@@ -1175,7 +1175,9 @@ def apply_special_post_query_processing(query, tableid, field_specs, collection,
     parent_inheritance_pref = get_parent_cat_num_inheritance_setting(collection, user)
     
     if parent_inheritance_pref:
-        query = parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
+        ##TODO: update
+        # query = parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
+        pass
     else: 
         query = cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
     
@@ -1183,33 +1185,34 @@ def apply_special_post_query_processing(query, tableid, field_specs, collection,
         return list(query)
     return query
 
-def parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
-    if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs]: 
-        if not get_parent_cat_num_inheritance_setting(collection, user):
-            return list(query)
+## TODO: adapt for component 
+# def parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
+#     if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs]: 
+#         if not get_parent_cat_num_inheritance_setting(collection, user):
+#             return list(query)
 
-        # Get the catalogNumber field index
-        catalog_number_field_index = [fs.fieldspec.join_path[0].name for fs in field_specs].index('catalogNumber') + 1
+#         # Get the catalogNumber field index
+#         catalog_number_field_index = [fs.fieldspec.join_path[0].name for fs in field_specs].index('catalogNumber') + 1
 
-        if field_specs[catalog_number_field_index - 1].op_num != 1:
-            return list(query)
+#         if field_specs[catalog_number_field_index - 1].op_num != 1:
+#             return list(query)
 
-        results = list(query)
-        updated_results = []
+#         results = list(query)
+#         updated_results = []
 
-        # Map results, replacing null catalog numbers with the parent catalog number
-        for result in results:
-            result = list(result)
-            if result[catalog_number_field_index] is None or result[catalog_number_field_index] == '':
-                component_id = result[0]  # Assuming the first column is the child's ID
-                component_obj = Collectionobject.objects.filter(id=component_id).first()
-                if component_obj and component_obj.componentParent:
-                    result[catalog_number_field_index] = component_obj.componentParent.catalognumber
-            updated_results.append(tuple(result))
+#         # Map results, replacing null catalog numbers with the parent catalog number
+#         for result in results:
+#             result = list(result)
+#             if result[catalog_number_field_index] is None or result[catalog_number_field_index] == '':
+#                 component_id = result[0]  # Assuming the first column is the child's ID
+#                 component_obj = Collectionobject.objects.filter(id=component_id).first()
+#                 if component_obj and component_obj.componentParent:
+#                     result[catalog_number_field_index] = component_obj.componentParent.catalognumber
+#             updated_results.append(tuple(result))
 
-        return updated_results
+#         return updated_results
 
-    return query
+#     return query
 
 def cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user):
     if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs if fs.fieldspec.join_path]:

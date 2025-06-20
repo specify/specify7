@@ -1609,8 +1609,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='cojo', type='one-to-one', required=False, relatedModelName='CollectionObjectGroupJoin', otherSideName='childco', dependent=True),
             Relationship(name='absoluteAges', type='one-to-many', required=False, relatedModelName='AbsoluteAge', otherSideName='collectionObject', dependent=True),
             Relationship(name='relativeAges', type='one-to-many', required=False, relatedModelName='RelativeAge', otherSideName='collectionObject', dependent=True),
-            Relationship(name='componentParent', type='many-to-one', required=False, relatedModelName='CollectionObject', column='ComponentParentID', otherSideName='components'),
-            Relationship(name='components', type='one-to-many', required=False, relatedModelName='CollectionObject', otherSideName='componentParent', dependent=True),
+            Relationship(name='components', type='one-to-many',required=False, relatedModelName='Component', otherSideName='collectionObject', dependent=True)
         ],
         fieldAliases=[
 
@@ -2206,6 +2205,57 @@ datamodel = Datamodel(tables=[
         fieldAliases=[
 
         ]
+    ),
+    Table(
+        classname='edu.ku.brc.specify.datamodel.Component',
+        table='component',
+        tableId=1028,
+        idColumn='ComponentID',
+        idFieldName='componentId',
+        idField=IdField(name='componentId', column='ComponentID', type='java.lang.Integer'),
+        fields=[
+            Field(name='catalogNumber', column='CatalogNumber', indexed=True, unique=False, required=False, type='java.lang.String', length=32),
+            Field(name='verbatimName', column='VerbatimName', indexed=False, unique=False, required=False, type='text'),
+            Field(name='role', column='Role', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='proportion', column='Proportion', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='uniqueIdentifier', column='UniqueIdentifier', indexed=True, unique=False, required=False, type='java.lang.String', length=128),
+            Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='text', length=65535),
+            Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text', length=65535),
+            Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='text', length=65535),
+            Field(name='text4', column='Text4', indexed=False, unique=False, required=False, type='text', length=65535),
+            Field(name='text5', column='Text5', indexed=False, unique=False, required=False, type='text', length=65535),
+            Field(name='text6', column='Text6', indexed=False, unique=False, required=False, type='text', length=65535),
+            Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='yesNo4', column='YesNo4', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='yesNo5', column='YesNo5', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='yesNo6', column='YesNo6', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='integer1', column='Integer1', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='integer2', column='Integer2', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='integer3', column='Integer3', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='integer4', column='Integer4', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='integer5', column='Integer5', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='integer6', column='Integer6', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='number1', column='Number1', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='number2', column='Number2', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='number3', column='Number3', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='number4', column='Number4', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='number5', column='Number5', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='number6', column='Number6', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+        ],
+        indexes=[],
+        relationships=[
+            Relationship(name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='components'),
+            Relationship(name='name', type='many-to-one',required=False, relatedModelName='Taxon', column='TaxonID', otherSideName='components'),
+            Relationship(name='type', type='many-to-one', required=True, relatedModelName='CollectionObjectType', column='CollectionObjectTypeID'),
+            Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+        ],
+        fieldAliases=[]
     ),
     Table(
         classname='edu.ku.brc.specify.datamodel.ConservDescription',
@@ -7164,7 +7214,9 @@ datamodel = Datamodel(tables=[
             Relationship(name='taxonAttachments', type='one-to-many',required=False, relatedModelName='TaxonAttachment', otherSideName='taxon', dependent=True),
             Relationship(name='taxonAttribute', type='many-to-one',required=False, relatedModelName='TaxonAttribute', column='TaxonAttributeID', otherSideName='taxons', dependent=True),
             Relationship(name='taxonCitations', type='one-to-many',required=False, relatedModelName='TaxonCitation', otherSideName='taxon', dependent=True),
-            Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID')
+            Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID'),
+            Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID'),
+            Relationship(name='components', type='one-to-many',required=False, relatedModelName='Component', otherSideName='taxon'),
         ],
         fieldAliases=[
             {'vname':'acceptedParent', 'aname':'acceptedTaxon'}

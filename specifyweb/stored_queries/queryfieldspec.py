@@ -510,7 +510,9 @@ def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uifor
     parent_inheritance_pref = get_parent_cat_num_inheritance_setting(collection, user)
 
     if parent_inheritance_pref: 
-        op, orm_field, value = parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
+        ## TODO: adapt for component 
+        # op, orm_field, value = parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
+        pass
     else: 
         op, orm_field, value = cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
 
@@ -555,32 +557,33 @@ def cog_primary_co_sibling_ids(cat_num, collection):
 
     return [str(i) for i in [co.id] + list(target_sibling_co_ids)]
 
-def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
-    if (
-        table.name == "CollectionObject"
-        and field.name == "catalogNumber"
-        and op_num == 1
-        and get_parent_cat_num_inheritance_setting(collection, user)
-    ):
-        components_ids = co_components_ids(value, collection)
-        if components_ids:
-            # Modify the query to filter operation and values for component collection objects
-            value = ','.join(components_ids)
-            orm_field = getattr(sq_CollectionObject, 'collectionObjectId')
-            op = QueryOps(uiformatter).by_op_num(10)
+## TODO: adapt for component
+# def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
+#     if (
+#         table.name == "CollectionObject"
+#         and field.name == "catalogNumber"
+#         and op_num == 1
+#         and get_parent_cat_num_inheritance_setting(collection, user)
+#     ):
+#         components_ids = co_components_ids(value, collection)
+#         if components_ids:
+#             # Modify the query to filter operation and values for component collection objects
+#             value = ','.join(components_ids)
+#             orm_field = getattr(sq_CollectionObject, 'collectionObjectId')
+#             op = QueryOps(uiformatter).by_op_num(10)
 
-    return op, orm_field, value
+#     return op, orm_field, value
 
-def co_components_ids(cat_num, collection):
-    # Get the collection object with the given catalog number
-    parentcomponent = Collectionobject.objects.filter(catalognumber=cat_num, collection=collection).first()
-    if not parentcomponent:
-        return []
+# def co_components_ids(cat_num, collection):
+#     # Get the collection object with the given catalog number
+#     parentcomponent = Collectionobject.objects.filter(catalognumber=cat_num, collection=collection).first()
+#     if not parentcomponent:
+#         return []
 
-    # Get component objects directly from the related name
-    components = parentcomponent.components.filter(catalognumber=None)
+#     # Get component objects directly from the related name
+#     components = parentcomponent.components.filter(catalognumber=None)
 
-    # Get their IDs
-    target_component_co_ids = components.values_list('id', flat=True)
+#     # Get their IDs
+#     target_component_co_ids = components.values_list('id', flat=True)
 
-    return [str(i) for i in [parentcomponent.id] + list(target_component_co_ids)]
+#     return [str(i) for i in [parentcomponent.id] + list(target_component_co_ids)]

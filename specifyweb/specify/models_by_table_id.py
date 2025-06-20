@@ -217,6 +217,7 @@ model_names_by_table_id = {
     1026:'Tectonicunittreedefitem',
     1027:'Tectonicunit', 
     1028:'SpDataSetAttachment', 
+    1029: 'Component'
 }
 
 model_names_by_app = {
@@ -447,6 +448,7 @@ model_names_by_app = {
         'Tectonicunittreedef',
         'Tectonicunittreedefitem',
         'Tectonicunit', 
+        'Component'
     }
 }
 

@@ -133,11 +133,6 @@ function Field({
     ? resource?.get('cojo') !== null && resource?.get('cojo') !== undefined
     : false;
 
-  const hasComponentParent = isCO
-    ? resource.get('componentParent') !== null &&
-      resource.get('componentParent') !== undefined
-    : false;
-
   const isCatNumberField = field?.name === 'catalogNumber';
 
   // Check if collection pref wants to inherit primary cat num for empty CO cat num sibilings inside of a COG
@@ -162,11 +157,7 @@ function Field({
     displayPrimaryCatNumberPref;
 
   const displayParentCatNumberPlaceHolder =
-    isNew === false &&
-    isCO &&
-    hasComponentParent &&
-    isCatNumberField &&
-    displayParentCatNumberPref;
+    isNew === false && isCO && isCatNumberField && displayParentCatNumberPref;
 
   const [primaryCatalogNumber, setPrimaryCatalogNumber] = React.useState<
     string | null
@@ -189,19 +180,23 @@ function Field({
         .catch((error) => {
           console.error('Error fetching catalog number:', error);
         });
-    } else if (resource && displayParentCatNumberPlaceHolder) {
-      ajax<string | null>('/api/specify/catalog_number_from_parent/', {
-        method: 'POST',
-        headers: { Accept: 'application/json' },
-        body: resource,
-      })
-        .then((response) => {
-          setParentCatalogNumber(response.data);
-        })
-        .catch((error) => {
-          console.error('Error fetching catalog number:', error);
-        });
     }
+    /*
+     * TODO: update for component
+     * else if (resource && displayParentCatNumberPlaceHolder) {
+     *   ajax<string | null>('/api/specify/catalog_number_from_parent/', {
+     *     method: 'POST',
+     *     headers: { Accept: 'application/json' },
+     *     body: resource,
+     *   })
+     *     .then((response) => {
+     *       setParentCatalogNumber(response.data);
+     *     })
+     *     .catch((error) => {
+     *       console.error('Error fetching catalog number:', error);
+     *     });
+     * }
+     */
   }, [
     resource,
     displayPrimaryCatNumberPlaceHolder,
