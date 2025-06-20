@@ -13,6 +13,9 @@ urlpatterns = [
     re_path(r'^specify/merge/status/(?P<merge_id>[0-9a-fA-F-]+)/$', views.merging_status),
     re_path(r'^specify/merge/abort/(?P<merge_id>[0-9a-fA-F-]+)/$', views.abort_merge_task),
 
+    # check if the user is new at login
+    re_path(r'^specify/is_new_user/$', views.is_new_user),
+
     # cat num for siblings
     re_path(r'^specify/catalog_number_for_sibling/$', views.catalog_number_for_sibling),
 
@@ -29,8 +32,14 @@ urlpatterns = [
     re_path(r'^specify/bulk/(?P<model>\w+)/(?P<copies>\d+)/$', views.collection_bulk_copy), # permissions added
     re_path(r'^specify/bulk/(?P<model>\w+)/$', views.collection_bulk), # permissions added
     re_path(r'^specify/(?P<model>\w+)/$', views.collection), # permissions added
-    re_path(r'^specify_rows/(?P<model>\w+)/$', views.rows), # permissions added  
-
+    re_path(r'^specify_rows/(?P<model>\w+)/$', views.rows), # permissions added
+  
+    re_path(r'^specify/institution/create/$', views.create_institution_view),
+    re_path(f'^specify/division/create/$', views.create_division_view),
+    re_path(f'^specify/discipline/create/$', views.create_discipline_view),
+    re_path(f'^specify/collection/create/$', views.create_collection_view),
+    re_path(f'^specify/specifyuser/create/$', views.create_specifyuser_view),
+  
     re_path(r'^delete_blockers/(?P<model>\w+)/(?P<id>\d+)/$', views.delete_blockers),
 
     # this url always triggers a 500 for testing purposes
