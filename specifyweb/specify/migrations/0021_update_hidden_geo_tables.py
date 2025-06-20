@@ -23,14 +23,11 @@ def fix_hidden_geo_prop(apps, schema_editor):
             )
             for container in containers:
                 for field_name in fields:
-                    items = Splocalecontaineritem.objects.filter(
+                    Splocalecontaineritem.objects.filter(
                         container=container,
                         name=field_name.lower()
-                    )
+                    ).update(ishidden=True)
 
-                    for item in items:
-                        item.ishidden = True
-                        item.save()
 
 def reverse_fix_hidden_geo_prop(apps, schema_editor):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
@@ -49,14 +46,11 @@ def reverse_fix_hidden_geo_prop(apps, schema_editor):
             )
             for container in containers:
                 for field_name in fields:
-                    items = Splocalecontaineritem.objects.filter(
+                    Splocalecontaineritem.objects.filter(
                         container=container,
                         name=field_name.lower()
-                    )
+                    ).update(ishidden=False)
 
-                    for item in items:
-                        item.ishidden = False
-                        item.save()
 
 class Migration(migrations.Migration):
     dependencies = [
