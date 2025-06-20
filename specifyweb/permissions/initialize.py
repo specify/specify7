@@ -1,6 +1,7 @@
 
 from django.db import transaction, connection
 from django.apps import apps
+from django.core.exceptions import MultipleObjectsReturned
 
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.model_extras import is_legacy_admin
@@ -67,19 +68,31 @@ def assign_users_to_roles(apps=apps) -> None:
             if user.usertype == 'Manager':
                 roles = Role.objects.filter(collection=collection, name="Collection Admin")
                 for role in roles:
-                    user_role, created = UserRole.objects.get_or_create(specifyuser=user, role=role)
+                    try:
+                        user_role, created = UserRole.objects.get_or_create(specifyuser=user, role=role)
+                    except MultipleObjectsReturned:
+                        user_role = UserRole.objects.filter(specifyuser=user, role=role).first()
+                        created = False
                     if created:
                         auditlog.insert(user_role)
             if user.usertype == 'FullAccess':
                 roles = Role.objects.filter(collection=collection, name="Full Access - Legacy")
                 for role in roles:
-                    user_role, created = UserRole.objects.get_or_create(specifyuser=user, role=role)
+                    try:
+                        user_role, created = UserRole.objects.get_or_create(specifyuser=user, role=role)
+                    except MultipleObjectsReturned:
+                        user_role = UserRole.objects.filter(specifyuser=user, role=role).first()
+                        created = False
                     if created:
                         auditlog.insert(user_role)
             if user.usertype in ('LimitedAccess', 'Guest'):
                 roles = Role.objects.filter(collection=collection, name="Read Only - Legacy")
                 for role in roles:
-                    user_role, created = UserRole.objects.get_or_create(specifyuser=user, role=role)
+                    try:
+                        user_role, created = UserRole.objects.get_or_create(specifyuser=user, role=role)
+                    except MultipleObjectsReturned:
+                        user_role = UserRole.objects.filter(specifyuser=user, role=role).first()
+                        created = False
                     if created:
                         auditlog.insert(user_role)
 
@@ -87,12 +100,21 @@ def assign_users_to_roles(apps=apps) -> None:
             # Does the user have an agent for the collection?
             if Agent.objects.filter(specifyuser=user, division__disciplines__collections__id=colid).exists():
                 # Give them access to the collection.
-                user_policy, created = UserPolicy.objects.get_or_create(
-                    collection_id=colid,
-                    specifyuser_id=user.id,
-                    resource=CollectionAccessPT.access.resource(),
-                    action=CollectionAccessPT.access.action(),
-                )
+                try:
+                    user_policy, created = UserPolicy.objects.get_or_create(
+                        collection_id=colid,
+                        specifyuser_id=user.id,
+                        resource=CollectionAccessPT.access.resource(),
+                        action=CollectionAccessPT.access.action(),
+                    )
+                except MultipleObjectsReturned:
+                    user_policy = UserPolicy.objects.filter(
+                        collection_id=colid,
+                        specifyuser_id=user.id,
+                        resource=CollectionAccessPT.access.resource(),
+                        action=CollectionAccessPT.access.action(),
+                    ).first()
+                    created = False
                 if created:
                     auditlog.insert(user_policy, None)
 
@@ -100,13 +122,21 @@ def get_or_create_role(model, name, description, extra_fields=None):
     kwargs = {"name": name, "description": description}
     if extra_fields:
         kwargs.update(extra_fields)
-    role_obj, created = model.objects.get_or_create(**kwargs)
+    try:
+        role_obj, created = model.objects.get_or_create(**kwargs)
+    except MultipleObjectsReturned:
+        role_obj = model.objects.filter(**kwargs).first()
+        created = False
     if created:
         auditlog.insert(role_obj)
     return role_obj
 
 def get_or_create_policy(role, resource, action):
-    policy_obj, created = role.policies.get_or_create(resource=resource, action=action)
+    try:
+        policy_obj, created = role.policies.get_or_create(resource=resource, action=action)
+    except MultipleObjectsReturned:
+        policy_obj = role.policies.filter(resource=resource, action=action).first()
+        created = False
     if created:
         auditlog.insert(policy_obj)
     return policy_obj

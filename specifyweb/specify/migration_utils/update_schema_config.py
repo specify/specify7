@@ -5,6 +5,7 @@ import logging
 
 from django.db.models import Q, Count
 from django.apps import apps as global_apps
+from django.core.exceptions import MultipleObjectsReturned  
 
 from specifyweb.specify.load_datamodel import Table, FieldDoesNotExistError, TableDoesNotExistError
 from specifyweb.specify.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
@@ -170,11 +171,18 @@ def update_table_field_schema_config_with_defaults(
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
-    sp_local_container, _ = Splocalecontainer.objects.get_or_create(
-        name=table.name.lower(),
-        discipline_id=discipline_id,
-        schematype=table_config.schema_type,
-    )
+    try:
+        sp_local_container, _ = Splocalecontainer.objects.get_or_create(
+            name=table.name.lower(),
+            discipline_id=discipline_id,
+            schematype=table_config.schema_type,
+        )
+    except MultipleObjectsReturned:
+        sp_local_container = Splocalecontainer.objects.filter(
+            name=table.name.lower(),
+            discipline_id=discipline_id,
+            schematype=table_config.schema_type
+        ).first()
 
     try:
         field = table.get_field_strict(field_name)
