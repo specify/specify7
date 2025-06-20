@@ -160,7 +160,7 @@ function Field({
     isCO &&
     isPartOfCOG &&
     isCatNumberField &&
-    displayParentCatNumberPref;
+    displayPrimaryCatNumberPref;
 
   const displayParentCatNumberPlaceHolder =
     isNew === false &&
