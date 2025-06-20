@@ -222,3 +222,23 @@ MIGRATION_0034_UPDATE_FIELDS = {
         ('date2Precision',              'Date 2 Precision',              'Date 2 Precision'),
     ]
 }
+
+MIGRATION_0035_TABLES = [
+    ('Component', None),
+]
+
+MIGRATION_0035_FIELDS = {
+    'CollectionObject': ['components'],
+    'Taxon': ['components'],
+}
+
+MIGRATION_0035_UPDATE_FIELDS = {
+    'Component': [
+        ('type', 'Component Type', 'This type determines the valid options for component names.'), 
+        ('name', 'Component Name', 'The name from a taxon tree corresponding to the chosen type.'),
+        ('verbatimName', 'Verbatim Name', 'The original name printed or associated with the component.'),
+        ('role', 'Component Role', 'Define the role or purpose of the component in the overall collection.'), 
+        ('proportion', 'Component Proportion', 'Specify the proportion of the component relative to the whole.'),
+        ('uniqueIdentifier', 'Unique Identifier', 'Unique Identifier [/+][-]Unique Identifier'),
+        ],
+}

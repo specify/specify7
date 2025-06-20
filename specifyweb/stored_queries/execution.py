@@ -31,7 +31,7 @@ from .field_spec_maps import apply_specify_user_name
 from ..notifications.models import Message
 from ..permissions.permissions import check_table_permissions
 from ..specify.auditlog import auditlog
-from ..specify.models import Collectionobjectgroupjoin, Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
+from ..specify.models import Collectionobjectgroupjoin, Component, Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
 from specifyweb.specify.utils import get_cat_num_inheritance_setting, log_sqlalchemy_query
 
 from specifyweb.stored_queries.group_concat import group_by_displayed_fields
@@ -1202,9 +1202,9 @@ def parent_inheritance_post_query_processing(query, tableid, field_specs, collec
             result = list(result)
             if result[catalog_number_field_index] is None or result[catalog_number_field_index] == '':
                 component_id = result[0]  # Assuming the first column is the child's ID
-                component_obj = Collectionobject.objects.filter(id=component_id).first()
+                component_obj = Component.objects.filter(id=component_id).first()
                 if component_obj and component_obj.componentParent:
-                    result[catalog_number_field_index] = component_obj.componentParent.catalognumber
+                    result[catalog_number_field_index] = component_obj.collectionobject.catalognumber
             updated_results.append(tuple(result))
 
         return updated_results

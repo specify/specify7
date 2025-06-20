@@ -1478,7 +1478,6 @@ class Collectionobject(models.Model):
     paleocontext = models.ForeignKey('PaleoContext', db_column='PaleoContextID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
     visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
     collectionobjecttype = models.ForeignKey('CollectionObjectType', db_column='CollectionObjectTypeID', related_name='collectionobjects', null=True, on_delete=models.SET_NULL)
-    componentParent = models.ForeignKey('CollectionObject', db_column='ComponentParentID', related_name='components', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'collectionobject'
@@ -2049,6 +2048,58 @@ class Commonnametx(models.Model):
     
     save = partialmethod(custom_save)
 
+class Component(models.Model): 
+    specify_model = datamodel.get_table_strict('component')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='componentid')
+
+    # Fields
+    catalognumber = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='CatalogNumber', db_index=False)
+    verbatimname = models.TextField(blank=True, null=True, unique=False, db_column='VerbatimName', db_index=False)
+    role = models.CharField(blank=False, max_length=50, null=True, unique=False, db_column='Role', db_index=False)
+    proportion= models.IntegerField(blank=True, null=True, unique=False, db_column='Proportion', db_index=False)
+    uniqueidentifier = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='UniqueIdentifier', db_index=False)
+    text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
+    text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
+    text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
+    text4 = models.TextField(blank=True, null=True, unique=False, db_column='Text4', db_index=False)
+    text5 = models.TextField(blank=True, null=True, unique=False, db_column='Text5', db_index=False)
+    text6 = models.TextField(blank=True, null=True, unique=False, db_column='Text6', db_index=False)
+    yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
+    yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
+    yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
+    yesno4 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo4', db_index=False)
+    yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
+    yesno6 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo6', db_index=False)
+    integer1 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer1', db_index=False)
+    integer2 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer2', db_index=False)
+    integer3 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer3', db_index=False)
+    integer4 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer4', db_index=False)
+    integer5 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer5', db_index=False)
+    integer6 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer6', db_index=False)
+    number1 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number1', db_index=False)
+    number2 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number2', db_index=False)
+    number3 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number3', db_index=False)
+    number4 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number4', db_index=False)
+    number5 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number5', db_index=False)
+    number6 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number6', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+
+    # Relationships: Many-to-One
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='components', null=False, on_delete=models.CASCADE)
+    name = models.ForeignKey('Taxon', db_column='TaxonID', related_name='components', null=True, on_delete=protect_with_blockers)
+    type = models.ForeignKey('CollectionObjectType', db_column='CollectionObjectTypeID', related_name='components', null=True, on_delete=models.SET_NULL)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'component'
+        ordering = ()
+
+    save = partialmethod(custom_save)
 class Commonnametxcitation(models.Model):
     specify_model = datamodel.get_table_strict('commonnametxcitation')
 
