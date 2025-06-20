@@ -1,7 +1,9 @@
+from typing import Any, Callable, List
 from specifyweb.interactions.cog_preps import modify_update_of_interaction_sibling_preps
 from specifyweb.interactions.tests.test_cog_consolidated_prep_sibling_context import (
     TestCogConsolidatedPrepSiblingContext,
 )
+from specifyweb.specify import api
 from specifyweb.specify.api import obj_to_data
 from specifyweb.specify.models import (
     Borrow,
@@ -12,6 +14,9 @@ from specifyweb.specify.models import (
     Loan,
     Loanpreparation,
 )
+
+PrepGetter = Callable[["TestModifyUpdateInteractionSiblingPreps"], List[Any]]
+PrepGetterFromPreps = Callable[[List[Any]], List[Any]]
 
 mapping = {
     "loan": dict(model=Loanpreparation, attr="loanpreparations", backref="loan"),
@@ -70,14 +75,18 @@ def _make_normal_interaction_preps(model_name: str):
     return test
 
 
-def _make_consolidated_preps_simple_no_change(model_name: str):
+def _make_consolidated_preps_no_change(
+    model_name: str,
+    getter: PrepGetter,
+):
 
     mapped = mapping[model_name.lower()]
 
     def test(self: "TestModifyUpdateInteractionSiblingPreps"):
 
         interaction_obj = getattr(self, model_name.lower())
-        prep_list = self._consolidated_cog_parent_simple()[0]
+        prep_list = getter(self)
+        # prep_list = self._consolidated_cog_parent_simple()[0]
         for prep in prep_list[:3]:
             self._update(prep, {"countamt": 2})
             _create_interaction_prep(
@@ -91,15 +100,17 @@ def _make_consolidated_preps_simple_no_change(model_name: str):
     return test
 
 
-def _make_consolidated_preps_simple_prep_removal(model_name: str):
+def _make_consolidated_preps_removal(
+    model_name: str, get_all_preps: PrepGetter, get_preps_to_remove: PrepGetter
+):
 
     mapped = mapping[model_name.lower()]
 
     def test(self: "TestModifyUpdateInteractionSiblingPreps"):
         interaction_obj = getattr(self, model_name.lower())
         attr = mapped["attr"]
-        prep_list = self._consolidated_cog_parent_simple()[0]
-        for prep in prep_list[:3]:
+        prep_list = get_all_preps(self)
+        for prep in prep_list:
             self._update(prep, {"countamt": 2})
             _create_interaction_prep(
                 self, interaction_obj, prep, None, quantity=1, quantityresolved=0
@@ -109,7 +120,7 @@ def _make_consolidated_preps_simple_prep_removal(model_name: str):
         # remove a prep from orig_data
         data_prep_limited = {
             **orig_data,
-            attr: orig_data[attr][1:3],
+            attr: get_preps_to_remove(orig_data[attr]),
         }
 
         # this should trigger removal of all the preps (they are part of the same branch)
@@ -153,69 +164,103 @@ def _make_consolidated_preps_simple_prep_removal(model_name: str):
     return test
 
 
-def _make_consolidated_preps_simple_prep_addition(model_name: str):
+# This test is same as "_make_consolidated_preps_removal", but it was easier to write it as a separate test.
+def _make_consolidated_preps_removal_branched(model_name):
 
     mapped = mapping[model_name.lower()]
 
     def test(self: "TestModifyUpdateInteractionSiblingPreps"):
         interaction_obj = getattr(self, model_name.lower())
         attr = mapped["attr"]
-        prep_list = self._consolidated_cog_parent_simple()[0]
-        loan_preps = []
+        branch_1_preps, branch_2_preps = self._consolidated_cog_parent_branched()
+
+        branch_1_prep_ids = [prep.id for prep in branch_1_preps]
+        branch_2_prep_ids = [prep.id for prep in branch_2_preps]
+
+        for prep in [*branch_1_preps, *branch_2_preps]:
+            self._update(prep, {"countamt": 2})
+            _create_interaction_prep(
+                self, interaction_obj, prep, None, quantity=1, quantityresolved=0
+            )
+        orig_data = obj_to_data(interaction_obj)
+        new_preps = []
+
+        did_remove = False
+        branch_2_inter_preps = []
+        for interaction_prep in orig_data[attr]:
+            prep_id = api.strict_uri_to_model(
+                interaction_prep["preparation"], "preparation"
+            )[1]
+            # Basically, remove all of the first branch's preps
+            if prep_id in branch_2_prep_ids:
+                branch_2_inter_preps.append(interaction_prep)
+            if (prep_id in branch_1_prep_ids) and (not did_remove):
+                did_remove = True
+                continue
+            new_preps.append(interaction_prep)
+
+        data_prep_limited = {**orig_data, attr: new_preps}
+
+        new_data = modify_update_of_interaction_sibling_preps(
+            interaction_obj, data_prep_limited
+        )
+        self.assertCountEqual(new_data[attr], branch_2_inter_preps)
+
+    return test
+
+
+def _make_consolidated_prep_addition(
+    model_name: str, get_all_preps: PrepGetter, get_preps_to_add: PrepGetter
+):
+
+    mapped = mapping[model_name.lower()]
+
+    def test(self: "TestModifyUpdateInteractionSiblingPreps"):
+        interaction_obj = getattr(self, model_name.lower())
+        attr = mapped["attr"]
+        prep_list = get_all_preps(self)
         for prep in prep_list[:3]:
             self._update(prep, {"countamt": 2})
             _create_interaction_prep(
-                self, interaction_obj, prep, loan_preps, quantity=1, quantityresolved=0
+                self, interaction_obj, prep, None, quantity=1, quantityresolved=0
             )
 
         orig_data = obj_to_data(interaction_obj)
+
+        preps_to_add = get_preps_to_add(self)
+
         # add a prep to orig_data
         data_prep_extra = {
             **orig_data,
             attr: [
                 *orig_data[attr],
-                {
-                    "preparation": f"/api/specify/preparation/{prep_list[3].id}/",
-                    "quantity": 1,
-                    "isresolved": True,
-                    "discipline": self.discipline_uri,
-                },
+                *[
+                    {
+                        "preparation": f"/api/specify/preparation/{prep_list[prep_to_add].id}/",
+                        "quantity": 1,
+                        "isresolved": True,
+                        "discipline": self.discipline_uri,
+                    }
+                    for prep_to_add in preps_to_add
+                ],
             ],
         }
 
         extra_preps = [
             {
-                "preparation": f"/api/specify/preparation/{prep_list[3].id}/",
+                "preparation": f"/api/specify/preparation/{prep.id}/",
                 "quantity": 1,
                 "isresolved": True,
                 "discipline": self.discipline_uri,
-            },
-            {
-                "preparation": f"/api/specify/preparation/{prep_list[4].id}/",
-                "quantity": 1,
-                "isresolved": True,
-                "discipline": self.discipline_uri,
-            },
+            }
+            for prep in prep_list[3:]
         ]
         # this should trigger removal of all the preps (they are part of the same branch)
         new_data = modify_update_of_interaction_sibling_preps(
             interaction_obj, data_prep_extra
         )
         self.assertEqual(len(new_data[attr]), len(prep_list))
-        self.assertEqual(new_data[attr][3:], extra_preps)
-
-    return test
-
-
-def _make_consolidated_preps_indirect_addition(model_name: str):
-
-    mapped = mapping[model_name.lower()]
-
-    def test(self: "TestModifyUpdateInteractionSiblingPreps"):
-        interaction_obj = getattr(self, model_name.lower())
-        attr = mapped["attr"]
-        prep_list = self._consolidated_cog_parent_indirect()[0]
-        print(len(prep_list))
+        self.assertCountEqual(new_data[attr][3:], extra_preps)
 
     return test
 
@@ -246,7 +291,46 @@ class TestModifyUpdateInteractionSiblingPreps(TestCogConsolidatedPrepSiblingCont
         )
 
 
+def _simple_prep_getter(self: TestModifyUpdateInteractionSiblingPreps):
+    return self._consolidated_cog_parent_simple()[0]
+
+
+def _indirect_prep_getter(self: TestModifyUpdateInteractionSiblingPreps):
+    return self._consolidated_cog_parent_indirect()[0]
+
+
+def _branched_prep_getter(self: TestModifyUpdateInteractionSiblingPreps):
+    branch_1_preps, branch_2_preps = self._consolidated_cog_parent_branched()
+    return [*branch_1_preps[:2], *branch_2_preps[:2]]
+
+
+def _branched_prep_getter_all(self: TestModifyUpdateInteractionSiblingPreps):
+    branch_1_preps, branch_2_preps = self._consolidated_cog_parent_branched()
+    return [*branch_1_preps, *branch_2_preps]
+
+
+def _simple_prep_new_getter(self: TestModifyUpdateInteractionSiblingPreps):
+    return [3]
+
+
+def _indirect_prep_new_getter(self: TestModifyUpdateInteractionSiblingPreps):
+    return [3, -1, -2]
+
+
+def _branched_prep_new_getter(self: TestModifyUpdateInteractionSiblingPreps):
+    return [3, -1, -2]
+
+
+def _simple_preps_remover(preps: List[Any]):
+    return preps[1:3]
+
+
+def _indirect_preps_remover(preps: List[Any]):
+    return preps[5:8]
+
+
 # This is done by setattrs to avoid code duplication between interaction types.
+# Also, makes adding tests less time consuming :)
 for model_name in mapping:
     setattr(
         TestModifyUpdateInteractionSiblingPreps,
@@ -255,21 +339,63 @@ for model_name in mapping:
     )
     setattr(
         TestModifyUpdateInteractionSiblingPreps,
-        f"test_consolidated_{model_name}_interaction_preps",
-        _make_consolidated_preps_simple_no_change(model_name),
+        f"test_consolidated_{model_name}_interaction_preps_no_change",
+        _make_consolidated_preps_no_change(model_name, _simple_prep_getter),
     )
     setattr(
         TestModifyUpdateInteractionSiblingPreps,
         f"test_consolidated_{model_name}_preps_simple_removal",
-        _make_consolidated_preps_simple_prep_removal(model_name),
+        _make_consolidated_preps_removal(
+            model_name, _simple_prep_getter, _simple_preps_remover
+        ),
     )
     setattr(
         TestModifyUpdateInteractionSiblingPreps,
+        f"test_consolidated_{model_name}_preps_indirect_removal",
+        _make_consolidated_preps_removal(
+            model_name, _indirect_prep_getter, _indirect_preps_remover
+        ),
+    )
+    # setattr(
+    #     TestModifyUpdateInteractionSiblingPreps,
+    #     f"test_consolidated_{model_name}_preps_indirect_removal",
+    #     _make_consolidated_preps_removal(
+    #         model_name, _indirect_prep_getter, _indirect_preps_remover
+    #     ),
+    # )
+    setattr(
+        TestModifyUpdateInteractionSiblingPreps,
         f"test_consolidated_{model_name}_preps_simple_addition",
-        _make_consolidated_preps_simple_prep_addition(model_name),
+        _make_consolidated_prep_addition(
+            model_name, _simple_prep_getter, _simple_prep_new_getter
+        ),
+    )
+    setattr(
+        TestModifyUpdateInteractionSiblingPreps,
+        f"test_indirect_consolidated_{model_name}_interaction_preps_no_change",
+        _make_consolidated_preps_no_change(model_name, _indirect_prep_getter),
+    )
+    setattr(
+        TestModifyUpdateInteractionSiblingPreps,
+        f"test_branched_consolidated_{model_name}_interaction_preps_no_change",
+        _make_consolidated_preps_no_change(model_name, _branched_prep_getter),
     )
     setattr(
         TestModifyUpdateInteractionSiblingPreps,
         f"test_consolidated_{model_name}_preps_indirect_addition",
-        _make_consolidated_preps_indirect_addition(model_name),
+        _make_consolidated_prep_addition(
+            model_name, _indirect_prep_getter, _indirect_prep_new_getter
+        ),
+    )
+    setattr(
+        TestModifyUpdateInteractionSiblingPreps,
+        f"test_consolidated_{model_name}_preps_branched_addition",
+        _make_consolidated_prep_addition(
+            model_name, _branched_prep_getter_all, _branched_prep_new_getter
+        ),
+    )
+    setattr(
+        TestModifyUpdateInteractionSiblingPreps,
+        f"test_consolidated_{model_name}_preps_branced_removal",
+        _make_consolidated_preps_removal_branched(model_name),
     )
