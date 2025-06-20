@@ -42,8 +42,10 @@ class TestCogInteractions(DefaultsSetup):
             parentcog=cog, childcog=child_cog, isprimary=True, issubstrate=True
         )
 
-    def _create_prep(self, co, prep_list):
-        prep = Preparation.objects.create(collectionobject=co, preptype=self.prep_type)
+    def _create_prep(self, co, prep_list, **prep_kwargs):
+        prep = Preparation.objects.create(
+            collectionobject=co, preptype=self.prep_type, **prep_kwargs
+        )
         if prep_list is not None:
             prep_list.append(prep)
         return prep
