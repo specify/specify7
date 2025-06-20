@@ -1789,10 +1789,18 @@
 			<columnDef os="exp">p,2px,p:g(2),5px:g,p,2px,p:g(2),0px,p,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2dlu"/>
 			<rows>
-				<row>
-					<cell type="label" labelfor="parent"/>
-					<cell type="field" id="parent" uitype="querycbx" isrequired="true" initialize="name=Storage;title=Storage;viewbtn=true;newbtn=false;editoncreate=true" name="parent"/>
-				</row>
+				<row> 
+			<cell type="panel" colspan="4" initialize="align=center">
+				<rows>
+					<row>
+						<cell type="label" labelfor="parent" initialize="align=left"/>
+						<cell type="field" id="parent" uitype="querycbx" isrequired="true" initialize="name=Storage;title=Storage;editbtn=false;newbtn=false;editoncreate=true" name="parent" colspan="3"/>
+					</row>
+				</rows>
+				<rows condition="definitionItem.rankId=0">
+				</rows>
+			</cell>
+		</row>
 				<row>
 					<cell type="label" labelfor="name"/>
 					<cell type="field" id="name" uitype="text" name="name" isrequired="true"/>
@@ -1880,10 +1888,19 @@
 					<cell type="label" label=" "/>
 					<cell type="field" id="isBioStrat" uitype="checkbox" name="isBioStrat"/>
 				</row>
-				<row>
-					<cell type="label" labelfor="parent"/>
-					<cell type="field" id="parent" uitype="querycbx" initialize="name=GeologicTimePeriod;title=GeologicTimePeriod;editbtn=false;newbtn=false;editoncreate=true" name="parent" isrequired="true" colspan="3"/>
-				</row>
+				
+        <row> 
+			<cell type="panel" colspan="4" initialize="align=center">
+				<rows>
+					<row>
+						<cell type="label" labelfor="parent" initialize="align=left"/>
+						<cell type="field" id="parent" uitype="querycbx" isrequired="true" initialize="name=GeologicTimePeriod;title=GeologicTimePeriod;editbtn=false;newbtn=false;editoncreate=true" name="parent" colspan="3"/>
+					</row>
+				</rows>
+				<rows condition="definitionItem.rankId=0">
+				</rows>
+			</cell>
+		</row>
 				<row>
 					<cell type="label" labelfor="name"/>
 					<cell type="field" id="name" uitype="text" name="name" isrequired="true"/>
@@ -2026,10 +2043,18 @@
 			<columnDef os="exp">p,2px,p:g(2),5px:g,p,2px,p:g(2),0px,p,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2dlu"/>
 			<rows>
-				<row>
-					<cell type="label" labelfor="parent"/>
-					<cell type="field" id="parent" uitype="querycbx" initialize="name=LithoStrat;title=LithoStrat;editbtn=false;newbtn=false;editoncreate=true" name="parent" isrequired="true" colspan="3"/>
-				</row>
+        <row> 
+			<cell type="panel" colspan="4" initialize="align=center">
+				<rows>
+					<row>
+						<cell type="label" labelfor="parent" initialize="align=left"/>
+						<cell type="field" id="parent" uitype="querycbx" isrequired="true" initialize="name=LithoStrat;title=LithoStrat;editbtn=false;newbtn=false;editoncreate=true" name="parent" colspan="3"/>
+					</row>
+				</rows>
+				<rows condition="definitionItem.rankId=0">
+				</rows>
+			</cell>
+		</row>
 				<row>
 					<cell type="label" labelfor="name"/>
 					<cell type="field" id="name" uitype="text" name="name"/>
@@ -2850,10 +2875,18 @@
 			<columnDef>100px,2px,325px,5px,133px,2px,155px,10px,95px,15px,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2px"/>
 			<rows>
-				<row>
-					<cell type="label" labelfor="parent"/>
-					<cell type="field" id="parent" uitype="querycbx" isrequired="true" colspan="3" initialize="editbtn=false;newbtn=false" name="parent"/>
-				</row>
+    <row> 
+			<cell type="panel" colspan="4" initialize="align=center">
+				<rows>
+					<row>
+						<cell type="label" labelfor="parent" initialize="align=left"/>
+						<cell type="field" id="parent" uitype="querycbx" isrequired="true" initialize="name=TectonicUnit;title=TectonicUnit;editbtn=false;newbtn=false;editoncreate=true" name="parent" colspan="3"/>
+					</row>
+				</rows>
+				<rows condition="definitionItem.rankId=0">
+				</rows>
+			</cell>
+		</row>
 				<row>
 					<cell type="label" labelfor="name"/>
 					<cell type="field" id="name" uitype="text" name="name"/>
