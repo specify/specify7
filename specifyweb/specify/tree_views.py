@@ -437,14 +437,14 @@ def add_root(request, tree, treeid):
         raise Exception("Root node already exists.") 
 
     root = item.objects.create(
-        name="Life",
+        name="Root",
         isaccepted=1,
         nodenumber=1,
         rankid=0,
         parent=None,
         definition=tree_target,
         definitionitem=tree_def_item,
-        fullname="Life"
+        fullname="Root"
     )
 
     # Override node number with raw sql execution
