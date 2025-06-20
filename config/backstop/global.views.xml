@@ -2132,7 +2132,7 @@
 				</row>
 				<row>
 					<cell type="label" labelfor="8"/>
-					<cell type="field" id="8" uitype="text" name="fullNameSeparator" default=", "/>
+					<cell type="field" id="8" uitype="text" name="fullNameSeparator" default=" "/>
 				</row>
 			</rows>
 		</viewdef>
