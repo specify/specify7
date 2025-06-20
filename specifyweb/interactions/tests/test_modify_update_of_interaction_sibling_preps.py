@@ -39,11 +39,11 @@ def _create_interaction_prep(context, obj, prep, prep_list, **loan_prep_kwargs):
         prep_list.append(lp)
 
 
-def _make_normal_interaction_preps(model_name):
+def _make_normal_interaction_preps(model_name: str):
 
     mapped = mapping[model_name.lower()]
 
-    def test(self):
+    def test(self: "TestModifyUpdateInteractionSiblingPreps"):
 
         interaction_obj = getattr(self, model_name.lower())
         # This loan doesn't have any preparations that should be impacted by COG.
@@ -70,11 +70,11 @@ def _make_normal_interaction_preps(model_name):
     return test
 
 
-def _make_consolidated_preps_simple_no_change(model_name):
+def _make_consolidated_preps_simple_no_change(model_name: str):
 
     mapped = mapping[model_name.lower()]
 
-    def test(self):
+    def test(self: "TestModifyUpdateInteractionSiblingPreps"):
 
         interaction_obj = getattr(self, model_name.lower())
         prep_list = self._consolidated_cog_parent_simple()[0]
@@ -91,11 +91,11 @@ def _make_consolidated_preps_simple_no_change(model_name):
     return test
 
 
-def _make_consolidated_preps_simple_prep_removal(model_name):
+def _make_consolidated_preps_simple_prep_removal(model_name: str):
 
     mapped = mapping[model_name.lower()]
 
-    def test(self):
+    def test(self: "TestModifyUpdateInteractionSiblingPreps"):
         interaction_obj = getattr(self, model_name.lower())
         attr = mapped["attr"]
         prep_list = self._consolidated_cog_parent_simple()[0]
@@ -153,11 +153,11 @@ def _make_consolidated_preps_simple_prep_removal(model_name):
     return test
 
 
-def _make_consolidated_preps_simple_prep_addition(model_name):
+def _make_consolidated_preps_simple_prep_addition(model_name: str):
 
     mapped = mapping[model_name.lower()]
 
-    def test(self):
+    def test(self: "TestModifyUpdateInteractionSiblingPreps"):
         interaction_obj = getattr(self, model_name.lower())
         attr = mapped["attr"]
         prep_list = self._consolidated_cog_parent_simple()[0]
@@ -207,6 +207,19 @@ def _make_consolidated_preps_simple_prep_addition(model_name):
     return test
 
 
+def _make_consolidated_preps_indirect_addition(model_name: str):
+
+    mapped = mapping[model_name.lower()]
+
+    def test(self: "TestModifyUpdateInteractionSiblingPreps"):
+        interaction_obj = getattr(self, model_name.lower())
+        attr = mapped["attr"]
+        prep_list = self._consolidated_cog_parent_indirect()[0]
+        print(len(prep_list))
+
+    return test
+
+
 class TestModifyUpdateInteractionSiblingPreps(TestCogConsolidatedPrepSiblingContext):
 
     # FEAT: Make this part of regular test environment
@@ -233,6 +246,7 @@ class TestModifyUpdateInteractionSiblingPreps(TestCogConsolidatedPrepSiblingCont
         )
 
 
+# This is done by setattrs to avoid code duplication between interaction types.
 for model_name in mapping:
     setattr(
         TestModifyUpdateInteractionSiblingPreps,
@@ -241,16 +255,21 @@ for model_name in mapping:
     )
     setattr(
         TestModifyUpdateInteractionSiblingPreps,
-        f"test_normal_{model_name}_interaction_preps",
+        f"test_consolidated_{model_name}_interaction_preps",
         _make_consolidated_preps_simple_no_change(model_name),
     )
     setattr(
         TestModifyUpdateInteractionSiblingPreps,
-        f"test_consolidated_{model_name}_preps_simple_prep_removal",
+        f"test_consolidated_{model_name}_preps_simple_removal",
         _make_consolidated_preps_simple_prep_removal(model_name),
     )
     setattr(
         TestModifyUpdateInteractionSiblingPreps,
-        f"test_consolidated_{model_name}_preps_simple_prep_addition",
+        f"test_consolidated_{model_name}_preps_simple_addition",
         _make_consolidated_preps_simple_prep_addition(model_name),
+    )
+    setattr(
+        TestModifyUpdateInteractionSiblingPreps,
+        f"test_consolidated_{model_name}_preps_indirect_addition",
+        _make_consolidated_preps_indirect_addition(model_name),
     )
