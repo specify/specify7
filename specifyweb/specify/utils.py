@@ -159,3 +159,34 @@ def get_parent_cat_num_inheritance_setting(collection, user) -> bool:
     
     return parent_inheritance_enabled
 
+
+from sqlalchemy.orm.properties import ColumnProperty
+from sqlalchemy.exc import NoInspectionAvailable
+from sqlalchemy.inspection import inspect as sa_inspect
+
+def get_sp_id_col(model):
+    try:
+        insp = sa_inspect(model)
+        mapper = insp.mapper
+        pk_cols = mapper.primary_key
+        if pk_cols:
+            pk_key = pk_cols[0].key
+            return sp_getattr(model, pk_key)
+    except NoInspectionAvailable:
+        pass
+
+    if isinstance(model._id, str):
+        return sp_getattr(model, pk_key)
+
+    if isinstance(model._id, ColumnProperty):
+        return model._id.columns[0]
+
+    return model._id
+
+def sp_getattr(obj, attr, default=None):
+    try:
+        return getattr(obj, attr)
+    except AttributeError:
+        if attr.endswith('ID'):
+            modified_attr = attr[0].lower() + attr[1:-1] + attr[-1].lower()
+            return getattr(obj, modified_attr)

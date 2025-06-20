@@ -12,6 +12,7 @@ from specifyweb.middleware.general import require_GET
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets, has_table_permission
 
+from specifyweb.specify.utils import get_sp_id_col
 from specifyweb.stored_queries import models as sqlmodels
 from specifyweb.stored_queries.execution import set_group_concat_max_len
 from specifyweb.stored_queries.group_concat import group_concat
@@ -168,8 +169,10 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
     accepted = aliased(node)
     synonym  = aliased(node)
 
-    id_col      = getattr(node, node._id)
-    child_id    = getattr(child, node._id)
+    # id_col      = getattr(node, node._id)
+    id_col      = get_sp_id_col(node)
+    # child_id    = getattr(child, node._id)
+    child_id    = get_sp_id_col(child)
     treedef_col = getattr(node, tree_table.name + "TreeDefID")
     orderby     = getattr(node, tree_table.get_field_strict(sortfield).name)
 

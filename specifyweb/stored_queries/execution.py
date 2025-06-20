@@ -16,6 +16,7 @@ from specifyweb.specify.models import Collectionobject
 from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting
 from sqlalchemy import sql, orm, func, select, text
 from sqlalchemy.sql.expression import asc, desc, insert, literal
+from sqlalchemy.orm.properties import ColumnProperty
 
 from specifyweb.specify.field_change_info import FieldChangeInfo
 from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
@@ -889,7 +890,12 @@ def build_query(
     Return all record IDs associated with a row.
     """
     model = models.models_by_tableid[tableid]
-    id_field = getattr(model, model._id)
+    if isinstance(model._id, str):
+        id_field = getattr(model, model._id)
+    elif isinstance(model._id, ColumnProperty):
+        id_field = model._id.columns[0]
+    else:
+        id_field = model._id
     catalog_number_field = model.catalogNumber if hasattr(model, 'catalogNumber') else None
 
     # field_specs = [apply_absolute_date(field_spec) for field_spec in field_specs]
