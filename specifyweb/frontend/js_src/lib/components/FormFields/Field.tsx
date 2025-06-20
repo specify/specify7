@@ -128,17 +128,16 @@ function Field({
 
   const isNew = resource?.isNew();
   const isCO = resource?.specifyTable.name === 'CollectionObject';
+  const isComponent = resource?.specifyTable.name === 'Component';
 
   const isPartOfCOG = isCO
     ? resource?.get('cojo') !== null && resource?.get('cojo') !== undefined
     : false;
 
-  /*
-   * Const hasComponentParent = isCO
-   *   ? resource.get('componentParent') !== null &&
-   *     resource.get('componentParent') !== undefined
-   *   : false;
-   */
+  const hasCOParent = isComponent
+    ? resource.get('collectionObject') !== null &&
+      resource.get('collectionObject') !== undefined
+    : false;
 
   const isCatNumberField = field?.name === 'catalogNumber';
 
@@ -159,22 +158,24 @@ function Field({
   const displayPrimaryCatNumberPlaceHolder =
     isNew === false &&
     isCO &&
-    // HasComponentParent &&
+    isPartOfCOG &&
     isCatNumberField &&
     displayParentCatNumberPref;
 
   const displayParentCatNumberPlaceHolder =
-    isNew === false && isCO && isCatNumberField && displayParentCatNumberPref;
+    isNew === false &&
+    isComponent &&
+    hasCOParent &&
+    isCatNumberField &&
+    displayParentCatNumberPref;
 
   const [primaryCatalogNumber, setPrimaryCatalogNumber] = React.useState<
     string | null
   >(null);
 
-  /*
-   * Const [parentCatalogNumber, setParentCatalogNumber] = React.useState<
-   *   string | null
-   * >(null);
-   */
+  const [parentCatalogNumber, setParentCatalogNumber] = React.useState<
+    string | null
+  >(null);
 
   React.useEffect(() => {
     if (resource && displayPrimaryCatNumberPlaceHolder) {
@@ -189,23 +190,19 @@ function Field({
         .catch((error) => {
           console.error('Error fetching catalog number:', error);
         });
+    } else if (resource && displayParentCatNumberPlaceHolder) {
+      ajax<string | null>('/api/specify/catalog_number_from_parent/', {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: resource,
+      })
+        .then((response) => {
+          setParentCatalogNumber(response.data);
+        })
+        .catch((error) => {
+          console.error('Error fetching catalog number:', error);
+        });
     }
-    /*
-     * TODO: update for component
-     * else if (resource && displayParentCatNumberPlaceHolder) {
-     *   ajax<string | null>('/api/specify/catalog_number_from_parent/', {
-     *     method: 'POST',
-     *     headers: { Accept: 'application/json' },
-     *     body: resource,
-     *   })
-     *     .then((response) => {
-     *       setParentCatalogNumber(response.data);
-     *     })
-     *     .catch((error) => {
-     *       console.error('Error fetching catalog number:', error);
-     *     });
-     * }
-     */
   }, [
     resource,
     displayPrimaryCatNumberPlaceHolder,
@@ -218,15 +215,15 @@ function Field({
       key={parser.title}
       max={Number.MAX_SAFE_INTEGER}
       name={name}
-      // placeholder={
-      //   displayPrimaryCatNumberPlaceHolder &&
-      //   typeof primaryCatalogNumber === 'string'
-      //     ? primaryCatalogNumber
-      //     : displayParentCatNumberPlaceHolder &&
-      //         typeof parentCatalogNumber === 'string'
-      //       ? parentCatalogNumber
-      //       : undefined
-      // }
+      placeholder={
+        displayPrimaryCatNumberPlaceHolder &&
+        typeof primaryCatalogNumber === 'string'
+          ? primaryCatalogNumber
+          : displayParentCatNumberPlaceHolder &&
+              typeof parentCatalogNumber === 'string'
+            ? parentCatalogNumber
+            : undefined
+      }
       {...validationAttributes}
       className={
         /*

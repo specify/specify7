@@ -69,6 +69,7 @@ export type Tables = {
   readonly Collector: Collector;
   readonly CommonNameTx: CommonNameTx;
   readonly CommonNameTxCitation: CommonNameTxCitation;
+  readonly Component: Component;
   readonly ConservDescription: ConservDescription;
   readonly ConservDescriptionAttachment: ConservDescriptionAttachment;
   readonly ConservEvent: ConservEvent;

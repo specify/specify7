@@ -1465,38 +1465,37 @@ def catalog_number_for_sibling(request: http.HttpRequest):
         return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)                  
                                 
 
-## TODO: ADAPT for component 
-# @login_maybe_required
-# @require_POST
-# def catalog_number_from_parent(request: http.HttpRequest):
-#     """
-#     Returns the catalog number of the parent component
-#     """
-#     try:
-#         request_data = json.loads(request.body)
-#         object_id = request_data.get('id')
-#         provided_catalog_number = request_data.get('catalognumber')
-#     except json.JSONDecodeError:
-#         return http.JsonResponse({'error': 'Invalid JSON body.'}, status=400)
+@login_maybe_required
+@require_POST
+def catalog_number_from_parent(request: http.HttpRequest):
+    """
+    Returns the catalog number of the parent collection object
+    """
+    try:
+        request_data = json.loads(request.body)
+        object_id = request_data.get('id')
+        provided_catalog_number = request_data.get('catalognumber')
+    except json.JSONDecodeError:
+        return http.JsonResponse({'error': 'Invalid JSON body.'}, status=400)
 
-#     if object_id is None:
-#         return http.JsonResponse({'error': "'id' field is required."}, status=400)
+    if object_id is None:
+        return http.JsonResponse({'error': "'id' field is required."}, status=400)
 
-#     if provided_catalog_number is not None:
-#         return http.JsonResponse(None, safe=False)
+    if provided_catalog_number is not None:
+        return http.JsonResponse(None, safe=False)
 
-#     try:
-#         # Get the child CO
-#         child = spmodels.Collectionobject.objects.get(id=object_id)
+    try:
+        # Get the child Component
+        child = spmodels.Component.objects.get(id=object_id)
 
-#         # Get the parent CO
-#         parent = child.componentParent
+        # Get the parent CO
+        parent = child.collectionObject
 
-#         if parent and parent.catalognumber:
-#             return http.JsonResponse(parent.catalognumber, safe=False)
-#         else:
-#             return http.JsonResponse({'error': 'Parent or parent catalog number not found.'}, status=404)
+        if parent and parent.catalognumber:
+            return http.JsonResponse(parent.catalognumber, safe=False)
+        else:
+            return http.JsonResponse({'error': 'Parent or parent catalog number not found.'}, status=404)
 
-#     except Exception as e:
-#         print(f"Error processing request: {e}")
-#         return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)  
+    except Exception as e:
+        print(f"Error processing request: {e}")
+        return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)  
