@@ -19,6 +19,7 @@ import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { SplashScreen } from '../Core/SplashScreen';
+import { SetupTool } from '../SetupTool';
 import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
 import type { OicProvider } from './OicLogin';
 import { OicLogin } from './OicLogin';
@@ -49,8 +50,7 @@ export function Login(): JSX.Element {
     const providers = parseDjangoDump<RA<OicProvider>>('providers') ?? [];
 
     if (isNewUser === true || isNewUser === undefined) {
-      // Display here the new setup pages
-      return <p>Welcome! No institutions are available at the moment.</p>;
+      return <SetupTool />;
     }
 
     return providers.length > 0 ? (
