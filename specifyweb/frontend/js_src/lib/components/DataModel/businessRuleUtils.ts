@@ -15,6 +15,7 @@ export const PREPARATION_DISPOSED_KEY = 'preparation-isDisposed';
 export const PREPARATION_EXCHANGED_OUT_KEY = 'preparation-isExchangedOut';
 export const PREPARATION_EXCHANGED_IN_KEY = 'preparation-isExchangedIn';
 export const COJO_PRIMARY_DELETE_KEY = 'primary-cojo-delete';
+export const COMPONENT_NAME_TAXON_KEY = 'component-taxon-name';
 
 /**
  *

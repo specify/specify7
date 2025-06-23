@@ -929,6 +929,10 @@ export const resourcesText = createDictionary({
     'uk-ua':
       "Визначення не належить до дерева таксонів, пов'язаного з типом об'єкта колекції",
   },
+  invalidNameTaxon: {
+    'en-us':
+      'Name taxon does not belong to the taxon tree associated with the Component Type',
+  },
   preparationUsedInLoan: {
     'en-us': 'The preparation is used in a loan.',
     'de-ch': 'Das Präparat dient der Kreditvergabe.',

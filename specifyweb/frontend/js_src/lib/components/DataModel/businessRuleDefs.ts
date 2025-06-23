@@ -6,6 +6,7 @@ import {
   COG_PRIMARY_KEY,
   COG_TOITSELF,
   COJO_PRIMARY_DELETE_KEY,
+  COMPONENT_NAME_TAXON_KEY,
   CURRENT_DETERMINATION_KEY,
   DETERMINATION_TAXON_KEY,
   ensureSingleCollectionObjectCheck,
@@ -385,6 +386,29 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         typeof component.get('type') !== 'string'
       )
         component.set('type', schema.defaultCollectionObjectType);
+    },
+    fieldChecks: {
+      type: async (resource): Promise<undefined> => {
+        const name = resource.independentResources.name;
+        if (name === null) return;
+
+        const coType = await resource.rgetPromise('type');
+        const coTypeTreeDef = coType.get('taxonTreeDef');
+
+        const taxonTreeDef = name.get('definition');
+
+        const isValid =
+          typeof taxonTreeDef === 'string' && taxonTreeDef === coTypeTreeDef;
+
+        setSaveBlockers(
+          name,
+          resource.specifyTable.field.name,
+          isValid ? [] : [resourcesText.invalidNameTaxon()],
+          COMPONENT_NAME_TAXON_KEY
+        );
+
+        return undefined;
+      },
     },
   },
 
