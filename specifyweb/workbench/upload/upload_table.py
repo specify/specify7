@@ -980,6 +980,14 @@ class BoundUpdateTable(BoundUploadTable):
 
         assert reference_record is not None
 
+        # FIXME: Latitude and Longitude precission mismatch can result in 
+        # triggering changes on records. 
+        # e.g., 
+        # { 'latitude1': {'field_name': 'latitude1', 
+        # 'old_value': Decimal('37.8713888889'), 
+        # 'new_value':          37.87138888888889
+        # }
+        # Related to 20dc725036dcb36ccf73a1a9ec231ee740d35a4f
         concrete_field_changes = BoundUpdateTable._field_changed(
             reference_record, attrs
         )

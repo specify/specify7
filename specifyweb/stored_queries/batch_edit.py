@@ -23,7 +23,7 @@ from specifyweb.specify.tree_views import TREE_INFORMATION, get_all_tree_informa
 from specifyweb.specify.tree_utils import SPECIFY_TREES
 from specifyweb.specify.datamodel import is_tree_table
 from specifyweb.stored_queries.execution import execute
-from specifyweb.stored_queries.queryfield import QueryField, SORT_TYPES, fields_from_json
+from specifyweb.stored_queries.queryfield import QueryField, QUERYFIELD_SORT, SORT_TYPES, fields_from_json
 from specifyweb.stored_queries.queryfieldspec import (
     QueryFieldSpec,
     QueryNode,
@@ -88,6 +88,15 @@ def get_readonly_fields(table: Table):
         relationships = ["preferredtaxon"]
     elif is_tree_table(table):
         relationships = ["definitionitem"]
+    elif table.name.lower() == 'locality': 
+        # The editing of these fields should ideally be done through the 
+        # corresponding mapped decimal fields (which act as these text fields
+        # in the Workbench)
+        # If the user maps to any of these fields in the Query, then the 
+        # corresponding decimal field will be added to the data set with the
+        # value of these text fields
+        # See batch_edit_query_rewrites.py
+        fields.extend(('lat1text', 'long1text', 'lat2text', 'long2text'))
 
     return fields, [*BATCH_EDIT_SHARED_READONLY_RELATIONSHIPS, *relationships]
 
@@ -99,7 +108,8 @@ def parse(value: Optional[Any], query_field: QueryField) -> Any:
     field = query_field.fieldspec.get_field()
     if field is None or value is None:
         return value
-    if field.type in FLOAT_FIELDS:
+    # FIXME: remove this
+    if field.type in FLOAT_FIELDS and not field.name.lower() in ('latitude1', 'longitude1', 'latitude2', 'longitude2'):
         return float(value)
     return value
 
@@ -116,11 +126,11 @@ batch_edit_fields: dict[str, tuple[MaybeField, int]] = {
     # technically, if version updates are correct, this is useless beyond base tables
     # and to-manys. TODO: Do just that. remove it. sorts asc. using sort, the optimized
     # dataset construction takes place.
-    "id": (lambda field_spec: field_spec.table.idField, 1),
+    "id": (lambda field_spec: field_spec.table.idField, QUERYFIELD_SORT.ASCENDING),
     # version control gets added here. no sort.
-    "version": (lambda field_spec: field_spec.table.get_field("version"), 0),
+    "version": (lambda field_spec: field_spec.table.get_field("version"), QUERYFIELD_SORT.NONE),
     # ordernumber. no sort (actually adding a sort here is useless)
-    "order": (_get_nested_order, 1),
+    "order": (_get_nested_order, QUERYFIELD_SORT.ASCENDING),
 }
 
 
@@ -140,7 +150,7 @@ class BatchEditPack(NamedTuple):
     def from_field_spec(field_spec: QueryFieldSpec) -> "BatchEditPack":
         # don't care about which way. bad things will happen if not sorted.
         # not using assert () since it can be optimised out.
-        if batch_edit_fields["id"][1] == 0 or batch_edit_fields["order"][1] == 0:
+        if batch_edit_fields["id"][1] == QUERYFIELD_SORT.NONE or batch_edit_fields["order"][1] == QUERYFIELD_SORT.NONE:
             raise Exception("the ID field should always be sorted!")
 
         def extend_callback(sort_type: SORT_TYPES):
@@ -1011,6 +1021,29 @@ class RowPlanCanonical(NamedTuple):
 
         return all_headers, upload_plan
 
+def rewrite_row(row, query_fields: list[QueryField]) -> tuple: 
+    join_paths = tuple(tuple(field.name for field in query_field.fieldspec.join_path) for query_field in query_fields)
+    
+    # FIXME: We can't directly use a dict because there may be duplicate fields being 
+    # mapped (such as when the user explictly adds ID or version to query)
+    mapped_rows = dict(zip(join_paths, row[1:]))
+    # assert len(mapped_rows) == len(row[1:]), "Row results and query fields have invalid length"
+    field_replacement_map = {
+        'latitude1': 'lat1text',
+        'longitude1': 'long1text',
+        'latiude2': 'lat2text',
+        'longitude2': 'long2text' 
+    }
+
+    for join_path, row_value in mapped_rows.items():
+        field_name = join_path[-1]
+        replacement_field = field_replacement_map.get(field_name, None)
+        replace_join_path = tuple((*join_path[:-1], replacement_field))
+        if replacement_field is None or not replace_join_path in mapped_rows.keys(): 
+            continue
+        mapped_rows[join_path] = mapped_rows[replace_join_path]
+    return tuple((row[0], *mapped_rows.values()))
+
 
 # TODO: This really only belongs on the front-end.
 # Using this as a last resort to show fields, for unit tests
@@ -1140,7 +1173,8 @@ def run_batch_edit_query(props: BatchEditProps):
     visited_rows: list[RowPlanCanonical] = []
     previous_id = None
     previous_row = RowPlanCanonical(EMPTY_PACK)
-    for row in rows["results"]:
+    for raw_row in rows["results"]:
+        row = rewrite_row(raw_row, query_with_hidden)
         _, new_row = previous_row.merge(row, indexed, query_with_hidden)
         to_many_planner = new_row.update_to_manys(to_many_planner)
         if previous_id != new_row.batch_edit_pack.id.value:

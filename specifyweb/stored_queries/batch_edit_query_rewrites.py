@@ -1,10 +1,11 @@
+import logging
 from functools import reduce
 from typing import Any, Dict, List, Set, Tuple
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.func import Func
 from specifyweb.specify.load_datamodel import Table
 from specifyweb.specify.tree_views import TREE_INFORMATION
-from specifyweb.stored_queries.queryfield import QUERYFIELD_SORT_TYPE
+from specifyweb.stored_queries.queryfield import QUERYFIELD_SORT
 from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec, TreeRankQuery
 from .batch_edit import BatchEditFieldPack, BatchEditPack, RowPlanMap
 
@@ -43,7 +44,8 @@ def _track_observed_ranks(
 
     # if the current_field is not found, insert them into the query with fields.
     naive_field_spec = QueryFieldSpec.from_path(running_path)
-    adjusted_field_spec = lambda field_name: naive_field_spec._replace(
+
+    def adjusted_field_spec(field_name): return naive_field_spec._replace(
         join_path=(
             *naive_field_spec.join_path,
             current.tree_rank,
@@ -57,14 +59,15 @@ def _track_observed_ranks(
     extra_columns = [
         BatchEditFieldPack(
             field=BatchEditPack._query_field(
-                adjusted_field_spec(field_name), QUERYFIELD_SORT_TYPE.NONE)
+                adjusted_field_spec(field_name), QUERYFIELD_SORT.NONE)
         )
         for field_name in required_missing
     ]
 
     new_columns = [*current.columns, *extra_columns]
     new_tree_rank_query = TreeRankQuery.create(
-        current.tree_rank.name, current.tree_rank.relatedModelName, tree_def["id"],tree_def["name"]
+        current.tree_rank.name, current.tree_rank.relatedModelName, tree_def[
+            "id"], tree_def["name"]
     )
 
     new_columns = []
@@ -73,7 +76,8 @@ def _track_observed_ranks(
         new_field_spec = BatchEditPack.replace_tree_rank(
             column_field.fieldspec, new_tree_rank_query)
         new_columns.append(
-            column._replace(field=column_field._replace(fieldspec=new_field_spec))
+            column._replace(field=column_field._replace(
+                fieldspec=new_field_spec))
         )
 
     return [*accum[0], current_rank["rankid"]], [
@@ -117,7 +121,8 @@ def _rewrite_multiple_trees(
             if len(ranks_found) == 0:
                 continue
             # We now add the new ranks that were initially missing.
-            min_rank_id = ranks_found[0] if len(ranks_found) == 1 else min(*ranks_found)
+            min_rank_id = ranks_found[0] if len(
+                ranks_found) == 1 else min(*ranks_found)
             ranks_to_add = [
                 rank["name"]
                 for rank in single_tree_info["ranks"]
@@ -135,8 +140,9 @@ def _rewrite_multiple_trees(
                 template_plans = {
                     **template_plans,
                     rank: RowPlanMap(
-                        batch_edit_pack=BatchEditPack.from_field_spec(adjusted),
-                        tree_rank = tree_rank_query
+                        batch_edit_pack=BatchEditPack.from_field_spec(
+                            adjusted),
+                        tree_rank=tree_rank_query
                     )
                 }
             final_ranks_created, final_rels_created = reduce(
@@ -182,9 +188,71 @@ def _safe_table(key: str, table: Table):
     return datamodel.get_table_strict(field.relatedModelName)
 
 
+def contains_coords(columns: list[BatchEditFieldPack]) -> bool:
+    coordinate_field_names = ('latitude1', 'lat1text', 'longitude1',
+                              'long1text', 'latitude2', 'lat2text', 'longitude2', 'long2text')
+    locality_table = datamodel.get_table_strict('Locality')
+    coordinate_fields = list(map(lambda field_name: locality_table.get_field_strict(
+        field_name), coordinate_field_names))
+    return any(column.field is not None and column.field.fieldspec.get_field() in coordinate_fields for column in columns)
+
+
+def missing_coordinate_columns(running_path: list[str], columns: list[BatchEditFieldPack]) -> tuple[BatchEditFieldPack]:
+    grouped_coordinate_fields = (
+        ('latitude1', 'lat1text'),
+        ('longitude1', 'long1text'),
+        ('latitude2', 'lat2text'),
+        ('longitude2', 'long2text')
+    )
+    coordinate_fields = tuple(
+        field for pair in grouped_coordinate_fields for field in pair)
+    present: dict[str, BatchEditFieldPack] = {}
+    for column in columns:
+        field = column.field.fieldspec.get_field() if column.field is not None else None
+        if field is None or not field.name.lower() in coordinate_fields:
+            continue
+        present[field.name.lower()] = column
+    present_field_names = present.keys()
+
+    missing_cols = []
+    for decimal_field, text_field in grouped_coordinate_fields:
+        decimal_field_present = decimal_field in present_field_names
+        text_field_present = text_field in present_field_names
+
+        if decimal_field_present == text_field_present:
+            continue
+
+        missing_field = text_field if decimal_field_present else decimal_field
+        field_spec = QueryFieldSpec.from_path([*running_path, missing_field])
+        field = BatchEditPack._query_field(
+            field_spec, QUERYFIELD_SORT.NONE)
+        missing_cols.append(BatchEditFieldPack(field=field))
+
+    return tuple(missing_cols)
+
+
+def _rewrite_locality_coords(running_path: list[str], current: RowPlanMap):
+    """
+        If the RowPlanMap contains any mappings to coordinate information, we
+        need to adjust the RowPlanMap to also include
+    """
+    new_current = current
+    if not contains_coords(current.columns):
+        # If no coordinate fields are mapped, we don't have to do any re-writing
+        return current
+
+    # Now we have to identify which corresponding lat/longtext fields to add to the query
+    missing_cols = missing_coordinate_columns(running_path, current.columns)
+    new_current = current._replace(columns=[*current.columns, *missing_cols])
+
+    return new_current
+
+
 def _batch_edit_rewrite(
     self: RowPlanMap, table: Table, all_tree_info: TREE_INFORMATION, running_path=[]
 ) -> RowPlanMap:
+
+    self = _rewrite_locality_coords(running_path, self)
 
     to_ones = {
         key: value.rewrite(
