@@ -13,6 +13,10 @@ import { DeleteBlockers } from '../Forms/DeleteBlocked';
 import type { DeleteButtonProps } from '../Forms/DeleteButton';
 import { loadingBar } from '.';
 import { Dialog, dialogClassNames } from './Dialog';
+import { SECOND } from '../Atoms/timeUnits';
+import { useDelay } from '../../hooks/useDelay';
+
+const LOADING_TIMEOUT = 2 * SECOND;
 
 // REFACTOR: consider merging this with Merging/Usages
 export function LinkedRecords<SCHEMA extends AnySchema>({
@@ -26,6 +30,11 @@ export function LinkedRecords<SCHEMA extends AnySchema>({
     resource,
     deferred
   );
+
+  // To reduce sudden shifts in the button, only display the Loading... text on
+  // the Linked Records button only after it has already been fetching for 2
+  // seconds
+  const showLoadingText = useDelay(blockers === undefined, LOADING_TIMEOUT);
 
   return (
     <>
@@ -47,7 +56,9 @@ export function LinkedRecords<SCHEMA extends AnySchema>({
         {blockers === false
           ? undefined
           : blockers === undefined
-            ? commonText.loading()
+            ? showLoadingText
+              ? commonText.loading()
+              : undefined
             : localized(
                 blockers
                   .reduce(
