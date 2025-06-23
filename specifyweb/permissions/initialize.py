@@ -1,4 +1,3 @@
-
 from django.db import transaction, connection
 from django.apps import apps
 from django.core.exceptions import MultipleObjectsReturned
@@ -533,7 +532,7 @@ def create_roles(apps=apps) -> None:
 
     # Copy library Roles into individual collections
     users = Specifyuser.objects.all()
-    user_types = set(user.usertype for user in users)
+    user_types = {user.usertype for user in users}
 
     if 'Guest' in user_types or 'LimitedAccess' in user_types:
         for collection in Collection.objects.all():

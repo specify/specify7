@@ -1,5 +1,3 @@
-
-
 schema = {
     'title': 'Specify 7 Workbench Upload Results',
     'descriptions': 'Records results of uploading a data set.',

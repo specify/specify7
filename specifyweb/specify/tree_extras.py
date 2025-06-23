@@ -118,7 +118,7 @@ class Tree(models.Model):
             set_fullnames(self.definition, node_number_range=[self.nodenumber, self.highestchildnodenumber])
 
     def accepted_id_attr(self):
-        return 'accepted{}_id'.format(self._meta.db_table)
+        return f'accepted{self._meta.db_table}_id'
 
     @property
     def accepted_id(self):
@@ -141,7 +141,7 @@ class TreeRank(models.Model):
             verify_rank_parent_chain_integrity(self, RankOperation.UPDATED)
         
         # save
-        super(TreeRank, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
         # post_save
         post_tree_rank_save(self.__class__, self)
@@ -160,7 +160,7 @@ class TreeRank(models.Model):
         verify_rank_parent_chain_integrity(self, RankOperation.DELETED)
 
         # delete
-        super(TreeRank, self).delete(*args, **kwargs)
+        super().delete(*args, **kwargs)
 
         # post_delete
         post_tree_rank_deletion(self)
@@ -243,7 +243,7 @@ def moving_node(to_save):
     new_parent = model.objects.select_for_update().get(id=to_save.parent.id)
     if new_parent.accepted_id is not None:
         raise TreeBusinessRuleException(
-            'Moving node "{node.fullname}" to synonymized parent "{parent.fullname}"'.format(node=to_save, parent=new_parent),
+            f'Moving node "{to_save.fullname}" to synonymized parent "{new_parent.fullname}"',
             {"tree" : "Taxon",
              "localizationKey" : "nodeOperationToSynonymizedParent",
              "operation" : "Moving",
@@ -274,7 +274,7 @@ def moving_node(to_save):
     to_save.nodenumber = current.nodenumber
     to_save.highestchildnodenumber = current.highestchildnodenumber
 
-def mutation_log(action, node, agent, parent, dirty_flds: List[FieldChangeInfo]):
+def mutation_log(action, node, agent, parent, dirty_flds: list[FieldChangeInfo]):
     from .auditlog import auditlog
     auditlog.log_action(action, node, agent, node.parent, dirty_flds)
 
@@ -292,7 +292,7 @@ def merge(node, into, agent):
     if not (node.definition_id == target.definition_id): raise AssertionError("merging across trees", {"localizationKey" : "operationAcrossTrees", "operation": "merge"})
     if into.accepted_id is not None:
         raise TreeBusinessRuleException(
-            'Merging node "{node.fullname}" with synonymized node "{into.fullname}"'.format(node=node, into=into),
+            f'Merging node "{node.fullname}" with synonymized node "{into.fullname}"',
             {"tree" : "Taxon",
              "localizationKey" : "nodeOperationToSynonymizedParent",
              "operation" : "Merging",
@@ -372,7 +372,7 @@ def synonymize(node, into, agent):
     if not (node.definition_id == target.definition_id): raise AssertionError("synonymizing across trees", {"localizationKey" : "operationAcrossTrees", "operation": "synonymize"})
     if target.accepted_id is not None:
         raise TreeBusinessRuleException(
-            'Synonymizing "{node.fullname}" to synonymized node "{into.fullname}"'.format(node=node, into=into),
+            f'Synonymizing "{node.fullname}" to synonymized node "{into.fullname}"',
             {"tree" : "Taxon",
              "localizationKey" : "nodeSynonymizeToSynonymized",
              "node" : {
@@ -399,7 +399,7 @@ def synonymize(node, into, agent):
     override = re.search(pattern, get_remote_prefs(), re.MULTILINE)
     if node.children.count() > 0 and (override is None or override.group(1).strip().lower() != "true"):
         raise TreeBusinessRuleException(
-            'Synonymizing node "{node.fullname}" which has children'.format(node=node),
+            f'Synonymizing node "{node.fullname}" which has children',
             {"tree" : "Taxon",
              "localizationKey" : "nodeSynonimizeWithChildren",
              "node" : {
@@ -463,7 +463,7 @@ def IF(if_expr, then_expr, else_expr=EMPTY):
     elif if_expr == FALSE:
         return else_expr
     else:
-        return 'if({}, {}, {})'.format(if_expr, then_expr, else_expr)
+        return f'if({if_expr}, {then_expr}, {else_expr})'
 
 def CONCAT(exprs, separator=''):
     exprs = [e for e in exprs if e != EMPTY]
@@ -477,25 +477,25 @@ def CONCAT(exprs, separator=''):
         return "concat_ws('{}', {})".format(separator, ', '.join(exprs))
 
 def NAME(index):
-    return 't{}.name'.format(index)
+    return f't{index}.name'
 
 def IN_NAME(index):
-    return 'd{}.isinfullname'.format(index)
+    return f'd{index}.isinfullname'
 
 def SEPARATOR(index):
-    return 'd{}.fullnameseparator'.format(index)
+    return f'd{index}.fullnameseparator'
 
 def BEFORE(index):
-    return 'd{}.textbefore'.format(index)
+    return f'd{index}.textbefore'
 
 def AFTER(index):
-    return 'd{}.textafter'.format(index)
+    return f'd{index}.textafter'
 
 def ID(table, index):
-    return 't{}.{table}id'.format(index, table=table)
+    return f't{index}.{table}id'
 
 def NODENUMBER(index):
-    return 't{}.nodenumber'.format(index)
+    return f't{index}.nodenumber'
 
 def fullname_expr(depth, reverse):
     fullname = CONCAT([
@@ -558,11 +558,11 @@ def set_fullnames(treedef, null_only=False, node_number_range=None):
         root=depth-1,
         table=table,
         treedefid=treedefid,
-        set_expr="t0.fullname = {}".format(fullname_expr(depth, reverse)),
+        set_expr=f"t0.fullname = {fullname_expr(depth, reverse)}",
         parent_joins=parent_joins(table, depth),
         definition_joins=definition_joins(table, depth),
         null_only="and t0.fullname is null" if null_only else "",
-        node_number_range="and t0.nodenumber between {} and {}".format(node_number_range[0], node_number_range[1]) if not (node_number_range is None) else ''
+        node_number_range=f"and t0.nodenumber between {node_number_range[0]} and {node_number_range[1]}" if not (node_number_range is None) else ''
     )
 
     logger.debug('fullname update sql:\n%s', sql)
@@ -618,7 +618,7 @@ def validate_tree_numbering(table):
     ).format(table=table))
     not_nested_count, = cursor.fetchone()
     assert not_nested_count == 0, \
-        "found {} nodenumbers not nested by parent".format(not_nested_count)
+        f"found {not_nested_count} nodenumbers not nested by parent"
 
 def path_expr(table, depth):
     return CONCAT([ID(table, i) for i in reversed(list(range(depth)))], ',')
@@ -680,7 +680,7 @@ def renumber_tree(table):
         )
 
     # Get the tree ranks in leaf -> root order.
-    cursor.execute("select distinct rankid from {} order by rankid desc".format(table))
+    cursor.execute(f"select distinct rankid from {table} order by rankid desc")
     ranks = [rank for (rank,) in cursor.fetchall()]
     depth = len(ranks)
 

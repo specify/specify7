@@ -1,4 +1,3 @@
-
 from unittest import skip
 from django.db.models import ProtectedError
 
@@ -7,7 +6,7 @@ from specifyweb.specify.tests.test_api import ApiTests
 
 class Geologictimeperiod(ApiTests):
     def setUp(self):
-        super(Geologictimeperiod, self).setUp()
+        super().setUp()
 
         self.rootgtp = models.Geologictimeperiod.objects.create(
             name="Eternity",

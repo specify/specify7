@@ -620,7 +620,7 @@ export const userPreferenceDefinitions = {
             title: localized('_shownTables'),
             requiresReload: false,
             visible: false,
-            defaultValue: 'legacy',
+            defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
             container: 'div',
           }),
@@ -714,7 +714,7 @@ export const userPreferenceDefinitions = {
             title: localized('_shownTables'),
             requiresReload: false,
             visible: false,
-            defaultValue: 'legacy',
+            defaultValue: [],
             renderer: f.never,
             container: 'div',
           }),
@@ -850,7 +850,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             setOnBlurOnly: true,
             visible: true,
-            defaultValue: 1200,
+            defaultValue: 1600,
             type: 'java.lang.Float',
             parser: {
               min: 100,
@@ -2053,6 +2053,14 @@ export const userPreferenceDefinitions = {
       editor: {
         title: preferencesText.general(),
         items: {
+          enableRelationships: definePref<boolean>({
+            title: batchEditText.enableRelationships(),
+            requiresReload: false,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+            visible: true,
+            description: batchEditText.enableRelationshipsDescription(),
+          }),
           showRollback: definePref<boolean>({
             title: batchEditText.showRollback(),
             requiresReload: false,

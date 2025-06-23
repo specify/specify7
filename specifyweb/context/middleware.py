@@ -48,7 +48,7 @@ def get_readonly(request):
         settings.RO_MODE or
         request.specify_user.usertype not in ('Manager', 'FullAccess'))
 
-class ContextMiddleware(object):
+class ContextMiddleware:
     """Adds information about the logged in user and collection to requests."""
     def __init__(self, get_response):
         self.get_response = get_response

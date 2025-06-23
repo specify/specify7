@@ -41,9 +41,9 @@ def log_sqlalchemy_query(query):
     from sqlalchemy.dialects import mysql
     compiled_query = query.statement.compile(dialect=mysql.dialect(), compile_kwargs={"literal_binds": True})
     raw_sql = str(compiled_query).replace('\n', ' ') + ';'
-    logger.debug('============== SQL Query ==============')
+    logger.debug('='.join(['' for _ in range(80)]))
     logger.debug(raw_sql)
-    logger.debug('=======================================')
+    logger.debug('='.join(['' for _ in range(80)]))
     # Run in the storred_queries.execute file, in the execute function, right before the return statement, line 546
     # from specifyweb.specify.utils import log_sqlalchemy_query; log_sqlalchemy_query(query)
 

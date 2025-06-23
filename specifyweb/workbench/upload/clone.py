@@ -10,7 +10,7 @@ from specifyweb.specify.func import Func
 from specifyweb.specify.load_datamodel import Table
 from specifyweb.specify.models import ModelWithTable
 
-FIELDS_TO_NOT_CLONE: Dict[str, List[str]] = json.load(
+FIELDS_TO_NOT_CLONE: dict[str, list[str]] = json.load(
     open("specifyweb/frontend/js_src/lib/components/DataModel/uniqueFields.json")
 )
 
@@ -32,9 +32,9 @@ GENERIC_FIELDS_TO_SKIP = [
 @transaction.atomic()
 def clone_record(
     reference_record,
-    inserter: Callable[[ModelWithTable, Dict[str, Any]], ModelWithTable],
+    inserter: Callable[[ModelWithTable, dict[str, Any]], ModelWithTable],
     one_to_ones={},
-    to_ignore: List[str] = [],
+    to_ignore: list[str] = [],
     override_attrs={},
 ) -> ModelWithTable:
     model: ModelWithTable = type(reference_record)  # type: ignore
@@ -97,7 +97,7 @@ def clone_record(
             ).all()  # Clone all records separatetly
         ]
         for (field, is_dependent) in marked
-        if is_dependent and not field.concrete
+        if is_dependent and not field.concrete and not (field.one_to_one or field.many_to_one)
     ]  # Should be a relationship, but not on our side
 
     return inserted

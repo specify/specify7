@@ -41,7 +41,7 @@ class ProviderInfo(TypedDict):
     # a dictionary of auth and token endpoints.
     config: Union[str, "ProviderConf"]
 
-def is_provider_info(d: Dict) -> bool:
+def is_provider_info(d: dict) -> bool:
     required_keys = ["title", "client_id", "client_secret", "scope", "config"]
     return all(key in d for key in required_keys)
 
@@ -66,7 +66,7 @@ class ExternalUser(TypedDict):
     provider_title: str # For UI purposes.
     id: str # The user's id in the provider's system.
     name: str # The user's name for UI purposes.
-    idtoken: Dict # The JWT from the provider.
+    idtoken: dict # The JWT from the provider.
 
 class InviteToken(TypedDict):
     """Embedded in an invite token."""
@@ -231,7 +231,7 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
     login(request,
           cast(AbstractBaseUser, spuserexternalid.specifyuser),
           backend='django.contrib.auth.backends.ModelBackend')
-    return http.HttpResponseRedirect('/specify')
+    return http.HttpResponseRedirect('/accounts/choose_collection')
 
 class InviteLinkPT(PermissionTarget):
     resource = "/admin/user/invite_link"

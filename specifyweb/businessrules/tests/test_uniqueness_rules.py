@@ -31,7 +31,7 @@ class UniquenessTests(ApiTests):
 
         response_content = json.loads(response.content.decode())
 
-        self.assertEquals(response_content, expected_response)
+        self.assertEqual(response_content, expected_response)
 
     def test_pathed_scope_validation(self):
         c = Client()
@@ -88,7 +88,7 @@ class UniquenessTests(ApiTests):
 
         response_content = json.loads(response.content.decode())
 
-        self.assertEquals(response_content, expected_response)
+        self.assertEqual(response_content, expected_response)
 
     def test_creating_uniqueness_rule(self):
         c = Client()
