@@ -18,10 +18,18 @@ class TestGetAvailabilityCount(TestCogInteractions):
 
         prep_1 = self._create_prep(self.collectionobjects[0], None, countamt=6)
 
-        lp = Loanpreparation.objects.create(
+        lp_1 = Loanpreparation.objects.create(
             loan=self.loan,
             discipline=self.discipline,
             quantity=2,
+            preparation=prep_1,
+            quantityresolved=0,
+        )
+
+        lp_2 = Loanpreparation.objects.create(
+            loan=self.loan,
+            discipline=self.discipline,
+            quantity=3,
             preparation=prep_1,
             quantityresolved=0,
         )
@@ -33,5 +41,5 @@ class TestGetAvailabilityCount(TestCogInteractions):
             gift=self.gift, quantity=0, preparation=prep_1, discipline=self.discipline
         )
 
-        count = get_availability_count(prep_1, lp.id, "loanpreparations__id")
+        count = get_availability_count(prep_1, lp_1.id, "loanpreparations__id")
         self.assertEqual(count, 4)
