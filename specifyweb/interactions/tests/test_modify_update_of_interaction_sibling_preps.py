@@ -14,9 +14,17 @@ from specifyweb.specify.models import (
     Loan,
     Loanpreparation,
 )
+import copy
 
 PrepGetter = Callable[["TestModifyUpdateInteractionSiblingPreps"], List[Any]]
 PrepGetterFromPreps = Callable[[List[Any]], List[Any]]
+
+
+# A wrap that makes it so that the data gets deep-copied.
+def _wrap_function_copy(obj, data):
+    old_data = copy.deepcopy(data)
+    return modify_update_of_interaction_sibling_preps(obj, old_data)
+
 
 mapping = {
     "loan": dict(model=Loanpreparation, attr="loanpreparations", backref="loan"),
@@ -59,16 +67,12 @@ def _make_normal_interaction_preps(model_name: str):
                 self, interaction_obj, prep, preps, quantity=1, quantityresolved=0
             )
         data = obj_to_data(interaction_obj)
-        self.assertEqual(
-            modify_update_of_interaction_sibling_preps(interaction_obj, data), data
-        )
+        self.assertEqual(_wrap_function_copy(interaction_obj, data), data)
 
         data_prep_limited = {**data, mapped["backref"]: mapped["backref"][:3]}
 
         self.assertEqual(
-            modify_update_of_interaction_sibling_preps(
-                interaction_obj, data_prep_limited
-            ),
+            _wrap_function_copy(interaction_obj, data_prep_limited),
             data_prep_limited,
         )
 
@@ -94,7 +98,7 @@ def _make_consolidated_preps_no_change(
             )
 
         data = obj_to_data(interaction_obj)
-        new_data = modify_update_of_interaction_sibling_preps(interaction_obj, data)
+        new_data = _wrap_function_copy(interaction_obj, data)
         self.assertEqual(new_data, data, "No change test failed!")
 
     return test
@@ -124,9 +128,7 @@ def _make_consolidated_preps_removal(
         }
 
         # this should trigger removal of all the preps (they are part of the same branch)
-        new_data = modify_update_of_interaction_sibling_preps(
-            interaction_obj, data_prep_limited
-        )
+        new_data = _wrap_function_copy(interaction_obj, data_prep_limited)
         self.assertEqual(new_data[attr], [])
 
         # Run the same test, but this time, add some unrelated loanpreps without a preparation.
@@ -156,9 +158,7 @@ def _make_consolidated_preps_removal(
             ],
         }
 
-        new_data = modify_update_of_interaction_sibling_preps(
-            interaction_obj, data_prep_unrelated
-        )
+        new_data = _wrap_function_copy(interaction_obj, data_prep_unrelated)
         self.assertEqual(new_data[attr], unrleated_preps)
 
     return test
@@ -201,9 +201,7 @@ def _make_consolidated_preps_removal_branched(model_name):
 
         data_prep_limited = {**orig_data, attr: new_preps}
 
-        new_data = modify_update_of_interaction_sibling_preps(
-            interaction_obj, data_prep_limited
-        )
+        new_data = _wrap_function_copy(interaction_obj, data_prep_limited)
         self.assertCountEqual(new_data[attr], branch_2_inter_preps)
 
     return test
@@ -256,9 +254,7 @@ def _make_consolidated_prep_addition(
             for prep in prep_list[3:]
         ]
         # this should trigger removal of all the preps (they are part of the same branch)
-        new_data = modify_update_of_interaction_sibling_preps(
-            interaction_obj, data_prep_extra
-        )
+        new_data = _wrap_function_copy(interaction_obj, data_prep_extra)
         self.assertEqual(len(new_data[attr]), len(prep_list))
         self.assertCountEqual(new_data[attr][3:], extra_preps)
 
@@ -280,15 +276,13 @@ class TestModifyUpdateInteractionSiblingPreps(TestCogConsolidatedPrepSiblingCont
 
     def test_interaction_preps_no_object(self):
         entry = dict(id=5, loanpreparations=[])
-        data = modify_update_of_interaction_sibling_preps(None, entry)
+        data = _wrap_function_copy(None, entry)
         self.assertEqual(data, entry, "No object case failed!")
 
     def test_borrow_interaction_preps(self):
         borrow = Borrow.objects.create(collectionmemberid=self.collection.id)
         entry = dict(id=5, borrowpreparations=[])
-        self.assertEqual(
-            modify_update_of_interaction_sibling_preps(borrow, entry), entry
-        )
+        self.assertEqual(_wrap_function_copy(borrow, entry), entry)
 
 
 def _simple_prep_getter(self: TestModifyUpdateInteractionSiblingPreps):
