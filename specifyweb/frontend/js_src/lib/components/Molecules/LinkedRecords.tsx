@@ -39,6 +39,8 @@ export function LinkedRecords<SCHEMA extends AnySchema>({
   return (
     <>
       <Button.Secondary
+        aria-pressed={isOpen}
+        aria-label={mergingText.linkedRecords()}
         disabled={blockers !== false && blockers?.length === 0}
         title={
           blockers === undefined
