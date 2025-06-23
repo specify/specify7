@@ -617,6 +617,7 @@ function Wrapped({
                         fields={state.fields}
                         query={queryResource}
                         recordSetId={recordSet?.id}
+                        saveRequired={saveRequired}
                       />
                     )}
                     {query.countOnly ? undefined : (
