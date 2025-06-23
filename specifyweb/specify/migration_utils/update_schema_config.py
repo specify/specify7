@@ -5,7 +5,7 @@ import logging
 
 from django.db.models import Q, Count
 from django.apps import apps as global_apps
-from django.core.exceptions import MultipleObjectsReturned  
+from django.core.exceptions import MultipleObjectsReturned
 
 from specifyweb.specify.load_datamodel import Table, FieldDoesNotExistError, TableDoesNotExistError
 from specifyweb.specify.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
@@ -25,6 +25,15 @@ from specifyweb.specify.migration_utils.sp7_schemaconfig import (
     MIGRATION_0023_FIELDS,
     MIGRATION_0023_FIELDS_BIS,
     MIGRATION_0024_FIELDS,
+    MIGRATION_0027_FIELDS,
+    MIGRATION_0027_UPDATE_FIELDS,
+    MIGRATION_0029_FIELDS,
+    MIGRATION_0029_UPDATE_FIELDS,
+    MIGRATION_0032_FIELDS,
+    MIGRATION_0032_UPDATE_FIELDS,
+    MIGRATION_0033_TABLES,
+    MIGRATION_0034_FIELDS,
+    MIGRATION_0034_UPDATE_FIELDS,
 )
 
 logger = logging.getLogger(__name__)
@@ -901,3 +910,379 @@ def revert_storage_unique_id_fields(apps):
     for table, fields in MIGRATION_0024_FIELDS.items(): 
         for field in fields: 
             revert_table_field_schema_config(table, field, apps)
+
+# ##########################################
+# Used in 0027_CO_children.py
+# ##########################################
+
+def update_co_children_fields(apps):
+    def update_discipline_fields(apps):
+        Discipline = apps.get_model('specify', 'Discipline')
+
+        for discipline in Discipline.objects.all():
+            for table, fields in MIGRATION_0027_FIELDS.items(): 
+                for field in fields: 
+                    update_table_field_schema_config_with_defaults(table, discipline.id, field, apps)
+
+    def update_schema_config_field_desc(apps):
+        Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+        Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+        Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+
+        for table, fields in MIGRATION_0027_UPDATE_FIELDS.items():
+            #i.e: Collection Object
+            containers = Splocalecontainer.objects.filter(
+                name=table.lower(),
+            )
+
+            for container in containers:
+                for field_name, new_name, new_desc in fields:
+                    #i.e: COType
+                    items = Splocalecontaineritem.objects.filter(
+                        container=container,
+                        name=field_name.lower()
+                    )
+
+                    for item in items:
+                        localized_items_desc = Splocaleitemstr.objects.filter(itemdesc_id=item.id).first()
+                        localized_items_name = Splocaleitemstr.objects.filter(itemname_id=item.id).first()
+
+                        if localized_items_desc is None or localized_items_name is None:
+                            continue
+
+                        localized_items_desc.text = new_desc
+                        localized_items_desc.save() 
+
+                        localized_items_name.text = new_name
+                        localized_items_name.save() 
+
+    update_discipline_fields(apps)
+    update_schema_config_field_desc(apps)
+
+def revert_co_children_fields(apps):
+    def revert_update_fields(apps):
+        for table, fields in MIGRATION_0027_FIELDS.items(): 
+            for field in fields: 
+                revert_table_field_schema_config(table, field, apps)
+
+    def revert_update_schema_field(apps):
+        Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+        Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+        for table, fields in MIGRATION_0027_UPDATE_FIELDS.items():
+            containers = Splocalecontainer.objects.filter(
+                name=table.lower(),
+            )
+            for container in containers:
+                for field_name in fields:
+                    items = Splocalecontaineritem.objects.filter(
+                        container=container,
+                        name=field_name
+                    )
+
+                    for item in items:
+                        item.ishidden = False
+                        item.save()
+
+    revert_update_fields(apps)
+    revert_update_schema_field(apps)
+
+# ##########################################
+# Used in 0029_remove_collectionobject_parentco.py
+# ##########################################
+
+def remove_collectionobject_parentco(apps):
+    def update_fields(apps):
+        Discipline = apps.get_model('specify', 'Discipline')
+
+        for discipline in Discipline.objects.all():
+            for table, fields in MIGRATION_0029_FIELDS.items(): 
+                for field in fields: 
+                    update_table_field_schema_config_with_defaults(table, discipline.id, field, apps)
+
+    def update_schema_config_field_desc(apps):
+        Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+        Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+        Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+
+        for table, fields in MIGRATION_0029_UPDATE_FIELDS.items():
+            #i.e: Collection Object
+            containers = Splocalecontainer.objects.filter(
+                name=table.lower(),
+            )
+
+            for container in containers:
+                for field_name, new_name, new_desc in fields:
+                    #i.e: COType
+                    items = Splocalecontaineritem.objects.filter(
+                        container=container,
+                        name=field_name.lower()
+                    )
+
+                    for item in items:
+                        localized_items_desc = Splocaleitemstr.objects.filter(itemdesc_id=item.id).first()
+                        localized_items_name = Splocaleitemstr.objects.filter(itemname_id=item.id).first()
+
+                        if localized_items_desc is None or localized_items_name is None:
+                            continue
+
+                        localized_items_desc.text = new_desc
+                        localized_items_desc.save() 
+
+                        localized_items_name.text = new_name
+                        localized_items_name.save() 
+
+    def hide_co_component(apps):
+        Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+        Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+        Discipline = apps.get_model('specify', 'Discipline')
+
+        disciplines = Discipline.objects.all()
+
+        for discipline in disciplines:
+            for table, fields in MIGRATION_0029_UPDATE_FIELDS.items():
+                containers = Splocalecontainer.objects.filter(
+                    name=table.lower(),
+                    discipline_id=discipline.id,
+                )
+                for container in containers:
+                    for field_name, _, _ in fields:
+                        items = Splocalecontaineritem.objects.filter(
+                            container=container,
+                            name=field_name.lower()
+                        )
+
+                        for item in items:
+                            item.ishidden = True
+                            item.save()
+
+    update_fields(apps)
+    update_schema_config_field_desc(apps)
+    hide_co_component(apps)
+
+def revert_remove_collectionobject_parentco(apps):
+    def revert_update_fields(apps):
+        for table, fields in MIGRATION_0029_FIELDS.items(): 
+            for field in fields: 
+                revert_table_field_schema_config(table, field, apps)
+
+    def revert_update_schema_field(apps):
+        Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+        Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+        for table, fields in MIGRATION_0029_UPDATE_FIELDS.items():
+            containers = Splocalecontainer.objects.filter(
+                name=table.lower(),
+            )
+            for container in containers:
+                for field_name in fields:
+                    items = Splocalecontaineritem.objects.filter(
+                        container=container,
+                        name=field_name
+                    )
+
+                    for item in items:
+                        item.ishidden = False
+                        item.save()
+
+    def reverse_hide_co_component(apps):
+        Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+        Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+        Discipline = apps.get_model('specify', 'Discipline')
+
+        disciplines = Discipline.objects.all()
+
+        for discipline in disciplines:
+            for table, fields in MIGRATION_0029_UPDATE_FIELDS.items():
+                containers = Splocalecontainer.objects.filter(
+                    name=table.lower(),
+                    discipline_id=discipline.id,
+                )
+                for container in containers:
+                    for field_name, _, _ in fields:
+                        items = Splocalecontaineritem.objects.filter(
+                            container=container,
+                            name=field_name.lower()
+                        )
+
+                        for item in items:
+                            item.ishidden = False
+                            item.save()
+
+    revert_update_fields(apps)
+    revert_update_schema_field(apps)
+    reverse_hide_co_component(apps)
+
+# ##########################################
+# Used in 0032_add_quantities_gift.py
+# ##########################################
+
+def add_quantities_gift(apps):
+    def update_fields(apps):
+        Discipline = apps.get_model('specify', 'Discipline')
+
+        for discipline in Discipline.objects.all():
+            for table, fields in MIGRATION_0032_FIELDS.items(): 
+                for field in fields: 
+                    update_table_field_schema_config_with_defaults(table, discipline.id, field, apps)
+
+    def update_schema_config_field_desc(apps):
+        Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+        Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+        Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+
+        for table, fields in MIGRATION_0032_UPDATE_FIELDS.items():
+            #i.e: Collection Object
+            containers = Splocalecontainer.objects.filter(
+                name=table.lower(),
+            )
+
+            for container in containers:
+                for field_name, new_name, new_desc in fields:
+                    #i.e: COType
+                    items = Splocalecontaineritem.objects.filter(
+                        container=container,
+                        name=field_name.lower()
+                    )
+
+                    for item in items:
+                        localized_items_desc = Splocaleitemstr.objects.filter(itemdesc_id=item.id).first()
+                        localized_items_name = Splocaleitemstr.objects.filter(itemname_id=item.id).first()
+
+                        if localized_items_desc is None or localized_items_name is None:
+                            continue
+
+                        localized_items_desc.text = new_desc
+                        localized_items_desc.save() 
+
+                        localized_items_name.text = new_name
+                        localized_items_name.save() 
+
+    update_fields(apps)
+    update_schema_config_field_desc(apps)
+
+def revert_add_quantities_gift(apps):
+    def revert_update_fields(apps):
+        for table, fields in MIGRATION_0032_FIELDS.items(): 
+            for field in fields: 
+                revert_table_field_schema_config(table, field, apps)
+
+    def revert_update_schema_field(apps):
+        Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+        Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+        for table, fields in MIGRATION_0032_UPDATE_FIELDS.items():
+            containers = Splocalecontainer.objects.filter(
+                name=table.lower(),
+            )
+            for container in containers:
+                for field_name in fields:
+                    items = Splocalecontaineritem.objects.filter(
+                        container=container,
+                        name=field_name
+                    )
+
+                    for item in items:
+                        item.ishidden = False
+                        item.save()
+
+    revert_update_fields(apps)
+    revert_update_schema_field(apps)
+
+# ##########################################
+# Used in 0033_update_paleo_desc.py
+# ##########################################
+
+def update_paleo_desc(apps):
+    def fix_table_description(apps):
+        Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+        Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+
+        for table_name, table_desc in MIGRATION_0033_TABLES:
+            containers = Splocalecontainer.objects.filter(
+                name=table_name.lower(), schematype=0)
+
+            Splocaleitemstr.objects.filter(
+            containerdesc__in=containers
+            ).update(text=table_desc)
+
+    fix_table_description(apps)
+
+# ##########################################
+# Used in 0034_accession_date_fields.py
+# ##########################################
+
+def update_accession_date_fields(apps):
+    def update_0034_fields(apps):
+        """
+        Update table-field schema entries for plain field names
+        (e.g., MIGRATION_0034_FIELDS).
+        """
+        Discipline = apps.get_model('specify', 'Discipline')
+        for discipline in Discipline.objects.all():
+            for table, fields in MIGRATION_0034_FIELDS.items():
+                for field_name in fields:
+                    update_table_field_schema_config_with_defaults(table, discipline.id, field_name, apps)
+
+    def update_0034_schema_config_field_desc(apps):
+        """
+        Update field descriptions and display names using MIGRATION_0034_UPDATE_FIELDS
+        (tuple: (fieldName, newLabel, newDesc)).
+        """
+        Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+        Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+        Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+
+        for table, fields in MIGRATION_0034_UPDATE_FIELDS.items():
+            containers = Splocalecontainer.objects.filter(name=table.lower())
+            for container in containers:
+                for (field_name, new_name, new_desc) in fields:
+                    items = Splocalecontaineritem.objects.filter(
+                        container=container,
+                        name=field_name.lower()
+                    )
+                    for item in items:
+                        item.ishidden = True
+                        item.save()
+                        desc_str = Splocaleitemstr.objects.filter(itemdesc_id=item.id).first()
+                        name_str = Splocaleitemstr.objects.filter(itemname_id=item.id).first()
+                        if not desc_str or not name_str:
+                            continue
+                        desc_str.text = new_desc
+                        desc_str.save()
+                        name_str.text = new_name
+                        name_str.save()
+
+    update_0034_fields(apps)
+    update_0034_schema_config_field_desc(apps)
+
+def revert_update_accession_date_fields(apps):
+    def revert_0034_fields(apps):
+        """
+        Revert table-field entries for plain field names.
+        """
+        for table, fields in MIGRATION_0034_FIELDS.items():
+            for field_name in fields:
+                revert_table_field_schema_config(table, field_name, apps)
+
+    def revert_0034_schema_config_field_desc(apps):
+        """
+        Revert the field name/description updates.
+        """
+        Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+        Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+        for table, fields in MIGRATION_0034_UPDATE_FIELDS.items():
+            containers = Splocalecontainer.objects.filter(name=table.lower())
+            for container in containers:
+                for (field_name, _, _) in fields:
+                    items = Splocalecontaineritem.objects.filter(
+                        container=container,
+                        name=field_name.lower()
+                    )
+                    for item in items:
+                        # If needed, reset ishidden or revert text
+                        pass
+
+    revert_0034_fields(apps)
+    revert_0034_schema_config_field_desc(apps)
