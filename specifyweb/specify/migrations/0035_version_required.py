@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0033_update_paleo_desc'),
+        ('specify', '0034_accession_date_fields'),
     ]
 
     operations = [

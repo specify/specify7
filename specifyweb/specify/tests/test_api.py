@@ -1110,6 +1110,11 @@ class DefaultsSetup(MainSetupTearDown, TestCase):
             value='Discrete',
             picklist=cog_type_picklist
         )
+        Picklistitem.objects.create(
+            title='Consolidated',
+            value='Consolidated',
+            picklist=cog_type_picklist
+        )
         self.cogtype = Collectionobjectgrouptype.objects.create(
             name="Test", type="Discrete", collection=self.collection
         )
