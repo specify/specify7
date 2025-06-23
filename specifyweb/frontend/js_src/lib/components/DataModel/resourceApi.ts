@@ -477,6 +477,24 @@ export const ResourceBase = Backbone.Model.extend({
     if (_(['id', 'resource_uri', 'recordset_info']).contains(fieldName))
       return [fieldName, value]; // Special fields
 
+    /**
+     * This is a temporary fix to prevent the front-end from setting an
+     * incomplete timestampcreated. A complete timestamp cannot be used because
+     * the back-end cannot receive timestamps with time zones, so this sets it
+     * to null so the back-end uses its own complete timestamp.
+     * See: https://github.com/specify/specify7/issues/5421, 
+     *      https://github.com/specify/specify7/issues/641
+     * REFACTOR: Remove this once the back-end supports time zones.
+     */
+    if (
+      fieldName === 'timestampcreated' &&
+      typeof value === 'string' &&
+      this.isNew() &&
+      value.length === 'YYYY-MM-DD'.length
+    ) {
+      return [fieldName, null];
+    }
+
     const field = this.specifyTable.getField(fieldName);
     if (!field) {
       console.warn(
