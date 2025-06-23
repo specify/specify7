@@ -8,7 +8,6 @@ import { overwriteReadOnly } from '../../../utils/types';
 import { getPref } from '../../InitialContext/remotePrefs';
 import { cogTypes } from '../helpers';
 import type { SerializedResource } from '../helperTypes';
-import type { SpecifyResource } from '../legacyTypes';
 import { getResourceApiUrl } from '../resource';
 import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
@@ -400,13 +399,13 @@ describe('Dependent Collections isPrimary', () => {
   testCases.forEach(([parentTableName, childFieldName, primaryField]) => {
     describe(`${parentTableName} -> ${childFieldName}`, () => {
       test(`Adding sole ${childFieldName} sets ${primaryField} `, () => {
-        const parentTable = tables[parentTableName];
-        const childTable =
-          parentTable.strictGetRelationship(childFieldName).relatedTable;
-        const parentResource =
-          new parentTable.Resource() ;
-        const resource =
-          new childTable.Resource() ;
+        const parentTable = tables[
+          parentTableName
+        ] as SpecifyTable<CollectingEvent>;
+        const childTable = parentTable.strictGetRelationship(childFieldName)
+          .relatedTable as SpecifyTable<Collector>;
+        const parentResource = new parentTable.Resource();
+        const resource = new childTable.Resource();
         expect(resource.get(primaryField as 'isPrimary')).toBeUndefined();
         parentResource.set(childFieldName as 'collectors', [resource]);
         expect(resource.get(primaryField as 'isPrimary')).toBe(true);
@@ -417,10 +416,12 @@ describe('Dependent Collections isPrimary', () => {
         ).toBe(true);
       });
       test(`${primaryField} set on initailization`, () => {
-        const parentTable = tables[parentTableName];
+        const parentTable = tables[
+          parentTableName
+        ] as SpecifyTable<CollectingEvent>;
         const parentResource = new parentTable.Resource({
           [childFieldName]: [{}],
-        }) ;
+        });
         const dependentCollection = parentResource.getDependentResource(
           childFieldName as 'collectors'
         );
