@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useDelay } from '../../hooks/useDelay';
 import { useDeleteBlockers } from '../../hooks/useDeleteBlockers';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
@@ -8,13 +9,12 @@ import { mergingText } from '../../localization/merging';
 import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
+import { SECOND } from '../Atoms/timeUnits';
 import type { AnySchema } from '../DataModel/helperTypes';
 import { DeleteBlockers } from '../Forms/DeleteBlocked';
 import type { DeleteButtonProps } from '../Forms/DeleteButton';
 import { loadingBar } from '.';
 import { Dialog, dialogClassNames } from './Dialog';
-import { SECOND } from '../Atoms/timeUnits';
-import { useDelay } from '../../hooks/useDelay';
 
 const LOADING_TIMEOUT = 2 * SECOND;
 
@@ -31,16 +31,18 @@ export function LinkedRecords<SCHEMA extends AnySchema>({
     deferred
   );
 
-  // To reduce sudden shifts in the button, only display the Loading... text on
-  // the Linked Records button only after it has already been fetching for 2
-  // seconds
+  /*
+   * To reduce sudden shifts in the button, only display the Loading... text on
+   * the Linked Records button only after it has already been fetching for 2
+   * seconds
+   */
   const showLoadingText = useDelay(blockers === undefined, LOADING_TIMEOUT);
 
   return (
     <>
       <Button.Secondary
-        aria-pressed={isOpen}
         aria-label={mergingText.linkedRecords()}
+        aria-pressed={isOpen}
         disabled={blockers !== false && blockers?.length === 0}
         title={
           blockers === undefined
