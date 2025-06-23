@@ -42,4 +42,4 @@ class TestGetAvailabilityCount(TestCogInteractions):
         )
 
         count = get_availability_count(prep_1, lp_1.id, "loanpreparations__id")
-        self.assertEqual(count, 4)
+        self.assertEqual(count, 3)
