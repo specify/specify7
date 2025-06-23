@@ -19,16 +19,15 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
   fetchResource,
   getResourceApiUrl,
+  idFromUrl,
   resourceOn,
 } from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
-import type {
-  CollectionObject,
-  CollectionObjectType,
-} from '../DataModel/types';
+import type { CollectionObject } from '../DataModel/types';
+import type { CollectionObjectType } from '../DataModel/types';
 import { format, naiveFormatter } from '../Formatters/formatters';
 import type { FormType } from '../FormParse';
 import { ResourceView, RESTRICT_ADDING } from '../Forms/ResourceView';
@@ -265,6 +264,14 @@ export function QueryComboBox({
                 ) => collectionObjectType?.get('taxonTreeDef')
               )
           : undefined;
+      } else if (resource?.specifyTable === tables.Component) {
+        const type = resource.get('type');
+        const typeId = idFromUrl(type);
+        const typeResource = await fetchResource(
+          'CollectionObjectType',
+          typeId ?? 1
+        );
+        return typeResource.taxonTreeDef;
       } else if (resource?.specifyTable === tables.Taxon) {
         const definition = resource.get('definition');
         const parentDefinition = (
