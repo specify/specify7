@@ -249,6 +249,10 @@ export function QueryComboBox({
     (typeof typeSearch === 'object' ? typeSearch?.table : undefined) ??
     field.relatedTable;
 
+  // Used to fetch again tree def if the component type changes
+  const componentType =
+    resource?.specifyTable === tables.Component ? resource?.get('type') : null;
+
   const [fetchedTreeDefinition] = useAsyncState(
     React.useCallback(async () => {
       if (resource?.specifyTable === tables.Determination) {
@@ -280,7 +284,11 @@ export function QueryComboBox({
         return definition || parentDefinition;
       }
       return undefined;
-    }, [resource, resource?.collection?.related?.get('collectionObjectType')]),
+    }, [
+      resource,
+      resource?.collection?.related?.get('collectionObjectType'),
+      componentType,
+    ]),
     false
   );
 
