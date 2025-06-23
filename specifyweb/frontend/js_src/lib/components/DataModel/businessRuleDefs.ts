@@ -389,13 +389,13 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     },
     fieldChecks: {
       type: async (resource): Promise<undefined> => {
-        const name = resource.independentResources.name;
+        const name = await resource.rgetPromise('name');
         if (name === null) return;
 
         const coType = await resource.rgetPromise('type');
         const coTypeTreeDef = coType.get('taxonTreeDef');
 
-        const taxonTreeDef = name.get('definition');
+        const taxonTreeDef = name?.get('definition');
 
         const isValid =
           typeof taxonTreeDef === 'string' && taxonTreeDef === coTypeTreeDef;
