@@ -40,6 +40,7 @@ import type {
   CollectionObjectGroup,
   CollectionObjectGroupJoin,
   Collector,
+  Component,
   Determination,
   DNASequence,
   LoanPreparation,
@@ -374,6 +375,16 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       if (collection.models.length === 1) {
         collector.set('isPrimary', true);
       }
+    },
+  },
+
+  Component: {
+    customInit: (component: SpecifyResource<Component>): void => {
+      if (
+        typeof schema.defaultCollectionObjectType === 'string' &&
+        typeof component.get('type') !== 'string'
+      )
+        component.set('type', schema.defaultCollectionObjectType);
     },
   },
 
