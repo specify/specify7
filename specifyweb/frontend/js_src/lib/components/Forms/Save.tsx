@@ -243,13 +243,21 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     formatter === undefined;
 
   const showSeriesEntry = true;
-  const [seriesEntryStart, setSeriesEntryStart] = React.useState<string | undefined>(undefined);
-  const [seriesEntryEnd, setSeriesEntryEnd] = React.useState<string | undefined>(undefined);
+  const [seriesEntryStart, setSeriesEntryStart] = React.useState<string>('');
+  const [seriesEntryEnd, setSeriesEntryEnd] = React.useState<string>('');
   const handleSeriesEntry = (): void => {
     // Scroll to the top of the form on clone
     smoothScroll(form, 0);
     const handleClick = async (): Promise<RA<SpecifyResource<SCHEMA>> | undefined> => {
-      // Simple test, don't generate cns between start and end
+      if (!formatter.parse(seriesEntryStart)) {
+        console.error('Please match the required format');
+        return undefined;
+      }
+      if (!formatter.format(seriesEntryEnd)) {
+        console.error('Please match the required format');
+        return undefined;
+      }
+
       const catalogNumbers = await ajax<
         { readonly values: RA<number> }
       >(
