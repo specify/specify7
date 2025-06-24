@@ -225,6 +225,7 @@ SPECIFY_APPS  = [
     'specifyweb.backend.notifications',
     'specifyweb.export',
     'specifyweb.backend.raven_placeholder' if RAVEN_CONFIG is None else 'raven.contrib.django.raven_compat',
+    'specifyweb.backend.stats',
 ]
 
 INSTALLED_APPS = (
