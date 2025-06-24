@@ -276,6 +276,8 @@ export function resolveValidationMessage(
   else if (key === 'multipleTreeDefsInRow')
     return backEndText.multipleTreeDefsInRow();
   else if (key === 'invalidCotype') return backEndText.invalidCotype();
+  else if (key === 'invalidComponentType')
+    return backEndText.invalidComponentType();
   else if (key === 'missingRequiredTreeParent')
     return backEndText.missingRequiredTreeParent({
       names: formatConjunction((payload.names as RA<LocalizedString>) ?? []),
