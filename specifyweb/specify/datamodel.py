@@ -2254,6 +2254,8 @@ datamodel = Datamodel(tables=[
             Relationship(name='type', type='many-to-one', required=True, relatedModelName='CollectionObjectType', column='CollectionObjectTypeID'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='absoluteAges', type='one-to-many', required=False, relatedModelName='AbsoluteAge', otherSideName='component', dependent=True),
+            Relationship(name='relativeAges', type='one-to-many', required=False, relatedModelName='RelativeAge', otherSideName='component', dependent=True),
         ],
         fieldAliases=[]
     ),
