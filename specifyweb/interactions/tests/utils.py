@@ -22,3 +22,5 @@ def _create_interaction_prep_generic(context, obj, prep, prep_list, **loan_prep_
     )
     if prep_list is not None:
         prep_list.append(lp)
+    
+    return lp

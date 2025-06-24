@@ -27,7 +27,7 @@ class TestInsertLoanReturnPreps(TestLoanPrepsContext):
 
     def test_loan_no_insert(self):
 
-        loan_nos = [self.loan_1.loannumber, self.loan_2.loannumber]
+        loan_nos = self._loan_no_test()
 
         # There might be orphaned loan preps before.
         Loanreturnpreparation.objects.all().delete()

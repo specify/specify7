@@ -37,17 +37,18 @@ class TestLoanPrepsContext(DefaultsSetup):
             countamt=4
         )
         self.loan_preps = []
+        self.all_loan_preps = []
 
         Loanpreparation.objects.all().delete()
         
-        _create_interaction_prep_generic(self, self.loan_1, prep_1, self.loan_preps, quantity=3, quantityresolved=2)
+        self.all_loan_preps.append(_create_interaction_prep_generic(self, self.loan_1, prep_1, self.loan_preps, quantity=3, quantityresolved=2, quantityreturned=2))
         # this prep will not be included 
-        _create_interaction_prep_generic(self, self.loan_1, prep_2, None, quantity=4, quantityresolved=4, isresolved=True)
-        _create_interaction_prep_generic(self, self.loan_1, prep_2, self.loan_preps, quantity=2, quantityresolved=0)
+        self.all_loan_preps.append(_create_interaction_prep_generic(self, self.loan_1, prep_2, None, quantity=4, quantityresolved=4, isresolved=True, quantityreturned=4))
+        self.all_loan_preps.append(_create_interaction_prep_generic(self, self.loan_1, prep_2, self.loan_preps, quantity=2, quantityresolved=0, quantityreturned=0))
 
-        _create_interaction_prep_generic(self, self.loan_2, prep_3, self.loan_preps, quantity=4, quantityresolved=3)
+        self.all_loan_preps.append(_create_interaction_prep_generic(self, self.loan_2, prep_3, self.loan_preps, quantity=4, quantityresolved=3, quantityreturned=3))
         # this prep will not be included, even though isresolved is false
-        _create_interaction_prep_generic(self, self.loan_2, prep_4, None, quantity=4, quantityresolved=4, isresolved=False)
+        self.all_loan_preps.append(_create_interaction_prep_generic(self, self.loan_2, prep_4, None, quantity=4, quantityresolved=4, isresolved=False, quantityreturned=4))
     
     def _record_set_test(self):
         record_set = Recordset.objects.create(
