@@ -1499,3 +1499,50 @@ def catalog_number_from_parent(request: http.HttpRequest):
     except Exception as e:
         print(f"Error processing request: {e}")
         return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)  
+
+
+from .uiformatters import UIFormatter, get_catalognumber_format, get_uiformatter
+from .autonumbering import do_autonumbering
+
+@login_maybe_required
+@require_POST
+def series_autonumber_range(request: http.HttpRequest):
+    """
+    Returns a list of autonumbered values given a range.
+    Used for series data entry on Collection Objects.
+    """
+    request_data = json.loads(request.body)
+    range_start = request_data.get('range_start')
+    range_end = request_data.get('range_end')
+    table_name = request_data.get('table_name')
+    field_name = request_data.get('field_name')
+    
+    formatter = get_uiformatter(request.specify_collection, table_name, field_name)
+    
+    try: 
+        canonicalized_range_start = formatter.canonicalize(formatter.parse(range_start))
+    except:
+        return http.HttpResponseBadRequest('Range start does not match format.')
+    try:
+        canonicalized_range_end = formatter.canonicalize(formatter.parse(range_end))
+    except:
+        return http.HttpResponseBadRequest('Range end does not match format.')
+
+    try:
+        limit = 300
+        values = [canonicalized_range_start]
+        previous_value = values[0]
+        while previous_value != canonicalized_range_end:
+            next_increment = ''.join(formatter.fill_vals_after(previous_value))
+            values.append(next_increment)
+            previous_value = next_increment
+            if len(values) >= limit:
+                return http.HttpResponseBadRequest(f'Range requested exceeds limit of {limit} values.')
+        
+        logger.debug(formatter.fill_vals_after(range_start))
+
+        return http.JsonResponse({
+            'values': values
+        })
+    except Exception as e:
+        return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)  
