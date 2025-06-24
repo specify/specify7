@@ -98,7 +98,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'application/json',
     name: 'DefaultUserPreferences',
     documentationUrl:
-      'https://github.com/specify/specify7/wiki/Setting-default-user-preferences',
+      'https://discourse.specifysoftware.org/t/setting-default-user-preferences/1447',
     icon: icons.cog,
     label: preferencesText.defaultUserPreferences(),
   },
@@ -114,7 +114,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'application/json',
     name: 'leaflet-layers',
     documentationUrl:
-      'https://github.com/specify/specify7/wiki/Adding-Custom-Tile-Servers',
+      'https://discourse.specifysoftware.org/t/adding-custom-tile-servers-geomap/2593',
     icon: icons.locationMarker,
     label: resourcesText.leafletLayers(),
   },
@@ -122,7 +122,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'text/xml',
     name: 'ExportFeed',
     documentationUrl:
-      'https://github.com/specify/specify7/wiki/Darwin-Core-Archive-Publishing',
+      'https://discourse.specifysoftware.org/t/dwca-data-exporting-in-specify-7/568',
     icon: icons.upload,
     label: resourcesText.rssExportFeed(),
   },
@@ -146,7 +146,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'text/xml',
     name: 'WebLinks',
     documentationUrl:
-      'https://github.com/specify/specify6/blob/master/config/common/weblinks.xml',
+      'https://discourse.specifysoftware.org/t/editing-web-links-in-specify-7/1559',
     icon: icons.externalLink,
     label: resourcesText.webLinks(),
   },
@@ -162,7 +162,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'text/xml',
     name: 'DataObjFormatters',
     documentationUrl:
-      'https://github.com/specify/specify6/blob/master/config/backstop/dataobj_formatters.xml',
+      'https://discourse.specifysoftware.org/t/editing-table-formats-and-aggregations-in-specify-7/1558',
     icon: icons.variable,
     label: resourcesText.dataObjectFormatters(),
   },
