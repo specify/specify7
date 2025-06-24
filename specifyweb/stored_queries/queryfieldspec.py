@@ -557,30 +557,30 @@ def cog_primary_co_sibling_ids(cat_num, collection):
 
 def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
     if (
-        table.name == "CollectionObject"
+        table.name == "Component"
         and field.name == "catalogNumber"
         and op_num == 1
         and get_parent_cat_num_inheritance_setting(collection, user)
     ):
         components_ids = co_components_ids(value, collection)
         if components_ids:
-            # Modify the query to filter operation and values for component collection objects
+            # Modify the query to filter operation and values for component
             value = ','.join(components_ids)
-            orm_field = getattr(sq_CollectionObject, 'collectionObjectId')
+            orm_field = getattr(sq_CollectionObject, 'componentId')
             op = QueryOps(uiformatter).by_op_num(10)
 
     return op, orm_field, value
 
 def co_components_ids(cat_num, collection):
     # Get the collection object with the given catalog number
-    parentcomponent = Collectionobject.objects.filter(catalognumber=cat_num, collection=collection).first()
-    if not parentcomponent:
+    coparent = Collectionobject.objects.filter(catalognumber=cat_num, collection=collection).first()
+    if not coparent:
         return []
 
     # Get component objects directly from the related name
-    components = parentcomponent.components.filter(catalognumber=None)
+    components = coparent.components.filter(catalognumber=None)
 
     # Get their IDs
     target_component_co_ids = components.values_list('id', flat=True)
 
-    return [str(i) for i in [parentcomponent.id] + list(target_component_co_ids)]
+    return [str(i) for i in [coparent.id] + list(target_component_co_ids)]

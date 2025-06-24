@@ -31,7 +31,7 @@ from .field_spec_maps import apply_specify_user_name
 from ..notifications.models import Message
 from ..permissions.permissions import check_table_permissions
 from ..specify.auditlog import auditlog
-from ..specify.models import Collectionobjectgroupjoin, Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
+from ..specify.models import Collectionobjectgroupjoin, Component, Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
 from specifyweb.specify.utils import get_cat_num_inheritance_setting, log_sqlalchemy_query
 
 from specifyweb.stored_queries.group_concat import group_by_displayed_fields
@@ -1183,14 +1183,15 @@ def apply_special_post_query_processing(query, tableid, field_specs, collection,
         return list(query)
     return query
 
-def parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
-    if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs]: 
+def parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user):
+    if tableid == 1029 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs]: 
         if not get_parent_cat_num_inheritance_setting(collection, user):
             return list(query)
 
         # Get the catalogNumber field index
         catalog_number_field_index = [fs.fieldspec.join_path[0].name for fs in field_specs].index('catalogNumber') + 1
 
+        # op_num 1 is refering to the filter equal, the inheritance will only work if we have cat num equal, other operators will not function
         if field_specs[catalog_number_field_index - 1].op_num != 1:
             return list(query)
 
@@ -1202,9 +1203,9 @@ def parent_inheritance_post_query_processing(query, tableid, field_specs, collec
             result = list(result)
             if result[catalog_number_field_index] is None or result[catalog_number_field_index] == '':
                 component_id = result[0]  # Assuming the first column is the child's ID
-                component_obj = Collectionobject.objects.filter(id=component_id).first()
-                if component_obj and component_obj.componentParent:
-                    result[catalog_number_field_index] = component_obj.componentParent.catalognumber
+                component_obj = Component.objects.filter(id=component_id).first()
+                if component_obj and component_obj.collectionobject:
+                    result[catalog_number_field_index] = component_obj.collectionobject.catalognumber
             updated_results.append(tuple(result))
 
         return updated_results
@@ -1220,6 +1221,7 @@ def cog_inheritance_post_query_processing(query, tableid, field_specs, collectio
         # Get the catalogNumber field index
         catalog_number_field_index = [fs.fieldspec.join_path[0].name for fs in field_specs if fs.fieldspec.join_path].index('catalogNumber') + 1
 
+        # op_num 1 is refering to the filter equal, the inheritance will only work if we have cat num equal, other operators will not function
         if field_specs[catalog_number_field_index - 1].op_num != 1:
             return list(query)
 

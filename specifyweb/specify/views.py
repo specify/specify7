@@ -1418,6 +1418,7 @@ def is_new_user(request):
     is_new_user = len(spmodels.Institution.objects.all()) == 0
     return http.JsonResponse(is_new_user, safe=False)
 
+# Display catalog number from primary CO in a COG on forms
 @login_maybe_required
 @require_POST
 def catalog_number_for_sibling(request: http.HttpRequest):
@@ -1464,12 +1465,12 @@ def catalog_number_for_sibling(request: http.HttpRequest):
         print(f"Error processing request: {e}")
         return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)                  
                                 
-
+# Display catalog number from parent CO on forms
 @login_maybe_required
 @require_POST
 def catalog_number_from_parent(request: http.HttpRequest):
     """
-    Returns the catalog number of the parent component
+    Returns the catalog number of the parent collection object
     """
     try:
         request_data = json.loads(request.body)
@@ -1485,11 +1486,11 @@ def catalog_number_from_parent(request: http.HttpRequest):
         return http.JsonResponse(None, safe=False)
 
     try:
-        # Get the child CO
-        child = spmodels.Collectionobject.objects.get(id=object_id)
+        # Get the child Component
+        child = spmodels.Component.objects.get(id=object_id)
 
         # Get the parent CO
-        parent = child.componentParent
+        parent = child.collectionobject
 
         if parent and parent.catalognumber:
             return http.JsonResponse(parent.catalognumber, safe=False)
