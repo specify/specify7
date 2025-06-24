@@ -30,6 +30,10 @@ class TestCogInteractions(DefaultsSetup):
             cogtype=self.cogtype,
         )
 
+    @property
+    def discipline_uri(self):
+        return f"/api/specify/discipline/{self.collection.discipline.id}/"
+
     @staticmethod
     def _link_co_cog(co, cog):
         Collectionobjectgroupjoin.objects.create(
