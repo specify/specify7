@@ -22,12 +22,13 @@ def _create_interaction_prep(context, obj, prep, prep_list, **loan_prep_kwargs):
     )
     if prep_list is not None:
         prep_list.append(lp)
-        
+
 class TestPrepsAvailableContext(ApiTests):
 
     def setUp(self):
         super().setUp()
         c = Client()
+        self._create_prep_type()
         c.force_login(self.specifyuser)
         self.client = c
         self.loan = Loan.objects.create(discipline_id=self.discipline.id)

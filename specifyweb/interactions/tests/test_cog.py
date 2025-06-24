@@ -11,6 +11,7 @@ from specifyweb.specify.models import (
 class TestCogInteractions(DefaultsSetup):
     def setUp(self):
         super().setUp()
+        self._create_prep_type()
         self.cogtype_consolidated = Collectionobjectgrouptype.objects.create(
             name="TestConsolidated", type="Consolidated", collection=self.collection
         )

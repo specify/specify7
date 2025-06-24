@@ -138,6 +138,7 @@ class MainSetupTearDown:
 
         self._update = _update
     
+    def _create_prep_type(self):
         self.prep_type = Preptype.objects.create(
                 name="testPrepType",
                 isloanable=False,
@@ -145,7 +146,7 @@ class MainSetupTearDown:
             )
 
     def _create_prep(self, co, prep_list, **prep_kwargs):
-        
+
         if 'preptype' not in prep_kwargs:
             prep_kwargs['preptype'] = self.prep_type
 
