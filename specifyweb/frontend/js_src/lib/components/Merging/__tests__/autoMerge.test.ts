@@ -421,7 +421,7 @@ describe('autoMerge', () => {
         "collTechContact": null,
         "collectors": "/api/specify/collector/?agent=2305",
         "createdByAgent": "/api/specify/agent/1313/",
-        "date1": "2020-01-01T00:00:00",
+        "date1": "2020-01-01",
         "date1Precision": null,
         "date2": null,
         "date2Precision": null,
