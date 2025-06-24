@@ -1,5 +1,5 @@
 
-from specifyweb.interactions.utils import _create_interaction_prep_generic
+from specifyweb.interactions.tests.utils import _create_interaction_prep_generic
 from specifyweb.interactions.views import insert_loanreturnpreps
 from specifyweb.specify.models import Loan, Recordset, Loanreturnpreparation, Loanpreparation
 from specifyweb.specify.tests.test_api import DefaultsSetup
