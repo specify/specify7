@@ -143,6 +143,8 @@
 				<row>
 					<cell type="subview" viewname="CollectionObjectGroupJoin_Sub" id="co_cog_join" name="cojo" colspan="14"/>
 				</row>
+				<!-- Show if you want to use Children Components -->
+				<!-- <cell type="subview" viewname="Component" id="6" name="components" colspan="14" defaulttype="table"/> -->
 				<!-- When PaleoContext is "shared", use a query combo box (querycbx) -->
 				<row>
 					<cell type="label" labelfor="9"/>
