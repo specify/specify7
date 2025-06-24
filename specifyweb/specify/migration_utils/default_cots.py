@@ -44,8 +44,9 @@ def create_default_discipline_for_tree_defs(apps):
         geologic_time_period_tree_def.save()
 
         lithostrat_tree_def = discipline.lithostrattreedef
-        lithostrat_tree_def.discipline = discipline
-        lithostrat_tree_def.save()
+        if lithostrat_tree_def:
+            lithostrat_tree_def.discipline = discipline
+            lithostrat_tree_def.save()
 
         taxon_tree_def = discipline.taxontreedef
         taxon_tree_def.discipline = discipline
