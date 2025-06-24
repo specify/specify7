@@ -8482,7 +8482,8 @@ datamodel = Datamodel(tables=[
             Relationship(name='collectionObject', type='many-to-one', required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='absoluteAges'),
             Relationship(name='absoluteAgeCitations', type='one-to-many',required=False, relatedModelName='AbsoluteAgeCitation', otherSideName='absoluteAge', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='component', type='many-to-one', required=False, relatedModelName='Component', column='ComponentID', otherSideName='absoluteAges'),
         ],
         fieldAliases=[
 
@@ -8531,7 +8532,8 @@ datamodel = Datamodel(tables=[
             Relationship(name='collectionObject', type='many-to-one', required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='relativeAges'),
             Relationship(name='relativeAgeCitations', type='one-to-many',required=False, relatedModelName='RelativeAgeCitation', otherSideName='relativeAge', dependent=True),
             Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID')
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='component', type='many-to-one', required=False, relatedModelName='Component', column='ComponentID', otherSideName='relativeAges'),
         ],
         fieldAliases=[
 

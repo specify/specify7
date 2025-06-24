@@ -7719,6 +7719,7 @@ class Absoluteage(models.Model):
     absoluteagecitation = models.ForeignKey(db_column='AbsoluteAgeCitationID', null=True, on_delete=protect_with_blockers, related_name='absoluteages', to='specify.absoluteagecitation')
     createdbyagent = models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')
     modifiedbyagent = models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')
+    component = models.ForeignKey('Component', db_column='ComponentID', related_name='absoluteages', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'absoluteage'
@@ -7764,6 +7765,7 @@ class Relativeage(models.Model):
     relativeagecitation = models.ForeignKey(db_column='RelativeAgeCitationID', null=True, on_delete=protect_with_blockers, related_name='relativeages', to='specify.relativeagecitation')
     createdbyagent = models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')
     modifiedbyagent = models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')
+    component = models.ForeignKey('Component', db_column='ComponentID', related_name='relativeages', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'relativeage'

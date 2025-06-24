@@ -2022,7 +2022,10 @@ export type Component = {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
   };
-  readonly toManyDependent: RR<never, never>;
+  readonly toManyDependent: {
+    readonly absoluteAges: RA<AbsoluteAge>;
+    readonly relativeAges: RA<RelativeAge>;
+  };
   readonly toManyIndependent: RR<never, never>;
 };
 export type ConservDescription = {
@@ -6666,6 +6669,7 @@ export type AbsoluteAge = {
     readonly collectionObject: CollectionObject;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
+    readonly component: Component;
   };
   readonly toManyDependent: {
     readonly absoluteAgeAttachments: RA<AbsoluteAgeAttachment>;
@@ -6706,6 +6710,7 @@ export type RelativeAge = {
     readonly collectionObject: CollectionObject;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
+    readonly component: Component;
   };
   readonly toManyDependent: {
     readonly relativeAgeAttachments: RA<RelativeAgeAttachment>;
