@@ -1,6 +1,6 @@
 import { overrideAjax } from "../../../tests/ajax";
-import { formatUrl } from "../../Router/queryString";
 import attachmentSettings from "../../../tests/ajax/static/context/attachment_settings.json"
+import { formatUrl } from "../../Router/queryString";
 import { fetchToken, overrideAttachmentSettings } from "../attachments";
 
 
@@ -19,7 +19,7 @@ describe("fetchToken", ()=>{
 
         expect(attachmentSettings.token_required_for_get).toBe(false);
 
-        expect(fetchToken(fileName)).resolves.toBe(undefined);
+        expect(fetchToken(fileName)).resolves.toBeUndefined();
 
     });
 
