@@ -2204,6 +2204,7 @@
 					<cell type="field" id="role" name="role" uitype="text"/>
 					<cell type="label" labelfor="proportion"/>
 					<cell type="field" id="proportion" name="proportion" uitype="text"/>
+        </row>
 			</rows>
 		</viewdef>
 		<viewdef type="form" name="CommonNameTx" class="edu.ku.brc.specify.datamodel.CommonNameTx" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
