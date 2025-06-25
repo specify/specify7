@@ -706,13 +706,10 @@ export const commonText = createDictionary({
     'uk-ua': '{resource:string}({count:number|formatted})',
     'de-ch': '{resource:string} ({count:number|formatted})',
     'pt-br': '{resource:string} ({count:number|formatted})',
-<<<<<<< issue-6521
   },
   countLineOrMore: {
     comment: 'Example usage: Record Sets (1,234+)',
     'en-us': '{resource:string} ({count:number|formatted}+)',
-=======
->>>>>>> main
   },
   jsxCountLine: {
     comment: 'Example usage: Record Sets (1,234)',
