@@ -1,9 +1,9 @@
+import attachmentSettings from "../../../tests/ajax/static/context/attachment_settings.json"
 import { requireContext } from "../../../tests/helpers";
 import { serializeResource } from "../../DataModel/serializers";
 import { tables } from "../../DataModel/tables";
-import { fetchThumbnail } from "../attachments";
-import attachmentSettings from "../../../tests/ajax/static/context/attachment_settings.json"
 import { formatUrl } from "../../Router/queryString";
+import { fetchThumbnail } from "../attachments";
 
 requireContext();
 
@@ -73,7 +73,7 @@ describe("fetchThumbnail", ()=>{
 
         const thumbnail = await fetchThumbnail(serializeResource(attachment), 78);
 
-        expect(thumbnail).toEqual(undefined);
+        expect(thumbnail).toBeUndefined();
     });
 
 });
