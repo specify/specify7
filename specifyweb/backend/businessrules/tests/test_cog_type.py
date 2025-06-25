@@ -1,4 +1,4 @@
-from specifyweb.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify.models import Collectionobjectgrouptype, Picklist, Picklistitem
 from specifyweb.specify.tests.test_api import DefaultsSetup
 from django.db import transaction

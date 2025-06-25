@@ -4,7 +4,7 @@ from django.test import Client
 
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
-from specifyweb.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 
 
 class UniquenessTests(ApiTests):

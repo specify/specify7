@@ -1,5 +1,5 @@
 from specifyweb.specify.models import Collectionobjectgroup, Collectionobjectgroupjoin, Collectionobjectgrouptype
-from specifyweb.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify.tests.test_api import DefaultsSetup
 
 class CoJoTest(DefaultsSetup):
