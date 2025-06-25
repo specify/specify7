@@ -18,7 +18,7 @@ from .exceptions import BusinessRuleException
 from . import models
 
 DEFAULT_UNIQUENESS_RULES:  dict[str, list[dict[str, Union[list[list[str]], bool]]]] = json.load(
-    open('specifyweb/businessrules/uniqueness_rules.json'))
+    open('specifyweb/backend/businessrules/uniqueness_rules.json'))
 
 UNIQUENESS_DISPATCH_UID = 'uniqueness-rules'
 
