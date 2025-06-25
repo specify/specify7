@@ -16,6 +16,9 @@ from .uploadable import Uploadable, ScopedUploadable, Row
 from .upload_table import UploadTable, ScopedUploadTable, ScopedOneToOneTable
 from .column_options import ColumnOptions, ExtendedColumnOptions
 from .treerecord import TreeRank, TreeRankRecord, TreeRecord, ScopedTreeRecord
+import logging
+
+logger = logging.getLogger(__name__)
 
 """ There are cases in which the scoping of records should be dependent on another record/column in a WorkBench dataset.
 
@@ -127,8 +130,6 @@ def extend_columnoptions(
 
     if tablename.lower() == "collectionobjecttype" and fieldname.lower() == "name":
         context.cache['cotype_column'] = colopts.column
-
-    if tablename.lower() == "collectionobjecttype" and fieldname.lower() == "name":
         context.cache['component_type_column'] = colopts.column
 
     # REFACTOR: Make context always required and simply

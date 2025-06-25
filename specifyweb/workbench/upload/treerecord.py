@@ -334,7 +334,6 @@ class ScopedTreeRecord(NamedTuple):
         def find_cotype_in_row(row: Row):
             if isinstance(self.cotype_column, str) and self.cotype_column in row:
                 return row[self.cotype_column]
-                
             return None
         
         def get_cotype_tree_def(cotype_name: str):
@@ -351,7 +350,6 @@ class ScopedTreeRecord(NamedTuple):
         # Validation for multiple ranks is done before this in _handle_multiple_or_no_treedefs
         if len(treedefs_in_row) > 0 and cotype_treedef_id == list(treedefs_in_row)[0]:
             return None
-        
         return self, WorkBenchParseFailure('invalidCotype', {}, self.cotype_column)
     
 
@@ -363,9 +361,7 @@ class ScopedTreeRecord(NamedTuple):
         def find_component_type_in_row(row: Row):
             if isinstance(self.component_type_column, str) and self.component_type_column in row:
                 return row[self.component_type_column]
-                
             return None
-        
         def get_component_type_tree_def(component_type_name: str):
             component_types = self.scoped_cotypes.filter(name=component_type_name)
             return component_types[0].taxontreedef.id if len(component_types) > 0 else None
@@ -380,7 +376,6 @@ class ScopedTreeRecord(NamedTuple):
         # Validation for multiple ranks is done before this in _handle_multiple_or_no_treedefs
         if len(treedefs_in_row) > 0 and component_type_treedef_id == list(treedefs_in_row)[0]:
             return None
-        
         return self, WorkBenchParseFailure('invalidComponentType', {}, self.component_type_column)
 
     def bind(
