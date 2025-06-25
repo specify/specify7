@@ -219,7 +219,7 @@ SPECIFY_APPS  = [
     'specifyweb.frontend',
     'specifyweb.backend.barvis',
     'specifyweb.patches',
-    'specifyweb.report_runner',
+    'specifyweb.backend.report_runner',
     'specifyweb.backend.interactions',
     'specifyweb.workbench',
     'specifyweb.backend.notifications',
