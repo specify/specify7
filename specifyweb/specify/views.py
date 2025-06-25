@@ -20,6 +20,7 @@ from specifyweb.notifications.models import Message, Spmerging, LocalityUpdate
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST, require_http_methods
+from specifyweb.specify.api import get_model
 
 from specifyweb.middleware.general import require_GET, require_http_methods
 from specifyweb.permissions.permissions import PermissionTarget, \
@@ -1501,8 +1502,7 @@ def catalog_number_from_parent(request: http.HttpRequest):
         return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)  
 
 
-from .uiformatters import UIFormatter, get_catalognumber_format, get_uiformatter
-from .autonumbering import do_autonumbering
+from .uiformatters import get_uiformatter
 
 @login_maybe_required
 @require_POST
@@ -1512,10 +1512,10 @@ def series_autonumber_range(request: http.HttpRequest):
     Used for series data entry on Collection Objects.
     """
     request_data = json.loads(request.body)
-    range_start = request_data.get('range_start')
-    range_end = request_data.get('range_end')
-    table_name = request_data.get('table_name')
-    field_name = request_data.get('field_name')
+    range_start = request_data.get('rangestart')
+    range_end = request_data.get('rangeend')
+    table_name = request_data.get('tablename')
+    field_name = request_data.get('fieldname')
     
     formatter = get_uiformatter(request.specify_collection, table_name, field_name)
     
@@ -1534,6 +1534,7 @@ def series_autonumber_range(request: http.HttpRequest):
         return http.HttpResponseBadRequest(f'Range end must be greater than range start.')
 
     try:
+        # Repeatedly autonumber until the end is reached.
         limit = 300
         values = [canonicalized_range_start]
         current_value = values[0]
@@ -1542,10 +1543,16 @@ def series_autonumber_range(request: http.HttpRequest):
             values.append(current_value)
             if len(values) >= limit:
                 return http.HttpResponseBadRequest(f'Bulk carry range exceeds limit of {limit} values.')
+        
+        # Check if any existing records use the values.
+        # Not garanteed to be accurate at the time of saving, just serves as a warning for the frontend.
+        table = get_model(table_name)
+        existing_records = table.objects.filter(**{f"{field_name}__in": values})
+        existing_values = list(existing_records.values_list(field_name, flat=True))
 
         return http.JsonResponse({
             'values': values,
-            'existing': [],
+            'existing': existing_values,
         })
     except Exception as e:
         return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)  

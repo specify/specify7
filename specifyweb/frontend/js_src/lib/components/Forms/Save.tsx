@@ -16,7 +16,7 @@ import {
 } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { replaceKey } from '../../utils/utils';
+import { keysToLowerCase,replaceKey } from '../../utils/utils';
 import { appResourceSubTypes } from '../AppResources/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -46,7 +46,6 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
-
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
 /*
@@ -216,7 +215,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     label: LocalizedString,
     description: LocalizedString,
     handleClick: () =>
-      Promise<RA<SpecifyResource<SCHEMA>> | undefined> | Promise<RA<SpecifyResource<SCHEMA>>>
+      | Promise<RA<SpecifyResource<SCHEMA>> | undefined>
+      | Promise<RA<SpecifyResource<SCHEMA>>>
   ): JSX.Element => (
     <ButtonComponent
       className={saveBlocked ? '!cursor-not-allowed' : undefined}
@@ -253,6 +253,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     formatter === undefined;
   const parser = formatterToParser(numberField, formatter);
 
+  const [bulkCarryBlocked, setBulkCarryBlocked] = React.useState(false);
+
   const handleBulkCarryForward = async (): Promise<
     RA<SpecifyResource<SCHEMA>> | undefined
   > => {
@@ -261,36 +263,50 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     let numbers: RA<number> | undefined;
 
     if (showBulkCarryRange) {
-      const carryForwardRangeStart = resource.get(numberFieldName)
-      if (carryForwardRangeStart === null || !formatter.parse(carryForwardRangeStart)) {
+      const carryForwardRangeStart = resource.get(numberFieldName);
+      if (
+        carryForwardRangeStart === null ||
+        !formatter.parse(carryForwardRangeStart)
+      ) {
         console.error('Please match the required format');
+        setBulkCarryBlocked(true);
         return undefined;
       }
       if (!formatter.format(carryForwardRangeEnd)) {
         console.error('Please match the required format');
+        setBulkCarryBlocked(true);
         return undefined;
       }
 
-      numbers = await ajax<{
+      const response = await ajax<{
         readonly values: RA<number>;
         readonly existing: RA<number>;
       }>(`/api/specify/series_autonumber_range/`, {
         method: 'POST',
         headers: { Accept: 'application/json' },
-        body: {
-          range_start: carryForwardRangeStart,
-          range_end: carryForwardRangeEnd,
-          table_name: resource.specifyTable.name.toLowerCase(),
-          field_name: numberFieldName.toLowerCase(),
-        },
+        body: keysToLowerCase({
+          rangeStart: carryForwardRangeStart,
+          rangeEnd: carryForwardRangeEnd,
+          tableName: resource.specifyTable.name.toLowerCase(),
+          fieldName: numberFieldName.toLowerCase(),
+        }),
       })
-        .then(({ data }) => data.values.slice(1))
+        .then(({ data }) => data)
         .catch((error) => {
           console.error(error);
           return undefined;
         });
-      if (numbers === undefined)
+      if (response === undefined) {
+        setBulkCarryBlocked(true);
         return undefined;
+      }
+      // Ignore the first number, since that belongs to the record that was already saved
+      numbers = response.values.slice(1);
+      if (response.existing.length > 1) {
+        // Change this to > 0 if first value shouldn't ignored
+        setBulkCarryBlocked(true);
+        return undefined;
+      }
     }
 
     const clonePromises = Array.from(
@@ -338,18 +354,17 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                   aria-label={formsText.bulkCarryForwardRangeStart()}
                   className="!w-fit"
                   isReadOnly
-                  width={numberField.datamodelDefinition.length}
                   placeholder={formatter.valueOrWild()}
                   value={resource.get('catalogNumber') ?? ''}
+                  width={numberField.datamodelDefinition.length}
                 />
-                <>-</>
                 <Input.Text
                   aria-label={formsText.bulkCarryForwardRangeEnd()}
                   className="!w-fit"
                   {...getValidationAttributes(parser)}
                   placeholder={formatter.valueOrWild()}
-                  width={numberField.datamodelDefinition.length}
                   value={carryForwardRangeEnd}
+                  width={numberField.datamodelDefinition.length}
                   onValueChange={(value): void =>
                     setCarryForwardRangeEnd(value)
                   }
@@ -378,9 +393,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                  * See https://github.com/specify/specify7/pull/4804
                  *
                  */
-                (resource.specifyTable.name === 'CollectionObject' &&
-                  showBulkCarryRange) ||
-                  carryForwardAmount > 1
+                resource.specifyTable.name === 'CollectionObject' &&
+                  (showBulkCarryRange || carryForwardAmount > 1)
                   ? handleBulkCarryForward
                   : async (): Promise<RA<SpecifyResource<SCHEMA>>> => [
                       await resource.clone(false),
@@ -431,6 +445,19 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           blocker={shownBlocker}
           onClose={(): void => setShownBlocker(undefined)}
         />
+      ) : undefined}
+      {bulkCarryBlocked ? (
+        <Dialog
+          buttons={
+            <Button.Warning onClick={(): void => setBulkCarryBlocked(false)}>
+              {commonText.close()}
+            </Button.Warning>
+          }
+          header={formsText.carryForward()}
+          onClose={undefined}
+        >
+          {formsText.bulkCarryForwardErrorDescription()}
+        </Dialog>
       ) : undefined}
     </>
   );
