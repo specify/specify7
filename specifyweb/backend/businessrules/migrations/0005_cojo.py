@@ -1,6 +1,6 @@
 from django.db import migrations
 
-from specifyweb.businessrules.uniqueness_rules import create_uniqueness_rule, DEFAULT_UNIQUENESS_RULES
+from specifyweb.backend.businessrules.uniqueness_rules import create_uniqueness_rule, DEFAULT_UNIQUENESS_RULES
 
 """
     Applies the COJO uniqueness rule to the database.
