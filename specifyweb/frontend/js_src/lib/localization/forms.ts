@@ -905,6 +905,21 @@ export const formsText = createDictionary({
     'de-ch': 'Dieses Feld ist erforderlich. Es muss übertragen werden',
     'pt-br': 'Este campo é obrigatório. Deve ser levado adiante',
   },
+  bulkCarryForwardRangeEnabled: {
+    'en-us': 'Show Bulk Carry Forward range',
+  },
+  bulkCarryForwardRange: {
+    'en-us': 'Bulk Carry Forward range',
+  },
+  bulkCarryForwardRangeDescription: {
+    'en-us': 'Create a series of new records from a ({field:string}) range.',
+  },
+  bulkCarryForwardRangeStart: {
+    'en-us': 'Carry Forward Range Start',
+  },
+  bulkCarryForwardRangeEnd: {
+    'en-us': 'Carry Forward Range End',
+  },
   cloneButtonEnabled: {
     'en-us': 'Show Clone button',
     'ru-ru': 'Показать кнопку «Клонировать»',
@@ -1196,17 +1211,5 @@ export const formsText = createDictionary({
     'pt-br': 'Adicionar crianças COG',
     'ru-ru': 'Добавить детей COG',
     'uk-ua': 'Додати дочірні елементи COG',
-  },
-  seriesEntry: {
-    'en-us': 'Series Entry',
-  },
-  seriesEntryDescription: {
-    'en-us': 'Create a series of new records from a range of catalog numbers',
-  },
-  seriesEntryStart: {
-    'en-us': 'Series Range Start',
-  },
-  seriesEntryEnd: {
-    'en-us': 'Series Range End',
   },
 } as const);
