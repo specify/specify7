@@ -14,13 +14,13 @@ import {
   formatterToParser,
   getValidationAttributes,
 } from '../../utils/parser/definitions';
-import type { RA, WritableArray } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { replaceKey } from '../../utils/utils';
 import { appResourceSubTypes } from '../AppResources/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { Input } from '../Atoms/Form';
+import { Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema, SerializedRecord } from '../DataModel/helperTypes';
@@ -289,12 +289,13 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           console.error(error);
           return undefined;
         });
+      if (numbers === undefined)
+        return undefined;
     }
 
     const clonePromises = Array.from(
       { length: numbers ? numbers.length : carryForwardAmount },
       async (_, index) => {
-        console.log(numbers ? numbers[index] : "no catalog number");
         const clonedResource = await resource.clone(false, true);
         clonedResource.set(
           numberFieldName,
@@ -332,25 +333,28 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           !isCOGorCOJO &&
           !disableBulk ? (
             showBulkCarryRange ? (
-              <>
+              <Label.Inline>
                 <Input.Text
                   aria-label={formsText.bulkCarryForwardRangeStart()}
                   className="!w-fit"
                   isReadOnly
+                  width={numberField.datamodelDefinition.length}
                   placeholder={formatter.valueOrWild()}
-                  value={resource.get('catalogNumber') ?? undefined}
+                  value={resource.get('catalogNumber') ?? ''}
                 />
+                <>-</>
                 <Input.Text
                   aria-label={formsText.bulkCarryForwardRangeEnd()}
                   className="!w-fit"
                   {...getValidationAttributes(parser)}
                   placeholder={formatter.valueOrWild()}
+                  width={numberField.datamodelDefinition.length}
                   value={carryForwardRangeEnd}
                   onValueChange={(value): void =>
                     setCarryForwardRangeEnd(value)
                   }
                 />
-              </>
+              </Label.Inline>
             ) : (
               <Input.Integer
                 aria-label={formsText.bulkCarryForwardCount()}

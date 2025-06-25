@@ -1521,23 +1521,27 @@ def series_autonumber_range(request: http.HttpRequest):
     
     try: 
         canonicalized_range_start = formatter.canonicalize(formatter.parse(range_start))
+        assert not formatter.needs_autonumber(canonicalized_range_start)
     except:
         return http.HttpResponseBadRequest('Range start does not match format.')
     try:
         canonicalized_range_end = formatter.canonicalize(formatter.parse(range_end))
+        assert not formatter.needs_autonumber(canonicalized_range_end)
     except:
         return http.HttpResponseBadRequest('Range end does not match format.')
+    
+    if canonicalized_range_end <= canonicalized_range_start:
+        return http.HttpResponseBadRequest(f'Range end must be greater than range start.')
 
     try:
         limit = 300
         values = [canonicalized_range_start]
-        previous_value = values[0]
-        while previous_value != canonicalized_range_end:
-            next_increment = ''.join(formatter.fill_vals_after(previous_value))
-            values.append(next_increment)
-            previous_value = next_increment
+        current_value = values[0]
+        while current_value < canonicalized_range_end:
+            current_value = ''.join(formatter.fill_vals_after(current_value))
+            values.append(current_value)
             if len(values) >= limit:
-                return http.HttpResponseBadRequest(f'Range requested exceeds limit of {limit} values.')
+                return http.HttpResponseBadRequest(f'Bulk carry range exceeds limit of {limit} values.')
 
         return http.JsonResponse({
             'values': values,
