@@ -8,7 +8,7 @@ from typing import List, Dict, Any, Tuple, NamedTuple, Optional, Union, Set
 from django.db import transaction, IntegrityError
 from typing_extensions import TypedDict
 
-from specifyweb.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
 from specifyweb.workbench.upload.clone import clone_record
 from specifyweb.workbench.upload.predicates import (
