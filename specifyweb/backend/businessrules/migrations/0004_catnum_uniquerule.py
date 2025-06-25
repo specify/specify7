@@ -2,7 +2,7 @@ from typing import Tuple
 
 from django.db import migrations
 
-from specifyweb.businessrules.uniqueness_rules import create_uniqueness_rule
+from specifyweb.backend.businessrules.uniqueness_rules import create_uniqueness_rule
 
 
 def catnum_rule_editable(apps, schema_editor):

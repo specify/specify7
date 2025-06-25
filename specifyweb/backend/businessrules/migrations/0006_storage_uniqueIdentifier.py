@@ -1,5 +1,5 @@
 from django.db import migrations, models
-from specifyweb.businessrules.uniqueness_rules import create_uniqueness_rule, remove_uniqueness_rule
+from specifyweb.backend.businessrules.uniqueness_rules import create_uniqueness_rule, remove_uniqueness_rule
 
 def apply_migration(apps, schema_editor):
     create_uniqueness_rule("Storage", None, True, ["uniqueIdentifier"], [], apps)

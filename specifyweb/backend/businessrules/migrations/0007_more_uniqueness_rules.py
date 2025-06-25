@@ -1,7 +1,7 @@
 import logging
 
 from django.db import migrations
-from specifyweb.businessrules.uniqueness_rules import DEFAULT_UNIQUENESS_RULES, check_uniqueness, create_uniqueness_rule, remove_uniqueness_rule, join_with_and
+from specifyweb.backend.businessrules.uniqueness_rules import DEFAULT_UNIQUENESS_RULES, check_uniqueness, create_uniqueness_rule, remove_uniqueness_rule, join_with_and
 
 logger = logging.getLogger(__name__)
 
