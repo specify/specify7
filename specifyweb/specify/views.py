@@ -1538,11 +1538,10 @@ def series_autonumber_range(request: http.HttpRequest):
             previous_value = next_increment
             if len(values) >= limit:
                 return http.HttpResponseBadRequest(f'Range requested exceeds limit of {limit} values.')
-        
-        logger.debug(formatter.fill_vals_after(range_start))
 
         return http.JsonResponse({
-            'values': values
+            'values': values,
+            'existing': [],
         })
     except Exception as e:
         return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)  
