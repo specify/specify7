@@ -5,4 +5,4 @@ class BussinessRuleConfig(AppConfig):
     name = "specifyweb.businessrules"
 
     def ready(self) -> None:
-        import specifyweb.businessrules.rules
+        import specifyweb.backend.businessrules.rules

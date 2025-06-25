@@ -7,8 +7,8 @@ from django.db.models import Q
 from django.views.decorators.http import require_POST
 
 from specifyweb.middleware.general import require_http_methods
-from specifyweb.businessrules.models import UniquenessRule
-from specifyweb.businessrules.uniqueness_rules import rule_is_global, check_uniqueness
+from specifyweb.backend.businessrules.models import UniquenessRule
+from specifyweb.backend.businessrules.uniqueness_rules import rule_is_global, check_uniqueness
 from specifyweb.specify.views import login_maybe_required, openapi
 from specifyweb.specify import models
 from specifyweb.specify.models import datamodel
