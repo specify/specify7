@@ -3,7 +3,7 @@ from django.dispatch import receiver
 from django.db import connection
 
 from specifyweb.specify.models import Specifyuser, Spprincipal, Collection
-from specifyweb.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 
 
 @receiver(signals.post_save, sender=Specifyuser)

@@ -1,7 +1,7 @@
 import logging
 
-from specifyweb.businessrules.orm_signal_handler import orm_signal_handler
-from specifyweb.businessrules.exceptions import TreeBusinessRuleException
+from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handler
+from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
 from specifyweb.specify.tree_extras import is_treedefitem
 from specifyweb.specify.tree_ranks import *
 

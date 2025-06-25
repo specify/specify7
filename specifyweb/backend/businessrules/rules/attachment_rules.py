@@ -1,6 +1,6 @@
 import re
 
-from specifyweb.businessrules.orm_signal_handler import orm_signal_handler
+from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handler
 from specifyweb.specify.scoping import Scoping
 from specifyweb.specify import models
 from specifyweb.specify.models_by_table_id import models_iterator
