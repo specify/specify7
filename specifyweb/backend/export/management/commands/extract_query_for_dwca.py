@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 
 from specifyweb.specify.models import Spquery
-from specifyweb.export.extract_query import extract_query
+from specifyweb.backend.export.extract_query import extract_query
 
 
 class Command(BaseCommand):
