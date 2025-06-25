@@ -1,10 +1,10 @@
+import { overrideAjax } from "../../../tests/ajax";
+import attachmentSettings from "../../../tests/ajax/static/context/attachment_settings.json"
 import { requireContext } from "../../../tests/helpers";
 import { serializeResource } from "../../DataModel/serializers";
 import { tables } from "../../DataModel/tables";
-import { fetchOriginalUrl, overrideAttachmentSettings } from "../attachments";
-import attachmentSettings from "../../../tests/ajax/static/context/attachment_settings.json"
-import { overrideAjax } from "../../../tests/ajax";
 import { formatUrl } from "../../Router/queryString";
+import { fetchOriginalUrl, overrideAttachmentSettings } from "../attachments";
 
 
 requireContext();
