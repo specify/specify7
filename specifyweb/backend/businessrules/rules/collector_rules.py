@@ -1,7 +1,7 @@
 from django.db.models import Max
-from specifyweb.businessrules.orm_signal_handler import orm_signal_handler
+from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handler
 from specifyweb.specify.models import Collector
-from specifyweb.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 
 
 @orm_signal_handler('pre_save', 'Collector')

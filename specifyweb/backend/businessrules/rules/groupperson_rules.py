@@ -1,7 +1,7 @@
-from specifyweb.businessrules.orm_signal_handler import orm_signal_handler
+from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handler
 from django.db.models import Max
 from specifyweb.specify.models import Groupperson
-from specifyweb.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 
 
 @orm_signal_handler('pre_save', 'Groupperson')
