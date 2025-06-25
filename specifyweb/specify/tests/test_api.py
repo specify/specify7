@@ -10,9 +10,9 @@ from django.test import TestCase, Client
 
 from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.specify import api, models, scoping
-from specifyweb.businessrules.uniqueness_rules import UNIQUENESS_DISPATCH_UID, validate_unique, apply_default_uniqueness_rules
-from specifyweb.businessrules.rules.cogtype_rules import SYSTEM_COGTYPES_PICKLIST
-from specifyweb.businessrules.orm_signal_handler import connect_signal, disconnect_signal
+from specifyweb.backend.businessrules.uniqueness_rules import UNIQUENESS_DISPATCH_UID, validate_unique, apply_default_uniqueness_rules
+from specifyweb.backend.businessrules.rules.cogtype_rules import SYSTEM_COGTYPES_PICKLIST
+from specifyweb.backend.businessrules.orm_signal_handler import connect_signal, disconnect_signal
 from specifyweb.specify.model_extras import Specifyuser
 from specifyweb.specify.models import (
     Institution,
