@@ -1,32 +1,27 @@
-import { overrideAjax } from "../../../tests/ajax";
-import { Http } from "../../../utils/ajax/definitions";
-import { formatUrl } from "../../Router/queryString";
-import { fetchAssetToken } from "../attachments";
+import { overrideAjax } from '../../../tests/ajax';
+import { Http } from '../../../utils/ajax/definitions';
+import { formatUrl } from '../../Router/queryString';
+import { fetchAssetToken } from '../attachments';
 
-describe("fetchAssetToken", ()=>{
+describe('fetchAssetToken', () => {
+  const testToken = 'testToken';
 
-    const testToken = "testToken";
+  const fileName = 'testFileName';
+  const failedFileName = 'failedTestFileName';
 
-    const fileName = "testFileName";
-    const failedFileName = "failedTestFileName";
+  overrideAjax(formatUrl('/attachment_gw/get_token/', { fileName }), testToken);
 
-    overrideAjax(
-        formatUrl('/attachment_gw/get_token/', { fileName }), 
-        testToken
-    );
+  test('fetches correctly, not silent', async () => {
+    expect(fetchAssetToken(fileName)).resolves.toBe(testToken);
+  });
 
-    test("fetches correctly, not silent", async ()=>{
-        expect(fetchAssetToken(fileName)).resolves.toBe(testToken);
-    });
+  overrideAjax(
+    formatUrl('/attachment_gw/get_token/', { fileName: failedFileName }),
+    testToken,
+    { responseCode: Http.BAD_GATEWAY }
+  );
 
-    overrideAjax(
-        formatUrl('/attachment_gw/get_token/', { fileName: failedFileName }), 
-        testToken,
-        {responseCode: Http.BAD_GATEWAY}
-    );
-
-    test("handles fetch error on silent", async ()=>{
-        expect(fetchAssetToken(failedFileName, true)).resolves.toBeUndefined();
-    });
-
+  test('handles fetch error on silent', async () => {
+    expect(fetchAssetToken(failedFileName, true)).resolves.toBeUndefined();
+  });
 });
