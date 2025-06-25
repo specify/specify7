@@ -251,7 +251,7 @@ msgstr "Cache has been cleared. Please reload the page."
 #: components/Header/userToolDefinitions.ts:131
 #. Used in: Components > Header > User Tool Definitions
 msgid "technicalDocumentation"
-msgstr "Technical Docs"
+msgstr "Documentation"
 
 #: components/Attachments/ChronoChart.tsx:33
 #. Used in: Components > Attachments > Chrono Chart

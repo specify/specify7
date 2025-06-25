@@ -266,7 +266,7 @@ msgstr "Se ha borrado la caché. Por favor recarga la página."
 #: components/Header/userToolDefinitions.ts:131
 #. Used in: Components > Header > User Tool Definitions
 msgid "technicalDocumentation"
-msgstr "Documentos técnicos"
+msgstr "Documentación"
 
 #: components/Attachments/ChronoChart.tsx:33
 #. Used in: Components > Attachments > Chrono Chart

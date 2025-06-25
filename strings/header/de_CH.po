@@ -272,7 +272,7 @@ msgstr "Der Cache wurde geleert. Bitte laden Sie die Seite neu."
 #: components/Header/userToolDefinitions.ts:131
 #. Used in: Components > Header > User Tool Definitions
 msgid "technicalDocumentation"
-msgstr "Technische Dokumentation"
+msgstr "Dokumentation"
 
 #: components/Attachments/ChronoChart.tsx:33
 #. Used in: Components > Attachments > Chrono Chart
