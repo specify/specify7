@@ -17,12 +17,12 @@ from django.views.decorators.http import require_POST
 from .dwca import make_dwca, prettify
 from .extract_query import extract_query as extract
 from .feed import FEED_DIR, get_feed_resource, update_feed
-from ..context.app_resource import get_app_resource
+from specifyweb.context.app_resource import get_app_resource
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets
-from ..specify.models import Spquery
-from ..specify.views import login_maybe_required
+from specifyweb.specify.models import Spquery
+from specifyweb.specify.views import login_maybe_required
 from specifyweb.middleware.general import require_GET
 
 logger = logging.getLogger(__name__)
