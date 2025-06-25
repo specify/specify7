@@ -1538,6 +1538,10 @@ def series_autonumber_range(request: http.HttpRequest):
         limit = 300
         values = [canonicalized_range_start]
         current_value = values[0]
+        if request_data.get('skipstartnumber'):
+            # The first value can be optionally excluded/skipped.
+            # Needed since series entry currently relies on the first record being saved first.
+            values = []
         while current_value < canonicalized_range_end:
             current_value = ''.join(formatter.fill_vals_after(current_value))
             values.append(current_value)

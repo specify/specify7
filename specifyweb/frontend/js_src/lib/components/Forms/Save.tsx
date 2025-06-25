@@ -253,7 +253,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     formatter === undefined;
   const parser = formatterToParser(numberField, formatter);
 
-  const [bulkCarryBlocked, setBulkCarryBlocked] = React.useState(false);
+  const [bulkCarryRangeBlocked, setBulkCarryRangeBlocked] = React.useState(false);
+  const [bulkCarryRangeInvalidNumbers, setBulkCarryRangeInvalidNumbers] = React.useState<RA<number> | undefined>(undefined);
 
   const handleBulkCarryForward = async (): Promise<
     RA<SpecifyResource<SCHEMA>> | undefined
@@ -269,12 +270,12 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         !formatter.parse(carryForwardRangeStart)
       ) {
         console.error('Please match the required format');
-        setBulkCarryBlocked(true);
+        setBulkCarryRangeBlocked(true);
         return undefined;
       }
       if (!formatter.format(carryForwardRangeEnd)) {
         console.error('Please match the required format');
-        setBulkCarryBlocked(true);
+        setBulkCarryRangeBlocked(true);
         return undefined;
       }
 
@@ -289,6 +290,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           rangeEnd: carryForwardRangeEnd,
           tableName: resource.specifyTable.name.toLowerCase(),
           fieldName: numberFieldName.toLowerCase(),
+          skipStartNumber: true,
         }),
       })
         .then(({ data }) => data)
@@ -297,14 +299,13 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           return undefined;
         });
       if (response === undefined) {
-        setBulkCarryBlocked(true);
+        setBulkCarryRangeBlocked(true);
         return undefined;
       }
-      // Ignore the first number, since that belongs to the record that was already saved
-      numbers = response.values.slice(1);
-      if (response.existing.length > 1) {
-        // Change this to > 0 if first value shouldn't ignored
-        setBulkCarryBlocked(true);
+      numbers = response.values;
+      if (response.existing.length > 0) {
+        setBulkCarryRangeInvalidNumbers(response.existing);
+        setBulkCarryRangeBlocked(true);
         return undefined;
       }
     }
@@ -446,17 +447,23 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           onClose={(): void => setShownBlocker(undefined)}
         />
       ) : undefined}
-      {bulkCarryBlocked ? (
+      {bulkCarryRangeBlocked ? (
         <Dialog
           buttons={
-            <Button.Warning onClick={(): void => setBulkCarryBlocked(false)}>
+            <Button.Warning onClick={(): void => {setBulkCarryRangeBlocked(false); setBulkCarryRangeInvalidNumbers(undefined)}}>
               {commonText.close()}
             </Button.Warning>
           }
           header={formsText.carryForward()}
           onClose={undefined}
         >
-          {formsText.bulkCarryForwardErrorDescription()}
+          {bulkCarryRangeInvalidNumbers !== undefined ?
+          (<>{formsText.bulkCarryForwardRangeExistingRecords({field: numberField.label})}
+              {bulkCarryRangeInvalidNumbers.map((number, index) => (
+                <p key={index}>{number}</p>
+            ))}</>)
+          : formsText.bulkCarryForwardRangeErrorDescription({field: numberField.label})
+          }
         </Dialog>
       ) : undefined}
     </>

@@ -911,8 +911,11 @@ export const formsText = createDictionary({
   bulkCarryForwardRange: {
     'en-us': 'Bulk Carry Forward range',
   },
-  bulkCarryForwardRangeDescription: {
-    'en-us': 'Create a series of new records from a ({field:string}) range.',
+  bulkCarryForwardRangeErrorDescription: {
+    'en-us': 'Cannot carry forward record through the specified {field:string} range.',
+  },
+  bulkCarryForwardRangeExistingRecords: {
+    'en-us': 'The following numbers for {field:string} are already being used:',
   },
   bulkCarryForwardRangeStart: {
     'en-us': 'Carry Forward Range Start',
