@@ -26,7 +26,7 @@ describe("fetchAssetToken", ()=>{
     );
 
     test("handles fetch error on silent", async ()=>{
-        expect(fetchAssetToken(failedFileName, true)).resolves.toBe(undefined);
+        expect(fetchAssetToken(failedFileName, true)).resolves.toBeUndefined();
     });
 
 });
