@@ -2,7 +2,7 @@ from functools import partialmethod
 from django.db import models
 from django.db.models import Q, CheckConstraint
 from django.utils import timezone
-from specifyweb.businessrules.exceptions import AbortSave
+from specifyweb.backend.businessrules.exceptions import AbortSave
 from specifyweb.specify.model_timestamp import save_auto_timestamp_field_with_override
 from specifyweb.specify import model_extras
 from .datamodel import datamodel, Table
