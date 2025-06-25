@@ -10,11 +10,13 @@ class TestLoanPrepsContext(DefaultsSetup):
         self._create_prep_type() # need to call this to create preptype.
         self.loan_1 = Loan.objects.create(
             loannumber="test_1",
-            discipline=self.discipline
+            discipline=self.discipline,
+            isclosed=False
         )
         self.loan_2 = Loan.objects.create(
             loannumber="test_2",
-            discipline=self.discipline
+            discipline=self.discipline,
+            isclosed=False
         )
         prep_1 = self._create_prep(
             self.collectionobjects[0],
