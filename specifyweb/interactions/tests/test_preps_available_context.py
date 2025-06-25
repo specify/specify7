@@ -1,27 +1,7 @@
+from specifyweb.interactions.tests.utils import _create_interaction_prep_generic
 from specifyweb.specify.tests.test_api import ApiTests
-from specifyweb.specify.models import Collectionobject, Exchangeout, Exchangeoutprep, Giftpreparation, Loanpreparation, Recordset, Preptype, Loan, Gift
+from specifyweb.specify.models import Exchangeout, Preptype, Loan, Gift
 from django.test import Client
-
-mapping = {
-    "loan": dict(model=Loanpreparation, backref="loan"),
-    "gift": dict(model=Giftpreparation, backref="gift"),
-    "exchangeout": dict(model=Exchangeoutprep, backref="exchangeout")
-}
-
-def _create_interaction_prep(context, obj, prep, prep_list, **loan_prep_kwargs):
-    mapped = mapping[obj._meta.model_name.lower()]
-    loan_prep_kwargs[mapped["backref"]] = obj
-    if obj._meta.model_name.lower() != "disposal":
-        loan_prep_kwargs["discipline_id"] = context.collection.discipline.id
-    else:
-        del loan_prep_kwargs["quantityresolved"]
-
-    lp = mapped["model"].objects.create(
-        preparation=prep,
-        **loan_prep_kwargs,
-    )
-    if prep_list is not None:
-        prep_list.append(lp)
 
 class TestPrepsAvailableContext(ApiTests):
 
@@ -68,25 +48,25 @@ class TestPrepsAvailableContext(ApiTests):
             self._create_prep(co, prep_list, countamt=6, preptype=test_prep_type)
         
         # CO 1
-        _create_interaction_prep(self, self.loan, prep_list[0], None, quantity=4, quantityresolved=2)
-        _create_interaction_prep(self, self.gift, prep_list[1], None, quantity=1)
+        _create_interaction_prep_generic(self, self.loan, prep_list[0], None, quantity=4, quantityresolved=2)
+        _create_interaction_prep_generic(self, self.gift, prep_list[1], None, quantity=1)
         
         # CO 2
-        _create_interaction_prep(self, self.exchangeout, prep_list[2], None, quantity=3)
-        _create_interaction_prep(self, self.loan, prep_list[2], None, quantity=3, quantityresolved=3)
-        _create_interaction_prep(self, self.loan, prep_list[3], None, quantity=5, quantityresolved=5)
+        _create_interaction_prep_generic(self, self.exchangeout, prep_list[2], None, quantity=3)
+        _create_interaction_prep_generic(self, self.loan, prep_list[2], None, quantity=3, quantityresolved=3)
+        _create_interaction_prep_generic(self, self.loan, prep_list[3], None, quantity=5, quantityresolved=5)
 
         # CO 3
-        _create_interaction_prep(self, self.gift, prep_list[4], None, quantity=2)
-        _create_interaction_prep(self, self.gift, prep_list[5], None, quantity=1)
+        _create_interaction_prep_generic(self, self.gift, prep_list[4], None, quantity=2)
+        _create_interaction_prep_generic(self, self.gift, prep_list[5], None, quantity=1)
 
         # CO 4
-        _create_interaction_prep(self, self.exchangeout, prep_list[7], None, quantity=2)
+        _create_interaction_prep_generic(self, self.exchangeout, prep_list[7], None, quantity=2)
 
         # CO 5
-        _create_interaction_prep(self, self.loan, prep_list[8], None, quantity=3, quantityresolved=1)
-        _create_interaction_prep(self, self.exchangeout, prep_list[8], None, quantity=1)
-        _create_interaction_prep(self, self.gift, prep_list[9], None, quantity=1)
+        _create_interaction_prep_generic(self, self.loan, prep_list[8], None, quantity=3, quantityresolved=1)
+        _create_interaction_prep_generic(self, self.exchangeout, prep_list[8], None, quantity=1)
+        _create_interaction_prep_generic(self, self.gift, prep_list[9], None, quantity=1)
 
         co_id = lambda index: self.collectionobjects[index].id
 
