@@ -3,7 +3,12 @@ import path from 'node:path';
 
 import { afterAll, beforeAll, expect } from '@jest/globals';
 
-import type { ajax, AjaxMethod, AjaxResponseObject, MimeType } from '../../utils/ajax';
+import type {
+  ajax,
+  AjaxMethod,
+  AjaxResponseObject,
+  MimeType,
+} from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { handleAjaxResponse } from '../../utils/ajax/response';
 import type { IR, RA } from '../../utils/types';

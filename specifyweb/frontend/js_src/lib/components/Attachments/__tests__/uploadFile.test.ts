@@ -1,9 +1,8 @@
 import { overrideAjax } from "../../../tests/ajax";
+import attachmentSettings from "../../../tests/ajax/static/context/attachment_settings.json"
 import { requireContext } from "../../../tests/helpers";
 import { Http } from "../../../utils/ajax/definitions";
 import { uploadFile } from "../attachments";
-
-import attachmentSettings from "../../../tests/ajax/static/context/attachment_settings.json"
 
 requireContext();
 
@@ -39,13 +38,15 @@ describe("uploadFile", ()=>{
 
         xhrMock.open.mockClear();
         xhrMock.send.mockClear();
-        // This is done like this so that a test can alter the return code
-        // to test errors.
+        /*
+         * This is done like this so that a test can alter the return code
+         * to test errors.
+         */
         xhrMock.status = Http.OK;
         xhrMock._error = undefined;
         
         // @ts-expect-error
-        window.XMLHttpRequest = jest.fn(()=>xhrMock);
+        jest.spyOn(window, 'XMLHttpRequest').mockImplementation(()=>xhrMock);
         globalThis.performance.getEntries = ()=>[]
     });
 
@@ -75,10 +76,10 @@ describe("uploadFile", ()=>{
             onProgress
         );
 
-        expect(xhrMock.open).toBeCalledTimes(1);
+        expect(xhrMock.open).toHaveBeenCalledTimes(1);
         expect(xhrMock.open).toHaveBeenLastCalledWith('POST', attachmentSettings.write);
         
-        expect(xhrMock.send).toBeCalledTimes(1);
+        expect(xhrMock.send).toHaveBeenCalledTimes(1);
         const formData: FormData = xhrMock.send.mock.calls.at(-1)[0];
         
         expect(formData.get('token')).toBe(testToken);
@@ -107,10 +108,10 @@ describe("uploadFile", ()=>{
             {token: newToken, attachmentLocation: newLocation}
         );
 
-        expect(xhrMock.open).toBeCalledTimes(1);
+        expect(xhrMock.open).toHaveBeenCalledTimes(1);
         expect(xhrMock.open).toHaveBeenLastCalledWith('POST', attachmentSettings.write);
         
-        expect(xhrMock.send).toBeCalledTimes(1);
+        expect(xhrMock.send).toHaveBeenCalledTimes(1);
         const formData: FormData = xhrMock.send.mock.calls.at(-1)[0];
         
         expect(formData.get('token')).toBe(newToken);
