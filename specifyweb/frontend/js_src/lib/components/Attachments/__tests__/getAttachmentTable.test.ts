@@ -11,7 +11,7 @@ describe("getAttachmentTable", ()=>{
     });
 
     test.skip("non-attachment table", ()=>{
-        expect(getAttachmentTable(tables.Division.tableId)).toBe(undefined);
+        expect(getAttachmentTable(tables.Division.tableId)).toBeUndefined();
     });
 
 });
