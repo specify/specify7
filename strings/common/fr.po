@@ -767,7 +767,7 @@ msgstr "Aucune correspondance"
 msgid "searchQuery"
 msgstr "Requête de recherche"
 
-#: components/Attachments/attachments.ts:112
+#: components/Attachments/attachments.ts:122
 #: components/HomePage/AboutSpecify.tsx:188
 #: components/HomePage/AboutSpecify.tsx:214
 #. Used in: Components > Attachments > Attachments ⬤ Components > Home Page > About Specify
