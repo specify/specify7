@@ -71,3 +71,37 @@ class TestLoanPrepsContext(DefaultsSetup):
     def _loan_no_test(self):
         loan_nos = [self.loan_1.loannumber, self.loan_2.loannumber]
         return loan_nos
+    
+    def _perform_resolve_check(self):
+        
+        self.assertEqual(
+            Loanpreparation.objects.filter(isresolved=True).count(),
+            5
+        )
+
+        for loan_prep in self.all_loan_preps:
+            if loan_prep.isresolved: # Ugh
+                continue
+            q_returned = loan_prep.quantityreturned + loan_prep.quantity - loan_prep.quantityresolved
+            q_resolved = loan_prep.quantity
+            version = loan_prep.version
+
+            # Get the new object. This is done because these tests can run with _perform_insert_loanreturnprep_check
+            # which assume cached objects haven't been sinced.
+            loan_prep = Loanpreparation.objects.get(id=loan_prep.id)
+
+            self.assertEqual(loan_prep.version, version + 1)
+            self.assertEqual(loan_prep.quantityreturned, q_returned)
+            self.assertEqual(loan_prep.quantityresolved, q_resolved)
+    
+    def _perform_insert_loanreturnprep_check(self, date=None):
+        self.assertEqual(Loanreturnpreparation.objects.all().count(), 3)
+        self.assertEqual(len(self.loan_preps), 3)
+
+        for loan_prep in self.loan_preps:
+            loan_return_prep = Loanreturnpreparation.objects.filter(loanpreparation_id=loan_prep.id).first()
+            self.assertIsNotNone(loan_return_prep)
+            self.assertEqual(loan_return_prep.quantityresolved, loan_prep.quantity-loan_prep.quantityresolved)
+            self.assertEqual(loan_return_prep.quantityreturned, loan_prep.quantity-loan_prep.quantityresolved)
+            if date:
+                self.assertEqual(str(loan_return_prep.returneddate.date()), date)
