@@ -37,6 +37,7 @@ from specifyweb.specify.models import (
     Accession,
     Picklist,
     Picklistitem,
+    Preparation
 )
 
 def get_table(name: str):
@@ -136,6 +137,25 @@ class MainSetupTearDown:
             obj.save()
 
         self._update = _update
+    
+    def _create_prep_type(self):
+        self.prep_type = Preptype.objects.create(
+                name="testPrepType",
+                isloanable=False,
+                collection=self.collection,
+            )
+
+    def _create_prep(self, co, prep_list, **prep_kwargs):
+
+        if 'preptype' not in prep_kwargs:
+            prep_kwargs['preptype'] = self.prep_type
+
+        prep = Preparation.objects.create(
+            collectionobject=co, **prep_kwargs
+        )
+        if prep_list is not None:
+            prep_list.append(prep)
+        return prep
 
 
 class ApiTests(MainSetupTearDown, TestCase): pass
@@ -1108,6 +1128,11 @@ class DefaultsSetup(MainSetupTearDown, TestCase):
         Picklistitem.objects.create(
             title='Discrete',
             value='Discrete',
+            picklist=cog_type_picklist
+        )
+        Picklistitem.objects.create(
+            title='Consolidated',
+            value='Consolidated',
             picklist=cog_type_picklist
         )
         self.cogtype = Collectionobjectgrouptype.objects.create(
