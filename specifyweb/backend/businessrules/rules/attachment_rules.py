@@ -6,7 +6,7 @@ from specifyweb.specify import models
 from specifyweb.specify.models_by_table_id import models_iterator
 from django.db import transaction
 
-from specifyweb.businessrules.exceptions import AbortSave
+from specifyweb.backend.businessrules.exceptions import AbortSave
 
 JOINTABLE_NAME_RE = re.compile('(.*)attachment')
 
