@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import { afterAll, beforeAll, expect } from '@jest/globals';
 
-import type { ajax, AjaxResponseObject, MimeType } from '../../utils/ajax';
+import type { ajax, AjaxMethod, AjaxResponseObject, MimeType } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { handleAjaxResponse } from '../../utils/ajax/response';
 import type { IR, RA } from '../../utils/types';
@@ -35,7 +35,7 @@ export function overrideAjax(
     body,
   }: {
     readonly responseCode?: number;
-    readonly method?: string;
+    readonly method?: AjaxMethod;
     readonly body?: unknown;
   } = {},
   allowOverride = false
