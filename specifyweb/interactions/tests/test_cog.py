@@ -11,13 +11,9 @@ from specifyweb.specify.models import (
 class TestCogInteractions(DefaultsSetup):
     def setUp(self):
         super().setUp()
+        self._create_prep_type()
         self.cogtype_consolidated = Collectionobjectgrouptype.objects.create(
             name="TestConsolidated", type="Consolidated", collection=self.collection
-        )
-        self.prep_type = Preptype.objects.create(
-            name="testPrepType",
-            isloanable=False,
-            collection=self.collection,
         )
 
         self.test_cog_consolidated = Collectionobjectgroup.objects.create(
@@ -45,14 +41,6 @@ class TestCogInteractions(DefaultsSetup):
         Collectionobjectgroupjoin.objects.create(
             parentcog=cog, childcog=child_cog, isprimary=True, issubstrate=True
         )
-
-    def _create_prep(self, co, prep_list, **prep_kwargs):
-        prep = Preparation.objects.create(
-            collectionobject=co, preptype=self.prep_type, **prep_kwargs
-        )
-        if prep_list is not None:
-            prep_list.append(prep)
-        return prep
 
     def _preps_match(self, base, computed):
         self.assertCountEqual(
