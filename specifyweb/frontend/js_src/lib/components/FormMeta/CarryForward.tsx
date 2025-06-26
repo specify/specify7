@@ -166,8 +166,14 @@ function BulkCloneConfig({
     'preferences',
     'enableBukCarryForward'
   );
+  const [globalBulkRangeEnabled, setGlobalBulkRangeEnabled] = userPreferences.use(
+    'form',
+    'preferences',
+    'enableBulkCarryForwardRange'
+  );
 
   const isBulkCarryEnabled = globalBulkEnabled.includes(table.name);
+  const isBulkCarryRangeEnabled = globalBulkRangeEnabled.includes(table.name);
 
   const [isOpen, handleOpen, handleClose] = useBooleanState();
 
@@ -188,6 +194,15 @@ function BulkCloneConfig({
         >
           {icons.cog}
         </Button.Small>
+      </Label.Inline>
+      <Label.Inline className="rounded bg-[color:var(--foreground)]">
+        <Input.Checkbox
+          checked={isBulkCarryRangeEnabled}
+          onChange={(): void =>
+            setGlobalBulkRangeEnabled(toggleItem(globalBulkRangeEnabled, table.name))
+          }
+        />
+        {formsText.bulkCarryForwardRangeEnabled()}
       </Label.Inline>
       {isOpen && (
         <CarryForwardConfigDialog

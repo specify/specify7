@@ -20,6 +20,7 @@ from specifyweb.notifications.models import Message, Spmerging, LocalityUpdate
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST, require_http_methods
+from specifyweb.specify.api import get_model
 
 from specifyweb.middleware.general import require_GET, require_http_methods
 from specifyweb.permissions.permissions import PermissionTarget, \
@@ -1498,4 +1499,64 @@ def catalog_number_from_parent(request: http.HttpRequest):
 
     except Exception as e:
         print(f"Error processing request: {e}")
+        return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)  
+
+
+from .uiformatters import get_uiformatter
+
+@login_maybe_required
+@require_POST
+def series_autonumber_range(request: http.HttpRequest):
+    """
+    Returns a list of autonumbered values given a range.
+    Used for series data entry on Collection Objects.
+    """
+    request_data = json.loads(request.body)
+    range_start = request_data.get('rangestart')
+    range_end = request_data.get('rangeend')
+    table_name = request_data.get('tablename')
+    field_name = request_data.get('fieldname')
+    
+    formatter = get_uiformatter(request.specify_collection, table_name, field_name)
+    
+    try: 
+        canonicalized_range_start = formatter.canonicalize(formatter.parse(range_start))
+        assert not formatter.needs_autonumber(canonicalized_range_start)
+    except:
+        return http.HttpResponseBadRequest('Range start does not match format.')
+    try:
+        canonicalized_range_end = formatter.canonicalize(formatter.parse(range_end))
+        assert not formatter.needs_autonumber(canonicalized_range_end)
+    except:
+        return http.HttpResponseBadRequest('Range end does not match format.')
+    
+    if canonicalized_range_end <= canonicalized_range_start:
+        return http.HttpResponseBadRequest(f'Range end must be greater than range start.')
+
+    try:
+        # Repeatedly autonumber until the end is reached.
+        limit = 300
+        values = [canonicalized_range_start]
+        current_value = values[0]
+        if request_data.get('skipstartnumber'):
+            # The first value can be optionally excluded/skipped.
+            # Needed since series entry currently relies on the first record being saved first.
+            values = []
+        while current_value < canonicalized_range_end:
+            current_value = ''.join(formatter.fill_vals_after(current_value))
+            values.append(current_value)
+            if len(values) >= limit:
+                return http.HttpResponseBadRequest(f'Bulk carry range exceeds limit of {limit} values.')
+        
+        # Check if any existing records use the values.
+        # Not garanteed to be accurate at the time of saving, just serves as a warning for the frontend.
+        table = get_model(table_name)
+        existing_records = table.objects.filter(**{f"{field_name}__in": values})
+        existing_values = list(existing_records.values_list(field_name, flat=True))
+
+        return http.JsonResponse({
+            'values': values,
+            'existing': existing_values,
+        })
+    except Exception as e:
         return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)  
