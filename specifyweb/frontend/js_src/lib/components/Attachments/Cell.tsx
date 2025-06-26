@@ -169,7 +169,7 @@ export async function fetchAttachmentParent(
 /**
  * Get CollectionObject id from CollectionObjectAttachment
  */
-function getBaseResourceId(
+export function getBaseResourceId(
   table: SpecifyTable,
   related: SpecifyResource<AnySchema>
 ): number | undefined {
