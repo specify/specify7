@@ -297,7 +297,7 @@ export async function uploadFile(
  * See: https://github.com/specify/specify7/issues/1141
  * REFACTOR: remove this once that issue is fixed
  */
-function fixMimeType(originalMimeType: string): string {
+export function fixMimeType(originalMimeType: string): string {
   const maxLength = getField(tables.Attachment, 'mimeType').length;
   if (maxLength === undefined || originalMimeType.length < maxLength)
     return originalMimeType;
