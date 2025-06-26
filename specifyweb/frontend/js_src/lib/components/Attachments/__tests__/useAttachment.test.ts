@@ -1,11 +1,12 @@
 import { renderHook, waitFor } from "@testing-library/react";
-import { useAttachment } from "../Plugin";
-import { requireContext } from "../../../tests/helpers";
-import { tables } from "../../DataModel/tables";
-import { getResourceApiUrl } from "../../DataModel/resource";
+
 import { overrideAjax } from "../../../tests/ajax";
-import { SpecifyResource } from "../../DataModel/legacyTypes";
-import { AnySchema } from "../../DataModel/helperTypes";
+import { requireContext } from "../../../tests/helpers";
+import type { AnySchema } from "../../DataModel/helperTypes";
+import type { SpecifyResource } from "../../DataModel/legacyTypes";
+import { getResourceApiUrl } from "../../DataModel/resource";
+import { tables } from "../../DataModel/tables";
+import { useAttachment } from "../Plugin";
 
 
 requireContext();
