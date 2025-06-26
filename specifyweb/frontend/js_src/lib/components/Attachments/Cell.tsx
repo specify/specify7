@@ -36,8 +36,8 @@ export function AttachmentCell({
   readonly onOpen: () => void;
   readonly related: GetSet<SpecifyResource<AnySchema> | undefined>;
   readonly onViewRecord:
-    | ((table: SpecifyTable, recordId: number) => void)
-    | undefined;
+  | ((table: SpecifyTable, recordId: number) => void)
+  | undefined;
 }): JSX.Element {
   const table = f.maybe(attachment.tableID ?? undefined, getAttachmentTable);
 
@@ -49,8 +49,8 @@ export function AttachmentCell({
   return (
     <div className="relative">
       {typeof handleViewRecord === 'function' &&
-      table !== undefined &&
-      hasTablePermission(table.name, 'read') ? (
+        table !== undefined &&
+        hasTablePermission(table.name, 'read') ? (
         <AttachmentRecordLink
           attachment={attachment}
           className="absolute left-0 top-0"
@@ -121,9 +121,9 @@ export function AttachmentRecordLink({
             (typeof related === 'object'
               ? Promise.resolve(related)
               : fetchAttachmentParent(table, attachment).then((related) => {
-                  setRelated(related);
-                  return related;
-                })
+                setRelated(related);
+                return related;
+              })
             )
               .then((related) =>
                 typeof related === 'object'
@@ -169,7 +169,7 @@ async function fetchAttachmentParent(
 /**
  * Get CollectionObject id from CollectionObjectAttachment
  */
-function getBaseResourceId(
+export function getBaseResourceId(
   table: SpecifyTable,
   related: SpecifyResource<AnySchema>
 ): number | undefined {
