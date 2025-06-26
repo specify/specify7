@@ -6,11 +6,11 @@ requireContext();
 
 describe("getAttachmentTable", ()=>{
 
-    test.skip("attachment table", ()=>{
+    test("attachment table", ()=>{
         expect(getAttachmentTable(tables.Accession.tableId)).toBe(tables.Accession);
     });
 
-    test.skip("non-attachment table", ()=>{
+    test("non-attachment table", ()=>{
         expect(getAttachmentTable(tables.Division.tableId)).toBeUndefined();
     });
 
