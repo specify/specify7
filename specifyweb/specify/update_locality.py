@@ -1,7 +1,8 @@
 import json
 import traceback
 
-from typing import get_args as get_typing_args, Any, Dict, List, Tuple, Literal, Optional, NamedTuple, Union, Callable, TypedDict
+from typing import get_args as get_typing_args, Any, Dict, List, Tuple, Literal, Optional, NamedTuple, Union, TypedDict
+from collections.abc import Callable
 from datetime import datetime
 from django.db import transaction
 from django.core.serializers.json import DjangoJSONEncoder
@@ -272,7 +273,12 @@ class UploadParseError(TypedDict):
 
 
 @transaction.atomic
-def resolve_localityupdate_result(taskid: str, results: Union[tuple[list[ParsedRow], list[ParseError]], Union[UploadSuccess, UploadParseError]], collection, create_recordset: bool = False) -> LocalityUpdate:
+def resolve_localityupdate_result(
+    taskid: str,
+    results: Union[Tuple[List[ParsedRow], List[ParseError]], UploadSuccess, UploadParseError],
+    collection,
+    create_recordset: bool = False
+) -> LocalityUpdate:
 
     lu = LocalityUpdate.objects.get(taskid=taskid)
 
@@ -423,7 +429,11 @@ def merge_parse_results(results: list[Union[ParseSuccess, ParseError]], locality
     return to_upload, errors
 
 
-def upload_locality_set(collection, column_headers: list[str], data: list[list[str]], progress: Optional[Progress] = None) -> Union[UploadSuccess, UploadParseError]:
+def upload_locality_set(
+        collection,
+        column_headers: list[str],
+        data: list[list[str]],
+        progress: Optional[Progress] = None) -> Union[UploadSuccess, UploadParseError]:
     to_upload, errors = parse_locality_set(
         collection, column_headers, data, progress)
 

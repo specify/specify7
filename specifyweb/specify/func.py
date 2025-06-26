@@ -1,5 +1,6 @@
 from functools import reduce
-from typing import Callable, Dict, List, Optional, Tuple, TypeVar
+from typing import Dict, List, Optional, Tuple, TypeVar, Union
+from collections.abc import Callable
 from collections.abc import Generator
 from django.db.models import Q
 
@@ -11,7 +12,7 @@ class Func:
     O = TypeVar("O")
 
     @staticmethod
-    def maybe(value: Optional[I], callback: Callable[[I], O]):
+    def maybe(value: Optional[I], callback: Callable[[I], O]) -> Optional[O]:
         if value is None:
             return None
         return callback(value)
@@ -21,13 +22,13 @@ class Func:
         return sorted(to_sort.items(), key=lambda t: t[0], reverse=reverse)
     
     @staticmethod
-    def obj_to_list(obj: Dict[I, O]) -> List[Tuple[I, O]]:
+    def obj_to_list(obj: dict[I, O]) -> list[tuple[I, O]]:
         return [(key, val) for key, val in obj.items()]
 
     @staticmethod
     def make_ors(eprns: list[Q]) -> Q:
         assert len(eprns) > 0
-        return reduce(lambda accum, curr: accum | curr, eprns)
+        return reduce(lambda accum, curr: Union[accum, curr], eprns)
 
     @staticmethod
     def make_generator(step=1):
@@ -56,7 +57,7 @@ class Func:
         return [second for (_, second) in source]
     
     @staticmethod
-    def filter_list(source: List[Optional[I]]) -> List[I]:
+    def filter_list(source: list[Optional[I]]) -> list[I]:
         return [item for item in source if item is not None]
 
 class CustomRepr:

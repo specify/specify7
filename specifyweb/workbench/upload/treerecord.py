@@ -170,7 +170,7 @@ class ScopedTreeRecord(NamedTuple):
     ranks: dict[TreeRankRecord, dict[str, ExtendedColumnOptions]]
     treedef: Any
     treedefitems: list
-    root: Optional[Any]
+    root: Optional[Any] 
     disambiguation: dict[str, int]
     batch_edit_pack: Optional[dict[str, Any]]
     scoped_cotypes: Any
@@ -443,7 +443,7 @@ class BoundTreeRecord(NamedTuple):
     name: str
     treedef: Any
     treedefitems: list
-    root: Optional[Any]
+    root: Optional[Any] 
     parsedFields: dict[TreeRankRecord, list[ParseResult]]
     uploadingAgentId: Optional[int]
     auditor: Auditor
@@ -729,7 +729,7 @@ class BoundTreeRecord(NamedTuple):
         ), f"Invalid Error: {to_upload}, can not upload matched resluts: {matched}"
         model = getattr(models, self.name)
 
-        parent_info: Optional[dict]
+        parent_info: Optional[dict] 
         if isinstance(matched, Matched):
             parent_info = model.objects.values(*FETCHED_ATTRS).get(id=matched.id)
             parent_result = {"parent": UploadResult(matched, {}, {})}

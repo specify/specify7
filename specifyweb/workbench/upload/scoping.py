@@ -1,5 +1,6 @@
 from functools import reduce
-from typing import Dict, Any, Optional, Tuple, Callable, TypedDict, Union, cast, List
+from typing import Dict, Any, Optional, Tuple, TypedDict, Union, cast, List
+from collections.abc import Callable
 
 from specifyweb.specify.datamodel import datamodel, Table, is_tree_table
 from specifyweb.specify.func import CustomRepr
@@ -157,7 +158,7 @@ def get_deferred_scoping(
     uploadable: UploadTable,
     row: dict[str, Any],
     base_ut,
-    context: Optional[ScopeContext]
+    context: Optional[ScopeContext] 
 ):
     deferred_key = (table_name, key)
     deferred_scoping = DEFERRED_SCOPING.get(deferred_key, None)

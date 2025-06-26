@@ -1,6 +1,6 @@
 from typing import List, Dict, Any, NamedTuple, Optional, Union
 
-from typing_extensions import Literal
+from typing import Literal
 
 from .parsing import WorkBenchParseFailure
 
@@ -303,7 +303,7 @@ class UploadResult(NamedTuple):
     toOne: dict[str, Any]
     toMany: dict[str, list[Any]]
 
-    def get_id(self) -> Union[int, None, Failure]:
+    def get_id(self) -> Union[Optional[int], Failure]:
         return self.record_result.get_id()
 
     def contains_failure(self) -> bool:

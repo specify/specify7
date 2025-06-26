@@ -7,9 +7,9 @@ from xml.etree.ElementTree import Element
 from xml.sax.saxutils import quoteattr
 
 from specifyweb.specify.utils import get_picklists
-from sqlalchemy import Table as SQLTable, inspect
+from sqlalchemy import Table as SQLTable, inspect, case
 from sqlalchemy.orm import aliased, Query
-from sqlalchemy.sql.expression import case, func, cast, literal, Label
+from sqlalchemy.sql.expression import func, cast, literal, Label
 from sqlalchemy.sql.functions import concat
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.sql.elements import Extract
@@ -248,7 +248,7 @@ class ObjectFormatter:
             query, formatted, switch_field_spec = self.make_expr(query, switchNode.attrib['field'], {}, orm_table, specify_model)
             def case_value_convert(value): return value == 'true' if switch_field_spec.get_field().type == 'java.lang.Boolean' else value
             cases = [(case_value_convert(value), expr) for (value, expr) in cases]
-            expr = case(cases, formatted)
+            expr = case(*cases, value=formatted)
         return query, blank_nulls(expr)
 
     def aggregate(self, query: QueryConstruct,
@@ -276,12 +276,14 @@ class ObjectFormatter:
         limit = None if limit == '' or int(limit) == 0 else limit
         orm_table = getattr(models, field.relatedModelName)
 
+        def _get_id_col(target):
+            return getattr(target, target._id) if isinstance(target._id, str) else target._id
 
         join_column = list(inspect(
             getattr(orm_table, field.otherSideName)).property.local_columns)[0]
         subquery_query = Query([]) \
             .select_from(orm_table) \
-            .filter(join_column == getattr(rel_table, rel_table._id)) \
+            .filter(join_column == _get_id_col(rel_table)) \
             .correlate(rel_table)
 
         try:
@@ -303,7 +305,7 @@ class ObjectFormatter:
                 # Child = aliased(orm_table)
                 subquery_query = Query([]) \
                     .select_from(aliased_orm_table) \
-                    .filter(aliased_orm_table.ComponentParentID == getattr(rel_table, rel_table._id)) \
+                    .filter(aliased_orm_table.ComponentParentID == _get_id_col(rel_table)) \
                     .correlate(rel_table)
             elif field.is_relationship and \
                 field.type == 'one-to-many' and \
@@ -314,7 +316,7 @@ class ObjectFormatter:
                 join_column = getattr(aliased_orm_table, join_column_str)
                 subquery_query = Query([]) \
                     .select_from(aliased_orm_table) \
-                    .filter(join_column == getattr(rel_table, rel_table._id)) \
+                    .filter(join_column == _get_id_col(rel_table)) \
                     .correlate(rel_table)
             else:
                 is_self_join_aggregation = False
