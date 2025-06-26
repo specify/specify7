@@ -156,9 +156,9 @@ async function fetchFromField(
   );
 
   const canBeScoped =
+    f.includes(Object.keys(schema.domainLevelIds), toLowerCase(tableName)) ||
     genericTables[tableName as keyof Tables]?.getScopingRelationship() !==
-      undefined ||
-    !f.includes(Object.keys(schema.domainLevelIds), toLowerCase(tableName));
+      undefined;
 
   return fetchRows(tableName as keyof Tables, {
     limit,
