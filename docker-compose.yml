@@ -63,11 +63,24 @@ services:
       - "./specifyweb/frontend/js_src/lib:/home/node/lib:ro"
       - "./specifyweb/frontend/js_src/css:/home/node/css:ro"
 
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 2s
+      retries: 5
+
   specify7-worker:
     build:
       context: ./.
       target: run-development
     command: bash -c "ve/bin/celery -A specifyweb worker -l INFO --concurrency=1 -Q $DATABASE_NAME"
+    depends_on:
+      redis:
+        condition: service_healthy
     init: true
     volumes:
       - "./config:/opt/Specify/config:ro"
@@ -76,9 +89,6 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     env_file: .env
-
-  redis:
-    image: redis
 
   asset-server:
     image: specifyconsortium/specify-asset-service
