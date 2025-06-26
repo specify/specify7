@@ -1,17 +1,15 @@
-import { requireContext } from "../../../tests/helpers";
-import { tables } from "../../DataModel/tables";
-import { getAttachmentTable } from "../Cell";
+import { requireContext } from '../../../tests/helpers';
+import { tables } from '../../DataModel/tables';
+import { getAttachmentTable } from '../Cell';
 
 requireContext();
 
-describe("getAttachmentTable", ()=>{
+describe('getAttachmentTable', () => {
+  test('attachment table', () => {
+    expect(getAttachmentTable(tables.Accession.tableId)).toBe(tables.Accession);
+  });
 
-    test("attachment table", ()=>{
-        expect(getAttachmentTable(tables.Accession.tableId)).toBe(tables.Accession);
-    });
-
-    test("non-attachment table", ()=>{
-        expect(getAttachmentTable(tables.Division.tableId)).toBeUndefined();
-    });
-
+  test('non-attachment table', () => {
+    expect(getAttachmentTable(tables.Division.tableId)).toBeUndefined();
+  });
 });
