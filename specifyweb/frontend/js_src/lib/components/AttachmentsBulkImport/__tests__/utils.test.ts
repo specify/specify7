@@ -55,7 +55,8 @@ const fileNameTestSpec: TestDefinition = {
           byYear: false,
         }),
       ],
-      tables.CollectionObject
+      tables.CollectionObject,
+      tables.CollectionObject?.getLiteralField('catalogNumber')
     ),
     testCases: [
       ['000.jpg', '000'],
@@ -79,7 +80,8 @@ const fileNameTestSpec: TestDefinition = {
           byYear: false,
         }),
       ],
-      tables.CollectionObject
+      tables.CollectionObject,
+      tables.CollectionObject?.getLiteralField('catalogNumber')
     ),
     testCases: [
       ['45265.jpg', '45265'],

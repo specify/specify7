@@ -167,12 +167,12 @@ function BlockerPreview({
             directRelationship.relatedTable.idField.name,
           ])
         : parentRelationship.otherSideName === undefined
-        ? undefined
-        : QueryFieldSpec.fromPath(table.name, [
-            parentRelationship.otherSideName,
-            directRelationship.name,
-            directRelationship.relatedTable.idField.name,
-          ]);
+          ? undefined
+          : QueryFieldSpec.fromPath(table.name, [
+              parentRelationship.otherSideName,
+              directRelationship.name,
+              directRelationship.relatedTable.idField.name,
+            ]);
 
     return (
       rawQueryField

@@ -40,8 +40,8 @@ def calc_prep_item_count(obj, prep_field_name, extra):
     extra["totalItems"] = model_preparations.aggregate(total=Sum("quantity"))["total"] or 0
     return extra
 
-def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
-    extra: Dict[str, Any] = {}
+def calculate_extra_fields(obj, data: dict[str, Any]) -> dict[str, Any]:
+    extra: dict[str, Any] = {}
 
     if isinstance(obj, Preparation):
         # Calculate the preperation sums
@@ -60,6 +60,10 @@ def calculate_extra_fields(obj, data: Dict[str, Any]) -> Dict[str, Any]:
 
         extra["actualCountAmt"] = actual_count_amount
         extra["isonloan"] = obj.isonloan()
+        extra["isongift"] = obj.isongift()
+        extra["isondisposal"] = obj.isondisposal()
+        extra["isonexchangeout"] = obj.isonexchangeout()
+        extra["isonexchangein"] = obj.isonexchangein()
 
     elif isinstance(obj, Specifyuser):
         extra["isadmin"] = obj.is_admin()

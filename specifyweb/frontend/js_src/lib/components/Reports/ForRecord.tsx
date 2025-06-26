@@ -7,8 +7,8 @@ import { serializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQuery } from '../DataModel/types';
 import { userPreferences } from '../Preferences/userPreferences';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { useQueryFieldFilters } from '../QueryBuilder/useQueryFieldFilters';
 import { QueryParametersDialog } from './Parameters';
 import { RunReport } from './Run';
 
@@ -27,6 +27,8 @@ export function ReportForRecord({
   readonly resourceId: number;
   readonly onClose: () => void;
 }): JSX.Element {
+  const queryFieldFilters = useQueryFieldFilters();
+
   const [clearQueryFilters] = userPreferences.use(
     'reports',
     'behavior',

@@ -28,7 +28,7 @@ export type NavigatorSpec = {
   // Whether to include all tree fields for non "any rank"
   readonly includeAllTreeFields: boolean;
   readonly allowNestedToMany: boolean;
-  readonly ensurePermission: () => typeof tableActions[number] | undefined;
+  readonly ensurePermission: () => (typeof tableActions)[number] | undefined;
   // Whether can execute query/do workbench upload
   readonly hasActionPermission: () => boolean;
   readonly includeRelationshipsFromTree: boolean;
@@ -56,7 +56,7 @@ const wbPlanView: NavigatorSpec = {
    * Hide nested -to-many relationships as they are not
    * supported by the WorkBench
    */
-  allowNestedToMany: false,
+  allowNestedToMany: true,
   ensurePermission: () =>
     userPreferences.get('workBench', 'wbPlanView', 'showNoAccessTables')
       ? 'create'
@@ -96,7 +96,7 @@ const queryBuilder: NavigatorSpec = {
   allowTransientToMany: true,
   useSchemaOverrides: false,
   // All tree fields are only available for "any rank"
-  includeAllTreeFields: false,
+  includeAllTreeFields: true,
   allowNestedToMany: true,
   ensurePermission: () =>
     userPreferences.get('queryBuilder', 'general', 'showNoReadTables')

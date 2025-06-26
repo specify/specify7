@@ -4,6 +4,7 @@ import _ from 'underscore';
 
 import { removeKey } from '../../utils/utils';
 import { assert } from '../Errors/assert';
+import { softFail } from '../Errors/Crash';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { Backbone } from './backbone';
 import { DEFAULT_FETCH_LIMIT } from './collection';
@@ -83,7 +84,13 @@ export const DependentCollection = Base.extend({
   __name__: 'DependentCollectionBase',
   constructor(options, records = []) {
     this.table = this.model;
-    assert(_.isArray(records));
+    if (!Array.isArray(records))
+      softFail(
+        new Error(
+          'Expected array of records when creating DependentCollection'
+        ),
+        { table: this.table.name, records }
+      );
     Base.call(this, records, options);
   },
   initialize(_tables, options) {
@@ -200,14 +207,16 @@ export const IndependentCollection = LazyCollection.extend({
     this.on(
       'change',
       function (resource: SpecifyResource<AnySchema>) {
-        if (!resource.isBeingInitialized()) {
-          if (relationshipIsToMany(this.field)) {
-            const otherSideName = this.field.getReverse().name;
-            this.related.set(otherSideName, resource);
-          }
-          this.updated[resource.cid] = resource;
-          this.trigger('saverequired');
+        if (resource.isBeingInitialized()) return;
+        if (
+          relationshipIsToMany(this.field) ||
+          this.field.type === 'one-to-one'
+        ) {
+          const otherSideName = this.field.getReverse().name;
+          this.related.set(otherSideName, resource);
         }
+        this.updated[resource.cid] = resource;
+        this.trigger('saverequired');
       },
       this
     );
@@ -273,6 +282,9 @@ export const IndependentCollection = LazyCollection.extend({
     };
 
     return lazyFetch.call(this, newOptions);
+  },
+  isComplete() {
+    return this.length === this._totalCount;
   },
   getFetchOffset() {
     return this.length === 0 && this.removed.size > 0

@@ -48,10 +48,10 @@ export const filterAppResources = (
     filters.appResources.length === 0
       ? []
       : isAllAppResourceTypes(filters.appResources)
-      ? resources.appResources
-      : resources.appResources.filter((resource) =>
-          filters.appResources.includes(getAppResourceType(resource))
-        ),
+        ? resources.appResources
+        : resources.appResources.filter((resource) =>
+            filters.appResources.includes(getAppResourceType(resource))
+          ),
 });
 
 export const getResourceType = (
@@ -65,8 +65,8 @@ export const getAppResourceType = (
 ): keyof typeof appResourceSubTypes =>
   resource.name === 'preferences' && (resource.mimeType ?? '') === ''
     ? 'otherPropertiesResource'
-    : Object.entries(appResourceSubTypes).find(([_key, { name, mimeType }]) =>
+    : (Object.entries(appResourceSubTypes).find(([_key, { name, mimeType }]) =>
         name === undefined
           ? mimeType === resource.mimeType
           : name === resource.name
-      )?.[KEY] ?? 'otherAppResources';
+      )?.[KEY] ?? 'otherAppResources');

@@ -14,7 +14,7 @@ import {
   deserializeResource,
   serializeResource,
 } from '../DataModel/serializers';
-import { genericTables, strictGetTable } from '../DataModel/tables';
+import { genericTables, strictGetTable, tables } from '../DataModel/tables';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { format } from '../Formatters/formatters';
@@ -84,7 +84,7 @@ async function fetchPickListItems(
 
   const limit = Math.max(
     0,
-    pickList.get('readOnly') ? pickList.get('sizeLimit') ?? 0 : 0
+    pickList.get('readOnly') ? (pickList.get('sizeLimit') ?? 0) : 0
   );
 
   if (type === PickListTypes.TABLE)
@@ -165,6 +165,9 @@ async function fetchFromField(
     fields: { [fieldName]: ['string', 'number', 'boolean', 'null'] },
     distinct: true,
     domainFilter: canBeScoped,
+    filterChronostrat:
+      tableName === tables.GeologicTimePeriod.name.toLowerCase() &&
+      fieldName === 'name', // Prop for age filter in QueryBuilder
   }).then((rows) =>
     rows
       .map((row) => row[fieldName] ?? '')
@@ -186,8 +189,8 @@ export function getPickListItems(pickList: SpecifyResource<PickList>): RA<{
     pickList.get('sortType') === PickListSortType.TITLE_SORT
       ? Array.from(items).sort(sortFunction(({ title }) => title))
       : pickList.get('sortType') === PickListSortType.ORDINAL_SORT
-      ? Array.from(items).sort(sortFunction(({ ordinal }) => ordinal))
-      : items
+        ? Array.from(items).sort(sortFunction(({ ordinal }) => ordinal))
+        : items
   ).map(({ value, title }) => ({
     value: value ?? title,
     title: title ?? value,

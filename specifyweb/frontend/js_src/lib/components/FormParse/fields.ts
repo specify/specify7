@@ -1,7 +1,7 @@
 /**
  * Parse XML cell with a field definition into JSON
  *
- * Documentation - https://github.com/specify/specify7/wiki/Form-System#field
+ * Documentation - https://discourse.specifysoftware.org/t/editing-forms-in-specify/1557#p-2936-field-31
  * On any modifications, please check if documentation needs to be updated.
  */
 
@@ -61,6 +61,7 @@ export type FieldTypes = {
       readonly hasViewButton: boolean;
       readonly typeSearch: string | undefined;
       readonly searchView: string | undefined;
+      readonly defaultRecord: string | undefined;
     }
   >;
   readonly Text: State<
@@ -195,8 +196,8 @@ const processFieldType: {
           name === 'name'
             ? 'PartialDateUI'
             : name === 'canChangePrecision'
-            ? 'false'
-            : getProperty(name),
+              ? 'false'
+              : getProperty(name),
       });
     else if (fieldType === 'checkbox') return processFieldType.Checkbox(props);
 
@@ -246,6 +247,7 @@ const processFieldType: {
             : getProperty('viewBtn')?.toLowerCase() === 'true',
         typeSearch: getProperty('name'),
         searchView: getProperty('searchView'),
+        defaultRecord: getProperty('default'),
       };
     } else {
       console.error('QueryComboBox can only be used to display a relationship');

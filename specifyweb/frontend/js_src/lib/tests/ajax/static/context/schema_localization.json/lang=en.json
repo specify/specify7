@@ -38532,6 +38532,17 @@
         "name": "Select Distinct",
         "desc": "Select Distinct"
       },
+      "selectseries": {
+        "format": null,
+        "ishidden": false,
+        "isuiformatter": false,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null,
+        "name": "Select Series",
+        "desc": "Select Series"
+      },
       "smushed": {
         "format": null,
         "ishidden": false,

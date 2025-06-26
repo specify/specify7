@@ -87,6 +87,14 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     undefined
   );
 
+  const originalDefinitionItemRef = React.useRef<string | undefined>();
+
+  React.useEffect(() => {
+    if (props.resource === undefined) return;
+    const resource = toTreeTable(props.resource);
+    originalDefinitionItemRef.current = resource?.get('definitionItem');
+  }, [props.resource]);
+
   React.useEffect(() => {
     if (props.resource === undefined) return undefined;
     const resource = toTreeTable(props.resource);
@@ -115,14 +123,14 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
                   idFromUrl(treeDefinitionItem.get('treeDef'))!
                 )
               : typeof resource.get('definitionItem') === 'string' &&
-                !resource.isNew()
-              ? ([
-                  await fetchTreeRoot(
-                    resource.specifyTable.name,
-                    idFromUrl(resource.get('definition'))!
-                  ),
-                ] as RA<SerializedResource<TreeDefItem<AnyTree>>>)
-              : undefined
+                  !resource.isNew()
+                ? ([
+                    await fetchTreeRoot(
+                      resource.specifyTable.name,
+                      idFromUrl(resource.get('definition'))!
+                    ),
+                  ] as RA<SerializedResource<TreeDefItem<AnyTree>>>)
+                : undefined
           )
           .then((items) => {
             if (destructorCalled) return undefined;
@@ -141,6 +149,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     if (props.resource === undefined) return undefined;
     const resource = toTreeTable(props.resource);
     const definitionItem = resource?.get('definitionItem');
+    const originalDefinitionItem = originalDefinitionItemRef.current;
 
     const newDefinitionItem =
       props.defaultValue ?? items?.slice(-1)[0]?.value ?? '';
@@ -153,10 +162,14 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       (!(items?.map(({ value }) => value).includes(definitionItem) ?? true) &&
         !Object.keys(resource?.changed ?? {}).includes('definitionitem'));
 
+    const wasCleared =
+      originalDefinitionItem !== undefined && definitionItem === undefined;
+
     if (
       isDifferentDefinitionItem &&
       (items !== undefined || typeof resource?.get('parent') !== 'string') &&
-      invalidDefinitionItem
+      invalidDefinitionItem &&
+      wasCleared
     ) {
       resource?.set('definitionItem', newDefinitionItem);
       return void resource?.businessRuleManager?.checkField('parent');

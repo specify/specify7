@@ -1,12 +1,20 @@
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
-import type { RA } from '../../../utils/types';
-import { replaceItem } from '../../../utils/utils';
+import type { DeepPartial, RA, WritableArray } from '../../../utils/types';
+import { removeKey, replaceItem } from '../../../utils/utils';
+import { formatUrl } from '../../Router/queryString';
 import { addMissingFields } from '../addMissingFields';
-import type { SerializedRecord } from '../helperTypes';
+import { DependentCollection } from '../collectionApi';
+import type { SerializedRecord, SerializedResource } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
+import { deserializeResource, serializeResource } from '../serializers';
+import type { Collection } from '../specifyTable';
 import { tables } from '../tables';
-import type { Determination } from '../types';
+import type {
+  CollectionObject,
+  CollectionObjectAttribute,
+  Determination,
+} from '../types';
 
 requireContext();
 
@@ -48,11 +56,33 @@ const collectionObjectResponse = {
   determinations: determinationsResponse,
 };
 
+overrideAjax(getResourceApiUrl('CollectionObjectType', 1), {});
+
 overrideAjax(collectionObjectUrl, collectionObjectResponse);
 overrideAjax(
   '/api/specify/collectionobject/?domainfilter=false&catalognumber=000029432&collection=4&offset=0',
   {
     objects: [collectionObjectResponse],
+    meta: {
+      limit: 20,
+      offset: 0,
+      total_count: 1,
+    },
+  }
+);
+
+const firstCollectionObjectUrl = getResourceApiUrl('CollectionObject', 1);
+const firstCollectionObject = {
+  id: 1,
+  resource_uri: firstCollectionObjectUrl,
+  catalognumber: '000011111',
+  collection: getResourceApiUrl('Collection', 4),
+};
+overrideAjax(firstCollectionObjectUrl, firstCollectionObject);
+overrideAjax(
+  '/api/specify/collectionobject/?domainfilter=false&catalognumber=000011111&collection=4&offset=0',
+  {
+    objects: [],
     meta: {
       limit: 20,
       offset: 0,
@@ -181,14 +211,20 @@ describe('rgetCollection', () => {
     expect(agents.models).toHaveLength(0);
   });
 
-  test('repeated calls for independent return different object', async () => {
+  test('repeated calls for independent merge different objects', async () => {
     const resource = new tables.CollectionObject.Resource({
       id: collectionObjectId,
     });
+    const testCEText = 'someOtherText';
+
     const firstCollectingEvent = await resource.rgetPromise('collectingEvent');
+    firstCollectingEvent?.set('text1', testCEText);
     const secondCollectingEvent = await resource.rgetPromise('collectingEvent');
-    expect(firstCollectingEvent?.toJSON()).toEqual(collectingEventResponse);
-    expect(firstCollectingEvent).not.toBe(secondCollectingEvent);
+    expect(testCEText).not.toBe(collectingEventText);
+    expect(secondCollectingEvent?.get('text1')).toBe(testCEText);
+    expect(
+      removeKey(firstCollectingEvent?.toJSON() ?? {}, 'text1')
+    ).toStrictEqual(removeKey(secondCollectingEvent?.toJSON() ?? {}, 'text1'));
   });
 
   test('call for independent refetches related', async () => {
@@ -209,9 +245,8 @@ describe('rgetCollection', () => {
       id: collectionObjectId,
     });
     const firstDeterminations = await resource.rgetCollection('determinations');
-    const secondDeterminations = await resource.rgetCollection(
-      'determinations'
-    );
+    const secondDeterminations =
+      await resource.rgetCollection('determinations');
     expect(firstDeterminations.toJSON()).toEqual(determinationsResponse);
     expect(secondDeterminations.toJSON()).toEqual(determinationsResponse);
     expect(firstDeterminations).toBe(secondDeterminations);
@@ -241,7 +276,8 @@ describe('eventHandlerForToMany', () => {
       ?.models[0].set('text1', 'helloWorld');
 
     expect(resource.needsSaved).toBe(true);
-    expect(testFunction).toHaveBeenCalledTimes(1);
+    // Change to 2 in issue-6214
+    expect(testFunction).toHaveBeenCalledTimes(3);
   });
   test('changing collection propagates to related', () => {
     const resource = new tables.CollectionObject.Resource(
@@ -290,14 +326,14 @@ describe('eventHandlerForToMany', () => {
       { index: 1 }
     );
 
-    expect(onResourceChange).toHaveBeenCalledTimes(3);
+    expect(onResourceChange).toHaveBeenCalledTimes(4);
 
     resource.set('determinations', [
       addMissingFields('Determination', {
         taxon: getResourceApiUrl('Taxon', 1),
       }),
     ]);
-    expect(onResourceChange).toHaveBeenCalledTimes(4);
+    expect(onResourceChange).toHaveBeenCalledTimes(5);
     expect(onPrepChange).toHaveBeenCalledTimes(1);
     expect(onPrepAdd).toHaveBeenCalledTimes(1);
     expect(onPrepRemoval).toHaveBeenCalledTimes(1);
@@ -389,6 +425,403 @@ test('save', async () => {
   expect(newDetermination.get('number1')).toBe(2);
 });
 
+describe('set', () => {
+  test('field value', () => {
+    const resource = new tables.CollectionObject.Resource();
+    const testIntegerValue = 10;
+    expect(resource.get('integer1')).toBeUndefined();
+    resource.set('integer1', testIntegerValue);
+    expect(resource.get('integer1')).toBe(testIntegerValue);
+    resource.set('integer1', undefined as never);
+    expect(resource.get('integer1')).toBe(testIntegerValue);
+    resource.set('integer1', null);
+    expect(resource.get('integer1')).toBeNull();
+  });
+  test('array dependent to-many', () => {
+    const resource = new tables.CollectionObject.Resource();
+    const determinations = [
+      new tables.Determination.Resource({ isCurrent: true }),
+      new tables.Determination.Resource(),
+    ];
+    resource.set('determinations', determinations);
+    const determinationCollection =
+      resource.getDependentResource('determinations');
+    expect(resource.get('determinations')).toBeUndefined();
+    expect(determinationCollection).toBeInstanceOf(DependentCollection);
+    expect(determinationCollection?.length).toBe(2);
+    expect(determinationCollection?.related).toBe(resource);
+    expect(resource.dependentResources.determinations).toBe(
+      determinationCollection
+    );
+  });
+  test('collection dependent to-many', () => {
+    const resource = new tables.CollectionObject.Resource();
+    const determinations = [
+      new tables.Determination.Resource({ isCurrent: true }),
+      new tables.Determination.Resource(),
+    ];
+    const initialDeterminationCollection =
+      new tables.Determination.DependentCollection(
+        {
+          related: resource,
+          field: tables.Determination.strictGetRelationship('collectionObject'),
+        },
+        determinations
+      ) as Collection<Determination>;
+    resource.set('determinations', initialDeterminationCollection);
+    const determinationCollection =
+      resource.getDependentResource('determinations');
+    expect(resource.get('determinations')).toBeUndefined();
+    expect(determinationCollection?.length).toBe(2);
+    expect(determinationCollection?.related).toBe(resource);
+    expect(resource.dependentResources.determinations).toBe(
+      determinationCollection
+    );
+    expect(initialDeterminationCollection).not.toBe(determinationCollection);
+  });
+  test('url dependent to-many', () => {
+    const expectedWarnings = [
+      'expected inline data for dependent field',
+      'Setting uri on to-many relationship',
+    ];
+    const warnings: WritableArray<unknown> = [];
+    const consoleWarn = jest.fn((...args) => warnings.push(args[0]));
+    jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
+
+    const resource = new tables.CollectionObject.Resource({
+      id: 1,
+      determinations: [
+        {
+          _tablename: 'Determination',
+          iscurrent: true,
+        },
+        { _tablename: 'Determination' },
+      ],
+    });
+    const determinationCollection =
+      resource.getDependentResource('determinations');
+    expect(determinationCollection).toHaveLength(2);
+    resource.set(
+      'determinations',
+      formatUrl(getResourceApiUrl('Determination', undefined), {
+        collectionobject: resource.id,
+      }) as never
+    );
+    expect(warnings).toStrictEqual(expectedWarnings);
+    expect(resource.get('determinations')).toBe(
+      formatUrl(getResourceApiUrl('Determination', undefined), {
+        collectionobject: resource.id,
+      })
+    );
+    expect(resource.getDependentResource('determinations')).toBe(
+      determinationCollection
+    );
+    expect(resource.dependentResources.determinations).toBe(
+      determinationCollection
+    );
+  });
+  test('undefined dependent to-many', () => {
+    const expectedWarnings = [
+      'Expected array of resources or collection when setting one-to-many',
+    ];
+    const warnings: WritableArray<unknown> = [];
+    const consoleWarn = jest.fn((...args) => warnings.push(args[0]));
+    jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
+    const resource = new tables.CollectionObject.Resource({
+      id: 1,
+      determinations: [
+        {
+          _tablename: 'Determination',
+          iscurrent: true,
+        },
+        { _tablename: 'Determination' },
+      ],
+    });
+    const determinationCollection =
+      resource.getDependentResource('determinations');
+    resource.set('determinations', undefined as never);
+    expect(warnings).toStrictEqual(expectedWarnings);
+    expect(resource.get('determinations')).toBeUndefined();
+    expect(resource.getDependentResource('determinations')).toBe(
+      determinationCollection
+    );
+    expect(resource.dependentResources.determinations).toBe(
+      determinationCollection
+    );
+  });
+  test('null dependent to-many', () => {
+    const expectedWarnings = [
+      'Expected array of resources or collection when setting one-to-many',
+    ];
+    const warnings: WritableArray<unknown> = [];
+    const consoleWarn = jest.fn((...args) => warnings.push(args[0]));
+    jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
+    const resource = new tables.CollectionObject.Resource({
+      id: 1,
+      determinations: [
+        {
+          _tablename: 'Determination',
+          iscurrent: true,
+        },
+        { _tablename: 'Determination' },
+      ],
+    });
+    const determinationCollection =
+      resource.getDependentResource('determinations');
+    resource.set('determinations', null as never);
+    expect(warnings).toStrictEqual(expectedWarnings);
+    expect(resource.get('determinations')).toBeUndefined();
+    expect(resource.getDependentResource('determinations')).toBe(
+      determinationCollection
+    );
+    expect(resource.dependentResources.determinations).toBe(
+      determinationCollection
+    );
+  });
+  test('specifyResource dependent to-one', () => {
+    const resource = new tables.CollectionObject.Resource();
+    const collectionObjectAttributeId = 1;
+    const collectionObjectAttribute =
+      new tables.CollectionObjectAttribute.Resource({
+        id: collectionObjectAttributeId,
+        text1: 'test',
+        integer1: 10,
+      });
+    resource.set('collectionObjectAttribute', collectionObjectAttribute);
+    expect(resource.dependentResources.collectionobjectattribute).toBe(
+      collectionObjectAttribute
+    );
+    expect(resource.getDependentResource('collectionObjectAttribute')).toBe(
+      collectionObjectAttribute
+    );
+    expect(resource.get('collectionObjectAttribute')).toBe(
+      getResourceApiUrl(
+        'CollectionObjectAttribute',
+        collectionObjectAttributeId
+      )
+    );
+  });
+  test('seralizedResource dependent to-one', () => {
+    const resource = new tables.CollectionObject.Resource({
+      id: 1,
+    });
+    const collectionObjectAttributeId = 1;
+    const seralizedCOAttribute: Partial<
+      SerializedResource<CollectionObjectAttribute>
+    > = {
+      _tableName: 'CollectionObjectAttribute',
+      id: collectionObjectAttributeId,
+      text1: 'test',
+      integer1: 10,
+    };
+    resource.set(
+      'collectionObjectAttribute',
+      seralizedCOAttribute as SerializedResource<CollectionObjectAttribute>
+    );
+    const collectionObjectAttribute = resource.getDependentResource(
+      'collectionObjectAttribute'
+    );
+    expect(resource.dependentResources.collectionobjectattribute).toBe(
+      collectionObjectAttribute
+    );
+    expect(serializeResource(collectionObjectAttribute!)).toStrictEqual(
+      serializeResource(deserializeResource(seralizedCOAttribute))
+    );
+    expect(resource.get('collectionObjectAttribute')).toBe(
+      getResourceApiUrl(
+        'CollectionObjectAttribute',
+        collectionObjectAttributeId
+      )
+    );
+  });
+  test('uri dependent to-one', () => {
+    const expectedWarnings = ['expected inline data for dependent field'];
+    const warnings: WritableArray<unknown> = [];
+    const consoleWarn = jest.fn((...args) => warnings.push(args[0]));
+    jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
+    const resource = new tables.CollectionObject.Resource();
+    const collectionObjectAttributeId = 1;
+    resource.set(
+      'collectionObjectAttribute',
+      getResourceApiUrl(
+        'CollectionObjectAttribute',
+        collectionObjectAttributeId
+      ) as never
+    );
+    expect(warnings).toStrictEqual(expectedWarnings);
+    expect(resource.get('collectionObjectAttribute')).toBe(
+      getResourceApiUrl(
+        'CollectionObjectAttribute',
+        collectionObjectAttributeId
+      )
+    );
+    expect(
+      resource.dependentResources.collectionobjectattribute
+    ).toBeUndefined();
+  });
+  test('uri unsets dependent to-one references', () => {
+    const expectedWarnings = [
+      'expected inline data for dependent field',
+      'unexpected condition',
+    ];
+    const warnings: WritableArray<unknown> = [];
+    const consoleWarn = jest.fn((...args) => warnings.push(args[0]));
+    jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
+
+    const collectionObjectAttributeId = 1;
+    const seralizedCOAttribute = {
+      id: collectionObjectAttributeId,
+      text1: 'test',
+    };
+    const resource = new tables.CollectionObject.Resource({
+      id: 1,
+      collectionObjectAttribute: seralizedCOAttribute as never,
+    });
+    const coAttribute = resource.getDependentResource(
+      'collectionObjectAttribute'
+    );
+    expect(coAttribute).toBeDefined();
+    expect(resource.dependentResources.collectionobjectattribute).toBe(
+      coAttribute
+    );
+    expect(resource.get('collectionObjectAttribute')).toBe(
+      getResourceApiUrl(
+        'CollectionObjectAttribute',
+        collectionObjectAttributeId
+      )
+    );
+    resource.set(
+      'collectionObjectAttribute',
+      getResourceApiUrl(
+        'CollectionObjectAttribute',
+        collectionObjectAttributeId + 1
+      ) as never
+    );
+    expect(warnings).toStrictEqual(expectedWarnings);
+    expect(resource.get('collectionObjectAttribute')).toBe(
+      getResourceApiUrl(
+        'CollectionObjectAttribute',
+        collectionObjectAttributeId + 1
+      )
+    );
+    expect(
+      resource.getDependentResource('collectionObjectAttribute')
+    ).toBeUndefined();
+    expect(
+      resource.dependentResources.collectionobjectattribute
+    ).toBeUndefined();
+  });
+  test('null dependent to-one', () => {
+    const collectionObjectAttributeId = 1;
+    const seralizedCOAttribute = {
+      id: collectionObjectAttributeId,
+      text1: 'test',
+    };
+    const resource = new tables.CollectionObject.Resource({
+      id: 1,
+      collectionObjectAttribute: seralizedCOAttribute as never,
+    });
+    resource.set('collectionObjectAttribute', null);
+    expect(resource.get('collectionObjectAttribute')).toBeNull();
+    expect(
+      resource.getDependentResource('collectionObjectAttribute')
+    ).toBeNull();
+    expect(resource.dependentResources.collectionobjectattribute).toBeNull();
+  });
+  test('url with independendent to-one', () => {
+    const baseId = 1;
+    const resource = new tables.CollectionObject.Resource({ id: baseId });
+    const accession = new tables.Accession.Resource({ id: baseId });
+    resource.set('accession', accession);
+    expect(resource.get('accession')).toBe(
+      getResourceApiUrl('Accession', baseId)
+    );
+    expect(resource.independentResources.accession).toBe(accession);
+    resource.set('accession', getResourceApiUrl('Accession', baseId));
+    expect(resource.get('accession')).toBe(
+      getResourceApiUrl('Accession', baseId)
+    );
+    expect(resource.independentResources.accession).toBe(accession);
+    resource.set('accession', getResourceApiUrl('Accession', baseId + 1));
+    expect(resource.get('accession')).toBe(
+      getResourceApiUrl('Accession', baseId + 1)
+    );
+    expect(resource.independentResources.accession).toBeUndefined();
+  });
+  test('null independent to-one', () => {
+    const baseId = 1;
+    const resource = new tables.CollectionObject.Resource({ id: baseId });
+    const accession = new tables.Accession.Resource({ id: baseId });
+    resource.set('accession', accession);
+    expect(resource.get('accession')).toBe(
+      getResourceApiUrl('Accession', baseId)
+    );
+    expect(resource.independentResources.accession).toBeDefined();
+    resource.set('accession', null);
+    expect(resource.get('accession')).toBeNull();
+    expect(resource.independentResources.accession).toBeNull();
+  });
+  test('bulk setting attributes', () => {
+    const resource = new tables.CollectionObject.Resource({ id: 1 });
+    const collectionObjectId = 1;
+    const catalogNumber = '000000001';
+    const options = undefined;
+    const accessionUrl = getResourceApiUrl('Accession', 1);
+    const attributeText1 = 'example text';
+    const serializedDeterminations: RA<
+      Partial<SerializedRecord<Determination>>
+    > = [
+      {
+        iscurrent: true,
+      },
+      {},
+    ];
+    const serializedAttributes: DeepPartial<
+      SerializedRecord<CollectionObject>
+    > = {
+      id: 1,
+      catalognumber: catalogNumber,
+      accession: accessionUrl,
+      determinations: Array.from(serializedDeterminations),
+      collectionobjectattribute: {
+        text1: attributeText1,
+      } as never,
+    };
+    resource.set(serializedAttributes as never, options as never);
+    expect(resource.id).toStrictEqual(collectionObjectId);
+    expect(resource.get('catalogNumber')).toEqual(catalogNumber);
+    expect(resource.get('accession')).toStrictEqual(accessionUrl);
+    expect(resource.get('determinations')).toBeUndefined();
+    expect(
+      resource.getDependentResource('determinations')?.models.length
+    ).toStrictEqual(serializedDeterminations.length);
+    expect(
+      resource.getDependentResource('collectionObjectAttribute')?.get('text1')
+    ).toStrictEqual(attributeText1);
+  });
+  test('silent respected on bulk set', () => {
+    // See https://github.com/specify/specify7/issues/6488
+    const resource = new tables.CollectionObject.Resource({ id: 1 });
+    const serializedDeterminations: RA<
+      Partial<SerializedRecord<Determination>>
+    > = [
+      {
+        iscurrent: true,
+      },
+      {},
+    ];
+    const serializedAttributes: DeepPartial<
+      SerializedRecord<CollectionObject>
+    > = {
+      determinations: serializedDeterminations,
+    };
+    resource.set(serializedAttributes as never, { silent: true } as never);
+    expect(resource.needsSaved).toBe(false);
+    resource.set(serializedAttributes as never, { silent: false } as never);
+    expect(resource.needsSaved).toBe(true);
+  });
+});
+
 /*
  * TEST: test the handler for when .save() fails
  * TEST: changing collection resource or adding/removing to collection triggers change in parent resource
@@ -412,9 +845,8 @@ describe('placeInSameHierarchy', () => {
       id: 5,
     });
     const locality = new tables.Locality.Resource();
-    const hierarchyResource = await locality.placeInSameHierarchy(
-      collectionObject
-    );
+    const hierarchyResource =
+      await locality.placeInSameHierarchy(collectionObject);
     expect(hierarchyResource?.url()).toBe(getResourceApiUrl('Discipline', 3));
     expect(locality.get('discipline')).toBe(getResourceApiUrl('Discipline', 3));
   });

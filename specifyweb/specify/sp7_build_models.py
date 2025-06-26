@@ -149,7 +149,7 @@ def generate_sp_relationship_field_code(modelname, rel, datamodel) -> str:
         return None
     
     try:
-        on_delete = SPECIAL_DELETION_RULES_CODE["%s.%s" % (modelname.capitalize(), rel.name.lower())]
+        on_delete = SPECIAL_DELETION_RULES_CODE[f"{modelname.capitalize()}.{rel.name.lower()}"]
     except KeyError:
         reverse = datamodel.reverse_relationship(rel)
 

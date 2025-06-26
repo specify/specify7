@@ -196,7 +196,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
             label,
             value: `(${
               selectedRows.size === 0
-                ? totalCount ?? commonText.loading()
+                ? (totalCount ?? commonText.loading())
                 : `${selectedRows.size}/${totalCount ?? commonText.loading()}`
             })`,
           })}
@@ -241,7 +241,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                    */
                   baseTableName={fieldSpecs[0].baseTable.name}
                   defaultRecordSetName={
-                    queryResource?.isNew() ?? true
+                    (queryResource?.isNew() ?? true)
                       ? undefined
                       : queryResource?.get('name')
                   }
@@ -452,7 +452,7 @@ const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 /** Record ID column index in Query Results when not in distinct mode */
 export const queryIdField = 0;
 
-function canMerge(table: SpecifyTable): boolean {
+export function canMerge(table: SpecifyTable): boolean {
   const isEmbeddedCollectingEvent = schema.embeddedCollectingEvent;
   const isEmbeddedPaleoContext = schema.embeddedPaleoContext;
   const canMerge =

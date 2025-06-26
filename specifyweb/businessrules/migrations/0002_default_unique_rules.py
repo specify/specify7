@@ -7,7 +7,7 @@ from specifyweb.businessrules.uniqueness_rules import apply_default_uniqueness_r
 def apply_default_rules(apps, schema_editor):
     Discipline = apps.get_model('specify', 'Discipline')
     for disp in Discipline.objects.all():
-        apply_default_uniqueness_rules(disp)
+        apply_default_uniqueness_rules(disp, registry=apps)
 
 
 def remove_default_rules(apps, schema_editor):
@@ -32,15 +32,13 @@ def remove_rules_from_discipline(discipline, uniqueness_rule, uniquenessrule_fie
             is_global = rule_is_global(scopes)
 
             for field in fields:
-                found_fields = uniquenessrule_fields.objects.filter(uniquenessrule__modelName=model_name, uniquenessrule__isDatabaseConstraint=isDatabaseConstraint,
-                                                                    uniquenessrule__discipline_id=None if is_global else discipline.id, fieldPath=field, isScope=False)
+                found_fields = uniquenessrule_fields.objects.filter(uniquenessrule__modelName=model_name, uniquenessrule__isDatabaseConstraint=isDatabaseConstraint,uniquenessrule__discipline_id=None if is_global else discipline.id, fieldPath=field, isScope=False)
 
                 to_remove.update(
                     tuple(found_fields.values_list('uniquenessrule_id', flat=True)))
                 found_fields.delete()
             for scope in scopes:
-                found_scopes = uniquenessrule_fields.objects.filter(uniquenessrule__modelName=model_name, uniquenessrule__isDatabaseConstraint=isDatabaseConstraint,
-                                                                    uniquenessrule__discipline_id=None if is_global else discipline.id, fieldPath=scope, isScope=True)
+                found_scopes = uniquenessrule_fields.objects.filter(uniquenessrule__modelName=model_name, uniquenessrule__isDatabaseConstraint=isDatabaseConstraint,uniquenessrule__discipline_id=None if is_global else discipline.id, fieldPath=scope, isScope=True)
 
                 to_remove.update(
                     tuple(found_scopes.values_list('uniquenessrule_id', flat=True)))

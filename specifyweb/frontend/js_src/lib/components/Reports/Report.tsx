@@ -145,7 +145,7 @@ async function fixupImages(definition: Element): Promise<RA<LocalizedString>> {
         Array.from(definition.querySelectorAll('imageExpression'), (image) => {
           const match = image.classList.contains('java.net.URL')
             ? undefined
-            : image.textContent?.match(reImage)?.slice(1)?.[0] ?? undefined;
+            : (image.textContent?.match(reImage)?.slice(1)?.[0] ?? undefined);
           return typeof match === 'string' ? [match, image] : undefined;
         })
       )

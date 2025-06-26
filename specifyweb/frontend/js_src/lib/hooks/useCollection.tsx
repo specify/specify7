@@ -6,7 +6,6 @@ import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import type { Relationship } from '../components/DataModel/specifyField';
 import type { Collection } from '../components/DataModel/specifyTable';
 import type { SubViewSortField } from '../components/FormParse/cells';
-import { relationshipIsToMany } from '../components/WbPlanView/mappingHelpers';
 import type { GetOrSet } from '../utils/types';
 import { overwriteReadOnly } from '../utils/types';
 import { sortFunction } from '../utils/utils';
@@ -27,15 +26,14 @@ export function useCollection<SCHEMA extends AnySchema>({
   ...GetOrSet<Collection<SCHEMA> | false | undefined>,
   (
     filters?: CollectionFetchFilters<SCHEMA>
-  ) => Promise<Collection<SCHEMA> | undefined>
+  ) => Promise<Collection<SCHEMA> | undefined>,
 ] {
   const [collection, setCollection] = useAsyncState<
     Collection<SCHEMA> | false | undefined
   >(
     React.useCallback(
       async () =>
-        relationshipIsToMany(relationship) &&
-        relationship.type !== 'zero-to-one'
+        relationship.type.includes('-to-many')
           ? fetchToManyCollection({
               parentResource,
               relationship,
@@ -61,16 +59,14 @@ export function useCollection<SCHEMA extends AnySchema>({
       versionRef.current += 1;
       const localVersionRef = versionRef.current;
 
-      const fetchCollection =
-        relationshipIsToMany(relationship) &&
-        relationship.type !== 'zero-to-one'
-          ? fetchToManyCollection({
-              parentResource,
-              relationship,
-              sortBy,
-              filters,
-            })
-          : fetchToOneCollection({ parentResource, relationship, filters });
+      const fetchCollection = relationship.type.includes('-to-many')
+        ? fetchToManyCollection({
+            parentResource,
+            relationship,
+            sortBy,
+            filters,
+          })
+        : fetchToOneCollection({ parentResource, relationship, filters });
 
       return fetchCollection.then((collection) => {
         if (

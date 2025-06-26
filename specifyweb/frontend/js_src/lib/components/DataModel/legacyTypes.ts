@@ -56,19 +56,19 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       SCHEMA['toManyDependent'] &
       SCHEMA['toManyIndependent'] &
       SCHEMA['toOneDependent'] &
-      SCHEMA['toOneIndependent'])[FIELD_NAME]
+      SCHEMA['toOneIndependent'])[FIELD_NAME],
   >(
     fieldName: FIELD_NAME
     // eslint-disable-next-line functional/prefer-readonly-type
   ): [VALUE] extends [never]
     ? never
     : VALUE extends AnySchema
-    ? VALUE extends null
-      ? string | null
-      : string
-    : VALUE extends RA<AnySchema>
-    ? string
-    : VALUE;
+      ? VALUE extends null
+        ? string | null
+        : string
+      : VALUE extends RA<AnySchema>
+        ? string
+        : VALUE;
   // Case-insensitive fetch of a -to-one resource
   rgetPromise<
     FIELD_NAME extends
@@ -76,10 +76,11 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       | keyof SCHEMA['toOneIndependent'],
     VALUE = (IR<never> &
       SCHEMA['toOneDependent'] &
-      SCHEMA['toOneIndependent'])[FIELD_NAME]
+      SCHEMA['toOneIndependent'])[FIELD_NAME],
   >(
     fieldName: FIELD_NAME,
-    prePopulate?: boolean
+    prePopulate?: boolean,
+    strict?: boolean // Whether to trigger 404 on resource not found
   ): readonly [VALUE] extends readonly [never]
     ? never
     : Promise<
@@ -93,12 +94,13 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       | keyof SCHEMA['toOneIndependent'],
     VALUE = (IR<never> &
       SCHEMA['toOneDependent'] &
-      SCHEMA['toOneIndependent'])[FIELD_NAME]
+      SCHEMA['toOneIndependent'])[FIELD_NAME],
   >(
     fieldName: FIELD_NAME,
     options?: {
       readonly prePop?: boolean;
       readonly noBusinessRules?: boolean;
+      readonly strict?: boolean;
     }
   ): readonly [VALUE] extends readonly [never]
     ? never
@@ -112,10 +114,12 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     FIELD_NAME extends keyof (SCHEMA['toManyDependent'] &
       SCHEMA['toManyIndependent']),
     VALUE extends (SCHEMA['toManyDependent'] &
-      SCHEMA['toManyIndependent'])[FIELD_NAME]
+      SCHEMA['toManyIndependent'])[FIELD_NAME],
   >(
     fieldName: FIELD_NAME,
-    filters?: CollectionFetchFilters<VALUE[number]>
+    filters?: CollectionFetchFilters<VALUE[number]> & {
+      readonly strict?: boolean;
+    }
   ): Promise<Collection<VALUE[number]>>;
   set<
     FIELD_NAME extends
@@ -131,7 +135,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       SCHEMA['toManyDependent'] &
       SCHEMA['toManyIndependent'] &
       SCHEMA['toOneDependent'] &
-      SCHEMA['toOneIndependent'])[FIELD_NAME]
+      SCHEMA['toOneIndependent'])[FIELD_NAME],
   >(
     fieldName: FIELD_NAME,
     value: readonly [VALUE] extends readonly [never]
@@ -149,11 +153,11 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
                   | RA<SerializedResource<VALUE[number]>>
                   | RA<SpecifyResource<VALUE[number]>>
               : null extends VALUE
-              ?
-                  | SerializedResource<Exclude<VALUE, null>>
-                  | SpecifyResource<Exclude<VALUE, null>>
-                  | null
-              : SerializedResource<VALUE> | SpecifyResource<VALUE>),
+                ?
+                    | SerializedResource<Exclude<VALUE, null>>
+                    | SpecifyResource<Exclude<VALUE, null>>
+                    | null
+                : SerializedResource<VALUE> | SpecifyResource<VALUE>),
     options?: { readonly silent: boolean }
   ): SpecifyResource<SCHEMA>;
   // Not type safe

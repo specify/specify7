@@ -1,4 +1,3 @@
-
 from unittest import skip
 from django.db.models import ProtectedError
 

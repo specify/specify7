@@ -65,8 +65,8 @@ export function WbValidate({
           hasUnsavedChanges
             ? wbText.unavailableWhileEditing()
             : isMapped
-            ? undefined
-            : wbText.wbValidateUnavailable()
+              ? undefined
+              : wbText.wbValidateUnavailable()
         }
         onClick={handleValidate}
       >

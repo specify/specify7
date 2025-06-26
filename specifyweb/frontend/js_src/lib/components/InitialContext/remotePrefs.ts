@@ -50,15 +50,15 @@ type TypeOf<DEFINITION extends Definition> =
   DEFINITION['defaultValue'] extends string
     ? string
     : DEFINITION['defaultValue'] extends number
-    ? number
-    : boolean;
+      ? number
+      : boolean;
 
 type DefinitionOf<KEY extends keyof CollectionDefinitions | keyof Definitions> =
   KEY extends keyof Definitions
     ? Definitions[KEY]
     : KEY extends keyof CollectionDefinitions
-    ? CollectionDefinitions[KEY]
-    : never;
+      ? CollectionDefinitions[KEY]
+      : never;
 
 export const getPref = <KEY extends keyof Definitions>(
   key: KEY
@@ -101,7 +101,7 @@ function parsePref(
       ? parsed.isValid
         ? parsed.parsed
         : defaultValue
-      : value ?? defaultValue
+      : (value ?? defaultValue)
   ) as boolean | number | string;
 }
 
@@ -295,7 +295,7 @@ export const remotePrefsDefinitions = f.store(
        *   isLegacy: true,
        * },
        */
-    } as const)
+    }) as const
 );
 
 /**

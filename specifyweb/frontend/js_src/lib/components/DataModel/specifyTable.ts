@@ -7,7 +7,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { commonText } from '../../localization/common';
 import { getCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
-import type { IR, R, RA } from '../../utils/types';
+import type { DeepPartial, IR, R, RA } from '../../utils/types';
 import { defined, filterArray, localized } from '../../utils/types';
 import { camelToHuman, multiSortFunction } from '../../utils/utils';
 import { error } from '../Errors/assert';
@@ -166,7 +166,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
    * https://github.com/microsoft/TypeScript/issues/48339
    */
   public readonly Resource: new <RESOURCE extends AnySchema = SCHEMA>(
-    props?: Partial<
+    props?: DeepPartial<
       | SerializedResource<RESOURCE>
       | SerializedRecord<RESOURCE>
       /*
@@ -220,7 +220,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
       this.name === 'Attachment'
         ? // Render the attachment plugin rather than the form
           attachmentView
-        : tableDefinition.view ?? tableViews[this.name] ?? this.name;
+        : (tableDefinition.view ?? tableViews[this.name] ?? this.name);
     this.searchDialog = tableDefinition.searchDialog ?? undefined;
     this.tableId = tableDefinition.tableId;
     this.isSystem = tableDefinition.system;

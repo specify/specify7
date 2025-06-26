@@ -87,7 +87,7 @@ export type ViewDefinition = {
 };
 
 export const formTypes = ['form', 'formTable'] as const;
-export type FormType = typeof formTypes[number];
+export type FormType = (typeof formTypes)[number];
 export type FormMode = 'edit' | 'search' | 'view';
 
 let views: R<ViewDefinition | undefined> = {};
@@ -300,9 +300,9 @@ export function resolveViewDefinition(
   const resolvedFormType =
     formType === 'formTable'
       ? 'formTable'
-      : formTypes.find(
+      : (formTypes.find(
           (type) => type.toLowerCase() === newFormType?.toLowerCase()
-        ) ?? 'form';
+        ) ?? 'form');
   if (resolvedFormType === undefined)
     console.warn(
       `Unknown form type ${
@@ -425,9 +425,10 @@ async function parseFormTableDefinition(
           : undefined) ??
         labelsForCells[cell.id ?? '']?.text ??
         (cell.type === 'Field' || cell.type === 'SubView'
-          ? table?.getField(cell.fieldNames?.join(backboneFieldSeparator) ?? '')
-              ?.label ??
-            localized(cell.fieldNames?.join(backboneFieldSeparator))
+          ? (table?.getField(
+              cell.fieldNames?.join(backboneFieldSeparator) ?? ''
+            )?.label ??
+            localized(cell.fieldNames?.join(backboneFieldSeparator)))
           : undefined),
       // Remove labels from checkboxes (as labels would be in the table header)
       ...(cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'

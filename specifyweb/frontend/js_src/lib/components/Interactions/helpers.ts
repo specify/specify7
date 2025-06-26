@@ -50,7 +50,7 @@ export type PreparationRow = readonly [
   amountLoaned: string | null,
   amountedGifted: string | null,
   amountExchanged: string | null,
-  amountAvailable: string
+  amountAvailable: string,
 ];
 
 export const getPrepsAvailableForLoanRs = async (

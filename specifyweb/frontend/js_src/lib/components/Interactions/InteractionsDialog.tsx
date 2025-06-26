@@ -9,8 +9,7 @@ import { Ul } from '../Atoms';
 import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
-import { EditFormTables } from '../DataEntryTables/Edit';
-import { useDataEntryTables } from '../DataEntryTables/fetchTables';
+import { EditFormTables, useFormTables } from '../DataEntryTables/Edit';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable, tables } from '../DataModel/tables';
@@ -20,7 +19,6 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { Redirect } from '../Router/Redirect';
 import { OverlayContext } from '../Router/Router';
-import { fetchLegacyInteractions } from './fetch';
 import type { InteractionWithPreps } from './helpers';
 import { interactionsWithPrepTables } from './helpers';
 import { InteractionDialog } from './InteractionDialog';
@@ -33,7 +31,7 @@ import { InteractionDialog } from './InteractionDialog';
  */
 
 export function InteractionsOverlay(): JSX.Element | null {
-  const tables = useDataEntryTables('interactions');
+  const tables = useFormTables('interactions')[0];
   const handleClose = React.useContext(OverlayContext);
 
   return typeof tables === 'object' ? (
@@ -72,10 +70,10 @@ function Interactions({
                   table.name === 'LoanReturnPreparation'
                     ? `/specify/overlay/interactions/return-loan/`
                     : interactionsWithPrepTables.includes(
-                        (table as SpecifyTable<InteractionWithPreps>).name
-                      )
-                    ? `/specify/overlay/interactions/create/${table.name}/`
-                    : getResourceViewUrl(table.name)
+                          (table as SpecifyTable<InteractionWithPreps>).name
+                        )
+                      ? `/specify/overlay/interactions/create/${table.name}/`
+                      : getResourceViewUrl(table.name)
                 }
               >
                 <TableIcon label={false} name={table.name} />
@@ -122,7 +120,3 @@ export function InteractionLoanReturn(): JSX.Element {
     />
   );
 }
-
-export const exportsForTests = {
-  fetchEntries: fetchLegacyInteractions,
-};
