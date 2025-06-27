@@ -51,6 +51,25 @@ def update_schema_config_field_desc(apps, schema_editor):
                     localized_items_name.text = new_name
                     localized_items_name.save() 
 
+def update_hidden_prop(apps, schema_editor):
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+    for table, fields in SCHEMA_CONFIG_TABLE_FIELDS.items():
+        containers = Splocalecontainer.objects.filter(
+            name=table.lower(),
+        )
+        for container in containers:
+            for field_name in fields:
+                items = Splocalecontaineritem.objects.filter(
+                    container=container,
+                    name=field_name.lower()
+                )
+
+                for item in items:
+                    item.ishidden = True
+                    item.save()
+
 def revert_table_schema_config_with_defaults(apps, schema_editor):
     for table, _ in SCHEMA_CONFIG_TABLES:
         revert_table_schema_config(table, apps)
@@ -77,6 +96,24 @@ def revert_update_hidden_prop(apps, schema_editor):
                     item.ishidden = False
                     item.save()
 
+def reverse_update_hidden_prop(apps, schema_editor):
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+    for table, fields in SCHEMA_CONFIG_TABLE_FIELDS.items():
+        containers = Splocalecontainer.objects.filter(
+            name=table.lower(),
+        )
+        for container in containers:
+            for field_name in fields:
+                items = Splocalecontaineritem.objects.filter(
+                    container=container,
+                    name=field_name.lower()
+                )
+
+                for item in items:
+                    item.ishidden = False
+                    item.save()
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -86,10 +123,12 @@ class Migration(migrations.Migration):
     def consolidated_python_django_migration_operations(apps, schema_editor):
         create_table_schema_config_with_defaults(apps, schema_editor)
         update_schema_config_field_desc(apps, schema_editor)
+        update_hidden_prop(apps, schema_editor)
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
         revert_table_schema_config_with_defaults(apps, schema_editor)
         revert_update_hidden_prop(apps, schema_editor)
+        reverse_update_hidden_prop(apps, schema_editor)
 
     operations = [
         migrations.CreateModel(
