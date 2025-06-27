@@ -1012,9 +1012,9 @@
 					<cell type="label" id="divLabel" label=" " initialize="align=right"/>
 					<cell type="field" id="4" name="divisionCBX" uitype="combobox" ignore="true"/>
 					<cell type="label" labelfor="5"/>
-					<cell type="field" uitype="plugin" id="5" name="dateAccessioned" initialize="name=PartialDateUI;df=dateAccessioned;tp=dateAccessionedPrecision" uifieldformatter="Date"  default="today"/>
+					<cell type="field" uitype="plugin" id="5" name="dateAccessioned" initialize="name=PartialDateUI;df=dateAccessioned;tp=dateAccessionedPrecision" uifieldformatter="Date" default="today"/>
 					<cell type="label" labelfor="6"/>
-					<cell type="field" uitype="plugin" id="6" name="dateReceived" initialize="name=PartialDateUI;df=dateReceived;tp=dateReceivedPrecision" uifieldformatter="Date"  default="today"/>
+					<cell type="field" uitype="plugin" id="6" name="dateReceived" initialize="name=PartialDateUI;df=dateReceived;tp=dateReceivedPrecision" uifieldformatter="Date" default="today"/>
 				</row>
 				<row>
 					<cell type="label" label="Total Items:" initialize="align=right"/>
@@ -2165,24 +2165,26 @@
 		<viewdef name="Component" class="edu.ku.brc.specify.datamodel.Component" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
 			<desc>The Component subform.</desc>
 			<enableRules/>
-			<columnDef>20px,2px,50px,5px,20px,2px,50px,5px,20px,2px,50px,5px,50px,p:g</columnDef>
+			<columnDef>20px,2px,50px,5px,20px,2px,50px,5px,20px,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2px"/>
 			<rows>
 				<row>
-					<!-- <cell type="label" labelfor="1"/>
-					<cell type="field" id="1" name="catalogNumber" uitype="formattedtext"/>-->
-					<cell type="label" labelfor="n"/>
-					<cell type="field" id="n" name="verbatimName" uitype="text"/>
+					<cell type="label" labelfor="1"/>
+					<cell type="field" id="1" name="catalogNumber" uitype="formattedtext"/>
+					<cell type="label" labelfor="3"/>
+					<cell type="field" id="3" name="name" uitype="querycbx"/>
+					<!-- 			<cell type="label" labelfor="n"/>
+			<cell type="field" id="n" name="verbatimName" uitype="text"/> -->
 					<cell type="label" labelfor="2"/>
 					<cell type="field" id="2" name="type" uitype="combobox"/>
 					<!-- You can set a default `componenttype` by adding the type name after a default attribute (e.g. `default="Mineral"`) in the line above -->
-					<cell type="label" labelfor="3"/>
-					<cell type="field" id="3" name="name" uitype="querycbx"/>
-					<cell type="label" labelfor="role"/>
-					<cell type="field" id="role" name="role" uitype="text"/>
-					<cell type="label" labelfor="proportion"/>
-					<cell type="field" id="proportion" name="proportion" uitype="text"/>
 				</row>
+				<!-- 		<row>
+			<cell type="label" labelfor="role"/>
+			<cell type="field" id="role" name="role" uitype="text"/>
+			<cell type="label" labelfor="proportion"/>
+			<cell type="field" id="proportion" name="proportion" uitype="text"/>
+		</row> -->
 			</rows>
 		</viewdef>
 		<viewdef name="Component Grid" class="edu.ku.brc.specify.datamodel.Component" type="formtable" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
@@ -2204,7 +2206,7 @@
 					<cell type="field" id="role" name="role" uitype="text"/>
 					<cell type="label" labelfor="proportion"/>
 					<cell type="field" id="proportion" name="proportion" uitype="text"/>
-        </row>
+				</row>
 			</rows>
 		</viewdef>
 		<viewdef type="form" name="CommonNameTx" class="edu.ku.brc.specify.datamodel.CommonNameTx" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
