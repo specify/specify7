@@ -168,7 +168,7 @@ RUN echo \
         "\nCELERY_TASK_DEFAULT_QUEUE = os.getenv('CELERY_TASK_QUEUE', DATABASE_NAME)" \
         "\nANONYMOUS_USER = os.getenv('ANONYMOUS_USER', None)" \
         "\nSPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', '/opt/Specify/config')" \
-        "\nTIME_ZONE = os.getenv('TIME_ZONE', 'America/Chicago')" \
+        "\nTIME_ZONE = os.environ.get('TIME_ZONE', 'America/Chicago')" \
         "\nhost = os.getenv('CSRF_TRUSTED_ORIGINS', None)" \
         "\nCSRF_TRUSTED_ORIGINS = [origin.strip() for origin in host.split(',')] if host else []" \
         > settings/local_specify_settings.py
