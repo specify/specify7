@@ -19,13 +19,13 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTableById } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
+import { DeleteButton } from '../Forms/DeleteButton';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
 import { fetchOriginalUrl } from './attachments';
 import { AttachmentPreview } from './Preview';
 import { getAttachmentRelationship, tablesWithAttachments } from './utils';
-import { DeleteButton } from '../Forms/DeleteButton';
 
 export function AttachmentCell({
   attachment,
@@ -97,10 +97,10 @@ export function AttachmentCell({
           {joinRecord && hasTablePermission('Attachment', 'delete') && (
             <div className="absolute right-0 bottom-0">
               <DeleteButton
-                resource={joinRecord} // Pass the join record here
-                isIcon
                 component={Button.Small}
                 deferred
+                isIcon
+                resource={joinRecord} // Pass the join record here
               />
             </div>
           )}
