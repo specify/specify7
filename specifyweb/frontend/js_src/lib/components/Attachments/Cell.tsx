@@ -25,6 +25,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { fetchOriginalUrl } from './attachments';
 import { AttachmentPreview } from './Preview';
 import { getAttachmentRelationship, tablesWithAttachments } from './utils';
+import { DeleteButton } from '../Forms/DeleteButton';
 
 export function AttachmentCell({
   attachment,
@@ -45,6 +46,18 @@ export function AttachmentCell({
     React.useCallback(async () => fetchOriginalUrl(attachment), [attachment]),
     false
   );
+
+  const [joinRecord, setJoinRecord] = React.useState<
+    SpecifyResource<AnySchema> | undefined
+  >(undefined);
+
+  React.useEffect(() => {
+    if (table && attachment && !joinRecord) {
+      fetchAttachmentParent(table, attachment)
+        .then(setJoinRecord)
+        .catch(softFail);
+    }
+  }, [table, attachment, joinRecord]);
 
   return (
     <div className="relative">
@@ -71,15 +84,27 @@ export function AttachmentCell({
         }}
       />
       {typeof originalUrl === 'string' && (
-        <Link.Icon
-          className="absolute right-0 top-0"
-          download={new URL(originalUrl).searchParams.get('downloadname')}
-          href={`/attachment_gw/proxy/${new URL(originalUrl).search}`}
-          icon="download"
-          target="_blank"
-          title={notificationsText.download()}
-          onClick={undefined}
-        />
+        <>
+          <Link.Icon
+            className="absolute right-0 top-0"
+            download={new URL(originalUrl).searchParams.get('downloadname')}
+            href={`/attachment_gw/proxy/${new URL(originalUrl).search}`}
+            icon="download"
+            target="_blank"
+            title={notificationsText.download()}
+            onClick={undefined}
+          />
+          {joinRecord && hasTablePermission('Attachment', 'delete') && (
+            <div className="absolute right-0 bottom-0">
+              <DeleteButton
+                resource={joinRecord} // Pass the join record here
+                isIcon
+                component={Button.Small}
+                deferred
+              />
+            </div>
+          )}
+        </>
       )}
     </div>
   );
