@@ -232,7 +232,9 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         // Scroll to the top of the form on clone
         smoothScroll(form, 0);
         loading(
-          handleClick().then((resources) => resources && handleAdd ? handleAdd(resources) : undefined)
+          handleClick().then((resources) =>
+            resources && handleAdd ? handleAdd(resources) : undefined
+          )
         );
       }}
     >
