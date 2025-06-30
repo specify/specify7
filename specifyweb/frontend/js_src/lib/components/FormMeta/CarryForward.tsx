@@ -166,11 +166,8 @@ function BulkCloneConfig({
     'preferences',
     'enableBukCarryForward'
   );
-  const [globalBulkRangeEnabled, setGlobalBulkRangeEnabled] = userPreferences.use(
-    'form',
-    'preferences',
-    'enableBulkCarryForwardRange'
-  );
+  const [globalBulkRangeEnabled, setGlobalBulkRangeEnabled] =
+    userPreferences.use('form', 'preferences', 'enableBulkCarryForwardRange');
 
   const isBulkCarryEnabled = globalBulkEnabled.includes(table.name);
   const isBulkCarryRangeEnabled = globalBulkRangeEnabled.includes(table.name);
@@ -182,9 +179,12 @@ function BulkCloneConfig({
       <Label.Inline className="rounded bg-[color:var(--foreground)]">
         <Input.Checkbox
           checked={isBulkCarryEnabled}
-          onChange={(): void =>
-            setGlobalBulkEnabled(toggleItem(globalBulkEnabled, table.name))
-          }
+          onChange={(): void => {
+            setGlobalBulkEnabled(toggleItem(globalBulkEnabled, table.name));
+            setGlobalBulkRangeEnabled(
+              globalBulkRangeEnabled.filter((name) => name !== table.name)
+            );
+          }}
         />
         {formsText.bulkCarryForwardEnabled()}
         <Button.Small
@@ -198,11 +198,23 @@ function BulkCloneConfig({
       <Label.Inline className="rounded bg-[color:var(--foreground)]">
         <Input.Checkbox
           checked={isBulkCarryRangeEnabled}
-          onChange={(): void =>
-            setGlobalBulkRangeEnabled(toggleItem(globalBulkRangeEnabled, table.name))
-          }
+          onChange={(): void => {
+            setGlobalBulkRangeEnabled(
+              toggleItem(globalBulkRangeEnabled, table.name)
+            );
+            setGlobalBulkEnabled(
+              globalBulkEnabled.filter((name) => name !== table.name)
+            );
+          }}
         />
         {formsText.bulkCarryForwardRangeEnabled()}
+        <Button.Small
+          className="ml-2"
+          title={formsText.bulkCarryForwardSettingsDescription()}
+          onClick={handleOpen}
+        >
+          {icons.cog}
+        </Button.Small>
       </Label.Inline>
       {isOpen && (
         <CarryForwardConfigDialog

@@ -16,7 +16,7 @@ import {
 } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { keysToLowerCase,replaceKey } from '../../utils/utils';
+import { keysToLowerCase, replaceKey } from '../../utils/utils';
 import { appResourceSubTypes } from '../AppResources/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -115,8 +115,13 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const loading = React.useContext(LoadingContext);
   const [_, setFormContext] = React.useContext(FormContext);
 
-  const { showClone, showCarry, showBulkCarry, showBulkCarryRange, showAdd } =
-    useEnabledButtons(resource);
+  const {
+    showClone,
+    showCarry,
+    showBulkCarryCount,
+    showBulkCarryRange,
+    showAdd,
+  } = useEnabledButtons(resource);
 
   const canCreate = hasTablePermission(resource.specifyTable.name, 'create');
   const canUpdate = hasTablePermission(resource.specifyTable.name, 'update');
@@ -253,8 +258,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     formatter === undefined;
   const parser = formatterToParser(numberField, formatter);
 
-  const [bulkCarryRangeBlocked, setBulkCarryRangeBlocked] = React.useState(false);
-  const [bulkCarryRangeInvalidNumbers, setBulkCarryRangeInvalidNumbers] = React.useState<RA<number> | undefined>(undefined);
+  const [bulkCarryRangeBlocked, setBulkCarryRangeBlocked] =
+    React.useState(false);
+  const [bulkCarryRangeInvalidNumbers, setBulkCarryRangeInvalidNumbers] =
+    React.useState<RA<number> | undefined>(undefined);
 
   const handleBulkCarryForward = async (): Promise<
     RA<SpecifyResource<SCHEMA>> | undefined
@@ -269,12 +276,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         carryForwardRangeStart === null ||
         !formatter.parse(carryForwardRangeStart)
       ) {
-        console.error('Please match the required format');
         setBulkCarryRangeBlocked(true);
         return undefined;
       }
       if (!formatter.format(carryForwardRangeEnd)) {
-        console.error('Please match the required format');
         setBulkCarryRangeBlocked(true);
         return undefined;
       }
@@ -346,7 +351,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           (isInRecordSet === false || isInRecordSet === undefined) &&
           isSaveDisabled &&
           showCarry &&
-          showBulkCarry &&
+          (showBulkCarryCount || showBulkCarryRange) &&
           !isCOGorCOJO &&
           !disableBulk ? (
             showBulkCarryRange ? (
@@ -450,20 +455,32 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       {bulkCarryRangeBlocked ? (
         <Dialog
           buttons={
-            <Button.Warning onClick={(): void => {setBulkCarryRangeBlocked(false); setBulkCarryRangeInvalidNumbers(undefined)}}>
+            <Button.Warning
+              onClick={(): void => {
+                setBulkCarryRangeBlocked(false);
+                setBulkCarryRangeInvalidNumbers(undefined);
+              }}
+            >
               {commonText.close()}
             </Button.Warning>
           }
           header={formsText.carryForward()}
           onClose={undefined}
         >
-          {bulkCarryRangeInvalidNumbers !== undefined ?
-          (<>{formsText.bulkCarryForwardRangeExistingRecords({field: numberField.label})}
+          {bulkCarryRangeInvalidNumbers !== undefined ? (
+            <>
+              {formsText.bulkCarryForwardRangeExistingRecords({
+                field: numberField.label,
+              })}
               {bulkCarryRangeInvalidNumbers.map((number, index) => (
                 <p key={index}>{number}</p>
-            ))}</>)
-          : formsText.bulkCarryForwardRangeErrorDescription({field: numberField.label})
-          }
+              ))}
+            </>
+          ) : (
+            formsText.bulkCarryForwardRangeErrorDescription({
+              field: numberField.label,
+            })
+          )}
         </Dialog>
       ) : undefined}
     </>
@@ -510,7 +527,7 @@ function useEnabledButtons<SCHEMA extends AnySchema = AnySchema>(
 ): {
   readonly showClone: boolean;
   readonly showCarry: boolean;
-  readonly showBulkCarry: boolean;
+  readonly showBulkCarryCount: boolean;
   readonly showBulkCarryRange: boolean;
   readonly showAdd: boolean;
 } {
@@ -549,9 +566,9 @@ function useEnabledButtons<SCHEMA extends AnySchema = AnySchema>(
   const showCarry =
     enableCarryForward.includes(tableName) && !NO_CLONE.has(tableName);
   const showBulkCarry =
-    enableBulkCarryForward.includes(tableName) &&
-    !NO_CLONE.has(tableName) &&
-    tableValidForBulkClone(resource.specifyTable);
+    !NO_CLONE.has(tableName) && tableValidForBulkClone(resource.specifyTable);
+  const showBulkCarryCount =
+    showBulkCarry && enableBulkCarryForward.includes(tableName);
   const showBulkCarryRange =
     showBulkCarry && enableBulkCarryForwardRange.includes(tableName);
   const showClone =
@@ -561,7 +578,13 @@ function useEnabledButtons<SCHEMA extends AnySchema = AnySchema>(
   const showAdd =
     !disableAdd.includes(tableName) && !FORBID_ADDING.has(tableName);
 
-  return { showClone, showCarry, showBulkCarry, showBulkCarryRange, showAdd };
+  return {
+    showClone,
+    showCarry,
+    showBulkCarryCount,
+    showBulkCarryRange,
+    showAdd,
+  };
 }
 
 const appResourcesToNotClone = filterArray(
