@@ -39,7 +39,7 @@ class DatamodelTests(TestCase):
             datamodel = self.sp6_datamodel
         # Uncomment this code if you want generate the sqlalchemy models code
         # sqlalchemy_code = gen_sqlalchemy_table_classes_code(datamodel)
-        # with open('/opt/specify7/specifyweb/stored_queries/specify_models.py', 'w') as f:
+        # with open('/opt/specify7/specifyweb/backend/stored_queries/specify_models.py', 'w') as f:
         #     f.write(sqlalchemy_code)
 
     @skip("This test is not needed anymore as the datamodel has changed from sp6")

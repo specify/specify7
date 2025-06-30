@@ -15,7 +15,7 @@ from specifyweb.backend.stored_queries.tests.static.co_query_row_plan import row
 class TestRowPlanMaps(TestCase):
 
     def test_query_construction(self):
-        query = json.load(open("specifyweb/stored_queries/tests/static/co_query.json"))
+        query = json.load(open("specifyweb/backend/stored_queries/tests/static/co_query.json"))
         query_fields = fields_from_json(query["fields"])
         visible_fields = [field for field in query_fields if field.display]
         row_plan = RowPlanMap.get_row_plan(visible_fields)
