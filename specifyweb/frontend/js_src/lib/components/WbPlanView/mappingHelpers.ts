@@ -22,6 +22,21 @@ export const relationshipIsToMany = (
   relationship?.type.includes('-to-many') === true ||
   relationship?.type === 'zero-to-one';
 
+/**
+ * Returns whether the relatation is one-to-one from the remote side
+ * (the foreign key exists on the other table of the relationship)
+ *
+ * In the WorkBench, remote one-to-one relationships are parsed as to-many
+ * in the upload plan
+ *
+ * See https://github.com/specify/specify7/pull/6073#discussion_r1915397675
+ */
+export const relationshipIsRemoteToOne = (
+  relationship: Relationship | undefined
+): boolean =>
+  relationship?.type === 'one-to-one' &&
+  relationship.databaseColumn === undefined;
+
 export type FieldType = Exclude<keyof CollectionObject, 'tableName'>;
 
 /** Returns whether a value is a -to-many index (e.x #1, #2, etc...) */
@@ -29,9 +44,20 @@ export const valueIsToManyIndex = (value: string | undefined): boolean =>
   value?.slice(0, schema.referenceSymbol.length) === schema.referenceSymbol ||
   false;
 
+/**
+ * Returns whether a value is any special tree-related meta information
+ * (e.g. tree defintiion, tree rank)
+ */
+export const valueIsTreeMeta = (value: string | undefined): boolean =>
+  valueIsTreeDefinition(value) || valueIsTreeRank(value);
+
+/** Returns whether a value is a tree definition name (e.x %Taxonomy) */
+export const valueIsTreeDefinition = (value: string | undefined): boolean =>
+  value?.startsWith(schema.treeDefinitionSymbol) ?? false;
+
 /** Returns whether a value is a tree rank name (e.x $Kingdom, $Order) */
 export const valueIsTreeRank = (value: string | undefined): boolean =>
-  value?.startsWith(schema.treeSymbol) || false;
+  value?.startsWith(schema.treeRankSymbol) ?? false;
 
 /**
  * Returns index from a formatted -to-many index value (e.x #1 => 1)
@@ -39,6 +65,14 @@ export const valueIsTreeRank = (value: string | undefined): boolean =>
  */
 export const getNumberFromToManyIndex = (value: string): number =>
   Number(value.slice(schema.referenceSymbol.length));
+
+/**
+ * Returns tree definition name from a complete tree definition name
+ * (e.x %Taxonomy => Taxonomy)
+ * Opposite of formatTreeDefinition
+ */
+export const getNameFromTreeDefinitionName = (value: string): string =>
+  value.slice(schema.treeDefinitionSymbol.length);
 
 /*
  * BUG: in places where output of this function is displayed to the user,
@@ -51,7 +85,7 @@ export const getNumberFromToManyIndex = (value: string): number =>
  *
  */
 export const getNameFromTreeRankName = (value: string): string =>
-  value.slice(schema.treeSymbol.length);
+  value.slice(schema.treeRankSymbol.length);
 
 /**
  * Returns a formatted -to-many index from an index (e.x 1 => #1)
@@ -61,7 +95,7 @@ export const formatToManyIndex = (index: number): string =>
   `${schema.referenceSymbol}${index}`;
 
 // Meta fields
-export const anyTreeRank = `${schema.fieldPartSeparator}any`;
+export const anyTreeRank = `${schema.fieldPartSeparator}any` as const;
 export const formattedEntry = `${schema.fieldPartSeparator}formatted`;
 
 /**
@@ -76,13 +110,21 @@ export const formattedEntry = `${schema.fieldPartSeparator}formatted`;
 export const emptyMapping = '0';
 
 /**
+ * Returns a complete tree definition name from a tree definition name
+ * (e.x Taxononomy => %Taxonomy)
+ * Opposite of getNameFromTreeDefinitionName
+ */
+export const formatTreeDefinition = (definitionName: string): string =>
+  `${schema.treeDefinitionSymbol}${definitionName}`;
+
+/**
  * Returns a complete tree rank name from a tree rank name
  * (e.x Kingdom => $Kingdom)
  * Opposite of getNameFromTreeRankName
  *
  */
 export const formatTreeRank = (rankName: string): string =>
-  `${schema.treeSymbol}${rankName}`;
+  `${schema.treeRankSymbol}${rankName}`;
 
 // Match fields names like startDate_fullDate, but not _formatted
 export const valueIsPartialField = (value: string): boolean =>
@@ -160,7 +202,7 @@ export const getGenericMappingPath = (mappingPath: MappingPath): MappingPath =>
   mappingPath.filter(
     (mappingPathPart) =>
       !valueIsToManyIndex(mappingPathPart) &&
-      !valueIsTreeRank(mappingPathPart) &&
+      !valueIsTreeMeta(mappingPathPart) &&
       mappingPathPart !== formattedEntry &&
       mappingPathPart !== emptyMapping
   );

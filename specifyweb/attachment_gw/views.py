@@ -1,10 +1,15 @@
+import os
+import re
 import hmac
 import json
 import logging
 import time
+import shutil
+from tempfile import mkdtemp
 from os.path import splitext
 from uuid import uuid4
 from xml.etree import ElementTree
+from datetime import datetime
 
 import requests
 from django.conf import settings
@@ -12,7 +17,8 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
     StreamingHttpResponse
 from django.db import transaction
 from django.utils.translation import gettext as _
-from django.views.decorators.cache import cache_control
+from django.views.decorators.cache import cache_control, never_cache
+from django.views.decorators.http import require_POST
 
 from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.views import login_maybe_required, openapi
@@ -66,8 +72,11 @@ def get_collection(request=None):
     # do any better than using the first collection
     # and hoping that all the assets are in the same
     # folder.
-    from specifyweb.specify.models import Collection
-    return Collection.objects.all()[0].collectionname
+    # from specifyweb.specify.models import Collection
+    # return Collection.objects.all()[0].collectionname
+
+    # The default coll parameter to assets is the database name
+    return settings.DATABASE_NAME
 
 @openapi(schema={
     "get": {
@@ -295,6 +304,71 @@ def proxy(request):
     return StreamingHttpResponse(
         (chunk for chunk in response.iter_content(512 * 1024)),
         content_type=response.headers['Content-Type'])
+
+@require_POST
+@login_maybe_required
+@never_cache
+def download_all(request):
+    """
+    Download all attachments from a list of attachment locations and put them into a zip file.
+    """
+    try:
+        r = json.load(request)
+    except ValueError as e:
+        return HttpResponseBadRequest(e)
+
+    attachmentLocations = r['attachmentlocations']
+    origFileNames = r['origfilenames']
+
+    filename = 'attachments_%s.zip' % datetime.now().isoformat()
+    path = os.path.join(settings.DEPOSITORY_DIR, filename)
+
+    try:
+        make_attachment_zip(attachmentLocations, origFileNames, get_collection(request), path)
+    except Exception as e:
+        return HttpResponseBadRequest(e)
+    
+    if not os.path.exists(path):
+        return HttpResponseBadRequest('Attachment archive not found')
+
+    def file_iterator(file_path, chunk_size=512 * 1024):
+        with open(file_path, 'rb') as f:
+            while chunk := f.read(chunk_size):
+                yield chunk
+        os.remove(file_path)
+
+    response = StreamingHttpResponse(
+        file_iterator(path),
+        content_type='application/octet-stream')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
+
+def make_attachment_zip(attachmentLocations, origFileNames, collection, output_file):
+    output_dir = mkdtemp()
+    try:
+        fileNameAppearances = {}
+        for i, attachmentLocation in enumerate(attachmentLocations):
+            data = {
+                'filename': attachmentLocation,
+                'coll': collection,
+                'type': 'O',
+                'token': generate_token(get_timestamp(), attachmentLocation)
+            }
+            response = requests.get(server_urls['read'], params=data)
+            if response.status_code == 200:
+                downloadFileName = origFileNames[i] if i < len(origFileNames) else attachmentLocation
+                fileNameAppearances[downloadFileName] = fileNameAppearances.get(downloadFileName, 0) + 1
+                if fileNameAppearances[downloadFileName] > 1:
+                    downloadOrigName = os.path.splitext(downloadFileName)[0]
+                    downloadExtension = os.path.splitext(downloadFileName)[1]
+                    downloadFileName = f'{downloadOrigName}_{fileNameAppearances[downloadFileName]-1}{downloadExtension}'
+                with open(os.path.join(output_dir, downloadFileName), 'wb') as f:
+                    f.write(response.content)
+        
+        basename = re.sub(r'\.zip$', '', output_file)
+        shutil.make_archive(basename, 'zip', output_dir, logger=logger)
+    finally:
+        shutil.rmtree(output_dir)
 
 @transaction.atomic()
 @login_maybe_required

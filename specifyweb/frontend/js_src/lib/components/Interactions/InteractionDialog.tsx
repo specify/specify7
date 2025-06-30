@@ -1,6 +1,7 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
@@ -32,6 +33,7 @@ import type {
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
+import { fetchContext as fetchDomain } from '../DataModel/schema';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
@@ -106,10 +108,13 @@ export function InteractionDialog({
 
   const loading = React.useContext(LoadingContext);
 
+  const isLoan = actionTable.name === 'Loan';
+
   function handleProceed(
     recordSet: SerializedResource<RecordSet> | undefined
   ): void {
-    const catalogNumbers = handleParse();
+    const fromRecordSet = recordSet !== undefined;
+    const catalogNumbers = handleParse(fromRecordSet);
     if (catalogNumbers === undefined) return undefined;
     if (isLoanReturn)
       loading(
@@ -133,7 +138,7 @@ export function InteractionDialog({
       );
     else if (typeof recordSet === 'object')
       loading(
-        getPrepsAvailableForLoanRs(recordSet.id).then((data) =>
+        getPrepsAvailableForLoanRs(recordSet.id, isLoan).then((data) =>
           availablePrepsReady(undefined, data)
         )
       );
@@ -141,7 +146,11 @@ export function InteractionDialog({
       loading(
         (catalogNumbers.length === 0
           ? Promise.resolve([])
-          : getPrepsAvailableForLoanCoIds('CatalogNumber', catalogNumbers)
+          : getPrepsAvailableForLoanCoIds(
+              'CatalogNumber',
+              catalogNumbers,
+              isLoan
+            )
         ).then((data) => availablePrepsReady(catalogNumbers, data))
       );
   }
@@ -196,14 +205,32 @@ export function InteractionDialog({
       })),
     });
 
-  function handleParse(): RA<string> | undefined {
+  const [collectionHasSeveralTypes] = useAsyncState(
+    React.useCallback(
+      async () =>
+        fetchDomain.then(
+          async (schema) =>
+            Object.keys(schema.collectionObjectTypeCatalogNumberFormats)
+              .length > 1
+        ),
+      []
+    ),
+    false
+  );
+
+  function handleParse(fromRecordSet: boolean): RA<string> | undefined {
+    if (fromRecordSet) {
+      return [];
+    }
     const parseResults = split(catalogNumbers).map((value) =>
       parseValue(parser, inputRef.current ?? undefined, value)
     );
+
     const errorMessages = parseResults
       .filter((result): result is InvalidParseResult => !result.isValid)
       .map(({ reason, value }) => `${reason} (${value})`);
-    if (errorMessages.length > 0) {
+
+    if (errorMessages.length > 0 && collectionHasSeveralTypes === false) {
       setValidation(errorMessages);
       setState({
         type: 'InvalidState',
@@ -212,12 +239,26 @@ export function InteractionDialog({
       return undefined;
     }
 
+    if (errorMessages.length === 0 && collectionHasSeveralTypes === false) {
+      setValidation([]);
+    }
+
+    if (collectionHasSeveralTypes === true) {
+      const parsedCatNumber = split(catalogNumbers);
+
+      setCatalogNumbers(parsedCatNumber.join('\n'));
+      setState({ type: 'MainState' });
+
+      return parsedCatNumber.map(String);
+    }
+
     const parsed = f.unique(
       (parseResults as RA<ValidParseResult>)
         .filter(({ parsed }) => parsed !== null)
         .map(({ parsed }) => (parsed as number | string).toString())
         .sort(sortFunction(f.id))
     );
+
     setCatalogNumbers(parsed.join('\n'));
 
     setState({ type: 'MainState' });
@@ -231,6 +272,11 @@ export function InteractionDialog({
       >) ?? new itemCollection.table.specifyTable.Resource()
     );
   };
+
+  const collectionObjectGroupResourceTableId = React.useMemo(
+    () => new tables.CollectionObjectGroup.Resource().specifyTable.tableId,
+    []
+  );
 
   return state.type === 'LoanReturnDoneState' ? (
     <Dialog
@@ -287,6 +333,9 @@ export function InteractionDialog({
   ) : (
     <ReadOnlyContext.Provider value>
       <RecordSetsDialog
+        collectionObjectGroupResourceTableId={
+          collectionObjectGroupResourceTableId
+        }
         table={itemTable}
         onClose={handleClose}
         onSelect={handleProceed}
@@ -328,8 +377,8 @@ export function InteractionDialog({
               typeof itemCollection === 'object'
                 ? interactionsText.addItems()
                 : itemTable.name === 'Loan'
-                ? interactionsText.recordReturn({ table: itemTable.label })
-                : interactionsText.createRecord({ table: actionTable.name })
+                  ? interactionsText.recordReturn({ table: itemTable.label })
+                  : interactionsText.createRecord({ table: actionTable.name })
             }
             onClose={handleClose}
           >

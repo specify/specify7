@@ -9,6 +9,7 @@ import type { RA } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
+import { ChronoChart } from '../Attachments/ChronoChart';
 import { RecordSetAttachments } from '../Attachments/RecordSetAttachment';
 import { tablesWithAttachments } from '../Attachments/utils';
 import { ReadOnlyContext } from '../Core/Contexts';
@@ -232,7 +233,14 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               {hasAttachments &&
               !hasSeveralResourceType &&
               !resource?.isNew() ? (
-                <RecordSetAttachments records={records} onFetch={handleFetch} />
+                <RecordSetAttachments
+                  name={title as string}
+                  records={records}
+                  onFetch={handleFetch}
+                />
+              ) : undefined}
+              {table.view === 'GeologicTimePeriod' ? (
+                <ChronoChart />
               ) : undefined}
               {specifyNetworkBadge}
             </div>

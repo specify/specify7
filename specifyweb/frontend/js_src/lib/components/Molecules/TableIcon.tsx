@@ -63,8 +63,8 @@ export function TableIcon({
     label === false
       ? undefined
       : typeof label === 'string'
-      ? label
-      : table?.label ?? camelToHuman(name);
+        ? label
+        : (table?.label ?? camelToHuman(name));
   if (tableName === undefined) {
     const tableIconSource = getIcon(name);
     // Display a legacy Specify 6 icon

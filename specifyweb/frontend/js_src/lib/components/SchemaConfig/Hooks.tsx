@@ -26,7 +26,7 @@ export function useSchemaContainer(
 ): readonly [
   SerializedResource<SpLocaleContainer>,
   (container: SerializedResource<SpLocaleContainer>) => void,
-  boolean
+  boolean,
 ] {
   const initialValue = React.useRef<
     SerializedResource<SpLocaleContainer> | undefined
@@ -59,7 +59,7 @@ export function useContainerString(
   readonly [
     NewSpLocaleItemString | SpLocaleItemString | undefined,
     (containerName: NewSpLocaleItemString | SpLocaleItemString) => void,
-    boolean
+    boolean,
   ]
 > {
   const initialValue = React.useRef<
@@ -107,7 +107,7 @@ export function useContainerItems(
       index: number,
       item: SerializedResource<SpLocaleContainerItem> & WithFetchedStrings
     ) => void,
-    RA<number>
+    RA<number>,
   ]
 > {
   const [changed, setChanged] = React.useState<RA<number>>([]);

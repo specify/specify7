@@ -89,7 +89,7 @@ export function GenericFormatterPickList<
   ITEM extends {
     readonly title: LocalizedString | undefined;
     readonly table: SpecifyTable | undefined;
-  }
+  },
 >({
   table,
   value = localized(''),
@@ -172,8 +172,8 @@ export function ResourceMapping({
       ...(rawPath.length === 0
         ? [emptyMapping]
         : relationship?.isRelationship === false
-        ? []
-        : [formattedEntry]),
+          ? []
+          : [formattedEntry]),
     ]);
   }, [mapping, table.name]);
   const [mappingPath, setMappingPath] = React.useState(sourcePath);
@@ -195,6 +195,7 @@ export function ResourceMapping({
   }, [mappingPath, sourcePath]);
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+
   const lineData = React.useMemo(
     () =>
       getMappingLineData({
@@ -203,7 +204,12 @@ export function ResourceMapping({
         showHiddenFields: true,
         generateFieldData: 'all',
         spec: navigatorSpecs.formatterEditor,
-      }),
+      }).map((line) => ({
+        ...line,
+        fieldsData: Object.fromEntries(
+          Object.entries(line.fieldsData).filter(([key]) => key !== 'age')
+        ),
+      })),
     [table.name, mappingPath]
   );
 

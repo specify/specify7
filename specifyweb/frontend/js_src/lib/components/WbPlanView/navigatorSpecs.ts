@@ -14,6 +14,9 @@ export type NavigatorSpec = {
   // Whether no restrictions mode is enabled
   readonly isNoRestrictions: () => boolean;
   readonly includeToManyReferenceNumbers: boolean;
+  // REFACTOR: remove this attribute
+  readonly useSpecificTreeInterface: boolean;
+  readonly includeAnyTreeDefinition: boolean;
   readonly includeSpecificTreeRanks: boolean;
   readonly includeAnyTreeRank: boolean;
   readonly includeFormattedAggregated: boolean;
@@ -25,7 +28,7 @@ export type NavigatorSpec = {
   // Whether to include all tree fields for non "any rank"
   readonly includeAllTreeFields: boolean;
   readonly allowNestedToMany: boolean;
-  readonly ensurePermission: () => typeof tableActions[number] | undefined;
+  readonly ensurePermission: () => (typeof tableActions)[number] | undefined;
   // Whether can execute query/do workbench upload
   readonly hasActionPermission: () => boolean;
   readonly includeRelationshipsFromTree: boolean;
@@ -40,7 +43,9 @@ const wbPlanView: NavigatorSpec = {
   isNoRestrictions: () =>
     userPreferences.get('workBench', 'wbPlanView', 'noRestrictionsMode'),
   includeToManyReferenceNumbers: true,
+  useSpecificTreeInterface: true,
   includeSpecificTreeRanks: true,
+  includeAnyTreeDefinition: false,
   includeAnyTreeRank: false,
   includeFormattedAggregated: false,
   includeRootFormattedAggregated: false,
@@ -51,7 +56,7 @@ const wbPlanView: NavigatorSpec = {
    * Hide nested -to-many relationships as they are not
    * supported by the WorkBench
    */
-  allowNestedToMany: false,
+  allowNestedToMany: true,
   ensurePermission: () =>
     userPreferences.get('workBench', 'wbPlanView', 'showNoAccessTables')
       ? 'create'
@@ -81,6 +86,9 @@ const queryBuilder: NavigatorSpec = {
   isNoRestrictions: () =>
     userPreferences.get('queryBuilder', 'general', 'noRestrictionsMode'),
   includeToManyReferenceNumbers: false,
+  // REFACTOR: see https://github.com/specify/specify7/pull/5251
+  useSpecificTreeInterface: false,
+  includeAnyTreeDefinition: true,
   includeSpecificTreeRanks: true,
   includeAnyTreeRank: true,
   includeFormattedAggregated: true,
@@ -88,7 +96,7 @@ const queryBuilder: NavigatorSpec = {
   allowTransientToMany: true,
   useSchemaOverrides: false,
   // All tree fields are only available for "any rank"
-  includeAllTreeFields: false,
+  includeAllTreeFields: true,
   allowNestedToMany: true,
   ensurePermission: () =>
     userPreferences.get('queryBuilder', 'general', 'showNoReadTables')
@@ -111,6 +119,8 @@ const formatterEditor: NavigatorSpec = {
   includeReadOnly: true,
   isNoRestrictions: () => true,
   includeToManyReferenceNumbers: false,
+  useSpecificTreeInterface: false,
+  includeAnyTreeDefinition: false,
   includeSpecificTreeRanks: false,
   includeAnyTreeRank: false,
   includeFormattedAggregated: true,
@@ -133,6 +143,8 @@ const permissive: NavigatorSpec = {
   includeReadOnly: true,
   isNoRestrictions: () => true,
   includeToManyReferenceNumbers: true,
+  useSpecificTreeInterface: true,
+  includeAnyTreeDefinition: true,
   includeSpecificTreeRanks: true,
   includeAnyTreeRank: true,
   includeFormattedAggregated: true,

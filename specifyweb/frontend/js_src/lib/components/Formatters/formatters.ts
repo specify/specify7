@@ -183,13 +183,13 @@ async function formatField(
                 cycleDetector
               ))
       : formatFieldValue
-      ? await fieldFormat(
-          field,
-          resource.get(field.name) as string | undefined,
-          undefined,
-          fieldFormatter
-        )
-      : (resource.get(field.name) as string | null) ?? undefined;
+        ? await fieldFormat(
+            field,
+            resource.get(field.name) as string | undefined,
+            undefined,
+            fieldFormatter
+          )
+        : ((resource.get(field.name) as string | null) ?? undefined);
   } else
     formatted = tryBest
       ? naiveFormatter(parentResource.specifyTable.name, parentResource.id)

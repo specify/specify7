@@ -155,13 +155,16 @@ class StatsQuerySpecialization(
         return query, prep
 
     def geologictimeperiod(self, query, descendant_id):
-        return self.chronos_or_litho('chronos', query, descendant_id)
+        return self.paleo_geo_tree('chronos', query, descendant_id)
 
     def lithostrat(self, query, descendant_id):
-        return self.chronos_or_litho('litho', query, descendant_id)
+        return self.paleo_geo_tree('litho', query, descendant_id)
+    
+    def tectonicunit(self, query, descendant_id):
+        return self.paleo_geo_tree('tectonic', query, descendant_id)
 
-    def chronos_or_litho(self, chronos_or_litho, query, descendant_id):
-        assert chronos_or_litho in ('chronos', 'litho')
+    def paleo_geo_tree(self, paleo_geo_tree, query, descendant_id):
+        assert paleo_geo_tree in ('chronos', 'litho', 'tectonic')
 
         co = aliased(models.CollectionObject)
         ce = aliased(models.CollectingEvent)
@@ -169,7 +172,7 @@ class StatsQuerySpecialization(
         pc = aliased(models.PaleoContext)
 
         pc_target = self.collection.discipline.paleocontextchildtable
-        join_col = pc.ChronosStratID if chronos_or_litho == 'chronos' else pc.LithoStratID
+        join_col = pc.ChronosStratID if paleo_geo_tree == 'chronos' else pc.LithoStratID if paleo_geo_tree == 'litho' else pc.TectonicUnitID
 
         query = query.outerjoin(pc, join_col == descendant_id)
 

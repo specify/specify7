@@ -7,6 +7,7 @@ import { index } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { serializeResource } from '../DataModel/serializers';
+import type { LiteralField } from '../DataModel/specifyField';
 import type { SpLocaleContainer, Tables } from '../DataModel/types';
 import { fetchContext as fetchUiFormatters } from '../FieldFormatters';
 import { fetchFormatters } from '../Formatters/formatters';
@@ -44,6 +45,7 @@ type SimpleFieldFormatter = {
   readonly name: string;
   readonly isSystem: boolean;
   readonly value: string;
+  readonly field: LiteralField | undefined;
 };
 
 export const fetchSchemaData = async (): Promise<RawSchemaData> =>
@@ -66,6 +68,7 @@ export const fetchSchemaData = async (): Promise<RawSchemaData> =>
           name,
           isSystem: formatter.isSystem,
           value: formatter.valueOrWild(),
+          field: formatter.field,
         }))
         .filter(({ value }) => value)
     ),

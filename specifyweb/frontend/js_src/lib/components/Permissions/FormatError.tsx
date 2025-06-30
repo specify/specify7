@@ -76,8 +76,8 @@ export function FormatPermissionError({
                     index === 0
                       ? 'rounded-l'
                       : index + 1 === length
-                      ? 'rounded-r'
-                      : ''
+                        ? 'rounded-r'
+                        : ''
                   }
                 `}
                 key={index}
@@ -98,7 +98,7 @@ export function FormatPermissionError({
                   collectionId={
                     institutionPermissions.has(resource)
                       ? undefined
-                      : collectionid ?? undefined
+                      : (collectionid ?? undefined)
                   }
                 />,
                 <UserName userId={userid} />,

@@ -6,20 +6,23 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import Element
 from xml.sax.saxutils import quoteattr
 
-from sqlalchemy import orm, Table as SQLTable, inspect
+from specifyweb.specify.utils import get_picklists
+from sqlalchemy import Table as SQLTable, inspect
+from sqlalchemy.orm import aliased, Query
 from sqlalchemy.sql.expression import case, func, cast, literal, Label
-from sqlalchemy.sql.functions import concat, count
+from sqlalchemy.sql.functions import concat
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.sql.elements import Extract
+from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy import types
 
-from typing import Tuple, Optional, Union, Any
+from typing import Tuple, Optional, Union
 
-from specifyweb.context.app_resource import get_app_resource
+import specifyweb.context.app_resource as app_resource
 from specifyweb.context.remote_prefs import get_remote_prefs
 
-from specifyweb.specify.models import datamodel, Spappresourcedata, \
-    Splocalecontainer, Splocalecontaineritem
+from specifyweb.specify.agent_types import agent_types
+from specifyweb.specify.models import datamodel, Splocalecontainer, Splocalecontaineritem, Picklist
 
 from specifyweb.specify.datamodel import Field, Relationship, Table
 from specifyweb.stored_queries.queryfield import QueryField
@@ -37,10 +40,10 @@ Agent_model = datamodel.get_table('Agent')
 Spauditlog_model = datamodel.get_table('SpAuditLog')
 
 
-class ObjectFormatter(object):
-    def __init__(self, collection, user, replace_nulls):
+class ObjectFormatter:
+    def __init__(self, collection, user, replace_nulls, format_agent_type=False, format_picklist=False):
 
-        formattersXML, _, __ = get_app_resource(collection, user, 'DataObjFormatters')
+        formattersXML, _, __ = app_resource.get_app_resource(collection, user, 'DataObjFormatters')
         self.formattersDom = ElementTree.fromstring(formattersXML)
         self.date_format = get_date_format()
         self.date_format_year = MYSQL_TO_YEAR.get(self.date_format)
@@ -48,14 +51,16 @@ class ObjectFormatter(object):
         self.collection = collection
         self.replace_nulls = replace_nulls
         self.aggregator_count = 0
+        self.format_agent_type = format_agent_type
+        self.format_picklist = format_picklist
 
     def getFormatterDef(self, specify_model: Table, formatter_name) -> Optional[Element]:
         def lookup(attr: str, val: str) -> Optional[Element]:
             return self.formattersDom.find(
-                'format[@%s=%s]' % (attr, quoteattr(val)))
+                f'format[@{attr}={quoteattr(val)}]')
 
         def lookup_default(attr: str, val: str) -> Optional[Element]:
-            elements = self.formattersDom.findall('format[@%s=%s]' % (attr, quoteattr(val)))
+            elements = self.formattersDom.findall(f'format[@{attr}={quoteattr(val)}]')
             for element in elements:
                 if element.get('default') == 'true':
                     return element
@@ -69,6 +74,7 @@ class ObjectFormatter(object):
             return None
 
         def getFormatterFromSchema() -> Element:
+
             try:
                 formatter_name = Splocalecontainer.objects.get(
                     name=specify_model.name.lower(),
@@ -98,7 +104,12 @@ class ObjectFormatter(object):
         if result is not None:
             return result
 
-        return lookup('class', specify_model.classname)
+        result = lookup('class', specify_model.classname)
+        if result is not None:
+            return result
+        
+        logger.warning("no dataobjformatter for %s", specify_model.classname)
+        return None
 
     def hasFormatterDef(self, specify_model: Table, formatter_name) -> bool:
         if formatter_name is None:
@@ -111,10 +122,10 @@ class ObjectFormatter(object):
 
     def getAggregatorDef(self, specify_model: Table, aggregator_name) -> Optional[Element]:
         def lookup(attr: str, val: str) -> Optional[Element]:
-            return self.formattersDom.find('aggregators/aggregator[@%s=%s]' % (attr, quoteattr(val)))
+            return self.formattersDom.find(f'aggregators/aggregator[@{attr}={quoteattr(val)}]')
 
         def lookup_default(attr: str, val: str) -> Optional[Element]:
-            elements = self.formattersDom.findall('aggregators/aggregator[@%s=%s]' % (attr, quoteattr(val)))
+            elements = self.formattersDom.findall(f'aggregators/aggregator[@{attr}={quoteattr(val)}]')
             for element in elements:
                 if element.get('default') == 'true':
                     return element
@@ -124,9 +135,6 @@ class ObjectFormatter(object):
         if aggregator_name:
             result = lookup('name', aggregator_name)
         return result if result is not None else lookup_default('class', specify_model.classname)
-
-    def catalog_number_is_numeric(self):
-        return self.collection.catalognumformatname == 'CatalogNumberNumeric'
 
     def pseudo_sprintf(self, format, expr):
         """Handle format attribute of fields in data object formatter definitions.
@@ -156,7 +164,7 @@ class ObjectFormatter(object):
                   specify_model,
                   previous_tables=None,
                   do_blank_null = True
-                  ) -> Tuple[
+                  ) -> tuple[
         QueryConstruct, blank_nulls, QueryFieldSpec]:
         path = path.split('.')
         path = [inspect(orm_table).class_.__name__, *path]
@@ -180,8 +188,7 @@ class ObjectFormatter(object):
         else:
             new_query, table, model, specify_field = query.build_join(
                 specify_model, orm_table, formatter_field_spec.join_path)
-            new_expr = self._fieldformat(formatter_field_spec.get_field(),
-                                         getattr(table, specify_field.name))
+            new_expr = getattr(table, specify_field.name)
 
         if 'format' in fieldNodeAttrib:
             new_expr = self.pseudo_sprintf(fieldNodeAttrib['format'], new_expr)
@@ -192,7 +199,7 @@ class ObjectFormatter(object):
         return new_query, blank_nulls(new_expr) if do_blank_null else new_expr, formatter_field_spec
 
     def objformat(self, query: QueryConstruct, orm_table: SQLTable,
-                  formatter_name, cycle_detector=[]) -> Tuple[QueryConstruct, blank_nulls]:
+                  formatter_name, cycle_detector=[]) -> tuple[QueryConstruct, blank_nulls]:
         logger.info('formatting %s using %s', orm_table, formatter_name)
         specify_model = datamodel.get_table(inspect(orm_table).class_.__name__,
                                             strict=True)
@@ -207,7 +214,7 @@ class ObjectFormatter(object):
         cycle_with_self = [*cycle_detector, (inspect(orm_table).class_.__name__, 'formatting')] if (
                 cycle_detector is not None) else None
 
-        def make_case(query: QueryConstruct, caseNode: Element) -> Tuple[
+        def make_case(query: QueryConstruct, caseNode: Element) -> tuple[
             QueryConstruct, Optional[str], blank_nulls]:
             field_exprs = []
             for node in caseNode.findall('field'):
@@ -263,7 +270,7 @@ class ObjectFormatter(object):
         formatter_name = aggregator_formatter_name
         if not self.hasFormatterDef(specify_model, aggregator_formatter_name):
             formatter_name = aggregatorNode.attrib.get('format', None)
-        separator = aggregatorNode.attrib.get('separator', ',')
+        separator = aggregatorNode.attrib.get('separator', '; ')
         order_by = aggregatorNode.attrib.get('orderfieldname', '')
         limit = aggregatorNode.attrib.get('count', '')
         limit = None if limit == '' or int(limit) == 0 else limit
@@ -272,16 +279,55 @@ class ObjectFormatter(object):
 
         join_column = list(inspect(
             getattr(orm_table, field.otherSideName)).property.local_columns)[0]
+        subquery_query = Query([]) \
+            .select_from(orm_table) \
+            .filter(join_column == getattr(rel_table, rel_table._id)) \
+            .correlate(rel_table)
+
+        try:
+            from_table_name = query.query.selectable.froms[0].name.lower()
+        except AttributeError:
+            from_table_name = None
+        except InvalidRequestError:
+            from_table_name = None
+        is_self_join_aggregation = len(query.query.column_descriptions) > 0 and \
+            query.query.selectable is not None and \
+            query.query.selectable.froms is not None and \
+            len(query.query.selectable.froms) > 0 and \
+            specify_model.name.lower() == from_table_name
+        # is_self_join_aggregation = orm_table.name.lower() == query.query.selectable.froms[0].name.lower()
+        aliased_orm_table = aliased(orm_table)
+
+        if is_self_join_aggregation: # Handle self join aggregation
+            if field.name in {'children', 'components'} and field.relatedModelName == 'CollectionObject':
+                # Child = aliased(orm_table)
+                subquery_query = Query([]) \
+                    .select_from(aliased_orm_table) \
+                    .filter(aliased_orm_table.ComponentParentID == getattr(rel_table, rel_table._id)) \
+                    .correlate(rel_table)
+            elif field.is_relationship and \
+                field.type == 'one-to-many' and \
+                field.otherSideName in [fld.name for fld in specify_model.relationships]:
+                # Handle self join aggregation in the general case
+                join_field = specify_model.get_field(field.otherSideName)
+                join_column_str = join_field.column
+                join_column = getattr(aliased_orm_table, join_column_str)
+                subquery_query = Query([]) \
+                    .select_from(aliased_orm_table) \
+                    .filter(join_column == getattr(rel_table, rel_table._id)) \
+                    .correlate(rel_table)
+            else:
+                is_self_join_aggregation = False
+
         subquery = QueryConstruct(
             collection=query.collection,
             objectformatter=self,
-            query=orm.Query([]).select_from(orm_table) \
-                .filter(join_column == getattr(rel_table, rel_table._id)) \
-                .correlate(rel_table)
+            query=subquery_query
         )
 
-        subquery, formatted = self.objformat(subquery, orm_table,
-                                             formatter_name, cycle_with_self)
+        subquery, formatted = self.objformat(subquery, orm_table, formatter_name, cycle_with_self) \
+            if not is_self_join_aggregation \
+            else self.objformat(subquery, aliased_orm_table, formatter_name, cycle_with_self) 
 
         if order_by != '':
             subquery, order_by_expr, _ = self.make_expr(subquery, order_by, {}, orm_table, specify_model, do_blank_null=False)
@@ -290,7 +336,6 @@ class ObjectFormatter(object):
             order_by_expr = []
 
         aggregated = blank_nulls(group_concat(formatted, separator, *order_by_expr))
-
 
         aggregator_label = f"aggregator_{self.aggregator_count}"
         self.aggregator_count += 1
@@ -303,14 +348,11 @@ class ObjectFormatter(object):
             if field_spec.is_temporal() and field_spec.date_part == "Full Date":
                 field = self._dateformat(field_spec.get_field(), field)
 
-            elif field_spec.tree_rank is not None:
-                pass
-
             elif field_spec.is_relationship():
                 pass
 
             else:
-                field = self._fieldformat(field_spec.get_field(), field)
+                field = self._fieldformat(field_spec.table, field_spec.get_field(), field)
         return blank_nulls(field) if self.replace_nulls else field
 
     def _dateformat(self, specify_field, field):
@@ -327,18 +369,35 @@ class ObjectFormatter(object):
 
         return func.date_format(field, format_expr)
 
-    def _fieldformat(self, specify_field: Field,
+    def _fieldformat(self, table: Table, specify_field: Field,
                      field: Union[InstrumentedAttribute, Extract]):
+        
+        if self.format_agent_type and specify_field is Agent_model.get_field("agenttype"):
+            cases = [(field == _id, name) for (_id, name) in enumerate(agent_types)]
+            _case = case(cases)
+            return blank_nulls(_case) if self.replace_nulls else _case
+        
+        if self.format_picklist:
+            picklists, _ = get_picklists(self.collection, table.table, specify_field.name)
+            if picklists:
+                cases = [(field == item.value, item.title) for item in picklists[0].picklistitems.all()]
+                _case = case(cases, else_=field)
+            
+                return blank_nulls(_case) if self.replace_nulls else _case
+        
         if specify_field.type == "java.lang.Boolean":
             return field != 0
 
         if specify_field.type in ("java.lang.Integer", "java.lang.Short"):
             return field
-
+        
         if specify_field is CollectionObject_model.get_field('catalogNumber') \
-                and self.catalog_number_is_numeric():
-            return cast(field,
-                        types.Numeric(65))  # 65 is the mysql max precision
+                and all_numeric_catnum_formats(self.collection):
+            # While the frontend can format the catalogNumber if needed,
+            # processes like reports, labels, and query exports generally
+            # expect the catalogNumber to be numeric if possible.
+            # See https://github.com/specify/specify7/issues/6464
+            return cast(field, types.Numeric(65))
 
         if specify_field.type == 'json' and isinstance(field.comparator.type, types.JSON):
             return cast(field, types.Text)
@@ -353,6 +412,10 @@ def get_date_format() -> str:
     logger.debug("dateformat = %s = %s", date_format, mysql_date_format)
     return mysql_date_format
 
+def all_numeric_catnum_formats(collection) -> bool:
+    return (collection.catalognumformatname == 'CatalogNumberNumeric' and
+            all(cot.catalognumberformatname is None or cot.catalognumberformatname == 'CatalogNumberNumeric'
+                for cot in collection.cotypes.all()))
 
 MYSQL_TO_YEAR = {
     "%m %d %y": "%y",

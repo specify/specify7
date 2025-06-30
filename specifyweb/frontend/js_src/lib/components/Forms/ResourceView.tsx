@@ -42,6 +42,7 @@ export const FORBID_ADDING = new Set<keyof Tables>([
   'StorageTreeDef',
   'GeologicTimePeriodTreeDef',
   'GeologicTimePeriodTreeDefItem',
+  'TectonicUnitTreeDef',
   'LithoStratTreeDef',
   'Institution',
   'Division',
@@ -248,6 +249,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   ) : undefined;
 
   const deleteButton =
+    !isReadOnly &&
     !isDependent &&
     !isSubForm &&
     typeof resource === 'object' &&
@@ -262,6 +264,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
         />
       </ErrorBoundary>
     ) : undefined;
+
+  const hasNoData =
+    !resource || (Array.isArray(resource) && resource.length === 0);
 
   const headerContent = (
     <>
@@ -312,7 +317,17 @@ export function ResourceView<SCHEMA extends AnySchema>({
           </DataEntry.SubFormTitle>
           {headerComponents}
         </DataEntry.SubFormHeader>
-        <div className={isCollapsed ? 'hidden' : ''}>{formattedChildren}</div>
+        <div
+          className={
+            isCollapsed
+              ? 'hidden'
+              : hasNoData
+                ? ''
+                : 'border border-gray-500 border-t-0 rounded-b p-1'
+          }
+        >
+          {formattedChildren}
+        </div>
       </DataEntry.SubForm>
     ) : (
       <Container.FullGray>
@@ -364,7 +379,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
       header={customTitle ?? title}
       headerButtons={
         <>
-          {headerButtons?.(specifyNetworkBadge) ?? (
+          {headerButtons?.(headerContent) ?? (
             <>
               <DataEntry.Visit resource={resource} />
               <span className="-ml-4 flex-1" />

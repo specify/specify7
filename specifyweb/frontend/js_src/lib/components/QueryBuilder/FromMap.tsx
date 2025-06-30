@@ -233,12 +233,12 @@ function getNewQueryLines(
     sortType: undefined,
     isDisplay: definedField.isDisplay,
     ...(fields[latitudeLineIndex] as Partial<QueryField>),
-    dataObjFormatter: undefined,
     filters: [
       {
         type: 'between',
         startValue: `${Math.min(...latitudes)},${Math.max(...latitudes)}`,
         isNot: false,
+        isStrict: false,
       },
     ],
   };
@@ -252,7 +252,6 @@ function getNewQueryLines(
     sortType: undefined,
     isDisplay: definedField.isDisplay,
     ...(fields[longitudeLineIndex] as Partial<QueryField>),
-    dataObjFormatter: undefined,
     filters:
       operator === 'between'
         ? [
@@ -260,6 +259,7 @@ function getNewQueryLines(
               type: 'between',
               startValue: `${longitudeStart},${longitudeEnd}`,
               isNot: false,
+              isStrict: false,
             },
           ]
         : [
@@ -267,11 +267,13 @@ function getNewQueryLines(
               type: 'greaterOrEqual',
               startValue: longitudeStart.toString(),
               isNot: false,
+              isStrict: false,
             },
             {
               type: 'lessOrEqual',
               startValue: longitudeEnd.toString(),
               isNot: false,
+              isStrict: false,
             },
           ],
   };

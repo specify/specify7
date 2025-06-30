@@ -18,8 +18,8 @@ export const traverseSchema = (
       typeNode?.tagName === 'names'
         ? 'name'
         : typeNode?.tagName === 'descs'
-        ? 'description'
-        : undefined;
+          ? 'description'
+          : undefined;
     if (type === undefined) return typeNode;
 
     // Get field name and table name
@@ -87,7 +87,8 @@ const traverseParent = (
   toParsedNode(
     traverseDom([node], (path, node) => {
       // Check we are in a text node
-      const text = typeof node.text === 'string' ? node.text?.trim() ?? '' : '';
+      const text =
+        typeof node.text === 'string' ? (node.text?.trim() ?? '') : '';
       if (text === '' || path.at(-1)?.tagName !== 'text') return node;
 
       // Reconstruct weblate language code

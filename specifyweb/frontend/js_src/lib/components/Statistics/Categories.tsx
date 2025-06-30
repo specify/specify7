@@ -221,26 +221,26 @@ export function Categories({
                           checkEmptyItems || handleEdit === undefined
                             ? undefined
                             : item.type === 'DefaultStat'
-                            ? (querySpec, itemName): void =>
-                                handleClick(
-                                  {
-                                    type: 'CustomStat',
-                                    label: itemName,
-                                    querySpec: {
-                                      tableName: querySpec.tableName,
-                                      fields: querySpec.fields,
-                                      isDistinct: querySpec.isDistinct,
+                              ? (querySpec, itemName): void =>
+                                  handleClick(
+                                    {
+                                      type: 'CustomStat',
+                                      label: itemName,
+                                      querySpec: {
+                                        tableName: querySpec.tableName,
+                                        fields: querySpec.fields,
+                                        isDistinct: querySpec.isDistinct,
+                                      },
                                     },
-                                  },
-                                  categoryIndex,
-                                  itemIndex
-                                )
-                            : (querySpec): void =>
-                                handleEdit?.(
-                                  categoryIndex,
-                                  itemIndex,
-                                  querySpec
-                                )
+                                    categoryIndex,
+                                    itemIndex
+                                  )
+                              : (querySpec): void =>
+                                  handleEdit?.(
+                                    categoryIndex,
+                                    itemIndex,
+                                    querySpec
+                                  )
                         }
                         onLoad={onLoad}
                         onRemove={

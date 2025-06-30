@@ -40,6 +40,7 @@ import type { MappingElementProps } from './LineComponents';
 import { getMappingLineProps, MappingLineComponent } from './LineComponents';
 import { columnOptionsAreDefault } from './linesGetter';
 import {
+  BatchEditPrefsView,
   ChangeBaseTable,
   EmptyDataSetDialog,
   mappingOptionsMenu,
@@ -102,17 +103,36 @@ export type MappingState = State<
     readonly autoMapperSuggestions?: RA<AutoMapperSuggestion>;
     readonly openSelectElement?: SelectElementPosition;
     readonly validationResults: RA<MappingPath>;
+    readonly batchEditPrefs?: BatchEditPrefs;
   }
 >;
+
+export type ReadonlySpec = {
+  readonly mustMatch: boolean;
+  readonly columnOptions: boolean;
+  readonly batchEditPrefs: boolean;
+};
+
+export type BatchEditPrefs = {
+  readonly deferForNullCheck: boolean;
+  readonly deferForMatch: boolean;
+};
+
+export const DEFAULT_BATCH_EDIT_PREFS: BatchEditPrefs = {
+  deferForMatch: true,
+  deferForNullCheck: false,
+} as const;
 
 export const getDefaultMappingState = ({
   changesMade,
   lines,
   mustMatchPreferences,
+  batchEditPrefs,
 }: {
   readonly changesMade: boolean;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
+  readonly batchEditPrefs?: BatchEditPrefs;
 }): MappingState => ({
   type: 'MappingState',
   showHiddenFields: getCache('wbPlanViewUi', 'showHiddenFields') ?? false,
@@ -124,6 +144,7 @@ export const getDefaultMappingState = ({
   focusedLine: 0,
   changesMade,
   mustMatchPreferences,
+  batchEditPrefs,
 });
 
 // REFACTOR: split component into smaller components
@@ -133,12 +154,15 @@ export function Mapper(props: {
   readonly onChangeBaseTable: () => void;
   readonly onSave: (
     lines: RA<MappingLine>,
-    mustMatchPreferences: IR<boolean>
+    mustMatchPreferences: IR<boolean>,
+    batchEditPrefs?: BatchEditPrefs
   ) => Promise<void>;
   // Initial values for the state:
   readonly changesMade: boolean;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
+  readonly readonlySpec?: ReadonlySpec;
+  readonly batchEditPrefs?: BatchEditPrefs;
 }): JSX.Element {
   const [state, dispatch] = React.useReducer(
     reducer,
@@ -146,6 +170,7 @@ export function Mapper(props: {
       changesMade: props.changesMade,
       lines: props.lines,
       mustMatchPreferences: props.mustMatchPreferences,
+      batchEditPrefs: props.batchEditPrefs,
     },
     getDefaultMappingState
   );
@@ -264,12 +289,28 @@ export function Mapper(props: {
     const validationResults = ignoreValidation ? [] : validate();
     if (validationResults.length === 0) {
       unsetUnloadProtect();
-      loading(props.onSave(state.lines, state.mustMatchPreferences));
+      loading(
+        props.onSave(
+          state.lines,
+          state.mustMatchPreferences,
+          state.batchEditPrefs
+        )
+      );
     } else
       dispatch({
         type: 'ValidationAction',
         validationResults,
       });
+  }
+
+  function clearUnmappedLines(): void {
+    const filteredLines = state.lines.filter(
+      (line) => line.mappingPath[0] !== emptyMapping
+    );
+    dispatch({
+      type: 'UpdateLinesAction',
+      lines: filteredLines,
+    });
   }
 
   const handleClose = (): void =>
@@ -283,6 +324,11 @@ export function Mapper(props: {
     state.lines.length > 0 &&
     mappingPathIsComplete(state.mappingView) &&
     getMappedFieldsBind(state.mappingView).length === 0;
+
+  const disableSave =
+    props.readonlySpec === undefined
+      ? isReadOnly
+      : Object.values(props.readonlySpec).every(Boolean);
 
   return (
     <Layout
@@ -327,38 +373,61 @@ export function Mapper(props: {
               })
             }
           />
-          <MustMatch
-            getMustMatchPreferences={(): IR<boolean> =>
-              getMustMatchTables({
-                baseTableName: props.baseTableName,
-                lines: state.lines,
-                mustMatchPreferences: state.mustMatchPreferences,
-              })
-            }
-            onChange={(mustMatchPreferences): void =>
-              dispatch({
-                type: 'MustMatchPrefChangeAction',
-                mustMatchPreferences,
-              })
-            }
-            onClose={(): void => {
-              /*
-               * Since setting table as must match causes all of its fields to
-               * be optional, we may have to rerun validation on
-               * mustMatchPreferences changes
-               */
-              if (
-                state.validationResults.length > 0 &&
-                state.lines.some(({ mappingPath }) =>
-                  mappingPathIsComplete(mappingPath)
-                )
-              )
+          {typeof props.batchEditPrefs === 'object' ? (
+            <ReadOnlyContext.Provider
+              value={
+                props.dataset.uploadresult?.success ??
+                props.readonlySpec?.batchEditPrefs ??
+                isReadOnly
+              }
+            >
+              <BatchEditPrefsView
+                prefs={props.batchEditPrefs}
+                onChange={(prefs) =>
+                  dispatch({
+                    type: 'ChangeBatchEditPrefs',
+                    prefs,
+                  })
+                }
+              />
+            </ReadOnlyContext.Provider>
+          ) : null}
+          <ReadOnlyContext.Provider
+            value={props.readonlySpec?.mustMatch ?? isReadOnly}
+          >
+            <MustMatch
+              getMustMatchPreferences={(): IR<boolean> =>
+                getMustMatchTables({
+                  baseTableName: props.baseTableName,
+                  lines: state.lines,
+                  mustMatchPreferences: state.mustMatchPreferences,
+                })
+              }
+              onChange={(mustMatchPreferences): void =>
                 dispatch({
-                  type: 'ValidationAction',
-                  validationResults: validate(),
-                });
-            }}
-          />
+                  type: 'ChangeMustMatchPrefAction',
+                  mustMatchPreferences,
+                })
+              }
+              onClose={(): void => {
+                /*
+                 * Since setting table as must match causes all of its fields to
+                 * be optional, we may have to rerun validation on
+                 * mustMatchPreferences changes
+                 */
+                if (
+                  state.validationResults.length > 0 &&
+                  state.lines.some(({ mappingPath }) =>
+                    mappingPathIsComplete(mappingPath)
+                  )
+                )
+                  dispatch({
+                    type: 'ValidationAction',
+                    validationResults: validate(),
+                  });
+              }}
+            />
+          </ReadOnlyContext.Provider>
           {!isReadOnly && (
             <Button.Small
               className={
@@ -386,11 +455,12 @@ export function Mapper(props: {
           >
             {isReadOnly ? wbText.dataEditor() : commonText.cancel()}
           </Link.Small>
-          {!isReadOnly && (
+          {!disableSave && (
             <Button.Small
               disabled={!state.changesMade}
               variant={className.saveButton}
-              onClick={(): void => handleSave(false)}
+              // This is a bit complicated to resolve correctly. Each component should have its own validator..
+              onClick={(): void => handleSave(isReadOnly)}
             >
               {commonText.save()}
             </Button.Small>
@@ -547,7 +617,7 @@ export function Mapper(props: {
                   customSelectSubtype: 'simple',
                   fieldsData: mappingOptionsMenu({
                     id: (suffix) => id(`column-options-${line}-${suffix}`),
-                    isReadOnly,
+                    isReadOnly: props.readonlySpec?.columnOptions ?? isReadOnly,
                     columnOptions,
                     onChangeMatchBehaviour: (matchBehavior) =>
                       dispatch({
@@ -653,6 +723,7 @@ export function Mapper(props: {
       </Ul>
 
       <MappingsControlPanel
+        columnsNotSaved={props.dataset.columns.length === 0}
         showHiddenFields={state.showHiddenFields}
         onAddNewHeader={
           isReadOnly
@@ -667,6 +738,7 @@ export function Mapper(props: {
                   );
               }
         }
+        onClear={clearUnmappedLines}
         onToggleHiddenFields={(): void =>
           dispatch({ type: 'ToggleHiddenFieldsAction' })
         }
