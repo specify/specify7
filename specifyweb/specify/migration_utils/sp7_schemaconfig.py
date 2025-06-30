@@ -236,11 +236,11 @@ MIGRATION_0035_FIELDS = {
 
 MIGRATION_0035_UPDATE_FIELDS = {
     'Component': [
-        ('type', 'Component Type', 'This type determines the valid options for component names.'), 
-        ('name', 'Component Name', 'The name from a taxon tree corresponding to the chosen type.'),
+        ('type', 'Type', 'This type determines the valid options for component names.'), 
+        ('name', 'Name', 'The name from a taxon tree corresponding to the chosen type.'),
         ('verbatimName', 'Verbatim Name', 'The original name printed or associated with the component.'),
-        ('role', 'Component Role', 'Define the role or purpose of the component in the overall collection.'), 
-        ('proportion', 'Component Proportion', 'Specify the proportion of the component relative to the whole.'),
+        ('role', 'Role', 'Define the role or purpose of the component in the overall collection.'), 
+        ('proportion', 'Proportion', 'Specify the proportion of the component relative to the whole.'),
         ('uniqueIdentifier', 'Unique Identifier', 'Unique Identifier [/+][-]Unique Identifier'),
         ],
 }
