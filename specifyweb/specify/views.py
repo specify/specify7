@@ -1520,13 +1520,15 @@ def series_autonumber_range(request: http.HttpRequest):
     formatter = get_uiformatter(request.specify_collection, table_name, field_name)
     
     try: 
-        canonicalized_range_start = formatter.canonicalize(formatter.parse(range_start))
-        assert not formatter.needs_autonumber(canonicalized_range_start)
+        range_start_parsed = formatter.parse(range_start)
+        assert not formatter.needs_autonumber(range_start_parsed)
+        canonicalized_range_start = formatter.canonicalize(range_start_parsed)
     except:
         return http.HttpResponseBadRequest('Range start does not match format.')
     try:
-        canonicalized_range_end = formatter.canonicalize(formatter.parse(range_end))
-        assert not formatter.needs_autonumber(canonicalized_range_end)
+        range_end_parsed = formatter.parse(range_end)
+        assert not formatter.needs_autonumber(range_end_parsed)
+        canonicalized_range_end = formatter.canonicalize(range_end_parsed)
     except:
         return http.HttpResponseBadRequest('Range end does not match format.')
     
