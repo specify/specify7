@@ -425,33 +425,37 @@ function RecordSet<SCHEMA extends AnySchema>({
             : undefined
         }
         onClone={(resources: RA<SpecifyResource<SCHEMA>>): void => {
+          console.log(resources);
           go(totalCount, 'new', resources[0]);
-          if (
-            createRecordSetOnBulkCarryForward.includes(
+          if (resources.length > 1) {
+            if (createRecordSetOnBulkCarryForward.includes(
               resources[0].specifyTable.name
-            ) &&
-            resources.length > 1
-          ) {
-            const sortedResources = Array.from(resources).sort(
-              sortFunction((r) => r.id)
-            ) as RA<SpecifyResource<CollectionObject>>;
-            loading(
-              createNewRecordSet(
-                sortedResources.map((resource) => resource.id)
-              ).then(async () => {
-                const firstCollectionObject = await format(sortedResources[0]);
-                const lastCollectionObject = await format(
-                  sortedResources.at(-1)
-                );
-                recordSet.set(
-                  'name',
-                  `${
-                    tables.CollectionObject.label
-                  } Batch ${firstCollectionObject!} - ${lastCollectionObject!}`
-                );
-                await recordSet.save();
-              })
-            );
+            )) {
+              const sortedResources = Array.from(resources).sort(
+                sortFunction((r) => r.id)
+              ) as RA<SpecifyResource<CollectionObject>>;
+              loading(
+                createNewRecordSet(
+                  sortedResources.map((resource) => resource.id)
+                ).then(async () => {
+                  const firstCollectionObject = await format(sortedResources[0]);
+                  const lastCollectionObject = await format(
+                    sortedResources.at(-1)
+                  );
+                  recordSet.set(
+                    'name',
+                    `${
+                      tables.CollectionObject.label
+                    } Batch ${firstCollectionObject!} - ${lastCollectionObject!}`
+                  );
+                  await recordSet.save();
+                })
+              );
+            } else {
+              // Don't create new record set
+              go(totalCount, resources[resources.length-1].id);
+              handleAdd(resources.slice(1), false);
+            }
           }
         }}
         onClose={handleClose}

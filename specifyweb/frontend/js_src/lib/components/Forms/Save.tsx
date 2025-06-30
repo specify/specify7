@@ -232,11 +232,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         // Scroll to the top of the form on clone
         smoothScroll(form, 0);
         loading(
-          handleClick().then((resources) => {
-            console.log(resources);
-            return resources && handleAdd ? handleAdd(resources) : undefined;
-          }
-          )
+          handleClick().then((resources) => resources && handleAdd ? handleAdd(resources) : undefined)
         );
       }}
     >
@@ -279,7 +275,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         carryForwardRangeStart === null ||
         !formatter.format(carryForwardRangeStart) ||
         !formatter.format(carryForwardRangeEnd) ||
-        (formatter.format(carryForwardRangeStart) ?? '') >
+        (formatter.format(carryForwardRangeStart) ?? '') >=
           (formatter.format(carryForwardRangeEnd) ?? '')
       ) {
         setBulkCarryRangeBlocked(true);
