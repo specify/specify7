@@ -453,7 +453,7 @@ function RecordSet<SCHEMA extends AnySchema>({
               );
             } else {
               // Don't create new record set
-              go(totalCount, resources[resources.length-1].id);
+              go(totalCount, resources.at(-1).id);
               handleAdd(resources.slice(1), false);
             }
           }
