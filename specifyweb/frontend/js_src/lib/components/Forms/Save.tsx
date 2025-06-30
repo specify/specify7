@@ -274,12 +274,11 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       const carryForwardRangeStart = resource.get(numberFieldName);
       if (
         carryForwardRangeStart === null ||
-        !formatter.parse(carryForwardRangeStart)
+        !formatter.format(carryForwardRangeStart) ||
+        !formatter.format(carryForwardRangeEnd) ||
+        (formatter.format(carryForwardRangeStart) ?? '') >
+          (formatter.format(carryForwardRangeEnd) ?? '')
       ) {
-        setBulkCarryRangeBlocked(true);
-        return undefined;
-      }
-      if (!formatter.format(carryForwardRangeEnd)) {
         setBulkCarryRangeBlocked(true);
         return undefined;
       }

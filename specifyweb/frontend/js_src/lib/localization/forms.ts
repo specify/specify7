@@ -908,9 +908,6 @@ export const formsText = createDictionary({
   bulkCarryForwardRangeEnabled: {
     'en-us': 'Show Bulk Carry Forward range',
   },
-  bulkCarryForwardRange: {
-    'en-us': 'Bulk Carry Forward range',
-  },
   bulkCarryForwardRangeErrorDescription: {
     'en-us': 'Cannot carry forward record through the specified {field:string} range.',
   },
