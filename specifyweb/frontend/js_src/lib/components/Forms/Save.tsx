@@ -45,8 +45,8 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
-import { FORBID_ADDING, NO_CLONE } from './ResourceView';
 import { BulkCarryRangeBlockedDialog } from './BulkCarryForward';
+import { FORBID_ADDING, NO_CLONE } from './ResourceView';
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
 /*
