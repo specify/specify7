@@ -9,6 +9,9 @@ from specifyweb.specify.migration_utils.update_schema_config import revert_table
 
 from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0035_TABLES as SCHEMA_CONFIG_TABLES, MIGRATION_0035_FIELDS as SCHEMA_CONFIG_TABLE_FIELDS, MIGRATION_0035_UPDATE_FIELDS as SCHEMA_CONFIG_COMPONENT_TABLE_FIELDS
 
+PICKLIST_NAME = 'CollectionObjectType'
+FIELD_NAME = 'type'
+
 def create_table_schema_config_with_defaults(apps, schema_editor):
     Discipline = specify_apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
@@ -70,6 +73,22 @@ def update_hidden_prop(apps, schema_editor):
                     item.ishidden = True
                     item.save()
 
+def create_cotype_splocalecontaineritem(apps):
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+    # Create a Splocalecontaineritem record for each Component Splocalecontainer
+    # NOTE: Each discipline has its own Component Splocalecontainer
+    for container in Splocalecontainer.objects.filter(name='component', schematype=0):
+        container_item = Splocalecontaineritem.objects.get(
+            name=FIELD_NAME,
+            container=container,
+        )
+        container_item.picklistname = PICKLIST_NAME
+        container_item.isrequired = True
+        container_item.type = 'ManyToOne'
+        container_item.save()
+
 def revert_table_schema_config_with_defaults(apps, schema_editor):
     for table, _ in SCHEMA_CONFIG_TABLES:
         revert_table_schema_config(table, apps)
@@ -114,6 +133,12 @@ def reverse_update_hidden_prop(apps, schema_editor):
                 for item in items:
                     item.ishidden = False
                     item.save()
+
+def revert_cotype_splocalecontaineritem(apps):
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+    Splocalecontaineritem.objects.filter(name=FIELD_NAME, container__name='component', container__schematype=0).delete()
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -124,11 +149,13 @@ class Migration(migrations.Migration):
         create_table_schema_config_with_defaults(apps, schema_editor)
         update_schema_config_field_desc(apps, schema_editor)
         update_hidden_prop(apps, schema_editor)
+        create_cotype_splocalecontaineritem(apps)
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
         revert_table_schema_config_with_defaults(apps, schema_editor)
         revert_update_hidden_prop(apps, schema_editor)
         reverse_update_hidden_prop(apps, schema_editor)
+        revert_cotype_splocalecontaineritem(apps)
 
     operations = [
         migrations.CreateModel(
