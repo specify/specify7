@@ -466,7 +466,11 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           header={formsText.carryForward()}
           onClose={undefined}
         >
-          {bulkCarryRangeInvalidNumbers !== undefined ? (
+          {bulkCarryRangeInvalidNumbers === undefined ? (
+            formsText.bulkCarryForwardRangeErrorDescription({
+              field: numberField.label,
+            })
+          ) : (
             <>
               {formsText.bulkCarryForwardRangeExistingRecords({
                 field: numberField.label,
@@ -475,10 +479,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                 <p key={index}>{number}</p>
               ))}
             </>
-          ) : (
-            formsText.bulkCarryForwardRangeErrorDescription({
-              field: numberField.label,
-            })
           )}
         </Dialog>
       ) : undefined}
