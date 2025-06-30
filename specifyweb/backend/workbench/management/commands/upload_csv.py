@@ -8,8 +8,8 @@ from django.db import transaction
 
 from specifyweb.specify.models import Collection
 
-from specifyweb.workbench.upload.upload import do_upload_csv
-from specifyweb.workbench.upload.upload_plan_schema import schema, parse_plan
+from specifyweb.backend.workbench.upload.upload import do_upload_csv
+from specifyweb.backend.workbench.upload.upload_plan_schema import schema, parse_plan
 
 class Command(BaseCommand):
     help = 'Upload CSV to the database.'

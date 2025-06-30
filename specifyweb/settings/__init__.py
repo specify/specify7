@@ -221,7 +221,7 @@ SPECIFY_APPS  = [
     'specifyweb.backend.patches',
     'specifyweb.backend.report_runner',
     'specifyweb.backend.interactions',
-    'specifyweb.workbench',
+    'specifyweb.backend.workbench',
     'specifyweb.backend.notifications',
     'specifyweb.backend.export',
     'specifyweb.backend.raven_placeholder' if RAVEN_CONFIG is None else 'raven.contrib.django.raven_compat',

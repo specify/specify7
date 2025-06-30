@@ -11,7 +11,7 @@ from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.tests.test_trees import TestTree
 from specifyweb.specify.tree_extras import validate_tree_numbering
 from specifyweb.specify.tests.test_trees import get_table
-from specifyweb.workbench.upload.auditor import DEFAULT_AUDITOR_PROPS
+from specifyweb.backend.workbench.upload.auditor import DEFAULT_AUDITOR_PROPS
 from .base import UploadTestsBase
 from ..parsing import filter_and_upload
 from ..treerecord import TreeRecord, BoundTreeRecord, TreeDefItemWithParseResults
