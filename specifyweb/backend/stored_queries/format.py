@@ -25,7 +25,7 @@ from specifyweb.specify.agent_types import agent_types
 from specifyweb.specify.models import datamodel, Splocalecontainer, Splocalecontaineritem, Picklist
 
 from specifyweb.specify.datamodel import Field, Relationship, Table
-from specifyweb.stored_queries.queryfield import QueryField
+from specifyweb.backend.stored_queries.queryfield import QueryField
 
 from . import models
 from .group_concat import group_concat

@@ -8,7 +8,7 @@ from specifyweb.specify.sp7_build_datamodel import build_datamodel_code_from_xml
 from specifyweb.specify.sp7_build_models import build_model_code, generate_build_model_functions_code, \
     generate_build_model_imports_code
 from specifyweb.specify.models_by_table_id import get_model_by_table_id as sp7_get_model_by_table_id
-from specifyweb.stored_queries.sp7_build_models import gen_sqlalchemy_table_classes_code
+from specifyweb.backend.stored_queries.sp7_build_models import gen_sqlalchemy_table_classes_code
 
 class DatamodelTests(TestCase):
     

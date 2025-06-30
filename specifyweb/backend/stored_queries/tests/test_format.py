@@ -1,10 +1,10 @@
-from specifyweb.stored_queries.format import ObjectFormatter
-from specifyweb.stored_queries.query_construct import QueryConstruct
-from specifyweb.stored_queries.tests.base_format import SIMPLE_DEF
-from specifyweb.stored_queries.tests.tests import SQLAlchemySetup
+from specifyweb.backend.stored_queries.format import ObjectFormatter
+from specifyweb.backend.stored_queries.query_construct import QueryConstruct
+from specifyweb.backend.stored_queries.tests.base_format import SIMPLE_DEF
+from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from xml.etree import ElementTree
 import specifyweb.specify.models as spmodels
-import specifyweb.stored_queries.models as models
+import specifyweb.backend.stored_queries.models as models
 
 # Used for pretty-formatting sql code for testing
 import sqlparse

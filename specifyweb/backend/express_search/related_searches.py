@@ -2,7 +2,7 @@
 Defines specific related searches
 """
 
-from specifyweb.stored_queries.query_ops import QueryOps
+from specifyweb.backend.stored_queries.query_ops import QueryOps
 
 from .related import RelatedSearch, F
 
