@@ -921,6 +921,9 @@ export const formsText = createDictionary({
   bulkCarryForwardRangeEnd: {
     'en-us': 'Carry Forward Range End',
   },
+  createRecordSetOnBulkCarryForward: {
+    'en-us': 'Create record set on Bulk Carry Forward'
+  },
   cloneButtonEnabled: {
     'en-us': 'Show Clone button',
     'ru-ru': 'Показать кнопку «Клонировать»',

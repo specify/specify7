@@ -38,6 +38,7 @@ import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { locationToState } from '../Router/RouterState';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 import type { RecordSelectorProps } from './RecordSelector';
@@ -347,6 +348,12 @@ function RecordSet<SCHEMA extends AnySchema>({
   const [openDialogForTitle, _, __, setOpenDialogForTitle] =
     useBooleanState(false);
 
+  const [createRecordSetOnBulkCarryForward] = userPreferences.use(
+    'form',
+    'preferences',
+    'createRecordSetOnBulkCarryForward'
+  );
+
   return (
     <>
       <RecordSelectorFromIds<SCHEMA>
@@ -419,7 +426,12 @@ function RecordSet<SCHEMA extends AnySchema>({
         }
         onClone={(resources: RA<SpecifyResource<SCHEMA>>): void => {
           go(totalCount, 'new', resources[0]);
-          if (resources.length > 1) {
+          if (
+            createRecordSetOnBulkCarryForward.includes(
+              resources[0].specifyTable.name
+            ) &&
+            resources.length > 1
+          ) {
             const sortedResources = Array.from(resources).sort(
               sortFunction((r) => r.id)
             ) as RA<SpecifyResource<CollectionObject>>;

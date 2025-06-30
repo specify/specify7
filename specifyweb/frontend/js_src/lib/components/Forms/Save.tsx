@@ -46,6 +46,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
+import { BulkCarryRangeBlockedDialog } from './BulkCarryForward';
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
 /*
@@ -231,8 +232,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         // Scroll to the top of the form on clone
         smoothScroll(form, 0);
         loading(
-          handleClick().then((resources) =>
-            resources && handleAdd ? handleAdd(resources) : undefined
+          handleClick().then((resources) => {
+            console.log(resources);
+            return resources && handleAdd ? handleAdd(resources) : undefined;
+          }
           )
         );
       }}
@@ -261,7 +264,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const [bulkCarryRangeBlocked, setBulkCarryRangeBlocked] =
     React.useState(false);
   const [bulkCarryRangeInvalidNumbers, setBulkCarryRangeInvalidNumbers] =
-    React.useState<RA<number> | undefined>(undefined);
+    React.useState<RA<string> | undefined>(undefined);
 
   const handleBulkCarryForward = async (): Promise<
     RA<SpecifyResource<SCHEMA>> | undefined
@@ -285,7 +288,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 
       const response = await ajax<{
         readonly values: RA<number>;
-        readonly existing: RA<number>;
+        readonly existing: RA<string>;
       }>(`/api/specify/series_autonumber_range/`, {
         method: 'POST',
         headers: { Accept: 'application/json' },
@@ -452,35 +455,14 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         />
       ) : undefined}
       {bulkCarryRangeBlocked ? (
-        <Dialog
-          buttons={
-            <Button.Warning
-              onClick={(): void => {
-                setBulkCarryRangeBlocked(false);
-                setBulkCarryRangeInvalidNumbers(undefined);
-              }}
-            >
-              {commonText.close()}
-            </Button.Warning>
-          }
-          header={formsText.carryForward()}
-          onClose={undefined}
-        >
-          {bulkCarryRangeInvalidNumbers === undefined ? (
-            formsText.bulkCarryForwardRangeErrorDescription({
-              field: numberField.label,
-            })
-          ) : (
-            <>
-              {formsText.bulkCarryForwardRangeExistingRecords({
-                field: numberField.label,
-              })}
-              {bulkCarryRangeInvalidNumbers.map((number, index) => (
-                <p key={index}>{number}</p>
-              ))}
-            </>
-          )}
-        </Dialog>
+        <BulkCarryRangeBlockedDialog
+          invalidNumbers={bulkCarryRangeInvalidNumbers}
+          numberField={numberField}
+          onClose={(): void => {
+            setBulkCarryRangeBlocked(false);
+            setBulkCarryRangeInvalidNumbers(undefined);
+          }}
+        />
       ) : undefined}
     </>
   );
