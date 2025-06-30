@@ -134,7 +134,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Component',
             fields=[
-                ('id', models.AutoField(db_column='componentid', primary_key=True, serialize=False)),
+                ('id', models.AutoField(db_column='ComponentID', primary_key=True, serialize=False)),
                 ('catalognumber', models.CharField(blank=True, db_column='CatalogNumber', max_length=32, null=True)),
                 ('verbatimname', models.TextField(blank=True, db_column='VerbatimName', null=True)),
                 ('role', models.CharField(db_column='Role', max_length=50, null=True)),
