@@ -15,7 +15,7 @@ from specifyweb.backend.stored_queries.models import CollectionObject as sq_Coll
 
 from . import models
 from .query_ops import QueryOps
-from ..specify.load_datamodel import Table, Field, Relationship
+from specifyweb.specify.load_datamodel import Table, Field, Relationship
 
 logger = logging.getLogger(__name__)
 

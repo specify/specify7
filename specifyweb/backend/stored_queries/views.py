@@ -20,10 +20,10 @@ from .execution import execute, run_ephemeral_query, do_export, recordset, \
 from .queryfield import QueryField
 from specifyweb.backend.permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets, check_table_permissions
-from ..specify.api import toJson, uri_for_model
-from ..specify.models import Collection, Recordset, Recordsetitem, \
+from specifyweb.specify.api import toJson, uri_for_model
+from specifyweb.specify.models import Collection, Recordset, Recordsetitem, \
     Loanreturnpreparation, Loanpreparation, Loan
-from ..specify.views import login_maybe_required
+from specifyweb.specify.views import login_maybe_required
 
 logger = logging.getLogger(__name__)
 
