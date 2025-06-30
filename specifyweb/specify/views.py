@@ -541,6 +541,8 @@ class ReplaceRecordPT(PermissionTarget):
 def record_merge(
     request: http.HttpRequest,
     model_name: str,
+    # This is actually of type str.
+    # TODO: Change below to str.
     new_model_id: int
 ) -> Union[http.HttpResponse, http.JsonResponse]:
     """Replaces all the foreign keys referencing the old record IDs
