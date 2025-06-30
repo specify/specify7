@@ -137,11 +137,11 @@ class TestRecordMergeRequests(ApiTests):
 
     def test_permissions_enforced_background(self):
         response = self._check_permission_enforced(background=True)
-        self.assertEqual(response.status_code, 200)
+        self._assertStatusCodeEqual(response, 200)
 
     def test_permissions_enforced_foreground(self):
         response = self._check_permission_enforced(background=False)
-        self.assertEqual(response.status_code, 204)
+        self._assertStatusCodeEqual(response, 204)
 
     def test_check_no_old_record_id_background(self):
         self._check_no_old_record_id(background=True)
@@ -213,7 +213,7 @@ class TestRecordMergeRequests(ApiTests):
             content_type='application/json'
         )
 
-        self.assertEqual(response.status_code, 200)
+        self._assertStatusCodeEqual(response, 200)
 
         self.assertEqual(json.loads(response.content.decode()), test_id)
 
