@@ -96,12 +96,7 @@ class MainSetupTearDown:
             name="testuser",
             password="205C0D906445E1C71CA77C6D714109EB6D582B03A5493E4C")  # testuser
 
-        UserPolicy.objects.create(
-            collection=None,
-            specifyuser=self.specifyuser,
-            resource="%",
-            action="%",
-        )
+        self._add_user_policy(self.specifyuser)
 
         self.agent = Agent.objects.create(
             agenttype=0,
@@ -157,6 +152,16 @@ class MainSetupTearDown:
             prep_list.append(prep)
         return prep
 
+    def _assertStatusCodeEqual(self, response, status_code):
+        self.assertEqual(response.status_code, status_code, f"ERROR: {response.content.decode()}")
+
+    def _add_user_policy(self, specifyuser):
+        UserPolicy.objects.create(
+                collection=None,
+                specifyuser=specifyuser,
+                resource="%",
+                action="%",
+            )
 
 class ApiTests(MainSetupTearDown, TestCase): pass
 

@@ -368,6 +368,9 @@ def set_user_agents(request, userid: int):
             pk__in=new_agentids).update(specifyuser_id=userid)
 
         # check for multiple agents assigned to the user
+        # NOTE: This is too aggressive (and inefficient) of a test.
+        # By the time we are here, we can just check if the current agents (in new_agentids)
+        # belong to the same division...
         cursor.execute(
             """select divisionid, a1.agentid, a2.agentid
             from agent a1 join agent a2 using (specifyuserid, divisionid)
