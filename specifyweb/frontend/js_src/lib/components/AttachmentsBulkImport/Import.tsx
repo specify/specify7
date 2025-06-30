@@ -75,7 +75,7 @@ export function AttachmentImportById(): JSX.Element | null {
   );
 }
 
-const fetchAndReconstructDataset = async (id: number) =>
+export const fetchAndReconstructAttachmentDataset = async (id: number) =>
   ajax<FetchedDataSet>(`/attachment_gw/dataset/${id}/`, {
     headers: { Accept: 'application/json' },
     method: 'GET',
@@ -99,7 +99,7 @@ function AttachmentImportByIdSafe({
   readonly id: number;
 }): JSX.Element | null {
   const [attachmentDataSet] = usePromise<AttachmentDataSet | undefined>(
-    React.useMemo(async () => fetchAndReconstructDataset(id), [id]),
+    React.useMemo(async () => fetchAndReconstructAttachmentDataset(id), [id]),
     true
   );
   return attachmentDataSet === undefined ? null : (
@@ -136,15 +136,15 @@ function AttachmentsImport({
       eagerDataSet.uploadplan.staticPathKey === undefined
         ? { uploadFile: file }
         : {
-            uploadFile: {
-              ...file,
-              parsedName: resolveFileNames(
-                file.file.name,
-                eagerDataSet.uploadplan.formatQueryResults,
-                eagerDataSet.uploadplan.fieldFormatter
-              ),
-            },
+          uploadFile: {
+            ...file,
+            parsedName: resolveFileNames(
+              file.file.name,
+              eagerDataSet.uploadplan.formatQueryResults,
+              eagerDataSet.uploadplan.fieldFormatter
+            ),
           },
+        },
     [eagerDataSet.uploadplan.staticPathKey]
   );
 
@@ -165,7 +165,7 @@ function AttachmentsImport({
     eagerDataSet.uploadplan.staticPathKey === undefined
       ? undefined
       : staticAttachmentImportPaths[eagerDataSet.uploadplan.staticPathKey]
-          .baseTable;
+        .baseTable;
 
   const anyUploaded = React.useMemo(
     () =>
@@ -213,10 +213,10 @@ function AttachmentsImport({
               {eagerDataSet.uploadplan.staticPathKey === undefined
                 ? ''
                 : strictGetTable(currentBaseTable).strictGetField(
-                    staticAttachmentImportPaths[
-                      eagerDataSet.uploadplan.staticPathKey
-                    ].path
-                  ).label}
+                  staticAttachmentImportPaths[
+                    eagerDataSet.uploadplan.staticPathKey
+                  ].path
+                ).label}
             </>
           )}
         </div>
@@ -267,11 +267,11 @@ function AttachmentsImport({
               anyUploaded
                 ? undefined
                 : (uploadSpec) => {
-                    commitChange((oldState) => ({
-                      ...oldState,
-                      uploadplan: uploadSpec,
-                    }));
-                  }
+                  commitChange((oldState) => ({
+                    ...oldState,
+                    uploadplan: uploadSpec,
+                  }));
+                }
             }
           />
         </div>
@@ -340,14 +340,14 @@ function AttachmentsImport({
               ...oldState,
               rows: oldState.rows.map((uploadable, index) =>
                 parsedName !== undefined &&
-                (multiple || index === indexToDisambiguate) &&
-                // Redundant check for single disambiguation, but needed for disambiguate multiples
-                parsedName === uploadable.uploadFile?.parsedName &&
-                uploadable.attachmentId === undefined
+                  (multiple || index === indexToDisambiguate) &&
+                  // Redundant check for single disambiguation, but needed for disambiguate multiples
+                  parsedName === uploadable.uploadFile?.parsedName &&
+                  uploadable.attachmentId === undefined
                   ? {
-                      ...uploadable,
-                      disambiguated: disambiguatedId,
-                    }
+                    ...uploadable,
+                    disambiguated: disambiguatedId,
+                  }
                   : uploadable
               ),
             };
@@ -357,7 +357,7 @@ function AttachmentsImport({
       />
 
       {eagerDataSet.uploaderstatus === 'validating' &&
-      eagerDataSet.uploadplan.staticPathKey !== undefined ? (
+        eagerDataSet.uploadplan.staticPathKey !== undefined ? (
         <AttachmentsValidationDialog
           files={eagerDataSet.rows}
           uploadSpec={eagerDataSet.uploadplan}
@@ -365,13 +365,13 @@ function AttachmentsImport({
             validatedFiles === undefined
               ? undefined
               : commitChange(
-                  (oldState) => ({
-                    ...oldState,
-                    uploaderstatus: 'main',
-                    rows: validatedFiles,
-                  }),
-                  true
-                )
+                (oldState) => ({
+                  ...oldState,
+                  uploaderstatus: 'main',
+                  rows: validatedFiles,
+                }),
+                true
+              )
           }
         />
       ) : null}
