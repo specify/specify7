@@ -50,7 +50,6 @@ exports[`fetches and parses remotePrefs correctly 1`] = `
   "SubPaneMgr.MaxPanes": "12",
   "SymbiotaTask.BaseUrlPref": "http\\\\://pinkava.asu.edu/symbiota/sandbox/webservices/dwc/dwcaingesthandler.php",
   "SymbiotaTask.SHOW_TASK_PREF.fish": "false",
-  "TaxonTreeEditor.DisplayAuthor": "true",
   "Testing2": "",
   "TreeEditor.Rank.Threshold.Geography": "100",
   "TreeEditor.Rank.Threshold.GeologicTimePeriod": "0",
