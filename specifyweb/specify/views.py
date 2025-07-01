@@ -1407,11 +1407,13 @@ def parse_locality_set(request: http.HttpRequest):
     data = request_data["data"]
     run_in_background = request_data.get("runInBackground", False)
     if not run_in_background:
+        # BUG?: The result could be list of named tuples. Need to serialize them.
         status, result = parse_locality_set_foreground(
             request.specify_collection, column_headers, data)
     else:
         status, result = 201, start_locality_set_background(
             request.specify_collection, request.specify_user, request.specify_user_agent, column_headers, data, False, True)
+
     return http.JsonResponse(result, status=status, safe=False)
 
 
