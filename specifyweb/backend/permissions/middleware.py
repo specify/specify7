@@ -2,7 +2,7 @@ from typing import Optional
 
 from django import http
 
-from .permissions import PermissionsException, NoMatchingRuleException, \
+from specifyweb.backend.permissions import PermissionsException, NoMatchingRuleException, \
     CollectionAccessPT, check_permission_targets
 
 class PermissionsMiddleware:
