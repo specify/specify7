@@ -682,7 +682,7 @@ export const preferencesText = createDictionary({
   scaleInterfaceDescription: {
     'en-us': 'Scale interface to match font size.',
     'ru-ru': 'Масштабируйте интерфейс в соответствии с размером шрифта.',
-    'es-es': 'Escala la interfaz para que coincida con el tamaño de la fonte.',
+    'es-es': 'Escala la interfaz para que coincida con el tamaño de la fuente.',
     'fr-fr': "Adapter l'interface à la taille de la police.",
     'uk-ua': 'Масштабуйте інтерфейс відповідно до розміру шрифту.',
     'de-ch':
