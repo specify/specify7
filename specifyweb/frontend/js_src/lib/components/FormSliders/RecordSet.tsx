@@ -425,7 +425,6 @@ function RecordSet<SCHEMA extends AnySchema>({
             : undefined
         }
         onClone={(resources: RA<SpecifyResource<SCHEMA>>): void => {
-          console.log(resources);
           go(totalCount, 'new', resources[0]);
           if (resources.length > 1) {
             if (createRecordSetOnBulkCarryForward.includes(
@@ -453,8 +452,8 @@ function RecordSet<SCHEMA extends AnySchema>({
               );
             } else {
               // Don't create new record set
-              go(totalCount, resources.at(-1).id);
               handleAdd(resources.slice(1), false);
+              go(totalCount, resources.at(-1)?.id);
             }
           }
         }}
