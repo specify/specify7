@@ -17,6 +17,7 @@ from collections.abc import Sized
 from django.db import transaction
 from django.db.utils import OperationalError, IntegrityError
 from jsonschema import validate  # type: ignore
+from typing import Any, Optional, cast
 
 from specifyweb.permissions.permissions import has_target_permission
 from specifyweb.specify import models
@@ -342,8 +343,9 @@ def do_upload(
 
                 # Added to validate cotype on Component table
                 # Only reorder if this is the Component table
-                if upload_plan.name == 'Component':
-                    toOne = upload_plan.toOne
+                component_upload = cast(Any, upload_plan)
+                if component_upload.name == 'Component':
+                    toOne = component_upload.toOne
 
                     # Only reorder if both keys exist
                     if 'type' in toOne and 'name' in toOne:
