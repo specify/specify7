@@ -129,7 +129,7 @@ export const preferencesText = createDictionary({
     'pt-br': 'Desabilite animações e transições não essenciais.',
   },
   rankThreshold: {
-    'en-us': 'Show object count',
+    'en-us': 'Show object count below',
   },
   rankThresholdDescription: {
     'en-us':
