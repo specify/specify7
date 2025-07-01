@@ -10,6 +10,9 @@ def get_failure_result(*args, **kwargs):
     failure_result = dict(type="ParseError", errors=[])
     return failure_result
 
+# NOTE: The function _upload_locality_set is currently mocked.
+# When tests are added for the specifyweb.specify.upload_locality.py file, comprehensive tests for
+# specifyweb.specify.upload_locality.upload_locality_set need to be added.
 class TestUploadLocalitySetForeground(ApiTests):
 
 
