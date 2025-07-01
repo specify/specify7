@@ -12,6 +12,7 @@ from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoi
 from specifyweb.specify.uiformatters import get_uiformatter
 from specifyweb.specify.utils import get_cat_num_inheritance_setting
 from specifyweb.stored_queries.models import CollectionObject as sq_CollectionObject
+from specifyweb.stored_queries.models import Component as sq_Component
 
 from . import models
 from .query_ops import QueryOps
@@ -566,7 +567,7 @@ def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, 
         if components_ids:
             # Modify the query to filter operation and values for component
             value = ','.join(components_ids)
-            orm_field = getattr(sq_CollectionObject, 'componentId')
+            orm_field = getattr(sq_Component, 'componentId')
             op = QueryOps(uiformatter).by_op_num(10)
 
     return op, orm_field, value
