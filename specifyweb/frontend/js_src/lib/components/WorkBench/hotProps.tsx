@@ -1,11 +1,13 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
+import { attachmentsText } from '../../localization/attachments';
 import { wbPlanText } from '../../localization/wbPlan';
 import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
+import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import type { WbMapping } from './mapping';
 
@@ -66,6 +68,10 @@ export function useHotProps({
 
   const colHeaders = React.useCallback(
     (physicalCol: number) => {
+      const columnName =
+        dataset.columns[physicalCol] === ATTACHMENTS_COLUMN
+          ? attachmentsText.attachments()
+          : dataset.columns[physicalCol];
       const tableIconUrl = mappings?.mappedHeaders?.[physicalCol];
       const isMapped = tableIconUrl !== undefined;
       const mappingCol = physicalColToMappingCol(physicalCol);
@@ -76,7 +82,7 @@ export function useHotProps({
 
       return ReactDOMServer.renderToString(
         <ColumnHeader
-          columnName={dataset.columns[physicalCol]}
+          columnName={columnName}
           isMapped={isMapped}
           tableName={tableName}
         />
