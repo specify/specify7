@@ -14,7 +14,7 @@ from specifyweb.backend.interactions import urls as interaction_urls
 from specifyweb.backend.notifications import urls as notification_urls
 from specifyweb.backend.permissions import urls as permissions_urls
 from specifyweb.backend.permissions.permissions import skip_collection_access_check
-from .report_runner import urls as report_urls
+from specifyweb.backend.report_runner import urls as report_urls
 from .specify import urls as api_urls
 from .specify.views import images, properties
 from .stored_queries import urls as query_urls
