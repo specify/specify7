@@ -244,3 +244,7 @@ MIGRATION_0035_UPDATE_FIELDS = {
         ('uniqueIdentifier', 'Unique Identifier', 'Unique Identifier [/+][-]Unique Identifier'),
         ],
 }
+
+MIGRATION_0035_HIDDEN_FIELDS = {
+    'Component': ['componentid','verbatimname','role', 'proportion','uniqueidentifier','text1','text2','text3', 'text4','text5','text6', 'yesno1','yesno2','yesno3','yesno4','yesno5','yesno6','integer1','integer2','integer3','integer4','integer5','integer6','number1', 'number2','number3','number4','number5','number6','version','collectionobject', 'absoluteages', 'relativeages' ]
+}

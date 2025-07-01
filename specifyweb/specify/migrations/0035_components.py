@@ -7,7 +7,7 @@ import specifyweb.specify.models
 from specifyweb.specify.models import protect_with_blockers
 from specifyweb.specify.migration_utils.update_schema_config import revert_table_field_schema_config, revert_table_schema_config, update_table_field_schema_config_with_defaults, update_table_schema_config_with_defaults
 
-from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0035_TABLES as SCHEMA_CONFIG_TABLES, MIGRATION_0035_FIELDS as SCHEMA_CONFIG_TABLE_FIELDS, MIGRATION_0035_UPDATE_FIELDS as SCHEMA_CONFIG_COMPONENT_TABLE_FIELDS
+from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0035_TABLES as SCHEMA_CONFIG_TABLES, MIGRATION_0035_FIELDS as SCHEMA_CONFIG_TABLE_FIELDS, MIGRATION_0035_UPDATE_FIELDS as SCHEMA_CONFIG_COMPONENT_TABLE_FIELDS, MIGRATION_0035_HIDDEN_FIELDS as SCHEMA_CONFIG_HIDDEN_FIELDS
 
 PICKLIST_NAME = 'CollectionObjectType'
 FIELD_NAME = 'type'
@@ -89,6 +89,25 @@ def create_cotype_splocalecontaineritem(apps):
         container_item.type = 'ManyToOne'
         container_item.save()
 
+def hide_component_fields(apps, schema_editor):
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+    Discipline = apps.get_model('specify', 'Discipline')
+
+    for discipline in Discipline.objects.all():
+        for table, fields in SCHEMA_CONFIG_HIDDEN_FIELDS.items():
+            containers = Splocalecontainer.objects.filter(
+                name=table.lower(),
+                discipline_id=discipline.id,
+            )
+            for container in containers:
+                for field_name in fields:
+                    items = Splocalecontaineritem.objects.filter(
+                        container=container,
+                        name=field_name.lower()
+                    )
+                    items.update(ishidden=True)
+
 def revert_table_schema_config_with_defaults(apps, schema_editor):
     for table, _ in SCHEMA_CONFIG_TABLES:
         revert_table_schema_config(table, apps)
@@ -139,6 +158,24 @@ def revert_cotype_splocalecontaineritem(apps):
 
     Splocalecontaineritem.objects.filter(name=FIELD_NAME, container__name='component', container__schematype=0).delete()
 
+def reverse_hide_component_fields(apps, schema_editor):
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+    Discipline = apps.get_model('specify', 'Discipline')
+
+    for discipline in Discipline.objects.all():
+        for table, fields in SCHEMA_CONFIG_HIDDEN_FIELDS.items():
+            containers = Splocalecontainer.objects.filter(
+                name=table.lower(),
+                discipline_id=discipline.id,
+            )
+            for container in containers:
+                for field_name in fields:
+                    items = Splocalecontaineritem.objects.filter(
+                        container=container,
+                        name=field_name.lower()
+                    )
+                    items.update(ishidden=True)
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -150,12 +187,14 @@ class Migration(migrations.Migration):
         update_schema_config_field_desc(apps, schema_editor)
         update_hidden_prop(apps, schema_editor)
         create_cotype_splocalecontaineritem(apps)
+        hide_component_fields(apps, schema_editor)
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
         revert_table_schema_config_with_defaults(apps, schema_editor)
         revert_update_hidden_prop(apps, schema_editor)
         reverse_update_hidden_prop(apps, schema_editor)
         revert_cotype_splocalecontaineritem(apps)
+        reverse_hide_component_fields(apps, schema_editor)
 
     operations = [
         migrations.CreateModel(
