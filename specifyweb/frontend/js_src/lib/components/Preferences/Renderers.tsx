@@ -379,23 +379,36 @@ export function DefaultPreferenceItemRender({
   );
 }
 
+type Rank = { rankId: number; name: string };
+
+// This grabs the ranks from the API and displays them in a dropdown
+// The ranks are sorted in ascending order by `rankId` so they appear in the correct order for the user
 export function ThresholdRank({
   value,
   onChange,
   tableName,
 }: PreferenceRendererProps<number> & { readonly tableName: string }): JSX.Element {
-  const [items, setItems] = React.useState<RA<{ readonly rankId: number; readonly name: string }>>([]);
+  const [items, setItems] = React.useState<Rank[]>([]);
   React.useEffect(() => {
     fetch(`/api/specify/${tableName.toLowerCase()}treedefitem/`)
       .then(async res => {
         if (!res.ok) throw new Error('Failed to fetch ThresholdRank items');
         return res.json();
       })
-      .then(data => setItems((data.objects ?? []).map((item: any) => ({
-        rankId: item.rankid,
-        name: item.name,
-      }))))
-      .catch(error => {
+      .then((data: { objects?: Array<{ rankid: number; name: string }> }) =>
+        setItems(
+          (data.objects ?? [])
+        .map(
+          // Map the results to the Rank type
+          (item: { rankid: number; name: string }): Rank => ({
+            rankId: item.rankid,
+            name: item.name,
+          })
+        ) // This sorts the ranks so they appear in ascending order in the dropdown
+        .sort((rankA, rankB) => rankA.rankId - rankB.rankId) 
+        )
+      )
+      .catch((error: unknown) => {
         console.error('Error fetching ThresholdRank items:', error);
         setItems([]);
       });
