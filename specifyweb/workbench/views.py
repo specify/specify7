@@ -16,7 +16,7 @@ from specifyweb.celery_tasks import CELERY_TASK_STATE
 from specifyweb.specify.api import get_object_or_404
 from specifyweb.specify.views import login_maybe_required, openapi
 from specifyweb.specify.models import Recordset, Specifyuser
-from specifyweb.notifications.models import Message
+from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.permissions import (
     check_permission_targets,
     check_table_permissions,

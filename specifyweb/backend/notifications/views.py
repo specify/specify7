@@ -6,8 +6,8 @@ from django.views.decorators.http import require_POST
 from django.conf import settings
 
 from specifyweb.middleware.general import require_GET
-from ..specify.views import login_maybe_required
-from ..specify.api import toJson
+from specifyweb.specify.views import login_maybe_required
+from specifyweb.specify.api import toJson
 
 from .models import Message
 
