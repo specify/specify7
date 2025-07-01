@@ -10,7 +10,7 @@ from django.views import View
 from specifyweb.specify.models import Specifyuser
 from specifyweb.specify.views import openapi, check_collection_access_against_agents
 from . import models
-from specifyweb.backend.permissions import PermissionTarget, PermissionTargetAction, \
+from .permissions import PermissionTarget, PermissionTargetAction, \
     NoAdminUsersException, check_permission_targets, registry, query
 
 class ListAdminsPT(PermissionTarget):

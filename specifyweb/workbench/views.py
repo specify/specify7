@@ -23,7 +23,7 @@ from specifyweb.backend.permissions.permissions import (
 )
 from . import models, tasks
 from .upload import upload as uploader, upload_plan_schema
-from specifyweb.backend.permissions import DataSetPT, BatchEditDataSetPT
+from .permissions import DataSetPT, BatchEditDataSetPT
 
 logger = logging.getLogger(__name__)
 

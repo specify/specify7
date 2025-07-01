@@ -1,4 +1,4 @@
-from specifyweb.permissions.models import UserPolicy
+from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.specify.models import Agent, Specifyuser
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify.views import MissingAgentForAccessibleCollection, check_collection_access_against_agents

@@ -19,7 +19,7 @@ from .extract_query import extract_query as extract
 from .feed import FEED_DIR, get_feed_resource, update_feed
 from ..context.app_resource import get_app_resource
 from ..notifications.models import Message
-from ..backend.permissions.permissions import PermissionTarget, PermissionTargetAction, \
+from specifyweb.backend.permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets
 from ..specify.models import Spquery
 from ..specify.views import login_maybe_required
