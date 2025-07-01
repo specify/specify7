@@ -762,13 +762,20 @@ def merging_status(request, merge_id: int) -> http.HttpResponse:
     },
 })
 @require_POST
-def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
+def abort_merge_task(
+    request,
+    # The below type is of str (and not an int)
+    merge_id: int
+    ) -> http.HttpResponse:
     "Aborts the merge task currently running and matching the given merge/task ID"
 
+    # BUG: This should not be a .get. It should instead be something like .filter(...).first()
+    # Currently, it is a 500 error (because .get() fails when no Spmerging found)
     merge = Spmerging.objects.get(taskid=merge_id)
     if merge is None:
         return http.HttpResponseNotFound(f'The merge task id is not found: {merge_id}')
 
+    # This condition is not possible.
     if merge.taskid is None:
         return http.JsonResponse(None, safe=False)
 
