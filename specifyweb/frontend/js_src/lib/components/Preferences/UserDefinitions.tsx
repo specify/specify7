@@ -51,6 +51,7 @@ import {
   FontFamilyPreferenceItem,
   HeaderItemsPreferenceItem,
   WelcomePageModePreferenceItem,
+  ThresholdRank,
 } from './Renderers';
 import type { GenericPreferences, PreferencesVisibilityContext } from './types';
 import { definePref } from './types';
@@ -1462,6 +1463,15 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
+          }),
+          taxonRankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: ThresholdRank,
+            container: 'label',
           }),
         },
       },
