@@ -701,7 +701,7 @@ export const preferencesText = createDictionary({
   scaleInterfaceDescription: {
     'en-us': 'Scale interface to match font size.',
     'ru-ru': 'Масштабируйте интерфейс в соответствии с размером шрифта.',
-    'es-es': 'Escala la interfaz para que coincida con el tamaño de la fonte.',
+    'es-es': 'Escala la interfaz para que coincida con el tamaño de la fuente.',
     'fr-fr': "Adapter l'interface à la taille de la police.",
     'uk-ua': 'Масштабуйте інтерфейс відповідно до розміру шрифту.',
     'de-ch':
@@ -715,7 +715,7 @@ export const preferencesText = createDictionary({
     'fr-fr': "Afficher l'auteur dans l'arbre",
     'uk-ua': 'Показати автора в дереві',
     'de-ch': 'Autor im Baum anzeigen',
-    'pt-br': 'Mostrar autoria',
+    'pt-br': 'Mostrar autor',
   },
   welcomePage: {
     'en-us': 'Home Page',
