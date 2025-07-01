@@ -1436,6 +1436,17 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="Geography" />
+            ),
+            container: 'label',
+          }),
         },
       },
       taxon: {
@@ -1464,13 +1475,15 @@ export const userPreferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          taxonRankThreshold: definePref<number>({
+          rankThreshold: definePref<number>({
             title: preferencesText.rankThreshold(),
             description: preferencesText.rankThresholdDescription(),
             requiresReload: true,
             visible: true,
             defaultValue: 0,
-            renderer: ThresholdRank,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="Taxon" />
+            ),
             container: 'label',
           }),
         },
@@ -1494,6 +1507,17 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="Storage" />
+            ),
+            container: 'label',
+          }),
         },
       },
       geologicTimePeriod: {
@@ -1513,6 +1537,17 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="GeologicTimePeriod" />
+            ),
             container: 'label',
           }),
         },
@@ -1536,6 +1571,17 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="LithoStrat" />
+            ),
+            container: 'label',
+          }),
         },
       },
       tectonicUnit: {
@@ -1555,6 +1601,17 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="TectonicUnit" />
+            ),
             container: 'label',
           }),
         },

@@ -392,29 +392,24 @@ export async function fetchTaxonTreeDefItems(): Promise<{ rankId: number; name: 
 export function ThresholdRank({
   value,
   onChange,
-}: PreferenceRendererProps<number>): JSX.Element {
-  const [items, setItems] = useState<{ rankId: number; name: string }[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchTaxonTreeDefItems()
-      .then(setItems)
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) return <>{commonText.loading()}</>;
+  tableName,
+}: PreferenceRendererProps<number> & { tableName: string }): JSX.Element {
+  const [items, setItems] = React.useState<{ rankId: number; name: string }[]>([]);
+  React.useEffect(() => {
+    fetch(`/api/specify/${tableName.toLowerCase()}treedefitem/`)
+      .then(res => res.json())
+      .then(data => setItems((data.objects ?? []).map((item: any) => ({
+        rankId: item.rankid,
+        name: item.name,
+      }))));
+  }, [tableName]);
 
   return (
-    <Select
-      value={value ?? ''}
-      onValueChange={(newRankId) => onChange(Number(newRankId))}
-    >
-      <option value="">{commonText.none()}</option>
+    <select value={value ?? ''} onChange={e => onChange(Number(e.target.value))}>
+      <option value="">None</option>
       {items.map(({ rankId, name }) => (
-        <option key={rankId} value={rankId}>
-          {name}
-        </option>
+        <option key={rankId} value={rankId}>{name}</option>
       ))}
-    </Select>
+    </select>
   );
 }
