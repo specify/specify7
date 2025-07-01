@@ -396,6 +396,7 @@ export function ThresholdRank({
 
   return (
     <select value={value ?? ''} onChange={e => onChange(Number(e.target.value))}>
+      <option value="">None</option>
       {items.map(({ rankId, name }) => (
         <option key={rankId} value={rankId}>{name}</option>
       ))}
