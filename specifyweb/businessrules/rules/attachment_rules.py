@@ -48,7 +48,7 @@ def attachment_save(attachment):
 
 @orm_signal_handler('post_delete', 'Attachment')
 def attachment_deletion(attachment):
-    from specifyweb.attachment_gw.views import delete_attachment_file
+    from specifyweb.backend.attachment_gw.views import delete_attachment_file
     if attachment.attachmentlocation is not None:
         delete_attachment_file(attachment.attachmentlocation)
 
