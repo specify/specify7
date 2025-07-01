@@ -3,7 +3,7 @@
  * Most use the default renderes, but there are some exceptions
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { usePromise } from '../../hooks/useAsyncState';
 import { useTriggerState } from '../../hooks/useTriggerState';
@@ -27,7 +27,7 @@ import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
-import type { Collection } from '../DataModel/types';
+import type { Collection, TaxonTreeDefItem } from '../DataModel/types';
 import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
 import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
 import { AttachmentPicker } from '../Molecules/AttachmentPicker';
@@ -376,5 +376,45 @@ export function DefaultPreferenceItemRender({
         } else handleChanged(newValue);
       }}
     />
+  );
+}
+
+export async function fetchTaxonTreeDefItems(): Promise<{ rankId: number; name: string }[]> {
+  const response = await fetch('/api/specify/taxontreedefitem/');
+  if (!response.ok) throw new Error('Failed to fetch TaxonTreeDefItems');
+  const data = await response.json();
+  return (data.objects ?? []).map((item: any) => ({
+    rankId: item.rankid,
+    name: item.name,
+  }));
+}
+
+export function ThresholdRank({
+  value,
+  onChange,
+}: PreferenceRendererProps<number>): JSX.Element {
+  const [items, setItems] = useState<{ rankId: number; name: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchTaxonTreeDefItems()
+      .then(setItems)
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <>{commonText.loading()}</>;
+
+  return (
+    <Select
+      value={value ?? ''}
+      onValueChange={(newRankId) => onChange(Number(newRankId))}
+    >
+      <option value="">{commonText.none()}</option>
+      {items.map(({ rankId, name }) => (
+        <option key={rankId} value={rankId}>
+          {name}
+        </option>
+      ))}
+    </Select>
   );
 }
