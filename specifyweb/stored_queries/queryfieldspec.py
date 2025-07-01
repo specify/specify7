@@ -509,10 +509,12 @@ class QueryFieldSpec(
 
 def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
     parent_inheritance_pref = get_parent_cat_num_inheritance_setting(collection, user)
+    cog_inheritance_pref = get_cat_num_inheritance_setting(collection, user)
 
     if parent_inheritance_pref: 
         op, orm_field, value = parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
-    else: 
+
+    if cog_inheritance_pref: 
         op, orm_field, value = cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
 
     return op, orm_field, value
@@ -522,7 +524,6 @@ def cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uif
         table.name == "CollectionObject"
         and field.name == "catalogNumber"
         and op_num == 1
-        and get_cat_num_inheritance_setting(collection, user)
     ):
         sibling_ids = cog_primary_co_sibling_ids(value, collection)
         if sibling_ids:
@@ -561,7 +562,6 @@ def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, 
         table.name == "Component"
         and field.name == "catalogNumber"
         and op_num == 1
-        and get_parent_cat_num_inheritance_setting(collection, user)
     ):
         components_ids = co_components_ids(value, collection)
         if components_ids:
