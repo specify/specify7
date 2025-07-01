@@ -1456,6 +1456,14 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
+          showAuthorship: definePref<boolean>({
+            title: preferencesText.showAuthorship(),
+            description: preferencesText.showAuthorshipDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       storage: {

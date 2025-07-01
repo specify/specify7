@@ -682,12 +682,30 @@ export const preferencesText = createDictionary({
   scaleInterfaceDescription: {
     'en-us': 'Scale interface to match font size.',
     'ru-ru': 'Масштабируйте интерфейс в соответствии с размером шрифта.',
-    'es-es': 'Escala la interfaz para que coincida con el tamaño de la fuente.',
+    'es-es': 'Escala la interfaz para que coincida con el tamaño de la fonte.',
     'fr-fr': "Adapter l'interface à la taille de la police.",
     'uk-ua': 'Масштабуйте інтерфейс відповідно до розміру шрифту.',
     'de-ch':
       'Skalieren Sie die Benutzeroberfläche, um sie an die Schriftgröße anzupassen.',
     'pt-br': 'Dimensione a interface para corresponder ao tamanho da fonte.',
+  },
+  showAuthorship: {
+    'en-us': 'Show Authorship',
+    'ru-ru': 'Показать авторство',
+    'es-es': 'Mostrar autoría',
+    'fr-fr': 'Afficher l\'auteur',
+    'uk-ua': 'Показати авторство',
+    'de-ch': 'Autorschaft anzeigen',
+    'pt-br': 'Mostrar autoria',
+  },
+  showAuthorshipDescription: {
+    'en-us': 'Shows the author field for the Taxon tree',
+    'ru-ru': 'Показывает поле автора для дерева таксонов',
+    'es-es': 'Muestra el campo de autor para el árbol taxonómico',
+    'fr-fr': 'Affiche le champ auteur pour l’arbre taxonomique',
+    'uk-ua': 'Показує поле автора для таксономічного дерева',
+    'de-ch': 'Zeigt das Autorenfeld für den Taxonbaum an',
+    'pt-br': 'Mostra o campo de autor para a árvore taxonômica',
   },
   welcomePage: {
     'en-us': 'Home Page',

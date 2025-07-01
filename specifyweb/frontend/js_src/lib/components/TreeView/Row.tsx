@@ -153,7 +153,7 @@ export function TreeRow<SCHEMA extends AnyTree>({
   const id = useId('tree-node');
   const isAction = actionRow === row;
 
-  const doIncludeAuthorPref = getPref(`TaxonTreeEditor.DisplayAuthor`);
+  const doIncludeAuthorPref = userPreferences.get('treeEditor', 'taxon', 'showAuthorship');
 
   const handleRef = React.useCallback(
     (element: HTMLButtonElement | null): void => {
