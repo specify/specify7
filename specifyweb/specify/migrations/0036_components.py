@@ -179,7 +179,7 @@ def reverse_hide_component_fields(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0034_accession_date_fields'),
+        ('specify', '0035_version_required'),
     ]
 
     def consolidated_python_django_migration_operations(apps, schema_editor):
