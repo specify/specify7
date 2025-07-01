@@ -30,6 +30,7 @@ from specifyweb.specify.record_merging import record_merge_fx, record_merge_task
 from specifyweb.specify.update_locality import localityupdate_parse_success, localityupdate_parse_error, parse_locality_set as _parse_locality_set, upload_locality_set as _upload_locality_set, create_localityupdate_recordset, update_locality_task, parse_locality_task, LocalityUpdateStatus
 from . import api, models as spmodels
 from .specify_jar import specify_jar, specify_jar_path
+from .uiformatters import get_uiformatter_by_name
 
 logger = logging.getLogger(__name__)
 
@@ -1502,8 +1503,6 @@ def catalog_number_from_parent(request: http.HttpRequest):
         return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)  
 
 
-from .uiformatters import get_uiformatter
-
 @login_maybe_required
 @require_POST
 def series_autonumber_range(request: http.HttpRequest):
@@ -1516,8 +1515,9 @@ def series_autonumber_range(request: http.HttpRequest):
     range_end = request_data.get('rangeend')
     table_name = request_data.get('tablename')
     field_name = request_data.get('fieldname')
+    formatter_name = request_data.get('formattername')
     
-    formatter = get_uiformatter(request.specify_collection, table_name, field_name)
+    formatter = get_uiformatter_by_name(request.specify_collection, request.specify_user, formatter_name)
     
     try: 
         range_start_parsed = formatter.parse(range_start)

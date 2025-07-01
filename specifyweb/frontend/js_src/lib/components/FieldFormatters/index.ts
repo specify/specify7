@@ -97,6 +97,10 @@ export class UiFormatter {
     return this.fields.some((field) => field.canAutonumber());
   }
 
+  public canAutoIncrement(): boolean {
+    return this.fields.some((field) => field.autoIncrement);
+  }
+
   public format(value: string): LocalizedString | undefined {
     const parsed = this.parse(value);
     return parsed === undefined ? undefined : this.canonicalize(parsed);
@@ -122,7 +126,7 @@ abstract class Field {
 
   public readonly value: LocalizedString;
 
-  private readonly autoIncrement: boolean;
+  public readonly autoIncrement: boolean;
 
   private readonly byYear: boolean;
 

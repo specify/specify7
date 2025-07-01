@@ -220,13 +220,14 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const copyButton = (
     label: LocalizedString,
     description: LocalizedString,
+    disabled: boolean,
     handleClick: () =>
       | Promise<RA<SpecifyResource<SCHEMA>> | undefined>
       | Promise<RA<SpecifyResource<SCHEMA>>>
   ): JSX.Element => (
     <ButtonComponent
       className={saveBlocked ? '!cursor-not-allowed' : undefined}
-      disabled={resource.isNew() || isChanged || isSaving}
+      disabled={disabled || resource.isNew() || isChanged || isSaving}
       title={description}
       onClick={(): void => {
         // Scroll to the top of the form on clone
@@ -257,6 +258,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const disableBulk =
     !tableValidForBulkClone(resource.specifyTable, resource) ||
     formatter === undefined;
+  const canAutoNumberFormatter = formatter.canAutoIncrement();
   const parser = formatterToParser(numberField, formatter);
 
   const [bulkCarryRangeBlocked, setBulkCarryRangeBlocked] =
@@ -295,6 +297,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           rangeEnd: carryForwardRangeEnd,
           tableName: resource.specifyTable.name.toLowerCase(),
           fieldName: numberFieldName.toLowerCase(),
+          formatterName: formatter.title,
           skipStartNumber: true,
         }),
       })
@@ -355,27 +358,29 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           !isCOGorCOJO &&
           !disableBulk ? (
             showBulkCarryRange ? (
-              <Label.Inline>
-                <Input.Text
-                  aria-label={formsText.bulkCarryForwardRangeStart()}
-                  className="!w-fit"
-                  isReadOnly
-                  placeholder={formatter.valueOrWild()}
-                  value={resource.get('catalogNumber') ?? ''}
-                  width={numberField.datamodelDefinition.length}
-                />
-                <Input.Text
-                  aria-label={formsText.bulkCarryForwardRangeEnd()}
-                  className="!w-fit"
-                  {...getValidationAttributes(parser)}
-                  placeholder={formatter.valueOrWild()}
-                  value={carryForwardRangeEnd}
-                  width={numberField.datamodelDefinition.length}
-                  onValueChange={(value): void =>
-                    setCarryForwardRangeEnd(value)
-                  }
-                />
-              </Label.Inline>
+              canAutoNumberFormatter ? (
+                <Label.Inline>
+                  <Input.Text
+                    aria-label={formsText.bulkCarryForwardRangeStart()}
+                    className="!w-fit"
+                    isReadOnly
+                    placeholder={formatter.valueOrWild()}
+                    value={resource.get('catalogNumber') ?? ''}
+                    width={numberField.datamodelDefinition.length}
+                  />
+                  <Input.Text
+                    aria-label={formsText.bulkCarryForwardRangeEnd()}
+                    className="!w-fit"
+                    {...getValidationAttributes(parser)}
+                    placeholder={formatter.valueOrWild()}
+                    value={carryForwardRangeEnd}
+                    width={numberField.datamodelDefinition.length}
+                    onValueChange={(value): void =>
+                      setCarryForwardRangeEnd(value)
+                    }
+                  />
+                </Label.Inline>
+              ) : undefined
             ) : (
               <Input.Integer
                 aria-label={formsText.bulkCarryForwardCount()}
@@ -399,6 +404,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                  * See https://github.com/specify/specify7/pull/4804
                  *
                  */
+                !(
+                  !showBulkCarryRange ||
+                  (showBulkCarryRange && canAutoNumberFormatter)
+                ),
                 resource.specifyTable.name === 'CollectionObject' &&
                   (showBulkCarryRange || carryForwardAmount > 1)
                   ? handleBulkCarryForward
@@ -411,6 +420,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             ? copyButton(
                 formsText.clone(),
                 formsText.cloneDescription(),
+                false,
                 async () => [await resource.clone(true)]
               )
             : undefined}
@@ -418,6 +428,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             copyButton(
               commonText.add(),
               formsText.addButtonDescription(),
+              false,
               async () => [new resource.specifyTable.Resource()]
             )}
         </>

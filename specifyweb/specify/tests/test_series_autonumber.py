@@ -9,9 +9,6 @@ class TestSeriesAutonumber(ApiTests):
         c = Client()
         c.force_login(self.specifyuser)
 
-        self.collection.catalognumformatname = "CatalogNumberNumeric"
-        self.collection.save()
-
         # 000000005 to 000000007
         response = c.post(
             f"/api/specify/series_autonumber_range/",
@@ -20,6 +17,7 @@ class TestSeriesAutonumber(ApiTests):
                 'rangeend': '7',
                 'tablename': 'collectionobject',
                 'fieldname': 'catalognumber',
+                'formattername': 'CatalogNumberNumeric',
                 'skipstartnumber': False,
             }),
             content_type="application/json",
@@ -35,6 +33,7 @@ class TestSeriesAutonumber(ApiTests):
                 'rangeend': '15',
                 'tablename': 'collectionobject',
                 'fieldname': 'catalognumber',
+                'formattername': 'CatalogNumberNumeric',
                 'skipstartnumber': True,
             }),
             content_type="application/json",
@@ -50,6 +49,7 @@ class TestSeriesAutonumber(ApiTests):
                 'rangeend': '0',
                 'tablename': 'collectionobject',
                 'fieldname': 'catalognumber',
+                'formattername': 'CatalogNumberNumeric',
                 'skipstartnumber': True
             }),
             content_type="application/json",
@@ -64,6 +64,7 @@ class TestSeriesAutonumber(ApiTests):
                 'rangeend': '10',
                 'tablename': 'collectionobject',
                 'fieldname': 'catalognumber',
+                'formattername': 'CatalogNumberNumeric',
                 'skipstartnumber': True,
             }),
             content_type="application/json",
@@ -78,6 +79,7 @@ class TestSeriesAutonumber(ApiTests):
                 'rangeend': '1000',
                 'tablename': 'collectionobject',
                 'fieldname': 'catalognumber',
+                'formattername': 'CatalogNumberNumeric',
                 'skipstartnumber': True,
             }),
             content_type="application/json",
@@ -85,8 +87,6 @@ class TestSeriesAutonumber(ApiTests):
         self.assertEqual(response.status_code, 400)
 
         # Test autonumbering with CatalogNumberAlphaNumByYear format
-        self.collection.catalognumformatname ="CatalogNumberAlphaNumByYear"
-        self.collection.save()
         response = c.post(
             f"/api/specify/series_autonumber_range/",
             data=json.dumps({
@@ -94,6 +94,7 @@ class TestSeriesAutonumber(ApiTests):
                 'rangeend': '2023-000005',
                 'tablename': 'collectionobject',
                 'fieldname': 'catalognumber',
+                'formattername': 'CatalogNumberAlphaNumByYear',
                 'skipstartnumber': False,
             }),
             content_type="application/json",
@@ -128,6 +129,7 @@ class TestSeriesAutonumber(ApiTests):
                 'rangeend': '20',
                 'tablename': 'collectionobject',
                 'fieldname': 'catalognumber',
+                'formattername': 'CatalogNumberNumeric',
                 'skipstartnumber': True,
             }),
             content_type="application/json",
@@ -142,6 +144,7 @@ class TestSeriesAutonumber(ApiTests):
                 'rangeend': '10',
                 'tablename': 'collectionobject',
                 'fieldname': 'catalognumber',
+                'formattername': 'CatalogNumberNumeric',
                 'skipstartnumber': True,
             }),
             content_type="application/json",
