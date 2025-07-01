@@ -128,6 +128,21 @@ export const preferencesText = createDictionary({
     'de-ch': 'Nicht erforderliche Animationen und Übergänge deaktivieren.',
     'pt-br': 'Desabilite animações e transições não essenciais.',
   },
+  rankThreshold: {
+    'en-us': 'Show object count',
+  },
+  rankThresholdDescription: {
+    'en-us': 'Show the count of Collection Objects for all ranks including and below this one.',
+    'ru-ru':
+      'Показывать количество объектов коллекции для всех рангов, включая и ниже этого.',
+    'es-es': 'Mostrar la cantidad de objetos de colección para todos los rangos, incluidos y por debajo de este.',
+    'fr-fr':
+      'Afficher le nombre d\'objets de collection pour tous les rangs, y compris et en dessous de celui-ci.',
+    'uk-ua': 'Показати кількість об\'єктів колекції для всіх рангів, включаючи та нижче цього.', 
+    'de-ch':
+      'Anzahl der Sammlungsobjekte für alle Ränge einschließlich und unterhalb dieses Rangs anzeigen.',
+    'pt-br': 'Mostrar a contagem de Objetos de Coleção para todos os ranks, incluindo e abaixo deste.',
+  },
   reduceTransparency: {
     'en-us': 'Reduce transparency',
     'ru-ru': 'Уменьшить прозрачность',
