@@ -132,16 +132,20 @@ export const preferencesText = createDictionary({
     'en-us': 'Show object count',
   },
   rankThresholdDescription: {
-    'en-us': 'Show the count of Collection Objects for all ranks below this one.',
+    'en-us':
+      'Show the count of Collection Objects for all ranks below this one.',
     'ru-ru':
       'Показывать количество объектов коллекции для всех рангов, включая и ниже этого.',
-    'es-es': 'Mostrar la cantidad de objetos de colección para todos los rangos, incluidos y por debajo de este.',
+    'es-es':
+      'Mostrar la cantidad de objetos de colección para todos los rangos, incluidos y por debajo de este.',
     'fr-fr':
-      'Afficher le nombre d\'objets de collection pour tous les rangs, y compris et en dessous de celui-ci.',
-    'uk-ua': 'Показати кількість об\'єктів колекції для всіх рангів, включаючи та нижче цього.', 
+      "Afficher le nombre d'objets de collection pour tous les rangs, y compris et en dessous de celui-ci.",
+    'uk-ua':
+      "Показати кількість об'єктів колекції для всіх рангів, включаючи та нижче цього.",
     'de-ch':
       'Anzahl der Sammlungsobjekte für alle Ränge einschließlich und unterhalb dieses Rangs anzeigen.',
-    'pt-br': 'Mostrar a contagem de Objetos de Coleção para todos os ranks, incluindo e abaixo deste.',
+    'pt-br':
+      'Mostrar a contagem de Objetos de Coleção para todos os ranks, incluindo e abaixo deste.',
   },
   reduceTransparency: {
     'en-us': 'Reduce transparency',
@@ -708,7 +712,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Show author in the tree',
     'ru-ru': 'Показать автора в дереве',
     'es-es': 'Mostrar autor en el árbol',
-    'fr-fr': 'Afficher l\'auteur dans l\'arbre',
+    'fr-fr': "Afficher l'auteur dans l'arbre",
     'uk-ua': 'Показати автора в дереві',
     'de-ch': 'Autor im Baum anzeigen',
     'pt-br': 'Mostrar autoria',
