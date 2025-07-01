@@ -132,7 +132,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Show object count',
   },
   rankThresholdDescription: {
-    'en-us': 'Show the count of Collection Objects for all ranks including and below this one.',
+    'en-us': 'Show the count of Collection Objects for all ranks below this one.',
     'ru-ru':
       'Показывать количество объектов коллекции для всех рангов, включая и ниже этого.',
     'es-es': 'Mostrar la cantidad de objetos de colección para todos los rangos, incluidos y por debajo de este.',

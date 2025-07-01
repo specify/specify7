@@ -102,6 +102,7 @@ export function Tree<
   treeToPref[tableName],
   'rankThreshold'
   );
+  
   const getStats = React.useCallback(
     async (nodeId: number | 'null', rankId: number): Promise<Stats> =>
       rankId >= statsThreshold
