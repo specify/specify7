@@ -384,7 +384,7 @@ export function ThresholdRank({
   onChange,
   tableName,
 }: PreferenceRendererProps<number> & { readonly tableName: string }): JSX.Element {
-  const [items, setItems] = React.useState<readonly { readonly rankId: number; readonly name: string }[]>([]);
+  const [items, setItems] = React.useState<RA<{ readonly rankId: number; readonly name: string }>>([]);
   React.useEffect(() => {
     fetch(`/api/specify/${tableName.toLowerCase()}treedefitem/`)
       .then(async res => {
