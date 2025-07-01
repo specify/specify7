@@ -379,16 +379,6 @@ export function DefaultPreferenceItemRender({
   );
 }
 
-export async function fetchTaxonTreeDefItems(): Promise<readonly { readonly rankId: number; readonly name: string }[]> {
-  const response = await fetch('/api/specify/taxontreedefitem/');
-  if (!response.ok) throw new Error('Failed to fetch TaxonTreeDefItems');
-  const data = await response.json();
-  return (data.objects ?? []).map((item: any) => ({
-    rankId: item.rankid,
-    name: item.name,
-  }));
-}
-
 export function ThresholdRank({
   value,
   onChange,
