@@ -7218,7 +7218,6 @@ datamodel = Datamodel(tables=[
             Relationship(name='taxonAttribute', type='many-to-one',required=False, relatedModelName='TaxonAttribute', column='TaxonAttributeID', otherSideName='taxons', dependent=True),
             Relationship(name='taxonCitations', type='one-to-many',required=False, relatedModelName='TaxonCitation', otherSideName='taxon', dependent=True),
             Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID'),
-            Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID'),
             Relationship(name='components', type='one-to-many',required=False, relatedModelName='Component', otherSideName='taxon'),
         ],
         fieldAliases=[
