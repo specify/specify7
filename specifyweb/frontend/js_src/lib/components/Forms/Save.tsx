@@ -45,7 +45,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
-import { BulkCarryRangeBlockedDialog } from './BulkCarryForward';
+import { BulkCarryRangeBlockedDialog, SeriesFormContext } from './BulkCarryForward';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
@@ -189,6 +189,22 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                 : error(error_)
             )
             .finally(() => {
+              if (usingSeriesForm && seriesRangeEndValue !== '') {
+                /*
+                * If using the in-form series input the record should not
+                * be saved before bulk carry forward.
+                */
+                handleBulkCarryForward(true).then((resources) => {
+                  if (handleAdd && resources !== undefined) {
+                    handleAdd(resources);
+                  }
+                }).then(() => {
+                  unsetUnloadProtect();
+                  handleSaved?.();
+                  setIsSaving(false);
+                })
+                return;
+              }
               unsetUnloadProtect();
               handleSaved?.();
               setIsSaving(false);
@@ -246,6 +262,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const [carryForwardAmount, setCarryForwardAmount] = React.useState<number>(1);
   const [carryForwardRangeEnd, setCarryForwardRangeEnd] =
     React.useState<string>('');
+  const { seriesEnd: seriesRangeEndValue, usingSeries: usingSeriesForm } = React.useContext(SeriesFormContext);
+  React.useEffect(() => {
+    setCarryForwardRangeEnd(seriesRangeEndValue);
+  }, [seriesRangeEndValue]);
 
   const isCOGorCOJO =
     resource.specifyTable.name === 'CollectionObjectGroup' ||
@@ -266,7 +286,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const [bulkCarryRangeInvalidNumbers, setBulkCarryRangeInvalidNumbers] =
     React.useState<RA<string> | undefined>(undefined);
 
-  const handleBulkCarryForward = async (): Promise<
+  const handleBulkCarryForward = async (saved=true): Promise<
     RA<SpecifyResource<SCHEMA>> | undefined
   > => {
     const numberFieldName = 'catalogNumber';
@@ -297,8 +317,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           rangeEnd: carryForwardRangeEnd,
           tableName: resource.specifyTable.name.toLowerCase(),
           fieldName: numberFieldName.toLowerCase(),
-          formatterName: formatter.title,
-          skipStartNumber: true,
+          formatterName: formatter.name,
+          skipStartNumber: saved,
         }),
       })
         .then(({ data }) => data)
@@ -330,14 +350,21 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       }
     );
 
+    let recordsToBeSaved: RA<SpecifyResource<SCHEMA>>;
     const clones = await Promise.all(clonePromises);
+
+    if (saved === false) {
+      recordsToBeSaved = [resource, ...clones];
+    } else {
+      recordsToBeSaved = clones;
+    }
 
     const backendClones = await ajax<RA<SerializedRecord<SCHEMA>>>(
       `/api/specify/bulk/${resource.specifyTable.name.toLowerCase()}/`,
       {
         method: 'POST',
         headers: { Accept: 'application/json' },
-        body: clones,
+        body: recordsToBeSaved,
       }
     ).then(({ data }) =>
       data.map((resource) => deserializeResource(serializeResource(resource)))
@@ -373,6 +400,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                     className="!w-fit"
                     {...getValidationAttributes(parser)}
                     placeholder={formatter.valueOrWild()}
+                    isReadOnly={usingSeriesForm}
                     value={carryForwardRangeEnd}
                     width={numberField.datamodelDefinition.length}
                     onValueChange={(value): void =>

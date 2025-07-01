@@ -43,3 +43,15 @@ export function BulkCarryRangeBlockedDialog({
     </Dialog>
   );
 }
+
+export const SeriesFormContext = React.createContext<{
+  seriesEnd: string;
+  setSeriesEnd: (v: string) => void;
+  usingSeries: boolean;
+  setUsingSeries: (v: boolean) => void;
+}>({
+  seriesEnd: '',
+  setSeriesEnd: () => {},
+  usingSeries: false,
+  setUsingSeries: () => {},
+});
