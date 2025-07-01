@@ -1456,9 +1456,8 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          showAuthorship: definePref<boolean>({
-            title: preferencesText.showAuthorship(),
-            description: preferencesText.showAuthorshipDescription(),
+          displayAuthor: definePref<boolean>({
+            title: preferencesText.displayAuthor(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
