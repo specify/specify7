@@ -135,9 +135,15 @@ class TestRecordMergeRequests(ApiTests):
         )
         self._assert_invalid_request(response)
 
-    def test_permissions_enforced_background(self):
+    @patch("specifyweb.specify.views.record_merge_task")
+    def test_permissions_enforced_background(self, record_merge_task):
+        test_id = "UUID_TEST_ID"
+        _apply_async = Mock(return_value=MockResult(test_id))
+        record_merge_task.apply_async = _apply_async
+
         response = self._check_permission_enforced(background=True)
         self._assertStatusCodeEqual(response, 200)
+        _apply_async.assert_called_once()
 
     def test_permissions_enforced_foreground(self):
         response = self._check_permission_enforced(background=False)
