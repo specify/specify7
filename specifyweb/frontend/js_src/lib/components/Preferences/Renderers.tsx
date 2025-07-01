@@ -379,7 +379,7 @@ export function DefaultPreferenceItemRender({
   );
 }
 
-export async function fetchTaxonTreeDefItems(): Promise<{ rankId: number; name: string }[]> {
+export async function fetchTaxonTreeDefItems(): Promise<readonly { readonly rankId: number; readonly name: string }[]> {
   const response = await fetch('/api/specify/taxontreedefitem/');
   if (!response.ok) throw new Error('Failed to fetch TaxonTreeDefItems');
   const data = await response.json();
@@ -393,11 +393,11 @@ export function ThresholdRank({
   value,
   onChange,
   tableName,
-}: PreferenceRendererProps<number> & { tableName: string }): JSX.Element {
-  const [items, setItems] = React.useState<{ rankId: number; name: string }[]>([]);
+}: PreferenceRendererProps<number> & { readonly tableName: string }): JSX.Element {
+  const [items, setItems] = React.useState<readonly { readonly rankId: number; readonly name: string }[]>([]);
   React.useEffect(() => {
     fetch(`/api/specify/${tableName.toLowerCase()}treedefitem/`)
-      .then(res => res.json())
+      .then(async res => res.json())
       .then(data => setItems((data.objects ?? []).map((item: any) => ({
         rankId: item.rankid,
         name: item.name,
