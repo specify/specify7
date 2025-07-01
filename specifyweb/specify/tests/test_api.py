@@ -5,7 +5,7 @@ Tests for api.py
 import json
 from unittest import skip
 from datetime import datetime
-from django.db.models import Max
+from django.db.models import Max, QuerySet
 from django.test import TestCase, Client
 
 from specifyweb.permissions.models import UserPolicy
@@ -162,6 +162,10 @@ class MainSetupTearDown:
                 resource="%",
                 action="%",
             )
+
+    # TODO: Replace all such tests with below.
+    def assertExists(self, queryset: QuerySet):
+        self.assertTrue(queryset.exists(), "Record does not exist!")
 
 class ApiTests(MainSetupTearDown, TestCase): pass
 
