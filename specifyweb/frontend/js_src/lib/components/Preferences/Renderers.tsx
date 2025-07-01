@@ -387,11 +387,18 @@ export function ThresholdRank({
   const [items, setItems] = React.useState<readonly { readonly rankId: number; readonly name: string }[]>([]);
   React.useEffect(() => {
     fetch(`/api/specify/${tableName.toLowerCase()}treedefitem/`)
-      .then(async res => res.json())
+      .then(async res => {
+        if (!res.ok) throw new Error('Failed to fetch ThresholdRank items');
+        return res.json();
+      })
       .then(data => setItems((data.objects ?? []).map((item: any) => ({
         rankId: item.rankid,
         name: item.name,
-      }))));
+      }))))
+      .catch(error => {
+        console.error('Error fetching ThresholdRank items:', error);
+        setItems([]);
+      });
   }, [tableName]);
 
   return (
