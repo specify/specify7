@@ -19,7 +19,6 @@ import { idFromUrl } from '../DataModel/resource';
 import { deserializeResource } from '../DataModel/serializers';
 import { softError } from '../Errors/assert';
 import { ResourceView } from '../Forms/ResourceView';
-import { getPref } from '../InitialContext/remotePrefs';
 import { hasTablePermission } from '../Permissions/helpers';
 import { useHighContrast } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';

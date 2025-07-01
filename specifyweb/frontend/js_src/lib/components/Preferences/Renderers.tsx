@@ -3,8 +3,6 @@
  * Most use the default renderes, but there are some exceptions
  */
 
-import React, { useEffect, useState } from 'react';
-
 import { usePromise } from '../../hooks/useAsyncState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { useValidation } from '../../hooks/useValidation';
