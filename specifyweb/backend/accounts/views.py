@@ -23,7 +23,7 @@ from typing_extensions import TypedDict
 
 from specifyweb.middleware.general import require_GET, require_http_methods
 
-from specifyweb.permissions.permissions import PermissionTarget, \
+from specifyweb.backend.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, check_permission_targets
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.views import login_maybe_required, openapi

@@ -1,5 +1,5 @@
 from .models import Spattachmentdataset
-from ..permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets
+from specifyweb.backend.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets
 from django import http
 import json
 import datetime

@@ -13,7 +13,7 @@ from sqlalchemy.sql.expression import or_, and_
 from specifyweb.middleware.general import require_GET
 from .search_terms import parse_search_str
 from ..context.app_resource import get_app_resource
-from ..permissions.permissions import check_table_permissions
+from specifyweb.backend.permissions.permissions import check_table_permissions
 from ..specify.api import toJson
 from ..specify.models import datamodel, Collection
 from ..specify.views import login_maybe_required
