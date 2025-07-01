@@ -1085,7 +1085,7 @@ export const preferencesText = createDictionary({
     'es-es': 'No distingue entre mayúsculas y minúsculas',
     'fr-fr': 'Insensible à la casse',
     'uk-ua': 'Регістр не враховується',
-    'de-ch': 'Groß- und Kleinschreibung wird nicht berücksichtigt',
+    'de-ch': 'Groß-/Kleinschreibung wird nicht beachtet',
     'pt-br': 'Não diferencia maiúsculas de minúsculas',
   },
   showNoReadTables: {
@@ -1860,7 +1860,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Una URL a una imagen que se mostrará junto al logotipo Especificar en el menú de navegación.',
     'fr-fr':
-      'Une URL vers une image qui serait affichée à côté du logo Spécifier dans le menu de navigation.',
+      'Une URL vers une image qui serait affichée à côté du logo Specify dans le menu de navigation.',
     'ru-ru':
       'URL-адрес изображения, которое будет отображаться рядом с логотипом «Указать» в меню навигации.',
     'uk-ua':
@@ -1881,7 +1881,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Save button color',
     'de-ch': 'Farbe der Schaltfläche „Speichern“',
     'es-es': 'Guardar el color del botón',
-    'fr-fr': 'Enregistrer la couleur du bouton',
+    'fr-fr': 'Couleur du bouton Enregistrer',
     'ru-ru': 'Сохранить цвет кнопки',
     'uk-ua': 'Зберегти колір кнопки',
     'pt-br': 'Cor do botão Salvar',

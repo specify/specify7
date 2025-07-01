@@ -292,7 +292,7 @@ export const wbText = createDictionary({
     'de-ch':
       'Keiner der übereinstimmenden Datensätze ist derzeit in der Datenbank vorhanden. Dies kann passieren, wenn alle übereinstimmenden Datensätze seit der Validierung gelöscht wurden oder wenn alle Übereinstimmungen im Vergleich zu anderen Datensätzen in diesem Datensatz mehrdeutig waren. In diesem Fall müssen Sie dem Datensatz Felder und Werte hinzufügen, um die Mehrdeutigkeit zu beheben.',
     'pt-br':
-      'Nenhum dos registros correspondentes existe atualmente no banco de dados. Isso pode ocorrer se todos os registros correspondentes foram excluídos desde a ocorrência do processo de validação ou se todas as correspondências forem ambíguas em relação a outros registros neste conjunto de dados. Neste último caso, você precisará adicionar campos e valores ao conjunto de dados para resolver a ambiguidade.',
+      'Nenhum dos registros correspondentes existe atualmente no banco de dados. Isso pode ocorrer se todos os registros correspondentes foram excluídos desde o processo de validação ou se todas as correspondências eram ambíguas em relação a outros registros neste conjunto de dados. Neste último caso, você precisará adicionar campos e valores ao conjunto de dados para resolver a ambiguidade.',
   },
   disambiguateMatches: {
     'en-us': 'Disambiguate Multiple Record Matches',
@@ -388,7 +388,7 @@ export const wbText = createDictionary({
     'de-ch':
       'Durch das Löschen eines Datensatzes werden dieser und sein Upload-Plan dauerhaft entfernt. Datenzuordnungen können nicht mehr mit anderen Datensätzen wiederverwendet werden. Nach dem Löschen ist für einen hochgeladenen Datensatz auch kein Rollback mehr möglich.',
     'pt-br':
-      'A exclusão de um Conjunto de Dados o remove permanentemente, juntamente com seu Plano de Upload. Os mapeamentos de dados não estarão mais disponíveis para reutilização com outros Conjuntos de Dados. Além disso, após a exclusão, a opção de Reversão não será mais uma opção para um Conjunto de Dados carregado.',
+      'A exclusão de um Conjunto de Dados o remove permanentemente, juntamente com seu Plano de Upload. Os mapeamentos de dados não estarão mais disponíveis para reutilização com outros Conjuntos de Dados. Além disso, após a exclusão, a opção de Reverter não será mais uma opção para um Conjunto de Dados carregado.',
   },
   dataSetDeleted: {
     'en-us': 'Data Set successfully deleted',
@@ -652,7 +652,7 @@ export const wbText = createDictionary({
     'fr-fr': 'Restauration annulée',
     'uk-ua': 'Відкат скасовано',
     'de-ch': 'Rollback abgebrochen',
-    'pt-br': 'Reverter cancelado',
+    'pt-br': 'Reversão cancelada',
   },
   rollbackCanceledDescription: {
     'en-us': 'Data Set Rollback cancelled.',
@@ -785,7 +785,7 @@ export const wbText = createDictionary({
     'de-ch':
       'Diese Aktion ist während der laufenden Datenüberprüfung nicht verfügbar.',
     'pt-br':
-      'Esta ação não estará disponível enquanto a verificação de dados estiver em andamento.',
+      'Esta ação não estará disponível enquanto a Verificação de Dados estiver em andamento',
   },
   unavailableWithoutLocality: {
     'en-us': 'This tool requires locality columns to be mapped',
@@ -1520,14 +1520,15 @@ export const wbText = createDictionary({
     'uk-ua': 'Записи видалено (без урахування утриманців)',
   },
   recordsMatchedAndChanged: {
-    'en-us': 'Records matched, different from current related',
-    'de-ch': 'Datensätze übereinstimmen, abweichend von aktuellen verwandten',
-    'es-es': 'Registros coincidentes, diferentes a los relacionados actuales',
+    'en-us': 'Related records matched to different records',
+    'de-ch':
+      'Verwandte Datensätze, die mit anderen Datensätzen abgeglichen wurden',
+    'es-es': 'Registros relacionados que coinciden con diferentes registros',
     'fr-fr':
-      'Enregistrements correspondants, différents des enregistrements actuellement liés',
-    'pt-br': 'Registros correspondentes, diferentes dos atuais relacionados',
-    'ru-ru': 'Записи сопоставлены, отличаются от текущих связанных',
-    'uk-ua': "Зіставлені записи відрізняються від поточних пов'язаних",
+      'Enregistrements associés correspondant à différents enregistrements',
+    'pt-br': 'Registros relacionados correspondidos a registros diferentes',
+    'ru-ru': 'Связанные записи сопоставлены с разными записями',
+    'uk-ua': 'Пов’язані записи, що відповідають іншим записам',
   },
   matchAndChanged: {
     'en-us': 'Matched and changed cells',

@@ -22,7 +22,7 @@ export const treeText = createDictionary({
     'en-us': 'Bad tree structure.',
     'ru-ru': 'Плохая структура дерева.',
     'es-es': 'Mala estructura de árbol.',
-    'fr-fr': "Mauvaise structure de l'arbre.",
+    'fr-fr': 'Mauvaise arborescence.',
     'uk-ua': 'Погана структура дерева.',
     'de-ch': 'Fehlerhafte Baumstruktur.',
     'pt-br': 'Estrutura de árvore ruim.',
@@ -31,7 +31,7 @@ export const treeText = createDictionary({
     'en-us': 'Move',
     'ru-ru': 'Двигаться',
     'es-es': 'Mover',
-    'fr-fr': 'Se déplacer',
+    'fr-fr': 'Déplacer',
     'uk-ua': 'рухатися',
     'de-ch': 'Verschieben',
     'pt-br': 'Mover',
@@ -250,7 +250,7 @@ export const treeText = createDictionary({
     'uk-ua':
       'Виберіть нову ціль для препаратів "{nodeName:string}", до якої потрібно переміститися',
     'pt-br':
-      'Selecione um novo alvo para que os preparativos "{nodeName:string}" sejam movidos para',
+      'Selecione um novo alvo para os preparativos "{nodeName:string}" a serem movidos para',
   },
   mergeNodeMessage: {
     'en-us':
@@ -370,7 +370,7 @@ export const treeText = createDictionary({
     'en-us': 'Search Tree',
     'ru-ru': 'Дерево поиска',
     'es-es': 'Árbol de búsqueda',
-    'fr-fr': 'Arbre de recherche',
+    'fr-fr': "Rechercher dans l'arbre",
     'uk-ua': 'Дерево пошуку',
     'de-ch': 'Baum durchsuchen',
     'pt-br': 'Árvore de Pesquisa',
@@ -491,7 +491,7 @@ export const treeText = createDictionary({
     'en-us': 'Vertical',
     'de-ch': 'Vertikal',
     'es-es': 'Vertical',
-    'fr-fr': 'Verticale',
+    'fr-fr': 'Vertical',
     'ru-ru': 'Вертикальный',
     'uk-ua': 'Вертикальний',
     'pt-br': 'Vertical',

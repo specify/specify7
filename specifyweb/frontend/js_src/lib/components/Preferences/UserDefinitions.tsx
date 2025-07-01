@@ -539,7 +539,7 @@ export const userPreferenceDefinitions = {
           mode: definePref<WelcomePageMode>({
             title: preferencesText.content(),
             description: (
-              <Link.NewTab href="https://github.com/specify/specify7/wiki/Customizing-the-splash-screen">
+              <Link.NewTab href="https://discourse.specifysoftware.org/t/customizing-the-splash-screen/2604">
                 {headerText.documentation()}
               </Link.NewTab>
             ),
@@ -620,7 +620,7 @@ export const userPreferenceDefinitions = {
             title: localized('_shownTables'),
             requiresReload: false,
             visible: false,
-            defaultValue: 'legacy',
+            defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
             container: 'div',
           }),
@@ -714,7 +714,7 @@ export const userPreferenceDefinitions = {
             title: localized('_shownTables'),
             requiresReload: false,
             visible: false,
-            defaultValue: 'legacy',
+            defaultValue: [],
             renderer: f.never,
             container: 'div',
           }),
