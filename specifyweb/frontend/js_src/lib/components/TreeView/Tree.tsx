@@ -98,8 +98,10 @@ export function Tree<
     'synonymColor'
   );
 
-  const statsThreshold = getPref(
-    `TreeEditor.Rank.Threshold.${tableName as 'Geography'}`
+  const [statsThreshold] = userPreferences.use(
+  'treeEditor',
+  treeToPref[tableName],
+  'rankThreshold'
   );
   const getStats = React.useCallback(
     async (nodeId: number | 'null', rankId: number): Promise<Stats> =>
