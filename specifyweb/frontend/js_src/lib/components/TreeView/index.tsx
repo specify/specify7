@@ -50,6 +50,7 @@ import {
 } from './helpers';
 import { TreeViewSearch } from './Search';
 import { Tree } from './Tree';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function TreeViewWrapper(): JSX.Element | null {
   useMenuItem('trees');
@@ -157,7 +158,7 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
   // Node sort order
   const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`);
 
-  const includeAuthor = getPref(`TaxonTreeEditor.DisplayAuthor`);
+  const includeAuthor = userPreferences.get('treeEditor', 'taxon', 'displayAuthor');
 
   const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
     treeDefinition.id
