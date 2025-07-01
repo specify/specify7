@@ -696,7 +696,7 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Afficher l\'auteur dans l\'arbre',
     'uk-ua': 'Показати автора в дереві',
     'de-ch': 'Autor im Baum anzeigen',
-    'pt-br': 'Mostrar autoria',
+    'pt-br': 'Mostrar autor',
   },
   welcomePage: {
     'en-us': 'Home Page',
