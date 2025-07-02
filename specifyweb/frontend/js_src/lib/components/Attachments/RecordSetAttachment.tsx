@@ -16,7 +16,7 @@ import { serializeResource } from '../DataModel/serializers';
 import type { CollectionObjectAttachment } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { defaultAttachmentScale } from '.';
-import { downloadAllAttachments } from './attachments';
+import { DownloadAllAttachmentsButton } from './DownloadButton';
 import { AttachmentGallery } from './Gallery';
 import { getAttachmentRelationship } from './utils';
 
@@ -109,8 +109,6 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
 
   const isComplete = fetchedCount.current === recordCount;
 
-  const [showCreateRecordSetDialog, setShowCreateRecordSetDialog] = React.useState(false);
-
   return (
     <>
       <Button.Icon
@@ -119,34 +117,16 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         title="attachments"
         onClick={handleShowAttachments}
       />
-      {showCreateRecordSetDialog && (
-        <CreateRecordSetDialog
-          onClose={(): void => {
-            setShowCreateRecordSetDialog(false);
-          }}
-        />
-      )}
       {showAttachments && (
         <Dialog
           buttons={
             <>
-              <Button.Info
-                title={attachmentsText.downloadAllDescription()}
-                onClick={(): void =>
-                  (recordSetId === undefined && !isComplete) ? 
-                  setShowCreateRecordSetDialog(true)
-                  :
-                  loading(
-                    downloadAllAttachments(
-                      (recordSetId !== undefined && !isComplete) ? [] : attachmentsRef.current?.attachments ?? [],
-                      name,
-                      recordSetId,
-                    )
-                  )
-                }
-              >
-                {attachmentsText.downloadAll()}
-              </Button.Info>
+              <DownloadAllAttachmentsButton
+                attachments={(recordSetId !== undefined && !isComplete) ? [] : attachmentsRef.current?.attachments ?? []}
+                archiveName={name}
+                recordSetId={recordSetId}
+                recordSetRequired={!isComplete}
+              />
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
             </>
           }
@@ -205,23 +185,5 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         </Dialog>
       )}
     </>
-  );
-}
-
-function CreateRecordSetDialog({
-  onClose,
-}: {
-  readonly onClose: () => void;
-}): JSX.Element {
-  return (
-    <Dialog
-      buttons={
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-      }
-      header={attachmentsText.downloadAll()}
-      onClose={onClose}
-    >
-      {attachmentsText.createRecordSetToDownloadAll()}
-    </Dialog>
   );
 }
