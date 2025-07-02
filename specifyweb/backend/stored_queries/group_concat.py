@@ -5,7 +5,7 @@ import sqlalchemy
 from sqlalchemy.sql import expression
 from sqlalchemy.ext import compiler
 
-from specifyweb.stored_queries.query_construct import QueryConstruct
+from specifyweb.backend.stored_queries.query_construct import QueryConstruct
 
 # class changed from FunctionElement to ColumnElement
 class group_concat(expression.ColumnElement):

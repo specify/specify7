@@ -3,7 +3,7 @@ from sqlalchemy import orm, inspect
 
 import specifyweb.specify.models as spmodels
 from specifyweb.specify.tests.test_api import ApiTests
-from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec, find_tree_and_field
+from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec, find_tree_and_field
 from .. import models
 
 class QueryFieldTests(TestCase):
