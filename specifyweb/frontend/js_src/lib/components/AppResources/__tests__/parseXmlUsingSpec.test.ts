@@ -4,8 +4,10 @@ import { interceptLogs } from "../../Errors/interceptLogs";
 import { pipe } from "../../Syncer";
 import { syncers } from "../../Syncer/syncers";
 import { createXmlSpec } from "../../Syncer/xmlUtils";
-import { parseXmlUsingSpec } from "../codeMirrorLinters";
+import { exportsForTests } from "../codeMirrorLinters";
 import { strictParseXml } from "../parseXml";
+
+const { parseXmlUsingSpec } = exportsForTests;
 
 requireContext();
 
