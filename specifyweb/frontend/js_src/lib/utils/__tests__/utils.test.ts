@@ -313,8 +313,8 @@ theories(chunk, [
 ]);
 
 theories(formatTime, [
-  { in: [5], out: "0:05"},
-  { in: [10], out: "0:10"},
-  { in: [70], out: "1:10"},
-  { in: [125], out: "2:05"},
+  { in: [5], out: '0:05' },
+  { in: [10], out: '0:10' },
+  { in: [70], out: '1:10' },
+  { in: [125], out: '2:05' },
 ]);
