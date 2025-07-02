@@ -8741,7 +8741,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=Falsee, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='SpDataSetAttColMemIDX', column_names=['CollectionMemberID'])
