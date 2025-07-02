@@ -130,6 +130,13 @@ describe('f.parseInt', () => {
   test('invalid case', () => expect(f.parseInt('a-1.4')).toBeUndefined());
 });
 
+describe('f.fastParseInt', () => {
+  test('simple case', () => expect(f.fastParseInt('1')).toBe(1));
+  test('float case', () => expect(f.fastParseInt('-1.4')).toBe(-1));
+  test('invalid case', () => expect(f.fastParseInt('a-1.4')).toBe(0));
+  test('empty string case', () => expect(f.fastParseInt("")).toBe(0));
+});
+
 describe('f.parseFloat', () => {
   test('simple case', () => expect(f.parseFloat('1')).toBe(1));
   test('float case', () => expect(f.parseFloat('-1.4')).toBe(-1.4));
