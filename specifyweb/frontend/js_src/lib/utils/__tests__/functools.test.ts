@@ -69,6 +69,11 @@ test('f.equal', () => {
   expect(f.equal('a')('b')).toBe(false);
 });
 
+test('f.notEqual', () => {
+  expect(f.notEqual('a')('a')).toBe(false);
+  expect(f.notEqual('a')('b')).toBe(true);
+});
+
 describe('f.maybe', () => {
   test('undefined case', () =>
     expect(f.maybe(undefined, f.true)).toBeUndefined());
