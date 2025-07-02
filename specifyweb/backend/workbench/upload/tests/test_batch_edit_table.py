@@ -6,15 +6,15 @@ from specifyweb.backend.stored_queries.queryfield import QueryField, fields_from
 from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
 from specifyweb.backend.stored_queries.tests.test_batch_edit import props_builder
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
-from specifyweb.workbench.upload.auditor import (
+from specifyweb.backend.workbench.upload.auditor import (
     DEFAULT_AUDITOR_PROPS,
     AuditorProps,
     BatchEditPrefs,
 )
-from specifyweb.workbench.upload.tests.base import UploadTestsBase
-from specifyweb.workbench.upload.upload import do_upload
+from specifyweb.backend.workbench.upload.tests.base import UploadTestsBase
+from specifyweb.backend.workbench.upload.upload import do_upload
 from specifyweb.specify import auditcodes
-from specifyweb.workbench.upload.upload_result import (
+from specifyweb.backend.workbench.upload.upload_result import (
     Deleted,
     MatchedAndChanged,
     MatchedMultiple,
@@ -26,8 +26,8 @@ from specifyweb.workbench.upload.upload_result import (
     Matched,
     UploadResult,
 )
-from specifyweb.workbench.upload.upload_table import UploadTable
-from specifyweb.workbench.views import regularize_rows
+from specifyweb.backend.workbench.upload.upload_table import UploadTable
+from specifyweb.backend.workbench.views import regularize_rows
 from ..upload_plan_schema import parse_column_options, parse_plan, schema
 
 from jsonschema import validate  # type: ignore

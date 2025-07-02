@@ -17,7 +17,7 @@ from specifyweb.backend.stored_queries.tests.static import test_plan
 from specifyweb.specify.datamodel import datamodel
 import specifyweb.specify.models as models
 
-from specifyweb.workbench.upload.upload_plan_schema import schema
+from specifyweb.backend.workbench.upload.upload_plan_schema import schema
 from jsonschema import validate
 
 from specifyweb.backend.stored_queries.tests.static.co_query_row_plan import row_plan_map

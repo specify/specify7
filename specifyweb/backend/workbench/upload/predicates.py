@@ -19,7 +19,7 @@ from specifyweb.specify.func import Func
 
 from django.core.exceptions import ObjectDoesNotExist
 
-from specifyweb.workbench.upload.clone import GENERIC_FIELDS_TO_SKIP
+from specifyweb.backend.workbench.upload.clone import GENERIC_FIELDS_TO_SKIP
 
 Filter = dict[str, Any]
 

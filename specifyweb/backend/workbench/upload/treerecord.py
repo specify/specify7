@@ -10,8 +10,8 @@ from typing_extensions import TypedDict
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
-from specifyweb.workbench.upload.clone import clone_record
-from specifyweb.workbench.upload.predicates import (
+from specifyweb.backend.workbench.upload.clone import clone_record
+from specifyweb.backend.workbench.upload.predicates import (
     SPECIAL_TREE_FIELDS_TO_SKIP,
     ContetRef,
     DjangoPredicates,
@@ -21,7 +21,7 @@ from specifyweb.workbench.upload.predicates import (
     safe_fetch,
 )
 from specifyweb.specify.tree_utils import SPECIFY_TREES, get_treedef_model, get_models, get_treedefitem_model
-from specifyweb.workbench.upload.scope_context import ScopeContext
+from specifyweb.backend.workbench.upload.scope_context import ScopeContext
 from .column_options import ColumnOptions, ExtendedColumnOptions
 
 from .parsing import (
