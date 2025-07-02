@@ -1537,7 +1537,7 @@ def series_autonumber_range(request: http.HttpRequest):
 
     try:
         # Repeatedly autonumber until the end is reached.
-        limit = 300
+        limit = 500
         values = [canonicalized_range_start]
         current_value = values[0]
         if request_data.get('skipstartnumber'):
@@ -1553,7 +1553,7 @@ def series_autonumber_range(request: http.HttpRequest):
         # Check if any existing records use the values.
         # Not garanteed to be accurate at the time of saving, just serves as a warning for the frontend.
         table = get_model(table_name)
-        existing_records = table.objects.filter(**{f"{field_name}__in": values})
+        existing_records = table.objects.filter(**{f'{field_name}__in': values, 'collection': request.specify_collection})
         existing_values = list(existing_records.values_list(field_name, flat=True))
 
         return http.JsonResponse({
