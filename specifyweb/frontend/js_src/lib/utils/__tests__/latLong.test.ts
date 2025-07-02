@@ -10,58 +10,57 @@ function compareCoords(coord: Coord, [sign, ...components]: RA<number>): void {
 const compareArray = (source: RA<number>, target: RA<number>): void =>
   source.forEach((source, index) => expect(source).toBeCloseTo(target[index]));
 
-const addWhiteSpace = (input: string, shouldAddWhiteSpace: boolean): string => (
-  shouldAddWhiteSpace ? `   ${input}     ` : input
-)
+const addWhiteSpace = (input: string, shouldAddWhiteSpace: boolean): string =>
+  shouldAddWhiteSpace ? `   ${input}     ` : input;
 
-const describeMessage = (prefix: string, shouldAddWhiteSpace: boolean) => (
-  `${prefix}${shouldAddWhiteSpace ? " (white space)" : ""}`
-);
+const describeMessage = (prefix: string, shouldAddWhiteSpace: boolean) =>
+  `${prefix}${shouldAddWhiteSpace ? ' (white space)' : ''}`;
 
 describe('latLongUtils', () => {
+  function makeParseValidTest(shouldAddWhiteSpace: boolean) {
+    const augment = (input: string) =>
+      addWhiteSpace(input, shouldAddWhiteSpace);
 
-  function makeParseValidTest(shouldAddWhiteSpace: boolean){
-
-    const augment = (input: string) => addWhiteSpace(input, shouldAddWhiteSpace);
-    
-    describe(describeMessage("parse valid", shouldAddWhiteSpace), ()=>(
-      [
-        [Lat, '34.123 N', [1, 34.123]],
-        [Lat, '36:07 N', [1, 36, 7]],
-        [Lat, '39:51:41 N', [1, 39, 51, 41]],
-        [Lat, '00.07152778 N', [1, 0.071_527_78]],
-        [Lat, '17:22.88 N', [1, 17, 22.88]],
-        [Lat, '39:51:41.02 N', [1, 39, 51, 41.02]],
-        [Coord, '-39:51:41', [-1, 39, 51, 41]],
-        [Lat, '39:51:41 s', [-1, 39, 51, 41]],
-        [Long, '39:51.41 w', [-1, 39, 51.41]],
-        [Coord, '.34', [1, 0.34]],
-        [Coord, '-.34', [-1, 0.34]],
-        [Long, '17:22.88 E', [1, 17, 22.88]],
-        [Lat, '28° N', [1, 28]],
-        [Lat, "28° 19' N", [1, 28, 19]],
-        [Lat, '28° 19\' 0.121" N', [1, 28, 19, 0.121]],
-        [Long, '115° 34\' 59.872" W', [-1, 115, 34, 59.872]],
-        [Lat, '1 01 S', [-1, 1, 1]],
-        [Long, '1 01 W', [-1, 1, 1]],
-        [Lat, '0 01 S', [-1, 0, 1]],
-        [Long, '0 01 W', [-1, 0, 1]],
-        [Coord, '0', [1, 0]],
-        [Coord, '0 58 0', [1, 0, 58, 0]],
-        [Coord, '-0 58 0', [-1, 0, 58, 0]],
-      ] as const
-    ).forEach(([type, raw, components]) =>
-      test(`${augment(raw)} is ${type.name}`, () => {
-        const result = Coord.parse(augment(raw))!;
-        expect(result).toBeInstanceOf(type);
-        expect([result.sign, ...result.components]).toEqual(components);
-      })
-    ))
+    describe(describeMessage('parse valid', shouldAddWhiteSpace), () =>
+      (
+        [
+          [Lat, '34.123 N', [1, 34.123]],
+          [Lat, '36:07 N', [1, 36, 7]],
+          [Lat, '39:51:41 N', [1, 39, 51, 41]],
+          [Lat, '00.07152778 N', [1, 0.071_527_78]],
+          [Lat, '17:22.88 N', [1, 17, 22.88]],
+          [Lat, '39:51:41.02 N', [1, 39, 51, 41.02]],
+          [Coord, '-39:51:41', [-1, 39, 51, 41]],
+          [Lat, '39:51:41 s', [-1, 39, 51, 41]],
+          [Long, '39:51.41 w', [-1, 39, 51.41]],
+          [Coord, '.34', [1, 0.34]],
+          [Coord, '-.34', [-1, 0.34]],
+          [Long, '17:22.88 E', [1, 17, 22.88]],
+          [Lat, '28° N', [1, 28]],
+          [Lat, "28° 19' N", [1, 28, 19]],
+          [Lat, '28° 19\' 0.121" N', [1, 28, 19, 0.121]],
+          [Long, '115° 34\' 59.872" W', [-1, 115, 34, 59.872]],
+          [Lat, '1 01 S', [-1, 1, 1]],
+          [Long, '1 01 W', [-1, 1, 1]],
+          [Lat, '0 01 S', [-1, 0, 1]],
+          [Long, '0 01 W', [-1, 0, 1]],
+          [Coord, '0', [1, 0]],
+          [Coord, '0 58 0', [1, 0, 58, 0]],
+          [Coord, '-0 58 0', [-1, 0, 58, 0]],
+        ] as const
+      ).forEach(([type, raw, components]) =>
+        test(`${augment(raw)} is ${type.name}`, () => {
+          const result = Coord.parse(augment(raw))!;
+          expect(result).toBeInstanceOf(type);
+          expect([result.sign, ...result.components]).toEqual(components);
+        })
+      )
+    );
   }
 
-  function makeParseInvalidTest(shouldAddWhiteSpace: boolean){
-
-    const augment = (input: string) => addWhiteSpace(input, shouldAddWhiteSpace);
+  function makeParseInvalidTest(shouldAddWhiteSpace: boolean) {
+    const augment = (input: string) =>
+      addWhiteSpace(input, shouldAddWhiteSpace);
 
     describe(describeMessage('parse invalid', shouldAddWhiteSpace), () =>
       [
@@ -83,12 +82,13 @@ describe('latLongUtils', () => {
           test(`${augment(value)} on ${parser.name}`, () =>
             expect(parser.parse(augment(value))).toBeUndefined())
         )
-      ));
+      )
+    );
   }
 
-  function makeToDegsTest(shouldAddWhiteSpace: boolean){
-
-    const augment = (input: string) => addWhiteSpace(input, shouldAddWhiteSpace);
+  function makeToDegsTest(shouldAddWhiteSpace: boolean) {
+    const augment = (input: string) =>
+      addWhiteSpace(input, shouldAddWhiteSpace);
 
     describe(describeMessage('toDegs', shouldAddWhiteSpace), () =>
       Object.entries({
@@ -100,60 +100,73 @@ describe('latLongUtils', () => {
           const result = Coord.parse(augment(raw))!.toDegs();
           compareCoords(result, expectedComponents);
         })
-      ));
+      )
+    );
   }
 
-  function makeLatLongCoordParseTest(shouldAddWhiteSpace: boolean){
+  function makeLatLongCoordParseTest(shouldAddWhiteSpace: boolean) {
+    const augment = (input: string) =>
+      addWhiteSpace(input, shouldAddWhiteSpace);
 
-    const augment = (input: string) => addWhiteSpace(input, shouldAddWhiteSpace);
-
-    describe(describeMessage('Lat.parse, Long.parse, Coord.parse', shouldAddWhiteSpace), () =>
-      (
-        [
-          [Lat, '34.123 N', [1, 34.123]],
-          [Lat, '36:07 N', [1, 36, 7]],
-          [Lat, '39:51:41 N', [1, 39, 51, 41]],
-          [Lat, '00.07152778 N', [1, 0.071_527_78]],
-          [Lat, '17:22.88 N', [1, 17, 22.88]],
-          [Lat, '39:51:41.02 N', [1, 39, 51, 41.02]],
-          [Coord, '-39:51:41', [-1, 39, 51, 41]],
-          [Lat, '39:51:41 s', [-1, 39, 51, 41]],
-          [Long, '39:51.41 w', [-1, 39, 51.41]],
-          [Coord, '.34', [1, 0.34]],
-          [Coord, '-.34', [-1, 0.34]],
-          [Long, '17:22.88 E', [1, 17, 22.88]],
-          [Lat, '28° N', [1, 28]],
-          [Lat, "28° 19' N", [1, 28, 19]],
-          [Lat, '28° 19\' 0.121" N', [1, 28, 19, 0.121]],
-          [Lat, '  28° 19\' 0.121" N  ', [1, 28, 19, 0.121]],
-          [Long, '115° 34\' 59.872" W', [-1, 115, 34, 59.872]],
-        ] as const
-      ).forEach(([givenType, formatted, components]) => {
-        [Coord, Lat, Long].forEach((type) =>
-          test(`${augment(formatted)} as ${type.name}`, () => {
-            const result = type.parse(augment(formatted))!;
-            if (type === Coord || givenType === Coord || givenType === type)
-              expect([result.sign, ...result.components]).toEqual(components);
-            else expect(result).toBeUndefined();
-          })
-        );
-      }));
+    describe(
+      describeMessage(
+        'Lat.parse, Long.parse, Coord.parse',
+        shouldAddWhiteSpace
+      ),
+      () =>
+        (
+          [
+            [Lat, '34.123 N', [1, 34.123]],
+            [Lat, '36:07 N', [1, 36, 7]],
+            [Lat, '39:51:41 N', [1, 39, 51, 41]],
+            [Lat, '00.07152778 N', [1, 0.071_527_78]],
+            [Lat, '17:22.88 N', [1, 17, 22.88]],
+            [Lat, '39:51:41.02 N', [1, 39, 51, 41.02]],
+            [Coord, '-39:51:41', [-1, 39, 51, 41]],
+            [Lat, '39:51:41 s', [-1, 39, 51, 41]],
+            [Long, '39:51.41 w', [-1, 39, 51.41]],
+            [Coord, '.34', [1, 0.34]],
+            [Coord, '-.34', [-1, 0.34]],
+            [Long, '17:22.88 E', [1, 17, 22.88]],
+            [Lat, '28° N', [1, 28]],
+            [Lat, "28° 19' N", [1, 28, 19]],
+            [Lat, '28° 19\' 0.121" N', [1, 28, 19, 0.121]],
+            [Lat, '  28° 19\' 0.121" N  ', [1, 28, 19, 0.121]],
+            [Long, '115° 34\' 59.872" W', [-1, 115, 34, 59.872]],
+          ] as const
+        ).forEach(([givenType, formatted, components]) => {
+          [Coord, Lat, Long].forEach((type) =>
+            test(`${augment(formatted)} as ${type.name}`, () => {
+              const result = type.parse(augment(formatted))!;
+              if (type === Coord || givenType === Coord || givenType === type)
+                expect([result.sign, ...result.components]).toEqual(components);
+              else expect(result).toBeUndefined();
+            })
+          );
+        })
+    );
   }
 
-  function makeLongsHandledTest(shouldAddWhiteSpace: boolean){
+  function makeLongsHandledTest(shouldAddWhiteSpace: boolean) {
+    const augment = (input: string) =>
+      addWhiteSpace(input, shouldAddWhiteSpace);
 
-    const augment = (input: string) => addWhiteSpace(input, shouldAddWhiteSpace);
-
-    describe(describeMessage('Longitudes are handled appropriately by all parsers', shouldAddWhiteSpace), () =>
-      ['124:34:23', '-124:34:23', '90.1', '90:00:01'].forEach((raw) =>
-        [Coord, Lat, Long].map((type) =>
-          test(`${augment(raw)} as ${type.name}`, () => {
-            const result = type.parse(augment(raw));
-            if (type === Lat) expect(result).toBeUndefined();
-            else expect(result).toBeInstanceOf(Long);
-          })
+    describe(
+      describeMessage(
+        'Longitudes are handled appropriately by all parsers',
+        shouldAddWhiteSpace
+      ),
+      () =>
+        ['124:34:23', '-124:34:23', '90.1', '90:00:01'].forEach((raw) =>
+          [Coord, Lat, Long].map((type) =>
+            test(`${augment(raw)} as ${type.name}`, () => {
+              const result = type.parse(augment(raw));
+              if (type === Lat) expect(result).toBeUndefined();
+              else expect(result).toBeInstanceOf(Long);
+            })
+          )
         )
-      ));
+    );
   }
 
   makeParseValidTest(false);
@@ -231,5 +244,4 @@ describe('latLongUtils', () => {
         expect(instance.toDegsMinsSecs().format(undefined)).toBe(formatted)
       )
     ));
-
 });
