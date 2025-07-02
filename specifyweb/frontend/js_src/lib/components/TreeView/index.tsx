@@ -158,7 +158,11 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
   // Node sort order
   const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`);
 
-  const includeAuthor = userPreferences.get('treeEditor', 'taxon', 'displayAuthor');
+  const includeAuthor = userPreferences.get(
+    'treeEditor',
+    'taxon',
+    'displayAuthor'
+  );
 
   const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
     treeDefinition.id
