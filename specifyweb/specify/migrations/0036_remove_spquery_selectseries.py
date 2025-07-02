@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0031_add_default_for_selectseries'),
+        ('specify', '0035_version_required'),
     ]
 
     operations = [
