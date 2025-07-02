@@ -54,7 +54,7 @@ export const xmlLinter = (
         : [];
   });
 
-function parseXmlUsingSpec(
+export function parseXmlUsingSpec(
   spec: BaseSpec<SimpleXmlNode>,
   xml: Element,
   string: string
