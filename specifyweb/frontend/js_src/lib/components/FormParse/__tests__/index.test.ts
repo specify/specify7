@@ -105,6 +105,7 @@ const parsedFormView = {
           minLength: undefined,
           step: undefined,
           isReadOnly: false,
+          isSeries: false,
           defaultValue: undefined,
           whiteSpaceSensitive: false,
         },
@@ -579,6 +580,7 @@ test('parseRows', async () => {
         fieldDefinition: {
           defaultValue: undefined,
           isReadOnly: false,
+          isSeries: false,
           max: undefined,
           maxLength: undefined,
           min: undefined,

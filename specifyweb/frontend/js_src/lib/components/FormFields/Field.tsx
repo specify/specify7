@@ -15,6 +15,7 @@ import { raise } from '../Errors/Crash';
 import { fetchPathAsString } from '../Formatters/formatters';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
+import { SeriesFormContext } from '../Forms/BulkCarryForward';
 
 export function UiField({
   field,
@@ -24,6 +25,7 @@ export function UiField({
   readonly name: string | undefined;
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly field: LiteralField | Relationship | undefined;
+  readonly isSeries: boolean | undefined;
   readonly parser?: Parser;
 }): JSX.Element {
   return field?.isRelationship === true ? (
@@ -95,12 +97,14 @@ function Field({
   id,
   name,
   field,
+  isSeries,
   parser: defaultParser,
 }: {
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly id: string | undefined;
   readonly name: string | undefined;
   readonly field: LiteralField | undefined;
+  readonly isSeries: boolean | undefined;
   readonly parser?: Parser;
 }): JSX.Element {
   const { value, updateValue, validationRef, parser } = useResourceValue(
@@ -208,55 +212,89 @@ function Field({
     displayParentCatNumberPlaceHolder,
   ]);
 
+  const tableName = resource?.specifyTable.name;
+  const [enableCarryForward] = userPreferences.use(
+    'form',
+    'preferences',
+    'enableCarryForward'
+  );
+  const [enableBulkCarryForwardRange] = userPreferences.use(
+    'form',
+    'preferences',
+    'enableBulkCarryForwardRange'
+  );
+
+  const placeholder = 
+    displayPrimaryCatNumberPlaceHolder &&
+    typeof primaryCatalogNumber === 'string'
+      ? primaryCatalogNumber
+      : displayParentCatNumberPlaceHolder &&
+          typeof parentCatalogNumber === 'string'
+        ? parentCatalogNumber
+        : undefined;
+
+  const { seriesEnd: seriesRangeEnd, setSeriesEnd: setSeriesRangeEnd, setUsingSeries } = React.useContext(SeriesFormContext);
   return (
-    <Input.Generic
-      forwardRef={validationRef}
-      key={parser.title}
-      max={Number.MAX_SAFE_INTEGER}
-      name={name}
-      placeholder={
-        displayPrimaryCatNumberPlaceHolder &&
-        typeof primaryCatalogNumber === 'string'
-          ? primaryCatalogNumber
-          : displayParentCatNumberPlaceHolder &&
-              typeof parentCatalogNumber === 'string'
-            ? parentCatalogNumber
-            : undefined
-      }
-      {...validationAttributes}
-      className={
+    <>
+      <Input.Generic
+        forwardRef={validationRef}
+        key={parser.title}
+        max={Number.MAX_SAFE_INTEGER}
+        name={name}
+        placeholder={placeholder}
+        {...validationAttributes}
+        className={
+          /*
+          * Disable "text-align: right" in non webkit browsers
+          * as they don't support spinner's arrow customization
+          */
+          parser.type === 'number' &&
+          rightAlignNumberFields &&
+          globalThis.navigator.userAgent.toLowerCase().includes('webkit')
+            ? `text-right ${isReadOnly ? '' : 'pr-6'}`
+            : ''
+        }
+        id={id}
+        isReadOnly={isReadOnly}
+        required={'required' in validationAttributes && !isInSearchDialog}
+        tabIndex={isReadOnly ? -1 : undefined}
+        value={value?.toString() ?? ''}
+        onBlur={
+          isReadOnly ? undefined : ({ target }): void => updateValue(target.value)
+        }
+        onValueChange={(value): void => updateValue(value, false)}
         /*
-         * Disable "text-align: right" in non webkit browsers
-         * as they don't support spinner's arrow customization
-         */
-        parser.type === 'number' &&
-        rightAlignNumberFields &&
-        globalThis.navigator.userAgent.toLowerCase().includes('webkit')
-          ? `text-right ${isReadOnly ? '' : 'pr-6'}`
-          : ''
+        * Update data model value before onBlur, as onBlur fires after onSubmit
+        * if form is submitted using the ENTER key
+        */
+        onChange={(event): void => {
+          const input = event.target as HTMLInputElement;
+          /*
+          * Don't show validation errors on value change for input fields until
+          * field is blurred, unless user tried to paste a date (see definition
+          * of Input.Generic)
+          */
+          updateValue(input.value, event.type === 'paste');
+        }}
+      />
+      {isSeries && tableName && enableCarryForward.includes(tableName) && enableBulkCarryForwardRange.includes(tableName) && resource?.isNew() ? 
+        <Input.Generic
+          id={'formSeriesRangeEnd'}
+          key={'formSeriesRangeEnd'}
+          max={Number.MAX_SAFE_INTEGER}
+          name={name}
+          value={seriesRangeEnd}
+          onChange={(event): void => {
+            const input = event.target as HTMLInputElement;
+            setSeriesRangeEnd(input.value);
+            setUsingSeries(true);
+          }}
+          placeholder={placeholder}
+          {...validationAttributes}
+          required={false}
+        /> :
+        undefined
       }
-      id={id}
-      isReadOnly={isReadOnly}
-      required={'required' in validationAttributes && !isInSearchDialog}
-      tabIndex={isReadOnly ? -1 : undefined}
-      value={value?.toString() ?? ''}
-      onBlur={
-        isReadOnly ? undefined : ({ target }): void => updateValue(target.value)
-      }
-      onValueChange={(value): void => updateValue(value, false)}
-      /*
-       * Update data model value before onBlur, as onBlur fires after onSubmit
-       * if form is submitted using the ENTER key
-       */
-      onChange={(event): void => {
-        const input = event.target as HTMLInputElement;
-        /*
-         * Don't show validation errors on value change for input fields until
-         * field is blurred, unless user tried to paste a date (see definition
-         * of Input.Generic)
-         */
-        updateValue(input.value, event.type === 'paste');
-      }}
-    />
+    </>
   );
 }

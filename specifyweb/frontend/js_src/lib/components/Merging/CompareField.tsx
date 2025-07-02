@@ -169,6 +169,7 @@ function fieldToDefinition(
     return {
       type: 'Text',
       defaultValue: undefined,
+      isSeries: false,
       min: undefined,
       max: undefined,
       minLength: undefined,

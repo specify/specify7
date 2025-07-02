@@ -82,6 +82,7 @@ export type FieldTypes = {
       readonly minLength: number | undefined;
       readonly maxLength: number | undefined;
       readonly whiteSpaceSensitive: boolean | undefined;
+      readonly isSeries: boolean | undefined;
     }
   >;
   readonly Plugin: State<
@@ -218,6 +219,7 @@ const processFieldType: {
       minLength: f.parseInt(getProperty('minLength')),
       maxLength: f.parseInt(getProperty('maxLength')),
       whiteSpaceSensitive,
+      isSeries: getProperty('series')?.toLowerCase() === 'true',
     };
   },
   QueryComboBox({ getProperty, fields }) {
