@@ -314,21 +314,20 @@ theories(chunk, [
   },
 ]);
 
-
 theories(stripLastOccurrence, [
-  { in: ["test", ":"], out: "test"},
-  { in: ["test:second", ":"], out: "test"},
-  { in: ["test:second:third", ":"], out: "test:second" },
-  { in: ["someText", ""], out: "someTex" },
-  { in: [" ", ":"], out: " " },
-  { in: [" ", ""], out: "" }
+  { in: ['test', ':'], out: 'test' },
+  { in: ['test:second', ':'], out: 'test' },
+  { in: ['test:second:third', ':'], out: 'test:second' },
+  { in: ['someText', ''], out: 'someTex' },
+  { in: [' ', ':'], out: ' ' },
+  { in: [' ', ''], out: '' },
 ]);
 
 theories(stripFileExtension, [
-  { in: ["test"], out: "test"},
-  { in: ["test.second"], out: "test"},
-  { in: ["test.second.jpg"], out: "test.second" },
-  { in: [" "], out: " " }
+  { in: ['test'], out: 'test' },
+  { in: ['test.second'], out: 'test' },
+  { in: ['test.second.jpg'], out: 'test.second' },
+  { in: [' '], out: ' ' },
 ]);
 
 theories(formatTime, [
@@ -337,4 +336,3 @@ theories(formatTime, [
   { in: [70], out: '1:10' },
   { in: [125], out: '2:05' },
 ]);
-
