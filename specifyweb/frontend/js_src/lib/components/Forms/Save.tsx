@@ -297,7 +297,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           rangeEnd: carryForwardRangeEnd,
           tableName: resource.specifyTable.name.toLowerCase(),
           fieldName: numberFieldName.toLowerCase(),
-          formatterName: formatter.title,
+          formatterName: formatter.name,
           skipStartNumber: true,
         }),
       })
