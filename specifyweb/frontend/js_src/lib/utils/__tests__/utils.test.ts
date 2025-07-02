@@ -23,6 +23,8 @@ import {
   sortFunction,
   spanNumber,
   split,
+  stripFileExtension,
+  stripLastOccurrence,
   takeBetween,
   toggleItem,
   toLowerCase,
@@ -309,4 +311,20 @@ theories(chunk, [
       [9, 10],
     ],
   },
+]);
+
+theories(stripLastOccurrence, [
+  { in: ["test", ":"], out: "test"},
+  { in: ["test:second", ":"], out: "test"},
+  { in: ["test:second:third", ":"], out: "test:second" },
+  { in: ["someText", ""], out: "someTex" },
+  { in: [" ", ":"], out: " " },
+  { in: [" ", ""], out: "" }
+]);
+
+theories(stripFileExtension, [
+  { in: ["test"], out: "test"},
+  { in: ["test.second"], out: "test"},
+  { in: ["test.second.jpg"], out: "test.second" },
+  { in: [" "], out: " " }
 ]);
