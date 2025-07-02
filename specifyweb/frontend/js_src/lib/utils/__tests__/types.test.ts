@@ -1,6 +1,6 @@
 import { theories } from '../../tests/utils';
 import { f } from '../functools';
-import { defined, filterArray, isFunction } from '../types';
+import { defined, filterArray, isFunction, overwriteReadOnly } from '../types';
 
 describe('defined', () => {
   test('undefined', () =>
@@ -19,3 +19,11 @@ theories(isFunction, [
   { in: [f.true], out: true },
   { in: ['a'], out: false },
 ]);
+
+test("overwriteReadOnly", ()=>{
+  const testObject: {readonly testKey: number} = {testKey: 10};
+  const testKey = "testKey";
+  const testValue = 30;
+  overwriteReadOnly(testObject, testKey, testValue);
+  expect(testObject[testKey]).toBe(testValue);
+});
