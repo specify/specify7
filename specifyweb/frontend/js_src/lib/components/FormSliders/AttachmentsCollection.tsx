@@ -9,9 +9,8 @@ import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { defaultAttachmentScale } from '../Attachments';
-import { downloadAllAttachments } from '../Attachments/attachments';
+import { DownloadAllAttachmentsButton } from '../Attachments/DownloadButton';
 import { AttachmentGallery } from '../Attachments/Gallery';
-import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import { serializeResource } from '../DataModel/serializers';
 import type { Collection } from '../DataModel/specifyTable';
@@ -59,7 +58,6 @@ export function AttachmentsCollection({
   const isAttachmentsNotLoaded = attachments.some(
     (attachment) => attachment.attachmentLocation === null
   );
-  const loading = React.useContext(LoadingContext);
 
   return attachments.length > 0 ? (
     <>
@@ -74,15 +72,10 @@ export function AttachmentsCollection({
         <Dialog
           buttons={
             <>
-              <Button.Info
+              <DownloadAllAttachmentsButton
+                attachments={attachments}
                 disabled={isAttachmentsNotLoaded}
-                title={attachmentsText.downloadAllDescription()}
-                onClick={(): void =>
-                  loading(downloadAllAttachments(attachments))
-                }
-              >
-                {attachmentsText.downloadAll()}
-              </Button.Info>
+              />
               <Button.Info onClick={handleCloseAttachments}>
                 {commonText.close()}
               </Button.Info>
