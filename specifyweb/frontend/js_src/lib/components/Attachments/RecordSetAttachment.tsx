@@ -119,8 +119,8 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
           buttons={
             <>
               <DownloadAllAttachmentsButton
-                attachments={(recordSetId !== undefined && !isComplete) ? [] : attachmentsRef.current?.attachments ?? []}
                 archiveName={name}
+                attachments={(recordSetId !== undefined && !isComplete) ? [] : attachmentsRef.current?.attachments ?? []}
                 recordSetId={recordSetId}
                 recordSetRequired={!isComplete}
               />
