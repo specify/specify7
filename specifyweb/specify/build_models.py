@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models.signals import pre_delete
 
-from specifyweb.businessrules.exceptions import AbortSave
+from specifyweb.backend.businessrules.exceptions import AbortSave
 from . import model_extras
 from .model_timestamp import save_auto_timestamp_field_with_override
 

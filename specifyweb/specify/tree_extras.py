@@ -14,7 +14,7 @@ from django.db import models, connection
 from django.db.models import F, Q, ProtectedError
 from django.conf import settings
 
-from specifyweb.businessrules.exceptions import TreeBusinessRuleException
+from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
 import specifyweb.specify.models as spmodels
 
 from  .auditcodes import TREE_BULK_MOVE, TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
