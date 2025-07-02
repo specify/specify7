@@ -117,7 +117,7 @@ export async function ajaxMock<RESPONSE_TYPE>(
    * Windows.
    */
   const [splitUrl, queryString = ''] = url.split('?');
-  const parsedPath = path.parse(`${basePath}/lib/tests/ajax/static${splitUrl}`);
+  const parsedPath = path.parse(`C:/Users/a114s239/Projects/specify7/specifyweb/frontend/js_src/${basePath}/lib/tests/ajax/static${splitUrl}`);
   const directoryName =
     queryString === ''
       ? parsedPath.dir

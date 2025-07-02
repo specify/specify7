@@ -31,6 +31,7 @@ describe('parseFormField', () => {
     expect(parse('<cell uiType="text" />', {})).toEqual({
       defaultValue: undefined,
       isReadOnly: false,
+      isSeries: false,
       max: undefined,
       min: undefined,
       step: undefined,
@@ -46,6 +47,7 @@ describe('parseFormField', () => {
     ).toEqual({
       defaultValue: 'a',
       isReadOnly: true,
+      isSeries: false,
       max: -10,
       min: 4,
       step: 3.2,
@@ -61,6 +63,7 @@ describe('parseFormField', () => {
     ).toEqual({
       defaultValue: 'abc',
       isReadOnly: true,
+      isSeries: false,
       max: -10,
       min: 4,
       step: 3.2,
@@ -72,6 +75,7 @@ describe('parseFormField', () => {
     expect(parse('<cell uiType="formattedtext" default="abc" />', {})).toEqual({
       defaultValue: 'abc',
       isReadOnly: false,
+      isSeries: false,
       max: undefined,
       min: undefined,
       step: undefined,
@@ -83,6 +87,7 @@ describe('parseFormField', () => {
     expect(parse('<cell uiType="label" default="abc" />', {})).toEqual({
       defaultValue: 'abc',
       isReadOnly: false,
+      isSeries: false,
       max: undefined,
       min: undefined,
       step: undefined,
@@ -197,6 +202,7 @@ describe('parseFormField', () => {
     expect(parse('<cell uiType="combobox"/>', {})).toEqual({
       defaultValue: undefined,
       isReadOnly: false,
+      isSeries: false,
       type: 'Text',
       max: undefined,
       min: undefined,
@@ -299,6 +305,7 @@ describe('parseFormField', () => {
     expect(parse('<cell uiType="browse" initialize="min=3" />', {})).toEqual({
       defaultValue: undefined,
       isReadOnly: false,
+      isSeries: false,
       type: 'Text',
       max: undefined,
       maxLength: undefined,
