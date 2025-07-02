@@ -24,8 +24,8 @@ from django.views.decorators.http import require_POST
 from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.views import login_maybe_required, openapi
 from specifyweb.specify import models
-from specifyweb.specify.models import Recordsetitem
 from specifyweb.specify.models_by_table_id import get_model_by_table_id
+from ..notifications.models import Message
 
 from .dataset_views import dataset_view, datasets_view
 logger = logging.getLogger(__name__)
@@ -323,6 +323,7 @@ def download_all(request):
 
     attachment_locations = r['attachmentlocations']
     orig_filenames = r['origfilenames']
+    archivename = r['archivename']
 
     # Optional record set parameter
     # Fetches all the attachment locations instead of using the ones provided by the frontend
@@ -354,19 +355,32 @@ def download_all(request):
         return HttpResponseBadRequest(e)
     
     if not os.path.exists(path):
+        Message.objects.create(user=request.specify_user, content=json.dumps({
+            'type': 'attachment-download-failed',
+            'archive_name': archivename,
+            'file': filename,
+        }))
         return HttpResponseBadRequest('Attachment archive not found')
 
-    def file_iterator(file_path, chunk_size=512 * 1024):
-        with open(file_path, 'rb') as f:
-            while chunk := f.read(chunk_size):
-                yield chunk
-        os.remove(file_path)
+    # def file_iterator(file_path, chunk_size=512 * 1024):
+    #     with open(file_path, 'rb') as f:
+    #         while chunk := f.read(chunk_size):
+    #             yield chunk
+    #     os.remove(file_path)
 
-    response = StreamingHttpResponse(
-        file_iterator(path),
-        content_type='application/octet-stream')
-    response['Content-Disposition'] = f'attachment; filename="{filename}"'
-    return response
+    Message.objects.create(user=request.specify_user, content=json.dumps({
+        'type': 'attachment-download-ready',
+        'archive_name': archivename,
+        'file': filename,
+    }))
+
+    # response = StreamingHttpResponse(
+    #     file_iterator(path),
+    #     content_type='application/octet-stream')
+    # response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    # return response
+
+    return HttpResponse('', status=200)
 
 def make_attachment_zip(attachment_locations, orig_filenames, collection, output_file):
     output_dir = mkdtemp()

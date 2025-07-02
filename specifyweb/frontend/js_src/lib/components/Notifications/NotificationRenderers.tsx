@@ -327,6 +327,29 @@ export const notificationRenderers: IR<
       </>
     );
   },
+  'attachment-download-ready'(notification) {
+    return (
+      <>
+        {notificationsText.attachmentDownloadReady({ archiveName: notification.payload.archive_name })}
+        <Link.Success
+          className="w-fit"
+          download
+          href={`/static/depository/${encodeURIComponent(
+            notification.payload.file
+          )}`}
+        >
+          {notificationsText.download()}
+        </Link.Success>
+      </>
+    );
+  },
+  'attachment-download-failed'(notification) {
+    return (
+      <>
+        {notificationsText.attachmentDownloadFailed({ archiveName: notification.payload.archive_name })}
+      </>
+    );
+  },
   default(notification) {
     console.error('Unknown notification type', { notification });
     return <pre>{JSON.stringify(notification, null, 2)}</pre>;

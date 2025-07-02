@@ -350,12 +350,16 @@ export async function downloadAllAttachments(
     )
     .filter((name): name is string => name !== null);
 
-  const response = await ajax<Blob>('/attachment_gw/download_all/', {
+  const fileName = `Attachments - ${(archiveName ?? new Date().toDateString()).replaceAll(':', '')}.zip`;
+
+  // const response = 
+  await ajax<Blob>('/attachment_gw/download_all/', {
     method: 'POST',
     body: keysToLowerCase({
       attachmentLocations,
       recordSetId: recordSetId ?? undefined,
       origFilenames,
+      archiveName: fileName,
     }),
     headers: {
       'Content-Type': 'application/json',
@@ -364,10 +368,10 @@ export async function downloadAllAttachments(
     errorMode: 'dismissible',
   });
 
-  if (response.status === Http.OK) {
-    const fileName = `Attachments - ${(archiveName ?? new Date().toDateString()).replaceAll(':', '')}.zip`;
-    downloadFile(fileName, response.data);
-  } else {
-    throw new Error(`Attachment archive download failed: ${response}`);
-  }
+  // if (response.status === Http.OK) {
+  //   const fileName = `Attachments - ${(archiveName ?? new Date().toDateString()).replaceAll(':', '')}.zip`;
+  //   downloadFile(fileName, response.data);
+  // } else {
+  //   throw new Error(`Attachment archive download failed: ${response}`);
+  // }
 }
