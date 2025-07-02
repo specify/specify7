@@ -20,9 +20,9 @@ theories(isFunction, [
   { in: ['a'], out: false },
 ]);
 
-test("overwriteReadOnly", ()=>{
-  const testObject: {readonly testKey: number} = {testKey: 10};
-  const testKey = "testKey";
+test('overwriteReadOnly', () => {
+  const testObject: { readonly testKey: number } = { testKey: 10 };
+  const testKey = 'testKey';
   const testValue = 30;
   overwriteReadOnly(testObject, testKey, testValue);
   expect(testObject[testKey]).toBe(testValue);
