@@ -3,7 +3,7 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/BatchEdit/index.tsx:187
 #: components/Header/menuItemDefinitions.ts:115
-#: components/Preferences/UserDefinitions.tsx:2036
+#: components/Preferences/UserDefinitions.tsx:2043
 #: components/Router/OverlayRoutes.tsx:246
 #: components/WbUtils/datasetVariants.tsx:89
 #: components/WbUtils/datasetVariants.tsx:105
@@ -17,7 +17,7 @@ msgstr "Batch Edit"
 msgid "batchEditPrefs"
 msgstr "Batch Edit Preferences"
 
-#: components/Preferences/UserDefinitions.tsx:2042
+#: components/Preferences/UserDefinitions.tsx:2049
 #. Used in: Components > Preferences > User Definitions
 msgid "numberOfRecords"
 msgstr "Number of records selected from the query"
@@ -61,12 +61,12 @@ msgstr "Query requires additional ranks for batch editing"
 msgid "createUpdateDataSetInstructions"
 msgstr "Use the query builder to make a new batch edit dataset"
 
-#: components/Preferences/UserDefinitions.tsx:2065
+#: components/Preferences/UserDefinitions.tsx:2072
 #. Used in: Components > Preferences > User Definitions
 msgid "showRollback"
 msgstr "Show rollback button"
 
-#: components/Preferences/UserDefinitions.tsx:2070
+#: components/Preferences/UserDefinitions.tsx:2077
 #. Used in: Components > Preferences > User Definitions
 msgid "showRollbackDescription"
 msgstr ""
@@ -185,12 +185,12 @@ msgstr "Batch Edit is disabled for system tables and scoping hierarchy tables"
 msgid "cannotEditAfterRollback"
 msgstr "(Batch Edit datasets cannot be edited after rollback - Read Only)"
 
-#: components/Preferences/UserDefinitions.tsx:2057
+#: components/Preferences/UserDefinitions.tsx:2064
 #. Used in: Components > Preferences > User Definitions
 msgid "enableRelationships"
 msgstr "Enable relationships"
 
-#: components/Preferences/UserDefinitions.tsx:2062
+#: components/Preferences/UserDefinitions.tsx:2069
 #. Used in: Components > Preferences > User Definitions
 msgid "enableRelationshipsDescription"
 msgstr ""

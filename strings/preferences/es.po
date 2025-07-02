@@ -42,9 +42,9 @@ msgstr "Preferencias de usuario predeterminadas"
 #: components/Preferences/UserDefinitions.tsx:617
 #: components/Preferences/UserDefinitions.tsx:711
 #: components/Preferences/UserDefinitions.tsx:1276
-#: components/Preferences/UserDefinitions.tsx:1551
-#: components/Preferences/UserDefinitions.tsx:1739
-#: components/Preferences/UserDefinitions.tsx:2054
+#: components/Preferences/UserDefinitions.tsx:1558
+#: components/Preferences/UserDefinitions.tsx:1746
+#: components/Preferences/UserDefinitions.tsx:2061
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "general"
@@ -253,9 +253,9 @@ msgstr "Diálogos"
 #: components/Preferences/UserDefinitions.tsx:237
 #: components/Preferences/UserDefinitions.tsx:569
 #: components/Preferences/UserDefinitions.tsx:967
-#: components/Preferences/UserDefinitions.tsx:1653
-#: components/Preferences/UserDefinitions.tsx:1914
-#: components/Preferences/UserDefinitions.tsx:1969
+#: components/Preferences/UserDefinitions.tsx:1660
+#: components/Preferences/UserDefinitions.tsx:1921
+#: components/Preferences/UserDefinitions.tsx:1976
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "appearance"
@@ -299,10 +299,10 @@ msgstr "Editor de árboles"
 
 #: components/Preferences/UserDefinitions.tsx:1423
 #: components/Preferences/UserDefinitions.tsx:1444
-#: components/Preferences/UserDefinitions.tsx:1465
-#: components/Preferences/UserDefinitions.tsx:1486
-#: components/Preferences/UserDefinitions.tsx:1507
-#: components/Preferences/UserDefinitions.tsx:1528
+#: components/Preferences/UserDefinitions.tsx:1472
+#: components/Preferences/UserDefinitions.tsx:1493
+#: components/Preferences/UserDefinitions.tsx:1514
+#: components/Preferences/UserDefinitions.tsx:1535
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "treeAccentColor"
@@ -310,22 +310,22 @@ msgstr "Color de acento del árbol"
 
 #: components/Preferences/UserDefinitions.tsx:1431
 #: components/Preferences/UserDefinitions.tsx:1452
-#: components/Preferences/UserDefinitions.tsx:1473
-#: components/Preferences/UserDefinitions.tsx:1494
-#: components/Preferences/UserDefinitions.tsx:1515
-#: components/Preferences/UserDefinitions.tsx:1536
+#: components/Preferences/UserDefinitions.tsx:1480
+#: components/Preferences/UserDefinitions.tsx:1501
+#: components/Preferences/UserDefinitions.tsx:1522
+#: components/Preferences/UserDefinitions.tsx:1543
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "synonymColor"
 msgstr "Color sinónimo"
 
-#: components/Preferences/UserDefinitions.tsx:1876
+#: components/Preferences/UserDefinitions.tsx:1883
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "showNewDataSetWarning"
 msgstr "Mostrar nueva advertencia de conjunto de datos"
 
-#: components/Preferences/UserDefinitions.tsx:1877
+#: components/Preferences/UserDefinitions.tsx:1884
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "showNewDataSetWarningDescription"
@@ -491,6 +491,11 @@ msgstr "Interfaz de escala"
 msgid "scaleInterfaceDescription"
 msgstr "Escala la interfaz para que coincida con el tamaño de la fuente."
 
+#: components/Preferences/UserDefinitions.tsx:1460
+#. Used in: Components > Preferences > User Definitions
+msgid "displayAuthor"
+msgstr "Mostrar autor en el árbol"
+
 #: components/Preferences/UserDefinitions.tsx:527
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
@@ -535,36 +540,36 @@ msgstr "Una URL a una página que se integrará en la página de inicio:"
 #: components/Preferences/UserDefinitions.tsx:738
 #: components/Preferences/UserDefinitions.tsx:1304
 #: components/Preferences/UserDefinitions.tsx:1337
-#: components/Preferences/UserDefinitions.tsx:1583
-#: components/Preferences/UserDefinitions.tsx:1677
-#: components/Preferences/UserDefinitions.tsx:1714
-#: components/Preferences/UserDefinitions.tsx:1926
-#: components/Preferences/UserDefinitions.tsx:1987
+#: components/Preferences/UserDefinitions.tsx:1590
+#: components/Preferences/UserDefinitions.tsx:1684
+#: components/Preferences/UserDefinitions.tsx:1721
+#: components/Preferences/UserDefinitions.tsx:1933
+#: components/Preferences/UserDefinitions.tsx:1994
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "behavior"
 msgstr "Comportamiento"
 
-#: components/Preferences/UserDefinitions.tsx:1554
-#: components/Preferences/UserDefinitions.tsx:1884
+#: components/Preferences/UserDefinitions.tsx:1561
+#: components/Preferences/UserDefinitions.tsx:1891
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "noRestrictionsMode"
 msgstr "Modo sin restricciones"
 
-#: components/Preferences/UserDefinitions.tsx:1887
+#: components/Preferences/UserDefinitions.tsx:1894
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "noRestrictionsModeWbDescription"
 msgstr "Permite cargar datos a cualquier campo de cualquier tabla."
 
-#: components/Preferences/UserDefinitions.tsx:1557
+#: components/Preferences/UserDefinitions.tsx:1564
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "noRestrictionsModeQueryDescription"
 msgstr "Permite consultar datos de cualquier campo de cualquier tabla."
 
-#: components/Preferences/UserDefinitions.tsx:1890
+#: components/Preferences/UserDefinitions.tsx:1897
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "noRestrictionsModeWarning"
@@ -578,7 +583,7 @@ msgstr ""
 msgid "adminsOnlyPreference"
 msgstr "No tienes permiso para cambiar esta opción"
 
-#: components/Preferences/UserDefinitions.tsx:1586
+#: components/Preferences/UserDefinitions.tsx:1593
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "stickyScrolling"
@@ -646,43 +651,43 @@ msgstr "Color de acento 4"
 msgid "accentColor5"
 msgstr "Color de acento 5"
 
-#: components/Preferences/UserDefinitions.tsx:1752
+#: components/Preferences/UserDefinitions.tsx:1759
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "spreadsheet"
 msgstr "Hoja de cálculo"
 
-#: components/Preferences/UserDefinitions.tsx:1755
+#: components/Preferences/UserDefinitions.tsx:1762
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "minSpareRows"
 msgstr "Número de filas en blanco al final"
 
-#: components/Preferences/UserDefinitions.tsx:1766
+#: components/Preferences/UserDefinitions.tsx:1773
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "autoWrapCols"
 msgstr "Navegue hacia el otro lado al llegar a la columna del borde."
 
-#: components/Preferences/UserDefinitions.tsx:1773
+#: components/Preferences/UserDefinitions.tsx:1780
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "autoWrapRows"
 msgstr "Navegue hacia el otro lado al llegar a la fila del borde."
 
-#: components/Preferences/UserDefinitions.tsx:1814
+#: components/Preferences/UserDefinitions.tsx:1821
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "enterBeginsEditing"
 msgstr "La tecla Enter inicia la edición de la celda"
 
-#: components/Preferences/UserDefinitions.tsx:1780
+#: components/Preferences/UserDefinitions.tsx:1787
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "tabMoveDirection"
 msgstr "Dirección de movimiento cuando se presiona la tecla <key>Tab</key>"
 
-#: components/Preferences/UserDefinitions.tsx:1781
+#: components/Preferences/UserDefinitions.tsx:1788
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "tabMoveDirectionDescription"
@@ -690,8 +695,8 @@ msgstr ""
 "Puedes moverte en la dirección opuesta presionando "
 "<key>Shift</key>+<key>Tab</key>."
 
-#: components/Preferences/UserDefinitions.tsx:1788
-#: components/Preferences/UserDefinitions.tsx:1805
+#: components/Preferences/UserDefinitions.tsx:1795
+#: components/Preferences/UserDefinitions.tsx:1812
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "column"
@@ -699,20 +704,20 @@ msgstr "Columna"
 
 #: components/LocalityUpdate/Status.tsx:373
 #: components/LocalityUpdate/Status.tsx:416
-#: components/Preferences/UserDefinitions.tsx:1792
-#: components/Preferences/UserDefinitions.tsx:1809
+#: components/Preferences/UserDefinitions.tsx:1799
+#: components/Preferences/UserDefinitions.tsx:1816
 #. Used in: Components > Locality Update > Status ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "row"
 msgstr "Fila"
 
-#: components/Preferences/UserDefinitions.tsx:1797
+#: components/Preferences/UserDefinitions.tsx:1804
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "enterMoveDirection"
 msgstr "Dirección de movimiento cuando se presiona la tecla <key>Enter</key>"
 
-#: components/Preferences/UserDefinitions.tsx:1798
+#: components/Preferences/UserDefinitions.tsx:1805
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "enterMoveDirectionDescription"
@@ -720,26 +725,26 @@ msgstr ""
 "Puedes moverte en la dirección opuesta presionando "
 "<key>Shift</key>+<key>Enter</key>."
 
-#: components/Preferences/UserDefinitions.tsx:1823
+#: components/Preferences/UserDefinitions.tsx:1830
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "filterPickLists"
 msgstr "Filtrar elementos de la lista de selección"
 
-#: components/Preferences/UserDefinitions.tsx:1598
-#: components/Preferences/UserDefinitions.tsx:1843
+#: components/Preferences/UserDefinitions.tsx:1605
+#: components/Preferences/UserDefinitions.tsx:1850
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "exportFileDelimiter"
 msgstr "Delimitador de archivo de exportación"
 
-#: components/Preferences/UserDefinitions.tsx:1626
+#: components/Preferences/UserDefinitions.tsx:1633
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "exportCsvUtf8Bom"
 msgstr "Agregar BOM UTF-8 a las exportaciones de archivos CSV"
 
-#: components/Preferences/UserDefinitions.tsx:1628
+#: components/Preferences/UserDefinitions.tsx:1635
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "exportCsvUtf8BomDescription"
@@ -749,25 +754,25 @@ msgstr ""
 "varios programas (Excel, OpenRefine, etc.), evitando problemas con "
 "caracteres especiales y formato."
 
-#: components/Preferences/UserDefinitions.tsx:1834
+#: components/Preferences/UserDefinitions.tsx:1841
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "caseSensitive"
 msgstr "Distingue mayúsculas y minúsculas"
 
-#: components/Preferences/UserDefinitions.tsx:1838
+#: components/Preferences/UserDefinitions.tsx:1845
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "caseInsensitive"
 msgstr "No distingue entre mayúsculas y minúsculas"
 
-#: components/Preferences/UserDefinitions.tsx:1566
+#: components/Preferences/UserDefinitions.tsx:1573
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "showNoReadTables"
 msgstr "Mostrar tablas sin acceso de \"Lectura\""
 
-#: components/Preferences/UserDefinitions.tsx:1900
+#: components/Preferences/UserDefinitions.tsx:1907
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "showNoAccessTables"
@@ -779,13 +784,13 @@ msgstr "Mostrar tablas sin acceso \"Crear\""
 msgid "textAreaAutoGrow"
 msgstr "Los cuadros de texto crecen automáticamente"
 
-#: components/Preferences/UserDefinitions.tsx:1717
+#: components/Preferences/UserDefinitions.tsx:1724
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "clearQueryFilters"
 msgstr "Restablecer filtros de consulta"
 
-#: components/Preferences/UserDefinitions.tsx:1718
+#: components/Preferences/UserDefinitions.tsx:1725
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "clearQueryFiltersDescription"
@@ -793,7 +798,7 @@ msgstr ""
 "Borra todos los filtros de consulta al ejecutar un informe desde un "
 "formulario."
 
-#: components/Preferences/UserDefinitions.tsx:1725
+#: components/Preferences/UserDefinitions.tsx:1732
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "queryParamtersFromForm"
@@ -817,37 +822,37 @@ msgstr "Incluir el nombre de la tabla en el título de la página del navegador"
 msgid "focusFirstField"
 msgstr "Enfoque el primer campo"
 
-#: components/Preferences/UserDefinitions.tsx:1990
+#: components/Preferences/UserDefinitions.tsx:1997
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "doubleClickZoom"
 msgstr "Haga doble clic para ampliar"
 
-#: components/Preferences/UserDefinitions.tsx:1997
+#: components/Preferences/UserDefinitions.tsx:2004
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "closePopupOnClick"
 msgstr "Cerrar ventana emergente al hacer clic desde fuera"
 
-#: components/Preferences/UserDefinitions.tsx:2004
+#: components/Preferences/UserDefinitions.tsx:2011
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "animateTransitions"
 msgstr "Transiciones animadas"
 
-#: components/Preferences/UserDefinitions.tsx:2011
+#: components/Preferences/UserDefinitions.tsx:2018
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "panInertia"
 msgstr "Inercia de la sartén"
 
-#: components/Preferences/UserDefinitions.tsx:2018
+#: components/Preferences/UserDefinitions.tsx:2025
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "mouseDrags"
 msgstr "El ratón arrastra"
 
-#: components/Preferences/UserDefinitions.tsx:2025
+#: components/Preferences/UserDefinitions.tsx:2032
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "scrollWheelZoom"
@@ -913,7 +918,7 @@ msgstr "esquinas redondeadas"
 msgid "limitMaxFieldWidth"
 msgstr "Limitar el ancho máximo del campo"
 
-#: components/Preferences/UserDefinitions.tsx:1656
+#: components/Preferences/UserDefinitions.tsx:1663
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "condenseQueryResults"
@@ -971,19 +976,19 @@ msgstr "Desplazamiento automático del árbol al nodo enfocado"
 msgid "sortByField"
 msgstr "Ordenar por campo"
 
-#: components/Preferences/UserDefinitions.tsx:1929
+#: components/Preferences/UserDefinitions.tsx:1936
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "lineWrap"
 msgstr "Ajuste de línea"
 
-#: components/Preferences/UserDefinitions.tsx:1936
+#: components/Preferences/UserDefinitions.tsx:1943
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "indentSize"
 msgstr "Tamaño de sangría"
 
-#: components/Preferences/UserDefinitions.tsx:1948
+#: components/Preferences/UserDefinitions.tsx:1955
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "indentWithTab"
@@ -1138,7 +1143,7 @@ msgstr ""
 "Mostrar un \"*\" en el título de la pestaña cuando haya cambios sin guardar "
 "en la pestaña actual."
 
-#: components/Preferences/UserDefinitions.tsx:1681
+#: components/Preferences/UserDefinitions.tsx:1688
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "autoPopulateDescription"
@@ -1146,13 +1151,13 @@ msgstr ""
 "Rellene automáticamente el registro fusionado con valores de duplicados al "
 "abrir el cuadro de diálogo de fusión."
 
-#: components/Preferences/UserDefinitions.tsx:1694
+#: components/Preferences/UserDefinitions.tsx:1701
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "autoCreateVariants"
 msgstr "Crear automáticamente registros {agentVariantTable:string}"
 
-#: components/Preferences/UserDefinitions.tsx:1698
+#: components/Preferences/UserDefinitions.tsx:1705
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "autoCreateVariantsDescription"
@@ -1198,13 +1203,13 @@ msgstr ""
 "Utilice siempre la búsqueda del generador de consultas dentro del "
 "formulario de búsqueda"
 
-#: components/Preferences/UserDefinitions.tsx:1917
+#: components/Preferences/UserDefinitions.tsx:1924
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "localizeResourceNames"
 msgstr "Localizar los nombres de los recursos de aplicaciones reconocidos"
 
-#: components/Preferences/UserDefinitions.tsx:1955
+#: components/Preferences/UserDefinitions.tsx:1962
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "splitLongXml"
@@ -1254,7 +1259,7 @@ msgstr ""
 "Una URL a una imagen que se mostrará junto al logotipo Especificar en el "
 "menú de navegación."
 
-#: components/Preferences/UserDefinitions.tsx:1663
+#: components/Preferences/UserDefinitions.tsx:1670
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "showLineNumber"
@@ -1316,19 +1321,19 @@ msgid "openAsReadOnly"
 msgstr "Abrir todos los registros en modo de solo lectura"
 
 #: components/Preferences/CollectionDefinitions.tsx:78
-#: components/Preferences/UserDefinitions.tsx:1636
+#: components/Preferences/UserDefinitions.tsx:1643
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "displayBasicView"
 msgstr "Mostrar vista básica"
 
-#: components/Preferences/UserDefinitions.tsx:1643
+#: components/Preferences/UserDefinitions.tsx:1650
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "showComparisonOperatorsForString"
 msgstr "Mostrar operadores de comparación para campos basados en texto"
 
-#: components/Preferences/UserDefinitions.tsx:1644
+#: components/Preferences/UserDefinitions.tsx:1651
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "showComparisonOperatorsDescription"

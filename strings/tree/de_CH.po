@@ -201,19 +201,19 @@ msgstr ""
 "\"{nodeName:string}\" wird nicht mehr ein Synonym von "
 "\"{synonymName:string}\" sein."
 
-#: components/TreeView/Row.tsx:250
-#: components/TreeView/Row.tsx:268
+#: components/TreeView/Row.tsx:249
+#: components/TreeView/Row.tsx:267
 #. Used in: Components > Tree View > Row
 msgid "acceptedName"
 msgstr "Bevorzugt: {name:string}"
 
-#: components/TreeView/Row.tsx:254
+#: components/TreeView/Row.tsx:253
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "synonyms"
 msgstr "Synonyme: {names:string}"
 
-#: components/TreeView/index.tsx:155
+#: components/TreeView/index.tsx:156
 #. Used in: Components > Tree View > Index
 msgid "treeViewTitle"
 msgstr "{treeName:string} Baum"
@@ -225,17 +225,17 @@ msgstr "{treeName:string} Baum"
 msgid "searchTreePlaceholder"
 msgstr "Baum durchsuchen"
 
-#: components/TreeView/Row.tsx:230
+#: components/TreeView/Row.tsx:229
 #. Used in: Components > Tree View > Row
 msgid "opened"
 msgstr "Geöffnet"
 
-#: components/TreeView/Row.tsx:231
+#: components/TreeView/Row.tsx:230
 #. Used in: Components > Tree View > Row
 msgid "closed"
 msgstr "Geschlossen"
 
-#: components/TreeView/Row.tsx:228
+#: components/TreeView/Row.tsx:227
 #. Used in: Components > Tree View > Row
 msgid "leafNode"
 msgstr "Blattknoten"
@@ -270,28 +270,28 @@ msgstr "Positionen bearbeiten"
 msgid "resourceToDelete"
 msgstr "Dadurch wird die folgende Ressource dauerhaft gelöscht"
 
-#: components/TreeView/index.tsx:387
+#: components/TreeView/index.tsx:388
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "associatedNodesOnly"
 msgstr "Nur Knoten mit zugehörigen Objekten anzeigen"
 
-#: components/TreeView/index.tsx:319
+#: components/TreeView/index.tsx:320
 #. Used in: Components > Tree View > Index
 msgid "splitView"
 msgstr "Geteilte Sicht"
 
-#: components/TreeView/index.tsx:325
+#: components/TreeView/index.tsx:326
 #. Used in: Components > Tree View > Index
 msgid "horizontal"
 msgstr "Horizontal"
 
-#: components/TreeView/index.tsx:325
+#: components/TreeView/index.tsx:326
 #. Used in: Components > Tree View > Index
 msgid "vertical"
 msgstr "Vertikal"
 
-#: components/TreeView/index.tsx:334
+#: components/TreeView/index.tsx:335
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "synchronize"
@@ -332,8 +332,8 @@ msgstr "Baum hinzufügen"
 msgid "addRootNode"
 msgstr "Stammknoten hinzufügen"
 
-#: components/TreeView/index.tsx:271
-#: components/TreeView/index.tsx:273
+#: components/TreeView/index.tsx:272
+#: components/TreeView/index.tsx:274
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "treePicker"

@@ -17,7 +17,7 @@ msgstr ""
 msgid "specifySeven"
 msgstr "Вкажіть 7"
 
-#: components/Preferences/UserDefinitions.tsx:1830
+#: components/Preferences/UserDefinitions.tsx:1837
 #: components/WorkBench/DataSetMeta.tsx:286
 #: utils/parser/definitions.ts:120
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
@@ -464,7 +464,7 @@ msgstr "Інструменти"
 #: components/Statistics/StatsResult.tsx:78
 #: components/Toolbar/Language.tsx:224
 #: components/Toolbar/Language.tsx:258
-#: components/TreeView/Row.tsx:226
+#: components/TreeView/Row.tsx:225
 #: components/WorkBench/Disambiguation.tsx:124
 #. Used in: Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Collection Rel One To One ⬤ Components > Formatters > Preview ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Sub View ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Leaflet > Index ⬤ Components > Merging > Usages ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Preferences > Renderers ⬤ Components > Query Builder > Formatter ⬤ Components > Query Builder > Query Line Filter ⬤ Components > Query Builder > Results ⬤ Components > Query Combo Box > Index ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Index ⬤ Components > Search Dialog > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Skeleton Loaders > Skeleton ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row ⬤ Components > Work Bench > Disambiguation
 msgid "loading"
@@ -886,7 +886,7 @@ msgid "collapse"
 msgstr "Згорнути"
 
 #: components/AppResources/Aside.tsx:189
-#: components/TreeView/index.tsx:301
+#: components/TreeView/index.tsx:302
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 msgid "collapseAll"
 msgstr "Закрити все"
