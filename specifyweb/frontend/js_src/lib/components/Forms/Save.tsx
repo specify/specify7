@@ -237,9 +237,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     label: LocalizedString,
     description: LocalizedString,
     disabled: boolean,
-    handleClick: () =>
-      | Promise<RA<SpecifyResource<SCHEMA>> | undefined>
-      | Promise<RA<SpecifyResource<SCHEMA>>>
+    handleClick: () => Promise<RA<SpecifyResource<SCHEMA>> | undefined>
   ): JSX.Element => (
     <ButtonComponent
       className={saveBlocked ? '!cursor-not-allowed' : undefined}

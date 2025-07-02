@@ -72,7 +72,7 @@ export class UiFormatter {
     public readonly table: SpecifyTable | undefined,
     // The field which this formatter is formatting
     public readonly field: LiteralField | undefined,
-    public readonly name: string,
+    public readonly name: string
   ) {}
 
   /**
