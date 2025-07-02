@@ -58,6 +58,7 @@ export function WbActions({
     useBooleanState();
   const [operationCompleted, openOperationCompleted, closeOperationCompleted] =
     useBooleanState();
+
   const { mode, refreshInitiatorAborted, startUpload, triggerStatusComponent } =
     useWbActions({
       datasetId: dataset.id,
@@ -84,14 +85,16 @@ export function WbActions({
 
   return (
     <>
-      <WbNoUploadPlan
-        datasetId={dataset.id}
-        isUploaded={isUploaded}
-        mappings={mappings}
-        noUploadPlan={noUploadPlan}
-        onCloseNoUploadPlan={closeNoUploadPlan}
-        onOpenNoUploadPlan={openNoUploadPlan}
-      />
+      {!dataset.isupdate && (
+        <WbNoUploadPlan
+          datasetId={dataset.id}
+          isUploaded={isUploaded}
+          mappings={mappings}
+          noUploadPlan={noUploadPlan}
+          onCloseNoUploadPlan={closeNoUploadPlan}
+          onOpenNoUploadPlan={openNoUploadPlan}
+        />
+      )}
       {!isUploaded && variant.canValidate() ? (
         <ErrorBoundary dismissible>
           <WbValidate
@@ -260,6 +263,10 @@ function useWbActions({
   const refreshInitiatorAborted = React.useRef<boolean>(false);
   const loading = React.useContext(LoadingContext);
 
+  /**
+   * NOTE: Only validate and upload use startUpload
+   * For rollback, we directly call the API inside the RollbackConfirmation component
+   */
   const startUpload = (newMode: WbStatus): void => {
     workbench.validation.stopLiveValidation();
     loading(

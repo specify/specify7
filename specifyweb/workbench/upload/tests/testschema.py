@@ -13,11 +13,18 @@ from . import example_plan
 
 def set_plan_treeId():
     # Set the treeId in example_plan.json dynamically, so that the unit test doesn't depend on the static treeId to always be the same.
-    from specifyweb.specify.models import Taxontreedefitem
-    tree_id = Taxontreedefitem.objects.filter(name='Species').first().treedef_id
+    def set_tree_id_for_ranks(ranks, model, name):
+        tree_id = model.objects.filter(name=name).first().treedef_id
+        for rank in ranks.keys():
+            ranks[rank]['treeId'] = tree_id
+
+    from specifyweb.specify.models import Taxontreedefitem, Geographytreedefitem
+    
     example_plan_ranks = example_plan.json['uploadable']['uploadTable']['toMany']['determinations'][0]['toOne']['taxon']['treeRecord']['ranks']
-    for rank in ['Species', 'Subspecies']:
-        example_plan_ranks[rank]['treeId'] = tree_id
+    set_tree_id_for_ranks(example_plan_ranks, Taxontreedefitem, 'Species')
+
+    geography_ranks = example_plan.json['uploadable']['uploadTable']['toOne']['collectingevent']['uploadTable']['toOne']['locality']['uploadTable']['toOne']['geography']['treeRecord']['ranks']
+    set_tree_id_for_ranks(geography_ranks, Geographytreedefitem, 'Continent')
 
 class SchemaTests(UploadTestsBase):
     maxDiff = None
@@ -36,7 +43,7 @@ class SchemaTests(UploadTestsBase):
         self.assertEqual(example_plan.json, parse_plan(example_plan.json).unparse())
 
     def test_reject_internal_tree_columns(self) -> None:
-        def with_field(field: str) -> Dict:
+        def with_field(field: str) -> dict:
             return dict(
                 baseTableName = 'Taxon',
                 uploadable = { 'treeRecord': dict(
@@ -73,13 +80,13 @@ class OtherSchemaTests(unittest.TestCase):
 
     @settings(max_examples=100, deadline=None, suppress_health_check=(HealthCheck.too_slow,))
     @given(name=infer, wbcols=infer)
-    def test_validate_upload_table_to_json(self, name: str, wbcols: Dict[str, ColumnOptions]):
+    def test_validate_upload_table_to_json(self, name: str, wbcols: dict[str, ColumnOptions]):
         upload_table = UploadTable(name=name, wbcols=wbcols, overrideScope=None, static={}, toOne={}, toMany={})
         validate(upload_table.unparse(), schema)
 
     @settings(max_examples=100, deadline=None, suppress_health_check=(HealthCheck.too_slow,))
     @given(column_opts=from_schema(schema['definitions']['columnOptions']))
-    def test_column_options_parse(self, column_opts: Dict):
+    def test_column_options_parse(self, column_opts: dict):
         validate(column_opts, schema['definitions']['columnOptions'])
         parse_column_options(column_opts)
 

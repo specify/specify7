@@ -66,7 +66,7 @@ def assert_valid_time_range(start_time: float, end_time: float):
 
 def search_co_ids_in_time_range(
     start_time: float, end_time: float, require_full_overlap: bool = False
-) -> Set[int]:
+) -> set[int]:
     """
     Search for collection object IDs that overlap with the given time range.
 
@@ -297,7 +297,7 @@ def search_co_ids_in_time_range(
 
 def search_co_ids_in_time_margin(
     time: float, uncertainty: float, require_full_overlap: bool = False
-) -> Set[int]:
+) -> set[int]:
     """
     Search for collection object IDs within a time margin.
 
@@ -312,7 +312,7 @@ def search_co_ids_in_time_margin(
 
 def search_co_ids_in_time_period(
     time_period_name: str, require_full_overlap: bool = False
-) -> Set[int]:
+) -> set[int]:
     """
     Search for collection object IDs that overlap with the given geologic time period.
 

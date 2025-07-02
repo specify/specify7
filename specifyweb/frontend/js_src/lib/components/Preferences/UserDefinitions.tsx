@@ -539,7 +539,7 @@ export const userPreferenceDefinitions = {
           mode: definePref<WelcomePageMode>({
             title: preferencesText.content(),
             description: (
-              <Link.NewTab href="https://github.com/specify/specify7/wiki/Customizing-the-splash-screen">
+              <Link.NewTab href="https://discourse.specifysoftware.org/t/customizing-the-splash-screen/2604">
                 {headerText.documentation()}
               </Link.NewTab>
             ),
@@ -620,7 +620,7 @@ export const userPreferenceDefinitions = {
             title: localized('_shownTables'),
             requiresReload: false,
             visible: false,
-            defaultValue: 'legacy',
+            defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
             container: 'div',
           }),
@@ -714,7 +714,7 @@ export const userPreferenceDefinitions = {
             title: localized('_shownTables'),
             requiresReload: false,
             visible: false,
-            defaultValue: 'legacy',
+            defaultValue: [],
             renderer: f.never,
             container: 'div',
           }),
@@ -850,7 +850,7 @@ export const userPreferenceDefinitions = {
             requiresReload: false,
             setOnBlurOnly: true,
             visible: true,
-            defaultValue: 1200,
+            defaultValue: 1600,
             type: 'java.lang.Float',
             parser: {
               min: 100,
@@ -1456,6 +1456,13 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
+          displayAuthor: definePref<boolean>({
+            title: preferencesText.displayAuthor(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       storage: {
@@ -1634,6 +1641,14 @@ export const userPreferenceDefinitions = {
           }),
           displayBasicView: definePref<boolean>({
             title: preferencesText.displayBasicView(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          showComparisonOperatorsForString: definePref<boolean>({
+            title: preferencesText.showComparisonOperatorsForString(),
+            description: preferencesText.showComparisonOperatorsDescription(),
             requiresReload: false,
             visible: true,
             defaultValue: false,
@@ -2045,6 +2060,14 @@ export const userPreferenceDefinitions = {
       editor: {
         title: preferencesText.general(),
         items: {
+          enableRelationships: definePref<boolean>({
+            title: batchEditText.enableRelationships(),
+            requiresReload: false,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+            visible: true,
+            description: batchEditText.enableRelationshipsDescription(),
+          }),
           showRollback: definePref<boolean>({
             title: batchEditText.showRollback(),
             requiresReload: false,

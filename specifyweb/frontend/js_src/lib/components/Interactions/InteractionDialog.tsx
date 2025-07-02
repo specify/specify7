@@ -113,7 +113,8 @@ export function InteractionDialog({
   function handleProceed(
     recordSet: SerializedResource<RecordSet> | undefined
   ): void {
-    const catalogNumbers = handleParse();
+    const fromRecordSet = recordSet !== undefined;
+    const catalogNumbers = handleParse(fromRecordSet);
     if (catalogNumbers === undefined) return undefined;
     if (isLoanReturn)
       loading(
@@ -204,23 +205,30 @@ export function InteractionDialog({
       })),
     });
 
-    const [collectionHasSeveralTypes] = useAsyncState(
-      React.useCallback(
-        async () =>
-          fetchDomain.then(async (schema) => Object.keys(schema.collectionObjectTypeCatalogNumberFormats).length > 1),
-        []
-      ),
-      false
-    );
+  const [collectionHasSeveralTypes] = useAsyncState(
+    React.useCallback(
+      async () =>
+        fetchDomain.then(
+          async (schema) =>
+            Object.keys(schema.collectionObjectTypeCatalogNumberFormats)
+              .length > 1
+        ),
+      []
+    ),
+    false
+  );
 
-  function handleParse(): RA<string> | undefined {
+  function handleParse(fromRecordSet: boolean): RA<string> | undefined {
+    if (fromRecordSet) {
+      return [];
+    }
     const parseResults = split(catalogNumbers).map((value) =>
       parseValue(parser, inputRef.current ?? undefined, value)
     );
 
     const errorMessages = parseResults
-    .filter((result): result is InvalidParseResult => !result.isValid)
-    .map(({ reason, value }) => `${reason} (${value})`);
+      .filter((result): result is InvalidParseResult => !result.isValid)
+      .map(({ reason, value }) => `${reason} (${value})`);
 
     if (errorMessages.length > 0 && collectionHasSeveralTypes === false) {
       setValidation(errorMessages);
@@ -231,12 +239,16 @@ export function InteractionDialog({
       return undefined;
     }
 
+    if (errorMessages.length === 0 && collectionHasSeveralTypes === false) {
+      setValidation([]);
+    }
+
     if (collectionHasSeveralTypes === true) {
       const parsedCatNumber = split(catalogNumbers);
-    
+
       setCatalogNumbers(parsedCatNumber.join('\n'));
       setState({ type: 'MainState' });
-    
+
       return parsedCatNumber.map(String);
     }
 

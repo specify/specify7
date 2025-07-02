@@ -6,7 +6,8 @@ Autonumbering logic
 from .uiformatters import UIFormatter, get_uiformatters
 from .lock_tables import lock_tables
 import logging
-from typing import List, Tuple, Sequence, Set
+from typing import List, Tuple, Set
+from collections.abc import Sequence
 
 from specifyweb.specify.scoping import Scoping
 from specifyweb.specify.datamodel import datamodel
@@ -31,7 +32,7 @@ def autonumber_and_save(collection, user, obj) -> None:
         obj.save()
 
 
-def do_autonumbering(collection, obj, fields: List[Tuple[UIFormatter, Sequence[str]]]) -> None:
+def do_autonumbering(collection, obj, fields: list[tuple[UIFormatter, Sequence[str]]]) -> None:
     logger.debug("autonumbering %s fields: %s", obj, fields)
 
     # The autonumber action is prepared and thunked outside the locked table
@@ -49,7 +50,7 @@ def do_autonumbering(collection, obj, fields: List[Tuple[UIFormatter, Sequence[s
         obj.save()
 
 
-def get_tables_to_lock(collection, obj, field_names) -> Set[str]:
+def get_tables_to_lock(collection, obj, field_names) -> set[str]:
     # TODO: Include the fix for https://github.com/specify/specify7/issues/4148
     from specifyweb.businessrules.models import UniquenessRule
 
@@ -73,7 +74,7 @@ def get_tables_to_lock(collection, obj, field_names) -> Set[str]:
     return tables
 
 
-def get_tables_from_field_path(model: str, field_path: str) -> List[str]:
+def get_tables_from_field_path(model: str, field_path: str) -> list[str]:
     tables = []
     table = datamodel.get_table_strict(model)
     relationships = field_path.split('__')

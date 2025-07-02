@@ -9,7 +9,6 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import type { AnyTree } from '../DataModel/helperTypes';
-import { getPref } from '../InitialContext/remotePrefs';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Conformations, KeyAction, Row, Stats } from './helpers';
 import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
@@ -153,7 +152,7 @@ export function TreeRow<SCHEMA extends AnyTree>({
   const id = useId('tree-node');
   const isAction = actionRow === row;
 
-  const doIncludeAuthorPref = getPref(`TaxonTreeEditor.DisplayAuthor`);
+  const doIncludeAuthorPref = userPreferences.get('treeEditor', 'taxon', 'displayAuthor');
 
   const handleRef = React.useCallback(
     (element: HTMLButtonElement | null): void => {

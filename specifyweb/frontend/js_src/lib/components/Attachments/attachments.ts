@@ -51,6 +51,16 @@ export const attachmentSettingsPromise = load<AttachmentSettings | IR<never>>(
 
 export const attachmentsAvailable = (): boolean => typeof settings === 'object';
 
+/*
+ * This function is useful when testing functions that depend on the settings.
+ * This function is only used in automated tests.
+ */
+export const overrideAttachmentSettings = (
+  newSettings: AttachmentSettings | undefined
+): void => {
+  settings = newSettings;
+};
+
 const thumbnailable = new Set([
   'image/jpeg',
   'image/gif',
@@ -125,7 +135,9 @@ export const fetchAssetToken = async (
     expectedErrors: silent ? Object.values(Http) : [Http.OK],
   }).then(({ data, status }) => (status === Http.OK ? data : undefined));
 
-const fetchToken = async (fileName: string): Promise<string | undefined> =>
+export const fetchToken = async (
+  fileName: string
+): Promise<string | undefined> =>
   settings?.token_required_for_get === true
     ? fetchAssetToken(fileName)
     : Promise.resolve(undefined);
@@ -285,7 +297,7 @@ export async function uploadFile(
  * See: https://github.com/specify/specify7/issues/1141
  * REFACTOR: remove this once that issue is fixed
  */
-function fixMimeType(originalMimeType: string): string {
+export function fixMimeType(originalMimeType: string): string {
   const maxLength = getField(tables.Attachment, 'mimeType').length;
   if (maxLength === undefined || originalMimeType.length < maxLength)
     return originalMimeType;

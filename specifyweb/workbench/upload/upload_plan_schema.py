@@ -12,7 +12,7 @@ from .column_options import ColumnOptions
 
 logger = logging.getLogger(__name__)
 
-schema: Dict = {
+schema: dict = {
     "title": "Specify 7 Workbench Upload Plan",
     "description": "The workbench upload plan defines how to load columnar data into the Specify datamodel.",
     "$schema": "http://json-schema.org/schema#",
@@ -294,8 +294,8 @@ this column will never be considered for matching purposes, only for uploading."
 
 
 def parse_plan_with_basetable(
-    to_parse: Dict,
-) -> Tuple[Table, Uploadable, BatchEditPrefs]:
+    to_parse: dict,
+) -> tuple[Table, Uploadable, BatchEditPrefs]:
     base_table = datamodel.get_table_strict(to_parse["baseTableName"])
     batch_edit_prefs = to_parse.get("batchEditPrefs", DEFAULT_BATCH_EDIT_PREFS)
     return (
@@ -305,11 +305,11 @@ def parse_plan_with_basetable(
     )
 
 
-def parse_plan(to_parse: Dict) -> Uploadable:
+def parse_plan(to_parse: dict) -> Uploadable:
     return parse_plan_with_basetable(to_parse)[1]
 
 
-def parse_uploadable(table: Table, to_parse: Dict) -> Uploadable:
+def parse_uploadable(table: Table, to_parse: dict) -> Uploadable:
     if "uploadTable" in to_parse:
         return parse_upload_table(table, to_parse["uploadTable"])
 
@@ -330,7 +330,7 @@ def parse_uploadable(table: Table, to_parse: Dict) -> Uploadable:
     raise ValueError("unknown uploadable type")
 
 
-def parse_upload_table(table: Table, to_parse: Dict) -> UploadTable:
+def parse_upload_table(table: Table, to_parse: dict) -> UploadTable:
 
     def rel_table(key: str) -> Table:
         return datamodel.get_table_strict(table.get_relationship(key).relatedModelName)
@@ -357,10 +357,10 @@ def parse_upload_table(table: Table, to_parse: Dict) -> UploadTable:
     )
 
 # TODO: Figure out a better way to do this. Django migration? Silently handle it?
-def _hacky_augment_to_many(to_parse: Dict):
+def _hacky_augment_to_many(to_parse: dict):
     return {"uploadTable": to_parse}
 
-def parse_tree_record(table: Table, to_parse: Dict) -> TreeRecord:
+def parse_tree_record(table: Table, to_parse: dict) -> TreeRecord:
     """Parse tree record from the given data"""
 
     def parse_rank(name_or_cols):
@@ -403,7 +403,7 @@ def parse_tree_record(table: Table, to_parse: Dict) -> TreeRecord:
     )
 
 
-def parse_column_options(to_parse: Union[str, Dict]) -> ColumnOptions:
+def parse_column_options(to_parse: Union[str, dict]) -> ColumnOptions:
     if isinstance(to_parse, str):
         return ColumnOptions(
             column=to_parse,

@@ -5,6 +5,7 @@ from specifyweb.specify.datamodel import datamodel, Table, is_tree_table
 from specifyweb.specify.func import CustomRepr
 from specifyweb.specify.load_datamodel import DoesNotExistError
 from specifyweb.specify import models
+from specifyweb.specify.tree_utils import get_default_treedef
 from specifyweb.specify.uiformatters import get_uiformatter, get_catalognumber_format, UIFormatter
 from specifyweb.specify.utils import get_picklists
 from specifyweb.stored_queries.format import get_date_format
@@ -38,7 +39,7 @@ The structure of DEFERRED_SCOPING is as following:
     See .upload_plan_schema.py for how this is used
 
 """
-DEFERRED_SCOPING: Dict[Tuple[str, str], Tuple[str, str, str]] = {
+DEFERRED_SCOPING: dict[tuple[str, str], tuple[str, str, str]] = {
     ("Collectionrelationship", "rightside"): (
         "collectionreltype",
         "name",
@@ -51,8 +52,8 @@ DEFERRED_SCOPING: Dict[Tuple[str, str], Tuple[str, str, str]] = {
     ),
 }
 
-def scoping_relationships(collection, table: Table) -> Dict[str, int]:
-    extra_static: Dict[str, int] = {}
+def scoping_relationships(collection, table: Table) -> dict[str, int]:
+    extra_static: dict[str, int] = {}
 
     try:
         table.get_field_strict("collectionmemberid")
@@ -108,7 +109,7 @@ def extend_columnoptions(
         tablename: str, 
         fieldname: str, 
         row: Optional[Row] = None,
-        toOne: Optional[Dict[str, Uploadable]] = None,
+        toOne: Optional[dict[str, Uploadable]] = None,
         context: Optional[ScopeContext] = None
     ) -> ExtendedColumnOptions:
 
@@ -116,20 +117,16 @@ def extend_columnoptions(
     toOne = toOne or {}
     picklists, schemaitem = get_picklists(collection, tablename, fieldname)
 
-    if not picklists:
-        picklist = None
-    else:
-        collection_picklists = picklists.filter(collection=collection)
-
-        picklist = (
-            picklists[0] if len(collection_picklists) == 0 else collection_picklists[0]
-        )
-
+    # Picklists are already scoped by collection in get_picklists if possible
+    picklist = None if picklists is None else picklists[0]
 
     ui_formatter = get_or_defer_formatter(collection, tablename, fieldname, row, toOne, context)
     scoped_formatter = (
         None if ui_formatter is None else ui_formatter.apply_scope(collection)
     )
+
+    if tablename.lower() == "collectionobjecttype" and fieldname.lower() == "name":
+        context.cache['cotype_column'] = colopts.column
 
     # REFACTOR: Make context always required and simply
     date_format = context.cache['date_format']
@@ -158,7 +155,7 @@ def get_deferred_scoping(
     key: str,
     table_name: str,
     uploadable: UploadTable,
-    row: Dict[str, Any],
+    row: dict[str, Any],
     base_ut,
     context: Optional[ScopeContext]
 ):
@@ -198,7 +195,7 @@ def get_or_defer_formatter(
         tablename: str, 
         fieldname: str, 
         row: Optional[Row],
-        _toOne: Dict[str, Uploadable],
+        _toOne: dict[str, Uploadable],
         context: Optional[ScopeContext] = None,
         ) -> Optional[UIFormatter]:
     """ The CollectionObject -> catalogNumber format can be determined by the 
@@ -216,7 +213,7 @@ def get_or_defer_formatter(
         uploadTable = toOne['collectionobjecttype']
 
         wb_col: Optional[ColumnOptions] = cast(UploadTable, uploadTable).wbcols.get('name', None)
-        co_type_cache : Dict[str, Optional[UIFormatter]] = {}
+        co_type_cache : dict[str, Optional[UIFormatter]] = {}
         # At this point, we are variable since we saw a co.
         if context:
             context.set_is_variable()
@@ -317,8 +314,8 @@ def apply_scoping_to_uploadtable(
     return scoped_table
 
 
-def get_to_one_fields(collection) -> Dict[str, List["str"]]:
-    return {
+def get_to_one_fields(collection) -> dict[str, list["str"]]:
+    fields_collection = {
         "collectionobject": [
             *(["collectingevent"] if collection.isembeddedcollectingevent else []),
             "collectionobjectattribute",
@@ -327,16 +324,18 @@ def get_to_one_fields(collection) -> Dict[str, List["str"]]:
         "attachment": ["attachmentimageattribute"],
         "collectingtrip": ["collectingtripattribute"],
         "preparation": ["preparationattribute"],
-        **(
-            {collection.discipline.paleocontextchildtable.lower(): ["paleocontext"]}
-            if collection.discipline.ispaleocontextembedded
-            else {}
-        ),
     }
+   
+    if collection.discipline.ispaleocontextembedded:
+        child = collection.discipline.paleocontextchildtable.lower()
+        # Done this way because child could be collectionobject and end up overriding the key in the dict above
+        fields_collection[child] = [*fields_collection.get(child, []), "paleocontext"]
+ 
+    return fields_collection
 
 
 def set_order_number(
-    i: int, tmr: ScopedUploadTable, to_ignore: List[str]
+    i: int, tmr: ScopedUploadTable, to_ignore: list[str]
 ) -> ScopedUploadTable:
     table = datamodel.get_table_strict(tmr.name)
     if table.get_field("ordernumber"):
@@ -344,32 +343,10 @@ def set_order_number(
     return tmr._replace(strong_ignore=[*tmr.strong_ignore, *to_ignore])
 
 
-def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
+def apply_scoping_to_treerecord(tr: TreeRecord, collection, context: Optional[ScopeContext] = None) -> ScopedTreeRecord:
     table = datamodel.get_table_strict(tr.name)
 
-    treedef = None
-    if table.name == 'Taxon':
-        if treedef is None:
-            treedef = collection.discipline.taxontreedef
-
-    elif table.name == "Geography":
-        treedef = collection.discipline.geographytreedef
-
-    elif table.name == "LithoStrat":
-        treedef = collection.discipline.lithostrattreedef
-
-    elif table.name == "GeologicTimePeriod":
-        treedef = collection.discipline.geologictimeperiodtreedef
-
-    elif table.name == "Storage":
-        treedef = collection.discipline.division.institution.storagetreedef
-
-    elif table.name == 'TectonicUnit':
-        treedef = collection.discipline.tectonicunittreedef
-
-    else:
-        raise Exception(f"unexpected tree type: {table.name}")
-
+    treedef = get_default_treedef(table, collection)
     if treedef is None:
         raise ValueError(f"Could not find treedef for table {table.name}")
 
@@ -377,7 +354,7 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     treedef_ranks = [tdi.name for tdi in treedefitems]
     for rank in tr.ranks:
         is_valid_rank = (hasattr(rank, 'rank_name') and rank.rank_name in treedef_ranks) or (rank in treedef_ranks) # type: ignore
-        if not is_valid_rank and isinstance(rank, TreeRankRecord) and not rank.check_rank(table.name):
+        if not is_valid_rank and (isinstance(rank, TreeRankRecord) and not rank.validate_rank(tr.name)):
             raise Exception(f'"{rank}" not among {table.name} tree ranks: {treedef_ranks}')
 
     root = list(
@@ -386,12 +363,13 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
         )[:1]
     )  # assume there is only one
 
-    scoped_ranks: Dict[TreeRankRecord, Dict[str, ExtendedColumnOptions]] = {
+    scoped_ranks: dict[TreeRankRecord, dict[str, ExtendedColumnOptions]] = {
         (
             TreeRank.create(
                 r, table.name, treedef.id if treedef else None
             ).tree_rank_record()
             if isinstance(r, str)
+            else r._replace(treedef_id=treedef.id) if r.treedef_id is None  # Adjust treeid for parsed JSON plans
             else r
         ): {
             f: extend_columnoptions(colopts, collection, table.name, f)
@@ -399,6 +377,8 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
         }
         for r, cols in tr.ranks.items()
     }
+
+    scoped_cotypes = models.Collectionobjecttype.objects.filter(collection=collection)
 
     return ScopedTreeRecord(
         name=tr.name,
@@ -408,4 +388,6 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
         root=root[0] if root else None,
         disambiguation={},
         batch_edit_pack=None,
+        scoped_cotypes=scoped_cotypes,
+        cotype_column=context.cache['cotype_column'] if context else None
     )
