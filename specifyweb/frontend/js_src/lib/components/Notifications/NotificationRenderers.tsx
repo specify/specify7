@@ -330,7 +330,9 @@ export const notificationRenderers: IR<
   'attachment-download-ready'(notification) {
     return (
       <>
-        {notificationsText.attachmentDownloadReady({ archiveName: notification.payload.archive_name })}
+        {notificationsText.attachmentDownloadReady({
+          archiveName: notification.payload.archive_name,
+        })}
         <Link.Success
           className="w-fit"
           download
@@ -346,7 +348,9 @@ export const notificationRenderers: IR<
   'attachment-download-failed'(notification) {
     return (
       <>
-        {notificationsText.attachmentDownloadFailed({ archiveName: notification.payload.archive_name })}
+        {notificationsText.attachmentDownloadFailed({
+          archiveName: notification.payload.archive_name,
+        })}
       </>
     );
   },
