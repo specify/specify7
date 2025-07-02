@@ -45,6 +45,7 @@ class TestTree:
 
     def setUp(self) -> None:
         super().setUp()
+        self._node_list = []
 
         self.earth = self.make_geotree("Earth", "Planet")
 
@@ -66,7 +67,7 @@ class TestTree:
         self.springill = self.make_geotree("Springfield", "City", parent=self.sangomon)
 
     def make_geotree(self, name, rank_name, **extra_kwargs):
-        return get_table("Geography").objects.create(
+        node = get_table("Geography").objects.create(
             name=name,
             definitionitem=get_table("Geographytreedefitem").objects.get(
                 name=rank_name
@@ -74,6 +75,8 @@ class TestTree:
             definition=self.geographytreedef,
             **extra_kwargs
         )
+        self._node_list.append(node)
+        return node
 
 
 class GeographyTree(TestTree, TestTreeSetup):
