@@ -1,14 +1,14 @@
 import React from 'react';
 
-import { Button } from '../Atoms/Button';
-import { Dialog } from '../Molecules/Dialog';
-import { LoadingContext } from '../Core/Contexts';
-import { downloadAllAttachments } from './attachments';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
-import { RA } from '../../utils/types';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { Attachment } from '../DataModel/types';
+import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { LoadingContext } from '../Core/Contexts';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { Attachment } from '../DataModel/types';
+import { Dialog } from '../Molecules/Dialog';
+import { downloadAllAttachments } from './attachments';
 
 export function DownloadAllAttachmentsButton({
   attachments,
@@ -27,34 +27,22 @@ export function DownloadAllAttachmentsButton({
 
   const [showCreateRecordSetDialog, setShowCreateRecordSetDialog] =
     React.useState(false);
-  const CreateRecordSetDialog = ({
-    onClose,
-  }: {
-    readonly onClose: () => void;
-  }): JSX.Element => {
-    return (
+  const createRecordSetDialog = (
       <Dialog
         buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
         header={attachmentsText.downloadAll()}
-        onClose={onClose}
+        onClose={(): void => {setShowCreateRecordSetDialog(false);}}
       >
         {attachmentsText.createRecordSetToDownloadAll()}
       </Dialog>
     );
-  };
 
   return (
     <>
-      {showCreateRecordSetDialog && (
-        <CreateRecordSetDialog
-          onClose={(): void => {
-            setShowCreateRecordSetDialog(false);
-          }}
-        />
-      )}
+      {showCreateRecordSetDialog && createRecordSetDialog}
       <Button.Info
-        title={attachmentsText.downloadAllDescription()}
         disabled={disabled}
+        title={attachmentsText.downloadAllDescription()}
         onClick={(): void =>
           recordSetRequired === true && recordSetId === undefined
             ? setShowCreateRecordSetDialog(true)

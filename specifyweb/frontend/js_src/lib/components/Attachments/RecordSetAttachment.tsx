@@ -89,8 +89,6 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   );
   const attachmentsRef = React.useRef(attachments);
 
-  const loading = React.useContext(LoadingContext);
-
   if (typeof attachments === 'object') attachmentsRef.current = attachments;
 
   /*
