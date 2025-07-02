@@ -21,6 +21,7 @@ import { mergingQueryParameter } from '../Merging/queryString';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
+import { downloadArchive } from '../Attachments/attachments';
 
 export type GenericNotification = {
   readonly messageId: string;
@@ -331,7 +332,12 @@ export const notificationRenderers: IR<
     return (
       <>
         {notificationsText.attachmentDownloadReady({ archiveName: notification.payload.archive_name })}
-        <Link.Success
+        <Button.Small
+          onClick={(): void => {downloadArchive(notification.payload.file, notification.payload.archive_name)}}
+        >
+          {localityText.localityUpdateResults()}
+        </Button.Small>
+        {/* <Link.Success
           className="w-fit"
           download
           href={`/static/depository/${encodeURIComponent(
@@ -339,7 +345,7 @@ export const notificationRenderers: IR<
           )}`}
         >
           {notificationsText.download()}
-        </Link.Success>
+        </Link.Success> */}
       </>
     );
   },

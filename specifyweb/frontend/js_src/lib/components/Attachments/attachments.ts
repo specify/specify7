@@ -367,11 +367,26 @@ export async function downloadAllAttachments(
     },
     errorMode: 'dismissible',
   });
+}
 
-  // if (response.status === Http.OK) {
-  //   const fileName = `Attachments - ${(archiveName ?? new Date().toDateString()).replaceAll(':', '')}.zip`;
-  //   downloadFile(fileName, response.data);
-  // } else {
-  //   throw new Error(`Attachment archive download failed: ${response}`);
-  // }
+export async function downloadArchive(
+  filename: string,
+  archiveName: string,
+): Promise<void> {
+  const response = await ajax<Blob>('/attachment_gw/download_archive/', {
+    method: 'GET',
+    body: keysToLowerCase({
+      filename,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/octet-stream',
+    },
+    errorMode: 'dismissible',
+  });
+  if (response.status === Http.OK) {
+    downloadFile(archiveName, response.data);
+  } else {
+    throw new Error(`Attachment archive download failed: ${response}`);
+  }
 }

@@ -409,6 +409,35 @@ def make_attachment_zip(attachment_locations, orig_filenames, collection, output
     finally:
         shutil.rmtree(output_dir)
 
+@login_maybe_required
+@never_cache
+def download_archive(request):
+    # TODO: the client shouldn't be able to request deletion of any file in the DEPOSITORY_DIR
+    try:
+        r = json.load(request)
+    except ValueError as e:
+        return HttpResponseBadRequest(e)
+
+    filename = r['filename']
+    path = os.path.join(settings.DEPOSITORY_DIR, filename)
+
+    def file_iterator(file_path, chunk_size=512 * 1024):
+        with open(file_path, 'rb') as f:
+            while chunk := f.read(chunk_size):
+                yield chunk
+        os.remove(file_path)
+    response = StreamingHttpResponse(
+        file_iterator(path),
+        content_type='application/octet-stream')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
+
+@login_maybe_required
+@never_cache
+def delete_file(request):
+    # TODO: the client shouldn't be able to request deletion of any file in the DEPOSITORY_DIR
+    pass
+
 @transaction.atomic()
 @login_maybe_required
 @require_http_methods(['GET', 'POST', 'HEAD'])
