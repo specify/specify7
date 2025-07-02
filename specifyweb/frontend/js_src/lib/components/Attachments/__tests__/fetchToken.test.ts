@@ -1,35 +1,27 @@
-import { overrideAjax } from "../../../tests/ajax";
-import attachmentSettings from "../../../tests/ajax/static/context/attachment_settings.json"
-import { formatUrl } from "../../Router/queryString";
-import { fetchToken, overrideAttachmentSettings } from "../attachments";
+import { overrideAjax } from '../../../tests/ajax';
+import attachmentSettings from '../../../tests/ajax/static/context/attachment_settings.json';
+import { formatUrl } from '../../Router/queryString';
+import { fetchToken, overrideAttachmentSettings } from '../attachments';
 
+describe('fetchToken', () => {
+  const testToken = 'testToken';
 
-describe("fetchToken", ()=>{
+  const fileName = 'testFileName';
 
-    const testToken = "testToken";
+  overrideAjax(formatUrl('/attachment_gw/get_token/', { fileName }), testToken);
 
-    const fileName = "testFileName";
+  test('does not fetch token when not required for get', () => {
+    expect(attachmentSettings.token_required_for_get).toBe(false);
 
-    overrideAjax(
-        formatUrl('/attachment_gw/get_token/', { fileName }), 
-        testToken
-    );
+    expect(fetchToken(fileName)).resolves.toBeUndefined();
+  });
 
-    test("does not fetch token when not required for get", ()=>{
-
-        expect(attachmentSettings.token_required_for_get).toBe(false);
-
-        expect(fetchToken(fileName)).resolves.toBeUndefined();
-
+  test('does not fetch token when not required for get', () => {
+    overrideAttachmentSettings({
+      ...attachmentSettings,
+      token_required_for_get: true,
     });
 
-    test("does not fetch token when not required for get", ()=>{
-
-        overrideAttachmentSettings({...attachmentSettings, token_required_for_get: true});
-
-        expect(fetchToken(fileName)).resolves.toBe(testToken);
-
-    });
-
-    
-})
+    expect(fetchToken(fileName)).resolves.toBe(testToken);
+  });
+});
