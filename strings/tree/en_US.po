@@ -184,13 +184,13 @@ msgstr ""
 "\"{nodeName:string}\" will no longer be a synonym of "
 "\"{synonymName:string}\"."
 
-#: components/TreeView/Row.tsx:249
-#: components/TreeView/Row.tsx:267
+#: components/TreeView/Row.tsx:253
+#: components/TreeView/Row.tsx:271
 #. Used in: Components > Tree View > Row
 msgid "acceptedName"
 msgstr "Preferred: {name:string}"
 
-#: components/TreeView/Row.tsx:253
+#: components/TreeView/Row.tsx:257
 #. Used in: Components > Tree View > Row
 msgid "synonyms"
 msgstr "Synonyms: {names:string}"
@@ -207,17 +207,17 @@ msgstr "{treeName:string} Tree"
 msgid "searchTreePlaceholder"
 msgstr "Search Tree"
 
-#: components/TreeView/Row.tsx:229
+#: components/TreeView/Row.tsx:233
 #. Used in: Components > Tree View > Row
 msgid "opened"
 msgstr "Opened"
 
-#: components/TreeView/Row.tsx:230
+#: components/TreeView/Row.tsx:234
 #. Used in: Components > Tree View > Row
 msgid "closed"
 msgstr "Closed"
 
-#: components/TreeView/Row.tsx:227
+#: components/TreeView/Row.tsx:231
 #. Used in: Components > Tree View > Row
 msgid "leafNode"
 msgstr "Leaf Node"
@@ -252,27 +252,27 @@ msgstr "Edit Ranks"
 msgid "resourceToDelete"
 msgstr "This will permanently delete the following resource"
 
-#: components/TreeView/index.tsx:388
+#: components/TreeView/index.tsx:392
 #. Used in: Components > Tree View > Index
 msgid "associatedNodesOnly"
 msgstr "Show only nodes with associated objects"
 
-#: components/TreeView/index.tsx:320
+#: components/TreeView/index.tsx:324
 #. Used in: Components > Tree View > Index
 msgid "splitView"
 msgstr "Split View"
 
-#: components/TreeView/index.tsx:326
+#: components/TreeView/index.tsx:330
 #. Used in: Components > Tree View > Index
 msgid "horizontal"
 msgstr "Horizontal"
 
-#: components/TreeView/index.tsx:326
+#: components/TreeView/index.tsx:330
 #. Used in: Components > Tree View > Index
 msgid "vertical"
 msgstr "Vertical"
 
-#: components/TreeView/index.tsx:335
+#: components/TreeView/index.tsx:339
 #. Used in: Components > Tree View > Index
 msgid "synchronize"
 msgstr "Synchronize"
@@ -307,8 +307,8 @@ msgstr "Add Tree"
 msgid "addRootNode"
 msgstr "Add root node"
 
-#: components/TreeView/index.tsx:272
-#: components/TreeView/index.tsx:274
+#: components/TreeView/index.tsx:276
+#: components/TreeView/index.tsx:278
 #. Used in: Components > Tree View > Index
 msgid "treePicker"
 msgstr "Tree Picker"

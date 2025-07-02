@@ -425,7 +425,8 @@ msgstr ""
 "План загрузки должен быть определен до того, как этот набор данных может "
 "быть проверен"
 
-#: components/WbActions/WbUpload.tsx:50
+#: components/WbActions/WbUpload.tsx:69
+#: components/WbActions/WbUpload.tsx:84
 #: components/WbActions/WbValidate.tsx:66
 #: components/WbToolkit/ChangeOwner.tsx:38
 #: components/WbToolkit/index.tsx:86
@@ -433,7 +434,8 @@ msgstr ""
 msgid "unavailableWhileEditing"
 msgstr "Это действие требует сохранения всех изменений"
 
-#: components/WbActions/WbUpload.tsx:52
+#: components/WbActions/WbUpload.tsx:71
+#: components/WbActions/WbUpload.tsx:86
 #. Used in: Components > Wb Actions > Wb Upload
 msgid "uploadUnavailableWhileHasErrors"
 msgstr "Загрузка недоступна, в то время как в некоторых ячейках есть ошибки проверки"

@@ -153,7 +153,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} using \"{nodeFullName:string}\""
 
-#: components/QueryBuilder/Wrapped.tsx:487
+#: components/QueryBuilder/Wrapped.tsx:479
 #. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
 msgstr "Add New Field"
@@ -545,12 +545,12 @@ msgstr "Catalog Number Parent Collection Object Inheritance"
 msgid "formatInputAs"
 msgstr "Format As: {commaSeparatedFormats:string}"
 
-#: components/BatchEdit/index.tsx:207
+#: components/BatchEdit/index.tsx:209
 #. Used in: Components > Batch Edit > Index
 msgid "unsavedChangesInQuery"
 msgstr "Query has unsaved changes"
 
-#: components/BatchEdit/index.tsx:210
+#: components/BatchEdit/index.tsx:212
 #. Used in: Components > Batch Edit > Index
 msgid "unsavedChangesInQueryDescription"
 msgstr "Please save the query before running Batch Edit"

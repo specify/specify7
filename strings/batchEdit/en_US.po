@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/BatchEdit/index.tsx:187
+#: components/BatchEdit/index.tsx:189
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2043
 #: components/Router/OverlayRoutes.tsx:246
@@ -41,7 +41,7 @@ msgstr ""
 "The selected rank(s) are found in multiple trees. Pick tree(s) to batch "
 "edit with"
 
-#: components/BatchEdit/index.tsx:160
+#: components/BatchEdit/index.tsx:162
 #. Used in: Components > Batch Edit > Index
 msgid "datasetName"
 msgstr "{queryName:string} {datePart:string}"
@@ -175,7 +175,7 @@ msgstr ""
 "If true, invisible database fields will not be used for determining whether "
 "the record is empty or not. Default value is {default: boolean}"
 
-#: components/BatchEdit/index.tsx:181
+#: components/BatchEdit/index.tsx:183
 #. Used in: Components > Batch Edit > Index
 msgid "batchEditDisabled"
 msgstr "Batch Edit is disabled for system tables and scoping hierarchy tables"
@@ -196,3 +196,17 @@ msgid "enableRelationshipsDescription"
 msgstr ""
 "Allows batch editing relationships of the base table. Rollback is disabled "
 "when relationships are enabled"
+
+#: components/WbActions/WbUpload.tsx:125
+#. Used in: Components > Wb Actions > Wb Upload
+msgid "commitDataSet"
+msgstr "Commit Data Set"
+
+#: components/WbActions/WbUpload.tsx:128
+#. Used in: Components > Wb Actions > Wb Upload
+msgid "warningBatchEditText"
+msgstr ""
+"Before proceeding, please note that the following action may interrupt "
+"other users. This action may cause delays or temporary unavailability of "
+"certain features for Specify users. Please consider the impact on their "
+"experience. This action cannot be undone"

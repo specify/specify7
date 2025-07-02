@@ -11,7 +11,7 @@ msgstr ""
 "X-Generator: Weblate 5.12-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: components/BatchEdit/index.tsx:187
+#: components/BatchEdit/index.tsx:189
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2043
 #: components/Router/OverlayRoutes.tsx:246
@@ -59,7 +59,7 @@ msgstr ""
 "Die ausgewählten Ränge sind in mehreren Bäumen vorhanden. Wählen Sie Bäume "
 "für die Stapelbearbeitung aus."
 
-#: components/BatchEdit/index.tsx:160
+#: components/BatchEdit/index.tsx:162
 #. Used in: Components > Batch Edit > Index
 #, fuzzy
 msgid "datasetName"
@@ -220,7 +220,7 @@ msgstr ""
 "verwendet, ob der Datensatz leer ist oder nicht. Der Standardwert ist "
 "{default: boolean}"
 
-#: components/BatchEdit/index.tsx:181
+#: components/BatchEdit/index.tsx:183
 #. Used in: Components > Batch Edit > Index
 #, fuzzy
 msgid "batchEditDisabled"
@@ -249,3 +249,13 @@ msgid "enableRelationshipsDescription"
 msgstr ""
 "Ermöglicht die Stapelbearbeitung von Beziehungen der Basistabelle. Rollback "
 "ist deaktiviert, wenn Beziehungen aktiviert sind."
+
+#: components/WbActions/WbUpload.tsx:125
+#. Used in: Components > Wb Actions > Wb Upload
+msgid "commitDataSet"
+msgstr ""
+
+#: components/WbActions/WbUpload.tsx:128
+#. Used in: Components > Wb Actions > Wb Upload
+msgid "warningBatchEditText"
+msgstr ""

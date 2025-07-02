@@ -494,7 +494,8 @@ msgstr ""
 "Um Plano de Upload precisa ser definido antes que este Conjunto de Dados "
 "possa ser Validado"
 
-#: components/WbActions/WbUpload.tsx:50
+#: components/WbActions/WbUpload.tsx:69
+#: components/WbActions/WbUpload.tsx:84
 #: components/WbActions/WbValidate.tsx:66
 #: components/WbToolkit/ChangeOwner.tsx:38
 #: components/WbToolkit/index.tsx:86
@@ -503,7 +504,8 @@ msgstr ""
 msgid "unavailableWhileEditing"
 msgstr "Esta ação requer que todas as alterações sejam salvas"
 
-#: components/WbActions/WbUpload.tsx:52
+#: components/WbActions/WbUpload.tsx:71
+#: components/WbActions/WbUpload.tsx:86
 #. Used in: Components > Wb Actions > Wb Upload
 #, fuzzy
 msgid "uploadUnavailableWhileHasErrors"

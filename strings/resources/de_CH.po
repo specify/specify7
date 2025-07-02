@@ -555,21 +555,21 @@ msgstr "Bedingter Feldwert"
 msgid "formatPreview"
 msgstr "Formatvorschau"
 
-#: components/DataModel/businessRuleDefs.ts:466
-#: components/DataModel/businessRuleDefs.ts:484
+#: components/DataModel/businessRuleDefs.ts:417
+#: components/DataModel/businessRuleDefs.ts:435
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "currentDeterminationRequired"
 msgstr "Eine aktuelle Feststellung ist erforderlich."
 
-#: components/DataModel/businessRuleDefs.ts:307
-#: components/DataModel/businessRuleDefs.ts:353
+#: components/DataModel/businessRuleDefs.ts:274
+#: components/DataModel/businessRuleDefs.ts:320
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "cogAddedToItself"
 msgstr "Ein Schwerpunkt kann nicht zu sich selbst addiert werden."
 
-#: components/DataModel/businessRuleDefs.ts:339
+#: components/DataModel/businessRuleDefs.ts:306
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "coHasParent"
@@ -577,8 +577,8 @@ msgstr ""
 "Eine CO mit einem übergeordneten Element kann nicht zu einer COG "
 "hinzugefügt werden."
 
-#: components/DataModel/businessRuleDefs.ts:256
-#: components/DataModel/__tests__/businessRules.test.ts:339
+#: components/DataModel/businessRuleDefs.ts:223
+#: components/DataModel/__tests__/businessRules.test.ts:385
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #, fuzzy
 msgid "primaryCogChildRequired"
@@ -586,44 +586,44 @@ msgstr ""
 "Eine konsolidierte Sammlungsobjektgruppe muss ein primäres "
 "Sammlungsobjekt-Unterobjekt haben"
 
-#: components/DataModel/businessRuleDefs.ts:371
+#: components/DataModel/businessRuleDefs.ts:338
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deletePrimaryRecord"
 msgstr "Der Primärdatensatz CO kann nicht gelöscht werden."
 
-#: components/DataModel/businessRuleDefs.ts:767
+#: components/DataModel/businessRuleDefs.ts:672
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteLoanedPrep"
 msgstr "Eine ausgeliehene Zubereitung kann nicht gelöscht werden"
 
-#: components/DataModel/businessRuleDefs.ts:775
+#: components/DataModel/businessRuleDefs.ts:680
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteGiftedPrep"
 msgstr "Eine geschenkte Vorbereitung kann nicht gelöscht werden"
 
-#: components/DataModel/businessRuleDefs.ts:783
+#: components/DataModel/businessRuleDefs.ts:688
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteDisposedPrep"
 msgstr "Eine verworfene Zubereitung kann nicht gelöscht werden"
 
-#: components/DataModel/businessRuleDefs.ts:791
+#: components/DataModel/businessRuleDefs.ts:696
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteExchangeOutPrep"
 msgstr "Ein ausgetauschtes Präparat kann nicht gelöscht werden"
 
-#: components/DataModel/businessRuleDefs.ts:799
+#: components/DataModel/businessRuleDefs.ts:704
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteExchangeInPrep"
 msgstr "Ein in Vorbereitung befindlicher Austausch kann nicht gelöscht werden"
 
-#: components/DataModel/businessRuleDefs.ts:227
-#: components/DataModel/__tests__/businessRules.test.ts:154
+#: components/DataModel/businessRuleDefs.ts:194
+#: components/DataModel/__tests__/businessRules.test.ts:163
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #, fuzzy
 msgid "invalidDeterminationTaxon"
@@ -631,13 +631,13 @@ msgstr ""
 "Die Bestimmung gehört nicht zum Taxonbaum, der mit dem Sammlungsobjekttyp "
 "verknüpft ist"
 
-#: components/DataModel/businessRuleDefs.ts:742
+#: components/DataModel/businessRuleDefs.ts:647
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "preparationUsedInLoan"
 msgstr "Das Präparat dient der Kreditvergabe."
 
-#: components/DataModel/businessRuleDefs.ts:735
+#: components/DataModel/businessRuleDefs.ts:640
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "preparationIsNegative"

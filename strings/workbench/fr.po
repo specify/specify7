@@ -441,7 +441,8 @@ msgstr ""
 "Un plan de téléchargement doit être défini avant que cet ensemble de "
 "données puisse être validé"
 
-#: components/WbActions/WbUpload.tsx:50
+#: components/WbActions/WbUpload.tsx:69
+#: components/WbActions/WbUpload.tsx:84
 #: components/WbActions/WbValidate.tsx:66
 #: components/WbToolkit/ChangeOwner.tsx:38
 #: components/WbToolkit/index.tsx:86
@@ -449,7 +450,8 @@ msgstr ""
 msgid "unavailableWhileEditing"
 msgstr "Cette action nécessite que toutes les modifications soient enregistrées"
 
-#: components/WbActions/WbUpload.tsx:52
+#: components/WbActions/WbUpload.tsx:71
+#: components/WbActions/WbUpload.tsx:86
 #. Used in: Components > Wb Actions > Wb Upload
 msgid "uploadUnavailableWhileHasErrors"
 msgstr ""

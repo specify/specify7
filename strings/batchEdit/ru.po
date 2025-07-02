@@ -12,7 +12,7 @@ msgstr ""
 "X-Generator: Weblate 5.12-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: components/BatchEdit/index.tsx:187
+#: components/BatchEdit/index.tsx:189
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2043
 #: components/Router/OverlayRoutes.tsx:246
@@ -60,7 +60,7 @@ msgstr ""
 "Выбранные ранги найдены в нескольких деревьях. Выберите дерево(а) для "
 "пакетного редактирования с"
 
-#: components/BatchEdit/index.tsx:160
+#: components/BatchEdit/index.tsx:162
 #. Used in: Components > Batch Edit > Index
 #, fuzzy
 msgid "datasetName"
@@ -221,7 +221,7 @@ msgstr ""
 "определения того, пуста ли запись или нет. Значение по умолчанию — "
 "{default: boolean}"
 
-#: components/BatchEdit/index.tsx:181
+#: components/BatchEdit/index.tsx:183
 #. Used in: Components > Batch Edit > Index
 #, fuzzy
 msgid "batchEditDisabled"
@@ -250,3 +250,13 @@ msgid "enableRelationshipsDescription"
 msgstr ""
 "Позволяет пакетное редактирование связей базовой таблицы. Откат отключен, "
 "если связи включены"
+
+#: components/WbActions/WbUpload.tsx:125
+#. Used in: Components > Wb Actions > Wb Upload
+msgid "commitDataSet"
+msgstr ""
+
+#: components/WbActions/WbUpload.tsx:128
+#. Used in: Components > Wb Actions > Wb Upload
+msgid "warningBatchEditText"
+msgstr ""

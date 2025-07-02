@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 5.12-dev\n"
 
-#: components/BatchEdit/index.tsx:187
+#: components/BatchEdit/index.tsx:189
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2043
 #: components/Router/OverlayRoutes.tsx:246
@@ -52,7 +52,7 @@ msgstr ""
 "Вибрані ранги знаходяться в кількох деревах. Виберіть дерево(а) для "
 "пакетного редагування"
 
-#: components/BatchEdit/index.tsx:160
+#: components/BatchEdit/index.tsx:162
 #. Used in: Components > Batch Edit > Index
 msgid "datasetName"
 msgstr "{queryName:string} {datePart:string}'"
@@ -191,7 +191,7 @@ msgstr ""
 "визначення того, чи є запис порожнім. Значення за замовчуванням: {default: "
 "boolean}"
 
-#: components/BatchEdit/index.tsx:181
+#: components/BatchEdit/index.tsx:183
 #. Used in: Components > Batch Edit > Index
 msgid "batchEditDisabled"
 msgstr ""
@@ -216,3 +216,13 @@ msgid "enableRelationshipsDescription"
 msgstr ""
 "Дозволяє пакетне редагування зв'язків базової таблиці. Відкат вимкнено, "
 "якщо зв'язки ввімкнено"
+
+#: components/WbActions/WbUpload.tsx:125
+#. Used in: Components > Wb Actions > Wb Upload
+msgid "commitDataSet"
+msgstr ""
+
+#: components/WbActions/WbUpload.tsx:128
+#. Used in: Components > Wb Actions > Wb Upload
+msgid "warningBatchEditText"
+msgstr ""

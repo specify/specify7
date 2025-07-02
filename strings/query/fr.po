@@ -189,7 +189,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} en utilisant « {nodeFullName:string} »"
 
-#: components/QueryBuilder/Wrapped.tsx:487
+#: components/QueryBuilder/Wrapped.tsx:479
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "newButtonDescription"
@@ -657,13 +657,13 @@ msgstr "Numéro de catalogue Collection parente Héritage d'objet"
 msgid "formatInputAs"
 msgstr "Formater comme : {commaSeparatedFormats:string}"
 
-#: components/BatchEdit/index.tsx:207
+#: components/BatchEdit/index.tsx:209
 #. Used in: Components > Batch Edit > Index
 #, fuzzy
 msgid "unsavedChangesInQuery"
 msgstr "La requête comporte des modifications non enregistrées"
 
-#: components/BatchEdit/index.tsx:210
+#: components/BatchEdit/index.tsx:212
 #. Used in: Components > Batch Edit > Index
 #, fuzzy
 msgid "unsavedChangesInQueryDescription"

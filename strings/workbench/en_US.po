@@ -405,7 +405,8 @@ msgstr "The data set must be validated or uploaded"
 msgid "wbValidateUnavailable"
 msgstr "An Upload Plan needs to defined before this Data Set can be Validated"
 
-#: components/WbActions/WbUpload.tsx:50
+#: components/WbActions/WbUpload.tsx:69
+#: components/WbActions/WbUpload.tsx:84
 #: components/WbActions/WbValidate.tsx:66
 #: components/WbToolkit/ChangeOwner.tsx:38
 #: components/WbToolkit/index.tsx:86
@@ -413,7 +414,8 @@ msgstr "An Upload Plan needs to defined before this Data Set can be Validated"
 msgid "unavailableWhileEditing"
 msgstr "This action requires all changes to be saved"
 
-#: components/WbActions/WbUpload.tsx:52
+#: components/WbActions/WbUpload.tsx:71
+#: components/WbActions/WbUpload.tsx:86
 #. Used in: Components > Wb Actions > Wb Upload
 msgid "uploadUnavailableWhileHasErrors"
 msgstr "Upload is unavailable while some cells have validation errors"

@@ -485,75 +485,75 @@ msgstr "Conditional Field Value"
 msgid "formatPreview"
 msgstr "Format Preview"
 
-#: components/DataModel/businessRuleDefs.ts:466
-#: components/DataModel/businessRuleDefs.ts:484
+#: components/DataModel/businessRuleDefs.ts:417
+#: components/DataModel/businessRuleDefs.ts:435
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "currentDeterminationRequired"
 msgstr "A current determination is required."
 
-#: components/DataModel/businessRuleDefs.ts:307
-#: components/DataModel/businessRuleDefs.ts:353
+#: components/DataModel/businessRuleDefs.ts:274
+#: components/DataModel/businessRuleDefs.ts:320
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "cogAddedToItself"
 msgstr "A COG cannot be added to itself."
 
-#: components/DataModel/businessRuleDefs.ts:339
+#: components/DataModel/businessRuleDefs.ts:306
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "coHasParent"
 msgstr "A CO with a parent cannot be added to a COG."
 
-#: components/DataModel/businessRuleDefs.ts:256
-#: components/DataModel/__tests__/businessRules.test.ts:339
+#: components/DataModel/businessRuleDefs.ts:223
+#: components/DataModel/__tests__/businessRules.test.ts:385
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 msgid "primaryCogChildRequired"
 msgstr ""
 "A Consolidated Collection Object Group must have a primary Collection "
 "Object child"
 
-#: components/DataModel/businessRuleDefs.ts:371
+#: components/DataModel/businessRuleDefs.ts:338
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deletePrimaryRecord"
 msgstr "Primary record CO cannot be deleted."
 
-#: components/DataModel/businessRuleDefs.ts:767
+#: components/DataModel/businessRuleDefs.ts:672
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteLoanedPrep"
 msgstr "A loaned preparation cannot be deleted"
 
-#: components/DataModel/businessRuleDefs.ts:775
+#: components/DataModel/businessRuleDefs.ts:680
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteGiftedPrep"
 msgstr "A gifted preparation cannot be deleted"
 
-#: components/DataModel/businessRuleDefs.ts:783
+#: components/DataModel/businessRuleDefs.ts:688
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteDisposedPrep"
 msgstr "A disposed preparation cannot be deleted"
 
-#: components/DataModel/businessRuleDefs.ts:791
+#: components/DataModel/businessRuleDefs.ts:696
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteExchangeOutPrep"
 msgstr "A exchanged out preparation cannot be deleted"
 
-#: components/DataModel/businessRuleDefs.ts:799
+#: components/DataModel/businessRuleDefs.ts:704
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteExchangeInPrep"
 msgstr "A exchanged in preparation cannot be deleted"
 
-#: components/DataModel/businessRuleDefs.ts:227
-#: components/DataModel/__tests__/businessRules.test.ts:154
+#: components/DataModel/businessRuleDefs.ts:194
+#: components/DataModel/__tests__/businessRules.test.ts:163
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 msgid "invalidDeterminationTaxon"
 msgstr ""
 "Determination does not belong to the taxon tree associated with the "
 "Collection Object Type"
 
-#: components/DataModel/businessRuleDefs.ts:742
+#: components/DataModel/businessRuleDefs.ts:647
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "preparationUsedInLoan"
 msgstr "The preparation is used in a loan."
 
-#: components/DataModel/businessRuleDefs.ts:735
+#: components/DataModel/businessRuleDefs.ts:640
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "preparationIsNegative"
 msgstr "Preparation count cannot be negative"

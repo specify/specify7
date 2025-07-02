@@ -429,7 +429,8 @@ msgstr ""
 "Se necesita definir un Plan de Carga antes de poder Validar este Conjunto "
 "de Datos"
 
-#: components/WbActions/WbUpload.tsx:50
+#: components/WbActions/WbUpload.tsx:69
+#: components/WbActions/WbUpload.tsx:84
 #: components/WbActions/WbValidate.tsx:66
 #: components/WbToolkit/ChangeOwner.tsx:38
 #: components/WbToolkit/index.tsx:86
@@ -437,7 +438,8 @@ msgstr ""
 msgid "unavailableWhileEditing"
 msgstr "Esta acción requiere que se guarden todos los cambios"
 
-#: components/WbActions/WbUpload.tsx:52
+#: components/WbActions/WbUpload.tsx:71
+#: components/WbActions/WbUpload.tsx:86
 #. Used in: Components > Wb Actions > Wb Upload
 msgid "uploadUnavailableWhileHasErrors"
 msgstr "Carga de datos no disponible si hay celdas con error de validación"

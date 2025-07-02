@@ -84,7 +84,8 @@ msgstr "No"
 #: components/TreeView/CreateTree.tsx:74
 #: components/WbActions/WbRevert.tsx:39
 #: components/WbActions/WbRollback.tsx:62
-#: components/WbActions/WbUpload.tsx:63
+#: components/WbActions/WbUpload.tsx:101
+#: components/WbActions/WbUpload.tsx:136
 #: components/WbPlanView/Mapper.tsx:456
 #: components/WbPlanView/MapperComponents.tsx:333
 #: components/WbPlanView/MapperComponents.tsx:359
@@ -158,7 +159,7 @@ msgstr "Create"
 #: components/AttachmentsBulkImport/Upload.tsx:263
 #: components/BatchEdit/MissingRanks.tsx:42
 #: components/BatchEdit/QueryError.tsx:23
-#: components/BatchEdit/index.tsx:204
+#: components/BatchEdit/index.tsx:206
 #: components/Core/VersionMismatch.tsx:18
 #: components/ExportFeed/Dwca.tsx:94
 #: components/ExportFeed/Dwca.tsx:100
@@ -334,7 +335,7 @@ msgstr "Save"
 #: components/Merging/CompareSubView.tsx:184
 #: components/Molecules/AutoComplete.tsx:524
 #: components/PickLists/index.tsx:280
-#: components/QueryBuilder/Wrapped.tsx:484
+#: components/QueryBuilder/Wrapped.tsx:476
 #: components/SchemaConfig/Format.tsx:291
 #: components/SchemaConfig/Format.tsx:339
 #: components/SchemaConfig/Languages.tsx:75
@@ -463,7 +464,7 @@ msgstr "Tools"
 #: components/Statistics/StatsResult.tsx:78
 #: components/Toolbar/Language.tsx:224
 #: components/Toolbar/Language.tsx:258
-#: components/TreeView/Row.tsx:225
+#: components/TreeView/Row.tsx:229
 #: components/WorkBench/Disambiguation.tsx:124
 #. Used in: Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Collection Rel One To One ⬤ Components > Formatters > Preview ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Sub View ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Leaflet > Index ⬤ Components > Merging > Usages ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Preferences > Renderers ⬤ Components > Query Builder > Formatter ⬤ Components > Query Builder > Query Line Filter ⬤ Components > Query Builder > Results ⬤ Components > Query Combo Box > Index ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Index ⬤ Components > Search Dialog > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Skeleton Loaders > Skeleton ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row ⬤ Components > Work Bench > Disambiguation
 msgid "loading"
@@ -581,7 +582,8 @@ msgstr "Ignore"
 #: components/FormSliders/RecordSelectorFromIds.tsx:282
 #: components/Merging/index.tsx:397
 #: components/Toolbar/Language.tsx:108
-#. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Merging > Index ⬤ Components > Toolbar > Language
+#: components/WbActions/WbUpload.tsx:117
+#. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Merging > Index ⬤ Components > Toolbar > Language ⬤ Components > Wb Actions > Wb Upload
 msgid "proceed"
 msgstr "Proceed"
 
@@ -885,7 +887,7 @@ msgid "collapse"
 msgstr "Collapse"
 
 #: components/AppResources/Aside.tsx:189
-#: components/TreeView/index.tsx:302
+#: components/TreeView/index.tsx:306
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 msgid "collapseAll"
 msgstr "Collapse All"
@@ -1044,7 +1046,8 @@ msgid "change"
 msgstr "Change"
 
 #: components/Merging/index.tsx:389
-#. Used in: Components > Merging > Index
+#: components/WbActions/WbUpload.tsx:109
+#. Used in: Components > Merging > Index ⬤ Components > Wb Actions > Wb Upload
 msgid "dontShowAgain"
 msgstr "Don't show this again"
 

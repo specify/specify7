@@ -420,7 +420,8 @@ msgstr "Набір даних має бути перевірений або за
 msgid "wbValidateUnavailable"
 msgstr "Перед перевіркою цього набору даних необхідно визначити план завантаження"
 
-#: components/WbActions/WbUpload.tsx:50
+#: components/WbActions/WbUpload.tsx:69
+#: components/WbActions/WbUpload.tsx:84
 #: components/WbActions/WbValidate.tsx:66
 #: components/WbToolkit/ChangeOwner.tsx:38
 #: components/WbToolkit/index.tsx:86
@@ -428,7 +429,8 @@ msgstr "Перед перевіркою цього набору даних не�
 msgid "unavailableWhileEditing"
 msgstr "Ця дія вимагає збереження всіх змін"
 
-#: components/WbActions/WbUpload.tsx:52
+#: components/WbActions/WbUpload.tsx:71
+#: components/WbActions/WbUpload.tsx:86
 #. Used in: Components > Wb Actions > Wb Upload
 msgid "uploadUnavailableWhileHasErrors"
 msgstr "Завантаження недоступне, оскільки в деяких клітинках є помилки перевірки"

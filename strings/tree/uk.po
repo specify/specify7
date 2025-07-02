@@ -195,13 +195,13 @@ msgstr "Десинонімізувати вузол"
 msgid "desynonymizeNodeMessage"
 msgstr "\"{nodeName:string}\" більше не буде синонімом \"{synonymName:string}\"."
 
-#: components/TreeView/Row.tsx:249
-#: components/TreeView/Row.tsx:267
+#: components/TreeView/Row.tsx:253
+#: components/TreeView/Row.tsx:271
 #. Used in: Components > Tree View > Row
 msgid "acceptedName"
 msgstr "Бажано: {name:string}"
 
-#: components/TreeView/Row.tsx:253
+#: components/TreeView/Row.tsx:257
 #. Used in: Components > Tree View > Row
 msgid "synonyms"
 msgstr "Синоніми: {names:string}"
@@ -218,17 +218,17 @@ msgstr "{treeName:string} Дерево"
 msgid "searchTreePlaceholder"
 msgstr "Дерево пошуку"
 
-#: components/TreeView/Row.tsx:229
+#: components/TreeView/Row.tsx:233
 #. Used in: Components > Tree View > Row
 msgid "opened"
 msgstr "Відкрито"
 
-#: components/TreeView/Row.tsx:230
+#: components/TreeView/Row.tsx:234
 #. Used in: Components > Tree View > Row
 msgid "closed"
 msgstr "ЗАЧИНЕНО"
 
-#: components/TreeView/Row.tsx:227
+#: components/TreeView/Row.tsx:231
 #. Used in: Components > Tree View > Row
 msgid "leafNode"
 msgstr "Листковий вузол"
@@ -263,27 +263,27 @@ msgstr "Редагувати ранги"
 msgid "resourceToDelete"
 msgstr "Це призведе до остаточного видалення наступного ресурсу"
 
-#: components/TreeView/index.tsx:388
+#: components/TreeView/index.tsx:392
 #. Used in: Components > Tree View > Index
 msgid "associatedNodesOnly"
 msgstr "Показувати лише вузли з пов'язаними об'єктами"
 
-#: components/TreeView/index.tsx:320
+#: components/TreeView/index.tsx:324
 #. Used in: Components > Tree View > Index
 msgid "splitView"
 msgstr "Розділений вид"
 
-#: components/TreeView/index.tsx:326
+#: components/TreeView/index.tsx:330
 #. Used in: Components > Tree View > Index
 msgid "horizontal"
 msgstr "Горизонтальний"
 
-#: components/TreeView/index.tsx:326
+#: components/TreeView/index.tsx:330
 #. Used in: Components > Tree View > Index
 msgid "vertical"
 msgstr "Вертикальний"
 
-#: components/TreeView/index.tsx:335
+#: components/TreeView/index.tsx:339
 #. Used in: Components > Tree View > Index
 msgid "synchronize"
 msgstr "Синхронізувати"
@@ -318,8 +318,8 @@ msgstr "Додати дерево"
 msgid "addRootNode"
 msgstr "Додати кореневий вузол"
 
-#: components/TreeView/index.tsx:272
-#: components/TreeView/index.tsx:274
+#: components/TreeView/index.tsx:276
+#: components/TreeView/index.tsx:278
 #. Used in: Components > Tree View > Index
 msgid "treePicker"
 msgstr "Збирач дерев"

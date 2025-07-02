@@ -497,75 +497,75 @@ msgstr "Умовне значення поля"
 msgid "formatPreview"
 msgstr "Попередній перегляд формату"
 
-#: components/DataModel/businessRuleDefs.ts:466
-#: components/DataModel/businessRuleDefs.ts:484
+#: components/DataModel/businessRuleDefs.ts:417
+#: components/DataModel/businessRuleDefs.ts:435
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "currentDeterminationRequired"
 msgstr "Потрібне поточне визначення."
 
-#: components/DataModel/businessRuleDefs.ts:307
-#: components/DataModel/businessRuleDefs.ts:353
+#: components/DataModel/businessRuleDefs.ts:274
+#: components/DataModel/businessRuleDefs.ts:320
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "cogAddedToItself"
 msgstr "COG не можна додати до самого себе."
 
-#: components/DataModel/businessRuleDefs.ts:339
+#: components/DataModel/businessRuleDefs.ts:306
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "coHasParent"
 msgstr "CO з батьківським елементом не можна додати до COG."
 
-#: components/DataModel/businessRuleDefs.ts:256
-#: components/DataModel/__tests__/businessRules.test.ts:339
+#: components/DataModel/businessRuleDefs.ts:223
+#: components/DataModel/__tests__/businessRules.test.ts:385
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 msgid "primaryCogChildRequired"
 msgstr ""
 "Консолідована група об'єктів колекції повинна мати дочірній об'єкт "
 "первинної колекції"
 
-#: components/DataModel/businessRuleDefs.ts:371
+#: components/DataModel/businessRuleDefs.ts:338
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deletePrimaryRecord"
 msgstr "Основний запис CO неможливо видалити."
 
-#: components/DataModel/businessRuleDefs.ts:767
+#: components/DataModel/businessRuleDefs.ts:672
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteLoanedPrep"
 msgstr "Позичений препарат не можна видалити"
 
-#: components/DataModel/businessRuleDefs.ts:775
+#: components/DataModel/businessRuleDefs.ts:680
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteGiftedPrep"
 msgstr "Подарований препарат не можна видалити"
 
-#: components/DataModel/businessRuleDefs.ts:783
+#: components/DataModel/businessRuleDefs.ts:688
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteDisposedPrep"
 msgstr "Викинутий препарат не можна видалити"
 
-#: components/DataModel/businessRuleDefs.ts:791
+#: components/DataModel/businessRuleDefs.ts:696
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteExchangeOutPrep"
 msgstr "Обмінений препарат не можна видалити"
 
-#: components/DataModel/businessRuleDefs.ts:799
+#: components/DataModel/businessRuleDefs.ts:704
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteExchangeInPrep"
 msgstr "Обмін, що готується, не можна видалити"
 
-#: components/DataModel/businessRuleDefs.ts:227
-#: components/DataModel/__tests__/businessRules.test.ts:154
+#: components/DataModel/businessRuleDefs.ts:194
+#: components/DataModel/__tests__/businessRules.test.ts:163
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 msgid "invalidDeterminationTaxon"
 msgstr ""
 "Визначення не належить до дерева таксонів, пов'язаного з типом об'єкта "
 "колекції"
 
-#: components/DataModel/businessRuleDefs.ts:742
+#: components/DataModel/businessRuleDefs.ts:647
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "preparationUsedInLoan"
 msgstr "Препарат використовується у позиці."
 
-#: components/DataModel/businessRuleDefs.ts:735
+#: components/DataModel/businessRuleDefs.ts:640
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "preparationIsNegative"
 msgstr "Кількість підготовок не може бути від'ємним значенням"

@@ -226,14 +226,14 @@ msgstr "Узел десиномизации"
 msgid "desynonymizeNodeMessage"
 msgstr "«{nodeName:string}» больше не будет синонимом «{synonymName:string}»."
 
-#: components/TreeView/Row.tsx:249
-#: components/TreeView/Row.tsx:267
+#: components/TreeView/Row.tsx:253
+#: components/TreeView/Row.tsx:271
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "acceptedName"
 msgstr "Предпочтительно: {name:string}"
 
-#: components/TreeView/Row.tsx:253
+#: components/TreeView/Row.tsx:257
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "synonyms"
@@ -253,19 +253,19 @@ msgstr "{treeName:string} Дерево"
 msgid "searchTreePlaceholder"
 msgstr "Дерево поиска"
 
-#: components/TreeView/Row.tsx:229
+#: components/TreeView/Row.tsx:233
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "opened"
 msgstr "Открыто"
 
-#: components/TreeView/Row.tsx:230
+#: components/TreeView/Row.tsx:234
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "closed"
 msgstr "Закрыто"
 
-#: components/TreeView/Row.tsx:227
+#: components/TreeView/Row.tsx:231
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "leafNode"
@@ -307,31 +307,31 @@ msgstr "Редактировать ранги"
 msgid "resourceToDelete"
 msgstr "Это приведет к окончательному удалению следующего ресурса"
 
-#: components/TreeView/index.tsx:388
+#: components/TreeView/index.tsx:392
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "associatedNodesOnly"
 msgstr "Показывать только узлы со связанными объектами"
 
-#: components/TreeView/index.tsx:320
+#: components/TreeView/index.tsx:324
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "splitView"
 msgstr "Разделенный вид"
 
-#: components/TreeView/index.tsx:326
+#: components/TreeView/index.tsx:330
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "horizontal"
 msgstr "Горизонтальный"
 
-#: components/TreeView/index.tsx:326
+#: components/TreeView/index.tsx:330
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "vertical"
 msgstr "Вертикальный"
 
-#: components/TreeView/index.tsx:335
+#: components/TreeView/index.tsx:339
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "synchronize"
@@ -372,8 +372,8 @@ msgstr "Добавить дерево"
 msgid "addRootNode"
 msgstr "Добавить корневой узел"
 
-#: components/TreeView/index.tsx:272
-#: components/TreeView/index.tsx:274
+#: components/TreeView/index.tsx:276
+#: components/TreeView/index.tsx:278
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "treePicker"

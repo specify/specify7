@@ -162,7 +162,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} за допомогою \"{nodeFullName:string}\""
 
-#: components/QueryBuilder/Wrapped.tsx:487
+#: components/QueryBuilder/Wrapped.tsx:479
 #. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
 msgstr "Додати нове поле"
@@ -558,12 +558,12 @@ msgstr "Успадкування батьківського об'єкта кол
 msgid "formatInputAs"
 msgstr "Форматувати як: {commaSeparatedFormats:string}"
 
-#: components/BatchEdit/index.tsx:207
+#: components/BatchEdit/index.tsx:209
 #. Used in: Components > Batch Edit > Index
 msgid "unsavedChangesInQuery"
 msgstr "Запит містить незбережені зміни"
 
-#: components/BatchEdit/index.tsx:210
+#: components/BatchEdit/index.tsx:212
 #. Used in: Components > Batch Edit > Index
 msgid "unsavedChangesInQueryDescription"
 msgstr "Будь ласка, збережіть запит перед запуском пакетного редагування"

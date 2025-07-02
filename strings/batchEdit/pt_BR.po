@@ -11,7 +11,7 @@ msgstr ""
 "X-Generator: Weblate 5.12-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: components/BatchEdit/index.tsx:187
+#: components/BatchEdit/index.tsx:189
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2043
 #: components/Router/OverlayRoutes.tsx:246
@@ -57,7 +57,7 @@ msgstr ""
 "A(s) classificação(ões) selecionada(s) são encontradas em várias árvores. "
 "Selecione a(s) árvore(s) para edição em lote"
 
-#: components/BatchEdit/index.tsx:160
+#: components/BatchEdit/index.tsx:162
 #. Used in: Components > Batch Edit > Index
 #, fuzzy
 msgid "datasetName"
@@ -218,7 +218,7 @@ msgstr ""
 "determinar se o registro está vazio ou não. O valor padrão é {default: "
 "boolean}"
 
-#: components/BatchEdit/index.tsx:181
+#: components/BatchEdit/index.tsx:183
 #. Used in: Components > Batch Edit > Index
 #, fuzzy
 msgid "batchEditDisabled"
@@ -247,3 +247,13 @@ msgid "enableRelationshipsDescription"
 msgstr ""
 "Permite a edição em lote de relacionamentos da tabela base. O rollback é "
 "desabilitado quando os relacionamentos são habilitados."
+
+#: components/WbActions/WbUpload.tsx:125
+#. Used in: Components > Wb Actions > Wb Upload
+msgid "commitDataSet"
+msgstr ""
+
+#: components/WbActions/WbUpload.tsx:128
+#. Used in: Components > Wb Actions > Wb Upload
+msgid "warningBatchEditText"
+msgstr ""

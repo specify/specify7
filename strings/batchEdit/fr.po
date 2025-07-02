@@ -11,7 +11,7 @@ msgstr ""
 "X-Generator: Weblate 5.12-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: components/BatchEdit/index.tsx:187
+#: components/BatchEdit/index.tsx:189
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2043
 #: components/Router/OverlayRoutes.tsx:246
@@ -59,7 +59,7 @@ msgstr ""
 "Les rangs sélectionnés se trouvent dans plusieurs arbres. Sélectionnez les "
 "arbres à modifier par lots."
 
-#: components/BatchEdit/index.tsx:160
+#: components/BatchEdit/index.tsx:162
 #. Used in: Components > Batch Edit > Index
 #, fuzzy
 msgid "datasetName"
@@ -226,7 +226,7 @@ msgstr ""
 "de données ne seront pas utilisés pour déterminer si l'enregistrement est "
 "vide. La valeur par défaut est {default: boolean}."
 
-#: components/BatchEdit/index.tsx:181
+#: components/BatchEdit/index.tsx:183
 #. Used in: Components > Batch Edit > Index
 #, fuzzy
 msgid "batchEditDisabled"
@@ -255,3 +255,13 @@ msgid "enableRelationshipsDescription"
 msgstr ""
 "Permet la modification par lots des relations de la table de base. La "
 "restauration est désactivée lorsque les relations sont activées."
+
+#: components/WbActions/WbUpload.tsx:125
+#. Used in: Components > Wb Actions > Wb Upload
+msgid "commitDataSet"
+msgstr ""
+
+#: components/WbActions/WbUpload.tsx:128
+#. Used in: Components > Wb Actions > Wb Upload
+msgid "warningBatchEditText"
+msgstr ""
