@@ -20,8 +20,15 @@ datamodel = Datamodel(tables=[
             Field(name='accessionCondition', column='AccessionCondition', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='accessionNumber', column='AccessionNumber', indexed=True, unique=False, required=True, type='java.lang.String', length=60),
             Field(name='dateAccessioned', column='DateAccessioned', indexed=True, unique=False, required=False, type='java.util.Calendar'),
+            Field(name='dateAccessionedPrecision', column='DateAccessionedPrecision', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='dateAcknowledged', column='DateAcknowledged', indexed=False, unique=False, required=False, type='java.util.Calendar'),
+            Field(name='dateAcknowledgedPrecision', column='DateAcknowledgedPrecision', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='dateReceived', column='DateReceived', indexed=False, unique=False, required=False, type='java.util.Calendar'),
+            Field(name='dateReceivedPrecision', column='DateReceivedPrecision', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='date1', column='Date1', indexed=False, unique=False, required=False, type='java.util.Calendar'),
+            Field(name='date1Precision', column='Date1Precision', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='date2', column='Date2', indexed=False, unique=False, required=False, type='java.util.Calendar'),
+            Field(name='date2Precision', column='Date2Precision', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='integer1', column='Integer1', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='integer2', column='Integer2', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='integer3', column='Integer3', indexed=False, unique=False, required=False, type='java.lang.Integer'),
@@ -39,7 +46,7 @@ datamodel = Datamodel(tables=[
             Field(name='totalValue', column='TotalValue', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
             Field(name='type', column='Type', indexed=False, unique=False, required=False, type='java.lang.String', length=32),
             Field(name='verbatimDate', column='VerbatimDate', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -79,7 +86,7 @@ datamodel = Datamodel(tables=[
             Field(name='role', column='Role', indexed=False, unique=False, required=True, type='java.lang.String', length=50),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -110,7 +117,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -138,7 +145,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -171,7 +178,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -218,7 +225,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='typeOfAddr', column='TypeOfAddr', indexed=False, unique=False, required=False, type='java.lang.String', length=32),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -253,7 +260,7 @@ datamodel = Datamodel(tables=[
             Field(name='state', column='State', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -314,7 +321,7 @@ datamodel = Datamodel(tables=[
             Field(name='url', column='URL', indexed=False, unique=False, required=False, type='java.lang.String', length=1024),
             Field(name='verbatimDate1', column='VerbatimDate1', indexed=False, unique=False, required=False, type='java.lang.String', length=128),
             Field(name='verbatimDate2', column='VerbatimDate2', indexed=False, unique=False, required=False, type='java.lang.String', length=128),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='AgentLastNameIDX', column_names=['LastName']),
@@ -363,7 +370,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -392,7 +399,7 @@ datamodel = Datamodel(tables=[
             Field(name='role', column='Role', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -429,7 +436,7 @@ datamodel = Datamodel(tables=[
             Field(name='text5', column='Text5', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -462,7 +469,7 @@ datamodel = Datamodel(tables=[
             Field(name='specialtyName', column='SpecialtyName', indexed=False, unique=False, required=True, type='java.lang.String', length=64),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -491,7 +498,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='varType', column='VarType', indexed=False, unique=False, required=True, type='java.lang.Byte'),
             Field(name='variant', column='Variant', indexed=False, unique=False, required=False, type='java.lang.String', length=2),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -522,7 +529,7 @@ datamodel = Datamodel(tables=[
             Field(name='notes', column='Notes', indexed=False, unique=False, required=False, type='text', length=2048),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='AppraisalNumberIDX', column_names=['AppraisalNumber']),
@@ -575,7 +582,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='title', column='Title', indexed=True, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='type', column='Type', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='visibility', column='Visibility', indexed=False, unique=False, required=False, type='java.lang.Byte')
         ],
         indexes=[
@@ -652,7 +659,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampLastSend', column='TimestampLastSend', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='timestampLastUpdateCheck', column='TimestampLastUpdateCheck', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='viewDescription', column='ViewDescription', indexed=False, unique=False, required=False, type='java.lang.String', length=80),
             Field(name='width', column='Width', indexed=False, unique=False, required=False, type='java.lang.Integer', length=24),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -684,7 +691,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='value', column='Value', indexed=False, unique=False, required=True, type='java.lang.String', length=128),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -710,7 +717,7 @@ datamodel = Datamodel(tables=[
             Field(name='tag', column='Tag', indexed=False, unique=False, required=True, type='java.lang.String', length=64),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -738,7 +745,7 @@ datamodel = Datamodel(tables=[
             Field(name='tableType', column='TableType', indexed=False, unique=False, required=False, type='java.lang.Short'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -768,7 +775,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -801,7 +808,7 @@ datamodel = Datamodel(tables=[
             Field(name='tableNumber', column='TableNumber', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='SchemeNameIDX', column_names=['SchemeName'])
@@ -846,7 +853,7 @@ datamodel = Datamodel(tables=[
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -883,7 +890,7 @@ datamodel = Datamodel(tables=[
             Field(name='role', column='Role', indexed=False, unique=False, required=True, type='java.lang.String', length=32),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='BorColMemIDX2', column_names=['CollectionMemberID'])
@@ -913,7 +920,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -950,7 +957,7 @@ datamodel = Datamodel(tables=[
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text', length=6667),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='BorMaterialNumberIDX', column_names=['MaterialNumber']),
@@ -983,7 +990,7 @@ datamodel = Datamodel(tables=[
             Field(name='returnedDate', column='ReturnedDate', indexed=True, unique=False, required=False, type='java.util.Calendar'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='BorrowReturnedDateIDX', column_names=['ReturnedDate']),
@@ -1044,7 +1051,7 @@ datamodel = Datamodel(tables=[
             Field(name='uniqueIdentifier', column='UniqueIdentifier', indexed=True, unique=False, required=False, type='java.lang.String', length=128),
             Field(name='verbatimDate', column='VerbatimDate', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
             Field(name='verbatimLocality', column='VerbatimLocality', indexed=False, unique=False, required=False, type='text', length=2048),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='visibility', column='Visibility', indexed=False, unique=False, required=False, type='java.lang.Byte')
         ],
         indexes=[
@@ -1089,7 +1096,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='CEAColMemIDX', column_names=['CollectionMemberID'])
@@ -1119,7 +1126,7 @@ datamodel = Datamodel(tables=[
             Field(name='strValue', column='StrValue', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='COLEVATColMemIDX', column_names=['CollectionMemberID'])
@@ -1185,7 +1192,7 @@ datamodel = Datamodel(tables=[
             Field(name='text9', column='Text9', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -1217,7 +1224,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -1272,7 +1279,7 @@ datamodel = Datamodel(tables=[
             Field(name='text9', column='Text9', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='vessel', column='Vessel', indexed=False, unique=False, required=False, type='java.lang.String', length=250),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
@@ -1313,7 +1320,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='CTAColMemIDX', column_names=['CollectionMemberID'])
@@ -1381,7 +1388,7 @@ datamodel = Datamodel(tables=[
             Field(name='text9', column='Text9', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -1412,7 +1419,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -1458,7 +1465,7 @@ datamodel = Datamodel(tables=[
             Field(name='scope', column='Scope', indexed=False, unique=False, required=False, type='text', length=2048),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='webPortalURI', column='WebPortalURI', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='webSiteURI', column='WebSiteURI', indexed=False, unique=False, required=False, type='java.lang.String', length=255)
         ],
@@ -1548,7 +1555,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='totalValue', column='TotalValue', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
             Field(name='uniqueIdentifier', column='UniqueIdentifier', indexed=True, unique=False, required=False, type='java.lang.String', length=128),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='visibility', column='Visibility', indexed=False, unique=False, required=False, type='java.lang.Byte', length=10),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -1628,7 +1635,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='COLOBJATTColMemIDX', column_names=['CollectionMemberID'])
@@ -1658,7 +1665,7 @@ datamodel = Datamodel(tables=[
             Field(name='strValue', column='StrValue', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='COLOBJATRSColMemIDX', column_names=['CollectionMemberID'])
@@ -1784,7 +1791,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='topDistance', column='TopDistance', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo10', column='YesNo10', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo11', column='YesNo11', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -1835,7 +1842,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='COCITColMemIDX', column_names=['CollectionMemberID'])
@@ -1983,7 +1990,7 @@ datamodel = Datamodel(tables=[
             Field(name='text9', column='Text9', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo10', column='YesNo10', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo11', column='YesNo11', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -2051,7 +2058,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='java.lang.String', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -2080,7 +2087,7 @@ datamodel = Datamodel(tables=[
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=32),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -2113,7 +2120,7 @@ datamodel = Datamodel(tables=[
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -2148,7 +2155,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='variant', column='Variant', indexed=False, unique=False, required=False, type='java.lang.String', length=2),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='CommonNameTxNameIDX', column_names=['Name']),
@@ -2183,7 +2190,7 @@ datamodel = Datamodel(tables=[
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -2248,7 +2255,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='units', column='Units', indexed=False, unique=False, required=False, type='java.lang.String', length=16),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='width', column='Width', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -2285,7 +2292,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -2331,7 +2338,7 @@ datamodel = Datamodel(tables=[
             Field(name='treatmentCompDate', column='TreatmentCompDate', indexed=False, unique=False, required=False, type='java.util.Calendar'),
             Field(name='treatmentCompDatePrecision', column='TreatmentCompDatePrecision', indexed=False, unique=False, required=False, type='java.lang.Byte'),
             Field(name='treatmentReport', column='TreatmentReport', indexed=False, unique=False, required=False, type='text', length=8192),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -2365,7 +2372,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -2397,7 +2404,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='type', column='Type', indexed=False, unique=False, required=False, type='java.lang.Short'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='ContainerNameIDX', column_names=['Name']),
@@ -2451,7 +2458,7 @@ datamodel = Datamodel(tables=[
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -2505,7 +2512,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='totalResidues', column='TotalResidues', indexed=False, unique=False, required=False, type='java.lang.Integer'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean')
@@ -2544,7 +2551,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -2598,7 +2605,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='traceFileName', column='TraceFileName', indexed=False, unique=False, required=False, type='java.lang.String', length=32),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean')
@@ -2633,7 +2640,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -2669,7 +2676,7 @@ datamodel = Datamodel(tables=[
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -2698,7 +2705,7 @@ datamodel = Datamodel(tables=[
             Field(name='name', column='Name', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -2743,7 +2750,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='type', column='Type', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -2783,7 +2790,7 @@ datamodel = Datamodel(tables=[
             Field(name='role', column='Role', indexed=False, unique=False, required=True, type='java.lang.String', length=50),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -2813,7 +2820,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -2874,7 +2881,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='typeStatusName', column='TypeStatusName', indexed=True, unique=False, required=False, type='java.lang.String', length=50),
             Field(name='varQualifier', column='VarQualifier', indexed=False, unique=False, required=False, type='java.lang.String', length=16),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -2920,7 +2927,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='DetCitColMemIDX', column_names=['CollectionMemberID'])
@@ -2950,7 +2957,7 @@ datamodel = Datamodel(tables=[
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -2984,7 +2991,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='type', column='Type', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='DisciplineNameIDX', column_names=['Name'])
@@ -3031,7 +3038,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='type', column='Type', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -3065,7 +3072,7 @@ datamodel = Datamodel(tables=[
             Field(name='role', column='Role', indexed=False, unique=False, required=True, type='java.lang.String', length=50),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -3095,7 +3102,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -3124,7 +3131,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -3161,7 +3168,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='uri', column='Uri', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='DivisionNameIDX', column_names=['Name'])
@@ -3204,7 +3211,7 @@ datamodel = Datamodel(tables=[
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -3241,7 +3248,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -3274,7 +3281,7 @@ datamodel = Datamodel(tables=[
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='ExchgInPrepDspMemIDX', column_names=['DisciplineID'])
@@ -3314,7 +3321,7 @@ datamodel = Datamodel(tables=[
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -3354,7 +3361,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -3387,7 +3394,7 @@ datamodel = Datamodel(tables=[
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='ExchgOutPrepDspMemIDX', column_names=['DisciplineID'])
@@ -3418,7 +3425,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='title', column='Title', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -3447,7 +3454,7 @@ datamodel = Datamodel(tables=[
             Field(name='number', column='Number', indexed=False, unique=False, required=False, type='java.lang.String', length=16),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -3476,7 +3483,7 @@ datamodel = Datamodel(tables=[
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -3510,7 +3517,7 @@ datamodel = Datamodel(tables=[
             Field(name='startDate', column='StartDate', indexed=True, unique=False, required=False, type='java.util.Calendar'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='FNBNameIDX', column_names=['Name']),
@@ -3543,7 +3550,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=8192),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -3573,7 +3580,7 @@ datamodel = Datamodel(tables=[
             Field(name='scanDate', column='ScanDate', indexed=True, unique=False, required=False, type='java.util.Calendar'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='FNBPPageNumberIDX', column_names=['PageNumber']),
@@ -3606,7 +3613,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=8192),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -3638,7 +3645,7 @@ datamodel = Datamodel(tables=[
             Field(name='startDate', column='StartDate', indexed=True, unique=False, required=False, type='java.util.Calendar'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='FNBPSStartDateIDX', column_names=['StartDate']),
@@ -3670,7 +3677,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=8192),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -3701,7 +3708,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='type', column='Type', indexed=False, unique=False, required=False, type='java.lang.String', length=32),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='COLTRIPDivIDX', column_names=['DivisionID'])
@@ -3761,7 +3768,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='uncertaintyPolygon', column='UncertaintyPolygon', indexed=False, unique=False, required=False, type='text'),
             Field(name='validation', column='Validation', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -3812,7 +3819,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='timestampVersion', column='TimestampVersion', indexed=False, unique=False, required=False, type='java.util.Date'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='GeoNameIDX', column_names=['Name']),
@@ -3848,7 +3855,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -3883,7 +3890,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='title', column='Title', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -3926,7 +3933,7 @@ datamodel = Datamodel(tables=[
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=128),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='GTPNameIDX', column_names=['Name']),
@@ -3964,7 +3971,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -3999,7 +4006,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='title', column='Title', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -4050,7 +4057,7 @@ datamodel = Datamodel(tables=[
             Field(name='text5', column='Text5', indexed=False, unique=False, required=False, type='java.lang.String', length=128),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -4089,7 +4096,7 @@ datamodel = Datamodel(tables=[
             Field(name='role', column='Role', indexed=False, unique=False, required=True, type='java.lang.String', length=50),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='GiftAgDspMemIDX', column_names=['DisciplineID'])
@@ -4120,7 +4127,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -4149,6 +4156,8 @@ datamodel = Datamodel(tables=[
             Field(name='inComments', column='InComments', indexed=False, unique=False, required=False, type='text', length=1024),
             Field(name='outComments', column='OutComments', indexed=False, unique=False, required=False, type='text', length=1024),
             Field(name='quantity', column='Quantity', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='quantityResolved', column='QuantityResolved', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='quantityReturned', column='QuantityReturned', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='receivedComments', column='ReceivedComments', indexed=False, unique=False, required=False, type='text', length=1024),
             Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text', length=65535),
@@ -4157,7 +4166,7 @@ datamodel = Datamodel(tables=[
             Field(name='text5', column='Text5', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='GiftPrepDspMemIDX', column_names=['DisciplineID'])
@@ -4187,7 +4196,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -4224,7 +4233,7 @@ datamodel = Datamodel(tables=[
             Field(name='requestDate', column='RequestDate', indexed=False, unique=False, required=False, type='java.util.Calendar'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='IRColMemIDX', column_names=['CollectionMemberID'])
@@ -4277,7 +4286,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='uri', column='Uri', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='InstNameIDX', column_names=['Name']),
@@ -4321,7 +4330,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='uri', column='Uri', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='InstNetworkNameIDX', column_names=['Name'])
@@ -4353,7 +4362,7 @@ datamodel = Datamodel(tables=[
             Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=32),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='JournalNameIDX', column_names=['JournalName']),
@@ -4384,7 +4393,7 @@ datamodel = Datamodel(tables=[
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=64),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -4445,7 +4454,7 @@ datamodel = Datamodel(tables=[
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -4484,7 +4493,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -4519,7 +4528,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='title', column='Title', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -4573,7 +4582,7 @@ datamodel = Datamodel(tables=[
             Field(name='text5', column='Text5', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -4611,7 +4620,7 @@ datamodel = Datamodel(tables=[
             Field(name='role', column='Role', indexed=False, unique=False, required=True, type='java.lang.String', length=50),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='LoanAgDspMemIDX', column_names=['DisciplineID'])
@@ -4642,7 +4651,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -4682,7 +4691,7 @@ datamodel = Datamodel(tables=[
             Field(name='text5', column='Text5', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='LoanPrepDspMemIDX', column_names=['DisciplineID'])
@@ -4715,7 +4724,7 @@ datamodel = Datamodel(tables=[
             Field(name='returnedDate', column='ReturnedDate', indexed=True, unique=False, required=False, type='java.util.Calendar'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='LoanReturnedDateIDX', column_names=['ReturnedDate']),
@@ -4779,7 +4788,7 @@ datamodel = Datamodel(tables=[
             Field(name='verbatimElevation', column='VerbatimElevation', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
             Field(name='verbatimLatitude', column='VerbatimLatitude', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
             Field(name='verbatimLongitude', column='VerbatimLongitude', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='visibility', column='Visibility', indexed=False, unique=False, required=False, type='java.lang.Byte'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -4828,7 +4837,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -4860,7 +4869,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='LocCitDspMemIDX', column_names=['DisciplineID'])
@@ -4927,7 +4936,7 @@ datamodel = Datamodel(tables=[
             Field(name='utmOrigLongitude', column='UtmOrigLongitude', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
             Field(name='utmScale', column='UtmScale', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
             Field(name='utmZone', column='UtmZone', indexed=False, unique=False, required=False, type='java.lang.Short'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='waterBody', column='WaterBody', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -4959,7 +4968,7 @@ datamodel = Datamodel(tables=[
             Field(name='source', column='Source', indexed=False, unique=False, required=True, type='java.lang.String', length=64),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='LocalityNameAliasIDX', column_names=['Name'])
@@ -5022,7 +5031,7 @@ datamodel = Datamodel(tables=[
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -5058,7 +5067,7 @@ datamodel = Datamodel(tables=[
             Field(name='specimenPart', column='SpecimenPart', indexed=False, unique=False, required=False, type='java.lang.String', length=128),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='viewAngle', column='ViewAngle', indexed=False, unique=False, required=False, type='java.lang.String', length=128),
             Field(name='viewName', column='ViewName', indexed=False, unique=False, required=False, type='java.lang.String', length=128)
         ],
@@ -5099,7 +5108,7 @@ datamodel = Datamodel(tables=[
             Field(name='text5', column='Text5', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -5144,7 +5153,7 @@ datamodel = Datamodel(tables=[
             Field(name='text5', column='Text5', indexed=False, unique=False, required=False, type='java.lang.String', length=500),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -5188,7 +5197,7 @@ datamodel = Datamodel(tables=[
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -5238,7 +5247,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='type', column='Type', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -5276,7 +5285,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -5315,7 +5324,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='type', column='Type', indexed=False, unique=False, required=True, type='java.lang.Byte'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='PickListNameIDX', column_names=['Name'])
@@ -5346,7 +5355,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='title', column='Title', indexed=False, unique=False, required=True, type='java.lang.String', length=1024),
             Field(name='value', column='Value', indexed=False, unique=False, required=False, type='java.lang.String', length=1024),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -5374,7 +5383,7 @@ datamodel = Datamodel(tables=[
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=64),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -5439,7 +5448,7 @@ datamodel = Datamodel(tables=[
             Field(name='text9', column='Text9', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean')
@@ -5491,7 +5500,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='PrepAttColMemIDX', column_names=['CollectionMemberID'])
@@ -5521,7 +5530,7 @@ datamodel = Datamodel(tables=[
             Field(name='strValue', column='StrValue', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='PrepAttrColMemIDX', column_names=['CollectionMemberID'])
@@ -5584,7 +5593,7 @@ datamodel = Datamodel(tables=[
             Field(name='text9', column='Text9', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -5735,7 +5744,7 @@ datamodel = Datamodel(tables=[
             Field(name='text9', column='Text9', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo10', column='YesNo10', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo11', column='YesNo11', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -5815,7 +5824,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='url', column='URL', indexed=False, unique=False, required=False, type='java.lang.String', length=1024),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -5854,7 +5863,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='type', column='Type', indexed=False, unique=False, required=True, type='java.lang.Byte'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='RecordSetNameIDX', column_names=['name'])
@@ -5920,7 +5929,7 @@ datamodel = Datamodel(tables=[
             Field(name='title', column='Title', indexed=True, unique=False, required=True, type='java.lang.String', length=500),
             Field(name='uri', column='Uri', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='url', column='URL', indexed=False, unique=False, required=False, type='java.lang.String', length=1024),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='volume', column='Volume', indexed=False, unique=False, required=False, type='java.lang.String', length=25),
             Field(name='workDate', column='WorkDate', indexed=False, unique=False, required=False, type='java.lang.String', length=25),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -5966,7 +5975,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -6004,7 +6013,7 @@ datamodel = Datamodel(tables=[
             Field(name='text3', column='Text3', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -6042,7 +6051,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -6079,7 +6088,7 @@ datamodel = Datamodel(tables=[
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='weight', column='Weight', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
@@ -6124,7 +6133,7 @@ datamodel = Datamodel(tables=[
             Field(name='name', column='Name', indexed=True, unique=False, required=True, type='java.lang.String', length=64),
             Field(name='ownerPermissionLevel', column='OwnerPermissionLevel', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='SpAppResNameIDX', column_names=['Name']),
@@ -6155,7 +6164,7 @@ datamodel = Datamodel(tables=[
             Field(name='data', column='data', indexed=False, unique=False, required=False, type='text', length=16000000),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -6184,7 +6193,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='userType', column='UserType', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='SpAppResourceDirDispTypeIDX', column_names=['DisciplineType'])
@@ -6219,7 +6228,7 @@ datamodel = Datamodel(tables=[
             Field(name='tableNum', column='TableNum', indexed=False, unique=False, required=True, type='java.lang.Short'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -6247,7 +6256,7 @@ datamodel = Datamodel(tables=[
             Field(name='oldValue', column='OldValue', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -6275,7 +6284,7 @@ datamodel = Datamodel(tables=[
             Field(name='schemaVersion', column='SchemaVersion', indexed=False, unique=False, required=False, type='java.lang.String', length=80),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -6306,7 +6315,7 @@ datamodel = Datamodel(tables=[
             Field(name='formatter', column='Formatter', indexed=False, unique=False, required=False, type='java.lang.String', length=32),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -6336,7 +6345,7 @@ datamodel = Datamodel(tables=[
             Field(name='rowType', column='RowType', indexed=False, unique=False, required=False, type='java.lang.String', length=500),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -6367,7 +6376,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampExported', column='TimeStampExported', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='SPEXPSCHMMAPColMemIDX', column_names=['CollectionMemberID'])
@@ -6399,7 +6408,7 @@ datamodel = Datamodel(tables=[
             Field(name='tableName', column='TableName', indexed=False, unique=False, required=False, type='java.lang.String', length=32),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='SpFieldValueDefaultColMemIDX', column_names=['CollectionMemberID'])
@@ -6433,7 +6442,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='type', column='Type', indexed=False, unique=False, required=False, type='java.lang.String', length=32),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='SpLocaleContainerNameIDX', column_names=['Name'])
@@ -6469,7 +6478,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='type', column='Type', indexed=False, unique=False, required=False, type='java.lang.String', length=32),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='webLinkName', column='WebLinkName', indexed=False, unique=False, required=False, type='java.lang.String', length=32)
         ],
         indexes=[
@@ -6502,7 +6511,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='variant', column='Variant', indexed=False, unique=False, required=False, type='java.lang.String', length=2),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='SpLocaleLanguageIDX', column_names=['Language']),
@@ -6560,7 +6569,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -6599,7 +6608,7 @@ datamodel = Datamodel(tables=[
             Field(name='sqlStr', column='SqlStr', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='SpQueryNameIDX', column_names=['Name'])
@@ -6644,7 +6653,7 @@ datamodel = Datamodel(tables=[
             Field(name='tableList', column='TableList', indexed=False, unique=False, required=True, type='java.lang.String', length=500),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='isStrict', column='IsStrict', indexed=False, unique=False, required=True, type='java.lang.Boolean')
         ],
         indexes=[
@@ -6675,7 +6684,7 @@ datamodel = Datamodel(tables=[
             Field(name='repeatField', column='RepeatField', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='SpReportNameIDX', column_names=['Name'])
@@ -6710,7 +6719,7 @@ datamodel = Datamodel(tables=[
             Field(name='symbiotaKey', column='SymbiotaKey', indexed=False, unique=False, required=False, type='java.lang.String', length=128),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='SPSYMINSTColMemIDX', column_names=['CollectionMemberID'])
@@ -6742,7 +6751,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='usageCount', column='UsageCount', indexed=False, unique=False, required=False, type='java.lang.Integer'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -6774,7 +6783,7 @@ datamodel = Datamodel(tables=[
             Field(name='schemaVersion', column='SchemaVersion', indexed=False, unique=False, required=False, type='java.lang.String', length=16),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='workbenchSchemaVersion', column='WorkbenchSchemaVersion', indexed=False, unique=False, required=False, type='java.lang.String', length=16)
         ],
         indexes=[
@@ -6804,7 +6813,7 @@ datamodel = Datamodel(tables=[
             Field(name='name', column='Name', indexed=True, unique=False, required=True, type='java.lang.String', length=64),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='SpViewObjNameIDX', column_names=['Name'])
@@ -6832,7 +6841,7 @@ datamodel = Datamodel(tables=[
             Field(name='name', column='Name', indexed=True, unique=False, required=True, type='java.lang.String', length=64),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='SpVisualQueryNameIDX', column_names=['Name'])
@@ -6868,7 +6877,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='userType', column='UserType', indexed=False, unique=False, required=False, type='java.lang.String', length=32),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -6912,7 +6921,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='timestampVersion', column='TimestampVersion', indexed=False, unique=False, required=False, type='java.util.Date'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='uniqueIdentifier', column='UniqueIdentifier', indexed=True, unique=True, required=False, type='java.lang.String', length=128),
         ],
         indexes=[
@@ -6951,7 +6960,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -6981,7 +6990,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -7016,7 +7025,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='title', column='Title', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -7105,7 +7114,7 @@ datamodel = Datamodel(tables=[
             Field(name='unitName3', column='UnitName3', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
             Field(name='unitName4', column='UnitName4', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
             Field(name='usfwsCode', column='UsfwsCode', indexed=False, unique=False, required=False, type='java.lang.String', length=16),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='visibility', column='Visibility', indexed=False, unique=False, required=False, type='java.lang.Byte'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo10', column='YesNo10', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -7175,7 +7184,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -7283,7 +7292,7 @@ datamodel = Datamodel(tables=[
             Field(name='text9', column='Text9', indexed=False, unique=False, required=False, type='java.lang.String', length=128),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo10', column='YesNo10', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo11', column='YesNo11', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -7399,7 +7408,7 @@ datamodel = Datamodel(tables=[
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='text', length=65535),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
@@ -7429,7 +7438,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -7465,7 +7474,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='title', column='Title', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -7516,7 +7525,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='treatmentNumber', column='TreatmentNumber', indexed=True, unique=False, required=False, type='java.lang.String', length=32),
             Field(name='type', column='Type', indexed=False, unique=False, required=False, type='java.lang.String', length=128),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean')
@@ -7554,7 +7563,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -7595,7 +7604,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='urlLink', column='UrlLink', indexed=False, unique=False, required=False, type='java.lang.String', length=1024),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='voucherNumber', column='VoucherNumber', indexed=False, unique=False, required=False, type='java.lang.String', length=256),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
@@ -7637,7 +7646,7 @@ datamodel = Datamodel(tables=[
             Field(name='srcFilePath', column='SrcFilePath', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='WorkbenchNameIDX', column_names=['name'])
@@ -7729,7 +7738,7 @@ datamodel = Datamodel(tables=[
             Field(name='tableName', column='TableName', indexed=False, unique=False, required=False, type='java.lang.String', length=120),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -7781,7 +7790,7 @@ datamodel = Datamodel(tables=[
             Field(name='srcFilePath', column='SrcFilePath', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer')
         ],
         indexes=[
 
@@ -7822,7 +7831,7 @@ datamodel = Datamodel(tables=[
             Field(name='tableName', column='TableName', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='viewOrder', column='ViewOrder', indexed=False, unique=False, required=False, type='java.lang.Short'),
             Field(name='xCoord', column='XCoord', indexed=False, unique=False, required=False, type='java.lang.Short'),
             Field(name='yCoord', column='YCoord', indexed=False, unique=False, required=False, type='java.lang.Short')
@@ -8250,7 +8259,7 @@ datamodel = Datamodel(tables=[
         idField=IdField(name='collectionObjectTypeId', column='collectionObjectTypeID', type='java.lang.Integer'),
         fields=[
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
@@ -8285,7 +8294,7 @@ datamodel = Datamodel(tables=[
             Field(name='description', column='Description', indexed=False, unique=False, required=False, type='text'),
             Field(name='igsn', column='IGSN', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='guid', column='GUID', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
@@ -8329,7 +8338,7 @@ datamodel = Datamodel(tables=[
             Field(name='isPrimary', column='IsPrimary', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
             Field(name='isSubstrate', column='IsSubstrate', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
             Field(name='precedence', column='Precedence', indexed=False, unique=False, required=True, type='java.lang.Integer'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='text1', column='Text1', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
@@ -8366,7 +8375,7 @@ datamodel = Datamodel(tables=[
         fields=[
             Field(name='name', column='Name', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
             Field(name='type', column='Type', indexed=False, unique=False, required=True, type='java.lang.String', length=255),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
         ],
@@ -8409,7 +8418,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='yesno1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesno2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
         ],
         indexes=[
 
@@ -8455,7 +8464,7 @@ datamodel = Datamodel(tables=[
             Field(name='verbatimPeriod', column='VerbatimPeriod', indexed=False, unique=False, required=False, type='text'),
             Field(name='yesno1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesno2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
         ],
         indexes=[
 
@@ -8489,7 +8498,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
         ],
         indexes=[
 
@@ -8519,7 +8528,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
         ],
         indexes=[
 
@@ -8552,7 +8561,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
         ],
         indexes=[
 
@@ -8585,7 +8594,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
         ],
         indexes=[
 
@@ -8616,7 +8625,7 @@ datamodel = Datamodel(tables=[
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
         ],
         indexes=[
 
@@ -8653,7 +8662,7 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='title', column='Title', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
         ],
         indexes=[
 
@@ -8695,7 +8704,7 @@ datamodel = Datamodel(tables=[
             Field(name='text2', column='Text2', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='version', column='Version', indexed=False, unique=False, required=True, type='java.lang.Integer'),
             Field(name='yesno1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesno2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean')
         ],
