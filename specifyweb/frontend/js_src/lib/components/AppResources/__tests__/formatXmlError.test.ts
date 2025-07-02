@@ -1,4 +1,5 @@
 import { EditorView } from "codemirror";
+
 import { exportsForTests } from "../codeMirrorLinters";
 
 const {formatXmlError} = exportsForTests;

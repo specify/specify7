@@ -105,8 +105,7 @@ const formatXmlError = (text: Text, error: string): Diagnostic =>
     };
   }) ?? { from: 0, to: 0, severity: 'error', message: error };
 
-
 export const exportsForTests = {
   parseXmlUsingSpec,
-  formatXmlError
-}
+  formatXmlError,
+};
