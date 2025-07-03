@@ -36,6 +36,11 @@ export const interactionsText = createDictionary({
     'de-ch': '{table:string} Rückkehr',
     'pt-br': '{table:string} Retornar',
   },
+  noInteractions: {
+    comment: 'Example: There are no interactions linked to this {preparation}',
+    'en-us':
+      'There are no interactions linked to this {preparationTable:string}.',
+  },
   preparationsNotFoundFor: {
     comment:
       'Example: No preparation records were found for the following records:',
