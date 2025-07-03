@@ -1,9 +1,9 @@
-import type { RR } from "../../../utils/types";
-import { localized } from "../../../utils/types";
-import { icons } from "../../Atoms/Icons";
-import { exportsForTests } from "../Create";
-import type { AppResourceMode } from "../helpers";
-import type { AppResourceType } from "../types";
+import type { RR } from '../../../utils/types';
+import { localized } from '../../../utils/types';
+import { icons } from '../../Atoms/Icons';
+import { exportsForTests } from '../Create';
+import type { AppResourceMode } from '../helpers';
+import type { AppResourceType } from '../types';
 
 const { getUrl } = exportsForTests;
 
@@ -12,43 +12,39 @@ const appResourceTypes: RR<AppResourceMode, AppResourceType> = {
   appResources: {
     tableName: 'SpAppResource',
     icon: icons.cog,
-    label: localized("App Resource"),
+    label: localized('App Resource'),
   },
   viewSets: {
     tableName: 'SpViewSetObj',
     icon: icons.pencilAt,
-    label: localized("Form definition"),
+    label: localized('Form definition'),
   },
 };
 
-test("table is SpAppResource", ()=>{
+test('table is SpAppResource', () => {
+  const result = getUrl(
+    'TestKey',
+    appResourceTypes.appResources,
+    'testName',
+    'application/json',
+    'testFile'
+  );
 
-    const result = getUrl(
-        "TestKey",
-        appResourceTypes.appResources,
-        "testName",
-        "application/json",
-        "testFile"
-    );
-
-    expect(result).toBe(
-        "/specify/resources/app-resource/new/?directorykey=TestKey&name=testName&mimetype=application%2Fjson&templatefile=testFile"
-    );
-
+  expect(result).toBe(
+    '/specify/resources/app-resource/new/?directorykey=TestKey&name=testName&mimetype=application%2Fjson&templatefile=testFile'
+  );
 });
 
-test("table is SpViewSetObj", ()=>{
+test('table is SpViewSetObj', () => {
+  const result = getUrl(
+    'TestKey',
+    appResourceTypes.viewSets,
+    'testName',
+    'application/json',
+    'testFile'
+  );
 
-    const result = getUrl(
-        "TestKey",
-        appResourceTypes.viewSets,
-        "testName",
-        "application/json",
-        "testFile"
-    );
-
-    expect(result).toBe(
-        "/specify/resources/view-set/new/?directorykey=TestKey&name=testName&mimetype=application%2Fjson&templatefile=testFile"
-    )
-
+  expect(result).toBe(
+    '/specify/resources/view-set/new/?directorykey=TestKey&name=testName&mimetype=application%2Fjson&templatefile=testFile'
+  );
 });
