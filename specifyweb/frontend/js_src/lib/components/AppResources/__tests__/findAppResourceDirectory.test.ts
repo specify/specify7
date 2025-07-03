@@ -100,8 +100,8 @@ const treeStructure: RA<Node> = [
 
 const makeTree = (nodes: RA<Node>, labelIncrementor: Incrementor, keyIncrementor: Incrementor, idIncrementor: Incrementor) : AppResourcesTree => (
     nodes.map((node)=>makeAppResourceNode(
-        prefixIncrmentor("TestLabel", labelIncrementor) as string, 
-        prefixIncrmentor("TestKey", keyIncrementor) as string,
+        prefixIncrmentor("TestLabel", labelIncrementor) , 
+        prefixIncrmentor("TestKey", keyIncrementor) ,
         node.id === undefined ? undefined : makeDirectory(idIncrementor.next().value as number),
         makeTree(node.children, labelIncrementor, keyIncrementor, idIncrementor)
     ))
@@ -149,7 +149,7 @@ describe("findAppResourceDirectory", ()=>{
         });
 
         const found = findAppResourceDirectory(tree, "_absent_key_");
-        expect(found).toBe(undefined);
+        expect(found).toBeUndefined();
 
     });
 
@@ -185,7 +185,7 @@ describe("findAppResourceDirectoryKey", ()=>{
         const dirKeyMapping = makeDirIdKeyMapping(tree);
 
         Object.entries(dirKeyMapping).forEach(([dirId, key])=>{
-            const found = findAppResourceDirectoryKey(tree, f.parseInt(dirId) as number);
+            const found = findAppResourceDirectoryKey(tree, f.parseInt(dirId)!);
             expect(found).toEqual(key);
         });
 
