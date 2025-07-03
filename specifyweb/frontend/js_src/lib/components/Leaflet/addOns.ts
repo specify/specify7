@@ -100,6 +100,7 @@ export type LeafletInstance = L.Map & {
       readonly name: string;
     }>;
   };
+  sp7MarkerCount: number;
 };
 
 export function addMarkersToMap(
@@ -107,6 +108,7 @@ export function addMarkersToMap(
   markers: RA<MarkerGroups>,
   labels: Partial<RR<MarkerLayerName, string>> = defaultLabels
 ): LeafletInstance {
+  
   // Initialize layer groups
   const cluster = L.markerClusterGroup({
     iconCreateFunction(cluster) {
@@ -155,7 +157,9 @@ export function addMarkersToMap(
 
   const addedGroups = new Set<MarkerLayerName>();
 
-  const addMarkers = (markers: RA<MarkerGroups>): void =>
+  const addMarkers = (markers: RA<MarkerGroups>): void => {
+    map.sp7MarkerCount ??= 0;
+    map.sp7MarkerCount += markers.length;
     // Sort markers by layer groups
     markers.forEach((markers) =>
       Object.entries(markers).forEach(([markerGroupName, markers]) =>
@@ -171,6 +175,8 @@ export function addMarkersToMap(
         })
       )
     );
+  }
+
 
   addMarkers(markers);
 

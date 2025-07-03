@@ -210,8 +210,11 @@ export function QueryToMapDialog({
     []
   );
 
+  const markerCountRef = React.useRef(results.length);
+
   const handleAddPoints = React.useCallback(
     (results: RA<QueryResultRow>) => {
+      markerCountRef.current += results.length;
       /*
        * Need to add markers into queue rather than directly to the map because
        * the map might not be initialized yet (the map is only initialized after
@@ -227,6 +230,21 @@ export function QueryToMapDialog({
   );
 
   useFetchLoop(handleFetchMore, handleAddPoints);
+
+  // The below is used for sanity checking at un-mount.
+  // A unit test for this functionality is tricky. A runtime check is simpler
+  const mapRef = React.useRef(map);
+  mapRef.current = map;
+
+  React.useEffect(() => {
+    return () => {
+      if (mapRef.current === undefined) return;
+      if (mapRef.current?.sp7MarkerCount !== markerCountRef.current) {
+        console.warn(`Expected the counts to match: Expected: ${markerCountRef.current}. Got: ${mapRef.current?.sp7MarkerCount}`);
+      }
+    }
+  }, []);
+
 
   const readyEffectCallback = React.useCallback(() => {
     if (map === undefined) return undefined;
