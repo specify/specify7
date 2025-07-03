@@ -7,7 +7,7 @@ import specifyweb.specify.models
 from specifyweb.specify.models import protect_with_blockers
 from specifyweb.specify.migration_utils.update_schema_config import revert_table_field_schema_config, revert_table_schema_config, update_table_field_schema_config_with_defaults, update_table_schema_config_with_defaults
 
-from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0035_TABLES as SCHEMA_CONFIG_TABLES, MIGRATION_0035_FIELDS as SCHEMA_CONFIG_TABLE_FIELDS, MIGRATION_0035_UPDATE_FIELDS as SCHEMA_CONFIG_COMPONENT_TABLE_FIELDS, MIGRATION_0035_HIDDEN_FIELDS as SCHEMA_CONFIG_HIDDEN_FIELDS
+from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0037_TABLES as SCHEMA_CONFIG_TABLES, MIGRATION_0037_FIELDS as SCHEMA_CONFIG_TABLE_FIELDS, MIGRATION_0037_UPDATE_FIELDS as SCHEMA_CONFIG_COMPONENT_TABLE_FIELDS, MIGRATION_0037_HIDDEN_FIELDS as SCHEMA_CONFIG_HIDDEN_FIELDS
 
 PICKLIST_NAME = 'CollectionObjectType'
 FIELD_NAME = 'type'
@@ -179,7 +179,7 @@ def reverse_hide_component_fields(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0035_version_required'),
+        ('specify', '0036_remove_spquery_selectseries'),
     ]
 
     def consolidated_python_django_migration_operations(apps, schema_editor):
