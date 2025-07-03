@@ -7,16 +7,16 @@ from specifyweb.specify.tree_views import TREE_INFORMATION
 from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec, TreeRankQuery
 from .batch_edit import BatchEditFieldPack, BatchEditPack, RowPlanMap
 
-BATCH_EDIT_REQUIRED_TREE_FIELDS: Set[str] = {"name"}
+BATCH_EDIT_REQUIRED_TREE_FIELDS: set[str] = {"name"}
 
 
 def _track_observed_ranks(
     table_name,
     running_path,
     tree_def,
-    all_current_ranks: Dict[str, Dict[Any, Any]],
-    accum: Tuple[List[int], List[Tuple[str, RowPlanMap]]],
-    _current: Tuple[str, RowPlanMap],
+    all_current_ranks: dict[str, dict[Any, Any]],
+    accum: tuple[list[int], list[tuple[str, RowPlanMap]]],
+    _current: tuple[str, RowPlanMap],
 ):
     # 1. if tree rank itself is None (non tree field), nothing to do.
     # 2. if the tree rank that's in the query is not in the current ranks, ignore them.
@@ -50,9 +50,9 @@ def _track_observed_ranks(
         )
     )
     # Now, we need to run the adjuster over all the fields that are required but did not appear
-    required_missing = BATCH_EDIT_REQUIRED_TREE_FIELDS - set(
+    required_missing = BATCH_EDIT_REQUIRED_TREE_FIELDS - {
         field.name for field in current_fields
-    )
+    }
     extra_columns = [
         BatchEditFieldPack(
             field=BatchEditPack._query_field(adjusted_field_spec(field_name), 0)
@@ -82,9 +82,9 @@ def _track_observed_ranks(
 
 def _rewrite_multiple_trees(
     running_path,
-    current: Dict[str, RowPlanMap],
-    all_tree_info: Dict[str, List[TREE_INFORMATION]],
-) -> Dict[str, RowPlanMap]:
+    current: dict[str, RowPlanMap],
+    all_tree_info: dict[str, list[TREE_INFORMATION]],
+) -> dict[str, RowPlanMap]:
     # We now rewrite the query for multiple trees. We need to do this because we don't support querying a specific treedef.
     # Multiple different iterations were went into this:
     # 1. Trying it on frontend
@@ -92,7 +92,7 @@ def _rewrite_multiple_trees(
     #   2.a: Rewriting directly on fields
     # This place is currently more simpler than other places tried.
 
-    new_rels: List[Tuple[str, RowPlanMap]] = [
+    new_rels: list[tuple[str, RowPlanMap]] = [
         (key, value) for (key, value) in current.items() if value.tree_rank is None
     ]
 

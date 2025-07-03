@@ -1,7 +1,8 @@
 import logging
 
 from inspect import getfullargspec
-from typing import Callable, Literal, Optional
+from typing import Literal, Optional
+from collections.abc import Callable
 from collections.abc import Hashable
 
 from django.db.models import signals

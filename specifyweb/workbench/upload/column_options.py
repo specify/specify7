@@ -1,5 +1,6 @@
-from typing import List, Dict, Any, NamedTuple, Union, Optional, Callable
-from typing_extensions import Literal
+from typing import List, Dict, Any, NamedTuple, Union, Optional
+from collections.abc import Callable
+from typing import Literal
 
 from specifyweb.specify.uiformatters import UIFormatter, ScopedFormatter
 
