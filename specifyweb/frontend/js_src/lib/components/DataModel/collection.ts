@@ -193,6 +193,7 @@ export const fetchRows = async <
     readonly fields: FIELDS;
     readonly distinct?: boolean;
     readonly limit?: number;
+    readonly filterChronostrat?: boolean;
   },
   /**
    * Advanced filters, not type-safe.

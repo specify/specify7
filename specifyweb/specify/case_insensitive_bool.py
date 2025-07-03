@@ -7,7 +7,7 @@ class BooleanField(models.BooleanField):
             return True
         if value == 'false':
             return False
-        return super(BooleanField, self).to_python(value)
+        return super().to_python(value)
 
 class NullBooleanField(models.NullBooleanField):
     def to_python(self, value):
@@ -15,4 +15,4 @@ class NullBooleanField(models.NullBooleanField):
             return True
         if value == 'false':
             return False
-        return super(NullBooleanField, self).to_python(value)
+        return super().to_python(value)

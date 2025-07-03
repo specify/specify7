@@ -1,8 +1,10 @@
+import os
 
 # Specify 7 requires the files from a Specify 6 install.
 # This setting should point to a directory containing an installation
 # of Specify 6 of the same version as the Specify database.
 THICK_CLIENT_LOCATION = '/opt/Specify'
+SPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', os.path.join(THICK_CLIENT_LOCATION, "config"))
 
 # Set the database name to the MySQL database you
 # want to access which must be a Specify database already
@@ -30,7 +32,7 @@ WEB_ATTACHMENT_URL = None
 WEB_ATTACHMENT_KEY = None
 
 # The collection name to use with the web attachment server.
-WEB_ATTACHMENT_COLLECTION = None
+WEB_ATTACHMENT_COLLECTION = os.environ.get('WEB_ATTACHMENT_COLLECTION', DATABASE_NAME) or DATABASE_NAME
 
 # If True, and WEB_ATTACHMENT_COLLECTION is None, attachments for each
 # collection would be stored in separate folders

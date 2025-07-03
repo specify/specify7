@@ -35,6 +35,7 @@ import type { QueryFieldFilter } from '../QueryBuilder/FieldFilter';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
+import type { MappingPath } from '../WbPlanView/Mapper';
 import { queryCbxExtendedSearch } from './helpers';
 import { SelectRecordSets } from './SelectRecordSet';
 
@@ -42,6 +43,7 @@ const resourceLimit = 100;
 
 export type QueryComboBoxFilter<SCHEMA extends AnySchema> = {
   readonly field: string & (keyof CommonFields | keyof SCHEMA['fields']);
+  readonly queryBuilderFieldPath?: MappingPath;
   readonly isRelationship: boolean;
   readonly isNot: boolean;
   readonly operation: QueryFieldFilter & ('between' | 'in' | 'less');
@@ -80,6 +82,7 @@ export function SearchDialog<SCHEMA extends AnySchema>(
   const [useQueryBuilder, handleUseQueryBuilder] = useBooleanState(
     props.onlyUseQueryBuilder ? true : alwaysUseQueryBuilder
   );
+
   return useQueryBuilder ? (
     <QueryBuilderSearch
       // BUG: pass on extraFilters
@@ -139,7 +142,13 @@ const filterResults = <SCHEMA extends AnySchema>(
 
 function testFilter<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA>,
-  { operation, field, value, isNot, isRelationship }: QueryComboBoxFilter<SCHEMA>
+  {
+    operation,
+    field,
+    value,
+    isNot,
+    isRelationship,
+  }: QueryComboBoxFilter<SCHEMA>
 ): boolean {
   const values = value.split(',').map(f.trim);
   const result =
@@ -150,8 +159,10 @@ function testFilter<SCHEMA extends AnySchema>(
         ? // Cast numbers to strings
           values.some((value) => {
             const fieldValue = resource.get(field);
-            // eslint-disable-next-line eqeqeq
-            return isRelationship ? value == strictIdFromUrl(fieldValue!).toString() : value == fieldValue
+
+            return isRelationship
+              ? value == strictIdFromUrl(fieldValue!).toString()
+              : value == fieldValue;
           })
         : operation === 'less'
           ? values.every((value) => (resource.get(field) ?? 0) < value)
@@ -175,6 +186,7 @@ function SearchForm<SCHEMA extends AnySchema>({
   onClose: handleClose,
   onUseQueryBuilder: handleUseQueryBuilder,
   onAdd: handleAdd,
+  multiple,
 }: {
   readonly forceCollection: number | undefined;
   readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>> | undefined;
@@ -186,6 +198,7 @@ function SearchForm<SCHEMA extends AnySchema>({
   readonly onAdd?:
     | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
     | undefined;
+  readonly multiple?: boolean;
 }): JSX.Element | null {
   const templateResource = React.useMemo(
     () =>
@@ -229,11 +242,13 @@ function SearchForm<SCHEMA extends AnySchema>({
               {queryText.queryBuilder()}
             </Button.Info>
           </ProtectedAction>
-          <SelectRecordSets
-            handleParentClose={handleClose}
-            table={table}
-            onAdd={handleAdd}
-          />
+          {multiple === true && (
+            <SelectRecordSets
+              handleParentClose={handleClose}
+              table={table}
+              onAdd={handleAdd}
+            />
+          )}
           <Submit.Success form={id('form')}>
             {commonText.search()}
           </Submit.Success>
@@ -387,8 +402,8 @@ const toQueryFields = <SCHEMA extends AnySchema>(
   table: SpecifyTable<SCHEMA>,
   filters: RA<QueryComboBoxFilter<SCHEMA>>
 ): RA<SpecifyResource<SpQueryField>> =>
-  filters.map(({ field, operation, isNot, value }) =>
-    QueryFieldSpec.fromPath(table.name, [field])
+  filters.map(({ field, queryBuilderFieldPath, operation, isNot, value }) =>
+    QueryFieldSpec.fromPath(table.name, queryBuilderFieldPath ?? [field])
       .toSpQueryField()
       .set('operStart', queryFieldFilters[operation].id)
       .set('isNot', isNot)
