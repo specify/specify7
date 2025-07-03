@@ -53,7 +53,7 @@ export function ShowLoansCommand({
         Object.fromEntries(
           accessibleInteractionTables.map((interactionTable) => [
             interactionTable,
-            () =>
+            async () =>
               fetchRelatedInterations(preparation, interactionTable).then(
                 (records) => records.map(({ id }) => id)
               ),
@@ -94,8 +94,8 @@ export function ShowLoansCommand({
               .map(([interactionTable, relatedIds], index) => (
                 <InterationWithPreps
                   key={index}
-                  tableName={interactionTable}
                   relatedInteractionIds={relatedIds}
+                  tableName={interactionTable}
                 />
               ))}
     </Dialog>
