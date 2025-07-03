@@ -303,7 +303,6 @@ class ObjectFormatter:
                 # Child = aliased(orm_table)
                 subquery_query = Query([]) \
                     .select_from(aliased_orm_table) \
-                    .filter(aliased_orm_table.ComponentParentID == getattr(rel_table, rel_table._id)) \
                     .correlate(rel_table)
             elif field.is_relationship and \
                 field.type == 'one-to-many' and \

@@ -3,10 +3,10 @@ import { resolveParser } from '../../utils/parser/definitions';
 import type { ValueOf } from '../../utils/types';
 import type { BusinessRuleResult } from './businessRules';
 import {
-  CO_HAS_PARENT,
   COG_PRIMARY_KEY,
   COG_TOITSELF,
   COJO_PRIMARY_DELETE_KEY,
+  COMPONENT_NAME_TAXON_KEY,
   CURRENT_DETERMINATION_KEY,
   DETERMINATION_TAXON_KEY,
   ensureSingleCollectionObjectCheck,
@@ -31,7 +31,6 @@ import {
   updateLoanPrep,
 } from './interactionBusinessRules';
 import type { SpecifyResource } from './legacyTypes';
-import { idFromUrl } from './resource';
 import { setSaveBlockers } from './saveBlockers';
 import { schema } from './schema';
 import type { LiteralField, Relationship } from './specifyField';
@@ -42,6 +41,7 @@ import type {
   CollectionObject,
   CollectionObjectGroup,
   CollectionObjectGroupJoin,
+  Component,
   Determination,
   DNASequence,
   LoanPreparation,
@@ -280,33 +280,6 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           saveBlockerKey: COG_TOITSELF,
         };
       },
-      childCo: async (
-        cojo: SpecifyResource<CollectionObjectGroupJoin>
-      ): Promise<BusinessRuleResult> => {
-        const childCO = cojo.get('childCo');
-        const childCOId = idFromUrl(childCO!);
-        const CO: SpecifyResource<CollectionObject> | void =
-          await new tables.CollectionObject.Resource({ id: childCOId })
-            .fetch()
-            .then((co) => co)
-            .catch((error) => {
-              console.error('Failed to fetch CollectionObject:', error);
-            });
-        let coParent;
-        if (CO !== undefined) {
-          coParent = CO.get('componentParent');
-        }
-        return coParent === null || coParent === undefined
-          ? {
-              isValid: true,
-              saveBlockerKey: CO_HAS_PARENT,
-            }
-          : {
-              isValid: false,
-              reason: resourcesText.coHasParent(),
-              saveBlockerKey: CO_HAS_PARENT,
-            };
-      },
     },
     onAdded: (cojo, collection) => {
       if (
@@ -357,6 +330,39 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       }
     },
     onAdded: onAddedEnsureBoolInCollection('isPrimary'),
+  },
+
+  Component: {
+    customInit: (component: SpecifyResource<Component>): void => {
+      if (
+        typeof schema.defaultCollectionObjectType === 'string' &&
+        typeof component.get('type') !== 'string'
+      )
+        component.set('type', schema.defaultCollectionObjectType);
+    },
+    fieldChecks: {
+      type: async (resource): Promise<undefined> => {
+        const name = await resource.rgetPromise('name');
+        if (name === null) return;
+
+        const coType = await resource.rgetPromise('type');
+        const coTypeTreeDef = coType.get('taxonTreeDef');
+
+        const taxonTreeDef = name?.get('definition');
+
+        const isValid =
+          typeof taxonTreeDef === 'string' && taxonTreeDef === coTypeTreeDef;
+
+        setSaveBlockers(
+          name,
+          resource.specifyTable.field.name,
+          isValid ? [] : [resourcesText.invalidNameTaxon()],
+          COMPONENT_NAME_TAXON_KEY
+        );
+
+        return undefined;
+      },
+    },
   },
 
   Determination: {
