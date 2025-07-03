@@ -40,14 +40,14 @@ test("table is SpViewSetObj", ()=>{
 
     const result = getUrl(
         "TestKey",
-        appResourceTypes.appResources,
+        appResourceTypes.viewSets,
         "testName",
         "application/json",
         "testFile"
     );
 
     expect(result).toBe(
-        "/specify/resources/app-resource/new/?directorykey=TestKey&name=testName&mimetype=application%2Fjson&templatefile=testFile"
+        "/specify/resources/view-set/new/?directorykey=TestKey&name=testName&mimetype=application%2Fjson&templatefile=testFile"
     )
 
 });
