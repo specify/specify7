@@ -1,4 +1,5 @@
-from specifyweb.specify.models import Collectionobjectgroup, Collectionobjectgroupjoin, Collectionobjectgrouptype, Picklist, Picklistitem
+from specifyweb.specify.models import Collectionobjectgroup, Collectionobjectgroupjoin, Collectionobjectgrouptype
+from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify.tests.test_api import DefaultsSetup
 
 class CoJoTest(DefaultsSetup):
@@ -58,3 +59,21 @@ class CoJoTest(DefaultsSetup):
         self.assertTrue(cojo_2.issubstrate)
         self.assertFalse(cojo_3.isprimary)
         self.assertFalse(cojo_3.issubstrate)
+
+        with self.assertRaises(BusinessRuleException): 
+            Collectionobjectgroupjoin.objects.create(
+                isprimary=False,
+                issubstrate=False,
+                parentcog=cog_1,
+                childcog=cog_4,
+                childco=self.collectionobjects[0]
+            )
+        
+        with self.assertRaises(BusinessRuleException): 
+            Collectionobjectgroupjoin.objects.create(
+                isprimary=False,
+                issubstrate=False,
+                parentcog=cog_1,
+                childcog=None,
+                childco=None
+            )

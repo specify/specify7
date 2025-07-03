@@ -29,6 +29,7 @@ import {
   ProtectedAction,
   ProtectedTool,
 } from '../Permissions/PermissionDenied';
+import { canMerge } from '../QueryBuilder/Results';
 import { UnloadProtectsContext } from '../Router/UnloadProtect';
 import { AutoNumbering } from './AutoNumbering';
 import { CarryForwardConfig } from './CarryForward';
@@ -130,6 +131,7 @@ function MetaDialog({
   readonly onClose: () => void;
 }): JSX.Element {
   const subView = React.useContext(SubViewContext);
+  const canMergeTable = canMerge(resource.specifyTable);
   return (
     <Dialog
       buttons={commonText.close()}
@@ -219,7 +221,8 @@ function MetaDialog({
             {resource.specifyTable.name in recordMergingTableSpec &&
             hasPermission('/record/merge', 'update') &&
             hasPermission('/record/merge', 'delete') &&
-            hasTablePermission(resource.specifyTable.name, 'update') ? (
+            hasTablePermission(resource.specifyTable.name, 'update') &&
+            canMergeTable ? (
               <MergeRecord resource={resource} />
             ) : undefined}
           </>

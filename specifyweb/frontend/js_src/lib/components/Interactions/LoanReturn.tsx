@@ -73,11 +73,19 @@ export function LoanReturn({
         onClose={handleClose}
       >
         {interactionsText.noUnresolvedPreparations({
-                loanPreparationsLabel: String(getField(tables.Loan, 'loanPreparations').label).toLowerCase()
-            })}
+          loanPreparationsLabel: getField(
+            tables.Loan,
+            'loanPreparations'
+          ).label.toLowerCase(),
+          loanTableLabel: tables.Loan.label,
+        })}
       </Dialog>
     ) : (
-      <PreparationReturn preparations={preparations} onClose={handleClose} />
+      <PreparationReturn
+        preparations={preparations}
+        resource={resource}
+        onClose={handleClose}
+      />
     )
   ) : null;
 }
@@ -85,9 +93,11 @@ export function LoanReturn({
 function PreparationReturn({
   preparations,
   onClose: handleClose,
+  resource,
 }: {
   readonly preparations: RA<SpecifyResource<LoanPreparation>>;
   readonly onClose: () => void;
+  readonly resource: SpecifyResource<Loan>;
 }): JSX.Element {
   const loanReturnPreparation = React.useRef(
     new tables.LoanReturnPreparation.Resource({
@@ -163,10 +173,9 @@ function PreparationReturn({
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <Button.Info
             disabled={!canSelectAll}
-            title=
-            {interactionsText.returnAllPreparations({
-              preparationTable: String(tables.Preparation.label).toLowerCase(),
-          })}
+            title={interactionsText.returnAllPreparations({
+              preparationTable: tables.Preparation.label.toLowerCase(),
+            })}
             onClick={(): void =>
               setState(
                 state.map(({ unresolved, remarks }) => ({
@@ -197,10 +206,9 @@ function PreparationReturn({
           </Button.Info>
           <Submit.Success
             form={id('form')}
-            title=
-              {interactionsText.returnSelectedPreparations({
-                preparationTable: String(tables.Preparation.label).toLowerCase(),
-               })}
+            title={interactionsText.returnSelectedPreparations({
+              preparationTable: tables.Preparation.label.toLowerCase(),
+            })}
           >
             {commonText.apply()}
           </Submit.Success>
@@ -253,6 +261,15 @@ function PreparationReturn({
               if (typeof loanPreparations === 'object')
                 loanPreparations.add(loanReturn);
             });
+
+          const isLoanClosed = state.every(
+            (preparation) => preparation.resolve === preparation.unresolved
+          );
+          if (isLoanClosed) {
+            resource.set('isClosed', true);
+            resource.set('dateClosed', getDateInputValue(new Date())!);
+          }
+
           handleClose();
         }}
       >
@@ -291,15 +308,12 @@ function PreparationReturn({
             />
           </Label.Inline>
         </div>
-        <table className="grid-table grid-cols-[repeat(9,auto)] gap-2">
+        <table className="grid-table grid-cols-[repeat(8,auto)] gap-2">
           <thead>
             <tr>
               <td />
               <th className="text-center" scope="col">
                 {getField(tables.CollectionObject, 'catalogNumber').label}
-              </th>
-              <th className="text-center" scope="col">
-                {tables.CollectionObjectGroup.label}
               </th>
               <th className="text-center" scope="col">
                 {getField(tables.Determination, 'taxon').label}
