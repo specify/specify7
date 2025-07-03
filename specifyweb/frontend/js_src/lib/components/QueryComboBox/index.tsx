@@ -395,19 +395,6 @@ export function QueryComboBox({
     />
   );
 
-  const isTree =
-    resource?.specifyTable === undefined
-      ? false
-      : isTreeTable(resource?.specifyTable.name);
-
-  const isRoot = isTree ? resource?.get('rankId') === 0 : false;
-
-  const validation = { ...getValidationAttributes(parser) };
-
-  if (isRoot && field.name === 'parent') {
-    delete validation.required;
-  }
-
   return (
     <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
       <TreeDefinitionContext.Provider value={treeDefinition}>
@@ -429,10 +416,10 @@ export function QueryComboBox({
           forwardRef={validationRef}
           inputProps={{
             id,
-            required: isRoot ? false : isRequired,
+            required: isRequired,
             title:
               typeof typeSearch === 'object' ? typeSearch.title : undefined,
-            ...validation,
+            ...getValidationAttributes(parser),
             type: 'text',
             [titlePosition]: 'top',
           }}

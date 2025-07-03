@@ -10,7 +10,9 @@ import {
   CURRENT_DETERMINATION_KEY,
   DETERMINATION_TAXON_KEY,
   ensureSingleCollectionObjectCheck,
+  fieldCheckBoolUniqueInCollection,
   hasNoCurrentDetermination,
+  onAddedEnsureBoolInCollection,
   PREPARATION_DISPOSED_KEY,
   PREPARATION_EXCHANGED_IN_KEY,
   PREPARATION_EXCHANGED_OUT_KEY,
@@ -35,12 +37,10 @@ import type { LiteralField, Relationship } from './specifyField';
 import type { Collection } from './specifyTable';
 import { tables } from './tables';
 import type {
-  Address,
   BorrowMaterial,
   CollectionObject,
   CollectionObjectGroup,
   CollectionObjectGroupJoin,
-  Collector,
   Component,
   Determination,
   DNASequence,
@@ -83,43 +83,10 @@ type MappedBusinessRuleDefs = {
 
 export const businessRuleDefs: MappedBusinessRuleDefs = {
   Address: {
-    customInit: (address) => {
-      if (address.isNew()) {
-        const setPrimary = (): void => {
-          address.set('isPrimary', true);
-          if (address.collection !== undefined) {
-            address.collection.models.forEach(
-              (other: SpecifyResource<Address>) => {
-                if (other.cid !== address.cid) other.set('isPrimary', false);
-              }
-            );
-          }
-        };
-        address.on('add', setPrimary);
-      }
-    },
     fieldChecks: {
-      isPrimary: async (address): Promise<BusinessRuleResult> => {
-        if (address.get('isPrimary') === true) {
-          address.collection?.models.forEach(
-            (other: SpecifyResource<Address>) => {
-              if (other.cid !== address.cid) {
-                other.set('isPrimary', false);
-              }
-            }
-          );
-        }
-        if (
-          address.collection !== undefined &&
-          !address.collection?.models.some((c: SpecifyResource<Address>) =>
-            c.get('isPrimary')
-          )
-        ) {
-          address.set('isPrimary', true);
-        }
-        return { isValid: true };
-      },
+      isPrimary: fieldCheckBoolUniqueInCollection('isPrimary'),
     },
+    onAdded: onAddedEnsureBoolInCollection('isPrimary'),
   },
   BorrowMaterial: {
     fieldChecks: {
@@ -355,28 +322,14 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
 
   Collector: {
     fieldChecks: {
-      isPrimary: (collector: SpecifyResource<Collector>): void => {
-        if (collector.get('isPrimary') && collector.collection !== undefined) {
-          collector.collection.models.map(
-            (other: SpecifyResource<Collector>) => {
-              if (other.cid !== collector.cid) {
-                other.set('isPrimary', false);
-              }
-            }
-          );
-        }
-      },
+      isPrimary: fieldCheckBoolUniqueInCollection('isPrimary'),
     },
     onRemoved: (collector, collection): void => {
       if (collector.get('isPrimary') && collection.models.length > 0) {
         collection.models[0].set('isPrimary', true);
       }
     },
-    onAdded: (collector, collection): void => {
-      if (collection.models.length === 1) {
-        collector.set('isPrimary', true);
-      }
-    },
+    onAdded: onAddedEnsureBoolInCollection('isPrimary'),
   },
 
   Component: {
@@ -443,9 +396,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
                     ),
                 };
           }),
-      isCurrent: async (
-        determination: SpecifyResource<Determination>
-      ): Promise<BusinessRuleResult> => {
+      isCurrent: async (determination): Promise<BusinessRuleResult> => {
         /*
          * Disallow multiple determinations being checked as current
          * Unchecks other determination when one of them gets checked
@@ -500,7 +451,17 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         );
     },
     onAdded: (determination, collection): void => {
+      /**
+       * BUG: Theoretically if the user adds an existing Determination to
+       * a (Backbone) Collection we would also want to make sure the existing
+       * Collection the Determination is leaving contains a current
+       * Determination and prevent the operation (via saveblocker?) if so.
+       */
       determination.set('isCurrent', true);
+      collection.models.forEach((otherDetermination) => {
+        if (determination.cid !== otherDetermination.cid)
+          otherDetermination.set('isCurrent', false);
+      });
       // Clear any existing save blocker on adding a new current determination
       setSaveBlockers(
         collection.related ?? determination,
@@ -511,37 +472,10 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     },
   },
   Determiner: {
-    customInit: (determiner) => {
-      if (determiner.isNew()) {
-        const setPrimary = (): void => {
-          determiner.set('isPrimary', true);
-          if (determiner.collection !== undefined) {
-            determiner.collection.models.forEach((other) => {
-              if (other.cid !== determiner.cid) other.set('isPrimary', false);
-            });
-          }
-        };
-        determiner.on('add', setPrimary);
-      }
-    },
     fieldChecks: {
-      isPrimary: async (determiner) => {
-        if (determiner.get('isPrimary')) {
-          determiner.collection?.models.forEach((other) => {
-            if (other.cid !== determiner.cid) {
-              other.set('isPrimary', false);
-            }
-          });
-        }
-        if (
-          determiner.collection !== undefined &&
-          !determiner.collection?.models.some((other) => other.get('isPrimary'))
-        ) {
-          determiner.set('isPrimary', true);
-        }
-        return { isValid: true };
-      },
+      isPrimary: fieldCheckBoolUniqueInCollection('isPrimary'),
     },
+    onAdded: onAddedEnsureBoolInCollection('isPrimary'),
   },
   DisposalPreparation: {
     fieldChecks: {
@@ -586,39 +520,10 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     },
   },
   FundingAgent: {
-    customInit: (fundingAgent) => {
-      if (fundingAgent.isNew()) {
-        const setPrimary = (): void => {
-          fundingAgent.set('isPrimary', true);
-          if (fundingAgent.collection !== undefined) {
-            fundingAgent.collection.models.forEach((other) => {
-              if (other.cid !== fundingAgent.cid) other.set('isPrimary', false);
-            });
-          }
-        };
-        fundingAgent.on('add', setPrimary);
-      }
-    },
     fieldChecks: {
-      isPrimary: async (fundingAgent) => {
-        if (fundingAgent.get('isPrimary')) {
-          fundingAgent.collection?.models.forEach((other) => {
-            if (other.cid !== fundingAgent.cid) {
-              other.set('isPrimary', false);
-            }
-          });
-        }
-        if (
-          fundingAgent.collection !== undefined &&
-          !fundingAgent.collection?.models.some((other) =>
-            other.get('isPrimary')
-          )
-        ) {
-          fundingAgent.set('isPrimary', true);
-        }
-        return { isValid: true };
-      },
+      isPrimary: fieldCheckBoolUniqueInCollection('isPrimary'),
     },
+    onAdded: onAddedEnsureBoolInCollection('isPrimary'),
   },
   GiftPreparation: {
     fieldChecks: {

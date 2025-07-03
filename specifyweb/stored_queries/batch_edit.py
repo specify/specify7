@@ -12,10 +12,7 @@ from typing import (
     List,
     NamedTuple,
     Optional,
-    Tuple,
     TypedDict,
-    Union,
-    Literal,
 )
 
 from specifyweb.permissions.permissions import has_target_permission
@@ -81,6 +78,14 @@ BATCH_EDIT_REQUIRED_TREE_FIELDS = ["name"]
 
 def get_readonly_fields(table: Table):
     fields = [*BATCH_EDIT_SHARED_READONLY_FIELDS, table.idFieldName.lower()]
+
+    # FEATURE: Remove this when lat/long is officially supported
+    # See https://github.com/specify/specify7/issues/6251 and
+    # https://github.com/specify/specify7/issues/6655
+    if table.name.lower() == 'locality':
+        fields.extend(('latitude1', 'longitude1', 'lat1text', 'long1text',
+                      'latitude2', 'longitude2', 'lat2text', 'long2text'))
+
     relationships = [
         rel.name
         for rel in table.relationships
