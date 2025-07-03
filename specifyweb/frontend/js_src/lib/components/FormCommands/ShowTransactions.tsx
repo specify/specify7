@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { useMultipleAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
-import type { RA } from '../../utils/types';
+import type { RA, RR } from '../../utils/types';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
@@ -29,6 +29,7 @@ import {
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
+
 export function ShowLoansCommand({
   preparation,
   onClose: handleClose,
@@ -36,6 +37,33 @@ export function ShowLoansCommand({
   readonly preparation: SpecifyResource<Preparation>;
   readonly onClose: () => void;
 }): JSX.Element | null {
+  const accessibleInteractionTables = React.useMemo(
+    () =>
+      interactionsWithPrepTables.filter((interactionTable) =>
+        hasTablePermission(interactionTable, 'read')
+      ),
+    []
+  );
+
+  const [relatedInteractions] = useMultipleAsyncState<
+    RR<InteractionWithPreps['tableName'], RA<number>>
+  >(
+    React.useMemo(
+      () =>
+        Object.fromEntries(
+          accessibleInteractionTables.map((interactionTable) => [
+            interactionTable,
+            () =>
+              fetchRelatedInterations(preparation, interactionTable).then(
+                (records) => records.map(({ id }) => id)
+              ),
+          ])
+        ),
+      [preparation, accessibleInteractionTables]
+    ),
+    false
+  );
+
   return (
     <Dialog
       buttons={commonText.close()}
@@ -44,39 +72,43 @@ export function ShowLoansCommand({
       modal={false}
       onClose={handleClose}
     >
-      {interactionsWithPrepTables
-        .filter((interactionTable) =>
-          hasTablePermission(interactionTable, 'read')
-        )
-        .map((interactionTable, index) => (
-          <InterationWithPreps
-            key={index}
-            preparation={preparation}
-            tableName={interactionTable}
-          />
-        ))}
+      {relatedInteractions === undefined
+        ? commonText.loading()
+        : accessibleInteractionTables.length ===
+              Object.keys(relatedInteractions).length &&
+            Object.values(relatedInteractions).every(
+              (relatedIds) =>
+                Array.isArray(relatedIds) && relatedIds.length === 0
+            )
+          ? interactionsText.noInteractions({
+              preparationTable: tables.Preparation.label,
+            })
+          : accessibleInteractionTables
+              .map(
+                (interactionTable) =>
+                  [
+                    interactionTable,
+                    relatedInteractions[interactionTable],
+                  ] as const
+              )
+              .map(([interactionTable, relatedIds], index) => (
+                <InterationWithPreps
+                  key={index}
+                  tableName={interactionTable}
+                  relatedInteractionIds={relatedIds}
+                />
+              ))}
     </Dialog>
   );
 }
 function InterationWithPreps({
-  preparation,
   tableName,
+  relatedInteractionIds,
 }: {
-  readonly preparation: SpecifyResource<Preparation>;
   readonly tableName: InteractionWithPreps['tableName'];
+  readonly relatedInteractionIds: RA<number> | undefined;
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose, _] = useBooleanState(false);
-
-  const [relatedInteractionIds] = useAsyncState(
-    React.useCallback(
-      async () =>
-        fetchRelatedInterations(preparation, tableName).then((records) =>
-          records.map(({ id }) => id)
-        ),
-      [preparation, tableName]
-    ),
-    false
-  );
 
   return (
     <>
