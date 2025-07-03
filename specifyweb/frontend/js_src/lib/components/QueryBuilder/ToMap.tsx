@@ -3,9 +3,7 @@ import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useLiveState } from '../../hooks/useLiveState';
-import { useReadyEffect } from '../../hooks/useReadyEffect';
 import { localityText } from '../../localization/locality';
-import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -239,8 +237,9 @@ export function QueryToMapDialog({
     () => () => {
       if (mapRef.current === undefined) return;
       if (mapRef.current?.sp7MarkerCount !== markerCountRef.current) {
-        console.warn(
-          `Expected the counts to match: Expected: ${markerCountRef.current}. Got: ${mapRef.current?.sp7MarkerCount}`
+        // This way, if the error happens in development mode, it can be caught more easily. (log checks may be easy to forget)
+        softFail(
+          new Error(`Expected the counts to match: Expected: ${markerCountRef.current}. Got: ${mapRef.current?.sp7MarkerCount}`)
         );
       }
     },
