@@ -17,6 +17,7 @@ import type { RA } from '../../utils/types';
 import { ErrorMessage } from '../Atoms';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
+import { ConfigurationTool } from '../ConfigurationTool';
 import { LoadingContext } from '../Core/Contexts';
 import { SplashScreen } from '../Core/SplashScreen';
 import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
@@ -50,7 +51,7 @@ export function Login(): JSX.Element {
 
     if (isNewUser === true || isNewUser === undefined) {
       // Display here the new setup pages
-      return <p>Welcome! No institutions are available at the moment.</p>;
+      return <ConfigurationTool />;
     }
 
     return providers.length > 0 ? (

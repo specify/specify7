@@ -52,7 +52,9 @@ export const unlockInitialContext = (entrypoint: typeof entrypointName): void =>
 
 export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
   contextUnlockedPromise.then(async (entrypoint) => {
-    if (entrypoint !== 'main') return foreverFetch<T>();
+    // TODO: chnage back at some point
+    if (entrypoint !== 'main' && entrypoint !== 'login')
+      return foreverFetch<T>();
 
     // Doing async import to avoid a circular dependency
     const { ajax } = await import('../../utils/ajax');
