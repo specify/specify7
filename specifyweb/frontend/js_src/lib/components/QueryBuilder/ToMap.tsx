@@ -2,6 +2,8 @@ import type L from 'leaflet';
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useLiveState } from '../../hooks/useLiveState';
+import { useReadyEffect } from '../../hooks/useReadyEffect';
 import { localityText } from '../../localization/locality';
 import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
@@ -38,8 +40,6 @@ import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
 import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
-import { useLiveState } from '../../hooks/useLiveState';
-import { useReadyEffect } from '../../hooks/useReadyEffect';
 
 export function QueryToMap({
   results,
@@ -93,8 +93,8 @@ function useSelectedResults(
       selectedRows.size === 0
         ? results
         : results.filter((result) =>
-          f.has(selectedRows, result?.[queryIdField])
-        ),
+            f.has(selectedRows, result?.[queryIdField])
+          ),
     [results, selectedRows]
   );
 }
@@ -182,20 +182,19 @@ export function QueryToMapDialog({
   const localityData = React.useRef<RA<LocalityDataWithId>>([]);
   const [initialData] = useLiveState<
     | {
-      readonly localityData: RA<LocalityData>;
-      readonly onClick: ReturnType<typeof createClickCallback>;
-    }
+        readonly localityData: RA<LocalityData>;
+        readonly onClick: ReturnType<typeof createClickCallback>;
+      }
     | undefined
-  >(React.useCallback(() => {
-
-    const extracted = extractLocalities(results, localityMappings);
-    return ({
-      localityData: extracted.map(
-        ({ localityData }) => localityData
-      ),
-      onClick: createClickCallback(tableName, extracted),
-    })
-  }, [results]));
+  >(
+    React.useCallback(() => {
+      const extracted = extractLocalities(results, localityMappings);
+      return {
+        localityData: extracted.map(({ localityData }) => localityData),
+        onClick: createClickCallback(tableName, extracted),
+      };
+    }, [results])
+  );
 
   const taxonId = React.useMemo(
     () => brokerData?.taxonId ?? extractQueryTaxonId(tableName, fields),
@@ -231,20 +230,24 @@ export function QueryToMapDialog({
 
   useFetchLoop(handleFetchMore, handleAddPoints);
 
-  // The below is used for sanity checking at un-mount.
-  // A unit test for this functionality is tricky. A runtime check is simpler
+  /*
+   * The below is used for sanity checking at un-mount.
+   * A unit test for this functionality is tricky. A runtime check is simpler
+   */
   const mapRef = React.useRef(map);
   mapRef.current = map;
 
-  React.useEffect(() => {
-    return () => {
+  React.useEffect(
+    () => () => {
       if (mapRef.current === undefined) return;
       if (mapRef.current?.sp7MarkerCount !== markerCountRef.current) {
-        console.warn(`Expected the counts to match: Expected: ${markerCountRef.current}. Got: ${mapRef.current?.sp7MarkerCount}`);
+        console.warn(
+          `Expected the counts to match: Expected: ${markerCountRef.current}. Got: ${mapRef.current?.sp7MarkerCount}`
+        );
       }
-    }
-  }, []);
-
+    },
+    []
+  );
 
   const readyEffectCallback = React.useCallback(() => {
     if (map === undefined) return undefined;
@@ -273,12 +276,12 @@ export function QueryToMapDialog({
         typeof totalCount === 'number'
           ? results.length === totalCount
             ? localityText.queryMapAll({
-              plotted: results.length,
-            })
+                plotted: results.length,
+              })
             : localityText.queryMapSubset({
-              plotted: results.length,
-              total: totalCount,
-            })
+                plotted: results.length,
+                total: totalCount,
+              })
           : localityText.geoMap()
       }
       headerButtons={

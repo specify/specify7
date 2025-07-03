@@ -100,7 +100,7 @@ export type LeafletInstance = L.Map & {
       readonly name: string;
     }>;
   };
-  sp7MarkerCount: number;
+  readonly sp7MarkerCount: number;
 };
 
 export function addMarkersToMap(
