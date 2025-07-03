@@ -169,7 +169,7 @@ RUN echo \
         "\nANONYMOUS_USER = os.getenv('ANONYMOUS_USER', None)" \
         "\nSPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', '/opt/Specify/config')" \
         "\nhost = os.getenv('CSRF_TRUSTED_ORIGINS', None)" \
-        "\nCSRF_TRUSTED_ORIGINS = [origin.strip() for origin in host.split(',')] if host else []" \
+        "\nCSRF_TRUSTED_ORIGINS = [origin.strip() for origin in host.split(',')] if host else ['https://*', 'http://*']" \
         > settings/local_specify_settings.py
 
 RUN echo "import os \nDEBUG = os.getenv('SP7_DEBUG', '').lower() == 'true'\n" \
