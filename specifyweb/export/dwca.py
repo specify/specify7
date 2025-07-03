@@ -250,4 +250,22 @@ def write_eml(source, output_path, pub_date=None, package_id=None):
 
     pubDate = ET.SubElement(dataset, 'pubDate')
     pubDate.text = pub_date.isoformat()
-    ET.ElementTree(eml).write(output_path, encoding='utf-8')
+
+    # Common EML order: title, creator, metadataProvider, associatedParty, pubDate, language, abstract, etc.
+    # Insert pubDate after the last associatedParty, if it exists.
+    # If no associatedParty is found, insert pubDate at the end of the dataset.
+    attribute = list(dataset)
+    insert_position = len(attribute)
+
+    # Look for specific elements to position pubDate correctly
+    for i, element in enumerate(attribute):
+        if element.tag in ['language', 'abstract', 'keywordSet', 'intellectualRights', 
+                          'distribution', 'coverage', 'contact', 'methods', 'project']:
+            insert_position = i
+            break
+    
+    dataset.insert(insert_position, pubDate)
+
+    tree = ET.ElementTree(eml)
+    # Write with XML declaration, matching GBIF behavior
+    tree.write(output_path, encoding='utf-8', xml_declaration=True)
