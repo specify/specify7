@@ -38,6 +38,8 @@ import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
 import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
+import { useLiveState } from '../../hooks/useLiveState';
+import { useReadyEffect } from '../../hooks/useReadyEffect';
 
 export function QueryToMap({
   results,
@@ -91,8 +93,8 @@ function useSelectedResults(
       selectedRows.size === 0
         ? results
         : results.filter((result) =>
-            f.has(selectedRows, result?.[queryIdField])
-          ),
+          f.has(selectedRows, result?.[queryIdField])
+        ),
     [results, selectedRows]
   );
 }
@@ -178,13 +180,22 @@ export function QueryToMapDialog({
 }): JSX.Element {
   const [map, setMap] = React.useState<LeafletInstance | undefined>(undefined);
   const localityData = React.useRef<RA<LocalityDataWithId>>([]);
-  const [initialData, setInitialData] = React.useState<
+  const [initialData] = useLiveState<
     | {
-        readonly localityData: RA<LocalityData>;
-        readonly onClick: ReturnType<typeof createClickCallback>;
-      }
+      readonly localityData: RA<LocalityData>;
+      readonly onClick: ReturnType<typeof createClickCallback>;
+    }
     | undefined
-  >(undefined);
+  >(React.useCallback(() => {
+
+    const extracted = extractLocalities(results, localityMappings);
+    return ({
+      localityData: extracted.map(
+        ({ localityData }) => localityData
+      ),
+      onClick: createClickCallback(tableName, extracted),
+    })
+  }, [results]));
 
   const taxonId = React.useMemo(
     () => brokerData?.taxonId ?? extractQueryTaxonId(tableName, fields),
@@ -193,6 +204,7 @@ export function QueryToMapDialog({
   const data = useMapData(brokerData, taxonId);
   const description = useExtendedMap(map, data);
 
+  // REFACTOR: This is actually no longer needed. Remove this.
   const markerEvents = React.useMemo(
     () => eventListener<{ readonly updated: undefined }>(),
     []
@@ -209,26 +221,14 @@ export function QueryToMapDialog({
         ...localityData.current,
         ...extractLocalities(results, localityMappings),
       ];
-      setInitialData((initialData) =>
-        typeof initialData === 'object'
-          ? initialData
-          : {
-              localityData: localityData.current.map(
-                ({ localityData }) => localityData
-              ),
-              onClick: createClickCallback(tableName, localityData.current),
-            }
-      );
       markerEvents.trigger('updated');
     },
     [tableName, localityMappings, markerEvents]
   );
 
-  // Add initial results
-  React.useEffect(() => handleAddPoints(results), [handleAddPoints]);
   useFetchLoop(handleFetchMore, handleAddPoints);
 
-  React.useEffect(() => {
+  const readyEffectCallback = React.useCallback(() => {
     if (map === undefined) return undefined;
 
     function emptyQueue(): void {
@@ -239,6 +239,9 @@ export function QueryToMapDialog({
 
     return markerEvents.on('updated', emptyQueue, true);
   }, [tableName, map, markerEvents]);
+
+  // Using ready effect to prevent double calls in DEV.
+  useReadyEffect(readyEffectCallback);
 
   return typeof initialData === 'object' ? (
     <LeafletMap
@@ -252,12 +255,12 @@ export function QueryToMapDialog({
         typeof totalCount === 'number'
           ? results.length === totalCount
             ? localityText.queryMapAll({
-                plotted: results.length,
-              })
+              plotted: results.length,
+            })
             : localityText.queryMapSubset({
-                plotted: results.length,
-                total: totalCount,
-              })
+              plotted: results.length,
+              total: totalCount,
+            })
           : localityText.geoMap()
       }
       headerButtons={
