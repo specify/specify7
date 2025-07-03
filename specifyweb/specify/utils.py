@@ -1,7 +1,7 @@
 import json
 import logging
 
-from specifyweb.accounts import models as acccounts_models
+from specifyweb.backend.accounts import models as acccounts_models
 from specifyweb.attachment_gw import models as attachment_gw_models
 from specifyweb.businessrules import models as businessrules_models
 from specifyweb.context import models as context_models
