@@ -372,6 +372,7 @@ function RecordSet<SCHEMA extends AnySchema>({
         ids={ids}
         isDependent={false}
         isInRecordSet
+        recordSetId={recordSet.id}
         isLoading={isLoading}
         newResource={currentRecord.isNew() ? currentRecord : undefined}
         table={currentRecord.specifyTable}
