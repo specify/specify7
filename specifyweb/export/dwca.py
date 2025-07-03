@@ -248,7 +248,7 @@ def write_eml(source, output_path, pub_date=None, package_id=None):
     for e in dataset.findall('pubDate'):
         dataset.remove(e)
 
-    pubDate = ET.SubElement(dataset, 'pubDate')
+    pubDate = ET.Element('pubDate')
     pubDate.text = pub_date.isoformat()
 
     # Common EML order: title, creator, metadataProvider, associatedParty, pubDate, language, abstract, etc.
