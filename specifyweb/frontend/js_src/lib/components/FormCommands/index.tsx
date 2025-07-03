@@ -101,7 +101,7 @@ const commandRenderers: {
             >
               {interactionsText.preparationsCanNotBeReturned({
                 preparationTable: tables.Preparation.label.toLowerCase(),
-               })}
+              })}
             </Dialog>
           ) : (
             <LoanReturn resource={loan} onClose={handleHide} />
