@@ -1,11 +1,12 @@
-import { AppResourcesTree } from "../hooks";
-import { ScopedAppResourceDir } from "../types";
-import { tables } from "../../DataModel/tables";
-import { serializeResource } from "../../DataModel/serializers";
-import { localized, R, RA } from "../../../utils/types";
 import { requireContext } from "../../../tests/helpers";
-import { findAppResourceDirectory } from "../Create";
 import { f } from "../../../utils/functools";
+import type { R, RA } from "../../../utils/types";
+import { localized } from "../../../utils/types";
+import { serializeResource } from "../../DataModel/serializers";
+import { tables } from "../../DataModel/tables";
+import { findAppResourceDirectory } from "../Create";
+import type { AppResourcesTree } from "../hooks";
+import type { ScopedAppResourceDir } from "../types";
 
 requireContext();
 
