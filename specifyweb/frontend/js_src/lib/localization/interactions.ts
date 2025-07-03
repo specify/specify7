@@ -18,11 +18,6 @@ export const interactionsText = createDictionary({
     'de-ch': 'Interaktionen',
     'pt-br': 'Interações',
   },
-  noInteractions: {
-    comment: 'Example: There are no interactions linked to this {preparation}',
-    'en-us':
-      'There are no interactions linked to this {preparationTable:string}.',
-  },
   addItems: {
     'en-us': 'Add Items',
     'ru-ru': 'Добавить элементы',
@@ -198,26 +193,6 @@ export const interactionsText = createDictionary({
     'uk-ua': "{tableName:string}': {resource:string}",
     'de-ch': '{tableName:string}: {resource:string}',
     'pt-br': '{tableName:string}: {resource:string}',
-  },
-  resolvedLoans: {
-    comment: 'Example: Resolved Loan records',
-    'en-us': 'Resolved {loanTable:string} records',
-    'es-es': 'Registros {loanTable:string} resueltos',
-    'fr-fr': 'Enregistrements résolus {loanTable:string}',
-    'ru-ru': 'Решено {loanTable:string} записей',
-    'uk-ua': 'Вирішено записів {loanTable:string}',
-    'de-ch': 'Aufgelöste {loanTable:string}-Datensätze',
-    'pt-br': 'Registros resolvidos {loanTable:string}',
-  },
-  openLoans: {
-    comment: 'Example: Open Loan records',
-    'en-us': 'Open {loanTable:string} records',
-    'es-es': 'Abrir {loanTable:string} registros',
-    'fr-fr': 'Ouvrir les enregistrements {loanTable:string}',
-    'ru-ru': 'Открыть {loanTable:string} записи',
-    'uk-ua': 'Відкрити записи {loanTable:string}',
-    'de-ch': 'Öffnen Sie {loanTable:string}-Datensätze',
-    'pt-br': 'Abrir registros {loanTable:string}',
   },
   tableLabelRecords: {
     comment: 'Example: Exchange In records',
