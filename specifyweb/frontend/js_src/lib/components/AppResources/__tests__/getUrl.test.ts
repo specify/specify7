@@ -1,8 +1,9 @@
-import { localized, RR } from "../../../utils/types";
+import type { RR } from "../../../utils/types";
+import { localized } from "../../../utils/types";
 import { icons } from "../../Atoms/Icons";
 import { exportsForTests } from "../Create";
-import { AppResourceMode } from "../helpers";
-import { AppResourceType } from "../types";
+import type { AppResourceMode } from "../helpers";
+import type { AppResourceType } from "../types";
 
 const { getUrl } = exportsForTests;
 
