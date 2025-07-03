@@ -79,6 +79,11 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       url: '/specify/security/',
       icon: icons.fingerPrint,
     },
+    systemConfigurationTool: {
+      title: userText.systemConfigurationTool(),
+      url: '/specify/system-configuration/',
+      icon: icons.fingerPrint,
+    },
     repairTree: {
       title: headerText.repairTree(),
       url: '/specify/overlay/tree-repair/',
