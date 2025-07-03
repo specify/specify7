@@ -1,50 +1,125 @@
 import { requireContext } from "../../../tests/helpers";
 import { f } from "../../../utils/functools";
 import type { R, RA } from "../../../utils/types";
-import { localized } from "../../../utils/types";
+import { filterArray, localized } from "../../../utils/types";
 import { serializeResource } from "../../DataModel/serializers";
 import { tables } from "../../DataModel/tables";
-import { findAppResourceDirectory } from "../Create";
+import { findAppResourceDirectory, findAppResourceDirectoryKey } from "../Create";
 import type { AppResourcesTree } from "../hooks";
 import type { ScopedAppResourceDir } from "../types";
 
 requireContext();
 
-describe("findAppResourceDirectory", ()=>{
-
-    const makeAppResourceNode = (
-        label: string, 
-        key: string, 
-        directory: ScopedAppResourceDir | undefined, 
-        subCategories: AppResourcesTree
-    ): AppResourcesTree[number] => ({
-        label: localized(label),
-        key,
-        directory,
-        subCategories,
-        appResources: [],
-        viewSets: []
-    });
+const makeAppResourceNode = (
+    label: string, 
+    key: string, 
+    directory: ScopedAppResourceDir | undefined, 
+    subCategories: AppResourcesTree
+): AppResourcesTree[number] => ({
+    label: localized(label),
+    key,
+    directory,
+    subCategories,
+    appResources: [],
+    viewSets: []
+});
     
-    const makeDirectory = (id: number): ScopedAppResourceDir => {
-        const dir = new tables.SpAppResourceDir.Resource({
-            id,
-            isPersonal: false,
-            collection: "/api/specify/collection/32768/",
-            discipline: "/api/specify/discipline/3/"
-        });
+const makeDirectory = (id: number): ScopedAppResourceDir => {
+    const dir = new tables.SpAppResourceDir.Resource({
+        id,
+        isPersonal: false,
+        collection: "/api/specify/collection/32768/",
+        discipline: "/api/specify/discipline/3/"
+    });
 
-        return ({...serializeResource(dir), scope: 'collection'})
-    };
+    return ({...serializeResource(dir), scope: 'collection'})
+};
 
-    test("first level search", ()=>{
-        const tree: AppResourcesTree = [
+// Make it part of functools?
+function *incrementor(){
+    let index = 0;
+    while (true){
+        yield index++;
+    }
+}
+
+type Incrementor = ReturnType<typeof incrementor>;
+
+function prefixIncrmentor(prefix: string, generator: ReturnType<typeof incrementor>){
+    return `${prefix}${generator.next().value}`
+}
+
+// This makes adding tests a bit easier.
+type Node = {
+    readonly id?: number;
+    readonly children: RA<Node>
+};
+
+const treeStructure: RA<Node> = [
+    {
+        id: 0, 
+        children: [
+            {
+                id: 0,
+                children: [
+                    {id: 0, children: []},
+                    {id: undefined, children: []}
+                ]
+            },
+            {
+                id: 0,
+                children: [
+                    {id: undefined, children: []},
+                    {id: undefined, children: []}
+                ]
+            }
+        ]
+    },
+    {
+        id: 0, 
+        children: [
+            {
+                id: 0,
+                children: [
+                    {id: 0, children: []},
+                    {id: undefined, children: []}
+                ]
+            },
+            {
+                id: 0,
+                children: [
+                    {id: 0, children: [
+                        {id: undefined, children: []}
+                    ]},
+                    {id: 0, children: []}
+                ]
+            }
+        ]
+    }
+];
+
+const makeTree = (nodes: RA<Node>, labelIncrementor: Incrementor, keyIncrementor: Incrementor, idIncrementor: Incrementor) : AppResourcesTree => (
+    nodes.map((node)=>makeAppResourceNode(
+        prefixIncrmentor("TestLabel", labelIncrementor) as string, 
+        prefixIncrmentor("TestKey", keyIncrementor) as string,
+        node.id === undefined ? undefined : makeDirectory(idIncrementor.next().value as number),
+        makeTree(node.children, labelIncrementor, keyIncrementor, idIncrementor)
+    ))
+);
+
+
+const simpleTree = () => [
             makeAppResourceNode("TestLabel", "TestKey1", makeDirectory(1), []),
             makeAppResourceNode("TestLabel2", "TestKey2", makeDirectory(2), []),
             makeAppResourceNode("TestLabel3", "TestKey3", undefined, []),
             makeAppResourceNode("TestLabel4", "TestKey4", makeDirectory(4), []),
-            makeAppResourceNode("TestLabel5", "TestKey5", makeDirectory(4), []),
-        ];
+            makeAppResourceNode("TestLabel5", "TestKey5", makeDirectory(5), []),
+    ]
+
+describe("findAppResourceDirectory", ()=>{
+
+    test("first level search", ()=>{
+        const tree: AppResourcesTree = simpleTree();
 
         tree.forEach((node)=>{
             const searchKey = node.key;
@@ -55,76 +130,9 @@ describe("findAppResourceDirectory", ()=>{
 
     test("multi level search", ()=>{
 
-        // This makes adding tests a bit easier.
-        type Node = {
-            readonly id?: number;
-            readonly children: RA<Node>
-        };
-
-        const treeStructure: RA<Node> = [
-            {
-                id: 1, 
-                children: [
-                    {
-                        id: 1,
-                        children: [
-                            {id: 2, children: []},
-                            {id: undefined, children: []}
-                        ]
-                    },
-                    {
-                        id: 3,
-                        children: [
-                            {id: undefined, children: []},
-                            {id: undefined, children: []}
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 1, 
-                children: [
-                    {
-                        id: 4,
-                        children: [
-                            {id: 7, children: []},
-                            {id: undefined, children: []}
-                        ]
-                    },
-                    {
-                        id: 3,
-                        children: [
-                            {id: 9, children: [
-                                {id: undefined, children: []}
-                            ]},
-                            {id: 10, children: []}
-                        ]
-                    }
-                ]
-            }
-        ];
-
-
-        function *incrementor(prefix: string){
-            let index = 0;
-            while (true){
-                yield `${prefix}${index++}`;
-            }
-        }
-
-
-
-        const labelMaker = incrementor("TestLabel");
-        const keyMaker = incrementor("TestKey");
-
-        const makeTree = (nodes: RA<Node>) : AppResourcesTree => (
-            nodes.map((node)=>makeAppResourceNode(
-                labelMaker.next().value as string, 
-                keyMaker.next().value as string,
-                f.maybe(node.id, makeDirectory),
-                makeTree(node.children)
-            ))
-        );
+        const labelIncrementor = incrementor();
+        const keyIncrementor = incrementor();
+        const idIncrementor = incrementor();
 
         const makeKeyDirMapping = (tree: AppResourcesTree): R<ScopedAppResourceDir | undefined> => (
             Object.fromEntries(tree.flatMap((node)=>[
@@ -133,14 +141,54 @@ describe("findAppResourceDirectory", ()=>{
             ]))
         );
 
+        const tree: AppResourcesTree = makeTree(treeStructure, labelIncrementor, keyIncrementor, idIncrementor);
 
-        const tree: AppResourcesTree = makeTree(treeStructure);
-        const keyDirMapping = makeKeyDirMapping(tree);
-
-        Object.entries(keyDirMapping).forEach(([searchKey, dir])=>{
+        Object.entries(makeKeyDirMapping(tree)).forEach(([searchKey, dir])=>{
             const found = findAppResourceDirectory(tree, searchKey);
             expect(found).toEqual(dir);
         });
+
+        const found = findAppResourceDirectory(tree, "_absent_key_");
+        expect(found).toBe(undefined);
+
     });
 
 });
+
+describe("findAppResourceDirectoryKey", ()=>{
+
+    test("first level search", ()=>{
+        const tree: AppResourcesTree = simpleTree();
+
+        tree.forEach((node)=>{
+            if (node.directory?.id === undefined) return;
+            const found = findAppResourceDirectoryKey(tree, node.directory?.id);
+            expect(found).toEqual(node.key);
+        });
+    });
+
+    test("multi level search", ()=>{
+
+        const labelIncrementor = incrementor();
+        const keyIncrementor = incrementor();
+        const idIncrementor = incrementor();
+
+        const tree: AppResourcesTree = makeTree(treeStructure, labelIncrementor, keyIncrementor, idIncrementor);
+
+        const makeDirIdKeyMapping = (tree: AppResourcesTree): Record<number, string> => (
+            Object.fromEntries(filterArray(tree.flatMap((node)=>[
+                node.directory === undefined ? undefined : [node.directory.id, node.key],
+                ...Object.entries(makeDirIdKeyMapping(node.subCategories))
+            ])))
+        );
+
+        const dirKeyMapping = makeDirIdKeyMapping(tree);
+
+        Object.entries(dirKeyMapping).forEach(([dirId, key])=>{
+            const found = findAppResourceDirectoryKey(tree, f.parseInt(dirId) as number);
+            expect(found).toEqual(key);
+        });
+
+
+    })
+})
