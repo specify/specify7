@@ -1,5 +1,4 @@
 import { errorContext } from '../../hooks/useErrorContext';
-import { f } from '../../utils/functools';
 import type { R } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { consoleLog } from './interceptLogs';
@@ -42,19 +41,6 @@ Promise.all(
 )
   // Can't use softFail here because of circular dependency
   .catch(console.error);
-
-const getTelemetry = ()=>(
-  globalThis.performance.getEntries ?? (
-    // If this is the test environment, 
-    // just return a void function.
-    // But, only do that if it is not overwritten (so that is why this branch is here)
-    process.env.NODE_ENV === 'test'? f.void : ()=>{
-      // FEAT: Make this optional?
-      throw Error("expected temeletry function")
-    }
-  )
-);
-
 /**
  * The stack trace is about 83KB in size
  */
@@ -70,7 +56,7 @@ export const produceStackTrace = (message: unknown): string =>
         pageHtml: document.documentElement.outerHTML,
         localStorage: { ...localStorage },
         // Network log and page load telemetry
-        eventLog: getTelemetry(),
+        eventLog: globalThis.performance.getEntries(),
         navigator: {
           userAgent: navigator.userAgent,
           language: navigator.language,
