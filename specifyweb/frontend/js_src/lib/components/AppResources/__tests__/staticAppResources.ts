@@ -191,6 +191,28 @@ export const staticAppResources = {
       resource_uri: '/api/specify/spappresource/4/',
       _tableName: 'SpAppResource',
     },
+    {
+      id: 73,
+      allPermissionLevel: null,
+      description: null,
+      groupPermissionLevel: null,
+      "level": 0,
+      "metaData": null,
+      "mimeType": "application/json",
+      "name": "DefaultUserPreferences",
+      "ownerPermissionLevel": null,
+      "timestampCreated": "2025-07-04T00:00:00",
+      "version": 1,
+      "createdByAgent": "/api/specify/agent/3/",
+      "group": null,
+      "modifiedByAgent": null,
+      "spAppResourceDir": "/api/specify/spappresourcedir/7/",
+      "specifyUser": "/api/specify/specifyuser/1/",
+      "spAppResourceDatas": "/api/specify/spappresourcedata/?spappresource=73",
+      "spReports": "/api/specify/spreport/?appresource=73",
+      "resource_uri": "/api/specify/spappresource/73/",
+      "_tableName": "SpAppResource"
+    }
   ],
   viewSets: [
     {

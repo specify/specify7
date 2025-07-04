@@ -4,6 +4,9 @@ import { staticAppResources } from './staticAppResources';
 import { overrideAjax } from '../../../tests/ajax';
 import { getResourceApiUrl } from '../../DataModel/resource';
 import { requireContext } from '../../../tests/helpers';
+import { appResourceSubTypes } from '../types';
+import { tables } from '../../DataModel/tables';
+import { serializeResource } from '../../DataModel/serializers';
 
 requireContext();
 
@@ -32,7 +35,7 @@ describe("useInitialData", () => {
 
     });
 
-    test("case: /static/config/", async () => {
+    test("case: using static template file", async () => {
 
         const templateFile = "icons_disciplines.xml";
 
@@ -42,6 +45,45 @@ describe("useInitialData", () => {
             // Eventually, it would return string.
             expect(typeof result.current).toBe("string");
             expect(result.current).not.toBe("");
+        });
+
+    });
+
+    test("case: not using template", async () => {
+
+        // We use this below assumption
+        expect(appResourceSubTypes.userPreferences.useTemplate).toBe(false);
+
+        const preferenceResource = new tables.SpAppResource.Resource({
+            id: 5,
+            name: "UserPreferences",
+            mimeType: undefined
+        });
+
+        const { result } = renderHook(() => useInitialData(
+            serializeResource(preferenceResource),
+            undefined,
+            undefined
+        )
+        );
+
+        await waitFor(() => {
+            expect(result.current).toBe(false);
+        });
+
+    });
+
+
+    test("case: using template", async () => {
+        const { result } = renderHook(() => useInitialData(
+            staticAppResources.appResources[2],
+            undefined,
+            undefined
+        )
+        );
+
+        await waitFor(() => {
+            expect(typeof result.current).toBe("string");
         });
 
     });
