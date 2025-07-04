@@ -1,11 +1,13 @@
 import { render } from "@testing-library/react";
-import { AppResources, useAppResources } from "../hooks";
-import { requireContext } from "../../../tests/helpers";
-import { overrideAjax } from "../../../tests/ajax";
-import { staticAppResources } from "./staticAppResources";
-import { GetOrSet, RA } from "../../../utils/types";
 import React from "react";
 import { act } from "react-dom/test-utils";
+
+import { overrideAjax } from "../../../tests/ajax";
+import { requireContext } from "../../../tests/helpers";
+import type { GetOrSet, RA } from "../../../utils/types";
+import type { AppResources} from "../hooks";
+import { useAppResources } from "../hooks";
+import { staticAppResources } from "./staticAppResources";
 
 requireContext();
 
