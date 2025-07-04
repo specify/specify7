@@ -1,4 +1,4 @@
-import { AppResources } from "../hooks";
+import type { AppResources } from '../hooks';
 
 export const staticAppResources = {
   directories: [
