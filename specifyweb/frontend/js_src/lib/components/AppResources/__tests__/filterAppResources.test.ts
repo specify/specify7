@@ -1,38 +1,55 @@
-import { defaultAppResourceFilters, filterAppResources } from "../filtersHelpers";
+import { countAppResources, defaultAppResourceFilters, filterAppResources } from "../filtersHelpers";
 import { staticAppResources } from "./staticAppResources";
 
 describe("filterAppResources", ()=>{
 
     test("case: no appResources filter", ()=>{
-        const filteredResourcesNoViews = filterAppResources(staticAppResources, {
+        const filter = {
             appResources: [],
             viewSets: true
-        });
+        }
+        const filteredResourcesNoViews = filterAppResources(staticAppResources, filter);
 
         expect(filteredResourcesNoViews).toEqual({
             ...staticAppResources,
             appResources: []
             }
+        );
+
+        expect(countAppResources(staticAppResources, filter)).toBe(
+            staticAppResources.viewSets.length
         )
     });
 
     test("case: no views filter", ()=>{
-        const filteredResourcesNoAppResources = filterAppResources(staticAppResources, {
+
+        const filter = {
             ...defaultAppResourceFilters,
             viewSets: false
-        });
+        }
+        const filteredResourcesNoAppResources = filterAppResources(staticAppResources, filter);
 
         expect(filteredResourcesNoAppResources).toEqual({
             ...staticAppResources,
             viewSets: []    
             }
-        )
+        );
+
+        expect(countAppResources(staticAppResources, filter)).toBe(
+            staticAppResources.appResources.length
+        );
+
     });
 
     test("case: default filter", ()=>{
         const defaultFiltered = filterAppResources(staticAppResources, defaultAppResourceFilters);
 
         expect(defaultFiltered).toEqual(staticAppResources);
+
+        expect(countAppResources(staticAppResources, defaultAppResourceFilters)).toBe(
+            staticAppResources.appResources.length + staticAppResources.viewSets.length
+        );
+
     });
 
     test("case: filtered app resources", ()=>{
@@ -51,5 +68,8 @@ describe("filterAppResources", ()=>{
             expectedResources
         );
 
+        expect(countAppResources(staticAppResources, filter)).toBe(
+            expectedResources.appResources.length + expectedResources.viewSets.length
+        );
     });
 });
