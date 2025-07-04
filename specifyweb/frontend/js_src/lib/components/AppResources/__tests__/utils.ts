@@ -102,10 +102,19 @@ const makeTree = (nodes: RA<Node>, labelIncrementor: Incrementor, keyIncrementor
     ))
 );
 
+const simpleTree = () => [
+    makeAppResourceNode("TestLabel", "TestKey1", makeDirectory(1), []),
+    makeAppResourceNode("TestLabel2", "TestKey2", makeDirectory(2), []),
+    makeAppResourceNode("TestLabel3", "TestKey3", undefined, []),
+    makeAppResourceNode("TestLabel4", "TestKey4", makeDirectory(4), []),
+    makeAppResourceNode("TestLabel5", "TestKey5", makeDirectory(5), []),
+]
+
 export const utilsForTests = {
     treeStructure,
     makeTree,
     makeDirectory,
     makeAppResourceNode,
-    incrementor
+    incrementor,
+    simpleTree
 }

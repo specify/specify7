@@ -6,17 +6,10 @@ import { findAppResourceDirectory, findAppResourceDirectoryKey } from "../Create
 import type { AppResourcesTree } from "../hooks";
 import type { ScopedAppResourceDir } from "../types";
 import { utilsForTests } from "./utils";
-    
+
 requireContext();
 
-const { treeStructure, makeAppResourceNode, makeDirectory, incrementor, makeTree } = utilsForTests;
-const simpleTree = () => [
-            makeAppResourceNode("TestLabel", "TestKey1", makeDirectory(1), []),
-            makeAppResourceNode("TestLabel2", "TestKey2", makeDirectory(2), []),
-            makeAppResourceNode("TestLabel3", "TestKey3", undefined, []),
-            makeAppResourceNode("TestLabel4", "TestKey4", makeDirectory(4), []),
-            makeAppResourceNode("TestLabel5", "TestKey5", makeDirectory(5), []),
-    ]
+const { treeStructure, simpleTree, incrementor, makeTree } = utilsForTests;
 
 describe("findAppResourceDirectory", ()=>{
 

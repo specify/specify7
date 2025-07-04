@@ -266,5 +266,6 @@ function useDirectory(
 
 export const exportsForTests = {
   useAppResource,
-  useInitialData
+  useInitialData,
+  useDirectory
 };
