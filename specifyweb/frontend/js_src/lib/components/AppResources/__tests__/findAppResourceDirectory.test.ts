@@ -36,7 +36,7 @@ describe("findAppResourceDirectory", ()=>{
             ]))
         );
 
-        const tree: AppResourcesTree = makeTree(treeStructure, labelIncrementor, keyIncrementor, idIncrementor);
+        const tree = makeTree(treeStructure, labelIncrementor, keyIncrementor, idIncrementor);
 
         Object.entries(makeKeyDirMapping(tree)).forEach(([searchKey, dir])=>{
             const found = findAppResourceDirectory(tree, searchKey);
@@ -53,7 +53,7 @@ describe("findAppResourceDirectory", ()=>{
 describe("findAppResourceDirectoryKey", ()=>{
 
     test("first level search", ()=>{
-        const tree: AppResourcesTree = simpleTree();
+        const tree = simpleTree();
 
         tree.forEach((node)=>{
             if (node.directory?.id === undefined) return;
@@ -68,7 +68,7 @@ describe("findAppResourceDirectoryKey", ()=>{
         const keyIncrementor = incrementor();
         const idIncrementor = incrementor();
 
-        const tree: AppResourcesTree = makeTree(treeStructure, labelIncrementor, keyIncrementor, idIncrementor);
+        const tree = makeTree(treeStructure, labelIncrementor, keyIncrementor, idIncrementor);
 
         const makeDirIdKeyMapping = (tree: AppResourcesTree): Record<number, string> => (
             Object.fromEntries(filterArray(tree.flatMap((node)=>[
