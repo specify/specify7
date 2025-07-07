@@ -1,8 +1,8 @@
 import { requireContext } from "../../../tests/helpers";
 import { addMissingFields } from "../../DataModel/addMissingFields";
-import { SerializedResource } from "../../DataModel/helperTypes";
+import type { SerializedResource } from "../../DataModel/helperTypes";
 import { getResourceApiUrl } from "../../DataModel/resource";
-import { SpAppResourceDir } from "../../DataModel/types";
+import type { SpAppResourceDir } from "../../DataModel/types";
 import { getScope } from "../tree";
 
 requireContext();
