@@ -169,8 +169,8 @@ RUN echo \
         "\nANONYMOUS_USER = os.getenv('ANONYMOUS_USER', None)" \
         "\nSPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', '/opt/Specify/config')" \
         "\nhost = os.getenv('CSRF_TRUSTED_ORIGINS', None)" \
-        "\nALLOWED_HOSTS=os.getenv('ALLOWED_HOSTS', '').split(',') if os.getenv('ALLOWED_HOSTS') else ['*']" \
-        "\nCSRF_TRUSTED_ORIGINS = [origin.strip() for origin in host.split(',')] if host else ['https://*', 'http://*']" \
+        "\nALLOWED_HOSTS = globals()["ALLOWED_HOSTS"] if "ALLOWED_HOSTS" in globals() else (os.getenv("ALLOWED_HOSTS", "").split(",") if os.getenv("ALLOWED_HOSTS") else ["*"])" \
+        "\nCSRF_TRUSTED_ORIGINS = globals()["CSRF_TRUSTED_ORIGINS"] if "CSRF_TRUSTED_ORIGINS" in globals() else ([o.strip() for o in host.split(",")] if host else [])" \
         > settings/local_specify_settings.py
 
 RUN echo "import os \nDEBUG = os.getenv('SP7_DEBUG', '').lower() == 'true'\n" \
