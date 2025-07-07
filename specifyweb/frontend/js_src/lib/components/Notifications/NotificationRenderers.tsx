@@ -9,6 +9,7 @@ import { StringToJsx } from '../../localization/utils';
 import type { IR, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
+import { downloadArchive } from '../Attachments/attachments';
 import { getTable } from '../DataModel/tables';
 import { userInformation } from '../InitialContext/userInformation';
 import {
@@ -21,7 +22,6 @@ import { mergingQueryParameter } from '../Merging/queryString';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
-import { downloadArchive } from '../Attachments/attachments';
 import { LoadingContext } from '../Core/Contexts';
 import { deleteNotification } from './utils';
 
