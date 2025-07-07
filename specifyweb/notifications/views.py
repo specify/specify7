@@ -1,3 +1,4 @@
+import os
 import json
 from datetime import datetime, timedelta
 
@@ -10,6 +11,9 @@ from ..specify.views import login_maybe_required
 from ..specify.api import toJson
 
 from .models import Message
+
+class MessageError(Exception):
+    pass
 
 @require_GET
 @login_maybe_required
@@ -58,3 +62,22 @@ def delete_all(request):
    Message.objects.filter(user=request.specify_user, id__in=message_ids).delete()
 
    return HttpResponse("OK", content_type="text/plain")
+
+def delete_message_file(message):
+    """
+    Delete files associated with one-time download notifications (like export notifications).
+    """
+    try:
+        content = json.loads(message.content)
+    except:
+        # Notification content can't be parsed, there's no way to tell if it points to a file.
+        return
+
+    # Only delete file if it
+    file = content.get('file')
+    delete_file = content.get('delete_file')
+    if file and delete_file:
+        try:
+            os.remove(file)
+        except Exception as e:
+            raise MessageError(f"Notification file deletion failed: {e}")

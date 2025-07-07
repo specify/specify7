@@ -22,6 +22,8 @@ import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
 import { downloadArchive } from '../Attachments/attachments';
+import { LoadingContext } from '../Core/Contexts';
+import { deleteNotification } from './utils';
 
 export type GenericNotification = {
   readonly messageId: string;
@@ -32,7 +34,7 @@ export type GenericNotification = {
 };
 
 export const notificationRenderers: IR<
-  (notification: GenericNotification) => React.ReactNode
+  (notification: GenericNotification, handleDelete: (promise: Promise<void>) => void) => React.ReactNode
 > = {
   'feed-item-updated'(notification) {
     const filename = notification.payload.file;
@@ -328,24 +330,23 @@ export const notificationRenderers: IR<
       </>
     );
   },
-  'attachment-download-ready'(notification) {
+  'attachment-download-ready'(notification, handleDelete) {
+    const loading = React.useContext(LoadingContext);
     return (
       <>
         {notificationsText.attachmentDownloadReady({ archiveName: notification.payload.archive_name })}
-        <Button.Small
-          onClick={(): void => {downloadArchive(notification.payload.file, notification.payload.archive_name)}}
-        >
-          {localityText.localityUpdateResults()}
-        </Button.Small>
-        {/* <Link.Success
+        <Button.Success
           className="w-fit"
-          download
-          href={`/static/depository/${encodeURIComponent(
-            notification.payload.file
-          )}`}
+          onClick={(): void => {
+            loading(
+              downloadArchive(notification.payload.file, notification.payload.archive_name).then(() => {
+                handleDelete(deleteNotification(notification));
+              })
+            );
+          }}
         >
           {notificationsText.download()}
-        </Link.Success> */}
+        </Button.Success>
       </>
     );
   },

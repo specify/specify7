@@ -352,8 +352,7 @@ export async function downloadAllAttachments(
 
   const fileName = `Attachments - ${(archiveName ?? new Date().toDateString()).replaceAll(':', '')}.zip`;
 
-  // Const response =
-  await ajax<Blob>('/attachment_gw/download_all/', {
+  ajax<Blob>('/attachment_gw/download_all/', {
     method: 'POST',
     body: keysToLowerCase({
       attachmentLocations,
@@ -374,7 +373,7 @@ export async function downloadArchive(
   archiveName: string,
 ): Promise<void> {
   const response = await ajax<Blob>('/attachment_gw/download_archive/', {
-    method: 'GET',
+    method: 'POST',
     body: keysToLowerCase({
       filename,
     }),

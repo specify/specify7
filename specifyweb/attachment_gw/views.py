@@ -362,23 +362,12 @@ def download_all(request):
         }))
         return HttpResponseBadRequest('Attachment archive not found')
 
-    # def file_iterator(file_path, chunk_size=512 * 1024):
-    #     with open(file_path, 'rb') as f:
-    #         while chunk := f.read(chunk_size):
-    #             yield chunk
-    #     os.remove(file_path)
-
     Message.objects.create(user=request.specify_user, content=json.dumps({
         'type': 'attachment-download-ready',
         'archive_name': archivename,
         'file': filename,
+        'delete_file': True,
     }))
-
-    # response = StreamingHttpResponse(
-    #     file_iterator(path),
-    #     content_type='application/octet-stream')
-    # response['Content-Disposition'] = f'attachment; filename="{filename}"'
-    # return response
 
     return HttpResponse('', status=200)
 
@@ -409,17 +398,23 @@ def make_attachment_zip(attachment_locations, orig_filenames, collection, output
     finally:
         shutil.rmtree(output_dir)
 
+@require_POST
 @login_maybe_required
 @never_cache
 def download_archive(request):
-    # TODO: the client shouldn't be able to request deletion of any file in the DEPOSITORY_DIR
+    """
+    Send an attachment archive to the frontend, and delete it from the backend to save storage.
+    """
     try:
         r = json.load(request)
     except ValueError as e:
         return HttpResponseBadRequest(e)
 
     filename = r['filename']
-    path = os.path.join(settings.DEPOSITORY_DIR, filename)
+    path = os.path.abspath(os.path.join(settings.DEPOSITORY_DIR, filename))
+
+    if not path.startswith(os.path.abspath(settings.DEPOSITORY_DIR) + os.sep):
+        return HttpResponseBadRequest("Invalid filepath.")
 
     def file_iterator(file_path, chunk_size=512 * 1024):
         with open(file_path, 'rb') as f:
@@ -431,12 +426,6 @@ def download_archive(request):
         content_type='application/octet-stream')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
-
-@login_maybe_required
-@never_cache
-def delete_file(request):
-    # TODO: the client shouldn't be able to request deletion of any file in the DEPOSITORY_DIR
-    pass
 
 @transaction.atomic()
 @login_maybe_required
