@@ -1,9 +1,9 @@
 import { requireContext } from '../../../tests/helpers';
 import { f } from '../../../utils/functools';
-import type { R} from '../../../utils/types';
+import type { R } from '../../../utils/types';
 import { filterArray } from '../../../utils/types';
 import {
-  findAppResourceDirectory, 
+  findAppResourceDirectory,
   findAppResourceDirectoryKey,
 } from '../Create';
 import type { AppResourcesTree } from '../hooks';
