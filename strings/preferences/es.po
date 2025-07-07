@@ -1165,7 +1165,7 @@ msgstr ""
 "Al fusionar agentes, cree automáticamente registros "
 "{agentVariantTable:string} basados en las variaciones de nombre/apellido."
 
-#: components/AppResources/types.tsx:110
+#: components/AppResources/types.tsx:111
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "collectionPreferences"

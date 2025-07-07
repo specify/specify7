@@ -1005,7 +1005,7 @@ msgstr ""
 "Lors de la fusion d'agents, créez automatiquement des enregistrements "
 "{agentVariantTable:string} en fonction des variations du prénom/nom."
 
-#: components/AppResources/types.tsx:110
+#: components/AppResources/types.tsx:111
 #. Used in: Components > App Resources > Types
 msgid "collectionPreferences"
 msgstr "Personnalisation"

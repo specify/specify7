@@ -980,7 +980,7 @@ msgstr ""
 "When merging agents, automatically create {agentVariantTable:string} "
 "records based on the variations of first name/last name."
 
-#: components/AppResources/types.tsx:110
+#: components/AppResources/types.tsx:111
 #. Used in: Components > App Resources > Types
 msgid "collectionPreferences"
 msgstr "Collection Preferences"

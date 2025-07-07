@@ -100,7 +100,7 @@ msgstr "Ajouter une ressource"
 msgid "appResource"
 msgstr "Ressource d'application"
 
-#: components/AppResources/types.tsx:127
+#: components/AppResources/types.tsx:128
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "rssExportFeed"
@@ -112,32 +112,32 @@ msgstr "Flux d'exportation RSS"
 msgid "exports"
 msgstr "Exportations"
 
-#: components/AppResources/types.tsx:135
+#: components/AppResources/types.tsx:136
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "expressSearchConfig"
 msgstr "Configuration de la recherche express"
 
-#: components/AppResources/types.tsx:143
+#: components/AppResources/types.tsx:144
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "typeSearches"
 msgstr "Recherches de type"
 
-#: components/AppResources/types.tsx:151
+#: components/AppResources/types.tsx:152
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "webLinks"
 msgstr "Liens Web"
 
-#: components/AppResources/types.tsx:159
+#: components/AppResources/types.tsx:160
 #: components/SchemaConfig/Format.tsx:100
 #. Used in: Components > App Resources > Types ⬤ Components > Schema Config > Format
 #, fuzzy
 msgid "uiFormatters"
 msgstr "Formateurs de champs"
 
-#: components/AppResources/types.tsx:167
+#: components/AppResources/types.tsx:168
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "dataObjectFormatters"
@@ -217,37 +217,37 @@ msgstr ""
 msgid "duplicateFormatters"
 msgstr "Les noms des formateurs d'enregistrements doivent être uniques"
 
-#: components/AppResources/types.tsx:175
+#: components/AppResources/types.tsx:176
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "dataEntryTables"
 msgstr "Tableaux de saisie de données"
 
-#: components/AppResources/types.tsx:183
+#: components/AppResources/types.tsx:184
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "interactionsTables"
 msgstr "Tables d'interactions"
 
-#: components/AppResources/types.tsx:190
+#: components/AppResources/types.tsx:191
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherXmlResource"
 msgstr "Autre ressource XML"
 
-#: components/AppResources/types.tsx:197
+#: components/AppResources/types.tsx:198
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherJsonResource"
 msgstr "Autre ressource JSON"
 
-#: components/AppResources/types.tsx:204
+#: components/AppResources/types.tsx:205
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherPropertiesResource"
 msgstr "Autres propriétés"
 
-#: components/AppResources/types.tsx:211
+#: components/AppResources/types.tsx:212
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherAppResource"
@@ -267,7 +267,7 @@ msgstr "Filtres"
 msgid "custom"
 msgstr "Coutume"
 
-#: components/AppResources/types.tsx:119
+#: components/AppResources/types.tsx:120
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "leafletLayers"

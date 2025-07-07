@@ -1117,7 +1117,7 @@ msgstr ""
 "{agentVariantTable:string}-Datensätze basierend auf den Variationen von "
 "Vorname/Nachname erstellt."
 
-#: components/AppResources/types.tsx:110
+#: components/AppResources/types.tsx:111
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "collectionPreferences"

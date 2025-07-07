@@ -89,7 +89,7 @@ msgstr "Добавить ресурс"
 msgid "appResource"
 msgstr "Подкатегории"
 
-#: components/AppResources/types.tsx:127
+#: components/AppResources/types.tsx:128
 #. Used in: Components > App Resources > Types
 msgid "rssExportFeed"
 msgstr "RSS-канал экспорта"
@@ -99,28 +99,28 @@ msgstr "RSS-канал экспорта"
 msgid "exports"
 msgstr "Экспорт"
 
-#: components/AppResources/types.tsx:135
+#: components/AppResources/types.tsx:136
 #. Used in: Components > App Resources > Types
 msgid "expressSearchConfig"
 msgstr "Конфигурация экспресс-поиска"
 
-#: components/AppResources/types.tsx:143
+#: components/AppResources/types.tsx:144
 #. Used in: Components > App Resources > Types
 msgid "typeSearches"
 msgstr "Тип поиска"
 
-#: components/AppResources/types.tsx:151
+#: components/AppResources/types.tsx:152
 #. Used in: Components > App Resources > Types
 msgid "webLinks"
 msgstr "Веб ссылки"
 
-#: components/AppResources/types.tsx:159
+#: components/AppResources/types.tsx:160
 #: components/SchemaConfig/Format.tsx:100
 #. Used in: Components > App Resources > Types ⬤ Components > Schema Config > Format
 msgid "uiFormatters"
 msgstr "Форматировщики полей"
 
-#: components/AppResources/types.tsx:167
+#: components/AppResources/types.tsx:168
 #. Used in: Components > App Resources > Types
 msgid "dataObjectFormatters"
 msgstr "Форматеры записи"
@@ -185,32 +185,32 @@ msgstr "Пожалуйста, выберите форматирование за
 msgid "duplicateFormatters"
 msgstr "Имена средств форматирования записей должны быть уникальными."
 
-#: components/AppResources/types.tsx:175
+#: components/AppResources/types.tsx:176
 #. Used in: Components > App Resources > Types
 msgid "dataEntryTables"
 msgstr "Таблицы ввода данных"
 
-#: components/AppResources/types.tsx:183
+#: components/AppResources/types.tsx:184
 #. Used in: Components > App Resources > Types
 msgid "interactionsTables"
 msgstr "Таблицы взаимодействий"
 
-#: components/AppResources/types.tsx:190
+#: components/AppResources/types.tsx:191
 #. Used in: Components > App Resources > Types
 msgid "otherXmlResource"
 msgstr "Выберите тип ресурса"
 
-#: components/AppResources/types.tsx:197
+#: components/AppResources/types.tsx:198
 #. Used in: Components > App Resources > Types
 msgid "otherJsonResource"
 msgstr "Другой ресурс JSON"
 
-#: components/AppResources/types.tsx:204
+#: components/AppResources/types.tsx:205
 #. Used in: Components > App Resources > Types
 msgid "otherPropertiesResource"
 msgstr "Ресурс «Другие свойства»"
 
-#: components/AppResources/types.tsx:211
+#: components/AppResources/types.tsx:212
 #. Used in: Components > App Resources > Types
 msgid "otherAppResource"
 msgstr "Другой ресурс"
@@ -227,7 +227,7 @@ msgstr "Фильтры"
 msgid "custom"
 msgstr "Обычай"
 
-#: components/AppResources/types.tsx:119
+#: components/AppResources/types.tsx:120
 #. Used in: Components > App Resources > Types
 msgid "leafletLayers"
 msgstr "Слои листовок"

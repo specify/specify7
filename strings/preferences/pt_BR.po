@@ -1168,7 +1168,7 @@ msgstr ""
 "Ao mesclar agentes, crie automaticamente registros "
 "{agentVariantTable:string} com base nas variações de nome/sobrenome."
 
-#: components/AppResources/types.tsx:110
+#: components/AppResources/types.tsx:111
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "collectionPreferences"

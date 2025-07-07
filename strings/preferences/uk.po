@@ -980,7 +980,7 @@ msgstr ""
 "Під час об’єднання агентів автоматично створювати записи "
 "{agentVariantTable:string} на основі варіацій імені/прізвища."
 
-#: components/AppResources/types.tsx:110
+#: components/AppResources/types.tsx:111
 #. Used in: Components > App Resources > Types
 msgid "collectionPreferences"
 msgstr "Налаштування"

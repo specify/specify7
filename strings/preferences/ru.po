@@ -1153,7 +1153,7 @@ msgstr ""
 "При объединении агентов автоматически создаются записи "
 "{agentVariantTable:string} на основе вариаций имени/фамилии."
 
-#: components/AppResources/types.tsx:110
+#: components/AppResources/types.tsx:111
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "collectionPreferences"
