@@ -84,8 +84,9 @@ export function Wrapper({
     resources
   );
 
-  const baseHref = `/specify/resources/${mode === 'appResources' ? 'app-resource' : 'view-set'
-    }`;
+  const baseHref = `/specify/resources/${
+    mode === 'appResources' ? 'app-resource' : 'view-set'
+  }`;
   return initialData === undefined ? (
     <AppResourceSkeleton />
   ) : resource === undefined || directory === undefined ? (
@@ -260,5 +261,5 @@ function useDirectory(
 }
 
 export const exportsForTests = {
-  useAppResource
+  useAppResource,
 };
