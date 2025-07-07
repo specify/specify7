@@ -196,6 +196,11 @@ function useAppResource(
   );
 }
 
+// REFACTOR: 
+// Split this function up.
+// Currently, the resource is not needed until subtype needs to be determined.
+// All the functionality that does not depend on resource should be part of a different
+// function.
 function useInitialData(
   resource: SerializedResource<SpAppResource | SpViewSetObj>,
   initialDataFrom: number | undefined,
@@ -260,5 +265,6 @@ function useDirectory(
 }
 
 export const exportsForTests = {
-  useAppResource
+  useAppResource,
+  useInitialData
 };
