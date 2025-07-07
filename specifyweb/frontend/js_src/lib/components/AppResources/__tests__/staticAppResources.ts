@@ -1,3 +1,5 @@
+import type { AppResources } from '../hooks';
+
 export const staticAppResources = {
   directories: [
     {
@@ -233,4 +235,4 @@ export const staticAppResources = {
       _tableName: 'SpViewSetObj',
     },
   ],
-} as const;
+} as unknown as AppResources;
