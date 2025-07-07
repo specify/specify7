@@ -1,7 +1,8 @@
-import { renderHook, act } from "@testing-library/react";
+import { act,renderHook } from "@testing-library/react";
+
 import { requireContext } from "../../../tests/helpers";
-import { utilsForTests } from "./utils";
 import { useAppResourceCount } from "../hooks";
+import { utilsForTests } from "./utils";
 
 requireContext();
 
