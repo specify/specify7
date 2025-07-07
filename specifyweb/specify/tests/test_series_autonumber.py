@@ -84,7 +84,8 @@ class TestSeriesAutonumber(ApiTests):
             }),
             content_type="application/json",
         )
-        self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content.decode())
+        self.assertEqual(content['error'], "LimitExceeded")
 
         # Test autonumbering with CatalogNumberAlphaNumByYear format
         response = c.post(
@@ -150,4 +151,4 @@ class TestSeriesAutonumber(ApiTests):
             content_type="application/json",
         )
         content = json.loads(response.content.decode())
-        self.assertEqual(content['existing'], [])
+        self.assertNotIn('existing', content)
