@@ -1,5 +1,4 @@
-import type { RA } from "../../utils/types";
-import type { WritableArray } from '../../utils/types';
+import type { RA, WritableArray } from "../../utils/types";
 import type { SerializedResource } from "../DataModel/helperTypes";
 import type {
   Attachment,
@@ -19,12 +18,12 @@ type CellAttachment = {
 };
 
 type CellAttachments = {
-  readonly attachments: readonly CellAttachment[];
+  readonly attachments: RA<CellAttachment>;
   readonly formatted: string;
 };
 
 export function attachmentsToCell(
-  dataSetAttachments: readonly SerializedResource<SpDataSetAttachment>[],
+  dataSetAttachments: RA<SerializedResource<SpDataSetAttachment>>,
   targetTable: AttachmentTargetTable,
 ): string {
   const formattedAttachments: WritableArray<string> = [];
