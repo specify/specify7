@@ -84,8 +84,9 @@ export function Wrapper({
     resources
   );
 
-  const baseHref = `/specify/resources/${mode === 'appResources' ? 'app-resource' : 'view-set'
-    }`;
+  const baseHref = `/specify/resources/${
+    mode === 'appResources' ? 'app-resource' : 'view-set'
+  }`;
   return initialData === undefined ? (
     <AppResourceSkeleton />
   ) : resource === undefined || directory === undefined ? (
@@ -197,7 +198,7 @@ function useAppResource(
 }
 
 /*
- * REFACTOR: 
+ * REFACTOR:
  * Split this function up.
  * Currently, the resource is not needed until subtype needs to be determined.
  * All the functionality that does not depend on resource should be part of a different
@@ -269,5 +270,5 @@ function useDirectory(
 export const exportsForTests = {
   useAppResource,
   useInitialData,
-  useDirectory
+  useDirectory,
 };
