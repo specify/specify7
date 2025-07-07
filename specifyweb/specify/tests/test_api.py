@@ -5,7 +5,7 @@ Tests for api.py
 import json
 from unittest import skip
 from datetime import datetime
-from django.db.models import Max
+from django.db.models import Max, QuerySet
 from django.test import TestCase, Client
 
 from specifyweb.permissions.models import UserPolicy
@@ -96,12 +96,7 @@ class MainSetupTearDown:
             name="testuser",
             password="205C0D906445E1C71CA77C6D714109EB6D582B03A5493E4C")  # testuser
 
-        UserPolicy.objects.create(
-            collection=None,
-            specifyuser=self.specifyuser,
-            resource="%",
-            action="%",
-        )
+        self._add_user_policy(self.specifyuser)
 
         self.agent = Agent.objects.create(
             agenttype=0,
@@ -157,6 +152,20 @@ class MainSetupTearDown:
             prep_list.append(prep)
         return prep
 
+    def _assertStatusCodeEqual(self, response, status_code):
+        self.assertEqual(response.status_code, status_code, f"ERROR: {response.content.decode()}")
+
+    def _add_user_policy(self, specifyuser):
+        UserPolicy.objects.create(
+                collection=None,
+                specifyuser=specifyuser,
+                resource="%",
+                action="%",
+            )
+
+    # TODO: Replace all such tests with below.
+    def assertExists(self, queryset: QuerySet):
+        self.assertTrue(queryset.exists(), "Record does not exist!")
 
 class ApiTests(MainSetupTearDown, TestCase): pass
 
@@ -939,6 +948,7 @@ class UserApiTests(ApiTests):
         # Because the test database doesn't have specifyuser_spprincipal
         from specifyweb.context import views
 
+        # TODO: Replace this with a mock.
         views.users_collections_for_sp6 = lambda cursor, userid: []
 
     def test_set_user_agents(self):

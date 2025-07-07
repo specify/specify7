@@ -161,9 +161,9 @@ function Wrapped({
     handleChange?.({
       fields: unParseQueryFields(state.baseTableName, state.fields),
       isDistinct: query.selectDistinct,
-      isSeries: query.selectSeries,
+      isSeries: query.smushed,
     });
-  }, [state, query.selectDistinct, query.selectSeries]);
+  }, [state, query.selectDistinct, query.smushed]);
 
   /**
    * If tried to save a query, enforce the field length limit for the
@@ -309,14 +309,6 @@ function Wrapped({
       ),
     [state, table.name]
   );
-
-  React.useEffect(() => {
-    if (!showSeries)
-      setQuery({
-        ...query,
-        selectSeries: false,
-      });
-  }, [showSeries]);
 
   return treeRanksLoaded ? (
     <ReadOnlyContext.Provider value={isReadOnly}>
@@ -578,7 +570,7 @@ function Wrapped({
               />
               <QueryToolbar
                 isDistinct={query.selectDistinct ?? false}
-                isSeries={query.selectSeries ?? false}
+                isSeries={query.smushed ?? false}
                 showHiddenFields={showHiddenFields}
                 showSeries={showSeries}
                 tableName={table.name}
@@ -598,7 +590,7 @@ function Wrapped({
                 onToggleSeries={(): void =>
                   setQuery({
                     ...query,
-                    selectSeries: !(query.selectSeries ?? false),
+                    smushed: !(query.smushed ?? false),
                   })
                 }
               />
@@ -625,6 +617,7 @@ function Wrapped({
                         fields={state.fields}
                         query={queryResource}
                         recordSetId={recordSet?.id}
+                        saveRequired={saveRequired}
                       />
                     )}
                     {query.countOnly ? undefined : (

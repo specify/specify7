@@ -370,6 +370,9 @@ def set_user_agents(request, userid: int):
             pk__in=new_agentids).update(specifyuser_id=userid)
 
         # check for multiple agents assigned to the user
+        # NOTE: This is too aggressive (and inefficient) of a test.
+        # By the time we are here, we can just check if the current agents (in new_agentids)
+        # belong to the same division...
         cursor.execute(
             """select divisionid, a1.agentid, a2.agentid
             from agent a1 join agent a2 using (specifyuserid, divisionid)
@@ -540,6 +543,8 @@ class ReplaceRecordPT(PermissionTarget):
 def record_merge(
     request: http.HttpRequest,
     model_name: str,
+    # This is actually of type str.
+    # TODO: Change below to str.
     new_model_id: int
 ) -> Union[http.HttpResponse, http.JsonResponse]:
     """Replaces all the foreign keys referencing the old record IDs
@@ -759,13 +764,20 @@ def merging_status(request, merge_id: int) -> http.HttpResponse:
     },
 })
 @require_POST
-def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
+def abort_merge_task(
+    request,
+    # The below type is of str (and not an int)
+    merge_id: int
+    ) -> http.HttpResponse:
     "Aborts the merge task currently running and matching the given merge/task ID"
 
+    # BUG: This should not be a .get. It should instead be something like .filter(...).first()
+    # Currently, it is a 500 error (because .get() fails when no Spmerging found)
     merge = Spmerging.objects.get(taskid=merge_id)
     if merge is None:
         return http.HttpResponseNotFound(f'The merge task id is not found: {merge_id}')
 
+    # This condition is not possible.
     if merge.taskid is None:
         return http.JsonResponse(None, safe=False)
 
@@ -1397,11 +1409,13 @@ def parse_locality_set(request: http.HttpRequest):
     data = request_data["data"]
     run_in_background = request_data.get("runInBackground", False)
     if not run_in_background:
+        # BUG?: The result could be list of named tuples. Need to serialize them.
         status, result = parse_locality_set_foreground(
             request.specify_collection, column_headers, data)
     else:
         status, result = 201, start_locality_set_background(
             request.specify_collection, request.specify_user, request.specify_user_agent, column_headers, data, False, True)
+
     return http.JsonResponse(result, status=status, safe=False)
 
 
