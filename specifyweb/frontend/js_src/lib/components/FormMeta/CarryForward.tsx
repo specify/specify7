@@ -168,12 +168,19 @@ function BulkCloneConfig({
   );
   const [globalBulkRangeEnabled, setGlobalBulkRangeEnabled] =
     userPreferences.use('form', 'preferences', 'enableBulkCarryForwardRange');
-  const [globalCreateRecordSetOnBulkCarryForward, setGlobalCreateRecordSetOnBulkCarryForward] =
-    userPreferences.use('form', 'preferences', 'createRecordSetOnBulkCarryForward');
+  const [
+    globalCreateRecordSetOnBulkCarryForward,
+    setGlobalCreateRecordSetOnBulkCarryForward,
+  ] = userPreferences.use(
+    'form',
+    'preferences',
+    'createRecordSetOnBulkCarryForward'
+  );
 
   const isBulkCarryEnabled = globalBulkEnabled.includes(table.name);
   const isBulkCarryRangeEnabled = globalBulkRangeEnabled.includes(table.name);
-  const createRecordSetOnBulkCarryForward = globalCreateRecordSetOnBulkCarryForward.includes(table.name);
+  const createRecordSetOnBulkCarryForward =
+    globalCreateRecordSetOnBulkCarryForward.includes(table.name);
 
   const [isOpen, handleOpen, handleClose] = useBooleanState();
 

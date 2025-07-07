@@ -427,9 +427,11 @@ function RecordSet<SCHEMA extends AnySchema>({
         onClone={(resources: RA<SpecifyResource<SCHEMA>>): void => {
           go(totalCount, 'new', resources[0]);
           if (resources.length > 1) {
-            if (createRecordSetOnBulkCarryForward.includes(
-              resources[0].specifyTable.name
-            )) {
+            if (
+              createRecordSetOnBulkCarryForward.includes(
+                resources[0].specifyTable.name
+              )
+            ) {
               const sortedResources = Array.from(resources).sort(
                 sortFunction((r) => r.id)
               ) as RA<SpecifyResource<CollectionObject>>;
@@ -437,7 +439,9 @@ function RecordSet<SCHEMA extends AnySchema>({
                 createNewRecordSet(
                   sortedResources.map((resource) => resource.id)
                 ).then(async () => {
-                  const firstCollectionObject = await format(sortedResources[0]);
+                  const firstCollectionObject = await format(
+                    sortedResources[0]
+                  );
                   const lastCollectionObject = await format(
                     sortedResources.at(-1)
                   );

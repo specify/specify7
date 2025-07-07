@@ -8,7 +8,10 @@ import type { LiteralField } from '../DataModel/specifyField';
 import { Dialog } from '../Molecules/Dialog';
 
 export type BulkCarryRangeError =
-  boolean | 'ExistingNumbers' | 'InvalidRange' | 'LimitExceeded';
+  | boolean
+  | 'ExistingNumbers'
+  | 'InvalidRange'
+  | 'LimitExceeded';
 
 const bulkCarryLimit = 500;
 
