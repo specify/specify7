@@ -17,13 +17,13 @@ msgid "forms"
 msgstr "Forms"
 
 #: components/Atoms/DataEntry.tsx:153
-#: components/Forms/Save.tsx:323
+#: components/Forms/Save.tsx:424
 #: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Clone"
 
-#: components/Forms/Save.tsx:324
+#: components/Forms/Save.tsx:425
 #. Used in: Components > Forms > Save
 msgid "cloneDescription"
 msgstr "Create a full copy of current record"
@@ -212,18 +212,18 @@ msgstr "Current object (out of {total:number|formatted})"
 
 #: components/FormMeta/Definition.tsx:93
 #: components/Forms/ResourceView.tsx:405
-#: components/Forms/Save.tsx:46
+#: components/Forms/Save.tsx:51
 #. Used in: Components > Form Meta > Definition ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
 msgstr "This form has not been saved."
 
 #: components/AttachmentsBulkImport/utils.ts:482
-#: components/Forms/Save.tsx:355
+#: components/Forms/Save.tsx:458
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 msgid "saveConflict"
 msgstr "Save conflict"
 
-#: components/Forms/Save.tsx:358
+#: components/Forms/Save.tsx:461
 #. Used in: Components > Forms > Save
 msgid "saveConflictDescription"
 msgstr ""
@@ -231,12 +231,12 @@ msgstr ""
 "browser tab and is out of date. The page must be reloaded to prevent "
 "inconsistent data from being saved."
 
-#: components/Forms/Save.tsx:388
+#: components/Forms/Save.tsx:502
 #. Used in: Components > Forms > Save
 msgid "saveBlocked"
 msgstr "Save blocked"
 
-#: components/Forms/Save.tsx:391
+#: components/Forms/Save.tsx:505
 #. Used in: Components > Forms > Save
 msgid "saveBlockedDescription"
 msgstr "Form cannot be saved because of the following error:"
@@ -310,8 +310,8 @@ msgid "pluginName"
 msgstr "Plugin name"
 
 #: utils/parser/definitions.ts:112
-#: utils/parser/__tests__/definitions.test.ts:185
-#: utils/parser/__tests__/definitions.test.ts:187
+#: utils/parser/__tests__/definitions.test.ts:186
+#: utils/parser/__tests__/definitions.test.ts:188
 #. 🟥Yes/No probably shouldn't be translated as Specify 7 does not support changing which values are recognized as Yes/No in a given language. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
 msgid "illegalBool"
 msgstr "Illegal value for a Yes/No field"
@@ -330,10 +330,10 @@ msgstr "Field is required."
 #: components/ExportFeed/Editor.tsx:399
 #: components/ExportFeed/Editor.tsx:403
 #: components/QueryComboBox/index.tsx:194
-#: utils/parser/__tests__/definitions.test.ts:204
-#: utils/parser/__tests__/definitions.test.ts:206
-#: utils/parser/__tests__/definitions.test.ts:222
-#: utils/parser/__tests__/definitions.test.ts:224
+#: utils/parser/__tests__/definitions.test.ts:205
+#: utils/parser/__tests__/definitions.test.ts:207
+#: utils/parser/__tests__/definitions.test.ts:223
+#: utils/parser/__tests__/definitions.test.ts:225
 #. Used in: Components > Export Feed > Editor ⬤ Components > Query Combo Box > Index ⬤ Parser > __tests__ > Definitions
 msgid "invalidValue"
 msgstr "Invalid value"
@@ -343,7 +343,7 @@ msgstr "Invalid value"
 #: utils/parser/definitions.ts:206
 #: utils/parser/definitions.ts:208
 #: utils/parser/definitions.ts:374
-#: utils/parser/__tests__/definitions.test.ts:79
+#: utils/parser/__tests__/definitions.test.ts:80
 #: utils/parser/__tests__/parse.test.ts:228
 #. 🟥Used in field validation messages on the form. Used in: Components > Form Plugins > Date Input ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
 msgid "requiredFormat"
@@ -418,7 +418,7 @@ msgstr "You might want to save this record before navigating away."
 msgid "creatingNewRecord"
 msgstr "Creating new record"
 
-#: components/FormSliders/RecordSet.tsx:364
+#: components/FormSliders/RecordSet.tsx:371
 #. Used in: Components > Form Sliders > Record Set
 msgid "createNewRecordSet"
 msgstr "Create a new record set"
@@ -438,12 +438,12 @@ msgstr "Reverse"
 msgid "deletedInline"
 msgstr "(deleted)"
 
-#: components/FormSliders/RecordSet.tsx:499
+#: components/FormSliders/RecordSet.tsx:514
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItem"
 msgstr "Duplicate {recordSetItemTable:string}"
 
-#: components/FormSliders/RecordSet.tsx:504
+#: components/FormSliders/RecordSet.tsx:519
 #. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItemDescription"
 msgstr "This record is already present in the current {recordSetTable:string}"
@@ -464,8 +464,9 @@ msgstr "Remove from {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Nothing found"
 
-#: components/Forms/Save.tsx:270
-#. 🟥Verb. Button label. Used in: Components > Forms > Save
+#: components/Forms/BulkCarryForward.tsx:33
+#: components/Forms/Save.tsx:403
+#. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 msgid "carryForward"
 msgstr "Carry Forward"
 
@@ -474,17 +475,17 @@ msgstr "Carry Forward"
 msgid "carryForwardEnabled"
 msgstr "Show Carry Forward button"
 
-#: components/FormMeta/CarryForward.tsx:183
+#: components/FormMeta/CarryForward.tsx:192
 #. Used in: Components > Form Meta > Carry Forward
 msgid "bulkCarryForwardEnabled"
 msgstr "Show Bulk Carry Forward count"
 
-#: components/Forms/Save.tsx:257
+#: components/Forms/Save.tsx:389
 #. Used in: Components > Forms > Save
 msgid "bulkCarryForwardCount"
 msgstr "Bulk Carry Forward count"
 
-#: components/Forms/Save.tsx:271
+#: components/Forms/Save.tsx:404
 #. Used in: Components > Forms > Save
 msgid "carryForwardDescription"
 msgstr "Create a new record with certain fields carried over"
@@ -495,30 +496,66 @@ msgstr "Create a new record with certain fields carried over"
 msgid "carryForwardSettingsDescription"
 msgstr "Configure fields to carry forward"
 
-#: components/FormMeta/CarryForward.tsx:186
+#: components/FormMeta/CarryForward.tsx:195
+#: components/FormMeta/CarryForward.tsx:216
 #. Used in: Components > Form Meta > Carry Forward
 msgid "bulkCarryForwardSettingsDescription"
 msgstr "Configure fields to bulk carry forward"
 
-#: components/FormMeta/CarryForward.tsx:344
+#: components/FormMeta/CarryForward.tsx:385
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardTableSettingsDescription"
 msgstr "Configure fields to carry forward ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:341
+#: components/FormMeta/CarryForward.tsx:382
 #. Used in: Components > Form Meta > Carry Forward
 msgid "bulkCarryForwardTableSettingsDescription"
 msgstr "Configure fields to bulk carry forward ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:414
+#: components/FormMeta/CarryForward.tsx:455
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardUniqueField"
 msgstr "This field must be unique. It can not be carried over"
 
-#: components/FormMeta/CarryForward.tsx:416
+#: components/FormMeta/CarryForward.tsx:457
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardRequiredField"
 msgstr "This field is required. It must be carried forward"
+
+#: components/FormMeta/CarryForward.tsx:213
+#. Used in: Components > Form Meta > Carry Forward
+msgid "bulkCarryForwardRangeEnabled"
+msgstr "Show Bulk Carry Forward range"
+
+#: components/Forms/BulkCarryForward.tsx:52
+#. Used in: Components > Forms > Bulk Carry Forward
+msgid "bulkCarryForwardRangeErrorDescription"
+msgstr "Cannot carry forward record through the specified {field:string} range."
+
+#: components/Forms/BulkCarryForward.tsx:46
+#. Used in: Components > Forms > Bulk Carry Forward
+msgid "bulkCarryForwardRangeLimitExceeded"
+msgstr "Range exceeds record limit of {limit:number}."
+
+#: components/Forms/BulkCarryForward.tsx:38
+#. Used in: Components > Forms > Bulk Carry Forward
+msgid "bulkCarryForwardRangeExistingRecords"
+msgstr "The following numbers for {field:string} are already being used:"
+
+#: components/Forms/Save.tsx:367
+#. Used in: Components > Forms > Save
+msgid "bulkCarryForwardRangeStart"
+msgstr "Carry Forward Range Start"
+
+#: components/Forms/Save.tsx:375
+#. Used in: Components > Forms > Save
+msgid "bulkCarryForwardRangeEnd"
+msgstr "Carry Forward Range End"
+
+#: components/FormMeta/CarryForward.tsx:231
+#. Used in: Components > Form Meta > Carry Forward
+msgid "createRecordSetOnBulkCarryForward"
+msgstr "Create record set on Bulk Carry Forward"
 
 #: components/FormMeta/Clone.tsx:31
 #. Used in: Components > Form Meta > Clone
@@ -530,7 +567,7 @@ msgstr "Show Clone button"
 msgid "addButtonEnabled"
 msgstr "Show Add button"
 
-#: components/Forms/Save.tsx:331
+#: components/Forms/Save.tsx:433
 #. Used in: Components > Forms > Save
 msgid "addButtonDescription"
 msgstr "Create a new blank record"
@@ -681,7 +718,7 @@ msgstr "Item was deleted successfully."
 msgid "dateRange"
 msgstr "(Range: {from:string} - {to:string})"
 
-#: components/FieldFormatters/index.ts:287
+#: components/FieldFormatters/index.ts:293
 #. 🟥Meaning "Catalog Number Numeric formatter". Used in: Components > Field Formatters > Index
 msgid "catalogNumberNumericFormatter"
 msgstr "Catalog Number Numeric"

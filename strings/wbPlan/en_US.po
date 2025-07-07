@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Preferences/UserDefinitions.tsx:1880
+#: components/Preferences/UserDefinitions.tsx:1896
 #: components/WbToolkit/DevShowPlan.tsx:119
 #: components/WorkBench/WbView.tsx:203
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Wb View
@@ -73,7 +73,7 @@ msgstr "Optional Fields"
 msgid "hiddenFields"
 msgstr "Hidden Fields"
 
-#: components/FormMeta/CarryForward.tsx:376
+#: components/FormMeta/CarryForward.tsx:417
 #: components/QueryBuilder/Toolbar.tsx:42
 #: components/WbPlanView/MapperComponents.tsx:76
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components

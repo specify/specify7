@@ -137,7 +137,7 @@ msgstr "Devolver preparaciones seleccionadas"
 msgid "selectAllAvailablePreparations"
 msgstr "Seleccione todas las preparaciones disponibles"
 
-#: components/FormMeta/CarryForward.tsx:311
+#: components/FormMeta/CarryForward.tsx:352
 #: components/Interactions/LoanReturn.tsx:182
 #: components/Interactions/PrepDialog.tsx:133
 #: components/Interactions/PrepDialog.tsx:257
@@ -228,7 +228,7 @@ msgstr ""
 "Se han devuelto y guardado {count:number|formatted} "
 "{tablePreparation:string} registros"
 
-#: components/FormMeta/CarryForward.tsx:332
+#: components/FormMeta/CarryForward.tsx:373
 #: components/Interactions/LoanReturn.tsx:197
 #: components/Interactions/PrepDialog.tsx:140
 #: components/QueryBuilder/Results.tsx:211

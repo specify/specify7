@@ -14,7 +14,7 @@ msgstr ""
 
 #: components/BatchEdit/index.tsx:189
 #: components/Header/menuItemDefinitions.ts:115
-#: components/Preferences/UserDefinitions.tsx:2043
+#: components/Preferences/UserDefinitions.tsx:2059
 #: components/Router/OverlayRoutes.tsx:246
 #: components/WbUtils/datasetVariants.tsx:89
 #: components/WbUtils/datasetVariants.tsx:105
@@ -28,7 +28,7 @@ msgstr "Пакетне редагування"
 msgid "batchEditPrefs"
 msgstr "Налаштування пакетного редагування"
 
-#: components/Preferences/UserDefinitions.tsx:2049
+#: components/Preferences/UserDefinitions.tsx:2065
 #. Used in: Components > Preferences > User Definitions
 msgid "numberOfRecords"
 msgstr "Кількість записів, вибраних із запиту"
@@ -74,12 +74,12 @@ msgstr ""
 "Використовуйте конструктор запитів для створення нового набору даних для "
 "пакетного редагування"
 
-#: components/Preferences/UserDefinitions.tsx:2072
+#: components/Preferences/UserDefinitions.tsx:2088
 #. Used in: Components > Preferences > User Definitions
 msgid "showRollback"
 msgstr "Показати кнопку відкату"
 
-#: components/Preferences/UserDefinitions.tsx:2077
+#: components/Preferences/UserDefinitions.tsx:2093
 #. Used in: Components > Preferences > User Definitions
 msgid "showRollbackDescription"
 msgstr ""
@@ -205,12 +205,12 @@ msgstr ""
 "(Набори даних пакетного редагування не можна редагувати після відкату – "
 "лише для читання)"
 
-#: components/Preferences/UserDefinitions.tsx:2064
+#: components/Preferences/UserDefinitions.tsx:2080
 #. Used in: Components > Preferences > User Definitions
 msgid "enableRelationships"
 msgstr "Увімкнути зв'язки"
 
-#: components/Preferences/UserDefinitions.tsx:2069
+#: components/Preferences/UserDefinitions.tsx:2085
 #. Used in: Components > Preferences > User Definitions
 msgid "enableRelationshipsDescription"
 msgstr ""

@@ -18,13 +18,13 @@ msgid "forms"
 msgstr "Форми"
 
 #: components/Atoms/DataEntry.tsx:153
-#: components/Forms/Save.tsx:323
+#: components/Forms/Save.tsx:424
 #: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Клон"
 
-#: components/Forms/Save.tsx:324
+#: components/Forms/Save.tsx:425
 #. Used in: Components > Forms > Save
 msgid "cloneDescription"
 msgstr "Створити повну копію поточного запису"
@@ -211,18 +211,18 @@ msgstr "Поточний об'єкт (з {total:number|formatted})"
 
 #: components/FormMeta/Definition.tsx:93
 #: components/Forms/ResourceView.tsx:405
-#: components/Forms/Save.tsx:46
+#: components/Forms/Save.tsx:51
 #. Used in: Components > Form Meta > Definition ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
 msgstr "Цю форму не збережено."
 
 #: components/AttachmentsBulkImport/utils.ts:482
-#: components/Forms/Save.tsx:355
+#: components/Forms/Save.tsx:458
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 msgid "saveConflict"
 msgstr "Зберегти конфлікт"
 
-#: components/Forms/Save.tsx:358
+#: components/Forms/Save.tsx:461
 #. Used in: Components > Forms > Save
 msgid "saveConflictDescription"
 msgstr ""
@@ -230,12 +230,12 @@ msgstr ""
 "або в іншій вкладці браузера та застарілі. Сторінку необхідно "
 "перезавантажити, щоб запобігти збереженню невідповідних даних."
 
-#: components/Forms/Save.tsx:388
+#: components/Forms/Save.tsx:502
 #. Used in: Components > Forms > Save
 msgid "saveBlocked"
 msgstr "Зберегти заблоковано"
 
-#: components/Forms/Save.tsx:391
+#: components/Forms/Save.tsx:505
 #. Used in: Components > Forms > Save
 msgid "saveBlockedDescription"
 msgstr "Форму неможливо зберегти через таку помилку:"
@@ -309,8 +309,8 @@ msgid "pluginName"
 msgstr "Назва плагіна"
 
 #: utils/parser/definitions.ts:112
-#: utils/parser/__tests__/definitions.test.ts:185
-#: utils/parser/__tests__/definitions.test.ts:187
+#: utils/parser/__tests__/definitions.test.ts:186
+#: utils/parser/__tests__/definitions.test.ts:188
 #. 🟥Yes/No probably shouldn't be translated as Specify 7 does not support changing which values are recognized as Yes/No in a given language. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
 msgid "illegalBool"
 msgstr "Неприпустиме значення для поля «Так/Ні»"
@@ -329,10 +329,10 @@ msgstr "Поле обов'язкове для заповнення."
 #: components/ExportFeed/Editor.tsx:399
 #: components/ExportFeed/Editor.tsx:403
 #: components/QueryComboBox/index.tsx:194
-#: utils/parser/__tests__/definitions.test.ts:204
-#: utils/parser/__tests__/definitions.test.ts:206
-#: utils/parser/__tests__/definitions.test.ts:222
-#: utils/parser/__tests__/definitions.test.ts:224
+#: utils/parser/__tests__/definitions.test.ts:205
+#: utils/parser/__tests__/definitions.test.ts:207
+#: utils/parser/__tests__/definitions.test.ts:223
+#: utils/parser/__tests__/definitions.test.ts:225
 #. Used in: Components > Export Feed > Editor ⬤ Components > Query Combo Box > Index ⬤ Parser > __tests__ > Definitions
 msgid "invalidValue"
 msgstr "Недійсне значення"
@@ -342,7 +342,7 @@ msgstr "Недійсне значення"
 #: utils/parser/definitions.ts:206
 #: utils/parser/definitions.ts:208
 #: utils/parser/definitions.ts:374
-#: utils/parser/__tests__/definitions.test.ts:79
+#: utils/parser/__tests__/definitions.test.ts:80
 #: utils/parser/__tests__/parse.test.ts:228
 #. 🟥Used in field validation messages on the form. Used in: Components > Form Plugins > Date Input ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
 msgid "requiredFormat"
@@ -417,7 +417,7 @@ msgstr "Можливо, ви захочете зберегти цей запис
 msgid "creatingNewRecord"
 msgstr "Створення нового запису"
 
-#: components/FormSliders/RecordSet.tsx:364
+#: components/FormSliders/RecordSet.tsx:371
 #. Used in: Components > Form Sliders > Record Set
 msgid "createNewRecordSet"
 msgstr "Створити новий набір записів"
@@ -437,12 +437,12 @@ msgstr "Зворотний"
 msgid "deletedInline"
 msgstr "(видалено)"
 
-#: components/FormSliders/RecordSet.tsx:499
+#: components/FormSliders/RecordSet.tsx:514
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItem"
 msgstr "Дублікат {recordSetItemTable:string}"
 
-#: components/FormSliders/RecordSet.tsx:504
+#: components/FormSliders/RecordSet.tsx:519
 #. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItemDescription"
 msgstr "Цей запис вже присутній у поточному {recordSetTable:string}"
@@ -463,8 +463,9 @@ msgstr "Видалити з {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Нічого не знайдено"
 
-#: components/Forms/Save.tsx:270
-#. 🟥Verb. Button label. Used in: Components > Forms > Save
+#: components/Forms/BulkCarryForward.tsx:33
+#: components/Forms/Save.tsx:403
+#. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 msgid "carryForward"
 msgstr "Перенести далі"
 
@@ -473,17 +474,17 @@ msgstr "Перенести далі"
 msgid "carryForwardEnabled"
 msgstr "Показати кнопку «Перенести вперед»"
 
-#: components/FormMeta/CarryForward.tsx:183
+#: components/FormMeta/CarryForward.tsx:192
 #. Used in: Components > Form Meta > Carry Forward
 msgid "bulkCarryForwardEnabled"
 msgstr "Показати кількість групового перенесення"
 
-#: components/Forms/Save.tsx:257
+#: components/Forms/Save.tsx:389
 #. Used in: Components > Forms > Save
 msgid "bulkCarryForwardCount"
 msgstr "Кількість перенесених даних"
 
-#: components/Forms/Save.tsx:271
+#: components/Forms/Save.tsx:404
 #. Used in: Components > Forms > Save
 msgid "carryForwardDescription"
 msgstr "Створити новий запис із перенесенням певних полів"
@@ -494,30 +495,66 @@ msgstr "Створити новий запис із перенесенням п�
 msgid "carryForwardSettingsDescription"
 msgstr "Налаштуйте поля для перенесення"
 
-#: components/FormMeta/CarryForward.tsx:186
+#: components/FormMeta/CarryForward.tsx:195
+#: components/FormMeta/CarryForward.tsx:216
 #. Used in: Components > Form Meta > Carry Forward
 msgid "bulkCarryForwardSettingsDescription"
 msgstr "Налаштуйте поля для масового перенесення"
 
-#: components/FormMeta/CarryForward.tsx:344
+#: components/FormMeta/CarryForward.tsx:385
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardTableSettingsDescription"
 msgstr "Налаштуйте поля для перенесення ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:341
+#: components/FormMeta/CarryForward.tsx:382
 #. Used in: Components > Form Meta > Carry Forward
 msgid "bulkCarryForwardTableSettingsDescription"
 msgstr "Налаштуйте поля для масового перенесення ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:414
+#: components/FormMeta/CarryForward.tsx:455
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardUniqueField"
 msgstr "Це поле має бути унікальним. Його не можна переносити"
 
-#: components/FormMeta/CarryForward.tsx:416
+#: components/FormMeta/CarryForward.tsx:457
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardRequiredField"
 msgstr "Це поле обов'язкове. Його потрібно перенести"
+
+#: components/FormMeta/CarryForward.tsx:213
+#. Used in: Components > Form Meta > Carry Forward
+msgid "bulkCarryForwardRangeEnabled"
+msgstr ""
+
+#: components/Forms/BulkCarryForward.tsx:52
+#. Used in: Components > Forms > Bulk Carry Forward
+msgid "bulkCarryForwardRangeErrorDescription"
+msgstr ""
+
+#: components/Forms/BulkCarryForward.tsx:46
+#. Used in: Components > Forms > Bulk Carry Forward
+msgid "bulkCarryForwardRangeLimitExceeded"
+msgstr ""
+
+#: components/Forms/BulkCarryForward.tsx:38
+#. Used in: Components > Forms > Bulk Carry Forward
+msgid "bulkCarryForwardRangeExistingRecords"
+msgstr ""
+
+#: components/Forms/Save.tsx:367
+#. Used in: Components > Forms > Save
+msgid "bulkCarryForwardRangeStart"
+msgstr ""
+
+#: components/Forms/Save.tsx:375
+#. Used in: Components > Forms > Save
+msgid "bulkCarryForwardRangeEnd"
+msgstr ""
+
+#: components/FormMeta/CarryForward.tsx:231
+#. Used in: Components > Form Meta > Carry Forward
+msgid "createRecordSetOnBulkCarryForward"
+msgstr ""
 
 #: components/FormMeta/Clone.tsx:31
 #. Used in: Components > Form Meta > Clone
@@ -529,7 +566,7 @@ msgstr "Кнопка «Показати клон»"
 msgid "addButtonEnabled"
 msgstr "Показати кнопку «Додати»"
 
-#: components/Forms/Save.tsx:331
+#: components/Forms/Save.tsx:433
 #. Used in: Components > Forms > Save
 msgid "addButtonDescription"
 msgstr "Створити новий пустий запис"
@@ -680,7 +717,7 @@ msgstr "Елемент успішно видалено."
 msgid "dateRange"
 msgstr "(Діапазон: {from:string} - {to:string})"
 
-#: components/FieldFormatters/index.ts:287
+#: components/FieldFormatters/index.ts:293
 #. 🟥Meaning "Catalog Number Numeric formatter". Used in: Components > Field Formatters > Index
 msgid "catalogNumberNumericFormatter"
 msgstr "Номер у каталозі (числовий)"
