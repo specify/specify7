@@ -1,6 +1,7 @@
 import Handsontable from 'handsontable';
 import type { Plugins } from 'handsontable/plugins';
 import type { CellProperties } from 'handsontable/settings';
+import type { WritableArray } from '../../utils/types';
 
 import { getCache } from '../../utils/cache';
 import { writable } from '../../utils/types';
@@ -217,7 +218,7 @@ function setColumnWidths(
   hot: Handsontable,
   dataset: Dataset
 ): void {
-  let colWidths: readonly number[] | undefined = undefined;
+  let colWidths: WritableArray<number> | undefined = undefined;
   /**
    * The attachments column contains text that is different from what is actually displayed.
    * For simplicity, the width is limited to 100px to reflect the likely shorter displayed text.
