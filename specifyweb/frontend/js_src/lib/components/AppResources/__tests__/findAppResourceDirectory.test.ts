@@ -1,9 +1,7 @@
 import { requireContext } from '../../../tests/helpers';
 import { f } from '../../../utils/functools';
-import type { R, RA } from '../../../utils/types';
-import { filterArray, localized } from '../../../utils/types';
-import { serializeResource } from '../../DataModel/serializers';
-import { tables } from '../../DataModel/tables';
+import type { R } from '../../../utils/types';
+import { filterArray } from '../../../utils/types';
 import {
   findAppResourceDirectory,
   findAppResourceDirectoryKey,
@@ -11,121 +9,11 @@ import {
 import type { AppResourcesTree } from '../hooks';
 import type { ScopedAppResourceDir } from '../types';
 
+import { utilsForTests } from './utils';
+
 requireContext();
 
-const makeAppResourceNode = (
-  label: string,
-  key: string,
-  directory: ScopedAppResourceDir | undefined,
-  subCategories: AppResourcesTree
-): AppResourcesTree[number] => ({
-  label: localized(label),
-  key,
-  directory,
-  subCategories,
-  appResources: [],
-  viewSets: [],
-});
-
-const makeDirectory = (id: number): ScopedAppResourceDir => {
-  const dir = new tables.SpAppResourceDir.Resource({
-    id,
-    isPersonal: false,
-    collection: '/api/specify/collection/32768/',
-    discipline: '/api/specify/discipline/3/',
-  });
-
-  return { ...serializeResource(dir), scope: 'collection' };
-};
-
-// Make it part of functools?
-function* incrementor() {
-  let index = 0;
-  while (true) {
-    yield index++;
-  }
-}
-
-type Incrementor = ReturnType<typeof incrementor>;
-
-function prefixIncrmentor(
-  prefix: string,
-  generator: ReturnType<typeof incrementor>
-) {
-  return `${prefix}${generator.next().value}`;
-}
-
-// This makes adding tests a bit easier.
-type Node = {
-  readonly id?: number;
-  readonly children: RA<Node>;
-};
-
-const treeStructure: RA<Node> = [
-  {
-    id: 0,
-    children: [
-      {
-        id: 0,
-        children: [
-          { id: 0, children: [] },
-          { id: undefined, children: [] },
-        ],
-      },
-      {
-        id: 0,
-        children: [
-          { id: undefined, children: [] },
-          { id: undefined, children: [] },
-        ],
-      },
-    ],
-  },
-  {
-    id: 0,
-    children: [
-      {
-        id: 0,
-        children: [
-          { id: 0, children: [] },
-          { id: undefined, children: [] },
-        ],
-      },
-      {
-        id: 0,
-        children: [
-          { id: 0, children: [{ id: undefined, children: [] }] },
-          { id: 0, children: [] },
-        ],
-      },
-    ],
-  },
-];
-
-const makeTree = (
-  nodes: RA<Node>,
-  labelIncrementor: Incrementor,
-  keyIncrementor: Incrementor,
-  idIncrementor: Incrementor
-): AppResourcesTree =>
-  nodes.map((node) =>
-    makeAppResourceNode(
-      prefixIncrmentor('TestLabel', labelIncrementor),
-      prefixIncrmentor('TestKey', keyIncrementor),
-      node.id === undefined
-        ? undefined
-        : makeDirectory(idIncrementor.next().value as number),
-      makeTree(node.children, labelIncrementor, keyIncrementor, idIncrementor)
-    )
-  );
-
-const simpleTree = () => [
-  makeAppResourceNode('TestLabel', 'TestKey1', makeDirectory(1), []),
-  makeAppResourceNode('TestLabel2', 'TestKey2', makeDirectory(2), []),
-  makeAppResourceNode('TestLabel3', 'TestKey3', undefined, []),
-  makeAppResourceNode('TestLabel4', 'TestKey4', makeDirectory(4), []),
-  makeAppResourceNode('TestLabel5', 'TestKey5', makeDirectory(5), []),
-];
+const { treeStructure, simpleTree, incrementor, makeTree } = utilsForTests;
 
 describe('findAppResourceDirectory', () => {
   test('first level search', () => {
@@ -153,7 +41,7 @@ describe('findAppResourceDirectory', () => {
         ])
       );
 
-    const tree: AppResourcesTree = makeTree(
+    const tree = makeTree(
       treeStructure,
       labelIncrementor,
       keyIncrementor,
@@ -172,7 +60,7 @@ describe('findAppResourceDirectory', () => {
 
 describe('findAppResourceDirectoryKey', () => {
   test('first level search', () => {
-    const tree: AppResourcesTree = simpleTree();
+    const tree = simpleTree();
 
     tree.forEach((node) => {
       if (node.directory?.id === undefined) return;
@@ -186,7 +74,7 @@ describe('findAppResourceDirectoryKey', () => {
     const keyIncrementor = incrementor();
     const idIncrementor = incrementor();
 
-    const tree: AppResourcesTree = makeTree(
+    const tree = makeTree(
       treeStructure,
       labelIncrementor,
       keyIncrementor,
