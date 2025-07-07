@@ -9,6 +9,7 @@ import { StringToJsx } from '../../localization/utils';
 import type { IR, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
+import { downloadArchive } from '../Attachments/attachments';
 import { getTable } from '../DataModel/tables';
 import { userInformation } from '../InitialContext/userInformation';
 import {
@@ -21,7 +22,6 @@ import { mergingQueryParameter } from '../Merging/queryString';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
-import { downloadArchive } from '../Attachments/attachments';
 
 export type GenericNotification = {
   readonly messageId: string;
@@ -331,9 +331,16 @@ export const notificationRenderers: IR<
   'attachment-download-ready'(notification) {
     return (
       <>
-        {notificationsText.attachmentDownloadReady({ archiveName: notification.payload.archive_name })}
+        {notificationsText.attachmentDownloadReady({
+          archiveName: notification.payload.archive_name,
+        })}
         <Button.Small
-          onClick={(): void => {downloadArchive(notification.payload.file, notification.payload.archive_name)}}
+          onClick={(): void => {
+            downloadArchive(
+              notification.payload.file,
+              notification.payload.archive_name
+            );
+          }}
         >
           {localityText.localityUpdateResults()}
         </Button.Small>
