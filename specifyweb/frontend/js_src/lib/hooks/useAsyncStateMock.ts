@@ -1,5 +1,7 @@
-// Like useAsyncState, but calls the callback function rather than updating the state.
-// Actually, useAsyncState can be refactored to use this
+/*
+ * Like useAsyncState, but calls the callback function rather than updating the state.
+ * Actually, useAsyncState can be refactored to use this
+ */
 
 import React from 'react';
 

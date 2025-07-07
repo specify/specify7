@@ -50,8 +50,8 @@ import {
   defaultFont,
   FontFamilyPreferenceItem,
   HeaderItemsPreferenceItem,
-  WelcomePageModePreferenceItem,
   ThresholdRank,
+  WelcomePageModePreferenceItem,
 } from './Renderers';
 import type { GenericPreferences, PreferencesVisibilityContext } from './types';
 import { definePref } from './types';
@@ -1497,9 +1497,7 @@ export const userPreferenceDefinitions = {
             requiresReload: true,
             visible: true,
             defaultValue: 0,
-            renderer: (props) => (
-              <ThresholdRank {...props} tableName="Taxon" />
-            ),
+            renderer: (props) => <ThresholdRank {...props} tableName="Taxon" />,
             container: 'label',
           }),
         },
