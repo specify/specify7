@@ -168,9 +168,22 @@ RUN echo \
         "\nCELERY_TASK_DEFAULT_QUEUE = os.getenv('CELERY_TASK_QUEUE', DATABASE_NAME)" \
         "\nANONYMOUS_USER = os.getenv('ANONYMOUS_USER', None)" \
         "\nSPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', '/opt/Specify/config')" \
-        "\nhost = os.getenv('CSRF_TRUSTED_ORIGINS', None)" \
-        "\nALLOWED_HOSTS = globals()['ALLOWED_HOSTS'] if 'ALLOWED_HOSTS' in globals() and globals()['ALLOWED_HOSTS'] != ['*'] else (os.getenv('ALLOWED_HOSTS', '').split(',') if os.getenv('ALLOWED_HOSTS') else ['*'])" \
-        "\nCSRF_TRUSTED_ORIGINS = globals()['CSRF_TRUSTED_ORIGINS'] if 'CSRF_TRUSTED_ORIGINS' in globals() and globals()['CSRF_TRUSTED_ORIGINS'] != ['https://*', 'http://*'] else ([o.strip() for o in host.split(',')] if host else [])" \
+        # Resolve ALLOWED_HOSTS in the following precedence:
+        # - Use the ALLOWED_HOSTS environment variable (if present)
+        # - Otherwise, fallback to the default specified in settings/specify_settings.py
+        # - If still not defined, use the hard-coded default ['*']
+        # See https://github.com/specify/specify7/pull/6831
+        "\n_env_allowed_hosts = os.getenv('ALLOWED_HOSTS', None)" \
+        "\n_default_allowed_hosts = globals().get('ALLOWED_HOSTS', ['*'])" \
+        "\nALLOWED_HOSTS = _default_allowed_hosts if _env_allowed_hosts is None else _env_allowed_hosts.split(',')" \
+        # Resolve CSRF_TRUSTED_ORIGINS in the following precedence:
+        # - Use the CSRF_TRUSTED_ORIGINS environment variable (if present)
+        # - Otherwise, fallback to the default specified in settings/specify_settings.py
+        # - If still not defined, use the hard-coded default ['https://*', 'http://*']
+        # See https://github.com/specify/specify7/pull/6831
+        "\n_env_trusted_origins = os.getenv('CSRF_TRUSTED_ORIGINS', None)" \ 
+        "\n_default_trusted_origins = globals().get('CSRF_TRUSTED_ORIGINS', ['https://*', 'http://*'])" \
+        "\nCSRF_TRUSTED_ORIGINS = _default_trusted_origins if _env_trusted_origins is None else _env_trusted_origins.split(',')" \
         > settings/local_specify_settings.py
 
 RUN echo "import os \nDEBUG = os.getenv('SP7_DEBUG', '').lower() == 'true'\n" \
