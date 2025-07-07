@@ -45,6 +45,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
+import type { BulkCarryRangeError } from './BulkCarryForward';
 import { BulkCarryRangeBlockedDialog } from './BulkCarryForward';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
@@ -260,7 +261,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const parser = formatterToParser(numberField, formatter);
 
   const [bulkCarryRangeBlocked, setBulkCarryRangeBlocked] =
-    React.useState(false);
+    React.useState<BulkCarryRangeError>(false);
   const [bulkCarryRangeInvalidNumbers, setBulkCarryRangeInvalidNumbers] =
     React.useState<RA<string> | undefined>(undefined);
 
@@ -280,13 +281,14 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         (formatter.format(carryForwardRangeStart) ?? '') >=
           (formatter.format(carryForwardRangeEnd) ?? '')
       ) {
-        setBulkCarryRangeBlocked(true);
+        setBulkCarryRangeBlocked('InvalidRange');
         return undefined;
       }
 
       const response = await ajax<{
         readonly values: RA<number>;
-        readonly existing: RA<string>;
+        readonly existing?: RA<string>;
+        readonly error?: string,
       }>(`/api/specify/series_autonumber_range/`, {
         method: 'POST',
         headers: { Accept: 'application/json' },
@@ -298,6 +300,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           formatterName: formatter.name,
           skipStartNumber: true,
         }),
+        errorMode: 'dismissible',
       })
         .then(({ data }) => data)
         .catch((error) => {
@@ -309,9 +312,11 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         return undefined;
       }
       numbers = response.values;
-      if (response.existing.length > 0) {
-        setBulkCarryRangeInvalidNumbers(response.existing);
-        setBulkCarryRangeBlocked(true);
+      if (response.error !== undefined) {
+        setBulkCarryRangeBlocked(response.error as BulkCarryRangeError);
+        if (response.existing !== undefined) {
+          setBulkCarryRangeInvalidNumbers(response.existing);
+        }
         return undefined;
       }
     }
@@ -461,8 +466,9 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           onClose={(): void => setShownBlocker(undefined)}
         />
       ) : undefined}
-      {bulkCarryRangeBlocked ? (
+      {(bulkCarryRangeBlocked !== false) && (
         <BulkCarryRangeBlockedDialog
+          error={bulkCarryRangeBlocked}
           invalidNumbers={bulkCarryRangeInvalidNumbers}
           numberField={numberField}
           onClose={(): void => {
@@ -470,7 +476,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             setBulkCarryRangeInvalidNumbers(undefined);
           }}
         />
-      ) : undefined}
+      )}
     </>
   );
 }

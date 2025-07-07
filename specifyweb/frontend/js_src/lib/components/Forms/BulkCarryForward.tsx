@@ -7,11 +7,21 @@ import { Button } from '../Atoms/Button';
 import type { LiteralField } from '../DataModel/specifyField';
 import { Dialog } from '../Molecules/Dialog';
 
+export type BulkCarryRangeError =
+  | boolean
+  | 'InvalidRange'
+  | 'ExistingNumbers'
+  | 'LimitExceeded';
+
+const bulkCarryLimit = 500;
+
 export function BulkCarryRangeBlockedDialog({
+  error,
   invalidNumbers,
   numberField,
   onClose: handleClose,
 }: {
+  readonly error: BulkCarryRangeError;
   readonly invalidNumbers: RA<string> | undefined;
   readonly numberField: LiteralField;
   readonly onClose: () => void;
@@ -26,18 +36,25 @@ export function BulkCarryRangeBlockedDialog({
       header={formsText.carryForward()}
       onClose={undefined}
     >
-      {invalidNumbers === undefined ? (
-        formsText.bulkCarryForwardRangeErrorDescription({
-          field: numberField.label,
-        })
-      ) : (
+      {error == 'ExistingNumbers' ? (
         <>
           {formsText.bulkCarryForwardRangeExistingRecords({
             field: numberField.label,
           })}
-          {invalidNumbers.map((number, index) => (
-            <p key={index}>{number}</p>
-          ))}
+          {invalidNumbers &&
+            invalidNumbers.map((number, index) => <p key={index}>{number}</p>)}
+        </>
+      ) : error === 'LimitExceeded' ? (
+        <>
+          {formsText.bulkCarryForwardRangeLimitExceeded({
+            limit: bulkCarryLimit,
+          })}
+        </>
+      ) : (
+        <>
+          {formsText.bulkCarryForwardRangeErrorDescription({
+            field: numberField.label,
+          })}
         </>
       )}
     </Dialog>

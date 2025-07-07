@@ -1548,7 +1548,10 @@ def series_autonumber_range(request: http.HttpRequest):
             current_value = ''.join(formatter.fill_vals_after(current_value))
             values.append(current_value)
             if len(values) >= limit:
-                return http.HttpResponseBadRequest(f'Bulk carry range exceeds limit of {limit} values.')
+                return http.JsonResponse({
+                    'values': [],
+                    'error': 'LimitExceeded',
+                })
         
         # Check if any existing records use the values.
         # Not garanteed to be accurate at the time of saving, just serves as a warning for the frontend.
@@ -1556,9 +1559,15 @@ def series_autonumber_range(request: http.HttpRequest):
         existing_records = table.objects.filter(**{f'{field_name}__in': values, 'collection': request.specify_collection})
         existing_values = list(existing_records.values_list(field_name, flat=True))
 
+        if len(existing_values) > 0:
+            return http.JsonResponse({
+                'values': values,
+                'existing': existing_values,
+                'error': 'ExistingNumbers',
+            })
+
         return http.JsonResponse({
             'values': values,
-            'existing': existing_values,
         })
     except Exception as e:
         return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)  
