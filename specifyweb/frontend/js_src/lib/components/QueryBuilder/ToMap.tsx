@@ -91,8 +91,8 @@ function useSelectedResults(
       selectedRows.size === 0
         ? results
         : results.filter((result) =>
-          f.has(selectedRows, result?.[queryIdField])
-        ),
+            f.has(selectedRows, result?.[queryIdField])
+          ),
     [results, selectedRows]
   );
 }
@@ -180,9 +180,9 @@ export function QueryToMapDialog({
   const localityData = React.useRef<RA<LocalityDataWithId>>([]);
   const [initialData] = useLiveState<
     | {
-      readonly localityData: RA<LocalityData>;
-      readonly onClick: ReturnType<typeof createClickCallback>;
-    }
+        readonly localityData: RA<LocalityData>;
+        readonly onClick: ReturnType<typeof createClickCallback>;
+      }
     | undefined
   >(
     React.useCallback(() => {
@@ -219,7 +219,6 @@ export function QueryToMapDialog({
       if (map === undefined) return;
       addLeafletMarkers(tableName, map, localityData.current);
       localityData.current = [];
-
     },
     [tableName, localityMappings]
   );
@@ -239,7 +238,9 @@ export function QueryToMapDialog({
       if (mapRef.current?.sp7MarkerCount !== markerCountRef.current) {
         // This way, if the error happens in development mode, it can be caught more easily. (log checks may be easy to forget)
         softFail(
-          new Error(`Expected the counts to match: Expected: ${markerCountRef.current}. Got: ${mapRef.current?.sp7MarkerCount}`)
+          new Error(
+            `Expected the counts to match: Expected: ${markerCountRef.current}. Got: ${mapRef.current?.sp7MarkerCount}`
+          )
         );
       }
     },
@@ -258,12 +259,12 @@ export function QueryToMapDialog({
         typeof totalCount === 'number'
           ? results.length === totalCount
             ? localityText.queryMapAll({
-              plotted: results.length,
-            })
+                plotted: results.length,
+              })
             : localityText.queryMapSubset({
-              plotted: results.length,
-              total: totalCount,
-            })
+                plotted: results.length,
+                total: totalCount,
+              })
           : localityText.geoMap()
       }
       headerButtons={

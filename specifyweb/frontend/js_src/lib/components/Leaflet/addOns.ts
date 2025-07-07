@@ -109,7 +109,6 @@ export function addMarkersToMap(
   markers: RA<MarkerGroups>,
   labels: Partial<RR<MarkerLayerName, string>> = defaultLabels
 ): LeafletInstance {
-  
   // Initialize layer groups
   const cluster = L.markerClusterGroup({
     iconCreateFunction(cluster) {
@@ -176,8 +175,7 @@ export function addMarkersToMap(
         })
       )
     );
-  }
-
+  };
 
   addMarkers(markers);
 
