@@ -2,6 +2,7 @@
 // Actually, useAsyncState can be refactored to use this
 
 import React from "react";
+import { f } from "../utils/functools";
 
 
 export function useAsyncStateMock<T>(
@@ -21,6 +22,6 @@ export function useAsyncStateMock<T>(
         }
     }, [callback]);
 
-    return [undefined, undefined];
-    
+    return [undefined, f.void];
+
 }
