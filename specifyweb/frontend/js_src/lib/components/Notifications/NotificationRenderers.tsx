@@ -352,7 +352,9 @@ export const notificationRenderers: IR<
   'attachment-download-failed'(notification) {
     return (
       <>
-        {notificationsText.attachmentDownloadFailed({ archiveName: notification.payload.archive_name })}
+        {notificationsText.attachmentDownloadFailed({
+          archiveName: notification.payload.archive_name,
+        })}
       </>
     );
   },
