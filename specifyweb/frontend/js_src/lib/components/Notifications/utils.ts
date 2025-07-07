@@ -1,9 +1,9 @@
-import { ping } from '../../utils/ajax/ping';
-import { GenericNotification } from './NotificationRenderers';
 import { formData } from '../../utils/ajax/helpers';
+import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
+import type { GenericNotification } from './NotificationRenderers';
 
-export function deleteNotification(
+export async function deleteNotification(
   notification: GenericNotification
 ): Promise<void> {
   return ping('/notifications/delete/', {
