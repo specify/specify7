@@ -8,7 +8,6 @@ import {
 } from '../Create';
 import type { AppResourcesTree } from '../hooks';
 import type { ScopedAppResourceDir } from '../types';
-
 import { utilsForTests } from './utils';
 
 requireContext();
