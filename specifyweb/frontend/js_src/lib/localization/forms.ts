@@ -913,8 +913,7 @@ export const formsText = createDictionary({
       'Cannot carry forward record through the specified {field:string} range.',
   },
   bulkCarryForwardRangeLimitExceeded: {
-    'en-us':
-      'Range exceeds record limit of {limit:number}.',
+    'en-us': 'Range exceeds record limit of {limit:number}.',
   },
   bulkCarryForwardRangeExistingRecords: {
     'en-us': 'The following numbers for {field:string} are already being used:',

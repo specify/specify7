@@ -288,7 +288,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       const response = await ajax<{
         readonly values: RA<number>;
         readonly existing?: RA<string>;
-        readonly error?: string,
+        readonly error?: string;
       }>(`/api/specify/series_autonumber_range/`, {
         method: 'POST',
         headers: { Accept: 'application/json' },
@@ -466,7 +466,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           onClose={(): void => setShownBlocker(undefined)}
         />
       ) : undefined}
-      {(bulkCarryRangeBlocked !== false) && (
+      {bulkCarryRangeBlocked !== false && (
         <BulkCarryRangeBlockedDialog
           error={bulkCarryRangeBlocked}
           invalidNumbers={bulkCarryRangeInvalidNumbers}
