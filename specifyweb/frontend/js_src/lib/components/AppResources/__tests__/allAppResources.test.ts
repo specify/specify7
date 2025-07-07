@@ -1,7 +1,7 @@
-import { allAppResources } from "../filtersHelpers";
+import { allAppResources } from '../filtersHelpers';
 
-test("allAppResources", ()=>{
-    expect(allAppResources).toMatchInlineSnapshot(`
+test('allAppResources', () => {
+  expect(allAppResources).toMatchInlineSnapshot(`
       [
         "collectionPreferences",
         "dataEntryTables",
