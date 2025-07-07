@@ -151,7 +151,7 @@ RUN cp -r specifyweb/settings .
 
 RUN echo \
         "import os" \
-        "\nfrom .specify_settings import *" \
+        "\nfrom . import specify_settings as specify_defaults" \
         "\nDATABASE_NAME = os.environ['DATABASE_NAME']" \
         "\nDATABASE_HOST = os.environ['DATABASE_HOST']" \
         "\nDATABASE_PORT = os.environ.get('DATABASE_PORT', '')" \
@@ -175,7 +175,7 @@ RUN echo \
         # - If still not defined, use the hard-coded default ['*']
         # See https://github.com/specify/specify7/pull/6831
         "\n_env_allowed_hosts = os.getenv('ALLOWED_HOSTS', None)" \
-        "\n_default_allowed_hosts = locals().get('ALLOWED_HOSTS', ['*'])" \
+        "\n_default_allowed_hosts = getattr(specify_defaults,'ALLOWED_HOSTS', ['*'])" \
         "\nALLOWED_HOSTS = _default_allowed_hosts if _env_allowed_hosts is None else _env_allowed_hosts.split(',')" \
         # Resolve CSRF_TRUSTED_ORIGINS in the following precedence:
         # - Use the CSRF_TRUSTED_ORIGINS environment variable (if present)
@@ -183,7 +183,7 @@ RUN echo \
         # - If still not defined, use the hard-coded default ['https://*', 'http://*']
         # See https://github.com/specify/specify7/pull/6831
         "\n_env_trusted_origins = os.getenv('CSRF_TRUSTED_ORIGINS', None)" \ 
-        "\n_default_trusted_origins = locals().get('CSRF_TRUSTED_ORIGINS', ['https://*', 'http://*'])" \
+        "\n_default_trusted_origins = getattr(specify_defaults,'CSRF_TRUSTED_ORIGINS', ['https://*', 'http://*'])" \
         "\nCSRF_TRUSTED_ORIGINS = _default_trusted_origins if _env_trusted_origins is None else _env_trusted_origins.split(',')" \
         > settings/local_specify_settings.py
 
