@@ -12,7 +12,6 @@ import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
-import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -35,7 +34,11 @@ import type { Attachment, SpDataSetAttachment } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Skeleton } from '../SkeletonLoaders/Skeleton';
-import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
+import type { Dataset } from '../WbPlanView/Wrapped';
+import {
+  getAttachmentsColumnIndex,
+  getAttachmentsFromCell,
+} from '../WorkBench/attachmentHelpers';
 
 type WbAttachmentPreviewCell = {
   readonly attachment: SerializedResource<Attachment> | undefined;
@@ -44,11 +47,11 @@ type WbAttachmentPreviewCell = {
 
 export function WbAttachmentsPreview({
   hot,
-  datasetColumns,
+  dataset,
   onClose: handleClose,
 }: {
   readonly hot: Handsontable | undefined;
-  readonly datasetColumns: RA<string>;
+  readonly dataset: Dataset;
   readonly onClose: () => void;
 }): JSX.Element {
   const [selectedRow, setSelectedRow] = React.useState<number | undefined>(
@@ -81,7 +84,7 @@ export function WbAttachmentsPreview({
 
     fetchRowAttachments(
       hot,
-      datasetColumns,
+      dataset,
       selectedRow,
       setAttachments,
       setSelectedAttachment
@@ -144,7 +147,7 @@ export function WbAttachmentsPreview({
 
 function fetchRowAttachments(
   hot: Handsontable,
-  datasetColumns: RA<string>,
+  dataset: Dataset,
   row: number,
   setAttachments: (
     attachments:
@@ -158,15 +161,17 @@ function fetchRowAttachments(
   ) => void
 ): void {
   // Look for Attachments column
-  const attachmentColumnIndex = datasetColumns.indexOf(ATTACHMENTS_COLUMN);
+  const attachmentColumnIndex = getAttachmentsColumnIndex(dataset);
   if (attachmentColumnIndex === -1) return;
 
   // Each row should have comma-separated IDs for SpDataSetAttachments
   const selectedCell = (hot.getDataAtCell(row, attachmentColumnIndex) ??
     '') as string;
-  const dataSetAttachmentIds = (selectedCell?.split(',') ?? [])
-    .map((rawId) => f.parseInt(rawId))
-    .filter((id): id is number => id !== undefined);
+  const cellData = getAttachmentsFromCell(selectedCell);
+  const dataSetAttachmentIds =
+    cellData === undefined
+      ? []
+      : cellData.attachments.map((attachment) => attachment.id);
 
   if (dataSetAttachmentIds.length === 0) {
     setAttachments([]);
@@ -252,28 +257,28 @@ function AttachmentViewerDialog({
 
   return (
     <Dialog
-        buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
-        className={{
-          container: dialogClassNames.wideContainer,
-        }}
-        header={attachmentsText.attachments()}
-        modal={false}
-        onClose={onClose}
-      >
-        {attachment !== undefined &&
-          (isImage ? (
-            <ImageViewer
-              alt={attachment?.title ?? ''}
-              src={attachmentUrl ?? ''}
-            />
-          ) : (
-            <AttachmentViewer
-              attachment={deserializeResource(attachment)}
-              related={[related, setRelated]}
-              showMeta={false}
-              onViewRecord={undefined}
-            />
-          ))}
-      </Dialog>
+      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+      className={{
+        container: dialogClassNames.wideContainer,
+      }}
+      header={attachmentsText.attachments()}
+      modal={false}
+      onClose={onClose}
+    >
+      {attachment !== undefined &&
+        (isImage ? (
+          <ImageViewer
+            alt={attachment?.title ?? ''}
+            src={attachmentUrl ?? ''}
+          />
+        ) : (
+          <AttachmentViewer
+            attachment={deserializeResource(attachment)}
+            related={[related, setRelated]}
+            showMeta={false}
+            onViewRecord={undefined}
+          />
+        ))}
+    </Dialog>
   );
 }

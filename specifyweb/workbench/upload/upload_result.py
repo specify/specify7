@@ -282,6 +282,25 @@ class PropagatedFailure(NamedTuple):
         return PropagatedFailure()
 
 
+class AttachmentFailure(NamedTuple):
+    message: str
+    info: ReportInfo
+
+    def get_id(self) -> Failure:
+        return "Failure"
+
+    def to_json(self):
+        return {"AttachmentFailure": dict(message=self.message, info=self.info.to_json())}
+
+    @staticmethod
+    def from_json(json: dict) -> "AttachmentFailure":
+        r = json["AttachmentFailure"]
+        return AttachmentFailure(
+            message=r["message"],
+            info=json_to_ReportInfo(r["info"])
+        )
+
+
 RecordResult = Union[
     Uploaded,
     NoMatch,
@@ -295,6 +314,7 @@ RecordResult = Union[
     Updated,
     Deleted,
     MatchedAndChanged,
+    AttachmentFailure,
 ]
 
 
@@ -382,5 +402,7 @@ def json_to_record_result(json: dict) -> RecordResult:
             return Deleted.from_json(json)
         elif record_type == "MatchedAndChanged":
             return MatchedAndChanged.from_json(json)
+        elif record_type == "AttachmentFailure":
+            return AttachmentFailure.from_json(json)
         assert False, f"record_result is unknown type: {record_type}"
     assert False, f"record_result contains no data: {json}"

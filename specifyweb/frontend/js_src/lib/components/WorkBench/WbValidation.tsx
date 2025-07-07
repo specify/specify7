@@ -13,7 +13,7 @@ import {
 } from '../WbPlanView/mappingHelpers';
 import type { WbCellCounts, WbMeta } from './CellMeta';
 import type { UploadResult } from './resultsParser';
-import { resolveValidationMessage } from './resultsParser';
+import { resolveValidationMessage, resolveAttachmentValidationMessage } from './resultsParser';
 import type { Workbench } from './WbView';
 
 type Records = WritableArray<
@@ -341,6 +341,15 @@ export class WbValidation {
         resolveColumns
       );
     }
+    else if (uploadStatus === 'AttachmentFailure')
+      setMetaCallback(
+        'issues',
+        whitespaceSensitive(
+          resolveAttachmentValidationMessage(recordResult.AttachmentFailure.message)
+        ),
+        recordResult.AttachmentFailure.info.columns,
+        resolveColumns
+      );
     // TODO: Discuss if MatchedAndChanged needs to shown. or whatever.
     else if (
       uploadStatus === 'Uploaded' ||
