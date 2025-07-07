@@ -1,7 +1,7 @@
-import { defaultAppResourceFilters } from "../filtersHelpers";
+import { defaultAppResourceFilters } from '../filtersHelpers';
 
-test("defaultAppResourceFilters", ()=>{
-    expect(defaultAppResourceFilters).toMatchInlineSnapshot(`
+test('defaultAppResourceFilters', () => {
+  expect(defaultAppResourceFilters).toMatchInlineSnapshot(`
       {
         "appResources": [
           "collectionPreferences",
@@ -25,5 +25,5 @@ test("defaultAppResourceFilters", ()=>{
         ],
         "viewSets": true,
       }
-    `)
+    `);
 });
