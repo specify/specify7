@@ -1175,8 +1175,8 @@ def apply_special_post_query_processing(query, tableid, field_specs, collection,
     parent_inheritance_pref = get_parent_cat_num_inheritance_setting(collection, user)
     cog_inheritance_pref = get_cat_num_inheritance_setting(collection, user)
 
-    # if parent_inheritance_pref:
-    #     query = parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
+    if parent_inheritance_pref:
+        query = parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
 
     if cog_inheritance_pref: 
         query = cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
