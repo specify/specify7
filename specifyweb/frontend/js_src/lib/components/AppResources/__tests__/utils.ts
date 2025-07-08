@@ -18,9 +18,10 @@ function* incrementor() {
 
 function prefixIncrmentor(
   prefix: string,
-  generator: ReturnType<typeof incrementor>
+  generator: ReturnType<typeof incrementor>,
+  padZero: boolean = false
 ) {
-  return `${prefix}${generator.next().value}`;
+  return `${prefix}${padZero ? (generator.next().value as number).toString().padStart(3, '0') : (generator.next().value as number)}`;
 }
 
 type Incrementor = ReturnType<typeof incrementor>;
@@ -112,40 +113,51 @@ const treeStructure: RA<Node> = [
   },
 ];
 
+type MakeTreeProps = {
+  readonly addResources: boolean;
+  readonly forceGenerator: boolean;
+  readonly padZero: boolean;
+};
+
+const defaultMakeTreeProps: MakeTreeProps = {
+  addResources: false,
+  forceGenerator: true,
+  padZero: false,
+};
+
 const makeTree = (
   nodes: RA<Node>,
   labelIncrementor: Incrementor,
   keyIncrementor: Incrementor,
   idIncrementor: Incrementor,
-  // If true, it'll also add the appResource and viewSet objects
-  addResources: boolean = false,
-  forceGenerator: boolean = true
+  props: Partial<MakeTreeProps> = defaultMakeTreeProps
 ): AppResourcesTree =>
   nodes.map((node) =>
     makeAppResourceNode(
-      prefixIncrmentor('TestLabel', labelIncrementor),
-      prefixIncrmentor('TestKey', keyIncrementor),
+      prefixIncrmentor('TestLabel', labelIncrementor, props.padZero),
+      prefixIncrmentor('TestKey', keyIncrementor, props.padZero),
       node.id === undefined
         ? undefined
         : makeDirectory(
-            forceGenerator ? (idIncrementor.next().value as number) : node.id
+            { ...defaultMakeTreeProps, ...props }.forceGenerator
+              ? (idIncrementor.next().value as number)
+              : node.id
           ),
       makeTree(
         node.children,
         labelIncrementor,
         keyIncrementor,
         idIncrementor,
-        addResources,
-        forceGenerator
+        props
       ),
-      addResources
+      { ...defaultMakeTreeProps, ...props }.addResources
         ? Array.from({ length: node.appResources ?? 0 }, () =>
             addMissingFields('SpAppResource', {
               id: idIncrementor.next().value as number,
             })
           )
         : [],
-      addResources
+      { ...defaultMakeTreeProps, ...props }.addResources
         ? Array.from({ length: node.viewSets ?? 0 }, () =>
             addMissingFields('SpViewSetObj', {
               id: idIncrementor.next().value as number,

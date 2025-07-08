@@ -47,7 +47,7 @@ describe('buildAppResourceConformation', () => {
       labelIncrementor,
       keyIncrementor,
       idIncrementor,
-      true
+      { addResources: true }
     );
 
     expect(buildAppResourceConformation(tree)).toMatchSnapshot();
@@ -101,7 +101,7 @@ describe('buildAppResourceConformation', () => {
       labelIncrementor,
       keyIncrementor,
       idIncrementor,
-      true
+      { addResources: true }
     );
 
     expect(buildAppResourceConformation(tree)).toMatchSnapshot();
@@ -130,7 +130,7 @@ describe('buildAppResourceConformation', () => {
       labelIncrementor,
       keyIncrementor,
       idIncrementor,
-      true
+      { addResources: true }
     );
 
     expect(buildAppResourceConformation(emptyTree)).toMatchSnapshot();
