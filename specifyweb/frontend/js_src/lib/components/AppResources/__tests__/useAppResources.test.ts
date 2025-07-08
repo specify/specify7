@@ -1,16 +1,16 @@
 import { renderHook, waitFor } from '@testing-library/react';
 
+import { useAsyncStateMock } from '../../../hooks/useAsyncStateMock';
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import type { RA } from '../../../utils/types';
 import { useAppResources } from '../hooks';
 import { staticAppResources } from './staticAppResources';
-import { useAsyncStateMock } from '../../../hooks/useAsyncStateMock';
 
-const mockFn = jest.fn();
+const mockFunction = jest.fn();
 
 function mockState<T>(callback: () => Promise<T | undefined> | undefined) {
-  useAsyncStateMock(callback, mockFn);
+  useAsyncStateMock(callback, mockFunction);
   return [undefined, undefined];
 }
 
@@ -25,7 +25,7 @@ jest.mock('../../../hooks/useAsyncState', () => {
 requireContext();
 
 beforeAll(() => {
-  mockFn.mockClear();
+  mockFunction.mockClear();
 });
 
 describe('useAppResources', () => {
@@ -69,8 +69,8 @@ describe('useAppResources', () => {
     renderHook(() => useAppResources(false));
 
     await waitFor(() => {
-      expect(mockFn).toBeCalledTimes(1);
-      expect(mockFn.mock.lastCall).toEqual([staticAppResources]);
+      expect(mockFunction).toHaveBeenCalledTimes(1);
+      expect(mockFunction.mock.lastCall).toEqual([staticAppResources]);
     });
   });
 });
