@@ -582,10 +582,10 @@ def co_components_ids(cat_num, collection):
     # Get component objects with the same cat num than the CO parent
     components_with_cat_num = Component.objects.filter(catalognumber=cat_num)
 
-    # Get component objects directly from the related name
+    # Get component objects directly from the parent CO
     empty_cat_num_components = coparent.components.filter(catalognumber=None)
 
-    # Get component with same cat num ids
+    # Get component ids
     ids_with_cat_num = components_with_cat_num.values_list('id', flat=True)
     ids_with_no_cat_num = empty_cat_num_components.values_list('id', flat=True)
 
