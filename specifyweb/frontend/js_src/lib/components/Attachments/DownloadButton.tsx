@@ -2,7 +2,6 @@ import React from 'react';
 
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
-import { queryText } from '../../localization/query';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
@@ -45,10 +44,10 @@ export function DownloadAllAttachmentsButton({
   const downloadStartedDialog = (
     <Dialog
       buttons={commonText.close()}
-      header={queryText.queryExportStarted()}
+      header={attachmentsText.downloadAllStarted()}
       onClose={(): void => setShowDownloadStartedDialog(false)}
     >
-      {queryText.queryExportStartedDescription()}
+      {attachmentsText.downloadAllStartedDescription()}
     </Dialog>
   );
 
