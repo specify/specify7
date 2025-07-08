@@ -21,7 +21,7 @@ function prefixIncrmentor(
   generator: ReturnType<typeof incrementor>,
   padZero: boolean = false
 ) {
-  return `${prefix}${padZero ? generator.next().value!.toString().padStart(3, '0') : generator.next().value!}`;
+  return `${prefix}${padZero ? generator.next().value.toString().padStart(3, '0') : generator.next().value}`;
 }
 
 type Incrementor = ReturnType<typeof incrementor>;
