@@ -381,7 +381,7 @@ export async function downloadArchive(
       'Content-Type': 'application/json',
       Accept: 'application/octet-stream',
     },
-    errorMode: 'dismissible',
+    errorMode: 'silent',
   });
   if (response.status === Http.OK) {
     downloadFile(archiveName, response.data);

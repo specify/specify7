@@ -139,7 +139,7 @@ export const notificationsText = createDictionary({
       '<userName /> transferiu a propriedade do conjunto de dados <dataSetName /> para você.',
   },
   attachmentDownloadReady: {
-    'en-us': 'Attachment download "{archiveName:LocalizedString}" is ready.',
+    'en-us': 'One-time download link for "{archiveName:LocalizedString}" is ready.',
   },
   attachmentDownloadFailed: {
     'en-us': 'Attachment download "{archiveName:LocalizedString}" failed.',

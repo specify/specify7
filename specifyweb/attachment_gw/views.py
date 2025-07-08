@@ -14,7 +14,7 @@ from django.apps import apps
 
 import requests
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseBadRequest, \
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, \
     StreamingHttpResponse
 from django.db import transaction
 from django.utils.translation import gettext as _
@@ -415,6 +415,8 @@ def download_archive(request):
 
     if not path.startswith(os.path.abspath(settings.DEPOSITORY_DIR) + os.sep):
         return HttpResponseBadRequest("Invalid filepath.")
+    if not os.path.exists(path):
+        return HttpResponseNotFound("File does not exist.")
 
     def file_iterator(file_path, chunk_size=512 * 1024):
         with open(file_path, 'rb') as f:
