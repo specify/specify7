@@ -301,5 +301,5 @@ export const exportsForTests = {
   getGlobalAllResources,
   disambiguateGlobalPrefs,
   mergeDirectories,
-  getDirectoryChildren
+  getDirectoryChildren,
 };

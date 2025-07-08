@@ -2,11 +2,11 @@ import type { RA } from '../../../utils/types';
 import { localized } from '../../../utils/types';
 import { replaceItem } from '../../../utils/utils';
 import { addMissingFields } from '../../DataModel/addMissingFields';
-import { SerializedResource } from '../../DataModel/helperTypes';
+import type { SerializedResource } from '../../DataModel/helperTypes';
 import { getResourceApiUrl } from '../../DataModel/resource';
 import { serializeResource } from '../../DataModel/serializers';
 import { tables } from '../../DataModel/tables';
-import { Discipline } from '../../DataModel/types';
+import type { Discipline } from '../../DataModel/types';
 import type { AppResources, AppResourcesTree } from '../hooks';
 import type { ScopedAppResourceDir } from '../types';
 
@@ -179,34 +179,34 @@ const setAppResourceDir = (
 });
 
 const testDisciplines = [
-      {
-        id: 3,
-        isPaleoContextEmbedded: true,
-        name: 'Ichthyology',
-        paleoContextChildTable: 'collectionobject',
-        regNumber: '1344636812.54',
-        timestampCreated: '2012-08-09T12:23:29',
-        timestampModified: '2012-08-09T12:23:29',
-        type: 'fish',
-        version: 11,
-        createdByAgent: '/api/specify/agent/1/',
-        dataType: '/api/specify/datatype/1/',
-        division: '/api/specify/division/2/',
-        geographyTreeDef: '/api/specify/geographytreedef/1/',
-        taxonTreeDef: '/api/specify/taxontreedef/1/',
-        geologicTimePeriodTreeDef: '/api/specify/geologictimeperiodtreedef/1/',
-        lithoStratTreeDef: '/api/specify/lithostrattreedef/1/',
-        tectonicUnitTreeDef: '/api/specify/tectonicunittreedef/1/',
-        modifiedByAgent: '/api/specify/agent/2/',
-        attributeDefs: '/api/specify/attributedef/?discipline=3',
-        collections: '/api/specify/collection/?discipline=3',
-        spExportSchemas: '/api/specify/spexportschema/?discipline=3',
-        spLocaleContainers: '/api/specify/splocalecontainer/?discipline=3',
-        resource_uri: '/api/specify/discipline/3/',
-        userGroups: '/api/specify/SpPrincipal?scope=3',
-        _tableName: 'Discipline',
-      },
-    ] as unknown as RA<SerializedResource<Discipline>>;
+  {
+    id: 3,
+    isPaleoContextEmbedded: true,
+    name: 'Ichthyology',
+    paleoContextChildTable: 'collectionobject',
+    regNumber: '1344636812.54',
+    timestampCreated: '2012-08-09T12:23:29',
+    timestampModified: '2012-08-09T12:23:29',
+    type: 'fish',
+    version: 11,
+    createdByAgent: '/api/specify/agent/1/',
+    dataType: '/api/specify/datatype/1/',
+    division: '/api/specify/division/2/',
+    geographyTreeDef: '/api/specify/geographytreedef/1/',
+    taxonTreeDef: '/api/specify/taxontreedef/1/',
+    geologicTimePeriodTreeDef: '/api/specify/geologictimeperiodtreedef/1/',
+    lithoStratTreeDef: '/api/specify/lithostrattreedef/1/',
+    tectonicUnitTreeDef: '/api/specify/tectonicunittreedef/1/',
+    modifiedByAgent: '/api/specify/agent/2/',
+    attributeDefs: '/api/specify/attributedef/?discipline=3',
+    collections: '/api/specify/collection/?discipline=3',
+    spExportSchemas: '/api/specify/spexportschema/?discipline=3',
+    spLocaleContainers: '/api/specify/splocalecontainer/?discipline=3',
+    resource_uri: '/api/specify/discipline/3/',
+    userGroups: '/api/specify/SpPrincipal?scope=3',
+    _tableName: 'Discipline',
+  },
+] as unknown as RA<SerializedResource<Discipline>>;
 
 export const utilsForTests = {
   treeStructure,
@@ -216,5 +216,5 @@ export const utilsForTests = {
   incrementor,
   simpleTree,
   setAppResourceDir,
-  testDisciplines
+  testDisciplines,
 };

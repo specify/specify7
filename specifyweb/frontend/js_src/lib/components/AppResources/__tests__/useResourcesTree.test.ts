@@ -30,7 +30,7 @@ describe('useResourcesTree', () => {
 
   const resources = {
     ...staticAppResources,
-    disciplines: testDisciplines
+    disciplines: testDisciplines,
   };
 
   test('missing appresource dir', () => {
