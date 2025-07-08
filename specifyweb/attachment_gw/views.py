@@ -334,16 +334,15 @@ def download_all(request):
         table = get_model_by_table_id(recordset.dbtableid)
         join_table = apps.get_model(table._meta.app_label, table.__name__ + 'attachment')
 
-        # Reach all attachments
-        recordsetitem_ids = models.Recordsetitem.objects.filter(recordset__id=recordSetId)
-        for rsi in recordsetitem_ids:
-            record_id = rsi.recordid
-            join_records = join_table.objects.filter(**{table.__name__.lower() + '_id': record_id})
-            for join_record in join_records:
-                attachment = join_record.attachment
-                if attachment.attachmentlocation is not None:
-                    attachment_locations.append(attachment.attachmentlocation)
-                    orig_filenames.append(os.path.basename(attachment.origfilename if attachment.origfilename else attachment.attachmentlocation))
+        # Reach all attachments (record set -> record set item -> record -> record_attachment -> attachment)
+        recordsetitems = models.Recordsetitem.objects.filter(recordset__id=recordSetId).values_list('recordid', flat=True)
+        join_records = join_table.objects.filter(**{table.__name__.lower() + '_id__in': list(recordsetitems)}).select_related('attachment')
+        
+        for join_record in join_records:
+            attachment = join_record.attachment
+            if attachment.attachmentlocation is not None:
+                attachment_locations.append(attachment.attachmentlocation)
+                orig_filenames.append(os.path.basename(attachment.origfilename or attachment.attachmentlocation))
 
     filename = 'attachments_%s.zip' % datetime.now().isoformat()
     path = os.path.join(settings.DEPOSITORY_DIR, filename)
