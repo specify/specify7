@@ -10,7 +10,6 @@ import { utilsForTests } from './utils';
 
 const { getGlobalAllResources } = exportsForTests;
 
-
 const { setAppResourceDir } = utilsForTests;
 
 requireContext();
