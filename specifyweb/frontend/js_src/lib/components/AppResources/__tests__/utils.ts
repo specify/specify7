@@ -183,5 +183,5 @@ export const utilsForTests = {
   makeAppResourceNode,
   incrementor,
   simpleTree,
-  setAppResourceDir
+  setAppResourceDir,
 };

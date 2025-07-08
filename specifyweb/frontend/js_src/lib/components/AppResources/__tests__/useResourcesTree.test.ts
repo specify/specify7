@@ -12,7 +12,7 @@ import { utilsForTests } from './utils';
 
 requireContext();
 
-const {setAppResourceDir} = utilsForTests;
+const { setAppResourceDir } = utilsForTests;
 
 describe('useResourcesTree', () => {
   const getResourceCountTree = (result: AppResourcesTree) =>
