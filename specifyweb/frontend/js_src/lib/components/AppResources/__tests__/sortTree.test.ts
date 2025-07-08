@@ -1,6 +1,6 @@
 import { requireContext } from "../../../tests/helpers";
 import { sortFunction } from "../../../utils/utils";
-import { AppResourcesTree } from "../hooks";
+import type { AppResourcesTree } from "../hooks";
 import { sortTree } from "../tree";
 import { utilsForTests } from "./utils";
 
