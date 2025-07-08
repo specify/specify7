@@ -15,8 +15,7 @@ describe("sortTree", ()=>{
     });
 
     test("simple tree case (reversed)", ()=>{
-        const treeReversed = simpleTree().toReversed();
-        expect(sortTree(treeReversed)).toEqual(simpleTree());
+        expect(sortTree(simpleTree().reverse())).toEqual(simpleTree());
     });
 
     test("multi-level tree case", ()=>{
