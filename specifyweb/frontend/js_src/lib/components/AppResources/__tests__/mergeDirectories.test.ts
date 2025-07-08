@@ -71,12 +71,12 @@ describe('mergeDirectories', () => {
     testSpec.forEach(({apps, views}, index)=>{
         
         const merged = mergeDirectories([viewSetAdjusted.directories[index]], viewSetAdjusted);
-        expect(merged.appResources.length).toBe(apps);
-        expect(merged.viewSets.length).toBe(views);
+        expect(merged.appResources).toHaveLength(apps);
+        expect(merged.viewSets).toHaveLength(views);
 
         const directoryChildren = getDirectoryChildren(viewSetAdjusted.directories[index], viewSetAdjusted);
-        expect(directoryChildren.appResources.length).toBe(apps);
-        expect(directoryChildren.viewSets.length).toBe(views);
+        expect(directoryChildren.appResources).toHaveLength(apps);
+        expect(directoryChildren.viewSets).toHaveLength(views);
 
         
     });
