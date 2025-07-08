@@ -8,7 +8,7 @@ from sqlalchemy import sql, Table as SQLTable
 from sqlalchemy.orm.query import Query
 
 from specifyweb.specify.load_datamodel import Field, Table
-from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, datamodel
+from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, Component, datamodel
 from specifyweb.specify.uiformatters import get_uiformatter
 from specifyweb.specify.utils import get_cat_num_inheritance_setting
 from specifyweb.stored_queries.models import CollectionObject as sq_CollectionObject
@@ -575,13 +575,23 @@ def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, 
 def co_components_ids(cat_num, collection):
     # Get the collection object with the given catalog number
     coparent = Collectionobject.objects.filter(catalognumber=cat_num, collection=collection).first()
+
     if not coparent:
         return []
+    
+    # Get component objects with the same cat num than the CO parent
+    components_with_cat_num = Component.objects.filter(catalognumber=cat_num)
 
     # Get component objects directly from the related name
-    components = coparent.components.filter(catalognumber=None)
+    empty_cat_num_components = coparent.components.filter(catalognumber=None)
 
-    # Get their IDs
-    target_component_co_ids = components.values_list('id', flat=True)
+    # Get component with same cat num ids
+    ids_with_cat_num = components_with_cat_num.values_list('id', flat=True)
+    ids_with_no_cat_num = empty_cat_num_components.values_list('id', flat=True)
 
-    return [str(i) for i in [coparent.id] + list(target_component_co_ids)]
+    # Combine all IDs and add the parent ID, convert to strings and remove duplicates
+    all_ids = {str(coparent.id)}
+    all_ids.update(str(i) for i in ids_with_cat_num)
+    all_ids.update(str(i) for i in ids_with_no_cat_num)
+
+    return list(all_ids)
