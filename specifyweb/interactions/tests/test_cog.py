@@ -3,21 +3,15 @@ from specifyweb.specify.models import (
     Collectionobjectgroup,
     Collectionobjectgrouptype,
     Collectionobjectgroupjoin,
-    Preptype,
-    Preparation,
 )
 
 
 class TestCogInteractions(DefaultsSetup):
     def setUp(self):
         super().setUp()
+        self._create_prep_type()
         self.cogtype_consolidated = Collectionobjectgrouptype.objects.create(
             name="TestConsolidated", type="Consolidated", collection=self.collection
-        )
-        self.prep_type = Preptype.objects.create(
-            name="testPrepType",
-            isloanable=False,
-            collection=self.collection,
         )
 
         self.test_cog_consolidated = Collectionobjectgroup.objects.create(
@@ -30,25 +24,25 @@ class TestCogInteractions(DefaultsSetup):
             cogtype=self.cogtype,
         )
 
+    @property
+    def discipline_uri(self):
+        return f"/api/specify/discipline/{self.collection.discipline.id}/"
+
     @staticmethod
-    def _link_co_cog(co, cog):
+    def _link_co_cog(co, cog, **kwargs):
+        kwargs['isprimary'] = kwargs.get('isprimary', True)
+        kwargs['issubstrate'] = kwargs.get('issubstrate', True)
         Collectionobjectgroupjoin.objects.create(
-            parentcog=cog, childco=co, isprimary=True, issubstrate=True
+            parentcog=cog, childco=co, **kwargs
         )
 
     @staticmethod
-    def _link_cog_cog(child_cog, cog):
+    def _link_cog_cog(child_cog, cog, **kwargs):
+        kwargs['isprimary'] = kwargs.get('isprimary', True)
+        kwargs['issubstrate'] = kwargs.get('issubstrate', True)
         Collectionobjectgroupjoin.objects.create(
-            parentcog=cog, childcog=child_cog, isprimary=True, issubstrate=True
+            parentcog=cog, childcog=child_cog, **kwargs
         )
-
-    def _create_prep(self, co, prep_list, **prep_kwargs):
-        prep = Preparation.objects.create(
-            collectionobject=co, preptype=self.prep_type, **prep_kwargs
-        )
-        if prep_list is not None:
-            prep_list.append(prep)
-        return prep
 
     def _preps_match(self, base, computed):
         self.assertCountEqual(
