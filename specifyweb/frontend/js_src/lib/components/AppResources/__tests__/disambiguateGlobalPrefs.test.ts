@@ -1,7 +1,7 @@
 import { resourcesText } from "../../../localization/resources";
 import { replaceItem } from "../../../utils/utils";
 import { getResourceApiUrl } from "../../DataModel/resource";
-import { AppResourcesTree } from "../hooks";
+import type { AppResourcesTree } from "../hooks";
 import { exportsForTests } from "../tree";
 import { staticAppResources } from "./staticAppResources";
 
