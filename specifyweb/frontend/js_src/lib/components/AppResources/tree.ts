@@ -61,7 +61,7 @@ export const sortTree = (tree: AppResourcesTree): AppResourcesTree =>
       subCategories: sortTree(subCategories),
     }));
 
-export function getGlobalAllResources(resources: AppResources): {
+function getGlobalAllResources(resources: AppResources): {
   readonly directory: ScopedAppResourceDir;
   readonly appResources: RA<SerializedResource<SpAppResource>>;
   readonly viewSets: RA<SerializedResource<SpViewSetObj>>;
@@ -296,3 +296,10 @@ const getUserResources = (
       subCategories: [],
     };
   });
+
+export const exportsForTests = {
+  getGlobalAllResources,
+  disambiguateGlobalPrefs,
+  mergeDirectories,
+  getDirectoryChildren,
+};
