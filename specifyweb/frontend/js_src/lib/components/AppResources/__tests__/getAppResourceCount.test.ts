@@ -25,7 +25,7 @@ describe('getAppResourceCount', () => {
       labelIncrementor,
       keyIncrementor,
       idIncrementor,
-      true
+      {addResources: true}
     );
 
     const getStructure = (tree: AppResourcesTree): TreeCount =>

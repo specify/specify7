@@ -20,7 +20,7 @@ describe('useAppResourceCount', () => {
       labelIncrementor,
       keyIncrementor,
       idIncrementor,
-      true
+      {addResources: true}
     );
 
     let treeNode = tree[0];
