@@ -303,14 +303,14 @@ msgid "selectResourceType"
 msgstr "Selecione o tipo de recurso"
 
 #: components/AppResources/tree.ts:121
-#: components/AppResources/__tests__/getGlobalAllResources.test.ts:28
+#: components/AppResources/__tests__/getGlobalAllResources.test.ts:36
 #. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Get Global All Resources
 #, fuzzy
 msgid "globalPreferences"
 msgstr "Preferências globais"
 
 #: components/AppResources/tree.ts:123
-#: components/AppResources/__tests__/getGlobalAllResources.test.ts:56
+#: components/AppResources/__tests__/getGlobalAllResources.test.ts:67
 #. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Get Global All Resources
 #, fuzzy
 msgid "remotePreferences"

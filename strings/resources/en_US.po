@@ -248,13 +248,13 @@ msgid "selectResourceType"
 msgstr "Select Resource Type"
 
 #: components/AppResources/tree.ts:121
-#: components/AppResources/__tests__/getGlobalAllResources.test.ts:28
+#: components/AppResources/__tests__/getGlobalAllResources.test.ts:36
 #. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Get Global All Resources
 msgid "globalPreferences"
 msgstr "Global Preferences"
 
 #: components/AppResources/tree.ts:123
-#: components/AppResources/__tests__/getGlobalAllResources.test.ts:56
+#: components/AppResources/__tests__/getGlobalAllResources.test.ts:67
 #. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Get Global All Resources
 msgid "remotePreferences"
 msgstr "Remote Preferences"
