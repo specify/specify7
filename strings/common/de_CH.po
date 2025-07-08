@@ -174,7 +174,7 @@ msgstr "Erstellen"
 #: components/FormEditor/Create.tsx:208
 #: components/FormEditor/Table.tsx:82
 #: components/FormMeta/AutoNumbering.tsx:91
-#: components/FormMeta/CarryForward.tsx:376
+#: components/FormMeta/CarryForward.tsx:383
 #: components/FormMeta/Definition.tsx:73
 #: components/FormMeta/EditHistory.tsx:53
 #: components/FormMeta/PickListUsages.tsx:44
@@ -191,10 +191,10 @@ msgstr "Erstellen"
 #: components/FormPlugins/index.tsx:267
 #: components/FormSliders/AttachmentWarningDeletion.tsx:39
 #: components/FormSliders/AttachmentsCollection.tsx:87
-#: components/FormSliders/RecordSet.tsx:513
+#: components/FormSliders/RecordSet.tsx:517
 #: components/Formatters/Element.tsx:66
 #: components/Formatters/Element.tsx:88
-#: components/Forms/BulkCarryForward.tsx:30
+#: components/Forms/BulkCarryForward.tsx:33
 #: components/Forms/DataTask.tsx:134
 #: components/Forms/DeleteButton.tsx:175
 #: components/Forms/ResourceView.tsx:213

@@ -460,13 +460,13 @@ msgstr "Contrarrestar"
 msgid "deletedInline"
 msgstr "(eliminado)"
 
-#: components/FormSliders/RecordSet.tsx:514
+#: components/FormSliders/RecordSet.tsx:518
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 #, fuzzy
 msgid "duplicateRecordSetItem"
 msgstr "Duplicado {recordSetItemTable:string}"
 
-#: components/FormSliders/RecordSet.tsx:519
+#: components/FormSliders/RecordSet.tsx:523
 #. Used in: Components > Form Sliders > Record Set
 #, fuzzy
 msgid "duplicateRecordSetItemDescription"
@@ -491,7 +491,7 @@ msgstr "Eliminar de {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "No se encontró nada"
 
-#: components/Forms/BulkCarryForward.tsx:33
+#: components/Forms/BulkCarryForward.tsx:36
 #: components/Forms/Save.tsx:403
 #. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 #, fuzzy
@@ -504,7 +504,7 @@ msgstr "Llevar adelante"
 msgid "carryForwardEnabled"
 msgstr "Mostrar el botón Llevar adelante"
 
-#: components/FormMeta/CarryForward.tsx:192
+#: components/FormMeta/CarryForward.tsx:199
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardEnabled"
@@ -529,52 +529,52 @@ msgstr "Crear un nuevo registro con ciertos campos transferidos"
 msgid "carryForwardSettingsDescription"
 msgstr "Configurar campos para transferir"
 
-#: components/FormMeta/CarryForward.tsx:195
-#: components/FormMeta/CarryForward.tsx:216
+#: components/FormMeta/CarryForward.tsx:202
+#: components/FormMeta/CarryForward.tsx:223
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardSettingsDescription"
 msgstr "Configurar campos para transferirlos en masa"
 
-#: components/FormMeta/CarryForward.tsx:385
+#: components/FormMeta/CarryForward.tsx:392
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardTableSettingsDescription"
 msgstr "Configurar campos para transferir ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:382
+#: components/FormMeta/CarryForward.tsx:389
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardTableSettingsDescription"
 msgstr "Configurar campos para transferirlos en masa ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:455
+#: components/FormMeta/CarryForward.tsx:462
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardUniqueField"
 msgstr "Este campo debe ser único. No se puede transferir."
 
-#: components/FormMeta/CarryForward.tsx:457
+#: components/FormMeta/CarryForward.tsx:464
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardRequiredField"
 msgstr "Este campo es obligatorio. Debe ser transferido"
 
-#: components/FormMeta/CarryForward.tsx:213
+#: components/FormMeta/CarryForward.tsx:220
 #. Used in: Components > Form Meta > Carry Forward
 msgid "bulkCarryForwardRangeEnabled"
 msgstr ""
 
-#: components/Forms/BulkCarryForward.tsx:52
+#: components/Forms/BulkCarryForward.tsx:55
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeErrorDescription"
 msgstr ""
 
-#: components/Forms/BulkCarryForward.tsx:46
+#: components/Forms/BulkCarryForward.tsx:49
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeLimitExceeded"
 msgstr ""
 
-#: components/Forms/BulkCarryForward.tsx:38
+#: components/Forms/BulkCarryForward.tsx:41
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeExistingRecords"
 msgstr ""
@@ -589,7 +589,7 @@ msgstr ""
 msgid "bulkCarryForwardRangeEnd"
 msgstr ""
 
-#: components/FormMeta/CarryForward.tsx:231
+#: components/FormMeta/CarryForward.tsx:238
 #. Used in: Components > Form Meta > Carry Forward
 msgid "createRecordSetOnBulkCarryForward"
 msgstr ""

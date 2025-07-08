@@ -73,7 +73,7 @@ msgstr "Необязательные поля"
 msgid "hiddenFields"
 msgstr "Скрытые поля"
 
-#: components/FormMeta/CarryForward.tsx:417
+#: components/FormMeta/CarryForward.tsx:424
 #: components/QueryBuilder/Toolbar.tsx:42
 #: components/WbPlanView/MapperComponents.tsx:76
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components

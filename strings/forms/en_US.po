@@ -438,12 +438,12 @@ msgstr "Reverse"
 msgid "deletedInline"
 msgstr "(deleted)"
 
-#: components/FormSliders/RecordSet.tsx:514
+#: components/FormSliders/RecordSet.tsx:518
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItem"
 msgstr "Duplicate {recordSetItemTable:string}"
 
-#: components/FormSliders/RecordSet.tsx:519
+#: components/FormSliders/RecordSet.tsx:523
 #. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItemDescription"
 msgstr "This record is already present in the current {recordSetTable:string}"
@@ -464,7 +464,7 @@ msgstr "Remove from {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Nothing found"
 
-#: components/Forms/BulkCarryForward.tsx:33
+#: components/Forms/BulkCarryForward.tsx:36
 #: components/Forms/Save.tsx:403
 #. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 msgid "carryForward"
@@ -475,7 +475,7 @@ msgstr "Carry Forward"
 msgid "carryForwardEnabled"
 msgstr "Show Carry Forward button"
 
-#: components/FormMeta/CarryForward.tsx:192
+#: components/FormMeta/CarryForward.tsx:199
 #. Used in: Components > Form Meta > Carry Forward
 msgid "bulkCarryForwardEnabled"
 msgstr "Show Bulk Carry Forward count"
@@ -496,48 +496,48 @@ msgstr "Create a new record with certain fields carried over"
 msgid "carryForwardSettingsDescription"
 msgstr "Configure fields to carry forward"
 
-#: components/FormMeta/CarryForward.tsx:195
-#: components/FormMeta/CarryForward.tsx:216
+#: components/FormMeta/CarryForward.tsx:202
+#: components/FormMeta/CarryForward.tsx:223
 #. Used in: Components > Form Meta > Carry Forward
 msgid "bulkCarryForwardSettingsDescription"
 msgstr "Configure fields to bulk carry forward"
 
-#: components/FormMeta/CarryForward.tsx:385
+#: components/FormMeta/CarryForward.tsx:392
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardTableSettingsDescription"
 msgstr "Configure fields to carry forward ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:382
+#: components/FormMeta/CarryForward.tsx:389
 #. Used in: Components > Form Meta > Carry Forward
 msgid "bulkCarryForwardTableSettingsDescription"
 msgstr "Configure fields to bulk carry forward ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:455
+#: components/FormMeta/CarryForward.tsx:462
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardUniqueField"
 msgstr "This field must be unique. It can not be carried over"
 
-#: components/FormMeta/CarryForward.tsx:457
+#: components/FormMeta/CarryForward.tsx:464
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardRequiredField"
 msgstr "This field is required. It must be carried forward"
 
-#: components/FormMeta/CarryForward.tsx:213
+#: components/FormMeta/CarryForward.tsx:220
 #. Used in: Components > Form Meta > Carry Forward
 msgid "bulkCarryForwardRangeEnabled"
 msgstr "Show Bulk Carry Forward range"
 
-#: components/Forms/BulkCarryForward.tsx:52
+#: components/Forms/BulkCarryForward.tsx:55
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeErrorDescription"
 msgstr "Cannot carry forward record through the specified {field:string} range."
 
-#: components/Forms/BulkCarryForward.tsx:46
+#: components/Forms/BulkCarryForward.tsx:49
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeLimitExceeded"
 msgstr "Range exceeds record limit of {limit:number}."
 
-#: components/Forms/BulkCarryForward.tsx:38
+#: components/Forms/BulkCarryForward.tsx:41
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeExistingRecords"
 msgstr "The following numbers for {field:string} are already being used:"
@@ -552,7 +552,7 @@ msgstr "Carry Forward Range Start"
 msgid "bulkCarryForwardRangeEnd"
 msgstr "Carry Forward Range End"
 
-#: components/FormMeta/CarryForward.tsx:231
+#: components/FormMeta/CarryForward.tsx:238
 #. Used in: Components > Form Meta > Carry Forward
 msgid "createRecordSetOnBulkCarryForward"
 msgstr "Create record set on Bulk Carry Forward"
