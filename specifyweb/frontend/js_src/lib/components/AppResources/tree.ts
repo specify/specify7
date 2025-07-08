@@ -299,5 +299,5 @@ const getUserResources = (
 
 export const exportsForTests = {
   getGlobalAllResources,
-  
+  disambiguateGlobalPrefs
 }
