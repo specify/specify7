@@ -3,7 +3,7 @@ import { requireContext } from "../../../tests/helpers";
 import { replaceItem } from "../../../utils/utils";
 import { addMissingFields } from "../../DataModel/addMissingFields";
 import { getResourceApiUrl } from "../../DataModel/resource";
-import { AppResources } from "../hooks";
+import type { AppResources } from "../hooks";
 import { getGlobalAllResources } from "../tree";
 import { staticAppResources } from "./staticAppResources";
 import { utilsForTests } from "./utils";
