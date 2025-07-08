@@ -77,7 +77,7 @@ class UploadResultsTests(unittest.TestCase):
         d = uploadResult.to_json()
         j = json.dumps(d)
         e = json.loads(j)
-        validate([e], schema)
+        validate([e], schema, cls=Draft7Validator)
         self.assertEqual(uploadResult, UploadResult.from_json(e))
 
     def testUploadResultExplicit(self):
@@ -106,6 +106,6 @@ class UploadResultsTests(unittest.TestCase):
         d = uploadResult.to_json()
         j = json.dumps(d)
         e = json.loads(j)
-        validate([e], schema) 
+        validate([e], schema, cls=Draft7Validator) 
         self.assertEqual(uploadResult, UploadResult.from_json(e))
 

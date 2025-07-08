@@ -280,21 +280,54 @@ def filter_match_key(f: Filter) -> str:
     return repr(sorted(f.items()))
 
 
-def canonicalize_remove_node(node: ToRemoveNode) -> Q:
-    all_exists = [Q(_map_matchee(matchee, name)) for name, matchee in node.items()]
-    all_or = Func.make_ors(all_exists)
+def canonicalize_remove_node(node: ToRemoveNode) -> Q | Exists:
+    preds: list[Q | Exists] = []
+    for name, matchee in node.items():
+        lookup = _map_matchee(matchee, name)
+
+        if isinstance(lookup, tuple) and len(lookup) == 2:
+            field, value = lookup
+            preds.append(Q(**{field: value}))
+        elif isinstance(lookup, Q) or isinstance(lookup, Exists) or (
+            hasattr(lookup, "resolve_expression") and getattr(lookup, "conditional", False)
+        ):
+            preds.append(lookup)
+        else:
+            raise ValueError(f"Unexpected predicate from _map_matchee: {lookup!r}")
+
+    # No predicates => always-false when negated
+    if not preds:
+        return ~Q()
+
+    all_or = preds[0]
+    for p in preds[1:]:
+        all_or |= p
+
     # Don't miss the negation below!
     return ~all_or
 
 
 def _map_matchee(matchee: list[ToRemoveMatchee], model_name: str) -> Exists:
-    model: Model = get_model(model_name)
-    qs = [Q(**match["filter_on"]) for match in matchee]
-    qs_or = Func.make_ors(qs)
-    query = model.objects.filter(qs_or)
-    to_remove = [match["remove"] for match in matchee if match["remove"] is not None]
-    if to_remove:
-        query = query.exclude(Func.make_ors(to_remove))
+    model = get_model(model_name)
+
+    # Combine include filters
+    include_preds = [Q(**match["filter_on"]) for match in matchee]
+    if include_preds:
+        combined_include = include_preds[0]
+        for q_obj in include_preds[1:]:
+            combined_include |= q_obj
+        query = model.objects.filter(combined_include)
+    else:
+        query = model.objects.all()
+
+    # Combine remove filters
+    remove_preds = [r for r in (match.get("remove") for match in matchee) if isinstance(r, Q)]
+    if remove_preds:
+        combined_remove = remove_preds[0]
+        for r in remove_preds[1:]:
+            combined_remove |= r
+        query = query.exclude(combined_remove)
+
     return Exists(query)
 
 
