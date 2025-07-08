@@ -7,6 +7,7 @@ import type { RA } from '../../../utils/types';
 import { useAppResources } from '../hooks';
 import { staticAppResources } from './staticAppResources';
 
+
 const mockFunction = jest.fn();
 
 function mockState<T>(callback: () => Promise<T | undefined> | undefined) {

@@ -1,9 +1,11 @@
 import type { RA } from '../../../utils/types';
 import { localized } from '../../../utils/types';
+import { replaceItem } from '../../../utils/utils';
 import { addMissingFields } from '../../DataModel/addMissingFields';
+import { getResourceApiUrl } from '../../DataModel/resource';
 import { serializeResource } from '../../DataModel/serializers';
 import { tables } from '../../DataModel/tables';
-import type { AppResourcesTree } from '../hooks';
+import type { AppResources, AppResourcesTree } from '../hooks';
 import type { ScopedAppResourceDir } from '../types';
 
 // Make it part of functools?
@@ -16,9 +18,10 @@ function* incrementor() {
 
 function prefixIncrmentor(
   prefix: string,
-  generator: ReturnType<typeof incrementor>
+  generator: ReturnType<typeof incrementor>,
+  padZero: boolean = false
 ) {
-  return `${prefix}${generator.next().value}`;
+  return `${prefix}${padZero ? generator.next().value!.toString().padStart(3, '0') : generator.next().value!}`;
 }
 
 type Incrementor = ReturnType<typeof incrementor>;
@@ -110,40 +113,51 @@ const treeStructure: RA<Node> = [
   },
 ];
 
+type MakeTreeProps = {
+  readonly addResources: boolean;
+  readonly forceGenerator: boolean;
+  readonly padZero: boolean;
+};
+
+const defaultMakeTreeProps: MakeTreeProps = {
+  addResources: false,
+  forceGenerator: true,
+  padZero: false,
+};
+
 const makeTree = (
   nodes: RA<Node>,
   labelIncrementor: Incrementor,
   keyIncrementor: Incrementor,
   idIncrementor: Incrementor,
-  // If true, it'll also add the appResource and viewSet objects
-  addResources: boolean = false,
-  forceGenerator: boolean = true
+  props: Partial<MakeTreeProps> = defaultMakeTreeProps
 ): AppResourcesTree =>
   nodes.map((node) =>
     makeAppResourceNode(
-      prefixIncrmentor('TestLabel', labelIncrementor),
-      prefixIncrmentor('TestKey', keyIncrementor),
+      prefixIncrmentor('TestLabel', labelIncrementor, props.padZero),
+      prefixIncrmentor('TestKey', keyIncrementor, props.padZero),
       node.id === undefined
         ? undefined
         : makeDirectory(
-            forceGenerator ? (idIncrementor.next().value as number) : node.id
+            { ...defaultMakeTreeProps, ...props }.forceGenerator
+              ? (idIncrementor.next().value as number)
+              : node.id
           ),
       makeTree(
         node.children,
         labelIncrementor,
         keyIncrementor,
         idIncrementor,
-        addResources,
-        forceGenerator
+        props
       ),
-      addResources
+      { ...defaultMakeTreeProps, ...props }.addResources
         ? Array.from({ length: node.appResources ?? 0 }, () =>
             addMissingFields('SpAppResource', {
               id: idIncrementor.next().value as number,
             })
           )
         : [],
-      addResources
+      { ...defaultMakeTreeProps, ...props }.addResources
         ? Array.from({ length: node.viewSets ?? 0 }, () =>
             addMissingFields('SpViewSetObj', {
               id: idIncrementor.next().value as number,
@@ -161,6 +175,19 @@ const simpleTree = () => [
   makeAppResourceNode('TestLabel5', 'TestKey5', makeDirectory(5), []),
 ];
 
+const setAppResourceDir = (
+  resources: AppResources,
+  key: 'appResources' | 'viewSets',
+  index: number,
+  newDir: number
+): AppResources => ({
+  ...resources,
+  [key]: replaceItem(resources[key as 'appResources'], index, {
+    ...resources[key as 'appResources'][index],
+    spAppResourceDir: getResourceApiUrl('SpAppResourceDir', newDir),
+  }),
+});
+
 export const utilsForTests = {
   treeStructure,
   makeTree,
@@ -168,4 +195,5 @@ export const utilsForTests = {
   makeAppResourceNode,
   incrementor,
   simpleTree,
+  setAppResourceDir,
 };
