@@ -303,5 +303,5 @@ export const exportsForTests = {
   mergeDirectories,
   getDirectoryChildren,
   getDisciplineAppResources,
-  getUserTypeResources
+  getUserTypeResources,
 };
