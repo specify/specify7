@@ -5,7 +5,6 @@ import { commonText } from '../../localization/common';
 import { notificationsText } from '../../localization/notifications';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
-import { f } from '../../utils/functools';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -15,6 +14,7 @@ import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { useNotificationsFetch } from './hooks';
 import type { GenericNotification } from './NotificationRenderers';
 import { notificationRenderers } from './NotificationRenderers';
+import { deleteNotification } from './utils';
 
 export function Notifications({
   isCollapsed,
@@ -164,16 +164,7 @@ function NotificationComponent({
         <Button.Icon
           icon="x"
           title={commonText.delete()}
-          onClick={(): void =>
-            handleDelete(
-              ping('/notifications/delete/', {
-                method: 'POST',
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                body: formData({ message_id: notification.messageId }),
-                errorMode: 'dismissible',
-              }).then(f.void)
-            )
-          }
+          onClick={(): void => handleDelete(deleteNotification(notification))}
         />
       </div>
       <div className="flex flex-col gap-2">
@@ -187,7 +178,7 @@ function NotificationComponent({
           (
             notificationRenderers[notification.type] ??
             notificationRenderers.default
-          )(notification)
+          )(notification, handleDelete)
         }
       </div>
     </article>

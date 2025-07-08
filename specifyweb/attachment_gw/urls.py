@@ -8,6 +8,7 @@ urlpatterns = [
     path('get_token/', views.get_token),
     path('proxy/', views.proxy),
     path('download_all/', views.download_all),
+    path('download_archive/', views.download_archive),
     path('dataset/', views.datasets),
     path('dataset/<int:ds_id>/', views.dataset),
 ]

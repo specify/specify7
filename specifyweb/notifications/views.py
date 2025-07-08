@@ -1,3 +1,4 @@
+import os
 import json
 from datetime import datetime, timedelta
 
@@ -10,6 +11,9 @@ from ..specify.views import login_maybe_required
 from ..specify.api import toJson
 
 from .models import Message
+
+class MessageError(Exception):
+    pass
 
 @require_GET
 @login_maybe_required
@@ -44,7 +48,9 @@ def delete(request):
     "Delete the notification message indicated by the 'message_id' POST parameter."
     if 'message_id' not in request.POST:
         return HttpResponseBadRequest()
-    Message.objects.filter(user=request.specify_user, id=request.POST['message_id']).delete()
+    for message in Message.objects.filter(user=request.specify_user, id=request.POST['message_id']):
+        delete_message_file(message)
+        message.delete()
     return HttpResponse('OK', content_type='text/plain')
 
 @require_POST
@@ -55,6 +61,28 @@ def delete_all(request):
        return HttpResponseBadRequest()
 
    message_ids = json.loads(request.POST["message_ids"])
-   Message.objects.filter(user=request.specify_user, id__in=message_ids).delete()
+   for message in Message.objects.filter(user=request.specify_user, id__in=message_ids):
+       delete_message_file(message)
+       message.delete()
 
    return HttpResponse("OK", content_type="text/plain")
+
+def delete_message_file(message):
+    """
+    Delete files in DEPOSITORY_DIR associated with one-time download notifications (like export notifications).
+    """
+    try:
+        content = json.loads(message.content)
+    except:
+        return
+
+    # Only delete file if it marked as deletable
+    file = content.get('file')
+    delete_file = content.get('delete_file')
+    if file and delete_file:
+        path = os.path.join(settings.DEPOSITORY_DIR, file)
+        if os.path.exists(path):
+            try:
+                os.remove(path)
+            except Exception as e:
+                raise MessageError(f"Notification file deletion failed: {e}")

@@ -659,6 +659,13 @@ export const attachmentsText = createDictionary({
     'en-us':
       'Not all attachments have been loaded. Please create a record set of the query results to download all the attachments.',
   },
+  downloadAllStarted: {
+    'en-us': 'Attachment Archive Being Created',
+  },
+  downloadAllStartedDescription: {
+    'en-us':
+      'A notification will appear when the attachment archive is complete and ready for download.',
+  },
   deleteAttachmentWarning: {
     'en-us': 'Are you sure you want to delete this attachment?',
     'de-ch': 'Möchten Sie diesen Anhang wirklich löschen?',
