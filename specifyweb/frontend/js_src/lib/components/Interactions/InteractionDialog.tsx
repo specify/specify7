@@ -113,7 +113,8 @@ export function InteractionDialog({
   function handleProceed(
     recordSet: SerializedResource<RecordSet> | undefined
   ): void {
-    const catalogNumbers = handleParse();
+    const fromRecordSet = recordSet !== undefined;
+    const catalogNumbers = handleParse(fromRecordSet);
     if (catalogNumbers === undefined) return undefined;
     if (isLoanReturn)
       loading(
@@ -217,7 +218,10 @@ export function InteractionDialog({
     false
   );
 
-  function handleParse(): RA<string> | undefined {
+  function handleParse(fromRecordSet: boolean): RA<string> | undefined {
+    if (fromRecordSet) {
+      return [];
+    }
     const parseResults = split(catalogNumbers).map((value) =>
       parseValue(parser, inputRef.current ?? undefined, value)
     );
@@ -233,6 +237,10 @@ export function InteractionDialog({
         invalid: errorMessages,
       });
       return undefined;
+    }
+
+    if (errorMessages.length === 0 && collectionHasSeveralTypes === false) {
+      setValidation([]);
     }
 
     if (collectionHasSeveralTypes === true) {

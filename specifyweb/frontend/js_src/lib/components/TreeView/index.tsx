@@ -38,6 +38,7 @@ import { useTitle } from '../Molecules/AppTitle';
 import { ResourceEdit } from '../Molecules/ResourceLink';
 import { TableIcon } from '../Molecules/TableIcon';
 import { ProtectedTree } from '../Permissions/PermissionDenied';
+import { userPreferences } from '../Preferences/userPreferences';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
 import { TreeViewActions } from './Actions';
@@ -157,7 +158,11 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
   // Node sort order
   const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`);
 
-  const includeAuthor = getPref(`TaxonTreeEditor.DisplayAuthor`);
+  const includeAuthor = userPreferences.get(
+    'treeEditor',
+    'taxon',
+    'displayAuthor'
+  );
 
   const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
     treeDefinition.id

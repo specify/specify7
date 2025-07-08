@@ -51,7 +51,7 @@ export const preferredOverlay = 'Labels and boundaries';
  * leafletLayersEndpoint
  *
  * Documentation:
- * https://github.com/specify/specify7/wiki/Adding-Custom-Tile-Servers
+ * https://discourse.specifysoftware.org/t/adding-custom-tile-servers-geomap/2593
  *
  * Adding "dark:invert-leaflet-layer' smartly inverts the layer colors when in
  * dark mode

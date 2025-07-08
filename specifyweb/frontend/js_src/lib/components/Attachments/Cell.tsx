@@ -155,7 +155,7 @@ export function AttachmentRecordLink({
 }
 
 /** Fetch CollectionObjectAttachment for a given Attachment */
-async function fetchAttachmentParent(
+export async function fetchAttachmentParent(
   table: SpecifyTable,
   attachment: SerializedResource<Attachment>
 ): Promise<SpecifyResource<AnySchema> | undefined> {
@@ -169,7 +169,7 @@ async function fetchAttachmentParent(
 /**
  * Get CollectionObject id from CollectionObjectAttachment
  */
-function getBaseResourceId(
+export function getBaseResourceId(
   table: SpecifyTable,
   related: SpecifyResource<AnySchema>
 ): number | undefined {
