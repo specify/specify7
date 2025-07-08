@@ -344,11 +344,12 @@ export const notificationRenderers: IR<
           className="w-fit"
           onClick={(): void => {
             loading(
-              downloadArchive(notification.payload.file, notification.payload.archive_name).then(() => 
-                handleDelete(deleteNotification(notification))
-              ).catch((error) =>
-                console.error(error)
+              downloadArchive(
+                notification.payload.file,
+                notification.payload.archive_name
               )
+                .then(() => handleDelete(deleteNotification(notification)))
+                .catch((error) => console.error(error))
             );
           }}
         >
