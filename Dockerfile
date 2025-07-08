@@ -176,7 +176,7 @@ RUN echo \
         # See https://github.com/specify/specify7/pull/6831
         "\n_env_allowed_hosts = os.getenv('ALLOWED_HOSTS', None)" \
         "\n_default_allowed_hosts = getattr(specify_defaults,'ALLOWED_HOSTS', ['*'])" \
-        "\nALLOWED_HOSTS = _default_allowed_hosts if _env_allowed_hosts is None else _env_allowed_hosts.split(',')" \
+        "\nALLOWED_HOSTS = _default_allowed_hosts if _env_allowed_hosts is None else [host.strip() for host in _env_allowed_hosts.split(',')]" \
         # Resolve CSRF_TRUSTED_ORIGINS in the following precedence:
         # - Use the CSRF_TRUSTED_ORIGINS environment variable (if present)
         # - Otherwise, fallback to the default specified in settings/specify_settings.py
@@ -184,7 +184,7 @@ RUN echo \
         # See https://github.com/specify/specify7/pull/6831
         "\n_env_trusted_origins = os.getenv('CSRF_TRUSTED_ORIGINS', None)" \ 
         "\n_default_trusted_origins = getattr(specify_defaults,'CSRF_TRUSTED_ORIGINS', ['https://*', 'http://*'])" \
-        "\nCSRF_TRUSTED_ORIGINS = _default_trusted_origins if _env_trusted_origins is None else _env_trusted_origins.split(',')" \
+        "\nCSRF_TRUSTED_ORIGINS = _default_trusted_origins if _env_trusted_origins is None else [origin.strip() for origin in _env_trusted_origins.split(',')]" \
         > settings/local_specify_settings.py
 
 RUN echo "import os \nDEBUG = os.getenv('SP7_DEBUG', '').lower() == 'true'\n" \
