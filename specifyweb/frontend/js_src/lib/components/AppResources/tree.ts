@@ -300,5 +300,6 @@ const getUserResources = (
 export const exportsForTests = {
   getGlobalAllResources,
   disambiguateGlobalPrefs,
-  mergeDirectories
+  mergeDirectories,
+  getDirectoryChildren
 };

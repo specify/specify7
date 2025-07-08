@@ -3,7 +3,7 @@ import { utilsForTests } from "./utils";
 import { exportsForTests } from "../tree";
 
 const { setAppResourceDir } = utilsForTests;
-const { mergeDirectories } = exportsForTests;
+const { mergeDirectories, getDirectoryChildren } = exportsForTests;
 
 
 describe("mergeDirectories", ()=>{
@@ -57,6 +57,12 @@ describe("mergeDirectories", ()=>{
             const merged = mergeDirectories([viewSetAdjusted.directories[index]], viewSetAdjusted);
             expect(merged.appResources.length).toBe(apps);
             expect(merged.viewSets.length).toBe(views);
+
+            const directoryChildren = getDirectoryChildren(viewSetAdjusted.directories[index], viewSetAdjusted);
+            expect(directoryChildren.appResources.length).toBe(apps);
+            expect(directoryChildren.viewSets.length).toBe(views);
+
+            
         });
 
 
