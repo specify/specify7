@@ -297,15 +297,17 @@ msgid "selectResourceType"
 msgstr "Seleccionar el tipo de recurso"
 
 #: components/AppResources/tree.ts:121
-#: components/AppResources/__tests__/getGlobalAllResources.test.ts:36
-#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Get Global All Resources
+#: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:27
+#: components/AppResources/__tests__/getGlobalAllResources.test.ts:38
+#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
 #, fuzzy
 msgid "globalPreferences"
 msgstr "Preferencias globales"
 
 #: components/AppResources/tree.ts:123
-#: components/AppResources/__tests__/getGlobalAllResources.test.ts:67
-#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Get Global All Resources
+#: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:50
+#: components/AppResources/__tests__/getGlobalAllResources.test.ts:69
+#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
 #, fuzzy
 msgid "remotePreferences"
 msgstr "Preferencias remotas"
