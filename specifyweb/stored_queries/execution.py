@@ -1192,7 +1192,7 @@ def parent_inheritance_post_query_processing(query, tableid, field_specs, collec
             return list(query)
 
         # Get the catalogNumber field index
-        catalog_number_field_index = [fs.fieldspec.join_path[0].name for fs in field_specs].index('catalogNumber') + 1
+        catalog_number_field_index = [fs.fieldspec.join_path[0].name for fs in field_specs if fs.fieldspec.join_path].index('catalogNumber') + 1
 
         # op_num 1 is refering to the filter equal, the inheritance will only work if we have cat num equal, other operators will not function
         if field_specs[catalog_number_field_index - 1].op_num != 1:
