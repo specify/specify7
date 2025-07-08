@@ -5,7 +5,11 @@
 import { f } from '../../utils/functools';
 import type { R, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import { sortFunction, toLowerCase } from '../../utils/utils';
+import {
+  caseInsensitiveHash,
+  sortFunction,
+  toLowerCase,
+} from '../../utils/utils';
 import { fetchCollection, fetchRows } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -14,6 +18,7 @@ import {
   deserializeResource,
   serializeResource,
 } from '../DataModel/serializers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables, strictGetTable, tables } from '../DataModel/tables';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
@@ -155,10 +160,14 @@ async function fetchFromField(
     'Unable to fetch pick list items as pick list field is not set'
   );
 
+  const caseInsensitiveTableKey = caseInsensitiveHash(
+    genericTables,
+    tableName
+  ) as SpecifyTable | undefined;
+
   const canBeScoped =
     f.includes(Object.keys(schema.domainLevelIds), toLowerCase(tableName)) ||
-    genericTables[tableName as keyof Tables]?.getScopingRelationship() !==
-      undefined;
+    caseInsensitiveTableKey?.getScopingRelationship() !== undefined;
 
   return fetchRows(tableName as keyof Tables, {
     limit,
