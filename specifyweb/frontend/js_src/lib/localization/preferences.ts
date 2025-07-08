@@ -1329,7 +1329,7 @@ export const preferencesText = createDictionary({
     'pt-br': 'Cantos arredondados',
   },
   showSubviewBorders: {
-	  'en-us': "Show borders around subviews",
+    'en-us': 'Show borders around subviews',
   },
   limitMaxFieldWidth: {
     'en-us': 'Limit max field width',
