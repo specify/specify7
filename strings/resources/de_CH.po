@@ -63,7 +63,7 @@ msgstr "Disziplin-Ressourcen"
 msgid "type"
 msgstr "Typ"
 
-#: components/AppResources/tree.ts:235
+#: components/AppResources/tree.ts:236
 #. Used in: Components > App Resources > Tree
 msgid "userTypes"
 msgstr "Benutzertypen"
@@ -274,13 +274,15 @@ msgstr "Visueller Editor"
 msgid "selectResourceType"
 msgstr "Ressourcentyp auswählen"
 
-#: components/AppResources/tree.ts:120
-#. Used in: Components > App Resources > Tree
+#: components/AppResources/tree.ts:121
+#: components/AppResources/__tests__/getGlobalAllResources.test.ts:28
+#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Get Global All Resources
 msgid "globalPreferences"
 msgstr "Globale Einstellungen"
 
-#: components/AppResources/tree.ts:122
-#. Used in: Components > App Resources > Tree
+#: components/AppResources/tree.ts:123
+#: components/AppResources/__tests__/getGlobalAllResources.test.ts:56
+#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Get Global All Resources
 msgid "remotePreferences"
 msgstr "Remote-Einstellungen"
 

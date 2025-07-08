@@ -301,7 +301,7 @@ msgstr "Salvar usuário primeiro"
 msgid "mustBeManager"
 msgstr "O usuário deve ser salvo como gerente primeiro"
 
-#: components/AppResources/tree.ts:227
+#: components/AppResources/tree.ts:228
 #: components/Security/CollectionRole.tsx:185
 #. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 #, fuzzy

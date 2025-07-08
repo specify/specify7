@@ -292,7 +292,7 @@ msgstr "Benutzer zuerst speichern"
 msgid "mustBeManager"
 msgstr "Der Benutzer muss zuerst als Manager gespeichert werden"
 
-#: components/AppResources/tree.ts:227
+#: components/AppResources/tree.ts:228
 #: components/Security/CollectionRole.tsx:185
 #. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 #, fuzzy

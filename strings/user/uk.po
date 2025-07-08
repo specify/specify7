@@ -259,7 +259,7 @@ msgstr "Спочатку збережіть користувача"
 msgid "mustBeManager"
 msgstr "Спочатку користувача потрібно зберегти як менеджера"
 
-#: components/AppResources/tree.ts:227
+#: components/AppResources/tree.ts:228
 #: components/Security/CollectionRole.tsx:185
 #. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 msgid "users"
