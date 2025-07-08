@@ -5,6 +5,8 @@
 
 import React from 'react';
 
+import { f } from '../utils/functools';
+
 export function useAsyncStateMock<T>(
   callback: () => Promise<T | undefined> | undefined,
   onSetCallback: (value: T | undefined) => void
@@ -20,5 +22,5 @@ export function useAsyncStateMock<T>(
     };
   }, [callback]);
 
-  return [undefined, undefined];
+  return [undefined, f.void];
 }
