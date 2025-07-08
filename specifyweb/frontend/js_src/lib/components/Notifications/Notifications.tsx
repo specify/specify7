@@ -164,9 +164,7 @@ function NotificationComponent({
         <Button.Icon
           icon="x"
           title={commonText.delete()}
-          onClick={(): void =>
-            handleDelete(deleteNotification(notification))
-          }
+          onClick={(): void => handleDelete(deleteNotification(notification))}
         />
       </div>
       <div className="flex flex-col gap-2">
