@@ -2,16 +2,17 @@ import { renderHook } from '@testing-library/react';
 
 import { requireContext } from '../../../tests/helpers';
 import type { RA } from '../../../utils/types';
-import { replaceItem } from '../../../utils/utils';
 import type { SerializedResource } from '../../DataModel/helperTypes';
-import { getResourceApiUrl } from '../../DataModel/resource';
 import type { Discipline } from '../../DataModel/types';
 import { getAppResourceCount } from '../helpers';
-import type { AppResources, AppResourcesTree } from '../hooks';
+import type { AppResourcesTree } from '../hooks';
 import { useResourcesTree } from '../hooks';
 import { staticAppResources } from './staticAppResources';
+import { utilsForTests } from './utils';
 
 requireContext();
+
+const {setAppResourceDir} = utilsForTests;
 
 describe('useResourcesTree', () => {
   const getResourceCountTree = (result: AppResourcesTree) =>
@@ -70,19 +71,6 @@ describe('useResourcesTree', () => {
 
     // There is only 1 resource with the matching spappresourcedir.
     expect(getResourceCountTree(result.current)).toBe(1);
-  });
-
-  const setAppResourceDir = (
-    resources: AppResources,
-    key: 'appResources' | 'viewSets',
-    index: number,
-    newDir: number
-  ): AppResources => ({
-    ...resources,
-    [key]: replaceItem(resources[key as 'appResources'], index, {
-      ...resources[key as 'appResources'][index],
-      spAppResourceDir: getResourceApiUrl('SpAppResourceDir', newDir),
-    }),
   });
 
   test('all appresource dir', () => {

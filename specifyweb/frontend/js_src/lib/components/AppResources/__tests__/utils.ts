@@ -1,9 +1,11 @@
 import type { RA } from '../../../utils/types';
 import { localized } from '../../../utils/types';
+import { replaceItem } from '../../../utils/utils';
 import { addMissingFields } from '../../DataModel/addMissingFields';
+import { getResourceApiUrl } from '../../DataModel/resource';
 import { serializeResource } from '../../DataModel/serializers';
 import { tables } from '../../DataModel/tables';
-import type { AppResourcesTree } from '../hooks';
+import type { AppResources, AppResourcesTree } from '../hooks';
 import type { ScopedAppResourceDir } from '../types';
 
 // Make it part of functools?
@@ -161,6 +163,19 @@ const simpleTree = () => [
   makeAppResourceNode('TestLabel5', 'TestKey5', makeDirectory(5), []),
 ];
 
+const setAppResourceDir = (
+  resources: AppResources,
+  key: 'appResources' | 'viewSets',
+  index: number,
+  newDir: number
+): AppResources => ({
+  ...resources,
+  [key]: replaceItem(resources[key as 'appResources'], index, {
+    ...resources[key as 'appResources'][index],
+    spAppResourceDir: getResourceApiUrl('SpAppResourceDir', newDir),
+  }),
+});
+
 export const utilsForTests = {
   treeStructure,
   makeTree,
@@ -168,4 +183,5 @@ export const utilsForTests = {
   makeAppResourceNode,
   incrementor,
   simpleTree,
+  setAppResourceDir
 };

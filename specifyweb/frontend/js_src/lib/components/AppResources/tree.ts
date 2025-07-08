@@ -61,7 +61,7 @@ const sortTree = (tree: AppResourcesTree): AppResourcesTree =>
       subCategories: sortTree(subCategories),
     }));
 
-function getGlobalAllResources(resources: AppResources): {
+export function getGlobalAllResources(resources: AppResources): {
   readonly directory: ScopedAppResourceDir;
   readonly appResources: RA<SerializedResource<SpAppResource>>;
   readonly viewSets: RA<SerializedResource<SpViewSetObj>>;
@@ -114,6 +114,7 @@ const disambiguateGlobalPrefs = (
       ({ id }) =>
         getResourceApiUrl('SpAppResourceDir', id) === resource.spAppResourceDir
     );
+    // Pretty sure this is redundant... that is, directory should always be defined.
     if (!directory) return resource;
     const userType = directory.userType?.toLowerCase();
     if (userType === globalUserType)
