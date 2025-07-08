@@ -367,7 +367,6 @@ const colorMapper = f.store<Partial<RR<keyof Tables, Gradient>>>(() => ({
   UserPolicy: colors.lightBlue,
   UserRole: colors.blue,
   VoucherRelationship: colors.red,
-  Component: colors.green,
 }));
 
 export const exportsForTests = { nameMapper, colorMapper };
