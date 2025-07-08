@@ -159,6 +159,11 @@ export function ResourceView<SCHEMA extends AnySchema>({
     'makeFormDialogsModal'
   );
 
+  const [showSubviewBorders] = userPreferences.use(
+	  'form',
+	  'ui',
+	  'showSubviewBorders'
+);
   const isReadOnly = augmentMode(
     React.useContext(ReadOnlyContext),
     resource?.isNew() === true,
@@ -323,7 +328,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
               ? 'hidden'
               : hasNoData
                 ? ''
-                : 'border border-gray-500 border-t-0 rounded-b p-1'
+		: showSubviewBorders 
+		?
+                'border border-gray-500 border-t-0 rounded-b p-1' : 'p-1'
           }
         >
           {formattedChildren}
