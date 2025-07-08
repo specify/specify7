@@ -53,7 +53,7 @@ export const getAppResourceTree = (
   },
 ];
 
-const sortTree = (tree: AppResourcesTree): AppResourcesTree =>
+export const sortTree = (tree: AppResourcesTree): AppResourcesTree =>
   Array.from(tree)
     .sort(sortFunction(({ label }) => label))
     .map(({ subCategories, ...rest }) => ({
