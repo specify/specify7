@@ -269,16 +269,13 @@ export async function fetchDeleteBlockers(
                           .set('operStart', queryFieldFilters.in.id)
                           .set('startValue', ids.join(',')),
                         /*
-                         * TODO: ParentRelationship.model.name should always be directRelationship.model.name.
+                         * TODO: ParentRelationship.table.name should always be directRelationship.model.name.
                          * Check if that can never be the case
                          */
-                        QueryFieldSpec.fromPath(
-                          parentRelationship.relatedTable.name,
-                          [
-                            parentRelationship.name,
-                            parentRelationship.relatedTable.idField.name,
-                          ]
-                        ).toSpQueryField(),
+                        QueryFieldSpec.fromPath(parentRelationship.table.name, [
+                          parentRelationship.name,
+                          parentRelationship.relatedTable.idField.name,
+                        ]).toSpQueryField(),
                       ])
                     : resolveParentViaOtherside(
                         parentRelationship,

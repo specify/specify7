@@ -38,6 +38,7 @@ import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { locationToState } from '../Router/RouterState';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 import type { RecordSelectorProps } from './RecordSelector';
@@ -347,6 +348,12 @@ function RecordSet<SCHEMA extends AnySchema>({
   const [openDialogForTitle, _, __, setOpenDialogForTitle] =
     useBooleanState(false);
 
+  const [createRecordSetOnBulkCarryForward] = userPreferences.use(
+    'form',
+    'preferences',
+    'createRecordSetOnBulkCarryForward'
+  );
+
   return (
     <>
       <RecordSelectorFromIds<SCHEMA>
@@ -420,26 +427,38 @@ function RecordSet<SCHEMA extends AnySchema>({
         onClone={(resources: RA<SpecifyResource<SCHEMA>>): void => {
           go(totalCount, 'new', resources[0]);
           if (resources.length > 1) {
-            const sortedResources = Array.from(resources).sort(
-              sortFunction((r) => r.id)
-            ) as RA<SpecifyResource<CollectionObject>>;
-            loading(
-              createNewRecordSet(
-                sortedResources.map((resource) => resource.id)
-              ).then(async () => {
-                const firstCollectionObject = await format(sortedResources[0]);
-                const lastCollectionObject = await format(
-                  sortedResources.at(-1)
-                );
-                recordSet.set(
-                  'name',
-                  `${
-                    tables.CollectionObject.label
-                  } Batch ${firstCollectionObject!} - ${lastCollectionObject!}`
-                );
-                await recordSet.save();
-              })
-            );
+            if (
+              createRecordSetOnBulkCarryForward.includes(
+                resources[0].specifyTable.name
+              )
+            ) {
+              const sortedResources = Array.from(resources).sort(
+                sortFunction((r) => r.id)
+              ) as RA<SpecifyResource<CollectionObject>>;
+              loading(
+                createNewRecordSet(
+                  sortedResources.map((resource) => resource.id)
+                ).then(async () => {
+                  const firstCollectionObject = await format(
+                    sortedResources[0]
+                  );
+                  const lastCollectionObject = await format(
+                    sortedResources.at(-1)
+                  );
+                  recordSet.set(
+                    'name',
+                    `${
+                      tables.CollectionObject.label
+                    } Batch ${firstCollectionObject!} - ${lastCollectionObject!}`
+                  );
+                  await recordSet.save();
+                })
+              );
+            } else {
+              // Don't create new record set
+              handleAdd(resources.slice(1), false);
+              go(totalCount, resources.at(-1)?.id);
+            }
           }
         }}
         onClose={handleClose}

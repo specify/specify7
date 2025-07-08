@@ -689,6 +689,15 @@ export const preferencesText = createDictionary({
       'Skalieren Sie die Benutzeroberfläche, um sie an die Schriftgröße anzupassen.',
     'pt-br': 'Dimensione a interface para corresponder ao tamanho da fonte.',
   },
+  displayAuthor: {
+    'en-us': 'Show author in the tree',
+    'ru-ru': 'Показать автора в дереве',
+    'es-es': 'Mostrar autor en el árbol',
+    'fr-fr': "Afficher l'auteur dans l'arbre",
+    'uk-ua': 'Показати автора в дереві',
+    'de-ch': 'Autor im Baum anzeigen',
+    'pt-br': 'Mostrar autor',
+  },
   welcomePage: {
     'en-us': 'Home Page',
     'ru-ru': 'Домашняя страница',
