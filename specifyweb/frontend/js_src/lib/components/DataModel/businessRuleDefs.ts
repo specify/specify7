@@ -18,6 +18,7 @@ import {
   PREPARATION_EXCHANGED_OUT_KEY,
   PREPARATION_GIFTED_KEY,
   PREPARATION_LOANED_KEY,
+  PREPARATION_NEGATIVE_KEY,
 } from './businessRuleUtils';
 import { cogTypes } from './helpers';
 import type { AnySchema, CommonFields, TableFields } from './helperTypes';
@@ -632,7 +633,14 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           totalPrepLoaned += quantity;
         });
 
-        if (totalPrep < totalPrepLoaned) {
+        if (totalPrep < 0) {
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [resourcesText.preparationIsNegative()],
+            PREPARATION_NEGATIVE_KEY
+          );
+        } else if (totalPrep < totalPrepLoaned) {
           setSaveBlockers(
             prep,
             prep.specifyTable.field.countAmt,
@@ -645,6 +653,12 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             prep.specifyTable.field.countAmt,
             [],
             PREPARATION_LOANED_KEY
+          );
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [],
+            PREPARATION_NEGATIVE_KEY
           );
         }
         return undefined;
