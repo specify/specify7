@@ -3,7 +3,7 @@ import { staticAppResources } from './staticAppResources';
 import { utilsForTests } from './utils';
 
 const { setAppResourceDir } = utilsForTests;
-const { mergeDirectories } = exportsForTests;
+const { mergeDirectories, getDirectoryChildren } = exportsForTests;
 
 describe('mergeDirectories', () => {
   test('spappresourcedirs matching', () => {
@@ -68,13 +68,18 @@ describe('mergeDirectories', () => {
       },
     ] as const;
 
-    testSpec.forEach(({ apps, views }, index) => {
-      const merged = mergeDirectories(
-        [viewSetAdjusted.directories[index]],
-        viewSetAdjusted
-      );
-      expect(merged.appResources).toHaveLength(apps);
-      expect(merged.viewSets).toHaveLength(views);
+    testSpec.forEach(({apps, views}, index)=>{
+        
+        const merged = mergeDirectories([viewSetAdjusted.directories[index]], viewSetAdjusted);
+        expect(merged.appResources).toHaveLength(apps);
+        expect(merged.viewSets).toHaveLength(views);
+
+        const directoryChildren = getDirectoryChildren(viewSetAdjusted.directories[index], viewSetAdjusted);
+        expect(directoryChildren.appResources).toHaveLength(apps);
+        expect(directoryChildren.viewSets).toHaveLength(views);
+
+        
     });
-  });
+    });
+
 });
