@@ -19,7 +19,7 @@ function prefixIncrmentor(
   generator: ReturnType<typeof incrementor>,
   padZero: boolean = false
 ) {
-  return `${prefix}${padZero ? (generator.next().value!).toString().padStart(3, '0') : (generator.next().value!)}`;
+  return `${prefix}${padZero ? generator.next().value!.toString().padStart(3, '0') : generator.next().value!}`;
 }
 
 type Incrementor = ReturnType<typeof incrementor>;
@@ -112,10 +112,10 @@ const treeStructure: RA<Node> = [
 ];
 
 type MakeTreeProps = {
-  readonly addResources: boolean,
-  readonly forceGenerator: boolean,
+  readonly addResources: boolean;
+  readonly forceGenerator: boolean;
   readonly padZero: boolean;
-}
+};
 
 const defaultMakeTreeProps: MakeTreeProps = {
   addResources: false,
@@ -137,7 +137,9 @@ const makeTree = (
       node.id === undefined
         ? undefined
         : makeDirectory(
-            ({...defaultMakeTreeProps, ...props}).forceGenerator ? (idIncrementor.next().value as number) : node.id
+            { ...defaultMakeTreeProps, ...props }.forceGenerator
+              ? (idIncrementor.next().value as number)
+              : node.id
           ),
       makeTree(
         node.children,
@@ -146,14 +148,14 @@ const makeTree = (
         idIncrementor,
         props
       ),
-      ({...defaultMakeTreeProps, ...props}).addResources
+      { ...defaultMakeTreeProps, ...props }.addResources
         ? Array.from({ length: node.appResources ?? 0 }, () =>
             addMissingFields('SpAppResource', {
               id: idIncrementor.next().value as number,
             })
           )
         : [],
-      ({...defaultMakeTreeProps, ...props}).addResources
+      { ...defaultMakeTreeProps, ...props }.addResources
         ? Array.from({ length: node.viewSets ?? 0 }, () =>
             addMissingFields('SpViewSetObj', {
               id: idIncrementor.next().value as number,
