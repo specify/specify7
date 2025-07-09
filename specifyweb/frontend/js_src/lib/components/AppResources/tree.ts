@@ -305,4 +305,5 @@ export const exportsForTests = {
   getDisciplineAppResources,
   getUserTypeResources,
   getUserResources,
+  getCollectionResources,
 };
