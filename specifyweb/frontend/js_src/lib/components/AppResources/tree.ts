@@ -53,7 +53,7 @@ export const getAppResourceTree = (
   },
 ];
 
-const sortTree = (tree: AppResourcesTree): AppResourcesTree =>
+export const sortTree = (tree: AppResourcesTree): AppResourcesTree =>
   Array.from(tree)
     .sort(sortFunction(({ label }) => label))
     .map(({ subCategories, ...rest }) => ({
@@ -114,6 +114,7 @@ const disambiguateGlobalPrefs = (
       ({ id }) =>
         getResourceApiUrl('SpAppResourceDir', id) === resource.spAppResourceDir
     );
+    // Pretty sure this is redundant... that is, directory should always be defined.
     if (!directory) return resource;
     const userType = directory.userType?.toLowerCase();
     if (userType === globalUserType)
@@ -295,3 +296,10 @@ const getUserResources = (
       subCategories: [],
     };
   });
+
+export const exportsForTests = {
+  getGlobalAllResources,
+  disambiguateGlobalPrefs,
+  mergeDirectories,
+  getDirectoryChildren,
+};

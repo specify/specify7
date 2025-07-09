@@ -1201,6 +1201,22 @@ export const userPreferenceDefinitions = {
             renderer: f.never,
             container: 'div',
           }),
+          enableBulkCarryForwardRange: definePref<RA<keyof Tables>>({
+            title: localized('_enableBulkCarryForwardRange'),
+            requiresReload: false,
+            visible: false,
+            defaultValue: [],
+            renderer: f.never,
+            container: 'div',
+          }),
+          createRecordSetOnBulkCarryForward: definePref<RA<keyof Tables>>({
+            title: localized('_createRecordSetOnBulkCarryForward'),
+            requiresReload: false,
+            visible: false,
+            defaultValue: [],
+            renderer: f.never,
+            container: 'div',
+          }),
           /*
            * Can temporary disable clone for a given table
            * Since most tables are likely to have carry enabled, this pref is
@@ -1455,6 +1471,13 @@ export const userPreferenceDefinitions = {
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
+          }),
+          displayAuthor: definePref<boolean>({
+            title: preferencesText.displayAuthor(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
           }),
         },
       },
