@@ -69,6 +69,11 @@ test('f.equal', () => {
   expect(f.equal('a')('b')).toBe(false);
 });
 
+test('f.notEqual', () => {
+  expect(f.notEqual('a')('a')).toBe(false);
+  expect(f.notEqual('a')('b')).toBe(true);
+});
+
 describe('f.maybe', () => {
   test('undefined case', () =>
     expect(f.maybe(undefined, f.true)).toBeUndefined());
@@ -123,6 +128,13 @@ describe('f.parseInt', () => {
   test('simple case', () => expect(f.parseInt('1')).toBe(1));
   test('float case', () => expect(f.parseInt('-1.4')).toBe(-1));
   test('invalid case', () => expect(f.parseInt('a-1.4')).toBeUndefined());
+});
+
+describe('f.fastParseInt', () => {
+  test('simple case', () => expect(f.fastParseInt('1')).toBe(1));
+  test('float case', () => expect(f.fastParseInt('-1.4')).toBe(-1));
+  test('invalid case', () => expect(f.fastParseInt('a-1.4')).toBe(0));
+  test('empty string case', () => expect(f.fastParseInt('')).toBe(0));
 });
 
 describe('f.parseFloat', () => {
