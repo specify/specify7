@@ -39,7 +39,7 @@ export const mergingText = createDictionary({
   showConflictingFieldsOnly: {
     'en-us': 'Show conflicting fields only',
     'ru-ru': 'Показывать только конфликтующие поля',
-    'de-ch': 'Nur widersprüchliche Felder anzeigen',
+    'de-ch': 'Nur in Konflikt stehende Felder anzeigen',
     'es-es': 'Mostrar solo campos en conflicto',
     'fr-fr': 'Afficher uniquement les champs en conflit',
     'uk-ua': 'Показувати лише конфліктуючі поля',

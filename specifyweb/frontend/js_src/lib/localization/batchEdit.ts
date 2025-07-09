@@ -421,4 +421,11 @@ export const batchEditText = createDictionary({
     'uk-ua':
       "Дозволяє пакетне редагування зв'язків базової таблиці. Відкат вимкнено, якщо зв'язки ввімкнено",
   },
+  commitDataSet: {
+    'en-us': 'Commit Data Set',
+  },
+  warningBatchEditText: {
+    'en-us':
+      'Before proceeding, please note that the following action may interrupt other users. This action may cause delays or temporary unavailability of certain features for Specify users. Please consider the impact on their experience. This action cannot be undone',
+  },
 } as const);
