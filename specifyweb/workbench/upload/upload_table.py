@@ -374,6 +374,8 @@ class BoundUploadTable(NamedTuple):
         should_defer_match: bool,
         to_one_override: dict[str, UploadResult] = {},
         consider_dependents=False,
+        is_origin=False,
+        origin_is_editable=False
     ) -> DjangoPredicates:
 
         model = self.django_model
@@ -412,6 +414,8 @@ class BoundUploadTable(NamedTuple):
                 else value.get_django_predicates(
                     should_defer_match=should_defer_match,
                     consider_dependents=consider_dependents,
+                    is_origin=False,
+                    origin_is_editable=origin_is_editable
                 ).reduce_for_to_one()
             )
             for key, value in self.toOne.items()
@@ -422,6 +426,8 @@ class BoundUploadTable(NamedTuple):
                 value.get_django_predicates(
                     should_defer_match=should_defer_match,
                     consider_dependents=consider_dependents,
+                    is_origin=False,
+                    origin_is_editable=origin_is_editable
                 ).reduce_for_to_many(value)
                 for value in values
             ]
@@ -432,7 +438,8 @@ class BoundUploadTable(NamedTuple):
             filters={**attrs, **direct_filters, **to_ones, **to_many}
         )
 
-        if combined_filters.is_reducible():
+        can_reduce = is_origin or (origin_is_editable or not isinstance(self.current_id, int))
+        if combined_filters.is_reducible() and can_reduce:
             # This is a very hot path, being called for every object on a row. We'd need to be very minimal in what we consider when considering dependents.
             # So, we:
             # 1. ^ all other attrs are null (otherwise, we won't delete this obj anyways, don't need to waste time looking at deps)
@@ -565,11 +572,15 @@ class BoundUploadTable(NamedTuple):
 
         # This is very handy to check for whether the entire record needs to be skipped or not.
         # This also returns predicates for to-many, we if this is empty, we really are a null record
+
+        is_edit_table = isinstance(self, BoundUpdateTable)
         try:
             filter_predicate = self.get_django_predicates(
                 should_defer_match=self._should_defer_match,
                 to_one_override=to_one_results,
-                consider_dependents=isinstance(self, BoundUpdateTable),
+                consider_dependents=is_edit_table,
+                is_origin=True,
+                origin_is_editable=is_edit_table
             )
         except ContetRef as e:
             # Not sure if there is a better way for this. Consider moving this to binding.

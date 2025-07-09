@@ -3,11 +3,12 @@ import type { Plugins } from 'handsontable/plugins';
 import type { CellProperties } from 'handsontable/settings';
 
 import { getCache } from '../../utils/cache';
+import type { WritableArray } from '../../utils/types';
 import { writable } from '../../utils/types';
 import { schema } from '../DataModel/schema';
 import { userPreferences } from '../Preferences/userPreferences';
-import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { getAttachmentsColumnIndex } from '../WorkBench/attachmentHelpers';
 import type { BatchEditPack } from './batchEditHelpers';
 import { BATCH_EDIT_KEY, isBatchEditNullRecord } from './batchEditHelpers';
 import { getPhysicalColToMappingCol } from './hotHelpers';
@@ -22,6 +23,7 @@ export function configureHandsontable(
 ): void {
   identifyDefaultValues(hot, mappings);
   curryCells(hot, mappings, dataset, pickLists);
+  setColumnWidths(hot, dataset);
   setSort(hot, dataset);
 }
 
@@ -141,9 +143,9 @@ function getIdentifyNullRecords(
 }
 
 function getAttachmentsIdentifier(dataset: Dataset): GetProperty | undefined {
-  const attachmentsColumn = dataset.columns.indexOf(ATTACHMENTS_COLUMN);
+  const attachmentsColumnIndex = getAttachmentsColumnIndex(dataset);
   const callback: GetProperty = (_physicalRow, physicalCol, _property) =>
-    physicalCol === attachmentsColumn
+    physicalCol === attachmentsColumnIndex
       ? {
           renderer: (
             instance,
@@ -160,7 +162,7 @@ function getAttachmentsIdentifier(dataset: Dataset): GetProperty | undefined {
               row,
               col,
               property,
-              typeof value === 'string'
+              typeof value === 'string' && value.length > 0
                 ? JSON.parse(value)?.formatted
                 : undefined,
               ...rest
@@ -210,4 +212,24 @@ export function getHotPlugin<NAME extends keyof Plugins>(
   if (plugins[pluginName] === undefined)
     plugins[pluginName] = hot.getPlugin(pluginName);
   return plugins[pluginName]!;
+}
+
+function setColumnWidths(
+  hot: Handsontable,
+  dataset: Dataset
+): void {
+  let colWidths: WritableArray<number> | undefined = undefined;
+  /**
+   * The attachments column contains text that is different from what is actually displayed.
+   * For simplicity, the width is limited to 100px to reflect the likely shorter displayed text.
+   */
+  const attachmentColumnMaxWidth = 100;
+  const attachmentsColumnIndex = getAttachmentsColumnIndex(dataset);
+  if (attachmentsColumnIndex !== -1) {
+    colWidths = [];
+    colWidths[attachmentsColumnIndex] = Math.min(hot.getColWidth(attachmentsColumnIndex), attachmentColumnMaxWidth)
+  }
+  hot.updateSettings({
+    colWidths
+  });
 }

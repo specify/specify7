@@ -34,8 +34,11 @@ import type { Attachment, SpDataSetAttachment } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Skeleton } from '../SkeletonLoaders/Skeleton';
-import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
-import { getAttachmentsFromCell } from '../WbImportAttachments/helpers';
+import type { Dataset } from '../WbPlanView/Wrapped';
+import {
+  getAttachmentsColumnIndex,
+  getAttachmentsFromCell,
+} from '../WorkBench/attachmentHelpers';
 
 type WbAttachmentPreviewCell = {
   readonly attachment: SerializedResource<Attachment> | undefined;
@@ -44,18 +47,18 @@ type WbAttachmentPreviewCell = {
 
 export function WbAttachmentsPreview({
   hot,
-  datasetColumns,
+  dataset,
   onClose: handleClose,
 }: {
   readonly hot: Handsontable | undefined;
-  readonly datasetColumns: RA<string>;
+  readonly dataset: Dataset;
   readonly onClose: () => void;
 }): JSX.Element {
   const [selectedRow, setSelectedRow] = React.useState<number | undefined>(
     undefined
   );
   const [attachments, setAttachments] = React.useState<
-    readonly WbAttachmentPreviewCell[]
+    RA<WbAttachmentPreviewCell>
   >([]);
   const [selectedAttachment, setSelectedAttachment] = React.useState<
     SerializedResource<Attachment> | undefined
@@ -81,7 +84,7 @@ export function WbAttachmentsPreview({
 
     fetchRowAttachments(
       hot,
-      datasetColumns,
+      dataset,
       selectedRow,
       setAttachments,
       setSelectedAttachment
@@ -144,21 +147,21 @@ export function WbAttachmentsPreview({
 
 function fetchRowAttachments(
   hot: Handsontable,
-  datasetColumns: RA<string>,
+  dataset: Dataset,
   row: number,
   setAttachments: (
     attachments:
-      | readonly WbAttachmentPreviewCell[]
+      | RA<WbAttachmentPreviewCell>
       | ((
-          attachments: readonly WbAttachmentPreviewCell[]
-        ) => readonly WbAttachmentPreviewCell[])
+          attachments: RA<WbAttachmentPreviewCell>
+        ) => RA<WbAttachmentPreviewCell>)
   ) => void,
   setSelectedAttachment: (
     attachment: SerializedResource<Attachment> | undefined
   ) => void
 ): void {
   // Look for Attachments column
-  const attachmentColumnIndex = datasetColumns.indexOf(ATTACHMENTS_COLUMN);
+  const attachmentColumnIndex = getAttachmentsColumnIndex(dataset);
   if (attachmentColumnIndex === -1) return;
 
   // Each row should have comma-separated IDs for SpDataSetAttachments
@@ -254,28 +257,28 @@ function AttachmentViewerDialog({
 
   return (
     <Dialog
-        buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
-        className={{
-          container: dialogClassNames.wideContainer,
-        }}
-        header={attachmentsText.attachments()}
-        modal={false}
-        onClose={onClose}
-      >
-        {attachment !== undefined &&
-          (isImage ? (
-            <ImageViewer
-              alt={attachment?.title ?? ''}
-              src={attachmentUrl ?? ''}
-            />
-          ) : (
-            <AttachmentViewer
-              attachment={deserializeResource(attachment)}
-              related={[related, setRelated]}
-              showMeta={false}
-              onViewRecord={undefined}
-            />
-          ))}
-      </Dialog>
+      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+      className={{
+        container: dialogClassNames.wideContainer,
+      }}
+      header={attachmentsText.attachments()}
+      modal={false}
+      onClose={onClose}
+    >
+      {attachment !== undefined &&
+        (isImage ? (
+          <ImageViewer
+            alt={attachment?.title ?? ''}
+            src={attachmentUrl ?? ''}
+          />
+        ) : (
+          <AttachmentViewer
+            attachment={deserializeResource(attachment)}
+            related={[related, setRelated]}
+            showMeta={false}
+            onViewRecord={undefined}
+          />
+        ))}
+    </Dialog>
   );
 }

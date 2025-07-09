@@ -42,7 +42,9 @@ export const notificationRenderers: IR<
           <Link.Success
             className="w-fit normal-case"
             download
-            href={`/static/depository/export_feed/${filename}`}
+            href={`/static/depository/export_feed/${encodeURIComponent(
+              filename
+            )}`}
           >
             {filename}
           </Link.Success>
@@ -71,7 +73,9 @@ export const notificationRenderers: IR<
         <Link.Success
           className="w-fit"
           download
-          href={`/static/depository/${notification.payload.file}`}
+          href={`/static/depository/${encodeURIComponent(
+            notification.payload.file
+          )}`}
         >
           {notificationsText.download()}
         </Link.Success>
@@ -99,7 +103,9 @@ export const notificationRenderers: IR<
         <Link.Success
           className="w-fit"
           download
-          href={`/static/depository/${notification.payload.file}`}
+          href={`/static/depository/${encodeURIComponent(
+            notification.payload.file
+          )}`}
         >
           {notificationsText.download()}
         </Link.Success>
@@ -113,7 +119,9 @@ export const notificationRenderers: IR<
         <Link.Success
           className="w-fit"
           download
-          href={`/static/depository/${notification.payload.file}`}
+          href={`/static/depository/${encodeURIComponent(
+            notification.payload.file
+          )}`}
         >
           {notificationsText.download()}
         </Link.Success>

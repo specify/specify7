@@ -39,39 +39,36 @@ import { Preview } from '../Molecules/FilePicker';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
 import {
+  ATTACHMENTS_COLUMN,
   attachmentsToCell,
   BASE_TABLE_NAME,
-} from './helpers';
-
-export const ATTACHMENTS_COLUMN = '_UPLOADED_ATTACHMENTS';
+} from '../WorkBench/attachmentHelpers';
 
 export function WbImportAttachmentsView(): JSX.Element {
   useMenuItem('workBench');
-  const [files, setFiles] = React.useState<readonly File[] | undefined>();
+  const [files, setFiles] = React.useState<RA<File> | undefined>();
 
   return (
     <Container.Full>
-        <H2>{commonText.multipleFilePickerMessage()}</H2>
-        <div className="w-96">
-          <FilePicker
-            acceptedFormats={undefined}
-            showFileNames
-            onFilesSelected={(selectedFiles) => {
-              setFiles(Array.from(selectedFiles));
-            }}
-          />
-        </div>
-        {files !== undefined && files.length > 0 && (
-          <FilesPicked files={files} />
-        )}
+      <H2>{commonText.multipleFilePickerMessage()}</H2>
+      <div className="w-96">
+        <FilePicker
+          acceptedFormats={undefined}
+          showFileNames
+          onFilesSelected={(selectedFiles) => {
+            setFiles(Array.from(selectedFiles));
+          }}
+        />
+      </div>
+      {files !== undefined && files.length > 0 && <FilesPicked files={files} />}
     </Container.Full>
   );
 }
 
 function uploadFiles(
-  files: readonly File[],
+  files: RA<File>,
   handleProgress: (progress: (progress: number | undefined) => number) => void
-): readonly Promise<SpecifyResource<Attachment>>[] {
+): RA<Promise<SpecifyResource<Attachment>>> {
   return files.map(async (file) =>
     uploadFile(file)
       .then(async (attachment) =>
@@ -120,11 +117,7 @@ async function saveDataSetAttachments(
   );
 }
 
-function FilesPicked({
-  files,
-}: {
-  readonly files: readonly File[];
-}): JSX.Element {
+function FilesPicked({ files }: { readonly files: RA<File> }): JSX.Element {
   const navigate = useNavigate();
   const [fileUploadProgress, setFileUploadProgress] = React.useState<
     number | undefined
@@ -132,7 +125,7 @@ function FilesPicked({
   const [isFailed, setFailed] = useBooleanState(false);
 
   const handleFilesSelected = async (
-    files: readonly File[],
+    files: RA<File>,
     dataSetName: string
   ): Promise<void> => {
     setFileUploadProgress(0);
@@ -219,7 +212,7 @@ function FilesPicked({
           {attachmentsText.importAttachments()}
         </Button.Secondary>
       </div>
-      <FilesPreview files={files} header="Attachment" />
+      <FilesPreview files={files} header={attachmentsText.attachments()} />
     </>
   );
 }
@@ -229,7 +222,7 @@ function FilesPreview({
   files,
 }: {
   readonly header: string;
-  readonly files: readonly File[];
+  readonly files: RA<File>;
 }): JSX.Element {
   const previewData = React.useMemo(() => {
     const preview: RA<RA<string>> = [
