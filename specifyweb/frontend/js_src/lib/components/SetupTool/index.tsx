@@ -41,10 +41,10 @@ const disciplineTypeOptions = [
 ];
 
 const catalogNumberFormats = [
-  'CatalogNumber (2025-######)',
-  'CatalogNumberAlphaNumByYear (2020-######)',
-  'CatalogNumberNumeric (#########)',
-  'CatalogNumberString (XXXXXXXXXX)',
+  'CatalogNumber',
+  'CatalogNumberAlphaNumByYear',
+  'CatalogNumberNumeric',
+  'CatalogNumberString',
 ];
 
 const resources: RA<ResourceConfig> = [
