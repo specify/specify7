@@ -41,7 +41,6 @@ Promise.all(
 )
   // Can't use softFail here because of circular dependency
   .catch(console.error);
-
 /**
  * The stack trace is about 83KB in size
  */

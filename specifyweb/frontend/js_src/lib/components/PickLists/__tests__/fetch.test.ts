@@ -96,7 +96,7 @@ describe('unsafeFetchPickList', () => {
 describe('fetchPickListItems', () => {
   test('pick list from items', async () => {
     const pickListItems = [
-      addMissingFields('PickListItem', { title: 'a', value: 'b' }),
+      addMissingFields('PickListItem', { title: 'a', value: 'b', ordinal: 0 }),
     ];
     const pickList = deserializeResource(
       addMissingFields('PickList', {
