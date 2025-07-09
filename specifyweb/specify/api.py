@@ -15,6 +15,7 @@ from urllib.parse import urlencode
 
 from typing_extensions import TypedDict, NotRequired
 
+from specifyweb.permissions.models import UserPolicy
 from specifyweb.specify.field_change_info import FieldChangeInfo
 from specifyweb.interactions.cog_preps import modify_update_of_interaction_sibling_preps
 
@@ -1436,15 +1437,13 @@ def create_specifyuser(request, direct=False):
                 new_user.set_password(new_user.password)
                 new_user.save()
 
-                ## TODO: add here permission to the newly created collection
-                actions = ['create', 'read', 'update', 'delete']
-                for action in actions:
-                    models.UserPolicy.objects.create(
-                        collection= Collection.objects.last(),
-                        specifyuser=new_user,
-                        resource='collection',
-                        action=action
-                    )
+                ## Give permission to the newly created user
+                UserPolicy.objects.create(
+                    specifyuser=new_user,
+                    collection=None,
+                    resource='%',
+                    action='%'
+                )
 
                 agent.specifyuser = new_user
                 agent.save()
@@ -1452,6 +1451,7 @@ def create_specifyuser(request, direct=False):
                 return JsonResponse({"success": True, "user_id": new_user.id}, status=200)
             except Exception as e:
                 return JsonResponse({"error": str(e)}, status=400)
+
         else:
             user = Specifyuser.objects.first()
             fields_to_update = [
@@ -1464,4 +1464,5 @@ def create_specifyuser(request, direct=False):
             if not Specifyuser.objects.filter(name=data['name']).exists():
                 user.save()
             return JsonResponse({"success": True, "user_id": user.id}, status=200)
+
     return JsonResponse({"error": "Invalid request"}, status=400)
