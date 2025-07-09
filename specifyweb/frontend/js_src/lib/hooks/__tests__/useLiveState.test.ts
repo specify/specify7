@@ -1,45 +1,42 @@
-import { renderHook } from "@testing-library/react";
-import { act } from "react-dom/test-utils";
+import { renderHook } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
 
-import { useLiveState } from "../useLiveState";
+import { useLiveState } from '../useLiveState';
 
-describe("useLiveState", ()=>{
+describe('useLiveState', () => {
+  test('does not recalculate state when function does not change', async () => {
+    const stateCreator = jest.fn().mockReturnValueOnce(50);
 
-    test("does not recalculate state when function does not change", async ()=>{
+    const { result, rerender } = renderHook(() => useLiveState(stateCreator));
 
-        const stateCreator = jest.fn().mockReturnValueOnce(50);
+    expect(result.current[0]).toBe(50);
+    expect(stateCreator).toHaveBeenCalledTimes(1);
 
-        const { result, rerender } = renderHook(()=>useLiveState(stateCreator));
+    await act(rerender);
 
-        expect(result.current[0]).toBe(50);
-        expect(stateCreator).toHaveBeenCalledTimes(1);
+    expect(result.current[0]).toBe(50);
+    expect(stateCreator).toHaveBeenCalledTimes(1);
+  });
 
-        await act(rerender);
+  test('recalculates state when function changes', async () => {
+    // Here, the function gets changed later.
+    let volatileStateCreator = jest.fn().mockReturnValue(10);
 
-        expect(result.current[0]).toBe(50);
-        expect(stateCreator).toHaveBeenCalledTimes(1);
+    const { result, rerender } = renderHook(() =>
+      useLiveState(volatileStateCreator)
+    );
 
-    });
+    expect(result.current[0]).toBe(10);
+    expect(volatileStateCreator).toHaveBeenCalledTimes(1);
 
-    test("recalculates state when function changes", async ()=>{
+    const originalCreator = volatileStateCreator;
 
-        // Here, the function gets changed later.
-        let volatileStateCreator = jest.fn().mockReturnValue(10);
+    volatileStateCreator = jest.fn().mockReturnValue(50);
 
-        const { result, rerender } = renderHook(()=>useLiveState(volatileStateCreator));
+    await act(rerender);
 
-        expect(result.current[0]).toBe(10);
-        expect(volatileStateCreator).toHaveBeenCalledTimes(1);
-
-        const originalCreator = volatileStateCreator;
-
-        volatileStateCreator = jest.fn().mockReturnValue(50);
-
-        await act(rerender);
-
-        expect(result.current[0]).toBe(50);
-        expect(volatileStateCreator).toHaveBeenCalledTimes(1);
-        expect(originalCreator).toHaveBeenCalledTimes(1);
-
-    })
+    expect(result.current[0]).toBe(50);
+    expect(volatileStateCreator).toHaveBeenCalledTimes(1);
+    expect(originalCreator).toHaveBeenCalledTimes(1);
+  });
 });
