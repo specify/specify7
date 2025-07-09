@@ -43,15 +43,15 @@ describe('getUserResources', () => {
     });
   });
 
-  test("directory case", ()=>{
+  test('directory case', () => {
     const newDirectory = [
-        staticAppResources.directories[0],
-        {
-            ...staticAppResources.directories[1],
-            scope: "user",
-            collection: staticAppResources.collections[0].resource_uri,
-            specifyUser: staticAppResources.users[0].resource_uri
-        }
+      staticAppResources.directories[0],
+      {
+        ...staticAppResources.directories[1],
+        scope: 'user',
+        collection: staticAppResources.collections[0].resource_uri,
+        specifyUser: staticAppResources.users[0].resource_uri,
+      },
     ] as const;
 
     const ids = [3, 3, 4];
@@ -70,42 +70,35 @@ describe('getUserResources', () => {
     );
 
     const scopedResources = getUserResources(
-        staticAppResources.collections[0],
-        {
-            ...viewSetAdjusted,
-            directories: newDirectory,
-            disciplines: testDisciplines
-        }
+      staticAppResources.collections[0],
+      {
+        ...viewSetAdjusted,
+        directories: newDirectory,
+        disciplines: testDisciplines,
+      }
     );
 
     const collection = staticAppResources.collections[0];
 
-    scopedResources.forEach((resource, index)=>{
+    scopedResources.forEach((resource, index) => {
+      const user = staticAppResources.users[index];
 
-        const user = staticAppResources.users[index];
-        
-        expect(resource.label).toBe(user.name);
-        expect(resource.key).toBe(
-            `collection_${collection.id}_user_${user.id}`
-        );
-        expect(resource.directory?.discipline).toBe(
-            testDisciplines[0].resource_uri
-        );
-        expect(resource.directory?.collection).toBe(
-            collection.resource_uri
-        );
-        
-        if (index == 0){
-            expect(resource.directory?.id).toBe(4);
-            expect(resource.appResources).toHaveLength(1);
-        }else{
-            expect(resource.directory?.id).toBeUndefined();
-            expect(resource.appResources).toHaveLength(0);
-        }
+      expect(resource.label).toBe(user.name);
+      expect(resource.key).toBe(`collection_${collection.id}_user_${user.id}`);
+      expect(resource.directory?.discipline).toBe(
+        testDisciplines[0].resource_uri
+      );
+      expect(resource.directory?.collection).toBe(collection.resource_uri);
 
-        expect(resource.viewSets).toHaveLength(0);
+      if (index == 0) {
+        expect(resource.directory?.id).toBe(4);
+        expect(resource.appResources).toHaveLength(1);
+      } else {
+        expect(resource.directory?.id).toBeUndefined();
+        expect(resource.appResources).toHaveLength(0);
+      }
 
+      expect(resource.viewSets).toHaveLength(0);
     });
-
   });
 });
