@@ -18,8 +18,7 @@ def set_null_versions_to_zero_and_default(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('patches', '0005_chrono_start_end'),
-        ('specify', '0035_version_required'),
+        ('patches', '0005_chrono_start_end')
     ]
 
     operations = [
