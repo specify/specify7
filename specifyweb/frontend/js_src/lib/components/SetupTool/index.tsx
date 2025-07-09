@@ -16,7 +16,36 @@ type ResourceConfig = {
 type FieldConfig = {
   readonly name: string;
   readonly label: string;
+  readonly type?: 'boolean' | 'password' | 'select' | 'text';
+  readonly options?: RA<string>;
 };
+
+const disciplineTypeOptions = [
+  'fish',
+  'herpetology',
+  'paleobotany',
+  'invertpaleo',
+  'vertpaleo',
+  'bird',
+  'mammal',
+  'insect',
+  'botany',
+  'invertebrate',
+  'minerals',
+  'geology',
+  'anthropology',
+  /*
+   * 'vascplant',
+   * 'fungi',
+   */
+];
+
+const catalogNumberFormats = [
+  'CatalogNumber (2025-######)',
+  'CatalogNumberAlphaNumByYear (2020-######)',
+  'CatalogNumberNumeric (#########)',
+  'CatalogNumberString (XXXXXXXXXX)',
+];
 
 const resources: RA<ResourceConfig> = [
   {
@@ -25,8 +54,16 @@ const resources: RA<ResourceConfig> = [
     fields: [
       { name: 'name', label: 'Name' },
       { name: 'code', label: 'Code' },
-      { name: 'isAccessionsGlobal', label: 'Define Accession Globally' },
-      { name: 'isSingleGeographyTree', label: 'Use Single Geography Tree' },
+      {
+        name: 'isAccessionsGlobal',
+        label: 'Define Accession Globally',
+        type: 'boolean',
+      },
+      {
+        name: 'isSingleGeographyTree',
+        label: 'Use Single Geography Tree',
+        type: 'boolean',
+      },
     ],
   },
   {
@@ -42,7 +79,12 @@ const resources: RA<ResourceConfig> = [
     endpoint: '/api/specify/discipline/create/',
     fields: [
       { name: 'name', label: 'Name' },
-      { name: 'type', label: 'Type' },
+      {
+        name: 'type',
+        label: 'Type',
+        type: 'select',
+        options: disciplineTypeOptions,
+      },
     ],
   },
   {
@@ -51,7 +93,12 @@ const resources: RA<ResourceConfig> = [
     fields: [
       { name: 'collectionName', label: 'Collection Name' },
       { name: 'code', label: 'Code' },
-      { name: 'catalogNumFormatName', label: 'Catalog Number Format' },
+      {
+        name: 'catalogNumFormatName',
+        label: 'Catalog Number Format',
+        type: 'select',
+        options: catalogNumberFormats,
+      },
     ],
   },
   {
@@ -59,7 +106,7 @@ const resources: RA<ResourceConfig> = [
     endpoint: '/api/specify/specifyuser/create/',
     fields: [
       { name: 'name', label: 'Username' },
-      { name: 'password', label: 'Password' },
+      { name: 'password', label: 'Password', type: 'password' },
     ],
   },
 ];
@@ -96,16 +143,16 @@ export function SetupTool(): JSX.Element {
         throw error;
       });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const { name, value, type, checked } = event.target;
     setFormData((previous) => ({
       ...previous,
       [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (event: React.FormEvent): void => {
+    event.preventDefault();
     const { endpoint, resourceName } = resources[currentStep];
 
     onResourceSaved(endpoint, resourceName, formData)
@@ -123,49 +170,70 @@ export function SetupTool(): JSX.Element {
   };
 
   const renderFormFields = () =>
-    resources[currentStep].fields.map(({ name, label }) => {
-      const isCheckbox = name.startsWith('is');
-
-      return (
-        <div className="mb-4" key={name}>
-          {isCheckbox ? (
-            <div className="flex items-center space-x-2">
-              <label className="font-medium text-gray-700" htmlFor={name}>
-                {label}
-              </label>
-              <input
-                checked={Boolean(formData[name])}
-                className="border border-gray-500 rounded-full"
-                id={name}
-                name={name}
-                type="checkbox"
-                onChange={handleChange}
-              />
-            </div>
-          ) : (
-            <>
-              <label
-                className="block font-medium text-gray-700 mb-1"
-                htmlFor={name}
-              >
-                {label}
-              </label>
-              <input
-                className="rounded-md p-2 w-full"
-                id={name}
-                name={name}
-                type={name === 'password' ? 'password' : 'text'}
-                value={formData[name] || ''}
-                onChange={handleChange}
-              />
-            </>
-          )}
-        </div>
-      );
-    });
+    resources[currentStep].fields.map(({ name, label, type, options }) => (
+      <div className="mb-4" key={name}>
+        {type === 'boolean' ? (
+          <div className="flex items-center space-x-2">
+            <label className="font-medium text-gray-700" htmlFor={name}>
+              {label}
+            </label>
+            <input
+              checked={Boolean(formData[name])}
+              className="border border-gray-500 rounded-full"
+              id={name}
+              name={name}
+              type="checkbox"
+              onChange={handleChange}
+            />
+          </div>
+        ) : type === 'select' && Array.isArray(options) ? (
+          <div className="mb-4" key={name}>
+            <label
+              className="block font-medium text-gray-700 mb-1"
+              htmlFor={name}
+            >
+              {label}
+            </label>
+            <select
+              className="rounded-md p-2 w-full"
+              id={name}
+              name={name}
+              value={formData[name] || ''}
+              onChange={handleChange}
+            >
+              <option disabled value="">
+                Select a type
+              </option>
+              {options.map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : (
+          <>
+            <label
+              className="block font-medium text-gray-700 mb-1"
+              htmlFor={name}
+            >
+              {label}
+            </label>
+            <input
+              className="rounded-md p-2 w-full"
+              id={name}
+              name={name}
+              type={type === 'password' ? 'password' : 'text'}
+              value={formData[name] || ''}
+              onChange={handleChange}
+            />
+          </>
+        )}
+      </div>
+    ));
 
   return (
-    <Container.FullGray className="overflow-auto">
+    <Container.FullGray className="overflow-auto w-full items-center">
       <H2 className="text-2xl mb-6">Specify Configuration Setup</H2>
       {currentStep < resources.length ? (
         <form
