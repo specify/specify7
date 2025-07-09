@@ -1,11 +1,11 @@
 from typing import Literal, Union
 from specifyweb.specify.func import Func
 from specifyweb.specify.tests.test_api import get_table
-from specifyweb.stored_queries.batch_edit import run_batch_edit_query  # type: ignore
-from specifyweb.stored_queries.queryfield import QueryField, fields_from_json
-from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec
-from specifyweb.stored_queries.tests.test_batch_edit import props_builder
-from specifyweb.stored_queries.tests.tests import SQLAlchemySetup
+from specifyweb.backend.stored_queries.batch_edit import run_batch_edit_query  # type: ignore
+from specifyweb.backend.stored_queries.queryfield import QueryField, fields_from_json
+from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
+from specifyweb.backend.stored_queries.tests.test_batch_edit import props_builder
+from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from specifyweb.workbench.upload.auditor import (
     DEFAULT_AUDITOR_PROPS,
     AuditorProps,

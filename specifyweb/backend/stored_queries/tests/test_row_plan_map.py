@@ -2,20 +2,20 @@ from unittest import TestCase
 
 import json
 
-from specifyweb.stored_queries.batch_edit import (
+from specifyweb.backend.stored_queries.batch_edit import (
     BatchEditFieldPack,
     BatchEditPack,
     RowPlanMap,
 )
-from specifyweb.stored_queries.queryfield import fields_from_json
+from specifyweb.backend.stored_queries.queryfield import fields_from_json
 
-from specifyweb.stored_queries.tests.static.co_query_row_plan import row_plan_map
+from specifyweb.backend.stored_queries.tests.static.co_query_row_plan import row_plan_map
 
 
 class TestRowPlanMaps(TestCase):
 
     def test_query_construction(self):
-        query = json.load(open("specifyweb/stored_queries/tests/static/co_query.json"))
+        query = json.load(open("specifyweb/backend/stored_queries/tests/static/co_query.json"))
         query_fields = fields_from_json(query["fields"])
         visible_fields = [field for field in query_fields if field.display]
         row_plan = RowPlanMap.get_row_plan(visible_fields)

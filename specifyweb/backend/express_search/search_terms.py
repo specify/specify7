@@ -4,7 +4,7 @@ from datetime import date, datetime
 
 from sqlalchemy.sql.expression import extract
 
-from specifyweb.stored_queries import models
+from specifyweb.backend.stored_queries import models
 
 logger = logging.getLogger(__name__)
 

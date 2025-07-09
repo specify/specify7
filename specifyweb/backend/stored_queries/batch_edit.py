@@ -22,9 +22,9 @@ from specifyweb.specify.load_datamodel import Field, Relationship, Table
 from specifyweb.specify.tree_views import TREE_INFORMATION, get_all_tree_information
 from specifyweb.specify.tree_utils import SPECIFY_TREES
 from specifyweb.specify.datamodel import is_tree_table
-from specifyweb.stored_queries.execution import execute
-from specifyweb.stored_queries.queryfield import QueryField, fields_from_json
-from specifyweb.stored_queries.queryfieldspec import (
+from specifyweb.backend.stored_queries.execution import execute
+from specifyweb.backend.stored_queries.queryfield import QueryField, fields_from_json
+from specifyweb.backend.stored_queries.queryfieldspec import (
     QueryFieldSpec,
     QueryNode,
     TreeRankQuery,
