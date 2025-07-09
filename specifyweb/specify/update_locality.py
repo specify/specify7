@@ -217,7 +217,7 @@ def parse_locality_task(self, collection_id: int, column_headers: list[str], dat
     # prevent Celery from overriding the State of the Task
     raise Ignore()
 
-
+# REFACTOR: Move all these types and classes to the top of the file.
 class JSONParseError(TypedDict):
     message: str
     field: str

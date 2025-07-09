@@ -1021,9 +1021,9 @@
 					<cell type="label" id="divLabel" label=" " initialize="align=right"/>
 					<cell type="field" id="4" name="divisionCBX" uitype="combobox" ignore="true"/>
 					<cell type="label" labelfor="5"/>
-					<cell type="field" id="5" name="dateAccessioned" uitype="formattedtext" uifieldformatter="Date" default="today"/>
+					<cell type="field" uitype="plugin" id="5" name="dateAccessioned" initialize="name=PartialDateUI;df=dateAccessioned;tp=dateAccessionedPrecision" uifieldformatter="Date"  default="today"/>
 					<cell type="label" labelfor="6"/>
-					<cell type="field" id="6" name="dateReceived" uitype="formattedtext" uifieldformatter="Date" default="today"/>
+					<cell type="field" uitype="plugin" id="6" name="dateReceived" initialize="name=PartialDateUI;df=dateReceived;tp=dateReceivedPrecision" uifieldformatter="Date"  default="today"/>
 				</row>
 				<row>
 					<cell type="label" label="Total Items:" initialize="align=right"/>

@@ -117,6 +117,8 @@ class Specifyuser(models.Model):
         except KeyError:
             pass
 
+        # NOTES: The specifyweb.specify.tests.TestSetPassword
+        # depends on the below condition.
         if self.id and self.usertype != 'Manager':
             self.clear_admin()
 
