@@ -15,7 +15,7 @@ import type { IR, RA } from '../../utils/types';
 import type { Tables } from '../DataModel/types';
 import { useTitle } from '../Molecules/AppTitle';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
-import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
+import { ATTACHMENTS_COLUMN } from '../WorkBench/attachmentHelpers';
 import type { UploadResult } from '../WorkBench/resultsParser';
 import { savePlan } from './helpers';
 import { getLinesFromHeaders, getLinesFromUploadPlan } from './linesGetter';
