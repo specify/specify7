@@ -104,7 +104,7 @@ export function CreateAppResource(): JSX.Element {
               { icon, mimeType, name = '', documentationUrl, label, ...rest },
             ]) =>
               'scope' in rest &&
-                !f.includes(rest.scope, directory.scope) ? undefined : (
+              !f.includes(rest.scope, directory.scope) ? undefined : (
                 <tr key={key}>
                   <td>
                     {name === '' ? (
@@ -281,8 +281,8 @@ function EditAppResource({
       title={
         type.tableName === 'SpViewSetObj'
           ? formsText.newResourceTitle({
-            tableName: resourcesText.formDefinition(),
-          })
+              tableName: resourcesText.formDefinition(),
+            })
           : undefined
       }
       viewName={
@@ -318,5 +318,5 @@ function EditAppResource({
 }
 
 export const exportsForTests = {
-  getUrl
+  getUrl,
 };
