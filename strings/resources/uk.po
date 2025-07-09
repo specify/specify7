@@ -259,14 +259,14 @@ msgid "selectResourceType"
 msgstr "Виберіть тип ресурсу"
 
 #: components/AppResources/tree.ts:121
-#: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:27
+#: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:32
 #: components/AppResources/__tests__/getGlobalAllResources.test.ts:38
 #. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
 msgid "globalPreferences"
 msgstr "Глобальні налаштування"
 
 #: components/AppResources/tree.ts:123
-#: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:50
+#: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:55
 #: components/AppResources/__tests__/getGlobalAllResources.test.ts:69
 #. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
 msgid "remotePreferences"
