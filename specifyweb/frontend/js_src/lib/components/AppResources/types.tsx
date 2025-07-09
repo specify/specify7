@@ -102,6 +102,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     icon: icons.cog,
     label: preferencesText.defaultUserPreferences(),
   },
+  // TODO: There should be useTemplate: false below? (like it is for userPreferences)
   collectionPreferences: {
     mimeType: 'application/json',
     name: 'CollectionPreferences',
