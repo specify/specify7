@@ -1,38 +1,41 @@
-import { requireContext } from "../../../tests/helpers";
-import { exportsForTests } from "../tree";
-import { staticAppResources } from "./staticAppResources";
-import { utilsForTests } from "./utils";
+import { requireContext } from '../../../tests/helpers';
+import { exportsForTests } from '../tree';
+import { staticAppResources } from './staticAppResources';
+import { utilsForTests } from './utils';
 
-const {testDisciplines, setAppResourceDir} = utilsForTests;
+const { testDisciplines, setAppResourceDir } = utilsForTests;
 const { getDisciplineAppResources } = exportsForTests;
 
 requireContext();
 
-describe("getDisciplineAppResources", ()=>{
-
+describe('getDisciplineAppResources', () => {
   test('no directory case', () => {
-    const scoped = getDisciplineAppResources(
-        testDisciplines[0],
-    {
+    const scoped = getDisciplineAppResources(testDisciplines[0], {
       ...staticAppResources,
       directories: [],
       disciplines: testDisciplines,
     });
-    expect(scoped[0].label).toBe(staticAppResources.collections[0].collectionName);
-    expect(scoped[0].key).toBe(`collection_${staticAppResources.collections[0].id}`);
+    expect(scoped[0].label).toBe(
+      staticAppResources.collections[0].collectionName
+    );
+    expect(scoped[0].key).toBe(
+      `collection_${staticAppResources.collections[0].id}`
+    );
 
     // This directory will be created newly (wouldn't have an ID too)
     expect(scoped[0].directory?.id).toBeUndefined();
     expect(scoped[0].directory?.discipline).toBe(
       testDisciplines[0].resource_uri
     );
-    expect(scoped[0].directory?.collection).toBe(staticAppResources.collections[0].resource_uri);
+    expect(scoped[0].directory?.collection).toBe(
+      staticAppResources.collections[0].resource_uri
+    );
 
     expect(scoped[0].appResources).toEqual([]);
     expect(scoped[0].viewSets).toEqual([]);
   });
 
-  test('directory case', ()=>{
+  test('directory case', () => {
     const newDirectory = [
       staticAppResources.directories[0],
       {
@@ -57,9 +60,7 @@ describe("getDisciplineAppResources", ()=>{
       3
     );
 
-    const scoped = getDisciplineAppResources(
-        testDisciplines[0],
-    {
+    const scoped = getDisciplineAppResources(testDisciplines[0], {
       ...viewSetAdjusted,
       directories: newDirectory,
       disciplines: testDisciplines,
@@ -72,6 +73,5 @@ describe("getDisciplineAppResources", ()=>{
 
     expect(scoped[0].appResources).toEqual([viewSetAdjusted.appResources[2]]);
     expect(scoped[0].viewSets).toEqual([]);
-
   });
-})
+});
