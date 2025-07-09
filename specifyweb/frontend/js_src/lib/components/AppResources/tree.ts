@@ -302,4 +302,5 @@ export const exportsForTests = {
   disambiguateGlobalPrefs,
   mergeDirectories,
   getDirectoryChildren,
+  getDisciplineAppResources,
 };
