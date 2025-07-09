@@ -48,7 +48,8 @@ export const fetchContext = Promise.all([
               formatter.title ?? formatter.name,
               fields,
               formatter.table,
-              formatter.field
+              formatter.field,
+              formatter.name
             );
           }
 
@@ -70,7 +71,8 @@ export class UiFormatter {
     public readonly fields: RA<Field>,
     public readonly table: SpecifyTable | undefined,
     // The field which this formatter is formatting
-    public readonly field: LiteralField | undefined
+    public readonly field: LiteralField | undefined,
+    public readonly name: string
   ) {}
 
   /**
@@ -95,6 +97,10 @@ export class UiFormatter {
 
   public canAutonumber(): boolean {
     return this.fields.some((field) => field.canAutonumber());
+  }
+
+  public canAutoIncrement(): boolean {
+    return this.fields.some((field) => field.autoIncrement);
   }
 
   public format(value: string): LocalizedString | undefined {
@@ -122,7 +128,7 @@ abstract class Field {
 
   public readonly value: LocalizedString;
 
-  private readonly autoIncrement: boolean;
+  public readonly autoIncrement: boolean;
 
   private readonly byYear: boolean;
 
@@ -293,7 +299,8 @@ export class CatalogNumberNumeric extends UiFormatter {
         }),
       ],
       tables.CollectionObject,
-      tables.CollectionObject?.getLiteralField('catalogNumber')
+      tables.CollectionObject?.getLiteralField('catalogNumber'),
+      'CatalogNumberNumeric'
     );
   }
 }
