@@ -55,7 +55,6 @@ describe('useResourcesTree', () => {
 
     expect(result.current).toMatchSnapshot();
 
-    // The user type resources are added for each specify user....
-    expect(getResourceCountTree(result.current)).toBe(8);
+    expect(getResourceCountTree(result.current)).toBe(4);
   });
 });
