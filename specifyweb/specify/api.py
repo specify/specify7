@@ -15,7 +15,7 @@ from urllib.parse import urlencode
 from typing_extensions import TypedDict
 
 from specifyweb.specify.field_change_info import FieldChangeInfo
-from specifyweb.interactions.cog_preps import modify_update_of_interaction_sibling_preps
+from specifyweb.backend.interactions.cog_preps import modify_update_of_interaction_sibling_preps
 
 logger = logging.getLogger(__name__)
 
@@ -1199,11 +1199,11 @@ def rows(request, model_name: str) -> HttpResponse:
     return HttpResponse(toJson(data), content_type='application/json')
 
 def _handle_special_update_posts(obj):
-    from specifyweb.interactions.cog_preps import enforce_interaction_sibling_prep_max_count
+    from specifyweb.backend.interactions.cog_preps import enforce_interaction_sibling_prep_max_count
     enforce_interaction_sibling_prep_max_count(obj)
 
 def _handle_special_update_priors(obj, data):
-    from specifyweb.interactions.cog_preps import (
+    from specifyweb.backend.interactions.cog_preps import (
         modify_update_of_interaction_sibling_preps,
         modify_update_of_loan_return_sibling_preps,
     )

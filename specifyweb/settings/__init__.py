@@ -220,7 +220,7 @@ SPECIFY_APPS  = [
     'specifyweb.backend.barvis',
     'specifyweb.patches',
     'specifyweb.report_runner',
-    'specifyweb.interactions',
+    'specifyweb.backend.interactions',
     'specifyweb.workbench',
     'specifyweb.backend.notifications',
     'specifyweb.export',

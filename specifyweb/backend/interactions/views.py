@@ -6,7 +6,7 @@ from django.core.exceptions import FieldDoesNotExist
 from django.db import connection, transaction
 from django.views.decorators.http import require_POST
 
-from specifyweb.interactions.cog_preps import (
+from specifyweb.backend.interactions.cog_preps import (
     get_all_sibling_preps_within_consolidated_cog,
     get_co_ids_from_shared_cog_rs,
     add_consolidated_sibling_co_ids
