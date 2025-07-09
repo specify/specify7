@@ -215,7 +215,7 @@ SPECIFY_APPS  = [
     'specifyweb.businessrules',
     'specifyweb.express_search',
     'specifyweb.context',
-    'specifyweb.attachment_gw',
+    'specifyweb.backend.attachment_gw',
     'specifyweb.frontend',
     'specifyweb.barvis',
     'specifyweb.patches',
