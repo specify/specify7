@@ -13,12 +13,12 @@ from django.views.decorators.http import require_POST
 from specifyweb.middleware.general import require_GET, require_http_methods
 from specifyweb.backend.permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets, check_table_permissions
-from ..specify.api import obj_to_data, toJson, \
+from specifyweb.specify.api import obj_to_data, toJson, \
     HttpResponseCreated, objs_to_data_, _obj_to_data
-from ..specify.models import Spappresource, Spappresourcedir, Spreport, Spquery
-from ..specify.views import login_maybe_required
-from ..stored_queries.execution import run_ephemeral_query, models
-from ..stored_queries.queryfield import QueryField
+from specifyweb.specify.models import Spappresource, Spappresourcedir, Spreport, Spquery
+from specifyweb.specify.views import login_maybe_required
+from specifyweb.stored_queries.execution import run_ephemeral_query, models
+from specifyweb.stored_queries.queryfield import QueryField
 
 
 class ReportException(Exception):

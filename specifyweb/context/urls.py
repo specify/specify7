@@ -7,7 +7,7 @@ from django.urls import path
 
 from . import views, user_resources, collection_resources
 from ..backend.attachment_gw.views import get_settings as attachment_settings
-from ..report_runner.views import get_status as report_runner_status
+from specifyweb.backend.report_runner.views import get_status as report_runner_status
 
 urlpatterns = [
     path('login/', views.api_login),
