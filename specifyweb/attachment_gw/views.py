@@ -1,16 +1,16 @@
 import os
-import re
 import hmac
 import json
 import logging
 import time
-import shutil
 from tempfile import mkdtemp
 from os.path import splitext
 from uuid import uuid4
 from xml.etree import ElementTree
 from datetime import datetime
 from django.apps import apps
+from stream_zip import ZIP_32, stream_zip
+from stat import S_IFREG
 
 import requests
 from django.conf import settings
@@ -345,33 +345,20 @@ def download_all(request):
                 orig_filenames.append(os.path.basename(attachment.origfilename or attachment.attachmentlocation))
 
     filename = 'attachments_%s.zip' % datetime.now().isoformat()
-    path = os.path.join(settings.DEPOSITORY_DIR, filename)
-
-    try:
-        make_attachment_zip(attachment_locations, orig_filenames, get_collection(request), path)
-    except Exception as e:
-        return HttpResponseBadRequest(e)
-    
-    if not os.path.exists(path):
-        return HttpResponseBadRequest('Attachment archive not found')
-
-    def file_iterator(file_path, chunk_size=512 * 1024):
-        with open(file_path, 'rb') as f:
-            while chunk := f.read(chunk_size):
-                yield chunk
-        os.remove(file_path)
 
     response = StreamingHttpResponse(
-        file_iterator(path),
+        stream_attachment_zip(attachment_locations, orig_filenames, get_collection(request)),
         content_type='application/octet-stream')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
 
-def make_attachment_zip(attachment_locations, orig_filenames, collection, output_file):
-    output_dir = mkdtemp()
+def stream_attachment_zip(attachment_locations, orig_filenames, collection):
+    "Streams attachment zip file to the frontend as its being created"
     session = requests.Session()
-    try:
-        filename_appearances = {}
+    filename_appearances = {}
+    def file_iterator():
+        modified_at = datetime.now()
+        mode = S_IFREG | 0o600 # default file permissions
         for i, attachment_location in enumerate(attachment_locations):
             data = {
                 'filename': attachment_location,
@@ -379,20 +366,18 @@ def make_attachment_zip(attachment_locations, orig_filenames, collection, output
                 'type': 'O',
                 'token': generate_token(get_timestamp(), attachment_location)
             }
-            response = session.get(server_urls['read'], params=data)
+            response = session.get(server_urls['read'], params=data, stream=True)
             if response.status_code == 200:
                 download_filename = orig_filenames[i] if i < len(orig_filenames) else attachment_location
                 filename_appearances[download_filename] = filename_appearances.get(download_filename, 0) + 1
                 if filename_appearances[download_filename] > 1:
                     name, extension = os.path.splitext(download_filename)
                     download_filename = f'{name}_{filename_appearances[download_filename]-1}{extension}'
-                with open(os.path.join(output_dir, download_filename), 'wb') as f:
-                    f.write(response.content)
-        
-        basename = re.sub(r'\.zip$', '', output_file)
-        shutil.make_archive(basename, 'zip', output_dir, logger=logger)
-    finally:
-        shutil.rmtree(output_dir)
+                def data_iterator():
+                    for chunk in response.iter_content(512 * 1024):
+                        yield chunk
+                yield (download_filename, modified_at, mode, ZIP_32, data_iterator())
+    return stream_zip(file_iterator())
 
 @transaction.atomic()
 @login_maybe_required
