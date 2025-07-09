@@ -143,11 +143,19 @@ export function SetupTool(): JSX.Element {
         throw error;
       });
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const { name, value, type, checked } = event.target;
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ): void => {
+    const { name, value, type } = event.target;
+
+    const newValue =
+      type === 'checkbox' && 'checked' in event.target
+        ? (event.target as HTMLInputElement).checked
+        : value;
+
     setFormData((previous) => ({
       ...previous,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: newValue,
     }));
   };
 
