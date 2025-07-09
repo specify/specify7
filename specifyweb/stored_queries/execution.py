@@ -13,7 +13,7 @@ from functools import reduce
 from django.conf import settings
 from django.db import transaction
 from specifyweb.specify.models import Collectionobject
-from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting
+from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting, get_sp_id_col
 from sqlalchemy import sql, orm, func, select, text
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 from sqlalchemy.orm.properties import ColumnProperty
@@ -389,7 +389,7 @@ def query_to_kml(
     )
     if selected_rows:
         model = models.models_by_tableid[tableid]
-        id_field = getattr(model, model._id)
+        id_field = get_sp_id_col(model)
         query = query.filter(id_field.in_(selected_rows))
 
     query = apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=False)
@@ -406,7 +406,7 @@ def query_to_kml(
 
     if not strip_id:
         model = models.models_by_tableid[tableid]
-        table = str(getattr(model, model._id)).split(".")[0].lower()  # wtfiw
+        table = str(get_sp_id_col(model)).split(".")[0].lower()  # wtfiw
     else:
         table = None
 
@@ -654,7 +654,7 @@ def recordset(collection, user, user_agent, recordset_info):
         new_rs_id = recordset.recordSetId
 
         model = models.models_by_tableid[tableid]
-        id_field = getattr(model, model._id)
+        id_field = get_sp_id_col(model)
 
         field_specs = fields_from_json(spquery["fields"])
 
@@ -684,7 +684,7 @@ def return_loan_preps(collection, user, agent, data):
 
     with models.session_context() as session:
         model = models.models_by_tableid[tableid]
-        id_field = getattr(model, model._id)
+        id_field = get_sp_id_col(model)
 
         field_specs = fields_from_json(spquery["fields"])
 

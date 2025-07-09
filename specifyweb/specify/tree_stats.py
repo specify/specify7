@@ -19,10 +19,10 @@ def get_tree_stat_old(treedef, tree, parentid, specify_collection, session_conte
 
     tree_node = getattr(models, tree_table.name)
     child = aliased(tree_node)
-    _child_id = getattr(child, child._id)
+    _child_id = get_sp_id_col(child)
     def make_joins(query):
         descendent = aliased(tree_node)
-        _descendent_id = getattr(descendent, descendent._id)
+        _descendent_id = getattr(get_sp_id_col(descendent))
         query = query.outerjoin(descendent,
                                 descendent.nodeNumber.between(
                                     child.nodeNumber,
@@ -33,7 +33,7 @@ def get_tree_stat_old(treedef, tree, parentid, specify_collection, session_conte
             StatsQuerySpecialization(specify_collection), tree)
 
         query, target = make_target_joins(query, _descendent_id)
-        target_id = getattr(target, target._id)
+        target_id = get_sp_id_col(target)
         query = query.add_columns(
             sql.cast(sql.func.sum(sql.case([(sql.and_(
                 _child_id == _descendent_id,
@@ -49,7 +49,7 @@ def get_tree_stat_old(treedef, tree, parentid, specify_collection, session_conte
         cte_joined, target = getattr(
             StatsQuerySpecialization(specify_collection), tree)(
             cte_query, cte_query.c.top_or_descendent_id)
-        target_id = getattr(target, target._id)
+        target_id = get_sp_id_col(target)
         count_expr = sql.func.count(target_id)
         sum_case_expr = sql.cast(sql.func.sum(sql.case([(sql.and_(
             cte_query.c.top_or_descendent_id == cte_query.c.top_id,
@@ -76,7 +76,7 @@ def get_tree_stat_old(treedef, tree, parentid, specify_collection, session_conte
         # I don't even want to use depth, but some pathological tree might have cycles, and CTE depth
         # might be in millions as a custom setting..
 
-        depth_query = session.query(sql.func.count(getattr(tree_def_item, tree_def_item._id))).filter(
+        depth_query = session.query(sql.func.count(get_sp_id_col(tree_def_item))).filter(
             getattr(tree_def_item, treedef_col) == int(treedef))
         depth, = list(depth_query)[0]
         query = None
@@ -94,7 +94,7 @@ def get_tree_stat_old(treedef, tree, parentid, specify_collection, session_conte
                 cte_query = cte_definition.union_all(
                     session.query(
                         cte_definition.c.top_id.label('top_id'),
-                        getattr(descendent, descendent._id).label(
+                        get_sp_id_col(descendent).label(
                             'top_or_descendent_id'),
                         (cte_definition.c.depth + 1).label('depth')
                     ).join(descendent,
@@ -110,10 +110,10 @@ def get_tree_stat_old(treedef, tree, parentid, specify_collection, session_conte
             pass
         finally:
             if results is None:
-                query = session.query(getattr(child, child._id)) \
+                query = session.query(get_sp_id_col(child)) \
                     .filter(child.ParentID == parentid) \
                     .filter(getattr(child, treedef_col) == int(treedef)) \
-                    .group_by(getattr(child, child._id))
+                    .group_by(get_sp_id_col(child))
                 query = make_joins(query)
                 results = list(query)
 
