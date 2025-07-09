@@ -363,11 +363,17 @@ class ObjectFormatter:
 
         prec_fld = getattr(field.class_, specify_field.name + 'Precision', None)
 
-        format_expr = \
-            case({2: self.date_format_month, 3: self.date_format_year},
-                 prec_fld, else_=self.date_format) \
-                if prec_fld is not None \
-                else self.date_format
+        format_expr = (
+            case(
+                [
+                    (prec_fld == 2, self.date_format_month),
+                    (prec_fld == 3, self.date_format_year),
+                ],
+                else_=self.date_format,
+            )
+            if prec_fld is not None
+            else self.date_format
+        )
 
         return func.date_format(field, format_expr)
 

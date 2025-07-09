@@ -27,6 +27,7 @@ from django.http import (HttpResponse, HttpResponseBadRequest,
                          Http404, HttpResponseNotAllowed, QueryDict)
 from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotExist
 from django.db.models.fields import DateTimeField, FloatField, DecimalField
+from sqlalchemy.engine import Row
 
 from specifyweb.permissions.permissions import (
     enforce,
@@ -99,6 +100,8 @@ class JsonEncoder(json.JSONEncoder):
     """Augmented JSON encoder that handles datetime and decimal objects."""
     def default(self, obj):
         from decimal import Decimal
+        if isinstance(obj, Row):
+            return [self.default(field) for field in obj._data]
         # if isinstance(obj, CallableBool):
         #     return obj()
         # JSON numbers are double precision floating point values, while Python
@@ -111,6 +114,12 @@ class JsonEncoder(json.JSONEncoder):
             # assume byte data is utf encoded text.
             # this works for things like app resources.
             return obj.decode()
+        if isinstance(obj, int) or isinstance(obj, str):
+            return obj
+        if obj is None:
+            return None
+        if hasattr(obj, '__str__'):
+            return str(obj)
         return json.JSONEncoder.default(self, obj)
 
 def toJson(obj: Any) -> str:
