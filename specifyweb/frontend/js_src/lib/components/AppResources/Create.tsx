@@ -316,3 +316,7 @@ function EditAppResource({
     />
   );
 }
+
+export const exportsForTests = {
+  getUrl,
+};
