@@ -1,8 +1,9 @@
 import { renderHook } from "@testing-library/react";
+
+import { requireContext } from "../../../tests/helpers";
+import { addMissingFields } from "../../DataModel/addMissingFields";
 import { useEditorTabs } from "../Tabs";
 import { staticAppResources } from "./staticAppResources";
-import { addMissingFields } from "../../DataModel/addMissingFields";
-import { requireContext } from "../../../tests/helpers";
 
 requireContext();
 
