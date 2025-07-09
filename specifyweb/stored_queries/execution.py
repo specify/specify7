@@ -28,7 +28,7 @@ from .query_construct import QueryConstruct
 from .queryfield import QueryField
 from .relative_date_utils import apply_absolute_date
 from .field_spec_maps import apply_specify_user_name
-from ..notifications.models import Message
+from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.permissions import check_table_permissions
 from ..specify.auditlog import auditlog
 from ..specify.models import Collectionobjectgroupjoin, Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
