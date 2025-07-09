@@ -13,6 +13,7 @@ from collections.abc import Generator
 from typing_extensions import TypedDict
 
 from django.db.models import QuerySet, Q, F, Model, Exists, OuterRef
+from django.db.models.expressions import Combinable
 
 import specifyweb.specify.models as spmodels
 from specifyweb.specify.func import Func
@@ -280,8 +281,8 @@ def filter_match_key(f: Filter) -> str:
     return repr(sorted(f.items()))
 
 
-def canonicalize_remove_node(node: ToRemoveNode) -> Q | Exists:
-    preds: list[Q | Exists] = []
+def canonicalize_remove_node(node: ToRemoveNode) -> Q | Combinable:
+    preds: list[Q | Combinable] = []
     for name, matchee in node.items():
         lookup = _map_matchee(matchee, name)
 
@@ -304,7 +305,7 @@ def canonicalize_remove_node(node: ToRemoveNode) -> Q | Exists:
         all_or |= p
 
     # Don't miss the negation below!
-    return ~all_or
+    return ~all_or # type: ignore
 
 
 def _map_matchee(matchee: list[ToRemoveMatchee], model_name: str) -> Exists:
