@@ -2,8 +2,8 @@ import type L from 'leaflet';
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useLiveState } from '../../hooks/useLiveState';
 import { localityText } from '../../localization/locality';
-import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -178,13 +178,21 @@ export function QueryToMapDialog({
 }): JSX.Element {
   const [map, setMap] = React.useState<LeafletInstance | undefined>(undefined);
   const localityData = React.useRef<RA<LocalityDataWithId>>([]);
-  const [initialData, setInitialData] = React.useState<
+  const [initialData] = useLiveState<
     | {
         readonly localityData: RA<LocalityData>;
         readonly onClick: ReturnType<typeof createClickCallback>;
       }
     | undefined
-  >(undefined);
+  >(
+    React.useCallback(() => {
+      const extracted = extractLocalities(results, localityMappings);
+      return {
+        localityData: extracted.map(({ localityData }) => localityData),
+        onClick: createClickCallback(tableName, extracted),
+      };
+    }, [results])
+  );
 
   const taxonId = React.useMemo(
     () => brokerData?.taxonId ?? extractQueryTaxonId(tableName, fields),
@@ -193,13 +201,11 @@ export function QueryToMapDialog({
   const data = useMapData(brokerData, taxonId);
   const description = useExtendedMap(map, data);
 
-  const markerEvents = React.useMemo(
-    () => eventListener<{ readonly updated: undefined }>(),
-    []
-  );
+  const markerCountRef = React.useRef(results.length);
 
   const handleAddPoints = React.useCallback(
     (results: RA<QueryResultRow>) => {
+      markerCountRef.current += results.length;
       /*
        * Need to add markers into queue rather than directly to the map because
        * the map might not be initialized yet (the map is only initialized after
@@ -209,36 +215,37 @@ export function QueryToMapDialog({
         ...localityData.current,
         ...extractLocalities(results, localityMappings),
       ];
-      setInitialData((initialData) =>
-        typeof initialData === 'object'
-          ? initialData
-          : {
-              localityData: localityData.current.map(
-                ({ localityData }) => localityData
-              ),
-              onClick: createClickCallback(tableName, localityData.current),
-            }
-      );
-      markerEvents.trigger('updated');
-    },
-    [tableName, localityMappings, markerEvents]
-  );
 
-  // Add initial results
-  React.useEffect(() => handleAddPoints(results), [handleAddPoints]);
-  useFetchLoop(handleFetchMore, handleAddPoints);
-
-  React.useEffect(() => {
-    if (map === undefined) return undefined;
-
-    function emptyQueue(): void {
       if (map === undefined) return;
       addLeafletMarkers(tableName, map, localityData.current);
       localityData.current = [];
-    }
+    },
+    [tableName, localityMappings]
+  );
 
-    return markerEvents.on('updated', emptyQueue, true);
-  }, [tableName, map, markerEvents]);
+  useFetchLoop(handleFetchMore, handleAddPoints);
+
+  /*
+   * The below is used for sanity checking at un-mount.
+   * A unit test for this functionality is tricky. A runtime check is simpler
+   */
+  const mapRef = React.useRef(map);
+  mapRef.current = map;
+
+  React.useEffect(
+    () => () => {
+      if (mapRef.current === undefined) return;
+      if (mapRef.current?.sp7MarkerCount !== markerCountRef.current) {
+        // This way, if the error happens in development mode, it can be caught more easily. (log checks may be easy to forget)
+        softFail(
+          new Error(
+            `Expected the counts to match: Expected: ${markerCountRef.current}. Got: ${mapRef.current?.sp7MarkerCount}`
+          )
+        );
+      }
+    },
+    []
+  );
 
   return typeof initialData === 'object' ? (
     <LeafletMap
