@@ -3,7 +3,7 @@ from typing import Dict, Union, Tuple
 import logging
 
 from specifyweb.specify.datamodel import datamodel, Table
-from specifyweb.workbench.upload.auditor import DEFAULT_BATCH_EDIT_PREFS, BatchEditPrefs
+from specifyweb.backend.workbench.upload.auditor import DEFAULT_BATCH_EDIT_PREFS, BatchEditPrefs
 
 from .upload_table import UploadTable, OneToOneTable, MustMatchTable
 from .treerecord import TreeRank, TreeRecord, MustMatchTreeRecord

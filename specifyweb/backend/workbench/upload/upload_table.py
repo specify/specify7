@@ -8,8 +8,8 @@ from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
 from specifyweb.specify.func import Func
 from specifyweb.specify.field_change_info import FieldChangeInfo
-from specifyweb.workbench.upload.clone import clone_record
-from specifyweb.workbench.upload.predicates import (
+from specifyweb.backend.workbench.upload.clone import clone_record
+from specifyweb.backend.workbench.upload.predicates import (
     ContetRef,
     DjangoPredicates,
     SkippablePredicate,
@@ -17,7 +17,7 @@ from specifyweb.workbench.upload.predicates import (
     resolve_reference_attributes,
     safe_fetch,
 )
-from specifyweb.workbench.upload.scope_context import ScopeContext
+from specifyweb.backend.workbench.upload.scope_context import ScopeContext
 from .column_options import ColumnOptions, ExtendedColumnOptions
 from .parsing import parse_many, ParseResult, WorkBenchParseFailure
 

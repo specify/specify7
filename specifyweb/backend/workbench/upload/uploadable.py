@@ -1,9 +1,9 @@
 from typing import Dict, Callable, Any, List, Optional, TypedDict, Union, Set
 from typing_extensions import Protocol
 
-from specifyweb.workbench.upload.predicates import DjangoPredicates, ToRemove
+from specifyweb.backend.workbench.upload.predicates import DjangoPredicates, ToRemove
 
-from specifyweb.workbench.upload.scope_context import ScopeContext
+from specifyweb.backend.workbench.upload.scope_context import ScopeContext
 
 from .upload_result import UploadResult, ParseFailures
 from .auditor import Auditor

@@ -8,7 +8,7 @@ from specifyweb.context import models as context_models
 from specifyweb.backend.notifications import models as notifications_models
 from specifyweb.backend.permissions import models as permissions_models
 from specifyweb.backend.interactions import models as interactions_models
-from specifyweb.workbench import models as workbench_models
+from specifyweb.backend.workbench import models as workbench_models
 from specifyweb.specify import models as spmodels
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from django.conf import settings
