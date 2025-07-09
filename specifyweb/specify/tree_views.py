@@ -167,6 +167,7 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
     node     = getattr(sqlmodels, tree_table.name)
     child    = aliased(node)
     accepted = aliased(node)
+    accepted_id_col = get_sp_id_col(accepted)
     synonym  = aliased(node)
 
     # id_col      = getattr(node, node._id)
@@ -200,7 +201,7 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
     query = (
         select(*cols)
         .outerjoin(child, child.ParentID  == id_col)
-        .outerjoin(accepted, node.AcceptedID == getattr(accepted, node._id))
+        .outerjoin(accepted, node.AcceptedID == accepted_id_col)
         .outerjoin(synonym, synonym.AcceptedID == id_col)
         .where(treedef_col == int(treedef))
         .where(node.ParentID == parentid)

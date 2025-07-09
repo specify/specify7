@@ -167,21 +167,33 @@ from sqlalchemy.inspection import inspect as sa_inspect
 def get_sp_id_col(model):
     try:
         insp = sa_inspect(model)
-        mapper = insp.mapper
-        pk_cols = mapper.primary_key
+        pk_cols = insp.mapper.primary_key
         if pk_cols:
-            pk_key = pk_cols[0].key
-            return sp_getattr(model, pk_key)
+            col = pk_cols[0]
+            key = col.key  # ex. "GeographyID"
+            # try direct attribute first
+            try:
+                return getattr(model, key)
+            except AttributeError:
+                # convert "XXXID" -> "xxxId"
+                if key.endswith("ID"):
+                    base = key[:-2]
+                    alt = base[0].lower() + base[1:] + "Id"
+                    return getattr(model, alt)
+                raise
     except NoInspectionAvailable:
         pass
 
-    if isinstance(model._id, str):
-        return sp_getattr(model, pk_key)
+    # fallback: check model._id
+    if hasattr(model, "_id"):
+        raw = model._id
+        if isinstance(raw, str) and hasattr(model, raw):
+            return getattr(model, raw)
+        if isinstance(raw, ColumnProperty):
+            return raw.columns[0]
+        return raw
 
-    if isinstance(model._id, ColumnProperty):
-        return model._id.columns[0]
-
-    return model._id
+    raise Exception(f"Could not locate primary-key column on {model!r}")
 
 def sp_getattr(obj, attr, default=None):
     try:

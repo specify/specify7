@@ -104,11 +104,10 @@ class SQLAlchemySetupTest(SQLAlchemySetup):
         with SQLAlchemySetupTest.test_session_context() as session:
 
             co_aliased = orm.aliased(models.CollectionObject)
-            sa_collection_objects = list(
-                session.query(co_aliased._id).filter(
-                    co_aliased.collectionMemberId == self.collection.id
-                )
-            )
+            sa_collection_objects = session.query(co_aliased._id)\
+                .filter(co_aliased.collectionMemberId == self.collection.id)\
+                .distinct()\
+                .all()
             sa_ids = [_id for (_id,) in sa_collection_objects]
             ids = [co.id for co in self.collectionobjects]
 
