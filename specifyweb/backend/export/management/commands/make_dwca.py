@@ -3,7 +3,7 @@ import logging
 from django.core.management.base import BaseCommand
 
 from specifyweb.context.app_resource import get_app_resource
-from specifyweb.export.dwca import make_dwca
+from specifyweb.backend.export.dwca import make_dwca
 from specifyweb.specify.models import Specifyuser, Collection
 
 logger = logging.getLogger(__name__)
