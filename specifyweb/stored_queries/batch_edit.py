@@ -15,7 +15,7 @@ from typing import (
     TypedDict,
 )
 
-from specifyweb.permissions.permissions import has_target_permission
+from specifyweb.backend.permissions.permissions import has_target_permission
 from specifyweb.specify.filter_by_col import CONCRETE_HIERARCHY
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.load_datamodel import Field, Relationship, Table

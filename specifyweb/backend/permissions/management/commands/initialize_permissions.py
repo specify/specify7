@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from specifyweb.permissions.initialize import initialize
+from specifyweb.backend.permissions.initialize import initialize
 
 class Command(BaseCommand):
     def add_arguments(self, parser) -> None:

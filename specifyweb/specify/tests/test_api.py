@@ -8,7 +8,7 @@ from datetime import datetime
 from django.db.models import Max, QuerySet
 from django.test import TestCase, Client
 
-from specifyweb.permissions.models import UserPolicy
+from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.specify import api, models, scoping
 from specifyweb.businessrules.uniqueness_rules import UNIQUENESS_DISPATCH_UID, validate_unique, apply_default_uniqueness_rules
 from specifyweb.businessrules.rules.cogtype_rules import SYSTEM_COGTYPES_PICKLIST

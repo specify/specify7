@@ -3,7 +3,7 @@ from typing import Any, List, NamedTuple, Optional, TypedDict, Union
 
 
 from specifyweb.specify.auditlog import AuditLog
-from specifyweb.permissions.permissions import (
+from specifyweb.backend.permissions.permissions import (
     TABLE_ACTION,
     check_table_permissions,
 )

@@ -18,7 +18,7 @@ from django.db import transaction
 from django.db.utils import OperationalError, IntegrityError
 from jsonschema import validate  # type: ignore
 
-from specifyweb.permissions.permissions import has_target_permission
+from specifyweb.backend.permissions.permissions import has_target_permission
 from specifyweb.specify import models
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.datamodel import Table
