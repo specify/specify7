@@ -3,8 +3,6 @@ from specifyweb.specify.models import (
     Collectionobjectgroup,
     Collectionobjectgrouptype,
     Collectionobjectgroupjoin,
-    Preptype,
-    Preparation,
 )
 
 
@@ -31,15 +29,19 @@ class TestCogInteractions(DefaultsSetup):
         return f"/api/specify/discipline/{self.collection.discipline.id}/"
 
     @staticmethod
-    def _link_co_cog(co, cog):
+    def _link_co_cog(co, cog, **kwargs):
+        kwargs['isprimary'] = kwargs.get('isprimary', True)
+        kwargs['issubstrate'] = kwargs.get('issubstrate', True)
         Collectionobjectgroupjoin.objects.create(
-            parentcog=cog, childco=co, isprimary=True, issubstrate=True
+            parentcog=cog, childco=co, **kwargs
         )
 
     @staticmethod
-    def _link_cog_cog(child_cog, cog):
+    def _link_cog_cog(child_cog, cog, **kwargs):
+        kwargs['isprimary'] = kwargs.get('isprimary', True)
+        kwargs['issubstrate'] = kwargs.get('issubstrate', True)
         Collectionobjectgroupjoin.objects.create(
-            parentcog=cog, childcog=child_cog, isprimary=True, issubstrate=True
+            parentcog=cog, childcog=child_cog, **kwargs
         )
 
     def _preps_match(self, base, computed):
