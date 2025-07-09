@@ -57,8 +57,8 @@ def fix_schema_config():
     usc.update_co_children_fields(apps) # specify 0027
     usc.remove_collectionobject_parentco(apps) # specify 0029
     usc.add_quantities_gift(apps) # specify 0032
-    usc.update_paleo_desc(apps) # specify 0033
-    usc.update_accession_date_fields(apps) # specify 0034
+    # usc.update_paleo_desc(apps) # specify 0033
+    # usc.update_accession_date_fields(apps) # specify 0034
 
 def fix_business_rules():
     Discipline = apps.get_model('specify', 'Discipline')
