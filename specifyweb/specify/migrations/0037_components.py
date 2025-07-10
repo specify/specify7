@@ -131,8 +131,8 @@ def restore_0029_schema_config_fields(apps, schema_editor):
     Discipline = apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
         for table, fields in FIELDS_TO_REMOVE.items():
-            for field in fields:
-                update_table_field_schema_config_with_defaults(table, discipline.id, field, apps)
+            for field_name, _, _ in fields:
+                update_table_field_schema_config_with_defaults(table, discipline.id, field_name, apps)
 
 def revert_table_schema_config_with_defaults(apps, schema_editor):
     for table, _ in SCHEMA_CONFIG_TABLES:
