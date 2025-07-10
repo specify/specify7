@@ -45,18 +45,6 @@ export const schemaExtras: {
       }),
     ],
   ],
-  Collection: (table) => [
-    [
-      new Relationship(table, {
-        name: 'collectionObjects',
-        required: false,
-        type: 'one-to-many',
-        otherSideName: 'Collection',
-        relatedModelName: 'CollectionObject',
-        dependent: false,
-      }),
-    ],
-  ],
   CollectionObject: (table) => [
     [
       new Relationship(table, {

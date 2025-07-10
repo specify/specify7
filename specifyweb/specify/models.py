@@ -1466,7 +1466,7 @@ class Collectionobject(models.Model):
     appraisal = models.ForeignKey('Appraisal', db_column='AppraisalID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
     cataloger = models.ForeignKey('Agent', db_column='CatalogerID', related_name='+', null=True, on_delete=protect_with_blockers)
     collectingevent = models.ForeignKey('CollectingEvent', db_column='CollectingEventID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
-    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='+', null=False, on_delete=protect_with_blockers)
+    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='collectionobjects', null=False, on_delete=protect_with_blockers)
     collectionobjectattribute = models.ForeignKey('CollectionObjectAttribute', db_column='CollectionObjectAttributeID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
     container = models.ForeignKey('Container', db_column='ContainerID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
     containerowner = models.ForeignKey('Container', db_column='ContainerOwnerID', related_name='collectionobjectkids', null=True, on_delete=protect_with_blockers)

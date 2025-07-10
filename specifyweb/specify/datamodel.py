@@ -1487,7 +1487,8 @@ datamodel = Datamodel(tables=[
             Relationship(name='rightSideRelTypes', type='one-to-many',required=False, relatedModelName='CollectionRelType', otherSideName='rightSideCollection'),
             Relationship(name='technicalContacts', type='one-to-many',required=False, relatedModelName='Agent', otherSideName='collTechContact'),
             Relationship(name='userGroups', type='one-to-many',required=False, relatedModelName='SpPrincipal', otherSideName='scope'),
-            Relationship(name='collectionObjectType', type='many-to-one',required=False, relatedModelName='CollectionObjectType', column='CollectionObjectTypeID', otherSideName='collections')
+            Relationship(name='collectionObjectType', type='many-to-one',required=False, relatedModelName='CollectionObjectType', column='CollectionObjectTypeID', otherSideName='collections'),
+            Relationship(name='collectionObjects', type='one-to-many',required=False, relatedModelName='CollectionObject', otherSideName='collection'),
         ],
         fieldAliases=[
 
@@ -1579,7 +1580,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='appraisal', type='many-to-one',required=False, relatedModelName='Appraisal', column='AppraisalID', otherSideName='collectionObjects'),
             Relationship(name='cataloger', type='many-to-one',required=False, relatedModelName='Agent', column='CatalogerID'),
             Relationship(name='collectingEvent', type='many-to-one',required=False, relatedModelName='CollectingEvent', column='CollectingEventID', otherSideName='collectionObjects'),
-            Relationship(name='collection', type='many-to-one',required=True, relatedModelName='Collection', column='CollectionID'),
+            Relationship(name='collection', type='many-to-one',required=True, relatedModelName='Collection', column='CollectionID', otherSideName='collectionObjects'),
             Relationship(name='collectionObjectAttachments', type='one-to-many',required=False, relatedModelName='CollectionObjectAttachment', otherSideName='collectionObject', dependent=True),
             Relationship(name='collectionObjectAttribute', type='many-to-one',required=False, relatedModelName='CollectionObjectAttribute', column='CollectionObjectAttributeID', otherSideName='collectionObjects', dependent=True),
             Relationship(name='collectionObjectAttrs', type='one-to-many',required=False, relatedModelName='CollectionObjectAttr', otherSideName='collectionObject', dependent=True),
