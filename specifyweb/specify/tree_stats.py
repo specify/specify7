@@ -354,4 +354,3 @@ class StatsQuerySpecialization(namedtuple('StatsQuerySpecialization', 'collectio
             raise Exception(f"unknown paleocontext join table: {target!r}")
 
         return query, co
-    

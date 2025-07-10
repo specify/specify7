@@ -1,4 +1,3 @@
-
 from django.test import Client
 from specifyweb.specify.models import Collection, Collectionobject, Geologictimeperiod
 import json

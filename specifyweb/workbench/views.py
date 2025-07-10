@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 def resolve_permission(
     dataset: models.Spdataset,
-) -> Union[type[DataSetPT], type[BatchEditDataSetPT]]:
+) -> type[DataSetPT] | type[BatchEditDataSetPT]:
     return BatchEditDataSetPT if dataset.isupdate else DataSetPT
 
 WorkbenchUpdateStatus = Literal["PROGRESS", "PENDING", "FAILURE"]
@@ -38,7 +38,7 @@ WorkbenchUpdateStatus = Literal["PROGRESS", "PENDING", "FAILURE"]
 def regularize_rows(ncols: int, rows: list[list], skip_empty=True) -> list[list[str]]:
     n = ncols + 1  # extra row info such as disambiguation in hidden col at end
 
-    def regularize(row: list) -> Optional[list]:
+    def regularize(row: list) -> list | None:
         data = (row + [""] * n)[:n]  # pad / trim row length to match columns
         cleaned = [
             "" if v is None else str(v).strip() for v in data

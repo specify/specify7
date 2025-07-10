@@ -8,12 +8,12 @@ from specifyweb.specify.uiformatters import UIFormatter
 class ScopingCache(TypedDict):
     # This stores UIFormatters for a collection's cotypes. We support collection relationships so we cannot assume
     # that there's just one collection. This takes care of if because collection is used into the value dict.
-    cotypes: dict[Any, dict[str, Optional[UIFormatter]]]
+    cotypes: dict[Any, dict[str, UIFormatter | None]]
     # This stores UIFormatters for granular fields. This is used to handle the bad scenario where are in heavy-collection relationships
     # or cotypes but want to reuse as much as other field based info
-    fields: dict[tuple[Any, str, str], Optional[UIFormatter]]
-    date_format: Optional[str]
-    cotype_column: Optional[str]
+    fields: dict[tuple[Any, str, str], UIFormatter | None]
+    date_format: str | None
+    cotype_column: str | None
 
 class ScopeContext:
     cache: ScopingCache

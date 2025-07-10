@@ -28,7 +28,7 @@ T = TypeVar("T")
 U = TypeVar("U")
 
 
-def strict_to_optional(f: Callable[[U], T], lookup: U, strict: bool) -> Optional[T]:
+def strict_to_optional(f: Callable[[U], T], lookup: U, strict: bool) -> T | None:
     try:
         warnings.warn("deprecated. use strict version.", DeprecationWarning)
         return f(lookup)
@@ -79,40 +79,40 @@ class Datamodel:
 
 class Table:
     system: bool = False
-    classname: Optional[str]
-    table: Optional[str]
-    tableId: Optional[int]
-    idColumn: Optional[str]
-    idFieldName: Optional[str]
+    classname: str | None
+    table: str | None
+    tableId: int | None
+    idColumn: str | None
+    idFieldName: str | None
     idField: Optional["Field"]
-    view: Optional[str] = None
-    searchDialog: Optional[str] = None 
-    fields: Optional[list["Field"]]
-    indexes: Optional[list["Index"]]
-    relationships: Optional[list["Relationship"]]
-    fieldAliases: Optional[list[dict[str, str]]]
+    view: str | None = None
+    searchDialog: str | None = None 
+    fields: list["Field"] | None
+    indexes: list["Index"] | None
+    relationships: list["Relationship"] | None
+    fieldAliases: list[dict[str, str]] | None
     sp7_only: bool = False
     django_app: str = "specify"
-    virtual_fields: Optional[list['Field']] = []
+    virtual_fields: list['Field'] | None = []
 
     def __init__(
         self,
-        classname: Optional[str] = None,
-        table: Optional[str] = None,
-        tableId: Optional[int] = None,
-        idColumn: Optional[str] = None,
-        idFieldName: Optional[str] = None,
+        classname: str | None = None,
+        table: str | None = None,
+        tableId: int | None = None,
+        idColumn: str | None = None,
+        idFieldName: str | None = None,
         idField: Optional["Field"] = None,
-        view: Optional[str] = None,
-        searchDialog: Optional[str] = None,
-        fields: Optional[list["Field"]] = None,
-        indexes: Optional[list["Index"]] = None,
-        relationships: Optional[list["Relationship"]] = None,
-        fieldAliases: Optional[list[dict[str, str]]] = None,
+        view: str | None = None,
+        searchDialog: str | None = None,
+        fields: list["Field"] | None = None,
+        indexes: list["Index"] | None = None,
+        relationships: list["Relationship"] | None = None,
+        fieldAliases: list[dict[str, str]] | None = None,
         system: bool = False,
         sp7_only: bool = False,
         django_app: str = "specify",
-        virtual_fields: Optional[list['Field']] = None
+        virtual_fields: list['Field'] | None = None
     ):
         if not classname:
             raise ValueError("classname is required")
@@ -227,23 +227,23 @@ class Table:
 
 class Field:
     is_relationship: bool = False
-    name: Optional[str]
-    column: Optional[str] = None 
-    indexed: Optional[bool]
-    unique: Optional[bool]
-    required: Optional[bool] = False
-    type: Optional[str] = None
-    length: Optional[int]
+    name: str | None
+    column: str | None = None 
+    indexed: bool | None
+    unique: bool | None
+    required: bool | None = False
+    type: str | None = None
+    length: int | None
 
     def __init__(
         self,
-        name: Optional[str] = None,
-        column: Optional[str] = None,
-        indexed: Optional[bool] = None,
-        unique: Optional[bool] = None,
-        required: Optional[bool] = None,
-        type: Optional[str] = None,
-        length: Optional[int] = None,
+        name: str | None = None,
+        column: str | None = None,
+        indexed: bool | None = None,
+        unique: bool | None = None,
+        required: bool | None = None,
+        type: str | None = None,
+        length: int | None = None,
         is_relationship: bool = False,
     ):
         if not name:
@@ -276,7 +276,7 @@ class Index:
     name: str
     column_names: list[str] = []
 
-    def __init__(self, name: Optional[str] = None, column_names: Optional[list[str]] = None):
+    def __init__(self, name: str | None = None, column_names: list[str] | None = None):
         if not name:
             raise ValueError("name is required")
         self.name = name or ""
@@ -287,16 +287,16 @@ class Index:
 
 
 class IdField(Field):
-    name: Optional[str]
-    column: Optional[str]
-    type: Optional[str]
+    name: str | None
+    column: str | None
+    type: str | None
     required: bool = True
 
     def __init__(
         self,
-        name: Optional[str] = None,
-        column: Optional[str] = None,
-        type: Optional[str] = None,
+        name: str | None = None,
+        column: str | None = None,
+        type: str | None = None,
         required: bool = True,
     ):
         super().__init__(
@@ -316,24 +316,24 @@ class IdField(Field):
 class Relationship(Field):
     is_relationship: bool = True
     dependent: bool = False
-    name: Optional[str]
-    type: Optional[str]
-    required: Optional[bool]
-    relatedModelName: Optional[str]
-    column: Optional[str] = None 
-    otherSideName: Optional[str] = None 
+    name: str | None
+    type: str | None
+    required: bool | None
+    relatedModelName: str | None
+    column: str | None = None 
+    otherSideName: str | None = None 
 
     def __init__(
         self,
-        name: Optional[str] = None,
-        type: Optional[str] = None,
-        required: Optional[bool] = None,
-        relatedModelName: Optional[str] = None,
-        column: Optional[str] = None,
-        otherSideName: Optional[str] = None,
+        name: str | None = None,
+        type: str | None = None,
+        required: bool | None = None,
+        relatedModelName: str | None = None,
+        column: str | None = None,
+        otherSideName: str | None = None,
         dependent: bool = False,
         is_relationship: bool = True,
-        is_to_many: Optional[bool] = None,
+        is_to_many: bool | None = None,
     ):
         super().__init__(
             name,
@@ -450,7 +450,7 @@ def make_field_alias(aliasdef: ElementTree.Element) -> dict[str, str]:
     return alias
 
 
-def load_datamodel() -> Optional[Datamodel]:
+def load_datamodel() -> Datamodel | None:
     try:
         datamodeldef = ElementTree.parse(
             os.path.join(settings.SPECIFY_CONFIG_DIR, "specify_datamodel.xml")

@@ -12,7 +12,7 @@ class Func:
     O = TypeVar("O")
 
     @staticmethod
-    def maybe(value: Optional[I], callback: Callable[[I], O]) -> Optional[O]:
+    def maybe(value: I | None, callback: Callable[[I], O]) -> O | None:
         if value is None:
             return None
         return callback(value)
@@ -57,7 +57,7 @@ class Func:
         return [second for (_, second) in source]
     
     @staticmethod
-    def filter_list(source: list[Optional[I]]) -> list[I]:
+    def filter_list(source: list[I | None]) -> list[I]:
         return [item for item in source if item is not None]
 
 class CustomRepr:

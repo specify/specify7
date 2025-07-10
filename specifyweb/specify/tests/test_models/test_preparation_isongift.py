@@ -23,4 +23,3 @@ class TestPreparationIsOnGift(ApiTests):
         prep = self._create_prep(self.collectionobjects[0], None, countamt=4)
         _create_interaction_prep_generic(self, self.gift, prep, None, quantity=0)
         self.assertFalse(prep.isongift())
-        

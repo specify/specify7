@@ -12,8 +12,8 @@ from .auditor import Auditor
 
 class BatchEditSelf(TypedDict):
     id: int
-    ordernumber: Optional[int]
-    version: Optional[int]
+    ordernumber: int | None
+    version: int | None
 
 
 class BatchEditJson(TypedDict):
@@ -23,7 +23,7 @@ class BatchEditJson(TypedDict):
 
 
 class Extra(TypedDict):
-    batch_edit: Optional[BatchEditJson]
+    batch_edit: BatchEditJson | None
     disambiguation: dict[str, int]
 
 
@@ -44,7 +44,7 @@ class Uploadable(Protocol):
     # we cannot cache. well, we can make this more complicated by recursviely caching
     # static parts of even a non-entirely-cachable uploadable.
     def apply_scoping(
-        self, collection, context: Optional[ScopeContext] = None, row=None
+        self, collection, context: ScopeContext | None = None, row=None
     ) -> "ScopedUploadable": ...
 
     def get_cols(self) -> set[str]: ...
@@ -55,7 +55,7 @@ class Uploadable(Protocol):
 
 
 class DisambiguationInfo(Protocol):
-    def disambiguate(self) -> Optional[int]: ...
+    def disambiguate(self) -> int | None: ...
 
     def disambiguate_tree(self) -> dict[str, int]: ...
 
@@ -78,13 +78,13 @@ class ScopedUploadable(Protocol):
         row: Row,
         uploadingAgentId: int,
         auditor: Auditor,
-        cache: Optional[dict] = None,
+        cache: dict | None = None,
     ) -> Union["BoundUploadable", ParseFailures]: ...
 
     def get_treedefs(self) -> set: ...
 
     def apply_batch_edit_pack(
-        self, batch_edit_pack: Optional[BatchEditJson]
+        self, batch_edit_pack: BatchEditJson | None
     ) -> "ScopedUploadable": ...
 
 

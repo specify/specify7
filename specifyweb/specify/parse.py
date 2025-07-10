@@ -43,7 +43,7 @@ class ParseSucess(NamedTuple):
 ParseResult = Union[ParseSucess, ParseFailure]
 
 
-def parse_field(table_name: str, field_name: str, raw_value: str, formatter: Optional[ScopedFormatter] = None) -> ParseResult:
+def parse_field(table_name: str, field_name: str, raw_value: str, formatter: ScopedFormatter | None = None) -> ParseResult:
     table = datamodel.get_table_strict(table_name)
     field = table.get_field_strict(field_name)
 
@@ -81,7 +81,7 @@ def parse_field(table_name: str, field_name: str, raw_value: str, formatter: Opt
     return ParseSucess({field_name.lower(): raw_value})
 
 
-def parse_string(value: str) -> Optional[str]:
+def parse_string(value: str) -> str | None:
     result = value.strip()
     if result == "":
         return None
@@ -168,7 +168,7 @@ def parse_date(table: Table, field_name: str, dateformat: str, value: str) -> Pa
     return ParseFailure('badDateFormat', {'value': value, 'format': dateformat})
 
 
-def parse_formatted(uiformatter: ScopedFormatter, table: Table, field: Union[Field, Relationship], value: str) -> ParseResult:
+def parse_formatted(uiformatter: ScopedFormatter, table: Table, field: Field | Relationship, value: str) -> ParseResult:
     try:
         canonicalized = uiformatter(table, value)
     except FormatMismatch as e:
@@ -216,7 +216,7 @@ def parse_latlong(field: Field, value: str) -> ParseResult:
                         field.name.lower().replace('itude', '') + 'text': parse_string(value)})
 
 
-def parse_coord(value: str) -> Optional[tuple[float, int]]:
+def parse_coord(value: str) -> tuple[float, int] | None:
     for p in LATLONG_PARSER_DEFS:
         match = re.compile(p.regex, re.I).match(value)
         if match and match.group(1):

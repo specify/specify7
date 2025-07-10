@@ -72,7 +72,7 @@ class InviteToken(TypedDict):
     """Embedded in an invite token."""
     userid: int  # The Specify user id
     username: str
-    sequence: Optional[int] # To prevent reuse of token.
+    sequence: int | None # To prevent reuse of token.
     expires: int # A time.time() value after which the token is expired.
 
 

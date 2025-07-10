@@ -91,7 +91,7 @@ def no_savepoint():
     yield
 
 
-def unupload_dataset(ds: Spdataset, agent, progress: Optional[Progress] = None) -> None:
+def unupload_dataset(ds: Spdataset, agent, progress: Progress | None = None) -> None:
     if ds.rowresults is None:
         return
     results = json.loads(ds.rowresults)
@@ -172,7 +172,7 @@ def do_upload_dataset(
     ds: Spdataset,
     no_commit: bool,
     allow_partial: bool,
-    progress: Optional[Progress] = None,
+    progress: Progress | None = None,
 ) -> list[UploadResult]:
     if ds.was_uploaded():
         raise AssertionError(
@@ -274,7 +274,7 @@ def create_recordset(ds: Spdataset, name: str, remarks: str):
 
 
 def get_disambiguation_from_row(ncols: int, row: list) -> Disambiguation:
-    extra: Optional[Extra] = json.loads(row[ncols]) if row[ncols] else None
+    extra: Extra | None = json.loads(row[ncols]) if row[ncols] else None
     return (
         disambiguation.from_json(extra["disambiguation"])
         if extra and "disambiguation" in extra
@@ -282,8 +282,8 @@ def get_disambiguation_from_row(ncols: int, row: list) -> Disambiguation:
     )
 
 
-def get_batch_edit_pack_from_row(ncols: int, row: list) -> Optional[BatchEditJson]:
-    extra: Optional[Extra] = json.loads(row[ncols]) if row[ncols] else None
+def get_batch_edit_pack_from_row(ncols: int, row: list) -> BatchEditJson | None:
+    extra: Extra | None = json.loads(row[ncols]) if row[ncols] else None
     return extra.get("batch_edit") if extra is not None else None
 
 
@@ -310,12 +310,12 @@ def do_upload(
     rows: Rows,
     upload_plan: Uploadable,
     uploading_agent_id: int,
-    disambiguations: Optional[list[Disambiguation]] = None,
+    disambiguations: list[Disambiguation] | None = None,
     no_commit: bool = False,
     allow_partial: bool = True,
-    progress: Optional[Progress] = None,
-    batch_edit_packs: Optional[list[Optional[BatchEditJson]]] = None,
-    auditor_props: Optional[AuditorProps] = None,
+    progress: Progress | None = None,
+    batch_edit_packs: list[BatchEditJson | None] | None = None,
+    auditor_props: AuditorProps | None = None,
 ) -> list[UploadResult]:
     cache: dict = {}
     _auditor = Auditor(
@@ -471,7 +471,7 @@ def changed_tree(tree: str, result: UploadResult) -> bool:
 
 
 def adjust_pack(
-    pack: Optional[BatchEditJson],
+    pack: BatchEditJson | None,
     upload_result: UploadResult,
     commit_uploader: Callable[[RecordResult], None],
 ):
@@ -519,7 +519,7 @@ def adjust_pack(
 
 
 def rollback_batch_edit(
-    parent: Spdataset, collection, agent, progress: Optional[Progress] = None
+    parent: Spdataset, collection, agent, progress: Progress | None = None
 ) -> None:
     assert parent.isupdate, "What are you trying to do here?"
 

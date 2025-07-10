@@ -17,7 +17,7 @@ from .orm_signal_handler import orm_signal_handler
 from .exceptions import BusinessRuleException
 from . import models
 
-DEFAULT_UNIQUENESS_RULES:  dict[str, list[dict[str, list[Union[list[str]], bool]]]] = json.load(
+DEFAULT_UNIQUENESS_RULES:  dict[str, list[dict[str, list[list[str], bool]]]] = json.load(
     open('specifyweb/businessrules/uniqueness_rules.json'))
 
 UNIQUENESS_DISPATCH_UID = 'uniqueness-rules'
@@ -147,7 +147,7 @@ class UniquenessCheck(TypedDict):
     fields: list[ViolatedUniquenessCheck]
 
 
-def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[str], registry=None) -> Optional[UniquenessCheck]:
+def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[str], registry=None) -> UniquenessCheck | None:
     """
     Given a model, a list of fields, and a list of scopes, check whether there
     are models of model_name which have duplicate values of fields in scopes. 
