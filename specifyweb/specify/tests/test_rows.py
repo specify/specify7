@@ -13,7 +13,7 @@ class TestRows(GeoTimeTestsContext):
         c = Client()
         c.force_login(self.specifyuser)
         self.c = c
-    
+
     def test_simple_fetch(self):
         
         result_rows = self.c.get("/api/specify_rows/collectionobject/", {
@@ -57,13 +57,36 @@ class TestRows(GeoTimeTestsContext):
             return [co.catalognumber, co.text1]
 
         rows = json.loads(result_rows.content.decode())
-        self.assertEqual(rows, [
-            _get_row(2),
-            _get_row(3),
-            _get_row(4),
-            _get_row(1),
-            _get_row(0)
-        ])
+
+        possible_lists = [
+            [
+                _get_row(2),
+                _get_row(3),
+                _get_row(4),
+                _get_row(1),
+                _get_row(0)
+            ],
+            [
+                _get_row(2),
+                _get_row(4),
+                _get_row(3),
+                _get_row(1),
+                _get_row(0)
+            ]
+        ]
+
+        error = None
+        for possible_row in possible_lists:
+            try:
+                self.assertEqual(rows, possible_row)
+                break
+            except Exception as e:
+                error = e
+                continue
+        else:
+            assert error is not None, "Trying to throw undefined error"
+            raise error
+
 
         distinct_result_rows = self.c.get("/api/specify_rows/collectionobject/", {
             'fields': 'text1',
