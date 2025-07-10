@@ -191,7 +191,6 @@ MIGRATION_0029_UPDATE_FIELDS = {
     ]
 }
 
-
 MIGRATION_0032_FIELDS = {
     'GiftPreparation': ['quantityResolved', 'quantityReturned'],
 }

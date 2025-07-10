@@ -7,10 +7,29 @@ import specifyweb.specify.models
 from specifyweb.specify.models import protect_with_blockers
 from specifyweb.specify.migration_utils.update_schema_config import revert_table_field_schema_config, revert_table_schema_config, update_table_field_schema_config_with_defaults, update_table_schema_config_with_defaults
 
-from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0037_TABLES as SCHEMA_CONFIG_TABLES, MIGRATION_0037_FIELDS as SCHEMA_CONFIG_TABLE_FIELDS, MIGRATION_0037_UPDATE_FIELDS as SCHEMA_CONFIG_COMPONENT_TABLE_FIELDS, MIGRATION_0037_HIDDEN_FIELDS as SCHEMA_CONFIG_HIDDEN_FIELDS
+from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0037_TABLES as SCHEMA_CONFIG_TABLES, MIGRATION_0037_FIELDS as SCHEMA_CONFIG_TABLE_FIELDS, MIGRATION_0037_UPDATE_FIELDS as SCHEMA_CONFIG_COMPONENT_TABLE_FIELDS, MIGRATION_0037_HIDDEN_FIELDS as SCHEMA_CONFIG_HIDDEN_FIELDS, MIGRATION_0029_UPDATE_FIELDS as FIELDS_TO_REMOVE
 
 PICKLIST_NAME = 'CollectionObjectType'
 FIELD_NAME = 'type'
+
+def remove_0029_schema_config_fields(apps, schema_editor):
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+
+    for table, fields in FIELDS_TO_REMOVE.items():
+        containers = Splocalecontainer.objects.filter(name=table.lower())
+        for container in containers:
+            for field_name, _, _ in fields:
+                items = Splocalecontaineritem.objects.filter(
+                    container=container,
+                    name=field_name.lower()
+                )
+                for item in items:
+                    # Also clean associated localized names/descriptions
+                    Splocaleitemstr.objects.filter(itemdesc_id=item.id).delete()
+                    Splocaleitemstr.objects.filter(itemname_id=item.id).delete()
+                    item.delete()
 
 def create_table_schema_config_with_defaults(apps, schema_editor):
     Discipline = specify_apps.get_model('specify', 'Discipline')
@@ -108,6 +127,13 @@ def hide_component_fields(apps, schema_editor):
                     )
                     items.update(ishidden=True)
 
+def restore_0029_schema_config_fields(apps, schema_editor):
+    Discipline = apps.get_model('specify', 'Discipline')
+    for discipline in Discipline.objects.all():
+        for table, fields in FIELDS_TO_REMOVE.items():
+            for field in fields:
+                update_table_field_schema_config_with_defaults(table, discipline.id, field, apps)
+
 def revert_table_schema_config_with_defaults(apps, schema_editor):
     for table, _ in SCHEMA_CONFIG_TABLES:
         revert_table_schema_config(table, apps)
@@ -183,6 +209,7 @@ class Migration(migrations.Migration):
     ]
 
     def consolidated_python_django_migration_operations(apps, schema_editor):
+        remove_0029_schema_config_fields(apps, schema_editor)
         create_table_schema_config_with_defaults(apps, schema_editor)
         update_schema_config_field_desc(apps, schema_editor)
         update_hidden_prop(apps, schema_editor)
@@ -190,6 +217,7 @@ class Migration(migrations.Migration):
         hide_component_fields(apps, schema_editor)
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
+        restore_0029_schema_config_fields(apps, schema_editor)
         revert_table_schema_config_with_defaults(apps, schema_editor)
         revert_update_hidden_prop(apps, schema_editor)
         reverse_update_hidden_prop(apps, schema_editor)
