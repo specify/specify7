@@ -25,10 +25,15 @@ class Func:
     def obj_to_list(obj: dict[I, O]) -> list[tuple[I, O]]:
         return [(key, val) for key, val in obj.items()]
 
+    # @staticmethod
+    # def make_ors(conds: list[Q]) -> Q:
+    #     assert conds, "need at least one Q"
+    #     return reduce(lambda a, b: a | b, conds)
+
     @staticmethod
     def make_ors(eprns: list[Q]) -> Q:
         assert len(eprns) > 0
-        return reduce(lambda accum, curr: Union[accum, curr], eprns)
+        return reduce(lambda accum, curr: accum | curr, eprns)
 
     @staticmethod
     def make_generator(step=1):
