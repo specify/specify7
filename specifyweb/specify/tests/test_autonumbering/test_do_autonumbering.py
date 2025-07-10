@@ -1,15 +1,14 @@
 from specifyweb.specify.autonumbering import do_autonumbering
 from specifyweb.specify.filter_by_col import filter_by_collection
 from specifyweb.specify.models import Collectionobject, Collection
-from specifyweb.specify.tests.test_api import ApiTransactionTests
 
 from unittest.mock import Mock, patch
 
-from specifyweb.specify.uiformatters import AnyCharField, CNNField, SeparatorField, UIFormatter, NumericField
+from specifyweb.specify.tests.test_autonumbering import TestAutonumberingContext
 
 # Thus test uses ApiTransactionTests because lock table performs implicit commit on the database.
 # So, need to reset the state of the entire database.
-class TestDoAutonumbering(ApiTransactionTests):
+class TestDoAutonumbering(TestAutonumberingContext):
 
     @patch("specifyweb.specify.uiformatters.get_autonumber_group_filter")
     def test_simple_autonumbering(self, group_filter: Mock):
@@ -18,12 +17,7 @@ class TestDoAutonumbering(ApiTransactionTests):
         )
         fields = [
             (
-                UIFormatter(
-                    model_name="CollectionObject",
-                    field_name="CatalogNumber",
-                    fields=[CNNField()],
-                    format_name="CatalogNumberNumeric",
-                ),
+                self.cnn_ui_formatter,
                 ("#########",),
             )
         ]
@@ -55,43 +49,13 @@ class TestDoAutonumbering(ApiTransactionTests):
             objs, self.collection
         )
 
-        complicated_formatter = (
-            UIFormatter(
-                model_name="CollectionObject",
-                field_name="Text1",
-                fields=[
-                    AnyCharField(
-                        size=2,
-                        value="AA",
-                        inc=False,
-                        by_year=False
-                    ),
-                    SeparatorField(
-                        size=1,
-                        value="-",
-                        inc=False,
-                        by_year=False
-                    ),
-                    NumericField(
-                        size=3,
-                        inc=3,
-                    )
-                ],
-                format_name="TestFormatter"
-            )
-        )
         fields = lambda values: [
             (
-                UIFormatter(
-                    model_name="CollectionObject",
-                    field_name="CatalogNumber",
-                    fields=[CNNField()],
-                    format_name="CatalogNumberNumeric",
-                ),
+                self.cnn_ui_formatter,
                 ("#########",),
             ),
             (
-                complicated_formatter,
+                self.complicated_formatter,
                 values
             )
         ]
@@ -137,12 +101,7 @@ class TestDoAutonumbering(ApiTransactionTests):
 
         fields = [
             (
-                UIFormatter(
-                    model_name="CollectionObject",
-                    field_name="CatalogNumber",
-                    fields=[CNNField()],
-                    format_name="CatalogNumberNumeric",
-                ),
+                self.cnn_ui_formatter,
                 ("#########",),
             )
         ]
