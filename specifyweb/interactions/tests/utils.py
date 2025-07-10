@@ -1,11 +1,12 @@
-from specifyweb.specify.models import Disposalpreparation, Exchangeoutprep, Giftpreparation, Loanpreparation
+from specifyweb.specify.models import Disposalpreparation, Exchangeinprep, Exchangeoutprep, Giftpreparation, Loanpreparation
 
 
 mapping = {
     "loan": dict(model=Loanpreparation, backref="loan"),
     "gift": dict(model=Giftpreparation, backref="gift"),
     "exchangeout": dict(model=Exchangeoutprep, backref="exchangeout"),
-    "disposal": dict(model=Disposalpreparation, backref="disposal")
+    "disposal": dict(model=Disposalpreparation, backref="disposal"),
+    "exchangein": dict(model=Exchangeinprep, backref="exchangein")
 }
 
 
