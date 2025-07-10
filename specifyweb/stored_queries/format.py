@@ -6,7 +6,7 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import Element
 from xml.sax.saxutils import quoteattr
 
-from specifyweb.specify.utils import get_picklists
+from specifyweb.specify.utils import get_picklists, get_sp_id_col
 from sqlalchemy import Table as SQLTable, inspect, case
 from sqlalchemy.orm import aliased, Query
 from sqlalchemy.sql.expression import func, cast, literal, Label
@@ -277,7 +277,7 @@ class ObjectFormatter:
         orm_table = getattr(models, field.relatedModelName)
 
         def _get_id_col(target):
-            return getattr(target, target._id) if isinstance(target._id, str) else target._id
+            return get_sp_id_col(target) if isinstance(target._id, str) else target._id
 
         join_column = list(inspect(
             getattr(orm_table, field.otherSideName)).property.local_columns)[0]

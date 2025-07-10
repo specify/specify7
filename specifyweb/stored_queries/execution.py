@@ -891,7 +891,7 @@ def build_query(
     """
     model = models.models_by_tableid[tableid]
     if isinstance(model._id, str):
-        id_field = getattr(model, model._id)
+        id_field = get_sp_id_col(model)
     elif isinstance(model._id, ColumnProperty):
         id_field = model._id.columns[0]
     else:
