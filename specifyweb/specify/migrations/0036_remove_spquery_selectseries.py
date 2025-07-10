@@ -5,10 +5,10 @@ from django.db import migrations, connection
 
 def add_field_if_not_exists(apps, schema_editor):
     with connection.cursor() as cursor:
-        cursor.execute("SELECT 1 FROM information_schema.columns WHERE table_name = 'spquery' AND column_name = 'selectseries';")
+        cursor.execute("SELECT 1 FROM information_schema.columns WHERE table_name = 'spquery' AND column_name = 'SelectSeries';")
         if not cursor.fetchone():
             # Create the selectseries field in the spquery temporary table so the RemoveField migration doesn't fail in special cases
-            cursor.execute("ALTER TABLE specify_spquery ADD COLUMN selectseries INTEGER NULL;")
+            cursor.execute("ALTER TABLE spquery ADD COLUMN SelectSeries BIT NULL;")
 
 class Migration(migrations.Migration):
 
