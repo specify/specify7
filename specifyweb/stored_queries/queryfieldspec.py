@@ -3,7 +3,7 @@ import re
 from collections import namedtuple, deque
 from typing import Union, Optional, Tuple
 
-from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting
+from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting, get_sp_id_col
 from sqlalchemy import sql, Table as SQLTable
 from sqlalchemy.orm.query import Query
 
@@ -469,9 +469,10 @@ class QueryFieldSpec(
                     if table.name in PRECALCULATED_FIELDS:
                         field_name = PRECALCULATED_FIELDS[table.name]
                         # orm_field = getattr(orm_model, field_name)
-                        orm_field = getattr(
-                            orm_model, orm_model._id
-                        )  # Replace with recordId, future just remove column from results
+                        orm_field = get_sp_id_col(orm_model)
+                        # orm_field = getattr(
+                        #     orm_model, orm_model._id
+                        # )  # Replace with recordId, future just remove column from results
                     else:
                         raise
 
