@@ -263,6 +263,7 @@ const colorMapper = f.store<Partial<RR<keyof Tables, Gradient>>>(() => ({
   CollectionRelType: colors.purple,
   CollectionRelationship: colors.green,
   Collector: colors.blue,
+  Component: colors.brown,
   CommonNameTx: colors.red,
   CommonNameTxCitation: colors.green,
   ConservDescription: colors.purple,
