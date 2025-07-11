@@ -354,9 +354,16 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           typeof taxonTreeDef === 'string' && taxonTreeDef === coTypeTreeDef;
 
         setSaveBlockers(
-          name,
+          resource,
           resource.specifyTable.field.name,
-          isValid ? [] : [resourcesText.invalidNameTaxon()],
+          isValid
+            ? []
+            : [
+                resourcesText.invalidNameTaxon({
+                  taxonName: resource.specifyTable.field.name.label,
+                  typeName: resource.specifyTable.label,
+                }),
+              ],
           COMPONENT_NAME_TAXON_KEY
         );
 
