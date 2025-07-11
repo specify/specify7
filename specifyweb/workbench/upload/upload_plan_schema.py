@@ -1,4 +1,5 @@
 from functools import reduce
+from typing import Dict, Union, Tuple
 import logging
 
 from specifyweb.specify.datamodel import datamodel, Table

@@ -1,6 +1,7 @@
 import logging
 import re
 from collections import namedtuple, deque
+from typing import Union
 
 from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting, get_sp_id_col
 from sqlalchemy import sql, Table as SQLTable
@@ -153,7 +154,7 @@ class TreeRankQuery(Relationship):
         return f"{self.treedef_name}{RANK_KEY_DELIMITER}{self.name}{RANK_KEY_DELIMITER}{self.treedef_id}"
 
 
-QueryNode = Field | Relationship | TreeRankQuery
+QueryNode = Union[Field, Relationship, TreeRankQuery]
 FieldSpecJoinPath = tuple[QueryNode]
 
 

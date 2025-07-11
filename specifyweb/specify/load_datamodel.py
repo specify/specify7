@@ -1,4 +1,4 @@
-from typing import TypeVar, cast
+from typing import Union, TypeVar, cast
 from collections.abc import Callable
 from collections.abc import Iterable
 from xml.etree import ElementTree
@@ -154,8 +154,8 @@ class Table:
         return self.name.capitalize()
 
     @property
-    def all_fields(self) -> list["Field" | "Relationship"]:
-        def af() -> Iterable["Field" | "Relationship"]:
+    def all_fields(self) -> list[Union["Field", "Relationship"]]:
+        def af() -> Iterable[Union["Field", "Relationship"]]:
             yield from self.fields or []  # Handle None by using an empty list
             yield from self.relationships or []  # Handle None by using an empty list
             if self.idField is not None:
@@ -167,10 +167,10 @@ class Table:
     def is_virtual_field(self, fieldname: str) -> bool:
         return fieldname in [f.name for f in self.virtual_fields] if self.virtual_fields else False
    
-    def get_field(self, fieldname: str, strict: bool=False) -> 'Field' | 'Relationship' | None:
+    def get_field(self, fieldname: str, strict: bool=False) -> Union['Field', 'Relationship', None]:
         return strict_to_optional(self.get_field_strict, fieldname, strict)
 
-    def get_field_strict(self, fieldname: str) -> "Field" | "Relationship":
+    def get_field_strict(self, fieldname: str) -> Union["Field", "Relationship"]:
         fieldname = fieldname.lower()
         if self.all_fields:
             for field in self.all_fields:
