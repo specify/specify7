@@ -19,8 +19,10 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('patches', '0005_chrono_start_end'),
+        ('specify', '0035_version_required'),
     ]
 
     operations = [
-        migrations.RunPython(set_null_versions_to_zero_and_default),
+        migrations.RunPython(set_null_versions_to_zero_and_default,
+        migrations.RunPython.noop, atomic=True)
     ]
