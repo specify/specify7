@@ -6,6 +6,7 @@ from unittest.mock import Mock, patch
 
 from specifyweb.specify.tests.test_autonumbering import TestAutonumberingContext
 
+
 # Thus test uses ApiTransactionTests because lock table performs implicit commit on the database.
 # So, need to reset the state of the entire database.
 class TestDoAutonumbering(TestAutonumberingContext):
@@ -54,33 +55,36 @@ class TestDoAutonumbering(TestAutonumberingContext):
                 self.cnn_ui_formatter,
                 ("#########",),
             ),
-            (
-                self.complicated_formatter,
-                values
-            )
+            (self.complicated_formatter, values),
         ]
 
         Collectionobject.objects.all().delete()
 
-        co = Collectionobject(collection=self.collection, catalognumber="#########", text1="AB-###")
+        co = Collectionobject(
+            collection=self.collection, catalognumber="#########", text1="AB-###"
+        )
 
-        do_autonumbering(self.collection, co, fields(('AB', '-', '###')))
+        do_autonumbering(self.collection, co, fields(("AB", "-", "###")))
         co.refresh_from_db()
 
         self.assertIsNotNone(co.id)
         self.assertEqual(co.text1, "AB-001")
         self.assertEqual(co.catalognumber, "000000001")
 
-        second_co = Collectionobject(collection=self.collection, catalognumber="#########", text1="AB-###")
-        do_autonumbering(self.collection, second_co, fields(('AB', '-', '###')))
+        second_co = Collectionobject(
+            collection=self.collection, catalognumber="#########", text1="AB-###"
+        )
+        do_autonumbering(self.collection, second_co, fields(("AB", "-", "###")))
         second_co.refresh_from_db()
 
         self.assertIsNotNone(second_co.id)
         self.assertEqual(second_co.text1, "AB-002")
         self.assertEqual(second_co.catalognumber, "000000002")
 
-        third_co = Collectionobject(collection=self.collection, catalognumber="#########", text1="AA-###")
-        do_autonumbering(self.collection, third_co, fields(('AA', '-', '###')))
+        third_co = Collectionobject(
+            collection=self.collection, catalognumber="#########", text1="AA-###"
+        )
+        do_autonumbering(self.collection, third_co, fields(("AA", "-", "###")))
         third_co.refresh_from_db()
 
         self.assertIsNotNone(third_co.id)
@@ -96,7 +100,9 @@ class TestDoAutonumbering(TestAutonumberingContext):
         )
 
         group_filter.return_value = lambda objs: (
-            objs.filter(collectionmemberid__in=[self.collection.id, second_collection.id])
+            objs.filter(
+                collectionmemberid__in=[self.collection.id, second_collection.id]
+            )
         )
 
         fields = [
@@ -144,9 +150,13 @@ class TestDoAutonumbering(TestAutonumberingContext):
             discipline=self.discipline,
         )
 
-        group_filter.return_value = lambda objs: filter_by_collection(objs, third_collection)
+        group_filter.return_value = lambda objs: filter_by_collection(
+            objs, third_collection
+        )
 
-        fourth_co_irrelevant_collection = Collectionobject(collection=third_collection, catalognumber="#########")
+        fourth_co_irrelevant_collection = Collectionobject(
+            collection=third_collection, catalognumber="#########"
+        )
 
         do_autonumbering(self.collection, fourth_co_irrelevant_collection, fields)
 
