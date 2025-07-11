@@ -142,7 +142,7 @@ export const staticAppResources = {
       taskSemaphores: '/api/specify/sptasksemaphore/?owner=5',
       workbenches: '/api/specify/workbench/?specifyuser=5',
       workbenchTemplates: '/api/specify/workbenchtemplate/?specifyuser=5',
-      resource_uri: '/api/specify/specifyuser/4/',
+      resource_uri: '/api/specify/specifyuser/5/',
       isAdmin: false,
       password: '',
       _tableName: 'SpecifyUser',
