@@ -189,9 +189,9 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                 ? undefined
                 : error(error_)
             )
+            .then(handleSaved)
             .finally(() => {
               unsetUnloadProtect();
-              handleSaved?.();
               setIsSaving(false);
             });
         }
