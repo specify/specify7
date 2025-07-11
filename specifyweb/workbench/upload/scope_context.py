@@ -14,6 +14,7 @@ class ScopingCache(TypedDict):
     fields: dict[tuple[Any, str, str], Optional[UIFormatter]]
     date_format: Optional[str]
     cotype_column: Optional[str]
+    component_type_column: Optional[str]
 
 class ScopeContext:
     cache: ScopingCache
@@ -25,6 +26,7 @@ class ScopeContext:
         self.cache['date_format'] = None
         self.cache['fields'] = {}
         self.cache['cotype_column'] = None
+        self.cache['component_type_column'] = None
         
     def set_is_variable(self):
         # We "discover" whether the scoping is variable across the rows.
