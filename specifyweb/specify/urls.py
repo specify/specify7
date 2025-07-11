@@ -17,7 +17,7 @@ urlpatterns = [
     re_path(r'^specify/catalog_number_for_sibling/$', views.catalog_number_for_sibling),
 
     # cat num for parent
-    re_path(r'^specify/catalog_number_from_parent/$', views.catalog_number_from_parent), 
+    # re_path(r'^specify/catalog_number_from_parent/$', views.catalog_number_from_parent), 
 
     # the main business data API
     re_path(r'^specify_schema/openapi.json$', schema.openapi),

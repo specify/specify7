@@ -3,7 +3,7 @@ import re
 from collections import namedtuple, deque
 from typing import Union, Optional, Tuple
 
-from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting
+# from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting
 from sqlalchemy import sql, Table as SQLTable
 from sqlalchemy.orm.query import Query
 
@@ -487,13 +487,18 @@ class QueryFieldSpec(
 
         return query, orm_field, field, table
 
-def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
-    parent_inheritance_pref = get_parent_cat_num_inheritance_setting(collection, user)
+# def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
+#     parent_inheritance_pref = get_parent_cat_num_inheritance_setting(collection, user)
 
-    if parent_inheritance_pref: 
-        op, orm_field, value = parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
-    else: 
-        op, orm_field, value = cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
+#     if parent_inheritance_pref: 
+#         op, orm_field, value = parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
+#     else: 
+#         op, orm_field, value = cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
+
+#     return op, orm_field, value
+
+def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
+    op, orm_field, value = cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
 
     return op, orm_field, value
 
@@ -536,23 +541,23 @@ def cog_primary_co_sibling_ids(cat_num, collection):
 
     return [str(i) for i in [co.id] + list(target_sibling_co_ids)]
 
-def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
-    if (
-        table.name == "CollectionObject"
-        and field.name == "catalogNumber"
-        and op_num == 1
-        and get_parent_cat_num_inheritance_setting(collection, user)
-    ):
-        components_ids = co_components_ids(value, collection)
-        if components_ids:
-            # Modify the query to filter operation and values for component collection objects
-            value = ','.join(components_ids)
-            orm_field = getattr(sq_CollectionObject, 'collectionObjectId')
-            op = QueryOps(uiformatter).by_op_num(10)
+# def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
+#     if (
+#         table.name == "CollectionObject"
+#         and field.name == "catalogNumber"
+#         and op_num == 1
+#         and get_parent_cat_num_inheritance_setting(collection, user)
+#     ):
+#         components_ids = co_components_ids(value, collection)
+#         if components_ids:
+#             # Modify the query to filter operation and values for component collection objects
+#             value = ','.join(components_ids)
+#             orm_field = getattr(sq_CollectionObject, 'collectionObjectId')
+#             op = QueryOps(uiformatter).by_op_num(10)
 
-    return op, orm_field, value
+#     return op, orm_field, value
 
-def co_components_ids(cat_num, collection):
+# def co_components_ids(cat_num, collection):
     # Get the collection object with the given catalog number
     parentcomponent = Collectionobject.objects.filter(catalognumber=cat_num, collection=collection).first()
     if not parentcomponent:

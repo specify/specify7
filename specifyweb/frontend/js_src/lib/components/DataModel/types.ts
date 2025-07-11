@@ -1444,7 +1444,6 @@ export type CollectionObject = {
     readonly collectingEvent: CollectingEvent | null;
     readonly collection: Collection;
     readonly collectionObjectType: CollectionObjectType;
-    readonly componentParent: CollectionObject | null;
     readonly container: Container | null;
     readonly containerOwner: Container | null;
     readonly createdByAgent: Agent | null;
@@ -1462,7 +1461,6 @@ export type CollectionObject = {
     readonly collectionObjectAttrs: RA<CollectionObjectAttr>;
     readonly collectionObjectCitations: RA<CollectionObjectCitation>;
     readonly collectionObjectProperties: RA<CollectionObjectProperty>;
-    readonly components: RA<CollectionObject>;
     readonly conservDescriptions: RA<ConservDescription>;
     readonly determinations: RA<Determination>;
     readonly dnaSequences: RA<DNASequence>;

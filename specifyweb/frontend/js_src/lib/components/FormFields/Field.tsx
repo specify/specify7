@@ -133,10 +133,12 @@ function Field({
     ? resource?.get('cojo') !== null && resource?.get('cojo') !== undefined
     : false;
 
-  const hasComponentParent = isCO
-    ? resource.get('componentParent') !== null &&
-      resource.get('componentParent') !== undefined
-    : false;
+  /*
+   * Const hasComponentParent = isCO
+   *   ? resource.get('componentParent') !== null &&
+   *     resource.get('componentParent') !== undefined
+   *   : false;
+   */
 
   const isCatNumberField = field?.name === 'catalogNumber';
 
@@ -147,12 +149,14 @@ function Field({
     'inheritance'
   );
 
-  // Check if collection pref wants to inherit parent cat num for empty CO cat num children
-  const [displayParentCatNumberPref] = collectionPreferences.use(
-    'catalogNumberParentInheritance',
-    'behavior',
-    'inheritance'
-  );
+  /*
+   * Check if collection pref wants to inherit parent cat num for empty CO cat num children
+   * const [displayParentCatNumberPref] = collectionPreferences.use(
+   *   'catalogNumberParentInheritance',
+   *   'behavior',
+   *   'inheritance'
+   * );
+   */
 
   const displayPrimaryCatNumberPlaceHolder =
     isNew === false &&
@@ -161,20 +165,24 @@ function Field({
     isCatNumberField &&
     displayPrimaryCatNumberPref;
 
-  const displayParentCatNumberPlaceHolder =
-    isNew === false &&
-    isCO &&
-    hasComponentParent &&
-    isCatNumberField &&
-    displayParentCatNumberPref;
+  /*
+   * Const displayParentCatNumberPlaceHolder =
+   *   isNew === false &&
+   *   isCO &&
+   *   hasComponentParent &&
+   *   isCatNumberField &&
+   *   displayParentCatNumberPref;
+   */
 
   const [primaryCatalogNumber, setPrimaryCatalogNumber] = React.useState<
     string | null
   >(null);
 
-  const [parentCatalogNumber, setParentCatalogNumber] = React.useState<
-    string | null
-  >(null);
+  /*
+   * Const [parentCatalogNumber, setParentCatalogNumber] = React.useState<
+   *   string | null
+   * >(null);
+   */
 
   React.useEffect(() => {
     if (resource && displayPrimaryCatNumberPlaceHolder) {
@@ -189,23 +197,26 @@ function Field({
         .catch((error) => {
           console.error('Error fetching catalog number:', error);
         });
-    } else if (resource && displayParentCatNumberPlaceHolder) {
-      ajax<string | null>('/api/specify/catalog_number_from_parent/', {
-        method: 'POST',
-        headers: { Accept: 'application/json' },
-        body: resource,
-      })
-        .then((response) => {
-          setParentCatalogNumber(response.data);
-        })
-        .catch((error) => {
-          console.error('Error fetching catalog number:', error);
-        });
     }
+    /*
+     * Else if (resource && displayParentCatNumberPlaceHolder) {
+     *   ajax<string | null>('/api/specify/catalog_number_from_parent/', {
+     *     method: 'POST',
+     *     headers: { Accept: 'application/json' },
+     *     body: resource,
+     *   })
+     *     .then((response) => {
+     *       setParentCatalogNumber(response.data);
+     *     })
+     *     .catch((error) => {
+     *       console.error('Error fetching catalog number:', error);
+     *     });
+     * }
+     */
   }, [
     resource,
     displayPrimaryCatNumberPlaceHolder,
-    displayParentCatNumberPlaceHolder,
+    // DisplayParentCatNumberPlaceHolder,
   ]);
 
   return (
@@ -217,10 +228,11 @@ function Field({
         displayPrimaryCatNumberPlaceHolder &&
         typeof primaryCatalogNumber === 'string'
           ? primaryCatalogNumber
-          : displayParentCatNumberPlaceHolder &&
-              typeof parentCatalogNumber === 'string'
-            ? parentCatalogNumber
-            : undefined
+          : undefined
+        // displayParentCatNumberPlaceHolder &&
+        //     typeof parentCatalogNumber === 'string'
+        //   ? parentCatalogNumber
+        //   : undefined
       }
       {...validationAttributes}
       className={
