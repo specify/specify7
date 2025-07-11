@@ -79,21 +79,21 @@ class Datamodel:
 
 class Table:
     system: bool = False
-    classname: str | None
-    table: str | None
-    tableId: int | None
-    idColumn: str | None
-    idFieldName: str | None
-    idField: Optional["Field"]
+    classname: str
+    table: str
+    tableId: int
+    idColumn: str
+    idFieldName: str
+    idField: "Field"
     view: str | None = None
     searchDialog: str | None = None 
-    fields: list["Field"] | None
-    indexes: list["Index"] | None
-    relationships: list["Relationship"] | None
-    fieldAliases: list[dict[str, str]] | None
+    fields: list["Field"]
+    indexes: list["Index"]
+    relationships: list["Relationship"]
+    fieldAliases: list[dict[str, str]]
     sp7_only: bool = False
     django_app: str = "specify"
-    virtual_fields: list['Field'] | None = []
+    virtual_fields: list['Field'] = []
 
     def __init__(
         self,
@@ -227,11 +227,11 @@ class Table:
 
 class Field:
     is_relationship: bool = False
-    name: str | None
+    name: str
     column: str | None = None 
-    indexed: bool | None
-    unique: bool | None
-    required: bool | None = False
+    indexed: bool
+    unique: bool
+    required: bool = False
     type: str | None = None
     length: int | None
 
@@ -287,8 +287,8 @@ class Index:
 
 
 class IdField(Field):
-    name: str | None
-    column: str | None
+    name: str
+    column: str
     type: str | None
     required: bool = True
 
@@ -316,10 +316,10 @@ class IdField(Field):
 class Relationship(Field):
     is_relationship: bool = True
     dependent: bool = False
-    name: str | None
+    name: str
     type: str | None
-    required: bool | None
-    relatedModelName: str | None
+    required: bool
+    relatedModelName: str
     column: str | None = None 
     otherSideName: str | None = None 
 
@@ -332,8 +332,7 @@ class Relationship(Field):
         column: str | None = None,
         otherSideName: str | None = None,
         dependent: bool = False,
-        is_relationship: bool = True,
-        is_to_many: bool | None = None,
+        is_relationship: bool = True
     ):
         super().__init__(
             name,
