@@ -3,7 +3,7 @@ For uploading tree records.
 """
 
 import logging
-from typing import Any, NamedTuple, Union
+from typing import Any, NamedTuple, Union, Optional
 
 from django.db import transaction, IntegrityError
 from typing_extensions import TypedDict
@@ -250,7 +250,7 @@ class ScopedTreeRecord(NamedTuple):
             for cell in process_row_item(row_key, row_value)
         ]
 
-    def rescope_tree_from_row(self, row: Row) -> tuple["ScopedTreeRecord", "WorkBenchParseFailure" | None]:
+    def rescope_tree_from_row(self, row: Row) -> tuple["ScopedTreeRecord", Optional["WorkBenchParseFailure"]]:
         """Rescope tree from row data."""
 
         # Determine the target treedef based on the columns that are not null
@@ -311,7 +311,7 @@ class ScopedTreeRecord(NamedTuple):
     # Handle cases where there are multiple or no treedefs
     def _handle_multiple_or_no_treedefs(self,
         unique_treedef_ids: set[int | None], targeted_treedefids: set[int], ranks_columns: list[TreeRankCell]
-    ) -> tuple["ScopedTreeRecord", "WorkBenchParseFailure" | None] | None:
+    ) -> tuple["ScopedTreeRecord", Optional["WorkBenchParseFailure"]] | None:
         if not targeted_treedefids:
             return self, None
         elif len(targeted_treedefids) > 1 and len(unique_treedef_ids) > 1:
