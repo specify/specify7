@@ -18,7 +18,7 @@ def remove_0029_schema_config_fields(apps, schema_editor):
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
     for table, fields in FIELDS_TO_REMOVE.items():
-        containers = Splocalecontainer.objects.filter(name=table.lower())
+        containers = Splocalecontainer.objects.filter(name=table.lower(), schematype=0)
         for container in containers:
             for field_name, _, _ in fields:
                 items = Splocalecontaineritem.objects.filter(

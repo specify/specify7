@@ -931,7 +931,7 @@ export const resourcesText = createDictionary({
   },
   invalidNameTaxon: {
     'en-us':
-      'Name taxon does not belong to the taxon tree associated with the Component Type',
+      '{taxonName: string} does not belong to the taxon tree associated with {typeName: string}',
   },
   preparationUsedInLoan: {
     'en-us': 'The preparation is used in a loan.',
