@@ -17,7 +17,11 @@ from .orm_signal_handler import orm_signal_handler
 from .exceptions import BusinessRuleException
 from . import models
 
-DEFAULT_UNIQUENESS_RULES:  dict[str, list[dict[str, list[list[str], bool]]]] = json.load(
+class JSONUniquenessRule(TypedDict): 
+    rule: tuple[list[str], list[str]]
+    isDatabaseConstraint: bool
+
+DEFAULT_UNIQUENESS_RULES:  dict[str, list[JSONUniquenessRule]] = json.load(
     open('specifyweb/businessrules/uniqueness_rules.json'))
 
 UNIQUENESS_DISPATCH_UID = 'uniqueness-rules'
