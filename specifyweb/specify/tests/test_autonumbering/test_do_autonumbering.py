@@ -1,15 +1,15 @@
 from specifyweb.specify.autonumbering import do_autonumbering
 from specifyweb.specify.filter_by_col import filter_by_collection
 from specifyweb.specify.models import Collectionobject, Collection
-from specifyweb.specify.tests.test_api import ApiTransactionTests
 
 from unittest.mock import Mock, patch
 
-from specifyweb.specify.uiformatters import AnyCharField, CNNField, SeparatorField, UIFormatter, NumericField
+from specifyweb.specify.tests.test_autonumbering import TestAutonumberingContext
+
 
 # Thus test uses ApiTransactionTests because lock table performs implicit commit on the database.
 # So, need to reset the state of the entire database.
-class TestDoAutonumbering(ApiTransactionTests):
+class TestDoAutonumbering(TestAutonumberingContext):
 
     @patch("specifyweb.specify.uiformatters.get_autonumber_group_filter")
     def test_simple_autonumbering(self, group_filter: Mock):
@@ -18,12 +18,7 @@ class TestDoAutonumbering(ApiTransactionTests):
         )
         fields = [
             (
-                UIFormatter(
-                    model_name="CollectionObject",
-                    field_name="CatalogNumber",
-                    fields=[CNNField()],
-                    format_name="CatalogNumberNumeric",
-                ),
+                self.cnn_ui_formatter,
                 ("#########",),
             )
         ]
@@ -55,68 +50,41 @@ class TestDoAutonumbering(ApiTransactionTests):
             objs, self.collection
         )
 
-        complicated_formatter = (
-            UIFormatter(
-                model_name="CollectionObject",
-                field_name="Text1",
-                fields=[
-                    AnyCharField(
-                        size=2,
-                        value="AA",
-                        inc=False,
-                        by_year=False
-                    ),
-                    SeparatorField(
-                        size=1,
-                        value="-",
-                        inc=False,
-                        by_year=False
-                    ),
-                    NumericField(
-                        size=3,
-                        inc=3,
-                    )
-                ],
-                format_name="TestFormatter"
-            )
-        )
         fields = lambda values: [
             (
-                UIFormatter(
-                    model_name="CollectionObject",
-                    field_name="CatalogNumber",
-                    fields=[CNNField()],
-                    format_name="CatalogNumberNumeric",
-                ),
+                self.cnn_ui_formatter,
                 ("#########",),
             ),
-            (
-                complicated_formatter,
-                values
-            )
+            (self.complicated_formatter, values),
         ]
 
         Collectionobject.objects.all().delete()
 
-        co = Collectionobject(collection=self.collection, catalognumber="#########", text1="AB-###")
+        co = Collectionobject(
+            collection=self.collection, catalognumber="#########", text1="AB-###"
+        )
 
-        do_autonumbering(self.collection, co, fields(('AB', '-', '###')))
+        do_autonumbering(self.collection, co, fields(("AB", "-", "###")))
         co.refresh_from_db()
 
         self.assertIsNotNone(co.id)
         self.assertEqual(co.text1, "AB-001")
         self.assertEqual(co.catalognumber, "000000001")
 
-        second_co = Collectionobject(collection=self.collection, catalognumber="#########", text1="AB-###")
-        do_autonumbering(self.collection, second_co, fields(('AB', '-', '###')))
+        second_co = Collectionobject(
+            collection=self.collection, catalognumber="#########", text1="AB-###"
+        )
+        do_autonumbering(self.collection, second_co, fields(("AB", "-", "###")))
         second_co.refresh_from_db()
 
         self.assertIsNotNone(second_co.id)
         self.assertEqual(second_co.text1, "AB-002")
         self.assertEqual(second_co.catalognumber, "000000002")
 
-        third_co = Collectionobject(collection=self.collection, catalognumber="#########", text1="AA-###")
-        do_autonumbering(self.collection, third_co, fields(('AA', '-', '###')))
+        third_co = Collectionobject(
+            collection=self.collection, catalognumber="#########", text1="AA-###"
+        )
+        do_autonumbering(self.collection, third_co, fields(("AA", "-", "###")))
         third_co.refresh_from_db()
 
         self.assertIsNotNone(third_co.id)
@@ -132,17 +100,14 @@ class TestDoAutonumbering(ApiTransactionTests):
         )
 
         group_filter.return_value = lambda objs: (
-            objs.filter(collectionmemberid__in=[self.collection.id, second_collection.id])
+            objs.filter(
+                collectionmemberid__in=[self.collection.id, second_collection.id]
+            )
         )
 
         fields = [
             (
-                UIFormatter(
-                    model_name="CollectionObject",
-                    field_name="CatalogNumber",
-                    fields=[CNNField()],
-                    format_name="CatalogNumberNumeric",
-                ),
+                self.cnn_ui_formatter,
                 ("#########",),
             )
         ]
@@ -185,9 +150,13 @@ class TestDoAutonumbering(ApiTransactionTests):
             discipline=self.discipline,
         )
 
-        group_filter.return_value = lambda objs: filter_by_collection(objs, third_collection)
+        group_filter.return_value = lambda objs: filter_by_collection(
+            objs, third_collection
+        )
 
-        fourth_co_irrelevant_collection = Collectionobject(collection=third_collection, catalognumber="#########")
+        fourth_co_irrelevant_collection = Collectionobject(
+            collection=third_collection, catalognumber="#########"
+        )
 
         do_autonumbering(self.collection, fourth_co_irrelevant_collection, fields)
 
