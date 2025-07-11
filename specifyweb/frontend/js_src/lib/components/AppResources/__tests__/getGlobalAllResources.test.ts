@@ -4,9 +4,11 @@ import { replaceItem } from '../../../utils/utils';
 import { addMissingFields } from '../../DataModel/addMissingFields';
 import { getResourceApiUrl } from '../../DataModel/resource';
 import type { AppResources } from '../hooks';
-import { getGlobalAllResources } from '../tree';
+import { exportsForTests } from '../tree';
 import { staticAppResources } from './staticAppResources';
 import { utilsForTests } from './utils';
+
+const { getGlobalAllResources } = exportsForTests;
 
 const { setAppResourceDir } = utilsForTests;
 
