@@ -1,4 +1,5 @@
-from typing import List, Dict, Union, Optional, TypeVar, Callable, cast
+from typing import Union, Optional, TypeVar, cast
+from collections.abc import Callable
 from collections.abc import Iterable
 from xml.etree import ElementTree
 import os
@@ -27,7 +28,7 @@ T = TypeVar("T")
 U = TypeVar("U")
 
 
-def strict_to_optional(f: Callable[[U], T], lookup: U, strict: bool) -> Optional[T]:
+def strict_to_optional(f: Callable[[U], T], lookup: U, strict: bool) -> T | None:
     try:
         warnings.warn("deprecated. use strict version.", DeprecationWarning)
         return f(lookup)
@@ -69,12 +70,11 @@ class Datamodel:
     def reverse_relationship(
         self, relationship: "Relationship"
     ) -> Optional["Relationship"]:
-        if hasattr(relationship, "otherSideName"):
-            return self.get_table_strict(
-                relationship.relatedModelName
-            ).get_relationship(cast(str, relationship.otherSideName))
-        else:
+        if relationship.relatedModelName is None or relationship.otherSideName is None:
             return None
+        return self.get_table_strict(relationship.relatedModelName).get_relationship(
+            cast(str, relationship.otherSideName)
+        )
 
 
 class Table:
@@ -85,8 +85,8 @@ class Table:
     idColumn: str
     idFieldName: str
     idField: "Field"
-    view: Optional[str]
-    searchDialog: Optional[str]
+    view: str | None = None
+    searchDialog: str | None = None 
     fields: list["Field"]
     indexes: list["Index"]
     relationships: list["Relationship"]
@@ -97,22 +97,22 @@ class Table:
 
     def __init__(
         self,
-        classname: str = None,
-        table: str = None,
-        tableId: int = None,
-        idColumn: str = None,
-        idFieldName: str = None,
-        idField: "Field" = None,
-        view: Optional[str] = None,
-        searchDialog: Optional[str] = None,
-        fields: list["Field"] = None,
-        indexes: list["Index"] = None,
-        relationships: list["Relationship"] = None,
-        fieldAliases: list[dict[str, str]] = None,
+        classname: str | None = None,
+        table: str | None = None,
+        tableId: int | None = None,
+        idColumn: str | None = None,
+        idFieldName: str | None = None,
+        idField: Optional["Field"] = None,
+        view: str | None = None,
+        searchDialog: str | None = None,
+        fields: list["Field"] | None = None,
+        indexes: list["Index"] | None = None,
+        relationships: list["Relationship"] | None = None,
+        fieldAliases: list[dict[str, str]] | None = None,
         system: bool = False,
         sp7_only: bool = False,
         django_app: str = "specify",
-        virtual_fields: list['Field'] = None
+        virtual_fields: list['Field'] | None = None
     ):
         if not classname:
             raise ValueError("classname is required")
@@ -145,6 +145,8 @@ class Table:
 
     @property
     def name(self) -> str:
+        if self.classname is None:
+            raise ValueError("classname is required to compute the name")
         return self.classname.split(".")[-1]
 
     @property
@@ -153,28 +155,31 @@ class Table:
 
     @property
     def all_fields(self) -> list[Union["Field", "Relationship"]]:
-        def af() -> Iterable[Union["Field", "Relationship"]]:
-            yield from self.fields
-            yield from self.relationships
-            yield self.idField
+        def af() -> Iterable[Union["Field","Relationship"]]:
+            yield from self.fields or []  # Handle None by using an empty list
+            yield from self.relationships or []  # Handle None by using an empty list
+            if self.idField is not None:
+                yield self.idField
 
         return list(af())
 
 
     def is_virtual_field(self, fieldname: str) -> bool:
-        return fieldname in [f.name for f in self.virtual_fields]
+        return fieldname in [f.name for f in self.virtual_fields] if self.virtual_fields else False
    
     def get_field(self, fieldname: str, strict: bool=False) -> Union['Field', 'Relationship', None]:
         return strict_to_optional(self.get_field_strict, fieldname, strict)
 
     def get_field_strict(self, fieldname: str) -> Union["Field", "Relationship"]:
         fieldname = fieldname.lower()
-        for field in self.all_fields:
-            if field.name.lower() == fieldname:
-                return field
-        for field in self.virtual_fields:
-            if field.name.lower() == fieldname:
-                return field
+        if self.all_fields:
+            for field in self.all_fields:
+                if fieldname and field.name and field.name.lower() == fieldname:
+                    return field
+        if self.virtual_fields:
+            for field in self.virtual_fields:
+                if fieldname and field.name and field.name.lower() == fieldname:
+                    return field
         # if self.table == 'collectionobject' and fieldname == 'age': # TODO: This is temporary for testing, more conprehensive solution to come.
         #     return Field(name='age', column='age', indexed=False, unique=False, required=False, type='java.lang.Integer', length=0)
         raise FieldDoesNotExistError(_("Field %(field_name)s not in table %(table_name)s. ") % {'field_name':fieldname, 'table_name':self.name} +
@@ -189,16 +194,17 @@ class Table:
         return field
 
     def get_index(self, indexname: str, strict: bool = False) -> Optional["Index"]:
-        for index in self.indexes:
-            if indexname in index.name:
-                return index
-        if strict:
-            raise FieldDoesNotExistError(
-                _("Index %(index_name)s not in table %(table_name)s. ")
-                % {"index_name": indexname, "table_name": self.name}
-                + _("Indexes: %(indexes)s")
-                % {"indexes": [i.name for i in self.indexes]}
-            )
+        if self.indexes:
+            for index in self.indexes:
+                if indexname in index.name:
+                    return index
+            if strict:
+                raise FieldDoesNotExistError(
+                    _("Index %(index_name)s not in table %(table_name)s. ")
+                    % {"index_name": indexname, "table_name": self.name}
+                    + _("Indexes: %(indexes)s")
+                    % {"indexes": [i.name for i in self.indexes]}
+                )
         return None
 
     @property
@@ -222,22 +228,22 @@ class Table:
 class Field:
     is_relationship: bool = False
     name: str
-    column: Optional[str]
+    column: str | None = None 
     indexed: bool
     unique: bool
     required: bool = False
-    type: Optional[str]
-    length: Optional[int]
+    type: str | None = None
+    length: int | None
 
     def __init__(
         self,
-        name: str = None,
-        column: str = None,
-        indexed: bool = None,
-        unique: bool = None,
-        required: bool = None,
-        type: str = None,
-        length: int = None,
+        name: str | None = None,
+        column: str | None = None,
+        indexed: bool | None = None,
+        unique: bool | None = None,
+        required: bool | None = None,
+        type: str | None = None,
+        length: int | None = None,
         is_relationship: bool = False,
     ):
         if not name:
@@ -270,7 +276,7 @@ class Index:
     name: str
     column_names: list[str] = []
 
-    def __init__(self, name: str = None, column_names: list[str] = None):
+    def __init__(self, name: str | None = None, column_names: list[str] | None = None):
         if not name:
             raise ValueError("name is required")
         self.name = name or ""
@@ -283,14 +289,14 @@ class Index:
 class IdField(Field):
     name: str
     column: str
-    type: str
+    type: str | None
     required: bool = True
 
     def __init__(
         self,
-        name: str = None,
-        column: str = None,
-        type: str = None,
+        name: str | None = None,
+        column: str | None = None,
+        type: str | None = None,
         required: bool = True,
     ):
         super().__init__(
@@ -311,23 +317,22 @@ class Relationship(Field):
     is_relationship: bool = True
     dependent: bool = False
     name: str
-    type: str
+    type: str | None
     required: bool
     relatedModelName: str
-    column: Optional[str]
-    otherSideName: Optional[str]
+    column: str | None = None 
+    otherSideName: str | None = None 
 
     def __init__(
         self,
-        name: str = None,
-        type: str = None,
-        required: bool = None,
-        relatedModelName: str = None,
-        column: str = None,
-        otherSideName: str = None,
+        name: str | None = None,
+        type: str | None = None,
+        required: bool | None = None,
+        relatedModelName: str | None = None,
+        column: str | None = None,
+        otherSideName: str | None = None,
         dependent: bool = False,
-        is_relationship: bool = True,
-        is_to_many: bool = None,
+        is_relationship: bool = True
     ):
         super().__init__(
             name,
@@ -444,7 +449,7 @@ def make_field_alias(aliasdef: ElementTree.Element) -> dict[str, str]:
     return alias
 
 
-def load_datamodel() -> Optional[Datamodel]:
+def load_datamodel() -> Datamodel | None:
     try:
         datamodeldef = ElementTree.parse(
             os.path.join(settings.SPECIFY_CONFIG_DIR, "specify_datamodel.xml")
@@ -474,7 +479,9 @@ def add_collectingevents_to_locality(datamodel: Datamodel) -> None:
     datamodel.get_table_strict("collectingevent").get_relationship(
         "locality"
     ).otherSideName = "collectingEvents"
-    datamodel.get_table_strict("locality").relationships.append(rel)
+    relationships = datamodel.get_table_strict("locality").relationships
+    if relationships:
+        relationships.append(rel)
 
 
 def flag_dependent_fields(datamodel: Datamodel) -> None:

@@ -4,18 +4,19 @@ import logging
 import os
 import re
 
-from typing import List, Literal, NamedTuple, Optional, Union
+from typing import Literal, NamedTuple
 import xml.dom.minidom
 from collections import namedtuple, defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime
 from functools import reduce
 
 from django.conf import settings
 from django.db import transaction
 from specifyweb.specify.models import Collectionobject
-from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting
-from sqlalchemy import sql, orm, func, select, text
+from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting, get_sp_id_col
+from sqlalchemy import sql, orm, func, text
 from sqlalchemy.sql.expression import asc, desc, insert, literal
+from sqlalchemy.orm.properties import ColumnProperty
 
 from specifyweb.specify.field_change_info import FieldChangeInfo
 from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
@@ -39,7 +40,7 @@ from specifyweb.stored_queries.queryfield import fields_from_json
 
 logger = logging.getLogger(__name__)
 
-SORT_LITERAL: Union[Literal["asc"], Literal["desc"], None]
+SORT_LITERAL: Literal["asc"] | Literal["desc"] | None = None
 
 SERIES_MAX_ROWS = 10000
 
@@ -56,7 +57,7 @@ class QuerySort:
 
 
 class BuildQueryProps(NamedTuple):
-    recordsetid: Optional[int] = None
+    recordsetid: int | None = None
     replace_nulls: bool = False
     formatauditobjs: bool = False
     distinct: bool = False
@@ -388,7 +389,7 @@ def query_to_kml(
     )
     if selected_rows:
         model = models.models_by_tableid[tableid]
-        id_field = getattr(model, model._id)
+        id_field = get_sp_id_col(model)
         query = query.filter(id_field.in_(selected_rows))
 
     query = apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=False)
@@ -405,7 +406,7 @@ def query_to_kml(
 
     if not strip_id:
         model = models.models_by_tableid[tableid]
-        table = str(getattr(model, model._id)).split(".")[0].lower()  # wtfiw
+        table = str(get_sp_id_col(model)).split(".")[0].lower()  # wtfiw
     else:
         table = None
 
@@ -653,7 +654,7 @@ def recordset(collection, user, user_agent, recordset_info):
         new_rs_id = recordset.recordSetId
 
         model = models.models_by_tableid[tableid]
-        id_field = getattr(model, model._id)
+        id_field = get_sp_id_col(model)
 
         field_specs = fields_from_json(spquery["fields"])
 
@@ -683,7 +684,7 @@ def return_loan_preps(collection, user, agent, data):
 
     with models.session_context() as session:
         model = models.models_by_tableid[tableid]
-        id_field = getattr(model, model._id)
+        id_field = get_sp_id_col(model)
 
         field_specs = fields_from_json(spquery["fields"])
 
@@ -889,7 +890,12 @@ def build_query(
     Return all record IDs associated with a row.
     """
     model = models.models_by_tableid[tableid]
-    id_field = getattr(model, model._id)
+    if isinstance(model._id, str):
+        id_field = get_sp_id_col(model)
+    elif isinstance(model._id, ColumnProperty):
+        id_field = model._id.columns[0]
+    else:
+        id_field = model._id
     catalog_number_field = model.catalogNumber if hasattr(model, 'catalogNumber') else None
 
     # field_specs = [apply_absolute_date(field_spec) for field_spec in field_specs]

@@ -6,8 +6,8 @@ from specifyweb.specify.models import Collectionobjectgroup, Collectionobjectgro
 
 class CoAndPreps(NamedTuple):
     # TODO: Stricten this?
-    cos: List[Any] = []
-    preps: List[Any] = []
+    cos: list[Any] = []
+    preps: list[Any] = []
 
 
 # This sets up the enviornment for cog consolidated related tests.

@@ -9,13 +9,13 @@ from specifyweb.specify.tests.test_api import ApiTests
 import json
 from unittest.mock import Mock, patch
 
-class MockResult(object):
+class MockResult:
 
     def __init__(self, _id):
         self.id = _id
 
-class TestMergeContext(object):
-    _data: Dict[str, Any]
+class TestMergeContext:
+    _data: dict[str, Any]
 
     def __init__(self):
         self._data = {}

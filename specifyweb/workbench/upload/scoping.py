@@ -1,5 +1,6 @@
 from functools import reduce
-from typing import Dict, Any, Optional, Tuple, Callable, TypedDict, Union, cast, List
+from typing import Any, cast
+from collections.abc import Callable
 
 from specifyweb.specify.datamodel import datamodel, Table, is_tree_table
 from specifyweb.specify.func import CustomRepr
@@ -108,9 +109,9 @@ def extend_columnoptions(
         collection, 
         tablename: str, 
         fieldname: str, 
-        row: Optional[Row] = None,
-        toOne: Optional[dict[str, Uploadable]] = None,
-        context: Optional[ScopeContext] = None
+        row: Row | None = None,
+        toOne: dict[str, Uploadable] | None = None,
+        context: ScopeContext | None = None
     ) -> ExtendedColumnOptions:
 
     context = context or ScopeContext()
@@ -157,7 +158,7 @@ def get_deferred_scoping(
     uploadable: UploadTable,
     row: dict[str, Any],
     base_ut,
-    context: Optional[ScopeContext]
+    context: ScopeContext | None 
 ):
     deferred_key = (table_name, key)
     deferred_scoping = DEFERRED_SCOPING.get(deferred_key, None)
@@ -194,10 +195,10 @@ def get_or_defer_formatter(
         collection, 
         tablename: str, 
         fieldname: str, 
-        row: Optional[Row],
+        row: Row | None,
         _toOne: dict[str, Uploadable],
-        context: Optional[ScopeContext] = None,
-        ) -> Optional[UIFormatter]:
+        context: ScopeContext | None = None,
+        ) -> UIFormatter | None:
     """ The CollectionObject -> catalogNumber format can be determined by the 
     CollectionObjectType -> catalogNumberFormatName for the CollectionObject
 
@@ -208,12 +209,12 @@ def get_or_defer_formatter(
     """
     toOne = {key.lower():value for key, value in _toOne.items()}
 
-    formatter: Optional[UIFormatter] = None
+    formatter: UIFormatter | None = None
     if tablename.lower() == 'collectionobject' and fieldname.lower() == 'catalognumber' and 'collectionobjecttype' in toOne:
         uploadTable = toOne['collectionobjecttype']
 
-        wb_col: Optional[ColumnOptions] = cast(UploadTable, uploadTable).wbcols.get('name', None)
-        co_type_cache : dict[str, Optional[UIFormatter]] = {}
+        wb_col: ColumnOptions | None = cast(UploadTable, uploadTable).wbcols.get('name', None)
+        co_type_cache : dict[str, UIFormatter | None] = {}
         # At this point, we are variable since we saw a co.
         if context:
             context.set_is_variable()
@@ -252,7 +253,7 @@ def get_or_defer_formatter(
 
 
 def apply_scoping_to_uploadtable(
-    ut: UploadTable, collection, context: Optional[ScopeContext] = None, row=None
+    ut: UploadTable, collection, context: ScopeContext | None = None, row=None
 ) -> ScopedUploadTable:
     # IMPORTANT:
     # before this comment, collection is untrusted and unreliable
@@ -343,7 +344,7 @@ def set_order_number(
     return tmr._replace(strong_ignore=[*tmr.strong_ignore, *to_ignore])
 
 
-def apply_scoping_to_treerecord(tr: TreeRecord, collection, context: Optional[ScopeContext] = None) -> ScopedTreeRecord:
+def apply_scoping_to_treerecord(tr: TreeRecord, collection, context: ScopeContext | None = None) -> ScopedTreeRecord:
     table = datamodel.get_table_strict(tr.name)
 
     treedef = get_default_treedef(table, collection)

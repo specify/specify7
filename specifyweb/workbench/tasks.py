@@ -1,10 +1,7 @@
-from typing import Optional, Any
-
-from celery import shared_task # type: ignore
 from celery import Task # type: ignore
 from celery.utils.log import get_task_logger # type: ignore
 
-from django.db import connection, transaction
+from django.db import transaction
 
 from specifyweb.specify.models import Collection, Agent
 from specifyweb.celery_tasks import LogErrorsTask, app
@@ -22,7 +19,7 @@ def upload_data(
     ds_id: int,
     no_commit: bool,
     allow_partial: bool,
-    task: Optional[Task]=None,
+    task: Task | None=None,
     progress=None,
 ) -> None:
     with transaction.atomic():
@@ -53,7 +50,7 @@ def upload_data(
 @app.task(base=LogErrorsTask, bind=True)
 def upload(self, collection_id: int, uploading_agent_id: int, ds_id: int, no_commit: bool, allow_partial: bool) -> None:
 
-    def progress(current: int, total: Optional[int]) -> None:
+    def progress(current: int, total: int | None) -> None:
         if not self.request.called_directly:
             self.update_state(state='PROGRESS', meta={'current': current, 'total': total})
 
@@ -62,7 +59,7 @@ def upload(self, collection_id: int, uploading_agent_id: int, ds_id: int, no_com
 @app.task(base=LogErrorsTask, bind=True)
 def unupload(self, collection_id: int, ds_id: int, agent_id: int) -> None:
 
-    def progress(current: int, total: Optional[int]) -> None:
+    def progress(current: int, total: int | None) -> None:
         if not self.request.called_directly:
             self.update_state(state='PROGRESS', meta={'current': current, 'total': total})
 

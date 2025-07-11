@@ -546,7 +546,7 @@ def record_merge(
     # This is actually of type str.
     # TODO: Change below to str.
     new_model_id: int
-) -> Union[http.HttpResponse, http.JsonResponse]:
+) -> http.HttpResponse | http.JsonResponse:
     """Replaces all the foreign keys referencing the old record IDs
     with the new record ID, and deletes the old records.
     """
@@ -1584,4 +1584,4 @@ def series_autonumber_range(request: http.HttpRequest):
             'values': values,
         })
     except Exception as e:
-        return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)  
+        return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)

@@ -5,7 +5,6 @@ import os
 import time
 
 from xml.etree import ElementTree as ET
-from typing import Optional
 from django.conf import settings
 
 from .dwca import make_dwca
@@ -27,7 +26,7 @@ def get_feed_resource():
     return None if from_db is None else from_db[0]
 
 
-def update_feed(force=False, notify_user: Optional[Specifyuser] = None):
+def update_feed(force=False, notify_user: Specifyuser | None = None):
     feed_resource = get_feed_resource()
     if feed_resource is None:
         raise MissingFeedResource()
@@ -90,7 +89,7 @@ def needs_update(path, days):
         return age > update_interval
 
 
-def create_notification(user: Specifyuser, filename: Optional[str]):
+def create_notification(user: Specifyuser, filename: str | None):
     Message.objects.create(user=user, content=json.dumps({
         'type': 'feed-item-updated',
         'file': filename
