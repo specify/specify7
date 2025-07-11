@@ -15,6 +15,7 @@ version: "3.7"
 
 services:
   mariadb:
+    container_name: mariadb
     image: mariadb:10.11
     volumes:
       - "database:/var/lib/mysql" # the data directory for mariadb
@@ -29,6 +30,7 @@ services:
       - MYSQL_PASSWORD=${MASTER_PASSWORD}
 
   specify7:
+    container_name: specify7
     build:
       context: ./.
       target: run-development
@@ -53,6 +55,7 @@ services:
     env_file: .env
 
   webpack:
+    container_name: webpack
     build:
       context: ./.
       target: build-frontend
@@ -64,6 +67,7 @@ services:
       - "./specifyweb/frontend/js_src/css:/home/node/css:ro"
 
   specify7-worker:
+    container_name: worker
     build:
       context: ./.
       target: run-development
@@ -78,9 +82,11 @@ services:
     env_file: .env
 
   redis:
+    container_name: redis
     image: redis
 
   asset-server:
+    container_name: asset-server
     image: specifyconsortium/specify-asset-service
     init: true
     volumes:
@@ -92,6 +98,7 @@ services:
       - DEBUG_MODE=false
 
   nginx:
+    container_name: nginx
     image: nginx:alpine
     ports:
       - "80:80"
@@ -102,6 +109,7 @@ services:
       - "./nginx.conf:/etc/nginx/conf.d/default.conf:ro"
 
   report-runner:
+    container_name: report-runner
     image: specifyconsortium/report-runner
 
 volumes:
