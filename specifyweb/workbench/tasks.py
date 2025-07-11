@@ -1,10 +1,7 @@
-from typing import Optional, Any
-
-from celery import shared_task # type: ignore
 from celery import Task # type: ignore
 from celery.utils.log import get_task_logger # type: ignore
 
-from django.db import connection, transaction
+from django.db import transaction
 
 from specifyweb.specify.models import Collection, Agent
 from specifyweb.celery_tasks import LogErrorsTask, app

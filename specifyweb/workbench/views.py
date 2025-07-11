@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import List, Optional, Type, Union, Dict, Literal, get_args as get_typing_args
+from typing import Literal, get_args as get_typing_args
 from uuid import uuid4
 
 from django import http

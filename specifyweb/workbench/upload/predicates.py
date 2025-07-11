@@ -1,9 +1,7 @@
 from functools import reduce
 from typing import (
     NamedTuple,
-    Optional,
     Any,
-    Union,
 )
 from collections.abc import Generator
 from typing_extensions import TypedDict
@@ -19,7 +17,7 @@ from specifyweb.workbench.upload.clone import GENERIC_FIELDS_TO_SKIP
 
 Filter = dict[str, Any]
 
-Value = Optional[Union[str, int, F]]
+Value = str | int | F | None
 
 
 class ToRemoveMatchee(TypedDict):

@@ -1,5 +1,5 @@
 import logging
-from typing import Any, List, NamedTuple, Optional, TypedDict, Union
+from typing import Any, NamedTuple, TypedDict
 
 
 from specifyweb.specify.auditlog import AuditLog

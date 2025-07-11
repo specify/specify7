@@ -5,7 +5,6 @@ import os
 import time
 
 from xml.etree import ElementTree as ET
-from typing import Optional
 from django.conf import settings
 
 from .dwca import make_dwca

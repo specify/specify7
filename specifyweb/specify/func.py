@@ -1,7 +1,6 @@
 from functools import reduce
-from typing import Dict, List, Optional, Tuple, TypeVar, Union
+from typing import TypeVar
 from collections.abc import Callable
-from collections.abc import Generator
 from django.db.models import Q
 
 # made as a class to encapsulate type variables and prevent pollution of export

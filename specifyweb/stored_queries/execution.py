@@ -4,17 +4,17 @@ import logging
 import os
 import re
 
-from typing import List, Literal, NamedTuple, Optional, Union
+from typing import Literal, NamedTuple
 import xml.dom.minidom
 from collections import namedtuple, defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime
 from functools import reduce
 
 from django.conf import settings
 from django.db import transaction
 from specifyweb.specify.models import Collectionobject
 from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting, get_sp_id_col
-from sqlalchemy import sql, orm, func, select, text
+from sqlalchemy import sql, orm, func, text
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 from sqlalchemy.orm.properties import ColumnProperty
 

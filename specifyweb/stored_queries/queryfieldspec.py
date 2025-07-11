@@ -1,7 +1,7 @@
 import logging
 import re
 from collections import namedtuple, deque
-from typing import Union, Optional, Tuple
+from typing import Union
 
 from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting, get_sp_id_col
 from sqlalchemy import sql, Table as SQLTable

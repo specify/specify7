@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from ..uploadable import Disambiguation
 from ..upload_result import Matched, MatchedMultiple
 from ..upload_table import UploadTable
@@ -9,8 +7,6 @@ from ..disambiguation import DisambiguationInfo
 
 from .base import UploadTestsBase
 from specifyweb.specify.tests.test_api import get_table
-
-from django.conf import settings
 
 class DisambiguationTests(UploadTestsBase):
 

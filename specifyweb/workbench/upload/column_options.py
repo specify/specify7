@@ -1,8 +1,7 @@
-from typing import List, Dict, Any, NamedTuple, Union, Optional
-from collections.abc import Callable
+from typing import Any, NamedTuple
 from typing import Literal
 
-from specifyweb.specify.uiformatters import UIFormatter, ScopedFormatter
+from specifyweb.specify.uiformatters import ScopedFormatter
 
 MatchBehavior = Literal["ignoreWhenBlank", "ignoreAlways", "ignoreNever"]
 

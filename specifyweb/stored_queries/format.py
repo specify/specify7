@@ -16,13 +16,11 @@ from sqlalchemy.sql.elements import Extract
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy import types
 
-from typing import Tuple, Optional, Union
-
 import specifyweb.context.app_resource as app_resource
 from specifyweb.context.remote_prefs import get_remote_prefs
 
 from specifyweb.specify.agent_types import agent_types
-from specifyweb.specify.models import datamodel, Splocalecontainer, Splocalecontaineritem, Picklist
+from specifyweb.specify.models import datamodel, Splocalecontainer
 
 from specifyweb.specify.datamodel import Field, Relationship, Table
 from specifyweb.stored_queries.queryfield import QueryField

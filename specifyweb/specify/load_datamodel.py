@@ -1,4 +1,4 @@
-from typing import List, Dict, Union, Optional, TypeVar, cast
+from typing import Union, TypeVar, cast
 from collections.abc import Callable
 from collections.abc import Iterable
 from xml.etree import ElementTree
@@ -44,7 +44,7 @@ class Datamodel:
     def __init__(self, tables: list["Table"] = []):
         self.tables = tables
 
-    def get_table(self, tablename: str, strict: bool = False) -> Optional["Table"]:
+    def get_table(self, tablename: str, strict: bool = False) -> "Table" | None:
         return strict_to_optional(self.get_table_strict, tablename, strict)
 
     def get_table_strict(self, tablename: str) -> "Table":
@@ -56,7 +56,7 @@ class Datamodel:
             _("No table with name: %(table_name)r") % {"table_name": tablename}
         )
 
-    def get_table_by_id(self, table_id: int, strict: bool = False) -> Optional["Table"]:
+    def get_table_by_id(self, table_id: int, strict: bool = False) -> "Table" | None:
         return strict_to_optional(self.get_table_by_id_strict, table_id, strict)
 
     def get_table_by_id_strict(self, table_id: int, strict: bool = False) -> "Table":
@@ -69,7 +69,7 @@ class Datamodel:
 
     def reverse_relationship(
         self, relationship: "Relationship"
-    ) -> Optional["Relationship"]:
+    ) -> "Relationship" | None:
         if relationship.relatedModelName is None or relationship.otherSideName is None:
             return None
         return self.get_table_strict(relationship.relatedModelName).get_relationship(
@@ -84,7 +84,7 @@ class Table:
     tableId: int | None
     idColumn: str | None
     idFieldName: str | None
-    idField: Optional["Field"]
+    idField: "Field" | None
     view: str | None = None
     searchDialog: str | None = None 
     fields: list["Field"] | None
@@ -102,7 +102,7 @@ class Table:
         tableId: int | None = None,
         idColumn: str | None = None,
         idFieldName: str | None = None,
-        idField: Optional["Field"] = None,
+        idField: "Field" | None = None,
         view: str | None = None,
         searchDialog: str | None = None,
         fields: list["Field"] | None = None,
@@ -193,7 +193,7 @@ class Table:
             )
         return field
 
-    def get_index(self, indexname: str, strict: bool = False) -> Optional["Index"]:
+    def get_index(self, indexname: str, strict: bool = False) -> "Index" | None:
         if self.indexes:
             for index in self.indexes:
                 if indexname in index.name:
@@ -208,7 +208,7 @@ class Table:
         return None
 
     @property
-    def attachments_field(self) -> Optional["Relationship"]:
+    def attachments_field(self) -> "Relationship" | None:
         try:
             return self.get_relationship("attachments")
         except FieldDoesNotExistError:

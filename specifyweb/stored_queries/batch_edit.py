@@ -7,10 +7,7 @@
 from functools import reduce
 from typing import (
     Any,
-    Dict,
-    List,
     NamedTuple,
-    Optional,
     TypedDict,
 )
 from collections.abc import Callable
@@ -45,7 +42,7 @@ from jsonschema import validate
 
 from django.db import transaction
 
-MaybeField = Callable[[QueryFieldSpec], Optional[Field]]
+MaybeField = Callable[[QueryFieldSpec], Field | None]
 
 # TODO:
 # Investigate if any/some/most of the logic for making an upload plan could be moved to frontend and reused.

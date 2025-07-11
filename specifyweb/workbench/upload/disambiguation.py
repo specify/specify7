@@ -1,5 +1,3 @@
-from typing import Dict, Tuple, Optional
-
 from .uploadable import Disambiguation
 
 class DisambiguationInfo:

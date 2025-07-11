@@ -1,6 +1,5 @@
 import json
 from collections import defaultdict
-from typing import Dict, Union, Optional, List
 
 from django import http
 from django.contrib.auth.mixins import LoginRequiredMixin

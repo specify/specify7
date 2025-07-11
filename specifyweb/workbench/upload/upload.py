@@ -4,13 +4,7 @@ import logging
 import time
 from contextlib import contextmanager
 from datetime import datetime, timezone
-from typing import (
-    List,
-    Dict,
-    Union,
-    Optional,
-    Tuple,
-)
+from typing import Union
 from collections.abc import Callable
 from collections.abc import Sized
 
@@ -58,7 +52,7 @@ from .scope_context import ScopeContext
 from ..models import Spdataset
 
 Rows = Union[list[Row], csv.DictReader]
-Progress = Callable[[int, Optional[int]], None]
+Progress = Callable[[int, int | None], None]
 
 logger = logging.getLogger(__name__)
 

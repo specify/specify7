@@ -6,7 +6,7 @@ Supports autonumbering mechanism
 import logging
 import re
 from datetime import date
-from typing import NamedTuple, List, Optional, Union
+from typing import NamedTuple
 from collections.abc import Callable
 from collections.abc import Sequence
 from xml.etree import ElementTree

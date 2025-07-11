@@ -1,4 +1,4 @@
-from typing import Dict, Any, List, Optional, TypedDict, Union, Set
+from typing import Any, TypedDict, Union, Optional
 from collections.abc import Callable
 from typing_extensions import Protocol
 
@@ -31,7 +31,7 @@ Disambiguation = Optional["DisambiguationInfo"]
 
 NULL_RECORD = "null_record"
 
-Progress = Callable[[int, Optional[int]], None]
+Progress = Callable[[int, int | None], None]
 
 Row = dict[str, str]
 

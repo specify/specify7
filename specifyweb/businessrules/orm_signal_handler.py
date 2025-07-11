@@ -1,7 +1,7 @@
 import logging
 
 from inspect import getfullargspec
-from typing import Literal, Optional
+from typing import Literal
 from collections.abc import Callable
 from collections.abc import Hashable
 

@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Any, Optional, List, NamedTuple, Tuple, Union, NoReturn
+from typing import Any, NamedTuple, NoReturn
 
 from django.core.exceptions import ObjectDoesNotExist
 

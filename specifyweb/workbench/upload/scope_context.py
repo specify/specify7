@@ -1,4 +1,4 @@
-from typing import Dict, Any, Optional, Tuple, TypedDict
+from typing import Any, TypedDict
 
 from specifyweb.specify.uiformatters import UIFormatter
 
