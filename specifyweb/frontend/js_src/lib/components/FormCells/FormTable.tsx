@@ -168,12 +168,6 @@ export function FormTable<SCHEMA extends AnySchema>({
 
   const isReadOnly = React.useContext(ReadOnlyContext);
 
-  const [showSubviewBorders] = userPreferences.use(
-    'form',
-    'ui',
-    'showSubviewBorders'
-  );
-
   const isInSearchDialog = React.useContext(SearchDialogContext);
 
   const mode = propsToFormMode(isReadOnly, isInSearchDialog);
@@ -213,6 +207,12 @@ export function FormTable<SCHEMA extends AnySchema>({
         ),
       ])
     )
+  );
+
+  const [showSubviewBorders] = userPreferences.use(
+    'form',
+    'ui',
+    'showSubviewBorders'
   );
 
   const [flexibleColumnWidth] = userPreferences.use(
