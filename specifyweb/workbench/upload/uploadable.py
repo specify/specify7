@@ -1,4 +1,4 @@
-from typing import Any, TypedDict, Union, Optional
+from typing import Any, TypedDict, Optional, Union
 from collections.abc import Callable
 from typing_extensions import Protocol
 

@@ -428,7 +428,7 @@ class TreeDefItemWithParseResults(NamedTuple):
         )
 
 
-MatchResult = Union[NoMatch, Matched, MatchedMultiple]
+MatchResult = NoMatch | Matched | MatchedMultiple
 
 class MatchInfo(TypedDict):
     id: int

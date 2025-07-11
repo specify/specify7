@@ -1,6 +1,6 @@
 from decimal import Decimal
 import logging
-from typing import Any, NamedTuple, Union, Literal
+from typing import Any, NamedTuple, Literal, Union
 
 from django.db import transaction, IntegrityError
 

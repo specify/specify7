@@ -155,7 +155,7 @@ class Table:
 
     @property
     def all_fields(self) -> list[Union["Field", "Relationship"]]:
-        def af() -> Iterable[Union["Field", "Relationship"]]:
+        def af() -> Iterable[Union["Field","Relationship"]]:
             yield from self.fields or []  # Handle None by using an empty list
             yield from self.relationships or []  # Handle None by using an empty list
             if self.idField is not None:

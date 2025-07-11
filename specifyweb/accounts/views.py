@@ -18,7 +18,7 @@ from django.template.response import TemplateResponse
 from django.utils import crypto
 from django.utils.http import url_has_allowed_host_and_scheme, urlencode
 from django.views.decorators.cache import never_cache
-from typing import Union, cast
+from typing import cast
 from typing_extensions import TypedDict
 
 from specifyweb.middleware.general import require_GET, require_http_methods
