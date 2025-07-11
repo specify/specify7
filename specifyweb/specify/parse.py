@@ -1,7 +1,7 @@
 import re
 import math
 
-from typing import Any, NamedTuple, Union, Literal
+from typing import Any, NamedTuple, Literal
 from datetime import datetime
 from decimal import Decimal
 
@@ -39,7 +39,7 @@ class ParseSucess(NamedTuple):
     to_upload: dict[str, Any]
 
 
-ParseResult = Union[ParseSucess, ParseFailure]
+ParseResult = ParseSucess | ParseFailure
 
 
 def parse_field(table_name: str, field_name: str, raw_value: str, formatter: ScopedFormatter | None = None) -> ParseResult:

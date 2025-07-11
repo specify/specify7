@@ -1,4 +1,4 @@
-from typing import Literal, Union
+from typing import Literal
 from specifyweb.specify.func import Func
 from specifyweb.specify.tests.test_api import get_table
 from specifyweb.stored_queries.batch_edit import run_batch_edit_query  # type: ignore

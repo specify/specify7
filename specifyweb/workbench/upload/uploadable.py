@@ -1,4 +1,4 @@
-from typing import Any, TypedDict, Union, Optional
+from typing import Any, TypedDict, Optional
 from collections.abc import Callable
 from typing_extensions import Protocol
 
@@ -79,7 +79,7 @@ class ScopedUploadable(Protocol):
         uploadingAgentId: int,
         auditor: Auditor,
         cache: dict | None = None,
-    ) -> Union["BoundUploadable", ParseFailures]: ...
+    ) -> "BoundUploadable" | ParseFailures: ...
 
     def get_treedefs(self) -> set: ...
 

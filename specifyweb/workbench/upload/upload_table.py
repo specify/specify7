@@ -1,6 +1,6 @@
 from decimal import Decimal
 import logging
-from typing import Any, NamedTuple, Union, Literal
+from typing import Any, NamedTuple, Literal
 
 from django.db import transaction, IntegrityError
 
@@ -210,7 +210,7 @@ class ScopedUploadTable(NamedTuple):
         uploadingAgentId: int,
         auditor: Auditor,
         cache: dict | None = None,
-    ) -> Union["BoundUploadTable", ParseFailures]:
+    ) -> "BoundUploadTable" | ParseFailures:
 
         current_id = (
             None if self.match_payload is None else self.match_payload.get("id")
@@ -286,7 +286,7 @@ class ScopedOneToOneTable(ScopedUploadTable):
         uploadingAgentId: int,
         auditor: Auditor,
         cache: dict | None = None,
-    ) -> Union["BoundOneToOneTable", ParseFailures]:
+    ) -> "BoundOneToOneTable" | ParseFailures:
         b = super().bind(row, uploadingAgentId, auditor, cache)
         return BoundOneToOneTable(*b) if isinstance(b, BoundUploadTable) else b
 
@@ -309,7 +309,7 @@ class ScopedMustMatchTable(ScopedUploadTable):
         uploadingAgentId: int,
         auditor: Auditor,
         cache: dict | None = None,
-    ) -> Union["BoundMustMatchTable", ParseFailures]:
+    ) -> "BoundMustMatchTable" | ParseFailures:
         b = super().bind(row, uploadingAgentId, auditor, cache)
         return BoundMustMatchTable(*b) if isinstance(b, BoundUploadTable) else b
 

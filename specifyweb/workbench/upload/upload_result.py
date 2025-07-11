@@ -1,4 +1,4 @@
-from typing import Any, NamedTuple, Union
+from typing import Any, NamedTuple
 
 from typing import Literal
 
@@ -64,7 +64,8 @@ class Uploaded(NamedTuple):
             "Uploaded": dict(
                 id=self.id,
                 info=self.info.to_json(),
-                picklistAdditions=[a.to_json() for a in self.picklistAdditions],
+                picklistAdditions=[a.to_json()
+                                   for a in self.picklistAdditions],
             )
         }
 
@@ -93,7 +94,8 @@ class Updated(NamedTuple):
             "Updated": dict(
                 id=self.id,
                 info=self.info.to_json(),
-                picklistAdditions=[a.to_json() for a in self.picklistAdditions],
+                picklistAdditions=[a.to_json()
+                                   for a in self.picklistAdditions],
             )
         }
 
@@ -259,7 +261,8 @@ class ParseFailures(NamedTuple):
 
     def to_json(self):
         return {
-            self.__class__.__name__: dict(failures=[f.to_json() for f in self.failures])
+            self.__class__.__name__: dict(
+                failures=[f.to_json() for f in self.failures])
         }
 
     @staticmethod
@@ -282,20 +285,20 @@ class PropagatedFailure(NamedTuple):
         return PropagatedFailure()
 
 
-RecordResult = Union[
-    Uploaded,
-    NoMatch,
-    Matched,
-    MatchedMultiple,
-    NullRecord,
-    FailedBusinessRule,
-    ParseFailures,
-    PropagatedFailure,
-    NoChange,
-    Updated,
-    Deleted,
-    MatchedAndChanged,
-]
+RecordResult = (
+    Uploaded
+    | NoMatch
+    | Matched
+    | MatchedMultiple
+    | NullRecord
+    | FailedBusinessRule
+    | ParseFailures
+    | PropagatedFailure
+    | NoChange
+    | Updated
+    | Deleted
+    | MatchedAndChanged
+)
 
 
 class UploadResult(NamedTuple):
@@ -321,7 +324,8 @@ class UploadResult(NamedTuple):
         self, success=[Uploaded, Matched, MatchedAndChanged, Updated, Deleted]
     ) -> bool:
         return (
-            any(isinstance(self.record_result, _success) for _success in success)
+            any(isinstance(self.record_result, _success)
+                for _success in success)
             or any(result.contains_success() for result in self.toOne.values())
             or any(
                 result.contains_success()
@@ -344,7 +348,8 @@ class UploadResult(NamedTuple):
     @staticmethod
     def from_json(json: dict) -> "UploadResult":
         return UploadResult(
-            record_result=json_to_record_result(json["UploadResult"]["record_result"]),
+            record_result=json_to_record_result(
+                json["UploadResult"]["record_result"]),
             toOne={
                 k: UploadResult.from_json(v)
                 for k, v in json["UploadResult"]["toOne"].items()

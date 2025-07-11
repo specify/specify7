@@ -3,7 +3,7 @@ For uploading tree records.
 """
 
 import logging
-from typing import Any, NamedTuple, Union
+from typing import Any, NamedTuple
 
 from django.db import transaction, IntegrityError
 from typing_extensions import TypedDict
@@ -356,7 +356,7 @@ class ScopedTreeRecord(NamedTuple):
         uploadingAgentId: int | None,
         auditor: Auditor,
         cache: dict | None = None,
-    ) -> Union["BoundTreeRecord", ParseFailures]:
+    ) -> "BoundTreeRecord" | ParseFailures:
         parsedFields: dict[TreeRankRecord, list[ParseResult]] = {}
         parseFails: list[WorkBenchParseFailure] = []
 
@@ -413,7 +413,7 @@ class ScopedMustMatchTreeRecord(ScopedTreeRecord):
         uploadingAgentId: int | None,
         auditor: Auditor,
         cache: dict | None = None,
-    ) -> Union["BoundMustMatchTreeRecord", ParseFailures]:
+    ) -> "BoundMustMatchTreeRecord" | ParseFailures:
         b = super().bind(row, uploadingAgentId, auditor, cache)
         return b if isinstance(b, ParseFailures) else BoundMustMatchTreeRecord(*b)
 
@@ -428,7 +428,7 @@ class TreeDefItemWithParseResults(NamedTuple):
         )
 
 
-MatchResult = Union[NoMatch, Matched, MatchedMultiple]
+MatchResult = NoMatch | Matched | MatchedMultiple
 
 class MatchInfo(TypedDict):
     id: int
