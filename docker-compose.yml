@@ -11,7 +11,6 @@
 # Docker compositions. Please contact us at support@specifysoftware.org
 # if you would like to get access
 #
-version: "3.7"
 
 services:
   mariadb:
