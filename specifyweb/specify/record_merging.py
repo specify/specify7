@@ -115,6 +115,8 @@ def fix_orderings(base_model: Table, new_record_data):
                               for ordering_field in ordering_fields])
                                 for record in records}
 
+        # The lengths will be different in the case where the ordering fields are duplicated.
+        # For example, the ordernumber is same for two collectors.
         if len(order_fields_data) != len(records):
             resources = []
             for record in records:
