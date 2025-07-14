@@ -222,8 +222,8 @@ export function useExtendedMap(
     gbif?.description,
     iDigBio?.description,
   ]);
-  return !Boolean(gbif?.description) &&
-    !Boolean(iDigBio?.description) ? undefined : (
+  const hasAnyDescription = Boolean(gbif?.description || iDigBio?.description);
+  return !hasAnyDescription ? undefined : (
     <details>
       <summary>{developmentText.details()}</summary>
       {items.map((item, index) => (
