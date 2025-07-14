@@ -587,12 +587,16 @@ function Wrapped({
                   })
                 }
                 onToggleHidden={setShowHiddenFields}
-                onToggleSeries={(): void =>
+                onToggleSeries={(): void => {
+                  const canEnableSmushed = query.fields.some(
+                    (field) => field.fieldName === "catalogNumber" && field.isDisplay
+                  );
+                
                   setQuery({
                     ...query,
-                    smushed: !(query.smushed ?? false),
-                  })
-                }
+                    smushed: canEnableSmushed ? !(query.smushed ?? false) : false,
+                  });
+                }}
               />
             </div>
             {hasPermission('/querybuilder/query', 'execute') && (
