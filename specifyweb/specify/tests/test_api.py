@@ -6,7 +6,7 @@ import json
 from unittest import skip
 from datetime import datetime
 from django.db.models import Max, QuerySet
-from django.test import TestCase, Client
+from django.test import TestCase, Client, TransactionTestCase
 
 from specifyweb.permissions.models import UserPolicy
 from specifyweb.specify import api, models, scoping
@@ -168,6 +168,9 @@ class MainSetupTearDown:
         self.assertTrue(queryset.exists(), "Record does not exist!")
 
 class ApiTests(MainSetupTearDown, TestCase): pass
+
+# This test gets used when there are some transactional behavior that needs to be tested
+class ApiTransactionTests(MainSetupTearDown, TransactionTestCase): pass
 
 skip_perms_check = lambda x: None
 
