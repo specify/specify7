@@ -98,7 +98,7 @@ def make_test(test_name, use_parse_locality_set=True):
                 LocalityUpdateRowResult.objects.filter(
                     localityupdate=self.lu, rownumber=i + 1
                 ).exists(),
-                f"couldn't find for {uploaded_or_error["results"][i]}",
+                f"couldn't find for {uploaded_or_error['results'][i]}",
             )
         self.assertEqual(
             LocalityUpdateRowResult.objects.filter(localityupdate=self.lu).count(),
@@ -110,5 +110,13 @@ def make_test(test_name, use_parse_locality_set=True):
 
 for test_name in TestResolveLocalityUpdateResult.parse_and_upload_tests:
 
-    setattr(TestResolveLocalityUpdateResult, f"test_upload{test_name}", make_test(test_name, False))
-    setattr(TestResolveLocalityUpdateResult, f"test_parse{test_name}", make_test(test_name, True))
+    setattr(
+        TestResolveLocalityUpdateResult,
+        f"test_upload{test_name}",
+        make_test(test_name, False),
+    )
+    setattr(
+        TestResolveLocalityUpdateResult,
+        f"test_parse{test_name}",
+        make_test(test_name, True),
+    )
