@@ -13,7 +13,10 @@ import {
 } from '../WbPlanView/mappingHelpers';
 import type { WbCellCounts, WbMeta } from './CellMeta';
 import type { UploadResult } from './resultsParser';
-import { resolveValidationMessage, resolveAttachmentValidationMessage } from './resultsParser';
+import {
+  resolveAttachmentValidationMessage,
+  resolveValidationMessage,
+} from './resultsParser';
 import type { Workbench } from './WbView';
 
 type Records = WritableArray<
@@ -340,12 +343,13 @@ export class WbValidation {
         recordResult.MatchedMultiple.info.columns,
         resolveColumns
       );
-    }
-    else if (uploadStatus === 'AttachmentFailure')
+    } else if (uploadStatus === 'AttachmentFailure')
       setMetaCallback(
         'issues',
         whitespaceSensitive(
-          resolveAttachmentValidationMessage(recordResult.AttachmentFailure.message)
+          resolveAttachmentValidationMessage(
+            recordResult.AttachmentFailure.message
+          )
         ),
         recordResult.AttachmentFailure.info.columns,
         resolveColumns

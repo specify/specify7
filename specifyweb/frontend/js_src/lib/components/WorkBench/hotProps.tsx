@@ -5,12 +5,12 @@ import { attachmentsText } from '../../localization/attachments';
 import { wbPlanText } from '../../localization/wbPlan';
 import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
+import { getIcon } from '../InitialContext/icons';
 import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
-import { getAttachmentsColumnIndex } from '../WorkBench/attachmentHelpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { getAttachmentsColumnIndex } from '../WorkBench/attachmentHelpers';
 import type { WbMapping } from './mapping';
-import { getIcon } from '../InitialContext/icons';
 
 const comments = { displayDelay: 100 };
 
@@ -71,16 +71,13 @@ export function useHotProps({
 
   const colHeaders = React.useCallback(
     (physicalCol: number) => {
-      const isAttachmentsColumn =
-        physicalCol === attachmentsColumnIndex;
-      const columnName =
-        isAttachmentsColumn
-          ? attachmentsText.attachments()
-          : dataset.columns[physicalCol];
-      const tableIconUrl = 
-        isAttachmentsColumn
-          ? getIcon('Attachment')
-          : mappings?.mappedHeaders?.[physicalCol];
+      const isAttachmentsColumn = physicalCol === attachmentsColumnIndex;
+      const columnName = isAttachmentsColumn
+        ? attachmentsText.attachments()
+        : dataset.columns[physicalCol];
+      const tableIconUrl = isAttachmentsColumn
+        ? getIcon('Attachment')
+        : mappings?.mappedHeaders?.[physicalCol];
       const isMapped = tableIconUrl !== undefined;
       const mappingCol = physicalColToMappingCol(physicalCol);
       const tableName =
