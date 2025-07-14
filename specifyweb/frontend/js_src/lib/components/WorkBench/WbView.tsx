@@ -288,6 +288,7 @@ export function WbView({
               <WbAttachmentsPreview
                 dataset={dataset}
                 hot={hot}
+                isUploaded={isUploaded}
                 onClose={toggleAttachments}
               />
             </aside>

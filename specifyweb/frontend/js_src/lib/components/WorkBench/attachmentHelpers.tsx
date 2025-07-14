@@ -1,11 +1,23 @@
+import type Handsontable from 'handsontable';
+
 import type { RA, WritableArray } from "../../utils/types";
 import type { SerializedResource } from "../DataModel/helperTypes";
 import type {
   Attachment,
+  Spdataset,
   SpDataSetAttachment,
   Tables,
 } from "../DataModel/types";
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { uploadFile } from '../Attachments/attachments';
+import type { SerializedRecord } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { ajax } from '../../utils/ajax';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 
 export const ATTACHMENTS_COLUMN = '_UPLOADED_ATTACHMENTS';
 export const BASE_TABLE_NAME = 'baseTable' as const;
@@ -85,4 +97,56 @@ export function getAttachmentsColumnIndexFromHeaders(
     return -1;
   }
   return headers.indexOf(ATTACHMENTS_COLUMN);
+}
+
+export function uploadFiles(
+  files: RA<File>,
+  handleProgress: (progress: (progress: number | undefined) => number) => void
+): RA<Promise<SpecifyResource<Attachment>>> {
+  return files.map(async (file) =>
+    uploadFile(file)
+      .then(async (attachment) =>
+        attachment === undefined
+          ? Promise.reject(`Upload failed for file ${file.name}`)
+          : attachment
+      )
+      .finally(() =>
+        handleProgress((progress) =>
+          typeof progress === 'number' ? progress + 1 : 1
+        )
+      )
+  );
+}
+
+export async function createDataSetAttachments(
+  attachments: RA<SpecifyResource<Attachment>>,
+  dataSet: SpecifyResource<Spdataset> | number
+): Promise<RA<SpecifyResource<SpDataSetAttachment>>> {
+  return Promise.all(
+    attachments.map(
+      (attachment) =>
+        new tables.SpDataSetAttachment.Resource({
+          attachment: attachment as never,
+          spdataset: typeof dataSet === 'number' ? `/api/specify/spdataset/${dataSet}/` : dataSet.url(),
+          ordinal: 0,
+        })
+    )
+  );
+}
+
+export async function saveDataSetAttachments(
+  dataSetAttachments: RA<SpecifyResource<SpDataSetAttachment>>
+): Promise<RA<SpecifyResource<SpDataSetAttachment>>> {
+  return ajax<RA<SerializedRecord<SpDataSetAttachment>>>(
+    `/api/specify/bulk/${tables.SpDataSetAttachment.name.toLowerCase()}/`,
+    {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: dataSetAttachments.map((dataSetAttachment) =>
+        serializeResource(dataSetAttachment)
+      ),
+    }
+  ).then(({ data }) =>
+    data.map((resource) => deserializeResource(serializeResource(resource)))
+  );
 }
