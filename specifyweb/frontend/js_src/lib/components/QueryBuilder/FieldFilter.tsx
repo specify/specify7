@@ -58,6 +58,7 @@ export type QueryFieldFilter =
   | 'lessOrEqual'
   | 'like'
   | 'startsWith'
+  | 'endsWith'
   | 'true'
   | 'trueOrNull';
 export const filtersWithDefaultValue = new Set<QueryFieldFilter>([
@@ -516,6 +517,14 @@ export const queryFieldFilters: RR<QueryFieldFilter, FieldFilter> = {
     label: queryText.startsWith(),
     description: undefined,
     renderPickList: false,
+    component: SingleField,
+    hasParser: false,
+  },
+  endsWith: {
+    id: 18,
+    label: queryText.endsWith(),
+    description: undefined,
+    renderPicklist: false,
     component: SingleField,
     hasParser: false,
   },

@@ -145,6 +145,15 @@ export function useQueryFieldFilters(): RR<
           id: { visible: true },
         },
       },
+      endsWith: {
+        ...queryFieldFilters.endsWith,
+        types: {
+          text: { visible: true },
+          number: { visible: true },
+          date: { visible: true },
+          id: { visible: true },
+        },
+      },
       empty: {
         ...queryFieldFilters.empty,
         types: {
