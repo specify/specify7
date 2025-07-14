@@ -580,7 +580,7 @@ function Wrapped({
                     (field) => field.fieldName === "catalogNumber" && field.isDisplay
                   );
                 
-                  queryResource.attributes.smushed = canEnableSmushed ? !(query.smushed ?? false) : false;
+                  queryResource.set('smushed', canEnableSmushed ? !(query.smushed ?? false) : false);
 
                   form?.checkValidity() === false
                     ? runQuery('regular')
