@@ -9,13 +9,13 @@
 import { f } from '../../utils/functools';
 import type { IR, RA, WritableArray } from '../../utils/types';
 import type { Tables } from '../DataModel/types';
+import { getAttachmentsColumnIndexFromHeaders } from '../WorkBench/attachmentHelpers';
 import type { AutoMapperResults } from './autoMapper';
 import { AutoMapper } from './autoMapper';
 import type { MappingLine } from './Mapper';
 import { emptyMapping } from './mappingHelpers';
 import type { ColumnOptions, UploadPlan } from './uploadPlanParser';
 import { parseUploadPlan } from './uploadPlanParser';
-import { getAttachmentsColumnIndexFromHeaders } from '../WorkBench/attachmentHelpers';
 
 export const defaultColumnOptions: ColumnOptions = {
   matchBehavior: 'ignoreNever',
@@ -131,9 +131,7 @@ export function getLinesFromUploadPlan(
   };
 }
 
-function removeHiddenColumnHeaders(
-  headers: RA<string>,
-): RA<string> {
+function removeHiddenColumnHeaders(headers: RA<string>): RA<string> {
   // Remove attachments column header so it cannot be mapped
   const attachmentsColumnIndex = getAttachmentsColumnIndexFromHeaders(headers);
   return headers.filter((_, index) => index !== attachmentsColumnIndex);

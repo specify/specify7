@@ -300,7 +300,7 @@ export function resolveValidationMessage(
 }
 
 export function resolveAttachmentValidationMessage(
-  key: string,
+  key: string
 ): LocalizedString {
   if (key === 'attachmentNotFound') {
     return backEndText.attachmentNotFound();
