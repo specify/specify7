@@ -575,11 +575,17 @@ function Wrapped({
                 showSeries={showSeries}
                 tableName={table.name}
                 onRunCountOnly={(): void => runQuery('count')}
-                onSubmitClick={(): void =>
+                onSubmitClick={(): void => {
+                  const canEnableSmushed = query.fields.some(
+                    (field) => field.fieldName === "catalogNumber" && field.isDisplay
+                  );
+                
+                  queryResource.attributes.smushed = canEnableSmushed ? !(query.smushed ?? false) : false;
+
                   form?.checkValidity() === false
                     ? runQuery('regular')
                     : undefined
-                }
+                }}
                 onToggleDistinct={(): void =>
                   setQuery({
                     ...query,
@@ -587,16 +593,12 @@ function Wrapped({
                   })
                 }
                 onToggleHidden={setShowHiddenFields}
-                onToggleSeries={(): void => {
-                  const canEnableSmushed = query.fields.some(
-                    (field) => field.fieldName === "catalogNumber" && field.isDisplay
-                  );
-                
+                onToggleSeries={(): void =>
                   setQuery({
                     ...query,
-                    smushed: canEnableSmushed ? !(query.smushed ?? false) : false,
-                  });
-                }}
+                    smushed: !(query.smushed ?? false),
+                  })
+                }
               />
             </div>
             {hasPermission('/querybuilder/query', 'execute') && (
