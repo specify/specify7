@@ -1,4 +1,5 @@
-import { defined, RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
+import { defined } from '../../utils/types';
 import { takeBetween } from '../../utils/utils';
 import { getCollectionPref } from '../InitialContext/remotePrefs';
 import { getTablePermissions } from '../Permissions';
