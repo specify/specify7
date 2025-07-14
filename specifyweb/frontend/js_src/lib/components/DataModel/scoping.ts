@@ -1,4 +1,4 @@
-import type { RA } from '../../utils/types';
+import { defined, RA } from '../../utils/types';
 import { takeBetween } from '../../utils/utils';
 import { getCollectionPref } from '../InitialContext/remotePrefs';
 import { getTablePermissions } from '../Permissions';
@@ -51,11 +51,14 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
     hasTablePermission('Preparation', 'create') &&
     resource.createdBy !== 'clone'
   ) {
-    const preps = collectionObject.getDependentResource('preparations') ?? [];
-    if (preps.length === 0)
+    if (collectionObject.getDependentResource('preparations') === undefined)
       collectionObject.set('preparations', [
         serializeResource(new tables.Preparation.Resource()),
       ]);
+    const preps = defined(
+      collectionObject.getDependentResource('preparations')
+    );
+    if (preps.length === 0) preps?.add(new tables.Preparation.Resource());
   }
 
   if (
@@ -63,12 +66,16 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
     hasTablePermission('Determination', 'create') &&
     resource.createdBy !== 'clone'
   ) {
-    const determinations =
-      collectionObject.getDependentResource('determinations') ?? [];
-    if (determinations.length === 0)
+    if (collectionObject.getDependentResource('determinations') === undefined) {
       collectionObject.set('determinations', [
         serializeResource(new tables.Determination.Resource()),
       ]);
+    }
+    const determinations = defined(
+      collectionObject.getDependentResource('determinations')
+    );
+    if (determinations.length === 0)
+      determinations.add(new tables.Determination.Resource());
   }
 }
 
