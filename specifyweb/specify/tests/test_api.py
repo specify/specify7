@@ -155,6 +155,9 @@ class MainSetupTearDown:
     def _assertStatusCodeEqual(self, response, status_code):
         self.assertEqual(response.status_code, status_code, f"ERROR: {response.content.decode()}")
 
+    def _assertContentEqual(self, response, expected_content):
+        self.assertEqual(response.content.decode(), expected_content)
+
     def _add_user_policy(self, specifyuser):
         UserPolicy.objects.create(
                 collection=None,
