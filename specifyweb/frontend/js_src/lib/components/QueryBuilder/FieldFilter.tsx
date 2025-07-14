@@ -524,7 +524,7 @@ export const queryFieldFilters: RR<QueryFieldFilter, FieldFilter> = {
     id: 18,
     label: queryText.endsWith(),
     description: undefined,
-    renderPicklist: false,
+    renderPickList: false,
     component: SingleField,
     hasParser: false,
   },
