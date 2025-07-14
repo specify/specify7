@@ -201,6 +201,7 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
         foreign_table = spmodels.datamodel.get_table(table_name)
         foreign_model = get_app_model(table_name.lower().title())
 
+        # BUG: This shouldn't be .title().
         apply_order = add_ordering_to_key(table_name.lower().title())
         # BUG: timestampmodified could be null for one record, and not the other
         new_key_fields = ('timestampcreated', 'timestampmodified', 'id') \
