@@ -1,8 +1,10 @@
-import { filterArray, IR, R, RA, WritableArray } from '../../utils/types';
-import { PermissionsQueryItem } from '../Permissions';
 import { f } from '../../utils/functools';
+import type { IR, R, RA, WritableArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { group, KEY, replaceItem } from '../../utils/utils';
-import { Policy } from './Policy';
+import type { PermissionsQueryItem } from '../Permissions';
+import type { Policy } from './Policy';
+import { toolDefinitions, toolTables } from './registry';
 import {
   anyAction,
   anyResource,
@@ -10,13 +12,12 @@ import {
   fieldPolicy,
   getAllActions,
   partsToResourceName,
-  resourceNameToModel,
   resourceNameToParts,
+  resourceNameToTable,
   tableNameToResourceName,
   tablePermissionsPrefix,
   toolPermissionPrefix,
 } from './utils';
-import { toolDefinitions, toolTables } from './registry';
 
 /**
  * Separate out tool tables from the raw list of policies received from the
@@ -68,15 +69,15 @@ export function decompressPolicies(rawPolicies: RA<Policy>): IR<RA<string>> {
             actions: policy.actions,
           }))
         : policy.resource === anyResource &&
-          getAllActions(anyResource).every((action) =>
-            policy.actions.includes(action)
-          )
-        ? {
-            // Combine separate actions on "any" resource into one
-            resource: anyResource,
-            actions: [anyAction],
-          }
-        : policy
+            getAllActions(anyResource).every((action) =>
+              policy.actions.includes(action)
+            )
+          ? {
+              // Combine separate actions on "any" resource into one
+              resource: anyResource,
+              actions: [anyAction],
+            }
+          : policy
     );
   return Object.fromEntries(
     // If has collection access, add other basic policies
@@ -128,10 +129,10 @@ export function compressPermissionQuery(
         item.resource.startsWith(tablePermissionsPrefix) &&
         resourceNameToParts(item.resource).at(-1) !== anyResource
       ) {
-        const model = resourceNameToModel(item.resource);
-        if (f.has(toolTables(), model.name)) {
+        const table = resourceNameToTable(item.resource);
+        if (f.has(toolTables(), table.name)) {
           const toolName = Object.entries(toolDefinitions()).find(
-            ([_name, { tables }]) => f.includes(tables, model.name)
+            ([_name, { tables }]) => f.includes(tables, table.name)
           )?.[KEY];
           if (typeof toolName === 'string') {
             tools[toolName] ??= {};

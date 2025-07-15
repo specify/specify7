@@ -1,0 +1,410 @@
+{
+  "Accession": [
+    {
+      "rule": {
+        "id": 1,
+        "fields": ["accessionNumber"],
+        "scopes": ["division"],
+        "modelName": "Accession",
+        "isDatabaseConstraint": false
+      }
+    }
+  ],
+  "Accessionagent": [
+    {
+      "rule": {
+        "id": 2,
+        "fields": ["role", "agent"],
+        "scopes": ["accession"],
+        "modelName": "Accessionagent",
+        "isDatabaseConstraint": true
+      }
+    }
+  ],
+  "Appraisal": [
+    {
+      "rule": {
+        "id": 3,
+        "fields": ["appraisalNumber"],
+        "scopes": ["accession"],
+        "modelName": "Appraisal",
+        "isDatabaseConstraint": true
+      }
+    }
+  ],
+  "Author": [
+    {
+      "rule": {
+        "id": 4,
+        "fields": ["agent"],
+        "scopes": ["referenceWork"],
+        "modelName": "Author",
+        "isDatabaseConstraint": true
+      }
+    },
+    {
+      "rule": {
+        "id": 5,
+        "fields": ["orderNumber"],
+        "scopes": ["referenceWork"],
+        "modelName": "Author",
+        "isDatabaseConstraint": false
+      }
+    }
+  ],
+  "Borrowagent": [
+    {
+      "rule": {
+        "id": 6,
+        "fields": ["role", "agent"],
+        "scopes": ["borrow"],
+        "modelName": "Borrowagent",
+        "isDatabaseConstraint": true
+      }
+    }
+  ],
+  "Collection": [
+    {
+      "rule": {
+        "id": 7,
+        "fields": ["collectionName"],
+        "scopes": ["discipline"],
+        "modelName": "Collection",
+        "isDatabaseConstraint": false
+      }
+    },
+    {
+      "rule": {
+        "id": 8,
+        "fields": ["code"],
+        "scopes": ["discipline"],
+        "modelName": "Collection",
+        "isDatabaseConstraint": false
+      }
+    }
+  ],
+  "Collectingevent": [
+    {
+      "rule": {
+        "id": 9,
+        "fields": ["uniqueIdentifier"],
+        "scopes": [],
+        "modelName": "Collectingevent",
+        "isDatabaseConstraint": true
+      }
+    }
+  ],
+  "Collectionobject": [
+    {
+      "rule": {
+        "id": 10,
+        "fields": ["catalogNumber"],
+        "scopes": ["collection"],
+        "modelName": "Collectionobject",
+        "isDatabaseConstraint": true
+      }
+    },
+    {
+      "rule": {
+        "id": 11,
+        "fields": ["uniqueIdentifier"],
+        "scopes": [],
+        "modelName": "Collectionobject",
+        "isDatabaseConstraint": true
+      }
+    },
+    {
+      "rule": {
+        "id": 12,
+        "fields": ["guid"],
+        "scopes": [],
+        "modelName": "Collectionobject",
+        "isDatabaseConstraint": false
+      }
+    }
+  ],
+  "Collector": [
+    {
+      "rule": {
+        "id": 13,
+        "fields": ["agent"],
+        "scopes": ["collectingEvent"],
+        "modelName": "Collector",
+        "isDatabaseConstraint": true
+      }
+    }
+  ],
+  "Determiner": [
+    {
+      "rule": {
+        "id": 14,
+        "fields": ["agent"],
+        "scopes": ["determination"],
+        "modelName": "Determiner",
+        "isDatabaseConstraint": true
+      }
+    }
+  ],
+  "Discipline": [
+    {
+      "rule": {
+        "id": 15,
+        "fields": ["name"],
+        "scopes": ["division"],
+        "modelName": "Discipline",
+        "isDatabaseConstraint": false
+      }
+    }
+  ],
+  "Disposalagent": [
+    {
+      "rule": {
+        "id": 16,
+        "fields": ["role", "agent"],
+        "scopes": ["disposal"],
+        "modelName": "Disposalagent",
+        "isDatabaseConstraint": true
+      }
+    }
+  ],
+  "Division": [
+    {
+      "rule": {
+        "id": 17,
+        "fields": ["name"],
+        "scopes": ["institution"],
+        "modelName": "Division",
+        "isDatabaseConstraint": false
+      }
+    }
+  ],
+  "Extractor": [
+    {
+      "rule": {
+        "id": 18,
+        "fields": ["agent"],
+        "scopes": ["dnaSequence"],
+        "modelName": "Extractor",
+        "isDatabaseConstraint": true
+      }
+    }
+  ],
+  "Fundingagent": [
+    {
+      "rule": {
+        "id": 19,
+        "fields": ["agent"],
+        "scopes": ["collectingTrip"],
+        "modelName": "Fundingagent",
+        "isDatabaseConstraint": true
+      }
+    }
+  ],
+  "Gift": [
+    {
+      "rule": {
+        "id": 20,
+        "fields": ["giftNumber"],
+        "scopes": ["discipline"],
+        "modelName": "Gift",
+        "isDatabaseConstraint": false
+      }
+    }
+  ],
+  "Giftagent": [
+    {
+      "rule": {
+        "id": 21,
+        "fields": ["role", "agent"],
+        "scopes": ["gift"],
+        "modelName": "Giftagent",
+        "isDatabaseConstraint": true
+      }
+    }
+  ],
+  "Groupperson": [
+    {
+      "rule": {
+        "id": 22,
+        "fields": ["member"],
+        "scopes": ["group"],
+        "modelName": "Groupperson",
+        "isDatabaseConstraint": true
+      }
+    }
+  ],
+  "Institution": [
+    {
+      "rule": {
+        "id": 23,
+        "fields": ["name"],
+        "scopes": [],
+        "modelName": "Institution",
+        "isDatabaseConstraint": false
+      }
+    }
+  ],
+  "Loan": [
+    {
+      "rule": {
+        "id": 24,
+        "fields": ["loanNumber"],
+        "scopes": ["discipline"],
+        "modelName": "Loan",
+        "isDatabaseConstraint": false
+      }
+    }
+  ],
+  "Loanagent": [
+    {
+      "rule": {
+        "id": 25,
+        "fields": ["role", "agent"],
+        "scopes": ["loan"],
+        "modelName": "Loanagent",
+        "isDatabaseConstraint": true
+      }
+    }
+  ],
+  "Locality": [
+    {
+      "rule": {
+        "id": 26,
+        "fields": ["uniqueIdentifier"],
+        "scopes": [],
+        "modelName": "Locality",
+        "isDatabaseConstraint": true
+      }
+    }
+  ],
+  "Localitycitation": [
+    {
+      "rule": {
+        "id": 27,
+        "fields": ["referenceWork"],
+        "scopes": ["locality"],
+        "modelName": "Localitycitation",
+        "isDatabaseConstraint": true
+      }
+    }
+  ],
+  "Pcrperson": [
+    {
+      "rule": {
+        "id": 28,
+        "fields": ["agent"],
+        "scopes": ["dnaSequence"],
+        "modelName": "Pcrperson",
+        "isDatabaseConstraint": true
+      }
+    }
+  ],
+  "Permit": [
+    {
+      "rule": {
+        "id": 29,
+        "fields": ["permitNumber"],
+        "scopes": [],
+        "modelName": "Permit",
+        "isDatabaseConstraint": false
+      }
+    }
+  ],
+  "Picklist": [
+    {
+      "rule": {
+        "id": 30,
+        "fields": ["name"],
+        "scopes": ["collection"],
+        "modelName": "Picklist",
+        "isDatabaseConstraint": false
+      }
+    }
+  ],
+  "Preparation": [
+    {
+      "rule": {
+        "id": 31,
+        "fields": ["barCode"],
+        "scopes": ["collectionobject__collection"],
+        "modelName": "Preparation",
+        "isDatabaseConstraint": true
+      }
+    }
+  ],
+  "Preptype": [
+    {
+      "rule": {
+        "id": 32,
+        "fields": ["name"],
+        "scopes": ["collection"],
+        "modelName": "Preptype",
+        "isDatabaseConstraint": false
+      }
+    }
+  ],
+  "Repositoryagreement": [
+    {
+      "rule": {
+        "id": 33,
+        "fields": ["repositoryAgreementNumber"],
+        "scopes": ["division"],
+        "modelName": "Repositoryagreement",
+        "isDatabaseConstraint": false
+      }
+    }
+  ],
+  "Spappresourcedata": [
+    {
+      "rule": {
+        "id": 34,
+        "fields": ["spAppResource"],
+        "scopes": [],
+        "modelName": "Spappresourcedata",
+        "isDatabaseConstraint": false
+      }
+    }
+  ],
+  "Specifyuser": [
+    {
+      "rule": {
+        "id": 35,
+        "fields": ["name"],
+        "scopes": [],
+        "modelName": "Specifyuser",
+        "isDatabaseConstraint": true
+      }
+    }
+  ],
+  "Taxontreedef": [
+    {
+      "rule": {
+        "id": 36,
+        "fields": ["name"],
+        "scopes": ["discipline"],
+        "modelName": "Taxontreedef",
+        "isDatabaseConstraint": false
+      }
+    }
+  ],
+  "Taxontreedefitem": [
+    {
+      "rule": {
+        "id": 37,
+        "fields": ["name"],
+        "scopes": ["treeDef"],
+        "modelName": "Taxontreedefitem",
+        "isDatabaseConstraint": false
+      }
+    },
+    {
+      "rule": {
+        "id": 38,
+        "fields": ["title"],
+        "scopes": ["treeDef"],
+        "modelName": "Taxontreedefitem",
+        "isDatabaseConstraint": false
+      }
+    }
+  ]
+}

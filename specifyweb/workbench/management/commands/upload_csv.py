@@ -6,12 +6,10 @@ from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
-from specifyweb.specify import models
+from specifyweb.specify.models import Collection
 
 from specifyweb.workbench.upload.upload import do_upload_csv
 from specifyweb.workbench.upload.upload_plan_schema import schema, parse_plan
-
-Collection = getattr(models, 'Collection')
 
 class Command(BaseCommand):
     help = 'Upload CSV to the database.'
@@ -38,7 +36,7 @@ class Command(BaseCommand):
 
         with open(options['csv_file'], newline='') as csvfile:
             reader = csv.DictReader(csvfile)
-            result = do_upload_csv(specify_collection, reader, parse_plan(specify_collection, plan).apply_scoping(specify_collection), not options['commit'])
+            result = do_upload_csv(specify_collection, reader, parse_plan(plan), not options['commit'])
 
         self.stdout.write(json.dumps([r.to_json() for r in result], indent=2))
 

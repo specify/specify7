@@ -10,7 +10,9 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { tableActions } from '../Permissions/definitions';
+import { getRegistriesFromPath } from './registry';
 import {
   actionToLabel,
   anyResource,
@@ -18,7 +20,6 @@ import {
   partsToResourceName,
   resourceNameToParts,
 } from './utils';
-import { getRegistriesFromPath } from './registry';
 
 export type Policy = {
   readonly resource: string;
@@ -40,14 +41,12 @@ export const hasTableActions = (actions: RA<string>): boolean =>
 // REFACTOR: reduce size of this component
 export function SecurityPolicy({
   policy: { resource, actions },
-  isReadOnly,
   isResourceMapped,
   onChange: handleChange,
   scope,
   orientation,
 }: {
   readonly policy: Policy;
-  readonly isReadOnly: boolean;
   readonly isResourceMapped: (resource: string) => boolean;
   readonly onChange: (policy: Policy | undefined) => void;
   readonly scope: PolicyScope;
@@ -86,14 +85,16 @@ export function SecurityPolicy({
     ? f.unique([...possibleActions, ...(actions ?? [])])
     : undefined;
   const isTablePolicy = f.maybe(extendedActions, hasTableActions);
+
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <li className="flex flex-wrap gap-2">
       {!isReadOnly && (
         <Button.Small
-          aria-label={commonText('remove')}
+          aria-label={commonText.remove()}
           className="print:hidden"
-          title={commonText('remove')}
-          variant={className.redButton}
+          title={commonText.remove()}
+          variant={className.dangerButton}
           onClick={(): void => handleChange(undefined)}
         >
           {icons.trash}
@@ -151,14 +152,19 @@ export function SecurityPolicy({
                       [partName, { label, actions, isInstitutional }],
                       _index,
                       { length }
-                    ) =>
+                    ) => {
+                      const parts = resourceNameToParts(resource);
+                      const optionResource = partsToResourceName([
+                        ...parts.slice(0, index),
+                        partName,
+                      ]);
                       /*
                        * Don't show Any if there is only one other option,
                        * and it is the default value
                        */
-                      partName === anyResource &&
-                      length <= 2 &&
-                      resourceParts[index] !== anyResource ? undefined : (
+                      return partName === anyResource &&
+                        length <= 2 &&
+                        resourceParts[index] !== anyResource ? undefined : (
                         <option
                           disabled={
                             /*
@@ -166,12 +172,10 @@ export function SecurityPolicy({
                              * Already mapped
                              */
                             (actions.length > 0 &&
-                              isResourceMapped(
-                                partsToResourceName([
-                                  ...resourceNameToParts(resource),
-                                  partName,
-                                ])
-                              )) ||
+                              // Don't disable if this is the current resource
+                              partsToResourceName(parts.slice(0, index + 1)) !==
+                                optionResource &&
+                              isResourceMapped(optionResource)) ||
                             /*
                              * Disable institutional policies on the
                              * collection level
@@ -183,7 +187,8 @@ export function SecurityPolicy({
                         >
                           {label}
                         </option>
-                      )
+                      );
+                    }
                   );
                   return groupName === '' ? (
                     children

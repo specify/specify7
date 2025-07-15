@@ -2,6 +2,9 @@ import React from 'react';
 
 import type { IR, RR } from '../../utils/types';
 
+/**
+ * Gather HTML attributes allowed for a given tag name
+ */
 type RawTagProps<TAG extends keyof React.ReactHTML> = Exclude<
   Parameters<React.ReactHTML[TAG]>[0],
   null | undefined
@@ -9,8 +12,10 @@ type RawTagProps<TAG extends keyof React.ReactHTML> = Exclude<
 
 /**
  * Forbid using regular "ref" since it needs to be forwarded
+ *
  * React.forwardRef has some typing issues when used with generics:
  * https://stackoverflow.com/questions/58469229/react-with-typescript-generics-while-using-react-forwardref/58473012
+ *
  * Instead, provide ref as a forwardRef. This does not change the runtime
  * behaviour
  */
@@ -42,7 +47,7 @@ export function wrap<
    * For example, can make some optional props be required, forbid passing
    * children, or mutate extra props using mergeProps callback
    */
-  EXTRA_PROPS extends IR<unknown> = RR<never, never>
+  EXTRA_PROPS extends IR<unknown> = RR<never, never>,
 >(
   // Would be shown in React DevTools
   name: string,
@@ -60,13 +65,11 @@ export function wrap<
       typeof props?.className === 'string'
         ? `${className} ${props.className}`
         : className;
-    const {
-      forwardRef,
-      ref: _,
-      ...mergedProps
-    } = typeof initialProps === 'function'
-      ? initialProps({ ...props, className: fullClassName })
-      : { ...initialProps, ...props, className: fullClassName };
+    const merged =
+      typeof initialProps === 'function'
+        ? initialProps({ ...props, className: fullClassName })
+        : { ...initialProps, ...props, className: fullClassName };
+    const { forwardRef, ref: _, ...mergedProps } = merged;
     /*
      * Using React.createElement rather than <tagName>, because the tag name is
      * dynamic, and that can only be done using React.createElement

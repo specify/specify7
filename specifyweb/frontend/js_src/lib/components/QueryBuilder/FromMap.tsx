@@ -1,19 +1,19 @@
 import L from 'leaflet';
 import React from 'react';
 
-import { f } from '../../utils/functools';
-import { insertItem, replaceItem } from '../../utils/utils';
 import { commonText } from '../../localization/common';
-import type { QueryField } from './helpers';
+import { f } from '../../utils/functools';
 import type { RA, Writable, WritableArray } from '../../utils/types';
-import { mappingPathToString } from '../WbPlanView/mappingHelpers';
+import { insertItem, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import type { LeafletInstance } from '../Leaflet/addOns';
 import { LeafletMap } from '../Leaflet/Map';
+import { mappingPathToString } from '../WbPlanView/mappingHelpers';
+import type { QueryField } from './helpers';
 
 const emptyArray: RA<never> = [];
 const defaultPoint = [0, 10] as const;
-// REFACTOR: use this type where applicable
-export type Pair<T = number> = readonly [T, T];
+type Pair<T = number> = readonly [T, T];
 
 export function QueryFromMap({
   fields,
@@ -33,10 +33,10 @@ export function QueryFromMap({
     undefined
   );
 
-  const [map, setMap] = React.useState<L.Map | null>(null);
+  const [map, setMap] = React.useState<LeafletInstance | undefined>(undefined);
 
   React.useEffect(() => {
-    if (map === null) return;
+    if (map === undefined) return;
 
     const indexes = findCoordinateLines(fields, lineNumber);
     setLineIndexes(indexes);
@@ -68,16 +68,16 @@ export function QueryFromMap({
     <LeafletMap
       buttons={
         <>
-          <Button.Gray onClick={handleClose}>
-            {commonText('cancel')}
-          </Button.Gray>
-          <Button.Blue onClick={handleSave}>{commonText('save')}</Button.Blue>
+          <Button.Secondary onClick={handleClose}>
+            {commonText.cancel()}
+          </Button.Secondary>
+          <Button.Save onClick={handleSave}>{commonText.save()}</Button.Save>
         </>
       }
       forwardRef={setMap}
       localityPoints={emptyArray}
-      onMarkerClick={f.never}
       onClose={handleClose}
+      onMarkerClick={f.never}
     />
   );
 }
@@ -180,9 +180,13 @@ const setMarkerMoveHandler = (
     callback([lat, lng]);
   });
 
-function usePolygon(map: L.Map | null, start: Pair, end: Pair): void {
+function usePolygon(
+  map: LeafletInstance | undefined,
+  start: Pair,
+  end: Pair
+): void {
   React.useEffect(() => {
-    if (map === null) return undefined;
+    if (map === undefined) return undefined;
     const polygon = L.polygon(pointsToPolygon(start, end), {
       interactive: false,
     });
@@ -234,6 +238,7 @@ function getNewQueryLines(
         type: 'between',
         startValue: `${Math.min(...latitudes)},${Math.max(...latitudes)}`,
         isNot: false,
+        isStrict: false,
       },
     ],
   };
@@ -254,6 +259,7 @@ function getNewQueryLines(
               type: 'between',
               startValue: `${longitudeStart},${longitudeEnd}`,
               isNot: false,
+              isStrict: false,
             },
           ]
         : [
@@ -261,11 +267,13 @@ function getNewQueryLines(
               type: 'greaterOrEqual',
               startValue: longitudeStart.toString(),
               isNot: false,
+              isStrict: false,
             },
             {
               type: 'lessOrEqual',
               startValue: longitudeEnd.toString(),
               isNot: false,
+              isStrict: false,
             },
           ],
   };

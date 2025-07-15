@@ -1,0 +1,429 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`reconstruct deleting attachment spec 1`] = `
+[
+  {
+    "attachmentId": 1,
+    "status": {
+      "reason": "rollbackInterruption",
+      "type": "cancelled",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+  },
+  {
+    "attachmentId": undefined,
+    "status": {
+      "successType": "deleted",
+      "type": "success",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+  },
+  {
+    "status": {
+      "reason": "incorrectFormatter",
+      "type": "skipped",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+  },
+  {
+    "attachmentId": undefined,
+    "status": {
+      "successType": "deleted",
+      "type": "success",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+  },
+  {
+    "attachmentId": 2,
+    "status": {
+      "reason": "rollbackInterruption",
+      "type": "cancelled",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+  },
+]
+`;
+
+exports[`reconstruct uploading attachment spec 1`] = `
+[
+  {
+    "attachmentId": 1,
+    "status": {
+      "successType": "uploaded",
+      "type": "success",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+    "uploadTokenSpec": {
+      "attachmentLocation": "location1.jpg",
+      "token": "fakeToken",
+    },
+  },
+  {
+    "attachmentId": 2,
+    "status": {
+      "successType": "uploaded",
+      "type": "success",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+    "uploadTokenSpec": {
+      "attachmentLocation": "location2.jpg",
+      "token": "fakeToken",
+    },
+  },
+  {
+    "attachmentId": 3,
+    "status": {
+      "successType": "uploaded",
+      "type": "success",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+    "uploadTokenSpec": {
+      "attachmentLocation": "location3.jpg",
+      "token": "fakeToken",
+    },
+  },
+  {
+    "status": {
+      "reason": "noMatch",
+      "type": "skipped",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+    "uploadTokenSpec": {
+      "attachmentLocation": "location10.jpg",
+      "token": "fakeToken",
+    },
+  },
+  {
+    "attachmentId": undefined,
+    "status": {
+      "reason": "uploadInterruption",
+      "type": "cancelled",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+    "uploadTokenSpec": {
+      "attachmentLocation": "location10.jpg",
+      "token": "fakeToken",
+    },
+  },
+  {
+    "attachmentId": undefined,
+    "status": {
+      "reason": "uploadInterruption",
+      "type": "cancelled",
+    },
+    "uploadFile": {
+      "file": {
+        "name": "someName",
+        "size": 0,
+        "type": "test",
+      },
+    },
+    "uploadTokenSpec": {
+      "attachmentLocation": "locationAny.jpg",
+      "token": "fakeToken",
+    },
+  },
+]
+`;
+
+exports[`resolve file names resolve file names from validation (keeping disambiguation) 1`] = `
+[
+  {
+    "disambiguated": undefined,
+    "matchedId": [
+      0,
+    ],
+    "uploadFile": {
+      "file": {
+        "name": "test",
+        "size": 0,
+        "type": "0",
+      },
+      "parsedName": "1",
+    },
+  },
+  {
+    "disambiguated": undefined,
+    "matchedId": [
+      1,
+    ],
+    "uploadFile": {
+      "file": {
+        "name": "test2",
+        "size": 0,
+        "type": "0",
+      },
+      "parsedName": "2",
+    },
+  },
+  {
+    "disambiguated": undefined,
+    "matchedId": [
+      2,
+    ],
+    "uploadFile": {
+      "file": {
+        "name": "test3",
+        "size": 0,
+        "type": "0",
+      },
+      "parsedName": "3",
+    },
+  },
+  {
+    "attachmentId": 10,
+    "disambiguated": 10,
+    "matchedId": [
+      2,
+    ],
+    "uploadFile": {
+      "file": {
+        "name": "test4",
+        "size": 0,
+        "type": "0",
+      },
+      "parsedName": "4",
+    },
+  },
+  {
+    "disambiguated": undefined,
+    "matchedId": [
+      3,
+    ],
+    "uploadFile": {
+      "file": {
+        "name": "test5",
+        "size": 0,
+        "type": "0",
+      },
+      "parsedName": "4",
+    },
+  },
+  {
+    "disambiguated": undefined,
+    "matchedId": [
+      10,
+      11,
+    ],
+    "uploadFile": {
+      "file": {
+        "name": "test6",
+        "size": 0,
+        "type": "0",
+      },
+      "parsedName": "5",
+    },
+  },
+  {
+    "disambiguated": undefined,
+    "matchedId": [
+      10,
+      11,
+    ],
+    "uploadFile": {
+      "file": {
+        "name": "test6",
+        "size": 0,
+        "type": "0",
+      },
+      "parsedName": "5",
+    },
+  },
+  {
+    "disambiguated": 10,
+    "matchedId": [
+      10,
+      11,
+    ],
+    "uploadFile": {
+      "file": {
+        "name": "test7",
+        "size": 0,
+        "type": "0",
+      },
+      "parsedName": "5",
+    },
+  },
+]
+`;
+
+exports[`resolve file names resolve file names from validation 1`] = `
+[
+  {
+    "disambiguated": undefined,
+    "matchedId": [
+      0,
+    ],
+    "uploadFile": {
+      "file": {
+        "name": "test",
+        "size": 0,
+        "type": "0",
+      },
+      "parsedName": "1",
+    },
+  },
+  {
+    "disambiguated": undefined,
+    "matchedId": [
+      1,
+    ],
+    "uploadFile": {
+      "file": {
+        "name": "test2",
+        "size": 0,
+        "type": "0",
+      },
+      "parsedName": "2",
+    },
+  },
+  {
+    "disambiguated": undefined,
+    "matchedId": [
+      2,
+    ],
+    "uploadFile": {
+      "file": {
+        "name": "test3",
+        "size": 0,
+        "type": "0",
+      },
+      "parsedName": "3",
+    },
+  },
+  {
+    "attachmentId": 10,
+    "disambiguated": 10,
+    "matchedId": [
+      2,
+    ],
+    "uploadFile": {
+      "file": {
+        "name": "test4",
+        "size": 0,
+        "type": "0",
+      },
+      "parsedName": "4",
+    },
+  },
+  {
+    "disambiguated": undefined,
+    "matchedId": [
+      3,
+    ],
+    "uploadFile": {
+      "file": {
+        "name": "test5",
+        "size": 0,
+        "type": "0",
+      },
+      "parsedName": "4",
+    },
+  },
+  {
+    "disambiguated": undefined,
+    "matchedId": [
+      10,
+      11,
+    ],
+    "uploadFile": {
+      "file": {
+        "name": "test6",
+        "size": 0,
+        "type": "0",
+      },
+      "parsedName": "5",
+    },
+  },
+  {
+    "disambiguated": undefined,
+    "matchedId": [
+      10,
+      11,
+    ],
+    "uploadFile": {
+      "file": {
+        "name": "test6",
+        "size": 0,
+        "type": "0",
+      },
+      "parsedName": "5",
+    },
+  },
+  {
+    "disambiguated": undefined,
+    "matchedId": [
+      10,
+      11,
+    ],
+    "uploadFile": {
+      "file": {
+        "name": "test7",
+        "size": 0,
+        "type": "0",
+      },
+      "parsedName": "5",
+    },
+  },
+]
+`;

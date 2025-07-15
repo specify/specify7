@@ -5,21 +5,34 @@ A few non-business data resource end points
 import json
 import mimetypes
 from functools import wraps
-from itertools import groupby
+import time
+import logging
+import os
+from typing import Union, List, Tuple, Dict, Any
+from uuid import uuid4
+from zipfile import ZipFile, BadZipFile
+from tempfile import TemporaryDirectory
 
 from django import http
 from django.conf import settings
-from django.db import IntegrityError, router, transaction, connection
+from django.db import router, transaction, connection
+from specifyweb.notifications.models import Message, Spmerging, LocalityUpdate
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
-from django.views.decorators.http import require_http_methods, require_POST
-from specifyweb.businessrules.exceptions import BusinessRuleException
+from django.views.decorators.http import require_POST, require_http_methods
+from specifyweb.specify.api import get_model
 
+from specifyweb.middleware.general import require_GET, require_http_methods
 from specifyweb.permissions.permissions import PermissionTarget, \
-    PermissionTargetAction, PermissionsException, check_permission_targets
-from specifyweb.workbench.upload.upload_result import FailedBusinessRule
-from . import api, models
-from .specify_jar import specify_jar
+    PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
+from specifyweb.celery_tasks import app, CELERY_TASK_STATE
+from specifyweb.specify.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
+from specifyweb.specify.update_locality import localityupdate_parse_success, localityupdate_parse_error, parse_locality_set as _parse_locality_set, upload_locality_set as _upload_locality_set, create_localityupdate_recordset, update_locality_task, parse_locality_task, LocalityUpdateStatus
+from . import api, models as spmodels
+from .specify_jar import specify_jar, specify_jar_path
+from .uiformatters import get_uiformatter_by_name
+
+logger = logging.getLogger(__name__)
 
 def login_maybe_required(view):
     @wraps(view)
@@ -29,12 +42,14 @@ def login_maybe_required(view):
         return view(request, *args, **kwargs)
     return wrapped
 
+
 if settings.ANONYMOUS_USER:
-    login_maybe_required = lambda func: func
+    def login_maybe_required(func): return func
 
 
 class HttpResponseConflict(http.HttpResponse):
     status_code = 409
+
 
 def openapi(schema, components={}):
     def decorator(view):
@@ -47,6 +62,7 @@ def openapi(schema, components={}):
         })
         return wrapped
     return decorator
+
 
 def api_view(dispatch_func):
     """Create a Django view function that handles exceptions arising
@@ -68,8 +84,12 @@ def api_view(dispatch_func):
             return http.HttpResponseNotFound(e)
     return view
 
+
 resource = api_view(api.resource_dispatch)
 collection = api_view(api.collection_dispatch)
+collection_bulk_copy = api_view(api.collection_dispatch_bulk_copy)
+collection_bulk = api_view(api.collection_dispatch_bulk)
+
 
 def raise_error(request):
     """This endpoint intentionally throws an error in the server for
@@ -77,6 +97,7 @@ def raise_error(request):
     """
     raise Exception('This error is a test. You may now return to your regularly '
                     'scheduled hacking.')
+
 
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
@@ -90,15 +111,21 @@ def delete_blockers(request, model, id):
     collector = Collector(using=using)
     collector.delete_blockers = []
     collector.collect([obj])
-    result = [
-        {
-            'table': sub_objs[0].__class__.__name__,
-            'field': field.name,
-            'id': sub_objs[0].id
-        }
-        for field, sub_objs in collector.delete_blockers
-    ]
+    result = flatten([
+        [
+            {
+                'table': sub_objs[0].__class__.__name__,
+                'field': field.name,
+                'ids': [sub_obj.id for sub_obj in sub_objs]
+            }
+        ] for field, sub_objs in collector.delete_blockers
+    ])
     return http.HttpResponse(api.toJson(result), content_type='application/json')
+
+
+def flatten(l):
+    return [item for sublist in l for item in sublist]
+
 
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
@@ -106,8 +133,9 @@ def rows(request, model):
     "Returns tuples from the table for <model>."
     return api.rows(request, model)
 
+
 @require_http_methods(['GET', 'HEAD'])
-@cache_control(max_age=365*24*60*60, public=True)
+@cache_control(max_age=365 * 24 * 60 * 60, public=True)
 def images(request, path):
     """Returns images and icons from the Specify thickclient jar file
     under edu/ku/brc/specify/images/."""
@@ -119,17 +147,59 @@ def images(request, path):
         raise http.Http404(e)
     return http.HttpResponse(image, content_type=mimetype)
 
+
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
-@cache_control(max_age=24*60*60, public=True)
+@cache_control(max_age=24 * 60 * 60, public=True)
 def properties(request, name):
-    """Returns the <name>.properities file from the thickclient jar file."""
-    path = name + '.properties'
-    return http.HttpResponse(specify_jar.read(path), content_type='text/plain')
+    """
+    Returns the <name>.properties file from the thickclient jar.
+    Retries on BadZipFile and falls back to manual extraction.
+    """
+    path = f"{name}.properties"
+    max_retries = 2
+    delay = 0.1
+
+    for attempt in range(1, max_retries + 2):
+        try:
+            data = specify_jar.read(path)
+            break
+        except BadZipFile:
+            logger.warning(
+                "Attempt %d to read from %r failed with BadZipFile. Retrying…",
+                attempt, path,
+                exc_info=True
+            )
+            if attempt <= max_retries:
+                time.sleep(delay * attempt)
+            else:
+                # Final fallback: manually extract just this one entry
+                try:
+                    with TemporaryDirectory() as td:
+                        with ZipFile(specify_jar_path, 'r') as jar:
+                            jar.extract(path, td)
+                        with open(os.path.join(td, path), 'rb') as f:
+                            data = f.read()
+                    logger.info("Successfully extracted %r via fallback extraction.", path)
+                    break
+                except Exception as fallback_exc:
+                    logger.error(
+                        "Fallback extract also failed for %r: %s",
+                        path, fallback_exc,
+                        exc_info=True
+                    )
+                    return http.HttpResponseServerError(
+                        f"Could not read {path} from JAR."
+                    )
+    else:
+        return http.HttpResponseServerError(f"Failed to load {path}.")
+
+    return http.HttpResponse(data, content_type='text/plain')
 
 class SetPasswordPT(PermissionTarget):
     resource = '/admin/user/password'
     update = PermissionTargetAction()
+
 
 @openapi(schema={
     'post': {
@@ -153,7 +223,7 @@ class SetPasswordPT(PermissionTarget):
             }
         },
         "responses": {
-            "204": {"description": "Success",},
+            "204": {"description": "Success", },
             "403": {"description": "Logged in user is not an admin."}
         }
     },
@@ -164,33 +234,40 @@ def set_password(request, userid):
     """Set <userid> specify user's password to the value in the 'password'
     POST parameter.
     """
-    check_permission_targets(None, request.specify_user.id, [SetPasswordPT.update])
-    user = models.Specifyuser.objects.get(pk=userid)
+    check_permission_targets(None, request.specify_user.id, [
+                             SetPasswordPT.update])
+    user = spmodels.Specifyuser.objects.get(pk=userid)
     user.set_password(request.POST['password'])
     user.save()
     return http.HttpResponse('', status=204)
 
+
 class SetAgentsException(PermissionsException):
-    http_status = 400
+    status_code = 400
 
     def to_json(self):
         return {self.__class__.__name__: self.args[0]}
+
 
 class AgentInUseException(SetAgentsException):
     "One of the agents being assigned is already assigned to another user."
     pass
 
+
 class MultipleAgentsException(SetAgentsException):
     "Attempting to assign more than one agent per division to the user."
     pass
+
 
 class MissingAgentForAccessibleCollection(SetAgentsException):
     "The user has access to a collection in a division that is not represented by any agent."
     pass
 
+
 class SetUserAgentsPT(PermissionTarget):
     resource = '/admin/user/agents'
     update = PermissionTargetAction()
+
 
 @openapi(schema={
     'post': {
@@ -208,7 +285,7 @@ class SetUserAgentsPT(PermissionTarget):
             }
         },
         "responses": {
-            "204": {"description": "Success",},
+            "204": {"description": "Success", },
             "400": {
                 "description": "The request was rejected.",
                 "content": {
@@ -273,23 +350,29 @@ class SetUserAgentsPT(PermissionTarget):
 @require_POST
 def set_user_agents(request, userid: int):
     "Sets the agents to represent the user in different disciplines."
-    user = models.Specifyuser.objects.get(pk=userid)
+    user = spmodels.Specifyuser.objects.get(pk=userid)
     new_agentids = json.loads(request.body)
     cursor = connection.cursor()
 
     with transaction.atomic():
         # clear user's existing agents
-        models.Agent.objects.filter(specifyuser_id=userid).update(specifyuser_id=None)
+        spmodels.Agent.objects.filter(
+            specifyuser_id=userid).update(specifyuser_id=None)
 
         # check if any of the agents to be assigned are used by other users
-        in_use = models.Agent.objects.select_for_update().filter(pk__in=new_agentids, specifyuser_id__isnull=False)
+        in_use = spmodels.Agent.objects.select_for_update().filter(
+            pk__in=new_agentids, specifyuser_id__isnull=False)
         if in_use:
             raise AgentInUseException([a.id for a in in_use])
 
         # assign the new agents
-        models.Agent.objects.filter(pk__in=new_agentids).update(specifyuser_id=userid)
+        spmodels.Agent.objects.filter(
+            pk__in=new_agentids).update(specifyuser_id=userid)
 
         # check for multiple agents assigned to the user
+        # NOTE: This is too aggressive (and inefficient) of a test.
+        # By the time we are here, we can just check if the current agents (in new_agentids)
+        # belong to the same division...
         cursor.execute(
             """select divisionid, a1.agentid, a2.agentid
             from agent a1 join agent a2 using (specifyuserid, divisionid)
@@ -305,21 +388,25 @@ def set_user_agents(request, userid: int):
             raise MultipleAgentsException(multiple)
 
         # get the list of collections the agents belong to.
-        collections = models.Collection.objects.filter(discipline__division__members__specifyuser_id=userid).values_list('id', flat=True)
+        collections = spmodels.Collection.objects.filter(
+            discipline__division__members__specifyuser_id=userid).values_list('id', flat=True)
 
         # check permissions for setting user agents in those collections.
         for collectionid in collections:
-            check_permission_targets(collectionid, request.specify_user.id, [SetUserAgentsPT.update])
+            check_permission_targets(collectionid, request.specify_user.id, [
+                                     SetUserAgentsPT.update])
 
         check_collection_access_against_agents(userid)
 
     return http.HttpResponse('', status=204)
 
+
 def check_collection_access_against_agents(userid: int) -> None:
     from specifyweb.context.views import users_collections_for_sp6, users_collections_for_sp7
 
     # get the list of collections the agents belong to.
-    collections = models.Collection.objects.filter(discipline__division__members__specifyuser_id=userid).values_list('id', flat=True)
+    collections = spmodels.Collection.objects.filter(
+        discipline__division__members__specifyuser_id=userid).values_list('id', flat=True)
 
     # make sure every collection the user is permitted to access has an assigned user.
     sp6_collections = users_collections_for_sp6(connection.cursor(), userid)
@@ -335,9 +422,10 @@ def check_collection_access_against_agents(userid: int) -> None:
         if collection.id not in collections
     ]
     if missing_for_6 or missing_for_7:
-        all_divisions = models.Division.objects.filter(
-            disciplines__collections__id__in=[cid for cid, _ in sp6_collections] + [c.id for c in sp7_collections]
-        ).values_list('id', flat=True)
+        all_divisions = spmodels.Division.objects.filter(
+            disciplines__collections__id__in=[
+                cid for cid, _ in sp6_collections] + [c.id for c in sp7_collections]
+        ).values_list('id', flat=True).distinct()
         raise MissingAgentForAccessibleCollection({
             'missing_for_6': missing_for_6,
             'missing_for_7': missing_for_7,
@@ -345,10 +433,10 @@ def check_collection_access_against_agents(userid: int) -> None:
         })
 
 
-
 class Sp6AdminPT(PermissionTarget):
     resource = '/admin/user/sp6/is_admin'
     update = PermissionTargetAction()
+
 
 @openapi(schema={
     'post': {
@@ -373,7 +461,7 @@ class Sp6AdminPT(PermissionTarget):
             }
         },
         "responses": {
-            "204": {"description": "Success",},
+            "204": {"description": "Success", },
             "403": {"description": "Logged in user is not an admin."}
         }
     },
@@ -385,8 +473,9 @@ def set_admin_status(request, userid):
     according to the 'admin_status' POST parameter. Must be logged in
     as an admin, otherwise HTTP 403 is returned.
     """
-    check_permission_targets(None, request.specify_user.id, [Sp6AdminPT.update])
-    user = models.Specifyuser.objects.get(pk=userid)
+    check_permission_targets(
+        None, request.specify_user.id, [Sp6AdminPT.update])
+    user = spmodels.Specifyuser.objects.get(pk=userid)
     if request.POST['admin_status'] == 'true':
         user.set_admin()
         return http.HttpResponse('true', content_type='text/plain')
@@ -394,91 +483,1105 @@ def set_admin_status(request, userid):
         user.clear_admin()
         return http.HttpResponse('false', content_type='text/plain')
 
+
 class ReplaceRecordPT(PermissionTarget):
-    resource = "/replace/record"
+    resource = "/record/merge"
     update = PermissionTargetAction()
     delete = PermissionTargetAction()
+
 
 @openapi(schema={
     'post': {
         "requestBody": {
             "required": True,
-            "description": "Replace a new agent for an old agent.",
+            "description": "Replace a list of old records with a new record.",
             "content": {
-                "application/x-www-form-urlencoded": {
+                "application/json": {
                     "schema": {
                         "type": "object",
-                        "description": "The error.",
+                        "description": "The request body.",
                         "properties": {
-                            "old_agent_id": {
-                                "type": "integer",
-                                "description": "The old AgentID value of the agent record that is to be replaced by the new one."
+                            "model_name": {
+                                "type": "string",
+                                "description": "The name of the table that is to be merged."
                             },
-                            "new_agent_id": {
+                            "new_model_id": {
                                 "type": "integer",
-                                "description": "The new AgentID value of the agent that is replacing the old one."
+                                "description": "The new ID value of the model that is replacing the old one."
+                            },
+                            "old_record_ids": {
+                                "type": "array",
+                                "items": {
+                                    "type": "integer"
+                                },
+                                "description": "The old record IDs."
+                            },
+                            "new_record_data": {
+                                "type": "object",
+                                "description": "The new record data."
+                            },
+                            "background": {
+                                "type": "boolean",
+                                "description": "Determine if the merging should be done as a background task.  Default is True."
                             }
                         },
-                        'required': ['old_agent_id', 'new_agent_id'],
+                        'required': ['model_name', 'new_model_id', 'collection_id', 'old_record_ids', 'new_record_data'],
                         'additionalProperties': False
                     }
                 }
             }
         },
         "responses": {
-            "204": {"description": "Success",},
-            "404": {"description": "The AgentID specified does not exist."},
+            "204": {"description": "Success", },
+            "404": {"description": "The ID specified does not exist."},
             "405": {"description": "A database rule was broken."}
         }
     },
 })
 @login_maybe_required
 @require_POST
-def agent_record_replacement(request: http.HttpRequest, old_agent_id, new_agent_id: int) -> http.HttpResponse:
-    """Replaces all the foreign keys referencing the old AgentID
-    with the new AgentID, and deletes the old agent record.
+def record_merge(
+    request: http.HttpRequest,
+    model_name: str,
+    # This is actually of type str.
+    # TODO: Change below to str.
+    new_model_id: int
+) -> Union[http.HttpResponse, http.JsonResponse]:
+    """Replaces all the foreign keys referencing the old record IDs
+    with the new record ID, and deletes the old records.
     """
-    check_permission_targets(None, request.specify_user.id, [ReplaceRecordPT.update, ReplaceRecordPT.delete])
+    record_version = getattr(spmodels, model_name.title()).objects.get(
+        id=new_model_id).version
+    get_version = request.GET.get('version', record_version)
+    version = get_version if isinstance(get_version, int) else 0
 
-    # Create database connection cursor
-    cursor = connection.cursor()
-    db_name = connection.get_connection_params()['db']
+    table_permissions_checker(
+        request.specify_collection, request.specify_user_agent, "read")
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [
+                             ReplaceRecordPT.update, ReplaceRecordPT.delete])
 
-    with transaction.atomic():
-        # Check to make sure both the old and new agent IDs exist in the table
-        if not models.Agent.objects.filter(id=old_agent_id).select_for_update().exists():
-            return http.HttpResponseNotFound("AgentID: " + old_agent_id + " does not exist.")
-        if not models.Agent.objects.filter(id=new_agent_id).select_for_update().exists():
-            return http.HttpResponseNotFound("AgentID: " + new_agent_id + " does not exist.")
+    data = json.loads(request.body)
+    old_model_ids = data['old_record_ids']
+    new_record_data = data['new_record_data'] if 'new_record_data' in data else None
 
-        # Get all of the columns in all of the tables of specify the are foreign keys referencing AgentID
-        sql_get_cols_ref_agent_id = """
-        SELECT TABLE_NAME, COLUMN_NAME
-        FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-        WHERE
-        REFERENCED_TABLE_SCHEMA = '<db_name>' AND
-        REFERENCED_TABLE_NAME = 'agent' AND
-        REFERENCED_COLUMN_NAME = 'AgentID'
-        ORDER BY TABLE_NAME;
-        """.replace('<db_name>', db_name)
-        cursor.execute(sql_get_cols_ref_agent_id)
-        foreign_key_cols = cursor.fetchall()
-        
-        # Build query to update all of the records with foreign keys referencing the AgentID
-        sql_update = ""
-        for table_name, column_names in groupby(foreign_key_cols, lambda x: x[0]):
-            for col in [c[1] for c in column_names]:
-                sql_set_clause = col + " = " + new_agent_id
-                sql_where_clause = col + " = " + old_agent_id
-                sql_update += "UPDATE " + table_name + " SET " + sql_set_clause + " WHERE " + sql_where_clause + ";\n"
-        
-        # Execute update query for agent children
+    if old_model_ids is None or len(old_model_ids) < 1:
+        return http.HttpResponseBadRequest('There were no old record IDs given to be replaced by the new ID.')
+
+    background = True
+    if 'background' in data:
+        background = data['background']
+
+    if background:
+        # Check if another merge is still in progress
+        cur_merges = Spmerging.objects.filter(status='MERGING')
+        for cur_merge in cur_merges:
+            cur_task_id = cur_merge.taskid
+            cur_result = record_merge_task.AsyncResult(cur_task_id)
+            if cur_result is not None:
+                cur_merge.status = 'FAILED'
+                cur_merge.save()
+            elif cur_result.state == 'MERGING':
+                return http.HttpResponseNotAllowed(
+                    'Another merge process is still running on the system, please try again later.')
+            else:
+                cur_merge.status = cur_result.state
+                cur_merge.save()
+
+        # Create task id and a Spmerging record
+        task_id = str(uuid4())
+        merge = Spmerging.objects.create(
+            name="Merge_" + model_name + "_" + new_model_id,
+            taskid=task_id,
+            status="MERGING",
+            table=model_name.title(),
+            newrecordid=new_model_id,
+            newrecordata=json.dumps(new_record_data),
+            oldrecordids=json.dumps(old_model_ids),
+            collection=request.specify_collection,
+            specifyuser=request.specify_user,
+            createdbyagent=request.specify_user_agent,
+            modifiedbyagent=request.specify_user_agent,
+        )
+        merge.save()
+
+        # Create a notification record of the merging process pending
+        Message.objects.create(user=request.specify_user, content=json.dumps({
+            'type': 'record-merge-starting',
+            'name': "Merge_" + model_name + "_" + new_model_id,
+            'task_id': task_id,
+            'table': model_name.title(),
+            'new_record_id': new_model_id,
+            'old_record_ids': old_model_ids,
+            'new_record_info': new_record_data,
+            'collection_id': request.specify_collection.id
+        }))
+
+        new_record_info = {
+            'agent_id': int(new_model_id),
+            'collection_id': request.specify_collection.id,
+            'specify_user_id': request.specify_user.id,
+            'specify_user_agent_id': request.specify_user_agent.id,
+            'version': version,
+            'new_record_data': new_record_data
+        }
+
         try:
-            cursor.execute(sql_update)
-        except (BusinessRuleException, IntegrityError) as e:
-            return http.HttpResponseNotAllowed(str(e))
+            json.dumps(new_record_info)
+        except TypeError as e:
+            return http.HttpResponseNotAllowed('Error while serializing new_record_info')
 
-        # Dedupe by deleting the agent that is being replaced and updating the old AgentID to the new one
-        cursor.execute("DELETE FROM agent WHERE AgentID=%s", old_agent_id)
+        # Run the merging process in the background with celery
+        async_result = record_merge_task.apply_async(
+            [model_name, old_model_ids, int(
+                new_model_id), merge.id, new_record_info],
+            task_id=task_id)
+
+        return http.JsonResponse(async_result.id, safe=False)
+    else:
+        new_record_info = {
+            'agent_id': int(new_model_id),
+            'collection': request.specify_collection,
+            'specify_user': request.specify_user_agent,
+            'version': version,
+            'new_record_data': new_record_data
+        }
+
+        response = resolve_record_merge_response(
+            lambda: record_merge_fx(model_name, old_model_ids, int(
+                new_model_id), None, new_record_info),
+            # If not doing merge in background, raise all unexpected errors
+            silent=False
+        )
+    return response
+
+
+@openapi(schema={
+    'get': {
+        "responses": {
+            "200": {
+                "description": "Data fetched successfully",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "oneOf": [
+                                {
+                                    "type": "string",
+                                    "example": "null",
+                                    "description": "Nothing to report"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "taskprogress": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current": {
+                                                    "type": "number",
+                                                    "example": 11,
+                                                },
+                                                "total": {
+                                                    "type": "number",
+                                                    "example": 22,
+                                                }
+                                            }
+                                        },
+                                        "taskstatus": {
+                                            "type": "string",
+                                            "enum": [
+                                                "MERGING",
+                                                "SUCCEEDED",
+                                                "FAILED",
+                                                "ABORTED"
+                                            ]
+                                        },
+                                        "taskid": {
+                                            "type": "string",
+                                            "maxLength": 36,
+                                            "example": "7d34dbb2-6e57-4c4b-9546-1fe7bec1acca"
+                                        },
+                                    },
+                                    "description": "Status of the record merge process",
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            '404': {
+                'description': 'The spmerging object with task id was not found',
+            },
+        }
+    },
+})
+@require_GET
+def merging_status(request, merge_id: int) -> http.HttpResponse:
+    """Returns the merging status for the record merging celery tasks"""
+
+    # Try to get the merge object directly
+    try:
+        merge = Spmerging.objects.get(taskid=merge_id)
+    except Spmerging.DoesNotExist:
+        return http.HttpResponseNotFound(f'The merge task id is not found: {merge_id}')
+
+    result = record_merge_task.AsyncResult(merge.taskid)
+
+    status = {
+        'taskstatus': merge.status,
+        'response': merge.response,
+        'taskprogress': result.info if isinstance(result.info, dict) else repr(result.info),
+        'taskid': merge.taskid
+    }
+
+    return http.JsonResponse(status)
+
+
+@openapi(schema={
+    'post': {
+        'responses': {
+            '200': {
+                'description': 'The task has been successfully aborted or it is not running and cannot be aborted',
+                'content': {
+                    'application/json': {
+                        'schema': {
+                            'type': 'object',
+                            'properties': {
+                                'message': {
+                                    'type': 'string',
+                                    'description': 'Response message about the status of the task'
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            '404': {
+                'description': 'The merge task id is not found',
+            },
+            '400': {
+                'description': 'Invalid input, object invalid',
+            },
+        },
+    },
+})
+@require_POST
+def abort_merge_task(
+    request,
+    # The below type is of str (and not an int)
+    merge_id: int
+    ) -> http.HttpResponse:
+    "Aborts the merge task currently running and matching the given merge/task ID"
+
+    # BUG: This should not be a .get. It should instead be something like .filter(...).first()
+    # Currently, it is a 500 error (because .get() fails when no Spmerging found)
+    merge = Spmerging.objects.get(taskid=merge_id)
+    if merge is None:
+        return http.HttpResponseNotFound(f'The merge task id is not found: {merge_id}')
+
+    # This condition is not possible.
+    if merge.taskid is None:
+        return http.JsonResponse(None, safe=False)
+
+    task = record_merge_task.AsyncResult(merge.taskid)
+
+    if task.state == 'PENDING' or task.state == 'MERGING':
+        # Revoking and terminating the task
+        app.control.revoke(merge.taskid, terminate=True)
+
+        # Updating the merging status
+        merge.status = 'ABORTED'
+        merge.save()
+
+        # Send notification the the megre task has been aborted
+        Message.objects.create(user=request.specify_user, content=json.dumps({
+            'type': 'record-merge-aborted',
+            'name': "Merge_" + merge.table.title() + "_" + str(merge.newrecordid),
+            'task_id': merge_id,
+            'table': merge.table,
+            'new_record_id': merge.newrecordid,
+            'collection_id': request.specify_collection.id,
+        }))
+
+        return http.HttpResponse(f'Task {merge.taskid} has been aborted.')
+
+    else:
+        return http.HttpResponse(f'Task {merge.taskid} is not running and cannot be aborted.')
+
+
+@openapi(schema={
+    'post': {
+        "requestBody": {
+            "required": True,
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "columnHeaders": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "createRecordSet": {
+                                "type": "boolean",
+                                "description": "When True, creates a recordset in the logged-in collection for the logged-in user with the matched/updated localities if the upload succeeds",
+                                "default": True
+                            },
+                            "runInBackground": {
+                                "type": "boolean",
+                                "description": "Whether the task should be ran in the background. Defaults to True",
+                                "default": False
+                            }
+                        },
+                        "required": ["columnHeaders", "data"],
+                        "additionalProperties": False
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "Task finished synchronously",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "oneOf": [
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": ["ParseError"]
+                                        },
+                                        "errors": localityupdate_parse_error
+                                    },
+                                    "required": ["type", "errors"],
+                                    "additionalProperties": False
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": ["Uploaded"]
+                                        },
+                                        "recordsetid": {
+                                            "oneOf": [
+                                                {
+                                                    "type": "string"
+                                                },
+                                                {
+                                                    "type": "null"
+                                                }
+                                            ]
+                                        },
+                                        "localities": {
+                                            "type": "array",
+                                            "description": "An array of matched/updated Locality IDs",
+                                            "items": {
+                                                "type": "number"
+                                            }
+                                        },
+                                        "geocoorddetails": {
+                                            "type": "array",
+                                            "description": "An array of created GeoCoordDetail IDs",
+                                            "items": {
+                                                "type": "number"
+                                            }
+                                        }
+                                    },
+                                    "required": ["type", "recordsetid", "localities", "geocoorddetails"],
+                                    "additionalProperties": False
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "201": {
+                "description": "Task started by the worker. Returns the newly created ID of the task",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 36,
+                            "example": "7d34dbb2-6e57-4c4b-9546-1fe7bec1acca",
+                        }
+                    }
+                }
+            },
+            "403": {
+                "description": "Insufficient rights to upload the Locality Data Set. Loggin in User must be an admin"
+            }
+        }
+    },
+})
+@login_maybe_required
+@require_POST
+def upload_locality_set(request: http.HttpRequest):
+
+    if not request.specify_user.is_admin():
+        return http.HttpResponseForbidden('Specifyuser must be an instituion admin')
+
+    request_data = json.loads(request.body)
+
+    column_headers = request_data["columnHeaders"]
+    data = request_data["data"]
+    create_recordset = request_data.get("createRecordSet", True)
+    run_in_background = request_data.get("runInBackground", False)
+
+    resolved_upload_function = start_locality_set_background if run_in_background else upload_locality_set_foreground
+
+    result = resolved_upload_function(request.specify_collection, request.specify_user,
+                                      request.specify_user_agent, column_headers, data, create_recordset)
+
+    return http.JsonResponse(result, status=201 if run_in_background else 200, safe=False)
+
+
+def start_locality_set_background(collection, specify_user, agent, column_headers: list[str], data: list[list[str]], create_recordset: bool = False, parse_only: bool = False) -> str:
+    task_id = str(uuid4())
+    args = [collection.id, column_headers, data]
+    if not parse_only:
+        args.append(create_recordset)
+    task_function = parse_locality_task.apply_async if parse_only else update_locality_task.apply_async
+
+    task = task_function(args, task_id=task_id)
+
+    lu = LocalityUpdate.objects.create(
+        taskid=task.id,
+        status=LocalityUpdateStatus.PENDING,
+        collection=collection,
+        specifyuser=specify_user,
+        createdbyagent=agent,
+        modifiedbyagent=agent,
+    )
+
+    Message.objects.create(user=specify_user, content=json.dumps({
+        'type': 'localityupdate-starting',
+        'taskid': task.id
+    }))
+
+    return task.id
+
+
+def upload_locality_set_foreground(collection, specify_user, agent, column_headers: list[str], data: list[list[str]], create_recordset: bool):
+    result = _upload_locality_set(collection, column_headers, data)
+
+    if result["type"] == 'ParseError':
+        return result
+
+    localities = [row["locality"] for row in result["results"]]
+
+    recordset = create_localityupdate_recordset(
+        collection, specify_user, localities) if create_recordset else None
+
+    result["recordsetid"] = None if recordset is None else recordset.pk
+
+    return result
+
+
+@openapi(schema={
+    'get': {
+        "responses": {
+            "200": {
+                "description": "Data fetched successfully",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "oneOf": [
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "taskstatus": {
+                                            "type": "string",
+                                            "enum": [LocalityUpdateStatus.PENDING, LocalityUpdateStatus.ABORTED]
+                                        },
+                                        "taskinfo": {
+                                            "type": "string",
+                                        },
+                                    },
+                                    "required": ["taskstatus", "taskinfo"],
+                                    "additionalProperties": False
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "taskstatus": {
+                                            "type": "string",
+                                            "enum": [LocalityUpdateStatus.PROGRESS, LocalityUpdateStatus.PARSING]
+                                        },
+                                        "taskinfo": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current": {
+                                                    "type": "number",
+                                                    "example": 4,
+                                                },
+                                                "total": {
+                                                    "type": "number",
+                                                    "example": 20,
+                                                }
+                                            }
+                                        },
+                                    },
+                                    "required": ["taskstatus", "taskinfo"],
+                                    "additionalProperties": False
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "taskstatus": {
+                                            "type": "string",
+                                            "enum": [LocalityUpdateStatus.PARSED]
+                                        },
+                                        "taskinfo": {
+                                            "type": "object",
+                                            "properties": {
+                                                "rows": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "locality": {
+                                                                "type": "object"
+                                                            },
+                                                            "geocoorddetail": {
+                                                                "oneOf": [
+                                                                    {
+                                                                        "type": "null"
+                                                                    },
+                                                                    {
+                                                                        "type": "object"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "locality_id": {
+                                                                "description": "The ID of the matched Locality",
+                                                                "type": "number"
+                                                            },
+                                                            "row_number": {
+                                                                "type": "number"
+                                                            }
+                                                        },
+                                                        "required": ["locality", "geocoorddetail"]
+                                                    }
+                                                }
+                                            }
+                                        },
+                                    },
+                                    "required": ["taskstatus", "taskinfo"],
+                                    "additionalProperties": False
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "taskstatus": {
+                                            "type": "string",
+                                            "enum": [LocalityUpdateStatus.SUCCEEDED]
+                                        },
+                                        "taskinfo": {
+                                            "type": "object",
+                                            "properties": {
+                                                "recordsetid": {
+                                                    "oneOf": [
+                                                        {
+                                                            "type": "number"
+                                                        },
+                                                        {
+                                                            "type": "null"
+                                                        }
+                                                    ]
+                                                },
+                                                "localities": {
+                                                    "type": "array",
+                                                    "description": "An array of matched/updated Locality IDs",
+                                                    "items": {
+                                                        "type": "number"
+                                                    }
+                                                },
+                                                "geocoorddetails": {
+                                                    "type": "array",
+                                                    "description": "An array of created GeoCoordDetail IDs",
+                                                    "items": {
+                                                        "type": "number"
+                                                    }
+                                                }
+                                            },
+                                            "required": ["recordsetid", "localities", "geocoorddetails"],
+                                            "additionalProperties": False
+                                        }
+                                    },
+                                    "required": ["taskstatus", "taskinfo"],
+                                    "additionalProperties": False
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "taskstatus": {
+                                            "type": "string",
+                                            "enum": [LocalityUpdateStatus.PARSE_FAILED]
+                                        },
+                                        "taskinfo": {
+                                            "type": "object",
+                                            "properties": {
+                                                "errors": localityupdate_parse_error
+                                            }
+                                        }
+                                    },
+                                    "required": ["taskstatus", "taskinfo"],
+                                    "additionalProperties": False
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "taskstatus": {
+                                            "type": "string",
+                                            "enum": [LocalityUpdateStatus.FAILED]
+                                        },
+                                        "taskinfo": {
+                                            "type": "object",
+                                            "properties": {
+                                                "error": {
+                                                    "type": "string"
+                                                },
+                                                "traceback": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "required": ["taskstatus", "taskinfo"],
+                                    "additionalProperties": False
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "404": {
+                "description": 'The localityupdate object with task id was not found',
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "type": "string",
+                            "example": "The localityupdate with task id '7d34dbb2-6e57-4c4b-9546-1fe7bec1acca' was not found"
+                        }
+                    }
+                }
+            }
+        }
+    },
+})
+@require_GET
+def localityupdate_status(request: http.HttpRequest, taskid: str):
+    try:
+        locality_update = LocalityUpdate.objects.get(taskid=taskid)
+    except LocalityUpdate.DoesNotExist:
+        return http.HttpResponseNotFound(f"The localityupdate with task id '{taskid}' was not found")
+
+    result = update_locality_task.AsyncResult(locality_update.taskid)
+
+    resolved_state = LocalityUpdateStatus.ABORTED if result.state == CELERY_TASK_STATE.REVOKED else LocalityUpdateStatus.FAILED if result.state == CELERY_TASK_STATE.FAILURE else result.state
+
+    status = {
+        'taskstatus': resolved_state,
+        'taskinfo': result.info if isinstance(result.info, dict) else repr(result.info)
+    }
+
+    if resolved_state == LocalityUpdateStatus.FAILED:
+        status["taskinfo"] = {
+            'error': str(result.result),
+            'traceback': str(result.traceback)
+        }
+
+    elif locality_update.status == LocalityUpdateStatus.PARSE_FAILED:
+
+        status["taskstatus"] = LocalityUpdateStatus.PARSE_FAILED
+
+        if isinstance(result.info, dict) and 'errors' in result.info.keys():
+            errors = result.info["errors"]
+        else:
+            results = locality_update.results.all()
+            errors = [json.loads(error.result) for error in results]
+
+        status["taskinfo"] = {"errors": errors}
+
+    elif locality_update.status == LocalityUpdateStatus.PARSED:
+        status["taskstatus"] = LocalityUpdateStatus.PARSED
+
+        results = locality_update.results.all()
+        rows = [json.loads(row.result) for row in results]
+
+        status["taskinfo"] = {
+            "rows": rows
+        }
+
+    elif locality_update.status == LocalityUpdateStatus.SUCCEEDED:
+        status["taskstatus"] = LocalityUpdateStatus.SUCCEEDED
+        recordset_id = locality_update.recordset.id if locality_update.recordset is not None else None
+        if isinstance(result.info, dict) and resolved_state == LocalityUpdateStatus.SUCCEEDED:
+            result = {
+                "recordsetid": recordset_id,
+                "localities": result.info["localities"],
+                "geocoorddetails": result.info["geocoorddetails"]
+            }
+        else:
+            results = locality_update.results.all()
+            localitites = []
+            geocoorddetails = []
+            for row in results:
+                parsed = json.loads(row.result)
+                localitites.append(parsed["locality"])
+                if parsed["geocoorddetail"] is not None:
+                    geocoorddetails.append(parsed["geocoorddetail"])
+            result = {
+                "recordsetid": recordset_id,
+                "localities": localitites,
+                "geocoorddetails": geocoorddetails
+            }
+
+        status["taskinfo"] = result
+
+    return http.JsonResponse(status, safe=False)
+
+
+@openapi(schema={
+    'post': {
+        'responses': {
+            '200': {
+                'description': 'The task has been successfully aborted or it is not running and cannot be aborted',
+                'content': {
+                    'application/json': {
+                        'schema': {
+                            'type': 'object',
+                            'properties': {
+                                'type': {
+                                    'type': 'string',
+                                    "enum": ["ABORTED", "NOT_RUNNING"]
+                                },
+                                'message': {
+                                    'type': 'string',
+                                    'description': 'Response message about the status of the task'
+                                },
+                            },
+                            "required": ["type", "message"],
+                            "additionalProperties": False
+                        },
+                    },
+                },
+            },
+            "404": {
+                "description": 'The localityupdate object with task id was not found',
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "type": "string",
+                            "example": "The localityupdate with task id '7d34dbb2-6e57-4c4b-9546-1fe7bec1acca' was not found"
+                        }
+                    }
+                }
+            }
+        },
+    },
+})
+@require_POST
+@login_maybe_required
+def abort_localityupdate_task(request: http.HttpRequest, taskid: str):
+    "Aborts the merge task currently running and matching the given merge/task ID"
+
+    try:
+        locality_update = LocalityUpdate.objects.get(taskid=taskid)
+    except LocalityUpdate.DoesNotExist:
+        return http.HttpResponseNotFound(f"The localityupdate with taskid: {taskid} is not found")
+
+    task = record_merge_task.AsyncResult(locality_update.taskid)
+
+    result = {
+        "type": None,
+        "message": None
+    }
+
+    if task.state in [LocalityUpdateStatus.PENDING, LocalityUpdateStatus.PARSING, LocalityUpdateStatus.PROGRESS]:
+        app.control.revoke(locality_update.taskid, terminate=True)
+
+        locality_update.status = LocalityUpdateStatus.ABORTED
+        locality_update.save()
+
+        Message.objects.create(user=request.specify_user, content=json.dumps({
+            'type': 'localityupdate-aborted',
+            'taskid': taskid
+        }))
+        result["type"] = "ABORTED"
+        result["message"] = f'Task {locality_update.taskid} has been aborted.'
+
+    else:
+        result["type"] = "NOT_RUNNING"
+        result["message"] = 'Task %s is not running and cannot be aborted' % locality_update.taskid
+
+    return http.JsonResponse(result, safe=False)
+
+
+@openapi(schema={
+    "post": {
+        "requestBody": {
+            "required": True,
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "columnHeaders": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "runInBackground": {
+                                "type": "boolean",
+                                "description": "Whether the task should be ran in the background. Defaults to True",
+                                "default": False
+                            }
+                        },
+                        "required": ["columnHeaders", "data"],
+                        "additionalProperties": False
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "Successful response returned by worker",
+                "content": {
+                    "application/json": {
+                        "schema": localityupdate_parse_success
+                    }
+                }
+            },
+            "201": {
+                "description": "Task started by the worker. Returns the newly created ID of the task",
+                "content": {
+                    "text/plain": {
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 36,
+                            "example": "7d34dbb2-6e57-4c4b-9546-1fe7bec1acca",
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Locality Import Set not parsed successfully",
+                "content": {
+                    "application/json": {
+                        "schema": localityupdate_parse_error
+                    }
+                }
+            }
+        }
+    }
+})
+@login_maybe_required
+@require_POST
+def parse_locality_set(request: http.HttpRequest):
+    """Parse a locality set without making any database changes and return the results 
+    """
+    request_data = json.loads(request.body)
+
+    column_headers = request_data["columnHeaders"]
+    data = request_data["data"]
+    run_in_background = request_data.get("runInBackground", False)
+    if not run_in_background:
+        # BUG?: The result could be list of named tuples. Need to serialize them.
+        status, result = parse_locality_set_foreground(
+            request.specify_collection, column_headers, data)
+    else:
+        status, result = 201, start_locality_set_background(
+            request.specify_collection, request.specify_user, request.specify_user_agent, column_headers, data, False, True)
+
+    return http.JsonResponse(result, status=status, safe=False)
+
+
+def parse_locality_set_foreground(collection, column_headers: list[str], data: list[list[str]]) -> tuple[int, dict[str, Any]]:
+    parsed, errors = _parse_locality_set(
+        collection, column_headers, data)
+
+    if len(errors) > 0:
+        return 422, errors
+
+    return 200, parsed
+
+
+# check if user is new by looking the presence of institution
+def is_new_user(request):
+    is_new_user = len(spmodels.Institution.objects.all()) == 0
+    return http.JsonResponse(is_new_user, safe=False)
+
+@login_maybe_required
+@require_POST
+def catalog_number_for_sibling(request: http.HttpRequest):
+    """
+    Returns the catalog number of the primary CO of a COG if one is present 
+    """
+    try:
+        request_data = json.loads(request.body)
+        object_id = request_data.get('id')
+        provided_catalog_number = request_data.get('catalognumber')
+    except json.JSONDecodeError:
+        return http.JsonResponse({'error': 'Invalid JSON body.'}, status=400)
+
+    if object_id is None:
+        return http.JsonResponse({'error': "'id' field is required."}, status=400)
+
+    if provided_catalog_number is not None:
+        return http.JsonResponse(None, safe=False)
+
+    try:
+        # Find the join record for the requesting object and its parent group ID
+        requesting_cojo = spmodels.Collectionobjectgroupjoin.objects.filter(
+            childco_id=object_id
+        ).values('parentcog_id').first()
+
+        if not requesting_cojo:
+            return http.JsonResponse(None, safe=False)
+
+        parent_cog_id = requesting_cojo['parentcog_id']
+
+        primary_cojo = spmodels.Collectionobjectgroupjoin.objects.filter(
+            parentcog_id=parent_cog_id,
+            isprimary=True
+        ).select_related('childco').first()
+
+        # Extract the catalog number if a primary sibling CO exists
+        primary_catalog_number = None
+        if primary_cojo and primary_cojo.childco:
+            primary_catalog_number = primary_cojo.childco.catalognumber
+
+        return http.JsonResponse(primary_catalog_number, safe=False)
+
+    except Exception as e:
+        print(f"Error processing request: {e}")
+        return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)                  
+                                
+
+@login_maybe_required
+@require_POST
+def catalog_number_from_parent(request: http.HttpRequest):
+    """
+    Returns the catalog number of the parent component
+    """
+    try:
+        request_data = json.loads(request.body)
+        object_id = request_data.get('id')
+        provided_catalog_number = request_data.get('catalognumber')
+    except json.JSONDecodeError:
+        return http.JsonResponse({'error': 'Invalid JSON body.'}, status=400)
+
+    if object_id is None:
+        return http.JsonResponse({'error': "'id' field is required."}, status=400)
+
+    if provided_catalog_number is not None:
+        return http.JsonResponse(None, safe=False)
+
+    try:
+        # Get the child CO
+        child = spmodels.Collectionobject.objects.get(id=object_id)
+
+        # Get the parent CO
+        parent = child.componentParent
+
+        if parent and parent.catalognumber:
+            return http.JsonResponse(parent.catalognumber, safe=False)
+        else:
+            return http.JsonResponse({'error': 'Parent or parent catalog number not found.'}, status=404)
+
+    except Exception as e:
+        print(f"Error processing request: {e}")
+        return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)  
+
+
+@login_maybe_required
+@require_POST
+def series_autonumber_range(request: http.HttpRequest):
+    """
+    Returns a list of autonumbered values given a range.
+    Used for series data entry on Collection Objects.
+    """
+    request_data = json.loads(request.body)
+    range_start = request_data.get('rangestart')
+    range_end = request_data.get('rangeend')
+    table_name = request_data.get('tablename')
+    field_name = request_data.get('fieldname')
+    formatter_name = request_data.get('formattername')
+    
+    formatter = get_uiformatter_by_name(request.specify_collection, request.specify_user, formatter_name)
+    
+    try: 
+        range_start_parsed = formatter.parse(range_start)
+        assert not formatter.needs_autonumber(range_start_parsed)
+        canonicalized_range_start = formatter.canonicalize(range_start_parsed)
+    except:
+        return http.HttpResponseBadRequest('Range start does not match format.')
+    try:
+        range_end_parsed = formatter.parse(range_end)
+        assert not formatter.needs_autonumber(range_end_parsed)
+        canonicalized_range_end = formatter.canonicalize(range_end_parsed)
+    except:
+        return http.HttpResponseBadRequest('Range end does not match format.')
+    
+    if canonicalized_range_end <= canonicalized_range_start:
+        return http.HttpResponseBadRequest(f'Range end must be greater than range start.')
+
+    try:
+        # Repeatedly autonumber until the end is reached.
+        limit = 500
+        values = [canonicalized_range_start]
+        current_value = values[0]
+        if request_data.get('skipstartnumber'):
+            # The first value can be optionally excluded/skipped.
+            # Needed since series entry currently relies on the first record being saved first.
+            values = []
+        while current_value < canonicalized_range_end:
+            current_value = ''.join(formatter.fill_vals_after(current_value))
+            values.append(current_value)
+            if len(values) >= limit:
+                return http.JsonResponse({
+                    'values': [],
+                    'error': 'LimitExceeded',
+                })
         
-        return http.HttpResponse('', status=204)
+        # Check if any existing records use the values.
+        # Not garanteed to be accurate at the time of saving, just serves as a warning for the frontend.
+        table = get_model(table_name)
+        existing_records = table.objects.filter(**{f'{field_name}__in': values, 'collection': request.specify_collection})
+        existing_values = list(existing_records.values_list(field_name, flat=True))
+
+        if len(existing_values) > 0:
+            return http.JsonResponse({
+                'values': values,
+                'existing': existing_values,
+                'error': 'ExistingNumbers',
+            })
+
+        return http.JsonResponse({
+            'values': values,
+        })
+    except Exception as e:
+        return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)  

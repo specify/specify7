@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest an idea for this project
 title: ''
-labels: 'type:enhance, pri:unknown'
+type: feature
 assignees: ''
 
 ---

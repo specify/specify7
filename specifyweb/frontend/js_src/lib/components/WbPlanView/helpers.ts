@@ -6,45 +6,51 @@
 
 import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
+import { f } from '../../utils/functools';
+import type { IR, RA } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
+import { schema } from '../DataModel/schema';
+import { getTable } from '../DataModel/tables';
+import type { Tables } from '../DataModel/types';
+import { isTreeTable } from '../InitialContext/treeRanks';
 import { AutoMapper } from './autoMapper';
-import type { Dataset } from './Wrapped';
+import { renameNewlyCreatedHeaders } from './headerHelper';
 import type {
   AutoMapperSuggestion,
+  BatchEditPrefs,
   MappingLine,
   MappingPath,
   SelectElementPosition,
 } from './Mapper';
-import type { Tables } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import { sortFunction } from '../../utils/utils';
-import { getModel, schema } from '../DataModel/schema';
-import { isTreeModel } from '../InitialContext/treeRanks';
-import type { IR, RA } from '../../utils/types';
-import { uploadPlanBuilder } from './uploadPlanBuilder';
-import { renameNewlyCreatedHeaders } from './headerHelper';
 import {
   anyTreeRank,
+  emptyMapping,
   findDuplicateMappings,
   formatToManyIndex,
   formatTreeRank,
   mappingPathToString,
+  relationshipIsRemoteToOne,
   relationshipIsToMany,
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './mappingHelpers';
 import { getMappingLineData } from './navigator';
-import { Http } from '../../utils/ajax/definitions';
+import { navigatorSpecs } from './navigatorSpecs';
+import { uploadPlanBuilder } from './uploadPlanBuilder';
+import type { Dataset } from './Wrapped';
 
 export async function savePlan({
   dataset,
   baseTableName,
   lines,
   mustMatchPreferences,
+  batchEditPrefs,
 }: {
   readonly dataset: Dataset;
   readonly baseTableName: keyof Tables;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
+  readonly batchEditPrefs?: BatchEditPrefs;
 }): Promise<void> {
   const renamedLines = renameNewlyCreatedHeaders(
     baseTableName,
@@ -56,7 +62,7 @@ export async function savePlan({
     .filter(
       ({ headerName, mappingPath }) =>
         mappingPath.length > 0 &&
-        mappingPath[0] !== '0' &&
+        mappingPath[0] !== emptyMapping &&
         !dataset.columns.includes(headerName)
     )
     .map(({ headerName }) => headerName);
@@ -64,46 +70,35 @@ export async function savePlan({
   const uploadPlan = uploadPlanBuilder(
     baseTableName,
     renamedLines,
-    getMustMatchTables({ baseTableName, lines, mustMatchPreferences })
+    getMustMatchTables({ baseTableName, lines, mustMatchPreferences }),
+    batchEditPrefs
   );
 
   const dataSetRequestUrl = `/api/workbench/dataset/${dataset.id}/`;
 
-  return ping(
-    dataSetRequestUrl,
-    {
-      method: 'PUT',
-      body: {
-        uploadplan: uploadPlan,
-      },
+  return ping(dataSetRequestUrl, {
+    method: 'PUT',
+    body: {
+      uploadplan: uploadPlan,
     },
-    {
-      expectedResponseCodes: [Http.NO_CONTENT],
-    }
-  ).then(async () =>
+  }).then(async () =>
     newlyAddedHeaders.length === 0
       ? Promise.resolve()
       : ajax<Dataset>(dataSetRequestUrl, {
           headers: { Accept: 'application/json' },
         }).then(async ({ data: { columns, visualorder } }) =>
-          ping(
-            dataSetRequestUrl,
-            {
-              method: 'PUT',
-              body: {
-                visualorder: [
-                  ...(visualorder ??
-                    Object.keys(dataset.columns).map(f.unary(Number.parseInt))),
-                  ...newlyAddedHeaders.map((headerName) =>
-                    columns.indexOf(headerName)
-                  ),
-                ],
-              },
+          ping(dataSetRequestUrl, {
+            method: 'PUT',
+            body: {
+              visualorder: [
+                ...(visualorder ??
+                  Object.keys(dataset.columns).map(f.unary(Number.parseInt))),
+                ...newlyAddedHeaders.map((headerName) =>
+                  columns.indexOf(headerName)
+                ),
+              ],
             },
-            {
-              expectedResponseCodes: [Http.NO_CONTENT],
-            }
-          ).then(f.void)
+          }).then(f.void)
         )
   );
 }
@@ -141,13 +136,14 @@ export function getMustMatchTables({
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
 }): IR<boolean> {
-  const baseTableIsTree = isTreeModel(baseTableName);
+  const baseTableIsTree = isTreeTable(baseTableName);
   const arrayOfMappingPaths = lines.map((line) => line.mappingPath);
   const arrayOfMappingLineData = arrayOfMappingPaths.flatMap((mappingPath) =>
     getMappingLineData({
       mappingPath,
       baseTableName,
       generateFieldData: 'none',
+      spec: navigatorSpecs.wbPlanView,
     }).filter(
       (mappingElementData, index, list) =>
         // Exclude base table
@@ -168,12 +164,12 @@ export function getMustMatchTables({
     .map(({ tableName = '' }) => tableName)
     .filter(
       (tableName) =>
-        getModel(tableName) === undefined ||
+        getTable(tableName) === undefined ||
         (!tableName.endsWith('attribute') &&
           // Exclude embedded paleo context
           (!schema.embeddedPaleoContext || tableName !== 'PaleoContext'))
     )
-    .sort(sortFunction((tableName) => getModel(tableName)?.label ?? null));
+    .sort(sortFunction((tableName) => getTable(tableName)?.label ?? null));
 
   return {
     ...Object.fromEntries(
@@ -208,20 +204,20 @@ export const getMappedFields = (
     .map((line) => line.mappingPath[mappingPathFilter.length]);
 
 export const mappingPathIsComplete = (mappingPath: MappingPath): boolean =>
-  mappingPath.at(-1) !== '0';
+  mappingPath.at(-1) !== emptyMapping;
 
 /*
  * The most important function in WbPlanView
- * It decides how to modify the mapping path when a different picklist
+ *
+ * It decides how to modify the mapping path when a different combo box
  *  item is selected.
+ *
  * It is also responsible for deciding when to spawn a new box to the right
  *  of the current one and whether to reset the mapping path to the right of
- *  the selected box on value changes
+ *  the selected box when value changes
  */
 export function mutateMappingPath({
-  lines,
-  mappingView,
-  line,
+  mappingPath: originalPath,
   index: originalIndex,
   newValue,
   isRelationship,
@@ -229,10 +225,9 @@ export function mutateMappingPath({
   currentTableName,
   newTableName,
   ignoreToMany = false,
+  ignoreTreeRanks = false,
 }: {
-  readonly lines: RA<MappingLine>;
-  readonly mappingView: MappingPath;
-  readonly line: number | 'mappingView';
+  readonly mappingPath: MappingPath;
   readonly index: number;
   readonly newValue: string;
   readonly isRelationship: boolean;
@@ -244,48 +239,60 @@ export function mutateMappingPath({
    * (in WbPlanView). Else, #1 is selected automatically (in QueryBuilder)
    */
   readonly ignoreToMany?: boolean;
+  /*
+   * If false, allows to choose a tree rank (or "any rank")
+   * Else, "any rank" is selected automatically
+   */
+  readonly ignoreTreeRanks?: boolean;
 }): MappingPath {
-  // Get mapping path from selected line or mapping view
-  let mappingPath = Array.from(
-    line === 'mappingView' ? mappingView : lines[line].mappingPath
-  );
+  let mappingPath = Array.from(originalPath);
 
   /*
-   * If ignoring -to-many, originalIndex needs to be corrected since -to-many
-   * boxes were not rendered
+   * If ignoring -to-many or tree ranks, originalIndex needs to be corrected
+   * since -to-many boxes were not rendered
    */
-  const index = ignoreToMany
-    ? mappingPath.reduce(
-        (index, part, partIndex) =>
-          index >= partIndex && valueIsToManyIndex(part) ? index + 1 : index,
-        originalIndex
-      )
-    : originalIndex;
+  const index =
+    ignoreToMany || ignoreTreeRanks
+      ? mappingPath.reduce(
+          (index, part, partIndex) =>
+            partIndex <= index &&
+            ((ignoreToMany && valueIsToManyIndex(part)) ||
+              (ignoreTreeRanks && valueIsTreeRank(part)))
+              ? index + 1
+              : index,
+          originalIndex
+        )
+      : originalIndex;
 
   /*
    * Get relationship type from current picklist to the next one both for
    * current value and next value
    */
-  const model = getModel(parentTableName ?? '');
-  const currentField = model?.getField(mappingPath[index] ?? '');
+  const table = getTable(parentTableName ?? '');
+  const currentField = table?.getField(mappingPath[index] ?? '');
   const isCurrentToMany =
-    currentField?.isRelationship === true && relationshipIsToMany(currentField);
-  const newField = model?.getField(newValue);
+    currentField?.isRelationship === true &&
+    (relationshipIsToMany(currentField) ||
+      relationshipIsRemoteToOne(currentField));
+  const newField = table?.getField(newValue);
   const isNewToMany =
-    newField?.isRelationship === true && relationshipIsToMany(newField);
+    newField?.isRelationship === true &&
+    (relationshipIsToMany(newField) || relationshipIsRemoteToOne(newField));
+  const isNewTree =
+    newField?.isRelationship === true &&
+    isTreeTable(newField.relatedTable.name);
 
   /*
    * Don't reset the boxes to the right of the current box if relationship
    * types are the same (or non-existent in both cases) and the new box is a
-   * -to-many, a tree rank or a different relationship to the same table
+   * -to-many, a non-any tree rank or a different relationship to the same table
    */
   const preserveMappingPathToRight =
     isCurrentToMany === isNewToMany &&
     (valueIsToManyIndex(newValue) ||
       valueIsTreeRank(newValue) ||
       currentTableName === newTableName) &&
-    mappingPath[index] !== formatTreeRank(anyTreeRank) &&
-    newValue !== formatTreeRank(anyTreeRank);
+    mappingPath[index] !== formatTreeRank(anyTreeRank);
 
   if (preserveMappingPathToRight) mappingPath[index] = newValue;
   // Clear mapping path to the right of current box
@@ -296,9 +303,13 @@ export function mutateMappingPath({
         ...mappingPath.slice(0, index + 1),
         ...(mappingPath.length > index + 1
           ? mappingPath.slice(index + 1)
-          : ignoreToMany && isNewToMany
-          ? [formatToManyIndex(1), '0']
-          : ['0']),
+          : [
+              ...(ignoreToMany && isNewToMany ? [formatToManyIndex(1)] : []),
+              ...(ignoreTreeRanks && isNewTree
+                ? [formatTreeRank(anyTreeRank)]
+                : []),
+              emptyMapping,
+            ]),
       ]
     : mappingPath;
 }
@@ -339,6 +350,7 @@ export async function fetchAutoMapperSuggestions({
     showHiddenFields: true,
     getMappedFields: getMappedFields.bind(undefined, lines),
     generateFieldData: 'all',
+    spec: navigatorSpecs.wbPlanView,
   }).slice(-1);
 
   // Don't show suggestions if picklist has only one field / no fields
@@ -380,6 +392,7 @@ export async function fetchAutoMapperSuggestions({
         mappingPath: autoMapperResult,
         getMappedFields: getMappedFields.bind(undefined, lines),
         generateFieldData: 'selectedOnly',
+        spec: navigatorSpecs.wbPlanView,
       })
         .slice(baseMappingPath.length - pathOffset)
         .map((data) => ({

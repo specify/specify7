@@ -1,15 +1,19 @@
-import { adminText } from '../../localization/admin';
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import {
+  camelToHuman,
   lowerToHuman,
   replaceKey,
   sortFunction,
   toLowerCase,
 } from '../../utils/utils';
-import { schema, strictGetModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { strictGetTable, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
   frontEndPermissions,
@@ -20,7 +24,6 @@ import type { RoleBase } from './Collection';
 import { processPolicies } from './policyConverter';
 import { getRegistriesFromPath } from './registry';
 import type { Role } from './Role';
-import { Http } from '../../utils/ajax/definitions';
 
 export type BackEndRole = Omit<Role, 'policies'> & {
   readonly policies: IR<RA<string>>;
@@ -29,20 +32,15 @@ export type BackEndRole = Omit<Role, 'policies'> & {
 export const fetchRoles = async (
   collectionId: number
 ): Promise<RA<Role> | undefined> =>
-  ajax<RA<BackEndRole>>(
-    `/permissions/roles/${collectionId}/`,
-    {
-      headers: { Accept: 'application/json' },
-    },
-    {
-      /*
-       * When looking at a different collection, it is not yet know if user has
-       * read permission. Instead of waiting for permission query to complete,
-       * query anyway and silently handle the permission denied error
-       */
-      expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
-    }
-  ).then(({ data, status }) =>
+  ajax<RA<BackEndRole>>(`/permissions/roles/${collectionId}/`, {
+    headers: { Accept: 'application/json' },
+    /*
+     * When looking at a different collection, it is not yet know if user has
+     * read permission. Instead of waiting for permission query to complete,
+     * query anyway and silently handle the permission denied error
+     */
+    expectedErrors: [Http.FORBIDDEN],
+  }).then(({ data, status }) =>
     status === Http.FORBIDDEN
       ? undefined
       : data
@@ -57,18 +55,16 @@ export const fetchUserRoles = async (
   collectionId: number,
   userId: number
 ): Promise<RA<RoleBase> | undefined> =>
-  ajax<RA<{ readonly id: number; readonly name: string }>>(
+  ajax<RA<{ readonly id: number; readonly name: LocalizedString }>>(
     `/permissions/user_roles/${collectionId}/${userId}`,
     {
       headers: { Accept: 'application/json' },
-    },
-    {
       /*
        * When looking at a different collection, it is not yet know if user has
        * read permission. Instead of waiting for permission query to complete,
        * query anyway and silently handle the permission denied error
        */
-      expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
+      expectedErrors: [Http.FORBIDDEN],
     }
   ).then(({ data, status }) =>
     status === Http.FORBIDDEN
@@ -82,7 +78,22 @@ export const fetchUserRoles = async (
           .sort(sortFunction(({ roleId }) => roleId))
   );
 
-export function resourceNameToLabel(resource: string): string {
+/**
+ * Convert a path like "/table/agent" into "Table > Agent"
+ */
+export function resourceNameToLongLabel(resource: string): string {
+  const parts = resourceNameToParts(resource);
+  return parts
+    .map((_, index) =>
+      resourceNameToLabel(partsToResourceName(parts.slice(0, index + 1)))
+    )
+    .join(' > ');
+}
+
+/**
+ * Convert "/table" into "Table" and "/table/agent" into "Agent"
+ */
+export function resourceNameToLabel(resource: string): LocalizedString {
   if (
     /*
      * "getRegistriesFromPath" does not work for system tables that are part
@@ -91,23 +102,14 @@ export function resourceNameToLabel(resource: string): string {
     resource.startsWith(tablePermissionsPrefix) &&
     !resource.includes(anyResource)
   )
-    return resourceNameToModel(resource).label;
+    return resourceNameToTable(resource).label;
   else {
     const parts = resourceNameToParts(resource);
     return (
-      getRegistriesFromPath(parts)[parts.length - 1]?.[parts.at(-1)!].label ??
-      adminText('resource')
+      getRegistriesFromPath(parts)[parts.length - 1]?.[parts.at(-1)!]?.label ??
+      camelToHuman(resource)
     );
   }
-}
-
-export function resourceNameToLongLabel(resource: string): string {
-  const parts = resourceNameToParts(resource);
-  return parts
-    .map((_, index) =>
-      resourceNameToLabel(partsToResourceName(parts.slice(0, index + 1)))
-    )
-    .join(' > ');
 }
 
 /** Like getRegistriesFromPath, but excludes institutional policies */
@@ -127,7 +129,7 @@ export function getCollectionRegistriesFromPath(resourceParts: RA<string>) {
               ? replaceKey(
                   data,
                   'groupName',
-                  adminText('excludedInstitutionalPolicies')
+                  userText.excludedInstitutionalPolicies()
                 )
               : data,
           ])
@@ -138,8 +140,8 @@ export function getCollectionRegistriesFromPath(resourceParts: RA<string>) {
 /**
  * Localize action name
  */
-export const actionToLabel = (action: string): string =>
-  action === anyAction ? adminText('allActions') : lowerToHuman(action);
+export const actionToLabel = (action: string): LocalizedString =>
+  action === anyAction ? userText.allActions() : lowerToHuman(action);
 
 export const toolPermissionPrefix = 'tools';
 export const anyAction = '%';
@@ -149,8 +151,8 @@ export const permissionSeparator = '/';
 export const resourceNameToParts = (resourceName: string): RA<string> =>
   resourceName.split(permissionSeparator).filter(Boolean);
 
-export const resourceNameToModel = (resourceName: string): SpecifyModel =>
-  strictGetModel(resourceNameToParts(resourceName)[1]);
+export const resourceNameToTable = (resourceName: string): SpecifyTable =>
+  strictGetTable(resourceNameToParts(resourceName)[1]);
 
 export const partsToResourceName = (parts: RA<string>): string =>
   parts.length === 1 && parts[0] === anyResource
@@ -195,7 +197,7 @@ export function getAllActions(rawPath: string): RA<string> {
       [
         ...Object.entries(operationPolicies),
         ...Object.entries(frontEndPermissions),
-        ...Object.keys(schema.models).map(
+        ...Object.keys(tables).map(
           (tableName) =>
             [tableNameToResourceName(tableName), tableActions] as const
         ),

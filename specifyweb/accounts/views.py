@@ -10,28 +10,27 @@ from django import forms
 from django import http
 from django.conf import settings
 from django.contrib.auth import login, logout
+from django.contrib.auth.models import AbstractBaseUser
 from django.db import connection
 from django.db.models import Max
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.utils import crypto
-from django.utils.http import is_safe_url, urlencode
-from django.views.decorators.cache import cache_control, never_cache
-from django.views.decorators.http import require_GET, require_http_methods
-from typing import Union, Optional, Dict
+from django.utils.http import url_has_allowed_host_and_scheme, urlencode
+from django.views.decorators.cache import never_cache
+from typing import Union, Optional, Dict, cast
 from typing_extensions import TypedDict
+
+from specifyweb.middleware.general import require_GET, require_http_methods
 
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, check_permission_targets
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.views import login_maybe_required, openapi
 from .models import Spuserexternalid
+from specifyweb.specify.models import Specifyuser
 
 logger = logging.getLogger(__name__)
-
-Specifyuser = getattr(spmodels, 'Specifyuser')
-
-
 class ProviderInfo(TypedDict):
     "Elements of settings.OAUTH_LOGIN_PROVIDERS should have this type."
     title: str # The name of the provider for UI purposes.
@@ -42,6 +41,9 @@ class ProviderInfo(TypedDict):
     # a dictionary of auth and token endpoints.
     config: Union[str, "ProviderConf"]
 
+def is_provider_info(d: dict) -> bool:
+    required_keys = ["title", "client_id", "client_secret", "scope", "config"]
+    return all(key in d for key in required_keys)
 
 class ProviderConf(TypedDict):
     """OpenId provider endpoints provided by the settings or by
@@ -64,7 +66,7 @@ class ExternalUser(TypedDict):
     provider_title: str # For UI purposes.
     id: str # The user's id in the provider's system.
     name: str # The user's name for UI purposes.
-    idtoken: Dict # The JWT from the provider.
+    idtoken: dict # The JWT from the provider.
 
 class InviteToken(TypedDict):
     """Embedded in an invite token."""
@@ -81,7 +83,9 @@ def oic_login(request: http.HttpRequest) -> http.HttpResponse:
     """
     if request.method == 'POST':
         provider = request.POST['provider']
-        provider_info: ProviderInfo = settings.OAUTH_LOGIN_PROVIDERS[provider]
+        provider_info_dict = settings.OAUTH_LOGIN_PROVIDERS[provider]
+        assert is_provider_info(provider_info_dict), "provider_info_dict does not match ProviderInfo structure"
+        provider_info: ProviderInfo = cast(ProviderInfo, provider_info_dict)
 
         provider_conf: ProviderConf
         if isinstance(provider_info['config'], str):
@@ -162,8 +166,11 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
 
     provider = oauth_login['provider']
     provider_conf: ProviderConf = oauth_login['provider_conf']
-
-    provider_info: ProviderInfo = settings.OAUTH_LOGIN_PROVIDERS[provider]
+    
+    provider_info_dict = settings.OAUTH_LOGIN_PROVIDERS[provider]
+    assert is_provider_info(provider_info_dict), "provider_info_dict does not match ProviderInfo structure"
+    provider_info: ProviderInfo = cast(ProviderInfo, provider_info_dict)
+    
     clientid = provider_info['client_id']
     clientsecret = provider_info['client_secret']
     code = request.GET['code']
@@ -221,8 +228,10 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
     spuserexternalid.idtoken = ext_user
     spuserexternalid.save()
 
-    login(request, spuserexternalid.specifyuser, backend='django.contrib.auth.backends.ModelBackend')
-    return http.HttpResponseRedirect('/specify')
+    login(request,
+          cast(AbstractBaseUser, spuserexternalid.specifyuser),
+          backend='django.contrib.auth.backends.ModelBackend')
+    return http.HttpResponseRedirect('/accounts/choose_collection')
 
 class InviteLinkPT(PermissionTarget):
     resource = "/admin/user/invite_link"
@@ -353,7 +362,7 @@ def choose_collection(request) -> http.HttpResponse:
 
     redirect_to = (request.POST if request.method == "POST" else request.GET).get('next', '')
     redirect_resp = http.HttpResponseRedirect(
-        redirect_to if is_safe_url(url=redirect_to, allowed_hosts=request.get_host())
+        redirect_to if url_has_allowed_host_and_scheme(url=redirect_to, allowed_hosts=request.get_host())
         else settings.LOGIN_REDIRECT_URL
     )
 

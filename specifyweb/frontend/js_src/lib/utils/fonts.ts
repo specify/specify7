@@ -110,7 +110,7 @@ const windowsFonts = [
  * https://developer.apple.com/fonts/system-fonts/
  *
  * Fonts that are also present in windowsFonts were removed from the list
- * Also, the list was filtered down like this (on a mac):
+ * Also, the list was filtered down like this (on a Mac):
  * ```js
  * macOsFonts.filter(fontName=>document.fonts.check(`12pt '${fontName}'`));
  * ```

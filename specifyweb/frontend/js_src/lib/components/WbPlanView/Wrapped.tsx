@@ -6,21 +6,22 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
-import type { Tables } from '../DataModel/types';
-import type { IR, RA } from '../../utils/types';
-import type { UploadPlan } from './uploadPlanParser';
-import { getLinesFromHeaders, getLinesFromUploadPlan } from './linesGetter';
-import { savePlan } from './helpers';
-import type { UploadResult } from '../WorkBench/resultsParser';
-import { ProtectedAction } from '../Permissions/PermissionDenied';
-import type { MappingLine } from './Mapper';
-import { Mapper } from './Mapper';
-import { BaseTableSelection } from './State';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useLiveState } from '../../hooks/useLiveState';
-import {useTitle} from '../Molecules/AppTitle';
+import type { IR, RA } from '../../utils/types';
+import type { Tables } from '../DataModel/types';
+import { useTitle } from '../Molecules/AppTitle';
+import { ProtectedAction } from '../Permissions/PermissionDenied';
+import type { UploadResult } from '../WorkBench/resultsParser';
+import { savePlan } from './helpers';
+import { getLinesFromHeaders, getLinesFromUploadPlan } from './linesGetter';
+import type { MappingLine, ReadonlySpec } from './Mapper';
+import { DEFAULT_BATCH_EDIT_PREFS, Mapper } from './Mapper';
+import { BaseTableSelection } from './State';
+import type { UploadPlan } from './uploadPlanParser';
 
 // General definitions
 export type Status = {
@@ -42,37 +43,43 @@ export type Status = {
     }
 );
 
-export type DatasetBrief = {
+export type DatasetBriefBase = {
   readonly id: number;
-  readonly name: string;
+  readonly name: LocalizedString;
+  readonly timestampcreated: string;
+  readonly timestampmodified: string;
+};
+
+export type DatasetBriefPlan = DatasetBrief & {
+  readonly uploadplan: UploadPlan | null;
+};
+
+export type DatasetBase = DatasetBriefBase & {
+  readonly createdbyagent: string;
+  readonly importedfilename: string;
+  readonly modifiedbyagent: string | null;
+  readonly remarks: string;
+};
+
+export type DatasetBrief = DatasetBriefBase & {
   readonly uploadresult: {
     readonly success: boolean;
     readonly timestamp: string;
     readonly recordsetid: number;
   } | null;
   readonly uploaderstatus: Status | null;
-  readonly timestampcreated: string;
-  readonly timestampmodified: string;
 };
 
-export type Dataset = DatasetBrief & {
-  readonly columns: RA<string>;
-  readonly createdbyagent: string;
-  readonly importedfilename: string;
-  readonly modifiedbyagent: string | null;
-  readonly remarks: string | null;
-  readonly rowresults: RA<UploadResult> | null;
-  readonly rows: RA<RA<string>>;
-  readonly uploadplan: UploadPlan | null;
-  readonly visualorder: RA<number> | null;
-};
-
-export type WbPlanViewProps = {
-  readonly uploadPlan: UploadPlan | null;
-  readonly headers: RA<string>;
-  readonly isReadOnly: boolean;
-  readonly dataset: Dataset;
-};
+export type Dataset = DatasetBase &
+  DatasetBrief & {
+    readonly columns: RA<string>;
+    readonly rowresults: RA<UploadResult> | null;
+    readonly rows: RA<RA<string>>;
+    readonly uploadplan: UploadPlan | null;
+    readonly visualorder: RA<number> | null;
+    readonly isupdate: boolean;
+    readonly rolledback: boolean;
+  };
 
 /**
  * Workbench Plan Mapper root component
@@ -81,8 +88,13 @@ export function WbPlanView({
   dataset,
   uploadPlan,
   headers,
-  isReadOnly,
-}: WbPlanViewProps): JSX.Element {
+  readonlySpec,
+}: {
+  readonly uploadPlan: UploadPlan | null;
+  readonly headers: RA<string>;
+  readonly dataset: Dataset;
+  readonly readonlySpec?: ReadonlySpec;
+}): JSX.Element {
   useTitle(dataset.name);
 
   const [state, setState] = useLiveState<
@@ -146,7 +158,6 @@ export function WbPlanView({
       baseTableName={state.baseTableName}
       changesMade={state.changesMade}
       dataset={dataset}
-      isReadOnly={isReadOnly}
       lines={state.lines}
       mustMatchPreferences={state.mustMatchPreferences}
       onChangeBaseTable={(): void =>
@@ -154,13 +165,24 @@ export function WbPlanView({
           type: 'SelectBaseTable',
         })
       }
-      onSave={async (lines, mustMatchPreferences): Promise<void> =>
+      onSave={async (
+        lines,
+        mustMatchPreferences,
+        batchEditPrefs
+      ): Promise<void> =>
         savePlan({
           dataset,
           baseTableName: state.baseTableName,
           lines,
           mustMatchPreferences,
+          batchEditPrefs,
         }).then(() => navigate(`/specify/workbench/${dataset.id}/`))
+      }
+      readonlySpec={readonlySpec}
+      // we add default values by simply passing in a pre-made prefs. If prefs is undefined (only classical workbench), we don't even show anything
+      batchEditPrefs={
+        uploadPlan?.batchEditPrefs ??
+        (dataset.isupdate ? DEFAULT_BATCH_EDIT_PREFS : undefined)
       }
     />
   );

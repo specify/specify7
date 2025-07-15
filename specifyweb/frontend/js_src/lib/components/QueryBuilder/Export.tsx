@@ -3,23 +3,34 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { ping } from '../../utils/ajax/ping';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import { keysToLowerCase } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { genericTables } from '../DataModel/tables';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
+import { downloadDataSet } from '../WorkBench/helpers';
 import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
 import { hasLocalityColumns } from './helpers';
+import type { QueryResultRow } from './Results';
 
 export function QueryExportButtons({
   baseTableName,
   fields,
   queryResource,
   getQueryFieldRecords,
+  recordSetId,
+  results,
+  selectedRows,
 }: {
   readonly baseTableName: keyof Tables;
   readonly fields: RA<QueryField>;
@@ -27,6 +38,11 @@ export function QueryExportButtons({
   readonly getQueryFieldRecords:
     | (() => RA<SerializedResource<SpQueryField>>)
     | undefined;
+  readonly recordSetId: number | undefined;
+  readonly results: React.MutableRefObject<
+    RA<QueryResultRow | undefined> | undefined
+  >;
+  readonly selectedRows: ReadonlySet<number>;
 }): JSX.Element {
   const showConfirmation = (): boolean =>
     fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath));
@@ -35,53 +51,130 @@ export function QueryExportButtons({
     undefined
   );
 
-  function doQueryExport(url: string, captions?: RA<string>): void {
+  function doQueryExport(
+    url: string,
+    delimiter: string | undefined,
+    bom: boolean | undefined,
+    selectedRows: ReadonlySet<number> | undefined
+  ): void {
     if (typeof getQueryFieldRecords === 'function')
       queryResource.set('fields', getQueryFieldRecords());
     const serialized = queryResource.toJSON();
     setState('creating');
     void ping(url, {
       method: 'POST',
-      body: {
+      body: keysToLowerCase({
         ...serialized,
-        captions,
-      },
+        captions: fields
+          .filter(({ isDisplay }) => isDisplay)
+          .map(({ mappingPath }) =>
+            generateMappingPathPreview(baseTableName, mappingPath)
+          ),
+        recordSetId,
+        selectedRows:
+          selectedRows === undefined ? undefined : Array.from(selectedRows),
+        delimiter,
+        bom,
+      }),
+      errorMode: 'dismissible',
     });
   }
+
+  const [separator] = userPreferences.use(
+    'queryBuilder',
+    'behavior',
+    'exportFileDelimiter'
+  );
+
+  const [utf8Bom] = userPreferences.use(
+    'queryBuilder',
+    'behavior',
+    'exportCsvUtf8Bom'
+  );
+
+  /*
+   *Will be only called if query is not distinct,
+   *selection not enabled when distinct selected
+   */
+
+  async function exportCsvSelected(): Promise<void> {
+    const name = `${
+      queryResource.isNew()
+        ? `${queryText.newQueryName()} ${genericTables[baseTableName].label}`
+        : queryResource.get('name')
+    } - ${new Date().toDateString()}.csv`;
+
+    const selectedResults = results?.current?.map((row) =>
+      row !== undefined && f.has(selectedRows, row[0])
+        ? row?.slice(1).map((cell) => cell?.toString() ?? '')
+        : undefined
+    );
+
+    if (selectedResults === undefined) return undefined;
+
+    const filteredResults = filterArray(selectedResults);
+
+    const columnsName = fields
+      .filter((field) => field.isDisplay)
+      .map((field) =>
+        generateMappingPathPreview(baseTableName, field.mappingPath)
+      );
+
+    return downloadDataSet(
+      name,
+      filteredResults,
+      columnsName,
+      separator,
+      utf8Bom
+    );
+  }
+
+  const containsResults = results.current?.some((row) => row !== undefined);
 
   const canUseKml =
     (baseTableName === 'Locality' ||
       fields.some(({ mappingPath }) => mappingPath.includes('locality'))) &&
+    containsResults &&
     hasPermission('/querybuilder/query', 'export_kml');
 
   return (
     <>
       {state === 'creating' ? (
         <Dialog
-          buttons={commonText('close')}
-          header={queryText('queryExportStartedDialogHeader')}
+          buttons={commonText.close()}
+          header={queryText.queryExportStarted()}
           onClose={(): void => setState(undefined)}
         >
-          {queryText('queryExportStartedDialogText')}
+          {queryText.queryExportStartedDescription()}
         </Dialog>
       ) : state === 'warning' ? (
         <Dialog
-          buttons={commonText('close')}
-          header={queryText('unableToExportAsKmlDialogHeader')}
+          buttons={commonText.close()}
+          header={queryText.missingCoordinatesForKml()}
           onClose={(): void => setState(undefined)}
         >
-          {queryText('unableToExportAsKmlDialogText')}
+          {queryText.missingCoordinatesForKmlDescription()}
         </Dialog>
       ) : undefined}
-      {hasPermission('/querybuilder/query', 'export_csv') && (
-        <QueryButton
-          disabled={fields.length === 0}
-          showConfirmation={showConfirmation}
-          onClick={(): void => doQueryExport('/stored_query/exportcsv/')}
-        >
-          {queryText('createCsv')}
-        </QueryButton>
-      )}
+      {containsResults &&
+        hasPermission('/querybuilder/query', 'export_csv') && (
+          <QueryButton
+            disabled={fields.length === 0}
+            showConfirmation={showConfirmation}
+            onClick={(): void => {
+              selectedRows.size === 0
+                ? doQueryExport(
+                    '/stored_query/exportcsv/',
+                    separator,
+                    utf8Bom,
+                    undefined
+                  )
+                : exportCsvSelected().catch(softFail);
+            }}
+          >
+            {queryText.createCsv()}
+          </QueryButton>
+        )}
       {canUseKml && (
         <QueryButton
           disabled={fields.length === 0}
@@ -90,16 +183,14 @@ export function QueryExportButtons({
             hasLocalityColumns(fields)
               ? doQueryExport(
                   '/stored_query/exportkml/',
-                  fields
-                    .filter(({ isDisplay }) => isDisplay)
-                    .map(({ mappingPath }) =>
-                      generateMappingPathPreview(baseTableName, mappingPath)
-                    )
+                  undefined,
+                  undefined,
+                  selectedRows.size === 0 ? undefined : selectedRows
                 )
               : setState('warning')
           }
         >
-          {queryText('createKml')}
+          {queryText.createKml()}
         </QueryButton>
       )}
     </>

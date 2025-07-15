@@ -4,10 +4,11 @@
  * Icons are stored in https://github.com/specify/specify6/tree/master/src/edu/ku/brc/specify/images
  */
 
-import { load } from './index';
 import type { RA } from '../../utils/types';
+import { softFail } from '../Errors/Crash';
+import { load } from './index';
 
-const iconGroups = {} as Record<IconGroup, Document>;
+const iconGroups = {} as Record<IconGroup, Element>;
 
 export const fetchContext = Promise.all(
   Object.entries({
@@ -21,7 +22,7 @@ export const fetchContext = Promise.all(
     plugin: 'icons_plugins.xml',
     default: 'icons.xml',
   }).map(async ([iconGroup, fileName]) =>
-    load<Document>(`/static/config/${fileName}`, 'text/xml').then((xml) => {
+    load<Element>(`/static/config/${fileName}`, 'text/xml').then((xml) => {
       iconGroups[iconGroup] = xml;
     })
   )
@@ -39,25 +40,34 @@ const iconDirectories = {
 
 export const unknownIcon = '/images/unknown.png';
 
-export function getIcon(icon: string): string | undefined {
+export function getIcon(name: string): string | undefined {
   for (const [group, xml] of Object.entries(iconGroups)) {
-    const iconFile = findIconInXml(icon, xml)?.getAttribute('file');
+    const iconFile = findIconInXml(name, xml)?.getAttribute('file');
     if (typeof iconFile === 'string')
       return `${iconDirectories[group]}${iconFile}`;
   }
+  try {
+    new URL(name);
+    return name;
+  } catch {}
+  console.warn(`Unable to find the icon ${name}`);
   return undefined;
 }
 
 function findIconInXml(
   icon: string,
-  xml: Document,
+  xml: Element,
   cycleDetect: RA<string> = []
 ): Element | undefined {
-  if (cycleDetect.includes(icon))
-    throw new Error('Circular reference in icon definitions');
-  const iconNode = xml.querySelector(`icon[name="${icon}"]`);
+  if (cycleDetect.includes(icon)) {
+    softFail(new Error('Circular reference in icon definitions'));
+    return undefined;
+  }
+  const iconNode = xml.querySelector(
+    `icon[name="${icon}"],icon[file="${icon}"]`
+  );
   const alias = iconNode?.getAttribute('alias');
   return typeof alias === 'string'
     ? findIconInXml(alias, xml, [...cycleDetect, icon])
-    : iconNode ?? undefined;
+    : (iconNode ?? undefined);
 }

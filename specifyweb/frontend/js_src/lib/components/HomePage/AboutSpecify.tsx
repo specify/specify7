@@ -1,7 +1,9 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
+import { StringToJsx } from '../../localization/utils';
 import { welcomeText } from '../../localization/welcome';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
@@ -10,7 +12,7 @@ import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import { supportLink } from '../Errors/ErrorDialog';
 import { produceStackTrace } from '../Errors/stackTrace';
 import { getSystemInfo } from '../InitialContext/systemInfo';
@@ -25,6 +27,8 @@ export function AboutOverlay(): JSX.Element {
   return <AboutDialog isOpen onClose={handleClose} />;
 }
 
+const websiteUrl = 'www.specifysoftware.org' as LocalizedString;
+
 function AboutDialog({
   isOpen,
   onClose: handleClose,
@@ -35,10 +39,9 @@ function AboutDialog({
   const loading = React.useContext(LoadingContext);
   return (
     <Dialog
-      icon="info"
       buttons={
         <>
-          <Button.Green
+          <Button.Success
             onClick={(): void =>
               loading(
                 downloadFile(
@@ -50,11 +53,11 @@ function AboutDialog({
               )
             }
           >
-            {welcomeText('downloadInformation')}
-          </Button.Green>
+            {welcomeText.downloadInformation()}
+          </Button.Success>
           {/* REFACTOR: replace span elements like this with a separator */}
           <span className="-ml-2 flex-1" />
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
         </>
       }
       className={{
@@ -62,72 +65,77 @@ function AboutDialog({
         content: `${dialogClassNames.flexContent} pr-4`,
         header: 'text-3xl',
       }}
-      header={welcomeText('aboutSpecify')}
+      header={welcomeText.aboutSpecify()}
+      icon="info"
       isOpen={isOpen}
       onClose={handleClose}
     >
       <p>
-        <b>{welcomeText('fullAddress')}</b>
+        <b>
+          <StringToJsx
+            components={{
+              br: <br />,
+            }}
+            string={welcomeText.fullAddress()}
+          />
+        </b>
       </p>
       <address>
         <p>
           <Link.NewTab href="https://specifysoftware.org" rel="noreferrer">
-            www.specifysoftware.org
+            {websiteUrl}
           </Link.NewTab>
         </p>
         <p>{supportLink}</p>
       </address>
-      <p className="text-justify">{welcomeText('disclosure')}</p>
-      <p className="text-justify">{welcomeText('licence')}</p>
+      <p className="text-justify">{welcomeText.disclosure()}</p>
+      <p className="text-justify">{welcomeText.licence()}</p>
 
       <section>
-        <H3>{welcomeText('systemInformation')}</H3>
+        <H3>{welcomeText.systemInformation()}</H3>
         <table className="grid-table grid-cols-[auto,auto] gap-1">
           <tbody>
             {[
-              [welcomeText('specifyVersion'), getSystemInfo().version],
-              [welcomeText('gitSha'), <GitSha />],
-              [welcomeText('buildDate'), <BuildDate />],
+              [welcomeText.specifyVersion(), getSystemInfo().version],
+              [welcomeText.gitSha(), <GitSha key="git-sha" />],
+              [welcomeText.buildDate(), <BuildDate key="build-date" />],
               [
-                welcomeText('specifySixVersion'),
+                welcomeText.specifySixVersion(),
                 getSystemInfo().specify6_version,
               ],
+              [welcomeText.databaseVersion(), getSystemInfo().database_version],
               [
-                welcomeText('databaseVersion'),
-                getSystemInfo().database_version,
-              ],
-              [
-                welcomeText('schemaVersion'),
+                `${welcomeText.schemaVersion()}:`,
                 <Link.Default href="/specify/datamodel/" key="link">
                   {getSystemInfo().schema_version}
                 </Link.Default>,
               ],
-              [welcomeText('databaseName'), getSystemInfo().database],
+              [welcomeText.databaseName(), getSystemInfo().database],
               ...(hasTablePermission('SpVersion', 'read')
                 ? [
                     [
-                      welcomeText('databaseCreationDate'),
+                      welcomeText.databaseCreationDate(),
                       <DatabaseCreationDate key="" />,
                     ],
                   ]
                 : []),
               [
-                `${schema.models.Institution.label}:`,
+                commonText.colonHeader({ header: tables.Institution.label }),
                 getSystemInfo().institution,
               ],
               [
-                `${schema.models.Discipline.label}:`,
+                commonText.colonHeader({ header: tables.Discipline.label }),
                 getSystemInfo().discipline,
               ],
               [
-                `${schema.models.Collection.label}: `,
+                commonText.colonHeader({ header: tables.Collection.label }),
                 getSystemInfo().collection,
               ],
               [
-                welcomeText('isaNumber'),
-                getSystemInfo().isa_number ?? commonText('notApplicable'),
+                welcomeText.isaNumber(),
+                getSystemInfo().isa_number ?? commonText.notApplicable(),
               ],
-              [welcomeText('browser'), globalThis.navigator.userAgent],
+              [welcomeText.browser(), globalThis.navigator.userAgent],
             ].map(([label, value], index) => (
               <tr key={index}>
                 <th className="justify-end whitespace-nowrap" scope="row">
@@ -147,31 +155,27 @@ function DatabaseCreationDate(): JSX.Element {
   const [date] = useAsyncState(
     React.useCallback(
       async () =>
-        fetchCollection('SpVersion', { limit: 1 }).then(
+        fetchCollection('SpVersion', { limit: 1, domainFilter: false }).then(
           ({ records }) => records[0]?.timestampCreated
         ),
       []
     ),
     false
   );
-  return <DateElement date={date} fallback={commonText('loading')} flipDates />;
+  return <DateElement date={date} fallback={commonText.loading()} flipDates />;
 }
 
 function GitSha(): JSX.Element {
   const [gitSha] = useAsyncState(
     React.useCallback(
       async () =>
-        ajax(
-          '/static/git_sha.txt',
-          {
-            headers: {
-              accept: 'text/plain',
-            },
+        ajax<LocalizedString>('/static/git_sha.txt', {
+          headers: {
+            accept: 'text/plain',
           },
-          {
-            expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
-          }
-        ).then(({ data, status }) =>
+          errorMode: 'dismissible',
+          expectedErrors: [Http.NOT_FOUND],
+        }).then(({ data, status }) =>
           status === Http.NOT_FOUND ? false : data
         ),
       []
@@ -181,7 +185,7 @@ function GitSha(): JSX.Element {
   return (
     <>
       {gitSha === false ? (
-        commonText('unknown')
+        commonText.unknown()
       ) : typeof gitSha === 'string' ? (
         <Link.NewTab
           className="break-all"
@@ -190,7 +194,7 @@ function GitSha(): JSX.Element {
           {gitSha}
         </Link.NewTab>
       ) : (
-        commonText('loading')
+        commonText.loading()
       )}
     </>
   );
@@ -200,22 +204,18 @@ function BuildDate(): JSX.Element {
   const [buildDate] = useAsyncState(
     React.useCallback(
       async () =>
-        ajax(
-          '/static/build_date.txt',
-          {
-            headers: {
-              accept: 'text/plain',
-            },
+        ajax('/static/build_date.txt', {
+          headers: {
+            accept: 'text/plain',
           },
-          {
-            expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
-          }
-        ).then(({ data, status }) =>
-          status === Http.NOT_FOUND ? commonText('unknown') : data
+          errorMode: 'dismissible',
+          expectedErrors: [Http.NOT_FOUND],
+        }).then(({ data, status }) =>
+          status === Http.NOT_FOUND ? commonText.unknown() : data
         ),
       []
     ),
     false
   );
-  return <DateElement date={buildDate} fallback={commonText('loading')} />;
+  return <DateElement date={buildDate} fallback={commonText.loading()} />;
 }

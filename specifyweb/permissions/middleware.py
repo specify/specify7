@@ -21,10 +21,10 @@ class PermissionsMiddleware:
             try:
                 check_permission_targets(col.id, user.id, [CollectionAccessPT.access])
             except PermissionsException as exception:
-                return http.JsonResponse(exception.to_json(), status=exception.http_status, safe=False)
+                return http.JsonResponse(exception.to_json(), status=exception.status_code, safe=False)
 
     def process_exception(self, request, exception) -> Optional[http.HttpResponse]:
         if isinstance(exception, PermissionsException):
-            return http.JsonResponse(exception.to_json(), status=exception.http_status, safe=False)
+            return http.JsonResponse(exception.to_json(), status=exception.status_code, safe=False)
         else:
             return None

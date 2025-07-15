@@ -1,17 +1,17 @@
 import React from 'react';
 
 import { useId } from '../../hooks/useId';
-import { adminText } from '../../localization/admin';
+import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import type { IR } from '../../utils/types';
 import { Input } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import { schema } from '../DataModel/schema';
+import { genericTables, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { TableIcon } from '../Molecules/TableIcon';
 import { tableActions } from '../Permissions/definitions';
 import type { PreviewCell } from './Preview';
 import { actionToLabel, resourceNameToLabel } from './utils';
-import { commonText } from '../../localization/common';
 
 export function PreviewRow({
   row,
@@ -23,7 +23,7 @@ export function PreviewRow({
   readonly getOpenRoleUrl: (roleId: number) => string;
 }): JSX.Element {
   const [view, setView] = React.useState<
-    typeof tableActions[number] | undefined
+    (typeof tableActions)[number] | undefined
   >(undefined);
   const id = useId('preview-row');
   return (
@@ -49,7 +49,7 @@ export function PreviewRow({
         ))}
         <div className="p-2" role="cell">
           <TableIcon label={false} name={tableName} />
-          {schema.models[tableName].label}
+          {genericTables[tableName].label}
         </div>
       </div>
       <div
@@ -85,9 +85,11 @@ export function PermissionExplanation({
       >
         <div role="row">
           {[
-            adminText('collectionUserRoles'),
-            adminText('action'),
-            adminText('resource'),
+            userText.collectionUserRoles({
+              collectionTable: tables.Collection.label,
+            }),
+            userText.action(),
+            userText.resource(),
           ].map((label, index, { length }) => (
             <div
               className={`
@@ -96,8 +98,8 @@ export function PermissionExplanation({
                   index === 0
                     ? 'rounded-l'
                     : index + 1 === length
-                    ? 'rounded-r'
-                    : ''
+                      ? 'rounded-r'
+                      : ''
                 }
               `}
               key={index}
@@ -128,7 +130,7 @@ export function PermissionExplanation({
           {matching_role_policies.length === 0 && (
             <div role="row">
               <div className="col-span-full p-2" role="cell">
-                {commonText('none')}
+                {commonText.none()}
               </div>
             </div>
           )}
@@ -140,10 +142,10 @@ export function PermissionExplanation({
       >
         <div role="row">
           {[
-            adminText('userPolicies'),
-            schema.models.Collection.label,
-            adminText('action'),
-            adminText('resource'),
+            userText.userPolicies(),
+            tables.Collection.label,
+            userText.action(),
+            userText.resource(),
           ].map((label, index, { length }) => (
             <div
               className={`
@@ -152,8 +154,8 @@ export function PermissionExplanation({
                   index === 0
                     ? 'rounded-l'
                     : index + 1 === length
-                    ? 'rounded-r'
-                    : ''
+                      ? 'rounded-r'
+                      : ''
                 }
               `}
               key={index}
@@ -168,11 +170,11 @@ export function PermissionExplanation({
             <div key={index} role="row">
               {[
                 policy.userid === null
-                  ? adminText('allUsers')
-                  : adminText('thisUser'),
+                  ? userText.allUsers()
+                  : userText.thisUser(),
                 policy.collectionid === null
-                  ? adminText('allCollections')
-                  : adminText('thisCollection'),
+                  ? userText.allCollections()
+                  : userText.thisCollection(),
                 actionToLabel(policy.action),
                 resourceNameToLabel(policy.resource),
               ].map((value, index) => (
@@ -185,7 +187,7 @@ export function PermissionExplanation({
           {matching_user_policies.length === 0 && (
             <div role="row">
               <div className="col-span-full p-2" role="cell">
-                {commonText('none')}
+                {commonText.none()}
               </div>
             </div>
           )}

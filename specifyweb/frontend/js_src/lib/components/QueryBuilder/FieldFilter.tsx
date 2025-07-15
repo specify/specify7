@@ -1,11 +1,11 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
+import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { Parser } from '../../utils/parser/definitions';
 import {
@@ -18,20 +18,23 @@ import type {
 } from '../../utils/parser/parse';
 import { parseValue } from '../../utils/parser/parse';
 import type { RA, RR } from '../../utils/types';
-import { removeKey } from '../../utils/utils';
 import { Input, Select, selectMultipleSize } from '../Atoms/Form';
-import { schema } from '../DataModel/schema';
+import { getField } from '../DataModel/helpers';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import { tables } from '../DataModel/tables';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
 import { hasNativeErrors } from '../Forms/validationHelpers';
-import { fetchPickList, getPickListItems } from '../PickLists/fetch';
-import { mappingElementDivider } from '../WbPlanView/LineComponents';
-import type { QueryField } from './helpers';
+import { IsQueryBasicContext } from './Context';
+import { DateQueryInputField } from './RelativeDate';
+import { SpecifyUserAutoComplete } from './SpecifyUserAutoComplete';
 
 /**
  * Formatters and aggregators don't yet support any filtering options.
  * See https://github.com/specify/specify7/issues/318
  */
 export type QueryFieldType =
+  | 'age'
+  | 'aggregator'
   | 'checkbox'
   | 'date'
   | 'formatter'
@@ -39,6 +42,8 @@ export type QueryFieldType =
   | 'number'
   | 'text';
 export type QueryFieldFilter =
+  | 'ageName'
+  | 'ageRange'
   | 'any'
   | 'between'
   | 'contains'
@@ -60,12 +65,12 @@ export const filtersWithDefaultValue = new Set<QueryFieldFilter>([
   'in',
 ]);
 
-function QueryInputField({
+export function QueryInputField({
   currentValue,
   // Used only to help browsers with autocomplete
   fieldName,
   parser,
-  label = commonText('searchQuery'),
+  label = commonText.searchQuery(),
   pickListItems,
   listInput = false,
   onChange: handleChange,
@@ -73,7 +78,7 @@ function QueryInputField({
   readonly currentValue: string;
   readonly fieldName: string;
   readonly parser: Parser;
-  readonly label?: string;
+  readonly label?: LocalizedString;
   readonly pickListItems: RA<PickListItemSimple> | undefined;
   readonly listInput?: boolean;
   readonly onChange: ((newValue: string) => void) | undefined;
@@ -109,10 +114,9 @@ function QueryInputField({
       inputRef.current?.checkValidity() === true
     )
       setValidation(
-        formsText(
-          'tooLongErrorMessage',
-          Number.parseInt(validationAttributes.maxLength)
-        )
+        queryText.tooLongErrorMessage({
+          maxLength: Number.parseInt(validationAttributes.maxLength),
+        })
       );
   }, [value, validationAttributes.maxLength, inputRef, setValidation]);
 
@@ -167,6 +171,8 @@ function QueryInputField({
     },
   };
 
+  const isBasic = React.useContext(IsQueryBasicContext);
+
   return Array.isArray(pickListItems) ? (
     <div>
       <Select
@@ -178,8 +184,8 @@ function QueryInputField({
             ? value
                 .split(',')
                 .map(f.trim)
-                .map((value) => resolveItem(pickListItems, value))
-            : resolveItem(pickListItems, value)
+                .map((value) => resolvePickListItem(pickListItems, value))
+            : resolvePickListItem(pickListItems, value)
         }
       >
         <option value="" />
@@ -196,6 +202,7 @@ function QueryInputField({
       className={`
         relative min-w-[theme(spacing.40)] after:invisible
         after:block after:px-2 after:leading-[0px] after:content-[attr(data-value)]
+        ${isBasic ? 'flex-1' : ''}
       `}
       // The :after pseudo element sets the width
       data-value={value}
@@ -203,18 +210,18 @@ function QueryInputField({
       {/* This invisible input is used to set the height */}
       <Input.Text aria-hidden className="invisible w-0" />
       <Input.Generic
+        // This is the actual input that is visible to user
         {...commonProps}
         {...validationAttributes}
-        type={listInput ? 'text' : validationAttributes.type}
-        // This is the actual input that is visible to user
-        value={value}
         className={`!absolute inset-0 ${commonProps.className}`}
+        type={listInput ? 'text' : validationAttributes.type}
+        value={value}
       />
     </span>
   );
 }
 
-const resolveItem = (
+export const resolvePickListItem = (
   items: RA<PickListItemSimple>,
   currentValue: string
 ): string =>
@@ -223,54 +230,84 @@ const resolveItem = (
   currentValue;
 
 function SingleField({
-  filter,
+  currentValue,
   parser,
   pickListItems,
   fieldName,
-  label = commonText('searchQuery'),
+  terminatingField,
+  label = commonText.searchQuery(),
   onChange: handleChange,
+  listInput = false,
 }: {
-  readonly filter: QueryField['filters'][number];
+  readonly currentValue: string;
   readonly parser: Parser;
   readonly pickListItems: RA<PickListItemSimple> | undefined;
-  readonly label?: string;
+  readonly label?: LocalizedString;
   readonly fieldName: string;
+  readonly terminatingField: LiteralField | Relationship | undefined;
+  readonly listInput?: boolean;
   readonly onChange: ((newValue: string) => void) | undefined;
   /*
    * This prop is not used here, but defined here because of "typeof SingleField"
    * in queryFieldFilters
    */
-
   readonly enforceLengthLimit: boolean;
 }): JSX.Element {
-  return (
-    <QueryInputField
-      currentValue={filter.startValue}
-      fieldName={fieldName}
-      label={label}
-      parser={parser}
-      pickListItems={pickListItems}
-      onChange={handleChange}
-    />
-  );
+  if (parser.type === 'date')
+    return (
+      <DateQueryInputField
+        currentValue={currentValue}
+        fieldName={fieldName}
+        label={label}
+        parser={parser}
+        onChange={handleChange}
+      />
+    );
+  else if (
+    terminatingField?.isRelationship === false &&
+    terminatingField.name === 'name' &&
+    terminatingField.table.name === 'SpecifyUser'
+  )
+    return (
+      <SpecifyUserAutoComplete
+        startValue={currentValue}
+        onChange={handleChange}
+      />
+    );
+  else
+    return (
+      <QueryInputField
+        currentValue={currentValue}
+        fieldName={fieldName}
+        label={label}
+        listInput={listInput}
+        parser={parser}
+        pickListItems={pickListItems}
+        onChange={handleChange}
+      />
+    );
 }
 
 function Between({
-  filter,
+  currentValue,
   fieldName,
   parser: originalParser,
   pickListItems,
   onChange: handleChange,
+  terminatingField,
+  enforceLengthLimit,
 }: {
-  readonly filter: QueryField['filters'][number];
+  readonly currentValue: string;
   readonly fieldName: string;
   readonly parser: Parser;
   readonly pickListItems: RA<PickListItemSimple> | undefined;
+  readonly terminatingField: LiteralField | Relationship | undefined;
+  readonly enforceLengthLimit: boolean;
   readonly onChange: ((newValue: string) => void) | undefined;
 }): JSX.Element {
   const splitValue = React.useMemo(
-    () => filter.startValue.split(','),
-    [filter.startValue]
+    () => currentValue.split(','),
+    [currentValue]
   );
   const [values, setValues] = useTriggerState(splitValue);
   const updateValues =
@@ -294,21 +331,25 @@ function Between({
   );
   return (
     <>
-      <QueryInputField
+      <SingleField
         currentValue={values[0] ?? ''}
+        enforceLengthLimit={enforceLengthLimit}
         fieldName={fieldName}
-        label={queryText('startValue')}
+        label={queryText.startValue()}
         parser={parser}
         pickListItems={pickListItems}
+        terminatingField={terminatingField}
         onChange={updateValues?.bind(undefined, 0)}
       />
-      <span className="flex items-center">{queryText('and')}</span>
-      <QueryInputField
+      <span className="flex items-center">{queryText.and()}</span>
+      <SingleField
         currentValue={values[1] ?? ''}
+        enforceLengthLimit={enforceLengthLimit}
         fieldName={fieldName}
-        label={queryText('endValue')}
+        label={queryText.endValue()}
         parser={parser}
         pickListItems={pickListItems}
+        terminatingField={terminatingField}
         onChange={updateValues?.bind(undefined, 1)}
       />
     </>
@@ -316,14 +357,14 @@ function Between({
 }
 
 function In({
-  filter,
+  currentValue,
   fieldName,
   parser,
   pickListItems,
   onChange: handleChange,
   enforceLengthLimit,
 }: {
-  readonly filter: QueryField['filters'][number];
+  readonly currentValue: string;
   readonly fieldName: string;
   readonly parser: Parser;
   readonly pickListItems: RA<PickListItemSimple> | undefined;
@@ -334,251 +375,185 @@ function In({
     () => ({
       ...pluralizeParser(parser),
       maxLength: enforceLengthLimit
-        ? schema.models.SpQueryField.strictGetLiteralField('startValue').length
+        ? getField(tables.SpQueryField, 'startValue').length
         : undefined,
     }),
     [parser, enforceLengthLimit]
   );
   return (
-    <QueryInputField
-      currentValue={filter.startValue}
+    <SingleField
+      currentValue={currentValue}
+      enforceLengthLimit={enforceLengthLimit}
       fieldName={fieldName}
-      label={queryText('startValue')}
+      label={queryText.startValue()}
       listInput
       parser={pluralizedParser}
       pickListItems={pickListItems}
+      terminatingField={undefined}
       onChange={handleChange}
     />
   );
 }
 
-export const queryFieldFilters: RR<
-  QueryFieldFilter,
-  {
-    readonly id: number;
-    readonly label: string;
-    readonly description: string | undefined;
-    // If true, show pick list item titles. Else, show free input
-    readonly renderPickList: boolean;
-    readonly types?: RA<QueryFieldType>;
-    readonly component?: typeof SingleField;
-    // Whether to do front-end validation
-    readonly hasParser: boolean;
-  }
-> = {
+type FieldFilter = {
+  readonly id: number;
+  readonly label: LocalizedString;
+  readonly description: LocalizedString | undefined;
+  // If true, show pick list item titles. Else, show free input
+  readonly renderPickList: boolean;
+  readonly component?: typeof SingleField;
+  // Whether to do front-end validation
+  readonly hasParser: boolean;
+};
+
+/**
+ * Basic QueryFieldFilter spec for non-React components and general use.
+ * React components should use the useQueryFieldFilters hook as some
+ * user preferences can modify/expand the spec, and the hook can listen to
+ * preference changes and update the object accordingly
+ *
+ * REFACTOR: Include attributes of the full field filters of
+ * useQueryFieldFilters with this object?
+ * So that they can still be easily accessed if needed by helper functions, but
+ * in a potentially stale state.
+ */
+export const queryFieldFilters: RR<QueryFieldFilter, FieldFilter> = {
   any: {
     id: 8,
-    label: queryText('any'),
+    label: queryText.any(),
     description: undefined,
     renderPickList: false,
     hasParser: false,
   },
   like: {
     id: 0,
-    label: queryText('like'),
-    description: queryText('likeDescription'),
+    label: queryText.like(),
+    description: queryText.likeDescription(),
     renderPickList: false,
-    types: ['text', 'number', 'date', 'id'],
     component: SingleField,
     hasParser: false,
   },
   equal: {
     id: 1,
-    label: queryText('equal'),
+    label: queryText.equal(),
     description: undefined,
     renderPickList: true,
     component: SingleField,
     hasParser: true,
-    types: ['text', 'number', 'date', 'id'],
   },
   greater: {
     id: 2,
-    label: queryText('greaterThan'),
+    label: queryText.greaterThan(),
     description: undefined,
     renderPickList: false,
-    types: ['number', 'date', 'id'],
     component: SingleField,
     hasParser: true,
   },
   less: {
     id: 3,
-    label: queryText('lessThan'),
+    label: queryText.lessThan(),
     description: undefined,
     renderPickList: false,
-    types: ['number', 'date', 'id'],
     component: SingleField,
     hasParser: true,
   },
   greaterOrEqual: {
     id: 4,
-    label: queryText('greaterOrEqualTo'),
+    label: queryText.greaterOrEqualTo(),
     description: undefined,
     renderPickList: false,
-    types: ['number', 'date', 'id'],
     component: SingleField,
     hasParser: true,
   },
   lessOrEqual: {
     id: 5,
-    label: queryText('lessOrEqualTo'),
+    label: queryText.lessOrEqualTo(),
     description: undefined,
     renderPickList: false,
-    types: ['number', 'date', 'id'],
     component: SingleField,
     hasParser: true,
   },
   true: {
     id: 6,
-    label: queryText('true'),
+    label: queryText.true(),
     description: undefined,
     renderPickList: false,
-    types: ['checkbox'],
     hasParser: true,
   },
   false: {
     id: 7,
-    label: queryText('false'),
+    label: queryText.false(),
     description: undefined,
     renderPickList: false,
-    types: ['checkbox'],
     hasParser: true,
   },
   between: {
     id: 9,
-    label: queryText('between'),
+    label: queryText.between(),
     description: undefined,
     renderPickList: false,
-    types: ['text', 'number', 'date', 'id'],
     component: Between,
     hasParser: true,
   },
   in: {
     id: 10,
-    label: queryText('in'),
-    description: queryText('inDescription'),
+    label: queryText.in(),
+    description: queryText.inDescription(),
     renderPickList: true,
-    /*
-     * Can't use "date" for IN because date picker does not allow separating
-     * multiple values with a comma. Instead, OR filters should be used
-     */
-    types: ['text', 'number', 'id'],
     component: In,
     hasParser: true,
   },
   contains: {
     id: 11,
-    label: queryText('contains'),
+    label: queryText.contains(),
     description: undefined,
     renderPickList: false,
     component: SingleField,
-    types: ['text', 'number', 'date', 'id'],
     hasParser: false,
   },
   startsWith: {
     id: 15,
-    label: queryText('startsWith'),
+    label: queryText.startsWith(),
     description: undefined,
     renderPickList: false,
     component: SingleField,
-    types: ['text', 'number', 'date', 'id'],
     hasParser: false,
   },
   empty: {
     id: 12,
-    label: queryText('empty'),
+    label: queryText.empty(),
     description: undefined,
     renderPickList: false,
     hasParser: false,
   },
   trueOrNull: {
     id: 13,
-    label: queryText('trueOrNull'),
+    label: queryText.trueOrNull(),
     description: undefined,
     renderPickList: false,
-    types: ['checkbox'],
     hasParser: true,
   },
   falseOrNull: {
     id: 14,
-    label: queryText('falseOrNull'),
+    label: queryText.falseOrNull(),
     description: undefined,
     renderPickList: false,
-    types: ['checkbox'],
     hasParser: true,
   },
+  ageName: {
+    id: 17,
+    label: resourcesText.name(),
+    description: undefined,
+    renderPickList: true,
+    hasParser: true,
+    component: In,
+  },
+  ageRange: {
+    id: 16,
+    label: queryText.range(),
+    description: undefined,
+    renderPickList: false,
+    hasParser: true,
+    component: Between,
+  },
 };
-
-export function QueryLineFilter({
-  filter,
-  fieldName,
-  parser: originalParser,
-  enforceLengthLimit,
-  onChange: handleChange,
-}: {
-  readonly filter: QueryField['filters'][number];
-  readonly fieldName: string;
-  readonly parser: Parser;
-  readonly enforceLengthLimit: boolean;
-  readonly onChange: ((newValue: string) => void) | undefined;
-}): JSX.Element | null {
-  const parser = queryFieldFilters[filter.type].hasParser
-    ? originalParser
-    : ({
-        ...removeKey(
-          originalParser,
-          'pattern',
-          'min',
-          'step',
-          'formatters',
-          'parser',
-          'validators'
-        ),
-        type: 'text',
-      } as const);
-
-  const [pickListItems] = useAsyncState(
-    React.useCallback(
-      () =>
-        typeof parser.pickListName === 'string'
-          ? fetchPickList(parser.pickListName).then((pickList) =>
-              typeof pickList === 'object' ? getPickListItems(pickList) : false
-            )
-          : false,
-      [parser.pickListName]
-    ),
-    false
-  );
-
-  // Fix for https://github.com/specify/specify7/issues/2296
-  React.useEffect(() => {
-    if (pickListItems === undefined || pickListItems === false) return;
-    const newStartValue = filter.startValue
-      .split(',')
-      .map((value) => resolveItem(pickListItems, value))
-      .join(',');
-    if (newStartValue !== filter.startValue) handleChange?.(newStartValue);
-  }, [pickListItems, filter]);
-
-  const Component = queryFieldFilters[filter.type].component;
-  return Component === undefined ? null : pickListItems === undefined ? (
-    <>{commonText('loading')}</>
-  ) : (
-    <>
-      {mappingElementDivider}
-      <Component
-        enforceLengthLimit={enforceLengthLimit}
-        fieldName={fieldName}
-        filter={filter}
-        parser={parser}
-        pickListItems={
-          queryFieldFilters[filter.type].renderPickList
-            ? pickListItems === false
-              ? undefined
-              : pickListItems
-            : undefined
-        }
-        onChange={handleChange}
-      />
-    </>
-  );
-}

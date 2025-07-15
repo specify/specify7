@@ -3,9 +3,9 @@
 from django import http
 from django.conf import settings
 from django.utils.translation import gettext as _
-from django.views.decorators.http import require_GET
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, cast
 
+from specifyweb.middleware.general import require_GET
 from .datamodel import (
     Field,
     Relationship,
@@ -16,7 +16,7 @@ from .datamodel import (
 from .views import login_maybe_required
 
 
-def base_schema(title="Specify 7 API", description="") -> Dict:
+def base_schema(title="Specify 7 API", description="") -> dict:
     """Return base schema object that is shared between both Swagger UI's.
 
     returns:
@@ -55,7 +55,7 @@ def base_schema(title="Specify 7 API", description="") -> Dict:
         },
         "externalDocs": {
             "description": "How to use specifyweb API as a generic webservice",
-            "url": "https://github.com/specify/specify7/wiki/Api-Demo",
+            "url": "https://discourse.specifysoftware.org/t/how-to-use-the-specify-api-as-a-generic-webservice/181",
         },
         "servers": [
             {
@@ -162,7 +162,7 @@ def generate_openapi_for_tables():
                 "orderby": {
                     "name": "orderby",
                     "in": "query",
-                    "description": "The name of the field to order by. Prefix the field name with '-' for DESC sort order",
+                    "description": "The name of the field to order by. Prefix the field name with '-' for DESC sort order. Can specify multiple fields separated by comma",
                     "required": False,
                     "schema": {
                         "type": "string",
@@ -184,6 +184,15 @@ def generate_openapi_for_tables():
                     "description": record_version_description,
                     "required": False,
                     "schema": {"type": "number", "minimum": 0},
+                },
+                "id": {
+                    "name": "id",
+                    "in": "path",
+                    "required": True,
+                    "schema": {
+                        "type": "number",
+                        "minimum": 0,
+                    }
                 },
                 "version_in_header": {
                     "name": "HTTP_IF_MATCH",
@@ -348,7 +357,7 @@ def view(request, model: str) -> http.HttpResponse:
     return http.JsonResponse(table_to_schema(table))
 
 
-def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
+def table_to_endpoint(table: Table) -> list[tuple[str, dict]]:
     """Generate OpenAPI for several endpoints based on table.
 
     params:
@@ -366,11 +375,11 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                     "summary": f"Query multiple records from the {table.django_name} table",
                     "description": (
                         f"Query multiple records from the {table.django_name} table<br>"
-                        f"Filterring is supported by providing field values as GET parameters<br>"
+                        f"Filtering is supported by providing field values as GET parameters<br>"
                         f"Example: /api/specify/sometable/?field=value. Advanced filtering "
                         f"options are also supported (e.g. ?numericfield__gte=4). More filters "
                         f"are documented here: "
-                        f"https://docs.djangoproject.com/en/4.0/ref/models/querysets/#field-lookups-1"
+                        f"<a href=https://docs.djangoproject.com/en/4.0/ref/models/querysets/#field-lookups-1>https://docs.djangoproject.com/en/4.0/ref/models/querysets/#field-lookups-1</a>"
                     ),
                     "parameters": [
                         {"$ref": "#/components/parameters/limit"},
@@ -410,7 +419,7 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                             "description": "Permission denied",
                             "content": {
                                 "application/json": {
-                                    "schema": { "$ref": "#/components/schemas/_permission_denied_error" }
+                                    "schema": {"$ref": "#/components/schemas/_permission_denied_error"}
                                 }
                             }
                         },
@@ -437,7 +446,7 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                         },
                     },
                     "responses": {
-                        "200": {
+                        "201": {
                             "description": "A newly created object",
                             "content": {
                                 "application/json": {
@@ -452,9 +461,107 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
             },
         ),
         (
-            f"/api/specify/{table.django_name}/{{id}}",
+            f"/api/specify/bulk/{table.django_name}/",
+            {
+                "post": {
+                    "tags": [table.django_name],
+                    "summary": f"Upload multiple records to the {table.django_name} table",
+                    "description": f"Upload multiple records to the {table.django_name} table",
+                    "parameters": [
+                        {
+                            "$ref": "#/components/parameters/collection_recordsetid"
+                        }
+                    ],
+                    "requestBody": {
+                        "required": True,
+                        "description": "An array containing a JSON representation of the objects to create",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": f"#/components/schemas/{table.django_name}",
+                                    }
+                                }
+                            }
+                        },
+                    },
+                    "responses": {
+                        "201": {
+                            "description": "An array containing the newly created objects",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "array",
+                                        "items": {
+                                            "$ref": f"#/components/schemas/{table.django_name}",
+                                        }
+                                    }
+                                }
+                            },
+                        }
+                    },
+                },
+            }
+        ),
+        (
+            f"/api/specify/bulk/{table.django_name}/{{copies}}/",
+            {
+                "post": {
+                    "tags": [table.django_name],
+                    "summary": f"Upload multiple records to the {table.django_name} table",
+                    "description": f"Upload multiple records to the {table.django_name} table",
+                    "parameters": [
+                        {
+                            "$ref": "#/components/parameters/collection_recordsetid"
+                        },
+                        {
+                            "name": "copies",
+                            "in": "path",
+                            "required": True,
+                            "schema": {
+                                "type": "number",
+                                "minimum": 1,
+                            },
+                            "description": "Number of copies to create",
+                        },
+                    ],
+                    "requestBody": {
+                        "required": True,
+                        "description": "A serialized JSON representation of the object to clone",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": f"#/components/schemas/{table.django_name}"
+                                }
+                            }
+                        },
+                    },
+                    "responses": {
+                        "201": {
+                            "description": "An array containing the newly created objects",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "array",
+                                        "items": {
+                                            "$ref": f"#/components/schemas/{table.django_name}",
+                                        }
+                                    }
+                                }
+                            },
+                        }
+                    },
+                },
+            }
+        ),
+        (
+            f"/api/specify/{table.django_name}/{{id}}/",
             {
                 "parameters": [
+                    {
+                        "$ref": "#/components/parameters/id"
+                    },
                     {
                         "$ref": "#/components/parameters/version_in_query"
                     },
@@ -464,8 +571,8 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                 ],
                 "get": {
                     "tags": [table.django_name],
-                    "summary": f"Query and manipulate records from the {table.django_name} table",
-                    "description": "TODO: description",
+                    "summary": f"Fetch a single record from the {table.django_name} table",
+                    "description": f"Fetch a single record from the {table.django_name} table",
                     "parameters": [
                         {
                             "$ref": "#/components/parameters/record_recordsetid"
@@ -570,8 +677,10 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                             "schema": {
                                 "type": "string"
                             },
-                            "example": "localityname,latitude1,longitude1",
-                            "description": "Comma separated list of fileds to fetch",
+                            "example": "localityname,latitude1,localitycitations__referencework__title",
+                            "description": ("Comma separated list of fileds to fetch. " 
+                                            "Can include relationships and their fields separated by __ "
+                                            "to include data from other tables")
                         },
                         {"$ref": "#/components/parameters/limit"},
                         {"$ref": "#/components/parameters/offset"},
@@ -593,24 +702,40 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                     "summary": f"Get rows from the {table.django_name} table",
                     "description": (
                         f"Query multiple records from the {table.django_name} table<br>"
-                        f"Filterring is supported by providing field values as GET parameters<br>"
-                        f"Example: /api/specify_rows/sometable/?field=value. Advanced filtering "
+                        f"Filtering is supported by providing field values as GET parameters<br>"
+                        f"Example: /api/specify_rows/sometable/fields=someFields&field=value. Advanced filtering "
                         f"options are also supported (e.g. ?numericfield__gte=4). More filters "
                         f"are documented here: "
-                        f"https://docs.djangoproject.com/en/4.0/ref/models/querysets/#field-lookups-1"
+                        f"<a href=https://docs.djangoproject.com/en/4.0/ref/models/querysets/#field-lookups-1>https://docs.djangoproject.com/en/4.0/ref/models/querysets/#field-lookups-1</a>"
                     ),
                     "responses": {
                         "200": {
-                            "description": "Empty response",
+                            "description": "2D array of results",
                             "content": {
                                 "application/json": {
                                     "schema": {
                                         "type": "array",
                                         "items": {
+                                            "description": f"A single record from the {table.django_name} table",
                                             "type": "array",
-                                            "items": {},
+                                            "items": {
+                                                "description": "The values of the fields for the record passed into the 'fields' parameter",
+                                                "oneOf": [
+                                                    {
+                                                        "type": "string",
+                                                    },
+                                                    {
+                                                        "type": "null"
+                                                    },
+                                                    {
+                                                        "type": "number"
+                                                    },
+                                                    {
+                                                        "type": "boolean"
+                                                    }
+                                                ]
+                                            },
                                         },
-                                        "description": "2D array of results",
                                     }
                                 }
                             }
@@ -620,25 +745,19 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
             }
         ),
         (
-            f"/api/delete_blockers/{table.django_name}/{{id}}",
+            f"/api/delete_blockers/{table.django_name}/{{id}}/",
             {
                 "get": {
                     "tags": [table.django_name],
                     "summary": "Returns a JSON list of fields that prevent " +
-                        "the record from getting deleted",
+                    "the record from getting deleted",
                     "description": "Returns a JSON list of fields that " +
-                       "point to related resources which prevent the resource " +
-                       "of that model from being deleted.",
+                    "point to related resources which prevent the resource " +
+                    "of that model from being deleted.",
                     "parameters": [
                         {
-                            "name": "id",
-                            "in": "path",
-                            "required": True,
-                            "schema": {
-                                "type": "number",
-                                "minimum": 0,
-                            }
-                        }
+                            "$ref": "#/components/parameters/id"
+                        },
                     ],
                     "responses": {
                         "200": {
@@ -646,14 +765,27 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                             "content": {
                                 "application/json": {
                                     "schema": {
-                                        "type": "string",
+                                        "type": "array",
                                         "items": {
-                                            "type": "string",
-                                        },
-                                        "example": [
-                                            "Collectingevent.locality"
-                                        ],
-                                        "description": "List of fields"
+                                            "type": "object",
+                                            "properties": {
+                                                "table": {
+                                                    "type": "string",
+                                                    "example": get_first_valid_relationship_attr(cast(list[Relationship], table.relationships), "relatedModelName").lower().capitalize()
+                                                },
+                                                "field": {
+                                                    "type": "string",
+                                                    "example": get_first_valid_relationship_attr(cast(list[Relationship], table.relationships), "otherSideName"),
+                                                },
+                                                "ids": {
+                                                    "type": "array",
+                                                    "description": "An array of blocking resources from <table>",
+                                                    "items": {
+                                                        "type": "number"
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -689,7 +821,7 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
     ]
 
 
-def table_to_schema(table: Table) -> Dict:
+def table_to_schema(table: Table) -> dict:
     """Generate the OpenAPI schema's schema object for a table.
 
     params:
@@ -709,7 +841,7 @@ def table_to_schema(table: Table) -> Dict:
     }
 
 
-def field_to_schema(field: Field) -> Dict:
+def field_to_schema(field: Field) -> dict:
     """Generate the OpenAPI schema's schema object for a field of a table.
 
     params:
@@ -719,7 +851,11 @@ def field_to_schema(field: Field) -> Dict:
         OpenAPI schema's schema object for a field of a table
     """
     if field.is_relationship:
-        assert isinstance(field, Relationship)
+        if not isinstance(field, Relationship):
+            raise AssertionError(
+                f"Field '{field.name}' is not a Relationship",
+                {"field": field.name,
+                 "localizaitonKey": "fieldNotRelationship"})
         if field.dependent:
             if (
                 field.type == "one-to-one"
@@ -743,10 +879,16 @@ def field_to_schema(field: Field) -> Dict:
             }
 
     elif field.type in ("text", "java.lang.String"):
-        return {
-            **required_to_schema(field, "string"),
-            "maxLength": getattr(field, "length", 0),
-        }
+        length = getattr(field, "length", None)
+        if length is not None and length > 0:
+            return {
+                **required_to_schema(field, "string"),
+                "maxLength": length,
+            }
+        else:
+            return {
+                **required_to_schema(field, "string"),
+            }
 
     elif field.type in (
         "java.lang.Integer",
@@ -776,9 +918,18 @@ def field_to_schema(field: Field) -> Dict:
     elif field.type == "java.lang.Boolean":
         return required_to_schema(field, "boolean")
 
+    elif field.type == "json":
+        return required_to_schema(field, "string")
+
     else:
         raise Exception(f"unexpected field type: {field.type}")
 
 
-def required_to_schema(field: Field, ftype: str) -> Dict:
+def required_to_schema(field: Field, ftype: str) -> dict:
     return {"type": ftype} if field.required else {"type": ftype, "nullable": True}
+
+def get_first_valid_relationship_attr(relationships: list[Relationship], attr_name: str) -> str:
+    for rel in relationships:
+        if hasattr(rel, 'otherSideName') and rel.type.endswith('to-many') and not rel.dependent:
+            return getattr(rel, attr_name, 'Default')
+    return 'Default'

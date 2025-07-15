@@ -2,9 +2,10 @@ import json
 from datetime import datetime, timedelta
 
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_POST
 from django.conf import settings
 
+from specifyweb.middleware.general import require_GET
 from ..specify.views import login_maybe_required
 from ..specify.api import toJson
 
@@ -45,3 +46,15 @@ def delete(request):
         return HttpResponseBadRequest()
     Message.objects.filter(user=request.specify_user, id=request.POST['message_id']).delete()
     return HttpResponse('OK', content_type='text/plain')
+
+@require_POST
+@login_maybe_required
+def delete_all(request):
+   "Delete the notification messages indicated by the 'message_ids' POST parameter."
+   if "message_ids" not in request.POST:
+       return HttpResponseBadRequest()
+
+   message_ids = json.loads(request.POST["message_ids"])
+   Message.objects.filter(user=request.specify_user, id__in=message_ids).delete()
+
+   return HttpResponse("OK", content_type="text/plain")

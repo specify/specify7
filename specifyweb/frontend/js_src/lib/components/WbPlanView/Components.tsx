@@ -1,67 +1,56 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { Button } from '../Atoms/Button';
-import { schema } from '../DataModel/schema';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { hasTablePermission } from '../Permissions/helpers';
-import { usePref } from '../UserPreferences/usePref';
-import { MappingElement } from './LineComponents';
+import { userPreferences } from '../Preferences/userPreferences';
+import { TableList, tablesFilter } from '../SchemaConfig/Tables';
 
 export function ListOfBaseTables({
-  onChange: handleChange,
-  showHiddenTables,
+  onClick: handleClick,
 }: {
-  readonly onChange: (newTable: keyof Tables) => void;
-  readonly showHiddenTables: boolean;
+  readonly onClick: (table: keyof Tables) => void;
 }): JSX.Element {
-  const [isNoRestrictionMode] = usePref(
+  const [isNoRestrictionMode] = userPreferences.use(
     'workBench',
     'wbPlanView',
     'noRestrictionsMode'
   );
-  const [showNoAccessTables] = usePref(
+  const [showNoAccessTables] = userPreferences.use(
     'workBench',
     'wbPlanView',
     'showNoAccessTables'
   );
-  const fieldsData = Object.fromEntries(
-    Object.entries(schema.models)
-      .filter(
-        ([tableName, { overrides }]) =>
-          (isNoRestrictionMode ||
-            (!overrides.isSystem && !overrides.isHidden)) &&
-          (overrides.isCommon || showHiddenTables) &&
-          (showNoAccessTables || hasTablePermission(tableName, 'create'))
-      )
-      .map(
-        ([tableName, { label, overrides }]) =>
-          [
-            tableName,
-            {
-              optionLabel: label,
-              tableName,
-              isRelationship: true,
-              isHidden: !overrides.isCommon,
-            },
-          ] as const
-      )
+
+  const filter = React.useCallback(
+    (showAdvancedTables: boolean, table: SpecifyTable) =>
+      tablesFilter(
+        isNoRestrictionMode,
+        showNoAccessTables,
+        showAdvancedTables,
+        table
+      ),
+    [isNoRestrictionMode, showNoAccessTables]
   );
+
   return (
-    <MappingElement
-      customSelectSubtype="tree"
-      customSelectType="BASE_TABLE_SELECTION_LIST"
-      fieldsData={fieldsData}
-      isOpen
-      onChange={({ newValue }): void => handleChange(newValue as keyof Tables)}
+    <TableList
+      cacheKey="wbPlanViewUi"
+      filter={filter}
+      getAction={({ name }) =>
+        () =>
+          handleClick(name)
+        }
     />
   );
 }
 
 export function ButtonWithConfirmation(props: {
   readonly children: React.ReactNode;
-  readonly dialogHeader: string;
+  readonly dialogHeader: LocalizedString;
   readonly dialogMessage: React.ReactNode;
   readonly dialogButtons: (
     confirm: () => void

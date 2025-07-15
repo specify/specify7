@@ -6,6 +6,7 @@
  */
 
 import React from 'react';
+
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 
@@ -20,7 +21,7 @@ export const loadingGif = (
       `}
       role="status"
     >
-      <span className="sr-only">{commonText('loading')}</span>
+      <span className="sr-only">{commonText.loading()}</span>
     </div>
   </div>
 );

@@ -10,21 +10,21 @@ import { Input, Label } from '../Atoms/Form';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { Dialog } from '../Molecules/Dialog';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function AutoNumbering({
   resource,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
 }): JSX.Element | null {
-  const fields = getAutoNumberingFields(resource.specifyModel);
+  const fields = getAutoNumberingFields(resource.specifyTable);
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return fields.length > 0 ? (
     <>
       <Button.Small onClick={handleOpen}>
-        {formsText('autoNumbering')}
+        {formsText.autoNumbering()}
       </Button.Small>
       {isOpen && (
         <AutoNumberingDialog
@@ -37,8 +37,8 @@ export function AutoNumbering({
   ) : null;
 }
 
-export const getAutoNumberingFields = (model: SpecifyModel): RA<LiteralField> =>
-  model.literalFields.filter(
+export const getAutoNumberingFields = (table: SpecifyTable): RA<LiteralField> =>
+  table.literalFields.filter(
     (field) => field.getUiFormatter()?.canAutonumber() === true
   );
 
@@ -51,19 +51,19 @@ function AutoNumberingDialog({
   readonly fields: RA<LiteralField>;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [globalConfig, setGlobalConfig] = usePref(
+  const [globalConfig, setGlobalConfig] = userPreferences.use(
     'form',
     'preferences',
     'autoNumbering'
   );
   const config =
-    (globalConfig[resource.specifyModel.name] as RA<string> | undefined) ??
+    (globalConfig[resource.specifyTable.name] as RA<string> | undefined) ??
     fields.map(({ name }) => name);
 
   function handleEnableAutoNumbering(fieldName: string): void {
     const stringValue = ((resource.get(fieldName) as string) ?? '').toString();
     if (stringValue.length === 0 && resource.isNew()) {
-      const field = resource.specifyModel.strictGetLiteralField(fieldName);
+      const field = resource.specifyTable.strictGetLiteralField(fieldName);
       const formatter = field.getUiFormatter()!;
       const wildCard = formatter.valueOrWild();
       resource.set(fieldName, wildCard as never);
@@ -72,7 +72,7 @@ function AutoNumberingDialog({
   }
 
   function handleDisableAutoNumbering(fieldName: string): void {
-    const field = resource.specifyModel.strictGetLiteralField(fieldName);
+    const field = resource.specifyTable.strictGetLiteralField(fieldName);
     const formatter = field.getUiFormatter()!;
     const wildCard = formatter.valueOrWild();
     if (resource.get(fieldName) === wildCard)
@@ -83,13 +83,13 @@ function AutoNumberingDialog({
   const handleChange = (config: RA<string>): void =>
     setGlobalConfig({
       ...globalConfig,
-      [resource.specifyModel.name]: config,
+      [resource.specifyTable.name]: config,
     });
 
   return (
     <Dialog
-      buttons={commonText('close')}
-      header={formsText('autoNumbering')}
+      buttons={commonText.close()}
+      header={formsText.autoNumbering()}
       onClose={handleClose}
     >
       <Ul>

@@ -2,16 +2,20 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
-import { hasToolPermission } from '../Permissions/helpers';
-import { Dialog } from '../Molecules/Dialog';
-import type { SchemaData } from './SetupHooks';
-import { Link } from '../Atoms/Link';
+import { schemaText } from '../../localization/schema';
+import { localized } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
-import {useId} from '../../hooks/useId';
+import { Dialog } from '../Molecules/Dialog';
+import { hasToolPermission } from '../Permissions/helpers';
+import type { SchemaData } from './schemaData';
+
+export const languageSeparator = '-';
 
 export function ChooseSchemaLanguage(): JSX.Element {
   const schemaData = useOutletContext<SchemaData>();
@@ -21,27 +25,30 @@ export function ChooseSchemaLanguage(): JSX.Element {
       buttons={
         <>
           {hasToolPermission('schemaConfig', 'create') && (
-            <Link.Blue href="/specify/schema-config/add-language/">
-              {commonText('addLanguage')}
-            </Link.Blue>
+            <Link.Info href="/specify/schema-config/add-language/">
+              {schemaText.addLanguage()}
+            </Link.Info>
           )}
           <span className="-ml-2 flex-1" />
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
         </>
       }
-      header={commonText('schemaConfig')}
+      header={schemaText.schemaConfig()}
       onClose={(): void => navigate('/specify/')}
     >
-      {commonText('language')}
+      {commonText.language()}
       <Ul>
         {Object.entries(schemaData.languages).map(([code, label]) => (
           <li key={code}>
             <Link.Default
               className="font-bold"
               href={`/specify/schema-config/${code}/`}
-              role="link"
             >
-              {label}
+              {label.includes('(')
+                ? label
+                : localized(
+                    `${label} (${code.split(languageSeparator).at(-1) ?? code})`
+                  )}
             </Link.Default>
           </li>
         ))}
@@ -60,15 +67,15 @@ export function AddLanguage(): JSX.Element {
     <Dialog
       buttons={
         <>
-          <Button.Gray
+          <Button.Secondary
             onClick={(): void => navigate('/specify/schema-config/')}
           >
-            {commonText('back')}
-          </Button.Gray>
-          <Submit.Blue form={id('form')}>{commonText('add')}</Submit.Blue>
+            {commonText.back()}
+          </Button.Secondary>
+          <Submit.Info form={id('form')}>{commonText.add()}</Submit.Info>
         </>
       }
-      header={commonText('addLanguageDialogHeader')}
+      header={schemaText.addLanguage()}
       onClose={(): void => navigate('/specify/')}
     >
       <Form
@@ -83,7 +90,7 @@ export function AddLanguage(): JSX.Element {
         }}
       >
         <Label.Block>
-          {commonText('language')}
+          {commonText.language()}
           <Input.Text
             maxLength={2}
             minLength={2}
@@ -94,7 +101,7 @@ export function AddLanguage(): JSX.Element {
           />
         </Label.Block>
         <Label.Block>
-          {commonText('country')}
+          {commonText.country()}
           <Input.Text
             maxLength={2}
             minLength={2}

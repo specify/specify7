@@ -1,35 +1,47 @@
 import React from 'react';
-
-import type { Collection } from '../DataModel/types';
-import { sortFunction } from '../../utils/utils';
-import { commonText } from '../../localization/common';
-import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
-import { userInformation } from '../InitialContext/userInformation';
-import { Container, Ul } from '../Atoms';
 import { useNavigate } from 'react-router-dom';
-import { switchCollection } from '../RouterCommands/SwitchCollection';
+
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { userText } from '../../localization/user';
+import type { RA } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
+import { Container, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { usePref } from '../UserPreferences/usePref';
+import { backboneFieldSeparator } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { tables } from '../DataModel/tables';
+import type { Collection } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
+import { toLargeSortConfig } from '../Molecules/Sorting';
+import { userPreferences } from '../Preferences/userPreferences';
+import { switchCollection } from '../RouterCommands/SwitchCollection';
 
 /**
  * Even though available collections do not change during lifecycle of a page,
  * their sort order may
  */
 export function useAvailableCollections(): RA<SerializedResource<Collection>> {
-  const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
-  const isReverseSort = sortOrder.startsWith('-');
-  const sortField = (isReverseSort ? sortOrder.slice(1) : sortOrder) as string &
-    keyof Collection['fields'];
-  const collections = React.useMemo(
-    () =>
-      Array.from(userInformation.availableCollections).sort(
-        sortFunction((collection) => collection[sortField], isReverseSort)
-      ),
-    [userInformation.availableCollections, isReverseSort, sortField]
+  const [sortOrder] = userPreferences.use(
+    'chooseCollection',
+    'general',
+    'sortOrder'
   );
+  const collections = React.useMemo(() => {
+    const { direction, fieldNames } = toLargeSortConfig(sortOrder);
+    return Array.from(userInformation.availableCollections).sort(
+      // FEATURE: support sorting by related table
+      sortFunction(
+        (collection) =>
+          collection[
+            fieldNames.join(
+              backboneFieldSeparator
+            ) as keyof Collection['fields']
+          ],
+        direction === 'desc'
+      )
+    );
+  }, [sortOrder]);
   useErrorContext('collections', collections);
   return collections;
 }
@@ -51,38 +63,44 @@ export function OtherCollection({
     <Container.FullGray>
       <Container.Center>
         {collections.length === 0 ? (
-          commonText('noAccessToResource')
+          userText.noAccessToResource({
+            collectionTable: tables.Collection.label,
+          })
         ) : (
           <>
-            <p>{commonText('resourceInaccessible')}</p>
+            <p>{userText.resourceInaccessible()}</p>
             {collections.length > 1 ? (
               <>
-                <p>{commonText('selectCollection')}</p>
+                <p>{userText.selectCollection()}</p>
                 <Ul className="flex gap-2">
                   {collections.map(({ id, collectionName }) => (
                     <li key={id}>
-                      <Button.Blue
+                      <Button.Info
                         onClick={(): void =>
                           switchCollection(navigate, collections[0].id)
                         }
                       >
-                        {collectionName}
-                      </Button.Blue>
+                        {localized(collectionName ?? '')}
+                      </Button.Info>
                     </li>
                   ))}
                 </Ul>
               </>
             ) : (
               <>
-                <p>{commonText('loginToProceed')}</p>
+                <p>
+                  {userText.loginToProceed({
+                    collectionTable: tables.Collection.label,
+                  })}
+                </p>
                 <div>
-                  <Button.Blue
+                  <Button.Info
                     onClick={(): void =>
                       switchCollection(navigate, collections[0].id)
                     }
                   >
-                    {collections[0].collectionName}
-                  </Button.Blue>
+                    {localized(collections[0].collectionName ?? '')}
+                  </Button.Info>
                 </div>
               </>
             )}

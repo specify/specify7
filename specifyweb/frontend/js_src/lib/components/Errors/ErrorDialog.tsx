@@ -1,18 +1,30 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
+import { mainText } from '../../localization/main';
+import { StringToJsx } from '../../localization/utils';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import { legacyLoadingContext, UnloadProtectsContext } from '../Core/Contexts';
+import { legacyLoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
-import { clearCache } from '../RouterCommands/CacheBuster';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
+import {
+  SetUnloadProtectsContext,
+  UnloadProtectsContext,
+} from '../Router/UnloadProtect';
+import { clearAllCache } from '../RouterCommands/CacheBuster';
+import type { ToastMessage } from './Toasts';
+import { SetToastsContext } from './Toasts';
 
-const supportEmail = 'support@specifysoftware.org';
+const supportEmail = localized('support@specifysoftware.org');
 export const supportLink = (
   <Link.NewTab href={`mailto:${supportEmail}`} rel="noreferrer">
     {supportEmail}
@@ -20,36 +32,63 @@ export const supportLink = (
 );
 const errors = new Set<string>();
 
+const errorBody = (
+  <p>
+    <StringToJsx
+      components={{ email: supportLink }}
+      string={mainText.errorResolutionDescription()}
+    />
+    <br />
+    <br />
+    <StringToJsx
+      components={{
+        memberLink: (label): JSX.Element => (
+          <Link.NewTab href="https://www.specifysoftware.org/members/#:~:text=Members%20can%20contact%20support%40specifysoftware.org%20for%20assistance%20updating.">
+            {label}
+          </Link.NewTab>
+        ),
+        discourseLink: (label): JSX.Element => (
+          <Link.NewTab href="https://discourse.specifysoftware.org/">
+            {label}
+          </Link.NewTab>
+        ),
+      }}
+      string={mainText.errorResolutionSecondDescription()}
+    />
+  </p>
+);
+
 export function ErrorDialog({
-  header = commonText('errorBoundaryDialogHeader'),
+  header = mainText.errorOccurred(),
   children,
   copiableMessage,
   // Error dialog is only closable in Development
   onClose: handleClose,
-  dismissable = false,
+  dismissible = false,
 }: {
   readonly children: React.ReactNode;
   readonly copiableMessage: string;
-  readonly header?: string;
+  readonly header?: LocalizedString;
   readonly onClose?: () => void;
-  readonly dismissable?: boolean;
-}): JSX.Element {
+  readonly dismissible?: boolean;
+}): JSX.Element | null {
   const id = useId('error-dialog')('');
-  // If there is more than one error, all but the last one should be dismissable
+  // If there is more than one error, all but the last one should be dismissible
   const isLastError = React.useRef(errors.size === 0).current;
   React.useEffect(() => {
     errors.add(id);
     return (): void => void errors.delete(id);
   }, [id]);
 
-  const [canDismiss] = usePref(
+  const [canDismiss] = userPreferences.use(
     'general',
     'application',
     'allowDismissingErrors'
   );
+  const isDismissible = dismissible && typeof handleClose === 'function';
   const canClose =
     (canDismiss ||
-      dismissable ||
+      isDismissible ||
       process.env.NODE_ENV === 'development' ||
       !isLastError) &&
     typeof handleClose === 'function';
@@ -58,9 +97,8 @@ export function ErrorDialog({
     'clearCacheOnException'
   );
 
-  const [unloadProtects = [], setUnloadProtects] = React.useContext(
-    UnloadProtectsContext
-  )!;
+  const unloadProtects = React.useContext(UnloadProtectsContext)!;
+  const setUnloadProtects = React.useContext(SetUnloadProtectsContext)!;
   /**
    * Clear unload protects when error occurs, but return them back if error
    * is dismissed
@@ -68,11 +106,27 @@ export function ErrorDialog({
   const initialUnloadProtects = React.useRef(unloadProtects);
   React.useCallback(() => setUnloadProtects?.([]), [setUnloadProtects]);
 
-  return (
+  // Display dismissible errors as toasts
+  const [showAsDialog, handleShowAsDialog] = useBooleanState(!isDismissible);
+  const setToasts = React.useContext(SetToastsContext);
+  React.useEffect(() => {
+    if (showAsDialog || handleClose === undefined) return undefined;
+    const toast: ToastMessage = {
+      type: 'Error',
+      message: header,
+      onDismiss: handleClose,
+      onClick: handleShowAsDialog,
+    };
+    setToasts((oldToasts) => [...oldToasts, toast]);
+    return (): void =>
+      setToasts((oldToasts) => oldToasts.filter((item) => item !== toast));
+  }, [showAsDialog, header, handleClose, handleShowAsDialog, setToasts]);
+
+  return isDismissible && !showAsDialog ? null : (
     <Dialog
       buttons={
         <>
-          <Button.Blue
+          <Button.Info
             onClick={(): void =>
               void downloadFile(
                 /*
@@ -87,30 +141,30 @@ export function ErrorDialog({
               )
             }
           >
-            {commonText('downloadErrorMessage')}
-          </Button.Blue>
+            {commonText.downloadErrorMessage()}
+          </Button.Info>
           <span className="-ml-2 flex-1" />
           <Label.Inline>
             <Input.Checkbox
               checked={clearCacheOnException}
               onValueChange={setClearCache}
             />
-            {commonText('clearCache')}
+            {headerText.clearCache()}
           </Label.Inline>
-          <Button.Red
+          <Button.Danger
             onClick={(): void =>
               legacyLoadingContext(
                 (clearCacheOnException
-                  ? clearCache()
+                  ? clearAllCache()
                   : Promise.resolve(undefined)
                 ).then(() => globalThis.location.assign('/specify/'))
               )
             }
           >
-            {commonText('goToHomepage')}
-          </Button.Red>
+            {commonText.goToHomepage()}
+          </Button.Danger>
           {canClose && (
-            <Button.Blue
+            <Button.Info
               onClick={(): void => {
                 setUnloadProtects?.(
                   initialUnloadProtects.current.length === 0
@@ -120,8 +174,8 @@ export function ErrorDialog({
                 handleClose();
               }}
             >
-              {commonText('dismiss')}
-            </Button.Blue>
+              {commonText.dismiss()}
+            </Button.Info>
           )}
         </>
       }
@@ -130,31 +184,16 @@ export function ErrorDialog({
       onClose={undefined}
     >
       <p>
-        {commonText('errorBoundaryDialogText')}{' '}
-        {!canClose && commonText('errorBoundaryCriticalDialogText')}
+        {mainText.errorOccurredDescription()}{' '}
+        {!canClose && mainText.criticalErrorOccurredDescription()}
       </p>
       <br />
-      <p>
-        {commonText(
-          'errorBoundaryDialogSecondMessage',
-          supportLink,
-          (label) => (
-            <Link.NewTab href="https://www.specifysoftware.org/members/#:~:text=Members%20can%20contact%20support%40specifysoftware.org%20for%20assistance%20updating.">
-              {label}
-            </Link.NewTab>
-          ),
-          (label) => (
-            <Link.NewTab href="https://discourse.specifysoftware.org/">
-              {label}
-            </Link.NewTab>
-          )
-        )}
-      </p>
+      {errorBody}
       <details
         className="flex-1 whitespace-pre-wrap"
         open={process.env.NODE_ENV === 'development'}
       >
-        <summary>{commonText('errorMessage')}</summary>
+        <summary>{mainText.errorMessage()}</summary>
         {children}
       </details>
     </Dialog>

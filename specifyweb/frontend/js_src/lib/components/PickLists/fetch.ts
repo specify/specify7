@@ -2,21 +2,29 @@
  * Pick list item fetching code
  */
 
-import { deserializeResource } from '../../hooks/resource';
-import { fetchRows } from '../../utils/ajax/specifyApi';
 import { f } from '../../utils/functools';
 import type { R, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import { sortFunction, toLowerCase } from '../../utils/utils';
-import { fetchCollection } from '../DataModel/collection';
-import { serializeResource } from '../DataModel/helpers';
+import {
+  caseInsensitiveHash,
+  sortFunction,
+  toLowerCase,
+} from '../../utils/utils';
+import { fetchCollection, fetchRows } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema, strictGetModel } from '../DataModel/schema';
+import { schema } from '../DataModel/schema';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { genericTables, strictGetTable, tables } from '../DataModel/tables';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
-import { error } from '../Errors/assert';
+import { softFail } from '../Errors/Crash';
+import { format } from '../Formatters/formatters';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
-import { format } from '../Forms/dataObjFormatters';
+import { getCollectionPref } from '../InitialContext/remotePrefs';
 import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
 import {
   createPickListItem,
@@ -25,12 +33,12 @@ import {
   unsafeGetPickLists,
 } from './definitions';
 
-const pickListFetchPromises: R<Promise<undefined | SpecifyResource<PickList>>> =
+const pickListFetchPromises: R<Promise<SpecifyResource<PickList> | undefined>> =
   {};
 
 export async function fetchPickList(
   pickListName: string
-): Promise<undefined | SpecifyResource<PickList>> {
+): Promise<SpecifyResource<PickList> | undefined> {
   pickListFetchPromises[pickListName] ??= unsafeFetchPickList(pickListName);
   return pickListFetchPromises[pickListName];
 }
@@ -56,7 +64,7 @@ async function unsafeFetchPickList(
     unsafeGetPickLists()[pickListName] = pickList;
   }
 
-  if (typeof pickList === 'undefined') return undefined;
+  if (pickList === undefined) return undefined;
 
   pickList.set('pickListItems', await fetchPickListItems(pickList));
 
@@ -81,16 +89,18 @@ async function fetchPickListItems(
 
   const limit = Math.max(
     0,
-    pickList.get('readOnly') ? pickList.get('sizeLimit') ?? 0 : 0
+    pickList.get('readOnly') ? (pickList.get('sizeLimit') ?? 0) : 0
   );
 
-  if (type === PickListTypes.ITEMS)
-    return serializeResource(pickList).pickListItems ?? [];
-  else if (type === PickListTypes.TABLE)
+  if (type === PickListTypes.TABLE)
     items = await fetchFromTable(pickList, limit);
   else if (type === PickListTypes.FIELDS)
     items = await fetchFromField(pickList, limit);
-  else error('Unknown picklist type', { pickList });
+  else {
+    if (type !== PickListTypes.ITEMS)
+      softFail(new Error('Unknown picklist type'), { pickList });
+    return serializeResource(pickList).pickListItems ?? [];
+  }
 
   return items.map(({ value, title }) => createPickListItem(value, title));
 }
@@ -108,13 +118,18 @@ async function fetchFromTable(
   pickList: SpecifyResource<PickList>,
   limit: number
 ): Promise<RA<PickListItemSimple>> {
-  const tableName = strictGetModel(pickList.get('tableName')).name;
+  const tableName = strictGetTable(pickList.get('tableName')).name;
   if (!hasTablePermission(tableName, 'read')) return [];
+
+  const scopeTablePicklist = getCollectionPref(
+    'sp7_scope_table_picklists',
+    schema.domainLevelIds.collection
+  );
+
   const { records } = await fetchCollection(tableName, {
-    domainFilter: !f.includes(
-      Object.keys(schema.domainLevelIds),
-      toLowerCase(tableName)
-    ),
+    domainFilter: scopeTablePicklist
+      ? true
+      : !f.includes(Object.keys(schema.domainLevelIds), toLowerCase(tableName)),
     limit,
   });
   return Promise.all(
@@ -125,7 +140,7 @@ async function fetchFromTable(
         true
       ).then((title) => ({
         value: record.id.toString(),
-        title: title!,
+        title,
       }))
     )
   );
@@ -144,10 +159,24 @@ async function fetchFromField(
     pickList.get('fieldName') ?? undefined,
     'Unable to fetch pick list items as pick list field is not set'
   );
+
+  const caseInsensitiveTableKey = caseInsensitiveHash(
+    genericTables,
+    tableName
+  ) as SpecifyTable | undefined;
+
+  const canBeScoped =
+    f.includes(Object.keys(schema.domainLevelIds), toLowerCase(tableName)) ||
+    caseInsensitiveTableKey?.getScopingRelationship() !== undefined;
+
   return fetchRows(tableName as keyof Tables, {
     limit,
     fields: { [fieldName]: ['string', 'number', 'boolean', 'null'] },
     distinct: true,
+    domainFilter: canBeScoped,
+    filterChronostrat:
+      tableName === tables.GeologicTimePeriod.name.toLowerCase() &&
+      fieldName === 'name', // Prop for age filter in QueryBuilder
   }).then((rows) =>
     rows
       .map((row) => row[fieldName] ?? '')
@@ -169,8 +198,8 @@ export function getPickListItems(pickList: SpecifyResource<PickList>): RA<{
     pickList.get('sortType') === PickListSortType.TITLE_SORT
       ? Array.from(items).sort(sortFunction(({ title }) => title))
       : pickList.get('sortType') === PickListSortType.ORDINAL_SORT
-      ? Array.from(items).sort(sortFunction(({ ordinal }) => ordinal))
-      : items
+        ? Array.from(items).sort(sortFunction(({ ordinal }) => ordinal))
+        : items
   ).map(({ value, title }) => ({
     value: value ?? title,
     title: title ?? value,

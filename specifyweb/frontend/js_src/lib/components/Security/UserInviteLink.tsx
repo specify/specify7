@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import type { IR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -48,17 +48,17 @@ export function UserInviteLink({
             : setLink('')
         }
       >
-        {adminText('createInviteLink')}
+        {userText.createInviteLink()}
       </Button.Small>
       {typeof link === 'string' && (
         <Dialog
-          buttons={commonText('close')}
-          header={adminText('userInviteLink')}
+          buttons={commonText.close()}
+          header={userText.userInviteLink()}
           onClose={(): void => setLink(undefined)}
         >
           {hasProvidersConfigured ? (
             <>
-              {adminText('userInviteLinkDescription', user.name)}
+              {userText.userInviteLinkDescription({ userName: user.name })}
               <div className="flex gap-2">
                 <Input.Text
                   className="flex-1 !cursor-pointer"
@@ -69,7 +69,7 @@ export function UserInviteLink({
               </div>
             </>
           ) : (
-            adminText('noProvidersForUserInviteLink')
+            userText.noProvidersForUserInviteLink()
           )}
         </Dialog>
       )}

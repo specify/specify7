@@ -2,15 +2,17 @@
  * Type definitions for files that aren't yet converted to TypeScript
  */
 
-import type { SaveBlockers } from './saveBlockers';
-import type { Collection, SpecifyModel } from './specifyModel';
 import type { IR, RA } from '../../utils/types';
-import {
+import type { BusinessRuleManager } from './businessRules';
+import type { CollectionFetchFilters } from './collection';
+import type {
   AnySchema,
   CommonFields,
-  SerializedModel,
+  SerializedRecord,
   SerializedResource,
+  TableFields,
 } from './helperTypes';
+import type { Collection, SpecifyTable } from './specifyTable';
 
 /*
  * FEATURE: need to improve the typing to handle the following:
@@ -23,19 +25,17 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   // FEATURE: store original values to know when changes were reverted
   readonly needsSaved: boolean;
   readonly cid: string;
-  readonly noValidation?: boolean;
   readonly populated: boolean;
-  readonly specifyModel: SpecifyModel<SCHEMA>;
-  readonly saveBlockers?: Readonly<SaveBlockers<SCHEMA>>;
+  readonly specifyTable: SpecifyTable<SCHEMA>;
+  readonly createdBy?: 'clone';
+  readonly deleted: boolean;
   readonly parent?: SpecifyResource<SCHEMA>;
   readonly noBusinessRules: boolean;
-  readonly collection: {
-    readonly related: SpecifyResource<SCHEMA>;
+  readonly changed?: {
+    readonly [FIELD_NAME in TableFields<AnySchema>]?: number | string;
   };
-  readonly businessRuleMgr?: {
-    readonly pending: Promise<void>;
-    readonly checkField: (fieldName: string) => Promise<void>;
-  };
+  readonly collection: Collection<SCHEMA> | undefined;
+  readonly businessRuleManager?: BusinessRuleManager<SCHEMA>;
   /*
    * Shorthand method signature is used to prevent
    * https://github.com/microsoft/TypeScript/issues/48339
@@ -56,19 +56,19 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       SCHEMA['toManyDependent'] &
       SCHEMA['toManyIndependent'] &
       SCHEMA['toOneDependent'] &
-      SCHEMA['toOneIndependent'])[FIELD_NAME]
+      SCHEMA['toOneIndependent'])[FIELD_NAME],
   >(
     fieldName: FIELD_NAME
     // eslint-disable-next-line functional/prefer-readonly-type
   ): [VALUE] extends [never]
     ? never
     : VALUE extends AnySchema
-    ? VALUE extends null
-      ? string | null
-      : string
-    : VALUE extends RA<AnySchema>
-    ? string
-    : VALUE;
+      ? VALUE extends null
+        ? string | null
+        : string
+      : VALUE extends RA<AnySchema>
+        ? string
+        : VALUE;
   // Case-insensitive fetch of a -to-one resource
   rgetPromise<
     FIELD_NAME extends
@@ -76,10 +76,11 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       | keyof SCHEMA['toOneIndependent'],
     VALUE = (IR<never> &
       SCHEMA['toOneDependent'] &
-      SCHEMA['toOneIndependent'])[FIELD_NAME]
+      SCHEMA['toOneIndependent'])[FIELD_NAME],
   >(
     fieldName: FIELD_NAME,
-    prePopulate?: boolean
+    prePopulate?: boolean,
+    strict?: boolean // Whether to trigger 404 on resource not found
   ): readonly [VALUE] extends readonly [never]
     ? never
     : Promise<
@@ -93,12 +94,13 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       | keyof SCHEMA['toOneIndependent'],
     VALUE = (IR<never> &
       SCHEMA['toOneDependent'] &
-      SCHEMA['toOneIndependent'])[FIELD_NAME]
+      SCHEMA['toOneIndependent'])[FIELD_NAME],
   >(
     fieldName: FIELD_NAME,
     options?: {
       readonly prePop?: boolean;
       readonly noBusinessRules?: boolean;
+      readonly strict?: boolean;
     }
   ): readonly [VALUE] extends readonly [never]
     ? never
@@ -112,9 +114,12 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     FIELD_NAME extends keyof (SCHEMA['toManyDependent'] &
       SCHEMA['toManyIndependent']),
     VALUE extends (SCHEMA['toManyDependent'] &
-      SCHEMA['toManyIndependent'])[FIELD_NAME]
+      SCHEMA['toManyIndependent'])[FIELD_NAME],
   >(
-    fieldName: FIELD_NAME
+    fieldName: FIELD_NAME,
+    filters?: CollectionFetchFilters<VALUE[number]> & {
+      readonly strict?: boolean;
+    }
   ): Promise<Collection<VALUE[number]>>;
   set<
     FIELD_NAME extends
@@ -130,7 +135,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       SCHEMA['toManyDependent'] &
       SCHEMA['toManyIndependent'] &
       SCHEMA['toOneDependent'] &
-      SCHEMA['toOneIndependent'])[FIELD_NAME]
+      SCHEMA['toOneIndependent'])[FIELD_NAME],
   >(
     fieldName: FIELD_NAME,
     value: readonly [VALUE] extends readonly [never]
@@ -148,13 +153,23 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
                   | RA<SerializedResource<VALUE[number]>>
                   | RA<SpecifyResource<VALUE[number]>>
               : null extends VALUE
-              ?
-                  | SerializedResource<Exclude<VALUE, null>>
-                  | SpecifyResource<Exclude<VALUE, null>>
-                  | null
-              : SerializedResource<VALUE> | SpecifyResource<VALUE>),
+                ?
+                    | SerializedResource<Exclude<VALUE, null>>
+                    | SpecifyResource<Exclude<VALUE, null>>
+                    | null
+                : SerializedResource<VALUE> | SpecifyResource<VALUE>),
     options?: { readonly silent: boolean }
   ): SpecifyResource<SCHEMA>;
+  // Not type safe
+  bulkSet(value: IR<unknown>): SpecifyResource<SCHEMA>;
+  // Unsafe
+  readonly independentResources: IR<
+    Collection<SCHEMA> | SpecifyResource<SCHEMA> | null | undefined
+  >;
+  // Unsafe. Use getDependentResource instead whenever possible
+  readonly dependentResources: IR<
+    Collection<SCHEMA> | SpecifyResource<SCHEMA> | null | undefined
+  >;
   getDependentResource<FIELD_NAME extends keyof SCHEMA['toOneDependent']>(
     fieldName: FIELD_NAME
   ):
@@ -164,27 +179,34 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     fieldName: FIELD_NAME
   ): Collection<SCHEMA['toManyDependent'][FIELD_NAME][number]> | undefined;
   save(props?: {
-    onSaveConflict?: () => void;
-    errorOnAlreadySaving?: boolean;
+    readonly onSaveConflict?: () => void;
+    readonly errorOnAlreadySaving?: boolean;
   }): Promise<SpecifyResource<SCHEMA>>;
   destroy(): Promise<void>;
   fetch(): Promise<SpecifyResource<SCHEMA>>;
   viewUrl(): string;
   isNew(): boolean;
-  clone(cloneAll: boolean): Promise<SpecifyResource<SCHEMA>>;
+  isBeingInitialized(): boolean;
+  clone(
+    cloneAll: boolean,
+    isBulkCarry?: boolean
+  ): Promise<SpecifyResource<SCHEMA>>;
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  toJSON(): SerializedModel<AnySchema>;
+  toJSON(): SerializedRecord<AnySchema>;
   getRelatedObjectCount(
     fieldName:
       | (string & keyof SCHEMA['toManyDependent'])
       | (string & keyof SCHEMA['toManyIndependent'])
   ): Promise<number | undefined>;
-  format(): Promise<string>;
   url(): string;
   placeInSameHierarchy(
     resource: SpecifyResource<AnySchema>
   ): SpecifyResource<AnySchema> | undefined;
-  on(eventName: string, callback: (...args: RA<never>) => void): void;
+  on(
+    eventName: string,
+    callback: (...args: RA<never>) => void,
+    thisArgument?: any
+  ): void;
   once(eventName: string, callback: (...args: RA<never>) => void): void;
   off(eventName?: string, callback?: (...args: RA<never>) => void): void;
   trigger(eventName: string, ...args: RA<unknown>): void;

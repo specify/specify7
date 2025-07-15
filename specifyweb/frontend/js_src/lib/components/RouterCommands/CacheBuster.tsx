@@ -4,44 +4,42 @@
 
 import React from 'react';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
+import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { cachableUrls } from '../InitialContext';
-import { commonText } from '../../localization/common';
 import { Dialog } from '../Molecules/Dialog';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { Http } from '../../utils/ajax/definitions';
 
-export const clearCache = async (): Promise<true> =>
-  Promise.all(
-    Array.from(cachableUrls, async (endpoint) =>
-      ping(
-        endpoint,
-        { method: 'HEAD', cache: 'no-cache' },
-        {
-          expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.NO_CONTENT],
-        }
-        // eslint-disable-next-line no-console
-      ).then(() => console.log(`Cleaned cache from ${endpoint}`))
-    )
-  ).then(() => {
+export const clearAllCache = async (): Promise<true> =>
+  Promise.all(Array.from(cachableUrls, clearUrlCache)).then(() => {
     localStorage.clear();
     return true;
   });
 
+export const clearUrlCache = async (url: string): Promise<void> =>
+  ping(url, {
+    method: 'HEAD',
+    cache: 'no-cache',
+    errorMode: 'silent',
+    expectedErrors: [Http.NOT_FOUND, Http.NOT_ALLOWED],
+  }).then(() => console.log(`Cleaned cache from ${url}`));
+
 export function CacheBuster(): JSX.Element | null {
-  const [isLoaded] = useAsyncState(clearCache, true);
+  const [isLoaded] = useAsyncState(clearAllCache, true);
 
   return isLoaded === true ? (
     <Dialog
-      buttons={commonText('goToHomepage')}
+      buttons={commonText.goToHomepage()}
       /*
        * Can not simply reload the page here, as that would open the
        * cache buster dialog again causing a perpetual loop.
        */
-      header={commonText('clearCache')}
+      header={headerText.clearCache()}
       onClose={(): void => globalThis.location.replace('/specify/')}
     >
-      {commonText('clearedCacheDialogText')}
+      {headerText.cacheCleared()}
     </Dialog>
   ) : null;
 }

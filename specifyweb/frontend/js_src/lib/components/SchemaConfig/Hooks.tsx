@@ -1,23 +1,24 @@
 import React from 'react';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useLiveState } from '../../hooks/useLiveState';
+import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { defined } from '../../utils/types';
+import { group, replaceItem } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
+import { backendFilter, formatRelationshipPath } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { getTable } from '../DataModel/tables';
 import type {
   SpLocaleContainer,
   SpLocaleContainerItem,
   Tables,
 } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import { group, replaceItem } from '../../utils/utils';
-import { getModel } from '../DataModel/schema';
-import { findString } from './helpers';
-import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
-import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
-import type { SchemaData } from './SetupHooks';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useLiveState } from '../../hooks/useLiveState';
-import { SerializedResource } from '../DataModel/helperTypes';
+import { findString } from './helpers';
+import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
+import type { SchemaData } from './schemaData';
 
 export function useSchemaContainer(
   tables: SchemaData['tables'],
@@ -25,7 +26,7 @@ export function useSchemaContainer(
 ): readonly [
   SerializedResource<SpLocaleContainer>,
   (container: SerializedResource<SpLocaleContainer>) => void,
-  boolean
+  boolean,
 ] {
   const initialValue = React.useRef<
     SerializedResource<SpLocaleContainer> | undefined
@@ -58,7 +59,7 @@ export function useContainerString(
   readonly [
     NewSpLocaleItemString | SpLocaleItemString | undefined,
     (containerName: NewSpLocaleItemString | SpLocaleItemString) => void,
-    boolean
+    boolean,
   ]
 > {
   const initialValue = React.useRef<
@@ -70,6 +71,7 @@ export function useContainerString(
         fetchCollection('SpLocaleItemStr', {
           limit: 0,
           [itemType]: container.id,
+          domainFilter: false,
         }).then(({ records }) => {
           initialValue.current = findString(
             records,
@@ -105,7 +107,7 @@ export function useContainerItems(
       index: number,
       item: SerializedResource<SpLocaleContainerItem> & WithFetchedStrings
     ) => void,
-    RA<number>
+    RA<number>,
   ]
 > {
   const [changed, setChanged] = React.useState<RA<number>>([]);
@@ -119,15 +121,17 @@ export function useContainerItems(
             items: fetchCollection('SpLocaleContainerItem', {
               limit: 0,
               container: container.id,
+              domainFilter: false,
             }),
             names: fetchCollection(
               'SpLocaleItemStr',
               {
                 limit: 0,
+                domainFilter: false,
               },
-              {
-                itemName__container: container.id,
-              }
+              backendFilter(
+                formatRelationshipPath('itemName', 'container')
+              ).equals(container.id)
             ).then(({ records }) =>
               Object.fromEntries(
                 group(records.map((name) => [name.itemName, name]))
@@ -137,10 +141,11 @@ export function useContainerItems(
               'SpLocaleItemStr',
               {
                 limit: 0,
+                domainFilter: false,
               },
-              {
-                itemDesc__container: container.id,
-              }
+              backendFilter(
+                formatRelationshipPath('itemDesc', 'container')
+              ).equals(container.id)
             ).then(({ records }) =>
               Object.fromEntries(
                 group(
@@ -157,7 +162,7 @@ export function useContainerItems(
               .filter(
                 (item) =>
                   /* Ignore removed fields (i.e, Accession->deaccessions) */
-                  getModel(container.name)!.getField(item.name) !== undefined
+                  getTable(container.name)!.getField(item.name) !== undefined
               )
               .map((item) => ({
                 ...item,

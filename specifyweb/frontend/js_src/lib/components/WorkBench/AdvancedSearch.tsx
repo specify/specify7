@@ -6,21 +6,21 @@
 
 import React from 'react';
 
-import { getCache, setCache } from '../../utils/cache';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { icons } from '../Atoms/Icons';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { Input, Label, Select } from '../Atoms/Form';
+import { getCache, setCache } from '../../utils/cache';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { useBooleanState } from '../../hooks/useBooleanState';
+import { Input, Label, Select } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 
 type NavigationDirection = 'columnFirst' | 'rowFirst';
 type ReplaceMode = 'replaceAll' | 'replaceNext';
 
-export type SearchPreferences = {
+export type WbSearchPreferences = {
   readonly navigation: {
     readonly direction: NavigationDirection;
   };
@@ -60,7 +60,7 @@ const defaultSearchPreferences = {
 /**
  * Fetch cached search config or create a new one
  */
-export const getInitialSearchPreferences = (): SearchPreferences =>
+export const getInitialSearchPreferences = (): WbSearchPreferences =>
   getCache('workbench', 'searchProperties') ?? defaultSearchPreferences;
 
 function CheckboxLine({
@@ -70,9 +70,9 @@ function CheckboxLine({
   setState,
 }: {
   readonly children: string;
-  readonly property: keyof SearchPreferences['search'];
-  readonly state: SearchPreferences;
-  readonly setState: (state: SearchPreferences) => void;
+  readonly property: keyof WbSearchPreferences['search'];
+  readonly state: WbSearchPreferences;
+  readonly setState: (state: WbSearchPreferences) => void;
 }): JSX.Element {
   return (
     <Label.Inline>
@@ -98,24 +98,24 @@ function PreferencesDialog({
   onClose: handleClose,
   onChange: handleChange,
 }: {
-  readonly searchPreferences: SearchPreferences;
-  readonly onChange: (newSearchPreferences: SearchPreferences) => void;
+  readonly searchPreferences: WbSearchPreferences;
+  readonly onChange: (newSearchPreferences: WbSearchPreferences) => void;
   readonly onClose: () => void;
 }): JSX.Element {
   return (
     <Dialog
-      buttons={commonText('close')}
+      buttons={commonText.close()}
       className={{
         container: dialogClassNames.narrowContainer,
       }}
-      header={wbText('configureSearchReplace')}
+      header={wbText.configureSearchReplace()}
       modal={false}
       onClose={handleClose}
     >
       <div>
-        <H2>{wbText('navigationOptions')}</H2>
+        <H2>{wbText.navigationOptions()}</H2>
         <Label.Block>
-          {wbText('cursorPriority')}
+          {wbText.cursorPriority()}
           <Select
             value={searchPreferences.navigation.direction}
             onValueChange={(value): void =>
@@ -128,48 +128,48 @@ function PreferencesDialog({
               })
             }
           >
-            <option value="columnFirst">{wbText('columnFirst')}</option>
-            <option value="rowFirst">{wbText('rowFirst')}</option>
+            <option value="columnFirst">{wbText.columnFirst()}</option>
+            <option value="rowFirst">{wbText.rowFirst()}</option>
           </Select>
         </Label.Block>
       </div>
 
       <div className="flex flex-col">
-        <H2>{wbText('searchOptions')}</H2>
+        <H2>{wbText.searchOptions()}</H2>
         <CheckboxLine
           property="fullMatch"
           setState={handleChange}
           state={searchPreferences}
         >
-          {wbText('findEntireCellsOnly')}
+          {wbText.findEntireCellsOnly()}
         </CheckboxLine>
         <CheckboxLine
           property="caseSensitive"
           setState={handleChange}
           state={searchPreferences}
         >
-          {wbText('matchCase')}
+          {wbText.matchCase()}
         </CheckboxLine>
         <CheckboxLine
           property="useRegex"
           setState={handleChange}
           state={searchPreferences}
         >
-          {wbText('useRegularExpression')}
+          {wbText.useRegularExpression()}
         </CheckboxLine>
         <CheckboxLine
           property="liveUpdate"
           setState={handleChange}
           state={searchPreferences}
         >
-          {wbText('liveUpdate')}
+          {wbText.liveUpdate()}
         </CheckboxLine>
       </div>
 
       <div>
-        <H2>{wbText('replaceOptions')}</H2>
+        <H2>{wbText.replaceOptions()}</H2>
         <Label.Block>
-          {wbText('replaceMode')}
+          {wbText.replaceMode()}
           <Select
             value={searchPreferences.replace.replaceMode}
             onValueChange={(value): void =>
@@ -182,8 +182,8 @@ function PreferencesDialog({
               })
             }
           >
-            <option value="replaceAll">{wbText('replaceAll')}</option>
-            <option value="replaceNext">{wbText('replaceNext')}</option>
+            <option value="replaceAll">{wbText.replaceAll()}</option>
+            <option value="replaceNext">{wbText.replaceNext()}</option>
           </Select>
         </Label.Block>
       </div>
@@ -195,12 +195,12 @@ export function WbAdvancedSearch({
   onChange: handleChange,
   initialSearchPreferences,
 }: {
-  readonly initialSearchPreferences: SearchPreferences;
-  readonly onChange: (newSearchPreferences: SearchPreferences) => void;
+  readonly initialSearchPreferences: WbSearchPreferences;
+  readonly onChange: (newSearchPreferences: WbSearchPreferences) => void;
 }): JSX.Element {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
   const [searchPreferences, setSearchPreferences] =
-    React.useState<SearchPreferences>(initialSearchPreferences);
+    React.useState<WbSearchPreferences>(initialSearchPreferences);
 
   React.useEffect(() => {
     handleChange(searchPreferences);
@@ -208,12 +208,12 @@ export function WbAdvancedSearch({
   }, [searchPreferences]);
 
   return (
-    <ErrorBoundary dismissable>
+    <ErrorBoundary dismissible>
       <Button.Small
         aria-haspopup="dialog"
-        aria-label={wbText('configureSearchReplace')}
+        aria-label={wbText.configureSearchReplace()}
         aria-pressed={isOpen}
-        title={wbText('configureSearchReplace')}
+        title={wbText.configureSearchReplace()}
         onClick={handleToggle}
       >
         {icons.cog}

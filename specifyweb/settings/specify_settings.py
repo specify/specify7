@@ -1,8 +1,45 @@
+import os
+
+# A list of strings representing the host/domain names that Specify can serve
+# This is a security measure to prevent HTTP Host header attacks.
+# Values in the list can be fully qualified domain names (like www.example.com)
+# or a portion of a domain name beginning with a period (like .example.com).
+# Values beginning with a period are treated as subdomain wildcards.
+# So .example.com would match any subdomain of example.com: www.example.com,
+# test.example.com, etc.
+#
+# See https://docs.djangoproject.com/en/4.2/ref/settings/#allowed-hosts
+#
+# WARNING: the default setting of '*' is potentially insecure: allowing all
+# hosts, essentially disabling Host header validation.
+ALLOWED_HOSTS = ['*']
+
+# A list of trusted origins for unsafe requests (POST, PUT, DELETE) to help
+# protect against Cross Site Request Forgery attacks.
+# An unsafe request that did not originate from one of these trusted origins
+# will be rejected.
+# * can be used as a wildcard to match against subdomains.
+# For instance, https://*.example.com allows all subdomains of example.com.
+#
+# The scheme (http, https) MUST be included in each origin.
+#
+# See https://docs.djangoproject.com/en/4.2/ref/settings/#csrf-trusted-origins
+#
+# To learn more about CSRF protection in Specify (Django apps in general), see:
+# https://docs.djangoproject.com/en/4.2/ref/csrf/
+#
+# WARNING: the default setting of https://* and http://* is potentially
+# insecure and trusts all origins (the request must still be an ALLOWED_HOST
+# and have the CSRF cookie set)
+CSRF_TRUSTED_ORIGINS = ['https://*', 'http://*']
+
 
 # Specify 7 requires the files from a Specify 6 install.
 # This setting should point to a directory containing an installation
 # of Specify 6 of the same version as the Specify database.
 THICK_CLIENT_LOCATION = '/opt/Specify'
+SPECIFY_CONFIG_DIR = os.environ.get(
+    'SPECIFY_CONFIG_DIR', os.path.join(THICK_CLIENT_LOCATION, "config"))
 
 # Set the database name to the MySQL database you
 # want to access which must be a Specify database already
@@ -15,7 +52,7 @@ DATABASE_HOST = ''
 DATABASE_PORT = ''
 
 # Any extra options for the database connection
-# https://docs.djangoproject.com/en/2.2/ref/settings/#options-1
+# https://docs.djangoproject.com/en/4.2/ref/settings/#std-setting-OPTIONS
 DATABASE_OPTIONS = {}
 
 # The master user login. This is the MySQL user used to connect to the
@@ -30,7 +67,14 @@ WEB_ATTACHMENT_URL = None
 WEB_ATTACHMENT_KEY = None
 
 # The collection name to use with the web attachment server.
-WEB_ATTACHMENT_COLLECTION = None
+WEB_ATTACHMENT_COLLECTION = os.environ.get(
+    'WEB_ATTACHMENT_COLLECTION', DATABASE_NAME) or DATABASE_NAME
+
+# If True, and WEB_ATTACHMENT_COLLECTION is None, attachments for each
+# collection would be stored in separate folders
+# Note, this is not recommended. See:
+# https://github.com/specify/specify7/pull/2375/commits/5cb767121b135fc8ce1bcf0b3cd1724b1d452725#diff-688a4b186646bf0680896b3dc52d2c8c4c1f0fa7c510b482cc7671ed170def7eR28-R42
+SEPARATE_WEB_ATTACHMENT_FOLDERS = False
 
 # Set to true if the asset server requires auth token to get files.
 WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = False
@@ -42,8 +86,8 @@ REPORT_RUNNER_PORT = ''
 # The message queue for the Specify 7 worker(s).
 # This should point to a Redis server for sending jobs
 # and retrieving results from the worker.
-CELERY_BROKER_URL="redis://localhost/0"
-CELERY_RESULT_BACKEND="redis://localhost/1"
+CELERY_BROKER_URL = "redis://localhost/0"
+CELERY_RESULT_BACKEND = "redis://localhost/1"
 
 # To allow anonymous use, set ANONYMOUS_USER to a Specify username
 # to use for anonymous access.
@@ -108,4 +152,3 @@ OAUTH_LOGIN_PROVIDERS = {
     #     'client_secret': "82yHd4XA",
     # },
 }
-

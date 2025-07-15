@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import type { IR, R, RA } from '../../utils/types';
 import { group, sortFunction } from '../../utils/utils';
@@ -16,13 +17,13 @@ import {
 } from './utils';
 
 export type Tree = {
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly children: IR<Tree>;
   readonly resource: string;
   readonly actions: RA<Omit<PermissionsQueryItem, 'resource'>>;
 };
 type WritableTree = {
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly children: R<WritableTree>;
   readonly resource: string;
   readonly actions: RA<Omit<PermissionsQueryItem, 'resource'>>;

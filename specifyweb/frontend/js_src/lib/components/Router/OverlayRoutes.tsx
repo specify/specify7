@@ -1,8 +1,21 @@
+import React from 'react';
+
+import { attachmentsText } from '../../localization/attachments';
+import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
-import { welcomeText } from '../../localization/welcome';
-import type { RA } from '../../utils/types';
-import type { EnhancedRoute } from './RouterUtils';
+import { headerText } from '../../localization/header';
+import { interactionsText } from '../../localization/interactions';
+import { mergingText } from '../../localization/merging';
 import { queryText } from '../../localization/query';
+import { reportsText } from '../../localization/report';
+import { schemaText } from '../../localization/schema';
+import { treeText } from '../../localization/tree';
+import { userText } from '../../localization/user';
+import { welcomeText } from '../../localization/welcome';
+import { wbText } from '../../localization/workbench';
+import type { RA } from '../../utils/types';
+import { Redirect } from './Redirect';
+import type { EnhancedRoute } from './RouterUtils';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 /**
@@ -27,23 +40,43 @@ export const overlayRoutes: RA<EnhancedRoute> = [
     children: [
       {
         path: 'user-tools',
-        title: commonText('userToolsDialogTitle'),
+        title: headerText.userTools(),
         element: () =>
           import('../Header/UserTools').then(
             ({ UserToolsOverlay }) => UserToolsOverlay
           ),
       },
       {
-        path: 'data-entry',
-        title: commonText('dataEntry'),
+        path: 'simple-search',
+        title: headerText.simpleSearch(),
         element: () =>
-          import('../Header/Forms').then(
+          import('../Header/ExpressSearchTask').then(
+            ({ ExpressSearchOverlay }) => ExpressSearchOverlay
+          ),
+      },
+      {
+        path: 'express-search',
+        element: <Redirect to="/specify/overlay/simple-search/" />,
+      },
+      {
+        path: 'choose-collection',
+        title: commonText.chooseCollection(),
+        element: () =>
+          import('../Header/ChooseCollection').then(
+            ({ ChooseCollection }) => ChooseCollection
+          ),
+      },
+      {
+        path: 'data-entry',
+        title: headerText.dataEntry(),
+        element: () =>
+          import('../DataEntryTables').then(
             ({ FormsDialogOverlay }) => FormsDialogOverlay
           ),
       },
       {
         path: 'trees',
-        title: commonText('trees'),
+        title: treeText.trees(),
         element: () =>
           import('../Toolbar/TreeRepair').then(
             ({ TreeSelectOverlay }) => TreeSelectOverlay
@@ -51,7 +84,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'interactions',
-        title: commonText('interactions'),
+        title: interactionsText.interactions(),
         children: [
           {
             index: true,
@@ -61,17 +94,24 @@ export const overlayRoutes: RA<EnhancedRoute> = [
               ),
           },
           {
-            path: ':action',
+            path: 'return-loan',
             element: () =>
               import('../Interactions/InteractionsDialog').then(
-                ({ InteractionsOverlay }) => InteractionsOverlay
+                ({ InteractionLoanReturn }) => InteractionLoanReturn
+              ),
+          },
+          {
+            path: 'create/:tableName',
+            element: () =>
+              import('../Interactions/InteractionsDialog').then(
+                ({ InteractionAction }) => InteractionAction
               ),
           },
         ],
       },
       {
         path: 'queries',
-        title: commonText('queries'),
+        title: queryText.queries(),
         element: () =>
           import('../Toolbar/Query').then(
             ({ QueriesOverlay }) => QueriesOverlay
@@ -86,7 +126,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           },
           {
             path: 'new',
-            title: queryText('newQueryName'),
+            title: queryText.newQueryName(),
             element: () =>
               import('../Toolbar/Query').then(({ NewQuery }) => NewQuery),
           },
@@ -94,7 +134,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'record-sets',
-        title: commonText('recordSets'),
+        title: commonText.recordSets(),
         element: () =>
           import('../Toolbar/RecordSets').then(
             ({ RecordSetsOverlay }) => RecordSetsOverlay
@@ -102,13 +142,13 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'reports',
-        title: commonText('reports'),
+        title: reportsText.reports(),
         element: () =>
           import('../Reports').then(({ ReportsOverlay }) => ReportsOverlay),
       },
       {
         path: 'data-sets',
-        title: commonText('workBench'),
+        title: wbText.workBench(),
         element: () =>
           import('../Toolbar/WbsDialog').then(
             ({ DataSetsOverlay }) => DataSetsOverlay
@@ -123,7 +163,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'tree-repair',
-        title: commonText('repairTree'),
+        title: headerText.repairTree(),
         element: () =>
           import('../Toolbar/TreeRepair').then(
             ({ TreeRepairOverlay }) => TreeRepairOverlay
@@ -131,7 +171,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'master-key',
-        title: commonText('generateMasterKey'),
+        title: userText.generateMasterKey(),
         element: () =>
           import('../Toolbar/MasterKey').then(
             ({ MasterKeyOverlay }) => MasterKeyOverlay
@@ -139,26 +179,74 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'make-dwca',
-        title: commonText('makeDwca'),
+        title: headerText.makeDwca(),
         element: () =>
-          import('../Toolbar/Dwca').then(
+          import('../ExportFeed/Dwca').then(
             ({ MakeDwcaOverlay }) => MakeDwcaOverlay
           ),
       },
       {
         path: 'force-update-feed',
-        title: commonText('updateExportFeed'),
+        title: headerText.updateExportFeed(),
         element: () =>
-          import('../Toolbar/ForceUpdate').then(
+          import('../ExportFeed/ForceUpdate').then(
             ({ ForceUpdateFeedOverlay }) => ForceUpdateFeedOverlay
           ),
       },
       {
         path: 'about',
-        title: welcomeText('aboutSpecify'),
+        title: welcomeText.aboutSpecify(),
         element: () =>
           import('../HomePage/AboutSpecify').then(
             ({ AboutOverlay }) => AboutOverlay
+          ),
+      },
+
+      {
+        path: 'resources/app-resource/:id/*',
+        element: () =>
+          import('../AppResources/DialogEditor').then(
+            ({ DialogEditor }) => DialogEditor
+          ),
+        isSingleResource: true,
+      },
+      {
+        // This path is used when an overlay triggered a 404 page
+        path: 'not-found',
+        element: () =>
+          import('../Router/RouterUtils').then(
+            ({ NotFoundDialog }) => NotFoundDialog
+          ),
+      },
+      {
+        path: 'merge/:tableName',
+        title: mergingText.mergeRecords(),
+        element: () =>
+          import('../Merging/index').then(({ MergingDialog }) => MergingDialog),
+      },
+      {
+        path: 'attachments/import',
+        title: attachmentsText.importAttachments(),
+        element: () =>
+          import('../AttachmentsBulkImport/Datasets').then(
+            ({ AttachmentsImportOverlay }) => AttachmentsImportOverlay
+          ),
+      },
+      {
+        path: 'configure/uniqueness/:tableName',
+        title: schemaText.uniquenessRules(),
+        element: () =>
+          import('../SchemaConfig/TableUniquenessRules').then(
+            ({ TableUniquenessRules }) => TableUniquenessRules
+          ),
+      },
+      {
+        // There's no physical difference between a workbench and batch-edit dataset, but separating them out helps UI.
+        path: 'batch-edit',
+        title: batchEditText.batchEdit(),
+        element: () =>
+          import('../Toolbar/WbsDialog').then(
+            ({ BatchEditDataSetsOverlay }) => BatchEditDataSetsOverlay
           ),
       },
     ],

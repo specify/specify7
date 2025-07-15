@@ -2,35 +2,45 @@ import React from 'react';
 
 import type { IR } from '../../utils/types';
 import { replaceKey } from '../../utils/utils';
-import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { serializeResource } from '../DataModel/serializers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQuery } from '../DataModel/types';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { userPreferences } from '../Preferences/userPreferences';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { useQueryFieldFilters } from '../QueryBuilder/useQueryFieldFilters';
+import { QueryParametersDialog } from './Parameters';
 import { RunReport } from './Run';
-import { usePref } from '../UserPreferences/usePref';
 
 export function ReportForRecord({
   query: rawQuery,
   parameters,
   definition,
-  model,
+  table,
   resourceId,
   onClose: handleClose,
 }: {
   readonly query: SerializedResource<SpQuery>;
-  readonly definition: Document;
+  readonly definition: Element;
   readonly parameters: IR<string>;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly resourceId: number;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [clearQueryFilters] = usePref(
+  const queryFieldFilters = useQueryFieldFilters();
+
+  const [clearQueryFilters] = userPreferences.use(
     'reports',
     'behavior',
     'clearQueryFilters'
   );
+
+  const [showQueryParameters] = userPreferences.use(
+    'reports',
+    'behavior',
+    'queryParamtersFromForm'
+  );
+
   const query = React.useMemo(() => {
     const query = replaceKey(
       rawQuery,
@@ -50,7 +60,7 @@ export function ReportForRecord({
             }
       )
     );
-    const newField = QueryFieldSpec.fromPath(model.name, [model.idField.name])
+    const newField = QueryFieldSpec.fromPath(table.name, [table.idField.name])
       .toSpQueryField()
       .set('operStart', queryFieldFilters.equal.id)
       .set('startValue', resourceId.toString())
@@ -60,9 +70,18 @@ export function ReportForRecord({
       ...query.fields,
       serializeResource(newField),
     ]);
-  }, [rawQuery, model, resourceId, clearQueryFilters]);
+  }, [rawQuery, table, resourceId, clearQueryFilters]);
 
-  return (
+  return showQueryParameters ? (
+    <QueryParametersDialog
+      autoRun={false}
+      definition={definition}
+      parameters={parameters}
+      query={query}
+      recordSetId={undefined}
+      onClose={handleClose}
+    />
+  ) : (
     <RunReport
       definition={definition}
       parameters={parameters}

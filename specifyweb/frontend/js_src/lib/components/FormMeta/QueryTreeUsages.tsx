@@ -1,10 +1,10 @@
 import React from 'react';
 
-import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { formsText } from '../../localization/forms';
 import { Link } from '../Atoms/Link';
+import type { AnyTree } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
-import {AnyTree} from '../DataModel/helperTypes';
 
 export function QueryTreeUsages({
   resource,
@@ -14,12 +14,12 @@ export function QueryTreeUsages({
   return (
     <ProtectedAction action="execute" resource="/querybuilder/query">
       <Link.Small
-        href={`/specify/query/fromtree/${resource.specifyModel.name.toLowerCase()}/${
+        href={`/specify/query/fromtree/${resource.specifyTable.name.toLowerCase()}/${
           resource.id
         }/`}
         target="_blank"
       >
-        {formsText('findUsages')}
+        {formsText.findUsages()}
       </Link.Small>
     </ProtectedAction>
   );

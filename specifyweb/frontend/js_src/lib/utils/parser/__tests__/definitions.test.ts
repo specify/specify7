@@ -1,15 +1,20 @@
 import type {
   JavaType,
   LiteralField,
+  Relationship,
 } from '../../../components/DataModel/specifyField';
-import { Relationship } from '../../../components/DataModel/specifyField';
+import { tables } from '../../../components/DataModel/tables';
 import {
   formatterTypeMapper,
   UiFormatter,
-} from '../../../components/Forms/uiFormatters';
+} from '../../../components/FieldFormatters';
+import { userPreferences } from '../../../components/Preferences/userPreferences';
 import { formsText } from '../../../localization/forms';
 import { requireContext } from '../../../tests/helpers';
+import { theories } from '../../../tests/utils';
 import { f } from '../../functools';
+import { localized } from '../../types';
+import { removeKey } from '../../utils';
 import type { Parser } from '../definitions';
 import {
   browserifyRegex,
@@ -26,9 +31,6 @@ import {
   stringGuard,
   validators,
 } from '../definitions';
-import { theories } from '../../../tests/utils';
-import { removeKey } from '../../utils';
-import { setPref } from '../../../components/UserPreferences/helpers';
 
 requireContext();
 
@@ -55,20 +57,27 @@ describe('parserFromType', () => {
 const formatterFields = [
   new formatterTypeMapper.constant({
     size: 2,
-    value: 'AB',
+    value: localized('AB'),
     autoIncrement: false,
     byYear: false,
-    pattern: '\\d{1,2}',
+    pattern: localized('\\d{1,2}'),
   }),
   new formatterTypeMapper.numeric({
     size: 2,
     autoIncrement: true,
     byYear: false,
-    pattern: '\\d{1,2}',
+    pattern: localized('\\d{1,2}'),
   }),
 ];
-const uiFormatter = new UiFormatter(false, formatterFields);
-const title = formsText('requiredFormat', uiFormatter.pattern()!);
+const uiFormatter = new UiFormatter(
+  false,
+  localized('test'),
+  formatterFields,
+  tables.CollectionObject,
+  undefined,
+  'test'
+);
+const title = formsText.requiredFormat({ format: uiFormatter.pattern()! });
 
 describe('resolveParser', () => {
   test('simple string with parser merger', () => {
@@ -108,6 +117,7 @@ describe('resolveParser', () => {
   });
   test('UiFormatter is converted to parser', () => {
     const field = {
+      isRelationship: false,
       type: 'java.lang.String',
       getUiFormatter: () => uiFormatter,
     } as unknown as LiteralField;
@@ -152,8 +162,15 @@ describe('mergeParsers', () => {
         { formatters: [formatter.trim] }
       )
     ).toEqual({ formatters: [formatter.toLowerCase, formatter.trim] }));
+  test('step case', () => {
+    expect(mergeParsers({ step: 'any' }, { step: undefined })).toEqual({
+      step: 'any',
+    });
+    expect(mergeParsers({ step: 'any' }, { step: 0.5 })).toEqual({ step: 0.5 });
+    expect(mergeParsers({ step: 1 }, { step: 0.25 })).toEqual({ step: 0.25 });
+  });
   test('takeMin case', () =>
-    expect(mergeParsers({ step: 1 }, { step: 4 })).toEqual({ step: 1 }));
+    expect(mergeParsers({ max: 1 }, { max: 4 })).toEqual({ max: 1 }));
   test('takeMax case', () =>
     expect(mergeParsers({ minLength: 1 }, { minLength: 4 })).toEqual({
       minLength: 4,
@@ -166,10 +183,10 @@ describe('mergeParsers', () => {
       min: 2,
       max: 20,
       step: 2.5,
-      placeholder: formsText('illegalBool'),
+      placeholder: formsText.illegalBool(),
       pattern: /a/u,
-      title: formsText('illegalBool'),
-      formatters: [formatter.toLowerCase],
+      title: formsText.illegalBool(),
+      formatters: [formatter.toLowerCase, formatter.trim],
       validators: [validators.number],
       parser: f.never,
       printFormatter: (a: unknown) =>
@@ -185,10 +202,10 @@ describe('mergeParsers', () => {
       min: 3,
       max: 21,
       step: 3.5,
-      placeholder: formsText('invalidValue'),
+      placeholder: formsText.invalidValue(),
       pattern: /b/u,
-      title: formsText('invalidValue'),
-      formatters: [formatter.toUpperCase],
+      title: formsText.invalidValue(),
+      formatters: [formatter.toLowerCase],
       validators: [validators.number],
       parser: f.toString,
       printFormatter: f.toString,
@@ -203,11 +220,11 @@ describe('mergeParsers', () => {
       min: 3,
       max: 20,
       step: 2.5,
-      placeholder: formsText('invalidValue'),
+      placeholder: formsText.invalidValue(),
       pattern: /b/u,
-      title: formsText('invalidValue'),
-      formatters: [formatter.toLowerCase, formatter.toUpperCase],
-      validators: [validators.number, validators.number],
+      title: formsText.invalidValue(),
+      formatters: [formatter.toLowerCase, formatter.trim],
+      validators: [validators.number],
       parser: f.toString,
       printFormatter: f.toString,
       required: true,
@@ -226,7 +243,9 @@ describe('formatterToParser', () => {
       ...parser
     } = formatterToParser({}, uiFormatter);
     expect(parser).toEqual({
-      pattern: new RegExp(uiFormatter.parseRegExp(), 'u'),
+      // Regex may be coming from the user, thus disable strict mode
+      // eslint-disable-next-line require-unicode-regexp
+      pattern: new RegExp(uiFormatter.parseRegExp()),
       title,
       placeholder: uiFormatter.pattern()!,
       value: uiFormatter.valueOrWild(),
@@ -248,12 +267,12 @@ describe('formatterToParser', () => {
 
   test('without autonumbering', () => {
     const field = {
-      model: {
+      table: {
         name: 'CollectionObject',
       },
       name: 'altCatalogNumber',
     } as unknown as LiteralField;
-    setPref('form', 'preferences', 'autoNumbering', {
+    userPreferences.set('form', 'preferences', 'autoNumbering', {
       CollectionObject: [],
     });
     expect(formatterToParser(field, uiFormatter).value).toBeUndefined();
@@ -286,13 +305,21 @@ theories(pluralizeParser, [
     in: [{ title: 'a', pattern: /^a$/u }],
     out: {
       title: 'a',
-      pattern: new RegExp('^(?:|\\s*(?:a)\\s*(?:,\\s*(?:a)\\s*)*)$', 'u'),
+      /*
+       * The below regex is autogenerated
+       */
+      // eslint-disable-next-line regexp/no-empty-alternative, regexp/no-useless-non-capturing-group, unicorn/no-unsafe-regex
+      pattern: /^(?:|\s*(?:a)\s*(?:,\s*(?:a)\s*)*)$/u,
     },
   },
 ]);
 
 theories(pluralizeRegex, [
-  [[/^a$/u], new RegExp('^(?:|\\s*(?:a)\\s*(?:,\\s*(?:a)\\s*)*)$', 'u')],
+  /*
+   * The below regex is autogenerated
+   */
+  // eslint-disable-next-line regexp/no-empty-alternative, regexp/no-useless-non-capturing-group, unicorn/no-unsafe-regex
+  [[/^a$/u], /^(?:|\s*(?:a)\s*(?:,\s*(?:a)\s*)*)$/u],
 ]);
 
 theories(lengthToRegex, [

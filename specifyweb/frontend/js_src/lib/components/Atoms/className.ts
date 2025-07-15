@@ -12,22 +12,26 @@ export const dialogIconTriggers = {
 };
 
 const buttonClassName = 'button';
-const grayButton = `${buttonClassName} hover:bg-gray-400 bg-gray-300 text-gray-800
-    dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
+const secondaryButton = `${buttonClassName} hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800 shadow-sm
+dark:text-gray-100`;
+const secondaryLightButton = `${buttonClassName} hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-light-button-color)] text-gray-800 shadow-sm
+dark:text-gray-100`;
+
 const containerBaseUnstyled = `flex flex-col gap-4 overflow-scroll
-  overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:stable]`;
+  overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:auto]`;
 const containerBase = `${containerBaseUnstyled} bg-[color:var(--form-foreground)]
-  rounded p-4 shadow-gray-400 shadow-lg`;
-const containerFull = 'flex flex-col gap-4 h-full p-4';
+  rounded p-4 shadow-gray-400 shadow-2xl`;
+const containerFull = 'flex flex-col gap-4 sm:h-full p-1 sm:p-4';
 const formStyles =
   'text-[length:var(--form-font-size)] font-[family-name:var(--form-font-family)]';
 const niceButton = `${buttonClassName} rounded cursor-pointer active:brightness-80 px-4 py-2
-    disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
-    inline-flex items-center capitalize justify-center`;
-const borderedGrayButton = `${grayButton} ring-1 ring-gray-400 dark:ring-0
-    disabled:ring-gray-500 disabled:dark:ring-neutral-500`;
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm`;
+const borderedGrayButton = `${secondaryButton} ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500`;
 
 // REFACTOR: reduce this once everything is using React. Can move things into tailwind.config.js
+
 export const className = {
   /*
    * Most fields in Specify are rendered on top of var(--form-background). For
@@ -42,43 +46,50 @@ export const className = {
    * place, the validation errors do not get permanently silenced
    */
   notSubmittedForm: 'not-submitted',
+  /*
+   * Used to disable default aria-current="page" styles for links and
+   * aria-pressed="true" for buttons
+   */
+  ariaHandled: 'aria-handled',
   notTouchedInput: 'not-touched',
-  // Disable default link click intercept action
-  navigationHandled: 'navigation-handled',
   label: 'flex flex-col',
   labelForCheckbox: 'cursor-pointer inline-flex gap-1 items-center',
   textArea: 'max-w-full min-w-[theme(spacing.20)] min-h-[theme(spacing.8)]',
   button: buttonClassName,
   link: 'link',
   icon: 'icon link',
-  grayButton,
+  secondaryButton,
+  secondaryLightButton,
   niceButton,
   smallButton: `${niceButton} !py-1 !px-2`,
   borderedGrayButton,
-  defaultSmallButtonVariant: `${borderedGrayButton} hover:bg-brand-200 dark:hover:bg-brand-400`,
-  redButton: `${dialogIconTriggers.error} hover:bg-red-800 bg-red-700 text-white`,
-  blueButton: `${dialogIconTriggers.info} hover:bg-blue-700 bg-blue-600 text-white`,
-  orangeButton: `${dialogIconTriggers.warning} hover:bg-orange-600 bg-orange-500 text-white`,
-  greenButton: `${dialogIconTriggers.success} hover:bg-green-800 bg-green-700 text-white`,
+  defaultSmallButtonVariant: `${borderedGrayButton}`,
+  dangerButton: `${dialogIconTriggers.error} hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--danger-button-color)] text-white`,
+  infoButton: `${dialogIconTriggers.info} hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--info-button-color)] text-white`,
+  warningButton: `${dialogIconTriggers.warning} hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--warning-button-color)] text-white`,
+  successButton: `${dialogIconTriggers.success} hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--success-button-color)] text-white`,
+  saveButton: `hover:brightness-90 dark:hover:brightness-150 text-white bg-[color:var(--save-button-color)]`,
   fancyButton: `bg-gray-300 hover:bg-brand-200 dark:bg-neutral-600
     hover:dark:bg-brand:400 text-gray-800 dark:text-white text-center`,
   containerFull,
   containerFullGray: `${containerFull} bg-[color:var(--form-background)]`,
   containerBaseUnstyled,
   containerBase,
-  containerCenter: `${containerBase} max-w-[min(100%,var(--form-max-width))]
+  containerCenter: `${containerBase} max-w-[var(--form-max-width)]
     mx-auto w-full ${formStyles}`,
-  formHeader: 'border-b-2 border-brand-300 flex items-center pb-2 gap-4',
+  formHeader:
+    'border-b-2 border-brand-300 flex items-center pb-2 gap-2 md:gap-4 md:justify-between flex-col md:flex-row',
   formTitle: 'text-lg font-bold flex items-center gap-2',
   formStyles,
-  limitedWidth: `max-w-[min(100%,var(--max-field-width))]`,
+  limitedWidth: `max-w-[var(--max-field-width)]`,
   headerPrimary: 'font-semibold text-black dark:text-white',
   headerGray: 'text-gray-500 dark:text-neutral-400',
   // These values must be synchronised with main.css
   dataEntryGrid: 'data-entry-grid',
-  formFooter: 'border-brand-300 border-t-2 flex print:hidden pt-2 gap-2',
+  formFooter:
+    'border-brand-300 border-t-2 flex print:hidden pt-2 gap-2 flex-wrap justify-center flex-col md:flex-row',
   dataEntryAdd: '!text-green-700 print:hidden',
-  dataEntryView: '!text-orange-400 print:hidden',
+  dataEntryView: '!text-cyan-400 print:hidden',
   dataEntryEdit: '!text-orange-400 print:hidden',
   dataEntryClone: '!text-amber-700 print:hidden',
   dataEntrySearch: '!text-blue-500 print:hidden',

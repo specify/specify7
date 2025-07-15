@@ -5,6 +5,7 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { csrfToken, parseDjangoDump } from '../../utils/ajax/csrfToken';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
@@ -15,28 +16,30 @@ import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import type { SerializedModel } from '../DataModel/helperTypes';
+import { SplashScreen } from '../Core/SplashScreen';
+import { backboneFieldSeparator } from '../DataModel/helpers';
+import type { SerializedRecord } from '../DataModel/helperTypes';
 import type { Collection } from '../DataModel/types';
+import { toLargeSortConfig } from '../Molecules/Sorting';
+import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
 import { scrollIntoView } from '../TreeView/helpers';
-import { usePref } from '../UserPreferences/usePref';
-import { SplashScreen } from '../Core/SplashScreen';
 
 export function ChooseCollection(): JSX.Element {
   return React.useMemo(
     () => (
       <Wrapped
         errors={[
-          parseDjangoDump<string>('form-errors'),
-          parseDjangoDump<string>('collection-errors'),
+          parseDjangoDump<string>('form-errors') ?? [],
+          parseDjangoDump<string>('collection-errors') ?? [],
         ]
           .flat()
           .filter(Boolean)}
         availableCollections={JSON.parse(
-          parseDjangoDump('available-collections')
+          parseDjangoDump('available-collections') ?? '[]'
         )}
         // REFACTOR: store this on the front-end?
-        initialValue={parseDjangoDump('initial-value')}
+        initialValue={parseDjangoDump('initial-value') ?? null}
         nextUrl={parseDjangoDump<string>('next-url') ?? '/specify/'}
       />
     ),
@@ -51,7 +54,7 @@ function Wrapped({
   nextUrl,
 }: {
   readonly errors: RA<string>;
-  readonly availableCollections: RA<SerializedModel<Collection>>;
+  readonly availableCollections: RA<SerializedRecord<Collection>>;
   readonly initialValue: string | null;
   readonly nextUrl: string;
 }): JSX.Element {
@@ -63,41 +66,52 @@ function Wrapped({
     [initialValue]
   );
 
-  const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
-  const isReverseSort = sortOrder.startsWith('-');
-  const sortField = (isReverseSort ? sortOrder.slice(1) : sortOrder) as string &
-    keyof Collection['fields'];
-  const sortedCollections = React.useMemo(
-    () =>
-      Array.from(availableCollections).sort(
-        sortFunction(
-          (collection) => collection[toLowerCase(sortField)],
-          isReverseSort
-        )
-      ),
-    [availableCollections, isReverseSort, sortField]
+  const [sortOrder] = userPreferences.use(
+    'chooseCollection',
+    'general',
+    'sortOrder'
   );
+  const sortedCollections = React.useMemo(() => {
+    const { fieldNames, direction } = toLargeSortConfig(sortOrder);
+    return Array.from(availableCollections).sort(
+      sortFunction(
+        // FEATURE: support sorting by related table
+        (collection) =>
+          collection[
+            toLowerCase(
+              fieldNames.join(
+                backboneFieldSeparator
+              ) as keyof Collection['fields']
+            )
+          ],
+        direction === 'desc'
+      )
+    );
+  }, [availableCollections, sortOrder]);
 
   const [selectedCollection, setSelectedCollection] = React.useState<
     number | undefined
-  >(() =>
+  >(() => {
+    const id = f.parseInt(initialValue ?? '');
     /*
      * When switching databases on the test server, initial value may point
      * to a collection that doesn't exist in this database
      */
-    f.maybe(f.parseInt(initialValue ?? ''), (id) =>
-      availableCollections.some((collection) => collection.id === id)
-        ? id
-        : undefined
-    )
-  );
+    return availableCollections.some((collection) => collection.id === id)
+      ? id
+      : undefined;
+  });
 
   /*
    * If there is a remotepref to not ask for collection every time,
    * submit the form as soon as loaded
    */
   const formRef = React.useRef<HTMLFormElement | null>(null);
-  const [alwaysPrompt] = usePref('chooseCollection', 'general', 'alwaysPrompt');
+  const [alwaysPrompt] = userPreferences.use(
+    'chooseCollection',
+    'general',
+    'alwaysPrompt'
+  );
   React.useEffect(() => {
     if (f.parseInt(initialValue ?? '') === undefined) return;
     else if (!alwaysPrompt || sortedCollections.length === 1)
@@ -120,11 +134,13 @@ function Wrapped({
   return (
     <SplashScreen>
       <Form forwardRef={formRef} method="post">
-        <h2>{commonText('chooseCollection')}:</h2>
+        <h2>
+          {commonText.colonHeader({ header: commonText.chooseCollection() })}
+        </h2>
         {errors.length > 0 && <ErrorMessage>{errors}</ErrorMessage>}
         {hasAccess ? (
           <>
-            <div className="-ml-1 flex max-h-56 flex-col gap-2 overflow-y-auto pl-1">
+            <div className="-ml-1 flex max-h-[50vh] flex-col gap-2 overflow-y-auto pl-1">
               {sortedCollections.map(({ id, collectionname }) => (
                 <Label.Inline key={id}>
                   <Input.Radio
@@ -145,13 +161,13 @@ function Wrapped({
             />
             <input name="next" type="hidden" value={nextUrl} />
             <Submit.Fancy forwardRef={submitRef}>
-              {commonText('open')}
+              {commonText.open()}
             </Submit.Fancy>
           </>
         ) : (
           <>
             <ErrorMessage>
-              <span>{commonText('noAccessToCollections')}</span>
+              <span>{userText.noAccessToCollections()}</span>
             </ErrorMessage>
             <Button.Fancy
               onClick={(): void =>
@@ -164,7 +180,7 @@ function Wrapped({
                 )
               }
             >
-              {commonText('login')}
+              {userText.logIn()}
             </Button.Fancy>
           </>
         )}

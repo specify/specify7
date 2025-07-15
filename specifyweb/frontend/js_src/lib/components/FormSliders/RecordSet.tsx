@@ -5,15 +5,19 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { fetchRows } from '../../utils/ajax/specifyApi';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import { clamp, split } from '../../utils/utils';
+import { clamp, sortFunction, split } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
-import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
-import { serializeResource } from '../DataModel/helpers';
+import {
+  DEFAULT_FETCH_LIMIT,
+  fetchCollection,
+  fetchRows,
+} from '../DataModel/collection';
+import { backendFilter } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -21,15 +25,24 @@ import {
   deleteResource,
   getResourceViewUrl,
 } from '../DataModel/resource';
-import type { RecordSet as RecordSetSchema } from '../DataModel/types';
+import { serializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
+import type {
+  CollectionObject,
+  RecordSet as RecordSetSchema,
+  Tables,
+} from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
-import type { FormMode } from '../FormParse';
+import { format } from '../Formatters/formatters';
+import { recordSetView } from '../FormParse/webOnlyViews';
+import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
+import { locationToState } from '../Router/RouterState';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 import type { RecordSelectorProps } from './RecordSelector';
 import { RecordSelectorFromIds } from './RecordSelectorFromIds';
-import { locationToState, useStableLocation } from '../Router/RouterState';
 
 export function RecordSetWrapper<SCHEMA extends AnySchema>({
   recordSet,
@@ -42,7 +55,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
 }): JSX.Element | null {
   const navigate = useNavigate();
 
-  const location = useStableLocation(useLocation());
+  const location = useLocation();
   const state = locationToState(location, 'RecordSet');
   const savedRecordSetItemIndex = state?.recordSetItemIndex;
   const [index, setIndex] = React.useState<number | undefined>(undefined);
@@ -52,32 +65,39 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
       setIndex(savedRecordSetItemIndex);
       return;
     }
-    if (resource.isNew()) {
+    if (resource.isNew() || recordSet.isNew()) {
       setIndex(0);
       return;
     }
+
     loading(
       fetchCollection('RecordSetItem', {
         recordSet: recordSet.id,
         limit: 1,
         recordId: resource.id,
+        domainFilter: false,
       }).then(async ({ records }) => {
         const recordSetItemId = records[0]?.id;
         if (recordSetItemId === undefined) {
           // Record is not part of a record set
           navigate(
-            getResourceViewUrl(resource.specifyModel.name, resource.id),
+            getResourceViewUrl(resource.specifyTable.name, resource.id),
             { replace: true }
           );
           return;
         }
+        /*
+         * Count how many record set items there are before this one.
+         * That would be used as index.
+         */
         const { totalCount } = await fetchCollection(
           'RecordSetItem',
           {
             recordSet: recordSet.id,
             limit: 1,
+            domainFilter: false,
           },
-          { id__lt: recordSetItemId }
+          backendFilter('id').lessThan(recordSetItemId)
         );
         setIndex(totalCount);
       })
@@ -87,10 +107,15 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
   const [totalCount] = useAsyncState(
     React.useCallback(
       async () =>
-        fetchCollection('RecordSetItem', {
-          limit: 1,
-          recordSet: recordSet.id,
-        }).then(({ totalCount }) => totalCount),
+        recordSet.isNew()
+          ? resource.isNew()
+            ? 0
+            : 1
+          : fetchCollection('RecordSetItem', {
+              limit: 1,
+              recordSet: recordSet.id,
+              domainFilter: false,
+            }).then(({ totalCount }) => totalCount),
       [recordSet.id]
     ),
     true
@@ -100,7 +125,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
     <RecordSet
       dialog={false}
       index={resource.isNew() ? totalCount : index}
-      mode="edit"
+      key={recordSet.cid}
       record={resource}
       recordSet={recordSet}
       totalCount={totalCount}
@@ -120,6 +145,7 @@ const fetchItems = async (
 ): Promise<RA<readonly [index: number, id: number]>> =>
   fetchRows('RecordSetItem', {
     limit: fetchSize,
+    domainFilter: false,
     recordSet: recordSetId,
     orderBy: 'id',
     offset,
@@ -150,7 +176,6 @@ function RecordSet<SCHEMA extends AnySchema>({
   record: currentRecord,
   totalCount: initialTotalCount,
   dialog,
-  mode,
   onClose: handleClose,
   ...rest
 }: Omit<
@@ -158,24 +183,21 @@ function RecordSet<SCHEMA extends AnySchema>({
   | 'defaultIndex'
   | 'field'
   | 'index'
-  | 'model'
   | 'onDelete'
   | 'onSaved'
   | 'records'
-  | 'totalCount'
+  | 'table'
 > & {
   readonly recordSet: SpecifyResource<RecordSetSchema>;
   readonly index: number;
   readonly record: SpecifyResource<SCHEMA>;
   readonly totalCount: number;
   readonly dialog: 'modal' | 'nonModal' | false;
-  readonly mode: FormMode;
   readonly onClose: () => void;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
 
-  const [totalCount, setTotalCount] = React.useState<number>(initialTotalCount);
   const [ids = [], setIds] = React.useState<
     /*
      * Caution, this array can be sparse
@@ -186,7 +208,9 @@ function RecordSet<SCHEMA extends AnySchema>({
     RA<number | undefined>
   >(() => {
     const array = [];
-    array[totalCount - 1] = undefined;
+    if (initialTotalCount > 0) array[initialTotalCount - 1] = undefined;
+    if (recordSet.isNew() && !currentRecord.isNew())
+      array[0] = currentRecord.id;
     return array;
   });
 
@@ -197,10 +221,10 @@ function RecordSet<SCHEMA extends AnySchema>({
     replace: boolean = false
   ): void =>
     recordId === undefined
-      ? handleFetch(index)
+      ? handleFetchMore(index)
       : navigate(
           getResourceViewUrl(
-            currentRecord.specifyModel.name,
+            currentRecord.specifyTable.name,
             recordId,
             recordSet.id
           ),
@@ -219,11 +243,12 @@ function RecordSet<SCHEMA extends AnySchema>({
 
   const previousIndex = React.useRef<number>(currentIndex);
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
+  const totalCount = ids.length;
   const handleFetch = React.useCallback(
-    (index: number): void => {
-      if (index >= totalCount) return;
+    async (index: number): Promise<RA<number | undefined> | undefined> => {
+      if (index >= totalCount) return undefined;
       handleLoading();
-      fetchItems(
+      return fetchItems(
         recordSet.id,
         // If new index is smaller (i.e, going back), fetch previous 40 IDs
         clamp(
@@ -231,55 +256,103 @@ function RecordSet<SCHEMA extends AnySchema>({
           previousIndex.current > index ? index - fetchSize + 1 : index,
           totalCount
         )
-      )
-        .then((updates) =>
-          setIds((oldIds = []) => {
-            handleLoaded();
-            const newIds = updateIds(oldIds, updates);
-            go(index, newIds[index]);
-            return newIds;
-          })
-        )
-        .catch(softFail);
+      ).then(
+        async (updates) =>
+          new Promise((resolve) =>
+            setIds((oldIds = []) => {
+              handleLoaded();
+              const newIds = updateIds(oldIds, updates);
+              resolve(newIds);
+              return newIds;
+            })
+          )
+      );
     },
     [totalCount, recordSet.id, loading, handleLoading, handleLoaded]
+  );
+
+  const handleFetchMore = React.useCallback(
+    (index: number): void => {
+      handleFetch(index)
+        .then((newIds) => {
+          if (newIds === undefined) return;
+          go(index, newIds[index]);
+        })
+        .catch(softFail);
+    },
+    [handleFetch]
   );
 
   // Fetch ID of record at current index
   const currentRecordId = ids[currentIndex];
   React.useEffect(() => {
-    if (currentRecordId === undefined) handleFetch(currentIndex);
+    if (currentRecordId === undefined) handleFetchMore(currentIndex);
+
     return (): void => {
       previousIndex.current = currentIndex;
     };
-  }, [totalCount, currentRecordId, handleFetch, currentIndex]);
+  }, [totalCount, currentRecordId, handleFetchMore, currentIndex]);
 
   const [hasDuplicate, handleHasDuplicate, handleDismissDuplicate] =
     useBooleanState();
-  const handleAdd = (
+
+  const [hasSeveralResourceType, setHasSeveralResourceType] =
+    React.useState(false);
+  const [resourceType, setResourceType] = React.useState<
+    keyof Tables | undefined
+  >(undefined);
+
+  async function handleAdd(
     resources: RA<SpecifyResource<SCHEMA>>,
     wasNew: boolean
-  ): void =>
-    loading(
-      Promise.all(
-        resources.map(async (resource) =>
-          createResource('RecordSetItem', {
-            recordId: resource.id,
-            recordSet: recordSet.get('resource_uri'),
-          })
-        )
-      ).then(() => {
-        const oldTotalCount = totalCount;
-        setTotalCount(oldTotalCount + resources.length);
-        go(oldTotalCount, resources[0].id, undefined, wasNew);
-        setIds((oldIds = []) =>
-          updateIds(
-            oldIds,
-            resources.map(({ id }, index) => [oldTotalCount + index, id])
-          )
-        );
-      })
+  ): Promise<void> {
+    if (!recordSet.isNew())
+      await addIdsToRecordSet(resources.map(({ id }) => id));
+    go(totalCount, resources[0].id, undefined, wasNew);
+    if (resourceType === undefined) {
+      setResourceType(resources[0].specifyTable.name);
+    } else if (resourceType !== resources.at(-1)?.specifyTable.name) {
+      setHasSeveralResourceType(true);
+      setResourceType(resources.at(-1)?.specifyTable.name);
+    }
+    setIds((oldIds = []) =>
+      updateIds(
+        oldIds,
+        resources.map(({ id }, index) => [totalCount + index, id])
+      )
     );
+  }
+
+  async function createNewRecordSet(
+    ids: RA<number | undefined>
+  ): Promise<void> {
+    await recordSet.save();
+    await addIdsToRecordSet(ids);
+    navigate(`/specify/record-set/${recordSet.id}/`);
+  }
+
+  const addIdsToRecordSet = async (
+    ids: RA<number | undefined>
+  ): Promise<void> =>
+    Promise.all(
+      ids.map(async (recordId) =>
+        recordId === undefined
+          ? undefined
+          : createResource('RecordSetItem', {
+              recordId,
+              recordSet: recordSet.get('resource_uri'),
+            })
+      )
+    ).then(f.void);
+
+  const [openDialogForTitle, _, __, setOpenDialogForTitle] =
+    useBooleanState(false);
+
+  const [createRecordSetOnBulkCarryForward] = userPreferences.use(
+    'form',
+    'preferences',
+    'createRecordSetOnBulkCarryForward'
+  );
 
   return (
     <>
@@ -287,18 +360,38 @@ function RecordSet<SCHEMA extends AnySchema>({
         {...rest}
         defaultIndex={currentIndex}
         dialog={dialog}
-        headerButtons={<EditRecordSetButton recordSet={recordSet} />}
+        hasSeveralResourceType={hasSeveralResourceType}
+        headerButtons={
+          recordSet.isNew() ? (
+            ids.length > 1 &&
+            !currentRecord.isNew() &&
+            !hasSeveralResourceType ? (
+              <Button.Icon
+                icon="collection"
+                title={formsText.createNewRecordSet()}
+                onClick={(): void => setOpenDialogForTitle()}
+              />
+            ) : undefined
+          ) : (
+            <EditRecordSetButton recordSet={recordSet} />
+          )
+        }
         ids={ids}
         isDependent={false}
         isInRecordSet
         isLoading={isLoading}
-        mode={mode}
-        model={currentRecord.specifyModel}
         newResource={currentRecord.isNew() ? currentRecord : undefined}
-        title={`${commonText('recordSet')}: ${recordSet.get('name')}`}
-        totalCount={totalCount}
+        table={currentRecord.specifyTable}
+        title={
+          recordSet.isNew()
+            ? undefined
+            : commonText.colonLine({
+                label: tables.RecordSet.label,
+                value: recordSet.get('name'),
+              })
+        }
         onAdd={
-          hasToolPermission('recordSets', 'create')
+          hasToolPermission('recordSets', 'create') && !recordSet.isNew()
             ? async (resources) =>
                 // Detect duplicate record set item
                 Promise.all(
@@ -311,10 +404,11 @@ function RecordSet<SCHEMA extends AnySchema>({
                             recordSet: recordSet.id,
                             recordId: resource.id,
                             limit: 1,
+                            domainFilter: false,
                           }).then(({ totalCount }) => totalCount !== 0),
                     })
                   )
-                ).then((results) => {
+                ).then(async (results) => {
                   const [nonDuplicates, duplicates] = split(
                     results,
                     ({ isDuplicate }) => isDuplicate
@@ -322,18 +416,56 @@ function RecordSet<SCHEMA extends AnySchema>({
                   if (duplicates.length > 0 && nonDuplicates.length === 0)
                     handleHasDuplicate();
                   else
-                    handleAdd(
+                    return handleAdd(
                       nonDuplicates.map(({ resource }) => resource),
                       false
                     );
+                  return undefined;
                 })
             : undefined
         }
-        onClone={(newResource): void => go(totalCount, 'new', newResource)}
+        onClone={(resources: RA<SpecifyResource<SCHEMA>>): void => {
+          go(totalCount, 'new', resources[0]);
+          if (resources.length > 1) {
+            if (
+              createRecordSetOnBulkCarryForward.includes(
+                resources[0].specifyTable.name
+              )
+            ) {
+              const sortedResources = Array.from(resources).sort(
+                sortFunction((r) => r.id)
+              ) as RA<SpecifyResource<CollectionObject>>;
+              loading(
+                createNewRecordSet(
+                  sortedResources.map((resource) => resource.id)
+                ).then(async () => {
+                  const firstCollectionObject = await format(
+                    sortedResources[0]
+                  );
+                  const lastCollectionObject = await format(
+                    sortedResources.at(-1)
+                  );
+                  recordSet.set(
+                    'name',
+                    `${
+                      tables.CollectionObject.label
+                    } Batch ${firstCollectionObject!} - ${lastCollectionObject!}`
+                  );
+                  await recordSet.save();
+                })
+              );
+            } else {
+              // Don't create new record set
+              handleAdd(resources.slice(1), false);
+              go(totalCount, resources.at(-1)?.id);
+            }
+          }
+        }}
         onClose={handleClose}
         onDelete={
           (recordSet.isNew() || hasToolPermission('recordSets', 'delete')) &&
-          (!currentRecord.isNew() || totalCount !== 0)
+          (!currentRecord.isNew() || totalCount !== 0) &&
+          !recordSet.isNew()
             ? (_index, source): void => {
                 if (currentRecord.isNew()) return;
                 loading(
@@ -342,6 +474,7 @@ function RecordSet<SCHEMA extends AnySchema>({
                         limit: 1,
                         recordId: ids[currentIndex],
                         recordSet: recordSet.id,
+                        domainFilter: false,
                       }).then(async ({ records }) =>
                         deleteResource(
                           'RecordSetItem',
@@ -349,29 +482,31 @@ function RecordSet<SCHEMA extends AnySchema>({
                             records[0],
                             `Failed to remove resource from the ` +
                               `record set. RecordSetItem not found. RecordId: ` +
-                              `${ids[currentIndex]}. Record set: ${recordSet.id}`
+                              `${ids[currentIndex] ?? 'null'}. Record set: ${
+                                recordSet.id
+                              }`
                           ).id
                         )
                       )
                     : Promise.resolve()
-                  ).then(() => {
-                    const newTotalCount = totalCount - 1;
-                    setTotalCount(newTotalCount);
+                  ).then(() =>
                     setIds((oldIds = []) => {
                       const newIds = oldIds.slice();
                       newIds.splice(currentIndex, 1);
+                      if (newIds.length === 0) handleClose();
                       return newIds;
-                    });
-                    if (newTotalCount === 0) handleClose();
-                  })
+                    })
+                  )
                 );
               }
             : undefined
         }
+        onFetch={handleFetch}
         onSaved={(resource): void =>
+          // Don't do anything if saving existing resource
           ids[currentIndex] === resource.id
             ? undefined
-            : handleAdd([resource], true)
+            : loading(handleAdd([resource], true))
         }
         onSlide={(index, replace): void =>
           go(index, ids[index], undefined, replace)
@@ -379,13 +514,30 @@ function RecordSet<SCHEMA extends AnySchema>({
       />
       {hasDuplicate && (
         <Dialog
-          buttons={commonText('close')}
-          header={formsText('duplicateRecordSetItemDialogHeader')}
+          buttons={commonText.close()}
+          header={formsText.duplicateRecordSetItem({
+            recordSetItemTable: tables.RecordSetItem.label,
+          })}
           onClose={handleDismissDuplicate}
         >
-          {formsText('duplicateRecordSetItemDialogText')}
+          {formsText.duplicateRecordSetItemDescription({
+            recordSetTable: tables.RecordSet.label,
+          })}
         </Dialog>
       )}
+      {openDialogForTitle ? (
+        <ResourceView
+          dialog="modal"
+          isDependent={false}
+          isSubForm={false}
+          resource={recordSet}
+          viewName={recordSetView}
+          onAdd={undefined}
+          onClose={(): void => setOpenDialogForTitle()}
+          onDeleted={f.never}
+          onSaved={(): void => loading(createNewRecordSet(ids))}
+        />
+      ) : null}
     </>
   );
 }
@@ -402,7 +554,6 @@ function EditRecordSetButton({
       <DataEntry.Edit onClick={handleOpen} />
       {isOpen && (
         <EditRecordSet
-          isReadOnly={false}
           recordSet={recordSet}
           onClose={handleClose}
           onDeleted={(): void => navigate('/specify/')}

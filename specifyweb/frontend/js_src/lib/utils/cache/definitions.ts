@@ -7,27 +7,32 @@
 import type hot from 'handsontable';
 import type { State } from 'typesafe-reducer';
 
-import type { AppResourceFilters } from '../../components/AppResources/filtersHelpers';
 import type { AppResourcesConformation } from '../../components/AppResources/Aside';
-import type { SearchPreferences } from '../../components/WorkBench/AdvancedSearch';
+import type { AppResourceFilters } from '../../components/AppResources/filtersHelpers';
+import type { AnyTree } from '../../components/DataModel/helperTypes';
 import type {
   Attachment,
   SpQuery,
   Tables,
 } from '../../components/DataModel/types';
-import type { UserPreferences } from '../../components/UserPreferences/helpers';
+import type {
+  pageSizes,
+  Paginators,
+} from '../../components/Molecules/Paginator';
+import type { SortConfig } from '../../components/Molecules/Sorting';
+import type { PartialPreferences } from '../../components/Preferences/BasePreferences';
+import type { collectionPreferenceDefinitions } from '../../components/Preferences/CollectionDefinitions';
+import type { userPreferenceDefinitions } from '../../components/Preferences/UserDefinitions';
 import type { Conformations } from '../../components/TreeView/helpers';
-import type { IR, RA } from '../types';
+import type { WbSearchPreferences } from '../../components/WorkBench/AdvancedSearch';
+import type { IR, RA, RR } from '../types';
 import { ensure } from '../types';
-import { AnyTree } from '../../components/DataModel/helperTypes';
-import {
-  LeafletCacheSalt,
-  MarkerLayerName,
-} from '../../components/Leaflet/addOns';
-import { SortConfig } from '../../components/Molecules/Sorting';
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
+  readonly header: {
+    readonly isCollapsed: boolean;
+  };
   readonly general: {
     readonly clearCacheOnException: boolean;
   };
@@ -55,32 +60,43 @@ export type CacheDefinitions = {
   };
   readonly schemaConfig: {
     readonly showHiddenTables: boolean;
+    readonly sortByHiddenFields: boolean;
   };
-  readonly leaflet: {
-    readonly /** Remembers the chosen overlays (markers/polygons/boundaries/...) */
-    [Property in `show${Capitalize<MarkerLayerName>}`]: boolean;
-  } & {
-    readonly /** Remembers the selected base layer */
-    [Property in `currentLayer${LeafletCacheSalt}`]: string;
-  };
+  /** Remembers the chosen overlays (markers/polygons/boundaries/...) */
+  readonly leafletOverlays: IR<boolean>;
+  readonly leafletCurrentLayer: IR<string>;
   readonly workbench: {
-    readonly searchProperties: SearchPreferences;
+    readonly searchProperties: WbSearchPreferences;
+  };
+  readonly coordinateConverter: {
+    readonly includeSymbols: boolean;
+    readonly applyAll: boolean;
   };
   readonly tree: {
-    readonly /** Open nodes in a given tree */
-    [key in `conformations${AnyTree['tableName']}`]: Conformations;
+    /** Collapsed ranks in a given tree */
+    readonly [key in `collapsedRanks${AnyTree['tableName']}`]: RA<number>;
+  } & {
+    /** Open nodes in a given tree */
+    readonly [key in `conformations${AnyTree['tableName']}`]: Conformations;
+  } & {
+    readonly [key in `definition${AnyTree['tableName']}`]: number;
   } & {
     readonly [key in `focusPath${AnyTree['tableName']}`]: RA<number>;
   } & {
-    readonly /** Collapsed ranks in a given tree */
-    [key in `collapsedRanks${AnyTree['tableName']}`]: RA<number>;
+    readonly hideEmptyNodes: boolean;
+    readonly isSplit: boolean;
+    readonly isHorizontal: boolean;
   };
   readonly workBenchSortConfig: {
-    readonly /**
+    /**
      * WorkBench column sort setting in a given dataset
      * {Collection ID}_{Dataset ID}
      */
-    [key in `${number}_${number}`]: RA<hot.columnSorting.Config>;
+    readonly [key in `${number}_${number}`]: RA<
+      Pick<hot.plugins.ColumnSorting.Config, 'column' | 'sortOrder'> & {
+        readonly physicalCol: number;
+      }
+    >;
   };
   readonly sortConfig: {
     readonly [KEY in keyof SortConfigs]: SortConfig<SortConfigs[KEY]>;
@@ -96,10 +112,10 @@ export type CacheDefinitions = {
     /** Attachments grid scale */
     readonly scale: number;
   };
-  readonly geoLocate: {
-    /** Remember dialog window dimentions from the last session */
-    readonly width: number;
-    readonly height: number;
+  /** Remember dialog window dimensions and positions from the last session */
+  readonly dialogs: {
+    readonly sizes: IR<readonly [width: number, height: number]>;
+    readonly positions: IR<readonly [x: number, y: number]>;
   };
   readonly userPreferences: {
     /**
@@ -112,12 +128,17 @@ export type CacheDefinitions = {
      * causing Specify to flash user its white mode, or font size to change
      * on the fly.
      */
-    readonly cached: UserPreferences;
+    readonly cached: PartialPreferences<typeof userPreferenceDefinitions>;
     /**
      * Admins may change default preferences. These defaults override original
      * defaults for items for which these are provided
      */
-    readonly defaultCached: UserPreferences;
+    readonly defaultCached: PartialPreferences<
+      typeof userPreferenceDefinitions
+    >;
+  };
+  readonly collectionPreferences: {
+    readonly cached: PartialPreferences<typeof collectionPreferenceDefinitions>;
   };
   readonly securityTool: {
     readonly policiesLayout: 'horizontal' | 'vertical';
@@ -128,6 +149,24 @@ export type CacheDefinitions = {
   readonly appResources: {
     readonly conformation: RA<AppResourcesConformation>;
     readonly filters: AppResourceFilters;
+    readonly showHiddenTables: boolean;
+  };
+  readonly pageSizes: RR<Paginators, (typeof pageSizes)[number]>;
+  readonly formEditor: {
+    readonly layout: 'horizontal' | 'vertical';
+  };
+  readonly merging: {
+    readonly showMatchingFields: boolean;
+    readonly warningDialog: boolean;
+  };
+
+  readonly statistics: {
+    readonly statsValue: RA<
+      RA<RA<{ readonly itemName: string; readonly value: number | string }>>
+    >;
+  };
+  readonly batchEdit: {
+    readonly warningBatchEditDialog: boolean;
   };
 };
 
@@ -138,7 +177,7 @@ export type SortConfigs = {
   readonly listOfDataSets: 'dateCreated' | 'dateUploaded' | 'name';
   readonly listOfReports: 'name' | 'timestampCreated';
   readonly listOfLabels: 'name' | 'timestampCreated';
-  readonly dataModelFields:
+  readonly schemaViewerFields:
     | 'databaseColumn'
     | 'description'
     | 'isHidden'
@@ -148,7 +187,7 @@ export type SortConfigs = {
     | 'length'
     | 'name'
     | 'type';
-  readonly dataModelRelationships:
+  readonly schemaViewerRelationships:
     | 'databaseColumn'
     | 'description'
     | 'isDependent'
@@ -158,9 +197,9 @@ export type SortConfigs = {
     | 'label'
     | 'name'
     | 'otherSideName'
-    | 'relatedModel'
+    | 'relatedTable'
     | 'type';
-  readonly dataModelTables:
+  readonly schemaViewerTables:
     | 'fieldCount'
     | 'isHidden'
     | 'isSystem'
@@ -168,9 +207,17 @@ export type SortConfigs = {
     | 'name'
     | 'relationshipCount'
     | 'tableId';
+  readonly attachmentImport:
+    | 'fileSize'
+    | 'matchedId'
+    | 'selectedFileName'
+    | 'status';
+  readonly attachmentDatasets:
+    | 'name'
+    | 'timestampCreated'
+    | 'timestampModified';
+  readonly listOfBatchEditDataSets: 'dateCreated' | 'dateUploaded' | 'name';
 };
-
-const cacheDefinitions = {} as unknown as CacheDefinitions;
 
 // Some circular types can't be expressed without interfaces
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -187,8 +234,9 @@ type CacheValue =
   | string
   | null
   | undefined;
+
 /**
  * This will trigger a TypeScript type error if any cache definition
  * contains a value that is not JSON-Serializable.
  */
-ensure<IR<IR<CacheValue>>>()(cacheDefinitions);
+ensure<IR<IR<CacheValue>>>()({} as unknown as CacheDefinitions);

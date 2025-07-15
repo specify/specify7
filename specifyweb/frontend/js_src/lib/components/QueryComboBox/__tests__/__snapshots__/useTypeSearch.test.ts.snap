@@ -1,0 +1,513 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`type searches are fetched and parsed correctly 1`] = `
+[
+  {
+    "displayFields": [
+      "accessionNumber",
+    ],
+    "format": "%s",
+    "name": "AccessionCO",
+    "searchFields": [
+      [
+        "[literalField Accession.accessionNumber]",
+      ],
+    ],
+    "table": "[table Accession]",
+    "title": "Searched fields: Accession #",
+  },
+  {
+    "displayFields": [
+      "lastName",
+      "firstName",
+    ],
+    "format": "%s, %s",
+    "formatter": "Agent",
+    "name": "Agent",
+    "searchFields": [
+      [
+        "[literalField Agent.lastName]",
+      ],
+    ],
+    "table": "[table Agent]",
+    "title": "Searched fields: Last Name",
+  },
+  {
+    "displayFields": [
+      "lastName",
+      "firstName",
+    ],
+    "format": "%s, %s",
+    "formatter": "Agent",
+    "name": "AgentSSPU",
+    "searchFields": [
+      [
+        "[literalField Agent.lastName]",
+      ],
+    ],
+    "table": "[table Agent]",
+    "title": "Searched fields: Last Name",
+  },
+  {
+    "displayFields": [
+      "appraisalNumber",
+    ],
+    "format": "%s",
+    "name": "Appraisal",
+    "searchFields": [
+      [
+        "[literalField Appraisal.appraisalNumber]",
+      ],
+    ],
+    "table": "[table Appraisal]",
+    "title": "Searched fields: Appraisal Number",
+  },
+  {
+    "displayFields": [
+      "schemeName",
+    ],
+    "format": "%s",
+    "name": "AutoNumberingScheme",
+    "searchFields": [
+      [
+        "[literalField AutoNumberingScheme.schemeName]",
+      ],
+    ],
+    "table": "[table AutoNumberingScheme]",
+    "title": "Searched fields: Schema Name",
+  },
+  {
+    "displayFields": [
+      "fullName",
+    ],
+    "format": "%s",
+    "name": "BioStrat",
+    "searchFields": [
+      [
+        "[literalField GeologicTimePeriod.name]",
+      ],
+    ],
+    "table": "[table GeologicTimePeriod]",
+    "title": "Searched fields: Name",
+  },
+  {
+    "displayFields": [
+      "schemeName",
+    ],
+    "format": "%s",
+    "name": "CatAutoNumberingScheme",
+    "searchFields": [
+      [
+        "[literalField AutoNumberingScheme.schemeName]",
+      ],
+    ],
+    "table": "[table AutoNumberingScheme]",
+    "title": "Searched fields: Schema Name",
+  },
+  {
+    "displayFields": [
+      "fullName",
+    ],
+    "format": "%s",
+    "name": "ChronosStrat",
+    "searchFields": [
+      [
+        "[literalField GeologicTimePeriod.name]",
+      ],
+    ],
+    "table": "[table GeologicTimePeriod]",
+    "title": "Searched fields: Name",
+  },
+  {
+    "displayFields": [
+      "stationFieldNumber",
+      "startDate",
+      "loc.localityName",
+      "geo.fullName",
+    ],
+    "format": "%s; %s; %s; %s",
+    "name": "CollectingEvent",
+    "searchFields": [
+      [
+        "[literalField CollectingEvent.stationFieldNumber]",
+      ],
+    ],
+    "table": "[table CollectingEvent]",
+    "title": "Searched fields: Field Number",
+  },
+  {
+    "displayFields": [
+      "text1",
+      "text2",
+      "number1",
+    ],
+    "format": "%s:%s:%s",
+    "formatter": "CollectingTrip",
+    "name": "CollectingTrip",
+    "searchFields": [
+      [
+        "[literalField CollectingTrip.collectingTripName]",
+      ],
+    ],
+    "table": "[table CollectingTrip]",
+    "title": "Searched fields: Trip Name",
+  },
+  {
+    "displayFields": [
+      "catalogNumber",
+    ],
+    "format": "",
+    "formatter": "CollectionObject",
+    "name": "CollectionObject",
+    "searchFields": [
+      [
+        "[literalField CollectionObject.catalogNumber]",
+      ],
+    ],
+    "table": "[table CollectionObject]",
+    "title": "Searched fields: Cat #",
+  },
+  {
+    "displayFields": [
+      "name",
+    ],
+    "format": "%s",
+    "name": "Container",
+    "searchFields": [
+      [
+        "[literalField Container.name]",
+      ],
+    ],
+    "table": "[table Container]",
+    "title": "Searched fields: Name",
+  },
+  {
+    "displayFields": [
+      "name",
+    ],
+    "format": "%s",
+    "name": "ContainerOwner",
+    "searchFields": [
+      [
+        "[literalField Container.name]",
+      ],
+    ],
+    "table": "[table Container]",
+    "title": "Searched fields: Name",
+  },
+  {
+    "displayFields": [
+      "primerDesignator",
+    ],
+    "format": "%s",
+    "name": "DNAPrimer",
+    "searchFields": [
+      [
+        "[literalField DNAPrimer.primerDesignator]",
+      ],
+    ],
+    "table": "[table DNAPrimer]",
+    "title": "Searched fields: Primer Designator",
+  },
+  {
+    "displayFields": [
+      "deaccessionNumber",
+    ],
+    "format": "%s",
+    "formatter": "Deaccession",
+    "name": "Deaccession",
+    "searchFields": [
+      [
+        "[literalField Deaccession.deaccessionNumber]",
+      ],
+    ],
+    "table": "[table Deaccession]",
+    "title": "Searched fields: Deacc #",
+  },
+  {
+    "displayFields": [
+      "name",
+    ],
+    "format": "%s",
+    "name": "Discipline",
+    "searchFields": [
+      [
+        "[literalField Discipline.name]",
+      ],
+    ],
+    "table": "[table Discipline]",
+    "title": "Searched fields: Name",
+  },
+  {
+    "displayFields": [
+      "disposalNumber",
+    ],
+    "format": "%s",
+    "formatter": "Disposal",
+    "name": "Disposal",
+    "searchFields": [
+      [
+        "[literalField Disposal.disposalNumber]",
+      ],
+    ],
+    "table": "[table Disposal]",
+    "title": "Searched fields: disposalNumber",
+  },
+  {
+    "displayFields": [
+      "name",
+    ],
+    "format": "%s",
+    "name": "Division",
+    "searchFields": [
+      [
+        "[literalField Division.name]",
+      ],
+    ],
+    "table": "[table Division]",
+    "title": "Searched fields: Name",
+  },
+  {
+    "displayFields": [
+      "title",
+    ],
+    "format": "%s",
+    "name": "Exsiccata",
+    "searchFields": [
+      [
+        "[literalField Exsiccata.title]",
+      ],
+    ],
+    "table": "[table Exsiccata]",
+    "title": "Searched fields: Title",
+  },
+  {
+    "displayFields": [
+      "fnbp.pageNumber",
+      "fnb.name",
+    ],
+    "format": "%s - %s",
+    "formatter": "FieldNotebookPage",
+    "name": "FieldNotebookPage",
+    "searchFields": [
+      [
+        "[literalField FieldNotebookPage.pageNumber]",
+      ],
+    ],
+    "table": "[table FieldNotebookPage]",
+    "title": "Searched fields: Page Number",
+  },
+  {
+    "displayFields": [
+      "fullName",
+    ],
+    "format": "%s",
+    "formatter": "Geography",
+    "name": "Geography",
+    "searchFields": [
+      [
+        "[literalField Geography.name]",
+      ],
+    ],
+    "table": "[table Geography]",
+    "title": "Searched fields: Name",
+  },
+  {
+    "displayFields": [
+      "fullName",
+    ],
+    "format": "%s",
+    "name": "GeologicTimePeriod",
+    "searchFields": [
+      [
+        "[literalField GeologicTimePeriod.name]",
+      ],
+    ],
+    "table": "[table GeologicTimePeriod]",
+    "title": "Searched fields: Name",
+  },
+  {
+    "displayFields": [
+      "journalName",
+    ],
+    "format": "%s",
+    "name": "Journal",
+    "searchFields": [
+      [
+        "[literalField Journal.journalName]",
+      ],
+    ],
+    "table": "[table Journal]",
+    "title": "Searched fields: Journal Name",
+  },
+  {
+    "displayFields": [
+      "fullName",
+    ],
+    "format": "%s",
+    "name": "LithoStrat",
+    "searchFields": [
+      [
+        "[literalField LithoStrat.name]",
+      ],
+    ],
+    "table": "[table LithoStrat]",
+    "title": "Searched fields: Name",
+  },
+  {
+    "displayFields": [
+      "localityName",
+      "geo.fullName",
+    ],
+    "format": "%s;  %s",
+    "formatter": "Locality",
+    "name": "Locality",
+    "searchFields": [
+      [
+        "[literalField Locality.localityName]",
+      ],
+    ],
+    "table": "[table Locality]",
+    "title": "Searched fields: Locality Name",
+  },
+  {
+    "displayFields": [
+      "viewName",
+    ],
+    "format": "%s",
+    "name": "MorphBankView",
+    "searchFields": [
+      [
+        "[literalField MorphBankView.viewName]",
+      ],
+    ],
+    "table": "[table MorphBankView]",
+    "title": "Searched fields: View Name",
+  },
+  {
+    "displayFields": [
+      "paleoContextName",
+      "cs.fullName",
+      "cse.fullName",
+      "ls.fullName",
+    ],
+    "format": "%s, %s, %s, %s",
+    "formatter": "PaleoContext",
+    "name": "PaleoContext",
+    "searchFields": [
+      [
+        "[literalField PaleoContext.paleoContextName]",
+      ],
+      [
+        "[relationship PaleoContext.chronosStrat]",
+        "[literalField GeologicTimePeriod.fullName]",
+      ],
+      [
+        "[relationship PaleoContext.lithoStrat]",
+        "[literalField LithoStrat.fullName]",
+      ],
+    ],
+    "table": "[table PaleoContext]",
+    "title": "Searched fields: Context Name, Chronostratigraphy / Full Name, and Lithostratigraphy / Full Name",
+  },
+  {
+    "displayFields": [
+      "permitNumber",
+    ],
+    "format": "%s",
+    "name": "Permit",
+    "searchFields": [
+      [
+        "[literalField Permit.permitNumber]",
+      ],
+    ],
+    "table": "[table Permit]",
+    "title": "Searched fields: Permit Number",
+  },
+  {
+    "displayFields": [
+      "name",
+    ],
+    "format": "%s",
+    "name": "PrepType",
+    "searchFields": [
+      [
+        "[literalField PrepType.name]",
+      ],
+    ],
+    "table": "[table PrepType]",
+    "title": "Searched fields: Name",
+  },
+  {
+    "displayFields": [
+      "title",
+    ],
+    "format": "%s",
+    "name": "ReferenceWork",
+    "searchFields": [
+      [
+        "[literalField ReferenceWork.title]",
+      ],
+    ],
+    "table": "[table ReferenceWork]",
+    "title": "Searched fields: Title",
+  },
+  {
+    "displayFields": [
+      "repositoryAgreementNumber",
+    ],
+    "format": "%s",
+    "name": "RepositoryAgreement",
+    "searchFields": [
+      [
+        "[literalField RepositoryAgreement.repositoryAgreementNumber]",
+      ],
+    ],
+    "table": "[table RepositoryAgreement]",
+    "title": "Searched fields: RA Number",
+  },
+  {
+    "displayFields": [
+      "fullName",
+    ],
+    "format": "%s",
+    "name": "Storage",
+    "searchFields": [
+      [
+        "[literalField Storage.name]",
+      ],
+    ],
+    "table": "[table Storage]",
+    "title": "Searched fields: Name",
+  },
+  {
+    "displayFields": [
+      "fullName",
+    ],
+    "format": "%s",
+    "formatter": "Taxon",
+    "name": "Taxon",
+    "searchFields": [
+      [
+        "[literalField Taxon.fullName]",
+      ],
+    ],
+    "table": "[table Taxon]",
+    "title": "Searched fields: Full Name",
+  },
+  {
+    "displayFields": [
+      "name",
+    ],
+    "format": "%s",
+    "name": "TaxonTreeDefItem",
+    "searchFields": [
+      [
+        "[literalField TaxonTreeDefItem.name]",
+      ],
+    ],
+    "table": "[table TaxonTreeDefItem]",
+    "title": "Searched fields: Name",
+  },
+]
+`;

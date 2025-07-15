@@ -1,0 +1,24 @@
+{% load script_manifest %}{% load raven %}
+</script>
+    {% if use_raven %}
+    <script src="//cdn.ravenjs.com/1.1.16/raven.min.js"></script>
+    <script>
+      Raven.config("{% sentry_public_dsn %}").install();
+    </script>
+    {% endif %}
+    <script src="{% script_src 'main.js' %}"></script>
+    <meta name="viewport" content="width=device-width">
+    <meta name="theme-color" content="#F79244"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/img/apple-touch-icon.png">
+    <link rel="mask-icon" href="/static/img/safari-pinned-tab.svg" color="#F79244">
+    <link rel="shortcut icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/static/img/favicon-512x512.png" sizes="any">
+    <link rel="icon" href="/static/img/favicon.svg" type="image/svg+xml">
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Francois+One">
+    <link rel="search" href="/opensearch.xml" type="application/opensearchdescription+xml" title="Specify 7"/>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <div id="portal-root"></div>

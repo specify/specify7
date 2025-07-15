@@ -33,9 +33,6 @@ if DEBUG:
 
 from .secret_key import SECRET_KEY
 
-
-ALLOWED_HOSTS = ['*']
-
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
@@ -56,19 +53,24 @@ DATABASES = {
     },
  }
 
-SA_DATABASE_URL = 'mysql://%s:%s@%s:%s/%s?charset=utf8' % (
+def get_sa_db_url(db_name):
+    return 'mysql://{}:{}@{}:{}/{}?charset=utf8'.format(
         MASTER_NAME,
         MASTER_PASSWORD,
         DATABASE_HOST,
         DATABASE_PORT or 3306,
-        DATABASE_NAME)
+        db_name)
+
+SA_DATABASE_URL = get_sa_db_url(DATABASE_NAME)
+
+SA_TEST_DB_URL = get_sa_db_url(f'test_{DATABASE_NAME}')
 
 # Prevent MySQL connection timeouts
 SA_POOL_RECYCLE = 3600
 
 SPECIFY_THICK_CLIENT = os.path.expanduser(THICK_CLIENT_LOCATION)
 
-SPECIFY_CONFIG_DIR = os.path.join(SPECIFY_THICK_CLIENT, "config")
+SPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', os.path.join(SPECIFY_THICK_CLIENT, "config"))
 
 RO_MODE = False
 
@@ -92,10 +94,18 @@ LOCALE_PATHS = (
     ),
 )
 
+# On any changes here, also update languageCodeMapper in
+# /specifyweb/frontend/js_src/lib/localization/utils/config.ts
+# Available language codes:
+# http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGES = [
     ('en-us', 'English'),
     ('ru-ru', 'русский'),
-    ('ca', 'català')
+    ('uk-ua', 'українська'),
+    ('fr-fr', 'français'),
+    ('es-es', 'español'),
+    ('de-ch', 'deutsch (schweiz)'),
+    ('pt-br', 'português (brasil)'),
 ]
 
 SITE_ID = 1
@@ -142,6 +152,11 @@ STATICFILES_DIRS = (
     ('config', SPECIFY_CONFIG_DIR),
 )
 
+# Add web app manifest
+WEBPACK_LOADER = {
+    'MANIFEST_FILE': os.path.join(SPECIFY_CONFIG_DIR, "/static/manifest.json"),
+}
+
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
@@ -184,6 +199,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'specifyweb.context.middleware.ContextMiddleware',
     'specifyweb.permissions.middleware.PermissionsMiddleware',
+    'specifyweb.middleware.general.GeneralMiddleware',
 ]
 
 ROOT_URLCONF = 'specifyweb.urls'
@@ -203,16 +219,18 @@ INSTALLED_APPS = (
     'specifyweb.attachment_gw',
     'specifyweb.frontend',
     'specifyweb.barvis',
+    'specifyweb.patches',
     'specifyweb.report_runner',
     'specifyweb.interactions',
     'specifyweb.workbench',
     'specifyweb.notifications',
     'specifyweb.export',
     'specifyweb.raven_placeholder' if RAVEN_CONFIG is None else 'raven.contrib.django.raven_compat',
-    'django_jsonfield_backport',
 )
 
 AUTH_USER_MODEL = 'specify.Specifyuser'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 AUTHENTICATION_BACKENDS = []
 if ALLOW_SUPPORT_LOGIN:
@@ -244,4 +262,6 @@ try:
 except ImportError:
     pass
 
-
+SILENCED_SYSTEM_CHECKS = [
+    "fields.W342", # Allow ForeignKey(unique=True) instead of OneToOneField without gettig a warning
+]

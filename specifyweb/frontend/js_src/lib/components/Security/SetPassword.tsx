@@ -1,14 +1,14 @@
 import React from 'react';
 
-import { adminText } from '../../localization/admin';
-import { commonText } from '../../localization/common';
-import { Dialog } from '../Molecules/Dialog';
-import { Button } from '../Atoms/Button';
-import { Submit } from '../Atoms/Submit';
-import { Form, Input, Label } from '../Atoms/Form';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { useValidation } from '../../hooks/useValidation';
-import { useBooleanState } from '../../hooks/useBooleanState';
+import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
+import { Button } from '../Atoms/Button';
+import { Form, Input, Label } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
+import { Dialog } from '../Molecules/Dialog';
 
 export const MIN_PASSWORD_LENGTH = 8;
 
@@ -26,18 +26,18 @@ export function PasswordResetDialog({
   const { validationRef, setValidation } = useValidation(
     password === repeatPassword
       ? undefined
-      : adminText('passwordsDoNotMatchError')
+      : userText.passwordsDoNotMatchError()
   );
 
   return (
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('apply')}</Submit.Blue>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          <Submit.Info form={id('form')}>{commonText.apply()}</Submit.Info>
         </>
       }
-      header={adminText('setPassword')}
+      header={userText.setPassword()}
       onClose={handleClose}
     >
       <Form
@@ -47,11 +47,11 @@ export function PasswordResetDialog({
           if (password === repeatPassword) {
             handleSet(password);
             handleClose();
-          } else setValidation(adminText('passwordsDoNotMatchError'));
+          } else setValidation(userText.passwordsDoNotMatchError());
         }}
       >
         <Label.Block>
-          {commonText('password')}
+          {userText.password()}
           <Input.Generic
             autoComplete="new-password"
             minLength={MIN_PASSWORD_LENGTH}
@@ -62,7 +62,7 @@ export function PasswordResetDialog({
           />
         </Label.Block>
         <Label.Block>
-          {adminText('confirmPassword')}
+          {userText.confirmPassword()}
           <Input.Generic
             autoComplete="new-password"
             forwardRef={validationRef}
@@ -89,7 +89,7 @@ export function SetPassword({
   return (
     <>
       <Button.Small onClick={handleOpen}>
-        {isNew ? adminText('setPassword') : commonText('changePassword')}
+        {isNew ? userText.setPassword() : userText.changePassword()}
       </Button.Small>
       {isOpen && (
         <PasswordResetDialog onClose={handleClose} onSet={handleSet} />

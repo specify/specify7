@@ -2,7 +2,7 @@
 
 /* Show table icons in column headers */
 .htCore thead th > .relative {
-  @apply flex justify-center items-center;
+  @apply flex items-center justify-center;
 }
 
 .htCore .colHeader {
@@ -15,12 +15,12 @@
 
 /* Sorting direction */
 .handsontable .columnSorting::before {
-  @apply order-2 !static pr-1 !mt-1 !bg-center;
+  @apply !static order-2 !mt-1 !bg-center pr-1;
 }
 
 /* Sorting priority index */
 .handsontable .columnSorting::after {
-  @apply order-2 !static !mt-2 -ml-2;
+  @apply !static order-2 !mt-2 -ml-2;
 }
 
 /* Highlighted cells' headers */
@@ -30,7 +30,7 @@
 
 /* Picklists */
 .handsontable td .htAutocompleteArrow {
-  @apply text-black dark:text-white cursor-pointer;
+  @apply cursor-pointer text-black dark:text-white;
 }
 
 .handsontable td .htAutocompleteArrow:hover {
@@ -38,8 +38,16 @@
 }
 
 /* CONTENT styles */
-.wbs-form.wb-show-upload-results .wb-no-match-cell,
-.wbs-form.wb-focus-coordinates .wb-coordinate-cell {
+.wbs-form.wb-show-upload-results
+  .wb-no-match-cell
+  .wbs-form.wb-show-upload-results
+  .wb-updated-cell
+  .wbs-form.wb-show-upload-results
+  .wb-deleted-cell
+  .wbs-form.wb-show-upload-results
+  .wb-matched-and-changed-cell
+  .wbs-form.wb-focus-coordinates
+  .wb-coordinate-cell {
   @apply text-black dark:text-white;
 }
 
@@ -49,13 +57,37 @@
 
 /* Cell navigation */
 
-.wbs-form :is(.wb-no-match-cell, .wb-modified-cell, .htCommentCell, .wb-search-match-cell),
+.wbs-form
+  :is(
+    .wb-no-match-cell,
+    .wb-modified-cell,
+    .htCommentCell,
+    .wb-search-match-cell,
+    .wb-updated-cell,
+    .wb-deleted-cell,
+    .wb-matched-and-changed-cell
+  ),
 .wb-navigation-section {
   @apply !bg-[color:var(--accent-color)];
 }
 
 /* The order here determines the priority of the states
  * From the lowest till the highest */
+.wbs-form:not(.wb-hide-new-cells) .wb-updated-cell,
+.wb-navigation-section[data-navigation-type='updatedCells'] {
+  --accent-color: var(--updated-cell);
+}
+
+.wbs-form:not(.wb-hide-new-cells) .wb-deleted-cell,
+.wb-navigation-section[data-navigation-type='deletedCells'] {
+  --accent-color: var(--deleted-cell);
+}
+
+.wbs-form:not(.wb-hide-new-cells) .wb-matched-and-changed-cell,
+.wb-navigation-section[data-navigation-type='matchedAndChangedCells'] {
+  --accent-color: var(--matched-and-changed-cell);
+}
+
 .wbs-form:not(.wb-hide-new-cells) .wb-no-match-cell,
 .wb-navigation-section[data-navigation-type='newCells'] {
   --accent-color: var(--new-cell);
@@ -76,10 +108,20 @@
   --accent-color: var(--search-result);
 }
 
+/* 
+ * Override default font properties: required for handsontable 10 and above
+ * See: https://github.com/handsontable/handsontable/pull/8681
+ */
+.handsontable {
+  @apply text-inherit;
+  font-family: inherit;
+  font-size: inherit;
+}
+
 /* Handsontable dark mode */
 .handsontable td,
 .htContextMenu table tbody tr td {
-  @apply dark:bg-neutral-800 dark:border-neutral-500;
+  @apply dark:border-neutral-500 dark:bg-neutral-800;
 }
 
 .htContextMenu table tbody tr td {
@@ -102,7 +144,7 @@
 }
 
 .handsontable th {
-  @apply dark:bg-neutral-900 dark:text-white dark:!border-neutral-800;
+  @apply dark:!border-neutral-800 dark:bg-neutral-900 dark:text-white;
 }
 
 .handsontable tr:first-child td {
@@ -119,7 +161,7 @@
 }
 
 .htCommentTextArea {
-  @apply dark:text-white cursor-auto dark:border-none dark:bg-neutral-800;
+  @apply cursor-auto dark:border-none dark:bg-neutral-800 dark:text-white;
 }
 
 .htCommentCell:after {

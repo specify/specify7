@@ -2,20 +2,32 @@ import { act, render, waitForElementToBeRemoved } from '@testing-library/react';
 import React from 'react';
 
 import { commonText } from '../../../localization/common';
+import { mainText } from '../../../localization/main';
 import { LeakContext, mount } from '../../../tests/reactUtils';
 import { flippedPromise } from '../../../utils/promise';
 import {
-  Contexts,
-  ErrorContext,
-  LoadingContext,
-  MenuContext,
+  SetUnloadProtectsContext,
   UnloadProtectsContext,
-} from '../Contexts';
-import { crash } from '../../Errors/Crash';
+} from '../../Router/UnloadProtect';
+import { Contexts, ErrorContext, LoadingContext } from '../Contexts';
+
+/*
+ * Normally, expect(mockedFunction).toHaveBeenCalledTimes(...) is used instead,
+ * but I couldn't get the mock to work correctly (possibly because Jest's
+ * mocking support for ESModels is still limited 😥)
+ */
+let crashCallCount = 0;
+beforeEach(() => {
+  crashCallCount = 0;
+});
 
 jest.mock('../../Errors/Crash', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
   ...jest.requireActual('../../Errors/Crash'),
-  crash: jest.fn(),
+  crash: jest.fn(() => {
+    crashCallCount += 1;
+  }),
 }));
 
 test('<Contexts> is providing error context', async () => {
@@ -33,7 +45,7 @@ test('<Contexts> is providing error context', async () => {
   act(() =>
     emitError(({ onClose: handleClose }) => (
       <button type="button" onClick={handleClose}>
-        {commonText('errorMessage')}
+        {mainText.errorMessage()}
       </button>
     ))
   );
@@ -61,7 +73,7 @@ test('<Contexts> provide a loading context', async () => {
   act(() => loading(promise));
   act(() => loading(promise2));
 
-  const heading = await findByRole('heading', { name: commonText('loading') });
+  const heading = await findByRole('heading', { name: commonText.loading() });
 
   promise.resolve();
   promise2.resolve();
@@ -72,21 +84,21 @@ test('<Contexts> provide a loading context', async () => {
   const rejectedPromise = flippedPromise();
   act(() => loading(rejectedPromise));
   const newHeading = await findByRole('heading', {
-    name: commonText('loading'),
+    name: commonText.loading(),
   });
-  expect(crash).not.toHaveBeenCalled();
-  jest.spyOn(console, 'error').mockImplementation();
+
+  expect(crashCallCount).toBe(0);
   rejectedPromise.reject('error');
   await waitForElementToBeRemoved(newHeading);
-  expect(crash).toHaveBeenCalledTimes(1);
+  expect(crashCallCount).toBe(1);
 });
 
-test('<Contexts> is providing UnloadProtectsContext and MenuContext', () => {
+test('<Contexts> is providing UnloadProtectsContext', () => {
   const handleUnloadProtect = jest.fn(
     (value: React.ContextType<typeof UnloadProtectsContext>) => value
   );
-  const handleMenu = jest.fn(
-    (value: React.ContextType<typeof MenuContext>) => value
+  const handleSetUnloadProtect = jest.fn(
+    (value: React.ContextType<typeof SetUnloadProtectsContext>) => value
   );
   render(
     <Contexts>
@@ -94,20 +106,17 @@ test('<Contexts> is providing UnloadProtectsContext and MenuContext', () => {
         context={UnloadProtectsContext}
         onLoaded={handleUnloadProtect}
       />
-      <LeakContext context={MenuContext} onLoaded={handleMenu} />
+      <LeakContext
+        context={SetUnloadProtectsContext}
+        onLoaded={handleSetUnloadProtect}
+      />
     </Contexts>
   );
 
   // Unload Protects
-  const getSetUnloadProtects = handleUnloadProtect.mock.calls[0][0]!;
-  expect(getSetUnloadProtects).toBeDefined();
-  expect(getSetUnloadProtects).toHaveLength(2);
-  expect(getSetUnloadProtects[0]).toHaveLength(0);
-  expect(getSetUnloadProtects[1]).toBeInstanceOf(Function);
+  const getUnloadProtects = handleUnloadProtect.mock.calls[0][0]!;
+  expect(getUnloadProtects).toHaveLength(0);
 
-  const menu = handleMenu.mock.calls[0][0]!;
-  expect(menu).toBeDefined();
-  expect(menu).toHaveLength(2);
-  expect(menu[0]).toBeUndefined();
-  expect(menu[1]).toBeInstanceOf(Function);
+  const setUnloadProtects = handleSetUnloadProtect.mock.calls[0][0]!;
+  expect(setUnloadProtects).toBeInstanceOf(Function);
 });

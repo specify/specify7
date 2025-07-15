@@ -1,5 +1,6 @@
-import { useTriggerState } from './useTriggerState';
 import React from 'react';
+
+import { useTriggerState } from './useTriggerState';
 
 /**
  * Many react states are simple boolean switches
@@ -41,7 +42,7 @@ export function useBooleanState(
     state: boolean,
     enable: () => void,
     disable: () => void,
-    toggle: () => void
+    toggle: () => void,
   ]
 > {
   const [state, setState] = useTriggerState(value);

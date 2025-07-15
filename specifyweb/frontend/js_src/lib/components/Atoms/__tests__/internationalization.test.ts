@@ -1,9 +1,11 @@
 import { mockTime } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
+import { localized } from '../../../utils/types';
 import {
   compareStrings,
   dateParts,
-  formatList,
+  formatConjunction,
+  formatDisjunction,
   formatNumber,
   getRelativeDate,
   months,
@@ -26,11 +28,18 @@ test('localized month names are retried', () => {
   ]);
 });
 
-theories(formatList, [
+theories(formatConjunction, [
   { in: [[]], out: '' },
-  { in: [['a']], out: 'a' },
-  { in: [['a', 'b']], out: 'a and b' },
-  { in: [['a', 'b', 'c']], out: 'a, b, and c' },
+  { in: [['a'].map(localized)], out: 'a' },
+  { in: [['a', 'b'].map(localized)], out: 'a and b' },
+  { in: [['a', 'b', 'c'].map(localized)], out: 'a, b, and c' },
+]);
+
+theories(formatDisjunction, [
+  { in: [[]], out: '' },
+  { in: [['a'].map(localized)], out: 'a' },
+  { in: [['a', 'b'].map(localized)], out: 'a or b' },
+  { in: [['a', 'b', 'c'].map(localized)], out: 'a, b, or c' },
 ]);
 
 describe('dateLocalizer', () => {

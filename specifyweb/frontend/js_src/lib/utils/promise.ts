@@ -1,4 +1,4 @@
-type ResolvablePromise<T = undefined> = Promise<T> & {
+export type ResolvablePromise<T = undefined> = Promise<T> & {
   // eslint-disable-next-line functional/prefer-readonly-type
   resolve: T extends undefined ? (value?: T) => void : (value: T) => void;
   // eslint-disable-next-line functional/prefer-readonly-type

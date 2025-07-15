@@ -1,18 +1,23 @@
 import React from 'react';
 
-import type { SpLocaleContainerItem } from '../DataModel/types';
 import { commonText } from '../../localization/common';
-import { javaTypeToHuman } from './helpers';
+import { resourcesText } from '../../localization/resources';
+import { schemaText } from '../../localization/schema';
+import { Input, Label } from '../Atoms/Form';
+import { ReadOnlyContext } from '../Core/Contexts';
+import { getField } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { ItemType } from './index';
+import { tables } from '../DataModel/tables';
+import type { SpLocaleContainerItem } from '../DataModel/types';
+import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
+import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { SchemaConfigColumn } from './Fields';
 import { SchemaConfigFormat } from './Format';
-import type { SchemaData } from './SetupHooks';
+import { javaTypeToHuman } from './helpers';
+import type { ItemType } from './index';
+import type { SchemaData } from './schemaData';
 import { maxSchemaValueLength } from './Table';
-import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
-import { Input, Label } from '../Atoms/Form';
-import {SerializedResource} from '../DataModel/helperTypes';
-import {AutoGrowTextArea} from '../Molecules/AutoGrowTextArea';
 
 export function SchemaConfigField({
   schemaData,
@@ -20,7 +25,6 @@ export function SchemaConfigField({
   item,
   onChange: handleChange,
   onFormatted: handleFormatted,
-  isReadOnly,
 }: {
   readonly schemaData: SchemaData;
   readonly field: LiteralField | Relationship;
@@ -30,14 +34,18 @@ export function SchemaConfigField({
     value: boolean | string
   ) => void;
   readonly onFormatted: (format: ItemType, value: string | null) => void;
-  readonly isReadOnly: boolean;
 }): JSX.Element {
-  const canChangeIsRequired =
-    !field.overrides.isRequired && !field.isRelationship;
+  const isReadOnly = React.useContext(ReadOnlyContext);
+  const canChangeIsRequired = !field.isRequired && !field.isRelationship;
   return (
-    <SchemaConfigColumn header={`${commonText('field')}: ${item.name}`}>
+    <SchemaConfigColumn
+      header={commonText.colonLine({
+        label: schemaText.field(),
+        value: item.name,
+      })}
+    >
       <Label.Block>
-        {commonText('caption')}
+        {schemaText.caption()}
         <Input.Text
           isReadOnly={isReadOnly}
           maxLength={maxSchemaValueLength}
@@ -47,7 +55,7 @@ export function SchemaConfigField({
         />
       </Label.Block>
       <Label.Block>
-        {commonText('description')}
+        {schemaText.description()}
         <AutoGrowTextArea
           className="resize-y"
           isReadOnly={isReadOnly}
@@ -57,16 +65,16 @@ export function SchemaConfigField({
         />
       </Label.Block>
       <Label.Block>
-        {commonText('length')}
-        <Input.Number isReadOnly value={field.length ?? ''} />
+        {schemaText.fieldLength()}
+        <Input.Integer isReadOnly value={field.length ?? ''} />
       </Label.Block>
       <Label.Block>
-        {commonText('type')}
+        {resourcesText.type()}
         <Input.Text
           isReadOnly
           value={javaTypeToHuman(
             field.type,
-            field.isRelationship ? field.relatedModel.name : undefined
+            field.isRelationship ? field.relatedTable.name : undefined
           )}
         />
       </Label.Block>
@@ -76,22 +84,21 @@ export function SchemaConfigField({
           isReadOnly={isReadOnly}
           onValueChange={(value): void => handleChange('isHidden', value)}
         />
-        {commonText('hideField')}
+        {schemaText.hideField()}
       </Label.Inline>
       <Label.Inline>
         <Input.Checkbox
           checked={
-            canChangeIsRequired ? item.isRequired ?? false : field.isRequired
+            canChangeIsRequired ? (item.isRequired ?? false) : field.isRequired
           }
           disabled={!canChangeIsRequired}
           isReadOnly={isReadOnly}
           onValueChange={(value): void => handleChange('isRequired', value)}
         />
-        {commonText('required')}
+        {getField(tables.SpLocaleContainerItem, 'isRequired').label}
       </Label.Inline>
       <SchemaConfigFormat
         field={field}
-        isReadOnly={isReadOnly}
         item={item}
         schemaData={schemaData}
         onFormatted={handleFormatted}

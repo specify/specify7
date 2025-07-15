@@ -1,20 +1,18 @@
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
-import type { Tables } from '../DataModel/types';
-import { commonText } from '../../localization/common';
-import { wbText } from '../../localization/workbench';
-import type { RA } from '../../utils/types';
-import type { UploadPlan } from './uploadPlanParser';
-import { LoadingContext } from '../Core/Contexts';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { useCachedState } from '../../hooks/useCachedState';
-import { DataSetsDialog } from '../Toolbar/WbsDialog';
-import type { Dataset } from './Wrapped';
-import { Input, Label } from '../Atoms/Form';
-import { Button } from '../Atoms/Button';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { commonText } from '../../localization/common';
+import { wbPlanText } from '../../localization/wbPlan';
+import { ajax } from '../../utils/ajax';
+import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { LoadingContext } from '../Core/Contexts';
+import type { Tables } from '../DataModel/types';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { GenericDataSetsDialog } from '../Toolbar/WbsDialog';
 import { ListOfBaseTables } from './Components';
+import type { UploadPlan } from './uploadPlanParser';
+import type { Dataset } from './Wrapped';
 
 function TemplateSelection({
   headers,
@@ -33,20 +31,19 @@ function TemplateSelection({
     <>
       {isInvalid && (
         <Dialog
-          buttons={commonText('close')}
-          header={wbText('noUploadPlanDialogHeader')}
+          buttons={commonText.close()}
+          header={wbPlanText.noUploadPlan()}
           onClose={handleValid}
         >
-          {wbText('invalidTemplateDialogText')}
+          {wbPlanText.invalidTemplatePlan()}
         </Dialog>
       )}
-      <DataSetsDialog
-        showTemplates
+      <GenericDataSetsDialog
+        wbVariant="workbenchChoosePlan"
         onClose={handleClose}
         onDataSetSelect={(id: number): void =>
           loading(
             ajax<Dataset>(`/api/workbench/dataset/${id}/`, {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               headers: { Accept: 'application/json' },
             }).then(({ data: { uploadplan, columns, visualorder } }) =>
               uploadplan === null
@@ -79,11 +76,6 @@ export function BaseTableSelection({
   readonly onSelected: (baseTableName: keyof Tables) => void;
   readonly headers: RA<string>;
 }): JSX.Element {
-  const [showHiddenTables = true, setShowHiddenTables] = useCachedState(
-    'wbPlanViewUi',
-    'showHiddenTables'
-  );
-
   const [useTemplate, handleUseTemplate, handleDontUseTemplate] =
     useBooleanState();
 
@@ -97,29 +89,19 @@ export function BaseTableSelection({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Button.Blue onClick={handleUseTemplate}>
-            {wbText('chooseExistingPlan')}
-          </Button.Blue>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Button.Info onClick={handleUseTemplate}>
+            {wbPlanText.chooseExistingPlan()}
+          </Button.Info>
         </>
       }
       className={{
         container: `${dialogClassNames.narrowContainer} h-1/2`,
       }}
-      header={wbText('selectBaseTableDialogTitle')}
+      header={wbPlanText.selectBaseTable()}
       onClose={handleClose}
     >
-      <ListOfBaseTables
-        showHiddenTables={showHiddenTables}
-        onChange={handleSelected}
-      />
-      <Label.Inline>
-        <Input.Checkbox
-          checked={showHiddenTables}
-          onChange={(): void => setShowHiddenTables(!showHiddenTables)}
-        />
-        {wbText('showAdvancedTables')}
-      </Label.Inline>
+      <ListOfBaseTables onClick={handleSelected} />
     </Dialog>
   );
 }

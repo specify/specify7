@@ -1,8 +1,11 @@
+import { genericTables, tables } from '../components/DataModel/tables';
+import { setDevelopmentGlobal } from '../utils/types';
 import { group, sortFunction } from '../utils/utils';
-import { schema } from '../components/DataModel/schema';
 
 const javaTypeToTypeScript = {
   text: 'string',
+  json: 'string',
+  blob: 'string',
   'java.lang.String': 'string',
   'java.lang.Byte': 'number',
   'java.lang.Short': 'number',
@@ -26,11 +29,11 @@ const keyOrder = [
   'toManyIndependent',
 ];
 
-export function regenerate(): string {
-  const index = `export type Tables = {${Object.keys(schema.models)
+function regenerate(): string {
+  const index = `export type Tables = {${Object.keys(tables)
     .map((tableName) => `readonly ${tableName}: ${tableName}`)
     .join(';')}};`;
-  const models = Object.entries(schema.models)
+  const tableTypes = Object.entries(genericTables)
     .map(
       ([tableName, { literalFields, relationships }]) =>
         `export type ${tableName} = {${Object.entries({
@@ -50,11 +53,15 @@ export function regenerate(): string {
               relationships.map((relationship) => [
                 `${
                   relationship.type.endsWith('-to-many') ? 'toMany' : 'toOne'
-                }${relationship.isDependent() ? 'Dependent' : 'Independent'}`,
+                }${
+                  relationship.datamodelDefinition.dependent
+                    ? 'Dependent'
+                    : 'Independent'
+                }`,
                 `readonly ${relationship.name}:${
                   relationship.type.endsWith('-to-many')
-                    ? `RA<${relationship.relatedModel.name}>`
-                    : `${relationship.relatedModel.name}${
+                    ? `RA<${relationship.relatedTable.name}>`
+                    : `${relationship.relatedTable.name}${
                         relationship.isRequired ? '' : '|null'
                       }`
                 }`,
@@ -66,11 +73,17 @@ export function regenerate(): string {
           .map(
             ([group, fields]) =>
               `readonly ${group}: ${
-                typeof fields === 'string' ? fields : `{${fields.join(';')}}`
+                typeof fields === 'string'
+                  ? fields
+                  : `{${fields.sort(sortFunction((field) => field)).join(';')}}`
               }`
           )
           .join(';')}}`
     )
     .join(';');
-  return `${index}${models}`;
+  return `${index}${tableTypes}`;
 }
+
+setDevelopmentGlobal('_regenerateSchema', (): void => {
+  document.body.textContent = regenerate();
+});

@@ -1,24 +1,23 @@
 import React from 'react';
 
-import { serializeResource } from '../components/DataModel/helpers';
-import { removeKey } from '../utils/utils';
+import { SearchDialogContext } from '../components/Core/Contexts';
+import { fetchDistantRelated } from '../components/DataModel/helpers';
+import type {
+  AnySchema,
+  SerializedResource,
+} from '../components/DataModel/helperTypes';
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import { resourceOn } from '../components/DataModel/resource';
-import { schema } from '../components/DataModel/schema';
+import { serializeResource } from '../components/DataModel/serializers';
 import type {
   LiteralField,
   Relationship,
 } from '../components/DataModel/specifyField';
-import type { GetOrSet, IR } from '../utils/types';
-import {
-  getValidationAttributes,
-  resolveParser,
-} from '../utils/parser/definitions';
-import {
-  AnySchema,
-  SerializedModel,
-  SerializedResource,
-} from '../components/DataModel/helperTypes';
+import { raise } from '../components/Errors/Crash';
+import type { Parser } from '../utils/parser/definitions';
+import { mergeParsers, resolveParser } from '../utils/parser/definitions';
+import type { GetOrSet, RA } from '../utils/types';
+import { useLiveState } from './useLiveState';
 
 /**
  * A wrapper for Backbone.Resource that integrates with React.useState for
@@ -30,20 +29,20 @@ import {
  *   React.useEffect(()=>{}, [resource.name, resource.fullname]);
  */
 export function useResource<SCHEMA extends AnySchema>(
-  model: SpecifyResource<SCHEMA>
+  table: SpecifyResource<SCHEMA>
 ): GetOrSet<SerializedResource<SCHEMA>> {
   const [resource, setResource] = React.useState<SerializedResource<SCHEMA>>(
-    () => serializeResource(model)
+    () => serializeResource(table)
   );
 
   const isChanging = React.useRef<boolean>(false);
   React.useEffect(() =>
     resourceOn(
-      model,
+      table,
       'change',
       () => {
         if (isChanging.current) return;
-        const newResource = serializeResource(model);
+        const newResource = serializeResource(table);
         previousResourceRef.current = newResource;
         setResource(newResource);
       },
@@ -53,11 +52,11 @@ export function useResource<SCHEMA extends AnySchema>(
 
   const previousResourceRef =
     React.useRef<SerializedResource<SCHEMA>>(resource);
-  const previousModel = React.useRef(model);
+  const previousTable = React.useRef(table);
   React.useEffect(() => {
-    if (previousModel.current !== model) {
-      previousModel.current = model;
-      const newResource = serializeResource(model);
+    if (previousTable.current !== table) {
+      previousTable.current = table;
+      const newResource = serializeResource(table);
       previousResourceRef.current = newResource;
       setResource(newResource);
       return;
@@ -70,101 +69,81 @@ export function useResource<SCHEMA extends AnySchema>(
 
     isChanging.current = true;
     changes.forEach(([key, newValue]) =>
-      model.set(key as 'resource_uri', newValue as never)
+      table.set(key as 'resource_uri', newValue as never)
     );
     isChanging.current = false;
 
     previousResourceRef.current = resource;
-  }, [resource, model]);
+  }, [resource, table]);
 
   return [resource, setResource];
 }
 
-export const deserializeResource = <SCHEMA extends AnySchema>(
-  serializedResource: SerializedModel<SCHEMA> | SerializedResource<SCHEMA>
-): SpecifyResource<SCHEMA> =>
-  new schema.models[
-    /**
-     * This assertion, while not required by TypeScript, is needed to fix
-     * a typechecking performance issue (it was taking 5s to typecheck this
-     * line according to TypeScript trace analyzer)
-     */
-    serializedResource._tableName
-  ].Resource(removeKey(serializedResource, '_tableName'));
-
-/** Hook for getting save blockers for a model's field */
-export function useSaveBlockers({
-  resource,
-  fieldName,
-}: {
-  readonly resource: SpecifyResource<AnySchema>;
-  readonly fieldName: string;
-}): string {
-  const [errors, setErrors] = React.useState<string>(
-    () => resource.saveBlockers?.getFieldErrors(fieldName).join('\n') ?? ''
-  );
-  React.useEffect(
-    () =>
-      resourceOn(
-        resource,
-        'blockersChanged',
-        (): void =>
-          setErrors(
-            resource.saveBlockers?.getFieldErrors(fieldName).join('\n') ?? ''
-          ),
-        false
-      ),
-    [resource, fieldName]
-  );
-  return errors;
-}
-
 /**
- * Derive validation attributes for an <Input> from a field schema
+ * I.e, if you have a Collection Object resource and the following fields:
+ * [accession, accessionNumber], this function will fetch the accession and
+ * return accession and accession number field. Basically, it climbs the fields
+ * until it gets to the last field and corresponding resource, which are
+ * returned.
  *
+ * If collection object has no accession, undefined is returned.
  */
-export function useValidationAttributes(
-  field: LiteralField | Relationship
-): IR<string> {
-  const [attributes, setAttributes] = React.useState<IR<string>>(() => {
-    const parser = resolveParser(field);
-    return getValidationAttributes(parser);
-  });
+export function useDistantRelated(
+  resource: SpecifyResource<AnySchema>,
+  fields: RA<LiteralField | Relationship> | undefined
+): Awaited<ReturnType<typeof fetchDistantRelated>> {
+  const [data, setData] =
+    React.useState<Awaited<ReturnType<typeof fetchDistantRelated>>>(undefined);
   React.useEffect(() => {
-    const parser = resolveParser(field);
-    setAttributes(getValidationAttributes(parser));
-  }, [field]);
-  return attributes;
+    let destructorCalled = false;
+    const handleChange = (): void =>
+      void fetchDistantRelated(resource, fields)
+        .then((data) => (destructorCalled ? undefined : setData(data)))
+        .catch(raise);
+
+    if (fields === undefined || fields.length === 0) {
+      handleChange();
+      return undefined;
+    }
+    const destructor = resourceOn(
+      resource,
+      `change:${fields[0].name}`,
+      handleChange,
+      true
+    );
+    return (): void => {
+      destructor();
+      destructorCalled = true;
+    };
+  }, [resource, fields]);
+  return data;
 }
 
-export async function getResourceAndField(
-  model: SpecifyResource<AnySchema>,
-  fieldName: string | undefined
-): Promise<
-  | {
-      readonly resource: SpecifyResource<AnySchema>;
-      readonly field: LiteralField | Relationship;
-    }
-  | undefined
-> {
-  const path = fieldName?.split('.') ?? [];
-  const resource =
-    path.length === 0
-      ? undefined
-      : path.length === 1
-      ? await model.fetch()
-      : await model.rgetPromise(path.slice(0, -1).join('.'));
+export function useParser(
+  field: LiteralField | Relationship | undefined,
+  resource?: SpecifyResource<AnySchema> | undefined,
+  defaultParser?: Parser
+): Parser {
+  const isInSearchDialog = React.useContext(SearchDialogContext);
+  const formatter =
+    field?.isRelationship === false
+      ? field.getUiFormatter(resource)
+      : undefined;
+  return useLiveState<Parser>(
+    React.useCallback(() => {
+      /*
+       * Disable parser when in search dialog as space and quote characters are
+       * interpreted differently in them  thus validation for them should be
+       * disabled.
+       */
+      const parser =
+        isInSearchDialog || field === undefined
+          ? { type: 'text' as const }
+          : resolveParser(field, undefined, resource);
 
-  const field = model.specifyModel.getField(fieldName ?? '');
-  if (field === undefined)
-    console.error(`Unknown field ${fieldName ?? ''}`, { resource });
-  else if (resource === undefined || resource === null)
-    /*
-     * Actually this probably shouldn't be an error. it can
-     * happen, for instance, in the collectors list if
-     * the collector has not been defined yet.
-     */
-    console.error("resource doesn't exist");
-  else return { resource, field };
-  return undefined;
+      return typeof defaultParser === 'object'
+        ? mergeParsers(parser, defaultParser)
+        : parser;
+    }, [isInSearchDialog, field, resource, formatter, defaultParser])
+  )[0];
 }

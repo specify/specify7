@@ -1,5 +1,4 @@
 from ..upload_table import UploadTable, ScopedUploadTable
-from ..tomany import ToManyRecord
 from ..treerecord import TreeRecord
 from ..upload_plan_schema import parse_column_options
 
@@ -35,11 +34,31 @@ json = dict(
                         )},
                         'taxon': { 'treeRecord': dict(
                             ranks = {
-                                'Class': 'Class',
-                                'Superfamily': 'Superfamily',
-                                'Family': 'Family',
-                                'Genus': 'Genus',
-                                'Subgenus': 'Subgenus',
+                                'Class': dict(
+                                    treeNodeCols = {
+                                        'name': 'Class',
+                                    },
+                                ),
+                                'Superfamily': dict(
+                                    treeNodeCols = {
+                                        'name': 'Superfamily',
+                                    },
+                                ),
+                                'Family': dict(
+                                    treeNodeCols = {
+                                        'name': 'Family',
+                                    },
+                                ),
+                                'Genus': dict(
+                                    treeNodeCols = {
+                                        'name': 'Genus',
+                                    },
+                                ),
+                                'Subgenus': dict(
+                                    treeNodeCols = {
+                                        'name': 'Subgenus',
+                                    },
+                                ),
                                 'Species': dict(
                                     treeNodeCols = {
                                         'name': 'Species',
@@ -55,6 +74,7 @@ json = dict(
                             }
                         )}
                     },
+                    toMany = {}
                 ),
             ],
         },
@@ -77,10 +97,26 @@ json = dict(
                         toOne = {
                             'geography': { 'treeRecord': dict(
                                 ranks = {
-                                    'Continent': 'Continent/Ocean' ,
-                                    'Country': 'Country',
-                                    'State': 'State/Prov/Pref',
-                                    'County': 'Region',
+                                    'Continent': dict(
+                                        treeNodeCols = {
+                                            'name': 'Continent/Ocean',
+                                        },
+                                    ),
+                                    'Country': dict(
+                                        treeNodeCols = {
+                                            'name': 'Country',
+                                        },
+                                    ),
+                                    'State': dict(
+                                        treeNodeCols = {
+                                            'name': 'State/Prov/Pref',
+                                        },
+                                    ),
+                                    'County': dict(
+                                        treeNodeCols = {
+                                            'name': 'Region',
+                                        },
+                                    ),
                                 }
                             )},
                         },
@@ -106,7 +142,8 @@ json = dict(
                                     toOne = {},
                                     toMany = {},
                                 )}
-                            }
+                            },
+                            toMany = {}
                         ),
                         dict(
                             wbcols = {},
@@ -125,7 +162,8 @@ json = dict(
                                     toOne = {},
                                     toMany = {},
                                 )}
-                            }
+                            },
+                            toMany = {}
                         ),
                     ]
                 }
@@ -134,16 +172,16 @@ json = dict(
     )}
 )
 
-def with_scoping(collection) -> ScopedUploadTable:
-    return UploadTable(
+upload_plan = UploadTable(
         name = 'Collectionobject',
         wbcols = {
             'catalognumber' : parse_column_options("BMSM No."),
         },
+        overrideScope=None,
         static = {},
         toMany = {
             'determinations': [
-                ToManyRecord(
+                UploadTable(
                     name = 'Determination',
                     wbcols = {
                         'determineddate': parse_column_options('ID Date'),
@@ -160,6 +198,7 @@ def with_scoping(collection) -> ScopedUploadTable:
                                 'middleinitial': parse_column_options('Determiner 1 Middle Initial'),
                                 'lastname': parse_column_options('Determiner 1 Last Name'),
                             },
+                            overrideScope=None,
                             static = {'agenttype': 1},
                             toOne = {},
                             toMany = {},
@@ -177,6 +216,7 @@ def with_scoping(collection) -> ScopedUploadTable:
                             }
                         )
                     },
+                    toMany={}
                 ),
             ],
         },
@@ -188,6 +228,7 @@ def with_scoping(collection) -> ScopedUploadTable:
                     'startdate' : parse_column_options('Start Date Collected'),
                     'stationfieldnumber' : parse_column_options('Station No.'),
                 },
+                overrideScope=None,
                 static = {},
                 toOne = {
                     'locality': UploadTable(
@@ -197,6 +238,7 @@ def with_scoping(collection) -> ScopedUploadTable:
                             'latitude1': parse_column_options('Latitude1'),
                             'longitude1': parse_column_options('Longitude1'),
                         },
+                        overrideScope=None,
                         static = {'srclatlongunit': 0},
                         toOne = {
                             'geography': TreeRecord(
@@ -214,7 +256,7 @@ def with_scoping(collection) -> ScopedUploadTable:
                 },
                 toMany = {
                     'collectors': [
-                        ToManyRecord(
+                        UploadTable(
                             name = 'Collector',
                             wbcols = {},
                             static = {'isprimary': True, 'ordernumber': 0},
@@ -227,13 +269,15 @@ def with_scoping(collection) -> ScopedUploadTable:
                                         'middleinitial' : parse_column_options('Collector 1 Middle Initial'),
                                         'lastname'      : parse_column_options('Collector 1 Last Name'),
                                     },
+                                    overrideScope=None,
                                     static = {'agenttype': 1},
                                     toOne = {},
                                     toMany = {},
                                 )
-                            }
+                            },
+                            toMany={}
                         ),
-                        ToManyRecord(
+                        UploadTable(
                             name = 'Collector',
                             wbcols = {},
                             static = {'isprimary': False, 'ordernumber': 1},
@@ -246,14 +290,19 @@ def with_scoping(collection) -> ScopedUploadTable:
                                         'middleinitial' : parse_column_options('Collector 2 Middle Initial'),
                                         'lastname'      : parse_column_options('Collector 2 Last name'),
                                     },
+                                    overrideScope=None,
                                     static = {'agenttype': 1},
                                     toOne = {},
                                     toMany = {},
                                 )
-                            }
+                            },
+                            toMany={}
                         ),
                     ]
                 }
             ),
         },
-    ).apply_scoping(collection)
+    )
+
+def with_scoping(collection) -> ScopedUploadTable:
+    return upload_plan.apply_scoping(collection)

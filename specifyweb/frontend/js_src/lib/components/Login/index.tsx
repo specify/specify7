@@ -3,33 +3,63 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { parseDjangoDump } from '../../utils/ajax/csrfToken';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
-import type { Language } from '../../localization/utils';
-import { enabledLanguages, LANGUAGE } from '../../localization/utils';
+import { userText } from '../../localization/user';
+import type { Language } from '../../localization/utils/config';
+import { devLanguage, LANGUAGE } from '../../localization/utils/config';
+import { ajax } from '../../utils/ajax';
+import { parseDjangoDump } from '../../utils/ajax/csrfToken';
 import type { RA } from '../../utils/types';
 import { ErrorMessage } from '../Atoms';
 import { Form, Input, Label } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
+import { SplashScreen } from '../Core/SplashScreen';
+import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
 import type { OicProvider } from './OicLogin';
 import { OicLogin } from './OicLogin';
-import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
-import { Submit } from '../Atoms/Submit';
-import { useValidation } from '../../hooks/useValidation';
-import { SplashScreen } from '../Core/SplashScreen';
 
 export function Login(): JSX.Element {
+  const [isNewUser] = useAsyncState(
+    React.useCallback(
+      async () =>
+        ajax<boolean>(`/api/specify/is_new_user/`, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+          },
+          errorMode: 'silent',
+        })
+          .then(({ data }) => data)
+          .catch((error) => {
+            console.error('Failed to fetch isNewUser:', error);
+            return undefined;
+          }),
+      []
+    ),
+    true
+  );
+
   return React.useMemo(() => {
     const nextUrl = parseDjangoDump<string>('next-url') ?? '/specify/';
-    const providers = parseDjangoDump<RA<OicProvider>>('providers');
+    const providers = parseDjangoDump<RA<OicProvider>>('providers') ?? [];
+
+    if (isNewUser === true || isNewUser === undefined) {
+      // Display here the new setup pages
+      return <p>Welcome! No institutions are available at the moment.</p>;
+    }
+
     return providers.length > 0 ? (
       <OicLogin
         data={{
-          inviteToken: parseDjangoDump('invite-token'),
+          inviteToken: parseDjangoDump('invite-token') ?? '',
           providers,
-          languages: parseDjangoDump('languages'),
-          csrfToken: parseDjangoDump('csrf-token'),
+          languages: parseDjangoDump('languages') ?? [],
+          csrfToken: parseDjangoDump('csrf-token') ?? '',
         }}
         nextUrl={
           // REFACTOR: use parseUrl() and formatUrl() instead
@@ -41,12 +71,12 @@ export function Login(): JSX.Element {
     ) : (
       <LegacyLogin
         data={{
-          formErrors: parseDjangoDump('form-errors'),
-          inputErrors: parseDjangoDump('input-errors'),
-          externalUser: parseDjangoDump('external-user'),
-          passwordErrors: parseDjangoDump('password-errors'),
-          languages: parseDjangoDump('languages'),
-          csrfToken: parseDjangoDump('csrf-token'),
+          formErrors: parseDjangoDump('form-errors') ?? [],
+          inputErrors: parseDjangoDump('input-errors') ?? [],
+          externalUser: parseDjangoDump('external-user') ?? '',
+          passwordErrors: parseDjangoDump('password-errors') ?? [],
+          languages: parseDjangoDump('languages') ?? [],
+          csrfToken: parseDjangoDump('csrf-token') ?? '',
         }}
         nextUrl={
           nextUrl.startsWith(nextDestination)
@@ -55,10 +85,32 @@ export function Login(): JSX.Element {
         }
       />
     );
-  }, []);
+  }, [isNewUser]);
 }
 
 const nextDestination = '/accounts/choose_collection/?next=';
+
+export function LoginLanguageChooser({
+  languages,
+}: {
+  readonly languages: RA<readonly [code: Language, name: string]>;
+}): JSX.Element {
+  const loading = React.useContext(LoadingContext);
+  return (
+    <LanguageSelection<Language>
+      isForInterface
+      languages={Object.fromEntries(languages)}
+      value={(devLanguage as Language) ?? LANGUAGE}
+      onChange={(language): void =>
+        loading(
+          handleLanguageChange(language).then((): void =>
+            globalThis.location.reload()
+          )
+        )
+      }
+    />
+  );
+}
 
 function LegacyLogin({
   data,
@@ -71,7 +123,7 @@ function LegacyLogin({
       | ''
       | {
           readonly name: string;
-          readonly provider_title: string;
+          readonly provider_title: LocalizedString;
         };
     readonly passwordErrors: RA<string>;
     readonly languages: RA<readonly [code: Language, name: string]>;
@@ -86,27 +138,19 @@ function LegacyLogin({
 
   React.useEffect(() => inputRef.current?.focus());
 
-  const loading = React.useContext(LoadingContext);
   return (
     <SplashScreen>
-      <LanguageSelection<Language>
-        languages={Object.fromEntries(
-          data.languages.filter(([code]) => enabledLanguages.includes(code))
-        )}
-        value={LANGUAGE}
-        onChange={(language): void =>
-          loading(
-            handleLanguageChange(language).then((): void =>
-              globalThis.location.reload()
-            )
-          )
-        }
-      />
+      <Label.Block>
+        {commonText.language()}
+        <LoginLanguageChooser languages={data.languages} />
+      </Label.Block>
       {typeof data.externalUser === 'object' && (
         <p>
-          {commonText('helloMessage', data.externalUser.name)}
+          {userText.helloMessage({ userName: data.externalUser.name })}
           <br />
-          {commonText('unknownOicUser', data.externalUser.provider_title)}
+          {userText.unknownOicUser({
+            providerName: data.externalUser.provider_title,
+          })}
         </p>
       )}
       <Form method="post">
@@ -117,8 +161,11 @@ function LegacyLogin({
         />
         {formErrors.length > 0 && <ErrorMessage>{formErrors}</ErrorMessage>}
         <Label.Block>
-          {commonText('username')}
+          {userText.username()}
           <Input.Text
+            autoCapitalize="none"
+            autoComplete="username"
+            autoCorrect="off"
             defaultValue=""
             forwardRef={validationRef}
             name="username"
@@ -126,8 +173,9 @@ function LegacyLogin({
           />
         </Label.Block>
         <Label.Block>
-          {commonText('password')}
+          {userText.password()}
           <Input.Generic
+            autoComplete="current-password"
             defaultValue=""
             forwardRef={passwordRef}
             name="password"
@@ -137,7 +185,7 @@ function LegacyLogin({
         </Label.Block>
         <input name="next" type="hidden" value={nextUrl} />
         <input name="this_is_the_login_form" type="hidden" value="1" />
-        <Submit.Fancy className="mt-1">{commonText('login')}</Submit.Fancy>
+        <Submit.Fancy className="mt-1">{userText.logIn()}</Submit.Fancy>
       </Form>
     </SplashScreen>
   );

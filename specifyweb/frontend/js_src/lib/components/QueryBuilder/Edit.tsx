@@ -1,30 +1,32 @@
 import React from 'react';
-
-import { ajax } from '../../utils/ajax';
-import { formData } from '../../utils/ajax/helpers';
-import { error } from '../Errors/assert';
-import type { SpQuery, SpReport } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { commonText } from '../../localization/common';
-import { hasPermission } from '../Permissions/helpers';
-import { schema } from '../DataModel/schema';
-import { LoadingContext } from '../Core/Contexts';
-import { downloadFile } from '../Molecules/FilePicker';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { deserializeResource } from '../../hooks/resource';
-import { ResourceView } from '../Forms/ResourceView';
 import { useNavigate } from 'react-router-dom';
-import { DataEntry } from '../Atoms/DataEntry';
-import { Button } from '../Atoms/Button';
-import { Form, Input } from '../Atoms/Form';
-import { Submit } from '../Atoms/Submit';
-import { useId } from '../../hooks/useId';
+
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { SerializedResource } from '../DataModel/helperTypes';
+import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
+import { queryText } from '../../localization/query';
+import { ajax } from '../../utils/ajax';
+import { formData } from '../../utils/ajax/helpers';
+import { f } from '../../utils/functools';
+import { Button } from '../Atoms/Button';
+import { DataEntry } from '../Atoms/DataEntry';
+import { Form, Input } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
+import { LoadingContext } from '../Core/Contexts';
+import { getField } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { deserializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
+import type { SpQuery, SpReport } from '../DataModel/types';
+import { error } from '../Errors/assert';
+import { ResourceView } from '../Forms/ResourceView';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import { Http } from '../../utils/ajax/definitions';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { downloadFile } from '../Molecules/FilePicker';
+import { hasPermission } from '../Permissions/helpers';
 
 export function QueryEditButton({
   query,
@@ -58,14 +60,13 @@ function EditQueryDialog({
   >('default');
 
   const loading = React.useContext(LoadingContext);
-  const navigate = useNavigate();
   return state === 'default' ? (
     <ResourceView
       dialog="modal"
       extraButtons={
         <>
           <span className="-ml-2 flex-1" />
-          <Button.Green
+          <Button.Success
             onClick={(): void => {
               loading(
                 downloadFile(
@@ -75,32 +76,31 @@ function EditQueryDialog({
               );
             }}
           >
-            {commonText('export')}
-          </Button.Green>
+            {commonText.export()}
+          </Button.Success>
         </>
       }
       isDependent={false}
       isSubForm={false}
-      mode="edit"
       resource={queryResource}
       onAdd={undefined}
       onClose={handleClose}
       onDeleted={handleClose}
-      onSaved={(): void => navigate(`/specify/query/${queryResource.id}/`)}
+      onSaved={(): void => globalThis.location.reload()}
     >
       {queryResource.isNew() ? undefined : (
         <div className="flex flex-col">
-          <p>{commonText('actions')}</p>
+          <p>{commonText.actions()}</p>
           <Button.LikeLink onClick={(): void => setState('dwcaExport')}>
-            {commonText('exportQueryForDwca')}
+            {queryText.exportQueryForDwca()}
           </Button.LikeLink>
           {hasPermission('/report', 'execute') && (
             <>
               <Button.LikeLink onClick={(): void => setState('reportExport')}>
-                {commonText('exportQueryAsReport')}
+                {queryText.exportQueryAsReport()}
               </Button.LikeLink>
               <Button.LikeLink onClick={(): void => setState('labelExport')}>
-                {commonText('exportQueryAsLabel')}
+                {queryText.exportQueryAsLabel()}
               </Button.LikeLink>
             </>
           )}
@@ -131,8 +131,8 @@ function DwcaQueryExport({
     React.useCallback(
       async () =>
         ajax(`/export/extract_query/${queryResource.id}/`, {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'text/plain' },
+          errorMode: 'dismissible',
         }).then(({ data: xml }) => xml),
       [queryResource.id]
     ),
@@ -141,11 +141,11 @@ function DwcaQueryExport({
 
   return typeof exported === 'string' ? (
     <Dialog
-      buttons={commonText('close')}
+      buttons={commonText.close()}
       className={{
         container: dialogClassNames.wideContainer,
       }}
-      header={commonText('exportQueryForDwcaDialogHeader')}
+      header={queryText.exportQueryForDwca()}
       onClose={handleClose}
     >
       <AutoGrowTextArea isReadOnly value={exported} />
@@ -171,39 +171,31 @@ function QueryExport({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('create')}</Submit.Blue>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Submit.Info form={id('form')}>{commonText.create()}</Submit.Info>
         </>
       }
-      header={
-        asLabel
-          ? commonText('createLabelDialogHeader')
-          : commonText('createReportDialogHeader')
-      }
+      header={asLabel ? headerText.createLabel() : headerText.createReport()}
       onClose={handleClose}
     >
       <Form
         id={id('form')}
         onSubmit={(): void =>
           loading(
-            ajax<SerializedResource<SpReport>>(
-              '/report_runner/create/',
-              {
-                method: 'POST',
-                body: formData({
-                  queryid: queryResource.id,
-                  mimetype: asLabel ? 'jrxml/label' : 'jrxml/report',
-                  name: name.trim(),
-                }),
-                headers: {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  Accept: 'application/json',
-                },
+            ajax<SerializedResource<SpReport>>('/report_runner/create/', {
+              method: 'POST',
+              body: formData({
+                queryid: queryResource.id,
+                mimetype: asLabel ? 'jrxml/label' : 'jrxml/report',
+                name: name.trim(),
+              }),
+              headers: {
+                Accept: 'application/json',
               },
-              { expectedResponseCodes: [Http.CREATED] }
-            )
+              errorMode: 'dismissible',
+            })
               .then(async ({ data: reportJson }) => {
-                const report = new schema.models.SpReport.Resource(reportJson);
+                const report = new tables.SpReport.Resource(reportJson);
                 return report.rgetPromise('appResource');
               })
               .then((appResource) =>
@@ -215,7 +207,7 @@ function QueryExport({
         <Input.Text
           maxLength={getMaxLength()}
           placeholder={
-            asLabel ? commonText('labelName') : commonText('reportName')
+            asLabel ? headerText.labelName() : headerText.reportName()
           }
           required
           value={name}
@@ -228,6 +220,6 @@ function QueryExport({
 
 const getMaxLength = (): number | undefined =>
   f.min(
-    schema.models.SpAppResource.strictGetLiteralField('name').length,
-    schema.models.SpReport.strictGetLiteralField('name').length
+    getField(tables.SpAppResource, 'name').length,
+    getField(tables.SpReport, 'name').length
   );

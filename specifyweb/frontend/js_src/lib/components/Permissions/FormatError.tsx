@@ -1,17 +1,20 @@
 import React from 'react';
-import { omit } from 'underscore';
 
-import { deserializeResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
+import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
-import { jsonStringify } from '../../utils/utils';
-import { serializeResource } from '../DataModel/helpers';
-import type { SerializedModel } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
+import { removeKey } from '../../utils/utils';
+import type { SerializedRecord } from '../DataModel/helperTypes';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type { SpecifyUser } from '../DataModel/types';
-import { format } from '../Forms/dataObjFormatters';
+import { toSafeObject } from '../Errors/interceptLogs';
+import { format } from '../Formatters/formatters';
 import { userInformation } from '../InitialContext/userInformation';
 import { actionToLabel, resourceNameToLongLabel } from '../Security/utils';
 import { institutionPermissions } from './definitions';
@@ -23,8 +26,11 @@ export function formatPermissionsError(
 ):
   | readonly [errorObject: JSX.Element | undefined, errorMessage: string]
   | undefined {
-  if (response.length === 0)
-    return [undefined, commonText('sessionTimeOutDialogHeader')];
+  /*
+   * If this is a permission error, back-end would provide a JSON object
+   * In cases of session time out, back-end returns empty response
+   */
+  if (response.length === 0) return [undefined, userText.sessionTimeOut()];
 
   let parsed: PermissionErrorSchema | undefined = undefined;
   try {
@@ -38,7 +44,7 @@ export function formatPermissionsError(
         <FormatPermissionError error={error} url={url} />,
         [
           `Permission denied when fetching from ${url}`,
-          `Response: ${jsonStringify(error, '\t')}`,
+          `Response: ${JSON.stringify(toSafeObject(error), null, '\t')}`,
         ].join('\n'),
       ] as const)
     : undefined;
@@ -53,15 +59,15 @@ export function FormatPermissionError({
 }): JSX.Element {
   return (
     <div className="flex h-full flex-col gap-2">
-      <p>{commonText('permissionDeniedDialogText')}</p>
+      <p>{userText.permissionDeniedDescription()}</p>
       <table className="grid-table grid-cols-4 rounded border border-gray-500">
         <thead>
           <tr>
             {[
-              adminText('action'),
-              adminText('resource'),
-              schema.models.Collection.label,
-              schema.models.SpecifyUser.label,
+              userText.action(),
+              userText.resource(),
+              tables.Collection.label,
+              tables.SpecifyUser.label,
             ].map((label, index, { length }) => (
               <th
                 className={`
@@ -70,8 +76,8 @@ export function FormatPermissionError({
                     index === 0
                       ? 'rounded-l'
                       : index + 1 === length
-                      ? 'rounded-r'
-                      : ''
+                        ? 'rounded-r'
+                        : ''
                   }
                 `}
                 key={index}
@@ -92,7 +98,7 @@ export function FormatPermissionError({
                   collectionId={
                     institutionPermissions.has(resource)
                       ? undefined
-                      : collectionid ?? undefined
+                      : (collectionid ?? undefined)
                   }
                 />,
                 <UserName userId={userid} />,
@@ -107,7 +113,12 @@ export function FormatPermissionError({
       </table>
       {typeof url === 'string' && (
         <p>
-          {commonText('permissionDeniedDialogSecondText', <code>{url}</code>)}
+          <StringToJsx
+            components={{
+              url: <code>{url}</code>,
+            }}
+            string={userText.permissionDeniedForUrl()}
+          />
         </p>
       )}
     </div>
@@ -120,25 +131,20 @@ function CollectionName({
   readonly collectionId: number | undefined;
 }): JSX.Element {
   const [formatted] = useAsyncState(
-    React.useCallback(
-      () =>
-        typeof collectionId === 'number'
-          ? format(
-              f.maybe(
-                userInformation.availableCollections.find(
-                  ({ id }) => id === collectionId
-                ),
-                deserializeResource
-              ) ?? new schema.models.Collection.Resource({ id: collectionId }),
-              undefined,
-              true
-            )
-          : schema.models.Institution.label,
-      [collectionId]
-    ),
+    React.useCallback(async () => {
+      if (collectionId === undefined) return tables.Institution.label;
+      const collection =
+        f.maybe(
+          userInformation.availableCollections.find(
+            ({ id }) => id === collectionId
+          ),
+          deserializeResource
+        ) ?? new tables.Collection.Resource({ id: collectionId });
+      return format(collection, undefined, true);
+    }, [collectionId]),
     false
   );
-  return <>{formatted}</>;
+  return <>{formatted ?? commonText.loading()}</>;
 }
 
 function UserName({ userId }: { readonly userId: number }): JSX.Element {
@@ -149,15 +155,15 @@ function UserName({ userId }: { readonly userId: number }): JSX.Element {
           userInformation.id === userId
             ? deserializeResource(
                 serializeResource(
-                  omit(
+                  removeKey(
                     userInformation,
                     'availableCollections',
                     'isauthenticated',
                     'agent'
-                  ) as SerializedModel<SpecifyUser>
+                  ) as SerializedRecord<SpecifyUser>
                 )
               )
-            : new schema.models.SpecifyUser.Resource({ id: userId }),
+            : new tables.SpecifyUser.Resource({ id: userId }),
           undefined,
           true
         ),
@@ -165,5 +171,5 @@ function UserName({ userId }: { readonly userId: number }): JSX.Element {
     ),
     false
   );
-  return <>{formatted}</>;
+  return <>{formatted ?? commonText.loading()}</>;
 }

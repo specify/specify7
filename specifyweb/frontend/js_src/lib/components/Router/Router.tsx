@@ -3,22 +3,20 @@ import React from 'react';
 import type { SafeNavigateFunction } from 'react-router';
 import { useLocation, useNavigate, useRoutes } from 'react-router-dom';
 
-import { commonText } from '../../localization/common';
-import { toRelativeUrl } from '../../utils/ajax/helpers';
+import { useErrorContext } from '../../hooks/useErrorContext';
+import { toLocalUrl } from '../../utils/ajax/helpers';
 import { listen } from '../../utils/events';
 import { setDevelopmentGlobal } from '../../utils/types';
-import { Button } from '../Atoms/Button';
-import { className } from '../Atoms/className';
-import { unloadProtectEvents, UnloadProtectsContext } from '../Core/Contexts';
+import { error } from '../Errors/assert';
+import { crash, softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { Dialog } from '../Molecules/Dialog';
-import { getUserPref } from '../UserPreferences/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { NotFoundView } from './NotFoundView';
 import { overlayRoutes } from './OverlayRoutes';
-import { useRouterBlocker } from './RouterBlocker';
+import { locationToUrl } from './queryString';
 import { toReactRoutes } from './RouterUtils';
 import { routes } from './Routes';
-import { f } from '../../utils/functools';
+import { pathIsOverlay, RouterUnloadProtect } from './UnloadProtect';
 
 let unsafeNavigateFunction: SafeNavigateFunction | undefined;
 export const unsafeNavigate = (
@@ -26,12 +24,33 @@ export const unsafeNavigate = (
 ): void => unsafeNavigateFunction?.(...parameters);
 let unsafeLocation: SafeLocation | undefined;
 
-// Using this is not recommended. Render <NotFoundView /> instead.
+/**
+ * Using this should be avoided when possible. Render <NotFoundView /> or
+ * <NotFoundDialog /> instead.
+ *
+ * If error was triggered by an overlay, display 404 error in a dialog. Otherwise,
+ * replace the main page with a 404.
+ *
+ * BUG: This assumes that if overlay is open, then it triggered the 404
+ *  error, which is not always the case as the main content could be sending
+ *  requests in the background too
+ */
 export function unsafeTriggerNotFound(): boolean {
-  unsafeNavigateFunction?.(unsafeLocation ?? '/specify/', {
-    replace: true,
-    state: { type: 'NotFoundPage' },
-  });
+  unsafeNavigateFunction?.(
+    unsafeLocation === undefined
+      ? '/specify/'
+      : pathIsOverlay(locationToUrl(unsafeLocation))
+        ? '/specify/overlay/not-found/'
+        : unsafeLocation,
+    {
+      replace: true,
+      state:
+        typeof unsafeLocation === 'object' &&
+        pathIsOverlay(locationToUrl(unsafeLocation))
+          ? unsafeLocation.state
+          : { type: 'NotFoundPage' },
+    }
+  );
   return typeof unsafeNavigateFunction === 'function';
 }
 
@@ -45,22 +64,45 @@ const transformedOverlays = toReactRoutes(overlayRoutes);
  * https://reactrouter.com/docs/en/v6/examples/modal
  */
 export function Router(): JSX.Element {
-  const location = useLocation();
-  unsafeLocation = location;
-  const state = location.state;
-  const background =
-    state?.type === 'BackgroundLocation' ? state.location : undefined;
-  const isNotFoundPage =
-    state?.type === 'NotFoundPage' ||
-    background?.state?.type === 'NotFoundPage';
-
   /*
    * REFACTOR: replace usages of navigate with <a> where possible
    * REFACTOR: replace <Button> with <Link> where possible
    */
   const navigate = useNavigate();
-  unsafeNavigateFunction = navigate;
-  React.useEffect(() => setDevelopmentGlobal('_goTo', navigate), [navigate]);
+
+  const location = useLocation();
+  unsafeLocation = location;
+  const state = location.state;
+
+  /*
+   * BUG: direct calls to navigate() with overlay URL don't set
+   *    BackgroundLocation. This is a partial workaround, but it won't stand on
+   *    page reload
+   */
+  const previousLocation = React.useRef(location);
+  const rawBackground =
+    state?.type === 'BackgroundLocation' ? state.location : undefined;
+  const backgroundRef = React.useRef(rawBackground);
+  if (!pathIsOverlay(location.pathname)) backgroundRef.current = undefined;
+  else if (rawBackground !== undefined) backgroundRef.current = rawBackground;
+  else if (!pathIsOverlay(previousLocation.current.pathname))
+    backgroundRef.current = previousLocation.current;
+  const background = backgroundRef.current;
+  previousLocation.current = location;
+
+  const isNotFoundState =
+    state?.type === 'NotFoundPage' ||
+    background?.state?.type === 'NotFoundPage';
+  useErrorContext('location', location);
+
+  React.useEffect(() => {
+    unsafeNavigateFunction = navigate;
+    setDevelopmentGlobal('_goTo', navigate);
+    // If page was in 404 state and user reloaded it, then clear the 404 state
+    if (isNotFoundState) navigate(locationToUrl(location), { replace: true });
+    // Only ever execute this on initial render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useLinkIntercept(background);
 
@@ -69,28 +111,32 @@ export function Router(): JSX.Element {
 
   const overlay = useRoutes(transformedOverlays, location) ?? undefined;
 
-  const isNotFound =
-    (main === undefined && overlay === undefined) || isNotFoundPage;
+  const urlNotFound = main === undefined && overlay === undefined;
 
+  const [singleResource, setSingleResource] = React.useState<
+    string | undefined
+  >(undefined);
   return (
-    <>
-      <UnloadProtect background={background} />
-      {isNotFound ? <NotFoundView /> : undefined}
-      {typeof overlay === 'object' && (
-        <Overlay background={background} overlay={overlay} />
-      )}
-      {main}
-    </>
+    <SetSingleResourceContext.Provider value={setSingleResource}>
+      <RouterUnloadProtect singleResource={singleResource} />
+      <OverlayLocation.Provider
+        value={pathIsOverlay(location.pathname) ? location : undefined}
+      >
+        {isNotFoundState || urlNotFound ? <NotFoundView /> : undefined}
+        {typeof overlay === 'object' && (
+          <Overlay background={background} overlay={overlay} />
+        )}
+        {
+          /**
+           * If in 404 state, don't render the main content.
+           * Fixes https://github.com/specify/specify7/issues/3339
+           */
+          isNotFoundState ? undefined : main
+        }
+      </OverlayLocation.Provider>
+    </SetSingleResourceContext.Provider>
   );
 }
-
-const pathIsOverlay = (relativeUrl: string): boolean =>
-  relativeUrl.startsWith('/specify/overlay/');
-
-// Don't trigger unload protect if only query string or hash changes
-const isCurrentUrl = (relativeUrl: string): boolean =>
-  new URL(relativeUrl, globalThis.location.origin).pathname ===
-  globalThis.location.pathname;
 
 function useLinkIntercept(background: SafeLocation | undefined): void {
   const navigate = useNavigate();
@@ -98,7 +144,6 @@ function useLinkIntercept(background: SafeLocation | undefined): void {
 
   const resolvedLocation = React.useRef<SafeLocation>(background ?? location);
   React.useEffect(() => {
-    // REFACTOR: consider adding a set() util like in @vueuse/core
     resolvedLocation.current = background ?? location;
   }, [background, location]);
 
@@ -133,8 +178,7 @@ function parseClickEvent(
     // Check if link already has an onClick that called event.preventDefault()
     !event.defaultPrevented &&
     link !== null &&
-    link.href.length > 0 &&
-    link.getAttribute('href')?.startsWith('#') === false &&
+    link.getAttribute('href')?.startsWith('/specify/') === true &&
     link.getAttribute('download') === null &&
     !event.metaKey &&
     !event.shiftKey &&
@@ -142,25 +186,32 @@ function parseClickEvent(
     (link.target === '' ||
       link.target === '_self' ||
       (event.altKey &&
-        getUserPref('general', 'behavior', 'altClickToSupressNewTab'))) &&
-    // Can add this class name to links to prevent react-router from handling them
-    !link.classList.contains(className.navigationHandled)
+        userPreferences.get('general', 'behavior', 'altClickToSupressNewTab')))
   ) {
     // Don't handle absolute URLs that lead to a different origin
-    const relativeUrl = toRelativeUrl(link.href);
-    if (typeof relativeUrl === 'string') {
+    const localUrl = toLocalUrl(link.href);
+    if (typeof localUrl === 'string') {
       event.preventDefault();
+      if (
+        process.env.NODE_ENV !== 'production' &&
+        link.getAttribute('href')!.startsWith('.')
+      )
+        crash(
+          new Error(
+            'Relative URLs are not supported as they are unpredictable. ' +
+              'Relative URL leads to different path depending on whether ' +
+              'current URL has trailing slash or not. Consider calling ' +
+              'resolveRelative() first'
+          )
+        );
       return {
-        url: relativeUrl,
-        isOverlay: pathIsOverlay(relativeUrl),
+        url: localUrl,
+        isOverlay: pathIsOverlay(localUrl),
       };
     }
   }
   return undefined;
 }
-
-const locationToUrl = (location: SafeLocation): string =>
-  `${location.pathname}${location.search}${location.hash}`;
 
 function Overlay({
   overlay,
@@ -182,121 +233,49 @@ function Overlay({
   handleCloseRef.current = handleClose;
 
   const handleCloseOverlay = React.useCallback(
+    // False positive
+    // eslint-disable-next-line functional/prefer-tacit
     () => handleCloseRef.current(),
     []
   );
 
   return (
     <OverlayContext.Provider value={handleCloseOverlay}>
-      <ErrorBoundary dismissable>{overlay}</ErrorBoundary>
+      <ErrorBoundary dismissible>{overlay}</ErrorBoundary>
     </OverlayContext.Provider>
   );
 }
 
-function defaultOverlayContext() {
-  throw new Error('Tried to close Overlay outside of an overlay');
+function defaultOverlayContext(): void {
+  softFail(new Error('Tried to close Overlay outside of an overlay'));
 }
 
 export const isOverlay = (overlayContext: () => void): boolean =>
   overlayContext !== defaultOverlayContext;
+
+/**
+ * When in overlay, this context provides a function that closes the overlay.
+ */
 export const OverlayContext = React.createContext<() => void>(
   defaultOverlayContext
 );
 OverlayContext.displayName = 'OverlayContext';
 
-function UnloadProtect({
-  background,
-}: {
-  readonly background: SafeLocation | undefined;
-}): JSX.Element | null {
-  const [unloadProtects] = React.useContext(UnloadProtectsContext)!;
-  const [unloadProtect, setUnloadProtect] = React.useState<
-    { readonly resolve: () => void; readonly reject: () => void } | undefined
-  >(undefined);
+/**
+ * Regardless of whether component is in overlay or not, if any overlay is open,
+ * this will provide location of that component
+ */
+export const OverlayLocation = React.createContext<SafeLocation | undefined>(
+  undefined
+);
+OverlayLocation.displayName = 'OverlayLocation';
 
-  const isEmpty = unloadProtects.length === 0;
-  const isSet = unloadProtect !== undefined;
-  const shouldUnset = isEmpty && isSet;
-  React.useEffect(
-    () =>
-      shouldUnset
-        ? setUnloadProtect((blocker) => void blocker?.resolve())
-        : undefined,
-    [isEmpty, isSet]
-  );
+/**
+ * If set, links within this path won't trigger unload protection
+ */
+export const SetSingleResourceContext = React.createContext<
+  (path: string | undefined) => void
+>(() => error('SetSingleResourceContext is not defined'));
+SetSingleResourceContext.displayName = 'SetSingleResourceContext';
 
-  const backgroundRef = React.useRef<SafeLocation | undefined>(background);
-  backgroundRef.current = background;
-
-  const { block, unblock } = useRouterBlocker(
-    React.useCallback(
-      async (location) =>
-        new Promise((resolve, reject) =>
-          hasUnloadProtect(location, backgroundRef.current)
-            ? setUnloadProtect({ resolve: () => resolve('unblock'), reject })
-            : resolve('ignore')
-        ),
-      []
-    )
-  );
-  /*
-   * Need to use events rather than context because contexts take time to
-   * propagate, leading to false "Unsaved changes" warnings when unsetting
-   * unload protects and navigation are done one after another.
-   */
-  React.useEffect(() => unloadProtectEvents.on('blocked', block), [block]);
-  React.useEffect(
-    () => unloadProtectEvents.on('unblocked', unblock),
-    [unblock]
-  );
-
-  return typeof unloadProtect === 'object' && unloadProtects.length > 0 ? (
-    <UnloadProtectDialog
-      onCancel={(): void => {
-        unloadProtect.reject();
-        setUnloadProtect(undefined);
-      }}
-      onConfirm={(): void => {
-        unloadProtect.resolve();
-        setUnloadProtect(undefined);
-      }}
-    >
-      {unloadProtects.at(-1)!}
-    </UnloadProtectDialog>
-  ) : null;
-}
-
-/** Decide whether a given URL change should trigger unload protect */
-const hasUnloadProtect = (
-  newLocation: SafeLocation,
-  background: SafeLocation | undefined
-): boolean =>
-  !pathIsOverlay(newLocation.pathname) &&
-  !isCurrentUrl(newLocation.pathname) &&
-  f.maybe(background, locationToUrl) !== locationToUrl(newLocation);
-
-export function UnloadProtectDialog({
-  children,
-  onCancel: handleCancel,
-  onConfirm: handleConfirm,
-}: {
-  readonly children: string;
-  readonly onCancel: () => void;
-  readonly onConfirm: () => void;
-}): JSX.Element {
-  return (
-    <Dialog
-      buttons={
-        <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Button.Red onClick={handleConfirm}>{commonText('leave')}</Button.Red>
-        </>
-      }
-      forceToTop
-      header={commonText('leavePageDialogHeader')}
-      onClose={handleCancel}
-    >
-      {children}
-    </Dialog>
-  );
-}
+export const exportsForTests = { parseClickEvent };

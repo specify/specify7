@@ -4,6 +4,7 @@
  * See more: https://docs.djangoproject.com/en/4.0/ref/csrf/
  */
 
+import { f } from '../functools';
 import { setDevelopmentGlobal } from '../types';
 import { readCookie } from './cookies';
 
@@ -11,10 +12,13 @@ import { readCookie } from './cookies';
  * Back-end passes initial data to front-end though templates as JSON in
  * <script> tags
  */
-export const parseDjangoDump = <T>(id: string): T =>
-  JSON.parse(globalThis.document?.getElementById(id)?.textContent ?? '[]');
+export function parseDjangoDump<T>(id: string): T | undefined {
+  const value =
+    globalThis.document?.getElementById(id)?.textContent ?? undefined;
+  return f.maybe(value, JSON.parse);
+}
 
 export const csrfToken =
-  readCookie('csrftoken') ?? parseDjangoDump<string>('csrf-token');
+  readCookie('csrftoken') ?? parseDjangoDump<string>('csrf-token') ?? '';
 
 setDevelopmentGlobal('_csrf', csrfToken);

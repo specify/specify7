@@ -75,13 +75,13 @@ msgid ""
 "Specify version: %(specify_version)s, Schema Version: %(schema_version)s do "
 "not match database values: %(app_specify_version)s, %(app_schema_version)s\n"
 "Please update and/or run the host thickclient installation at "
-"%(thich_client_location)s to update the database."
+"%(thick_client_location)s to update the database."
 msgstr ""
 "Версия Specify: %(specify_version)s, версия схемы: %(schema_version)s не "
 "соответствуют c значениям d базе данных:  %(app_specify_version)s, "
 "%(app_schema_version)s\n"
 "Пожалуйста, обновите и / или запустите установку толстого клиента хоста по "
-"адресу %(thich_client_location)s для обновления базы данных."
+"адресу %(thick_client_location)s для обновления базы данных."
 
 #: specify/load_datamodel.py:45
 #, python-format
@@ -110,44 +110,3 @@ msgstr "<Форматирования не определено.>"
 #: stored_queries/format.py:150
 msgid "<Aggregator not defined.>"
 msgstr "<Агрегатор не определен.>"
-
-#: workbench/upload/parsing.py:153
-#, python-format
-msgid "value %(value)s not resolvable to True or False"
-msgstr "значение %(value)s не разрешается to True or False"
-
-#: workbench/upload/parsing.py:164
-#, fuzzy
-#| msgid "value %(value)s is not a valid decimal value"
-msgid "value $(value)s is not a valid decimal value"
-msgstr "значение %(value)s не является допустимым чеслом"
-
-#: workbench/upload/parsing.py:194
-#, python-format
-msgid ""
-"\"%(value)s\" is not a legal value in this picklist field.\n"
-"Click on the arrow to choose among available options."
-msgstr ""
-"\"%(value)s\" е является допустимым значением в этом списке.\n"
-"Нажмите на стрелку, чтобы выбрать один из доступных вариантов."
-
-#: workbench/upload/parsing.py:225
-#, python-format
-msgid "bad agent type: %(bad_type)s. Expected one of %(valid_types)s"
-msgstr "неверный тип агента: %(bad_type)s. Ожидается один из %(valid_types)s"
-
-#: workbench/upload/treerecord.py:278
-msgid "There are multiple 'Uploaded' placeholder values in the tree!"
-msgstr "В дереве есть несколько веток с именем 'Uploaded'!"
-
-#: workbench/upload/treerecord.py:299
-#, python-format
-msgid "Missing or unmapped required tree parent rank value for %(value)s."
-msgstr ""
-"Отсутствует или не сопоставлено необходимое значение родительского ранга для "
-"дерева %(value)s."
-
-#: workbench/upload/upload.py:133
-#, python-format
-msgid "WB Upload of %(data_set_name)s"
-msgstr "Загрузка WB %(data_set_name)s"

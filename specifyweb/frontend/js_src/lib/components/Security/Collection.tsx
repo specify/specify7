@@ -1,33 +1,32 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import type { GetOrSet, IR, RA } from '../../utils/types';
-import { defined } from '../../utils/types';
+import { defined, localized } from '../../utils/types';
 import { index } from '../../utils/utils';
 import { Container, Ul } from '../Atoms';
-import { formatList } from '../Atoms/Internationalization';
+import { formatConjunction } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { Collection } from '../DataModel/types';
 import { useAvailableCollections } from '../Forms/OtherCollectionView';
 import { userInformation } from '../InitialContext/userInformation';
 import { useTitle } from '../Molecules/AppTitle';
+import { RecordEdit } from '../Molecules/ResourceLink';
 import { SetPermissionContext } from '../Permissions/Context';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { NotFoundView } from '../Router/NotFoundView';
+import { formatUrl } from '../Router/queryString';
 import { SafeOutlet } from '../Router/RouterUtils';
 import type { SecurityOutlet } from '../Toolbar/Security';
-import {
-  CollectionRoles,
-  CurrentUserLink,
-  ViewCollectionButton,
-} from './CollectionComponents';
+import { CollectionRoles, CurrentUserLink } from './CollectionComponents';
 import {
   mergeCollectionUsers,
   useCollectionUserRoles,
@@ -38,12 +37,12 @@ import { fetchRoles } from './utils';
 
 export type RoleBase = {
   readonly roleId: number;
-  readonly roleName: string;
+  readonly roleName: LocalizedString;
 };
 
 export type UserRoles = RA<{
   readonly userId: number;
-  readonly userName: string;
+  readonly userName: LocalizedString;
   readonly roles: RA<RoleBase>;
 }>;
 
@@ -73,7 +72,7 @@ export function CollectionView({
 }: {
   readonly collection: SerializedResource<Collection>;
 }): JSX.Element {
-  useTitle(collection.collectionName ?? undefined);
+  useTitle(localized(collection.collectionName) ?? undefined);
 
   const getSetRoles = useAsyncState<IR<Role>>(
     React.useCallback(
@@ -129,12 +128,13 @@ export function CollectionView({
         <>
           <div className="flex gap-2">
             <h3 className="text-2xl">
-              {`${schema.models.Collection.label}: ${
-                collection.collectionName ?? ''
-              }`}
+              {commonText.colonLine({
+                label: tables.Collection.label,
+                value: collection.collectionName ?? '',
+              })}
             </h3>
             {hasTablePermission('Collection', 'read') && (
-              <ViewCollectionButton collection={collection} />
+              <RecordEdit resource={collection} />
             )}
           </div>
           <div className="flex flex-1 flex-col gap-6 overflow-y-scroll">
@@ -147,10 +147,14 @@ export function CollectionView({
               </CollectionRoles>
             )}
             <section className="flex flex-col gap-2">
-              <h4 className="text-xl">{adminText('collectionUsers')}</h4>
+              <h4 className="text-xl">
+                {userText.collectionUsers({
+                  collectionTable: tables.Collection.label,
+                })}
+              </h4>
               {typeof mergedUsers === 'object' ? (
                 mergedUsers.length === 0 ? (
-                  commonText('none')
+                  commonText.none()
                 ) : (
                   <>
                     <Ul>
@@ -163,7 +167,7 @@ export function CollectionView({
                             {userName}
                             {roles.length > 0 && (
                               <span className="text-gray-500">
-                                {`(${formatList(
+                                {`(${formatConjunction(
                                   roles.map(({ roleName }) => roleName)
                                 )})`}
                               </span>
@@ -178,13 +182,12 @@ export function CollectionView({
                                 onClick={(event): void => {
                                   event.preventDefault();
                                   navigate(
-                                    `/specify/security/user/${userId}/`,
-                                    {
-                                      state: {
-                                        type: 'SecurityUser',
-                                        initialCollectionId: collection.id,
-                                      },
-                                    }
+                                    formatUrl(
+                                      `/specify/security/user/${userId}/`,
+                                      {
+                                        collection: collection.id,
+                                      }
+                                    )
                                   );
                                 }}
                               >
@@ -198,20 +201,19 @@ export function CollectionView({
                       })}
                     </Ul>
                     <div>
-                      <Link.Green
+                      <Link.Success
                         href="/specify/security/user/new/"
                         onClick={(event): void => {
                           event.preventDefault();
-                          navigate('/specify/security/user/new/', {
-                            state: {
-                              type: 'SecurityUser',
-                              initialCollectionId: collection.id,
-                            },
-                          });
+                          navigate(
+                            formatUrl('/specify/security/user/new/', {
+                              collection: collection.id,
+                            })
+                          );
                         }}
                       >
-                        {commonText('create')}
-                      </Link.Green>
+                        {userText.addUser()}
+                      </Link.Success>
                     </div>
                   </>
                 )
@@ -220,7 +222,7 @@ export function CollectionView({
                   'read',
                   collection.id
                 ) ? (
-                commonText('loading')
+                commonText.loading()
               ) : (
                 <CurrentUserLink collectionId={collection.id} />
               )}

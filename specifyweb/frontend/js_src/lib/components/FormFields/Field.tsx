@@ -1,228 +1,235 @@
 import React from 'react';
 
-import { aggregate, format } from '../Forms/dataObjFormatters';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { commonText } from '../../localization/common';
-import type { FormMode } from '../FormParse';
-import { hasPathPermission, hasTablePermission } from '../Permissions/helpers';
-import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
-import { parseRelativeDate } from '../../utils/relativeDate';
-import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyModel';
-import type { IR } from '../../utils/types';
-import type { Parser } from '../../utils/parser/definitions';
-import {
-  getValidationAttributes,
-  mergeParsers,
-  parserFromType,
-} from '../../utils/parser/definitions';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { Input } from '../Atoms/Form';
 import { useResourceValue } from '../../hooks/useResourceValue';
-import { PartialDateUi } from '../FormPlugins/PartialDateUi';
-import { getResourceAndField } from '../../hooks/resource';
-import { SpecifyFormCheckbox } from './Checkbox';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { AnySchema } from '../DataModel/helperTypes';
-import { usePref } from '../UserPreferences/usePref';
+import { commonText } from '../../localization/common';
+import { ajax } from '../../utils/ajax';
+import type { Parser } from '../../utils/parser/definitions';
+import { getValidationAttributes } from '../../utils/parser/definitions';
+import { Input } from '../Atoms/Form';
+import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceOn } from '../DataModel/resource';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import { raise } from '../Errors/Crash';
+import { fetchPathAsString } from '../Formatters/formatters';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function UiField({
-  id,
-  resource,
-  mode,
-  fieldName,
-  parser,
+  field,
+  ...props
 }: {
   readonly id: string | undefined;
-  readonly resource: SpecifyResource<AnySchema>;
-  readonly mode: FormMode;
-  readonly fieldName: string | undefined;
+  readonly name: string | undefined;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
+  readonly field: LiteralField | Relationship | undefined;
   readonly parser?: Parser;
 }): JSX.Element {
-  const hasAccess = React.useMemo(
-    () =>
-      typeof fieldName !== 'string' ||
-      hasPathPermission(
-        resource.specifyModel.name,
-        fieldName.split('.'),
-        'read'
-      ),
-    [resource.specifyModel.name, fieldName]
-  );
-
-  const [data] = useAsyncState(
-    React.useCallback(
-      async () =>
-        hasAccess
-          ? getResourceAndField(resource, fieldName).catch((error) => {
-              console.error(error);
-              return undefined;
-            })
-          : undefined,
-      [resource, fieldName]
-    ),
-    false
-  );
-
-  /*
-   * If tried to render a -to-many field, display a readOnly aggregated
-   * collection
-   */
-  const [aggregated] = useAsyncState(
-    React.useCallback(
-      async () =>
-        hasAccess && typeof data === 'object' && typeof fieldName === 'string'
-          ? 'models' in data.resource
-            ? aggregate(data.resource as unknown as Collection<AnySchema>)
-            : QueryFieldSpec.fromPath(
-                resource.specifyModel.name,
-                fieldName.split('.')
-              ).joinPath.some(
-                (field) => field.isRelationship && relationshipIsToMany(field)
-              )
-            ? data.resource.rgetCollection(data.field.name).then(aggregate)
-            : false
-          : undefined,
-      [hasAccess, resource.specifyModel.name, data, fieldName]
-    ),
-    false
-  );
-
-  const fieldType = React.useMemo(
-    () =>
-      typeof data === 'object' && !data.field.isRelationship
-        ? parserFromType(data.field.type).type
-        : undefined,
-    [data]
-  );
-
-  const defaultDate = React.useMemo(
-    () =>
-      f.maybe(
-        parser?.value?.toString().trim().toLowerCase(),
-        parseRelativeDate
-      ),
-    [parser?.value]
-  );
-
-  return hasAccess ? (
-    data === undefined ? (
-      <Input.Text disabled id={id} value={aggregated?.toString() ?? ''} />
-    ) : fieldType === 'date' ? (
-      <PartialDateUi
-        canChangePrecision={false}
-        dateField={data.field.name}
-        defaultPrecision="full"
-        defaultValue={defaultDate}
-        id={id}
-        isReadOnly={mode === 'view' || data.resource !== resource}
-        precisionField={undefined}
-        resource={data.resource}
-      />
-    ) : fieldType === 'checkbox' ? (
-      <SpecifyFormCheckbox
-        defaultValue={
-          parser?.value === true ||
-          // Not sure if this branch can ever happen:
-          parser?.value?.toString().toLowerCase() === 'true'
-        }
-        fieldName={data.field.name}
-        id={id}
-        isReadOnly={resource !== data.resource}
-        resource={data.resource}
-        text={undefined}
-      />
-    ) : aggregated === false ? (
-      <Field
-        field={data.field}
-        id={id}
-        mode={mode}
-        model={resource}
-        parser={parser}
-        resource={data.resource}
-      />
-    ) : (
-      <Input.Text disabled id={id} value={aggregated?.toString() ?? ''} />
-    )
+  return field?.isRelationship === true ? (
+    <RelationshipField field={field} {...props} />
   ) : (
-    <Input.Text disabled id={id} value={commonText('noPermission')} />
+    <Field field={field} {...props} />
+  );
+}
+
+/*
+ * If tried to render a -to-many relationship, display a readOnly aggregated
+ * collection
+ * Display -to-one as a formatted field
+ */
+function RelationshipField({
+  resource,
+  field,
+  id,
+  name,
+}: {
+  readonly id: string | undefined;
+  readonly name: string | undefined;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
+  readonly field: Relationship;
+}): JSX.Element {
+  const [formatted, setFormatted] = React.useState<string | false | undefined>(
+    undefined
+  );
+  React.useEffect(() => {
+    if (resource === undefined) return undefined;
+    let destructorCalled = false;
+    const handleChange = (): void =>
+      void fetchPathAsString(resource, [field])
+        .then((value) =>
+          destructorCalled ? undefined : setFormatted(value ?? false)
+        )
+        .catch(raise);
+
+    const destructor = resourceOn(
+      resource,
+      `change:${field.name}`,
+      handleChange,
+      true
+    );
+    return (): void => {
+      destructor();
+      destructorCalled = true;
+    };
+  }, [resource, field]);
+
+  return (
+    <Input.Text
+      id={id}
+      isReadOnly
+      name={name}
+      value={
+        formatted === undefined
+          ? commonText.loading()
+          : formatted === false
+            ? ''
+            : formatted.toString()
+      }
+    />
   );
 }
 
 function Field({
-  id,
   resource,
-  model,
-  mode,
+  id,
+  name,
   field,
   parser: defaultParser,
 }: {
+  readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly id: string | undefined;
-  readonly resource: SpecifyResource<AnySchema>;
-  readonly model?: SpecifyResource<AnySchema>;
-  readonly mode: FormMode;
-  readonly field: LiteralField | Relationship | undefined;
+  readonly name: string | undefined;
+  readonly field: LiteralField | undefined;
   readonly parser?: Parser;
 }): JSX.Element {
   const { value, updateValue, validationRef, parser } = useResourceValue(
     resource,
-    field?.name,
+    field,
     defaultParser
   );
 
-  const [validationAttributes, setAttributes] = React.useState<IR<string>>({});
-  React.useEffect(
-    () =>
-      setAttributes(
-        getValidationAttributes(mergeParsers(parser, defaultParser ?? {}))
-      ),
-    [parser, defaultParser]
-  );
-
+  /*
+   * REFACTOR: consider moving this into useResoruceValue
+   *    (it will be added to parser)
+   */
+  const isInSearchDialog = React.useContext(SearchDialogContext);
   const isReadOnly =
-    mode === 'view' ||
-    resource !== model ||
-    field?.isRelationship === true ||
-    (field?.isReadOnly === true && mode !== 'search');
+    React.useContext(ReadOnlyContext) ||
+    (field?.isReadOnly === true && !isInSearchDialog);
 
-  const [formattedRelationship] = useAsyncState(
-    React.useCallback(
-      () =>
-        field?.isRelationship === true
-          ? hasTablePermission(field.relatedModel.name, 'read')
-            ? (
-                resource.rgetPromise(field.name) as Promise<
-                  SpecifyResource<AnySchema> | undefined
-                >
-              )
-                .then(format)
-                .then((value = '') => value)
-            : commonText('noPermission')
-          : undefined,
-      /*
-       * While "value" is not used in the hook, it is needed to update a
-       * formatter if related resource changes
-       */
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [resource, field, value]
-    ),
-    false
-  );
+  const validationAttributes = getValidationAttributes(parser);
 
-  const [rightAlignNumberFields] = usePref(
+  const [rightAlignNumberFields] = userPreferences.use(
     'form',
     'ui',
     'rightAlignNumberFields'
   );
+
+  const isNew = resource?.isNew();
+  const isCO = resource?.specifyTable.name === 'CollectionObject';
+
+  const isPartOfCOG = isCO
+    ? resource?.get('cojo') !== null && resource?.get('cojo') !== undefined
+    : false;
+
+  const hasComponentParent = isCO
+    ? resource.get('componentParent') !== null &&
+      resource.get('componentParent') !== undefined
+    : false;
+
+  const isCatNumberField = field?.name === 'catalogNumber';
+
+  // Check if collection pref wants to inherit primary cat num for empty CO cat num sibilings inside of a COG
+  const [displayPrimaryCatNumberPref] = collectionPreferences.use(
+    'catalogNumberInheritance',
+    'behavior',
+    'inheritance'
+  );
+
+  // Check if collection pref wants to inherit parent cat num for empty CO cat num children
+  const [displayParentCatNumberPref] = collectionPreferences.use(
+    'catalogNumberParentInheritance',
+    'behavior',
+    'inheritance'
+  );
+
+  const displayPrimaryCatNumberPlaceHolder =
+    isNew === false &&
+    isCO &&
+    isPartOfCOG &&
+    isCatNumberField &&
+    displayPrimaryCatNumberPref;
+
+  const displayParentCatNumberPlaceHolder =
+    isNew === false &&
+    isCO &&
+    hasComponentParent &&
+    isCatNumberField &&
+    displayParentCatNumberPref;
+
+  const [primaryCatalogNumber, setPrimaryCatalogNumber] = React.useState<
+    string | null
+  >(null);
+
+  const [parentCatalogNumber, setParentCatalogNumber] = React.useState<
+    string | null
+  >(null);
+
+  React.useEffect(() => {
+    if (resource && displayPrimaryCatNumberPlaceHolder) {
+      ajax<string | null>('/api/specify/catalog_number_for_sibling/', {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: resource,
+      })
+        .then((response) => {
+          setPrimaryCatalogNumber(response.data);
+        })
+        .catch((error) => {
+          console.error('Error fetching catalog number:', error);
+        });
+    } else if (resource && displayParentCatNumberPlaceHolder) {
+      ajax<string | null>('/api/specify/catalog_number_from_parent/', {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: resource,
+      })
+        .then((response) => {
+          setParentCatalogNumber(response.data);
+        })
+        .catch((error) => {
+          console.error('Error fetching catalog number:', error);
+        });
+    }
+  }, [
+    resource,
+    displayPrimaryCatNumberPlaceHolder,
+    displayParentCatNumberPlaceHolder,
+  ]);
+
   return (
     <Input.Generic
       forwardRef={validationRef}
-      name={field?.name}
+      key={parser.title}
+      max={Number.MAX_SAFE_INTEGER}
+      name={name}
+      placeholder={
+        displayPrimaryCatNumberPlaceHolder &&
+        typeof primaryCatalogNumber === 'string'
+          ? primaryCatalogNumber
+          : displayParentCatNumberPlaceHolder &&
+              typeof parentCatalogNumber === 'string'
+            ? parentCatalogNumber
+            : undefined
+      }
       {...validationAttributes}
-      // This is undefined when resource.noValidation = true
       className={
-        validationAttributes.type === 'number' &&
+        /*
+         * Disable "text-align: right" in non webkit browsers
+         * as they don't support spinner's arrow customization
+         */
+        parser.type === 'number' &&
         rightAlignNumberFields &&
         globalThis.navigator.userAgent.toLowerCase().includes('webkit')
           ? `text-right ${isReadOnly ? '' : 'pr-6'}`
@@ -230,25 +237,17 @@ function Field({
       }
       id={id}
       isReadOnly={isReadOnly}
+      required={'required' in validationAttributes && !isInSearchDialog}
+      tabIndex={isReadOnly ? -1 : undefined}
+      value={value?.toString() ?? ''}
+      onBlur={
+        isReadOnly ? undefined : ({ target }): void => updateValue(target.value)
+      }
+      onValueChange={(value): void => updateValue(value, false)}
       /*
        * Update data model value before onBlur, as onBlur fires after onSubmit
        * if form is submitted using the ENTER key
        */
-      required={'required' in validationAttributes && mode !== 'search'}
-      tabIndex={isReadOnly ? -1 : undefined}
-      type={validationAttributes.type ?? 'text'}
-      /*
-       * Disable "text-align: right" in non webkit browsers
-       * as they don't support spinner's arrow customization
-       */
-      value={
-        field?.isRelationship === true
-          ? formattedRelationship ?? commonText('loading')
-          : value?.toString() ?? ''
-      }
-      onBlur={
-        isReadOnly ? undefined : ({ target }): void => updateValue(target.value)
-      }
       onChange={(event): void => {
         const input = event.target as HTMLInputElement;
         /*

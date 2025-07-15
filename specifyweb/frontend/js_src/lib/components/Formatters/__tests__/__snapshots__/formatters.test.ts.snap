@@ -1,0 +1,2819 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Formatters are fetched and parsed correctly 1`] = `
+{
+  "aggregators": [
+    {
+      "formatter": "AccessionAgent",
+      "isDefault": true,
+      "name": "AccessionAgent",
+      "separator": "; ",
+      "suffix": "",
+      "table": "[table AccessionAgent]",
+      "title": "AccessionAgent",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "name": "AccessionAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField AccessionAttachment.ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table AccessionAttachment]",
+      "title": "AccessionAttachment",
+    },
+    {
+      "formatter": "AccessionAuthorization",
+      "isDefault": true,
+      "name": "AccessionAuthorization",
+      "separator": "; ",
+      "suffix": "",
+      "table": "[table AccessionAuthorization]",
+      "title": "AccessionAuthorization",
+    },
+    {
+      "formatter": "Address",
+      "isDefault": true,
+      "name": "Address",
+      "separator": "; ",
+      "suffix": "",
+      "table": "[table Address]",
+      "title": "Address",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "name": "AgentAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField AgentAttachment.ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table AgentAttachment]",
+      "title": "AgentAttachment",
+    },
+    {
+      "formatter": "Author",
+      "isDefault": true,
+      "name": "Author",
+      "separator": "; ",
+      "sortField": [
+        "[literalField Author.orderNumber]",
+      ],
+      "suffix": "",
+      "table": "[table Author]",
+      "title": "Author",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "name": "BorrowAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField BorrowAttachment.ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table BorrowAttachment]",
+      "title": "BorrowAttachment",
+    },
+    {
+      "formatter": "Citation",
+      "isDefault": true,
+      "limit": 0,
+      "name": "Citation",
+      "separator": " | ",
+      "suffix": "",
+      "table": "[table CollectionObjectCitation]",
+      "title": "Citation",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "name": "CollectingEventAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField CollectingEventAttachment.ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table CollectingEventAttachment]",
+      "title": "CollectingEventAttachment",
+    },
+    {
+      "formatter": "CollectionObject",
+      "isDefault": true,
+      "name": "CollectionObject",
+      "separator": "; ",
+      "suffix": "",
+      "table": "[table CollectionObject]",
+      "title": "CollectionObject",
+    },
+    {
+      "formatter": "COattachment",
+      "isDefault": true,
+      "limit": 0,
+      "name": "CollectionObjectAttachment",
+      "separator": " | ",
+      "sortField": [
+        "[literalField CollectionObjectAttachment.ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table CollectionObjectAttachment]",
+      "title": "CollectionObjectAttachment",
+    },
+    {
+      "formatter": "Collector",
+      "isDefault": true,
+      "name": "Collector",
+      "separator": "; ",
+      "sortField": [
+        "[literalField Collector.orderNumber]",
+      ],
+      "suffix": "",
+      "table": "[table Collector]",
+      "title": "Collector",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "name": "ConservDescriptionAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ConservDescriptionAttachment.ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table ConservDescriptionAttachment]",
+      "title": "ConservDescriptionAttachment",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "name": "ConservEventAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ConservEventAttachment.ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table ConservEventAttachment]",
+      "title": "ConservEventAttachment",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "name": "DNASequenceAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField DNASequenceAttachment.ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table DNASequenceAttachment]",
+      "title": "DNASequenceAttachment",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "name": "DNASequencingRunAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField DNASequencingRunAttachment.ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table DNASequencingRunAttachment]",
+      "title": "DNASequencingRunAttachment",
+    },
+    {
+      "formatter": "DNAsequence",
+      "isDefault": true,
+      "limit": 0,
+      "name": "DNAsequence",
+      "separator": "| ",
+      "suffix": "",
+      "table": "[table DNASequence]",
+      "title": "DNAsequence",
+    },
+    {
+      "formatter": "Determination",
+      "isDefault": true,
+      "limit": 1,
+      "name": "Determination",
+      "separator": "; ",
+      "suffix": "",
+      "table": "[table Determination]",
+      "title": "Determination",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "name": "FieldNotebookAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField FieldNotebookAttachment.ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table FieldNotebookAttachment]",
+      "title": "FieldNotebookAttachment",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "name": "FieldNotebookPageAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField FieldNotebookPageAttachment.ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table FieldNotebookPageAttachment]",
+      "title": "FieldNotebookPageAttachment",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "name": "FieldNotebookPageSetAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField FieldNotebookPageSetAttachment.ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table FieldNotebookPageSetAttachment]",
+      "title": "FieldNotebookPageSetAttachment",
+    },
+    {
+      "formatter": "FundingAgent",
+      "isDefault": true,
+      "name": "FundingAgent",
+      "separator": "; ",
+      "sortField": [
+        "[literalField FundingAgent.orderNumber]",
+      ],
+      "suffix": "",
+      "table": "[table FundingAgent]",
+      "title": "FundingAgent",
+    },
+    {
+      "formatter": "LoanAgent",
+      "isDefault": true,
+      "name": "GiftAttachment",
+      "separator": "; ",
+      "suffix": "",
+      "table": "[table GiftAttachment]",
+      "title": "GiftAttachment",
+    },
+    {
+      "formatter": "LoanAgent",
+      "isDefault": true,
+      "name": "LoanAgent",
+      "separator": "; ",
+      "suffix": "",
+      "table": "[table LoanAgent]",
+      "title": "LoanAgent",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "name": "LoanAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField LoanAttachment.ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table LoanAttachment]",
+      "title": "LoanAttachment",
+    },
+    {
+      "formatter": "LoanPreparation",
+      "isDefault": true,
+      "limit": 0,
+      "name": "LoanPrep",
+      "separator": "; ",
+      "suffix": "",
+      "table": "[table LoanPreparation]",
+      "title": "LoanPrep",
+    },
+    {
+      "formatter": "LoanReturnPreparation",
+      "isDefault": true,
+      "limit": 0,
+      "name": "LoanReturnPrep",
+      "separator": "; ",
+      "suffix": "",
+      "table": "[table LoanReturnPreparation]",
+      "title": "Loan Return Prep",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "name": "LocalityAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField LocalityAttachment.ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table LocalityAttachment]",
+      "title": "LocalityAttachment",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "name": "PermitAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField PermitAttachment.ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table PermitAttachment]",
+      "title": "PermitAttachment",
+    },
+    {
+      "formatter": "Preparation",
+      "isDefault": true,
+      "name": "Preparation",
+      "separator": "; ",
+      "suffix": "",
+      "table": "[table Preparation]",
+      "title": "Preparation",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "name": "PreparationAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField PreparationAttachment.ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table PreparationAttachment]",
+      "title": "PreparationAttachment",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "name": "ReferenceWorkAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ReferenceWorkAttachment.ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table ReferenceWorkAttachment]",
+      "title": "ReferenceWorkAttachment",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "name": "RepositoryAgreementAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField RepositoryAgreementAttachment.ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table RepositoryAgreementAttachment]",
+      "title": "RepositoryAgreementAttachment",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "name": "TaxonAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField TaxonAttachment.ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table TaxonAttachment]",
+      "title": "TaxonAttachment",
+    },
+    {
+      "formatter": "Voucher relationship",
+      "isDefault": true,
+      "limit": 0,
+      "name": "Voucher Relationship",
+      "separator": ";",
+      "sortField": [
+        "[literalField VoucherRelationship.institutionCode]",
+      ],
+      "suffix": "",
+      "table": "[table VoucherRelationship]",
+      "title": "VoucherRelationship",
+    },
+  ],
+  "formatters": [
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Accession.accessionNumber]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Accession",
+      "table": "[table Accession]",
+      "title": "Accession",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[relationship AccessionAgent.agent]",
+                ],
+                "formatter": "Agent",
+                "separator": "",
+              },
+              {
+                "field": [
+                  "[literalField AccessionAgent.role]",
+                ],
+                "separator": " - ",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "AccessionAgent",
+      "table": "[table AccessionAgent]",
+      "title": "AccessionAgent",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[relationship AccessionAuthorization.accession]",
+                  "[literalField Accession.accessionNumber]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "AccessionAuthorization",
+      "table": "[table AccessionAuthorization]",
+      "title": "AccessionAuthorization",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Address.address]",
+                ],
+                "separator": "",
+              },
+              {
+                "field": [
+                  "[literalField Address.address2]",
+                ],
+                "separator": " ",
+              },
+              {
+                "field": [
+                  "[literalField Address.city]",
+                ],
+                "separator": ", ",
+              },
+              {
+                "field": [
+                  "[literalField Address.state]",
+                ],
+                "separator": ", ",
+              },
+              {
+                "field": [
+                  "[literalField Address.postalCode]",
+                ],
+                "separator": " ",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Address",
+      "table": "[table Address]",
+      "title": "Address",
+    },
+    {
+      "definition": {
+        "conditionField": [
+          "[literalField Agent.agentType]",
+        ],
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Agent.lastName]",
+                ],
+                "separator": "",
+              },
+            ],
+            "value": "0",
+          },
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Agent.lastName]",
+                ],
+                "separator": "",
+              },
+              {
+                "field": [
+                  "[literalField Agent.firstName]",
+                ],
+                "separator": ", ",
+              },
+              {
+                "field": [
+                  "[literalField Agent.middleInitial]",
+                ],
+                "separator": " ",
+              },
+            ],
+            "value": "1",
+          },
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Agent.lastName]",
+                ],
+                "separator": "",
+              },
+            ],
+            "value": "2",
+          },
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Agent.lastName]",
+                ],
+                "separator": "",
+              },
+            ],
+            "value": "3",
+          },
+        ],
+        "isSingle": false,
+      },
+      "isDefault": true,
+      "name": "Agent",
+      "table": "[table Agent]",
+      "title": "Agent",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Attachment.attachmentLocation]",
+                ],
+                "separator": "http://biimages.biodiversity.ku.edu/static/Ichthyology/originals/",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Attachment",
+      "table": "[table Attachment]",
+      "title": "Attachment",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[relationship Author.agent]",
+                ],
+                "formatter": "Agent",
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Author",
+      "table": "[table Author]",
+      "title": "Author",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField AutoNumberingScheme.schemeName]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "AutoNumberingScheme",
+      "table": "[table AutoNumberingScheme]",
+      "title": "AutoNumberingScheme",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Borrow.receivedDate]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Borrow",
+      "table": "[table Borrow]",
+      "title": "Borrow",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[relationship CollectionObjectAttachment.attachment]",
+                  "[literalField Attachment.attachmentLocation]",
+                ],
+                "separator": "http://biimages.biodiversity.ku.edu/static/Ichthyology/originals/",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "COattachment",
+      "table": "[table CollectionObjectAttachment]",
+      "title": "COattachment",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[relationship CollectionObjectCitation.referenceWork]",
+                  "[literalField ReferenceWork.url]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Citation",
+      "table": "[table CollectionObjectCitation]",
+      "title": "Citation",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField CollectingEvent.stationFieldNumber]",
+                ],
+                "separator": "",
+              },
+              {
+                "field": [
+                  "[literalField CollectingEvent.startDate]",
+                ],
+                "separator": ": ",
+              },
+              {
+                "field": [
+                  "[relationship CollectingEvent.locality]",
+                  "[relationship Locality.geography]",
+                  "[literalField Geography.fullName]",
+                ],
+                "separator": ": ",
+              },
+              {
+                "field": [
+                  "[relationship CollectingEvent.locality]",
+                  "[literalField Locality.localityName]",
+                ],
+                "separator": ": ",
+              },
+              {
+                "field": [
+                  "[relationship CollectingEvent.locality]",
+                  "[literalField Locality.latitude1]",
+                ],
+                "separator": ": ",
+              },
+              {
+                "field": [
+                  "[relationship CollectingEvent.locality]",
+                  "[literalField Locality.longitude1]",
+                ],
+                "separator": ": ",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": false,
+      "name": "CollectingEvent",
+      "table": "[table CollectingEvent]",
+      "title": "CollectingEvent",
+    },
+    {
+      "definition": {
+        "external": {
+          "attributes": {
+            "class": "edu.ku.brc.specify.ui.CollectingEventDataObjFmt",
+          },
+          "children": {
+            "param": [
+              {
+                "attributes": {
+                  "name": "format",
+                },
+                "children": {},
+                "tagName": "param",
+                "text": "FN; DT; LC; LA, LO; CO, ST, CT",
+                "type": "SimpleXmlNode",
+              },
+            ],
+          },
+          "tagName": "external",
+          "type": "SimpleXmlNode",
+        },
+        "fields": [],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "CollectingEventDetail",
+      "table": "[table CollectingEvent]",
+      "title": "CollectingEventDetail",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField CollectingEvent.stationFieldNumber]",
+                ],
+                "separator": "",
+              },
+              {
+                "field": [
+                  "[literalField CollectingEvent.startDate]",
+                ],
+                "separator": ", ",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": false,
+      "name": "CollectingEventSFN",
+      "table": "[table CollectingEvent]",
+      "title": "CollectingEventSFN",
+    },
+    {
+      "definition": {
+        "external": {
+          "attributes": {
+            "class": "edu.ku.brc.specify.ui.CollectingEventDataObjFmt",
+          },
+          "children": {
+            "param": [
+              {
+                "attributes": {
+                  "name": "format",
+                },
+                "children": {},
+                "tagName": "param",
+                "text": "FN; DT; LC; LA, LO; CO, ST, CT",
+                "type": "SimpleXmlNode",
+              },
+            ],
+          },
+          "tagName": "external",
+          "type": "SimpleXmlNode",
+        },
+        "fields": [],
+        "isSingle": true,
+      },
+      "isDefault": false,
+      "name": "CollectingEventStartDate",
+      "table": "[table CollectingEvent]",
+      "title": "CollectingEventStartDate",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField CollectingTrip.text1]",
+                ],
+                "separator": "",
+              },
+              {
+                "field": [
+                  "[literalField CollectingTrip.text2]",
+                ],
+                "separator": ": ",
+              },
+              {
+                "field": [
+                  "[literalField CollectingTrip.number1]",
+                ],
+                "separator": ": ",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "CollectingTrip",
+      "table": "[table CollectingTrip]",
+      "title": "CollectingTrip",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Collection.collectionName]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Collection",
+      "table": "[table Collection]",
+      "title": "Collection",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField CollectionObject.catalogNumber]",
+                ],
+                "fieldFormatter": "CatalogNumber",
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "CollectionObject",
+      "table": "[table CollectionObject]",
+      "title": "CollectionObject",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField CollectionRelType.name]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "CollectionRelType",
+      "table": "[table CollectionRelType]",
+      "title": "CollectionRelType",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[relationship Collector.agent]",
+                ],
+                "formatter": "Agent",
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Collector",
+      "table": "[table Collector]",
+      "title": "Collector",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Container.name]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Container",
+      "table": "[table Container]",
+      "title": "Container",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField DNAPrimer.primerDesignator]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "DNAPrimer",
+      "table": "[table DNAPrimer]",
+      "title": "DNAPrimer",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField DNASequence.text2]",
+                ],
+                "separator": "https://www.ncbi.nlm.nih.gov/nuccore/",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "DNAsequence",
+      "table": "[table DNASequence]",
+      "title": "DNAsequence",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField DataType.name]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "DataType",
+      "table": "[table DataType]",
+      "title": "DataType",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Deaccession.deaccessionNumber]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Deaccession",
+      "table": "[table Deaccession]",
+      "title": "Deaccession",
+    },
+    {
+      "definition": {
+        "conditionField": [
+          "[literalField Determination.isCurrent]",
+        ],
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[relationship Determination.preferredTaxon]",
+                  "[literalField Taxon.fullName]",
+                ],
+                "separator": "",
+              },
+            ],
+            "value": "true",
+          },
+          {
+            "fields": [
+              {
+                "field": [
+                  "[relationship Determination.taxon]",
+                  "[literalField Taxon.fullName]",
+                ],
+                "separator": "",
+              },
+            ],
+            "value": "false",
+          },
+        ],
+        "isSingle": false,
+      },
+      "isDefault": true,
+      "name": "Determination",
+      "table": "[table Determination]",
+      "title": "Determination",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Discipline.name]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Discipline",
+      "table": "[table Discipline]",
+      "title": "Discipline",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Division.name]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Division",
+      "table": "[table Division]",
+      "title": "Division",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField FieldNotebookPage.pageNumber]",
+                ],
+                "separator": "",
+              },
+              {
+                "field": [
+                  "[relationship FieldNotebookPage.pageSet]",
+                  "[relationship FieldNotebookPageSet.fieldNotebook]",
+                  "[literalField FieldNotebook.name]",
+                ],
+                "separator": " - ",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "FieldNotebookPage",
+      "table": "[table FieldNotebookPage]",
+      "title": "FieldNotebookPage",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[relationship FundingAgent.agent]",
+                ],
+                "formatter": "Agent",
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "FundingAgent",
+      "table": "[table FundingAgent]",
+      "title": "FundingAgent",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Geography.fullName]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Geography",
+      "table": "[table Geography]",
+      "title": "Geography",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField GeographyTreeDef.name]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "GeographyTreeDef",
+      "table": "[table GeographyTreeDef]",
+      "title": "GeographyTreeDef",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField GeographyTreeDefItem.name]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "GeographyTreeDefItem",
+      "table": "[table GeographyTreeDefItem]",
+      "title": "GeographyTreeDefItem",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField GeologicTimePeriod.fullName]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "GeologicTimePeriod",
+      "table": "[table GeologicTimePeriod]",
+      "title": "GeologicTimePeriod",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField GeologicTimePeriodTreeDef.name]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "GeologicTimePeriodTreeDef",
+      "table": "[table GeologicTimePeriodTreeDef]",
+      "title": "GeologicTimePeriodTreeDef",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Journal.journalName]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Journal",
+      "table": "[table Journal]",
+      "title": "Journal",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField LithoStrat.fullName]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "LithoStrat",
+      "table": "[table LithoStrat]",
+      "title": "LithoStrat",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField LithoStratTreeDef.name]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "LithoStratTreeDef",
+      "table": "[table LithoStratTreeDef]",
+      "title": "LithoStratTreeDef",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField LithoStratTreeDefItem.name]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "LithoStratTreeDefItem",
+      "table": "[table LithoStratTreeDefItem]",
+      "title": "LithoStratTreeDefItem",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Loan.loanNumber]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Loan",
+      "table": "[table Loan]",
+      "title": "Loan",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[relationship LoanAgent.agent]",
+                ],
+                "formatter": "Agent",
+                "separator": "",
+              },
+              {
+                "field": [
+                  "[literalField LoanAgent.role]",
+                ],
+                "separator": " - ",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "LoanAgent",
+      "table": "[table LoanAgent]",
+      "title": "LoanAgent",
+    },
+    {
+      "definition": {
+        "fields": [],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "LoanPreparation",
+      "table": "[table LoanPreparation]",
+      "title": "LoanPreparation",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[relationship LoanReturnPreparation.loanPreparation]",
+                  "[relationship LoanPreparation.preparation]",
+                  "[relationship Preparation.prepType]",
+                ],
+                "formatter": "PrepType",
+                "separator": "",
+              },
+              {
+                "field": [
+                  "[literalField LoanReturnPreparation.quantityResolved]",
+                ],
+                "separator": " - ",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "LoanReturnPreparation",
+      "table": "[table LoanReturnPreparation]",
+      "title": "LoanReturnPreparation",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Locality.localityName]",
+                ],
+                "separator": "",
+              },
+              {
+                "field": [
+                  "[relationship Locality.geography]",
+                  "[literalField Geography.fullName]",
+                ],
+                "separator": "; ",
+              },
+              {
+                "field": [
+                  "[literalField Locality.latitude1]",
+                ],
+                "separator": "; ",
+              },
+              {
+                "field": [
+                  "[literalField Locality.longitude1]",
+                ],
+                "separator": ", ",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Locality",
+      "table": "[table Locality]",
+      "title": "Locality",
+    },
+    {
+      "definition": {
+        "external": {
+          "attributes": {
+            "class": "edu.ku.brc.specify.ui.LocalityLatLonFormatter",
+          },
+          "children": {
+            "param": [
+              {
+                "attributes": {
+                  "name": "type",
+                },
+                "children": {},
+                "tagName": "param",
+                "text": "Latitude",
+                "type": "SimpleXmlNode",
+              },
+              {
+                "attributes": {
+                  "name": "dir",
+                },
+                "children": {},
+                "tagName": "param",
+                "text": "symbol",
+                "type": "SimpleXmlNode",
+              },
+              {
+                "attributes": {
+                  "name": "dir",
+                },
+                "children": {},
+                "tagName": "param",
+                "text": "DDDDDD",
+                "type": "SimpleXmlNode",
+              },
+              {
+                "attributes": {
+                  "name": "which",
+                },
+                "children": {},
+                "tagName": "param",
+                "text": "1",
+                "type": "SimpleXmlNode",
+              },
+            ],
+          },
+          "tagName": "external",
+          "type": "SimpleXmlNode",
+        },
+        "fields": [],
+        "isSingle": true,
+      },
+      "isDefault": false,
+      "name": "LocalityLatitude",
+      "table": "[table Locality]",
+      "title": "LocalityLatitude",
+    },
+    {
+      "definition": {
+        "external": {
+          "attributes": {
+            "class": "edu.ku.brc.specify.ui.LocalityLatLonFormatter",
+          },
+          "children": {
+            "param": [
+              {
+                "attributes": {
+                  "name": "type",
+                },
+                "children": {},
+                "tagName": "param",
+                "text": "Longitude",
+                "type": "SimpleXmlNode",
+              },
+              {
+                "attributes": {
+                  "name": "dir",
+                },
+                "children": {},
+                "tagName": "param",
+                "text": "symbol",
+                "type": "SimpleXmlNode",
+              },
+              {
+                "attributes": {
+                  "name": "dir",
+                },
+                "children": {},
+                "tagName": "param",
+                "text": "DDDDDD",
+                "type": "SimpleXmlNode",
+              },
+              {
+                "attributes": {
+                  "name": "which",
+                },
+                "children": {},
+                "tagName": "param",
+                "text": "1",
+                "type": "SimpleXmlNode",
+              },
+            ],
+          },
+          "tagName": "external",
+          "type": "SimpleXmlNode",
+        },
+        "fields": [],
+        "isSingle": true,
+      },
+      "isDefault": false,
+      "name": "LocalityLongitude",
+      "table": "[table Locality]",
+      "title": "LocalityLongitude",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField PaleoContext.paleoContextName]",
+                ],
+                "separator": "",
+              },
+              {
+                "field": [
+                  "[relationship PaleoContext.chronosStrat]",
+                  "[literalField GeologicTimePeriod.fullName]",
+                ],
+                "separator": ", ",
+              },
+              {
+                "field": [
+                  "[relationship PaleoContext.lithoStrat]",
+                  "[literalField LithoStrat.fullName]",
+                ],
+                "separator": ", ",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "PaleoContext",
+      "table": "[table PaleoContext]",
+      "title": "PaleoContext",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Permit.permitNumber]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Permit",
+      "table": "[table Permit]",
+      "title": "Permit",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField PrepType.name]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "PrepType",
+      "table": "[table PrepType]",
+      "title": "PrepType",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[relationship Preparation.prepType]",
+                ],
+                "formatter": "PrepType",
+                "separator": "",
+              },
+              {
+                "field": [
+                  "[literalField Preparation.countAmt]",
+                ],
+                "separator": " - ",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Preparation",
+      "table": "[table Preparation]",
+      "title": "Preparation",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField ReferenceWork.title]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "ReferenceWork",
+      "table": "[table ReferenceWork]",
+      "title": "ReferenceWork",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Shipment.shipmentDate]",
+                ],
+                "separator": "",
+              },
+              {
+                "field": [
+                  "[literalField Shipment.shipmentNumber]",
+                ],
+                "separator": " - ",
+              },
+              {
+                "field": [
+                  "[literalField Shipment.shipmentMethod]",
+                ],
+                "separator": " - ",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Shipment",
+      "table": "[table Shipment]",
+      "title": "Shipment",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Storage.fullName]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Storage",
+      "table": "[table Storage]",
+      "title": "Storage",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField StorageTreeDef.name]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "StorageTreeDef",
+      "table": "[table StorageTreeDef]",
+      "title": "StorageTreeDef",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField StorageTreeDefItem.name]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "StorageTreeDefItem",
+      "table": "[table StorageTreeDefItem]",
+      "title": "StorageTreeDefItem",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Taxon.fullName]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Taxon",
+      "table": "[table Taxon]",
+      "title": "Taxon",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[relationship TaxonCitation.referenceWork]",
+                ],
+                "formatter": "ReferenceWork",
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "TaxonCitation",
+      "table": "[table TaxonCitation]",
+      "title": "TaxonCitation",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField TaxonTreeDef.name]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "TaxonTreeDef",
+      "table": "[table TaxonTreeDef]",
+      "title": "TaxonTreeDef",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField TaxonTreeDefItem.name]",
+                ],
+                "separator": "",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "TaxonTreeDefItem",
+      "table": "[table TaxonTreeDefItem]",
+      "title": "TaxonTreeDefItem",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField Project.projectNumber]",
+                ],
+                "separator": "institutionCode=",
+              },
+              {
+                "field": [
+                  "[literalField Project.grantAgency]",
+                ],
+                "separator": "&collectionCode=",
+              },
+              {
+                "field": [
+                  "[literalField Project.projectName]",
+                ],
+                "separator": "&catalogNumber=",
+              },
+              {
+                "field": [
+                  "[literalField Project.url]",
+                ],
+                "separator": "&accesspoint=",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Voucher",
+      "table": "[table Project]",
+      "title": "Voucher",
+    },
+    {
+      "definition": {
+        "fields": [
+          {
+            "fields": [
+              {
+                "field": [
+                  "[literalField VoucherRelationship.institutionCode]",
+                ],
+                "separator": "institutionCode=",
+              },
+              {
+                "field": [
+                  "[literalField VoucherRelationship.collectionCode]",
+                ],
+                "separator": "&collectionCode=",
+              },
+              {
+                "field": [
+                  "[literalField VoucherRelationship.voucherNumber]",
+                ],
+                "separator": "&catalogNumber=",
+              },
+              {
+                "field": [
+                  "[literalField VoucherRelationship.urlLink]",
+                ],
+                "separator": "&accesspoint=",
+              },
+            ],
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Voucher relationship",
+      "table": "[table VoucherRelationship]",
+      "title": "VoucherRelationship",
+    },
+  ],
+}
+`;
+
+exports[`getMainTableFields 1`] = `
+{
+  "AbsoluteAge": [
+    "ageType",
+    "datingMethod",
+  ],
+  "AbsoluteAgeAttachment": [],
+  "AbsoluteAgeCitation": [
+    "figureNumber",
+    "pageNumber",
+    "plateNumber",
+  ],
+  "Accession": [
+    "accessionNumber",
+    "status",
+    "type",
+  ],
+  "AccessionAgent": [
+    "role",
+  ],
+  "AccessionAttachment": [],
+  "AccessionAuthorization": [],
+  "AccessionCitation": [
+    "figureNumber",
+    "pageNumber",
+    "plateNumber",
+  ],
+  "Address": [
+    "address",
+    "address2",
+    "city",
+    "country",
+    "fax",
+    "phone1",
+    "phone2",
+    "postalCode",
+    "roomOrBuilding",
+    "state",
+  ],
+  "AddressOfRecord": [
+    "address",
+    "address2",
+    "city",
+    "country",
+    "postalCode",
+    "state",
+  ],
+  "Agent": [
+    "firstName",
+    "lastName",
+    "abbreviation",
+    "email",
+    "guid",
+    "jobTitle",
+    "middleInitial",
+    "interests",
+    "title",
+    "url",
+  ],
+  "AgentAttachment": [],
+  "AgentGeography": [],
+  "AgentIdentifier": [
+    "identifier",
+    "identifierType",
+  ],
+  "AgentSpecialty": [
+    "specialtyName",
+  ],
+  "AgentVariant": [
+    "name",
+  ],
+  "Appraisal": [
+    "appraisalNumber",
+    "monetaryUnitType",
+  ],
+  "Attachment": [
+    "captureDevice",
+    "guid",
+    "licenseLogoUrl",
+    "metadataText",
+    "subjectOrientation",
+    "subtype",
+    "title",
+    "type",
+  ],
+  "AttachmentImageAttribute": [
+    "imageType",
+    "text1",
+    "text2",
+    "viewDescription",
+  ],
+  "AttachmentMetadata": [
+    "name",
+    "value",
+  ],
+  "AttachmentTag": [
+    "tag",
+  ],
+  "AttributeDef": [],
+  "Author": [],
+  "AutoNumberingScheme": [],
+  "Borrow": [
+    "invoiceNumber",
+  ],
+  "BorrowAgent": [
+    "role",
+  ],
+  "BorrowAttachment": [],
+  "BorrowMaterial": [
+    "materialNumber",
+    "description",
+  ],
+  "BorrowReturnMaterial": [],
+  "CollectingEvent": [
+    "stationFieldNumber",
+    "method",
+    "guid",
+    "verbatimDate",
+  ],
+  "CollectingEventAttachment": [],
+  "CollectingEventAttr": [],
+  "CollectingEventAttribute": [
+    "text4",
+    "text5",
+  ],
+  "CollectingEventAuthorization": [],
+  "CollectingTrip": [
+    "collectingTripName",
+    "text2",
+    "expedition",
+    "text1",
+  ],
+  "CollectingTripAttachment": [],
+  "CollectingTripAttribute": [
+    "text10",
+    "text11",
+    "text12",
+    "text13",
+    "text14",
+    "text15",
+    "text16",
+    "text17",
+    "text4",
+    "text5",
+    "text6",
+    "text7",
+    "text8",
+    "text9",
+  ],
+  "CollectingTripAuthorization": [],
+  "Collection": [
+    "catalogNumFormatName",
+    "collectionName",
+    "code",
+    "collectionType",
+    "dbContentVersion",
+    "developmentStatus",
+    "guid",
+    "institutionType",
+    "isaNumber",
+    "kingdomCoverage",
+    "preservationMethodType",
+    "primaryFocus",
+    "primaryPurpose",
+    "regNumber",
+  ],
+  "CollectionObject": [
+    "catalogNumber",
+    "reservedText",
+    "guid",
+    "altCatalogNumber",
+    "projectNumber",
+    "reservedText2",
+    "fieldNumber",
+  ],
+  "CollectionObjectAttachment": [],
+  "CollectionObjectAttr": [],
+  "CollectionObjectAttribute": [
+    "text10",
+    "text8",
+    "text11",
+    "text13",
+    "text14",
+    "text4",
+    "text5",
+    "text6",
+    "text7",
+    "text12",
+  ],
+  "CollectionObjectCitation": [
+    "figureNumber",
+    "pageNumber",
+    "plateNumber",
+  ],
+  "CollectionObjectGroup": [
+    "name",
+    "guid",
+    "igsn",
+    "text1",
+    "text2",
+    "text3",
+  ],
+  "CollectionObjectGroupJoin": [
+    "text1",
+    "text2",
+    "text3",
+  ],
+  "CollectionObjectGroupType": [
+    "name",
+    "type",
+  ],
+  "CollectionObjectProperty": [
+    "guid",
+    "text1",
+  ],
+  "CollectionObjectType": [
+    "name",
+    "catalogNumberFormatName",
+    "text1",
+    "text2",
+    "text3",
+  ],
+  "CollectionRelType": [
+    "name",
+    "remarks",
+  ],
+  "CollectionRelationship": [],
+  "Collector": [],
+  "CommonNameTx": [
+    "name",
+  ],
+  "CommonNameTxCitation": [],
+  "ConservDescription": [
+    "shortDesc",
+    "units",
+  ],
+  "ConservDescriptionAttachment": [],
+  "ConservEvent": [
+    "text1",
+    "text2",
+  ],
+  "ConservEventAttachment": [],
+  "Container": [
+    "name",
+  ],
+  "DNAPrimer": [
+    "primerNameForward",
+    "primerNameReverse",
+    "primerDesignator",
+    "primerReferenceCitationForward",
+    "primerReferenceCitationReverse",
+    "primerReferenceLinkForward",
+    "primerSequenceForward",
+    "primerSequenceReverse",
+    "purificationMethod",
+  ],
+  "DNASequence": [
+    "boldBarcodeId",
+    "boldSampleId",
+    "text2",
+    "text1",
+    "moleculeType",
+    "targetMarker",
+  ],
+  "DNASequenceAttachment": [],
+  "DNASequencingRun": [
+    "pcrPrimerName",
+    "scoreFileName",
+    "sequencePrimerName",
+    "traceFileName",
+    "dryadDOI",
+    "pcrForwardPrimerCode",
+    "pcrReversePrimerCode",
+    "readDirection",
+    "sequencePrimerCode",
+    "sraExperimentID",
+    "sraRunID",
+    "sraSubmissionID",
+  ],
+  "DNASequencingRunAttachment": [],
+  "DNASequencingRunCitation": [],
+  "DataType": [
+    "name",
+  ],
+  "Deaccession": [
+    "deaccessionNumber",
+    "status",
+  ],
+  "DeaccessionAgent": [
+    "role",
+  ],
+  "DeaccessionAttachment": [],
+  "Determination": [
+    "typeStatusName",
+    "guid",
+  ],
+  "DeterminationCitation": [],
+  "Determiner": [],
+  "Discipline": [
+    "name",
+    "paleoContextChildTable",
+    "type",
+  ],
+  "Disposal": [
+    "disposalNumber",
+    "type",
+  ],
+  "DisposalAgent": [
+    "role",
+  ],
+  "DisposalAttachment": [],
+  "DisposalPreparation": [],
+  "Division": [
+    "altName",
+    "name",
+    "abbrev",
+    "iconURI",
+    "uri",
+  ],
+  "ExchangeIn": [
+    "descriptionOfMaterial",
+    "exchangeInNumber",
+  ],
+  "ExchangeInAttachment": [],
+  "ExchangeInPrep": [
+    "descriptionOfMaterial",
+  ],
+  "ExchangeOut": [
+    "exchangeOutNumber",
+    "descriptionOfMaterial",
+  ],
+  "ExchangeOutAttachment": [],
+  "ExchangeOutPrep": [
+    "descriptionOfMaterial",
+  ],
+  "Exsiccata": [
+    "title",
+    "schedae",
+  ],
+  "ExsiccataItem": [
+    "fascicle",
+    "number",
+  ],
+  "Extractor": [],
+  "FieldNotebook": [
+    "name",
+    "location",
+  ],
+  "FieldNotebookAttachment": [],
+  "FieldNotebookPage": [
+    "pageNumber",
+    "description",
+  ],
+  "FieldNotebookPageAttachment": [],
+  "FieldNotebookPageSet": [
+    "description",
+  ],
+  "FieldNotebookPageSetAttachment": [],
+  "FundingAgent": [
+    "type",
+  ],
+  "GeoCoordDetail": [
+    "geoRefDetRef",
+    "maxUncertaintyEstUnit",
+  ],
+  "Geography": [
+    "name",
+    "geographyCode",
+    "guid",
+  ],
+  "GeographyTreeDef": [
+    "name",
+  ],
+  "GeographyTreeDefItem": [
+    "name",
+    "fullNameSeparator",
+    "textAfter",
+    "textBefore",
+    "title",
+  ],
+  "GeologicTimePeriod": [
+    "name",
+    "guid",
+  ],
+  "GeologicTimePeriodTreeDef": [
+    "name",
+  ],
+  "GeologicTimePeriodTreeDefItem": [
+    "name",
+    "fullNameSeparator",
+    "textAfter",
+    "textBefore",
+    "title",
+  ],
+  "Gift": [
+    "giftNumber",
+    "purposeOfGift",
+  ],
+  "GiftAgent": [
+    "role",
+  ],
+  "GiftAttachment": [],
+  "GiftPreparation": [
+    "descriptionOfMaterial",
+  ],
+  "GroupPerson": [],
+  "InfoRequest": [
+    "infoReqNumber",
+  ],
+  "Institution": [
+    "altName",
+    "name",
+    "code",
+    "currentManagedRelVersion",
+    "currentManagedSchemaVersion",
+    "guid",
+    "lsidAuthority",
+    "uri",
+  ],
+  "InstitutionNetwork": [
+    "altName",
+    "name",
+    "code",
+    "iconURI",
+    "uri",
+  ],
+  "Journal": [
+    "journalName",
+    "guid",
+    "journalAbbreviation",
+  ],
+  "LatLonPolygon": [
+    "name",
+  ],
+  "LatLonPolygonPnt": [],
+  "LibraryRole": [
+    "name",
+  ],
+  "LibraryRolePolicy": [
+    "action",
+    "resource",
+  ],
+  "LithoStrat": [
+    "name",
+    "guid",
+  ],
+  "LithoStratTreeDef": [
+    "name",
+  ],
+  "LithoStratTreeDefItem": [
+    "name",
+    "fullNameSeparator",
+    "textAfter",
+    "textBefore",
+    "title",
+  ],
+  "Loan": [
+    "loanNumber",
+    "srcGeography",
+    "srcTaxonomy",
+  ],
+  "LoanAgent": [
+    "role",
+  ],
+  "LoanAttachment": [],
+  "LoanPreparation": [
+    "descriptionOfMaterial",
+  ],
+  "LoanReturnPreparation": [],
+  "Locality": [
+    "localityName",
+    "datum",
+    "guid",
+    "latLongMethod",
+    "lat1text",
+    "lat2text",
+    "latLongType",
+    "long1text",
+    "long2text",
+    "elevationMethod",
+  ],
+  "LocalityAttachment": [],
+  "LocalityCitation": [],
+  "LocalityDetail": [
+    "drainage",
+    "island",
+    "islandGroup",
+    "rangeDesc",
+    "section",
+    "sectionPart",
+    "township",
+    "waterBody",
+  ],
+  "LocalityNameAlias": [
+    "name",
+    "source",
+  ],
+  "LocalityUpdate": [
+    "status",
+    "taskid",
+  ],
+  "LocalityUpdateRowResult": [],
+  "MaterialSample": [
+    "GGBN_absorbanceRatioMethod",
+    "GGBN_concentrationUnit",
+    "guid",
+    "GGBN_medium",
+    "GGBN_purificationMethod",
+    "GGBN_quality",
+    "GGBN_sampleDesignation",
+    "GGBN_materialSampleType",
+    "sraProjectID",
+    "sraSampleID",
+    "GGBN_volumeUnit",
+    "GGBN_weightMethod",
+    "GGBN_weightUnit",
+  ],
+  "Message": [],
+  "MorphBankView": [],
+  "OtherIdentifier": [
+    "identifier",
+    "institution",
+  ],
+  "PaleoContext": [
+    "paleoContextName",
+    "text1",
+  ],
+  "PcrPerson": [],
+  "Permit": [
+    "permitNumber",
+    "copyright",
+    "reservedText3",
+    "reservedText4",
+    "status",
+    "statusQualifier",
+    "type",
+  ],
+  "PermitAttachment": [],
+  "PickList": [
+    "name",
+    "fieldName",
+    "tableName",
+    "formatter",
+  ],
+  "PickListItem": [
+    "title",
+    "value",
+  ],
+  "PrepType": [
+    "name",
+  ],
+  "Preparation": [
+    "guid",
+    "storageLocation",
+  ],
+  "PreparationAttachment": [],
+  "PreparationAttr": [],
+  "PreparationAttribute": [],
+  "PreparationProperty": [
+    "guid",
+    "text1",
+  ],
+  "Project": [
+    "projectName",
+    "projectDescription",
+    "grantAgency",
+    "grantNumber",
+    "projectNumber",
+  ],
+  "RecordSet": [
+    "name",
+  ],
+  "RecordSetItem": [],
+  "ReferenceWork": [
+    "title",
+    "workDate",
+    "guid",
+    "libraryNumber",
+    "pages",
+    "placeOfPublication",
+    "publisher",
+    "url",
+    "volume",
+  ],
+  "ReferenceWorkAttachment": [],
+  "RelativeAge": [
+    "ageType",
+    "datingMethod",
+  ],
+  "RelativeAgeAttachment": [],
+  "RelativeAgeCitation": [
+    "figureNumber",
+    "pageNumber",
+    "plateNumber",
+  ],
+  "RepositoryAgreement": [
+    "repositoryAgreementNumber",
+    "status",
+  ],
+  "RepositoryAgreementAttachment": [],
+  "Role": [
+    "name",
+  ],
+  "RolePolicy": [
+    "action",
+    "resource",
+  ],
+  "Shipment": [
+    "shipmentNumber",
+    "shipmentMethod",
+  ],
+  "SpAppResource": [
+    "name",
+  ],
+  "SpAppResourceData": [],
+  "SpAppResourceDir": [],
+  "SpAuditLog": [],
+  "SpAuditLogField": [
+    "fieldName",
+  ],
+  "SpDataSetAttachment": [],
+  "SpExportSchema": [],
+  "SpExportSchemaItem": [],
+  "SpExportSchemaItemMapping": [
+    "exportedFieldName",
+    "rowType",
+  ],
+  "SpExportSchemaMapping": [],
+  "SpFieldValueDefault": [],
+  "SpLocaleContainer": [
+    "name",
+  ],
+  "SpLocaleContainerItem": [
+    "name",
+  ],
+  "SpLocaleItemStr": [
+    "language",
+    "text",
+  ],
+  "SpPermission": [
+    "permissionClass",
+  ],
+  "SpPrincipal": [
+    "name",
+    "groupSubClass",
+  ],
+  "SpQuery": [
+    "contextName",
+    "name",
+  ],
+  "SpQueryField": [
+    "fieldName",
+    "stringId",
+    "tableList",
+  ],
+  "SpReport": [
+    "name",
+    "repeatField",
+  ],
+  "SpSymbiotaInstance": [
+    "instanceName",
+    "description",
+    "symbiotaKey",
+  ],
+  "SpTaskSemaphore": [],
+  "SpVersion": [
+    "dbClosedBy",
+    "workbenchSchemaVersion",
+  ],
+  "SpViewSetObj": [
+    "name",
+  ],
+  "SpVisualQuery": [
+    "name",
+  ],
+  "Spattachmentdataset": [
+    "name",
+  ],
+  "Spdataset": [
+    "name",
+    "rowresults",
+  ],
+  "SpecifyUser": [
+    "name",
+    "password",
+    "userType",
+  ],
+  "Spmerging": [
+    "name",
+    "status",
+    "table",
+    "taskid",
+  ],
+  "Spuserexternalid": [
+    "provider",
+    "providerid",
+    "idtoken",
+  ],
+  "Storage": [
+    "name",
+  ],
+  "StorageAttachment": [],
+  "StorageTreeDef": [
+    "name",
+  ],
+  "StorageTreeDefItem": [
+    "name",
+    "fullNameSeparator",
+    "textAfter",
+    "textBefore",
+    "title",
+  ],
+  "Taxon": [
+    "name",
+    "commonName",
+    "author",
+    "guid",
+    "source",
+  ],
+  "TaxonAttachment": [],
+  "TaxonAttribute": [
+    "text1",
+  ],
+  "TaxonCitation": [],
+  "TaxonTreeDef": [
+    "name",
+    "remarks",
+  ],
+  "TaxonTreeDefItem": [
+    "name",
+    "fullNameSeparator",
+    "textAfter",
+    "textBefore",
+    "title",
+  ],
+  "TectonicUnit": [
+    "name",
+    "guid",
+    "text1",
+    "text2",
+  ],
+  "TectonicUnitTreeDef": [
+    "name",
+  ],
+  "TectonicUnitTreeDefItem": [
+    "name",
+    "fullNameSeparator",
+    "textAfter",
+    "textBefore",
+    "title",
+  ],
+  "TreatmentEvent": [
+    "treatmentNumber",
+    "type",
+  ],
+  "TreatmentEventAttachment": [],
+  "UniquenessRule": [
+    "modelname",
+  ],
+  "UniquenessRuleField": [],
+  "UserPolicy": [
+    "action",
+    "resource",
+  ],
+  "UserRole": [],
+  "VoucherRelationship": [
+    "collectionCode",
+    "institutionCode",
+    "urlLink",
+    "voucherNumber",
+  ],
+  "Workbench": [
+    "exportedFromTableName",
+  ],
+  "WorkbenchDataItem": [],
+  "WorkbenchRow": [],
+  "WorkbenchRowExportedRelationship": [
+    "relationshipName",
+    "tableName",
+  ],
+  "WorkbenchRowImage": [],
+  "WorkbenchTemplate": [],
+  "WorkbenchTemplateMappingItem": [
+    "tableName",
+  ],
+}
+`;

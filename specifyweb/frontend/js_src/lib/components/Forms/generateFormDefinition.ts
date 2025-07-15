@@ -1,5 +1,11 @@
+import { schemaText } from '../../localization/schema';
+import { resolveParser } from '../../utils/parser/definitions';
+import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { sortFunction, split } from '../../utils/utils';
-import { commonText } from '../../localization/common';
+import type { AnySchema, TableFields } from '../DataModel/helperTypes';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type {
   FormMode,
   FormType,
@@ -7,32 +13,28 @@ import type {
   ViewDescription,
 } from '../FormParse';
 import type { CellTypes, FormCellDefinition } from '../FormParse/cells';
-import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
-import { resolveParser } from '../../utils/parser/definitions';
+import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { AnySchema, TableFields } from '../DataModel/helperTypes';
 
 /**
  * If form definition is missing, this function will generate one on the fly
  */
 export function autoGenerateViewDefinition<SCHEMA extends AnySchema>(
-  model: SpecifyModel<SCHEMA>,
+  table: SpecifyTable<SCHEMA>,
   formType: FormType,
   mode: FormMode,
-  fieldsToShow: RA<TableFields<SCHEMA>> = getFieldsForAutoView(model, [])
+  fieldsToShow: RA<TableFields<SCHEMA>> = getFieldsForAutoView(table, [])
 ): ViewDescription {
   return {
     ...(formType === 'form' ? generateForm : generateFormTable)(
-      model,
+      table,
       mode,
       fieldsToShow
     ),
+    name: '',
     formType,
     mode,
-    model,
+    table,
   };
 }
 
@@ -42,16 +44,17 @@ export function autoGenerateViewDefinition<SCHEMA extends AnySchema>(
  * that won't be as type safe
  */
 export function getFieldsForAutoView<SCHEMA extends AnySchema>(
-  model: SpecifyModel<SCHEMA>,
+  table: SpecifyTable<SCHEMA>,
   fieldsToSkip: RA<TableFields<SCHEMA>>
 ): RA<TableFields<SCHEMA>> {
-  const baseFields = model.literalFields
+  const baseFields = table.literalFields
     .filter((field) => !fieldsToSkip.includes(field.name))
     .sort(sortFunction(({ isRequired }) => isRequired, true));
   const filteredFields = baseFields.filter(
     (field) => !field.isHidden && !field.isReadOnly
   );
-  const relationships = model.relationships
+  // BUG: if displayed as a dependent sub view, should hide relationship to parent
+  const relationships = table.relationships
     .filter(
       (field) =>
         !field.isHidden &&
@@ -69,7 +72,7 @@ export function getFieldsForAutoView<SCHEMA extends AnySchema>(
 }
 
 function generateFormTable(
-  model: SpecifyModel,
+  model: SpecifyTable,
   _mode: FormMode,
   fieldsToShow: RA<string>
 ): ParsedFormDefinition {
@@ -97,15 +100,16 @@ const cellAttributes = {
   colSpan: 1,
   visible: true,
   ariaLabel: undefined,
+  verticalAlign: 'stretch',
 } as const;
 
 function generateForm(
-  model: SpecifyModel,
+  table: SpecifyTable,
   mode: FormMode,
   fieldsToShow: RA<string>
 ): ParsedFormDefinition {
   const allFields = fieldsToShow.map((fieldName) =>
-    model.strictGetField(fieldName)
+    table.strictGetField(fieldName)
   );
   const [fields, relationships] = split<LiteralField, Relationship>(
     allFields,
@@ -123,7 +127,7 @@ function generateForm(
         : [
             {
               type: 'Separator',
-              label: commonText('fields'),
+              label: schemaText.fields(),
               icon: undefined,
               forClass: undefined,
               ...cellAttributes,
@@ -138,7 +142,7 @@ function generateForm(
                   type: 'Label',
                   text: field.label,
                   labelForCellId: field.name,
-                  fieldName: field.name,
+                  fieldNames: [field.name],
                   title: field.getLocalizedDesc(),
                   ...cellAttributes,
                 },
@@ -161,57 +165,67 @@ function generateForm(
         : [
             {
               type: 'Separator',
-              label: commonText('relationships'),
+              label: schemaText.relationships(),
               ...cellAttributes,
               icon: undefined,
               forClass: undefined,
             },
           ],
-      ...relationships.flatMap(
-        (field) =>
-          [
+      ...relationships
+        .filter(({ relatedTable }) =>
+          hasTablePermission(relatedTable.name, 'read')
+        )
+        .flatMap(
+          (field) =>
             [
-              {
-                type: 'Label',
-                text: field.label,
-                labelForCellId: field.name,
-                fieldName: field.name,
-                title: field.getLocalizedDesc(),
-                ...cellAttributes,
-              },
-            ],
-            [
-              relationshipIsToMany(field)
-                ? ({
-                    ...cellAttributes,
-                    id: field.name,
-                    type: 'SubView',
-                    formType: 'form',
-                    mode,
-                    fieldName: field.name,
-                    viewName: undefined,
-                    isButton: true,
-                    icon: undefined,
-                    isRequired: false,
-                    sortField: 'id',
-                  } as const)
-                : ({
-                    ...cellAttributes,
-                    id: field.name,
-                    type: 'Field',
-                    fieldName: field.name,
-                    fieldDefinition: {
-                      type: 'QueryComboBox',
-                      hasCloneButton: false,
-                      typeSearch: undefined,
-                      isReadOnly: mode === 'view',
-                    },
-                    isRequired: false,
-                    viewName: undefined,
-                  } as const),
-            ],
-          ] as const
-      ),
+              [
+                {
+                  type: 'Label',
+                  text: field.label,
+                  labelForCellId: field.name,
+                  fieldNames: [field.name],
+                  title: field.getLocalizedDesc(),
+                  ...cellAttributes,
+                },
+              ],
+              [
+                relationshipIsToMany(field)
+                  ? ({
+                      ...cellAttributes,
+                      id: field.name,
+                      type: 'SubView',
+                      formType: 'form',
+                      mode,
+                      fieldNames: [field.name],
+                      viewName: undefined,
+                      isButton: true,
+                      icon: undefined,
+                      isRequired: false,
+                      sortField: { fieldNames: ['id'], direction: 'asc' },
+                    } as const)
+                  : ({
+                      ...cellAttributes,
+                      id: field.name,
+                      type: 'Field',
+                      fieldNames: [field.name],
+                      fieldDefinition: {
+                        type: 'QueryComboBox',
+                        hasCloneButton: false,
+                        hasNewButton: true,
+                        hasSearchButton: true,
+                        hasEditButton: true,
+                        hasViewButton: false,
+                        typeSearch: undefined,
+                        searchView: undefined,
+                        isReadOnly: mode === 'view',
+                        defaultRecord: undefined,
+                      },
+                      isRequired: false,
+                      viewName: undefined,
+                    } as const),
+              ],
+            ] as const
+        ),
     ]),
   };
 }
@@ -223,10 +237,11 @@ function getFieldDefinition(
   field: LiteralField
 ): CellTypes['Field'] & FormCellDefinition {
   const parser = resolveParser(field);
+  // FEATURE: render date fields using Partial Date UI
   return {
     ...cellAttributes,
     type: 'Field',
-    fieldName: field.name,
+    fieldNames: [field.name],
     isRequired: false,
     ariaLabel: undefined,
     fieldDefinition: {
@@ -239,24 +254,27 @@ function getFieldDefinition(
             printOnSave: false,
           }
         : typeof parser.pickListName === 'string'
-        ? {
-            type: 'ComboBox',
-            defaultValue: undefined,
-            pickList: parser.pickListName,
-          }
-        : field.type === 'text'
-        ? {
-            type: 'TextArea',
-            defaultValue: undefined,
-            rows: undefined,
-          }
-        : {
-            type: 'Text',
-            defaultValue: undefined,
-            min: parser.min,
-            max: parser.max,
-            step: parser.step,
-          }),
+          ? {
+              type: 'ComboBox',
+              defaultValue: undefined,
+              pickList: parser.pickListName,
+            }
+          : field.type === 'text'
+            ? {
+                type: 'TextArea',
+                defaultValue: undefined,
+                rows: undefined,
+              }
+            : {
+                type: 'Text',
+                defaultValue: undefined,
+                min: parser.min,
+                max: parser.max,
+                step: parser.step,
+                minLength: parser.minLength,
+                maxLength: parser.maxLength,
+                whiteSpaceSensitive: parser.whiteSpaceSensitive,
+              }),
     },
   };
 }

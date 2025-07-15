@@ -1,24 +1,41 @@
 import React from 'react';
 
-import type { Geography, Locality } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
-import { hasTablePermission } from '../Permissions/helpers';
-import { formatUrl } from '../Router/queryString';
-import { schema } from '../DataModel/schema';
+import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
+import type { Geography, Locality } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
-import { useCachedState } from '../../hooks/useCachedState';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
+import type { GeoLocatePayload } from '../Molecules/GeoLocate';
+import { GenericGeoLocate } from '../Molecules/GeoLocate';
+import { hasTablePermission } from '../Permissions/helpers';
 
-const defaultWidth = 947;
-const defaultHeight = 779;
+export function GeoLocatePlugin({
+  resource,
+}: {
+  readonly resource: SpecifyResource<Locality>;
+}): JSX.Element {
+  const [isOpen, _, handleClose, handleToggle] = useBooleanState();
+  return (
+    <>
+      <Button.Small
+        aria-pressed={isOpen}
+        className="w-fit"
+        onClick={handleToggle}
+      >
+        {localityText.geoLocate()}
+      </Button.Small>
+      {isOpen && <GeoLocate resource={resource} onClose={handleClose} />}
+    </>
+  );
+}
 
 // REFACTOR: merge this with GeoLocate code in the WB once WB is using react
 function GeoLocate({
@@ -37,23 +54,15 @@ function GeoLocate({
   );
   const loading = React.useContext(LoadingContext);
 
-  React.useEffect(() => {
-    if (typeof data !== 'object') return undefined;
+  const [clicked, handleClicked] = useBooleanState();
+  const handleUpdate = React.useCallback(
+    ({ latitude, longitude, uncertainty, polygon }: GeoLocatePayload) => {
+      handleClicked();
 
-    function listener(event: MessageEvent): void {
-      if (
-        !event.origin.endsWith('www.geo-locate.org') ||
-        typeof event.data !== 'string' ||
-        !hasTablePermission('Locality', resource.isNew() ? 'create' : 'update')
-      )
-        return;
-
-      const [lat, long, uncertainty, poly] = event.data.split('|');
-
-      resource.set('lat1text', lat);
-      resource.set('latitude1', Number.parseFloat(lat));
-      resource.set('long1text', long);
-      resource.set('longitude1', Number.parseFloat(long));
+      resource.set('lat1text', latitude);
+      resource.set('latitude1', Number.parseFloat(latitude));
+      resource.set('long1text', longitude);
+      resource.set('longitude1', Number.parseFloat(longitude));
       resource.set('latLongType', 'Point');
       // Presumably available in picklist.
       resource.set('latLongMethod', 'GEOLocate');
@@ -62,17 +71,22 @@ function GeoLocate({
         uncertainty === 'Unavailable'
           ? undefined
           : Number.parseFloat(uncertainty);
-      const polyParsed = poly === 'Unavailable' ? undefined : poly;
+      const polyParsed = polygon === 'Unavailable' ? undefined : polygon;
 
-      loading(
-        ((typeof uncertaintyParsed === 'number' || typeof poly === 'string') &&
+      const savePolygon =
+        (typeof uncertaintyParsed === 'number' ||
+          typeof polygon === 'string') &&
         hasTablePermission('GeoCoordDetail', 'read') &&
         hasTablePermission('GeoCoordDetail', 'create') &&
-        hasTablePermission('GeoCoordDetail', 'update')
-          ? resource.rgetPromise('geoCoordDetails').then((details) => {
+        hasTablePermission('GeoCoordDetail', 'update');
+      if (savePolygon)
+        loading(
+          resource
+            .rgetPromise('geoCoordDetails')
+            .then((details) => {
               let detailsResource = details;
               if (detailsResource === null) {
-                detailsResource = new schema.models.GeoCoordDetail.Resource();
+                detailsResource = new tables.GeoCoordDetail.Resource();
                 detailsResource.placeInSameHierarchy(resource);
                 resource.set('geoCoordDetails', detailsResource);
               }
@@ -86,58 +100,40 @@ function GeoLocate({
               );
               detailsResource.set('errorPolygon', polyParsed ?? null);
             })
-          : Promise.resolve()
-        ).then(handleClose)
-      );
-    }
-
-    globalThis.window.addEventListener('message', listener);
-    return (): void => globalThis.removeEventListener('message', listener);
-  }, [loading, data, handleClose, resource]);
-
-  const [width = defaultWidth, setWidth] = useCachedState('geoLocate', 'width');
-  const [height = defaultHeight, setHeight] = useCachedState(
-    'geoLocate',
-    'height'
+            .then(handleClose)
+        );
+      else handleClose();
+    },
+    [loading, resource, handleClicked]
   );
 
   return data === undefined ? null : data === false ? (
     <Dialog
-      buttons={commonText('close')}
-      header={localityText('geographyRequiredDialogHeader')}
+      buttons={commonText.close()}
+      header={localityText.geographyRequired({
+        geographyTable: tables.Geography.label,
+      })}
       onClose={handleClose}
     >
-      {localityText('geographyRequiredDialogText')}
+      {localityText.geographyRequiredDescription()}
     </Dialog>
   ) : (
-    <Dialog
-      buttons={commonText('close')}
-      forwardRef={{
-        container(container): void {
-          if (container === null) return;
-          container.style.width = `${width}px`;
-          container.style.height = `${height}px`;
-        },
-      }}
-      header={localityText('geoLocate')}
-      modal={false}
+    <GenericGeoLocate
+      buttons={
+        <Button.DialogClose
+          component={clicked ? Button.Info : Button.Secondary}
+        >
+          {commonText.close()}
+        </Button.DialogClose>
+      }
+      data={data}
       onClose={handleClose}
-      // REFACTOR: consider adding a hook to remember dialog size and position
-      onResize={(container): void => {
-        setWidth(container.clientWidth);
-        setHeight(container.clientHeight);
-      }}
-    >
-      <iframe
-        className="h-full"
-        // GEOLocate doesn't like '|' to be uri escaped.
-        src={formatUrl(
-          'https://www.geo-locate.org/web/webgeoreflight.aspx',
-          data
-        ).replace(/%7c/gi, '|')}
-        title={localityText('geoLocate')}
-      />
-    </Dialog>
+      onUpdate={
+        hasTablePermission('Locality', resource.isNew() ? 'create' : 'update')
+          ? handleUpdate
+          : undefined
+      }
+    />
   );
 }
 
@@ -180,7 +176,7 @@ async function getGeoLocateData(
 
   const geography = resource
     .rgetPromise('geography')
-    .then((geography) =>
+    .then(async (geography) =>
       geography === null ? undefined : constructGeography(geography)
     );
 
@@ -188,39 +184,15 @@ async function getGeoLocateData(
     geography === undefined
       ? undefined
       : {
-          v: '1',
-          w: '900',
-          h: '400',
-          georef: 'run',
           locality: resource.get('localityName') ?? '',
           ...geography,
           ...(Array.isArray(point)
             ? {
                 points: filterArray([...point, uncertainty])
-                  .map((part) => part.toString().replace(/[:|]/g, ' '))
+                  .map((part) => part.toString().replaceAll(/[:|]/gu, ' '))
                   .join('|'),
               }
             : {}),
         }
-  );
-}
-
-export function GeoLocatePlugin({
-  resource,
-}: {
-  readonly resource: SpecifyResource<Locality>;
-}): JSX.Element {
-  const [isOpen, _, handleClose, handleToggle] = useBooleanState();
-  return (
-    <>
-      <Button.Small
-        aria-pressed={isOpen}
-        className="w-fit"
-        onClick={handleToggle}
-      >
-        {localityText('geoLocate')}
-      </Button.Small>
-      {isOpen && <GeoLocate resource={resource} onClose={handleClose} />}
-    </>
   );
 }

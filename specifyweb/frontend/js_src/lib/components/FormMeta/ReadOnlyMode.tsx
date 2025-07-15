@@ -9,6 +9,7 @@ export function ReadOnlyMode(): JSX.Element {
     'forms',
     'readOnlyMode'
   );
+
   return (
     <Button.Small
       onClick={(): void => {
@@ -16,7 +17,7 @@ export function ReadOnlyMode(): JSX.Element {
         globalThis.location.reload();
       }}
     >
-      {isReadOnly ? formsText('disableReadOnly') : formsText('enableReadOnly')}
+      {isReadOnly ? formsText.disableReadOnly() : formsText.enableReadOnly()}
     </Button.Small>
   );
 }

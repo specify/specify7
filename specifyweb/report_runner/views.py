@@ -1,20 +1,20 @@
 import json
+
 import requests
 from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
 from django.http import HttpResponse
-from django.template import loader, Context
+from django.template import loader
 from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control
-from django.views.decorators.http import require_GET, require_POST, \
-    require_http_methods
+from django.views.decorators.http import require_POST
 
+from specifyweb.middleware.general import require_GET, require_http_methods
 from ..permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets, check_table_permissions
-from ..permissions.permissions import PermissionTarget, PermissionTargetAction, \
-    check_permission_targets, check_table_permissions
-from ..specify.api import obj_to_data, objs_to_data, toJson, HttpResponseCreated
+from ..specify.api import obj_to_data, toJson, \
+    HttpResponseCreated, objs_to_data_, _obj_to_data
 from ..specify.models import Spappresource, Spappresourcedir, Spreport, Spquery
 from ..specify.views import login_maybe_required
 from ..stored_queries.execution import run_ephemeral_query, models
@@ -64,40 +64,50 @@ def run(request):
     else:
         raise ReportException(r.text)
 
+def get_reports_view(request):
+    return get_reports_by_table(request, table_id=None)
+
 @require_GET
 @login_maybe_required
-def get_reports(request):
+def get_reports_by_table(request, table_id):
     "Returns a list of available reports and labels."
     reports = Spappresource.objects.filter(
         mimetype__icontains="jrxml/",
         spappresourcedir__discipline=request.specify_collection.discipline) \
+        .prefetch_related('spreports') \
         .filter(
-            Q(spappresourcedir__collection=None) |
-            Q(spappresourcedir__collection=request.specify_collection)) \
+        Q(spappresourcedir__collection=None) |
+        Q(spappresourcedir__collection=request.specify_collection)) \
         .filter(
-            Q(spappresourcedir__specifyuser=request.specify_user) |
-            Q(spappresourcedir__ispersonal=False))
+        Q(spappresourcedir__specifyuser=request.specify_user) |
+        Q(spappresourcedir__ispersonal=False))
 
-    data = objs_to_data(reports, request.GET.get('offset', 0), request.GET.get('limit', 0))
-    return HttpResponse(toJson(data), content_type="application/json")
+    if table_id is not None:
+        reports = reports.filter(Q(spreports__query__contexttableid=table_id))
 
-@require_GET
-@login_maybe_required
-def get_reports_by_tbl(request, tbl_id):
-    "Returns a list of availabel reports and labels for the given table <tbl_id>."
-    reports = Spappresource.objects.filter(
-        mimetype__icontains="jrxml/",
-        spappresourcedir__discipline=request.specify_collection.discipline) \
-        .filter(
-            Q(spappresourcedir__collection=None) |
-            Q(spappresourcedir__collection=request.specify_collection)) \
-        .filter(
-            Q(spappresourcedir__specifyuser=request.specify_user) |
-            Q(spappresourcedir__ispersonal=False)) \
-        .filter(
-            Q(spreports__query__contexttableid=tbl_id))
+    def map(app_resource):
+        report = app_resource.spreports.first()
+        return dict(
+            app_resource=app_resource,
+            report=report,
+            query=None if report is None else report.query
+        )
 
-    data = objs_to_data(reports, request.GET.get('offset', 0), request.GET.get('limit', 0))
+    response = [
+        map(app_resource) for app_resource in reports
+    ]
+
+    data = objs_to_data_(
+        response,
+        len(response),
+        lambda o: {
+            key: None if value is None else _obj_to_data(value, lambda x: None)
+            for key, value in o.items()
+        },
+        request.GET.get('offset', 0),
+        request.GET.get('limit', 0)
+    )
+
     return HttpResponse(toJson(data), content_type="application/json")
 
 @require_POST
@@ -115,12 +125,16 @@ def create(request):
 
 @transaction.atomic
 def create_report(user_id, discipline_id, query_id, mimetype, name):
-    assert mimetype in ("jrxml/label", "jrxml/report")
+    if mimetype not in ("jrxml/label", "jrxml/report"): raise AssertionError(
+        "Can not create report: mimetype not 'jrxml/label' or 'jrxml/report'", 
+        {"localizationKey" : "invalidReportMimetype"})
     query = Spquery.objects.get(id=query_id)
-    try:
-        spappdir = Spappresourcedir.objects.get(discipline_id=discipline_id, collection_id=None)
-    except Spappresourcedir.DoesNotExist:
+
+    spappdirs_matched = Spappresourcedir.objects.filter(discipline_id=discipline_id, collection_id=None)
+    if len(spappdirs_matched) == 0:
         spappdir = Spappresourcedir.objects.create(discipline_id=discipline_id)
+    else:
+        spappdir = spappdirs_matched[0]
 
     appresource = spappdir.sppersistedappresources.create(
         version=0,
@@ -147,7 +161,8 @@ def template_report_for_query(query_id, name):
     def field_element(field):
         queryfield = QueryField.from_spqueryfield(field)
         fieldspec = queryfield.fieldspec
-        field_type = fieldspec.get_field().type
+        fieldspec_field = fieldspec.get_field()
+        field_type = fieldspec_field.type if fieldspec_field is not None else "java.lang.String"
 
         if field.formatName \
            or field.isRelFld \

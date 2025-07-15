@@ -13,14 +13,14 @@ repos:
   - repo: local
     hooks:
       - id: frontend-tests
-        name: TypeScript and QUnit
+        name: TypeScript, Jest and localization tests
         description: Run TypeScript typechecker and automated tests on .ts files
         entry: /bin/bash -c "cd specifyweb/frontend/js_src && npm run test"
         language: script
         types_or: [javascript, jsx, ts, tsx]
         pass_filenames: false
 
-  - repo: https://github.com/maxxxxxdlp/pre-commit
+  - repo: https://github.com/maxpatiiuk/pre-commit
     rev: v1.0.5
     hooks:
       - id: regex-blacklist
@@ -32,13 +32,16 @@ repos:
       - id: mypy
         name: mypy
         description: Python mypy typechecker
-        entry: /bin/bash -c "docker exec --tty specify7_specify7_1 bash -c 'VIRTUAL_ENV=./ve make typecheck'"
+        entry:
+          /bin/bash -c "docker exec --tty specify7_specify7_1 bash -c
+          'VIRTUAL_ENV=./ve make typecheck'"
         language: script
         types: [python]
         pass_filenames: false
 
   #- repo: https://github.com/pre-commit/mirrors-mypy
   #- repo: https://github.com/pre-commit/mirrors-eslint
+  #- repo: https://github.com/awebdeveloper/pre-commit-stylelint
 
   # global hooks:
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -114,21 +117,11 @@ repos:
       - id: prettier
         additional_dependencies:
           - prettier@2.5.0
-          - "@prettier/plugin-xml@^0.13.1"
+          - '@prettier/plugin-xml@^0.13.1'
           - prettier-plugin-package@^1.3.0
           - prettier-plugin-sh@^0.8.1
           - prettier-plugin-tailwind-css@^1.5.0
           - prettier-plugin-firebase-database@^1.0.1
-
-  - repo: https://github.com/awebdeveloper/pre-commit-stylelint
-    rev: 0.0.2
-    hooks:
-      - id: stylelint
-        files: \.(css|scss|sass|js|jsx|ts|tsx)$
-        additional_dependencies:
-          - stylelint@^14.1.0
-          - stylelint-config-prettier@^9.0.3
-          - stylelint-config-standard@^24.0.0
 
   - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
     rev: v1.2.2
@@ -153,7 +146,7 @@ repos:
         args:
           - --git-recurse
 
-  - repo: https://github.com/maxxxxxdlp/mirrors-jscpd
+  - repo: https://github.com/maxpatiiuk/mirrors-jscpd
     rev: v3.3.26
     hooks:
       - id: jscpd

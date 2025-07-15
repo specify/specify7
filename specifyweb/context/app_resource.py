@@ -22,31 +22,95 @@ logger = logging.getLogger(__name__)
 DIR_LEVELS = ['Personal', 'UserType', 'Collection', 'Discipline', 'Common', 'Backstop']
 
 # At the discipline level of the hierarchy, filesystem resources are found in
-# the directories defined in "disciplines.xml".
-disc_file = os.path.join(settings.SPECIFY_CONFIG_DIR, "disciplines.xml")
+# the directories were defined in "disciplines.xml" but are now defined here.
+DISCIPLINE_DIRS = {
+    "fish": "fish",
+    "herpetology": "herpetology",
+    "paleobotany": "invertpaleo",
+    "invertpaleo": "invertpaleo",
+    "vertpaleo": "vertpaleo",
+    "bird": "bird",
+    "mammal": "mammal",
+    "insect": "insect",
+    "botany": "botany",
+    "invertebrate": "invertebrate",
+    "minerals": "minerals",
+    "geology": "geology",
+    "anthropology": "anthropology",
+    # "vascplant": "vascplant",
+    # "fungi": "fungi",
+}
 
-disciplines = ElementTree.parse(disc_file)
-
-discipline_dirs = dict( (disc.attrib['name'], disc.attrib.get('folder', disc.attrib['name']))
-    for disc in disciplines.findall('discipline') )
+FORM_RESOURCE_EXCLUDED_LST = [
+    "fish/fishbase.views.xml",
+    "accessions/accessions.views.xml",
+    "backstop/system.views.xml",
+    "backstop/editorpanel.views.xml",
+    "backstop/gbif.views.xml",
+    "backstop/preferences.views.xml",
+]
 
 # get_app_resource is the main interface provided by this module
-def get_app_resource(collection, user, resource_name):
+def get_app_resource(collection, user, resource_name, additional_default=False):
     """Fetch the named app resource in the context of the given user and collection.
     Returns the resource data and mimetype as a pair.
     """
     logger.info('looking for app resource %r for user %s in %s',
                 resource_name, user and user.name, collection and collection.collectionname)
-    # Traverse the hierarchy.
-    for level in DIR_LEVELS:
-        # First look in the database.
-        from_db = get_app_resource_from_db(collection, user, level, resource_name)
-        if from_db is not None: return from_db
 
-        # If resource was not found, look on the filesystem.
-        from_fs = load_resource_at_level(collection, user, level, resource_name)
+    # Handling for DataObjFormatters to support fallback to defaults
+    if resource_name == 'DataObjFormatters':
+        custom_formatter = None
+        default_formatter = None
+        
+        # Try to search for the the custom formatter first
+        for level in DIR_LEVELS:
+            # First look in the database.
+            from_db = get_app_resource_from_db(collection, user, level, resource_name)
+            if from_db is not None:
+                custom_formatter = from_db
+                break
+
+            # If resource was not found, look on the filesystem.
+            from_fs = load_resource_at_level(collection, user, level, resource_name)
+            if from_fs is not None:
+                custom_formatter = from_fs
+                break
+        
+        # If custom formatter not found, try to load the default formatter from the backstop level
+        default_formatter = load_resource_at_level(collection, user, 'Backstop', resource_name)
+        
+        # If both custom and default formatters are found, merge them
+        if custom_formatter is not None and default_formatter is not None:
+            merged_formatter = merge_formatters(custom_formatter[0], default_formatter[0])
+            return merged_formatter, custom_formatter[1], custom_formatter[2]
+        
+        # Return the custom formatter if it exists, otherwise return the default
+        if custom_formatter is not None:
+            return custom_formatter
+        
+        if default_formatter is not None:
+            return default_formatter
+        
+        return None
+    
+    if not additional_default:
+        # Traverse the hierarchy.
+        for level in DIR_LEVELS:
+            # First look in the database.
+            from_db = get_app_resource_from_db(collection, user, level, resource_name)
+            if from_db is not None: return from_db
+
+            # If resource was not found, look on the filesystem.
+            from_fs = load_resource_at_level(collection, user, level, resource_name)
+            if from_fs is not None: return from_fs
+            # Continue to next higher level of hierarchy.
+
+    # If additional_default is True, add the resource from the Backstop level.
+    if additional_default:
+        # Then check the backstop level in the filesystem.
+        from_fs = load_resource_at_level(collection, user, 'Backstop', resource_name)
         if from_fs is not None: return from_fs
-        # Continue to next higher level of hierarchy.
 
     # resource was not found
     return None
@@ -69,7 +133,8 @@ def load_resource_at_level(collection, user, level, resource_name):
 def get_path_for_level(collection, user, level):
     """Build the filesystem path for a given resource level."""
 
-    discipline_dir = discipline_dirs.get(collection.discipline.type, None)
+    discipline_dir = None if collection is None else \
+        DISCIPLINE_DIRS.get(collection.discipline.type, None)
     usertype = get_usertype(user)
 
     paths = {
@@ -89,7 +154,7 @@ def load_registry(path, registry_filename='app_resources.xml'):
     pathname = os.path.join(path, registry_filename)
     try:
         return ElementTree.parse(pathname)
-    except IOError as e:
+    except OSError as e:
         if e.errno == errno.ENOENT: return None
         else: raise
 
@@ -102,8 +167,8 @@ def load_resource(path, registry, resource_name):
     if resource is None: return None
     pathname = os.path.join(path, resource.attrib['file'])
     try:
-        return (open(pathname).read(), resource.attrib['mimetype'])
-    except IOError as e:
+        return open(pathname).read(), resource.attrib['mimetype'], None
+    except OSError as e:
         if e.errno == errno.ENOENT: return None
         else: raise
 
@@ -120,18 +185,21 @@ def get_app_resource_from_db(collection, user, level, resource_name):
     filters = {
         'spappresource__name': resource_name,
         'spappresource__spappresourcedir__in': dirs
-        }
+    }
 
     try:
         resource = Spappresourcedata.objects.get(**filters)
-        return (resource.data, resource.spappresource.mimetype)
+        return resource.data, resource.spappresource.mimetype, resource.spappresource.id
     except Spappresourcedata.MultipleObjectsReturned:
         logger.warning('found multiple appresources for %s', filters)
         resource = Spappresourcedata.objects.filter(**filters)[0]
-        return (resource.data, resource.spappresource.mimetype)
+        return resource.data, resource.spappresource.mimetype, resource.spappresource.id
     except Spappresourcedata.DoesNotExist:
         # The resource does not exist in the database at the given level.
         return None
+
+# Defines which fields to ignore when looking up
+IGNORE = {}
 
 def get_app_resource_dirs_for_level(collection, user, level):
     """Returns a queryset of SpAppResourceDir that match the user/collection context
@@ -139,31 +207,60 @@ def get_app_resource_dirs_for_level(collection, user, level):
     a single row. The queryset is returned so that the django ORM can use it to
     build a IN clause when selecting the actual SpAppResource row, resulting in
     a single query to get the resource."""
-    usertype = get_usertype(user)
-    discipline = collection.discipline
+
+    usertype = get_usertype(user) if user is not None else None
+    discipline = collection.discipline if collection is not None else None
 
     # Define what the filters (WHERE clause) are for each level.
     filter_levels = {
         'Columns'    : ('ispersonal', 'usertype', 'collection', 'discipline'),
-        'Personal'   : (True        , 'IGNORE'  , collection  , discipline)  ,
+        'Personal'   : (True        , IGNORE , collection  , discipline)  ,
         'UserType'   : (False       , usertype  , collection  , discipline)  ,
         'Collection' : (False       , None      , collection  , discipline)  ,
         'Discipline' : (False       , None      , None        , discipline)  ,
-        'Common'     : (False       , "Common"  , None        , None)}
+        'Common'     : (False       , IGNORE  , None        , None)
+    }
 
     if level not in filter_levels: return []
 
     # Pull out the column names and values for the given level.
     columns, values = filter_levels['Columns'], filter_levels[level]
-    filters = dict(list(zip(columns, values)))
+    raw_filters = dict(list(zip(columns, values)))
 
     # At the user level, add a clause for the user column.
-    if filters['ispersonal']:
+    if raw_filters['ispersonal']:
         if user is None: return []
-        filters['specifyuser'] = user
-        # when filtering by user, usertype is implied
-        # also if a user's type is changed, what would happen?
-        del filters['usertype']
+        raw_filters['specifyuser'] = user
+
+    filters = {key: value
+               for (key, value) in raw_filters.items()
+               if value != IGNORE}
 
     # Build the queryset.
     return Spappresourcedir.objects.filter(**filters)
+
+def merge_formatters(custom_xml, default_xml):
+    """Merge custom and default XML formatters.
+    This function takes two XML strings, one for custom formatters and one for default formatters,
+    and merges them by adding any formatters from the default XML that are not already present in
+    the custom XML. It returns the merged XML as a string.
+    """
+    
+    custom_root = ElementTree.fromstring(custom_xml)
+    default_root = ElementTree.fromstring(default_xml)
+    
+    # Create a set of existing classes in the custom XML to avoid duplicates
+    custom_classes = set()
+    for format_elem in custom_root.findall('format'):
+        class_attr = format_elem.get('class')
+        if class_attr:
+            custom_classes.add(class_attr)
+
+    # Add formatters from default that don't exist in custom
+    for format_elem in default_root.findall('format'):
+        class_attr = format_elem.get('class')
+        if class_attr and class_attr not in custom_classes:
+            custom_root.append(format_elem)
+    
+    # Convert the merged XML tree back to a string
+    return ElementTree.tostring(custom_root, encoding='utf-8').decode('utf-8')

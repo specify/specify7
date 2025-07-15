@@ -1,25 +1,31 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
-import { formsText } from '../../localization/forms';
-import type { Preparations } from '../../utils/ajax/specifyApi';
-import { getInteractionsForPrepId } from '../../utils/ajax/specifyApi';
-import { syncFieldFormat } from '../../utils/fieldFormat';
+import { interactionsText } from '../../localization/interactions';
 import type { RA, RR } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
+import { formatNumber } from '../Atoms/Internationalization';
+import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
+import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { getResourceViewUrl } from '../DataModel/resource';
+import { genericTables, tables } from '../DataModel/tables';
 import type { ExchangeOut, Gift, Loan } from '../DataModel/types';
+import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { ResourceView } from '../Forms/ResourceView';
+import type { PreparationData } from './helpers';
+import { getInteractionsForPrepId } from './helpers';
 
 export function PrepDialogRow({
   preparation,
   selected,
   onChange: handleChange,
 }: {
-  readonly preparation: Preparations[number];
+  readonly preparation: PreparationData;
   readonly selected: number;
   readonly onChange: (newSelected: number) => void;
 }): JSX.Element {
@@ -36,7 +42,7 @@ export function PrepDialogRow({
             'ExchangeOut' | 'Gift' | 'Loan',
             RA<{
               readonly id: number;
-              readonly label: string;
+              readonly label: LocalizedString;
             }>
           >;
         }
@@ -55,29 +61,43 @@ export function PrepDialogRow({
       <tr>
         <td>
           <Input.Checkbox
-            aria-label={formsText('selectAll')}
+            aria-label={interactionsText.selectAll()}
             checked={checked}
-            title={formsText('selectAll')}
+            title={interactionsText.selectAll()}
             onValueChange={(): void => handleChange(checked ? 0 : available)}
           />
         </td>
         <td className="justify-end tabular-nums">
-          {syncFieldFormat(
-            schema.models.CollectionObject.strictGetLiteralField(
-              'catalogNumber'
-            ),
-            undefined,
-            preparation.catalogNumber
+          <Link.NewTab
+            href={getResourceViewUrl(
+              'CollectionObject',
+              preparation.collectionObjectId
+            )}
+          >
+            {syncFieldFormat(
+              getField(tables.CollectionObject, 'catalogNumber'),
+              preparation.catalogNumber
+            )}
+          </Link.NewTab>
+        </td>
+        <td>
+          {preparation.taxon ? (
+            <Link.NewTab
+              href={getResourceViewUrl('Taxon', preparation.taxonId)}
+            >
+              {localized(preparation.taxon)}
+            </Link.NewTab>
+          ) : (
+            <span>{interactionsText.notAvailable()}</span>
           )}
         </td>
-        <td>{preparation.taxon}</td>
         <td>{preparation.prepType}</td>
         <td>
-          <Input.Number
-            aria-label={formsText('selectedAmount')}
+          <Input.Integer
+            aria-label={interactionsText.selectedAmount()}
             max={preparation.available}
             min={0}
-            title={formsText('selectedAmount')}
+            title={interactionsText.selectedAmount()}
             value={selected}
             onValueChange={handleChange}
           />
@@ -103,21 +123,20 @@ export function PrepDialogRow({
                                 .map((object) => object.split('>|<'))
                                 .map(([id, label]) => ({
                                   id: Number.parseInt(id),
-                                  label,
+                                  label: localized(label),
                                 })) ?? []
                           );
                           const count =
                             loans.length + gifts.length + exchangeOuts.length;
-
                           setState(
                             count === 1
                               ? {
                                   type: 'ResourceDialog',
                                   resource: new (loans.length === 1
-                                    ? schema.models.Loan
+                                    ? tables.Loan
                                     : gifts.length === 1
-                                    ? schema.models.Gift
-                                    : schema.models.ExchangeOut
+                                      ? tables.Gift
+                                      : tables.ExchangeOut
                                   ).Resource({
                                     id: [...loans, ...gifts, ...exchangeOuts][0]
                                       .id,
@@ -137,7 +156,7 @@ export function PrepDialogRow({
                     : setState({ type: 'Main' })
                 }
               >
-                {unavailableCount}
+                {formatNumber(unavailableCount)}
               </Button.LikeLink>
             )
           }
@@ -149,13 +168,19 @@ export function PrepDialogRow({
             {Object.entries(state.items).map(([tableName, items]) =>
               items.map(({ id, label }) => (
                 <Button.LikeLink
+                  key={id}
                   onClick={(): void =>
                     setState({
                       type: 'ResourceDialog',
-                      resource: new schema.models[tableName].Resource({ id }),
+                      resource: new genericTables[tableName].Resource({ id }),
                     })
                   }
-                >{`${schema.models[tableName].label}: ${label}`}</Button.LikeLink>
+                >
+                  {interactionsText.prepReturnFormatter({
+                    tableName: genericTables[tableName].label,
+                    resource: label,
+                  })}
+                </Button.LikeLink>
               ))
             )}
           </td>
@@ -166,7 +191,6 @@ export function PrepDialogRow({
           dialog="modal"
           isDependent={false}
           isSubForm={false}
-          mode="edit"
           resource={state.resource}
           onAdd={undefined}
           onClose={(): void => setState({ type: 'Main' })}

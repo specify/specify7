@@ -3,6 +3,8 @@
  * parsing it and formatting it
  */
 
+import type { AnySchema } from '../../components/DataModel/helperTypes';
+import type { SpecifyResource } from '../../components/DataModel/legacyTypes';
 import type {
   JavaType,
   LiteralField,
@@ -10,18 +12,20 @@ import type {
   RelationshipType,
 } from '../../components/DataModel/specifyField';
 import { error } from '../../components/Errors/assert';
-import type { UiFormatter } from '../../components/Forms/uiFormatters';
-import { monthsPickList } from '../../components/PickLists/definitions';
+import type { UiFormatter } from '../../components/FieldFormatters';
+import { monthsPickListName } from '../../components/PickLists/definitions';
+import { userPreferences } from '../../components/Preferences/userPreferences';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
-import { databaseDateFormat, fullDateFormat } from '../dateFormat';
+import { testTime } from '../../tests/testTime';
 import { dayjs } from '../dayJs';
 import { f } from '../functools';
-import { parseRelativeDate } from '../relativeDate';
+import { parseAnyDate } from '../relativeDate';
 import type { IR, RA, RR } from '../types';
 import { filterArray } from '../types';
-import { getUserPref } from '../../components/UserPreferences/helpers';
+import { databaseDateFormat } from './dateConfig';
+import { fullDateFormat } from './dateFormat';
 
 /** Makes sure a wrapped function would receive a string value */
 export const stringGuard =
@@ -44,16 +48,23 @@ export const validators: IR<(value: unknown) => string | undefined> = {
     !Number.isNaN(value) &&
     (!Number.isInteger(value) || Number.isSafeInteger(value))
       ? undefined
-      : formsText('inputTypeNumber'),
+      : formsText.inputTypeNumber(),
 } as const;
 
 export type Parser = Partial<{
-  readonly type: 'checkbox' | 'date' | 'number' | 'text';
+  readonly type: 'age' | 'checkbox' | 'date' | 'number' | 'text';
   readonly minLength: number;
   readonly maxLength: number;
-  readonly min: number;
-  readonly max: number;
-  readonly step: number;
+  // Number, or a string date in yyyy-mm-dd format
+  readonly min: number | string;
+  // Number, or a string date in yyyy-mm-dd format
+  readonly max: number | string;
+  /*
+   * The step attribute defaults to 1 when not explicitly defined
+   * use `any` to disable step validation for numeric inputs
+   * See https://github.com/specify/specify7/pull/4758
+   */
+  readonly step: number | 'any';
   readonly placeholder: string;
   readonly pattern: RegExp;
   // Browsers use this as an error message when value does not match the pattern
@@ -62,9 +73,9 @@ export type Parser = Partial<{
    * Format a value before validating it. Formatters are applied in the order
    * they are defined
    */
-  readonly formatters: RA<typeof formatter[string]>;
+  readonly formatters: RA<(typeof formatter)[string]>;
   // Validate the value
-  readonly validators: RA<typeof validators[string]>;
+  readonly validators: RA<(typeof validators)[string]>;
   // Format the value after formatting it
   readonly parser: (value: unknown) => unknown;
   // Format the value for use in read only contexts
@@ -74,29 +85,39 @@ export type Parser = Partial<{
   readonly value: boolean | number | string;
   // This is different from field.getPickList() for Month partial date
   readonly pickListName: string;
+  readonly whiteSpaceSensitive: boolean;
 }>;
 
 const numberPrintFormatter = (value: unknown, { step }: Parser): string =>
   typeof value === 'number' && typeof step === 'number' && step > 0
     ? f.round(value, step).toString()
-    : (value as number)?.toString() ?? '';
+    : ((value as number)?.toString() ?? '');
 
 type ExtendedJavaType = JavaType | 'day' | 'month' | 'year';
+
+/**
+ * Using this rather than mocking time using jest because this file might be
+ * called from a test that does not do time mocking.
+ *
+ * This could be resolved by enabling time mocking globally, but that's not
+ * great as it can alter behavior of the code
+ */
+const getDate = () => (process.env.NODE_ENV === 'test' ? testTime : new Date());
 
 export const parsers = f.store(
   (): RR<ExtendedJavaType, ExtendedJavaType | Parser> => ({
     'java.lang.Boolean': {
       type: 'checkbox',
       pattern: /true|false|yes|no|nan|null|undefined/iu,
-      title: formsText('illegalBool'),
+      title: formsText.illegalBool(),
       formatters: [formatter.toLowerCase],
       parser: stringGuard((value) => ['yes', 'true'].includes(value)),
       printFormatter: (value) =>
         value === undefined
           ? ''
           : Boolean(value)
-          ? queryText('yes')
-          : commonText('no'),
+            ? queryText.yes()
+            : commonText.no(),
       value: false,
     },
 
@@ -117,6 +138,7 @@ export const parsers = f.store(
       validators: [validators.number],
       value: 0,
       printFormatter: numberPrintFormatter,
+      step: 'any',
     },
 
     'java.lang.Float': 'java.lang.Double',
@@ -157,6 +179,10 @@ export const parsers = f.store(
     'java.lang.String': {
       type: 'text',
       maxLength: 2 ** 31 - 1,
+      /*
+       * Note, despite empty string being default value, empty strings
+       * are cast to null in parseValue
+       */
       value: '',
     },
 
@@ -165,22 +191,23 @@ export const parsers = f.store(
     'java.sql.Timestamp': {
       type: 'date',
       minLength: fullDateFormat().length,
-      maxLength: fullDateFormat().length,
+      // FEATURE: allow customizing this in global prefs
+      max: '9999-12-31',
       formatters: [
         formatter.toLowerCase,
         stringGuard((value) =>
-          f.maybe(parseRelativeDate(value), (date) => f.maybe(date, dayjs))
+          f.maybe(parseAnyDate(value), (date) => f.maybe(date, dayjs))
         ),
       ],
       validators: [
         (value): string | undefined =>
           typeof value === 'object' && (value as dayjs.Dayjs).isValid()
             ? undefined
-            : formsText('requiredFormat', fullDateFormat()),
+            : formsText.requiredFormat({ format: fullDateFormat() }),
       ],
-      title: formsText('requiredFormat', fullDateFormat()),
+      title: formsText.requiredFormat({ format: fullDateFormat() }),
       parser: (value) => (value as dayjs.Dayjs)?.format(databaseDateFormat),
-      value: dayjs().format(databaseDateFormat),
+      value: dayjs(getDate()).format(databaseDateFormat),
     },
 
     'java.util.Calendar': 'java.sql.Timestamp',
@@ -194,7 +221,7 @@ export const parsers = f.store(
       step: 1,
       formatters: [formatter.int],
       validators: [validators.number],
-      value: new Date().getFullYear().toString(),
+      value: getDate().getFullYear().toString(),
     },
 
     month: {
@@ -205,8 +232,8 @@ export const parsers = f.store(
       formatters: [formatter.int],
       validators: [validators.number],
       // Caution: getMonth is 0-based
-      value: (new Date().getMonth() + 1).toString(),
-      pickListName: monthsPickList?.().get('name'),
+      value: (getDate().getMonth() + 1).toString(),
+      pickListName: monthsPickListName,
     },
 
     day: {
@@ -216,7 +243,7 @@ export const parsers = f.store(
       step: 1,
       formatters: [formatter.int],
       validators: [validators.number],
-      value: new Date().getDate().toString(),
+      value: getDate().getDate().toString(),
     },
 
     text: {
@@ -244,7 +271,8 @@ export function parserFromType(fieldType: ExtendedJavaType): Parser {
 
 export function resolveParser(
   field: Partial<LiteralField | Relationship>,
-  extras?: Partial<ExtendedField>
+  extras?: Partial<ExtendedField>,
+  resource?: SpecifyResource<AnySchema>
 ): Parser {
   const fullField = { ...field, ...extras };
   let parser = parserFromType(fullField.type as ExtendedJavaType);
@@ -258,12 +286,19 @@ export function resolveParser(
   )
     parser = parsers()[fullField.datePart] as Parser;
 
-  const formatter = field.getUiFormatter?.();
+  const formatter =
+    field.isRelationship === false
+      ? field.getUiFormatter?.(resource)
+      : undefined;
+
   return mergeParsers(parser, {
     pickListName: field.getPickList?.(),
     // Don't make checkboxes required
     required: fullField.isRequired === true && parser.type !== 'checkbox',
     maxLength: fullField.length,
+    whiteSpaceSensitive: fullField.isRelationship
+      ? undefined
+      : (fullField as LiteralField).whiteSpaceSensitive,
     ...(typeof formatter === 'object'
       ? formatterToParser(field, formatter)
       : {}),
@@ -271,8 +306,8 @@ export function resolveParser(
 }
 
 export function mergeParsers(base: Parser, extra: Parser): Parser {
-  const concat = ['formatters', 'validators'] as const;
-  const takeMin = ['max', 'step', 'maxLength'] as const;
+  const uniqueConcat = ['formatters', 'validators'] as const;
+  const takeMin = ['max', 'maxLength'] as const;
   const takeMax = ['min', 'minLength'] as const;
 
   return Object.fromEntries(
@@ -283,15 +318,52 @@ export function mergeParsers(base: Parser, extra: Parser): Parser {
         'required',
         base?.required === true || extra?.required === true ? true : undefined,
       ],
-      ...concat
-        .map((key) => [key, [...(base[key] ?? []), ...(extra[key] ?? [])]])
+      [
+        'whiteSpaceSensitive',
+        base.whiteSpaceSensitive || extra.whiteSpaceSensitive,
+      ],
+      ['step', resolveStep(base.step, extra.step)],
+      ...uniqueConcat
+        .map((key) => [
+          key,
+          f.unique([...(base[key] ?? []), ...(extra[key] ?? [])]),
+        ])
         .filter(([_key, value]) => value.length > 0),
-      ...takeMin.map((key) => [key, f.min(base[key], extra[key])]),
+      ...takeMin.map((key) => [key, resolveDate(base[key], extra[key], true)]),
       ...takeMax
-        .map((key) => [key, Math.max(...filterArray([base[key], extra[key]]))])
+        .map((key) => [key, resolveDate(base[key], extra[key], false)])
         .filter(([_key, value]) => Number.isFinite(value)),
     ].filter(([_key, value]) => value !== undefined)
   );
+}
+
+function resolveStep(
+  left: Parser['step'],
+  right: Parser['step']
+): Parser['step'] {
+  if (left === right) return left;
+  const values = filterArray([left, right]);
+  if (values.length === 1) return values[0];
+  if (values.includes('any')) return values.find((step) => step !== 'any');
+  return f.min(...(values as RA<number>));
+}
+
+function resolveDate(
+  left: number | string | undefined,
+  right: number | string | undefined,
+  takeMin: boolean
+): number | string | undefined {
+  const values = filterArray([left, right]);
+  if (typeof values[0] === 'string') {
+    if (values.length === 1) return values[0];
+    const leftDate = new Date(values[0]);
+    const rightDate = new Date(values[1]);
+    return leftDate.getTime() < rightDate.getTime() === takeMin
+      ? values[0]
+      : values[1];
+  }
+  const callback = takeMin ? f.min : f.max;
+  return callback(...(values as RA<number | undefined>));
 }
 
 export function formatterToParser(
@@ -299,33 +371,40 @@ export function formatterToParser(
   formatter: UiFormatter
 ): Parser {
   const regExpString = formatter.parseRegExp();
-  const title = formsText(
-    'requiredFormat',
-    formatter.pattern() ?? formatter.valueOrWild()
-  );
+  const title = formsText.requiredFormat({
+    format: formatter.pattern() ?? formatter.valueOrWild(),
+  });
 
-  const autoNumberingConfig = getUserPref(
+  const autoNumberingConfig = userPreferences.get(
     'form',
     'preferences',
     'autoNumbering'
   );
-  const modelName = field.model?.name;
+  const tableName = field.table?.name;
   const autoNumberingFields =
-    typeof modelName === 'string'
-      ? (autoNumberingConfig[modelName] as RA<string>)
+    typeof tableName === 'string'
+      ? (autoNumberingConfig[tableName] as RA<string>)
       : undefined;
   const canAutoNumber =
     formatter.canAutonumber() &&
-    autoNumberingFields?.includes(field.name ?? '') !== false;
+    (autoNumberingFields === undefined ||
+      autoNumberingFields.includes(field.name ?? ''));
 
   return {
-    pattern: regExpString === null ? undefined : new RegExp(regExpString, 'u'),
+    // Regex may be coming from the user, thus disable strict mode
+    // eslint-disable-next-line require-unicode-regexp
+    pattern: regExpString === null ? undefined : new RegExp(regExpString),
     title,
     formatters: [stringGuard(formatter.parse.bind(formatter))],
     validators: [
-      (value) => (value === undefined || value === null ? title : undefined),
+      (value): string | undefined =>
+        value === undefined || value === null ? title : undefined,
     ],
     placeholder: formatter.pattern() ?? undefined,
+    type:
+      field.type === undefined
+        ? undefined
+        : parserFromType(field.type as ExtendedJavaType).type,
     parser: (value: unknown): string =>
       formatter.canonicalize(value as RA<string>),
     value: canAutoNumber ? formatter.valueOrWild() : undefined,
@@ -385,6 +464,7 @@ export function pluralizeParser(rawParser: Parser): Parser {
 
 // FEATURE: allow customizing this
 const separator = ',';
+
 /** Modify a regex pattern to allow a comma separate list of values */
 export function pluralizeRegex(regex: RegExp): RegExp {
   const pattern = browserifyRegex(regex);
@@ -401,3 +481,8 @@ export const lengthToRegex = (
   minLength: number,
   maxLength: number | undefined
 ): RegExp => new RegExp(`^.{${minLength},${maxLength ?? ''}}$`, 'u');
+
+const booleanParser = f.store(() => parserFromType('java.lang.Boolean'));
+
+export const formatBoolean = (value: boolean): string =>
+  booleanParser().printFormatter?.(value, booleanParser()) ?? value.toString();

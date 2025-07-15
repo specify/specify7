@@ -1,11 +1,11 @@
-from django.conf.urls import url
+from django.urls import path
 
 from . import views
 
 urlpatterns = [
-    url(r'^run/$', views.run),
-    url(r'^get_reports/$', views.get_reports),
-    url(r'^get_reports_by_tbl/(?P<tbl_id>\d+)/$', views.get_reports_by_tbl),
-    url(r'^create/$', views.create),
+    path('run/', views.run),
+    path('get_reports/', views.get_reports_view),
+    path('get_reports_by_tbl/<int:table_id>/', views.get_reports_by_table),
+    path('create/', views.create),
 ]
 

@@ -5,17 +5,17 @@ import {
   camelToKebab,
   capitalize,
   caseInsensitiveHash,
+  chunk,
   clamp,
   escapeRegExp,
   findArrayDivergencePoint,
-  getAttribute,
-  getBooleanAttribute,
-  getParsedAttribute,
+  formatTime,
   group,
   index,
   insertItem,
   lowerToHuman,
   mappedFind,
+  moveItem,
   multiSortFunction,
   removeItem,
   removeKey,
@@ -24,6 +24,8 @@ import {
   sortFunction,
   spanNumber,
   split,
+  stripFileExtension,
+  stripLastOccurrence,
   takeBetween,
   toggleItem,
   toLowerCase,
@@ -141,7 +143,6 @@ test('multiSortFunction', () => {
     ].sort(
       multiSortFunction(
         ({ type }) => type,
-        false,
         ({ priority }) => priority,
         true
       )
@@ -156,7 +157,7 @@ test('multiSortFunction', () => {
 
 theories(split, [
   {
-    in: [[1, 2, 3, 4, 5, 6, 7, 8], (value: number) => value % 2 === 0],
+    in: [[1, 2, 3, 4, 5, 6, 7, 8], (value: number): boolean => value % 2 === 0],
     out: [
       [1, 3, 5, 7],
       [2, 4, 6, 8],
@@ -184,16 +185,16 @@ theories(group, [
 ]);
 
 describe('mappedFind', () => {
-  test('Found value', () => {
+  test('Found value', () =>
     expect(
       mappedFind([undefined, 1, 2, 3, 4, 5], (value) =>
         typeof value === 'number' ? value * 2 : undefined
       )
-    ).toBe(2);
-  });
-  test('Not found a value', () => {
-    expect(mappedFind([undefined, undefined, undefined], f.id)).toBe(undefined);
-  });
+    ).toBe(2));
+  test('Not found a value', () =>
+    expect(
+      mappedFind([undefined, undefined, undefined], f.id)
+    ).toBeUndefined());
 });
 
 theories(removeKey, {
@@ -226,6 +227,11 @@ theories(replaceItem, {
   'replace at the end': { in: [[1, 2, 3, 0], 3, 4], out: [1, 2, 3, 4] },
   'replace from the end': { in: [[1, 2, 3, 0], -1, 4], out: [1, 2, 3, 4] },
   'replace after the end': { in: [[1, 2, 3], 99, 4], out: [1, 2, 3, 4] },
+  'if empty array, inserts new item': { in: [[], 4, 'a'], out: ['a'] },
+  'if empty array, inserts new item, even for negative index': {
+    in: [[], -2, 'a'],
+    out: ['a'],
+  },
 });
 
 theories(removeItem, {
@@ -242,23 +248,29 @@ theories(toggleItem, {
   'remove duplicate item': { in: [[1, 2, 3, 1], 1], out: [2, 3] },
 });
 
-theories(replaceKey, {
-  'replacing existing key': {
-    in: [{ a: 'a', b: 'b' }, 'a', 'c'],
-    out: {
-      a: 'c',
-      b: 'b',
+theories(moveItem, {
+  'move up': { in: [[1, 2, 3], 1, 'up'], out: [2, 1, 3] },
+  'move down': { in: [[1, 2, 3], 1, 'down'], out: [1, 3, 2] },
+  'move up outside bounds': { in: [[1, 2, 3], 0, 'up'], out: [1, 2, 3] },
+  'move down outside bounds': { in: [[1, 2, 3], 2, 'down'], out: [1, 2, 3] },
+}),
+  theories(replaceKey, {
+    'replacing existing key': {
+      in: [{ a: 'a', b: 'b' }, 'a', 'c'],
+      out: {
+        a: 'c',
+        b: 'b',
+      },
     },
-  },
-  'replacing non-existed key': {
-    in: [{ a: 'a', b: 'b' }, 'c' as 'a', 'c'],
-    out: {
-      a: 'a',
-      b: 'b',
-      c: 'c',
+    'replacing non-existed key': {
+      in: [{ a: 'a', b: 'b' }, 'c' as 'a', 'c'],
+      out: {
+        a: 'a',
+        b: 'b',
+        c: 'c',
+      },
     },
-  },
-});
+  });
 
 theories(index, [
   {
@@ -282,79 +294,45 @@ theories(escapeRegExp, [
   },
 ]);
 
-describe('getAttribute', () => {
-  test('Get existing attribute', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', '1');
-    expect(getAttribute(input, 'data-someAttribute')).toEqual('1');
-  });
-  test('Get non-existent attribute', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', '1');
-    expect(getAttribute(input, 'data-attr')).toEqual(undefined);
-  });
-});
-
-describe('getParsedAttribute', () => {
-  test('Get existing attribute', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', '1');
-    expect(getParsedAttribute(input, 'data-someAttribute')).toEqual('1');
-  });
-  test('Trim attribute', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', '  1  ');
-    expect(getParsedAttribute(input, 'data-someAttribute')).toEqual('1');
-  });
-  test('Ignore blank attributes', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', '');
-    expect(getParsedAttribute(input, 'data-someAttribute')).toEqual(undefined);
-  });
-  test('Ignore whitespace-only attributes', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', '    ');
-    expect(getParsedAttribute(input, 'data-someAttribute')).toEqual(undefined);
-  });
-  test('Get non-existent attribute', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', '1');
-    expect(getParsedAttribute(input, 'data-attr')).toEqual(undefined);
-  });
-});
-
-describe('getBooleanAttribute', () => {
-  test('Get existing true attribute', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', 'TRUE');
-    expect(getBooleanAttribute(input, 'data-someAttribute')).toEqual(true);
-  });
-  test('Get existing false attribute', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', 'faLse');
-    expect(getBooleanAttribute(input, 'data-someAttribute')).toEqual(false);
-  });
-  test('Get existing false attribute with whitespace', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', '\tfalSe\n');
-    expect(getBooleanAttribute(input, 'data-someAttribute')).toEqual(false);
-  });
-  test('Treat all non-boolean as false', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', '\tAbc\n');
-    expect(getBooleanAttribute(input, 'data-someAttribute')).toEqual(false);
-  });
-  test('Get non-existent attribute', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', '1');
-    expect(getBooleanAttribute(input, 'data-attr')).toEqual(undefined);
-  });
-});
-
 theories(takeBetween, [
   { in: [[], '', ''], out: [] },
   { in: [['a'], '', ''], out: [] },
   { in: [['a', 'b', 'c'], 'a', 'b'], out: ['b'] },
   { in: [['a', 'b', 'c'], 'a', 'c'], out: ['b', 'c'] },
   { in: [['a', 'b', 'c'], 'a', 'd'], out: [] },
+]);
+
+theories(chunk, [
+  { in: [[], 4], out: [] },
+  {
+    in: [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 4],
+    out: [
+      [1, 2, 3, 4],
+      [5, 6, 7, 8],
+      [9, 10],
+    ],
+  },
+]);
+
+theories(stripLastOccurrence, [
+  { in: ['test', ':'], out: 'test' },
+  { in: ['test:second', ':'], out: 'test' },
+  { in: ['test:second:third', ':'], out: 'test:second' },
+  { in: ['someText', ''], out: 'someTex' },
+  { in: [' ', ':'], out: ' ' },
+  { in: [' ', ''], out: '' },
+]);
+
+theories(stripFileExtension, [
+  { in: ['test'], out: 'test' },
+  { in: ['test.second'], out: 'test' },
+  { in: ['test.second.jpg'], out: 'test.second' },
+  { in: [' '], out: ' ' },
+]);
+
+theories(formatTime, [
+  { in: [5], out: '0:05' },
+  { in: [10], out: '0:10' },
+  { in: [70], out: '1:10' },
+  { in: [125], out: '2:05' },
 ]);

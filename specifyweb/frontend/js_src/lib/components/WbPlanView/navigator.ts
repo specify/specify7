@@ -10,20 +10,14 @@ import { queryText } from '../../localization/query';
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { dateParts } from '../Atoms/Internationalization';
-import { getFrontEndOnlyFields, strictGetModel } from '../DataModel/schema';
+import type { AnyTree } from '../DataModel/helperTypes';
 import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getFrontEndOnlyFields, strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
-import {
-  isTreeModel,
-  strictGetTreeDefinitionItems,
-} from '../InitialContext/treeRanks';
-import {
-  hasPermission,
-  hasTablePermission,
-  hasTreeAccess,
-} from '../Permissions/helpers';
-import { getUserPref } from '../UserPreferences/helpers';
+import { getSystemInfo } from '../InitialContext/systemInfo';
+import { getTreeDefinitions, isTreeTable } from '../InitialContext/treeRanks';
+import { hasTablePermission, hasTreeAccess } from '../Permissions/helpers';
 import type { CustomSelectSubtype } from './CustomSelectElement';
 import type {
   HtmlGeneratorFieldData,
@@ -32,32 +26,34 @@ import type {
 import type { MappingPath } from './Mapper';
 import {
   anyTreeRank,
+  emptyMapping,
   formatPartialField,
   formattedEntry,
   formatToManyIndex,
+  formatTreeDefinition,
   formatTreeRank,
   getGenericMappingPath,
+  getNameFromTreeDefinitionName,
   getNameFromTreeRankName,
   parsePartialField,
+  relationshipIsRemoteToOne,
   relationshipIsToMany,
   valueIsPartialField,
   valueIsToManyIndex,
-  valueIsTreeRank,
+  valueIsTreeDefinition,
+  valueIsTreeMeta,
 } from './mappingHelpers';
 import { getMaxToManyIndex, isCircularRelationship } from './modelHelpers';
+import type { NavigatorSpec } from './navigatorSpecs';
 
 type NavigationCallbackPayload = {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly parentRelationship?: Relationship;
 };
 
-type NavigatorCallbackFunction<RETURN_TYPE> = (
-  callbackPayload: Readonly<NavigationCallbackPayload>
-) => RETURN_TYPE;
-
 type NavigationCallbacks = {
   // Should return undefined if next element does not exist
-  readonly getNextDirection: (model: SpecifyModel) =>
+  readonly getNextDirection: (table: SpecifyTable) =>
     | {
         // The name of the next path element
         readonly fieldName: string;
@@ -70,11 +66,22 @@ type NavigationCallbacks = {
       }
     | undefined;
   // Handles toMany children
-  readonly handleToManyChildren: NavigatorCallbackFunction<void>;
+  readonly handleToManyChildren: (
+    callbackPayload: Readonly<NavigationCallbackPayload>
+  ) => void;
+  readonly handleTreeDefinitions: (
+    callbackPayload: Readonly<NavigationCallbackPayload>
+  ) => void;
   // Handles tree ranks children
-  readonly handleTreeRanks: NavigatorCallbackFunction<void>;
+  readonly handleTreeRanks: (
+    callbackPayload: Readonly<NavigationCallbackPayload> & {
+      readonly definitionName: string;
+    }
+  ) => void;
   // Handles field and relationships
-  readonly handleSimpleFields: NavigatorCallbackFunction<void>;
+  readonly handleSimpleFields: (
+    callbackPayload: Readonly<NavigationCallbackPayload>
+  ) => void;
 };
 
 /**
@@ -87,66 +94,105 @@ type NavigationCallbacks = {
  * fields from multiple relationships at once)
  */
 function navigator({
+  spec,
   callbacks,
   recursivePayload,
   baseTableName,
 }: {
+  readonly spec: NavigatorSpec;
   // Callbacks can be modified depending on the need to make navigator versatile
   readonly callbacks: NavigationCallbacks;
   // Used internally to make navigator call itself multiple times
   readonly recursivePayload?: {
-    readonly model: SpecifyModel;
+    readonly table: SpecifyTable;
     readonly parentPartName: string;
     readonly parentRelationship?: Relationship;
   };
   readonly baseTableName: string | undefined;
 }): void {
   const {
-    model = strictGetModel(
+    table = strictGetTable(
       defined(baseTableName, 'navigator() called withouth baseTableName')
     ),
     parentRelationship = undefined,
     parentPartName = '',
   } = recursivePayload ?? {};
 
-  const next = callbacks.getNextDirection(model);
+  const next = callbacks.getNextDirection(table);
   if (next === undefined) return;
 
   const childrenAreToManyElements =
-    relationshipIsToMany(parentRelationship) &&
+    (relationshipIsToMany(parentRelationship) ||
+      relationshipIsRemoteToOne(parentRelationship)) &&
     !valueIsToManyIndex(parentPartName) &&
-    !valueIsTreeRank(parentPartName);
+    !valueIsTreeMeta(parentPartName);
 
   const childrenAreRanks =
-    isTreeModel(model.name) && !valueIsTreeRank(parentPartName);
+    isTreeTable(table.name) && !valueIsTreeMeta(parentPartName);
+
+  const disciplineType = getSystemInfo().discipline_type?.toLowerCase();
+  const geoPaleoDisciplines = [
+    'geology',
+    'invertpaleo',
+    'vertpaleo',
+    'paleobotany',
+  ];
+  const isNonGeoDiscipline = !geoPaleoDisciplines.includes(disciplineType);
+
+  if (
+    isNonGeoDiscipline &&
+    (table.name === 'PaleoContext' ||
+      table.name === 'LithoStrat' ||
+      table.name === 'TectonicUnit')
+  ) {
+    return;
+  }
 
   const callbackPayload = {
-    model,
+    table,
     parentRelationship,
   };
 
   if (childrenAreToManyElements)
     callbacks.handleToManyChildren(callbackPayload);
-  else if (childrenAreRanks) callbacks.handleTreeRanks(callbackPayload);
+  else if (childrenAreRanks) {
+    const definitions = getTreeDefinitions(table.name, 'all');
+
+    if (definitions.length > 1 && spec.useSpecificTreeInterface)
+      callbacks.handleTreeDefinitions(callbackPayload);
+    else
+      callbacks.handleTreeRanks({
+        ...callbackPayload,
+        definitionName: spec.useSpecificTreeInterface
+          ? (definitions[0].definition.name ?? anyTreeRank)
+          : anyTreeRank,
+      });
+  } else if (valueIsTreeDefinition(parentPartName))
+    callbacks.handleTreeRanks({
+      ...callbackPayload,
+      definitionName: getNameFromTreeDefinitionName(parentPartName),
+    });
   else callbacks.handleSimpleFields(callbackPayload);
 
   const isSpecial =
-    valueIsToManyIndex(next.partName) || valueIsTreeRank(next.partName);
+    valueIsToManyIndex(next.partName) || valueIsTreeMeta(next.partName);
+
   const nextField = isSpecial
     ? parentRelationship
-    : model.getField(next.fieldName);
+    : table.getField(next.fieldName);
 
   const nextTable = isSpecial
-    ? model
+    ? table
     : typeof nextField === 'object' && nextField.isRelationship
-    ? nextField.relatedModel
-    : undefined;
+      ? nextField.relatedTable
+      : undefined;
 
   if (typeof nextTable === 'object' && nextField?.isRelationship !== false)
     navigator({
+      spec,
       callbacks,
       recursivePayload: {
-        model: nextTable,
+        table: nextTable,
         parentRelationship: nextField,
         parentPartName: next.partName,
       },
@@ -167,16 +213,16 @@ export function getTableFromMappingPath(
     fieldName,
   ]).join('.');
   if (fieldPath.length === 0) return baseTableName;
-  const field = strictGetModel(baseTableName).strictGetField(fieldPath);
-  return (field.isRelationship ? field.relatedModel : field.model).name;
+  const field = strictGetTable(baseTableName).strictGetField(fieldPath);
+  return (field.isRelationship ? field.relatedTable : field.table).name;
 }
 
 export type MappingLineData = Pick<
   MappingElementProps,
   'customSelectSubtype' | 'fieldsData' | 'selectLabel' | 'tableName'
->;
-
-const queryBuilderTreeFields = new Set(['fullName', 'author']);
+> & {
+  readonly defaultValue: string;
+};
 
 /**
  * Get data required to build a mapping line from a source mapping path
@@ -189,7 +235,7 @@ export function getMappingLineData({
   getMappedFields,
   showHiddenFields = false,
   mustMatchPreferences = {},
-  scope = 'wbPlanView',
+  spec,
 }: {
   readonly baseTableName: keyof Tables;
   // The mapping path
@@ -203,13 +249,21 @@ export function getMappingLineData({
   readonly getMappedFields?: (mappingPath: MappingPath) => RA<string>;
   readonly showHiddenFields?: boolean;
   readonly mustMatchPreferences?: IR<boolean>;
-  // WbPlanView has readOnly fields removed
-  readonly scope?: 'queryBuilder' | 'wbPlanView';
+  readonly spec: NavigatorSpec;
 }): RA<MappingLineData> {
-  const isNoRestrictionsMode =
-    scope === 'queryBuilder'
-      ? getUserPref('queryBuilder', 'general', 'noRestrictionsMode')
-      : getUserPref('workBench', 'wbPlanView', 'noRestrictionsMode');
+  if (
+    process.env.NODE_ENV !== 'production' &&
+    mappingPath.includes(anyTreeRank)
+  )
+    throw new Error(
+      'Mapping path should not contain anyTreeRank. ' +
+        'You likely meant to use formatTreeRank(anyTreeRank) instead'
+    );
+
+  const isNoRestrictionsMode = spec.isNoRestrictions();
+  const canDoAction = spec.hasActionPermission();
+  const ensurePermission = spec.ensurePermission();
+
   const internalState: {
     // eslint-disable-next-line functional/prefer-readonly-type
     position: number;
@@ -224,8 +278,8 @@ export function getMappingLineData({
     position: -1,
     mappingLineData: [],
     mappedFields: [],
-    defaultValue: '0',
-    parsedDefaultValue: ['0', undefined],
+    defaultValue: emptyMapping,
+    parsedDefaultValue: [emptyMapping, undefined],
   };
 
   const isFieldVisible = (
@@ -240,31 +294,21 @@ export function getMappingLineData({
 
   const commitInstanceData = (
     customSelectSubtype: CustomSelectSubtype,
-    model: SpecifyModel,
+    table: SpecifyTable,
     fieldsData: RA<readonly [string, HtmlGeneratorFieldData] | undefined>
   ): void =>
     void internalState.mappingLineData.push({
       customSelectSubtype,
-      selectLabel: model.label,
+      defaultValue: internalState.defaultValue,
+      selectLabel: table.label,
       fieldsData: Object.fromEntries(filterArray(fieldsData)),
-      tableName: model.name,
+      tableName: table.name,
     });
 
   const lastPartIndex =
-    mappingPath.at(-1) === '0'
+    mappingPath.at(-1) === emptyMapping
       ? mappingPath.length - 1
       : mappingPath.length - 2;
-
-  /*
-   * If user doesn't have upload a data set, there is no need to remove
-   * tables without create access from the mapper
-   */
-  const canDoWbUpload = hasPermission('/workbench/dataset', 'upload');
-  /*
-   * Similar for the query builder: if can't run a query, no need to remove
-   * tables without read access
-   */
-  const canExecuteQuery = hasPermission('/querybuilder/query', 'execute');
 
   const callbacks: NavigationCallbacks = {
     getNextDirection() {
@@ -283,28 +327,32 @@ export function getMappingLineData({
       return {
         partName: nextPart,
         fieldName:
-          valueIsTreeRank(nextPart) || valueIsToManyIndex(nextPart)
-            ? mappingPath[internalState.position - 1]
+          valueIsTreeMeta(nextPart) || valueIsToManyIndex(nextPart)
+            ? valueIsToManyIndex(mappingPath[internalState.position - 1])
+              ? mappingPath[internalState.position - 2]
+              : mappingPath[internalState.position - 1]
             : nextPart,
       };
     },
 
-    handleToManyChildren({ model, parentRelationship }) {
+    handleToManyChildren({ table, parentRelationship }) {
       const maxMappedElementNumber = getMaxToManyIndex([
         ...internalState.mappedFields,
         internalState.defaultValue,
       ]);
 
-      const isToOne = parentRelationship?.type === 'zero-to-one';
+      const isToOne =
+        parentRelationship?.type === 'one-to-one' ||
+        parentRelationship?.type === 'zero-to-one';
       const toManyLimit = isToOne ? 1 : Number.POSITIVE_INFINITY;
       const additional =
         maxMappedElementNumber < toManyLimit
-          ? [[formatToManyIndex(maxMappedElementNumber + 1), commonText('add')]]
+          ? [[formatToManyIndex(maxMappedElementNumber + 1), commonText.add()]]
           : [];
 
       commitInstanceData(
         'toMany',
-        model,
+        table,
         generateFieldData === 'none'
           ? []
           : [
@@ -321,7 +369,7 @@ export function getMappingLineData({
                       optionLabel,
                       isRelationship: true,
                       isDefault,
-                      tableName: model.name,
+                      tableName: table.name,
                     },
                   ]
                 : undefined;
@@ -329,251 +377,339 @@ export function getMappingLineData({
       );
     },
 
-    handleTreeRanks({ model }) {
+    handleTreeDefinitions({ table }) {
+      const defaultValue = getNameFromTreeDefinitionName(
+        internalState.defaultValue
+      );
+
+      commitInstanceData(
+        'tree',
+        table,
+        generateFieldData === 'none' ||
+          !hasTreeAccess(table.name as AnyTree['tableName'], 'read')
+          ? []
+          : [
+              spec.includeAnyTreeDefinition &&
+              (generateFieldData === 'all' ||
+                internalState.defaultValue ===
+                  formatTreeDefinition(anyTreeRank))
+                ? [
+                    formatTreeDefinition(anyTreeRank),
+                    {
+                      optionLabel: queryText.anyTree(),
+                      isRelationship: true,
+                      isDefault:
+                        internalState.defaultValue ===
+                        formatTreeDefinition(anyTreeRank),
+                      isEnabled: true,
+                      tableName: table.name,
+                    },
+                  ]
+                : undefined,
+              ...(spec.includeSpecificTreeRanks
+                ? getTreeDefinitions(
+                    table.name as AnyTree['tableName'],
+                    'all'
+                  ).map(({ definition: { name } }) =>
+                    name === defaultValue || generateFieldData === 'all'
+                      ? ([
+                          formatTreeDefinition(name),
+                          {
+                            optionLabel: name,
+                            isRelationship: true,
+                            isDefault: name === defaultValue,
+                            tableName: table.name,
+                          },
+                        ] as const)
+                      : undefined
+                  )
+                : []),
+            ]
+      );
+    },
+
+    handleTreeRanks({ table, definitionName }) {
       const defaultValue = getNameFromTreeRankName(internalState.defaultValue);
 
       commitInstanceData(
         'tree',
-        model,
+        table,
         generateFieldData === 'none' ||
-          !hasTreeAccess(model.name as 'Geography', 'read')
+          !hasTreeAccess(table.name as AnyTree['tableName'], 'read')
           ? []
           : [
-              scope === 'queryBuilder' &&
+              spec.includeAnyTreeRank &&
               (generateFieldData === 'all' ||
                 internalState.defaultValue === formatTreeRank(anyTreeRank))
                 ? [
                     formatTreeRank(anyTreeRank),
                     {
-                      optionLabel: queryText('anyRank'),
+                      optionLabel: queryText.anyRank(),
                       isRelationship: true,
                       isDefault:
                         internalState.defaultValue ===
                         formatTreeRank(anyTreeRank),
                       isEnabled: true,
-                      tableName: model.name,
+                      tableName: table.name,
                     },
                   ]
                 : undefined,
-              ...strictGetTreeDefinitionItems(
-                model.name as 'Geography',
-                false
-              ).map(({ name, title }) =>
-                name === defaultValue || generateFieldData === 'all'
-                  ? ([
-                      formatTreeRank(name),
-                      {
-                        optionLabel: title ?? name,
-                        isRelationship: true,
-                        isDefault: name === defaultValue,
-                        tableName: model.name,
-                      },
-                    ] as const)
-                  : undefined
-              ),
+              ...(spec.includeSpecificTreeRanks
+                ? getTreeDefinitions(table.name as AnyTree['tableName'], 'all')
+                    .filter(
+                      ({ definition: { name } }) =>
+                        definitionName === name ||
+                        definitionName === anyTreeRank
+                    )
+                    .flatMap(({ ranks }) =>
+                      // Exclude the root rank for each tree
+                      ranks.slice(1).map(({ name, title }) =>
+                        name === defaultValue || generateFieldData === 'all'
+                          ? ([
+                              formatTreeRank(name),
+                              {
+                                optionLabel: title ?? name,
+                                isRelationship: true,
+                                isDefault: name === defaultValue,
+                                tableName: table.name,
+                              },
+                            ] as const)
+                          : undefined
+                      )
+                    )
+                : []),
             ]
       );
     },
 
-    // REFACTOR: make this more readable
-    handleSimpleFields: ({ model, parentRelationship }) =>
-      commitInstanceData(
-        'simple',
-        model,
-        generateFieldData === 'none'
-          ? []
-          : [
-              scope === 'queryBuilder' &&
-              ((generateFieldData === 'all' &&
-                (!isTreeModel(model.name) ||
+    handleSimpleFields({ table, parentRelationship }) {
+      if (generateFieldData === 'none') {
+        commitInstanceData('simple', table, []);
+        return;
+      }
+
+      const formatted =
+        spec.includeFormattedAggregated &&
+        (spec.includeRootFormattedAggregated ||
+          internalState.mappingLineData.length > 0) &&
+        ((generateFieldData === 'all' &&
+          (!isTreeTable(table.name) ||
+            mappingPath[internalState.position - 1] ===
+              formatTreeRank(anyTreeRank))) ||
+          internalState.defaultValue === formattedEntry)
+          ? ([
+              formattedEntry,
+              {
+                optionLabel: relationshipIsToMany(parentRelationship)
+                  ? queryText.aggregatedInline()
+                  : queryText.formattedInline(),
+                tableName: table.name,
+                isRelationship: false,
+                isDefault: internalState.defaultValue === formattedEntry,
+                isEnabled: !internalState.mappedFields.includes(formattedEntry),
+              },
+            ] as const)
+          : undefined;
+
+      if (!spec.allowTransientToMany) {
+        const isInToMany = internalState.mappingLineData.some(
+          ({ customSelectSubtype }) => customSelectSubtype === 'toMany'
+        );
+        if (isInToMany) {
+          commitInstanceData('simple', table, [formatted]);
+          return;
+        }
+      }
+
+      /*
+       * Add ID field to the list if it is selected or hidden fields
+       * are visible
+       */
+      const showId =
+        internalState.defaultValue === table.idField.name ||
+        (generateFieldData === 'all' &&
+          isFieldVisible(
+            showHiddenFields,
+            table.idField.isHidden,
+            table.idField.name
+          ));
+      const idField = showId
+        ? ([
+            table.idField.name,
+            {
+              optionLabel: commonText.id(),
+              tableName: table.name,
+              isRelationship: false,
+              isDefault: internalState.defaultValue === table.idField.name,
+              isEnabled: !internalState.mappedFields.includes(
+                table.idField.name
+              ),
+              isHidden: true,
+            },
+          ] as const)
+        : undefined;
+
+      const fieldsData = [
+        formatted,
+        idField,
+        ...table.fields
+          .filter((field) => {
+            let isIncluded = true;
+
+            const disciplineType =
+              getSystemInfo().discipline_type?.toLowerCase();
+            const geoPaleoDisciplines = ['geology', 'invertpaleo', 'vertpaleo'];
+            if (
+              field.name === 'age' &&
+              !geoPaleoDisciplines.includes(disciplineType)
+            ) {
+              return false;
+            }
+
+            isIncluded &&=
+              generateFieldData === 'all' ||
+              field.name === internalState.parsedDefaultValue[0];
+
+            isIncluded &&= isFieldVisible(
+              showHiddenFields,
+              spec.useSchemaOverrides
+                ? field.overrides.isHidden
+                : field.isHidden,
+              field.name
+            );
+
+            isIncluded &&=
+              isNoRestrictionsMode ||
+              spec.includeReadOnly ||
+              !field.overrides.isReadOnly;
+
+            // Hide frontend only field
+            isIncluded &&= !(
+              getFrontEndOnlyFields()[table.name]?.includes(field.name) ===
+                true && field.name !== 'age'
+            );
+
+            if (field.isRelationship) {
+              isIncluded &&=
+                parentRelationship === undefined ||
+                (!isCircularRelationship(parentRelationship, field) &&
+                  (spec.allowNestedToMany ||
+                    !(
+                      (relationshipIsToMany(field) ||
+                        relationshipIsRemoteToOne(field)) &&
+                      (relationshipIsToMany(parentRelationship) ||
+                        relationshipIsRemoteToOne(parentRelationship))
+                    )));
+
+              isIncluded &&=
+                !canDoAction ||
+                ensurePermission === undefined ||
+                (isTreeTable(table.name)
+                  ? hasTreeAccess(table.name, ensurePermission)
+                  : hasTablePermission(
+                      field.relatedTable.name,
+                      ensurePermission
+                    ));
+
+              isIncluded &&=
+                (spec.includeRelationshipsFromTree &&
                   mappingPath[internalState.position - 1] ===
-                    formatTreeRank(anyTreeRank) ||
-                  queryBuilderTreeFields.has(formattedEntry))) ||
-                internalState.defaultValue === formattedEntry)
-                ? [
-                    formattedEntry,
-                    {
-                      optionLabel: relationshipIsToMany(parentRelationship)
-                        ? queryText('aggregated')
-                        : queryText('formatted'),
-                      tableName: model.name,
-                      isRelationship: false,
-                      isDefault: internalState.defaultValue === formattedEntry,
-                      isEnabled:
-                        !internalState.mappedFields.includes(formattedEntry),
-                    },
-                  ]
+                    formatTreeRank(anyTreeRank)) ||
+                !isTreeTable(table.name);
+
+              isIncluded &&=
+                spec.includeToManyToTree ||
+                /*
+                 * Hide -to-many relationships to a tree table as they are
+                 * not supported by the WorkBench
+                 */
+                !(
+                  relationshipIsToMany(field) ||
+                  relationshipIsRemoteToOne(field)
+                ) ||
+                !isTreeTable(field.relatedTable.name);
+            }
+
+            return isIncluded;
+          })
+          .flatMap((field) => {
+            const fieldData = {
+              optionLabel: field.label,
+              // Enable field
+              isEnabled:
+                // If it is not mapped
+                !internalState.mappedFields.includes(field.name) ||
+                // Or is a relationship
+                field.isRelationship,
+              isRequired:
+                spec.enforceRequiredFields &&
+                field.overrides.isRequired &&
+                !mustMatchPreferences[table.name] &&
+                // Relationships to system tables are not required by the uploader
+                (!field.isRelationship ||
+                  !field.relatedTable.overrides.isSystem),
+              isHidden: spec.useSchemaOverrides
+                ? field.overrides.isHidden
+                : field.isHidden,
+              isDefault: field.name === internalState.defaultValue,
+              isRelationship: field.isRelationship,
+              tableName: field.isRelationship
+                ? field.relatedTable.name
                 : undefined,
-              /*
-               * Add ID field to the list if it is selected or hidden fields
-               * are visible
-               */
-              internalState.defaultValue === model.idField.name ||
-              (generateFieldData === 'all' &&
-                isFieldVisible(
-                  showHiddenFields,
-                  model.idField.isHidden,
-                  model.idField.name
-                ))
-                ? [
-                    model.idField.name,
-                    {
-                      optionLabel: commonText('id'),
-                      tableName: model.name,
-                      isRelationship: false,
-                      isDefault:
-                        internalState.defaultValue === model.idField.name,
-                      isEnabled: !internalState.mappedFields.includes(
-                        model.idField.name
-                      ),
-                      isHidden: true,
-                    },
-                  ]
-                : undefined,
-              ...model.fields
-                .filter(
-                  (field) =>
-                    (generateFieldData === 'all' ||
-                      field.name === internalState.parsedDefaultValue[0]) &&
-                    (!field.isRelationship ||
-                      parentRelationship === undefined ||
-                      (!isCircularRelationship(parentRelationship, field) &&
-                        /*
-                         * Hide nested -to-many relationships as they are not
-                         * supported by the WorkBench
-                         */
-                        (scope === 'queryBuilder' ||
-                          !(
-                            relationshipIsToMany(field) &&
-                            relationshipIsToMany(parentRelationship)
-                          )))) &&
-                    isFieldVisible(
-                      showHiddenFields,
-                      scope === 'queryBuilder'
-                        ? field.isHidden
-                        : field.overrides.isHidden,
-                      field.name
-                    ) &&
-                    (!field.isRelationship ||
-                      (scope === 'queryBuilder'
-                        ? !canExecuteQuery ||
-                          (isTreeModel(model.name)
-                            ? hasTreeAccess(model.name, 'read')
-                            : hasTablePermission(
-                                field.relatedModel.name,
-                                'read'
-                              )) ||
-                          getUserPref(
-                            'queryBuilder',
-                            'general',
-                            'showNoReadTables'
-                          )
-                        : !canDoWbUpload ||
-                          (isTreeModel(model.name)
-                            ? hasTreeAccess(model.name, 'create')
-                            : hasTablePermission(
-                                field.relatedModel.name,
-                                'create'
-                              )) ||
-                          getUserPref(
-                            'workBench',
-                            'wbPlanView',
-                            'showNoAccessTables'
-                          ))) &&
-                    /*
-                     * Hide relationship from tree tables in WbPlanView as they
-                     * are not supported by the WorkBench
-                     */
-                    (scope === 'queryBuilder' ||
-                      !field.isRelationship ||
-                      !isTreeModel(model.name)) &&
-                    /*
-                     * Hide -to-many relationships to a tree table as they are
-                     * not supported by the WorkBench
-                     */
-                    (scope === 'queryBuilder' ||
-                      !field.isRelationship ||
-                      !relationshipIsToMany(field) ||
-                      !isTreeModel(field.relatedModel.name)) &&
-                    (isNoRestrictionsMode ||
-                      // Display read only fields in query builder only
-                      scope === 'queryBuilder' ||
-                      !field.overrides.isReadOnly) &&
-                    // Hide most fields for non "any" tree ranks in query builder
-                    (scope !== 'queryBuilder' ||
-                      !isTreeModel(model.name) ||
-                      mappingPath[internalState.position - 1] ===
-                        formatTreeRank(anyTreeRank) ||
-                      queryBuilderTreeFields.has(field.name)) &&
-                    getFrontEndOnlyFields()[model.name]?.includes(
-                      field.name
-                    ) !== true
-                )
-                .flatMap((field) => {
-                  const fieldData = {
-                    optionLabel: field.label,
-                    // Enable field
-                    isEnabled:
-                      // If it is not mapped
-                      !internalState.mappedFields.includes(field.name) ||
-                      // Or is a relationship
-                      field.isRelationship,
-                    // All fields are optional in the query builder
-                    isRequired:
-                      scope !== 'queryBuilder' &&
-                      field.overrides.isRequired &&
-                      !mustMatchPreferences[model.name] &&
-                      // Relationships to system tables are not required by the uploader
-                      (!field.isRelationship ||
-                        !field.relatedModel.overrides.isSystem),
-                    isHidden:
-                      scope === 'queryBuilder'
-                        ? field.isHidden
-                        : field.overrides.isHidden,
-                    isDefault: field.name === internalState.defaultValue,
-                    isRelationship: field.isRelationship,
-                    tableName: field.isRelationship
-                      ? field.relatedModel.name
-                      : undefined,
-                  };
-                  return scope === 'queryBuilder' && field.isTemporal()
-                    ? Object.entries(dateParts)
-                        .map(
-                          ([datePart, label]) =>
-                            [
-                              formatPartialField(field.name, datePart),
-                              {
-                                ...fieldData,
-                                optionLabel: `${fieldData.optionLabel}${
-                                  datePart === 'fullDate' ? '' : ` (${label})`
-                                }`,
-                                isDefault:
-                                  field.name ===
-                                    internalState.parsedDefaultValue[0] &&
-                                  datePart ===
-                                    internalState.parsedDefaultValue[1],
-                                isEnabled:
-                                  fieldData.isEnabled &&
-                                  !internalState.mappedFields.includes(
-                                    formatPartialField(field.name, datePart)
-                                  ),
-                              },
-                            ] as const
-                        )
-                        .filter(
-                          ([_fieldName, fieldData]) =>
-                            generateFieldData === 'all' || fieldData.isDefault
-                        )
-                    : ([[field.name, fieldData]] as const);
-                }),
-            ]
-      ),
+            };
+            return spec.includePartialDates && field.isTemporal()
+              ? Object.entries({
+                  fullDate: commonText.fullDate(),
+                  ...dateParts,
+                })
+                  .map(
+                    ([datePart, label]) =>
+                      [
+                        formatPartialField(field.name, datePart),
+                        {
+                          ...fieldData,
+                          optionLabel: `${fieldData.optionLabel}${
+                            datePart === 'fullDate' ? '' : ` (${label})`
+                          }`,
+                          isDefault:
+                            field.name ===
+                              internalState.parsedDefaultValue[0] &&
+                            datePart === internalState.parsedDefaultValue[1],
+                          isEnabled:
+                            fieldData.isEnabled &&
+                            !internalState.mappedFields.includes(
+                              formatPartialField(field.name, datePart)
+                            ),
+                        },
+                      ] as const
+                  )
+                  .filter(
+                    ([_fieldName, fieldData]) =>
+                      generateFieldData === 'all' || fieldData.isDefault
+                  )
+              : ([[field.name, fieldData]] as const);
+          }),
+      ] as const;
+      commitInstanceData('simple', table, fieldsData);
+    },
   };
 
   navigator({
+    spec,
     callbacks,
     baseTableName,
   });
 
-  return internalState.mappingLineData;
+  const filtered = spec.includeToManyReferenceNumbers
+    ? internalState.mappingLineData
+    : internalState.mappingLineData.filter(
+        ({ customSelectSubtype }) => customSelectSubtype !== 'toMany'
+      );
+  return spec.includeAnyTreeRank ||
+    spec.includeAnyTreeDefinition ||
+    spec.includeSpecificTreeRanks
+    ? filtered
+    : filtered.filter(
+        ({ customSelectSubtype }) => customSelectSubtype !== 'tree'
+      );
 }

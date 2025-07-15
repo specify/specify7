@@ -1,65 +1,112 @@
-from typing import List, Dict, Tuple, Any, NamedTuple, Optional, Union
+from typing import List, Dict, Any, NamedTuple, Optional, Union
+
 from typing_extensions import Literal
 
-from .parsing import ParseFailure
+from .parsing import WorkBenchParseFailure
 
 Failure = Literal["Failure"]
+
 
 class TreeInfo(NamedTuple):
     rank: str
     name: str
 
+
 class ReportInfo(NamedTuple):
     "Records the table and wb cols an upload result refers to."
     tableName: str
-    columns: List[str]
+    columns: list[str]
     treeInfo: Optional[TreeInfo]
 
-    def to_json(self) -> Dict:
-        return {**self._asdict(), **{'treeInfo': self.treeInfo._asdict() if self.treeInfo else None}}
+    def to_json(self) -> dict:
+        return {
+            **self._asdict(),
+            **{"treeInfo": self.treeInfo._asdict() if self.treeInfo else None},
+        }
 
 
-def json_to_ReportInfo(json: Dict) -> ReportInfo:
+def json_to_ReportInfo(json: dict) -> ReportInfo:
     return ReportInfo(
-        tableName=json['tableName'],
-        columns=json['columns'],
-        treeInfo=TreeInfo(**json['treeInfo']) if 'treeInfo' in json and json['treeInfo'] else None
+        tableName=json["tableName"],
+        columns=json["columns"],
+        treeInfo=(
+            TreeInfo(**json["treeInfo"])
+            if "treeInfo" in json and json["treeInfo"]
+            else None
+        ),
     )
 
-class PicklistAddition(NamedTuple):
-    name: str # Name of the picklist receiving the new item
-    value: str # The value of the new item
-    caption: str # The dataset column caption generating the addition
-    id: int # The new picklistitem id
 
-    def to_json(self) -> Dict:
+class PicklistAddition(NamedTuple):
+    name: str  # Name of the picklist receiving the new item
+    value: str  # The value of the new item
+    caption: str  # The dataset column caption generating the addition
+    id: int  # The new picklistitem id
+
+    def to_json(self) -> dict:
         return self._asdict()
 
-def json_to_PicklistAddition(json: Dict) -> PicklistAddition:
+
+def json_to_PicklistAddition(json: dict) -> PicklistAddition:
     return PicklistAddition(**json)
+
 
 class Uploaded(NamedTuple):
     id: int
     info: ReportInfo
-    picklistAdditions: List[PicklistAddition]
+    picklistAdditions: list[PicklistAddition]
 
     def get_id(self) -> int:
         return self.id
 
-    def to_json(self) -> Dict:
-        return { 'Uploaded': dict(
-            id=self.id,
-            info=self.info.to_json(),
-            picklistAdditions=[a.to_json() for a in self.picklistAdditions]
-        )}
+    def to_json(self) -> dict:
+        return {
+            "Uploaded": dict(
+                id=self.id,
+                info=self.info.to_json(),
+                picklistAdditions=[a.to_json() for a in self.picklistAdditions],
+            )
+        }
 
-def json_to_Uploaded(json: Dict) -> Uploaded:
-    uploaded = json['Uploaded']
-    return Uploaded(
-        id=uploaded['id'],
-        info=json_to_ReportInfo(uploaded['info']),
-        picklistAdditions=[json_to_PicklistAddition(i) for i in uploaded['picklistAdditions']]
-    )
+    @staticmethod
+    def from_json(json: dict) -> "Uploaded":
+        uploaded = json["Uploaded"]
+        return Uploaded(
+            id=uploaded["id"],
+            info=json_to_ReportInfo(uploaded["info"]),
+            picklistAdditions=[
+                json_to_PicklistAddition(i) for i in uploaded["picklistAdditions"]
+            ],
+        )
+
+
+class Updated(NamedTuple):
+    id: int
+    info: ReportInfo
+    picklistAdditions: list[PicklistAddition]
+
+    def get_id(self) -> int:
+        return self.id
+
+    def to_json(self) -> dict:
+        return {
+            "Updated": dict(
+                id=self.id,
+                info=self.info.to_json(),
+                picklistAdditions=[a.to_json() for a in self.picklistAdditions],
+            )
+        }
+
+    @staticmethod
+    def from_json(json: dict) -> "Updated":
+        uploaded = json["Updated"]
+        return Updated(
+            id=uploaded["id"],
+            info=json_to_ReportInfo(uploaded["info"]),
+            picklistAdditions=[
+                json_to_PicklistAddition(i) for i in uploaded["picklistAdditions"]
+            ],
+        )
 
 
 class Matched(NamedTuple):
@@ -69,22 +116,30 @@ class Matched(NamedTuple):
     def get_id(self) -> int:
         return self.id
 
-    def to_json(self) -> Dict:
-        return { 'Matched':  dict(
-            id=self.id,
-            info=self.info.to_json()
-        )}
+    def to_json(self) -> dict:
+        return {"Matched": dict(id=self.id, info=self.info.to_json())}
 
-def json_to_Matched(json: Dict) -> Matched:
-    matched = json['Matched']
-    return Matched(
-        id=matched['id'],
-        info=json_to_ReportInfo(matched['info'])
-    )
+    @staticmethod
+    def from_json(json: dict) -> "Matched":
+        matched = json["Matched"]
+        return Matched(id=matched["id"], info=json_to_ReportInfo(matched["info"]))
+
+
+class MatchedAndChanged(Matched):
+    def to_json(self) -> dict:
+        return {"MatchedAndChanged": super().to_json()["Matched"]}
+
+    @staticmethod
+    def from_json(json: dict) -> Matched:
+        matchedAndChanged = json["MatchedAndChanged"]
+        return MatchedAndChanged(
+            id=matchedAndChanged["id"],
+            info=json_to_ReportInfo(matchedAndChanged["info"]),
+        )
 
 
 class MatchedMultiple(NamedTuple):
-    ids: List[int]
+    ids: list[int]
     key: str
     info: ReportInfo
 
@@ -92,19 +147,21 @@ class MatchedMultiple(NamedTuple):
         return "Failure"
 
     def to_json(self):
-        return { 'MatchedMultiple': dict(
-            ids=self.ids,
-            key=self.key,
-            info=self.info.to_json()
-        )}
+        return {
+            "MatchedMultiple": dict(
+                ids=self.ids, key=self.key, info=self.info.to_json()
+            )
+        }
 
-def json_to_MatchedMultiple(json: Dict) -> MatchedMultiple:
-    matchedMultiple = json['MatchedMultiple']
-    return MatchedMultiple(
-        ids=matchedMultiple['ids'],
-        key=matchedMultiple.get('key', ''),
-        info=json_to_ReportInfo(matchedMultiple['info'])
-    )
+    @staticmethod
+    def from_json(json: dict) -> "MatchedMultiple":
+        matchedMultiple = json["MatchedMultiple"]
+        return MatchedMultiple(
+            ids=matchedMultiple["ids"],
+            key=matchedMultiple.get("key", ""),
+            info=json_to_ReportInfo(matchedMultiple["info"]),
+        )
+
 
 class NullRecord(NamedTuple):
     info: ReportInfo
@@ -113,28 +170,71 @@ class NullRecord(NamedTuple):
         return None
 
     def to_json(self):
-        return { 'NullRecord': dict(info=self.info.to_json()) }
+        return {"NullRecord": dict(info=self.info.to_json())}
 
-def json_to_NullRecord(json: Dict) -> NullRecord:
-    nullRecord = json['NullRecord']
-    return NullRecord(info=json_to_ReportInfo(nullRecord['info']))
+    @staticmethod
+    def from_json(json: dict) -> "NullRecord":
+        nullRecord = json["NullRecord"]
+        return NullRecord(info=json_to_ReportInfo(nullRecord["info"]))
+
+
+class NoChange(NamedTuple):
+    id: int
+    info: ReportInfo
+
+    def get_id(self) -> int:
+        return self.id
+
+    def to_json(self):
+        return {"NoChange": dict(id=self.id, info=self.info.to_json())}
+
+    @staticmethod
+    def from_json(json: dict) -> "NoChange":
+        noChange = json["NoChange"]
+        return NoChange(id=noChange["id"], info=json_to_ReportInfo(noChange["info"]))
+
+
+class Deleted(NamedTuple):
+    id: int
+    info: ReportInfo
+
+    def get_id(self) -> None:
+        return None
+
+    def to_json(self):
+        assert self.id is not None
+        return {"Deleted": dict(id=self.id, info=self.info.to_json())}
+
+    @staticmethod
+    def from_json(json: dict) -> "Deleted":
+        deleted = json["Deleted"]
+        return Deleted(id=deleted["id"], info=json_to_ReportInfo(deleted["info"]))
+
 
 class FailedBusinessRule(NamedTuple):
     message: str
+    payload: dict[str, Union[str, int, list[str], list[int]]]
     info: ReportInfo
 
     def get_id(self) -> Failure:
         return "Failure"
 
     def to_json(self):
-        return { self.__class__.__name__: dict(message=self.message, info=self.info.to_json()) }
+        return {
+            "FailedBusinessRule": dict(
+                message=self.message, payload=self.payload, info=self.info.to_json()
+            )
+        }
 
-def json_to_FailedBusinessRule(json: Dict) -> FailedBusinessRule:
-    r = json['FailedBusinessRule']
-    return FailedBusinessRule(
-        message=r['message'],
-        info=json_to_ReportInfo(r['info'])
-    )
+    @staticmethod
+    def from_json(json: dict) -> "FailedBusinessRule":
+        r = json["FailedBusinessRule"]
+        return FailedBusinessRule(
+            message=r["message"],
+            payload=r["payload"],
+            info=json_to_ReportInfo(r["info"]),
+        )
+
 
 class NoMatch(NamedTuple):
     info: ReportInfo
@@ -143,83 +243,144 @@ class NoMatch(NamedTuple):
         return "Failure"
 
     def to_json(self):
-        return { self.__class__.__name__: dict(info=self.info.to_json()) }
+        return {"NoMatch": dict(info=self.info.to_json())}
 
-def json_to_NoMatch(json: Dict) -> NoMatch:
-    r = json['NoMatch']
-    return NoMatch(info=json_to_ReportInfo(r['info']))
+    @staticmethod
+    def from_json(json: dict) -> "NoMatch":
+        r = json["NoMatch"]
+        return NoMatch(info=json_to_ReportInfo(r["info"]))
+
 
 class ParseFailures(NamedTuple):
-    failures: List[ParseFailure]
+    failures: list[WorkBenchParseFailure]
 
     def get_id(self) -> Failure:
         return "Failure"
 
     def to_json(self):
-        return { self.__class__.__name__: dict(failures=[f.to_json() for f in self.failures]) }
+        return {
+            self.__class__.__name__: dict(failures=[f.to_json() for f in self.failures])
+        }
 
-def json_to_ParseFailures(json: Dict) -> ParseFailures:
-    r = json['ParseFailures']
-    return ParseFailures(failures=[ParseFailure(*i) for i in r['failures']])
+    @staticmethod
+    def from_json(json: dict) -> "ParseFailures":
+        r = json["ParseFailures"]
+        return ParseFailures(
+            failures=[WorkBenchParseFailure(*i) for i in r["failures"]]
+        )
+
 
 class PropagatedFailure(NamedTuple):
     def get_id(self) -> Failure:
         return "Failure"
 
     def to_json(self):
-        return { 'PropagatedFailure': {} }
+        return {"PropagatedFailure": {}}
 
-def json_to_PropagatedFailure(json: Dict) -> PropagatedFailure:
-    return PropagatedFailure()
+    @staticmethod
+    def from_json(json: dict) -> "PropagatedFailure":
+        return PropagatedFailure()
 
-RecordResult = Union[Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, ParseFailures, PropagatedFailure]
+
+RecordResult = Union[
+    Uploaded,
+    NoMatch,
+    Matched,
+    MatchedMultiple,
+    NullRecord,
+    FailedBusinessRule,
+    ParseFailures,
+    PropagatedFailure,
+    NoChange,
+    Updated,
+    Deleted,
+    MatchedAndChanged,
+]
 
 
 class UploadResult(NamedTuple):
     record_result: RecordResult
-    toOne: Dict[str, Any]
-    toMany: Dict[str, List[Any]]
+    toOne: dict[str, Any]
+    toMany: dict[str, list[Any]]
 
     def get_id(self) -> Union[int, None, Failure]:
         return self.record_result.get_id()
 
     def contains_failure(self) -> bool:
-        return ( self.record_result.get_id() == "Failure"
-                 or any(result.contains_failure() for result in self.toOne.values())
-                 or any(result.contains_failure() for results in self.toMany.values() for result in results)
+        return (
+            self.record_result.get_id() == "Failure"
+            or any(result.contains_failure() for result in self.toOne.values())
+            or any(
+                result.contains_failure()
+                for results in self.toMany.values()
+                for result in results
+            )
         )
 
-    def to_json(self) -> Dict:
-        return { 'UploadResult': {
-            'record_result': self.record_result.to_json(),
-            'toOne': {k: v.to_json() for k,v in self.toOne.items()},
-            'toMany': {k: [v.to_json() for v in vs] for k,vs in self.toMany.items()},
-        }}
+    def contains_success(
+        self, success=[Uploaded, Matched, MatchedAndChanged, Updated, Deleted]
+    ) -> bool:
+        return (
+            any(isinstance(self.record_result, _success) for _success in success)
+            or any(result.contains_success() for result in self.toOne.values())
+            or any(
+                result.contains_success()
+                for results in self.toMany.values()
+                for result in results
+            )
+        )
 
-def json_to_UploadResult(json: Dict) -> UploadResult:
-    return UploadResult(
-        record_result=json_to_record_result(json['UploadResult']['record_result']),
-        toOne={k: json_to_UploadResult(v) for k,v in json['UploadResult']['toOne'].items()},
-        toMany={k: [json_to_UploadResult(v) for v in vs] for k,vs in json['UploadResult']['toMany'].items()}
-    )
+    def to_json(self) -> dict:
+        return {
+            "UploadResult": {
+                "record_result": self.record_result.to_json(),
+                "toOne": {k: v.to_json() for k, v in self.toOne.items()},
+                "toMany": {
+                    k: [v.to_json() for v in vs] for k, vs in self.toMany.items()
+                },
+            }
+        }
 
-def json_to_record_result(json: Dict) -> RecordResult:
+    @staticmethod
+    def from_json(json: dict) -> "UploadResult":
+        return UploadResult(
+            record_result=json_to_record_result(json["UploadResult"]["record_result"]),
+            toOne={
+                k: UploadResult.from_json(v)
+                for k, v in json["UploadResult"]["toOne"].items()
+            },
+            toMany={
+                k: [UploadResult.from_json(v) for v in vs]
+                for k, vs in json["UploadResult"]["toMany"].items()
+            },
+        )
+
+
+def json_to_record_result(json: dict) -> RecordResult:
     for record_type in json:
         if record_type == "Uploaded":
-            return json_to_Uploaded(json)
+            return Uploaded.from_json(json)
         elif record_type == "NoMatch":
-            return json_to_NoMatch(json)
+            return NoMatch.from_json(json)
         elif record_type == "Matched":
-            return json_to_Matched(json)
+            return Matched.from_json(json)
         elif record_type == "MatchedMultiple":
-            return json_to_MatchedMultiple(json)
+            return MatchedMultiple.from_json(json)
         elif record_type == "NullRecord":
-            return json_to_NullRecord(json)
+            return NullRecord.from_json(json)
         elif record_type == "FailedBusinessRule":
-            return json_to_FailedBusinessRule(json)
+            return FailedBusinessRule.from_json(json)
         elif record_type == "ParseFailures":
-            return json_to_ParseFailures(json)
+            return ParseFailures.from_json(json)
         elif record_type == "PropagatedFailure":
-            return json_to_PropagatedFailure(json)
+            return PropagatedFailure.from_json(json)
+        elif record_type == "NoChange":
+            return NoChange.from_json(json)
+        elif record_type == "Updated":
+            return Updated.from_json(json)
+        elif record_type == "Deleted":
+            return Deleted.from_json(json)
+        elif record_type == "MatchedAndChanged":
+            return MatchedAndChanged.from_json(json)
         assert False, f"record_result is unknown type: {record_type}"
     assert False, f"record_result contains no data: {json}"

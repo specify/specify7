@@ -66,12 +66,12 @@ msgid ""
 "Specify version: %(specify_version)s, Schema Version: %(schema_version)s do "
 "not match database values: %(app_specify_version)s, %(app_schema_version)s\n"
 "Please update and/or run the host thickclient installation at "
-"%(thich_client_location)s to update the database."
+"%(thick_client_location)s to update the database."
 msgstr ""
 "Specify version: %(specify_version)s, Schema Version: %(schema_version)s do "
 "not match database values: %(app_specify_version)s, %(app_schema_version)s\n"
 "Please update and/or run the host thickclient installation at "
-"%(thich_client_location)s to update the database."
+"%(thick_client_location)s to update the database."
 
 #: specify/load_datamodel.py:45
 #, python-format
@@ -100,38 +100,6 @@ msgstr "<Formatter not defined.>"
 #: stored_queries/format.py:150
 msgid "<Aggregator not defined.>"
 msgstr "<Aggregator not defined.>"
-
-#: workbench/upload/parsing.py:153
-#, python-format
-msgid "value %(value)s not resolvable to True or False"
-msgstr "value %(value)s not resolvable to True or False"
-
-#: workbench/upload/parsing.py:164
-msgid "value $(value)s is not a valid decimal value"
-msgstr "value $(value)s is not a valid decimal value"
-
-#: workbench/upload/parsing.py:194
-#, fuzzy, python-format
-msgid ""
-"\"%(value)s\" is not a legal value in this picklist field.\n"
-"Click on the arrow to choose among available options."
-msgstr ""
-"\"%(value)\" is not a legal value in this picklist field.\n"
-"Click on the arrow to choose among available options."
-
-#: workbench/upload/parsing.py:225
-#, python-format
-msgid "bad agent type: %(bad_type)s. Expected one of %(valid_types)s"
-msgstr "bad agent type: %(bad_type)s. Expected one of %(valid_types)s"
-
-#: workbench/upload/treerecord.py:278
-msgid "There are multiple 'Uploaded' placeholder values in the tree!"
-msgstr "There are multiple 'Uploaded' placeholder values in the tree!"
-
-#: workbench/upload/treerecord.py:299
-#, fuzzy, python-format
-msgid "Missing or unmapped required tree parent rank value for %(value)s."
-msgstr "Missing or unmapped required tree parent rank value for %(value)s"
 
 #: workbench/upload/upload.py:133
 #, python-format

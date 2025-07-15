@@ -8,23 +8,28 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import type { Tables } from '../DataModel/types';
-import { camelToKebab, upperToKebab } from '../../utils/utils';
+import { useId } from '../../hooks/useId';
+import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
-import { wbText } from '../../localization/workbench';
-import { getModel } from '../DataModel/schema';
-import { scrollIntoView } from '../TreeView/helpers';
+import { formsText } from '../../localization/forms';
+import { wbPlanText } from '../../localization/wbPlan';
 import type { IR, RA, RR } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, localized } from '../../utils/types';
+import { camelToKebab, upperToKebab } from '../../utils/utils';
 import { iconClassName, icons } from '../Atoms/Icons';
+import { getTable } from '../DataModel/tables';
+import type { Tables } from '../DataModel/types';
 import {
   TableIcon,
   tableIconEmpty,
   tableIconSelected,
   tableIconUndefined,
 } from '../Molecules/TableIcon';
-import { formsText } from '../../localization/forms';
+import { titlePosition } from '../Molecules/Tooltips';
+import { scrollIntoView } from '../TreeView/helpers';
+import { emptyMapping } from './mappingHelpers';
 
 type Properties =
   /*
@@ -61,11 +66,11 @@ type Properties =
   // Has down arrow (closed picklist preview) or left arrow (relationship)
   | 'arrow';
 export type CustomSelectType =
-  | 'BASE_TABLE_SELECTION_LIST'
   | 'CLOSED_LIST'
   | 'OPENED_LIST'
   | 'OPTIONS_LIST'
   | 'PREVIEW_LIST'
+  | 'SIMPLE_LIST'
   | 'SUGGESTION_LIST';
 /* eslint-disable @typescript-eslint/naming-convention */
 export const customSelectTypes: RR<CustomSelectType, RA<Properties>> = {
@@ -90,20 +95,26 @@ export const customSelectTypes: RR<CustomSelectType, RA<Properties>> = {
     'arrow',
   ],
   /*
+   * Like CLOSED_LIST but meant for usage outside the WorkBench mapper
+   * Needed to fix https://github.com/specify/specify7/issues/2729
+   */
+  SIMPLE_LIST: [
+    'interactive',
+    'preview',
+    'unmapOption',
+    'autoScroll',
+    'scroll',
+    'shadow',
+    'icon',
+    'arrow',
+  ],
+  /*
    * Like CLOSED_LIST, but not interactive
    * Used for displaying validation results and inside of a SUGGESTION_LIST
    */
   PREVIEW_LIST: ['preview', 'icon'],
   // Used to display a list of AutoMapper suggestions
   SUGGESTION_LIST: ['interactive', 'tabIndex', 'handleKeyboardClick', 'shadow'],
-  // Used for base table selection in mapping view, schema config, et. al.
-  BASE_TABLE_SELECTION_LIST: [
-    'interactive',
-    'autoScroll',
-    'tabIndex',
-    'handleKeyboardClick',
-    'icon',
-  ],
   /*
    * Used for configuring mapping options for a mapping line or filter options
    * for a query line
@@ -113,10 +124,10 @@ export const customSelectTypes: RR<CustomSelectType, RA<Properties>> = {
 
 const customSelectClassNames: Partial<RR<CustomSelectType, string>> = {
   OPENED_LIST: '!h-full',
-  BASE_TABLE_SELECTION_LIST: 'flex-1',
   OPTIONS_LIST: 'grid',
   CLOSED_LIST: 'grid',
-  SUGGESTION_LIST: '[z-index:10] h-auto !fixed',
+  SIMPLE_LIST: 'grid',
+  SUGGESTION_LIST: 'z-[10] h-auto !fixed',
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -144,7 +155,7 @@ type CustomSelectElementIconProps = {
   readonly optionLabel?: JSX.Element | string;
   // The value of the title HTML attribute
 
-  readonly title?: string;
+  readonly title?: LocalizedString;
   /*
    * True if option can be selected. False if option cannot be selected because
    * it was already selected
@@ -171,7 +182,7 @@ type CustomSelectElementOptionGroupProps = {
   // Group's name (used for styling)
   readonly selectGroupName?: string;
   // Group's label (shown to the user)
-  readonly selectGroupLabel?: string;
+  readonly selectGroupLabel?: LocalizedString;
   readonly selectOptionsData: IR<CustomSelectElementOptionProps>;
   readonly onClick?: (payload: {
     readonly newValue: string;
@@ -183,9 +194,17 @@ type CustomSelectElementOptionGroupProps = {
   readonly hasArrow?: boolean;
 };
 
+type ChangeEvent = {
+  readonly newValue: string;
+  readonly isRelationship: boolean;
+  readonly currentTableName: keyof Tables | undefined;
+  readonly newTableName: keyof Tables | undefined;
+  readonly isDoubleClick: boolean;
+};
+
 type CustomSelectElementPropsBase = {
   // The label to use for the element
-  readonly selectLabel?: string;
+  readonly selectLabel?: LocalizedString;
   readonly customSelectType: CustomSelectType;
   readonly customSelectSubtype?: CustomSelectSubtype;
   readonly isOpen: boolean;
@@ -193,16 +212,11 @@ type CustomSelectElementPropsBase = {
   readonly role?: string;
   readonly previewOption?: CustomSelectElementDefaultOptionProps;
 
+  readonly validation?: string;
+
   readonly onOpen?: () => void;
 
-  readonly onChange?: (payload: {
-    readonly close: boolean;
-    readonly newValue: string;
-    readonly isRelationship: boolean;
-    readonly currentTableName: keyof Tables | undefined;
-    readonly newTableName: keyof Tables | undefined;
-    readonly isDoubleClick: boolean;
-  }) => void;
+  readonly onChange?: (event: ChangeEvent) => void;
   readonly onClose?: () => void;
   readonly customSelectOptionGroups?: IR<CustomSelectElementOptionGroupProps>;
   readonly autoMapperSuggestions?: JSX.Element;
@@ -216,7 +230,6 @@ export type CustomSelectElementPropsClosed = CustomSelectElementPropsBase & {
 export type CustomSelectElementPropsOpenBase = CustomSelectElementPropsBase & {
   readonly isOpen: true;
   readonly onChange?: (payload: {
-    readonly close: boolean;
     readonly newValue: string;
     readonly isRelationship: boolean;
     readonly currentTableName: keyof Tables | undefined;
@@ -236,9 +249,9 @@ export function Icon({
   isPreview = false,
   isEnabled = true,
   tableName = undefined,
-  optionLabel = '0',
+  optionLabel = emptyMapping,
 }: CustomSelectElementIconProps): JSX.Element {
-  if (optionLabel === '0') return tableIconUndefined;
+  if (optionLabel === emptyMapping) return tableIconUndefined;
   else if (!isRelationship && (isPreview || !isEnabled))
     return tableIconSelected;
   else if (!isRelationship || tableName === undefined) return tableIconEmpty;
@@ -260,7 +273,7 @@ function Option({
 
   if ((!isEnabled || isDefault) && !isRelationship)
     classes.push(
-      '!cursor-not-allowed text-gray-500',
+      '!cursor-not-allowed dark:text-white',
       'bg-[color:var(--custom-select-b1)]'
     );
   else
@@ -271,31 +284,31 @@ function Option({
 
   if (isDefault)
     classes.push(
-      'custom-select-option-selected cursor-auto',
-      'bg-[color:var(--custom-select-accent)]'
+      'custom-select-option-selected cursor-auto dark:text-white',
+      '!bg-[color:var(--custom-select-accent)]'
     );
 
-  const tableLabel = getModel(tableName ?? '')?.label;
+  const tableLabel = getTable(tableName ?? '')?.label;
 
   const fullTitle = filterArray([
     title ?? (typeof optionLabel === 'string' ? optionLabel : tableLabel),
-    isRelationship ? `(${formsText('relationship')})` : '',
-    isDefault ? `(${commonText('selected')})` : '',
+    isRelationship ? `(${formsText.relationship()})` : '',
+    isDefault ? `(${commonText.selected()})` : '',
   ]).join(' ');
 
   return (
     // Keyboard events are handled by the parent
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events
-    <span
+    <li
       aria-atomic="true"
       aria-current={isDefault ? 'location' : undefined}
       aria-disabled={!isEnabled || isDefault}
       aria-label={fullTitle}
       aria-selected={isDefault}
       className={classes.join(' ')}
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
       role="option"
       tabIndex={-1}
-      title={fullTitle === optionLabel ? tableLabel : fullTitle}
       onClick={
         typeof handleClick === 'function'
           ? (event): void => handleClick({ isDoubleClick: event.detail > 1 })
@@ -312,26 +325,29 @@ function Option({
         />
       )}
       <span className="flex-1">
-        {optionLabel === '0' ? wbText('unmap') : optionLabel}
+        {optionLabel === emptyMapping ? wbPlanText.unmap() : optionLabel}
       </span>
       {hasArrow &&
         (isRelationship ? (
           <span
-            aria-label={wbText('relationship', tableLabel ?? '')}
+            aria-label={wbPlanText.relationshipWithTable({
+              tableName: tableLabel ?? '',
+            })}
             className="print:hidden"
             role="img"
             title={
               typeof tableLabel === 'string'
-                ? wbText('relationship', tableLabel)
+                ? wbPlanText.relationshipWithTable({ tableName: tableLabel })
                 : undefined
             }
+            {...{ [titlePosition]: 'right' }}
           >
             {icons.chevronRight}
           </span>
         ) : (
           <span className={`print:hidden ${iconClassName}`} />
         ))}
-    </span>
+    </li>
   );
 }
 
@@ -425,8 +441,8 @@ function ShadowListOfOptions({
 }
 
 const defaultDefaultOption = {
-  optionName: '0',
-  optionLabel: '0',
+  optionName: emptyMapping,
+  optionLabel: emptyMapping,
   tableName: undefined,
   isRelationship: false,
   isRequired: false,
@@ -435,25 +451,37 @@ const defaultDefaultOption = {
 
 export const customSelectElementBackground = 'bg-white dark:bg-neutral-600';
 
+/**
+ * An alternative to <select>. Used since we need to embed table icons in
+ * items. Needed until <selectmenu> is supported by all browsers.
+ */
 export function CustomSelectElement({
   customSelectType,
   customSelectSubtype = 'simple',
   customSelectOptionGroups: initialSelectOptionGroups,
-  selectLabel = '',
+  selectLabel = localized(''),
   isOpen,
   tableName,
-  onChange: handleChange,
+  onChange: handleChangeRaw,
   onOpen: handleOpen,
   onClose: handleClose,
   previewOption,
   autoMapperSuggestions,
-  role,
+  validation,
 }: CustomSelectElementPropsClosed | CustomSelectElementPropsOpen): JSX.Element {
   const has = React.useCallback(
     (property: Properties): boolean =>
       customSelectTypes[customSelectType].includes(property),
     [customSelectType]
   );
+  const handleChange =
+    has('interactive') && typeof handleChangeRaw === 'function'
+      ? (props: Omit<ChangeEvent, 'currentTableName'>): void =>
+          handleChangeRaw({
+            currentTableName: defaultOption.tableName,
+            ...props,
+          })
+      : undefined;
 
   // Used to store internal state if handleKeyboardClick is set
   const [selectedValue, setSelectedValue] = React.useState<string | undefined>(
@@ -502,34 +530,12 @@ export function CustomSelectElement({
     isOpen &&
     customSelectSubtype === 'simple' &&
     has('unmapOption') &&
-    defaultOption.optionName !== '0';
+    defaultOption.optionName !== emptyMapping;
 
-  if (showUnmapOption && typeof defaultDefaultOption === 'string')
-    inlineOptions = [defaultDefaultOption, ...inlineOptions];
+  if (showUnmapOption) inlineOptions = [defaultDefaultOption, ...inlineOptions];
 
-  const handleClick = has('interactive')
-    ? ({
-        isDoubleClick,
-        close,
-        newValue,
-        ...rest
-      }: {
-        readonly close: boolean;
-        readonly newValue: string;
-        readonly isRelationship: boolean;
-        readonly newTableName: keyof Tables | undefined;
-        readonly isDoubleClick: boolean;
-      }): void =>
-        isDoubleClick || close || newValue !== defaultOption.optionName
-          ? handleChange?.({
-              currentTableName: defaultOption.tableName,
-              newValue,
-              isDoubleClick,
-              close,
-              ...rest,
-            })
-          : undefined
-    : undefined;
+  const id = useId('listbox');
+  const { validationRef } = useValidation(validation);
 
   let header: JSX.Element | undefined;
   let preview: JSX.Element | undefined;
@@ -539,8 +545,7 @@ export function CustomSelectElement({
     header = (
       <header
         className={`
-          flex items-center gap-y-2 gap-x-1 rounded rounded-b-none
-          border border-brand-300 bg-brand-100 p-2 dark:bg-brand-500
+          border-brand-300 bg-brand-100 dark:bg-brand-500 flex items-center gap-x-1 gap-y-2 rounded rounded-b-none border p-2
         `}
       >
         {has('icon') && (
@@ -555,32 +560,38 @@ export function CustomSelectElement({
       </header>
     );
   else if (has('preview')) {
+    const handleClick = has('interactive')
+      ? isOpen
+        ? handleClose
+        : handleOpen
+      : undefined;
     preview = (
       // Not tabbable because keyboard events are handled separately
-      // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/interactive-supports-focus
-      <header
+      <button
+        aria-controls={id('options')}
+        aria-describedby={id('validation')}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         className={`
-          flex min-h-[theme(spacing.8)] cursor-pointer
-          items-center gap-1 rounded border border-gray-500 px-1 dark:border-none
+          flex min-h-[theme(spacing.8)] min-w-max cursor-pointer
+          items-center gap-1 rounded border border-gray-500 px-1 text-left
+          md:min-w-[unset] dark:border-none
           ${
             defaultOption?.isRequired === true
               ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
               : defaultOption?.isHidden === true
-              ? `custom-select-input-hidden bg-[color:var(--custom-select-b2)]
-                 dark:!border-solid`
-              : customSelectType === 'OPTIONS_LIST' &&
-                defaultOption?.isRelationship === true
-              ? 'bg-yellow-250 dark:bg-yellow-900'
-              : customSelectElementBackground
+                ? `custom-select-input-hidden bg-[color:var(--custom-select-b2)]
+                dark:!border-solid`
+                : customSelectType === 'OPTIONS_LIST' &&
+                    defaultOption?.isRelationship === true
+                  ? 'bg-yellow-250 dark:bg-yellow-900'
+                  : customSelectElementBackground
           }
-          ${isOpen ? 'rounded-b-none [z-index:3]' : ''}
+          ${isOpen ? 'z-[3] rounded-b-none' : ''}
+          ${handleClick === undefined ? '' : 'border border-gray-500'}
         `}
-        role="button"
-        onClick={
-          has('interactive') ? (isOpen ? handleClose : handleOpen) : undefined
-        }
+        type="button"
+        onClick={handleClick}
       >
         {has('icon') && (
           <Icon
@@ -593,43 +604,47 @@ export function CustomSelectElement({
         )}
         <span
           className={`
-            flex-1 ${
-              defaultOption.optionLabel === '0'
+            flex-1
+            ${
+              defaultOption.optionLabel === emptyMapping &&
+              customSelectType !== 'SIMPLE_LIST'
                 ? 'font-extrabold text-red-600'
                 : ''
             }
           `}
         >
-          {defaultOption.optionLabel === '0'
-            ? wbText('notMapped')
+          {defaultOption.optionLabel === emptyMapping
+            ? wbPlanText.notSelected()
             : defaultOption.optionLabel}
         </span>
         {has('arrow') && (
           <span className="print:hidden">{icons.chevronDown}</span>
         )}
-      </header>
+      </button>
     );
 
     unmapOption = showUnmapOption ? (
       <Option
         hasArrow
         hasIcon
-        isDefault={defaultOption.optionLabel === '0'}
-        optionLabel="0"
-        onClick={(): void =>
-          handleClick?.({
-            close: true,
-            newValue: '0',
+        isDefault={defaultOption.optionLabel === emptyMapping}
+        optionLabel={emptyMapping}
+        onClick={(): void => {
+          handleChange?.({
+            newValue: emptyMapping,
             isRelationship: false,
             newTableName: undefined,
             isDoubleClick: false,
-          })
-        }
+          });
+          handleClose?.();
+        }}
       />
     ) : undefined;
 
     const fieldNames = inlineOptions
-      .map(({ optionLabel }) => optionLabel)
+      .map(({ optionLabel }) =>
+        optionLabel === emptyMapping ? wbPlanText.notSelected() : optionLabel
+      )
       .filter((option): option is string => typeof option === 'string');
     optionsShadow =
       !isOpen && has('scroll') && fieldNames.length > 0 ? (
@@ -657,40 +672,43 @@ export function CustomSelectElement({
             key={index}
             selectGroupName={selectGroupName}
             onClick={
-              typeof handleClick === 'function'
-                ? (payload): void => handleClick({ close: true, ...payload })
+              typeof handleChange === 'function'
+                ? (payload): void => {
+                    handleChange(payload);
+                    handleClose?.();
+                  }
                 : undefined
             }
             {...selectGroupData}
             hasArrow={has('arrow')}
             hasIcon={has('icon')}
-            selectGroupLabel={
-              customSelectSubtype === 'simple' ? selectGroupLabel : undefined
-            }
+            selectGroupLabel={selectGroupLabel}
           />
         )
       );
 
-  const listOfOptionsRef = React.useRef<HTMLElement>(null);
+  const listOfOptionsRef = React.useRef<HTMLDivElement>(null);
   const customSelectOptions = (Boolean(unmapOption) || groups) && (
-    <span
+    <div
       aria-label={selectLabel}
+      aria-orientation="vertical"
       aria-readonly={!has('interactive') || typeof handleChange !== 'function'}
       className={`
-        h-fit flex-1 cursor-pointer overflow-x-hidden
-        rounded border border-brand-300 bg-[color:var(--custom-select-b1)]
-        ${has('preview') ? '[z-index:2]' : ''}
+        border-brand-300 h-fit flex-1 cursor-pointer
+        overflow-x-hidden rounded-b border bg-[color:var(--custom-select-b1)]
+        ${has('preview') ? 'z-[2]' : ''}
         ${has('scroll') ? 'overflow-y-scroll' : 'overflow-y-auto'}
         ${has('shadow') ? 'max-h-[theme(spacing.64)] shadow-md' : ''}
         ${customSelectType === 'SUGGESTION_LIST' ? '' : 'min-w-max'}
       `}
+      id={id('options')}
       ref={listOfOptionsRef}
       role="listbox"
       tabIndex={-1}
     >
       {unmapOption}
       {groups}
-    </span>
+    </div>
   );
 
   const previousDefaultOption = React.useRef<
@@ -728,14 +746,14 @@ export function CustomSelectElement({
     <article
       aria-live={has('interactive') ? 'polite' : 'off'}
       className={`
-        custom-select relative flex h-8
-        flex-col custom-select-${upperToKebab(customSelectType)}
+        custom-select relative flex h-8 flex-col
+        custom-select-${upperToKebab(customSelectType)}
         ${customSelectClassNames[customSelectType] ?? ''}
       `}
       ref={customSelectElementRef}
-      role={role}
       tabIndex={has('tabIndex') ? 0 : has('interactive') ? -1 : undefined}
       title={selectLabel}
+      {...{ [titlePosition]: 'top' }}
       onBlur={
         has('interactive')
           ? (event): void => {
@@ -792,18 +810,20 @@ export function CustomSelectElement({
 
               if (typeof newIndex === 'number') {
                 event.preventDefault();
-                const newValue = inlineOptions[newIndex]?.optionName ?? '0';
+                const newValue =
+                  inlineOptions[newIndex]?.optionName ?? emptyMapping;
                 if (!close && has('handleKeyboardClick'))
                   setSelectedValue(newValue);
-                else
-                  handleClick?.({
-                    close,
+                else {
+                  handleChange?.({
                     newValue,
                     isRelationship:
                       inlineOptions[newIndex]?.isRelationship ?? false,
                     newTableName: inlineOptions[newIndex]?.tableName,
                     isDoubleClick: false,
                   });
+                  if (close) handleClose?.();
+                }
               }
             }
           : undefined
@@ -814,6 +834,37 @@ export function CustomSelectElement({
       {preview}
       {optionsShadow}
       {customSelectOptions}
+      {
+        /*
+         * A very hacky way to display validation messages for custom list-boxes
+         * Not sure if there is a simpler way that is at least this good until
+         * <selectmenu> is wildly supported.
+         */
+        (validation ?? '').length > 0 && (
+          <div
+            // Place the browser's tooltip at bottom center
+            className="sr-only bottom-0 top-[unset] flex w-full justify-center"
+          >
+            <input
+              // Associate validation message with the listbox
+              id={id('validation')}
+              defaultValue={validation}
+              // Announce validation message to screen readers
+              aria-live="polite"
+              // Act as an error message, not an input
+              role="alert"
+              /*
+               * Set a validation message for input (using useValidation).
+               * It will be displayed by browsers on form submission
+               */
+              ref={validationRef}
+              type="text"
+              // Don't show the input
+              className="sr-only"
+            />
+          </div>
+        )
+      }
     </article>
   );
 }
@@ -834,7 +885,7 @@ export function SuggestionBox({
     <CustomSelectElement
       customSelectOptionGroups={{
         suggestedMappings: {
-          selectGroupLabel: wbText('suggestedMappings'),
+          selectGroupLabel: wbPlanText.suggestedMappings(),
           selectOptionsData,
           hasIcon: false,
           hasArrow: false,

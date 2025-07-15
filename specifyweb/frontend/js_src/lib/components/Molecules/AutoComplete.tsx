@@ -1,3 +1,4 @@
+import type { Placement } from '@floating-ui/react';
 import { Combobox } from '@headlessui/react';
 import React from 'react';
 import _ from 'underscore';
@@ -15,8 +16,9 @@ import { icons } from '../Atoms/Icons';
 import { compareStrings } from '../Atoms/Internationalization';
 import type { TagProps } from '../Atoms/wrapper';
 import { softFail } from '../Errors/Crash';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 import { Portal } from './Portal';
+import type { titlePosition } from './Tooltips';
 
 const debounceRate = 300;
 
@@ -37,8 +39,8 @@ const getScrollParent = (node: Element | undefined): Element =>
   node === undefined
     ? document.body
     : node.scrollHeight > node.clientHeight
-    ? node
-    : getScrollParent(node.parentElement ?? undefined);
+      ? node
+      : getScrollParent(node.parentElement ?? undefined);
 
 const optionClassName = (isActive: boolean, isSelected: boolean) => `
   p-0.5 active:bg-brand-100 dark:active:bg-brand-500
@@ -102,7 +104,9 @@ export function AutoComplete<T>({
     | 'onKeyDown'
     | 'readOnly'
     | 'value'
-  >;
+  > & {
+    readonly [titlePosition]?: Placement;
+  };
   readonly value: string;
   /*
    * For low-level access to the value in the input box before user finished
@@ -115,42 +119,46 @@ export function AutoComplete<T>({
   >(undefined);
   const resultsRef = React.useRef<RA<AutoCompleteItem<T>> | undefined>(results);
 
-  const [searchAlgorithm] = usePref('form', 'autoComplete', 'searchAlgorithm');
+  const [searchAlgorithm] = userPreferences.use(
+    'form',
+    'autoComplete',
+    'searchAlgorithm'
+  );
 
   const filterItems = React.useCallback(
     (newResults: RA<AutoCompleteItem<T>>, pendingValue: string) =>
       pendingValue.length === 0
         ? newResults
         : shouldFilterItems
-        ? newResults.filter(({ label, searchValue }) => {
-            let searchString =
-              typeof label === 'string' ? label : searchValue ?? '';
-            let searchQuery = pendingValue;
+          ? newResults.filter(({ label, searchValue }) => {
+              let searchString =
+                typeof label === 'string' ? label : (searchValue ?? '');
+              let searchQuery = pendingValue;
 
-            if (
-              searchAlgorithm === 'contains' ||
-              searchAlgorithm === 'startsWith'
-            ) {
-              searchString = searchString.toLowerCase();
-              searchQuery = pendingValue.toLowerCase();
-            }
+              if (
+                searchAlgorithm === 'contains' ||
+                searchAlgorithm === 'startsWith'
+              ) {
+                searchString = searchString.toLowerCase();
+                searchQuery = pendingValue.toLowerCase();
+              }
 
-            if (
-              searchAlgorithm === 'contains' ||
-              searchAlgorithm === 'containsCaseSensitive'
-            ) {
-              if (searchString.includes(searchQuery)) return true;
-            } else if (searchString.startsWith(searchQuery)) return true;
+              if (
+                searchAlgorithm === 'contains' ||
+                searchAlgorithm === 'containsCaseSensitive'
+              ) {
+                if (searchString.includes(searchQuery)) return true;
+              } else if (searchString.startsWith(searchQuery)) return true;
 
-            return (
-              typeof searchValue === 'string' &&
-              compareStrings(
-                searchValue.slice(0, pendingValue.length),
-                pendingValue
-              ) === 0
-            );
-          })
-        : newResults,
+              return (
+                typeof searchValue === 'string' &&
+                compareStrings(
+                  searchValue.slice(0, pendingValue.length),
+                  pendingValue
+                ) === 0
+              );
+            })
+          : newResults,
     [shouldFilterItems, searchAlgorithm]
   );
 
@@ -192,8 +200,7 @@ export function AutoComplete<T>({
         .then((items) => updateItems(items, value))
         .catch(softFail)
         .finally(handleLoaded);
-    },
-    delay),
+    }, delay),
     []
   );
 
@@ -229,7 +236,7 @@ export function AutoComplete<T>({
    * thus the filtered list of items has only one item.
    */
   const ignoreFilter = currentValue === pendingValue;
-  const itemSource = ignoreFilter ? results ?? [] : filteredItems;
+  const itemSource = ignoreFilter ? (results ?? []) : filteredItems;
 
   const pendingItem = results?.find(
     ({ label, searchValue }) => (searchValue ?? label) === pendingValue
@@ -244,14 +251,14 @@ export function AutoComplete<T>({
   function handleChanged(item: AutoCompleteItem<T>): void {
     handleChange(item);
     const value =
-      typeof item.label === 'string' ? item.label : item.searchValue ?? '';
+      typeof item.label === 'string' ? item.label : (item.searchValue ?? '');
     setPendingValue(value);
     if (typeof pendingValueRef === 'object') pendingValueRef.current = value;
   }
 
   const isInDialog = typeof React.useContext(DialogContext) === 'function';
 
-  const [autoGrowAutoComplete] = usePref(
+  const [autoGrowAutoComplete] = userPreferences.use(
     'form',
     'autoComplete',
     'autoGrowAutoComplete'
@@ -327,7 +334,11 @@ export function AutoComplete<T>({
     return listen(globalThis, 'scroll', handleScroll, true);
   }, [dataList, input, isInDialog, autoGrowAutoComplete]);
 
-  const [highlightMatch] = usePref('form', 'autoComplete', 'highlightMatch');
+  const [highlightMatch] = userPreferences.use(
+    'form',
+    'autoComplete',
+    'highlightMatch'
+  );
 
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   const forwardChildRef: React.RefCallback<HTMLInputElement> =
@@ -345,7 +356,7 @@ export function AutoComplete<T>({
   const [currentItem, setCurrentItem] = React.useState<
     AutoCompleteItem<T> | string | undefined
   >(undefined);
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const newCurrentItem = resultsRef.current?.find(
       ({ label, searchValue }) => (searchValue ?? label) === currentValue
     );
@@ -362,12 +373,13 @@ export function AutoComplete<T>({
   }, [currentValue]);
 
   return (
-    <Combobox
+    <Combobox<'div', AutoCompleteItem<T> | string | null | undefined>
       as="div"
       className="relative w-full"
       disabled={disabled}
       nullable
       value={currentItem}
+      // Triggers on enter or selects new item
       onChange={(
         value: AutoCompleteItem<T> | string | null | undefined
       ): void => {
@@ -376,7 +388,7 @@ export function AutoComplete<T>({
         else handleChanged(value);
       }}
     >
-      <Combobox.Input
+      <Combobox.Input<'input'>
         autoComplete="off"
         onChange={({ target }): void => {
           const value = (target as HTMLInputElement).value;
@@ -386,9 +398,15 @@ export function AutoComplete<T>({
             pendingValueRef.current = value;
         }}
         {...inputProps}
-        onBlur={(event: React.FocusEvent<HTMLInputElement>): void =>
-          withHandleBlur(inputProps?.onBlur).onBlur(event)
+        displayValue={(item: AutoCompleteItem<T> | null): string =>
+          typeof item === 'string'
+            ? item
+            : typeof item?.label === 'string'
+              ? item.label
+              : (item?.searchValue ?? '')
         }
+        ref={forwardChildRef}
+        onBlur={withHandleBlur(inputProps?.onBlur).onBlur}
         /*
          * Padding for the button. Using "em" so as to match @tailwind/forms
          * styles for <select>
@@ -396,16 +414,8 @@ export function AutoComplete<T>({
         className={`
           ${className.notTouchedInput}
           ${inputProps.className ?? ''}
-          w-full pr-[1.5em]
+          w-full min-w-[theme(spacing.20)] pr-[1.5em] sm:min-w-[unset]
         `}
-        displayValue={(item: AutoCompleteItem<T> | null): string =>
-          typeof item === 'string'
-            ? item
-            : typeof item?.label === 'string'
-            ? item.label
-            : item?.searchValue ?? ''
-        }
-        ref={forwardChildRef}
       />
       {listHasItems && !disabled ? toggleButton : undefined}
       {/*
@@ -413,7 +423,7 @@ export function AutoComplete<T>({
        * of parents with overflow:hidden
        */}
       <Portal>
-        <Combobox.Options
+        <Combobox.Options<'ul'>
           className={`
             fixed z-[10000] max-h-[50vh] w-[inherit] cursor-pointer
             overflow-y-auto rounded rounded bg-white shadow-lg
@@ -422,12 +432,12 @@ export function AutoComplete<T>({
           ref={dataListRefCallback}
         >
           {isLoading && (
-            <Combobox.Option
+            <Combobox.Option<'li'>
               className={`${optionClassName(false, false)} cursor-auto`}
               disabled
               value=""
             >
-              {commonText('loading')}
+              {commonText.loading()}
             </Combobox.Option>
           )}
           {itemSource.map((item, index) => {
@@ -511,15 +521,15 @@ export function AutoComplete<T>({
                 <li className={optionClassName(active, selected)}>
                   <div className="flex items-center">
                     <span className={className.dataEntryAdd}>{icons.plus}</span>
-                    {commonText('add')}
+                    {commonText.add()}
                   </div>
                 </li>
               )}
             </Combobox.Option>
           )}
           {!listHasItems && (
-            <div className={`${optionClassName} cursor-auto`}>
-              {formsText('nothingFound')}
+            <div className={`${optionClassName(false, false)} cursor-auto`}>
+              {formsText.nothingFound()}
             </div>
           )}
         </Combobox.Options>
@@ -529,7 +539,10 @@ export function AutoComplete<T>({
 }
 
 const toggleButton = (
-  <Combobox.Button className="absolute inset-y-0 right-0">
+  <Combobox.Button
+    aria-label={commonText.expand()}
+    className="absolute inset-y-0 right-0"
+  >
     {/* Copied from the @tailwind/forms styles for <select> */}
     <svg
       className="h-[1.5em] w-[1.5em]"

@@ -1,35 +1,39 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useSearchParameter } from '../../hooks/navigation';
+import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
-import { wbText } from '../../localization/workbench';
+import { wbPlanText } from '../../localization/wbPlan';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getModelById, schema, strictGetModel } from '../DataModel/schema';
+import { getTableById, strictGetTable, tables } from '../DataModel/tables';
 import type {
   RecordSet,
   SpQuery,
   SpQueryField,
   Tables,
 } from '../DataModel/types';
+import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
 import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
+import { formatUrl } from '../Router/queryString';
+import { ButtonWithConfirmation } from '../WbPlanView/Components';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { QueryField } from './helpers';
 import { QuerySaveDialog } from './Save';
-import { ButtonWithConfirmation } from '../WbPlanView/Components';
-import { recordSetView } from '../FormParse/webOnlyViews';
 
 export function SaveQueryButtons({
-  isReadOnly,
   fields,
   saveRequired,
   isValid,
@@ -39,10 +43,9 @@ export function SaveQueryButtons({
   onSaved: handleSaved,
   onTriedToSave: handleTriedToSave,
 }: {
-  readonly isReadOnly: boolean;
   readonly fields: RA<QueryField>;
   readonly saveRequired: boolean;
-  readonly isValid: () => void;
+  readonly isValid: () => boolean;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly unsetUnloadProtect: () => void;
   readonly getQueryFieldRecords:
@@ -51,6 +54,8 @@ export function SaveQueryButtons({
   readonly onSaved: () => void;
   readonly onTriedToSave: () => boolean;
 }): JSX.Element {
+  const [recordSetId] = useSearchParameter('recordsetid');
+
   const [showDialog, setShowDialog] = React.useState<'save' | 'saveAs' | false>(
     false
   );
@@ -61,12 +66,15 @@ export function SaveQueryButtons({
     if (
       typeof getQueryFieldRecords === 'function' &&
       (newState === 'save' || newState === 'saveAs')
-    )
+    ) {
       queryResource.set('fields', getQueryFieldRecords());
+    }
     setShowDialog(newState);
   }
 
   const navigate = useNavigate();
+  const isReadOnly = React.useContext(ReadOnlyContext);
+
   return (
     <>
       {typeof showDialog === 'string' && (
@@ -78,7 +86,15 @@ export function SaveQueryButtons({
             handleSaved();
             setShowDialog(false);
             unsetUnloadProtect();
-            navigate(`/specify/query/${queryId}/`, { replace: true });
+            navigate(
+              formatUrl(
+                `/specify/query/${queryId}/`,
+                recordSetId === undefined ? {} : { recordSetId }
+              ),
+              {
+                replace: true,
+              }
+            );
           }}
         />
       )}
@@ -92,7 +108,7 @@ export function SaveQueryButtons({
             handleTriedToSave() && isValid() ? handleSave('save') : undefined
           }
         >
-          {queryText('saveQuery')}
+          {queryText.saveQuery()}
         </QueryButton>
       )}
       {isReadOnly || queryResource.isNew() ? undefined : (
@@ -103,7 +119,7 @@ export function SaveQueryButtons({
             handleTriedToSave() && isValid() ? handleSave('saveAs') : undefined
           }
         >
-          {queryText('saveAs')}
+          {queryText.saveAs()}
         </QueryButton>
       )}
     </>
@@ -112,20 +128,22 @@ export function SaveQueryButtons({
 
 export function ToggleMappingViewButton({
   fields,
-  showMappingView,
-  onClick: handleClick,
 }: {
   readonly fields: RA<QueryField>;
-  readonly showMappingView: boolean;
-  readonly onClick: () => void;
 }): JSX.Element {
+  const [showMappingView = true, setShowMappingView] = useCachedState(
+    'queryBuilder',
+    'showMappingView'
+  );
+
   return (
     <Button.Small
-      aria-pressed={!showMappingView}
-      onClick={handleClick}
       disabled={fields.length === 0 && showMappingView}
+      onClick={() => setShowMappingView(!showMappingView)}
     >
-      {showMappingView ? wbText('hideFieldMapper') : wbText('showFieldMapper')}
+      {showMappingView
+        ? wbPlanText.hideFieldMapper()
+        : wbPlanText.showFieldMapper()}
     </Button.Small>
   );
 }
@@ -145,14 +163,14 @@ export function QueryButton({
     <ButtonWithConfirmation
       dialogButtons={(confirm): JSX.Element => (
         <>
-          <Button.Orange onClick={confirm}>
-            {commonText('remove')}
-          </Button.Orange>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.Warning onClick={confirm}>
+            {commonText.remove()}
+          </Button.Warning>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
         </>
       )}
-      dialogHeader={queryText('queryDeleteIncompleteDialogHeader')}
-      dialogMessage={queryText('queryDeleteIncompleteDialogText')}
+      dialogHeader={queryText.queryDeleteIncomplete()}
+      dialogMessage={queryText.queryDeleteIncompleteDescription()}
       disabled={disabled}
       showConfirmation={showConfirmation}
       onConfirm={handleClick}
@@ -163,8 +181,7 @@ export function QueryButton({
 }
 
 /**
- * Create a Record Set from all query results.
- * See also `CreateRecordSet`
+ * Create a Record Set from query results.
  */
 export function MakeRecordSetButton({
   baseTableName,
@@ -186,7 +203,6 @@ export function MakeRecordSetButton({
   const [recordSet, setRecordSet] = React.useState<
     SpecifyResource<RecordSet> | undefined
   >(undefined);
-
   return (
     <>
       <QueryButton
@@ -199,12 +215,12 @@ export function MakeRecordSetButton({
           if (typeof getQueryFieldRecords === 'function')
             queryResource.set('fields', getQueryFieldRecords());
 
-          const recordSet = new schema.models.RecordSet.Resource();
+          const recordSet = new tables.RecordSet.Resource();
 
           if (!queryResource.isNew())
             recordSet.set('name', queryResource.get('name'));
 
-          recordSet.set('dbTableId', strictGetModel(baseTableName).tableId);
+          recordSet.set('dbTableId', strictGetTable(baseTableName).tableId);
           // @ts-expect-error Adding a non-datamodel field
           recordSet.set('fromQuery', queryResource.toJSON());
           // @ts-expect-error Overwriting the resource back-end URL
@@ -212,7 +228,9 @@ export function MakeRecordSetButton({
           setRecordSet(recordSet);
         }}
       >
-        {queryText('createRecordSet')}
+        {queryText.createRecordSet({
+          recordSetTable: tables.RecordSet.label,
+        })}
       </QueryButton>
       {state === 'editing' || state === 'saving' ? (
         <>
@@ -221,7 +239,6 @@ export function MakeRecordSetButton({
               dialog="modal"
               isDependent={false}
               isSubForm={false}
-              mode="edit"
               resource={recordSet}
               viewName={recordSetView}
               onAdd={undefined}
@@ -231,7 +248,7 @@ export function MakeRecordSetButton({
               onSaving={(): void => setState('saving')}
             />
           )}
-          {state === 'saving' && recordSetFromQueryLoading}
+          {state === 'saving' && recordSetFromQueryLoading()}
         </>
       ) : undefined}
       {state === 'saved' && typeof recordSet === 'object' ? (
@@ -244,16 +261,20 @@ export function MakeRecordSetButton({
   );
 }
 
-export const recordSetFromQueryLoading = (
+export const recordSetFromQueryLoading = f.store(() => (
   <Dialog
     buttons={undefined}
-    header={queryText('recordSetToQueryDialogHeader')}
+    header={queryText.recordSetToQuery({
+      recordSetTable: tables.RecordSet.label,
+    })}
     onClose={undefined}
   >
-    {queryText('recordSetToQueryDialogText')}
+    {queryText.recordSetToQueryDescription({
+      recordSetTable: tables.RecordSet.label,
+    })}
     {loadingBar}
   </Dialog>
-);
+));
 
 export function RecordSetCreated({
   recordSet,
@@ -264,13 +285,15 @@ export function RecordSetCreated({
 }): JSX.Element {
   return (
     <Dialog
-      buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
-      header={queryText('recordSetCreatedDialogHeader')}
+      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+      header={queryText.recordSetCreated({
+        recordSetTable: tables.RecordSet.label,
+      })}
       onClose={handleClose}
     >
       <Link.Default href={`/specify/record-set/${recordSet.id}/`}>
-        <TableIcon label name={getModelById(recordSet.get('dbTableId')).name} />
-        {recordSet.get('name')}
+        <TableIcon label name={getTableById(recordSet.get('dbTableId')).name} />
+        {localized(recordSet.get('name'))}
       </Link.Default>
     </Dialog>
   );

@@ -3,163 +3,150 @@
  */
 
 import React from 'react';
-import type { State } from 'typesafe-reducer';
 
-import { error } from '../Errors/assert';
-import {
-  attachmentsAvailable,
-  attachmentSettingsPromise,
-  uploadFile,
-} from './attachments';
-import type { Attachment } from '../DataModel/types';
-import { serializeResource, toTable } from '../DataModel/helpers';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
-import type { FormMode } from '../FormParse';
-import { hasTablePermission } from '../Permissions/helpers';
-import { Progress } from '../Atoms';
-import { FilePicker } from '../Molecules/FilePicker';
-import { Dialog } from '../Molecules/Dialog';
+import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { AnySchema, SerializedResource } from '../DataModel/helperTypes';
-import { fail } from '../Errors/Crash';
+import { useTriggerState } from '../../hooks/useTriggerState';
+import { attachmentsText } from '../../localization/attachments';
+import { formsText } from '../../localization/forms';
+import { f } from '../../utils/functools';
+import type { GetOrSet } from '../../utils/types';
+import { Progress } from '../Atoms';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
+import { toTable } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Attachment } from '../DataModel/types';
+import { raise } from '../Errors/Crash';
 import { loadingBar } from '../Molecules';
-import { AttachmentCell } from './Cell';
+import { Dialog } from '../Molecules/Dialog';
+import { FilePicker } from '../Molecules/FilePicker';
+import { ProtectedTable } from '../Permissions/PermissionDenied';
+import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
+import { attachmentSettingsPromise, uploadFile } from './attachments';
+import { AttachmentViewer } from './Viewer';
 
-export function AttachmentsPlugin({
-  resource,
-  onUploadComplete: handleUploadComplete,
-  mode = 'edit',
-  id,
-  name,
-}: {
-  readonly resource: SpecifyResource<AnySchema> | undefined;
-  readonly onUploadComplete?: (attachment: SpecifyResource<Attachment>) => void;
-  readonly mode: FormMode;
-  readonly id?: string;
-  readonly name?: string;
-}): JSX.Element {
-  const [state, setState] = useAsyncState<
-    | State<'AddAttachment'>
-    | State<
-        'DisplayAttachment',
-        { readonly attachment: SerializedResource<Attachment> }
-      >
-    | State<'FileUpload', { readonly file: File }>
-    | State<'Unavailable'>
-  >(
+export function AttachmentsPlugin(
+  props: Parameters<typeof ProtectedAttachmentsPlugin>[0]
+): JSX.Element | null {
+  const [available] = usePromise(attachmentSettingsPromise, true);
+  return available === undefined ? null : available ? (
+    <ProtectedTable action="read" tableName="Attachment">
+      <ProtectedAttachmentsPlugin {...props} />
+    </ProtectedTable>
+  ) : (
+    <p>{attachmentsText.attachmentServerUnavailable()}</p>
+  );
+}
+
+/** Retrieve attachment related to a given resource */
+export function useAttachment(
+  resource: SpecifyResource<AnySchema> | undefined
+): GetOrSet<SpecifyResource<Attachment> | false | undefined> {
+  return useAsyncState(
     React.useCallback(
       async () =>
-        attachmentSettingsPromise.then(() =>
-          attachmentsAvailable()
-            ? (
-                f.maybe(
-                  f.maybe(resource, (resource) =>
-                    toTable(resource, 'Attachment')
-                  ),
-                  async (attachment) => attachment
-                ) ??
-                resource?.rgetPromise('attachment') ??
-                Promise.resolve(null)
-              ).then((attachment) => {
-                if (attachment === null) return { type: 'AddAttachment' };
-                const serialized = serializeResource(attachment);
-                return {
-                  type: 'DisplayAttachment',
-                  attachment: serialized,
-                };
-              })
-            : { type: 'Unavailable' }
-        ),
+        f.maybe(resource, (resource) => toTable(resource, 'Attachment')) ??
+        (await resource?.rgetPromise('attachment')) ??
+        false,
       [resource]
     ),
-    true
+    false
   );
-  useErrorContext('attachmentPluginState', state);
+}
 
-  const [uploadProgress, setUploadProgress] = React.useState<
-    number | undefined
-  >(undefined);
-  React.useEffect(
-    () =>
-      state?.type === 'FileUpload'
-        ? void uploadFile(state.file, setUploadProgress)
-            .then((attachment) => {
-              if (typeof resource === 'object')
-                attachment?.set('tableID', resource.specifyModel.tableId);
-              if (attachment === undefined) setState({ type: 'Unavailable' });
-              else {
-                handleUploadComplete?.(attachment);
-                resource?.set('attachment', attachment as never);
-                setState({
-                  type: 'DisplayAttachment',
-                  attachment: serializeResource(attachment),
-                });
-              }
-            })
-            .catch((error) => {
-              setState({ type: 'Unavailable' });
-              fail(error);
-            })
-            .finally(() => setUploadProgress(undefined))
-        : undefined,
-    [setState, state, resource, handleUploadComplete]
-  );
+function ProtectedAttachmentsPlugin({
+  resource,
+}: {
+  readonly resource: SpecifyResource<AnySchema> | undefined;
+}): JSX.Element | null {
+  const [attachment, setAttachment] = useAttachment(resource);
+  const isReadOnly = React.useContext(ReadOnlyContext);
+
+  useErrorContext('attachment', attachment);
 
   const filePickerContainer = React.useRef<HTMLDivElement | null>(null);
-
-  return state === undefined ? (
-    <>{commonText('loading')}</>
-  ) : state.type === 'Unavailable' ? (
-    <div>{formsText('attachmentServerUnavailable')}</div>
+  const related = useTriggerState(
+    resource?.specifyTable.name === 'Attachment' ? undefined : resource
+  );
+  return attachment === undefined ? (
+    <AttachmentPluginSkeleton />
   ) : (
-    <div ref={filePickerContainer} tabIndex={-1}>
-      {state.type === 'AddAttachment' ? (
-        mode === 'view' || !hasTablePermission('Attachment', 'create') ? (
-          <p>{formsText('noData')}</p>
-        ) : (
-          <FilePicker
-            acceptedFormats={undefined}
-            id={id}
-            name={name}
-            onSelected={(file): void => {
-              // Fix focus loss when <FilePicker would be removed from DOB
-              filePickerContainer.current?.focus();
-              setState({
-                type: 'FileUpload',
-                file,
-              });
-            }}
-          />
-        )
-      ) : state.type === 'FileUpload' ? (
-        <Dialog
-          buttons={undefined}
-          header={formsText('attachmentUploadDialogTitle')}
-          onClose={undefined}
-        >
-          <div aria-live="polite">
-            {typeof uploadProgress === 'number' ? (
-              <Progress value={uploadProgress} />
-            ) : (
-              loadingBar
-            )}
-          </div>
-        </Dialog>
-      ) : state.type === 'DisplayAttachment' ? (
-        // Padding bottom prevents the shadow from being cut off
-        <div className="flex h-full items-center justify-center pb-5">
-          <AttachmentCell
-            attachment={state.attachment}
-            onViewRecord={undefined}
-          />
-        </div>
+    <div
+      className="flex h-full gap-8 overflow-x-auto"
+      ref={filePickerContainer}
+      tabIndex={-1}
+    >
+      {typeof attachment === 'object' ? (
+        <AttachmentViewer
+          attachment={attachment}
+          related={related}
+          onViewRecord={undefined}
+        />
+      ) : isReadOnly ? (
+        <p>{formsText.noData()}</p>
       ) : (
-        error('Unhandled case', { state })
+        <UploadAttachment
+          onUploaded={(attachment): void => {
+            // Fix focus loss when <FilePicker would be removed from DOM
+            filePickerContainer.current?.focus();
+            if (typeof resource === 'object')
+              attachment?.set('tableID', resource.specifyTable.tableId);
+            resource?.set('attachment', attachment as never);
+            setAttachment(attachment);
+          }}
+        />
       )}
     </div>
+  );
+}
+
+export function UploadAttachment({
+  onUploaded: handleUploaded,
+}: {
+  readonly onUploaded: (attachment: SpecifyResource<Attachment>) => void;
+}): JSX.Element {
+  const [uploadProgress, setUploadProgress] = React.useState<
+    number | true | undefined
+  >(undefined);
+  const [isFailed, handleFailed] = useBooleanState();
+  const loading = React.useContext(LoadingContext);
+
+  return isFailed ? (
+    <p>{attachmentsText.attachmentServerUnavailable()}</p>
+  ) : typeof uploadProgress === 'object' ? (
+    <Dialog
+      buttons={undefined}
+      header={attachmentsText.uploadingInline()}
+      onClose={undefined}
+    >
+      <div aria-live="polite">
+        {typeof uploadProgress === 'number' ? (
+          <Progress value={uploadProgress} />
+        ) : (
+          loadingBar
+        )}
+      </div>
+    </Dialog>
+  ) : (
+    <FilePicker
+      acceptedFormats={undefined}
+      onFileSelected={(file): void =>
+        loading(
+          uploadFile(file, setUploadProgress)
+            .then((attachment) =>
+              attachment === undefined
+                ? handleFailed()
+                : handleUploaded(attachment)
+            )
+            .catch((error) => {
+              handleFailed();
+              raise(error);
+            })
+            .finally(() => setUploadProgress(undefined))
+        )
+      }
+    />
   );
 }

@@ -26,7 +26,7 @@ test('f.zero', () => {
   expect(f.zero(callback)(...args)).toEqual([]);
 });
 
-test('f.id', () => {
+test('f.id returns the value it was passed', () => {
   const id = {};
   expect(f.id(id)).toBe(id);
 });
@@ -49,14 +49,13 @@ test('f.log', () => {
   expect(consoleLog).toHaveBeenCalledWith('Console', 'log');
 });
 
-test('f.all', async () => {
-  await expect(
+test('f.all', async () =>
+  expect(
     f.all({
       a: Promise.resolve('a1'),
       b: 'b1',
     })
-  ).resolves.toEqual({ a: 'a1', b: 'b1' });
-});
+  ).resolves.toEqual({ a: 'a1', b: 'b1' }));
 
 describe('f.sum', () => {
   test('empty case', () => expect(f.sum([])).toBe(0));
@@ -131,6 +130,13 @@ describe('f.parseInt', () => {
   test('invalid case', () => expect(f.parseInt('a-1.4')).toBeUndefined());
 });
 
+describe('f.fastParseInt', () => {
+  test('simple case', () => expect(f.fastParseInt('1')).toBe(1));
+  test('float case', () => expect(f.fastParseInt('-1.4')).toBe(-1));
+  test('invalid case', () => expect(f.fastParseInt('a-1.4')).toBe(0));
+  test('empty string case', () => expect(f.fastParseInt('')).toBe(0));
+});
+
 describe('f.parseFloat', () => {
   test('simple case', () => expect(f.parseFloat('1')).toBe(1));
   test('float case', () => expect(f.parseFloat('-1.4')).toBe(-1.4));
@@ -163,4 +169,13 @@ describe('f.min', () => {
   test('undefined and defined case', () =>
     expect(f.min(undefined, 3, 1)).toBe(1));
   test('duplicate case', () => expect(f.min(3, 1, 2, 1)).toBe(1));
+});
+
+describe('f.max', () => {
+  test('empty case', () => expect(f.max()).toBeUndefined());
+  test('undefined case', () => expect(f.max(undefined)).toBeUndefined());
+  test('simple case', () => expect(f.max(2, 1)).toBe(2));
+  test('undefined and defined case', () =>
+    expect(f.max(undefined, 3, 1)).toBe(3));
+  test('duplicate case', () => expect(f.max(3, 1, 2, 3)).toBe(3));
 });

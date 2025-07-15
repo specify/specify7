@@ -1,11 +1,12 @@
 import { formsText } from '../../../localization/forms';
 import { mockTime, requireContext } from '../../../tests/helpers';
+import { theories } from '../../../tests/utils';
 import type { IR } from '../../types';
+import { fullDateFormat } from '../dateFormat';
 import type { Parser } from '../definitions';
 import { resolveParser } from '../definitions';
 import type { InvalidParseResult, ValidParseResult } from '../parse';
-import { parseValue } from '../parse';
-import { fullDateFormat } from '../../dateFormat';
+import { parseBoolean, parseValue } from '../parse';
 
 requireContext();
 
@@ -57,7 +58,7 @@ test('isRequired', () => {
     isRequired: true,
   });
   const result = parseValue(parser, undefined, '  ');
-  expectInvalid(result, formsText('requiredField'));
+  expectInvalid(result, formsText.requiredField());
 });
 
 test('not isRequired', () => {
@@ -75,7 +76,25 @@ test('required String empty', () => {
     isRequired: true,
   });
   const result = parseValue(parser, undefined, ' \n\t ');
-  expectInvalid(result, formsText('requiredField'));
+  expectInvalid(result, formsText.requiredField());
+});
+
+test('white space sensitive', () => {
+  const parser = resolveParser({
+    type: 'java.lang.String',
+    whiteSpaceSensitive: true,
+  });
+  const whiteSpaceString = ' \n\t ';
+  const result = parseValue(parser, undefined, whiteSpaceString);
+  expectValid(result, whiteSpaceString);
+});
+
+test('non white space sensitive', () => {
+  const parser = resolveParser({
+    type: 'java.lang.String',
+  });
+  const result = parseValue(parser, undefined, ' \n\t ');
+  expectValid(result, null);
 });
 
 describe('Boolean', () => {
@@ -117,7 +136,7 @@ describe('Double', () => {
   });
 
   ensureInvalid(parser, {
-    foo: formsText('inputTypeNumber'),
+    foo: formsText.inputTypeNumber(),
   });
 });
 
@@ -136,7 +155,7 @@ describe('Integer', () => {
   });
 
   ensureInvalid(parser, {
-    foo: formsText('inputTypeNumber'),
+    foo: formsText.inputTypeNumber(),
   });
 });
 
@@ -159,7 +178,7 @@ describe('Short', () => {
   });
 
   ensureInvalid(parser, {
-    foo: formsText('inputTypeNumber'),
+    foo: formsText.inputTypeNumber(),
   });
 });
 
@@ -185,9 +204,9 @@ describe('String', () => {
   });
 
   ensureInvalid(parser, {
-    '': formsText('requiredField'),
+    '': formsText.requiredField(),
     // Values are trimmed before being validated
-    '  ': formsText('requiredField'),
+    '  ': formsText.requiredField(),
   });
 });
 
@@ -206,7 +225,7 @@ describe('date validation', () => {
   });
 
   ensureInvalid(parser, {
-    a: () => formsText('requiredFormat', fullDateFormat()),
+    a: () => formsText.requiredFormat({ format: fullDateFormat() }),
   });
 });
 
@@ -217,3 +236,14 @@ test('native browser validation is enforced', () => {
   input.value = 'a';
   expectInvalid(parseValue({}, input, 'a'), 'Constraints not satisfied');
 });
+
+theories(parseBoolean, [
+  { in: ['true'], out: true },
+  { in: ['  TrUE  '], out: true },
+  { in: [' yes'], out: true },
+  { in: ['no'], out: false },
+  { in: ['Nan'], out: false },
+  { in: [' no! '], out: false },
+  { in: ['FALSE'], out: false },
+  { in: ['etc'], out: false },
+]);

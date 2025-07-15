@@ -4,24 +4,28 @@
  * @module
  */
 import React from 'react';
+import type { DraggableData } from 'react-draggable';
 import Draggable from 'react-draggable';
 import type { Props } from 'react-modal';
 import Modal from 'react-modal';
+import type { LocalizedString } from 'typesafe-i18n';
 
+import { useCachedState } from '../../hooks/useCachedState';
+import { useId } from '../../hooks/useId';
 import { listen } from '../../utils/events';
+import { f } from '../../utils/functools';
 import { KEY } from '../../utils/utils';
-import { LoadingContext } from '../Core/Contexts';
+import { Button, DialogContext } from '../Atoms/Button';
+import { className, dialogIconTriggers } from '../Atoms/className';
 import { dialogIcons } from '../Atoms/Icons';
+import { LoadingContext } from '../Core/Contexts';
 import {
   useHighContrast,
   useReducedTransparency,
   useTransitionDuration,
-} from '../UserPreferences/Hooks';
-import { className, dialogIconTriggers } from '../Atoms/className';
-import { Button, DialogContext } from '../Atoms/Button';
-import { useId } from '../../hooks/useId';
+} from '../Preferences/Hooks';
+import { userPreferences } from '../Preferences/userPreferences';
 import { useTitle } from './AppTitle';
-import { usePref } from '../UserPreferences/usePref';
 
 /**
  * Modal dialog with a loading bar
@@ -46,13 +50,20 @@ const commonContainer = 'rounded resize max-w-[90%] shadow-lg shadow-gray-500';
 export const dialogClassNames = {
   fullScreen: '!transform-none !w-full !h-full',
   freeContainer: `${commonContainer} max-h-[90%]`,
-  narrowContainer: `${commonContainer} max-h-[50%] min-w-[min(20rem,90%)]
+  narrowContainer: `${commonContainer} max-h-[90%] sm:max-h-[50%] min-w-[min(20rem,90%)]
     lg:max-w-[50%]`,
   normalContainer: `${commonContainer} max-h-[90%] min-w-[min(30rem,90%)]`,
-  wideContainer: `${commonContainer} max-h-[90%] min-w-[min(40rem,90%)]`,
+  wideContainer: `${commonContainer} max-h-screen min-w-[min(40rem,90%)]`,
   extraWideContainer: `${commonContainer} max-h-[90%] min-w-[min(20rem,90%)]
     w-[min(60rem,90%)] h-[60rem]`,
   flexContent: 'flex flex-col gap-2',
+  solidBackground: 'bg-white dark:bg-neutral-900',
+  transparentBackground: 'bg-white/40 backdrop-blur-lg dark:bg-transparent',
+  legacyTransparentBackground: 'bg-white/70 dark:bg-black/70',
+  gradientBackground: `
+    bg-gradient-to-bl from-gray-200 via-white
+    to-white dark:from-neutral-800 dark:via-neutral-900 dark:to-neutral-900
+  `,
 } as const;
 
 /*
@@ -65,12 +76,30 @@ const dialogIndexes = new Set<number>();
 const getNextIndex = (): number =>
   dialogIndexes.size === 0 ? initialIndex : Math.max(...dialogIndexes) + 1;
 
-export const supportsBackdropBlur = globalThis.CSS.supports(
-  '((-webkit-backdrop-filter: none) or (backdrop-filter: none))'
-);
+/*
+ * Long enough to prevent accidental dialog close during the brief
+ * moment of dialog resize, but not long enough to falsely intercept
+ * any intentional clicks.
+ */
+const preventAutoCloseTime = 300;
+
+const supportsBackdropBlur =
+  globalThis.CSS?.supports(
+    '((-webkit-backdrop-filter: none) or (backdrop-filter: none))'
+  ) ?? false;
+
+// Used for 'inert' attribute addition
+const root = globalThis.document?.getElementById('root');
 
 /**
  * Modal or non-modal dialog. Highly customizable. Used all over the place
+ *
+ * @remarks
+ * We are using a library "react-modal" to render dialogs. It worked great so
+ * far. However, since then we started using HeadlessUI and FloatingUI, both
+ * of which already provide dialogs. Might be worth at some point to migrate
+ * to reduce number of dependencies
+ *
  * @remarks
  * Note, if the same components renders a <Dialog>, and on the next render
  * instead renders a different <Dialog> with the same parent, React would
@@ -78,7 +107,7 @@ export const supportsBackdropBlur = globalThis.CSS.supports(
  * new dialog, with a different content would already be scrolled down.
  * Possible solution would be to set container.scrollTop=0 on header change,
  * though, that may introduce issues in other places, as same dialogs change
- * header durring lifecycle (ResourceView)
+ * header during lifecycle (ResourceView)
  */
 export function Dialog({
   /*
@@ -88,7 +117,7 @@ export function Dialog({
   isOpen = true,
   header,
   headerButtons,
-  showOrangeBar = false,
+  specialMode,
   // Default icon type is determined based on dialog button types
   icon: defaultIcon,
   buttons,
@@ -101,6 +130,8 @@ export function Dialog({
   modal = true,
   onClose: handleClose,
   onResize: handleResize,
+  dimensionsKey: rawDimensionsKey = header,
+  // eslint-disable-next-line react/no-object-type-as-default-prop
   className: {
     // Dialog has optimal width
     container: containerClassName = dialogClassNames.normalContainer,
@@ -112,12 +143,14 @@ export function Dialog({
   } = {},
   /* Force dialog to stay on top of all others. Useful for exception messages */
   forceToTop = false,
+  // eslint-disable-next-line react/no-object-type-as-default-prop
   forwardRef: { content: contentRef, container: externalContainerRef } = {},
 }: {
   readonly isOpen?: boolean;
-  readonly header: string;
+  readonly header: LocalizedString;
   readonly headerButtons?: React.ReactNode;
-  readonly showOrangeBar?: boolean;
+  // A semi-elegant way to specify one-of customizations
+  readonly specialMode?: 'noGradient' | 'orangeBar';
   /*
    * TEST: review dialogs that don't need icons or dialogs whose autogenerated
    *   icon is incorrect (record view dialog has red icon because of delete
@@ -125,8 +158,10 @@ export function Dialog({
    */
   readonly icon?: JSX.Element | keyof typeof dialogIconTriggers;
   // Have to explicitly pass undefined if you don't want buttons
-  readonly buttons: JSX.Element | string | undefined;
+  readonly buttons: JSX.Element | LocalizedString | undefined;
   readonly children: React.ReactNode;
+  // If set, will remember the dialog size under this name
+  readonly dimensionsKey?: string | false;
   readonly modal?: boolean;
   /*
    * Have to explicitly pass undefined if dialog should not be closable
@@ -151,24 +186,37 @@ export function Dialog({
 }): JSX.Element {
   const id = useId('modal');
 
-  const [modifyTitle] = usePref('general', 'dialog', 'updatePageTitle');
+  React.useEffect(() => {
+    const shouldInert = modal && isOpen;
+    root?.toggleAttribute('inert', shouldInert);
+    return () => {
+      root?.removeAttribute('inert');
+    };
+  }, [modal, isOpen]);
+
+  const [modifyTitle] = userPreferences.use(
+    'general',
+    'dialog',
+    'updatePageTitle'
+  );
+
   useTitle(modal && isOpen && modifyTitle ? header : undefined);
 
   const reduceTransparency = useReducedTransparency();
-  const [transparentDialog] = usePref(
+  const [transparentDialog] = userPreferences.use(
     'general',
     'dialog',
     'transparentBackground'
   );
-  const [blurContentBehindDialog] = usePref(
+  const [blurContentBehindDialog] = userPreferences.use(
     'general',
     'dialog',
     'blurContentBehindDialog'
   );
-  const [showIcon] = usePref('general', 'dialog', 'showIcon');
+  const [showIcon] = userPreferences.use('general', 'dialog', 'showIcon');
 
-  const [closeOnEsc] = usePref('general', 'dialog', 'closeOnEsc');
-  const [closeOnOutsideClick] = usePref(
+  const [closeOnEsc] = userPreferences.use('general', 'dialog', 'closeOnEsc');
+  const [closeOnOutsideClick] = userPreferences.use(
     'general',
     'dialog',
     'closeOnOutsideClick'
@@ -221,23 +269,59 @@ export function Dialog({
     [forceToTop, modal, isOpen, zIndex, container]
   );
 
-  // Resize listener
-  React.useEffect(() => {
-    if (
-      !isOpen ||
-      container === null ||
-      handleResize === undefined ||
-      globalThis.ResizeObserver === undefined
-    )
-      return undefined;
+  /*
+   * Try to shorten the key if possible (i.e, turn Collection Object: 00123
+   * into Collection Object). This is crude, but it doesn't have to be perfect
+   */
+  const dimensionsKey =
+    typeof rawDimensionsKey === 'string'
+      ? rawDimensionsKey.split(':')[0].split('(')[0]
+      : undefined;
+  if (process.env.NODE_ENV !== 'production')
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useTitleChangeNotice(dimensionsKey);
+  const initialSize = useDialogSize(
+    container,
+    isOpen,
+    dimensionsKey,
+    handleResize
+  );
 
-    const observer = new globalThis.ResizeObserver(() =>
-      handleResize?.(container)
-    );
-    observer.observe(container);
-
-    return (): void => observer.disconnect();
-  }, [isOpen, container, handleResize]);
+  const [rememberPosition] = userPreferences.use(
+    'general',
+    'dialog',
+    'rememberPosition'
+  );
+  const positionKey = rememberPosition ? dimensionsKey : undefined;
+  const [dialogPositions = {}, setDialogPositions] = useCachedState(
+    'dialogs',
+    'positions'
+  );
+  const handleDrag = React.useCallback(
+    (_: unknown, { x, y }: DraggableData) =>
+      typeof positionKey === 'string'
+        ? setDialogPositions((positions) => ({
+            ...positions,
+            [positionKey]: [x, y],
+          }))
+        : undefined,
+    [positionKey, setDialogPositions]
+  );
+  const handleDragged =
+    typeof positionKey === 'string' ? handleDrag : undefined;
+  const initialPosition = React.useMemo(
+    () => {
+      const position = dialogPositions[positionKey ?? ''];
+      return typeof position === 'object'
+        ? {
+            x: position[0],
+            y: position[1],
+          }
+        : undefined;
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [positionKey]
+  );
 
   const isFullScreen = containerClassName.includes(dialogClassNames.fullScreen);
 
@@ -246,20 +330,22 @@ export function Dialog({
       <Draggable
         // Don't allow moving the dialog past the window bounds
         bounds="parent"
-        // Allow moving the dialog when hovering over the header line
-        cancel={`#${id('full-screen')}`}
         // Don't allow moving when in full-screen
+        cancel={`#${id('full-screen')}`}
         defaultClassName=""
         // Don't need any extra classNames
         defaultClassNameDragged=""
         defaultClassNameDragging=""
+        defaultPosition={initialPosition}
+        // Allow moving the dialog when hovering over the header line
         handle={`#${id('handle')}`}
         nodeRef={containerRef}
+        onStop={handleDragged}
       >
         <div {...props}>{children}</div>
       </Draggable>
     ),
-    [id]
+    [id, initialPosition, handleDragged]
   );
 
   const [buttonContainer, setButtonContainer] =
@@ -282,37 +368,56 @@ export function Dialog({
     );
   }, [showIcon, defaultIcon, buttons, buttonContainer]);
 
-  const overlayElement: Props['overlayElement'] = React.useCallback(
-    (
-      props: React.ComponentPropsWithRef<'div'>,
-      contentElement: React.ReactElement
-    ) => (
-      <div
-        {...props}
-        onMouseDown={
-          closeOnOutsideClick
-            ? (event): void => {
-                // Outside click detection
-                if (
-                  modal &&
-                  typeof handleClose === 'function' &&
-                  event.target === event.currentTarget
-                ) {
-                  event.preventDefault();
-                  handleClose();
-                } else props?.onMouseDown?.(event);
-              }
-            : undefined
-        }
-      >
-        {contentElement}
-      </div>
-    ),
-    [modal, handleClose, closeOnOutsideClick]
+  /*
+   * Ref used to save the user from accidentally closing the dialog
+   * if it shrunk in size in a brief instant before the user tried
+   * to click on something.
+   */
+  const ignoreOutsideClickRef = React.useRef<boolean>(false);
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      ignoreOutsideClickRef.current = true;
+    }, preventAutoCloseTime);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+
+  const overlayElement: Props['overlayElement'] = (
+    props: React.ComponentPropsWithRef<'div'>,
+    contentElement: React.ReactElement
+  ) => (
+    <div
+      {...props}
+      onMouseDown={
+        closeOnOutsideClick
+          ? (event): void => {
+              // Outside click detection
+              if (
+                ignoreOutsideClickRef.current &&
+                modal &&
+                typeof handleClose === 'function' &&
+                event.target === event.currentTarget
+              ) {
+                event.preventDefault();
+                handleClose();
+              } else props?.onMouseDown?.(event);
+            }
+          : undefined
+      }
+    >
+      {contentElement}
+    </div>
   );
 
   const transitionDuration = useTransitionDuration();
   const highContrast = useHighContrast();
+
+  const resolvedIcon =
+    typeof defaultIcon === 'object' && showIcon
+      ? defaultIcon
+      : dialogIcons[iconType];
 
   return (
     <Modal
@@ -329,14 +434,13 @@ export function Dialog({
         dark:border dark:border-neutral-700 dark:text-neutral-200
         ${modal ? '' : 'pointer-events-auto border border-gray-500'}
         ${
-          reduceTransparency || highContrast
-            ? 'bg-white dark:bg-neutral-900'
+          reduceTransparency || highContrast || specialMode === 'noGradient'
+            ? dialogClassNames.solidBackground
             : transparentDialog && modal
-            ? supportsBackdropBlur
-              ? 'bg-white/40 backdrop-blur-lg dark:bg-transparent'
-              : 'bg-white/70 dark:bg-black/70'
-            : `bg-gradient-to-bl from-gray-200 via-white
-                to-white dark:from-neutral-800 dark:via-neutral-900 dark:to-neutral-900`
+              ? supportsBackdropBlur
+                ? dialogClassNames.transparentBackground
+                : dialogClassNames.legacyTransparentBackground
+              : dialogClassNames.gradientBackground
         }
       `}
       closeTimeoutMS={transitionDuration === 0 ? undefined : transitionDuration}
@@ -384,41 +488,52 @@ export function Dialog({
        * which causes another accessibility problem.
        */
       shouldCloseOnOverlayClick={false}
-      style={{ overlay: { zIndex } }}
+      style={{
+        overlay: { zIndex },
+        content:
+          typeof initialSize === 'object'
+            ? {
+                width: `${initialSize.width}px`,
+                height: `${initialSize.height}px`,
+              }
+            : undefined,
+      }}
       onRequestClose={handleClose}
     >
       {/* "p-4 -m-4" increases the handle size for easier dragging */}
-      <span
+      <div
         className={`
-          flex items-center gap-4
+          flex items-center gap-2 md:gap-4
           ${isFullScreen ? '' : '-m-4 cursor-move p-4'}
-          ${showOrangeBar ? '' : 'flex-wrap'}
+          ${specialMode === 'orangeBar' ? '' : 'flex-wrap'}
         `}
         id={id('handle')}
       >
         <div className="flex items-center gap-2">
-          {typeof defaultIcon === 'object' && showIcon
-            ? defaultIcon
-            : dialogIcons[iconType]}
+          {resolvedIcon === undefined ? undefined : (
+            <span className="text-blue-500">{resolvedIcon}</span>
+          )}
           <h2 className={headerClassName} id={id('header')}>
             {header}
           </h2>
         </div>
         {headerButtons}
-      </span>
-      {showOrangeBar && <div className="w-full border-b-2 border-brand-300" />}
+      </div>
+      {specialMode === 'orangeBar' && (
+        <div className="border-brand-300 w-full border-b-2" />
+      )}
       <DialogContext.Provider value={handleClose}>
         {/*
          * "px-1 -mx-1" ensures that focus outline for checkboxes
          * and other inputs is not cut-off. You can also use "px-4 -mx-4" to
          * place container scroll bar at the very edge of the dialog, which
-         * looks nice, but is bad UX, because misclics can trigger dialog
+         * looks nice, but is bad UX, because mis-clicks can trigger dialog
          * close
          */}
         <div
           className={`
-            -mx-1 flex-1 overflow-y-auto px-1 py-4 text-gray-700
-            dark:text-neutral-350 ${contentClassName}
+            dark:text-neutral-350 -mx-1 flex-1 overflow-y-auto px-1 py-4
+            text-gray-700 ${contentClassName}
           `}
           id={id('content')}
           ref={contentRef}
@@ -432,7 +547,7 @@ export function Dialog({
           >
             {typeof buttons === 'string' ? (
               // If button was passed directly as text, render it as Blue.Button
-              <Button.DialogClose component={Button.Blue}>
+              <Button.DialogClose component={Button.Info}>
                 {buttons}
               </Button.DialogClose>
             ) : (
@@ -443,4 +558,80 @@ export function Dialog({
       </DialogContext.Provider>
     </Modal>
   );
+}
+
+function useDialogSize(
+  container: HTMLElement | null,
+  isOpen: boolean,
+  dimensionsKey: string | undefined,
+  handleResize: ((container: HTMLElement) => void) | undefined
+): { readonly width: number; readonly height: number } | undefined {
+  const [rememberSize] = userPreferences.use(
+    'general',
+    'dialog',
+    'rememberSize'
+  );
+  const sizeKey = rememberSize ? dimensionsKey : undefined;
+  const [dialogSizes = {}, setDialogSizes] = useCachedState('dialogs', 'sizes');
+  const dialogSizesRef = React.useRef(dialogSizes);
+  dialogSizesRef.current = dialogSizes;
+
+  /*
+   * If two dialogs with the same dimensionsKey are rendered, changing one dialog's
+   * dimensions shouldn't affect the other
+   */
+  const initialSize = React.useMemo(() => {
+    const sizes = dialogSizesRef.current[sizeKey ?? ''];
+    return typeof sizes === 'object'
+      ? {
+          width: sizes[0],
+          height: sizes[1],
+        }
+      : undefined;
+  }, [sizeKey]);
+
+  // Resize listener
+  React.useEffect(() => {
+    if (
+      !isOpen ||
+      container === null ||
+      (handleResize === undefined && sizeKey === undefined)
+    )
+      return undefined;
+
+    const observer = new ResizeObserver(() => {
+      handleResize?.(container);
+      if (typeof sizeKey === 'string') {
+        /*
+         * Looking at the style attributes rather than actual element size to
+         * record whether the user resized the dialog (rather than dialog
+         * resized due to browser window change)
+         */
+        const width = f.parseInt(container.style.width);
+        const height = f.parseInt(container.style.height);
+        if (typeof width === 'number' && typeof height === 'number')
+          setDialogSizes((sizes) => ({
+            ...sizes,
+            [sizeKey]: [width, height],
+          }));
+      }
+    });
+    observer.observe(container);
+
+    return (): void => observer.disconnect();
+  }, [isOpen, container, handleResize, sizeKey, setDialogSizes]);
+
+  return initialSize;
+}
+
+function useTitleChangeNotice(dimensionKey: string | undefined): void {
+  const changeCount = React.useRef(0);
+  React.useEffect(() => {
+    if (dimensionKey === undefined) return;
+    changeCount.current += 1;
+    if (changeCount.current > 3)
+      console.warn(
+        'Dialog title changes too much. Please add a dimensionsKey="..." prop to the dialog'
+      );
+  }, [dimensionKey]);
 }

@@ -1,68 +1,16 @@
-import json
-
-from django import http
-from django.db import transaction
-from django.shortcuts import get_object_or_404
-from django.views import View
-
 from specifyweb.context.app_resource import get_usertype
 from specifyweb.specify import models, api
 from specifyweb.specify.views import openapi
+from specifyweb.context.resources import Resource, Resources
+from specifyweb.specify.models import Spappresource, Spappresourcedir
 
-Spappresource = getattr(models, 'Spappresource')
-Spappresourcedir = getattr(models, 'Spappresourcedir')
+user_resource_dir_filter_gen = lambda request: {
+                'specifyuser': request.specify_user,
+                'ispersonal': True,
+                'usertype': get_usertype(request.specify_user),
+}
 
-class Resources(View):
-    def get(self, request) -> http.HttpResponse:
-        resources = Spappresource.objects.filter(
-            spappresourcedir__specifyuser=request.specify_user,
-            spappresourcedir__ispersonal=True,
-            spappresourcedir__collection=request.specify_collection
-        )
-
-        return http.JsonResponse([
-            {
-                'id': r.id,
-                'name': r.name,
-                'mimetype': r.mimetype,
-                'metadata': r.metadata,
-            }
-            for r in resources
-        ], safe=False)
-
-    def post(self, request) -> http.HttpResponse:
-        post_data = json.loads(request.body)
-
-        with transaction.atomic():
-            directory, _ = Spappresourcedir.objects.get_or_create(
-                specifyuser=request.specify_user,
-                ispersonal=True,
-                collection=request.specify_collection,
-                discipline=request.specify_collection.discipline,
-                usertype=get_usertype(request.specify_user),
-            )
-            resource = Spappresource.objects.create(
-                spappresourcedir=directory,
-                level=0,
-                specifyuser=request.specify_user,
-                name=post_data['name'],
-                mimetype=post_data['mimetype'],
-                metadata=post_data['metadata'],
-            )
-            data = resource.spappresourcedatas.create(
-                data=post_data['data'],
-            )
-
-            response_data = {
-                'id': resource.id,
-                'name': resource.name,
-                'mimetype': resource.mimetype,
-                'metadata': resource.metadata,
-                'data': data.data,
-            }
-            return http.HttpResponse(api.toJson(response_data), content_type="application/json", status=201)
-
-resources = openapi(schema={
+user_resources = openapi(schema={
     "get": {
         "responses": {
             "200": {
@@ -130,65 +78,17 @@ resources = openapi(schema={
             }
         }
     }
-})(Resources.as_view())
+})(Resources.as_view(_spappresourcedirfilter= user_resource_dir_filter_gen,
+                     _spappresourcefilter= lambda request: {
+                'spappresourcedir__specifyuser': request.specify_user,
+                'spappresourcedir__ispersonal':True
+}, _spappresourcefilterpost=lambda request: {
+                'specifyuser': request.specify_user
+},_spappresourcedircreate=user_resource_dir_filter_gen
+                     ))
 
-class Resource(View):
-    def get(self, request, resourceid: int) -> http.HttpResponse:
-        resource = get_object_or_404(
-            Spappresource,
-            pk=resourceid,
-            spappresourcedir__specifyuser=request.specify_user,
-            spappresourcedir__ispersonal=True,
-            spappresourcedir__collection=request.specify_collection,
-        )
 
-        data = resource.spappresourcedatas.get()
-        response_data = {
-            'id': resource.id,
-            'name': resource.name,
-            'mimetype': resource.mimetype,
-            'metadata': resource.metadata,
-            'data': data.data,
-        }
-        return http.HttpResponse(api.toJson(response_data), content_type="application/json")
-
-    def put(self, request, resourceid: int) -> http.HttpResponse:
-        put_data = json.loads(request.body)
-
-        with transaction.atomic():
-            resource = get_object_or_404(
-                Spappresource,
-                pk=resourceid,
-                spappresourcedir__specifyuser=request.specify_user,
-                spappresourcedir__ispersonal=True,
-                spappresourcedir__collection=request.specify_collection,
-            )
-
-            resource.name = put_data['name']
-            resource.mimetype = put_data['mimetype']
-            resource.metadata = put_data['metadata']
-            resource.save()
-
-            data = resource.spappresourcedatas.get()
-            data.data = put_data['data']
-            data.save()
-
-        return http.HttpResponse('', status=204)
-
-    def delete(self, request, resourceid: int) -> http.HttpResponse:
-        with transaction.atomic():
-            resource = get_object_or_404(
-                Spappresource,
-                pk=resourceid,
-                spappresourcedir__specifyuser=request.specify_user,
-                spappresourcedir__ispersonal=True,
-                spappresourcedir__collection=request.specify_collection,
-            )
-            resource.delete()
-
-        return http.HttpResponse('', status=204)
-
-resource = openapi(schema={
+user_resource = openapi(schema={
     "get": {
         "responses": {
             "200": {
@@ -241,4 +141,11 @@ resource = openapi(schema={
             "204": {"description": "The resource was deleted.",}
         }
     }
-})(Resource.as_view())
+})(Resource.as_view(_spappresourcefilter= lambda request: {
+            'spappresourcedir__specifyuser': request.specify_user,
+            'spappresourcedir__ispersonal': True,
+}))
+
+
+
+

@@ -8,11 +8,19 @@
  * REFACTOR: get rid of most global styles once everything is using React components
  *   (can use arbitrary variants too)
  * REFACTOR: remove most usages of !important after global styles are removed
+ * REFACTOR: split this into smaller files
  */
 @layer base {
-
   body.reduce-motion * {
     @apply !transition-none !duration-0;
+  }
+
+  body.dark {
+    color-scheme: dark;
+  }
+
+  body:not(.dark) {
+    color-scheme: light;
   }
 
   body.no-rounded-corners *:not(.rounded-full) {
@@ -20,13 +28,14 @@
   }
 
   * {
-    @apply transition duration-[var(--transition-duration)] ease-in-out
-      dark:!shadow-none placeholder-gray-400 !ring-inset;
+    @apply placeholder-gray-400 !ring-inset transition
+      duration-[var(--transition-duration)] ease-in-out dark:!shadow-none;
     /*
      * Disables transitions for text color.
      * See https://github.com/specify/specify7/issues/1561
      */
-    transition-property: background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+    transition-property: background-color, border-color, text-decoration-color,
+      fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
   }
 
   [type='text'],
@@ -45,9 +54,9 @@
   textarea,
   .textarea-shadow,
   select {
-    @apply p-1 rounded accent-brand-200 dark:accent-brand-400 ring-gray-500
-      ring-1 dark:ring-0 border-none bg-[color:var(--field-background)]
-      text-[length:inherit] leading-[unset]
+    @apply accent-brand-200 dark:accent-brand-400 rounded border-none bg-[color:var(--field-background)] p-1
+      text-[length:inherit] leading-[unset] shadow-sm ring-1
+      ring-gray-400 dark:ring-0
       [.has-alt-background_&]:optional:bg-white
       dark:[.has-alt-background_&]:optional:bg-neutral-900;
   }
@@ -59,23 +68,25 @@
     @apply focus:ring-2 dark:focus:ring-1;
 
     /* Hide arrows, calendar icon and other symbols */
-    @apply print:bg-none print:m-0 print:appearance-none;
+    @apply print:m-0 print:appearance-none print:bg-none;
   }
 
   /* Adapted from Tailwind's styles for <select> */
   input.autocomplete {
-    background-image: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 20 20%27%3e%3cpath stroke=%27%236b7280%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%271.5%27 d=%27M6 8l4 4 4-4%27/%3e%3c/svg%3e");
+    background-image: url('data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 20 20%27%3e%3cpath stroke=%27%236b7280%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%271.5%27 d=%27M6 8l4 4 4-4%27/%3e%3c/svg%3e');
     background-position: right 0 center;
     background-repeat: no-repeat;
     background-size: 1.5em 1.5em;
     padding-right: 1.5em;
   }
 
-  :disabled:not(.link), [readonly] {
+  :disabled:not(.link),
+  [readonly] {
     @apply ring-1 ring-gray-500 dark:ring-1;
   }
 
-  select, input[role='combox'] {
+  select,
+  input[role='combox'] {
     @apply disabled:cursor-default;
   }
 
@@ -90,16 +101,17 @@
 
   [type='checkbox'],
   [type='radio'] {
-    @apply cursor-pointer text-brand-200 dark:text-brand-400 focus:!ring-2
-      focus:!ring-offset-1;
+    @apply text-brand-200 dark:text-brand-400 cursor-pointer focus:border-none focus:!ring-2
+      focus:!ring-offset-0;
   }
 
   :is([type='checkbox'], [type='radio']):is([readonly], :disabled) {
-    @apply cursor-default bg-gray-300 dark:bg-neutral-600 text-gray-500 dark:text-neutral-900
-      hover:ring-gray-500 checked:bg-current;
+    @apply cursor-default bg-gray-300 text-gray-500 checked:bg-current hover:ring-gray-500
+      dark:bg-neutral-600 dark:text-neutral-900;
   }
 
-  label, summary {
+  label,
+  summary {
     @apply cursor-pointer;
   }
 
@@ -109,7 +121,8 @@
       dark:placeholder-red-400;
   }
 
-  textarea, .textarea-shadow {
+  textarea,
+  .textarea-shadow {
     @apply w-full resize;
   }
 
@@ -138,24 +151,36 @@
   [type='number']:not([readonly], .no-arrows)::-webkit-outer-spin-button,
   [type='number']:not([readonly], .no-arrows)::-webkit-inner-spin-button {
     -webkit-appearance: inner-spin-button !important;
-    @apply w-[2] absolute top-0 right-0 h-full;
+    @apply absolute right-0 top-0 h-full w-2;
   }
 
   [type='number']:not([readonly], .no-arrows) {
-    @apply relative;
+    @apply relative pr-4;
   }
 
-  .button:is([aria-pressed='true'], [aria-selected='true'], [aria-current]):not(.aria-handled) {
-    @apply brightness-[1.2] dark:brightness-[1.5];
+  .button {
+    @apply text-center;
+  }
+
+  .button:is([aria-pressed='true'], [aria-selected='true'], [aria-current]):not(
+      .aria-handled
+    ) {
+    @apply ring-[color:var(--accent-color-300)] brightness-[1.2] dark:brightness-[1.5];
   }
 
   button[aria-pressed='true']:not(.aria-handled).link {
-    @apply !bg-transparent text-brand-300 dark:text-brand-400;
+    @apply text-brand-300 dark:text-brand-400 !bg-transparent;
+  }
+
+  a.button {
+    @apply text-center;
   }
 
   .link {
-    @apply text-black dark:text-gray-200 cursor-pointer disabled:!ring-0
-      enabled:hover:text-brand-300 gap-2 inline-flex items-center active:underline;
+    @apply enabled:hover:text-brand-300 inline-flex cursor-pointer items-center
+      gap-2 text-left text-black active:underline
+      disabled:cursor-text disabled:!ring-0 disabled:active:no-underline
+      dark:text-gray-200;
   }
 
   a.link {
@@ -174,7 +199,7 @@
   }
 
   progress::-webkit-progress-bar {
-    @apply bg-gray-200 dark:bg-neutral-700 rounded;
+    @apply rounded bg-gray-200 dark:bg-neutral-700;
   }
 
   progress::-webkit-progress-value {
@@ -185,18 +210,6 @@
     @apply bg-brand-200 dark:bg-brand-400 rounded;
   }
 
-  /* Display tooltips as an overlay on touch-screen devices */
-  @media (pointer: coarse), (hover: none) {
-    [title] {
-      @apply relative inline-flex justify-center;
-    }
-
-    [title]:focus::after {
-      @apply w-fit absolute p-1 text-black bg-white border border-black
-        content-[attr(title)] top-[90%];
-    }
-  }
-
   /*
    * Grid-based table implementation for increased flexibility
    * Does not sacrifice accessibility thanks to the [role] attributes
@@ -205,15 +218,16 @@
    *   grid-cols-[repeat(4,1fr)_auto_auto_min-content_minmax(10rem,1fr)]
    * There is much more flexibility in how columns should be sized.
    */
-  .grid-table:is(table, [role~="table"]) {
+  .grid-table:is(table, [role~='table']) {
     @apply grid;
   }
 
-  .grid-table :is(thead, tbody, tr, [role~="rowgroup"], [role~="row"]) {
+  .grid-table :is(thead, tbody, tr, [role~='rowgroup'], [role~='row']) {
     @apply contents;
   }
 
-  .grid-table :is(th, td, [role~="columnheader"], [role~="rowheader"], [role~="cell"]) {
+  .grid-table
+    :is(th, td, [role~='columnheader'], [role~='rowheader'], [role~='cell']) {
     @apply flex items-center gap-1;
   }
 
@@ -228,7 +242,6 @@
   optgroup {
     @apply font-bold;
   }
-
 }
 
 /**
@@ -243,46 +256,54 @@
     --invalid-cell: theme('colors.red.300');
     --modified-cell: theme('colors.yellow.250');
     --search-result: theme('colors.green.300');
-    @apply dark:[--new-cell:theme('colors.indigo.900')]
+    --updated-cell: theme('colors.cyan.200');
+    --deleted-cell: theme('colors.amber.500');
+    --matched-and-changed-cell: theme('colors.blue.200');
+    @apply dark:[--deleted-cell:theme('colors.amber.600')]
       dark:[--invalid-cell:theme('colors.red.900')]
+      dark:[--matched-and-changed-cell:theme('colors.fuchsia.700')]
       dark:[--modified-cell:theme('colors.yellow.900')]
-      dark:[--search-result:theme('colors.green.900')];
+      dark:[--new-cell:theme('colors.indigo.900')]
+      dark:[--search-result:theme('colors.green.900')]
+      dark:[--updated-cell:theme('colors.cyan.800')];
   }
 
   .custom-select {
     --custom-select-b1: theme('colors.white');
     --custom-select-b2: theme('colors.brand.100');
     --custom-select-accent: theme('colors.brand.100');
-    @apply dark:[--custom-select-b1:theme('colors.neutral.800')]
-      dark:[--custom-select-b2:theme('colors.brand.500')]
-      dark:[--custom-select-accent:theme('colors.brand.500')];
+    @apply dark:[--custom-select-accent:theme('colors.brand.500')]
+      dark:[--custom-select-b1:theme('colors.neutral.800')]
+      dark:[--custom-select-b2:theme('colors.brand.500')];
   }
 
-  .custom-select-group-required-fields, .custom-select-input-required {
+  .custom-select-group-required-fields,
+  .custom-select-input-required {
     --custom-select-b1: theme('colors.cyan.100');
     --custom-select-b2: theme('colors.cyan.200');
     --custom-select-accent: theme('colors.cyan.300');
-    @apply dark:[--custom-select-b1:theme('colors.cyan.900')]
-      dark:[--custom-select-b2:theme('colors.cyan.800')]
-      dark:[--custom-select-accent:theme('colors.cyan.700')];
+    @apply dark:[--custom-select-accent:theme('colors.cyan.700')]
+      dark:[--custom-select-b1:theme('colors.cyan.900')]
+      dark:[--custom-select-b2:theme('colors.cyan.800')];
   }
 
-  .custom-select-group-hidden-fields, .custom-select-input-hidden {
+  .custom-select-group-hidden-fields,
+  .custom-select-input-hidden {
     --custom-select-b1: theme('colors.gray.200');
     --custom-select-b2: theme('colors.gray.300');
     --custom-select-accent: theme('colors.gray.350');
     @apply dark:[--custom-select-b1:theme('colors.neutral.800')]
-      dark:[--custom-select-b2:theme('colors.neutral.700')]
-      dark:[--custom-select-accent:theme('colors.neutral.600')];
+      dark:[--custom-select-accent:theme('colors.neutral.600')]
+      dark:[--custom-select-b2:theme('colors.neutral.700')];
   }
 
   .custom-select-group-suggested-mappings {
     --custom-select-b1: theme('colors.green.200');
     --custom-select-b2: theme('colors.green.300');
     --custom-select-accent: theme('colors.green.400');
-    @apply dark:[--custom-select-b1:theme('colors.green.700')]
-      dark:[--custom-select-b2:theme('colors.green.600')]
-      dark:[--custom-select-accent:theme('colors.green.500')];
+    @apply dark:[--custom-select-accent:theme('colors.green.500')]
+      dark:[--custom-select-b1:theme('colors.green.700')]
+      dark:[--custom-select-b2:theme('colors.green.600')];
   }
 }
 
@@ -298,25 +319,49 @@
    * https://gist.github.com/BrendonKoz/b1df234fe3ee388b402cd8e98f7eedbd
    */
   .invert-leaflet-layer {
-    filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+    filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg)
+      saturate(0.3) brightness(0.7);
   }
+}
+
+.\! {
+  /**
+   * In Chrome DevTools, in the "Element Classes" box (where you customize
+   * element class names), DevTools apply the first matching class name even
+   * before you started typing. The first matching happens to be !absolute,
+   * which breaks the UI. This noop is a workaround for that UX issue
+   */
+  --dev-tools-hack: 0;
 }
 
 /* Leaflet dark mode */
 .leaflet-bar a {
-  @apply dark:!bg-black dark:!border-b-neutral-600 dark:!text-white
-    hover:dark:!bg-brand-400;
+  @apply hover:dark:!bg-brand-400 dark:!border-b-neutral-600 dark:!bg-black
+    dark:!text-white;
 }
 
 .leaflet-control-layers,
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip,
 .leaflet-control-attribution {
-  @apply dark:!bg-black dark:!text-neutral-300
+  @apply dark:!bg-black dark:!text-neutral-300;
 }
 
 .leaflet-control-layers-separator {
   @apply dark:!border-t-neutral-600;
+}
+
+/** Improve Leaflet layer legend styling */
+.leaflet-control-layers-overlays > label > div {
+  @apply flex items-center gap-2;
+}
+
+.leaflet-control-layers-overlays > label > div > span {
+  @apply contents;
+}
+
+.leaflet-control-layers-selector {
+  @apply static m-0 p-0;
 }
 
 /*
@@ -329,6 +374,7 @@
 }
 
 /* The CodeMirror editor styleds*/
-.cm-theme, .cm-editor {
+.cm-theme,
+.cm-editor {
   @apply h-full;
 }

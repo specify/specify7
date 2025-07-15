@@ -3,15 +3,16 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
+import { interactionsText } from '../../localization/interactions';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
+import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { LoanPreparation } from '../DataModel/types';
-import type { PrepReturnRowState } from './PrepReturnDialog';
+import { fieldFormat } from '../Formatters/fieldFormat';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import { fieldFormat } from '../../utils/fieldFormat';
+import type { PrepReturnRowState } from './LoanReturn';
 
 export function PrepReturnRow({
   preparation,
@@ -37,7 +38,7 @@ export function PrepReturnRow({
                 catalogNumber: '',
                 taxon:
                   preparation.get('descriptionOfMaterial')?.slice(0, 50) ??
-                  formsText('unCataloged'),
+                  interactionsText.unCataloged(),
                 prepType: '',
               }
             : {
@@ -46,15 +47,12 @@ export function PrepReturnRow({
                   readonly taxon: string;
                 }>(async (collectionObject) => ({
                   catalogNumber: await fieldFormat(
-                    schema.models.CollectionObject.strictGetLiteralField(
-                      'catalogNumber'
-                    ),
-                    undefined,
+                    getField(tables.CollectionObject, 'catalogNumber'),
                     collectionObject.get('catalogNumber')
                   ),
                   taxon: await collectionObject
                     .rgetCollection('determinations')
-                    .then(({ models }) =>
+                    .then(async ({ models }) =>
                       models
                         .find((determination) => determination.get('isCurrent'))
                         ?.rgetPromise('preferredTaxon')
@@ -72,15 +70,16 @@ export function PrepReturnRow({
   );
 
   const [showRemarks, _, __, handleToggle] = useBooleanState();
+  const remarksLabel = getField(tables.LoanReturnPreparation, 'remarks').label;
 
   return (
     <>
       <tr>
         <td>
           <Input.Checkbox
-            aria-label={formsText('selectAll')}
+            aria-label={interactionsText.selectAll()}
             checked={resolve > 0}
-            title={formsText('selectAll')}
+            title={interactionsText.selectAll()}
             onValueChange={(checked): void =>
               handleChange({
                 resolve: checked ? unresolved : 0,
@@ -91,49 +90,49 @@ export function PrepReturnRow({
             }
           />
         </td>
-        <td>{data?.catalogNumber ?? commonText('loading')}</td>
-        <td>{data?.taxon ?? commonText('loading')}</td>
+        <td>{data?.catalogNumber ?? commonText.loading()}</td>
+        <td>{data?.taxon ?? commonText.loading()}</td>
         <td className="text-center">
-          {data?.prepType ?? commonText('loading')}
+          {data?.prepType ?? commonText.loading()}
         </td>
         <td className="text-center">{unresolved}</td>
         <td>
-          <Input.Number
-            aria-label={formsText('returnedAmount')}
+          <Input.Integer
+            aria-label={interactionsText.returnedAmount()}
             className="w-12"
             max={unresolved}
             min={0}
-            title={formsText('returnedAmount')}
+            title={interactionsText.returnedAmount()}
             value={returns}
             onValueChange={(returns): void =>
-              handleChange({
-                // Make return <= unresolved
-                returns: Math.min(returns, unresolved),
-                // Make resolved >= returned
-                resolve: Math.max(returns, resolve),
-                unresolved,
-                remarks,
-              })
+              handleChange(
+                updateReturnChanged({
+                  returns,
+                  resolve,
+                  unresolved,
+                  remarks,
+                })
+              )
             }
           />
         </td>
         <td>
-          <Input.Number
-            aria-label={formsText('resolvedAmount')}
+          <Input.Integer
+            aria-label={interactionsText.resolvedAmount()}
             className="w-12"
             max={unresolved}
             min={returns}
-            title={formsText('resolvedAmount')}
+            title={interactionsText.resolvedAmount()}
             value={resolve}
-            onValueChange={(resolve): void =>
-              handleChange({
-                // Make resolve <= unresolved
-                resolve: Math.min(resolve, unresolved),
-                // Make returned <= resolved
-                returns: Math.min(resolve, returns),
-                unresolved,
-                remarks,
-              })
+            onValueChange={(resolved): void =>
+              handleChange(
+                updateResolvedChanged({
+                  returns,
+                  resolve: resolved,
+                  unresolved,
+                  remarks,
+                })
+              )
             }
           />
         </td>
@@ -143,7 +142,7 @@ export function PrepReturnRow({
               aria-pressed={showRemarks}
               className="return-remark w-full"
               icon="annotation"
-              title={formsText('remarks')}
+              title={remarksLabel}
               onClick={handleToggle}
             />
           )}
@@ -154,11 +153,11 @@ export function PrepReturnRow({
           <td />
           <td className="col-span-7">
             <AutoGrowTextArea
-              aria-label={formsText('remarks')}
+              aria-label={remarksLabel}
               containerClassName="w-full"
               forwardRef={(target): void => target?.focus()}
-              placeholder={formsText('remarks')}
-              title={formsText('remarks')}
+              placeholder={remarksLabel}
+              title={remarksLabel}
               value={remarks}
               // Focus the input when toggled
               onValueChange={(remarks): void =>
@@ -175,5 +174,44 @@ export function PrepReturnRow({
       ) : undefined}
     </>
   );
-  // Hide show remarks field here
+}
+
+export function updateReturnChanged({
+  returns,
+  resolve,
+  unresolved,
+  remarks,
+}: PrepReturnRowState): PrepReturnRowState {
+  // Make return <= unresolved
+  const returnedCount = Math.min(returns, unresolved);
+
+  // Make resolved >= returned
+  const newResolve = Math.max(returns, resolve);
+
+  return {
+    resolve: newResolve,
+    returns: returnedCount,
+    unresolved,
+    remarks,
+  };
+}
+
+export function updateResolvedChanged({
+  returns,
+  resolve,
+  unresolved,
+  remarks,
+}: PrepReturnRowState): PrepReturnRowState {
+  // Make return <= unresolved
+  const resolvedCount = Math.min(resolve, unresolved);
+
+  // Make resolved >= returned
+  const newReturns = Math.min(resolve, returns);
+
+  return {
+    resolve: resolvedCount,
+    returns: newReturns,
+    unresolved,
+    remarks,
+  };
 }

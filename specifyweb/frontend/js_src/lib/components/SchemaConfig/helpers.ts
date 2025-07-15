@@ -1,21 +1,16 @@
+import { schemaText } from '../../localization/schema';
+import type { IR, RA } from '../../utils/types';
+import { localized } from '../../utils/types';
+import { addMissingFields } from '../DataModel/addMissingFields';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpLocaleContainerItem } from '../DataModel/types';
+import type { Aggregator, Formatter } from '../Formatters/spec';
 import type {
   ItemType,
   NewSpLocaleItemString,
   SpLocaleItemString,
 } from './index';
-import type { DataObjectFormatter } from './SetupHooks';
-import type { SpLocaleContainerItem, Tables } from '../DataModel/types';
-import type { Aggregator, Formatter } from '../Forms/dataObjFormatters';
-import { commonText } from '../../localization/common';
-import { parseJavaClassName } from '../DataModel/resource';
-import type {
-  JavaType,
-  LiteralField,
-  Relationship,
-} from '../DataModel/specifyField';
-import type { IR, RA } from '../../utils/types';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { addMissingFields } from '../DataModel/addMissingFields';
+import type { SchemaFormatter } from './schemaData';
 
 let newStringId = 1;
 const defaultLanguage = 'en';
@@ -31,7 +26,7 @@ export function findString(
   /*
    * Start searching for matching string from the end. This would align
    * schema config behavior with the way back-end handles cases when there
-   * are duplicate SpLocalteItemStr records for the same field and same language
+   * are duplicate SpLocaleItemStr records for the same field and same language
    */
   const targetString = Array.from(strings ?? [])
     .reverse()
@@ -60,32 +55,13 @@ export function findString(
 /** Throws away unneeded fields */
 export const formatAggregators = (
   aggregators: RA<Aggregator | Formatter>
-): IR<DataObjectFormatter> =>
-  Object.fromEntries(
-    aggregators.map(({ name = '', title = '', className = '' }) => [
-      name,
-      {
-        title,
-        className,
-      },
-    ])
-  );
-
-/**
- * Filter down defined formatters
- */
-export const filterFormatters = (
-  formatters: IR<DataObjectFormatter>,
-  tableName: keyof Tables
-): IR<string> =>
-  Object.fromEntries(
-    Object.entries(formatters)
-      .filter(
-        ([_name, { className }]) =>
-          parseJavaClassName(className).toLowerCase() === tableName
-      )
-      .map(([name, { title }]) => [name, title] as const)
-  );
+): RA<SchemaFormatter> =>
+  aggregators.map(({ name = '', title = '', table }, index) => ({
+    name,
+    title: localized(title === '' ? name : title),
+    tableName: table?.name,
+    index,
+  }));
 
 /**
  * Determine what kind of item SpLocalItem is based on what fields it has
@@ -98,29 +74,18 @@ export function getItemType(
 ): ItemType {
   if (item.webLinkName !== null) return 'webLink';
   else if (item.pickListName !== null) return 'pickList';
-  // eslint-disable-next-line no-negated-condition
-  else if (item.format !== null) return 'formatted';
-  else return 'none';
-}
-
-const webLinkTypes = new Set<JavaType>(['text', 'java.lang.String']);
-
-export function isFormatterAvailable(
-  field: LiteralField | Relationship,
-  formatter: ItemType
-): boolean {
-  if (formatter === 'none' || formatter === 'pickList') return true;
-  else if (formatter === 'webLink')
-    return !field.isRelationship && webLinkTypes.has(field.type);
-  else if (formatter === 'formatted') return !field.isRelationship;
-  else return false;
+  else if (item.format === null) {
+    return 'none';
+  } else {
+    return 'formatted';
+  }
 }
 
 export const localizedRelationshipTypes: IR<string> = {
-  'one-to-one': commonText('oneToOne'),
-  'one-to-many': commonText('oneToMany'),
-  'many-to-one': commonText('manyToOne'),
-  'many-to-many': commonText('manyToMany'),
+  'one-to-one': schemaText.oneToOne(),
+  'one-to-many': schemaText.oneToMany(),
+  'many-to-one': schemaText.manyToOne(),
+  'many-to-many': schemaText.manyToMany(),
 };
 
 /**
@@ -128,11 +93,11 @@ export const localizedRelationshipTypes: IR<string> = {
  */
 export function javaTypeToHuman(
   type: string | null,
-  relatedModelName: string | undefined = ''
+  relatedTableName: string | undefined = ''
 ): string {
   if (type === null) return '';
   else if (type in localizedRelationshipTypes)
-    return `${localizedRelationshipTypes[type]} (${relatedModelName})`;
+    return `${localizedRelationshipTypes[type]} (${relatedTableName})`;
   else if (type.startsWith('java')) return type.split('.').at(-1)!;
   else return type;
 }

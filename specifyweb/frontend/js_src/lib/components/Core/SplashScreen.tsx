@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useHueDifference } from '../../hooks/useHueDifference';
 import { commonText } from '../../localization/common';
 
 export function SplashScreen({
@@ -7,10 +8,11 @@ export function SplashScreen({
 }: {
   readonly children: React.ReactNode;
 }): JSX.Element {
+  const hueDifference = useHueDifference();
   return (
     <div
       className={`
-        flex h-full items-center justify-center overflow-y-auto
+        flex w-full items-center justify-center overflow-y-auto
         bg-gray-400 dark:bg-neutral-900
       `}
     >
@@ -21,11 +23,12 @@ export function SplashScreen({
         `}
       >
         <header className="pb-2">
-          <h1 className="sr-only">{commonText('specifySeven')}</h1>
+          <h1 className="sr-only">{commonText.specifySeven()}</h1>
           <img
             alt=""
             className="max-w-xs hover:animate-hue-rotate"
             src="/static/img/logo.svg"
+            style={{ filter: `hue-rotate(${hueDifference}deg)` }}
           />
         </header>
         <main className="contents">{children}</main>

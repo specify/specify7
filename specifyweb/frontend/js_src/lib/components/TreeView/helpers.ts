@@ -1,14 +1,16 @@
 import type React from 'react';
-import _ from 'underscore';
 
-import { ajax } from '../../utils/ajax';
-import { formatNumber } from '../Atoms/Internationalization';
-import { getTransitionDuration } from '../UserPreferences/Hooks';
+import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
+import { ajax } from '../../utils/ajax';
 import type { RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { AnyTree } from '../DataModel/helperTypes';
+import { throttle } from '../../utils/utils';
+import type { AnyTree } from '../DataModel/helperTypes';
+import { tables } from '../DataModel/tables';
+import { softFail } from '../Errors/Crash';
+import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
+import { getTransitionDuration } from '../Preferences/Hooks';
 
 export const fetchRows = async (fetchUrl: string) =>
   ajax<
@@ -22,11 +24,12 @@ export const fetchRows = async (fetchUrl: string) =>
         number,
         number | null,
         string | null,
-        number
+        string | null,
+        number,
+        string | null,
       ]
     >
   >(fetchUrl, {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: { Accept: 'application/json' },
   }).then(({ data: rows }) =>
     rows.map(
@@ -40,7 +43,9 @@ export const fetchRows = async (fetchUrl: string) =>
           rankId,
           acceptedId = undefined,
           acceptedName = undefined,
+          author = undefined,
           children,
+          synonyms = undefined,
         ],
         index,
         { length }
@@ -53,8 +58,10 @@ export const fetchRows = async (fetchUrl: string) =>
         rankId,
         acceptedId,
         acceptedName,
+        author,
         children,
         isLastChild: index + 1 === length,
+        synonyms,
       })
     )
   );
@@ -71,14 +78,10 @@ export type Stats = RR<
  * Fetch tree node usage stats
  */
 export const fetchStats = async (url: string): Promise<Stats> =>
-  ajax<RA<readonly [number, number, number]>>(
-    url,
-    {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      headers: { Accept: 'application/json' },
-    },
-    { strict: false }
-  )
+  ajax<RA<readonly [number, number, number]>>(url, {
+    headers: { Accept: 'application/json' },
+    errorMode: 'silent',
+  })
     .then(({ data }) =>
       Object.fromEntries(
         data.map(([childId, directCount, allCount]) => [
@@ -108,13 +111,13 @@ export function deserializeConformation(
 ): Conformations | undefined {
   if (conformation === '') return undefined;
   const serialized = conformation
-    .replace(/([^~])~/g, '$1,~')
+    .replaceAll(/([^~])~/g, '$1,~')
     .replaceAll('~', '[')
     .replaceAll('-', ']');
   try {
     return JSON.parse(serialized) as Conformations;
   } catch {
-    console.error('bad tree conformation:', serialized);
+    softFail(new Error('bad tree conformation:'), serialized);
     return undefined;
   }
 }
@@ -135,7 +138,7 @@ export function serializeConformation(
 }
 
 const throttleRate = 250;
-export const scrollIntoView = _.throttle(function scrollIntoView(
+export const scrollIntoView = throttle(function scrollIntoView(
   element: HTMLElement,
   mode: ScrollLogicalPosition = 'center'
 ): void {
@@ -148,8 +151,7 @@ export const scrollIntoView = _.throttle(function scrollIntoView(
   } catch {
     element.scrollIntoView(mode === 'start');
   }
-},
-throttleRate);
+}, throttleRate);
 
 export type KeyAction =
   | 'child'
@@ -190,15 +192,27 @@ export const formatTreeStats = (
   readonly text: string;
 } => ({
   title: filterArray([
-    `${treeText('directCollectionObjectCount')}: ${nodeStats.directCount}`,
+    commonText.colonLine({
+      label: treeText.directCollectionObjectCount({
+        collectionObjectTable: tables.CollectionObject.label,
+      }),
+      value: nodeStats.directCount.toString(),
+    }),
     isLeaf
       ? undefined
-      : `${treeText('indirectCollectionObjectCount')}: ${nodeStats.childCount}`,
+      : commonText.colonLine({
+          label: treeText.indirectCollectionObjectCount({
+            collectionObjectTable: tables.CollectionObject.label,
+          }),
+          value: nodeStats.childCount.toString(),
+        }),
   ]).join('\n'),
-  text: `(${filterArray([
-    nodeStats.directCount,
-    isLeaf ? undefined : formatNumber(nodeStats.childCount),
-  ]).join(', ')})`,
+  text: isLeaf
+    ? treeText.leafNodeStats({ directCount: nodeStats.directCount })
+    : treeText.nodeStats({
+        directCount: nodeStats.directCount,
+        childCount: nodeStats.childCount,
+      }),
 });
 
 /**

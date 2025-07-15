@@ -1,31 +1,13 @@
-{% load raven %}
-{% load script_manifest %}
+{% include "head.html" %}
+"login"
+{% include "body.html" %}
 {% load i18n %}
-<!DOCTYPE html>
-{% get_current_language as LANGUAGE_CODE %}
-<html lang="{{ LANGUAGE_CODE }}">
-<head>
-  <meta charset="utf-8">
-  <script id="entrypoint-name">"login"</script>
-{% if use_raven %}
-  <script src="https://cdn.ravenjs.com/1.1.16/raven.min.js"></script>
-  <script>Raven.config('{% sentry_public_dsn %}').install()</script>
-{% endif %}
-  <script src="{% script_src 'main.js' %}"></script>
-</head>
-
-<body>
-  <div id="root"></div>
-  <div id="portal-root"></div>
-
-  {% get_available_languages as LANGUAGES %}
-  {{ LANGUAGES|json_script:'languages' }}
-  {{ request.session.external_user|json_script:'external-user' }}
-  {{ form.non_field_errors|json_script:'form-errors' }}
-  {{ form.username.errors|json_script:'username-errors' }}
-  {{ form.password.errors|json_script:'password-errors' }}
-  {{ next|json_script:'next-url' }}
-  <script id="csrf-token">"{{ csrf_token }}"</script>
-</body>
-</html>
-
+{% get_available_languages as LANGUAGES %}
+{{ LANGUAGES|json_script:'languages' }}
+{{ next|json_script:'next-url' }}
+{{ request.session.external_user|json_script:'external-user' }}
+{{ form.non_field_errors|json_script:'form-errors' }}
+{{ form.username.errors|json_script:'username-errors' }}
+{{ form.password.errors|json_script:'password-errors' }}
+<script id="csrf-token">"{{ csrf_token }}"</script>
+{% include "footer.html" %}

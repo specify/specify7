@@ -23,4 +23,4 @@ describe('Parsing Remote Prefs', () => {
 });
 
 test('can retrieve collection pref', () =>
-  expect(getCollectionPref('CO_CREATE_COA', 32678)).toBe(false));
+  expect(getCollectionPref('CO_CREATE_COA', 32_678)).toBe(false));

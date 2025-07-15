@@ -1,30 +1,38 @@
 import React from 'react';
 import type { SafeNavigateFunction } from 'react-router';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
+import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { toRelativeUrl } from '../../utils/ajax/helpers';
+import { toLocalUrl } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
-import { locationToState } from '../Router/RouterState';
+import { formatUrl } from '../Router/queryString';
+import { clearAllCache } from './CacheBuster';
 
 export const switchCollection = (
   navigate: SafeNavigateFunction,
   collectionId: number,
   nextUrl?: string
 ): void =>
-  navigate(`/specify/command/switch-collection/${collectionId}/`, {
-    state: {
-      type: 'Command',
-      nextUrl:
-        nextUrl ?? toRelativeUrl(globalThis.location.href) ?? '/specify/',
-    },
-  });
+  /**
+   * React router has prevention against navigation during render. Unfortunately,
+   * that back-fires when navigate is called from useLayoutEffect (before
+   * useEffect). Need to add artificial delay for that
+   */
+  void setTimeout(
+    () =>
+      navigate(
+        formatUrl(`/specify/command/switch-collection/${collectionId}/`, {
+          nextUrl:
+            nextUrl ?? toLocalUrl(globalThis.location.href) ?? '/specify/',
+        })
+      ),
+    0
+  );
 
 export function SwitchCollectionCommand(): null {
   const { collectionId } = useParams();
-  const location = useLocation();
-  const state = locationToState(location, 'Command');
-  const nextUrl = state?.nextUrl ?? '/specify/';
+  const [nextUrl = '/specify/'] = useSearchParameter('nextUrl');
 
   useAsyncState(
     React.useCallback(
@@ -32,7 +40,10 @@ export function SwitchCollectionCommand(): null {
         ping('/context/collection/', {
           method: 'POST',
           body: collectionId!.toString(),
-        }).then(() => globalThis.location.replace(nextUrl)),
+          errorMode: 'dismissible',
+        })
+          .then(clearAllCache)
+          .then(() => globalThis.location.replace(nextUrl)),
       [collectionId, nextUrl]
     ),
     true

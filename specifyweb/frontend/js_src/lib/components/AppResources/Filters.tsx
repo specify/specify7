@@ -1,9 +1,12 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
+import { resourcesText } from '../../localization/resources';
+import type { RA } from '../../utils/types';
 import { toggleItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -12,13 +15,11 @@ import { Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Dialog } from '../Molecules/Dialog';
-import type { AppResourceFilters as AppResourceFiltersType } from './filtersHelpers';
 import {
   allAppResources,
   countAppResources,
   defaultAppResourceFilters,
-  filterAppResources,
-  hasAllAppResources,
+  isAllAppResourceTypes,
 } from './filtersHelpers';
 import type { AppResources } from './hooks';
 import { appResourceSubTypes, appResourceTypes } from './types';
@@ -33,7 +34,7 @@ export function AppResourcesFilters({
     'filters'
   );
 
-  const showAllResources = hasAllAppResources(filters.appResources);
+  const showAllResources = isAllAppResourceTypes(filters.appResources);
   const handleToggleResources = (): void =>
     setFilters({
       ...filters,
@@ -44,8 +45,7 @@ export function AppResourcesFilters({
 
   return (
     <>
-      <div className="flex gap-2 rounded bg-[color:var(--background)]">
-        <span className="sr-only">{adminText('filters')}</span>
+      <RadioContainer screenReaderLabel={resourcesText.filters()}>
         <RadioButton
           isPressed={filters.viewSets}
           onClick={(): void =>
@@ -55,7 +55,7 @@ export function AppResourcesFilters({
             })
           }
         >
-          {commonText('formDefinitions')}
+          {resourcesText.formDefinitions()}
         </RadioButton>
         <RadioButton
           isPressed={showAllResources}
@@ -67,20 +67,20 @@ export function AppResourcesFilters({
             })
           }
         >
-          {commonText('appResources')}
+          {resourcesText.appResources()}
         </RadioButton>
-        <Button.Blue
-          aria-label={adminText('custom')}
-          title={adminText('custom')}
+        <Button.Info
+          aria-label={resourcesText.custom()}
+          title={resourcesText.custom()}
           onClick={handleOpen}
         >
           {icons.cog}
-        </Button.Blue>
-      </div>
+        </Button.Info>
+      </RadioContainer>
       {isOpen && (
         <Dialog
-          buttons={commonText('close')}
-          header={adminText('custom')}
+          buttons={commonText.close()}
+          header={resourcesText.custom()}
           modal={false}
           onClose={handleClose}
         >
@@ -97,10 +97,13 @@ export function AppResourcesFilters({
                   }
                 />
                 {appResourceTypes.viewSets.icon}
-                {`${commonText('formDefinitions')} (${countAppResources(
-                  initialResources,
-                  { appResources: [], viewSets: true }
-                )})`}
+                {commonText.countLine({
+                  resource: resourcesText.formDefinitions(),
+                  count: countAppResources(initialResources, {
+                    appResources: [],
+                    viewSets: true,
+                  }),
+                })}
               </Label.Inline>
             </li>
             <li>
@@ -110,10 +113,13 @@ export function AppResourcesFilters({
                   onValueChange={handleToggleResources}
                 />
                 {appResourceTypes.appResources.icon}
-                {`${commonText('appResources')} (${countAppResources(
-                  initialResources,
-                  { appResources: allAppResources, viewSets: false }
-                )})`}
+                {commonText.countLine({
+                  resource: resourcesText.appResources(),
+                  count: countAppResources(initialResources, {
+                    appResources: allAppResources,
+                    viewSets: false,
+                  }),
+                })}
               </Label.Inline>
               <Ul className="pl-6">
                 {Object.entries(appResourceSubTypes).map(
@@ -133,16 +139,19 @@ export function AppResourcesFilters({
                           }
                         />
                         {icon}
-                        {`${label} (${countAppResources(initialResources, {
-                          appResources: [key],
-                          viewSets: false,
-                        })})`}
+                        {commonText.countLine({
+                          resource: label,
+                          count: countAppResources(initialResources, {
+                            appResources: [key],
+                            viewSets: false,
+                          }),
+                        })}
                         {typeof documentationUrl === 'string' && (
                           <Link.Icon
                             href={documentationUrl}
                             icon="externalLink"
                             target="_blank"
-                            title={commonText('documentation')}
+                            title={headerText.documentation()}
                           />
                         )}
                       </Label.Inline>
@@ -158,50 +167,48 @@ export function AppResourcesFilters({
   );
 }
 
+function RadioContainer({
+  screenReaderLabel,
+  children,
+}: {
+  readonly screenReaderLabel: LocalizedString;
+  readonly children: RA<JSX.Element>;
+}): JSX.Element {
+  return (
+    <div className="flex flex-wrap gap-2 rounded bg-[color:var(--background)]">
+      <span className="sr-only">{screenReaderLabel}</span>
+      {children}
+    </div>
+  );
+}
+
+export const radioButtonClassName = (isPressed: boolean): string => `
+  ${className.niceButton} ${className.ariaHandled}
+  ${
+    isPressed
+      ? className.infoButton
+      : 'hover:bg-gray-300 hover:dark:bg-neutral-600'
+  }
+`;
+
 function RadioButton({
   isPressed,
   children,
   onClick: handleClick,
 }: {
   readonly isPressed: boolean;
-  readonly children: string;
+  readonly children: LocalizedString;
   readonly onClick: () => void;
 }): JSX.Element {
   return (
+    // REFACTOR: this should reuse Button.Small
     <button
       aria-pressed={isPressed}
-      className={`
-        ${className.niceButton} aria-handled
-        ${
-          isPressed
-            ? className.blueButton
-            : 'hover:bg-gray-300 hover:dark:bg-neutral-600'
-        }
-      `}
+      className={radioButtonClassName(isPressed)}
       type="button"
       onClick={handleClick}
     >
       {children}
     </button>
-  );
-}
-
-export function useFilteredAppResources(
-  initialResources: AppResources,
-  initialFilters: AppResourceFiltersType | undefined = defaultAppResourceFilters
-): AppResources {
-  const [filters, setFilters] = useCachedState('appResources', 'filters');
-
-  React.useEffect(() => {
-    if (initialFilters === defaultAppResourceFilters) return undefined;
-    setFilters(initialFilters);
-    const oldFilter = filters;
-    return (): void => setFilters(oldFilter);
-  }, [setFilters]);
-
-  const nonNullFilters = filters ?? initialFilters;
-  return React.useMemo(
-    () => filterAppResources(initialResources, nonNullFilters),
-    [nonNullFilters, initialResources]
   );
 }

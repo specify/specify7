@@ -1,28 +1,9 @@
-{% load raven %} {% load script_manifest %} {% load i18n %}
-<!DOCTYPE html>
-{% get_current_language as LANGUAGE_CODE %}
-<html lang="{{ LANGUAGE_CODE }}">
-  <head>
-    <meta charset="utf-8" />
-    <script id="entrypoint-name">"chooseCollection"</script>
-    {% if use_raven %}
-    <script src="https://cdn.ravenjs.com/1.1.16/raven.min.js"></script>
-    <script>
-      Raven.config("{% sentry_public_dsn %}").install();
-    </script>
-    {% endif %}
-    <script src="{% script_src 'main.js' %}"></script>
-  </head>
-
-  <body>
-    <div id="root"></div>
-    <div id="portal-root"></div>
-
-    {{ form.non_field_errors|json_script:'form-errors' }}
-    {{ form.collection.errors|json_script:'collection-errors' }}
-    {{ available_collections|json_script:'available-collections' }}
-    {{ initial_value|json_script:'initial-value' }}
-    {{ next|json_script:'next-url' }}
-
-  </body>
-</html>
+{% include "head.html" %}
+"chooseCollection"
+{% include "body.html" %}
+{{ form.non_field_errors|json_script:'form-errors' }}
+{{ form.collection.errors|json_script:'collection-errors' }}
+{{ available_collections|json_script:'available-collections' }}
+{{ initial_value|json_script:'initial-value' }}
+{{ next|json_script:'next-url' }}
+{% include "footer.html" %}

@@ -5,21 +5,24 @@
 
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
-import { error } from '../Errors/assert';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { Progress } from '../Atoms';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import type { Dataset, Status } from '../WbPlanView/Wrapped';
 import { Button } from '../Atoms/Button';
 import { Label } from '../Atoms/Form';
+import { SECOND } from '../Atoms/timeUnits';
+import { error } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
 import { useTitle } from '../Molecules/AppTitle';
-import { Http } from '../../utils/ajax/definitions';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import type { Dataset, Status } from '../WbPlanView/Wrapped';
+import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
+import { RemainingLoadingTime } from './RemainingLoadingTime';
 
 // How often to query back-end
-const REFRESH_RATE = 2000;
+const REFRESH_RATE = 2 * SECOND;
 
 export function WbStatus({
   dataset,
@@ -31,6 +34,9 @@ export function WbStatus({
   if (!dataset.uploaderstatus)
     throw new Error('Initial Wb Status object is not defined');
 
+  const viewerLocalization =
+    resolveVariantFromDataset(dataset).localization.viewer;
+
   const [status, setStatus] = React.useState<Status>(dataset.uploaderstatus);
   const [aborted, setAborted] = React.useState<boolean | 'failed' | 'pending'>(
     false
@@ -40,7 +46,6 @@ export function WbStatus({
     let destructorCalled = false;
     const fetchStatus = (): void =>
       void ajax<Status | null>(`/api/workbench/status/${dataset.id}/`, {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         headers: { Accept: 'application/json' },
       })
         .then(({ data: status }) => {
@@ -61,34 +66,34 @@ export function WbStatus({
   }, [aborted, dataset.id]);
 
   const title = {
-    validating: wbText('wbStatusValidationDialogTitle'),
-    uploading: wbText('wbStatusUploadDialogTitle'),
-    unuploading: wbText('wbStatusUnuploadDialogTitle'),
+    validating: wbText.wbStatusValidation(),
+    uploading: viewerLocalization.doStatus,
+    unuploading: wbText.wbStatusUnupload(),
   }[status.uploaderstatus.operation];
 
   // FEATURE: display upload progress in the title if tab is not focused
   useTitle(title);
 
   const mappedOperation = {
-    validating: wbText('validation'),
-    uploading: wbText('upload'),
-    unuploading: wbText('rollback'),
+    validating: wbText.validation(),
+    uploading: viewerLocalization.do,
+    unuploading: wbText.rollback(),
   }[status.uploaderstatus.operation];
 
-  const standartalizedOperation = {
-    validating: wbText('validating'),
-    uploading: wbText('uploading'),
-    unuploading: wbText('rollingBack'),
+  const standardizedOperation = {
+    validating: wbText.validating(),
+    uploading: viewerLocalization.doing,
+    unuploading: wbText.rollingBack(),
   }[status.uploaderstatus.operation];
 
   if (aborted === 'failed')
     return (
       <Dialog
-        buttons={commonText('close')}
+        buttons={commonText.close()}
         header={title}
         onClose={(): void => setAborted(false)}
       >
-        {wbText('wbStatusAbortFailed', mappedOperation)}
+        {wbText.wbStatusAbortFailed({ operationName: mappedOperation })}
       </Dialog>
     );
 
@@ -98,28 +103,38 @@ export function WbStatus({
   const total =
     typeof status?.taskinfo === 'object' ? status.taskinfo?.total : 1;
 
-  if (aborted === 'pending') message = wbText('aborting');
+  if (aborted === 'pending') message = wbText.aborting();
   else if (status.taskstatus === 'PENDING')
-    message = wbText('wbStatusPendingDialogText', mappedOperation);
+    message = (
+      <>
+        {wbText.wbStatusPendingDescription({ operationName: mappedOperation })}
+        <br />
+        <br />
+        {wbText.wbStatusPendingSecondDescription({
+          operationName: mappedOperation,
+        })}
+      </>
+    );
   else if (status.taskstatus === 'PROGRESS') {
     if (current === total)
       message =
         status.uploaderstatus.operation === 'uploading'
-          ? wbText('updatingTrees')
-          : wbText('wbStatusOperationNoProgress', mappedOperation);
+          ? wbText.updatingTrees()
+          : wbText.wbStatusOperationNoProgress({
+              operationName: mappedOperation,
+            });
     else
-      message = wbText(
-        'wbStatusOperationProgress',
-        standartalizedOperation,
+      message = wbText.wbStatusOperationProgress({
+        operationName: standardizedOperation,
         current,
-        total
-      );
+        total,
+      });
   }
   // FAILED
   else
     message = (
       <>
-        {wbText('wbStatusErrorDialogText', mappedOperation)}
+        {wbText.wbStatusError({ operationName: mappedOperation })}
         <pre>{JSON.stringify(status, null, 2)}</pre>
       </>
     );
@@ -128,27 +143,28 @@ export function WbStatus({
     <Dialog
       buttons={
         aborted === false ? (
-          <Button.Red
+          <Button.Danger
             onClick={(): void => {
               setAborted('pending');
               ajax<'not running' | 'ok'>(
                 `/api/workbench/abort/${dataset.id}/`,
-                { method: 'POST', headers: { Accept: 'application/json' } },
                 {
-                  expectedResponseCodes: [Http.UNAVAILABLE, Http.OK],
-                  strict: false,
+                  method: 'POST',
+                  headers: { Accept: 'application/json' },
+                  expectedErrors: [Http.UNAVAILABLE],
+                  errorMode: 'silent',
                 }
               )
                 .then(({ data, status }) =>
                   status === Http.OK && ['ok', 'not running'].includes(data)
                     ? setAborted(true)
-                    : error('Invalid response')
+                    : error('Invalid WbStatus response', { status, data })
                 )
                 .catch(() => setAborted('failed'));
             }}
           >
-            {commonText('stop')}
-          </Button.Red>
+            {wbText.stop()}
+          </Button.Danger>
         ) : undefined
       }
       className={{
@@ -162,6 +178,7 @@ export function WbStatus({
         {status.taskstatus === 'PROGRESS' && (
           <Progress max={total} value={current} />
         )}
+        <RemainingLoadingTime current={current} total={total} />
       </Label.Block>
     </Dialog>
   );

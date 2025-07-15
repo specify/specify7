@@ -5,30 +5,35 @@
 
 import React from 'react';
 
+import { useResource } from '../../hooks/resource';
+import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import { formData } from '../../utils/ajax/helpers';
-import type { SpecifyUser } from '../DataModel/types';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { adminText } from '../../localization/admin';
-import { hasPermission } from '../Permissions/helpers';
-import { userInformation } from '../InitialContext/userInformation';
+import { ping } from '../../utils/ajax/ping';
+import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
-import { useResource } from '../../hooks/resource';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Collection, SpecifyUser } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
+import { hasPermission } from '../Permissions/helpers';
 
 export function AdminStatusPlugin({
   user: resource,
   isAdmin,
   onChange: handleChange,
+  collections,
 }: {
   readonly user: SpecifyResource<SpecifyUser>;
   readonly isAdmin: boolean;
   readonly onChange: (isAdmin: boolean) => void;
+  readonly collections: RA<SerializedResource<Collection>>;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [user] = useResource(resource);
   const isCurrentUser = userInformation.id === user.id;
-
+  const allCollectionIds = collections?.map((collection) => collection.id);
   return (
     <Button.Small
       className="w-fit"
@@ -36,18 +41,18 @@ export function AdminStatusPlugin({
         !hasPermission('/admin/user/sp6/is_admin', 'update') ||
         resource.isNew() ||
         // Only managers can be admins
-        user.userType != 'Manager' ||
+        user.userType !== 'Manager' ||
         // Can't remove admin status from yourself
         (isAdmin && isCurrentUser)
       }
       title={
         resource.isNew()
-          ? adminText('saveUserFirst')
+          ? userText.saveUserFirst()
           : isAdmin && isCurrentUser
-          ? adminText('canNotRemoveYourself')
-          : user.userType === 'Manager'
-          ? undefined
-          : adminText('mustBeManager')
+            ? userText.canNotRemoveYourself()
+            : user.userType === 'Manager'
+              ? undefined
+              : userText.mustBeManager()
       }
       onClick={(): void =>
         loading(
@@ -56,14 +61,27 @@ export function AdminStatusPlugin({
             body: formData({
               admin_status: !isAdmin,
             }),
+            errorMode: 'dismissible',
             headers: {
               Accept: 'text/plain',
             },
-          }).then(({ data }) => handleChange(data === 'true'))
+          })
+            .then(({ data }) => {
+              handleChange(data === 'true');
+              return data;
+            })
+            .then((data) => {
+              data === 'true'
+                ? ping(`/context/user_collection_access_for_sp6/${user.id}/`, {
+                    method: 'PUT',
+                    body: allCollectionIds,
+                  })
+                : undefined;
+            })
         )
       }
     >
-      {isAdmin ? adminText('removeAdmin') : adminText('makeAdmin')}
+      {isAdmin ? userText.removeAdmin() : userText.makeAdmin()}
     </Button.Small>
   );
 }

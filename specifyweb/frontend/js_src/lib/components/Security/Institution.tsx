@@ -1,34 +1,34 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useLocation } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { ajax } from '../../utils/ajax';
-import type { Institution } from '../DataModel/types';
-import { sortFunction } from '../../utils/utils';
-import { adminText } from '../../localization/admin';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
-import { hasPermission, hasTablePermission } from '../Permissions/helpers';
-import { schema } from '../DataModel/schema';
+import { userText } from '../../localization/user';
+import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
-import { userInformation } from '../InitialContext/userInformation';
+import { localized } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
+import { Container, Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
+import type { Institution } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
+import { useTitle } from '../Molecules/AppTitle';
 import { downloadFile } from '../Molecules/FilePicker';
-import { deserializeResource } from '../../hooks/resource';
-import { ResourceView } from '../Forms/ResourceView';
+import { RecordEdit } from '../Molecules/ResourceLink';
+import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import { SafeOutlet } from '../Router/RouterUtils';
+import type { SecurityOutlet } from '../Toolbar/Security';
 import { createLibraryRole } from './CreateLibraryRole';
 import { ImportExport } from './ImportExport';
 import { updateLibraryRole } from './LibraryRole';
-import type { SecurityOutlet } from '../Toolbar/Security';
-import { SafeOutlet } from '../Router/RouterUtils';
-import { useErrorContext } from '../../hooks/useErrorContext';
-import { Link } from '../Atoms/Link';
-import { Container, Ul } from '../Atoms';
-import { Button } from '../Atoms/Button';
-import { DataEntry } from '../Atoms/DataEntry';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { useTitle } from '../Molecules/AppTitle';
 import { policiesToTsv } from './registry';
 
 export function SecurityInstitution(): JSX.Element | null {
@@ -53,7 +53,7 @@ function InstitutionView({
 
   const admins = useAdmins();
 
-  useTitle(institution.name ?? undefined);
+  useTitle(localized(institution.name) ?? undefined);
   const loading = React.useContext(LoadingContext);
   const location = useLocation();
   const isOverlay = location.pathname.startsWith(
@@ -70,14 +70,17 @@ function InstitutionView({
         <>
           <div className="flex gap-2">
             <h3 className="text-2xl">
-              {`${schema.models.Institution.label}: ${institution.name ?? ''}`}
+              {commonText.colonLine({
+                label: tables.Institution.label,
+                value: institution.name ?? '',
+              })}
             </h3>
-            <ViewInstitutionButton institution={institution} />
+            <RecordEdit resource={institution} />
           </div>
           <div className="flex flex-1 flex-col gap-8 overflow-y-scroll">
             {hasPermission('/permissions/library/roles', 'read') && (
               <section className="flex flex-col gap-2">
-                <h4 className="text-xl">{adminText('userRoleLibrary')}</h4>
+                <h4 className="text-xl">{userText.userRoleLibrary()}</h4>
                 {typeof libraryRoles === 'object' ? (
                   <ul>
                     {Object.values(libraryRoles)
@@ -93,17 +96,17 @@ function InstitutionView({
                       ))}
                   </ul>
                 ) : (
-                  commonText('loading')
+                  commonText.loading()
                 )}
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   {hasPermission('/permissions/library/roles', 'create') && (
-                    <Link.Green href="/specify/security/institution/role/create/">
-                      {commonText('create')}
-                    </Link.Green>
+                    <Link.Success href="/specify/security/institution/role/create/">
+                      {commonText.create()}
+                    </Link.Success>
                   )}
                   <SafeOutlet<SecurityOutlet> {...outletState} />
                   <ImportExport
-                    baseName={institution.name ?? ''}
+                    baseName={localized(institution.name ?? '')}
                     collectionId={schema.domainLevelIds.collection}
                     permissionName="/permissions/library/roles"
                     roles={libraryRoles}
@@ -114,7 +117,8 @@ function InstitutionView({
                       loading(updateLibraryRole(handleChangeLibraryRoles, role))
                     }
                   />
-                  <Button.Blue
+                  {/* REFACTOR: turn this into a CLI command using commander instead */}
+                  <Button.Info
                     className={
                       process.env.NODE_ENV === 'development'
                         ? undefined
@@ -126,13 +130,17 @@ function InstitutionView({
                       )
                     }
                   >
-                    [DEV] Download policy list
-                  </Button.Blue>
+                    {localized('[DEV] Download policy list')}
+                  </Button.Info>
                 </div>
               </section>
             )}
             <section className="flex flex-col gap-2">
-              <h4 className="text-xl">{adminText('institutionUsers')}</h4>
+              <h4 className="text-xl">
+                {userText.institutionUsers({
+                  institutionTable: tables.Institution.label,
+                })}
+              </h4>
               {typeof users === 'object' ? (
                 <>
                   <Ul>
@@ -147,11 +155,11 @@ function InstitutionView({
                             {`${user.name}`}
                             <span className="text-gray-500">{`${
                               admins?.admins.has(user.id) === true
-                                ? ` ${adminText('specifyAdmin')}`
+                                ? ` ${userText.specifyAdmin()}`
                                 : ''
                             }${
                               admins?.legacyAdmins.has(user.id) === true
-                                ? ` ${adminText('legacyAdmin')}`
+                                ? ` ${userText.legacyAdmin()}`
                                 : ''
                             }`}</span>
                           </>
@@ -173,17 +181,17 @@ function InstitutionView({
                   </Ul>
                   {hasTablePermission('SpecifyUser', 'create') && (
                     <div>
-                      <Link.Green href="/specify/security/user/new/">
-                        {commonText('create')}
-                      </Link.Green>
+                      <Link.Success href="/specify/security/user/new/">
+                        {commonText.create()}
+                      </Link.Success>
                     </div>
                   )}
                 </>
               ) : (
-                commonText('loading')
+                commonText.loading()
               )}
               {typeof users === 'object' && admins === undefined && (
-                <p>{adminText('loadingAdmins')}</p>
+                <p>{userText.loadingAdmins()}</p>
               )}
             </section>
           </div>
@@ -208,14 +216,15 @@ export function useAdmins():
           ? ajax<{
               readonly sp7_admins: RA<{
                 readonly userid: number;
-                readonly username: string;
+                readonly username: LocalizedString;
               }>;
               readonly sp6_admins: RA<{
                 readonly userid: number;
-                readonly username: string;
+                readonly username: LocalizedString;
               }>;
             }>('/permissions/list_admins/', {
               headers: { Accept: 'application/json' },
+              errorMode: 'dismissible',
             }).then(({ data }) => ({
               admins: new Set(data.sp7_admins.map(({ userid }) => userid)),
               legacyAdmins: new Set(
@@ -227,34 +236,4 @@ export function useAdmins():
     ),
     false
   )[0];
-}
-
-function ViewInstitutionButton({
-  institution,
-}: {
-  readonly institution: SerializedResource<Institution>;
-}): JSX.Element {
-  const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const resource = React.useMemo(
-    () => deserializeResource(institution),
-    [institution]
-  );
-  return (
-    <>
-      <DataEntry.Edit onClick={handleOpen} />
-      {isOpen && (
-        <ResourceView
-          dialog="modal"
-          isDependent={false}
-          isSubForm={false}
-          mode="edit"
-          resource={resource}
-          onAdd={undefined}
-          onClose={handleClose}
-          onDeleted={undefined}
-          onSaved={undefined}
-        />
-      )}
-    </>
-  );
 }

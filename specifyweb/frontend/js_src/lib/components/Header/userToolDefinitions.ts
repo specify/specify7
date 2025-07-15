@@ -1,150 +1,186 @@
-import type { UserTool } from '../Core/Main';
-import { sortFunction, split, toLowerCase } from '../../utils/utils';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
+import { preferencesText } from '../../localization/preferences';
+import { resourcesText } from '../../localization/resources';
+import { schemaText } from '../../localization/schema';
+import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
+import { f } from '../../utils/functools';
+import type { IR } from '../../utils/types';
+import { ensure } from '../../utils/types';
+import { toLowerCase } from '../../utils/utils';
+import { icons } from '../Atoms/Icons';
+import type { MenuItem } from '../Core/Main';
+import { getDisciplineTrees } from '../InitialContext/treeRanks';
+import { userInformation } from '../InitialContext/userInformation';
 import { fetchContext as userPermission } from '../Permissions';
 import {
   hasPermission,
   hasTablePermission,
   hasToolPermission,
 } from '../Permissions/helpers';
-import { getDisciplineTrees } from '../InitialContext/treeRanks';
-import type { IR, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
-import { fetchContext as fetchUserInfo } from '../InitialContext/userInformation';
+import { clearAllCache } from '../RouterCommands/CacheBuster';
+import { filterMenuItems } from './menuItemProcessing';
 
-const rawUserTools: IR<RA<UserTool>> = {
-  [commonText('userAccount')]: [
-    {
-      title: commonText('logOut'),
+const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
+  [userText.userAccount()]: {
+    logOut: {
+      title: userText.logOut(),
       url: '/accounts/logout/',
+      icon: icons.logout,
+      enabled: () => userInformation.isauthenticated,
+      onClick: async () =>
+        clearAllCache()
+          .then(() => {
+            console.log('Cache cleared successfully.');
+          })
+          .catch((error) => {
+            console.error('Error occurred during cache clearing:', error);
+          }),
     },
-    {
-      title: commonText('changePassword'),
+    changePassword: {
+      title: userText.changePassword(),
       url: '/accounts/password_change/',
+      icon: icons.key,
+      enabled: () => userInformation.isauthenticated,
     },
-  ],
-  [commonText('customization')]: [
-    {
-      title: commonText('preferences'),
+    logIn: {
+      title: userText.logIn(),
+      url: '/accounts/login/',
+      icon: icons.login,
+      enabled: () => !userInformation.isauthenticated,
+    },
+  },
+  [preferencesText.customization()]: {
+    userPreferences: {
+      title: preferencesText.preferences(),
       url: '/specify/user-preferences/',
+      icon: icons.cog,
     },
-    {
-      title: commonText('schemaConfig'),
+    schemaConfig: {
+      title: schemaText.schemaConfig(),
       url: '/specify/schema-config/',
+      icon: icons.adjustments,
     },
-  ],
-  [commonText('administration')]: [
-    {
-      title: commonText('appResources'),
+  },
+  [headerText.administration()]: {
+    resources: {
+      title: resourcesText.appResources(),
       url: '/specify/resources/',
+      icon: icons.document,
       enabled: () =>
         hasToolPermission('resources', 'read') &&
         hasTablePermission('Discipline', 'read') &&
         hasTablePermission('Collection', 'read') &&
         hasTablePermission('SpecifyUser', 'read'),
     },
-    {
-      title: adminText('securityPanel'),
+    securityPanel: {
+      title: userText.securityPanel(),
       url: '/specify/security/',
+      icon: icons.fingerPrint,
     },
-    {
-      title: commonText('repairTree'),
+    repairTree: {
+      title: headerText.repairTree(),
       url: '/specify/overlay/tree-repair/',
+      icon: icons.checkCircle,
       enabled: () =>
         getDisciplineTrees().some((treeName) =>
           hasPermission(`/tree/edit/${toLowerCase(treeName)}`, 'repair')
         ),
     },
-    {
-      title: commonText('generateMasterKey'),
+    generateMasterKey: {
+      title: userText.generateMasterKey(),
       url: '/specify/overlay/master-key/',
+      icon: icons.identification,
     },
-  ],
-  [commonText('export')]: [
-    {
-      title: commonText('makeDwca'),
+  },
+  [commonText.export()]: {
+    makeDwca: {
+      title: headerText.makeDwca(),
       enabled: () => hasPermission('/export/dwca', 'execute'),
       url: '/specify/overlay/make-dwca/',
+      icon: icons.upload,
     },
-    {
-      title: commonText('updateExportFeed'),
+    updateExportFeed: {
+      title: headerText.updateExportFeed(),
       enabled: () => hasPermission('/export/feed', 'force_update'),
       url: '/specify/overlay/force-update-feed/',
+      icon: icons.rss,
     },
-  ],
-  [commonText('documentation')]: [
-    {
-      title: welcomeText('aboutSpecify'),
+  },
+  [commonText.import()]: {
+    localityUpdate: {
+      title: headerText.localityUpdateTool(),
+      enabled: () => userInformation.isadmin,
+      url: '/specify/import/locality-dataset/',
+      icon: icons.globe,
+    },
+  },
+  [headerText.documentation()]: {
+    aboutSpecify: {
+      title: welcomeText.aboutSpecify(),
       url: '/specify/overlay/about/',
+      icon: icons.informationCircle,
     },
-    {
-      title: commonText('forum'),
+    forum: {
+      title: headerText.forum(),
       url: 'https://discourse.specifysoftware.org/',
+      icon: icons.annotation,
     },
-    {
-      title: commonText('technicalDocumentation'),
-      url: 'https://github.com/specify/specify7/wiki',
+    technicalDocumentation: {
+      title: headerText.technicalDocumentation(),
+      url: 'https://discourse.specifysoftware.org/c/docs/',
+      icon: icons.bookOpen,
     },
-  ],
-  [commonText('developers')]: [
-    {
-      title: commonText('databaseSchema'),
-      url: '/specify/datamodel/',
+  },
+  [headerText.developers()]: {
+    databaseSchema: {
+      title: schemaText.databaseSchema(),
+      url: '/specify/data-model/',
+      icon: icons.database,
     },
-    {
-      title: commonText('clearCache'),
+    clearCache: {
+      title: headerText.clearCache(),
       url: '/specify/command/clear-cache/',
+      icon: icons.backspace,
     },
-    {
-      title: commonText('tableApi'),
+    tableApi: {
+      title: headerText.tableApi(),
       url: '/documentation/api/tables/',
+      icon: icons.cube,
     },
-    {
-      title: commonText('operationsApi'),
+    operationsApi: {
+      title: headerText.operationsApi(),
       url: '/documentation/api/operations/',
+      icon: icons.cubeTransparent,
     },
-  ],
-};
+  },
+} as const);
 
-export const userToolsPromise: Promise<RA<IR<RA<UserTool>>>> = Promise.all([
-  userPermission,
-  fetchUserInfo,
-])
-  .then(async () =>
-    Promise.all(
-      Object.entries(rawUserTools).map(
-        async ([groupLabel, userTools]) =>
-          [groupLabel, await filterUserTools(userTools)] as const
+/**
+ * Do not us directly. Use useUserTools() instead
+ */
+export const rawUserToolsPromise = f.store(async () =>
+  Promise.all([
+    userPermission,
+    import('../InitialContext/userInformation').then(
+      async ({ fetchContext }) => fetchContext
+    ),
+  ])
+    .then(async () =>
+      Promise.all(
+        Object.entries(rawUserTools).map(
+          async ([groupLabel, userTools]) =>
+            [
+              groupLabel,
+              await filterMenuItems(userTools).then((items) =>
+                Object.fromEntries(
+                  items.map((item) => [item.name, item] as const)
+                )
+              ),
+            ] as const
+        )
       )
     )
-  )
-  .then((groups) =>
-    groups
-      .filter(([_name, userTools]) => userTools.length > 0)
-      .map(([name, userTools]) => [
-        name,
-        Array.from(userTools).sort(sortFunction(({ title }) => title)),
-      ])
-  )
-  .then((groups) => Object.fromEntries(groups))
-  .then((userTools) =>
-    /*
-     * Can't split columns with CSS because break-inside:avoid is not yet
-     * well-supported
-     */
-    split(
-      Object.entries(userTools),
-      (_item, index, { length }) => index >= length / 2
-    ).map((group) => Object.fromEntries(group))
-  );
-
-export const filterUserTools = async <T extends UserTool>(
-  userTools: RA<T>
-): Promise<RA<T>> =>
-  Promise.all(
-    userTools.map(async (entry) =>
-      (await entry.enabled?.()) === false ? undefined : entry
-    )
-  ).then(filterArray);
+    .then((groups) => Object.fromEntries(groups))
+);

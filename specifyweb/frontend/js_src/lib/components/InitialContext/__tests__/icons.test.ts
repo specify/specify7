@@ -14,7 +14,13 @@ theories(getIcon, [
     out: '/images/Reports32x32.png',
   },
   {
-    in: ['unknownIcon'],
-    out: undefined,
+    in: ['Reports32x32.png'],
+    out: '/images/Reports32x32.png',
   },
 ]);
+
+test('Unknown icon', () => {
+  const consoleWarn = jest.fn();
+  jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
+  expect(getIcon('unknownIcon')).toBeUndefined();
+});

@@ -5,6 +5,7 @@
  * custom styles and in some cases custom logic
  */
 
+import { softError } from '../Errors/assert';
 import { className } from './className';
 import { wrap } from './wrapper';
 
@@ -12,6 +13,15 @@ export const ErrorMessage = wrap(
   'ErrorMessage',
   'div',
   'flex flex-col gap-2 p-2 text-white bg-red-500 rounded',
+  {
+    role: 'alert',
+  }
+);
+
+export const WarningMessage = wrap(
+  'WarningMessage',
+  'div',
+  'flex flex-col gap-2 p-2 text-white bg-orange-500 dark:bg-transparent border border-orange-500 rounded',
   {
     role: 'alert',
   }
@@ -47,8 +57,10 @@ export const Progress = wrap<'progress', { readonly value: number }>(
   }
 );
 
-// Need to set explicit [role] for list without bullets to be announced as a list
-// REFACTOR: consider adding "flex flex-col gap-1" and .contents to <li>
+/*
+ * Need to set explicit [role] for list without bullets to be announced as a list
+ * REFACTOR: consider adding "flex flex-col gap-1" and .contents to <li>
+ */
 export const Ul = wrap('Ul', 'ul', '', { role: 'list' });
 
 export const H2 = wrap('H2', 'h2', className.headerPrimary);
@@ -70,8 +82,8 @@ export const Summary = wrap<
           props.onClick?.(event);
           const details = (event.target as Element)?.closest('details');
           if (details === null)
-            throw new Error("Can't use <summary> outside of <details>");
-          handleToggle?.(!details.hasAttribute('open'));
+            softError("Can't use <summary> outside of <details>");
+          else handleToggle?.(!details.hasAttribute('open'));
         }
       : undefined,
 }));
@@ -80,4 +92,10 @@ export const Key = wrap(
   'Key',
   'kbd',
   'bg-gray-200 border-1 dark:border-none dark:bg-neutral-700 rounded-sm mx-1 p-0.5'
+);
+
+const defaultOneRem = 16;
+export const oneRem = Number.parseFloat(
+  globalThis.getComputedStyle?.(document.documentElement).fontSize ??
+    defaultOneRem
 );

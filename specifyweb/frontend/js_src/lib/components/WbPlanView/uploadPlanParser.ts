@@ -1,11 +1,16 @@
-import type { MappingPath } from './Mapper';
+import type { IR, PartialBy, RA, RR } from '../../utils/types';
+import type { AnyTree } from '../DataModel/helperTypes';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
-import { strictGetModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { IR, RA, RR } from '../../utils/types';
+import { softFail } from '../Errors/Crash';
+import { getTreeDefinitions } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
+import type { BatchEditPrefs, MappingPath } from './Mapper';
 import type { SplitMappingPath } from './mappingHelpers';
+import { formatTreeDefinition } from './mappingHelpers';
 import { formatToManyIndex, formatTreeRank } from './mappingHelpers';
+import { RANK_KEY_DELIMITER } from './uploadPlanBuilder';
 
 export type MatchBehaviors = 'ignoreAlways' | 'ignoreNever' | 'ignoreWhenBlank';
 
@@ -19,7 +24,11 @@ export type ColumnDefinition =
   | string
   | (ColumnOptions & { readonly column: string });
 
-export type NestedUploadTable = Omit<UploadTable, 'toMany'>;
+/*
+ * NOTE: This comment was added after workbench supports nested-to-manys.
+ * Type is made Partial to not chock on legacy upload plans
+ */
+export type NestedUploadTable = PartialBy<UploadTable, 'toMany'>;
 
 export type UploadTable = {
   readonly wbcols: IR<ColumnDefinition>;
@@ -33,7 +42,10 @@ type UploadTableVariety =
   | { readonly uploadTable: UploadTable };
 
 export type TreeRecord = {
-  readonly ranks: IR<string | { readonly treeNodeCols: IR<ColumnDefinition> }>;
+  readonly ranks: IR<
+    | string
+    | { readonly treeNodeCols: IR<ColumnDefinition>; readonly treeId?: number }
+  >;
 };
 
 type TreeRecordVariety =
@@ -45,6 +57,7 @@ export type Uploadable = TreeRecordVariety | UploadTableVariety;
 export type UploadPlan = {
   readonly baseTableName: Lowercase<keyof Tables>;
   readonly uploadable: Uploadable;
+  readonly batchEditPrefs?: BatchEditPrefs;
 };
 
 const parseColumnOptions = (matchingOptions: ColumnOptions): ColumnOptions => ({
@@ -57,53 +70,66 @@ const parseColumnOptions = (matchingOptions: ColumnOptions): ColumnOptions => ({
 });
 
 const parseTree = (
-  model: SpecifyModel,
+  table: SpecifyTable,
   uploadPlan: TreeRecord,
   mappingPath: MappingPath
 ): RA<SplitMappingPath> =>
   Object.entries(uploadPlan.ranks).flatMap(([rankName, rankData]) =>
     parseWbCols(
-      model,
+      table,
       typeof rankData === 'string'
         ? {
             name: rankData,
           }
         : rankData.treeNodeCols,
-      [...mappingPath, formatTreeRank(rankName)]
+      [
+        ...mappingPath,
+        ...(typeof rankData === 'object' &&
+        typeof rankData.treeId === 'number' &&
+        getTreeDefinitions(table.name as 'Geography', 'all').length > 1
+          ? [resolveTreeId(table.name as 'Geography', rankData.treeId)]
+          : []),
+        formatTreeRank(getRankNameFromKey(rankName)),
+      ]
     )
   );
 
+const resolveTreeId = (tableName: AnyTree['tableName'], id: number): string => {
+  const treeDefinition = getTreeDefinitions(tableName, id);
+  return formatTreeDefinition(treeDefinition[0].definition.name);
+};
+
 function parseTreeTypes(
-  model: SpecifyModel,
+  table: SpecifyTable,
   uploadPlan: TreeRecordVariety,
-  makeMustMatch: (model: SpecifyModel) => void,
+  makeMustMatch: (table: SpecifyTable) => void,
   mappingPath: MappingPath
 ): RA<SplitMappingPath> {
-  if ('mustMatchTreeRecord' in uploadPlan) makeMustMatch(model);
+  if ('mustMatchTreeRecord' in uploadPlan) makeMustMatch(table);
 
-  return parseTree(model, Object.values(uploadPlan)[0], mappingPath);
+  return parseTree(table, Object.values(uploadPlan)[0], mappingPath);
 }
 
 /** A fix for https://github.com/specify/specify7/issues/1378 */
-function resolveField(model: SpecifyModel, fieldName: string): RA<string> {
-  const field = model.strictGetField(fieldName);
+function resolveField(table: SpecifyTable, fieldName: string): RA<string> {
+  const field = table.strictGetField(fieldName);
   if (field.isRelationship) {
-    console.error('Upload plan has a column mapped to a relationship', {
-      model,
+    softFail(new Error('Upload plan has a column mapped to a relationship'), {
+      table,
       fieldName,
     });
-    return [field.name, field.relatedModel.idField.name];
+    return [field.name, field.relatedTable.idField.name];
   }
   return [field.name];
 }
 
 const parseWbCols = (
-  model: SpecifyModel,
+  table: SpecifyTable,
   wbCols: IR<ColumnDefinition>,
   mappingPath: MappingPath
 ) =>
   Object.entries(wbCols).map(([fieldName, fieldData]) => ({
-    mappingPath: [...mappingPath, ...resolveField(model, fieldName)],
+    mappingPath: [...mappingPath, ...resolveField(table, fieldName)],
     headerName: typeof fieldData === 'string' ? fieldData : fieldData.column,
     columnOptions:
       typeof fieldData === 'string'
@@ -112,49 +138,47 @@ const parseWbCols = (
   }));
 
 const parseUploadTable = (
-  model: SpecifyModel,
+  table: SpecifyTable,
   uploadPlan: NestedUploadTable | UploadTable,
-  makeMustMatch: (model: SpecifyModel) => void,
+  makeMustMatch: (model: SpecifyTable) => void,
   mappingPath: MappingPath
 ): RA<SplitMappingPath> => [
-  ...parseWbCols(model, uploadPlan.wbcols, mappingPath),
+  ...parseWbCols(table, uploadPlan.wbcols, mappingPath),
   ...Object.entries(uploadPlan.toOne).flatMap(([relationshipName, mappings]) =>
     parseUploadable(
-      model.strictGetRelationship(relationshipName).relatedModel,
+      table.strictGetRelationship(relationshipName).relatedTable,
       mappings,
       makeMustMatch,
-      [...mappingPath, model.strictGetRelationship(relationshipName).name]
+      [...mappingPath, table.strictGetRelationship(relationshipName).name]
     )
   ),
-  ...('toMany' in uploadPlan
-    ? Object.entries(uploadPlan.toMany).flatMap(
-        ([relationshipName, mappings]) =>
-          Object.values(mappings).flatMap((mapping, index) =>
-            parseUploadTable(
-              model.strictGetRelationship(relationshipName).relatedModel,
-              mapping,
-              makeMustMatch,
-              [
-                ...mappingPath,
-                model.strictGetRelationship(relationshipName).name,
-                formatToManyIndex(index + 1),
-              ]
-            )
-          )
+  ...Object.entries(uploadPlan.toMany ?? []).flatMap(
+    ([relationshipName, mappings]) =>
+      Object.values(mappings).flatMap((mapping, index) =>
+        parseUploadTable(
+          table.strictGetRelationship(relationshipName).relatedTable,
+          mapping,
+          makeMustMatch,
+          [
+            ...mappingPath,
+            table.strictGetRelationship(relationshipName).name,
+            formatToManyIndex(index + 1),
+          ]
+        )
       )
-    : []),
+  ),
 ];
 
 function parseUploadTableTypes(
-  model: SpecifyModel,
+  table: SpecifyTable,
   uploadPlan: UploadTableVariety,
-  makeMustMatch: (model: SpecifyModel) => void,
+  makeMustMatch: (table: SpecifyTable) => void,
   mappingPath: MappingPath
 ): RA<SplitMappingPath> {
-  if ('mustMatchTable' in uploadPlan) makeMustMatch(model);
+  if ('mustMatchTable' in uploadPlan) makeMustMatch(table);
 
   return parseUploadTable(
-    model,
+    table,
     Object.values(uploadPlan)[0],
     makeMustMatch,
     mappingPath
@@ -162,29 +186,29 @@ function parseUploadTableTypes(
 }
 
 const parseUploadable = (
-  model: SpecifyModel,
+  table: SpecifyTable,
   uploadPlan: Uploadable,
-  makeMustMatch: (model: SpecifyModel) => void,
+  makeMustMatch: (table: SpecifyTable) => void,
   mappingPath: MappingPath
 ): RA<SplitMappingPath> =>
   'treeRecord' in uploadPlan || 'mustMatchTreeRecord' in uploadPlan
-    ? parseTreeTypes(model, uploadPlan, makeMustMatch, mappingPath)
-    : parseUploadTableTypes(model, uploadPlan, makeMustMatch, mappingPath);
+    ? parseTreeTypes(table, uploadPlan, makeMustMatch, mappingPath)
+    : parseUploadTableTypes(table, uploadPlan, makeMustMatch, mappingPath);
 
 /**
  * Break down upload plan into components that are easier to manipulate
  */
 export function parseUploadPlan(uploadPlan: UploadPlan): {
-  readonly baseTable: SpecifyModel;
+  readonly baseTable: SpecifyTable;
   readonly lines: RA<SplitMappingPath>;
   readonly mustMatchPreferences: RR<keyof Tables, boolean>;
 } {
   const mustMatchTables = new Set<keyof Tables>();
 
-  const makeMustMatch = (model: SpecifyModel): void =>
-    void mustMatchTables.add(model.name);
+  const makeMustMatch = (table: SpecifyTable): void =>
+    void mustMatchTables.add(table.name);
 
-  const baseTable = strictGetModel(uploadPlan.baseTableName);
+  const baseTable = strictGetTable(uploadPlan.baseTableName);
   return {
     baseTable,
     lines: parseUploadable(baseTable, uploadPlan.uploadable, makeMustMatch, []),
@@ -193,3 +217,10 @@ export function parseUploadPlan(uploadPlan: UploadPlan): {
     ),
   };
 }
+
+/**
+ * Returns the tree rank name from a tree upload plan key (ex: <treeName>~><rankName> => <rankName>)
+ * NOTE: Opposite of uploadPlanBuilder.ts > formatTreeRankKey()
+ */
+const getRankNameFromKey = (rankName: string): string =>
+  rankName.split(RANK_KEY_DELIMITER).at(-1)!;

@@ -1,17 +1,20 @@
 import React from 'react';
 
-import { f } from '../../utils/functools';
-import { initialContext } from '../InitialContext';
-import { commonText } from '../../localization/common';
-import { Main } from './Main';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { commonText } from '../../localization/common';
+import { f } from '../../utils/functools';
+import { crash } from '../Errors/Crash';
+import { useMenuItems } from '../Header/menuItemProcessing';
+import { initialContext } from '../InitialContext';
+import { Main } from './Main';
 import { SplashScreen } from './SplashScreen';
 
 // Show loading splash screen if didn't finish load within 2 seconds
 const LOADING_TIMEOUT = 2000;
 
-const fetchContext = async (): Promise<true> => initialContext.then(f.true);
+const fetchContext = async (): Promise<true | void> =>
+  initialContext.then(f.true).catch(crash);
 
 /**
  * - Load initial context
@@ -20,6 +23,9 @@ const fetchContext = async (): Promise<true> => initialContext.then(f.true);
  */
 export function ContextLoader(): JSX.Element | null {
   const [isContextLoaded = false] = useAsyncState(fetchContext, false);
+  const menuItems = useMenuItems();
+  const isLoaded = isContextLoaded && typeof menuItems === 'object';
+
   /*
    * Show loading screen only if didn't finish loading within 2 seconds.
    * This prevents briefly flashing the loading dialog on fast systems.
@@ -31,18 +37,18 @@ export function ContextLoader(): JSX.Element | null {
   React.useEffect(() => {
     if (timeoutRef.current !== undefined)
       globalThis.clearTimeout(timeoutRef.current);
-    if (!isContextLoaded)
+    if (!isLoaded)
       timeoutRef.current = globalThis.setTimeout(
         setShowLoadingScreen,
         LOADING_TIMEOUT
       );
-  }, [isContextLoaded, setShowLoadingScreen]);
+  }, [isLoaded, setShowLoadingScreen]);
 
-  return isContextLoaded ? (
-    <Main />
+  return isLoaded ? (
+    <Main menuItems={menuItems} />
   ) : showLoadingScreen ? (
     <SplashScreen>
-      <h2 className="text-center">{commonText('loading')}</h2>
+      <h2 className="text-center">{commonText.loading()}</h2>
     </SplashScreen>
   ) : null;
 }

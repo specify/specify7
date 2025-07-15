@@ -1,7 +1,12 @@
 import React from 'react';
-import { Navigate, useRoutes } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import type { RA } from '../../utils/types';
 import { NotFoundView } from './NotFoundView';
 import type { EnhancedRoute } from './RouterUtils';
@@ -14,12 +19,17 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
     children: [
       {
         path: 'login',
-        title: commonText('login'),
+        title: userText.logIn(),
+        element: () => import('../Login').then(({ Login }) => Login),
+      },
+      {
+        path: 'legacy_login',
+        title: userText.logIn(),
         element: () => import('../Login').then(({ Login }) => Login),
       },
       {
         path: 'choose_collection',
-        title: commonText('chooseCollection'),
+        title: commonText.chooseCollection(),
         element: () =>
           import('../ChooseCollection').then(
             ({ ChooseCollection }) => ChooseCollection
@@ -27,7 +37,7 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'password_change',
-        title: commonText('changePassword'),
+        title: userText.changePassword(),
         element: () =>
           import('../PasswordChange').then(
             ({ PasswordChange }) => PasswordChange
@@ -37,12 +47,12 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
   },
   {
     path: 'specify/*',
-    title: '',
     element: () =>
       import('../Core/ContextLoader').then(
         ({ ContextLoader }) => ContextLoader
       ),
   },
+  // This should never be reached as back-end has a redict, but good to have it just in case
   {
     index: true,
     element: <Navigate to="/specify/" />,
@@ -54,7 +64,9 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
 ];
 /* eslint-enable @typescript-eslint/promise-function-async */
 
+const routes = toReactRoutes(entrypointRoutes, undefined, false);
+const router = createBrowserRouter(routes);
+
 export function EntrypointRouter(): JSX.Element {
-  const routes = React.useMemo(() => toReactRoutes(entrypointRoutes), []);
-  return useRoutes(routes) ?? <NotFoundView />;
+  return <RouterProvider router={router} />;
 }

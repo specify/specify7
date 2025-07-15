@@ -1,7 +1,8 @@
 import React from 'react';
 
-import {LANGUAGE} from '../../localization/utils';
+import { LANGUAGE } from '../../localization/utils/config';
 import { getRelativeDate } from '../Atoms/Internationalization';
+import { HOUR, MINUTE, SECOND } from '../Atoms/timeUnits';
 
 const longDate = new Intl.DateTimeFormat(LANGUAGE, {
   dateStyle: 'full',
@@ -21,12 +22,53 @@ export function DateElement({
 }): JSX.Element {
   if (typeof date !== 'string' || Number.isNaN(Date.parse(date)))
     return <>{fallback}</>;
+  return <DateElementSafe date={date} flipDates={flipDates} />;
+}
+
+function DateElementSafe({
+  date,
+  flipDates = false,
+}: {
+  readonly date: string;
+  readonly flipDates?: boolean;
+}): JSX.Element {
+  const [relativeDate, setRelativeDate] = React.useState<string>(
+    getRelativeDate(new Date(date))
+  );
+
   const dateObject = new Date(date);
-  const relativeDate = getRelativeDate(dateObject);
+  React.useEffect(() => {
+    let timeout: NodeJS.Timeout | undefined;
+
+    function updateRelativeDate(): void {
+      if (date) {
+        const now = new Date();
+        const timeDifference = Math.abs(now.getTime() - dateObject.getTime());
+
+        let timeoutValue = 0;
+
+        if (timeDifference < MINUTE) timeoutValue = SECOND;
+        else if (timeDifference < HOUR) timeoutValue = MINUTE;
+        else timeoutValue = HOUR;
+
+        setRelativeDate(getRelativeDate(new Date(date)));
+
+        timeout = setTimeout(updateRelativeDate, timeoutValue);
+      }
+    }
+
+    updateRelativeDate();
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [date]);
+
   const fullDate = longDate.format(dateObject);
   const [children, title] = flipDates
     ? [fullDate, relativeDate]
     : [relativeDate, fullDate];
+
   return (
     <time dateTime={dateObject.toISOString()} title={title}>
       {children}

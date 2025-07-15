@@ -8,24 +8,27 @@ import type { Action } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
 import { setCache } from '../../utils/cache';
-import type {
-  AutoMapperSuggestion,
-  MappingLine,
-  MappingPath,
-  MappingState,
-  SelectElementPosition,
-} from './Mapper';
-import type { Tables } from '../DataModel/types';
-import { replaceItem } from '../../utils/utils';
 import type { IR, RA } from '../../utils/types';
-import type { MatchBehaviors } from './uploadPlanParser';
+import { replaceItem } from '../../utils/utils';
+import type { Tables } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
 import { uniquifyHeaders } from './headerHelper';
-import { defaultColumnOptions, getLinesFromHeaders } from './linesGetter';
 import {
   deduplicateMappings,
   mappingPathIsComplete,
   mutateMappingPath,
 } from './helpers';
+import { defaultColumnOptions, getLinesFromHeaders } from './linesGetter';
+import type {
+  AutoMapperSuggestion,
+  BatchEditPrefs,
+  MappingLine,
+  MappingPath,
+  MappingState,
+  SelectElementPosition,
+} from './Mapper';
+import { emptyMapping } from './mappingHelpers';
+import type { MatchBehaviors } from './uploadPlanParser';
 
 const modifyLine = (
   state: MappingState,
@@ -89,7 +92,6 @@ export type ChangeSelectElementValueAction = Action<
   {
     readonly line: number | 'mappingView';
     readonly index: number;
-    readonly close: boolean;
     readonly newValue: string;
     readonly isRelationship: boolean;
     readonly parentTableName: keyof Tables | undefined;
@@ -119,8 +121,8 @@ type ValidationResultClickAction = Action<
   }
 >;
 
-type MustMatchPrefChangeAction = Action<
-  'MustMatchPrefChangeAction',
+type ChangMustMatchPrefAction = Action<
+  'ChangeMustMatchPrefAction',
   {
     readonly mustMatchPreferences: IR<boolean>;
   }
@@ -162,19 +164,27 @@ type ReRunAutoMapperAction = Action<
   }
 >;
 
+type ChangeBatchEditPrefs = Action<
+  'ChangeBatchEditPrefs',
+  {
+    readonly prefs: BatchEditPrefs;
+  }
+>;
+
 export type MappingActions =
   | AddNewHeaderAction
   | AutoMapperSuggestionSelectedAction
   | AutoMapperSuggestionsLoadedAction
+  | ChangeBatchEditPrefs
   | ChangeDefaultValueAction
   | ChangeMatchBehaviorAction
   | ChangeSelectElementValueAction
+  | ChangMustMatchPrefAction
   | ClearMappingLineAction
   | ClearValidationAction
   | CloseSelectElementAction
   | FocusLineAction
   | MappingViewMapAction
-  | MustMatchPrefChangeAction
   | OpenSelectElementAction
   | ReRunAutoMapperAction
   | ResetMappingsAction
@@ -186,6 +196,7 @@ export type MappingActions =
   | ValidationResultClickAction;
 
 export const reducer = generateReducer<MappingState, MappingActions>({
+  /* Workbench Actions (Shared with Batch-Edit) */
   ToggleMappingViewAction: ({ state, action }) => ({
     ...state,
     // REFACTOR: replace setState calls in reducers with useCachedState hooks
@@ -208,7 +219,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     ...state,
     lines: state.lines.map((line) => ({
       ...line,
-      mappingPath: ['0'],
+      mappingPath: [emptyMapping],
       columnOptions: defaultColumnOptions,
     })),
     changesMade: true,
@@ -218,7 +229,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
   ClearMappingLineAction: ({ state, action }) => ({
     ...state,
     lines: modifyLine(state, action.line, {
-      mappingPath: ['0'],
+      mappingPath: [emptyMapping],
       columnOptions: defaultColumnOptions,
     }),
     changesMade: true,
@@ -226,7 +237,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
   }),
   FocusLineAction: ({ state, action }) => {
     if (action.line >= state.lines.length)
-      throw new Error(`Tried to focus a line that doesn't exist`);
+      softFail(new Error(`Tried to focus a line that doesn't exist`));
 
     const focusedLineMappingPath = state.lines[action.line].mappingPath;
     return {
@@ -269,7 +280,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
           [...state.lines.map(({ headerName }) => headerName), newHeaderName],
           [state.lines.length]
         ).at(-1)!,
-        mappingPath: ['0'],
+        mappingPath: [emptyMapping],
         columnOptions: defaultColumnOptions,
       },
     ],
@@ -297,20 +308,16 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     openSelectElement: undefined,
     autoMapperSuggestions: undefined,
   }),
-  ChangeSelectElementValueAction: ({ state, action }) => {
+  ChangeSelectElementValueAction: ({ state, action: { line, ...action } }) => {
     const newMappingPath = mutateMappingPath({
-      lines: state.lines,
-      mappingView: state.mappingView,
-      line: action.line,
-      index: action.index,
-      newValue: action.newValue,
-      isRelationship: action.isRelationship,
-      parentTableName: action.parentTableName,
-      currentTableName: action.currentTableName,
-      newTableName: action.newTableName,
+      ...action,
+      mappingPath:
+        line === 'mappingView'
+          ? state.mappingView
+          : state.lines[line].mappingPath,
     });
 
-    if (action.line === 'mappingView')
+    if (line === 'mappingView')
       return {
         ...state,
         mappingView: newMappingPath,
@@ -319,12 +326,11 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     return {
       ...state,
       lines: deduplicateMappings(
-        modifyLine(state, action.line, {
+        modifyLine(state, line, {
           mappingPath: newMappingPath,
         }),
         state.openSelectElement?.line ?? false
       ),
-      openSelectElement: action.close ? undefined : state.openSelectElement,
       autoMapperSuggestions: undefined,
       changesMade: true,
       mappingsAreValidated: false,
@@ -349,7 +355,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     ...state,
     mappingView: mappingPath,
   }),
-  MustMatchPrefChangeAction: ({ state, action }) => ({
+  ChangeMustMatchPrefAction: ({ state, action }) => ({
     ...state,
     changesMade: true,
     mustMatchPreferences: action.mustMatchPreferences,
@@ -405,4 +411,10 @@ export const reducer = generateReducer<MappingState, MappingActions>({
       lines,
     };
   },
+  /* Batch-Edit Specific Actions */
+  ChangeBatchEditPrefs: ({ state, action }) => ({
+    ...state,
+    changesMade: true,
+    batchEditPrefs: action.prefs,
+  }),
 });

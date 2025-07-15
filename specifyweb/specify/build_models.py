@@ -1,12 +1,15 @@
 from django.db import models
+from django.db.models.signals import pre_delete
 
 from specifyweb.businessrules.exceptions import AbortSave
-
 from . import model_extras
-from .case_insensitive_bool import BooleanField, NullBooleanField
+from .model_timestamp import save_auto_timestamp_field_with_override
 
 appname = __name__.split('.')[-2]
 
+# REFACTOR: generate this on the fly based on presence of
+#    ordinal/ordernumber/position etc field in a table. This way it will
+#    automatically work for any newly added table
 orderings = {
     'Picklistitem': ('ordinal', ),
     'Recordsetitem': ('recordid', ),
@@ -14,6 +17,13 @@ orderings = {
     'Determination': ('-iscurrent',),
     'Author': ('ordernumber',),
     'Collector': ('ordernumber',),
+    'AgentSpecialty': ('ordernumber',),
+    'Determiner': ('ordernumber',),
+    'Extractor': ('ordernumber',),
+    'FieldNotebookPageSet': ('ordernumber',),
+    'FundingAgent': ('ordernumber',),
+    'GroupPerson': ('ordernumber',),
+    'PcrPerson': ('ordernumber',),
 }
 
 def make_model(module, table, datamodel):
@@ -28,10 +38,9 @@ def make_model(module, table, datamodel):
         fldname = field.name.lower()
         maker = field_type_map[field.type]
         fldargs = {}
-        if fldname == 'timestampcreated':
-            fldargs['auto_now_add'] = True
-        if fldname == 'timestampmodified':
-            fldargs['auto_now'] = True
+        # NOTE: setting fldargs['auto_now_add'] = True and fldargs['auto_now'] = True not needed for 
+        # 'if fldname == 'timestampcreated'' or `if fldname == 'timestampmodified'` 
+        # as we are using pre_save_auto_timestamp_field_with_override
         if fldname == 'version':
             fldargs['default'] = 0
         attrs[fldname] = maker(field, fldargs)
@@ -52,16 +61,30 @@ def make_model(module, table, datamodel):
 
     def save(self, *args, **kwargs):
         try:
-            return super(model, self).save(*args, **kwargs)
+            return save_auto_timestamp_field_with_override(super(model, self).save, args, kwargs, self)
         except AbortSave:
             return
+        
+    def pre_constraints_delete(self):
+        # This function is to be called before the object is deleted, and before the pre_delete signal is sent.
+        # It will manually send the pre_delete signal for the django model object.
+        # The pre_delete function must contain logic that will prevent ForeignKey constraints from being violated.
+        # This is needed because database constraints are checked before pre_delete signals are sent.
+        # This is not currently used, but is here for future use.
+        pre_delete.send(sender=self.__class__, instance=self)
+
+    attrs['Meta'] = Meta
+    if table.django_name in tables_with_pre_constraints_delete:
+        # This is not currently used, but is here for future use.
+        attrs['pre_constraints_delete'] = pre_constraints_delete
 
     attrs['save'] = save
-    attrs['Meta'] = Meta
 
-    supercls = getattr(model_extras, table.django_name, models.Model)
+    supercls = models.Model
+    if hasattr(model_extras, table.django_name):
+        supercls = getattr(model_extras, table.django_name)
+
     model = type(table.django_name, (supercls,), attrs)
-
     return model
 
 def make_id_field(column):
@@ -89,6 +112,13 @@ SPECIAL_DELETION_RULES = {
     'Spappresourcedata.spappresource': models.CASCADE,
     'Spappresourcedata.spviewsetobj': models.CASCADE,
     'Spreport.appresource': models.CASCADE,
+
+    'Geographytreedefitem.parent': models.DO_NOTHING,
+    'Geologictimeperiodtreedefitem.parent': models.DO_NOTHING,
+    'Lithostrattreedefitem.parent': models.DO_NOTHING,
+    'Storagetreedefitem.parent': models.DO_NOTHING,
+    'Taxontreedefitem.parent': models.DO_NOTHING,
+    'Tectonicunittreedefitem.parent': models.DO_NOTHING,
 }
 
 def make_relationship(modelname, rel, datamodel):
@@ -112,9 +142,10 @@ def make_relationship(modelname, rel, datamodel):
         return None
 
     try:
-        on_delete = SPECIAL_DELETION_RULES["%s.%s" % (modelname.capitalize(), rel.name.lower())]
+        on_delete = SPECIAL_DELETION_RULES[f"{modelname.capitalize()}.{rel.name.lower()}"]
     except KeyError:
         reverse = datamodel.reverse_relationship(rel)
+
         if reverse and reverse.dependent:
             on_delete = models.CASCADE
         else:
@@ -141,7 +172,7 @@ def make_relationship(modelname, rel, datamodel):
     if rel.type == 'one-to-one' and hasattr(rel, 'column'):
         return make_to_one(models.OneToOneField)
 
-class make_field(object):
+class make_field:
     """An abstract "psuedo" metaclass that produces instances of the
     appropriate Django model field type. Utilizes inheritance
     mechanism to factor out common aspects of Field configuration.
@@ -188,7 +219,7 @@ class make_string_field(make_field):
         """Supplement the standard field options with the 'length'
         and 'blank' options supported by the Django CharField type.
         """
-        args = super(make_string_field, cls).make_args(fld)
+        args = super().make_args(fld)
         args.update(dict(
                 max_length = fld.length,
                 blank = not fld.required))
@@ -223,7 +254,7 @@ class make_decimal_field(make_field):
         """Augment the standard field options with those specific
         to Decimal fields.
         """
-        args = super(make_decimal_field, cls).make_args(fld)
+        args = super().make_args(fld)
         args.update(dict(
             # The precision info is not included in the
             # XML schema def. I don't think it really
@@ -236,18 +267,12 @@ class make_decimal_field(make_field):
 
 class make_boolean_field(make_field):
     """A specialization of make_field for Boolean type fields."""
-    @classmethod
-    def get_field_class(cls, fld):
-        """Django differentiates between boolean fields which
-        can contain nulls and those that cannot with different
-        types.
-        """
-        return BooleanField if fld.required else NullBooleanField
+    field_class = models.BooleanField
 
     @classmethod
     def make_args(cls, fld):
         """Make False the default as it was in Django 1.5"""
-        args = super(make_boolean_field, cls).make_args(fld)
+        args = super().make_args(fld)
         if fld.required:
             args['default'] = False
         return args
@@ -256,6 +281,8 @@ class make_boolean_field(make_field):
 # appropriate field constructor functions.
 field_type_map = {
     'text': make_text_field,
+    'json': make_text_field,
+    'blob': make_text_field,
     'java.lang.String': make_string_field,
     'java.lang.Integer': make_integer_field,
     'java.lang.Long': make_integer_field,
@@ -269,6 +296,14 @@ field_type_map = {
     'java.math.BigDecimal': make_decimal_field,
     'java.lang.Boolean': make_boolean_field,
     }
+
+tables_with_pre_constraints_delete = [
+    # 'Geographytreedefitem',
+    # 'Geologictimeperiodtreedefitem',
+    # 'Lithostrattreedefitem',
+    # 'Storagetreedefitem',
+    # 'Taxontreedefitem',
+]
 
 def build_models(module, datamodel):
     return { model.specify_model.tableId: model

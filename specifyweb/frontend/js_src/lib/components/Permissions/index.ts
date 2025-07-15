@@ -6,7 +6,7 @@ import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
 import { setDevelopmentGlobal } from '../../utils/types';
-import { group, split } from '../../utils/utils';
+import { group, sortFunction, split } from '../../utils/utils';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { load } from '../InitialContext';
@@ -27,12 +27,12 @@ let operationPermissions: RR<
   number,
   RR<typeof anyResource, RR<typeof anyAction, boolean>> & {
     readonly [RESOURCE in keyof typeof frontEndPermissions]: RR<
-      typeof frontEndPermissions[RESOURCE][number],
+      (typeof frontEndPermissions)[RESOURCE][number],
       boolean
     >;
   } & {
     readonly [RESOURCE in keyof typeof operationPolicies]: RR<
-      typeof operationPolicies[RESOURCE][number],
+      (typeof operationPolicies)[RESOURCE][number],
       boolean
     >;
   }
@@ -42,7 +42,7 @@ let tablePermissions: RR<
   number,
   {
     readonly [TABLE_NAME in keyof Tables as `${typeof tablePermissionsPrefix}${Lowercase<TABLE_NAME>}`]: RR<
-      typeof tableActions[number],
+      (typeof tableActions)[number],
       boolean
     >;
   }
@@ -52,7 +52,7 @@ let derivedPermissions: RR<
   number,
   {
     readonly [RESOURCE in keyof typeof derivedPolicies]: RR<
-      typeof derivedPolicies[RESOURCE][number],
+      (typeof derivedPolicies)[RESOURCE][number],
       boolean
     >;
   }
@@ -60,6 +60,13 @@ let derivedPermissions: RR<
 export const getTablePermissions = () => tablePermissions;
 export const getOperationPermissions = () => operationPermissions;
 export const getDerivedPermissions = () => derivedPermissions;
+
+const sortPolicies = (policy: typeof operationPolicies) =>
+  JSON.stringify(
+    Object.fromEntries(
+      Object.entries(policy).sort(sortFunction(([key]) => key))
+    )
+  );
 
 /**
  * List of policies is stored on the front-end to improve TypeScript typing
@@ -78,9 +85,11 @@ const checkRegistry = async (): Promise<void> =>
         '/permissions/registry/',
         'application/json'
       ).then((policies) =>
-        JSON.stringify(policies) === JSON.stringify(operationPolicies)
+        sortPolicies(policies) === sortPolicies(operationPolicies)
           ? undefined
-          : error('Front-end has outdated list of operation policies')
+          : error(
+              'Front-end list of operation policies is out of date. To resolve this error, please update "operationPolicies" in specifyweb/frontend/js_src/lib/components/Permissions/definitions.ts based on the response from the http://localhost/permissions/registry/ endpoint'
+            )
       );
 
 export type PermissionsQueryItem = {
@@ -105,14 +114,15 @@ export const queryUserPermissions = async (
   userId: number,
   collectionId: number
 ): Promise<RA<PermissionsQueryItem>> =>
-  import('../DataModel/schema')
+  import('../DataModel/tables')
     .then(async ({ fetchContext }) => fetchContext)
-    .then(async (schema) =>
+    .then(async (tables) =>
       ajax<{
         readonly details: RA<PermissionsQueryItem>;
       }>('/permissions/query/', {
         headers: { Accept: 'application/json' },
         method: 'POST',
+        errorMode: 'dismissible',
         body: {
           collectionid: collectionId,
           userid: userId,
@@ -121,7 +131,7 @@ export const queryUserPermissions = async (
               resource: policy,
               actions,
             })),
-            ...Object.keys(schema.models)
+            ...Object.keys(tables)
               .map(tableNameToResourceName)
               .map((resource) => ({
                 resource,
@@ -178,7 +188,7 @@ export const queryUserPermissions = async (
 
 const calculateDerivedPermissions = (
   items: RA<PermissionsQueryItem>
-): typeof derivedPermissions[number] =>
+): (typeof derivedPermissions)[number] =>
   Object.fromEntries(
     indexQueryItems(
       items
@@ -204,7 +214,7 @@ const calculateDerivedPermissions = (
           })
         )
     )
-  ) as typeof derivedPermissions[number];
+  ) as (typeof derivedPermissions)[number];
 
 const indexQueryItems = (
   query: RA<PermissionsQueryItem>
@@ -230,7 +240,7 @@ export const fetchUserPermissions = async (
 ): Promise<number> =>
   f
     .all({
-      schema: import('../DataModel/schemaBase').then(
+      schema: import('../DataModel/schema').then(
         async ({ fetchContext }) => fetchContext
       ),
       userInformation: import('../InitialContext/userInformation').then(
@@ -264,9 +274,9 @@ export const fetchUserPermissions = async (
                     ).map(Object.fromEntries);
                     return {
                       operations:
-                        operations as unknown as typeof operationPermissions[number],
+                        operations as unknown as (typeof operationPermissions)[number],
                       tables:
-                        tables as unknown as typeof tablePermissions[number],
+                        tables as unknown as (typeof tablePermissions)[number],
                       derived: calculateDerivedPermissions(query),
                     };
                   }

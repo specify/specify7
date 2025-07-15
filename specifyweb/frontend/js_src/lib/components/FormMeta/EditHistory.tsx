@@ -1,21 +1,20 @@
 import React from 'react';
 
-import type { SpQuery } from '../DataModel/types';
-import { format } from '../Forms/dataObjFormatters';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useFormatted } from '../../hooks/useFormatted';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { flippedSortTypes } from '../QueryBuilder/helpers';
-import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
-import { schema } from '../DataModel/schema';
 import { Button } from '../Atoms/Button';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { QueryBuilder } from '../QueryBuilder/Wrapped';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
+import type { SpQuery } from '../DataModel/types';
+import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { createQuery } from '../QueryBuilder';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { AnySchema } from '../DataModel/helperTypes';
+import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { flippedSortTypes } from '../QueryBuilder/helpers';
+import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { formattedEntry } from '../WbPlanView/mappingHelpers';
 
 export function EditHistory({
@@ -27,12 +26,12 @@ export function EditHistory({
   return (
     <>
       <Button.Small
-        disabled={resource.isNew()}
-        title={resource.isNew() ? formsText('saveRecordFirst') : undefined}
-        onClick={handleOpen}
         className="normal-case"
+        disabled={resource.isNew()}
+        title={resource.isNew() ? formsText.saveRecordFirst() : undefined}
+        onClick={handleOpen}
       >
-        {formsText('historyOfEdits')}
+        {formsText.editHistory()}
       </Button.Small>
       {isOpen && (
         <RecordHistoryDialog resource={resource} onClose={handleClose} />
@@ -51,23 +50,24 @@ function RecordHistoryDialog({
   const query = useEditHistoryQuery(resource);
   return typeof query === 'object' ? (
     <Dialog
-      buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
+      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
       className={{
         container: dialogClassNames.wideContainer,
       }}
-      header={formsText('historyOfEdits')}
+      header={formsText.editHistory()}
       onClose={handleClose}
     >
       <QueryBuilder
         autoRun
+        forceCollection={undefined}
         isEmbedded
-        isReadOnly={false}
         query={query}
         recordSet={undefined}
-        forceCollection={undefined}
       />
     </Dialog>
-  ) : null;
+  ) : (
+    <LoadingScreen />
+  );
 }
 
 function useEditHistoryQuery(
@@ -79,14 +79,14 @@ function useEditHistoryQuery(
     () =>
       typeof formatted === 'string'
         ? createQuery(
-            formsText('historyOfEditsQueryName', formatted),
-            schema.models.SpAuditLog
+            formsText.editHistoryQueryName({ formattedRecord: formatted }),
+            tables.SpAuditLog
           ).set('fields', [
             QueryFieldSpec.fromPath('SpAuditLog', ['tableNum'])
               .toSpQueryField()
               .set('isDisplay', false)
               .set('operStart', queryFieldFilters.equal.id)
-              .set('startValue', resource.specifyModel.tableId.toString()),
+              .set('startValue', resource.specifyTable.tableId.toString()),
             QueryFieldSpec.fromPath('SpAuditLog', ['recordId'])
               .toSpQueryField()
               .set('isDisplay', false)
@@ -116,16 +116,4 @@ function useEditHistoryQuery(
         : undefined,
     [resource, formatted]
   );
-}
-function useFormatted(
-  resource: SpecifyResource<AnySchema>
-): string | undefined {
-  const [formatted] = useAsyncState(
-    React.useCallback(
-      async () => format(resource, undefined, true),
-      [resource]
-    ),
-    true
-  );
-  return formatted;
 }

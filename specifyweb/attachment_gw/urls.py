@@ -1,9 +1,13 @@
-from django.conf.urls import url
+from django.urls import path
 
 from . import views
 
 urlpatterns = [
-    url(r'^get_settings/$', views.get_settings),
-    url(r'^get_upload_params/$', views.get_upload_params),
-    url(r'^get_token/$', views.get_token),
+    path('get_settings/', views.get_settings),
+    path('get_upload_params/', views.get_upload_params),
+    path('get_token/', views.get_token),
+    path('proxy/', views.proxy),
+    path('download_all/', views.download_all),
+    path('dataset/', views.datasets),
+    path('dataset/<int:ds_id>/', views.dataset),
 ]

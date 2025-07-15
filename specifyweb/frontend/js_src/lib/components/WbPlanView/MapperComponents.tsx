@@ -1,38 +1,51 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import type { Tables } from '../DataModel/types';
-import { commonText } from '../../localization/common';
-import { wbText } from '../../localization/workbench';
-import { strictGetModel } from '../DataModel/schema';
-import type { IR, RA, RR } from '../../utils/types';
-import type { ColumnOptions, MatchBehaviors } from './uploadPlanParser';
-import { getMappingLineData } from './navigator';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
+import { useId } from '../../hooks/useId';
+import { batchEditText } from '../../localization/batchEdit';
+import { commonText } from '../../localization/common';
+import { schemaText } from '../../localization/schema';
+import { wbPlanText } from '../../localization/wbPlan';
+import type { IR, RA, RR } from '../../utils/types';
+import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { Input, Label } from '../Atoms/Form';
+import { ReadOnlyContext } from '../Core/Contexts';
+import { strictGetTable } from '../DataModel/tables';
+import type { Tables } from '../DataModel/types';
+import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { TableIcon } from '../Molecules/TableIcon';
+import { userPreferences } from '../Preferences/userPreferences';
+import { ButtonWithConfirmation } from './Components';
 import type {
   HtmlGeneratorFieldData,
   MappingElementProps,
 } from './LineComponents';
 import { MappingPathComponent } from './LineComponents';
-import type { MappingPath } from './Mapper';
-import { Button } from '../Atoms/Button';
-import { Input, Label } from '../Atoms/Form';
-import { Ul } from '../Atoms';
-import { useId } from '../../hooks/useId';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { TableIcon } from '../Molecules/TableIcon';
-import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import { usePref } from '../UserPreferences/usePref';
-import { ButtonWithConfirmation } from './Components';
+import {
+  type BatchEditPrefs,
+  type MappingPath,
+  DEFAULT_BATCH_EDIT_PREFS,
+} from './Mapper';
+import { getMappingLineData } from './navigator';
+import { navigatorSpecs } from './navigatorSpecs';
+import type { ColumnOptions, MatchBehaviors } from './uploadPlanParser';
 
 export function MappingsControlPanel({
   showHiddenFields,
   onToggleHiddenFields: handleToggleHiddenFields,
   onAddNewHeader: handleAddNewHeader,
+  onClear: handleClear,
+  columnsNotSaved,
 }: {
   readonly showHiddenFields: boolean;
   readonly onToggleHiddenFields?: () => void;
   readonly onAddNewHeader?: (newHeaderName: string) => void;
+  readonly onClear: () => void;
+  readonly columnsNotSaved: boolean;
 }): JSX.Element {
   const newHeaderIdRef = React.useRef(1);
 
@@ -41,11 +54,18 @@ export function MappingsControlPanel({
       {typeof handleAddNewHeader === 'function' && (
         <Button.Small
           onClick={(): void => {
-            handleAddNewHeader(wbText('newHeaderName', newHeaderIdRef.current));
+            handleAddNewHeader(
+              wbPlanText.newHeaderName({ index: newHeaderIdRef.current })
+            );
             newHeaderIdRef.current += 1;
           }}
         >
-          {wbText('addNewColumn')}
+          {wbPlanText.addNewColumn()}
+        </Button.Small>
+      )}
+      {columnsNotSaved && (
+        <Button.Small onClick={handleClear}>
+          {commonText.deleteUnmapped()}
         </Button.Small>
       )}
       <Label.Inline>
@@ -53,7 +73,7 @@ export function MappingsControlPanel({
           checked={showHiddenFields}
           onChange={handleToggleHiddenFields}
         />
-        {commonText('revealHiddenFormFields')}
+        {wbPlanText.revealHiddenFormFields()}
       </Label.Inline>
     </div>
   );
@@ -74,19 +94,19 @@ export function ValidationResults(props: {
     <Dialog
       buttons={
         <>
-          <Button.Blue onClick={props.onDismissValidation}>
-            {wbText('continueEditing')}
-          </Button.Blue>
-          <Button.Orange onClick={props.onSave}>
-            {wbText('saveUnfinished')}
-          </Button.Orange>
+          <Button.Info onClick={props.onDismissValidation}>
+            {wbPlanText.continueEditing()}
+          </Button.Info>
+          <Button.Warning onClick={props.onSave}>
+            {wbPlanText.saveUnfinished()}
+          </Button.Warning>
         </>
       }
-      header={wbText('validationFailedDialogHeader')}
+      header={wbPlanText.validationFailed()}
       modal={false}
       onClose={props.onDismissValidation}
     >
-      <p>{wbText('validationFailedDialogText')}</p>
+      <p>{wbPlanText.validationFailedDescription()}</p>
       <section className="flex flex-col gap-2">
         {props.validationResults.map((fieldPath, index) => (
           <Button.Small
@@ -104,6 +124,7 @@ export function ValidationResults(props: {
                 getMappedFields: props.getMappedFields,
                 mustMatchPreferences: props.mustMatchPreferences,
                 generateFieldData: 'selectedOnly',
+                spec: navigatorSpecs.wbPlanView,
               }).map((data) => ({
                 ...data,
                 isOpen: true,
@@ -150,7 +171,7 @@ export function MappingView({
 
   return (
     <section
-      aria-label={wbText('mappingEditor')}
+      aria-label={wbPlanText.mappingEditor()}
       className={`
         h-[var(--mapping-view-height)] max-h-[50vh]
         min-h-[theme(spacing.40)] resize-y overflow-x-auto
@@ -177,7 +198,7 @@ export function EmptyDataSetDialog({
 }: {
   readonly lineCount: number;
 }): JSX.Element | null {
-  const [dialogEnabled] = usePref(
+  const [dialogEnabled] = userPreferences.use(
     'workBench',
     'wbPlanView',
     'showNewDataSetWarning'
@@ -188,12 +209,15 @@ export function EmptyDataSetDialog({
 
   return (
     <Dialog
-      buttons={commonText('close')}
-      header={wbText('emptyDataSetDialogHeader')}
+      buttons={commonText.close()}
+      header={wbPlanText.emptyDataSet()}
       isOpen={showDialog}
       onClose={handleClose}
     >
-      {wbText('emptyDataSetDialogText')}
+      {wbPlanText.emptyDataSetDescription()}
+      <br />
+      <br />
+      {wbPlanText.emptyDataSetSecondDescription()}
     </Dialog>
   );
 }
@@ -217,20 +241,20 @@ export function mappingOptionsMenu({
     matchBehavior: {
       optionLabel: (
         <>
-          {wbText('matchBehavior')}
+          {wbPlanText.matchBehavior()}
           <Ul>
             {Object.entries({
               ignoreWhenBlank: {
-                title: wbText('ignoreWhenBlank'),
-                description: wbText('ignoreWhenBlankDescription'),
+                title: wbPlanText.ignoreWhenBlank(),
+                description: wbPlanText.ignoreWhenBlankDescription(),
               },
               ignoreAlways: {
-                title: wbText('ignoreAlways'),
-                description: wbText('ignoreAlwaysDescription'),
+                title: wbPlanText.ignoreAlways(),
+                description: wbPlanText.ignoreAlwaysDescription(),
               },
               ignoreNever: {
-                title: wbText('ignoreNever'),
-                description: wbText('ignoreNeverDescription'),
+                title: wbPlanText.ignoreNever(),
+                description: wbPlanText.ignoreNeverDescription(),
               },
             }).map(([id, { title, description }]) => (
               <li key={id}>
@@ -258,7 +282,7 @@ export function mappingOptionsMenu({
             disabled={isReadOnly}
             onValueChange={handleToggleAllowNulls}
           />{' '}
-          {wbText('allowNullValues')}
+          {wbPlanText.allowNullValues()}
         </Label.Inline>
       ),
     },
@@ -275,7 +299,7 @@ export function mappingOptionsMenu({
                 )
               }
             />{' '}
-            <span id={id('default-value')}>{wbText('useDefaultValue')}</span>
+            <span id={id('default-value')}>{wbPlanText.useDefaultValue()}</span>
             {columnOptions.default !== null && ':'}
           </Label.Inline>
           {typeof columnOptions.default === 'string' && (
@@ -284,7 +308,7 @@ export function mappingOptionsMenu({
               <AutoGrowTextArea
                 aria-labelledby={id('default-value')}
                 disabled={isReadOnly}
-                title={wbText('defaultValue')}
+                title={wbPlanText.defaultValue()}
                 value={columnOptions.default || ''}
                 onValueChange={handleChangeDefaultValue}
               />
@@ -292,7 +316,7 @@ export function mappingOptionsMenu({
           )}
         </>
       ),
-      title: wbText('useDefaultValueDescription'),
+      title: wbPlanText.defaultValueDescription(),
     },
   };
 }
@@ -306,17 +330,17 @@ export function ChangeBaseTable({
     <ButtonWithConfirmation
       dialogButtons={(confirm) => (
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Button.Orange onClick={confirm}>
-            {commonText('changeBaseTable')}
-          </Button.Orange>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Button.Warning onClick={confirm}>
+            {schemaText.changeBaseTable()}
+          </Button.Warning>
         </>
       )}
-      dialogHeader={wbText('goToBaseTableDialogHeader')}
-      dialogMessage={wbText('goToBaseTableDialogText')}
+      dialogHeader={wbPlanText.goToBaseTable()}
+      dialogMessage={wbPlanText.goToBaseTableDescription()}
       onConfirm={handleClick}
     >
-      {wbText('baseTable')}
+      {wbPlanText.baseTable()}
     </ButtonWithConfirmation>
   );
 }
@@ -332,18 +356,18 @@ export function ReRunAutoMapper({
     <ButtonWithConfirmation
       dialogButtons={(confirm) => (
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Button.Orange onClick={confirm}>
-            {wbText('reRunAutoMapper')}
-          </Button.Orange>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Button.Warning onClick={confirm}>
+            {wbPlanText.reRunAutoMapper()}
+          </Button.Warning>
         </>
       )}
-      dialogHeader={wbText('reRunAutoMapperDialogHeader')}
-      dialogMessage={wbText('reRunAutoMapperDialogText')}
+      dialogHeader={wbPlanText.reRunAutoMapperConfirmation()}
+      dialogMessage={wbPlanText.reRunAutoMapperConfirmationDescription()}
       showConfirmation={showConfirmation}
       onConfirm={handleClick}
     >
-      {wbText('autoMapper')}
+      {wbPlanText.autoMapper()}
     </ButtonWithConfirmation>
   );
 }
@@ -357,13 +381,14 @@ export function ToggleMappingPath({
 }): JSX.Element {
   return (
     <Button.Small aria-pressed={!showMappingView} onClick={handleClick}>
-      {showMappingView ? wbText('hideFieldMapper') : wbText('showFieldMapper')}
+      {showMappingView
+        ? wbPlanText.hideFieldMapper()
+        : wbPlanText.showFieldMapper()}
     </Button.Small>
   );
 }
 
 export function MustMatch({
-  isReadOnly,
   /**
    * Recalculating tables available for MustMatch is expensive, so we only
    * do it when opening the dialog
@@ -372,7 +397,6 @@ export function MustMatch({
   onChange: handleChange,
   onClose: handleClose,
 }: {
-  readonly isReadOnly: boolean;
   readonly getMustMatchPreferences: () => IR<boolean>;
   readonly onChange: (mustMatchPreferences: IR<boolean>) => void;
   readonly onClose: () => void;
@@ -387,34 +411,37 @@ export function MustMatch({
     handleClose();
   };
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <>
       <Button.Small
         aria-haspopup="dialog"
         onClick={(): void => setLocalPreferences(getMustMatchPreferences())}
       >
-        {wbText('mustMatch')}
+        {wbPlanText.mustMatch()}
       </Button.Small>
       {typeof localPreferences === 'object' && (
         <Dialog
           buttons={
-            <Button.Blue onClick={handleDialogClose}>
+            <Button.Info onClick={handleDialogClose}>
               {Object.keys(localPreferences).length === 0
-                ? commonText('close')
-                : commonText('apply')}
-            </Button.Blue>
+                ? commonText.close()
+                : commonText.apply()}
+            </Button.Info>
           }
           className={{
             container: dialogClassNames.narrowContainer,
           }}
-          header={wbText('matchingLogicDialogTitle')}
+          header={wbPlanText.changeMatchingLogic()}
           onClose={handleDialogClose}
         >
           {Object.keys(localPreferences).length === 0 ? (
-            wbText('matchingLogicUnavailableDialogText')
+            wbPlanText.matchingLogicUnavailable()
           ) : (
             <>
-              <p id={id('description')}>{wbText('matchingLogicDialogText')}</p>
+              <p id={id('description')}>
+                {wbPlanText.matchingLogicDescription()}
+              </p>
               <table
                 aria-describedby={id('description')}
                 className="grid-table grid-cols-[auto_auto] gap-2"
@@ -422,10 +449,10 @@ export function MustMatch({
                 <thead>
                   <tr>
                     <th className="justify-center" scope="col">
-                      {commonText('tableName')}
+                      {schemaText.tableName()}
                     </th>
                     <th className="justify-center" scope="col">
-                      {wbText('mustMatch')}
+                      {wbPlanText.mustMatch()}
                     </th>
                   </tr>
                 </thead>
@@ -439,7 +466,7 @@ export function MustMatch({
                             htmlFor={id(`table-${tableName}`)}
                           >
                             <TableIcon label={false} name={tableName} />
-                            {strictGetModel(tableName).label}
+                            {strictGetTable(tableName).label}
                           </label>
                         </td>
                         <td className="justify-center">
@@ -469,6 +496,91 @@ export function MustMatch({
               </table>
             </>
           )}
+        </Dialog>
+      )}
+    </>
+  );
+}
+
+export function BatchEditPrefsView({
+  prefs,
+  onChange: handleChange,
+}: {
+  readonly prefs: BatchEditPrefs;
+  readonly onChange: (prefs: BatchEditPrefs) => void;
+}): JSX.Element {
+  //
+  const prefLocalization: RR<
+    keyof BatchEditPrefs,
+    { readonly title: LocalizedString; readonly description: LocalizedString }
+  > = {
+    deferForMatch: {
+      title: batchEditText.deferForMatch(),
+      description: batchEditText.deferForMatchDescription({
+        default: DEFAULT_BATCH_EDIT_PREFS.deferForMatch,
+      }),
+    },
+    deferForNullCheck: {
+      title: batchEditText.deferForNullCheck(),
+      description: batchEditText.deferForNullCheckDescription({
+        default: DEFAULT_BATCH_EDIT_PREFS.deferForNullCheck,
+      }),
+    },
+  };
+
+  const isReadOnly = React.useContext(ReadOnlyContext);
+
+  const [isOpen, handleOpen, handleClose] = useBooleanState(false);
+
+  const [localPrefs, setLocalPrefs] = React.useState<BatchEditPrefs>(prefs);
+
+  const isChanged = React.useMemo(
+    () => JSON.stringify(localPrefs) !== JSON.stringify(prefs),
+    [localPrefs, prefs]
+  );
+
+  const handleCommit = () => {
+    if (isChanged) handleChange(localPrefs);
+    handleClose();
+  };
+
+  return (
+    <>
+      <Button.Small aria-haspopup="dialog" onClick={handleOpen}>
+        {batchEditText.batchEditPrefs()}
+      </Button.Small>
+      {isOpen && (
+        <Dialog
+          buttons={
+            <Button.Info onClick={handleCommit}>
+              {isChanged ? commonText.apply() : commonText.close()}
+            </Button.Info>
+          }
+          className={{ container: dialogClassNames.narrowContainer }}
+          header={batchEditText.batchEditPrefs()}
+          onClose={handleCommit}
+        >
+          <div>
+            <Ul>
+              {Object.entries(prefLocalization).map(
+                ([id, { title, description }]) => (
+                  <li key={id}>
+                    <Label.Inline title={description}>
+                      <Input.Checkbox
+                        checked={localPrefs[id]}
+                        isReadOnly={isReadOnly}
+                        name="batch-edit-prefs"
+                        onValueChange={(isChecked) =>
+                          setLocalPrefs({ ...localPrefs, [id]: isChecked })
+                        }
+                      />
+                      {` ${title}`}
+                    </Label.Inline>
+                  </li>
+                )
+              )}
+            </Ul>
+          </div>
         </Dialog>
       )}
     </>

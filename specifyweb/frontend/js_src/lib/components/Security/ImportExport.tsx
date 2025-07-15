@@ -1,9 +1,10 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -26,9 +27,9 @@ import type { NewRole, Role } from './Role';
 
 type Category = 'changed' | 'created' | 'unchanged';
 const categoryLabels = {
-  changed: adminText('updateExistingRoles'),
-  unchanged: adminText('unchangedRoles'),
-  created: adminText('createNewRoles'),
+  changed: userText.updateExistingRoles(),
+  unchanged: userText.unchangedRoles(),
+  created: userText.createNewRoles(),
 } as const;
 
 // REFACTOR: reduce size of this component
@@ -42,7 +43,7 @@ export function ImportExport({
   onCreateRole: handleCreateRole,
 }: {
   readonly roles: IR<Role> | undefined;
-  readonly baseName: string;
+  readonly baseName: LocalizedString;
   readonly collectionId: number;
   readonly permissionName: '/permissions/library/roles' | '/permissions/roles';
   readonly isReadOnly?: boolean;
@@ -68,22 +69,25 @@ export function ImportExport({
       {!isReadOnly &&
         (hasPermission(permissionName, 'update', collectionId) ||
           hasPermission(permissionName, 'create', collectionId)) && (
-          <Button.Blue disabled={roles === undefined} onClick={handleOpen}>
-            {commonText('import')}
-          </Button.Blue>
+          <Button.Info disabled={roles === undefined} onClick={handleOpen}>
+            {commonText.import()}
+          </Button.Info>
         )}
       <ExportButton baseName={baseName} roles={roles} />
       {isOpen && (
         <Dialog
           buttons={
             <>
-              <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-              <Submit.Green disabled={newRoles === undefined} form={id('form')}>
-                {commonText('import')}
-              </Submit.Green>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+              <Submit.Success
+                disabled={newRoles === undefined}
+                form={id('form')}
+              >
+                {commonText.import()}
+              </Submit.Success>
             </>
           }
-          header={commonText('import')}
+          header={commonText.import()}
           onClose={(): void => {
             setNewRoles(undefined);
             handleClose();
@@ -113,37 +117,35 @@ export function ImportExport({
                 <section key={category}>
                   <H3>{categoryLabels[category]}</H3>
                   {roles === undefined || roles.length === 0 ? (
-                    commonText('none')
+                    commonText.none()
                   ) : (
                     <Ul>
-                      {Array.from(roles)
-                        .sort(sortFunction(({ role }) => role.name))
-                        .map(({ role, isChecked }, index) => (
-                          <li key={index}>
-                            {category === 'unchanged' ? (
-                              role.name
-                            ) : (
-                              <Label.Inline>
-                                <Input.Checkbox
-                                  checked={isChecked}
-                                  onValueChange={(): void =>
-                                    setNewRoles(
-                                      replaceKey(
-                                        newRoles,
-                                        category,
-                                        replaceItem(roles, index, {
-                                          role,
-                                          isChecked: !isChecked,
-                                        })
-                                      )
+                      {roles.map(({ role, isChecked }, index) => (
+                        <li key={index}>
+                          {category === 'unchanged' ? (
+                            role.name
+                          ) : (
+                            <Label.Inline>
+                              <Input.Checkbox
+                                checked={isChecked}
+                                onValueChange={(): void =>
+                                  setNewRoles(
+                                    replaceKey(
+                                      newRoles,
+                                      category,
+                                      replaceItem(roles, index, {
+                                        role,
+                                        isChecked: !isChecked,
+                                      })
                                     )
-                                  }
-                                />
-                                {role.name}
-                              </Label.Inline>
-                            )}
-                          </li>
-                        ))}
+                                  )
+                                }
+                              />
+                              {role.name}
+                            </Label.Inline>
+                          )}
+                        </li>
+                      ))}
                     </Ul>
                   )}
                 </section>
@@ -151,7 +153,7 @@ export function ImportExport({
             ) : (
               <FilePicker
                 acceptedFormats={['.json']}
-                onSelected={(file): void =>
+                onFileSelected={(file): void =>
                   loading(
                     fileToText(file)
                       .then<RA<Role>>(f.unary(JSON.parse))
@@ -204,6 +206,14 @@ export function ImportExport({
                                         ];
                                   })
                               )
+                            ).map(
+                              ([category, roles]) =>
+                                [
+                                  category,
+                                  Array.from(roles).sort(
+                                    sortFunction(({ role }) => role.name)
+                                  ),
+                                ] as const
                             )
                           )
                         )
@@ -224,24 +234,22 @@ function ExportButton({
   baseName,
 }: {
   readonly roles: IR<Role> | undefined;
-  readonly baseName: string;
+  readonly baseName: LocalizedString;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   return (
-    <Button.Blue
+    <Button.Info
       disabled={roles === undefined}
       onClick={(): void =>
         loading(
           downloadFile(
-            `${adminText(
-              'userRoles'
-            )} - ${baseName} - ${new Date().toDateString()}.json`,
+            `${userText.userRoles()} - ${baseName} - ${new Date().toDateString()}.json`,
             JSON.stringify(Object.values(roles!), null, '\t')
           )
         )
       }
     >
-      {commonText('export')}
-    </Button.Blue>
+      {commonText.export()}
+    </Button.Info>
   );
 }

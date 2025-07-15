@@ -1,12 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { deserializeResource } from '../../hooks/resource';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import type { GetOrSet, IR } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -14,10 +14,13 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import { deserializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type { Collection } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
 import { hasPermission } from '../Permissions/helpers';
+import { formatUrl } from '../Router/queryString';
 import { updateCollectionRole } from './CollectionRole';
 import { createCollectionRole } from './CreateRole';
 import { ImportExport } from './ImportExport';
@@ -40,12 +43,11 @@ export function CurrentUserLink({
       href={`/specify/security/user/${userInformation.id}/`}
       onClick={(event): void => {
         event.preventDefault();
-        navigate(`/specify/security/user/${userInformation.id}/`, {
-          state: {
-            type: 'SecurityUser',
-            initialCollectionId: collectionId,
-          },
-        });
+        navigate(
+          formatUrl(`/specify/security/user/${userInformation.id}/`, {
+            collection: collectionId,
+          })
+        );
       }}
     >
       {userInformation.name}
@@ -61,13 +63,13 @@ export function CreateCollectionRoleButton({
   readonly collectionId: number;
 }): JSX.Element {
   return isDisabled ? (
-    <Button.Green onClick={undefined}>{commonText('create')}</Button.Green>
+    <Button.Success onClick={undefined}>{userText.addRole()}</Button.Success>
   ) : (
-    <Link.Green
+    <Link.Success
       href={`/specify/security/collection/${collectionId}/role/create/`}
     >
-      {commonText('create')}
-    </Link.Green>
+      {userText.addRole()}
+    </Link.Success>
   );
 }
 
@@ -89,7 +91,6 @@ export function ViewCollectionButton({
           dialog="modal"
           isDependent={false}
           isSubForm={false}
-          mode="edit"
           resource={resource}
           onAdd={undefined}
           onClose={handleClose}
@@ -117,7 +118,11 @@ export function CollectionRoles({
 
   return (
     <section className="flex flex-col gap-1">
-      <h4 className="text-xl">{adminText('collectionUserRoles')}</h4>
+      <h4 className="text-xl">
+        {userText.collectionUserRoles({
+          collectionTable: tables.Collection.label,
+        })}
+      </h4>
       {typeof roles === 'object' ? (
         <Ul>
           {Object.values(roles)
@@ -133,7 +138,7 @@ export function CollectionRoles({
             ))}
         </Ul>
       ) : (
-        commonText('loading')
+        commonText.loading()
       )}
       <div className="flex gap-2">
         {hasPermission('/permissions/roles', 'create', collection.id) ||
@@ -153,7 +158,7 @@ export function CollectionRoles({
         ) : undefined}
         {children}
         <ImportExport
-          baseName={collection.collectionName ?? ''}
+          baseName={localized(collection.collectionName ?? '')}
           collectionId={collection.id}
           permissionName="/permissions/roles"
           roles={roles}

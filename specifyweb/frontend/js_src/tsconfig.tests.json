@@ -1,9 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "exclude": ["node_modules", "testBuild"],
-  "compilerOptions": {
-    "noEmit": false,
-    "outDir": "./testBuild",
-    "sourceMap": false
-  }
-}

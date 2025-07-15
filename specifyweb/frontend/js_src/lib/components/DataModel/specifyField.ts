@@ -2,17 +2,21 @@
  * Classes for a specify field
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
+
 import type { IR } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
-import { getUiFormatters, type UiFormatter } from '../Forms/uiFormatters';
-import { isTreeModel } from '../InitialContext/treeRanks';
+import { type UiFormatter, getUiFormatters } from '../FieldFormatters';
+import { isTreeTable } from '../InitialContext/treeRanks';
 import { getFrontEndPickLists } from '../PickLists/definitions';
+import type { AnySchema } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
-import type { SchemaLocalization } from './schema';
-import { schema, strictGetModel } from './schema';
-import { unescape } from './schemaBase';
+import { schema, unescape } from './schema';
 import { getFieldOverwrite, getGlobalFieldOverwrite } from './schemaOverrides';
-import type { SpecifyModel } from './specifyModel';
+import type { SpecifyTable } from './specifyTable';
+import type { SchemaLocalization } from './tables';
+import { getTable, strictGetTable } from './tables';
 import type { PickList, Tables } from './types';
 
 export type JavaType =
@@ -43,7 +47,7 @@ const relationshipTypes = [
   'zero-to-one',
 ] as const;
 
-export type RelationshipType = typeof relationshipTypes[number];
+export type RelationshipType = (typeof relationshipTypes)[number];
 
 export type FieldDefinition = {
   readonly column?: string;
@@ -67,8 +71,8 @@ export type RelationshipDefinition = {
   readonly readOnly?: boolean;
 };
 
-abstract class FieldBase {
-  public readonly model: SpecifyModel;
+export abstract class FieldBase {
+  public readonly table: SpecifyTable;
 
   public readonly isRelationship: boolean = false;
 
@@ -94,10 +98,10 @@ abstract class FieldBase {
   public readonly overrides: {
     // eslint-disable-next-line functional/prefer-readonly-type
     isRequired: boolean;
-    // If relatedModel isHidden, this is set to true
+    // If relatedTable isHidden, this is set to true
     // eslint-disable-next-line functional/prefer-readonly-type
     isHidden: boolean;
-    // If relatedModel isSystem, this is set to true
+    // If relatedTable isSystem, this is set to true
     // eslint-disable-next-line functional/prefer-readonly-type
     isReadOnly: boolean;
   };
@@ -111,55 +115,59 @@ abstract class FieldBase {
   public readonly localization: SchemaLocalization['items'][string];
 
   // User friendly name of the field from the schema config.
-  public readonly label: string;
+  public readonly label: LocalizedString;
 
-  public constructor(
-    model: SpecifyModel,
+  protected constructor(
+    table: SpecifyTable,
     fieldDefinition: Omit<FieldDefinition, 'type'> & {
       readonly type: JavaType | RelationshipType;
     }
   ) {
-    this.model = model;
+    this.table = table;
 
     this.name = fieldDefinition.name;
 
-    const globalFieldOverride = getGlobalFieldOverwrite(model.name, this.name);
+    const globalFieldOverride = getGlobalFieldOverwrite(table.name, this.name);
 
     this.isReadOnly =
-      globalFieldOverride === 'readOnly' || fieldDefinition.readOnly === true;
+      globalFieldOverride?.visibility === 'readOnly' ||
+      fieldDefinition.readOnly === true;
 
     this.isRequired =
-      globalFieldOverride === 'required'
+      globalFieldOverride?.visibility === 'required'
         ? true
-        : globalFieldOverride === 'optional'
-        ? false
-        : fieldDefinition.required;
+        : globalFieldOverride?.visibility === 'optional'
+          ? false
+          : fieldDefinition.required;
     this.type = fieldDefinition.type;
     this.length = fieldDefinition.length;
     this.databaseColumn = fieldDefinition.column;
 
     this.localization =
-      this.model.localization.items[this.name.toLowerCase()] ?? {};
+      this.table.localization.items[this.name.toLowerCase()] ?? {};
 
     this.label =
       typeof this.localization.name === 'string' &&
       this.localization.name.length > 0
-        ? unescape(this.localization.name)
+        ? localized(unescape(this.localization.name))
         : camelToHuman(this.name);
 
     this.isHidden =
-      globalFieldOverride === 'hidden' || (this.localization.ishidden ?? false);
+      globalFieldOverride?.visibility === 'hidden' ||
+      (this.localization.ishidden ?? false);
 
     // Apply overrides
-    const fieldOverwrite = getFieldOverwrite(this.model.name, this.name);
+    const fieldOverwrite = getFieldOverwrite(this.table.name, this.name);
 
-    let isRequired = fieldOverwrite !== 'optional' && this.isRequired;
+    let isRequired =
+      fieldOverwrite?.visibility !== 'optional' && this.isRequired;
     let isHidden = this.isHidden;
 
-    const isReadOnly = this.isReadOnly || fieldOverwrite === 'readOnly';
+    const isReadOnly =
+      this.isReadOnly || fieldOverwrite?.visibility === 'readOnly';
 
     // Overwritten hidden fields are made not required
-    if (fieldOverwrite === 'hidden') {
+    if (fieldOverwrite?.visibility === 'hidden') {
       isRequired = false;
       isHidden = true;
     }
@@ -174,23 +182,11 @@ abstract class FieldBase {
   }
 
   // Returns the description of the field from the schema config.
-  public getLocalizedDesc(): string | undefined {
+  public getLocalizedDesc(): LocalizedString | undefined {
     const description = this.localization.desc;
     return description === null || description === undefined
       ? undefined
-      : unescape(description);
-  }
-
-  // Returns the name of the UIFormatter for the field from the schema config.
-  public getFormat(): string | undefined {
-    return this.localization.format ?? undefined;
-  }
-
-  // Returns the UIFormatter for the field specified in the schema config.
-  public getUiFormatter(): UiFormatter | undefined {
-    return this.isRelationship
-      ? undefined
-      : getUiFormatters()[this.getFormat() ?? ''];
+      : localized(unescape(description));
   }
 
   /*
@@ -201,7 +197,7 @@ abstract class FieldBase {
     return (
       this.localization.picklistname ??
       (getFrontEndPickLists() as IR<IR<SpecifyResource<PickList> | undefined>>)[
-        this.model.name
+        this.table.name
       ]?.[this.name]?.get('name')
     );
   }
@@ -233,8 +229,23 @@ abstract class FieldBase {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public toJSON(): string {
     return `[${this.isRelationship ? 'relationship' : 'literalField'} ${
-      this.name
-    }]`;
+      this.table.name
+    }.${this.name}]`;
+  }
+
+  public static fromJson(
+    value: string
+  ): LiteralField | Relationship | undefined {
+    if (!value.endsWith(']')) return undefined;
+    const name = value.startsWith('[literalField')
+      ? 'literalField'
+      : value.startsWith('[relationship')
+        ? 'relationship'
+        : undefined;
+    if (name === undefined) return undefined;
+    const parts = value.replace(`[${name} `, '').replace(']', '').split('.');
+    if (parts.length !== 2) return undefined;
+    return getTable(parts[0])?.getField(parts[1]);
   }
 }
 
@@ -244,9 +255,34 @@ export class LiteralField extends FieldBase {
 
   public readonly isRelationship: false = false;
 
-  public constructor(model: SpecifyModel, fieldDefinition: FieldDefinition) {
-    super(model, fieldDefinition);
+  // Indicates white space should not be ignored in the field
+  public readonly whiteSpaceSensitive: boolean;
+
+  public readonly datamodelDefinition: FieldDefinition;
+
+  public constructor(table: SpecifyTable, fieldDefinition: FieldDefinition) {
+    super(table, fieldDefinition);
+    this.datamodelDefinition = fieldDefinition;
     this.type = fieldDefinition.type;
+
+    const globalFieldOverride = getGlobalFieldOverwrite(table.name, this.name);
+    const fieldOverwrite = getFieldOverwrite(table.name, this.name);
+
+    this.whiteSpaceSensitive =
+      (globalFieldOverride?.whiteSpaceSensitive ?? false) ||
+      (fieldOverwrite?.whiteSpaceSensitive ?? false);
+  }
+
+  // Returns the name of the UIFormatter for the field from the schema config.
+  public getFormat(_resource?: SpecifyResource<AnySchema>): string | undefined {
+    return this.localization.format ?? undefined;
+  }
+
+  // Returns the UIFormatter for the field specified in the schema config.
+  public getUiFormatter(
+    resource?: SpecifyResource<AnySchema>
+  ): UiFormatter | undefined {
+    return getUiFormatters()[this.getFormat(resource) ?? ''];
   }
 }
 
@@ -254,45 +290,48 @@ export class Relationship extends FieldBase {
   // eslint-disable-next-line functional/prefer-readonly-type
   public otherSideName?: string;
 
-  public readonly relatedModel: SpecifyModel;
+  public readonly relatedTable: SpecifyTable;
 
   public readonly type: RelationshipType;
+
+  public readonly datamodelDefinition: RelationshipDefinition;
 
   private readonly dependent: boolean;
 
   public readonly isRelationship: true = true;
 
   public constructor(
-    model: SpecifyModel,
+    table: SpecifyTable,
     relationshipDefinition: RelationshipDefinition
   ) {
-    super(model, {
+    super(table, {
       ...relationshipDefinition,
       indexed: false,
       unique: false,
     });
+    this.datamodelDefinition = relationshipDefinition;
 
     this.type = relationshipDefinition.type;
     this.otherSideName = relationshipDefinition.otherSideName;
     this.dependent = relationshipDefinition.dependent;
-    const relatedModelName =
-      model.name === 'SpPrincipal' &&
+    const relatedTableName =
+      table.name === 'SpPrincipal' &&
       relationshipDefinition.name === 'scope' &&
       relationshipDefinition.relatedModelName === 'UserGroupScope'
         ? 'Division'
         : relationshipDefinition.relatedModelName;
-    this.relatedModel = strictGetModel(relatedModelName);
+    this.relatedTable = strictGetTable(relatedTableName);
 
-    if (isTreeModel(this.model.name)) this.overrides.isReadOnly = true;
+    if (isTreeTable(this.table.name)) this.overrides.isReadOnly = true;
 
     this.overrides.isRequired =
       this.overrides.isRequired &&
       !this.overrides.isReadOnly &&
-      !this.relatedModel.overrides.isSystem;
+      !this.relatedTable.overrides.isSystem;
     this.overrides.isHidden ||=
       !this.overrides.isRequired &&
-      this.relatedModel.overrides.isHidden &&
-      this.relatedModel !== this.model;
+      this.relatedTable.overrides.isHidden &&
+      this.relatedTable !== this.table;
   }
 
   /*
@@ -302,19 +341,19 @@ export class Relationship extends FieldBase {
    */
   public isDependent(): boolean {
     // REFACTOR: move this into SchemaExtras.ts
-    return this.model.name === 'CollectionObject' &&
+    return this.table.name === 'CollectionObject' &&
       this.name === 'collectingEvent'
       ? schema.embeddedCollectingEvent
-      : this.model.name.toLowerCase() === schema.paleoContextChildTable &&
-        this.name === 'paleoContext'
-      ? schema.embeddedPaleoContext
-      : this.dependent;
+      : this.table.name.toLowerCase() === schema.paleoContextChildTable &&
+          this.name === 'paleoContext'
+        ? schema.embeddedPaleoContext
+        : this.dependent;
   }
 
-  // Returns the field of the related model that is the reverse of this field.
+  // Returns the field of the related table that is the reverse of this field.
   public getReverse(): Relationship | undefined {
     return this.otherSideName
-      ? this.relatedModel.getRelationship(this.otherSideName)
+      ? this.relatedTable.getRelationship(this.otherSideName)
       : undefined;
   }
 }

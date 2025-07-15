@@ -1,19 +1,21 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import type { Locality } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { hasTablePermission } from '../Permissions/helpers';
+import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { formatDisjunction } from '../Atoms/Internationalization';
 import { LoadingContext } from '../Core/Contexts';
+import { toTable, toTables } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { genericTables, tables } from '../DataModel/tables';
+import type { Locality } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
-import { AnySchema } from '../DataModel/helperTypes';
-import { toTable, toTables } from '../DataModel/helpers';
+import { hasTablePermission } from '../Permissions/helpers';
 
 type States =
   | State<
@@ -33,48 +35,58 @@ export function PaleoLocationMapPlugin({
   resource,
 }: {
   readonly id: string | undefined;
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
 }): JSX.Element | null {
   const [state, setState] = React.useState<States>({ type: 'MainState' });
   const loading = React.useContext(LoadingContext);
 
-  return hasTablePermission('CollectingEvent', 'read') &&
+  return typeof resource === 'object' &&
+    hasTablePermission('CollectingEvent', 'read') &&
     hasTablePermission('Locality', 'read') &&
     hasTablePermission('PaleoContext', 'read') ? (
-    <ErrorBoundary dismissable>
+    <ErrorBoundary dismissible>
       <Button.Small
         className="w-fit"
         id={id}
         onClick={(): void => loading(fetchPaleoData(resource).then(setState))}
       >
-        {formsText('paleoMap')}
+        {formsText.paleoMap()}
       </Button.Small>
       {state.type === 'InvalidTableState' && (
         <Dialog
-          buttons={commonText('close')}
-          header={formsText('unsupportedFormDialogHeader')}
+          buttons={commonText.close()}
+          header={formsText.pluginNotAvailable()}
           onClose={(): void =>
             setState({
               type: 'MainState',
             })
           }
         >
-          {formsText('unsupportedFormDialogText')}
+          {formsText.wrongTableForPlugin({
+            currentTable: resource.specifyTable.name,
+            supportedTables: formatDisjunction(
+              paleoPluginTables.map((name) => genericTables[name].label)
+            ),
+          })}
         </Dialog>
       )}
       {state.type === 'NoDataState' && (
         <Dialog
-          buttons={commonText('close')}
-          header={formsText('paleoRequiresGeographyDialogHeader')}
+          buttons={commonText.close()}
+          header={formsText.paleoRequiresGeography({
+            geographyTable: tables.Geography.label,
+          })}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {formsText('paleoRequiresGeographyDialogText')}
+          {formsText.paleoRequiresGeographyDescription({
+            localityTable: tables.Locality.label,
+          })}
         </Dialog>
       )}
       {state.type === 'LoadedState' && (
         <Dialog
-          buttons={commonText('close')}
-          header={formsText('paleoMap')}
+          buttons={commonText.close()}
+          header={formsText.paleoMap()}
           onClose={(): void => setState({ type: 'MainState' })}
         >
           <iframe
@@ -83,7 +95,7 @@ export function PaleoLocationMapPlugin({
               width: '800px',
               height: '600px',
             }}
-            title={formsText('paleoMap')}
+            title={formsText.paleoMap()}
           />
         </Dialog>
       )}
@@ -91,59 +103,61 @@ export function PaleoLocationMapPlugin({
   ) : null;
 }
 
-const fetchPaleoData = async (
-  resource: SpecifyResource<AnySchema>
-): Promise<States> =>
-  f.maybe(
-    toTables(resource, ['Locality', 'CollectionObject', 'CollectingEvent']),
-    async (resource) => {
-      const locality:
-        | SpecifyResource<Locality>
-        | 'InvalidTableState'
-        | undefined =
-        toTable(resource, 'Locality') ??
-        (await f.maybe(
-          toTable(resource, 'CollectingEvent'),
-          async (collectingEvent) => collectingEvent.rgetPromise('locality')
-        )) ??
-        (await f.maybe(
-          toTable(resource, 'CollectionObject'),
-          async (collectionObject) =>
-            collectionObject
-              .rgetPromise('collectingEvent')
-              .then((collectingEvent) =>
-                collectingEvent?.rgetPromise('locality')
-              )
-        )) ??
-        'InvalidTableState';
-      if (locality === 'InvalidTableState')
-        return { type: 'InvalidTableState' };
+export const paleoPluginTables = [
+  'Locality',
+  'CollectionObject',
+  'CollectingEvent',
+] as const;
 
-      const latitude = locality?.get('latitude1') ?? undefined;
-      const longitude = locality?.get('longitude1') ?? undefined;
+async function fetchPaleoData(
+  anyResource: SpecifyResource<AnySchema>
+): Promise<States> {
+  const resource = toTables(anyResource, paleoPluginTables);
+  if (resource === undefined)
+    throw new Error('Trying to display PaleoMap unsupported form');
 
-      if (latitude === undefined || longitude === undefined)
-        return { type: 'NoDataState' };
+  const locality: SpecifyResource<Locality> | 'InvalidTableState' | undefined =
+    toTable(resource, 'Locality') ??
+    (await f.maybe(
+      toTable(resource, 'CollectingEvent'),
+      async (collectingEvent) => collectingEvent.rgetPromise('locality')
+    )) ??
+    (await f.maybe(
+      toTable(resource, 'CollectionObject'),
+      async (collectionObject) =>
+        collectionObject
+          .rgetPromise('collectingEvent')
+          .then(async (collectingEvent) =>
+            collectingEvent?.rgetPromise('locality')
+          )
+    )) ??
+    'InvalidTableState';
+  if (locality === 'InvalidTableState') return { type: 'InvalidTableState' };
 
-      /*
-       * Because the paleo context is related directly to each of the possible forms in the same way
-       * we can treat the retrieval of the age in the same all for all forms.
-       */
-      const chronosStrat = await resource
-        .rgetPromise('paleoContext')
-        .then((paleoContext) => paleoContext?.rgetPromise('chronosStrat'));
-      const startPeriod = chronosStrat?.get('startPeriod') ?? undefined;
-      const endPeriod = chronosStrat?.get('endPeriod') ?? undefined;
+  const latitude = locality?.get('latitude1') ?? undefined;
+  const longitude = locality?.get('longitude1') ?? undefined;
 
-      // Calculate the mid-point of the age if possible
-      const periods = filterArray([startPeriod, endPeriod]);
-      return periods.length === 0
-        ? { type: 'NoDataState' }
-        : {
-            type: 'LoadedState',
-            latitude,
-            longitude,
-            age: f.sum(periods) / periods.length,
-          };
-    }
-  ) ?? { type: 'InvalidTableState' };
+  if (latitude === undefined || longitude === undefined)
+    return { type: 'NoDataState' };
+
+  /*
+   * Because the paleo context is related directly to each of the possible forms in the same way
+   * we can treat the retrieval of the age in the same all for all forms.
+   */
+  const chronosStrat = await resource
+    .rgetPromise('paleoContext')
+    .then(async (paleoContext) => paleoContext?.rgetPromise('chronosStrat'));
+  const startPeriod = chronosStrat?.get('startPeriod') ?? undefined;
+  const endPeriod = chronosStrat?.get('endPeriod') ?? undefined;
+
+  // Calculate the mid-point of the age if possible
+  const periods = filterArray([startPeriod, endPeriod]);
+  return periods.length === 0
+    ? { type: 'NoDataState' }
+    : {
+        type: 'LoadedState',
+        latitude,
+        longitude,
+        age: f.sum(periods) / periods.length,
+      };
+}

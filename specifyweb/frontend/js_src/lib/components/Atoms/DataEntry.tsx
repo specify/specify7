@@ -1,19 +1,23 @@
-import { icons } from './Icons';
-import { TagProps, wrap } from './wrapper';
 import React from 'react';
-import { RA } from '../../utils/types';
-import { ViewDescription } from '../FormParse';
-import { className } from './className';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { SpecifyResource } from '../DataModel/legacyTypes';
+import type { RA } from '../../utils/types';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { ViewDescription } from '../FormParse';
+import type { cellAlign, cellVerticalAlign } from '../FormParse/cells';
 import { Button } from './Button';
+import { className } from './className';
+import type { icons } from './Icons';
 import { Link } from './Link';
-import { AnySchema } from '../DataModel/helperTypes';
+import type { TagProps } from './wrapper';
+import { wrap } from './wrapper';
 
 const dataEntryButton = (
   className: string,
-  title: string,
+  title: LocalizedString,
   icon: keyof typeof icons
 ) =>
   function (
@@ -49,7 +53,7 @@ export const columnDefinitionsToCss = (
  * Components for Specify Form
  * This is called DataEntry instead of Form because "Form" is already taken
  */
-/* eslint-disable @typescript-eslint/naming-convention */
+
 export const DataEntry = {
   Grid: wrap<
     'div',
@@ -61,7 +65,7 @@ export const DataEntry = {
   >(
     'DataEntry.Grid',
     'div',
-    `overflow-x-auto items-center p-1 -ml-1 gap-2`,
+    `items-center p-1 gap-2`,
     ({
       viewDefinition,
       display,
@@ -93,14 +97,15 @@ export const DataEntry = {
     'div',
     {
       readonly colSpan: number;
-      readonly align: string;
+      readonly align: (typeof cellAlign)[number];
       readonly visible: boolean;
+      readonly verticalAlign: (typeof cellVerticalAlign)[number];
     }
   >(
     'DataEntry.Cell',
     'div',
     'flex flex-col',
-    ({ colSpan, align, visible, ...props }) => ({
+    ({ colSpan, align, visible, verticalAlign, ...props }) => ({
       ...props,
       style: {
         visibility: visible ? undefined : 'hidden',
@@ -110,8 +115,18 @@ export const DataEntry = {
           align === 'right'
             ? 'flex-end'
             : align === 'center'
-            ? 'center'
-            : undefined,
+              ? 'center'
+              : undefined,
+        alignSelf:
+          verticalAlign === 'stretch'
+            ? 'stretch'
+            : verticalAlign === 'center'
+              ? 'self-center'
+              : verticalAlign === 'start'
+                ? 'self-start'
+                : verticalAlign === 'end'
+                  ? 'self-end'
+                  : undefined,
         ...props.style,
       },
     })
@@ -123,45 +138,44 @@ export const DataEntry = {
   SubFormHeader: wrap(
     'DataEntry.SubFormHeader',
     'legend',
-    'gap-2 flex font-bold border-b border-gray-500 pt-5 pb-1 items-center',
+    'gap-2 flex font-bold border-b border-gray-500 pt-3 pb-1 items-center',
     ({ children, ...props }) => ({
       // A hack for Safari. See https://github.com/specify/specify7/issues/1535
-      children: <span {...props}>{children}</span>,
+      children: <div {...props}>{children}</div>,
     })
   ),
-  SubFormTitle: wrap('DataEntry.SubFormTitle', 'h3', `${className.formTitle}`),
-  Add: dataEntryButton(className.dataEntryAdd, commonText('add'), 'plus'),
-  View: dataEntryButton(className.dataEntryView, commonText('view'), 'eye'),
-  Edit: dataEntryButton(className.dataEntryEdit, commonText('edit'), 'pencil'),
+  SubFormTitle: wrap('DataEntry.SubFormTitle', 'h3', className.formTitle),
+  Add: dataEntryButton(className.dataEntryAdd, commonText.add(), 'plus'),
+  View: dataEntryButton(className.dataEntryView, commonText.view(), 'eye'),
+  Edit: dataEntryButton(className.dataEntryEdit, commonText.edit(), 'pencil'),
   Clone: dataEntryButton(
     className.dataEntryClone,
-    formsText('clone'),
+    formsText.clone(),
     'clipboard'
   ),
   Search: dataEntryButton(
     className.dataEntrySearch,
-    commonText('search'),
+    commonText.search(),
     'search'
   ),
   Remove: dataEntryButton(
     className.dataEntryRemove,
-    commonText('remove'),
+    commonText.remove(),
     'minus'
   ),
   Visit({
+    className: localClassName = '',
     resource,
-    props,
   }: {
-    readonly props?: Exclude<TagProps<'a'>, 'aria-label' | 'href' | 'title'>;
+    readonly className?: string;
     readonly resource: SpecifyResource<AnySchema> | undefined;
   }): JSX.Element | null {
     return typeof resource === 'object' && !resource.isNew() ? (
       <Link.NewTab
-        {...props}
-        aria-label={formsText('visit')}
-        className={`${className.dataEntryVisit} ${props?.className ?? ''}`}
+        aria-label={commonText.openInNewTab()}
+        className={`${className.dataEntryVisit} ${localClassName}`}
         href={resource.viewUrl()}
-        title={formsText('visit')}
+        title={commonText.openInNewTab()}
       />
     ) : null;
   },

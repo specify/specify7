@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { AnyTree } from '../DataModel/helperTypes';
@@ -40,7 +41,7 @@ export function ToolPermissionDenied({
   action,
 }: {
   readonly tool: keyof ReturnType<typeof toolDefinitions>;
-  readonly action: typeof tableActions[number];
+  readonly action: (typeof tableActions)[number];
 }): JSX.Element {
   return (
     <PermissionError
@@ -69,7 +70,7 @@ export function ProtectedTool({
   children,
 }: {
   readonly tool: keyof ReturnType<typeof toolDefinitions>;
-  readonly action: typeof tableActions[number];
+  readonly action: (typeof tableActions)[number];
   readonly children: React.ReactNode;
 }): JSX.Element {
   return hasToolPermission(tool, action) ? (
@@ -80,7 +81,7 @@ export function ProtectedTool({
 }
 
 export function PermissionDenied<
-  RESOURCE extends keyof ReturnType<typeof getOperationPermissions>[number]
+  RESOURCE extends keyof ReturnType<typeof getOperationPermissions>[number],
 >({
   resource,
   action,
@@ -110,7 +111,7 @@ export function PermissionDenied<
 }
 
 export function ProtectedAction<
-  RESOURCE extends keyof ReturnType<typeof getOperationPermissions>[number]
+  RESOURCE extends keyof ReturnType<typeof getOperationPermissions>[number],
 >({
   resource,
   action,
@@ -133,7 +134,7 @@ export function TablePermissionDenied({
   action,
 }: {
   readonly tableName: keyof Tables;
-  readonly action: typeof tableActions[number];
+  readonly action: (typeof tableActions)[number];
 }): JSX.Element {
   return (
     <PermissionError
@@ -161,7 +162,7 @@ export function ProtectedTable({
   children,
 }: {
   readonly tableName: keyof Tables;
-  readonly action: typeof tableActions[number];
+  readonly action: (typeof tableActions)[number];
   readonly children: React.ReactNode;
 }): JSX.Element {
   return hasTablePermission(tableName, action) ? (
@@ -177,7 +178,7 @@ export function ProtectedTree({
   children,
 }: {
   readonly treeName: AnyTree['tableName'];
-  readonly action: typeof tableActions[number];
+  readonly action: (typeof tableActions)[number];
   readonly children: JSX.Element | null;
 }): JSX.Element | null {
   return hasTreeAccess(treeName, action) ? (
@@ -207,35 +208,35 @@ export function PermissionError({
     <Dialog
       buttons={
         <>
-          <Button.Red
+          <Button.Danger
             onClick={(): void => globalThis.location.assign('/specify/')}
           >
-            {commonText('goToHomepage')}
-          </Button.Red>
+            {commonText.goToHomepage()}
+          </Button.Danger>
           {typeof handleClose === 'function' && (
-            <Button.Red onClick={handleClose}>
-              {commonText('dismiss')}
-            </Button.Red>
+            <Button.Danger onClick={handleClose}>
+              {commonText.dismiss()}
+            </Button.Danger>
           )}
         </>
       }
-      header={commonText('permissionDeniedError')}
+      header={userText.permissionDeniedError()}
       onClose={handleClose}
     >
       {error}
     </Dialog>
   ) : (
     <Dialog
-      buttons={commonText('logIn')}
+      buttons={userText.logIn()}
       forceToTop
-      header={commonText('sessionTimeOutDialogHeader')}
+      header={userText.sessionTimeOut()}
       onClose={(): void =>
         globalThis.location.assign(
           formatUrl('/accounts/login/', { next: globalThis.location.href })
         )
       }
     >
-      {commonText('sessionTimeOutDialogText')}
+      {userText.sessionTimeOutDescription()}
     </Dialog>
   );
 }

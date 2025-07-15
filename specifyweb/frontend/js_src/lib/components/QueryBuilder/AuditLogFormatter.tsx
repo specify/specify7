@@ -1,39 +1,42 @@
-import { SpecifyModel } from '../DataModel/specifyModel';
-import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
-import { format } from '../Forms/dataObjFormatters';
-import { hasTablePermission } from '../Permissions/helpers';
-import { Link } from '../Atoms/Link';
-import { RA } from '../../utils/types';
-import { formsText } from '../../localization/forms';
 import React from 'react';
-import { QueryFieldSpec } from './fieldSpec';
-import { queryIdField } from './Results';
-import { getModelById } from '../DataModel/schema';
-import { fieldFormat } from '../../utils/fieldFormat';
+
+import { formsText } from '../../localization/forms';
+import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
+import type { RA } from '../../utils/types';
+import { Link } from '../Atoms/Link';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTableById } from '../DataModel/tables';
+import { fieldFormat } from '../Formatters/fieldFormat';
+import { format, naiveFormatter } from '../Formatters/formatters';
+import { hasTablePermission } from '../Permissions/helpers';
+import type { QueryFieldSpec } from './fieldSpec';
+import { queryIdField } from './Results';
 
 const needAuditLogFormatting = (fieldSpecs: RA<QueryFieldSpec>): boolean =>
   fieldSpecs.some(({ table }) =>
     ['SpAuditLog', 'SpAuditLogField'].includes(table.name)
   );
 
+// REFACTOR: replace with <FormattedResourceUrl />
 async function resourceToLink(
-  model: SpecifyModel,
+  table: SpecifyTable,
   id: number
 ): Promise<JSX.Element | string> {
-  const resource = new model.Resource({ id });
+  const resource = new table.Resource({ id });
   let errorHandled = false;
   return hijackBackboneAjax(
-    [Http.OK, Http.NOT_FOUND],
+    [Http.NOT_FOUND],
     async () =>
       resource
         .fetch()
         .then(async (resource) => format(resource, undefined, true))
         .then((string) =>
-          hasTablePermission(resource.specifyModel.name, 'read') ? (
+          hasTablePermission(resource.specifyTable.name, 'read') &&
+          !resource.isNew() ? (
             <Link.NewTab href={resource.viewUrl()}>{string}</Link.NewTab>
           ) : (
-            string!
+            string
           )
         ),
     (status) => {
@@ -41,14 +44,13 @@ async function resourceToLink(
     }
   ).catch((error) => {
     if (errorHandled)
-      return `${model.name} #${id} ${formsText('deletedInline')}`;
+      return `${naiveFormatter(table.name, id)} ${formsText.deletedInline()}`;
     else throw error;
   });
 }
 
 export function getAuditRecordFormatter(
-  fieldSpecs: RA<QueryFieldSpec>,
-  hasIdField: boolean
+  fieldSpecs: RA<QueryFieldSpec>
 ):
   | ((
       resultRow: RA<number | string | null>
@@ -61,42 +63,42 @@ export function getAuditRecordFormatter(
       .map((field) => (field?.isRelationship === false ? field : undefined))
   );
 
-  const modelIdIndex = fields.findIndex((field) => field?.name === 'tableNum');
-  if (modelIdIndex < 0) return undefined;
+  const tableIdIndex = fields.findIndex((field) => field?.name === 'tableNum');
+  if (tableIdIndex < 0) return undefined;
 
-  const parentModelIdIndex = fields.findIndex(
+  const parentTableIdIndex = fields.findIndex(
     (field) => field?.name === 'parentTableNum'
   );
-  if (parentModelIdIndex < 0) return undefined;
+  if (parentTableIdIndex < 0) return undefined;
 
   return async (resultRow): Promise<RA<JSX.Element | string>> =>
     Promise.all(
       resultRow
-        .filter((_, index) => !hasIdField || index !== queryIdField)
-        .map((value, index, row) => {
+        .filter((_, index) => index !== queryIdField)
+        .map(async (value, index, row) => {
           if (value === null || value === '') return '';
           const stringValue = value.toString();
           if (fields[index]?.name === 'fieldName') {
-            const modelId = row[modelIdIndex];
-            return typeof modelId === 'number'
-              ? getModelById(modelId).getField(stringValue)?.label ??
-                  stringValue
-              : modelId ?? '';
+            const tableId = row[tableIdIndex];
+            return typeof tableId === 'number'
+              ? (getTableById(tableId).getField(stringValue)?.label ??
+                  stringValue)
+              : (tableId ?? '');
           } else if (fields[index]?.name === 'recordId') {
-            const modelId = row[modelIdIndex];
-            return typeof modelId === 'number'
-              ? resourceToLink(getModelById(modelId), Number(value))
-              : modelId ?? '';
+            const tableId = row[tableIdIndex];
+            return typeof tableId === 'number'
+              ? resourceToLink(getTableById(tableId), Number(value))
+              : (tableId ?? '');
           } else if (fields[index]?.name === 'parentRecordId') {
-            const modelId = row[parentModelIdIndex];
-            return typeof modelId === 'number'
-              ? resourceToLink(getModelById(modelId), Number(value))
-              : modelId ?? '';
+            const tableId = row[parentTableIdIndex];
+            return typeof tableId === 'number'
+              ? resourceToLink(getTableById(tableId), Number(value))
+              : (tableId ?? '');
           } else
             return fieldFormat(
               fields[index],
-              fieldSpecs[index].parser,
-              (value ?? '').toString()
+              (value ?? '').toString(),
+              fieldSpecs[index].parser
             );
         })
     );

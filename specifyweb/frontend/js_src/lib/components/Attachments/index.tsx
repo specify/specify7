@@ -3,58 +3,72 @@
  */
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
-import { useCollection } from '../../hooks/useCollection';
+import { useSerializedCollection } from '../../hooks/useSerializedCollection';
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
+import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
-import { filterArray } from '../../utils/types';
+import { replaceItem } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
+import { Button, DialogContext } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
-import { getModel, schema } from '../DataModel/schema';
-import type { Tables } from '../DataModel/types';
-import { useMenuItem } from '../Header';
-import { hasTablePermission } from '../Permissions/helpers';
+import { backendFilter } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { genericTables, tables } from '../DataModel/tables';
+import type { Attachment, Tables } from '../DataModel/types';
+import { useMenuItem } from '../Header/MenuContext';
+import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
-import { OrderPicker } from '../UserPreferences/Renderers';
+import { OrderPicker } from '../Preferences/Renderers';
+import { attachmentSettingsPromise } from './attachments';
 import { AttachmentGallery } from './Gallery';
+import { allTablesWithAttachments, tablesWithAttachments } from './utils';
 
-const allTablesWithAttachments = f.store(() =>
-  filterArray(
-    Object.keys(schema.models)
-      .filter((tableName) => tableName.endsWith('Attachment'))
-      .map((tableName) =>
-        getModel(tableName.slice(0, -1 * 'Attachment'.length))
-      )
-  )
-);
-/** Exclude tables without read access*/
-export const tablesWithAttachments = f.store(() =>
-  allTablesWithAttachments().filter((model) =>
-    hasTablePermission(model.name, 'read')
-  )
-);
-
-const defaultScale = 10;
+export const defaultAttachmentScale = 10;
 const minScale = 4;
 const maxScale = 50;
 const defaultSortOrder = '-timestampCreated';
 const defaultFilter = { type: 'all' } as const;
 
-export function AttachmentsView(): JSX.Element {
-  return (
+export function AttachmentsView({
+  onClick,
+}: {
+  readonly onClick?: (attachment: SerializedResource<Attachment>) => void;
+}): JSX.Element | null {
+  const navigate = useNavigate();
+  const [isConfigured] = usePromise(attachmentSettingsPromise, true);
+
+  return isConfigured === undefined ? null : isConfigured ? (
     <ProtectedTable action="read" tableName="Attachment">
-      <Attachments />
+      <Attachments onClick={onClick} />
     </ProtectedTable>
+  ) : (
+    <Dialog
+      buttons={commonText.close()}
+      header={attachmentsText.attachmentServerUnavailable()}
+      onClose={(): void => navigate('/specify/')}
+    >
+      {attachmentsText.attachmentServerUnavailableDescription()}
+    </Dialog>
   );
 }
 
-function Attachments(): JSX.Element {
+function Attachments({
+  onClick,
+}: {
+  readonly onClick?: (attachment: SerializedResource<Attachment>) => void;
+}): JSX.Element {
   useMenuItem('attachments');
+
+  const isInDialog = React.useContext(DialogContext);
+
+  const navigate = useNavigate();
 
   const [order = defaultSortOrder, setOrder] = useCachedState(
     'attachments',
@@ -74,19 +88,18 @@ function Attachments(): JSX.Element {
             'Attachment',
             {
               limit: 1,
+              domainFilter: true,
             },
             allTablesWithAttachments().length === tablesWithAttachments().length
               ? {}
-              : {
-                  tableId__in: tablesWithAttachments()
-                    .map(({ tableId }) => tableId)
-                    .join(','),
-                }
+              : backendFilter('tableId').isIn(
+                  tablesWithAttachments().map(({ tableId }) => tableId)
+                )
           ).then<number>(({ totalCount }) => totalCount),
           unused: fetchCollection(
             'Attachment',
-            { limit: 1 },
-            { tableId__isNull: 'true' }
+            { limit: 1, domainFilter: true },
+            backendFilter('tableId').isNull()
           ).then<number>(({ totalCount }) => totalCount),
           byTable: f.all(
             Object.fromEntries(
@@ -94,7 +107,9 @@ function Attachments(): JSX.Element {
                 name,
                 fetchCollection('Attachment', {
                   limit: 1,
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   tableID: tableId,
+                  domainFilter: true,
                 }).then<number>(({ totalCount }) => totalCount),
               ])
             )
@@ -105,12 +120,12 @@ function Attachments(): JSX.Element {
     false
   );
 
-  const [scale = defaultScale, setScale] = useCachedState(
+  const [scale = defaultAttachmentScale, setScale] = useCachedState(
     'attachments',
     'scale'
   );
 
-  const [collection, fetchMore] = useCollection(
+  const [collection, setCollection, fetchMore] = useSerializedCollection(
     React.useCallback(
       async (offset) =>
         fetchCollection(
@@ -122,19 +137,17 @@ function Attachments(): JSX.Element {
             limit: DEFAULT_FETCH_LIMIT,
           },
           filter.type === 'unused'
-            ? { tableId__isNull: 'true' }
+            ? backendFilter('tableId').isNull()
             : filter.type === 'byTable'
-            ? {
-                tableId: schema.models[filter.tableName].tableId,
-              }
-            : allTablesWithAttachments().length ===
-              tablesWithAttachments().length
-            ? {}
-            : {
-                tableId__in: tablesWithAttachments()
-                  .map(({ tableId }) => tableId)
-                  .join(','),
-              }
+              ? {
+                  tableId: genericTables[filter.tableName].tableId,
+                }
+              : allTablesWithAttachments().length ===
+                  tablesWithAttachments().length
+                ? {}
+                : backendFilter('tableId').isIn(
+                    tablesWithAttachments().map(({ tableId }) => tableId)
+                  )
         ),
       [order, filter]
     )
@@ -145,12 +158,12 @@ function Attachments(): JSX.Element {
       <header
         className={`flex flex-wrap items-center gap-2 ${className.hasAltBackground}`}
       >
-        <H2>{commonText('attachments')}</H2>
+        <H2>{attachmentsText.attachments()}</H2>
         <Label.Inline>
-          <span className="sr-only">{commonText('filter')}</span>
+          <span className="sr-only">{commonText.filter()}</span>
           <Select
             value={filter.type === 'byTable' ? filter.tableName : filter.type}
-            onValueChange={(filter): void =>
+            onValueChange={(filter: string): void =>
               setFilter(
                 filter === 'all' || filter === 'unused'
                   ? { type: filter }
@@ -162,20 +175,24 @@ function Attachments(): JSX.Element {
             }
           >
             <option value="all">
-              {commonText('all')}
               {typeof collectionSizes === 'object'
-                ? ` (${collectionSizes.all})`
-                : ''}
+                ? commonText.countLine({
+                    resource: commonText.all(),
+                    count: collectionSizes.all,
+                  })
+                : commonText.all()}
             </option>
             {collectionSizes?.unused !== 0 && (
               <option value="unused">
-                {commonText('unused')}
                 {typeof collectionSizes === 'object'
-                  ? ` (${collectionSizes.unused})`
-                  : ''}
+                  ? commonText.countLine({
+                      resource: commonText.unused(),
+                      count: collectionSizes.unused,
+                    })
+                  : commonText.unused()}
               </option>
             )}
-            <optgroup label={commonText('tables')}>
+            <optgroup label={schemaText.tables()}>
               {tablesWithAttachments()
                 .filter(({ name }) => collectionSizes?.byTable[name] !== 0)
                 .map(({ name, label }) => (
@@ -190,26 +207,38 @@ function Attachments(): JSX.Element {
           </Select>
         </Label.Inline>
         <Label.Inline>
-          {formsText('orderBy')}
+          {attachmentsText.orderBy()}
           <div>
             <OrderPicker
-              model={schema.models.Attachment}
               order={order}
+              table={tables.Attachment}
               onChange={setOrder}
             />
           </div>
         </Label.Inline>
         <span className="-ml-2 flex-1" />
-        <Label.Inline>
-          {commonText('scale')}
-          <Input.Generic
-            max={maxScale}
-            min={minScale}
-            type="range"
-            value={scale}
-            onValueChange={(value) => setScale(Number.parseInt(value))}
-          />
-        </Label.Inline>
+        {/* Don't display scale if in dialog to not have resizing/glitching issue */}
+        {isInDialog === undefined && (
+          <>
+            <Label.Inline>
+              {attachmentsText.scale()}
+              <Input.Generic
+                max={maxScale}
+                min={minScale}
+                type="range"
+                value={scale}
+                onValueChange={(value): void =>
+                  setScale(Number.parseInt(value))
+                }
+              />
+            </Label.Inline>
+            <Button.BorderedGray
+              onClick={() => navigate('/specify/overlay/attachments/import/')}
+            >
+              {commonText.import()}
+            </Button.BorderedGray>
+          </>
+        )}
       </header>
       <AttachmentGallery
         attachments={collection?.records ?? []}
@@ -217,8 +246,18 @@ function Attachments(): JSX.Element {
           typeof collection === 'object' &&
           collection.totalCount === collection.records.length
         }
+        key={`${order}_${JSON.stringify(filter)}`}
         scale={scale}
-        onFetchMore={fetchMore}
+        onChange={(attachment, index): void =>
+          collection === undefined
+            ? undefined
+            : setCollection({
+                records: replaceItem(collection.records, index, attachment),
+                totalCount: collection.totalCount,
+              })
+        }
+        onClick={onClick}
+        onFetchMore={collection === undefined ? undefined : fetchMore}
       />
     </Container.FullGray>
   );

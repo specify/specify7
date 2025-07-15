@@ -1,7 +1,8 @@
 import React from 'react';
 
+import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { adminText } from '../../localization/admin';
+import { resourcesText } from '../../localization/resources';
 import type { GetOrSet } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
 import { ProtectedTable, ProtectedTool } from '../Permissions/PermissionDenied';
@@ -15,7 +16,7 @@ export function AppResourcesWrapper(): JSX.Element {
   return (
     <ProtectedTool action="read" tool="resources">
       <ProtectedTable action="read" tableName="Discipline">
-        <ProtectedTable action="read" tableName="Discipline">
+        <ProtectedTable action="read" tableName="Collection">
           <ProtectedTable action="read" tableName="SpecifyUser">
             <AppResourcesDataFetcher />
           </ProtectedTable>
@@ -43,18 +44,23 @@ function AppResourcesView({
   readonly getSet: GetOrSet<AppResources>;
 }): JSX.Element {
   const [resources] = getSet;
+
+  const conformations = useCachedState('appResources', 'conformation');
+  const [filters] = useCachedState('appResources', 'filters');
+
   return (
     <Container.FullGray>
-      <div className="flex items-center gap-4">
-        <H2 className="text-2xl">{adminText('resources')}</H2>
-        <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap items-center gap-4">
+        <H2 className="text-2xl">{resourcesText.resources()}</H2>
+        <div className="flex gap-2">
           <AppResourcesFilters initialResources={resources} />
         </div>
       </div>
-      <div className="flex h-0 flex-1 gap-4">
+      <div className="flex flex-1 flex-col gap-4 sm:h-0 sm:overflow-scroll md:flex-row">
         <AppResourcesAside
+          conformations={conformations}
+          filters={filters}
           isEmbedded={false}
-          isReadOnly={false}
           resources={resources}
         />
         <SafeOutlet<AppResourcesOutlet>

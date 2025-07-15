@@ -1,29 +1,34 @@
-import { ajax } from './index';
 import { Backbone } from '../../components/DataModel/backbone';
-import { formatUrl } from '../../components/Router/queryString';
 import { promiseToXhr } from '../../components/DataModel/resourceApi';
-import type { RA } from '../types';
+import { formatUrl } from '../../components/Router/queryString';
+import { f } from '../functools';
+import type { RA, ValueOf } from '../types';
 import { defined } from '../types';
 import { Http } from './definitions';
+import type { AjaxErrorMode, AjaxMethod } from './index';
+import { ajax } from './index';
 
-let expectedResponseCodes: RA<typeof Http[keyof typeof Http]> | undefined =
-  undefined;
+let expectedErrors: RA<ValueOf<typeof Http>> | undefined = undefined;
 let requestCallback: ((status: number) => void) | undefined;
+let errorMessageMode: AjaxErrorMode | undefined;
 
 /**
  * Since arguments can't be passed directly to the Backbone.ajax call, this
  * allows to partially intercept the call
  */
 export function hijackBackboneAjax<T>(
-  responseCodes: RA<typeof Http[keyof typeof Http]>,
+  expectedErrorCodes: RA<ValueOf<typeof Http>>,
   callback: () => T,
-  successCallback: (status: number) => void
+  successCallback?: (status: number) => void,
+  errorMode: AjaxErrorMode = 'visible'
 ): T {
-  expectedResponseCodes = responseCodes;
+  expectedErrors = expectedErrorCodes;
   requestCallback = successCallback;
+  errorMessageMode = errorMode;
   const value = callback();
   requestCallback = undefined;
-  expectedResponseCodes = undefined;
+  expectedErrors = undefined;
+  errorMessageMode = undefined;
   return value;
 }
 
@@ -44,7 +49,7 @@ Backbone.ajax = function (request): JQueryXHR {
         ? formatUrl(url, request.data ?? {})
         : url,
       {
-        method: request.type,
+        method: request.type as AjaxMethod,
         headers: {
           Accept: request.type === 'DELETE' ? 'text/plain' : 'application/json',
           'Content-Type':
@@ -53,18 +58,14 @@ Backbone.ajax = function (request): JQueryXHR {
               : undefined,
         },
         body: request.type === 'GET' ? undefined : request.data,
-      },
-      {
-        expectedResponseCodes: expectedResponseCodes ?? [
-          Http.OK,
-          Http.CREATED,
-          Http.NO_CONTENT,
-        ],
+        expectedErrors,
+        errorMode: errorMessageMode,
       }
     )
       .then(({ data, status }) => {
         requestCallbackCopy?.(status);
-        if (status === Http.CONFLICT) throw new Error(data);
+        if (f.includes([Http.CONFLICT, Http.NOT_FOUND], status))
+          throw new Error(data);
         else if (typeof request.success === 'function')
           request.success(data, 'success', undefined as never);
       })

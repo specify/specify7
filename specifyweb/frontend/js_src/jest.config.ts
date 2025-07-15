@@ -1,7 +1,7 @@
 /**
  * Jest currently has two solutions for running TypeScript files:
  *   - babel-jest
- *   - ts-ject
+ *   - ts-jest
  *
  * ts-jest has great source map support and does TypeChecking
  * It would have been a preferered option, except for the fact that
@@ -118,7 +118,7 @@ const config: Config.InitialOptions = {
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
-  modulePathIgnorePatterns: ['<rootDir>/testBuild'],
+  // modulePathIgnorePatterns: [],
 
   // Activates notifications for test results
   notify: true,
@@ -184,7 +184,7 @@ const config: Config.InitialOptions = {
   },
 
   // A list of paths to snapshot serializer modules Jest should use for snapshot testing
-  // snapshotSerializers: [],
+  snapshotSerializers: ['<rootDir>/lib/tests/jsxSerializer.ts'],
 
   // The test environment that will be used for testing
   testEnvironment: 'jsdom',
@@ -196,10 +196,7 @@ const config: Config.InitialOptions = {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  testMatch: [
-    '**/__tests__/**/*.test.[jt]s?(x)',
-    '**/?(*.)+(spec|test).[tj]s?(x)',
-  ],
+  testMatch: ['**/__tests__/**/*.test.[jt]s?(x)', '**/?(*.)+test.[tj]s?(x)'],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: [
@@ -227,7 +224,7 @@ const config: Config.InitialOptions = {
 
   // See https://stackoverflow.com/questions/69075510/jest-tests-failing-on-d3-import
   transformIgnorePatterns: [
-    '/node_modules/(?!d3|d3-array|internmap|delaunator|robust-predicates)',
+    '/node_modules/(?!d3|d3-array|internmap|delaunator|robust-predicates|csv-stringify|csv-parse)',
   ],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them

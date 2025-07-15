@@ -1,16 +1,19 @@
 import React from 'react';
 
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-import { getUserPref } from '../UserPreferences/helpers';
+import type { RA } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { icons } from '../Atoms/Icons';
+import type { AnyTree } from '../DataModel/helperTypes';
+import { userPreferences } from '../Preferences/userPreferences';
 import type { Conformations, KeyAction, Row, Stats } from './helpers';
 import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
-import type { RA } from '../../utils/types';
-import { Button } from '../Atoms/Button';
-import { icons } from '../Atoms/Icons';
-import { useId } from '../../hooks/useId';
 
-export function TreeRow({
+export function TreeRow<SCHEMA extends AnyTree>({
   row,
   getRows,
   getStats,
@@ -27,6 +30,8 @@ export function TreeRow({
   onAction: handleAction,
   setFocusedRow,
   synonymColor,
+  treeName,
+  hideEmptyNodes,
 }: {
   readonly row: Row;
   readonly getRows: (parentId: number | 'null') => Promise<RA<Row>>;
@@ -47,9 +52,11 @@ export function TreeRow({
   readonly actionRow: Row | undefined;
   readonly onFocusNode: (newFocusedNode: RA<number>) => void;
   readonly onAction: (action: Exclude<KeyAction, 'child' | 'toggle'>) => void;
-  readonly setFocusedRow: (row: Row) => void;
+  readonly setFocusedRow?: (row: Row) => void;
   readonly synonymColor: string;
-}): JSX.Element {
+  readonly treeName: SCHEMA['tableName'];
+  readonly hideEmptyNodes: boolean;
+}): JSX.Element | null {
   const [rows, setRows] = React.useState<RA<Row> | undefined>(undefined);
   const [childStats, setChildStats] = React.useState<Stats | undefined>(
     undefined
@@ -59,25 +66,45 @@ export function TreeRow({
   );
 
   React.useEffect(() => {
-    if (Array.isArray(focusPath) && focusPath.length === 0) setFocusedRow(row);
+    if (Array.isArray(focusPath) && focusPath.length === 0)
+      setFocusedRow?.(row);
   }, [setFocusedRow, focusPath, row]);
 
   // Fetch children
   const isExpanded = Array.isArray(conformation);
   const isLoading = isExpanded && !Array.isArray(rows);
   const displayChildren = isExpanded && typeof rows?.[0] === 'object';
+  const orderByField = userPreferences.get(
+    'treeEditor',
+    'behavior',
+    'orderByField'
+  );
+
   React.useEffect(() => {
     if (!isLoading) return undefined;
 
-    void getRows(row.nodeId).then((rows) =>
-      destructorCalled ? undefined : setRows(rows)
-    );
+    void getRows(row.nodeId).then((fetchedRows: RA<Row>) => {
+      const sortedRows = Array.from(fetchedRows).sort(
+        sortFunction<Row, number | string>(
+          orderByField === 'rankId'
+            ? (row) => row.rankId
+            : orderByField === 'nodeNumber'
+              ? (row) => row.nodeNumber
+              : orderByField === 'name'
+                ? (row) => row.name
+                : orderByField === 'fullName'
+                  ? (row) => row.fullName
+                  : () => 0
+        )
+      );
+      destructorCalled ? undefined : setRows(sortedRows);
+    });
 
     let destructorCalled = false;
     return (): void => {
       destructorCalled = true;
     };
-  }, [isLoading, getRows, row]);
+  }, [isLoading, getRows, row, orderByField]);
 
   // Fetch children stats
   const isLoadingStats = displayChildren && childStats === undefined;
@@ -125,17 +152,26 @@ export function TreeRow({
   const id = useId('tree-node');
   const isAction = actionRow === row;
 
+  const doIncludeAuthorPref = userPreferences.get(
+    'treeEditor',
+    'taxon',
+    'displayAuthor'
+  );
+
   const handleRef = React.useCallback(
     (element: HTMLButtonElement | null): void => {
       if (element === null) return;
       element.focus();
-      if (getUserPref('treeEditor', 'behavior', 'autoScroll'))
+      if (userPreferences.get('treeEditor', 'behavior', 'autoScroll'))
         scrollIntoView(element);
     },
     []
   );
 
-  return (
+  const hasNoChildrenNodes =
+    nodeStats?.directCount === 0 && nodeStats.childCount === 0;
+
+  return hideEmptyNodes && hasNoChildrenNodes ? null : (
     <li role="treeitem row">
       {ranks.map((rankId) => {
         if (row.rankId === rankId) {
@@ -144,7 +180,7 @@ export function TreeRow({
             formatTreeStats(nodeStats, row.children === 0);
           return (
             <Button.LikeLink
-              aria-controls={id('children')}
+              aria-controls={displayChildren ? id('children') : undefined}
               /*
                * Shift all node labels using margin and padding to align nicely
                * with borders of <span> cells
@@ -152,15 +188,17 @@ export function TreeRow({
               aria-describedby={rankNameId(rankId.toString())}
               aria-pressed={isLoading ? 'mixed' : displayChildren}
               className={`
-                aria-handled -mb-[12px] -ml-[5px] mt-2
+                -mb-[12px] -ml-[5px] mt-2
                 whitespace-nowrap rounded border border-transparent
+                ${className.ariaHandled}
                 ${
                   isAction
                     ? 'outline outline-1 outline-red-500'
                     : isFocused
-                    ? 'outline outline-1 outline-blue-500'
-                    : ''
+                      ? 'outline outline-1 outline-blue-500'
+                      : ''
                 }
+                ${hideEmptyNodes && isLoadingStats ? 'opacity-50' : ''}
               `}
               forwardRef={isFocused ? handleRef : undefined}
               key={rankId}
@@ -188,21 +226,21 @@ export function TreeRow({
                 <span className="sr-only">
                   {isFocused
                     ? isLoading
-                      ? commonText('loading')
+                      ? commonText.loading()
                       : row.children === 0
-                      ? treeText('leafNode')
-                      : displayChildren
-                      ? treeText('opened')
-                      : treeText('closed')
+                        ? treeText.leafNode()
+                        : displayChildren
+                          ? treeText.opened()
+                          : treeText.closed()
                     : undefined}
                 </span>
                 {isLoading
                   ? icons.clock
                   : row.children === 0
-                  ? icons.blank
-                  : displayChildren
-                  ? icons.chevronDown
-                  : icons.chevronRight}
+                    ? icons.blank
+                    : displayChildren
+                      ? icons.chevronDown
+                      : icons.chevronRight}
               </span>
               <span
                 className={
@@ -212,19 +250,27 @@ export function TreeRow({
                 <span
                   title={
                     typeof row.acceptedId === 'number'
-                      ? `${treeText('acceptedName')} ${
-                          row.acceptedName ?? row.acceptedId
-                        }`
-                      : undefined
+                      ? treeText.acceptedName({
+                          name: row.acceptedName ?? row.acceptedId.toString(),
+                        })
+                      : typeof row.synonyms === 'string'
+                        ? treeText.synonyms({
+                            names: row.synonyms,
+                          })
+                        : undefined
                   }
                 >
-                  {row.name}
+                  {doIncludeAuthorPref &&
+                  treeName === 'Taxon' &&
+                  typeof row.author === 'string'
+                    ? `${row.name} ${row.author}`
+                    : row.name}
                   {typeof row.acceptedId === 'number' && (
                     <span className="sr-only">
                       <br />
-                      {`${treeText('acceptedName')} ${
-                        row.acceptedName ?? row.acceptedId
-                      }`}
+                      {treeText.acceptedName({
+                        name: row.acceptedName ?? row.acceptedId.toString(),
+                      })}
                     </span>
                   )}
                 </span>
@@ -287,6 +333,7 @@ export function TreeRow({
               }
               getRows={getRows}
               getStats={getStats}
+              hideEmptyNodes={hideEmptyNodes}
               key={childRow.nodeId}
               nodeStats={childStats?.[childRow.nodeId]}
               path={[...path, row]}
@@ -295,6 +342,7 @@ export function TreeRow({
               row={childRow}
               setFocusedRow={setFocusedRow}
               synonymColor={synonymColor}
+              treeName={treeName}
               onAction={(action): void => {
                 if (action === 'next')
                   if (typeof rows[index + 1] === 'object')

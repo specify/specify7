@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
+import { schemaText } from '../../localization/schema';
+import { userText } from '../../localization/user';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { group } from '../../utils/utils';
@@ -11,7 +12,8 @@ import type { PermissionsQueryItem } from '../Permissions';
 import { getTablePermissions } from '../Permissions';
 import type { PreviewCell } from './Preview';
 import { PreviewRow } from './PreviewComponents';
-import { resourceNameToModel } from './utils';
+import { isUncommonPermissionTable } from './registry';
+import { resourceNameToTable } from './utils';
 
 export function PreviewTables({
   query,
@@ -33,9 +35,9 @@ export function PreviewTables({
                 getTablePermissions()[schema.domainLevelIds.collection]
             )
             .map((entry) => {
-              const model = resourceNameToModel(entry.resource);
-              return isSystem === (model.isSystem || model.isHidden)
-                ? ([model.name, entry] as const)
+              const table = resourceNameToTable(entry.resource);
+              return isSystem === isUncommonPermissionTable(table)
+                ? ([table.name, entry] as const)
                 : undefined;
             })
         )
@@ -60,11 +62,11 @@ export function PreviewTables({
     >
       <div role="row">
         {[
-          adminText('read'),
-          commonText('create'),
-          commonText('update'),
-          commonText('delete'),
-          adminText('table'),
+          userText.read(),
+          commonText.create(),
+          commonText.update(),
+          commonText.delete(),
+          schemaText.table(),
         ].map((header, index, { length }) => (
           <div
             className={`
@@ -72,8 +74,8 @@ export function PreviewTables({
                 index === 0
                   ? 'rounded-l'
                   : index + 1 === length
-                  ? 'rounded-r'
-                  : ''
+                    ? 'rounded-r'
+                    : ''
               }
             `}
             key={header}

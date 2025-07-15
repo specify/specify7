@@ -1,47 +1,60 @@
 import React from 'react';
 
-import { adminText } from '../../localization/admin';
-import { commonText } from '../../localization/common';
+import { attachmentsText } from '../../localization/attachments';
+import { developmentText } from '../../localization/development';
+import { headerText } from '../../localization/header';
+import { preferencesText } from '../../localization/preferences';
+import { resourcesText } from '../../localization/resources';
+import { schemaText } from '../../localization/schema';
+import { statsText } from '../../localization/stats';
+import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
 import { Redirect } from './Redirect';
 import type { EnhancedRoute } from './RouterUtils';
-import { WelcomeView } from '../HomePage';
 
 // FEATURE: go over non-dynamic routes in all routers to make sure they have titles
 /* eslint-disable @typescript-eslint/promise-function-async */
 export const routes: RA<EnhancedRoute> = [
   {
-    path: 'express-search',
+    path: 'specify-network-collection',
+    element: () =>
+      import('../SpecifyNetworkCollection').then(
+        ({ SpecifyNetworkCollection }) => SpecifyNetworkCollection
+      ),
+  },
+  {
+    path: 'simple-search',
     element: () =>
       import('../Header/ExpressSearchTask').then(
         ({ ExpressSearchView }) => ExpressSearchView
       ),
-    title: commonText('expressSearch'),
-    navigatable: false,
+    title: headerText.simpleSearch(),
   },
   {
     path: 'express_search',
-    element: <Redirect to="/specify/express-search/" />,
+    element: <Redirect to="/specify/simple-search/" />,
+  },
+  {
+    path: 'express-search',
+    element: <Redirect to="/specify/simple-search/" />,
   },
   {
     path: 'data-model',
-    title: commonText('databaseSchema'),
+    title: schemaText.databaseSchema(),
     children: [
       {
         index: true,
-        title: commonText('databaseSchema'),
+        title: schemaText.databaseSchema(),
         element: () =>
-          import('../Toolbar/Schema').then(
-            ({ DataModelTables }) => DataModelTables
-          ),
+          import('../SchemaViewer').then(({ SchemaViewer }) => SchemaViewer),
       },
       {
         path: ':tableName',
         element: () =>
-          import('../Toolbar/Schema').then(
-            ({ DataModelTable }) => DataModelTable
+          import('../SchemaViewer/helpers').then(
+            ({ SchemaViewerRedirect }) => SchemaViewerRedirect
           ),
       },
     ],
@@ -57,7 +70,7 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'security',
-    title: adminText('securityPanel'),
+    title: userText.securityPanel(),
     element: () =>
       import('../Toolbar/Security').then(({ SecurityPanel }) => SecurityPanel),
     children: [
@@ -70,7 +83,6 @@ export const routes: RA<EnhancedRoute> = [
         children: [
           {
             index: true,
-            element: <></>,
           },
           {
             path: 'role',
@@ -80,6 +92,14 @@ export const routes: RA<EnhancedRoute> = [
                 element: () =>
                   import('../Security/CreateLibraryRole').then(
                     ({ CreateLibraryRole }) => CreateLibraryRole
+                  ),
+              },
+              {
+                path: 'new',
+                title: userText.newRole(),
+                element: () =>
+                  import('../Security/LibraryRole').then(
+                    ({ SecurityLibraryRole }) => SecurityLibraryRole
                   ),
               },
               {
@@ -121,14 +141,13 @@ export const routes: RA<EnhancedRoute> = [
         children: [
           {
             index: true,
-            element: <></>,
           },
           {
             path: 'role/',
             children: [
               {
                 path: 'create',
-                title: adminText('createRole'),
+                title: userText.createRole(),
                 element: () =>
                   import('../Security/CreateRole').then(
                     ({ CreateCollectionRole }) => CreateCollectionRole
@@ -136,7 +155,7 @@ export const routes: RA<EnhancedRoute> = [
               },
               {
                 path: 'new',
-                title: adminText('newRole'),
+                title: userText.newRole(),
                 element: () =>
                   import('../Security/CollectionRole').then(
                     ({ SecurityCollectionRole }) => SecurityCollectionRole
@@ -157,9 +176,23 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'attachments',
-    title: commonText('attachments'),
-    element: () =>
-      import('../Attachments').then(({ AttachmentsView }) => AttachmentsView),
+    children: [
+      {
+        index: true,
+        title: attachmentsText.attachments(),
+        element: () =>
+          import('../Attachments').then(
+            ({ AttachmentsView }) => AttachmentsView
+          ),
+      },
+      {
+        path: 'import/:id',
+        element: () =>
+          import('../AttachmentsBulkImport/Import').then(
+            ({ AttachmentImportById }) => AttachmentImportById
+          ),
+      },
+    ],
   },
   {
     path: 'workbench',
@@ -167,11 +200,11 @@ export const routes: RA<EnhancedRoute> = [
       {
         path: ':id',
         element: () =>
-          import('../WorkBench/Template').then(({ WorkBench }) => WorkBench),
+          import('../WorkBench/index').then(({ WorkBench }) => WorkBench),
       },
       {
         path: 'import',
-        title: wbText('importDataSet'),
+        title: wbText.importDataSet(),
         element: () =>
           import('../WbImport').then(({ WbImportView }) => WbImportView),
       },
@@ -193,8 +226,21 @@ export const routes: RA<EnhancedRoute> = [
     element: <Redirect to="/specify/workbench/import" />,
   },
   {
+    path: 'import',
+    children: [
+      {
+        path: 'locality-dataset',
+        element: () =>
+          import('../LocalityUpdate').then(
+            ({ LocalityUpdateFromDataSet: ImportLocalitySet }) =>
+              ImportLocalitySet
+          ),
+      },
+    ],
+  },
+  {
     path: 'resources',
-    title: commonText('appResources'),
+    title: resourcesText.appResources(),
     element: () =>
       import('../AppResources').then(
         ({ AppResourcesWrapper }) => AppResourcesWrapper
@@ -202,25 +248,27 @@ export const routes: RA<EnhancedRoute> = [
     children: [
       {
         path: 'create/:directoryKey',
-        title: adminText('addResource'),
+        title: resourcesText.addResource(),
         element: () =>
           import('../AppResources/Create').then(
             ({ CreateAppResource }) => CreateAppResource
           ),
       },
       {
-        path: 'app-resource/:id',
+        path: 'app-resource/:id/*',
         element: () =>
           import('../AppResources/EditorWrapper').then(
             ({ AppResourceView }) => AppResourceView
           ),
+        isSingleResource: true,
       },
       {
-        path: 'view-set/:id',
+        path: 'view-set/:id/*',
         element: () =>
           import('../AppResources/EditorWrapper').then(
             ({ ViewSetView }) => ViewSetView
           ),
+        isSingleResource: true,
       },
     ],
   },
@@ -270,19 +318,14 @@ export const routes: RA<EnhancedRoute> = [
     ],
   },
   {
-    path: 'view/:tableName',
-    children: [
-      {
-        /*
-         * Id is set to "new" when adding new resource.
-         * Separate route was not used to prevent reloading everything when
-         * adding new items to record set
-         */
-        path: ':id',
-        element: () =>
-          import('../Forms/DataTask').then(({ ViewResource }) => ViewResource),
-      },
-    ],
+    /*
+     * Id is set to "new" when adding new resource.
+     * Separate route was not used to prevent reloading everything when
+     * adding new items to record set
+     */
+    path: 'view/:tableName/:id',
+    element: () =>
+      import('../Forms/DataTask').then(({ ViewResource }) => ViewResource),
   },
   {
     path: 'bycatalog/:collectionCode/:catalogNumber/',
@@ -319,15 +362,15 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'user-preferences',
-    title: commonText('preferences'),
+    title: preferencesText.preferences(),
     element: () =>
-      import('../UserPreferences').then(
+      import('../Preferences').then(
         ({ PreferencesWrapper }) => PreferencesWrapper
       ),
   },
   {
     path: 'schema-config',
-    title: commonText('schemaConfig'),
+    title: schemaText.schemaConfig(),
     element: () =>
       import('../Toolbar/SchemaConfig').then(
         ({ SchemaConfig }) => SchemaConfig
@@ -342,7 +385,7 @@ export const routes: RA<EnhancedRoute> = [
       },
       {
         path: 'add-language',
-        title: commonText('addLanguageDialogHeader'),
+        title: schemaText.addLanguage(),
         element: () =>
           import('../SchemaConfig/Languages').then(
             ({ AddLanguage }) => AddLanguage
@@ -353,7 +396,7 @@ export const routes: RA<EnhancedRoute> = [
         children: [
           {
             index: true,
-            title: commonText('tables'),
+            title: schemaText.tables(),
             element: () =>
               import('../SchemaConfig/Tables').then(
                 ({ SchemaConfigTables }) => SchemaConfigTables
@@ -389,7 +432,7 @@ export const routes: RA<EnhancedRoute> = [
       },
       {
         path: 'clear-cache',
-        title: commonText('clearCache'),
+        title: headerText.clearCache(),
         element: () =>
           import('../RouterCommands/CacheBuster').then(
             ({ CacheBuster }) => CacheBuster
@@ -398,9 +441,28 @@ export const routes: RA<EnhancedRoute> = [
     ],
   },
   {
+    path: 'stats',
+    title: statsText.statistics(),
+    element: () =>
+      import('../Statistics/index').then(({ StatsPage }) => StatsPage),
+  },
+  {
+    path: 'developer',
+    children: [
+      {
+        path: 'crash-report-visualizer',
+        title: developmentText.crashReportVisualizer(),
+        element: () =>
+          import('../Developer/CrashReportVisualizer').then(
+            ({ CrashReportVisualizer }) => CrashReportVisualizer
+          ),
+      },
+    ],
+  },
+  {
     index: true,
-    title: welcomeText('pageTitle'),
-    element: <WelcomeView />,
+    title: welcomeText.pageTitle(),
+    element: () => import('../HomePage').then(({ WelcomeView }) => WelcomeView),
   },
   /*
    * The "*" route (the 404 case) was not added, as otherwise it would be
@@ -409,3 +471,5 @@ export const routes: RA<EnhancedRoute> = [
 ];
 
 /* eslint-enable @typescript-eslint/promise-function-async */
+
+export const inRouterContext = {};

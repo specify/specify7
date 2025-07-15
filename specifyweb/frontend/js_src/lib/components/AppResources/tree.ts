@@ -1,4 +1,11 @@
-import type { AppResources, AppResourcesTree } from './hooks';
+import { resourcesText } from '../../localization/resources';
+import { userText } from '../../localization/user';
+import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
+import { addMissingFields } from '../DataModel/addMissingFields';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { getResourceApiUrl } from '../DataModel/resource';
 import type {
   Collection,
   Discipline,
@@ -6,24 +13,38 @@ import type {
   SpAppResourceDir,
   SpViewSetObj,
 } from '../DataModel/types';
-import { sortFunction } from '../../utils/utils';
-import { adminText } from '../../localization/admin';
 import { userTypes } from '../PickLists/definitions';
-import type { RA } from '../../utils/types';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { addMissingFields } from '../DataModel/addMissingFields';
+import type { AppResources, AppResourcesTree } from './hooks';
+import type { AppResourceScope, ScopedAppResourceDir } from './types';
+
+export const globalResourceKey = 'globalResource';
+
+export const getScope = (
+  directory: SerializedResource<SpAppResourceDir>
+): AppResourceScope => {
+  if (directory.discipline === null && directory.collection === null)
+    return 'global';
+  else if (directory.collection === null) return 'discipline';
+  else if (directory.userType === null && !directory.isPersonal)
+    return 'collection';
+  else if (directory.isPersonal) {
+    return 'user';
+  } else {
+    return 'userType';
+  }
+};
 
 export const getAppResourceTree = (
   resources: AppResources
 ): AppResourcesTree => [
   {
-    label: adminText('globalResources'),
-    key: 'globalResources',
+    label: resourcesText.globalResources(),
+    key: globalResourceKey,
     ...getGlobalAllResources(resources),
     subCategories: [],
   },
   {
-    label: adminText('disciplineResources'),
+    label: resourcesText.disciplineResources(),
     key: 'disciplineResources',
     directory: undefined,
     appResources: [],
@@ -32,7 +53,7 @@ export const getAppResourceTree = (
   },
 ];
 
-const sortTree = (tree: AppResourcesTree): AppResourcesTree =>
+export const sortTree = (tree: AppResourcesTree): AppResourcesTree =>
   Array.from(tree)
     .sort(sortFunction(({ label }) => label))
     .map(({ subCategories, ...rest }) => ({
@@ -41,19 +62,20 @@ const sortTree = (tree: AppResourcesTree): AppResourcesTree =>
     }));
 
 function getGlobalAllResources(resources: AppResources): {
-  readonly directory: SerializedResource<SpAppResourceDir>;
+  readonly directory: ScopedAppResourceDir;
   readonly appResources: RA<SerializedResource<SpAppResource>>;
   readonly viewSets: RA<SerializedResource<SpViewSetObj>>;
 } {
   const globalDirectories = resources.directories.filter(
-    ({ discipline, collection }) => discipline === null && collection === null
+    (directory) => directory.scope === 'global'
   );
   if (globalDirectories.length === 0)
-    globalDirectories.push(
-      addMissingFields('SpAppResourceDir', {
+    globalDirectories.push({
+      ...addMissingFields('SpAppResourceDir', {
         userType: 'Common',
-      })
-    );
+      }),
+      scope: 'global',
+    });
   /**
    * Even though there are several global directories, for consistency, all
    * global resources are added to the one that has userType==='Common'
@@ -67,11 +89,40 @@ function getGlobalAllResources(resources: AppResources): {
    * global resource dirs, while having them separated in the UI would
    * suggest the opposite.
    */
+  const { appResources, viewSets } = mergeDirectories(
+    globalDirectories,
+    resources
+  );
   return {
     directory: mainDirectory,
-    ...mergeDirectories(globalDirectories, resources),
+    appResources: disambiguateGlobalPrefs(appResources, globalDirectories),
+    viewSets,
   };
 }
+
+const prefResource = 'preferences';
+const globalUserType = 'Global Prefs'.toLowerCase();
+const remoteUserType = 'Prefs'.toLowerCase();
+
+const disambiguateGlobalPrefs = (
+  appResources: RA<SerializedResource<SpAppResource>>,
+  directories: RA<SerializedResource<SpAppResourceDir>>
+): AppResourcesTree[number]['appResources'] =>
+  appResources.map((resource) => {
+    if (resource.name !== prefResource) return resource;
+    const directory = directories.find(
+      ({ id }) =>
+        getResourceApiUrl('SpAppResourceDir', id) === resource.spAppResourceDir
+    );
+    // Pretty sure this is redundant... that is, directory should always be defined.
+    if (!directory) return resource;
+    const userType = directory.userType?.toLowerCase();
+    if (userType === globalUserType)
+      return { ...resource, label: resourcesText.globalPreferences() };
+    else if (userType === remoteUserType)
+      return { ...resource, label: resourcesText.remotePreferences() };
+    else return resource;
+  });
 
 /**
  * Merge resources from several directories into a single one.
@@ -119,16 +170,17 @@ export const getScopedAppResources = (
   resources.disciplines.map((discipline) => {
     const directories = resources.directories.filter(
       (directory) =>
-        directory.discipline === discipline.resource_uri &&
-        directory.collection === null
+        directory.scope === 'discipline' &&
+        directory.discipline === discipline.resource_uri
     );
     const directory =
       directories[0] ??
       addMissingFields('SpAppResourceDir', {
         discipline: discipline.resource_uri,
+        collection: undefined,
       });
     return {
-      label: discipline.name ?? '',
+      label: localized(discipline.name ?? ''),
       key: `discipline_${discipline.id}`,
       directory,
       ...mergeDirectories(directories, resources),
@@ -146,8 +198,7 @@ const getDisciplineAppResources = (
       const directories = resources.directories.filter(
         (directory) =>
           directory.collection === collection.resource_uri &&
-          directory.userType === null &&
-          !directory.isPersonal
+          directory.scope === 'collection'
       );
       const directory =
         directories[0] ??
@@ -156,7 +207,12 @@ const getDisciplineAppResources = (
           discipline: collection.discipline,
         });
       return {
-        label: collection.collectionName ?? '',
+        /*
+         * REFACTOR: should data coming from the database be considered
+         *  localized? It depends... no in the case of agent type, yes in the
+         *  case of collection name
+         */
+        label: localized(collection.collectionName ?? ''),
         key: `collection_${collection.id}`,
         directory,
         ...mergeDirectories(directories, resources),
@@ -169,20 +225,20 @@ const getCollectionResources = (
   resources: AppResources
 ): AppResourcesTree => [
   {
-    label: adminText('userTypes'),
-    key: 'userTypes',
-    directory: undefined,
-    appResources: [],
-    viewSets: [],
-    subCategories: sortTree(getUserTypeResources(collection, resources)),
-  },
-  {
-    label: adminText('users'),
+    label: userText.users(),
     key: 'users',
     directory: undefined,
     appResources: [],
     viewSets: [],
     subCategories: sortTree(getUserResources(collection, resources)),
+  },
+  {
+    label: resourcesText.userTypes(),
+    key: 'userTypes',
+    directory: undefined,
+    appResources: [],
+    viewSets: [],
+    subCategories: sortTree(getUserTypeResources(collection, resources)),
   },
 ];
 
@@ -195,7 +251,7 @@ const getUserTypeResources = (
       (directory) =>
         directory.collection === collection.resource_uri &&
         directory.userType?.toLowerCase() === userType.toLowerCase() &&
-        !directory.isPersonal
+        directory.scope === 'userType'
     );
     const directory =
       directories[0] ??
@@ -205,7 +261,7 @@ const getUserTypeResources = (
         userType: userType.toLowerCase(),
       });
     return {
-      label: userType,
+      label: localized(userType),
       key: `collection_${collection.id}_userType_${userType}`,
       directory,
       ...mergeDirectories(directories, resources),
@@ -217,29 +273,37 @@ const getUserResources = (
   collection: SerializedResource<Collection>,
   resources: AppResources
 ): AppResourcesTree =>
-  resources.users
-    .map((user) => {
-      const directories = resources.directories.filter(
-        (directory) =>
-          directory.collection === collection.resource_uri &&
-          directory.specifyUser === user.resource_uri &&
-          directory.isPersonal
-      );
-      const directory =
-        directories[0] ??
-        addMissingFields('SpAppResourceDir', {
-          collection: collection.resource_uri,
-          discipline: collection.discipline,
-          specifyUser: user.resource_uri,
-          isPersonal: true,
-        });
+  resources.users.map((user) => {
+    const directories = resources.directories.filter(
+      (directory) =>
+        directory.collection === collection.resource_uri &&
+        directory.specifyUser === user.resource_uri &&
+        directory.scope === 'user'
+    );
+    const directory =
+      directories[0] ??
+      addMissingFields('SpAppResourceDir', {
+        collection: collection.resource_uri,
+        discipline: collection.discipline,
+        specifyUser: user.resource_uri,
+        isPersonal: true,
+      });
+    return {
+      label: localized(user.name),
+      key: `collection_${collection.id}_user_${user.id}`,
+      directory,
+      ...mergeDirectories(directories, resources),
+      subCategories: [],
+    };
+  });
 
-      return {
-        label: user.name,
-        key: `collection_${collection.id}_user_${user.id}`,
-        directory,
-        ...mergeDirectories(directories, resources),
-        subCategories: [],
-      };
-    })
-    .sort(sortFunction(({ label }) => label));
+export const exportsForTests = {
+  getGlobalAllResources,
+  disambiguateGlobalPrefs,
+  mergeDirectories,
+  getDirectoryChildren,
+  getDisciplineAppResources,
+  getUserTypeResources,
+  getUserResources,
+  getCollectionResources,
+};

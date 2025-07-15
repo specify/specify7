@@ -5,7 +5,7 @@ export const operationPolicies = {
   '/admin/user/password': ['update'],
   '/admin/user/agents': ['update'],
   '/admin/user/sp6/is_admin': ['update'],
-  '/replace/record': ['update', 'delete'],
+  '/record/merge': ['update', 'delete'],
   '/admin/user/invite_link': ['create'],
   '/admin/user/oic_providers': ['read'],
   '/admin/user/sp6/collection_access': ['read', 'update'],
@@ -37,6 +37,7 @@ export const operationPolicies = {
     'synonymize',
     'desynonymize',
     'repair',
+    'bulk_move',
   ],
   '/tree/edit/geologictimeperiod': [
     'merge',
@@ -46,6 +47,13 @@ export const operationPolicies = {
     'repair',
   ],
   '/tree/edit/lithostrat': [
+    'merge',
+    'move',
+    'synonymize',
+    'desynonymize',
+    'repair',
+  ],
+  '/tree/edit/tectonicunit': [
     'merge',
     'move',
     'synonymize',
@@ -66,6 +74,26 @@ export const operationPolicies = {
     'unupload',
     'validate',
     'transfer',
+    'create_recordset',
+  ],
+  '/attachment_import/dataset': [
+    'create',
+    'update',
+    'delete',
+    'upload',
+    'rollback',
+  ],
+  '/batch_edit/dataset': [
+    'create',
+    'update',
+    'delete',
+    'commit',
+    'rollback',
+    'validate',
+    'transfer',
+    'create_recordset',
+    'delete_dependents',
+    'edit_multiple_tables',
   ],
 } as const;
 
@@ -91,6 +119,7 @@ export const institutionPermissions = new Set([
  */
 export const frontEndPermissions = {
   '/preferences/user': ['edit_protected'],
+  '/preferences/statistics': ['edit_shared'],
 } as const;
 
 /**

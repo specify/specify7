@@ -1,16 +1,37 @@
 import React from 'react';
-import { Outlet } from 'react-router';
-import type { RouteObject } from 'react-router/lib/router';
+import type {
+  IndexRouteObject,
+  NonIndexRouteObject,
+  RouteObject,
+} from 'react-router';
+import { Outlet, useOutletContext } from 'react-router';
+import { useLocation, useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
+import { commonText } from '../../localization/common';
+import { mainText } from '../../localization/main';
 import type { IR, RA, WritableArray } from '../../utils/types';
-import { LoadingScreen } from '../Molecules/Dialog';
-import { useTitle } from '../Molecules/AppTitle';
+import { error } from '../Errors/assert';
+import { softFail } from '../Errors/Crash';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { AppTitle } from '../Molecules/AppTitle';
+import { Dialog } from '../Molecules/Dialog';
+import { NotFoundView } from './NotFoundView';
+import { ReactLazy } from './ReactLazy';
+import { OverlayContext, SetSingleResourceContext } from './Router';
+import { useStableLocation } from './RouterState';
 
 /**
  * A wrapper for native React Routes object. Makes everything readonly.
  */
 export type EnhancedRoute = Readonly<
-  Omit<RouteObject, 'children' | 'element'>
+  Omit<
+    IndexRouteObject | NonIndexRouteObject,
+    /*
+     * Not using errorElement because of https://github.com/remix-run/react-router/discussions/9881
+     */
+    'children' | 'element' | 'errorElement'
+  >
 > & {
   readonly children?: RA<EnhancedRoute>;
   // Allow to define element as a function that returns an async
@@ -19,61 +40,161 @@ export type EnhancedRoute = Readonly<
    * Add a title attribute for usage when displaying the route in user
    * preferences
    */
-  readonly title?: string;
+  readonly title?: LocalizedString;
   /*
-   * Add an explicit way of opting out from displaying the path in user
-   * preferences (this is the case implicitly if title is missing)
+   * If true, links within this route won't trigger unload protect. Useful
+   * when a single resource has separate URLs for tabs/subtabs (e.g, in
+   * DataObjectFormatter editor)
+   *
+   * This can only be used if path ends with '*' and only for the main router
+   * (not entry point router or nested routers)
    */
-  readonly navigatable?: boolean;
+  readonly isSingleResource?: boolean;
 };
+
+let index = 0;
 
 /** Convert EnhancedRoutes to RouteObjects */
 export const toReactRoutes = (
   enhancedRoutes: RA<EnhancedRoute>,
-  title?: string
+  title?: LocalizedString,
+  dismissible: boolean = true
 ): WritableArray<RouteObject> =>
-  enhancedRoutes.map(({ element, children, ...enhancedRoute }) => ({
-    ...enhancedRoute,
-    children: Array.isArray(children)
-      ? toReactRoutes(children, title)
-      : undefined,
-    element:
-      typeof element === 'function' ? (
-        <Async element={element} title={enhancedRoute.title ?? title} />
+  enhancedRoutes.map<IndexRouteObject | NonIndexRouteObject>((data) => {
+    const {
+      element: rawElement,
+      children,
+      isSingleResource = false,
+      ...enhancedRoute
+    } = data;
+    if (
+      process.env.NODE_ENV !== 'production' &&
+      isSingleResource &&
+      (typeof enhancedRoute.path !== 'string' ||
+        !enhancedRoute.path.endsWith('*'))
+    )
+      softFail(
+        new Error(
+          '"isSingleResource" only has effect for path\'s that end with "*"'
+        )
+      );
+
+    const titleComponent =
+      typeof title === 'string' ? (
+        <AppTitle source={undefined} title={title} />
+      ) : undefined;
+
+    const resolvedElement =
+      typeof rawElement === 'function' ? (
+        <>
+          {titleComponent}
+          {ReactLazy(rawElement)({})}
+        </>
+      ) : rawElement === undefined ? (
+        enhancedRoute.index ? (
+          <></>
+        ) : undefined
       ) : (
-        element
-      ),
-  }));
+        <>
+          {titleComponent}
+          {rawElement}
+        </>
+      );
 
-/**
- * Using this allows Webpack to split code bundles.
- * React Suspense takes care of rendering a loading screen if component is
- * being fetched.
- * Having a separate Suspense for each async component rather than a one main
- * suspense on the top level prevents all components from being un-rendered
- * when any component is being loaded.
- */
-export function Async({
-  element,
-  title,
-}: {
-  readonly element: () => Promise<React.FunctionComponent>;
-  readonly title: string | undefined;
-}): JSX.Element {
-  useTitle(title);
+    index += 1;
 
-  const Element = React.lazy(async () =>
-    element().then((element) => ({ default: element }))
-  );
-
-  return (
-    <React.Suspense fallback={<LoadingScreen />}>
-      <Element />
-    </React.Suspense>
-  );
-}
-
+    return {
+      id: index.toString(),
+      ...enhancedRoute,
+      index: enhancedRoute.index as unknown as false,
+      children: Array.isArray(children)
+        ? toReactRoutes(children, title)
+        : undefined,
+      element:
+        process.env.NODE_ENV === 'test' ||
+        resolvedElement === undefined ? undefined : (
+          <ErrorBoundary dismissible={dismissible}>
+            {isSingleResource ? (
+              <SingleResource>{resolvedElement}</SingleResource>
+            ) : (
+              resolvedElement
+            )}
+          </ErrorBoundary>
+        ),
+    };
+  });
 /** Type-safe react-router outlet */
 export function SafeOutlet<T extends IR<unknown>>(props: T): JSX.Element {
   return <Outlet context={props} />;
+}
+
+/**
+ * Like <Outlet> but forwards all props from parent outlet
+ */
+export function ForwardOutlet(): JSX.Element {
+  const context = useOutletContext();
+  return <Outlet context={context} />;
+}
+
+function SingleResource({
+  children,
+}: {
+  readonly children: React.ReactNode;
+}): JSX.Element {
+  const handleSet = React.useContext(SetSingleResourceContext);
+  const parameters = useParams();
+  const location = useStableLocation(useLocation());
+
+  const parsedUrl = decodeURIComponent(location.pathname);
+  const index =
+    parameters['*'] === undefined ? -1 : parsedUrl.indexOf(parameters['*']);
+  const path =
+    index === -1
+      ? undefined
+      : index === 0
+        ? location.pathname
+        : location.pathname.slice(0, index);
+  if (process.env.NODE_ENV !== 'production') {
+    if (path === undefined)
+      throw new Error(
+        'Unable to extract the base path for the single resource URL'
+      );
+    else if (index > 0) {
+      const decodedPath = decodeURIComponent(location.pathname.slice(0, index));
+      if (path !== decodedPath)
+        error(
+          "Path and decoded path don't match.\n" +
+            'To fix this, make sure base URL does not contain any escaped characters',
+          {
+            path,
+            decodedPath,
+            location,
+            parameters,
+          }
+        );
+    }
+  }
+
+  React.useEffect(() => {
+    handleSet(path);
+    return () => handleSet(undefined);
+  }, [handleSet, path]);
+  return <>{children}</>;
+}
+
+export function NotFoundDialog({
+  onClose: handleCloseDialog,
+}: {
+  readonly onClose?: () => void;
+}): JSX.Element {
+  const handleClose = React.useContext(OverlayContext);
+  return (
+    <Dialog
+      buttons={commonText.close()}
+      header={mainText.pageNotFound()}
+      onClose={handleCloseDialog ?? handleClose}
+    >
+      <NotFoundView container={false} />
+    </Dialog>
+  );
 }

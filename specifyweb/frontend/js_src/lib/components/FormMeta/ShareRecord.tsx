@@ -18,7 +18,7 @@ export function ShareRecord({
 }: {
   readonly resource: SpecifyResource<AnySchema>;
 }): JSX.Element {
-  const [recordsetid] = useSearchParameter('recordsetid');
+  const [recordsetid] = useSearchParameter('recordSetId');
   const recordSetId = f.parseInt(recordsetid);
   const collectionCode =
     userInformation.availableCollections.find(
@@ -30,27 +30,22 @@ export function ShareRecord({
     ) ?? '';
   const rawUrl =
     collectionCode.length > 0 && catalogNumber.length > 0
-      ? formatUrl(
-          `/specify/bycatalog/${collectionCode}/${catalogNumber}`,
-          typeof recordSetId === 'number'
-            ? {
-                recordSetId: recordSetId?.toString(),
-              }
-            : {}
-        )
+      ? formatUrl(`/specify/bycatalog/${collectionCode}/${catalogNumber}`, {
+          recordSetId,
+        })
       : getResourceViewUrl(
-          resource.specifyModel.name,
+          resource.specifyTable.name,
           resource.id,
           recordSetId
         );
   const url = new URL(rawUrl, globalThis.location.origin).href;
   return (
-    <div className="flex flex-col gap-2">
-      <h4>{formsText('shareRecord')}</h4>
+    <label className="flex flex-col gap-2">
+      {formsText.shareRecord()}
       <div className="flex gap-2">
         <Input.Text className="!cursor-auto" defaultValue={url} isReadOnly />
         <CopyButton text={url} />
       </div>
-    </div>
+    </label>
   );
 }

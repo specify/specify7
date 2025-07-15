@@ -2,27 +2,41 @@
  * WebPack config for development and production
  */
 
-const path = require('path');
-const webpack = require('webpack');
-const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import webpack from 'webpack';
+import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
+import postcssConfig from './postcss.config.js';
 
-const outputPath = path.resolve(__dirname, 'dist');
+const outputPath = resolve(dirname(fileURLToPath(import.meta.url)), 'dist');
 
-module.exports = (_env, argv) =>
+// 1MB in bytes
+const mb = 1024 * 1024;
+
+export default (_environment, argv) =>
   /** @type { import('webpack').Configuration } */ ({
     module: {
       rules: [
         {
-          test: /\.(png|gif|jpg|jpeg|svg)$/,
+          test: /\.(png|gif|jpg|jpeg|svg)$/u,
           type: 'asset',
         },
         {
-          test: /\.css$/,
-          use: ['style-loader', 'css-loader', 'postcss-loader'],
+          test: /\.css$/u,
+          use: [
+            'style-loader',
+            'css-loader',
+            {
+              loader: 'postcss-loader',
+              options: {
+                postcssOptions: postcssConfig,
+              },
+            },
+          ],
         },
         {
-          test: /\.[tj]sx?$/,
-          exclude: /(node_modules)/,
+          test: /\.[jt]sx?$/u,
+          exclude: /(node_modules)/u,
           use: [
             {
               loader: 'babel-loader?+cacheDirectory',
@@ -51,20 +65,15 @@ module.exports = (_env, argv) =>
       ],
     },
     resolve: {
-      /**
-       * Resolve TypeScript files first. This way, when a .js file is
-       * rewritten to .ts, but the old .js still remains in a docker volume,
-       * it gets ignored in favor of the new .ts file
-       */
       extensions: ['.ts', '.tsx', '.js'],
       symlinks: false,
     },
     plugins: [
-      new WebpackManifestPlugin(),
+      new WebpackManifestPlugin({}),
       ...(process.env.NODE_ENV === 'production'
         ? [
             new webpack.optimize.MinChunkSizePlugin({
-              minChunkSize: 10000, // Minimum number of characters
+              minChunkSize: 10_000, // Minimum number of characters
             }),
           ]
         : []),
@@ -96,8 +105,8 @@ module.exports = (_env, argv) =>
     },
     performance: {
       // Disable bundle size warnings for bundles <2 MB
-      maxEntrypointSize: 2 * 1024 * 1024,
-      maxAssetSize: 2 * 1024 * 1024,
+      maxEntrypointSize: 2 * mb,
+      maxAssetSize: 2 * mb,
     },
     stats: {
       env: true,

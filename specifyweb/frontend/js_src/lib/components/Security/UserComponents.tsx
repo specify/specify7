@@ -1,22 +1,24 @@
 import React from 'react';
 
 import { useLiveState } from '../../hooks/useLiveState';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
 import { replaceItem, replaceKey, sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext } from '../Core/Contexts';
+import { getField } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
-import type { SpecifyUser } from '../DataModel/types';
+import { tables } from '../DataModel/tables';
+import type { Collection, SpecifyUser } from '../DataModel/types';
 import { Combobox } from '../FormFields/ComboBox';
-import type { FormMode } from '../FormParse';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
@@ -81,10 +83,10 @@ export function SetSuperAdmin({
           }
         }}
       />
-      {adminText('institutionAdmin')}
+      {userText.institutionAdmin()}
     </Label.Inline>
   ) : (
-    <>{commonText('loading')}</>
+    <>{commonText.loading()}</>
   );
 }
 
@@ -99,22 +101,25 @@ export function UserRoles({
   readonly userRoles: IR<RA<RoleBase> | undefined> | undefined;
   readonly onChange: (value: IR<RA<RoleBase> | undefined>) => void;
 }): JSX.Element | null {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return typeof userRoles !== 'object' ||
     typeof userRoles[collectionId] === 'object' ? (
     <fieldset className="flex flex-col gap-2">
       <legend>
-        <span className="text-xl">{adminText('assignedUserRoles')}</span>
+        <span className="text-xl">{userText.assignedUserRoles()}</span>
       </legend>
       <Ul className="flex flex-col gap-1 pl-2">
         {typeof collectionRoles === 'object' && typeof userRoles === 'object'
-          ? collectionRoles[collectionId]?.map((role) => (
+          ? (collectionRoles[collectionId]?.map((role) => (
               <li className="flex items-center gap-2" key={role.id}>
                 <Label.Inline>
                   <Input.Checkbox
                     checked={userRoles?.[collectionId]?.some(
                       ({ roleId }) => roleId === role.id
                     )}
-                    disabled={!Array.isArray(userRoles?.[collectionId])}
+                    disabled={
+                      !Array.isArray(userRoles?.[collectionId]) || isReadOnly
+                    }
                     onValueChange={(): void =>
                       handleChange(
                         replaceKey(
@@ -146,18 +151,18 @@ export function UserRoles({
                   {role.name}
                 </Label.Inline>
                 <Link.Icon
-                  aria-label={commonText('edit')}
+                  aria-label={commonText.edit()}
                   className={className.dataEntryEdit}
                   href={`/specify/security/collection/${collectionId}/role/${role.id}/`}
                   icon="pencil"
-                  title={commonText('edit')}
+                  title={commonText.edit()}
                 />
               </li>
             )) ??
             userRoles[collectionId]!.map(({ roleId, roleName }) => (
               <li key={roleId}>{roleName}</li>
-            ))
-          : commonText('loading')}
+            )))
+          : commonText.loading()}
       </Ul>
     </fieldset>
   ) : null;
@@ -179,16 +184,18 @@ export function SetPasswordPrompt({
     <Dialog
       buttons={
         <>
-          <Button.Red onClick={handleIgnore}>{commonText('ignore')}</Button.Red>
-          <Button.Green onClick={handleSet}>
-            {adminText('setPassword')}
-          </Button.Green>
+          <Button.Danger onClick={handleIgnore}>
+            {commonText.ignore()}
+          </Button.Danger>
+          <Button.Success onClick={handleSet}>
+            {userText.setPassword()}
+          </Button.Success>
         </>
       }
-      header={adminText('setPassword')}
+      header={userText.setPassword()}
       onClose={handleClose}
     >
-      {adminText('setPasswordBeforeSavePrompt')}
+      {userText.setPasswordBeforeSavePrompt()}
     </Dialog>
   );
 }
@@ -201,7 +208,7 @@ export function UserIdentityProviders({
   return identityProviders === undefined ||
     Object.entries(identityProviders).length === 0 ? null : (
     <fieldset className="flex flex-col gap-2">
-      <legend>{adminText('externalIdentityProviders')}</legend>
+      <legend>{userText.externalIdentityProviders()}</legend>
       <Ul className="flex flex-col gap-1 pl-2">
         {Object.entries(identityProviders).map(([title, isEnabled], index) => (
           <li key={index}>
@@ -218,10 +225,10 @@ export function UserIdentityProviders({
 
 export function LegacyPermissions({
   userResource,
-  mode,
+  collections,
 }: {
   readonly userResource: SpecifyResource<SpecifyUser>;
-  readonly mode: FormMode;
+  readonly collections: RA<SerializedResource<Collection>>;
 }): JSX.Element {
   const admins = useAdmins();
   const [isAdmin, setIsAdmin] = useLiveState(
@@ -230,20 +237,21 @@ export function LegacyPermissions({
       [admins, userResource.id]
     )
   );
-  const userType = schema.models.SpecifyUser.strictGetLiteralField('userType');
+  const userType = getField(tables.SpecifyUser, 'userType');
   return (
     <section className="flex flex-col gap-2">
-      <h4 className="text-xl">{adminText('legacyPermissions')}</h4>
+      <h4 className="text-xl">{userText.legacyPermissions()}</h4>
       {hasPermission('/permissions/list_admins', 'read') && (
         <div className="flex gap-2">
           <AdminStatusPlugin
+            collections={collections}
             isAdmin={isAdmin}
             user={userResource}
             onChange={setIsAdmin}
           />
           {hasPermission('/admin/user/sp6/collection_access', 'read') &&
           hasTablePermission('Collection', 'read') ? (
-            <UserCollections isAdmin={isAdmin} user={userResource} />
+            <UserCollections user={userResource} />
           ) : undefined}
         </div>
       )}
@@ -253,16 +261,15 @@ export function LegacyPermissions({
       >
         {userType.label}
         <Combobox
-          defaultValue={undefined}
+          defaultValue={userResource.get('userType') || undefined}
           field={userType}
-          fieldName={userType.name}
-          formType="form"
           id={undefined}
           isDisabled={false}
           isRequired
-          mode={mode}
-          model={userResource}
-          pickListName={undefined}
+          pickListName={defined(
+            userType.getPickList(),
+            'UserType pick list not found'
+          )}
           resource={userResource}
         />
       </Label.Block>

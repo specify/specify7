@@ -414,6 +414,7 @@ schema = json.loads(r'''
           "type": "string",
           "enum": [
             "array",
+            "null",
             "boolean",
             "integer",
             "number",
@@ -479,6 +480,19 @@ schema = json.loads(r'''
               "$ref": "#/definitions/Reference"
             }
           ]
+        },
+        "prefixItems" : {
+          "type": "array",
+          "items" : {
+            "oneOf": [
+              {
+                "$ref": "#/definitions/Schema"
+              },
+              {
+                "$ref": "#/definitions/Reference"
+              }
+            ]
+          }
         },
         "properties": {
           "type": "object",

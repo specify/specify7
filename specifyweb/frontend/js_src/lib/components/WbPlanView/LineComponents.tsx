@@ -5,12 +5,15 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import type { Tables } from '../DataModel/types';
-import { wbText } from '../../localization/workbench';
+import { useId } from '../../hooks/useId';
+import { wbPlanText } from '../../localization/wbPlan';
 import type { IR, R, RA } from '../../utils/types';
-import type { MappingLineData } from './navigator';
 import { Button } from '../Atoms/Button';
+import { icons } from '../Atoms/Icons';
+import { ReadOnlyContext } from '../Core/Contexts';
+import type { Tables } from '../DataModel/types';
 import type {
   CustomSelectElementOptionProps,
   CustomSelectElementPropsClosed,
@@ -22,13 +25,12 @@ import {
   customSelectTypes,
   SuggestionBox,
 } from './CustomSelectElement';
-import { icons } from '../Atoms/Icons';
 import type { AutoMapperSuggestion } from './Mapper';
-import { useId } from '../../hooks/useId';
+import type { MappingLineData } from './navigator';
 
 export type HtmlGeneratorFieldData = {
   readonly optionLabel: JSX.Element | string;
-  readonly title?: string;
+  readonly title?: LocalizedString;
   readonly isEnabled?: boolean;
   readonly isRequired?: boolean;
   readonly isHidden?: boolean;
@@ -44,7 +46,6 @@ type MappingLineBaseProps = {
   readonly onFocus: () => void;
   readonly onKeyDown: (key: string) => void;
   readonly onClearMapping: () => void;
-  readonly isReadOnly: boolean;
 };
 
 export type MappingElementProps = {
@@ -62,6 +63,7 @@ export function getMappingLineProps({
   openSelectElement,
   customSelectType,
   onChange: handleChange,
+  // REFACTOR: onOpen/onClose/openSelectElement should probably be in local state
   onOpen: handleOpen,
   onClose: handleClose,
   onAutoMapperSuggestionSelection: handleAutoMapperSuggestionSelection,
@@ -73,7 +75,6 @@ export function getMappingLineProps({
   readonly customSelectType: CustomSelectType;
   readonly onChange?: (payload: {
     readonly index: number;
-    readonly close: boolean;
     readonly newValue: string;
     readonly isRelationship: boolean;
     readonly parentTableName: keyof Tables | undefined;
@@ -124,13 +125,12 @@ export function getMappingLineProps({
 export function MappingLineComponent({
   lineData,
   headerName,
-  isReadOnly,
   isFocused,
   onFocus: handleFocus,
   onKeyDown: handleKeyDown,
   onClearMapping: handleClearMapping,
 }: MappingLineBaseProps): JSX.Element {
-  const lineRef = React.useRef<HTMLDivElement>(null);
+  const lineRef = React.useRef<HTMLUListElement>(null);
 
   React.useLayoutEffect(() => {
     if (isFocused && lineRef.current?.contains(document.activeElement) !== true)
@@ -140,6 +140,7 @@ export function MappingLineComponent({
   const id = useId('mapping-line');
 
   const isComplete = lineData.at(-1)?.customSelectType === 'OPTIONS_LIST';
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <li
       aria-current={isFocused ? 'location' : undefined}
@@ -148,10 +149,10 @@ export function MappingLineComponent({
     >
       <div className="border-t border-t-gray-500 py-2 print:hidden">
         <Button.Small
-          aria-label={wbText('clearMapping')}
+          aria-label={wbPlanText.clearMapping()}
           className="h-full w-full p-2"
           disabled={isReadOnly}
-          title={wbText('clearMapping')}
+          title={wbPlanText.clearMapping()}
           onClick={handleClearMapping}
         >
           {icons.backspace}
@@ -167,22 +168,20 @@ export function MappingLineComponent({
         {headerName}
       </div>
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
-      <div
-        aria-label={wbText('columnMapping')}
+      <ul
+        aria-label={wbPlanText.columnMapping()}
         className={`
           flex flex-wrap items-center gap-2 border-t border-t-gray-500
           py-2 print:gap-1
           ${isFocused ? 'bg-gray-300 dark:bg-neutral-700' : ''}
         `}
         ref={lineRef}
-        role="list"
         tabIndex={0}
-        title={wbText('columnMapping')}
         onClick={handleFocus}
         onKeyDown={({ key }): void => handleKeyDown(key)}
       >
         <MappingPathComponent mappingLineData={lineData} />
-      </div>
+      </ul>
     </li>
   );
 }
@@ -195,23 +194,23 @@ export function MappingPathComponent({
   return (
     <>
       {mappingLineData.map((mappingDetails, index) => (
-        <React.Fragment key={index}>
-          <MappingElement {...mappingDetails} role="listitem" />
+        <li className="contents" key={index}>
+          <MappingElement {...mappingDetails} />
           {index + 1 !== mappingLineData.length &&
           mappingLineData[index + 1]?.customSelectType !== 'OPTIONS_LIST'
             ? mappingElementDivider
             : undefined}
-        </React.Fragment>
+        </li>
       ))}
     </>
   );
 }
 
 const fieldGroupLabels = {
-  suggestedMappings: wbText('suggestedMappings'),
-  requiredFields: wbText('requiredFields'),
-  optionalFields: wbText('optionalFields'),
-  hiddenFields: wbText('hiddenFields'),
+  suggestedMappings: wbPlanText.suggestedMappings(),
+  requiredFields: wbPlanText.requiredFields(),
+  optionalFields: wbPlanText.optionalFields(),
+  hiddenFields: wbPlanText.hiddenFields(),
 } as const;
 
 export const mappingElementDividerClassName = `print:px-1 flex items-center px-2`;
@@ -230,15 +229,21 @@ export function MappingElement({
 }: MappingElementProps): JSX.Element {
   const fieldGroups = Object.entries(fieldsData).reduce<
     R<R<CustomSelectElementOptionProps>>
-  >((fieldGroups, [fieldName, fieldData]) => {
-    const groupName = getFieldGroupName(
-      fieldData.isHidden ?? false,
-      fieldData.isRequired ?? false
-    );
-    fieldGroups[groupName] ??= {};
-    fieldGroups[groupName][fieldName] = fieldData;
-    return fieldGroups;
-  }, Object.fromEntries(Object.keys(fieldGroupLabels).map((groupName) => [groupName, {}])));
+  >(
+    (fieldGroups, [fieldName, fieldData]) => {
+      const groupName = getFieldGroupName(
+        fieldData.isHidden ?? false,
+        fieldData.isRequired ?? false
+      );
+      fieldGroups[groupName] ??= {};
+      fieldGroups[groupName][fieldName] = fieldData;
+
+      return fieldGroups;
+    },
+    Object.fromEntries(
+      Object.keys(fieldGroupLabels).map((groupName) => [groupName, {}])
+    )
+  );
 
   const customSelectOptionGroups = Object.fromEntries(
     Object.entries(fieldGroups)

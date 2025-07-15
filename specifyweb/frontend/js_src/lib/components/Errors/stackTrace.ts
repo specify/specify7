@@ -1,56 +1,82 @@
 import { errorContext } from '../../hooks/useErrorContext';
-import { f } from '../../utils/functools';
-import type { IR } from '../../utils/types';
-import { jsonStringify, removeKey } from '../../utils/utils';
-import { softFail } from './Crash';
+import type { R } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
 import { consoleLog } from './interceptLogs';
 
-let resolvedStackTrace: IR<unknown> = { stackTrace: 'loading' };
-f.all({
-  tablePermissions: import('../Permissions').then(({ getTablePermissions }) =>
-    getTablePermissions()
-  ),
-  systemInformation: import('../InitialContext/systemInfo').then(
-    ({ getSystemInfo }) => getSystemInfo()
-  ),
-  operationPermissions: import('../Permissions').then(
-    ({ getOperationPermissions }) => getOperationPermissions()
-  ),
-  errorContext: Array.from(errorContext),
-  schema: import('../DataModel/schema').then(({ schema }) =>
-    removeKey(schema, 'models')
-  ),
-  remotePrefs: import('../InitialContext/remotePrefs').then(
-    ({ remotePrefs }) => remotePrefs
-  ),
-  userPreferences: import('../UserPreferences/helpers').then(
-    ({ getRawUserPreferences }) => getRawUserPreferences()
-  ),
-  userInformation: import('../InitialContext/userInformation').then(
-    ({ userInformation }) => userInformation
-  ),
-})
-  .then((data) => {
-    resolvedStackTrace = data;
-    return data;
+const resolvedStackTrace: R<unknown> = {};
+Promise.all(
+  Object.entries({
+    systemInformation: import('../InitialContext/systemInfo').then(
+      async ({ fetchContext, getSystemInfo }) =>
+        fetchContext.then(getSystemInfo)
+    ),
+    tablePermissions: import('../Permissions').then(
+      async ({ getTablePermissions, fetchContext }) =>
+        fetchContext.then(getTablePermissions)
+    ),
+    operationPermissions: import('../Permissions').then(
+      async ({ getOperationPermissions, fetchContext }) =>
+        fetchContext.then(getOperationPermissions)
+    ),
+    schema: import('../DataModel/schema').then(
+      async ({ fetchContext }) => fetchContext
+    ),
+    remotePrefs: import('../InitialContext/remotePrefs').then(
+      async ({ fetchContext }) => fetchContext
+    ),
+    userPreferences: import('../Preferences/userPreferences').then(
+      async ({ userPreferences }) =>
+        userPreferences.fetch().then(() => userPreferences.getRaw())
+    ),
+    collectionPreferences: import('../Preferences/collectionPreferences').then(
+      async ({ collectionPreferences }) =>
+        collectionPreferences.fetch().then(() => collectionPreferences.getRaw())
+    ),
+    userInformation: import('../InitialContext/userInformation').then(
+      async ({ fetchContext }) => fetchContext
+    ),
+  }).map(async ([key, promise]) => {
+    resolvedStackTrace[key] = await promise;
   })
-  .catch(softFail);
-
+)
+  // Can't use softFail here because of circular dependency
+  .catch(console.error);
 /**
  * The stack trace is about 83KB in size
  */
 export const produceStackTrace = (message: unknown): string =>
-  jsonStringify({
-    message,
-    ...resolvedStackTrace,
-    href: globalThis.location.href,
-    consoleLog,
-    pageHtml: document.documentElement.outerHTML,
-    localStorage: { ...localStorage },
-    // Network log and page load telemetry
-    eventLog: globalThis.performance.getEntries(),
-    navigator: {
-      userAgent: navigator.userAgent,
-      language: navigator.language,
-    },
-  });
+  JSON.stringify(
+    Object.fromEntries(
+      Object.entries({
+        message,
+        ...resolvedStackTrace,
+        href: globalThis.location.href,
+        consoleLog,
+        errorContext: Array.from(errorContext),
+        pageHtml: document.documentElement.outerHTML,
+        localStorage: { ...localStorage },
+        // Network log and page load telemetry
+        eventLog: globalThis.performance.getEntries(),
+        navigator: {
+          userAgent: navigator.userAgent,
+          language: navigator.language,
+        },
+      }).sort(
+        sortFunction(([key]) => {
+          const order = errorSorted.indexOf(key);
+          return order === -1 ? Number.POSITIVE_INFINITY : order;
+        })
+      )
+    )
+  );
+
+const errorSorted = [
+  'message',
+  'userInformation',
+  'systemInformation',
+  'pageHtml',
+  'href',
+  'errorContext',
+  'navigator',
+  'consoleLog',
+];

@@ -3,12 +3,12 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { f } from '../../utils/functools';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import { error } from '../Errors/assert';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { softFail } from '../Errors/Crash';
 import type { FormMode, FormType, ViewDescription } from '../FormParse';
 import { fetchView, parseViewDefinition } from '../FormParse';
-import { webOnlyViews } from '../FormParse/webOnlyViews';
-import { usePref } from '../UserPreferences/usePref';
+import { attachmentView, webOnlyViews } from '../FormParse/webOnlyViews';
+import { userPreferences } from '../Preferences/userPreferences';
 import { autoGenerateViewDefinition } from './generateFormDefinition';
 
 /**
@@ -18,55 +18,66 @@ import { autoGenerateViewDefinition } from './generateFormDefinition';
  */
 export const originalAttachmentsView = 'originalObjectAttachment';
 
+export const propsToFormMode = (
+  isReadOnly: boolean,
+  isInSearchDialog: boolean
+): FormMode => (isInSearchDialog ? 'search' : isReadOnly ? 'view' : 'edit');
+
 /**
  * A hook to get information needed to display a form
  * Can be used independently of <SpecifyForm> if need to get form definition
  * for alternative purposes (i.e a different renderer)
  */
 export function useViewDefinition({
-  model,
+  table,
   viewName,
   // If can't find the view by viewName, could use a fallback view name
   fallbackViewName,
   formType,
   mode,
 }: {
-  readonly model: SpecifyModel | undefined;
+  readonly table: SpecifyTable | undefined;
   readonly viewName?: string;
   readonly fallbackViewName?: string;
   readonly formType: FormType;
   readonly mode: FormMode;
 }): ViewDescription | undefined {
-  const [globalConfig] = usePref('form', 'preferences', 'useCustomForm');
+  const [globalConfig] = userPreferences.use(
+    'form',
+    'preferences',
+    'useCustomForm'
+  );
   const useGeneratedForm =
-    Array.isArray(globalConfig) && f.includes(globalConfig, model?.name);
+    Array.isArray(globalConfig) && f.includes(globalConfig, table?.name);
   const [viewDefinition] = useAsyncState<ViewDescription>(
     React.useCallback(async () => {
-      if (model === undefined) return undefined;
-      else if (viewName === 'ObjectAttachment')
+      if (table === undefined) return undefined;
+      else if (viewName === attachmentView)
         return {
-          ...webOnlyViews().ObjectAttachment,
-          model,
+          ...webOnlyViews()[attachmentView],
+          table,
+          name: attachmentView,
           formType,
           mode,
         };
       else if (useGeneratedForm)
-        return autoGenerateViewDefinition(model, formType, mode);
-      const resolvedViewName = viewName ?? model.view;
-      return fetchViewDefinition(resolvedViewName, model, formType, mode)
+        return autoGenerateViewDefinition(table, formType, mode);
+      const resolvedViewName = viewName ?? table.view;
+      return fetchViewDefinition(resolvedViewName, table, formType, mode)
         .then(
-          (definition) =>
+          async (definition) =>
             definition ??
             (typeof fallbackViewName === 'string' &&
-            fallbackViewName !== resolvedViewName
-              ? fetchViewDefinition(fallbackViewName, model, formType, mode)
+            fallbackViewName !== resolvedViewName &&
+            fallbackViewName !== attachmentView
+              ? fetchViewDefinition(fallbackViewName, table, formType, mode)
               : undefined)
         )
         .then(
           (definition) =>
-            definition ?? autoGenerateViewDefinition(model, formType, mode)
+            definition ?? autoGenerateViewDefinition(table, formType, mode)
         );
-    }, [useGeneratedForm, viewName, formType, mode, model]),
+    }, [useGeneratedForm, viewName, formType, mode, table, fallbackViewName]),
     false
   );
 
@@ -76,7 +87,7 @@ export function useViewDefinition({
 
 const fetchViewDefinition = async (
   viewName: string,
-  model: SpecifyModel,
+  table: SpecifyTable,
   formType: FormType,
   mode: FormMode
 ): Promise<ViewDescription | undefined> =>
@@ -85,22 +96,31 @@ const fetchViewDefinition = async (
   )
     .then((viewDefinition) =>
       typeof viewDefinition === 'object'
-        ? parseViewDefinition(viewDefinition, formType, mode)
+        ? parseViewDefinition(viewDefinition, formType, mode, table)
         : undefined
     )
-    .then((viewDefinition) =>
-      typeof viewDefinition === 'object'
-        ? viewDefinition.model === model
-          ? viewDefinition
-          : error('View definition model does not match resource model')
-        : f.maybe(
-            webOnlyViews()[viewName as keyof typeof webOnlyViews],
-            ({ columns, rows }) => ({
-              columns,
-              rows,
-              formType,
-              mode,
-              model,
-            })
-          )
-    );
+    .then((viewDefinition) => {
+      if (typeof viewDefinition === 'object') {
+        if (viewDefinition.table !== table)
+          softFail(
+            new Error('View definition table does not match resource table')
+          );
+        return viewName === originalAttachmentsView
+          ? {
+              ...viewDefinition,
+              name: originalAttachmentsView,
+            }
+          : viewDefinition;
+      } else
+        return f.maybe(
+          webOnlyViews()[viewName as keyof typeof webOnlyViews],
+          ({ columns, rows }) => ({
+            columns,
+            rows,
+            name: '',
+            formType,
+            mode,
+            table,
+          })
+        );
+    });

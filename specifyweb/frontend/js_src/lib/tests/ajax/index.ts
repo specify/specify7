@@ -1,11 +1,16 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import type { ajax, AjaxResponseObject } from '../../utils/ajax';
-import { MimeType } from '../../utils/ajax';
+import { afterAll, beforeAll, expect } from '@jest/globals';
+
+import type {
+  ajax,
+  AjaxMethod,
+  AjaxResponseObject,
+  MimeType,
+} from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { handleAjaxResponse } from '../../utils/ajax/response';
-import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 
 type ResponseType = Document | IR<unknown> | RA<unknown> | string;
@@ -35,9 +40,10 @@ export function overrideAjax(
     body,
   }: {
     readonly responseCode?: number;
-    readonly method?: string;
+    readonly method?: AjaxMethod;
     readonly body?: unknown;
-  } = {}
+  } = {},
+  allowOverride = false
 ): void {
   if (!url.startsWith('/'))
     throw new Error(
@@ -45,6 +51,14 @@ export function overrideAjax(
     );
   beforeAll(() => {
     overrides[url] ??= {};
+    if (typeof overrides[url]![method] === 'object' && !allowOverride)
+      throw new Error(
+        /*
+         * This prevent accidentally calling overrideAjax twice with the same
+         * URL in the same scope
+         */
+        `Can\'t override ${url} [${method}] as there already is an override for that URL`
+      );
     overrides[url]![method] = {
       data: typeof response === 'function' ? response : () => response,
       responseCode,
@@ -55,6 +69,11 @@ export function overrideAjax(
     overrides[url]![method] = undefined;
   });
 }
+
+const basePathParts = process.cwd().split('/');
+const basePath = basePathParts
+  .slice(0, basePathParts.indexOf('js_src') + 1)
+  .join('/');
 
 /**
  * When process.env.NODE_ENV === 'test', this intercepts the AJAX requests
@@ -73,39 +92,41 @@ export async function ajaxMock<RESPONSE_TYPE>(
     method: requestMethod = 'GET',
     body: requestBody,
     headers: { Accept: accept },
-  }: Parameters<typeof ajax>[1],
-  {
-    expectedResponseCodes = [Http.OK],
-  }: {
-    readonly expectedResponseCodes?: RA<number>;
-  } = {}
+    expectedErrors = [],
+  }: Parameters<typeof ajax>[1]
 ): Promise<AjaxResponseObject<RESPONSE_TYPE>> {
   if (url.startsWith('https://stats.specifycloud.org/capture'))
-    return formatResponse('', accept, expectedResponseCodes);
+    return formatResponse('', accept, expectedErrors, undefined);
 
   const parsedUrl = new URL(url, globalThis?.location.origin);
   const urlWithoutQuery = `${parsedUrl.origin}${parsedUrl.pathname}`;
   const overwrittenData =
     overrides[url]?.[requestMethod] ??
     overrides[urlWithoutQuery]?.[requestMethod];
-  if (typeof overwrittenData !== 'undefined') {
+  if (overwrittenData !== undefined) {
     const { data, responseCode, body } = overwrittenData;
     if (body !== undefined) expect(requestBody).toEqual(body);
     const value = data();
     const resolvedValue =
       typeof value === 'object' ? JSON.stringify(value) : value;
-    return formatResponse(
-      resolvedValue,
-      accept,
-      typeof responseCode === 'number' ? [responseCode] : expectedResponseCodes
-    );
+    return formatResponse(resolvedValue, accept, expectedErrors, responseCode);
   }
 
-  const parsedPath = path.parse(`./lib/tests/ajax/static${url}`);
+  /*
+   * Get rid of the ? character as it is not allowed in file names on
+   * Windows.
+   */
+  const [splitUrl, queryString = ''] = url.split('?');
+  const parsedPath = path.parse(`${basePath}/lib/tests/ajax/static${splitUrl}`);
+  const directoryName =
+    queryString === ''
+      ? parsedPath.dir
+      : path.join(parsedPath.dir, parsedPath.base);
+  const fileName = queryString === '' ? parsedPath.base : queryString;
 
   // Find a directory that matches the part name in the URL
   const files = await fs.promises
-    .readdir(parsedPath.dir, {
+    .readdir(directoryName, {
       withFileTypes: true,
     })
     .catch(() => []);
@@ -117,21 +138,19 @@ export async function ajaxMock<RESPONSE_TYPE>(
        * Compare file name from the URL to a file in the found directory with
        * and without the file extension
        */
-      (parsedPath.base === dirent.name ||
-        parsedPath.base === splitFileName(dirent.name).fileName)
+      (fileName === dirent.name ||
+        fileName === splitFileName(dirent.name).fileName)
   )?.name;
 
-  if (typeof targetFile === 'undefined')
+  if (targetFile === undefined)
     throw new Error(
       `No static source found for URL ${url} [${requestMethod}].\n` +
         `You can mock it by creating a file in ./lib/tests/ajax/static\n` +
         `Alternatively, you can add overrideAjax() to your test`
     );
 
-  const file = await fs.promises.readFile(
-    path.join(parsedPath.dir, targetFile)
-  );
-  return formatResponse(file.toString(), accept, expectedResponseCodes);
+  const file = await fs.promises.readFile(path.join(directoryName, targetFile));
+  return formatResponse(file.toString(), accept, expectedErrors, undefined);
 }
 
 function splitFileName(fileName: string): {
@@ -148,25 +167,19 @@ function splitFileName(fileName: string): {
 const formatResponse = <RESPONSE_TYPE>(
   response: string,
   accept: MimeType | undefined,
-  expectedResponseCodes: RA<number>
+  expectedErrors: RA<number>,
+  responseCode: number | undefined = Http.OK
 ): AjaxResponseObject<RESPONSE_TYPE> =>
   handleAjaxResponse({
-    expectedResponseCodes,
+    expectedErrors,
     accept,
-    response: createResponse(expectedResponseCodes),
-    strict: true,
+    response: createResponse(responseCode),
+    errorMode: 'visible',
     text: response,
   });
 
-function createResponse(expectedResponseCodes: RA<number>): Response {
-  const statusCode = getResponseCode(expectedResponseCodes);
-  return new Response(statusCode === Http.NO_CONTENT ? undefined : '', {
+const createResponse = (statusCode: number): Response =>
+  new Response(statusCode === Http.NO_CONTENT ? undefined : '', {
     status: statusCode,
     statusText: undefined,
   });
-}
-
-const getResponseCode = (expectedResponseCodes: RA<number>): number =>
-  expectedResponseCodes.find((code) =>
-    f.includes([Http.OK, Http.NO_CONTENT, Http.CREATED], code)
-  ) ?? expectedResponseCodes[0];

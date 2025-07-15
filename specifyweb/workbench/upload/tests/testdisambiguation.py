@@ -1,15 +1,16 @@
 from typing import List, Optional
 
 from ..uploadable import Disambiguation
-from ..upload_result import Uploaded, UploadResult, Matched, MatchedMultiple, FailedBusinessRule, ReportInfo, TreeInfo
-from ..upload_table import UploadTable, ScopedUploadTable, _to_many_filters_and_excludes, BoundUploadTable
-from ..tomany import ToManyRecord
-from ..treerecord import TreeRecord, BoundTreeRecord, TreeDefItemWithParseResults
-from ..upload import do_upload, do_upload_csv, validate_row, get_disambiguation_from_row
+from ..upload_result import Matched, MatchedMultiple
+from ..upload_table import UploadTable
+from ..upload import do_upload, validate_row, get_disambiguation_from_row
 from ..upload_plan_schema import parse_column_options, parse_plan
 from ..disambiguation import DisambiguationInfo
 
-from .base import UploadTestsBase, get_table
+from .base import UploadTestsBase
+from specifyweb.specify.tests.test_api import get_table
+
+from django.conf import settings
 
 class DisambiguationTests(UploadTestsBase):
 
@@ -31,10 +32,11 @@ class DisambiguationTests(UploadTestsBase):
         plan = UploadTable(
             name='Referencework',
             wbcols={'title': parse_column_options('title')},
+            overrideScope=None,
             static={'referenceworktype': 0},
             toOne={},
             toMany={'authors': [
-                ToManyRecord(
+                UploadTable(
                     name='Author',
                     wbcols={},
                     static={},
@@ -43,11 +45,14 @@ class DisambiguationTests(UploadTestsBase):
                         wbcols={
                             'lastname': parse_column_options('author1')
                         },
+                        overrideScope=None,
                         static={},
                         toOne={},
                         toMany={}
-                    )}),
-                ToManyRecord(
+                    )},
+                    toMany={}
+                    ),
+                UploadTable(
                     name='Author',
                     wbcols={},
                     static={},
@@ -56,12 +61,15 @@ class DisambiguationTests(UploadTestsBase):
                         wbcols={
                             'lastname': parse_column_options('author2')
                         },
+                        overrideScope=None,
                         static={},
                         toOne={},
                         toMany={}
-                    )}),
+                    )},
+                    toMany={}
+                    ),
             ]}
-        ).apply_scoping(self.collection)
+        )
 
         data = [
             {'title': "A Natural History of Mung Beans 1", 'author1': "Philomungus", 'author2': "Mungophilius"},
@@ -73,7 +81,7 @@ class DisambiguationTests(UploadTestsBase):
         for result in results:
             assert result.contains_failure()
 
-        disambiguations: Optional[List[Disambiguation]] = [
+        disambiguations: Optional[list[Disambiguation]] = [
             DisambiguationInfo({("authors", "#2", "agent"): senior.id}),
             DisambiguationInfo({("authors", "#1", "agent"): junior.id}),
             DisambiguationInfo({("authors", "#1", "agent"): senior.id, ("authors", "#2", "agent"): junior.id}),
@@ -117,12 +125,12 @@ class DisambiguationTests(UploadTestsBase):
         cols = ["Cat #", "Genus", "Species"]
         row = ["123", "Fundulus", "olivaceus"]
 
-        up = parse_plan(self.collection, plan).apply_scoping(self.collection)
+        up = parse_plan(plan).apply_scoping(self.collection)
 
         result = validate_row(self.collection, up, self.agent.id, dict(zip(cols, row)), None)
         taxon_result = result.toMany['determinations'][0].toOne['taxon'].record_result
         assert isinstance(taxon_result, MatchedMultiple)
-        self.assertEqual(set(taxon_result.ids), set([fundulus1.id, fundulus2.id]))
+        self.assertEqual(set(taxon_result.ids), {fundulus1.id, fundulus2.id})
 
         da_row = ["123", "Fundulus", "olivaceus", "{\"disambiguation\":{\"determinations.#1.taxon.$Genus\":%d}}" % fundulus1.id]
         da = get_disambiguation_from_row(len(cols), da_row)
@@ -160,12 +168,12 @@ class DisambiguationTests(UploadTestsBase):
         cols = ["Cat #", "Genus", "Species"]
         row = ["123", "Fundulus", "olivaceus"]
 
-        up = parse_plan(self.collection, plan).apply_scoping(self.collection)
+        up = parse_plan(plan).apply_scoping(self.collection)
 
         result = validate_row(self.collection, up, self.agent.id, dict(zip(cols, row)), None)
         taxon_result = result.toMany['determinations'][0].toOne['taxon'].record_result
         assert isinstance(taxon_result, MatchedMultiple)
-        self.assertEqual(set(taxon_result.ids), set([fundulus1.id, fundulus2.id]))
+        self.assertEqual(set(taxon_result.ids), {fundulus1.id, fundulus2.id})
 
         da_row = ["123", "Fundulus", "olivaceus", "{\"disambiguation\":{\"determinations.#1.taxon.$Genus\":%d}}" % fundulus1.id]
 
@@ -201,12 +209,12 @@ class DisambiguationTests(UploadTestsBase):
         cols = ["Cat #", "Cat last"]
         row = ["123", "Bentley"]
 
-        up = parse_plan(self.collection, plan).apply_scoping(self.collection)
+        up = parse_plan(plan).apply_scoping(self.collection)
 
         result = validate_row(self.collection, up, self.agent.id, dict(zip(cols, row)), None)
         agent_result = result.toOne['cataloger'].record_result
         assert isinstance(agent_result, MatchedMultiple)
-        self.assertEqual(set(agent_result.ids), set([andy.id, bogus.id]))
+        self.assertEqual(set(agent_result.ids), {andy.id, bogus.id})
 
         da_row = ["123", "Bentley", "{\"disambiguation\":{\"cataloger\":%d}}" % bogus.id]
 

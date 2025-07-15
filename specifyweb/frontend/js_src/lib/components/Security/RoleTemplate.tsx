@@ -2,24 +2,24 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 
-import { ajax } from '../../utils/ajax';
-import { keysToLowerCase, sortFunction } from '../../utils/utils';
-import { adminText } from '../../localization/admin';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
-import { hasPermission } from '../Permissions/helpers';
+import { userText } from '../../localization/user';
+import { ajax } from '../../utils/ajax';
+import { localized } from '../../utils/types';
+import { getUniqueName } from '../../utils/uniquifyName';
+import { keysToLowerCase, sortFunction } from '../../utils/utils';
+import { H3, Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { LoadingContext } from '../Core/Contexts';
 import { schema } from '../DataModel/schema';
+import { useAvailableCollections } from '../Forms/OtherCollectionView';
+import { Dialog } from '../Molecules/Dialog';
+import { hasPermission } from '../Permissions/helpers';
+import type { SecurityOutlet } from '../Toolbar/Security';
+import type { NewRole, Role } from './Role';
 import type { BackEndRole } from './utils';
 import { fetchRoles } from './utils';
-import { getUniqueName } from '../../utils/uniquifyName';
-import { LoadingContext } from '../Core/Contexts';
-import { Dialog } from '../Molecules/Dialog';
-import { useAvailableCollections } from '../Forms/OtherCollectionView';
-import type { NewRole, Role } from './Role';
-import type { SecurityOutlet } from '../Toolbar/Security';
-import { Button } from '../Atoms/Button';
-import { H3, Ul } from '../Atoms';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { Http } from '../../utils/ajax/definitions';
 
 export function CreateRole({
   scope,
@@ -57,7 +57,7 @@ export function CreateRole({
   const currentRoleNames = (
     scope === 'institution'
       ? Object.values(libraryRoles ?? [])
-      : Object.values(roles ?? []).find(([{ id }]) => id === scope)?.[1] ?? []
+      : (Object.values(roles ?? []).find(([{ id }]) => id === scope)?.[1] ?? [])
   ).map(({ name }) => name);
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
@@ -76,24 +76,24 @@ export function CreateRole({
         <>
           {(scope === 'institution' ||
             hasPermission('/permissions/roles', 'create', collectionId)) && (
-            <Button.Blue
+            <Button.Info
               onClick={(): void =>
                 handleCreated({
                   id: undefined,
-                  name: adminText('newRole'),
-                  description: '',
+                  name: userText.newRole(),
+                  description: localized(''),
                   policies: [],
                 })
               }
             >
-              {commonText('new')}
-            </Button.Blue>
+              {commonText.new()}
+            </Button.Info>
           )}
           <span className="-ml-2 flex-1" />
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
         </>
       }
-      header={adminText('createRole')}
+      header={userText.addRole()}
       onClose={(): void => navigate(closeUrl)}
     >
       {scope === 'institution' ||
@@ -105,10 +105,10 @@ export function CreateRole({
         hasPermission('/permissions/roles', 'create', collectionId)) &&
         hasPermission('/permissions/library/roles', 'read', collectionId)) ? (
         <section>
-          <H3>{adminText('fromLibrary')}</H3>
+          <H3>{userText.fromLibrary()}</H3>
           {typeof libraryRoles === 'object' ? (
             Object.keys(libraryRoles).length === 0 ? (
-              commonText('none')
+              commonText.none()
             ) : (
               <Ul>
                 {Object.values(libraryRoles)
@@ -148,9 +148,6 @@ export function CreateRole({
                                       libraryRoleId: role.id,
                                       name: roleName,
                                     }),
-                                  },
-                                  {
-                                    expectedResponseCodes: [Http.CREATED],
                                   }
                                 ).then(({ data }) => data)
                             ).then((newRole) =>
@@ -169,7 +166,7 @@ export function CreateRole({
               </Ul>
             )
           ) : (
-            commonText('loading')
+            commonText.loading()
           )}
         </section>
       ) : undefined}
@@ -177,12 +174,15 @@ export function CreateRole({
         hasPermission('/permissions/roles', 'create', collectionId)) &&
       (!Array.isArray(roles) || roles.length > 0) ? (
         <section>
-          <H3>{adminText('fromExistingRole')}</H3>
+          <H3>{userText.fromExistingRole()}</H3>
           {typeof roles === 'object' ? (
             <div className="flex flex-col gap-4">
               {roles.map(([collection, roles]) => (
                 <article key={collection.id}>
-                  {`${collection.collectionName ?? collection.id}:`}
+                  {commonText.colonHeader({
+                    header:
+                      collection.collectionName ?? collection.id.toString(),
+                  })}
                   <Ul>
                     {roles.map((role) => (
                       <li key={role.id}>
@@ -205,7 +205,7 @@ export function CreateRole({
               ))}
             </div>
           ) : (
-            commonText('loading')
+            commonText.loading()
           )}
         </section>
       ) : undefined}

@@ -1,8 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "include": ["**/*.ts", "**/*.tsx", "**/*.js"],
-  "exclude": ["node_modules", "testBuild"],
-  "compilerOptions": {
-    "sourceMap": false
-  }
-}
