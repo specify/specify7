@@ -353,10 +353,6 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         const isValid =
           typeof taxonTreeDef === 'string' && taxonTreeDef === coTypeTreeDef;
 
-        const test = tables.Component.field;
-        const test2 = tables.Component.fields;
-        console.log(test, test2);
-
         setSaveBlockers(
           resource,
           resource.specifyTable.field.name,
@@ -372,6 +368,18 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           COMPONENT_NAME_TAXON_KEY
         );
 
+        return undefined;
+      },
+      name: async (resource): Promise<undefined> => {
+        const name = await resource.rgetPromise('name');
+        if (name === null) {
+          setSaveBlockers(
+            resource,
+            resource.specifyTable.field.name,
+            [],
+            COMPONENT_NAME_TAXON_KEY
+          );
+        }
         return undefined;
       },
     },
