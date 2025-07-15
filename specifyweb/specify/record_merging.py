@@ -111,10 +111,12 @@ def fix_orderings(base_model: Table, new_record_data):
                 # Can this ever happen?
                 not isinstance(records, list)):
             continue
-        order_fields_data = set([tuple([record.get(ordering_field, None)
+        order_fields_data = {tuple([record.get(ordering_field, None)
                               for ordering_field in ordering_fields])
-                                for record in records])
+                                for record in records}
 
+        # The lengths will be different in the case where the ordering fields are duplicated.
+        # For example, the ordernumber is same for two collectors.
         if len(order_fields_data) != len(records):
             resources = []
             for record in records:
@@ -161,9 +163,9 @@ def fix_record_data(new_record_data, current_model: Table, target_model_name: st
 RESTRICT_UPDATE_FIELDS = {'spappresourcedata'}
 
 @transaction.atomic
-def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int,
+def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int,
                     progress: Optional[Progress]=None,
-                    new_record_info: Dict[str, Any]=None):
+                    new_record_info: dict[str, Any]=None):
     """Replaces all the foreign keys referencing the old record ID
     with the new record ID, and deletes the old record.
     """
@@ -186,7 +188,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
         for rel in target_object.specify_model.relationships
         if is_dependent_field(target_object, rel.name)]
 
-    dependant_table_names = set([rel[0] for rel in dependant_relationships])
+    dependant_table_names = {rel[0] for rel in dependant_relationships}
 
     # Get all of the columns in all of the tables of specify the are foreign keys referencing model ID
     foreign_key_cols = []
@@ -201,6 +203,7 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
         foreign_table = spmodels.datamodel.get_table(table_name)
         foreign_model = get_app_model(table_name.lower().title())
 
+        # BUG: This shouldn't be .title().
         apply_order = add_ordering_to_key(table_name.lower().title())
         # BUG: timestampmodified could be null for one record, and not the other
         new_key_fields = ('timestampcreated', 'timestampmodified', 'id') \
@@ -338,8 +341,8 @@ def record_merge_fx(model_name: str, old_model_ids: List[int], new_model_id: int
             raise
 
 @app.task(base=LogErrorsTask, bind=True)
-def record_merge_task(self, model_name: str, old_model_ids: List[int], new_model_id: int, merge_id: int,
-                      new_record_dict: Dict[str, Any]=None):
+def record_merge_task(self, model_name: str, old_model_ids: list[int], new_model_id: int, merge_id: int,
+                      new_record_dict: dict[str, Any]=None):
     "Run the record merging process as a background task with celery"
 
     logger.info('logging is working for record merging task')

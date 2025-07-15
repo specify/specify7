@@ -165,6 +165,9 @@ export type CacheDefinitions = {
       RA<RA<{ readonly itemName: string; readonly value: number | string }>>
     >;
   };
+  readonly batchEdit: {
+    readonly warningBatchEditDialog: boolean;
+  };
 };
 
 export type SortConfigs = {
@@ -213,6 +216,7 @@ export type SortConfigs = {
     | 'name'
     | 'timestampCreated'
     | 'timestampModified';
+  readonly listOfBatchEditDataSets: 'dateCreated' | 'dateUploaded' | 'name';
 };
 
 // Some circular types can't be expressed without interfaces

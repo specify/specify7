@@ -12,6 +12,7 @@ from django.db import transaction
 from django.utils import timezone
 
 from specifyweb.middleware.general import require_GET
+from specifyweb.stored_queries.batch_edit import run_batch_edit
 from specifyweb.specify.models_by_table_id import model_names_by_table_id
 from . import models
 from .execution import execute, run_ephemeral_query, do_export, recordset, \
@@ -82,14 +83,25 @@ def query(request, id):
     with models.session_context() as session:
         sp_query = session.query(models.SpQuery).get(int(id))
         distinct = sp_query.selectDistinct
+        series = sp_query.smushed
         tableid = sp_query.contextTableId
         count_only = sp_query.countOnly
 
         field_specs = [QueryField.from_spqueryfield(field, value_from_request(field, request.GET))
                        for field in sorted(sp_query.fields, key=lambda field: field.position)]
 
-        data = execute(session, request.specify_collection, request.specify_user,
-                       tableid, distinct, count_only, field_specs, limit, offset)
+        data = execute(
+            session=session, 
+            collection=request.specify_collection, 
+            user=request.specify_user,
+            tableid=tableid, 
+            distinct=distinct, 
+            series=series,
+            count_only=count_only, 
+            field_specs=field_specs, 
+            limit=limit, 
+            offset=offset
+        )
 
     return HttpResponse(toJson(data), content_type='application/json')
 
@@ -99,22 +111,35 @@ def query(request, id):
 @never_cache
 def ephemeral(request):
     """Executes and returns the results of the query provided as JSON in the POST body."""
+
+    spquery, collection = get_query(request)
+    data = run_ephemeral_query(collection, request.specify_user, spquery)
+
+    return HttpResponse(toJson(data), content_type='application/json')
+
+def get_query(request):
     try:
         spquery = json.load(request)
     except ValueError as e:
         return HttpResponseBadRequest(e)
-
 
     if 'collectionid' in spquery:
         collection = Collection.objects.get(pk=spquery['collectionid'])
         logger.debug('forcing collection to %s', collection.collectionname)
     else:
         collection = request.specify_collection
-
+    
     check_permission_targets(collection.id, request.specify_user.id, [QueryBuilderPt.execute])
-    data = run_ephemeral_query(collection, request.specify_user, spquery)
-    return HttpResponse(toJson(data), content_type='application/json')
+    return spquery, collection
 
+@require_POST
+@login_maybe_required
+@never_cache
+def batch_edit(request):
+    """Executes and returns the results of the query provided as JSON in the POST body."""
+    spquery, collection = get_query(request)
+    ds_id, ds_name = run_batch_edit(collection, request.specify_user, spquery, request.specify_user_agent)
+    return HttpResponse(toJson({"id": ds_id, "name": ds_name}), status=201, content_type='application/json')
 
 @require_POST
 @login_maybe_required

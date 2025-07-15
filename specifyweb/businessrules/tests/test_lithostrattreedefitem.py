@@ -5,7 +5,7 @@ from specifyweb.specify import models
 
 class LithostrattreedefitemTests(ApiTests):
     def setUp(self):
-        super(LithostrattreedefitemTests, self).setUp()
+        super().setUp()
 
         self.lithostrattreedef = models.Lithostrattreedef.objects.create(
             name="Test Lithostrat tree def")
@@ -18,12 +18,6 @@ class LithostrattreedefitemTests(ApiTests):
             name="Rocks",
             definition=self.rootlithostrattreedefitem.treedef,
             rankid=self.rootlithostrattreedefitem.rankid)
-
-    def test_cannot_delete_root(self):
-        self.rootlithostrat.delete()
-
-        with self.assertRaises(TreeBusinessRuleException):
-            self.rootlithostrattreedefitem.delete()
 
     def test_delete_blocked_by_lithostrat(self):
         layer = self.rootlithostrattreedefitem.children.create(

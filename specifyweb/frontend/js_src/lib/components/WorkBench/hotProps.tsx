@@ -3,6 +3,7 @@ import ReactDOMServer from 'react-dom/server';
 
 import { wbPlanText } from '../../localization/wbPlan';
 import { icons } from '../Atoms/Icons';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
@@ -26,6 +27,7 @@ export function useHotProps({
   readonly mappings: WbMapping | undefined;
   readonly physicalColToMappingCol: (physicalCol: number) => number | undefined;
 }) {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const [autoWrapCol] = userPreferences.use(
     'workBench',
     'editor',
@@ -46,9 +48,12 @@ export function useHotProps({
         (_, physicalCol) => ({
           // Get data from nth column for nth column
           data: physicalCol,
+          readOnly:
+            isReadOnly ||
+            [-1, undefined].includes(physicalColToMappingCol(physicalCol)),
         })
       ),
-    [dataset.columns.length]
+    [dataset.columns.length, isReadOnly]
   );
 
   const [enterMovesPref] = userPreferences.use(
@@ -111,6 +116,7 @@ export function useHotProps({
   const tabMoves =
     tabMovesPref === 'col' ? { col: 1, row: 0 } : { col: 0, row: 1 };
 
+  const adjustedMinRows = dataset.isupdate ? 0 : minSpareRows;
   return {
     autoWrapCol,
     autoWrapRow,
@@ -120,7 +126,7 @@ export function useHotProps({
     enterBeginsEditing,
     hiddenRows,
     hiddenColumns,
-    minSpareRows,
+    minSpareRows: adjustedMinRows,
     tabMoves,
     comments,
   };

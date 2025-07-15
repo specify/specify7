@@ -8,7 +8,7 @@ from . import models, permissions, initialize
 
 class PermissionsApiTest(ApiTests):
     def setUp(self):
-        super(PermissionsApiTest, self).setUp()
+        super().setUp()
         initialize.wipe_permissions()
 
         models.UserPolicy.objects.create(

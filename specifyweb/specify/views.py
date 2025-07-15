@@ -5,9 +5,13 @@ A few non-business data resource end points
 import json
 import mimetypes
 from functools import wraps
-import re
+import time
+import logging
+import os
 from typing import Union, List, Tuple, Dict, Any
 from uuid import uuid4
+from zipfile import ZipFile, BadZipFile
+from tempfile import TemporaryDirectory
 
 from django import http
 from django.conf import settings
@@ -15,7 +19,8 @@ from django.db import router, transaction, connection
 from specifyweb.notifications.models import Message, Spmerging, LocalityUpdate
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_http_methods
+from specifyweb.specify.api import get_model
 
 from specifyweb.middleware.general import require_GET, require_http_methods
 from specifyweb.permissions.permissions import PermissionTarget, \
@@ -24,8 +29,10 @@ from specifyweb.celery_tasks import app, CELERY_TASK_STATE
 from specifyweb.specify.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
 from specifyweb.specify.update_locality import localityupdate_parse_success, localityupdate_parse_error, parse_locality_set as _parse_locality_set, upload_locality_set as _upload_locality_set, create_localityupdate_recordset, update_locality_task, parse_locality_task, LocalityUpdateStatus
 from . import api, models as spmodels
-from .specify_jar import specify_jar
+from .specify_jar import specify_jar, specify_jar_path
+from .uiformatters import get_uiformatter_by_name
 
+logger = logging.getLogger(__name__)
 
 def login_maybe_required(view):
     @wraps(view)
@@ -145,10 +152,49 @@ def images(request, path):
 @require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=24 * 60 * 60, public=True)
 def properties(request, name):
-    """Returns the <name>.properities file from the thickclient jar file."""
-    path = name + '.properties'
-    return http.HttpResponse(specify_jar.read(path), content_type='text/plain')
+    """
+    Returns the <name>.properties file from the thickclient jar.
+    Retries on BadZipFile and falls back to manual extraction.
+    """
+    path = f"{name}.properties"
+    max_retries = 2
+    delay = 0.1
 
+    for attempt in range(1, max_retries + 2):
+        try:
+            data = specify_jar.read(path)
+            break
+        except BadZipFile:
+            logger.warning(
+                "Attempt %d to read from %r failed with BadZipFile. Retrying…",
+                attempt, path,
+                exc_info=True
+            )
+            if attempt <= max_retries:
+                time.sleep(delay * attempt)
+            else:
+                # Final fallback: manually extract just this one entry
+                try:
+                    with TemporaryDirectory() as td:
+                        with ZipFile(specify_jar_path, 'r') as jar:
+                            jar.extract(path, td)
+                        with open(os.path.join(td, path), 'rb') as f:
+                            data = f.read()
+                    logger.info("Successfully extracted %r via fallback extraction.", path)
+                    break
+                except Exception as fallback_exc:
+                    logger.error(
+                        "Fallback extract also failed for %r: %s",
+                        path, fallback_exc,
+                        exc_info=True
+                    )
+                    return http.HttpResponseServerError(
+                        f"Could not read {path} from JAR."
+                    )
+    else:
+        return http.HttpResponseServerError(f"Failed to load {path}.")
+
+    return http.HttpResponse(data, content_type='text/plain')
 
 class SetPasswordPT(PermissionTarget):
     resource = '/admin/user/password'
@@ -324,6 +370,9 @@ def set_user_agents(request, userid: int):
             pk__in=new_agentids).update(specifyuser_id=userid)
 
         # check for multiple agents assigned to the user
+        # NOTE: This is too aggressive (and inefficient) of a test.
+        # By the time we are here, we can just check if the current agents (in new_agentids)
+        # belong to the same division...
         cursor.execute(
             """select divisionid, a1.agentid, a2.agentid
             from agent a1 join agent a2 using (specifyuserid, divisionid)
@@ -494,6 +543,8 @@ class ReplaceRecordPT(PermissionTarget):
 def record_merge(
     request: http.HttpRequest,
     model_name: str,
+    # This is actually of type str.
+    # TODO: Change below to str.
     new_model_id: int
 ) -> Union[http.HttpResponse, http.JsonResponse]:
     """Replaces all the foreign keys referencing the old record IDs
@@ -713,13 +764,20 @@ def merging_status(request, merge_id: int) -> http.HttpResponse:
     },
 })
 @require_POST
-def abort_merge_task(request, merge_id: int) -> http.HttpResponse:
+def abort_merge_task(
+    request,
+    # The below type is of str (and not an int)
+    merge_id: int
+    ) -> http.HttpResponse:
     "Aborts the merge task currently running and matching the given merge/task ID"
 
+    # BUG: This should not be a .get. It should instead be something like .filter(...).first()
+    # Currently, it is a 500 error (because .get() fails when no Spmerging found)
     merge = Spmerging.objects.get(taskid=merge_id)
     if merge is None:
         return http.HttpResponseNotFound(f'The merge task id is not found: {merge_id}')
 
+    # This condition is not possible.
     if merge.taskid is None:
         return http.JsonResponse(None, safe=False)
 
@@ -889,7 +947,7 @@ def upload_locality_set(request: http.HttpRequest):
     return http.JsonResponse(result, status=201 if run_in_background else 200, safe=False)
 
 
-def start_locality_set_background(collection, specify_user, agent, column_headers: List[str], data: List[List[str]], create_recordset: bool = False, parse_only: bool = False) -> str:
+def start_locality_set_background(collection, specify_user, agent, column_headers: list[str], data: list[list[str]], create_recordset: bool = False, parse_only: bool = False) -> str:
     task_id = str(uuid4())
     args = [collection.id, column_headers, data]
     if not parse_only:
@@ -915,7 +973,7 @@ def start_locality_set_background(collection, specify_user, agent, column_header
     return task.id
 
 
-def upload_locality_set_foreground(collection, specify_user, agent, column_headers: List[str], data: List[List[str]], create_recordset: bool):
+def upload_locality_set_foreground(collection, specify_user, agent, column_headers: list[str], data: list[list[str]], create_recordset: bool):
     result = _upload_locality_set(collection, column_headers, data)
 
     if result["type"] == 'ParseError':
@@ -1351,15 +1409,17 @@ def parse_locality_set(request: http.HttpRequest):
     data = request_data["data"]
     run_in_background = request_data.get("runInBackground", False)
     if not run_in_background:
+        # BUG?: The result could be list of named tuples. Need to serialize them.
         status, result = parse_locality_set_foreground(
             request.specify_collection, column_headers, data)
     else:
         status, result = 201, start_locality_set_background(
             request.specify_collection, request.specify_user, request.specify_user_agent, column_headers, data, False, True)
+
     return http.JsonResponse(result, status=status, safe=False)
 
 
-def parse_locality_set_foreground(collection, column_headers: List[str], data: List[List[str]]) -> Tuple[int, Dict[str, Any]]:
+def parse_locality_set_foreground(collection, column_headers: list[str], data: list[list[str]]) -> tuple[int, dict[str, Any]]:
     parsed, errors = _parse_locality_set(
         collection, column_headers, data)
 
@@ -1367,3 +1427,161 @@ def parse_locality_set_foreground(collection, column_headers: List[str], data: L
         return 422, errors
 
     return 200, parsed
+
+
+# check if user is new by looking the presence of institution
+def is_new_user(request):
+    is_new_user = len(spmodels.Institution.objects.all()) == 0
+    return http.JsonResponse(is_new_user, safe=False)
+
+@login_maybe_required
+@require_POST
+def catalog_number_for_sibling(request: http.HttpRequest):
+    """
+    Returns the catalog number of the primary CO of a COG if one is present 
+    """
+    try:
+        request_data = json.loads(request.body)
+        object_id = request_data.get('id')
+        provided_catalog_number = request_data.get('catalognumber')
+    except json.JSONDecodeError:
+        return http.JsonResponse({'error': 'Invalid JSON body.'}, status=400)
+
+    if object_id is None:
+        return http.JsonResponse({'error': "'id' field is required."}, status=400)
+
+    if provided_catalog_number is not None:
+        return http.JsonResponse(None, safe=False)
+
+    try:
+        # Find the join record for the requesting object and its parent group ID
+        requesting_cojo = spmodels.Collectionobjectgroupjoin.objects.filter(
+            childco_id=object_id
+        ).values('parentcog_id').first()
+
+        if not requesting_cojo:
+            return http.JsonResponse(None, safe=False)
+
+        parent_cog_id = requesting_cojo['parentcog_id']
+
+        primary_cojo = spmodels.Collectionobjectgroupjoin.objects.filter(
+            parentcog_id=parent_cog_id,
+            isprimary=True
+        ).select_related('childco').first()
+
+        # Extract the catalog number if a primary sibling CO exists
+        primary_catalog_number = None
+        if primary_cojo and primary_cojo.childco:
+            primary_catalog_number = primary_cojo.childco.catalognumber
+
+        return http.JsonResponse(primary_catalog_number, safe=False)
+
+    except Exception as e:
+        print(f"Error processing request: {e}")
+        return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)                  
+                                
+
+@login_maybe_required
+@require_POST
+def catalog_number_from_parent(request: http.HttpRequest):
+    """
+    Returns the catalog number of the parent component
+    """
+    try:
+        request_data = json.loads(request.body)
+        object_id = request_data.get('id')
+        provided_catalog_number = request_data.get('catalognumber')
+    except json.JSONDecodeError:
+        return http.JsonResponse({'error': 'Invalid JSON body.'}, status=400)
+
+    if object_id is None:
+        return http.JsonResponse({'error': "'id' field is required."}, status=400)
+
+    if provided_catalog_number is not None:
+        return http.JsonResponse(None, safe=False)
+
+    try:
+        # Get the child CO
+        child = spmodels.Collectionobject.objects.get(id=object_id)
+
+        # Get the parent CO
+        parent = child.componentParent
+
+        if parent and parent.catalognumber:
+            return http.JsonResponse(parent.catalognumber, safe=False)
+        else:
+            return http.JsonResponse({'error': 'Parent or parent catalog number not found.'}, status=404)
+
+    except Exception as e:
+        print(f"Error processing request: {e}")
+        return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)  
+
+
+@login_maybe_required
+@require_POST
+def series_autonumber_range(request: http.HttpRequest):
+    """
+    Returns a list of autonumbered values given a range.
+    Used for series data entry on Collection Objects.
+    """
+    request_data = json.loads(request.body)
+    range_start = request_data.get('rangestart')
+    range_end = request_data.get('rangeend')
+    table_name = request_data.get('tablename')
+    field_name = request_data.get('fieldname')
+    formatter_name = request_data.get('formattername')
+    
+    formatter = get_uiformatter_by_name(request.specify_collection, request.specify_user, formatter_name)
+    
+    try: 
+        range_start_parsed = formatter.parse(range_start)
+        assert not formatter.needs_autonumber(range_start_parsed)
+        canonicalized_range_start = formatter.canonicalize(range_start_parsed)
+    except:
+        return http.HttpResponseBadRequest('Range start does not match format.')
+    try:
+        range_end_parsed = formatter.parse(range_end)
+        assert not formatter.needs_autonumber(range_end_parsed)
+        canonicalized_range_end = formatter.canonicalize(range_end_parsed)
+    except:
+        return http.HttpResponseBadRequest('Range end does not match format.')
+    
+    if canonicalized_range_end <= canonicalized_range_start:
+        return http.HttpResponseBadRequest(f'Range end must be greater than range start.')
+
+    try:
+        # Repeatedly autonumber until the end is reached.
+        limit = 500
+        values = [canonicalized_range_start]
+        current_value = values[0]
+        if request_data.get('skipstartnumber'):
+            # The first value can be optionally excluded/skipped.
+            # Needed since series entry currently relies on the first record being saved first.
+            values = []
+        while current_value < canonicalized_range_end:
+            current_value = ''.join(formatter.fill_vals_after(current_value))
+            values.append(current_value)
+            if len(values) >= limit:
+                return http.JsonResponse({
+                    'values': [],
+                    'error': 'LimitExceeded',
+                })
+        
+        # Check if any existing records use the values.
+        # Not garanteed to be accurate at the time of saving, just serves as a warning for the frontend.
+        table = get_model(table_name)
+        existing_records = table.objects.filter(**{f'{field_name}__in': values, 'collection': request.specify_collection})
+        existing_values = list(existing_records.values_list(field_name, flat=True))
+
+        if len(existing_values) > 0:
+            return http.JsonResponse({
+                'values': values,
+                'existing': existing_values,
+                'error': 'ExistingNumbers',
+            })
+
+        return http.JsonResponse({
+            'values': values,
+        })
+    except Exception as e:
+        return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)  
