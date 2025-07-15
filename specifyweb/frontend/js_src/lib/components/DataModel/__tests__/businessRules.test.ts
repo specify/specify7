@@ -234,10 +234,12 @@ describe('Collection Object business rules', () => {
       expect(result.current[0]).toStrictEqual([]);
     });
 
-    // FEATURE: Support collection business logic on initializiation again.
-    // These were first introduced in
-    // https://github.com/specify/specify7/pull/6581, but removed due to
-    // https://github.com/specify/specify7/issues/7069
+    /*
+     * FEATURE: Support collection business logic on initializiation again.
+     * These were first introduced in
+     * https://github.com/specify/specify7/pull/6581, but removed due to
+     * https://github.com/specify/specify7/issues/7069
+     */
     test.skip('CollectionObject -> determinations: determinations on initializtion is current by default', () => {
       // We don't directly use the base because the determination is marked as current by default
       const collectionObject = new tables.CollectionObject.Resource({
@@ -393,10 +395,12 @@ describe('CollectionObjectGroup business rules', () => {
   });
 });
 
-// FEATURE: Support collection business logic on initializiation again.
-// These were first introduced in
-// https://github.com/specify/specify7/pull/6581, but removed due to
-// https://github.com/specify/specify7/issues/7069
+/*
+ * FEATURE: Support collection business logic on initializiation again.
+ * These were first introduced in
+ * https://github.com/specify/specify7/pull/6581, but removed due to
+ * https://github.com/specify/specify7/issues/7069
+ */
 describe.skip('Dependent Collections isPrimary', () => {
   const testCases: RA<
     readonly [parentTable: keyof Tables, table: string, fieldName: string]
