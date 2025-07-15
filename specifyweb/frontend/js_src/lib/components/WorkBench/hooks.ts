@@ -167,7 +167,7 @@ export function useHotHooks({
         .filter(
           ([, property]) =>
             (property as number) < workbench.dataset.columns.length
-      );
+        );
       if (
         filteredChanges.length === unfilteredChanges.length ||
         workbench.hot === undefined
