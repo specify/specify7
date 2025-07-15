@@ -25,11 +25,9 @@ def remove_0029_schema_config_fields(apps, schema_editor):
                     container=container,
                     name=field_name.lower()
                 )
-                for item in items:
-                    # Also clean associated localized names/descriptions
-                    Splocaleitemstr.objects.filter(itemdesc_id=item.id).delete()
-                    Splocaleitemstr.objects.filter(itemname_id=item.id).delete()
-                    item.delete()
+                Splocaleitemstr.objects.filter(itemdesc__in=items).delete()
+                Splocaleitemstr.objects.filter(itemname__in=items).delete()
+                items.delete()
 
 def create_table_schema_config_with_defaults(apps, schema_editor):
     Discipline = specify_apps.get_model('specify', 'Discipline')
