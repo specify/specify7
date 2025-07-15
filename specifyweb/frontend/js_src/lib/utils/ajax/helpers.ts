@@ -70,9 +70,13 @@ export function extractAppResourceId(url: string, response: Response): void {
 
 export const getAppResourceUrl = (
   name: string,
-  quiet: 'quiet' | undefined = undefined
+  // REFACTOR: Why is this a string? Why not boolean?
+  quiet: 'quiet' | undefined = undefined,
+  additionalDefault: boolean = false
 ): string =>
   formatUrl('/context/app.resource', {
     name,
+    // BUG: backend expects quiet to be a boolean rather than an empty string.
     quiet: quiet === 'quiet' ? '' : undefined,
+    additionaldefault: additionalDefault ? 'true' : undefined,
   });
