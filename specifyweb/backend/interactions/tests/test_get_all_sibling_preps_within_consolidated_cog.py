@@ -1,8 +1,8 @@
-from specifyweb.interactions.cog_preps import (
+from specifyweb.backend.interactions.cog_preps import (
     get_all_sibling_preps_within_consolidated_cog,
 )
 
-from specifyweb.interactions.tests.test_cog_consolidated_prep_sibling_context import (
+from specifyweb.backend.interactions.tests.test_cog_consolidated_prep_sibling_context import (
     TestCogConsolidatedPrepSiblingContext,
 )
 from specifyweb.specify.models import (

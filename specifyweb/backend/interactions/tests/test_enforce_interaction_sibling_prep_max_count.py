@@ -1,5 +1,5 @@
-from specifyweb.interactions.cog_preps import enforce_interaction_sibling_prep_max_count
-from specifyweb.interactions.tests.test_cog_consolidated_prep_sibling_context import (
+from specifyweb.backend.interactions.cog_preps import enforce_interaction_sibling_prep_max_count
+from specifyweb.backend.interactions.tests.test_cog_consolidated_prep_sibling_context import (
     TestCogConsolidatedPrepSiblingContext,
 )
 from specifyweb.specify.api import obj_to_data

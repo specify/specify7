@@ -1,5 +1,5 @@
-from specifyweb.interactions.cog_preps import add_consolidated_sibling_co_ids
-from specifyweb.interactions.tests.test_cog_consolidated_prep_context import (
+from specifyweb.backend.interactions.cog_preps import add_consolidated_sibling_co_ids
+from specifyweb.backend.interactions.tests.test_cog_consolidated_prep_context import (
     TestCogConsolidatedPrepContext,
 )
 from specifyweb.specify.models import (
