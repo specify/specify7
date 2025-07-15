@@ -4,7 +4,7 @@ from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Literal, T
 
 from django.db import transaction, IntegrityError
 
-from specifyweb.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
 from specifyweb.specify.func import Func
 from specifyweb.specify.field_change_info import FieldChangeInfo
