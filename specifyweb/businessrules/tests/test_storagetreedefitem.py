@@ -5,7 +5,7 @@ from specifyweb.specify import models
 
 class StorageTreeDefItemTests(ApiTests):
     def setUp(self):
-        super(StorageTreeDefItemTests, self).setUp()
+        super().setUp()
 
         self.storagetreedef = models.Storagetreedef.objects.create(
             name="Test Storage tree def")

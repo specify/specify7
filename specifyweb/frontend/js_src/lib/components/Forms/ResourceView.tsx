@@ -249,6 +249,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   ) : undefined;
 
   const deleteButton =
+    !isReadOnly &&
     !isDependent &&
     !isSubForm &&
     typeof resource === 'object' &&

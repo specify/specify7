@@ -139,12 +139,12 @@ class UnUploadTests(UploadTestsBase):
             (400, "Greene"),
             (400, "Christian"),
             (400, "Johnson"),
-        }, set((record.rankid, record.name) for record in get_table('Geography').objects.all()))
+        }, {(record.rankid, record.name) for record in get_table('Geography').objects.all()})
 
         for result in reversed(results):
             unupload_record(result, self.agent)
 
-        self.assertEqual(set(), set((record.rankid, record.name) for record in get_table('Geography').objects.all()))
+        self.assertEqual(set(), {(record.rankid, record.name) for record in get_table('Geography').objects.all()})
 
         self.assertEqual(9,
                          get_table('Spauditlog').objects.filter(

@@ -1,4 +1,3 @@
-
 from unittest import skip
 from django.db.models import ProtectedError
 
@@ -7,7 +6,7 @@ from specifyweb.specify.tests.test_api import ApiTests
 
 class StorageTests(ApiTests):
     def setUp(self):
-        super(StorageTests, self).setUp()
+        super().setUp()
 
         self.storagetreedef = models.Storagetreedef.objects.create(
             name="Test Storage tree def")

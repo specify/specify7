@@ -96,6 +96,7 @@ function Wrapped({
   readonly onChange?: (props: {
     readonly fields: RA<SerializedResource<SpQueryField>>;
     readonly isDistinct: boolean | null;
+    readonly isSeries: boolean | null;
   }) => void;
 }): JSX.Element {
   const [query, setQuery] = useResource(queryResource);
@@ -160,8 +161,9 @@ function Wrapped({
     handleChange?.({
       fields: unParseQueryFields(state.baseTableName, state.fields),
       isDistinct: query.selectDistinct,
+      isSeries: query.smushed,
     });
-  }, [state, query.selectDistinct]);
+  }, [state, query.selectDistinct, query.smushed]);
 
   /**
    * If tried to save a query, enforce the field length limit for the
@@ -297,6 +299,15 @@ function Wrapped({
 
   const resultsRef = React.useRef<RA<QueryResultRow | undefined> | undefined>(
     undefined
+  );
+
+  const showSeries = React.useMemo(
+    () =>
+      table.name === 'CollectionObject' &&
+      state.fields.some(
+        (field) => field.mappingPath[0] === 'catalogNumber' && field.isDisplay
+      ),
+    [state, table.name]
   );
 
   return treeRanksLoaded ? (
@@ -559,7 +570,9 @@ function Wrapped({
               />
               <QueryToolbar
                 isDistinct={query.selectDistinct ?? false}
+                isSeries={query.smushed ?? false}
                 showHiddenFields={showHiddenFields}
+                showSeries={showSeries}
                 tableName={table.name}
                 onRunCountOnly={(): void => runQuery('count')}
                 onSubmitClick={(): void =>
@@ -574,6 +587,12 @@ function Wrapped({
                   })
                 }
                 onToggleHidden={setShowHiddenFields}
+                onToggleSeries={(): void =>
+                  setQuery({
+                    ...query,
+                    smushed: !(query.smushed ?? false),
+                  })
+                }
               />
             </div>
             {hasPermission('/querybuilder/query', 'execute') && (
@@ -598,6 +617,7 @@ function Wrapped({
                         fields={state.fields}
                         query={queryResource}
                         recordSetId={recordSet?.id}
+                        saveRequired={saveRequired}
                       />
                     )}
                     {query.countOnly ? undefined : (

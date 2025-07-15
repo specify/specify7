@@ -14,7 +14,16 @@ urlpatterns = [
     re_path(r'^specify/merge/abort/(?P<merge_id>[0-9a-fA-F-]+)/$', views.abort_merge_task),
 
     # cat num for siblings
-    re_path(r'^specify/catalog_number_for_sibling/(?P<model>\w+)/(?P<id>\d+)/$', views.catalog_number_for_sibling),
+    re_path(r'^specify/catalog_number_for_sibling/$', views.catalog_number_for_sibling),
+
+    # cat num for parent
+    re_path(r'^specify/catalog_number_from_parent/$', views.catalog_number_from_parent), 
+
+    # retrieve auto numbered fields
+    re_path(r'^specify/series_autonumber_range', views.series_autonumber_range),
+
+    # check if the user is new at login
+    re_path(r'^specify/is_new_user/$', views.is_new_user),
 
     # the main business data API
     re_path(r'^specify_schema/openapi.json$', schema.openapi),

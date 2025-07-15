@@ -94,6 +94,7 @@ export const datasetVariants = {
     canTransfer: () => hasPermission('/batch_edit/dataset', 'transfer'),
     canDo: () => hasPermission('/batch_edit/dataset', 'commit'),
     canUndo: () =>
+      !userPreferences.get('batchEdit', 'editor', 'enableRelationships') &&
       userPreferences.get('batchEdit', 'editor', 'showRollback') &&
       hasPermission('/batch_edit/dataset', 'rollback'),
     canValidate: () => hasPermission('/batch_edit/dataset', 'validate'),
