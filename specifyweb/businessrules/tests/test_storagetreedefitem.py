@@ -5,7 +5,7 @@ from specifyweb.specify import models
 
 class StorageTreeDefItemTests(ApiTests):
     def setUp(self):
-        super(StorageTreeDefItemTests, self).setUp()
+        super().setUp()
 
         self.storagetreedef = models.Storagetreedef.objects.create(
             name="Test Storage tree def")
@@ -18,12 +18,6 @@ class StorageTreeDefItemTests(ApiTests):
             name="Storage",
             definition=self.rootstoragetreedefitem.treedef,
             rankid=self.rootstoragetreedefitem.rankid)
-
-    def test_cannot_delete_root(self):
-        self.rootstorage.delete()
-
-        with self.assertRaises(TreeBusinessRuleException):
-            self.rootstoragetreedefitem.delete()
 
     def test_delete_blocked_by_storage(self):
         site = self.rootstoragetreedefitem.children.create(

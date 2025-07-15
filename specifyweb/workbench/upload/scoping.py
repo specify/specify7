@@ -1,16 +1,21 @@
-from typing import Dict, Any, Optional, Tuple, Callable, Union, cast
+from functools import reduce
+from typing import Dict, Any, Optional, Tuple, Callable, TypedDict, Union, cast, List
 
-from specifyweb.specify.datamodel import datamodel, Table
+from specifyweb.specify.datamodel import datamodel, Table, is_tree_table
+from specifyweb.specify.func import CustomRepr
 from specifyweb.specify.load_datamodel import DoesNotExistError
 from specifyweb.specify import models
+from specifyweb.specify.tree_utils import get_default_treedef
 from specifyweb.specify.uiformatters import get_uiformatter, get_catalognumber_format, UIFormatter
+from specifyweb.specify.utils import get_picklists
 from specifyweb.stored_queries.format import get_date_format
+from specifyweb.workbench.upload.predicates import SPECIAL_TREE_FIELDS_TO_SKIP
+from specifyweb.workbench.upload.scope_context import ScopeContext
 
-from .uploadable import Uploadable, ScopedUploadable
-from .upload_table import UploadTable, DeferredScopeUploadTable, ScopedUploadTable, ScopedOneToOneTable
-from .tomany import ToManyRecord, ScopedToManyRecord
+from .uploadable import Uploadable, ScopedUploadable, Row
+from .upload_table import UploadTable, ScopedUploadTable, ScopedOneToOneTable
+from .column_options import ColumnOptions, ExtendedColumnOptions
 from .treerecord import TreeRank, TreeRankRecord, TreeRecord, ScopedTreeRecord
-from .column_options import ColumnOptions, ExtendedColumnOptions, DeferredUIFormatter
 
 """ There are cases in which the scoping of records should be dependent on another record/column in a WorkBench dataset.
 
@@ -34,47 +39,57 @@ The structure of DEFERRED_SCOPING is as following:
     See .upload_plan_schema.py for how this is used
 
 """
-DEFERRED_SCOPING: Dict[Tuple[str, str], Tuple[str, str, str]] = {
-    ("Collectionrelationship", "rightside"): ('collectionreltype', 'name', 'rightsidecollection'),
-    ("Collectionrelationship", "leftside"): ('collectionreltype', 'name', 'leftsidecollection'),
-    }
+DEFERRED_SCOPING: dict[tuple[str, str], tuple[str, str, str]] = {
+    ("Collectionrelationship", "rightside"): (
+        "collectionreltype",
+        "name",
+        "rightsidecollection",
+    ),
+    ("Collectionrelationship", "leftside"): (
+        "collectionreltype",
+        "name",
+        "leftsidecollection",
+    ),
+}
 
-def scoping_relationships(collection, table: Table) -> Dict[str, int]:
-    extra_static: Dict[str, int] = {}
+def scoping_relationships(collection, table: Table) -> dict[str, int]:
+    extra_static: dict[str, int] = {}
 
     try:
-        table.get_field_strict('collectionmemberid')
-        extra_static['collectionmemberid'] = collection.id
+        table.get_field_strict("collectionmemberid")
+        extra_static["collectionmemberid"] = collection.id
     except DoesNotExistError:
         pass
 
     try:
-        table.get_relationship('collection')
-        extra_static['collection_id'] = collection.id
+        table.get_relationship("collection")
+        extra_static["collection_id"] = collection.id
     except DoesNotExistError:
         pass
 
     try:
-        table.get_relationship('discipline')
-        extra_static['discipline_id'] = collection.discipline.id
+        table.get_relationship("discipline")
+        extra_static["discipline_id"] = collection.discipline.id
     except DoesNotExistError:
         pass
 
     try:
-        table.get_relationship('division')
-        extra_static['division_id'] = collection.discipline.division.id
+        table.get_relationship("division")
+        extra_static["division_id"] = collection.discipline.division.id
     except DoesNotExistError:
         pass
 
     try:
-        table.get_relationship('institution')
-        extra_static['institution_id'] = collection.discipline.division.institution.id
+        table.get_relationship("institution")
+        extra_static["institution_id"] = collection.discipline.division.institution.id
     except DoesNotExistError:
         pass
 
     return extra_static
 
+
 AdjustToOnes = Callable[[ScopedUploadable, str], ScopedUploadable]
+
 
 def _make_one_to_one(fieldname: str, rest: AdjustToOnes) -> AdjustToOnes:
     def adjust_to_ones(u: ScopedUploadable, f: str) -> ScopedUploadable:
@@ -82,27 +97,44 @@ def _make_one_to_one(fieldname: str, rest: AdjustToOnes) -> AdjustToOnes:
             return rest(ScopedOneToOneTable(*u), f)
         else:
             return rest(u, f)
+
     return adjust_to_ones
 
 
-def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fieldname: str, _toOne: Optional[Dict[str, Uploadable]] = None) -> ExtendedColumnOptions:
-    toOne = {} if _toOne is None else _toOne
-    schema_items = models.Splocalecontaineritem.objects.filter(
-        container__discipline=collection.discipline,
-        container__schematype=0,
-        container__name=tablename.lower(),
-        name=fieldname.lower())
+def extend_columnoptions(
+        colopts: ColumnOptions, 
+        # IMPORTANT: This collection CAN be trusted. That is, even if you are in a collection relationship,
+        # it'll always point to the correct collection (so whatever you want to use it for, you can trust it.)
+        collection, 
+        tablename: str, 
+        fieldname: str, 
+        row: Optional[Row] = None,
+        toOne: Optional[dict[str, Uploadable]] = None,
+        context: Optional[ScopeContext] = None
+    ) -> ExtendedColumnOptions:
 
-    schemaitem = schema_items and schema_items[0]
-    picklistname = schemaitem and schemaitem.picklistname
+    context = context or ScopeContext()
+    toOne = toOne or {}
+    picklists, schemaitem = get_picklists(collection, tablename, fieldname)
 
-    if not isinstance(picklistname, str):
-        picklist = None
-    else:
-        picklists = models.Picklist.objects.filter(name=picklistname)
-        collection_picklists = picklists.filter(collection=collection)
-        
-        picklist = picklists[0] if len(collection_picklists) == 0 else collection_picklists[0]
+    # Picklists are already scoped by collection in get_picklists if possible
+    picklist = None if picklists is None else picklists[0]
+
+    ui_formatter = get_or_defer_formatter(collection, tablename, fieldname, row, toOne, context)
+    scoped_formatter = (
+        None if ui_formatter is None else ui_formatter.apply_scope(collection)
+    )
+
+    if tablename.lower() == "collectionobjecttype" and fieldname.lower() == "name":
+        context.cache['cotype_column'] = colopts.column
+
+    # REFACTOR: Make context always required and simply
+    date_format = context.cache['date_format']
+    date_format = get_date_format() if date_format is None else date_format
+    context.cache['date_format'] = date_format
+
+    # Technically this should contain info about cotypes but oh well
+    friendly_repr = f"{collection.collectionname}-{tablename}-{fieldname}"
 
     return ExtendedColumnOptions(
         column=colopts.column,
@@ -110,12 +142,62 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
         nullAllowed=colopts.nullAllowed,
         default=colopts.default,
         schemaitem=schemaitem,
-        uiformatter=get_or_defer_formatter(collection, tablename, fieldname, toOne),
+        # Formatters are "scoped" here, that is, all they need is a value coming directly from the row.
+        uiformatter=(None if scoped_formatter is None else CustomRepr(scoped_formatter, friendly_repr)),
         picklist=picklist,
-        dateformat=get_date_format(),
+        # caching this, since it literally makes a database hit for every row.
+        # TODO: I don't think this should belong here in the first place, should probably be in context or something
+        dateformat=date_format
     )
 
-def get_or_defer_formatter(collection, tablename: str, fieldname: str, _toOne: Dict[str, Uploadable]) -> Union[None, UIFormatter, DeferredUIFormatter]:
+
+def get_deferred_scoping(
+    key: str,
+    table_name: str,
+    uploadable: UploadTable,
+    row: dict[str, Any],
+    base_ut,
+    context: Optional[ScopeContext]
+):
+    deferred_key = (table_name, key)
+    deferred_scoping = DEFERRED_SCOPING.get(deferred_key, None)
+
+    if deferred_scoping is None:
+        return uploadable
+
+    if row:
+        related_key, filter_field, relationship_name = deferred_scoping
+        other = base_ut.toOne[related_key]
+        if not isinstance(other, UploadTable):
+            raise Exception("invalid scoping scheme!")
+        related_column_name = base_ut.toOne[related_key].wbcols[filter_field].column
+        filter_value = row[related_column_name]
+        filter_search = {filter_field: filter_value}
+        related_table = datamodel.get_table_strict(related_key)
+        # TODO: Consider caching this??
+        related = getattr(models, related_table.django_name).objects.get(
+            **filter_search
+        )
+        collection_id = getattr(related, relationship_name).id
+    else:
+        # meh, would just go to the original collection
+        collection_id = None
+
+    # don't cache anymore, since values can be dependent on rows.
+    if context is not None:
+        context.set_is_variable()
+
+    return uploadable._replace(overrideScope={"collection": collection_id})
+
+
+def get_or_defer_formatter(
+        collection, 
+        tablename: str, 
+        fieldname: str, 
+        row: Optional[Row],
+        _toOne: dict[str, Uploadable],
+        context: Optional[ScopeContext] = None,
+        ) -> Optional[UIFormatter]:
     """ The CollectionObject -> catalogNumber format can be determined by the 
     CollectionObjectType -> catalogNumberFormatName for the CollectionObject
 
@@ -125,113 +207,146 @@ def get_or_defer_formatter(collection, tablename: str, fieldname: str, _toOne: D
     See https://github.com/specify/specify7/issues/5473 
     """
     toOne = {key.lower():value for key, value in _toOne.items()}
-    if tablename.lower() == 'collectionobject' and fieldname.lower() == 'catalognumber' and 'collectionobjecttype' in toOne.keys():
+
+    formatter: Optional[UIFormatter] = None
+    if tablename.lower() == 'collectionobject' and fieldname.lower() == 'catalognumber' and 'collectionobjecttype' in toOne:
         uploadTable = toOne['collectionobjecttype']
 
-        wb_col = cast(UploadTable, uploadTable).wbcols.get('name', None) if hasattr(uploadTable, 'wbcols') else None
-        optional_col_name = None if wb_col is None else wb_col.column
-        if optional_col_name is not None: 
-            col_name = cast(str, optional_col_name)
-            formats: Dict[str, Optional[UIFormatter]] = {cot.name: get_catalognumber_format(collection, cot.catalognumberformatname, None) for cot in collection.cotypes.all()}
-            return lambda row: formats.get(row[col_name], get_uiformatter(collection, tablename, fieldname))
+        wb_col: Optional[ColumnOptions] = cast(UploadTable, uploadTable).wbcols.get('name', None)
+        co_type_cache : dict[str, Optional[UIFormatter]] = {}
+        # At this point, we are variable since we saw a co.
+        if context:
+            context.set_is_variable()
+            co_type_cache = context.cache["cotypes"].get(collection, {})
+        
+        if wb_col is not None:
+            # try deferring this expensive operation as much as possible. That is, until we see a value, don't bother fetching catalognumber formats.
+            if not co_type_cache:
+                co_type_cache = {
+                    cot.name: get_catalognumber_format(collection, cot.catalognumberformatname, None) 
+                    for cot in collection.cotypes.all()
+                }
+            if context and collection not in context.cache["cotypes"]:
+                # I guess we could 
+                context.cache["cotypes"][collection] = co_type_cache
 
-    return get_uiformatter(collection, tablename, fieldname)
+            if row:
+                # At this point, we now look at the row.
+                formatter = co_type_cache.get(row[wb_col.column]) if row[wb_col.column] is not None else None
+        
+    
+    if formatter is None:
+        # All the default cases.
+        key = (collection, tablename, fieldname)
+        if context:
+            formatter = context.cache["fields"].get(key, None)
+        
+        # cache hit failed
+        if formatter is None:
+            formatter = get_uiformatter(collection, tablename, fieldname)
+        
+        if context:
+            context.cache["fields"][key] = formatter
 
-def apply_scoping_to_uploadtable(ut: Union[UploadTable, DeferredScopeUploadTable], collection) -> ScopedUploadTable:
+    return formatter
+
+
+def apply_scoping_to_uploadtable(
+    ut: UploadTable, collection, context: Optional[ScopeContext] = None, row=None
+) -> ScopedUploadTable:
+    # IMPORTANT:
+    # before this comment, collection is untrusted and unreliable
+    # (you'd not necessarily have the correct side of a collection relationship)
+    
     table = datamodel.get_table_strict(ut.name)
-
-    adjust_to_ones = to_one_adjustments(collection, table)
+    if ut.overrideScope is not None and isinstance(ut.overrideScope["collection"], int):
+        collection = models.Collection.objects.get(id=ut.overrideScope["collection"])
     
-    if ut.overrideScope is not None and isinstance(ut.overrideScope['collection'], int):
-        collection = models.Collection.objects.filter(id=ut.overrideScope['collection']).get()
-    
+    # After this comment, collection can be trusted and is safe to use (even if you are in collection relationships)
+    to_one_fields = get_to_one_fields(collection)
+    adjuster = reduce(
+        lambda accum, curr: _make_one_to_one(curr, accum),
+        to_one_fields.get(table.name.lower(), []),
+        lambda u, f: u,
+    )
 
-    return ScopedUploadTable(
+    apply_scoping = lambda key, value: get_deferred_scoping(
+        key, table.django_name, value, row, ut, context
+    ).apply_scoping(collection, context, row)
+
+    to_ones = {
+        key: adjuster(apply_scoping(key, value), key)
+        for (key, value) in ut.toOne.items()
+    }
+
+    model = getattr(models, table.django_name)
+
+    def _backref(key):
+        return model._meta.get_field(key).remote_field.attname
+
+    to_many = {
+        key: [
+            set_order_number(i, apply_scoping(key, record), [_backref(key)])
+            for i, record in enumerate(records)
+        ]
+        for (key, records) in ut.toMany.items()
+    }
+
+    scoped_table = ScopedUploadTable(
         name=ut.name,
-        wbcols={f: extend_columnoptions(colopts, collection, table.name, f, ut.toOne) for f, colopts in ut.wbcols.items()},
-        static=static_adjustments(table, ut.wbcols, ut.static),
-        toOne={f: adjust_to_ones(u.apply_scoping(collection), f) for f, u in ut.toOne.items()},
-        toMany={f: [set_order_number(i, r.apply_scoping(collection)) for i, r in enumerate(rs)] for f, rs in ut.toMany.items()},
+        wbcols={
+            f: extend_columnoptions(colopts, collection, table.name, f, row, ut.toOne, context)
+            for f, colopts in ut.wbcols.items()
+        },
+        static=ut.static,
+        toOne=to_ones,
+        toMany=to_many,  # type: ignore
         scopingAttrs=scoping_relationships(collection, table),
         disambiguation=None,
+        # Often, we'll need to recur down to clone (nested one-to-ones). Having this entire is handy in such a case
+        to_one_fields=to_one_fields,
+        match_payload=None,
+        # Ignore stuff like parent_id and such for matching, BUT, preserve it for cloning.
+        # This is done to allow matching to different parts of the tree, but not make a faulty tree if user doesn't select values (during clone).
+        strong_ignore=(SPECIAL_TREE_FIELDS_TO_SKIP if is_tree_table(table) else []),
     )
 
-def to_one_adjustments(collection, table: Table) -> AdjustToOnes:
-    adjust_to_ones: AdjustToOnes = lambda u, f: u
-    if collection.isembeddedcollectingevent and table.name == 'CollectionObject':
-        adjust_to_ones = _make_one_to_one('collectingevent', adjust_to_ones)
+    return scoped_table
 
-    elif collection.discipline.ispaleocontextembedded and table.name.lower() == collection.discipline.paleocontextchildtable.lower():
-        adjust_to_ones = _make_one_to_one('paleocontext', adjust_to_ones)
 
-    if table.name == 'CollectionObject':
-        adjust_to_ones = _make_one_to_one('collectionobjectattribute', adjust_to_ones)
-    if table.name == 'CollectingEvent':
-        adjust_to_ones = _make_one_to_one('collectingeventattribute', adjust_to_ones)
-    if table.name == 'Attachment':
-        adjust_to_ones = _make_one_to_one('attachmentimageattribute', adjust_to_ones)
-    if table.name == 'CollectingTrip':
-        adjust_to_ones = _make_one_to_one('collectingtripattribute', adjust_to_ones)
-    if table.name == 'Preparation':
-        adjust_to_ones = _make_one_to_one('preparationattribute', adjust_to_ones)
+def get_to_one_fields(collection) -> dict[str, list["str"]]:
+    fields_collection = {
+        "collectionobject": [
+            *(["collectingevent"] if collection.isembeddedcollectingevent else []),
+            "collectionobjectattribute",
+        ],
+        "collectingevent": ["collectingeventattribute"],
+        "attachment": ["attachmentimageattribute"],
+        "collectingtrip": ["collectingtripattribute"],
+        "preparation": ["preparationattribute"],
+    }
+   
+    if collection.discipline.ispaleocontextembedded:
+        child = collection.discipline.paleocontextchildtable.lower()
+        # Done this way because child could be collectionobject and end up overriding the key in the dict above
+        fields_collection[child] = [*fields_collection.get(child, []), "paleocontext"]
+ 
+    return fields_collection
 
-    return adjust_to_ones
 
-def static_adjustments(table: Table, wbcols: Dict[str, ColumnOptions], static: Dict[str, Any]) -> Dict[str, Any]:
-    # not sure if this is the right place for this, but it will work for now.
-    if table.name == 'Agent' and 'agenttype' not in wbcols and 'agenttype' not in static:
-        static = {'agenttype': 1, **static}
-    elif table.name == 'Determination' and 'iscurrent' not in wbcols and 'iscurrent' not in static:
-        static = {'iscurrent': True, **static}
-    else:
-        static = static
-    return static
-
-def set_order_number(i: int, tmr: ScopedToManyRecord) -> ScopedToManyRecord:
+def set_order_number(
+    i: int, tmr: ScopedUploadTable, to_ignore: list[str]
+) -> ScopedUploadTable:
     table = datamodel.get_table_strict(tmr.name)
-    if table.get_field('ordernumber'):
-        return tmr._replace(scopingAttrs={**tmr.scopingAttrs, 'ordernumber': i})
-    return tmr
+    if table.get_field("ordernumber"):
+        return tmr._replace(scopingAttrs={**tmr.scopingAttrs, "ordernumber": i})
+    return tmr._replace(strong_ignore=[*tmr.strong_ignore, *to_ignore])
 
-def apply_scoping_to_tomanyrecord(tmr: ToManyRecord, collection) -> ScopedToManyRecord:
-    table = datamodel.get_table_strict(tmr.name)
 
-    adjust_to_ones = to_one_adjustments(collection, table)
-
-    return ScopedToManyRecord(
-        name=tmr.name,
-        wbcols={f: extend_columnoptions(colopts, collection, table.name, f, tmr.toOne) for f, colopts in tmr.wbcols.items()},
-        static=static_adjustments(table, tmr.wbcols, tmr.static),
-        toOne={f: adjust_to_ones(u.apply_scoping(collection), f) for f, u in tmr.toOne.items()},
-        scopingAttrs=scoping_relationships(collection, table),
-    )
-
-def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
+def apply_scoping_to_treerecord(tr: TreeRecord, collection, context: Optional[ScopeContext] = None) -> ScopedTreeRecord:
     table = datamodel.get_table_strict(tr.name)
 
-    treedef = None
-    if table.name == 'Taxon':
-        if treedef is None:
-            treedef = collection.discipline.taxontreedef
-
-    elif table.name == 'Geography':
-        treedef = collection.discipline.geographytreedef
-
-    elif table.name == 'LithoStrat':
-        treedef = collection.discipline.lithostrattreedef
-
-    elif table.name == 'GeologicTimePeriod':
-        treedef = collection.discipline.geologictimeperiodtreedef
-
-    elif table.name == 'Storage':
-        treedef = collection.discipline.division.institution.storagetreedef
-
-    elif table.name == 'TectonicUnit':
-        treedef = collection.discipline.tectonicunittreedef
-
-    else:
-        raise Exception(f'unexpected tree type: {table.name}')
-
+    treedef = get_default_treedef(table, collection)
     if treedef is None:
         raise ValueError(f"Could not find treedef for table {table.name}")
 
@@ -239,17 +354,22 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
     treedef_ranks = [tdi.name for tdi in treedefitems]
     for rank in tr.ranks:
         is_valid_rank = (hasattr(rank, 'rank_name') and rank.rank_name in treedef_ranks) or (rank in treedef_ranks) # type: ignore
-        if not is_valid_rank and isinstance(rank, TreeRankRecord) and not rank.check_rank(table.name):
+        if not is_valid_rank and (isinstance(rank, TreeRankRecord) and not rank.validate_rank(tr.name)):
             raise Exception(f'"{rank}" not among {table.name} tree ranks: {treedef_ranks}')
 
-    root = list(getattr(models, table.name.capitalize()).objects.filter(definitionitem=treedefitems[0])[:1]) # assume there is only one
+    root = list(
+        getattr(models, table.name.capitalize()).objects.filter(
+            definitionitem=treedefitems[0]
+        )[:1]
+    )  # assume there is only one
 
-    scoped_ranks: Dict[TreeRankRecord, Dict[str, ExtendedColumnOptions]] = {
+    scoped_ranks: dict[TreeRankRecord, dict[str, ExtendedColumnOptions]] = {
         (
             TreeRank.create(
                 r, table.name, treedef.id if treedef else None
             ).tree_rank_record()
             if isinstance(r, str)
+            else r._replace(treedef_id=treedef.id) if r.treedef_id is None  # Adjust treeid for parsed JSON plans
             else r
         ): {
             f: extend_columnoptions(colopts, collection, table.name, f)
@@ -258,6 +378,8 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
         for r, cols in tr.ranks.items()
     }
 
+    scoped_cotypes = models.Collectionobjecttype.objects.filter(collection=collection)
+
     return ScopedTreeRecord(
         name=tr.name,
         ranks=scoped_ranks,
@@ -265,4 +387,7 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection) -> ScopedTreeRecord:
         treedefitems=treedefitems,
         root=root[0] if root else None,
         disambiguation={},
+        batch_edit_pack=None,
+        scoped_cotypes=scoped_cotypes,
+        cotype_column=context.cache['cotype_column'] if context else None
     )
