@@ -5,11 +5,11 @@ from typing import (
     NamedTuple,
     Optional,
     Any,
-    Generator,
     List,
     Tuple,
     Union,
 )
+from collections.abc import Generator
 from typing_extensions import TypedDict
 
 from django.db.models import QuerySet, Q, F, Model, Exists, OuterRef
@@ -21,7 +21,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from specifyweb.workbench.upload.clone import GENERIC_FIELDS_TO_SKIP
 
-Filter = Dict[str, Any]
+Filter = dict[str, Any]
 
 Value = Optional[Union[str, int, F]]
 
@@ -33,7 +33,7 @@ class ToRemoveMatchee(TypedDict):
     remove: Optional[Q]
 
 
-ToRemoveNode = Dict[str, List[ToRemoveMatchee]]
+ToRemoveNode = dict[str, list[ToRemoveMatchee]]
 
 get_model = lambda model_name: getattr(spmodels, model_name.lower().capitalize())
 
@@ -54,7 +54,7 @@ class ToRemove(NamedTuple):
 
 
 class DjangoPredicates(NamedTuple):
-    filters: Dict[str, Union[Value, List[Any]]] = {}  # type: ignore
+    filters: dict[str, Union[Value, list[Any]]] = {}  # type: ignore
     to_remove: Optional[ToRemove] = None
 
     def reduce_for_to_one(self):
@@ -114,7 +114,7 @@ class DjangoPredicates(NamedTuple):
         get_unique_alias: Generator[str, None, None],
         current_model: Model,
         path: Optional[str] = None,
-        aliases: List[Tuple[str, str]] = [],
+        aliases: list[tuple[str, str]] = [],
         to_remove_node: "ToRemoveNode" = {},
     ):
         _get_field_name = lambda raw_name: (
@@ -149,7 +149,7 @@ class DjangoPredicates(NamedTuple):
             assert new_model is not None
 
             def _reduce(
-                previous: Tuple[QuerySet, ToRemoveNode, List[Any]],
+                previous: tuple[QuerySet, ToRemoveNode, list[Any]],
                 current: DjangoPredicates,
             ):
                 # Don't do anything
@@ -216,8 +216,8 @@ class DjangoPredicates(NamedTuple):
             return _reduce
 
         def _reduce_by_rel(
-            accum: Tuple[QuerySet, ToRemoveNode],
-            by_rels: List[DjangoPredicates],
+            accum: tuple[QuerySet, ToRemoveNode],
+            by_rels: list[DjangoPredicates],
             rel_name: str,
         ):
             modified_query, modified_to_remove, _ = reduce(
@@ -287,7 +287,7 @@ def canonicalize_remove_node(node: ToRemoveNode) -> Q:
     return ~all_or
 
 
-def _map_matchee(matchee: List[ToRemoveMatchee], model_name: str) -> Exists:
+def _map_matchee(matchee: list[ToRemoveMatchee], model_name: str) -> Exists:
     model: Model = get_model(model_name)
     qs = [Q(**match["filter_on"]) for match in matchee]
     qs_or = Func.make_ors(qs)
@@ -340,7 +340,7 @@ def safe_fetch(model: Model, filters, version):
 
 def resolve_reference_attributes(
     fields_to_skip, model, reference_record
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
 
     if reference_record is None:
         return {}

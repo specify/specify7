@@ -5,12 +5,12 @@ Tests for api.py
 import json
 from unittest import skip
 from datetime import datetime
-from django.db.models import Max
-from django.test import TestCase, Client
+from django.db.models import Max, QuerySet
+from django.test import TestCase, Client, TransactionTestCase
 
 from specifyweb.permissions.models import UserPolicy
 from specifyweb.specify import api, models, scoping
-from specifyweb.businessrules.uniqueness_rules import UNIQUENESS_DISPATCH_UID, check_unique, apply_default_uniqueness_rules
+from specifyweb.businessrules.uniqueness_rules import UNIQUENESS_DISPATCH_UID, validate_unique, apply_default_uniqueness_rules
 from specifyweb.businessrules.rules.cogtype_rules import SYSTEM_COGTYPES_PICKLIST
 from specifyweb.businessrules.orm_signal_handler import connect_signal, disconnect_signal
 from specifyweb.specify.model_extras import Specifyuser
@@ -37,6 +37,7 @@ from specifyweb.specify.models import (
     Accession,
     Picklist,
     Picklistitem,
+    Preparation
 )
 
 def get_table(name: str):
@@ -45,7 +46,7 @@ def get_table(name: str):
 class MainSetupTearDown:
     def setUp(self):
         disconnect_signal('pre_save', None, dispatch_uid=UNIQUENESS_DISPATCH_UID)
-        connect_signal('pre_save', check_unique, None, dispatch_uid=UNIQUENESS_DISPATCH_UID)
+        connect_signal('pre_save', validate_unique, None, dispatch_uid=UNIQUENESS_DISPATCH_UID)
         self.institution = Institution.objects.create(
             name='Test Institution',
             isaccessionsglobal=True,
@@ -77,6 +78,7 @@ class MainSetupTearDown:
             geographytreedef=self.geographytreedef,
             division=self.division,
             datatype=self.datatype,
+            type='paleobotany'
         )
 
         apply_default_uniqueness_rules(self.discipline)
@@ -94,12 +96,7 @@ class MainSetupTearDown:
             name="testuser",
             password="205C0D906445E1C71CA77C6D714109EB6D582B03A5493E4C")  # testuser
 
-        UserPolicy.objects.create(
-            collection=None,
-            specifyuser=self.specifyuser,
-            resource="%",
-            action="%",
-        )
+        self._add_user_policy(self.specifyuser)
 
         self.agent = Agent.objects.create(
             agenttype=0,
@@ -135,9 +132,48 @@ class MainSetupTearDown:
             obj.save()
 
         self._update = _update
+    
+    def _create_prep_type(self):
+        self.prep_type = Preptype.objects.create(
+                name="testPrepType",
+                isloanable=False,
+                collection=self.collection,
+            )
 
+    def _create_prep(self, co, prep_list, **prep_kwargs):
+
+        if 'preptype' not in prep_kwargs:
+            prep_kwargs['preptype'] = self.prep_type
+
+        prep = Preparation.objects.create(
+            collectionobject=co, **prep_kwargs
+        )
+        if prep_list is not None:
+            prep_list.append(prep)
+        return prep
+
+    def _assertStatusCodeEqual(self, response, status_code):
+        self.assertEqual(response.status_code, status_code, f"ERROR: {response.content.decode()}")
+
+    def _assertContentEqual(self, response, expected_content):
+        self.assertEqual(response.content.decode(), expected_content)
+
+    def _add_user_policy(self, specifyuser):
+        UserPolicy.objects.create(
+                collection=None,
+                specifyuser=specifyuser,
+                resource="%",
+                action="%",
+            )
+
+    # TODO: Replace all such tests with below.
+    def assertExists(self, queryset: QuerySet):
+        self.assertTrue(queryset.exists(), "Record does not exist!")
 
 class ApiTests(MainSetupTearDown, TestCase): pass
+
+# This test gets used when there are some transactional behavior that needs to be tested
+class ApiTransactionTests(MainSetupTearDown, TransactionTestCase): pass
 
 skip_perms_check = lambda x: None
 
@@ -184,7 +220,7 @@ class SimpleApiTests(ApiTests):
 
 class RecordSetTests(ApiTests):
     def setUp(self):
-        super(RecordSetTests, self).setUp()
+        super().setUp()
         self.recordset = Recordset.objects.create(
             collectionmemberid=self.collection.id,
             dbtableid=Collectionobject.specify_model.tableId,
@@ -247,18 +283,18 @@ class RecordSetTests(ApiTests):
         for id in ids:
             self.recordset.recordsetitems.create(recordid=id)
 
-        counts = set(
-            (self.recordset.recordsetitems.filter(recordid=id).count() for id in ids)
-        )
-        self.assertEqual(counts, set([1]))
+        counts = {
+            self.recordset.recordsetitems.filter(recordid=id).count() for id in ids
+        }
+        self.assertEqual(counts, {1})
 
         for co in self.collectionobjects:
             co.delete()
 
-        counts = set(
-            (self.recordset.recordsetitems.filter(recordid=id).count() for id in ids)
-        )
-        self.assertEqual(counts, set([0]))
+        counts = {
+            self.recordset.recordsetitems.filter(recordid=id).count() for id in ids
+        }
+        self.assertEqual(counts, {0})
 
     def test_get_resource_with_recordset_info(self):
         data = api.get_resource(
@@ -529,7 +565,7 @@ class InlineApiTests(ApiTests):
         obj = api.create_obj(self.collection, self.agent, "collectionobject", data)
         co = models.Collectionobject.objects.get(id=obj.id)
         self.assertEqual(
-            set(co.determinations.values_list("number1", flat=True)), set((1, 2))
+            set(co.determinations.values_list("number1", flat=True)), {1, 2}
         )
         self.assertEqual(co.collectionobjectattribute.text1, "some text")
 
@@ -561,7 +597,7 @@ class InlineApiTests(ApiTests):
             ]
         })
         rs = Recordset.objects.get(pk=obj.id)
-        self.assertEqual(set([123, 124]), set(rs.recordsetitems.values_list('recordid', flat=True)))
+        self.assertEqual({123, 124}, set(rs.recordsetitems.values_list('recordid', flat=True)))
 
     def test_update_object_with_inlines(self):
         self.collectionobjects[0].determinations.create(
@@ -823,7 +859,7 @@ class InlineApiTests(ApiTests):
 
 class InlineApiRemoteToOneTests(ApiTests): 
     def setUp(self): 
-        super(InlineApiRemoteToOneTests, self).setUp()
+        super().setUp()
         cog_type_picklist = Picklist.objects.create(
             name=SYSTEM_COGTYPES_PICKLIST,
             issystem=True,
@@ -913,11 +949,12 @@ class InlineApiRemoteToOneTests(ApiTests):
 class UserApiTests(ApiTests):
     def setUp(self):
         "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOF!"
-        super(UserApiTests, self).setUp()
+        super().setUp()
 
         # Because the test database doesn't have specifyuser_spprincipal
         from specifyweb.context import views
 
+        # TODO: Replace this with a mock.
         views.users_collections_for_sp6 = lambda cursor, userid: []
 
     def test_set_user_agents(self):
@@ -1017,7 +1054,7 @@ class UserApiTests(ApiTests):
 
 class ScopingTests(ApiTests):
     def setUp(self):
-        super(ScopingTests, self).setUp()
+        super().setUp()
 
         self.other_division = Division.objects.create(
             institution=self.institution,
@@ -1107,6 +1144,11 @@ class DefaultsSetup(MainSetupTearDown, TestCase):
         Picklistitem.objects.create(
             title='Discrete',
             value='Discrete',
+            picklist=cog_type_picklist
+        )
+        Picklistitem.objects.create(
+            title='Consolidated',
+            value='Consolidated',
             picklist=cog_type_picklist
         )
         self.cogtype = Collectionobjectgrouptype.objects.create(
