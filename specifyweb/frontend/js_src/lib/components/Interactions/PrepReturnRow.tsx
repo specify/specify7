@@ -6,7 +6,7 @@ import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
-import { cogTypes, getField } from '../DataModel/helpers';
+import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
 import type { LoanPreparation } from '../DataModel/types';
@@ -29,8 +29,6 @@ export function PrepReturnRow({
     readonly catalogNumber: string;
     readonly taxon: string;
     readonly prepType: string;
-    readonly cogName: string | undefined;
-    readonly isConsolidated: boolean;
   }>(
     React.useCallback(
       async () =>
@@ -42,15 +40,11 @@ export function PrepReturnRow({
                   preparation.get('descriptionOfMaterial')?.slice(0, 50) ??
                   interactionsText.unCataloged(),
                 prepType: '',
-                cogName: undefined,
-                isConsolidated: false,
               }
             : {
                 ...(await loanPreparation.rgetPromise('collectionObject').then<{
                   readonly catalogNumber: string;
                   readonly taxon: string;
-                  readonly cogName: string | undefined;
-                  readonly isConsolidated: boolean;
                 }>(async (collectionObject) => ({
                   catalogNumber: await fieldFormat(
                     getField(tables.CollectionObject, 'catalogNumber'),
@@ -64,27 +58,6 @@ export function PrepReturnRow({
                         ?.rgetPromise('preferredTaxon')
                     )
                     .then((taxon) => taxon?.get('fullName') ?? ''),
-                  ...((await collectionObject
-                    .getDependentResource('cojo')
-                    ?.rgetPromise('parentCog')
-                    .then<{
-                      readonly cogName: string;
-                      readonly isConsolidated: boolean;
-                    }>(async (cog) => ({
-                      cogName: await fieldFormat(
-                        getField(tables.CollectionObjectGroup, 'name'),
-                        cog.get('name')
-                      ),
-                      isConsolidated: await cog
-                        .rgetPromise('cogType')
-                        .then(
-                          (cogType) =>
-                            cogType.get('type') === cogTypes.CONSOLIDATED
-                        ),
-                    }))) ?? {
-                    cogName: undefined,
-                    isConsolidated: false,
-                  }),
                 }))),
                 prepType: await loanPreparation
                   .rgetPromise('prepType')
@@ -118,7 +91,6 @@ export function PrepReturnRow({
           />
         </td>
         <td>{data?.catalogNumber ?? commonText.loading()}</td>
-        <td>{data?.cogName ?? commonText.loading()}</td>
         <td>{data?.taxon ?? commonText.loading()}</td>
         <td className="text-center">
           {data?.prepType ?? commonText.loading()}

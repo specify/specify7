@@ -9,6 +9,7 @@ import type { GetOrSet, RA } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -139,7 +140,11 @@ export function ResourcePreview({
     ),
     false
   );
-  return children((_, index) =>
-    formatted === undefined ? commonText.loading() : formatted[index]
+  return (
+    <ReadOnlyContext.Provider value>
+      {children((_, index) =>
+        formatted === undefined ? commonText.loading() : formatted[index]
+      )}
+    </ReadOnlyContext.Provider>
   );
 }

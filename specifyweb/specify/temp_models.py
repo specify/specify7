@@ -5011,6 +5011,7 @@ class Spquery(models.Model):
     remarks = models.TextField(db_column='Remarks', blank=True, null=True)  # Field name made lowercase.
     searchsynonymy = models.BooleanField(db_column='SearchSynonymy', blank=True, null=True)  # Field name made lowercase.
     selectdistinct = models.BooleanField(db_column='SelectDistinct', blank=True, null=True)  # Field name made lowercase.
+    selectseries = models.BooleanField(db_column='SelectSeries', blank=True, null=True)
     sqlstr = models.TextField(db_column='SqlStr', blank=True, null=True)  # Field name made lowercase.
     modifiedbyagentid = models.ForeignKey(Agent, models.DO_NOTHING, db_column='ModifiedByAgentID', blank=True, null=True)  # Field name made lowercase.
     specifyuserid = models.ForeignKey(Specifyuser, models.DO_NOTHING, db_column='SpecifyUserID')  # Field name made lowercase.

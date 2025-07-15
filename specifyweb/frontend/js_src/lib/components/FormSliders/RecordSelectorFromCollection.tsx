@@ -14,7 +14,6 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyTable';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type {
   RecordSelectorProps,
   RecordSelectorState,
@@ -58,8 +57,7 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
 
   const isDependent = collection instanceof DependentCollection;
   const isLazy = collection instanceof LazyCollection;
-  const isToOne =
-    !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
+  const isToOne = !relationship.type.includes('-to-many');
 
   // Listen for changes to collection
   React.useEffect(

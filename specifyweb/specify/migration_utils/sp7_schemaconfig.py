@@ -86,7 +86,7 @@ MIGRATION_0023_FIELDS = {
         ('guid', 'GUID', 'GUID'), 
         ('cogType', 'Type', 'Determines the logic Specify should use when managing the children within that COG'),
         ('igsn', 'IGSN', 'An International Generic Sample Number (IGSN) provides an unambiguous globally unique and persistent identifier for physical samples.'),
-        ('cojo', 'Collection Object Group Join', 'This connects a Collection Object Group to its parent Collection Object Group, which is used for managing a hierarchy.'), 
+        ('cojo', 'Parent COG', 'This connects a Collection Object Group to its parent Collection Object Group, which is used for managing a hierarchy.'), 
         ('yesno2', 'YesNo2', 'YesNo2'),
         ('yesno1', 'YesNo1', 'YesNo1'),
         ],
@@ -123,7 +123,7 @@ MIGRATION_0023_FIELDS = {
 
     'collectionobject': [
         ('collectionObjectType', 'Type', 'The type of object, such as a fish, mammal, mineral, rock, or meteorite.'),
-        ('cojo', 'Collection Object Group', 'Connects a Collection Object to its Collection Object Group'),
+        ('cojo', 'Parent COG', 'Connects a Collection Object to its Collection Object Group'),
     ],
 
     'tectonicunit': [
@@ -163,4 +163,62 @@ MIGRATION_0023_FIELDS_BIS = {
     'tectonicunittreedefitem': ['children', 'rankId', 'parent', 'treeDef', 'treeEntries', 'tectonicUnitTreeDefItemId'],
 
     'tectonicunittreedef': ['discipline', 'treeEntries', 'tectonicUnitTreeDefId']
+}
+
+MIGRATION_0024_FIELDS = {
+    'Storage': ['uniqueIdentifier'],
+}
+
+MIGRATION_0027_FIELDS = {
+    'CollectionObject': ['parentCO', 'children'],
+}
+
+MIGRATION_0027_UPDATE_FIELDS = {
+    'CollectionObject': [
+        ('parentCO', 'Parent Collection Object', 'Parent CollectionObject'), 
+        ('children', 'Children', 'Children'),
+    ]
+}
+
+MIGRATION_0029_FIELDS = {
+    'CollectionObject': ['componentParent', 'components'],
+}
+
+MIGRATION_0029_UPDATE_FIELDS = {
+    'CollectionObject': [
+        ('componentParent', 'Component Parent', 'Parent of a component Collection Object'), 
+        ('components', 'Components', 'Component parts of a Collection Object'),
+    ]
+}
+
+
+MIGRATION_0032_FIELDS = {
+    'GiftPreparation': ['quantityResolved', 'quantityReturned'],
+}
+
+MIGRATION_0032_UPDATE_FIELDS = {
+    'GiftPreparation': [
+        ('quantityResolved','Quantity Resolved', 'Number of specimens returned, deaccessioned or otherwise accounted for. (necessary for Lots).'), 
+        ('quantityReturned', 'Quantity Returned', 'Number of specimens returned. (necessary for Lots)'),
+    ]
+}
+
+MIGRATION_0033_TABLES = [
+    ('Paleocontext', 'Paleo Context provides contextual information on the chronostratigraphy, lithostratigraphy, and biostratigraphy of a collection object, collecting event, or locality.'),
+]
+
+MIGRATION_0034_FIELDS = {
+    'Accession': ['dateAccessionedPrecision', 'dateAcknowledgedPrecision', 'dateReceivedPrecision', 'date1', 'date1Precision', 'date2', 'date2Precision'],
+}
+
+MIGRATION_0034_UPDATE_FIELDS = {
+    'Accession': [
+        ('dateAccessionedPrecision',    'Date Accessioned Precision',    'Date Accessioned Precision'),
+        ('dateAcknowledgedPrecision',   'Date Acknowledged Precision',   'Date Acknowledged Precision'),
+        ('dateReceivedPrecision',       'Date Received Precision',       'Date Received Precision'),
+        ('date1',                       'Date 1',                        'Date 1'),
+        ('date1Precision',              'Date 1 Precision',              'Date 1 Precision'),
+        ('date2',                       'Date 2',                        'Date 2'),
+        ('date2Precision',              'Date 2 Precision',              'Date 2 Precision'),
+    ]
 }
