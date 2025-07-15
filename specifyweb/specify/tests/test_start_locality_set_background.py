@@ -1,5 +1,5 @@
 from unittest.mock import Mock, patch
-from specifyweb.notifications.models import LocalityUpdate, Message
+from specifyweb.backend.notifications.models import LocalityUpdate, Message
 from specifyweb.specify.tests.test_api import ApiTests
 from uuid import uuid4 as base_uuid4
 
