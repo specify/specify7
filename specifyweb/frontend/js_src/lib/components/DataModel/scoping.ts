@@ -10,7 +10,6 @@ import type { AnySchema } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { getResourceApiUrl, idFromUrl } from './resource';
 import { schema } from './schema';
-import { serializeResource } from './serializers';
 import type { Relationship } from './specifyField';
 import type { SpecifyTable } from './specifyTable';
 import { strictGetTable, tables } from './tables';
@@ -53,9 +52,10 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
     resource.createdBy !== 'clone'
   ) {
     if (collectionObject.getDependentResource('preparations') === undefined)
-      collectionObject.set('preparations', [
-        serializeResource(new tables.Preparation.Resource()),
-      ]);
+      // This is needed to initialize the DependentCollection on the resource
+      // See pulls #6581 and #7073
+      // REFACTOR: generalize this and move it to resourceApi.ts
+      collectionObject.set('preparations', []);
     const preps = defined(
       collectionObject.getDependentResource('preparations')
     );
@@ -67,11 +67,12 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
     hasTablePermission('Determination', 'create') &&
     resource.createdBy !== 'clone'
   ) {
-    if (collectionObject.getDependentResource('determinations') === undefined) {
-      collectionObject.set('determinations', [
-        serializeResource(new tables.Determination.Resource()),
-      ]);
-    }
+    if (collectionObject.getDependentResource('determinations') === undefined)
+      // This is needed to initialize the DependentCollection on the resource
+      // See pulls #6581 and #7073
+      // REFACTOR: generalize this and move it to resourceApi.ts
+      collectionObject.set('determinations', []);
+
     const determinations = defined(
       collectionObject.getDependentResource('determinations')
     );
