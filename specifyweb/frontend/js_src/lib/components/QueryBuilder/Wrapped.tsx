@@ -236,14 +236,16 @@ function Wrapped({
 
     // Handle checking if catalogNumber is present for series query
     const queryFields = getQueryFieldRecords?.(fields) ?? query.fields;
-    const canEnableSmushed = queryFields.length === 0 || queryFields.some(
-      (field) => field.fieldName === "catalogNumber" && field.isDisplay
-    );
+    const canEnableSmushed =
+      queryFields.length === 0 ||
+      queryFields.some(
+        (field) => field.fieldName === 'catalogNumber' && field.isDisplay
+      );
     queryResource.set('smushed', canEnableSmushed && query.smushed);
     setQuery({
       ...query,
       smushed: canEnableSmushed && query.smushed,
-    })
+    });
 
     /*
      * Wait for new query to propagate before re running it
@@ -587,11 +589,11 @@ function Wrapped({
                 showSeries={showSeries}
                 tableName={table.name}
                 onRunCountOnly={(): void => runQuery('count')}
-                onSubmitClick={(): void => {
+                onSubmitClick={(): void =>
                   form?.checkValidity() === false
                     ? runQuery('regular')
                     : undefined
-                }}
+                }
                 onToggleDistinct={(): void =>
                   setQuery({
                     ...query,
