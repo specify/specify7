@@ -13,13 +13,12 @@ import type { RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
-import { backboneFieldSeparator } from '../DataModel/helpers';
+import { backboneFieldSeparator, toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
   fetchResource,
   getResourceApiUrl,
-  idFromUrl,
   resourceOn,
 } from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
@@ -269,13 +268,16 @@ export function QueryComboBox({
               )
           : undefined;
       } else if (resource?.specifyTable === tables.Component) {
-        const type = resource.get('type');
-        const typeId = idFromUrl(type);
-        const typeResource = await fetchResource(
-          'CollectionObjectType',
-          typeId ?? 1
+        const typeResource = await toTable(resource, 'Component')?.rgetPromise(
+          'type'
         );
-        return typeResource.taxonTreeDef;
+        if (typeResource === undefined || typeResource === null) {
+          console.warn('Could not scope Component -> name without type', {
+            component: resource,
+          });
+          return undefined;
+        }
+        return typeResource.get('taxonTreeDef');
       } else if (resource?.specifyTable === tables.Taxon) {
         const definition = resource.get('definition');
         const parentDefinition = (
