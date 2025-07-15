@@ -1,4 +1,3 @@
-
 # We want to import everything since we are basically subclassing the module.
 from django.db.backends.mysql.base import *
 

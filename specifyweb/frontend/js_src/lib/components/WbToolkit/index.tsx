@@ -7,9 +7,10 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 import { downloadDataSet } from '../WorkBench/helpers';
 import type { WbMapping } from '../WorkBench/mapping';
 import { WbChangeOwner } from './ChangeOwner';
@@ -57,14 +58,15 @@ export function WbToolkit({
   const hasLocality =
     mappings === undefined ? false : mappings.localityColumns.length > 0;
 
+  const variant = resolveVariantFromDataset(dataset);
+
   return (
     <div
       aria-label={commonText.tools()}
       className="flex flex-wrap gap-x-1 gap-y-2"
       role="toolbar"
     >
-      {hasPermission('/workbench/dataset', 'transfer') &&
-      hasTablePermission('SpecifyUser', 'read') ? (
+      {variant.canTransfer() && hasTablePermission('SpecifyUser', 'read') ? (
         <ErrorBoundary dismissible>
           <WbChangeOwner
             dataset={dataset}
@@ -87,7 +89,7 @@ export function WbToolkit({
         {commonText.export()}
       </Button.Small>
       <span className="-ml-1 flex-1" />
-      {hasPermission('/workbench/dataset', 'update') && (
+      {variant.canUpdate() && (
         <>
           <ErrorBoundary dismissible>
             <WbConvertCoordinates
