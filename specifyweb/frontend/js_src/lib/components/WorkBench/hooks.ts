@@ -161,10 +161,6 @@ export function useHotHooks({
     beforeChange: (unfilteredChanges, source) => {
       if (source !== 'CopyPaste.paste') return true;
 
-      const filteredChanges = unfilteredChanges.filter(
-        ([, property]) =>
-          (property as number) < workbench.dataset.columns.length
-      );
       const filteredChanges = unfilteredChanges
         .filter((change): change is CellChange => change !== null)
         .filter(
