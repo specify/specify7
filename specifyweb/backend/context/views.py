@@ -635,6 +635,11 @@ def remote_prefs(request):
     return HttpResponse(get_remote_prefs(), content_type='text/x-java-properties')
 
 @require_http_methods(['GET', 'HEAD'])
+def time_zone(request):
+    """Return the back-end time zone."""
+    return JsonResponse({"time_zone": settings.TIME_ZONE})
+
+@require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, public=True)
 @skip_collection_access_check
 def system_info(request):
