@@ -1,4 +1,5 @@
 import type Handsontable from 'handsontable';
+import { CellChange } from 'handsontable';
 import type { Events } from 'handsontable/pluginHooks';
 import type { Action } from 'handsontable/plugins/undoRedo';
 import React from 'react';
