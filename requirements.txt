@@ -4,7 +4,7 @@ wheel
 backports.zoneinfo==0.2.1
 kombu==5.5.2
 celery[redis]==5.5.1
-Django==4.2.18
+Django==4.2.22
 mysqlclient==2.1.1
 SQLAlchemy==1.2.11
 requests==2.32.4
