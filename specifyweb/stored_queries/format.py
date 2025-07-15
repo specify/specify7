@@ -188,16 +188,13 @@ class ObjectFormatter:
         else:
             new_query, table, model, specify_field = query.build_join(
                 specify_model, orm_table, formatter_field_spec.join_path)
-            new_expr = getattr(table, specify_field.name)
+            new_expr = self._fieldformat(table, formatter_field_spec.get_field(),
+                                         getattr(table, specify_field.name))
 
         if 'format' in fieldNodeAttrib:
             new_expr = self.pseudo_sprintf(fieldNodeAttrib['format'], new_expr)
 
         if 'sep' in fieldNodeAttrib:
-            if specify_field.name == 'catalogNumber':
-                # Special Case: Leading zeroes are removed from catalog number if formatter has separator.
-                # See: https://github.com/specify/specify7/issues/7037
-                new_expr = func.regexp_replace(new_expr, '^0+', '')
             new_expr = concat(fieldNodeAttrib['sep'], new_expr)
 
         return new_query, blank_nulls(new_expr) if do_blank_null else new_expr, formatter_field_spec
