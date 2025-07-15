@@ -12,6 +12,7 @@ import { Input, Label, Select } from '../Atoms/Form';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpLocaleContainerItem } from '../DataModel/types';
+import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 
 export function SchemaConfigFields({
   table,
@@ -90,7 +91,16 @@ export function SchemaConfigFieldsList({
     <>
       {fields.map((item) => (
         <option key={item.id} value={item.id}>
-          {item.name} {item.isHidden ? `(${schemaText.hidden()})` : null}
+          <span className="font-bold">{item.name}</span>{' '}
+          <span className="italic">
+            {
+              (
+                item as SerializedResource<SpLocaleContainerItem> &
+                  WithFetchedStrings
+              ).strings.name.text
+            }
+          </span>{' '}
+          {item.isHidden ? `(${schemaText.hidden()})` : null}
         </option>
       ))}
     </>
