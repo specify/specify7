@@ -213,7 +213,7 @@ def close_loan(cursor, current_user_agent_id, returned_date, record_set_id=None,
 
     id_clause, id_params = record_set_or_loan_nos(record_set_id, loan_nos, by_id=(not using_loan_nos))
 
-    where_clause = id_clause if using_loan_nos else "LoanID in ({})".format(id_clause)
+    where_clause = id_clause if using_loan_nos else f"LoanID in ({id_clause})"
 
     sql = """
     update loan set
@@ -282,11 +282,12 @@ def prep_availability(request, prep_id, iprep_id=None, iprep_name=None):
     left join loanpreparation lp on lp.preparationid = p.preparationid
     left join giftpreparation gp on gp.preparationid = p.preparationid
     left join exchangeoutprep ep on ep.PreparationID = p.PreparationID
+    left join disposalpreparation dp on dp.preparationid = p.preparationid
     where p.preparationid = %s 
     """
     if iprep_id is not None:
         from specifyweb.specify import models
-        keyfld = models.datamodel.get_table(iprep_name).idFieldName
+        keyfld = models.datamodel.get_table(iprep_name).idField.column
         sql += " and " + keyfld + " != %s "
         args.append(iprep_id)
 

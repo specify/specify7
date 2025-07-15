@@ -33,9 +33,6 @@ if DEBUG:
 
 from .secret_key import SECRET_KEY
 
-
-ALLOWED_HOSTS = ['*']
-
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
@@ -57,7 +54,7 @@ DATABASES = {
  }
 
 def get_sa_db_url(db_name):
-    return 'mysql://%s:%s@%s:%s/%s?charset=utf8' % (
+    return 'mysql://{}:{}@{}:{}/{}?charset=utf8'.format(
         MASTER_NAME,
         MASTER_PASSWORD,
         DATABASE_HOST,
@@ -222,6 +219,7 @@ INSTALLED_APPS = (
     'specifyweb.attachment_gw',
     'specifyweb.frontend',
     'specifyweb.barvis',
+    'specifyweb.patches',
     'specifyweb.report_runner',
     'specifyweb.interactions',
     'specifyweb.workbench',

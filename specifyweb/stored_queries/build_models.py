@@ -79,7 +79,7 @@ def make_classes(datamodel: Datamodel):
 
     return {td.name: make_class(td) for td in datamodel.tables}
 
-def map_classes(datamodel: Datamodel, tables: List[Table], classes):
+def map_classes(datamodel: Datamodel, tables: list[Table], classes):
 
     def map_class(tabledef):
         cls = classes[ tabledef.name ]

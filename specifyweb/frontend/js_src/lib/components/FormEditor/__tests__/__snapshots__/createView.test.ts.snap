@@ -154,5 +154,6 @@ exports[`Tables with form tables computed correctly 1`] = `
   "[table TectonicUnitTreeDef]",
   "[table TectonicUnitTreeDefItem]",
   "[table TectonicUnit]",
+  "[table SpDataSetAttachment]",
 ]
 `;
