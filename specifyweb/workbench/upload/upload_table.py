@@ -588,6 +588,9 @@ class BoundUploadTable(NamedTuple):
                 FailedBusinessRule(str(e), {}, info), to_one_results, {}
             )
 
+        visible_attrs = {
+            **attrs,
+        }
         attrs = {
             **(
                 {}
@@ -601,10 +604,18 @@ class BoundUploadTable(NamedTuple):
             all(v is None for v in attrs.values()) and not filter_predicate.filters
         ) and allow_null:
             # nothing to upload
+            logger.debug("Null record found.")
             return UploadResult(NullRecord(info), to_one_results, {})
         if not skip_match:
+            logger.debug("Trying to match: ")
+            logger.debug(self.name)
+            logger.debug(attrs)
+            logger.debug(visible_attrs)
             match = self._match(filter_predicate, info)
-            if match:
+            if (all(v is None for v in visible_attrs.values())):
+                logger.debug("All visible fields null, skipping match.")
+                pass
+            elif match:
                 return UploadResult(match, to_one_results, {})
 
         return self._do_upload(model, to_one_results, info)
