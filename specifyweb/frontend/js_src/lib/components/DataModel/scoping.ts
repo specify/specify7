@@ -52,9 +52,11 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
     resource.createdBy !== 'clone'
   ) {
     if (collectionObject.getDependentResource('preparations') === undefined)
-      // This is needed to initialize the DependentCollection on the resource
-      // See pulls #6581 and #7073
-      // REFACTOR: generalize this and move it to resourceApi.ts
+      /*
+       * This is needed to initialize the DependentCollection on the resource
+       * See pulls #6581 and #7073
+       * REFACTOR: generalize this and move it to resourceApi.ts
+       */
       collectionObject.set('preparations', []);
     const preps = defined(
       collectionObject.getDependentResource('preparations')
@@ -68,9 +70,11 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
     resource.createdBy !== 'clone'
   ) {
     if (collectionObject.getDependentResource('determinations') === undefined)
-      // This is needed to initialize the DependentCollection on the resource
-      // See pulls #6581 and #7073
-      // REFACTOR: generalize this and move it to resourceApi.ts
+      /*
+       * This is needed to initialize the DependentCollection on the resource
+       * See pulls #6581 and #7073
+       * REFACTOR: generalize this and move it to resourceApi.ts
+       */
       collectionObject.set('determinations', []);
 
     const determinations = defined(
