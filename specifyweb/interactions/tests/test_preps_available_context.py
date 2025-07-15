@@ -133,6 +133,7 @@ class TestPrepsAvailableContext(ApiTests):
             self._iprep_list,
             quantity=3,
             quantityresolved=3,
+            isresolved=True,
         )
         _create_interaction_prep_generic(
             self,
@@ -141,6 +142,7 @@ class TestPrepsAvailableContext(ApiTests):
             self._iprep_list,
             quantity=5,
             quantityresolved=5,
+            isresolved=True,
         )
 
         # CO 3
