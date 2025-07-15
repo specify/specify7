@@ -1,4 +1,4 @@
-from specifyweb.interactions.tests.test_cog import TestCogInteractions
+from specifyweb.backend.interactions.tests.test_cog import TestCogInteractions
 from specifyweb.specify.models import (
     Collectionobjectgroup,
 )
