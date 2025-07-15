@@ -60,7 +60,17 @@ export function QueryToForms({
           onAdd={undefined}
           onClone={undefined}
           onClose={handleClose}
-          onDelete={(index): void => handleDelete(unParseIndex(index))}
+          onDelete={(index): void => {
+            if (
+              (selectedRows.size === 0 && results[index] === undefined) ||
+              (selectedRows.size > 0 &&
+                Array.from(selectedRows)[index] === undefined)
+            ) {
+              handleClose();
+            } else {
+              handleDelete(unParseIndex(index));
+            }
+          }}
           onSaved={f.void}
           onSlide={
             typeof handleFetchMore === 'function'

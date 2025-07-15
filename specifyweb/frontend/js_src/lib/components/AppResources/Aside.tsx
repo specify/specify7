@@ -401,3 +401,7 @@ function ResourceItem({
     </ActiveLink>
   );
 }
+
+export const exportsForTests = {
+  mutateConformation,
+};

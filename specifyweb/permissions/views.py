@@ -132,7 +132,7 @@ class AllUserPolicies(LoginRequiredMixin, View):
     def get(self, request, collectionid: Optional[int]) -> http.HttpResponse:
         check_permission_targets(collectionid, request.specify_user.id, [PoliciesUserPT.read])
 
-        data: Dict[int, Dict[str, List[str]]] = defaultdict(lambda: defaultdict(list))
+        data: dict[int, dict[str, list[str]]] = defaultdict(lambda: defaultdict(list))
         ps = models.UserPolicy.objects.filter(collection__isnull=True, specifyuser_id__isnull=False) \
             if collectionid is None else \
                models.UserPolicy.objects.filter(collection_id=collectionid, specifyuser_id__isnull=False)
@@ -531,7 +531,7 @@ user_roles = openapi(schema={
     }
 })(UserRoles.as_view())
 
-def serialize_role(role: Union[models.Role, models.LibraryRole]) -> Dict:
+def serialize_role(role: Union[models.Role, models.LibraryRole]) -> dict:
     policies = defaultdict(list)
     for p in role.policies.all():
         policies[p.resource].append(p.action)
