@@ -573,6 +573,6 @@ export const backEndText = createDictionary({
     'uk-ua': 'Недійсний тип для вибраного(их) рангу(ів) дерева',
   },
   invalidComponentType: {
-    'en-us': 'Invalid component type for selected tree rank(s)',
+    'en-us': 'Invalid {componentType: string} for selected tree rank(s)',
   },
 } as const);

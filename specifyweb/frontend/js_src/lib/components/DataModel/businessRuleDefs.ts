@@ -353,6 +353,10 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         const isValid =
           typeof taxonTreeDef === 'string' && taxonTreeDef === coTypeTreeDef;
 
+        const test = tables.Component.field;
+        const test2 = tables.Component.fields;
+        console.log(test, test2);
+
         setSaveBlockers(
           resource,
           resource.specifyTable.field.name,
@@ -361,6 +365,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             : [
                 resourcesText.invalidNameTaxon({
                   taxonName: resource.specifyTable.field.name.label,
+                  taxonTableLabel: tables.Taxon.label,
                   typeName: resource.specifyTable.label,
                 }),
               ],
