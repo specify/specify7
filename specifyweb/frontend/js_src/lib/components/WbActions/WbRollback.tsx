@@ -2,18 +2,20 @@ import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
-import { wbText } from '../../localization/workbench';
 import { ping } from '../../utils/ajax/ping';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import type { WbVariantLocalization } from '../Toolbar/WbsDialog';
 import type { WbStatus } from '../WorkBench/WbView';
 
 export function WbRollback({
   datasetId,
   triggerStatusComponent,
+  viewerLocalization,
 }: {
   readonly datasetId: number;
+  readonly viewerLocalization: WbVariantLocalization;
   readonly triggerStatusComponent: (mode: WbStatus) => void;
 }): JSX.Element {
   const [confirmRollback, handleOpen, handleClose] = useBooleanState();
@@ -27,11 +29,12 @@ export function WbRollback({
         aria-pressed={confirmRollback}
         onClick={handleOpen}
       >
-        {wbText.rollback()}
+        {viewerLocalization.undo}
       </Button.Small>
       {confirmRollback && (
         <RollbackConfirmation
           datasetId={datasetId}
+          viewerLocalization={viewerLocalization}
           onClose={handleClose}
           onRollback={handleRollback}
         />
@@ -42,10 +45,12 @@ export function WbRollback({
 
 function RollbackConfirmation({
   datasetId,
+  viewerLocalization,
   onClose: handleClose,
   onRollback: handleRollback,
 }: {
   readonly datasetId: number;
+  readonly viewerLocalization: WbVariantLocalization;
   readonly onClose: () => void;
   readonly onRollback: () => void;
 }): JSX.Element {
@@ -66,17 +71,17 @@ function RollbackConfirmation({
               )
             }
           >
-            {wbText.rollback()}
+            {viewerLocalization.undo}
           </Button.Danger>
         </>
       }
       className={{
         container: dialogClassNames.narrowContainer,
       }}
-      header={wbText.beginRollback()}
+      header={viewerLocalization.undoConfirm}
       onClose={handleClose}
     >
-      {wbText.beginRollbackDescription()}
+      {viewerLocalization.undoStartDescription}
     </Dialog>
   );
 }

@@ -17,6 +17,7 @@ import { AutoMapper } from './autoMapper';
 import { renameNewlyCreatedHeaders } from './headerHelper';
 import type {
   AutoMapperSuggestion,
+  BatchEditPrefs,
   MappingLine,
   MappingPath,
   SelectElementPosition,
@@ -28,6 +29,7 @@ import {
   formatToManyIndex,
   formatTreeRank,
   mappingPathToString,
+  relationshipIsRemoteToOne,
   relationshipIsToMany,
   valueIsToManyIndex,
   valueIsTreeRank,
@@ -42,11 +44,13 @@ export async function savePlan({
   baseTableName,
   lines,
   mustMatchPreferences,
+  batchEditPrefs,
 }: {
   readonly dataset: Dataset;
   readonly baseTableName: keyof Tables;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
+  readonly batchEditPrefs?: BatchEditPrefs;
 }): Promise<void> {
   const renamedLines = renameNewlyCreatedHeaders(
     baseTableName,
@@ -66,7 +70,8 @@ export async function savePlan({
   const uploadPlan = uploadPlanBuilder(
     baseTableName,
     renamedLines,
-    getMustMatchTables({ baseTableName, lines, mustMatchPreferences })
+    getMustMatchTables({ baseTableName, lines, mustMatchPreferences }),
+    batchEditPrefs
   );
 
   const dataSetRequestUrl = `/api/workbench/dataset/${dataset.id}/`;
@@ -266,10 +271,13 @@ export function mutateMappingPath({
   const table = getTable(parentTableName ?? '');
   const currentField = table?.getField(mappingPath[index] ?? '');
   const isCurrentToMany =
-    currentField?.isRelationship === true && relationshipIsToMany(currentField);
+    currentField?.isRelationship === true &&
+    (relationshipIsToMany(currentField) ||
+      relationshipIsRemoteToOne(currentField));
   const newField = table?.getField(newValue);
   const isNewToMany =
-    newField?.isRelationship === true && relationshipIsToMany(newField);
+    newField?.isRelationship === true &&
+    (relationshipIsToMany(newField) || relationshipIsRemoteToOne(newField));
   const isNewTree =
     newField?.isRelationship === true &&
     isTreeTable(newField.relatedTable.name);

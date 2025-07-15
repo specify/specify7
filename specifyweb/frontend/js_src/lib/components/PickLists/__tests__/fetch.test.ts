@@ -96,7 +96,7 @@ describe('unsafeFetchPickList', () => {
 describe('fetchPickListItems', () => {
   test('pick list from items', async () => {
     const pickListItems = [
-      addMissingFields('PickListItem', { title: 'a', value: 'b' }),
+      addMissingFields('PickListItem', { title: 'a', value: 'b', ordinal: 0 }),
     ];
     const pickList = deserializeResource(
       addMissingFields('PickList', {
@@ -182,7 +182,7 @@ describe('fetchPickListItems', () => {
   });
 
   overrideAjax(
-    '/api/specify_rows/locality/?limit=0&domainfilter=true&distinct=true&fields=localityname',
+    '/api/specify_rows/locality/?limit=0&domainfilter=true&filterchronostrat=false&distinct=true&fields=localityname',
     [['abc']]
   );
   test('entire column', async () => {

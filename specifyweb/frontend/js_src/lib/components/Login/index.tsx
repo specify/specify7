@@ -5,11 +5,13 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import type { Language } from '../../localization/utils/config';
 import { devLanguage, LANGUAGE } from '../../localization/utils/config';
+import { ajax } from '../../utils/ajax';
 import { parseDjangoDump } from '../../utils/ajax/csrfToken';
 import type { RA } from '../../utils/types';
 import { ErrorMessage } from '../Atoms';
@@ -22,9 +24,35 @@ import type { OicProvider } from './OicLogin';
 import { OicLogin } from './OicLogin';
 
 export function Login(): JSX.Element {
+  const [isNewUser] = useAsyncState(
+    React.useCallback(
+      async () =>
+        ajax<boolean>(`/api/specify/is_new_user/`, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+          },
+          errorMode: 'silent',
+        })
+          .then(({ data }) => data)
+          .catch((error) => {
+            console.error('Failed to fetch isNewUser:', error);
+            return undefined;
+          }),
+      []
+    ),
+    true
+  );
+
   return React.useMemo(() => {
     const nextUrl = parseDjangoDump<string>('next-url') ?? '/specify/';
     const providers = parseDjangoDump<RA<OicProvider>>('providers') ?? [];
+
+    if (isNewUser === true || isNewUser === undefined) {
+      // Display here the new setup pages
+      return <p>Welcome! No institutions are available at the moment.</p>;
+    }
+
     return providers.length > 0 ? (
       <OicLogin
         data={{
@@ -57,7 +85,7 @@ export function Login(): JSX.Element {
         }
       />
     );
-  }, []);
+  }, [isNewUser]);
 }
 
 const nextDestination = '/accounts/choose_collection/?next=';

@@ -73,7 +73,6 @@ export function FormTableCollection({
       totalCount={collection._totalCount}
       onAdd={disableAdding ? undefined : handleAdd}
       onDelete={(resource): void => {
-        collection.remove(resource);
         setRecords(Array.from(collection.models));
         handleDelete?.(resource, records.indexOf(resource));
       }}

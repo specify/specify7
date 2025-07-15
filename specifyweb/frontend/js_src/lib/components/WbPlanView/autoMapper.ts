@@ -30,6 +30,7 @@ import {
   getNameFromTreeRankName,
   getNumberFromToManyIndex,
   mappingPathToString,
+  relationshipIsRemoteToOne,
   relationshipIsToMany,
   valueIsToManyIndex,
   valueIsTreeRank,
@@ -809,7 +810,10 @@ export class AutoMapper {
       .forEach((relationship) => {
         const localPath = [...mappingPath, relationship.name];
 
-        if (relationshipIsToMany(relationship))
+        if (
+          relationshipIsToMany(relationship) ||
+          relationshipIsRemoteToOne(relationship)
+        )
           localPath.push(formatToManyIndex(1));
 
         const newDepthLevel = localPath.length;
