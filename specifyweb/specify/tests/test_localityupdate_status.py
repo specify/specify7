@@ -2,7 +2,7 @@ from unittest.mock import Mock, patch
 from django import http
 from django.test import Client
 from specifyweb.celery_tasks import CELERY_TASK_STATE
-from specifyweb.notifications.models import LocalityUpdate, LocalityUpdateRowResult
+from specifyweb.backend.notifications.models import LocalityUpdate, LocalityUpdateRowResult
 from specifyweb.specify.tests.test_api import ApiTests
 from django.core.serializers.json import DjangoJSONEncoder
 
