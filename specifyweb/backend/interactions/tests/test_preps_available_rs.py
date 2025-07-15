@@ -1,4 +1,4 @@
-from specifyweb.interactions.tests.test_preps_available_context import TestPrepsAvailableContext
+from specifyweb.backend.interactions.tests.test_preps_available_context import TestPrepsAvailableContext
 from specifyweb.specify.models import Collectionobject, Recordset
 
 

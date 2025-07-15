@@ -1,6 +1,6 @@
 
-from specifyweb.interactions.tests.test_loan_preps_context import TestLoanPrepsContext
-from specifyweb.interactions.views import insert_loanreturnpreps
+from specifyweb.backend.interactions.tests.test_loan_preps_context import TestLoanPrepsContext
+from specifyweb.backend.interactions.views import insert_loanreturnpreps
 
 from django.db import connection
 

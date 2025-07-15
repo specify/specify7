@@ -1,5 +1,5 @@
 # Technically DefaultsSetup is too much for this
-from specifyweb.interactions.views import record_set_or_loan_nos
+from specifyweb.backend.interactions.views import record_set_or_loan_nos
 from specifyweb.specify.tests.test_api import DefaultsSetup
 
 

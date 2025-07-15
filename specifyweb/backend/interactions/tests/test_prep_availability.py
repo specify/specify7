@@ -1,7 +1,7 @@
-from specifyweb.interactions.tests.test_preps_available_context import TestPrepsAvailableContext
+from specifyweb.backend.interactions.tests.test_preps_available_context import TestPrepsAvailableContext
 import json
 
-from specifyweb.interactions.tests.utils import _create_interaction_prep_generic
+from specifyweb.backend.interactions.tests.utils import _create_interaction_prep_generic
 from unittest import skip
 
 
