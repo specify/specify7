@@ -188,7 +188,7 @@ class ObjectFormatter:
         else:
             new_query, table, model, specify_field = query.build_join(
                 specify_model, orm_table, formatter_field_spec.join_path)
-            new_expr = self._fieldformat(table, formatter_field_spec.get_field(),
+            new_expr = self._fieldformat(formatter_field_spec.table, formatter_field_spec.get_field(),
                                          getattr(table, specify_field.name))
 
         if 'format' in fieldNodeAttrib:
