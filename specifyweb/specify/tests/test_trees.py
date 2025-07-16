@@ -81,7 +81,6 @@ class TestTree:
         node = models.Taxon.objects.create(
             name=name,
             definitionitem=models.Taxontreedefitem.objects.get(name=rank_name),
-            definition=self.taxontreedef,
             **extra_kwargs
         )
         self._node_list.append(node)
