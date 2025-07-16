@@ -3,7 +3,7 @@ from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify.utils import get_app_model, APP_MODELS
 
 # These are done as part of tests.
-from specifyweb.accounts import models as acccounts_models
+from specifyweb.backend.accounts import models as acccounts_models
 from specifyweb.attachment_gw import models as attachment_gw_models
 from specifyweb.businessrules import models as businessrules_models
 from specifyweb.context import models as context_models
