@@ -9,7 +9,7 @@ import traceback
 
 from django import http
 from django.db import IntegrityError, transaction, models
-from specifyweb.notifications.models import Message, Spmerging
+from specifyweb.backend.notifications.models import Message, Spmerging
 from django.db.models import Q
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
