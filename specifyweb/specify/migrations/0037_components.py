@@ -68,20 +68,19 @@ def update_hidden_prop(apps, schema_editor):
         ).update(ishidden=True)
 
 def create_cotype_splocalecontaineritem(apps):
-    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
     # Create a Splocalecontaineritem record for each Component Splocalecontainer
     # NOTE: Each discipline has its own Component Splocalecontainer
-    for container in Splocalecontainer.objects.filter(name='component', schematype=0):
-        container_item = Splocalecontaineritem.objects.get(
-            name=FIELD_NAME,
-            container=container,
-        )
-        container_item.picklistname = PICKLIST_NAME
-        container_item.isrequired = True
-        container_item.type = 'ManyToOne'
-        container_item.save()
+    Splocalecontaineritem.objects.filter(
+        container__name='component',
+        container__schematype=0,
+        name=FIELD_NAME
+    ).update(
+        picklistname=PICKLIST_NAME,
+        isrequired=True,
+        type='ManyToOne',
+    )
 
 def hide_component_fields(apps, schema_editor):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
