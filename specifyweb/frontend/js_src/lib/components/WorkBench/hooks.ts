@@ -165,15 +165,13 @@ export function useHotHooks({
       const filteredChanges = unfilteredChanges
         .filter((change): change is CellChange => change !== null)
         .filter(
-          ([, prop]) => {
+          ([, property]) => {
             let columnIndex: number | undefined;
       
-            if (typeof prop === 'number') {
-              columnIndex = prop;
-            } else if (typeof prop === 'string' && workbench.dataset.columns) {
-              columnIndex = workbench.dataset.columns.findIndex(colDef => {
-                return (colDef as unknown as { data: string }).data === prop;
-              });
+            if (typeof property === 'number') {
+              columnIndex = property;
+            } else if (typeof property === 'string' && workbench.dataset.columns) {
+              columnIndex = workbench.dataset.columns.findIndex(colDef => (colDef as unknown as { readonly data: string }).data === property);
             }
       
             return columnIndex !== undefined && columnIndex >= 0 && columnIndex < workbench.dataset.columns.length;
