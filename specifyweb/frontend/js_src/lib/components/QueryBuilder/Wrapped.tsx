@@ -233,6 +233,7 @@ function Wrapped({
       fields: getQueryFieldRecords?.(fields) ?? query.fields,
       countOnly: mode === 'count',
     });
+
     /*
      * Wait for new query to propagate before re running it
      * TEST: check if this still works after updating to React 18
@@ -309,6 +310,14 @@ function Wrapped({
       ),
     [state, table.name]
   );
+
+  React.useEffect(() => {
+    if (!showSeries)
+      setQuery({
+        ...query,
+        smushed: false,
+      });
+  }, [showSeries]);
 
   return treeRanksLoaded ? (
     <ReadOnlyContext.Provider value={isReadOnly}>
