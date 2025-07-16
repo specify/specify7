@@ -1504,7 +1504,7 @@ def catalog_number_from_parent(request: http.HttpRequest):
 
     try:
         # Get the child Component
-        child = spmodels.Component.objects.get(id=object_id)
+        child = spmodels.Component.objects.select_related("collectionobject").get(id=object_id)
 
         # Get the parent CO
         parent = child.collectionobject
