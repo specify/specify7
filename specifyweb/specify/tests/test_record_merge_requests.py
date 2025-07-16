@@ -2,7 +2,7 @@ from typing import Dict, Any
 from django import http
 from django.test import Client
 from specifyweb.notifications.models import Spmerging, Message
-from specifyweb.permissions.models import UserPolicy
+from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.specify.models import Agent
 from specifyweb.specify.tests.test_api import ApiTests
 
