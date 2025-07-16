@@ -24,8 +24,8 @@ from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify.func import Func
 from specifyweb.specify.tree_extras import renumber_tree, set_fullnames
-from specifyweb.workbench.permissions import BatchEditDataSetPT
-from specifyweb.workbench.upload.auditor import (
+from specifyweb.backend.workbench.permissions import BatchEditDataSetPT
+from specifyweb.backend.workbench.upload.auditor import (
     DEFAULT_AUDITOR_PROPS,
     AuditorProps,
     BatchEditPrefs,

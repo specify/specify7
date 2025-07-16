@@ -149,7 +149,7 @@ class TreeRankQuery(Relationship):
         return obj
 
     def get_workbench_name(self):
-        from specifyweb.workbench.upload.treerecord import RANK_KEY_DELIMITER
+        from specifyweb.backend.workbench.upload.treerecord import RANK_KEY_DELIMITER
         # Treedef id included to make it easier to pass it to batch edit
         return f"{self.treedef_name}{RANK_KEY_DELIMITER}{self.name}{RANK_KEY_DELIMITER}{self.treedef_id}"
 

@@ -29,18 +29,18 @@ from specifyweb.backend.stored_queries.queryfieldspec import (
     QueryNode,
     TreeRankQuery,
 )
-from specifyweb.workbench.models import Spdataset
-from specifyweb.workbench.permissions import BatchEditDataSetPT
-from specifyweb.workbench.upload.treerecord import TreeRecord, TreeRankRecord, RANK_KEY_DELIMITER
-from specifyweb.workbench.upload.upload_plan_schema import parse_column_options
-from specifyweb.workbench.upload.upload_table import UploadTable
-from specifyweb.workbench.upload.uploadable import NULL_RECORD, Uploadable
-from specifyweb.workbench.views import regularize_rows
+from specifyweb.backend.workbench.models import Spdataset
+from specifyweb.backend.workbench.permissions import BatchEditDataSetPT
+from specifyweb.backend.workbench.upload.treerecord import TreeRecord, TreeRankRecord, RANK_KEY_DELIMITER
+from specifyweb.backend.workbench.upload.upload_plan_schema import parse_column_options
+from specifyweb.backend.workbench.upload.upload_table import UploadTable
+from specifyweb.backend.workbench.upload.uploadable import NULL_RECORD, Uploadable
+from specifyweb.backend.workbench.views import regularize_rows
 from specifyweb.specify.func import Func
 from . import models
 import json
 
-from specifyweb.workbench.upload.upload_plan_schema import schema
+from specifyweb.backend.workbench.upload.upload_plan_schema import schema
 from jsonschema import validate
 
 from django.db import transaction
@@ -273,7 +273,7 @@ class BatchEditPack(NamedTuple):
         return BatchEditPack(id=id_field, order=order_field, version=version_field)
     
 def get_tree_rank_record(key) -> TreeRankRecord:
-    from specifyweb.workbench.upload.treerecord import RANK_KEY_DELIMITER
+    from specifyweb.backend.workbench.upload.treerecord import RANK_KEY_DELIMITER
 
     tree_name, rank_name, tree_def_id = tuple(key.split(RANK_KEY_DELIMITER))
     return TreeRankRecord(RANK_KEY_DELIMITER.join([tree_name, rank_name]), int(tree_def_id))

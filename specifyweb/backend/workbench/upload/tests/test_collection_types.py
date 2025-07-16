@@ -1,6 +1,6 @@
 from jsonschema import validate # type: ignore
 
-from specifyweb.workbench.upload.tests.base import UploadTestsBase
+from specifyweb.backend.workbench.upload.tests.base import UploadTestsBase
 from ..upload_plan_schema import schema, parse_plan
 from specifyweb.specify.models import Collectionobjecttype, Collectionobject
 from ..scope_context import ScopeContext

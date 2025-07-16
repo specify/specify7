@@ -4,7 +4,7 @@ from typing import Dict, Any, Optional, List, NamedTuple, Tuple, Union, NoReturn
 from django.core.exceptions import ObjectDoesNotExist
 
 from specifyweb.specify.datamodel import datamodel
-from specifyweb.workbench.upload.predicates import filter_match_key
+from specifyweb.backend.workbench.upload.predicates import filter_match_key
 from .column_options import ExtendedColumnOptions
 from specifyweb.specify.parse import parse_field, is_latlong, ParseSucess, ParseFailure
 
