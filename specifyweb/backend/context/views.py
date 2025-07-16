@@ -16,6 +16,7 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest, \
 from django.urls import URLPattern
 from django.utils.translation import get_language_info
 from django.utils.translation import gettext as _
+from django.utils import timezone
 from django.views.decorators.cache import cache_control, never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.i18n import LANGUAGE_QUERY_PARAMETER
@@ -635,9 +636,8 @@ def remote_prefs(request):
     return HttpResponse(get_remote_prefs(), content_type='text/x-java-properties')
 
 @require_http_methods(['GET', 'HEAD'])
-def time_zone(request):
-    """Return the back-end time zone."""
-    return JsonResponse({"time_zone": settings.TIME_ZONE})
+def get_server_time(request):
+    return JsonResponse({"server_time": timezone.now().isoformat()})
 
 @require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, public=True)
