@@ -418,8 +418,8 @@ def app_resource(request):
 @cache_control(max_age=86400, private=True)
 def available_related_searches(request):
     """Return a list of the available 'related' express searches."""
-    from specifyweb.express_search import related_searches
-    from specifyweb.express_search.views import get_express_search_config
+    from specifyweb.backend.express_search import related_searches
+    from specifyweb.backend.express_search.views import get_express_search_config
 
     express_search_config = get_express_search_config(request.specify_collection, request.specify_user)
     active = [int(q.find('id').text)
