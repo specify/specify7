@@ -9,7 +9,7 @@ from specifyweb.businessrules import models as businessrules_models
 from specifyweb.context import models as context_models
 from specifyweb.backend.notifications import models as notifications_models
 from specifyweb.backend.permissions import models as permissions_models
-from specifyweb.interactions import models as interactions_models
+from specifyweb.backend.interactions import models as interactions_models
 from specifyweb.workbench import models as workbench_models
 from specifyweb.specify import models as spmodels
 
