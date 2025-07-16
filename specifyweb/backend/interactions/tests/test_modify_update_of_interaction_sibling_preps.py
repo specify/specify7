@@ -1,6 +1,6 @@
 from typing import Any, Callable, List
-from specifyweb.interactions.cog_preps import modify_update_of_interaction_sibling_preps
-from specifyweb.interactions.tests.test_cog_consolidated_prep_sibling_context import (
+from specifyweb.backend.interactions.cog_preps import modify_update_of_interaction_sibling_preps
+from specifyweb.backend.interactions.tests.test_cog_consolidated_prep_sibling_context import (
     TestCogConsolidatedPrepSiblingContext,
 )
 from specifyweb.specify import api
