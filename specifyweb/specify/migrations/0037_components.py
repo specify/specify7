@@ -13,21 +13,23 @@ PICKLIST_NAME = 'CollectionObjectType'
 FIELD_NAME = 'type'
 
 def remove_0029_schema_config_fields(apps, schema_editor):
-    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
     for table, fields in FIELDS_TO_REMOVE.items():
-        containers = Splocalecontainer.objects.filter(name=table.lower(), schematype=0)
-        for container in containers:
-            for field_name, _, _ in fields:
-                items = Splocalecontaineritem.objects.filter(
-                    container=container,
-                    name=field_name.lower()
-                )
-                Splocaleitemstr.objects.filter(itemdesc__in=items).delete()
-                Splocaleitemstr.objects.filter(itemname__in=items).delete()
-                items.delete()
+        items = Splocalecontaineritem.objects.filter(
+            container__name=table.lower(),
+            container__schematype=0,
+            # we only need the field name from the tuple of Schema Config information
+            name__in=list(map(lambda f: f[0].lower(), fields))
+        )
+
+        # Delete field labels (captions) and descriptions (Splocaleitemstr) associated with the fields
+        Splocaleitemstr.objects.filter(
+            models.Q(itemdesc__in=items) | models.Q(itemname__in=items)
+        ).delete()
+
+        items.delete()
 
 def create_table_schema_config_with_defaults(apps, schema_editor):
     Discipline = specify_apps.get_model('specify', 'Discipline')
