@@ -44,7 +44,7 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'specifyweb.hibernateboolsbackend.backends.mysql',
+        'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
         'NAME': DATABASE_NAME,
         'USER': MASTER_NAME,
         'PASSWORD': MASTER_PASSWORD,
