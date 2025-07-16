@@ -1482,6 +1482,7 @@ def catalog_number_for_sibling(request: http.HttpRequest):
         return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)                  
                                 
 # Display catalog number from parent CO on forms
+# Todo: document with openAPI
 @login_maybe_required
 @require_POST
 def catalog_number_from_parent(request: http.HttpRequest):
