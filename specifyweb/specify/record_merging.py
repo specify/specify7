@@ -115,6 +115,8 @@ def fix_orderings(base_model: Table, new_record_data):
                               for ordering_field in ordering_fields])
                                 for record in records}
 
+        # The lengths will be different in the case where the ordering fields are duplicated.
+        # For example, the ordernumber is same for two collectors.
         if len(order_fields_data) != len(records):
             resources = []
             for record in records:
@@ -201,6 +203,7 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
         foreign_table = spmodels.datamodel.get_table(table_name)
         foreign_model = get_app_model(table_name.lower().title())
 
+        # BUG: This shouldn't be .title().
         apply_order = add_ordering_to_key(table_name.lower().title())
         # BUG: timestampmodified could be null for one record, and not the other
         new_key_fields = ('timestampcreated', 'timestampmodified', 'id') \
