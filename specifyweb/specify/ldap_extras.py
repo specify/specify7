@@ -25,7 +25,7 @@ def handle_populate_user(sender, user, ldap_user, **kwargs):
     from django.db import connection
     from .models import Collection, Division, Agent
     from .agent_types import agent_types
-    from specifyweb.context.views import set_users_collections
+    from specifyweb.backend.context.views import set_users_collections
 
     for division in Division.objects.all():
         agent, created = Agent.objects.get_or_create(

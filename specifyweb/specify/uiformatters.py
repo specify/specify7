@@ -16,7 +16,7 @@ from django.db import connection
 
 logger = logging.getLogger(__name__)
 
-from specifyweb.context.app_resource import get_app_resource
+from specifyweb.backend.context.app_resource import get_app_resource
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify import models
 

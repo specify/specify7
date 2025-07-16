@@ -11,7 +11,7 @@ from django.db import connection
 from django.conf import settings
 
 from specifyweb.specify.models import Spauditlog, Spauditlogfield
-from specifyweb.context.remote_prefs import get_remote_prefs, get_global_prefs
+from specifyweb.backend.context.remote_prefs import get_remote_prefs, get_global_prefs
 from specifyweb.specify.models import datamodel
 
 Collection = datamodel.get_table_strict('Collection')

@@ -402,7 +402,7 @@ def set_user_agents(request, userid: int):
 
 
 def check_collection_access_against_agents(userid: int) -> None:
-    from specifyweb.context.views import users_collections_for_sp6, users_collections_for_sp7
+    from specifyweb.backend.context.views import users_collections_for_sp6, users_collections_for_sp7
 
     # get the list of collections the agents belong to.
     collections = spmodels.Collection.objects.filter(

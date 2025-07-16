@@ -18,7 +18,7 @@ class PermissionsApiTest(ApiTests):
             action='%',
         )
         # Because the test database doesn't have specifyuser_spprincipal
-        from specifyweb.context import views
+        from specifyweb.backend.context import views
         views.users_collections_for_sp6 = lambda cursor, userid: []
 
     def test_set_user_policies(self) -> None:
