@@ -56,7 +56,8 @@ const fileNameTestSpec: TestDefinition = {
         }),
       ],
       tables.CollectionObject,
-      tables.CollectionObject?.getLiteralField('catalogNumber')
+      tables.CollectionObject?.getLiteralField('catalogNumber'),
+      'testNumeric'
     ),
     testCases: [
       ['000.jpg', '000'],
@@ -81,7 +82,8 @@ const fileNameTestSpec: TestDefinition = {
         }),
       ],
       tables.CollectionObject,
-      tables.CollectionObject?.getLiteralField('catalogNumber')
+      tables.CollectionObject?.getLiteralField('catalogNumber'),
+      'testRegex'
     ),
     testCases: [
       ['45265.jpg', '45265'],
