@@ -177,7 +177,7 @@ def do_upload_dataset(
     batch_edit_packs = [get_batch_edit_pack_from_row(ncols, row) for row in ds.data]
     base_table, upload_plan, batchEditPrefs = get_raw_ds_upload_plan(ds)
 
-    results = do_upload(
+    results, failed_rows = do_upload(
         collection,
         rows,
         upload_plan,
@@ -197,9 +197,19 @@ def do_upload_dataset(
         ),
     )
     success = not any(r.contains_failure() for r in results)
+
+    # Export failed rows
     if FORCE_UPLOAD:
         # upload counts as success if at least one row uploaded
         success = any(not r.contains_failure() for r in results)
+
+        agent = models.Agent.objects.get(id=uploading_agent_id)
+        user = agent.specifyuser
+        
+        logger.debug(failed_rows)
+        if len(failed_rows) > 0:
+            export_failed_rows(failed_rows, user)
+
     if not no_commit:
         ds.uploadresult = {
             "success": success,
@@ -292,12 +302,6 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadab
     base_table, plan, _ = get_raw_ds_upload_plan(ds)
     return base_table, plan.apply_scoping(collection)
 
-from django.conf import settings
-import csv
-import re
-import os
-from specifyweb.notifications.models import Message
-import uuid
 
 def do_upload(
     collection,
@@ -388,43 +392,42 @@ def do_upload(
         else:
             fixup_trees(scoped_table, results)
 
-    if FORCE_UPLOAD:
-        logger.debug(failed_rows)
-        if len(failed_rows) > 0:
-            message_type = "workbench-failed-rows"
+    return results, failed_rows
 
-
-            filename = f"failed_rows_{uuid.uuid4().hex}.csv"
-            path = os.path.join(settings.DEPOSITORY_DIR, filename)
-            bom = True
-            delimiter = ','
-            headers = []
-            
-            encoding = 'utf-8-sig' if bom else 'utf-8'
-
-            column_order = None
-            if column_order is None:
-                column_order = list(failed_rows[0].keys())
-
-            with open(path, 'w', newline='', encoding=encoding) as f:
-                csv_writer = csv.DictWriter(f, fieldnames=column_order, delimiter=delimiter)
-                csv_writer.writeheader()
-                for row in failed_rows:
-                    csv_writer.writerow(row)
-
-            user = models.Specifyuser.objects.get(name="spbirdadmin")
-
-            Message.objects.create(user=user, content=json.dumps({
-                'type': message_type,
-                'file': filename,
-                'datasetname': 'PLACEHOLDER',
-            }))
-
-    return results
-
-
+from django.conf import settings
+import csv
+import re
+import os
+from specifyweb.notifications.models import Message
+import uuid
 do_upload_csv = do_upload
 
+def export_failed_rows(failed_rows, user):
+    message_type = "workbench-failed-rows"
+
+
+    filename = f"failed_rows_{uuid.uuid4().hex}.csv"
+    path = os.path.join(settings.DEPOSITORY_DIR, filename)
+    bom = True
+    delimiter = ','
+    
+    encoding = 'utf-8-sig' if bom else 'utf-8'
+
+    column_order = None
+    if column_order is None:
+        column_order = list(failed_rows[0].keys())
+
+    with open(path, 'w', newline='', encoding=encoding) as f:
+        csv_writer = csv.DictWriter(f, fieldnames=column_order, delimiter=delimiter)
+        csv_writer.writeheader()
+        for row in failed_rows:
+            csv_writer.writerow(row)
+
+    Message.objects.create(user=user, content=json.dumps({
+        'type': message_type,
+        'file': filename,
+        'datasetname': 'PLACEHOLDER',
+    }))
 
 def validate_row(
     collection,
