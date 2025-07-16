@@ -40,36 +40,22 @@ def create_table_schema_config_with_defaults(apps, schema_editor):
                 update_table_field_schema_config_with_defaults(table, discipline.id, field, apps)
 
 def update_schema_config_field_desc(apps, schema_editor):
-    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
-    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
     for table, fields in SCHEMA_CONFIG_COMPONENT_TABLE_FIELDS.items():
-        #i.e: Collection Object
-        containers = Splocalecontainer.objects.filter(
-            name=table.lower(),
-        )
+        for field_name, new_name, new_desc in fields:
 
-        for container in containers:
-            for field_name, new_name, new_desc in fields:
-                #i.e: COType
-                items = Splocalecontaineritem.objects.filter(
-                    container=container,
-                    name=field_name.lower()
-                )
+            Splocaleitemstr.objects.filter(
+                itemdesc__container__name=table.lower(),
+                itemdesc__container__schematype=0,
+                itemdesc__name=field_name.lower()
+            ).update(text=new_desc)
 
-                for item in items:
-                    localized_items_desc = Splocaleitemstr.objects.filter(itemdesc_id=item.id).first()
-                    localized_items_name = Splocaleitemstr.objects.filter(itemname_id=item.id).first()
-
-                    if localized_items_desc is None or localized_items_name is None:
-                        continue
-
-                    localized_items_desc.text = new_desc
-                    localized_items_desc.save() 
-
-                    localized_items_name.text = new_name
-                    localized_items_name.save() 
+            Splocaleitemstr.objects.filter(
+                itemname__container__name=table.lower(),
+                itemname__container__schematype=0,
+                itemname__name=field_name.lower()
+            ).update(text=new_name)
 
 def update_hidden_prop(apps, schema_editor):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
