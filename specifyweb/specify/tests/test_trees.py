@@ -85,6 +85,15 @@ class TestTree:
         )
         self._node_list.append(node)
         return node
+    
+    def make_storagetree(self, name, rank_name, **extra_kwargs):
+        node = models.Storage.objects.create(
+            name=name,
+            definitionitem=models.Storagetreedefitem.objects.get(name=rank_name),
+            **extra_kwargs
+        )
+        self._node_list.append(node)
+        return node
 
 
 class GeographyTree(TestTree, TestTreeSetup):
