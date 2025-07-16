@@ -165,9 +165,18 @@ export function useHotHooks({
       const filteredChanges = unfilteredChanges
         .filter((change): change is CellChange => change !== null)
         .filter(
-          ([, property]) =>
-            (property as number) < workbench.dataset.columns.length
-        );
+          ([, prop]) => {
+            let columnIndex: number | undefined;
+      
+            if (typeof prop === 'number') {
+              columnIndex = prop;
+            } else if (typeof prop === 'string' && workbench.dataset.columns) {
+              columnIndex = workbench.dataset.columns.findIndex(colDef => (colDef as { data: string }).data === prop);
+            }
+            
+            return columnIndex !== undefined && columnIndex >= 0 && columnIndex < workbench.dataset.columns.length;
+          }
+      );
       if (
         filteredChanges.length === unfilteredChanges.length ||
         workbench.hot === undefined
