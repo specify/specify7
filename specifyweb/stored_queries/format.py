@@ -299,12 +299,7 @@ class ObjectFormatter:
         aliased_orm_table = aliased(orm_table)
 
         if is_self_join_aggregation: # Handle self join aggregation
-            if field.name in {'children', 'components'} and field.relatedModelName == 'CollectionObject':
-                # Child = aliased(orm_table)
-                subquery_query = Query([]) \
-                    .select_from(aliased_orm_table) \
-                    .correlate(rel_table)
-            elif field.is_relationship and \
+            if field.is_relationship and \
                 field.type == 'one-to-many' and \
                 field.otherSideName in [fld.name for fld in specify_model.relationships]:
                 # Handle self join aggregation in the general case
