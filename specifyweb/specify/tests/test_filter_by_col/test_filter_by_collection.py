@@ -15,16 +15,6 @@ from specifyweb.specify.tests.test_trees import GeographyTree
 
 class TestFilterByCollection(GeographyTree):
 
-    def make_taxontree(self, name, rank_name, **extra_kwargs):
-        node = Taxon.objects.create(
-            name=name,
-            definitionitem=Taxontreedefitem.objects.get(name=rank_name),
-            definition=self.taxontreedef,
-            **extra_kwargs
-        )
-        self._node_list.append(node)
-        return node
-
     def test_attachment(self):
 
         collection_2 = Collection.objects.create(
