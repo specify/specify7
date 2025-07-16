@@ -22,8 +22,8 @@ class TestTreeSetup(ApiTests):
         self.geographytreedef.treedefitems.create(name="City", rankid=500)
 
         self.taxontreedef = models.Taxontreedef.objects.create(name="Test Taxonomy")
-        self.taxontreedef.treedefitems.create(name="Taxonomy Root", rankid=0)
-        self.taxontreedef.treedefitems.create(name="Kingdom", rankid=10)
+        self.taxon_root = self.taxontreedef.treedefitems.create(name="Taxonomy Root", rankid=0)
+        self.taxon_kingdom = self.taxontreedef.treedefitems.create(name="Kingdom", rankid=10)
         self.taxontreedef.treedefitems.create(name="Phylum", rankid=30)
         self.taxontreedef.treedefitems.create(name="Class", rankid=60)
         self.taxontreedef.treedefitems.create(name="Order", rankid=100)
@@ -39,7 +39,6 @@ class TestTreeSetup(ApiTests):
         self.collectionobjecttype.save()
         self.collection.collectionobjecttype = self.collectionobjecttype
         self.collection.save()
-
 
 class TestTree:
 
@@ -73,6 +72,15 @@ class TestTree:
                 name=rank_name
             ),
             definition=self.geographytreedef,
+            **extra_kwargs
+        )
+        self._node_list.append(node)
+        return node
+    
+    def make_taxontree(self, name, rank_name, **extra_kwargs):
+        node = models.Taxon.objects.create(
+            name=name,
+            definitionitem=models.Taxontreedefitem.objects.get(name=rank_name),
             **extra_kwargs
         )
         self._node_list.append(node)
