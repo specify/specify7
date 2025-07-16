@@ -171,9 +171,11 @@ export function useHotHooks({
             if (typeof prop === 'number') {
               columnIndex = prop;
             } else if (typeof prop === 'string' && workbench.dataset.columns) {
-              columnIndex = workbench.dataset.columns.findIndex(colDef => (colDef as { data: string }).data === prop);
+              columnIndex = workbench.dataset.columns.findIndex(colDef => {
+                return (colDef as unknown as { data: string }).data === prop;
+              });
             }
-            
+      
             return columnIndex !== undefined && columnIndex >= 0 && columnIndex < workbench.dataset.columns.length;
           }
       );
