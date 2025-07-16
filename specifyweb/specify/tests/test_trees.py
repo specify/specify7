@@ -65,6 +65,10 @@ class TestTree:
         self.springmo = self.make_geotree("Springfield", "City", parent=self.greene)
         self.springill = self.make_geotree("Springfield", "City", parent=self.sangomon)
 
+    def refresh_all(self):
+        for node in self._node_list:
+            node.refresh_from_db()
+
     def make_geotree(self, name, rank_name, **extra_kwargs):
         node = get_table("Geography").objects.create(
             name=name,
