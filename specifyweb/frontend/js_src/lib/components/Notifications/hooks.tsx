@@ -2,7 +2,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { ajax } from '../../utils/ajax';
-import { formatDateForBackEnd } from '../../utils/parser/dateFormat';
+import { fetchServerTime } from '../../utils/fetchServerTime';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { MINUTE, SECOND } from '../Atoms/timeUnits';
@@ -32,17 +32,32 @@ export function useNotificationsFetch({
   >(undefined);
 
   const lastFetchDateRef = React.useRef<Date | undefined>(undefined);
+  const lastRawTimeRef = React.useRef<string | undefined>(undefined);
 
   React.useEffect(() => {
     let pullInterval = INITIAL_INTERVAL;
     let timeout: NodeJS.Timeout | undefined = undefined;
+    let destructorCalled = false;
 
-    const doFetch = (since = new Date()): void => {
-      const startFetchTimestamp = new Date();
+    const doFetch = async (): Promise<void> => {
+      let startFetchTimestamp: Date;
+      let rawServerTime: string;
 
-      const url = getSinceUrl(
-        lastFetchDateRef.current === undefined ? undefined : since
-      );
+      try {
+        const result = await fetchServerTime();
+        startFetchTimestamp = result.date;
+        rawServerTime = result.rawTime;
+      } catch (error) {
+        console.error('Error fetching server time, using local time', error);
+        startFetchTimestamp = new Date();
+        rawServerTime = startFetchTimestamp.toISOString();
+      }
+
+      // Use raw server time string for URL
+      const baseUrl = `/notifications/messages/`;
+      const url = lastRawTimeRef.current === undefined
+        ? baseUrl
+        : formatUrl(baseUrl, { since: formatDateForServer(lastRawTimeRef.current) });
 
       /*
        * Poll interval is scaled exponentially to reduce requests if the tab is
@@ -81,12 +96,15 @@ export function useNotificationsFetch({
           );
 
           lastFetchDateRef.current = startFetchTimestamp;
+          lastRawTimeRef.current = rawServerTime;
           // Stop updating if tab is hidden
           timeout =
             document.visibilityState === 'hidden'
               ? undefined
               : globalThis.setTimeout(
-                  () => doFetch(lastFetchDateRef.current),
+                  () => {
+                    void doFetch();
+                  },
                   pullInterval
                 );
         })
@@ -104,16 +122,14 @@ export function useNotificationsFetch({
 
     document.addEventListener('visibilitychange', handler);
 
-    doFetch();
-
-    let destructorCalled = false;
+    void doFetch();
 
     return (): void => {
       document.removeEventListener('visibilitychange', handler);
       destructorCalled = true;
       if (timeout !== undefined) globalThis.clearTimeout(timeout);
     };
-  }, [isOpen]);
+  }, [isOpen, freezeFetchPromise]);
 
   return { notifications, setNotifications };
 }
@@ -151,11 +167,32 @@ function mergeAndSortNotifications(
 
 function getSinceUrl(time: Date | undefined): string {
   const baseUrl = `/notifications/messages/`;
-  return time === undefined
-    ? baseUrl
-    : formatUrl(baseUrl, {
-        since: formatDateForBackEnd(time),
-      });
+  if (time === undefined) return baseUrl;
+
+  // Extract the date parts directly from the server time to preserve the timezone
+  const year = time.getFullYear();
+  const month = time.getMonth() + 1; // getMonth is 0-indexed
+  const day = time.getDate();
+  const hours = time.getHours();
+  const minutes = time.getMinutes();
+  const seconds = time.getSeconds();
+
+  // Format in the exact format expected by the server
+  const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+  return formatUrl(baseUrl, {
+    since: formattedDate,
+  });
+}
+
+// This function formats the date string to be used in the URL
+function formatDateForServer(isoString: string): string {
+  // This parses the ISO string and formats it so it can be used in the URL
+  // All the Date object methods apply timezone conversion magic...
+  const match = isoString.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/); // Magic regex to match ISO date format
+  if (!match) return isoString; // If the format is unexpected, return the original string. At least this won't crash.
+  const [_, year, month, day, hours, minutes, seconds] = match;
+  return `${year}-${parseInt(month, 10)}-${parseInt(day, 10)} ${hours}:${minutes}:${seconds}`;
 }
 
 export const exportsForTests = {
