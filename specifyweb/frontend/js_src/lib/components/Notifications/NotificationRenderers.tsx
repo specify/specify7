@@ -106,10 +106,24 @@ export const notificationRenderers: IR<
       </>
     );
   },
-  'query-export-to-kml-complete'(notification) {
+  'query-export-to-csv-complete'(notification) {
     return (
       <>
-        {notificationsText.queryExportToKmlCompleted()}
+        {notificationsText.queryExportToCsvCompleted()}
+        <Link.Success
+          className="w-fit"
+          download
+          href={`/static/depository/${notification.payload.file}`}
+        >
+          {notificationsText.download()}
+        </Link.Success>
+      </>
+    );
+  },
+  'workbench-failed-rows'(notification) {
+    return (
+      <>
+        {notificationsText.workbenchFailedRows({name:notification.payload.datasetname})}
         <Link.Success
           className="w-fit"
           download

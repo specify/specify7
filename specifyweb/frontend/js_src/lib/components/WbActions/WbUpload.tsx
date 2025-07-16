@@ -10,6 +10,8 @@ import type { WbCellCounts } from '../WorkBench/CellMeta';
 import type { WbMapping } from '../WorkBench/mapping';
 import type { WbStatus } from '../WorkBench/WbView';
 
+const FORCE_UPLOAD = true
+
 export function WbUpload({
   hasUnsavedChanges,
   mappings,
@@ -44,7 +46,7 @@ export function WbUpload({
     <>
       <Button.Small
         aria-haspopup="dialog"
-        disabled={hasUnsavedChanges || cellCounts.invalidCells > 0}
+        disabled={hasUnsavedChanges || (cellCounts.invalidCells > 0 && FORCE_UPLOAD !== true)}
         title={
           hasUnsavedChanges
             ? wbText.unavailableWhileEditing()

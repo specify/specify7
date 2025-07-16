@@ -153,6 +153,7 @@ def unupload_record(upload_result: UploadResult, agent) -> None:
         unupload_record(record, agent)
 
 
+FORCE_UPLOAD = True
 def do_upload_dataset(
     collection,
     uploading_agent_id: int,
@@ -196,6 +197,9 @@ def do_upload_dataset(
         ),
     )
     success = not any(r.contains_failure() for r in results)
+    if FORCE_UPLOAD:
+        # upload counts as success if at least one row uploaded
+        success = any(not r.contains_failure() for r in results)
     if not no_commit:
         ds.uploadresult = {
             "success": success,
@@ -288,6 +292,13 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadab
     base_table, plan, _ = get_raw_ds_upload_plan(ds)
     return base_table, plan.apply_scoping(collection)
 
+from django.conf import settings
+import csv
+import re
+import os
+from specifyweb.notifications.models import Message
+import uuid
+
 def do_upload(
     collection,
     rows: Rows,
@@ -315,6 +326,10 @@ def do_upload(
 
     scope_context = ScopeContext()
 
+    if FORCE_UPLOAD:
+        allow_partial = True
+
+    failed_rows = []
     with savepoint("main upload"):
         tic = time.perf_counter()
         results: List[UploadResult] = []
@@ -359,8 +374,11 @@ def do_upload(
                     f"finished row {len(results)}, cache size: {cache and len(cache)}"
                 )
                 if result.contains_failure():
-                    cache = _cache
-                    raise Rollback("failed row")
+                    if FORCE_UPLOAD:
+                        failed_rows.append(row)
+                    else:
+                        cache = _cache
+                        raise Rollback("failed row")
 
         toc = time.perf_counter()
         logger.info(f"finished upload of {len(results)} rows in {toc-tic}s")
@@ -369,6 +387,38 @@ def do_upload(
             raise Rollback("no_commit option")
         else:
             fixup_trees(scoped_table, results)
+
+    if FORCE_UPLOAD:
+        logger.debug(failed_rows)
+        if len(failed_rows) > 0:
+            message_type = "workbench-failed-rows"
+
+
+            filename = f"failed_rows_{uuid.uuid4().hex}.csv"
+            path = os.path.join(settings.DEPOSITORY_DIR, filename)
+            bom = True
+            delimiter = ','
+            headers = []
+            
+            encoding = 'utf-8-sig' if bom else 'utf-8'
+
+            column_order = None
+            if column_order is None:
+                column_order = list(failed_rows[0].keys())
+
+            with open(path, 'w', newline='', encoding=encoding) as f:
+                csv_writer = csv.DictWriter(f, fieldnames=column_order, delimiter=delimiter)
+                csv_writer.writeheader()
+                for row in failed_rows:
+                    csv_writer.writerow(row)
+
+            user = models.Specifyuser.objects.get(name="spbirdadmin")
+
+            Message.objects.create(user=user, content=json.dumps({
+                'type': message_type,
+                'file': filename,
+                'datasetname': 'PLACEHOLDER',
+            }))
 
     return results
 
