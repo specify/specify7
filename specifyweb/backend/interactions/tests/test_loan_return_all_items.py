@@ -1,5 +1,5 @@
 from django.test import Client
-from specifyweb.interactions.tests.test_loan_preps_context import TestLoanPrepsContext
+from specifyweb.backend.interactions.tests.test_loan_preps_context import TestLoanPrepsContext
 
 import json
 
