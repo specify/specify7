@@ -905,28 +905,6 @@ export const formsText = createDictionary({
     'de-ch': 'Dieses Feld ist erforderlich. Es muss übertragen werden',
     'pt-br': 'Este campo é obrigatório. Deve ser levado adiante',
   },
-  bulkCarryForwardRangeEnabled: {
-    'en-us': 'Show Bulk Carry Forward range',
-  },
-  bulkCarryForwardRangeErrorDescription: {
-    'en-us':
-      'Cannot carry forward record through the specified {field:string} range.',
-  },
-  bulkCarryForwardRangeLimitExceeded: {
-    'en-us': 'Range exceeds record limit of {limit:number}.',
-  },
-  bulkCarryForwardRangeExistingRecords: {
-    'en-us': 'The following numbers for {field:string} are already being used:',
-  },
-  bulkCarryForwardRangeStart: {
-    'en-us': 'Carry Forward Range Start',
-  },
-  bulkCarryForwardRangeEnd: {
-    'en-us': 'Carry Forward Range End',
-  },
-  createRecordSetOnBulkCarryForward: {
-    'en-us': 'Create record set on Bulk Carry Forward',
-  },
   cloneButtonEnabled: {
     'en-us': 'Show Clone button',
     'ru-ru': 'Показать кнопку «Клонировать»',
