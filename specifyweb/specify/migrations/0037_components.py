@@ -58,23 +58,14 @@ def update_schema_config_field_desc(apps, schema_editor):
             ).update(text=new_name)
 
 def update_hidden_prop(apps, schema_editor):
-    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
     for table, fields in SCHEMA_CONFIG_TABLE_FIELDS.items():
-        containers = Splocalecontainer.objects.filter(
-            name=table.lower(),
-        )
-        for container in containers:
-            for field_name in fields:
-                items = Splocalecontaineritem.objects.filter(
-                    container=container,
-                    name=field_name.lower()
-                )
-
-                for item in items:
-                    item.ishidden = True
-                    item.save()
+        Splocalecontaineritem.objects.filter(
+            container__name=table.lower(),
+            container__schematype=0,
+            name__in=list(map(lambda f: f.lower(), fields))
+        ).update(ishidden=True)
 
 def create_cotype_splocalecontaineritem(apps):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
