@@ -85,23 +85,14 @@ def create_cotype_splocalecontaineritem(apps):
     )
 
 def hide_component_fields(apps, schema_editor):
-    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
-    Discipline = apps.get_model('specify', 'Discipline')
 
-    for discipline in Discipline.objects.all():
-        for table, fields in SCHEMA_CONFIG_HIDDEN_FIELDS.items():
-            containers = Splocalecontainer.objects.filter(
-                name=table.lower(),
-                discipline_id=discipline.id,
-            )
-            for container in containers:
-                for field_name in fields:
-                    items = Splocalecontaineritem.objects.filter(
-                        container=container,
-                        name=field_name.lower()
-                    )
-                    items.update(ishidden=True)
+    for table, fields in SCHEMA_CONFIG_HIDDEN_FIELDS.items():
+        Splocalecontaineritem.objects.filter(
+            container__name=table.lower(),
+            container__schematype=0,
+            name__in=list(map(lambda f: f.lower(), fields))
+        ).update(ishidden=True)
 
 def restore_0029_schema_config_fields(apps, schema_editor):
     Discipline = apps.get_model('specify', 'Discipline')
