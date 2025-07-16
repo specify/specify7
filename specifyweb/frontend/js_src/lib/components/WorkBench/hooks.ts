@@ -1,4 +1,5 @@
 import type Handsontable from 'handsontable';
+import type { CellChange } from 'handsontable/common';
 // Import type { CellChange } from 'handsontable/common';
 import type { Events } from 'handsontable/pluginHooks';
 import type { Action } from 'handsontable/plugins/undoRedo';
@@ -159,29 +160,57 @@ export function useHotHooks({
      * arguments that are inconvenient to work with
      *
      */
+    /*
+     * BeforeChange: (unfilteredChanges, source) => {
+     *   if (source !== 'CopyPaste.paste') return true;
+     */
+
+    /*
+     *   Const filteredChanges = unfilteredChanges
+     *     // .filter((change): change is CellChange => change !== null)
+     *     .filter(
+     *       ([, property]) =>
+     *         (property as number) < workbench.dataset.columns.length
+     *     );
+     *   if (
+     *     filteredChanges.length === unfilteredChanges.length ||
+     *     workbench.hot === undefined
+     *   )
+     *     return true;
+     *   workbench.hot.setDataAtCell(
+     *     filteredChanges.map(([visualRow, property, _oldValue, newValue]) => [
+     *       visualRow,
+     *       workbench.hot!.propToCol(property as number),
+     *       newValue,
+     *     ]),
+     *     'CopyPaste.paste'
+     *   );
+     *   return false;
+     * },
+     */
+
     beforeChange: (unfilteredChanges, source) => {
       if (source !== 'CopyPaste.paste') return true;
 
-      const filteredChanges = unfilteredChanges
-        // .filter((change): change is CellChange => change !== null)
-        .filter(
-          ([, property]) =>
-            (property as number) < workbench.dataset.columns.length
-        );
-      if (
-        filteredChanges.length === unfilteredChanges.length ||
-        workbench.hot === undefined
-      )
-        return true;
-      workbench.hot.setDataAtCell(
-        filteredChanges.map(([visualRow, property, _oldValue, newValue]) => [
-          visualRow,
-          workbench.hot!.propToCol(property as number),
-          newValue,
-        ]),
-        'CopyPaste.paste'
+      // Filter out null values first
+      const validChanges = (unfilteredChanges ?? []).filter(
+        (change): change is CellChange => change !== null
       );
-      return false;
+
+      // Now apply your filtering logic
+      const filteredChanges = validChanges.filter(
+        ([, property]) =>
+          (property as number) < workbench.dataset.columns.length
+      );
+
+      // If no valid changes left, cancel the paste
+      if (filteredChanges.length === 0) return false;
+
+      // Replace original changes (modifies the array by reference)
+      unfilteredChanges.length = 0;
+      unfilteredChanges.push(...filteredChanges);
+
+      return true;
     },
 
     afterChange: (unfilteredChanges, source) => {
