@@ -18,8 +18,8 @@ from sqlalchemy import types
 
 from typing import Tuple, Optional, Union
 
-import specifyweb.context.app_resource as app_resource
-from specifyweb.context.remote_prefs import get_remote_prefs
+import specifyweb.backend.context.app_resource as app_resource
+from specifyweb.backend.context.remote_prefs import get_remote_prefs
 
 from specifyweb.specify.agent_types import agent_types
 from specifyweb.specify.models import datamodel, Splocalecontainer, Splocalecontaineritem, Picklist

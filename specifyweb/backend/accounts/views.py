@@ -344,7 +344,7 @@ def choose_collection(request) -> http.HttpResponse:
     through here, we also use the opportunity to associate an external
     id to the user if one is provided.
     """
-    from specifyweb.context.views import set_collection_cookie, users_collections_for_sp7
+    from specifyweb.backend.context.views import set_collection_cookie, users_collections_for_sp7
     from specifyweb.specify.api import obj_to_data, toJson
 
     if 'external_user' in request.session and request.user.is_authenticated:

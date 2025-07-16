@@ -48,7 +48,7 @@ def create_admins(apps=apps) -> None:
             )
 
 def assign_users_to_roles(apps=apps) -> None:
-    from specifyweb.context.views import users_collections_for_sp6
+    from specifyweb.backend.context.views import users_collections_for_sp6
 
     Role = apps.get_model('permissions', 'Role')
     UserPolicy = apps.get_model('permissions', 'UserPolicy')

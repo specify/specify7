@@ -12,7 +12,7 @@ from sqlalchemy.sql.expression import or_, and_
 
 from specifyweb.middleware.general import require_GET
 from .search_terms import parse_search_str
-from specifyweb.context.app_resource import get_app_resource
+from specifyweb.backend.context.app_resource import get_app_resource
 from specifyweb.backend.permissions.permissions import check_table_permissions
 from specifyweb.specify.api import toJson
 from specifyweb.specify.models import datamodel, Collection

@@ -946,7 +946,7 @@ class UserApiTests(ApiTests):
         super().setUp()
 
         # Because the test database doesn't have specifyuser_spprincipal
-        from specifyweb.context import views
+        from specifyweb.backend.context import views
 
         # TODO: Replace this with a mock.
         views.users_collections_for_sp6 = lambda cursor, userid: []
