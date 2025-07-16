@@ -12,9 +12,9 @@ from django.utils.translation import gettext as _
 from xml.etree import ElementTree as ET
 from xml.dom import minidom
 
-from specifyweb.stored_queries.execution import query_to_csv
-from specifyweb.stored_queries.queryfield import QueryField, EphemeralField
-from specifyweb.stored_queries.models import session_context
+from specifyweb.backend.stored_queries.execution import query_to_csv
+from specifyweb.backend.stored_queries.queryfield import QueryField, EphemeralField
+from specifyweb.backend.stored_queries.models import session_context
 
 logger = logging.getLogger(__name__)
 ET.register_namespace('eml', 'eml://ecoinformatics.org/eml-2.1.1')

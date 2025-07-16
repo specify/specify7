@@ -17,8 +17,8 @@ from specifyweb.specify.api import obj_to_data, toJson, \
     HttpResponseCreated, objs_to_data_, _obj_to_data
 from specifyweb.specify.models import Spappresource, Spappresourcedir, Spreport, Spquery
 from specifyweb.specify.views import login_maybe_required
-from specifyweb.stored_queries.execution import run_ephemeral_query, models
-from specifyweb.stored_queries.queryfield import QueryField
+from specifyweb.backend.stored_queries.execution import run_ephemeral_query, models
+from specifyweb.backend.stored_queries.queryfield import QueryField
 
 
 class ReportException(Exception):
