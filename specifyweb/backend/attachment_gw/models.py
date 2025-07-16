@@ -1,7 +1,7 @@
 from django.db import models
 from functools import partialmethod
 from specifyweb.specify.models import datamodel, custom_save
-from ..workbench.models import Dataset
+from specifyweb.workbench.models import Dataset
 
 class Spattachmentdataset(Dataset):
     specify_model = datamodel.get_table('spattachmentdataset')
