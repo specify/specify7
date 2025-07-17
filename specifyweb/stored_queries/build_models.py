@@ -1,7 +1,6 @@
 from typing import List
 from specifyweb.specify.load_datamodel import Datamodel, Table, Field, Relationship
-from sqlalchemy import Table as Table_Sqlalchemy, Column, ForeignKey, types, orm, MetaData
-from sqlalchemy.orm import column_property
+from sqlalchemy import Table as Table_Sqlalchemy, Column, ForeignKey, types, orm, MetaData, column as sql_column
 from sqlalchemy.dialects.mysql import BIT as mysql_bit_type
 metadata = MetaData()
 
@@ -76,7 +75,7 @@ def make_tables(datamodel: Datamodel):
 
 def make_classes(datamodel: Datamodel):
     def make_class(tabledef):
-        return type(tabledef.name, (object,), { 'tableid': tabledef.tableId, '_id': tabledef.idFieldName })
+        return type(tabledef.name, (object,), { 'tableid': tabledef.tableId, '_id': sql_column(tabledef.idFieldName)})
 
     return {td.name: make_class(td) for td in datamodel.tables}
 
@@ -116,49 +115,6 @@ def map_classes(datamodel: Datamodel, tables: list[Table], classes):
 
         orm.mapper(cls, table, properties=properties)
 
-        pk = table.c[tabledef.idColumn]
-        setattr(cls, "_id", column_property(pk))
-
     for tabledef in datamodel.tables:
         map_class(tabledef)
 
-# def map_classes(datamodel: Datamodel, tables: dict[str, Table_Sqlalchemy], classes: dict[str, type]):
-
-#     def map_class(tabledef: Table):
-#         cls = classes[tabledef.name]
-#         table = tables[tabledef.table]
-
-#         def make_relationship(reldef: Relationship):
-#             if not getattr(reldef, 'column', None) or reldef.relatedModelName not in classes:
-#                 return None
-
-#             remote_class = classes[reldef.relatedModelName]
-#             fk_col = getattr(table.c, reldef.column)
-#             rel_args = {'foreign_keys': fk_col}
-#             if remote_class is cls:
-#                 rel_args['remote_side'] = table.c[tabledef.idColumn]
-#             if getattr(reldef, 'otherSideName', None):
-#                 backref_args = {'uselist': reldef.type != 'one-to-one'}
-#                 rel_args['backref'] = orm.backref(reldef.otherSideName, **backref_args)
-#             return reldef.name, orm.relationship(remote_class, **rel_args)
-
-#         # map columns to class attributes
-#         properties: dict[str, Column] = {
-#             tabledef.idFieldName: table.c[tabledef.idColumn]
-#         }
-#         # add scalar fields
-#         for fld in tabledef.fields:
-#             properties[fld.name] = table.c[fld.column]
-#         # add relationship fields
-#         for rel in tabledef.relationships:
-#             rel_prop = make_relationship(rel)
-#             if rel_prop:
-#                 properties[rel_prop[0]] = rel_prop[1]
-
-#         orm.mapper(cls, table, properties=properties)
-
-#         pk_column = table.c[tabledef.idColumn]
-#         setattr(cls, '_id', column_property(pk_column))
-
-#     for tabledef in datamodel.tables:
-#         map_class(tabledef)

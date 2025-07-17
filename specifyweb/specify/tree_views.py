@@ -1,18 +1,16 @@
 from functools import wraps
 from django import http
-from typing import Literal, Tuple, TypedDict, Any, Dict, List
+from typing import Literal, TypedDict, Any
 from django.db import connection, transaction
-from django.db.models import F, Q
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
-from sqlalchemy import select, func, distinct, literal_column, literal
+from sqlalchemy import select, func, distinct, literal
 from sqlalchemy.orm import aliased
 
 from specifyweb.middleware.general import require_GET
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets, has_table_permission
 
-from specifyweb.specify.utils import get_sp_id_col
 from specifyweb.stored_queries import models as sqlmodels
 from specifyweb.stored_queries.execution import set_group_concat_max_len
 from specifyweb.stored_queries.group_concat import group_concat
@@ -167,16 +165,13 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
     node     = getattr(sqlmodels, tree_table.name)
     child    = aliased(node)
     accepted = aliased(node)
-    accepted_id_col = get_sp_id_col(accepted)
     synonym  = aliased(node)
 
-    id_col      = get_sp_id_col(node)
-    child_id    = get_sp_id_col(child)
     treedef_col = getattr(node, tree_table.name + "TreeDefID")
     orderby     = getattr(node, tree_table.get_field_strict(sortfield).name)
 
     cols = [
-        id_col.label("id"),
+        node._id.label("id"),
         func.min(node.name).label("name"),
         func.min(node.fullName).label("full_name"),
         func.min(node.nodeNumber).label("node_number"),
@@ -192,18 +187,18 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
             else func.min(literal("NULL"))
         ).label("author"),
 
-        func.count(distinct(child_id)).label("child_count"),
+        func.count(distinct(child._id)).label("child_count"),
         group_concat(distinct(synonym.fullName), separator=", ").label("synonyms"),
     ]
 
     query = (
         select(*cols)
-        .outerjoin(child, child.ParentID  == id_col)
-        .outerjoin(accepted, node.AcceptedID == accepted_id_col)
-        .outerjoin(synonym, synonym.AcceptedID == id_col)
+        .outerjoin(child, child.ParentID  == node._id)
+        .outerjoin(accepted, node.AcceptedID == accepted._id)
+        .outerjoin(synonym, synonym.AcceptedID == node._id)
         .where(treedef_col == int(treedef))
         .where(node.ParentID == parentid)
-        .group_by(id_col)
+        .group_by(node._id)
         .order_by(orderby)
     )
 

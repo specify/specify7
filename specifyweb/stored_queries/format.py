@@ -6,7 +6,7 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import Element
 from xml.sax.saxutils import quoteattr
 
-from specifyweb.specify.utils import get_picklists, get_sp_id_col
+from specifyweb.specify.utils import get_picklists
 from sqlalchemy import Table as SQLTable, inspect, case
 from sqlalchemy.orm import aliased, Query
 from sqlalchemy.sql.expression import func, cast, literal, Label
@@ -274,14 +274,11 @@ class ObjectFormatter:
         limit = None if limit == '' or int(limit) == 0 else limit
         orm_table = getattr(models, field.relatedModelName)
 
-        def _get_id_col(target):
-            return get_sp_id_col(target) if isinstance(target._id, str) else target._id
-
         join_column = list(inspect(
             getattr(orm_table, field.otherSideName)).property.local_columns)[0]
         subquery_query = Query([]) \
             .select_from(orm_table) \
-            .filter(join_column == _get_id_col(rel_table)) \
+            .filter(join_column == rel_table._id) \
             .correlate(rel_table)
 
         try:
@@ -303,7 +300,7 @@ class ObjectFormatter:
                 # Child = aliased(orm_table)
                 subquery_query = Query([]) \
                     .select_from(aliased_orm_table) \
-                    .filter(aliased_orm_table.ComponentParentID == _get_id_col(rel_table)) \
+                    .filter(aliased_orm_table.ComponentParentID == rel_table._id) \
                     .correlate(rel_table)
             elif field.is_relationship and \
                 field.type == 'one-to-many' and \
@@ -314,7 +311,7 @@ class ObjectFormatter:
                 join_column = getattr(aliased_orm_table, join_column_str)
                 subquery_query = Query([]) \
                     .select_from(aliased_orm_table) \
-                    .filter(join_column == _get_id_col(rel_table)) \
+                    .filter(join_column == rel_table._id) \
                     .correlate(rel_table)
             else:
                 is_self_join_aggregation = False

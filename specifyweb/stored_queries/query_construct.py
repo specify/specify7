@@ -1,12 +1,10 @@
 import logging
 from collections import namedtuple, deque
-from typing import Tuple, List
 
 from sqlalchemy import orm, sql, or_
 
 import specifyweb.specify.models as spmodels
 from specifyweb.specify.tree_utils import get_treedefs
-from specifyweb.specify.utils import get_sp_id_col
 
 from .queryfieldspec import TreeRankQuery, QueryFieldSpec
 from specifyweb.stored_queries import models
@@ -54,7 +52,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             ancestors = [node]
             for _ in range(max_depth-1):
                 ancestor = orm.aliased(node)
-                query = query.outerjoin(ancestor, ancestors[-1].ParentID == get_sp_id_col(ancestor))
+                query = query.outerjoin(ancestor, ancestors[-1].ParentID == ancestor._id)
                 ancestors.append(ancestor)
         
 
