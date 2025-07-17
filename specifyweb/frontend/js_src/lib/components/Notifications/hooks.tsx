@@ -165,26 +165,6 @@ function mergeAndSortNotifications(
   );
 }
 
-function getSinceUrl(time: Date | undefined): string {
-  const baseUrl = `/notifications/messages/`;
-  if (time === undefined) return baseUrl;
-
-  // Extract the date parts directly from the server time to preserve the timezone
-  const year = time.getFullYear();
-  const month = String(time.getMonth() + 1).padStart(2, '0')
-  const day = String(time.getDate()).padStart(2, '0');
-  const hours = String(time.getHours()).padStart(2, '0');
-  const minutes = String(time.getMinutes()).padStart(2, '0');
-  const seconds = String(time.getSeconds()).padStart(2, '0');
-
-  // Format in the exact format expected by the server
-  const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
-  return formatUrl(baseUrl, {
-    since: formattedDate,
-  });
-}
-
 // This function formats the date string to be used in the URL
 function formatDateForServer(isoString: string): string {
   /*
@@ -200,5 +180,4 @@ function formatDateForServer(isoString: string): string {
 export const exportsForTests = {
   INITIAL_INTERVAL,
   mergeAndSortNotifications,
-  getSinceUrl,
 };
