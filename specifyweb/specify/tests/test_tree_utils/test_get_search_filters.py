@@ -1,12 +1,11 @@
 from specifyweb.specify.models import Collection, Collectionobjecttype, Discipline, Division, Geographytreedef, Institution, Storage, Storagetreedef, Taxontreedef
-from specifyweb.specify.tests.test_api import ApiTests
-from django.db.models import Q
 
 from unittest import skip
 
+from specifyweb.specify.tests.test_tree_utils import TestMultipleTaxonTreeContext
 from specifyweb.specify.tree_utils import get_search_filters
 
-class TestGetSearchFilters(ApiTests):
+class TestGetSearchFilters(TestMultipleTaxonTreeContext):
     
     @skip("storage case cannot be tested since there can only be 1 institution")
     def test_storage(self):
@@ -113,35 +112,7 @@ class TestGetSearchFilters(ApiTests):
 
     def test_taxon_collection_object_types(self):
 
-        taxontreedef_1 = Taxontreedef.objects.create(name='Test taxon1', discipline=self.discipline)
-
-        self._update(self.discipline, dict(taxontreedef=taxontreedef_1))
-        self._update(self.collectionobjecttype, dict(taxontreedef=taxontreedef_1))
-
-        discipline_2 = Discipline.objects.create(
-            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
-            geographytreedef=self.geographytreedef,
-            division=self.division,
-            datatype=self.datatype,
-            type='paleobotany'
-        )
-
-        taxontreedef_2 = Taxontreedef.objects.create(name='Test taxon2', discipline=discipline_2)
-
-        collection_2 = Collection.objects.create(
-            catalognumformatname='test',
-            collectionname='TestCollection2',
-            isembeddedcollectingevent=False,
-            discipline=discipline_2,
-        )
-
-        self._update(discipline_2, dict(taxontreedef=taxontreedef_2))
-
-        Collectionobjecttype.objects.create(
-            name="Test2", collection=collection_2, taxontreedef=taxontreedef_1
-        )
-
-        Taxontreedef.objects.filter(~Q(id__in=[taxontreedef_1.id, taxontreedef_2.id])).delete()
+        (collection_2, taxontreedef_1, taxontreedef_2) = self._create_multiple_taxon()
 
         self.assertEqual(
             set(list(Taxontreedef.objects.filter(
