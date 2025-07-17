@@ -174,7 +174,7 @@ function formatDateForServer(isoString: string): string {
   ); // Magic regex to match ISO date format
   if (!match) return isoString; // If the format is unexpected, return the original string. At least this won't crash.
   const [_, year, month, day, hours, minutes, seconds] = match;
-  return `${year}-${Number.parseInt(month, 10)}-${Number.parseInt(day, 10)} ${hours}:${minutes}:${seconds}`;
+  return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')} ${hours}:${minutes}:${seconds}`;
 }
 
 export const exportsForTests = {
