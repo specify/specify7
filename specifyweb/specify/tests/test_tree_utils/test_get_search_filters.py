@@ -1,5 +1,6 @@
 from specifyweb.specify.models import Collection, Collectionobjecttype, Discipline, Division, Geographytreedef, Institution, Storage, Storagetreedef, Taxontreedef
 from specifyweb.specify.tests.test_api import ApiTests
+from django.db.models import Q
 
 from unittest import skip
 
@@ -110,14 +111,13 @@ class TestGetSearchFilters(ApiTests):
             [taxontreedef_2.id]
         )
 
-    @skip("WIP")
     def test_taxon_collection_object_types(self):
-        Taxontreedef.objects.all().update(discipline=None)
+
         taxontreedef_1 = Taxontreedef.objects.create(name='Test taxon1', discipline=self.discipline)
 
         self._update(self.discipline, dict(taxontreedef=taxontreedef_1))
         self._update(self.collectionobjecttype, dict(taxontreedef=taxontreedef_1))
-        
+
         discipline_2 = Discipline.objects.create(
             geologictimeperiodtreedef=self.geologictimeperiodtreedef,
             geographytreedef=self.geographytreedef,
@@ -126,8 +126,8 @@ class TestGetSearchFilters(ApiTests):
             type='paleobotany'
         )
 
-        taxontreedef_2 = Taxontreedef.objects.create(name='Test taxon2', discipline=self.discipline)
-        
+        taxontreedef_2 = Taxontreedef.objects.create(name='Test taxon2', discipline=discipline_2)
+
         collection_2 = Collection.objects.create(
             catalognumformatname='test',
             collectionname='TestCollection2',
@@ -141,6 +141,8 @@ class TestGetSearchFilters(ApiTests):
             name="Test2", collection=collection_2, taxontreedef=taxontreedef_1
         )
 
+        Taxontreedef.objects.filter(~Q(id__in=[taxontreedef_1.id, taxontreedef_2.id])).delete()
+
         self.assertEqual(
             set(list(Taxontreedef.objects.filter(
                 get_search_filters(self.collection, "taxon")
@@ -152,5 +154,5 @@ class TestGetSearchFilters(ApiTests):
             set(list(Taxontreedef.objects.filter(
                 get_search_filters(collection_2, "taxon")
             ).values_list('id', flat=True))),
-            set([taxontreedef_1.id])
+            set([taxontreedef_1.id, taxontreedef_2.id])
         )
