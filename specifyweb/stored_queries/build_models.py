@@ -1,6 +1,6 @@
 from typing import List
 from specifyweb.specify.load_datamodel import Datamodel, Table, Field, Relationship
-from sqlalchemy import Table as Table_Sqlalchemy, Column, ForeignKey, types, orm, MetaData, column as sql_column
+from sqlalchemy import Table as Table_Sqlalchemy, Column, ForeignKey, types, orm, MetaData
 from sqlalchemy.dialects.mysql import BIT as mysql_bit_type
 metadata = MetaData()
 
@@ -75,7 +75,7 @@ def make_tables(datamodel: Datamodel):
 
 def make_classes(datamodel: Datamodel):
     def make_class(tabledef):
-        return type(tabledef.name, (object,), { 'tableid': tabledef.tableId, '_id': sql_column(tabledef.idFieldName)})
+        return type(tabledef.name, (object,), { 'tableid': tabledef.tableId})
 
     return {td.name: make_class(td) for td in datamodel.tables}
 
@@ -103,7 +103,8 @@ def map_classes(datamodel: Datamodel, tables: list[Table], classes):
 
             return reldef.name, orm.relationship(remote_class, **relationship_args)
 
-        properties = { tabledef.idFieldName: table.c[tabledef.idColumn] }
+        id_column = table.c[tabledef.idColumn]
+        properties = { tabledef.idFieldName: id_column, '_id': id_column }
 
         properties.update({ flddef.name: table.c[flddef.column]
                             for flddef in tabledef.fields })
