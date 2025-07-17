@@ -129,7 +129,7 @@ export function useNotificationsFetch({
       destructorCalled = true;
       if (timeout !== undefined) globalThis.clearTimeout(timeout);
     };
-  }, [isOpen, freezeFetchPromise]);
+  }, [isOpen]);
 
   return { notifications, setNotifications };
 }
