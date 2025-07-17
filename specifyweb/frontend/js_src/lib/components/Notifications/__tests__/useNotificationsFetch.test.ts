@@ -9,8 +9,7 @@ import { formatDateForBackEnd } from '../../../utils/parser/dateFormat';
 import { formatUrl } from '../../Router/queryString';
 import { exportsForTests, useNotificationsFetch } from '../hooks';
 
-const { INITIAL_INTERVAL, mergeAndSortNotifications, getSinceUrl } =
-  exportsForTests;
+const { INITIAL_INTERVAL, mergeAndSortNotifications } = exportsForTests;
 
 test.skip('Verify notifications are fetched when isOpen is true', async () => {
   const freezeFetchPromise: MutableRefObject<Promise<void> | undefined> = {
@@ -149,15 +148,6 @@ test('Verify mergeAndSortNotifications correctly merges and sorts notifications'
   expect(mergedAndSorted).toEqual(expectedMergedAndSorted);
 });
 
-test('Verify getSinceUrl function returns the correct URL', () => {
-  const date = new Date('2023-09-19T12:00:00');
-
-  const url = getSinceUrl(date);
-
-  const expectedUrl = '/notifications/messages/?since=2023-9-19+12%3A0%3A0';
-
-  expect(url).toBe(expectedUrl);
-});
 describe('fetch notifications', () => {
   const freezeFetchPromise: MutableRefObject<Promise<void> | undefined> = {
     current: undefined,
