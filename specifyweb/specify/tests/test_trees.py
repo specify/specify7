@@ -27,13 +27,16 @@ class TestTreeSetup(ApiTests):
         treedef.treedefitems.create(name="Species", rankid=220)
         treedef.treedefitems.create(name="Subspecies", rankid=230)
 
+    def make_geography_ranks(self, treedef):
+        treedef.treedefitems.create(name="Continent", rankid=100)
+        treedef.treedefitems.create(name="Country", rankid=200)
+        treedef.treedefitems.create(name="State", rankid=300)
+        treedef.treedefitems.create(name="County", rankid=400)
+        treedef.treedefitems.create(name="City", rankid=500)
+
     def setUp(self) -> None:
         super().setUp()
-        self.geographytreedef.treedefitems.create(name="Continent", rankid=100)
-        self.geographytreedef.treedefitems.create(name="Country", rankid=200)
-        self.geographytreedef.treedefitems.create(name="State", rankid=300)
-        self.geographytreedef.treedefitems.create(name="County", rankid=400)
-        self.geographytreedef.treedefitems.create(name="City", rankid=500)
+        self.make_geography_ranks(self.geographytreedef)
 
         self.taxontreedef = models.Taxontreedef.objects.create(name="Test Taxonomy")
         self.make_taxon_ranks(self.taxontreedef)
@@ -86,9 +89,19 @@ class TestTree:
         return node
 
     def make_taxontree(self, name, rank_name, **extra_kwargs):
+
+        if "treedef" in extra_kwargs:
+            extra_rank_filters = dict(treedef=extra_kwargs["treedef"])
+            extra_kwargs.pop("treedef")
+        else:
+            extra_rank_filters = {}
+
         node = models.Taxon.objects.create(
             name=name,
-            definitionitem=models.Taxontreedefitem.objects.get(name=rank_name),
+            # In some cases, we'd need to make sure we're getting the correct tree definition.
+            definitionitem=models.Taxontreedefitem.objects.get(
+                name=rank_name, **extra_rank_filters
+            ),
             **extra_kwargs,
         )
         self._node_list.append(node)
