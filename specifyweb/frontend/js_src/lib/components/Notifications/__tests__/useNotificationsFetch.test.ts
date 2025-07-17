@@ -9,7 +9,7 @@ import { formatDateForBackEnd } from '../../../utils/parser/dateFormat';
 import { formatUrl } from '../../Router/queryString';
 import { exportsForTests, useNotificationsFetch } from '../hooks';
 
-const { INITIAL_INTERVAL, mergeAndSortNotifications } = exportsForTests;
+const { INITIAL_INTERVAL, mergeAndSortNotifications, formatDateForServer } = exportsForTests;
 
 test.skip('Verify notifications are fetched when isOpen is true', async () => {
   const freezeFetchPromise: MutableRefObject<Promise<void> | undefined> = {
@@ -225,4 +225,13 @@ describe('fetch notifications', () => {
       });
     });
   });
+});
+
+test('formatDateForServer correctly formats ISO date strings for API requests', () => {
+  expect(formatDateForServer('2023-09-19T01:22:00')).toBe('2023-09-19 01:22:00');
+  expect(formatDateForServer('2023-09-19T01:22:00.123456')).toBe('2023-09-19 01:22:00');
+  expect(formatDateForServer('2023-09-19T01:22:00Z')).toBe('2023-09-19 01:22:00');
+  expect(formatDateForServer('2023-09-19T01:22:00.123456Z')).toBe('2023-09-19 01:22:00');
+  const invalidString = 'not-a-date';
+  expect(formatDateForServer(invalidString)).toBe(invalidString);
 });
