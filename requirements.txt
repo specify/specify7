@@ -4,11 +4,11 @@ wheel
 # backports.zoneinfo==0.2.1
 kombu==5.5.2
 celery[redis]==5.5.1
-Django==4.2.18
+Django==4.2.22
 mysqlclient==2.1.1
 SQLAlchemy==1.4.54
 sqlalchemy2-stubs
-requests==2.32.2
+requests==2.32.4
 pycryptodome==3.21.0
 PyJWT==2.3.0
 django-auth-ldap==1.2.17
