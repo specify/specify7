@@ -55,9 +55,12 @@ export function useNotificationsFetch({
 
       // Use raw server time string for URL
       const baseUrl = `/notifications/messages/`;
-      const url = lastRawTimeRef.current === undefined
-        ? baseUrl
-        : formatUrl(baseUrl, { since: formatDateForServer(lastRawTimeRef.current) });
+      const url =
+        lastRawTimeRef.current === undefined
+          ? baseUrl
+          : formatUrl(baseUrl, {
+              since: formatDateForServer(lastRawTimeRef.current),
+            });
 
       /*
        * Poll interval is scaled exponentially to reduce requests if the tab is
@@ -101,12 +104,9 @@ export function useNotificationsFetch({
           timeout =
             document.visibilityState === 'hidden'
               ? undefined
-              : globalThis.setTimeout(
-                  () => {
-                    void doFetch();
-                  },
-                  pullInterval
-                );
+              : globalThis.setTimeout(() => {
+                  void doFetch();
+                }, pullInterval);
         })
         .catch(console.error);
     };
@@ -171,7 +171,9 @@ function formatDateForServer(isoString: string): string {
    * This parses the ISO string and formats it so it can be used in the URL
    * All the Date object methods apply timezone conversion magic...
    */
-  const match = isoString.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/); // Magic regex to match ISO date format
+  const match = isoString.match(
+    /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/
+  ); // Magic regex to match ISO date format
   if (!match) return isoString; // If the format is unexpected, return the original string. At least this won't crash.
   const [_, year, month, day, hours, minutes, seconds] = match;
   return `${year}-${Number.parseInt(month, 10)}-${Number.parseInt(day, 10)} ${hours}:${minutes}:${seconds}`;
