@@ -180,4 +180,5 @@ function formatDateForServer(isoString: string): string {
 export const exportsForTests = {
   INITIAL_INTERVAL,
   mergeAndSortNotifications,
+  formatDateForServer,
 };
