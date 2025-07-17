@@ -170,6 +170,14 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
     treedef_col = getattr(node, tree_table.name + "TreeDefID")
     orderby     = getattr(node, tree_table.get_field_strict(sortfield).name)
 
+    # We use min for grouped columns because for some reason, SQL is rejecting
+    # the group_by in some dbs due to "only_full_group_by". It is somehow not
+    # smart enough to see that there is no dependency in the columns going from
+    # main table to the to-manys (child, and syns).
+    # I want to use ANY_VALUE() but that's not supported by MySQL 5.6- and MariaDB.
+    # I don't want to disable "only_full_group_by" in case someone misuses it...
+    # applying min to fool into thinking it is aggregated.
+    # these values are guarenteed to be the same
     cols = [
         node._id.label("id"),
         func.min(node.name).label("name"),
