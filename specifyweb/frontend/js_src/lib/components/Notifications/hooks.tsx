@@ -31,7 +31,6 @@ export function useNotificationsFetch({
     RA<GenericNotification> | undefined
   >(undefined);
 
-  const lastFetchDateRef = React.useRef<Date | undefined>(undefined);
   const lastRawTimeRef = React.useRef<string | undefined>(undefined);
 
   React.useEffect(() => {
@@ -98,7 +97,6 @@ export function useNotificationsFetch({
             mergeAndSortNotifications(existingNotifications, newNotifications)
           );
 
-          lastFetchDateRef.current = startFetchTimestamp;
           lastRawTimeRef.current = rawServerTime;
           // Stop updating if tab is hidden
           timeout =
