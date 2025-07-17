@@ -171,11 +171,11 @@ function getSinceUrl(time: Date | undefined): string {
 
   // Extract the date parts directly from the server time to preserve the timezone
   const year = time.getFullYear();
-  const month = time.getMonth() + 1; // GetMonth is 0-indexed
-  const day = time.getDate();
-  const hours = time.getHours();
-  const minutes = time.getMinutes();
-  const seconds = time.getSeconds();
+  const month = String(time.getMonth() + 1).padStart(2, '0')
+  const day = String(time.getDate()).padStart(2, '0');
+  const hours = String(time.getHours()).padStart(2, '0');
+  const minutes = String(time.getMinutes()).padStart(2, '0');
+  const seconds = String(time.getSeconds()).padStart(2, '0');
 
   // Format in the exact format expected by the server
   const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
