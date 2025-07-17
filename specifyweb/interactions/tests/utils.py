@@ -1,12 +1,24 @@
-from specifyweb.specify.models import Disposalpreparation, Exchangeinprep, Exchangeoutprep, Giftpreparation, Loanpreparation
+from specifyweb.specify.models import (
+    Disposalpreparation,
+    Exchangeinprep,
+    Exchangeoutprep,
+    Giftpreparation,
+    Loanpreparation,
+)
 
 
 mapping = {
-    "loan": dict(model=Loanpreparation, backref="loan"),
-    "gift": dict(model=Giftpreparation, backref="gift"),
-    "exchangeout": dict(model=Exchangeoutprep, backref="exchangeout"),
-    "disposal": dict(model=Disposalpreparation, backref="disposal"),
-    "exchangein": dict(model=Exchangeinprep, backref="exchangein")
+    "loan": dict(model=Loanpreparation, backref="loan", ref="loanpreparations"),
+    "gift": dict(model=Giftpreparation, backref="gift", ref="giftpreparations"),
+    "exchangeout": dict(
+        model=Exchangeoutprep, backref="exchangeout", ref="exchangeoutpreps"
+    ),
+    "disposal": dict(
+        model=Disposalpreparation, backref="disposal", ref="disposalpreparations"
+    ),
+    "exchangein": dict(
+        model=Exchangeinprep, backref="exchangein", ref="exchangeinpreps"
+    ),
 }
 
 
@@ -25,5 +37,5 @@ def _create_interaction_prep_generic(context, obj, prep, prep_list, **loan_prep_
     )
     if prep_list is not None:
         prep_list.append(lp)
-    
+
     return lp
