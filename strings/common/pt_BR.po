@@ -432,7 +432,7 @@ msgstr "Ferramentas"
 #: components/FormFields/Field.tsx:84
 #: components/FormPlugins/CollectionRelOneToMany.tsx:158
 #: components/FormPlugins/CollectionRelOneToOne.tsx:43
-#: components/Formatters/Preview.tsx:103
+#: components/Formatters/Preview.tsx:105
 #: components/Formatters/Preview.tsx:146
 #: components/Forms/BaseResourceView.tsx:61
 #: components/Forms/DeleteButton.tsx:123
