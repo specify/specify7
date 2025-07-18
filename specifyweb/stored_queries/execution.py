@@ -64,6 +64,9 @@ class BuildQueryProps(NamedTuple):
     implicit_or: bool = True
     format_agent_type: bool = False
     format_picklist: bool = False
+    format_types: bool = True
+    numeric_catalog_number: bool = True
+    format_expr: bool = True
 
 
 def set_group_concat_max_len(connection):
@@ -784,6 +787,9 @@ def execute(
     recordsetid=None,
     formatauditobjs=False,
     format_picklist=False,
+    format_types=True,
+    numeric_catalog_number=True,
+    format_expr=True,
 ):
     "Build and execute a query, returning the results as a data structure for json serialization"
 
@@ -801,6 +807,9 @@ def execute(
             series=series,
             format_agent_type=format_agent_type,
             format_picklist=format_picklist,
+            format_types=format_types,
+            numeric_catalog_number=numeric_catalog_number,
+            format_expr=format_expr,
         ),
     )
 
@@ -917,6 +926,9 @@ def build_query(
             props.replace_nulls,
             format_agent_type=props.format_agent_type,
             format_picklist=props.format_picklist,
+            format_types=props.format_types,
+            numeric_catalog_number=props.numeric_catalog_number,
+            format_expr=props.format_expr,
         ),
         query=query_construct_query
     )
