@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.11.0.2](https://github.com/specify/specify7/compare/v7.11.0...v7.11.0.2) (14 July 2025)
+
+* Fixed an issue that could cause updates to Collection Object to set the incorrect Determination as current and updates to Collecting Event to set the incorrect Collector as primary ([#7073](https://github.com/specify/specify7/pull/7073))
+
+
 ## [7.11.0](https://github.com/specify/specify7/compare/v7.10.2.3...v7.11.0) (8 July 2025)
 
 ### Added

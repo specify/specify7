@@ -1,7 +1,6 @@
 import logging
 import re
 from collections import namedtuple, deque
-from typing import Union, Optional, Tuple
 
 from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting
 from sqlalchemy import sql, Table as SQLTable
@@ -123,9 +122,9 @@ class TreeRankQuery(Relationship):
     # FUTURE: used to remember what the previous value was. Useless after 6 retires
     original_field: str
     # This is used to query a particular treedef. If this is none, all treedefs are searched, otherwise a specific treedef is searched.
-    treedef_id: Optional[int]
+    treedef_id: int | None
     # Yeah this can be inferred from treedef_id but doing it this way avoids a database lookup because we already fetch it once.
-    treedef_name: Optional[str]
+    treedef_name: str | None
 
     def __hash__(self):
         return hash((TreeRankQuery, self.relatedModelName, self.name))
@@ -155,7 +154,7 @@ class TreeRankQuery(Relationship):
         return f"{self.treedef_name}{RANK_KEY_DELIMITER}{self.name}{RANK_KEY_DELIMITER}{self.treedef_id}"
 
 
-QueryNode = Union[Field, Relationship, TreeRankQuery]
+QueryNode = Field | Relationship | TreeRankQuery
 FieldSpecJoinPath = tuple[QueryNode]
 
 
@@ -169,9 +168,9 @@ class QueryFieldSpec(
     root_sql_table: SQLTable
     join_path: FieldSpecJoinPath
     table: Table
-    date_part: Optional[str]
-    tree_rank: Optional[str]
-    tree_field: Optional[str]
+    date_part: str | None
+    tree_rank: str | None
+    tree_field: str | None
 
     @classmethod
     def from_path(cls, path_in, add_id=False):
@@ -469,10 +468,8 @@ class QueryFieldSpec(
                 except AttributeError:
                     if table.name in PRECALCULATED_FIELDS:
                         field_name = PRECALCULATED_FIELDS[table.name]
-                        # orm_field = getattr(orm_model, field_name)
-                        orm_field = getattr(
-                            orm_model, orm_model._id
-                        )  # Replace with recordId, future just remove column from results
+                        # Replace with recordId, future just remove column from results
+                        orm_field = orm_model._id
                     else:
                         raise
 

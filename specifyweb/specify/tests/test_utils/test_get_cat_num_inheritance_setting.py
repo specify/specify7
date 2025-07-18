@@ -1,4 +1,3 @@
-
 from specifyweb.specify.tests.test_utils.test_collection_preference_context import TestCollectionPreferenceContext
 from specifyweb.specify.utils import get_cat_num_inheritance_setting
 

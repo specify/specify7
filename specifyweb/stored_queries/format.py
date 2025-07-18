@@ -7,22 +7,20 @@ from xml.etree.ElementTree import Element
 from xml.sax.saxutils import quoteattr
 
 from specifyweb.specify.utils import get_picklists
-from sqlalchemy import Table as SQLTable, inspect
+from sqlalchemy import Table as SQLTable, inspect, case
 from sqlalchemy.orm import aliased, Query
-from sqlalchemy.sql.expression import case, func, cast, literal, Label
+from sqlalchemy.sql.expression import func, cast, literal, Label
 from sqlalchemy.sql.functions import concat
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.sql.elements import Extract
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy import types
 
-from typing import Tuple, Optional, Union
-
 import specifyweb.context.app_resource as app_resource
 from specifyweb.context.remote_prefs import get_remote_prefs
 
 from specifyweb.specify.agent_types import agent_types
-from specifyweb.specify.models import datamodel, Splocalecontainer, Splocalecontaineritem, Picklist
+from specifyweb.specify.models import datamodel, Splocalecontainer
 
 from specifyweb.specify.datamodel import Field, Relationship, Table
 from specifyweb.stored_queries.queryfield import QueryField
@@ -54,19 +52,19 @@ class ObjectFormatter:
         self.format_agent_type = format_agent_type
         self.format_picklist = format_picklist
 
-    def getFormatterDef(self, specify_model: Table, formatter_name) -> Optional[Element]:
-        def lookup(attr: str, val: str) -> Optional[Element]:
+    def getFormatterDef(self, specify_model: Table, formatter_name) -> Element | None:
+        def lookup(attr: str, val: str) -> Element | None:
             return self.formattersDom.find(
                 f'format[@{attr}={quoteattr(val)}]')
 
-        def lookup_default(attr: str, val: str) -> Optional[Element]:
+        def lookup_default(attr: str, val: str) -> Element | None:
             elements = self.formattersDom.findall(f'format[@{attr}={quoteattr(val)}]')
             for element in elements:
                 if element.get('default') == 'true':
                     return element
             return None
         
-        def lookup_name(name: str) -> Optional[Element]:
+        def lookup_name(name: str) -> Element | None:
             elements = self.formattersDom.findall('format[@name=%s]' % quoteattr(name))
             for element in elements:
                 if element.get('class') == specify_model.classname:
@@ -120,11 +118,11 @@ class ObjectFormatter:
                 return True
         return False
 
-    def getAggregatorDef(self, specify_model: Table, aggregator_name) -> Optional[Element]:
-        def lookup(attr: str, val: str) -> Optional[Element]:
+    def getAggregatorDef(self, specify_model: Table, aggregator_name) -> Element | None:
+        def lookup(attr: str, val: str) -> Element | None:
             return self.formattersDom.find(f'aggregators/aggregator[@{attr}={quoteattr(val)}]')
 
-        def lookup_default(attr: str, val: str) -> Optional[Element]:
+        def lookup_default(attr: str, val: str) -> Element | None:
             elements = self.formattersDom.findall(f'aggregators/aggregator[@{attr}={quoteattr(val)}]')
             for element in elements:
                 if element.get('default') == 'true':
@@ -215,7 +213,7 @@ class ObjectFormatter:
                 cycle_detector is not None) else None
 
         def make_case(query: QueryConstruct, caseNode: Element) -> tuple[
-            QueryConstruct, Optional[str], blank_nulls]:
+            QueryConstruct, str | None, blank_nulls]:
             field_exprs = []
             for node in caseNode.findall('field'):
                 query, expr, _ = self.make_expr(query, node.text, node.attrib, orm_table, specify_model, cycle_with_self)
@@ -248,11 +246,11 @@ class ObjectFormatter:
             query, formatted, switch_field_spec = self.make_expr(query, switchNode.attrib['field'], {}, orm_table, specify_model)
             def case_value_convert(value): return value == 'true' if switch_field_spec.get_field().type == 'java.lang.Boolean' else value
             cases = [(case_value_convert(value), expr) for (value, expr) in cases]
-            expr = case(cases, formatted)
+            expr = case(*cases, value=formatted)
         return query, blank_nulls(expr)
 
     def aggregate(self, query: QueryConstruct,
-                  field: Union[Field, Relationship], rel_table: SQLTable,
+                  field: Field | Relationship, rel_table: SQLTable,
                   aggregator_formatter_name,
                   cycle_detector=[]) -> Label:
 
@@ -276,12 +274,11 @@ class ObjectFormatter:
         limit = None if limit == '' or int(limit) == 0 else limit
         orm_table = getattr(models, field.relatedModelName)
 
-
         join_column = list(inspect(
             getattr(orm_table, field.otherSideName)).property.local_columns)[0]
         subquery_query = Query([]) \
             .select_from(orm_table) \
-            .filter(join_column == getattr(rel_table, rel_table._id)) \
+            .filter(join_column == rel_table._id) \
             .correlate(rel_table)
 
         try:
@@ -308,7 +305,7 @@ class ObjectFormatter:
                 join_column = getattr(aliased_orm_table, join_column_str)
                 subquery_query = Query([]) \
                     .select_from(aliased_orm_table) \
-                    .filter(join_column == getattr(rel_table, rel_table._id)) \
+                    .filter(join_column == rel_table._id) \
                     .correlate(rel_table)
             else:
                 is_self_join_aggregation = False
@@ -355,16 +352,22 @@ class ObjectFormatter:
 
         prec_fld = getattr(field.class_, specify_field.name + 'Precision', None)
 
-        format_expr = \
-            case({2: self.date_format_month, 3: self.date_format_year},
-                 prec_fld, else_=self.date_format) \
-                if prec_fld is not None \
-                else self.date_format
+        format_expr = (
+            case(
+                [
+                    (prec_fld == 2, self.date_format_month),
+                    (prec_fld == 3, self.date_format_year),
+                ],
+                else_=self.date_format,
+            )
+            if prec_fld is not None
+            else self.date_format
+        )
 
         return func.date_format(field, format_expr)
 
     def _fieldformat(self, table: Table, specify_field: Field,
-                     field: Union[InstrumentedAttribute, Extract]):
+                     field: InstrumentedAttribute | Extract):
         
         if self.format_agent_type and specify_field is Agent_model.get_field("agenttype"):
             cases = [(field == _id, name) for (_id, name) in enumerate(agent_types)]

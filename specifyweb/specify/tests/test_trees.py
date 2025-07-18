@@ -13,6 +13,21 @@ from django.db import connection
 
 
 class TestTreeSetup(ApiTests):
+
+    def make_taxon_ranks(self, treedef):
+        self.taxon_root = treedef.treedefitems.create(name="Taxonomy Root", rankid=0)
+        self.taxon_kingdom = treedef.treedefitems.create(name="Kingdom", rankid=10)
+        treedef.treedefitems.create(name="Phylum", rankid=30)
+        treedef.treedefitems.create(name="Class", rankid=60)
+        treedef.treedefitems.create(name="Order", rankid=100)
+        treedef.treedefitems.create(name="Superfamily", rankid=130)
+        treedef.treedefitems.create(name="Family", rankid=140)
+        treedef.treedefitems.create(name="Genus", rankid=180)
+        treedef.treedefitems.create(name="Subgenus", rankid=190)
+        treedef.treedefitems.create(name="Species", rankid=220)
+        treedef.treedefitems.create(name="Subspecies", rankid=230)
+
+
     def setUp(self) -> None:
         super().setUp()
         self.geographytreedef.treedefitems.create(name="Continent", rankid=100)
@@ -22,18 +37,7 @@ class TestTreeSetup(ApiTests):
         self.geographytreedef.treedefitems.create(name="City", rankid=500)
 
         self.taxontreedef = models.Taxontreedef.objects.create(name="Test Taxonomy")
-        self.taxon_root = self.taxontreedef.treedefitems.create(name="Taxonomy Root", rankid=0)
-        self.taxon_kingdom = self.taxontreedef.treedefitems.create(name="Kingdom", rankid=10)
-        self.taxontreedef.treedefitems.create(name="Phylum", rankid=30)
-        self.taxontreedef.treedefitems.create(name="Class", rankid=60)
-        self.taxontreedef.treedefitems.create(name="Order", rankid=100)
-        self.taxontreedef.treedefitems.create(name="Superfamily", rankid=130)
-        self.taxontreedef.treedefitems.create(name="Family", rankid=140)
-        self.taxontreedef.treedefitems.create(name="Genus", rankid=180)
-        self.taxontreedef.treedefitems.create(name="Subgenus", rankid=190)
-        self.taxontreedef.treedefitems.create(name="Species", rankid=220)
-        self.taxontreedef.treedefitems.create(name="Subspecies", rankid=230)
-
+        self.make_taxon_ranks(self.taxontreedef)
 
         self.collectionobjecttype.taxontreedef = self.taxontreedef
         self.collectionobjecttype.save()
@@ -65,6 +69,10 @@ class TestTree:
         self.springmo = self.make_geotree("Springfield", "City", parent=self.greene)
         self.springill = self.make_geotree("Springfield", "City", parent=self.sangomon)
 
+    def refresh_all(self):
+        for node in self._node_list:
+            node.refresh_from_db()
+
     def make_geotree(self, name, rank_name, **extra_kwargs):
         node = get_table("Geography").objects.create(
             name=name,
@@ -81,6 +89,15 @@ class TestTree:
         node = models.Taxon.objects.create(
             name=name,
             definitionitem=models.Taxontreedefitem.objects.get(name=rank_name),
+            **extra_kwargs
+        )
+        self._node_list.append(node)
+        return node
+    
+    def make_storagetree(self, name, rank_name, **extra_kwargs):
+        node = models.Storage.objects.create(
+            name=name,
+            definitionitem=models.Storagetreedefitem.objects.get(name=rank_name),
             **extra_kwargs
         )
         self._node_list.append(node)
