@@ -63,4 +63,3 @@ class TestDeleteBlockers(GeographyTree):
         
         for node in self._node_list:
             self._assertSame(self._get_blockers(node), [])
-    

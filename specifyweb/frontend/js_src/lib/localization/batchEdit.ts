@@ -423,9 +423,21 @@ export const batchEditText = createDictionary({
   },
   commitDataSet: {
     'en-us': 'Commit Data Set',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   warningBatchEditText: {
     'en-us':
       'Before proceeding, please note that the following action may interrupt other users. This action may cause delays or temporary unavailability of certain features for Specify users. Please consider the impact on their experience. This action cannot be undone',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);

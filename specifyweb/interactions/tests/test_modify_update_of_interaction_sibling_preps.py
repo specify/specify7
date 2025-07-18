@@ -1,4 +1,5 @@
-from typing import Any, Callable, List
+from typing import Any, List
+from collections.abc import Callable
 from specifyweb.interactions.cog_preps import modify_update_of_interaction_sibling_preps
 from specifyweb.interactions.tests.test_cog_consolidated_prep_sibling_context import (
     TestCogConsolidatedPrepSiblingContext,
@@ -16,8 +17,8 @@ from specifyweb.specify.models import (
 )
 import copy
 
-PrepGetter = Callable[["TestModifyUpdateInteractionSiblingPreps"], List[Any]]
-PrepGetterFromPreps = Callable[[List[Any]], List[Any]]
+PrepGetter = Callable[["TestModifyUpdateInteractionSiblingPreps"], list[Any]]
+PrepGetterFromPreps = Callable[[list[Any]], list[Any]]
 
 
 # A wrap that makes it so that the data gets deep-copied.
@@ -315,11 +316,11 @@ def _branched_prep_new_getter(self: TestModifyUpdateInteractionSiblingPreps):
     return [3, -1, -2]
 
 
-def _simple_preps_remover(preps: List[Any]):
+def _simple_preps_remover(preps: list[Any]):
     return preps[1:3]
 
 
-def _indirect_preps_remover(preps: List[Any]):
+def _indirect_preps_remover(preps: list[Any]):
     return preps[5:8]
 
 

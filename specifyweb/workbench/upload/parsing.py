@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Any, Optional, List, NamedTuple, Tuple, Union, NoReturn
+from typing import Any, NamedTuple, NoReturn
 
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -22,7 +22,7 @@ class PicklistAddition(NamedTuple):
 
 class WorkBenchParseFailure(NamedTuple):
     message: str
-    payload: dict[str, Union[str, int, list[str], list[int]]]
+    payload: dict[str, str | int | list[str] | list[int]]
     column: str
 
     @classmethod
@@ -35,12 +35,12 @@ class WorkBenchParseFailure(NamedTuple):
 class ParseResult(NamedTuple):
     filter_on: Filter
     upload: Filter
-    add_to_picklist: Optional[PicklistAddition]
+    add_to_picklist: PicklistAddition | None
     column: str
-    missing_required: Optional[str]
+    missing_required: str | None
 
     @classmethod
-    def from_parse_success(cls, ps: ParseSucess, filter_on: Filter, add_to_picklist: Optional[PicklistAddition], column: str, missing_required: Optional[str]):
+    def from_parse_success(cls, ps: ParseSucess, filter_on: Filter, add_to_picklist: PicklistAddition | None, column: str, missing_required: str | None):
         return cls(filter_on=filter_on, upload=ps.to_upload, add_to_picklist=add_to_picklist, column=column, missing_required=missing_required)
 
     def match_key(self) -> str:
@@ -63,10 +63,10 @@ def parse_many(tablename: str, mapping: dict[str, ExtendedColumnOptions], row: R
     )
 
 
-def parse_value(tablename: str, fieldname: str, value_in: str, colopts: ExtendedColumnOptions) -> Union[ParseResult, WorkBenchParseFailure]:
+def parse_value(tablename: str, fieldname: str, value_in: str, colopts: ExtendedColumnOptions) -> ParseResult | WorkBenchParseFailure:
     required_by_schema = colopts.schemaitem and colopts.schemaitem.isrequired
 
-    result: Union[ParseResult, WorkBenchParseFailure]
+    result: ParseResult | WorkBenchParseFailure
     was_blank = value_in.strip() == ""
     if was_blank:
         if colopts.default is None:
@@ -100,7 +100,7 @@ def parse_value(tablename: str, fieldname: str, value_in: str, colopts: Extended
         assertNever(colopts.matchBehavior)
 
 
-def _parse(tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value: str) -> Union[ParseResult, WorkBenchParseFailure]:
+def _parse(tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value: str) -> ParseResult | WorkBenchParseFailure:
     table = datamodel.get_table_strict(tablename)
     field = table.get_field_strict(fieldname)
 
@@ -121,7 +121,7 @@ def _parse(tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value
     parsed = parse_field(tablename, fieldname, value, colopts.uiformatter)
 
     if is_latlong(table, field) and isinstance(parsed, ParseSucess):
-        coord_text_field = field.name.replace('itude', '') + 'text'
+        coord_text_field = field.name.replace('itude', '') + 'text' if field.name else ''
         filter_on = {coord_text_field: parsed.to_upload[coord_text_field]}
         return ParseResult.from_parse_success(parsed, filter_on, None, colopts.column, None)
 
@@ -131,7 +131,7 @@ def _parse(tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value
         return ParseResult.from_parse_success(parsed, parsed.to_upload, None, colopts.column, None)
 
 
-def parse_with_picklist(picklist, fieldname: str, value: str, column: str) -> Union[ParseResult, WorkBenchParseFailure, None]:
+def parse_with_picklist(picklist, fieldname: str, value: str, column: str) -> ParseResult | WorkBenchParseFailure | None:
     if picklist.type == 0:  # items from picklistitems table
         try:
             item = picklist.picklistitems.get(title=value)
