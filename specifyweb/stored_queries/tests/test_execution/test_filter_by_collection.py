@@ -1,17 +1,25 @@
-from contextlib import contextmanager
 from specifyweb.specify.models import (
     Accession,
+    Agent,
+    Conservdescription,
     Division,
+    Exchangein,
+    Exchangeout,
     Geographytreedef,
     Geographytreedefitem,
     Geologictimeperiodtreedef,
+    Inforequest,
     Lithostrattreedef,
+    Locality,
+    Picklist,
+    Repositoryagreement,
     Storagetreedef,
     Taxon,
     Taxontreedefitem,
     Collection,
     Discipline,
     Tectonicunittreedef,
+    Treatmentevent,
 )
 from specifyweb.specify.tests.test_tree_utils import TestMultipleTaxonTreeContext
 from specifyweb.specify.tests.test_trees import SqlTreeSetup
@@ -1020,4 +1028,426 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
                 (self._tree_building.id, "Building", 50, "Test storage tree"),
                 (self._tree_room.id, "Room", 100, "Test storage tree"),
             ],
+        )
+
+    def _create_division(self):
+        division_1 = Division.objects.create(
+            institution=self.institution, name="Division 1"
+        )
+        division_2 = Division.objects.create(
+            institution=self.institution, name="Division 2"
+        )
+        discipline_1 = Discipline.objects.create(
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+            geographytreedef=self.geographytreedef,
+            division=division_1,
+            datatype=self.datatype,
+            type="paleobotany",
+        )
+
+        discipline_2 = Discipline.objects.create(
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+            geographytreedef=self.geographytreedef,
+            division=division_2,
+            datatype=self.datatype,
+            type="paleobotany",
+        )
+
+        collection_1, collection_2 = self._create_collection_pair(
+            discipline_1, discipline_2
+        )
+        return (collection_1, division_1, collection_2, division_2)
+
+    def test_agent_division(self):
+
+        (collection_1, division_1, collection_2, division_2) = self._create_division()
+
+        division_1_agent_1 = Agent.objects.create(
+            agenttype=0,
+            firstname="John (Division 1)",
+            lastname="Doe",
+            division=division_1,
+        )
+
+        division_1_agent_2 = Agent.objects.create(
+            agenttype=0,
+            firstname="Jane (Division 1)",
+            lastname="DoT",
+            division=division_1,
+        )
+
+        division_2_agent_1 = Agent.objects.create(
+            agenttype=0,
+            firstname="John (Division 2)",
+            lastname="Doe",
+            division=division_2,
+        )
+
+        division_2_agent_2 = Agent.objects.create(
+            agenttype=0,
+            firstname="Jane (Division 2)",
+            lastname="DoT",
+            division=division_2,
+        )
+
+        agent_fields = [["firstname"], ["lastname"]]
+
+        base_table, query_fields = self.make_query_fields("agent", agent_fields)
+
+        self.assertCountEqual(
+            self._get_results(base_table, query_fields, collection_1),
+            [
+                (division_1_agent_1.id, "John (Division 1)", "Doe"),
+                (division_1_agent_2.id, "Jane (Division 1)", "DoT"),
+            ],
+        )
+
+        self.assertCountEqual(
+            self._get_results(base_table, query_fields, collection_2),
+            [
+                (division_2_agent_1.id, "John (Division 2)", "Doe"),
+                (division_2_agent_2.id, "Jane (Division 2)", "DoT"),
+            ],
+        )
+
+    def test_repository_agreement(self):
+        (collection_1, division_1, collection_2, division_2) = self._create_division()
+
+        division_1_rep_1 = Repositoryagreement.objects.create(
+            repositoryagreementnumber="Rep1 (Division 1)",
+            division=division_1,
+            originator=self.agent,
+        )
+
+        division_1_rep_2 = Repositoryagreement.objects.create(
+            repositoryagreementnumber="Rep2 (Division 1)",
+            division=division_1,
+            originator=self.agent,
+        )
+
+        division_2_rep_1 = Repositoryagreement.objects.create(
+            repositoryagreementnumber="Rep1 (Division 2)",
+            division=division_2,
+            originator=self.agent,
+        )
+
+        division_2_rep_2 = Repositoryagreement.objects.create(
+            repositoryagreementnumber="Rep2 (Division 2)",
+            division=division_2,
+            originator=self.agent,
+        )
+
+        base_table, query_fields = self.make_query_fields(
+            "Repositoryagreement", [["repositoryagreementnumber"], ["division", "name"]]
+        )
+
+        self.assertCountEqual(
+            self._get_results(base_table, query_fields, collection_1),
+            [
+                (division_1_rep_1.id, "Rep1 (Division 1)", "Division 1"),
+                (division_1_rep_2.id, "Rep2 (Division 1)", "Division 1"),
+            ],
+        )
+
+        self.assertCountEqual(
+            self._get_results(base_table, query_fields, collection_2),
+            [
+                (division_2_rep_1.id, "Rep1 (Division 2)", "Division 2"),
+                (division_2_rep_2.id, "Rep2 (Division 2)", "Division 2"),
+            ],
+        )
+
+    def test_exchangein(self):
+        (collection_1, division_1, collection_2, division_2) = self._create_division()
+
+        division_1_exchangein_1 = Exchangein.objects.create(
+            agentcatalogedby=self.agent,
+            division=division_1,
+            agentreceivedfrom=self.agent,
+            exchangeinnumber="Num1 (Division 1)",
+        )
+
+        division_1_exchangein_2 = Exchangein.objects.create(
+            agentcatalogedby=self.agent,
+            division=division_1,
+            agentreceivedfrom=self.agent,
+            exchangeinnumber="Num2 (Division 1)",
+        )
+
+        division_2_exchangein_1 = Exchangein.objects.create(
+            agentcatalogedby=self.agent,
+            division=division_2,
+            agentreceivedfrom=self.agent,
+            exchangeinnumber="Num1 (Division 2)",
+        )
+
+        division_2_exchangein_2 = Exchangein.objects.create(
+            agentcatalogedby=self.agent,
+            division=division_2,
+            agentreceivedfrom=self.agent,
+            exchangeinnumber="Num2 (Division 2)",
+        )
+
+        base_table, query_fields = self.make_query_fields(
+            "Exchangein", [["exchangeinnumber"], ["division", "name"]]
+        )
+
+        self.assertCountEqual(
+            self._get_results(base_table, query_fields, collection_1),
+            [
+                (division_1_exchangein_1.id, "Num1 (Division 1)", "Division 1"),
+                (division_1_exchangein_2.id, "Num2 (Division 1)", "Division 1"),
+            ],
+        )
+
+        self.assertCountEqual(
+            self._get_results(base_table, query_fields, collection_2),
+            [
+                (division_2_exchangein_1.id, "Num1 (Division 2)", "Division 2"),
+                (division_2_exchangein_2.id, "Num2 (Division 2)", "Division 2"),
+            ],
+        )
+
+    def test_exchangeout(self):
+
+        (collection_1, division_1, collection_2, division_2) = self._create_division()
+
+        division_1_exchangeout_1 = Exchangeout.objects.create(
+            agentcatalogedby=self.agent,
+            agentsentto=self.agent,
+            division=division_1,
+            exchangeoutnumber="Num1 (Division 1)",
+        )
+
+        division_1_exchangeout_2 = Exchangeout.objects.create(
+            agentcatalogedby=self.agent,
+            agentsentto=self.agent,
+            division=division_1,
+            exchangeoutnumber="Num2 (Division 1)",
+        )
+
+        division_2_exchangeout_1 = Exchangeout.objects.create(
+            agentcatalogedby=self.agent,
+            agentsentto=self.agent,
+            division=division_2,
+            exchangeoutnumber="Num1 (Division 2)",
+        )
+
+        division_2_exchangeout_2 = Exchangeout.objects.create(
+            agentcatalogedby=self.agent,
+            agentsentto=self.agent,
+            division=division_2,
+            exchangeoutnumber="Num2 (Division 2)",
+        )
+
+        base_table, query_fields = self.make_query_fields(
+            "Exchangeout", [["exchangeoutnumber"], ["division", "name"]]
+        )
+
+        self.assertCountEqual(
+            self._get_results(base_table, query_fields, collection_1),
+            [
+                (division_1_exchangeout_1.id, "Num1 (Division 1)", "Division 1"),
+                (division_1_exchangeout_2.id, "Num2 (Division 1)", "Division 1"),
+            ],
+        )
+
+        self.assertCountEqual(
+            self._get_results(base_table, query_fields, collection_2),
+            [
+                (division_2_exchangeout_1.id, "Num1 (Division 2)", "Division 2"),
+                (division_2_exchangeout_2.id, "Num2 (Division 2)", "Division 2"),
+            ],
+        )
+
+    def test_conserv_description(self):
+        (collection_1, division_1, collection_2, division_2) = self._create_division()
+
+        division_1_conv_1 = Conservdescription.objects.create(
+            division=division_1, backgroundinfo="Conv1 (Division 1)"
+        )
+
+        division_1_conv_2 = Conservdescription.objects.create(
+            division=division_1, backgroundinfo="Conv2 (Division 1)"
+        )
+
+        division_2_conv_1 = Conservdescription.objects.create(
+            division=division_2, backgroundinfo="Conv1 (Division 2)"
+        )
+
+        division_2_conv_2 = Conservdescription.objects.create(
+            division=division_2, backgroundinfo="Conv2 (Division 2)"
+        )
+
+        base_table, query_fields = self.make_query_fields(
+            "Conservdescription", [["backgroundinfo"], ["division", "name"]]
+        )
+
+        self.assertCountEqual(
+            [
+                (division_1_conv_1.id, "Conv1 (Division 1)", "Division 1"),
+                (division_1_conv_2.id, "Conv2 (Division 1)", "Division 1"),
+            ],
+            self._get_results(base_table, query_fields, collection_1),
+        )
+
+        self.assertCountEqual(
+            [
+                (division_2_conv_1.id, "Conv1 (Division 2)", "Division 2"),
+                (division_2_conv_2.id, "Conv2 (Division 2)", "Division 2"),
+            ],
+            self._get_results(base_table, query_fields, collection_2),
+        )
+
+    def test_collection_scope(self):
+        (collection_1, division_1, collection_2, division_2) = self._create_division()
+
+        collection_1_picklist_1 = Picklist.objects.create(
+            collection=collection_1, name="Picklist 1 (Collection 1)", type=0
+        )
+
+        collection_1_picklist_2 = Picklist.objects.create(
+            collection=collection_1, name="Picklist 2 (Collection 1)", type=0
+        )
+
+        collection_2_picklist_1 = Picklist.objects.create(
+            collection=collection_2, name="Picklist 1 (Collection 2)", type=0
+        )
+
+        collection_2_picklist_2 = Picklist.objects.create(
+            collection=collection_2, name="Picklist 2 (Collection 2)", type=0
+        )
+
+        base_table, query_fields = self.make_query_fields("Picklist", [["name"]])
+
+        self.assertCountEqual(
+            self._get_results(base_table, query_fields, collection_1),
+            [
+                (collection_1_picklist_1.id, "Picklist 1 (Collection 1)"),
+                (collection_1_picklist_2.id, "Picklist 2 (Collection 1)"),
+            ],
+        )
+
+        self.assertCountEqual(
+            self._get_results(base_table, query_fields, collection_2),
+            [
+                (collection_2_picklist_1.id, "Picklist 1 (Collection 2)"),
+                (collection_2_picklist_2.id, "Picklist 2 (Collection 2)"),
+            ],
+        )
+
+    def test_collection_member_scope(self):
+        (collection_1, division_1, collection_2, division_2) = self._create_division()
+
+        collection_1_inforeq_1 = Inforequest.objects.create(
+            collectionmemberid=collection_1.id, firstname="Info 1 (Collection 1)"
+        )
+
+        collection_1_inforeq_2 = Inforequest.objects.create(
+            collectionmemberid=collection_1.id, firstname="Info 2 (Collection 1)"
+        )
+
+        collection_2_inforeq_1 = Inforequest.objects.create(
+            collectionmemberid=collection_2.id, firstname="Info 1 (Collection 2)"
+        )
+
+        collection_2_inforeq_2 = Inforequest.objects.create(
+            collectionmemberid=collection_2.id, firstname="Info 2 (Collection 2)"
+        )
+
+        base_table, query_fields = self.make_query_fields(
+            "Inforequest", [["firstname"]]
+        )
+
+        self.assertCountEqual(
+            self._get_results(base_table, query_fields, collection_1),
+            [
+                (collection_1_inforeq_1.id, "Info 1 (Collection 1)"),
+                (collection_1_inforeq_2.id, "Info 2 (Collection 1)"),
+            ],
+        )
+
+        self.assertCountEqual(
+            self._get_results(base_table, query_fields, collection_2),
+            [
+                (collection_2_inforeq_1.id, "Info 1 (Collection 2)"),
+                (collection_2_inforeq_2.id, "Info 2 (Collection 2)"),
+            ],
+        )
+
+    def test_discipline_scope(self):
+        (collection_1, division_1, collection_2, division_2) = self._create_division()
+
+        discipline_1_locality_1 = Locality.objects.create(
+            localityname="Locality 1 (Discipline 1)", discipline=collection_1.discipline
+        )
+
+        discipline_1_locality_2 = Locality.objects.create(
+            localityname="Locality 2 (Discipline 1)", discipline=collection_1.discipline
+        )
+
+        discipline_2_locality_1 = Locality.objects.create(
+            localityname="Locality 1 (Discipline 2)", discipline=collection_2.discipline
+        )
+
+        discipline_2_locality_2 = Locality.objects.create(
+            localityname="Locality 2 (Discipline 2)", discipline=collection_2.discipline
+        )
+
+        base_table, query_fields = self.make_query_fields(
+            "Locality", [["localityname"]]
+        )
+
+        self.assertCountEqual(
+            self._get_results(base_table, query_fields, collection_1),
+            [
+                (discipline_1_locality_1.id, "Locality 1 (Discipline 1)"),
+                (discipline_1_locality_2.id, "Locality 2 (Discipline 1)"),
+            ],
+        )
+
+        self.assertCountEqual(
+            self._get_results(base_table, query_fields, collection_2),
+            [
+                (discipline_2_locality_1.id, "Locality 1 (Discipline 2)"),
+                (discipline_2_locality_2.id, "Locality 2 (Discipline 2)"),
+            ],
+        )
+
+    def test_division_scope_skipped(self):
+        (collection_1, division_1, collection_2, division_2) = self._create_division()
+
+        division_1_treatmentevent_1 = Treatmentevent.objects.create(
+            fieldnumber="TE1 (Division 1)", division=division_1
+        )
+
+        division_1_treatmentevent_2 = Treatmentevent.objects.create(
+            fieldnumber="TE2 (Division 1)", division=division_1
+        )
+
+        division_2_treatmentevent_1 = Treatmentevent.objects.create(
+            fieldnumber="TE1 (Division 2)", division=division_2
+        )
+
+        division_2_treatmentevent_2 = Treatmentevent.objects.create(
+            fieldnumber="TE2 (Division 2)", division=division_2
+        )
+
+        base_table, query_fields = self.make_query_fields(
+            "Treatmentevent", [["fieldnumber"]]
+        )
+
+        expected_result = [
+            (division_1_treatmentevent_1.id, "TE1 (Division 1)"),
+            (division_1_treatmentevent_2.id, "TE2 (Division 1)"),
+            (division_2_treatmentevent_1.id, "TE1 (Division 2)"),
+            (division_2_treatmentevent_2.id, "TE2 (Division 2)"),
+        ]
+
+        self.assertCountEqual(
+            self._get_results(base_table, query_fields, collection_1), expected_result
+        )
+
+        self.assertCountEqual(
+            self._get_results(base_table, query_fields, collection_2), expected_result
         )
