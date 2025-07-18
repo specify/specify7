@@ -28,11 +28,48 @@ class TestTreeSetup(ApiTests):
         treedef.treedefitems.create(name="Subspecies", rankid=230)
 
     def make_geography_ranks(self, treedef):
+        if not treedef.treedefitems.all().filter(rankid=0).exists():
+            treedef.treedefitems.create(name="Planet", rankid=0)
         treedef.treedefitems.create(name="Continent", rankid=100)
         treedef.treedefitems.create(name="Country", rankid=200)
         treedef.treedefitems.create(name="State", rankid=300)
         treedef.treedefitems.create(name="County", rankid=400)
         treedef.treedefitems.create(name="City", rankid=500)
+
+    def _set_attr(self, key, value):
+        if not hasattr(self, "_attr_map"):
+            self._attr_map = {}
+
+        self._attr_map[key] = self._attr_map.get(key, 0) + 1
+        setattr(self, f"{key}_{self._attr_map[key]}", value)
+
+    def make_lithostrat_ranks(self, treedef):
+
+        self._set_attr(
+            "_tree_lithostrat_root", treedef.treedefitems.create(name="Root", rankid=0)
+        )
+
+        self._set_attr(
+            "_tree_lithostrat_layer",
+            treedef.treedefitems.create(name="Layer", rankid=100),
+        )
+
+    def make_geologictimeperiod_ranks(self, treedef):
+        self._set_attr(
+            "_tree_geologictimeperiod_root",
+            treedef.treedefitems.create(name="Root", rankid=0),
+        )
+        self._set_attr(
+            "_tree_geologictimeperiod_erathem",
+            treedef.treedefitems.create(name="Erathem", rankid=100),
+        )
+        self._set_attr(
+            "_tree_geologictimeperiod_period",
+            treedef.treedefitems.create(
+                name="Period",
+                rankid=200,
+            ),
+        )
 
     def setUp(self) -> None:
         super().setUp()
@@ -77,10 +114,17 @@ class TestTree:
             node.refresh_from_db()
 
     def make_geotree(self, name, rank_name, **extra_kwargs):
+
+        if "treedef" in extra_kwargs:
+            extra_rank_filters = dict(treedef=extra_kwargs["treedef"])
+            extra_kwargs.pop("treedef")
+        else:
+            extra_rank_filters = {}
+
         node = get_table("Geography").objects.create(
             name=name,
             definitionitem=get_table("Geographytreedefitem").objects.get(
-                name=rank_name
+                name=rank_name, **extra_rank_filters
             ),
             definition=self.geographytreedef,
             **extra_kwargs,
