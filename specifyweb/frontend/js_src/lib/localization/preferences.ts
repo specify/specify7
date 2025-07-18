@@ -1030,7 +1030,6 @@ export const preferencesText = createDictionary({
       'Вы можете двигаться в противоположном направлении, нажав <key>Shift</key>+<key>Enter</key>.',
     'es-es':
       'Puedes moverte en la dirección opuesta presionando <key>Shift</key>+<key>Enter</key>.',
-    'fr-fr': 'Synonyme couleur.',
     'uk-ua':
       'Ви можете рухатися у протилежному напрямку, натискаючи <key>Shift</key>+<key>Enter</key>.',
     'de-ch':

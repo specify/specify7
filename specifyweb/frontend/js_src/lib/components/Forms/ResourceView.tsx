@@ -21,6 +21,7 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { InFormEditorContext } from '../FormEditor/Context';
 import { AppTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { LinkedRecords } from '../Molecules/LinkedRecords';
 import { IsNotReadOnly } from '../Molecules/ResourceLink';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -248,20 +249,31 @@ export function ResourceView<SCHEMA extends AnySchema>({
     )
   ) : undefined;
 
-  const deleteButton =
-    !isReadOnly &&
+  const showResourceReferenceButtons =
     !isDependent &&
     !isSubForm &&
     typeof resource === 'object' &&
     !resource.isNew() &&
-    hasTablePermission(resource.specifyTable.name, 'delete') &&
-    !isInFormEditor ? (
+    !isInFormEditor;
+
+  const deleteButton =
+    showResourceReferenceButtons &&
+    !isReadOnly &&
+    hasTablePermission(resource.specifyTable.name, 'delete') ? (
       <ErrorBoundary dismissible>
         <DeleteButton
           deletionMessage={deletionMessage}
           resource={resource}
           onDeleted={handleDelete}
         />
+      </ErrorBoundary>
+    ) : undefined;
+
+  const referencingRecordsButton =
+    showResourceReferenceButtons &&
+    hasTablePermission(resource.specifyTable.name, 'read') ? (
+      <ErrorBoundary dismissible>
+        <LinkedRecords resource={resource} />
       </ErrorBoundary>
     ) : undefined;
 
@@ -294,6 +306,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         typeof extraButtons === 'object' ? (
           <DataEntry.Footer>
             {deleteButton}
+            {referencingRecordsButton}
             {extraButtons ?? <span className="-ml-2 md:flex-1" />}
             {saveButtonElement}
           </DataEntry.Footer>
@@ -357,6 +370,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         isSubForm ? undefined : (
           <>
             {deleteButton}
+            {referencingRecordsButton}
             {extraButtons ?? <span className="-ml-2 flex-1" />}
             {isModified && !isDependent ? (
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
