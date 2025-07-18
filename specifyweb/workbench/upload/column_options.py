@@ -1,7 +1,7 @@
-from typing import List, Dict, Any, NamedTuple, Union, Optional, Callable
-from typing_extensions import Literal
+from typing import Any, NamedTuple
+from typing import Literal
 
-from specifyweb.specify.uiformatters import UIFormatter, ScopedFormatter
+from specifyweb.specify.uiformatters import ScopedFormatter
 
 MatchBehavior = Literal["ignoreWhenBlank", "ignoreAlways", "ignoreNever"]
 
@@ -12,9 +12,9 @@ class ColumnOptions(NamedTuple):
     column: str
     matchBehavior: MatchBehavior
     nullAllowed: bool
-    default: Optional[str]
+    default: str | None
 
-    def to_json(self) -> Union[dict, str]:
+    def to_json(self) -> dict | str:
         if self.matchBehavior == "ignoreNever" and self.nullAllowed and self.default is None:
             return self.column
 
@@ -24,8 +24,8 @@ class ExtendedColumnOptions(NamedTuple):
     column: str
     matchBehavior: MatchBehavior
     nullAllowed: bool
-    default: Optional[str]
-    uiformatter: Optional[ScopedFormatter]
+    default: str | None
+    uiformatter: ScopedFormatter | None
     schemaitem: Any
     picklist: Any
-    dateformat: Optional[str]
+    dateformat: str | None
