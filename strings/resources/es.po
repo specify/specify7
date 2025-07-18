@@ -604,7 +604,7 @@ msgid "coHasParent"
 msgstr "No es posible agregar un CO con un padre a un COG."
 
 #: components/DataModel/businessRuleDefs.ts:223
-#: components/DataModel/__tests__/businessRules.test.ts:385
+#: components/DataModel/__tests__/businessRules.test.ts:393
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #, fuzzy
 msgid "primaryCogChildRequired"
@@ -649,7 +649,7 @@ msgid "deleteExchangeInPrep"
 msgstr "No se puede eliminar un intercambio en preparación"
 
 #: components/DataModel/businessRuleDefs.ts:194
-#: components/DataModel/__tests__/businessRules.test.ts:163
+#: components/DataModel/__tests__/businessRules.test.ts:164
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #, fuzzy
 msgid "invalidDeterminationTaxon"

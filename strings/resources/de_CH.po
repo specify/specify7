@@ -582,7 +582,7 @@ msgstr ""
 "hinzugefügt werden."
 
 #: components/DataModel/businessRuleDefs.ts:223
-#: components/DataModel/__tests__/businessRules.test.ts:385
+#: components/DataModel/__tests__/businessRules.test.ts:393
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #, fuzzy
 msgid "primaryCogChildRequired"
@@ -627,7 +627,7 @@ msgid "deleteExchangeInPrep"
 msgstr "Ein in Vorbereitung befindlicher Austausch kann nicht gelöscht werden"
 
 #: components/DataModel/businessRuleDefs.ts:194
-#: components/DataModel/__tests__/businessRules.test.ts:163
+#: components/DataModel/__tests__/businessRules.test.ts:164
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #, fuzzy
 msgid "invalidDeterminationTaxon"
