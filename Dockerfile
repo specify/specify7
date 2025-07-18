@@ -152,6 +152,8 @@ COPY --from=build-backend /opt/specify7 /opt/specify7
 WORKDIR /opt/specify7
 RUN cp -r specifyweb/settings .
 
+ENV PATH="/opt/specify7/ve/bin:$PATH"
+
 RUN echo 'export PATH="/opt/specify7/ve/bin:$PATH"' > ~/.bashrc
 
 RUN echo \
