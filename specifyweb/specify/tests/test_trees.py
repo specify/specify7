@@ -71,6 +71,17 @@ class TestTreeSetup(ApiTests):
             ),
         )
 
+    def make_tectonicunit_ranks(self, treedef):
+        self._set_attr(
+            "_tree_tectonicunit_root",
+            treedef.treedefitems.create(name=f"Root  {treedef.name}", rankid=0),
+        )
+
+        self._set_attr(
+            "_tree_tectonicunit_first_rank",
+            treedef.treedefitems.create(name=f"Rank 1 {treedef.name}", rankid=50),
+        )
+
     def setUp(self) -> None:
         super().setUp()
         self.make_geography_ranks(self.geographytreedef)

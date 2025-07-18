@@ -10,6 +10,7 @@ from specifyweb.specify.models import (
     Taxontreedefitem,
     Collection,
     Discipline,
+    Tectonicunittreedef,
 )
 from specifyweb.specify.tests.test_tree_utils import TestMultipleTaxonTreeContext
 from specifyweb.specify.tests.test_trees import SqlTreeSetup
@@ -299,6 +300,71 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
             self._tree_geologictimeperiod_period_2.treeentries.create(
                 name="Paleogene (tree 2)",
                 parent=self._tree_geologictimeperiod_entry_cenozoic_2,
+            ),
+        )
+
+        return (collection_1, collection_2, treedef_1, treedef_2)
+
+    def _create_mock_tectonic_unit(self):
+        treedef_1 = Tectonicunittreedef.objects.create(name="Test Tectonic 1")
+        treedef_2 = Tectonicunittreedef.objects.create(name="Test Tectonic 2")
+
+        self.make_tectonicunit_ranks(treedef_1)
+        self.make_tectonicunit_ranks(treedef_2)
+
+        discipline_1 = Discipline.objects.create(
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+            geographytreedef=self.geographytreedef,
+            division=self.division,
+            datatype=self.datatype,
+            type="paleobotany",
+            tectonicunittreedef=treedef_1,
+        )
+
+        discipline_2 = Discipline.objects.create(
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+            geographytreedef=self.geographytreedef,
+            division=self.division,
+            datatype=self.datatype,
+            type="paleobotany",
+            tectonicunittreedef=treedef_2,
+        )
+
+        collection_1, collection_2 = self._create_collection_pair(
+            discipline_1, discipline_2
+        )
+
+        self._set_attr(
+            "_tree_tectonicunit_entry_root",
+            self._tree_tectonicunit_root_1.treeentries.create(
+                name="Root (tree 1)",
+                definition=treedef_1,
+                rankid=self._tree_tectonicunit_root_1.rankid,
+            ),
+        )
+
+        self._set_attr(
+            "_tree_tectonicunit_entry_first_child",
+            self._tree_tectonicunit_first_rank_1.treeentries.create(
+                name="Some First Child (tree 1)",
+                definition=treedef_1,
+            ),
+        )
+
+        self._set_attr(
+            "_tree_tectonicunit_entry_root",
+            self._tree_tectonicunit_root_2.treeentries.create(
+                name="Root (tree 2)",
+                definition=treedef_2,
+                rankid=self._tree_tectonicunit_root_2.rankid,
+            ),
+        )
+
+        self._set_attr(
+            "_tree_tectonicunit_entry_first_child",
+            self._tree_tectonicunit_first_rank_2.treeentries.create(
+                name="Some First Child (tree 2)",
+                definition=treedef_2,
             ),
         )
 
@@ -841,6 +907,57 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
                     "Period",
                     200,
                     "Test gtptd2",
+                ),
+            ],
+        )
+
+    def test_tectonicunit(self):
+        collection_1, collection_2, *_ = self._create_mock_tectonic_unit()
+
+        base_table, query_fields = self.make_query_fields(
+            "tectonicunit", self.tree_paths
+        )
+
+        self.assertCountEqual(
+            self._get_results(base_table, query_fields, collection_1),
+            [
+                (
+                    self._tree_tectonicunit_entry_root_1.id,
+                    "Root (tree 1)",
+                    0,
+                    0,
+                    "Root  Test Tectonic 1",
+                    "Test Tectonic 1",
+                ),
+                (
+                    self._tree_tectonicunit_entry_first_child_1.id,
+                    "Some First Child (tree 1)",
+                    50,
+                    50,
+                    "Rank 1 Test Tectonic 1",
+                    "Test Tectonic 1",
+                ),
+            ],
+        )
+
+        self.assertCountEqual(
+            self._get_results(base_table, query_fields, collection_2),
+            [
+                (
+                    self._tree_tectonicunit_entry_root_2.id,
+                    "Root (tree 2)",
+                    0,
+                    0,
+                    "Root  Test Tectonic 2",
+                    "Test Tectonic 2",
+                ),
+                (
+                    self._tree_tectonicunit_entry_first_child_2.id,
+                    "Some First Child (tree 2)",
+                    50,
+                    50,
+                    "Rank 1 Test Tectonic 2",
+                    "Test Tectonic 2",
                 ),
             ],
         )
