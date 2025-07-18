@@ -6,6 +6,7 @@ from specifyweb.specify.models import (
     Geographytreedefitem,
     Geologictimeperiodtreedef,
     Lithostrattreedef,
+    Storagetreedef,
     Taxon,
     Taxontreedefitem,
     Collection,
@@ -369,6 +370,31 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
         )
 
         return (collection_1, collection_2, treedef_1, treedef_2)
+
+    def _create_mock_storage(self):
+        self.storage_tree_def = Storagetreedef.objects.create(name="Test storage tree")
+        self._update(self.institution, dict(storagetreedef=self.storage_tree_def))
+        self._tree_root = self.storage_tree_def.treedefitems.create(
+            name="Root", rankid=0
+        )
+        self._tree_building = self.storage_tree_def.treedefitems.create(
+            name="Building", rankid=50
+        )
+        self._tree_room = self.storage_tree_def.treedefitems.create(
+            name="Room", rankid=100
+        )
+
+        self.root = self.make_storagetree("Root", "Root")
+        self.building_1 = self.make_storagetree(
+            "Building 1", "Building", parent=self.root
+        )
+        self.room_1 = self.make_storagetree("Room 1", "Room", parent=self.building_1)
+
+        self.building_2 = self.make_storagetree(
+            "Building 2", "Building", parent=self.root
+        )
+        self.room_2 = self.make_storagetree("Room 2", "Room", parent=self.building_2)
+        self.room_3 = self.make_storagetree("Room 3", "Room", parent=self.building_2)
 
     def test_accession_global_scope(self):
 
@@ -959,5 +985,39 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
                     "Rank 1 Test Tectonic 2",
                     "Test Tectonic 2",
                 ),
+            ],
+        )
+
+    def test_storage(self):
+
+        self._create_mock_storage()
+
+        base_table, query_fields = self.make_query_fields("storage", self.tree_paths)
+
+        expected_results = [
+            (self.root.id, "Root", 0, 0, "Root", "Test storage tree"),
+            (self.building_1.id, "Building 1", 50, 50, "Building", "Test storage tree"),
+            (self.room_1.id, "Room 1", 100, 100, "Room", "Test storage tree"),
+            (self.building_2.id, "Building 2", 50, 50, "Building", "Test storage tree"),
+            (self.room_2.id, "Room 2", 100, 100, "Room", "Test storage tree"),
+            (self.room_3.id, "Room 3", 100, 100, "Room", "Test storage tree"),
+        ]
+
+        self.assertCountEqual(
+            expected_results, self._get_results(base_table, query_fields)
+        )
+
+    def test_storagetreedefitem(self):
+        self._create_mock_storage()
+        base_table, query_fields = self.make_query_fields(
+            "storagetreedefitem", self.tree_item_paths
+        )
+
+        self.assertCountEqual(
+            self._get_results(base_table, query_fields),
+            [
+                (self._tree_root.id, "Root", 0, "Test storage tree"),
+                (self._tree_building.id, "Building", 50, "Test storage tree"),
+                (self._tree_room.id, "Room", 100, "Test storage tree"),
             ],
         )
