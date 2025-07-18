@@ -1,4 +1,4 @@
-FROM ubuntu:20.04 AS common
+FROM ubuntu:24.04 AS common
 
 LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 
@@ -9,8 +9,10 @@ RUN set -eux; \
       apt-get update && \
       apt-get -y install --no-install-recommends \
         gettext \
-        python3.9 \
-        libldap-2.4-2 \
+        python3.12 \
+        python3.12-venv \
+        python3.12-dev \
+        libldap2 \
         libmariadb3 \
         rsync \
         tzdata \
@@ -68,10 +70,11 @@ RUN set -eux; \
             libssl-dev \
             libgmp-dev \
             libffi-dev \
-            python3.9-venv \
-            python3.9-distutils \
-            python3.9-dev \
-            libmariadbclient-dev && break; \
+            python3.12-venv \
+            python3.12-dev \
+            libmariadb-dev \
+            tzdata \
+            && break; \
       echo "apt-get install failed, retrying in 5 seconds..."; sleep 5; \
     done; \
     apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -83,7 +86,7 @@ WORKDIR /opt/specify7
 # Retry loop to help GitHub arm64 build
 RUN set -eux; \
     for i in 1 2 3; do \
-        python3.9 -m venv ve && \
+        python3.12 -m venv ve && \
         ve/bin/pip install --no-cache-dir --upgrade pip setuptools wheel && \
         ve/bin/pip install -v --no-cache-dir -r /home/specify/requirements.txt && \
         break; \
@@ -212,7 +215,6 @@ RUN set -eux; \
     for i in 1 2 3; do \
       apt-get update && \
       apt-get -y install --no-install-recommends \
-        python3.9-distutils \
         ca-certificates \
         make && \
       break; \

@@ -1,4 +1,3 @@
-
 from django.test import Client
 from specifyweb.specify.tests.test_api import ApiTests
 
