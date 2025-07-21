@@ -162,7 +162,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} за допомогою \"{nodeFullName:string}\""
 
-#: components/QueryBuilder/Wrapped.tsx:479
+#: components/QueryBuilder/Wrapped.tsx:487
 #. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
 msgstr "Додати нове поле"
