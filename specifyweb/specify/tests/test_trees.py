@@ -13,27 +13,81 @@ from django.db import connection
 
 
 class TestTreeSetup(ApiTests):
+
+    def make_taxon_ranks(self, treedef):
+        self.taxon_root = treedef.treedefitems.create(name="Taxonomy Root", rankid=0)
+        self.taxon_kingdom = treedef.treedefitems.create(name="Kingdom", rankid=10)
+        treedef.treedefitems.create(name="Phylum", rankid=30)
+        treedef.treedefitems.create(name="Class", rankid=60)
+        treedef.treedefitems.create(name="Order", rankid=100)
+        treedef.treedefitems.create(name="Superfamily", rankid=130)
+        treedef.treedefitems.create(name="Family", rankid=140)
+        treedef.treedefitems.create(name="Genus", rankid=180)
+        treedef.treedefitems.create(name="Subgenus", rankid=190)
+        treedef.treedefitems.create(name="Species", rankid=220)
+        treedef.treedefitems.create(name="Subspecies", rankid=230)
+
+    def make_geography_ranks(self, treedef):
+        if not treedef.treedefitems.all().filter(rankid=0).exists():
+            treedef.treedefitems.create(name="Planet", rankid=0)
+        treedef.treedefitems.create(name="Continent", rankid=100)
+        treedef.treedefitems.create(name="Country", rankid=200)
+        treedef.treedefitems.create(name="State", rankid=300)
+        treedef.treedefitems.create(name="County", rankid=400)
+        treedef.treedefitems.create(name="City", rankid=500)
+
+    def _set_attr(self, key, value):
+        if not hasattr(self, "_attr_map"):
+            self._attr_map = {}
+
+        self._attr_map[key] = self._attr_map.get(key, 0) + 1
+        setattr(self, f"{key}_{self._attr_map[key]}", value)
+
+    def make_lithostrat_ranks(self, treedef):
+
+        self._set_attr(
+            "_tree_lithostrat_root", treedef.treedefitems.create(name="Root", rankid=0)
+        )
+
+        self._set_attr(
+            "_tree_lithostrat_layer",
+            treedef.treedefitems.create(name="Layer", rankid=100),
+        )
+
+    def make_geologictimeperiod_ranks(self, treedef):
+        self._set_attr(
+            "_tree_geologictimeperiod_root",
+            treedef.treedefitems.create(name="Root", rankid=0),
+        )
+        self._set_attr(
+            "_tree_geologictimeperiod_erathem",
+            treedef.treedefitems.create(name="Erathem", rankid=100),
+        )
+        self._set_attr(
+            "_tree_geologictimeperiod_period",
+            treedef.treedefitems.create(
+                name="Period",
+                rankid=200,
+            ),
+        )
+
+    def make_tectonicunit_ranks(self, treedef):
+        self._set_attr(
+            "_tree_tectonicunit_root",
+            treedef.treedefitems.create(name=f"Root  {treedef.name}", rankid=0),
+        )
+
+        self._set_attr(
+            "_tree_tectonicunit_first_rank",
+            treedef.treedefitems.create(name=f"Rank 1 {treedef.name}", rankid=50),
+        )
+
     def setUp(self) -> None:
         super().setUp()
-        self.geographytreedef.treedefitems.create(name="Continent", rankid=100)
-        self.geographytreedef.treedefitems.create(name="Country", rankid=200)
-        self.geographytreedef.treedefitems.create(name="State", rankid=300)
-        self.geographytreedef.treedefitems.create(name="County", rankid=400)
-        self.geographytreedef.treedefitems.create(name="City", rankid=500)
+        self.make_geography_ranks(self.geographytreedef)
 
         self.taxontreedef = models.Taxontreedef.objects.create(name="Test Taxonomy")
-        self.taxontreedef.treedefitems.create(name="Taxonomy Root", rankid=0)
-        self.taxontreedef.treedefitems.create(name="Kingdom", rankid=10)
-        self.taxontreedef.treedefitems.create(name="Phylum", rankid=30)
-        self.taxontreedef.treedefitems.create(name="Class", rankid=60)
-        self.taxontreedef.treedefitems.create(name="Order", rankid=100)
-        self.taxontreedef.treedefitems.create(name="Superfamily", rankid=130)
-        self.taxontreedef.treedefitems.create(name="Family", rankid=140)
-        self.taxontreedef.treedefitems.create(name="Genus", rankid=180)
-        self.taxontreedef.treedefitems.create(name="Subgenus", rankid=190)
-        self.taxontreedef.treedefitems.create(name="Species", rankid=220)
-        self.taxontreedef.treedefitems.create(name="Subspecies", rankid=230)
-
+        self.make_taxon_ranks(self.taxontreedef)
 
         self.collectionobjecttype.taxontreedef = self.taxontreedef
         self.collectionobjecttype.save()
@@ -45,6 +99,7 @@ class TestTree:
 
     def setUp(self) -> None:
         super().setUp()
+        self._node_list = []
 
         self.earth = self.make_geotree("Earth", "Planet")
 
@@ -65,15 +120,56 @@ class TestTree:
         self.springmo = self.make_geotree("Springfield", "City", parent=self.greene)
         self.springill = self.make_geotree("Springfield", "City", parent=self.sangomon)
 
+    def refresh_all(self):
+        for node in self._node_list:
+            node.refresh_from_db()
+
     def make_geotree(self, name, rank_name, **extra_kwargs):
-        return get_table("Geography").objects.create(
+
+        if "treedef" in extra_kwargs:
+            extra_rank_filters = dict(treedef=extra_kwargs["treedef"])
+            extra_kwargs.pop("treedef")
+        else:
+            extra_rank_filters = {}
+
+        node = get_table("Geography").objects.create(
             name=name,
             definitionitem=get_table("Geographytreedefitem").objects.get(
-                name=rank_name
+                name=rank_name, **extra_rank_filters
             ),
             definition=self.geographytreedef,
-            **extra_kwargs
+            **extra_kwargs,
         )
+        self._node_list.append(node)
+        return node
+
+    def make_taxontree(self, name, rank_name, **extra_kwargs):
+
+        if "treedef" in extra_kwargs:
+            extra_rank_filters = dict(treedef=extra_kwargs["treedef"])
+            extra_kwargs.pop("treedef")
+        else:
+            extra_rank_filters = {}
+
+        node = models.Taxon.objects.create(
+            name=name,
+            # In some cases, we'd need to make sure we're getting the correct tree definition.
+            definitionitem=models.Taxontreedefitem.objects.get(
+                name=rank_name, **extra_rank_filters
+            ),
+            **extra_kwargs,
+        )
+        self._node_list.append(node)
+        return node
+
+    def make_storagetree(self, name, rank_name, **extra_kwargs):
+        node = models.Storage.objects.create(
+            name=name,
+            definitionitem=models.Storagetreedefitem.objects.get(name=rank_name),
+            **extra_kwargs,
+        )
+        self._node_list.append(node)
+        return node
 
 
 class GeographyTree(TestTree, TestTreeSetup):
@@ -139,13 +235,13 @@ class TreeViewsTest(SqlTreeSetup):
                 *args,
                 **kwargs,
                 session_context=TreeViewsTest.test_session_context,
-                using_cte=True
+                using_cte=True,
             )
             node_number_results = get_tree_stats(
                 *args,
                 **kwargs,
                 session_context=TreeViewsTest.test_session_context,
-                using_cte=False
+                using_cte=False,
             )
             self.assertCountEqual(cte_results, node_number_results)
             return cte_results
@@ -594,23 +690,44 @@ class AddDeleteRankResourcesTest(ApiTests):
         )
 
         # Test deleting a rank in the middle of the heirarchy
-        api.delete_resource(self.collection, self.agent,
-                            'Geologictimeperiodtreedefitem', epoch_rank.id, epoch_rank.version)
-        self.assertEqual(None, models.Geologictimeperiodtreedefitem.objects.filter(
-            name='Epoch').first())
-        self.assertEqual(period_rank.id, models.Geologictimeperiodtreedefitem.objects.get(
-            name='Age').parent.id)
+        api.delete_resource(
+            self.collection,
+            self.agent,
+            "Geologictimeperiodtreedefitem",
+            epoch_rank.id,
+            epoch_rank.version,
+        )
+        self.assertEqual(
+            None,
+            models.Geologictimeperiodtreedefitem.objects.filter(name="Epoch").first(),
+        )
+        self.assertEqual(
+            period_rank.id,
+            models.Geologictimeperiodtreedefitem.objects.get(name="Age").parent.id,
+        )
 
         # Test deleting a rank at the end of the heirarchy
-        api.delete_resource(self.collection, self.agent,
-                            'Geologictimeperiodtreedefitem', age_rank.id, age_rank.version)
+        api.delete_resource(
+            self.collection,
+            self.agent,
+            "Geologictimeperiodtreedefitem",
+            age_rank.id,
+            age_rank.version,
+        )
         self.assertEqual(
-            None, models.Geologictimeperiodtreedefitem.objects.filter(name='Age').first())
+            None,
+            models.Geologictimeperiodtreedefitem.objects.filter(name="Age").first(),
+        )
 
         # Test deleting a rank at the head of the heirarchy
         with self.assertRaises(TreeBusinessRuleException):
-            api.delete_resource(self.collection, self.agent,
-                                'Geologictimeperiodtreedefitem', era_rank.id, era_rank.version)
+            api.delete_resource(
+                self.collection,
+                self.agent,
+                "Geologictimeperiodtreedefitem",
+                era_rank.id,
+                era_rank.version,
+            )
 
     def test_parents_inferred_treedef_inline(self):
         default_taxon_tree = {
@@ -678,80 +795,86 @@ class AddDeleteRankResourcesTest(ApiTests):
             ],
         }
 
-        created_treedef = api.create_obj(self.collection, self.agent, "Taxontreedef", default_taxon_tree)
+        created_treedef = api.create_obj(
+            self.collection, self.agent, "Taxontreedef", default_taxon_tree
+        )
         root = models.Taxontreedefitem.objects.get(treedef=created_treedef, rankid=0)
         self.assertEqual(root.name, "Life")
         self.assertIsNone(root.parent)
-        family = models.Taxontreedefitem.objects.get(treedef=created_treedef, rankid=140)
+        family = models.Taxontreedefitem.objects.get(
+            treedef=created_treedef, rankid=140
+        )
         self.assertEqual(family.name, "Family")
-        self.assertEqual(family.parent, models.Taxontreedefitem.objects.get(treedef=created_treedef, rankid=100))
-        species = models.Taxontreedefitem.objects.get(treedef=created_treedef, rankid=220)
+        self.assertEqual(
+            family.parent,
+            models.Taxontreedefitem.objects.get(treedef=created_treedef, rankid=100),
+        )
+        species = models.Taxontreedefitem.objects.get(
+            treedef=created_treedef, rankid=220
+        )
         self.assertEqual(species.name, "Species")
-        self.assertEqual(species.parent, models.Taxontreedefitem.objects.get(treedef=created_treedef, rankid=180))
+        self.assertEqual(
+            species.parent,
+            models.Taxontreedefitem.objects.get(treedef=created_treedef, rankid=180),
+        )
 
     def test_add_root_taxon(self):
         c = Client()
         c.force_login(self.specifyuser)
 
-        tree = 'taxon'
-        tree_def = models.Taxontreedef.objects.create(name='New Blank Tree')
+        tree = "taxon"
+        tree_def = models.Taxontreedef.objects.create(name="New Blank Tree")
         tree_def_id = tree_def.id
-        root_rank = models.Taxontreedefitem.objects.create(treedef=tree_def, rankid=0, name='Root')
-        first_rank = models.Taxontreedefitem.objects.create(treedef=tree_def, rankid=100, name='Test', parent=root_rank)
+        root_rank = models.Taxontreedefitem.objects.create(
+            treedef=tree_def, rankid=0, name="Root"
+        )
+        first_rank = models.Taxontreedefitem.objects.create(
+            treedef=tree_def, rankid=100, name="Test", parent=root_rank
+        )
 
         response = c.post(
-            f'/api/specify_tree/{tree}/{tree_def_id}/add_root/',
-            content_type='application/json'
+            f"/api/specify_tree/{tree}/{tree_def_id}/add_root/",
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(models.Taxon.objects.filter(definition=tree_def, rankid=0, name='Root').exists())
+        self.assertTrue(
+            models.Taxon.objects.filter(
+                definition=tree_def, rankid=0, name="Root"
+            ).exists()
+        )
 
         response = c.post(
-            f'/api/specify_tree/{tree}/{tree_def_id}/add_root/',
-            content_type='application/json'
+            f"/api/specify_tree/{tree}/{tree_def_id}/add_root/",
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 500)
 
-        root_node = models.Taxon.objects.filter(definition=tree_def, rankid=0, name='Root').first()
+        root_node = models.Taxon.objects.filter(
+            definition=tree_def, rankid=0, name="Root"
+        ).first()
         response = c.post(
             # f'/api/specify/{tree}/{root_node.id}/',
-            f'/api/specify/{tree}/',
-            data=json.dumps({
-                "isaccepted": True,
-                "parent": f"/api/specify/taxon/{root_node.id}/",
-                "name": "test",
-                "fullname": "test",
-                "commonname": None,
-                "ishybrid": False,
-                "author": None,
-                "source": None,
-                "guid": None,
-                "definitionitem": f"/api/specify/taxontreedefitem/{first_rank.id}/",
-                "taxoncitations": [
-                    
-                ],
-                "taxonattachments": [
-                    
-                ],
-                "acceptedchildren": {
-                    "update": [
-                    
-                    ],
-                    "remove": [
-                    
-                    ]
-                },
-                "children": {
-                    "update": [
-                    
-                    ],
-                    "remove": [
-                    
-                    ]
-                },
-                "_tableName": "Taxon"
-            }),
-            content_type='application/json'
+            f"/api/specify/{tree}/",
+            data=json.dumps(
+                {
+                    "isaccepted": True,
+                    "parent": f"/api/specify/taxon/{root_node.id}/",
+                    "name": "test",
+                    "fullname": "test",
+                    "commonname": None,
+                    "ishybrid": False,
+                    "author": None,
+                    "source": None,
+                    "guid": None,
+                    "definitionitem": f"/api/specify/taxontreedefitem/{first_rank.id}/",
+                    "taxoncitations": [],
+                    "taxonattachments": [],
+                    "acceptedchildren": {"update": [], "remove": []},
+                    "children": {"update": [], "remove": []},
+                    "_tableName": "Taxon",
+                }
+            ),
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 201)
         next_node = models.Taxon.objects.filter(
@@ -772,25 +895,35 @@ class AddDeleteRankResourcesTest(ApiTests):
         c = Client()
         c.force_login(self.specifyuser)
 
-        tree = 'geography'
-        tree_def = models.Geographytreedef.objects.create(name='New Blank Tree')
+        tree = "geography"
+        tree_def = models.Geographytreedef.objects.create(name="New Blank Tree")
         tree_def_id = tree_def.id
-        root_rank = models.Geographytreedefitem.objects.create(treedef=tree_def, rankid=0, name='Root')
-        first_rank = models.Geographytreedefitem.objects.create(treedef=tree_def, rankid=100, name='Continent')
+        root_rank = models.Geographytreedefitem.objects.create(
+            treedef=tree_def, rankid=0, name="Root"
+        )
+        first_rank = models.Geographytreedefitem.objects.create(
+            treedef=tree_def, rankid=100, name="Continent"
+        )
 
         response = c.post(
-            f'/api/specify_tree/{tree}/{tree_def_id}/add_root/',
-            content_type='application/json'
+            f"/api/specify_tree/{tree}/{tree_def_id}/add_root/",
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(models.Geography.objects.filter(definition=tree_def, rankid=0, name='Root').exists())
+        self.assertTrue(
+            models.Geography.objects.filter(
+                definition=tree_def, rankid=0, name="Root"
+            ).exists()
+        )
 
         response = c.post(
-            f'/api/specify_tree/{tree}/{tree_def_id}/add_root/',
-            content_type='application/json'
+            f"/api/specify_tree/{tree}/{tree_def_id}/add_root/",
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 500)
 
-        root_node = models.Geography.objects.filter(definition=tree_def, rankid=0, name='Root').first()
+        root_node = models.Geography.objects.filter(
+            definition=tree_def, rankid=0, name="Root"
+        ).first()
         root_node.delete()
         first_rank.delete()

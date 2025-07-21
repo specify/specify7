@@ -938,4 +938,13 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Препарат используется при кредитовании.',
     'uk-ua': 'Препарат використовується у позиці.',
   },
+  preparationIsNegative: {
+    "en-us": "Preparation count cannot be negative",
+    "de-ch": "Die Anzahl der Vorbereitungen darf nicht negativ sein",
+    "es-es": "El recuento de preparación no puede ser negativo",
+    "fr-fr": "Le nombre de préparations ne peut pas être négatif",
+    "pt-br": "A contagem de preparação não pode ser negativa",
+    "ru-ru": "Количество приготовлений не может быть отрицательным",
+    "uk-ua": "Кількість підготовок не може бути від'ємним значенням",
+  },
 } as const);

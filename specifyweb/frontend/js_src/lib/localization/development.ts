@@ -23,7 +23,7 @@ export const developmentText = createDictionary({
     "en-us": "Download as HTML",
     "es-es": "Descargar en formato HTML",
     "fr-fr": "Télécharger au format HTML",
-    "ru-ru": "Скачать как HTML",
+    "ru-ru": "Загрузить как HTML",
     "uk-ua": "Завантажити як HTML",
     "de-ch": "Als HTML-Datei herunterladen",
     "pt-br": "Baixar como HTML",

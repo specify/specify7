@@ -60,7 +60,7 @@ export const commonText = createDictionary({
   },
   create: {
     "en-us": "Create",
-    "ru-ru": "Создавать",
+    "ru-ru": "Создать",
     "es-es": "Crear",
     "fr-fr": "Créer",
     "uk-ua": "Створити",
@@ -69,7 +69,7 @@ export const commonText = createDictionary({
   },
   close: {
     "en-us": "Close",
-    "ru-ru": "Закрывать",
+    "ru-ru": "Закрыть",
     "es-es": "Cerrar",
     "fr-fr": "Fermer",
     "uk-ua": "Закрити",
@@ -78,7 +78,7 @@ export const commonText = createDictionary({
   },
   apply: {
     "en-us": "Apply",
-    "ru-ru": "Применять",
+    "ru-ru": "Применить",
     "es-es": "Aplicar",
     "fr-fr": "Appliquer",
     "uk-ua": "Застосувати",
@@ -109,12 +109,12 @@ export const commonText = createDictionary({
     "es-es": "Eliminar columnas no asignadas",
     "fr-fr": "Supprimer les colonnes non mappées",
     "pt-br": "Excluir colunas não mapeadas",
-    "ru-ru": "Удалить неотображенные столбцы",
+    "ru-ru": "Удаление неотображенных столбцов",
     "uk-ua": "Видалити незіставлені стовпці",
   },
   save: {
     "en-us": "Save",
-    "ru-ru": "Сохранять",
+    "ru-ru": "Сохранить",
     "es-es": "Guardar",
     "fr-fr": "Sauvegarder",
     "uk-ua": "зберегти",
@@ -123,7 +123,7 @@ export const commonText = createDictionary({
   },
   add: {
     "en-us": "Add",
-    "ru-ru": "Добавлять",
+    "ru-ru": "Добавить",
     "es-es": "Añadir",
     "fr-fr": "Ajouter",
     "uk-ua": "додати",
@@ -204,7 +204,7 @@ export const commonText = createDictionary({
   },
   remove: {
     "en-us": "Remove",
-    "ru-ru": "Удалять",
+    "ru-ru": "Удалить",
     "es-es": "Eliminar",
     "fr-fr": "Retirer",
     "uk-ua": "видалити",
@@ -277,7 +277,7 @@ export const commonText = createDictionary({
   start: {
     comment: "Noun",
     "en-us": "Start",
-    "ru-ru": "Начинать",
+    "ru-ru": "Начать",
     "es-es": "Empezar",
     "fr-fr": "Commencer",
     "uk-ua": "старт",
@@ -297,7 +297,7 @@ export const commonText = createDictionary({
   update: {
     comment: "Verb",
     "en-us": "Update",
-    "ru-ru": "Обновлять",
+    "ru-ru": "Обновить",
     "es-es": "Actualizar",
     "fr-fr": "Mise à jour",
     "uk-ua": "оновлення",

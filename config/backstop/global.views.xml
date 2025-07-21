@@ -1272,7 +1272,7 @@
 			<columnDef os="exp">p,2px,p:g(2),5px:g,p,2px,p:g(2),10px,p,p,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2dlu"/>
 			<rows>
-				<row>
+			  <row>
 					<cell type="label" labelfor="parent"/>
 					<cell type="field" id="parent" uitype="querycbx" isrequired="true" colspan="3" initialize="name=Taxon;title=Taxon;viewbtn=true;newbtn=false;editoncreate=true" name="parent"/>
 				</row>
@@ -1781,7 +1781,7 @@
 			<columnDef os="exp">p,2px,p:g(2),5px:g,p,2px,p:g(2),0px,p,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2dlu"/>
 			<rows>
-				<row>
+			 <row>
 					<cell type="label" labelfor="parent"/>
 					<cell type="field" id="parent" uitype="querycbx" isrequired="true" initialize="name=Storage;title=Storage;viewbtn=true;newbtn=false;editoncreate=true" name="parent"/>
 				</row>
@@ -1872,7 +1872,7 @@
 					<cell type="label" label=" "/>
 					<cell type="field" id="isBioStrat" uitype="checkbox" name="isBioStrat"/>
 				</row>
-				<row>
+ 			<row>
 					<cell type="label" labelfor="parent"/>
 					<cell type="field" id="parent" uitype="querycbx" initialize="name=GeologicTimePeriod;title=GeologicTimePeriod;editbtn=false;newbtn=false;editoncreate=true" name="parent" isrequired="true" colspan="3"/>
 				</row>
@@ -2842,7 +2842,7 @@
 			<columnDef>100px,2px,325px,5px,133px,2px,155px,10px,95px,15px,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2px"/>
 			<rows>
-				<row>
+ 			<row>
 					<cell type="label" labelfor="parent"/>
 					<cell type="field" id="parent" uitype="querycbx" isrequired="true" colspan="3" initialize="editbtn=false;newbtn=false" name="parent"/>
 				</row>
