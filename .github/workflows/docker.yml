@@ -79,7 +79,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push by digest
+      - name: Build digest
         id: build
         uses: docker/build-push-action@v6
         with:
@@ -88,7 +88,10 @@ jobs:
             BUILD_VERSION=${{ needs.prep.outputs.version }}
             GIT_SHA=${{ github.sha }}
           tags: ${{ needs.prep.outputs.tags }}
-          push: true
+          # We'll push these digests to DockerHub in the merge job, when all
+          # architectures will be simultaneasoly pushed.
+          # See https://github.com/specify/specify7/issues/7159
+          push: false
 
       - name: Export digest
         run: |
