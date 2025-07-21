@@ -1218,7 +1218,7 @@ export const formsText = createDictionary({
     "ru-ru": "{tableName:string} #{id:number}",
     "es-es": "{tableName:string} #{id:number}",
     "fr-fr": "{tableName:string} #{id:number}",
-    "uk-ua": "{tableName:string} #{id:number}",
+    "uk-ua": "{tableName:string} '#{id:number}",
     "de-ch": "{tableName:string} #{id:number}",
     "pt-br": "{tableName:string} #{id:number}",
   },
