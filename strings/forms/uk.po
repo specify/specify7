@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-07-21 14:10+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-07-21 18:03+0000\n"
+"Last-Translator: Максим Горпиніч <gorpinicmaksim5@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "forms/uk/>\n"
 "Language: uk\n"
@@ -523,43 +523,36 @@ msgstr "Це поле обов'язкове. Його потрібно пере�
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:220
-#, fuzzy
 msgid "bulkCarryForwardRangeEnabled"
 msgstr "Показати діапазон масового перенесення"
 
 #. Used in: Components > Forms > Bulk Carry Forward
 #: components/Forms/BulkCarryForward.tsx:55
-#, fuzzy
 msgid "bulkCarryForwardRangeErrorDescription"
 msgstr "Неможливо перенести запис у вказаний діапазон {field:string}."
 
 #. Used in: Components > Forms > Bulk Carry Forward
 #: components/Forms/BulkCarryForward.tsx:49
-#, fuzzy
 msgid "bulkCarryForwardRangeLimitExceeded"
 msgstr "Діапазон перевищує ліміт записів {limit:number}."
 
 #. Used in: Components > Forms > Bulk Carry Forward
 #: components/Forms/BulkCarryForward.tsx:41
-#, fuzzy
 msgid "bulkCarryForwardRangeExistingRecords"
 msgstr "Наступні номери для {field:string} вже використовуються:"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:367
-#, fuzzy
 msgid "bulkCarryForwardRangeStart"
 msgstr "Початок діапазону перенесення вперед"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:375
-#, fuzzy
 msgid "bulkCarryForwardRangeEnd"
 msgstr "Кінець діапазону перенесення вперед"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:238
-#, fuzzy
 msgid "createRecordSetOnBulkCarryForward"
 msgstr "Створення набору записів для групового перенесення"
 
@@ -707,7 +700,7 @@ msgstr "Новий {tableName:string}"
 #: components/Formatters/formatters.ts:59
 #: components/Forms/dataObjFormatters.ts:161
 msgid "resourceFormatter"
-msgstr "{tableName:string} #{id:number}"
+msgstr "{tableName:string} '#{id:number}"
 
 #. Used in: Components > Forms > Resource View
 #: components/Forms/ResourceView.tsx:214
