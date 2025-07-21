@@ -23,10 +23,7 @@ from specifyweb.specify.models import (
 )
 from specifyweb.specify.tests.test_tree_utils import TestMultipleTaxonTreeContext
 from specifyweb.specify.tests.test_trees import SqlTreeSetup
-from specifyweb.stored_queries.execution import build_query
-from specifyweb.stored_queries.queryfield import QueryField
-from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec
-from specifyweb.specify.models import datamodel
+from specifyweb.stored_queries.tests.utils import make_query_fields_test
 
 
 def taxon_rank_getter(rank_name, treedef):
@@ -55,40 +52,6 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
             ["rankid"],
             ["treeDef", "name"],
         ]
-
-    # Below is taken from batch edit datasets.
-    # TODO: Refactor those tests and make these part of SqlTreeSetup
-    def make_query(self, field_spec, sort_type=0):
-        return QueryField(
-            fieldspec=field_spec,
-            op_num=8,
-            value=None,
-            negate=False,
-            display=True,
-            format_name=None,
-            sort_type=sort_type,
-        )
-
-    def make_query_fields(self, base_table, query_paths):
-        added = [(base_table, *path) for path in query_paths]
-
-        query_fields = [
-            self.make_query(QueryFieldSpec.from_path(path), 0) for path in added
-        ]
-
-        return datamodel.get_table_strict(base_table), query_fields
-
-    def _get_results(self, base_table, fields, collection=None):
-        with TestFilterByCollection.test_session_context() as session:
-            query, _ = build_query(
-                session,
-                collection or self.collection,
-                self.specifyuser,
-                base_table.tableId,
-                fields,
-            )
-
-            return list(query)
 
     def _populate_taxon_tree(self, taxondef_1, taxondef_2):
 
@@ -421,7 +384,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
 
         paths = [["accessionNumber"], ["division", "name"]]
 
-        base_table, query_fields = self.make_query_fields("accession", paths)
+        base_table, query_fields = make_query_fields_test("accession", paths)
 
         self.assertCountEqual(
             self._get_results(base_table, query_fields),
@@ -445,7 +408,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
 
         paths = [["accessionNumber"], ["division", "name"]]
 
-        base_table, query_fields = self.make_query_fields("accession", paths)
+        base_table, query_fields = make_query_fields_test("accession", paths)
 
         self.assertCountEqual(
             self._get_results(base_table, query_fields),
@@ -458,7 +421,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
         collection_2, taxondef_1, taxondef_2 = self._create_simple_taxon()
         self._populate_taxon_tree(taxondef_1, taxondef_2)
 
-        base_table, query_fields = self.make_query_fields("taxon", self.tree_paths)
+        base_table, query_fields = make_query_fields_test("taxon", self.tree_paths)
 
         self.assertCountEqual(
             self._get_results(base_table, query_fields),
@@ -489,7 +452,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
         collection_2, taxondef_1, taxondef_2 = self._create_multiple_taxon()
         self._populate_taxon_tree(taxondef_1, taxondef_2)
 
-        base_table, query_fields = self.make_query_fields("taxon", self.tree_paths)
+        base_table, query_fields = make_query_fields_test("taxon", self.tree_paths)
 
         self.assertCountEqual(
             self._get_results(base_table, query_fields),
@@ -524,7 +487,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
         self.make_taxon_ranks(taxondef_1)
         self.make_taxon_ranks(taxondef_2)
 
-        base_table, query_fields = self.make_query_fields(
+        base_table, query_fields = make_query_fields_test(
             "taxontreedefitem", self.tree_item_paths
         )
         raw_results = self._get_results(base_table, query_fields)
@@ -579,7 +542,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
         self.make_taxon_ranks(taxondef_1)
         self.make_taxon_ranks(taxondef_2)
 
-        base_table, query_fields = self.make_query_fields(
+        base_table, query_fields = make_query_fields_test(
             "taxontreedefitem", self.tree_item_paths
         )
         raw_results = self._get_results(base_table, query_fields)
@@ -635,7 +598,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
             self._create_mock_geotree()
         )
 
-        base_table, query_fields = self.make_query_fields("geography", self.tree_paths)
+        base_table, query_fields = make_query_fields_test("geography", self.tree_paths)
 
         self.assertCountEqual(
             self._get_results(base_table, query_fields, collection_1),
@@ -674,7 +637,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
             self._create_mock_geotree()
         )
 
-        base_table, query_fields = self.make_query_fields(
+        base_table, query_fields = make_query_fields_test(
             "geographytreedefitem", self.tree_item_paths
         )
         treedef_1_raw_results = self._get_results(
@@ -762,7 +725,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
             self._create_mock_lithostrat()
         )
 
-        base_table, query_fields = self.make_query_fields("lithostrat", self.tree_paths)
+        base_table, query_fields = make_query_fields_test("lithostrat", self.tree_paths)
 
         self.assertCountEqual(
             self._get_results(base_table, query_fields, collection_1),
@@ -813,7 +776,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
             self._create_mock_lithostrat()
         )
 
-        base_table, query_fields = self.make_query_fields(
+        base_table, query_fields = make_query_fields_test(
             "lithostrattreedefitem", self.tree_item_paths
         )
 
@@ -836,7 +799,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
     def test_geologictimeperiod(self):
         collection_1, collection_2, *_ = self._create_mock_geologictimeperiod()
 
-        base_table, query_fields = self.make_query_fields(
+        base_table, query_fields = make_query_fields_test(
             "geologictimeperiod", self.tree_paths
         )
 
@@ -903,7 +866,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
     def test_geologictimeperioddefitem(self):
         collection_1, collection_2, *_ = self._create_mock_geologictimeperiod()
 
-        base_table, query_fields = self.make_query_fields(
+        base_table, query_fields = make_query_fields_test(
             "geologictimeperiodtreedefitem", self.tree_item_paths
         )
 
@@ -948,7 +911,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
     def test_tectonicunit(self):
         collection_1, collection_2, *_ = self._create_mock_tectonic_unit()
 
-        base_table, query_fields = self.make_query_fields(
+        base_table, query_fields = make_query_fields_test(
             "tectonicunit", self.tree_paths
         )
 
@@ -1000,7 +963,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
 
         self._create_mock_storage()
 
-        base_table, query_fields = self.make_query_fields("storage", self.tree_paths)
+        base_table, query_fields = make_query_fields_test("storage", self.tree_paths)
 
         expected_results = [
             (self.root.id, "Root", 0, 0, "Root", "Test storage tree"),
@@ -1017,7 +980,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
 
     def test_storagetreedefitem(self):
         self._create_mock_storage()
-        base_table, query_fields = self.make_query_fields(
+        base_table, query_fields = make_query_fields_test(
             "storagetreedefitem", self.tree_item_paths
         )
 
@@ -1092,7 +1055,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
 
         agent_fields = [["firstname"], ["lastname"]]
 
-        base_table, query_fields = self.make_query_fields("agent", agent_fields)
+        base_table, query_fields = make_query_fields_test("agent", agent_fields)
 
         self.assertCountEqual(
             self._get_results(base_table, query_fields, collection_1),
@@ -1137,7 +1100,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
             originator=self.agent,
         )
 
-        base_table, query_fields = self.make_query_fields(
+        base_table, query_fields = make_query_fields_test(
             "Repositoryagreement", [["repositoryagreementnumber"], ["division", "name"]]
         )
 
@@ -1188,7 +1151,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
             exchangeinnumber="Num2 (Division 2)",
         )
 
-        base_table, query_fields = self.make_query_fields(
+        base_table, query_fields = make_query_fields_test(
             "Exchangein", [["exchangeinnumber"], ["division", "name"]]
         )
 
@@ -1240,7 +1203,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
             exchangeoutnumber="Num2 (Division 2)",
         )
 
-        base_table, query_fields = self.make_query_fields(
+        base_table, query_fields = make_query_fields_test(
             "Exchangeout", [["exchangeoutnumber"], ["division", "name"]]
         )
 
@@ -1279,7 +1242,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
             division=division_2, backgroundinfo="Conv2 (Division 2)"
         )
 
-        base_table, query_fields = self.make_query_fields(
+        base_table, query_fields = make_query_fields_test(
             "Conservdescription", [["backgroundinfo"], ["division", "name"]]
         )
 
@@ -1318,7 +1281,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
             collection=collection_2, name="Picklist 2 (Collection 2)", type=0
         )
 
-        base_table, query_fields = self.make_query_fields("Picklist", [["name"]])
+        base_table, query_fields = make_query_fields_test("Picklist", [["name"]])
 
         self.assertCountEqual(
             self._get_results(base_table, query_fields, collection_1),
@@ -1355,7 +1318,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
             collectionmemberid=collection_2.id, firstname="Info 2 (Collection 2)"
         )
 
-        base_table, query_fields = self.make_query_fields(
+        base_table, query_fields = make_query_fields_test(
             "Inforequest", [["firstname"]]
         )
 
@@ -1394,7 +1357,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
             localityname="Locality 2 (Discipline 2)", discipline=collection_2.discipline
         )
 
-        base_table, query_fields = self.make_query_fields(
+        base_table, query_fields = make_query_fields_test(
             "Locality", [["localityname"]]
         )
 
@@ -1433,7 +1396,7 @@ class TestFilterByCollection(TestMultipleTaxonTreeContext, SqlTreeSetup):
             fieldnumber="TE2 (Division 2)", division=division_2
         )
 
-        base_table, query_fields = self.make_query_fields(
+        base_table, query_fields = make_query_fields_test(
             "Treatmentevent", [["fieldnumber"]]
         )
 
