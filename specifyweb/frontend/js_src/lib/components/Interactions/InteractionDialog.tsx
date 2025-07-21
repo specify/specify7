@@ -312,11 +312,15 @@ export function InteractionDialog({
                   handleClose();
                 }}
               >
-                {interactionsText.continueWithoutPreparations()}
+                {interactionsText.continueWithoutPreparations({
+                  preparationTable: tables.Preparation.label.toLowerCase(),
+                })}
               </Button.Info>
             ) : (
               <Link.Info href={getResourceViewUrl(actionTable.name)}>
-                {interactionsText.continueWithoutPreparations()}
+                {interactionsText.continueWithoutPreparations({
+                  preparationTable: tables.Preparation.label.toLowerCase(),
+                })}
               </Link.Info>
             )}
             {}
@@ -327,7 +331,9 @@ export function InteractionDialog({
         })}
         onClose={handleClose}
       >
-        {interactionsText.noPreparationsWarning()}
+        {interactionsText.noPreparationsWarning({
+          preparationTable: tables.Preparation.label.toLowerCase(),
+        })}
       </Dialog>
     )
   ) : (
@@ -355,7 +361,9 @@ export function InteractionDialog({
                   </Button.Secondary>
                 ) : interactionsWithPrepTables.includes(actionTable.name) ? (
                   <Link.Secondary href={getResourceViewUrl(actionTable.name)}>
-                    {interactionsText.withoutPreparations()}
+                    {interactionsText.withoutPreparations({
+                      preparationTable: tables.Preparation.label.toLowerCase(),
+                    })}
                   </Link.Secondary>
                 ) : undefined}
                 <span className="-ml-2 flex-1" />
@@ -425,7 +433,12 @@ export function InteractionDialog({
                   <>
                     {state.missing.length > 0 && (
                       <>
-                        <H3>{interactionsText.preparationsNotFoundFor()}</H3>
+                        <H3>
+                          {interactionsText.preparationsNotFoundFor({
+                            preparationTable:
+                              tables.Preparation.label.toLowerCase(),
+                          })}
+                        </H3>
                         {state.missing.map((problem, index) => (
                           <p key={index}>{problem}</p>
                         ))}
@@ -434,7 +447,10 @@ export function InteractionDialog({
                     {state.unavailableBis.length > 0 && (
                       <>
                         <H3>
-                          {interactionsText.preparationsNotAvailableFor()}
+                          {interactionsText.preparationsNotAvailableFor({
+                            preparationTable:
+                              tables.Preparation.label.toLowerCase(),
+                          })}
                         </H3>
                         {state.unavailableBis.map((problem, index) => (
                           <p key={index}>{problem}</p>
