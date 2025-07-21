@@ -889,7 +889,7 @@ def build_query(
     id_field = model._id
     catalog_number_field = model.catalogNumber if hasattr(model, 'catalogNumber') else None
 
-    # field_specs = [apply_absolute_date(field_spec) for field_spec in field_specs]
+    field_specs = [apply_absolute_date(field_spec) for field_spec in field_specs]
     field_specs = [apply_specify_user_name(field_spec, user) for field_spec in field_specs]
 
     query_construct_query = session.query(id_field)
