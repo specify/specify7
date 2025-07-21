@@ -229,6 +229,7 @@ MIGRATION_0037_TABLES = [
 MIGRATION_0037_FIELDS = {
     'CollectionObject': ['components'],
     'Taxon': ['components'],
+    'Determiner': ['components'],
     'RelativeAge': ['component'],
     'AbsoluteAge': ['component'],
 }
@@ -242,7 +243,6 @@ MIGRATION_0037_UPDATE_FIELDS = {
         ('proportion', 'Proportion', 'Specify the proportion of the component relative to the whole.'),
         ('uniqueIdentifier', 'Unique Identifier', 'Uniquely identifies each component record'),
         ('catalogNumber', 'Catalog Number', 'User-assigned identifier for the component'),
-        
         ],
 }
 

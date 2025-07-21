@@ -2091,6 +2091,7 @@ class Component(models.Model):
     # Relationships: Many-to-One
     collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='components', null=False, on_delete=models.CASCADE)
     name = models.ForeignKey('Taxon', db_column='TaxonID', related_name='components', null=True, on_delete=protect_with_blockers)
+    determiner = models.ForeignKey('Determiner', db_column='DeterminerID', related_name='components', null=True, on_delete=protect_with_blockers)
     type = models.ForeignKey('CollectionObjectType', db_column='CollectionObjectTypeID', related_name='components', null=True, on_delete=models.SET_NULL)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)

@@ -2251,6 +2251,7 @@ datamodel = Datamodel(tables=[
         relationships=[
             Relationship(name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='components'),
             Relationship(name='name', type='many-to-one',required=False, relatedModelName='Taxon', column='TaxonID', otherSideName='components'),
+            Relationship(name='determiner', type='many-to-one', required=False, relatedModelName='Determiner', column='DeterminerID', otherSideName='components'),
             Relationship(name='type', type='many-to-one', required=True, relatedModelName='CollectionObjectType', column='CollectionObjectTypeID'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
@@ -3021,6 +3022,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='agent', type='many-to-one',required=True, relatedModelName='Agent', column='AgentID'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='determination', type='many-to-one',required=True, relatedModelName='Determination', column='DeterminationID', otherSideName='determiners'),
+            Relationship(name='components', type='one-to-many',required=False, relatedModelName='Component', otherSideName='determiner'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID')
         ],
         fieldAliases=[

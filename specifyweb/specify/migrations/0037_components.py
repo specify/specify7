@@ -187,6 +187,7 @@ class Migration(migrations.Migration):
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')),
                 ('name', models.ForeignKey(db_column='TaxonID', null=True, on_delete=protect_with_blockers, related_name='components', to='specify.taxon')),
                 ('type', models.ForeignKey(db_column='CollectionObjectTypeID', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='components', to='specify.collectionobjecttype')),
+                ('determiner', models.ForeignKey(db_column='DeterminerID', null=True, on_delete=protect_with_blockers, related_name='components', to='specify.determiner')),
             ],
             options={
                 'db_table': 'component',
