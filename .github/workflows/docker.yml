@@ -91,7 +91,7 @@ jobs:
           # We'll push these digests to DockerHub in the merge job, when all
           # architectures will be simultaneasoly pushed.
           # See https://github.com/specify/specify7/issues/7159
-          push: false
+          outputs: type=image,push=false
 
       - name: Export digest
         run: |
