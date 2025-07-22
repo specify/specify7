@@ -3,8 +3,6 @@ from specifyweb.stored_queries.execution import createPlacemark, getCoordinateCo
 from specifyweb.stored_queries.tests.test_execution.test_kml_context import (
 	TestKMLContext,
 )
-from django.db.models import F, Value as V
-from django.db.models.functions import Concat
 
 from specifyweb.stored_queries.tests.utils import make_query_fields_test
 from xml.dom.minidom import Document, parseString
@@ -47,14 +45,6 @@ class TestCreatePlacemark(TestKMLContext):
 			self._locality_value_value_value_value_value_l_0,
 			self._locality_value_value_value_value_value_r_0,
 		]
-
-	def _update_name_text1(self):
-		Locality.objects.update(
-			localityname=Concat(V("Locality-"), "lat1text", V("-"), "long1text")
-		)
-		Locality.objects.update(
-			text1=Concat(V("LocalityText-"), "lat1text", V("-"), "long1text")
-		)
 
 	def assert_xml_equal(self, base, other):
 		self.maxDiff = None
