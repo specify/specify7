@@ -443,6 +443,10 @@ def getCoordinateColumns(field_specs, hasId):
     for fld in field_specs:
         if fld.fieldspec.table.name == "Locality":
             jp = fld.fieldspec.join_path
+            # BUG: In the cases where the basetable's formatted is added to the query,
+            # then the below branch will incorrectly skip incrementing the index.
+            # To fix this, simply do all the below logic in `if jp` (rather than continuing)
+            # See test: specifyweb.stored_queries.tests.test_execution.TestGetCoordinateColumns.test_formatted_fields)
             if not jp:
                 continue
             f_name = jp[-1].name.lower()
@@ -889,7 +893,7 @@ def build_query(
     id_field = model._id
     catalog_number_field = model.catalogNumber if hasattr(model, 'catalogNumber') else None
 
-    # field_specs = [apply_absolute_date(field_spec) for field_spec in field_specs]
+    field_specs = [apply_absolute_date(field_spec) for field_spec in field_specs]
     field_specs = [apply_specify_user_name(field_spec, user) for field_spec in field_specs]
 
     query_construct_query = session.query(id_field)
