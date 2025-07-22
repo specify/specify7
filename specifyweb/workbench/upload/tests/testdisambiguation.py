@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from ..uploadable import Disambiguation
 from ..upload_result import Matched, MatchedMultiple
 from ..upload_table import UploadTable
@@ -9,8 +7,6 @@ from ..disambiguation import DisambiguationInfo
 
 from .base import UploadTestsBase
 from specifyweb.specify.tests.test_api import get_table
-
-from django.conf import settings
 
 class DisambiguationTests(UploadTestsBase):
 
@@ -81,7 +77,7 @@ class DisambiguationTests(UploadTestsBase):
         for result in results:
             assert result.contains_failure()
 
-        disambiguations: Optional[list[Disambiguation]] = [
+        disambiguations: list[Disambiguation] | None = [
             DisambiguationInfo({("authors", "#2", "agent"): senior.id}),
             DisambiguationInfo({("authors", "#1", "agent"): junior.id}),
             DisambiguationInfo({("authors", "#1", "agent"): senior.id, ("authors", "#2", "agent"): junior.id}),

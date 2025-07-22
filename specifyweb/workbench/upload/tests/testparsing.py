@@ -5,7 +5,7 @@ import unittest
 from datetime import date
 
 from hypothesis import given, strategies as st
-from jsonschema import validate  # type: ignore
+from jsonschema import validate, Draft7Validator  # type: ignore
 
 from specifyweb.specify import auditcodes
 from specifyweb.specify.datamodel import datamodel
@@ -163,7 +163,7 @@ class ParsingTests(UploadTestsBase):
 
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate([result.to_json()], upload_results_schema)
+            validate([result.to_json()], upload_results_schema, cls=Draft7Validator)
             self.assertIsInstance(result.record_result, Uploaded)
 
         for i, v in enumerate('River Lake marsh Lake marsh Lake'.split()):
@@ -565,7 +565,7 @@ class MatchingBehaviorTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate([result.to_json()], upload_results_schema)
+            validate([result.to_json()], upload_results_schema, cls=Draft7Validator)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Matched, "Second record matches first despite blank value.")
@@ -592,7 +592,7 @@ class MatchingBehaviorTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate([result.to_json()], upload_results_schema)
+            validate([result.to_json()], upload_results_schema, cls=Draft7Validator)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Matched, "Second record matches first despite default value.")
@@ -623,7 +623,7 @@ class MatchingBehaviorTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate([result.to_json()], upload_results_schema)
+            validate([result.to_json()], upload_results_schema, cls=Draft7Validator)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded, "Second record doesn't match first due to blank value.")
@@ -648,7 +648,7 @@ class MatchingBehaviorTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate([result.to_json()], upload_results_schema)
+            validate([result.to_json()], upload_results_schema, cls=Draft7Validator)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Matched, "Second record matches first despite blank value.")
@@ -676,7 +676,7 @@ class DefaultTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate([result.to_json()], upload_results_schema)
+            validate([result.to_json()], upload_results_schema, cls=Draft7Validator)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded)
@@ -705,7 +705,7 @@ class DefaultTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate([result.to_json()], upload_results_schema)
+            validate([result.to_json()], upload_results_schema, cls=Draft7Validator)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded)
@@ -735,7 +735,7 @@ class DefaultTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate([result.to_json()], upload_results_schema)
+            validate([result.to_json()], upload_results_schema, cls=Draft7Validator)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded)
@@ -764,7 +764,7 @@ class DefaultTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate([result.to_json()], upload_results_schema)
+            validate([result.to_json()], upload_results_schema, cls=Draft7Validator)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded)
@@ -794,7 +794,7 @@ class NullAllowedTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate([result.to_json()], upload_results_schema)
+            validate([result.to_json()], upload_results_schema, cls=Draft7Validator)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertEqual(results[1].record_result, ParseFailures(failures=[WorkBenchParseFailure(message='field is required by upload plan mapping', payload={}, column='firstname')]))
@@ -821,7 +821,7 @@ class NullAllowedTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate([result.to_json()], upload_results_schema)
+            validate([result.to_json()], upload_results_schema, cls=Draft7Validator)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertEqual(results[1].record_result, ParseFailures(failures=[WorkBenchParseFailure(message='field is required by upload plan mapping', payload={}, column='firstname')]))
@@ -850,7 +850,7 @@ class NullAllowedTests(UploadTestsBase):
         ]
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
-            validate([result.to_json()], upload_results_schema)
+            validate([result.to_json()], upload_results_schema, cls=Draft7Validator)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertEqual(results[1].record_result, ParseFailures(failures=[WorkBenchParseFailure(message='field is required by upload plan mapping', payload={}, column='firstname')]))

@@ -158,4 +158,3 @@ def get_parent_cat_num_inheritance_setting(collection, user) -> bool:
         logger.warning(f"An unexpected error occurred: {e}")
     
     return parent_inheritance_enabled
-

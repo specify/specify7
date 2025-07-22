@@ -13,7 +13,7 @@ class TestModifyPrepUpdateBasedOnSiblingPreps(TestCogConsolidatedPrepSiblingCont
         created_prep = self._create_prep(new_co, None)
 
         original_prep_ids = {prep.id for prep in prep_list}
-        new_prep_id = set([*list(original_prep_ids), created_prep.id])
+        new_prep_id = {*list(original_prep_ids), created_prep.id}
 
         self.assertEqual(
             modify_prep_update_based_on_sibling_preps(original_prep_ids, new_prep_id),

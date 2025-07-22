@@ -1,5 +1,4 @@
 from functools import reduce
-from typing import Dict, Union, Tuple
 import logging
 
 from specifyweb.specify.datamodel import datamodel, Table
@@ -333,7 +332,10 @@ def parse_uploadable(table: Table, to_parse: dict) -> Uploadable:
 def parse_upload_table(table: Table, to_parse: dict) -> UploadTable:
 
     def rel_table(key: str) -> Table:
-        return datamodel.get_table_strict(table.get_relationship(key).relatedModelName)
+        related_model_name = table.get_relationship(key).relatedModelName
+        if related_model_name is None:
+            raise ValueError(f"Related model name for key '{key}' is None.")
+        return datamodel.get_table_strict(related_model_name)
 
     return UploadTable(
         name=table.django_name,
@@ -403,7 +405,7 @@ def parse_tree_record(table: Table, to_parse: dict) -> TreeRecord:
     )
 
 
-def parse_column_options(to_parse: Union[str, dict]) -> ColumnOptions:
+def parse_column_options(to_parse: str | dict) -> ColumnOptions:
     if isinstance(to_parse, str):
         return ColumnOptions(
             column=to_parse,

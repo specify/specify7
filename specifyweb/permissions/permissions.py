@@ -1,14 +1,9 @@
 from typing import (
     Any,
-    Callable,
     Literal,
-    Tuple,
-    List,
-    Dict,
-    Union,
-    Optional,
     NamedTuple,
 )
+from collections.abc import Callable
 from collections.abc import Iterable
 
 import logging
@@ -66,14 +61,14 @@ class PermissionTarget(metaclass=PermissionTargetMeta):
 
 
 class PermRequest(NamedTuple):
-    collectionid: Optional[int]
+    collectionid: int | None
     userid: int
     resource: str
     action: str
 
 
 def check_permission_targets(
-    collectionid: Optional[int], userid: int, targets: list[PermissionTargetAction]
+    collectionid: int | None, userid: int, targets: list[PermissionTargetAction]
 ) -> None:
     if not targets:
         return
@@ -90,7 +85,7 @@ def check_permission_targets(
 
 
 def has_target_permission(
-    collectionid: Optional[int], userid: int, targets: list[PermissionTargetAction]
+    collectionid: int | None, userid: int, targets: list[PermissionTargetAction]
 ):
     try:
         check_permission_targets(collectionid, userid, targets)
@@ -124,7 +119,7 @@ class NoAdminUsersException(PermissionsException):
 
 
 def enforce(
-    collection: Union[int, Model, None], actor, resources: list[str], action: str
+    collection: int | Model | None, actor, resources: list[str], action: str
 ) -> None:
     if not resources:
         return
@@ -174,13 +169,13 @@ class QueryResult(NamedTuple):
 
 
 def query_pt(
-    collectionid: Optional[int], userid: int, target: PermissionTargetAction
+    collectionid: int | None, userid: int, target: PermissionTargetAction
 ) -> QueryResult:
     return query(collectionid, userid, target.resource(), target.action())
 
 
 def query(
-    collectionid: Optional[int], userid: int, resource: str, action: str
+    collectionid: int | None, userid: int, resource: str, action: str
 ) -> QueryResult:
     cursor = connection.cursor()
 
