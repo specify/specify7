@@ -5,9 +5,7 @@ from specifyweb.stored_queries.tests.test_execution.test_kml_context import (
 )
 
 from specifyweb.stored_queries.tests.utils import make_query_fields_test
-from xml.dom.minidom import Document, parseString
-
-import re
+from xml.dom.minidom import Document
 
 fields_value_value_null_null_null = [
 	["localityName"],
@@ -45,17 +43,6 @@ class TestCreatePlacemark(TestKMLContext):
 			self._locality_value_value_value_value_value_l_0,
 			self._locality_value_value_value_value_value_r_0,
 		]
-
-	def assert_xml_equal(self, base, other):
-		self.maxDiff = None
-		# We use a different format for showing the XML
-		# So, this takes the generated xml, and parses the other, and formats them the same
-		# and then compare the results.
-		# This way, it can still be pretty printed.
-		xml_other = parseString(re.sub(r"[\n\r\t]+", "", other))
-		xml_other_str = xml_other.toprettyxml(indent="", newl="")
-		base_str = base.toprettyxml(indent="", newl="")
-		self.assertEqual(xml_other_str, base_str)
 
 	def _get_kml_doc(self, locality_attr, fields_to_use_idx=0):
 		(
