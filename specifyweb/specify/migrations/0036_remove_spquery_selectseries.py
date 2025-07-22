@@ -4,13 +4,6 @@ from django.db import migrations
 
 from django.db import migrations, models
 
-def make_smushed_false(apps, schema_editor):
-    Spquery = apps.get_model('specify', 'Spquery')
-    Spquery.objects.filter(smushed__isnull=True).update(smushed=False)
-
-def revert_smushed(apps, schema_editor):
-    pass
-
 def add_column_if_missing(apps, schema_editor):
     SpQuery = apps.get_model('specify', 'SpQuery')
     table = SpQuery._meta.db_table
@@ -37,19 +30,10 @@ class Migration(migrations.Migration):
         ('specify', '0035_version_required'),
     ]
 
-    def apply_migration(apps, schema_editor):
-        make_smushed_false(apps, schema_editor)
-
     operations = [
         migrations.RunPython(add_column_if_missing, reverse_code=migrations.RunPython.noop),
         migrations.RemoveField(
             model_name='spquery',
             name='selectseries',
         ),
-        migrations.AlterField(
-            model_name='spquery',
-            name='smushed',
-            field=models.BooleanField(blank=True, null=True, default=False, db_column='Smushed'),
-        ),
-        migrations.RunPython(apply_migration, revert_smushed, atomic=True)
     ]
