@@ -1,60 +1,395 @@
 from specifyweb.specify.models import Locality
+from specifyweb.stored_queries.execution import createPlacemark, getCoordinateColumns
 from specifyweb.stored_queries.tests.test_execution.test_kml_context import (
-    TestKMLContext,
+	TestKMLContext,
 )
 from django.db.models import F, Value as V
 from django.db.models.functions import Concat
 
+from specifyweb.stored_queries.tests.utils import make_query_fields_test
+from xml.dom.minidom import Document, parseString
+
+import re
+
 fields_value_value_null_null_null = [
-    ["localityName"],
-    ["text1"],
-    ["latitude1"],
-    ["longitude1"],
+	["localityName"],
+	["text1"],
+	["latitude1"],
+	["longitude1"],
 ]
 
 
+captions = [
+	"Locality Name",
+	"Locality Text1",
+	"Locality Latitude1",
+	"Locality Longitude1",
+]
+
+
+# Warning:
+# If modifying these tests, make sure you are using "Indent by Tabs" (rather than "Indent By Space")
 class TestCreatePlacemark(TestKMLContext):
 
-    # In this test suite, we have groups of rows that have geocoord.
-    # From each group, we take a single row.
-    # For that row, we take 1 field definition (3 in total)
+	@classmethod
+	def setUpClass(cls):
+		cls._use_blank_nulls = True
+		super().setUpClass()
 
-    def noop(self):
-        # Basic test to investigate things.
-        rows_with_geocoords = [
-            self._locality_value_value_null_null_null_0,
-            self._locality_value_value_value_value_value_l_0,
-            self._locality_value_value_value_value_value_r_0,
-        ]
+	# In this test suite, we have groups of rows that have geocoord.
+	# From each group, we take a single row.
+	# For that row, we take 1 field definition (3 in total)
 
-    def _update_name_text1(self):
-        Locality.objects.update(
-            localityname=Concat(V("Locality-"), "lat1text", V("-"), "long1text")
-        )
-        Locality.objects.update(
-            text1=Concat(V("LocalityText-"), "lat1text", V("-"), "long1text")
-        )
+	def noop(self):
+		# Basic test to investigate things.
+		rows_with_geocoords = [
+			self._locality_value_value_null_null_null_0,
+			self._locality_value_value_value_value_value_l_0,
+			self._locality_value_value_value_value_value_r_0,
+		]
 
-    def _lat_long_only(self, fields_to_use_idx=0):
-        (
-            *_,
-            fields_value_value_value_value_null,
-            fields_value_value_value_value_value,
-        ) = self.direct_locality_fields(add_extras=True)
+	def _update_name_text1(self):
+		Locality.objects.update(
+			localityname=Concat(V("Locality-"), "lat1text", V("-"), "long1text")
+		)
+		Locality.objects.update(
+			text1=Concat(V("LocalityText-"), "lat1text", V("-"), "long1text")
+		)
 
-        all_fields = [
-            fields_value_value_value_value_null,
-            fields_value_value_value_value_value,
-            fields_value_value_null_null_null,
-        ]
+	def assert_xml_equal(self, base, other):
+		self.maxDiff = None
+		# We use a different format for showing the XML
+		# So, this takes the generated xml, and parses the other, and formats them the same
+		# and then compare the results.
+		# This way, it can still be pretty printed.
+		xml_other = parseString(re.sub(r"[\n\r\t]+", "", other))
+		xml_other_str = xml_other.toprettyxml(indent="", newl="")
+		base_str = base.toprettyxml(indent="", newl="")
+		self.assertEqual(xml_other_str, base_str)
 
-        locality = self._locality_value_value_null_null_null_0
+	def _get_kml_doc(self, locality_attr, fields_to_use_idx=0):
+		(
+			*_,
+			fields_value_value_value_value_null,
+			fields_value_value_value_value_value,
+		) = self.direct_locality_fields(add_extras=True)
 
-        # Delete all other localities to make things simpler
-        Locality.objects.exclude(id=locality.id).delete()
-        self._update_name_text1()
+		all_fields = [
+			fields_value_value_null_null_null,
+			fields_value_value_value_value_null,
+			fields_value_value_value_value_value,
+		]
 
-        fields_to_use = all_fields[fields_to_use_idx]
+		locality = getattr(self, locality_attr)
 
-    def test_lat_long_only_field_latlong_latlong_null(self):
-        self._lat_long_only(0)
+		# Delete all other localities to make things simpler
+		Locality.objects.exclude(id=locality.id).delete()
+		self._update_name_text1()
+
+		fields_to_use = all_fields[fields_to_use_idx]
+
+		table, query_fields = make_query_fields_test("Locality", fields_to_use)
+		cols = getCoordinateColumns(query_fields, True)
+		kmlDoc = Document()
+		rows = self._get_results(table, query_fields)
+		element = createPlacemark(
+			kmlDoc,
+			rows[0],
+			cols,
+			"locality",
+			captions,
+			"http://localhost:5050",
+		)
+		kmlDoc.appendChild(element)
+		return kmlDoc, locality
+
+
+tests = [
+	dict(
+		attr="_locality_value_value_null_null_null_0",
+		fields=0,
+		expected=lambda locality: f"""<?xml version="1.0" ?>
+		<Placemark>
+			<ExtendedData>
+				<Data name="Locality Name">
+					<value>Locality-12.3-40.67</value>
+				</Data>
+				<Data name="Locality Text1">
+					<value>LocalityText-12.3-40.67</value>
+				</Data>
+				<Data name="coordinates">
+					<value>12.3, 40.67</value>
+				</Data>
+				<Data name="go to">
+					<value>http://localhost:5050/specify/view/locality/{locality.id}/</value>
+				</Data>
+			</ExtendedData>
+			<name>Locality-12.3-40.67</name>
+			<Point>
+				<coordinates>40.67,12.3</coordinates>
+			</Point>
+		</Placemark>
+		""",
+    ),
+	dict(
+		attr="_locality_value_value_null_null_null_0",
+		fields=1,
+		expected=lambda locality: f"""<?xml version="1.0" ?>
+		<Placemark>
+			<ExtendedData>
+				<Data name="Locality Name">
+					<value>Locality-12.3-40.67</value>
+				</Data>
+				<Data name="Locality Text1">
+					<value>LocalityText-12.3-40.67</value>
+				</Data>
+				<Data name="coordinates">
+					<value>12.3, 40.67 : , </value>
+				</Data>
+				<Data name="go to">
+					<value>http://localhost:5050/specify/view/locality/{locality.id}/</value>
+				</Data>
+			</ExtendedData>
+			<name>Locality-12.3-40.67</name>
+			<MultiGeometry>
+				<Point>
+					<coordinates>40.67,12.3</coordinates>
+				</Point>
+				<LineString>
+					<tessellate>1</tessellate>
+					<coordinates>40.67,12.3 ,</coordinates>
+				</LineString>
+			</MultiGeometry>
+		</Placemark>
+		""",
+	),
+	dict(
+		attr="_locality_value_value_null_null_null_0",
+		fields=2,
+		expected=lambda locality: f"""<?xml version="1.0" ?>
+		<Placemark>
+			<ExtendedData>
+				<Data name="Locality Name">
+					<value>Locality-12.3-40.67</value>
+				</Data>
+				<Data name="Locality Text1">
+					<value>LocalityText-12.3-40.67</value>
+				</Data>
+				<Data name="coordinates">
+					<value>12.3, 40.67 : ,  ()</value>
+				</Data>
+				<Data name="go to">
+					<value>http://localhost:5050/specify/view/locality/{locality.id}/</value>
+				</Data>
+			</ExtendedData>
+			<name>Locality-12.3-40.67</name>
+			<MultiGeometry>
+				<Point>
+					<coordinates>40.67,12.3</coordinates>
+				</Point>
+				<LinearRing>
+					<tessellate>1</tessellate>
+					<coordinates>40.67,12.3 ,12.3 , 40.67, 40.67,12.3</coordinates>
+				</LinearRing>
+			</MultiGeometry>
+		</Placemark>
+		""",
+	),
+	dict(
+		attr="_locality_value_value_value_value_value_l_0",
+		fields=0,
+		expected=lambda locality: f"""<?xml version="1.0" ?>
+			<Placemark>
+				<ExtendedData>
+					<Data name="Locality Name">
+						<value>Locality-23.12-16.90</value>
+					</Data>
+					<Data name="Locality Text1">
+						<value>LocalityText-23.12-16.90</value>
+					</Data>
+					<Data name="coordinates">
+						<value>23.12, 16.9</value>
+					</Data>
+					<Data name="go to">
+						<value>http://localhost:5050/specify/view/locality/{locality.id}/</value>
+					</Data>
+				</ExtendedData>
+				<name>Locality-23.12-16.90</name>
+				<Point>
+					<coordinates>16.9,23.12</coordinates>
+				</Point>
+			</Placemark>
+			""",
+	),
+	dict(
+		attr="_locality_value_value_value_value_value_l_0",
+		fields=1,
+		expected=lambda locality: f"""<?xml version="1.0" ?>
+			<Placemark>
+				<ExtendedData>
+					<Data name="Locality Name">
+						<value>Locality-23.12-16.90</value>
+					</Data>
+					<Data name="Locality Text1">
+						<value>LocalityText-23.12-16.90</value>
+					</Data>
+					<Data name="coordinates">
+						<value>23.12, 16.9 : 67.87, 12.42</value>
+					</Data>
+					<Data name="go to">
+						<value>http://localhost:5050/specify/view/locality/{locality.id}/</value>
+					</Data>
+				</ExtendedData>
+				<name>Locality-23.12-16.90</name>
+				<MultiGeometry>
+					<Point>
+						<coordinates>16.9,23.12</coordinates>
+					</Point>
+					<LineString>
+						<tessellate>1</tessellate>
+						<coordinates>16.9,23.12 12.42,67.87</coordinates>
+					</LineString>
+				</MultiGeometry>
+			</Placemark>
+			""",
+	),
+	dict(
+		attr="_locality_value_value_value_value_value_l_0",
+		fields=2,
+		expected=lambda locality: f"""<?xml version="1.0" ?>
+			<Placemark>
+				<ExtendedData>
+					<Data name="Locality Name">
+						<value>Locality-23.12-16.90</value>
+					</Data>
+					<Data name="Locality Text1">
+						<value>LocalityText-23.12-16.90</value>
+					</Data>
+					<Data name="coordinates">
+						<value>23.12, 16.9 : 67.87, 12.42 (Line)</value>
+					</Data>
+					<Data name="go to">
+						<value>http://localhost:5050/specify/view/locality/{locality.id}/</value>
+					</Data>
+				</ExtendedData>
+				<name>Locality-23.12-16.90</name>
+				<MultiGeometry>
+					<Point>
+						<coordinates>16.9,23.12</coordinates>
+					</Point>
+					<LineString>
+						<tessellate>1</tessellate>
+						<coordinates>16.9,23.12 12.42,67.87</coordinates>
+					</LineString>
+				</MultiGeometry>
+			</Placemark>
+			""",
+	),
+	dict(
+		attr="_locality_value_value_value_value_value_r_0",
+		fields=0,
+		expected=lambda locality: f"""<?xml version="1.0" ?>
+			<Placemark>
+				<ExtendedData>
+					<Data name="Locality Name">
+						<value>Locality-59.78-15.35</value>
+					</Data>
+					<Data name="Locality Text1">
+						<value>LocalityText-59.78-15.35</value>
+					</Data>
+					<Data name="coordinates">
+						<value>59.78, 15.35</value>
+					</Data>
+					<Data name="go to">
+						<value>http://localhost:5050/specify/view/locality/{locality.id}/</value>
+					</Data>
+				</ExtendedData>
+				<name>Locality-59.78-15.35</name>
+				<Point>
+					<coordinates>15.35,59.78</coordinates>
+				</Point>
+			</Placemark>
+			""",
+	),
+	dict(
+		attr="_locality_value_value_value_value_value_r_0",
+		fields=1,
+		expected=lambda locality: f"""<?xml version="1.0" ?>
+			<Placemark>
+				<ExtendedData>
+					<Data name="Locality Name">
+						<value>Locality-59.78-15.35</value>
+					</Data>
+					<Data name="Locality Text1">
+						<value>LocalityText-59.78-15.35</value>
+					</Data>
+					<Data name="coordinates">
+						<value>59.78, 15.35 : 15.78, 18.53</value>
+					</Data>
+					<Data name="go to">
+						<value>http://localhost:5050/specify/view/locality/{locality.id}/</value>
+					</Data>
+				</ExtendedData>
+				<name>Locality-59.78-15.35</name>
+				<MultiGeometry>
+					<Point>
+						<coordinates>15.35,59.78</coordinates>
+					</Point>
+					<LineString>
+						<tessellate>1</tessellate>
+						<coordinates>15.35,59.78 18.53,15.78</coordinates>
+					</LineString>
+				</MultiGeometry>
+			</Placemark>
+			""",
+	),
+	dict(
+		attr="_locality_value_value_value_value_value_r_0",
+		fields=2,
+		expected=lambda locality: f"""<?xml version="1.0" ?>
+			<Placemark>
+				<ExtendedData>
+					<Data name="Locality Name">
+						<value>Locality-59.78-15.35</value>
+					</Data>
+					<Data name="Locality Text1">
+						<value>LocalityText-59.78-15.35</value>
+					</Data>
+					<Data name="coordinates">
+						<value>59.78, 15.35 : 15.78, 18.53 (Rectangle)</value>
+					</Data>
+					<Data name="go to">
+						<value>http://localhost:5050/specify/view/locality/{locality.id}/</value>
+					</Data>
+				</ExtendedData>
+				<name>Locality-59.78-15.35</name>
+				<MultiGeometry>
+					<Point>
+					<coordinates>15.35,59.78</coordinates>
+					</Point>
+					<LinearRing>
+					<tessellate>1</tessellate>
+					<coordinates>15.35,59.78 18.53,59.78 18.53,15.78 15.35,15.78 15.35,59.78</coordinates>
+					</LinearRing>
+				</MultiGeometry>
+			</Placemark>
+			""",
+	),
+]
+
+
+def make_test(test_spec):
+
+	def test(self: TestCreatePlacemark):
+		kmlDoc, locality = self._get_kml_doc(
+			test_spec['attr'], test_spec['fields']
+		)
+		expected = test_spec['expected'](locality)
+		self.assert_xml_equal(kmlDoc, expected)
+
+	attr = f"test{test_spec['attr']}_{test_spec['fields']}"
+	return [attr, test]
+
+for test in tests:
+	setattr(TestCreatePlacemark, *make_test(test))
+	...
