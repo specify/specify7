@@ -502,27 +502,21 @@ msgstr "Условное значение поля"
 msgid "formatPreview"
 msgstr "Предварительный просмотр формата"
 
-#: components/DataModel/businessRuleDefs.ts:417
-#: components/DataModel/businessRuleDefs.ts:435
+#: components/DataModel/businessRuleDefs.ts:388
+#: components/DataModel/businessRuleDefs.ts:406
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "currentDeterminationRequired"
 msgstr "Требуется текущее определение."
 
-#: components/DataModel/businessRuleDefs.ts:274
-#: components/DataModel/businessRuleDefs.ts:320
+#: components/DataModel/businessRuleDefs.ts:272
+#: components/DataModel/businessRuleDefs.ts:291
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "cogAddedToItself"
 msgstr "COG не может быть добавлен сам к себе."
 
-#: components/DataModel/businessRuleDefs.ts:306
-#. Used in: Components > Data Model > Business Rule Defs
-#, fuzzy
-msgid "coHasParent"
-msgstr "CO с родительским элементом не может быть добавлен в COG."
-
-#: components/DataModel/businessRuleDefs.ts:223
+#: components/DataModel/businessRuleDefs.ts:221
 #: components/DataModel/__tests__/businessRules.test.ts:393
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #, fuzzy
@@ -531,43 +525,43 @@ msgstr ""
 "Группа объектов консолидированной коллекции должна иметь основной дочерний "
 "объект коллекции."
 
-#: components/DataModel/businessRuleDefs.ts:338
+#: components/DataModel/businessRuleDefs.ts:309
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deletePrimaryRecord"
 msgstr "Первичная запись CO не может быть удалена."
 
-#: components/DataModel/businessRuleDefs.ts:672
+#: components/DataModel/businessRuleDefs.ts:643
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteLoanedPrep"
 msgstr "Заимствованный препарат не может быть удален"
 
-#: components/DataModel/businessRuleDefs.ts:680
+#: components/DataModel/businessRuleDefs.ts:651
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteGiftedPrep"
 msgstr "Подаренный препарат не может быть удален"
 
-#: components/DataModel/businessRuleDefs.ts:688
+#: components/DataModel/businessRuleDefs.ts:659
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteDisposedPrep"
 msgstr "Утилизированный препарат не может быть удален"
 
-#: components/DataModel/businessRuleDefs.ts:696
+#: components/DataModel/businessRuleDefs.ts:667
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteExchangeOutPrep"
 msgstr "Замененный препарат не может быть удален"
 
-#: components/DataModel/businessRuleDefs.ts:704
+#: components/DataModel/businessRuleDefs.ts:675
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteExchangeInPrep"
 msgstr "Обмен в стадии подготовки не может быть удален"
 
-#: components/DataModel/businessRuleDefs.ts:194
+#: components/DataModel/businessRuleDefs.ts:192
 #: components/DataModel/__tests__/businessRules.test.ts:164
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #, fuzzy
@@ -576,13 +570,13 @@ msgstr ""
 "Определение не принадлежит к таксонному дереву, связанному с типом объекта "
 "коллекции."
 
-#: components/DataModel/businessRuleDefs.ts:647
+#: components/DataModel/businessRuleDefs.ts:618
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "preparationUsedInLoan"
 msgstr "Препарат используется при кредитовании."
 
-#: components/DataModel/businessRuleDefs.ts:640
+#: components/DataModel/businessRuleDefs.ts:611
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "preparationIsNegative"
