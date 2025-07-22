@@ -156,7 +156,7 @@ class TestKMLContext(SQLAlchemySetup):
             latlongtype="Rectangle",
         )
 
-    def simple_paths(self):
+    def simple_paths(self, add_extras=True):
         # [Latitude1] [Longitude1] [Latitude2] [Longitude2] [latlongtype]
 
         simple_extras = [["localityName"], ["text1"]]
@@ -190,11 +190,15 @@ class TestKMLContext(SQLAlchemySetup):
             fields_value_value_value_value_value,
         ]
 
-        return [[*simple_extras, *field_def] for field_def in field_defs]
+        return (
+            [[*simple_extras, *field_def] for field_def in field_defs]
+            if add_extras
+            else field_defs
+        )
 
-    def direct_locality_fields(self):
+    def direct_locality_fields(self, add_extras=True):
         self.create_localities()
-        return tuple(self.simple_paths())
+        return tuple(self.simple_paths(add_extras))
 
     def to_many_locality_fields(self): ...
 
