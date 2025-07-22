@@ -1,9 +1,9 @@
-from contextlib import contextmanager
 from specifyweb.stored_queries.execution import query_to_kml
 from specifyweb.stored_queries.tests.test_execution.test_kml_context import TestKMLContext
 from specifyweb.stored_queries.tests.utils import make_query_fields_test
 
 from unittest.mock import patch, Mock
+from lxml import etree
 
 fields_value_value_null_null_null = [
 	["localityName"],
@@ -35,7 +35,7 @@ class MockFile:
 	def __exit__(self, *args, **kwargs): ...
 
 	def write(self, value: bytes):
-		self._contents = value.decode()
+		self._contents = value
 
 class TestQueryToKML(TestKMLContext):
 
@@ -64,7 +64,9 @@ class TestQueryToKML(TestKMLContext):
 				"http://localhost:5050"
 			)
 		
-		self.assert_xml_equal(self._expected_result(), file._contents)
+		parser = etree.XMLParser(remove_blank_text=True)
+		xml_stripped = etree.XML(file._contents, parser=parser)
+		self.assert_xml_equal(etree.tostring(xml_stripped).decode(), self._expected_result())
 
 	def _expected_result(self):
 		return f"""<?xml version="1.0" encoding="utf-8"?>
