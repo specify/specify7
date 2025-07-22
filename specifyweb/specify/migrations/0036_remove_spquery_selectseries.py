@@ -2,8 +2,6 @@
 
 from django.db import migrations
 
-from django.db import migrations, models
-
 def add_column_if_missing(apps, schema_editor):
     SpQuery = apps.get_model('specify', 'SpQuery')
     table = SpQuery._meta.db_table
