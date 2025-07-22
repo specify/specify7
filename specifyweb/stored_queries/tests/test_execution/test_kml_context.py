@@ -7,6 +7,10 @@ from specifyweb.stored_queries.tests.utils import (
     make_query_test,
 )
 
+from django.db.models import F, Value as V
+from django.db.models.functions import Concat
+
+
 
 def get_group(attr_name: str):
     return tuple(attr_name.split("_")[:-1])
@@ -18,6 +22,20 @@ class TestKMLContext(SQLAlchemySetup):
         super().setUp()
         self._created_localities = defaultdict(list)
 
+    @classmethod
+    def setUpClass(cls):
+        cls._use_blank_nulls = True
+        cls._use_decimal_format = True
+        super().setUpClass()
+
+    def _update_name_text1(self):
+        Locality.objects.update(
+            localityname=Concat(V("Locality-"), "lat1text", V("-"), "long1text")
+        )
+        Locality.objects.update(
+            text1=Concat(V("LocalityText-"), "lat1text", V("-"), "long1text")
+        )
+        
     def no_locality_fields(self):
         self._update(self.collectionobjects[0], dict(text1="Text-0-1"))
         self._update(self.collectionobjects[1], dict(text1="Text-1-1"))

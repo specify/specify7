@@ -15,10 +15,23 @@ from specifyweb.stored_queries.execution import build_query
 from .. import models
 
 from datetime import datetime
+from decimal import Decimal
 
 
 def parse_datetime(datetime: datetime):
     return datetime.strftime("YYYY-MM-DD hh:mm:ss")
+
+
+def parse_value(value, use_blank_nulls=False, use_decimal_format=False):
+    if value is None:
+        return sqlalchemy.literal("") if use_blank_nulls else sqlalchemy.sql.null()
+    if isinstance(value, datetime):
+        # This is a bad bad bad bad idea.
+        # The correct way is to make a compiler for it.
+        return sqlalchemy.literal(parse_datetime(value))
+    if isinstance(value, Decimal) and use_decimal_format:
+        return sqlalchemy.literal(str(float(value)))
+    return sqlalchemy.literal(value)
 
 
 """"
@@ -37,7 +50,7 @@ with session.context() as session:
 """
 
 
-def setup_sqlalchemy(url: str):
+def setup_sqlalchemy(url: str, use_blank_nulls=False, use_decimal_format=False):
     engine = sqlalchemy.create_engine(
         url,
         pool_recycle=settings.SA_POOL_RECYCLE,
@@ -61,17 +74,7 @@ def setup_sqlalchemy(url: str):
         selects = [
             sqlalchemy.select(
                 [
-                    (
-                        sqlalchemy.sql.null()
-                        if column is None
-                        else (
-                            # This is a bad bad bad bad idea.
-                            # The correct way is to make a compiler for it.
-                            sqlalchemy.literal(parse_datetime(column))
-                            if isinstance(column, datetime)
-                            else sqlalchemy.literal(column)
-                        )
-                    ).label(columns[idx][0])
+                    (parse_value(column, use_blank_nulls, use_decimal_format)).label(columns[idx][0])
                     for idx, column in enumerate(row)
                 ]
             )
@@ -104,10 +107,16 @@ class SQLAlchemySetup(ApiTests):
 
     @classmethod
     def setUpClass(cls):
+        if not hasattr(cls, "_use_blank_nulls"):
+            cls._use_blank_nulls = False
+        if not hasattr(cls, "_use_decimal_format"):
+            cls._use_decimal_format = False
         # Django creates a new database for testing. SQLAlchemy needs to connect to the test database
         super().setUpClass()
 
-        engine, session_context = setup_sqlalchemy(settings.SA_TEST_DB_URL)
+        engine, session_context = setup_sqlalchemy(
+            settings.SA_TEST_DB_URL, cls._use_blank_nulls, cls._use_decimal_format
+        )
         cls.engine = engine
         cls.test_session_context = session_context
 
