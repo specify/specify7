@@ -426,6 +426,8 @@ def query_to_kml(
                 documentElement.appendChild(placemarkElement)
 
     with open(path, "wb") as kmlFile:
+        # This should be controlled by a preference or argument, because it makes adding 
+        # tests difficult.
         kmlFile.write(kmlDoc.toprettyxml("  ", newl="\n", encoding="utf-8"))
 
     logger.debug("query_to_kml finished")
