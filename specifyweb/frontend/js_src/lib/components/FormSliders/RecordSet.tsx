@@ -6,7 +6,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { clamp, sortFunction, split } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
@@ -338,7 +338,10 @@ function RecordSet<SCHEMA extends AnySchema>({
       ids.map(async (recordId) =>
         recordId === undefined
           ? undefined
-          : createResource('RecordSetItem', {
+          : // REFACTOR: OPTIMIZE: The backend supports passing recordSetItems
+            // inline like a dependent relationship. Don't need to create each
+            // item individually
+            createResource('RecordSetItem', {
               recordId,
               recordSet: recordSet.get('resource_uri'),
             })
