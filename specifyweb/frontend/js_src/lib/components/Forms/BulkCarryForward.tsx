@@ -125,16 +125,17 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
                 if (data.existing !== undefined) {
                   setBulkCarryRangeInvalidNumbers(data.existing);
                 }
+                return false;
               }
               return data.values;
             })
             .catch((error) => {
               console.error(error);
+              setBulkCarryRangeBlocked(true);
               return false as const;
             });
 
           if (!Array.isArray(response)) {
-            setBulkCarryRangeBlocked(true);
             return undefined;
           }
 
