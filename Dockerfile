@@ -49,7 +49,7 @@ COPY --chown=node:node specifyweb/frontend/js_src .
 RUN npx webpack --mode production
 
 
-####################################################################
+#####################################################################
 
 FROM common AS build-backend
 
@@ -205,7 +205,7 @@ ENTRYPOINT ["/opt/specify7/docker-entrypoint.sh"]
 EXPOSE 8000
 
 
-########################################################################
+######################################################################
 
 FROM run-common AS run-development
 
