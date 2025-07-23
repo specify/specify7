@@ -89,8 +89,8 @@ jobs:
             GIT_SHA=${{ github.sha }}
           tags: ${{ needs.prep.outputs.tags }}
           push: true
-          cache-from: type=gha
-          cache-to:   type=gha,mode=max
+          # cache-from: type=gha
+          # cache-to:   type=gha,mode=max
 
       - name: Export digest
         run: |
