@@ -603,37 +603,37 @@ def run_ephemeral_query(collection, user, spquery):
         )
 
 
-def augment_field_specs(field_specs: list[QueryField], formatauditobjs=False):
-    print("augment_field_specs ######################################")
-    new_field_specs = []
-    for fs in field_specs:
-        print(fs)
-        print(fs.fieldspec.table.tableId)
-        field = fs.fieldspec.join_path[-1]
-        model = models.models_by_tableid[fs.fieldspec.table.tableId]
-        if field.type == "java.util.Calendar":
-            precision_field = field.name + "Precision"
-            has_precision = hasattr(model, precision_field)
-            if has_precision:
-                new_field_specs.append(
-                    make_augmented_field_spec(fs, model, precision_field)
-                )
-        elif formatauditobjs and model.name.lower().startswith("spauditlog"):
-            if field.name.lower() in "newvalue, oldvalue":
-                log_model = models.models_by_tableid[530]
-                new_field_specs.append(
-                    make_augmented_field_spec(fs, log_model, "TableNum")
-                )
-                new_field_specs.append(
-                    make_augmented_field_spec(fs, model, "FieldName")
-                )
-            elif field.name.lower() == "recordid":
-                new_field_specs.append(make_augmented_field_spec(fs, model, "TableNum"))
-    print("################################ sceps_dleif_tnemgua")
+# def augment_field_specs(field_specs: list[QueryField], formatauditobjs=False):
+#     print("augment_field_specs ######################################")
+#     new_field_specs = []
+#     for fs in field_specs:
+#         print(fs)
+#         print(fs.fieldspec.table.tableId)
+#         field = fs.fieldspec.join_path[-1]
+#         model = models.models_by_tableid[fs.fieldspec.table.tableId]
+#         if field.type == "java.util.Calendar":
+#             precision_field = field.name + "Precision"
+#             has_precision = hasattr(model, precision_field)
+#             if has_precision:
+#                 new_field_specs.append(
+#                     make_augmented_field_spec(fs, model, precision_field)
+#                 )
+#         elif formatauditobjs and model.name.lower().startswith("spauditlog"):
+#             if field.name.lower() in "newvalue, oldvalue":
+#                 log_model = models.models_by_tableid[530]
+#                 new_field_specs.append(
+#                     make_augmented_field_spec(fs, log_model, "TableNum")
+#                 )
+#                 new_field_specs.append(
+#                     make_augmented_field_spec(fs, model, "FieldName")
+#                 )
+#             elif field.name.lower() == "recordid":
+#                 new_field_specs.append(make_augmented_field_spec(fs, model, "TableNum"))
+#     print("################################ sceps_dleif_tnemgua")
 
 
-def make_augmented_field_spec(field_spec, model, field_name):
-    print("make_augmented_field_spec ######################################")
+# def make_augmented_field_spec(field_spec, model, field_name):
+#     print("make_augmented_field_spec ######################################")
 
 
 def recordset(collection, user, user_agent, recordset_info):
@@ -1105,7 +1105,7 @@ def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair
             
             return (None, s, '')
 
-    def parse_catalog_for_sorting(catalog):
+    def parse_catalog_for_sorting(catalog): # pragma: no cover
         m = re.match(r'^([A-Za-z]*)(\d+)$', catalog)
         if m:
             return m.group(1), int(m.group(2))
