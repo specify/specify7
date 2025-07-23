@@ -12,14 +12,13 @@ import { keysToLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import type { AnySchema, SerializedRecord } from '../DataModel/helperTypes';
-import type { Collection } from '../DataModel/specifyTable';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { Relationship } from '../DataModel/specifyField';
 import {
   deserializeResource,
   serializeResource,
 } from '../DataModel/serializers';
-import type { LiteralField } from '../DataModel/specifyField';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { Collection } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import { tableValidForBulkClone } from '../FormMeta/CarryForward';
 import { Dialog } from '../Molecules/Dialog';
@@ -90,13 +89,16 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
     React.useState<BulkCarryRangeError>(false);
   const [bulkCarryRangeInvalidNumbers, setBulkCarryRangeInvalidNumbers] =
     React.useState<RA<string> | undefined>(undefined);
-  const [bulkCarryRangeUnsupportedRelationships, setBulkCarryRangeUnsupportedRelationships] =
-    React.useState<RA<string> | undefined>(undefined);
+  const [
+    bulkCarryRangeUnsupportedRelationships,
+    setBulkCarryRangeUnsupportedRelationships,
+  ] = React.useState<RA<string> | undefined>(undefined);
 
   const handleBulkCarryForward =
     typeof formatter === 'object'
       ? async (): Promise<RA<SpecifyResource<SCHEMA>> | undefined> => {
-          const unsupportedRelationships = await getUnsupportedRelationships(resource, 2);
+          const unsupportedRelationships =
+            getUnsupportedRelationships(resource);
           if (unsupportedRelationships.length > 0) {
             setBulkCarryRangeBlocked('UnsupportedRelationships');
             setBulkCarryRangeUnsupportedRelationships(unsupportedRelationships);
@@ -204,8 +206,8 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
       <BulkCarryRangeBlockedDialog
         error={bulkCarryRangeBlocked}
         invalidNumbers={bulkCarryRangeInvalidNumbers}
-        unsupportedRelationships={bulkCarryRangeUnsupportedRelationships}
         numberField={field}
+        unsupportedRelationships={bulkCarryRangeUnsupportedRelationships}
         onClose={(): void => {
           setBulkCarryRangeBlocked(false);
           setBulkCarryRangeInvalidNumbers(undefined);
@@ -302,7 +304,7 @@ export function BulkCarryRangeBlockedDialog({
       header={formsText.carryForward()}
       onClose={undefined}
     >
-      {error == 'ExistingNumbers' ? (
+      {error === 'ExistingNumbers' ? (
         <>
           {formsText.bulkCarryForwardRangeExistingRecords({
             field: numberField.label,
@@ -320,7 +322,9 @@ export function BulkCarryRangeBlockedDialog({
         <>
           {formsText.bulkCarryForwardRangeUnsupportedRelationships()}
           {unsupportedRelationships &&
-            unsupportedRelationships.map((relationship, index) => <p key={index}>{relationship}</p>)}
+            unsupportedRelationships.map((relationship, index) => (
+              <p key={index}>{relationship}</p>
+            ))}
         </>
       ) : (
         <>
@@ -336,66 +340,74 @@ export function BulkCarryRangeBlockedDialog({
 /*
  * Temporary fix for https://github.com/specify/specify7/issues/5022.
  * REFACTOR: Remove this once the issue is fixed.
-*/
-async function getUnsupportedRelationships<SCHEMA extends AnySchema>(
+ */
+function getUnsupportedRelationships<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA>
-): Promise<RA<string>> {
+): RA<string> {
   const unsupported: WritableArray<string> = [];
 
   const table = resource.specifyTable;
-  const unsupportedRelationships = [
-    'cojo',
+  const unsupportedRelationships = new Set([
     'determinations',
     'determiners',
     'fundingagents',
     'collectors',
     'addresses',
-  ];
-  
-  function isCollection(obj: unknown): obj is Collection<any> {
-    return !!obj && typeof obj === 'object' && 'models' in obj && 'length' in obj;
+  ]);
+
+  function isCollection(object: unknown): object is Collection<SCHEMA> {
+    return (
+      Boolean(object) &&
+      typeof object === 'object' &&
+      'models' in object &&
+      'length' in object
+    );
   }
 
-  const recursiveRelationshipCheck = async function(related: SpecifyResource<SCHEMA>, relationship: Relationship) {
-    const relatedUnsupported = await getUnsupportedRelationships(related);
-    relatedUnsupported.forEach(
-      (relatedRelationship) => {
-        unsupported.push(relationship.label + ' > ' + relatedRelationship);
-      }
-    )
+  function recursiveRelationshipCheck(
+    related: SpecifyResource<SCHEMA>,
+    relationship: Relationship
+  ): void {
+    const relatedUnsupported = getUnsupportedRelationships(related);
+    relatedUnsupported.forEach((relatedRelationship) => {
+      unsupported.push(`${relationship.label} > ${relatedRelationship}`);
+    });
   }
 
-  await Promise.all(
-    table.relationships.map(async (relationship): Promise<void> => {
-      if (relationship.isDependent()) {
-        const relatedTable = relationship.relatedTable;
-        const relatedHasUnsupportedRelationships = relatedTable.relationships.some((rel: any) =>
-            unsupportedRelationships.includes(rel.name)
-          )
-        // Relationship contains unsupported relationships within, check recursively.
-        if (relatedHasUnsupportedRelationships) {
-          const related = await resource.getDependentResource(relationship.name);
-          if (related !== undefined) {
-            if (isCollection(related)) {
-              await Promise.all(
-                related.models.map(async (model) => recursiveRelationshipCheck(model, relationship))
-              );
-            } else {
-              recursiveRelationshipCheck(related, relationship)
-            }
-          }
-        }
-        
-        // This unsupported relationship cannot have more than two related records
-        if (unsupportedRelationships.includes(relationship.name)) {
-          const related = await resource.getDependentResource(relationship.name);
-          if (related !== undefined && isCollection(related) && related.length > 1) {
-            unsupported.push(relationship.label);
+  table.relationships.forEach((relationship): void => {
+    if (relationship.isDependent()) {
+      const relatedTable = relationship.relatedTable;
+      const relatedHasUnsupportedRelationships =
+        relatedTable.relationships.some((relatedRelationship: Relationship) =>
+          unsupportedRelationships.has(relatedRelationship.name)
+        );
+      // Relationship contains unsupported relationships within, check recursively.
+      if (relatedHasUnsupportedRelationships) {
+        const related = resource.getDependentResource(relationship.name);
+        if (related !== undefined) {
+          if (isCollection(related)) {
+            related.models.forEach((model) =>
+              recursiveRelationshipCheck(model, relationship)
+            );
+          } else {
+            recursiveRelationshipCheck(related, relationship);
           }
         }
       }
-    })
-  );
+
+      // This unsupported relationship cannot have more than two related records
+      if (unsupportedRelationships.has(relationship.name)) {
+        const related = resource.getDependentResource(relationship.name);
+        if (
+          related !== undefined &&
+          isCollection(related) &&
+          related.length > 1
+        ) {
+          unsupported.push(relationship.label);
+        }
+      }
+    }
+  });
 
   return unsupported;
 }
