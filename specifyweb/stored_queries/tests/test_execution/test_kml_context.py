@@ -7,6 +7,13 @@ from specifyweb.stored_queries.tests.utils import (
     make_query_test,
 )
 
+from xml.dom.minidom import parseString
+import re
+
+from django.db.models import F, Value as V
+from django.db.models.functions import Concat
+
+
 
 def get_group(attr_name: str):
     return tuple(attr_name.split("_")[:-1])
@@ -17,7 +24,23 @@ class TestKMLContext(SQLAlchemySetup):
     def setUp(self):
         super().setUp()
         self._created_localities = defaultdict(list)
+        self._all_localities = set()
 
+
+    @classmethod
+    def setUpClass(cls):
+        cls._use_blank_nulls = True
+        cls._use_decimal_format = True
+        super().setUpClass()
+
+    def _update_name_text1(self):
+        Locality.objects.update(
+            localityname=Concat(V("Locality-"), "lat1text", V("-"), "long1text")
+        )
+        Locality.objects.update(
+            text1=Concat(V("LocalityText-"), "lat1text", V("-"), "long1text")
+        )
+        
     def no_locality_fields(self):
         self._update(self.collectionobjects[0], dict(text1="Text-0-1"))
         self._update(self.collectionobjects[1], dict(text1="Text-1-1"))
@@ -32,7 +55,23 @@ class TestKMLContext(SQLAlchemySetup):
     def __setattr__(self, key: str, value):
         if key.startswith("_locality_"):
             self._created_localities[get_group(key)].append(value)
+            self._all_localities.add((key, value))
         super().__setattr__(key, value)
+
+    def assert_xml_equal(self, base, other):
+        self.maxDiff = None
+        # We use a different format for showing the XML
+        # So, this takes the generated xml, and parses the other, and formats them the same
+        # and then compare the results.
+        # This way, it can still be pretty printed.
+        xml_other = parseString(re.sub(r"[\n\r\t]+", "", other))
+        xml_other_str = xml_other.toprettyxml(indent="", newl="")
+
+        if isinstance(base, str):
+            base = parseString(re.sub(r"[\n\r\t]+", "", base))
+
+        base_str = base.toprettyxml(indent="", newl="")
+        self.assertEqual(xml_other_str, base_str)
 
     def create_localities(self):
         # [Latitude1] [Longitude1] [Latitude2] [Longitude2] [latlongtype]
