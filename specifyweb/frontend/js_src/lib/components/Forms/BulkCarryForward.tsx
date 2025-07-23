@@ -3,24 +3,24 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { ajax } from '../../utils/ajax';
-import { keysToLowerCase } from '../../utils/utils';
 import {
   formatterToParser,
   getValidationAttributes,
 } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
+import { keysToLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { AnySchema, SerializedRecord } from '../DataModel/helperTypes';
-import { SpecifyResource } from '../DataModel/legacyTypes';
+import { Input, Label } from '../Atoms/Form';
+import type { AnySchema, SerializedRecord } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
   deserializeResource,
   serializeResource,
 } from '../DataModel/serializers';
 import type { LiteralField } from '../DataModel/specifyField';
+import { tables } from '../DataModel/tables';
 import { tableValidForBulkClone } from '../FormMeta/CarryForward';
 import { Dialog } from '../Molecules/Dialog';
-import { Input, Label } from '../Atoms/Form';
-import { tables } from '../DataModel/tables';
 
 export type BulkCarryRangeError =
   | boolean
@@ -41,8 +41,8 @@ export function useBulkCarryForward<SCHEMA extends AnySchema = AnySchema>({
 }): {
   readonly BulkCarryForward: JSX.Element | null;
   readonly handleBulkCarryForward:
-    | undefined
-    | (() => Promise<RA<SpecifyResource<SCHEMA>> | undefined>);
+    | (() => Promise<RA<SpecifyResource<SCHEMA>> | undefined>)
+    | undefined;
   readonly dialogs: JSX.Element | null;
 } {
   // Disable bulk carry forward for COType cat num format that are undefined or one of types listed in tableValidForBulkClone()
@@ -188,7 +188,7 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
     ) : undefined;
 
   const dialogs =
-    bulkCarryRangeBlocked !== false ? (
+    bulkCarryRangeBlocked === false ? null : (
       <BulkCarryRangeBlockedDialog
         error={bulkCarryRangeBlocked}
         invalidNumbers={bulkCarryRangeInvalidNumbers}
@@ -198,7 +198,7 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
           setBulkCarryRangeInvalidNumbers(undefined);
         }}
       />
-    ) : null;
+    );
 
   return BulkCarryForward === undefined
     ? undefined
