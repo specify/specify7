@@ -359,6 +359,7 @@ function getUnsupportedRelationships<SCHEMA extends AnySchema>(
     return (
       Boolean(object) &&
       typeof object === 'object' &&
+      object !== null &&
       'models' in object &&
       'length' in object
     );
