@@ -210,18 +210,18 @@ def filter_by_collection(model, query, collection):
 
 EphemeralField = namedtuple('EphemeralField', "stringId isRelFld operStart startValue isNot isDisplay sortType formatName isStrict")
 
-def field_specs_from_json(json_fields):
-    """Given deserialized json data representing an array of SpQueryField
-    records, return an array of QueryField objects that can build the
-    corresponding sqlalchemy query.
-    """
-    def ephemeral_field_from_json(json):
-        return EphemeralField(**{field: json.get(field.lower(), None) for field in EphemeralField._fields})
+# def field_specs_from_json(json_fields):
+#     """Given deserialized json data representing an array of SpQueryField
+#     records, return an array of QueryField objects that can build the
+#     corresponding sqlalchemy query.
+#     """
+#     def ephemeral_field_from_json(json):
+#         return EphemeralField(**{field: json.get(field.lower(), None) for field in EphemeralField._fields})
 
-    field_specs =  [QueryField.from_spqueryfield(ephemeral_field_from_json(data))
-            for data in sorted(json_fields, key=lambda field: field['position'])]
+#     field_specs =  [QueryField.from_spqueryfield(ephemeral_field_from_json(data))
+#             for data in sorted(json_fields, key=lambda field: field['position'])]
 
-    return field_specs
+#     return field_specs
 
 def do_export(spquery, collection, user, filename, exporttype, host):
     """Executes the given deserialized query definition, sending the
@@ -254,30 +254,30 @@ def do_export(spquery, collection, user, filename, exporttype, host):
         'file': filename,
     }))
 
-def stored_query_to_csv(query_id, collection, user, path):
-    """Executes a query from the Spquery table with the given id and send
-    the results to a CSV file at path.
+# def stored_query_to_csv(query_id, collection, user, path):
+#     """Executes a query from the Spquery table with the given id and send
+#     the results to a CSV file at path.
 
-    See query_to_csv for details of the other accepted arguments.
-    """
-    with models.session_context() as session:
-        sp_query = session.query(models.SpQuery).get(query_id)
-        tableid = sp_query.contextTableId
+#     See query_to_csv for details of the other accepted arguments.
+#     """
+#     with models.session_context() as session:
+#         sp_query = session.query(models.SpQuery).get(query_id)
+#         tableid = sp_query.contextTableId
 
-        field_specs = [
-            QueryField.from_spqueryfield(field)
-            for field in sorted(sp_query.fields, key=lambda field: field.position)
-        ]
+#         field_specs = [
+#             QueryField.from_spqueryfield(field)
+#             for field in sorted(sp_query.fields, key=lambda field: field.position)
+#         ]
 
-        query_to_csv(
-            session,
-            collection,
-            user,
-            tableid,
-            field_specs,
-            path,
-            distinct=spquery["selectdistinct"],
-        )  # bug?
+#         query_to_csv(
+#             session,
+#             collection,
+#             user,
+#             tableid,
+#             field_specs,
+#             path,
+#             distinct=spquery["selectdistinct"],
+#         )  # bug?
 
 
 def query_to_csv(
@@ -670,110 +670,110 @@ def recordset(collection, user, user_agent, recordset_info):
     return new_rs_id
 
 
-def return_loan_preps(collection, user, agent, data):
-    spquery = data["query"]
-    commit = data["commit"]
+# def return_loan_preps(collection, user, agent, data):
+#     spquery = data["query"]
+#     commit = data["commit"]
 
-    tableid = spquery["contexttableid"]
-    if not (tableid == Loanpreparation.specify_model.tableId):
-        raise AssertionError(
-            f"Unexpected tableId '{tableid}' in request. Expected {Loanpreparation.specify_model.tableId}",
-            {
-                "tableId": tableid,
-                "expectedTableId": Loanpreparation.specify_model.tableId,
-                "localizationKey": "unexpectedTableId",
-            },
-        )
+#     tableid = spquery["contexttableid"]
+#     if not (tableid == Loanpreparation.specify_model.tableId):
+#         raise AssertionError(
+#             f"Unexpected tableId '{tableid}' in request. Expected {Loanpreparation.specify_model.tableId}",
+#             {
+#                 "tableId": tableid,
+#                 "expectedTableId": Loanpreparation.specify_model.tableId,
+#                 "localizationKey": "unexpectedTableId",
+#             },
+#         )
 
-    with models.session_context() as session:
-        model = models.models_by_tableid[tableid]
+#     with models.session_context() as session:
+#         model = models.models_by_tableid[tableid]
 
-        field_specs = fields_from_json(spquery["fields"])
+#         field_specs = fields_from_json(spquery["fields"])
 
-        query, __ = build_query(session, collection, user, tableid, field_specs)
-        lrp = orm.aliased(models.LoanReturnPreparation)
-        loan = orm.aliased(models.Loan)
-        query = query.join(loan).outerjoin(lrp)
-        unresolved = (
-            model.quantity
-            - sql.functions.coalesce(sql.functions.sum(lrp.quantityResolved), 0)
-        ).label("unresolved")
-        query = query.with_entities(
-            model._id, unresolved, loan.loanId, loan.loanNumber
-        ).group_by(model._id)
-        to_return = [
-            (lp_id, quantity, loan_id, loan_no)
-            for lp_id, quantity, loan_id, loan_no in query
-            if quantity > 0
-        ]
-        if not commit:
-            return to_return
-        with transaction.atomic():
-            for lp_id, quantity, _, _ in to_return:
-                lp = Loanpreparation.objects.select_for_update().get(pk=lp_id)
-                was_resolved = lp.isresolved
-                lp.quantityresolved = lp.quantityresolved + quantity
-                lp.quantityreturned = lp.quantityreturned + quantity
-                lp.isresolved = True
-                lp.save()
+#         query, __ = build_query(session, collection, user, tableid, field_specs)
+#         lrp = orm.aliased(models.LoanReturnPreparation)
+#         loan = orm.aliased(models.Loan)
+#         query = query.join(loan).outerjoin(lrp)
+#         unresolved = (
+#             model.quantity
+#             - sql.functions.coalesce(sql.functions.sum(lrp.quantityResolved), 0)
+#         ).label("unresolved")
+#         query = query.with_entities(
+#             model._id, unresolved, loan.loanId, loan.loanNumber
+#         ).group_by(model._id)
+#         to_return = [
+#             (lp_id, quantity, loan_id, loan_no)
+#             for lp_id, quantity, loan_id, loan_no in query
+#             if quantity > 0
+#         ]
+#         if not commit:
+#             return to_return
+#         with transaction.atomic():
+#             for lp_id, quantity, _, _ in to_return:
+#                 lp = Loanpreparation.objects.select_for_update().get(pk=lp_id)
+#                 was_resolved = lp.isresolved
+#                 lp.quantityresolved = lp.quantityresolved + quantity
+#                 lp.quantityreturned = lp.quantityreturned + quantity
+#                 lp.isresolved = True
+#                 lp.save()
 
-                auditlog.update(
-                    lp,
-                    agent,
-                    None,
-                    [
-                        FieldChangeInfo(
-                            field_name="quantityresolved",
-                            old_value=lp.quantityresolved - quantity,
-                            new_value=lp.quantityresolved,
-                        ),
-                        FieldChangeInfo(
-                            field_name="quantityreturned",
-                            old_value=lp.quantityreturned - quantity,
-                            new_value=lp.quantityreturned,
-                        ),
-                        FieldChangeInfo(
-                            field_name="isresolved",
-                            old_value=was_resolved,
-                            new_value=True,
-                        ),
-                    ],
-                )
+#                 auditlog.update(
+#                     lp,
+#                     agent,
+#                     None,
+#                     [
+#                         FieldChangeInfo(
+#                             field_name="quantityresolved",
+#                             old_value=lp.quantityresolved - quantity,
+#                             new_value=lp.quantityresolved,
+#                         ),
+#                         FieldChangeInfo(
+#                             field_name="quantityreturned",
+#                             old_value=lp.quantityreturned - quantity,
+#                             new_value=lp.quantityreturned,
+#                         ),
+#                         FieldChangeInfo(
+#                             field_name="isresolved",
+#                             old_value=was_resolved,
+#                             new_value=True,
+#                         ),
+#                     ],
+#                 )
 
-                new_lrp = Loanreturnpreparation.objects.create(
-                    quantityresolved=quantity,
-                    quantityreturned=quantity,
-                    loanpreparation_id=lp_id,
-                    returneddate=data.get("returneddate", None),
-                    receivedby_id=data.get("receivedby", None),
-                    createdbyagent=agent,
-                    discipline=collection.discipline,
-                )
-                auditlog.insert(new_lrp, agent)
-            loans_to_close = (
-                Loan.objects.select_for_update()
-                .filter(
-                    pk__in={loan_id for _, _, loan_id, _ in to_return},
-                    isclosed=False,
-                )
-                .exclude(loanpreparations__isresolved=False)
-            )
-            for loan in loans_to_close:
-                loan.isclosed = True
-                loan.save()
-                auditlog.update(
-                    loan,
-                    agent,
-                    None,
-                    [
-                        {
-                            "field_name": "isclosed",
-                            "old_value": False,
-                            "new_value": True,
-                        },
-                    ],
-                )
-        return to_return
+#                 new_lrp = Loanreturnpreparation.objects.create(
+#                     quantityresolved=quantity,
+#                     quantityreturned=quantity,
+#                     loanpreparation_id=lp_id,
+#                     returneddate=data.get("returneddate", None),
+#                     receivedby_id=data.get("receivedby", None),
+#                     createdbyagent=agent,
+#                     discipline=collection.discipline,
+#                 )
+#                 auditlog.insert(new_lrp, agent)
+#             loans_to_close = (
+#                 Loan.objects.select_for_update()
+#                 .filter(
+#                     pk__in={loan_id for _, _, loan_id, _ in to_return},
+#                     isclosed=False,
+#                 )
+#                 .exclude(loanpreparations__isresolved=False)
+#             )
+#             for loan in loans_to_close:
+#                 loan.isclosed = True
+#                 loan.save()
+#                 auditlog.update(
+#                     loan,
+#                     agent,
+#                     None,
+#                     [
+#                         {
+#                             "field_name": "isclosed",
+#                             "old_value": False,
+#                             "new_value": True,
+#                         },
+#                     ],
+#                 )
+#         return to_return
 
 def execute(
     session,
@@ -1015,44 +1015,44 @@ def build_query(
     logger.debug("query: %s", query.query)
     return query.query, order_by_exprs
 
-def series_post_query_for_int_cat_nums(query, co_id_cat_num_pair_col_index=0):
-    """Transform the query results by removing the co_id:catnum pair column
-    and adding a co_id colum and formatted catnum range column.
-    Sort the results by the first catnum in the range."""
-    log_sqlalchemy_query(query)  # Debugging
+# def series_post_query_for_int_cat_nums(query, co_id_cat_num_pair_col_index=0):
+#     """Transform the query results by removing the co_id:catnum pair column
+#     and adding a co_id colum and formatted catnum range column.
+#     Sort the results by the first catnum in the range."""
+#     log_sqlalchemy_query(query)  # Debugging
 
-    def group_consecutive_ranges(lst):
-        def group_consecutives(acc, x):
-            if not acc or int(acc[-1][-1][1]) + 1 != int(x[1]):
-                acc.append([x])
-            else:
-                acc[-1].append(x)
-            return acc
+#     def group_consecutive_ranges(lst):
+#         def group_consecutives(acc, x):
+#             if not acc or int(acc[-1][-1][1]) + 1 != int(x[1]):
+#                 acc.append([x])
+#             else:
+#                 acc[-1].append(x)
+#             return acc
 
-        grouped = reduce(group_consecutives, lst, [])
-        return [
-            (','.join([x[0] for x in group]), f"{group[0][1]} - {group[-1][1]}" if len(group) > 1 else f"{group[0][1]}")
-            for group in grouped
-        ]
+#         grouped = reduce(group_consecutives, lst, [])
+#         return [
+#             (','.join([x[0] for x in group]), f"{group[0][1]} - {group[-1][1]}" if len(group) > 1 else f"{group[0][1]}")
+#             for group in grouped
+#         ]
 
-    def process_row(row):
-        co_id_cat_num_consecutive_pairs = group_consecutive_ranges(
-            sorted(
-                (pair.split(':') for pair in row[co_id_cat_num_pair_col_index].split(',')),
-                key=lambda x: int(x[1])
-            )
-        )
+#     def process_row(row):
+#         co_id_cat_num_consecutive_pairs = group_consecutive_ranges(
+#             sorted(
+#                 (pair.split(':') for pair in row[co_id_cat_num_pair_col_index].split(',')),
+#                 key=lambda x: int(x[1])
+#             )
+#         )
 
-        return [
-            [co_id, cat_num_series] + list(
-                list(row[1:]) if co_id_cat_num_pair_col_index == 0
-                else list(row[:co_id_cat_num_pair_col_index]) + list(row[co_id_cat_num_pair_col_index + 1:])
-            )
-            for co_id, cat_num_series in co_id_cat_num_consecutive_pairs
-        ]
+#         return [
+#             [co_id, cat_num_series] + list(
+#                 list(row[1:]) if co_id_cat_num_pair_col_index == 0
+#                 else list(row[:co_id_cat_num_pair_col_index]) + list(row[co_id_cat_num_pair_col_index + 1:])
+#             )
+#             for co_id, cat_num_series in co_id_cat_num_consecutive_pairs
+#         ]
 
-    MAX_ROWS = 500
-    return [item for sublist in map(process_row, list(query)) for item in sublist][:MAX_ROWS]
+#     MAX_ROWS = 500
+#     return [item for sublist in map(process_row, list(query)) for item in sublist][:MAX_ROWS]
 
 def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair_col_index=0, is_count=False):
     """Transform the query results by removing the co_id:catnum pair column
