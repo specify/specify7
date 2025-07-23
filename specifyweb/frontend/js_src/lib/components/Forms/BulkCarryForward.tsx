@@ -244,17 +244,18 @@ function useBulkCarryForwardCount<SCHEMA extends AnySchema>(
           ]);
         };
 
-  const BulkCarryForward = (
-    <Input.Integer
-      aria-label={formsText.bulkCarryForwardCount()}
-      className="!w-fit"
-      max={5000}
-      min={1}
-      placeholder="1"
-      value={carryForwardAmount}
-      onValueChange={(value): void => setCarryForwardAmount(Number(value))}
-    />
-  );
+  const BulkCarryForward =
+    formatter === undefined ? undefined : (
+      <Input.Integer
+        aria-label={formsText.bulkCarryForwardCount()}
+        className="!w-fit"
+        max={5000}
+        min={1}
+        placeholder="1"
+        value={carryForwardAmount}
+        onValueChange={(value): void => setCarryForwardAmount(Number(value))}
+      />
+    );
   return BulkCarryForward === undefined
     ? undefined
     : {
