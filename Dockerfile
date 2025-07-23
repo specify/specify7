@@ -49,7 +49,7 @@ COPY --chown=node:node specifyweb/frontend/js_src .
 RUN npx webpack --mode production
 
 
-#####################################################################
+####################################################################
 
 FROM common AS build-backend
 
