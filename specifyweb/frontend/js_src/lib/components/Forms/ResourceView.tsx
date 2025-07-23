@@ -70,6 +70,8 @@ export const RESTRICT_ADDING = new Set<keyof Tables>([
  */
 export const NO_CLONE = new Set<keyof Tables>([
   ...FORBID_ADDING,
+  'CollectionObjectGroup',
+  'CollectionObjectGroupJoin',
   // To properly clone a user need to also clone their roles and policies
   'SpecifyUser',
 ]);
