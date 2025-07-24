@@ -1,9 +1,13 @@
 import type { RA } from '../../../utils/types';
 import { localized } from '../../../utils/types';
+import { replaceItem } from '../../../utils/utils';
 import { addMissingFields } from '../../DataModel/addMissingFields';
+import type { SerializedResource } from '../../DataModel/helperTypes';
+import { getResourceApiUrl } from '../../DataModel/resource';
 import { serializeResource } from '../../DataModel/serializers';
 import { tables } from '../../DataModel/tables';
-import type { AppResourcesTree } from '../hooks';
+import type { Discipline } from '../../DataModel/types';
+import type { AppResources, AppResourcesTree } from '../hooks';
 import type { ScopedAppResourceDir } from '../types';
 
 // Make it part of functools?
@@ -16,9 +20,10 @@ function* incrementor() {
 
 function prefixIncrmentor(
   prefix: string,
-  generator: ReturnType<typeof incrementor>
+  generator: ReturnType<typeof incrementor>,
+  padZero: boolean = false
 ) {
-  return `${prefix}${generator.next().value}`;
+  return `${prefix}${padZero ? (generator.next().value as number).toString().padStart(3, '0') : (generator.next().value as number)}`;
 }
 
 type Incrementor = ReturnType<typeof incrementor>;
@@ -110,40 +115,51 @@ const treeStructure: RA<Node> = [
   },
 ];
 
+type MakeTreeProps = {
+  readonly addResources: boolean;
+  readonly forceGenerator: boolean;
+  readonly padZero: boolean;
+};
+
+const defaultMakeTreeProps: MakeTreeProps = {
+  addResources: false,
+  forceGenerator: true,
+  padZero: false,
+};
+
 const makeTree = (
   nodes: RA<Node>,
   labelIncrementor: Incrementor,
   keyIncrementor: Incrementor,
   idIncrementor: Incrementor,
-  // If true, it'll also add the appResource and viewSet objects
-  addResources: boolean = false,
-  forceGenerator: boolean = true
+  props: Partial<MakeTreeProps> = defaultMakeTreeProps
 ): AppResourcesTree =>
   nodes.map((node) =>
     makeAppResourceNode(
-      prefixIncrmentor('TestLabel', labelIncrementor),
-      prefixIncrmentor('TestKey', keyIncrementor),
+      prefixIncrmentor('TestLabel', labelIncrementor, props.padZero),
+      prefixIncrmentor('TestKey', keyIncrementor, props.padZero),
       node.id === undefined
         ? undefined
         : makeDirectory(
-            forceGenerator ? (idIncrementor.next().value as number) : node.id
+            { ...defaultMakeTreeProps, ...props }.forceGenerator
+              ? (idIncrementor.next().value as number)
+              : node.id
           ),
       makeTree(
         node.children,
         labelIncrementor,
         keyIncrementor,
         idIncrementor,
-        addResources,
-        forceGenerator
+        props
       ),
-      addResources
+      { ...defaultMakeTreeProps, ...props }.addResources
         ? Array.from({ length: node.appResources ?? 0 }, () =>
             addMissingFields('SpAppResource', {
               id: idIncrementor.next().value as number,
             })
           )
         : [],
-      addResources
+      { ...defaultMakeTreeProps, ...props }.addResources
         ? Array.from({ length: node.viewSets ?? 0 }, () =>
             addMissingFields('SpViewSetObj', {
               id: idIncrementor.next().value as number,
@@ -161,6 +177,49 @@ const simpleTree = () => [
   makeAppResourceNode('TestLabel5', 'TestKey5', makeDirectory(5), []),
 ];
 
+const setAppResourceDir = (
+  resources: AppResources,
+  key: 'appResources' | 'viewSets',
+  index: number,
+  newDir: number
+): AppResources => ({
+  ...resources,
+  [key]: replaceItem(resources[key as 'appResources'], index, {
+    ...resources[key as 'appResources'][index],
+    spAppResourceDir: getResourceApiUrl('SpAppResourceDir', newDir),
+  }),
+});
+
+const testDisciplines = [
+  {
+    id: 3,
+    isPaleoContextEmbedded: true,
+    name: 'Ichthyology',
+    paleoContextChildTable: 'collectionobject',
+    regNumber: '1344636812.54',
+    timestampCreated: '2012-08-09T12:23:29',
+    timestampModified: '2012-08-09T12:23:29',
+    type: 'fish',
+    version: 11,
+    createdByAgent: '/api/specify/agent/1/',
+    dataType: '/api/specify/datatype/1/',
+    division: '/api/specify/division/2/',
+    geographyTreeDef: '/api/specify/geographytreedef/1/',
+    taxonTreeDef: '/api/specify/taxontreedef/1/',
+    geologicTimePeriodTreeDef: '/api/specify/geologictimeperiodtreedef/1/',
+    lithoStratTreeDef: '/api/specify/lithostrattreedef/1/',
+    tectonicUnitTreeDef: '/api/specify/tectonicunittreedef/1/',
+    modifiedByAgent: '/api/specify/agent/2/',
+    attributeDefs: '/api/specify/attributedef/?discipline=3',
+    collections: '/api/specify/collection/?discipline=3',
+    spExportSchemas: '/api/specify/spexportschema/?discipline=3',
+    spLocaleContainers: '/api/specify/splocalecontainer/?discipline=3',
+    resource_uri: '/api/specify/discipline/3/',
+    userGroups: '/api/specify/SpPrincipal?scope=3',
+    _tableName: 'Discipline',
+  },
+] as unknown as RA<SerializedResource<Discipline>>;
+
 export const utilsForTests = {
   treeStructure,
   makeTree,
@@ -168,4 +227,6 @@ export const utilsForTests = {
   makeAppResourceNode,
   incrementor,
   simpleTree,
+  setAppResourceDir,
+  testDisciplines,
 };

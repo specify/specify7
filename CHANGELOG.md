@@ -4,6 +4,81 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.11.0.2](https://github.com/specify/specify7/compare/v7.11.0...v7.11.0.2) (14 July 2025)
+
+* Fixed an issue that could cause updates to Collection Object to set the incorrect Determination as current and updates to Collecting Event to set the incorrect Collector as primary ([#7073](https://github.com/specify/specify7/pull/7073))
+
+
+## [7.11.0](https://github.com/specify/specify7/compare/v7.10.2.3...v7.11.0) (8 July 2025)
+
+### Added
+* Extends **[Batch Edit](https://discourse.specifysoftware.org/t/batch-edit/2248/)** to support relationships
+  * Supports the following:
+    * to-one and to-many relationships
+    * matching existing records
+    * creating new records
+    * cloning, deleting, and updating records
+* Extends **Batch Edit** to support editing trees ([#6196](https://github.com/specify/specify7/pull/6196))
+  * Taxon, Geography, Storage, Chronostrat, Lithostrat, and Tectonic Unit
+* Query combo boxes will automatically determine which fields to search if not defined in the `TypeSearches` app resource ([#6369](https://github.com/specify/specify7/pull/6369))
+* Adds a new `spdatasetattachment` table to the database in preparation for WorkBench attachment support in a later update ([#6269](https://github.com/specify/specify7/pull/6269))
+ * Adds a Series tool to the Query Builder for Collection Objects to group records with consecutive catalog numbers and identical fields, displaying catalog number ranges ([#4952](https://github.com/specify/specify7/pull/4952))
+  * Adds user preference to enable/disable relationships in Batch Edit; disables rollback when relationships are enabled by default ([#6509](https://github.com/specify/specify7/pull/6509))
+ * Adds missing business rules from Specify 6, including new uniqueness rules, scoping for collectors, and enforcing single primary determiners and funding agents ([#4892](https://github.com/specify/specify7/pull/4892))
+ * Adds the ability to select a "Record Set" in one-to-many fields from the search dialog ([#6352](https://github.com/specify/specify7/pull/6352))
+ * Adds support for falling back on default `DataObjFormatters` when user-defined table formats and aggregations are not available for a table ([#6324](https://github.com/specify/specify7/pull/6324))
+
+### Changed
+* Major dependency updates:
+   * Updates Ubuntu from 18.04 LTS to 20.04 LTS ([#6364](https://github.com/specify/specify7/pull/6364))
+      * Update to 24.04 LTS planned for an upcoming release
+   * Updates Django from 3.2 to 4.2 ([#6275](https://github.com/specify/specify7/pull/6275))
+   * Updates Celery from 5.2.7 to 5.5.1 ([#6437](https://github.com/specify/specify7/pull/6437))
+   * Updates Python from 3.8 to 3.9 ([#6444](https://github.com/specify/specify7/pull/6444))
+ * Increases default form width from `1200px` to `1600px` ([#6497](https://github.com/specify/specify7/pull/6497))
+ * Changes the pronoun in the crash dialog ([#6353](https://github.com/specify/specify7/pull/6353) – _Requested by UF Fish Collection_)
+ * Removes the “Return Loan Records” button in the query builder ([#6340](https://github.com/specify/specify7/pull/6340))
+ * The first added collector is now set as "primary" by default ([#6348](https://github.com/specify/specify7/pull/6348))
+
+### Fixed
+* Fixes an issue where automatically created Determinations were not marked as "current" ([#6581](https://github.com/specify/specify7/pull/6581) *– Reported by *)  
+* Adds missing default insect XML files for the entomology discipline ([#6383](https://github.com/specify/specify7/pull/6383))
+ * Fixes an issue where tree actions were still accessible in read-only mode ([#6337](https://github.com/specify/specify7/pull/6337))
+ * Fixes an issue where queries generated from the tree interface could not be saved ([#6342](https://github.com/specify/specify7/pull/6342) _- Reported by Beaty Biodiversity Museum_)
+ * Fixes an issue preventing the Collector "Is Primary" field from being carried forward or cloned ([#6331](https://github.com/specify/specify7/pull/6331) – *Reported by Institute of Research for Development, France*)
+ * Fixes an issue in the Query Builder where only the second added line was auto-focused ([#6376](https://github.com/specify/specify7/pull/6376))
+ * Merging record sets no longer discards unsaved data by reloading the form ([#6371](https://github.com/specify/specify7/pull/6371))
+ * Fixes error when deleting a preparation that is currently on loan ([#6374](https://github.com/specify/specify7/pull/6374) _– Reported by FWRI_)
+ * Fixes unintended ability to merge embedded Collecting Event or Paleo Context records from the form meta menu by removing the merge button ([#6372](https://github.com/specify/specify7/pull/6372))
+ * Prevents the 'Age' field from being added to a table format or aggregation ([#6373](https://github.com/specify/specify7/pull/6373))
+ * Fixes query title not updating immediately by reloading the page after renaming ([#6347](https://github.com/specify/specify7/pull/6347))
+ * Fixes auto-created preparations not expanding when opening a Collection Object if `CO_CREATE_PREP` is enabled ([#6362](https://github.com/specify/specify7/pull/6362) – *Reported by Herbier de Guyane and Institute of Research for Development, France*)
+ * Fixes tree view from jumping back to the selected node when clicking empty space ([#6367](https://github.com/specify/specify7/pull/6367) _- Reported by Royal Botanic Gardens Edinburgh_)
+ * Fixes desynonymize dialog message to correctly show the preferred taxon name instead of the synonym name ([#6354](https://github.com/specify/specify7/pull/6354))
+ * Fixes crash when deleting the last record in "Browse in Forms" by closing the dialog automatically ([#6355](https://github.com/specify/specify7/pull/6355))
+ * Fixes an issue where the count field for Bulk Carry Forward cannot be cleared ([#6363](https://github.com/specify/specify7/pull/6363))
+ * Fixes an issue where Specify Users could be edited from the Reports dialog; they are now read-only ([#6356](https://github.com/specify/specify7/pull/6356))
+ * Fixes an issue where attachments could be accidentally deleted by adding a confirmation dialog before deletion ([#6386](https://github.com/specify/specify7/pull/6386) _- Reported by The University of Kansas_)
+ * Fixes taxon links in the prep dialog by displaying 'Not available' when no taxon is present ([#6357](https://github.com/specify/specify7/pull/6357))
+ * Prevents negative values being entered in quantity returned or resolved fields in Loan Return Preparations ([#6341](https://github.com/specify/specify7/pull/6341))
+ * Fixes an issue where loan preparations could be added without a quantity ([#6358](https://github.com/specify/specify7/pull/6358))
+ * Fixes an issue where collection objects without taxon determinations were excluded from queries using 'Any' filter ([#6380](https://github.com/specify/specify7/pull/6380))
+ * Improves Collection Object Type validation in the WorkBench ([#6332](https://github.com/specify/specify7/pull/6332))
+* Fixes an issue with string comparison operators hidden in Query Builder, adding a user preference to show them for text-based fields ([#3501](https://github.com/specify/specify7/pull/3501) _- Reported by Santa Barbara_)
+ * Fixes an issue where Docker container failed to start due to missing shebang in `docker-entrypoint.sh` ([#6424](https://github.com/specify/specify7/pull/6424) _- Reported by biodiversity.cz_)
+ * Fixes an issue where attachments failed to load due to incorrect `coll` parameter; now uses database name by default ([#6176](https://github.com/specify/specify7/pull/6176))
+ * Fixes an issue where users could decrease a preparation’s count below the number currently loaned ([#6438](https://github.com/specify/specify7/pull/6438) _- Reported by The University of Texas_)
+ * Fixes an issue preventing the attachment gallery from loading all attachments visible on screen ([#6400](https://github.com/specify/specify7/pull/6400))
+ * Fixes an issue where data in read-only cells can be search and replaced in WorkBench ([#6456](https://github.com/specify/specify7/pull/6456))
+ * Fixes an issue where the WorkBench upload plan save is enabled without changes ([#6458](https://github.com/specify/specify7/pull/6458))
+ * Fixes an issue where remarks were not saved when creating a record set from a WorkBench dataset ([#6494](https://github.com/specify/specify7/pull/6494))
+ * Fixes cases where a missing record in a query combo box could cause a 404 ([#5139](https://github.com/specify/specify7/pull/5139))
+ * Fixes an issue where new pick list items are not deleted on roll back in the WorkBench and Batch Edit ([#6514](https://github.com/specify/specify7/pull/6514))
+ * Fixes an issue where Batch Edit incorrectly matches CollectionObjectAttribute records when the discipline uses CollectionObject as its PaleoContextChildTable ([#6520](https://github.com/specify/specify7/pull/6520))
+ * Fixes an issue parsing `isnull` field lookup filters ([#6481](https://github.com/specify/specify7/pull/6481))
+ * Fixes an issue where queries with special characters (#, ?, etc.) in the name could not be downloaded ([#5070](https://github.com/specify/specify7/pull/5070) – _Reported by The University of Kansas and Ohio State University Mollusks_
+ * Fixes an issue that allowed users to add a Collection Object with an existing Collection Object Group (COG) parent to as a child to another COG ([#6414](https://github.com/specify/specify7/pull/6414))  
+
 ## [7.10.2.3](https://github.com/specify/specify7/compare/v7.10.2.2...v7.10.2.3) (13 May 2025)
 
 ## Fixed
