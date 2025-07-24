@@ -249,7 +249,7 @@ def merge_recordsets(request: HttpRequest) -> JsonResponse:
 
         model_name = model_names_by_table_id[tableid] if tableid in model_names_by_table_id else None
         current_date = timezone.now().strftime('%Y-%m-%d')
-        if not model_name:
+        if not model_name: # this check is unnecessary.
             return JsonResponse({'error': 'Model not found for tableid'}, status=400)
 
         # Get all the recordsetitems for the given recordsets
@@ -282,6 +282,7 @@ def merge_recordsets(request: HttpRequest) -> JsonResponse:
             recordsetitems.delete()
             recordsets.delete()
 
+        # FEAT: Make it return the new recordset id.
         return JsonResponse({'message': 'Recordset merge successful'}, status=200)
 
     except json.JSONDecodeError:
