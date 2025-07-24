@@ -17,13 +17,13 @@ msgid "forms"
 msgstr "Forms"
 
 #: components/Atoms/DataEntry.tsx:153
-#: components/Forms/Save.tsx:424
+#: components/Forms/Save.tsx:271
 #: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Clone"
 
-#: components/Forms/Save.tsx:425
+#: components/Forms/Save.tsx:272
 #. Used in: Components > Forms > Save
 msgid "cloneDescription"
 msgstr "Create a full copy of current record"
@@ -211,19 +211,19 @@ msgid "currentRecord"
 msgstr "Current object (out of {total:number|formatted})"
 
 #: components/FormMeta/Definition.tsx:93
-#: components/Forms/ResourceView.tsx:405
-#: components/Forms/Save.tsx:51
+#: components/Forms/ResourceView.tsx:410
+#: components/Forms/Save.tsx:39
 #. Used in: Components > Form Meta > Definition ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
 msgstr "This form has not been saved."
 
 #: components/AttachmentsBulkImport/utils.ts:482
-#: components/Forms/Save.tsx:458
+#: components/Forms/Save.tsx:305
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 msgid "saveConflict"
 msgstr "Save conflict"
 
-#: components/Forms/Save.tsx:461
+#: components/Forms/Save.tsx:308
 #. Used in: Components > Forms > Save
 msgid "saveConflictDescription"
 msgstr ""
@@ -231,12 +231,12 @@ msgstr ""
 "browser tab and is out of date. The page must be reloaded to prevent "
 "inconsistent data from being saved."
 
-#: components/Forms/Save.tsx:502
+#: components/Forms/Save.tsx:339
 #. Used in: Components > Forms > Save
 msgid "saveBlocked"
 msgstr "Save blocked"
 
-#: components/Forms/Save.tsx:505
+#: components/Forms/Save.tsx:342
 #. Used in: Components > Forms > Save
 msgid "saveBlockedDescription"
 msgstr "Form cannot be saved because of the following error:"
@@ -418,7 +418,7 @@ msgstr "You might want to save this record before navigating away."
 msgid "creatingNewRecord"
 msgstr "Creating new record"
 
-#: components/FormSliders/RecordSet.tsx:371
+#: components/FormSliders/RecordSet.tsx:376
 #. Used in: Components > Form Sliders > Record Set
 msgid "createNewRecordSet"
 msgstr "Create a new record set"
@@ -438,12 +438,12 @@ msgstr "Reverse"
 msgid "deletedInline"
 msgstr "(deleted)"
 
-#: components/FormSliders/RecordSet.tsx:518
+#: components/FormSliders/RecordSet.tsx:523
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItem"
 msgstr "Duplicate {recordSetItemTable:string}"
 
-#: components/FormSliders/RecordSet.tsx:523
+#: components/FormSliders/RecordSet.tsx:528
 #. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItemDescription"
 msgstr "This record is already present in the current {recordSetTable:string}"
@@ -464,8 +464,8 @@ msgstr "Remove from {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Nothing found"
 
-#: components/Forms/BulkCarryForward.tsx:36
-#: components/Forms/Save.tsx:403
+#: components/Forms/BulkCarryForward.tsx:310
+#: components/Forms/Save.tsx:253
 #. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 msgid "carryForward"
 msgstr "Carry Forward"
@@ -480,12 +480,12 @@ msgstr "Show Carry Forward button"
 msgid "bulkCarryForwardEnabled"
 msgstr "Show Bulk Carry Forward count"
 
-#: components/Forms/Save.tsx:389
-#. Used in: Components > Forms > Save
+#: components/Forms/BulkCarryForward.tsx:272
+#. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardCount"
 msgstr "Bulk Carry Forward count"
 
-#: components/Forms/Save.tsx:404
+#: components/Forms/Save.tsx:254
 #. Used in: Components > Forms > Save
 msgid "carryForwardDescription"
 msgstr "Create a new record with certain fields carried over"
@@ -527,28 +527,35 @@ msgstr "This field is required. It must be carried forward"
 msgid "bulkCarryForwardRangeEnabled"
 msgstr "Show Bulk Carry Forward range"
 
-#: components/Forms/BulkCarryForward.tsx:55
+#: components/Forms/BulkCarryForward.tsx:337
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeErrorDescription"
 msgstr "Cannot carry forward record through the specified {field:string} range."
 
-#: components/Forms/BulkCarryForward.tsx:49
+#: components/Forms/BulkCarryForward.tsx:323
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeLimitExceeded"
 msgstr "Range exceeds record limit of {limit:number}."
 
-#: components/Forms/BulkCarryForward.tsx:41
+#: components/Forms/BulkCarryForward.tsx:329
+#. Used in: Components > Forms > Bulk Carry Forward
+msgid "bulkCarryForwardRangeUnsupportedRelationships"
+msgstr ""
+"Some relationships with more than one record are not currently supported by "
+"Bulk Carry Forward:"
+
+#: components/Forms/BulkCarryForward.tsx:315
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeExistingRecords"
 msgstr "The following numbers for {field:string} are already being used:"
 
-#: components/Forms/Save.tsx:367
-#. Used in: Components > Forms > Save
+#: components/Forms/BulkCarryForward.tsx:192
+#. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeStart"
 msgstr "Carry Forward Range Start"
 
-#: components/Forms/Save.tsx:375
-#. Used in: Components > Forms > Save
+#: components/Forms/BulkCarryForward.tsx:200
+#. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeEnd"
 msgstr "Carry Forward Range End"
 
@@ -567,7 +574,7 @@ msgstr "Show Clone button"
 msgid "addButtonEnabled"
 msgstr "Show Add button"
 
-#: components/Forms/Save.tsx:433
+#: components/Forms/Save.tsx:280
 #. Used in: Components > Forms > Save
 msgid "addButtonDescription"
 msgstr "Create a new blank record"
@@ -703,12 +710,12 @@ msgstr "New {tableName:string}"
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
-#: components/Forms/ResourceView.tsx:214
+#: components/Forms/ResourceView.tsx:219
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeleted"
 msgstr "Resource deleted"
 
-#: components/Forms/ResourceView.tsx:217
+#: components/Forms/ResourceView.tsx:222
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeletedDescription"
 msgstr "Item was deleted successfully."

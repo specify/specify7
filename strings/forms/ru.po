@@ -19,14 +19,14 @@ msgid "forms"
 msgstr "Формы"
 
 #: components/Atoms/DataEntry.tsx:153
-#: components/Forms/Save.tsx:424
+#: components/Forms/Save.tsx:271
 #: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 #, fuzzy
 msgid "clone"
 msgstr "Клон"
 
-#: components/Forms/Save.tsx:425
+#: components/Forms/Save.tsx:272
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "cloneDescription"
@@ -242,21 +242,21 @@ msgid "currentRecord"
 msgstr "Текущий объект (из {total:number|formatted})"
 
 #: components/FormMeta/Definition.tsx:93
-#: components/Forms/ResourceView.tsx:405
-#: components/Forms/Save.tsx:51
+#: components/Forms/ResourceView.tsx:410
+#: components/Forms/Save.tsx:39
 #. Used in: Components > Form Meta > Definition ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save
 #, fuzzy
 msgid "unsavedFormUnloadProtect"
 msgstr "Эта форма не была сохранена."
 
 #: components/AttachmentsBulkImport/utils.ts:482
-#: components/Forms/Save.tsx:458
+#: components/Forms/Save.tsx:305
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 #, fuzzy
 msgid "saveConflict"
 msgstr "Сохранить конфликт"
 
-#: components/Forms/Save.tsx:461
+#: components/Forms/Save.tsx:308
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveConflictDescription"
@@ -265,13 +265,13 @@ msgstr ""
 "вкладке браузера и устарели. Для предотвращения сохранения "
 "несоответствующих данных необходимо перезагрузить страницу."
 
-#: components/Forms/Save.tsx:502
+#: components/Forms/Save.tsx:339
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveBlocked"
 msgstr "Сохранить заблокировано"
 
-#: components/Forms/Save.tsx:505
+#: components/Forms/Save.tsx:342
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveBlockedDescription"
@@ -482,7 +482,7 @@ msgstr "Возможно, вы захотите сохранить эту зап
 msgid "creatingNewRecord"
 msgstr "Создание новой записи"
 
-#: components/FormSliders/RecordSet.tsx:371
+#: components/FormSliders/RecordSet.tsx:376
 #. Used in: Components > Form Sliders > Record Set
 #, fuzzy
 msgid "createNewRecordSet"
@@ -506,13 +506,13 @@ msgstr "Обеспечить регресс"
 msgid "deletedInline"
 msgstr "(удалено)"
 
-#: components/FormSliders/RecordSet.tsx:518
+#: components/FormSliders/RecordSet.tsx:523
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 #, fuzzy
 msgid "duplicateRecordSetItem"
 msgstr "Дубликат {recordSetItemTable:string}"
 
-#: components/FormSliders/RecordSet.tsx:523
+#: components/FormSliders/RecordSet.tsx:528
 #. Used in: Components > Form Sliders > Record Set
 #, fuzzy
 msgid "duplicateRecordSetItemDescription"
@@ -537,8 +537,8 @@ msgstr "Удалить из {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Ничего не найдено"
 
-#: components/Forms/BulkCarryForward.tsx:36
-#: components/Forms/Save.tsx:403
+#: components/Forms/BulkCarryForward.tsx:310
+#: components/Forms/Save.tsx:253
 #. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 #, fuzzy
 msgid "carryForward"
@@ -556,13 +556,13 @@ msgstr "Показать кнопку «Перенести вперед»"
 msgid "bulkCarryForwardEnabled"
 msgstr "Показать счетчик массового переноса данных"
 
-#: components/Forms/Save.tsx:389
-#. Used in: Components > Forms > Save
+#: components/Forms/BulkCarryForward.tsx:272
+#. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardCount"
 msgstr "Подсчет массового переноса данных"
 
-#: components/Forms/Save.tsx:404
+#: components/Forms/Save.tsx:254
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "carryForwardDescription"
@@ -612,32 +612,37 @@ msgstr "Это поле обязательно для заполнения. Ег
 msgid "bulkCarryForwardRangeEnabled"
 msgstr "Показать диапазон массового переноса данных"
 
-#: components/Forms/BulkCarryForward.tsx:55
+#: components/Forms/BulkCarryForward.tsx:337
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeErrorDescription"
 msgstr "Невозможно перенести запись через указанный диапазон {field:string}."
 
-#: components/Forms/BulkCarryForward.tsx:49
+#: components/Forms/BulkCarryForward.tsx:323
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeLimitExceeded"
 msgstr "Диапазон превышает предел записи {limit:number}."
 
-#: components/Forms/BulkCarryForward.tsx:41
+#: components/Forms/BulkCarryForward.tsx:329
+#. Used in: Components > Forms > Bulk Carry Forward
+msgid "bulkCarryForwardRangeUnsupportedRelationships"
+msgstr ""
+
+#: components/Forms/BulkCarryForward.tsx:315
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeExistingRecords"
 msgstr "Следующие номера для {field:string} уже используются:"
 
-#: components/Forms/Save.tsx:367
-#. Used in: Components > Forms > Save
+#: components/Forms/BulkCarryForward.tsx:192
+#. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeStart"
 msgstr "Начало диапазона переноса вперед"
 
-#: components/Forms/Save.tsx:375
-#. Used in: Components > Forms > Save
+#: components/Forms/BulkCarryForward.tsx:200
+#. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeEnd"
 msgstr "Конец диапазона переноса вперед"
@@ -660,7 +665,7 @@ msgstr "Показать кнопку «Клонировать»"
 msgid "addButtonEnabled"
 msgstr "Показать кнопку «Добавить»"
 
-#: components/Forms/Save.tsx:433
+#: components/Forms/Save.tsx:280
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "addButtonDescription"
@@ -821,13 +826,13 @@ msgstr "Новый {tableName:string}"
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
-#: components/Forms/ResourceView.tsx:214
+#: components/Forms/ResourceView.tsx:219
 #. Used in: Components > Forms > Resource View
 #, fuzzy
 msgid "resourceDeleted"
 msgstr "Ресурс удален"
 
-#: components/Forms/ResourceView.tsx:217
+#: components/Forms/ResourceView.tsx:222
 #. Used in: Components > Forms > Resource View
 #, fuzzy
 msgid "resourceDeletedDescription"

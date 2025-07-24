@@ -17,13 +17,13 @@ msgid "forms"
 msgstr "Formularios"
 
 #: components/Atoms/DataEntry.tsx:153
-#: components/Forms/Save.tsx:424
+#: components/Forms/Save.tsx:271
 #: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Clon"
 
-#: components/Forms/Save.tsx:425
+#: components/Forms/Save.tsx:272
 #. Used in: Components > Forms > Save
 msgid "cloneDescription"
 msgstr "Crear una copia completa del registro actual"
@@ -217,21 +217,21 @@ msgid "currentRecord"
 msgstr "Objeto actual (de {total:number|formatted})"
 
 #: components/FormMeta/Definition.tsx:93
-#: components/Forms/ResourceView.tsx:405
-#: components/Forms/Save.tsx:51
+#: components/Forms/ResourceView.tsx:410
+#: components/Forms/Save.tsx:39
 #. Used in: Components > Form Meta > Definition ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save
 #, fuzzy
 msgid "unsavedFormUnloadProtect"
 msgstr "Este formulario no ha sido guardado."
 
 #: components/AttachmentsBulkImport/utils.ts:482
-#: components/Forms/Save.tsx:458
+#: components/Forms/Save.tsx:305
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 #, fuzzy
 msgid "saveConflict"
 msgstr "Guardar conflicto"
 
-#: components/Forms/Save.tsx:461
+#: components/Forms/Save.tsx:308
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveConflictDescription"
@@ -240,13 +240,13 @@ msgstr ""
 "usuario o en otra pestaña del navegador y están desactualizados. Es "
 "necesario recargar la página para evitar que se guarden datos incoherentes."
 
-#: components/Forms/Save.tsx:502
+#: components/Forms/Save.tsx:339
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveBlocked"
 msgstr "Guardar bloqueado"
 
-#: components/Forms/Save.tsx:505
+#: components/Forms/Save.tsx:342
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveBlockedDescription"
@@ -436,7 +436,7 @@ msgstr "Es posible que desees guardar este registro antes de navegar."
 msgid "creatingNewRecord"
 msgstr "Creando nuevo registro"
 
-#: components/FormSliders/RecordSet.tsx:371
+#: components/FormSliders/RecordSet.tsx:376
 #. Used in: Components > Form Sliders > Record Set
 #, fuzzy
 msgid "createNewRecordSet"
@@ -460,13 +460,13 @@ msgstr "Contrarrestar"
 msgid "deletedInline"
 msgstr "(eliminado)"
 
-#: components/FormSliders/RecordSet.tsx:518
+#: components/FormSliders/RecordSet.tsx:523
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 #, fuzzy
 msgid "duplicateRecordSetItem"
 msgstr "Duplicado {recordSetItemTable:string}"
 
-#: components/FormSliders/RecordSet.tsx:523
+#: components/FormSliders/RecordSet.tsx:528
 #. Used in: Components > Form Sliders > Record Set
 #, fuzzy
 msgid "duplicateRecordSetItemDescription"
@@ -491,8 +491,8 @@ msgstr "Eliminar de {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "No se encontró nada"
 
-#: components/Forms/BulkCarryForward.tsx:36
-#: components/Forms/Save.tsx:403
+#: components/Forms/BulkCarryForward.tsx:310
+#: components/Forms/Save.tsx:253
 #. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 #, fuzzy
 msgid "carryForward"
@@ -510,13 +510,13 @@ msgstr "Mostrar el botón Llevar adelante"
 msgid "bulkCarryForwardEnabled"
 msgstr "Mostrar recuento de transferencia masiva"
 
-#: components/Forms/Save.tsx:389
-#. Used in: Components > Forms > Save
+#: components/Forms/BulkCarryForward.tsx:272
+#. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardCount"
 msgstr "Recuento de transferencia masiva"
 
-#: components/Forms/Save.tsx:404
+#: components/Forms/Save.tsx:254
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "carryForwardDescription"
@@ -565,32 +565,37 @@ msgstr "Este campo es obligatorio. Debe ser transferido"
 msgid "bulkCarryForwardRangeEnabled"
 msgstr "Mostrar rango de transferencia masiva"
 
-#: components/Forms/BulkCarryForward.tsx:55
+#: components/Forms/BulkCarryForward.tsx:337
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeErrorDescription"
 msgstr "No se puede trasladar la grabación al rango {field:string} especificado."
 
-#: components/Forms/BulkCarryForward.tsx:49
+#: components/Forms/BulkCarryForward.tsx:323
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeLimitExceeded"
 msgstr "El rango excede el límite de registro de {limit:number}."
 
-#: components/Forms/BulkCarryForward.tsx:41
+#: components/Forms/BulkCarryForward.tsx:329
+#. Used in: Components > Forms > Bulk Carry Forward
+msgid "bulkCarryForwardRangeUnsupportedRelationships"
+msgstr ""
+
+#: components/Forms/BulkCarryForward.tsx:315
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeExistingRecords"
 msgstr "Los siguientes números para {field:string} ya se están utilizando:"
 
-#: components/Forms/Save.tsx:367
-#. Used in: Components > Forms > Save
+#: components/Forms/BulkCarryForward.tsx:192
+#. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeStart"
 msgstr "Arranque del rango de transferencia hacia adelante"
 
-#: components/Forms/Save.tsx:375
-#. Used in: Components > Forms > Save
+#: components/Forms/BulkCarryForward.tsx:200
+#. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeEnd"
 msgstr "Fin del rango de arrastre"
@@ -613,7 +618,7 @@ msgstr "Mostrar botón Clonar"
 msgid "addButtonEnabled"
 msgstr "Mostrar el botón Agregar"
 
-#: components/Forms/Save.tsx:433
+#: components/Forms/Save.tsx:280
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "addButtonDescription"
@@ -773,13 +778,13 @@ msgstr "Nuevo {tableName:string}"
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
-#: components/Forms/ResourceView.tsx:214
+#: components/Forms/ResourceView.tsx:219
 #. Used in: Components > Forms > Resource View
 #, fuzzy
 msgid "resourceDeleted"
 msgstr "Recurso eliminado"
 
-#: components/Forms/ResourceView.tsx:217
+#: components/Forms/ResourceView.tsx:222
 #. Used in: Components > Forms > Resource View
 #, fuzzy
 msgid "resourceDeletedDescription"

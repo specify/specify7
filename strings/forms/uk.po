@@ -18,13 +18,13 @@ msgid "forms"
 msgstr "Форми"
 
 #: components/Atoms/DataEntry.tsx:153
-#: components/Forms/Save.tsx:424
+#: components/Forms/Save.tsx:271
 #: components/Statistics/ResultsDialog.tsx:68
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Клон"
 
-#: components/Forms/Save.tsx:425
+#: components/Forms/Save.tsx:272
 #. Used in: Components > Forms > Save
 msgid "cloneDescription"
 msgstr "Створити повну копію поточного запису"
@@ -210,19 +210,19 @@ msgid "currentRecord"
 msgstr "Поточний об'єкт (з {total:number|formatted})"
 
 #: components/FormMeta/Definition.tsx:93
-#: components/Forms/ResourceView.tsx:405
-#: components/Forms/Save.tsx:51
+#: components/Forms/ResourceView.tsx:410
+#: components/Forms/Save.tsx:39
 #. Used in: Components > Form Meta > Definition ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
 msgstr "Цю форму не збережено."
 
 #: components/AttachmentsBulkImport/utils.ts:482
-#: components/Forms/Save.tsx:458
+#: components/Forms/Save.tsx:305
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 msgid "saveConflict"
 msgstr "Зберегти конфлікт"
 
-#: components/Forms/Save.tsx:461
+#: components/Forms/Save.tsx:308
 #. Used in: Components > Forms > Save
 msgid "saveConflictDescription"
 msgstr ""
@@ -230,12 +230,12 @@ msgstr ""
 "або в іншій вкладці браузера та застарілі. Сторінку необхідно "
 "перезавантажити, щоб запобігти збереженню невідповідних даних."
 
-#: components/Forms/Save.tsx:502
+#: components/Forms/Save.tsx:339
 #. Used in: Components > Forms > Save
 msgid "saveBlocked"
 msgstr "Зберегти заблоковано"
 
-#: components/Forms/Save.tsx:505
+#: components/Forms/Save.tsx:342
 #. Used in: Components > Forms > Save
 msgid "saveBlockedDescription"
 msgstr "Форму неможливо зберегти через таку помилку:"
@@ -417,7 +417,7 @@ msgstr "Можливо, ви захочете зберегти цей запис
 msgid "creatingNewRecord"
 msgstr "Створення нового запису"
 
-#: components/FormSliders/RecordSet.tsx:371
+#: components/FormSliders/RecordSet.tsx:376
 #. Used in: Components > Form Sliders > Record Set
 msgid "createNewRecordSet"
 msgstr "Створити новий набір записів"
@@ -437,12 +437,12 @@ msgstr "Зворотний"
 msgid "deletedInline"
 msgstr "(видалено)"
 
-#: components/FormSliders/RecordSet.tsx:518
+#: components/FormSliders/RecordSet.tsx:523
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItem"
 msgstr "Дублікат {recordSetItemTable:string}"
 
-#: components/FormSliders/RecordSet.tsx:523
+#: components/FormSliders/RecordSet.tsx:528
 #. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItemDescription"
 msgstr "Цей запис вже присутній у поточному {recordSetTable:string}"
@@ -463,8 +463,8 @@ msgstr "Видалити з {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Нічого не знайдено"
 
-#: components/Forms/BulkCarryForward.tsx:36
-#: components/Forms/Save.tsx:403
+#: components/Forms/BulkCarryForward.tsx:310
+#: components/Forms/Save.tsx:253
 #. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 msgid "carryForward"
 msgstr "Перенести далі"
@@ -479,12 +479,12 @@ msgstr "Показати кнопку «Перенести вперед»"
 msgid "bulkCarryForwardEnabled"
 msgstr "Показати кількість групового перенесення"
 
-#: components/Forms/Save.tsx:389
-#. Used in: Components > Forms > Save
+#: components/Forms/BulkCarryForward.tsx:272
+#. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardCount"
 msgstr "Кількість перенесених даних"
 
-#: components/Forms/Save.tsx:404
+#: components/Forms/Save.tsx:254
 #. Used in: Components > Forms > Save
 msgid "carryForwardDescription"
 msgstr "Створити новий запис із перенесенням певних полів"
@@ -526,28 +526,33 @@ msgstr "Це поле обов'язкове. Його потрібно пере�
 msgid "bulkCarryForwardRangeEnabled"
 msgstr "Показати діапазон масового перенесення"
 
-#: components/Forms/BulkCarryForward.tsx:55
+#: components/Forms/BulkCarryForward.tsx:337
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeErrorDescription"
 msgstr "Неможливо перенести запис у вказаний діапазон {field:string}."
 
-#: components/Forms/BulkCarryForward.tsx:49
+#: components/Forms/BulkCarryForward.tsx:323
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeLimitExceeded"
 msgstr "Діапазон перевищує ліміт записів {limit:number}."
 
-#: components/Forms/BulkCarryForward.tsx:41
+#: components/Forms/BulkCarryForward.tsx:329
+#. Used in: Components > Forms > Bulk Carry Forward
+msgid "bulkCarryForwardRangeUnsupportedRelationships"
+msgstr ""
+
+#: components/Forms/BulkCarryForward.tsx:315
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeExistingRecords"
 msgstr "Наступні номери для {field:string} вже використовуються:"
 
-#: components/Forms/Save.tsx:367
-#. Used in: Components > Forms > Save
+#: components/Forms/BulkCarryForward.tsx:192
+#. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeStart"
 msgstr "Початок діапазону перенесення вперед"
 
-#: components/Forms/Save.tsx:375
-#. Used in: Components > Forms > Save
+#: components/Forms/BulkCarryForward.tsx:200
+#. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeEnd"
 msgstr "Кінець діапазону перенесення вперед"
 
@@ -566,7 +571,7 @@ msgstr "Кнопка «Показати клон»"
 msgid "addButtonEnabled"
 msgstr "Показати кнопку «Додати»"
 
-#: components/Forms/Save.tsx:433
+#: components/Forms/Save.tsx:280
 #. Used in: Components > Forms > Save
 msgid "addButtonDescription"
 msgstr "Створити новий пустий запис"
@@ -702,12 +707,12 @@ msgstr "Новий {tableName:string}"
 msgid "resourceFormatter"
 msgstr "{tableName:string} '#{id:number}"
 
-#: components/Forms/ResourceView.tsx:214
+#: components/Forms/ResourceView.tsx:219
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeleted"
 msgstr "Ресурс видалено"
 
-#: components/Forms/ResourceView.tsx:217
+#: components/Forms/ResourceView.tsx:222
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeletedDescription"
 msgstr "Елемент успішно видалено."

@@ -38,7 +38,7 @@ msgstr "Non"
 #: components/FormSliders/RecordSelectorFromIds.tsx:273
 #: components/Forms/DeleteButton.tsx:121
 #: components/Forms/DeleteButton.tsx:145
-#: components/Forms/ResourceView.tsx:362
+#: components/Forms/ResourceView.tsx:367
 #: components/Header/ChooseCollection.tsx:26
 #: components/Header/ExpressSearchTask.tsx:49
 #: components/Interactions/InteractionDialog.tsx:307
@@ -196,16 +196,16 @@ msgstr "Créer"
 #: components/FormPlugins/index.tsx:267
 #: components/FormSliders/AttachmentWarningDeletion.tsx:39
 #: components/FormSliders/AttachmentsCollection.tsx:87
-#: components/FormSliders/RecordSet.tsx:517
+#: components/FormSliders/RecordSet.tsx:522
 #: components/Formatters/Element.tsx:66
 #: components/Formatters/Element.tsx:88
-#: components/Forms/BulkCarryForward.tsx:33
+#: components/Forms/BulkCarryForward.tsx:307
 #: components/Forms/DataTask.tsx:134
 #: components/Forms/DeleteButton.tsx:175
-#: components/Forms/ResourceView.tsx:213
-#: components/Forms/ResourceView.tsx:365
-#: components/Forms/Save.tsx:455
-#: components/Forms/Save.tsx:501
+#: components/Forms/ResourceView.tsx:218
+#: components/Forms/ResourceView.tsx:370
+#: components/Forms/Save.tsx:302
+#: components/Forms/Save.tsx:338
 #: components/Header/UserTools.tsx:75
 #: components/HomePage/AboutSpecify.tsx:60
 #: components/Interactions/InteractionDialog.tsx:283
@@ -318,7 +318,7 @@ msgstr "Supprimer les colonnes non mappées"
 
 #: components/AttachmentsBulkImport/Datasets.tsx:266
 #: components/AttachmentsBulkImport/Import.tsx:298
-#: components/Forms/Save.tsx:67
+#: components/Forms/Save.tsx:55
 #: components/Preferences/index.tsx:100
 #: components/QueryBuilder/FromMap.tsx:74
 #: components/QueryBuilder/Save.tsx:67
@@ -344,7 +344,7 @@ msgstr "Sauvegarder"
 #: components/ExportFeed/Editor.tsx:137
 #: components/FormSliders/RecordSelectorFromIds.tsx:179
 #: components/Formatters/List.tsx:138
-#: components/Forms/Save.tsx:432
+#: components/Forms/Save.tsx:279
 #: components/Merging/CompareSubView.tsx:184
 #: components/Molecules/AutoComplete.tsx:524
 #: components/PickLists/index.tsx:280
@@ -581,7 +581,7 @@ msgstr "Nouveau"
 #: components/FormEditor/Create.tsx:160
 #: components/FormMeta/index.tsx:100
 #: components/FormMeta/index.tsx:102
-#: components/Forms/ResourceView.tsx:223
+#: components/Forms/ResourceView.tsx:228
 #: components/Molecules/ResourceLink.tsx:140
 #: components/Reports/index.tsx:258
 #: components/Reports/index.tsx:262
@@ -1047,11 +1047,11 @@ msgstr "{header:string}:"
 #: components/FormCells/index.tsx:318
 #: components/FormCommands/index.tsx:128
 #: components/FormPlugins/index.tsx:207
-#: components/FormSliders/RecordSet.tsx:388
+#: components/FormSliders/RecordSet.tsx:393
 #: components/Formatters/Element.tsx:92
 #: components/Formatters/Formatter.tsx:126
 #: components/Forms/BaseResourceView.tsx:132
-#: components/Forms/Save.tsx:507
+#: components/Forms/Save.tsx:344
 #: components/Leaflet/index.ts:171
 #: components/LocalityUpdate/Status.tsx:519
 #: components/LocalityUpdate/utils.ts:64
