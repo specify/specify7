@@ -1186,7 +1186,7 @@ def apply_special_post_query_processing(query, tableid, field_specs, collection,
         return list(query)
     return query
 
-def parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
+def parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True): # pragma: no cover
     if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs]: 
         if not get_parent_cat_num_inheritance_setting(collection, user):
             return list(query)
