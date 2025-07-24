@@ -940,7 +940,8 @@ export const formsText = createDictionary({
     'uk-ua': 'Діапазон перевищує ліміт записів {limit:number}.',
   },
   bulkCarryForwardRangeUnsupportedRelationships: {
-    'en-us': 'Some relationships with more than one record are not currently supported by Bulk Carry Forward:'
+    'en-us':
+      'Some relationships with more than one record are not currently supported by Bulk Carry Forward:',
   },
   bulkCarryForwardRangeExistingRecords: {
     'en-us': 'The following numbers for {field:string} are already being used:',
