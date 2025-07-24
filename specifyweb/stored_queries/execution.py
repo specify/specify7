@@ -636,7 +636,7 @@ def run_ephemeral_query(collection, user, spquery):
 #     print("make_augmented_field_spec ######################################")
 
 
-def recordset(collection, user, user_agent, recordset_info):
+def recordset(collection, user, user_agent, recordset_info): # pragma: no cover
     "Create a record set from the records matched by a query."
     spquery = recordset_info["fromquery"]
     tableid = spquery["contexttableid"]
