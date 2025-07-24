@@ -11,6 +11,7 @@ import type { RA, WritableArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
+import { cogTypes } from '../DataModel/helpers';
 import type { AnySchema, SerializedRecord } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -20,6 +21,7 @@ import {
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
+import type { CollectionObject } from '../DataModel/types';
 import { tableValidForBulkClone } from '../FormMeta/CarryForward';
 import { Dialog } from '../Molecules/Dialog';
 
@@ -97,8 +99,12 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
   const handleBulkCarryForward =
     typeof formatter === 'object'
       ? async (): Promise<RA<SpecifyResource<SCHEMA>> | undefined> => {
-          const unsupportedRelationships =
-            getUnsupportedRelationships(resource);
+          const unsupportedRelationships = [
+            ...getUnsupportedRelationships(resource),
+            ...(await isInConsolidatedCog(
+              resource as SpecifyResource<CollectionObject>
+            )),
+          ];
           if (unsupportedRelationships.length > 0) {
             setBulkCarryRangeBlocked('UnsupportedRelationships');
             setBulkCarryRangeUnsupportedRelationships(unsupportedRelationships);
@@ -339,7 +345,7 @@ export function BulkCarryRangeBlockedDialog({
 
 /*
  * Temporary fix for https://github.com/specify/specify7/issues/5022.
- * REFACTOR: Remove this once the issue is fixed.
+ * REFACTOR: Remove this once issue #5022 is fixed.
  */
 function getUnsupportedRelationships<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA>
@@ -385,7 +391,7 @@ function getUnsupportedRelationships<SCHEMA extends AnySchema>(
       // Relationship contains unsupported relationships within, check recursively.
       if (relatedHasUnsupportedRelationships) {
         const related = resource.getDependentResource(relationship.name);
-        if (related !== undefined) {
+        if (related !== null && related !== undefined) {
           if (isCollection(related)) {
             related.models.forEach((model) =>
               recursiveRelationshipCheck(model, relationship)
@@ -411,4 +417,22 @@ function getUnsupportedRelationships<SCHEMA extends AnySchema>(
   });
 
   return unsupported;
+}
+/*
+ * Consolidated COGs aren't supported.
+ * REFACTOR: Remove this once issue #5022 is fixed.
+ */
+async function isInConsolidatedCog(
+  resource: SpecifyResource<CollectionObject>
+): Promise<RA<string>> {
+  const cojo = resource.getDependentResource('cojo');
+  if (cojo !== null && cojo !== undefined) {
+    const parentCog = await cojo.rgetPromise('parentCog');
+    const cogType = await parentCog.rgetPromise('cogType');
+    if (cogType.get('type') === cogTypes.CONSOLIDATED) {
+      // Return 'Consolidated Collection Object Group' as error.
+      return [`${cogTypes.CONSOLIDATED} ${parentCog.specifyTable.label}`];
+    }
+  }
+  return [];
 }
