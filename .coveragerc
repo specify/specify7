@@ -1,0 +1,8 @@
+[run]
+omit = 
+    # Omit all migration files
+    */migrations/*
+    specifyweb/specify/temp_models.py
+    */tests/*
+    specifyweb/settings.py
+    specifyweb/specify/selenium_tests.py

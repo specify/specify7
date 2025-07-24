@@ -140,7 +140,12 @@ jobs:
       #     mysql -h 127.0.0.1 -P $PORT -u MasterUser -p'MasterPassword' -e 'DROP DATABASE IF EXISTS test_SpecifyDB;';
       #     mysql -h 127.0.0.1 -P $PORT -u MasterUser -p'MasterPassword' -e 'SHOW DATABASES;'
       - name: Run test suite
-        run: ./ve/bin/python manage.py test --verbosity=3 --keepdb
+        run: |
+          cat .coveragerc
+          set +e
+          ./ve/bin/coverage run --source='./specifyweb/' manage.py test specifyweb --verbosity=3 --keepdb
+          coverage report
+          set -e
         # run: ./ve/bin/python manage.py test --verbosity=3 --noinput
 
   test-front-end:
