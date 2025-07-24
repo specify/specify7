@@ -111,7 +111,7 @@ def update_table_schema_config_with_defaults(
     )
 
     # Create Splocalecontainer for the table
-    sp_local_container, _ = Splocalecontainer.objects.get_or_create(
+    sp_local_container, is_new = Splocalecontainer.objects.get_or_create(
         name=table_config.name.lower(),
         discipline_id=discipline_id,
         schematype=table_config.schema_type,
@@ -119,6 +119,8 @@ def update_table_schema_config_with_defaults(
         issystem=table.system,
         version=0,
     )
+    if not is_new:
+        return  # If the container already exists, we don't need to update it
 
     # Create a Splocaleitemstr for the table name and description
     for k, text in {
