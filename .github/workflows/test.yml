@@ -140,7 +140,16 @@ jobs:
       #     mysql -h 127.0.0.1 -P $PORT -u MasterUser -p'MasterPassword' -e 'DROP DATABASE IF EXISTS test_SpecifyDB;';
       #     mysql -h 127.0.0.1 -P $PORT -u MasterUser -p'MasterPassword' -e 'SHOW DATABASES;'
       - name: Run test suite
-        run: ./ve/bin/python manage.py test --verbosity=3 --keepdb
+        run: |
+          mysql -h 127.0.0.1 -P $PORT -u root -p'password' -e 'create schema if not exists test_SpecifyDB_1;'
+          mysql -h 127.0.0.1 -P $PORT -u root -p'password' -e 'create schema if not exists test_SpecifyDB_2;'
+          mysql -h 127.0.0.1 -P $PORT -u root -p'password' -e 'create schema if not exists test_SpecifyDB_3;'
+          mysql -h 127.0.0.1 -P $PORT -u root -p'password' -e 'create schema if not exists test_SpecifyDB_4;'
+          mysql -h 127.0.0.1 -P $PORT -u root -p'password' -e 'GRANT ALL PRIVILEGES ON test_SpecifyDB_1.* TO 'MasterUser'@'%';'
+          mysql -h 127.0.0.1 -P $PORT -u root -p'password' -e 'GRANT ALL PRIVILEGES ON test_SpecifyDB_2.* TO 'MasterUser'@'%';'
+          mysql -h 127.0.0.1 -P $PORT -u root -p'password' -e 'GRANT ALL PRIVILEGES ON test_SpecifyDB_3.* TO 'MasterUser'@'%';'
+          mysql -h 127.0.0.1 -P $PORT -u root -p'password' -e 'GRANT ALL PRIVILEGES ON test_SpecifyDB_4.* TO 'MasterUser'@'%';'          
+          ./ve/bin/python manage.py test --verbosity=3 --keepdb --parallel 4
         # run: ./ve/bin/python manage.py test --verbosity=3 --noinput
 
   test-front-end:
