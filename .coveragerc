@@ -6,3 +6,7 @@ omit =
     */tests/*
     specifyweb/settings.py
     specifyweb/specify/selenium_tests.py
+    specifyweb/specify/sp7_build_models.py
+    specifyweb/specify/geo_time.py
+    */management/*
+    specifyweb/stored_queries/sp7_build_models.py
