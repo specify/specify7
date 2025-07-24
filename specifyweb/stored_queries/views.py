@@ -15,8 +15,7 @@ from specifyweb.middleware.general import require_GET
 from specifyweb.stored_queries.batch_edit import run_batch_edit
 from specifyweb.specify.models_by_table_id import model_names_by_table_id
 from . import models
-from .execution import execute, run_ephemeral_query, do_export, recordset, \
-    return_loan_preps as rlp
+from .execution import execute, run_ephemeral_query, do_export, recordset
 from .queryfield import QueryField
 from ..permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets, check_table_permissions
@@ -292,22 +291,23 @@ def merge_recordsets(request: HttpRequest) -> JsonResponse:
 @login_maybe_required
 @never_cache
 def return_loan_preps(request):
-    check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.execute])
-    check_table_permissions(request.specify_collection, request.specify_user, Loanreturnpreparation, "create")
-    check_table_permissions(request.specify_collection, request.specify_user, Loanpreparation, "read")
-    check_table_permissions(request.specify_collection, request.specify_user, Loan, "update")
-    try:
-        data = json.load(request)
-    except ValueError as e:
-        return HttpResponseBadRequest(e)
+    ...
+    # check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.execute])
+    # check_table_permissions(request.specify_collection, request.specify_user, Loanreturnpreparation, "create")
+    # check_table_permissions(request.specify_collection, request.specify_user, Loanpreparation, "read")
+    # check_table_permissions(request.specify_collection, request.specify_user, Loan, "update")
+    # try:
+    #     data = json.load(request)
+    # except ValueError as e:
+    #     return HttpResponseBadRequest(e)
 
-    to_return = rlp(request.specify_collection, request.specify_user, request.specify_user_agent, data)
+    # to_return = rlp(request.specify_collection, request.specify_user, request.specify_user_agent, data)
 
-    resp = defaultdict(lambda: {'loanpreparations': list()})
-    for lp_id, quantity, loan_id, loan_no in to_return:
-        item = resp[loan_id]
-        item['loannumber'] = loan_no
-        item['loanpreparations'].append({'loanpreparationid': lp_id, 'quantity': int(quantity)})
+    # resp = defaultdict(lambda: {'loanpreparations': list()})
+    # for lp_id, quantity, loan_id, loan_no in to_return:
+    #     item = resp[loan_id]
+    #     item['loannumber'] = loan_no
+    #     item['loanpreparations'].append({'loanpreparationid': lp_id, 'quantity': int(quantity)})
 
-    return JsonResponse(resp, safe=False)
+    # return JsonResponse(resp, safe=False)
 
