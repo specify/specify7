@@ -145,7 +145,7 @@ jobs:
           set +e
           ./ve/bin/coverage run --source='./specifyweb/' manage.py test specifyweb --verbosity=3 --keepdb
           set -e
-          ./ve/bin/coverage coverage report
+          ./ve/bin/coverage report
         # run: ./ve/bin/python manage.py test --verbosity=3 --noinput
 
   test-front-end:
