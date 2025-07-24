@@ -8,7 +8,7 @@ from functools import wraps
 import time
 import logging
 import os
-from typing import Union, List, Tuple, Dict, Any
+from typing import Any
 from uuid import uuid4
 from zipfile import ZipFile, BadZipFile
 from tempfile import TemporaryDirectory
@@ -1526,7 +1526,7 @@ def series_autonumber_range(request: http.HttpRequest):
     Returns a list of autonumbered values given a range.
     Used for series data entry on Collection Objects.
     """
-    request_data = json.loads(request.body)
+    request_data: dict = json.loads(request.body)
     range_start = request_data.get('rangestart')
     range_end = request_data.get('rangeend')
     table_name = request_data.get('tablename')

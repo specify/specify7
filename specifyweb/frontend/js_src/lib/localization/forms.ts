@@ -933,6 +933,10 @@ export const formsText = createDictionary({
     'ru-ru': '',
     'uk-ua': '',
   },
+  bulkCarryForwardRangeUnsupportedRelationships: {
+    'en-us':
+      'Some relationships with more than one record are not currently supported by Bulk Carry Forward:',
+  },
   bulkCarryForwardRangeExistingRecords: {
     'en-us': 'The following numbers for {field:string} are already being used:',
     'de-ch': '',
