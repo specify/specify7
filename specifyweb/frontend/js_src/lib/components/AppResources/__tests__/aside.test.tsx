@@ -3,7 +3,7 @@ import type { AppResourcesConformation } from '../Aside';
 import { exportsForTests } from '../Aside';
 
 const { mutateConformation } = exportsForTests;
-// Temp code.
+
 describe('mutateConfirmation', () => {
   test('child replaced', () => {
     const conformations: RA<AppResourcesConformation> = [
