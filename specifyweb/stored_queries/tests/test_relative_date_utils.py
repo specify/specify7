@@ -1,15 +1,9 @@
-from specifyweb.specify.tests.test_api import ApiTests
+from specifyweb.specify.tests.test_api import ApiTests, MockDateTime
 from specifyweb.stored_queries.relative_date_utils import apply_absolute_date, relative_to_absolute_date
 from unittest.mock import patch, Mock
 import datetime
 
 from specifyweb.stored_queries.tests.utils import make_query_fields_test
-
-class MockDateTime:
-
-    @classmethod
-    def now(cls):
-        return datetime.datetime(2025, 7, 20, 18, 23, 32)
     
 class TestApplyAbsoluteDate(ApiTests):
     
