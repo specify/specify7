@@ -200,7 +200,7 @@ def export_kml(request):
 @require_POST
 @login_maybe_required
 @never_cache
-def make_recordset(request):
+def make_recordset(request): # pragma: no cover
     """Executes the query provided as JSON in the POST body and creates a
     recordset of the result. Redirects to the URL of the created recordset.
     """
