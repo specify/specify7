@@ -21,7 +21,7 @@
     "pullFromWeblate": "node --import ./lib/tests/jsdom.js --import ./lib/tests/register.js --import tsx lib/localization/utils/pull.ts",
     "schema:extract": "node --import ./lib/tests/jsdom.js --import ./lib/tests/register.js --import tsx lib/localization/schema-localization/extract.ts",
     "schema:pullFromWeblate": "node --import ./lib/tests/jsdom.js --import ./lib/tests/register.js --import tsx lib/localization/schema-localization/pull.ts",
-    "test": "npm run typecheck && npm run unitTests && npm run localizationTests",
+    "test": "npm run typecheck && npm run unitTests:coverage && npm run localizationTests",
     "typecheck": "tsc",
     "unitTests": "jest",
     "unitTests:coverage": "jest --coverage",
