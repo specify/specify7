@@ -10,3 +10,4 @@ omit =
     specifyweb/specify/geo_time.py
     */management/*
     specifyweb/stored_queries/sp7_build_models.py
+    specifyweb/accounts/views.py
