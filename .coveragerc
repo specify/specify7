@@ -11,3 +11,8 @@ omit =
     */management/*
     specifyweb/stored_queries/sp7_build_models.py
     specifyweb/accounts/views.py
+    specifyweb/settings/ldap_settings_example.py
+    specifyweb/specify/case_insensitive_bool.py
+    specifyweb/context/testsviews.py
+    specifyweb/specify/support_login.py
+    specifyweb/specify/check_versions.py

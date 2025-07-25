@@ -125,7 +125,7 @@ class LocalityUpdateTask(LogErrorsTask):
 
 
 @app.task(base=LocalityUpdateTask, bind=True)
-def update_locality_task(self, collection_id: int, column_headers: list[str], data: list[list[str]], create_recordset: bool) -> None:
+def update_locality_task(self, collection_id: int, column_headers: list[str], data: list[list[str]], create_recordset: bool) -> None: # pragma: no cover
     def progress(state, current: int, total: int):
         self.update_state(state=state, meta={
                           'current': current, 'total': total})
@@ -172,7 +172,7 @@ def update_locality_task(self, collection_id: int, column_headers: list[str], da
 
 
 @app.task(base=LocalityUpdateTask, bind=True)
-def parse_locality_task(self, collection_id: int, column_headers: list[str], data: list[list[str]]):
+def parse_locality_task(self, collection_id: int, column_headers: list[str], data: list[list[str]]): # pragma: no cover
     def progress(state, current: int, total: int):
         self.update_state(state=state, meta={
                           'current': current, 'total': total})
