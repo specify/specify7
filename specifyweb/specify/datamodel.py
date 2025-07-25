@@ -4065,6 +4065,11 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', dependent=True),
+            Relationship(name='agent1', type='many-to-one',required=False, relatedModelName='Agent', column='Agent1ID'),
+            Relationship(name='agent2', type='many-to-one',required=False, relatedModelName='Agent', column='Agent2ID'),
+            Relationship(name='agent3', type='many-to-one',required=False, relatedModelName='Agent', column='Agent3ID'),
+            Relationship(name='agent4', type='many-to-one',required=False, relatedModelName='Agent', column='Agent4ID'),
+            Relationship(name='agent5', type='many-to-one',required=False, relatedModelName='Agent', column='Agent5ID'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='deaccession', type='many-to-one',required=False, relatedModelName='Deaccession', column='DeaccessionID', otherSideName='gifts'),
             Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
@@ -4591,6 +4596,11 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='addressOfRecord', type='many-to-one',required=False, relatedModelName='AddressOfRecord', column='AddressOfRecordID', otherSideName='loans', dependent=True),
+            Relationship(name='agent1', type='many-to-one',required=False, relatedModelName='Agent', column='Agent1ID'),
+            Relationship(name='agent2', type='many-to-one',required=False, relatedModelName='Agent', column='Agent2ID'),
+            Relationship(name='agent3', type='many-to-one',required=False, relatedModelName='Agent', column='Agent3ID'),
+            Relationship(name='agent4', type='many-to-one',required=False, relatedModelName='Agent', column='Agent4ID'),
+            Relationship(name='agent5', type='many-to-one',required=False, relatedModelName='Agent', column='Agent5ID'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='discipline', type='many-to-one',required=True, relatedModelName='Discipline', column='DisciplineID'),
             Relationship(name='division', type='many-to-one',required=False, relatedModelName='Division', column='DivisionID'),

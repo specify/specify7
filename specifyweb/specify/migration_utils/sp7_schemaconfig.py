@@ -222,3 +222,25 @@ MIGRATION_0034_UPDATE_FIELDS = {
         ('date2Precision',              'Date 2 Precision',              'Date 2 Precision'),
     ]
 }
+
+MIGRATION_0038_FIELDS = {
+    'Loan': ['agent1', 'agent2', 'agent3', 'agent4', 'agent5'],
+    'Gift': ['agent1', 'agent2', 'agent3', 'agent4', 'agent5'],
+}
+
+MIGRATION_0038_UPDATE_FIELDS = {
+    'Loan': [
+        ('agent1','Agent 1','Agent 1'),
+        ('agent2','Agent 2','Agent 2'),
+        ('agent3','Agent 3','Agent 3'),
+        ('agent4','Agent 4','Agent 4'),
+        ('agent5','Agent 5','Agent 5'),
+    ],
+    'Gift': [
+        ('agent1','Agent 1','Agent 1'),
+        ('agent2','Agent 2','Agent 2'),
+        ('agent3','Agent 3','Agent 3'),
+        ('agent4','Agent 4','Agent 4'),
+        ('agent5','Agent 5','Agent 5'),
+    ]
+}
