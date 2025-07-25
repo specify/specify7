@@ -24,7 +24,7 @@
     "test": "npm run typecheck && npm run unitTests:coverage && npm run localizationTests",
     "typecheck": "tsc",
     "unitTests": "jest",
-    "unitTests:coverage": "jest --coverage",
+    "unitTests:coverage": "jest --coverage --verbose",
     "unitTests:watch": "jest --watch",
     "validateWeblate": "node --import ./lib/tests/jsdom.js --import ./lib/tests/register.js --import tsx lib/localization/__tests__/validateWeblate.ts"
   },
