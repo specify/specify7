@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-07-25 03:03+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-07-25 17:03+0000\n"
+"Last-Translator: Максим Горпиніч <gorpinicmaksim5@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "forms/uk/>\n"
 "Language: uk\n"
@@ -538,7 +538,6 @@ msgstr "Діапазон перевищує ліміт записів {limit:num
 
 #. Used in: Components > Forms > Bulk Carry Forward
 #: components/Forms/BulkCarryForward.tsx:329
-#, fuzzy
 msgid "bulkCarryForwardRangeUnsupportedRelationships"
 msgstr ""
 "Деякі зв'язки з кількома записами наразі не підтримуються груповим "
