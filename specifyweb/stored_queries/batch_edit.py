@@ -1137,6 +1137,9 @@ def run_batch_edit_query(props: BatchEditProps):
             recordsetid=recordsetid,
             formatauditobjs=False,
             format_picklist=True,
+            format_types=False,
+            numeric_catalog_number=False,
+            format_expr=False,
         )
 
     to_many_planner = indexed.to_many_planner()
