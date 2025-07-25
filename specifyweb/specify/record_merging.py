@@ -57,10 +57,11 @@ def resolve_record_merge_response(start_function, silent=True):
         elif silent:
             logger.info(traceback.format_exc())
             return http.HttpResponseServerError(content=str(traceback.format_exc()), content_type="application/json")
-        elif type(error.args[0]) == type(http.HttpResponseNotFound):
-            logger.info('HttpResponseNotFound')
-            logger.info(error.args[0])
-            response = error.args[0]
+        elif type(error.args[0]) == type(http.HttpResponseNotFound): # pragma: no cover
+            # Above branch is never possible.
+            logger.info('HttpResponseNotFound') # pragma: no cover
+            logger.info(error.args[0]) # pragma: no cover
+            response = error.args[0] # pragma: no cover
         else:
             raise
     return response
@@ -343,7 +344,7 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
 
 @app.task(base=LogErrorsTask, bind=True)
 def record_merge_task(self, model_name: str, old_model_ids: list[int], new_model_id: int, merge_id: int,
-                      new_record_dict: dict[str, Any]=None):
+                      new_record_dict: dict[str, Any]=None): # pragma: no cover
     "Run the record merging process as a background task with celery"
 
     logger.info('logging is working for record merging task')

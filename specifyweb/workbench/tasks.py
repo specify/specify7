@@ -48,7 +48,7 @@ def upload_data(
         ds.save(update_fields=['uploaderstatus'])
 
 @app.task(base=LogErrorsTask, bind=True)
-def upload(self, collection_id: int, uploading_agent_id: int, ds_id: int, no_commit: bool, allow_partial: bool) -> None:
+def upload(self, collection_id: int, uploading_agent_id: int, ds_id: int, no_commit: bool, allow_partial: bool) -> None: # pragma: no cover
 
     def progress(current: int, total: int | None) -> None:
         if not self.request.called_directly:
@@ -57,7 +57,7 @@ def upload(self, collection_id: int, uploading_agent_id: int, ds_id: int, no_com
     upload_data(collection_id, uploading_agent_id, ds_id, no_commit, allow_partial, self, progress)
 
 @app.task(base=LogErrorsTask, bind=True)
-def unupload(self, collection_id: int, ds_id: int, agent_id: int) -> None:
+def unupload(self, collection_id: int, ds_id: int, agent_id: int) -> None: # pragma: no cover
 
     def progress(current: int, total: int | None) -> None:
         if not self.request.called_directly:
