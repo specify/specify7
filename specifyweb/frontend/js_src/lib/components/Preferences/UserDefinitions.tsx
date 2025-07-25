@@ -857,6 +857,13 @@ export const userPreferenceDefinitions = {
               max: 10_000,
             },
           }),
+          showSubviewBorders: definePref<boolean>({
+            title: preferencesText.showSubviewBorders(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
           limitMaxFieldWidth: definePref<boolean>({
             title: preferencesText.limitMaxFieldWidth(),
             requiresReload: false,
