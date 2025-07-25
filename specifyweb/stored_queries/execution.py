@@ -655,7 +655,7 @@ def recordset(collection, user, user_agent, recordset_info): # pragma: no cover
         recordset.SpecifyUserID = user.id
         session.add(recordset)
         session.flush()
-        new_rs_id = recordset.recordSetId
+        new_rs_id = recordset.recordSetId if recordset.recordSetId else recordset._id
 
         model = models.models_by_tableid[tableid]
 
