@@ -220,6 +220,7 @@ def make_recordset(request): # pragma: no cover
 @login_maybe_required
 @require_POST
 def merge_recordsets(request: HttpRequest) -> JsonResponse:
+    # Why does this require execute permission?
     check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.execute])
     check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.create_recordset])
     check_table_permissions(request.specify_collection, request.specify_user, Recordset, "create")
@@ -236,6 +237,7 @@ def merge_recordsets(request: HttpRequest) -> JsonResponse:
         recordsets = Recordset.objects.filter(id__in=recordset_ids)
 
         if not recordsets.exists():
+            # This should be HTTP error (rather than being a JSON response)
             return JsonResponse({'error': 'No valid recordsets found'}, status=404)
         
         first_recordset_name = recordsets.first().name
