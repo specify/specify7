@@ -7,11 +7,13 @@ import React from 'react';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
+import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { removeItem, replaceItem, replaceKey } from '../../utils/utils';
 import { Key } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import type { PreferenceRendererProps } from '../Preferences/types';
 import type { KeyboardShortcuts } from './config';
 import { keyboardPlatform } from './config';
@@ -22,6 +24,13 @@ import {
   resolvePlatformShortcuts,
 } from './utils';
 
+/*
+ * If any component instance is editing a keyboard shortcut, don't let any
+ * other start editing it.
+ */
+let currentlyEditingShortcut: Record<never, never> | undefined = undefined;
+const editingEvent = eventListener<{ readonly change: undefined }>();
+
 export const emptyShortcuts = {};
 export function KeyboardShortcutPreferenceItem({
   value = emptyShortcuts,
@@ -29,23 +38,39 @@ export function KeyboardShortcutPreferenceItem({
 }: Partial<
   Pick<PreferenceRendererProps<KeyboardShortcuts>, 'onChange' | 'value'>
 >): JSX.Element {
+  const [localValue, setLocalValue] = useTriggerState(value);
+
+  const key = React.useMemo<Record<never, never>>(() => ({}), []);
+  const globalIsEditingElsewhere =
+    currentlyEditingShortcut !== undefined && currentlyEditingShortcut !== key;
+
   const [editingIndex, setEditingIndex] = React.useState<number | false>(false);
   const isEditing = typeof editingIndex === 'number';
-  const shortcuts = resolvePlatformShortcuts(value) ?? [];
+  const shortcuts = resolvePlatformShortcuts(localValue) ?? [];
   const setShortcuts =
     handleChange === undefined
       ? undefined
       : (shortcuts: RA<string>): void =>
-          handleChange(replaceKey(value, keyboardPlatform, shortcuts));
+          setLocalValue(replaceKey(localValue, keyboardPlatform, shortcuts));
 
-  const valueRef = React.useRef(value);
-  valueRef.current = value;
+  const valueRef = React.useRef(localValue);
+  valueRef.current = localValue;
+
+  const [_, triggerReRender] = React.useState(false);
+  React.useEffect(
+    () => editingEvent.on('change', () => triggerReRender((flip) => !flip)),
+    []
+  );
 
   // Cleanup empty when we finish editing
   React.useEffect(
     () =>
       isEditing
-        ? (): void => handleChange?.(cleanupEmpty(valueRef.current))
+        ? (): void => {
+            currentlyEditingShortcut = undefined;
+            editingEvent.trigger('change');
+            handleChange?.(cleanupEmpty(valueRef.current));
+          }
         : undefined,
     [isEditing, handleChange]
   );
@@ -57,12 +82,18 @@ export function KeyboardShortcutPreferenceItem({
           key={index}
           shortcut={shortcut}
           onEditStart={
-            editingIndex === false
-              ? (): void => setEditingIndex(index)
+            !isEditing && !globalIsEditingElsewhere
+              ? (): void => {
+                  currentlyEditingShortcut = key;
+                  editingEvent.trigger('change');
+                  setEditingIndex(index);
+                }
               : undefined
           }
           onSave={
-            editingIndex === index && setShortcuts !== undefined
+            editingIndex === index &&
+            setShortcuts !== undefined &&
+            !globalIsEditingElsewhere
               ? (shortcut): void => {
                   setShortcuts(
                     f.unique(
@@ -80,10 +111,16 @@ export function KeyboardShortcutPreferenceItem({
       {setShortcuts !== undefined && (
         <Button.Small
           disabled={isEditing}
-          onClick={(): void => {
-            setShortcuts([...shortcuts, '']);
-            setEditingIndex(shortcuts.length);
-          }}
+          onClick={
+            globalIsEditingElsewhere
+              ? undefined
+              : (): void => {
+                  currentlyEditingShortcut = key;
+                  editingEvent.trigger('change');
+                  setShortcuts([...shortcuts, '']);
+                  setEditingIndex(shortcuts.length);
+                }
+          }
         >
           {commonText.add()}
         </Button.Small>
@@ -170,6 +207,7 @@ function EditKeyboardShortcut({
       )}
       <Button.Small
         forwardRef={saveButtonRef}
+        variant={isEditing ? className.saveButton : undefined}
         onClick={
           isEditing
             ? (): void =>
