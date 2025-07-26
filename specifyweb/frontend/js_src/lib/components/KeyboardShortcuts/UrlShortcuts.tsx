@@ -1,6 +1,7 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
@@ -14,10 +15,7 @@ import { Input } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { PreferenceRendererProps } from '../Preferences/types';
-import { entrypointRoutes } from '../Router/EntrypointRouter';
-import { overlayRoutes } from '../Router/OverlayRoutes';
 import type { EnhancedRoute } from '../Router/RouterUtils';
-import { routes } from '../Router/Routes';
 import type { KeyboardShortcuts } from './config';
 import { emptyShortcuts, KeyboardShortcutPreferenceItem } from './Shortcuts';
 
@@ -64,10 +62,10 @@ Object.defineProperty(UrlShortcutsEditor, 'name', {
 function EditorDialog({
   value,
   onChange: handleChange,
-}: PreferenceRendererProps<UrlShortcuts>): JSX.Element {
-  const categorizedRoutes = getCategorizedRoutes();
+}: PreferenceRendererProps<UrlShortcuts>): JSX.Element | null {
+  const [categorizedRoutes] = useAsyncState(getCategorizedRoutes, true);
   const localValue = useTriggerState(value);
-  return (
+  return categorizedRoutes ? (
     <Dialog
       buttons={commonText.close()}
       className={{
@@ -87,7 +85,7 @@ function EditorDialog({
       <H3>{preferencesText.customPages()}</H3>
       <CustomRouteBrowser categorized={categorizedRoutes} value={localValue} />
     </Dialog>
-  );
+  ) : null;
 }
 
 const cleanupShortcuts = (shortcuts: UrlShortcuts): UrlShortcuts =>
@@ -102,15 +100,28 @@ const cleanupShortcuts = (shortcuts: UrlShortcuts): UrlShortcuts =>
 type CategorizedRoutes = Record<'overlays' | 'pages', CategoryRoutes>;
 type CategoryRoutes = Record<string, LocalizedString | undefined>;
 
-const getCategorizedRoutes = f.store(
-  (): CategorizedRoutes => ({
+const getCategorizedRoutes = f.store(async (): Promise<CategorizedRoutes> => {
+  const [entrypointRoutes, routes, overlayRoutes] = await Promise.all([
+    /*
+     * Routes import a lot of files. To avoid cycle imports, we import
+     * them dynamically.
+     */
+    import('../Router/EntrypointRouter').then(
+      ({ entrypointRoutes }) => entrypointRoutes
+    ),
+    import('../Router/Routes').then(({ routes }) => routes),
+    import('../Router/OverlayRoutes').then(
+      ({ overlayRoutes }) => overlayRoutes
+    ),
+  ]);
+  return {
     pages: Object.fromEntries([
       ...scoutTree(entrypointRoutes, ''),
       ...scoutTree(routes, '/specify'),
     ]),
     overlays: Object.fromEntries(scoutTree(overlayRoutes, '/specify')),
-  })
-);
+  };
+});
 
 const scoutTree = (
   routes: RA<EnhancedRoute>,

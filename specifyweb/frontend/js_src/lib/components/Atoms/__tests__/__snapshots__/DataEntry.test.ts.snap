@@ -142,10 +142,10 @@ exports[`DataEntry.visit no resource 2`] = `
     href="RESOURCE_VIEW_URL"
     rel="noopener"
     target="_blank"
-    title="Open in New Tab"
+    title="Open in New Tab (o)"
   >
     <span
-      title="(opens in a new tab)"
+      title="Open in New Tab (o)"
     >
       <span
         class="sr-only"
