@@ -8,6 +8,7 @@ import { Submit } from '../Atoms/Submit';
 import type { Tables } from '../DataModel/types';
 import { isTreeTable } from '../InitialContext/treeRanks';
 import { hasPermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function QueryToolbar({
   showHiddenFields,
@@ -18,7 +19,8 @@ export function QueryToolbar({
   onToggleHidden: handleToggleHidden,
   onToggleDistinct: handleToggleDistinct,
   onToggleSeries: handleToggleSeries,
-  onRunCountOnly: handleRunCountOnly,
+  onScheduleCountOnlyRun: handleScheduleCountOnlyRun,
+  onScheduleRun: handleScheduleRun,
   onSubmitClick: handleSubmitClick,
 }: {
   readonly showHiddenFields: boolean;
@@ -29,9 +31,36 @@ export function QueryToolbar({
   readonly onToggleHidden: (value: boolean) => void;
   readonly onToggleDistinct: () => void;
   readonly onToggleSeries: () => void;
-  readonly onRunCountOnly: () => void;
+  readonly onScheduleCountOnlyRun: () => void;
+  readonly onScheduleRun: () => void;
   readonly onSubmitClick: () => void;
 }): JSX.Element {
+  const canRun = hasPermission('/querybuilder/query', 'execute');
+  /*
+   * Query Distinct for trees is disabled because of
+   * https://github.com/specify/specify7/pull/1019#issuecomment-973525594
+   */
+  const canRunDistinct = canRun && !isTreeTable(tableName);
+
+  const runDistinctKeyboardShortcut = userPreferences.useKeyboardShortcut(
+    'queryBuilder',
+    'actions',
+    'distinct',
+    canRunDistinct ? handleToggleDistinct : undefined
+  );
+  const runCountOnlyKeyboardShortcut = userPreferences.useKeyboardShortcut(
+    'queryBuilder',
+    'actions',
+    'count',
+    canRun ? handleScheduleCountOnlyRun : undefined
+  );
+  const runQueryKeyboardShortcut = userPreferences.useKeyboardShortcut(
+    'queryBuilder',
+    'actions',
+    'query',
+    canRun ? handleScheduleRun : undefined
+  );
+
   return (
     <div className="flex flex-wrap gap-2" role="toolbar">
       <Label.Inline>
@@ -42,7 +71,7 @@ export function QueryToolbar({
         {wbPlanText.revealHiddenFormFields()}
       </Label.Inline>
       <span className="-ml-2 flex-1" />
-      {hasPermission('/querybuilder/query', 'execute') && (
+      {canRun && (
         <>
           {showSeries && (
             <Label.Inline>
@@ -58,8 +87,8 @@ export function QueryToolbar({
            * Query Distinct for trees is disabled because of
            * https://github.com/specify/specify7/pull/1019#issuecomment-973525594
            */}
-          {!isTreeTable(tableName) && (
-            <Label.Inline>
+          {canRunDistinct && (
+            <Label.Inline title={runDistinctKeyboardShortcut}>
               <Input.Checkbox
                 checked={isDistinct}
                 isReadOnly={isSeries}
@@ -68,10 +97,16 @@ export function QueryToolbar({
               {queryText.distinct()}
             </Label.Inline>
           )}
-          <Button.Small onClick={handleRunCountOnly}>
+          <Button.Small
+            title={runCountOnlyKeyboardShortcut}
+            onClick={handleScheduleCountOnlyRun}
+          >
             {queryText.countOnly()}
           </Button.Small>
-          <Submit.Small onClick={handleSubmitClick}>
+          <Submit.Small
+            title={runQueryKeyboardShortcut}
+            onClick={handleSubmitClick}
+          >
             {queryText.query()}
           </Submit.Small>
         </>

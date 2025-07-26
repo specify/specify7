@@ -460,6 +460,7 @@ export function QueryComboBox({
               {canAdd && hasNewButton ? (
                 <DataEntry.Add
                   aria-pressed={state.type === 'AddResourceState'}
+                  enableShortcut={false}
                   onClick={(): void =>
                     state.type === 'AddResourceState'
                       ? setState({ type: 'MainState' })

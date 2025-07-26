@@ -8,6 +8,7 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
+import { userPreferences } from '../Preferences/userPreferences';
 import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
 
@@ -34,12 +35,17 @@ export function QueryToForms({
       ? (results[index]![queryIdField] as number)
       : Array.from(selectedRows)[index];
 
+  const handleStart = (totalCount ?? 0) > 0 ? handleOpen : undefined;
+  const keyboardShortcut = userPreferences.useKeyboardShortcut(
+    'queryBuilder',
+    'actions',
+    'browseInForms',
+    handleStart
+  );
+
   return (
     <>
-      <Button.Small
-        disabled={totalCount === undefined || totalCount === 0}
-        onClick={handleOpen}
-      >
+      <Button.Small title={keyboardShortcut} onClick={handleStart}>
         {queryText.browseInForms()}
       </Button.Small>
       {isOpen && typeof totalCount === 'number' ? (
