@@ -642,7 +642,7 @@ export const userPreferenceDefinitions = {
         },
       },
       actions: {
-        title: preferencesText.actions(),
+        title: commonText.actions(),
         items: {
           urlShortcuts: definePref<UrlShortcuts>({
             title: preferencesText.urlShortcuts(),
@@ -853,7 +853,7 @@ export const userPreferenceDefinitions = {
         },
       },
       actions: {
-        title: preferencesText.actions(),
+        title: commonText.actions(),
         items: {
           openFormMeta: defineKeyboardShortcut(
             preferencesText.openFormMeta(),
@@ -1512,7 +1512,7 @@ export const userPreferenceDefinitions = {
         },
       },
       actions: {
-        title: preferencesText.actions(),
+        title: commonText.actions(),
         items: {
           search: defineKeyboardShortcut(commonText.search(), 'KeyS'),
           query: defineKeyboardShortcut(queryText.query(), 'KeyQ'),
@@ -1788,7 +1788,7 @@ export const userPreferenceDefinitions = {
         },
       },
       actions: {
-        title: preferencesText.actions(),
+        title: commonText.actions(),
         items: {
           query: defineKeyboardShortcut(queryText.query(), 'KeyR'),
           count: defineKeyboardShortcut(queryText.countOnly(), 'KeyC'),
