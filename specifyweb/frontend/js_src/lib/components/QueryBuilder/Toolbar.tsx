@@ -21,7 +21,6 @@ export function QueryToolbar({
   onToggleSeries: handleToggleSeries,
   onScheduleCountOnlyRun: handleScheduleCountOnlyRun,
   onScheduleRun: handleScheduleRun,
-  onCountOnlyRun: handleCountOnlyRun,
   onSubmitClick: handleSubmitClick,
 }: {
   readonly showHiddenFields: boolean;
@@ -34,7 +33,6 @@ export function QueryToolbar({
   readonly onToggleSeries: () => void;
   readonly onScheduleCountOnlyRun: () => void;
   readonly onScheduleRun: () => void;
-  readonly onCountOnlyRun: () => void;
   readonly onSubmitClick: () => void;
 }): JSX.Element {
   const canRun = hasPermission('/querybuilder/query', 'execute');
@@ -101,7 +99,7 @@ export function QueryToolbar({
           )}
           <Button.Small
             title={runCountOnlyKeyboardShortcut}
-            onClick={handleCountOnlyRun}
+            onClick={handleScheduleCountOnlyRun}
           >
             {queryText.countOnly()}
           </Button.Small>

@@ -582,7 +582,6 @@ function Wrapped({
                 showHiddenFields={showHiddenFields}
                 showSeries={showSeries}
                 tableName={table.name}
-                onCountOnlyRun={(): void => runQuery('count')}
                 onScheduleCountOnlyRun={(): void => scheduleRun('count')}
                 onScheduleRun={(): void => scheduleRun('regular')}
                 onSubmitClick={(): void =>
