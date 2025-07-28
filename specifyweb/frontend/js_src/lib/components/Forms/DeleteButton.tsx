@@ -27,7 +27,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { createQuery } from '../QueryBuilder';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { queryFieldFilterSpecs } from '../QueryBuilder/FieldFilterSpec';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { runQuery } from '../QueryBuilder/ResultsWrapper';
 import type { DeleteBlocker } from './DeleteBlocked';
@@ -208,7 +208,7 @@ function resolveParentViaOtherside(
     ])
       .toSpQueryField()
       .set('isDisplay', false)
-      .set('operStart', queryFieldFilters.equal.id)
+      .set('operStart', queryFieldFilterSpecs.equal.id)
       .set('startValue', id.toString()),
   ]);
 }
@@ -265,7 +265,7 @@ export async function fetchBlockers(
                         ])
                           .toSpQueryField()
                           .set('isDisplay', false)
-                          .set('operStart', queryFieldFilters.in.id)
+                          .set('operStart', queryFieldFilterSpecs.in.id)
                           .set('startValue', ids.join(',')),
                         /*
                          * TODO: ParentRelationship.table.name should always be directRelationship.model.name.
