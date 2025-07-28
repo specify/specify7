@@ -8,7 +8,7 @@ import { icons } from '../Atoms/Icons';
 import { IsQueryBasicContext } from './Context';
 import type { QueryField } from './helpers';
 import { sortTypes } from './helpers';
-import { QueryLineFieldMeta } from './Line';
+import type { QueryLineFieldMeta } from './Line';
 
 export function QueryLineTools({
   fieldMeta,

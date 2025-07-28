@@ -15,9 +15,9 @@ import { filtersWithDefaultValue } from './FieldFilterSpec';
 import { FieldFilterTool } from './FieldFilterTool';
 import { CatalogNumberFormatSelection } from './Formatter';
 import type { QueryField } from './helpers';
-import { QueryLineFieldMeta } from './Line';
+import type { QueryLineFieldMeta } from './Line';
 import { QueryLineFilter } from './QueryLineFilter';
-import {
+import type {
   ExpandedFieldFilter,
   useQueryFieldFilterSpecs,
 } from './useQueryFieldFilterSpecs';
@@ -73,12 +73,12 @@ export function QueryLineFilters({
           availableFilters={availableFilters}
           baseTableName={baseTableName}
           enforceLengthLimit={enforceLengthLimit}
+          fieldFilters={fieldFilters}
+          fieldMeta={fieldMeta}
           hasAny={hasAny}
           index={index}
           isBasic={isBasic}
           isFieldComplete={isFieldComplete}
-          fieldFilters={fieldFilters}
-          fieldMeta={fieldMeta}
           key={index}
           mappingPath={mappingPath}
           queryFieldFilterSpecs={queryFieldFilterSpecs}
