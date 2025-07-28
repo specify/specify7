@@ -200,7 +200,7 @@ def export_kml(request):
 @require_POST
 @login_maybe_required
 @never_cache
-def make_recordset(request):
+def make_recordset(request): # pragma: no cover
     """Executes the query provided as JSON in the POST body and creates a
     recordset of the result. Redirects to the URL of the created recordset.
     """
@@ -220,6 +220,7 @@ def make_recordset(request):
 @login_maybe_required
 @require_POST
 def merge_recordsets(request: HttpRequest) -> JsonResponse:
+    # Why does this require execute permission?
     check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.execute])
     check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.create_recordset])
     check_table_permissions(request.specify_collection, request.specify_user, Recordset, "create")
@@ -236,6 +237,7 @@ def merge_recordsets(request: HttpRequest) -> JsonResponse:
         recordsets = Recordset.objects.filter(id__in=recordset_ids)
 
         if not recordsets.exists():
+            # This should be HTTP error (rather than being a JSON response)
             return JsonResponse({'error': 'No valid recordsets found'}, status=404)
         
         first_recordset_name = recordsets.first().name
@@ -247,7 +249,7 @@ def merge_recordsets(request: HttpRequest) -> JsonResponse:
 
         model_name = model_names_by_table_id[tableid] if tableid in model_names_by_table_id else None
         current_date = timezone.now().strftime('%Y-%m-%d')
-        if not model_name:
+        if not model_name: # this check is unnecessary.
             return JsonResponse({'error': 'Model not found for tableid'}, status=400)
 
         # Get all the recordsetitems for the given recordsets
@@ -280,6 +282,7 @@ def merge_recordsets(request: HttpRequest) -> JsonResponse:
             recordsetitems.delete()
             recordsets.delete()
 
+        # FEAT: Make it return the new recordset id.
         return JsonResponse({'message': 'Recordset merge successful'}, status=200)
 
     except json.JSONDecodeError:

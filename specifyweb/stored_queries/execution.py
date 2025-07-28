@@ -655,7 +655,7 @@ def recordset(collection, user, user_agent, recordset_info): # pragma: no cover
         recordset.SpecifyUserID = user.id
         session.add(recordset)
         session.flush()
-        new_rs_id = recordset.recordSetId
+        new_rs_id = recordset.recordSetId if recordset.recordSetId else recordset._id
 
         model = models.models_by_tableid[tableid]
 
@@ -1187,7 +1187,7 @@ def apply_special_post_query_processing(query, tableid, field_specs, collection,
     return query
 
 def parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True): # pragma: no cover
-    if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs]: 
+    if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs if fs.fieldspec.join_path]:
         if not get_parent_cat_num_inheritance_setting(collection, user):
             return list(query)
 
