@@ -129,7 +129,7 @@ def reverse_hide_component_fields(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0036_remove_spquery_selectseries'),
+        ('specify', '0037_make_smushed_default_false'),
     ]
 
     def consolidated_python_django_migration_operations(apps, schema_editor):
