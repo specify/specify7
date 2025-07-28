@@ -221,7 +221,6 @@
 				<altview name="COS Table View" viewdef="CollectionObjectSub Table" mode="view"/>
 			</altviews>
 		</view>
-<<<<<<< HEAD
 		<view name="Component" class="edu.ku.brc.specify.datamodel.Component" usedefbusrule="false" resourcelabels="false" busrules="edu.ku.brc.specify.datamodel.busrules.ComponentBusRules">
 			<desc>The Collection Object Subfrom for Components.</desc>
 			<altviews>
@@ -231,8 +230,6 @@
 				<altview name="COS Table Edit" viewdef="Component Grid" mode="edit"/>
 			</altviews>
 		</view>
-=======
->>>>>>> origin/main
 		<view name="CommonNameTx" class="edu.ku.brc.specify.datamodel.CommonNameTx">
 			<desc>The Common Name form.</desc>
 			<altviews>
