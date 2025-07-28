@@ -74,20 +74,20 @@ msgstr "Taper"
 msgid "userTypes"
 msgstr "Types d'utilisateurs"
 
-#: components/AppResources/Aside.tsx:321
+#: components/AppResources/Aside.tsx:320
 #: components/AppResources/index.tsx:54
 #. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
 #, fuzzy
 msgid "resources"
 msgstr "Ressources"
 
-#: components/AppResources/Aside.tsx:264
+#: components/AppResources/Aside.tsx:263
 #. Used in: Components > App Resources > Aside
 #, fuzzy
 msgid "subCategories"
 msgstr "Sous-catégories"
 
-#: components/AppResources/Aside.tsx:331
+#: components/AppResources/Aside.tsx:330
 #: components/Router/Routes.tsx:251
 #. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 #, fuzzy

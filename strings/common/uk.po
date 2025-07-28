@@ -751,7 +751,7 @@ msgstr "Країна"
 msgid "viewRecord"
 msgstr "Переглянути запис"
 
-#: components/AppResources/Aside.tsx:400
+#: components/AppResources/Aside.tsx:399
 #: components/FormCells/index.tsx:315
 #: components/FormCommands/index.tsx:110
 #: components/FormPlugins/index.tsx:190
@@ -875,7 +875,7 @@ msgstr "Вибране"
 msgid "expand"
 msgstr "Розгорнути"
 
-#: components/AppResources/Aside.tsx:186
+#: components/AppResources/Aside.tsx:185
 #. Used in: Components > App Resources > Aside
 msgid "expandAll"
 msgstr "Розгорнути все"
@@ -888,7 +888,7 @@ msgstr "Розгорнути все"
 msgid "collapse"
 msgstr "Згорнути"
 
-#: components/AppResources/Aside.tsx:189
+#: components/AppResources/Aside.tsx:188
 #: components/TreeView/index.tsx:306
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 msgid "collapseAll"
@@ -947,7 +947,7 @@ msgstr "Немає доступних"
 msgid "countLine"
 msgstr "{resource:string}({count:number|formatted})"
 
-#: components/AppResources/Aside.tsx:250
+#: components/AppResources/Aside.tsx:249
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Aside
 msgid "jsxCountLine"
 msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>'"

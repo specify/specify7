@@ -799,7 +799,7 @@ msgstr "País"
 msgid "viewRecord"
 msgstr "Ver registro"
 
-#: components/AppResources/Aside.tsx:400
+#: components/AppResources/Aside.tsx:399
 #: components/FormCells/index.tsx:315
 #: components/FormCommands/index.tsx:110
 #: components/FormPlugins/index.tsx:190
@@ -940,7 +940,7 @@ msgstr "Selecionado"
 msgid "expand"
 msgstr "Expandir"
 
-#: components/AppResources/Aside.tsx:186
+#: components/AppResources/Aside.tsx:185
 #. Used in: Components > App Resources > Aside
 #, fuzzy
 msgid "expandAll"
@@ -955,7 +955,7 @@ msgstr "Expandir tudo"
 msgid "collapse"
 msgstr "Colapso"
 
-#: components/AppResources/Aside.tsx:189
+#: components/AppResources/Aside.tsx:188
 #: components/TreeView/index.tsx:306
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 #, fuzzy
@@ -1020,7 +1020,7 @@ msgstr "Nenhum disponível"
 msgid "countLine"
 msgstr "{resource:string} ({count:number|formatted})"
 
-#: components/AppResources/Aside.tsx:250
+#: components/AppResources/Aside.tsx:249
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Aside
 #, fuzzy
 msgid "jsxCountLine"
