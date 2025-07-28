@@ -53,6 +53,9 @@ class ObjectFormatter:
         self.format_picklist = format_picklist
 
     def getFormatterDef(self, specify_model: Table, formatter_name) -> Element | None:
+
+        # These functions don't belong here.
+        # REFACTOR: define them outside. This code design is very bad for test writing (and code quality)
         def lookup(attr: str, val: str) -> Element | None:
             return self.formattersDom.find(
                 f'format[@{attr}={quoteattr(val)}]')

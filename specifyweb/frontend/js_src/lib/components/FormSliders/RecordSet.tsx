@@ -338,7 +338,12 @@ function RecordSet<SCHEMA extends AnySchema>({
       ids.map(async (recordId) =>
         recordId === undefined
           ? undefined
-          : createResource('RecordSetItem', {
+          : // REFACTOR: OPTIMIZE: The backend supports passing recordSetItems
+            /*
+             * Inline like a dependent relationship. Don't need to create each
+             * item individually
+             */
+            createResource('RecordSetItem', {
               recordId,
               recordSet: recordSet.get('resource_uri'),
             })
