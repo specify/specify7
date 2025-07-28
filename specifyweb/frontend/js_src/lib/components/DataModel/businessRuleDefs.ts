@@ -6,6 +6,7 @@ import {
   COG_PRIMARY_KEY,
   COG_TOITSELF,
   COJO_PRIMARY_DELETE_KEY,
+  COMPONENT_NAME_TAXON_KEY,
   CURRENT_DETERMINATION_KEY,
   DETERMINATION_TAXON_KEY,
   ensureSingleCollectionObjectCheck,
@@ -40,6 +41,7 @@ import type {
   CollectionObject,
   CollectionObjectGroup,
   CollectionObjectGroupJoin,
+  Component,
   Determination,
   DNASequence,
   LoanPreparation,
@@ -328,6 +330,59 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       }
     },
     onAdded: onAddedEnsureBoolInCollection('isPrimary'),
+  },
+
+  Component: {
+    customInit: (component: SpecifyResource<Component>): void => {
+      if (
+        typeof schema.defaultCollectionObjectType === 'string' &&
+        typeof component.get('type') !== 'string'
+      )
+        component.set('type', schema.defaultCollectionObjectType);
+    },
+    fieldChecks: {
+      type: async (resource): Promise<undefined> => {
+        const name = await resource.rgetPromise('name');
+        if (name === null) return;
+
+        const coType = await resource.rgetPromise('type');
+        const coTypeTreeDef = coType.get('taxonTreeDef');
+
+        const taxonTreeDef = name?.get('definition');
+
+        const isValid =
+          typeof taxonTreeDef === 'string' && taxonTreeDef === coTypeTreeDef;
+
+        setSaveBlockers(
+          resource,
+          resource.specifyTable.field.name,
+          isValid
+            ? []
+            : [
+                resourcesText.invalidNameTaxon({
+                  taxonName: resource.specifyTable.field.name.label,
+                  taxonTableLabel: tables.Taxon.label,
+                  typeName: resource.specifyTable.label,
+                }),
+              ],
+          COMPONENT_NAME_TAXON_KEY
+        );
+
+        return undefined;
+      },
+      name: async (resource): Promise<undefined> => {
+        const name = await resource.rgetPromise('name');
+        if (name === null) {
+          setSaveBlockers(
+            resource,
+            resource.specifyTable.field.name,
+            [],
+            COMPONENT_NAME_TAXON_KEY
+          );
+        }
+        return undefined;
+      },
+    },
   },
 
   Determination: {
