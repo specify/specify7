@@ -1,5 +1,4 @@
 import React from "react"
-import { testAppResources } from "./testAppResources";
 import * as Router from 'react-router-dom';
 
 import { requireContext } from "../../../tests/helpers";
@@ -7,6 +6,7 @@ import { mount } from "../../../tests/reactUtils";
 import type { RA } from "../../../utils/types";
 import type { AppResourcesConformation } from "../Aside";
 import { AppResourcesAside } from "../Aside"
+import { testAppResources } from "./testAppResources";
 
 
 requireContext();
@@ -19,11 +19,11 @@ describe("AppResourcesAside (simple no conformation case)", () => {
         const setConformations = jest.fn();
 
         const { asFragment, unmount } = mount(<AppResourcesAside
-            resources={testAppResources}
-            isEmbedded
-            onOpen={onOpen}
-            filters={undefined}
             conformations={[[], setConformations]}
+            filters={undefined}
+            isEmbedded
+            resources={testAppResources}
+            onOpen={onOpen}
         />);
 
         expect(asFragment()).toMatchSnapshot();
@@ -49,11 +49,11 @@ describe("AppResourcesAside (expanded case)", () => {
         }
 
         const { getAllByRole, user, unmount, asFragment: asFragmentInitial } = mount(<AppResourcesAside
-            resources={testAppResources}
-            isEmbedded
-            onOpen={onOpen}
-            filters={undefined}
             conformations={[_conformations, setConformations]}
+            filters={undefined}
+            isEmbedded
+            resources={testAppResources}
+            onOpen={onOpen}
         />);
 
         const initialFragment = asFragmentInitial().textContent;
@@ -65,11 +65,11 @@ describe("AppResourcesAside (expanded case)", () => {
         unmount();
 
         const { asFragment, unmount: unmountSecond, getAllByRole: getIntermediate } = mount(<AppResourcesAside
-            resources={testAppResources}
-            isEmbedded
-            onOpen={onOpen}
-            filters={undefined}
             conformations={[_conformations, setConformations]}
+            filters={undefined}
+            isEmbedded
+            resources={testAppResources}
+            onOpen={onOpen}
         />);
 
         expect(asFragment()).toMatchSnapshot();
@@ -82,11 +82,11 @@ describe("AppResourcesAside (expanded case)", () => {
         unmountSecond();
 
         const { asFragment: asFragmentLater, unmount: unmountThird, getAllByRole: getFinal } = mount(<AppResourcesAside
-            resources={testAppResources}
-            isEmbedded
-            onOpen={onOpen}
-            filters={undefined}
             conformations={[_conformations, setConformations]}
+            filters={undefined}
+            isEmbedded
+            resources={testAppResources}
+            onOpen={onOpen}
         />);
 
         const laterFragment = asFragmentLater().textContent;
@@ -103,11 +103,11 @@ describe("AppResourcesAside (expanded case)", () => {
         const { asFragment: asFragmentAllExpanded, unmount: unmountExpandedll } = mount(
             <Router.MemoryRouter initialEntries={['/specify/resources/']}>
                 <AppResourcesAside
-                    resources={testAppResources}
-                    isEmbedded
-                    onOpen={onOpen}
-                    filters={undefined}
                     conformations={[_conformations, setConformations]}
+                    filters={undefined}
+                    isEmbedded
+                    resources={testAppResources}
+                    onOpen={onOpen}
                 />
             </Router.MemoryRouter>
 
