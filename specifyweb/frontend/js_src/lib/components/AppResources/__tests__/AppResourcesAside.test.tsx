@@ -4,6 +4,8 @@ import { AppResources } from "../hooks";
 import { requireContext } from "../../../tests/helpers";
 import { mount } from "../../../tests/reactUtils";
 import { RA } from "../../../utils/types";
+import * as Router from 'react-router-dom';
+
 
 requireContext();
 
@@ -375,12 +377,12 @@ describe("AppResourcesAside (expanded case)", () => {
         const initialFragment = asFragmentInitial().textContent;
 
         const buttons = getAllByRole("button");
-        // console.log('buttons', (button[1]));
+
         await user.click(buttons[1]);
 
         unmount();
 
-        const { asFragment, unmount: unmountSecond, getAllByRole: getLater } = mount(<AppResourcesAside
+        const { asFragment, unmount: unmountSecond, getAllByRole: getIntermediate } = mount(<AppResourcesAside
             resources={appResources}
             isEmbedded
             onOpen={onOpen}
@@ -392,12 +394,12 @@ describe("AppResourcesAside (expanded case)", () => {
 
         const intermediateFragment = asFragment().textContent;
 
-        const closeAllButton = getLater("button").at(-1);
+        const closeAllButton = getIntermediate("button").at(-1);
         await user.click(closeAllButton!);
 
         unmountSecond();
 
-        const { asFragment: asFragmentLater, unmount: unmountThird } = mount(<AppResourcesAside
+        const { asFragment: asFragmentLater, unmount: unmountThird, getAllByRole: getFinal } = mount(<AppResourcesAside
             resources={appResources}
             isEmbedded
             onOpen={onOpen}
@@ -407,11 +409,34 @@ describe("AppResourcesAside (expanded case)", () => {
 
         const laterFragment = asFragmentLater().textContent;
 
-        unmountThird();
-
         expect(initialFragment).toBe("Global Resources (2)Discipline Resources (4)Expand AllCollapse All");
         expect(intermediateFragment).toBe("Global Resources (2)Discipline Resources (4)Botany (4)Expand AllCollapse All");
         expect(laterFragment).toBe("Global Resources (2)Discipline Resources (4)Expand AllCollapse All");
+
+        const expandAllButton = getFinal("button")[2];
+        await user.click(expandAllButton!);
+
+        unmountThird();
+
+        const { asFragment: asFragmentAllExpanded, unmount: unmountExpandedll } = mount(
+            <Router.MemoryRouter initialEntries={['/specify/resources/']}>
+                <AppResourcesAside
+                    resources={appResources}
+                    isEmbedded
+                    onOpen={onOpen}
+                    filters={undefined}
+                    conformations={[_conformations, setConformations]}
+                />
+            </Router.MemoryRouter>
+
+        );
+
+        const expandedAllFragment = asFragmentAllExpanded().textContent;
+
+        expect(expandedAllFragment).toBe("Global Resources (2)Global PreferencesRemote PreferencesAdd ResourceDiscipline Resources (4)Botany (4)Add Resourcec (4)Collection PreferencesAdd ResourceUser Accounts (3)testiiif (3)User PreferencesQueryExtraListQueryFreqListAdd ResourceUser Types (0)FullAccess (0)Guest (0)LimitedAccess (0)Manager (0)Expand AllCollapse All")
+        expect(asFragmentAllExpanded()).toMatchSnapshot();
+        unmountExpandedll();
+
     });
 
 });
