@@ -104,7 +104,7 @@ export function CreateAppResource(): JSX.Element {
               { icon, mimeType, name = '', documentationUrl, label, ...rest },
             ]) =>
               'scope' in rest &&
-              !f.includes(rest.scope, directory.scope) ? undefined : (
+                !f.includes(rest.scope, directory.scope) ? undefined : (
                 <tr key={key}>
                   <td>
                     {name === '' ? (
@@ -210,6 +210,8 @@ function ViewSetTemplates({
           errorMode: 'silent',
         })
           .then(({ data }) => {
+            // REFACTOR: Make this part of a effect.
+            // The current logic makes it harder to write tests for.
             if (data.length === 0) handleSelect(false);
             return data;
           })
@@ -281,8 +283,8 @@ function EditAppResource({
       title={
         type.tableName === 'SpViewSetObj'
           ? formsText.newResourceTitle({
-              tableName: resourcesText.formDefinition(),
-            })
+            tableName: resourcesText.formDefinition(),
+          })
           : undefined
       }
       viewName={

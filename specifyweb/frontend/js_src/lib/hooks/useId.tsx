@@ -46,3 +46,10 @@ export function useId(prefix: string): (suffix: string) => string {
     [resolvedPrefix]
   );
 }
+
+export const clearIdStore = () => {
+  const keys = Object.keys(idStore);
+  keys.forEach((key) => {
+    delete idStore[key];
+  });
+}
