@@ -1,7 +1,6 @@
 import { resourcesText } from '../../localization/resources';
 import { resolveParser } from '../../utils/parser/definitions';
 import type { ValueOf } from '../../utils/types';
-import { collectionPreferences } from '../Preferences/collectionPreferences';
 import type { BusinessRuleResult } from './businessRules';
 import {
   CATALOG_NUMBER_EXISTS,
@@ -202,12 +201,15 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         return undefined;
       },
       catalogNumber: async (resource): Promise<undefined> => {
-        const [uniqueCatalogNumberAccrossComponentAndCOPref] =
-          collectionPreferences.use(
-            'uniqueCatalogNumberAccrossComponentAndCO',
-            'behavior',
-            'inheritance'
-          );
+        const preferences = await import(
+          '../Preferences/collectionPreferences'
+        ).then(({ collectionPreferences }) => collectionPreferences);
+
+        const uniqueCatalogNumberAccrossComponentAndCOPref = preferences.get(
+          'uniqueCatalogNumberAccrossComponentAndCO',
+          'behavior',
+          'inheritance'
+        );
 
         if (!uniqueCatalogNumberAccrossComponentAndCOPref) {
           setSaveBlockers(
@@ -216,6 +218,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             [],
             CATALOG_NUMBER_EXISTS
           );
+          return;
         }
 
         const catalogNumberValue = resource.get('catalogNumber');
@@ -425,12 +428,15 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         return undefined;
       },
       catalogNumber: async (resource): Promise<undefined> => {
-        const [uniqueCatalogNumberAccrossComponentAndCOPref] =
-          collectionPreferences.use(
-            'uniqueCatalogNumberAccrossComponentAndCO',
-            'behavior',
-            'inheritance'
-          );
+        const preferences = await import(
+          '../Preferences/collectionPreferences'
+        ).then(({ collectionPreferences }) => collectionPreferences);
+
+        const uniqueCatalogNumberAccrossComponentAndCOPref = preferences.get(
+          'uniqueCatalogNumberAccrossComponentAndCO',
+          'behavior',
+          'inheritance'
+        );
 
         if (!uniqueCatalogNumberAccrossComponentAndCOPref) {
           setSaveBlockers(
@@ -439,6 +445,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             [],
             CATALOG_NUMBER_EXISTS
           );
+          return;
         }
 
         const catalogNumberValue = resource.get('catalogNumber');
