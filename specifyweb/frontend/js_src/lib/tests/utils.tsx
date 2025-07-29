@@ -127,7 +127,7 @@ export function TestComponentWrapperRouter(
   return (
     <Router.MemoryRouter initialEntries={initialEntries}>
       <Router.Routes>
-        <Router.Route path='/' element={<Router.Outlet {...context} />}>
+        <Router.Route path='/' element={<Router.Outlet context={context} />}>
           <Router.Route
             index
             element={children}
