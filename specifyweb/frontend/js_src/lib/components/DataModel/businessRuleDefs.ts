@@ -201,6 +201,29 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
 
         return undefined;
       },
+      catalogNumber: async (resource): Promise<undefined> => {
+        const catalogNumberValue = resource.get('catalogNumber');
+
+        const containsComponentDuplicates = await fetchCollection('Component', {
+          catalogNumber: catalogNumberValue,
+          domainFilter: true,
+        }).then(({ totalCount }) => totalCount !== 0);
+
+        setSaveBlockers(
+          resource,
+          resource.specifyTable.field.catalogNumber,
+          containsComponentDuplicates
+            ? [
+                resourcesText.catalogNumberAlreadyUsed({
+                  catalogNumberFieldName:
+                    resource.specifyTable.field.catalogNumber.label,
+                  catalogNumber: catalogNumberValue!,
+                }),
+              ]
+            : [],
+          CATALOG_NUMBER_EXISTS
+        );
+      },
     },
   },
 
