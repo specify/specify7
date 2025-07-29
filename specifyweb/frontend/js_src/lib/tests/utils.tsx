@@ -1,8 +1,8 @@
-import React from 'react';
 import { describe, expect, test } from '@jest/globals';
+import React from 'react';
+import * as Router from 'react-router-dom';
 
 import type { IR, RA, WritableArray } from '../utils/types';
-import * as Router from 'react-router-dom';
 
 /**
  * Named after https://github.com/RobPethick/jest-theories
@@ -127,10 +127,10 @@ export function TestComponentWrapperRouter(
   return (
     <Router.MemoryRouter initialEntries={initialEntries}>
       <Router.Routes>
-        <Router.Route path='/' element={<Router.Outlet context={context} />}>
+        <Router.Route element={<Router.Outlet context={context} />} path='/'>
           <Router.Route
-            index
             element={children}
+            index
             path={path}
           />
         </Router.Route>
