@@ -1,15 +1,14 @@
 import { render, renderHook } from '@testing-library/react';
 import React from 'react';
-import * as Router from 'react-router-dom';
 
 import { requireContext } from '../../../tests/helpers';
-import type { RA, WritableArray } from '../../../utils/types';
-import { removeKey } from '../../../utils/utils';
+import type { RA } from '../../../utils/types';
 import type { SerializedResource } from '../../DataModel/helperTypes';
 import type { SpAppResource } from '../../DataModel/types';
 import type { AppResourcesConformation } from '../Aside';
 import { exportsForTests } from '../Aside';
 import { utilsForTests } from './utils';
+import { TestComponentWrapperRouter } from '../../../tests/utils';
 
 requireContext();
 
@@ -24,22 +23,6 @@ function TestComponent(props: {
   return <></>;
 }
 
-function TestComponentWrapper(
-  props: {
-    readonly initialEntries: WritableArray<string>;
-  } & { readonly args: Parameters<typeof useOpenCurrent> }
-): JSX.Element {
-  return (
-    <Router.MemoryRouter initialEntries={props.initialEntries}>
-      <Router.Routes>
-        <Router.Route
-          element={<TestComponent {...removeKey(props, 'initialEntries')} />}
-          path=":id"
-        />
-      </Router.Routes>
-    </Router.MemoryRouter>
-  );
-}
 
 describe('useOpenCurrent', () => {
   const makeAppResources = (id: number) =>
@@ -63,10 +46,12 @@ describe('useOpenCurrent', () => {
 
     const testConformation: RA<AppResourcesConformation> = [];
     render(
-      <TestComponentWrapper
-        args={[testConformation, setConformation, simpleTree()]}
+      <TestComponentWrapperRouter
         initialEntries={[`/10`]}
-      />
+        path=":id"
+      >
+        <TestComponent args={[testConformation, setConformation, simpleTree()]} />
+      </TestComponentWrapperRouter>
     );
 
     expect(setConformation).toHaveBeenCalledTimes(1);
@@ -102,10 +87,12 @@ describe('useOpenCurrent', () => {
     ];
 
     render(
-      <TestComponentWrapper
-        args={[testConformation, setConformation, tree]}
+      <TestComponentWrapperRouter
         initialEntries={[`/10`]}
-      />
+        path=":id"
+      >
+        <TestComponent args={[testConformation, setConformation, tree]} />
+      </TestComponentWrapperRouter>
     );
 
     expect(setConformation).toHaveBeenCalledTimes(1);
@@ -164,10 +151,12 @@ describe('useOpenCurrent', () => {
     ];
 
     render(
-      <TestComponentWrapper
-        args={[testConformation, setConformation, tree]}
+      <TestComponentWrapperRouter
         initialEntries={[`/10`]}
-      />
+        path=":id"
+      >
+        <TestComponent args={[testConformation, setConformation, tree]} />
+      </TestComponentWrapperRouter>
     );
 
     expect(setConformation).toHaveBeenCalledTimes(1);
