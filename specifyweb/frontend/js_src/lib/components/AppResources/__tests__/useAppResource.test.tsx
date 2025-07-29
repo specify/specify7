@@ -38,6 +38,7 @@ function TestComponent({
   return <></>;
 }
 
+// REFACTOR: make this part of utils
 function TestComponentWrapper(
   props: Parameters<typeof TestComponent>[0] & {
     readonly initialEntries: WritableArray<string>;
