@@ -3,6 +3,7 @@ import { resolveParser } from '../../utils/parser/definitions';
 import type { ValueOf } from '../../utils/types';
 import type { BusinessRuleResult } from './businessRules';
 import {
+  CATALOG_NUMBER_EXISTS,
   COG_PRIMARY_KEY,
   COG_TOITSELF,
   COJO_PRIMARY_DELETE_KEY,
@@ -20,7 +21,8 @@ import {
   PREPARATION_LOANED_KEY,
   PREPARATION_NEGATIVE_KEY,
 } from './businessRuleUtils';
-import { cogTypes } from './helpers';
+import { fetchCollection } from './collection';
+import { backendFilter, cogTypes, formatRelationshipPath } from './helpers';
 import type { AnySchema, CommonFields, TableFields } from './helperTypes';
 import {
   checkPrepAvailability,
@@ -33,6 +35,7 @@ import {
 import type { SpecifyResource } from './legacyTypes';
 import { setSaveBlockers } from './saveBlockers';
 import { schema } from './schema';
+import { getDomainResource } from './scoping';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Collection } from './specifyTable';
 import { tables } from './tables';
@@ -381,6 +384,36 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           );
         }
         return undefined;
+      },
+      catalogNumber: async (resource): Promise<undefined> => {
+        const catalogNumberValue = resource.get('catalogNumber');
+
+        const containsCoDuplicates = await fetchCollection('CollectionObject', {
+          domainFilter: true,
+          catalogNumber: catalogNumberValue,
+        }).then(({ totalCount }) => totalCount !== 0);
+
+        const containsComponentDuplicates = await fetchCollection('Component', {
+          catalogNumber: catalogNumberValue,
+          domainFilter: true,
+        }).then(({ totalCount }) => totalCount !== 0);
+
+        const isInvalid = containsCoDuplicates || containsComponentDuplicates;
+
+        setSaveBlockers(
+          resource,
+          resource.specifyTable.field.catalogNumber,
+          isInvalid
+            ? [
+                resourcesText.catalogNumberAlreadyUsed({
+                  catalogNumberFieldName:
+                    resource.specifyTable.field.catalogNumber.label,
+                  catalogNumber: catalogNumberValue!,
+                }),
+              ]
+            : [],
+          CATALOG_NUMBER_EXISTS
+        );
       },
     },
   },
