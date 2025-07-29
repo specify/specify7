@@ -3,7 +3,6 @@ import { describe, expect, test } from '@jest/globals';
 
 import type { IR, RA, WritableArray } from '../utils/types';
 import * as Router from 'react-router-dom';
-import { SafeOutlet } from '../components/Router/RouterUtils';
 
 /**
  * Named after https://github.com/RobPethick/jest-theories
@@ -128,7 +127,7 @@ export function TestComponentWrapperRouter(
   return (
     <Router.MemoryRouter initialEntries={initialEntries}>
       <Router.Routes>
-        <Router.Route path='/' element={<SafeOutlet {...context} />}>
+        <Router.Route path='/' element={<Router.Outlet {...context} />}>
           <Router.Route
             index
             element={children}
