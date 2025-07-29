@@ -1,10 +1,12 @@
-import { AppResourcesAside, AppResourcesConformation } from "../Aside"
 import React from "react"
-import { AppResources } from "../hooks";
+import * as Router from 'react-router-dom';
+
 import { requireContext } from "../../../tests/helpers";
 import { mount } from "../../../tests/reactUtils";
-import { RA } from "../../../utils/types";
-import * as Router from 'react-router-dom';
+import type { RA } from "../../../utils/types";
+import type { AppResourcesConformation } from "../Aside";
+import { AppResourcesAside } from "../Aside"
+import type { AppResources } from "../hooks";
 
 
 requireContext();
@@ -337,11 +339,11 @@ describe("AppResourcesAside (simple no conformation case)", () => {
         const setConformations = jest.fn();
 
         const { asFragment, unmount } = mount(<AppResourcesAside
-            resources={appResources}
-            isEmbedded
-            onOpen={onOpen}
-            filters={undefined}
             conformations={[[], setConformations]}
+            filters={undefined}
+            isEmbedded
+            resources={appResources}
+            onOpen={onOpen}
         />);
 
         expect(asFragment()).toMatchSnapshot();
@@ -360,18 +362,18 @@ describe("AppResourcesAside (expanded case)", () => {
         let _conformations: RA<AppResourcesConformation> | undefined = [];
 
         const setConformations = (
-            arg: typeof _conformations // whatever
+            argument: typeof _conformations // Whatever
         ) => {
-            _setConformations(arg);
-            _conformations = arg;
+            _setConformations(argument);
+            _conformations = argument;
         }
 
         const { getAllByRole, user, unmount, asFragment: asFragmentInitial } = mount(<AppResourcesAside
-            resources={appResources}
-            isEmbedded
-            onOpen={onOpen}
-            filters={undefined}
             conformations={[_conformations, setConformations]}
+            filters={undefined}
+            isEmbedded
+            resources={appResources}
+            onOpen={onOpen}
         />);
 
         const initialFragment = asFragmentInitial().textContent;
@@ -383,11 +385,11 @@ describe("AppResourcesAside (expanded case)", () => {
         unmount();
 
         const { asFragment, unmount: unmountSecond, getAllByRole: getIntermediate } = mount(<AppResourcesAside
-            resources={appResources}
-            isEmbedded
-            onOpen={onOpen}
-            filters={undefined}
             conformations={[_conformations, setConformations]}
+            filters={undefined}
+            isEmbedded
+            resources={appResources}
+            onOpen={onOpen}
         />);
 
         expect(asFragment()).toMatchSnapshot();
@@ -400,11 +402,11 @@ describe("AppResourcesAside (expanded case)", () => {
         unmountSecond();
 
         const { asFragment: asFragmentLater, unmount: unmountThird, getAllByRole: getFinal } = mount(<AppResourcesAside
-            resources={appResources}
-            isEmbedded
-            onOpen={onOpen}
-            filters={undefined}
             conformations={[_conformations, setConformations]}
+            filters={undefined}
+            isEmbedded
+            resources={appResources}
+            onOpen={onOpen}
         />);
 
         const laterFragment = asFragmentLater().textContent;
@@ -414,18 +416,18 @@ describe("AppResourcesAside (expanded case)", () => {
         expect(laterFragment).toBe("Global Resources (2)Discipline Resources (4)Expand AllCollapse All");
 
         const expandAllButton = getFinal("button")[2];
-        await user.click(expandAllButton!);
+        await user.click(expandAllButton);
 
         unmountThird();
 
         const { asFragment: asFragmentAllExpanded, unmount: unmountExpandedll } = mount(
             <Router.MemoryRouter initialEntries={['/specify/resources/']}>
                 <AppResourcesAside
-                    resources={appResources}
-                    isEmbedded
-                    onOpen={onOpen}
-                    filters={undefined}
                     conformations={[_conformations, setConformations]}
+                    filters={undefined}
+                    isEmbedded
+                    resources={appResources}
+                    onOpen={onOpen}
                 />
             </Router.MemoryRouter>
 
