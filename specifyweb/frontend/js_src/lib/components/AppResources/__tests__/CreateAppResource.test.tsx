@@ -1,13 +1,14 @@
-import React from "react";
-import { mount } from "../../../tests/reactUtils";
-import { CreateAppResource } from "../Create";
-import { TestComponentWrapperRouter } from "../../../tests/utils";
-import { testAppResources } from "./testAppResources";
-import { requireContext } from "../../../tests/helpers";
-import { UnloadProtectsContext } from "../../Router/UnloadProtect";
-import { clearIdStore } from "../../../hooks/useId";
-import { LoadingContext } from "../../Core/Contexts";
 import { waitFor } from "@testing-library/react";
+import React from "react";
+
+import { clearIdStore } from "../../../hooks/useId";
+import { requireContext } from "../../../tests/helpers";
+import { mount } from "../../../tests/reactUtils";
+import { TestComponentWrapperRouter } from "../../../tests/utils";
+import { LoadingContext } from "../../Core/Contexts";
+import { UnloadProtectsContext } from "../../Router/UnloadProtect";
+import { CreateAppResource } from "../Create";
+import { testAppResources } from "./testAppResources";
 
 requireContext();
 
@@ -24,9 +25,9 @@ describe("CreateAppResource", () => {
 
         const { getByRole } = mount(
             <TestComponentWrapperRouter
+                context={{ getSet: [testAppResources, setter] }}
                 initialEntries={["/resources/create/discipline_3"]}
                 path="resources/create/:directoryKey"
-                context={{ getSet: [testAppResources, setter] }}
             >
                 <UnloadProtectsContext.Provider value={[]}>
                     <CreateAppResource />
@@ -43,9 +44,9 @@ describe("CreateAppResource", () => {
 
         const { getAllByRole, user, getByRole } = mount(
             <TestComponentWrapperRouter
+                context={{ getSet: [testAppResources, setter] }}
                 initialEntries={["/resources/create/discipline_3"]}
                 path="resources/create/:directoryKey"
-                context={{ getSet: [testAppResources, setter] }}
             >
                 <UnloadProtectsContext.Provider value={[]}>
                     <CreateAppResource />
@@ -66,9 +67,9 @@ describe("CreateAppResource", () => {
         const promiseHandler = jest.fn();
         const { getAllByRole, user, getByRole, asFragment } = mount(
             <TestComponentWrapperRouter
+                context={{ getSet: [testAppResources, setter] }}
                 initialEntries={["/resources/create/discipline_3"]}
                 path="resources/create/:directoryKey"
-                context={{ getSet: [testAppResources, setter] }}
             >
                 <UnloadProtectsContext.Provider value={[]}>
                     <LoadingContext.Provider value={promiseHandler}>
@@ -86,9 +87,11 @@ describe("CreateAppResource", () => {
                 expect(asFragment).toThrowErrorMatchingSnapshot(`<DocumentFragment />`);
             })
         } catch {
-            // This is hacky. Essentially, we want to wait till the dialog gets populated
-            // since the useAsyncState won't resolve immediately.
-            //
+            /*
+             * This is hacky. Essentially, we want to wait till the dialog gets populated
+             * since the useAsyncState won't resolve immediately.
+             * 
+             */
         }
 
         expect(getByRole('dialog').textContent).toMatchInlineSnapshot(`"Copy default formsHerpetologyHerpetology > Guest > HerpetologyHerpetology > Manager > HerpetologyBirdBird > Guest > BirdBird > Manager > BirdMammalMammal > Guest > MammalMammal > Manager > MammalVertpaleoVertpaleo > Guest > VertpaleoVertpaleo > Manager > VertpaleoFishFish > Guest > FishFish > Manager > FishInvertebrateInvertebrate > Guest > InvertebrateInvertebrate > Manager > InvertebrateInsect > EntoInsect > Guest > EntoInsect > Manager > EntoBotanyBotany > Guest > BotanyBotany > Manager > BotanyGeologyCommonBackstop > GlobalBackstop > SearchInvertpaleo > PaleoInvertpaleo > Guest > PaleoInvertpaleo > Manager > PaleoNew"`);
