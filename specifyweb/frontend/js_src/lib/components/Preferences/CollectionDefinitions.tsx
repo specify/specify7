@@ -127,6 +127,25 @@ export const collectionPreferenceDefinitions = {
       },
     },
   },
+  uniqueCatalogNumberAccrossComponentAndCO: {
+    title: queryText.uniqueCatalogNumberAcrossComponentAndCo(),
+    subCategories: {
+      behavior: {
+        title: preferencesText.behavior(),
+        items: {
+          inheritance: definePref<boolean>({
+            title: preferencesText.uniqueCatNumberAcrossCompAndCo(),
+            requiresReload: false,
+            visible: false,
+            defaultValue: false,
+            renderer: f.never,
+            container: 'label',
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
 } as const;
 
 ensure<GenericPreferences>()(collectionPreferenceDefinitions);

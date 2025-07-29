@@ -1,6 +1,7 @@
 import { resourcesText } from '../../localization/resources';
 import { resolveParser } from '../../utils/parser/definitions';
 import type { ValueOf } from '../../utils/types';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 import type { BusinessRuleResult } from './businessRules';
 import {
   CATALOG_NUMBER_EXISTS,
@@ -22,7 +23,7 @@ import {
   PREPARATION_NEGATIVE_KEY,
 } from './businessRuleUtils';
 import { fetchCollection } from './collection';
-import { backendFilter, cogTypes, formatRelationshipPath } from './helpers';
+import { cogTypes } from './helpers';
 import type { AnySchema, CommonFields, TableFields } from './helperTypes';
 import {
   checkPrepAvailability,
@@ -35,7 +36,6 @@ import {
 import type { SpecifyResource } from './legacyTypes';
 import { setSaveBlockers } from './saveBlockers';
 import { schema } from './schema';
-import { getDomainResource } from './scoping';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Collection } from './specifyTable';
 import { tables } from './tables';
@@ -202,6 +202,22 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         return undefined;
       },
       catalogNumber: async (resource): Promise<undefined> => {
+        const [uniqueCatalogNumberAccrossComponentAndCOPref] =
+          collectionPreferences.use(
+            'uniqueCatalogNumberAccrossComponentAndCO',
+            'behavior',
+            'inheritance'
+          );
+
+        if (!uniqueCatalogNumberAccrossComponentAndCOPref) {
+          setSaveBlockers(
+            resource,
+            resource.specifyTable.field.catalogNumber,
+            [],
+            CATALOG_NUMBER_EXISTS
+          );
+        }
+
         const catalogNumberValue = resource.get('catalogNumber');
 
         const containsComponentDuplicates = await fetchCollection('Component', {
@@ -409,6 +425,22 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         return undefined;
       },
       catalogNumber: async (resource): Promise<undefined> => {
+        const [uniqueCatalogNumberAccrossComponentAndCOPref] =
+          collectionPreferences.use(
+            'uniqueCatalogNumberAccrossComponentAndCO',
+            'behavior',
+            'inheritance'
+          );
+
+        if (!uniqueCatalogNumberAccrossComponentAndCOPref) {
+          setSaveBlockers(
+            resource,
+            resource.specifyTable.field.catalogNumber,
+            [],
+            CATALOG_NUMBER_EXISTS
+          );
+        }
+
         const catalogNumberValue = resource.get('catalogNumber');
 
         const containsCoDuplicates = await fetchCollection('CollectionObject', {

@@ -947,6 +947,9 @@ export const queryText = createDictionary({
     'ru-ru': 'Номер каталога Родительская коллекция Объект Наследование',
     'uk-ua': "Успадкування батьківського об'єкта колекції за номером каталогу",
   },
+  uniqueCatalogNumberAcrossComponentAndCo: {
+    'en-us': 'Catalog Number Uniqueness Across Component And CO tables',
+  },
   formatInputAs: {
     comment: `
       Used to indicate a text field will be formatted with a specific format. If
