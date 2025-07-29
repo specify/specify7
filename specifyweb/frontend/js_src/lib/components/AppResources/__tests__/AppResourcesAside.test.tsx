@@ -1,10 +1,12 @@
-import { AppResourcesAside, AppResourcesConformation } from "../Aside"
 import React from "react"
+import { testAppResources } from "./testAppResources";
+import * as Router from 'react-router-dom';
+
 import { requireContext } from "../../../tests/helpers";
 import { mount } from "../../../tests/reactUtils";
-import { RA } from "../../../utils/types";
-import * as Router from 'react-router-dom';
-import { testAppResources } from "./testAppResources";
+import type { RA } from "../../../utils/types";
+import type { AppResourcesConformation } from "../Aside";
+import { AppResourcesAside } from "../Aside"
 
 
 requireContext();
@@ -40,10 +42,10 @@ describe("AppResourcesAside (expanded case)", () => {
         let _conformations: RA<AppResourcesConformation> | undefined = [];
 
         const setConformations = (
-            arg: typeof _conformations // whatever
+            argument: typeof _conformations // Whatever
         ) => {
-            _setConformations(arg);
-            _conformations = arg;
+            _setConformations(argument);
+            _conformations = argument;
         }
 
         const { getAllByRole, user, unmount, asFragment: asFragmentInitial } = mount(<AppResourcesAside
@@ -94,7 +96,7 @@ describe("AppResourcesAside (expanded case)", () => {
         expect(laterFragment).toBe("Global Resources (2)Discipline Resources (4)Expand AllCollapse All");
 
         const expandAllButton = getFinal("button")[2];
-        await user.click(expandAllButton!);
+        await user.click(expandAllButton);
 
         unmountThird();
 
