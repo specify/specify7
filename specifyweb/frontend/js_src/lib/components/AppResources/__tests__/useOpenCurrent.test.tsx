@@ -23,7 +23,6 @@ function TestComponent(props: {
   return <></>;
 }
 
-
 describe('useOpenCurrent', () => {
   const makeAppResources = (id: number) =>
     [
@@ -46,11 +45,10 @@ describe('useOpenCurrent', () => {
 
     const testConformation: RA<AppResourcesConformation> = [];
     render(
-      <TestComponentWrapperRouter
-        initialEntries={[`/10`]}
-        path=":id"
-      >
-        <TestComponent args={[testConformation, setConformation, simpleTree()]} />
+      <TestComponentWrapperRouter initialEntries={[`/10`]} path=":id">
+        <TestComponent
+          args={[testConformation, setConformation, simpleTree()]}
+        />
       </TestComponentWrapperRouter>
     );
 
@@ -87,10 +85,7 @@ describe('useOpenCurrent', () => {
     ];
 
     render(
-      <TestComponentWrapperRouter
-        initialEntries={[`/10`]}
-        path=":id"
-      >
+      <TestComponentWrapperRouter initialEntries={[`/10`]} path=":id">
         <TestComponent args={[testConformation, setConformation, tree]} />
       </TestComponentWrapperRouter>
     );
@@ -151,10 +146,7 @@ describe('useOpenCurrent', () => {
     ];
 
     render(
-      <TestComponentWrapperRouter
-        initialEntries={[`/10`]}
-        path=":id"
-      >
+      <TestComponentWrapperRouter initialEntries={[`/10`]} path=":id">
         <TestComponent args={[testConformation, setConformation, tree]} />
       </TestComponentWrapperRouter>
     );

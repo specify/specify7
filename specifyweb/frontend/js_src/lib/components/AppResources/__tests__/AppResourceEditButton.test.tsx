@@ -1,75 +1,74 @@
-import React from "react";
-import { mount } from "../../../tests/reactUtils";
-import { localized } from "../../../utils/types";
-import { tables } from "../../DataModel/tables";
-import { AppResourceEditButton } from "../EditorComponents";
-import { testAppResources } from "./testAppResources";
-import { f } from "../../../utils/functools";
-import { requireContext } from "../../../tests/helpers";
-import { clearIdStore } from "../../../hooks/useId";
-import { UnloadProtectsContext } from "../../Router/UnloadProtect";
-import { waitFor } from "@testing-library/react";
-import { overrideAjax } from "../../../tests/ajax";
-import { Http } from "../../../utils/ajax/definitions";
-import { LoadingContext } from "../../Core/Contexts";
+import React from 'react';
+import { mount } from '../../../tests/reactUtils';
+import { localized } from '../../../utils/types';
+import { tables } from '../../DataModel/tables';
+import { AppResourceEditButton } from '../EditorComponents';
+import { testAppResources } from './testAppResources';
+import { f } from '../../../utils/functools';
+import { requireContext } from '../../../tests/helpers';
+import { clearIdStore } from '../../../hooks/useId';
+import { UnloadProtectsContext } from '../../Router/UnloadProtect';
+import { waitFor } from '@testing-library/react';
+import { overrideAjax } from '../../../tests/ajax';
+import { Http } from '../../../utils/ajax/definitions';
+import { LoadingContext } from '../../Core/Contexts';
 
 requireContext();
 
 beforeEach(() => {
-    clearIdStore();
+  clearIdStore();
 });
 
 jest.setTimeout(1000 * 60 * 60 * 24);
 
-describe("AppResourceEditButton", () => {
-
-    test("simple render", () => {
-
-        const resource = new tables.SpAppResource.Resource({
-            name: "TestName",
-            spAppResourceDir: testAppResources.directories[0].resource_uri
-        });
-
-        const { asFragment } = mount(
-            <AppResourceEditButton
-                title={localized("TestTitle")}
-                appResource={resource}
-                onDeleted={f.void}
-            ><></>
-            </AppResourceEditButton>
-        );
-
-        expect(asFragment()).toMatchSnapshot();
-
+describe('AppResourceEditButton', () => {
+  test('simple render', () => {
+    const resource = new tables.SpAppResource.Resource({
+      name: 'TestName',
+      spAppResourceDir: testAppResources.directories[0].resource_uri,
     });
 
-    test("edit click test", async () => {
-        const resource = new tables.SpAppResource.Resource({
-            name: "TestName",
-            spAppResourceDir: testAppResources.directories[0].resource_uri
-        });
-        const handleDeleted = jest.fn();
+    const { asFragment } = mount(
+      <AppResourceEditButton
+        title={localized('TestTitle')}
+        appResource={resource}
+        onDeleted={f.void}
+      >
+        <></>
+      </AppResourceEditButton>
+    );
 
-        const { getByRole, user } = mount(
-            <UnloadProtectsContext.Provider value={[]}>
-                <AppResourceEditButton
-                    title={localized("TestTitle")}
-                    appResource={resource}
-                    onDeleted={handleDeleted}
-                ><></>
-                </AppResourceEditButton>
-            </UnloadProtectsContext.Provider>
-        );
+    expect(asFragment()).toMatchSnapshot();
+  });
 
-        const button = getByRole("button");
-        await user.click(button);
+  test('edit click test', async () => {
+    const resource = new tables.SpAppResource.Resource({
+      name: 'TestName',
+      spAppResourceDir: testAppResources.directories[0].resource_uri,
+    });
+    const handleDeleted = jest.fn();
 
-        await waitFor(() => {
-            getByRole("dialog");
-        });
+    const { getByRole, user } = mount(
+      <UnloadProtectsContext.Provider value={[]}>
+        <AppResourceEditButton
+          title={localized('TestTitle')}
+          appResource={resource}
+          onDeleted={handleDeleted}
+        >
+          <></>
+        </AppResourceEditButton>
+      </UnloadProtectsContext.Provider>
+    );
 
-        const dialog = getByRole('dialog');
-        expect(dialog.innerHTML).toMatchInlineSnapshot(`
+    const button = getByRole('button');
+    await user.click(button);
+
+    await waitFor(() => {
+      getByRole('dialog');
+    });
+
+    const dialog = getByRole('dialog');
+    expect(dialog.innerHTML).toMatchInlineSnapshot(`
 "<div class=\\"
           flex items-center gap-2 md:gap-4
           -m-4 cursor-move p-4
@@ -83,53 +82,53 @@ describe("AppResourceEditButton", () => {
 dark:text-gray-100\\" type=\\"button\\">Close</button></div>"
 `);
 
-        expect(handleDeleted).not.toHaveBeenCalled();
+    expect(handleDeleted).not.toHaveBeenCalled();
+  });
+
+  overrideAjax(`/api/delete_blockers/spappresource/3/`, []);
+  overrideAjax(`/api/specify/spappresource/3/`, {
+    id: 3,
+    name: 'TestName',
+    spAppResourceDir: testAppResources.directories[0].resource_uri,
+  });
+  overrideAjax(`/api/specify/spappresource/3/`, '', {
+    method: 'DELETE',
+    responseCode: Http.NO_CONTENT,
+  });
+
+  test('delete resource test', async () => {
+    const resource = new tables.SpAppResource.Resource({
+      id: 3,
     });
 
-    overrideAjax(`/api/delete_blockers/spappresource/3/`, []);
-    overrideAjax(`/api/specify/spappresource/3/`, {
-        id: 3,
-        name: "TestName",
-        spAppResourceDir: testAppResources.directories[0].resource_uri,
+    const handleDeleted = jest.fn();
+    const promiseHandler = jest.fn();
+
+    const { getAllByRole, user, getByRole } = mount(
+      <UnloadProtectsContext.Provider value={[]}>
+        <LoadingContext.Provider value={promiseHandler}>
+          <AppResourceEditButton
+            title={localized('TestTitle')}
+            appResource={resource}
+            onDeleted={handleDeleted}
+          >
+            <></>
+          </AppResourceEditButton>
+        </LoadingContext.Provider>
+      </UnloadProtectsContext.Provider>
+    );
+
+    const button = getByRole('button');
+    await user.click(button);
+
+    await waitFor(() => {
+      getByRole('dialog');
     });
-    overrideAjax(`/api/specify/spappresource/3/`, '', {
-        method: 'DELETE',
-        responseCode: Http.NO_CONTENT,
-    });
 
-    test("delete resource test", async () => {
-        const resource = new tables.SpAppResource.Resource({
-            id: 3
-        });
+    await user.click(getAllByRole('button')[1]);
 
-        const handleDeleted = jest.fn();
-        const promiseHandler = jest.fn();
+    await user.click(getAllByRole('button')[3]);
 
-        const { getAllByRole, user, getByRole } = mount(
-            <UnloadProtectsContext.Provider value={[]}>
-                <LoadingContext.Provider value={promiseHandler}>
-                    <AppResourceEditButton
-                        title={localized("TestTitle")}
-                        appResource={resource}
-                        onDeleted={handleDeleted}
-                    ><></>
-                    </AppResourceEditButton>
-                </LoadingContext.Provider>
-            </UnloadProtectsContext.Provider>
-        );
-
-        const button = getByRole("button")
-        await user.click(button);
-
-        await waitFor(() => {
-            getByRole("dialog");
-        });
-
-        await user.click(getAllByRole('button')[1]);
-
-        await user.click(getAllByRole('button')[3]);
-
-        expect(handleDeleted).toBeCalledTimes(1);
-
-    })
+    expect(handleDeleted).toBeCalledTimes(1);
+  });
 });
