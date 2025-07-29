@@ -1,0 +1,188 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AppResourcesAside (expanded case) expanded case 1`] = `
+<DocumentFragment>
+  <aside
+    class="
+        !gap-2 sm:overflow-visible
+        flex flex-col gap-4 overflow-scroll
+  overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:auto] 
+      "
+  >
+    <ul
+      class=" flex flex-1 flex-col gap-1 overflow-auto"
+      role="tree"
+    >
+      <li
+        aria-expanded="false"
+        aria-labelledby="app-resources-tree-4-label"
+        class="flex flex-col gap-2"
+        id="app-resources-tree-4-li"
+        role="treeitem"
+      >
+        <button
+          aria-controls="app-resources-tree-4-li"
+          class="link inline text-left font-bold"
+          id="app-resources-tree-4-label"
+          type="button"
+        >
+          Global Resources 
+          <span
+            class="pl-2 text-neutral-500"
+          >
+            (2)
+          </span>
+        </button>
+      </li>
+      <li
+        aria-expanded="true"
+        aria-labelledby="app-resources-tree-5-label"
+        class="flex flex-col gap-2"
+        id="app-resources-tree-5-li"
+        role="treeitem"
+      >
+        <button
+          aria-controls="app-resources-tree-5-li"
+          class="link inline text-left font-bold"
+          id="app-resources-tree-5-label"
+          type="button"
+        >
+          Discipline Resources 
+          <span
+            class="pl-2 text-neutral-500"
+          >
+            (4)
+          </span>
+        </button>
+        <ul
+          aria-label="Sub-categories"
+          class=" flex flex-col gap-2 pl-4"
+          role="group"
+        >
+          <li
+            aria-expanded="false"
+            aria-labelledby="app-resources-tree-6-label"
+            class="flex flex-col gap-2"
+            id="app-resources-tree-6-li"
+            role="treeitem"
+          >
+            <button
+              aria-controls="app-resources-tree-6-li"
+              class="link inline text-left font-bold"
+              id="app-resources-tree-6-label"
+              type="button"
+            >
+              Botany 
+              <span
+                class="pl-2 text-neutral-500"
+              >
+                (4)
+              </span>
+            </button>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <div
+      class="flex flex-wrap gap-2"
+    >
+      <button
+        class="button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--info-button-color)] text-white grow"
+        type="button"
+      >
+        Expand All
+      </button>
+      <button
+        class="button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--info-button-color)] text-white grow"
+        type="button"
+      >
+        Collapse All
+      </button>
+    </div>
+  </aside>
+</DocumentFragment>
+`;
+
+exports[`AppResourcesAside (simple no conformation case) simple no conformation case 1`] = `
+<DocumentFragment>
+  <aside
+    class="
+        !gap-2 sm:overflow-visible
+        flex flex-col gap-4 overflow-scroll
+  overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:auto] 
+      "
+  >
+    <ul
+      class=" flex flex-1 flex-col gap-1 overflow-auto"
+      role="tree"
+    >
+      <li
+        aria-expanded="false"
+        aria-labelledby="app-resources-tree-0-label"
+        class="flex flex-col gap-2"
+        id="app-resources-tree-0-li"
+        role="treeitem"
+      >
+        <button
+          aria-controls="app-resources-tree-0-li"
+          class="link inline text-left font-bold"
+          id="app-resources-tree-0-label"
+          type="button"
+        >
+          Global Resources 
+          <span
+            class="pl-2 text-neutral-500"
+          >
+            (2)
+          </span>
+        </button>
+      </li>
+      <li
+        aria-expanded="false"
+        aria-labelledby="app-resources-tree-1-label"
+        class="flex flex-col gap-2"
+        id="app-resources-tree-1-li"
+        role="treeitem"
+      >
+        <button
+          aria-controls="app-resources-tree-1-li"
+          class="link inline text-left font-bold"
+          id="app-resources-tree-1-label"
+          type="button"
+        >
+          Discipline Resources 
+          <span
+            class="pl-2 text-neutral-500"
+          >
+            (4)
+          </span>
+        </button>
+      </li>
+    </ul>
+    <div
+      class="flex flex-wrap gap-2"
+    >
+      <button
+        class="button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--info-button-color)] text-white grow"
+        type="button"
+      >
+        Expand All
+      </button>
+      <button
+        class="button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--info-button-color)] text-white grow"
+        type="button"
+      >
+        Collapse All
+      </button>
+    </div>
+  </aside>
+</DocumentFragment>
+`;
