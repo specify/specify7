@@ -1,15 +1,15 @@
-import React from 'react';
-
 import { render, renderHook } from '@testing-library/react';
-import { AppResourcesConformation, exportsForTests } from '../Aside';
-import { RA, WritableArray } from '../../../utils/types';
-
+import React from 'react';
 import * as Router from 'react-router-dom';
-import { removeKey } from '../../../utils/utils';
-import { utilsForTests } from './utils';
+
 import { requireContext } from '../../../tests/helpers';
-import { SerializedResource } from '../../DataModel/helperTypes';
-import { SpAppResource } from '../../DataModel/types';
+import type { RA, WritableArray } from '../../../utils/types';
+import { removeKey } from '../../../utils/utils';
+import type { SerializedResource } from '../../DataModel/helperTypes';
+import type { SpAppResource } from '../../DataModel/types';
+import type { AppResourcesConformation } from '../Aside';
+import { exportsForTests } from '../Aside';
+import { utilsForTests } from './utils';
 
 requireContext();
 
@@ -25,9 +25,9 @@ function TestComponent(props: {
 }
 
 function TestComponentWrapper(
-  props: { readonly args: Parameters<typeof useOpenCurrent> } & {
+  props: {
     readonly initialEntries: WritableArray<string>;
-  }
+  } & { readonly args: Parameters<typeof useOpenCurrent> }
 ): JSX.Element {
   return (
     <Router.MemoryRouter initialEntries={props.initialEntries}>
@@ -55,7 +55,7 @@ describe('useOpenCurrent', () => {
     const setConformation = jest.fn();
 
     renderHook(() => useOpenCurrent([], setConformation, []));
-    expect(setConformation).toBeCalledTimes(0);
+    expect(setConformation).toHaveBeenCalledTimes(0);
   });
 
   test('not found in app resources', () => {
@@ -69,7 +69,7 @@ describe('useOpenCurrent', () => {
       />
     );
 
-    expect(setConformation).toBeCalledTimes(1);
+    expect(setConformation).toHaveBeenCalledTimes(1);
     expect(setConformation.mock.calls.at(-1)).toEqual([[]]);
   });
 
@@ -108,7 +108,7 @@ describe('useOpenCurrent', () => {
       />
     );
 
-    expect(setConformation).toBeCalledTimes(1);
+    expect(setConformation).toHaveBeenCalledTimes(1);
     expect(setConformation.mock.lastCall).toEqual([
       [{ key: 'TestKey', children: [] }],
     ]);
@@ -170,7 +170,7 @@ describe('useOpenCurrent', () => {
       />
     );
 
-    expect(setConformation).toBeCalledTimes(1);
+    expect(setConformation).toHaveBeenCalledTimes(1);
     expect(setConformation.mock.lastCall).toEqual([
       [
         {
@@ -198,8 +198,10 @@ describe('useOpenCurrent', () => {
         },
       ],
     ]);
-    // expect((setConformation.mock.lastCall)).toEqual([
-    //     [{ key: "TestKey", children: [] }]
-    // ]);
+    /*
+     * Expect((setConformation.mock.lastCall)).toEqual([
+     *     [{ key: "TestKey", children: [] }]
+     * ]);
+     */
   });
 });
