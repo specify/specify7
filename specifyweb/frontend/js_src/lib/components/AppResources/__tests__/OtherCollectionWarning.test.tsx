@@ -1,6 +1,5 @@
 import { render } from "@testing-library/react";
 import { requireContext } from "../../../tests/helpers";
-import { schema } from "../../DataModel/schema";
 import { exportsForTests } from "../Tabs";
 import React from "react";
 import { testAppResources } from "./testAppResources";
