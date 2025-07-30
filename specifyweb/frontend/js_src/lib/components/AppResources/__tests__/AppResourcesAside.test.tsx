@@ -1,5 +1,4 @@
 import React from 'react';
-import { testAppResources } from './testAppResources';
 import * as Router from 'react-router-dom';
 
 import { requireContext } from '../../../tests/helpers';
@@ -7,6 +6,7 @@ import { mount } from '../../../tests/reactUtils';
 import type { RA } from '../../../utils/types';
 import type { AppResourcesConformation } from '../Aside';
 import { AppResourcesAside } from '../Aside';
+import { testAppResources } from './testAppResources';
 
 requireContext();
 
