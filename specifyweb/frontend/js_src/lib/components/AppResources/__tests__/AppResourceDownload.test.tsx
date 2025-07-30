@@ -1,5 +1,5 @@
-import { render } from "@testing-library/react";
-import React from "react";
+import { render } from '@testing-library/react';
+import React from 'react';
 
 import { mount } from "../../../tests/reactUtils";
 import { f } from "../../../utils/functools";
@@ -16,12 +16,11 @@ beforeEach(() => {
     mockDownload.mockClear();
 });
 
-describe("AppResourceDownload", () => {
-
+describe('AppResourceDownload', () => {
     const resource = testAppResources.appResources[0];
-    const testData = "testString";
+    const testData = 'testString';
 
-    test("simple render", () => {
+    test('simple render', () => {
         const { asFragment } = render(
             <LoadingContext.Provider value={f.void}>
                 <AppResourceDownload data={testData} resource={resource} />
@@ -39,8 +38,9 @@ describe("AppResourceDownload", () => {
         const button = getByRole('button');
         await user.click(button);
         expect(mockDownload).toHaveBeenCalled();
-        expect(mockDownload.mock.lastCall).toEqual(["preferences.properties", "testString"]);
+        expect(mockDownload.mock.lastCall).toEqual([
+            'preferences.properties',
+            'testString',
+        ]);
     });
-
-
 });
