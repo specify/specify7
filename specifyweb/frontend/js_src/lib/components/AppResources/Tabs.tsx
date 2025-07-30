@@ -212,3 +212,7 @@ export function Tabs({
     </Tab.Group>
   );
 }
+
+export const exportsForTests = {
+  OtherCollectionWarning
+};
