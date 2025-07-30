@@ -6,330 +6,10 @@ import { mount } from "../../../tests/reactUtils";
 import type { RA } from "../../../utils/types";
 import type { AppResourcesConformation } from "../Aside";
 import { AppResourcesAside } from "../Aside"
-import type { AppResources } from "../hooks";
+import { testAppResources } from "./testAppResources";
 
 
 requireContext();
-
-const appResources = {
-    "directories": [
-        {
-            "id": 1,
-            "disciplineType": null,
-            "isPersonal": false,
-            "timestampCreated": "2023-09-07T12:11:13",
-            "timestampModified": "2023-09-07T12:11:13",
-            "userType": "Global Prefs",
-            "version": 2,
-            "collection": null,
-            "createdByAgent": null,
-            "discipline": null,
-            "modifiedByAgent": null,
-            "specifyUser": null,
-            "spPersistedAppResources": "/api/specify/spappresource/?spappresourcedir=1",
-            "spPersistedViewSets": "/api/specify/spviewsetobj/?spappresourcedir=1",
-            "resource_uri": "/api/specify/spappresourcedir/1/",
-            "_tableName": "SpAppResourceDir",
-            "scope": "global"
-        },
-        {
-            "id": 2,
-            "disciplineType": null,
-            "isPersonal": false,
-            "timestampCreated": "2023-09-07T16:11:20",
-            "timestampModified": "2023-09-07T16:11:20",
-            "userType": "Prefs",
-            "version": 1,
-            "collection": null,
-            "createdByAgent": null,
-            "discipline": null,
-            "modifiedByAgent": null,
-            "specifyUser": "/api/specify/specifyuser/1/",
-            "spPersistedAppResources": "/api/specify/spappresource/?spappresourcedir=2",
-            "spPersistedViewSets": "/api/specify/spviewsetobj/?spappresourcedir=2",
-            "resource_uri": "/api/specify/spappresourcedir/2/",
-            "_tableName": "SpAppResourceDir",
-            "scope": "global"
-        },
-        {
-            "id": 3,
-            "disciplineType": "Botany",
-            "isPersonal": true,
-            "timestampCreated": "2023-09-07T16:11:21",
-            "timestampModified": "2023-09-07T16:11:21",
-            "userType": "manager",
-            "version": 1,
-            "collection": "/api/specify/collection/4/",
-            "createdByAgent": "/api/specify/agent/1/",
-            "discipline": "/api/specify/discipline/3/",
-            "modifiedByAgent": null,
-            "specifyUser": "/api/specify/specifyuser/1/",
-            "spPersistedAppResources": "/api/specify/spappresource/?spappresourcedir=3",
-            "spPersistedViewSets": "/api/specify/spviewsetobj/?spappresourcedir=3",
-            "resource_uri": "/api/specify/spappresourcedir/3/",
-            "_tableName": "SpAppResourceDir",
-            "scope": "user"
-        },
-        {
-            "id": 4,
-            "disciplineType": null,
-            "isPersonal": false,
-            "timestampCreated": "2025-07-16T18:11:14",
-            "timestampModified": "2025-07-16T18:11:14",
-            "userType": null,
-            "version": 0,
-            "collection": "/api/specify/collection/4/",
-            "createdByAgent": null,
-            "discipline": "/api/specify/discipline/3/",
-            "modifiedByAgent": null,
-            "specifyUser": null,
-            "spPersistedAppResources": "/api/specify/spappresource/?spappresourcedir=4",
-            "spPersistedViewSets": "/api/specify/spviewsetobj/?spappresourcedir=4",
-            "resource_uri": "/api/specify/spappresourcedir/4/",
-            "_tableName": "SpAppResourceDir",
-            "scope": "collection"
-        }
-    ],
-    "disciplines": [
-        {
-            "id": 3,
-            "isPaleoContextEmbedded": false,
-            "name": "Botany",
-            "paleoContextChildTable": "collectingevent",
-            "regNumber": null,
-            "timestampCreated": "2023-09-07T12:05:15",
-            "timestampModified": "2023-09-07T12:05:15",
-            "type": "botany",
-            "version": 1,
-            "createdByAgent": null,
-            "dataType": "/api/specify/datatype/1/",
-            "division": "/api/specify/division/2/",
-            "geographyTreeDef": "/api/specify/geographytreedef/1/",
-            "taxonTreeDef": "/api/specify/taxontreedef/1/",
-            "geologicTimePeriodTreeDef": "/api/specify/geologictimeperiodtreedef/1/",
-            "lithoStratTreeDef": "/api/specify/lithostrattreedef/1/",
-            "tectonicUnitTreeDef": "/api/specify/tectonicunittreedef/1/",
-            "modifiedByAgent": null,
-            "attributeDefs": "/api/specify/attributedef/?discipline=3",
-            "collections": "/api/specify/collection/?discipline=3",
-            "spExportSchemas": "/api/specify/spexportschema/?discipline=3",
-            "spLocaleContainers": "/api/specify/splocalecontainer/?discipline=3",
-            "resource_uri": "/api/specify/discipline/3/",
-            "userGroups": "/api/specify/SpPrincipal?scope=3",
-            "_tableName": "Discipline"
-        }
-    ],
-    "collections": [
-        {
-            "id": 4,
-            "catalogNumFormatName": "CatalogNumberNumeric",
-            "code": "c",
-            "collectionName": "c",
-            "collectionType": null,
-            "dbContentVersion": null,
-            "description": null,
-            "developmentStatus": null,
-            "estimatedSize": 0,
-            "guid": "5af6c242-0c68-4dd7-925e-489f251570a6",
-            "institutionType": null,
-            "isEmbeddedCollectingEvent": true,
-            "isaNumber": null,
-            "kingdomCoverage": null,
-            "preservationMethodType": null,
-            "primaryFocus": null,
-            "primaryPurpose": null,
-            "regNumber": null,
-            "remarks": null,
-            "scope": null,
-            "timestampCreated": "2023-09-07T12:28:33",
-            "timestampModified": "2023-09-07T12:28:33",
-            "version": 2,
-            "webPortalURI": null,
-            "webSiteURI": null,
-            "adminContact": null,
-            "createdByAgent": null,
-            "discipline": "/api/specify/discipline/3/",
-            "institutionNetwork": null,
-            "modifiedByAgent": null,
-            "collectionObjectType": "/api/specify/collectionobjecttype/1/",
-            "contentContacts": "/api/specify/agent/?collcontentcontact=4",
-            "technicalContacts": "/api/specify/agent/?colltechcontact=4",
-            "leftSideRelTypes": "/api/specify/collectionreltype/?leftsidecollection=4",
-            "rightSideRelTypes": "/api/specify/collectionreltype/?rightsidecollection=4",
-            "pickLists": "/api/specify/picklist/?collection=4",
-            "prepTypes": "/api/specify/preptype/?collection=4",
-            "resource_uri": "/api/specify/collection/4/",
-            "collectionObjects": "/api/specify/CollectionObject?collection=4",
-            "userGroups": "/api/specify/SpPrincipal?scope=4",
-            "_tableName": "Collection"
-        }
-    ],
-    "users": [
-        {
-            "id": 1,
-            "accumMinLoggedIn": null,
-            "email": "m",
-            "isLoggedIn": false,
-            "isLoggedInReport": false,
-            "loginCollectionName": null,
-            "loginDisciplineName": null,
-            "loginOutTime": "2023-09-07T16:11:34",
-            "name": "testiiif",
-            "timestampCreated": "2023-09-07T12:03:09",
-            "timestampModified": "2023-09-07T12:03:09",
-            "userType": "Manager",
-            "version": 6,
-            "createdByAgent": null,
-            "modifiedByAgent": null,
-            "agents": "/api/specify/agent/?specifyuser=1",
-            "spAppResources": "/api/specify/spappresource/?specifyuser=1",
-            "spAppResourceDirs": "/api/specify/spappresourcedir/?specifyuser=1",
-            "spQuerys": "/api/specify/spquery/?specifyuser=1",
-            "taskSemaphores": "/api/specify/sptasksemaphore/?owner=1",
-            "workbenches": "/api/specify/workbench/?specifyuser=1",
-            "workbenchTemplates": "/api/specify/workbenchtemplate/?specifyuser=1",
-            "resource_uri": "/api/specify/specifyuser/1/",
-            "isAdmin": true,
-            "password": "",
-            "_tableName": "SpecifyUser"
-        }
-    ],
-    "appResources": [
-        {
-            "id": 1,
-            "allPermissionLevel": null,
-            "description": null,
-            "groupPermissionLevel": null,
-            "level": 3,
-            "metaData": null,
-            "mimeType": null,
-            "name": "preferences",
-            "ownerPermissionLevel": null,
-            "timestampCreated": "2023-09-07T12:11:13",
-            "version": 2,
-            "createdByAgent": null,
-            "group": null,
-            "modifiedByAgent": null,
-            "spAppResourceDir": "/api/specify/spappresourcedir/1/",
-            "specifyUser": "/api/specify/specifyuser/1/",
-            "spAppResourceDatas": "/api/specify/spappresourcedata/?spappresource=1",
-            "spReports": "/api/specify/spreport/?appresource=1",
-            "resource_uri": "/api/specify/spappresource/1/",
-            "_tableName": "SpAppResource"
-        },
-        {
-            "id": 2,
-            "allPermissionLevel": null,
-            "description": null,
-            "groupPermissionLevel": null,
-            "level": 3,
-            "metaData": null,
-            "mimeType": null,
-            "name": "preferences",
-            "ownerPermissionLevel": null,
-            "timestampCreated": "2023-09-07T16:11:20",
-            "version": 1,
-            "createdByAgent": null,
-            "group": null,
-            "modifiedByAgent": null,
-            "spAppResourceDir": "/api/specify/spappresourcedir/2/",
-            "specifyUser": "/api/specify/specifyuser/1/",
-            "spAppResourceDatas": "/api/specify/spappresourcedata/?spappresource=2",
-            "spReports": "/api/specify/spreport/?appresource=2",
-            "resource_uri": "/api/specify/spappresource/2/",
-            "_tableName": "SpAppResource"
-        },
-        {
-            "id": 3,
-            "allPermissionLevel": null,
-            "description": "QueryFreqList",
-            "groupPermissionLevel": null,
-            "level": 0,
-            "metaData": null,
-            "mimeType": "text/xml",
-            "name": "QueryFreqList",
-            "ownerPermissionLevel": null,
-            "timestampCreated": "2023-09-07T16:11:23",
-            "version": 1,
-            "createdByAgent": "/api/specify/agent/1/",
-            "group": null,
-            "modifiedByAgent": "/api/specify/agent/1/",
-            "spAppResourceDir": "/api/specify/spappresourcedir/3/",
-            "specifyUser": "/api/specify/specifyuser/1/",
-            "spAppResourceDatas": "/api/specify/spappresourcedata/?spappresource=3",
-            "spReports": "/api/specify/spreport/?appresource=3",
-            "resource_uri": "/api/specify/spappresource/3/",
-            "_tableName": "SpAppResource"
-        },
-        {
-            "id": 4,
-            "allPermissionLevel": null,
-            "description": "QueryExtraList",
-            "groupPermissionLevel": null,
-            "level": 0,
-            "metaData": null,
-            "mimeType": "text/xml",
-            "name": "QueryExtraList",
-            "ownerPermissionLevel": null,
-            "timestampCreated": "2023-09-07T16:11:23",
-            "version": 0,
-            "createdByAgent": "/api/specify/agent/1/",
-            "group": null,
-            "modifiedByAgent": "/api/specify/agent/1/",
-            "spAppResourceDir": "/api/specify/spappresourcedir/3/",
-            "specifyUser": "/api/specify/specifyuser/1/",
-            "spAppResourceDatas": "/api/specify/spappresourcedata/?spappresource=4",
-            "spReports": "/api/specify/spreport/?appresource=4",
-            "resource_uri": "/api/specify/spappresource/4/",
-            "_tableName": "SpAppResource"
-        },
-        {
-            "id": 5,
-            "allPermissionLevel": null,
-            "description": null,
-            "groupPermissionLevel": null,
-            "level": 0,
-            "metaData": "",
-            "mimeType": "application/json",
-            "name": "UserPreferences",
-            "ownerPermissionLevel": null,
-            "timestampCreated": "2025-07-16T18:11:14",
-            "version": 0,
-            "createdByAgent": null,
-            "group": null,
-            "modifiedByAgent": null,
-            "spAppResourceDir": "/api/specify/spappresourcedir/3/",
-            "specifyUser": "/api/specify/specifyuser/1/",
-            "spAppResourceDatas": "/api/specify/spappresourcedata/?spappresource=5",
-            "spReports": "/api/specify/spreport/?appresource=5",
-            "resource_uri": "/api/specify/spappresource/5/",
-            "_tableName": "SpAppResource"
-        },
-        {
-            "id": 6,
-            "allPermissionLevel": null,
-            "description": null,
-            "groupPermissionLevel": null,
-            "level": 0,
-            "metaData": "",
-            "mimeType": "application/json",
-            "name": "CollectionPreferences",
-            "ownerPermissionLevel": null,
-            "timestampCreated": "2025-07-16T18:11:14",
-            "version": 0,
-            "createdByAgent": null,
-            "group": null,
-            "modifiedByAgent": null,
-            "spAppResourceDir": "/api/specify/spappresourcedir/4/",
-            "specifyUser": "/api/specify/specifyuser/1/",
-            "spAppResourceDatas": "/api/specify/spappresourcedata/?spappresource=6",
-            "spReports": "/api/specify/spreport/?appresource=6",
-            "resource_uri": "/api/specify/spappresource/6/",
-            "_tableName": "SpAppResource"
-        }
-    ],
-    "viewSets": []
-} as unknown as AppResources;
 
 describe("AppResourcesAside (simple no conformation case)", () => {
 
@@ -342,7 +22,7 @@ describe("AppResourcesAside (simple no conformation case)", () => {
             conformations={[[], setConformations]}
             filters={undefined}
             isEmbedded
-            resources={appResources}
+            resources={testAppResources}
             onOpen={onOpen}
         />);
 
@@ -372,7 +52,7 @@ describe("AppResourcesAside (expanded case)", () => {
             conformations={[_conformations, setConformations]}
             filters={undefined}
             isEmbedded
-            resources={appResources}
+            resources={testAppResources}
             onOpen={onOpen}
         />);
 
@@ -388,7 +68,7 @@ describe("AppResourcesAside (expanded case)", () => {
             conformations={[_conformations, setConformations]}
             filters={undefined}
             isEmbedded
-            resources={appResources}
+            resources={testAppResources}
             onOpen={onOpen}
         />);
 
@@ -405,7 +85,7 @@ describe("AppResourcesAside (expanded case)", () => {
             conformations={[_conformations, setConformations]}
             filters={undefined}
             isEmbedded
-            resources={appResources}
+            resources={testAppResources}
             onOpen={onOpen}
         />);
 
@@ -426,7 +106,7 @@ describe("AppResourcesAside (expanded case)", () => {
                     conformations={[_conformations, setConformations]}
                     filters={undefined}
                     isEmbedded
-                    resources={appResources}
+                    resources={testAppResources}
                     onOpen={onOpen}
                 />
             </Router.MemoryRouter>
