@@ -218,7 +218,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             [],
             CATALOG_NUMBER_EXISTS
           );
-          return;
+          return undefined;
         }
 
         const catalogNumberValue = resource.get('catalogNumber');
@@ -242,6 +242,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             : [],
           CATALOG_NUMBER_EXISTS
         );
+        return undefined;
       },
     },
   },
@@ -445,7 +446,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             [],
             CATALOG_NUMBER_EXISTS
           );
-          return;
+          return undefined;
         }
 
         const catalogNumberValue = resource.get('catalogNumber');
@@ -476,6 +477,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             : [],
           CATALOG_NUMBER_EXISTS
         );
+        return undefined;
       },
     },
   },
