@@ -17,11 +17,11 @@ describe('AppResourcesAside (simple no conformation case)', () => {
 
     const { asFragment, unmount } = mount(
       <AppResourcesAside
-        resources={testAppResources}
-        isEmbedded
-        onOpen={onOpen}
-        filters={undefined}
         conformations={[[], setConformations]}
+        filters={undefined}
+        isEmbedded
+        resources={testAppResources}
+        onOpen={onOpen}
       />
     );
 
@@ -50,11 +50,11 @@ describe('AppResourcesAside (expanded case)', () => {
       asFragment: asFragmentInitial,
     } = mount(
       <AppResourcesAside
-        resources={testAppResources}
-        isEmbedded
-        onOpen={onOpen}
-        filters={undefined}
         conformations={[_conformations, setConformations]}
+        filters={undefined}
+        isEmbedded
+        resources={testAppResources}
+        onOpen={onOpen}
       />
     );
 
@@ -72,11 +72,11 @@ describe('AppResourcesAside (expanded case)', () => {
       getAllByRole: getIntermediate,
     } = mount(
       <AppResourcesAside
-        resources={testAppResources}
-        isEmbedded
-        onOpen={onOpen}
-        filters={undefined}
         conformations={[_conformations, setConformations]}
+        filters={undefined}
+        isEmbedded
+        resources={testAppResources}
+        onOpen={onOpen}
       />
     );
 
@@ -95,11 +95,11 @@ describe('AppResourcesAside (expanded case)', () => {
       getAllByRole: getFinal,
     } = mount(
       <AppResourcesAside
-        resources={testAppResources}
-        isEmbedded
-        onOpen={onOpen}
-        filters={undefined}
         conformations={[_conformations, setConformations]}
+        filters={undefined}
+        isEmbedded
+        resources={testAppResources}
+        onOpen={onOpen}
       />
     );
 
@@ -124,11 +124,11 @@ describe('AppResourcesAside (expanded case)', () => {
       mount(
         <Router.MemoryRouter initialEntries={['/specify/resources/']}>
           <AppResourcesAside
-            resources={testAppResources}
-            isEmbedded
-            onOpen={onOpen}
-            filters={undefined}
             conformations={[_conformations, setConformations]}
+            filters={undefined}
+            isEmbedded
+            resources={testAppResources}
+            onOpen={onOpen}
           />
         </Router.MemoryRouter>
       );
