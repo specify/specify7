@@ -1,11 +1,12 @@
-import React from "react";
 import { render } from "@testing-library/react";
-import { LoadingContext } from "../../Core/Contexts";
+import React from "react";
+
+import { mount } from "../../../tests/reactUtils";
 import { f } from "../../../utils/functools";
+import { LoadingContext } from "../../Core/Contexts";
+import * as FilePickerModule from "../../Molecules/FilePicker";
 import { AppResourceDownload } from "../EditorComponents";
 import { testAppResources } from "./testAppResources";
-import { mount } from "../../../tests/reactUtils";
-import * as FilePickerModule from "../../Molecules/FilePicker";
 
 const mockDownload = jest.fn();
 
@@ -23,7 +24,7 @@ describe("AppResourceDownload", () => {
     test("simple render", () => {
         const { asFragment } = render(
             <LoadingContext.Provider value={f.void}>
-                <AppResourceDownload resource={resource} data={testData} />
+                <AppResourceDownload data={testData} resource={resource} />
             </LoadingContext.Provider>
         );
         expect(asFragment()).toMatchSnapshot();
@@ -32,12 +33,12 @@ describe("AppResourceDownload", () => {
     test('download file', async () => {
         const { getByRole, user } = mount(
             <LoadingContext.Provider value={f.void}>
-                <AppResourceDownload resource={resource} data={testData} />
+                <AppResourceDownload data={testData} resource={resource} />
             </LoadingContext.Provider>
         );
         const button = getByRole('button');
         await user.click(button);
-        expect(mockDownload).toBeCalled();
+        expect(mockDownload).toHaveBeenCalled();
         expect(mockDownload.mock.lastCall).toEqual(["preferences.properties", "testString"]);
     });
 
