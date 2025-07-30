@@ -1,7 +1,8 @@
 import { renderHook } from '@testing-library/react';
-import { useIndent } from '../EditorComponents';
-import { userPreferences } from '../../Preferences/userPreferences';
 import { act } from 'react-dom/test-utils';
+
+import { userPreferences } from '../../Preferences/userPreferences';
+import { useIndent } from '../EditorComponents';
 
 describe('useIndent', () => {
   test('simple render', () => {
