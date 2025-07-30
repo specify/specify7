@@ -170,10 +170,10 @@ def get_unique_catnum_across_comp_co_coll_pref(collection, user) -> bool:
         if collection_prefs_json is not None:
             collection_prefs_dict = json.loads(collection_prefs_json)
 
-            unique_catalog_number_pref = collection_prefs_dict.get('catalogNumberParentInheritance', {})
+            unique_catalog_number_pref = collection_prefs_dict.get('uniqueCatalogNumberAccrossComponentAndCO', {})
             behavior = unique_catalog_number_pref.get('behavior', {}) \
                 if isinstance(unique_catalog_number_pref, dict) else {}
-            unique_catnum_enabled = behavior.get('inheritance', False) if isinstance(behavior, dict) else False
+            unique_catnum_enabled = behavior.get('uniqueness', False) if isinstance(behavior, dict) else False
 
             if not isinstance(unique_catnum_enabled, bool):
                 unique_catnum_enabled = False

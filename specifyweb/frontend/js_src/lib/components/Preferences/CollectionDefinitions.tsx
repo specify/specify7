@@ -133,7 +133,7 @@ export const collectionPreferenceDefinitions = {
       behavior: {
         title: preferencesText.behavior(),
         items: {
-          inheritance: definePref<boolean>({
+          uniqueness: definePref<boolean>({
             title: preferencesText.uniqueCatNumberAcrossCompAndCo(),
             requiresReload: false,
             visible: false,

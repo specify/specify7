@@ -208,7 +208,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         const uniqueCatalogNumberAccrossComponentAndCOPref = preferences.get(
           'uniqueCatalogNumberAccrossComponentAndCO',
           'behavior',
-          'inheritance'
+          'uniqueness'
         );
 
         if (!uniqueCatalogNumberAccrossComponentAndCOPref) {
@@ -436,7 +436,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         const uniqueCatalogNumberAccrossComponentAndCOPref = preferences.get(
           'uniqueCatalogNumberAccrossComponentAndCO',
           'behavior',
-          'inheritance'
+          'uniqueness'
         );
 
         if (!uniqueCatalogNumberAccrossComponentAndCOPref) {
