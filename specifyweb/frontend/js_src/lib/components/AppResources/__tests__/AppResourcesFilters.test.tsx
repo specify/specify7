@@ -1,9 +1,10 @@
 import React from "react";
+
 import { mount } from "../../../tests/reactUtils";
-import { testAppResources } from "./testAppResources";
-import { AppResourcesFilters } from "../Filters";
 import { getCache, setCache } from "../../../utils/cache";
 import { UnloadProtectsContext } from "../../Router/UnloadProtect";
+import { AppResourcesFilters } from "../Filters";
+import { testAppResources } from "./testAppResources";
 
 beforeEach(() => {
     setCache('appResources', 'filters', { appResources: [], viewSets: false }, false);
