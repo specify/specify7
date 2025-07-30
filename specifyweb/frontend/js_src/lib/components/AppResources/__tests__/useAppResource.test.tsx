@@ -49,7 +49,8 @@ describe('useAppResource', () => {
     render(
       <TestComponentWrapperRouter
         initialEntries={[`/${appResourceToUse.id}`]}
-        path=':id'>
+        path=":id"
+      >
         <TestComponent
           mode="appResources"
           newResource={serializedNewResource}
@@ -74,9 +75,7 @@ describe('useAppResource', () => {
     const onResultSet = jest.fn();
 
     render(
-      <TestComponentWrapperRouter
-        initialEntries={[`/2048`]}
-        path=':id'>
+      <TestComponentWrapperRouter initialEntries={[`/2048`]} path=":id">
         <TestComponent
           mode="appResources"
           newResource={serializedNewResource}
@@ -104,7 +103,8 @@ describe('useAppResource', () => {
     render(
       <TestComponentWrapperRouter
         initialEntries={[`/${viewSetToUse.id}`]}
-        path=':id'>
+        path=":id"
+      >
         <TestComponent
           mode="viewSets"
           newResource={serializedNewResource}
@@ -129,9 +129,7 @@ describe('useAppResource', () => {
     const onResultSet = jest.fn();
 
     render(
-      <TestComponentWrapperRouter
-        initialEntries={[`/2048`]}
-        path=':id'>
+      <TestComponentWrapperRouter initialEntries={[`/2048`]} path=":id">
         <TestComponent
           mode="viewSets"
           newResource={serializedNewResource}

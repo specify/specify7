@@ -52,4 +52,4 @@ export const clearIdStore = () => {
   keys.forEach((key) => {
     delete idStore[key];
   });
-}
+};
