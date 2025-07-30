@@ -164,6 +164,7 @@ export function CollectionOneToManyPlugin({
       typeof data === 'object' ? (
         <DataEntry.Add
           aria-pressed={state.type === 'SearchState'}
+          enableShortcut={false}
           onClick={(): void =>
             setState(
               state.type === 'SearchState'

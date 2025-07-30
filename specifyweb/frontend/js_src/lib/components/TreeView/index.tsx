@@ -15,7 +15,7 @@ import { type GetSet, type RA } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { Input, Label, Select } from '../Atoms/Form';
+import { Select } from '../Atoms/Form';
 import { ChronoChart } from '../Attachments/ChronoChart';
 import type {
   AnyTree,
@@ -254,7 +254,7 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
         rows={rows}
         searchBoxRef={searchBoxRef}
         setFocusedRow={type === lastFocusedTree ? setLastFocusedRow : undefined}
-        setLastFocusedTree={() => setLastFocusedTree(type)}
+        setLastFocusedTree={(): void => setLastFocusedTree(type)}
         tableName={tableName}
         treeDefinitionItems={treeDefinitionItems}
         onToggleEditingRanks={handleToggleEditingRanks}
@@ -318,31 +318,45 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
         />
         {tableName === 'GeologicTimePeriod' ? <ChronoChart /> : undefined}
         <Button.Icon
+          aria-pressed={hideEmptyNodes}
+          icon="filter"
+          title={treeText.associatedNodesOnly()}
+          onClick={(): void => setHideEmptyNodes(!hideEmptyNodes)}
+        />
+        <Button.Icon
           aria-pressed={isSplit}
           disabled={!canSplit}
           icon="template"
           title={treeText.splitView()}
-          onClick={() => setRawIsSplit(!rawIsSplit)}
+          onClick={(): void => setRawIsSplit(!rawIsSplit)}
         />
-        <Button.Icon
-          disabled={!isSplit}
-          icon={isHorizontal ? 'switchVertical' : 'switchHorizontal'}
-          title={isHorizontal ? treeText.vertical() : treeText.horizontal()}
-          onClick={() => {
-            setIsHorizontal(!isHorizontal);
-            if (!isHorizontal) resetDimensions();
-          }}
-        />
-        <Button.Icon
-          disabled={!isSplit}
-          icon="synchronize"
-          title={treeText.synchronize()}
-          onClick={() => {
-            lastFocusedTree === 'first'
-              ? states.second.focusPath[1](states[lastFocusedTree].focusPath[0])
-              : states.first.focusPath[1](states[lastFocusedTree].focusPath[0]);
-          }}
-        />
+        {isSplit && (
+          <>
+            <Button.Icon
+              disabled={!isSplit}
+              icon={isHorizontal ? 'switchVertical' : 'switchHorizontal'}
+              title={isHorizontal ? treeText.vertical() : treeText.horizontal()}
+              onClick={(): void => {
+                setIsHorizontal(!isHorizontal);
+                if (!isHorizontal) resetDimensions();
+              }}
+            />
+            <Button.Icon
+              disabled={!isSplit}
+              icon="synchronize"
+              title={treeText.synchronize()}
+              onClick={(): void =>
+                lastFocusedTree === 'first'
+                  ? states.second.focusPath[1](
+                      states[lastFocusedTree].focusPath[0]
+                    )
+                  : states.first.focusPath[1](
+                      states[lastFocusedTree].focusPath[0]
+                    )
+              }
+            />
+          </>
+        )}
         <span className="-ml-2 flex-1" />
         <ErrorBoundary dismissible>
           <TreeViewActions
@@ -384,13 +398,6 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
       ) : (
         treeContainer('first')
       )}
-      <Label.Inline>
-        <Input.Checkbox
-          checked={hideEmptyNodes}
-          onValueChange={setHideEmptyNodes}
-        />
-        {treeText.associatedNodesOnly()}
-      </Label.Inline>
     </Container.Full>
   );
 }

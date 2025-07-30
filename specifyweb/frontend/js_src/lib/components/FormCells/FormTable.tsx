@@ -507,6 +507,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                     {isExpanded[resource.cid] === true && (
                       <FormMeta
                         className="flex-1"
+                        enableKeyboardShortcut={false}
                         resource={resource}
                         viewDescription={expandedViewDefinition}
                       />
@@ -547,6 +548,7 @@ export function FormTable<SCHEMA extends AnySchema>({
         ) : undefined}
         {hasTablePermission(relationship.relatedTable.name, 'create') ? (
           <DataEntry.Add
+            enableShortcut={dialog !== false}
             onClick={(): void => {
               const resource = new relationship.relatedTable.Resource();
               handleAddResources([resource]);

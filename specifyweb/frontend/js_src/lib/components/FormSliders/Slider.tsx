@@ -5,15 +5,21 @@ import { clamp } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function Slider({
   value,
   count,
   onChange: handleChange,
+  enableKeyboardShortcuts,
 }: {
   readonly value: number;
   readonly count: number;
   readonly onChange: ((newValue: number) => void) | undefined;
+  /**
+   * If true, keyboard shortcuts will be enabled for this slider
+   */
+  readonly enableKeyboardShortcuts: boolean;
 }): JSX.Element | null {
   const [pendingValue, setPendingValue] = React.useState<number>(value);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
@@ -26,22 +32,63 @@ export function Slider({
   );
   const max = Math.max(1, count);
   const resolvedValue = Number.isNaN(pendingValue) ? '' : pendingValue + 1;
+
+  const goToFirstRecord =
+    value === 0 || handleChange === undefined
+      ? undefined
+      : (): void => handleChange?.(0);
+  const goToPreviousRecord =
+    value === 0 || handleChange === undefined
+      ? undefined
+      : (): void => handleChange(value - 1);
+  const goToNextRecord =
+    value + 1 === count || handleChange === undefined
+      ? undefined
+      : (): void => handleChange?.(value + 1);
+  const goToLastRecord =
+    value + 1 === count || handleChange === undefined
+      ? undefined
+      : (): void => handleChange?.(count - 1);
+
+  const goToFirstRecordShortcut = userPreferences.useKeyboardShortcut(
+    'form',
+    'recordSet',
+    'goToFirstRecord',
+    enableKeyboardShortcuts ? goToFirstRecord : undefined
+  );
+  const goToPreviousRecordShortcut = userPreferences.useKeyboardShortcut(
+    'form',
+    'recordSet',
+    'goToPreviousRecord',
+    enableKeyboardShortcuts ? goToPreviousRecord : undefined
+  );
+  const goToNextRecordShortcut = userPreferences.useKeyboardShortcut(
+    'form',
+    'recordSet',
+    'goToNextRecord',
+    enableKeyboardShortcuts ? goToNextRecord : undefined
+  );
+  const goToLastRecordShortcut = userPreferences.useKeyboardShortcut(
+    'form',
+    'recordSet',
+    'goToLastRecord',
+    enableKeyboardShortcuts ? goToLastRecord : undefined
+  );
+
   return count > 0 ? (
     <nav className="flex justify-center gap-2 print:hidden">
       <Button.Small
-        aria-label={formsText.firstRecord()}
-        disabled={value === 0 || handleChange === undefined}
-        title={formsText.firstRecord()}
-        onClick={(): void => handleChange?.(0)}
+        aria-label={formsText.goToFirstRecord()}
+        title={`${formsText.goToFirstRecord()}${goToFirstRecordShortcut}`}
+        onClick={goToFirstRecord}
       >
         {icons.chevronDoubleLeft}
       </Button.Small>
       <Button.Small
-        aria-label={formsText.previousRecord()}
+        aria-label={formsText.goToPreviousRecord()}
         className="px-4 dark:bg-neutral-500"
-        disabled={value === 0 || handleChange === undefined}
-        title={formsText.previousRecord()}
-        onClick={(): void => handleChange?.(value - 1)}
+        title={`${formsText.goToPreviousRecord()}${goToPreviousRecordShortcut}`}
+        onClick={goToPreviousRecord}
       >
         {icons.chevronLeft}
       </Button.Small>
@@ -84,19 +131,17 @@ export function Slider({
         <span>{count}</span>
       </div>
       <Button.Small
-        aria-label={formsText.nextRecord()}
+        aria-label={formsText.goToNextRecord()}
         className="px-4 dark:bg-neutral-500"
-        disabled={value + 1 === count || handleChange === undefined}
-        title={formsText.nextRecord()}
-        onClick={(): void => handleChange?.(value + 1)}
+        title={`${formsText.goToNextRecord()}${goToNextRecordShortcut}`}
+        onClick={goToNextRecord}
       >
         {icons.chevronRight}
       </Button.Small>
       <Button.Small
-        aria-label={formsText.lastRecord()}
-        disabled={value + 1 === count || handleChange === undefined}
-        title={formsText.lastRecord()}
-        onClick={(): void => handleChange?.(count - 1)}
+        aria-label={formsText.goToLastRecord()}
+        title={`${formsText.goToLastRecord()}${goToLastRecordShortcut}`}
+        onClick={goToLastRecord}
       >
         {icons.chevronDoubleRight}
       </Button.Small>

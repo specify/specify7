@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
@@ -8,7 +9,11 @@ import { f } from '../../utils/functools';
 import { mergeParsers, parserFromType } from '../../utils/parser/definitions';
 import { parseValue } from '../../utils/parser/parse';
 import type { GetOrSet, RA } from '../../utils/types';
-import { filterArray, setDevelopmentGlobal } from '../../utils/types';
+import {
+  filterArray,
+  localized,
+  setDevelopmentGlobal,
+} from '../../utils/types';
 import { keysToLowerCase, replaceKey } from '../../utils/utils';
 import { SECOND } from '../Atoms/timeUnits';
 import { softFail } from '../Errors/Crash';
@@ -17,6 +22,10 @@ import {
   contextUnlockedPromise,
   foreverFetch,
 } from '../InitialContext';
+import {
+  useKeyboardShortcutLabel,
+  useManualKeyboardShortcut,
+} from '../KeyboardShortcuts/hooks';
 import { formatUrl } from '../Router/queryString';
 import type { GenericPreferences, PreferenceItem } from './types';
 
@@ -88,7 +97,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
   /**
    * Fetch preferences from back-end and update local cache with fetched values
    */
-  async fetch(): Promise<ResourceWithData> {
+  public async fetch(): Promise<ResourceWithData> {
     const entryPoint = await contextUnlockedPromise;
     if (entryPoint === 'main') {
       if (typeof this.resourcePromise === 'object') return this.resourcePromise;
@@ -365,12 +374,15 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
   ): GetOrSet<
     DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
   > {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const preferences = React.useContext(this.Context) ?? this;
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [localValue, setLocalValue] = React.useState<
       DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
     >(() => preferences.get(category, subcategory, item));
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     React.useEffect(
       () =>
         preferences.events.on('update', (payload) => {
@@ -387,6 +399,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
       [category, subcategory, item, preferences]
     );
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const updatePref = React.useCallback(
       (
         newPref:
@@ -413,6 +426,59 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
     );
 
     return [localValue, updatePref] as const;
+  }
+
+  /**
+   * React Hook for reacting to keyboard shortcuts user pressed for a given
+   * action.
+   *
+   * The hook also returns a localized string representing the keyboard
+   * shortcut - this string can be displayed in UI tooltips.
+   */
+  // eslint-disable-next-line max-params
+  public useKeyboardShortcut<
+    CATEGORY extends string & keyof DEFINITIONS,
+    SUBCATEGORY extends CATEGORY extends keyof DEFINITIONS
+      ? string & keyof DEFINITIONS[CATEGORY]['subCategories']
+      : never,
+    ITEM extends string &
+      keyof DEFINITIONS[CATEGORY]['subCategories'][SUBCATEGORY]['items']
+  >(
+    category: CATEGORY,
+    subcategory: SUBCATEGORY,
+    item: ITEM,
+    callback: (() => void) | undefined
+  ): LocalizedString {
+    const [shortcuts] = this.use(category, subcategory, item);
+
+    const hasCallback = typeof callback === 'function';
+
+    // Calling hook conditionally like this is fine as this condition is constant during runtime of a page
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      React.useEffect(() => {
+        const definition = this.definition(
+          category,
+          subcategory,
+          item
+        ) as PreferenceItem<unknown>;
+        if (
+          !('renderer' in definition) ||
+          definition.renderer.name !== 'KeyboardShortcutPreferenceItem'
+        )
+          throw new Error(
+            `Trying to listen to keyboard shortcut on a non-keyboard shortcut preference item '${category}.${subcategory}.${item}'`
+          );
+      });
+    }
+
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useManualKeyboardShortcut(shortcuts, callback);
+
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const localizedShortcut = useKeyboardShortcutLabel(shortcuts);
+
+    return hasCallback ? localizedShortcut : localized('');
   }
 }
 
