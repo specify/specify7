@@ -22,7 +22,7 @@ msgstr ""
 msgid "appResources"
 msgstr "App Ressourcen"
 
-#: components/AppResources/Create.tsx:284
+#: components/AppResources/Create.tsx:286
 #: components/FormEditor/Create.tsx:265
 #: components/FormMeta/Definition.tsx:31
 #: components/FormMeta/Definition.tsx:74
@@ -505,7 +505,7 @@ msgstr "Vorhandene Ansichtsdefinition kopieren"
 msgid "copyDefaultForm"
 msgstr "Standardansichtsdefinition kopieren"
 
-#: components/AppResources/Create.tsx:228
+#: components/AppResources/Create.tsx:230
 #. Used in: Components > App Resources > Create
 #, fuzzy
 msgid "copyDefaultForms"

@@ -814,7 +814,7 @@ msgstr "Konfigurieren von Interaktionstabellen"
 msgid "formMeta"
 msgstr "Formular-Metadaten"
 
-#: components/AppResources/Create.tsx:283
+#: components/AppResources/Create.tsx:285
 #: components/AppResources/Editor.tsx:250
 #: components/Formatters/formatters.ts:58
 #: components/Forms/BaseResourceView.tsx:124

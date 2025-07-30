@@ -820,7 +820,7 @@ msgstr "Configurer les tables d'interaction"
 msgid "formMeta"
 msgstr "Formulaire Méta"
 
-#: components/AppResources/Create.tsx:283
+#: components/AppResources/Create.tsx:285
 #: components/AppResources/Editor.tsx:250
 #: components/Formatters/formatters.ts:58
 #: components/Forms/BaseResourceView.tsx:124

@@ -695,7 +695,7 @@ msgstr "Configure interaction tables"
 msgid "formMeta"
 msgstr "Form Meta"
 
-#: components/AppResources/Create.tsx:283
+#: components/AppResources/Create.tsx:285
 #: components/AppResources/Editor.tsx:250
 #: components/Formatters/formatters.ts:58
 #: components/Forms/BaseResourceView.tsx:124

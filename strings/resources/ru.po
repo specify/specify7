@@ -22,7 +22,7 @@ msgstr ""
 msgid "appResources"
 msgstr "Ресурсы приложений"
 
-#: components/AppResources/Create.tsx:284
+#: components/AppResources/Create.tsx:286
 #: components/FormEditor/Create.tsx:265
 #: components/FormMeta/Definition.tsx:31
 #: components/FormMeta/Definition.tsx:74
@@ -457,7 +457,7 @@ msgstr "Копировать существующее определение п�
 msgid "copyDefaultForm"
 msgstr "Форматеры записи"
 
-#: components/AppResources/Create.tsx:228
+#: components/AppResources/Create.tsx:230
 #. Used in: Components > App Resources > Create
 msgid "copyDefaultForms"
 msgstr "Копировать формы по умолчанию"
