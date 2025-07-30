@@ -28,7 +28,7 @@ describe("AppResourceLoad", () => {
 
     test("load file", async () => {
         const handleLoaded = jest.fn();
-        const { getByRole, user, asFragment, container } = mount(
+        const { getByRole, user } = mount(
             <UnloadProtectsContext.Provider value={[]}>
                 <LoadingContext.Provider value={f.void}>
                     <AppResourceLoad onLoaded={handleLoaded} />
