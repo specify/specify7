@@ -1,11 +1,12 @@
-import React from 'react';
 import { fireEvent, render, waitFor } from "@testing-library/react";
+import React from 'react';
+
 import { clearIdStore } from "../../../hooks/useId";
-import { LoadingContext } from "../../Core/Contexts";
-import { f } from "../../../utils/functools";
-import { AppResourceLoad } from '../EditorComponents';
 import { mount } from '../../../tests/reactUtils';
+import { f } from "../../../utils/functools";
+import { LoadingContext } from "../../Core/Contexts";
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
+import { AppResourceLoad } from '../EditorComponents';
 
 beforeEach(() => {
     clearIdStore();
@@ -53,8 +54,8 @@ describe("AppResourceLoad", () => {
         fireEvent.change(input, { target: { files: [testFile] } });
 
         await waitFor(() => {
-            expect(handleLoaded).toBeCalledTimes(1);
-            expect(handleLoaded).toBeCalledWith('Some Text Contents', 'text/plain');
+            expect(handleLoaded).toHaveBeenCalledTimes(1);
+            expect(handleLoaded).toHaveBeenCalledWith('Some Text Contents', 'text/plain');
         });
 
     })
