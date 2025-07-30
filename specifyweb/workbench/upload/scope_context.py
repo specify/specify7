@@ -28,6 +28,7 @@ class ScopeContext:
         self.cache['cotype_column'] = None
         self.cache['component_type_column'] = None
         
+
     def set_is_variable(self):
         # We "discover" whether the scoping is variable across the rows.
         # If it is not variable, we can just perform it once and reuse.
