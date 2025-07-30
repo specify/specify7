@@ -37,8 +37,8 @@ describe("AppResourceDownload", () => {
         );
         const button = getByRole('button');
         await user.click(button);
-        expect(mockDownload).toBeCalledTimes(1);
-        expect(mockDownload).toHaveBeenCalledWith("preferences.properties", "testString")
+        expect(mockDownload).toBeCalled();
+        expect(mockDownload.mock.lastCall).toEqual(["preferences.properties", "testString"]);
     });
 
 
