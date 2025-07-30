@@ -54,7 +54,7 @@ describe("AppResourceLoad", () => {
         fireEvent.change(input, { target: { files: [testFile] } });
 
         await waitFor(() => {
-            expect(handleLoaded).toBeCalled()
+            expect(handleLoaded).toHaveBeenCalled()
             expect(handleLoaded.mock.lastCall).toEqual(['Some Text Contents', 'text/plain']);
         });
 
