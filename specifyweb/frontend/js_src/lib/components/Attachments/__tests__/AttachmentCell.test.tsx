@@ -1,21 +1,22 @@
-import React from "react";
-import { mount } from "../../../tests/reactUtils";
-import { AttachmentCell } from "../Cell";
-import { requireContext } from "../../../tests/helpers";
-import { GetOrSet, GetSet } from "../../../utils/types";
-import * as AsyncState from "../../../hooks/useAsyncState";
-import { AnySchema, SerializedResource } from "../../DataModel/helperTypes";
-import { Attachment } from "../../DataModel/types";
-import { SpecifyResource } from "../../DataModel/legacyTypes";
-import { SpecifyTable } from "../../DataModel/specifyTable";
-import { f } from "../../../utils/functools";
 import { waitFor } from "@testing-library/react";
-import attachmentSettings from '../../../tests/ajax/static/context/attachment_settings.json';
-import { overrideAttachmentSettings } from "../attachments";
+import React from "react";
+
+import * as AsyncState from "../../../hooks/useAsyncState";
 import { clearIdStore } from "../../../hooks/useId";
 import { overrideAjax } from "../../../tests/ajax";
+import attachmentSettings from '../../../tests/ajax/static/context/attachment_settings.json';
+import { requireContext } from "../../../tests/helpers";
+import { mount } from "../../../tests/reactUtils";
+import { f } from "../../../utils/functools";
+import type { GetOrSet, GetSet } from "../../../utils/types";
 import { LoadingContext } from "../../Core/Contexts";
+import type { AnySchema, SerializedResource } from "../../DataModel/helperTypes";
+import type { SpecifyResource } from "../../DataModel/legacyTypes";
+import type { SpecifyTable } from "../../DataModel/specifyTable";
 import { tables } from "../../DataModel/tables";
+import type { Attachment } from "../../DataModel/types";
+import { overrideAttachmentSettings } from "../attachments";
+import { AttachmentCell } from "../Cell";
 
 requireContext();
 
@@ -61,7 +62,7 @@ function useAsyncRef<T>(
 
 function AttachmentCellMock({ options, ...rest }: {
     readonly options: {
-        trigger: () => void,
+        readonly trigger: () => void,
     }
     readonly attachment: SerializedResource<Attachment>;
     readonly onOpen: () => void;
@@ -156,7 +157,7 @@ describe("AttachmentCell", () => {
         "timestampcreated": "2025-07-31T17:00:40",
         "timestampmodified": "2025-07-31T17:00:40",
         "version": 0,
-        "attachment": attachment,
+        attachment,
         "collectionobject": "/api/specify/collectionobject/51731/",
         "createdbyagent": "/api/specify/agent/3/",
         "modifiedbyagent": null,
@@ -190,24 +191,24 @@ describe("AttachmentCell", () => {
             <LoadingContext.Provider value={f.void} >
                 <AttachmentCellMock
                     attachment={attachment}
-                    onOpen={handleOpen}
-                    related={[undefined, setRelated]}
-                    onViewRecord={handleViewRecord}
                     options={options}
+                    related={[undefined, setRelated]}
+                    onOpen={handleOpen}
+                    onViewRecord={handleViewRecord}
                 />
             </LoadingContext.Provider>
         );
 
-        await waitFor(() => { expect(setStateMock).toBeCalled() });
+        await waitFor(() => { expect(setStateMock).toHaveBeenCalled() });
 
         rerender(
             <LoadingContext.Provider value={f.void} >
                 <AttachmentCellMock
                     attachment={attachment}
-                    onOpen={handleOpen}
-                    related={[undefined, setRelated]}
-                    onViewRecord={handleViewRecord}
                     options={options}
+                    related={[undefined, setRelated]}
+                    onOpen={handleOpen}
+                    onViewRecord={handleViewRecord}
                 />
             </LoadingContext.Provider>
         );
@@ -219,14 +220,14 @@ describe("AttachmentCell", () => {
         expect(handleOpen).not.toHaveBeenCalled();
         await user.click(button)
 
-        expect(handleOpen).toBeCalled();
+        expect(handleOpen).toHaveBeenCalled();
 
         const relatedButton = getAllByRole('button')[0];
         await user.click(relatedButton);
         expect(setRelated.mock.lastCall).toMatchSnapshot();
 
-        expect(handleViewRecord).toBeCalled();
-        expect(handleViewRecord).toBeCalledWith(tables.CollectionObject, 51731);
+        expect(handleViewRecord).toHaveBeenCalled();
+        expect(handleViewRecord).toHaveBeenCalledWith(tables.CollectionObject, 51_731);
 
     });
 })
