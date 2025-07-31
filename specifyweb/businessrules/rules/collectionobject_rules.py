@@ -13,7 +13,7 @@ def collectionobject_pre_save(co):
         co.collectionobjecttype = co.collection.collectionobjecttype
 
     agent = co.createdbyagent
-    if agent is not None or agent.specifyuser is not None:
+    if agent is not None and agent.specifyuser is not None:
 
         unique_catnum_across_comp_co_coll_pref = get_unique_catnum_across_comp_co_coll_pref(co.collection, co.createdbyagent.specifyuser)
 
