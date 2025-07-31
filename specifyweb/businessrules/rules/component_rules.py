@@ -9,12 +9,13 @@ def component_pre_save(comp):
     unique_catnum_across_comp_co_coll_pref = get_unique_catnum_across_comp_co_coll_pref(comp.collectionobject.collection, comp.createdbyagent.specifyuser)
 
     if unique_catnum_across_comp_co_coll_pref: 
-        contains_co_duplicates = Collectionobject.objects.filter(
-        catalognumber=comp.catalognumber).exclude(pk=comp.pk).exists()
+        if comp.catalognumber is not None:
+            contains_co_duplicates = Collectionobject.objects.filter(
+            catalognumber=comp.catalognumber).exclude(pk=comp.pk).exists()
 
-        contains_component_duplicates = Component.objects.filter(
-        catalognumber=comp.catalognumber).exclude(pk=comp.pk).exists()
+            contains_component_duplicates = Component.objects.filter(
+            catalognumber=comp.catalognumber).exclude(pk=comp.pk).exists()
 
-        if contains_co_duplicates or contains_component_duplicates: 
-            raise BusinessRuleException(
-                'Catalog Number is already in use for another Collection Object or Component in this collection.')
+            if contains_co_duplicates or contains_component_duplicates: 
+                raise BusinessRuleException(
+                    'Catalog Number is already in use for another Collection Object or Component in this collection.')

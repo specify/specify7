@@ -351,8 +351,6 @@ class ScopedTreeRecord(NamedTuple):
         if len(treedefs_in_row) > 0 and cotype_treedef_id == list(treedefs_in_row)[0]:
             return None
         return self, WorkBenchParseFailure('invalidCotype', {}, self.cotype_column)
-    
-    # TODO: Add validate for unique cat num 
 
     # Ensure component type has same taxontreedef for ranks in row
     def _validate_trees_with_component_type(self, row: Row, treedefs_in_row: set[int]):

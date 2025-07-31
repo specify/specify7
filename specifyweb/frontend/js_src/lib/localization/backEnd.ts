@@ -575,8 +575,4 @@ export const backEndText = createDictionary({
   invalidComponentType: {
     'en-us': 'Invalid {componentType: string} for selected tree rank(s)',
   },
-  catNumAlreadyInUse: {
-    'en-us':
-      '{catalogNumber: string} is already in use by a Component or a Collection Object in this collection',
-  },
 } as const);

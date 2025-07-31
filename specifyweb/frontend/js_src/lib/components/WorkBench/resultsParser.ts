@@ -280,10 +280,6 @@ export function resolveValidationMessage(
     return backEndText.invalidComponentType({
       componentType: tables.Component.field.type.label,
     });
-  else if (key === 'catNumAlreadyInUse')
-    return backEndText.catNumAlreadyInUse({
-      catalogNumber: tables.Component.field.catalogNumber.label,
-    });
   else if (key === 'missingRequiredTreeParent')
     return backEndText.missingRequiredTreeParent({
       names: formatConjunction((payload.names as RA<LocalizedString>) ?? []),
