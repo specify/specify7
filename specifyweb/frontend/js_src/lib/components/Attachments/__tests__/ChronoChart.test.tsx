@@ -1,38 +1,34 @@
-import React from "react";
-import { mount } from "../../../tests/reactUtils";
-import { ChronoChart } from "../ChronoChart";
-import { UnloadProtectsContext } from "../../Router/UnloadProtect";
+import React from 'react';
 
-describe("ChronoChart", () => {
+import { mount } from '../../../tests/reactUtils';
+import { UnloadProtectsContext } from '../../Router/UnloadProtect';
+import { ChronoChart } from '../ChronoChart';
 
-    test('simple render', () => {
+describe('ChronoChart', () => {
+  test('simple render', () => {
+    const { asFragment } = mount(<ChronoChart />);
+    expect(asFragment()).toMatchSnapshot();
+  });
 
-        const { asFragment } = mount(<ChronoChart />);
-        expect(asFragment()).toMatchSnapshot();
-    });
+  test('dialog open and close', async () => {
+    const { getAllByRole, user } = mount(
+      <UnloadProtectsContext.Provider value={[]}>
+        <ChronoChart />
+      </UnloadProtectsContext.Provider>
+    );
 
-    test('dialog open and close', async () => {
+    const button = getAllByRole('button')[0];
 
-        const { getAllByRole, user } = mount(
-            <UnloadProtectsContext.Provider value={[]}>
-                <ChronoChart />
-            </UnloadProtectsContext.Provider>
+    await user.click(button);
 
-        );
+    const dialog = getAllByRole('dialog')[0];
 
-        const button = getAllByRole('button')[0];
+    expect(dialog).toMatchSnapshot();
 
-        await user.click(button);
+    const closeButton = getAllByRole('button')[3];
 
-        const dialog = getAllByRole('dialog')[0];
+    await user.click(closeButton);
 
-        expect(dialog).toMatchSnapshot();
-
-        const closeButton = getAllByRole('button')[3];
-
-        await user.click(closeButton);
-
-        expect(() => getAllByRole('dialog')).toThrowError();
-
-    });
-})
+    expect(() => getAllByRole('dialog')).toThrow();
+  });
+});
