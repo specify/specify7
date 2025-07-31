@@ -232,22 +232,22 @@ msgstr "Спеціальні"
 msgid "leafletLayers"
 msgstr "Шари листівок"
 
-#: components/AppResources/Tabs.tsx:144
+#: components/AppResources/Tabs.tsx:145
 #. Used in: Components > App Resources > Tabs
 msgid "textEditor"
 msgstr "Текстовий редактор"
 
-#: components/AppResources/Tabs.tsx:142
+#: components/AppResources/Tabs.tsx:143
 #. Used in: Components > App Resources > Tabs
 msgid "xmlEditor"
 msgstr "Редактор XML"
 
-#: components/AppResources/Tabs.tsx:143
+#: components/AppResources/Tabs.tsx:144
 #. Used in: Components > App Resources > Tabs
 msgid "jsonEditor"
 msgstr "Редактор JSON"
 
-#: components/AppResources/Tabs.tsx:141
+#: components/AppResources/Tabs.tsx:142
 #. Used in: Components > App Resources > Tabs
 msgid "visualEditor"
 msgstr "Візуальний редактор"
@@ -399,7 +399,7 @@ msgstr ""
 "Цей формат використовуватиметься, лише якщо значення поля умови дорівнює "
 "цій умові й не є нульовим."
 
-#: components/AppResources/Tabs.tsx:164
+#: components/AppResources/Tabs.tsx:165
 #. Used in: Components > App Resources > Tabs
 msgid "wrongScopeWarning"
 msgstr ""

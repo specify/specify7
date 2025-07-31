@@ -265,25 +265,25 @@ msgstr "Costumbre"
 msgid "leafletLayers"
 msgstr "Capas de los folletos"
 
-#: components/AppResources/Tabs.tsx:144
+#: components/AppResources/Tabs.tsx:145
 #. Used in: Components > App Resources > Tabs
 #, fuzzy
 msgid "textEditor"
 msgstr "Editor de texto"
 
-#: components/AppResources/Tabs.tsx:142
+#: components/AppResources/Tabs.tsx:143
 #. Used in: Components > App Resources > Tabs
 #, fuzzy
 msgid "xmlEditor"
 msgstr "Editor XML"
 
-#: components/AppResources/Tabs.tsx:143
+#: components/AppResources/Tabs.tsx:144
 #. Used in: Components > App Resources > Tabs
 #, fuzzy
 msgid "jsonEditor"
 msgstr "Editor JSON"
 
-#: components/AppResources/Tabs.tsx:141
+#: components/AppResources/Tabs.tsx:142
 #. Used in: Components > App Resources > Tabs
 #, fuzzy
 msgid "visualEditor"
@@ -460,7 +460,7 @@ msgstr ""
 "Este formato se utilizará solo si el valor del campo de condición es igual "
 "a esta condición y no es nulo."
 
-#: components/AppResources/Tabs.tsx:164
+#: components/AppResources/Tabs.tsx:165
 #. Used in: Components > App Resources > Tabs
 #, fuzzy
 msgid "wrongScopeWarning"

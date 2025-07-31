@@ -246,24 +246,24 @@ msgstr "Individuell"
 msgid "leafletLayers"
 msgstr "Leaflet-Layer"
 
-#: components/AppResources/Tabs.tsx:144
+#: components/AppResources/Tabs.tsx:145
 #. Used in: Components > App Resources > Tabs
 msgid "textEditor"
 msgstr "Text-Editor"
 
-#: components/AppResources/Tabs.tsx:142
+#: components/AppResources/Tabs.tsx:143
 #. Used in: Components > App Resources > Tabs
 #, fuzzy
 msgid "xmlEditor"
 msgstr "XML-Editor"
 
-#: components/AppResources/Tabs.tsx:143
+#: components/AppResources/Tabs.tsx:144
 #. Used in: Components > App Resources > Tabs
 #, fuzzy
 msgid "jsonEditor"
 msgstr "JSON-Editor"
 
-#: components/AppResources/Tabs.tsx:141
+#: components/AppResources/Tabs.tsx:142
 #. Used in: Components > App Resources > Tabs
 msgid "visualEditor"
 msgstr "Visueller Editor"
@@ -436,7 +436,7 @@ msgstr ""
 "Dieses Format wird nur verwendet, wenn der Wert des Bedingungsfelds dieser "
 "Bedingung entspricht und nicht null ist."
 
-#: components/AppResources/Tabs.tsx:164
+#: components/AppResources/Tabs.tsx:165
 #. Used in: Components > App Resources > Tabs
 #, fuzzy
 msgid "wrongScopeWarning"

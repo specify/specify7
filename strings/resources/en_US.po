@@ -221,22 +221,22 @@ msgstr "Custom"
 msgid "leafletLayers"
 msgstr "Leaflet Layers"
 
-#: components/AppResources/Tabs.tsx:144
+#: components/AppResources/Tabs.tsx:145
 #. Used in: Components > App Resources > Tabs
 msgid "textEditor"
 msgstr "Text Editor"
 
-#: components/AppResources/Tabs.tsx:142
+#: components/AppResources/Tabs.tsx:143
 #. Used in: Components > App Resources > Tabs
 msgid "xmlEditor"
 msgstr "XML Editor"
 
-#: components/AppResources/Tabs.tsx:143
+#: components/AppResources/Tabs.tsx:144
 #. Used in: Components > App Resources > Tabs
 msgid "jsonEditor"
 msgstr "JSON Editor"
 
-#: components/AppResources/Tabs.tsx:141
+#: components/AppResources/Tabs.tsx:142
 #. Used in: Components > App Resources > Tabs
 msgid "visualEditor"
 msgstr "Visual Editor"
@@ -386,7 +386,7 @@ msgstr ""
 "This format will be used only if the condition field value equals this "
 "condition and is not null."
 
-#: components/AppResources/Tabs.tsx:164
+#: components/AppResources/Tabs.tsx:165
 #. Used in: Components > App Resources > Tabs
 msgid "wrongScopeWarning"
 msgstr ""
