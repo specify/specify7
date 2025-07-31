@@ -176,7 +176,7 @@ jobs:
         working-directory: specifyweb/frontend/js_src
         run: |
           npm run typecheck && \
-          npm run unitTests -- --maxWorkers ${{ steps.cpu-cores.outputs.count }}
+          npm run unitTests:coverage --verbose
 
       - name: Clone branch that stores localization strings
         # Listen for changes to production branch
