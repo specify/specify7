@@ -8,7 +8,7 @@ import attachmentSettings from '../../../tests/ajax/static/context/attachment_se
 import { requireContext } from "../../../tests/helpers";
 import { mount } from "../../../tests/reactUtils";
 import { f } from "../../../utils/functools";
-import { overwriteReadOnly, type GetOrSet, type GetSet } from "../../../utils/types";
+import { type GetOrSet, type GetSet,overwriteReadOnly } from "../../../utils/types";
 import { LoadingContext } from "../../Core/Contexts";
 import type { AnySchema, SerializedResource } from "../../DataModel/helperTypes";
 import type { SpecifyResource } from "../../DataModel/legacyTypes";
