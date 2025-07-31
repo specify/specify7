@@ -8,7 +8,7 @@ import attachmentSettings from '../../../tests/ajax/static/context/attachment_se
 import { requireContext } from "../../../tests/helpers";
 import { mount } from "../../../tests/reactUtils";
 import { f } from "../../../utils/functools";
-import type { GetOrSet, GetSet } from "../../../utils/types";
+import { overwriteReadOnly, type GetOrSet, type GetSet } from "../../../utils/types";
 import { LoadingContext } from "../../Core/Contexts";
 import type { AnySchema, SerializedResource } from "../../DataModel/helperTypes";
 import type { SpecifyResource } from "../../DataModel/legacyTypes";
@@ -75,7 +75,7 @@ function AttachmentCellMock({ options, ...rest }: {
     const triggerChange = React.useCallback(() => {
         setState((old) => !old);
     }, [setState]);
-    options.trigger = triggerChange;
+    overwriteReadOnly(options, 'trigger', triggerChange);
     return (<AttachmentCell {...rest} />)
 
 }
