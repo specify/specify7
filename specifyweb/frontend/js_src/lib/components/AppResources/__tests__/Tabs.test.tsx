@@ -1,7 +1,8 @@
-import { Tabs } from "../Tabs";
 import React from "react";
-import { mount } from "../../../tests/reactUtils";
+
 import { clearIdStore } from "../../../hooks/useId";
+import { mount } from "../../../tests/reactUtils";
+import { Tabs } from "../Tabs";
 
 beforeEach(() => {
     clearIdStore();
@@ -14,7 +15,7 @@ describe("Tabs", () => {
 
         const handleChange = jest.fn();
 
-        const { asFragment } = mount(<Tabs tabs={{}} index={[0, handleChange]} />)
+        const { asFragment } = mount(<Tabs index={[0, handleChange]} tabs={{}} />)
         expect(asFragment()).toMatchSnapshot();
     });
 
@@ -27,7 +28,7 @@ describe("Tabs", () => {
             'tab2': <h1>Tab2</h1>
         };
 
-        const { asFragment, getAllByRole, user } = mount(<Tabs tabs={tabs} index={[0, handleChange]} />);
+        const { asFragment, getAllByRole, user } = mount(<Tabs index={[0, handleChange]} tabs={tabs} />);
         expect(asFragment()).toMatchSnapshot();
         expect(handleChange).not.toHaveBeenCalled();
 
@@ -35,7 +36,7 @@ describe("Tabs", () => {
         await user.click(tabElements[1]);
 
         expect(handleChange).toHaveBeenCalled();
-        expect(handleChange).toBeCalledWith(1);
+        expect(handleChange).toHaveBeenCalledWith(1);
         expect(asFragment()).toMatchSnapshot();
     });
 });
