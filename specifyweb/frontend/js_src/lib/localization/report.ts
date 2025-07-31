@@ -97,7 +97,7 @@ export const reportsText = createDictionary({
     'fr-fr': 'Paramètres du rapport',
     'uk-ua': 'Параметри звіту',
     'de-ch': 'Parameter des Berichts',
-    'pt-br': 'Parâmetros do Relatório',
+    'pt-br': 'Parâmetros do relatório',
   },
   runReport: {
     'en-us': 'Run Report',
