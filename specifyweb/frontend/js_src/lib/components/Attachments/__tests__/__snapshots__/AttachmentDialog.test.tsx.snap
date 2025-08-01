@@ -1,0 +1,433 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AttachmentDialog simple render 1`] = `
+<div
+  aria-describedby="modal-0-content"
+  aria-labelledby="modal-0-header"
+  aria-modal="true"
+  class="ReactModal__Content ReactModal__Content--after-open 
+        flex flex-col gap-2 p-4 outline-none rounded resize max-w-[90%] shadow-lg shadow-gray-500 max-h-[90%] min-w-[min(30rem,90%)]
+        overflow-x-hidden text-neutral-900 duration-0
+        dark:border dark:border-neutral-700 dark:text-neutral-200
+        
+        
+    bg-gradient-to-bl from-gray-200 via-white
+    to-white dark:from-neutral-800 dark:via-neutral-900 dark:to-neutral-900
+  
+      "
+  role="dialog"
+  style="transform: translate(0px,0px);"
+  tabindex="-1"
+>
+  <div
+    class="
+          flex items-center gap-2 md:gap-4
+          -m-4 cursor-move p-4
+          flex-wrap
+        "
+    id="modal-0-handle"
+  >
+    <div
+      class="flex items-center gap-2"
+    >
+      <span
+        class="text-blue-500"
+      >
+        <svg
+          aria-hidden="true"
+          class="w-6 h-6 flex-shrink-0"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            clip-rule="evenodd"
+            d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+            fill-rule="evenodd"
+          />
+        </svg>
+      </span>
+      <h2
+        class="font-semibold text-black dark:text-white text-xl"
+        id="modal-0-header"
+      >
+        kubiodiversitylogo.jpg
+      </h2>
+    </div>
+    <span
+      class="-ml-4 flex-1"
+    />
+    <button
+      class="button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--info-button-color)] text-white"
+      type="button"
+    >
+      Hide Form
+    </button>
+  </div>
+  <div
+    class="
+            dark:text-neutral-350 -mx-1 flex-1 overflow-y-auto px-1 py-4
+            text-gray-700 flex flex-col gap-2
+          "
+    id="modal-0-content"
+  >
+    <div
+      class="flex flex-1 gap-4 overflow-auto"
+    >
+      <button
+        aria-label="Previous"
+        class="icon link rounded p-4"
+        title="Previous"
+        type="button"
+      >
+        <svg
+          aria-hidden="true"
+          class="w-6 h-6 flex-shrink-0"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            clip-rule="evenodd"
+            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+            fill-rule="evenodd"
+          />
+        </svg>
+      </button>
+      <form
+        class="not-submitted flex flex-col gap-4 flex flex-1 !flex-row gap-8"
+        id="save-button-0-form"
+      >
+        <div
+          class="flex min-h-[theme(spacing.60)] w-full min-w-[theme(spacing.60)] flex-1 items-center justify-center"
+        >
+          <div
+            class="hover:animate-hue-rotate [.reduce-motion_&]:animate-hue-rotate"
+          >
+            <div
+              class="
+        spinner-border h-20 w-20 rounded-full border-8 border-brand-300
+        [.motion-normal_&]:m-px
+        [.motion-normal_&]:animate-spin
+        [.motion-normal_&]:border-r-transparent
+      "
+              role="status"
+            >
+              <span
+                class="sr-only"
+              >
+                Something custom!
+              </span>
+            </div>
+          </div>
+        </div>
+        <div
+          class="flex flex-col gap-2"
+        >
+          <fieldset
+            class="contents"
+          >
+            <legend>
+              <div
+                class="gap-2 flex font-bold border-b border-gray-500 pt-3 pb-1 items-center"
+              >
+                <h3
+                  class="text-lg font-bold flex items-center gap-2"
+                >
+                  kubiodiversitylogo.jpg
+                </h3>
+                <span
+                  class="-ml-2 flex-1"
+                />
+                <button
+                  aria-label="Form Meta"
+                  class="button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800 shadow-sm
+dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
+                  title="Form Meta"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="w-6 h-6 flex-shrink-0"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      clip-rule="evenodd"
+                      d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                      fill-rule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </legend>
+            <div
+              class="border border-gray-500 border-t-0 rounded-b p-1"
+            >
+              <div
+                class="
+          shrink-0
+          overflow-auto
+          
+        "
+                lang="en"
+              >
+                <div
+                  aria-label="Loading…"
+                  class="flex gap-4 flex-col"
+                >
+                  <div
+                    class="justify-beween m-4 flex flex-col flex-wrap gap-4"
+                  >
+                    <div
+                      class="flex flex-wrap items-center justify-between gap-8"
+                    >
+                      <div
+                        class="m-4 flex items-center gap-2"
+                      >
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-4 w-14 rounded"
+                        />
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-6 w-16 rounded"
+                        />
+                      </div>
+                      <div
+                        class="m-4 flex gap-2"
+                      >
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-4 w-14 rounded"
+                        />
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-6 w-16 rounded"
+                        />
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse w-6 rounded-full"
+                        />
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse w-6 rounded-full"
+                        />
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse w-6 rounded-full"
+                        />
+                      </div>
+                      <div
+                        class="m-4 flex items-center gap-2"
+                      >
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-4 w-14 rounded"
+                        />
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-6 w-16 rounded"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="flex gap-2"
+                    >
+                      <div
+                        class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-6 w-16 rounded"
+                      />
+                      <div
+                        class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-6 w-6 rounded"
+                      />
+                      <div
+                        class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-6 w-6 rounded"
+                      />
+                    </div>
+                    <div>
+                      <div
+                        class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-4 rounded"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="justify-beween m-4 flex flex-col flex-wrap gap-4"
+                  >
+                    <div
+                      class="flex flex-wrap items-center justify-between gap-8"
+                    >
+                      <div
+                        class="flex gap-2"
+                      >
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-6 w-16 rounded"
+                        />
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-6 w-6 rounded"
+                        />
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-6 w-6 rounded"
+                        />
+                      </div>
+                      <div
+                        class="m-4 flex items-center gap-2"
+                      >
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-4 w-14 rounded"
+                        />
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-6 w-16 rounded"
+                        />
+                      </div>
+                      <div
+                        class="m-4 flex items-center gap-2"
+                      >
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-4 w-14 rounded"
+                        />
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-6 w-16 rounded"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <div
+                        class="flex gap-2"
+                      >
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-6 w-6 rounded"
+                        />
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-6 w-6 rounded"
+                        />
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-6 w-16 rounded"
+                        />
+                      </div>
+                      <div
+                        class="m-4 flex justify-center gap-2"
+                      >
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-4 w-14 rounded"
+                        />
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-6 w-16 rounded"
+                        />
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse w-6 rounded-full"
+                        />
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse w-6 rounded-full"
+                        />
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse w-6 rounded-full"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="justify-beween m-4 flex flex-col flex-wrap gap-4"
+                  >
+                    <div
+                      class="flex flex-wrap items-center justify-between gap-8"
+                    >
+                      <div
+                        class="flex gap-2"
+                      >
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-6 w-64 rounded"
+                        />
+                      </div>
+                      <div
+                        class="m-4 flex items-center gap-2"
+                      >
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-4 w-14 rounded"
+                        />
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-4 w-14 rounded"
+                        />
+                      </div>
+                      <div
+                        class="m-4 flex items-center gap-2"
+                      >
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-4 w-14 rounded"
+                        />
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-6 w-16 rounded"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <div
+                        class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-4 rounded"
+                      />
+                    </div>
+                    <div>
+                      <div
+                        class="flex gap-2"
+                      >
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-6 w-16 rounded"
+                        />
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-6 w-6 rounded"
+                        />
+                        <div
+                          class="bg-gray-200 dark:bg-neutral-600 [body:not(.reduce-motion)_&]:animate-pulse h-6 w-6 rounded"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+          <span
+            class="flex-1"
+          />
+        </div>
+      </form>
+      <button
+        aria-label="Next"
+        class="icon link rounded p-4"
+        title="Next"
+        type="button"
+      >
+        <svg
+          aria-hidden="true"
+          class="w-6 h-6 flex-shrink-0"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            clip-rule="evenodd"
+            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+            fill-rule="evenodd"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div
+    class="flex gap-2 justify-end"
+  >
+    <button
+      class="button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--info-button-color)] text-white"
+      type="button"
+    >
+      Close
+    </button>
+    <input
+      class="button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm hover:brightness-90 dark:hover:brightness-150 text-white bg-[color:var(--save-button-color)]"
+      disabled=""
+      form="save-button-0-form"
+      type="submit"
+      value="Save"
+    />
+  </div>
+</div>
+`;
