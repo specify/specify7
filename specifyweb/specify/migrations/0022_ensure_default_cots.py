@@ -1,5 +1,5 @@
 from django.db import migrations
-from specifyweb.specify.utils import create_default_collection_types
+from specifyweb.specify.migration_utils.default_cots import create_default_collection_types
 
 class Migration(migrations.Migration):
 
