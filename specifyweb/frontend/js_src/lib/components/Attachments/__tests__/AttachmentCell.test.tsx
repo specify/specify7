@@ -17,6 +17,7 @@ import { tables } from "../../DataModel/tables";
 import type { Attachment } from "../../DataModel/types";
 import { overrideAttachmentSettings } from "../attachments";
 import { AttachmentCell } from "../Cell";
+import { testAttachment, testCollectionObjectAttachment } from "./utils";
 
 requireContext();
 
@@ -84,7 +85,7 @@ describe("AttachmentCell", () => {
     overrideAjax("/api/specify/collectionobjectattachment/?limit=20&attachment=5490",
         {
             "objects": [
-                collectionObjectAttachment
+                testCollectionObjectAttachment
             ],
             "meta": {
                 "limit": 20,
@@ -107,7 +108,7 @@ describe("AttachmentCell", () => {
         const { asFragment, rerender, getAllByRole, user } = mount(
             <LoadingContext.Provider value={f.void} >
                 <AttachmentCellMock
-                    attachment={attachment}
+                    attachment={testAttachment}
                     options={options}
                     related={[undefined, setRelated]}
                     onOpen={handleOpen}
@@ -121,7 +122,7 @@ describe("AttachmentCell", () => {
         rerender(
             <LoadingContext.Provider value={f.void} >
                 <AttachmentCellMock
-                    attachment={attachment}
+                    attachment={testAttachment}
                     options={options}
                     related={[undefined, setRelated]}
                     onOpen={handleOpen}
