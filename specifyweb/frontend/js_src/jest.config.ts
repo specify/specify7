@@ -24,6 +24,7 @@ import type { Config } from '@jest/types';
  */
 
 const config: Config.InitialOptions = {
+  prettierPath: null,
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 

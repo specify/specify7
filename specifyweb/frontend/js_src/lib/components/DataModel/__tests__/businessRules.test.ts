@@ -140,39 +140,142 @@ describe('Collection Object business rules', () => {
   };
   overrideAjax(otherCollectionObjectTypeUrl, otherCollectionObjectType);
 
-  test('CollectionObject -> determinations: Save blocked when a determination does not belong to COT tree', async () => {
-    const collectionObject = getBaseCollectionObject();
-    collectionObject.set(
-      'collectionObjectType',
-      getResourceApiUrl('CollectionObjectType', 1)
-    );
-
-    const determination =
-      collectionObject.getDependentResource('determinations')?.models[0];
-
-    const { result } = renderHook(() =>
-      useSaveBlockers(determination, tables.Determination.getField('Taxon'))
-    );
-
-    await act(async () => {
-      await collectionObject?.businessRuleManager?.checkField(
-        'collectionObjectType'
+  describe('determinations', () => {
+    test('CollectionObject -> determinations: Save blocked when a determination does not belong to COT tree', async () => {
+      const collectionObject = getBaseCollectionObject();
+      collectionObject.set(
+        'collectionObjectType',
+        getResourceApiUrl('CollectionObjectType', 1)
       );
-    });
-    expect(result.current[0]).toStrictEqual([
-      resourcesText.invalidDeterminationTaxon(),
-    ]);
 
-    collectionObject.set(
-      'collectionObjectType',
-      getResourceApiUrl('CollectionObjectType', 2)
-    );
-    await act(async () => {
-      await collectionObject?.businessRuleManager?.checkField(
-        'collectionObjectType'
+      const determination =
+        collectionObject.getDependentResource('determinations')?.models[0];
+
+      const { result } = renderHook(() =>
+        useSaveBlockers(determination, tables.Determination.getField('Taxon'))
       );
+
+      await act(async () => {
+        await collectionObject?.businessRuleManager?.checkField(
+          'collectionObjectType'
+        );
+      });
+      expect(result.current[0]).toStrictEqual([
+        resourcesText.invalidDeterminationTaxon(),
+      ]);
+
+      collectionObject.set(
+        'collectionObjectType',
+        getResourceApiUrl('CollectionObjectType', 2)
+      );
+      await act(async () => {
+        await collectionObject?.businessRuleManager?.checkField(
+          'collectionObjectType'
+        );
+      });
+      expect(result.current[0]).toStrictEqual([]);
     });
-    expect(result.current[0]).toStrictEqual([]);
+
+    test('Newly added determinations are current by default', async () => {
+      const collectionObject = getBaseCollectionObject();
+      const determinations =
+        collectionObject.getDependentResource('determinations');
+
+      determinations?.add(new tables.Determination.Resource());
+
+      // Old determination gets unchecked as current
+      expect(determinations?.models[0].get('isCurrent')).toBe(false);
+      // New determination becomes current by default
+      expect(determinations?.models[1].get('isCurrent')).toBe(true);
+    });
+
+    test('Save blocked when no current determinations exist', async () => {
+      const collectionObject = getBaseCollectionObject();
+      const determination =
+        collectionObject.getDependentResource('determinations')?.models[0];
+
+      determination?.set('isCurrent', false);
+
+      const { result } = renderHook(() =>
+        useSaveBlockers(
+          collectionObject,
+          tables.Determination.getField('isCurrent')
+        )
+      );
+
+      await act(async () => {
+        await determination?.businessRuleManager?.checkField('isCurrent');
+      });
+
+      expect(result.current[0]).toStrictEqual([
+        'A current determination is required.',
+      ]);
+    });
+
+    test('Save is not blocked when all determinations are deleted', async () => {
+      const collectionObject = getBaseCollectionObject();
+      const determinations =
+        collectionObject.getDependentResource('determinations');
+      const determination = determinations?.models[0];
+
+      determinations?.remove(determination!);
+
+      const { result } = renderHook(() =>
+        useSaveBlockers(
+          collectionObject,
+          tables.Determination.getField('isCurrent')
+        )
+      );
+
+      await act(async () => {
+        await determination?.businessRuleManager?.checkField('isCurrent');
+      });
+
+      expect(result.current[0]).toStrictEqual([]);
+    });
+
+    /*
+     * FEATURE: Support collection business logic on initializiation again.
+     * These were first introduced in
+     * https://github.com/specify/specify7/pull/6581, but removed due to
+     * https://github.com/specify/specify7/issues/7069
+     */
+    test.skip('CollectionObject -> determinations: determinations on initializtion is current by default', () => {
+      // We don't directly use the base because the determination is marked as current by default
+      const collectionObject = new tables.CollectionObject.Resource({
+        determinations: [
+          {
+            /*
+             * We don't directly use IDs because then the determinations will not be 'new' and the
+             * businessrule not executed
+             */
+            guid: '1',
+          },
+        ],
+      });
+      const determinations =
+        collectionObject.getDependentResource('determinations');
+      expect(determinations?.length).toBe(1);
+      expect(determinations?.models[0].get('isCurrent')).toBe(true);
+    });
+
+    test.skip('CollectionObject -> determinations: multiple determinations on intialization handled', () => {
+      const collectionObject = new tables.CollectionObject.Resource({
+        determinations: [
+          {
+            guid: '1',
+          },
+          {
+            guid: '2',
+          },
+        ],
+      });
+      const determinations =
+        collectionObject.getDependentResource('determinations');
+      expect(determinations?.length).toBe(2);
+      expect(determinations?.models[0]?.get('isCurrent')).toBe(false);
+      expect(determinations?.models[1]?.get('isCurrent')).toBe(true);
+    });
   });
 
   // Uniqueness rule check
@@ -211,101 +314,6 @@ describe('Collection Object business rules', () => {
     expect(collectionObject.get('catalogNumber')).toBe(expectedCatNumber);
     // Wait for any pending promise to complete before test finishes
     await collectionObject.businessRuleManager?.pendingPromise;
-  });
-
-  test('CollectionObject -> determinations: determinations on initializtion is current by default', () => {
-    // We don't directly use the base because the determination is marked as current by default
-    const collectionObject = new tables.CollectionObject.Resource({
-      determinations: [
-        {
-          /*
-           * We don't directly use IDs because then the determinations will not be 'new' and the
-           * businessrule not executed
-           */
-          guid: '1',
-        },
-      ],
-    });
-    const determinations =
-      collectionObject.getDependentResource('determinations');
-    expect(determinations?.length).toBe(1);
-    expect(determinations?.models[0].get('isCurrent')).toBe(true);
-  });
-
-  test('CollectionObject -> determinations: multiple determinations on intialization handled', () => {
-    const collectionObject = new tables.CollectionObject.Resource({
-      determinations: [
-        {
-          guid: '1',
-        },
-        {
-          guid: '2',
-        },
-      ],
-    });
-    const determinations =
-      collectionObject.getDependentResource('determinations');
-    expect(determinations?.length).toBe(2);
-    expect(determinations?.models[0]?.get('isCurrent')).toBe(false);
-    expect(determinations?.models[1]?.get('isCurrent')).toBe(true);
-  });
-
-  test('CollectionObject -> determinations: Newly added determinations are current by default', async () => {
-    const collectionObject = getBaseCollectionObject();
-    const determinations =
-      collectionObject.getDependentResource('determinations');
-
-    determinations?.add(new tables.Determination.Resource());
-
-    // Old determination gets unchecked as current
-    expect(determinations?.models[0].get('isCurrent')).toBe(false);
-    // New determination becomes current by default
-    expect(determinations?.models[1].get('isCurrent')).toBe(true);
-  });
-
-  test('CollectionObject -> determinations: Save blocked when no current determinations exist', async () => {
-    const collectionObject = getBaseCollectionObject();
-    const determination =
-      collectionObject.getDependentResource('determinations')?.models[0];
-
-    determination?.set('isCurrent', false);
-
-    const { result } = renderHook(() =>
-      useSaveBlockers(
-        collectionObject,
-        tables.Determination.getField('isCurrent')
-      )
-    );
-
-    await act(async () => {
-      await determination?.businessRuleManager?.checkField('isCurrent');
-    });
-
-    expect(result.current[0]).toStrictEqual([
-      'A current determination is required.',
-    ]);
-  });
-
-  test('CollectionObject -> determinations: Save is not blocked when all determinations are deleted', async () => {
-    const collectionObject = getBaseCollectionObject();
-    const determinations =
-      collectionObject.getDependentResource('determinations');
-    const determination = determinations?.models[0];
-
-    determinations?.remove(determination!);
-
-    const { result } = renderHook(() =>
-      useSaveBlockers(
-        collectionObject,
-        tables.Determination.getField('isCurrent')
-      )
-    );
-
-    await act(async () => {
-      await determination?.businessRuleManager?.checkField('isCurrent');
-    });
-
-    expect(result.current[0]).toStrictEqual([]);
   });
 });
 
@@ -387,7 +395,13 @@ describe('CollectionObjectGroup business rules', () => {
   });
 });
 
-describe('Dependent Collections isPrimary', () => {
+/*
+ * FEATURE: Support collection business logic on initializiation again.
+ * These were first introduced in
+ * https://github.com/specify/specify7/pull/6581, but removed due to
+ * https://github.com/specify/specify7/issues/7069
+ */
+describe.skip('Dependent Collections isPrimary', () => {
   const testCases: RA<
     readonly [parentTable: keyof Tables, table: string, fieldName: string]
   > = [
