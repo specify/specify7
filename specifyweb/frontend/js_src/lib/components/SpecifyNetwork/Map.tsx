@@ -223,7 +223,7 @@ export function useExtendedMap(
     iDigBio?.description,
   ]);
   const hasAnyDescription = Boolean(gbif?.description || iDigBio?.description);
-  return !hasAnyDescription ? undefined : (
+  return hasAnyDescription ? (
     <details>
       <summary>{developmentText.details()}</summary>
       {items.map((item, index) => (
@@ -233,7 +233,7 @@ export function useExtendedMap(
         </React.Fragment>
       ))}
     </details>
-  );
+  ) : undefined;
 }
 
 export const exportsForTests = {
