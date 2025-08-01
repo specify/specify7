@@ -140,14 +140,7 @@ export function generateMappingPathPreview(
 
   // Show filedname or not
   const fieldNameFormatted =
-    fieldsToHide.has(databaseFieldName) ||
-    (databaseTableOrRankName !== 'CollectionObject' &&
-      databaseTableOrRankName !== 'childCog' &&
-      databaseTableOrRankName !== 'parentCog' &&
-      databaseFieldName === 'name' &&
-      !isAnyRank)
-      ? undefined
-      : fieldName;
+    fieldsToHide.has(databaseFieldName) || !isAnyRank ? undefined : fieldName;
 
   // Extract the first part of fieldName (i.e: timestampCreated-fulldate)
   const baseFieldName = valueIsPartialField(databaseFieldName)
