@@ -48,6 +48,11 @@ export const FORBID_ADDING = new Set<keyof Tables>([
   'Division',
   'Discipline',
   'Collection',
+  /*
+   * SpecifyUser's should be created through the Security and Accounts tool.
+   * To properly clone a user need to also clone their roles and policies too
+   */
+  'SpecifyUser',
   // See https://github.com/specify/specify7/issues/1754
   'Attachment',
 ]);
@@ -70,8 +75,8 @@ export const RESTRICT_ADDING = new Set<keyof Tables>([
  */
 export const NO_CLONE = new Set<keyof Tables>([
   ...FORBID_ADDING,
-  // To properly clone a user need to also clone their roles and policies
-  'SpecifyUser',
+  'CollectionObjectGroup',
+  'CollectionObjectGroupJoin',
 ]);
 
 /**
@@ -249,6 +254,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   ) : undefined;
 
   const deleteButton =
+    !isReadOnly &&
     !isDependent &&
     !isSubForm &&
     typeof resource === 'object' &&

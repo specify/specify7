@@ -1,6 +1,6 @@
 from decimal import Decimal
 import logging
-from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Literal, Tuple
+from typing import Any, NamedTuple, Literal, Union
 
 from django.db import transaction, IntegrityError
 
@@ -65,10 +65,10 @@ class UploadTable(NamedTuple):
     toOne: dict[str, Uploadable]
     toMany: dict[str, list[Uploadable]]
 
-    overrideScope: Optional[dict[Literal["collection"], Optional[int]]] = None
+    overrideScope: dict[Literal["collection"], int | None] | None = None
 
     def apply_scoping(
-        self, collection, context: Optional[ScopeContext] = None, row=None
+        self, collection, context: ScopeContext | None = None, row=None
     ) -> "ScopedUploadTable":
         from .scoping import apply_scoping_to_uploadtable
 
@@ -131,9 +131,9 @@ class ScopedUploadTable(NamedTuple):
     toOne: dict[str, ScopedUploadable]
     toMany: dict[str, list["ScopedUploadable"]]  # type: ignore
     scopingAttrs: dict[str, int]
-    disambiguation: Optional[int]
+    disambiguation: int | None
     to_one_fields: dict[str, list[str]]  # TODO: Consider making this a payload..
-    match_payload: Optional[BatchEditSelf]
+    match_payload: BatchEditSelf | None
     strong_ignore: list[str]
 
     def disambiguate(self, disambiguation: Disambiguation) -> "ScopedUploadable":
@@ -160,7 +160,7 @@ class ScopedUploadTable(NamedTuple):
         )
 
     def apply_batch_edit_pack(
-        self, batch_edit_pack: Optional[BatchEditJson]
+        self, batch_edit_pack: BatchEditJson | None
     ) -> "ScopedUploadable":
         if batch_edit_pack is None:
             return self
@@ -209,7 +209,7 @@ class ScopedUploadTable(NamedTuple):
         row: Row,
         uploadingAgentId: int,
         auditor: Auditor,
-        cache: Optional[dict] = None,
+        cache: dict | None = None,
     ) -> Union["BoundUploadTable", ParseFailures]:
 
         current_id = (
@@ -270,7 +270,7 @@ class ScopedUploadTable(NamedTuple):
 
 class OneToOneTable(UploadTable):
     def apply_scoping(
-        self, collection, context: Optional[ScopeContext] = None, row=None
+        self, collection, context: ScopeContext | None = None, row=None
     ) -> "ScopedOneToOneTable":
         s = super().apply_scoping(collection, context, row)
         return ScopedOneToOneTable(*s)
@@ -285,7 +285,7 @@ class ScopedOneToOneTable(ScopedUploadTable):
         row: Row,
         uploadingAgentId: int,
         auditor: Auditor,
-        cache: Optional[dict] = None,
+        cache: dict | None = None,
     ) -> Union["BoundOneToOneTable", ParseFailures]:
         b = super().bind(row, uploadingAgentId, auditor, cache)
         return BoundOneToOneTable(*b) if isinstance(b, BoundUploadTable) else b
@@ -293,7 +293,7 @@ class ScopedOneToOneTable(ScopedUploadTable):
 
 class MustMatchTable(UploadTable):
     def apply_scoping(
-        self, collection, context: Optional[ScopeContext] = None, row=None
+        self, collection, context: ScopeContext | None = None, row=None
     ) -> "ScopedMustMatchTable":
         s = super().apply_scoping(collection, context, row)
         return ScopedMustMatchTable(*s)
@@ -308,7 +308,7 @@ class ScopedMustMatchTable(ScopedUploadTable):
         row: Row,
         uploadingAgentId: int,
         auditor: Auditor,
-        cache: Optional[dict] = None,
+        cache: dict | None = None,
     ) -> Union["BoundMustMatchTable", ParseFailures]:
         b = super().bind(row, uploadingAgentId, auditor, cache)
         return BoundMustMatchTable(*b) if isinstance(b, BoundUploadTable) else b
@@ -321,12 +321,12 @@ class BoundUploadTable(NamedTuple):
     toOne: dict[str, BoundUploadable]
     toMany: dict[str, list[BoundUploadable]]
     scopingAttrs: dict[str, int]
-    disambiguation: Optional[int]
-    uploadingAgentId: Optional[int]
+    disambiguation: int | None
+    uploadingAgentId: int | None
     auditor: Auditor
-    cache: Optional[dict]
+    cache: dict | None
     to_one_fields: dict[str, list[str]]
-    match_payload: Optional[BatchEditSelf]
+    match_payload: BatchEditSelf | None
     strong_ignore: list[
         str
     ]  # fields to stricly ignore for anything. unfortunately, depends needs parent-backref. See comment in "test_batch_edit_table.py/test_to_many_match_is_possible"
@@ -496,7 +496,7 @@ class BoundUploadTable(NamedTuple):
             else update_table.process_row_with_null()
         )
 
-    def _get_reference(self, should_cache=True) -> Optional[models.ModelWithTable]:
+    def _get_reference(self, should_cache=True) -> models.ModelWithTable | None:
         model: models.ModelWithTable = self.django_model
         current_id = self.current_id
 
@@ -623,11 +623,11 @@ class BoundUploadTable(NamedTuple):
 
     def _match(
         self, predicates: DjangoPredicates, info: ReportInfo
-    ) -> Union[Matched, MatchedMultiple, None]:
+    ) -> Matched | MatchedMultiple | None:
 
         cache_key = predicates.get_cache_key(self.name)
 
-        cache_hit: Optional[list[int]] = (
+        cache_hit: list[int] | None = (
             self.cache.get(cache_key, None) if self.cache is not None else None
         )
         if cache_hit is not None:
@@ -657,7 +657,7 @@ class BoundUploadTable(NamedTuple):
         else:
             return None
 
-    def _check_missing_required(self) -> Optional[ParseFailures]:
+    def _check_missing_required(self) -> ParseFailures | None:
         missing_requireds = [
             # TODO: there should probably be a different structure for
             # missing required fields than ParseFailure
@@ -702,7 +702,7 @@ class BoundUploadTable(NamedTuple):
             },
         }
 
-        to_one_ids: dict[str, Optional[int]] = {}
+        to_one_ids: dict[str, int | None] = {}
         for field, result in to_one_results.items():
             id = result.get_id()
             if id == "Failure":
@@ -817,7 +817,7 @@ class BoundUploadTable(NamedTuple):
 
         assert reference_record is not None
 
-        result: Optional[Union[Deleted, FailedBusinessRule]] = None
+        result: Deleted | FailedBusinessRule | None = None
 
         to_many_deleted: dict[str, list[UploadResult]] = {
             key: [record.delete_row() for record in records]
@@ -1042,7 +1042,7 @@ class BoundUpdateTable(BoundUploadTable):
                         FailedBusinessRule(str(e), {}, info), to_one_results, {}
                     )
 
-        record: Union[Updated, NoChange] = (
+        record: Updated | NoChange = (
             Updated(updated.pk, info, picklist_additions)
             if changed
             else NoChange(reference_record.pk, info)

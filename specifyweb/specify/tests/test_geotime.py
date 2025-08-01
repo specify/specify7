@@ -18,7 +18,7 @@ from specifyweb.specify.models import (
 )
 from unittest.mock import patch
 
-class GeoTimeTests(ApiTests):
+class GeoTimeTestsContext(ApiTests):
     def setUp(self):
         super().setUp()
 
@@ -80,7 +80,7 @@ class GeoTimeTests(ApiTests):
             endperiod=245,
             enduncertainty=20,
         )
-        null_erathem_chronostrat = Geologictimeperiod.objects.create(
+        self.null_erathem_chronostrat = Geologictimeperiod.objects.create(
             name='Null',
             rankid=100,
             definitionitem=self.erathem_rank,
@@ -206,6 +206,8 @@ class GeoTimeTests(ApiTests):
             'jurassic': jurassic_period_chronostrat,
             'late_jurassic': late_jurassic_epoch_chronostrat,
         }
+
+class GeoTimeTests(GeoTimeTestsContext):
 
     def test_geotime_range_all_paths(self):
         # Test absolute age

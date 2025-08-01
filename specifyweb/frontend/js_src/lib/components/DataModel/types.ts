@@ -245,8 +245,15 @@ export type Accession = {
     readonly actualTotalCountAmt: number | null;
     readonly collectionObjectCount: number | null;
     readonly dateAccessioned: string | null;
+    readonly dateAccessionedPrecision: number | null;
     readonly dateAcknowledged: string | null;
+    readonly dateAcknowledgedPrecision: number | null;
     readonly dateReceived: string | null;
+    readonly dateReceivedPrecision: number | null;
+    readonly date1: string | null;
+    readonly date1Precision: number | null;
+    readonly date2: string | null;
+    readonly date2Precision: number | null;
     readonly integer1: number | null;
     readonly integer2: number | null;
     readonly integer3: number | null;
@@ -1444,7 +1451,6 @@ export type CollectionObject = {
     readonly collectingEvent: CollectingEvent | null;
     readonly collection: Collection;
     readonly collectionObjectType: CollectionObjectType;
-    readonly componentParent: CollectionObject | null;
     readonly container: Container | null;
     readonly containerOwner: Container | null;
     readonly createdByAgent: Agent | null;
@@ -1462,7 +1468,6 @@ export type CollectionObject = {
     readonly collectionObjectAttrs: RA<CollectionObjectAttr>;
     readonly collectionObjectCitations: RA<CollectionObjectCitation>;
     readonly collectionObjectProperties: RA<CollectionObjectProperty>;
-    readonly components: RA<CollectionObject>;
     readonly conservDescriptions: RA<ConservDescription>;
     readonly determinations: RA<Determination>;
     readonly dnaSequences: RA<DNASequence>;
@@ -5301,7 +5306,6 @@ export type SpQuery = {
     readonly remarks: string | null;
     readonly searchSynonymy: boolean | null;
     readonly selectDistinct: boolean | null;
-    readonly selectSeries: boolean | null;
     readonly smushed: boolean | null;
     readonly sqlStr: string | null;
     readonly timestampCreated: string;
