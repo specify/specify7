@@ -42,25 +42,7 @@ export type QueryFieldType =
   | 'number'
   | 'text';
 export type QueryFieldFilter =
-  | 'ageName'
-  | 'ageRange'
-  | 'any'
-  | 'between'
-  | 'contains'
-  | 'empty'
-  | 'equal'
-  | 'false'
-  | 'falseOrNull'
-  | 'greater'
-  | 'greaterOrEqual'
-  | 'in'
-  | 'less'
-  | 'lessOrEqual'
-  | 'like'
-  | 'startsWith'
-  | 'endsWith'
-  | 'true'
-  | 'trueOrNull';
+  'ageName' | 'ageRange' | 'any' | 'between' | 'contains' | 'empty' | 'endsWith' | 'equal' | 'false' | 'falseOrNull' | 'greater' | 'greaterOrEqual' | 'in' | 'less' | 'lessOrEqual' | 'like' | 'startsWith' | 'true' | 'trueOrNull';
 export const filtersWithDefaultValue = new Set<QueryFieldFilter>([
   'equal',
   'in',
