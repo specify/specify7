@@ -1,5 +1,3 @@
-from typing import Dict, Tuple, Optional
-
 from .uploadable import Disambiguation
 
 class DisambiguationInfo:
@@ -8,7 +6,7 @@ class DisambiguationInfo:
     def __init__(self, disambiguations: dict[tuple, int]):
         self.disambiguations = disambiguations
 
-    def disambiguate(self) -> Optional[int]:
+    def disambiguate(self) -> int | None:
         return self.disambiguations[()] if () in self.disambiguations else None
 
     def disambiguate_tree(self) -> dict[str, int]:

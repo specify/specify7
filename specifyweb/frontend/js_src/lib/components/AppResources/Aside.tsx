@@ -71,8 +71,7 @@ export function AppResourcesAside({
     <aside
       className={`
         !gap-2 sm:overflow-visible
-        ${
-          isEmbedded ? className.containerBaseUnstyled : className.containerBase
+        ${isEmbedded ? className.containerBaseUnstyled : className.containerBase
         } 
       `}
     >
@@ -130,9 +129,9 @@ function useOpenCurrent(
         conformation !== undefined ||
         childrenConformation.length > 0
         ? {
-            key: category.key,
-            children: childrenConformation,
-          }
+          key: category.key,
+          children: childrenConformation,
+        }
         : undefined;
     }
 
@@ -202,8 +201,8 @@ function TreeItem({
   readonly conformations: RA<AppResourcesConformation>;
   readonly onFold: (conformations: RA<AppResourcesConformation>) => void;
   readonly onOpen:
-    | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
-    | undefined;
+  | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
+  | undefined;
 }): JSX.Element {
   const { label, key, subCategories } = resourcesTree;
   const conformationIndex = conformations.findIndex(
@@ -294,8 +293,8 @@ function TreeItemResources({
 }: {
   readonly resourcesTree: AppResourcesTree[number];
   readonly onOpen:
-    | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
-    | undefined;
+  | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
+  | undefined;
 }): JSX.Element | null {
   const { appResources, viewSets, directory, key } = resourcesTree;
   const isReadOnly = React.useContext(ReadOnlyContext);
@@ -359,8 +358,8 @@ function ResourceItem({
     readonly label?: LocalizedString;
   };
   readonly onOpen:
-    | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
-    | undefined;
+  | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
+  | undefined;
 }): JSX.Element {
   const url =
     getAppResourceMode(resource) === 'appResources'
@@ -388,9 +387,9 @@ function ResourceItem({
       onClick={
         typeof handleOpen === 'function'
           ? (event): void => {
-              event.preventDefault();
-              handleOpen(resource);
-            }
+            event.preventDefault();
+            handleOpen(resource);
+          }
           : undefined
       }
     >
@@ -403,5 +402,6 @@ function ResourceItem({
 }
 
 export const exportsForTests = {
-    mutateConformation
-}
+  mutateConformation,
+  useOpenCurrent
+};

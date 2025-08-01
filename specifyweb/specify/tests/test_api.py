@@ -39,9 +39,16 @@ from specifyweb.specify.models import (
     Picklistitem,
     Preparation
 )
+import datetime
 
 def get_table(name: str):
     return getattr(models, name.capitalize())
+
+class MockDateTime:
+
+    @classmethod
+    def now(cls):
+        return datetime.datetime(2025, 7, 20, 18, 23, 32)
 
 class MainSetupTearDown:
     def setUp(self):

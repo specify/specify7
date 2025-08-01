@@ -37,6 +37,7 @@ class Tree(models.Model):
         def save():
             save_auto_timestamp_field_with_override(super(Tree, self).save, args, kwargs, self)
 
+        # This should be probably after the rank id gets set?
         if skip_tree_extras:
             return save()
 
@@ -325,6 +326,8 @@ def merge(node, into, agent):
         try:
             id = node.id
             node.delete()
+            # Seems like this is done for the audit log. Why not log first, and then delete?
+            # That way, we don't need to set the ID like below (quite a hack.)
             node.id = id
             mutation_log(TREE_MERGE, node, agent, node.parent,
                         [FieldChangeInfo(field_name=model.specify_model.idFieldName, old_value=node.id, new_value=into.id)])

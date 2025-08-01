@@ -1,7 +1,7 @@
 from email.policy import strict
 import logging
 from collections import namedtuple
-from typing import Any, Dict, List, NamedTuple, Optional
+from typing import Any, NamedTuple
 
 from .query_ops import QueryOps
 from .queryfieldspec import QueryFieldSpec
@@ -36,10 +36,10 @@ def fields_from_json(json_fields) -> list["QueryField"]:
 class QueryField(NamedTuple):
     fieldspec: QueryFieldSpec
     op_num: int
-    value: Optional[str]
+    value: str | None
     negate: bool
     display: bool
-    format_name: Optional[str]
+    format_name: str | None
     sort_type: int
     strict: bool = False
 

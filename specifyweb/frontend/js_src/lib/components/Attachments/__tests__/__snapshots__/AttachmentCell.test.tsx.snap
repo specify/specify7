@@ -1,0 +1,191 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AttachmentCell simple render 1`] = `
+<DocumentFragment>
+  <div
+    class="relative"
+  >
+    <button
+      class="link absolute left-0 top-0"
+      title="Collection Object"
+      type="button"
+    >
+      <svg
+        aria-hidden="false"
+        class="w-table-icon h-table-icon flex-shrink-0 font-normal not-italic"
+        role="img"
+        viewBox="0 0 1000 1000"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <title>
+          Collection Object
+        </title>
+        <g>
+          <radialgradient
+            cx="512.8199"
+            cy="2.0972"
+            gradientUnits="userSpaceOnUse"
+            id="icon-0-gradient"
+            r="1190.8768"
+          >
+            <stop
+              offset="0"
+              style="stop-color: rgb(166, 124, 82);"
+            />
+            <stop
+              offset="1"
+              style="stop-color: rgb(117, 76, 36);"
+            />
+          </radialgradient>
+          <path
+            d="M500,0c53.8,0.7,107.6,0.9,161.4,2.4c51.6,1.4,103,5.1,153.2,18.4c57.7,15.3,104.7,45.7,136.6,97.1c19.9,32.1,30.1,67.7,36.5,104.5c9.3,53.9,11.4,108.3,11.6,162.8c0.3,92.3,0,184.7-1.3,277c-0.7,49.8-4.8,99.5-17,148.1c-15.2,60.4-46.1,109.8-100.4,142.6c-31.5,19.1-66.2,29.1-102.2,35.2c-60.2,10.3-121.1,11.8-182,11.9c-85.9,0.1-171.8-0.2-257.7-1.5c-49.1-0.7-98.1-4.8-146.1-16.6C97.9,958.9,40.1,899.6,17.8,805.2C9,768,4.8,730.1,3.2,692.1c-5-119.8-4.1-239.6-1.1-359.3c1.3-50.9,5.5-101.7,19.4-151.1c24.6-87.2,81.8-140.4,169-162.3C239.1,7.2,288.8,3.6,338.6,2.3C392.4,0.9,446.2,0.7,500,0z"
+            fill="url(#icon-0-gradient)"
+          />
+        </g>
+        <g>
+          <text
+            alignment-baseline="middle"
+            baseline-shift="-10%"
+            dominant-baseline="central"
+            fill="#FFFFFF"
+            font-family="Francois One,sans-serif"
+            font-size="660px"
+            text-anchor="middle"
+            x="50%"
+            y="50%"
+          >
+            CO
+          </text>
+        </g>
+      </svg>
+    </button>
+    <div
+      class="
+        flex items-center justify-center rounded bg-white shadow-md
+        shadow-gray-300 transition hover:shadow-md hover:shadow-gray-400
+        dark:bg-black
+      "
+    >
+      <button
+        type="button"
+      >
+        <img
+          alt="kubiodiversitylogo.jpg"
+          class="
+        max-h-full max-w-full border-2 border-white object-contain
+        dark:border-black
+      "
+          src="http://host.docker.internal/fileget?coll=KU+Fish+Voucher+Collection&type=T&filename=a6daad6c-5091-4461-86ee-eeba9434ef2b.jpg&scale=123"
+          style="width: 123px; height: 123px;"
+        />
+      </button>
+    </div>
+    <a
+      aria-label="Download"
+      class="icon link rounded absolute right-0 top-0"
+      download="topbrc4.jpg"
+      href="/attachment_gw/proxy/?coll=KU+Fish+Voucher+Collection&type=O&filename=a6daad6c-5091-4461-86ee-eeba9434ef2b.jpg&downloadname=topbrc4.jpg"
+      target="_blank"
+      title="Download"
+    >
+      <svg
+        aria-hidden="true"
+        class="w-6 h-6 flex-shrink-0"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          clip-rule="evenodd"
+          d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+          fill-rule="evenodd"
+        />
+      </svg>
+    </a>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`AttachmentCell simple render 2`] = `
+[
+  {
+    "attachment": {
+      "accessionattachments": "/api/specify/accessionattachment/?attachment=5490",
+      "agentattachments": "/api/specify/agentattachment/?attachment=5490",
+      "attachmentimageattribute": null,
+      "attachmentlocation": "a6daad6c-5091-4461-86ee-eeba9434ef2b.jpg",
+      "attachmentstorageconfig": null,
+      "borrowattachments": "/api/specify/borrowattachment/?attachment=5490",
+      "capturedevice": null,
+      "collectingeventattachments": "/api/specify/collectingeventattachment/?attachment=5490",
+      "collectingtripattachments": "/api/specify/collectingtripattachment/?attachment=5490",
+      "collectionobjectattachments": "/api/specify/collectionobjectattachment/?attachment=5490",
+      "conservdescriptionattachments": "/api/specify/conservdescriptionattachment/?attachment=5490",
+      "conserveventattachments": "/api/specify/conserveventattachment/?attachment=5490",
+      "copyrightdate": null,
+      "copyrightholder": null,
+      "createdbyagent": "/api/specify/agent/3/",
+      "creator": null,
+      "credit": null,
+      "dateimaged": null,
+      "deaccessionattachments": "/api/specify/deaccessionattachment/?attachment=5490",
+      "disposalattachments": "/api/specify/disposalattachment/?attachment=5490",
+      "dnasequenceattachments": "/api/specify/dnasequenceattachment/?attachment=5490",
+      "dnasequencingrunattachments": "/api/specify/dnasequencingrunattachment/?attachment=5490",
+      "exchangeinattachments": "/api/specify/exchangeinattachment/?attachment=5490",
+      "exchangeoutattachments": "/api/specify/exchangeoutattachment/?attachment=5490",
+      "fieldnotebookattachments": "/api/specify/fieldnotebookattachment/?attachment=5490",
+      "fieldnotebookpageattachments": "/api/specify/fieldnotebookpageattachment/?attachment=5490",
+      "fieldnotebookpagesetattachments": "/api/specify/fieldnotebookpagesetattachment/?attachment=5490",
+      "filecreateddate": null,
+      "giftattachments": "/api/specify/giftattachment/?attachment=5490",
+      "guid": "7664fc1b-cc39-4f7d-b81c-645fc11e8e1d",
+      "id": 5490,
+      "ispublic": true,
+      "license": null,
+      "licenselogourl": null,
+      "loanattachments": "/api/specify/loanattachment/?attachment=5490",
+      "localityattachments": "/api/specify/localityattachment/?attachment=5490",
+      "metadata": "/api/specify/attachmentmetadata/?attachment=5490",
+      "metadatatext": null,
+      "mimetype": "image/jpeg",
+      "modifiedbyagent": null,
+      "origfilename": "topbrc4.jpg",
+      "permitattachments": "/api/specify/permitattachment/?attachment=5490",
+      "preparationattachments": "/api/specify/preparationattachment/?attachment=5490",
+      "referenceworkattachments": "/api/specify/referenceworkattachment/?attachment=5490",
+      "remarks": null,
+      "repositoryagreementattachments": "/api/specify/repositoryagreementattachment/?attachment=5490",
+      "resource_uri": "/api/specify/attachment/5490/",
+      "scopeid": null,
+      "scopetype": null,
+      "spdatasetattachments": "/api/specify/spdatasetattachment/?attachment=5490",
+      "storageattachments": "/api/specify/storageattachment/?attachment=5490",
+      "subjectorientation": null,
+      "subtype": null,
+      "tableid": 1,
+      "tags": "/api/specify/attachmenttag/?attachment=5490",
+      "taxonattachments": "/api/specify/taxonattachment/?attachment=5490",
+      "timestampcreated": "2015-05-20T12:16:38",
+      "timestampmodified": "2015-05-20T12:16:38",
+      "title": "kubiodiversitylogo.jpg",
+      "treatmenteventattachments": "/api/specify/treatmenteventattachment/?attachment=5490",
+      "type": null,
+      "version": 0,
+      "visibility": null,
+      "visibilitysetby": null,
+    },
+    "collectionmemberid": 4,
+    "collectionobject": "/api/specify/collectionobject/51731/",
+    "createdbyagent": "/api/specify/agent/3/",
+    "id": 4732,
+    "modifiedbyagent": null,
+    "ordinal": 0,
+    "remarks": null,
+    "resource_uri": "/api/specify/collectionobjectattachment/4732/",
+    "timestampcreated": "2025-07-31T17:00:40",
+    "timestampmodified": "2025-07-31T17:00:40",
+    "version": 0,
+  },
+]
+`;

@@ -1,7 +1,8 @@
 # generic logic for cloning records. TODO: Make this part of the generic API and server-side cloning
 
 import json
-from typing import Any, Callable, Dict, List
+from typing import Any, Dict, List
+from collections.abc import Callable
 
 from django.db.models import Model
 from django.db import transaction

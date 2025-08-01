@@ -1,6 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
+import React from 'react';
+import * as Router from 'react-router-dom';
 
-import type { IR, RA } from '../utils/types';
+import type { IR, RA, WritableArray } from '../utils/types';
 
 /**
  * Named after https://github.com/RobPethick/jest-theories
@@ -27,37 +29,37 @@ export function theories<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
    */
   inputOutputSet:
     | IR<
-        | readonly [ARGUMENTS_TYPE, RETURN_TYPE]
-        | {
-            readonly in: ARGUMENTS_TYPE;
-            readonly out: RETURN_TYPE;
-          }
-      >
+      | readonly [ARGUMENTS_TYPE, RETURN_TYPE]
+      | {
+        readonly in: ARGUMENTS_TYPE;
+        readonly out: RETURN_TYPE;
+      }
+    >
     | RA<
-        | readonly [ARGUMENTS_TYPE, RETURN_TYPE]
-        | {
-            readonly name?: string;
-            readonly in: ARGUMENTS_TYPE;
-            readonly out: RETURN_TYPE;
-          }
-      >
+      | readonly [ARGUMENTS_TYPE, RETURN_TYPE]
+      | {
+        readonly name?: string;
+        readonly in: ARGUMENTS_TYPE;
+        readonly out: RETURN_TYPE;
+      }
+    >
 ): void {
   const items = Array.isArray(inputOutputSet)
     ? inputOutputSet
     : Object.entries(inputOutputSet).map(([name, inputOutput]) => ({
-        name,
-        in: Array.isArray(inputOutput) ? inputOutput[0] : inputOutput.in,
-        out: Array.isArray(inputOutput) ? inputOutput[1] : inputOutput.out,
-      }));
+      name,
+      in: Array.isArray(inputOutput) ? inputOutput[0] : inputOutput.in,
+      out: Array.isArray(inputOutput) ? inputOutput[1] : inputOutput.out,
+    }));
 
   function runTest(
     entry:
       | readonly [ARGUMENTS_TYPE, RETURN_TYPE]
       | {
-          readonly name?: string;
-          readonly in: ARGUMENTS_TYPE;
-          readonly out: RETURN_TYPE;
-        },
+        readonly name?: string;
+        readonly in: ARGUMENTS_TYPE;
+        readonly out: RETURN_TYPE;
+      },
     index: number
   ): void {
     const {
@@ -107,4 +109,32 @@ function createName(input: RA<unknown>, index: number): string {
       return input[0].toString();
   }
   return `#${index + 1}`;
+}
+
+export function TestComponentWrapperRouter(
+  {
+    initialEntries,
+    path,
+    children,
+    context
+  }: {
+    readonly initialEntries: WritableArray<string>;
+    readonly path: string;
+    readonly children: React.ReactNode
+    readonly context?: IR<unknown>
+  }) {
+
+  return (
+    <Router.MemoryRouter initialEntries={initialEntries}>
+      <Router.Routes>
+        <Router.Route element={<Router.Outlet context={context} />} path='/'>
+          <Router.Route
+            element={children}
+            index
+            path={path}
+          />
+        </Router.Route>
+      </Router.Routes>
+    </Router.MemoryRouter >
+  )
 }

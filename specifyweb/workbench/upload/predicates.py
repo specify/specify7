@@ -1,13 +1,7 @@
 from functools import reduce
 from typing import (
-    Callable,
-    Dict,
     NamedTuple,
-    Optional,
     Any,
-    List,
-    Tuple,
-    Union,
 )
 from collections.abc import Generator
 from typing_extensions import TypedDict
@@ -23,14 +17,14 @@ from specifyweb.workbench.upload.clone import GENERIC_FIELDS_TO_SKIP
 
 Filter = dict[str, Any]
 
-Value = Optional[Union[str, int, F]]
+Value = str | int | F | None
 
 
 class ToRemoveMatchee(TypedDict):
     filter_on: Filter
     # It is possible that the node we need to filter on may be present. In this case, we'll remove valid entries.
     # To avoid that, we track the present ones too. I can't think why this might need more cont, so making it Q
-    remove: Optional[Q]
+    remove: Q | None
 
 
 ToRemoveNode = dict[str, list[ToRemoveMatchee]]
@@ -54,8 +48,8 @@ class ToRemove(NamedTuple):
 
 
 class DjangoPredicates(NamedTuple):
-    filters: dict[str, Union[Value, list[Any]]] = {}  # type: ignore
-    to_remove: Optional[ToRemove] = None
+    filters: dict[str, Value | list[Any]] = {}  # type: ignore
+    to_remove: ToRemove | None = None
 
     def reduce_for_to_one(self):
         if (
@@ -92,7 +86,7 @@ class DjangoPredicates(NamedTuple):
             DjangoPredicates._map_reduce(values) for values in self.filters.values()
         )
 
-    def get_cache_key(self, basetable_name: str = None) -> str:
+    def get_cache_key(self, basetable_name: str | None = None) -> str:
         filters = [
             # we don't care about table past the first one, since rels will uniquely denote the related table..
             (
@@ -113,7 +107,7 @@ class DjangoPredicates(NamedTuple):
         query: QuerySet,
         get_unique_alias: Generator[str, None, None],
         current_model: Model,
-        path: Optional[str] = None,
+        path: str | None = None,
         aliases: list[tuple[str, str]] = [],
         to_remove_node: "ToRemoveNode" = {},
     ):
@@ -265,7 +259,7 @@ def get_unique_predicate(pre="predicate-") -> Generator[str, None, None]:
 # This predicates is a magic predicate, and is completely ignored during query-building. If a uploadable returns this, it won't be considered for matching
 # NOTE: There's a difference between Skipping and returning a null filter (if within to-ones, null will really - correctly - filter for null).
 class SkippablePredicate(DjangoPredicates):
-    def get_cache_key(self, basetable_name: str = None) -> str:
+    def get_cache_key(self, basetable_name: str | None = None) -> str:
         return repr(("Skippable", basetable_name))
 
     def apply_to_query(self, base_name: str) -> QuerySet:

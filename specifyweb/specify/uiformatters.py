@@ -6,7 +6,8 @@ Supports autonumbering mechanism
 import logging
 import re
 from datetime import date
-from typing import NamedTuple, List, Optional, Union, Callable
+from typing import NamedTuple
+from collections.abc import Callable
 from collections.abc import Sequence
 from xml.etree import ElementTree
 from xml.sax.saxutils import quoteattr
@@ -112,7 +113,7 @@ class UIFormatter(NamedTuple):
             for field, val in zip(self.fields, vals)
         ))
 
-    def fillin_year(self, vals: Sequence[str], year: Optional[int]=None) -> list[str]:
+    def fillin_year(self, vals: Sequence[str], year: int | None=None) -> list[str]:
         if year is None:
             year = date.today().year
 
@@ -121,7 +122,7 @@ class UIFormatter(NamedTuple):
             for field, val in zip(self.fields, vals)
         ]
 
-    def autonumber_now(self, collection, model, vals: Sequence[str], year: Optional[int]=None) -> str:
+    def autonumber_now(self, collection, model, vals: Sequence[str], year: int | None=None) -> str:
         with_year = self.fillin_year(vals, year)
         fieldname = self.field_name.lower()
 
@@ -141,7 +142,7 @@ class UIFormatter(NamedTuple):
         objs = model.objects.filter(**{ fieldname + '__regex': self.autonumber_regexp(with_year) })
         return group_filter(objs).order_by('-' + fieldname)
 
-    def prepare_autonumber_thunk(self, collection, model, vals: Sequence[str], year: Optional[int]=None):
+    def prepare_autonumber_thunk(self, collection, model, vals: Sequence[str], year: int | None=None):
         with_year = self.fillin_year(vals, year)
         fieldname = self.field_name.lower()
 
@@ -286,7 +287,7 @@ class CNNField(NumericField):
     def canonicalize(self, value: str) -> str:
         return value.zfill(self.size)
 
-def get_uiformatter_by_name(collection, user, formatter_name: str) -> Optional[UIFormatter]:
+def get_uiformatter_by_name(collection, user, formatter_name: str) -> UIFormatter | None:
     xml, _, __ = get_app_resource(collection, user, "UIFormatters")
     node = ElementTree.XML(xml).find('.//format[@name=%s]' % quoteattr(formatter_name))
     if node is None: return None
@@ -350,7 +351,7 @@ def get_uiformatters(collection, obj, user) -> list[UIFormatter]:
     logger.debug("uiformatters for %s: %s", tablename, uiformatters)
     return uiformatters
 
-def get_uiformatter(collection, tablename: str, fieldname: str) -> Optional[UIFormatter]:
+def get_uiformatter(collection, tablename: str, fieldname: str) -> UIFormatter | None:
 
     if tablename.lower() == "collectionobject" and fieldname.lower() == "catalognumber":
         return get_catalognumber_format(collection, None, None)
@@ -366,7 +367,7 @@ def get_uiformatter(collection, tablename: str, fieldname: str) -> Optional[UIFo
     else:
         return get_uiformatter_by_name(collection, None, field_format)
 
-def get_catalognumber_format(collection, format_name: Optional[str], user) -> UIFormatter:
+def get_catalognumber_format(collection, format_name: str | None, user) -> UIFormatter:
     if format_name: 
          formatter = get_uiformatter_by_name(collection, user, format_name)
          if formatter:

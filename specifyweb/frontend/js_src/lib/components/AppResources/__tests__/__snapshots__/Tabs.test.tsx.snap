@@ -1,0 +1,145 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tabs first tab selected, and then second 1`] = `
+<DocumentFragment>
+  <div
+    aria-orientation="horizontal"
+    class="
+          inline-flex w-fit flex-wrap gap-2 rounded
+          bg-[color:var(--form-background)]
+          
+        "
+    role="tablist"
+  >
+    <button
+      aria-controls="headlessui-tabs-panel-:r2:"
+      aria-selected="true"
+      class="
+  button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm aria-handled
+  dialog-icon-info hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--info-button-color)] text-white
+"
+      id="headlessui-tabs-tab-:r0:"
+      role="tab"
+      tabindex="0"
+      type="button"
+    >
+      tab1
+    </button>
+    <button
+      aria-selected="false"
+      class="
+  button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm aria-handled
+  hover:bg-gray-300 hover:dark:bg-neutral-600
+"
+      id="headlessui-tabs-tab-:r1:"
+      role="tab"
+      tabindex="-1"
+      type="button"
+    >
+      tab2
+    </button>
+  </div>
+  <div
+    class="flex flex-1 overflow-hidden"
+  >
+    <div
+      aria-labelledby="headlessui-tabs-tab-:r0:"
+      class="flex flex-1 flex-col gap-4"
+      id="headlessui-tabs-panel-:r2:"
+      role="tabpanel"
+      tabindex="0"
+    >
+      <h1>
+        Tab1
+      </h1>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Tabs first tab selected, and then second 2`] = `
+<DocumentFragment>
+  <div
+    aria-orientation="horizontal"
+    class="
+          inline-flex w-fit flex-wrap gap-2 rounded
+          bg-[color:var(--form-background)]
+          
+        "
+    role="tablist"
+  >
+    <button
+      aria-selected="false"
+      class="
+  button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm aria-handled
+  dialog-icon-info hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--info-button-color)] text-white
+"
+      id="headlessui-tabs-tab-:r0:"
+      role="tab"
+      tabindex="-1"
+      type="button"
+    >
+      tab1
+    </button>
+    <button
+      aria-controls="headlessui-tabs-panel-:r3:"
+      aria-selected="true"
+      class="
+  button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm aria-handled
+  hover:bg-gray-300 hover:dark:bg-neutral-600
+"
+      id="headlessui-tabs-tab-:r1:"
+      role="tab"
+      tabindex="0"
+      type="button"
+    >
+      tab2
+    </button>
+  </div>
+  <div
+    class="flex flex-1 overflow-hidden"
+  >
+    <div
+      aria-labelledby="headlessui-tabs-tab-:r1:"
+      class="flex flex-1 flex-col gap-4"
+      id="headlessui-tabs-panel-:r3:"
+      role="tabpanel"
+      tabindex="0"
+    >
+      <h1>
+        Tab2
+      </h1>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Tabs simple no tabs 1`] = `
+<DocumentFragment>
+  <button
+    aria-hidden="true"
+    style="position: absolute; width: 1px; height: 1px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap; border-width: 0px;"
+    type="button"
+  />
+  <div
+    aria-orientation="horizontal"
+    class="
+          inline-flex w-fit flex-wrap gap-2 rounded
+          bg-[color:var(--form-background)]
+          
+        "
+    role="tablist"
+  />
+  <div
+    class="flex flex-1 overflow-hidden"
+  />
+</DocumentFragment>
+`;

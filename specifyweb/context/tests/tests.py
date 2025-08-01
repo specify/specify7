@@ -5,7 +5,7 @@ from jsonschema import validate  # type: ignore
 from jsonschema.exceptions import ValidationError  # type: ignore
 
 from specifyweb.specify.tests.test_api import ApiTests
-from . import viewsets
+import specifyweb.context.viewsets as viewsets
 
 
 class ViewTests(ApiTests):
@@ -21,8 +21,8 @@ class ViewTests(ApiTests):
 
 class OpenApiTests(TestCase):
     def test_operations_spec(self) -> None:
-        from .views import generate_openapi_for_endpoints
-        from .openapi_schema import schema
+        from specifyweb.context.views import generate_openapi_for_endpoints
+        from specifyweb.context.openapi_schema import schema
 
         spec = generate_openapi_for_endpoints(all_endpoints=True)
         validate(instance=spec, schema=schema)
