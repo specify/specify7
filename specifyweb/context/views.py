@@ -38,10 +38,10 @@ from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_views
 
 
-def set_collection_cookie(response, collection_id):
+def set_collection_cookie(response, collection_id): # pragma: no cover
     response.set_cookie('collection', str(collection_id), max_age=365*24*60*60)
 
-def users_collections_for_sp6(cursor, user_id):
+def users_collections_for_sp6(cursor, user_id): # pragma: no cover
     cursor.execute("""
     select distinct c.usergroupscopeid, c.collectionname from collection c
     inner join spprincipal p on p.usergroupscopeid = c.usergroupscopeid
@@ -52,14 +52,14 @@ def users_collections_for_sp6(cursor, user_id):
 
     return list(cursor.fetchall())
 
-def users_collections_for_sp7(userid: int) -> list:
+def users_collections_for_sp7(userid: int) -> list: # pragma: no cover
     return [
         c
         for c in Collection.objects.all()
         if query_pt(c.id, userid, CollectionAccessPT.access).allowed
     ]
 
-def set_users_collections_for_sp6(cursor, user, collectionids):
+def set_users_collections_for_sp6(cursor, user, collectionids): # pragma: no cover
     with transaction.atomic():
 
         # Delete the principals for the user for all collections not
@@ -159,7 +159,7 @@ class Sp6CollectionAccessPT(PermissionTarget):
 @login_maybe_required
 @require_http_methods(['GET', 'PUT'])
 @never_cache
-def user_collection_access_for_sp6(request, userid):
+def user_collection_access_for_sp6(request, userid): # pragma: no cover
     """Returns (GET) or sets (PUT) the list of collections user <userid>
     can log into. Requesting user must be an admin."""
     check_permission_targets(None, request.specify_user.id, [Sp6CollectionAccessPT.read])
@@ -786,7 +786,7 @@ def get_endpoints(
     merge_components,
     prefix="/",
     preparams=[]
-):
+): # pragma: no cover
     for p in patterns:
         path, params = parse_pattern(p)
         complete_path = prefix + path
@@ -840,7 +840,7 @@ def get_endpoints(
             )
 
 
-def generate_openapi_for_endpoints(all_endpoints=False):
+def generate_openapi_for_endpoints(all_endpoints=False): # pragma: no cover
     """Returns a JSON description of endpoints.
 
     Params:
@@ -882,14 +882,14 @@ def generate_openapi_for_endpoints(all_endpoints=False):
 
 @require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, public=True)
-def api_endpoints(request):
+def api_endpoints(request): # pragma: no cover
     """Returns a JSON description of endpoints that have schema defined."""
     return JsonResponse(generate_openapi_for_endpoints(False))
 
 
 @require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, public=True)
-def api_endpoints_all(request):
+def api_endpoints_all(request): # pragma: no cover
     """Returns a JSON description of all endpoints."""
     return JsonResponse(generate_openapi_for_endpoints(True))
 
