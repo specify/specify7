@@ -11,7 +11,7 @@ import { createDictionary } from "./utils";
 export const mergingText = createDictionary({
   recordMerging: {
     "en-us": "Record Merging",
-    "ru-ru": "Слияние записей",
+    "ru-ru": "Объединение записей",
     "de-ch": "Datensatzzusammenführung",
     "es-es": "Fusión de registros",
     "fr-fr": "Fusion d'enregistrements",
@@ -20,7 +20,7 @@ export const mergingText = createDictionary({
   },
   mergeRecords: {
     "en-us": "Merge Records",
-    "ru-ru": "Объединить записи",
+    "ru-ru": "Объединение записей",
     "de-ch": "Datensätze zusammenführen",
     "es-es": "Fusionar registros",
     "fr-fr": "Fusionner les enregistrements",
@@ -39,7 +39,7 @@ export const mergingText = createDictionary({
   showConflictingFieldsOnly: {
     "en-us": "Show conflicting fields only",
     "ru-ru": "Показывать только конфликтующие поля",
-    "de-ch": "Nur in Konflikt stehende Felder anzeigen",
+    "de-ch": "Nur widersprüchliche Felder anzeigen",
     "es-es": "Mostrar solo campos en conflicto",
     "fr-fr": "Afficher uniquement les champs en conflit",
     "uk-ua": "Показувати лише конфліктуючі поля",
@@ -74,8 +74,8 @@ export const mergingText = createDictionary({
   },
   subViewControls: {
     "en-us": "Sub-view Controls",
-    "ru-ru": "Элементы управления подвидом",
-    "de-ch": "Unteransichtssteuerung",
+    "ru-ru": "Элементы управления подвидами",
+    "de-ch": "Unteransichtssteuerungen",
     "es-es": "Controles de vista parcial",
     "fr-fr": "Contrôles de la sous-vue",
     "uk-ua": "Елементи керування вкладеним переглядом",
@@ -143,7 +143,7 @@ export const mergingText = createDictionary({
     "de-ch": "Andere zusammenführen",
     "es-es": "Fusionar otros",
     "fr-fr": "Fusionner les autres",
-    "ru-ru": "Объединить другие",
+    "ru-ru": "Объединить других",
     "uk-ua": "Об’єднати інші",
     "pt-br": "Mesclar outros",
   },
@@ -157,7 +157,7 @@ export const mergingText = createDictionary({
     "fr-fr":
       "Avant de continuer, veuillez noter que l'action suivante peut interrompre les autres utilisateurs. Cette action peut entraîner des retards ou une indisponibilité temporaire de certaines fonctionnalités pour les utilisateurs Specify. Veuillez considérer l’impact sur leur expérience. Cette fusion est irréversible",
     "ru-ru":
-      "Прежде чем продолжить, обратите внимание, что следующее действие может помешать другим пользователям. Это действие может вызвать задержки или временную недоступность определенных функций для пользователей Specify. Пожалуйста, учтите влияние на их опыт. Это объединение не может быть отменено",
+      "Прежде чем продолжить, обратите внимание, что следующее действие может помешать другим пользователям. Это действие может привести к задержкам или временной недоступности некоторых функций для пользователей Specify. Пожалуйста, учтите это влияние на их работу. Это объединение не может быть отменено.",
     "uk-ua":
       "Перш ніж продовжити, зауважте, що наступна дія може перешкодити іншим користувачам. Ця дія може призвести до затримок або тимчасової недоступності певних функцій для користувачів Specify. Будь ласка, врахуйте вплив на їхній досвід. Це об’єднання не можна скасувати",
     "pt-br":
@@ -240,7 +240,7 @@ export const mergingText = createDictionary({
     "de-ch": "Beim Zusammenführungsprozess ist ein Fehler aufgetreten.",
     "es-es": "Algo salió mal durante el proceso de fusión.",
     "fr-fr": "Quelque chose s'est mal passé pendant le processus de fusion.",
-    "ru-ru": "В процессе слияния что-то пошло не так.",
+    "ru-ru": "Что-то пошло не так во время процесса слияния.",
     "uk-ua": "Під час процесу об'єднання сталася помилка.",
     "pt-br": "Algo deu errado durante o processo de mesclagem.",
   },
