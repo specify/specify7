@@ -7,13 +7,10 @@
 from functools import reduce
 from typing import (
     Any,
-    Callable,
-    Dict,
-    List,
     NamedTuple,
-    Optional,
     TypedDict,
 )
+from collections.abc import Callable
 
 from specifyweb.permissions.permissions import has_target_permission
 from specifyweb.specify.filter_by_col import CONCRETE_HIERARCHY
@@ -45,7 +42,7 @@ from jsonschema import validate
 
 from django.db import transaction
 
-MaybeField = Callable[[QueryFieldSpec], Optional[Field]]
+MaybeField = Callable[[QueryFieldSpec], Field | None]
 
 # TODO:
 # Investigate if any/some/most of the logic for making an upload plan could be moved to frontend and reused.
@@ -102,7 +99,7 @@ def get_readonly_fields(table: Table):
 FLOAT_FIELDS = ["java.lang.Float", "java.lang.Double", "java.math.BigDecimal"]
 
 
-def parse(value: Optional[Any], query_field: QueryField) -> Any:
+def parse(value: Any | None, query_field: QueryField) -> Any:
     field = query_field.fieldspec.get_field()
     if field is None or value is None:
         return value
@@ -132,8 +129,8 @@ batch_edit_fields: dict[str, tuple[MaybeField, int]] = {
 
 
 class BatchEditFieldPack(NamedTuple):
-    field: Optional[QueryField] = None
-    idx: Optional[int] = None  # default value not there, for type safety
+    field: QueryField | None = None
+    idx: int | None = None  # default value not there, for type safety
     value: Any = None  # stricten this?
 
 
@@ -294,7 +291,7 @@ class RowPlanMap(NamedTuple):
     to_one: dict[str, "RowPlanMap"] = {}
     to_many: dict[str, "RowPlanMap"] = {}
     is_naive: bool = True
-    tree_rank: Optional[TreeRankQuery] = None
+    tree_rank: TreeRankQuery | None = None
 
     @staticmethod
     def _merge(
@@ -836,7 +833,7 @@ class RowPlanCanonical(NamedTuple):
 
         return _flat
 
-    def flatten(self) -> tuple[list[Any], Optional[dict[str, Any]]]:
+    def flatten(self) -> tuple[list[Any], dict[str, Any] | None]:
         cols = [col.value for col in self.columns]
         base_pack = (
             self.batch_edit_pack.to_json()
@@ -895,7 +892,7 @@ class RowPlanCanonical(NamedTuple):
             for canonical in self.to_one.values()
         )
 
-        def _lookup_in_fields(_id: Optional[int], readonly_fields: list[str]):
+        def _lookup_in_fields(_id: int | None, readonly_fields: list[str]):
             assert _id is not None, "invalid lookup used!"
             field = query_fields[
                 _id - 1
@@ -1069,11 +1066,11 @@ class BatchEditProps(TypedDict):
     user: Any
     contexttableid: int
     captions: Any
-    limit: Optional[int]
-    recordsetid: Optional[int]
+    limit: int | None
+    recordsetid: int | None
     session_maker: Any
     fields: list[QueryField]
-    omit_relationships: Optional[bool]
+    omit_relationships: bool | None 
     treedefsfilter: Any
 
 def _get_table_and_field(field: QueryField):
@@ -1165,7 +1162,7 @@ def run_batch_edit_query(props: BatchEditProps):
     visited_rows = visited_rows[1:]
     assert len(visited_rows) > 0, "nothing to return!"
 
-    raw_rows: list[tuple[list[Any], Optional[dict[str, Any]]]] = []
+    raw_rows: list[tuple[list[Any], dict[str, Any] | None]] = []
     for visited_row in visited_rows:
         extend_row = visited_row.extend(to_many_planner, indexed)
         row_data, row_batch_edit_pack = extend_row.flatten()
@@ -1261,7 +1258,7 @@ def make_dataset(
     return (ds_id, ds_name)
 
 
-def filter_tree_info(filters: Dict[str, List[int]], all_tree_info: Dict[str, List[TREE_INFORMATION]]):
+def filter_tree_info(filters: dict[str, list[int]], all_tree_info: dict[str, list[TREE_INFORMATION]]):
     for tablename in filters:
         treetable_key = tablename.title()
         if treetable_key in all_tree_info:

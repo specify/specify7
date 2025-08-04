@@ -1,4 +1,4 @@
-from typing import Literal, Union
+from typing import Literal
 from specifyweb.specify.func import Func
 from specifyweb.specify.tests.test_api import get_table
 from specifyweb.stored_queries.batch_edit import run_batch_edit_query  # type: ignore
@@ -574,7 +574,7 @@ class SQLUploadTests(SQLAlchemySetup, UploadTestsBase):
         self,
         record_id,
         table,
-        audit_code: Union[Literal["INSERT"], Literal["UPDATE"], Literal["REMOVE"]],
+        audit_code: Literal["INSERT"] | Literal["UPDATE"] | Literal["REMOVE"],
     ):
         entries = lookup_in_auditlog(table, record_id)
         self.assertEqual(1, entries.count())

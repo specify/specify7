@@ -32,5 +32,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(reverse_faulty_end_start_period),
+        migrations.RunPython(reverse_faulty_end_start_period,migrations.RunPython.noop, atomic=True),
     ]
