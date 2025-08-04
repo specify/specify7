@@ -601,7 +601,6 @@ function Wrapped({
                     ...query,
                     smushed: !(query.smushed ?? false),
                   });
-                  setSaveRequired(true);
                 }}
               />
             </div>
