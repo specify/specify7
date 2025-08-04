@@ -6,7 +6,7 @@ from specifyweb.backend.attachment_gw import urls as attachment_urls
 from specifyweb.backend.barvis import urls as tt_urls
 from .businessrules import urls as bus_urls
 from .context import urls as context_urls
-from .export import urls as export_urls
+from specifyweb.backend.export import urls as export_urls
 from specifyweb.backend.express_search import urls as es_urls
 from .frontend import urls as frontend_urls, doc_urls
 from .frontend.views import open_search as search_view

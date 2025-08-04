@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from specifyweb.export.feed import update_feed, MissingFeedResource
+from specifyweb.backend.export.feed import update_feed, MissingFeedResource
 
 class Command(BaseCommand):
 
