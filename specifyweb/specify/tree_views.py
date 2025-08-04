@@ -9,7 +9,7 @@ from sqlalchemy import sql, distinct
 from sqlalchemy.orm import aliased
 
 from specifyweb.middleware.general import require_GET
-from specifyweb.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets, has_table_permission
 
 from specifyweb.stored_queries import models as sqlmodels
