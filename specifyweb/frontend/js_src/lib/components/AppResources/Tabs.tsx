@@ -109,32 +109,32 @@ export function useEditorTabs(
         : undefined;
     return editors === undefined
       ? [
-        {
-          label: labels.generic,
-          component(props): JSX.Element {
-            return <AppResourceTextEditor {...props} />;
+          {
+            label: labels.generic,
+            component(props): JSX.Element {
+              return <AppResourceTextEditor {...props} />;
+            },
           },
-        },
-      ]
+        ]
       : filterArray(
-        Object.entries(editors).map(([type, Editor]) =>
-          typeof Editor === 'function'
-            ? {
-              label: labels[type],
-              component(props): JSX.Element {
-                return (
-                  <>
-                    {type === 'visual' && (
-                      <OtherCollectionWarning directory={props.directory} />
-                    )}
-                    <Editor {...props} />
-                  </>
-                );
-              },
-            }
-            : undefined
-        )
-      );
+          Object.entries(editors).map(([type, Editor]) =>
+            typeof Editor === 'function'
+              ? {
+                  label: labels[type],
+                  component(props): JSX.Element {
+                    return (
+                      <>
+                        {type === 'visual' && (
+                          <OtherCollectionWarning directory={props.directory} />
+                        )}
+                        <Editor {...props} />
+                      </>
+                    );
+                  },
+                }
+              : undefined
+          )
+        );
   }, [subType]);
 }
 
@@ -155,10 +155,10 @@ function OtherCollectionWarning({
     () =>
       (typeof directory.collection === 'string' &&
         directory.collection !==
-        getResourceApiUrl('Collection', schema.domainLevelIds.collection)) ||
+          getResourceApiUrl('Collection', schema.domainLevelIds.collection)) ||
       (typeof directory.discipline === 'string' &&
         directory.discipline !==
-        getResourceApiUrl('Discipline', schema.domainLevelIds.discipline)),
+          getResourceApiUrl('Discipline', schema.domainLevelIds.discipline)),
     [directory]
   );
   return isOtherScope ? (
@@ -214,5 +214,5 @@ export function Tabs({
 }
 
 export const exportsForTests = {
-  OtherCollectionWarning
+  OtherCollectionWarning,
 };
