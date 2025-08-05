@@ -227,6 +227,8 @@ function fetchRowAttachments(
   });
 }
 
+import NewWindow from 'react-new-window';
+
 function AttachmentViewerDialog({
   attachment,
   onClose,
@@ -255,7 +257,30 @@ function AttachmentViewerDialog({
     SpecifyResource<AnySchema> | undefined
   >(undefined);
 
-  return (
+  const body =
+    attachment !== undefined &&
+    (isImage ? (
+      <ImageViewer alt={attachment?.title ?? ''} src={attachmentUrl ?? ''} />
+    ) : (
+      <AttachmentViewer
+        attachment={deserializeResource(attachment)}
+        related={[related, setRelated]}
+        showMeta={false}
+        onViewRecord={undefined}
+      />
+    ));
+
+  const useWindow = true;
+
+  return useWindow ? (
+    <NewWindow
+      copyStyles
+      title={attachment?.title ?? ''}
+      onUnload={onClose}
+    >
+      {body}
+    </NewWindow>
+  ) : (
     <Dialog
       buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
       className={{
@@ -265,20 +290,7 @@ function AttachmentViewerDialog({
       modal={false}
       onClose={onClose}
     >
-      {attachment !== undefined &&
-        (isImage ? (
-          <ImageViewer
-            alt={attachment?.title ?? ''}
-            src={attachmentUrl ?? ''}
-          />
-        ) : (
-          <AttachmentViewer
-            attachment={deserializeResource(attachment)}
-            related={[related, setRelated]}
-            showMeta={false}
-            onViewRecord={undefined}
-          />
-        ))}
+      {body}
     </Dialog>
   );
 }
