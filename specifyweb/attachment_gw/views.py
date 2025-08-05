@@ -20,6 +20,7 @@ from django.db import transaction
 from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control, never_cache
 from django.views.decorators.http import require_POST
+from django.utils.text import get_valid_filename
 
 from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.views import login_maybe_required, openapi
@@ -368,9 +369,10 @@ def stream_attachment_zip(attachment_locations, orig_filenames, collection):
             }
             response = session.get(server_urls['read'], params=data, stream=True)
             if response.status_code == 200:
-                download_filename = orig_filenames[i] if i < len(orig_filenames) else attachment_location
+                download_filename = get_valid_filename(orig_filenames[i] if i < len(orig_filenames) else attachment_location)
                 filename_appearances[download_filename] = filename_appearances.get(download_filename, 0) + 1
                 if filename_appearances[download_filename] > 1:
+                    # De-duplicate filename
                     name, extension = os.path.splitext(download_filename)
                     download_filename = f'{name}_{filename_appearances[download_filename]-1}{extension}'
                 def data_iterator():
