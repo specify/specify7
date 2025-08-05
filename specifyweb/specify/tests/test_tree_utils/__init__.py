@@ -44,9 +44,15 @@ class TestMultipleTaxonTreeContext:
             name="Test2", collection=collection_2, taxontreedef=taxontreedef_1
         )
 
-        Taxontreedef.objects.filter(
-            ~Q(id__in=[taxontreedef_1.id, taxontreedef_2.id])
-        ).delete()
+        
+        # Taxontreedef.objects.filter(
+        #     ~Q(id__in=[taxontreedef_1.id, taxontreedef_2.id])
+        # ).delete()
+
+        extra_defs = Taxontreedef.objects.exclude(id__in=[taxontreedef_1.id, taxontreedef_2.id])
+        for def_ in extra_defs:
+            def_.treedefitems.all().delete()
+        extra_defs.delete()
 
         return (collection_2, taxontreedef_1, taxontreedef_2)
 
