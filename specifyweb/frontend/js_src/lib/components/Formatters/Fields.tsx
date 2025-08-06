@@ -14,7 +14,10 @@ import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { fetchContext as fetchFieldFormatters } from '../FieldFormatters';
-import type { HtmlGeneratorFieldData,MappingElementProps } from '../WbPlanView/LineComponents';
+import type {
+  HtmlGeneratorFieldData,
+  MappingElementProps,
+} from '../WbPlanView/LineComponents';
 import { MappingElement } from '../WbPlanView/LineComponents';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import {
