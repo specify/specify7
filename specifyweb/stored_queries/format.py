@@ -55,7 +55,7 @@ class ObjectFormatter:
         self.numeric_catalog_number = numeric_catalog_number
         # format_expr determines if make_expr should call _fieldformat.
         # Batch edit expects it to be false to correctly handle some edge cases.
-        self.format_expr = False # format_expr
+        self.format_expr = format_expr
 
     def getFormatterDef(self, specify_model: Table, formatter_name) -> Element | None:
 
