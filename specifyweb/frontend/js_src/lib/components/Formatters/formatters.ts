@@ -145,6 +145,7 @@ async function formatField(
     aggregator,
     fieldFormatter,
     formatFieldValue = true,
+    numeric = false,
   }: Formatter['definition']['fields'][number]['fields'][number] & {
     readonly formatFieldValue?: boolean;
   },
@@ -195,6 +196,12 @@ async function formatField(
       ? naiveFormatter(parentResource.specifyTable.name, parentResource.id)
       : userText.noPermission();
 
+  if (numeric) {
+    return {
+      formatted: formatted ? Number(formatted)?.toString() ?? '' : '',
+      separator: (formatted ?? '') === '' ? '' : separator,
+    };
+  }
   return {
     formatted: formatted?.toString() ?? '',
     separator: (formatted ?? '') === '' ? '' : separator,
@@ -218,6 +225,7 @@ export async function fetchPathAsString(
       aggregator: undefined,
       fieldFormatter: undefined,
       formatFieldValue,
+      numeric: false,
     },
     baseResource
   );
