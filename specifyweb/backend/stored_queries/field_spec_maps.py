@@ -1,4 +1,4 @@
-from specifyweb.stored_queries.queryfield import QueryField
+from specifyweb.backend.stored_queries.queryfield import QueryField
 
 
 def apply_specify_user_name(query_field: QueryField, user):

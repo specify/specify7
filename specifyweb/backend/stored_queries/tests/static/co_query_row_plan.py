@@ -1,4 +1,4 @@
-from specifyweb.stored_queries.batch_edit import (
+from specifyweb.backend.stored_queries.batch_edit import (
     BatchEditFieldPack,
     BatchEditPack,
     RowPlanMap,

@@ -1,18 +1,18 @@
 import json
 from unittest.mock import patch
 
-from specifyweb.stored_queries.batch_edit import (
+from specifyweb.backend.stored_queries.batch_edit import (
     BatchEditPack,
     BatchEditProps,
     RowPlanMap,
     run_batch_edit_query,
 )
 
-from specifyweb.stored_queries.queryfield import fields_from_json
-from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec
-from specifyweb.stored_queries.tests.base_format import SIMPLE_DEF
-from specifyweb.stored_queries.tests.tests import SQLAlchemySetup
-from specifyweb.stored_queries.tests.static import test_plan
+from specifyweb.backend.stored_queries.queryfield import fields_from_json
+from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
+from specifyweb.backend.stored_queries.tests.base_format import SIMPLE_DEF
+from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
+from specifyweb.backend.stored_queries.tests.static import test_plan
 
 from specifyweb.specify.datamodel import datamodel
 import specifyweb.specify.models as models
@@ -20,7 +20,7 @@ import specifyweb.specify.models as models
 from specifyweb.workbench.upload.upload_plan_schema import schema
 from jsonschema import validate
 
-from specifyweb.stored_queries.tests.static.co_query_row_plan import row_plan_map
+from specifyweb.backend.stored_queries.tests.static.co_query_row_plan import row_plan_map
 
 
 def apply_visual_order(headers, order):
@@ -87,7 +87,7 @@ class QueryConstructionTests(SQLAlchemySetup):
 
     def test_query_construction(self):
         self.maxDiff = None
-        query = json.load(open("specifyweb/stored_queries/tests/static/co_query.json"))
+        query = json.load(open("specifyweb/backend/stored_queries/tests/static/co_query.json"))
         query_fields = fields_from_json(query["fields"])
         visible_fields = [field for field in query_fields if field.display]
         row_plan = RowPlanMap.get_row_plan(visible_fields)

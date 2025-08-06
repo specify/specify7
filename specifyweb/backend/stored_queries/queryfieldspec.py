@@ -11,11 +11,11 @@ from specifyweb.specify.load_datamodel import Field, Table
 from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, datamodel
 from specifyweb.specify.uiformatters import get_uiformatter
 from specifyweb.specify.utils import get_cat_num_inheritance_setting
-from specifyweb.stored_queries.models import CollectionObject as sq_CollectionObject
+from specifyweb.backend.stored_queries.models import CollectionObject as sq_CollectionObject
 
 from . import models
 from .query_ops import QueryOps
-from ..specify.load_datamodel import Table, Field, Relationship
+from specifyweb.specify.load_datamodel import Table, Field, Relationship
 
 logger = logging.getLogger(__name__)
 

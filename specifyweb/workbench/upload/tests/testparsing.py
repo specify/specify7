@@ -9,7 +9,7 @@ from jsonschema import validate  # type: ignore
 
 from specifyweb.specify import auditcodes
 from specifyweb.specify.datamodel import datamodel
-from specifyweb.stored_queries.format import LDLM_TO_MYSQL, MYSQL_TO_MONTH, \
+from specifyweb.backend.stored_queries.format import LDLM_TO_MYSQL, MYSQL_TO_MONTH, \
     MYSQL_TO_YEAR
 from specifyweb.specify.parse import parse_coord, parse_date, ParseFailure, ParseSucess
 from .base import UploadTestsBase, get_table

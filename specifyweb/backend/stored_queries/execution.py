@@ -19,7 +19,7 @@ from sqlalchemy.sql.expression import asc, desc, insert, literal
 
 from specifyweb.specify.field_change_info import FieldChangeInfo
 from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
-from specifyweb.stored_queries.group_concat import group_by_displayed_fields
+from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.specify.tree_utils import get_search_filters
 
 from . import models
@@ -30,12 +30,12 @@ from .relative_date_utils import apply_absolute_date
 from .field_spec_maps import apply_specify_user_name
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.permissions import check_table_permissions
-from ..specify.auditlog import auditlog
-from ..specify.models import Collectionobjectgroupjoin, Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
+from specifyweb.specify.auditlog import auditlog
+from specifyweb.specify.models import Collectionobjectgroupjoin, Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
 from specifyweb.specify.utils import get_cat_num_inheritance_setting, log_sqlalchemy_query
 
-from specifyweb.stored_queries.group_concat import group_by_displayed_fields
-from specifyweb.stored_queries.queryfield import fields_from_json
+from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
+from specifyweb.backend.stored_queries.queryfield import fields_from_json
 
 logger = logging.getLogger(__name__)
 

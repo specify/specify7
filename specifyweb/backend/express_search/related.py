@@ -5,10 +5,10 @@ Base class for related search
 import logging
 
 from specifyweb.specify.models import datamodel
-from specifyweb.stored_queries.execution import BuildQueryProps, build_query
-from specifyweb.stored_queries.query_ops import QueryOps
-from specifyweb.stored_queries.queryfield import QueryField
-from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec
+from specifyweb.backend.stored_queries.execution import BuildQueryProps, build_query
+from specifyweb.backend.stored_queries.query_ops import QueryOps
+from specifyweb.backend.stored_queries.queryfield import QueryField
+from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
 
 logger = logging.getLogger(__name__)
 

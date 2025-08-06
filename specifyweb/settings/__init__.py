@@ -211,7 +211,7 @@ SPECIFY_APPS  = [
     'specifyweb.specify',
     'specifyweb.backend.permissions',
     'specifyweb.backend.accounts',
-    'specifyweb.stored_queries',
+    'specifyweb.backend.stored_queries',
     'specifyweb.backend.businessrules',
     'specifyweb.backend.express_search',
     'specifyweb.context',

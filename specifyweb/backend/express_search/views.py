@@ -17,9 +17,9 @@ from specifyweb.backend.permissions.permissions import check_table_permissions
 from specifyweb.specify.api import toJson
 from specifyweb.specify.models import datamodel, Collection
 from specifyweb.specify.views import login_maybe_required
-from specifyweb.stored_queries import models
-from specifyweb.stored_queries.execution import filter_by_collection
-from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec
+from specifyweb.backend.stored_queries import models
+from specifyweb.backend.stored_queries.execution import filter_by_collection
+from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
 
 logger = logging.getLogger(__name__)
 

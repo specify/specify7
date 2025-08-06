@@ -4,7 +4,7 @@ from specifyweb.specify.models import datamodel
 from specifyweb.specify.func import Func
 from specifyweb.specify.load_datamodel import Table
 from specifyweb.specify.tree_views import TREE_INFORMATION
-from specifyweb.stored_queries.queryfieldspec import QueryFieldSpec, TreeRankQuery
+from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec, TreeRankQuery
 from .batch_edit import BatchEditFieldPack, BatchEditPack, RowPlanMap
 
 BATCH_EDIT_REQUIRED_TREE_FIELDS: Set[str] = {"name"}
