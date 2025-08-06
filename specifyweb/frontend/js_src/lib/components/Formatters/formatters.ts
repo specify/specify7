@@ -196,12 +196,9 @@ async function formatField(
       ? naiveFormatter(parentResource.specifyTable.name, parentResource.id)
       : userText.noPermission();
 
-  if (numeric) {
-    return {
-      formatted: formatted ? Number(formatted)?.toString() ?? '' : '',
-      separator: (formatted ?? '') === '' ? '' : separator,
-    };
-  }
+  if (numeric)
+    formatted = formatted ? Number(formatted)?.toString() : formatted
+
   return {
     formatted: formatted?.toString() ?? '',
     separator: (formatted ?? '') === '' ? '' : separator,
