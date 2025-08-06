@@ -197,7 +197,7 @@ async function formatField(
       : userText.noPermission();
 
   if (numeric)
-    formatted = formatted ? Number(formatted)?.toString() : formatted
+    formatted = formatted === undefined ? undefined : Number(formatted)?.toString();
 
   return {
     formatted: formatted?.toString() ?? '',
@@ -271,6 +271,7 @@ const autoGenerateFormatter = (table: SpecifyTable): Formatter => ({
             formatter: undefined,
             aggregator: undefined,
             fieldFormatter: undefined,
+            numeric: false,
           })),
       },
     ],

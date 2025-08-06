@@ -4,7 +4,7 @@ import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
-import type { GetSet } from '../../utils/types';
+import type { GetSet, IR } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
@@ -14,6 +14,8 @@ import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { fetchContext as fetchFieldFormatters } from '../FieldFormatters';
+import type { HtmlGeneratorFieldData,MappingElementProps } from '../WbPlanView/LineComponents';
+import { MappingElement } from '../WbPlanView/LineComponents';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import {
   FormattersPickList,
@@ -136,9 +138,6 @@ export function Fields({
   );
 }
 
-import { MappingElement } from '../WbPlanView/LineComponents';
-import { MappingElementProps } from '../WbPlanView/LineComponents';
-
 function Field({
   table,
   field: [field, handleChange],
@@ -174,16 +173,14 @@ function Field({
         handleChange({
           ...field,
           numeric,
-        })
+        });
       },
     }),
     previewOption: {
       optionName: 'mappingOptions',
       optionLabel: (
         <span title={resourcesText.configureField()}>
-          <span className="sr-only">
-            {resourcesText.configureField()}
-          </span>
+          <span className="sr-only">{resourcesText.configureField()}</span>
           {icons.cog}
         </span>
       ),
@@ -193,17 +190,17 @@ function Field({
       ? {
           isOpen: true,
           onChange: undefined,
-          onClose: () => {
+          onClose: (): void => {
             setOpen(false);
           },
         }
       : {
           isOpen: false,
-          onOpen: () => {
+          onOpen: (): void => {
             setOpen(true);
           },
         }),
-  }
+  };
 
   return (
     <tr>
@@ -234,9 +231,7 @@ function Field({
             openIndex={[openIndex, setOpenIndex]}
             table={table}
           />
-          <MappingElement
-            {...mappingDetails}
-          />
+          <MappingElement {...mappingDetails} />
         </div>
       </td>
       {displayFormatter && (
@@ -348,7 +343,7 @@ export function fieldOptionsMenu({
   readonly isReadOnly: boolean;
   readonly columnOptions: FormatterFieldOptions;
   readonly onToggleNumeric: (numeric: boolean) => void;
-}): any {
+}): IR<HtmlGeneratorFieldData> {
   return {
     numeric: {
       optionLabel: (
