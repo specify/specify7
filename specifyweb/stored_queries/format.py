@@ -55,7 +55,7 @@ class ObjectFormatter:
         self.numeric_catalog_number = numeric_catalog_number
         # format_expr determines if make_expr should call _fieldformat.
         # Batch edit expects it to be false to correctly handle some edge cases.
-        self.format_expr = format_expr
+        self.format_expr = False # format_expr
 
     def getFormatterDef(self, specify_model: Table, formatter_name) -> Element | None:
 
@@ -175,7 +175,8 @@ class ObjectFormatter:
         path = path.split('.')
         path = [inspect(orm_table).class_.__name__, *path]
         formatter_field_spec = QueryFieldSpec.from_path(path)
-        formatter = fieldNodeAttrib.get('formatter', None)
+        # TODO: Figure out if fallback to uifieldformatter works.
+        formatter = fieldNodeAttrib.get('formatter', fieldNodeAttrib.get('uifieldformatter', None))
         aggregator = fieldNodeAttrib.get('aggregator', None)
         next_table_name = formatter_field_spec.table.name
 
@@ -198,6 +199,10 @@ class ObjectFormatter:
             
             if self.format_expr:
                 new_expr = self._fieldformat(formatter_field_spec.table, formatter_field_spec.get_field(), new_expr)
+
+        if 'numeric' in fieldNodeAttrib:
+            # TODO: This can crash.
+            new_expr = cast(new_expr, types.Numeric(65))
 
         if 'format' in fieldNodeAttrib:
             new_expr = self.pseudo_sprintf(fieldNodeAttrib['format'], new_expr)

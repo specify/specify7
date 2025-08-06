@@ -127,6 +127,11 @@ const fieldSpec = (table: SpecifyTable | undefined) =>
     formatter: syncers.xmlAttribute('formatter', 'skip'),
     fieldFormatter: syncers.xmlAttribute('uiFieldFormatter', 'skip'),
     field: pipe(syncers.xmlContent, syncers.field(table?.name)),
+    numeric: pipe(
+      syncers.xmlAttribute('numeric', 'skip'),
+      syncers.maybe(syncers.toBoolean),
+      syncers.default<boolean>(false)
+    ),
   });
 
 const aggregatorSpec = f.store(() =>

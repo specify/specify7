@@ -111,6 +111,7 @@ export function Fields({
                   formatter: undefined,
                   fieldFormatter: undefined,
                   field: undefined,
+                  numeric: false,
                 },
               ])
             }
@@ -135,6 +136,9 @@ export function Fields({
   );
 }
 
+import { MappingElement } from '../WbPlanView/LineComponents';
+import { MappingElementProps } from '../WbPlanView/LineComponents';
+
 function Field({
   table,
   field: [field, handleChange],
@@ -156,6 +160,51 @@ function Field({
   const [openIndex, setOpenIndex] = React.useState<number | undefined>(
     undefined
   );
+
+  const [isOpen, setOpen] = React.useState<boolean>(false);
+  const mappingDetails: MappingElementProps = {
+    customSelectType: 'OPTIONS_LIST',
+    customSelectSubtype: 'simple',
+    fieldsData: fieldOptionsMenu({
+      isReadOnly: false,
+      columnOptions: {
+        numeric: field.numeric,
+      },
+      onToggleNumeric: (numeric) => {
+        handleChange({
+          ...field,
+          numeric,
+        })
+      },
+    }),
+    previewOption: {
+      optionName: 'mappingOptions',
+      optionLabel: (
+        <span title={resourcesText.configureField()}>
+          <span className="sr-only">
+            {resourcesText.configureField()}
+          </span>
+          {icons.cog}
+        </span>
+      ),
+    },
+    selectLabel: resourcesText.configureField(),
+    ...(isOpen
+      ? {
+          isOpen: true,
+          onChange: undefined,
+          onClose: () => {
+            setOpen(false);
+          },
+        }
+      : {
+          isOpen: false,
+          onOpen: () => {
+            setOpen(true);
+          },
+        }),
+  }
+
   return (
     <tr>
       <td>
@@ -172,18 +221,23 @@ function Field({
         />
       </td>
       <td>
-        <ResourceMapping
-          mapping={[
-            field.field,
-            (fieldMapping): void =>
-              handleChange({
-                ...field,
-                field: fieldMapping,
-              }),
-          ]}
-          openIndex={[openIndex, setOpenIndex]}
-          table={table}
-        />
+        <div className="flex items-center gap-2">
+          <ResourceMapping
+            mapping={[
+              field.field,
+              (fieldMapping): void =>
+                handleChange({
+                  ...field,
+                  field: fieldMapping,
+                }),
+            ]}
+            openIndex={[openIndex, setOpenIndex]}
+            table={table}
+          />
+          <MappingElement
+            {...mappingDetails}
+          />
+        </div>
       </td>
       {displayFormatter && (
         <td>
@@ -280,4 +334,33 @@ function FieldFormatter({
         />
       </Label.Inline>
     );
+}
+
+export type FormatterFieldOptions = {
+  readonly numeric: boolean;
+};
+
+export function fieldOptionsMenu({
+  columnOptions,
+  isReadOnly,
+  onToggleNumeric: handleToggleNumeric,
+}: {
+  readonly isReadOnly: boolean;
+  readonly columnOptions: FormatterFieldOptions;
+  readonly onToggleNumeric: (numeric: boolean) => void;
+}): any {
+  return {
+    numeric: {
+      optionLabel: (
+        <Label.Inline>
+          <Input.Checkbox
+            checked={columnOptions.numeric}
+            disabled={isReadOnly}
+            onValueChange={handleToggleNumeric}
+          />{' '}
+          {resourcesText.numericField()}
+        </Label.Inline>
+      ),
+    },
+  };
 }

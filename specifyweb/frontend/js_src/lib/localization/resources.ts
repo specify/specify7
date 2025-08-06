@@ -947,4 +947,10 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Количество приготовлений не может быть отрицательным',
     'uk-ua': "Кількість підготовок не може бути від'ємним значенням",
   },
+  configureField: {
+    'en-us': 'Configure field',
+  },
+  numericField: {
+    'en-us': 'Convert to number',
+  },
 } as const);
