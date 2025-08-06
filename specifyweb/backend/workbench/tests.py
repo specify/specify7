@@ -3,7 +3,7 @@ import json
 from django.test import Client
 
 from specifyweb.specify.models import Recordset
-from specifyweb.workbench.models import Spdataset
+from specifyweb.backend.workbench.models import Spdataset
 from specifyweb.specify.tests.test_api import ApiTests
 from .upload import upload as uploader
 

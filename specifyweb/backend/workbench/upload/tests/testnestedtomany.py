@@ -1,8 +1,8 @@
 from jsonschema import validate # type: ignore
 from typing import Any, Dict, List, Tuple
-from specifyweb.workbench.upload.tests.base import UploadTestsBase
-from specifyweb.workbench.upload.upload import do_upload
-from specifyweb.workbench.upload.upload_result import Matched, NullRecord, Uploaded
+from specifyweb.backend.workbench.upload.tests.base import UploadTestsBase
+from specifyweb.backend.workbench.upload.upload import do_upload
+from specifyweb.backend.workbench.upload.upload_result import Matched, NullRecord, Uploaded
 from ..upload_plan_schema import schema, parse_plan
 from specifyweb.specify.tests.test_api import get_table
 

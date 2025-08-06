@@ -6,8 +6,8 @@ from django.db import transaction
 
 from specifyweb.specify import models
 
-from specifyweb.workbench.upload.upload import clear_disambiguation
-from specifyweb.workbench.models import Spdataset
+from specifyweb.backend.workbench.upload.upload import clear_disambiguation
+from specifyweb.backend.workbench.models import Spdataset
 
 
 class Command(BaseCommand):

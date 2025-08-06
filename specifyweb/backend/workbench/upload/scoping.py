@@ -9,8 +9,8 @@ from specifyweb.specify.tree_utils import get_default_treedef
 from specifyweb.specify.uiformatters import get_uiformatter, get_catalognumber_format, UIFormatter
 from specifyweb.specify.utils import get_picklists
 from specifyweb.backend.stored_queries.format import get_date_format
-from specifyweb.workbench.upload.predicates import SPECIAL_TREE_FIELDS_TO_SKIP
-from specifyweb.workbench.upload.scope_context import ScopeContext
+from specifyweb.backend.workbench.upload.predicates import SPECIAL_TREE_FIELDS_TO_SKIP
+from specifyweb.backend.workbench.upload.scope_context import ScopeContext
 
 from .uploadable import Uploadable, ScopedUploadable, Row
 from .upload_table import UploadTable, ScopedUploadTable, ScopedOneToOneTable
