@@ -1,5 +1,5 @@
 import logging
-from typing import Any, List, NamedTuple, Optional, TypedDict, Union
+from typing import Any, NamedTuple, TypedDict
 
 
 from specifyweb.specify.auditlog import AuditLog
@@ -39,9 +39,9 @@ DEFAULT_AUDITOR_PROPS = AuditorProps(
 class Auditor(NamedTuple):
     collection: Any
     props: AuditorProps
-    audit_log: Optional[AuditLog]
+    audit_log: AuditLog | None
     skip_create_permission_check: bool = False
-    agent: Optional[Agent] = None
+    agent: Agent | None = None
 
     def pre_log(self, obj: Any, action_name: TABLE_ACTION):
         if self.skip_create_permission_check:
@@ -54,13 +54,13 @@ class Auditor(NamedTuple):
         check_table_permissions(self.collection, self.agent, obj, action_name)
         return
 
-    def insert(self, inserted_obj: Any, parent_record: Optional[Any]) -> None:
+    def insert(self, inserted_obj: Any, parent_record: Any | None) -> None:
         self.pre_log(inserted_obj, "create")
 
         if self.audit_log is not None:
             self.audit_log.insert(inserted_obj, self.agent, parent_record)
 
-    def delete(self, deleted_obj: Any, parent_record: Optional[Any]) -> None:
+    def delete(self, deleted_obj: Any, parent_record: Any | None) -> None:
         self.pre_log(deleted_obj, "delete")
 
         if self.audit_log is not None:

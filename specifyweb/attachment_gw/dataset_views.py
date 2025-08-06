@@ -57,7 +57,7 @@ def dataset_view(request, ds: Spattachmentdataset):
         # If state changed from main to uploading, add timestamp
         if old_status == 'main' and new_status == 'uploading':
             ds.uploadresult = {
-                'timestamp': datetime.datetime.now(datetime.timezone.utc).isoformat()
+                'timestamp': datetime.datetime.now(datetime.UTC).isoformat()
             }
         elif not (old_status == 'uploading' and new_status == 'main'):
             # if state changed from uploading to main (during sync or interruption)
