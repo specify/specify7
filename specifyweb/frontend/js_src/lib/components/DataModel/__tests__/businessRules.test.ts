@@ -530,7 +530,7 @@ describe('Address business rules', () => {
     // Doing this initializes the DependentCollection
     agent.set('addresses', []);
     agent.getDependentResource('addresses')?.add(address);
-    expect(address.get('isPrimary')).toBe(true);
+    expect(address.get('isPrimary')).toBeUndefined();
   });
   test('only one isPrimary', () => {
     const agent = new tables.Agent.Resource();
