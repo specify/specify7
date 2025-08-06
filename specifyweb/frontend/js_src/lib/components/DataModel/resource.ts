@@ -276,7 +276,6 @@ const uniqueFields = [
   'guid',
   'timestampCreated',
   'version',
-  'isCurrent',
   'timestampModified',
 ];
 
