@@ -27,6 +27,7 @@ class FieldDoesNotExistError(DoesNotExistError):
 T = TypeVar("T")
 U = TypeVar("U")
 
+Field_Type = TypeVar('Field_Type', bound="Field")
 
 def strict_to_optional(f: Callable[[U], T], lookup: U, strict: bool) -> T | None:
     try:
@@ -146,8 +147,8 @@ class Table:
         self._init_fields(self.relationships)
         self._init_fields(self.virtual_fields)
 
-    def _init_fields(self, fields: list[type["Field"]]) -> None: 
-        for field in fields: 
+    def _init_fields(self, fields: list[Field_Type]) -> None:
+        for field in fields:
             field.table = self
 
 
