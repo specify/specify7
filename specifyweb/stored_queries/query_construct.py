@@ -1,6 +1,5 @@
 import logging
 from collections import namedtuple, deque
-from typing import Tuple, List
 
 from sqlalchemy import orm, sql, or_
 
@@ -53,7 +52,7 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             ancestors = [node]
             for _ in range(max_depth-1):
                 ancestor = orm.aliased(node)
-                query = query.outerjoin(ancestor, ancestors[-1].ParentID == getattr(ancestor, ancestor._id))
+                query = query.outerjoin(ancestor, ancestors[-1].ParentID == ancestor._id)
                 ancestors.append(ancestor)
         
 
