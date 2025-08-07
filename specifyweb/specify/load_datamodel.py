@@ -146,7 +146,7 @@ class Table:
         self._init_fields(self.relationships)
         self._init_fields(self.virtual_fields)
 
-    def _init_fields(self, fields: list["Field"]) -> None: 
+    def _init_fields(self, fields: list[type["Field"]]) -> None: 
         for field in fields: 
             field.table = self
 
@@ -236,7 +236,7 @@ class Table:
 class Field:
     is_relationship: bool = False
     name: str
-    column: str | None = None 
+    column: str | None = None
     indexed: bool
     unique: bool
     required: bool = False
@@ -257,7 +257,7 @@ class Field:
     ):
         if not name:
             raise ValueError("name is required")
-        if not type: 
+        if not type:
             raise ValueError('type is required')
         if not column and not is_relationship:
             raise ValueError("column is required")
@@ -333,7 +333,7 @@ class Relationship(Field):
     type: RelationshipType
     required: bool
     relatedModelName: str
-    column: str | None = None 
+    column: str | None = None
     otherSideName: str | None = None
 
     def __init__(
