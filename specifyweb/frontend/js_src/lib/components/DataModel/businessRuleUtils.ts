@@ -95,8 +95,10 @@ export function onAddedEnsureBoolInCollection<
     collection
   ) => {
     if (
-      resource.specifyTable.name !== 'Address' &&
-      resource.createdBy !== 'clone'
+      !(
+        resource.specifyTable.name === 'Address' &&
+        resource.createdBy === 'clone'
+      )
     ) {
       resource.set(fieldName, false as never);
       if (!collection.models.some((model) => model.get(fieldName)))
