@@ -142,6 +142,14 @@ class Table:
         self.sp7_only = sp7_only
         self.django_app = django_app
         self.virtual_fields = virtual_fields if virtual_fields is not None else []
+        self._init_fields(self.fields)
+        self._init_fields(self.relationships)
+        self._init_fields(self.virtual_fields)
+
+    def _init_fields(self, fields: list["Field"]) -> None: 
+        for field in fields: 
+            field.table = self
+
 
     @property
     def name(self) -> str:
@@ -234,6 +242,7 @@ class Field:
     required: bool = False
     type: str
     length: int | None
+    table: "Table"
 
     def __init__(
         self,
@@ -325,7 +334,7 @@ class Relationship(Field):
     required: bool
     relatedModelName: str
     column: str | None = None 
-    otherSideName: str | None = None 
+    otherSideName: str | None = None
 
     def __init__(
         self,
