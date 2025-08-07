@@ -1,4 +1,4 @@
-from typing import Union, Optional, TypeVar, cast, Literal
+from typing import Union, Optional, TypeVar, cast, Literal, get_args as get_typing_args
 from collections.abc import Callable
 from collections.abc import Iterable
 from xml.etree import ElementTree
@@ -232,7 +232,7 @@ class Field:
     indexed: bool
     unique: bool
     required: bool = False
-    type: str | None = None
+    type: str
     length: int | None
 
     def __init__(
@@ -289,7 +289,7 @@ class Index:
 class IdField(Field):
     name: str
     column: str
-    type: str | None
+    type: str
     required: bool = True
 
     def __init__(
@@ -315,11 +315,13 @@ class IdField(Field):
 
 RelationshipType = Literal["one-to-many", "one-to-one", "many-to-one", "many-to-many", "zero-to-one"]
 
+valid_relationship_types = get_typing_args(RelationshipType)
+
 class Relationship(Field):
     is_relationship: bool = True
     dependent: bool = False
     name: str
-    type: RelationshipType | None
+    type: RelationshipType
     required: bool
     relatedModelName: str
     column: str | None = None 
@@ -347,10 +349,15 @@ class Relationship(Field):
             is_relationship=is_relationship,
         )
         
-        if relatedModelName is None: 
+        if relatedModelName is None:
             raise ValueError('relatedModelName is required for Relationship')
-        
-        if not column and type == 'many-to-one': 
+
+        if type is not None and type not in valid_relationship_types:
+            raise ValueError(
+                f'invalid relationship type: {type}.'
+                f'Expected one of {valid_relationship_types}')
+
+        if not column and type == 'many-to-one':
             raise ValueError('column is required')
         
         self.dependent = dependent if dependent is not None else False
@@ -429,7 +436,7 @@ def make_index(indexdef: ElementTree.Element) -> Index:
 def make_relationship(reldef: ElementTree.Element) -> Relationship:
     rel = Relationship(
         name=reldef.attrib["relationshipname"],
-        type=reldef.attrib["type"],
+        type=cast(RelationshipType, reldef.attrib["type"]),
         required=(reldef.attrib["required"] == "true"),
         relatedModelName=reldef.attrib["classname"].split(".")[-1],
         column=(
@@ -492,7 +499,7 @@ def flag_dependent_fields(datamodel: Datamodel) -> None:
         try:
             field = datamodel.get_table_strict(tablename).get_relationship(fieldname)
         except DoesNotExistError as e:
-            logger.warn(
+            logger.warning(
                 "missing table or relationship setting dependent field: %s", name
             )
             continue
