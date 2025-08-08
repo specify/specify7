@@ -13,23 +13,23 @@ from specifyweb.stored_queries.tests.static.simple_static_fields import (
 
 class SimpleStr:
 
-    def __init__(self, str_value):
+    def __init__(self, str_value): # pragma: no cover
         self.str_value = str_value
 
-    def __repr__(self):
+    def __repr__(self): # pragma: no cover
         # Don't put anything in here in quotes
         return str(self.str_value)
 
 
-def GET_TABLE(table: Table):
+def GET_TABLE(table: Table): # pragma: no cover
     return SimpleStr(f'datamodel.get_table_strict("{table.name}")')
 
 
-def GET_FIELD(table: Table, field: Field):
+def GET_FIELD(table: Table, field: Field): # pragma: no cover
     return SimpleStr(f'{GET_TABLE(table)}.get_field_strict("{field.name}")')
 
 
-def GET_SQL_TABLE(table: Table):
+def GET_SQL_TABLE(table: Table): # pragma: no cover
     return SimpleStr(f'get_sql_table("{table.name}")')
 
 
@@ -50,7 +50,7 @@ class StrFriendlyQueryFieldSpec(QueryFieldSpec):
 
     # A wrapper around queryfieldspec to make it more friendly for unit tests.
 
-    def __repr__(self):
+    def __repr__(self): # pragma: no cover
         key_values = self._asdict()
 
         key_values["root_table"] = GET_TABLE(self.root_table)
@@ -65,7 +65,7 @@ class StrFriendlyQueryFieldSpec(QueryFieldSpec):
         # to write tests for.
         return f"QueryFieldSpec(**{repr(key_values)})"
 
-    def _easify_join_path(self):
+    def _easify_join_path(self): # pragma: no cover
         join_path_list = list(self.join_path)
         table = self.root_table
         join_path_easy = []
@@ -89,7 +89,7 @@ class StrFriendlyQueryFieldSpec(QueryFieldSpec):
         return tuple(join_path_easy)
 
 
-def generate_fields_test_str(query_fields, var_name):
+def generate_fields_test_str(query_fields, var_name): # pragma: no cover
     # Generates the python file to represent the named tuple.
     query_field_with_friendly_specs = [
         f._replace(fieldspec=StrFriendlyQueryFieldSpec(*f.fieldspec))
@@ -101,7 +101,7 @@ def generate_fields_test_str(query_fields, var_name):
 
 class TestFieldSpecsFromJson(ApiTests):
 
-    def test_static_field_specs(self):
+    def test_static_field_specs(self): # pragma: no cover
         query = json.load(open("specifyweb/stored_queries/tests/static/co_query.json"))
         query_fields = fields_from_json(query["fields"])
 

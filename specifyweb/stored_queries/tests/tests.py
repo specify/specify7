@@ -74,7 +74,9 @@ def setup_sqlalchemy(url: str, use_blank_nulls=False, use_decimal_format=False):
         selects = [
             sqlalchemy.select(
                 [
-                    (parse_value(column, use_blank_nulls, use_decimal_format)).label(columns[idx][0])
+                    (parse_value(column, use_blank_nulls, use_decimal_format)).label(
+                        columns[idx][0]
+                    )
                     for idx, column in enumerate(row)
                 ]
             )
