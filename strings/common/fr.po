@@ -510,8 +510,8 @@ msgstr "Téléchargé"
 #: components/QueryBuilder/Components.tsx:167
 #: components/QueryBuilder/FieldFilterTool.tsx:100
 #: components/QueryBuilder/FieldFilterTool.tsx:103
-#: components/QueryBuilder/Line.tsx:308
-#: components/QueryBuilder/Line.tsx:312
+#: components/QueryBuilder/Line.tsx:309
+#: components/QueryBuilder/Line.tsx:313
 #: components/SchemaConfig/UniquenessRuleRow.tsx:273
 #: components/Security/Policy.tsx:94
 #: components/Security/Policy.tsx:96
@@ -677,7 +677,7 @@ msgstr "(ouvre dans un nouvel onglet)"
 
 #: components/Atoms/DataEntry.tsx:175
 #: components/Atoms/DataEntry.tsx:178
-#: components/Attachments/Viewer.tsx:212
+#: components/Attachments/Viewer.tsx:214
 #: components/FormCells/FormTable.tsx:482
 #: components/FormCells/FormTable.tsx:485
 #. 🟥Used in a button that opens a link in a new tab. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments > Viewer ⬤ Components > Form Cells > Form Table
@@ -801,7 +801,7 @@ msgstr "Pays"
 msgid "viewRecord"
 msgstr "Voir l'enregistrement"
 
-#: components/AppResources/Aside.tsx:399
+#: components/AppResources/Aside.tsx:400
 #: components/FormCells/index.tsx:315
 #: components/FormCommands/index.tsx:110
 #: components/FormPlugins/index.tsx:190
@@ -888,8 +888,8 @@ msgid "id"
 msgstr "IDENTIFIANT"
 
 #: components/Attachments/index.tsx:163
-#: components/QueryBuilder/Line.tsx:469
-#: components/QueryBuilder/Line.tsx:477
+#: components/QueryBuilder/Line.tsx:472
+#: components/QueryBuilder/Line.tsx:480
 #. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Line
 #, fuzzy
 msgid "filter"
@@ -942,7 +942,7 @@ msgstr "Choisi"
 msgid "expand"
 msgstr "Développer"
 
-#: components/AppResources/Aside.tsx:185
+#: components/AppResources/Aside.tsx:186
 #. Used in: Components > App Resources > Aside
 #, fuzzy
 msgid "expandAll"
@@ -957,7 +957,7 @@ msgstr "Tout développer"
 msgid "collapse"
 msgstr "Effondrement"
 
-#: components/AppResources/Aside.tsx:188
+#: components/AppResources/Aside.tsx:189
 #: components/TreeView/index.tsx:306
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 #, fuzzy
@@ -1022,7 +1022,7 @@ msgstr "Aucun disponible"
 msgid "countLine"
 msgstr "{resource:string} ({count:number|formatted})"
 
-#: components/AppResources/Aside.tsx:249
+#: components/AppResources/Aside.tsx:250
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Aside
 #, fuzzy
 msgid "jsxCountLine"
