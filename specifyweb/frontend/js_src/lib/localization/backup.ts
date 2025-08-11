@@ -39,4 +39,7 @@ export const backupText = createDictionary({
   databaseBackupFailed: {
     'en-us': 'Database backup failed.',
   },
+  compressing: {
+    "en-us": "Compressing...",
+  },
 } as const);

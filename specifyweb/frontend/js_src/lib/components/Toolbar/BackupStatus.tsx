@@ -58,6 +58,8 @@ export function BackupStatus({
     };
   }, [taskId]);
 
+  const isFinalizing = status === 'RUNNING' && percentage >= 100;
+
   return (
     <Dialog
       buttons={
@@ -97,8 +99,17 @@ export function BackupStatus({
         </div>
       ) : (
         <div className="flex flex-col gap-2">
-          <Progress max={total} value={current} />
-          {percentage < 100 && <p>{`${percentage}%`}</p>}
+          {isFinalizing ? (
+            <div className="flex items-center gap-2">
+              {loadingGif}
+              <span>{backupText.compressing()}</span>
+            </div>
+          ) : (
+            <>
+              <Progress max={total} value={current} />
+              <p>{`${percentage}%`}</p>
+            </>
+          )}
         </div>
       )}
     </Dialog>
