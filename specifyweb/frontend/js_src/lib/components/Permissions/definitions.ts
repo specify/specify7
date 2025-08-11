@@ -12,6 +12,7 @@ export const operationPolicies = {
   '/report': ['execute'],
   '/export/dwca': ['execute'],
   '/export/feed': ['force_update'],
+  '/export/backup': ['backup'],
   '/permissions/list_admins': ['read'],
   '/permissions/policies/user': ['read', 'update'],
   '/permissions/user/roles': ['read', 'update'],
@@ -112,6 +113,7 @@ export const institutionPermissions = new Set([
   '/permissions/library/roles',
   '/permissions/list_admins',
   '/report/record',
+  '/export/backup',
 ]);
 
 /**
