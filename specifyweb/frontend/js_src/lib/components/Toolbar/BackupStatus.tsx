@@ -12,6 +12,7 @@ import { dialogIcons } from '../Atoms/Icons';
 import { SECOND } from '../Atoms/timeUnits';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
+import { loadingGif } from '../Molecules';
 
 export function BackupStatus({
   taskId,

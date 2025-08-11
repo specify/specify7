@@ -13,6 +13,7 @@ import { ajax } from '../../utils/ajax';
 import { Button } from '../Atoms/Button';
 import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
+import { icons } from '../Atoms/Icons';
 
 export function BackupDatabaseOverlay(): JSX.Element | null {
   const handleClose = React.useContext(OverlayContext);
@@ -65,6 +66,7 @@ export function BackupDatabaseOverlay(): JSX.Element | null {
 
   return (
     <Dialog
+      icon={icons.database}
       buttons={
         <>
           {previous.exists && (
