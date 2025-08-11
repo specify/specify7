@@ -61,7 +61,13 @@ class BuildQueryProps(NamedTuple):
     distinct: bool = False
     series: bool = False
     implicit_or: bool = True
-    formatter_props: ObjectFormatterProps = ObjectFormatterProps()
+    formatter_props: ObjectFormatterProps = ObjectFormatterProps(
+        format_agent_type = False,
+        format_picklist = False,
+        format_types = True,
+        numeric_catalog_number = True,
+        format_expr = True,
+    )
 
 
 def set_group_concat_max_len(connection):
