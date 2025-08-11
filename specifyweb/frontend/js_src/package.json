@@ -128,6 +128,9 @@
     "webpack-manifest-plugin": "^5.0.0",
     "worker-loader": "^3.0.8"
   },
+  "overrides": {
+    "form-data": ">=4.0.4"
+  },
   "browserslist": {
     "production": [
       "last 2 years",
