@@ -951,6 +951,9 @@ export const resourcesText = createDictionary({
     'en-us': 'Configure field',
   },
   numericField: {
-    'en-us': 'Convert to number',
+    'en-us': 'Trim Zeros',
+  },
+  numericFieldDescription: {
+    'en-us': 'Remove leading zeros from numeric values.',
   },
 } as const);

@@ -197,8 +197,9 @@ async function formatField(
       : userText.noPermission();
 
   if (numeric)
-    formatted =
-      formatted === undefined ? undefined : Number(formatted)?.toString();
+    formatted = Number.isNaN(Number(formatted))
+      ? formatted
+      : Number(formatted).toString();
 
   return {
     formatted: formatted?.toString() ?? '',
