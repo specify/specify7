@@ -7,21 +7,18 @@ import {
   formatterToParser,
   getValidationAttributes,
 } from '../../utils/parser/definitions';
-import type { RA, WritableArray } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
-import { cogTypes } from '../DataModel/helpers';
 import type { AnySchema, SerializedRecord } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
   deserializeResource,
   serializeResource,
 } from '../DataModel/serializers';
-import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyTable';
+import type { LiteralField } from '../DataModel/specifyField';
 import { tables } from '../DataModel/tables';
-import type { CollectionObject } from '../DataModel/types';
 import { tableValidForBulkClone } from '../FormMeta/CarryForward';
 import { Dialog } from '../Molecules/Dialog';
 
@@ -29,8 +26,7 @@ export type BulkCarryRangeError =
   | boolean
   | 'ExistingNumbers'
   | 'InvalidRange'
-  | 'LimitExceeded'
-  | 'UnsupportedRelationships';
+  | 'LimitExceeded';
 
 const bulkCarryLimit = 500;
 
@@ -91,25 +87,10 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
     React.useState<BulkCarryRangeError>(false);
   const [bulkCarryRangeInvalidNumbers, setBulkCarryRangeInvalidNumbers] =
     React.useState<RA<string> | undefined>(undefined);
-  const [
-    bulkCarryRangeUnsupportedRelationships,
-    setBulkCarryRangeUnsupportedRelationships,
-  ] = React.useState<RA<string> | undefined>(undefined);
 
   const handleBulkCarryForward =
     typeof formatter === 'object'
       ? async (): Promise<RA<SpecifyResource<SCHEMA>> | undefined> => {
-          const unsupportedRelationships = [
-            ...getUnsupportedRelationships(resource),
-            ...(await isInConsolidatedCog(
-              resource as SpecifyResource<CollectionObject>
-            )),
-          ];
-          if (unsupportedRelationships.length > 0) {
-            setBulkCarryRangeBlocked('UnsupportedRelationships');
-            setBulkCarryRangeUnsupportedRelationships(unsupportedRelationships);
-            return undefined;
-          }
           const carryForwardRangeStart = resource.get(field.name);
           if (
             carryForwardRangeStart === null ||
@@ -213,11 +194,9 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
         error={bulkCarryRangeBlocked}
         invalidNumbers={bulkCarryRangeInvalidNumbers}
         numberField={field}
-        unsupportedRelationships={bulkCarryRangeUnsupportedRelationships}
         onClose={(): void => {
           setBulkCarryRangeBlocked(false);
           setBulkCarryRangeInvalidNumbers(undefined);
-          setBulkCarryRangeUnsupportedRelationships(undefined);
         }}
       />
     );
@@ -290,13 +269,11 @@ function useBulkCarryForwardCount<SCHEMA extends AnySchema>(
 export function BulkCarryRangeBlockedDialog({
   error,
   invalidNumbers,
-  unsupportedRelationships,
   numberField,
   onClose: handleClose,
 }: {
   readonly error: BulkCarryRangeError;
   readonly invalidNumbers: RA<string> | undefined;
-  readonly unsupportedRelationships: RA<string> | undefined;
   readonly numberField: LiteralField;
   readonly onClose: () => void;
 }): JSX.Element {
@@ -324,14 +301,6 @@ export function BulkCarryRangeBlockedDialog({
             limit: bulkCarryLimit,
           })}
         </>
-      ) : error === 'UnsupportedRelationships' ? (
-        <>
-          {formsText.bulkCarryForwardRangeUnsupportedRelationships()}
-          {unsupportedRelationships &&
-            unsupportedRelationships.map((relationship, index) => (
-              <p key={index}>{relationship}</p>
-            ))}
-        </>
       ) : (
         <>
           {formsText.bulkCarryForwardRangeErrorDescription({
@@ -341,98 +310,4 @@ export function BulkCarryRangeBlockedDialog({
       )}
     </Dialog>
   );
-}
-
-/*
- * Temporary fix for https://github.com/specify/specify7/issues/5022.
- * REFACTOR: Remove this once issue #5022 is fixed.
- */
-function getUnsupportedRelationships<SCHEMA extends AnySchema>(
-  resource: SpecifyResource<SCHEMA>
-): RA<string> {
-  const unsupported: WritableArray<string> = [];
-
-  const table = resource.specifyTable;
-  const unsupportedRelationships = new Set([
-    'determinations',
-    'determiners',
-    'fundingagents',
-    'collectors',
-    'addresses',
-  ]);
-
-  function isCollection(object: unknown): object is Collection<SCHEMA> {
-    return (
-      Boolean(object) &&
-      typeof object === 'object' &&
-      object !== null &&
-      'models' in object &&
-      'length' in object
-    );
-  }
-
-  function recursiveRelationshipCheck(
-    related: SpecifyResource<SCHEMA>,
-    relationship: Relationship
-  ): void {
-    const relatedUnsupported = getUnsupportedRelationships(related);
-    relatedUnsupported.forEach((relatedRelationship) => {
-      unsupported.push(`${relationship.label} > ${relatedRelationship}`);
-    });
-  }
-
-  table.relationships.forEach((relationship): void => {
-    if (relationship.isDependent()) {
-      const relatedTable = relationship.relatedTable;
-      const relatedHasUnsupportedRelationships =
-        relatedTable.relationships.some((relatedRelationship: Relationship) =>
-          unsupportedRelationships.has(relatedRelationship.name)
-        );
-      // Relationship contains unsupported relationships within, check recursively.
-      if (relatedHasUnsupportedRelationships) {
-        const related = resource.getDependentResource(relationship.name);
-        if (related !== null && related !== undefined) {
-          if (isCollection(related)) {
-            related.models.forEach((model) =>
-              recursiveRelationshipCheck(model, relationship)
-            );
-          } else {
-            recursiveRelationshipCheck(related, relationship);
-          }
-        }
-      }
-
-      // This unsupported relationship cannot have more than two related records
-      if (unsupportedRelationships.has(relationship.name)) {
-        const related = resource.getDependentResource(relationship.name);
-        if (
-          related !== undefined &&
-          isCollection(related) &&
-          related.length > 1
-        ) {
-          unsupported.push(relationship.label);
-        }
-      }
-    }
-  });
-
-  return unsupported;
-}
-/*
- * Consolidated COGs aren't supported.
- * REFACTOR: Remove this once issue #5022 is fixed.
- */
-async function isInConsolidatedCog(
-  resource: SpecifyResource<CollectionObject>
-): Promise<RA<string>> {
-  const cojo = resource.getDependentResource('cojo');
-  if (cojo !== null && cojo !== undefined) {
-    const parentCog = await cojo.rgetPromise('parentCog');
-    const cogType = await parentCog.rgetPromise('cogType');
-    if (cogType.get('type') === cogTypes.CONSOLIDATED) {
-      // Return 'Consolidated Collection Object Group' as error.
-      return [`${cogTypes.CONSOLIDATED} ${parentCog.specifyTable.label}`];
-    }
-  }
-  return [];
 }
