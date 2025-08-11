@@ -802,7 +802,7 @@ def execute(
             formatauditobjs=formatauditobjs,
             distinct=distinct,
             series=series,
-            formatter_props = formatter_props,
+            formatter_props=formatter_props,
         ),
     )
 
@@ -917,13 +917,7 @@ def build_query(
             collection,
             user,
             props.replace_nulls,
-            props=ObjectFormatterProps(
-                format_agent_type=props.formatter_props.format_agent_type,
-                format_picklist=props.formatter_props.format_picklist,
-                format_types=props.formatter_props.format_types,
-                numeric_catalog_number=props.formatter_props.numeric_catalog_number,
-                format_expr=props.formatter_props.format_expr,
-            ),
+            props=props.formatter_props,
         ),
         query=query_construct_query
     )

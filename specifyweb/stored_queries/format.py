@@ -60,8 +60,9 @@ class ObjectFormatter:
         self.format_picklist = props.format_picklist
         self.format_types = props.format_types
         self.numeric_catalog_number = props.numeric_catalog_number
-        # format_expr determines if make_expr should call _fieldformat.
+        # format_expr determines if make_expr should call _fieldformat, like in versions before 7.10.2.
         # Batch edit expects it to be false to correctly handle some edge cases.
+        # Currently its never set to True.
         self.format_expr = props.format_expr
 
     def getFormatterDef(self, specify_model: Table, formatter_name) -> Element | None:
