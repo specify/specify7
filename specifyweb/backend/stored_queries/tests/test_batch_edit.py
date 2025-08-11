@@ -49,7 +49,7 @@ def fake_obj_formatter(*args, **kwargs):
     return (SIMPLE_DEF, None, None)
 
 
-OBJ_FORMATTER_PATH = "specifyweb.context.app_resource.get_app_resource"
+OBJ_FORMATTER_PATH = "specifyweb.backend.context.app_resource.get_app_resource"
 
 
 # NOTES: Yes, it is more convenient to hard code ids (instead of defining variables.).

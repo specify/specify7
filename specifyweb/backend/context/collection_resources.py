@@ -1,7 +1,7 @@
-from specifyweb.context.app_resource import get_usertype
+from specifyweb.backend.context.app_resource import get_usertype
 from specifyweb.specify.models import Spappresource, Spappresourcedir
 from specifyweb.specify.views import openapi
-from specifyweb.context.resources import Resource, Resources
+from specifyweb.backend.context.resources import Resource, Resources
 
 collection_resources = openapi(schema={
     "get": {

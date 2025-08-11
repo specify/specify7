@@ -7,11 +7,11 @@ from unittest.mock import patch
 
 class TestCollectionAgainstAgents(ApiTests):
 
-    @patch("specifyweb.context.views.users_collections_for_sp6", lambda x, y: [])
+    @patch("specifyweb.backend.context.views.users_collections_for_sp6", lambda x, y: [])
     def test_simple(self):
         check_collection_access_against_agents(self.specifyuser.id)
 
-    @patch("specifyweb.context.views.users_collections_for_sp6", lambda x, y: [])
+    @patch("specifyweb.backend.context.views.users_collections_for_sp6", lambda x, y: [])
     def test_no_access_simple(self):
 
         new_specify_user = Specifyuser.objects.create(
