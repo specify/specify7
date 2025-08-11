@@ -526,27 +526,27 @@ msgstr ""
 msgid "deletePrimaryRecord"
 msgstr "Основний запис CO неможливо видалити."
 
-#: components/DataModel/businessRuleDefs.ts:643
+#: components/DataModel/businessRuleDefs.ts:645
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteLoanedPrep"
 msgstr "Позичений препарат не можна видалити"
 
-#: components/DataModel/businessRuleDefs.ts:651
+#: components/DataModel/businessRuleDefs.ts:653
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteGiftedPrep"
 msgstr "Подарований препарат не можна видалити"
 
-#: components/DataModel/businessRuleDefs.ts:659
+#: components/DataModel/businessRuleDefs.ts:661
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteDisposedPrep"
 msgstr "Викинутий препарат не можна видалити"
 
-#: components/DataModel/businessRuleDefs.ts:667
+#: components/DataModel/businessRuleDefs.ts:669
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteExchangeOutPrep"
 msgstr "Обмінений препарат не можна видалити"
 
-#: components/DataModel/businessRuleDefs.ts:675
+#: components/DataModel/businessRuleDefs.ts:677
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteExchangeInPrep"
 msgstr "Обмін, що готується, не можна видалити"
@@ -559,12 +559,12 @@ msgstr ""
 "Визначення не належить до дерева таксонів, пов'язаного з типом об'єкта "
 "колекції"
 
-#: components/DataModel/businessRuleDefs.ts:618
+#: components/DataModel/businessRuleDefs.ts:620
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "preparationUsedInLoan"
 msgstr "Препарат використовується у позиці."
 
-#: components/DataModel/businessRuleDefs.ts:611
+#: components/DataModel/businessRuleDefs.ts:613
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "preparationIsNegative"
 msgstr "Кількість підготовок не може бути від'ємним значенням"

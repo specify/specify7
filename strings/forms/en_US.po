@@ -464,7 +464,7 @@ msgstr "Remove from {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Nothing found"
 
-#: components/Forms/BulkCarryForward.tsx:310
+#: components/Forms/BulkCarryForward.tsx:287
 #: components/Forms/Save.tsx:253
 #. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 msgid "carryForward"
@@ -480,7 +480,7 @@ msgstr "Show Carry Forward button"
 msgid "bulkCarryForwardEnabled"
 msgstr "Show Bulk Carry Forward count"
 
-#: components/Forms/BulkCarryForward.tsx:272
+#: components/Forms/BulkCarryForward.tsx:251
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardCount"
 msgstr "Bulk Carry Forward count"
@@ -527,34 +527,27 @@ msgstr "This field is required. It must be carried forward"
 msgid "bulkCarryForwardRangeEnabled"
 msgstr "Show Bulk Carry Forward range"
 
-#: components/Forms/BulkCarryForward.tsx:337
+#: components/Forms/BulkCarryForward.tsx:306
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeErrorDescription"
 msgstr "Cannot carry forward record through the specified {field:string} range."
 
-#: components/Forms/BulkCarryForward.tsx:323
+#: components/Forms/BulkCarryForward.tsx:300
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeLimitExceeded"
 msgstr "Range exceeds record limit of {limit:number}."
 
-#: components/Forms/BulkCarryForward.tsx:329
-#. Used in: Components > Forms > Bulk Carry Forward
-msgid "bulkCarryForwardRangeUnsupportedRelationships"
-msgstr ""
-"Some relationships with more than one record are not currently supported by "
-"Bulk Carry Forward:"
-
-#: components/Forms/BulkCarryForward.tsx:315
+#: components/Forms/BulkCarryForward.tsx:292
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeExistingRecords"
 msgstr "The following numbers for {field:string} are already being used:"
 
-#: components/Forms/BulkCarryForward.tsx:192
+#: components/Forms/BulkCarryForward.tsx:173
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeStart"
 msgstr "Carry Forward Range Start"
 
-#: components/Forms/BulkCarryForward.tsx:200
+#: components/Forms/BulkCarryForward.tsx:181
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeEnd"
 msgstr "Carry Forward Range End"

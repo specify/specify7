@@ -514,27 +514,27 @@ msgstr ""
 msgid "deletePrimaryRecord"
 msgstr "Primary record CO cannot be deleted."
 
-#: components/DataModel/businessRuleDefs.ts:643
+#: components/DataModel/businessRuleDefs.ts:645
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteLoanedPrep"
 msgstr "A loaned preparation cannot be deleted"
 
-#: components/DataModel/businessRuleDefs.ts:651
+#: components/DataModel/businessRuleDefs.ts:653
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteGiftedPrep"
 msgstr "A gifted preparation cannot be deleted"
 
-#: components/DataModel/businessRuleDefs.ts:659
+#: components/DataModel/businessRuleDefs.ts:661
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteDisposedPrep"
 msgstr "A disposed preparation cannot be deleted"
 
-#: components/DataModel/businessRuleDefs.ts:667
+#: components/DataModel/businessRuleDefs.ts:669
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteExchangeOutPrep"
 msgstr "A exchanged out preparation cannot be deleted"
 
-#: components/DataModel/businessRuleDefs.ts:675
+#: components/DataModel/businessRuleDefs.ts:677
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteExchangeInPrep"
 msgstr "A exchanged in preparation cannot be deleted"
@@ -547,12 +547,12 @@ msgstr ""
 "Determination does not belong to the taxon tree associated with the "
 "Collection Object Type"
 
-#: components/DataModel/businessRuleDefs.ts:618
+#: components/DataModel/businessRuleDefs.ts:620
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "preparationUsedInLoan"
 msgstr "The preparation is used in a loan."
 
-#: components/DataModel/businessRuleDefs.ts:611
+#: components/DataModel/businessRuleDefs.ts:613
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "preparationIsNegative"
 msgstr "Preparation count cannot be negative"

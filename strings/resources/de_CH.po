@@ -588,31 +588,31 @@ msgstr ""
 msgid "deletePrimaryRecord"
 msgstr "Der Primärdatensatz CO kann nicht gelöscht werden."
 
-#: components/DataModel/businessRuleDefs.ts:643
+#: components/DataModel/businessRuleDefs.ts:645
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteLoanedPrep"
 msgstr "Eine ausgeliehene Zubereitung kann nicht gelöscht werden"
 
-#: components/DataModel/businessRuleDefs.ts:651
+#: components/DataModel/businessRuleDefs.ts:653
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteGiftedPrep"
 msgstr "Eine geschenkte Vorbereitung kann nicht gelöscht werden"
 
-#: components/DataModel/businessRuleDefs.ts:659
+#: components/DataModel/businessRuleDefs.ts:661
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteDisposedPrep"
 msgstr "Eine verworfene Zubereitung kann nicht gelöscht werden"
 
-#: components/DataModel/businessRuleDefs.ts:667
+#: components/DataModel/businessRuleDefs.ts:669
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteExchangeOutPrep"
 msgstr "Ein ausgetauschtes Präparat kann nicht gelöscht werden"
 
-#: components/DataModel/businessRuleDefs.ts:675
+#: components/DataModel/businessRuleDefs.ts:677
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteExchangeInPrep"
@@ -627,13 +627,13 @@ msgstr ""
 "Die Bestimmung gehört nicht zum Taxonbaum, der mit dem Sammlungsobjekttyp "
 "verknüpft ist"
 
-#: components/DataModel/businessRuleDefs.ts:618
+#: components/DataModel/businessRuleDefs.ts:620
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "preparationUsedInLoan"
 msgstr "Das Präparat dient der Kreditvergabe."
 
-#: components/DataModel/businessRuleDefs.ts:611
+#: components/DataModel/businessRuleDefs.ts:613
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "preparationIsNegative"

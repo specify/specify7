@@ -540,7 +540,7 @@ msgstr "Remover de {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Nada encontrado"
 
-#: components/Forms/BulkCarryForward.tsx:310
+#: components/Forms/BulkCarryForward.tsx:287
 #: components/Forms/Save.tsx:253
 #. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 #, fuzzy
@@ -559,7 +559,7 @@ msgstr "Mostrar botão Transferir para frente"
 msgid "bulkCarryForwardEnabled"
 msgstr "Mostrar contagem de transporte em massa"
 
-#: components/Forms/BulkCarryForward.tsx:272
+#: components/Forms/BulkCarryForward.tsx:251
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardCount"
@@ -615,7 +615,7 @@ msgstr "Este campo é obrigatório. Deve ser levado adiante"
 msgid "bulkCarryForwardRangeEnabled"
 msgstr "Mostrar intervalo de transporte em massa"
 
-#: components/Forms/BulkCarryForward.tsx:337
+#: components/Forms/BulkCarryForward.tsx:306
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeErrorDescription"
@@ -623,33 +623,25 @@ msgstr ""
 "Não é possível levar o registro adiante através do intervalo especificado "
 "{field:string}."
 
-#: components/Forms/BulkCarryForward.tsx:323
+#: components/Forms/BulkCarryForward.tsx:300
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeLimitExceeded"
 msgstr "O alcance excede o limite recorde de {limit:number}."
 
-#: components/Forms/BulkCarryForward.tsx:329
-#. Used in: Components > Forms > Bulk Carry Forward
-#, fuzzy
-msgid "bulkCarryForwardRangeUnsupportedRelationships"
-msgstr ""
-"Alguns relacionamentos com mais de um registro não são suportados "
-"atualmente pelo Bulk Carry Forward:"
-
-#: components/Forms/BulkCarryForward.tsx:315
+#: components/Forms/BulkCarryForward.tsx:292
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeExistingRecords"
 msgstr "Os seguintes números para {field:string} já estão sendo usados:"
 
-#: components/Forms/BulkCarryForward.tsx:192
+#: components/Forms/BulkCarryForward.tsx:173
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeStart"
 msgstr "Início do intervalo de transporte"
 
-#: components/Forms/BulkCarryForward.tsx:200
+#: components/Forms/BulkCarryForward.tsx:181
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeEnd"

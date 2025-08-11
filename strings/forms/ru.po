@@ -531,7 +531,7 @@ msgstr "Удалить из {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Ничего не найдено"
 
-#: components/Forms/BulkCarryForward.tsx:310
+#: components/Forms/BulkCarryForward.tsx:287
 #: components/Forms/Save.tsx:253
 #. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 #, fuzzy
@@ -550,7 +550,7 @@ msgstr "Показать кнопку «Перенести вперед»"
 msgid "bulkCarryForwardEnabled"
 msgstr "Показать счетчик массового переноса данных"
 
-#: components/Forms/BulkCarryForward.tsx:272
+#: components/Forms/BulkCarryForward.tsx:251
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardCount"
@@ -606,39 +606,31 @@ msgstr "Это поле обязательно для заполнения. Ег
 msgid "bulkCarryForwardRangeEnabled"
 msgstr "Показать диапазон массового переноса данных"
 
-#: components/Forms/BulkCarryForward.tsx:337
+#: components/Forms/BulkCarryForward.tsx:306
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeErrorDescription"
 msgstr "Невозможно перенести запись через указанный диапазон {field:string}."
 
-#: components/Forms/BulkCarryForward.tsx:323
+#: components/Forms/BulkCarryForward.tsx:300
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeLimitExceeded"
 msgstr "Диапазон превышает предел записи {limit:number}."
 
-#: components/Forms/BulkCarryForward.tsx:329
-#. Used in: Components > Forms > Bulk Carry Forward
-#, fuzzy
-msgid "bulkCarryForwardRangeUnsupportedRelationships"
-msgstr ""
-"Некоторые связи с более чем одной записью в настоящее время не "
-"поддерживаются функцией массового переноса данных:"
-
-#: components/Forms/BulkCarryForward.tsx:315
+#: components/Forms/BulkCarryForward.tsx:292
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeExistingRecords"
 msgstr "Следующие номера для {field:string} уже используются:"
 
-#: components/Forms/BulkCarryForward.tsx:192
+#: components/Forms/BulkCarryForward.tsx:173
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeStart"
 msgstr "Начало диапазона переноса вперед"
 
-#: components/Forms/BulkCarryForward.tsx:200
+#: components/Forms/BulkCarryForward.tsx:181
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeEnd"
