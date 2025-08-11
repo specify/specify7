@@ -1328,6 +1328,9 @@ export const preferencesText = createDictionary({
     "de-ch": "Abgerundete Ecken",
     "pt-br": "Cantos arredondados",
   },
+  showSubviewBorders: {
+    'en-us': 'Show borders around subviews',
+  },
   limitMaxFieldWidth: {
     "en-us": "Limit max field width",
     "ru-ru": "Ограничить максимальную ширину поля",
