@@ -6262,7 +6262,7 @@ class Spquery(models.Model):
     # Fields
     contextname = models.CharField(blank=False, max_length=64, null=False, unique=False, db_column='ContextName', db_index=False)
     contexttableid = models.SmallIntegerField(blank=False, null=False, unique=False, db_column='ContextTableId', db_index=False)
-    countonly = models.BooleanField(blank=True, null=True, unique=False, db_column='CountOnly', db_index=False)
+    countonly = models.BooleanField(blank=True, null=True, unique=False, db_column='CountOnly', db_index=False, default=False)
     formatauditrecids = models.BooleanField(blank=True, null=True, unique=False, db_column='FormatAuditRecIds', db_index=False)
     isfavorite = models.BooleanField(blank=True, null=True, unique=False, db_column='IsFavorite', db_index=False)
     name = models.CharField(blank=False, max_length=256, null=False, unique=False, db_column='Name', db_index=False)
@@ -7101,7 +7101,7 @@ class Taxontreedefitem(model_extras.Taxontreedefitem):
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('TaxonTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=models.CASCADE)
+    parent = models.ForeignKey('TaxonTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=models.DO_NOTHING)
     treedef = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='treedefitems', null=False, on_delete=models.CASCADE)
 
     class Meta:
