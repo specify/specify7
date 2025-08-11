@@ -4,7 +4,7 @@ import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
-import { SetupProgress } from '../Login';
+import type { SetupProgress } from '../Login';
 
 type ResourceFormData = Record<string, any>;
 
