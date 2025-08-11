@@ -603,6 +603,23 @@ class BoundUploadTable(NamedTuple):
             # nothing to upload
             return UploadResult(NullRecord(info), to_one_results, {})
         if not skip_match:
+            assert not is_edit_table, "Trying to match update table!"
+
+            if not filter_predicate.filters and self.current_id is not None:
+                # Technically, we'll get always the empty predicate back if self.current_id is None
+                # So, we can skip the check for "self.current_id is not None:". But, it 
+                # is an optimization (a micro-one)
+                filter_predicate = self.get_django_predicates(
+                    should_defer_match=self._should_defer_match,
+                    # to_one_results should be completely empty (or all nulls)
+                    # Having it here is an optimization.
+                    to_one_override=to_one_results,
+                    consider_dependents=False,
+                    # Don't necessarily reduce the empty fields now.
+                    is_origin=False,
+                    origin_is_editable=False
+                )
+
             match = self._match(filter_predicate, info)
             if match:
                 return UploadResult(match, to_one_results, {})
