@@ -403,5 +403,6 @@ function ResourceItem({
 }
 
 export const exportsForTests = {
-    mutateConformation
-}
+  mutateConformation,
+  useOpenCurrent,
+};

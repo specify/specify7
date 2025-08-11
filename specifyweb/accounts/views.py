@@ -18,7 +18,7 @@ from django.template.response import TemplateResponse
 from django.utils import crypto
 from django.utils.http import url_has_allowed_host_and_scheme, urlencode
 from django.views.decorators.cache import never_cache
-from typing import Union, Optional, Dict, cast
+from typing import Union, cast
 from typing_extensions import TypedDict
 
 from specifyweb.middleware.general import require_GET, require_http_methods
@@ -72,7 +72,7 @@ class InviteToken(TypedDict):
     """Embedded in an invite token."""
     userid: int  # The Specify user id
     username: str
-    sequence: Optional[int] # To prevent reuse of token.
+    sequence: int | None # To prevent reuse of token.
     expires: int # A time.time() value after which the token is expired.
 
 

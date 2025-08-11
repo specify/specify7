@@ -7,8 +7,8 @@ import http
 import json
 import logging
 import re
-from typing import Any, Dict, List, Optional, Tuple, Union, \
-    Callable, TypedDict, Literal, cast
+from typing import Any, TypedDict, cast
+from collections.abc import Callable
 from collections.abc import Iterable
 
 from urllib.parse import urlencode
@@ -30,6 +30,7 @@ from django.http import (HttpResponse, HttpResponseBadRequest,
 from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotExist
 from django.db.models.fields import DateTimeField, FloatField, DecimalField
 from specifyweb.specify.models import Specifyuser
+from sqlalchemy.engine import Row
 
 from specifyweb.permissions.permissions import (
     enforce,
@@ -102,6 +103,8 @@ class JsonEncoder(json.JSONEncoder):
     """Augmented JSON encoder that handles datetime and decimal objects."""
     def default(self, obj):
         from decimal import Decimal
+        if isinstance(obj, Row):
+            return [self.default(field) for field in obj._data]
         # if isinstance(obj, CallableBool):
         #     return obj()
         # JSON numbers are double precision floating point values, while Python
@@ -114,6 +117,12 @@ class JsonEncoder(json.JSONEncoder):
             # assume byte data is utf encoded text.
             # this works for things like app resources.
             return obj.decode()
+        if isinstance(obj, int) or isinstance(obj, str):
+            return obj
+        if obj is None:
+            return None
+        if hasattr(obj, '__str__'):
+            return str(obj)
         return json.JSONEncoder.default(self, obj)
 
 def toJson(obj: Any) -> str:
@@ -371,10 +380,10 @@ class RecordSetInfo(TypedDict):
     recordsetid: int
     total_count: int
     index: int
-    previous: Optional[str]
-    next: Optional[str]
+    previous: str | None
+    next: str | None
 
-def get_recordset_info(obj, recordsetid: int) -> Optional[RecordSetInfo]:
+def get_recordset_info(obj, recordsetid: int) -> RecordSetInfo | None:
     """Return a dict of info about how the resource 'obj' is related to
     the recordset with id 'recordsetid'.
     """
@@ -396,12 +405,12 @@ def get_recordset_info(obj, recordsetid: int) -> Optional[RecordSetInfo]:
 
     # Build URIs for the previous and the next recordsetitem, if present.
     try:
-        prev: Optional[str] = uri_for_model(obj.__class__, prev_rsis[0].recordid)
+        prev: str | None = uri_for_model(obj.__class__, prev_rsis[0].recordid)
     except IndexError:
         prev = None
 
     try:
-        next: Optional[str] = uri_for_model(obj.__class__, next_rsis[0].recordid)
+        next: str | None = uri_for_model(obj.__class__, next_rsis[0].recordid)
     except IndexError:
         next = None
 
@@ -414,7 +423,7 @@ def get_recordset_info(obj, recordsetid: int) -> Optional[RecordSetInfo]:
         }
 
 @transaction.atomic
-def post_resource(collection, agent, name: str, data, recordsetid: Optional[int]=None):
+def post_resource(collection, agent, name: str, data, recordsetid: int | None=None):
     """Create a new resource in the database.
 
     collection - the collection the client is logged into.
@@ -458,7 +467,7 @@ def _maybe_delete(data: dict[str, Any], to_delete: str):
     if to_delete in data:
         del data[to_delete]
 
-def _is_circular_relationship(model, field_name: str, parent_relationship: Optional[Relationship] = None) -> bool: 
+def _is_circular_relationship(model, field_name: str, parent_relationship: Relationship | None = None) -> bool: 
     table: Table = cast(Table, model.specify_model)
     field = table.get_field(field_name)
 
@@ -470,7 +479,7 @@ def _is_circular_relationship(model, field_name: str, parent_relationship: Optio
     
     return datamodel.reverse_relationship(cast(Relationship, field)) is parent_relationship
 
-def cleanData(model, data: dict[str, Any], parent_relationship: Optional[Relationship] = None) -> dict[str, Any]:
+def cleanData(model, data: dict[str, Any], parent_relationship: Relationship | None = None) -> dict[str, Any]:
     """Returns a copy of data with redundant resources removed and only 
     fields that are part of model, removing metadata fields and warning on 
     unexpected extra fields"""
@@ -553,7 +562,7 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
     _handle_special_update_posts(obj)
     return obj
 
-def fld_change_info(obj, field, val) -> Optional[FieldChangeInfo]:
+def fld_change_info(obj, field, val) -> FieldChangeInfo | None:
     if field.name != 'timestampmodified':
         value = prepare_value(field, val)
         if isinstance(field, FloatField) or isinstance(field, DecimalField):
@@ -812,7 +821,7 @@ def _handle_dependent_to_many(collection, agent, obj, field, value):
     to_remove.delete()
 
 class IndependentInline(TypedDict): 
-    update: list[Union[str, dict[str, Any]]]
+    update: list[str | dict[str, Any]]
     remove: list[str]
 
 def _handle_independent_to_many(collection, agent, obj, field, value: IndependentInline): 
@@ -888,7 +897,7 @@ def make_default_deleter(collection=None, agent=None):
             auditlog.remove(obj, agent, parent_obj)
     return _deleter
 
-def delete_obj(obj, deleter: Optional[Callable[[Any, Any], None]]=None, version=None, parent_obj=None, clean_predelete=None) -> None:
+def delete_obj(obj, deleter: Callable[[Any, Any], None] | None=None, version=None, parent_obj=None, clean_predelete=None) -> None:
     # need to delete dependent -to-one records
     # e.g. delete CollectionObjectAttribute when CollectionObject is deleted
     # but have to delete the referring record first
@@ -1029,7 +1038,7 @@ def _obj_to_data(obj, perm_checker: ReadPermChecker) -> dict[str, Any]:
     data.update(calculate_extra_fields(obj, data))
     return data
 
-def to_many_to_data(obj, rel, checker: ReadPermChecker) -> Union[str, list[dict[str, Any]]]:
+def to_many_to_data(obj, rel, checker: ReadPermChecker) -> str | list[dict[str, Any]]:
     """Return the URI or nested data of the 'rel' collection
     depending on if the field is included in the 'inlined_fields' global.
     """
