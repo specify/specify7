@@ -4,6 +4,7 @@ import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
+import { SetupProgress } from '../Login';
 
 type ResourceFormData = Record<string, any>;
 
@@ -111,9 +112,27 @@ const resources: RA<ResourceConfig> = [
   },
 ];
 
-export function SetupTool(): JSX.Element {
-  const [currentStep, setCurrentStep] = React.useState(0);
+const stepOrder = [
+  'institution',
+  'division',
+  'discipline',
+  'collection',
+  'specifyUser',
+];
+
+function findInitialStep(progress: SetupProgress): number {
+  return stepOrder.findIndex((key) => !progress[key]);
+}
+
+export function SetupTool({
+  setupProgress,
+}: {
+  readonly setupProgress: SetupProgress;
+}): JSX.Element {
   const [formData, setFormData] = React.useState<ResourceFormData>({});
+
+  const initialStep = findInitialStep(setupProgress);
+  const [currentStep, setCurrentStep] = React.useState(initialStep);
 
   const onResourceSaved = async (
     endpoint: string,

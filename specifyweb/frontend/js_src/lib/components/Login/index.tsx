@@ -23,21 +23,28 @@ import { SetupTool } from '../SetupTool';
 import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
 import type { OicProvider } from './OicLogin';
 import { OicLogin } from './OicLogin';
+import { LoadingScreen } from '../Molecules/Dialog';
+
+export type SetupProgress = {
+  institution: boolean;
+  division: boolean;
+  discipline: boolean;
+  collection: boolean;
+  specifyUser: boolean;
+};
 
 export function Login(): JSX.Element {
-  const [isNewUser] = useAsyncState(
+  const [setupProgress] = useAsyncState(
     React.useCallback(
       async () =>
-        ajax<boolean>(`/api/specify/is_new_user/`, {
+        ajax<SetupProgress>(`/api/specify/setup_progress/`, {
           method: 'GET',
-          headers: {
-            Accept: 'application/json',
-          },
+          headers: { Accept: 'application/json' },
           errorMode: 'silent',
         })
           .then(({ data }) => data)
           .catch((error) => {
-            console.error('Failed to fetch isNewUser:', error);
+            console.error('Failed to fetch setup progress:', error);
             return undefined;
           }),
       []
@@ -49,8 +56,10 @@ export function Login(): JSX.Element {
     const nextUrl = parseDjangoDump<string>('next-url') ?? '/specify/';
     const providers = parseDjangoDump<RA<OicProvider>>('providers') ?? [];
 
-    if (isNewUser === true || isNewUser === undefined) {
-      return <SetupTool />;
+    if (setupProgress === undefined) return <LoadingScreen />;
+
+    if (Object.values(setupProgress).includes(false)) {
+      return <SetupTool setupProgress={setupProgress} />;
     }
 
     return providers.length > 0 ? (
@@ -85,7 +94,7 @@ export function Login(): JSX.Element {
         }
       />
     );
-  }, [isNewUser]);
+  }, [setupProgress]);
 }
 
 const nextDestination = '/accounts/choose_collection/?next=';

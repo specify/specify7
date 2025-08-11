@@ -1433,12 +1433,6 @@ def parse_locality_set_foreground(collection, column_headers: list[str], data: l
 
     return 200, parsed
 
-
-# check if user is new by looking the presence of institution
-def is_new_user(request):
-    is_new_user = len(spmodels.Institution.objects.all()) == 0
-    return http.JsonResponse(is_new_user, safe=False)
-
 @login_maybe_required
 @require_POST
 def catalog_number_for_sibling(request: http.HttpRequest):
@@ -1555,10 +1549,16 @@ def create_collection_view(request):
 def create_specifyuser_view(request):
     return api.create_specifyuser(request, direct=True)
 
-# check if user is new by looking the presence of institution
-def is_new_user(request):
-    is_new_user = len(spmodels.Institution.objects.all()) == 0
-    return http.JsonResponse(is_new_user, safe=False)
+# check which resource are present in a new db to define setup step
+def get_setup_progress(request):
+    progress = {
+        "institution": spmodels.Institution.objects.exists(),
+        "division": spmodels.Division.objects.exists(),
+        "discipline": spmodels.Discipline.objects.exists(),
+        "collection": spmodels.Collection.objects.exists(),
+        "specifyUser": spmodels.Specifyuser.objects.exists(),
+    }
+    return http.JsonResponse(progress)
 
 @login_maybe_required
 @require_POST

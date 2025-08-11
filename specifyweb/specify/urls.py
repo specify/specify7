@@ -22,8 +22,8 @@ urlpatterns = [
     # retrieve auto numbered fields
     re_path(r'^specify/series_autonumber_range', views.series_autonumber_range),
 
-    # check if the user is new at login
-    re_path(r'^specify/is_new_user/$', views.is_new_user),
+    # check if the db is new at login
+    re_path(r'^specify/setup_progress/$', views.get_setup_progress),
 
     # the main business data API
     re_path(r'^specify_schema/openapi.json$', schema.openapi),
