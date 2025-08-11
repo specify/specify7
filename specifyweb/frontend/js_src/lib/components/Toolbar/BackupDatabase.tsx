@@ -11,9 +11,9 @@ import { headerText } from '../../localization/header';
 import { notificationsText } from '../../localization/notifications';
 import { ajax } from '../../utils/ajax';
 import { Button } from '../Atoms/Button';
+import { icons } from '../Atoms/Icons';
 import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
-import { icons } from '../Atoms/Icons';
 
 export function BackupDatabaseOverlay(): JSX.Element | null {
   const handleClose = React.useContext(OverlayContext);
@@ -66,7 +66,6 @@ export function BackupDatabaseOverlay(): JSX.Element | null {
 
   return (
     <Dialog
-      icon={icons.database}
       buttons={
         <>
           {previous.exists && (
@@ -84,6 +83,7 @@ export function BackupDatabaseOverlay(): JSX.Element | null {
         </>
       }
       header={headerText.backupDatabase()}
+      icon={icons.database}
       onClose={handleClose}
     >
       {loading ? (
