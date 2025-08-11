@@ -4,10 +4,51 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.11.1](https://github.com/specify/specify7/compare/v7.11.0.2...v7.11.1) (8 August 2025)
+
+### Added
+
+* Adds new date and precision fields to the Accession form, including `DateAccessioned`, `DateAcknowledged`, `DateReceived`, `Date1`, and `Date2`, along with corresponding precision fields ([#6645](https://github.com/specify/specify7/pull/6645) - *Requested by Museu de Ciències Naturals de Barcelona, Ohio State University, Natural History Museum of Denmark, and Museum für Naturkunde Berlin*)
+* Adds support for specifying a catalog number range during Bulk Carry Forward in Collection Objects ([#6710](https://github.com/specify/specify7/pull/6710) - *Requested by KU Entomology and Louisiana State Arthropod Museum*)
+* Adds a warning dialog before committing changes through Batch Edit to inform users about possible disruptions to other Specify users ([#6599](https://github.com/specify/specify7/pull/6599))
+
+### Changed
+
+* Changes data entry and interaction dialogs to use user settings instead of the legacy XML configuration, and removes the “Copy Specify 6 settings” option ([#6587](https://github.com/specify/specify7/pull/6587))
+* Changes confusing heading text in Batch Edit results to improve clarity for related record matches ([#6573](https://github.com/specify/specify7/pull/6573))
+* Disallows editing coordinate fields in Batch Edit to prevent data inconsistencies. A warning dialog is shown when restricted fields are included in a query ([#6657](https://github.com/specify/specify7/pull/6657))
+* Moves the “Show author in the tree” option to User Preferences for better individual control ([#6842](https://github.com/specify/specify7/pull/6842))
+* Upgrades Python to 3.11 and SQLAlchemy to 1.4.54 as part of the Ubuntu 24.04 update ([#6667](https://github.com/specify/specify7/pull/6667))
+
+### Fixed
+
+* Fixes an issue where GeoMap displayed duplicate markers when multiple collection objects shared the same locality ([#6900](https://github.com/specify/specify7/pull/6900) - *Reported by Commonwealth Scientific and Industrial Research Organisation (CSIRO) and Natural Resources Canada*)
+* Fixes an issue where loans were not automatically closed after all preparations were returned ([#6442](https://github.com/specify/specify7/pull/6442) - *Reported by The University of Kansas*)
+* Fixes an issue where query results returned 1 for `Day` and `Month` fields when the original date only included a year ([#6475](https://github.com/specify/specify7/pull/6475) - *Reported by Royal Botanic Gardens Victoria*)
+* Fixes an issue where new Determinations and Collectors were not automatically marked as current or primary on Collection Objects and Collecting Events ([#6581](https://github.com/specify/specify7/pull/6581) - *Reported by Ohio State University Mollusks*)
+* Fixes an issue where some Django migrations, including those for business rules, were not run by the Makefile ([#6720](https://github.com/specify/specify7/pull/6720) - *Reported by University of Florida*)
+* Fixes an issue where newly created records had an incorrect timestampCreated value set to midnight instead of the actual creation time ([#6734](https://github.com/specify/specify7/pull/6734) - *Reported by Royal Botanic Gardens Victoria*)
+* Fixes an issue where null version fields caused crashes by requiring all version fields to default to 0 ([#6384](https://github.com/specify/specify7/pull/6384) - *Reported by Gothenburg Museum of Natural History*)
+* Fixes an issue where picklists from non-hierarchical tables failed to load ([#5044](https://github.com/specify/specify7/pull/5044) - *Reported by University of Michigan*)
+* Fixes an issue where attachment URLs broke by defaulting to the database name instead of the collection name in single-collection databases ([#7097](https://github.com/specify/specify7/pull/7097) - *Reported by California Academy of Sciences*)
+* Fixes an issue where the catalog number field in the preparations dialog stayed red even after entering a valid number ([#6487](https://github.com/specify/specify7/pull/6487))
+* Fixes an issue where users could enter a negative preparation count and incorrectly see a loan-related error message ([#6462](https://github.com/specify/specify7/pull/6462))
+* Fixes an issue where numeric values exceeding the maximum limit were rounded instead of showing an error message ([#6454](https://github.com/specify/specify7/pull/6454))
+* Fixes an issue where required fields in Schema Config, such as Agent Type, appeared editable but were still enforced by the database ([#6558](https://github.com/specify/specify7/pull/6558))
+* Fixes an issue where the same preparation could be added multiple times to a gift, exceeding the available quantity ([#6482](https://github.com/specify/specify7/pull/6482))
+* Fixes an issue where editing preparation counts in a disposal interaction caused an error ([#6479](https://github.com/specify/specify7/pull/6479))
+* Fixes an issue where entering an invalid catalog number during loan or gift creation prevented users from selecting a record set ([#6466](https://github.com/specify/specify7/pull/6466))
+* Fixes an issue where links to specific tables in the Data Model page did not scroll to the correct section ([#6461](https://github.com/specify/specify7/pull/6461))
+* Fixes a spelling and description error in the Paleo Context table in Schema Config ([#6460](https://github.com/specify/specify7/pull/6460))
+* Fixes an issue where records opened from table formatters or aggregations were editable instead of read-only ([#6483](https://github.com/specify/specify7/pull/6483))
+* Fixes an issue where importing a query with geology fields into a non-geo collection caused an error ([#6455](https://github.com/specify/specify7/pull/6455))
+* Fixes an issue where tree rank titles were blank when the rank name was present but the title field was null ([#6616](https://github.com/specify/specify7/pull/6616))
+* Fixes an issue where Geologic Time Period records had start and end periods in the wrong order, causing inconsistencies in Chronostratigraphy data ([#6434](https://github.com/specify/specify7/pull/6434))
+* Fixes an issue where some queries failed to open due to incorrect relationship handling in the form ([#4966](https://github.com/specify/specify7/pull/4966))
+
 ## [7.11.0.2](https://github.com/specify/specify7/compare/v7.11.0...v7.11.0.2) (14 July 2025)
 
 * Fixed an issue that could cause updates to Collection Object to set the incorrect Determination as current and updates to Collecting Event to set the incorrect Collector as primary ([#7073](https://github.com/specify/specify7/pull/7073))
-
 
 ## [7.11.0](https://github.com/specify/specify7/compare/v7.10.2.3...v7.11.0) (8 July 2025)
 
