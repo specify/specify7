@@ -10,9 +10,9 @@ import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { dialogIcons } from '../Atoms/Icons';
 import { SECOND } from '../Atoms/timeUnits';
+import { loadingGif } from '../Molecules';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
-import { loadingGif } from '../Molecules';
 
 export function BackupStatus({
   taskId,
