@@ -643,7 +643,7 @@ msgstr "(відкривається в новій вкладці)"
 
 #: components/Atoms/DataEntry.tsx:175
 #: components/Atoms/DataEntry.tsx:178
-#: components/Attachments/Viewer.tsx:209
+#: components/Attachments/Viewer.tsx:212
 #: components/FormCells/FormTable.tsx:474
 #: components/FormCells/FormTable.tsx:477
 #. 🟥Used in a button that opens a link in a new tab. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments > Viewer ⬤ Components > Form Cells > Form Table

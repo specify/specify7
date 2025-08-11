@@ -29,7 +29,7 @@ msgstr "Excepción"
 
 #: components/AppResources/EditorComponents.tsx:159
 #: components/Attachments/Cell.tsx:80
-#: components/Attachments/Viewer.tsx:201
+#: components/Attachments/Viewer.tsx:204
 #: components/LocalityUpdate/Status.tsx:393
 #: components/Notifications/NotificationRenderers.tsx:80
 #: components/Notifications/NotificationRenderers.tsx:110
