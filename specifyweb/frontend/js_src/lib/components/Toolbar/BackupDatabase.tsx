@@ -5,37 +5,42 @@
 
 import React from 'react';
 
+import { backupText } from '../../localization/backup';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
+import { notificationsText } from '../../localization/notifications';
+import { ajax } from '../../utils/ajax';
 import { Button } from '../Atoms/Button';
 import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
-import { ajax } from '../../utils/ajax';
-import { notificationsText } from '../../localization/notifications';
-import { backupText } from '../../localization/backup';
 
 export function BackupDatabaseOverlay(): JSX.Element | null {
   const handleClose = React.useContext(OverlayContext);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [previous, setPrevious] = React.useState<{
-    exists: boolean;
-    url?: string;
-    filename?: string;
-    size?: number;
-    last_modified?: string;
+    readonly exists: boolean;
+    readonly url?: string;
+    readonly filename?: string;
+    readonly size?: number;
+    readonly last_modified?: string;
   }>({ exists: false });
 
   React.useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        const { data } = await ajax<{ exists: boolean; url?: string; filename?: string; size?: number; last_modified?: string }>(
-          '/api/backup/previous/',
-          { headers: { Accept: 'application/json' } }
-        );
+        const { data } = await ajax<{
+          readonly exists: boolean;
+          readonly url?: string;
+          readonly filename?: string;
+          readonly size?: number;
+          readonly last_modified?: string;
+        }>('/api/backup/previous/', {
+          headers: { Accept: 'application/json' },
+        });
         if (mounted) setPrevious(data);
-      } catch (e) {
+      } catch {
         if (mounted) setError(String(backupText.checkPreviousFailed()));
       } finally {
         if (mounted) setLoading(false);
@@ -48,12 +53,12 @@ export function BackupDatabaseOverlay(): JSX.Element | null {
 
   const startNewBackup = async () => {
     try {
-      const { data } = await ajax<{ taskid: string }>(
+      const { data } = await ajax<{ readonly taskid: string }>(
         '/api/backup/start/',
         { method: 'POST', headers: { Accept: 'application/json' } }
       );
       window.location.href = `/specify/overlay/backup-status/${data.taskid}/`;
-    } catch (e) {
+    } catch {
       setError(String(backupText.startFailed()));
     }
   };
@@ -63,7 +68,11 @@ export function BackupDatabaseOverlay(): JSX.Element | null {
       buttons={
         <>
           {previous.exists && (
-            <Button.Info onClick={() => { if (previous.url) window.location.href = previous.url; }}>
+            <Button.Info
+              onClick={() => {
+                if (previous.url) window.location.href = previous.url;
+              }}
+            >
               {notificationsText.download()}
             </Button.Info>
           )}
@@ -84,7 +93,7 @@ export function BackupDatabaseOverlay(): JSX.Element | null {
           {backupText.previousFound()} <b>{previous.filename}</b>{' '}
           {typeof previous.size === 'number'
             ? backupText.previousSizeMB({
-                size: (previous.size / (1000 ** 2)).toFixed(2),
+                size: (previous.size / 1000 ** 2).toFixed(2),
               })
             : ''}
           <br />
