@@ -103,8 +103,10 @@ export function AttachmentViewer({
   const Component = typeof originalUrl === 'string' ? Link.Info : Button.Info;
   const [autoPlay] = userPreferences.use('attachments', 'behavior', 'autoPlay');
   const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
-  // Tiff files cannot be shown by chrome or firefox,
-  // so fallback to the thumbnail regardless of user preference
+  /*
+   * Tiff files cannot be shown by chrome or firefox,
+   * so fallback to the thumbnail regardless of user preference
+   */
   const isTiffImage = mimeType === 'image/tiff' || mimeType === 'image/tif';
 
   return (
