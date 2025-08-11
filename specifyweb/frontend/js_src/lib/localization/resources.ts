@@ -950,10 +950,10 @@ export const resourcesText = createDictionary({
   configureField: {
     'en-us': 'Configure field',
   },
-  numericField: {
+  trimZeros: {
     'en-us': 'Trim Zeros',
   },
-  numericFieldDescription: {
+  trimZerosDescription: {
     'en-us': 'Remove leading zeros from numeric values.',
   },
 } as const);

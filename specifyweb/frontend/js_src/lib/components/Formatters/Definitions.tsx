@@ -202,7 +202,7 @@ function ConditionalFormatter({
                       formatter: undefined,
                       fieldFormatter: undefined,
                       field: undefined,
-                      numeric: false,
+                      trimZeros: false,
                     },
                   ],
                 },

@@ -117,7 +117,7 @@ export function Fields({
                   formatter: undefined,
                   fieldFormatter: undefined,
                   field: undefined,
-                  numeric: false,
+                  trimZeros: false,
                 },
               ])
             }
@@ -319,12 +319,12 @@ function fieldOptionsButtonProps({
         selectOptionsData: fieldOptionsMenu({
           isReadOnly: false,
           columnOptions: {
-            numeric: field.numeric,
+            trimZeros: field.trimZeros,
           },
-          onToggleNumeric: (numeric) => {
+          onToggleTrimZeros: (trimZeros) => {
             handleChange({
               ...field,
-              numeric,
+              trimZeros,
             });
           },
         }),
@@ -357,28 +357,28 @@ function fieldOptionsButtonProps({
 }
 
 export type FormatterFieldOptions = {
-  readonly numeric: boolean;
+  readonly trimZeros: boolean;
 };
 
 function fieldOptionsMenu({
   columnOptions,
   isReadOnly,
-  onToggleNumeric: handleToggleNumeric,
+  onToggleTrimZeros: handleToggleTrimZeros,
 }: {
   readonly isReadOnly: boolean;
   readonly columnOptions: FormatterFieldOptions;
-  readonly onToggleNumeric: (numeric: boolean) => void;
+  readonly onToggleTrimZeros: (trimZeros: boolean) => void;
 }): IR<HtmlGeneratorFieldData> {
   return {
-    numeric: {
+    trimZeros: {
       optionLabel: (
-        <Label.Inline title={resourcesText.numericFieldDescription()}>
+        <Label.Inline title={resourcesText.trimZerosDescription()}>
           <Input.Checkbox
-            checked={columnOptions.numeric}
+            checked={columnOptions.trimZeros}
             disabled={isReadOnly}
-            onValueChange={handleToggleNumeric}
+            onValueChange={handleToggleTrimZeros}
           />{' '}
-          {resourcesText.numericField()}
+          {resourcesText.trimZeros()}
         </Label.Inline>
       ),
     },

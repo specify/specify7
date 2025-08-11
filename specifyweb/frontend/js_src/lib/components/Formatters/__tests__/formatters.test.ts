@@ -98,7 +98,7 @@ describe('formatField', () => {
           aggregator: undefined,
           fieldFormatter: undefined,
           separator: localized(', '),
-          numeric: false,
+          trimZeros: false,
         },
         parentResource
       )
@@ -125,7 +125,7 @@ describe('formatField', () => {
           fieldFormatter: undefined,
           formatFieldValue: false,
           separator: localized(', '),
-          numeric: false,
+          trimZeros: false,
         },
         parentResource
       )
@@ -186,7 +186,7 @@ test('Circular formatting is detected and prevented', async () => {
               separator: localized(''),
               formatter: undefined,
               fieldFormatter: undefined,
-              numeric: false,
+              trimZeros: false,
             },
             {
               field: [getField(tables.ReferenceWork, 'taxonCitations')],
@@ -194,7 +194,7 @@ test('Circular formatting is detected and prevented', async () => {
               separator: localized(''),
               formatter: undefined,
               fieldFormatter: undefined,
-              numeric: false,
+              trimZeros: false,
             },
           ],
         },
@@ -220,7 +220,7 @@ test('Circular formatting is detected and prevented', async () => {
               separator: localized(' - '),
               formatter: undefined,
               fieldFormatter: undefined,
-              numeric: false,
+              trimZeros: false,
             },
             {
               field: [getField(tables.TaxonCitation, 'referenceWork')],
@@ -228,7 +228,7 @@ test('Circular formatting is detected and prevented', async () => {
               separator: localized(' -- '),
               formatter: undefined,
               fieldFormatter: undefined,
-              numeric: false,
+              trimZeros: false,
             },
           ],
         },

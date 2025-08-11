@@ -56,7 +56,7 @@ test('Editing Data Object Formatter', () => {
                   formatter: undefined,
                   fieldFormatter: undefined,
                   field: [getField(tables.Accession, 'accessionAgents')],
-                  numeric: false,
+                  trimZeros: false,
                 },
               ],
             },
