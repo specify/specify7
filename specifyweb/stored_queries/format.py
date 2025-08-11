@@ -30,6 +30,7 @@ from .group_concat import group_concat
 from .blank_nulls import blank_nulls
 from .query_construct import QueryConstruct
 from .queryfieldspec import QueryFieldSpec
+from typing import NamedTuple
 
 logger = logging.getLogger(__name__)
 
@@ -37,9 +38,15 @@ CollectionObject_model = datamodel.get_table('CollectionObject')
 Agent_model = datamodel.get_table('Agent')
 Spauditlog_model = datamodel.get_table('SpAuditLog')
 
+class ObjectFormatterProps(NamedTuple):
+    format_agent_type: bool = False,
+    format_picklist: bool = False,
+    format_types: bool = True,
+    numeric_catalog_number: bool = True,
+    format_expr: bool = False
 
 class ObjectFormatter:
-    def __init__(self, collection, user, replace_nulls, format_agent_type=False, format_picklist=False, format_types=True, numeric_catalog_number=True, format_expr=True):
+    def __init__(self, collection, user, replace_nulls, props: ObjectFormatterProps = ObjectFormatterProps()):
 
         formattersXML, _, __ = app_resource.get_app_resource(collection, user, 'DataObjFormatters')
         self.formattersDom = ElementTree.fromstring(formattersXML)
@@ -49,13 +56,13 @@ class ObjectFormatter:
         self.collection = collection
         self.replace_nulls = replace_nulls
         self.aggregator_count = 0
-        self.format_agent_type = format_agent_type
-        self.format_picklist = format_picklist
-        self.format_types = format_types
-        self.numeric_catalog_number = numeric_catalog_number
+        self.format_agent_type = props.format_agent_type
+        self.format_picklist = props.format_picklist
+        self.format_types = props.format_types
+        self.numeric_catalog_number = props.numeric_catalog_number
         # format_expr determines if make_expr should call _fieldformat.
         # Batch edit expects it to be false to correctly handle some edge cases.
-        self.format_expr = format_expr
+        self.format_expr = props.format_expr
 
     def getFormatterDef(self, specify_model: Table, formatter_name) -> Element | None:
 
@@ -200,9 +207,11 @@ class ObjectFormatter:
             if self.format_expr:
                 new_expr = self._fieldformat(formatter_field_spec.table, formatter_field_spec.get_field(), new_expr)
 
-        if 'numeric' in fieldNodeAttrib:
-            # TODO: This can crash.
-            new_expr = cast(new_expr, types.Numeric(65))
+        if 'trimzeros' in fieldNodeAttrib:
+            new_expr = case(
+                [(new_expr.op('REGEXP')('^-?[0-9]+(\\.[0-9]+)?$'), cast(new_expr, types.Numeric(65)))],
+                else_=new_expr
+            )
 
         if 'format' in fieldNodeAttrib:
             new_expr = self.pseudo_sprintf(fieldNodeAttrib['format'], new_expr)

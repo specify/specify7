@@ -36,6 +36,7 @@ from specifyweb.workbench.views import regularize_rows
 from specifyweb.specify.func import Func
 from . import models
 import json
+from .format import ObjectFormatterProps
 
 from specifyweb.workbench.upload.upload_plan_schema import schema
 from jsonschema import validate
@@ -1133,13 +1134,15 @@ def run_batch_edit_query(props: BatchEditProps):
             field_specs=query_with_hidden,
             limit=limit,
             offset=offset,
-            format_agent_type=True,
             recordsetid=recordsetid,
             formatauditobjs=False,
-            format_picklist=True,
-            format_types=False,
-            numeric_catalog_number=False,
-            format_expr=False,
+            formatter_props=ObjectFormatterProps(
+                format_agent_type=True,
+                format_picklist=True,
+                format_types=False,
+                numeric_catalog_number=False,
+                format_expr=False,
+            )
         )
 
     to_many_planner = indexed.to_many_planner()

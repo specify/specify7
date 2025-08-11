@@ -23,7 +23,7 @@ from specifyweb.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.specify.tree_utils import get_search_filters
 
 from . import models
-from .format import ObjectFormatter
+from .format import ObjectFormatter, ObjectFormatterProps
 from .query_construct import QueryConstruct
 from .queryfield import QueryField
 from .relative_date_utils import apply_absolute_date
@@ -54,7 +54,6 @@ class QuerySort:
     def by_id(sort_id: int):
         return QuerySort.SORT_TYPES[sort_id]
 
-
 class BuildQueryProps(NamedTuple):
     recordsetid: int | None = None
     replace_nulls: bool = False
@@ -62,11 +61,7 @@ class BuildQueryProps(NamedTuple):
     distinct: bool = False
     series: bool = False
     implicit_or: bool = True
-    format_agent_type: bool = False
-    format_picklist: bool = False
-    format_types: bool = True
-    numeric_catalog_number: bool = True
-    format_expr: bool = True
+    formatter_props: ObjectFormatterProps = ObjectFormatterProps()
 
 
 def set_group_concat_max_len(connection):
@@ -789,13 +784,9 @@ def execute(
     field_specs,
     limit,
     offset,
-    format_agent_type=False,
     recordsetid=None,
     formatauditobjs=False,
-    format_picklist=False,
-    format_types=True,
-    numeric_catalog_number=True,
-    format_expr=True,
+    formatter_props=ObjectFormatterProps(),
 ):
     "Build and execute a query, returning the results as a data structure for json serialization"
 
@@ -811,11 +802,7 @@ def execute(
             formatauditobjs=formatauditobjs,
             distinct=distinct,
             series=series,
-            format_agent_type=format_agent_type,
-            format_picklist=format_picklist,
-            format_types=format_types,
-            numeric_catalog_number=numeric_catalog_number,
-            format_expr=format_expr,
+            formatter_props = formatter_props,
         ),
     )
 
@@ -930,11 +917,13 @@ def build_query(
             collection,
             user,
             props.replace_nulls,
-            format_agent_type=props.format_agent_type,
-            format_picklist=props.format_picklist,
-            format_types=props.format_types,
-            numeric_catalog_number=props.numeric_catalog_number,
-            format_expr=props.format_expr,
+            props=ObjectFormatterProps(
+                format_agent_type=props.formatter_props.format_agent_type,
+                format_picklist=props.formatter_props.format_picklist,
+                format_types=props.formatter_props.format_types,
+                numeric_catalog_number=props.formatter_props.numeric_catalog_number,
+                format_expr=props.formatter_props.format_expr,
+            ),
         ),
         query=query_construct_query
     )
