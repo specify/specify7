@@ -158,8 +158,8 @@ msgid "invalidNumericPicklistValue"
 msgstr "Only numeric values are supported in this {pickListTable:string}"
 
 #: components/Attachments/Plugin.tsx:88
-#: components/FormCells/FormTable.tsx:268
-#: components/FormCells/FormTable.tsx:600
+#: components/FormCells/FormTable.tsx:274
+#: components/FormCells/FormTable.tsx:608
 #: components/Forms/BaseResourceView.tsx:106
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"
@@ -181,14 +181,14 @@ msgstr "Save record first"
 
 #: components/FormSliders/Slider.tsx:32
 #: components/FormSliders/Slider.tsx:34
-#: components/Preferences/UserDefinitions.tsx:1120
+#: components/Preferences/UserDefinitions.tsx:1127
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "firstRecord"
 msgstr "First Record"
 
 #: components/FormSliders/Slider.tsx:96
 #: components/FormSliders/Slider.tsx:98
-#: components/Preferences/UserDefinitions.tsx:1124
+#: components/Preferences/UserDefinitions.tsx:1131
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "lastRecord"
 msgstr "Last Record"
@@ -211,7 +211,7 @@ msgid "currentRecord"
 msgstr "Current object (out of {total:number|formatted})"
 
 #: components/FormMeta/Definition.tsx:93
-#: components/Forms/ResourceView.tsx:410
+#: components/Forms/ResourceView.tsx:417
 #: components/Forms/Save.tsx:39
 #. Used in: Components > Form Meta > Definition ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
@@ -651,7 +651,7 @@ msgid "subForm"
 msgstr "Subform"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/Preferences/UserDefinitions.tsx:1131
+#: components/Preferences/UserDefinitions.tsx:1138
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "formTable"
 msgstr "Grid"
@@ -703,12 +703,12 @@ msgstr "New {tableName:string}"
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
-#: components/Forms/ResourceView.tsx:219
+#: components/Forms/ResourceView.tsx:224
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeleted"
 msgstr "Resource deleted"
 
-#: components/Forms/ResourceView.tsx:222
+#: components/Forms/ResourceView.tsx:227
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeletedDescription"
 msgstr "Item was deleted successfully."

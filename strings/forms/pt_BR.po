@@ -184,8 +184,8 @@ msgid "invalidNumericPicklistValue"
 msgstr "Somente valores numéricos são suportados neste {pickListTable:string}"
 
 #: components/Attachments/Plugin.tsx:88
-#: components/FormCells/FormTable.tsx:268
-#: components/FormCells/FormTable.tsx:600
+#: components/FormCells/FormTable.tsx:274
+#: components/FormCells/FormTable.tsx:608
 #: components/Forms/BaseResourceView.tsx:106
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 #, fuzzy
@@ -210,7 +210,7 @@ msgstr "Salvar registro primeiro"
 
 #: components/FormSliders/Slider.tsx:32
 #: components/FormSliders/Slider.tsx:34
-#: components/Preferences/UserDefinitions.tsx:1120
+#: components/Preferences/UserDefinitions.tsx:1127
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "firstRecord"
@@ -218,7 +218,7 @@ msgstr "Primeiro Registro"
 
 #: components/FormSliders/Slider.tsx:96
 #: components/FormSliders/Slider.tsx:98
-#: components/Preferences/UserDefinitions.tsx:1124
+#: components/Preferences/UserDefinitions.tsx:1131
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "lastRecord"
@@ -245,7 +245,7 @@ msgid "currentRecord"
 msgstr "Objeto atual (de {total:number|formatted})"
 
 #: components/FormMeta/Definition.tsx:93
-#: components/Forms/ResourceView.tsx:410
+#: components/Forms/ResourceView.tsx:417
 #: components/Forms/Save.tsx:39
 #. Used in: Components > Form Meta > Definition ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save
 #, fuzzy
@@ -765,7 +765,7 @@ msgid "subForm"
 msgstr "Subform"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/Preferences/UserDefinitions.tsx:1131
+#: components/Preferences/UserDefinitions.tsx:1138
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "formTable"
@@ -826,13 +826,13 @@ msgstr "Novo {tableName:string}"
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
-#: components/Forms/ResourceView.tsx:219
+#: components/Forms/ResourceView.tsx:224
 #. Used in: Components > Forms > Resource View
 #, fuzzy
 msgid "resourceDeleted"
 msgstr "Recurso excluído"
 
-#: components/Forms/ResourceView.tsx:222
+#: components/Forms/ResourceView.tsx:227
 #. Used in: Components > Forms > Resource View
 #, fuzzy
 msgid "resourceDeletedDescription"

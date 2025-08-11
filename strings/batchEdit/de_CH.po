@@ -13,7 +13,7 @@ msgstr ""
 
 #: components/BatchEdit/index.tsx:189
 #: components/Header/menuItemDefinitions.ts:115
-#: components/Preferences/UserDefinitions.tsx:2059
+#: components/Preferences/UserDefinitions.tsx:2066
 #: components/Router/OverlayRoutes.tsx:246
 #: components/WbUtils/datasetVariants.tsx:89
 #: components/WbUtils/datasetVariants.tsx:105
@@ -29,7 +29,7 @@ msgstr "Stapelbearbeitung"
 msgid "batchEditPrefs"
 msgstr "Stapelbearbeitungseinstellungen"
 
-#: components/Preferences/UserDefinitions.tsx:2065
+#: components/Preferences/UserDefinitions.tsx:2072
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "numberOfRecords"
@@ -85,13 +85,13 @@ msgstr ""
 "Verwenden Sie den Abfrage-Generator, um einen neuen Datensatz für die "
 "Stapelbearbeitung zu erstellen"
 
-#: components/Preferences/UserDefinitions.tsx:2088
+#: components/Preferences/UserDefinitions.tsx:2095
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "showRollback"
 msgstr "Rollback-Schaltfläche anzeigen"
 
-#: components/Preferences/UserDefinitions.tsx:2093
+#: components/Preferences/UserDefinitions.tsx:2100
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "showRollbackDescription"
@@ -236,13 +236,13 @@ msgstr ""
 "(Datensätze der Stapelbearbeitung können nach dem Rollback nicht bearbeitet "
 "werden – schreibgeschützt)"
 
-#: components/Preferences/UserDefinitions.tsx:2080
+#: components/Preferences/UserDefinitions.tsx:2087
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "enableRelationships"
 msgstr "Beziehungen aktivieren"
 
-#: components/Preferences/UserDefinitions.tsx:2085
+#: components/Preferences/UserDefinitions.tsx:2092
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "enableRelationshipsDescription"

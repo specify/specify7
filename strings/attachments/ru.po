@@ -20,7 +20,7 @@ msgstr ""
 #: components/Header/menuItemDefinitions.ts:99
 #: components/Molecules/SyncAttachmentPicker.tsx:101
 #: components/Molecules/SyncAttachmentPicker.tsx:110
-#: components/Preferences/UserDefinitions.tsx:1317
+#: components/Preferences/UserDefinitions.tsx:1324
 #: components/Router/Routes.tsx:182
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 msgid "attachments"
@@ -47,7 +47,7 @@ msgstr "Настройте сервер вложений"
 
 #: components/Attachments/index.tsx:210
 #: components/FormMeta/SubViewMeta.tsx:42
-#: components/Preferences/UserDefinitions.tsx:1304
+#: components/Preferences/UserDefinitions.tsx:1311
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "orderBy"
 msgstr "Сортировать по"

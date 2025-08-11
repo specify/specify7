@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Preferences/UserDefinitions.tsx:1896
+#: components/Preferences/UserDefinitions.tsx:1903
 #: components/WbToolkit/DevShowPlan.tsx:119
 #: components/WorkBench/WbView.tsx:203
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Wb View

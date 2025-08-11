@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.12-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:2062
+#: components/Preferences/UserDefinitions.tsx:2069
 #: components/QueryBuilder/Header.tsx:91
 #: components/QueryBuilder/Toolbar.tsx:75
 #: components/Reports/RecordSets.tsx:95
@@ -34,7 +34,7 @@ msgid "queries"
 msgstr "Abfragen"
 
 #: components/Preferences/CollectionDefinitions.tsx:72
-#: components/Preferences/UserDefinitions.tsx:1571
+#: components/Preferences/UserDefinitions.tsx:1578
 #: components/SearchDialog/index.tsx:242
 #: components/SearchDialog/index.tsx:386
 #: components/Security/registry.ts:210
@@ -402,7 +402,7 @@ msgstr "In"
 msgid "inDescription"
 msgstr "Eine durch Kommas getrennte Liste von Werten"
 
-#: components/Preferences/UserDefinitions.tsx:1425
+#: components/Preferences/UserDefinitions.tsx:1432
 #: components/QueryBuilder/FieldFilter.tsx:508
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 #, fuzzy
@@ -421,7 +421,7 @@ msgstr "Leer"
 msgid "and"
 msgstr "Und"
 
-#: components/Preferences/UserDefinitions.tsx:1421
+#: components/Preferences/UserDefinitions.tsx:1428
 #: components/QueryBuilder/FieldFilter.tsx:516
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 #, fuzzy

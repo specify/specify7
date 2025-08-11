@@ -17,7 +17,7 @@ msgstr ""
 msgid "specifySeven"
 msgstr "Spécifiez 7"
 
-#: components/Preferences/UserDefinitions.tsx:1853
+#: components/Preferences/UserDefinitions.tsx:1860
 #: components/WorkBench/DataSetMeta.tsx:286
 #: utils/parser/definitions.ts:120
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
@@ -38,7 +38,7 @@ msgstr "Non"
 #: components/FormSliders/RecordSelectorFromIds.tsx:273
 #: components/Forms/DeleteButton.tsx:121
 #: components/Forms/DeleteButton.tsx:145
-#: components/Forms/ResourceView.tsx:367
+#: components/Forms/ResourceView.tsx:374
 #: components/Header/ChooseCollection.tsx:26
 #: components/Header/ExpressSearchTask.tsx:49
 #: components/Interactions/InteractionDialog.tsx:307
@@ -171,7 +171,7 @@ msgstr "Créer"
 #: components/ExportFeed/Dwca.tsx:100
 #: components/ExportFeed/Dwca.tsx:128
 #: components/ExportFeed/ForceUpdate.tsx:23
-#: components/FormCells/FormTable.tsx:571
+#: components/FormCells/FormTable.tsx:579
 #: components/FormCommands/ShowTransactions.tsx:118
 #: components/FormCommands/index.tsx:96
 #: components/FormCommands/index.tsx:118
@@ -202,8 +202,8 @@ msgstr "Créer"
 #: components/Forms/BulkCarryForward.tsx:284
 #: components/Forms/DataTask.tsx:134
 #: components/Forms/DeleteButton.tsx:175
-#: components/Forms/ResourceView.tsx:218
-#: components/Forms/ResourceView.tsx:370
+#: components/Forms/ResourceView.tsx:223
+#: components/Forms/ResourceView.tsx:377
 #: components/Forms/Save.tsx:302
 #: components/Forms/Save.tsx:338
 #: components/Header/UserTools.tsx:75
@@ -428,7 +428,7 @@ msgstr "Outils"
 #: components/Core/Contexts.tsx:125
 #: components/Core/__tests__/Contexts.test.tsx:76
 #: components/Core/__tests__/Contexts.test.tsx:87
-#: components/FormCells/FormTable.tsx:266
+#: components/FormCells/FormTable.tsx:272
 #: components/FormCommands/ShowTransactions.tsx:65
 #: components/FormFields/ComboBox.tsx:131
 #: components/FormFields/Field.tsx:84
@@ -502,8 +502,8 @@ msgstr "Téléchargé"
 #: components/Atoms/DataEntry.tsx:163
 #: components/ExportFeed/Editor.tsx:155
 #: components/ExportFeed/Editor.tsx:157
-#: components/FormCells/FormTable.tsx:489
-#: components/FormCells/FormTable.tsx:501
+#: components/FormCells/FormTable.tsx:497
+#: components/FormCells/FormTable.tsx:509
 #: components/FormPlugins/CollectionRelOneToMany.tsx:136
 #: components/Formatters/Fields.tsx:197
 #: components/Formatters/Fields.tsx:198
@@ -581,7 +581,7 @@ msgstr "Nouveau"
 #: components/FormEditor/Create.tsx:160
 #: components/FormMeta/index.tsx:100
 #: components/FormMeta/index.tsx:102
-#: components/Forms/ResourceView.tsx:228
+#: components/Forms/ResourceView.tsx:233
 #: components/Molecules/ResourceLink.tsx:140
 #: components/Reports/index.tsx:258
 #: components/Reports/index.tsx:262
@@ -678,8 +678,8 @@ msgstr "(ouvre dans un nouvel onglet)"
 #: components/Atoms/DataEntry.tsx:175
 #: components/Atoms/DataEntry.tsx:178
 #: components/Attachments/Viewer.tsx:212
-#: components/FormCells/FormTable.tsx:474
-#: components/FormCells/FormTable.tsx:477
+#: components/FormCells/FormTable.tsx:482
+#: components/FormCells/FormTable.tsx:485
 #. 🟥Used in a button that opens a link in a new tab. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments > Viewer ⬤ Components > Form Cells > Form Table
 #, fuzzy
 msgid "openInNewTab"
@@ -694,7 +694,7 @@ msgstr "Ouvrir dans un nouvel onglet"
 msgid "goToHomepage"
 msgstr "Accéder à la page d'accueil"
 
-#: components/FormCells/FormTable.tsx:347
+#: components/FormCells/FormTable.tsx:355
 #: components/QueryBuilder/Edit.tsx:93
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Query Builder > Edit
 #, fuzzy
@@ -704,7 +704,7 @@ msgstr "Actes"
 #: components/ChooseCollection/index.tsx:138
 #: components/Header/ChooseCollection.tsx:27
 #: components/Header/index.tsx:94
-#: components/Preferences/UserDefinitions.tsx:1289
+#: components/Preferences/UserDefinitions.tsx:1296
 #: components/Router/EntrypointRouter.tsx:32
 #: components/Router/OverlayRoutes.tsx:63
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > Choose Collection ⬤ Components > Header > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Entrypoint Router ⬤ Components > Router > Overlay Routes
@@ -930,9 +930,9 @@ msgstr "Copier dans le presse-papiers"
 msgid "selected"
 msgstr "Choisi"
 
-#: components/FormCells/FormTable.tsx:302
-#: components/FormCells/FormTable.tsx:398
-#: components/FormCells/FormTable.tsx:400
+#: components/FormCells/FormTable.tsx:310
+#: components/FormCells/FormTable.tsx:406
+#: components/FormCells/FormTable.tsx:408
 #: components/FormSliders/IntegratedRecordSelector.tsx:110
 #: components/Formatters/Definitions.tsx:242
 #: components/Header/index.tsx:158
@@ -948,8 +948,8 @@ msgstr "Développer"
 msgid "expandAll"
 msgstr "Tout développer"
 
-#: components/FormCells/FormTable.tsx:358
-#: components/FormCells/FormTable.tsx:360
+#: components/FormCells/FormTable.tsx:366
+#: components/FormCells/FormTable.tsx:368
 #: components/FormSliders/IntegratedRecordSelector.tsx:110
 #: components/Header/index.tsx:158
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Header > Index
