@@ -95,7 +95,7 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
     },
     downloadDatabase: {
       title: headerText.backupDatabase(),
-      enabled: () => hasPermission('/export/backup', 'backup'),
+      enabled: () => hasPermission('/export/backup', 'execute'),
       url: '/specify/overlay/backup-database/',
       icon: icons.download,
     },

@@ -12,7 +12,7 @@ export const operationPolicies = {
   '/report': ['execute'],
   '/export/dwca': ['execute'],
   '/export/feed': ['force_update'],
-  '/export/backup': ['backup'],
+  '/export/backup': ['execute'],
   '/permissions/list_admins': ['read'],
   '/permissions/policies/user': ['read', 'update'],
   '/permissions/user/roles': ['read', 'update'],
