@@ -5,7 +5,7 @@ from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.orm import aliased
 from .models import datamodel
 from specifyweb.backend.stored_queries import models
-from sqlalchemy import sql, distinct
+from sqlalchemy import sql
 
 import logging
 logger = logging.getLogger(__name__)
@@ -18,10 +18,8 @@ def get_tree_stats(treedef, tree, parentid, specify_collection, session_context,
 
     tree_node = getattr(models, tree_table.name)
     child = aliased(tree_node)
-    _child_id = getattr(child, child._id)
     def make_joins(query):
         descendent = aliased(tree_node)
-        _descendent_id = getattr(descendent, descendent._id)
         query = query.outerjoin(descendent,
                                 descendent.nodeNumber.between(
                                     child.nodeNumber,
@@ -31,14 +29,13 @@ def get_tree_stats(treedef, tree, parentid, specify_collection, session_context,
         make_target_joins = getattr(
             StatsQuerySpecialization(specify_collection), tree)
 
-        query, target = make_target_joins(query, _descendent_id)
-        target_id = getattr(target, target._id)
+        query, target = make_target_joins(query, descendent._id)
         query = query.add_columns(
             sql.cast(sql.func.sum(sql.case([(sql.and_(
-                _child_id == _descendent_id,
-                target_id.isnot(None)
+                child._id == descendent._id,
+                target._id.isnot(None)
             ), 1)], else_=0)), INTEGER),
-            sql.func.count(target_id)
+            sql.func.count(target._id)
         )
 
         return query
@@ -48,11 +45,10 @@ def get_tree_stats(treedef, tree, parentid, specify_collection, session_context,
         cte_joined, target = getattr(
             StatsQuerySpecialization(specify_collection), tree)(
             cte_query, cte_query.c.top_or_descendent_id)
-        target_id = getattr(target, target._id)
-        count_expr = sql.func.count(target_id)
+        count_expr = sql.func.count(target._id)
         sum_case_expr = sql.cast(sql.func.sum(sql.case([(sql.and_(
             cte_query.c.top_or_descendent_id == cte_query.c.top_id,
-            target_id.isnot(None)
+            target._id.isnot(None)
         ), 1)], else_=0)), INTEGER)
 
         query = query.select_from(cte_joined)
@@ -75,15 +71,15 @@ def get_tree_stats(treedef, tree, parentid, specify_collection, session_context,
         # I don't even want to use depth, but some pathological tree might have cycles, and CTE depth
         # might be in millions as a custom setting..
 
-        depth_query = session.query(sql.func.count(getattr(tree_def_item, tree_def_item._id))).filter(
+        depth_query = session.query(sql.func.count(tree_def_item._id)).filter(
             getattr(tree_def_item, treedef_col) == int(treedef))
         depth, = list(depth_query)[0]
         query = None
         try:
             if using_cte:
                 cte_definition = session.query(
-                    _child_id.label('top_id'),
-                    _child_id.label('top_or_descendent_id'),
+                    child._id.label('top_id'),
+                    child._id.label('top_or_descendent_id'),
                     sql.expression.literal_column("1").label("depth")
                 ) \
                     .filter(child.ParentID == parentid) \
@@ -93,7 +89,7 @@ def get_tree_stats(treedef, tree, parentid, specify_collection, session_context,
                 cte_query = cte_definition.union_all(
                     session.query(
                         cte_definition.c.top_id.label('top_id'),
-                        getattr(descendent, descendent._id).label(
+                        descendent._id.label(
                             'top_or_descendent_id'),
                         (cte_definition.c.depth + 1).label('depth')
                     ).join(descendent,
@@ -109,10 +105,10 @@ def get_tree_stats(treedef, tree, parentid, specify_collection, session_context,
             pass
         finally:
             if results is None:
-                query = session.query(getattr(child, child._id)) \
+                query = session.query(child._id) \
                     .filter(child.ParentID == parentid) \
                     .filter(getattr(child, treedef_col) == int(treedef)) \
-                    .group_by(getattr(child, child._id))
+                    .group_by(child._id)
                 query = make_joins(query)
                 results = list(query)
 
@@ -138,9 +134,9 @@ class StatsQuerySpecialization(
         ce = aliased(models.CollectingEvent)
 
         query = query.outerjoin(loc, loc.GeographyID == descendant_id) \
-            .outerjoin(ce, ce.LocalityID == getattr(loc, loc._id)) \
+            .outerjoin(ce, ce.LocalityID == loc._id) \
             .outerjoin(co, sql.and_(
-            co.CollectingEventID == getattr(ce, ce._id),
+            co.CollectingEventID == ce._id,
             co.collectionMemberId == self.collection.id))
 
         return query, co
@@ -178,22 +174,22 @@ class StatsQuerySpecialization(
 
         if pc_target == "collectionobject":
             query = query.outerjoin(co, sql.and_(
-                co.PaleoContextID == getattr(pc, pc._id),
+                co.PaleoContextID == pc._id,
                 co.collectionMemberId == self.collection.id))
 
         elif pc_target == "collectingevent":
             query = query.outerjoin(ce,
-                                    ce.PaleoContextID == getattr(pc, pc._id)) \
+                                    ce.PaleoContextID == pc._id) \
                 .outerjoin(co, sql.and_(
-                co.CollectingEventID == getattr(ce, ce._id),
+                co.CollectingEventID == ce._id,
                 co.collectionMemberId == self.collection.id))
 
         elif pc_target == "locality":
             query = query.outerjoin(loc,
-                                    loc.PaleoContextID == getattr(pc, pc._id)) \
-                .outerjoin(ce, ce.LocalityID == getattr(loc, loc._id)) \
+                                    loc.PaleoContextID == pc._id) \
+                .outerjoin(ce, ce.LocalityID == loc._id) \
                 .outerjoin(co, sql.and_(
-                co.CollectingEventID == getattr(ce, ce._id),
+                co.CollectingEventID == ce._id,
                 co.collectionMemberId == self.collection.id))
 
         else:

@@ -5,7 +5,7 @@ from django.test import Client
 from specifyweb.backend.notifications.models import Message, Spmerging
 from specifyweb.specify.tests.test_api import ApiTests
 
-class MockResult(object):
+class MockResult:
 
     def __init__(self, state):
         self.state = state

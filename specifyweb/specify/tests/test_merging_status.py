@@ -7,7 +7,7 @@ from specifyweb.specify.tests.test_api import ApiTests
 from unittest.mock import patch, Mock
 import json
 
-class MockResult(object):
+class MockResult:
     
     def __init__(self, info):
         self.info = info

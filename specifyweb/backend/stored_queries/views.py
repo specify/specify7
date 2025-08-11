@@ -15,8 +15,7 @@ from specifyweb.middleware.general import require_GET
 from specifyweb.backend.stored_queries.batch_edit import run_batch_edit
 from specifyweb.specify.models_by_table_id import model_names_by_table_id
 from . import models
-from .execution import execute, run_ephemeral_query, do_export, recordset, \
-    return_loan_preps as rlp
+from .execution import execute, run_ephemeral_query, do_export, recordset
 from .queryfield import QueryField
 from specifyweb.backend.permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets, check_table_permissions
@@ -201,7 +200,7 @@ def export_kml(request):
 @require_POST
 @login_maybe_required
 @never_cache
-def make_recordset(request):
+def make_recordset(request): # pragma: no cover
     """Executes the query provided as JSON in the POST body and creates a
     recordset of the result. Redirects to the URL of the created recordset.
     """
@@ -221,6 +220,7 @@ def make_recordset(request):
 @login_maybe_required
 @require_POST
 def merge_recordsets(request: HttpRequest) -> JsonResponse:
+    # Why does this require execute permission?
     check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.execute])
     check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.create_recordset])
     check_table_permissions(request.specify_collection, request.specify_user, Recordset, "create")
@@ -237,6 +237,7 @@ def merge_recordsets(request: HttpRequest) -> JsonResponse:
         recordsets = Recordset.objects.filter(id__in=recordset_ids)
 
         if not recordsets.exists():
+            # This should be HTTP error (rather than being a JSON response)
             return JsonResponse({'error': 'No valid recordsets found'}, status=404)
         
         first_recordset_name = recordsets.first().name
@@ -248,7 +249,7 @@ def merge_recordsets(request: HttpRequest) -> JsonResponse:
 
         model_name = model_names_by_table_id[tableid] if tableid in model_names_by_table_id else None
         current_date = timezone.now().strftime('%Y-%m-%d')
-        if not model_name:
+        if not model_name: # this check is unnecessary.
             return JsonResponse({'error': 'Model not found for tableid'}, status=400)
 
         # Get all the recordsetitems for the given recordsets
@@ -281,6 +282,7 @@ def merge_recordsets(request: HttpRequest) -> JsonResponse:
             recordsetitems.delete()
             recordsets.delete()
 
+        # FEAT: Make it return the new recordset id.
         return JsonResponse({'message': 'Recordset merge successful'}, status=200)
 
     except json.JSONDecodeError:
@@ -292,22 +294,23 @@ def merge_recordsets(request: HttpRequest) -> JsonResponse:
 @login_maybe_required
 @never_cache
 def return_loan_preps(request):
-    check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.execute])
-    check_table_permissions(request.specify_collection, request.specify_user, Loanreturnpreparation, "create")
-    check_table_permissions(request.specify_collection, request.specify_user, Loanpreparation, "read")
-    check_table_permissions(request.specify_collection, request.specify_user, Loan, "update")
-    try:
-        data = json.load(request)
-    except ValueError as e:
-        return HttpResponseBadRequest(e)
+    ...
+    # check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.execute])
+    # check_table_permissions(request.specify_collection, request.specify_user, Loanreturnpreparation, "create")
+    # check_table_permissions(request.specify_collection, request.specify_user, Loanpreparation, "read")
+    # check_table_permissions(request.specify_collection, request.specify_user, Loan, "update")
+    # try:
+    #     data = json.load(request)
+    # except ValueError as e:
+    #     return HttpResponseBadRequest(e)
 
-    to_return = rlp(request.specify_collection, request.specify_user, request.specify_user_agent, data)
+    # to_return = rlp(request.specify_collection, request.specify_user, request.specify_user_agent, data)
 
-    resp = defaultdict(lambda: {'loanpreparations': list()})
-    for lp_id, quantity, loan_id, loan_no in to_return:
-        item = resp[loan_id]
-        item['loannumber'] = loan_no
-        item['loanpreparations'].append({'loanpreparationid': lp_id, 'quantity': int(quantity)})
+    # resp = defaultdict(lambda: {'loanpreparations': list()})
+    # for lp_id, quantity, loan_id, loan_no in to_return:
+    #     item = resp[loan_id]
+    #     item['loannumber'] = loan_no
+    #     item['loanpreparations'].append({'loanpreparationid': lp_id, 'quantity': int(quantity)})
 
-    return JsonResponse(resp, safe=False)
+    # return JsonResponse(resp, safe=False)
 

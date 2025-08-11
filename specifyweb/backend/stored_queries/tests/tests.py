@@ -10,7 +10,29 @@ import sqlalchemy
 from sqlalchemy.dialects import mysql
 from django.db import connection
 from sqlalchemy import event
+
+from specifyweb.backend.stored_queries.execution import build_query
 from .. import models
+
+from datetime import datetime
+from decimal import Decimal
+
+
+def parse_datetime(datetime: datetime):
+    return datetime.strftime("YYYY-MM-DD hh:mm:ss")
+
+
+def parse_value(value, use_blank_nulls=False, use_decimal_format=False):
+    if value is None:
+        return sqlalchemy.literal("") if use_blank_nulls else sqlalchemy.sql.null()
+    if isinstance(value, datetime):
+        # This is a bad bad bad bad idea.
+        # The correct way is to make a compiler for it.
+        return sqlalchemy.literal(parse_datetime(value))
+    if isinstance(value, Decimal) and use_decimal_format:
+        return sqlalchemy.literal(str(float(value)))
+    return sqlalchemy.literal(value)
+
 
 """"
 Provides a gateway to test sqlalchemy queries, while
@@ -28,7 +50,7 @@ with session.context() as session:
 """
 
 
-def setup_sqlalchemy(url: str):
+def setup_sqlalchemy(url: str, use_blank_nulls=False, use_decimal_format=False):
     engine = sqlalchemy.create_engine(
         url,
         pool_recycle=settings.SA_POOL_RECYCLE,
@@ -52,11 +74,9 @@ def setup_sqlalchemy(url: str):
         selects = [
             sqlalchemy.select(
                 [
-                    (
-                        sqlalchemy.sql.null()
-                        if column is None
-                        else sqlalchemy.literal(column)
-                    ).label(columns[idx][0])
+                    (parse_value(column, use_blank_nulls, use_decimal_format)).label(
+                        columns[idx][0]
+                    )
                     for idx, column in enumerate(row)
                 ]
             )
@@ -89,12 +109,30 @@ class SQLAlchemySetup(ApiTests):
 
     @classmethod
     def setUpClass(cls):
+        if not hasattr(cls, "_use_blank_nulls"):
+            cls._use_blank_nulls = False
+        if not hasattr(cls, "_use_decimal_format"):
+            cls._use_decimal_format = False
         # Django creates a new database for testing. SQLAlchemy needs to connect to the test database
         super().setUpClass()
 
-        engine, session_context = setup_sqlalchemy(settings.SA_TEST_DB_URL)
+        engine, session_context = setup_sqlalchemy(
+            settings.SA_TEST_DB_URL, cls._use_blank_nulls, cls._use_decimal_format
+        )
         cls.engine = engine
         cls.test_session_context = session_context
+
+    def _get_results(self, base_table, fields, collection=None):
+        with self.__class__.test_session_context() as session:
+            query, _ = build_query(
+                session,
+                collection or self.collection,
+                self.specifyuser,
+                base_table.tableId,
+                fields,
+            )
+
+            return list(query)
 
 
 class SQLAlchemySetupTest(SQLAlchemySetup):
@@ -104,10 +142,11 @@ class SQLAlchemySetupTest(SQLAlchemySetup):
         with SQLAlchemySetupTest.test_session_context() as session:
 
             co_aliased = orm.aliased(models.CollectionObject)
-            sa_collection_objects = list(
-                session.query(co_aliased._id).filter(
-                    co_aliased.collectionMemberId == self.collection.id
-                )
+            sa_collection_objects = (
+                session.query(co_aliased._id)
+                .filter(co_aliased.collectionMemberId == self.collection.id)
+                .distinct()
+                .all()
             )
             sa_ids = [_id for (_id,) in sa_collection_objects]
             ids = [co.id for co in self.collectionobjects]
@@ -218,147 +257,52 @@ class SQLAlchemyModelTest(TestCase):
 
 
 expected_errors = {
-  "Attachment": {
-    "incorrect_table": {
-      "dnaSequencingRunAttachments": [
-        "dnasequencerunattachment",
-        "dnasequencingrunattachment"
-      ]
-    }
-  },
-  "AutoNumberingScheme": {
-    "not_found": [
-      "collections",
-      "disciplines",
-      "divisions"
-    ]
-  },
-  "Collection": {
-    "not_found": [
-      "numberingSchemes",
-      "userGroups"
-    ]
-  },
-  "CollectionObject": {
-    "not_found": [
-      "projects"
-    ],
-    "incorrect_direction": {
-      "cojo": [
-        "onetomany",
-        "onetoone"
-      ]
-    }
-  },
-  "DNASequencingRun": {
-    "incorrect_table": {
-      "attachments": [
-        "dnasequencerunattachment",
-        "dnasequencingrunattachment"
-      ]
-    }
-  },
-  "Discipline": {
-    "not_found": [
-      "numberingSchemes",
-      "userGroups"
-    ]
-  },
-  "Division": {
-    "not_found": [
-      "numberingSchemes",
-      "userGroups"
-    ]
-  },
-  "Institution": {
-    "not_found": [
-      "userGroups"
-    ]
-  },
-  "InstitutionNetwork": {
-    "not_found": [
-      "collections",
-      "contacts"
-    ]
-  },
-  "Locality": {
-    "incorrect_direction": {
-      "geoCoordDetails": [
-        "onetomany",
-        "zerotoone"
-      ],
-      "localityDetails": [
-        "onetomany",
-        "zerotoone"
-      ]
-    }
-  },
-  "Project": {
-    "not_found": [
-      "collectionObjects"
-    ]
-  },
-  "SpExportSchema": {
-    "not_found": [
-      "spExportSchemaMappings"
-    ]
-  },
-  "SpExportSchemaMapping": {
-    "not_found": [
-      "spExportSchemas"
-    ]
-  },
-  "SpPermission": {
-    "not_found": [
-      "principals"
-    ]
-  },
-  "SpPrincipal": {
-    "not_found": [
-      "permissions",
-      "scope",
-      "specifyUsers"
-    ]
-  },
-  "SpReport": {
-    "incorrect_direction": {
-      "workbenchTemplate": [
-        "manytoone",
-        "onetoone"
-      ]
-    }
-  },
-  "SpecifyUser": {
-    "not_found": [
-      "spPrincipals"
-    ]
-  },
-  "TaxonTreeDef": {
-    "incorrect_direction": {
-      "discipline": [
-        "onetomany",
-        "onetoone"
-      ]
-    }
-  },
-  "CollectionObjectGroupJoin": {
-    "incorrect_direction": {
-      "childCog": [
-        "manytoone",
-        "onetoone"
-      ],
-      "childCo": [
-        "manytoone",
-        "onetoone"
-      ]
-    }
-  },
-  "CollectionObjectGroup": {
-    "incorrect_direction": {
-      "cojo": [
-        "onetomany",
-        "onetoone"
-      ]
-    }
-  },
+    "Attachment": {
+        "incorrect_table": {
+            "dnaSequencingRunAttachments": [
+                "dnasequencerunattachment",
+                "dnasequencingrunattachment",
+            ]
+        }
+    },
+    "AutoNumberingScheme": {"not_found": ["collections", "disciplines", "divisions"]},
+    "Collection": {"not_found": ["numberingSchemes", "userGroups"]},
+    "CollectionObject": {
+        "not_found": ["projects"],
+        "incorrect_direction": {"cojo": ["onetomany", "onetoone"]},
+    },
+    "DNASequencingRun": {
+        "incorrect_table": {
+            "attachments": ["dnasequencerunattachment", "dnasequencingrunattachment"]
+        }
+    },
+    "Discipline": {"not_found": ["numberingSchemes", "userGroups"]},
+    "Division": {"not_found": ["numberingSchemes", "userGroups"]},
+    "Institution": {"not_found": ["userGroups"]},
+    "InstitutionNetwork": {"not_found": ["collections", "contacts"]},
+    "Locality": {
+        "incorrect_direction": {
+            "geoCoordDetails": ["onetomany", "zerotoone"],
+            "localityDetails": ["onetomany", "zerotoone"],
+        }
+    },
+    "Project": {"not_found": ["collectionObjects"]},
+    "SpExportSchema": {"not_found": ["spExportSchemaMappings"]},
+    "SpExportSchemaMapping": {"not_found": ["spExportSchemas"]},
+    "SpPermission": {"not_found": ["principals"]},
+    "SpPrincipal": {"not_found": ["permissions", "scope", "specifyUsers"]},
+    "SpReport": {
+        "incorrect_direction": {"workbenchTemplate": ["manytoone", "onetoone"]}
+    },
+    "SpecifyUser": {"not_found": ["spPrincipals"]},
+    "TaxonTreeDef": {"incorrect_direction": {"discipline": ["onetomany", "onetoone"]}},
+    "CollectionObjectGroupJoin": {
+        "incorrect_direction": {
+            "childCog": ["manytoone", "onetoone"],
+            "childCo": ["manytoone", "onetoone"],
+        }
+    },
+    "CollectionObjectGroup": {
+        "incorrect_direction": {"cojo": ["onetomany", "onetoone"]}
+    },
 }

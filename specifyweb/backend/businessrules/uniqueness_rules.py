@@ -1,7 +1,7 @@
 from functools import reduce
 import logging
 import json
-from typing import Union, Dict, List, Any, TypedDict, Optional
+from typing import Any, TypedDict
 from collections.abc import Iterable
 
 from django.apps import apps
@@ -17,7 +17,11 @@ from .orm_signal_handler import orm_signal_handler
 from .exceptions import BusinessRuleException
 from . import models
 
-DEFAULT_UNIQUENESS_RULES:  dict[str, list[dict[str, Union[list[list[str]], bool]]]] = json.load(
+class JSONUniquenessRule(TypedDict): 
+    rule: tuple[list[str], list[str]]
+    isDatabaseConstraint: bool
+
+DEFAULT_UNIQUENESS_RULES:  dict[str, list[JSONUniquenessRule]] = json.load(
     open('specifyweb/backend/businessrules/uniqueness_rules.json'))
 
 UNIQUENESS_DISPATCH_UID = 'uniqueness-rules'
@@ -139,15 +143,15 @@ def validate_unique(model, instance):
 class ViolatedUniquenessCheck(TypedDict):
     duplicates: int
     # Mapping of field names to detected duplicate values
-    fields: Dict[str, Any]
+    fields: dict[str, Any]
 
 
 class UniquenessCheck(TypedDict):
     totalDuplicates: int
-    fields: List[ViolatedUniquenessCheck]
+    fields: list[ViolatedUniquenessCheck]
 
 
-def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[str], registry=None) -> Optional[UniquenessCheck]:
+def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[str], registry=None) -> UniquenessCheck | None:
     """
     Given a model, a list of fields, and a list of scopes, check whether there
     are models of model_name which have duplicate values of fields in scopes. 

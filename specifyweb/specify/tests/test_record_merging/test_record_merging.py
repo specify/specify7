@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from .test_api import ApiTests
+from specifyweb.specify.tests.test_api import ApiTests
 from django.test import Client
 from specifyweb.specify.record_merging import fix_record_data
 from specifyweb.specify import models

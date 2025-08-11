@@ -6,7 +6,7 @@ import json
 from unittest import skip
 from datetime import datetime
 from django.db.models import Max, QuerySet
-from django.test import TestCase, Client
+from django.test import TestCase, Client, TransactionTestCase
 
 from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.specify import api, models, scoping
@@ -39,9 +39,16 @@ from specifyweb.specify.models import (
     Picklistitem,
     Preparation
 )
+import datetime
 
 def get_table(name: str):
     return getattr(models, name.capitalize())
+
+class MockDateTime:
+
+    @classmethod
+    def now(cls):
+        return datetime.datetime(2025, 7, 20, 18, 23, 32)
 
 class MainSetupTearDown:
     def setUp(self):
@@ -155,6 +162,9 @@ class MainSetupTearDown:
     def _assertStatusCodeEqual(self, response, status_code):
         self.assertEqual(response.status_code, status_code, f"ERROR: {response.content.decode()}")
 
+    def _assertContentEqual(self, response, expected_content):
+        self.assertEqual(response.content.decode(), expected_content)
+
     def _add_user_policy(self, specifyuser):
         UserPolicy.objects.create(
                 collection=None,
@@ -168,6 +178,9 @@ class MainSetupTearDown:
         self.assertTrue(queryset.exists(), "Record does not exist!")
 
 class ApiTests(MainSetupTearDown, TestCase): pass
+
+# This test gets used when there are some transactional behavior that needs to be tested
+class ApiTransactionTests(MainSetupTearDown, TransactionTestCase): pass
 
 skip_perms_check = lambda x: None
 

@@ -17,7 +17,6 @@ export const PREPARATION_DISPOSED_KEY = 'preparation-isDisposed';
 export const PREPARATION_EXCHANGED_OUT_KEY = 'preparation-isExchangedOut';
 export const PREPARATION_EXCHANGED_IN_KEY = 'preparation-isExchangedIn';
 export const COJO_PRIMARY_DELETE_KEY = 'primary-cojo-delete';
-export const CO_HAS_PARENT = ' co-has-parent';
 
 /**
  * In tables where a boolean field can designate a "Primary" or important
@@ -95,9 +94,16 @@ export function onAddedEnsureBoolInCollection<
     resource,
     collection
   ) => {
-    resource.set(fieldName, false as never);
-    if (!collection.models.some((model) => model.get(fieldName)))
-      resource.set(fieldName, true as never);
+    if (
+      !(
+        resource.specifyTable.name === 'Address' &&
+        resource.createdBy === 'clone'
+      )
+    ) {
+      resource.set(fieldName, false as never);
+      if (!collection.models.some((model) => model.get(fieldName)))
+        resource.set(fieldName, true as never);
+    }
   };
   return onAdded;
 }
