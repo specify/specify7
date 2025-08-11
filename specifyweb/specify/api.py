@@ -29,7 +29,7 @@ from django.http import (HttpResponse, HttpResponseBadRequest,
                          Http404, HttpResponseNotAllowed, JsonResponse, QueryDict)
 from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotExist
 from django.db.models.fields import DateTimeField, FloatField, DecimalField
-from specifyweb.specify.models import Specifyuser
+from specifyweb.specify.models import Specifyuser, Spversion
 from sqlalchemy.engine import Row
 
 from specifyweb.permissions.permissions import (
@@ -1293,6 +1293,11 @@ def create_institution(request, direct=False):
 
             normalized_data['id'] = 1
             new_institution = Institution.objects.create(**normalized_data)
+            Spversion.objects.create(
+                appversion='7',
+                schemaversion="2.10"
+            )
+
             return JsonResponse({"success": True, "institution_id": new_institution.id}, status=200)
 
         except Exception as e:
