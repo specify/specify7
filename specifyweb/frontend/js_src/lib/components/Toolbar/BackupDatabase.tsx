@@ -80,7 +80,7 @@ export function BackupDatabaseOverlay(): JSX.Element | null {
           )}
           <span className="-ml-2 flex-1" />
           <Button.Info onClick={startNewBackup}>{commonText.new()}</Button.Info>
-          <Button.Info onClick={handleClose}>{commonText.close()}</Button.Info>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
         </>
       }
       header={headerText.backupDatabase()}
