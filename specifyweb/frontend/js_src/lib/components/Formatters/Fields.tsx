@@ -15,10 +15,11 @@ import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { fetchContext as fetchFieldFormatters } from '../FieldFormatters';
 import type {
-  HtmlGeneratorFieldData,
-  MappingElementProps,
-} from '../WbPlanView/LineComponents';
-import { MappingElement } from '../WbPlanView/LineComponents';
+  CustomSelectElementPropsClosed,
+  CustomSelectElementPropsOpen,
+} from '../WbPlanView/CustomSelectElement';
+import { CustomSelectElement } from '../WbPlanView/CustomSelectElement';
+import type { HtmlGeneratorFieldData } from '../WbPlanView/LineComponents';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import {
   FormattersPickList,
@@ -163,47 +164,12 @@ function Field({
     undefined
   );
 
-  const [isOpen, setOpen] = React.useState<boolean>(false);
-  const mappingDetails: MappingElementProps = {
-    customSelectType: 'OPTIONS_LIST',
-    customSelectSubtype: 'simple',
-    fieldsData: fieldOptionsMenu({
-      isReadOnly: false,
-      columnOptions: {
-        numeric: field.numeric,
-      },
-      onToggleNumeric: (numeric) => {
-        handleChange({
-          ...field,
-          numeric,
-        });
-      },
-    }),
-    previewOption: {
-      optionName: 'mappingOptions',
-      optionLabel: (
-        <span title={resourcesText.configureField()}>
-          <span className="sr-only">{resourcesText.configureField()}</span>
-          {icons.cog}
-        </span>
-      ),
-    },
-    selectLabel: resourcesText.configureField(),
-    ...(isOpen
-      ? {
-          isOpen: true,
-          onChange: undefined,
-          onClose: (): void => {
-            setOpen(false);
-          },
-        }
-      : {
-          isOpen: false,
-          onOpen: (): void => {
-            setOpen(true);
-          },
-        }),
-  };
+  const [isConfigurationOpen, setConfigurationOpen] =
+    React.useState<boolean>(false);
+  const fieldOptionsSelectProps = fieldOptionsButtonProps({
+    field: [field, handleChange],
+    configurationOpen: [isConfigurationOpen, setConfigurationOpen],
+  });
 
   return (
     <tr>
@@ -234,7 +200,7 @@ function Field({
             openIndex={[openIndex, setOpenIndex]}
             table={table}
           />
-          <MappingElement {...mappingDetails} />
+          <CustomSelectElement {...fieldOptionsSelectProps} />
         </div>
       </td>
       {displayFormatter && (
@@ -334,11 +300,67 @@ function FieldFormatter({
     );
 }
 
+function fieldOptionsButtonProps({
+  field: [field, handleChange],
+  configurationOpen: [isConfigurationOpen, setConfigurationOpen],
+}: {
+  readonly field: GetSet<
+    Formatter['definition']['fields'][number]['fields'][number]
+  >;
+  readonly configurationOpen: GetSet<boolean>;
+}): CustomSelectElementPropsClosed | CustomSelectElementPropsOpen {
+  // Per-field configuration button using CustomSelectElement
+  return {
+    customSelectType: 'OPTIONS_LIST',
+    customSelectSubtype: 'simple',
+    customSelectOptionGroups: {
+      optionalFields: {
+        selectGroupLabel: undefined,
+        selectOptionsData: fieldOptionsMenu({
+          isReadOnly: false,
+          columnOptions: {
+            numeric: field.numeric,
+          },
+          onToggleNumeric: (numeric) => {
+            handleChange({
+              ...field,
+              numeric,
+            });
+          },
+        }),
+      },
+    },
+    previewOption: {
+      optionName: 'mappingOptions',
+      optionLabel: (
+        <span title={resourcesText.configureField()}>
+          <span className="sr-only">{resourcesText.configureField()}</span>
+          {icons.cog}
+        </span>
+      ),
+    },
+    selectLabel: resourcesText.configureField(),
+    ...(isConfigurationOpen
+      ? {
+          isOpen: true,
+          onClose: (): void => {
+            setConfigurationOpen(false);
+          },
+        }
+      : {
+          isOpen: false,
+          onOpen: (): void => {
+            setConfigurationOpen(true);
+          },
+        }),
+  };
+}
+
 export type FormatterFieldOptions = {
   readonly numeric: boolean;
 };
 
-export function fieldOptionsMenu({
+function fieldOptionsMenu({
   columnOptions,
   isReadOnly,
   onToggleNumeric: handleToggleNumeric,
