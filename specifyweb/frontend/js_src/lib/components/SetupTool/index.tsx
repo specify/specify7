@@ -112,7 +112,7 @@ const resources: RA<ResourceConfig> = [
   },
 ];
 
-const stepOrder = [
+const stepOrder: RA<keyof SetupProgress> = [
   'institution',
   'division',
   'discipline',
