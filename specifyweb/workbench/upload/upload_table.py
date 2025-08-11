@@ -668,6 +668,8 @@ class BoundUploadTable(NamedTuple):
 
         n_matched = len(ids)
         if n_matched > 1:
+            if self.name == 'Agent':
+                return Matched(id=ids[0], info=info)
             return MatchedMultiple(ids=ids, key=repr(cache_key), info=info)
         elif n_matched == 1:
             return Matched(id=ids[0], info=info)
