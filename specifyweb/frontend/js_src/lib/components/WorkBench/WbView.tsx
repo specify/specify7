@@ -32,12 +32,12 @@ import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { WbActions } from '../WbActions';
 import { useResults } from '../WbActions/useResults';
-import { usesAttachments } from './attachmentHelpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbToolkit } from '../WbToolkit';
 import { WbUtilsComponent } from '../WbUtils';
 import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 import { WbUtils } from '../WbUtils/Utils';
+import { usesAttachments } from './attachmentHelpers';
 import type { WbCellCounts } from './CellMeta';
 import { WbCellMeta } from './CellMeta';
 import { DataSetName } from './DataSetMeta';
@@ -289,8 +289,8 @@ export function WbView({
               <WbAttachmentsPreview
                 dataset={dataset}
                 hot={hot}
-                onClose={toggleAttachments}
                 showPanel={showAttachments}
+                onClose={toggleAttachments}
               />
             </aside>
           ) : undefined}
