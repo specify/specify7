@@ -43,6 +43,8 @@ class ObjectFormatterProps(NamedTuple):
     format_picklist: bool = False,
     format_types: bool = True,
     numeric_catalog_number: bool = True,
+    # format_expr determines if make_expr should call _fieldformat, like in versions before 7.10.2.
+    # Batch edit expects it to be false to correctly handle some edge cases.
     format_expr: bool = False
 
 class ObjectFormatter:
@@ -60,9 +62,6 @@ class ObjectFormatter:
         self.format_picklist = props.format_picklist
         self.format_types = props.format_types
         self.numeric_catalog_number = props.numeric_catalog_number
-        # format_expr determines if make_expr should call _fieldformat, like in versions before 7.10.2.
-        # Batch edit expects it to be false to correctly handle some edge cases.
-        # Currently its never set to True.
         self.format_expr = props.format_expr
 
     def getFormatterDef(self, specify_model: Table, formatter_name) -> Element | None:
@@ -183,8 +182,7 @@ class ObjectFormatter:
         path = path.split('.')
         path = [inspect(orm_table).class_.__name__, *path]
         formatter_field_spec = QueryFieldSpec.from_path(path)
-        # TODO: Figure out if fallback to uifieldformatter works.
-        formatter = fieldNodeAttrib.get('formatter', fieldNodeAttrib.get('uifieldformatter', None))
+        formatter = fieldNodeAttrib.get('formatter', None)
         aggregator = fieldNodeAttrib.get('aggregator', None)
         next_table_name = formatter_field_spec.table.name
 
