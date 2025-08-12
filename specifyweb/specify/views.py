@@ -1617,21 +1617,26 @@ def backup_status(request, taskid):
     res = AsyncResult(taskid)
     state = res.state
     meta = res.info if isinstance(res.info, dict) else {}
-    if state in ('PENDING', 'RECEIVED', 'STARTED', 'PROGRESS'):
-        taskstatus = 'RUNNING'
-    elif state in ('SUCCESS',):
-        taskstatus = 'SUCCEEDED'
-    elif state in ('FAILURE', 'RETRY'):
-        taskstatus = 'FAILED'
-    else:
-        taskstatus = 'FAILED'
-    taskprogress = {
-        'current': int((meta.get('current') or 0)),
-        'total': int((meta.get('total') or 1)),
+
+    status_map = {
+        'PENDING': 'RUNNING',
+        'RECEIVED': 'RUNNING',
+        'STARTED': 'RUNNING',
+        'PROGRESS': 'RUNNING',
+        'SUCCESS': 'SUCCEEDED',
+        'FAILURE': 'FAILED',
+        'RETRY': 'FAILED',
     }
-    response = ''
-    if state == 'FAILURE' and hasattr(res, 'traceback') and res.traceback:
-        response = res.traceback
+
+    taskstatus = status_map.get(state, 'FAILED')
+
+    taskprogress = {
+        'current': int(meta.get('current') or 0),
+        'total': max(int(meta.get('total') or 0), 1)
+    }
+
+    response = res.traceback if state == 'FAILURE' and getattr(res, 'traceback', None) else ''
+
     return http.JsonResponse({
         'taskstatus': taskstatus,
         'taskprogress': taskprogress,
