@@ -23,11 +23,6 @@ import {
 import type { MappingPath } from '../WbPlanView/Mapper';
 import {
   formattedEntry,
-<<<<<<< HEAD
-=======
-  getGenericMappingPath,
-  mappingPathToString,
->>>>>>> origin/main
   parsePartialField,
   valueIsPartialField,
 } from '../WbPlanView/mappingHelpers';
