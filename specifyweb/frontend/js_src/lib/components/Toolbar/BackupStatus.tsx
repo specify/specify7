@@ -21,9 +21,8 @@ export function BackupStatus({
   readonly taskId: string;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [status, setStatus] = React.useState<
-    'FAILED' | 'RUNNING' | 'SUCCEEDED'
-  >('RUNNING');
+  type TaskStatus = 'FAILED' | 'RUNNING' | 'SUCCEEDED';
+  const [status, setStatus] = React.useState<TaskStatus>('RUNNING');
   const [total, setTotal] = React.useState(1);
   const [current, setCurrent] = React.useState(0);
   const [traceback, setTraceback] = React.useState<string | null>(null);
@@ -33,7 +32,7 @@ export function BackupStatus({
     let stop = false;
     const tick = () =>
       void ajax<{
-        readonly taskstatus: 'FAILED' | 'RUNNING' | 'SUCCEEDED';
+        readonly taskstatus: TaskStatus;
         readonly taskprogress: {
           readonly total: number;
           readonly current: number;
