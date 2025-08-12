@@ -285,7 +285,7 @@ function AttachmentViewerDialog({
         if (useWindow)
           onClose()
       }}>
-      {<>
+      <>
         {body}
         <Button.Info
           onClick={(): void =>
@@ -294,7 +294,7 @@ function AttachmentViewerDialog({
         >
           {wbText.attachWindow()}
         </Button.Info>
-      </>}
+      </>
     </NewWindow>
   ) : (
     <Dialog
