@@ -64,6 +64,9 @@ def assign_users_to_roles(apps=apps) -> None:
     cursor = connection.cursor()
     for user in Specifyuser.objects.all():
         for collection in Collection.objects.all():
+            if is_sp6_user_permissions_migrated(user, apps):
+                # Skip users that have already been migrated from sp6 to sp7.
+                continue
             if user.usertype == 'Manager':
                 roles = Role.objects.filter(collection=collection, name="Collection Admin")
                 for role in roles:
@@ -139,6 +142,11 @@ def get_or_create_policy(role, resource, action):
     if created:
         auditlog.insert(policy_obj)
     return policy_obj
+
+def is_sp6_user_permissions_migrated(user, apps=apps) -> bool:
+    UserPolicy = apps.get_model('permissions', 'UserPolicy')
+    UserRole = apps.get_model('permissions', 'UserRole')
+    return UserRole.objects.filter(specifyuser=user).exists() or UserPolicy.objects.filter(specifyuser=user).exists()
 
 def create_roles(apps=apps) -> None:
     LibraryRole = apps.get_model('permissions', 'LibraryRole')
