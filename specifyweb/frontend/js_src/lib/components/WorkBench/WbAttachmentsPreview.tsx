@@ -48,10 +48,12 @@ type WbAttachmentPreviewCell = {
 export function WbAttachmentsPreview({
   hot,
   dataset,
+  showPanel,
   onClose: handleClose,
 }: {
   readonly hot: Handsontable | undefined;
   readonly dataset: Dataset;
+  readonly showPanel: boolean;
   readonly onClose: () => void;
 }): JSX.Element {
   const [selectedRow, setSelectedRow] = React.useState<number | undefined>(
@@ -100,41 +102,43 @@ export function WbAttachmentsPreview({
 
   return (
     <>
-      <ErrorBoundary dismissible>
-        <div className="flex h-full w-60 flex-col gap-4 overflow-y-auto">
-          <div>
-            <H2>{attachmentsText.attachments()}</H2>
-            <p>
-              {selectedRow === undefined
-                ? commonText.noResults()
-                : wbText.attachmentsForRow({ row: selectedRow + 1 })}
-            </p>
-            {selectedRow !== undefined && attachments.length >= 0 && (
-              <div className="flex flex-col gap-2">
-                {attachments.map((cell, index) =>
-                  cell !== undefined && !cell.isLoading && cell.attachment ? (
-                    <AttachmentPreview
-                      attachment={cell.attachment}
-                      key={index}
-                      onOpen={(): void => {
-                        handleShowAttachment();
-                        setSelectedAttachment(cell.attachment);
-                      }}
-                    />
-                  ) : (
-                    <Skeleton.Square key={index} />
-                  )
-                )}
-              </div>
-            )}
+      {showPanel && (
+        <ErrorBoundary dismissible>
+          <div className="flex h-full w-60 flex-col gap-4 overflow-y-auto">
+            <div>
+              <H2>{attachmentsText.attachments()}</H2>
+              <p>
+                {selectedRow === undefined
+                  ? commonText.noResults()
+                  : wbText.attachmentsForRow({ row: selectedRow + 1 })}
+              </p>
+              {selectedRow !== undefined && attachments.length >= 0 && (
+                <div className="flex flex-col gap-2">
+                  {attachments.map((cell, index) =>
+                    cell !== undefined && !cell.isLoading && cell.attachment ? (
+                      <AttachmentPreview
+                        attachment={cell.attachment}
+                        key={index}
+                        onOpen={(): void => {
+                          handleShowAttachment();
+                          setSelectedAttachment(cell.attachment);
+                        }}
+                      />
+                    ) : (
+                      <Skeleton.Square key={index} />
+                    )
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button.Small className="flex-1" onClick={handleClose}>
+                {commonText.close()}
+              </Button.Small>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <Button.Small className="flex-1" onClick={handleClose}>
-              {commonText.close()}
-            </Button.Small>
-          </div>
-        </div>
-      </ErrorBoundary>
+        </ErrorBoundary>
+      )}
       {showAttachment && (
         <AttachmentViewerDialog
           attachment={selectedAttachment}
@@ -273,11 +277,7 @@ function AttachmentViewerDialog({
   const useWindow = true;
 
   return useWindow ? (
-    <NewWindow
-      copyStyles
-      title={attachment?.title ?? ''}
-      onUnload={onClose}
-    >
+    <NewWindow copyStyles title={attachment?.title ?? ''} onUnload={onClose}>
       {body}
     </NewWindow>
   ) : (
