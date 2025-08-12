@@ -30,8 +30,9 @@ from ..permissions.permissions import check_table_permissions
 from ..specify.models import Collectionobjectgroupjoin, Taxontreedef
 from specifyweb.specify.utils import get_cat_num_inheritance_setting, log_sqlalchemy_query
 
+from specifyweb.specify.load_datamodel import Relationship
 from specifyweb.stored_queries.group_concat import group_by_displayed_fields
-from specifyweb.stored_queries.queryfield import fields_from_json
+from specifyweb.stored_queries.queryfield import fields_from_json, QueryField, QueryFieldSpec
 
 logger = logging.getLogger(__name__)
 
@@ -582,7 +583,8 @@ def run_ephemeral_query(collection, user, spquery):
     format_audits = spquery.get("formatauditrecids", False)
 
     with models.session_context() as session:
-        field_specs = fields_from_json(spquery["fields"])
+        field_specs = optimize_query_fields(
+            fields_from_json(spquery["fields"]), distinct)
         return execute(
             session=session,
             collection=collection,
@@ -597,6 +599,52 @@ def run_ephemeral_query(collection, user, spquery):
             recordsetid=recordsetid,
             formatauditobjs=format_audits,
         )
+
+
+def optimize_query_fields(fields: list[QueryField], is_distinct: bool) -> list[QueryField]:
+    if is_distinct:
+        return [collapse_query_field(field) for field in fields]
+    return fields
+
+
+def collapse_query_field(queryfield: QueryField) -> QueryField:
+    """
+    Attempt to collapse a QueryField which can result in a Cartesian explosion
+    of duplicate results.
+
+    Do not modify the results, but make the Query easier to compute.
+    For example, a field of
+    Locality -> collectingEvents -> locality -> localityName would duplicate
+    the localityName for each CollectingEvent associated with the locality.
+    If the query is distinct, we can collapse the field to
+    Locality -> localityName without changing the results.
+    """
+    if queryfield.display or queryfield.sort_type != QuerySort.NONE:
+        return queryfield._replace(
+            fieldspec=collapse_fieldspec(
+                queryfield.fieldspec
+            )
+        )
+    return queryfield
+
+
+def collapse_fieldspec(fieldspec: QueryFieldSpec) -> QueryFieldSpec:
+    if len(fieldspec.join_path) <= 1:
+        return fieldspec
+    new_path = [fieldspec.join_path[0]]
+    for node in fieldspec.join_path[1:]:
+        previous_node = new_path[-1]
+        if (type(node) is Relationship) and (type(previous_node) is Relationship):
+            """
+            Only collapse join paths which are directly "self-referential"; 
+            that is, exactly of the form: relOne -> relTwo -> relOne where 
+            relTwo is the reverse of relOne.
+            """
+            if len(new_path) >= 2 and node is new_path[-2]:
+                new_path = new_path[:-2]
+
+        new_path.append(node)
+    return fieldspec._replace(join_path=tuple(new_path))
 
 
 # def augment_field_specs(field_specs: list[QueryField], formatauditobjs=False):
