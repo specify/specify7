@@ -6,15 +6,14 @@
 
 import type Handsontable from 'handsontable';
 import React from 'react';
-import NewWindow from 'react-new-window';
+import { PopupWindow } from '../Molecules/PopupWindow';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
-import type { RA } from '../../utils/types';
-import type { GetSet } from '../../utils/types';
+import type { GetSet, RA } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { fetchOriginalUrl } from '../Attachments/attachments';
@@ -70,7 +69,7 @@ export function WbAttachmentsPreview({
 
   const [showAttachment, handleShowAttachment, handleHideAttachment] =
     useBooleanState();
-  
+
   const [useWindow, setUseWindow] = React.useState<boolean>(false);
 
   const handleSelection = (row: number | undefined): void => {
@@ -278,35 +277,33 @@ function AttachmentViewerDialog({
         onViewRecord={undefined}
       />
     ));
-
+  
   return useWindow ? (
-    <NewWindow copyStyles title={attachment?.title ?? ''}
-      onUnload={():void => {
-        if (useWindow)
-          onClose()
-      }}>
-      <>
+    <PopupWindow
+      title={attachmentsText.attachments()}
+      onBlock={(): void => {
+        setUseWindow(false);
+      }}
+      onUnload={(): void => {
+        if (useWindow) onClose();
+      }}
+    >
+      <div
+        className="flex flex-col items-center justify-center h-full w-full p-4"
+      >
         {body}
-        <Button.Info
-          onClick={(): void =>
-            setUseWindow(false)
-          }
-        >
+        <Button.Secondary onClick={(): void => setUseWindow(false)}>
           {wbText.attachWindow()}
-        </Button.Info>
-      </>
-    </NewWindow>
+        </Button.Secondary>
+      </div>
+    </PopupWindow>
   ) : (
     <Dialog
       buttons={
         <>
-          <Button.Info
-            onClick={(): void =>
-              setUseWindow(true)
-            }
-          >
+          <Button.Secondary onClick={(): void => setUseWindow(true)}>
             {wbText.detachWindow()}
-          </Button.Info>
+          </Button.Secondary>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
         </>
       }
