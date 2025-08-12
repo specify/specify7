@@ -19,27 +19,26 @@ export function BackupDatabaseOverlay(): JSX.Element | null {
   const handleClose = React.useContext(OverlayContext);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
-  const [previous, setPrevious] = React.useState<{
+  type BackupInfo = {
     readonly exists: boolean;
     readonly url?: string;
     readonly filename?: string;
     readonly size?: number;
     readonly last_modified?: string;
-  }>({ exists: false });
+  };
+
+  const [previous, setPrevious] = React.useState<BackupInfo>({ exists: false });
 
   React.useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        const { data } = await ajax<{
-          readonly exists: boolean;
-          readonly url?: string;
-          readonly filename?: string;
-          readonly size?: number;
-          readonly last_modified?: string;
-        }>('/api/backup/previous/', {
-          headers: { Accept: 'application/json' },
-        });
+        const { data } = await ajax<BackupInfo>(
+          '/api/backup/previous/',
+          {
+            headers: { Accept: 'application/json' },
+          }
+        );
         if (mounted) setPrevious(data);
       } catch {
         if (mounted) setError(String(backupText.checkPreviousFailed()));
