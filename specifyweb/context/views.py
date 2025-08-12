@@ -321,6 +321,7 @@ def user(request):
         for c in users_collections_for_sp7(request.specify_user.id)
     ]
     data['agent'] = obj_to_data(request.specify_user_agent) if request.specify_user_agent != None else None
+    data['isloggedin'] = request.user.isloggedin
 
     if settings.RO_MODE or not request.user.is_authenticated:
         data['usertype'] = "readonly"

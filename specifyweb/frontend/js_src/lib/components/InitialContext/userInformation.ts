@@ -19,6 +19,7 @@ export type UserInformation = SerializedRecord<SpecifyUser> & {
   readonly isauthenticated: boolean;
   readonly availableCollections: RA<SerializedResource<Collection>>;
   readonly agent: SerializedRecord<Agent>;
+  readonly isloggedin: boolean;
 };
 
 const userInfo: Writable<UserInformation> = {} as UserInformation;
