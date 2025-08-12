@@ -22,9 +22,6 @@ urlpatterns = [
     # retrieve auto numbered fields
     re_path(r'^specify/series_autonumber_range', views.series_autonumber_range),
 
-    # check if the db is new at login
-    re_path(r'^specify/setup_progress/$', views.get_setup_progress),
-
     # the main business data API
     re_path(r'^specify_schema/openapi.json$', schema.openapi),
     re_path(r'^specify_schema/(?P<model>\w+)/$', schema.view),
@@ -34,13 +31,6 @@ urlpatterns = [
     re_path(r'^specify/(?P<model>\w+)/$', views.collection), # permissions added
 
     re_path(r'^specify_rows/(?P<model>\w+)/$', views.rows), # permissions added
-
-    re_path(r'^specify/institution/create/$', views.create_institution_view),
-    re_path(f'^specify/division/create/$', views.create_division_view),
-    re_path(f'^specify/discipline/create/$', views.create_discipline_view),
-    re_path(f'^specify/collection/create/$', views.create_collection_view),
-    re_path(f'^specify/specifyuser/create/$', views.create_specifyuser_view),
- 
 
     re_path(r'^delete_blockers/(?P<model>\w+)/(?P<id>\d+)/$', views.delete_blockers),
 
