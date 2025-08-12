@@ -16,14 +16,14 @@ from tempfile import TemporaryDirectory
 from django import http
 from django.conf import settings
 from django.db import router, transaction, connection
-from specifyweb.notifications.models import Message, Spmerging, LocalityUpdate
+from specifyweb.backend.notifications.models import Message, Spmerging, LocalityUpdate
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST, require_http_methods
 from specifyweb.specify.api import get_model
 
 from specifyweb.middleware.general import require_GET, require_http_methods
-from specifyweb.permissions.permissions import PermissionTarget, \
+from specifyweb.backend.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
 from specifyweb.celery_tasks import app, CELERY_TASK_STATE
 from specifyweb.specify.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
@@ -402,7 +402,7 @@ def set_user_agents(request, userid: int):
 
 
 def check_collection_access_against_agents(userid: int) -> None:
-    from specifyweb.context.views import users_collections_for_sp6, users_collections_for_sp7
+    from specifyweb.backend.context.views import users_collections_for_sp6, users_collections_for_sp7
 
     # get the list of collections the agents belong to.
     collections = spmodels.Collection.objects.filter(

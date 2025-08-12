@@ -9,7 +9,10 @@ import type { Tables } from '../DataModel/types';
 import { getUiFormatters } from '../FieldFormatters';
 import { customSelectElementBackground } from '../WbPlanView/CustomSelectElement';
 import type { MappingPath } from '../WbPlanView/Mapper';
-import { mappingPathToString } from '../WbPlanView/mappingHelpers';
+import {
+  getGenericMappingPath,
+  mappingPathToString,
+} from '../WbPlanView/mappingHelpers';
 import type { QueryFieldFilter } from './FieldFilterSpec';
 import { filtersWithDefaultValue } from './FieldFilterSpec';
 import { FieldFilterTool } from './FieldFilterTool';
@@ -129,7 +132,9 @@ function QueryLineFilterWrapper({
   const filter = fieldFilters[index];
 
   const terminatingField = isFieldComplete
-    ? genericTables[baseTableName].getField(mappingPathToString(mappingPath))
+    ? genericTables[baseTableName].getField(
+        mappingPathToString(getGenericMappingPath(mappingPath))
+      )
     : undefined;
 
   const fieldFormatter =
