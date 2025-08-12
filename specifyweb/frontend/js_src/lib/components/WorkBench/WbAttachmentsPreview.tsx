@@ -6,7 +6,6 @@
 
 import type Handsontable from 'handsontable';
 import React from 'react';
-import { PopupWindow } from '../Molecules/PopupWindow';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { attachmentsText } from '../../localization/attachments';
@@ -34,6 +33,7 @@ import {
 import type { Attachment, SpDataSetAttachment } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { PopupWindow } from '../Molecules/PopupWindow';
 import { Skeleton } from '../SkeletonLoaders/Skeleton';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import {
@@ -277,7 +277,7 @@ function AttachmentViewerDialog({
         onViewRecord={undefined}
       />
     ));
-  
+
   return useWindow ? (
     <PopupWindow
       title={attachmentsText.attachments()}
@@ -288,9 +288,7 @@ function AttachmentViewerDialog({
         if (useWindow) onClose();
       }}
     >
-      <div
-        className="flex flex-col items-center justify-center h-full w-full p-4"
-      >
+      <div className="flex flex-col items-center justify-center h-full w-full p-4">
         {body}
         <Button.Secondary onClick={(): void => setUseWindow(false)}>
           {wbText.attachWindow()}
