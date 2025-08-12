@@ -15,6 +15,7 @@ from urllib.parse import urlencode
 
 from typing_extensions import TypedDict, NotRequired
 
+from specifyweb.backend.setup_tool.api import create_collection, create_discipline, create_division, create_institution, create_specifyuser
 from specifyweb.specify.field_change_info import FieldChangeInfo
 from specifyweb.backend.interactions.cog_preps import modify_update_of_interaction_sibling_preps
 
