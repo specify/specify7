@@ -278,6 +278,8 @@ function AttachmentViewerDialog({
       />
     ));
 
+  const switchingToDialog = React.useRef(false);
+
   return useWindow ? (
     <PopupWindow
       title={attachmentsText.attachments()}
@@ -285,14 +287,28 @@ function AttachmentViewerDialog({
         setUseWindow(false);
       }}
       onUnload={(): void => {
-        if (useWindow) onClose();
+        // Only close the viewer if the user isn't reattaching the window.
+        if (!switchingToDialog.current) {
+          onClose();
+        }
+        switchingToDialog.current = false;
       }}
     >
       <div className="flex flex-col items-center justify-center h-full w-full p-4">
         {body}
-        <Button.Secondary onClick={(): void => setUseWindow(false)}>
-          {wbText.attachWindow()}
-        </Button.Secondary>
+        <div className="flex w-full justify-end gap-2 mt-4">
+          <Button.Secondary onClick={(): void => {
+            switchingToDialog.current = true;
+            setUseWindow(false);
+          }}>
+            {wbText.attachWindow()}
+          </Button.Secondary>
+          <Button.Secondary
+            onClick={onClose}
+          >
+            {commonText.close()}
+          </Button.Secondary>
+        </div>
       </div>
     </PopupWindow>
   ) : (
