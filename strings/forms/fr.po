@@ -551,13 +551,13 @@ msgstr "Rien trouvé"
 msgid "carryForward"
 msgstr "Reporter"
 
-#: components/FormMeta/CarryForward.tsx:119
+#: components/FormMeta/CarryForward.tsx:121
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardEnabled"
 msgstr "Afficher le bouton de report"
 
-#: components/FormMeta/CarryForward.tsx:199
+#: components/FormMeta/CarryForward.tsx:201
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardEnabled"
@@ -575,44 +575,44 @@ msgstr "Nombre de reports en masse"
 msgid "carryForwardDescription"
 msgstr "Créer un nouvel enregistrement avec certains champs reportés"
 
-#: components/FormMeta/CarryForward.tsx:122
-#: components/FormMeta/CarryForward.tsx:131
+#: components/FormMeta/CarryForward.tsx:124
+#: components/FormMeta/CarryForward.tsx:133
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardSettingsDescription"
 msgstr "Configurer les champs à reporter"
 
-#: components/FormMeta/CarryForward.tsx:202
-#: components/FormMeta/CarryForward.tsx:223
+#: components/FormMeta/CarryForward.tsx:204
+#: components/FormMeta/CarryForward.tsx:225
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardSettingsDescription"
 msgstr "Configurer les champs pour un report en masse"
 
-#: components/FormMeta/CarryForward.tsx:392
+#: components/FormMeta/CarryForward.tsx:393
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardTableSettingsDescription"
 msgstr "Configurer les champs à reporter ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:389
+#: components/FormMeta/CarryForward.tsx:390
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardTableSettingsDescription"
 msgstr "Configurer les champs pour un report en masse ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:462
+#: components/FormMeta/CarryForward.tsx:463
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardUniqueField"
 msgstr "Ce champ doit être unique. Il ne peut pas être reporté."
 
-#: components/FormMeta/CarryForward.tsx:464
+#: components/FormMeta/CarryForward.tsx:465
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardRequiredField"
 msgstr "Ce champ est obligatoire. Il doit être reporté"
 
-#: components/FormMeta/CarryForward.tsx:220
+#: components/FormMeta/CarryForward.tsx:222
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeEnabled"
@@ -650,7 +650,7 @@ msgstr "Début de la plage de report"
 msgid "bulkCarryForwardRangeEnd"
 msgstr "Fin de la plage de report"
 
-#: components/FormMeta/CarryForward.tsx:238
+#: components/FormMeta/CarryForward.tsx:240
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "createRecordSetOnBulkCarryForward"

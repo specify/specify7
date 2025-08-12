@@ -547,13 +547,13 @@ msgstr "Nichts gefunden"
 msgid "carryForward"
 msgstr "Übertrag"
 
-#: components/FormMeta/CarryForward.tsx:119
+#: components/FormMeta/CarryForward.tsx:121
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardEnabled"
 msgstr "Schaltfläche „Übertrag anzeigen“"
 
-#: components/FormMeta/CarryForward.tsx:199
+#: components/FormMeta/CarryForward.tsx:201
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardEnabled"
@@ -571,44 +571,44 @@ msgstr "Anzahl der Massenüberträge"
 msgid "carryForwardDescription"
 msgstr "Erstellen Sie einen neuen Datensatz mit bestimmten übernommenen Feldern"
 
-#: components/FormMeta/CarryForward.tsx:122
-#: components/FormMeta/CarryForward.tsx:131
+#: components/FormMeta/CarryForward.tsx:124
+#: components/FormMeta/CarryForward.tsx:133
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardSettingsDescription"
 msgstr "Konfigurieren der zu übertragenden Felder"
 
-#: components/FormMeta/CarryForward.tsx:202
-#: components/FormMeta/CarryForward.tsx:223
+#: components/FormMeta/CarryForward.tsx:204
+#: components/FormMeta/CarryForward.tsx:225
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardSettingsDescription"
 msgstr "Konfigurieren von Feldern für die Massenübertragung"
 
-#: components/FormMeta/CarryForward.tsx:392
+#: components/FormMeta/CarryForward.tsx:393
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardTableSettingsDescription"
 msgstr "Konfigurieren Sie die zu übertragenden Felder ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:389
+#: components/FormMeta/CarryForward.tsx:390
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardTableSettingsDescription"
 msgstr "Konfigurieren Sie Felder für den Massenübertrag ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:462
+#: components/FormMeta/CarryForward.tsx:463
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardUniqueField"
 msgstr "Dieses Feld muss eindeutig sein. Es kann nicht übertragen werden"
 
-#: components/FormMeta/CarryForward.tsx:464
+#: components/FormMeta/CarryForward.tsx:465
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardRequiredField"
 msgstr "Dieses Feld ist erforderlich. Es muss übertragen werden"
 
-#: components/FormMeta/CarryForward.tsx:220
+#: components/FormMeta/CarryForward.tsx:222
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeEnabled"
@@ -646,7 +646,7 @@ msgstr "Übertragsbereichsanfang"
 msgid "bulkCarryForwardRangeEnd"
 msgstr "Übertragsbereichsende"
 
-#: components/FormMeta/CarryForward.tsx:238
+#: components/FormMeta/CarryForward.tsx:240
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "createRecordSetOnBulkCarryForward"
