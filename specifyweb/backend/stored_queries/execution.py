@@ -20,7 +20,7 @@ from sqlalchemy.sql.expression import asc, desc, insert, literal
 from specifyweb.specify.field_change_info import FieldChangeInfo
 from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
-from specifyweb.specify.tree_utils import get_search_filters
+from specifyweb.backend.trees.tree_utils import get_search_filters
 
 from . import models
 from .format import ObjectFormatter

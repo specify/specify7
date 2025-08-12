@@ -8,9 +8,9 @@ from jsonschema import validate  # type: ignore
 
 from specifyweb.specify import auditcodes
 from specifyweb.specify.auditlog import auditlog
-from specifyweb.specify.tests.test_trees import TestTree
-from specifyweb.specify.tree_extras import validate_tree_numbering
-from specifyweb.specify.tests.test_trees import get_table
+from specifyweb.backend.trees.test_trees import TestTree
+from specifyweb.backend.trees.tree_extras import validate_tree_numbering
+from specifyweb.backend.trees.test_trees import get_table
 from specifyweb.backend.workbench.upload.auditor import DEFAULT_AUDITOR_PROPS
 from .base import UploadTestsBase
 from ..parsing import filter_and_upload

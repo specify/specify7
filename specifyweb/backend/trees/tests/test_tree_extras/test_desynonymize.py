@@ -1,6 +1,6 @@
 from specifyweb.specify.models import Determination, Taxon
-from specifyweb.specify.tests.test_trees import GeographyTree
-from specifyweb.specify.tree_extras import desynonymize, synonymize
+from specifyweb.backend.trees.test_trees import GeographyTree
+from specifyweb.backend.trees.tree_extras import desynonymize, synonymize
 
 
 class TestDesynonymize(GeographyTree):

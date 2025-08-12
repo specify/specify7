@@ -4,7 +4,7 @@ from collections import namedtuple, deque
 from sqlalchemy import orm, sql, or_
 
 import specifyweb.specify.models as spmodels
-from specifyweb.specify.tree_utils import get_treedefs
+from specifyweb.backend.trees.tree_utils import get_treedefs
 
 from .queryfieldspec import TreeRankQuery, QueryFieldSpec
 from specifyweb.backend.stored_queries import models
