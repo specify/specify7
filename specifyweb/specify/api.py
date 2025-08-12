@@ -15,7 +15,7 @@ from urllib.parse import urlencode
 
 from typing_extensions import TypedDict, NotRequired
 
-from specifyweb.permissions.models import UserPolicy
+from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.specify.field_change_info import FieldChangeInfo
 from specifyweb.backend.interactions.cog_preps import modify_update_of_interaction_sibling_preps
 
