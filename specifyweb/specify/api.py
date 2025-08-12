@@ -15,7 +15,6 @@ from urllib.parse import urlencode
 
 from typing_extensions import TypedDict, NotRequired
 
-from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.specify.field_change_info import FieldChangeInfo
 from specifyweb.backend.interactions.cog_preps import modify_update_of_interaction_sibling_preps
 
@@ -23,13 +22,12 @@ logger = logging.getLogger(__name__)
 
 from django import forms
 from django.db import transaction
-from django.db.models import F, Model, Max
+from django.db.models import F, Model
 from django.apps import apps
 from django.http import (HttpResponse, HttpResponseBadRequest,
-                         Http404, HttpResponseNotAllowed, JsonResponse, QueryDict)
+                         Http404, HttpResponseNotAllowed, QueryDict)
 from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotExist
 from django.db.models.fields import DateTimeField, FloatField, DecimalField
-from specifyweb.specify.models import Specifyuser, Spversion
 from sqlalchemy.engine import Row
 
 from specifyweb.backend.permissions.permissions import (

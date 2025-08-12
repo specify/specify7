@@ -1,7 +1,7 @@
 
 from django.urls import include, path, re_path
 
-from specifyweb.specify import views
+from . import views
 
 urlpatterns = [
     # check if the db is new at login
