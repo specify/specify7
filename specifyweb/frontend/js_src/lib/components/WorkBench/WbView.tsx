@@ -293,7 +293,7 @@ export function WbView({
                 onClose={toggleAttachments}
               />
             </aside>
-          ) : undefined}
+          ) : null}
         </div>
         {disambiguationDialogs}
         <WbUtilsComponent

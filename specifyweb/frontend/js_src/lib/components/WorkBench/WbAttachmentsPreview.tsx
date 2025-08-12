@@ -6,6 +6,7 @@
 
 import type Handsontable from 'handsontable';
 import React from 'react';
+import NewWindow from 'react-new-window';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { attachmentsText } from '../../localization/attachments';
@@ -13,6 +14,7 @@ import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
+import type { GetSet } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { fetchOriginalUrl } from '../Attachments/attachments';
@@ -68,6 +70,8 @@ export function WbAttachmentsPreview({
 
   const [showAttachment, handleShowAttachment, handleHideAttachment] =
     useBooleanState();
+  
+  const [useWindow, setUseWindow] = React.useState<boolean>(false);
 
   const handleSelection = (row: number | undefined): void => {
     if (!hot) return;
@@ -142,6 +146,7 @@ export function WbAttachmentsPreview({
       {showAttachment && (
         <AttachmentViewerDialog
           attachment={selectedAttachment}
+          window={[useWindow, setUseWindow]}
           onClose={handleHideAttachment}
         />
       )}
@@ -231,14 +236,14 @@ function fetchRowAttachments(
   });
 }
 
-import NewWindow from 'react-new-window';
-
 function AttachmentViewerDialog({
   attachment,
   onClose,
+  window: [useWindow, setUseWindow],
 }: {
   readonly attachment: SerializedResource<Attachment> | undefined;
   readonly onClose: () => void;
+  readonly window: GetSet<boolean>;
 }): JSX.Element | null {
   const [attachmentUrl, setAttachmentUrl] = React.useState<string | undefined>(
     undefined
@@ -274,15 +279,37 @@ function AttachmentViewerDialog({
       />
     ));
 
-  const useWindow = true;
-
   return useWindow ? (
-    <NewWindow copyStyles title={attachment?.title ?? ''} onUnload={onClose}>
-      {body}
+    <NewWindow copyStyles title={attachment?.title ?? ''}
+      onUnload={():void => {
+        if (useWindow)
+          onClose()
+      }}>
+      {<>
+        {body}
+        <Button.Info
+          onClick={(): void =>
+            setUseWindow(false)
+          }
+        >
+          {wbText.attachWindow()}
+        </Button.Info>
+      </>}
     </NewWindow>
   ) : (
     <Dialog
-      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+      buttons={
+        <>
+          <Button.Info
+            onClick={(): void =>
+              setUseWindow(true)
+            }
+          >
+            {wbText.detachWindow()}
+          </Button.Info>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+        </>
+      }
       className={{
         container: dialogClassNames.wideContainer,
       }}
