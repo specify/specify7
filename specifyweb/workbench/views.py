@@ -774,8 +774,8 @@ def unupload(request, ds) -> http.HttpResponse:
         ds.uploaderstatus = {"operation": "unuploading", "taskid": taskid}
         ds.save(update_fields=["uploaderstatus"])
 
-    return http.JsonResponse("w", safe=False)
-
+    # return http.JsonResponse("w", safe=False)
+    return http.JsonResponse(async_result.id, safe=False)
 
 # @login_maybe_required
 @openapi(
