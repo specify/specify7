@@ -1,26 +1,25 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 
-
+import { ajax } from '../../utils/ajax';
+import { getCache } from '../../utils/cache';
+import { exportsForTests } from '../../utils/cache/index';
+import type { RA } from '../../utils/types';
+import { fetchOriginalUrl } from '../Attachments/attachments';
 import { ImageViewer } from '../Attachments/ImageViewer';
 import { AttachmentViewer } from '../Attachments/Viewer';
-import {
-  deserializeResource,
-} from '../DataModel/serializers';
+import { toResource } from '../DataModel/helpers';
 import type {
   AnySchema,
   SerializedRecord,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { Attachment } from '../DataModel/types';
-import { toResource } from '../DataModel/helpers';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import {
+  deserializeResource,
+} from '../DataModel/serializers';
 import { serializeResource } from '../DataModel/serializers';
-import { ajax } from '../../utils/ajax';
-import { fetchOriginalUrl } from '../Attachments/attachments';
-import { getCache } from '../../utils/cache';
-import { useLocation } from 'react-router-dom';
-import { exportsForTests } from '../../utils/cache/index';
-import { RA } from '../../utils/types';
+import type { Attachment } from '../DataModel/types';
 import { NotFoundView } from '../Router/NotFoundView';
 
 const { parseCacheKey } = exportsForTests;
@@ -31,8 +30,8 @@ export function AttachmentViewerView(): JSX.Element {
   );
 
   const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const imageViewerId = params.get("id") ?? '';
+  const parameters = new URLSearchParams(location.search);
+  const imageViewerId = parameters.get("id") ?? '';
 
   const [attachment, setAttachment] = React.useState<SerializedResource<Attachment> | undefined>(undefined);
   const [selectedAttachment, setSelectedAttachment] = React.useState<number>(0);

@@ -1,7 +1,7 @@
 /**
  * Detached Popup window.
  * A wrapper for react-new-window.
- * 
+ *
  * Limited Compatibility across browsers.
  */
 
@@ -28,16 +28,14 @@ export function PopupWindow({
   const windowRef = React.useRef<Window | null>(null);
   React.useEffect(() => {
     // Copy body attributes to the window so css styles are used.
-    if (copyStyles) {
-      if (windowRef.current) {
-        copyElementAttributes(document.body, windowRef.current.document.body);
-        const mainRoot = document.getElementById('root');
-        const popupRoot = windowRef.current.document.getElementById(
-          'new-window-container'
-        );
-        if (mainRoot && popupRoot) {
-          copyElementAttributes(mainRoot, popupRoot);
-        }
+    if (copyStyles && windowRef.current) {
+      copyElementAttributes(document.body, windowRef.current.document.body);
+      const mainRoot = document.getElementById('root');
+      const popupRoot = windowRef.current.document.getElementById(
+        'new-window-container'
+      );
+      if (mainRoot && popupRoot) {
+        copyElementAttributes(mainRoot, popupRoot);
       }
     }
   }, []);
