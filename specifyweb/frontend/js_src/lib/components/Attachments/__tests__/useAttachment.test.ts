@@ -2,7 +2,6 @@ import { renderHook, waitFor } from '@testing-library/react';
 
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
-import type { AnySchema } from '../../DataModel/helperTypes';
 import type { SpecifyResource } from '../../DataModel/legacyTypes';
 import { getResourceApiUrl } from '../../DataModel/resource';
 import { tables } from '../../DataModel/tables';
@@ -15,8 +14,8 @@ describe('useAttachment', () => {
     const { result } = renderHook(() => useAttachment(undefined));
 
     await waitFor(() => {
-      // [0] = upload fn, [1] = resource
-      expect(result.current[1]).toBe(false);
+      // [0] uploadFile, [1] setAttachment, [2] attachment resource
+      expect(result.current[2]).toBe(false);
     });
   });
 
@@ -29,7 +28,7 @@ describe('useAttachment', () => {
     const { result } = renderHook(() => useAttachment(attachment));
 
     await waitFor(() => {
-      expect(result.current[1]).toBe(attachment);
+      expect(result.current[2]).toBe(attachment);
     });
   });
 
@@ -50,25 +49,18 @@ describe('useAttachment', () => {
   };
 
   overrideAjax(
-    getResourceApiUrl(
-      'CollectionObjectAttachment',
-      collectionObjectAttachmentId
-    ),
+    getResourceApiUrl('CollectionObjectAttachment', collectionObjectAttachmentId),
     collectionObjectAttachment
   );
 
   test('resource is Collection Object Attachment', async () => {
     const collectionObjectAttachmentRes =
-      new tables.CollectionObjectAttachment.Resource({
-        id: collectionObjectAttachmentId,
-      });
+      new tables.CollectionObjectAttachment.Resource({ id: collectionObjectAttachmentId });
 
-    const { result } = renderHook(() =>
-      useAttachment(collectionObjectAttachmentRes)
-    );
+    const { result } = renderHook(() => useAttachment(collectionObjectAttachmentRes));
 
     await waitFor(() => {
-      const resource = result.current[1] as SpecifyResource<AnySchema>;
+      const resource = result.current[2] as SpecifyResource<any>;
       expect(typeof resource).toBe('object');
       expect(resource.specifyTable.name).toBe('Attachment');
     });
