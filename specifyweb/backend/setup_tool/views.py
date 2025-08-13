@@ -1,8 +1,8 @@
-import http
+from django import http
 import json
 
-from specifyweb.specify import api, models as spmodels
-
+from specifyweb.backend.setup_tool import api
+from specifyweb.specify import models
 
 def create_institution(request):
     if request.method == 'POST':
@@ -41,10 +41,10 @@ def create_specifyuser_view(request):
 # check which resource are present in a new db to define setup step
 def get_setup_progress(request):
     progress = {
-        "institution": spmodels.Institution.objects.exists(),
-        "division": spmodels.Division.objects.exists(),
-        "discipline": spmodels.Discipline.objects.exists(),
-        "collection": spmodels.Collection.objects.exists(),
-        "specifyUser": spmodels.Specifyuser.objects.exists(),
+        "institution": models.Institution.objects.exists(),
+        "division": models.Division.objects.exists(),
+        "discipline": models.Discipline.objects.exists(),
+        "collection": models.Collection.objects.exists(),
+        "specifyUser": models.Specifyuser.objects.exists(),
     }
     return http.JsonResponse(progress)

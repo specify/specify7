@@ -37,7 +37,7 @@ export function Login(): JSX.Element {
   const [setupProgress] = useAsyncState(
     React.useCallback(
       async () =>
-        ajax<SetupProgress>(`/api/specify/setup_progress/`, {
+        ajax<SetupProgress>(`/setup_tool/setup_progress/`, {
           method: 'GET',
           headers: { Accept: 'application/json' },
           errorMode: 'silent',

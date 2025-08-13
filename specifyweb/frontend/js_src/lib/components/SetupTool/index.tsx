@@ -51,7 +51,7 @@ const catalogNumberFormats = [
 const resources: RA<ResourceConfig> = [
   {
     resourceName: 'Institution',
-    endpoint: '/api/specify/institution/create/',
+    endpoint: '/setup_tool/institution/create/',
     fields: [
       { name: 'name', label: 'Name' },
       { name: 'code', label: 'Code' },
@@ -69,7 +69,7 @@ const resources: RA<ResourceConfig> = [
   },
   {
     resourceName: 'Division',
-    endpoint: '/api/specify/division/create/',
+    endpoint: '/setup_tool/division/create/',
     fields: [
       { name: 'name', label: 'Name' },
       { name: 'abbrev', label: 'Abbreviation' },
@@ -77,7 +77,7 @@ const resources: RA<ResourceConfig> = [
   },
   {
     resourceName: 'Discipline',
-    endpoint: '/api/specify/discipline/create/',
+    endpoint: '/setup_tool/discipline/create/',
     fields: [
       { name: 'name', label: 'Name' },
       {
@@ -90,7 +90,7 @@ const resources: RA<ResourceConfig> = [
   },
   {
     resourceName: 'Collection',
-    endpoint: '/api/specify/collection/create/',
+    endpoint: '/setup_tool/collection/create/',
     fields: [
       { name: 'collectionName', label: 'Collection Name' },
       { name: 'code', label: 'Code' },
@@ -104,7 +104,7 @@ const resources: RA<ResourceConfig> = [
   },
   {
     resourceName: 'SpecifyUser',
-    endpoint: '/api/specify/specifyuser/create/',
+    endpoint: '/setup_tool/specifyuser/create/',
     fields: [
       { name: 'name', label: 'Username' },
       { name: 'password', label: 'Password', type: 'password' },
