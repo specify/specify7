@@ -73,9 +73,4 @@ urlpatterns = [
     path('set_admin_status/<int:userid>/', views.set_admin_status),
     path('set_agents/<int:userid>/', views.set_user_agents),
 
-    # backup database async
-    path('backup/start/', views.backup_start, name='backup_start'),
-    path('backup/status/<str:taskid>/', views.backup_status, name='backup_status'),
-    path('backup/download/<str:taskid>/', views.backup_download, name='backup_download'),
-    path('backup/previous/', views.backup_previous, name='backup_previous'),
 ]
