@@ -8,7 +8,7 @@ from functools import wraps
 import time
 import logging
 import os
-from typing import Union, List, Tuple, Dict, Any
+from typing import Any
 from uuid import uuid4
 from zipfile import ZipFile, BadZipFile
 from tempfile import TemporaryDirectory
@@ -16,14 +16,14 @@ from tempfile import TemporaryDirectory
 from django import http
 from django.conf import settings
 from django.db import router, transaction, connection
-from specifyweb.notifications.models import Message, Spmerging, LocalityUpdate
+from specifyweb.backend.notifications.models import Message, Spmerging, LocalityUpdate
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST, require_http_methods
 from specifyweb.specify.api import get_model
 
 from specifyweb.middleware.general import require_GET, require_http_methods
-from specifyweb.permissions.permissions import PermissionTarget, \
+from specifyweb.backend.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
 from specifyweb.celery_tasks import app, CELERY_TASK_STATE
 from specifyweb.specify.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
@@ -402,7 +402,7 @@ def set_user_agents(request, userid: int):
 
 
 def check_collection_access_against_agents(userid: int) -> None:
-    from specifyweb.context.views import users_collections_for_sp6, users_collections_for_sp7
+    from specifyweb.backend.context.views import users_collections_for_sp6, users_collections_for_sp7
 
     # get the list of collections the agents belong to.
     collections = spmodels.Collection.objects.filter(
@@ -546,7 +546,7 @@ def record_merge(
     # This is actually of type str.
     # TODO: Change below to str.
     new_model_id: int
-) -> Union[http.HttpResponse, http.JsonResponse]:
+) -> http.HttpResponse | http.JsonResponse:
     """Replaces all the foreign keys referencing the old record IDs
     with the new record ID, and deletes the old records.
     """
@@ -1524,7 +1524,7 @@ def series_autonumber_range(request: http.HttpRequest):
     Returns a list of autonumbered values given a range.
     Used for series data entry on Collection Objects.
     """
-    request_data = json.loads(request.body)
+    request_data: dict = json.loads(request.body)
     range_start = request_data.get('rangestart')
     range_end = request_data.get('rangeend')
     table_name = request_data.get('tablename')
@@ -1584,4 +1584,4 @@ def series_autonumber_range(request: http.HttpRequest):
             'values': values,
         })
     except Exception as e:
-        return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)  
+        return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)

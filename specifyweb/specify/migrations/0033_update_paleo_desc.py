@@ -1,4 +1,3 @@
-
 from django.db import migrations
 from specifyweb.specify.migration_utils import update_schema_config as usc
 

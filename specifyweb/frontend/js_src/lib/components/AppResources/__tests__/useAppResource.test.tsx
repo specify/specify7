@@ -1,10 +1,7 @@
 import { render, waitFor } from '@testing-library/react';
 import React from 'react';
-import * as Router from 'react-router-dom';
 
 import { requireContext } from '../../../tests/helpers';
-import type { WritableArray } from '../../../utils/types';
-import { removeKey } from '../../../utils/utils';
 import type { SerializedResource } from '../../DataModel/helperTypes';
 import { serializeResource } from '../../DataModel/serializers';
 import { tables } from '../../DataModel/tables';
@@ -13,6 +10,7 @@ import { exportsForTests } from '../EditorWrapper';
 import type { AppResourceMode } from '../helpers';
 import type { AppResources } from '../hooks';
 import { staticAppResources } from './staticAppResources';
+import { TestComponentWrapperRouter } from '../../../tests/utils';
 
 requireContext();
 
@@ -38,23 +36,6 @@ function TestComponent({
   return <></>;
 }
 
-function TestComponentWrapper(
-  props: Parameters<typeof TestComponent>[0] & {
-    readonly initialEntries: WritableArray<string>;
-  }
-): JSX.Element {
-  return (
-    <Router.MemoryRouter initialEntries={props.initialEntries}>
-      <Router.Routes>
-        <Router.Route
-          element={<TestComponent {...removeKey(props, 'initialEntries')} />}
-          path=":id"
-        />
-      </Router.Routes>
-    </Router.MemoryRouter>
-  );
-}
-
 describe('useAppResource', () => {
   test('appResource mode (existing resorurce)', async () => {
     const spAppResource = new tables.SpAppResource.Resource({
@@ -66,13 +47,17 @@ describe('useAppResource', () => {
     const appResourceToUse = staticAppResources.appResources[0];
 
     render(
-      <TestComponentWrapper
+      <TestComponentWrapperRouter
         initialEntries={[`/${appResourceToUse.id}`]}
-        mode="appResources"
-        newResource={serializedNewResource}
-        resources={staticAppResources as unknown as AppResources}
-        onResultSet={onResultSet}
-      />
+        path=":id"
+      >
+        <TestComponent
+          mode="appResources"
+          newResource={serializedNewResource}
+          resources={staticAppResources as unknown as AppResources}
+          onResultSet={onResultSet}
+        />
+      </TestComponentWrapperRouter>
     );
 
     await waitFor(() => {
@@ -90,13 +75,14 @@ describe('useAppResource', () => {
     const onResultSet = jest.fn();
 
     render(
-      <TestComponentWrapper
-        initialEntries={[`/2048`]}
-        mode="appResources"
-        newResource={serializedNewResource}
-        resources={staticAppResources as unknown as AppResources}
-        onResultSet={onResultSet}
-      />
+      <TestComponentWrapperRouter initialEntries={[`/2048`]} path=":id">
+        <TestComponent
+          mode="appResources"
+          newResource={serializedNewResource}
+          resources={staticAppResources as unknown as AppResources}
+          onResultSet={onResultSet}
+        />
+      </TestComponentWrapperRouter>
     );
 
     await waitFor(() => {
@@ -115,13 +101,17 @@ describe('useAppResource', () => {
     const viewSetToUse = staticAppResources.viewSets[0];
 
     render(
-      <TestComponentWrapper
+      <TestComponentWrapperRouter
         initialEntries={[`/${viewSetToUse.id}`]}
-        mode="viewSets"
-        newResource={serializedNewResource}
-        resources={staticAppResources as unknown as AppResources}
-        onResultSet={onResultSet}
-      />
+        path=":id"
+      >
+        <TestComponent
+          mode="viewSets"
+          newResource={serializedNewResource}
+          resources={staticAppResources as unknown as AppResources}
+          onResultSet={onResultSet}
+        />
+      </TestComponentWrapperRouter>
     );
 
     await waitFor(() => {
@@ -139,13 +129,14 @@ describe('useAppResource', () => {
     const onResultSet = jest.fn();
 
     render(
-      <TestComponentWrapper
-        initialEntries={[`/2048`]}
-        mode="viewSets"
-        newResource={serializedNewResource}
-        resources={staticAppResources as unknown as AppResources}
-        onResultSet={onResultSet}
-      />
+      <TestComponentWrapperRouter initialEntries={[`/2048`]} path=":id">
+        <TestComponent
+          mode="viewSets"
+          newResource={serializedNewResource}
+          resources={staticAppResources as unknown as AppResources}
+          onResultSet={onResultSet}
+        />
+      </TestComponentWrapperRouter>
     );
 
     await waitFor(() => {

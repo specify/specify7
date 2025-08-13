@@ -1,16 +1,16 @@
 import json
 import logging
 
-from specifyweb.accounts import models as acccounts_models
-from specifyweb.attachment_gw import models as attachment_gw_models
-from specifyweb.businessrules import models as businessrules_models
-from specifyweb.context import models as context_models
-from specifyweb.notifications import models as notifications_models
-from specifyweb.permissions import models as permissions_models
-from specifyweb.interactions import models as interactions_models
-from specifyweb.workbench import models as workbench_models
+from specifyweb.backend.accounts import models as acccounts_models
+from specifyweb.backend.attachment_gw import models as attachment_gw_models
+from specifyweb.backend.businessrules import models as businessrules_models
+from specifyweb.backend.context import models as context_models
+from specifyweb.backend.notifications import models as notifications_models
+from specifyweb.backend.permissions import models as permissions_models
+from specifyweb.backend.interactions import models as interactions_models
+from specifyweb.backend.workbench import models as workbench_models
 from specifyweb.specify import models as spmodels
-from specifyweb.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from django.conf import settings
 
 logger = logging.getLogger(__name__)
@@ -67,7 +67,7 @@ def get_picklists(collection: spmodels.Collection, tablename: str, fieldname: st
     return picklists, schemaitem
 
 def get_cat_num_inheritance_setting(collection, user) -> bool:
-    import specifyweb.context.app_resource as app_resource
+    import specifyweb.backend.context.app_resource as app_resource
 
     inheritance_enabled: bool = False
 
@@ -95,7 +95,7 @@ def get_cat_num_inheritance_setting(collection, user) -> bool:
     return inheritance_enabled
 
 def get_parent_cat_num_inheritance_setting(collection, user) -> bool:
-    import specifyweb.context.app_resource as app_resource
+    import specifyweb.backend.context.app_resource as app_resource
 
     parent_inheritance_enabled: bool = False  
 
@@ -121,4 +121,3 @@ def get_parent_cat_num_inheritance_setting(collection, user) -> bool:
         logger.warning(f"An unexpected error occurred: {e}")
     
     return parent_inheritance_enabled
-
