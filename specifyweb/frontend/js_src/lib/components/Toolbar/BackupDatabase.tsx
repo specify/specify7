@@ -15,17 +15,18 @@ import { icons } from '../Atoms/Icons';
 import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
 
+type BackupInfo = {
+  readonly exists: boolean;
+  readonly url?: string;
+  readonly filename?: string;
+  readonly size?: number;
+  readonly last_modified?: string;
+};
+
 export function BackupDatabaseOverlay(): JSX.Element | null {
   const handleClose = React.useContext(OverlayContext);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
-  type BackupInfo = {
-    readonly exists: boolean;
-    readonly url?: string;
-    readonly filename?: string;
-    readonly size?: number;
-    readonly last_modified?: string;
-  };
 
   const [previous, setPrevious] = React.useState<BackupInfo>({ exists: false });
 

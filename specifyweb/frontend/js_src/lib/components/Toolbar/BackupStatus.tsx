@@ -14,6 +14,8 @@ import { loadingGif } from '../Molecules';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
 
+type TaskStatus = 'FAILED' | 'RUNNING' | 'SUCCEEDED';
+
 export function BackupStatus({
   taskId,
   onClose,
@@ -21,7 +23,6 @@ export function BackupStatus({
   readonly taskId: string;
   readonly onClose: () => void;
 }): JSX.Element {
-  type TaskStatus = 'FAILED' | 'RUNNING' | 'SUCCEEDED';
   const [status, setStatus] = React.useState<TaskStatus>('RUNNING');
   const [total, setTotal] = React.useState(1);
   const [current, setCurrent] = React.useState(0);
