@@ -5,7 +5,7 @@ import subprocess
 from django.conf import settings
 from specifyweb.celery_tasks import app
 from django.db import connection
-from specifyweb.notifications.models import Message
+from specifyweb.backend.notifications.models import Message
 import json
 import traceback
 from django.utils import timezone

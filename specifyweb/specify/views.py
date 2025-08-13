@@ -1588,4 +1588,3 @@ def series_autonumber_range(request: http.HttpRequest):
     except Exception as e:
         return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)
 
-## Backup endpoints moved to specifyweb.backup_tool app (views removed here for modularity)

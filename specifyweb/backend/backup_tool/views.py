@@ -4,13 +4,15 @@ from django import http
 from django.conf import settings
 from django.views.decorators.http import require_POST
 from specifyweb.middleware.general import require_GET
-from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets
+from specifyweb.backend.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.backup_task import backup_database_task
+
 
 class BackupPT(PermissionTarget):
     resource = "/export/backup"
     execute = PermissionTargetAction()
+
 
 @login_maybe_required
 @require_POST
@@ -26,6 +28,7 @@ def backup_start(request):
     except Exception:
         task = backup_database_task.apply_async(kwargs={'user_id': user_id})
     return http.JsonResponse({'taskid': task.id})
+
 
 @login_maybe_required
 @require_GET
@@ -62,6 +65,7 @@ def backup_status(request, taskid):
         'response': response,
     })
 
+
 @login_maybe_required
 @require_GET
 def backup_download(request, taskid):
@@ -79,6 +83,7 @@ def backup_download(request, taskid):
         resp = http.HttpResponse(fh.read(), content_type='application/gzip')
         resp['Content-Disposition'] = f'attachment; filename="{filename}"'
         return resp
+
 
 @login_maybe_required
 @require_GET
