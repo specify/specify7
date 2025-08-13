@@ -8,9 +8,9 @@ import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
 import { f } from '../../../utils/functools';
 import { LoadingContext } from '../../Core/Contexts';
-import { SpecifyResource } from '../../DataModel/legacyTypes';
+import type { SpecifyResource } from '../../DataModel/legacyTypes';
 import { deserializeResource } from '../../DataModel/serializers';
-import { Attachment } from '../../DataModel/types';
+import type { Attachment } from '../../DataModel/types';
 import { overrideAttachmentSettings } from '../attachments';
 import * as Attachments from '../attachments';
 import { UploadAttachment } from '../Plugin';
@@ -18,12 +18,19 @@ import { testAttachment } from './utils';
 
 requireContext();
 
-async function uploadFileMock() {
-  return deserializeResource(testAttachment) ;
-}
+const uploadFileMock: typeof Attachments.uploadFile = async (
+  _file,
+  _handleProgress,
+  _spec?,
+  _strict?
+) => {
+  // If deserializeResource is generic, prefer: deserializeResource<Attachment>(testAttachment)
+  return deserializeResource(testAttachment) as unknown as SpecifyResource<Attachment>;
+};
 
 beforeEach(() => {
   clearIdStore();
+  jest.restoreAllMocks();
 });
 
 describe('UploadAttachment', () => {
@@ -39,6 +46,7 @@ describe('UploadAttachment', () => {
   test('simple render', async () => {
     jest.spyOn(Attachments, 'uploadFile').mockImplementation(uploadFileMock);
     jest.spyOn(console, 'warn').mockImplementation();
+
     const handleUploaded = jest.fn();
 
     overrideAttachmentSettings(attachmentSettings);
@@ -50,9 +58,7 @@ describe('UploadAttachment', () => {
     expect(asFragment()).toMatchSnapshot();
 
     const input = Array.from(container.getElementsByTagName('input'))[0];
-    const testFile = new File(['Some Text Contents'], 'testName', {
-      type: 'text/plain',
-    });
+    const testFile = new File(['Some Text Contents'], 'testName', { type: 'text/plain' });
 
     await user.upload(input, testFile);
     fireEvent.change(input, { target: { files: [testFile] } });
