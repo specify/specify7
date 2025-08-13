@@ -42,8 +42,8 @@ export function PopupWindow({
     <NewWindow
       copyStyles
       title={title}
-      onBlock={onBlock}
       url={url}
+      onBlock={onBlock}
       onOpen={(window): void => {
         windowRef.current = window;
         onOpen(window);
