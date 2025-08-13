@@ -6,7 +6,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from .model_timestamp import save_auto_timestamp_field_with_override
-from .tree_extras import Tree, TreeRank
+from specifyweb.backend.trees.tree_extras import Tree, TreeRank
 
 if settings.AUTH_LDAP_SERVER_URI is not None:
     from . import ldap_extras

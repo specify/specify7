@@ -17,7 +17,7 @@ from django.conf import settings
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
 import specifyweb.specify.models as spmodels
 
-from  .auditcodes import TREE_BULK_MOVE, TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
+from  specifyweb.specify.auditcodes import TREE_BULK_MOVE, TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
 
 @contextmanager
 def validate_node_numbers(table, revalidate_after=True):

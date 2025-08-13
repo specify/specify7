@@ -4,7 +4,7 @@ from django.urls import include, path, re_path
 
 from . import master_key
 from . import schema
-from . import tree_views
+from specifyweb.backend.trees import tree_views
 from . import views
 
 urlpatterns = [
