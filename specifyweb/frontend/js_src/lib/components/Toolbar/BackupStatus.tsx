@@ -74,9 +74,9 @@ export function BackupStatus({
               {notificationsText.download()}
             </Button.Info>
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-            </div>
-          ) : (
-            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          </div>
+        ) : (
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
         )
       }
       className={{ container: dialogClassNames.narrowContainer }}
