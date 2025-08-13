@@ -18,7 +18,7 @@ type TaskStatus = 'FAILED' | 'RUNNING' | 'SUCCEEDED';
 
 export function BackupStatus({
   taskId,
-  onClose,
+  onClose: handleClose,
 }: {
   readonly taskId: string;
   readonly onClose: () => void;
@@ -73,17 +73,17 @@ export function BackupStatus({
             >
               {notificationsText.download()}
             </Button.Info>
-            <Button.Info onClick={onClose}>{commonText.close()}</Button.Info>
-          </div>
-        ) : (
-          <Button.Info onClick={onClose}>{commonText.close()}</Button.Info>
+            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+            </div>
+          ) : (
+            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
         )
       }
       className={{ container: dialogClassNames.narrowContainer }}
       dimensionsKey="backup-progress"
       header={headerText.backupDatabase()}
       icon={status === 'SUCCEEDED' ? dialogIcons.success : dialogIcons.error}
-      onClose={undefined}
+      onClose={handleClose}
     >
       {status === 'FAILED' ? (
         <div className="flex flex-col gap-2">
