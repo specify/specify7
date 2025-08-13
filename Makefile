@@ -41,8 +41,8 @@ webpack_watch:
 
 typecheck:
 	$(MYPY) --follow-imports silent \
-	specifyweb/permissions specifyweb/workbench specifyweb/accounts \
+	specifyweb/backend/permissions specifyweb/backend/workbench specifyweb/backend/accounts \
 	specifyweb/specify/schema.py specifyweb/specify/load_datamodel.py \
-	specifyweb/specify/api.py specifyweb/context/user_resources.py
+	specifyweb/specify/api.py specifyweb/backend/context/user_resources.py
 
 .FORCE:
