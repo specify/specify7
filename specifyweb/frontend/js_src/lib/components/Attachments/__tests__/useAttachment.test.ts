@@ -15,7 +15,8 @@ describe('useAttachment', () => {
     const { result } = renderHook(() => useAttachment(undefined));
 
     await waitFor(() => {
-      expect(result.current[0]).toBe(false);
+      // [0] = upload fn, [1] = resource
+      expect(result.current[1]).toBe(false);
     });
   });
 
@@ -28,7 +29,7 @@ describe('useAttachment', () => {
     const { result } = renderHook(() => useAttachment(attachment));
 
     await waitFor(() => {
-      expect(result.current[0]).toBe(attachment);
+      expect(result.current[1]).toBe(attachment);
     });
   });
 
@@ -57,17 +58,17 @@ describe('useAttachment', () => {
   );
 
   test('resource is Collection Object Attachment', async () => {
-    const collectionObjectAttachment =
+    const collectionObjectAttachmentRes =
       new tables.CollectionObjectAttachment.Resource({
         id: collectionObjectAttachmentId,
       });
 
     const { result } = renderHook(() =>
-      useAttachment(collectionObjectAttachment)
+      useAttachment(collectionObjectAttachmentRes)
     );
 
     await waitFor(() => {
-      const resource = result.current[0] as SpecifyResource<AnySchema>;
+      const resource = result.current[1] as SpecifyResource<AnySchema>;
       expect(typeof resource).toBe('object');
       expect(resource.specifyTable.name).toBe('Attachment');
     });
