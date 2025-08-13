@@ -10,12 +10,14 @@ import NewWindow from 'react-new-window';
 
 export function PopupWindow({
   title = '',
+  url,
   onOpen = () => {},
   onBlock = () => {},
   onUnload = () => {},
   children,
 }: {
   readonly title?: string;
+  readonly url?: string;
   readonly onOpen?: (window: Window) => void;
   readonly onBlock?: () => void;
   readonly onUnload?: () => void;
@@ -41,6 +43,7 @@ export function PopupWindow({
       copyStyles
       title={title}
       onBlock={onBlock}
+      url={url}
       onOpen={(window): void => {
         windowRef.current = window;
         onOpen(window);
@@ -57,10 +60,9 @@ function copyElementAttributes(
   toElement: HTMLElement
 ): void {
   Array.from(toElement.attributes).forEach((attribute) => {
-    if (attribute.name !== 'id') toElement.removeAttribute(attribute.name);
+    toElement.removeAttribute(attribute.name);
   });
   Array.from(fromElement.attributes).forEach((attribute) => {
-    if (attribute.name !== 'id')
-      toElement.setAttribute(attribute.name, attribute.value);
+    toElement.setAttribute(attribute.name, attribute.value);
   });
 }
