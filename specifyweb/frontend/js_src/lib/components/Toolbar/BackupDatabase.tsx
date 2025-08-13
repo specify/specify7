@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { backupText } from '../../localization/backup';
 import { commonText } from '../../localization/common';
@@ -25,6 +26,7 @@ type BackupInfo = {
 
 export function BackupDatabaseOverlay(): JSX.Element | null {
   const handleClose = React.useContext(OverlayContext);
+  const navigate = useNavigate();
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -58,7 +60,7 @@ export function BackupDatabaseOverlay(): JSX.Element | null {
         '/api/backup/start/',
         { method: 'POST', headers: { Accept: 'application/json' } }
       );
-      window.location.href = `/specify/overlay/backup-status/${data.taskid}/`;
+      navigate(`/specify/overlay/backup-status/${data.taskid}/`);
     } catch {
       setError(String(backupText.startFailed()));
     }
