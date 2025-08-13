@@ -2,8 +2,8 @@ import logging
 from django.core.management.base import BaseCommand
 from django.apps import apps
 from django.db import transaction
-from specifyweb.businessrules.migration_utils import catnum_rule_editable
-from specifyweb.businessrules.uniqueness_rules import (
+from specifyweb.backend.businessrules.migration_utils import catnum_rule_editable
+from specifyweb.backend.businessrules.uniqueness_rules import (
     apply_default_uniqueness_rules,
     create_uniqueness_rule
 )
@@ -17,11 +17,11 @@ from specifyweb.specify.migration_utils.default_cots import (
     set_discipline_for_taxon_treedefs,
     fix_tectonic_unit_treedef_discipline_links
 )
-from specifyweb.permissions.initialize import initialize
+from specifyweb.backend.permissions.initialize import initialize
 from specifyweb.specify.migration_utils import update_schema_config as usc
 from specifyweb.specify.migration_utils.misc_migrations import make_selectseries_false
 from specifyweb.specify.migration_utils.tectonic_ranks import create_default_tectonic_ranks, create_root_tectonic_node
-from specifyweb.patches.migration_utils import apply_migrations as apply_patches
+from specifyweb.backend.patches.migration_utils import apply_migrations as apply_patches
 
 logger = logging.getLogger(__name__)
 

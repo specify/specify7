@@ -2,7 +2,7 @@
 
 from django.db import migrations
 
-from specifyweb.patches.migration_utils import update_coordinates
+from specifyweb.backend.patches.migration_utils import update_coordinates
 
 
 class Migration(migrations.Migration):

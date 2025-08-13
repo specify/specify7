@@ -1,5 +1,5 @@
 from django.db import migrations, models
-from specifyweb.businessrules.uniqueness_rules import DEFAULT_UNIQUENESS_RULES
+from specifyweb.backend.businessrules.uniqueness_rules import DEFAULT_UNIQUENESS_RULES
 from specifyweb.specify.migration_utils import update_schema_config as usc
 
 class Migration(migrations.Migration):
