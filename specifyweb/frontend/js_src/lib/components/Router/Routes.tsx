@@ -473,11 +473,11 @@ export const routes: RA<EnhancedRoute> = [
     element: () => import('../HomePage').then(({ WelcomeView }) => WelcomeView),
   },
   {
-    path: 'attachment-viewer',
+    path: 'workbench-attachment',
     title: attachmentsText.attachments(),
     element: () =>
-      import('../AttachmentViewer/index').then(
-        ({ AttachmentViewerView }) => AttachmentViewerView
+      import('../WbAttachmentViewer/index').then(
+        ({ WbAttachmentViewerView }) => WbAttachmentViewerView
       ),
   },
   /*

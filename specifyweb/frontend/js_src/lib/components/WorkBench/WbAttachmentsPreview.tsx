@@ -40,6 +40,7 @@ import {
   getAttachmentsColumnIndex,
   getAttachmentsFromCell,
 } from '../WorkBench/attachmentHelpers';
+import { setCache } from '../../utils/cache';
 
 type WbAttachmentPreviewCell = {
   readonly attachment: SerializedResource<Attachment> | undefined;
@@ -145,7 +146,7 @@ export function WbAttachmentsPreview({
       {showAttachment && (
         <AttachmentViewerDialog
           attachment={selectedAttachment}
-          imageViewerId={dataset.id.toString()}
+          viewerId={dataset.id.toString()}
           window={[useWindow, setUseWindow]}
           onClose={handleHideAttachment}
         />
@@ -236,17 +237,15 @@ function fetchRowAttachments(
   });
 }
 
-import { setCache } from '../../utils/cache';
-
 function AttachmentViewerDialog({
   attachment,
   onClose,
-  imageViewerId,
+  viewerId,
   window: [useWindow, setUseWindow],
 }: {
   readonly attachment: SerializedResource<Attachment> | undefined;
   readonly onClose: () => void;
-  readonly imageViewerId: string;
+  readonly viewerId: string;
   readonly window: GetSet<boolean>;
 }): JSX.Element | null {
   const [attachmentUrl, setAttachmentUrl] = React.useState<string | undefined>(
@@ -265,7 +264,7 @@ function AttachmentViewerDialog({
       }
     });
 
-    setCache('workBenchImageViewer', imageViewerId, [attachment.id]);
+    setCache('workBenchImageViewer', viewerId, [attachment.id]);
   }, [attachment]);
 
   const [related, setRelated] = React.useState<
@@ -290,7 +289,7 @@ function AttachmentViewerDialog({
   return useWindow ? (
     <PopupWindow
       title={attachmentsText.attachments()}
-      url={`/specify/attachment-viewer/?id=${encodeURIComponent(imageViewerId)}`}
+      url={`/specify/workbench-attachment/?id=${encodeURIComponent(viewerId)}`}
       onBlock={(): void => {
         setUseWindow(false);
       }}
@@ -302,22 +301,7 @@ function AttachmentViewerDialog({
         switchingToDialog.current = false;
       }}
     >
-      <div className="flex flex-col items-center justify-center h-full w-full p-4">
-        {body}
-        <div className="flex w-full justify-end gap-2 mt-4">
-          <Button.Secondary
-            onClick={(): void => {
-              switchingToDialog.current = true;
-              setUseWindow(false);
-            }}
-          >
-            {wbText.attachWindow()}
-          </Button.Secondary>
-          <Button.Secondary onClick={onClose}>
-            {commonText.close()}
-          </Button.Secondary>
-        </div>
-      </div>
+      {body}
     </PopupWindow>
   ) : (
     <Dialog

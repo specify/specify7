@@ -21,10 +21,14 @@ import {
 import { serializeResource } from '../DataModel/serializers';
 import type { Attachment } from '../DataModel/types';
 import { NotFoundView } from '../Router/NotFoundView';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { attachmentsText } from '../../localization/attachments';
+import { commonText } from '../../localization/common';
+import { Button } from '../Atoms/Button';
 
 const { parseCacheKey } = exportsForTests;
 
-export function AttachmentViewerView(): JSX.Element {
+export function WbAttachmentViewerView(): JSX.Element {
   const [attachmentUrl, setAttachmentUrl] = React.useState<string | undefined>(
     undefined
   );
@@ -106,9 +110,23 @@ export function AttachmentViewerView(): JSX.Element {
 
   return (
     imageViewerId ?
-    <div className="flex flex-col items-center justify-center h-full w-full p-4">
-        {body}
-    </div> :
+    <Dialog
+      buttons={<>
+                <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+              </>}
+      className={{container: dialogClassNames.fullScreen}}
+      dimensionsKey="LeafletMap"
+      header={attachmentsText.attachments()}
+      headerButtons={undefined}
+      onClose={() => {
+        window.close();
+      }}
+    >
+      <div className="flex flex-col items-center justify-center h-full w-full p-4">
+          {body}
+      </div>
+    </Dialog>
+    :
     <NotFoundView/>
   )
 }
