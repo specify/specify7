@@ -2,7 +2,7 @@ import json
 from django.http import (JsonResponse)
 
 from specifyweb.backend.permissions.models import UserPolicy
-from specifyweb.specify.api import strict_uri_to_model
+from specifyweb.specify.api_utils import strict_uri_to_model
 from specifyweb.specify.models import Spversion
 
 from django.db.models import Max

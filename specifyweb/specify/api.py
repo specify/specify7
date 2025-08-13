@@ -5,8 +5,7 @@ Implements the RESTful business data API
 from calendar import c
 import http
 import json
-import logging
-import re
+import logging 
 from typing import Any, TypedDict, cast
 from collections.abc import Callable
 from collections.abc import Iterable
@@ -16,6 +15,7 @@ from urllib.parse import urlencode
 from typing_extensions import TypedDict, NotRequired
 
 from specifyweb.backend.setup_tool.api import create_collection, create_discipline, create_division, create_institution, create_specifyuser
+from specifyweb.specify.api_utils import strict_uri_to_model
 from specifyweb.specify.field_change_info import FieldChangeInfo
 from specifyweb.backend.interactions.cog_preps import modify_update_of_interaction_sibling_preps
 
@@ -48,9 +48,6 @@ from .datamodel import datamodel, Table, Relationship
 from .calculated_fields import calculate_extra_fields
 
 ReadPermChecker = Callable[[Any], None]
-
-# Regex matching api uris for extracting the model name and id number.
-URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')
 
 def strict_get_model(name: str, apps = apps):
     """Fetch an ORM model from the module dynamically so that
@@ -990,19 +987,6 @@ def prepare_value(field, val: Any) -> Any:
     if isinstance(field, DateTimeField) and isinstance(val, str):
         return val.replace('T', ' ')
     return val
-
-def parse_uri(uri: str) -> tuple[str, str]:
-    """Return the model name and id from a resource or collection URI."""
-    match = URI_RE.match(uri)
-    assert match is not None, f"Bad URI: {uri}"
-    groups = match.groups()
-    return groups[0], groups[2]
-
-def strict_uri_to_model(uri: str, model: str) -> tuple[str, int]:
-    uri_model, uri_id = parse_uri(uri)
-    assert model.lower() == uri_model.lower(), f"{model} does not match model in uri: {uri_model}"
-    assert uri_id is not None
-    return uri_model, int(uri_id)
 
 def obj_to_data(obj) -> dict[str, Any]:
     "Wrapper for backwards compat w/ other modules that use this function."
