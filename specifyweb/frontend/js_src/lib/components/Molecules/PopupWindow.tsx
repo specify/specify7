@@ -11,6 +11,7 @@ import NewWindow from 'react-new-window';
 export function PopupWindow({
   title = '',
   url,
+  copyStyles = false,
   onOpen = () => {},
   onBlock = () => {},
   onUnload = () => {},
@@ -18,6 +19,7 @@ export function PopupWindow({
 }: {
   readonly title?: string;
   readonly url?: string;
+  readonly copyStyles?: boolean;
   readonly onOpen?: (window: Window) => void;
   readonly onBlock?: () => void;
   readonly onUnload?: () => void;
@@ -26,21 +28,23 @@ export function PopupWindow({
   const windowRef = React.useRef<Window | null>(null);
   React.useEffect(() => {
     // Copy body attributes to the window so css styles are used.
-    if (windowRef.current) {
-      copyElementAttributes(document.body, windowRef.current.document.body);
-      const mainRoot = document.getElementById('root');
-      const popupRoot = windowRef.current.document.getElementById(
-        'new-window-container'
-      );
-      if (mainRoot && popupRoot) {
-        copyElementAttributes(mainRoot, popupRoot);
+    if (copyStyles) {
+      if (windowRef.current) {
+        copyElementAttributes(document.body, windowRef.current.document.body);
+        const mainRoot = document.getElementById('root');
+        const popupRoot = windowRef.current.document.getElementById(
+          'new-window-container'
+        );
+        if (mainRoot && popupRoot) {
+          copyElementAttributes(mainRoot, popupRoot);
+        }
       }
     }
   }, []);
 
   return (
     <NewWindow
-      copyStyles
+      copyStyles={copyStyles}
       title={title}
       onBlock={onBlock}
       url={url}

@@ -98,6 +98,10 @@ export type CacheDefinitions = {
       }
     >;
   };
+  readonly workBenchImageViewer: {
+    /** Attachment id for attachment that should be displayed. */
+    readonly [key: string]: RA<number>;
+  }
   readonly sortConfig: {
     readonly [KEY in keyof SortConfigs]: SortConfig<SortConfigs[KEY]>;
   };

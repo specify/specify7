@@ -147,6 +147,7 @@ export function WbAttachmentsPreview({
           attachment={selectedAttachment}
           window={[useWindow, setUseWindow]}
           onClose={handleHideAttachment}
+          imageViewerId={dataset.id.toString()}
         />
       )}
     </>
@@ -235,13 +236,17 @@ function fetchRowAttachments(
   });
 }
 
+import { setCache } from '../../utils/cache';
+
 function AttachmentViewerDialog({
   attachment,
   onClose,
+  imageViewerId,
   window: [useWindow, setUseWindow],
 }: {
   readonly attachment: SerializedResource<Attachment> | undefined;
   readonly onClose: () => void;
+  readonly imageViewerId: string;
   readonly window: GetSet<boolean>;
 }): JSX.Element | null {
   const [attachmentUrl, setAttachmentUrl] = React.useState<string | undefined>(
@@ -259,6 +264,8 @@ function AttachmentViewerDialog({
         setAttachmentUrl(`/attachment_gw/proxy/${new URL(url).search}`);
       }
     });
+
+    setCache('workBenchImageViewer', imageViewerId, [attachment.id]);
   }, [attachment]);
 
   const [related, setRelated] = React.useState<
@@ -293,6 +300,7 @@ function AttachmentViewerDialog({
         }
         switchingToDialog.current = false;
       }}
+      url={`/specify/attachment-viewer/?id=${encodeURIComponent(imageViewerId)}`}
     >
       <div className="flex flex-col items-center justify-center h-full w-full p-4">
         {body}
