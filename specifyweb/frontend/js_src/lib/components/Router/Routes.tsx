@@ -472,6 +472,14 @@ export const routes: RA<EnhancedRoute> = [
     title: welcomeText.pageTitle(),
     element: () => import('../HomePage').then(({ WelcomeView }) => WelcomeView),
   },
+  {
+    path: 'workbench-attachment',
+    title: attachmentsText.attachments(),
+    element: () =>
+      import('../WbAttachmentViewer/index').then(
+        ({ WbAttachmentViewerView }) => WbAttachmentViewerView
+      ),
+  },
   /*
    * The "*" route (the 404 case) was not added, as otherwise it would be
    * triggered when displaying the overlay
