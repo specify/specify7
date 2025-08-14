@@ -539,7 +539,7 @@ def definition_joins(table, depth):
         for j in range(depth)
     ])
 
-def set_fullnames(treedef, null_only=False, node_number_range=None):
+def set_fullnames(treedef, null_only=False, node_number_range=None, include_synonyms=False, synonyms_only=False):
     table = treedef.treeentries.model._meta.db_table
     depth = treedef.treedefitems.count()
     reverse = treedef.fullnamedirection == -1
@@ -548,6 +548,22 @@ def set_fullnames(treedef, null_only=False, node_number_range=None):
     if depth < 1:
         return
     cursor = connection.cursor()
+    # Determine filter for accepted / synonym nodes.
+    if synonyms_only:
+        accepted_filter = "and t0.acceptedid is not null"
+    elif include_synonyms:
+        accepted_filter = ""  # all nodes
+    else:
+        accepted_filter = "and t0.acceptedid is null"
+
+    fullname_sql_expr = fullname_expr(depth, reverse)
+
+    # Only update rows whose fullname differs (or is null if null_only)
+    diff_condition = (
+        "and (t0.fullname is null OR t0.fullname <> {expr})".format(expr=fullname_sql_expr)
+        if not null_only else ""
+    )
+
     sql = (
         "update {table} t0\n"
         "{parent_joins}\n"
@@ -555,22 +571,26 @@ def set_fullnames(treedef, null_only=False, node_number_range=None):
         "set {set_expr}\n"
         "where t{root}.parentid is null\n"
         "and t0.{table}treedefid = {treedefid}\n"
-        "and t0.acceptedid is null\n"
+        "{accepted_filter}\n"
         "{null_only}\n"
         "{node_number_range}\n"
+        "{diff_condition}\n"
     ).format(
         root=depth-1,
         table=table,
         treedefid=treedefid,
-        set_expr=f"t0.fullname = {fullname_expr(depth, reverse)}",
+        set_expr=f"t0.fullname = {fullname_sql_expr}",
         parent_joins=parent_joins(table, depth),
         definition_joins=definition_joins(table, depth),
+        accepted_filter=accepted_filter,
         null_only="and t0.fullname is null" if null_only else "",
-        node_number_range=f"and t0.nodenumber between {node_number_range[0]} and {node_number_range[1]}" if not (node_number_range is None) else ''
+        node_number_range=f"and t0.nodenumber between {node_number_range[0]} and {node_number_range[1]}" if not (node_number_range is None) else '',
+        diff_condition=diff_condition,
     )
 
     logger.debug('fullname update sql:\n%s', sql)
-    return cursor.execute(sql)
+    cursor.execute(sql)
+    return cursor.rowcount
 
 def predict_fullname(table, depth, parentid, defitemid, name, reverse=False):
     cursor = connection.cursor()

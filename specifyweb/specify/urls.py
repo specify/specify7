@@ -49,6 +49,7 @@ urlpatterns = [
         path('<int:id>/bulk_move/', tree_views.bulk_move),
         path('<int:id>/synonymize/', tree_views.synonymize),
         path('<int:id>/desynonymize/', tree_views.desynonymize),
+        path('<int:id>/rebuild-full-name', tree_views.rebuild_fullname),
         path('<int:rankid>/tree_rank_item_count/', tree_views.tree_rank_item_count),
         path('<int:parentid>/predict_fullname/', tree_views.predict_fullname),
         re_path(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/stats/$', tree_views.tree_stats),
