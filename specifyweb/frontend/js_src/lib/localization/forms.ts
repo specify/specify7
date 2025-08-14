@@ -939,6 +939,22 @@ export const formsText = createDictionary({
     'ru-ru': 'Диапазон превышает предел записи {limit:number}.',
     'uk-ua': 'Діапазон перевищує ліміт записів {limit:number}.',
   },
+  bulkCarryForwardRangeUnsupportedRelationships: {
+    'en-us':
+      'Some relationships with more than one record are not currently supported by Bulk Carry Forward:',
+    'de-ch':
+      'Einige Beziehungen mit mehr als einem Datensatz werden derzeit von Bulk Carry Forward nicht unterstützt:',
+    'es-es':
+      'Algunas relaciones con más de un registro actualmente no son compatibles con Bulk Carry Forward:',
+    'fr-fr':
+      'Certaines relations avec plusieurs enregistrements ne sont actuellement pas prises en charge par le report en bloc :',
+    'pt-br':
+      'Alguns relacionamentos com mais de um registro não são suportados atualmente pelo Bulk Carry Forward:',
+    'ru-ru':
+      'Некоторые связи с более чем одной записью в настоящее время не поддерживаются функцией массового переноса данных:',
+    'uk-ua':
+      "Деякі зв'язки з кількома записами наразі не підтримуються груповим перенесенням:",
+  },
   bulkCarryForwardRangeExistingRecords: {
     'en-us': 'The following numbers for {field:string} are already being used:',
     'de-ch': 'Folgende Nummern für {field:string} werden bereits verwendet:',
