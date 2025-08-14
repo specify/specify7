@@ -20,12 +20,12 @@ export const treeText = createDictionary({
   },
   badStructure: {
     'en-us': 'Bad tree structure.',
-    'ru-ru': 'Неправильная структура дерева.',
-    'es-es': 'Estructura de árbol incorrecta.',
+    'ru-ru': 'Плохая структура дерева.',
+    'es-es': 'Mala estructura de árbol.',
     'fr-fr': 'Mauvaise arborescence.',
     'uk-ua': 'Погана структура дерева.',
     'de-ch': 'Fehlerhafte Baumstruktur.',
-    'pt-br': 'Má estrutura da árvore.',
+    'pt-br': 'Estrutura de árvore ruim.',
   },
   move: {
     'en-us': 'Move',
@@ -43,25 +43,25 @@ export const treeText = createDictionary({
     'fr-fr': 'Fusionner',
     'uk-ua': 'Об’єднати',
     'de-ch': 'Zusammenführen',
-    'pt-br': 'Fusão',
+    'pt-br': 'Mesclar',
   },
   undoSynonymy: {
     'en-us': 'Undo Synonymy',
     'ru-ru': 'Отменить синонимию',
-    'es-es': 'Deshacer sinonimia',
+    'es-es': 'Deshacer sinónimo',
     'fr-fr': 'Annuler la synonymie',
     'uk-ua': 'Скасувати синонімію',
     'de-ch': 'Synonymie rückgängig machen',
-    'pt-br': 'Desfazer Sinônimo',
+    'pt-br': 'Desfazer Sinonímia',
   },
   synonymize: {
     'en-us': 'Synonymize',
     'ru-ru': 'Подбирать синонимы',
-    'es-es': 'Sinonimizar',
+    'es-es': 'Sinónimos',
     'fr-fr': 'Synonymiser',
     'uk-ua': 'Синонімізувати',
     'de-ch': 'Synonymisieren',
-    'pt-br': 'Sinônimos',
+    'pt-br': 'Sinonímia',
   },
   actionFailed: {
     'en-us': 'Operation failed',
@@ -70,7 +70,7 @@ export const treeText = createDictionary({
     'fr-fr': "L'opération a échoué",
     'uk-ua': 'Операція не вдалася',
     'de-ch': 'Vorgang fehlgeschlagen',
-    'pt-br': 'Operação falhou',
+    'pt-br': 'A operação falhou',
   },
   actionFailedDescription: {
     'en-us':
@@ -97,58 +97,57 @@ export const treeText = createDictionary({
   addChild: {
     'en-us': 'Add Child',
     'ru-ru': 'Добавить ребенка',
-    'es-es': 'Agregar hijo',
+    'es-es': 'Agregar niño',
     'fr-fr': 'Ajouter un enfant',
     'uk-ua': 'Додати дитину',
     'de-ch': 'Kind hinzuzufügen',
-    'pt-br': 'Adicionar filho',
+    'pt-br': 'Adicionar criança',
   },
   moveNodeHere: {
     'en-us': 'Move "{nodeName:string}" here',
-    'ru-ru': 'Переместите "{nodeName:string}" сюда',
-    'es-es': 'Mover "{nodeName:string}" aquí',
+    'ru-ru': 'Переместите «{nodeName:string}» сюда',
+    'es-es': 'Mueva "{nodeName:string}" aquí',
     'fr-fr': 'Déplacer « {nodeName:string} » ici',
     'uk-ua': 'Перемістіть сюди "{nodeName:string}"',
     'de-ch': 'Verschiebe "{nodeName:string}" hierhin',
-    'pt-br': 'Mova "{nodeName:string}" para cá',
+    'pt-br': 'Mova "{nodeName:string}" aqui',
   },
   moveNodePreparationsHere: {
     'en-us': 'Move all "{nodeName:string}" preparations here',
-    'de-ch':
-      'Verschieben Sie alle Vorbereitungen mit dem Präfix "{nodeName:string}" hierher.',
-    'es-es': 'Mover todas las preparaciones "{nodeName:string}" aquí',
+    'de-ch': 'Verschieben Sie alle "{nodeName:string}"-Vorbereitungen hierher',
+    'es-es': 'Mueva todas las preparaciones "{nodeName:string}" aquí',
     'fr-fr': 'Déplacer toutes les préparations « {nodeName:string} » ici',
-    'ru-ru': 'Переместите сюда все приготовления "{nodeName:string}".',
+    'ru-ru': 'Переместить все препараты «{nodeName:string}» сюда',
     'uk-ua': 'Перемістіть сюди всі препарати "{nodeName:string}"',
-    'pt-br': 'Mova todos os preparativos "{nodeName:string}" para cá.',
+    'pt-br': 'Mova todos os preparativos "{nodeName:string}" aqui',
   },
   nodeMoveMessage: {
     'en-us':
       'The {treeName:string} node "{nodeName:string}" will be placed, along with all of its descendants, under the new parent "{parentName:string}".',
     'ru-ru':
-      'Узел {treeName:string} "{nodeName:string}" будет помещен вместе со всеми его потомками под новый родительский узел "{parentName:string}".',
+      'Узел {treeName:string} «{nodeName:string}» будет помещен вместе со всеми его потомками под новый родительский узел «{parentName:string}».',
     'es-es':
       'El nodo {treeName:string} "{nodeName:string}" se colocará, junto con todos sus descendientes, bajo el nuevo padre "{parentName:string}".',
     'fr-fr':
-      'Le nœud {treeName:string} « {nodeName:string} » sera placé, avec tous ses descendants, sous le nouveau parent « {parentName:string} ».',
+      'Le nœud {treeName:string} « {nodeName:string} » sera placé, ainsi que tous ses descendants, sous le nouveau parent « {parentName:string} ».',
     'uk-ua':
       'Вузол {treeName:string} "{nodeName:string}" буде розміщено разом із усіма його нащадками під новим батьківським вузлом "{parentName:string}".',
     'de-ch':
       'Der {treeName:string} Knoten "{nodeName:string}" wird zusammen mit allen seinen Unterknoten unter den neuen übergeordneten Knoten "{parentName:string}" platziert.',
     'pt-br':
-      'O nó {treeName:string} "{nodeName:string}" será colocado, juntamente com todos os seus descendentes, sob o novo pai "{parentName:string}".',
+      'O nó {treeName:string} "{nodeName:string}" será colocado, junto com todos os seus descendentes, sob o novo pai "{parentName:string}".',
   },
   nodeBulkMoveMessage: {
     'en-us':
       'The {treeName:string} node "{nodeName:string}" preparations will be placed under the new location "{parentName:string}".',
     'de-ch':
-      'Die Vorbereitungen für den Knoten {treeName:string} "{nodeName:string}" werden unter dem neuen Standort "{parentName:string}" zusammengefasst.',
+      'Die Vorbereitungen für den {treeName:string}-Knoten „{nodeName:string}“ werden unter dem neuen Standort „{parentName:string}“ platziert.',
     'es-es':
-      'Las preparaciones del nodo {treeName:string} "{nodeName:string}" se colocarán en la nueva ubicación "{parentName:string}".',
+      'Los preparativos del nodo {treeName:string} "{nodeName:string}" se colocarán en la nueva ubicación "{parentName:string}".',
     'fr-fr':
-      'Les préparatifs du nœud {treeName:string} « {nodeName:string} » seront placés sous le nouvel emplacement « {parentName:string} ».',
+      'Les préparations du nœud {treeName:string} « {nodeName:string} » seront placées sous le nouvel emplacement « {parentName:string} ».',
     'ru-ru':
-      'Подготовка узла {treeName:string} "{nodeName:string}" будет размещена в новом месте "{parentName:string}".',
+      'Заготовки узла {treeName:string} «{nodeName:string}» будут размещены в новом месте «{parentName:string}».',
     'uk-ua':
       'Підготовка вузла {treeName:string} "{nodeName:string}" буде розміщена в новому місці розташування "{parentName:string}".',
     'pt-br':
@@ -161,79 +160,107 @@ export const treeText = createDictionary({
     'fr-fr': "Impossible de déplacer ce nœud d'arbre ici",
     'uk-ua': 'Неможливо перемістити цей вузол дерева сюди',
     'de-ch': 'Dieser Knoten kann nicht hierhin verschoben werden',
-    'pt-br': 'Não é possível mover este nó da árvore para cá.',
+    'pt-br': 'Não é possível mover este nó da árvore aqui',
   },
   cantMergeHere: {
     'en-us': "Can't merge this tree node here",
-    'ru-ru': 'Невозможно объединить этот узел дерева.',
+    'ru-ru': 'Невозможно объединить этот узел дерева здесь.',
     'es-es': 'No se puede fusionar este nodo de árbol aquí',
     'fr-fr': "Impossible de fusionner ce nœud d'arbre ici",
     'uk-ua': 'Неможливо об’єднати цей вузол дерева тут',
     'de-ch': 'Dieser Knoten kann hier nicht zusammengelegt werden',
-    'pt-br': 'Não é possível mesclar este nó da árvore aqui.',
+    'pt-br': 'Não é possível mesclar este nó da árvore aqui',
   },
   rebuildNames: {
-    "en-us": "Rebuild Full Names",
-    "es-es": "Reconstruir nombres completos",
-    "fr-fr": "Reconstruire les noms complets",
-    "ru-ru": "Перестроить полные имена",
-    "de-ch": "Vollständige Namen neu erstellen",
-    "pt-br": "Reconstruir nomes completos",
-    "uk-ua": "Перебудувати повні імена",
+    'en-us': 'Rebuild Full Names',
+    'es-es': 'Reconstruir nombres completos',
+    'fr-fr': 'Reconstruire les noms complets',
+    'ru-ru': 'Перестроить полные имена',
+    'de-ch': 'Vollständige Namen neu erstellen',
+    'pt-br': 'Reconstruir nomes completos',
+    'uk-ua': 'Перебудувати повні імена',
   },
   rebuildNamesDescription: {
-    "en-us": "Rebuilds 'Full Name' values for accepted (preferred) nodes that are out of date. Skips synonym nodes.",
-    "es-es": "Reconstruye los valores 'Full Name' para nodos aceptados desactualizados. Omite sinónimos.",
-    "fr-fr": "Reconstruit les valeurs 'Full Name' des nœuds acceptés obsolètes. Ignore les synonymes.",
-    "ru-ru": "Перестраивает 'Full Name' для устаревших принятых узлов. Пропускает синонимы.",
-    "de-ch": "Erneuert 'Full Name' für veraltete akzeptierte Knoten. Synonyme werden übersprungen.",
-    "pt-br": "Reconstrói 'Full Name' para nós aceitos desatualizados. Ignora sinônimos.",
-    "uk-ua": "Перебудовує 'Full Name' для застарілих прийнятих вузлів. Ігнорує синоніми.",
+    'en-us':
+      "Rebuilds 'Full Name' values for accepted (preferred) nodes that are out of date. Skips synonym nodes.",
+    'es-es':
+      "Reconstruye los valores 'Full Name' para nodos aceptados desactualizados. Omite sinónimos.",
+    'fr-fr':
+      "Reconstruit les valeurs 'Full Name' des nœuds acceptés obsolètes. Ignore les synonymes.",
+    'ru-ru':
+      "Перестраивает 'Full Name' для устаревших принятых узлов. Пропускает синонимы.",
+    'de-ch':
+      "Erneuert 'Full Name' für veraltete akzeptierte Knoten. Synonyme werden übersprungen.",
+    'pt-br':
+      "Reconstrói 'Full Name' para nós aceitos desatualizados. Ignora sinônimos.",
+    'uk-ua':
+      "Перебудовує 'Full Name' для застарілих прийнятих вузлів. Ігнорує синоніми.",
   },
   rebuildNamesSynonyms: {
-    "en-us": "Rebuild Full Names Including Synonyms",
-    "es-es": "Reconstruir nombres completos para sinónimos",
-    "fr-fr": "Reconstruire les noms complets pour les synonymes",
-    "ru-ru": "Перестроить полные имена для синонимов",
-    "de-ch": "Vollständige Namen für Synonyme neu erstellen",
-    "pt-br": "Reconstruir nomes completos para sinônimos",
-    "uk-ua": "Перебудувати повні імена + синоніми",
+    'en-us': 'Rebuild Full Names Including Synonyms',
+    'es-es': 'Reconstruir nombres completos para sinónimos',
+    'fr-fr': 'Reconstruire les noms complets pour les synonymes',
+    'ru-ru': 'Перестроить полные имена для синонимов',
+    'de-ch': 'Vollständige Namen für Synonyme neu erstellen',
+    'pt-br': 'Reconstruir nomes completos para sinônimos',
+    'uk-ua': 'Перебудувати повні імена + синоніми',
   },
   rebuildNamesSynonymsDescription: {
-    "en-us": "Rebuilds 'Full Name' for both accepted and synonym nodes that require updates.",
-    "es-es": "Reconstruye 'Full Name' para nodos aceptados y sinónimos que requieren actualización.",
-    "fr-fr": "Reconstruit 'Full Name' pour les nœuds acceptés et synonymes nécessitant une mise à jour.",
-    "ru-ru": "Перестраивает 'Full Name' для принятых и синонимичных узлов требующих обновления.",
-    "de-ch": "Erneuert 'Full Name' für akzeptierte und synonym Knoten, die Aktualisierung brauchen.",
-    "pt-br": "Reconstrói 'Full Name' para nós aceitos e sinônimos que precisam de atualização.",
-    "uk-ua": "Перебудовує 'Full Name' для прийнятих і синонімів, що потребують оновлення.",
+    'en-us':
+      "Rebuilds 'Full Name' for both accepted and synonym nodes that require updates.",
+    'es-es':
+      "Reconstruye 'Full Name' para nodos aceptados y sinónimos que requieren actualización.",
+    'fr-fr':
+      "Reconstruit 'Full Name' pour les nœuds acceptés et synonymes nécessitant une mise à jour.",
+    'ru-ru':
+      "Перестраивает 'Full Name' для принятых и синонимичных узлов требующих обновления.",
+    'de-ch':
+      "Erneuert 'Full Name' für akzeptierte und synonym Knoten, die Aktualisierung brauchen.",
+    'pt-br':
+      "Reconstrói 'Full Name' para nós aceitos e sinônimos que precisam de atualização.",
+    'uk-ua':
+      "Перебудовує 'Full Name' для прийнятих і синонімів, що потребують оновлення.",
   },
   repairTreeDescription: {
-    "en-us": "Repairs structural numbering only by recomputing and validating 'NodeNumber' and 'HighestChildNodeNumber' fields.",
-    "es-es": "Repara solo la numeración estructural recalculando y validando los campos 'NodeNumber' y 'HighestChildNodeNumber'.",
-    "fr-fr": "Répare uniquement la numérotation structurelle en recalculant et en validant les champs 'NodeNumber' et 'HighestChildNodeNumber'.",
-    "ru-ru": "Исправляет только структурную нумерацию, пересчитывая и проверяя поля 'NodeNumber' и 'HighestChildNodeNumber'.",
-    "de-ch": "Repariert nur die strukturelle Nummerierung durch Neuberechnung und Validierung der Felder 'NodeNumber' und 'HighestChildNodeNumber'.",
-    "pt-br": "Repara apenas a numeração estrutural recalculando e validando os campos 'NodeNumber' e 'HighestChildNodeNumber'.",
-    "uk-ua": "Виправляє лише структурну нумерацію, перераховуючи й перевіряючи поля 'NodeNumber' та 'HighestChildNodeNumber'.",
+    'en-us':
+      "Repairs structural numbering only by recomputing and validating 'NodeNumber' and 'HighestChildNodeNumber' fields.",
+    'es-es':
+      "Repara solo la numeración estructural recalculando y validando los campos 'NodeNumber' y 'HighestChildNodeNumber'.",
+    'fr-fr':
+      "Répare uniquement la numérotation structurelle en recalculant et en validant les champs 'NodeNumber' et 'HighestChildNodeNumber'.",
+    'ru-ru':
+      "Исправляет только структурную нумерацию, пересчитывая и проверяя поля 'NodeNumber' и 'HighestChildNodeNumber'.",
+    'de-ch':
+      "Repariert nur die strukturelle Nummerierung durch Neuberechnung und Validierung der Felder 'NodeNumber' und 'HighestChildNodeNumber'.",
+    'pt-br':
+      "Repara apenas a numeração estrutural recalculando e validando os campos 'NodeNumber' e 'HighestChildNodeNumber'.",
+    'uk-ua':
+      "Виправляє лише структурну нумерацію, перераховуючи й перевіряючи поля 'NodeNumber' та 'HighestChildNodeNumber'.",
   },
   rebuildResult: {
-    "en-us": "Updated: {total:number} ({accepted:number} accepted names, {synonyms:number} synonyms)",
-    "es-es": "Actualizado: {total:number} (aceptado {accepted:number}, sinónimos {synonyms:number})",
-    "fr-fr": "Mis à jour : {total:number} (accepté {accepted:number}, synonymes {synonyms:number})",
-    "ru-ru": "Обновлено: {total:number} (принято {accepted:number}, синонимы {synonyms:number})",
-    "de-ch": "Aktualisiert: {total:number} (akzeptiert {accepted:number}, Synonyme {synonyms:number})",
-    "pt-br": "Atualizado: {total:number} (aceitos {accepted:number}, sinônimos {synonyms:number})",
-    "uk-ua": "Оновлено: {total:number} (прийнято {accepted:number}, синоніми {synonyms:number})",
+    'en-us':
+      'Updated: {total:number} ({accepted:number} accepted names, {synonyms:number} synonyms)',
+    'es-es':
+      'Actualizado: {total:number} (aceptado {accepted:number}, sinónimos {synonyms:number})',
+    'fr-fr':
+      'Mis à jour : {total:number} (accepté {accepted:number}, synonymes {synonyms:number})',
+    'ru-ru':
+      'Обновлено: {total:number} (принято {accepted:number}, синонимы {synonyms:number})',
+    'de-ch':
+      'Aktualisiert: {total:number} (akzeptiert {accepted:number}, Synonyme {synonyms:number})',
+    'pt-br':
+      'Atualizado: {total:number} (aceitos {accepted:number}, sinônimos {synonyms:number})',
+    'uk-ua':
+      'Оновлено: {total:number} (прийнято {accepted:number}, синоніми {synonyms:number})',
   },
   noFullNamesUpdated: {
-    "en-us": "No full names required updating.",
-    "ru-ru": "Не требуется обновление полных имен.",
-    "es-es": "No se requiere actualizar nombres completos.",
-    "fr-fr": "Aucune mise à jour des noms complets requise.",
-    "uk-ua": "Не потрібно оновлювати повні імена.",
-    "de-ch": "Keine Aktualisierung der vollständigen Namen erforderlich.",
-    "pt-br": "Nenhuma atualização de nomes completos necessária.",
+    'en-us': 'No full names required updating.',
+    'ru-ru': 'Не требуется обновление полных имен.',
+    'es-es': 'No se requiere actualizar nombres completos.',
+    'fr-fr': 'Aucune mise à jour des noms complets requise.',
+    'uk-ua': 'Не потрібно оновлювати повні імена.',
+    'de-ch': 'Keine Aktualisierung der vollständigen Namen erforderlich.',
+    'pt-br': 'Nenhuma atualização de nomes completos necessária.',
   },
   cantMoveToSynonym: {
     'en-us': "Can't move to a synonym",
@@ -246,25 +273,25 @@ export const treeText = createDictionary({
   },
   cantMergeIntoSynonym: {
     'en-us': "Can't merge into synonyms",
-    'ru-ru': 'Невозможно объединить в синонимы.',
+    'ru-ru': 'Невозможно объединить в синонимы',
     'es-es': 'No se pueden fusionar en sinónimos',
     'fr-fr': 'Impossible de fusionner en synonymes',
     'uk-ua': 'Не можна об’єднувати в синоніми',
     'de-ch': 'Kann nicht zu Synonymen zusammenführen',
-    'pt-br': 'Não é possível mesclar em sinônimos.',
+    'pt-br': 'Não é possível mesclar em sinônimos',
   },
   cantSynonymizeSynonym: {
     'en-us': "Can't synonymize with a synonym",
-    'ru-ru': 'Нельзя использовать синоним для обозначения чего-либо.',
+    'ru-ru': 'Невозможно синонимизировать с помощью синонима',
     'es-es': 'No se puede sinonimizar con un sinónimo',
-    'fr-fr': 'Impossible de synonymiser avec un synonyme',
+    'fr-fr': 'Impossible de faire un synonyme avec un synonyme',
     'uk-ua': 'Не можна синонімізувати синонім',
     'de-ch': 'Kann nicht mit einem Synonym synonymisiert werden',
-    'pt-br': 'Não é possível usar um sinônimo com outro sinônimo.',
+    'pt-br': 'Não é possível sinonimizar com um sinônimo',
   },
   nodeMoveHintMessage: {
     'en-us': 'Select a new parent for "{nodeName:string}"',
-    'ru-ru': 'Выберите нового родителя для "{nodeName:string}"',
+    'ru-ru': 'Выберите нового родителя для «{nodeName:string}»',
     'es-es': 'Seleccione un nuevo padre para "{nodeName:string}"',
     'fr-fr': 'Sélectionnez un nouveau parent pour « {nodeName:string} »',
     'uk-ua': 'Виберіть новий батьківський елемент для "{nodeName:string}"',
@@ -273,8 +300,8 @@ export const treeText = createDictionary({
   },
   mergeNode: {
     'en-us': 'Merge node',
-    'ru-ru': 'Слияние узлов',
-    'es-es': 'Fusionar el nodo',
+    'ru-ru': 'Узел слияния',
+    'es-es': 'Nodo de fusión',
     'fr-fr': 'Fusionner le nœud',
     'uk-ua': 'Вузол злиття',
     'de-ch': 'Knoten zusammenführen',
@@ -282,36 +309,35 @@ export const treeText = createDictionary({
   },
   mergeNodeHere: {
     'en-us': 'Merge "{nodeName:string}" here',
-    'ru-ru': 'Объедините "{nodeName:string}" здесь',
+    'ru-ru': 'Объединить «{nodeName:string}» здесь',
     'es-es': 'Fusionar "{nodeName:string}" aquí',
     'fr-fr': 'Fusionner « {nodeName:string} » ici',
     'uk-ua': 'Об\'єднайте "{nodeName:string}" тут',
     'de-ch': 'Führe "{nodeName:string}" hier zusammen',
-    'pt-br': 'Mescle "{nodeName:string}" aqui',
+    'pt-br': 'Mesclar "{nodeName:string}" aqui',
   },
   mergeNodeHintMessage: {
     'en-us': 'Select a new target for "{nodeName:string}" to be merged into',
-    'ru-ru': 'Выберите новый целевой объект для слияния "{nodeName:string}".',
+    'ru-ru': 'Выберите новую цель для объединения «{nodeName:string}»',
     'es-es': 'Seleccione un nuevo objetivo para fusionar "{nodeName:string}"',
     'fr-fr':
-      'Sélectionnez une nouvelle cible pour que « {nodeName:string} » soit fusionné dans',
+      'Sélectionnez une nouvelle cible dans laquelle « {nodeName:string} » doit être fusionné',
     'uk-ua':
       'Виберіть нову ціль для «{nodeName:string}», у яку потрібно об’єднати',
     'de-ch': 'Wähle ein neues Ziel um "{nodeName:string}" zusammenzuführen',
-    'pt-br':
-      'Selecione um novo destino para "{nodeName:string}" a ser mesclado.',
+    'pt-br': 'Selecione um novo alvo para "{nodeName:string}" a ser mesclado',
   },
   bulkMoveNodeHintMessage: {
     'en-us':
       'Select a new target for "{nodeName:string}" preparations to be moved into',
     'de-ch':
-      'Wählen Sie ein neues Ziel für die "{nodeName:string}"-Vorbereitungen aus, die verschoben werden sollen.',
+      'Wählen Sie ein neues Ziel für die "{nodeName:string}"-Vorbereitungen, in die Sie verschieben möchten',
     'es-es':
-      'Seleccione un nuevo objetivo para los preparaciones "{nodeName:string}" que se trasladarán a',
+      'Seleccione un nuevo objetivo para los preparativos "{nodeName:string}" que se trasladarán a',
     'fr-fr':
-      'Sélectionnez une nouvelle cible pour le déplacement des préparations « {nodeName:string} » dans',
+      'Sélectionnez une nouvelle cible pour les préparations « {nodeName:string} » à déplacer',
     'ru-ru':
-      'Выберите новую цель для перемещения подготовительных работ "{nodeName:string}".',
+      'Выберите новую цель для перемещения препаратов «{nodeName:string}»',
     'uk-ua':
       'Виберіть нову ціль для препаратів "{nodeName:string}", до якої потрібно переміститися',
     'pt-br':
@@ -321,26 +347,26 @@ export const treeText = createDictionary({
     'en-us':
       'All references to {treeName:string} node "{nodeName:string}" will be replaced with "{parentName:string}", and all descendants of "{nodeName:string}" will be moved to "{parentName:string}" with any descendants matching in name and rank being themselves merged recursively.',
     'ru-ru':
-      'Все ссылки на узел {treeName:string} "{nodeName:string}" будут заменены на "{parentName:string}", а все потомки "{nodeName:string}" будут перемещены в "{parentName:string}", при этом любые потомки, совпадающие по имени и рангу, будут рекурсивно объединены.',
+      'Все ссылки на узел {treeName:string} «{nodeName:string}» будут заменены на «{parentName:string}», а все потомки «{nodeName:string}» будут перемещены в «{parentName:string}», при этом все потомки, совпадающие по имени и рангу, будут рекурсивно объединены.',
     'es-es':
-      'Todas las referencias al nodo {treeName:string} "{nodeName:string}" serán reemplazadas por "{parentName:string}", todos los descendientes de "{nodeName:string}" se moverán a "{parentName:string}" y todos los descendientes que coincidan en nombre y rango se fusionarán de forma recursiva.',
+      'Todas las referencias al nodo {treeName:string} "{nodeName:string}" serán reemplazadas por "{parentName:string}", y todos los descendientes de "{nodeName:string}" se moverán a "{parentName:string}" y todos los descendientes que coincidan en nombre y rango se fusionarán de forma recursiva.',
     'fr-fr':
-      'Toutes les références au nœud {treeName:string} "{nodeName:string}" seront remplacées par "{parentName:string}", et tous les descendants de "{nodeName:string}" seront déplacés vers "{parentName:string}" avec tous les descendants correspondant en nom et en rang étant eux-mêmes fusionnés de manière récursive.',
+      'Toutes les références au nœud {treeName:string} « {nodeName:string} » seront remplacées par « {parentName:string} », et tous les descendants de « {nodeName:string} » seront déplacés vers « {parentName:string} », tous les descendants correspondant au nom et au rang étant eux-mêmes fusionnés de manière récursive.',
     'uk-ua':
       "Усі посилання на вузол {treeName:string} «{nodeName:string}» буде замінено на «{parentName:string}», а всі нащадки «{nodeName:string}» буде переміщено до «{parentName:string}», а будь-які нащадки, що відповідають імені та рангу, будуть самі собою об'єднані рекурсивно.",
     'de-ch':
       'Alle Referenzen zu {treeName:string} "{nodeName:string}" werden mit "{parentName:string}" ersetzt. Alle Nachkommen von "{nodeName:string}" werden nach "{parentName:string}" verschoben, wobei alle Nachkommen, die in Name und Rang übereinstimmen, selbst rekursiv zusammengeführt werden.',
     'pt-br':
-      'Todas as referências ao nó {treeName:string} "{nodeName:string}" serão substituídas por "{parentName:string}", e todos os descendentes de "{nodeName:string}" serão movidos para "{parentName:string}", com quaisquer descendentes correspondentes em nome e classificação sendo eles próprios mesclados recursivamente.',
+      'Todas as referências ao nó {treeName:string} "{nodeName:string}" serão substituídas por "{parentName:string}", e todos os descendentes de "{nodeName:string}" serão movidos para "{parentName:string}", com quaisquer descendentes que correspondam em nome e classificação sendo eles próprios mesclados recursivamente.',
   },
   synonymizeNode: {
     'en-us': 'Synonymize node',
-    'ru-ru': 'Синонимизировать узел',
-    'es-es': 'Sinonimizar nodo',
+    'ru-ru': 'Узел синонимизации',
+    'es-es': 'Sinónimos de nodo',
     'fr-fr': 'Synonymiser le nœud',
     'uk-ua': 'Синонімізувати вузол',
     'de-ch': 'Knoten synonymisieren',
-    'pt-br': 'Sinônimo de nó',
+    'pt-br': 'Sinonímia de nó',
   },
   makeSynonym: {
     'en-us': 'Make {nodeName:string} a synonym of {synonymName:string}',
@@ -350,50 +376,49 @@ export const treeText = createDictionary({
     'uk-ua': 'Зробити {nodeName:string} синонімом {synonymName:string}',
     'de-ch':
       'Aus {nodeName:string} ein Synonym von {synonymName:string} machen',
-    'pt-br': 'Faça de {nodeName:string} um sinônimo de {synonymName:string}',
+    'pt-br': 'Faça {nodeName:string} um sinônimo de {synonymName:string}',
   },
   synonymizeNodeHintMessage: {
     'en-us': 'Select a target for "{nodeName:string}" to be synonymized to',
-    'ru-ru':
-      'Выберите целевой объект для "{nodeName:string}", который будет синонимизирован.',
+    'ru-ru': 'Выберите цель для синонимизации «{nodeName:string}»',
     'es-es':
       'Seleccione un objetivo para que "{nodeName:string}" se convierta en sinónimo',
     'fr-fr':
-      'Sélectionnez une cible pour que « {nodeName:string} » soit synonymisé à',
+      'Sélectionnez une cible pour que « {nodeName:string} » soit synonyme',
     'uk-ua': 'Виберіть ціль для "{nodeName:string}", який буде синонімічним',
     'de-ch': 'Wähle Ziel um "{nodeName:string}" daran zu synonymisieren',
-    'pt-br': 'Selecione um alvo para "{nodeName:string}" a ser sinônimo de',
+    'pt-br': 'Selecione um alvo para "{nodeName:string}" ser sinonimizado',
   },
   synonymizeMessage: {
     'en-us':
       'The {treeName:string} node "{nodeName:string}" will be made a synonym of "{synonymName:string}".',
     'ru-ru':
-      'Узел {treeName:string} "{nodeName:string}" будет синонимом "{synonymName:string}".',
+      'Узел {treeName:string} «{nodeName:string}» станет синонимом «{synonymName:string}».',
     'es-es':
       'El nodo {treeName:string} "{nodeName:string}" se convertirá en sinónimo de "{synonymName:string}".',
     'fr-fr':
-      'Le nœud {treeName:string} «{nodeName:string}» sera rendu synonyme de «{synonymName:string}».',
+      'Le nœud {treeName:string} « {nodeName:string} » deviendra synonyme de « {synonymName:string} ».',
     'de-ch':
       'Der {treeName:string}-Knoten "{nodeName:string}" wird zu einem Synonym von "{synonymName:string}".',
     'uk-ua':
       'Вузол {treeName:string} "{nodeName:string}" стане синонімом "{synonymName:string}".',
     'pt-br':
-      'O nó {treeName:string} "{nodeName:string}" será transformado em sinônimo de "{synonymName:string}".',
+      'O nó {treeName:string} "{nodeName:string}" se tornará sinônimo de "{synonymName:string}".',
   },
   desynonymizeNode: {
     'en-us': 'Desynonymize node',
-    'ru-ru': 'Десинонимизировать узел',
+    'ru-ru': 'Узел десиномизации',
     'es-es': 'Desinonimizar nodo',
     'fr-fr': 'Désynonymiser le nœud',
     'uk-ua': 'Десинонімізувати вузол',
     'de-ch': 'Knoten desynonymisieren',
-    'pt-br': 'Dessinonizar nó',
+    'pt-br': 'Dessinonimizar nó',
   },
   desynonymizeNodeMessage: {
     'en-us':
       '"{nodeName:string}" will no longer be a synonym of "{synonymName:string}".',
     'ru-ru':
-      '"{nodeName:string}" больше не будет синонимом "{synonymName:string}".',
+      '«{nodeName:string}» больше не будет синонимом «{synonymName:string}».',
     'es-es':
       '"{nodeName:string}" ya no será sinónimo de "{synonymName:string}".',
     'fr-fr':
@@ -403,16 +428,16 @@ export const treeText = createDictionary({
     'uk-ua':
       '"{nodeName:string}" більше не буде синонімом "{synonymName:string}".',
     'pt-br':
-      '"{nodeName:string}" deixará de ser sinônimo de "{synonymName:string}".',
+      '"{nodeName:string}" não será mais sinônimo de "{synonymName:string}".',
   },
   acceptedName: {
     'en-us': 'Preferred: {name:string}',
-    'ru-ru': 'Предпочтительный вариант: {name:string}',
+    'ru-ru': 'Предпочтительно: {name:string}',
     'es-es': 'Preferido: {name:string}',
     'fr-fr': 'Préféré : {name:string}',
     'uk-ua': 'Бажано: {name:string}',
     'de-ch': 'Bevorzugt: {name:string}',
-    'pt-br': 'Preferencial: {name:string}',
+    'pt-br': 'Preferido: {name:string}',
   },
   synonyms: {
     'en-us': 'Synonyms: {names:string}',
@@ -439,7 +464,7 @@ export const treeText = createDictionary({
     'fr-fr': "Rechercher dans l'arbre",
     'uk-ua': 'Дерево пошуку',
     'de-ch': 'Baum durchsuchen',
-    'pt-br': 'Árvore de pesquisa',
+    'pt-br': 'Árvore de Pesquisa',
   },
   opened: {
     'en-us': 'Opened',
@@ -466,7 +491,7 @@ export const treeText = createDictionary({
     'fr-fr': 'Nœud feuille',
     'uk-ua': 'Листковий вузол',
     'de-ch': 'Blattknoten',
-    'pt-br': 'Nó foliar',
+    'pt-br': 'Nó Folha',
   },
   nodeStats: {
     comment: "Used to show tree node's direct and indirect usages",
@@ -491,7 +516,7 @@ export const treeText = createDictionary({
   directCollectionObjectCount: {
     comment: 'Example: Direct Collection Object count',
     'en-us': 'Direct {collectionObjectTable:string} Count',
-    'ru-ru': 'Прямой {collectionObjectTable:string} подсчет',
+    'ru-ru': 'Прямой {collectionObjectTable:string} счет',
     'es-es': 'Recuento directo {collectionObjectTable:string}',
     'de-ch': 'Direkte {collectionObjectTable:string} Anzahl',
     'fr-fr': 'Compte direct {collectionObjectTable:string}',
@@ -501,7 +526,7 @@ export const treeText = createDictionary({
   indirectCollectionObjectCount: {
     comment: 'Example: Indirect Collection Object count',
     'en-us': 'Indirect {collectionObjectTable:string} Count',
-    'ru-ru': 'Косвенный {collectionObjectTable:string} подсчет',
+    'ru-ru': 'Косвенный {collectionObjectTable:string} счет',
     'es-es': 'Recuento indirecto {collectionObjectTable:string}',
     'fr-fr': 'Compte indirect {collectionObjectTable:string}',
     'uk-ua': 'Непрямий підрахунок {collectionObjectTable:string}',
@@ -521,28 +546,28 @@ export const treeText = createDictionary({
     'en-us': 'This will permanently delete the following resource',
     'es-es': 'Esto eliminará permanentemente el siguiente recurso',
     'fr-fr': 'Cela supprimera définitivement la ressource suivante',
-    'ru-ru': 'Это приведет к безвозвратному удалению следующего ресурса.',
+    'ru-ru': 'Это приведет к безвозвратному удалению следующего ресурса:',
     'uk-ua': 'Це призведе до остаточного видалення наступного ресурсу',
     'de-ch': 'Dadurch wird die folgende Ressource dauerhaft gelöscht',
-    'pt-br': 'Isso excluirá permanentemente o seguinte recurso.',
+    'pt-br': 'Isso excluirá permanentemente o seguinte recurso',
   },
   associatedNodesOnly: {
     'en-us': 'Show only nodes with associated objects',
-    'de-ch': 'Es werden nur Knoten mit zugehörigen Objekten angezeigt.',
+    'de-ch': 'Nur Knoten mit zugehörigen Objekten anzeigen',
     'es-es': 'Mostrar solo nodos con objetos asociados',
     'fr-fr': 'Afficher uniquement les nœuds avec des objets associés',
-    'ru-ru': 'Отображать только узлы, связанные с объектами.',
+    'ru-ru': 'Показывать только узлы со связанными объектами',
     'uk-ua': "Показувати лише вузли з пов'язаними об'єктами",
-    'pt-br': 'Mostrar apenas os nós com objetos associados.',
+    'pt-br': 'Mostrar apenas nós com objetos associados',
   },
   splitView: {
     'en-us': 'Split View',
     'de-ch': 'Geteilte Sicht',
     'es-es': 'Vista dividida',
     'fr-fr': 'Vue fractionnée',
-    'ru-ru': 'Разделенный экран',
+    'ru-ru': 'Разделенный вид',
     'uk-ua': 'Розділений вид',
-    'pt-br': 'Visão dividida',
+    'pt-br': 'Visualização dividida',
   },
   horizontal: {
     'en-us': 'Horizontal',
@@ -578,23 +603,23 @@ export const treeText = createDictionary({
     'fr-fr': 'Ajouter un nouveau rang',
     'ru-ru': 'Добавить новый ранг',
     'uk-ua': 'Додати новий ранг',
-    'pt-br': 'Adicionar novo cargo',
+    'pt-br': 'Adicionar nova classificação',
   },
   chooseParentRank: {
     'en-us': 'Choose Parent Rank',
-    'de-ch': 'Übergeordneten Rang auswählen',
+    'de-ch': 'Wählen Sie den übergeordneten Rang',
     'es-es': 'Elija el rango de los padres',
-    'fr-fr': 'Choisir le rang du parent',
+    'fr-fr': 'Choisissez le rang des parents',
     'ru-ru': 'Выберите родительский ранг',
     'uk-ua': 'Виберіть батьківський рейтинг',
-    'pt-br': 'Escolha a classificação principal',
+    'pt-br': 'Escolha a classificação dos pais',
   },
   moveItems: {
     'en-us': 'Move Items',
-    'de-ch': 'Gegenstände verschieben',
+    'de-ch': 'Elemente verschieben',
     'es-es': 'Mover elementos',
     'fr-fr': 'Déplacer des éléments',
-    'ru-ru': 'Переместить предметы',
+    'ru-ru': 'Переместить элементы',
     'uk-ua': 'Переміщення елементів',
     'pt-br': 'Mover itens',
   },
@@ -609,9 +634,9 @@ export const treeText = createDictionary({
   },
   addRootNode: {
     'en-us': 'Add root node',
-    'de-ch': 'Füge den Stammknoten hinzu.',
+    'de-ch': 'Stammknoten hinzufügen',
     'es-es': 'Agregar nodo raíz',
-    'fr-fr': 'Ajouter le nœud racine',
+    'fr-fr': 'Ajouter un nœud racine',
     'pt-br': 'Adicionar nó raiz',
     'ru-ru': 'Добавить корневой узел',
     'uk-ua': 'Додати кореневий вузол',
@@ -619,9 +644,9 @@ export const treeText = createDictionary({
   treePicker: {
     'en-us': 'Tree Picker',
     'de-ch': 'Baumpflücker',
-    'es-es': 'Selector de árboles',
+    'es-es': 'Recolector de árboles',
     'fr-fr': "Cueilleur d'arbres",
-    'pt-br': 'apanhador de árvores',
+    'pt-br': 'Colhedor de árvores',
     'ru-ru': 'Сборщик деревьев',
     'uk-ua': 'Збирач дерев',
   },
@@ -663,7 +688,7 @@ export const treeText = createDictionary({
   },
   invertpaleo: {
     'en-us': 'Invertebrate Paleontology',
-    'de-ch': 'Wirbellosenpaläontologie',
+    'de-ch': 'Paläontologie der Wirbellosen',
     'es-es': 'Paleontología de invertebrados',
     'fr-fr': 'Paléontologie des invertébrés',
     'pt-br': 'Paleontologia de Invertebrados',
@@ -672,7 +697,7 @@ export const treeText = createDictionary({
   },
   invertzoo: {
     'en-us': 'Invertebrate Zoology',
-    'de-ch': 'Wirbellosenzoologie',
+    'de-ch': 'Wirbellose Zoologie',
     'es-es': 'Zoología de invertebrados',
     'fr-fr': 'Zoologie des invertébrés',
     'pt-br': 'Zoologia de Invertebrados',
@@ -684,7 +709,7 @@ export const treeText = createDictionary({
     'de-ch': 'Mammalogie',
     'es-es': 'Mastozoología',
     'fr-fr': 'Mammalogie',
-    'pt-br': 'Mamalogia',
+    'pt-br': 'Mammalogia',
     'ru-ru': 'Маммология',
     'uk-ua': 'Мамалогія',
   },
@@ -729,8 +754,8 @@ export const treeText = createDictionary({
     'de-ch': 'Ein Standard-Taxonbaum',
     'es-es': 'Un árbol de taxones predeterminado',
     'fr-fr': 'Un arbre taxonomique par défaut',
-    'pt-br': 'Uma árvore taxonômica padrão',
-    'ru-ru': 'Дерево таксонов по умолчанию',
+    'pt-br': 'Uma árvore de táxons padrão',
+    'ru-ru': 'Дерево таксона по умолчанию',
     'uk-ua': 'Дерево таксонів за замовчуванням',
   },
   emptyTree: {
@@ -738,7 +763,7 @@ export const treeText = createDictionary({
     'de-ch': 'Leerer Baum',
     'es-es': 'Árbol vacío',
     'fr-fr': 'Arbre vide',
-    'pt-br': 'Árvore Vazia',
+    'pt-br': 'Árvore vazia',
     'ru-ru': 'Пустое дерево',
     'uk-ua': 'Порожнє дерево',
   },
@@ -755,9 +780,9 @@ export const treeText = createDictionary({
     'en-us': 'Rocks',
     'de-ch': 'Felsen',
     'es-es': 'Rocas',
-    'fr-fr': 'Roches',
+    'fr-fr': 'Rochers',
     'pt-br': 'Rochas',
-    'ru-ru': 'Камни',
+    'ru-ru': 'Скалы',
     'uk-ua': 'Скелі',
   },
   meteorites: {
@@ -768,39 +793,5 @@ export const treeText = createDictionary({
     'pt-br': 'Meteoritos',
     'ru-ru': 'Метеориты',
     'uk-ua': 'Метеорити',
-  },
-  treeManagement: {
-    'en-us': 'Tree Management',
-    'de-ch': 'Baumpflege',
-    'es-es': 'Manejo de árboles',
-    'fr-fr': 'Gestion des arbres',
-    'pt-br': 'Gestão de árvores',
-    'ru-ru': 'Управление деревьями',
-    'uk-ua': 'Управління деревами',
-  },
-  synonymizedNodes: {
-    'en-us': 'Expand Synonym Behavior',
-    'de-ch': 'Synonymverhalten erweitern',
-    'es-es': 'Expandir el comportamiento de los sinónimos',
-    'fr-fr': 'Développer le comportement des synonymes',
-    'pt-br': 'Expandir o comportamento dos sinônimos',
-    'ru-ru': 'Развернуть поведение синонимов',
-    'uk-ua': 'Розгорнути поведінку синонімів',
-  },
-  synonymizedNodesDescription: {
-    'en-us':
-      'If enabled, this allows users to add children to synonymized parents and to synonymize a node with children.',
-    'de-ch':
-      'Ist diese Funktion aktiviert, können Benutzer Kindknoten zu synonymisierten Elternknoten hinzufügen und einen Knoten mit Kindknoten synonymisieren.',
-    'es-es':
-      'Si está habilitado, esto permite a los usuarios agregar hijos a padres sinonimizados y sinonimizar un nodo con hijos.',
-    'fr-fr':
-      "Si cette option est activée, elle permet aux utilisateurs d'ajouter des enfants à des parents synonymisés et de synonymiser un nœud avec ses enfants.",
-    'pt-br':
-      'Se ativada, essa opção permite que os usuários adicionem filhos a nós pais sinonimizados e sinonimizem um nó com seus filhos.',
-    'ru-ru':
-      'Если эта функция включена, она позволяет пользователям добавлять дочерние элементы к синонимизированным родительским элементам и синонимизировать узел с дочерними элементами.',
-    'uk-ua':
-      'Якщо це ввімкнено, користувачі можуть додавати дочірні елементи до синонімізованих батьківських елементів та синонімізувати вузол з дочірніми елементами.',
   },
 } as const);
