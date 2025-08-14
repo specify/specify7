@@ -10,6 +10,7 @@ from django.core.exceptions import MultipleObjectsReturned
 from specifyweb.specify.load_datamodel import Table, FieldDoesNotExistError, TableDoesNotExistError
 from specifyweb.specify.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
 from specifyweb.specify.models import (
+    Discipline,
     datamodel,
 )
 from specifyweb.specify.migration_utils.sp7_schemaconfig import (
@@ -34,6 +35,7 @@ from specifyweb.specify.migration_utils.sp7_schemaconfig import (
     MIGRATION_0033_TABLES,
     MIGRATION_0034_FIELDS,
     MIGRATION_0034_UPDATE_FIELDS,
+    MIGRATION_0035_FIELDS,
 )
 
 logger = logging.getLogger(__name__)
@@ -198,6 +200,8 @@ def update_table_field_schema_config_with_defaults(
     try:
         field = table.get_field_strict(field_name)
     except FieldDoesNotExistError:
+        if field_name in {'parentCog', 'parentCO', 'children', 'componentParent', 'components'}:
+            return
         logger.warning(
             f"Field does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name} -> {field_name}"
         )
@@ -250,6 +254,85 @@ def revert_table_field_schema_config(table_name, field_name, apps=global_apps):
         Q(itemdesc__in=items)
     ).delete()
     items.delete()
+
+def update_table_field_schema_config_params(
+    table_name,
+    discipline_id: int,
+    field_name: str,
+    update_params: dict,
+    apps = global_apps
+):
+    table = datamodel.get_table(table_name)
+
+    if table is None: 
+        logger.warning(f"Table does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name}")
+        return
+
+    table_name = table.name
+    table_config = TableSchemaConfig(
+        name=table_name.lower(),
+        discipline_id=discipline_id,
+        schema_type=0,
+        language="en"
+    )
+
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+    try:
+        sp_local_container, _ = Splocalecontainer.objects.get_or_create(
+            name=table.name.lower(),
+            discipline_id=discipline_id,
+            schematype=table_config.schema_type,
+        )
+    except MultipleObjectsReturned:
+        sp_local_container = Splocalecontainer.objects.filter(
+            name=table.name.lower(),
+            discipline_id=discipline_id,
+            schematype=table_config.schema_type
+        ).first()
+
+    try:
+        field = table.get_field_strict(field_name)
+    except FieldDoesNotExistError:
+        logger.warning(
+            f"Field does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name} -> {field_name}"
+        )
+        return
+    except AttributeError:
+        logger.warning(
+            f"Field does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name} -> {field_name}"
+        )
+        return
+
+    field_config = FieldSchemaConfig(
+        name=field_name,
+        column=field.column,
+        java_type=datamodel_type_to_schematype(field.type) if field.is_relationship else field.type,
+        description=camel_to_spaced_title_case(field.name),
+        language="en"
+    )
+
+    qs = Splocalecontaineritem.objects.filter(
+        name=field_config.name,
+        container=sp_local_container,
+        type=field_config.java_type, # maybe remove from filter
+    )
+    count = qs.count()
+
+    if count == 0:
+        # logger.warning(f"Splocalecontaineritem does not exist for: {table_name} -> {field_name}, skipping update")
+        return
+
+    if count > 1:
+        updated = qs.update(**update_params)
+        logger.info(f"Updated {updated} duplicate Splocalecontaineritem rows for {table_name}.{field_name}")
+        return
+
+    sp_local_container_item = qs.first()
+    for k, v in update_params.items():
+        setattr(sp_local_container_item, k, v)
+    sp_local_container_item.save(update_fields=list(update_params.keys()))
 
 # ##############################################################################
 # Migration schema config helper functions
@@ -557,6 +640,7 @@ def revert_update_cog_schema_config(apps):
 
 # ##########################################
 # Used in 0015_add_version_to_ages.py
+# ##########################################
 
 def update_age_schema_config(apps):
     # Revert before adding to avoid duplicates
@@ -1201,12 +1285,8 @@ def update_paleo_desc(apps):
         Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
         for table_name, table_desc in MIGRATION_0033_TABLES:
-            containers = Splocalecontainer.objects.filter(
-                name=table_name.lower(), schematype=0)
-
-            Splocaleitemstr.objects.filter(
-            containerdesc__in=containers
-            ).update(text=table_desc)
+            containers = Splocalecontainer.objects.filter(name=table_name.lower(), schematype=0)
+            Splocaleitemstr.objects.filter(containerdesc__in=containers).update(text=table_desc)
 
     fix_table_description(apps)
 
@@ -1288,3 +1368,31 @@ def revert_update_accession_date_fields(apps):
 
     revert_0034_fields(apps)
     revert_0034_schema_config_field_desc(apps)
+
+# ##########################################
+# Used in 0035_version_required.py
+# ##########################################
+
+def update_version_required(apps):
+    Discipline = apps.get_model('specify', 'Discipline')
+    updated_config_params = {
+        'isrequired': True,
+    }
+
+    # Update the schema config for each discipline with the version isHidden change
+    for discipline in Discipline.objects.all():
+        for table, fields in MIGRATION_0035_FIELDS.items():
+            for field in fields:    
+                update_table_field_schema_config_params(table, discipline.id, field, updated_config_params, apps)
+
+def revert_version_required(apps):
+    Discipline = apps.get_model('specify', 'Discipline')
+    updated_config_params = {
+        'isrequired': False,
+    }
+
+    # Revert the schema config for each discipline with the version isHidden change
+    for discipline in Discipline.objects.all():
+        for table, fields in MIGRATION_0035_FIELDS.items():
+            for field in fields:    
+                update_table_field_schema_config_params(table, discipline.id, field, updated_config_params, apps)
