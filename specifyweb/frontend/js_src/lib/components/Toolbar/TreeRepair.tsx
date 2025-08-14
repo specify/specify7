@@ -338,7 +338,7 @@ function TreeActionsDropdown({ treeName, treeDefinition }: { treeName: string; t
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={headerText.treeOptions()}
-  title={headerText.treeOptions?.()}
+        title={headerText.treeOptions()}
         onClick={(e): void => {
           e.preventDefault();
           if (open) {

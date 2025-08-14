@@ -209,6 +209,12 @@ export const treeText = createDictionary({
   },
   repairTreeDescription: {
     "en-us": "Repairs structural numbering only by recomputing and validating 'NodeNumber' and 'HighestChildNodeNumber' fields.",
+    "es-es": "Repara solo la numeración estructural recalculando y validando los campos 'NodeNumber' y 'HighestChildNodeNumber'.",
+    "fr-fr": "Répare uniquement la numérotation structurelle en recalculant et en validant les champs 'NodeNumber' et 'HighestChildNodeNumber'.",
+    "ru-ru": "Исправляет только структурную нумерацию, пересчитывая и проверяя поля 'NodeNumber' и 'HighestChildNodeNumber'.",
+    "de-ch": "Repariert nur die strukturelle Nummerierung durch Neuberechnung und Validierung der Felder 'NodeNumber' und 'HighestChildNodeNumber'.",
+    "pt-br": "Repara apenas a numeração estrutural recalculando e validando os campos 'NodeNumber' e 'HighestChildNodeNumber'.",
+    "uk-ua": "Виправляє лише структурну нумерацію, перераховуючи й перевіряючи поля 'NodeNumber' та 'HighestChildNodeNumber'.",
   },
   rebuildResult: {
     "en-us": "Updated: {total:number} ({accepted:number} accepted names, {synonyms:number} synonyms)",
