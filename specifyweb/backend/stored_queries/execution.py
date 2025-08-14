@@ -645,7 +645,6 @@ def recordset(collection, user, user_agent, recordset_info): # pragma: no cover
     with models.session_context() as session:
         recordset = models.RecordSet()
         recordset.timestampCreated = timezone.now()
-        recordset.timestampModified = recordset.timestampCreated
         recordset.version = 0
         recordset.collectionMemberId = collection.id
         recordset.dbTableId = tableid
