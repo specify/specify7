@@ -74,12 +74,11 @@ def backup_database_task(self, user_id: int | None = None):
     6) Notify the user with a "backup-succeeded" message (or "backup-failed" on error).
     """
     # 1) DB settings
-    db = settings.DATABASES.get('default', {})
-    db_name = db.get('NAME') or settings.DATABASE_NAME
-    db_user = db.get('USER') or settings.MASTER_NAME
-    db_password = db.get('PASSWORD') or settings.MASTER_PASSWORD
-    db_host = db.get('HOST') or (settings.DATABASE_HOST or 'localhost')
-    db_port = str(db.get('PORT') or (settings.DATABASE_PORT or 3306))
+    db_name = settings.DATABASE_NAME
+    db_user = settings.MASTER_NAME
+    db_password = settings.MASTER_PASSWORD
+    db_host = settings.DATABASE_HOST
+    db_port = str(settings.DATABASE_PORT)
 
     # Writable depository
     deposit_dir = getattr(settings, 'DEPOSITORY_DIR', '/tmp')
