@@ -123,6 +123,8 @@ export const isFunction = <T>(
  *    the read-only error)
  *  - Using this utility makes it easy to see all the places that overwrite a
  *    read only property
+ * TODO:
+ *  1. The type of value should be inferred, rather than unknown.
  */
 export function overwriteReadOnly<
   KEY extends string,

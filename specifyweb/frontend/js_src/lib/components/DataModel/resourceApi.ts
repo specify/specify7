@@ -402,6 +402,11 @@ export const ResourceBase = Backbone.Model.extend({
     const attributes = {};
     if (_.isObject(key) || key == null) {
       /*
+       * The two argument case. This is almost exclusively called by BackBone
+       * when syncing the resource attributes with the server
+       */
+
+      /*
        * In the two argument case, so
        * "key" is actually an object mapping keys to values
        */
@@ -427,7 +432,23 @@ export const ResourceBase = Backbone.Model.extend({
     const adjustedAttributes = _.reduce(
       attributes,
       (accumulator, value, fieldName) => {
-        const [newFieldName, newValue] = this._handleField(value, fieldName);
+        const [newFieldName, newValue] = this._handleField(
+          value,
+          fieldName,
+          /**
+           * Only silence (change) events in the two argument case and when
+           * options indicate.
+           *
+           * This is primarily so any Collections listening to change events
+           * on their models holding the resource are not incidently notified
+           * of a change event
+           * See https://github.com/specify/specify7/issues/6488
+           *
+           */
+          {
+            silent: typeof key === 'object' && options?.silent === true,
+          }
+        );
         return _.isUndefined(newValue)
           ? accumulator
           : Object.assign(accumulator, { [newFieldName]: newValue });
@@ -447,10 +468,32 @@ export const ResourceBase = Backbone.Model.extend({
     this.trigger('changed');
     return result;
   },
-  _handleField(value, fieldName) {
+  _handleField<OPTIONS extends { readonly silent?: boolean }>(
+    value,
+    fieldName,
+    options?: OPTIONS
+  ) {
     if (fieldName === '_tablename') return ['_tablename', undefined];
     if (_(['id', 'resource_uri', 'recordset_info']).contains(fieldName))
       return [fieldName, value]; // Special fields
+
+    /**
+     * This is a temporary fix to prevent the front-end from setting an
+     * incomplete timestampcreated. A complete timestamp cannot be used because
+     * the back-end cannot receive timestamps with time zones, so this sets it
+     * to null so the back-end uses its own complete timestamp.
+     * See: https://github.com/specify/specify7/issues/5421,
+     *      https://github.com/specify/specify7/issues/641
+     * REFACTOR: Remove this once the back-end supports time zones.
+     */
+    if (
+      fieldName === 'timestampcreated' &&
+      typeof value === 'string' &&
+      this.isNew() &&
+      value.length === 'YYYY-MM-DD'.length
+    ) {
+      return [fieldName, null];
+    }
 
     const field = this.specifyTable.getField(fieldName);
     if (!field) {
@@ -473,11 +516,15 @@ export const ResourceBase = Backbone.Model.extend({
               getResourceApiUrl(field.table.name, value),
               fieldName
             )
-          : this._handleInlineDataOrResource(value, fieldName);
+          : this._handleInlineDataOrResource(value, fieldName, options);
     }
     return [fieldName, value];
   },
-  _handleInlineDataOrResource(value, fieldName) {
+  _handleInlineDataOrResource<OPTIONS extends { readonly silent?: boolean }>(
+    value,
+    fieldName,
+    options?: OPTIONS
+  ) {
     // BUG: check type of value
     const field: Relationship = this.specifyTable.strictGetField(fieldName);
     const relatedTable = field.relatedTable;
@@ -530,8 +577,10 @@ export const ResourceBase = Backbone.Model.extend({
         }
 
         // Because the foreign key is on the other side
-        this.trigger(`change:${fieldName}`, this);
-        this.trigger('change', this);
+        if (!(options?.silent ?? false)) {
+          this.trigger(`change:${fieldName}`, this);
+          this.trigger('change', this);
+        }
 
         /**
          * These are serialized and added to the JSON before being sent to the
@@ -556,8 +605,10 @@ export const ResourceBase = Backbone.Model.extend({
         const toOne = maybeMakeResource(value, relatedTable);
         if (field.isDependent()) this.storeDependent(field, toOne);
         else this.storeIndependent(field, toOne);
-        this.trigger(`change:${fieldName}`, this);
-        this.trigger('change', this);
+        if (!(options?.silent ?? false)) {
+          this.trigger(`change:${fieldName}`, this);
+          this.trigger('change', this);
+        }
         return toOne.url();
       } // The FK as a URI
       case 'zero-to-one': {
@@ -575,8 +626,10 @@ export const ResourceBase = Backbone.Model.extend({
 
         field.isDependent() && this.storeDependent(field, oneTo);
         // Because the FK is on the other side
-        this.trigger(`change:${fieldName}`, this);
-        this.trigger('change', this);
+        if (!(options?.silent ?? false)) {
+          this.trigger(`change:${fieldName}`, this);
+          this.trigger('change', this);
+        }
         return undefined;
       }
     }

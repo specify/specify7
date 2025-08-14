@@ -7,7 +7,7 @@ import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { ajax } from '../../utils/ajax';
-import type { RA } from '../../utils/types';
+import type { DeepPartial, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
@@ -48,13 +48,21 @@ export function BatchEditFromQuery({
   query,
   fields,
   baseTableName,
+  saveRequired,
   recordSetId,
 }: {
   readonly query: SpecifyResource<SpQuery>;
   readonly fields: RA<QueryField>;
   readonly baseTableName: keyof Tables;
+  readonly saveRequired: boolean;
   readonly recordSetId?: number;
 }) {
+  const hasRelationships = userPreferences.get(
+    'batchEdit',
+    'editor',
+    'enableRelationships'
+  );
+
   const navigate = useNavigate();
   const post = async (dataSetName: string) =>
     ajax<{ readonly id: number }>('/stored_query/batch_edit/', {
@@ -72,6 +80,7 @@ export function BatchEditFromQuery({
         recordSetId,
         limit: userPreferences.get('batchEdit', 'query', 'limit'),
         treeDefsFilter,
+        omitRelationships: !hasRelationships,
       }),
     });
 
@@ -81,7 +90,7 @@ export function BatchEditFromQuery({
   const [treeDefsFilter, setTreeDefsFilter] = React.useState<TreeDefsFilter>(
     {}
   );
-  const [hasUnsavedQuery, openWarningDialog, closeWarningDialog] =
+  const [showWarningDialog, openWarningDialog, closeWarningDialog] =
     useBooleanState();
   const loading = React.useContext(LoadingContext);
 
@@ -134,7 +143,8 @@ export function BatchEditFromQuery({
     queryFieldSpecs.some(hasHierarchyBaseTable) ||
     containsDisallowedTables(query);
 
-  const handleClickBatchEdit = () => loading(
+  const handleClickBatchEdit = () =>
+    loading(
       treeRanksPromise.then(async () => {
         const invalidFields = queryFieldSpecs.filter((fieldSpec) =>
           filters.some((filter) => filter(fieldSpec))
@@ -172,7 +182,7 @@ export function BatchEditFromQuery({
         disabled={isDisabled}
         title={isDisabled ? batchEditText.batchEditDisabled() : undefined}
         onClick={() => {
-          if (query.needsSaved) openWarningDialog();
+          if (saveRequired || query.needsSaved) openWarningDialog();
           else handleClickBatchEdit();
         }}
       >
@@ -189,12 +199,12 @@ export function BatchEditFromQuery({
           onSelectTreeDef={handleCheckboxChange}
         />
       ) : undefined}
-      {hasUnsavedQuery && (
+      {showWarningDialog && (
         <Dialog
           buttons={
             <Button.Danger onClick={closeWarningDialog}>
-                {commonText.close()}
-              </Button.Danger>
+              {commonText.close()}
+            </Button.Danger>
           }
           header={queryText.unsavedChangesInQuery()}
           onClose={closeWarningDialog}
@@ -225,6 +235,39 @@ function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
 const containsSystemTables = (queryFieldSpec: QueryFieldSpec) =>
   queryFieldSpec.joinPath.some((field) => field.table.isSystem);
 
+const DISALLOWED_FIELDS: DeepPartial<{
+  readonly [TABLE in keyof Tables]: RA<keyof Tables[TABLE]['fields']>;
+}> = {
+  /*
+   * FEATURE: Remove these when lat/long is officially supported
+   * See https://github.com/specify/specify7/issues/6251 and
+   * https://github.com/specify/specify7/issues/6655
+   */
+  Locality: [
+    'latitude1',
+    'longitude1',
+    'lat1text',
+    'long1text',
+    'latitude2',
+    'longitude2',
+    'lat2text',
+    'long2text',
+  ],
+};
+
+function containsDisallowedFields(queryFieldSpec: QueryFieldSpec) {
+  const field = queryFieldSpec.getField();
+  if (
+    field === undefined ||
+    field.isRelationship ||
+    DISALLOWED_FIELDS[field.table.name] === undefined
+  )
+    return false;
+  return (
+    DISALLOWED_FIELDS[field.table.name]?.includes(field.name as never) ?? false
+  );
+}
+
 const hasHierarchyBaseTable = (queryFieldSpec: QueryFieldSpec) =>
   Object.keys(schema.domainLevelIds).includes(
     queryFieldSpec.baseTable.name.toLowerCase() as 'collection'
@@ -239,4 +282,8 @@ const containsDisallowedTables = (query: SpecifyResource<SpQuery>) =>
   );
 
 // Error filters
-const filters = [containsFaultyNestedToMany, containsSystemTables];
+const filters: RA<(queryFieldSpec: QueryFieldSpec) => boolean> = [
+  containsFaultyNestedToMany,
+  containsSystemTables,
+  containsDisallowedFields,
+];

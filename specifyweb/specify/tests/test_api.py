@@ -5,14 +5,14 @@ Tests for api.py
 import json
 from unittest import skip
 from datetime import datetime
-from django.db.models import Max
-from django.test import TestCase, Client
+from django.db.models import Max, QuerySet
+from django.test import TestCase, Client, TransactionTestCase
 
-from specifyweb.permissions.models import UserPolicy
+from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.specify import api, models, scoping
-from specifyweb.businessrules.uniqueness_rules import UNIQUENESS_DISPATCH_UID, check_unique, apply_default_uniqueness_rules
-from specifyweb.businessrules.rules.cogtype_rules import SYSTEM_COGTYPES_PICKLIST
-from specifyweb.businessrules.orm_signal_handler import connect_signal, disconnect_signal
+from specifyweb.backend.businessrules.uniqueness_rules import UNIQUENESS_DISPATCH_UID, validate_unique, apply_default_uniqueness_rules
+from specifyweb.backend.businessrules.rules.cogtype_rules import SYSTEM_COGTYPES_PICKLIST
+from specifyweb.backend.businessrules.orm_signal_handler import connect_signal, disconnect_signal
 from specifyweb.specify.model_extras import Specifyuser
 from specifyweb.specify.models import (
     Institution,
@@ -37,15 +37,23 @@ from specifyweb.specify.models import (
     Accession,
     Picklist,
     Picklistitem,
+    Preparation
 )
+import datetime
 
 def get_table(name: str):
     return getattr(models, name.capitalize())
 
+class MockDateTime:
+
+    @classmethod
+    def now(cls):
+        return datetime.datetime(2025, 7, 20, 18, 23, 32)
+
 class MainSetupTearDown:
     def setUp(self):
         disconnect_signal('pre_save', None, dispatch_uid=UNIQUENESS_DISPATCH_UID)
-        connect_signal('pre_save', check_unique, None, dispatch_uid=UNIQUENESS_DISPATCH_UID)
+        connect_signal('pre_save', validate_unique, None, dispatch_uid=UNIQUENESS_DISPATCH_UID)
         self.institution = Institution.objects.create(
             name='Test Institution',
             isaccessionsglobal=True,
@@ -95,12 +103,7 @@ class MainSetupTearDown:
             name="testuser",
             password="205C0D906445E1C71CA77C6D714109EB6D582B03A5493E4C")  # testuser
 
-        UserPolicy.objects.create(
-            collection=None,
-            specifyuser=self.specifyuser,
-            resource="%",
-            action="%",
-        )
+        self._add_user_policy(self.specifyuser)
 
         self.agent = Agent.objects.create(
             agenttype=0,
@@ -136,9 +139,48 @@ class MainSetupTearDown:
             obj.save()
 
         self._update = _update
+    
+    def _create_prep_type(self):
+        self.prep_type = Preptype.objects.create(
+                name="testPrepType",
+                isloanable=False,
+                collection=self.collection,
+            )
 
+    def _create_prep(self, co, prep_list, **prep_kwargs):
+
+        if 'preptype' not in prep_kwargs:
+            prep_kwargs['preptype'] = self.prep_type
+
+        prep = Preparation.objects.create(
+            collectionobject=co, **prep_kwargs
+        )
+        if prep_list is not None:
+            prep_list.append(prep)
+        return prep
+
+    def _assertStatusCodeEqual(self, response, status_code):
+        self.assertEqual(response.status_code, status_code, f"ERROR: {response.content.decode()}")
+
+    def _assertContentEqual(self, response, expected_content):
+        self.assertEqual(response.content.decode(), expected_content)
+
+    def _add_user_policy(self, specifyuser):
+        UserPolicy.objects.create(
+                collection=None,
+                specifyuser=specifyuser,
+                resource="%",
+                action="%",
+            )
+
+    # TODO: Replace all such tests with below.
+    def assertExists(self, queryset: QuerySet):
+        self.assertTrue(queryset.exists(), "Record does not exist!")
 
 class ApiTests(MainSetupTearDown, TestCase): pass
+
+# This test gets used when there are some transactional behavior that needs to be tested
+class ApiTransactionTests(MainSetupTearDown, TransactionTestCase): pass
 
 skip_perms_check = lambda x: None
 
@@ -917,8 +959,9 @@ class UserApiTests(ApiTests):
         super().setUp()
 
         # Because the test database doesn't have specifyuser_spprincipal
-        from specifyweb.context import views
+        from specifyweb.backend.context import views
 
+        # TODO: Replace this with a mock.
         views.users_collections_for_sp6 = lambda cursor, userid: []
 
     def test_set_user_agents(self):
@@ -1108,6 +1151,11 @@ class DefaultsSetup(MainSetupTearDown, TestCase):
         Picklistitem.objects.create(
             title='Discrete',
             value='Discrete',
+            picklist=cog_type_picklist
+        )
+        Picklistitem.objects.create(
+            title='Consolidated',
+            value='Consolidated',
             picklist=cog_type_picklist
         )
         self.cogtype = Collectionobjectgrouptype.objects.create(

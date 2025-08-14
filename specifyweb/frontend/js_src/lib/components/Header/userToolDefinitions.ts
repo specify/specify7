@@ -134,7 +134,7 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
     },
     technicalDocumentation: {
       title: headerText.technicalDocumentation(),
-      url: 'https://github.com/specify/specify7/wiki',
+      url: 'https://discourse.specifysoftware.org/c/docs/',
       icon: icons.bookOpen,
     },
   },

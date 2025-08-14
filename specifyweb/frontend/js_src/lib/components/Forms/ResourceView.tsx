@@ -48,6 +48,11 @@ export const FORBID_ADDING = new Set<keyof Tables>([
   'Division',
   'Discipline',
   'Collection',
+  /*
+   * SpecifyUser's should be created through the Security and Accounts tool.
+   * To properly clone a user need to also clone their roles and policies too
+   */
+  'SpecifyUser',
   // See https://github.com/specify/specify7/issues/1754
   'Attachment',
 ]);
@@ -70,8 +75,8 @@ export const RESTRICT_ADDING = new Set<keyof Tables>([
  */
 export const NO_CLONE = new Set<keyof Tables>([
   ...FORBID_ADDING,
-  // To properly clone a user need to also clone their roles and policies
-  'SpecifyUser',
+  'CollectionObjectGroup',
+  'CollectionObjectGroupJoin',
 ]);
 
 /**
@@ -159,6 +164,11 @@ export function ResourceView<SCHEMA extends AnySchema>({
     'makeFormDialogsModal'
   );
 
+  const [showSubviewBorders] = userPreferences.use(
+    'form',
+    'ui',
+    'showSubviewBorders'
+  );
   const isReadOnly = augmentMode(
     React.useContext(ReadOnlyContext),
     resource?.isNew() === true,
@@ -249,6 +259,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   ) : undefined;
 
   const deleteButton =
+    !isReadOnly &&
     !isDependent &&
     !isSubForm &&
     typeof resource === 'object' &&
@@ -322,7 +333,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
               ? 'hidden'
               : hasNoData
                 ? ''
-                : 'border border-gray-500 border-t-0 rounded-b p-1'
+                : showSubviewBorders
+                  ? 'border border-gray-500 border-t-0 rounded-b p-1'
+                  : 'p-1'
           }
         >
           {formattedChildren}
