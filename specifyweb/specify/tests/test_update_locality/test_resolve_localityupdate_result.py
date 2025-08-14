@@ -1,4 +1,4 @@
-from specifyweb.notifications.models import LocalityUpdate, LocalityUpdateRowResult
+from specifyweb.backend.notifications.models import LocalityUpdate, LocalityUpdateRowResult
 
 from uuid import uuid4
 

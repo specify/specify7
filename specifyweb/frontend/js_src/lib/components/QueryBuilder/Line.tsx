@@ -29,6 +29,7 @@ import {
 import type { MappingPath } from '../WbPlanView/Mapper';
 import {
   formattedEntry,
+  getGenericMappingPath,
   mappingPathToString,
   parsePartialField,
   valueIsPartialField,
@@ -426,7 +427,9 @@ export function QueryLine({
               {field.filters.map((filter, index) => {
                 const terminatingField = isFieldComplete
                   ? genericTables[baseTableName].getField(
-                      mappingPathToString(field.mappingPath)
+                      mappingPathToString(
+                        getGenericMappingPath(field.mappingPath)
+                      )
                     )
                   : undefined;
 
