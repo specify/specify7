@@ -1,5 +1,6 @@
 import json
 from django.http import (JsonResponse)
+import time
 
 from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.specify import models
@@ -7,6 +8,7 @@ from specifyweb.specify.api_utils import strict_uri_to_model
 from specifyweb.specify.load_datamodel import Datamodel
 from specifyweb.specify.migration_utils.update_schema_config import update_table_schema_config_with_defaults
 from specifyweb.specify.models import Spversion
+from specifyweb.specify.models_by_table_id import model_names_by_table_id
 
 from django.db.models import Max
 
@@ -141,9 +143,7 @@ def create_discipline(request, direct=False):
                 new_discipline = Discipline.objects.create(**data)
 
                 # Create Splocalecontainers for every table in datamodel
-                tables = list(models.datamodel.tables)
-                for table in tables:
-                    model_name = table.name
+                for model_name in model_names_by_table_id.values():
                     update_table_schema_config_with_defaults(
                         table_name=model_name,
                         discipline_id=new_discipline.id
