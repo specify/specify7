@@ -199,6 +199,15 @@ export const headerText = createDictionary({
     "de-ch": "Die Baumreparatur ist abgeschlossen.",
     "pt-br": "O reparo da árvore foi concluído.",
   },
+  treeOptions: {
+    "en-us": "Tree Options",
+    "ru-ru": "Параметры дерева",
+    "es-es": "Opciones de árbol",
+    "fr-fr": "Options de l'arbre",
+    "uk-ua": "Параметри дерева",
+    "de-ch": "Baumoptionen",
+    "pt-br": "Opções da Árvore",
+  },
   choose: {
     "en-us": "Choose",
     "de-ch": "Wählen",

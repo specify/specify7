@@ -12,6 +12,7 @@ import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { treeText } from '../../localization/tree';
 import { ping } from '../../utils/ajax/ping';
+import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import { toLowerCase } from '../../utils/utils';
 import { Ul } from '../Atoms';
@@ -29,9 +30,20 @@ import {
 import { Dialog } from '../Molecules/Dialog';
 import { ResourceEdit } from '../Molecules/ResourceLink';
 import { TableIcon } from '../Molecules/TableIcon';
+import { Portal } from '../Molecules/Portal';
 import { hasPermission, hasTreeAccess } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
+
+const TREE_RESOURCES = {
+  Taxon: '/tree/edit/taxon',
+  Geography: '/tree/edit/geography',
+  Storage: '/tree/edit/storage',
+  GeologicTimePeriod: '/tree/edit/geologictimeperiod',
+  LithoStrat: '/tree/edit/lithostrat',
+  TectonicUnit: '/tree/edit/tectonicunit',
+} as const;
+type TreeNameKey = keyof typeof TREE_RESOURCES;
 
 export function TreeSelectOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -108,32 +120,37 @@ export function TreeSelectDialog({
           <Ul className="flex flex-col gap-1">
             {treeData.map(([treeName, treeDefinition]) => (
               <li className="contents" key={treeName}>
-                <div className="flex gap-2">
-                  <Link.Default
-                    className="flex-1"
-                    href={getLink(treeName)}
-                    title={treeDefinition?.get('remarks') ?? undefined}
-                    onClick={(event): void => {
-                      if (handleClick === undefined) return;
-                      event.preventDefault();
-                      loading(
-                        Promise.resolve(handleClick(treeName)).then(() =>
-                          typeof confirmationMessage === 'string'
-                            ? setIsFinished()
-                            : handleClose()
-                        )
-                      );
-                    }}
-                  >
-                    <TableIcon label={false} name={treeName} />
-                    {genericTables[treeName].label}
-                  </Link.Default>
-                  {typeof treeDefinition === 'object' && (
-                    <ResourceEdit
-                      resource={treeDefinition}
-                      onSaved={(): void => globalThis.location.reload()}
-                    />
-                  )}
+                <div className="flex flex-col gap-1">
+                  <div className="flex gap-2 items-start">
+                    <Link.Default
+                      className="flex-1"
+                      href={getLink(treeName)}
+                      title={treeDefinition?.get('remarks') ?? undefined}
+                      onClick={(event): void => {
+                        if (handleClick === undefined) return;
+                        event.preventDefault();
+                        loading(
+                          Promise.resolve(handleClick(treeName)).then(() =>
+                            typeof confirmationMessage === 'string'
+                              ? setIsFinished()
+                              : handleClose()
+                          )
+                        );
+                      }}
+                    >
+                      <TableIcon label={false} name={treeName} />
+                      {genericTables[treeName].label}
+                    </Link.Default>
+                    {typeof treeDefinition === 'object' && (
+                      <ResourceEdit
+                        resource={treeDefinition}
+                        onSaved={(): void => globalThis.location.reload()}
+                      />
+                    )}
+                    {permissionName === 'repair' && (
+                      <TreeActionsDropdown treeName={treeName} treeDefinition={treeDefinition} />
+                    )}
+                  </div>
                 </div>
               </li>
             ))}
@@ -142,6 +159,211 @@ export function TreeSelectDialog({
       )}
     </Dialog>
   ) : null;
+}
+
+function ActionsMenu({ treeName, treeDefinition }: { treeName: string; treeDefinition: any }): JSX.Element | null {
+  const [result, setResult] = React.useState<null | { accepted: number; synonyms: number; total: number }>(null);
+  const [isRunning, setIsRunning] = React.useState(false);
+  const [repairStatus, setRepairStatus] = React.useState<'idle' | 'success'>('idle');
+  const [hoveredAction, setHoveredAction] = React.useState<null | 'repair' | 'rebuildAccepted' | 'rebuildSynonyms'>(null);
+  if (typeof treeDefinition !== 'object') return null;
+  if (!(treeName in TREE_RESOURCES)) return null;
+  const canRebuild = hasPermission(TREE_RESOURCES[treeName as TreeNameKey], 'rebuild_fullname');
+  const canRepair = hasPermission(TREE_RESOURCES[treeName as TreeNameKey], 'repair');
+  if (!canRebuild && !canRepair) return null;
+  const id = treeDefinition.get('id');
+  const trigger = (withSynonyms: boolean): void => {
+    setIsRunning(true);
+    setResult(null);
+    setRepairStatus('idle');
+    ajax<{ success: boolean; rebuild_synonyms: boolean; changed: { accepted: number; synonyms: number; total: number } } | string>(
+      `/api/specify_tree/${treeName.toLowerCase()}/${id}/rebuild-full-name${withSynonyms ? '?rebuild_synonyms=true' : ''}`,
+      { method: 'POST', headers: { Accept: 'application/json' }, errorMode: 'dismissible' }
+    )
+      .then((resp) => {
+        if (!resp) {
+          setResult({ accepted: 0, synonyms: 0, total: 0 });
+          return;
+        }
+        const rawData: any = (resp as any).data ?? resp;
+        let parsed: any = rawData;
+        if (typeof rawData === 'string') {
+          try { parsed = JSON.parse(rawData); } catch { /* ignore */ }
+        }
+        const changed = parsed?.changed;
+        const accepted = changed?.accepted ?? 0;
+        const synonyms = changed?.synonyms ?? 0;
+        const total = changed?.total ?? accepted + synonyms;
+        setResult({ accepted, synonyms, total });
+      })
+      .finally(() => setIsRunning(false));
+  };
+  const triggerRepair = (): void => {
+    if (!canRepair) return;
+    setIsRunning(true);
+    setResult(null);
+    setRepairStatus('idle');
+    ping(`/api/specify_tree/${treeName.toLowerCase()}/repair/`, {
+      method: 'POST',
+      errorMode: 'dismissible',
+    })
+      .then(() => setRepairStatus('success'))
+      .finally(() => setIsRunning(false));
+  };
+  type ActionKey = 'repair' | 'rebuildAccepted' | 'rebuildSynonyms';
+  interface ActionDef {
+    key: ActionKey;
+    can: boolean;
+    label: () => LocalizedString;
+    description: () => LocalizedString;
+    run: () => void;
+  }
+  const actions: ReadonlyArray<ActionDef> = [
+    {
+      key: 'repair',
+      can: canRepair,
+      label: () => headerText.repairTree(),
+      description: () => treeText.repairTreeDescription(),
+      run: triggerRepair,
+    },
+    {
+      key: 'rebuildAccepted',
+      can: canRebuild,
+      label: () => treeText.rebuildNames(),
+      description: () => treeText.rebuildNamesDescription(),
+      run: () => trigger(false),
+    },
+    {
+      key: 'rebuildSynonyms',
+      can: canRebuild,
+      label: () => treeText.rebuildNamesSynonyms(),
+      description: () => treeText.rebuildNamesSynonymsDescription(),
+      run: () => trigger(true),
+    },
+  ];
+  const visibleActions = actions.filter((a) => a.can);
+
+  let status: React.ReactNode = null;
+  if (isRunning) status = <span className="text-xs">{commonText.working()}</span>;
+  else if (result && canRebuild) {
+    status = result.total > 0 ? (
+      <div className="text-xs">
+        {treeText.rebuildResult({ total: result.total, accepted: result.accepted, synonyms: result.synonyms })}
+      </div>
+    ) : (
+  <div className="text-xs italic">{treeText.noFullNamesUpdated()}</div>
+    );
+  } else if (repairStatus === 'success' && (!canRebuild || !result)) {
+    status = (
+      <div className="text-xs text-green-600 dark:text-green-400">
+  {headerText.treeRepairComplete()}
+      </div>
+    );
+  } else if (hoveredAction) {
+    const current = actions.find((a) => a.key === hoveredAction);
+    status = current ? (
+      <div className="text-xs leading-snug opacity-80">{current.description()}</div>
+    ) : null;
+  }
+  return (
+    <div className="flex flex-col gap-1 p-2 bg-[color:var(--background)] rounded">
+      <div className="flex flex-col gap-2">
+        {visibleActions.map((a) => (
+          <Button.Secondary
+            key={a.key}
+            disabled={isRunning}
+            onClick={(e): void => { e.preventDefault(); a.run(); }}
+            onMouseEnter={(): void => setHoveredAction(a.key)}
+            onMouseLeave={(): void => setHoveredAction((h) => (h === a.key ? null : h))}
+          >
+            <>{a.label()}</>
+          </Button.Secondary>
+        ))}
+      </div>
+      <div>{status}</div>
+    </div>
+  );
+}
+
+function TreeActionsDropdown({ treeName, treeDefinition }: { treeName: string; treeDefinition: any }): JSX.Element | null {
+  const [open, setOpen] = React.useState(false);
+  const anchorRef = React.useRef<HTMLButtonElement | null>(null);
+  const menuRef = React.useRef<HTMLDivElement | null>(null);
+  const [position, setPosition] = React.useState<{ top: number; left: number } | null>(null);
+
+  const hasAnyPermission = React.useMemo(() => {
+    if (!(treeName in TREE_RESOURCES)) return false;
+    return (
+      hasPermission(TREE_RESOURCES[treeName as TreeNameKey], 'rebuild_fullname') ||
+      hasPermission(TREE_RESOURCES[treeName as TreeNameKey], 'repair')
+    );
+  }, [treeName]);
+
+  const updatePosition = React.useCallback(() => {
+    const el = anchorRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    setPosition({ top: rect.bottom + window.scrollY + 4, left: rect.right + window.scrollX });
+  }, []);
+
+  React.useEffect(() => {
+    if (!open) return;
+    updatePosition();
+    const onClick = (e: MouseEvent): void => {
+      if (
+  anchorRef.current?.contains(e.target as Node) ||
+        menuRef.current?.contains(e.target as Node)
+      ) {
+        return; // inside
+      }
+      setOpen(false);
+    };
+    const onScrollOrResize = (): void => updatePosition();
+    window.addEventListener('mousedown', onClick, { capture: true });
+    window.addEventListener('scroll', onScrollOrResize, true);
+    window.addEventListener('resize', onScrollOrResize);
+    return () => {
+      window.removeEventListener('mousedown', onClick, { capture: true } as any);
+      window.removeEventListener('scroll', onScrollOrResize, true);
+      window.removeEventListener('resize', onScrollOrResize);
+    };
+  }, [open, updatePosition]);
+
+  if (!hasAnyPermission) return null;
+
+  return (
+    <>
+      <Button.Icon
+        icon="cog"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label={headerText.treeOptions()}
+  title={headerText.treeOptions?.()}
+        onClick={(e): void => {
+          e.preventDefault();
+          if (open) {
+            setOpen(false);
+            return;
+          }
+          anchorRef.current = e.currentTarget as HTMLButtonElement;
+          setOpen((o) => !o);
+          setTimeout(updatePosition, 0);
+        }}
+      />
+      {open && position && (
+        <Portal>
+          <div
+            ref={menuRef}
+            role="menu"
+            className="z-[10000] fixed w-64 -translate-x-full rounded border border-gray-300 dark:border-gray-600 shadow-lg"
+            style={{ top: position.top, left: position.left }}
+          >
+            <ActionsMenu treeName={treeName} treeDefinition={treeDefinition} />
+          </div>
+        </Portal>
+      )}
+    </>
+  );
 }
 
 const handleClick = async (tree: string): Promise<void> =>
