@@ -11,8 +11,8 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { treeText } from '../../localization/tree';
-import { ping } from '../../utils/ajax/ping';
 import { ajax } from '../../utils/ajax';
+import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import { toLowerCase } from '../../utils/utils';
 import { Ul } from '../Atoms';
@@ -28,9 +28,9 @@ import {
   treeRanksPromise,
 } from '../InitialContext/treeRanks';
 import { Dialog } from '../Molecules/Dialog';
+import { Portal } from '../Molecules/Portal';
 import { ResourceEdit } from '../Molecules/ResourceLink';
 import { TableIcon } from '../Molecules/TableIcon';
-import { Portal } from '../Molecules/Portal';
 import { hasPermission, hasTreeAccess } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
@@ -148,7 +148,7 @@ export function TreeSelectDialog({
                       />
                     )}
                     {permissionName === 'repair' && (
-                      <TreeActionsDropdown treeName={treeName} treeDefinition={treeDefinition} />
+                      <TreeActionsDropdown treeDefinition={treeDefinition} treeName={treeName} />
                     )}
                   </div>
                 </div>
@@ -161,11 +161,11 @@ export function TreeSelectDialog({
   ) : null;
 }
 
-function ActionsMenu({ treeName, treeDefinition }: { treeName: string; treeDefinition: any }): JSX.Element | null {
-  const [result, setResult] = React.useState<null | { accepted: number; synonyms: number; total: number }>(null);
+function ActionsMenu({ treeName, treeDefinition }: { readonly treeName: string; readonly treeDefinition: any }): JSX.Element | null {
+  const [result, setResult] = React.useState<{ readonly accepted: number; readonly synonyms: number; readonly total: number } | null>(null);
   const [isRunning, setIsRunning] = React.useState(false);
   const [repairStatus, setRepairStatus] = React.useState<'idle' | 'success'>('idle');
-  const [hoveredAction, setHoveredAction] = React.useState<null | 'repair' | 'rebuildAccepted' | 'rebuildSynonyms'>(null);
+  const [hoveredAction, setHoveredAction] = React.useState<'rebuildAccepted' | 'rebuildSynonyms' | 'repair' | null>(null);
   if (typeof treeDefinition !== 'object') return null;
   if (!(treeName in TREE_RESOURCES)) return null;
   const canRebuild = hasPermission(TREE_RESOURCES[treeName as TreeNameKey], 'rebuild_fullname');
@@ -176,7 +176,7 @@ function ActionsMenu({ treeName, treeDefinition }: { treeName: string; treeDefin
     setIsRunning(true);
     setResult(null);
     setRepairStatus('idle');
-    ajax<{ success: boolean; rebuild_synonyms: boolean; changed: { accepted: number; synonyms: number; total: number } } | string>(
+    ajax<string | { readonly success: boolean; readonly rebuild_synonyms: boolean; readonly changed: { readonly accepted: number; readonly synonyms: number; readonly total: number } }>(
       `/api/specify_tree/${treeName.toLowerCase()}/${id}/rebuild-full-name${withSynonyms ? '?rebuild_synonyms=true' : ''}`,
       { method: 'POST', headers: { Accept: 'application/json' }, errorMode: 'dismissible' }
     )
@@ -188,7 +188,7 @@ function ActionsMenu({ treeName, treeDefinition }: { treeName: string; treeDefin
         const rawData: any = (resp as any).data ?? resp;
         let parsed: any = rawData;
         if (typeof rawData === 'string') {
-          try { parsed = JSON.parse(rawData); } catch { /* ignore */ }
+          try { parsed = JSON.parse(rawData); } catch { /* Ignore */ }
         }
         const changed = parsed?.changed;
         const accepted = changed?.accepted ?? 0;
@@ -210,15 +210,15 @@ function ActionsMenu({ treeName, treeDefinition }: { treeName: string; treeDefin
       .then(() => setRepairStatus('success'))
       .finally(() => setIsRunning(false));
   };
-  type ActionKey = 'repair' | 'rebuildAccepted' | 'rebuildSynonyms';
-  interface ActionDef {
-    key: ActionKey;
-    can: boolean;
-    label: () => LocalizedString;
-    description: () => LocalizedString;
-    run: () => void;
+  type ActionKey = 'rebuildAccepted' | 'rebuildSynonyms' | 'repair';
+  type ActionDef = {
+    readonly key: ActionKey;
+    readonly can: boolean;
+    readonly label: () => LocalizedString;
+    readonly description: () => LocalizedString;
+    readonly run: () => void;
   }
-  const actions: ReadonlyArray<ActionDef> = [
+  const actions: readonly ActionDef[] = [
     {
       key: 'repair',
       can: canRepair,
@@ -270,8 +270,8 @@ function ActionsMenu({ treeName, treeDefinition }: { treeName: string; treeDefin
       <div className="flex flex-col gap-2">
         {visibleActions.map((a) => (
           <Button.Secondary
-            key={a.key}
             disabled={isRunning}
+            key={a.key}
             onClick={(e): void => { e.preventDefault(); a.run(); }}
             onMouseEnter={(): void => setHoveredAction(a.key)}
             onMouseLeave={(): void => setHoveredAction((h) => (h === a.key ? null : h))}
@@ -285,11 +285,11 @@ function ActionsMenu({ treeName, treeDefinition }: { treeName: string; treeDefin
   );
 }
 
-function TreeActionsDropdown({ treeName, treeDefinition }: { treeName: string; treeDefinition: any }): JSX.Element | null {
+function TreeActionsDropdown({ treeName, treeDefinition }: { readonly treeName: string; readonly treeDefinition: any }): JSX.Element | null {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLButtonElement | null>(null);
   const menuRef = React.useRef<HTMLDivElement | null>(null);
-  const [position, setPosition] = React.useState<{ top: number; left: number } | null>(null);
+  const [position, setPosition] = React.useState<{ readonly top: number; readonly left: number } | null>(null);
 
   const hasAnyPermission = React.useMemo(() => {
     if (!(treeName in TREE_RESOURCES)) return false;
@@ -300,9 +300,9 @@ function TreeActionsDropdown({ treeName, treeDefinition }: { treeName: string; t
   }, [treeName]);
 
   const updatePosition = React.useCallback(() => {
-    const el = anchorRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
+    const element = anchorRef.current;
+    if (!element) return;
+    const rect = element.getBoundingClientRect();
     setPosition({ top: rect.bottom + window.scrollY + 4, left: rect.right + window.scrollX });
   }, []);
 
@@ -314,7 +314,7 @@ function TreeActionsDropdown({ treeName, treeDefinition }: { treeName: string; t
   anchorRef.current?.contains(e.target as Node) ||
         menuRef.current?.contains(e.target as Node)
       ) {
-        return; // inside
+        return; // Inside
       }
       setOpen(false);
     };
@@ -334,10 +334,10 @@ function TreeActionsDropdown({ treeName, treeDefinition }: { treeName: string; t
   return (
     <>
       <Button.Icon
-        icon="cog"
-        aria-haspopup="menu"
         aria-expanded={open}
+        aria-haspopup="menu"
         aria-label={headerText.treeOptions()}
+        icon="cog"
         title={headerText.treeOptions()}
         onClick={(e): void => {
           e.preventDefault();
@@ -353,12 +353,12 @@ function TreeActionsDropdown({ treeName, treeDefinition }: { treeName: string; t
       {open && position && (
         <Portal>
           <div
+            className="z-[10000] fixed w-64 -translate-x-full rounded border border-gray-300 dark:border-gray-600 shadow-lg"
             ref={menuRef}
             role="menu"
-            className="z-[10000] fixed w-64 -translate-x-full rounded border border-gray-300 dark:border-gray-600 shadow-lg"
             style={{ top: position.top, left: position.left }}
           >
-            <ActionsMenu treeName={treeName} treeDefinition={treeDefinition} />
+            <ActionsMenu treeDefinition={treeDefinition} treeName={treeName} />
           </div>
         </Portal>
       )}
