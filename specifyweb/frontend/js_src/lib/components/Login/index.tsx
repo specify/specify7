@@ -19,18 +19,18 @@ import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { SplashScreen } from '../Core/SplashScreen';
+import { LoadingScreen } from '../Molecules/Dialog';
 import { SetupTool } from '../SetupTool';
 import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
 import type { OicProvider } from './OicLogin';
 import { OicLogin } from './OicLogin';
-import { LoadingScreen } from '../Molecules/Dialog';
 
 export type SetupProgress = {
-  institution: boolean;
-  division: boolean;
-  discipline: boolean;
-  collection: boolean;
-  specifyUser: boolean;
+  readonly institution: boolean;
+  readonly division: boolean;
+  readonly discipline: boolean;
+  readonly collection: boolean;
+  readonly specifyUser: boolean;
 };
 
 export function Login(): JSX.Element {
