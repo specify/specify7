@@ -91,7 +91,7 @@ def consolidated_0038_backward(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0037_make_smushed_default_false'),
+        ('specify', '0038_make_countonly_default_false'),
     ]
 
     operations = [
