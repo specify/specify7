@@ -12,6 +12,7 @@ from functools import reduce
 
 from django.conf import settings
 from django.db import transaction
+from django.utils import timezone
 from specifyweb.specify.models import Collectionobject
 from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting
 from sqlalchemy import sql, orm, func, text
@@ -643,7 +644,8 @@ def recordset(collection, user, user_agent, recordset_info): # pragma: no cover
 
     with models.session_context() as session:
         recordset = models.RecordSet()
-        recordset.timestampCreated = datetime.now()
+        recordset.timestampCreated = timezone.now()
+        recordset.timestampModified = recordset.timestampCreated
         recordset.version = 0
         recordset.collectionMemberId = collection.id
         recordset.dbTableId = tableid
