@@ -359,7 +359,7 @@ msgstr "Salvar"
 #: components/Statistics/Categories.tsx:285
 #: components/Statistics/StatsPageEditing.tsx:47
 #: components/Statistics/index.tsx:636
-#: components/Toolbar/ListEdit.tsx:145
+#: components/Toolbar/ListEdit.tsx:144
 #: components/WbPlanView/navigator.ts:350
 #: components/WebLinks/Definition.tsx:117
 #: components/WebLinks/List.tsx:53
@@ -516,7 +516,7 @@ msgstr "Enviado"
 #: components/Security/Role.tsx:182
 #: components/Statistics/StatsPageEditing.tsx:37
 #: components/Statistics/StatsResult.tsx:62
-#: components/Toolbar/ListEdit.tsx:151
+#: components/Toolbar/ListEdit.tsx:150
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Form Cells > Form Table ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Formatters > Fields ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Field Filter Tool ⬤ Components > Query Builder > Line ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Policy ⬤ Components > Security > Role ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > List Edit
 #, fuzzy
 msgid "remove"
