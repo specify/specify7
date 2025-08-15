@@ -89,6 +89,14 @@ def create_division(request, direct=False):
 
     data = json.loads(request.body)
 
+    # If division_id is provided and exists, return success
+    existing_id = data.get('division_id')
+    if existing_id:
+        existing_division = Division.objects.filter(id=existing_id).first()
+        if existing_division:
+            return JsonResponse({"success": True, "division_id": existing_division.id}, status=200)
+
+
     # Determine new Division ID
     max_id = Division.objects.aggregate(Max('id'))['id__max'] or 0
     data['id'] = max_id + 1
@@ -134,6 +142,13 @@ def create_discipline(request, direct=False):
     # Load and normalize data keys
     raw_data = json.loads(request.body)
     data = {k.lower(): v for k, v in raw_data.items()}
+
+    # Check if discipline_id is provided and already exists
+    existing_id = data.get('discipline_id')
+    if existing_id:
+        existing_discipline = Discipline.objects.filter(id=existing_id).first()
+        if existing_discipline:
+            return JsonResponse({"success": True, "discipline_id": existing_discipline.id}, status=200)
 
     # Resolve division
     division_url = data.get('division')
@@ -202,6 +217,13 @@ def create_collection(request, direct=False):
     # Load and normalize data keys
     raw_data = json.loads(request.body)
     data = {k.lower(): v for k, v in raw_data.items()}
+
+    # If collection_id is provided and exists, return success
+    existing_id = data.get('collection_id')
+    if existing_id:
+        existing_collection = Collection.objects.filter(id=existing_id).first()
+        if existing_collection:
+            return JsonResponse({"success": True, "collection_id": existing_collection.id}, status=200)
 
     # Assign new Collection ID
     max_id = Collection.objects.aggregate(Max('id'))['id__max'] or 0
