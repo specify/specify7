@@ -37,9 +37,14 @@ logger = logging.getLogger(__name__)
 def login_maybe_required(view):
     @wraps(view)
     def wrapped(request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return http.HttpResponseForbidden()
-        return view(request, *args, **kwargs)
+        if hasattr(request, 'user') and request.user is not None:
+            if request.user.is_authenticated:
+                return view(request, *args, **kwargs)
+
+            if not spmodels.Institution.objects.exists():
+                return view(request, *args, **kwargs)
+
+        return http.HttpResponseForbidden()
     return wrapped
 
 
@@ -1428,12 +1433,6 @@ def parse_locality_set_foreground(collection, column_headers: list[str], data: l
 
     return 200, parsed
 
-
-# check if user is new by looking the presence of institution
-def is_new_user(request):
-    is_new_user = len(spmodels.Institution.objects.all()) == 0
-    return http.JsonResponse(is_new_user, safe=False)
-
 @login_maybe_required
 @require_POST
 def catalog_number_for_sibling(request: http.HttpRequest):
@@ -1516,7 +1515,6 @@ def catalog_number_from_parent(request: http.HttpRequest):
         print(f"Error processing request: {e}")
         return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)  
 
-
 @login_maybe_required
 @require_POST
 def series_autonumber_range(request: http.HttpRequest):
@@ -1584,4 +1582,4 @@ def series_autonumber_range(request: http.HttpRequest):
             'values': values,
         })
     except Exception as e:
-        return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)
+        return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)  
