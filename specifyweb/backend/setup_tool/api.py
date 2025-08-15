@@ -162,16 +162,18 @@ def create_discipline(request, direct=False):
         data.pop('_tablename', None)
         data.pop('success', None)
         data.pop('discipline_id', None)
+        data.pop('datatype', None)
 
         try:
             new_discipline = Discipline.objects.create(**data)
 
-            # Create Splocalecontainers for every table in datamodel
-            for model_name in model_names_by_table_id.values():
-                update_table_schema_config_with_defaults(
-                    table_name=model_name,
-                    discipline_id=new_discipline.id
-                )
+            # Create Splocalecontainers for every table in datamodel during setup
+            if not division_url: 
+                for model_name in model_names_by_table_id.values():
+                    update_table_schema_config_with_defaults(
+                        table_name=model_name,
+                        discipline_id=new_discipline.id
+                    )
 
             return JsonResponse({"success": True, "discipline_id": new_discipline.id}, status=200)
 
