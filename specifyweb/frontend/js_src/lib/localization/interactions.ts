@@ -251,7 +251,7 @@ export const interactionsText = createDictionary({
     'ru-ru': '{tableName:string}: {resource:string}',
     'es-es': '{tableName:string}: {resource:string}',
     'fr-fr': '{tableName:string}: {resource:string}',
-    'uk-ua': "{tableName:string}': {resource:string}",
+    'uk-ua': '{tableName:string}: {resource:string}',
     'de-ch': '{tableName:string}: {resource:string}',
     'pt-br': '{tableName:string}: {resource:string}',
   },
