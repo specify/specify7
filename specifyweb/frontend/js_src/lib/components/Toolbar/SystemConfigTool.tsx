@@ -55,10 +55,10 @@ export function SystemConfigurationTool(): JSX.Element | null {
         Accept: 'application/json',
       },
       body: data,
-    }).then(() => {
-      closeNewResource();
-      window.location.reload();
-    });
+    })
+      .then(() => fetchAllSystemData)
+      .then(setAllInfo)
+      .then(() => closeNewResource());
   };
 
   const renderHierarchy = (
