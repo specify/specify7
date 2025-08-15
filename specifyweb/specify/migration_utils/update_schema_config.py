@@ -1376,7 +1376,7 @@ def revert_update_accession_date_fields(apps):
 def update_version_required(apps):
     Discipline = apps.get_model('specify', 'Discipline')
     updated_config_params = {
-        'isrequired': True,
+        'isrequired': False,
     }
 
     # Update the schema config for each discipline with the version isHidden change
@@ -1388,7 +1388,7 @@ def update_version_required(apps):
 def revert_version_required(apps):
     Discipline = apps.get_model('specify', 'Discipline')
     updated_config_params = {
-        'isrequired': False,
+        'isrequired': True,
     }
 
     # Revert the schema config for each discipline with the version isHidden change

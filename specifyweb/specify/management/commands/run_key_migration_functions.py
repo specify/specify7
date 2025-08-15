@@ -59,7 +59,6 @@ def fix_schema_config():
     usc.add_quantities_gift(apps) # specify 0032
     usc.update_paleo_desc(apps) # specify 0033
     usc.update_accession_date_fields(apps) # specify 0034
-    usc.update_version_required(apps) # specify 0035
 
 def fix_business_rules():
     # Discipline = apps.get_model('specify', 'Discipline')
