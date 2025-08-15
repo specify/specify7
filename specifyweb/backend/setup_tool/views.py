@@ -8,7 +8,7 @@ def create_institution(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            new_institution = spmodels.Institution.objects.create(**data)
+            new_institution = models.Institution.objects.create(**data)
             return http.JsonResponse(
                 {"success": True, "institution_id": new_institution.id},
                 status=201

@@ -8,11 +8,15 @@ import { Container, H2, H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
-import type { Collection } from '../DataModel/types';
+import type { Collection, Discipline, Division } from '../DataModel/types';
 import { collection } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { load } from '../InitialContext';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
+import { f } from '../../utils/functools';
+import { serializeResource } from '../DataModel/serializers';
 
 export function SystemConfigurationTool(): JSX.Element | null {
   const [allInfo, setAllInfo] = React.useState<InstitutionData | null>(null);
@@ -23,7 +27,10 @@ export function SystemConfigurationTool(): JSX.Element | null {
   const [parentId, setParentId] = React.useState<number | undefined>();
 
   const [newResource, setNewResource] = React.useState<
-    SpecifyResource<Collection> | undefined
+    | SpecifyResource<Collection>
+    | SpecifyResource<Division>
+    | SpecifyResource<Discipline>
+    | undefined
   >();
 
   React.useEffect(() => {
@@ -31,6 +38,34 @@ export function SystemConfigurationTool(): JSX.Element | null {
       .then(setAllInfo)
       .catch(() => console.warn('Error when fetching institution info'));
   }, []);
+
+  const handleSaved = () => {
+    if (!newResource) return;
+
+    const data = serializeResource(newResource as SpecifyResource<Collection>);
+
+    let url = '';
+    let parentKey: number | null = parentId ?? 0;
+    if (newResource.specifyTable.name === 'Division') {
+      url = '/setup_tool/division/create/';
+    } else if (newResource.specifyTable.name === 'Discipline') {
+      url = '/setup_tool/discipline/create/';
+    } else if (newResource.specifyTable.name === 'Collection') {
+      url = '/setup_tool/collection/create/';
+    }
+
+    ajax<{}>(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+      },
+      body: data,
+      // [parentKey]: parentId,
+    })
+      .then(() => fetchAllSystemData)
+      .then(setAllInfo)
+      .then(() => closeNewResource());
+  };
 
   const renderHierarchy = (
     institution: InstitutionData | null
@@ -50,7 +85,9 @@ export function SystemConfigurationTool(): JSX.Element | null {
                   `'Add new division to institution' ${institution.id}`
                 );
                 setParentId(institution.id);
-                setNewResource(new tables.Division.Resource());
+                setNewResource(
+                  new tables.Division.Resource() as SpecifyResource<Collection>
+                );
                 handleNewResource();
               }}
             />
@@ -68,7 +105,11 @@ export function SystemConfigurationTool(): JSX.Element | null {
                         `'Add new discipline to division' ${division.id}`
                       );
                       setParentId(division.id);
-                      setNewResource(new tables.Discipline.Resource());
+                      setNewResource(
+                        new tables.Discipline.Resource({
+                          division: `/api/specify/discipline/${division.id}/`,
+                        }) as SpecifyResource<Discipline>
+                      );
                       handleNewResource();
                     }}
                   />
@@ -87,7 +128,11 @@ export function SystemConfigurationTool(): JSX.Element | null {
                                 `'Add new collection to discipline' ${discipline.id}`
                               );
                               setParentId(discipline.id);
-                              setNewResource(new tables.Collection.Resource());
+                              setNewResource(
+                                new tables.Collection.Resource({
+                                  discipline: `/api/specify/discipline/${discipline.id}/`,
+                                }) as SpecifyResource<Collection>
+                              );
                               handleNewResource();
                             }}
                           />
@@ -133,12 +178,12 @@ export function SystemConfigurationTool(): JSX.Element | null {
             dialog="modal"
             isDependent={false}
             isSubForm={false}
-            resource={newResource}
+            resource={newResource as SpecifyResource<Collection>}
             viewName={collection}
             onAdd={undefined}
             onClose={closeNewResource}
             onDeleted={undefined}
-            onSaved={() => console.log('Click')}
+            onSaved={handleSaved}
           />
         </Dialog>
       ) : undefined}

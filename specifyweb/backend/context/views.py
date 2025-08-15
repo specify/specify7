@@ -25,7 +25,7 @@ from specifyweb.backend.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, \
     check_permission_targets, skip_collection_access_check, query_pt, \
     CollectionAccessPT
-from specifyweb.specify.models import Collection, Institution, \
+from specifyweb.specify.models import Collection, Discipline, Division, Institution, \
     Specifyuser, Spprincipal, Spversion, Collectionobjecttype
 from specifyweb.specify.schema import base_schema
 from specifyweb.specify.api import uri_for_model
