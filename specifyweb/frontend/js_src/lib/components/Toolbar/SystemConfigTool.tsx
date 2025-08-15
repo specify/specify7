@@ -22,8 +22,6 @@ export function SystemConfigurationTool(): JSX.Element | null {
   const [newResourceOpen, handleNewResource, closeNewResource] =
     useBooleanState();
 
-  const [parentId, setParentId] = React.useState<number | undefined>();
-
   const [newResource, setNewResource] = React.useState<
     | SpecifyResource<Collection>
     | SpecifyResource<Division>
@@ -80,7 +78,6 @@ export function SystemConfigurationTool(): JSX.Element | null {
                 console.log(
                   `'Add new division to institution' ${institution.id}`
                 );
-                setParentId(institution.id);
                 setNewResource(
                   new tables.Division.Resource() as SpecifyResource<Collection>
                 );
@@ -100,7 +97,6 @@ export function SystemConfigurationTool(): JSX.Element | null {
                       console.log(
                         `'Add new discipline to division' ${division.id}`
                       );
-                      setParentId(division.id);
                       setNewResource(
                         new tables.Discipline.Resource({
                           division: `/api/specify/discipline/${division.id}/`,
@@ -123,7 +119,6 @@ export function SystemConfigurationTool(): JSX.Element | null {
                               console.log(
                                 `'Add new collection to discipline' ${discipline.id}`
                               );
-                              setParentId(discipline.id);
                               setNewResource(
                                 new tables.Collection.Resource({
                                   discipline: `/api/specify/discipline/${discipline.id}/`,
