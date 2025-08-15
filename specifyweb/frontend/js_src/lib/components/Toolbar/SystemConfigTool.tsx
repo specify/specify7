@@ -183,10 +183,6 @@ export function SystemConfigurationTool(): JSX.Element | null {
 }
 
 type InstitutionData = {
-  /*
-   * Readonly 'institution': {
-   *   // Institution
-   */
   readonly id: number;
   readonly name: string;
   readonly children: RA<{
@@ -205,7 +201,6 @@ type InstitutionData = {
     }>;
   }>;
 };
-// };
 
 let institutionData: InstitutionData;
 
