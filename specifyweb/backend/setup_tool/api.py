@@ -79,155 +79,162 @@ def create_institution(request, direct=False):
 def create_division(request, direct=False):
     from specifyweb.specify.models import Division, Institution
 
+    # Check permission
     if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
 
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        max_id = int(Division.objects.aggregate(Max('id'))['id__max']) if Division.objects.exists() else 0
+    # Only allow POST requests
+    if request.method != 'POST':
+        return JsonResponse({"error": "Invalid request"}, status=400)
 
-        data['id'] = max_id + 1
-        data['abbrev'] = data.get('abbreviation', data.get('abbrev', ''))
+    data = json.loads(request.body)
 
-        if 'institution' not in data:
-            data['institution_id'] = Institution.objects.last().id
-        else:
-            institution_url = data['institution']
-            institution = strict_uri_to_model(institution_url, 'institution')
-            data['institution_id'] = institution[1]
-            data.pop('institution', None)
+    # Determine new Division ID
+    max_id = Division.objects.aggregate(Max('id'))['id__max'] or 0
+    data['id'] = max_id + 1
 
-        data.pop('abbreviation', None)
-        data.pop('_tableName', None)
-        data.pop('success', None)
-        data.pop('division_id', None)
+    # Normalize abbreviation
+    data['abbrev'] = data.get('abbreviation') or data.get('abbrev', '')
 
-        try:
-            new_division = Division.objects.create(**data)
-            return JsonResponse({"success": True, "division_id": new_division.id}, status=200)
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=400)
-    return JsonResponse({"error": "Invalid request"}, status=400)
+    # Handle institution assignment
+    if 'institution' in data:
+        institution_url = data.pop('institution')
+        institution = strict_uri_to_model(institution_url, 'institution')
+        data['institution_id'] = institution[1]
+    else:
+        last_institution = Institution.objects.last()
+        data['institution_id'] = last_institution.id if last_institution else None
+
+    # Remove unwanted keys
+    for key in ['abbreviation', '_tableName', 'success', 'division_id']:
+        data.pop(key, None)
+
+    # Create new division
+    try:
+        new_division = Division.objects.create(**data)
+        return JsonResponse({"success": True, "division_id": new_division.id}, status=200)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
+
 
 def create_discipline(request, direct=False):
-    from specifyweb.specify.models import Discipline, Division, Datatype, Geographytreedef, Geologictimeperiodtreedef
+    from specifyweb.specify.models import (
+        Discipline, Division, Datatype,
+        Geographytreedef, Geologictimeperiodtreedef
+    )
 
+    # Permission check
     if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
 
-    if request.method == 'POST':
-        raw_data = json.loads(request.body)
-        # Lowercase all keys
-        data = {k.lower(): v for k, v in raw_data.items()}
+    # Only allow POST requests
+    if request.method != 'POST':
+        return JsonResponse({"error": "Invalid request"}, status=400)
 
-        # Determine division_id from request or fallback to last Division
-        division_url = data.get('division')
-        if division_url:
-            # Extract ID from URL
-            try:
-                division_id = int(division_url.rstrip('/').split('/')[-1])
-                division = Division.objects.get(id=division_id)
-            except ValueError:
-                return JsonResponse({"error": "Invalid division URL"}, status=400)
-        else:
-            # Fallback to last Division
-            division = Division.objects.last()
-            if not division:
-                return JsonResponse({"error": "No Division available to assign"}, status=400)
+    # Load and normalize data keys
+    raw_data = json.loads(request.body)
+    data = {k.lower(): v for k, v in raw_data.items()}
 
-        data['division'] = division
-
-        # Ensure Datatype exists
-        datatype = Datatype.objects.last()
-        if not datatype:
-            datatype = Datatype.objects.create(id=1, name='Biota') 
-        data['datatype_id'] = datatype.id
-
-        # Ensure Geographytreedef exists
-        geography_tree_def = Geographytreedef.objects.last()
-        if not geography_tree_def:
-            geography_tree_def = Geographytreedef.objects.create(id=1, name='Geography')
-        data['geographytreedef_id'] = geography_tree_def.id
-
-        # Ensure Geologictimeperiodtreedef exists
-        geologic_time_def = Geologictimeperiodtreedef.objects.last()
-        if not geologic_time_def:
-            geologic_time_def = Geologictimeperiodtreedef.objects.create(id=1, name='Chronostratigraphy')
-        data['geologictimeperiodtreedef_id'] = geologic_time_def.id
-
-        # Assign new ID
-        max_id = Discipline.objects.aggregate(Max('id'))['id__max'] or 0
-        data['id'] = max_id + 1
-
-        data.pop('_tablename', None)
-        data.pop('success', None)
-        data.pop('discipline_id', None)
-        data.pop('datatype', None)
-
+    # Resolve division
+    division_url = data.get('division')
+    if division_url:
         try:
-            new_discipline = Discipline.objects.create(**data)
+            division_id = int(division_url.rstrip('/').split('/')[-1])
+            division = Division.objects.get(id=division_id)
+        except (ValueError, Division.DoesNotExist):
+            return JsonResponse({"error": "Invalid division URL"}, status=400)
+    else:
+        division = Division.objects.last()
+        if not division:
+            return JsonResponse({"error": "No Division available to assign"}, status=400)
 
-            # Create Splocalecontainers for every table in datamodel during setup
-            if not division_url: 
-                for model_name in model_names_by_table_id.values():
-                    update_table_schema_config_with_defaults(
-                        table_name=model_name,
-                        discipline_id=new_discipline.id
-                    )
+    data['division'] = division
 
-            return JsonResponse({"success": True, "discipline_id": new_discipline.id}, status=200)
+    # Ensure required foreign key objects exist
+    datatype = Datatype.objects.last() or Datatype.objects.create(id=1, name='Biota')
+    geography_def = Geographytreedef.objects.last() or Geographytreedef.objects.create(id=1, name='Geography')
+    geologic_time_def = Geologictimeperiodtreedef.objects.last() or Geologictimeperiodtreedef.objects.create(id=1, name='Chronostratigraphy')
 
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=400)
+    data.update({
+        'datatype_id': datatype.id,
+        'geographytreedef_id': geography_def.id,
+        'geologictimeperiodtreedef_id': geologic_time_def.id
+    })
 
-    return JsonResponse({"error": "Invalid request"}, status=400)
+    # Assign new Discipline ID
+    max_id = Discipline.objects.aggregate(Max('id'))['id__max'] or 0
+    data['id'] = max_id + 1
+
+    # Remove unwanted keys
+    for key in ['_tablename', 'success', 'discipline_id', 'datatype']:
+        data.pop(key, None)
+
+    # Create new Discipline
+    try:
+        new_discipline = Discipline.objects.create(**data)
+
+        # During setup, create Splocalecontainers for all datamodel tables
+        if not division_url:
+            for model_name in model_names_by_table_id.values():
+                update_table_schema_config_with_defaults(
+                    table_name=model_name,
+                    discipline_id=new_discipline.id
+                )
+
+        return JsonResponse({"success": True, "discipline_id": new_discipline.id}, status=200)
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
+
 
 
 def create_collection(request, direct=False):
     from specifyweb.specify.models import Collection, Discipline
 
+    # Permission check
     if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
 
-    if request.method == 'POST':
-        raw_data = json.loads(request.body)
-        # Lowercase all keys
-        data = {k.lower(): v for k, v in raw_data.items()}
+    # Only allow POST requests
+    if request.method != 'POST':
+        return JsonResponse({"error": "Invalid request"}, status=400)
 
-        # Assign a new ID (optional if auto-increment is used)
-        max_id = Collection.objects.aggregate(Max('id'))['id__max'] or 0
-        data['id'] = max_id + 1
+    # Load and normalize data keys
+    raw_data = json.loads(request.body)
+    data = {k.lower(): v for k, v in raw_data.items()}
 
-        # Handle 'discipline' key from API URL
-        discipline_url = data.get('discipline')
-        if discipline_url:
-            try:
-                discipline_id = int(discipline_url.rstrip('/').split('/')[-1])
-                data['discipline_id'] = discipline_id
-            except ValueError:
-                return JsonResponse({"error": "Invalid discipline URL"}, status=400)
+    # Assign new Collection ID
+    max_id = Collection.objects.aggregate(Max('id'))['id__max'] or 0
+    data['id'] = max_id + 1
 
-        # Assign a discipline (use last one if none provided)
-        if 'discipline_id' not in data or not data['discipline_id']:
-            last_discipline = Discipline.objects.last()
-            if last_discipline:
-                data['discipline_id'] = last_discipline.id
-            else:
-                return JsonResponse({"error": "No discipline available"}, status=400)
-
-        # Remove 'discipline' key so it doesn't conflict with ForeignKey
-        data.pop('discipline', None)
-        data.pop('_tablename', None)
-        data.pop('success', None)
-        data.pop('collection_id', None)
-
+    # Handle discipline reference from URL
+    discipline_url = data.get('discipline')
+    if discipline_url:
         try:
-            new_collection = Collection.objects.create(**data)
-            return JsonResponse({"success": True, "collection_id": new_collection.id}, status=200)
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=400)
+            discipline_id = int(discipline_url.rstrip('/').split('/')[-1])
+            data['discipline_id'] = discipline_id
+        except ValueError:
+            return JsonResponse({"error": "Invalid discipline URL"}, status=400)
 
-    return JsonResponse({"error": "Invalid request"}, status=400)
+    # Fallback to last Discipline if none provided
+    if not data.get('discipline_id'):
+        last_discipline = Discipline.objects.last()
+        if last_discipline:
+            data['discipline_id'] = last_discipline.id
+        else:
+            return JsonResponse({"error": "No discipline available"}, status=400)
+
+    # Remove keys that should not be passed to model
+    for key in ['discipline', '_tablename', 'success', 'collection_id']:
+        data.pop(key, None)
+
+    # Create new Collection
+    try:
+        new_collection = Collection.objects.create(**data)
+        return JsonResponse({"success": True, "collection_id": new_collection.id}, status=200)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
+
 
 def create_specifyuser(request, direct=False):
     from specifyweb.specify.models import Specifyuser, Agent, Division, Collection
