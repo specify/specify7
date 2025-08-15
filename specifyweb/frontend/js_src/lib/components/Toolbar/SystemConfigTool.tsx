@@ -3,19 +3,19 @@ import React from 'react';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
+import { ajax } from '../../utils/ajax';
 import { type RA, localized } from '../../utils/types';
+import { toLowerCase } from '../../utils/utils';
 import { Container, H2, H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { serializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
 import type { Collection, Discipline, Division } from '../DataModel/types';
 import { collection } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { load } from '../InitialContext';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
-import { ajax } from '../../utils/ajax';
-import { serializeResource } from '../DataModel/serializers';
-import { toLowerCase } from '../../utils/utils';
 
 export function SystemConfigurationTool(): JSX.Element | null {
   const [allInfo, setAllInfo] = React.useState<InstitutionData | null>(null);
@@ -24,10 +24,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
     useBooleanState();
 
   const [newResource, setNewResource] = React.useState<
-    | SpecifyResource<Collection>
-    | SpecifyResource<Division>
-    | SpecifyResource<Discipline>
-    | undefined
+    SpecifyResource<Collection> | SpecifyResource<Discipline> | SpecifyResource<Division> | undefined
   >();
 
   React.useEffect(() => {
@@ -36,7 +33,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
       .catch(() => console.warn('Error when fetching institution info'));
   }, []);
 
-  const refreshAllInfo = () =>
+  const refreshAllInfo = async () =>
     load<InstitutionData>(
       '/context/all_system_data.json',
       'application/json'
@@ -79,7 +76,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
                   `'Add new division to institution' ${institution.id}`
                 );
                 setNewResource(
-                  new tables.Division.Resource() as SpecifyResource<Collection>
+                  new tables.Division.Resource() 
                 );
                 handleNewResource();
               }}
@@ -100,7 +97,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
                       setNewResource(
                         new tables.Discipline.Resource({
                           division: `/api/specify/discipline/${division.id}/`,
-                        }) as SpecifyResource<Discipline>
+                        }) 
                       );
                       handleNewResource();
                     }}
@@ -122,7 +119,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
                               setNewResource(
                                 new tables.Collection.Resource({
                                   discipline: `/api/specify/discipline/${discipline.id}/`,
-                                }) as SpecifyResource<Collection>
+                                }) 
                               );
                               handleNewResource();
                             }}
