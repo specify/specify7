@@ -14,8 +14,6 @@ import { ResourceView } from '../Forms/ResourceView';
 import { load } from '../InitialContext';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
-import { f } from '../../utils/functools';
 import { serializeResource } from '../DataModel/serializers';
 
 export function SystemConfigurationTool(): JSX.Element | null {
@@ -45,7 +43,6 @@ export function SystemConfigurationTool(): JSX.Element | null {
     const data = serializeResource(newResource as SpecifyResource<Collection>);
 
     let url = '';
-    let parentKey: number | null = parentId ?? 0;
     if (newResource.specifyTable.name === 'Division') {
       url = '/setup_tool/division/create/';
     } else if (newResource.specifyTable.name === 'Discipline') {
@@ -60,11 +57,10 @@ export function SystemConfigurationTool(): JSX.Element | null {
         Accept: 'application/json',
       },
       body: data,
-      // [parentKey]: parentId,
-    })
-      .then(() => fetchAllSystemData)
-      .then(setAllInfo)
-      .then(() => closeNewResource());
+    }).then(() => {
+      closeNewResource();
+      window.location.reload();
+    });
   };
 
   const renderHierarchy = (
