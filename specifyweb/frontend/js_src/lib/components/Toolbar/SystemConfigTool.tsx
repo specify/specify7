@@ -15,6 +15,7 @@ import { load } from '../InitialContext';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { ajax } from '../../utils/ajax';
 import { serializeResource } from '../DataModel/serializers';
+import { toLowerCase } from '../../utils/utils';
 
 export function SystemConfigurationTool(): JSX.Element | null {
   const [allInfo, setAllInfo] = React.useState<InstitutionData | null>(null);
@@ -46,22 +47,16 @@ export function SystemConfigurationTool(): JSX.Element | null {
 
     const data = serializeResource(newResource as SpecifyResource<Collection>);
 
-    let url = '';
-    if (newResource.specifyTable.name === 'Division') {
-      url = '/setup_tool/division/create/';
-    } else if (newResource.specifyTable.name === 'Discipline') {
-      url = '/setup_tool/discipline/create/';
-    } else if (newResource.specifyTable.name === 'Collection') {
-      url = '/setup_tool/collection/create/';
-    }
-
-    ajax<{}>(url, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-      },
-      body: data,
-    })
+    ajax<{}>(
+      `/setup_tool/${toLowerCase(newResource.specifyTable.name)}/create/`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+        },
+        body: data,
+      }
+    )
       .then(refreshAllInfo)
       .then(closeNewResource);
   };
