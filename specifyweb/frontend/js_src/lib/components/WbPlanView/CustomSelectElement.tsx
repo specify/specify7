@@ -239,7 +239,7 @@ export type CustomSelectElementPropsOpenBase = CustomSelectElementPropsBase & {
   readonly onClose?: () => void;
 };
 
-type CustomSelectElementPropsOpen = CustomSelectElementPropsOpenBase & {
+export type CustomSelectElementPropsOpen = CustomSelectElementPropsOpenBase & {
   readonly customSelectOptionGroups: IR<CustomSelectElementOptionGroupProps>;
   readonly autoMapperSuggestions?: JSX.Element;
 };
