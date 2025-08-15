@@ -35,6 +35,12 @@ export function SystemConfigurationTool(): JSX.Element | null {
       .catch(() => console.warn('Error when fetching institution info'));
   }, []);
 
+  const refreshAllInfo = () =>
+    load<InstitutionData>(
+      '/context/all_system_data.json',
+      'application/json'
+    ).then(setAllInfo);
+
   const handleSaved = () => {
     if (!newResource) return;
 
@@ -56,9 +62,8 @@ export function SystemConfigurationTool(): JSX.Element | null {
       },
       body: data,
     })
-      .then(() => fetchAllSystemData)
-      .then(setAllInfo)
-      .then(() => closeNewResource());
+      .then(refreshAllInfo)
+      .then(closeNewResource);
   };
 
   const renderHierarchy = (
