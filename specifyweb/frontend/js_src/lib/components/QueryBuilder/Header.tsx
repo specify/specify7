@@ -15,11 +15,17 @@ import { resourceEvents } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import type { RecordSet, SpQuery, SpQueryField } from '../DataModel/types';
 import { TableIcon } from '../Molecules/TableIcon';
-import { hasToolPermission } from '../Permissions/helpers';
+import {
+  hasPermission,
+  hasTablePermission,
+  hasToolPermission,
+} from '../Permissions/helpers';
 import { SaveQueryButtons, ToggleMappingViewButton } from './Components';
 import { useQueryViewPref } from './Context';
 import { QueryEditButton } from './Edit';
 import type { MainState } from './reducer';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { QueryLoanReturn } from './LoanReturn';
 
 export type QueryView = {
   readonly basicView: RA<number>;
@@ -103,6 +109,19 @@ export function QueryHeader({
           />
         )}
       </div>
+      {state.baseTableName === 'LoanPreparation' &&
+      hasPermission('/querybuilder/query', 'execute') &&
+      hasTablePermission('Loan', 'update') &&
+      hasTablePermission('LoanReturnPreparation', 'create') &&
+      hasTablePermission('LoanPreparation', 'read') ? (
+        <ErrorBoundary dismissible>
+          <QueryLoanReturn
+            fields={state.fields}
+            getQueryFieldRecords={getQueryFieldRecords}
+            queryResource={queryResource}
+          />
+        </ErrorBoundary>
+      ) : undefined}
       <div className="flex flex-wrap justify-center gap-2">
         <Button.Small onClick={() => setIsBasic(!isBasic)}>
           {isBasic
