@@ -48,7 +48,7 @@
     "dayjs": "^1.10.7",
     "globals": "^13.19.0",
     "handsontable": "^12.1.0",
-    "jquery": "~1.12.0",
+    "jquery": "~3.5.0",
     "leaflet": "^1.7.1",
     "leaflet-gesture-handling": "^1.2.2",
     "leaflet.featuregroup.subgroup": "^1.0.2",
