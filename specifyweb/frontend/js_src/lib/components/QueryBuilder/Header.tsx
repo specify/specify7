@@ -14,6 +14,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceEvents } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import type { RecordSet, SpQuery, SpQueryField } from '../DataModel/types';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { TableIcon } from '../Molecules/TableIcon';
 import {
   hasPermission,
@@ -23,9 +24,8 @@ import {
 import { SaveQueryButtons, ToggleMappingViewButton } from './Components';
 import { useQueryViewPref } from './Context';
 import { QueryEditButton } from './Edit';
-import type { MainState } from './reducer';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { QueryLoanReturn } from './LoanReturn';
+import type { MainState } from './reducer';
 
 export type QueryView = {
   readonly basicView: RA<number>;
