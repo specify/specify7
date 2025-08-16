@@ -472,13 +472,6 @@ class QueryFieldSpec(
                     else:
                         raise
 
-                if field.type == "java.sql.Timestamp":
-                    # Only consider the date portion of timestamp fields.
-                    # This is to replicate the behavior of Sp6. It might
-                    # make sense to condition this on whether there is a
-                    # time component in the input value.
-                    orm_field = sql.func.DATE(orm_field)
-
                 if field.is_temporal() and self.date_part != "Full Date":
                     precision_field_name = field.name + "Precision"
                     precision_field = getattr(orm_model, precision_field_name, None)
