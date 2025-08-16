@@ -357,7 +357,7 @@ class ObjectFormatter:
 
     def _dateformat(self, specify_field, field):
         if specify_field.type == "java.sql.Timestamp":
-            return func.date_format(field, self.date_format)
+            return func.date_format(field, "%Y-%m-%d %H:%i:%s")
 
         prec_fld = getattr(field.class_, specify_field.name + 'Precision', None)
 
