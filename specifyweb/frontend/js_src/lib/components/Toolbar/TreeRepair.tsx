@@ -195,8 +195,8 @@ function ActionsMenu({
   );
   if (!canRebuild && !canRepair) return null;
   const id = treeDefinition.get('id');
-  interface RebuildChanged { readonly accepted: number; readonly synonyms: number; readonly total: number }
-  interface RebuildResponse { readonly success?: boolean; readonly rebuild_synonyms?: boolean; readonly changed?: Partial<RebuildChanged> | null }
+  type RebuildChanged = { readonly accepted: number; readonly synonyms: number; readonly total: number }
+  type RebuildResponse = { readonly success?: boolean; readonly rebuild_synonyms?: boolean; readonly changed?: Partial<RebuildChanged> | null }
   const parseRebuildResponse = (raw: unknown): RebuildChanged => {
     let payload: unknown = raw;
     if (payload && typeof payload === 'object' && 'data' in (payload as any)) {
