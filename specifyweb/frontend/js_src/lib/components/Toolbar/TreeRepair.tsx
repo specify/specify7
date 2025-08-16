@@ -168,7 +168,7 @@ function ActionsMenu({ treeName, treeDefinition }: { readonly treeName: string; 
   const [hoveredAction, setHoveredAction] = React.useState<'rebuildAccepted' | 'rebuildSynonyms' | 'repair' | null>(null);
   if (typeof treeDefinition !== 'object') return null;
   if (!(treeName in TREE_RESOURCES)) return null;
-  const canRebuild = hasPermission(TREE_RESOURCES[treeName as TreeNameKey], 'rebuild_fullname');
+  const canRebuild = hasPermission(TREE_RESOURCES[treeName as TreeNameKey], 'rebuild_full_names');
   const canRepair = hasPermission(TREE_RESOURCES[treeName as TreeNameKey], 'repair');
   if (!canRebuild && !canRepair) return null;
   const id = treeDefinition.get('id');
@@ -294,7 +294,7 @@ function TreeActionsDropdown({ treeName, treeDefinition }: { readonly treeName: 
   const hasAnyPermission = React.useMemo(() => {
     if (!(treeName in TREE_RESOURCES)) return false;
     return (
-      hasPermission(TREE_RESOURCES[treeName as TreeNameKey], 'rebuild_fullname') ||
+      hasPermission(TREE_RESOURCES[treeName as TreeNameKey], 'rebuild_full_names') ||
       hasPermission(TREE_RESOURCES[treeName as TreeNameKey], 'repair')
     );
   }, [treeName]);
