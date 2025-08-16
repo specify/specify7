@@ -195,22 +195,29 @@ function ActionsMenu({
   );
   if (!canRebuild && !canRepair) return null;
   const id = treeDefinition.get('id');
+  type RebuildChanged = { readonly accepted: number; readonly synonyms: number; readonly total: number }
+  type RebuildResponse = { readonly success?: boolean; readonly rebuild_synonyms?: boolean; readonly changed?: Partial<RebuildChanged> | null }
+  const parseRebuildResponse = (raw: unknown): RebuildChanged => {
+    let payload: unknown = raw;
+    if (payload && typeof payload === 'object' && 'data' in (payload as any)) {
+      payload = (payload as any).data;
+    }
+    if (typeof payload === 'string') {
+      try { payload = JSON.parse(payload); } catch { return { accepted: 0, synonyms: 0, total: 0 }; }
+    }
+    if (!payload || typeof payload !== 'object') return { accepted: 0, synonyms: 0, total: 0 };
+    const changed = (payload as RebuildResponse).changed || undefined;
+    const accepted = typeof changed?.accepted === 'number' ? changed.accepted : 0;
+    const synonyms = typeof changed?.synonyms === 'number' ? changed.synonyms : 0;
+    const total = typeof changed?.total === 'number' ? changed.total : accepted + synonyms;
+    return { accepted, synonyms, total };
+  };
+
   const trigger = (withSynonyms: boolean): void => {
     setIsRunning(true);
     setResult(null);
     setRepairStatus('idle');
-    ajax<
-      | string
-      | {
-          readonly success: boolean;
-          readonly rebuild_synonyms: boolean;
-          readonly changed: {
-            readonly accepted: number;
-            readonly synonyms: number;
-            readonly total: number;
-          };
-        }
-    >(
+    ajax<unknown>(
       `/api/specify_tree/${treeName.toLowerCase()}/${id}/rebuild-full-name${withSynonyms ? '?rebuild_synonyms=true' : ''}`,
       {
         method: 'POST',
@@ -218,26 +225,7 @@ function ActionsMenu({
         errorMode: 'dismissible',
       }
     )
-      .then((resp) => {
-        if (!resp) {
-          setResult({ accepted: 0, synonyms: 0, total: 0 });
-          return;
-        }
-        const rawData: any = (resp as any).data ?? resp;
-        let parsed: any = rawData;
-        if (typeof rawData === 'string') {
-          try {
-            parsed = JSON.parse(rawData);
-          } catch {
-            /* Ignore */
-          }
-        }
-        const changed = parsed?.changed;
-        const accepted = changed?.accepted ?? 0;
-        const synonyms = changed?.synonyms ?? 0;
-        const total = changed?.total ?? accepted + synonyms;
-        setResult({ accepted, synonyms, total });
-      })
+      .then((resp) => setResult(parseRebuildResponse(resp)))
       .finally(() => setIsRunning(false));
   };
   const triggerRepair = (): void => {
