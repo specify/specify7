@@ -323,7 +323,7 @@ function TreeActionsDropdown({ treeName, treeDefinition }: { readonly treeName: 
     window.addEventListener('scroll', onScrollOrResize, true);
     window.addEventListener('resize', onScrollOrResize);
     return () => {
-      window.removeEventListener('mousedown', onClick, { capture: true } as any);
+      window.removeEventListener('mousedown', onClick, { capture: true });
       window.removeEventListener('scroll', onScrollOrResize, true);
       window.removeEventListener('resize', onScrollOrResize);
     };
