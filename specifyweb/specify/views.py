@@ -31,6 +31,8 @@ from specifyweb.specify.update_locality import localityupdate_parse_success, loc
 from . import api, models as spmodels
 from .specify_jar import specify_jar, specify_jar_path
 from .uiformatters import get_uiformatter_by_name
+from .backup_task import backup_database_task
+import os as _os
 
 logger = logging.getLogger(__name__)
 
@@ -1585,3 +1587,4 @@ def series_autonumber_range(request: http.HttpRequest):
         })
     except Exception as e:
         return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)
+

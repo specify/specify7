@@ -135,7 +135,7 @@ FROM common AS run-common
 RUN set -eux; \
     for i in 1 2 3; do \
       apt-get update && \
-      apt-get -y install --no-install-recommends rsync && \
+      apt-get -y install --no-install-recommends rsync mariadb-client && \
       break; \
       echo "apt-get install rsync failed (attempt $i), retrying in 5s…"; \
       sleep 5; \

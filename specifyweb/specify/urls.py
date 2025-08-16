@@ -71,5 +71,6 @@ urlpatterns = [
     # set a user's password
     path('set_password/<int:userid>/', views.set_password),
     path('set_admin_status/<int:userid>/', views.set_admin_status),
-    path('set_agents/<int:userid>/', views.set_user_agents)
+    path('set_agents/<int:userid>/', views.set_user_agents),
+
 ]
