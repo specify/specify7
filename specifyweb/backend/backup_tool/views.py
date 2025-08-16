@@ -18,15 +18,11 @@ class BackupPT(PermissionTarget):
 @require_POST
 def backup_start(request):
     check_permission_targets(None, request.specify_user.id, [BackupPT.execute])
-    queue_name = getattr(settings, 'DATABASE_NAME', None)
     user_id = getattr(request, 'specify_user', None).id if getattr(request, 'specify_user', None) else None
     try:
-        if queue_name:
-            task = backup_database_task.apply_async(kwargs={'user_id': user_id}, queue=queue_name)
-        else:
-            task = backup_database_task.apply_async(kwargs={'user_id': user_id})
-    except Exception:
         task = backup_database_task.apply_async(kwargs={'user_id': user_id})
+    except Exception as e:
+        return http.JsonResponse({'error': 'queue-submit-failed', 'reason': str(e)}, status=500)
     return http.JsonResponse({'taskid': task.id})
 
 
