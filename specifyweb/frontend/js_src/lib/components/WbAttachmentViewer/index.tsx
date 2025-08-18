@@ -7,10 +7,14 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
+import { attachmentsText } from '../../localization/attachments';
+import { commonText } from '../../localization/common';
+import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { getCache, removeCache } from '../../utils/cache';
 import { exportsForTests } from '../../utils/cache/index';
 import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
 import { fetchOriginalUrl } from '../Attachments/attachments';
 import { ImageViewer } from '../Attachments/ImageViewer';
 import { AttachmentViewer } from '../Attachments/Viewer';
@@ -26,12 +30,8 @@ import {
 } from '../DataModel/serializers';
 import { serializeResource } from '../DataModel/serializers';
 import type { Attachment } from '../DataModel/types';
-import { NotFoundView } from '../Router/NotFoundView';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { attachmentsText } from '../../localization/attachments';
-import { commonText } from '../../localization/common';
-import { Button } from '../Atoms/Button';
-import { wbText } from '../../localization/workbench';
+import { NotFoundView } from '../Router/NotFoundView';
 
 const { parseCacheKey } = exportsForTests;
 
@@ -48,7 +48,7 @@ export function WbAttachmentViewerView(): JSX.Element {
    * Get attachment id from cache. Set by the parent workbench window.
    * URL contains the id of this attachment viewer. This makes sure this page
    * is linked to the correct workbench window.
-  */ 
+   */ 
   const location = useLocation();
   const parameters = new URLSearchParams(location.search);
   const viewerId = parameters.get("id") ?? '';
@@ -128,9 +128,7 @@ export function WbAttachmentViewerView(): JSX.Element {
           }}>
             {wbText.attachWindow()}
           </Button.Secondary>
-          <>
-            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          </>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
         </>
       }
       className={{container: dialogClassNames.fullScreen}}
