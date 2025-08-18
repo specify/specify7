@@ -31,7 +31,6 @@ from specifyweb.specify.update_locality import localityupdate_parse_success, loc
 from . import api, models as spmodels
 from .specify_jar import specify_jar, specify_jar_path
 from .uiformatters import get_uiformatter_by_name
-import os as _os
 
 logger = logging.getLogger(__name__)
 
