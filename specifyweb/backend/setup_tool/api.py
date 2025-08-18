@@ -24,57 +24,29 @@ def _guided_setup_condition(request):
 def create_institution(request, direct=False):
     from specifyweb.specify.models import Institution
 
-    if Institution.objects.exists() and not _guided_setup_condition(request):
-        return JsonResponse({"error": "Institution already exists"}, status=400)
+    # Check permission
+    if not _guided_setup_condition(request):
+        return JsonResponse({"error": "Not permitted"}, status=401)
 
-    if request.method == 'POST':
-        if Institution.objects.exists():
-            if not _guided_setup_condition(request):
-                return JsonResponse({"error": "Not permitted"}, status=401)
-            data = json.loads(request.body)
-            institution = Institution.objects.first()
-            fields_to_update = [
-                'name',
-                'code',
-                'isaccessionsglobal',
-                'issecurityon',
-                'isserverbased',
-                'issinglegeographytree',
-            ]
+    # Only allow POST requests
+    if request.method != 'POST':
+        return JsonResponse({"error": "Invalid request"}, status=400)
 
-            for field in fields_to_update:
-                if field in data:
-                    setattr(institution, field, data[field])
-            institution.save()
+    raw_data = json.loads(request.body)
 
-            return JsonResponse({"success": True, "institution_id": institution.id}, status=200)
-        try:
-            data = json.loads(request.body)
+    # Normalize keys: lowercase everything
+    data = {k.lower(): v for k, v in raw_data.items()}
 
-            key_map = {
-                'isAccessionsGlobal': 'isaccessionsglobal',
-                'isSecurityOn': 'issecurityon',
-                'isServerBased': 'isserverbased',
-                'isSingleGeographyTree': 'issinglegeographytree',
-            }
-            normalized_data = {}
+    # New DB: force id = 1
+    data['id'] = 1
 
-            for key, value in data.items():
-                normalized_key = key_map.get(key, key.lower() if key.isupper() else key)
-                normalized_data[normalized_key] = value
+    try:
+        new_institution = Institution.objects.create(**data)
+        Spversion.objects.create(appversion='7', schemaversion='2.10')
+        return JsonResponse({"success": True, "institution_id": new_institution.id}, status=200)
 
-            normalized_data['id'] = 1
-            new_institution = Institution.objects.create(**normalized_data)
-            Spversion.objects.create(
-                appversion='7',
-                schemaversion="2.10"
-            )
-
-            return JsonResponse({"success": True, "institution_id": new_institution.id}, status=200)
-
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=400)
-    return JsonResponse({"error": "Invalid request"}, status=400)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
 
 def create_division(request, direct=False):
     from specifyweb.specify.models import Division, Institution
@@ -123,7 +95,6 @@ def create_division(request, direct=False):
         return JsonResponse({"success": True, "division_id": new_division.id}, status=200)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
-
 
 def create_discipline(request, direct=False):
     from specifyweb.specify.models import (
@@ -201,8 +172,6 @@ def create_discipline(request, direct=False):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
 
-
-
 def create_collection(request, direct=False):
     from specifyweb.specify.models import Collection, Discipline
 
@@ -257,9 +226,8 @@ def create_collection(request, direct=False):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
 
-
 def create_specifyuser(request, direct=False):
-    from specifyweb.specify.models import Specifyuser, Agent, Division, Collection
+    from specifyweb.specify.models import Specifyuser, Agent, Division
 
     if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
