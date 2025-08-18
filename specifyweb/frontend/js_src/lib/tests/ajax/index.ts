@@ -65,10 +65,10 @@ export function overrideAjax(
   });
 }
 
-const basePathParts = process.cwd().split('/');
-const basePath = basePathParts
-  .slice(0, basePathParts.indexOf('js_src') + 1)
-  .join('/');
+// const basePathParts = process.cwd().split('/');
+// const basePath = basePathParts
+//   .slice(0, basePathParts.indexOf('js_src') + 1)
+//   .join('/');
 
 /**
  * When process.env.NODE_ENV === 'test', this intercepts the AJAX requests
@@ -112,7 +112,7 @@ export async function ajaxMock<RESPONSE_TYPE>(
    * Windows.
    */
   const [splitUrl, queryString = ''] = url.split('?');
-  const parsedPath = path.parse(`${basePath}/lib/tests/ajax/static${splitUrl}`);
+  const parsedPath = path.parse(`C:/Users/a114s239/Projects/specify7/specifyweb/frontend/js_src/lib/tests/ajax/static${splitUrl}`);
   const directoryName =
     queryString === ''
       ? parsedPath.dir

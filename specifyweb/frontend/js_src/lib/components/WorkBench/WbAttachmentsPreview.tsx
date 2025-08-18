@@ -40,7 +40,9 @@ import {
   getAttachmentsColumnIndex,
   getAttachmentsFromCell,
 } from '../WorkBench/attachmentHelpers';
-import { setCache } from '../../utils/cache';
+import { setCache, exportsForTests } from '../../utils/cache';
+
+const { formatCacheKey } = exportsForTests;
 
 type WbAttachmentPreviewCell = {
   readonly attachment: SerializedResource<Attachment> | undefined;
@@ -263,9 +265,16 @@ function AttachmentViewerDialog({
         setAttachmentUrl(`/attachment_gw/proxy/${new URL(url).search}`);
       }
     });
-
-    setCache('workBenchImageViewer', viewerId, [attachment.id]);
   }, [attachment]);
+
+  // Use cache/localStorage to communicate with WbAttachmentViewer page.
+  React.useEffect(() => {
+    if (attachment === undefined) return;
+    if (useWindow) {
+      setCache('workBenchAttachmentViewer', viewerId, [attachment.id]);
+    }
+  }, [attachment, useWindow]);
+
 
   const [related, setRelated] = React.useState<
     SpecifyResource<AnySchema> | undefined
@@ -284,8 +293,6 @@ function AttachmentViewerDialog({
       />
     ));
 
-  const switchingToDialog = React.useRef(false);
-
   return useWindow ? (
     <PopupWindow
       title={attachmentsText.attachments()}
@@ -294,11 +301,17 @@ function AttachmentViewerDialog({
         setUseWindow(false);
       }}
       onUnload={(): void => {
-        // Only close the viewer if the user isn't reattaching the window.
-        if (!switchingToDialog.current) {
+        /**
+         * Only close the viewer if the user isn't reattaching the window.
+         * We know the window was reattached if the cache key was removed.
+         * Not using getCache to avoid using the cached cache (localStorage) value.
+         */
+        const value = globalThis.localStorage.getItem(formatCacheKey('workBenchAttachmentViewer', viewerId));
+        if (value) {
           onClose();
+        } else {
+          setUseWindow(false);
         }
-        switchingToDialog.current = false;
       }}
     >
       {body}
