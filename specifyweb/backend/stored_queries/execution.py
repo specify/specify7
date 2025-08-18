@@ -24,7 +24,7 @@ from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fi
 from specifyweb.specify.tree_utils import get_search_filters
 
 from . import models
-from .format import ObjectFormatter
+from .format import ObjectFormatter, ObjectFormatterProps
 from .query_construct import QueryConstruct
 from .queryfield import QueryField
 from .relative_date_utils import apply_absolute_date
@@ -55,7 +55,6 @@ class QuerySort:
     def by_id(sort_id: int):
         return QuerySort.SORT_TYPES[sort_id]
 
-
 class BuildQueryProps(NamedTuple):
     recordsetid: int | None = None
     replace_nulls: bool = False
@@ -63,8 +62,13 @@ class BuildQueryProps(NamedTuple):
     distinct: bool = False
     series: bool = False
     implicit_or: bool = True
-    format_agent_type: bool = False
-    format_picklist: bool = False
+    formatter_props: ObjectFormatterProps = ObjectFormatterProps(
+        format_agent_type = False,
+        format_picklist = False,
+        format_types = True,
+        numeric_catalog_number = True,
+        format_expr = True,
+    )
 
 
 def set_group_concat_max_len(connection):
@@ -787,10 +791,9 @@ def execute(
     field_specs,
     limit,
     offset,
-    format_agent_type=False,
     recordsetid=None,
     formatauditobjs=False,
-    format_picklist=False,
+    formatter_props=ObjectFormatterProps(),
 ):
     "Build and execute a query, returning the results as a data structure for json serialization"
 
@@ -806,8 +809,7 @@ def execute(
             formatauditobjs=formatauditobjs,
             distinct=distinct,
             series=series,
-            format_agent_type=format_agent_type,
-            format_picklist=format_picklist,
+            formatter_props=formatter_props,
         ),
     )
 
@@ -922,8 +924,7 @@ def build_query(
             collection,
             user,
             props.replace_nulls,
-            format_agent_type=props.format_agent_type,
-            format_picklist=props.format_picklist,
+            props=props.formatter_props,
         ),
         query=query_construct_query
     )
