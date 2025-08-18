@@ -6,7 +6,7 @@ from django.views.decorators.http import require_POST
 from specifyweb.middleware.general import require_GET
 from specifyweb.backend.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets
 from specifyweb.specify.views import login_maybe_required
-from specifyweb.specify.backup_task import backup_database_task
+from specifyweb.backend.backup_tool.backup_task import backup_database_task
 
 
 class BackupPT(PermissionTarget):
