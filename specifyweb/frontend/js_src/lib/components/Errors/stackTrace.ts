@@ -57,7 +57,7 @@ export const produceStackTrace = (message: unknown): string =>
         localStorage: { ...localStorage },
         // Network log and page load telemetry
         eventLog:
-          typeof globalThis.performance !== 'undefined' &&
+          globalThis.performance !== undefined &&
           typeof globalThis.performance.getEntries === 'function'
             ? globalThis.performance.getEntries()
             : [],
