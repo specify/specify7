@@ -560,7 +560,7 @@ class ReplaceRecordTests(ApiTests):
         self.assertEqual(models.Agentspecialty.objects.filter(specialtyname__in=['test_name_1', 'test_name_3']).count(),
                          2)
     
-    @patch('specifyweb.attachment_gw.views.delete_attachment_file')
+    @patch('specifyweb.backend.attachment_gw.views.delete_attachment_file')
     def test_attachment_preserved(self, delete_attachment_mock):
         c = Client()
         c.force_login(self.specifyuser)

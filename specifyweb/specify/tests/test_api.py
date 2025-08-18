@@ -8,11 +8,11 @@ from datetime import datetime
 from django.db.models import Max, QuerySet
 from django.test import TestCase, Client, TransactionTestCase
 
-from specifyweb.permissions.models import UserPolicy
+from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.specify import api, models, scoping
-from specifyweb.businessrules.uniqueness_rules import UNIQUENESS_DISPATCH_UID, validate_unique, apply_default_uniqueness_rules
-from specifyweb.businessrules.rules.cogtype_rules import SYSTEM_COGTYPES_PICKLIST
-from specifyweb.businessrules.orm_signal_handler import connect_signal, disconnect_signal
+from specifyweb.backend.businessrules.uniqueness_rules import UNIQUENESS_DISPATCH_UID, validate_unique, apply_default_uniqueness_rules
+from specifyweb.backend.businessrules.rules.cogtype_rules import SYSTEM_COGTYPES_PICKLIST
+from specifyweb.backend.businessrules.orm_signal_handler import connect_signal, disconnect_signal
 from specifyweb.specify.model_extras import Specifyuser
 from specifyweb.specify.models import (
     Institution,
@@ -39,9 +39,16 @@ from specifyweb.specify.models import (
     Picklistitem,
     Preparation
 )
+import datetime
 
 def get_table(name: str):
     return getattr(models, name.capitalize())
+
+class MockDateTime:
+
+    @classmethod
+    def now(cls):
+        return datetime.datetime(2025, 7, 20, 18, 23, 32)
 
 class MainSetupTearDown:
     def setUp(self):
@@ -952,7 +959,7 @@ class UserApiTests(ApiTests):
         super().setUp()
 
         # Because the test database doesn't have specifyuser_spprincipal
-        from specifyweb.context import views
+        from specifyweb.backend.context import views
 
         # TODO: Replace this with a mock.
         views.users_collections_for_sp6 = lambda cursor, userid: []

@@ -1,7 +1,7 @@
 from unittest.mock import Mock, patch
 from django import http
 from django.test import Client
-from specifyweb.notifications.models import LocalityUpdate, Message
+from specifyweb.backend.notifications.models import LocalityUpdate, Message
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify.update_locality import LocalityUpdateStatus
 

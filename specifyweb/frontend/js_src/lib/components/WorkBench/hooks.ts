@@ -1,5 +1,4 @@
 import type Handsontable from 'handsontable';
-import type { CellChange } from 'handsontable/common';
 import type { Events } from 'handsontable/pluginHooks';
 import type { Action } from 'handsontable/plugins/undoRedo';
 import React from 'react';
@@ -162,12 +161,10 @@ export function useHotHooks({
     beforeChange: (unfilteredChanges, source) => {
       if (source !== 'CopyPaste.paste') return true;
 
-      const filteredChanges = unfilteredChanges
-        .filter((change): change is CellChange => change !== null)
-        .filter(
-          ([, property]) =>
-            (property as number) < workbench.dataset.columns.length
-        );
+      const filteredChanges = unfilteredChanges.filter(
+        ([, property]) =>
+          (property as number) < workbench.dataset.columns.length
+      );
       if (
         filteredChanges.length === unfilteredChanges.length ||
         workbench.hot === undefined
