@@ -7,32 +7,34 @@ import re
 from typing import Literal, NamedTuple
 import xml.dom.minidom
 from collections import namedtuple, defaultdict
-from datetime import datetime
 from functools import reduce
 
 from django.conf import settings
+from django.db import transaction
+from django.utils import timezone
 from specifyweb.specify.models import Collectionobject
 from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting
-from sqlalchemy import sql, func, text
+from sqlalchemy import sql, orm, func, text
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
+from specifyweb.specify.field_change_info import FieldChangeInfo
+from specifyweb.specify.auditlog import auditlog
+from specifyweb.specify.models import Collectionobjectgroupjoin, Taxontreedef, Loan, Loanpreparation, Loanreturnpreparation
+from specifyweb.specify.load_datamodel import Relationship
+from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
+from specifyweb.backend.stored_queries.queryfield import fields_from_json, QueryField, QueryFieldSpec
 from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.specify.tree_utils import get_search_filters
 
 from . import models
-from .format import ObjectFormatter
+from .format import ObjectFormatter, ObjectFormatterProps
 from .query_construct import QueryConstruct
 from .relative_date_utils import apply_absolute_date
 from .field_spec_maps import apply_specify_user_name
 from ..notifications.models import Message
 from ..permissions.permissions import check_table_permissions
 from specifyweb.specify.utils import get_cat_num_inheritance_setting, log_sqlalchemy_query
-
-from specifyweb.specify.models import Collectionobjectgroupjoin, Taxontreedef
-from specifyweb.specify.load_datamodel import Relationship
-from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
-from specifyweb.backend.stored_queries.queryfield import fields_from_json, QueryField, QueryFieldSpec
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +53,6 @@ class QuerySort:
     def by_id(sort_id: int):
         return QuerySort.SORT_TYPES[sort_id]
 
-
 class BuildQueryProps(NamedTuple):
     recordsetid: int | None = None
     replace_nulls: bool = False
@@ -59,8 +60,13 @@ class BuildQueryProps(NamedTuple):
     distinct: bool = False
     series: bool = False
     implicit_or: bool = True
-    format_agent_type: bool = False
-    format_picklist: bool = False
+    formatter_props: ObjectFormatterProps = ObjectFormatterProps(
+        format_agent_type = False,
+        format_picklist = False,
+        format_types = True,
+        numeric_catalog_number = True,
+        format_expr = True,
+    )
 
 
 def set_group_concat_max_len(connection):
@@ -687,7 +693,7 @@ def recordset(collection, user, user_agent, recordset_info): # pragma: no cover
 
     with models.session_context() as session:
         recordset = models.RecordSet()
-        recordset.timestampCreated = datetime.now()
+        recordset.timestampCreated = timezone.now()
         recordset.version = 0
         recordset.collectionMemberId = collection.id
         recordset.dbTableId = tableid
@@ -714,110 +720,110 @@ def recordset(collection, user, user_agent, recordset_info): # pragma: no cover
     return new_rs_id
 
 
-# def return_loan_preps(collection, user, agent, data):
-#     spquery = data["query"]
-#     commit = data["commit"]
+def return_loan_preps(collection, user, agent, data):
+    spquery = data["query"]
+    commit = data["commit"]
 
-#     tableid = spquery["contexttableid"]
-#     if not (tableid == Loanpreparation.specify_model.tableId):
-#         raise AssertionError(
-#             f"Unexpected tableId '{tableid}' in request. Expected {Loanpreparation.specify_model.tableId}",
-#             {
-#                 "tableId": tableid,
-#                 "expectedTableId": Loanpreparation.specify_model.tableId,
-#                 "localizationKey": "unexpectedTableId",
-#             },
-#         )
+    tableid = spquery["contexttableid"]
+    if not (tableid == Loanpreparation.specify_model.tableId):
+        raise AssertionError(
+            f"Unexpected tableId '{tableid}' in request. Expected {Loanpreparation.specify_model.tableId}",
+            {
+                "tableId": tableid,
+                "expectedTableId": Loanpreparation.specify_model.tableId,
+                "localizationKey": "unexpectedTableId",
+            },
+        )
 
-#     with models.session_context() as session:
-#         model = models.models_by_tableid[tableid]
+    with models.session_context() as session:
+        model = models.models_by_tableid[tableid]
 
-#         field_specs = fields_from_json(spquery["fields"])
+        field_specs = fields_from_json(spquery["fields"])
 
-#         query, __ = build_query(session, collection, user, tableid, field_specs)
-#         lrp = orm.aliased(models.LoanReturnPreparation)
-#         loan = orm.aliased(models.Loan)
-#         query = query.join(loan).outerjoin(lrp)
-#         unresolved = (
-#             model.quantity
-#             - sql.functions.coalesce(sql.functions.sum(lrp.quantityResolved), 0)
-#         ).label("unresolved")
-#         query = query.with_entities(
-#             model._id, unresolved, loan.loanId, loan.loanNumber
-#         ).group_by(model._id)
-#         to_return = [
-#             (lp_id, quantity, loan_id, loan_no)
-#             for lp_id, quantity, loan_id, loan_no in query
-#             if quantity > 0
-#         ]
-#         if not commit:
-#             return to_return
-#         with transaction.atomic():
-#             for lp_id, quantity, _, _ in to_return:
-#                 lp = Loanpreparation.objects.select_for_update().get(pk=lp_id)
-#                 was_resolved = lp.isresolved
-#                 lp.quantityresolved = lp.quantityresolved + quantity
-#                 lp.quantityreturned = lp.quantityreturned + quantity
-#                 lp.isresolved = True
-#                 lp.save()
+        query, __ = build_query(session, collection, user, tableid, field_specs)
+        lrp = orm.aliased(models.LoanReturnPreparation)
+        loan = orm.aliased(models.Loan)
+        query = query.join(loan).outerjoin(lrp)
+        unresolved = (
+            sql.functions.coalesce(model.quantity, 0)
+            - sql.functions.coalesce(sql.functions.sum(lrp.quantityResolved), 0)
+        ).label("unresolved")
+        query = query.with_entities(
+            model._id, unresolved, loan.loanId, loan.loanNumber
+        ).group_by(model._id)
+        to_return = [
+            (lp_id, quantity, loan_id, loan_no)
+            for lp_id, quantity, loan_id, loan_no in query
+            if quantity > 0
+        ]
+        if not commit:
+            return to_return
+        with transaction.atomic():
+            for lp_id, quantity, _, _ in to_return:
+                lp = Loanpreparation.objects.select_for_update().get(pk=lp_id)
+                was_resolved = lp.isresolved
+                lp.quantityresolved = lp.quantityresolved + quantity
+                lp.quantityreturned = lp.quantityreturned + quantity
+                lp.isresolved = True
+                lp.save()
 
-#                 auditlog.update(
-#                     lp,
-#                     agent,
-#                     None,
-#                     [
-#                         FieldChangeInfo(
-#                             field_name="quantityresolved",
-#                             old_value=lp.quantityresolved - quantity,
-#                             new_value=lp.quantityresolved,
-#                         ),
-#                         FieldChangeInfo(
-#                             field_name="quantityreturned",
-#                             old_value=lp.quantityreturned - quantity,
-#                             new_value=lp.quantityreturned,
-#                         ),
-#                         FieldChangeInfo(
-#                             field_name="isresolved",
-#                             old_value=was_resolved,
-#                             new_value=True,
-#                         ),
-#                     ],
-#                 )
+                auditlog.update(
+                    lp,
+                    agent,
+                    None,
+                    [
+                        FieldChangeInfo(
+                            field_name="quantityresolved",
+                            old_value=lp.quantityresolved - quantity,
+                            new_value=lp.quantityresolved,
+                        ),
+                        FieldChangeInfo(
+                            field_name="quantityreturned",
+                            old_value=lp.quantityreturned - quantity,
+                            new_value=lp.quantityreturned,
+                        ),
+                        FieldChangeInfo(
+                            field_name="isresolved",
+                            old_value=was_resolved,
+                            new_value=True,
+                        ),
+                    ],
+                )
 
-#                 new_lrp = Loanreturnpreparation.objects.create(
-#                     quantityresolved=quantity,
-#                     quantityreturned=quantity,
-#                     loanpreparation_id=lp_id,
-#                     returneddate=data.get("returneddate", None),
-#                     receivedby_id=data.get("receivedby", None),
-#                     createdbyagent=agent,
-#                     discipline=collection.discipline,
-#                 )
-#                 auditlog.insert(new_lrp, agent)
-#             loans_to_close = (
-#                 Loan.objects.select_for_update()
-#                 .filter(
-#                     pk__in={loan_id for _, _, loan_id, _ in to_return},
-#                     isclosed=False,
-#                 )
-#                 .exclude(loanpreparations__isresolved=False)
-#             )
-#             for loan in loans_to_close:
-#                 loan.isclosed = True
-#                 loan.save()
-#                 auditlog.update(
-#                     loan,
-#                     agent,
-#                     None,
-#                     [
-#                         {
-#                             "field_name": "isclosed",
-#                             "old_value": False,
-#                             "new_value": True,
-#                         },
-#                     ],
-#                 )
-#         return to_return
+                new_lrp = Loanreturnpreparation.objects.create(
+                    quantityresolved=quantity,
+                    quantityreturned=quantity,
+                    loanpreparation_id=lp_id,
+                    returneddate=data.get("returneddate", None),
+                    receivedby_id=data.get("receivedby", None),
+                    createdbyagent=agent,
+                    discipline=collection.discipline,
+                )
+                auditlog.insert(new_lrp, agent)
+            loans_to_close = (
+                Loan.objects.select_for_update()
+                .filter(
+                    pk__in={loan_id for _, _, loan_id, _ in to_return},
+                    isclosed=False,
+                )
+                .exclude(loanpreparations__isresolved=False)
+            )
+            for loan in loans_to_close:
+                loan.isclosed = True
+                loan.save()
+                auditlog.update(
+                    loan,
+                    agent,
+                    None,
+                    [
+                        {
+                            "field_name": "isclosed",
+                            "old_value": False,
+                            "new_value": True,
+                        },
+                    ],
+                )
+        return to_return
 
 def execute(
     session,
@@ -830,10 +836,9 @@ def execute(
     field_specs,
     limit,
     offset,
-    format_agent_type=False,
     recordsetid=None,
     formatauditobjs=False,
-    format_picklist=False,
+    formatter_props=ObjectFormatterProps(),
 ):
     "Build and execute a query, returning the results as a data structure for json serialization"
 
@@ -849,8 +854,7 @@ def execute(
             formatauditobjs=formatauditobjs,
             distinct=distinct,
             series=series,
-            format_agent_type=format_agent_type,
-            format_picklist=format_picklist,
+            formatter_props=formatter_props,
         ),
     )
 
@@ -965,8 +969,7 @@ def build_query(
             collection,
             user,
             props.replace_nulls,
-            format_agent_type=props.format_agent_type,
-            format_picklist=props.format_picklist,
+            props=props.formatter_props,
         ),
         query=query_construct_query
     )
