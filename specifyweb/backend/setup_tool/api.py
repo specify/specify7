@@ -24,57 +24,29 @@ def _guided_setup_condition(request):
 def create_institution(request, direct=False):
     from specifyweb.specify.models import Institution
 
-    if Institution.objects.exists() and not _guided_setup_condition(request):
-        return JsonResponse({"error": "Institution already exists"}, status=400)
+    # Check permission
+    if not _guided_setup_condition(request):
+        return JsonResponse({"error": "Not permitted"}, status=401)
 
-    if request.method == 'POST':
-        if Institution.objects.exists():
-            if not _guided_setup_condition(request):
-                return JsonResponse({"error": "Not permitted"}, status=401)
-            data = json.loads(request.body)
-            institution = Institution.objects.first()
-            fields_to_update = [
-                'name',
-                'code',
-                'isaccessionsglobal',
-                'issecurityon',
-                'isserverbased',
-                'issinglegeographytree',
-            ]
+    # Only allow POST requests
+    if request.method != 'POST':
+        return JsonResponse({"error": "Invalid request"}, status=400)
 
-            for field in fields_to_update:
-                if field in data:
-                    setattr(institution, field, data[field])
-            institution.save()
+    raw_data = json.loads(request.body)
 
-            return JsonResponse({"success": True, "institution_id": institution.id}, status=200)
-        try:
-            data = json.loads(request.body)
+    # Normalize keys: lowercase everything
+    data = {k.lower(): v for k, v in raw_data.items()}
 
-            key_map = {
-                'isAccessionsGlobal': 'isaccessionsglobal',
-                'isSecurityOn': 'issecurityon',
-                'isServerBased': 'isserverbased',
-                'isSingleGeographyTree': 'issinglegeographytree',
-            }
-            normalized_data = {}
+    # New DB: force id = 1
+    data['id'] = 1
 
-            for key, value in data.items():
-                normalized_key = key_map.get(key, key.lower() if key.isupper() else key)
-                normalized_data[normalized_key] = value
+    try:
+        new_institution = Institution.objects.create(**data)
+        Spversion.objects.create(appversion='7', schemaversion='2.10')
+        return JsonResponse({"success": True, "institution_id": new_institution.id}, status=200)
 
-            normalized_data['id'] = 1
-            new_institution = Institution.objects.create(**normalized_data)
-            Spversion.objects.create(
-                appversion='7',
-                schemaversion="2.10"
-            )
-
-            return JsonResponse({"success": True, "institution_id": new_institution.id}, status=200)
-
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=400)
-    return JsonResponse({"error": "Invalid request"}, status=400)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
 
 def create_division(request, direct=False):
     from specifyweb.specify.models import Division, Institution
@@ -123,7 +95,6 @@ def create_division(request, direct=False):
         return JsonResponse({"success": True, "division_id": new_division.id}, status=200)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
-
 
 def create_discipline(request, direct=False):
     from specifyweb.specify.models import (
@@ -201,8 +172,6 @@ def create_discipline(request, direct=False):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
 
-
-
 def create_collection(request, direct=False):
     from specifyweb.specify.models import Collection, Discipline
 
@@ -257,62 +226,50 @@ def create_collection(request, direct=False):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
 
-
 def create_specifyuser(request, direct=False):
-    from specifyweb.specify.models import Specifyuser, Agent, Division, Collection
+    from specifyweb.specify.models import Specifyuser, Agent, Division
 
     if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
 
-    if request.method == 'POST':
-        data = json.loads(request.body)
+    if request.method != 'POST':
+        return JsonResponse({"error": "Invalid request"}, status=400)
 
-        if not Specifyuser.objects.exists():
-            max_id = int(Specifyuser.objects.aggregate(Max('id'))['id__max']) if Specifyuser.objects.exists() else 0
+    data = json.loads(request.body)
 
-            data['id'] = max_id + 1
+    # Assign ID manually
+    max_id = Specifyuser.objects.aggregate(Max('id'))['id__max'] or 0
+    data['id'] = max_id + 1
 
-            agent = Agent.objects.last()
-            if not agent:
-                agent = Agent.objects.create(
-                    id=1, 
-                    agenttype=1, 
-                    firstname='spadmin', 
-                    division= Division.objects.last()
-                ) 
+    # Ensure there is an Agent
+    agent = Agent.objects.last()
+    if not agent:
+        agent = Agent.objects.create(
+            id=1,
+            agenttype=1,
+            firstname='spadmin',
+            division=Division.objects.last(),
+        )
 
-            try:
-                new_user = Specifyuser.objects.create(**data)
+    try:
+        # Create user
+        new_user = Specifyuser.objects.create(**data)
+        new_user.set_password(new_user.password)
+        new_user.save()
 
-                new_user.set_password(new_user.password)
-                new_user.save()
+        # Grant permissions
+        UserPolicy.objects.create(
+            specifyuser=new_user,
+            collection=None,
+            resource='%',
+            action='%'
+        )
 
-                ## Give permission to the newly created user
-                UserPolicy.objects.create(
-                    specifyuser=new_user,
-                    collection=None,
-                    resource='%',
-                    action='%'
-                )
+        # Link agent to user
+        agent.specifyuser = new_user
+        agent.save()
 
-                agent.specifyuser = new_user
-                agent.save()
+        return JsonResponse({"success": True, "user_id": new_user.id}, status=200)
 
-                return JsonResponse({"success": True, "user_id": new_user.id}, status=200)
-            except Exception as e:
-                return JsonResponse({"error": str(e)}, status=400)
-
-        else:
-            user = Specifyuser.objects.first()
-            fields_to_update = [
-                'name',
-                'password',
-            ]
-            for field in fields_to_update:
-                if field in data:
-                    setattr(user, field, data[field])
-            if not Specifyuser.objects.filter(name=data['name']).exists():
-                user.save()
-            return JsonResponse({"success": True, "user_id": user.id}, status=200)
-
-    return JsonResponse({"error": "Invalid request"}, status=400)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
