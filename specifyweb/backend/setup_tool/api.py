@@ -264,55 +264,44 @@ def create_specifyuser(request, direct=False):
     if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
 
-    if request.method == 'POST':
-        data = json.loads(request.body)
+    if request.method != 'POST':
+        return JsonResponse({"error": "Invalid request"}, status=400)
 
-        if not Specifyuser.objects.exists():
-            max_id = int(Specifyuser.objects.aggregate(Max('id'))['id__max']) if Specifyuser.objects.exists() else 0
+    data = json.loads(request.body)
 
-            data['id'] = max_id + 1
+    # Assign ID manually
+    max_id = Specifyuser.objects.aggregate(Max('id'))['id__max'] or 0
+    data['id'] = max_id + 1
 
-            agent = Agent.objects.last()
-            if not agent:
-                agent = Agent.objects.create(
-                    id=1, 
-                    agenttype=1, 
-                    firstname='spadmin', 
-                    division= Division.objects.last()
-                ) 
+    # Ensure there is an Agent
+    agent = Agent.objects.last()
+    if not agent:
+        agent = Agent.objects.create(
+            id=1,
+            agenttype=1,
+            firstname='spadmin',
+            division=Division.objects.last(),
+        )
 
-            try:
-                new_user = Specifyuser.objects.create(**data)
+    try:
+        # Create user
+        new_user = Specifyuser.objects.create(**data)
+        new_user.set_password(new_user.password)
+        new_user.save()
 
-                new_user.set_password(new_user.password)
-                new_user.save()
+        # Grant permissions
+        UserPolicy.objects.create(
+            specifyuser=new_user,
+            collection=None,
+            resource='%',
+            action='%'
+        )
 
-                ## Give permission to the newly created user
-                UserPolicy.objects.create(
-                    specifyuser=new_user,
-                    collection=None,
-                    resource='%',
-                    action='%'
-                )
+        # Link agent to user
+        agent.specifyuser = new_user
+        agent.save()
 
-                agent.specifyuser = new_user
-                agent.save()
+        return JsonResponse({"success": True, "user_id": new_user.id}, status=200)
 
-                return JsonResponse({"success": True, "user_id": new_user.id}, status=200)
-            except Exception as e:
-                return JsonResponse({"error": str(e)}, status=400)
-
-        else:
-            user = Specifyuser.objects.first()
-            fields_to_update = [
-                'name',
-                'password',
-            ]
-            for field in fields_to_update:
-                if field in data:
-                    setattr(user, field, data[field])
-            if not Specifyuser.objects.filter(name=data['name']).exists():
-                user.save()
-            return JsonResponse({"success": True, "user_id": user.id}, status=200)
-
-    return JsonResponse({"error": "Invalid request"}, status=400)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
