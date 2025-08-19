@@ -172,6 +172,7 @@ RUN echo \
         "\nCELERY_TASK_DEFAULT_QUEUE = os.getenv('CELERY_TASK_QUEUE', DATABASE_NAME)" \
         "\nANONYMOUS_USER = os.getenv('ANONYMOUS_USER', None)" \
         "\nSPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', '/opt/Specify/config')" \
+        "\nTIME_ZONE = os.environ.get('TIME_ZONE', 'America/Chicago')" \
         # Resolve ALLOWED_HOSTS in the following precedence:
         # - Use the ALLOWED_HOSTS environment variable (if present)
         # - Otherwise, fallback to the default specified in settings/specify_settings.py
