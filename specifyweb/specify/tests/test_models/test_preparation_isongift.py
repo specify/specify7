@@ -1,4 +1,4 @@
-from specifyweb.interactions.tests.utils import _create_interaction_prep_generic
+from specifyweb.backend.interactions.tests.utils import _create_interaction_prep_generic
 from specifyweb.specify.models import Gift
 from specifyweb.specify.tests.test_api import ApiTests
 
@@ -23,4 +23,3 @@ class TestPreparationIsOnGift(ApiTests):
         prep = self._create_prep(self.collectionobjects[0], None, countamt=4)
         _create_interaction_prep_generic(self, self.gift, prep, None, quantity=0)
         self.assertFalse(prep.isongift())
-        

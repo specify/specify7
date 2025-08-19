@@ -1,21 +1,21 @@
 from typing import Dict, Any
 from django import http
 from django.test import Client
-from specifyweb.notifications.models import Spmerging, Message
-from specifyweb.permissions.models import UserPolicy
+from specifyweb.backend.notifications.models import Spmerging, Message
+from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.specify.models import Agent
 from specifyweb.specify.tests.test_api import ApiTests
 
 import json
 from unittest.mock import Mock, patch
 
-class MockResult(object):
+class MockResult:
 
     def __init__(self, _id):
         self.id = _id
 
-class TestMergeContext(object):
-    _data: Dict[str, Any]
+class TestMergeContext:
+    _data: dict[str, Any]
 
     def __init__(self):
         self._data = {}
