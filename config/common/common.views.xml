@@ -3514,7 +3514,8 @@
                     <cell type="field" id="11" name="timestampModified" uitype="label" readonly="true"/>
                     <cell type="label" labelfor="12"/>
                     <cell type="field" id="12" name="timestampCreated" uitype="label" readonly="true"/>
-                </row>-->
+                </row>
+				-->
 			</rows>
 		</viewdef>
 		<viewdef type="form" name="ExchangeOut" class="edu.ku.brc.specify.datamodel.ExchangeOut" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
@@ -4202,7 +4203,22 @@
                     <cell type="field" id="11" name="timestampModified" uitype="label" readonly="true"/>
                     <cell type="label" labelfor="12"/>
                     <cell type="field" id="12" name="timestampCreated" uitype="label" readonly="true"/>
-                </row>-->
+                </row>
+				<row>
+					<cell type="label" labelfor="a1"/>
+					<cell type="field" id="a1" name="agent1" uitype="querycbx" colspan="3"/>
+					<cell type="label" labelfor="a2"/>
+					<cell type="field" id="a2" name="agent2" uitype="querycbx"/>
+					<cell type="label" labelfor="a3"/>
+					<cell type="field" id="a3" name="agent3" uitype="querycbx" colspan="3"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="a4"/>
+					<cell type="field" id="a4" name="agent4" uitype="querycbx" colspan="3"/>
+					<cell type="label" labelfor="a5"/>
+					<cell type="field" id="a5" name="agent5" uitype="querycbx"/>
+				</row>
+				-->
 			</rows>
 		</viewdef>
 		<viewdef type="form" name="GiftSub" class="edu.ku.brc.specify.datamodel.Gift" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
@@ -4782,7 +4798,21 @@
                     <cell type="field" id="11" name="timestampModified" uitype="label" readonly="true"/>
                     <cell type="label" labelfor="12"/>
                     <cell type="field" id="12" name="timestampCreated" uitype="label" readonly="true"/>
-                </row>-->
+                </row>
+				<row>
+					<cell type="label" labelfor="a1"/>
+					<cell type="field" id="a1" name="agent1" uitype="querycbx" colspan="3"/>
+					<cell type="label" labelfor="a2"/>
+					<cell type="field" id="a2" name="agent2" uitype="querycbx"/>
+					<cell type="label" labelfor="a3"/>
+					<cell type="field" id="a3" name="agent3" uitype="querycbx" colspan="3"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="a4"/>
+					<cell type="field" id="a4" name="agent4" uitype="querycbx" colspan="3"/>
+					<cell type="label" labelfor="a5"/>
+					<cell type="field" id="a5" name="agent5" uitype="querycbx"/>
+				</row>-->
 			</rows>
 		</viewdef>
 		<viewdef type="formtable" name="LoanAgent Table" class="edu.ku.brc.specify.datamodel.LoanAgent" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
