@@ -12,7 +12,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { serializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
 import type { Collection, Discipline, Division } from '../DataModel/types';
-import { collection } from '../FormParse/webOnlyViews';
+import { collection, discipline, division } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { load } from '../InitialContext';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
@@ -24,7 +24,10 @@ export function SystemConfigurationTool(): JSX.Element | null {
     useBooleanState();
 
   const [newResource, setNewResource] = React.useState<
-    SpecifyResource<Collection> | SpecifyResource<Discipline> | SpecifyResource<Division> | undefined
+    | SpecifyResource<Collection>
+    | SpecifyResource<Discipline>
+    | SpecifyResource<Division>
+    | undefined
   >();
 
   React.useEffect(() => {
@@ -75,9 +78,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
                 console.log(
                   `'Add new division to institution' ${institution.id}`
                 );
-                setNewResource(
-                  new tables.Division.Resource() 
-                );
+                setNewResource(new tables.Division.Resource());
                 handleNewResource();
               }}
             />
@@ -97,7 +98,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
                       setNewResource(
                         new tables.Discipline.Resource({
                           division: `/api/specify/discipline/${division.id}/`,
-                        }) 
+                        })
                       );
                       handleNewResource();
                     }}
@@ -119,7 +120,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
                               setNewResource(
                                 new tables.Collection.Resource({
                                   discipline: `/api/specify/discipline/${discipline.id}/`,
-                                }) 
+                                })
                               );
                               handleNewResource();
                             }}
@@ -146,6 +147,8 @@ export function SystemConfigurationTool(): JSX.Element | null {
     );
   };
 
+  const viewName = collection;
+
   return (
     <Container.FullGray className="sm:h-auto">
       <H2 className="text-2xl">{userText.systemConfigurationTool()}</H2>
@@ -167,7 +170,15 @@ export function SystemConfigurationTool(): JSX.Element | null {
             isDependent={false}
             isSubForm={false}
             resource={newResource as SpecifyResource<Collection>}
-            viewName={collection}
+            viewName={
+              newResource?.specifyTable.name === 'Collection'
+                ? collection
+                : newResource?.specifyTable.name === 'Discipline'
+                  ? discipline
+                  : newResource?.specifyTable.name === 'Division'
+                    ? division
+                    : undefined
+            }
             onAdd={undefined}
             onClose={closeNewResource}
             onDeleted={undefined}

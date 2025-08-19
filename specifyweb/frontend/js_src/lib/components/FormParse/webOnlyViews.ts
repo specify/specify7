@@ -90,6 +90,16 @@ export const webOnlyViews = f.store(() =>
       'edit',
       ['collectionName', 'code', 'catalogNumFormatName']
     ),
+    [division]: autoGenerateViewDefinition(tables.Division, 'form', 'edit', [
+      'name',
+      'abbrev',
+    ]),
+    [discipline]: autoGenerateViewDefinition(
+      tables.Discipline,
+      'form',
+      'edit',
+      ['name', 'type']
+    ),
   } as const)
 );
 
@@ -99,3 +109,5 @@ export const spAppResourceView = '_SpAppResourceView_name';
 export const spViewSetNameView = '_SpViewSetObj_name';
 export const recordSetView = '_RecordSet_name';
 export const collection = '_Collection_setup';
+export const division = '_Division_setup';
+export const discipline = '_Discipline_setup';
