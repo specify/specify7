@@ -842,16 +842,6 @@ export const resourcesText = createDictionary({
     "ru-ru": "COG не может быть добавлен сам к себе.",
     "uk-ua": "COG не можна додати до самого себе.",
   },
-  coHasParent: {
-    "en-us": "A CO with a parent cannot be added to a COG.",
-    "de-ch":
-      "Eine CO mit einem übergeordneten Element kann nicht zu einer COG hinzugefügt werden.",
-    "es-es": "No es posible agregar un CO con un padre a un COG.",
-    "fr-fr": "Un CO avec un parent ne peut pas être ajouté à un COG.",
-    "pt-br": "Um CO com um pai não pode ser adicionado a um COG.",
-    "ru-ru": "CO с родительским элементом не может быть добавлен в COG.",
-    "uk-ua": "CO з батьківським елементом не можна додати до COG.",
-  },
   primaryCogChildRequired: {
     "en-us":
       "A Consolidated Collection Object Group must have a primary Collection Object child",
@@ -947,5 +937,23 @@ export const resourcesText = createDictionary({
     "pt-br": "A preparação é usada em um empréstimo.",
     "ru-ru": "Препарат используется при кредитовании.",
     "uk-ua": "Препарат використовується у позиці.",
+  },
+  preparationIsNegative: {
+    "en-us": "Preparation count cannot be negative",
+    "de-ch": "Die Anzahl der Vorbereitungen darf nicht negativ sein",
+    "es-es": "El recuento de preparación no puede ser negativo",
+    "fr-fr": "Le nombre de préparations ne peut pas être négatif",
+    "pt-br": "A contagem de preparação não pode ser negativa",
+    "ru-ru": "Количество приготовлений не может быть отрицательным",
+    "uk-ua": "Кількість підготовок не може бути від'ємним значенням",
+  },
+  configureField: {
+    "en-us": "Configure field",
+  },
+  trimZeros: {
+    "en-us": "Trim Zeros",
+  },
+  trimZerosDescription: {
+    "en-us": "Remove leading zeros from numeric values.",
   },
 } as const);

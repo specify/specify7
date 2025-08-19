@@ -241,7 +241,7 @@ export const backEndText = createDictionary({
     "en-us": "{tableName:string} must have unique {fieldName:string}",
     "es-es": "{tableName:string} debe tener un {fieldName:string} único",
     "fr-fr": 'Type de collection inattendu "[X31X]". "[X71X]" attendu',
-    "ru-ru": "{tableName:string} должен иметь уникальный {fieldName:string}",
+    "ru-ru": "{tableName:string} должно иметь уникальное {fieldName:string}",
     "uk-ua": "{tableName:string} має мати унікальний {fieldName:string}",
     "de-ch": "{tableName:string} muss eindeutig sein {fieldName:string}",
     "pt-br": "{tableName:string} deve ter {fieldName:string} exclusivo",
@@ -254,7 +254,7 @@ export const backEndText = createDictionary({
     "fr-fr":
       "{tableName:string} doit avoir un {fieldName:string} unique dans {parentField:string}",
     "ru-ru":
-      "{tableName:string} должен иметь уникальный {fieldName:string} в {parentField:string}",
+      "{tableName:string} должно иметь уникальное {fieldName:string} в {parentField:string}",
     "uk-ua":
       '{tableName:string} повинен мати унікальний "{fieldName:string}" у "{parentField:string}"',
     "de-ch":
@@ -279,7 +279,7 @@ export const backEndText = createDictionary({
     "en-us": "Tree node's parent has rank greater than itself",
     "es-es": "El padre de un nodo del árbol tiene un rango mayor que él mismo",
     "fr-fr": "Le parent du nœud d'arbre a un rang supérieur à lui-même",
-    "ru-ru": "Родительский узел дерева имеет ранг выше, чем он сам",
+    "ru-ru": "Родительский узел дерева имеет ранг выше, чем он сам.",
     "uk-ua": "Батько вузла дерева має ранг, вищий за нього самого",
     "de-ch":
       "Der übergeordnete Knoten des Baumknotens hat einen höheren Rang als er selbst",
@@ -310,7 +310,7 @@ export const backEndText = createDictionary({
     "de-ch":
       '{operation:string} Knoten "{nodeName:string}" zum synonymisierten übergeordneten Knoten "{parentName:string}"',
     "ru-ru":
-      '{operation:string} узел "{nodeName:string}" к синонимизированному родителю "{parentName:string}"',
+      '{operation:string} узел "{nodeName:string}" к синонимизированному родительскому элементу "{parentName:string}"',
     "pt-br":
       '{operation:string} nó "{nodeName:string}" para pai sinonimizado "{parentName:string}"',
   },
@@ -322,7 +322,7 @@ export const backEndText = createDictionary({
     "fr-fr":
       'Synonymisation de "{nodeName:string}" en nœud synonymisé "{intoName:string}"',
     "ru-ru":
-      'Синонимизация "{nodeName:string}" в синонимизированный узел "{intoName:string}"',
+      "Синонимизация «{nodeName:string}» в синонимизированный узел «{intoName:string}»",
     "uk-ua":
       'Синонімізація "{nodeName:string}" до синоніма "{intoName:string}"',
     "de-ch":
@@ -335,7 +335,7 @@ export const backEndText = createDictionary({
     "es-es": 'Sinonimizando el nodo "{nodeName:string}" que tiene hijos',
     "fr-fr": 'Type de collection inattendu "[X31X]". "[X71X]" attendu',
     "ru-ru":
-      'Синонимизация узла "{nodeName:string}", имеющего дочерние элементы',
+      "Синонимизация узла «{nodeName:string}», имеющего дочерние элементы",
     "uk-ua": 'Синонімується вузол "{nodeName:string}", який має дітей',
     "de-ch":
       "Synonymisierender Knoten „{nodeName:string}“, der untergeordnete Knoten hat",
@@ -349,7 +349,7 @@ export const backEndText = createDictionary({
     "fr-fr":
       "Mauvaise structure d'arborescence : cas {badRanks:number|formatted} trouvés où le rang du nœud n'est pas supérieur à celui de son parent",
     "ru-ru":
-      "Плохая структура дерева: обнаружено {badRanks:number|formatted} случаев, когда ранг узла не больше, чем у его родителя.",
+      "Плохая структура дерева: обнаружено {badRanks:number|formatted} случаев, когда ранг узла не превышает ранг его родителя.",
     "uk-ua":
       "Погана структура дерева: знайдено {badRanks:number|formatted} випадків, коли ранг вузла не перевищує його батьківського рівня",
     "de-ch":
@@ -365,7 +365,7 @@ export const backEndText = createDictionary({
     "fr-fr":
       'Type inattendu de nœud "{node:string}" pendant {operation:string}. "{nodeModel:string}" attendu',
     "ru-ru":
-      'Неожиданный тип узла "{node:string}" во время {operation:string}. Ожидалось "{nodeModel:string}"',
+      "Неожиданный тип узла «{node:string}» во время {operation:string}. Ожидалось «{nodeModel:string}».",
     "uk-ua":
       'Неочікуваний тип вузла "{node:string}" під час {operation:string}. Очікується "{nodeModel:string}"',
     "de-ch":
@@ -434,7 +434,7 @@ export const backEndText = createDictionary({
     "fr-fr":
       'Type de collection inattendu "{unexpectedTypeName:string}". "{collectionName:string}" attendu',
     "ru-ru":
-      'Неожиданный тип коллекции "{unexpectedTypeName:string}". Ожидается "{collectionName:string}"',
+      "Неожиданный тип коллекции «{unexpectedTypeName:string}». Ожидалось «{collectionName:string}».",
     "uk-ua":
       'Неочікуваний тип колекції "{unexpectedTypeName:string}". Очікується "{collectionName:string}"',
     "de-ch":
@@ -450,7 +450,7 @@ export const backEndText = createDictionary({
     "fr-fr":
       'Impossible de créer un rapport : {mimeTypeField:string} n\'est pas l\'un des "jrxml/label" ou "jrxml/report"',
     "ru-ru":
-      'Невозможно создать отчет: {mimeTypeField:string} не является ни одним из "jrxml/label" или "jrxml/report"',
+      "Невозможно создать отчёт: {mimeTypeField:string} не является ни «jrxml/label», ни «jrxml/report».",
     "uk-ua":
       'Не вдається створити звіт: {mimeTypeField:string} має бути "jrxml/label" або "jrxml/report"',
     "de-ch":
@@ -475,7 +475,7 @@ export const backEndText = createDictionary({
     "fr-fr":
       'ID de table inattendu "{tableId:string}" dans la demande. "{expectedTableId:string}" attendu',
     "ru-ru":
-      'Неожиданный идентификатор таблицы "{tableId:string}" в запросе. Ожидается "{expectedTableId:string}"',
+      "Неожиданный идентификатор таблицы «{tableId:string}» в запросе. Ожидается «{expectedTableId:string}».",
     "uk-ua":
       'Неочікуваний ІД таблиці "{tableId:string}" у запиті. Очікується "{expectedTableId:string}"',
     "de-ch":
@@ -505,7 +505,7 @@ export const backEndText = createDictionary({
     "fr-fr":
       'Partie de date "{datePart:string}" non valide. Attendu l\'un des {validDateParts:string}',
     "ru-ru":
-      'Неверная часть даты "{datePart:string}". Ожидается один из {validDateParts:string}',
+      "Неверная часть даты «{datePart:string}». Ожидается {validDateParts:string}.",
     "uk-ua":
       'Недійсна частина дати "{datePart:string}". Очікується один із {validDateParts:string}',
     "de-ch":
@@ -521,7 +521,7 @@ export const backEndText = createDictionary({
     "fr-fr":
       'Statut non valide "{uploadStatus:string}" pour {operation:string}. Attendu {expectedUploadStatus:string}',
     "ru-ru":
-      'Неверный статус "{uploadStatus:string}" для {operation:string}. Ожидается {expectedUploadStatus:string}',
+      "Недопустимый статус «{uploadStatus:string}» для {operation:string}. Ожидается {expectedUploadStatus:string}.",
     "uk-ua":
       'Недійсний статус "{uploadStatus:string}" для {operation:string}. Очікується {expectedUploadStatus:string}',
     "de-ch":
@@ -550,9 +550,9 @@ export const backEndText = createDictionary({
     "pt-br":
       "Alteração de escopo detectada nesta linha. Recomenda-se excluir esta linha do conjunto de dados.",
     "ru-ru":
-      "Изменение области действия обнаружено в этой строке. Рекомендуется удалить эту строку из набора данных",
+      "В этой строке обнаружено изменение области действия. Рекомендуется удалить эту строку из набора данных.",
     "uk-ua":
-      "У цьому рядку виявлено зміну області застосування. Рекомендується видалити цей рядок з набору даних.",
+      "У цьому рядку виявлено зміну області застосування. Рекомендується видалити цей рядок з набору даних",
   },
   multipleTreeDefsInRow: {
     "en-us": "Multiple tree definitions in row",
@@ -569,7 +569,7 @@ export const backEndText = createDictionary({
     "es-es": "Tipo no válido para el rango de árbol seleccionado",
     "fr-fr": "Type non valide pour le(s) rang(s) d'arbre sélectionné(s)",
     "pt-br": "Tipo inválido para classificação de árvore selecionada",
-    "ru-ru": "Недопустимый тип для выбранного ранга(ов) дерева",
+    "ru-ru": "Недопустимый тип для выбранного ранга дерева",
     "uk-ua": "Недійсний тип для вибраного(их) рангу(ів) дерева",
   },
 } as const);

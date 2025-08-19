@@ -21,6 +21,7 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { InFormEditorContext } from '../FormEditor/Context';
 import { AppTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { LinkedRecords } from '../Molecules/LinkedRecords';
 import { IsNotReadOnly } from '../Molecules/ResourceLink';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -48,6 +49,11 @@ export const FORBID_ADDING = new Set<keyof Tables>([
   'Division',
   'Discipline',
   'Collection',
+  /*
+   * SpecifyUser's should be created through the Security and Accounts tool.
+   * To properly clone a user need to also clone their roles and policies too
+   */
+  'SpecifyUser',
   // See https://github.com/specify/specify7/issues/1754
   'Attachment',
 ]);
@@ -70,8 +76,8 @@ export const RESTRICT_ADDING = new Set<keyof Tables>([
  */
 export const NO_CLONE = new Set<keyof Tables>([
   ...FORBID_ADDING,
-  // To properly clone a user need to also clone their roles and policies
-  'SpecifyUser',
+  'CollectionObjectGroup',
+  'CollectionObjectGroupJoin',
 ]);
 
 /**
@@ -159,6 +165,11 @@ export function ResourceView<SCHEMA extends AnySchema>({
     'makeFormDialogsModal'
   );
 
+  const [showSubviewBorders] = userPreferences.use(
+    'form',
+    'ui',
+    'showSubviewBorders'
+  );
   const isReadOnly = augmentMode(
     React.useContext(ReadOnlyContext),
     resource?.isNew() === true,
@@ -248,19 +259,31 @@ export function ResourceView<SCHEMA extends AnySchema>({
     )
   ) : undefined;
 
-  const deleteButton =
+  const showResourceReferenceButtons =
     !isDependent &&
     !isSubForm &&
     typeof resource === 'object' &&
     !resource.isNew() &&
-    hasTablePermission(resource.specifyTable.name, 'delete') &&
-    !isInFormEditor ? (
+    !isInFormEditor;
+
+  const deleteButton =
+    showResourceReferenceButtons &&
+    !isReadOnly &&
+    hasTablePermission(resource.specifyTable.name, 'delete') ? (
       <ErrorBoundary dismissible>
         <DeleteButton
           deletionMessage={deletionMessage}
           resource={resource}
           onDeleted={handleDelete}
         />
+      </ErrorBoundary>
+    ) : undefined;
+
+  const referencingRecordsButton =
+    showResourceReferenceButtons &&
+    hasTablePermission(resource.specifyTable.name, 'read') ? (
+      <ErrorBoundary dismissible>
+        <LinkedRecords resource={resource} />
       </ErrorBoundary>
     ) : undefined;
 
@@ -293,6 +316,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         typeof extraButtons === 'object' ? (
           <DataEntry.Footer>
             {deleteButton}
+            {referencingRecordsButton}
             {extraButtons ?? <span className="-ml-2 md:flex-1" />}
             {saveButtonElement}
           </DataEntry.Footer>
@@ -322,7 +346,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
               ? 'hidden'
               : hasNoData
                 ? ''
-                : 'border border-gray-500 border-t-0 rounded-b p-1'
+                : showSubviewBorders
+                  ? 'border border-gray-500 border-t-0 rounded-b p-1'
+                  : 'p-1'
           }
         >
           {formattedChildren}
@@ -356,6 +382,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         isSubForm ? undefined : (
           <>
             {deleteButton}
+            {referencingRecordsButton}
             {extraButtons ?? <span className="-ml-2 flex-1" />}
             {isModified && !isDependent ? (
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>

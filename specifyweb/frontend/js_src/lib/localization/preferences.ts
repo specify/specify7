@@ -689,6 +689,15 @@ export const preferencesText = createDictionary({
       "Skalieren Sie die Benutzeroberfläche, um sie an die Schriftgröße anzupassen.",
     "pt-br": "Dimensione a interface para corresponder ao tamanho da fonte.",
   },
+  displayAuthor: {
+    "en-us": "Show author in the tree",
+    "ru-ru": "Показать автора в дереве",
+    "es-es": "Mostrar autor en el árbol",
+    "fr-fr": "Afficher l'auteur dans l'arbre",
+    "uk-ua": "Показати автора в дереві",
+    "de-ch": "Autor im Baum anzeigen",
+    "pt-br": "Mostrar autor",
+  },
   welcomePage: {
     "en-us": "Home Page",
     "ru-ru": "Домашняя страница",
@@ -1085,7 +1094,7 @@ export const preferencesText = createDictionary({
     "es-es": "No distingue entre mayúsculas y minúsculas",
     "fr-fr": "Insensible à la casse",
     "uk-ua": "Регістр не враховується",
-    "de-ch": "Groß- und Kleinschreibung wird nicht berücksichtigt",
+    "de-ch": "Groß-/Kleinschreibung wird nicht beachtet",
     "pt-br": "Não diferencia maiúsculas de minúsculas",
   },
   showNoReadTables: {
@@ -1318,6 +1327,15 @@ export const preferencesText = createDictionary({
     "uk-ua": "Заокруглені кути",
     "de-ch": "Abgerundete Ecken",
     "pt-br": "Cantos arredondados",
+  },
+  showSubviewBorders: {
+    "en-us": "Show borders around subviews",
+    "de-ch": "",
+    "es-es": "",
+    "fr-fr": "",
+    "pt-br": "",
+    "ru-ru": "",
+    "uk-ua": "",
   },
   limitMaxFieldWidth: {
     "en-us": "Limit max field width",
@@ -1860,7 +1878,7 @@ export const preferencesText = createDictionary({
     "es-es":
       "Una URL a una imagen que se mostrará junto al logotipo Especificar en el menú de navegación.",
     "fr-fr":
-      "Une URL vers une image qui serait affichée à côté du logo Spécifier dans le menu de navigation.",
+      "Une URL vers une image qui serait affichée à côté du logo Specify dans le menu de navigation.",
     "ru-ru":
       "URL-адрес изображения, которое будет отображаться рядом с логотипом «Указать» в меню навигации.",
     "uk-ua":
@@ -1881,7 +1899,7 @@ export const preferencesText = createDictionary({
     "en-us": "Save button color",
     "de-ch": "Farbe der Schaltfläche „Speichern“",
     "es-es": "Guardar el color del botón",
-    "fr-fr": "Enregistrer la couleur du bouton",
+    "fr-fr": "Couleur du bouton Enregistrer",
     "ru-ru": "Сохранить цвет кнопки",
     "uk-ua": "Зберегти колір кнопки",
     "pt-br": "Cor do botão Salvar",

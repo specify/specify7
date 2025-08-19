@@ -1,7 +1,7 @@
 import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { tables } from '../../DataModel/tables';
-import { fetchBlockers } from '../DeleteButton';
+import { fetchDeleteBlockers } from '../DeleteButton';
 
 requireContext();
 mockTime();
@@ -105,8 +105,7 @@ overrideAjax(
       resource_uri: undefined,
       searchsynonymy: null,
       selectdistinct: false,
-      selectseries: false,
-      smushed: null,
+      smushed: false,
       specifyuser: '/api/specify/specifyuser/2/',
       sqlstr: null,
       timestampcreated: '2022-08-31',
@@ -118,7 +117,7 @@ overrideAjax(
 
 test('fetchBlockers', async () => {
   const resource = new tables.Agent.Resource({ id: agentId });
-  const resources = await fetchBlockers(resource);
+  const resources = await fetchDeleteBlockers(resource);
 
   expect(JSON.parse(JSON.stringify(resources))).toEqual([
     {
