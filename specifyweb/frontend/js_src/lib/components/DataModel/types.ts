@@ -1451,7 +1451,6 @@ export type CollectionObject = {
     readonly collectingEvent: CollectingEvent | null;
     readonly collection: Collection;
     readonly collectionObjectType: CollectionObjectType;
-    readonly componentParent: CollectionObject | null;
     readonly container: Container | null;
     readonly containerOwner: Container | null;
     readonly createdByAgent: Agent | null;
@@ -1469,7 +1468,6 @@ export type CollectionObject = {
     readonly collectionObjectAttrs: RA<CollectionObjectAttr>;
     readonly collectionObjectCitations: RA<CollectionObjectCitation>;
     readonly collectionObjectProperties: RA<CollectionObjectProperty>;
-    readonly components: RA<CollectionObject>;
     readonly conservDescriptions: RA<ConservDescription>;
     readonly determinations: RA<Determination>;
     readonly dnaSequences: RA<DNASequence>;
@@ -3371,6 +3369,11 @@ export type Gift = {
   };
   readonly toOneDependent: { readonly addressOfRecord: AddressOfRecord | null };
   readonly toOneIndependent: {
+    readonly agent1: Agent | null;
+    readonly agent2: Agent | null;
+    readonly agent3: Agent | null;
+    readonly agent4: Agent | null;
+    readonly agent5: Agent | null;
     readonly createdByAgent: Agent | null;
     readonly deaccession: Deaccession | null;
     readonly discipline: Discipline;
@@ -3764,6 +3767,11 @@ export type Loan = {
   };
   readonly toOneDependent: { readonly addressOfRecord: AddressOfRecord | null };
   readonly toOneIndependent: {
+    readonly agent1: Agent | null;
+    readonly agent2: Agent | null;
+    readonly agent3: Agent | null;
+    readonly agent4: Agent | null;
+    readonly agent5: Agent | null;
     readonly createdByAgent: Agent | null;
     readonly discipline: Discipline;
     readonly division: Division | null;
@@ -5308,7 +5316,6 @@ export type SpQuery = {
     readonly remarks: string | null;
     readonly searchSynonymy: boolean | null;
     readonly selectDistinct: boolean | null;
-    readonly selectSeries: boolean | null;
     readonly smushed: boolean | null;
     readonly sqlStr: string | null;
     readonly timestampCreated: string;

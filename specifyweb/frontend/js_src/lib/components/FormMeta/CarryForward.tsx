@@ -30,6 +30,8 @@ import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 /**
  * Fields to always carry forward (unless "Deselect All" is pressed), but not
  * show in the UI.
+ * NOTE: "Deselect All" no longer deselects these fields to prevent issues.
+ * This behavior is probably desirable. Only downside is bigger preferences.
  */
 const invisibleCarry = new Set([
   'collection',
@@ -166,8 +168,21 @@ function BulkCloneConfig({
     'preferences',
     'enableBukCarryForward'
   );
+  const [globalBulkRangeEnabled, setGlobalBulkRangeEnabled] =
+    userPreferences.use('form', 'preferences', 'enableBulkCarryForwardRange');
+  const [
+    globalCreateRecordSetOnBulkCarryForward,
+    setGlobalCreateRecordSetOnBulkCarryForward,
+  ] = userPreferences.use(
+    'form',
+    'preferences',
+    'createRecordSetOnBulkCarryForward'
+  );
 
   const isBulkCarryEnabled = globalBulkEnabled.includes(table.name);
+  const isBulkCarryRangeEnabled = globalBulkRangeEnabled.includes(table.name);
+  const createRecordSetOnBulkCarryForward =
+    globalCreateRecordSetOnBulkCarryForward.includes(table.name);
 
   const [isOpen, handleOpen, handleClose] = useBooleanState();
 
@@ -176,9 +191,12 @@ function BulkCloneConfig({
       <Label.Inline className="rounded bg-[color:var(--foreground)]">
         <Input.Checkbox
           checked={isBulkCarryEnabled}
-          onChange={(): void =>
-            setGlobalBulkEnabled(toggleItem(globalBulkEnabled, table.name))
-          }
+          onChange={(): void => {
+            setGlobalBulkEnabled(toggleItem(globalBulkEnabled, table.name));
+            setGlobalBulkRangeEnabled(
+              globalBulkRangeEnabled.filter((name) => name !== table.name)
+            );
+          }}
         />
         {formsText.bulkCarryForwardEnabled()}
         <Button.Small
@@ -188,6 +206,38 @@ function BulkCloneConfig({
         >
           {icons.cog}
         </Button.Small>
+      </Label.Inline>
+      <Label.Inline className="rounded bg-[color:var(--foreground)]">
+        <Input.Checkbox
+          checked={isBulkCarryRangeEnabled}
+          onChange={(): void => {
+            setGlobalBulkRangeEnabled(
+              toggleItem(globalBulkRangeEnabled, table.name)
+            );
+            setGlobalBulkEnabled(
+              globalBulkEnabled.filter((name) => name !== table.name)
+            );
+          }}
+        />
+        {formsText.bulkCarryForwardRangeEnabled()}
+        <Button.Small
+          className="ml-2"
+          title={formsText.bulkCarryForwardSettingsDescription()}
+          onClick={handleOpen}
+        >
+          {icons.cog}
+        </Button.Small>
+      </Label.Inline>
+      <Label.Inline className="rounded bg-[color:var(--foreground)]">
+        <Input.Checkbox
+          checked={createRecordSetOnBulkCarryForward}
+          onChange={(): void => {
+            setGlobalCreateRecordSetOnBulkCarryForward(
+              toggleItem(globalCreateRecordSetOnBulkCarryForward, table.name)
+            );
+          }}
+        />
+        {formsText.createRecordSetOnBulkCarryForward()}
       </Label.Inline>
       {isOpen && (
         <CarryForwardConfigDialog
@@ -314,18 +364,17 @@ function CarryForwardConfigDialog({
             disabled={config.length === 0}
             onClick={(): void =>
               handleChange(
-                // Don't deselect hidden fields if they are not visible
-                showHiddenFields
-                  ? []
-                  : table.fields
-                      .filter(
-                        ({ name, isVirtual, overrides }) =>
-                          !isVirtual &&
-                          !reverseRelationships.includes(name) &&
-                          overrides.isHidden &&
-                          config.includes(name)
-                      )
-                      .map(({ name }) => name)
+                table.fields
+                  .filter(
+                    ({ name, isVirtual, overrides, isRequired }) =>
+                      !isVirtual &&
+                      !reverseRelationships.includes(name) &&
+                      // Don't deselect hidden fields if they are not visible
+                      ((!showHiddenFields && overrides.isHidden) ||
+                        isRequired) &&
+                      config.includes(name)
+                  )
+                  .map(({ name }) => name)
               )
             }
           >
