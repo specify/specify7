@@ -8,9 +8,9 @@ import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
 import { f } from '../../../utils/functools';
 import { LoadingContext } from '../../Core/Contexts';
-import { SpecifyResource } from '../../DataModel/legacyTypes';
+import type { SpecifyResource } from '../../DataModel/legacyTypes';
 import { deserializeResource } from '../../DataModel/serializers';
-import { Attachment } from '../../DataModel/types';
+import type { Attachment } from '../../DataModel/types';
 import * as Attachments from '../attachments';
 import { UploadAttachment } from '../Plugin';
 import { testAttachment } from './utils';
@@ -18,7 +18,7 @@ import { testAttachment } from './utils';
 requireContext();
 
 async function uploadFileMock() {
-  return deserializeResource(testAttachment) as SpecifyResource<Attachment>;
+  return deserializeResource(testAttachment) ;
 }
 
 beforeEach(() => {
