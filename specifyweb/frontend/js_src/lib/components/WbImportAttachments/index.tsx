@@ -39,7 +39,7 @@ import { Preview } from '../Molecules/FilePicker';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
 
-const ATTACHMENTS_COLUMN = 'Attachments';
+export const ATTACHMENTS_COLUMN = 'UPLOADED_ATTACHMENTS';
 
 export function WbImportAttachmentsView(): JSX.Element {
   useMenuItem('workBench');
@@ -114,11 +114,7 @@ async function saveDataSetAttachments(
   );
 }
 
-function FilesPicked({
-  files,
-}: {
-  readonly files: RA<File>;
-}): JSX.Element {
+function FilesPicked({ files }: { readonly files: RA<File> }): JSX.Element {
   const navigate = useNavigate();
   const [fileUploadProgress, setFileUploadProgress] = React.useState<
     number | undefined
@@ -145,9 +141,9 @@ function FilesPicked({
             }).save(),
             attachments,
           })
-          .then(async ({ dataSet, attachments }) => 
+          .then(async ({ dataSet, attachments }) =>
             // Create SpDataSetAttachments for each attachment
-             f.all({
+            f.all({
               dataSetAttachments: createDataSetAttachments(
                 attachments,
                 dataSet

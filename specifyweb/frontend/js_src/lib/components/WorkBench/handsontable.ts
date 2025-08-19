@@ -1,4 +1,4 @@
-import type Handsontable from 'handsontable';
+import Handsontable from 'handsontable';
 import type { Plugins } from 'handsontable/plugins';
 import type { CellProperties } from 'handsontable/settings';
 
@@ -6,6 +6,7 @@ import { getCache } from '../../utils/cache';
 import { writable } from '../../utils/types';
 import { schema } from '../DataModel/schema';
 import { userPreferences } from '../Preferences/userPreferences';
+import { ATTACHMENTS_COLUMN } from '../WbImportAttachments';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import type { BatchEditPack } from './batchEditHelpers';
 import { BATCH_EDIT_KEY, isBatchEditNullRecord } from './batchEditHelpers';
@@ -53,16 +54,23 @@ function curryCells(
 ): void {
   const identifyPickLists = getPickListsIdentifier(pickLists);
   const identifyNullRecords = getIdentifyNullRecords(hot, mappings, dataset);
+  const identifyAttachments = getAttachmentsIdentifier(dataset);
   hot.updateSettings({
     cells: (physicalRow, physicalColumn, property) => {
       const pickListsResults =
         identifyPickLists?.(physicalRow, physicalColumn, property) ?? {};
+      const attachmentsResults =
+        identifyAttachments?.(physicalRow, physicalColumn, property) ?? {};
       const nullRecordsResults =
         dataset.uploadresult?.success === true
           ? {}
           : (identifyNullRecords?.(physicalRow, physicalColumn, property) ??
             {});
-      return { ...pickListsResults, ...nullRecordsResults };
+      return {
+        ...pickListsResults,
+        ...attachmentsResults,
+        ...nullRecordsResults,
+      };
     },
   });
 }
@@ -130,6 +138,38 @@ function getIdentifyNullRecords(
     };
   };
   return makeNullRecordsReadOnly;
+}
+
+function getAttachmentsIdentifier(dataset: Dataset): GetProperty | undefined {
+  const attachmentsColumn = dataset.columns.indexOf(ATTACHMENTS_COLUMN);
+  const callback: GetProperty = (_physicalRow, physicalCol, _property) =>
+    physicalCol === attachmentsColumn
+      ? {
+          renderer: (
+            instance,
+            td,
+            row,
+            col,
+            property,
+            value,
+            ...rest
+          ): void => {
+            Handsontable.renderers.TextRenderer(
+              instance,
+              td,
+              row,
+              col,
+              property,
+              typeof value === 'string'
+                ? (value.match(/,/gu) ?? '').length + 1
+                : undefined,
+              ...rest
+            );
+          },
+          readOnly: true,
+        }
+      : {};
+  return callback;
 }
 
 function setSort(hot: Handsontable, dataset: Dataset): void {
