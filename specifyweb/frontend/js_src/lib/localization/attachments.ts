@@ -76,7 +76,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Unable to find related record',
     'es-es': 'No se puede encontrar el registro relacionado',
     'fr-fr': "Impossible de trouver l'enregistrement lié",
-    'ru-ru': 'Не удалось найти связанную запись',
+    'ru-ru': 'Невозможно найти связанную запись',
     'uk-ua': 'Неможливо знайти відповідний запис',
     'de-ch': 'Verknüpfter Datensatz kann nicht gefunden werden',
     'pt-br': 'Não foi possível encontrar o registro relacionado',
@@ -155,7 +155,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Falsch formatiert',
     'es-es': 'Formateado incorrectamente',
     'fr-fr': 'Incorrectement formaté',
-    'ru-ru': 'Неправильно отформатирован',
+    'ru-ru': 'Неправильно отформатировано',
     'uk-ua': 'Неправильно відформатований',
     'pt-br': 'Formatado incorretamente',
   },
@@ -203,7 +203,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Übereinstimmungsfehler',
     'es-es': 'Error de coincidencia',
     'fr-fr': 'Erreur de correspondance',
-    'ru-ru': 'Ошибка совпадения',
+    'ru-ru': 'Ошибка соответствия',
     'uk-ua': 'Помилка збігу',
     'pt-br': 'Erro de correspondência',
   },
@@ -239,7 +239,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Neuer Anhangsdatensatz {date: string}',
     'es-es': 'Nuevo conjunto de datos adjuntos {date: string}',
     'fr-fr': 'Nouveau jeu de données de pièces jointes {date: string}',
-    'ru-ru': 'Новый набор данных вложений {дата: строка}',
+    'ru-ru': 'Новый набор данных о вложениях {дата: строка}',
     'uk-ua': 'Новий набір даних вкладень {date: string}',
     'pt-br': 'Novo conjunto de dados de anexo {data: string}',
   },
@@ -249,7 +249,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Nuevo conjunto de datos adjuntos',
     'uk-ua': 'Новий набір даних вкладення',
     'fr-fr': 'Nouveau jeu de données de pièces jointes',
-    'ru-ru': 'Новый набор данных вложений',
+    'ru-ru': 'Новый набор данных о вложениях',
     'pt-br': 'Novo conjunto de dados de anexo',
   },
   uploadInterrupted: {
@@ -265,13 +265,13 @@ export const attachmentsText = createDictionary({
     'en-us':
       'The upload was in progress when an interruption occurred. Some files may have been uploaded.',
     'de-ch':
-      'Der Upload war bereits im Gange, als es zu einer Unterbrechung kam. Möglicherweise wurden bereits einige Dateien hochgeladen.',
+      'Der Upload war im Gange, als es zu einer Unterbrechung kam. Möglicherweise wurden bereits einige Dateien hochgeladen.',
     'es-es':
       'La carga estaba en curso cuando se produjo una interrupción. Es posible que se hayan cargado algunos archivos.',
     'fr-fr':
       "Le téléchargement était en cours lorsqu'une interruption s'est produite. Certains fichiers peuvent avoir été téléchargés.",
     'ru-ru':
-      'Загрузка была в процессе, когда произошло прерывание. Некоторые файлы могли быть загружены.',
+      'Загрузка была прервана. Возможно, некоторые файлы уже были загружены.',
     'uk-ua':
       'Під час завантаження виникла перерва. Можливо, деякі файли було завантажено.',
     'pt-br':
@@ -294,7 +294,7 @@ export const attachmentsText = createDictionary({
     'fr-fr':
       "Le retour en arrière était en cours lorsqu'une interruption s'est produite. Certains fichiers peuvent avoir été supprimés",
     'ru-ru':
-      'Откат был в процессе, когда произошло прерывание. Некоторые файлы могли быть удалены',
+      'Откат выполнялся, когда произошло прерывание. Некоторые файлы могли быть удалены.',
     'uk-ua':
       'Тривав відкат, коли сталася перерва. Деякі файли могли бути видалені',
     'es-es':
@@ -381,11 +381,11 @@ export const attachmentsText = createDictionary({
     'fr-fr':
       "La restauration supprimera les pièces jointes de la base de données spécifiée et du serveur d'actifs.",
     'ru-ru':
-      'Откат приведет к удалению вложений из базы данных Specify и Asset Server.',
+      'Откат приведет к удалению вложений из базы данных Specify и сервера Asset.',
     'uk-ua':
       'Відкат видалить вкладення з бази даних Specify і сервера ресурсів',
     'pt-br':
-      'A reversão excluirá os anexos do banco de dados Especificar e do Asset Server',
+      'A reversão excluirá os anexos do banco de dados Especificar e do Servidor de Ativos',
   },
   noMatch: {
     'en-us': 'No match',
@@ -415,7 +415,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Suchen Sie nach weiteren Anhängen',
     'es-es': 'Buscar más adjuntos',
     'fr-fr': 'Rechercher plus de pièces jointes',
-    'ru-ru': 'Ищите больше вложений',
+    'ru-ru': 'Найдите больше вложений',
     'uk-ua': 'Шукайте більше вкладень',
     'pt-br': 'Procure mais anexos',
   },
@@ -443,7 +443,7 @@ export const attachmentsText = createDictionary({
       'Mehrere Übereinstimmungen. Klicken Sie hier, um die Mehrdeutigkeit aufzuheben.',
     'es-es': 'Múltiples coincidencias. Haga clic para eliminar la ambigüedad',
     'fr-fr': 'Plusieurs correspondances. Cliquez pour clarifier',
-    'ru-ru': 'Несколько совпадений. Нажмите, чтобы устранить неоднозначность',
+    'ru-ru': 'Несколько совпадений. Нажмите, чтобы устранить неоднозначность.',
     'uk-ua': 'Кілька збігів. Натисніть, щоб усунути неоднозначність',
     'pt-br': 'Várias correspondências. Clique para desambiguar',
   },
@@ -461,7 +461,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Korrekt formatiert',
     'es-es': 'Formateado correctamente',
     'fr-fr': 'Correctement formaté',
-    'ru-ru': 'Правильно отформатирован',
+    'ru-ru': 'Правильно отформатировано',
     'uk-ua': 'Правильно відформатований',
     'pt-br': 'Formatado corretamente',
   },
@@ -487,7 +487,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'On File',
     'de-ch': 'In Datei',
     'es-es': 'En archivo',
-    'ru-ru': 'В файле',
+    'ru-ru': 'В деле',
     'uk-ua': 'У файлі',
     'fr-fr': 'Dans le fichier',
     'pt-br': 'Em arquivo',
@@ -542,7 +542,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Detenido debido a un error al cargar un archivo anterior',
     'fr-fr':
       "Arrêté à cause d'une erreur de téléchargement du précédent fichier",
-    'ru-ru': 'Остановлено из-за ошибки загрузки предыдущего файла',
+    'ru-ru': 'Остановлено из-за ошибки при загрузке предыдущего файла',
     'uk-ua': 'Зупинено через помилку завантаження попереднього файлу',
     'pt-br': 'Interrompido devido a erro ao carregar um arquivo anterior',
   },
@@ -553,7 +553,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Elija archivos o arrástrelos aquí para comenzar.',
     'fr-fr':
       'Choisissez des fichiers ou faites-les glisser ici pour commencer.',
-    'ru-ru': 'Выберите файлы или перетащите их сюда, чтобы начать.',
+    'ru-ru': 'Чтобы начать, выберите файлы или перетащите их сюда.',
     'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
     'pt-br': 'Escolha os arquivos ou arraste-os aqui para começar.',
   },
@@ -615,7 +615,7 @@ export const attachmentsText = createDictionary({
     'fr-fr':
       'Supprimer un jeu de données le retire définitivement ainsi que son chemin de téléchargement. De plus, après la suppression, le retour en arrière ne sera plus possible pour un jeu de données téléchargé.',
     'ru-ru':
-      'Удаление набора данных навсегда удаляет его и его путь загрузки. Также после удаления откат больше не будет опцией для загруженного набора данных.',
+      'Удаление набора данных приводит к его безвозвратному удалению вместе с путём загрузки. Кроме того, после удаления откат загруженного набора данных больше не будет доступен.',
     'uk-ua':
       'Видалення набору даних остаточно видаляє його та його шлях завантаження. Крім того, після видалення відкат більше не буде доступним для завантаженого набору даних.',
     'pt-br':
@@ -631,7 +631,7 @@ export const attachmentsText = createDictionary({
     'fr-fr':
       "Erreur lors du téléchargement de la pièce jointe. Le serveur de pièces jointes est peut-être indisponible ou une erreur s'est produite lors de la lecture du fichier.",
     'ru-ru':
-      'Ошибка загрузки вложения. Сервер вложения может быть недоступен или произошла ошибка чтения файла.',
+      'Ошибка загрузки вложения. Возможно, сервер вложения недоступен или произошла ошибка при чтении файла.',
     'uk-ua':
       'Помилка завантаження вкладення. Можливо, сервер вкладень недоступний або під час читання файлу сталася помилка.',
     'pt-br':

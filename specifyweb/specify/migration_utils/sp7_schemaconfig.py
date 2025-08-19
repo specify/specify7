@@ -206,3 +206,41 @@ MIGRATION_0032_UPDATE_FIELDS = {
 MIGRATION_0033_TABLES = [
     ('Paleocontext', 'Paleo Context provides contextual information on the chronostratigraphy, lithostratigraphy, and biostratigraphy of a collection object, collecting event, or locality.'),
 ]
+
+MIGRATION_0034_FIELDS = {
+    'Accession': ['dateAccessionedPrecision', 'dateAcknowledgedPrecision', 'dateReceivedPrecision', 'date1', 'date1Precision', 'date2', 'date2Precision'],
+}
+
+MIGRATION_0034_UPDATE_FIELDS = {
+    'Accession': [
+        ('dateAccessionedPrecision',    'Date Accessioned Precision',    'Date Accessioned Precision'),
+        ('dateAcknowledgedPrecision',   'Date Acknowledged Precision',   'Date Acknowledged Precision'),
+        ('dateReceivedPrecision',       'Date Received Precision',       'Date Received Precision'),
+        ('date1',                       'Date 1',                        'Date 1'),
+        ('date1Precision',              'Date 1 Precision',              'Date 1 Precision'),
+        ('date2',                       'Date 2',                        'Date 2'),
+        ('date2Precision',              'Date 2 Precision',              'Date 2 Precision'),
+    ]
+}
+
+MIGRATION_0038_FIELDS = {
+    'Loan': ['agent1', 'agent2', 'agent3', 'agent4', 'agent5'],
+    'Gift': ['agent1', 'agent2', 'agent3', 'agent4', 'agent5'],
+}
+
+MIGRATION_0038_UPDATE_FIELDS = {
+    'Loan': [
+        ('agent1','Agent 1','Agent 1'),
+        ('agent2','Agent 2','Agent 2'),
+        ('agent3','Agent 3','Agent 3'),
+        ('agent4','Agent 4','Agent 4'),
+        ('agent5','Agent 5','Agent 5'),
+    ],
+    'Gift': [
+        ('agent1','Agent 1','Agent 1'),
+        ('agent2','Agent 2','Agent 2'),
+        ('agent3','Agent 3','Agent 3'),
+        ('agent4','Agent 4','Agent 4'),
+        ('agent5','Agent 5','Agent 5'),
+    ]
+}

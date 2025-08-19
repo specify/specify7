@@ -9,20 +9,22 @@ from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 import requests
 from sqlalchemy import sql, distinct
+from sqlalchemy import select, func, distinct, literal
 from sqlalchemy.orm import aliased
 from specifyweb.celery_tasks import LogErrorsTask, app
 
 from specifyweb.middleware.general import require_GET
-from specifyweb.businessrules.exceptions import BusinessRuleException
-from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets, has_table_permission
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets, has_table_permission
 
-from specifyweb.stored_queries import models as sqlmodels
-from specifyweb.stored_queries.execution import set_group_concat_max_len
-from specifyweb.stored_queries.group_concat import group_concat
 from specifyweb.specify.tree_utils import add_default_taxon, get_search_filters, initialize_default_taxon_tree
+from specifyweb.backend.stored_queries import models as sqlmodels
+from specifyweb.backend.stored_queries.execution import set_group_concat_max_len
+from specifyweb.backend.stored_queries.group_concat import group_concat
+from specifyweb.specify.tree_utils import get_search_filters
 from specifyweb.specify.field_change_info import FieldChangeInfo
 from specifyweb.specify import models as spmodels
-from specifyweb.notifications.models import Message
+from specifyweb.backend.notifications.models import Message
 from specifyweb.specify.tree_ranks import tree_rank_count
 from . import tree_extras
 from .api import get_object_or_404, obj_to_data, toJson
@@ -37,13 +39,13 @@ logger = logging.getLogger(__name__)
 TREE_TABLE = Literal['Taxon', 'Storage',
                      'Geography', 'Geologictimeperiod', 'Lithostrat', 'Tectonicunit']
 
-GEO_TREES: tuple[TREE_TABLE, ...] = ['Tectonicunit']
+GEO_TREES: tuple[TREE_TABLE, ...] = ('Tectonicunit',)
 
-COMMON_TREES: tuple[TREE_TABLE, ...] = ['Taxon', 'Storage',
-                                        'Geography']
+COMMON_TREES: tuple[TREE_TABLE, ...] = ('Taxon', 'Storage',
+                                        'Geography')
 
-ALL_TREES: tuple[TREE_TABLE, ...] = [
-    *COMMON_TREES, 'Geologictimeperiod', 'Lithostrat', *GEO_TREES]
+ALL_TREES: tuple[TREE_TABLE, ...] = (
+    *COMMON_TREES, 'Geologictimeperiod', 'Lithostrat', *GEO_TREES)
 
 
 def tree_mutation(mutation):
@@ -168,59 +170,55 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
     tree_table = spmodels.datamodel.get_table(tree)
     parentid = None if parentid == 'null' else int(parentid)
 
-    node = getattr(sqlmodels, tree_table.name)
-    child = aliased(node)
+    node     = getattr(sqlmodels, tree_table.name)
+    child    = aliased(node)
     accepted = aliased(node)
-    synonym = aliased(node)
-    id_col = getattr(node, node._id)
-    child_id = getattr(child, node._id)
+    synonym  = aliased(node)
+
     treedef_col = getattr(node, tree_table.name + "TreeDefID")
-    orderby = getattr(node, tree_table.get_field_strict(sortfield).name)
+    orderby     = getattr(node, tree_table.get_field_strict(sortfield).name)
 
-    col_args = [
-        node.name,
-        node.fullName,
-        node.nodeNumber,
-        node.highestChildNodeNumber,
-        node.rankId,
-        node.AcceptedID,
-        accepted.fullName,
-        node.author if include_author else "NULL",
-    ]
+    # We use min for grouped columns because for some reason, SQL is rejecting
+    # the group_by in some dbs due to "only_full_group_by". It is somehow not
+    # smart enough to see that there is no dependency in the columns going from
+    # main table to the to-manys (child, and syns).
+    # I want to use ANY_VALUE() but that's not supported by MySQL 5.6- and MariaDB.
+    # I don't want to disable "only_full_group_by" in case someone misuses it...
+    # applying min to fool into thinking it is aggregated.
+    # these values are guarenteed to be the same
+    cols = [
+        node._id.label("id"),
+        func.min(node.name).label("name"),
+        func.min(node.fullName).label("full_name"),
+        func.min(node.nodeNumber).label("node_number"),
+        func.min(node.highestChildNodeNumber).label("highest_child_number"),
+        func.min(node.rankId).label("rank_id"),
 
-    apply_min = [
-        # for some reason, SQL is rejecting the group_by in some dbs
-        # due to "only_full_group_by". It is somehow not smart enough to see
-        # that there is no dependency in the columns going from main table to the to-manys (child, and syns)
-        # I want to use ANY_VALUE() but that's not supported by MySQL 5.6- and MariaDB.
-        # I don't want to disable "only_full_group_by" in case someone misuses it...
-        # applying min to fool into thinking it is aggregated.
-        # these values are guarenteed to be the same
-        sql.func.min(arg)
-        for arg in col_args
-    ]
+        func.min(node.AcceptedID).label("accepted_id"),
+        func.min(accepted.fullName).label("accepted_fullname"),
 
-    grouped = [
-        *apply_min,
-        # syns are to-many, so child can be duplicated
-        sql.func.count(distinct(child_id)),
-        # child are to-many, so syn's full name can be duplicated
-        # FEATURE: Allow users to select a separator?? Maybe that's too nice
-        group_concat(distinct(synonym.fullName), separator=", "),
+        (
+            func.min(node.author)
+            if include_author
+            else func.min(literal("NULL"))
+        ).label("author"),
+
+        func.count(distinct(child._id)).label("child_count"),
+        group_concat(distinct(synonym.fullName), separator=", ").label("synonyms"),
     ]
 
     query = (
-        session.query(id_col, *grouped)
-        .outerjoin(child, child.ParentID == id_col)
-        .outerjoin(accepted, node.AcceptedID == getattr(accepted, node._id))
-        .outerjoin(synonym, synonym.AcceptedID == id_col)
-        .group_by(id_col)
-        .filter(treedef_col == int(treedef))
-        .filter(node.ParentID == parentid)
+        select(*cols)
+        .outerjoin(child, child.ParentID  == node._id)
+        .outerjoin(accepted, node.AcceptedID == accepted._id)
+        .outerjoin(synonym, synonym.AcceptedID == node._id)
+        .where(treedef_col == int(treedef))
+        .where(node.ParentID == parentid)
+        .group_by(node._id)
         .order_by(orderby)
     )
-    results = list(query)
-    return results
+
+    return session.execute(query).all()
 
 @login_maybe_required
 @require_GET
@@ -521,11 +519,11 @@ def all_tree_information(request):
 
 class TREE_INFORMATION(TypedDict):
     # TODO: Stricten all this.
-    definition: Dict[Any, Any]
-    ranks: List[Dict[Any, Any]] 
+    definition: dict[Any, Any]
+    ranks: list[dict[Any, Any]] 
 
 # This is done to make tree fetching easier.
-def get_all_tree_information(collection, user_id) -> Dict[str, List[TREE_INFORMATION]]:
+def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMATION]]:
     def has_tree_read_permission(tree: TREE_TABLE) -> bool:
         return has_table_permission(
             collection.id, user_id, tree, 'read')

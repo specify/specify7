@@ -1,0 +1,102 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AppResourcesTab dialog render 1`] = `
+<div
+  aria-describedby="modal-0-content"
+  aria-labelledby="modal-0-header"
+  aria-modal="true"
+  class="ReactModal__Content 
+        flex flex-col gap-2 p-4 outline-none !transform-none !w-full !h-full
+        overflow-x-hidden text-neutral-900 duration-0
+        dark:border dark:border-neutral-700 dark:text-neutral-200
+        
+        
+    bg-gradient-to-bl from-gray-200 via-white
+    to-white dark:from-neutral-800 dark:via-neutral-900 dark:to-neutral-900
+  
+      "
+  id="modal-0-full-screen"
+  role="dialog"
+  style="transform: translate(0px,0px);"
+  tabindex="-1"
+>
+  <div
+    class="
+          flex items-center gap-2 md:gap-4
+          
+          flex-wrap
+        "
+    id="modal-0-handle"
+  >
+    <div
+      class="flex items-center gap-2"
+    >
+      <span
+        class="text-blue-500"
+      >
+        <span
+          aria-hidden="true"
+          title="Other Properties Resource"
+        >
+          <svg
+            aria-hidden="true"
+            class="w-6 h-6 flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clip-rule="evenodd"
+              d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </span>
+      </span>
+      <h2
+        class="font-semibold text-black dark:text-white text-xl"
+        id="modal-0-header"
+      >
+        test
+      </h2>
+    </div>
+    <button
+      class="button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--info-button-color)] text-white"
+      type="button"
+    />
+  </div>
+  <div
+    class="
+            dark:text-neutral-350 -mx-1 flex-1 overflow-y-auto px-1 py-4
+            text-gray-700 flex flex-col gap-2
+          "
+    id="modal-0-content"
+  >
+    <h1>
+      Data: 
+      TestData
+    </h1>
+  </div>
+  <div
+    class="flex gap-2 !block"
+  >
+    <div
+      class="flex gap-2"
+    >
+      <h3>
+        TestFooter
+      </h3>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AppResourcesTab simple render 1`] = `
+<DocumentFragment>
+  <h1>
+    Data: TestData
+  </h1>
+</DocumentFragment>
+`;

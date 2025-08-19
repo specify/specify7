@@ -42,7 +42,7 @@ export const interactionsText = createDictionary({
     'es-es': 'No se encontraron preparaciones para los siguientes registros:',
     'fr-fr':
       "Aucune préparation n'a été trouvée pour les enregistrements suivants :",
-    'ru-ru': 'Не обнаружено никаких препаратов для следующих записей:',
+    'ru-ru': 'Препаратов для следующих записей не обнаружено:',
     'uk-ua': 'Для наступних записів не знайдено жодних підготовчих матеріалів:',
     'pt-br': 'Não foram encontradas preparações para os seguintes registros:',
   },
@@ -135,7 +135,7 @@ export const interactionsText = createDictionary({
   },
   preparationsCanNotBeReturned: {
     'en-us': 'Preparations cannot be returned in this context.',
-    'ru-ru': 'В этом контексте препараты не подлежат возврату.',
+    'ru-ru': 'Препараты в данном случае возврату не подлежат.',
     'es-es': 'En este contexto no es posible retomar los preparativos.',
     'fr-fr': 'Les preparations ne peuvent être renvoyées dans ce contexte.',
     'uk-ua': 'У цьому контексті препарати не можна повернути.',
@@ -144,7 +144,8 @@ export const interactionsText = createDictionary({
   },
   noUnresolvedPreparations: {
     'en-us': 'There are no unresolved preparations for this loan.',
-    'ru-ru': 'По данному кредиту нет нерешенных вопросов подготовки.',
+    'ru-ru':
+      'Никаких нерешенных подготовительных вопросов по данному кредиту нет.',
     'es-es': 'No existen preparativos pendientes para este préstamo.',
     'fr-fr': 'Il n’y a pas de preparations non retournées pour ce prêt.',
     'uk-ua':
@@ -259,7 +260,7 @@ export const interactionsText = createDictionary({
     'en-us': 'Resolved {loanTable:string} records',
     'es-es': 'Registros {loanTable:string} resueltos',
     'fr-fr': 'Enregistrements résolus {loanTable:string}',
-    'ru-ru': 'Решено {loanTable:string} записей',
+    'ru-ru': 'Решенные {loanTable:string} записи',
     'uk-ua': 'Вирішено записів {loanTable:string}',
     'de-ch': 'Aufgelöste {loanTable:string}-Datensätze',
     'pt-br': 'Registros resolvidos {loanTable:string}',
