@@ -227,7 +227,7 @@ def create_collection(request, direct=False):
         return JsonResponse({"error": str(e)}, status=400)
 
 def create_specifyuser(request, direct=False):
-    from specifyweb.specify.models import Specifyuser, Agent, Division
+    from specifyweb.specify.models import Specifyuser, Agent, Division, Collection
 
     if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
@@ -260,7 +260,7 @@ def create_specifyuser(request, direct=False):
         # Grant permissions
         UserPolicy.objects.create(
             specifyuser=new_user,
-            collection=None,
+            collection=Collection.objects.last(),
             resource='%',
             action='%'
         )
