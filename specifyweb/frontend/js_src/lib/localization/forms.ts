@@ -91,6 +91,15 @@ export const formsText = createDictionary({
     "de-ch": "Überprüfen, ob die Ressource gelöscht werden kann …",
     "pt-br": "Verificando se o recurso pode ser excluído…",
   },
+  checkingIfResourceIsUsed: {
+    'en-us': 'Checking if this record is currently in use…',
+  },
+  noLinkedRecords: {
+    'en-us': 'No linked records',
+  },
+  recordUsedDescription: {
+    'en-us': 'This resource is currently linked to the following records:',
+  },
   deleteBlocked: {
     "en-us": "Delete blocked",
     "ru-ru": "Удалить заблокированный",
