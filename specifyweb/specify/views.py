@@ -1,5 +1,5 @@
 """
-A few non-business data resource end points
+A few non-business data resource end points 
 """
 
 import json
