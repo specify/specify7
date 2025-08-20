@@ -379,6 +379,7 @@ export function QueryComboBox({
       onClick={(): void => handleOpenRelated(true)}
     />
   );
+
   return (
     <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
       <TreeDefinitionContext.Provider value={treeDefinition}>
@@ -543,6 +544,10 @@ export function QueryComboBox({
                                         : fieldName === 'taxonTreeDefId'
                                           ? {
                                               field: 'definition',
+                                              queryBuilderFieldPath: [
+                                                'definition',
+                                                'id',
+                                              ],
                                               isRelationship: true,
                                               operation: 'in',
                                               isNot: false,
