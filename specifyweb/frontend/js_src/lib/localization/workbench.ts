@@ -1437,9 +1437,6 @@ export const wbText = createDictionary({
   attachmentsForRow: {
     'en-us': 'Attachments for row {row:number}:',
   },
-  attachmentsForRow: {
-    'en-us': 'Attachments for row {row:number}:',
-  },
   updatedCells: {
     "en-us": "Updated Cells",
     "de-ch": "Aktualisierte Zellen",
