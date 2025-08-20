@@ -283,11 +283,13 @@ export function WbView({
                 onClose={closeResults}
               />
             </aside>
-          ) : showAttachments ? (
+          ) : null}
+          {useAttachments ? (
             <aside aria-live="polite">
               <WbAttachmentsPreview
                 dataset={dataset}
                 hot={hot}
+                showPanel={showAttachments}
                 onClose={toggleAttachments}
               />
             </aside>
