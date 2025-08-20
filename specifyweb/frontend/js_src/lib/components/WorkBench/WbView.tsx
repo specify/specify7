@@ -38,7 +38,6 @@ import { WbToolkit } from '../WbToolkit';
 import { WbUtilsComponent } from '../WbUtils';
 import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 import { WbUtils } from '../WbUtils/Utils';
-import { usesAttachments } from './attachmentHelpers';
 import type { WbCellCounts } from './CellMeta';
 import { WbCellMeta } from './CellMeta';
 import { DataSetName } from './DataSetMeta';
