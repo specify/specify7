@@ -16,7 +16,7 @@ import { exportsForTests } from '../../utils/cache/index';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { fetchOriginalUrl } from '../Attachments/attachments';
-import { ImageViewer } from '../Attachments/ImageViewer';
+import { LeafletImageViewer } from '../Attachments/LeafletImageViewer';
 import { AttachmentViewer } from '../Attachments/Viewer';
 import { toResource } from '../DataModel/helpers';
 import type {
@@ -107,7 +107,7 @@ export function WbAttachmentViewerView(): JSX.Element {
   const body =
     attachment !== undefined &&
     (isImage ? (
-      <ImageViewer alt={attachment?.title ?? ''} src={attachmentUrl ?? ''} />
+      <LeafletImageViewer alt={attachment?.title ?? ''} src={attachmentUrl ?? ''} />
     ) : (
       <AttachmentViewer
         attachment={deserializeResource(attachment)}

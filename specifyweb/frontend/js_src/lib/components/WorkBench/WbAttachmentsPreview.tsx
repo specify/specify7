@@ -16,7 +16,7 @@ import type { GetSet, RA } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { fetchOriginalUrl } from '../Attachments/attachments';
-import { ImageViewer } from '../Attachments/ImageViewer';
+import { LeafletImageViewer } from '../Attachments/LeafletImageViewer';
 import { AttachmentPreview } from '../Attachments/Preview';
 import { AttachmentViewer } from '../Attachments/Viewer';
 import { toResource } from '../DataModel/helpers';
@@ -283,7 +283,7 @@ function AttachmentViewerDialog({
   const body =
     attachment !== undefined &&
     (isImage ? (
-      <ImageViewer alt={attachment?.title ?? ''} src={attachmentUrl ?? ''} />
+      <LeafletImageViewer alt={attachment?.title ?? ''} src={attachmentUrl ?? ''} />
     ) : (
       <AttachmentViewer
         attachment={deserializeResource(attachment)}
