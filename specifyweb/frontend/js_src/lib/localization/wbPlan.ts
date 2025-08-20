@@ -388,6 +388,9 @@ export const wbPlanText = createDictionary({
     "de-ch": "Erweiterte Tabellen anzeigen",
     "pt-br": "Mostrar todas as tabelas",
   },
+  selectBaseTableWithAttachments: {
+    'en-us': 'Select a Base Table with Attachments',
+  },
   dataSetUploaded: {
     "en-us": "Data Set uploaded. This Upload Plan cannot be changed",
     "ru-ru": "Набор данных загружен. Этот план загрузки нельзя изменить",

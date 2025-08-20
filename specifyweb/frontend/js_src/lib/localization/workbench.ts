@@ -1434,6 +1434,15 @@ export const wbText = createDictionary({
     "uk-ua": "{node:string} {author:string} (у {parent:string})",
     "pt-br": "{node:string} {author:string} (em {parent:string})",
   },
+  attachmentsForRow: {
+    'en-us': 'Attachments for row {row:number}:',
+  },
+  detachWindow: {
+    'en-us': 'Detach Window',
+  },
+  attachWindow: {
+    'en-us': 'Attach Window',
+  },
   updatedCells: {
     "en-us": "Updated Cells",
     "de-ch": "Aktualisierte Zellen",
