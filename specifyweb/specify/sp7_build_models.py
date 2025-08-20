@@ -244,7 +244,7 @@ def generate_build_model_imports_code() -> str:
         "from functools import partialmethod\n"
         "from django.db import models\n"
         "#from specifyweb.specify.test_load_datamodel import model_extras\n"
-        "from specifyweb.businessrules.exceptions import AbortSave\n"
+        "from specifyweb.backend.businessrules.exceptions import AbortSave\n"
         "from . import model_extras\n"
         "import logging\n\n"
         "logger = logging.getLogger(__name__)\n"
