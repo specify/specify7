@@ -4,15 +4,16 @@ A few non-business data resource end points
 
 import json
 from itertools import groupby
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any
+from collections.abc import Callable
 import traceback
 
 from django import http
 from django.db import IntegrityError, transaction, models
-from specifyweb.notifications.models import Message, Spmerging
+from specifyweb.backend.notifications.models import Message, Spmerging
 from django.db.models import Q
 
-from specifyweb.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.celery_tasks import LogErrorsTask, app
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.api import uri_for_model, delete_obj, is_dependent_field, put_resource
@@ -115,6 +116,8 @@ def fix_orderings(base_model: Table, new_record_data):
                               for ordering_field in ordering_fields])
                                 for record in records}
 
+        # The lengths will be different in the case where the ordering fields are duplicated.
+        # For example, the ordernumber is same for two collectors.
         if len(order_fields_data) != len(records):
             resources = []
             for record in records:
@@ -162,7 +165,7 @@ RESTRICT_UPDATE_FIELDS = {'spappresourcedata'}
 
 @transaction.atomic
 def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int,
-                    progress: Optional[Progress]=None,
+                    progress: Progress | None=None,
                     new_record_info: dict[str, Any]=None):
     """Replaces all the foreign keys referencing the old record ID
     with the new record ID, and deletes the old record.
@@ -201,6 +204,7 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
         foreign_table = spmodels.datamodel.get_table(table_name)
         foreign_model = get_app_model(table_name.lower().title())
 
+        # BUG: This shouldn't be .title().
         apply_order = add_ordering_to_key(table_name.lower().title())
         # BUG: timestampmodified could be null for one record, and not the other
         new_key_fields = ('timestampcreated', 'timestampmodified', 'id') \

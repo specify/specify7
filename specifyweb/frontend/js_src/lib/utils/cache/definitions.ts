@@ -166,6 +166,9 @@ export type CacheDefinitions = {
       RA<RA<{ readonly itemName: string; readonly value: number | string }>>
     >;
   };
+  readonly batchEdit: {
+    readonly warningBatchEditDialog: boolean;
+  };
 };
 
 export type SortConfigs = {
