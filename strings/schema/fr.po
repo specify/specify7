@@ -22,7 +22,7 @@ msgstr "Tableau"
 
 #: components/Attachments/index.tsx:195
 #: components/FormEditor/Table.tsx:49
-#: components/Router/Routes.tsx:399
+#: components/Router/Routes.tsx:407
 #: components/SchemaConfig/Tables.tsx:49
 #. Used in: Components > Attachments > Index ⬤ Components > Form Editor > Table ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 #, fuzzy
@@ -44,7 +44,7 @@ msgstr "Sans table"
 
 #: components/Header/userToolDefinitions.ts:61
 #: components/Preferences/UserDefinitions.tsx:724
-#: components/Router/Routes.tsx:373
+#: components/Router/Routes.tsx:381
 #: components/SchemaConfig/Components.tsx:30
 #: components/SchemaConfig/Languages.tsx:36
 #: components/Security/registry.ts:206
@@ -232,7 +232,7 @@ msgstr "Lien Web"
 msgid "userDefined"
 msgstr "Défini par l'utilisateur"
 
-#: components/Router/Routes.tsx:388
+#: components/Router/Routes.tsx:396
 #: components/SchemaConfig/Languages.tsx:29
 #: components/SchemaConfig/Languages.tsx:78
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages

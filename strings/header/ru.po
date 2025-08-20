@@ -233,7 +233,7 @@ msgstr "Операционный API"
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:235
 #: components/Header/userToolDefinitions.ts:119
 #: components/Preferences/UserDefinitions.tsx:543
-#: components/Toolbar/WbsDialog.tsx:225
+#: components/Toolbar/WbsDialog.tsx:229
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Toolbar > Wbs Dialog
 msgid "documentation"
 msgstr "Документация"
@@ -255,7 +255,7 @@ msgstr "форум сообщества"
 
 #: components/Errors/ErrorDialog.tsx:152
 #: components/Header/userToolDefinitions.ts:143
-#: components/Router/Routes.tsx:435
+#: components/Router/Routes.tsx:443
 #: components/RouterCommands/CacheBuster.tsx:39
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 msgid "clearCache"
@@ -271,7 +271,7 @@ msgstr "Кэш очищен. Пожалуйста, перезагрузите с
 msgid "technicalDocumentation"
 msgstr "Документация"
 
-#: components/Attachments/ChronoChart.tsx:33
+#: components/Attachments/ChronoChart.tsx:29
 #. Used in: Components > Attachments > Chrono Chart
 #, fuzzy
 msgid "chronostratigraphicChart"

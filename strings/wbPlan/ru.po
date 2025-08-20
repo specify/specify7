@@ -3,7 +3,7 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/Preferences/UserDefinitions.tsx:1903
 #: components/WbToolkit/DevShowPlan.tsx:119
-#: components/WorkBench/WbView.tsx:203
+#: components/WorkBench/WbView.tsx:220
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Wb View
 msgid "dataMapper"
 msgstr "Сопоставления"
@@ -19,8 +19,8 @@ msgstr "План загрузки не определен"
 msgid "noUploadPlanDescription"
 msgstr "Для этого набора данных не определен план загрузки. Создать эго сейчас?"
 
-#: components/WorkBench/hotProps.tsx:150
-#: components/WorkBench/hotProps.tsx:152
+#: components/WorkBench/hotProps.tsx:164
+#: components/WorkBench/hotProps.tsx:166
 #. Used in: Components > Work Bench > Hot Props
 msgid "unmappedColumn"
 msgstr "Несопоставленный столбец"
@@ -199,12 +199,12 @@ msgstr "Сопоставить выбранное поле с выбранным
 msgid "relationshipWithTable"
 msgstr "Связь с таблицей {tableName:string}"
 
-#: components/WbPlanView/State.tsx:101
+#: components/WbPlanView/State.tsx:105
 #. Used in: Components > Wb Plan View > State
 msgid "selectBaseTable"
 msgstr "Выберите базовую таблицу"
 
-#: components/WbPlanView/State.tsx:94
+#: components/WbPlanView/State.tsx:96
 #. Used in: Components > Wb Plan View > State
 msgid "chooseExistingPlan"
 msgstr "Выберите существующий план"
@@ -213,6 +213,11 @@ msgstr "Выберите существующий план"
 #. Used in: Components > Schema Config > Tables
 msgid "showAllTables"
 msgstr "Показать дополнительные таблицы"
+
+#: components/WbPlanView/State.tsx:104
+#. Used in: Components > Wb Plan View > State
+msgid "selectBaseTableWithAttachments"
+msgstr ""
 
 #: components/WbPlanView/Mapper.tsx:482
 #. Used in: Components > Wb Plan View > Mapper

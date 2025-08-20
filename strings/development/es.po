@@ -12,7 +12,7 @@ msgstr ""
 "X-Generator: Weblate 4.15.1\n"
 
 #: components/Developer/CrashReportVisualizer.tsx:21
-#: components/Router/Routes.tsx:454
+#: components/Router/Routes.tsx:462
 #. Used in: Components > Developer > Crash Report Visualizer ⬤ Components > Router > Routes
 msgid "crashReportVisualizer"
 msgstr "Visualizador los informes de errores"

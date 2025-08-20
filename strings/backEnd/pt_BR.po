@@ -11,19 +11,19 @@ msgstr ""
 "X-Generator: Weblate 5.12-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: components/WorkBench/resultsParser.ts:203
+#: components/WorkBench/resultsParser.ts:213
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "failedParsingBoolean"
 msgstr "valor \"{value:string}\" não pode ser resolvido como Verdadeiro ou Falso"
 
-#: components/WorkBench/resultsParser.ts:205
+#: components/WorkBench/resultsParser.ts:215
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "failedParsingDecimal"
 msgstr "o valor \"{value:string}\" não é um valor decimal válido"
 
-#: components/WorkBench/resultsParser.ts:207
+#: components/WorkBench/resultsParser.ts:217
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "failedParsingFloat"
@@ -32,7 +32,7 @@ msgstr "o valor \"{value:string}\" não é um valor de ponto flutuante válido"
 #: components/WorkBench/CellMeta.ts:159
 #: components/WorkBench/hooks.ts:122
 #: components/WorkBench/hooks.ts:131
-#: components/WorkBench/resultsParser.ts:258
+#: components/WorkBench/resultsParser.ts:268
 #. Used in: Components > Work Bench > Cell Meta ⬤ Components > Work Bench > Hooks ⬤ Components > Work Bench > Results Parser
 #, fuzzy
 msgid "failedParsingPickList"
@@ -40,7 +40,7 @@ msgstr ""
 "{value:string} não é um valor válido neste campo da lista de opções.\n"
 "Clique na seta para escolher entre as opções disponíveis."
 
-#: components/WorkBench/resultsParser.ts:209
+#: components/WorkBench/resultsParser.ts:219
 #. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "failedParsingAgentType"
@@ -48,7 +48,7 @@ msgstr ""
 "ruim {agentTypeField:string}: \"{badType:string}\". Esperava um de "
 "{validTypes:string}"
 
-#: components/WorkBench/resultsParser.ts:262
+#: components/WorkBench/resultsParser.ts:272
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "pickListValueTooLong"
@@ -56,67 +56,67 @@ msgstr ""
 "valor de {pickListTable:string} {pickList:string} maior que o máximo de "
 "{maxLength:number|formatted} para o campo"
 
-#: components/WorkBench/resultsParser.ts:217
+#: components/WorkBench/resultsParser.ts:227
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "valueTooLong"
 msgstr "o valor não deve ter comprimento maior que {maxLength:number|formatted}"
 
-#: components/WorkBench/resultsParser.ts:221
+#: components/WorkBench/resultsParser.ts:231
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "invalidYear"
 msgstr "o valor da data deve conter o ano de quatro dígitos: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:225
+#: components/WorkBench/resultsParser.ts:235
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "badDateFormat"
 msgstr "valor de data inválido: {value:string}. esperado: {format:string}"
 
-#: components/WorkBench/resultsParser.ts:230
+#: components/WorkBench/resultsParser.ts:240
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "coordinateBadFormat"
 msgstr "valor incorreto de latitude ou longitude: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:234
+#: components/WorkBench/resultsParser.ts:244
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "latitudeOutOfRange"
 msgstr "a latitude deve estar entre -90 e 90. Real: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:238
+#: components/WorkBench/resultsParser.ts:248
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "longitudeOutOfRange"
 msgstr "a longitude deve estar entre -180 e 180. Real: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:242
+#: components/WorkBench/resultsParser.ts:252
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "formatMismatch"
 msgstr "valor {value:string} não corresponde ao formatador {formatter:string}"
 
-#: components/WorkBench/resultsParser.ts:268
+#: components/WorkBench/resultsParser.ts:278
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "invalidPartialRecord"
 msgstr "este campo deve estar vazio se {column:string} estiver vazio"
 
-#: components/WorkBench/resultsParser.ts:272
+#: components/WorkBench/resultsParser.ts:282
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "fieldRequiredByUploadPlan"
 msgstr "campo é obrigatório para mapeamento do plano de upload"
 
-#: components/WorkBench/resultsParser.ts:274
+#: components/WorkBench/resultsParser.ts:284
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "invalidTreeStructure"
 msgstr "Há vários valores de espaço reservado \"Carregado\" na árvore!"
 
-#: components/WorkBench/resultsParser.ts:280
+#: components/WorkBench/resultsParser.ts:290
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "missingRequiredTreeParent"
@@ -284,7 +284,7 @@ msgstr ""
 msgid "datasetAlreadyUploaded"
 msgstr "Conjunto de dados já carregado"
 
-#: components/WorkBench/resultsParser.ts:275
+#: components/WorkBench/resultsParser.ts:285
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "scopeChangeDetected"
@@ -292,14 +292,30 @@ msgstr ""
 "Alteração de escopo detectada nesta linha. Recomenda-se excluir esta linha "
 "do conjunto de dados."
 
-#: components/WorkBench/resultsParser.ts:277
+#: components/WorkBench/resultsParser.ts:287
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "multipleTreeDefsInRow"
 msgstr "Várias definições de árvores em linha"
 
-#: components/WorkBench/resultsParser.ts:278
+#: components/WorkBench/resultsParser.ts:288
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "invalidCotype"
 msgstr "Tipo inválido para classificação de árvore selecionada"
+
+#: components/WorkBench/resultsParser.ts:306
+#: components/WorkBench/resultsParser.ts:312
+#. Used in: Components > Work Bench > Results Parser
+msgid "attachmentNotFound"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:308
+#. Used in: Components > Work Bench > Results Parser
+msgid "tableDoesNotSupportAttachments"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:310
+#. Used in: Components > Work Bench > Results Parser
+msgid "attachmentAlreadyLinked"
+msgstr ""

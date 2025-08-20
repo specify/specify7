@@ -22,7 +22,17 @@ msgstr ""
 #: components/Molecules/SyncAttachmentPicker.tsx:110
 #: components/Preferences/UserDefinitions.tsx:1324
 #: components/Router/Routes.tsx:182
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
+#: components/Router/Routes.tsx:477
+#: components/WbAttachmentViewer/index.tsx:136
+#: components/WbImportAttachments/index.tsx:181
+#: components/WbImportAttachments/index.tsx:215
+#: components/WbToolkit/index.tsx:59
+#: components/WorkBench/WbAttachmentsPreview.tsx:115
+#: components/WorkBench/WbAttachmentsPreview.tsx:298
+#: components/WorkBench/WbAttachmentsPreview.tsx:332
+#: components/WorkBench/WbView.tsx:229
+#: components/WorkBench/hotProps.tsx:78
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Wb Attachment Viewer > Index ⬤ Components > Wb Import Attachments > Index ⬤ Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb Attachments Preview ⬤ Components > Work Bench > Wb View ⬤ Components > Work Bench > Hot Props
 msgid "attachments"
 msgstr "Вложения"
 
@@ -36,7 +46,8 @@ msgstr "Масштаб"
 #: components/Attachments/index.tsx:54
 #: components/AttachmentsBulkImport/Upload.tsx:250
 #: components/AttachmentsBulkImport/Upload.tsx:257
-#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Upload
+#: components/WbImportAttachments/index.tsx:184
+#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Wb Import Attachments > Index
 msgid "attachmentServerUnavailable"
 msgstr "Сервер прикрепленных файлов недоступен"
 
@@ -53,7 +64,8 @@ msgid "orderBy"
 msgstr "Сортировать по"
 
 #: components/Attachments/Plugin.tsx:121
-#. Used in: Components > Attachments > Plugin
+#: components/WbImportAttachments/index.tsx:190
+#. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index
 msgid "uploadingInline"
 msgstr "Закачивание…"
 
@@ -67,7 +79,7 @@ msgstr "В вашей коллекции нет вложений"
 #: components/Attachments/Cell.tsx:147
 #. Used in: Components > Attachments > Cell
 msgid "unableToFindRelatedRecord"
-msgstr "Невозможно найти связанную запись"
+msgstr "Не удалось найти связанную запись"
 
 #: components/Attachments/Cell.tsx:150
 #. Used in: Components > Attachments > Cell
@@ -116,7 +128,7 @@ msgstr "Пожалуйста, повторно выберите все файл�
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "incorrectFormatter"
-msgstr "Неправильно отформатировано"
+msgstr "Неправильно отформатирован"
 
 #: components/AttachmentsBulkImport/utils.ts:470
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -147,7 +159,7 @@ msgstr "{action:string} был в процессе выполнения, ког�
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "matchError"
-msgstr "Ошибка соответствия"
+msgstr "Ошибка совпадения"
 
 #: components/AttachmentsBulkImport/utils.ts:481
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -171,13 +183,13 @@ msgstr "Наборы данных импорта вложений ({count:number
 #. Used in: Components > Attachments Bulk Import > Datasets
 #, fuzzy
 msgid "newAttachmentDataset"
-msgstr "Новый набор данных о вложениях {дата: строка}"
+msgstr "Новый набор данных вложений {дата: строка}"
 
 #: components/AttachmentsBulkImport/Datasets.tsx:269
 #. Used in: Components > Attachments Bulk Import > Datasets
 #, fuzzy
 msgid "newAttachmentDatasetBase"
-msgstr "Новый набор данных о вложениях"
+msgstr "Новый набор данных вложений"
 
 #: components/AttachmentsBulkImport/Import.tsx:393
 #. Used in: Components > Attachments Bulk Import > Import
@@ -189,7 +201,9 @@ msgstr "Загрузка прервана"
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "uploadInterruptedDescription"
-msgstr "Загрузка была прервана. Возможно, некоторые файлы уже были загружены."
+msgstr ""
+"Загрузка была в процессе, когда произошло прерывание. Некоторые файлы могли "
+"быть загружены."
 
 #: components/AttachmentsBulkImport/Import.tsx:404
 #. Used in: Components > Attachments Bulk Import > Import
@@ -202,8 +216,8 @@ msgstr "Откат прерван"
 #, fuzzy
 msgid "rollbackInterruptedDescription"
 msgstr ""
-"Откат выполнялся, когда произошло прерывание. Некоторые файлы могли быть "
-"удалены."
+"Откат был в процессе, когда произошло прерывание. Некоторые файлы могли "
+"быть удалены"
 
 #: components/AttachmentsBulkImport/Import.tsx:227
 #. Used in: Components > Attachments Bulk Import > Import
@@ -254,7 +268,7 @@ msgstr "Прервано. Повторная попытка через {remainin
 #. Used in: Components > Attachments Bulk Import > Rollback
 #, fuzzy
 msgid "rollbackDescription"
-msgstr "Откат приведет к удалению вложений из базы данных Specify и сервера Asset."
+msgstr "Откат приведет к удалению вложений из базы данных Specify и Asset Server."
 
 #: components/AttachmentsBulkImport/utils.ts:485
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -272,7 +286,7 @@ msgstr "В первых записях {halt:number} вложений не об�
 #. Used in: Components > Attachments > Record Set Attachment
 #, fuzzy
 msgid "fetchNextAttachments"
-msgstr "Найдите больше вложений"
+msgstr "Ищите больше вложений"
 
 #: components/Attachments/Dialog.tsx:87
 #. Used in: Components > Attachments > Dialog
@@ -290,7 +304,7 @@ msgstr "Несколько совпадений"
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "multipleMatchesClick"
-msgstr "Несколько совпадений. Нажмите, чтобы устранить неоднозначность."
+msgstr "Несколько совпадений. Нажмите, чтобы устранить неоднозначность"
 
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:160
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
@@ -302,7 +316,7 @@ msgstr "Всего файлов"
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "correctlyFormatted"
-msgstr "Правильно отформатировано"
+msgstr "Правильно отформатирован"
 
 #: components/AttachmentsBulkImport/utils.ts:488
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -311,7 +325,10 @@ msgid "stoppedByUser"
 msgstr "Остановлено пользователем"
 
 #: components/Router/OverlayRoutes.tsx:229
-#. Used in: Components > Router > Overlay Routes
+#: components/Router/Routes.tsx:213
+#: components/Toolbar/WbsDialog.tsx:197
+#: components/WbImportAttachments/index.tsx:212
+#. Used in: Components > Router > Overlay Routes ⬤ Components > Router > Routes ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import Attachments > Index
 #, fuzzy
 msgid "importAttachments"
 msgstr "Импорт вложений"
@@ -320,7 +337,7 @@ msgstr "Импорт вложений"
 #. Used in: Components > Attachments Bulk Import > Action State
 #, fuzzy
 msgid "onFile"
-msgstr "В деле"
+msgstr "В файле"
 
 #: components/AttachmentsBulkImport/Import.tsx:416
 #. Used in: Components > Attachments Bulk Import > Import
@@ -352,13 +369,13 @@ msgstr "Ошибка сохранения записи"
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "interruptionStopped"
-msgstr "Остановлено из-за ошибки при загрузке предыдущего файла"
+msgstr "Остановлено из-за ошибки загрузки предыдущего файла"
 
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "chooseFilesToGetStarted"
-msgstr "Чтобы начать, выберите файлы или перетащите их сюда."
+msgstr "Выберите файлы или перетащите их сюда, чтобы начать."
 
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:232
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
@@ -392,17 +409,16 @@ msgstr ""
 #, fuzzy
 msgid "deleteAttachmentDataSetDescription"
 msgstr ""
-"Удаление набора данных приводит к его безвозвратному удалению вместе с "
-"путём загрузки. Кроме того, после удаления откат загруженного набора данных "
-"больше не будет доступен."
+"Удаление набора данных навсегда удаляет его и его путь загрузки. Также "
+"после удаления откат больше не будет опцией для загруженного набора данных."
 
 #: components/AttachmentsBulkImport/utils.ts:492
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "attachmentUploadError"
 msgstr ""
-"Ошибка загрузки вложения. Возможно, сервер вложения недоступен или "
-"произошла ошибка при чтении файла."
+"Ошибка загрузки вложения. Сервер вложения может быть недоступен или "
+"произошла ошибка чтения файла."
 
 #: components/Attachments/RecordSetAttachment.tsx:134
 #: components/FormSliders/AttachmentsCollection.tsx:84

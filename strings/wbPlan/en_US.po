@@ -3,7 +3,7 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/Preferences/UserDefinitions.tsx:1903
 #: components/WbToolkit/DevShowPlan.tsx:119
-#: components/WorkBench/WbView.tsx:203
+#: components/WorkBench/WbView.tsx:220
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Wb View
 msgid "dataMapper"
 msgstr "Data Mapper"
@@ -19,8 +19,8 @@ msgstr "No Upload Plan is Defined"
 msgid "noUploadPlanDescription"
 msgstr "No Upload Plan has been defined for this Data Set. Create one now?"
 
-#: components/WorkBench/hotProps.tsx:150
-#: components/WorkBench/hotProps.tsx:152
+#: components/WorkBench/hotProps.tsx:164
+#: components/WorkBench/hotProps.tsx:166
 #. Used in: Components > Work Bench > Hot Props
 msgid "unmappedColumn"
 msgstr "Unmapped Column"
@@ -198,12 +198,12 @@ msgstr "Map selected field to selected header"
 msgid "relationshipWithTable"
 msgstr "Relationship to the {tableName:string} table"
 
-#: components/WbPlanView/State.tsx:101
+#: components/WbPlanView/State.tsx:105
 #. Used in: Components > Wb Plan View > State
 msgid "selectBaseTable"
 msgstr "Select a Base Table"
 
-#: components/WbPlanView/State.tsx:94
+#: components/WbPlanView/State.tsx:96
 #. Used in: Components > Wb Plan View > State
 msgid "chooseExistingPlan"
 msgstr "Choose Existing Plan"
@@ -212,6 +212,11 @@ msgstr "Choose Existing Plan"
 #. Used in: Components > Schema Config > Tables
 msgid "showAllTables"
 msgstr "Show All Tables"
+
+#: components/WbPlanView/State.tsx:104
+#. Used in: Components > Wb Plan View > State
+msgid "selectBaseTableWithAttachments"
+msgstr "Select a Base Table with Attachments"
 
 #: components/WbPlanView/Mapper.tsx:482
 #. Used in: Components > Wb Plan View > Mapper

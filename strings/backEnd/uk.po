@@ -12,17 +12,17 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.13-dev\n"
 
-#: components/WorkBench/resultsParser.ts:203
+#: components/WorkBench/resultsParser.ts:213
 #. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingBoolean"
 msgstr "значення \"{value:string}\" не являється \"True\" або \"False\""
 
-#: components/WorkBench/resultsParser.ts:205
+#: components/WorkBench/resultsParser.ts:215
 #. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingDecimal"
 msgstr "значення \"{value:string}\" не є дійсним цілим числом"
 
-#: components/WorkBench/resultsParser.ts:207
+#: components/WorkBench/resultsParser.ts:217
 #. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingFloat"
 msgstr "значення \"{value:string}\" не є раціональним числом"
@@ -30,80 +30,80 @@ msgstr "значення \"{value:string}\" не є раціональним ч�
 #: components/WorkBench/CellMeta.ts:159
 #: components/WorkBench/hooks.ts:122
 #: components/WorkBench/hooks.ts:131
-#: components/WorkBench/resultsParser.ts:258
+#: components/WorkBench/resultsParser.ts:268
 #. Used in: Components > Work Bench > Cell Meta ⬤ Components > Work Bench > Hooks ⬤ Components > Work Bench > Results Parser
 msgid "failedParsingPickList"
 msgstr ""
 "{value:string} не є допустимим значенням у цьому полі списку вибору.\n"
 "Натисніть на стрілку, щоб вибрати серед доступних варіантів."
 
-#: components/WorkBench/resultsParser.ts:209
+#: components/WorkBench/resultsParser.ts:219
 #. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Results Parser
 msgid "failedParsingAgentType"
 msgstr ""
 "поганий {agentTypeField:string}: \"{badType:string}\". Очікується один із "
 "{validTypes:string}"
 
-#: components/WorkBench/resultsParser.ts:262
+#: components/WorkBench/resultsParser.ts:272
 #. Used in: Components > Work Bench > Results Parser
 msgid "pickListValueTooLong"
 msgstr ""
 "значення з {pickListTable:string} {pickList:string} довше, ніж максимальне "
 "значення {maxLength:number|formatted} для поля"
 
-#: components/WorkBench/resultsParser.ts:217
+#: components/WorkBench/resultsParser.ts:227
 #. Used in: Components > Work Bench > Results Parser
 msgid "valueTooLong"
 msgstr "довжина значення не повинна перевищувати {maxLength:number|formatted}"
 
-#: components/WorkBench/resultsParser.ts:221
+#: components/WorkBench/resultsParser.ts:231
 #. Used in: Components > Work Bench > Results Parser
 msgid "invalidYear"
 msgstr "дата має містити чотири цифри року: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:225
+#: components/WorkBench/resultsParser.ts:235
 #. Used in: Components > Work Bench > Results Parser
 msgid "badDateFormat"
 msgstr ""
 "неправильне значення дати: {value:string}. очікуваний формат: "
 "{format:string}"
 
-#: components/WorkBench/resultsParser.ts:230
+#: components/WorkBench/resultsParser.ts:240
 #. Used in: Components > Work Bench > Results Parser
 msgid "coordinateBadFormat"
 msgstr "неправильне значення широти або довготи: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:234
+#: components/WorkBench/resultsParser.ts:244
 #. Used in: Components > Work Bench > Results Parser
 msgid "latitudeOutOfRange"
 msgstr "широта має бути між -90 і 90. Поточна: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:238
+#: components/WorkBench/resultsParser.ts:248
 #. Used in: Components > Work Bench > Results Parser
 msgid "longitudeOutOfRange"
 msgstr "довгота має бути між -180 і 180. Поточна: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:242
+#: components/WorkBench/resultsParser.ts:252
 #. Used in: Components > Work Bench > Results Parser
 msgid "formatMismatch"
 msgstr "значення {value:string} не відповідає формату {formatter:string}"
 
-#: components/WorkBench/resultsParser.ts:268
+#: components/WorkBench/resultsParser.ts:278
 #. Used in: Components > Work Bench > Results Parser
 msgid "invalidPartialRecord"
 msgstr "це поле має бути порожнім, якщо {column:string} є порожнім"
 
-#: components/WorkBench/resultsParser.ts:272
+#: components/WorkBench/resultsParser.ts:282
 #. Used in: Components > Work Bench > Results Parser
 msgid "fieldRequiredByUploadPlan"
 msgstr "це поле є обов’язковим (згідно з визначенням)"
 
-#: components/WorkBench/resultsParser.ts:274
+#: components/WorkBench/resultsParser.ts:284
 #. Used in: Components > Work Bench > Results Parser
 msgid "invalidTreeStructure"
 msgstr "У дереві є кілька вузлів з назвою \"Uploaded\"!"
 
-#: components/WorkBench/resultsParser.ts:280
+#: components/WorkBench/resultsParser.ts:290
 #. Used in: Components > Work Bench > Results Parser
 msgid "missingRequiredTreeParent"
 msgstr ""
@@ -243,19 +243,35 @@ msgstr ""
 msgid "datasetAlreadyUploaded"
 msgstr "Таблиця уже завантажена"
 
-#: components/WorkBench/resultsParser.ts:275
+#: components/WorkBench/resultsParser.ts:285
 #. Used in: Components > Work Bench > Results Parser
 msgid "scopeChangeDetected"
 msgstr ""
 "У цьому рядку виявлено зміну області застосування. Рекомендується видалити "
 "цей рядок з набору даних"
 
-#: components/WorkBench/resultsParser.ts:277
+#: components/WorkBench/resultsParser.ts:287
 #. Used in: Components > Work Bench > Results Parser
 msgid "multipleTreeDefsInRow"
 msgstr "Кілька визначень дерев у рядку"
 
-#: components/WorkBench/resultsParser.ts:278
+#: components/WorkBench/resultsParser.ts:288
 #. Used in: Components > Work Bench > Results Parser
 msgid "invalidCotype"
 msgstr "Недійсний тип для вибраного(их) рангу(ів) дерева"
+
+#: components/WorkBench/resultsParser.ts:306
+#: components/WorkBench/resultsParser.ts:312
+#. Used in: Components > Work Bench > Results Parser
+msgid "attachmentNotFound"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:308
+#. Used in: Components > Work Bench > Results Parser
+msgid "tableDoesNotSupportAttachments"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:310
+#. Used in: Components > Work Bench > Results Parser
+msgid "attachmentAlreadyLinked"
+msgstr ""

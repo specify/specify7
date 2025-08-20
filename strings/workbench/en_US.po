@@ -261,7 +261,7 @@ msgstr ""
 msgid "saving"
 msgstr "Saving..."
 
-#: components/WorkBench/WbView.tsx:105
+#: components/WorkBench/WbView.tsx:108
 #. Used in: Components > Work Bench > Wb View
 msgid "wbUnloadProtect"
 msgstr "Changes to this Data Set have not been Saved."
@@ -409,7 +409,7 @@ msgstr "An Upload Plan needs to defined before this Data Set can be Validated"
 #: components/WbActions/WbUpload.tsx:84
 #: components/WbActions/WbValidate.tsx:66
 #: components/WbToolkit/ChangeOwner.tsx:38
-#: components/WbToolkit/index.tsx:86
+#: components/WbToolkit/index.tsx:100
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Index
 msgid "unavailableWhileEditing"
 msgstr "This action requires all changes to be saved"
@@ -621,7 +621,7 @@ msgid "firstRowIsHeader"
 msgstr "First Row is Header:"
 
 #: components/Molecules/FilePicker.tsx:229
-#: components/Toolbar/WbsDialog.tsx:196
+#: components/Toolbar/WbsDialog.tsx:200
 #. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
 msgid "importFile"
 msgstr "Import file"
@@ -631,7 +631,7 @@ msgstr "Import file"
 msgid "columnName"
 msgstr "Column {columnIndex:number}"
 
-#: components/Toolbar/WbsDialog.tsx:40
+#: components/Toolbar/WbsDialog.tsx:41
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "newDataSetName"
 msgstr "New Data Set {date}"
@@ -654,7 +654,7 @@ msgstr "Currently no Data Sets exist."
 msgid "createDataSetInstructions"
 msgstr "Use \"Import a file\" or \"Create New\" to make a new one."
 
-#: components/Toolbar/WbsDialog.tsx:207
+#: components/Toolbar/WbsDialog.tsx:211
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "createNew"
 msgstr "Create New"
@@ -713,7 +713,7 @@ msgstr "Data Set owner changed"
 msgid "dataSet"
 msgstr "Data Set"
 
-#: components/Toolbar/WbsDialog.tsx:123
+#: components/Toolbar/WbsDialog.tsx:124
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "dataSetTimestampUploaded"
 msgstr "Timestamp Uploaded"
@@ -801,6 +801,21 @@ msgstr "WB upload of \"{dataSet:string}\""
 #. Used in: Components > Work Bench > Disambiguation
 msgid "ambiguousTaxaChild"
 msgstr "{node:string} {author:string} (in {parent:string})"
+
+#: components/WorkBench/WbAttachmentsPreview.tsx:119
+#. Used in: Components > Work Bench > Wb Attachments Preview
+msgid "attachmentsForRow"
+msgstr "Attachments for row {row:number}:"
+
+#: components/WorkBench/WbAttachmentsPreview.tsx:324
+#. Used in: Components > Work Bench > Wb Attachments Preview
+msgid "detachWindow"
+msgstr "Detach Window"
+
+#: components/WbAttachmentViewer/index.tsx:129
+#. Used in: Components > Wb Attachment Viewer > Index
+msgid "attachWindow"
+msgstr "Attach Window"
 
 #: components/WbUtils/index.tsx:137
 #. Used in: Components > Wb Utils > Index

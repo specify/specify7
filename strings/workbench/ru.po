@@ -273,7 +273,7 @@ msgstr ""
 msgid "saving"
 msgstr "Сохранение..."
 
-#: components/WorkBench/WbView.tsx:105
+#: components/WorkBench/WbView.tsx:108
 #. Used in: Components > Work Bench > Wb View
 msgid "wbUnloadProtect"
 msgstr "Изменения в этом наборе данных не были сохранены."
@@ -429,7 +429,7 @@ msgstr ""
 #: components/WbActions/WbUpload.tsx:84
 #: components/WbActions/WbValidate.tsx:66
 #: components/WbToolkit/ChangeOwner.tsx:38
-#: components/WbToolkit/index.tsx:86
+#: components/WbToolkit/index.tsx:100
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Index
 msgid "unavailableWhileEditing"
 msgstr "Это действие требует сохранения всех изменений"
@@ -641,7 +641,7 @@ msgid "firstRowIsHeader"
 msgstr "Первая строка является заголовок:"
 
 #: components/Molecules/FilePicker.tsx:229
-#: components/Toolbar/WbsDialog.tsx:196
+#: components/Toolbar/WbsDialog.tsx:200
 #. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
 msgid "importFile"
 msgstr "Импортировать файл"
@@ -651,7 +651,7 @@ msgstr "Импортировать файл"
 msgid "columnName"
 msgstr "Столбец {columnIndex:number}"
 
-#: components/Toolbar/WbsDialog.tsx:40
+#: components/Toolbar/WbsDialog.tsx:41
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "newDataSetName"
 msgstr "Новый набор данных {date}"
@@ -675,7 +675,7 @@ msgstr "В настоящее время наборов данных не сущ
 msgid "createDataSetInstructions"
 msgstr "Используйте «Импортировать файл» или «Создать новый», чтобы создать новый."
 
-#: components/Toolbar/WbsDialog.tsx:207
+#: components/Toolbar/WbsDialog.tsx:211
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "createNew"
 msgstr "Создайте новый"
@@ -734,7 +734,7 @@ msgstr "Владелец набора данных изменен"
 msgid "dataSet"
 msgstr "Набор данных"
 
-#: components/Toolbar/WbsDialog.tsx:123
+#: components/Toolbar/WbsDialog.tsx:124
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "dataSetTimestampUploaded"
@@ -827,6 +827,21 @@ msgstr "WB загрузка \"{dataSet:string}\""
 #. Used in: Components > Work Bench > Disambiguation
 msgid "ambiguousTaxaChild"
 msgstr "{node:string} {author:string} (в {parent:string})"
+
+#: components/WorkBench/WbAttachmentsPreview.tsx:119
+#. Used in: Components > Work Bench > Wb Attachments Preview
+msgid "attachmentsForRow"
+msgstr ""
+
+#: components/WorkBench/WbAttachmentsPreview.tsx:324
+#. Used in: Components > Work Bench > Wb Attachments Preview
+msgid "detachWindow"
+msgstr ""
+
+#: components/WbAttachmentViewer/index.tsx:129
+#. Used in: Components > Wb Attachment Viewer > Index
+msgid "attachWindow"
+msgstr ""
 
 #: components/WbUtils/index.tsx:137
 #. Used in: Components > Wb Utils > Index

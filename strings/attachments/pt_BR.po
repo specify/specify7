@@ -21,7 +21,17 @@ msgstr ""
 #: components/Molecules/SyncAttachmentPicker.tsx:110
 #: components/Preferences/UserDefinitions.tsx:1324
 #: components/Router/Routes.tsx:182
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
+#: components/Router/Routes.tsx:477
+#: components/WbAttachmentViewer/index.tsx:136
+#: components/WbImportAttachments/index.tsx:181
+#: components/WbImportAttachments/index.tsx:215
+#: components/WbToolkit/index.tsx:59
+#: components/WorkBench/WbAttachmentsPreview.tsx:115
+#: components/WorkBench/WbAttachmentsPreview.tsx:298
+#: components/WorkBench/WbAttachmentsPreview.tsx:332
+#: components/WorkBench/WbView.tsx:229
+#: components/WorkBench/hotProps.tsx:78
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Wb Attachment Viewer > Index ⬤ Components > Wb Import Attachments > Index ⬤ Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb Attachments Preview ⬤ Components > Work Bench > Wb View ⬤ Components > Work Bench > Hot Props
 #, fuzzy
 msgid "attachments"
 msgstr "Anexos"
@@ -37,7 +47,8 @@ msgstr "Escala"
 #: components/Attachments/index.tsx:54
 #: components/AttachmentsBulkImport/Upload.tsx:250
 #: components/AttachmentsBulkImport/Upload.tsx:257
-#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Upload
+#: components/WbImportAttachments/index.tsx:184
+#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Wb Import Attachments > Index
 #, fuzzy
 msgid "attachmentServerUnavailable"
 msgstr "Servidor de anexos indisponível"
@@ -57,7 +68,8 @@ msgid "orderBy"
 msgstr "Ordenar por"
 
 #: components/Attachments/Plugin.tsx:121
-#. Used in: Components > Attachments > Plugin
+#: components/WbImportAttachments/index.tsx:190
+#. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index
 #, fuzzy
 msgid "uploadingInline"
 msgstr "Enviando…"
@@ -264,8 +276,8 @@ msgstr "Interrompido. Tentando novamente em {remainingTime:string}"
 #, fuzzy
 msgid "rollbackDescription"
 msgstr ""
-"A reversão excluirá os anexos do banco de dados Especificar e do Servidor "
-"de Ativos"
+"A reversão excluirá os anexos do banco de dados Especificar e do Asset "
+"Server"
 
 #: components/AttachmentsBulkImport/utils.ts:485
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -322,7 +334,10 @@ msgid "stoppedByUser"
 msgstr "Parado pelo usuário"
 
 #: components/Router/OverlayRoutes.tsx:229
-#. Used in: Components > Router > Overlay Routes
+#: components/Router/Routes.tsx:213
+#: components/Toolbar/WbsDialog.tsx:197
+#: components/WbImportAttachments/index.tsx:212
+#. Used in: Components > Router > Overlay Routes ⬤ Components > Router > Routes ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import Attachments > Index
 #, fuzzy
 msgid "importAttachments"
 msgstr "Importar anexos"

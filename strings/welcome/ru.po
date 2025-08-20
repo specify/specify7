@@ -2,7 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain\n"
 
 #: components/HomePage/index.tsx:65
-#: components/Router/Routes.tsx:464
+#: components/Router/Routes.tsx:472
 #. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 msgid "pageTitle"
 msgstr "Добро пожаловать"

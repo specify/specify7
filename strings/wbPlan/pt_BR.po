@@ -13,7 +13,7 @@ msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:1903
 #: components/WbToolkit/DevShowPlan.tsx:119
-#: components/WorkBench/WbView.tsx:203
+#: components/WorkBench/WbView.tsx:220
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Wb View
 #, fuzzy
 msgid "dataMapper"
@@ -34,8 +34,8 @@ msgstr ""
 "Nenhum Plano de Upload foi definido para este Conjunto de Dados. Criar um "
 "agora?"
 
-#: components/WorkBench/hotProps.tsx:150
-#: components/WorkBench/hotProps.tsx:152
+#: components/WorkBench/hotProps.tsx:164
+#: components/WorkBench/hotProps.tsx:166
 #. Used in: Components > Work Bench > Hot Props
 #, fuzzy
 msgid "unmappedColumn"
@@ -246,13 +246,13 @@ msgstr "Mapear campo selecionado para cabeçalho selecionado"
 msgid "relationshipWithTable"
 msgstr "Relação com a tabela {tableName:string}"
 
-#: components/WbPlanView/State.tsx:101
+#: components/WbPlanView/State.tsx:105
 #. Used in: Components > Wb Plan View > State
 #, fuzzy
 msgid "selectBaseTable"
 msgstr "Selecione uma tabela base"
 
-#: components/WbPlanView/State.tsx:94
+#: components/WbPlanView/State.tsx:96
 #. Used in: Components > Wb Plan View > State
 #, fuzzy
 msgid "chooseExistingPlan"
@@ -263,6 +263,11 @@ msgstr "Escolha o plano existente"
 #, fuzzy
 msgid "showAllTables"
 msgstr "Mostrar todas as tabelas"
+
+#: components/WbPlanView/State.tsx:104
+#. Used in: Components > Wb Plan View > State
+msgid "selectBaseTableWithAttachments"
+msgstr ""
 
 #: components/WbPlanView/Mapper.tsx:482
 #. Used in: Components > Wb Plan View > Mapper

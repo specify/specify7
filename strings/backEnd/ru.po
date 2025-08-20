@@ -12,17 +12,17 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.13-dev\n"
 
-#: components/WorkBench/resultsParser.ts:203
+#: components/WorkBench/resultsParser.ts:213
 #. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingBoolean"
 msgstr "значение \"{value:string}\" не разрешается to True or False"
 
-#: components/WorkBench/resultsParser.ts:205
+#: components/WorkBench/resultsParser.ts:215
 #. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingDecimal"
 msgstr "значение \"{value:string}\" не является допустимым чеслом"
 
-#: components/WorkBench/resultsParser.ts:207
+#: components/WorkBench/resultsParser.ts:217
 #. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingFloat"
 msgstr "значение \"{value:string}\" не является допустимым числом с плавающей точкой"
@@ -30,79 +30,79 @@ msgstr "значение \"{value:string}\" не является допусти
 #: components/WorkBench/CellMeta.ts:159
 #: components/WorkBench/hooks.ts:122
 #: components/WorkBench/hooks.ts:131
-#: components/WorkBench/resultsParser.ts:258
+#: components/WorkBench/resultsParser.ts:268
 #. Used in: Components > Work Bench > Cell Meta ⬤ Components > Work Bench > Hooks ⬤ Components > Work Bench > Results Parser
 msgid "failedParsingPickList"
 msgstr ""
 "{value:string} не является допустимым значением в этом списке.\n"
 "Нажмите на стрелку, чтобы выбрать один из доступных вариантов."
 
-#: components/WorkBench/resultsParser.ts:209
+#: components/WorkBench/resultsParser.ts:219
 #. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Results Parser
 msgid "failedParsingAgentType"
 msgstr ""
 "неверный {agentTypeField:string}: \"{badType:string}\". Ожидается один из "
 "{validTypes:string}"
 
-#: components/WorkBench/resultsParser.ts:262
+#: components/WorkBench/resultsParser.ts:272
 #. Used in: Components > Work Bench > Results Parser
 msgid "pickListValueTooLong"
 msgstr ""
 "значение из {pickListTable:string} {pickList:string} длиннее максимального "
 "значения {maxLength:number|formatted} для поля"
 
-#: components/WorkBench/resultsParser.ts:217
+#: components/WorkBench/resultsParser.ts:227
 #. Used in: Components > Work Bench > Results Parser
 msgid "valueTooLong"
 msgstr "значение не должно быть длиннее {maxLength:number|formatted}"
 
-#: components/WorkBench/resultsParser.ts:221
+#: components/WorkBench/resultsParser.ts:231
 #. Used in: Components > Work Bench > Results Parser
 msgid "invalidYear"
 msgstr "значение даты должно содержать четырехзначный год: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:225
+#: components/WorkBench/resultsParser.ts:235
 #. Used in: Components > Work Bench > Results Parser
 msgid "badDateFormat"
 msgstr "неверное значение даты: {value:string}. ожидается: {format:string}"
 
-#: components/WorkBench/resultsParser.ts:230
+#: components/WorkBench/resultsParser.ts:240
 #. Used in: Components > Work Bench > Results Parser
 msgid "coordinateBadFormat"
 msgstr "неверное значение широты или долготы: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:234
+#: components/WorkBench/resultsParser.ts:244
 #. Used in: Components > Work Bench > Results Parser
 msgid "latitudeOutOfRange"
 msgstr "широта должна быть между -90 и 90. Фактически: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:238
+#: components/WorkBench/resultsParser.ts:248
 #. Used in: Components > Work Bench > Results Parser
 msgid "longitudeOutOfRange"
 msgstr "долгота должна быть между -180 и 180. Фактически: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:242
+#: components/WorkBench/resultsParser.ts:252
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "formatMismatch"
 msgstr "значение {value:string} не соответствует форматеру {formatter:string}"
 
-#: components/WorkBench/resultsParser.ts:268
+#: components/WorkBench/resultsParser.ts:278
 #. Used in: Components > Work Bench > Results Parser
 msgid "invalidPartialRecord"
 msgstr "это поле должно быть пустым, если {column:string} пусто"
 
-#: components/WorkBench/resultsParser.ts:272
+#: components/WorkBench/resultsParser.ts:282
 #. Used in: Components > Work Bench > Results Parser
 msgid "fieldRequiredByUploadPlan"
 msgstr "поле обязательно для загрузки плана"
 
-#: components/WorkBench/resultsParser.ts:274
+#: components/WorkBench/resultsParser.ts:284
 #. Used in: Components > Work Bench > Results Parser
 msgid "invalidTreeStructure"
 msgstr "В дереве есть несколько веток с именем \"Uploaded\"!"
 
-#: components/WorkBench/resultsParser.ts:280
+#: components/WorkBench/resultsParser.ts:290
 #. Used in: Components > Work Bench > Results Parser
 msgid "missingRequiredTreeParent"
 msgstr ""
@@ -267,7 +267,7 @@ msgstr ""
 msgid "datasetAlreadyUploaded"
 msgstr "Набор данных уже загружен"
 
-#: components/WorkBench/resultsParser.ts:275
+#: components/WorkBench/resultsParser.ts:285
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "scopeChangeDetected"
@@ -275,14 +275,30 @@ msgstr ""
 "В этой строке обнаружено изменение области действия. Рекомендуется удалить "
 "эту строку из набора данных."
 
-#: components/WorkBench/resultsParser.ts:277
+#: components/WorkBench/resultsParser.ts:287
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "multipleTreeDefsInRow"
 msgstr "Несколько определений деревьев в строке"
 
-#: components/WorkBench/resultsParser.ts:278
+#: components/WorkBench/resultsParser.ts:288
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "invalidCotype"
 msgstr "Недопустимый тип для выбранного ранга дерева"
+
+#: components/WorkBench/resultsParser.ts:306
+#: components/WorkBench/resultsParser.ts:312
+#. Used in: Components > Work Bench > Results Parser
+msgid "attachmentNotFound"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:308
+#. Used in: Components > Work Bench > Results Parser
+msgid "tableDoesNotSupportAttachments"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:310
+#. Used in: Components > Work Bench > Results Parser
+msgid "attachmentAlreadyLinked"
+msgstr ""

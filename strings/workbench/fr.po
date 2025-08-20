@@ -281,7 +281,7 @@ msgstr ""
 msgid "saving"
 msgstr "Économie..."
 
-#: components/WorkBench/WbView.tsx:105
+#: components/WorkBench/WbView.tsx:108
 #. Used in: Components > Work Bench > Wb View
 msgid "wbUnloadProtect"
 msgstr ""
@@ -445,7 +445,7 @@ msgstr ""
 #: components/WbActions/WbUpload.tsx:84
 #: components/WbActions/WbValidate.tsx:66
 #: components/WbToolkit/ChangeOwner.tsx:38
-#: components/WbToolkit/index.tsx:86
+#: components/WbToolkit/index.tsx:100
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Index
 msgid "unavailableWhileEditing"
 msgstr "Cette action nécessite que toutes les modifications soient enregistrées"
@@ -667,7 +667,7 @@ msgid "firstRowIsHeader"
 msgstr "La première ligne est l'en-tête :"
 
 #: components/Molecules/FilePicker.tsx:229
-#: components/Toolbar/WbsDialog.tsx:196
+#: components/Toolbar/WbsDialog.tsx:200
 #. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
 msgid "importFile"
 msgstr "Importer le fichier"
@@ -677,7 +677,7 @@ msgstr "Importer le fichier"
 msgid "columnName"
 msgstr "Colonne {columnIndex:number}"
 
-#: components/Toolbar/WbsDialog.tsx:40
+#: components/Toolbar/WbsDialog.tsx:41
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "newDataSetName"
 msgstr "Nouvel ensemble de données {date}"
@@ -703,7 +703,7 @@ msgstr ""
 "Utilisez « Importer un fichier » ou « Créer un nouveau » pour en créer un "
 "nouveau."
 
-#: components/Toolbar/WbsDialog.tsx:207
+#: components/Toolbar/WbsDialog.tsx:211
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "createNew"
 msgstr "Créer un nouveau"
@@ -763,7 +763,7 @@ msgstr "Le propriétaire de l'ensemble de données a changé"
 msgid "dataSet"
 msgstr "Ensemble de données"
 
-#: components/Toolbar/WbsDialog.tsx:123
+#: components/Toolbar/WbsDialog.tsx:124
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "dataSetTimestampUploaded"
@@ -855,6 +855,21 @@ msgstr "Téléchargement WB de \"{dataSet:string}\""
 #, fuzzy
 msgid "ambiguousTaxaChild"
 msgstr "{node:string} {author:string} (dans {parent:string})"
+
+#: components/WorkBench/WbAttachmentsPreview.tsx:119
+#. Used in: Components > Work Bench > Wb Attachments Preview
+msgid "attachmentsForRow"
+msgstr ""
+
+#: components/WorkBench/WbAttachmentsPreview.tsx:324
+#. Used in: Components > Work Bench > Wb Attachments Preview
+msgid "detachWindow"
+msgstr ""
+
+#: components/WbAttachmentViewer/index.tsx:129
+#. Used in: Components > Wb Attachment Viewer > Index
+msgid "attachWindow"
+msgstr ""
 
 #: components/WbUtils/index.tsx:137
 #. Used in: Components > Wb Utils > Index

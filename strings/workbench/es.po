@@ -276,7 +276,7 @@ msgstr ""
 msgid "saving"
 msgstr "Ahorro..."
 
-#: components/WorkBench/WbView.tsx:105
+#: components/WorkBench/WbView.tsx:108
 #. Used in: Components > Work Bench > Wb View
 msgid "wbUnloadProtect"
 msgstr "Los cambios a este conjunto de datos no se han guardado."
@@ -433,7 +433,7 @@ msgstr ""
 #: components/WbActions/WbUpload.tsx:84
 #: components/WbActions/WbValidate.tsx:66
 #: components/WbToolkit/ChangeOwner.tsx:38
-#: components/WbToolkit/index.tsx:86
+#: components/WbToolkit/index.tsx:100
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Index
 msgid "unavailableWhileEditing"
 msgstr "Esta acción requiere que se guarden todos los cambios"
@@ -645,7 +645,7 @@ msgid "firstRowIsHeader"
 msgstr "La primera Fila es el Encabezado:"
 
 #: components/Molecules/FilePicker.tsx:229
-#: components/Toolbar/WbsDialog.tsx:196
+#: components/Toolbar/WbsDialog.tsx:200
 #. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
 msgid "importFile"
 msgstr "Importar archivo"
@@ -655,7 +655,7 @@ msgstr "Importar archivo"
 msgid "columnName"
 msgstr "Columna {columnIndex:number}"
 
-#: components/Toolbar/WbsDialog.tsx:40
+#: components/Toolbar/WbsDialog.tsx:41
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "newDataSetName"
 msgstr "Nuevo Conjunto de Datos {date}"
@@ -679,7 +679,7 @@ msgstr "Actualmente no existen conjuntos de datos."
 msgid "createDataSetInstructions"
 msgstr "Usar \"Importar un archivo\" o \"Crear Nuevo\" para generar uno nuevo."
 
-#: components/Toolbar/WbsDialog.tsx:207
+#: components/Toolbar/WbsDialog.tsx:211
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "createNew"
 msgstr "Crear Nuevo"
@@ -738,7 +738,7 @@ msgstr "El propietario del conjunto de datos cambió"
 msgid "dataSet"
 msgstr "Conjunto de Datos"
 
-#: components/Toolbar/WbsDialog.tsx:123
+#: components/Toolbar/WbsDialog.tsx:124
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "dataSetTimestampUploaded"
 msgstr "Marca de tiempo cargada"
@@ -826,6 +826,21 @@ msgstr "Carga de WB de \"{dataSet:string}\""
 #. Used in: Components > Work Bench > Disambiguation
 msgid "ambiguousTaxaChild"
 msgstr "{node:string} {author:string} (en {parent:string})"
+
+#: components/WorkBench/WbAttachmentsPreview.tsx:119
+#. Used in: Components > Work Bench > Wb Attachments Preview
+msgid "attachmentsForRow"
+msgstr ""
+
+#: components/WorkBench/WbAttachmentsPreview.tsx:324
+#. Used in: Components > Work Bench > Wb Attachments Preview
+msgid "detachWindow"
+msgstr ""
+
+#: components/WbAttachmentViewer/index.tsx:129
+#. Used in: Components > Wb Attachment Viewer > Index
+msgid "attachWindow"
+msgstr ""
 
 #: components/WbUtils/index.tsx:137
 #. Used in: Components > Wb Utils > Index

@@ -318,7 +318,7 @@ msgstr ""
 msgid "saving"
 msgstr "Salvando..."
 
-#: components/WorkBench/WbView.tsx:105
+#: components/WorkBench/WbView.tsx:108
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "wbUnloadProtect"
@@ -498,7 +498,7 @@ msgstr ""
 #: components/WbActions/WbUpload.tsx:84
 #: components/WbActions/WbValidate.tsx:66
 #: components/WbToolkit/ChangeOwner.tsx:38
-#: components/WbToolkit/index.tsx:86
+#: components/WbToolkit/index.tsx:100
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Index
 #, fuzzy
 msgid "unavailableWhileEditing"
@@ -754,7 +754,7 @@ msgid "firstRowIsHeader"
 msgstr "A primeira linha é o cabeçalho:"
 
 #: components/Molecules/FilePicker.tsx:229
-#: components/Toolbar/WbsDialog.tsx:196
+#: components/Toolbar/WbsDialog.tsx:200
 #. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "importFile"
@@ -766,7 +766,7 @@ msgstr "Importar arquivo"
 msgid "columnName"
 msgstr "Coluna {columnIndex:number}"
 
-#: components/Toolbar/WbsDialog.tsx:40
+#: components/Toolbar/WbsDialog.tsx:41
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "newDataSetName"
@@ -793,7 +793,7 @@ msgstr "Atualmente não existem conjuntos de dados."
 msgid "createDataSetInstructions"
 msgstr "Use \"Importar um arquivo\" ou \"Criar novo\" para criar um novo."
 
-#: components/Toolbar/WbsDialog.tsx:207
+#: components/Toolbar/WbsDialog.tsx:211
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "createNew"
@@ -863,7 +863,7 @@ msgstr "Proprietário do conjunto de dados alterado"
 msgid "dataSet"
 msgstr "Conjunto de dados"
 
-#: components/Toolbar/WbsDialog.tsx:123
+#: components/Toolbar/WbsDialog.tsx:124
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "dataSetTimestampUploaded"
@@ -967,6 +967,21 @@ msgstr "Envio do WB de \"{dataSet:string}\""
 #, fuzzy
 msgid "ambiguousTaxaChild"
 msgstr "{node:string} {author:string} (em {parent:string})"
+
+#: components/WorkBench/WbAttachmentsPreview.tsx:119
+#. Used in: Components > Work Bench > Wb Attachments Preview
+msgid "attachmentsForRow"
+msgstr ""
+
+#: components/WorkBench/WbAttachmentsPreview.tsx:324
+#. Used in: Components > Work Bench > Wb Attachments Preview
+msgid "detachWindow"
+msgstr ""
+
+#: components/WbAttachmentViewer/index.tsx:129
+#. Used in: Components > Wb Attachment Viewer > Index
+msgid "attachWindow"
+msgstr ""
 
 #: components/WbUtils/index.tsx:137
 #. Used in: Components > Wb Utils > Index
