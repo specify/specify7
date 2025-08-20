@@ -16,31 +16,18 @@ export function LeafletImageViewer({
       const map = L.map(containerRef.current, {
           crs: L.CRS.Simple
       });
+      const defaultBounds = [[0, 0], [512, 512]];
+      map.fitBounds(defaultBounds as never);
 
       const img = new window.Image();
       img.src = src;
       img.onload = () => {
+        // Update viewer bounds once the image is done loading.
         const bounds = [[0, 0], [img.height, img.width]];
         
         L.imageOverlay(src, bounds as never, { alt }).addTo(map);
         map.fitBounds(bounds as never);
       };
-
-      (function() {
-        var control = new L.Control({position:'topright'});
-        control.onAdd = function(map) {
-            var azoom = L.DomUtil.create('a','resetzoom');
-            azoom.innerHTML = "[Reset Zoom]";
-            L.DomEvent
-              .disableClickPropagation(azoom)
-              .addListener(azoom, 'click', function() {
-                map.setView(map.options.center as never, map.options.zoom);
-              },azoom);
-            return azoom;
-          };
-        return control;
-      }())
-      .addTo(map);
   
       return () => {
         map.remove();
@@ -55,6 +42,8 @@ export function LeafletImageViewer({
           {
             '--transition-duration': 0,
             zIndex: 0,
+            minWidth: '512px',
+            minHeight: '512px',
             height: '100%',
             width: '100%',
             position: 'relative',

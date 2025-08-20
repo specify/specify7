@@ -120,21 +120,22 @@ export function WbAttachmentViewerView(): JSX.Element {
   return (
     viewerId ?
     <Dialog
-      buttons={
-        <>
+      headerButtons={
+        <div className="flex items-center gap-2 md:gap-2 ml-auto">
           <Button.Secondary onClick={(): void => {
             removeCache('workBenchAttachmentViewer', viewerId);
             window.close();
           }}>
             {wbText.attachWindow()}
           </Button.Secondary>
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-        </>
+          <Button.Secondary onClick={(): void => onClose()}>
+            {commonText.close()}
+          </Button.Secondary>
+        </div>
       }
       className={{container: dialogClassNames.fullScreen}}
-      dimensionsKey="LeafletMap"
       header={attachmentsText.attachments()}
-      headerButtons={undefined}
+      buttons={undefined}
       onClose={() => {
         window.close();
       }}

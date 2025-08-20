@@ -318,14 +318,17 @@ function AttachmentViewerDialog({
     </PopupWindow>
   ) : (
     <Dialog
-      buttons={
-        <>
+      headerButtons={
+        <div className="flex items-center gap-2 md:gap-2 ml-auto">
           <Button.Secondary onClick={(): void => setUseWindow(true)}>
             {wbText.detachWindow()}
           </Button.Secondary>
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-        </>
+          <Button.Secondary onClick={(): void => onClose()}>
+            {commonText.close()}
+          </Button.Secondary>
+        </div>
       }
+      buttons={undefined}
       className={{
         container: dialogClassNames.wideContainer,
       }}
