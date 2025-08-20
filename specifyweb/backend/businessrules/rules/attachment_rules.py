@@ -4,7 +4,7 @@ from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handl
 from specifyweb.specify.scoping import Scoping
 from specifyweb.specify import models
 from specifyweb.specify.models_by_table_id import get_model_by_table_id, models_iterator
-from specifyweb.workbench.models import Spdataset, Spdatasetattachment
+from specifyweb.backend.workbench.models import Spdataset, Spdatasetattachment
 from django.db import transaction
 from django.apps import apps
 
