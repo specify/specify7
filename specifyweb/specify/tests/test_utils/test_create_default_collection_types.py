@@ -1,7 +1,8 @@
+from specifyweb.specify.migration_utils.default_cots import create_default_collection_types
 from specifyweb.specify.tests.test_api import ApiTests
 from django.apps import apps
 from specifyweb.specify.models import Collection, Collectionobject, Collectionobjecttype
-from specifyweb.specify.utils import create_default_collection_types
+
 
 class TestCreateDefaultCollectionTypes(ApiTests):
 
