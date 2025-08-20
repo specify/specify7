@@ -17,9 +17,6 @@ from specifyweb.specify.model_extras import Specifyuser
 from specifyweb.specify.models import (
     Institution,
     Division,
-    Geologictimeperiodtreedef,
-    Geographytreedef,
-    Taxontreedef,
     Datatype,
     Discipline,
     Collection,
@@ -38,6 +35,11 @@ from specifyweb.specify.models import (
     Picklist,
     Picklistitem,
     Preparation
+)
+from specifyweb.backend.trees.models import (
+    Geologictimeperiodtreedef,
+    Geographytreedef,
+    Taxontreedef,
 )
 import datetime
 

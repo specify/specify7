@@ -11,10 +11,10 @@ from decimal import Decimal
 from specifyweb.specify.models import (
     Absoluteage,
     Relativeage,
-    Geologictimeperiod,
     Collectionobject,
     Paleocontext,
 )
+from specifyweb.backend.trees.models import Geologictimeperiod
 from specifyweb.specify.utils import log_sqlalchemy_query
 from specifyweb.backend.stored_queries.models import (
     AbsoluteAge,

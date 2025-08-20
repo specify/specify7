@@ -6,15 +6,17 @@ from .test_api import ApiTests
 from django.test import Client
 from specifyweb.specify import geo_time
 from specifyweb.specify.models import (
-    Geologictimeperiod,
-    Geologictimeperiodtreedefitem,
-    Geologictimeperiodtreedef,
     Relativeage,
     Absoluteage,
     Paleocontext,
     Collectionobject,
     Collectingevent,
     Locality,
+)
+from specifyweb.backend.trees.models import (
+    Geologictimeperiod,
+    Geologictimeperiodtreedefitem,
+    Geologictimeperiodtreedef
 )
 from unittest.mock import patch
 

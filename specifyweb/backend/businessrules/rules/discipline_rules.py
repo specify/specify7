@@ -1,5 +1,5 @@
 from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handler
-from specifyweb.specify.models import Taxontreedef
+from specifyweb.backend.trees.models import Taxontreedef
 import re
 
 @orm_signal_handler('pre_save', 'Discipline')

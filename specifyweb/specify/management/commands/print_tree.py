@@ -2,7 +2,7 @@ from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
 
-from specifyweb.specify.models import Taxon, Taxontreedefitem
+from specifyweb.backend.trees.models import Taxon, Taxontreedefitem
 
 class Command(BaseCommand):
     help = 'Prints a specify tree.'

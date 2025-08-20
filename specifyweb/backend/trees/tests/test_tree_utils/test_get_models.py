@@ -1,4 +1,4 @@
-from specifyweb.specify.models import (
+from specifyweb.backend.trees.models import (
     Geography,
     Geographytreedef,
     Geographytreedefitem,

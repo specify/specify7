@@ -5,24 +5,27 @@ from specifyweb.specify.models import (
     Division,
     Exchangein,
     Exchangeout,
-    Geographytreedef,
-    Geographytreedefitem,
-    Geologictimeperiodtreedef,
     Inforequest,
-    Lithostrattreedef,
     Locality,
     Picklist,
     Repositoryagreement,
+    Collection,
+    Discipline,
+    Treatmentevent
+)
+from specifyweb.backend.trees.models import (
+    Geographytreedef,
+    Geographytreedefitem,
+    Geologictimeperiodtreedef,
+    Lithostrattreedef,
     Storagetreedef,
     Taxon,
     Taxontreedefitem,
-    Collection,
-    Discipline,
-    Tectonicunittreedef,
-    Treatmentevent,
+    Tectonicunittreedef
 )
+
 from specifyweb.backend.trees.tests.test_tree_utils import TestMultipleTaxonTreeContext
-from specifyweb.backend.trees.test_trees import SqlTreeSetup
+from specifyweb.backend.trees.tests.test_trees import SqlTreeSetup
 from specifyweb.backend.stored_queries.tests.utils import make_query_fields_test
 
 

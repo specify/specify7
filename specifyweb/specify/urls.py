@@ -5,7 +5,7 @@ from django.urls import include, path, re_path
 from . import master_key
 from . import schema
 from specifyweb.backend.trees import tree_views
-from . import views
+from specifyweb.specify import views
 
 urlpatterns = [
     # replace record

@@ -31,7 +31,8 @@ from .field_spec_maps import apply_specify_user_name
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.permissions import check_table_permissions
 from specifyweb.specify.auditlog import auditlog
-from specifyweb.specify.models import Collectionobjectgroupjoin, Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
+from specifyweb.specify.models import Collectionobjectgroupjoin, Loan, Loanpreparation, Loanreturnpreparation
+from specifyweb.backend.trees.models import Taxontreedef
 from specifyweb.specify.utils import get_cat_num_inheritance_setting, log_sqlalchemy_query
 
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields

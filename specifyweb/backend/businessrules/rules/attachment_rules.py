@@ -2,7 +2,7 @@ import re
 
 from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handler
 from specifyweb.specify.scoping import Scoping
-from specifyweb.specify import models
+from specifyweb.specify.models_by_table_id import import_model
 from specifyweb.specify.models_by_table_id import models_iterator
 from django.db import transaction
 
@@ -13,9 +13,10 @@ JOINTABLE_NAME_RE = re.compile('(.*)attachment')
 attachment_tables = {model for model in models_iterator()
                      if model.__name__.endswith('attachment')}
 
-tables_with_attachments = {getattr(models, model.__name__.replace('attachment', ''))
-                           for model in attachment_tables}
-
+tables_with_attachments = {
+    import_model(model.__name__.replace('attachment', ''))()
+    for model in attachment_tables
+}
 
 @orm_signal_handler('pre_save')
 def attachment_jointable_save(sender, obj):

@@ -3,11 +3,14 @@ from specifyweb.specify.models import (
     Collectionobjecttype,
     Discipline,
     Division,
-    Geographytreedef,
     Institution,
+
+)
+from specifyweb.backend.trees.models import (
+    Geographytreedef,
     Storage,
     Storagetreedef,
-    Taxontreedef,
+    Taxontreedef
 )
 
 from unittest import skip

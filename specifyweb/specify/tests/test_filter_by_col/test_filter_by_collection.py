@@ -4,13 +4,15 @@ from specifyweb.specify.models import (
     Collection,
     Determination,
     Discipline,
-    Disposal,
+    Disposal
+)
+from specifyweb.backend.trees.models import (
     Geography,
     Taxontreedefitem,
-    Taxon,
+    Taxon
 )
 from specifyweb.specify.scoping import ScopeType
-from specifyweb.specify.tests.test_trees import GeographyTree
+from specifyweb.backend.trees.tests.test_trees import GeographyTree
 
 
 class TestFilterByCollection(GeographyTree):
