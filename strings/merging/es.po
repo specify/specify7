@@ -149,8 +149,15 @@ msgstr "Reintentar la fusión."
 msgid "mergingWentWrong"
 msgstr "Algo salió mal durante el proceso de fusión."
 
-#: components/Merging/Usages.tsx:22
-#: components/Merging/Usages.tsx:78
-#. Used in: Components > Merging > Usages
+#: components/Forms/DeleteButton.tsx:110
+#: components/Forms/DeleteButton.tsx:114
+#: components/Merging/Usages.tsx:19
+#: components/Merging/Usages.tsx:52
+#: components/Molecules/LinkedRecords.tsx:44
+#: components/Molecules/LinkedRecords.tsx:52
+#: components/Molecules/LinkedRecords.tsx:90
+#: components/Molecules/LinkedRecords.tsx:94
+#: components/Molecules/LinkedRecords.tsx:129
+#. Used in: Components > Forms > Delete Button ⬤ Components > Merging > Usages ⬤ Components > Molecules > Linked Records
 msgid "linkedRecords"
 msgstr "Registros vinculados"

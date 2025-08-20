@@ -219,7 +219,7 @@ msgstr ""
 "У вас недостаточно прав для этого действия, или ваш текущий сеанс был "
 "завершен."
 
-#: components/Formatters/formatters.ts:196
+#: components/Formatters/formatters.ts:197
 #: components/Forms/dataObjFormatters.ts:290
 #: components/QueryComboBox/index.tsx:200
 #: components/Statistics/Categories.tsx:76

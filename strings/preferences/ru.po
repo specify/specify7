@@ -1332,14 +1332,14 @@ msgstr ""
 "Позволяет применять к текстовым полям следующие фильтры: «Больше чем», "
 "«Меньше чем», «Больше или равно» и «Меньше или равно»."
 
-#: components/QueryBuilder/Header.tsx:110
+#: components/QueryBuilder/Header.tsx:129
 #: components/Reports/Parameters.tsx:98
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy
 msgid "basicView"
 msgstr "Базовый вид"
 
-#: components/QueryBuilder/Header.tsx:109
+#: components/QueryBuilder/Header.tsx:128
 #: components/Reports/Parameters.tsx:97
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy

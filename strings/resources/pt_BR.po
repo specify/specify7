@@ -145,7 +145,7 @@ msgstr "Formatadores de registros"
 
 #: components/Formatters/Aggregator.tsx:69
 #: components/Formatters/Element.tsx:128
-#: components/Formatters/Fields.tsx:269
+#: components/Formatters/Fields.tsx:287
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "formatter"
@@ -347,8 +347,8 @@ msgid "default"
 msgstr "Padrão"
 
 #: components/Formatters/Aggregator.tsx:28
-#: components/Formatters/Fields.tsx:68
-#: components/Formatters/Fields.tsx:163
+#: components/Formatters/Fields.tsx:74
+#: components/Formatters/Fields.tsx:178
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "separator"
@@ -419,7 +419,7 @@ msgstr "Adicionar definição"
 
 #: components/FormEditor/Editor.tsx:133
 #: components/Formatters/Definitions.tsx:172
-#: components/Formatters/Definitions.tsx:252
+#: components/Formatters/Definitions.tsx:253
 #. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 #, fuzzy
 msgid "deleteDefinition"
@@ -431,8 +431,8 @@ msgstr "Excluir definição"
 msgid "urlPart"
 msgstr "Parte da URL"
 
-#: components/Formatters/Definitions.tsx:212
-#: components/Formatters/Fields.tsx:118
+#: components/Formatters/Definitions.tsx:213
+#: components/Formatters/Fields.tsx:125
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "addField"
@@ -559,13 +559,13 @@ msgstr "Você precisa salvar este formulário antes de editar outro"
 msgid "conditionalFormatter"
 msgstr "Formato Condicional"
 
-#: components/Formatters/Fields.tsx:129
+#: components/Formatters/Fields.tsx:136
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "customizeFieldFormatters"
 msgstr "Personalizar formatos de campo"
 
-#: components/Formatters/Definitions.tsx:261
+#: components/Formatters/Definitions.tsx:262
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "expandConditionalField"
@@ -583,7 +583,7 @@ msgstr "Recolher campo condicional"
 msgid "conditionalFieldValue"
 msgstr "Valor do campo condicional"
 
-#: components/Formatters/Definitions.tsx:218
+#: components/Formatters/Definitions.tsx:219
 #. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "formatPreview"
@@ -668,3 +668,20 @@ msgstr "A preparação é usada em um empréstimo."
 #, fuzzy
 msgid "preparationIsNegative"
 msgstr "A contagem de preparação não pode ser negativa"
+
+#: components/Formatters/Fields.tsx:336
+#: components/Formatters/Fields.tsx:337
+#: components/Formatters/Fields.tsx:342
+#. Used in: Components > Formatters > Fields
+msgid "configureField"
+msgstr ""
+
+#: components/Formatters/Fields.tsx:381
+#. Used in: Components > Formatters > Fields
+msgid "trimZeros"
+msgstr ""
+
+#: components/Formatters/Fields.tsx:375
+#. Used in: Components > Formatters > Fields
+msgid "trimZerosDescription"
+msgstr ""

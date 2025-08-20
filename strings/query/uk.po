@@ -13,7 +13,7 @@ msgstr ""
 "X-Generator: Weblate 5.12-dev\n"
 
 #: components/Preferences/UserDefinitions.tsx:2069
-#: components/QueryBuilder/Header.tsx:91
+#: components/QueryBuilder/Header.tsx:97
 #: components/QueryBuilder/Toolbar.tsx:75
 #: components/Reports/RecordSets.tsx:95
 #: components/Toolbar/RecordSetEdit.tsx:52
@@ -150,7 +150,7 @@ msgstr ""
 msgid "invalidPicklistValue"
 msgstr "{value:string} (поточне, недійсне значення)"
 
-#: components/QueryBuilder/Header.tsx:85
+#: components/QueryBuilder/Header.tsx:91
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 msgid "queryRecordSetTitle"
 msgstr ""
@@ -214,8 +214,8 @@ msgstr "(будь-який ранг)"
 msgid "anyTree"
 msgstr "(будь-яке дерево)"
 
-#: components/Formatters/Fields.tsx:205
-#: components/Formatters/Fields.tsx:206
+#: components/Formatters/Fields.tsx:223
+#: components/Formatters/Fields.tsx:224
 #: components/QueryBuilder/QueryLineTools.tsx:108
 #: components/QueryBuilder/QueryLineTools.tsx:110
 #: components/Toolbar/ListEdit.tsx:111
@@ -223,8 +223,8 @@ msgstr "(будь-яке дерево)"
 msgid "moveUp"
 msgstr "Рухатися вгору"
 
-#: components/Formatters/Fields.tsx:212
-#: components/Formatters/Fields.tsx:213
+#: components/Formatters/Fields.tsx:230
+#: components/Formatters/Fields.tsx:231
 #: components/QueryBuilder/QueryLineTools.tsx:116
 #: components/QueryBuilder/QueryLineTools.tsx:118
 #: components/Toolbar/ListEdit.tsx:117
@@ -508,7 +508,7 @@ msgstr "Перейти до відносного"
 msgid "switchToAbsolute"
 msgstr "Перейти до відносного"
 
-#: components/QueryBuilder/Header.tsx:99
+#: components/QueryBuilder/Header.tsx:105
 #. Used in: Components > Query Builder > Header
 msgid "scrollToEditor"
 msgstr "Перейдіть до редактора"
@@ -567,3 +567,13 @@ msgstr "Запит містить незбережені зміни"
 #. Used in: Components > Batch Edit > Index
 msgid "unsavedChangesInQueryDescription"
 msgstr "Будь ласка, збережіть запит перед запуском пакетного редагування"
+
+#: components/QueryBuilder/LoanReturn.tsx:173
+#. Used in: Components > Query Builder > Loan Return
+msgid "noPreparationsToReturn"
+msgstr "Немає невирішених елементів для повернення"
+
+#: components/QueryBuilder/LoanReturn.tsx:226
+#. Used in: Components > Query Builder > Loan Return
+msgid "itemsReturned"
+msgstr "Товари повернуто"

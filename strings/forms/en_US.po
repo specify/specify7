@@ -48,19 +48,35 @@ msgstr "Values of {values:string} must be unique to {fieldName:string}"
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Values of {values:string} must be unique to database"
 
-#: components/Forms/DeleteButton.tsx:126
+#: components/Forms/DeleteButton.tsx:125
 #. Used in: Components > Forms > Delete Button
 msgid "checkingIfResourceCanBeDeleted"
 msgstr "Checking if resource can be deleted…"
 
-#: components/Forms/DeleteButton.tsx:100
-#: components/Forms/DeleteButton.tsx:108
-#: components/Forms/DeleteButton.tsx:179
+#: components/Molecules/LinkedRecords.tsx:105
+#. Used in: Components > Molecules > Linked Records
+msgid "checkingIfResourceIsUsed"
+msgstr "Checking if this record is currently in use…"
+
+#: components/Molecules/LinkedRecords.tsx:51
+#: components/Molecules/LinkedRecords.tsx:119
+#. Used in: Components > Molecules > Linked Records
+msgid "noLinkedRecords"
+msgstr "No linked records"
+
+#: components/Molecules/LinkedRecords.tsx:133
+#. Used in: Components > Molecules > Linked Records
+msgid "recordUsedDescription"
+msgstr "This resource is currently linked to the following records:"
+
+#: components/Forms/DeleteButton.tsx:82
+#: components/Forms/DeleteButton.tsx:90
+#: components/Forms/DeleteButton.tsx:180
 #. Used in: Components > Forms > Delete Button
 msgid "deleteBlocked"
 msgstr "Delete blocked"
 
-#: components/Forms/DeleteButton.tsx:182
+#: components/Forms/DeleteButton.tsx:183
 #. Used in: Components > Forms > Delete Button
 msgid "deleteBlockedDescription"
 msgstr ""
@@ -105,7 +121,7 @@ msgstr ""
 "Are you sure you want to permanently delete this {tableName:string} from "
 "the database?"
 
-#: components/Forms/DeleteButton.tsx:45
+#: components/Forms/DeleteButton.tsx:54
 #. Used in: Components > Forms > Delete Button
 msgid "deleteConfirmationDescription"
 msgstr "This action cannot be undone."
@@ -211,7 +227,7 @@ msgid "currentRecord"
 msgstr "Current object (out of {total:number|formatted})"
 
 #: components/FormMeta/Definition.tsx:93
-#: components/Forms/ResourceView.tsx:417
+#: components/Forms/ResourceView.tsx:431
 #: components/Forms/Save.tsx:39
 #. Used in: Components > Form Meta > Definition ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
@@ -703,12 +719,12 @@ msgstr "New {tableName:string}"
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
-#: components/Forms/ResourceView.tsx:224
+#: components/Forms/ResourceView.tsx:225
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeleted"
 msgstr "Resource deleted"
 
-#: components/Forms/ResourceView.tsx:227
+#: components/Forms/ResourceView.tsx:228
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeletedDescription"
 msgstr "Item was deleted successfully."

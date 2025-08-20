@@ -127,7 +127,7 @@ msgstr "Форматеры записи"
 
 #: components/Formatters/Aggregator.tsx:69
 #: components/Formatters/Element.tsx:128
-#: components/Formatters/Fields.tsx:269
+#: components/Formatters/Fields.tsx:287
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 msgid "formatter"
 msgstr "Формат таблицы"
@@ -297,8 +297,8 @@ msgid "default"
 msgstr "По умолчанию"
 
 #: components/Formatters/Aggregator.tsx:28
-#: components/Formatters/Fields.tsx:68
-#: components/Formatters/Fields.tsx:163
+#: components/Formatters/Fields.tsx:74
+#: components/Formatters/Fields.tsx:178
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 msgid "separator"
 msgstr "Разделитель"
@@ -359,7 +359,7 @@ msgstr "Добавить определение"
 
 #: components/FormEditor/Editor.tsx:133
 #: components/Formatters/Definitions.tsx:172
-#: components/Formatters/Definitions.tsx:252
+#: components/Formatters/Definitions.tsx:253
 #. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 msgid "deleteDefinition"
 msgstr "Удалить определение"
@@ -369,8 +369,8 @@ msgstr "Удалить определение"
 msgid "urlPart"
 msgstr "Другой ресурс JSON"
 
-#: components/Formatters/Definitions.tsx:212
-#: components/Formatters/Fields.tsx:118
+#: components/Formatters/Definitions.tsx:213
+#: components/Formatters/Fields.tsx:125
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 msgid "addField"
 msgstr "Добавить поле"
@@ -477,12 +477,12 @@ msgstr "Вам необходимо сохранить эту форму, пре
 msgid "conditionalFormatter"
 msgstr "Условный формат"
 
-#: components/Formatters/Fields.tsx:129
+#: components/Formatters/Fields.tsx:136
 #. Used in: Components > Formatters > Fields
 msgid "customizeFieldFormatters"
 msgstr "Настройте форматы полей"
 
-#: components/Formatters/Definitions.tsx:261
+#: components/Formatters/Definitions.tsx:262
 #. Used in: Components > Formatters > Definitions
 msgid "expandConditionalField"
 msgstr "Развернуть условное поле"
@@ -497,7 +497,7 @@ msgstr "Свернуть условное поле"
 msgid "conditionalFieldValue"
 msgstr "Условное значение поля"
 
-#: components/Formatters/Definitions.tsx:218
+#: components/Formatters/Definitions.tsx:219
 #. Used in: Components > Formatters > Definitions
 msgid "formatPreview"
 msgstr "Предварительный просмотр формата"
@@ -581,3 +581,20 @@ msgstr "Препарат используется при кредитовани�
 #, fuzzy
 msgid "preparationIsNegative"
 msgstr "Количество приготовлений не может быть отрицательным"
+
+#: components/Formatters/Fields.tsx:336
+#: components/Formatters/Fields.tsx:337
+#: components/Formatters/Fields.tsx:342
+#. Used in: Components > Formatters > Fields
+msgid "configureField"
+msgstr ""
+
+#: components/Formatters/Fields.tsx:381
+#. Used in: Components > Formatters > Fields
+msgid "trimZeros"
+msgstr ""
+
+#: components/Formatters/Fields.tsx:375
+#. Used in: Components > Formatters > Fields
+msgid "trimZerosDescription"
+msgstr ""

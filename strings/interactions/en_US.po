@@ -95,7 +95,8 @@ msgid "unresolved"
 msgstr "Unresolved"
 
 #: components/Interactions/LoanReturn.tsx:318
-#. 🟥Verb. Used in: Components > Interactions > Loan Return
+#: components/QueryBuilder/LoanReturn.tsx:164
+#. 🟥Verb. Used in: Components > Interactions > Loan Return ⬤ Components > Query Builder > Loan Return
 msgid "return"
 msgstr "Return"
 
@@ -110,7 +111,8 @@ msgid "returnAllPreparations"
 msgstr "Return all preparations"
 
 #: components/Interactions/LoanReturn.tsx:201
-#. Used in: Components > Interactions > Loan Return
+#: components/QueryBuilder/LoanReturn.tsx:162
+#. Used in: Components > Interactions > Loan Return ⬤ Components > Query Builder > Loan Return
 msgid "returnSelectedPreparations"
 msgstr "Return selected preparations"
 
@@ -217,7 +219,8 @@ msgid "unavailable"
 msgstr "Unavailable"
 
 #: components/Interactions/InteractionsDialog.tsx:81
-#. 🟥Example: Return Loan records. Used in: Components > Interactions > Interactions Dialog
+#: components/QueryBuilder/LoanReturn.tsx:148
+#. 🟥Example: Return Loan records. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return
 msgid "returnLoan"
 msgstr "Return {tableLoan:string} records"
 

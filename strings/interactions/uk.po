@@ -94,7 +94,8 @@ msgid "unresolved"
 msgstr "Невирішено"
 
 #: components/Interactions/LoanReturn.tsx:318
-#. 🟥Verb. Used in: Components > Interactions > Loan Return
+#: components/QueryBuilder/LoanReturn.tsx:164
+#. 🟥Verb. Used in: Components > Interactions > Loan Return ⬤ Components > Query Builder > Loan Return
 msgid "return"
 msgstr "Повернення"
 
@@ -109,7 +110,8 @@ msgid "returnAllPreparations"
 msgstr "Поверніть усі заготовки"
 
 #: components/Interactions/LoanReturn.tsx:201
-#. Used in: Components > Interactions > Loan Return
+#: components/QueryBuilder/LoanReturn.tsx:162
+#. Used in: Components > Interactions > Loan Return ⬤ Components > Query Builder > Loan Return
 msgid "returnSelectedPreparations"
 msgstr "Повернути вибрані препарати"
 
@@ -216,7 +218,8 @@ msgid "unavailable"
 msgstr "Недоступно"
 
 #: components/Interactions/InteractionsDialog.tsx:81
-#. 🟥Example: Return Loan records. Used in: Components > Interactions > Interactions Dialog
+#: components/QueryBuilder/LoanReturn.tsx:148
+#. 🟥Example: Return Loan records. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return
 msgid "returnLoan"
 msgstr "Повернути записи {tableLoan:string}"
 

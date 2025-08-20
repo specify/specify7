@@ -116,7 +116,7 @@ msgstr "Record Formatters"
 
 #: components/Formatters/Aggregator.tsx:69
 #: components/Formatters/Element.tsx:128
-#: components/Formatters/Fields.tsx:269
+#: components/Formatters/Fields.tsx:287
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 msgid "formatter"
 msgstr "Table Format"
@@ -286,8 +286,8 @@ msgid "default"
 msgstr "Default"
 
 #: components/Formatters/Aggregator.tsx:28
-#: components/Formatters/Fields.tsx:68
-#: components/Formatters/Fields.tsx:163
+#: components/Formatters/Fields.tsx:74
+#: components/Formatters/Fields.tsx:178
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 msgid "separator"
 msgstr "Separator"
@@ -346,7 +346,7 @@ msgstr "Add definition"
 
 #: components/FormEditor/Editor.tsx:133
 #: components/Formatters/Definitions.tsx:172
-#: components/Formatters/Definitions.tsx:252
+#: components/Formatters/Definitions.tsx:253
 #. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 msgid "deleteDefinition"
 msgstr "Delete definition"
@@ -356,8 +356,8 @@ msgstr "Delete definition"
 msgid "urlPart"
 msgstr "URL part"
 
-#: components/Formatters/Definitions.tsx:212
-#: components/Formatters/Fields.tsx:118
+#: components/Formatters/Definitions.tsx:213
+#: components/Formatters/Fields.tsx:125
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 msgid "addField"
 msgstr "Add field"
@@ -464,12 +464,12 @@ msgstr "You need to save this form before you edit another one"
 msgid "conditionalFormatter"
 msgstr "Conditional Format"
 
-#: components/Formatters/Fields.tsx:129
+#: components/Formatters/Fields.tsx:136
 #. Used in: Components > Formatters > Fields
 msgid "customizeFieldFormatters"
 msgstr "Customize Field Formats"
 
-#: components/Formatters/Definitions.tsx:261
+#: components/Formatters/Definitions.tsx:262
 #. Used in: Components > Formatters > Definitions
 msgid "expandConditionalField"
 msgstr "Expand Conditional Field"
@@ -484,7 +484,7 @@ msgstr "Collapse Conditional Field"
 msgid "conditionalFieldValue"
 msgstr "Conditional Field Value"
 
-#: components/Formatters/Definitions.tsx:218
+#: components/Formatters/Definitions.tsx:219
 #. Used in: Components > Formatters > Definitions
 msgid "formatPreview"
 msgstr "Format Preview"
@@ -556,3 +556,20 @@ msgstr "The preparation is used in a loan."
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "preparationIsNegative"
 msgstr "Preparation count cannot be negative"
+
+#: components/Formatters/Fields.tsx:336
+#: components/Formatters/Fields.tsx:337
+#: components/Formatters/Fields.tsx:342
+#. Used in: Components > Formatters > Fields
+msgid "configureField"
+msgstr "Configure field"
+
+#: components/Formatters/Fields.tsx:381
+#. Used in: Components > Formatters > Fields
+msgid "trimZeros"
+msgstr "Trim Zeros"
+
+#: components/Formatters/Fields.tsx:375
+#. Used in: Components > Formatters > Fields
+msgid "trimZerosDescription"
+msgstr "Remove leading zeros from numeric values."

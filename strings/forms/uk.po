@@ -49,19 +49,35 @@ msgstr "Значення {values:string} мають бути унікальни�
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Значення {values:string} мають бути унікальними для бази даних"
 
-#: components/Forms/DeleteButton.tsx:126
+#: components/Forms/DeleteButton.tsx:125
 #. Used in: Components > Forms > Delete Button
 msgid "checkingIfResourceCanBeDeleted"
 msgstr "Перевірка можливості видалення ресурсу…"
 
-#: components/Forms/DeleteButton.tsx:100
-#: components/Forms/DeleteButton.tsx:108
-#: components/Forms/DeleteButton.tsx:179
+#: components/Molecules/LinkedRecords.tsx:105
+#. Used in: Components > Molecules > Linked Records
+msgid "checkingIfResourceIsUsed"
+msgstr ""
+
+#: components/Molecules/LinkedRecords.tsx:51
+#: components/Molecules/LinkedRecords.tsx:119
+#. Used in: Components > Molecules > Linked Records
+msgid "noLinkedRecords"
+msgstr ""
+
+#: components/Molecules/LinkedRecords.tsx:133
+#. Used in: Components > Molecules > Linked Records
+msgid "recordUsedDescription"
+msgstr ""
+
+#: components/Forms/DeleteButton.tsx:82
+#: components/Forms/DeleteButton.tsx:90
+#: components/Forms/DeleteButton.tsx:180
 #. Used in: Components > Forms > Delete Button
 msgid "deleteBlocked"
 msgstr "Видалити заблоковано"
 
-#: components/Forms/DeleteButton.tsx:182
+#: components/Forms/DeleteButton.tsx:183
 #. Used in: Components > Forms > Delete Button
 msgid "deleteBlockedDescription"
 msgstr "Ресурс не можна видалити, оскільки на нього посилаються такі ресурси:"
@@ -104,7 +120,7 @@ msgstr ""
 "Ви впевнені, що хочете остаточно видалити цей {tableName:string} з бази "
 "даних?"
 
-#: components/Forms/DeleteButton.tsx:45
+#: components/Forms/DeleteButton.tsx:54
 #. Used in: Components > Forms > Delete Button
 msgid "deleteConfirmationDescription"
 msgstr "Цю дію не можна скасувати."
@@ -210,7 +226,7 @@ msgid "currentRecord"
 msgstr "Поточний об'єкт (з {total:number|formatted})"
 
 #: components/FormMeta/Definition.tsx:93
-#: components/Forms/ResourceView.tsx:417
+#: components/Forms/ResourceView.tsx:431
 #: components/Forms/Save.tsx:39
 #. Used in: Components > Form Meta > Definition ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
@@ -702,12 +718,12 @@ msgstr "Новий {tableName:string}"
 msgid "resourceFormatter"
 msgstr "{tableName:string} '#{id:number}"
 
-#: components/Forms/ResourceView.tsx:224
+#: components/Forms/ResourceView.tsx:225
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeleted"
 msgstr "Ресурс видалено"
 
-#: components/Forms/ResourceView.tsx:227
+#: components/Forms/ResourceView.tsx:228
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeletedDescription"
 msgstr "Елемент успішно видалено."

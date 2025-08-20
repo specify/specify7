@@ -150,8 +150,15 @@ msgstr "Réessayez la fusion."
 msgid "mergingWentWrong"
 msgstr "Quelque chose s'est mal passé pendant le processus de fusion."
 
-#: components/Merging/Usages.tsx:22
-#: components/Merging/Usages.tsx:78
-#. Used in: Components > Merging > Usages
+#: components/Forms/DeleteButton.tsx:110
+#: components/Forms/DeleteButton.tsx:114
+#: components/Merging/Usages.tsx:19
+#: components/Merging/Usages.tsx:52
+#: components/Molecules/LinkedRecords.tsx:44
+#: components/Molecules/LinkedRecords.tsx:52
+#: components/Molecules/LinkedRecords.tsx:90
+#: components/Molecules/LinkedRecords.tsx:94
+#: components/Molecules/LinkedRecords.tsx:129
+#. Used in: Components > Forms > Delete Button ⬤ Components > Merging > Usages ⬤ Components > Molecules > Linked Records
 msgid "linkedRecords"
 msgstr "Enregistrements liés"

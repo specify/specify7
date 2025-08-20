@@ -67,7 +67,7 @@ msgstr "As alterações de esquema não foram salvas"
 msgid "changeBaseTable"
 msgstr "Alterar tabela base"
 
-#: components/Formatters/Fields.tsx:69
+#: components/Formatters/Fields.tsx:75
 #: components/LocalityUpdate/Status.tsx:374
 #: components/LocalityUpdate/Status.tsx:419
 #: components/SchemaConfig/Field.tsx:43
@@ -429,7 +429,7 @@ msgstr "Classificar por campos ocultos"
 msgid "hidden"
 msgstr "escondido"
 
-#: components/Formatters/Fields.tsx:70
+#: components/Formatters/Fields.tsx:76
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "customFieldFormat"

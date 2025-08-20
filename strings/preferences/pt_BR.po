@@ -1349,14 +1349,14 @@ msgstr ""
 "Permite que os seguintes filtros sejam aplicados aos campos de texto: Maior "
 "que, Menor que, Maior ou igual a e Menor ou igual a"
 
-#: components/QueryBuilder/Header.tsx:110
+#: components/QueryBuilder/Header.tsx:129
 #: components/Reports/Parameters.tsx:98
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy
 msgid "basicView"
 msgstr "Visão básica"
 
-#: components/QueryBuilder/Header.tsx:109
+#: components/QueryBuilder/Header.tsx:128
 #: components/Reports/Parameters.tsx:97
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy

@@ -175,9 +175,16 @@ msgstr "Повторите попытку слияния."
 msgid "mergingWentWrong"
 msgstr "Что-то пошло не так во время процесса слияния."
 
-#: components/Merging/Usages.tsx:22
-#: components/Merging/Usages.tsx:78
-#. Used in: Components > Merging > Usages
+#: components/Forms/DeleteButton.tsx:110
+#: components/Forms/DeleteButton.tsx:114
+#: components/Merging/Usages.tsx:19
+#: components/Merging/Usages.tsx:52
+#: components/Molecules/LinkedRecords.tsx:44
+#: components/Molecules/LinkedRecords.tsx:52
+#: components/Molecules/LinkedRecords.tsx:90
+#: components/Molecules/LinkedRecords.tsx:94
+#: components/Molecules/LinkedRecords.tsx:129
+#. Used in: Components > Forms > Delete Button ⬤ Components > Merging > Usages ⬤ Components > Molecules > Linked Records
 #, fuzzy
 msgid "linkedRecords"
 msgstr "Связанные записи"

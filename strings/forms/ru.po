@@ -50,21 +50,37 @@ msgstr "Значения {values:string} должны быть уникальн�
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Значения {values:string} должны быть уникальными в базе данных."
 
-#: components/Forms/DeleteButton.tsx:126
+#: components/Forms/DeleteButton.tsx:125
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "checkingIfResourceCanBeDeleted"
 msgstr "Проверка возможности удаления ресурса…"
 
-#: components/Forms/DeleteButton.tsx:100
-#: components/Forms/DeleteButton.tsx:108
-#: components/Forms/DeleteButton.tsx:179
+#: components/Molecules/LinkedRecords.tsx:105
+#. Used in: Components > Molecules > Linked Records
+msgid "checkingIfResourceIsUsed"
+msgstr ""
+
+#: components/Molecules/LinkedRecords.tsx:51
+#: components/Molecules/LinkedRecords.tsx:119
+#. Used in: Components > Molecules > Linked Records
+msgid "noLinkedRecords"
+msgstr ""
+
+#: components/Molecules/LinkedRecords.tsx:133
+#. Used in: Components > Molecules > Linked Records
+msgid "recordUsedDescription"
+msgstr ""
+
+#: components/Forms/DeleteButton.tsx:82
+#: components/Forms/DeleteButton.tsx:90
+#: components/Forms/DeleteButton.tsx:180
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteBlocked"
 msgstr "Удалить заблокированный"
 
-#: components/Forms/DeleteButton.tsx:182
+#: components/Forms/DeleteButton.tsx:183
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteBlockedDescription"
@@ -112,7 +128,7 @@ msgstr "Неверная дата"
 msgid "deleteConfirmation"
 msgstr "Вы уверены, что хотите навсегда удалить {tableName:string} из базы данных?"
 
-#: components/Forms/DeleteButton.tsx:45
+#: components/Forms/DeleteButton.tsx:54
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteConfirmationDescription"
@@ -236,7 +252,7 @@ msgid "currentRecord"
 msgstr "Текущий объект (из {total:number|formatted})"
 
 #: components/FormMeta/Definition.tsx:93
-#: components/Forms/ResourceView.tsx:417
+#: components/Forms/ResourceView.tsx:431
 #: components/Forms/Save.tsx:39
 #. Used in: Components > Form Meta > Definition ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save
 #, fuzzy
@@ -815,13 +831,13 @@ msgstr "Новый {tableName:string}"
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
-#: components/Forms/ResourceView.tsx:224
+#: components/Forms/ResourceView.tsx:225
 #. Used in: Components > Forms > Resource View
 #, fuzzy
 msgid "resourceDeleted"
 msgstr "Ресурс удален"
 
-#: components/Forms/ResourceView.tsx:227
+#: components/Forms/ResourceView.tsx:228
 #. Used in: Components > Forms > Resource View
 #, fuzzy
 msgid "resourceDeletedDescription"

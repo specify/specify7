@@ -68,7 +68,7 @@ msgstr "Изменения схемы не были сохранены"
 msgid "changeBaseTable"
 msgstr "Изменить базовую таблицу"
 
-#: components/Formatters/Fields.tsx:69
+#: components/Formatters/Fields.tsx:75
 #: components/LocalityUpdate/Status.tsx:374
 #: components/LocalityUpdate/Status.tsx:419
 #: components/SchemaConfig/Field.tsx:43
@@ -430,7 +430,7 @@ msgstr "Сортировать по скрытым полям"
 msgid "hidden"
 msgstr "скрытый"
 
-#: components/Formatters/Fields.tsx:70
+#: components/Formatters/Fields.tsx:76
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "customFieldFormat"

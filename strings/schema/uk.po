@@ -61,7 +61,7 @@ msgstr "Зміни схеми не збережено"
 msgid "changeBaseTable"
 msgstr "Змінити базову таблицю"
 
-#: components/Formatters/Fields.tsx:69
+#: components/Formatters/Fields.tsx:75
 #: components/LocalityUpdate/Status.tsx:374
 #: components/LocalityUpdate/Status.tsx:419
 #: components/SchemaConfig/Field.tsx:43
@@ -371,7 +371,7 @@ msgstr "Сортувати за прихованими полями"
 msgid "hidden"
 msgstr "прихований"
 
-#: components/Formatters/Fields.tsx:70
+#: components/Formatters/Fields.tsx:76
 #. Used in: Components > Formatters > Fields
 msgid "customFieldFormat"
 msgstr "Формат користувацького поля"

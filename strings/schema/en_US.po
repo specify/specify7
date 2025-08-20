@@ -50,7 +50,7 @@ msgstr "Schema changes have not been saved"
 msgid "changeBaseTable"
 msgstr "Change Base Table"
 
-#: components/Formatters/Fields.tsx:69
+#: components/Formatters/Fields.tsx:75
 #: components/LocalityUpdate/Status.tsx:374
 #: components/LocalityUpdate/Status.tsx:419
 #: components/SchemaConfig/Field.tsx:43
@@ -360,7 +360,7 @@ msgstr "Sort by hidden fields"
 msgid "hidden"
 msgstr "hidden"
 
-#: components/Formatters/Fields.tsx:70
+#: components/Formatters/Fields.tsx:76
 #. Used in: Components > Formatters > Fields
 msgid "customFieldFormat"
 msgstr "Custom Field Format"

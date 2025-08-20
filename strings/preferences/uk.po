@@ -1132,13 +1132,13 @@ msgstr ""
 "Дозволяє застосовувати до текстових полів такі фільтри: «Більше ніж», "
 "«Менше ніж», «Більше або дорівнює» та «Менше або дорівнює»"
 
-#: components/QueryBuilder/Header.tsx:110
+#: components/QueryBuilder/Header.tsx:129
 #: components/Reports/Parameters.tsx:98
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 msgid "basicView"
 msgstr "Основний вигляд"
 
-#: components/QueryBuilder/Header.tsx:109
+#: components/QueryBuilder/Header.tsx:128
 #: components/Reports/Parameters.tsx:97
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 msgid "detailedView"
