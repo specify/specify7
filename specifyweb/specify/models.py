@@ -3571,18 +3571,6 @@ class Geocoorddetail(models.Model):
     
     save = partialmethod(custom_save)
 
-    class Meta:
-        db_table = 'geography'
-        ordering = ()
-        indexes = [
-            models.Index(fields=['name'], name='GeoNameIDX'),
-            models.Index(fields=['fullname'], name='GeoFullNameIDX')
-        ]
-
-    
-    save = partialmethod(custom_save)
-
-
 
 class Gift(models.Model):
     specify_model = datamodel.get_table_strict('gift')

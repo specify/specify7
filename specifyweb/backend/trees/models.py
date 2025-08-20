@@ -213,6 +213,17 @@ class Geography(model_extras.Geography):
     definitionitem = models.ForeignKey('GeographyTreeDefItem', db_column='GeographyTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('specify.Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('Geography', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
+    
+    class Meta:
+        db_table = 'geography'
+        ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='GeoNameIDX'),
+            models.Index(fields=['fullname'], name='GeoFullNameIDX')
+        ]
+
+    
+    save = partialmethod(custom_save)
 
 class Lithostrat(model_extras.Lithostrat):
     specify_model = datamodel.get_table_strict('lithostrat')
