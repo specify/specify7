@@ -32,6 +32,7 @@ import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { WbActions } from '../WbActions';
 import { useResults } from '../WbActions/useResults';
+import { usesAttachments } from './attachmentHelpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbToolkit } from '../WbToolkit';
 import { WbUtilsComponent } from '../WbUtils';
