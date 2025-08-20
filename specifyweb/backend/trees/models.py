@@ -24,9 +24,9 @@ class Geographytreedef(models.Model):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='geographytreedefs', null=True, on_delete=protect_with_blockers)
-    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    discipline = models.ForeignKey('specify.Discipline', db_column='DisciplineID', related_name='geographytreedefs', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('specify.Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('specify.Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'geographytreedef'
@@ -56,8 +56,8 @@ class Geographytreedefitem(model_extras.Geographytreedefitem):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('specify.Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('specify.Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('GeographyTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=models.DO_NOTHING)
     treedef = models.ForeignKey('GeographyTreeDef', db_column='GeographyTreeDefID', related_name='treedefitems', null=False, on_delete=protect_with_blockers)
 
@@ -97,10 +97,10 @@ class Geologictimeperiod(model_extras.Geologictimeperiod):
 
     # Relationships: Many-to-One
     acceptedgeologictimeperiod = models.ForeignKey('GeologicTimePeriod', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
-    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('specify.Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     definition = models.ForeignKey('GeologicTimePeriodTreeDef', db_column='GeologicTimePeriodTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     definitionitem = models.ForeignKey('GeologicTimePeriodTreeDefItem', db_column='GeologicTimePeriodTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
-    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('specify.Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('GeologicTimePeriod', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
 
     class Meta:
@@ -130,9 +130,9 @@ class Geologictimeperiodtreedef(models.Model):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='geologictimeperiodtreedefs', null=True, on_delete=protect_with_blockers)
-    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    discipline = models.ForeignKey('specify.Discipline', db_column='DisciplineID', related_name='geologictimeperiodtreedefs', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('specify.Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('specify.Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'geologictimeperiodtreedef'
@@ -162,8 +162,8 @@ class Geologictimeperiodtreedefitem(model_extras.Geologictimeperiodtreedefitem):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('specify.Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('specify.Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('GeologicTimePeriodTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=models.DO_NOTHING)
     treedef = models.ForeignKey('GeologicTimePeriodTreeDef', db_column='GeologicTimePeriodTreeDefID', related_name='treedefitems', null=False, on_delete=protect_with_blockers)
 
@@ -208,10 +208,10 @@ class Geography(model_extras.Geography):
 
     # Relationships: Many-to-One
     acceptedgeography = models.ForeignKey('Geography', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
-    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('specify.Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     definition = models.ForeignKey('GeographyTreeDef', db_column='GeographyTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     definitionitem = models.ForeignKey('GeographyTreeDefItem', db_column='GeographyTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
-    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('specify.Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('Geography', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
 
 class Lithostrat(model_extras.Lithostrat):
@@ -241,10 +241,10 @@ class Lithostrat(model_extras.Lithostrat):
 
     # Relationships: Many-to-One
     acceptedlithostrat = models.ForeignKey('LithoStrat', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
-    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('specify.Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     definition = models.ForeignKey('LithoStratTreeDef', db_column='LithoStratTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     definitionitem = models.ForeignKey('LithoStratTreeDefItem', db_column='LithoStratTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
-    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('specify.Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('LithoStrat', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
 
     class Meta:
@@ -274,9 +274,9 @@ class Lithostrattreedef(models.Model):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='lithostratstreedefs', null=True, on_delete=protect_with_blockers)
-    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    discipline = models.ForeignKey('specify.Discipline', db_column='DisciplineID', related_name='lithostratstreedefs', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('specify.Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('specify.Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'lithostrattreedef'
@@ -306,8 +306,8 @@ class Lithostrattreedefitem(model_extras.Lithostrattreedefitem):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('specify.Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('specify.Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('LithoStratTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=models.DO_NOTHING)
     treedef = models.ForeignKey('LithoStratTreeDef', db_column='LithoStratTreeDefID', related_name='treedefitems', null=False, on_delete=protect_with_blockers)
 
@@ -345,10 +345,10 @@ class Storage(model_extras.Storage):
 
     # Relationships: Many-to-One
     acceptedstorage = models.ForeignKey('Storage', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
-    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('specify.Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     definition = models.ForeignKey('StorageTreeDef', db_column='StorageTreeDefID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
     definitionitem = models.ForeignKey('StorageTreeDefItem', db_column='StorageTreeDefItemID', related_name='treeentries', null=False, on_delete=protect_with_blockers)
-    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('specify.Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('Storage', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
 
     class Meta:
@@ -377,9 +377,9 @@ class Storagetreedef(models.Model):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    institution = models.ForeignKey('Institution', db_column='InstitutionID', related_name='storagetreedefs', null=True, on_delete=protect_with_blockers)
-    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    institution = models.ForeignKey('specify.Institution', db_column='InstitutionID', related_name='storagetreedefs', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('specify.Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('specify.Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'storagetreedef'
@@ -409,8 +409,8 @@ class Storagetreedefitem(model_extras.Storagetreedefitem):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('specify.Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('specify.Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('StorageTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=models.DO_NOTHING)
     treedef = models.ForeignKey('StorageTreeDef', db_column='StorageTreeDefID', related_name='treedefitems', null=False, on_delete=protect_with_blockers)
 
@@ -516,15 +516,15 @@ class Taxon(model_extras.Taxon):
 
     # Relationships: Many-to-One
     acceptedtaxon = models.ForeignKey('Taxon', db_column='AcceptedID', related_name='acceptedchildren', null=True, on_delete=protect_with_blockers)
-    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('specify.Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     definition = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='treeentries', null=False, on_delete=models.CASCADE)
     definitionitem = models.ForeignKey('TaxonTreeDefItem', db_column='TaxonTreeDefItemID', related_name='treeentries', null=False, on_delete=models.CASCADE)
     hybridparent1 = models.ForeignKey('Taxon', db_column='HybridParent1ID', related_name='hybridchildren1', null=True, on_delete=protect_with_blockers)
     hybridparent2 = models.ForeignKey('Taxon', db_column='HybridParent2ID', related_name='hybridchildren2', null=True, on_delete=protect_with_blockers)
-    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('specify.Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('Taxon', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
-    taxonattribute = models.ForeignKey('TaxonAttribute', db_column='TaxonAttributeID', related_name='taxons', null=True, on_delete=protect_with_blockers)
-    visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
+    taxonattribute = models.ForeignKey('specify.TaxonAttribute', db_column='TaxonAttributeID', related_name='taxons', null=True, on_delete=protect_with_blockers)
+    visibilitysetby = models.ForeignKey('specify.SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'taxon'
@@ -559,9 +559,9 @@ class Taxontreedef(models.Model):
     # Relationships: One-to-One
 
     # Relationships: Many-to-One
-    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='taxontreedefs', null=True, on_delete=protect_with_blockers)
-    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    discipline = models.ForeignKey('specify.Discipline', db_column='DisciplineID', related_name='taxontreedefs', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('specify.Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('specify.Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'taxontreedef'
@@ -592,8 +592,8 @@ class Taxontreedefitem(model_extras.Taxontreedefitem):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('specify.Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('specify.Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('TaxonTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=models.DO_NOTHING)
     treedef = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='treedefitems', null=False, on_delete=models.CASCADE)
 
@@ -634,8 +634,8 @@ class Tectonicunit(model_extras.Tectonicunit):
     definitionitem = models.ForeignKey('TectonicUnitTreeDefItem', db_column='TectonicUnitTreeDefItemID', related_name='treeentries', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('TectonicUnit', db_column='ParentID', related_name='children', null=True, on_delete=models.CASCADE)
     definition = models.ForeignKey('TectonicUnitTreeDef', db_column='TectonicUnitTreeDefID', related_name='treeentries', null=True, on_delete=protect_with_blockers)
-    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('specify.Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('specify.Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     
     class Meta:
         db_table = 'tectonicunit'
@@ -658,9 +658,9 @@ class Tectonicunittreedef(models.Model):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
     
     # Relationships: Many-to-One
-    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='tectonicunittreedefs', null=True, on_delete=protect_with_blockers)
-    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    discipline = models.ForeignKey('specify.Discipline', db_column='DisciplineID', related_name='tectonicunittreedefs', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('specify.Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('specify.Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     
     class Meta:
         db_table = 'tectonicunittreedef'
@@ -689,8 +689,8 @@ class Tectonicunittreedefitem(model_extras.Tectonicunittreedefitem):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
     
     # Relationships: Many-to-One
-    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('specify.Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('specify.Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     parent = models.ForeignKey('TectonicUnitTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=models.DO_NOTHING)
     treedef = models.ForeignKey('TectonicUnitTreeDef', db_column='TectonicUnitTreeDefID', related_name='treedefitems', null=True, on_delete=protect_with_blockers)
     
