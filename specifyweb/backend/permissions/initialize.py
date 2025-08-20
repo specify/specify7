@@ -6,6 +6,7 @@ from specifyweb.specify.model_extras import is_legacy_admin
 
 from .permissions import CollectionAccessPT
 
+import sys
 import logging
 
 logger = logging.getLogger(__name__)
@@ -31,7 +32,10 @@ def initialize(wipe: bool=False, apps=apps) -> None:
             wipe_permissions(apps)
         create_admins(apps)
         create_roles(apps)
-        assign_users_to_roles(apps)
+        if 'test' in ''.join(sys.argv):
+            assign_users_to_roles_during_testing(apps)
+        else:
+            assign_users_to_roles(apps)
 
 def create_admins(apps=apps) -> None:
     UserPolicy = apps.get_model('permissions', 'UserPolicy')
@@ -133,6 +137,36 @@ def assign_users_to_roles(apps=apps) -> None:
                 resource=CollectionAccessPT.access.resource(),
                 action=CollectionAccessPT.access.action()
             )
+
+def assign_users_to_roles_during_testing(apps=apps) -> None:
+    from specifyweb.backend.context.views import users_collections_for_sp6
+
+    Role = apps.get_model('permissions', 'Role')
+    UserPolicy = apps.get_model('permissions', 'UserPolicy')
+    Collection = apps.get_model('specify', 'Collection')
+    Specifyuser = apps.get_model('specify', 'Specifyuser')
+    Agent = apps.get_model('specify', 'Agent')
+
+    cursor = connection.cursor()
+    for user in Specifyuser.objects.all():
+        for collection in Collection.objects.all():
+            if user.usertype == 'Manager':
+                user.roles.create(role=Role.objects.get(collection=collection, name="Collection Admin"))
+            if user.usertype == 'FullAccess':
+                user.roles.create(role=Role.objects.get(collection=collection, name="Full Access - Legacy"))
+            if user.usertype in ('LimitedAccess', 'Guest'):
+                user.roles.create(role=Role.objects.get(collection=collection, name="Read Only - Legacy"))
+
+        for colid, _ in users_collections_for_sp6(cursor, user.id):
+            # Does the user has an agent for the collection?
+            if Agent.objects.filter(specifyuser=user, division__disciplines__collections__id=colid).exists():
+                # Give them access to the collection.
+                UserPolicy.objects.create(
+                    collection_id=colid,
+                    specifyuser_id=user.id,
+                    resource=CollectionAccessPT.access.resource(),
+                    action=CollectionAccessPT.access.action(),
+                )
 
 def create_roles(apps = apps) -> None:
     LibraryRole = apps.get_model('permissions', 'LibraryRole')
