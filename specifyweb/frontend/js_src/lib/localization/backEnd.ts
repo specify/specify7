@@ -572,4 +572,15 @@ export const backEndText = createDictionary({
     "ru-ru": "Недопустимый тип для выбранного ранга дерева",
     "uk-ua": "Недійсний тип для вибраного(их) рангу(ів) дерева",
   },
+  attachmentNotFound: {
+    'en-us':
+      'One or more attachments do not exist. They may have been deleted.',
+  },
+  tableDoesNotSupportAttachments: {
+    'en-us': "The attachment's destination table does not support attachments.",
+  },
+  attachmentAlreadyLinked: {
+    'en-us':
+      'One or more attachments are already associated with an uploaded record.',
+  },
 } as const);
