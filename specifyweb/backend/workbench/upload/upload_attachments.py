@@ -4,7 +4,7 @@ from typing import Tuple, Union, cast
 import copy
 
 from .uploadable import Row, Uploadable
-from specifyweb.businessrules.rules.attachment_rules import tables_with_attachments
+from specifyweb.backend.businessrules.rules.attachment_rules import tables_with_attachments
 from .column_options import ColumnOptions
 from .upload_table import UploadTable
 from ..models import Attachment, Spdataset, Spdatasetattachment
