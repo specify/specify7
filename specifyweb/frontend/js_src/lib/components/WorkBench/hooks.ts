@@ -160,16 +160,20 @@ export function useHotHooks({
      */
     beforeChange: (unfilteredChanges, source) => {
       if (source !== 'CopyPaste.paste') return true;
+      if (!unfilteredChanges) return true;
 
       const filteredChanges = unfilteredChanges.filter(
         ([, property]) =>
           (property as number) < workbench.dataset.columns.length
       );
+
       if (
         filteredChanges.length === unfilteredChanges.length ||
         workbench.hot === undefined
-      )
+      ) {
         return true;
+      }
+
       workbench.hot.setDataAtCell(
         filteredChanges.map(([visualRow, property, _oldValue, newValue]) => [
           visualRow,
