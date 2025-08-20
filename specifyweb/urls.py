@@ -62,6 +62,6 @@ urlpatterns = [
     path('export/', include(export_urls)), # permissions added
     path('permissions/', include(permissions_urls)), # permissions added
     # url(r'^testcontext/', include()),
-    path('stats/', include(stat_urls))
+    path('stats/', include(stat_urls)),
     path('inheritance/', include(inheritance_urls))
 ]
