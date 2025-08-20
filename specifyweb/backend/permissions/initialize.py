@@ -51,19 +51,18 @@ def create_admins(apps=apps) -> None:
                 action="%",
             )
 
-def is_sp6_user_permissions_migrated(user, apps=apps) -> bool:
+def assign_users_to_roles(apps=apps) -> None:
+    Role = apps.get_model('permissions', 'Role')
+    UserPolicy = apps.get_model('permissions', 'UserPolicy')
+    Agent = apps.get_model('specify', 'Agent')
     UserPolicy = apps.get_model('permissions', 'UserPolicy')
     UserRole = apps.get_model('permissions', 'UserRole')
-    return UserRole.objects.filter(specifyuser=user).exists() or UserPolicy.objects.filter(specifyuser=user).exists()
-
-def assign_users_to_roles(apps=apps) -> None:
-    from specifyweb.backend.context.views import users_collections_for_sp6
 
     ROLE_DESCRIPTIONS = {
-        "Manager": "Full access to the collection, can manage users and roles.",
-        "FullAccess": "Full access to the collection, can create and edit records.",
-        "LimitedAccess": "Limited access to the collection, can view records.",
-        "Guest": "Guest access to the collection, can view limited records.",
+        "Manager": "Grants full access to all abilities within a collection.",
+        "FullAccess": "This is a legacy role that provides read write access to most Specify resources and is assigned to users in the Full Access group from Specify 6. This is to maintain consistency with the permissions granted these users in previous versions of Specify 7.",
+        "LimitedAccess": "This is a legacy role that provides read only access and is assigned to user in the Limited Access and Guest groups from Specify 6. This is to maintain consistency with the permissions granted these users in previous versions of Specify 7.",
+        "Guest": "This is a legacy role that provides read only access and is assigned to user in the Limited Access and Guest groups from Specify 6. This is to maintain consistency with the permissions granted these users in previous versions of Specify 7.",
     }
 
     ROLE_NAMES = {
@@ -73,154 +72,67 @@ def assign_users_to_roles(apps=apps) -> None:
         "Guest": "Read Only - Legacy",
     }
 
-    Role = apps.get_model('permissions', 'Role')
-    UserPolicy = apps.get_model('permissions', 'UserPolicy')
-    Specifyuser = apps.get_model('specify', 'Specifyuser')
-    UserRole = apps.get_model('permissions', 'UserRole')
-    Agent = apps.get_model('specify', 'Agent')
-
-    # usernames = set(Specifyuser.objects.values_list('name', flat=True))
-
-    # Get all the sp6 roles that need to be created from the spprincipals table.
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            select
-                u.SpecifyUserID as user_id,
-                u.Name as user_name,
-                u.UserType as user_type,
-                p.usergroupscopeid as collection_id,
-                c.CollectionName as collection_name,
-                p.name as principal_name,
-                p.grouptype as principal_type,
-                p.groupsubclass as principal_class
-            from
-                spprincipal p
-            join specifyuser_spprincipal up
-            on
-                up.SpPrincipalID = p.SpPrincipalID
-            join specifyuser u
-            on
-                u.SpecifyUserID = up.SpecifyUserID
-            join collection c
-            on
-                p.usergroupscopeid = c.collectionId;
-        """)
-        results = cursor.fetchall()
-        
-        for user_id, user_name, user_type, collection_id, collection_name, principal_name, principal_type, principal_class in results:
-            if UserRole.objects.filter(
-                specifyuser_id=user_id,
-                role__collection_id=collection_id,
-            ).exists() or \
-            UserPolicy.objects.filter(
-                specifyuser_id=user_id,
-                collection_id=collection_id,
-                resource=CollectionAccessPT.access.resource(),
-                action=CollectionAccessPT.access.action(),
-            ).exists():
-                continue
-
-            if user_type not in {'Manager', 'FullAccess', 'LimitedAccess', 'Guest'}:
-                continue
-
-            if principal_type is None or principal_type not in {'Manager', 'FullAccess', 'LimitedAccess', 'Guest'}:
-                continue
-                # principal_type = user_type
-                # if principal_name in usernames:
-                #     pass
-
-            role_name = ROLE_NAMES.get(principal_type, f"{principal_name} - {collection_name}")
-            role_description = ROLE_DESCRIPTIONS.get(principal_type, "No description available.")
-            logger.info(f"Assigned user {user_name} to role {role_name} for collection {collection_name}.")
-
-            role, is_new_role = Role.objects.get_or_create(
-                collection_id=collection_id,
-                name=role_name
-            )
-            if is_new_role:
-                role.description = role_description
-                role.save()
-            UserRole.objects.get_or_create(
-                specifyuser_id=user_id,
-                role=role
-            )
-
-            if Agent.objects.filter(specifyuser_id=user_id, division__disciplines__collections__id=collection_id).exists():
-                UserPolicy.objects.get_or_create(
-                    collection_id=collection_id,
-                    specifyuser_id=user_id,
-                    resource=CollectionAccessPT.access.resource(),
-                    action=CollectionAccessPT.access.action()
-                )
-
-def assign_users_to_roles_old(apps=apps) -> None:
-    from specifyweb.backend.context.views import users_collections_for_sp6
-
-    Role = apps.get_model('permissions', 'Role')
-    UserPolicy = apps.get_model('permissions', 'UserPolicy')
-    Collection = apps.get_model('specify', 'Collection')
-    Specifyuser = apps.get_model('specify', 'Specifyuser')
-    Agent = apps.get_model('specify', 'Agent')
-    UserRole = apps.get_model('permissions', 'UserRole')
-
-    def get_sp6_user_principals(user, collection, apps=apps):
-        user_type = user.usertype
-
-        with connection.cursor() as cursor:
-            cursor.execute(
-                """
-                SELECT 1
-                FROM spprincipal p
-                JOIN specifyuser_spprincipal up
-                  ON up.SpPrincipalID = p.SpPrincipalID
-                WHERE up.SpecifyUserID = %s
-                  AND p.groupType = %s
-                  AND p.userGroupScopeID = %s
-                LIMIT 1
-                """,
-                [user.id, user_type, collection.id],
-            )
-            return cursor.fetchone() is not None
-
-    def create_user_role(user, role, colllection):
-        if role is None:
-            return
-        if UserRole.objects.filter(
-            specifyuser=user,
-            role__collection_id=role.collection_id,
-        ).exists():
-            return
-        if not get_sp6_user_principals(user, colllection):
-            return
-        UserRole.objects.get_or_create(specifyuser=user, role=role)
-        logger.info(f"Assigned user {user.name} to role {role.name} for collection {role.collection.collectionname}.")
-
     cursor = connection.cursor()
-    for user in Specifyuser.objects.all():
-        if is_sp6_user_permissions_migrated(user, apps):
-            # Skip users that have already been migrated from sp6 to sp7.
-            continue
-        for collection in Collection.objects.all():
-            if user.usertype == 'Manager':
-                role = Role.objects.filter(collection=collection, name="Collection Admin",).first()
-                create_user_role(user, role, collection)
-            elif user.usertype == 'FullAccess':
-                role = Role.objects.filter(collection=collection, name="Full Access - Legacy").first()
-                create_user_role(user, role, collection)
-            elif user.usertype in ('LimitedAccess', 'Guest'):
-                role = Role.objects.filter(collection=collection, name="Read Only - Legacy").first()
-                create_user_role(user, role, collection)
+    cursor.execute("""
+        SELECT
+            u.SpecifyUserID as user_id,
+            u.Name as user_name,
+            u.UserType as user_type,
+            p.usergroupscopeid as collection_id,
+            c.CollectionName as collection_name
+        FROM specifyuser u
+        JOIN specifyuser_spprincipal up ON up.SpecifyUserID = u.SpecifyUserID
+        JOIN spprincipal p ON p.SpPrincipalID = up.SpPrincipalID
+        JOIN collection c ON c.UserGroupScopeId = p.userGroupScopeID
+        WHERE p.groupType IS NULL
+        AND u.SpecifyUserID NOT IN (
+            SELECT ur.specifyuser_id
+            FROM spuserrole ur 
+            JOIN sprole r ON r.id = ur.role_id 
+            WHERE r.collection_id = p.usergroupscopeid
+        );
+    """)
 
-        for colid, _ in users_collections_for_sp6(cursor, user.id):
-            # Does the user has an agent for the collection?
-            if Agent.objects.filter(specifyuser=user, division__disciplines__collections__id=colid).exists():
-                # Give them access to the collection.
-                UserPolicy.objects.get_or_create(
-                    collection_id=colid,
-                    specifyuser_id=user.id,
-                    resource=CollectionAccessPT.access.resource(),
-                    action=CollectionAccessPT.access.action(),
-                )
+    results = cursor.fetchall()
+    for user_id, user_name, user_type, collection_id, collection_name in results:
+        if UserRole.objects.filter(
+            specifyuser_id=user_id,
+            role__collection_id=collection_id,
+        ).exists() or \
+        UserPolicy.objects.filter(
+            specifyuser_id=user_id,
+            collection_id=collection_id,
+            resource=CollectionAccessPT.access.resource(),
+            action=CollectionAccessPT.access.action(),
+        ).exists():
+            continue
+
+        if user_type not in {'Manager', 'FullAccess', 'LimitedAccess', 'Guest'}:
+            continue
+
+        role_name = ROLE_NAMES.get(user_type, f"{user_type} - {collection_name}")
+        role_description = ROLE_DESCRIPTIONS.get(user_type, "No description available.")
+        logger.info(f"Assigned user {user_name} to role {role_name} for collection {collection_name}.")
+
+        role, is_new_role = Role.objects.get_or_create(
+            collection_id=collection_id,
+            name=role_name
+        )
+        if is_new_role:
+            role.description = role_description
+            role.save()
+        UserRole.objects.get_or_create(
+            specifyuser_id=user_id,
+            role=role
+        )
+
+        if Agent.objects.filter(specifyuser_id=user_id, division__disciplines__collections__id=collection_id).exists():
+            UserPolicy.objects.get_or_create(
+                collection_id=collection_id,
+                specifyuser_id=user_id,
+                resource=CollectionAccessPT.access.resource(),
+                action=CollectionAccessPT.access.action()
+            )
 
 def create_roles(apps = apps) -> None:
     LibraryRole = apps.get_model('permissions', 'LibraryRole')
