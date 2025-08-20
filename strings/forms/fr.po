@@ -1,121 +1,124 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-07-25 03:03+0000\n"
+"PO-Revision-Date: 2025-08-20 17:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: French "
-"<https://hosted.weblate.org/projects/specify-7/forms/fr/>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/specify-7/forms/"
+"fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.13\n"
 
-#: components/Preferences/UserDefinitions.tsx:708
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:708
 #, fuzzy
 msgid "forms"
 msgstr "Formulaires"
 
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 #: components/Atoms/DataEntry.tsx:153
 #: components/Forms/Save.tsx:271
 #: components/Statistics/ResultsDialog.tsx:68
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 #, fuzzy
 msgid "clone"
 msgstr "Cloner"
 
-#: components/Forms/Save.tsx:272
 #. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:272
 #, fuzzy
 msgid "cloneDescription"
 msgstr "Créer une copie complète de l'enregistrement actuel"
 
-#: components/DataModel/uniquenessRules.ts:143
 #. Used in: Components > Data Model > Uniqueness Rules
+#: components/DataModel/uniquenessRules.ts:143
 #, fuzzy
 msgid "valueMustBeUniqueToField"
 msgstr "La valeur doit être unique à {fieldName:string}"
 
-#: components/DataModel/uniquenessRules.ts:146
 #. Used in: Components > Data Model > Uniqueness Rules
+#: components/DataModel/uniquenessRules.ts:146
 #, fuzzy
 msgid "valueMustBeUniqueToDatabase"
 msgstr "La valeur doit être unique dans la base de données"
 
-#: components/DataModel/uniquenessRules.ts:134
 #. Used in: Components > Data Model > Uniqueness Rules
+#: components/DataModel/uniquenessRules.ts:134
 #, fuzzy
 msgid "valuesOfMustBeUniqueToField"
 msgstr "Les valeurs de {values:string} doivent être uniques à {fieldName:string}"
 
-#: components/DataModel/uniquenessRules.ts:138
 #. Used in: Components > Data Model > Uniqueness Rules
+#: components/DataModel/uniquenessRules.ts:138
 #, fuzzy
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Les valeurs de {values:string} doivent être uniques à la base de données"
 
-#: components/Forms/DeleteButton.tsx:125
 #. Used in: Components > Forms > Delete Button
+#: components/Forms/DeleteButton.tsx:125
 #, fuzzy
 msgid "checkingIfResourceCanBeDeleted"
 msgstr "Vérification si la ressource peut être supprimée…"
 
-#: components/Molecules/LinkedRecords.tsx:105
 #. Used in: Components > Molecules > Linked Records
+#: components/Molecules/LinkedRecords.tsx:105
+#, fuzzy
 msgid "checkingIfResourceIsUsed"
-msgstr ""
+msgstr "Vérification si cet enregistrement est actuellement utilisé…"
 
+#. Used in: Components > Molecules > Linked Records
 #: components/Molecules/LinkedRecords.tsx:51
 #: components/Molecules/LinkedRecords.tsx:119
-#. Used in: Components > Molecules > Linked Records
+#, fuzzy
 msgid "noLinkedRecords"
-msgstr ""
+msgstr "Aucun enregistrement lié"
 
-#: components/Molecules/LinkedRecords.tsx:133
 #. Used in: Components > Molecules > Linked Records
+#: components/Molecules/LinkedRecords.tsx:133
+#, fuzzy
 msgid "recordUsedDescription"
-msgstr ""
+msgstr "Cette ressource est actuellement liée aux enregistrements suivants :"
 
+#. Used in: Components > Forms > Delete Button
 #: components/Forms/DeleteButton.tsx:82
 #: components/Forms/DeleteButton.tsx:90
 #: components/Forms/DeleteButton.tsx:180
-#. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteBlocked"
 msgstr "Supprimer bloqué"
 
-#: components/Forms/DeleteButton.tsx:183
 #. Used in: Components > Forms > Delete Button
+#: components/Forms/DeleteButton.tsx:183
 #, fuzzy
 msgid "deleteBlockedDescription"
 msgstr ""
 "La ressource ne peut pas être supprimée car elle est référencée par les "
 "ressources suivantes :"
 
+#. Used in: Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 #: components/SchemaViewer/schemaToTsv.tsx:26
 #: components/WbPlanView/CustomSelectElement.tsx:295
-#. Used in: Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 #, fuzzy
 msgid "relationship"
 msgstr "Relation"
 
+#. Used in: Components > Form Plugins > Paleo Location
 #: components/FormPlugins/PaleoLocation.tsx:53
 #: components/FormPlugins/PaleoLocation.tsx:89
 #: components/FormPlugins/PaleoLocation.tsx:98
-#. Used in: Components > Form Plugins > Paleo Location
 #, fuzzy
 msgid "paleoMap"
 msgstr "Carte paléo"
 
-#: components/FormPlugins/PaleoLocation.tsx:76
 #. 🟥Example: Geography Required. Used in: Components > Form Plugins > Paleo Location
+#: components/FormPlugins/PaleoLocation.tsx:76
 #, fuzzy
 msgid "paleoRequiresGeography"
 msgstr "{geographyTable:string} Obligatoire"
 
-#: components/FormPlugins/PaleoLocation.tsx:81
 #. Used in: Components > Form Plugins > Paleo Location
+#: components/FormPlugins/PaleoLocation.tsx:81
 #, fuzzy
 msgid "paleoRequiresGeographyDescription"
 msgstr ""
@@ -123,162 +126,162 @@ msgstr ""
 "coordonnées géographiques et que le contexte paléo ait un âge géographique "
 "avec au moins une heure de début ou une heure de fin renseignée."
 
-#: components/FormPlugins/DateInput.tsx:85
 #. Used in: Components > Form Plugins > Date Input
+#: components/FormPlugins/DateInput.tsx:85
 #, fuzzy
 msgid "invalidDate"
 msgstr "Date invalide"
 
-#: components/Forms/DeleteButton.tsx:151
 #. Used in: Components > Forms > Delete Button
+#: components/Forms/DeleteButton.tsx:151
 #, fuzzy
 msgid "deleteConfirmation"
 msgstr ""
 "Êtes-vous sûr de vouloir supprimer définitivement ce {tableName:string} de "
 "la base de données ?"
 
-#: components/Forms/DeleteButton.tsx:54
 #. Used in: Components > Forms > Delete Button
+#: components/Forms/DeleteButton.tsx:54
 #, fuzzy
 msgid "deleteConfirmationDescription"
 msgstr "Cette action ne peut pas être annulée."
 
-#: components/FormPlugins/DatePrecisionPicker.tsx:28
 #. Used in: Components > Form Plugins > Date Precision Picker
+#: components/FormPlugins/DatePrecisionPicker.tsx:28
 #, fuzzy
 msgid "datePrecision"
 msgstr "Précision de la date"
 
-#: components/FormPlugins/DatePrecisionPicker.tsx:47
 #. 🟥A placeholder for partial date field when "month /year" type is selected. Visible only in browsers that don't support the "month" input type. Used in: Components > Form Plugins > Date Precision Picker
+#: components/FormPlugins/DatePrecisionPicker.tsx:47
 #, fuzzy
 msgid "monthYear"
 msgstr "Lun / Année"
 
-#: components/FormPlugins/DateInput.tsx:108
 #. 🟥A placeholder for partial date field when "year" type is selected. Used in: Components > Form Plugins > Date Input
+#: components/FormPlugins/DateInput.tsx:108
 #, fuzzy
 msgid "yearPlaceholder"
 msgstr "AAAA"
 
-#: components/FormPlugins/DateInput.tsx:141
 #. Used in: Components > Form Plugins > Date Input
+#: components/FormPlugins/DateInput.tsx:141
 #, fuzzy
 msgid "today"
 msgstr "Aujourd'hui"
 
-#: components/FormPlugins/DateInput.tsx:144
 #. Used in: Components > Form Plugins > Date Input
+#: components/FormPlugins/DateInput.tsx:144
 #, fuzzy
 msgid "todayButtonDescription"
 msgstr "Définir sur la date du jour"
 
-#: components/PickLists/index.tsx:285
 #. Used in: Components > Pick Lists > Index
+#: components/PickLists/index.tsx:285
 #, fuzzy
 msgid "addToPickListConfirmation"
 msgstr "Ajouter à {pickListTable:string} ?"
 
-#: components/PickLists/index.tsx:290
 #. Used in: Components > Pick Lists > Index
+#: components/PickLists/index.tsx:290
 #, fuzzy
 msgid "addToPickListConfirmationDescription"
 msgstr ""
 "Ajouter la valeur « {value:string} » au {pickListTable:string} nommé « "
 "{pickListName:string} » ?"
 
-#: components/PickLists/index.tsx:252
 #. Used in: Components > Pick Lists > Index
+#: components/PickLists/index.tsx:252
 #, fuzzy
 msgid "invalidType"
 msgstr "Type invalide"
 
-#: components/PickLists/index.tsx:255
 #. Used in: Components > Pick Lists > Index
+#: components/PickLists/index.tsx:255
 #, fuzzy
 msgid "invalidNumericPicklistValue"
 msgstr ""
 "Seules les valeurs numériques sont prises en charge dans ce "
 "{pickListTable:string}"
 
+#. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 #: components/Attachments/Plugin.tsx:88
 #: components/FormCells/FormTable.tsx:274
 #: components/FormCells/FormTable.tsx:608
 #: components/Forms/BaseResourceView.tsx:106
-#. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 #, fuzzy
 msgid "noData"
 msgstr "Aucune donnée."
 
-#: components/Toolbar/RecordSetEdit.tsx:42
 #. Used in: Components > Toolbar > Record Set Edit
+#: components/Toolbar/RecordSetEdit.tsx:42
 #, fuzzy
 msgid "recordSetDeletionWarning"
 msgstr ""
 "Le {recordSetTable:string} « {recordSetName:string} » sera supprimé. Les "
 "enregistrements référencés ne seront PAS supprimés de la base de données."
 
+#. Used in: Components > Form Commands > Index ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Merge Record
 #: components/FormCommands/index.tsx:39
 #: components/FormMeta/EditHistory.tsx:31
 #: components/FormMeta/MergeRecord.tsx:53
-#. Used in: Components > Form Commands > Index ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Merge Record
 #, fuzzy
 msgid "saveRecordFirst"
 msgstr "Enregistrer d'abord l'enregistrement"
 
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #: components/FormSliders/Slider.tsx:32
 #: components/FormSliders/Slider.tsx:34
 #: components/Preferences/UserDefinitions.tsx:1127
-#. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "firstRecord"
 msgstr "Premier enregistrement"
 
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #: components/FormSliders/Slider.tsx:96
 #: components/FormSliders/Slider.tsx:98
 #: components/Preferences/UserDefinitions.tsx:1131
-#. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "lastRecord"
 msgstr "Dernier enregistrement"
 
+#. Used in: Components > Form Sliders > Slider
 #: components/FormSliders/Slider.tsx:40
 #: components/FormSliders/Slider.tsx:43
-#. Used in: Components > Form Sliders > Slider
 #, fuzzy
 msgid "previousRecord"
 msgstr "Record précédent"
 
+#. Used in: Components > Form Sliders > Slider
 #: components/FormSliders/Slider.tsx:87
 #: components/FormSliders/Slider.tsx:90
-#. Used in: Components > Form Sliders > Slider
 #, fuzzy
 msgid "nextRecord"
 msgstr "Prochain enregistrement"
 
-#: components/FormSliders/Slider.tsx:57
 #. Used in: Components > Form Sliders > Slider
+#: components/FormSliders/Slider.tsx:57
 #, fuzzy
 msgid "currentRecord"
 msgstr "Objet actuel (sur {total:number|formatted})"
 
+#. Used in: Components > Form Meta > Definition ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save
 #: components/FormMeta/Definition.tsx:93
 #: components/Forms/ResourceView.tsx:431
 #: components/Forms/Save.tsx:39
-#. Used in: Components > Form Meta > Definition ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save
 #, fuzzy
 msgid "unsavedFormUnloadProtect"
 msgstr "Ce formulaire n'a pas été enregistré."
 
+#. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 #: components/AttachmentsBulkImport/utils.ts:482
 #: components/Forms/Save.tsx:305
-#. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 #, fuzzy
 msgid "saveConflict"
 msgstr "Enregistrer le conflit"
 
-#: components/Forms/Save.tsx:308
 #. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:308
 #, fuzzy
 msgid "saveConflictDescription"
 msgstr ""
@@ -287,85 +290,85 @@ msgstr ""
 "page doit être rechargée pour éviter l'enregistrement de données "
 "incohérentes."
 
-#: components/Forms/Save.tsx:339
 #. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:339
 #, fuzzy
 msgid "saveBlocked"
 msgstr "Enregistrer bloqué"
 
-#: components/Forms/Save.tsx:342
 #. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:342
 #, fuzzy
 msgid "saveBlockedDescription"
 msgstr "Le formulaire ne peut pas être enregistré en raison de l'erreur suivante :"
 
+#. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:115
 #: components/FormCommands/index.tsx:142
-#. Used in: Components > Form Commands > Index
 #, fuzzy
 msgid "unavailableCommandButton"
 msgstr "Commande N/A"
 
+#. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:120
 #: components/FormCommands/index.tsx:147
-#. Used in: Components > Form Commands > Index
 #, fuzzy
 msgid "commandUnavailable"
 msgstr "Commande non disponible"
 
-#: components/FormCommands/index.tsx:124
 #. Used in: Components > Form Commands > Index
+#: components/FormCommands/index.tsx:124
 #, fuzzy
 msgid "commandUnavailableDescription"
 msgstr "Cette commande n'est actuellement pas disponible pour Specify 7."
 
+#. Used in: Components > Form Commands > Index ⬤ Components > Form Plugins > Index
 #: components/FormCommands/index.tsx:126
 #: components/FormPlugins/index.tsx:205
-#. Used in: Components > Form Commands > Index ⬤ Components > Form Plugins > Index
 #, fuzzy
 msgid "commandUnavailableSecondDescription"
 msgstr ""
 "Il a probablement été inclus dans ce formulaire à partir de Specify 6 et "
 "peut être pris en charge à l'avenir."
 
-#: components/FormCommands/index.tsx:129
 #. Used in: Components > Form Commands > Index
+#: components/FormCommands/index.tsx:129
 #, fuzzy
 msgid "commandName"
 msgstr "Nom de la commande"
 
+#. Used in: Components > Form Plugins > Index
 #: components/FormPlugins/index.tsx:195
 #: components/FormPlugins/index.tsx:264
-#. Used in: Components > Form Plugins > Index
 #, fuzzy
 msgid "unavailablePluginButton"
 msgstr "Plugin N/A"
 
+#. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
 #: components/FormPlugins/PaleoLocation.tsx:58
 #: components/FormPlugins/index.tsx:199
 #: components/FormPlugins/index.tsx:268
-#. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
 #, fuzzy
 msgid "pluginNotAvailable"
 msgstr "Plugin non disponible"
 
-#: components/FormPlugins/index.tsx:203
 #. Used in: Components > Form Plugins > Index
+#: components/FormPlugins/index.tsx:203
 #, fuzzy
 msgid "pluginNotAvailableDescription"
 msgstr "Ce plugin n'est actuellement pas disponible pour Specify 7"
 
+#. 🟥Example: ... Locality, Collecting Event or Collection Object forms. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
 #: components/FormPlugins/PaleoLocation.tsx:65
 #: components/FormPlugins/index.tsx:272
-#. 🟥Example: ... Locality, Collecting Event or Collection Object forms. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
 #, fuzzy
 msgid "wrongTableForPlugin"
 msgstr ""
 "Ce plugin ne peut pas être utilisé sur le formulaire {currentTable:string}. "
 "Essayez de le déplacer vers les formulaires {supportedTables:string}."
 
-#: components/FormCommands/index.tsx:151
 #. Used in: Components > Form Commands > Index
+#: components/FormCommands/index.tsx:151
 #, fuzzy
 msgid "wrongTableForCommand"
 msgstr ""
@@ -373,20 +376,21 @@ msgstr ""
 "{currentTable:string}. Elle ne peut être utilisée que sur le formulaire "
 "{correctTable:string}."
 
-#: components/FormPlugins/index.tsx:208
 #. Used in: Components > Form Plugins > Index
+#: components/FormPlugins/index.tsx:208
 #, fuzzy
 msgid "pluginName"
 msgstr "Nom du plugin"
 
+#. 🟥Yes/No probably shouldn't be translated as Specify 7 does not support changing which values are recognized as Yes/No in a given language. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
 #: utils/parser/definitions.ts:112
 #: utils/parser/__tests__/definitions.test.ts:186
 #: utils/parser/__tests__/definitions.test.ts:188
-#. 🟥Yes/No probably shouldn't be translated as Specify 7 does not support changing which values are recognized as Yes/No in a given language. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
 #, fuzzy
 msgid "illegalBool"
 msgstr "Valeur illégale pour un champ Oui/Non"
 
+#. Used in: Hooks > __tests__ > Use Resource Value ⬤ Utils > Parser > Parse ⬤ Parser > __tests__ > Parse
 #: hooks/__tests__/useResourceValue.test.tsx:146
 #: hooks/__tests__/useResourceValue.test.tsx:203
 #: utils/parser/parse.ts:33
@@ -394,11 +398,11 @@ msgstr "Valeur illégale pour un champ Oui/Non"
 #: utils/parser/__tests__/parse.test.ts:79
 #: utils/parser/__tests__/parse.test.ts:207
 #: utils/parser/__tests__/parse.test.ts:209
-#. Used in: Hooks > __tests__ > Use Resource Value ⬤ Utils > Parser > Parse ⬤ Parser > __tests__ > Parse
 #, fuzzy
 msgid "requiredField"
 msgstr "Le champ est obligatoire."
 
+#. Used in: Components > Export Feed > Editor ⬤ Components > Query Combo Box > Index ⬤ Parser > __tests__ > Definitions
 #: components/ExportFeed/Editor.tsx:399
 #: components/ExportFeed/Editor.tsx:403
 #: components/QueryComboBox/index.tsx:194
@@ -406,11 +410,11 @@ msgstr "Le champ est obligatoire."
 #: utils/parser/__tests__/definitions.test.ts:207
 #: utils/parser/__tests__/definitions.test.ts:223
 #: utils/parser/__tests__/definitions.test.ts:225
-#. Used in: Components > Export Feed > Editor ⬤ Components > Query Combo Box > Index ⬤ Parser > __tests__ > Definitions
 #, fuzzy
 msgid "invalidValue"
 msgstr "Valeur invalide"
 
+#. 🟥Used in field validation messages on the form. Used in: Components > Form Plugins > Date Input ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
 #: components/FormPlugins/DateInput.tsx:82
 #: components/FormPlugins/DateInput.tsx:84
 #: utils/parser/definitions.ts:206
@@ -418,459 +422,458 @@ msgstr "Valeur invalide"
 #: utils/parser/definitions.ts:374
 #: utils/parser/__tests__/definitions.test.ts:80
 #: utils/parser/__tests__/parse.test.ts:228
-#. 🟥Used in field validation messages on the form. Used in: Components > Form Plugins > Date Input ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
 #, fuzzy
 msgid "requiredFormat"
 msgstr "Format requis : {format:string}."
 
+#. Used in: Hooks > __tests__ > Use Resource Value ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Parse
 #: hooks/__tests__/useResourceValue.test.tsx:195
 #: utils/parser/definitions.ts:51
 #: utils/parser/__tests__/parse.test.ts:139
 #: utils/parser/__tests__/parse.test.ts:158
 #: utils/parser/__tests__/parse.test.ts:181
-#. Used in: Hooks > __tests__ > Use Resource Value ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Parse
 #, fuzzy
 msgid "inputTypeNumber"
 msgstr "La valeur doit être un nombre"
 
-#: components/PickLists/definitions.ts:30
 #. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:30
 #, fuzzy
 msgid "organization"
 msgstr "Organisation"
 
-#: components/PickLists/definitions.ts:31
 #. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:31
 #, fuzzy
 msgid "person"
 msgstr "Personne"
 
-#: components/PickLists/definitions.ts:32
 #. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:32
 #, fuzzy
 msgid "other"
 msgstr "Autre"
 
-#: components/PickLists/definitions.ts:33
 #. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:33
 #, fuzzy
 msgid "group"
 msgstr "Groupe"
 
-#: components/PickLists/definitions.ts:37
 #. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:37
 #, fuzzy
 msgid "userDefinedItems"
 msgstr "Éléments définis par l'utilisateur"
 
-#: components/PickLists/definitions.ts:38
 #. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:38
 #, fuzzy
 msgid "entireTable"
 msgstr "Tableau entier"
 
-#: components/PickLists/definitions.ts:39
 #. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:39
 #, fuzzy
 msgid "fieldFromTable"
 msgstr "Champ de la table"
 
-#: components/FormCells/index.tsx:319
 #. Used in: Components > Form Cells > Index
+#: components/FormCells/index.tsx:319
 #, fuzzy
 msgid "unsupportedCellType"
 msgstr "Type de cellule non pris en charge"
 
-#: components/SearchDialog/index.tsx:325
 #. 🟥Represents truncated search dialog output (when lots of results returned). Used in: Components > Search Dialog > Index
+#: components/SearchDialog/index.tsx:325
 #, fuzzy
 msgid "additionalResultsOmitted"
 msgstr "Résultats supplémentaires omis"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:286
 #. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSelectorFromIds.tsx:286
 #, fuzzy
 msgid "recordSelectorUnloadProtect"
 msgstr "Continuer sans enregistrer ?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:289
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSelectorFromIds.tsx:289
 #, fuzzy
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Vous souhaiterez peut-être sauvegarder cet enregistrement avant de partir."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:227
 #. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSelectorFromIds.tsx:227
 #, fuzzy
 msgid "creatingNewRecord"
 msgstr "Création d'un nouvel enregistrement"
 
-#: components/FormSliders/RecordSet.tsx:376
 #. Used in: Components > Form Sliders > Record Set
+#: components/FormSliders/RecordSet.tsx:376
 #, fuzzy
 msgid "createNewRecordSet"
 msgstr "Créer un nouvel ensemble d'enregistrements"
 
-#: components/PickLists/definitions.ts:154
 #. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:154
 #, fuzzy
 msgid "forward"
 msgstr "Avant"
 
-#: components/PickLists/definitions.ts:153
 #. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:153
 #, fuzzy
 msgid "reverse"
 msgstr "Inverse"
 
-#: components/QueryBuilder/AuditLogFormatter.tsx:47
 #. Used in: Components > Query Builder > Audit Log Formatter
+#: components/QueryBuilder/AuditLogFormatter.tsx:47
 #, fuzzy
 msgid "deletedInline"
 msgstr "(supprimé)"
 
-#: components/FormSliders/RecordSet.tsx:523
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
+#: components/FormSliders/RecordSet.tsx:523
 #, fuzzy
 msgid "duplicateRecordSetItem"
 msgstr "Dupliquer {recordSetItemTable:string}"
 
-#: components/FormSliders/RecordSet.tsx:528
 #. Used in: Components > Form Sliders > Record Set
+#: components/FormSliders/RecordSet.tsx:528
 #, fuzzy
 msgid "duplicateRecordSetItemDescription"
 msgstr "Cet enregistrement est déjà présent dans le {recordSetTable:string} actuel"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:176
 #. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSelectorFromIds.tsx:176
 #, fuzzy
 msgid "addToRecordSet"
 msgstr "Ajouter à {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:181
 #. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSelectorFromIds.tsx:181
 #, fuzzy
 msgid "removeFromRecordSet"
 msgstr "Supprimer de {recordSetTable:string}"
 
+#. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Auto Complete
 #: components/AttachmentsBulkImport/utils.ts:484
 #: components/Molecules/AutoComplete.tsx:532
-#. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Auto Complete
 #, fuzzy
 msgid "nothingFound"
 msgstr "Rien trouvé"
 
+#. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 #: components/Forms/BulkCarryForward.tsx:287
 #: components/Forms/Save.tsx:253
-#. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 #, fuzzy
 msgid "carryForward"
 msgstr "Reporter"
 
-#: components/FormMeta/CarryForward.tsx:121
 #. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:121
 #, fuzzy
 msgid "carryForwardEnabled"
 msgstr "Afficher le bouton de report"
 
-#: components/FormMeta/CarryForward.tsx:201
 #. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:201
 #, fuzzy
 msgid "bulkCarryForwardEnabled"
 msgstr "Afficher le nombre de reports en masse"
 
-#: components/Forms/BulkCarryForward.tsx:251
 #. Used in: Components > Forms > Bulk Carry Forward
+#: components/Forms/BulkCarryForward.tsx:251
 #, fuzzy
 msgid "bulkCarryForwardCount"
 msgstr "Nombre de reports en masse"
 
-#: components/Forms/Save.tsx:254
 #. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:254
 #, fuzzy
 msgid "carryForwardDescription"
 msgstr "Créer un nouvel enregistrement avec certains champs reportés"
 
+#. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:124
 #: components/FormMeta/CarryForward.tsx:133
-#. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardSettingsDescription"
 msgstr "Configurer les champs à reporter"
 
+#. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:204
 #: components/FormMeta/CarryForward.tsx:225
-#. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardSettingsDescription"
 msgstr "Configurer les champs pour un report en masse"
 
-#: components/FormMeta/CarryForward.tsx:393
 #. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:393
 #, fuzzy
 msgid "carryForwardTableSettingsDescription"
 msgstr "Configurer les champs à reporter ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:390
 #. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:390
 #, fuzzy
 msgid "bulkCarryForwardTableSettingsDescription"
 msgstr "Configurer les champs pour un report en masse ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:463
 #. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:463
 #, fuzzy
 msgid "carryForwardUniqueField"
 msgstr "Ce champ doit être unique. Il ne peut pas être reporté."
 
-#: components/FormMeta/CarryForward.tsx:465
 #. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:465
 msgid "carryForwardRequiredField"
 msgstr "Ce champ est obligatoire. Il doit être reporté"
 
-#: components/FormMeta/CarryForward.tsx:222
 #. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:222
 #, fuzzy
 msgid "bulkCarryForwardRangeEnabled"
 msgstr "Afficher la plage de report en masse"
 
-#: components/Forms/BulkCarryForward.tsx:306
 #. Used in: Components > Forms > Bulk Carry Forward
+#: components/Forms/BulkCarryForward.tsx:306
 #, fuzzy
 msgid "bulkCarryForwardRangeErrorDescription"
 msgstr ""
 "Impossible de reporter l'enregistrement sur la plage {field:string} "
 "spécifiée."
 
-#: components/Forms/BulkCarryForward.tsx:300
 #. Used in: Components > Forms > Bulk Carry Forward
+#: components/Forms/BulkCarryForward.tsx:300
 #, fuzzy
 msgid "bulkCarryForwardRangeLimitExceeded"
 msgstr "La plage dépasse la limite d'enregistrement de {limit:number}."
 
-#: components/Forms/BulkCarryForward.tsx:292
 #. Used in: Components > Forms > Bulk Carry Forward
+#: components/Forms/BulkCarryForward.tsx:292
 #, fuzzy
 msgid "bulkCarryForwardRangeExistingRecords"
 msgstr "Les numéros suivants pour {field:string} sont déjà utilisés :"
 
-#: components/Forms/BulkCarryForward.tsx:173
 #. Used in: Components > Forms > Bulk Carry Forward
+#: components/Forms/BulkCarryForward.tsx:173
 #, fuzzy
 msgid "bulkCarryForwardRangeStart"
 msgstr "Début de la plage de report"
 
-#: components/Forms/BulkCarryForward.tsx:181
 #. Used in: Components > Forms > Bulk Carry Forward
+#: components/Forms/BulkCarryForward.tsx:181
 #, fuzzy
 msgid "bulkCarryForwardRangeEnd"
 msgstr "Fin de la plage de report"
 
-#: components/FormMeta/CarryForward.tsx:240
 #. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:240
 #, fuzzy
 msgid "createRecordSetOnBulkCarryForward"
 msgstr "Créer un ensemble d'enregistrements sur le report en masse"
 
-#: components/FormMeta/Clone.tsx:31
 #. Used in: Components > Form Meta > Clone
+#: components/FormMeta/Clone.tsx:31
 #, fuzzy
 msgid "cloneButtonEnabled"
 msgstr "Afficher le bouton Cloner"
 
-#: components/FormMeta/Clone.tsx:57
 #. Used in: Components > Form Meta > Clone
+#: components/FormMeta/Clone.tsx:57
 #, fuzzy
 msgid "addButtonEnabled"
 msgstr "Afficher le bouton Ajouter"
 
-#: components/Forms/Save.tsx:280
 #. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:280
 #, fuzzy
 msgid "addButtonDescription"
 msgstr "Créer un nouvel enregistrement vierge"
 
+#. Used in: Components > Form Meta > Auto Numbering
 #: components/FormMeta/AutoNumbering.tsx:27
 #: components/FormMeta/AutoNumbering.tsx:92
-#. Used in: Components > Form Meta > Auto Numbering
 #, fuzzy
 msgid "autoNumbering"
 msgstr "Numérotation automatique"
 
-#: components/FormMeta/Definition.tsx:153
 #. Used in: Components > Form Meta > Definition
+#: components/FormMeta/Definition.tsx:153
 #, fuzzy
 msgid "editFormDefinition"
 msgstr "Modifier la définition du formulaire"
 
-#: components/FormMeta/Definition.tsx:117
 #. Used in: Components > Form Meta > Definition
+#: components/FormMeta/Definition.tsx:117
 #, fuzzy
 msgid "useAutoGeneratedForm"
 msgstr "Utiliser le formulaire généré automatiquement"
 
-#: components/FormMeta/Definition.tsx:134
 #. Used in: Components > Form Meta > Definition
+#: components/FormMeta/Definition.tsx:134
 #, fuzzy
 msgid "useFieldLabels"
 msgstr "Utiliser des étiquettes de champ localisées"
 
-#: components/FormEditor/Editor.tsx:205
 #. Used in: Components > Form Editor > Editor
+#: components/FormEditor/Editor.tsx:205
 #, fuzzy
 msgid "showFieldLabels"
 msgstr "Afficher les étiquettes de champ localisées"
 
-#: components/FormEditor/Editor.tsx:204
 #. Used in: Components > Form Editor > Editor
+#: components/FormEditor/Editor.tsx:204
 #, fuzzy
 msgid "showDataModelLabels"
 msgstr "Afficher les noms des champs du modèle de données"
 
+#. Used in: Components > Form Meta > Edit History
 #: components/FormMeta/EditHistory.tsx:34
 #: components/FormMeta/EditHistory.tsx:57
-#. Used in: Components > Form Meta > Edit History
 #, fuzzy
 msgid "editHistory"
 msgstr "Modifier l'historique"
 
-#: components/FormMeta/EditHistory.tsx:82
 #. Used in: Components > Form Meta > Edit History
+#: components/FormMeta/EditHistory.tsx:82
 #, fuzzy
 msgid "editHistoryQueryName"
 msgstr "Historique des modifications pour « {formattedRecord:string} »"
 
-#: components/FormMeta/index.tsx:149
 #. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:149
 #, fuzzy
 msgid "formConfiguration"
 msgstr "Configuration du formulaire"
 
-#: components/FormMeta/index.tsx:181
 #. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:181
 #, fuzzy
 msgid "formState"
 msgstr "État du formulaire"
 
-#: components/FormMeta/index.tsx:230
 #. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:230
 #, fuzzy
 msgid "recordInformation"
 msgstr "Informations sur le dossier"
 
-#: components/FormMeta/ShareRecord.tsx:44
 #. Used in: Components > Form Meta > Share Record
+#: components/FormMeta/ShareRecord.tsx:44
 #, fuzzy
 msgid "shareRecord"
 msgstr "Partager l'enregistrement"
 
+#. Used in: Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Query Tree Usages
 #: components/FormMeta/PickListUsages.tsx:26
 #: components/FormMeta/QueryTreeUsages.tsx:22
-#. Used in: Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Query Tree Usages
 #, fuzzy
 msgid "findUsages"
 msgstr "Trouver des utilisations"
 
-#: components/FormMeta/PickListUsages.tsx:68
 #. Used in: Components > Form Meta > Pick List Usages
+#: components/FormMeta/PickListUsages.tsx:68
 #, fuzzy
 msgid "usagesOfPickList"
 msgstr "Utilisations de la liste de sélection « {pickList:string} »"
 
-#: components/FormMeta/SubViewMeta.tsx:36
 #. Used in: Components > Form Meta > Sub View Meta
+#: components/FormMeta/SubViewMeta.tsx:36
 #, fuzzy
 msgid "subForm"
 msgstr "Sous-formulaire"
 
+#. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #: components/FormMeta/SubViewMeta.tsx:37
 #: components/Preferences/UserDefinitions.tsx:1138
-#. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "formTable"
 msgstr "Grille"
 
-#: components/FormMeta/index.tsx:199
 #. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:199
 #, fuzzy
 msgid "subviewConfiguration"
 msgstr "Sous-vue"
 
+#. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
 #: components/FormMeta/ReadOnlyMode.tsx:20
 #: components/Header/UserTools.tsx:91
-#. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
 #, fuzzy
 msgid "disableReadOnly"
 msgstr "Désactiver le mode lecture seule"
 
-#: components/FormMeta/ReadOnlyMode.tsx:20
 #. Used in: Components > Form Meta > Read Only Mode
+#: components/FormMeta/ReadOnlyMode.tsx:20
 #, fuzzy
 msgid "enableReadOnly"
 msgstr "Activer le mode lecture seule"
 
-#: components/DataEntryTables/Edit.tsx:75
 #. Used in: Components > Data Entry Tables > Edit
+#: components/DataEntryTables/Edit.tsx:75
 #, fuzzy
 msgid "configureDataEntryTables"
 msgstr "Configurer les tables de saisie de données"
 
-#: components/DataEntryTables/Edit.tsx:76
 #. Used in: Components > Data Entry Tables > Edit
+#: components/DataEntryTables/Edit.tsx:76
 #, fuzzy
 msgid "configureInteractionTables"
 msgstr "Configurer les tables d'interaction"
 
+#. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:68
 #: components/FormMeta/index.tsx:70
-#. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "formMeta"
 msgstr "Formulaire Méta"
 
+#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor ⬤ Components > Formatters > Formatters ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
 #: components/AppResources/Create.tsx:285
 #: components/AppResources/Editor.tsx:250
 #: components/Formatters/formatters.ts:58
 #: components/Forms/BaseResourceView.tsx:124
 #: components/Forms/dataObjFormatters.ts:160
-#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor ⬤ Components > Formatters > Formatters ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
 #, fuzzy
 msgid "newResourceTitle"
 msgstr "Nouveau {tableName:string}"
 
+#. 🟥When resource does not have a formatter defined, this formatter is used. Used in: Components > Formatters > Formatters ⬤ Components > Forms > Data Obj Formatters
 #: components/Formatters/formatters.ts:59
 #: components/Forms/dataObjFormatters.ts:161
-#. 🟥When resource does not have a formatter defined, this formatter is used. Used in: Components > Formatters > Formatters ⬤ Components > Forms > Data Obj Formatters
 #, fuzzy
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
-#: components/Forms/ResourceView.tsx:225
 #. Used in: Components > Forms > Resource View
+#: components/Forms/ResourceView.tsx:225
 #, fuzzy
 msgid "resourceDeleted"
 msgstr "Ressource supprimée"
 
-#: components/Forms/ResourceView.tsx:228
 #. Used in: Components > Forms > Resource View
+#: components/Forms/ResourceView.tsx:228
 #, fuzzy
 msgid "resourceDeletedDescription"
 msgstr "L'élément a été supprimé avec succès."
 
-#: components/Forms/DateRange.tsx:53
 #. Used in: Components > Forms > Date Range
+#: components/Forms/DateRange.tsx:53
 #, fuzzy
 msgid "dateRange"
 msgstr "(Plage : {from:string} - {to:string})"
 
-#: components/FieldFormatters/index.ts:293
 #. 🟥Meaning "Catalog Number Numeric formatter". Used in: Components > Field Formatters > Index
+#: components/FieldFormatters/index.ts:293
 #, fuzzy
 msgid "catalogNumberNumericFormatter"
 msgstr "Numéro de catalogue numérique"
 
-#: components/FormCells/COJODialog.tsx:94
 #. Used in: Components > Form Cells > COJODialog
+#: components/FormCells/COJODialog.tsx:94
 #, fuzzy
 msgid "addCOGChildren"
 msgstr "Ajouter des enfants COG"
