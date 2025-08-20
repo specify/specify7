@@ -1,11 +1,23 @@
+import type Handsontable from 'handsontable';
+
 import type { RA, WritableArray } from "../../utils/types";
 import type { SerializedResource } from "../DataModel/helperTypes";
 import type {
   Attachment,
+  Spdataset,
   SpDataSetAttachment,
   Tables,
-} from "../DataModel/types";
+} from '../DataModel/types';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { uploadFile } from '../Attachments/attachments';
+import type { SerializedRecord } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { ajax } from '../../utils/ajax';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 
 export const ATTACHMENTS_COLUMN = '_UPLOADED_ATTACHMENTS';
 export const BASE_TABLE_NAME = 'baseTable' as const;
@@ -24,29 +36,29 @@ type CellAttachments = {
 
 export function attachmentsToCell(
   dataSetAttachments: RA<SerializedResource<SpDataSetAttachment>>,
-  targetTable: AttachmentTargetTable,
+  targetTable: AttachmentTargetTable
 ): string {
   const formattedAttachments: WritableArray<string> = [];
   const att: WritableArray<CellAttachment> = [];
   dataSetAttachments.forEach((dataSetAttachment) => {
-    const attachment = dataSetAttachment.attachment as SerializedResource<Attachment>;
+    const attachment =
+      dataSetAttachment.attachment as SerializedResource<Attachment>;
     att.push({
       id: dataSetAttachment.id,
       table: targetTable,
     } as CellAttachment);
     formattedAttachments.push(attachment.origFilename);
   });
-  
-  const data: CellAttachments = 
-    {
-      attachments: att,
-      formatted: formattedAttachments.join("; "),
-    }
+
+  const data: CellAttachments = {
+    attachments: att,
+    formatted: formattedAttachments.join('; '),
+  };
   return JSON.stringify(data);
 }
 
 export function getAttachmentsFromCell(
-  cellData: string,
+  cellData: string
 ): CellAttachments | undefined {
   if (cellData.length === 0) {
     return undefined;
@@ -58,15 +70,11 @@ export function getAttachmentsFromCell(
   return undefined;
 }
 
-export function usesAttachments(
-  dataset: Dataset,
-): boolean {
+export function usesAttachments(dataset: Dataset): boolean {
   return dataset.columns.includes(ATTACHMENTS_COLUMN);
 }
 
-export function getAttachmentsColumnIndex(
-  dataset: Dataset,
-): number {
+export function getAttachmentsColumnIndex(dataset: Dataset): number {
   if (!usesAttachments(dataset)) {
     return -1;
   }
@@ -79,10 +87,62 @@ export function getAttachmentsColumnIndex(
  * Right now this function doesn't do anything different.
  */
 export function getAttachmentsColumnIndexFromHeaders(
-  headers: RA<string>,
+  headers: RA<string>
 ): number {
   if (!headers.includes(ATTACHMENTS_COLUMN)) {
     return -1;
   }
   return headers.indexOf(ATTACHMENTS_COLUMN);
+}
+
+export function uploadFiles(
+  files: RA<File>,
+  handleProgress: (progress: (progress: number | undefined) => number) => void
+): RA<Promise<SpecifyResource<Attachment>>> {
+  return files.map(async (file) =>
+    uploadFile(file)
+      .then(async (attachment) =>
+        attachment === undefined
+          ? Promise.reject(`Upload failed for file ${file.name}`)
+          : attachment
+      )
+      .finally(() =>
+        handleProgress((progress) =>
+          typeof progress === 'number' ? progress + 1 : 1
+        )
+      )
+  );
+}
+
+export async function createDataSetAttachments(
+  attachments: RA<SpecifyResource<Attachment>>,
+  dataSet: SpecifyResource<Spdataset> | number
+): Promise<RA<SpecifyResource<SpDataSetAttachment>>> {
+  return Promise.all(
+    attachments.map(
+      (attachment) =>
+        new tables.SpDataSetAttachment.Resource({
+          attachment: attachment as never,
+          spdataset: typeof dataSet === 'number' ? `/api/specify/spdataset/${dataSet}/` : dataSet.url(),
+          ordinal: 0,
+        })
+    )
+  );
+}
+
+export async function saveDataSetAttachments(
+  dataSetAttachments: RA<SpecifyResource<SpDataSetAttachment>>
+): Promise<RA<SpecifyResource<SpDataSetAttachment>>> {
+  return ajax<RA<SerializedRecord<SpDataSetAttachment>>>(
+    `/api/specify/bulk/${tables.SpDataSetAttachment.name.toLowerCase()}/`,
+    {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: dataSetAttachments.map((dataSetAttachment) =>
+        serializeResource(dataSetAttachment)
+      ),
+    }
+  ).then(({ data }) =>
+    data.map((resource) => deserializeResource(serializeResource(resource)))
+  );
 }
