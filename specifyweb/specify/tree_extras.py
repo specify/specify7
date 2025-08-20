@@ -14,7 +14,7 @@ from django.db import models, connection
 from django.db.models import F, Q, ProtectedError
 from django.conf import settings
 
-from specifyweb.businessrules.exceptions import TreeBusinessRuleException
+from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
 import specifyweb.specify.models as spmodels
 
 from  .auditcodes import TREE_BULK_MOVE, TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
@@ -209,7 +209,7 @@ def adding_node(node):
     model = type(node)
     parent = model.objects.select_for_update().get(id=node.parent.id)
     if parent.accepted_id is not None:
-        from specifyweb.context.remote_prefs import get_remote_prefs
+        from specifyweb.backend.context.remote_prefs import get_remote_prefs
         # This business rule can be overriden by a remote pref.
         pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
         override = re.search(pattern, get_remote_prefs(), re.MULTILINE)
@@ -398,7 +398,7 @@ def synonymize(node, into, agent):
     node.save()
 
     # This check can be disabled by a remote pref
-    from specifyweb.context.remote_prefs import get_remote_prefs
+    from specifyweb.backend.context.remote_prefs import get_remote_prefs
     pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
     override = re.search(pattern, get_remote_prefs(), re.MULTILINE)
     if node.children.count() > 0 and (override is None or override.group(1).strip().lower() != "true"):

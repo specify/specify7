@@ -1,7 +1,7 @@
 from django import http
 from django.test import Client
 
-from specifyweb.notifications.models import Spmerging
+from specifyweb.backend.notifications.models import Spmerging
 from specifyweb.specify.tests.test_api import ApiTests
 
 from unittest.mock import patch, Mock

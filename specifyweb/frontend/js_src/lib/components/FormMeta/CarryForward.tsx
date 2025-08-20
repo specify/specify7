@@ -30,6 +30,8 @@ import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 /**
  * Fields to always carry forward (unless "Deselect All" is pressed), but not
  * show in the UI.
+ * NOTE: "Deselect All" no longer deselects these fields to prevent issues.
+ * This behavior is probably desirable. Only downside is bigger preferences.
  */
 const invisibleCarry = new Set([
   'collection',
@@ -362,18 +364,17 @@ function CarryForwardConfigDialog({
             disabled={config.length === 0}
             onClick={(): void =>
               handleChange(
-                // Don't deselect hidden fields if they are not visible
-                showHiddenFields
-                  ? []
-                  : table.fields
-                      .filter(
-                        ({ name, isVirtual, overrides }) =>
-                          !isVirtual &&
-                          !reverseRelationships.includes(name) &&
-                          overrides.isHidden &&
-                          config.includes(name)
-                      )
-                      .map(({ name }) => name)
+                table.fields
+                  .filter(
+                    ({ name, isVirtual, overrides, isRequired }) =>
+                      !isVirtual &&
+                      !reverseRelationships.includes(name) &&
+                      // Don't deselect hidden fields if they are not visible
+                      ((!showHiddenFields && overrides.isHidden) ||
+                        isRequired) &&
+                      config.includes(name)
+                  )
+                  .map(({ name }) => name)
               )
             }
           >

@@ -3369,6 +3369,11 @@ export type Gift = {
   };
   readonly toOneDependent: { readonly addressOfRecord: AddressOfRecord | null };
   readonly toOneIndependent: {
+    readonly agent1: Agent | null;
+    readonly agent2: Agent | null;
+    readonly agent3: Agent | null;
+    readonly agent4: Agent | null;
+    readonly agent5: Agent | null;
     readonly createdByAgent: Agent | null;
     readonly deaccession: Deaccession | null;
     readonly discipline: Discipline;
@@ -3762,6 +3767,11 @@ export type Loan = {
   };
   readonly toOneDependent: { readonly addressOfRecord: AddressOfRecord | null };
   readonly toOneIndependent: {
+    readonly agent1: Agent | null;
+    readonly agent2: Agent | null;
+    readonly agent3: Agent | null;
+    readonly agent4: Agent | null;
+    readonly agent5: Agent | null;
     readonly createdByAgent: Agent | null;
     readonly discipline: Discipline;
     readonly division: Division | null;

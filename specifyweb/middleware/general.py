@@ -59,7 +59,7 @@ class GeneralMiddleware:
         pass
 
     def process_exception(self, request, exception) -> http.HttpResponse | None:
-        from ..permissions.permissions import PermissionsException
+        from specifyweb.backend.permissions.permissions import PermissionsException
         if not settings.DEBUG:
             if isinstance(exception, PermissionsException):
                 return http.JsonResponse(exception.to_json(), status=exception.status_code, safe=False)

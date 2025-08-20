@@ -1,4 +1,4 @@
-from specifyweb.businessrules.models import UniquenessRule, UniquenessRuleField
+from specifyweb.backend.businessrules.models import UniquenessRule, UniquenessRuleField
 from specifyweb.specify.autonumbering import get_tables_to_lock
 from specifyweb.specify.tests.test_api import ApiTests
 

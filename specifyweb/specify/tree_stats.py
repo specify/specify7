@@ -4,7 +4,7 @@ from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.orm import aliased
 from .models import datamodel
-from specifyweb.stored_queries import models
+from specifyweb.backend.stored_queries import models
 from sqlalchemy import sql
 
 import logging

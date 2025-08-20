@@ -56,7 +56,11 @@ export const produceStackTrace = (message: unknown): string =>
         pageHtml: document.documentElement.outerHTML,
         localStorage: { ...localStorage },
         // Network log and page load telemetry
-        eventLog: globalThis.performance.getEntries(),
+        eventLog:
+          globalThis.performance !== undefined &&
+          typeof globalThis.performance.getEntries === 'function'
+            ? globalThis.performance.getEntries()
+            : [],
         navigator: {
           userAgent: navigator.userAgent,
           language: navigator.language,

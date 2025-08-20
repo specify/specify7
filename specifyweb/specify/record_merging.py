@@ -10,10 +10,10 @@ import traceback
 
 from django import http
 from django.db import IntegrityError, transaction, models
-from specifyweb.notifications.models import Message, Spmerging
+from specifyweb.backend.notifications.models import Message, Spmerging
 from django.db.models import Q
 
-from specifyweb.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.celery_tasks import LogErrorsTask, app
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.api import uri_for_model, delete_obj, is_dependent_field, put_resource

@@ -2,7 +2,7 @@ from unittest import skip
 from unittest.mock import Mock, patch
 from django import http
 from django.test import Client
-from specifyweb.notifications.models import Message, Spmerging
+from specifyweb.backend.notifications.models import Message, Spmerging
 from specifyweb.specify.tests.test_api import ApiTests
 
 class MockResult:

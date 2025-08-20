@@ -3,7 +3,7 @@ from django.test import Client
 
 import json
 
-from specifyweb.interactions.tests.test_cog import TestCogInteractions
+from specifyweb.backend.interactions.tests.test_cog import TestCogInteractions
 
 class TestCatalogNumberFromSibling(TestCogInteractions):
 
