@@ -317,6 +317,7 @@ RecordResult = (
     | Updated
     | Deleted
     | MatchedAndChanged
+    | AttachmentFailure
 )
 
 
