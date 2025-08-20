@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-07-20 23:05+0000\n"
+"PO-Revision-Date: 2025-08-20 23:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/resources/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.13\n"
 
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 #: components/AppResources/Filters.tsx:70
@@ -143,7 +143,7 @@ msgstr "Tabellenformat"
 msgid "formatterDescription"
 msgstr ""
 "Das Tabellenformat steuert die Darstellung von Daten aus einer bestimmten "
-"Tabelle in Abfrageergebnissen, Exporten und Abfragekombinationsfeldern. Es "
+"Tabelle in Abfrageergebnissen, Exporten und Abfrage-Kombinationsfeldern. Es "
 "bestimmt die anzuzeigenden Felder und deren Reihenfolge. Die bedingte "
 "Formatierung kann basierend auf einem Wert im Datensatz konfiguriert werden."
 
@@ -574,8 +574,8 @@ msgstr "Ein Schwerpunkt kann nicht zu sich selbst addiert werden."
 #, fuzzy
 msgid "coHasParent"
 msgstr ""
-"Eine CO mit einem übergeordneten Element kann nicht zu einer COG "
-"hinzugefügt werden."
+"Ein CO mit einem übergeordneten Element kann nicht zu einem COG hinzugefügt "
+"werden."
 
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #: components/DataModel/businessRuleDefs.ts:256
@@ -590,7 +590,7 @@ msgstr ""
 #: components/DataModel/businessRuleDefs.ts:371
 #, fuzzy
 msgid "deletePrimaryRecord"
-msgstr "Der Primärdatensatz CO kann nicht gelöscht werden."
+msgstr "Primärdatensatz CO kann nicht gelöscht werden."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:767
@@ -608,7 +608,7 @@ msgstr "Eine geschenkte Vorbereitung kann nicht gelöscht werden"
 #: components/DataModel/businessRuleDefs.ts:783
 #, fuzzy
 msgid "deleteDisposedPrep"
-msgstr "Eine verworfene Zubereitung kann nicht gelöscht werden"
+msgstr "Eine entsorgte Zubereitung kann nicht gelöscht werden"
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:791
