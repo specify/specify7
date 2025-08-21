@@ -17,6 +17,7 @@ import { genericTables, tables } from '../DataModel/tables';
 import type { ExchangeOut, Gift, Loan } from '../DataModel/types';
 import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { ResourceView } from '../Forms/ResourceView';
+import { FormattedResource } from '../Molecules/FormattedResource';
 import type { PreparationData } from './helpers';
 import { getInteractionsForPrepId } from './helpers';
 
@@ -67,7 +68,7 @@ export function PrepDialogRow({
             onValueChange={(): void => handleChange(checked ? 0 : available)}
           />
         </td>
-        <td className="justify-end tabular-nums">
+        <td className="tabular-nums">
           <Link.NewTab
             href={getResourceViewUrl(
               'CollectionObject',
@@ -78,6 +79,15 @@ export function PrepDialogRow({
               getField(tables.CollectionObject, 'catalogNumber'),
               preparation.catalogNumber
             )}
+          </Link.NewTab>
+        </td>
+        <td>
+          <Link.NewTab
+            href={getResourceViewUrl('Preparation', preparation.preparationId)}
+          >
+            <FormattedResource 
+              resource={new tables.Preparation.Resource({ id: preparation.preparationId })}
+            />
           </Link.NewTab>
         </td>
         <td>
