@@ -9,7 +9,7 @@ import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { formatNumber } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
-import { LoadingContext } from '../Core/Contexts';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
@@ -264,52 +264,60 @@ export function PrepDialogRow({
         </tr>
       )}
       {state.type === 'ResourceDialog' && (
-        <ResourceView
-          dialog="modal"
-          isDependent={false}
-          isSubForm={false}
-          resource={state.resource}
-          onAdd={undefined}
-          onClose={(): void => setState({ type: 'Main' })}
-          onDeleted={undefined}
-          onSaved={undefined}
-        />
+        <ReadOnlyContext.Provider value={true}>
+          <ResourceView
+            dialog="modal"
+            isDependent={false}
+            isSubForm={false}
+            resource={state.resource}
+            onAdd={undefined}
+            onClose={(): void => setState({ type: 'Main' })}
+            onDeleted={undefined}
+            onSaved={undefined}
+          />
+        </ReadOnlyContext.Provider>
       )}
       {state.type === 'CollectionObjectDialog' && (
-        <ResourceView
-          dialog="modal"
-          isDependent={false}
-          isSubForm={false}
-          resource={state.resource}
-          onAdd={undefined}
-          onClose={(): void => setState({ type: 'Main' })}
-          onDeleted={undefined}
-          onSaved={undefined}
-        />
+        <ReadOnlyContext.Provider value={true}>
+          <ResourceView
+            dialog="modal"
+            isDependent={false}
+            isSubForm={false}
+            resource={state.resource}
+            onAdd={undefined}
+            onClose={(): void => setState({ type: 'Main' })}
+            onDeleted={undefined}
+            onSaved={undefined}
+          />
+        </ReadOnlyContext.Provider>
       )}
       {state.type === 'TaxonDialog' && (
-        <ResourceView
-          dialog="modal"
-          isDependent={false}
-          isSubForm={false}
-          resource={state.resource}
-          onAdd={undefined}
-          onClose={(): void => setState({ type: 'Main' })}
-          onDeleted={undefined}
-          onSaved={undefined}
-        />
+        <ReadOnlyContext.Provider value={true}>
+          <ResourceView
+            dialog="modal"
+            isDependent={false}
+            isSubForm={false}
+            resource={state.resource}
+            onAdd={undefined}
+            onClose={(): void => setState({ type: 'Main' })}
+            onDeleted={undefined}
+            onSaved={undefined}
+          />
+        </ReadOnlyContext.Provider>
       )}
       {state.type === 'PreparationDialog' && (
-        <ResourceView
-          dialog="modal"
-          isDependent={false}
-          isSubForm={false}
-          resource={state.resource}
-          onAdd={undefined}
-          onClose={(): void => setState({ type: 'Main' })}
-          onDeleted={undefined}
-          onSaved={undefined}
-        />
+        <ReadOnlyContext.Provider value={true}>
+          <ResourceView
+            dialog="modal"
+            isDependent={false}
+            isSubForm={false}
+            resource={state.resource}
+            onAdd={undefined}
+            onClose={(): void => setState({ type: 'Main' })}
+            onDeleted={undefined}
+            onSaved={undefined}
+          />
+        </ReadOnlyContext.Provider>
       )}
     </>
   );
