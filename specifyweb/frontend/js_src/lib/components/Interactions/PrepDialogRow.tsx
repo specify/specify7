@@ -14,7 +14,7 @@ import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { genericTables, tables } from '../DataModel/tables';
-import type { ExchangeOut, Gift, Loan, CollectionObject, Taxon, Preparation } from '../DataModel/types';
+import type { CollectionObject, ExchangeOut, Gift, Loan, Preparation,Taxon } from '../DataModel/types';
 import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { ResourceView } from '../Forms/ResourceView';
 import { FormattedResource } from '../Molecules/FormattedResource';
@@ -36,7 +36,12 @@ export function PrepDialogRow({
   const checked = selected !== 0;
   const loading = React.useContext(LoadingContext);
   const [state, setState] = React.useState<
-    | State<
+    State<
+        'CollectionObjectDialog',
+        {
+          readonly resource: SpecifyResource<CollectionObject>;
+        }
+      > | State<
         'ItemSelection',
         {
           readonly items: RR<
@@ -47,32 +52,22 @@ export function PrepDialogRow({
             }>
           >;
         }
-      >
-    | State<
-        'ResourceDialog',
-        {
-          readonly resource: SpecifyResource<ExchangeOut | Gift | Loan>;
-        }
-      >
-    | State<
-        'CollectionObjectDialog',
-        {
-          readonly resource: SpecifyResource<CollectionObject>;
-        }
-      >
-    | State<
-        'TaxonDialog',
-        {
-          readonly resource: SpecifyResource<Taxon>;
-        }
-      >
-    | State<
+      > | State<
         'PreparationDialog',
         {
           readonly resource: SpecifyResource<Preparation>;
         }
-      >
-    | State<'Main'>
+      > | State<
+        'ResourceDialog',
+        {
+          readonly resource: SpecifyResource<ExchangeOut | Gift | Loan>;
+        }
+      > | State<
+        'TaxonDialog',
+        {
+          readonly resource: SpecifyResource<Taxon>;
+        }
+      > | State<'Main'>
   >({ type: 'Main' });
 
   return (
@@ -264,7 +259,7 @@ export function PrepDialogRow({
         </tr>
       )}
       {state.type === 'ResourceDialog' && (
-        <ReadOnlyContext.Provider value={true}>
+        <ReadOnlyContext.Provider value>
           <ResourceView
             dialog="modal"
             isDependent={false}
@@ -278,7 +273,7 @@ export function PrepDialogRow({
         </ReadOnlyContext.Provider>
       )}
       {state.type === 'CollectionObjectDialog' && (
-        <ReadOnlyContext.Provider value={true}>
+        <ReadOnlyContext.Provider value>
           <ResourceView
             dialog="modal"
             isDependent={false}
@@ -292,7 +287,7 @@ export function PrepDialogRow({
         </ReadOnlyContext.Provider>
       )}
       {state.type === 'TaxonDialog' && (
-        <ReadOnlyContext.Provider value={true}>
+        <ReadOnlyContext.Provider value>
           <ResourceView
             dialog="modal"
             isDependent={false}
@@ -306,7 +301,7 @@ export function PrepDialogRow({
         </ReadOnlyContext.Provider>
       )}
       {state.type === 'PreparationDialog' && (
-        <ReadOnlyContext.Provider value={true}>
+        <ReadOnlyContext.Provider value>
           <ResourceView
             dialog="modal"
             isDependent={false}
