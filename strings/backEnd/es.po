@@ -3,285 +3,284 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2025-08-20 23:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
-"backEnd/es/>\n"
+"Language-Team: Spanish "
+"<https://hosted.weblate.org/projects/specify-7/backEnd/es/>\n"
 "Language: es\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.13\n"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:213
+#. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingBoolean"
 msgstr "el valor \"{value:string}\" no se puede resolver en Verdadero o Falso"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:215
+#. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingDecimal"
 msgstr "El valor \"{value:string}\" no es un valor decimal válido"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:217
+#. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingFloat"
 msgstr "El valor \"{value:string}\" no es un valor de coma flotante válido"
 
-#. Used in: Components > Work Bench > Cell Meta ⬤ Components > Work Bench > Hooks ⬤ Components > Work Bench > Results Parser
 #: components/WorkBench/CellMeta.ts:159
 #: components/WorkBench/hooks.ts:122
 #: components/WorkBench/hooks.ts:131
 #: components/WorkBench/resultsParser.ts:268
+#. Used in: Components > Work Bench > Cell Meta ⬤ Components > Work Bench > Hooks ⬤ Components > Work Bench > Results Parser
 msgid "failedParsingPickList"
 msgstr ""
 "{value:string} no es un valor legal en este campo de lista de selección.\n"
 "Haga clic en la flecha para elegir entre las opciones disponibles."
 
-#. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:219
+#. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Results Parser
 msgid "failedParsingAgentType"
 msgstr ""
 "malo {agentTypeField:string}: \"{badType:string}\". Se esperaba uno de "
 "{validTypes:string}"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:272
+#. Used in: Components > Work Bench > Results Parser
 msgid "pickListValueTooLong"
 msgstr ""
 "valor de {pickListTable:string} {pickList:string} más largo que el máximo "
 "de {maxLength:number|formatted} para el campo"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:227
+#. Used in: Components > Work Bench > Results Parser
 msgid "valueTooLong"
 msgstr "el valor no debe tener una longitud mayor que {maxLength:number|formatted}"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:231
+#. Used in: Components > Work Bench > Results Parser
 msgid "invalidYear"
 msgstr "el valor de fecha debe contener el año de cuatro dígitos: {value:string}"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:235
+#. Used in: Components > Work Bench > Results Parser
 msgid "badDateFormat"
 msgstr "valor de fecha incorrecto: {value:string}. se esperaba: {format:string}"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:240
+#. Used in: Components > Work Bench > Results Parser
 msgid "coordinateBadFormat"
 msgstr "valor de latitud o longitud incorrecto: {value:string}"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:244
+#. Used in: Components > Work Bench > Results Parser
 msgid "latitudeOutOfRange"
 msgstr "la latitud debe estar entre -90 y 90. Actual: {value:string}"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:248
+#. Used in: Components > Work Bench > Results Parser
 msgid "longitudeOutOfRange"
 msgstr "la longitud debe estar entre -180 y 180. Actual: {value:string}"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:252
+#. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "formatMismatch"
 msgstr "El valor {value:string} no coincide con el formateador {formatter:string}"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:278
+#. Used in: Components > Work Bench > Results Parser
 msgid "invalidPartialRecord"
 msgstr "este campo debe estar vacío si {column:string} está vacío"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:282
+#. Used in: Components > Work Bench > Results Parser
 msgid "fieldRequiredByUploadPlan"
 msgstr "el campo es obligatorio para la asignación del plan de mapeo"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:284
+#. Used in: Components > Work Bench > Results Parser
 msgid "invalidTreeStructure"
 msgstr "¡Hay varios valores de marcador de posición \"Subidos\" en el árbol!"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:290
+#. Used in: Components > Work Bench > Results Parser
 msgid "missingRequiredTreeParent"
 msgstr ""
 "Falta o no está asignado el valor requerido del rango del padre en el árbol "
 "para \"{names:string}\"."
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:70
+#. Used in: Components > Errors > Json Error
 msgid "showTraceback"
 msgstr "Mostrar seguimiento"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:189
+#. Used in: Components > Errors > Json Error
 msgid "fieldNotUnique"
 msgstr "{tableName:string} debe tener un {fieldName:string} único"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:194
+#. Used in: Components > Errors > Json Error
 msgid "childFieldNotUnique"
 msgstr ""
 "{tableName:string} debe tener un {fieldName:string} único en "
 "{parentField:string}"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:154
+#. Used in: Components > Errors > Json Error
 msgid "deletingTreeRoot"
 msgstr "No se puede eliminar la definición del elemento de nivel raíz del árbol"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:156
+#. Used in: Components > Errors > Json Error
 msgid "nodeParentInvalidRank"
 msgstr "El padre de un nodo del árbol tiene un rango mayor que él mismo"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:158
+#. Used in: Components > Errors > Json Error
 msgid "nodeChildrenInvalidRank"
 msgstr "El rango de un nodo del árbol es mayor que el de alguno de sus hijos"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:160
+#. Used in: Components > Errors > Json Error
 msgid "nodeOperationToSynonymizedParent"
 msgstr ""
 "{operation:string} nodo \"{nodeName:string}\" al padre sinonimizado "
 "\"{parentName:string}\""
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:166
+#. Used in: Components > Errors > Json Error
 msgid "nodeSynonymizeToSynonymized"
 msgstr ""
 "Sinonimizando \"{nodeName:string}\" al nodo sinonimizado "
 "\"{intoName:string}\""
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:171
+#. Used in: Components > Errors > Json Error
 msgid "nodeSynonimizeWithChildren"
 msgstr "Sinonimizando el nodo \"{nodeName:string}\" que tiene hijos"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:150
+#. Used in: Components > Errors > Json Error
 msgid "badTreeStructureInvalidRanks"
 msgstr ""
 "Estructura de árbol incorrecta: se encontraron {badRanks:number|formatted} "
 "casos en los que el rango del nodo no es mayor que el de su padre"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:175
+#. Used in: Components > Errors > Json Error
 msgid "invalidNodeType"
 msgstr ""
 "Tipo de nodo inesperado \"{node:string}\" durante {operation:string}. Se "
 "esperaba \"{nodeModel:string}\""
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:181
+#. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "operationAcrossTrees"
 msgstr "{operation:string} a través de los árboles"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:185
+#. Used in: Components > Errors > Json Error
 msgid "limitReachedDeterminingAccepted"
 msgstr ""
 "No se pudo encontrar el taxón válido para el taxón sinonimizado con ID "
 "{taxonId:number}"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:200
+#. Used in: Components > Errors > Json Error
 msgid "resourceInPermissionRegistry"
 msgstr "El recurso {resource:string} ya está en el registro de permisos"
 
-#. 🟥Agent "Abc" is not a Specify User. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:204
+#. 🟥Agent "Abc" is not a Specify User. Used in: Components > Errors > Json Error
 msgid "actorIsNotSpecifyUser"
 msgstr "{agentTable:string} {actor:string} no es un {specifyUserTable:string}"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:210
+#. Used in: Components > Errors > Json Error
 msgid "unexpectedCollectionType"
 msgstr ""
 "Tipo de colección \"{unexpectedTypeName:string}\" inesperado. Se esperaba "
 "\"{collectionName:string}\""
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:215
+#. Used in: Components > Errors > Json Error
 msgid "invalidReportMimetype"
 msgstr ""
 "No se puede crear el informe: {mimeTypeField:string} no es uno de "
 "\"jrxml/label\" o \"jrxml/report\""
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:219
+#. Used in: Components > Errors > Json Error
 msgid "fieldNotRelationship"
 msgstr "El campo {field:string} no es una relación"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:221
+#. Used in: Components > Errors > Json Error
 msgid "unexpectedTableId"
 msgstr ""
 "ID de tabla inesperado \"{tableId:string}\" en la solicitud. Se esperaba "
 "\"{expectedTableId:string}\""
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:226
+#. Used in: Components > Errors > Json Error
 msgid "noCollectionInQuery"
 msgstr "No se encontró ninguna colección en la consulta de la tabla {table:string}"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:228
+#. Used in: Components > Errors > Json Error
 msgid "invalidDatePart"
 msgstr ""
 "Parte de la fecha no válida \"{datePart:string}\". Se esperaba "
 "{validDateParts:string}"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:233
+#. Used in: Components > Errors > Json Error
 msgid "invalidUploadStatus"
 msgstr ""
 "Estado no válido \"{uploadStatus:string}\" para {operation:string}. Se "
 "esperaba {expectedUploadStatus:string}"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:239
+#. Used in: Components > Errors > Json Error
 msgid "datasetAlreadyUploaded"
 msgstr "Conjunto de datos ya subido"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:285
+#. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "scopeChangeDetected"
 msgstr ""
 "Se detectó un cambio de alcance en esta fila. Se recomienda eliminarla del "
 "conjunto de datos."
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:287
+#. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "multipleTreeDefsInRow"
 msgstr "Varias definiciones de árboles en fila"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:288
+#. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "invalidCotype"
 msgstr "Tipo no válido para el rango de árbol seleccionado"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:306
 #: components/WorkBench/resultsParser.ts:312
+#. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "attachmentNotFound"
-msgstr ""
-"Uno o más archivos adjuntos no existen. Es posible que se hayan eliminado."
+msgstr "Uno o más archivos adjuntos no existen. Es posible que se hayan eliminado."
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:308
+#. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "tableDoesNotSupportAttachments"
 msgstr "La tabla de destino del archivo adjunto no admite archivos adjuntos."
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:310
+#. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "attachmentAlreadyLinked"
 msgstr "Uno o más archivos adjuntos ya están asociados a un registro cargado."
