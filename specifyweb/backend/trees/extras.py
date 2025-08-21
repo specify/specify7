@@ -277,11 +277,11 @@ def moving_node(to_save):
     to_save.highestchildnodenumber = current.highestchildnodenumber
 
 def mutation_log(action, node, agent, parent, dirty_flds: list[FieldChangeInfo]):
-    from .auditlog import auditlog
+    from specifyweb.specify.auditlog import auditlog
     auditlog.log_action(action, node, agent, node.parent, dirty_flds)
 
 def merge(node, into, agent):
-    from . import models
+    from specifyweb.specify import models
     logger.info('merging %s into %s', node, into)
     model = type(node)
     if not type(into) is model: raise AssertionError(
@@ -346,7 +346,7 @@ def merge(node, into, agent):
     assert False, "failed to move all referrences to merged tree node"
 
 def bulk_move(node, into, agent):
-    from . import models
+    from specifyweb.specify import models
     logger.info('Bulk move preparations from %s to %s', node, into)
     model = type(node)
     if not type(into) is model: raise AssertionError(
@@ -429,7 +429,7 @@ def synonymize(node, into, agent):
 
     if model._meta.db_table == 'taxon':
         node.determinations.update(preferredtaxon=target)
-        from .models import Determination
+        from specifyweb.specify.models import Determination
         Determination.objects.filter(preferredtaxon=node).update(preferredtaxon=target)
 
 def desynonymize(node, agent):
@@ -728,7 +728,7 @@ def renumber_tree(table):
         ).format(table=table), {'rank': rank})
 
     # Clear the BadNodes and UpdateNodes flags.
-    from .models import datamodel, Sptasksemaphore
+    from specifyweb.specify.models import datamodel, Sptasksemaphore
     tree_model = datamodel.get_table(table)
     tasknames = [name.format(tree_model.name) for name in ("UpdateNodes{}", "BadNodes{}")]
     Sptasksemaphore.objects.filter(taskname__in=tasknames).update(islocked=False)
