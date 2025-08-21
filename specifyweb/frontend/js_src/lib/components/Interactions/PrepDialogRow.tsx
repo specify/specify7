@@ -68,7 +68,7 @@ export function PrepDialogRow({
             onValueChange={(): void => handleChange(checked ? 0 : available)}
           />
         </td>
-        <td className="tabular-nums">
+        <td className="justify-end tabular-nums">
           <Link.NewTab
             href={getResourceViewUrl(
               'CollectionObject',
