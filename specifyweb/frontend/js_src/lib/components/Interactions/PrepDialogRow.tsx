@@ -14,7 +14,7 @@ import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { genericTables, tables } from '../DataModel/tables';
-import type { ExchangeOut, Gift, Loan } from '../DataModel/types';
+import type { ExchangeOut, Gift, Loan, CollectionObject, Taxon, Preparation } from '../DataModel/types';
 import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { ResourceView } from '../Forms/ResourceView';
 import { FormattedResource } from '../Molecules/FormattedResource';
@@ -54,6 +54,24 @@ export function PrepDialogRow({
           readonly resource: SpecifyResource<ExchangeOut | Gift | Loan>;
         }
       >
+    | State<
+        'CollectionObjectDialog',
+        {
+          readonly resource: SpecifyResource<CollectionObject>;
+        }
+      >
+    | State<
+        'TaxonDialog',
+        {
+          readonly resource: SpecifyResource<Taxon>;
+        }
+      >
+    | State<
+        'PreparationDialog',
+        {
+          readonly resource: SpecifyResource<Preparation>;
+        }
+      >
     | State<'Main'>
   >({ type: 'Main' });
 
@@ -69,34 +87,83 @@ export function PrepDialogRow({
           />
         </td>
         <td className="justify-end tabular-nums">
-          <Link.NewTab
-            href={getResourceViewUrl(
-              'CollectionObject',
-              preparation.collectionObjectId
-            )}
+          <Button.LikeLink
+            onClick={(): void =>
+              setState({
+                type: 'CollectionObjectDialog',
+                resource: new tables.CollectionObject.Resource({
+                  id: preparation.collectionObjectId,
+                }),
+              })
+            }
           >
             {syncFieldFormat(
               getField(tables.CollectionObject, 'catalogNumber'),
               preparation.catalogNumber
             )}
+          </Button.LikeLink>
+          <Link.NewTab
+            href={getResourceViewUrl(
+              'CollectionObject',
+              preparation.collectionObjectId
+            )}
+            title={getField(tables.CollectionObject, 'catalogNumber').label}
+          >
+            
+            <span className="sr-only">
+              {getField(tables.CollectionObject, 'catalogNumber').label}
+            </span>
           </Link.NewTab>
         </td>
-        <td>
-          <Link.NewTab
-            href={getResourceViewUrl('Preparation', preparation.preparationId)}
+        <td className="flex items-center gap-1">
+          <Button.LikeLink
+            onClick={(): void =>
+              setState({
+                type: 'PreparationDialog',
+                resource: new tables.Preparation.Resource({
+                  id: preparation.preparationId,
+                }),
+              })
+            }
           >
-            <FormattedResource 
+            <FormattedResource
               resource={new tables.Preparation.Resource({ id: preparation.preparationId })}
             />
+          </Button.LikeLink>
+          <Link.NewTab
+            href={getResourceViewUrl('Preparation', preparation.preparationId)}
+            title={tables.Preparation.label}
+          >
+            
+            <span className="sr-only">{tables.Preparation.label}</span>
           </Link.NewTab>
         </td>
         <td>
           {preparation.taxon ? (
-            <Link.NewTab
-              href={getResourceViewUrl('Taxon', preparation.taxonId)}
-            >
-              {localized(preparation.taxon)}
-            </Link.NewTab>
+            <span className="flex items-center gap-1">
+              <Button.LikeLink
+    
+                onClick={(): void =>
+                  setState({
+                    type: 'TaxonDialog',
+                    resource: new tables.Taxon.Resource({
+                      id: preparation.taxonId,
+                    }),
+                  })
+                }
+              >
+                {localized(preparation.taxon)}
+              </Button.LikeLink>
+              <Link.NewTab
+                href={getResourceViewUrl('Taxon', preparation.taxonId)}
+                title={getField(tables.Determination, 'taxon').label}
+              >
+                
+                <span className="sr-only">
+                  {getField(tables.Determination, 'taxon').label}
+                </span>
+              </Link.NewTab>
+            </span>
           ) : (
             <span>{interactionsText.notAvailable()}</span>
           )}
@@ -197,6 +264,42 @@ export function PrepDialogRow({
         </tr>
       )}
       {state.type === 'ResourceDialog' && (
+        <ResourceView
+          dialog="modal"
+          isDependent={false}
+          isSubForm={false}
+          resource={state.resource}
+          onAdd={undefined}
+          onClose={(): void => setState({ type: 'Main' })}
+          onDeleted={undefined}
+          onSaved={undefined}
+        />
+      )}
+      {state.type === 'CollectionObjectDialog' && (
+        <ResourceView
+          dialog="modal"
+          isDependent={false}
+          isSubForm={false}
+          resource={state.resource}
+          onAdd={undefined}
+          onClose={(): void => setState({ type: 'Main' })}
+          onDeleted={undefined}
+          onSaved={undefined}
+        />
+      )}
+      {state.type === 'TaxonDialog' && (
+        <ResourceView
+          dialog="modal"
+          isDependent={false}
+          isSubForm={false}
+          resource={state.resource}
+          onAdd={undefined}
+          onClose={(): void => setState({ type: 'Main' })}
+          onDeleted={undefined}
+          onSaved={undefined}
+        />
+      )}
+      {state.type === 'PreparationDialog' && (
         <ResourceView
           dialog="modal"
           isDependent={false}
