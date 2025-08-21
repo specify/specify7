@@ -20,7 +20,7 @@ from .specify.views import images, properties
 from specifyweb.backend.stored_queries import urls as query_urls
 from specifyweb.backend.workbench import urls as wb_urls
 from specifyweb.backend.stats import urls as stat_urls
-
+from specifyweb.backend.trees import urls as trees_urls
 # print(get_resolver().reverse_dict.keys()) # Use for debugging urls
 
 urlpatterns = [
@@ -61,5 +61,6 @@ urlpatterns = [
     path('export/', include(export_urls)), # permissions added
     path('permissions/', include(permissions_urls)), # permissions added
     # url(r'^testcontext/', include()),
-    path('stats/', include(stat_urls))
+    path('stats/', include(stat_urls)),
+    path('trees/', include(trees_urls))
 ]
