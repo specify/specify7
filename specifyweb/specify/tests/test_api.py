@@ -1,5 +1,5 @@
 """
-Tests for api.py 
+Tests for api.py
 """
 
 import json
