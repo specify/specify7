@@ -1,8 +1,21 @@
-from typing import List
+from typing import Optional
 from specifyweb.specify.load_datamodel import Datamodel, Table, Field, Relationship
 from sqlalchemy import Table as Table_Sqlalchemy, Column, ForeignKey, types, orm, MetaData
 from sqlalchemy.dialects.mysql import BIT as mysql_bit_type
 metadata = MetaData()
+
+class BaseIdAlias:
+    id_attr_name: Optional[str] = None
+
+    @property
+    def primary_id(self):
+        val = getattr(self, "_id", None)
+        if val is not None:
+            return val
+        
+        if self.__class__.id_attr_name:
+            return getattr(self, self.__class__.id_attr_name, None)
+        return None
 
 # Custom BIT type to handle both BIT(1) and TINYINT
 class CustomBIT(mysql_bit_type):
@@ -75,7 +88,14 @@ def make_tables(datamodel: Datamodel):
 
 def make_classes(datamodel: Datamodel):
     def make_class(tabledef):
-        return type(tabledef.name, (object,), { 'tableid': tabledef.tableId})
+        return type(
+            tabledef.name,
+            (BaseIdAlias,),
+            {
+                'tableid': tabledef.tableId,
+                'id_attr_name': tabledef.idFieldName,
+            },
+        )
 
     return {td.name: make_class(td) for td in datamodel.tables}
 
@@ -104,7 +124,10 @@ def map_classes(datamodel: Datamodel, tables: list[Table], classes):
             return reldef.name, orm.relationship(remote_class, **relationship_args)
 
         id_column = table.c[tabledef.idColumn]
-        properties = { tabledef.idFieldName: id_column, '_id': id_column }
+        properties = {
+            '_id': id_column,
+            tabledef.idFieldName: orm.synonym('_id'),
+        }
 
         properties.update({ flddef.name: table.c[flddef.column]
                             for flddef in tabledef.fields })
