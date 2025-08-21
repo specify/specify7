@@ -1,12 +1,9 @@
 from functools import partialmethod
 from django.db import models
-from django.db.models import Q, CheckConstraint
 from django.utils import timezone
-from specifyweb.backend.businessrules.exceptions import AbortSave
 from specifyweb.specify.model_timestamp import save_auto_timestamp_field_with_override
 from specifyweb.specify import model_extras
-from specifyweb.specify.datamodel import datamodel, Table
-import logging
+from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.models import custom_save, protect_with_blockers
 
 class Geographytreedef(models.Model):
@@ -173,8 +170,7 @@ class Geologictimeperiodtreedefitem(model_extras.Geologictimeperiodtreedefitem):
 
     
     save = partialmethod(custom_save)
-    
-    
+
 class Geography(model_extras.Geography):
     specify_model = datamodel.get_table_strict('geography')
 
@@ -551,7 +547,6 @@ class Taxon(model_extras.Taxon):
 
     
     save = partialmethod(custom_save)
-
 
 class Taxontreedef(models.Model):
     specify_model = datamodel.get_table_strict('taxontreedef')
