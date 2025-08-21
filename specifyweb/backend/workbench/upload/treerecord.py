@@ -20,7 +20,7 @@ from specifyweb.backend.workbench.upload.predicates import (
     resolve_reference_attributes,
     safe_fetch,
 )
-from specifyweb.backend.trees.tree_utils import SPECIFY_TREES, get_treedef_model, get_models, get_treedefitem_model
+from specifyweb.backend.trees.utils import SPECIFY_TREES, get_treedef_model, get_models, get_treedefitem_model
 from specifyweb.backend.workbench.upload.scope_context import ScopeContext
 from .column_options import ColumnOptions, ExtendedColumnOptions
 

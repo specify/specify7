@@ -2,8 +2,8 @@ import logging
 
 from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handler
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
-from specifyweb.backend.trees.tree_extras import is_treedefitem
-from specifyweb.backend.trees.tree_ranks import *
+from specifyweb.backend.trees.extras import is_treedefitem
+from specifyweb.backend.trees.ranks import *
 
 logger = logging.getLogger(__name__)
 

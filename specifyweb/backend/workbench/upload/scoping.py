@@ -6,7 +6,7 @@ from specifyweb.specify.datamodel import datamodel, Table, is_tree_table
 from specifyweb.specify.func import CustomRepr
 from specifyweb.specify.load_datamodel import DoesNotExistError
 from specifyweb.specify import models
-from specifyweb.backend.trees.tree_utils import get_default_treedef
+from specifyweb.backend.trees.utils import get_default_treedef
 from specifyweb.specify.uiformatters import get_uiformatter, get_catalognumber_format, UIFormatter
 from specifyweb.specify.utils import get_picklists
 from specifyweb.backend.stored_queries.format import get_date_format

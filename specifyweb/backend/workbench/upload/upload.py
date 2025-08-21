@@ -25,14 +25,14 @@ from specifyweb.specify import models
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify.func import Func
-from specifyweb.backend.trees.tree_extras import renumber_tree, set_fullnames
+from specifyweb.backend.trees.extras import renumber_tree, set_fullnames
 from specifyweb.backend.workbench.permissions import BatchEditDataSetPT
 from specifyweb.backend.workbench.upload.auditor import (
     DEFAULT_AUDITOR_PROPS,
     AuditorProps,
     BatchEditPrefs,
 )
-from specifyweb.backend.trees.tree_views import ALL_TREES
+from specifyweb.backend.trees.views import ALL_TREES
 
 from . import disambiguation
 from .upload_plan_schema import schema, parse_plan_with_basetable

@@ -19,7 +19,7 @@ from specifyweb.specify.models import (
     Tectonicunittreedefitem,
 )
 from specifyweb.specify.tests.test_api import ApiTests
-from specifyweb.backend.trees.tree_utils import get_models
+from specifyweb.backend.trees.utils import get_models
 
 
 class TestGetModels(ApiTests):

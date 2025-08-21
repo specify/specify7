@@ -1,7 +1,7 @@
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.models import Lithostrattreedef, Storagetreedef, Taxontreedef, Tectonicunittreedef
 from specifyweb.specify.tests.test_api import ApiTests
-from specifyweb.backend.trees.tree_utils import get_default_treedef
+from specifyweb.backend.trees.utils import get_default_treedef
 
 class TestGetDefaultTreedef(ApiTests):
 
