@@ -1,6 +1,6 @@
 from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handler
 
-from specifyweb.specify.models import Determination, taxon
+from specifyweb.specify.models import Determination, Taxon
 
 
 @orm_signal_handler('pre_save', 'Determination')
