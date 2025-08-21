@@ -1,6 +1,7 @@
 import type Handsontable from 'handsontable';
 import React from 'react';
 
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
@@ -11,6 +12,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
+import { getAttachmentsColumnIndex } from '../WorkBench/attachmentHelpers';
 import { downloadDataSet } from '../WorkBench/helpers';
 import type { WbMapping } from '../WorkBench/mapping';
 import { WbChangeOwner } from './ChangeOwner';
@@ -18,8 +20,6 @@ import { WbConvertCoordinates } from './CoordinateConverter';
 import { WbRawPlan } from './DevShowPlan';
 import { WbGeoLocate } from './GeoLocate';
 import { WbLeafletMap } from './WbLeafletMap';
-import { getAttachmentsColumnIndex } from '../WorkBench/attachmentHelpers';
-import { attachmentsText } from '../../localization/attachments';
 
 export function WbToolkit({
   dataset,
@@ -51,14 +51,11 @@ export function WbToolkit({
 
     let datasetColumns = dataset.columns;
     // Don't export attachments column
-    let attachmentsColumnIndex = getAttachmentsColumnIndex(dataset);
+    const attachmentsColumnIndex = getAttachmentsColumnIndex(dataset);
     if (attachmentsColumnIndex !== -1) {
-      datasetColumns = dataset.columns.map(
-        (col, index) =>
-          index === attachmentsColumnIndex
-            ? attachmentsText.attachments()
-            : col
-      )
+      datasetColumns = dataset.columns.map((col, index) =>
+        index === attachmentsColumnIndex ? attachmentsText.attachments() : col
+      );
     }
 
     downloadDataSet(
