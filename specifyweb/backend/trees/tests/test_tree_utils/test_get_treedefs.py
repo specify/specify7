@@ -1,5 +1,4 @@
-from specifyweb.specify.models import Collectionobjecttype, Discipline
-from specifyweb.specify.models import Taxontreedef
+from specifyweb.specify.models import Collectionobjecttype, Discipline, Taxontreedef
 from specifyweb.backend.trees.tests.test_tree_utils import TestMultipleTaxonTreeContext
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
 from specifyweb.backend.trees.tree_utils import get_treedefs

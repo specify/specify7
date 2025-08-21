@@ -6,13 +6,13 @@ from django.core.exceptions import FieldError
 from django.db.models import Q
 
 from .scoping import ScopeType
-from specifyweb.specify.models import Attachment
 from specifyweb.specify.models import (
     Geography,
     Geologictimeperiod,
     Lithostrat,
     Taxon,
     Storage,
+    Attachment,
     Tectonicunit
 )
 

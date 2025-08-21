@@ -2,8 +2,8 @@ from specifyweb.specify.models import (
     Collectionobjecttype,
     Discipline,
     Collection,
+    Taxontreedef
 )
-from specifyweb.specify.models import Taxontreedef
 from specifyweb.specify.tests.test_api import ApiTests
 from django.db.models import Q
 

@@ -1,5 +1,4 @@
-from specifyweb.specify.models import Preparation
-from specifyweb.specify.models import Storagetreedef
+from specifyweb.specify.models import Storagetreedef, Preparation
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
 from specifyweb.backend.trees.tree_extras import bulk_move
 
