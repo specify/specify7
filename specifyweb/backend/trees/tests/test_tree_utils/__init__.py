@@ -3,7 +3,7 @@ from specifyweb.specify.models import (
     Discipline,
     Collection,
 )
-from specifyweb.backend.trees.models import Taxontreedef
+from specifyweb.specify.models import Taxontreedef
 from specifyweb.specify.tests.test_api import ApiTests
 from django.db.models import Q
 

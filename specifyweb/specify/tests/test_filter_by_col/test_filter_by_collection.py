@@ -6,7 +6,7 @@ from specifyweb.specify.models import (
     Discipline,
     Disposal
 )
-from specifyweb.backend.trees.models import (
+from specifyweb.specify.models import (
     Geography,
     Taxontreedefitem,
     Taxon

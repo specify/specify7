@@ -36,7 +36,7 @@ from specifyweb.specify.models import (
     Picklistitem,
     Preparation
 )
-from specifyweb.backend.trees.models import (
+from specifyweb.specify.models import (
     Geologictimeperiodtreedef,
     Geographytreedef,
     Taxontreedef,

@@ -14,7 +14,7 @@ from specifyweb.specify.models import (
     Collectionobject,
     Paleocontext,
 )
-from specifyweb.backend.trees.models import Geologictimeperiod
+from specifyweb.specify.models import Geologictimeperiod
 from specifyweb.specify.utils import log_sqlalchemy_query
 from specifyweb.backend.stored_queries.models import (
     AbsoluteAge,

@@ -11,9 +11,7 @@ from specifyweb.specify.models import (
     Repositoryagreement,
     Collection,
     Discipline,
-    Treatmentevent
-)
-from specifyweb.backend.trees.models import (
+    Treatmentevent,
     Geographytreedef,
     Geographytreedefitem,
     Geologictimeperiodtreedef,

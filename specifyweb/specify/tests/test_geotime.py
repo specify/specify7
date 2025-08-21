@@ -13,7 +13,7 @@ from specifyweb.specify.models import (
     Collectingevent,
     Locality,
 )
-from specifyweb.backend.trees.models import (
+from specifyweb.specify.models import (
     Geologictimeperiod,
     Geologictimeperiodtreedefitem,
     Geologictimeperiodtreedef

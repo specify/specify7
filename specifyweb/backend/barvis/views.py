@@ -5,7 +5,7 @@ from specifyweb.middleware.general import require_GET
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.filter_by_col import filter_by_collection
 from specifyweb.specify.api import toJson
-from specifyweb.backend.trees.models import Taxon
+from specifyweb.specify.models import Taxon
 
 from django.db import connection
 

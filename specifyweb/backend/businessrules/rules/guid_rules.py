@@ -1,7 +1,7 @@
 from uuid import uuid4
 from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handler
 
-from specifyweb.backend.trees.models import Taxon, Geography
+from specifyweb.specify.models import Taxon, Geography
 
 
 @orm_signal_handler('pre_save')

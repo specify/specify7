@@ -6,7 +6,7 @@ from specifyweb.specify.models import (
     Institution,
 
 )
-from specifyweb.backend.trees.models import (
+from specifyweb.specify.models import (
     Geographytreedef,
     Storage,
     Storagetreedef,

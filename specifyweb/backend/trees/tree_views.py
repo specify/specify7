@@ -4,6 +4,7 @@ from typing import Literal, TypedDict, Any
 from django.db import connection, transaction
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
+from specifyweb.specify import models as spmodels
 from sqlalchemy import select, func, distinct, literal
 from sqlalchemy.orm import aliased
 
@@ -16,7 +17,6 @@ from specifyweb.backend.stored_queries.execution import set_group_concat_max_len
 from specifyweb.backend.stored_queries.group_concat import group_concat
 from specifyweb.backend.trees.tree_utils import get_search_filters
 from specifyweb.specify.field_change_info import FieldChangeInfo
-from specifyweb.backend.trees import models as tree_models
 from specifyweb.backend.trees.tree_ranks import tree_rank_count
 from . import tree_extras
 from specifyweb.specify.api import get_object_or_404, obj_to_data, toJson
@@ -159,7 +159,7 @@ def tree_view(request, treedef, tree: TREE_TABLE, parentid, sortfield):
 
 
 def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
-    tree_table = tree_models.datamodel.get_table(tree)
+    tree_table = spmodels.datamodel.get_table(tree)
     parentid = None if parentid == 'null' else int(parentid)
 
     node     = getattr(sqlmodels, tree_table.name)
@@ -404,7 +404,7 @@ def repair_tree(request, tree: TREE_TABLE):
     check_permission_targets(request.specify_collection.id,
                              request.specify_user.id,
                              [perm_target(tree).repair])
-    tree_model = tree_models.datamodel.get_table(tree)
+    tree_model = spmodels.datamodel.get_table(tree)
     table = tree_model.name.lower()
     tree_extras.renumber_tree(table)
     tree_extras.validate_tree_numbering(table)
@@ -415,8 +415,8 @@ def add_root(request, tree, treeid):
 
     tree_name = tree.title()
     tree_target = get_object_or_404(f"{tree_name}treedef", id=treeid)
-    tree_def_item_model = getattr(tree_models, f"{tree_name}treedefitem")
-    item = getattr(tree_models, tree_name)
+    tree_def_item_model = getattr(spmodels, f"{tree_name}treedefitem")
+    item = getattr(spmodels, tree_name)
 
     tree_def_item, create = tree_def_item_model.objects.get_or_create(
             treedef=tree_target,
@@ -530,7 +530,7 @@ def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMA
     for tree in accessible_trees:
         result[tree] = []
 
-        treedef_model = getattr(tree_models, f'{tree.lower().capitalize()}treedef')
+        treedef_model = getattr(spmodels, f'{tree.lower().capitalize()}treedef')
         tree_defs = treedef_model.objects.filter(get_search_filters(collection, tree)).distinct()
         for definition in tree_defs:
             ranks = definition.treedefitems.order_by('rankid')            

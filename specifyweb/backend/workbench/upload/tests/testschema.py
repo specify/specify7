@@ -18,7 +18,7 @@ def set_plan_treeId():
         for rank in ranks.keys():
             ranks[rank]['treeId'] = tree_id
 
-    from specifyweb.backend.trees.models import Taxontreedefitem, Geographytreedefitem
+    from specifyweb.specify.models import Taxontreedefitem, Geographytreedefitem
     
     example_plan_ranks = example_plan.json['uploadable']['uploadTable']['toMany']['determinations'][0]['toOne']['taxon']['treeRecord']['ranks']
     set_tree_id_for_ranks(example_plan_ranks, Taxontreedefitem, 'Species')

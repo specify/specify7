@@ -7,7 +7,7 @@ from django.db.models import Q
 
 from .scoping import ScopeType
 from specifyweb.specify.models import Attachment
-from specifyweb.backend.trees.models import (
+from specifyweb.specify.models import (
     Geography,
     Geologictimeperiod,
     Lithostrat,

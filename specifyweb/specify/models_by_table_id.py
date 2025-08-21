@@ -337,6 +337,12 @@ model_names_by_app = {
         'Fieldnotebookpagesetattachment',
         'Fundingagent',
         'Geocoorddetail',
+        'Geography',
+        'Geographytreedef',
+        'Geographytreedefitem',
+        'Geologictimeperiod',
+        'Geologictimeperiodtreedef',
+        'Geologictimeperiodtreedefitem',
         'Gift',
         'Giftagent',
         'Giftattachment',
@@ -348,6 +354,9 @@ model_names_by_app = {
         'Journal',
         'Latlonpolygon',
         'Latlonpolygonpnt',
+        'Lithostrat',
+        'Lithostrattreedef',
+        'Lithostrattreedefitem',
         'Loan',
         'Loanagent',
         'Loanattachment',
@@ -405,10 +414,16 @@ model_names_by_app = {
         'Spviewsetobj',
         'Spvisualquery',
         'Specifyuser',
+        'Storage',
         'Storageattachment',
+        'Storagetreedef',
+        'Storagetreedefitem',
+        'Taxon',
         'Taxonattachment',
         'Taxonattribute',
         'Taxoncitation',
+        'Taxontreedef',
+        'Taxontreedefitem',
         'Treatmentevent',
         'Treatmenteventattachment',
         'Voucherrelationship',
@@ -428,24 +443,7 @@ model_names_by_app = {
         'Absoluteageattachment',
         'Relativeageattachment', 
         'Absoluteagecitation', 
-        'Relativeagecitation'
-    },
-    'trees': {
-        'Geography',
-        'Geographytreedef',
-        'Geographytreedefitem',
-        'Geologictimeperiod',
-        'Geologictimeperiodtreedef',
-        'Geologictimeperiodtreedefitem',
-        'Lithostrat',
-        'Lithostrattreedef',
-        'Lithostrattreedefitem',
-        'Storage',
-        'Storagetreedef',
-        'Storagetreedefitem',
-        'Taxon',
-        'Taxontreedef',
-        'Taxontreedefitem',
+        'Relativeagecitation',
         'Tectonicunittreedef',
         'Tectonicunittreedefitem',
         'Tectonicunit', 
@@ -472,7 +470,7 @@ def import_model(model_name):
         if model_name in model_names:
             def get_model():
                 from importlib import import_module
-                if app_name in ['accounts', 'permissions', 'attachment_gw', 'barvis', 'raven_placeholder', 'notifications', 'express_search', 'hibernateboolsbackend', 'stats', 'interactions', 'report_runner', 'export', 'businessrules', 'patches', 'stored_queries', 'workbench', 'context', 'trees']:
+                if app_name in ['accounts', 'permissions', 'attachment_gw', 'barvis', 'raven_placeholder', 'notifications', 'express_search', 'hibernateboolsbackend', 'stats', 'interactions', 'report_runner', 'export', 'businessrules', 'patches', 'stored_queries', 'workbench', 'context']:
                     module = import_module(f"specifyweb.backend.{app_name}.models")
                 else:
                     module = import_module(f"specifyweb.{app_name}.models")
