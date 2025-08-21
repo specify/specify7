@@ -833,7 +833,7 @@ class AddDeleteRankResourcesTest(ApiTests):
         )
 
         response = c.post(
-            f"/api/specify_tree/{tree}/{tree_def_id}/add_root/",
+            f"/trees/specify_tree/{tree}/{tree_def_id}/add_root/",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -844,7 +844,7 @@ class AddDeleteRankResourcesTest(ApiTests):
         )
 
         response = c.post(
-            f"/api/specify_tree/{tree}/{tree_def_id}/add_root/",
+            f"/trees/specify_tree/{tree}/{tree_def_id}/add_root/",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 500)
@@ -906,7 +906,7 @@ class AddDeleteRankResourcesTest(ApiTests):
         )
 
         response = c.post(
-            f"/api/specify_tree/{tree}/{tree_def_id}/add_root/",
+            f"/trees/specify_tree/{tree}/{tree_def_id}/add_root/",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -917,7 +917,7 @@ class AddDeleteRankResourcesTest(ApiTests):
         )
 
         response = c.post(
-            f"/api/specify_tree/{tree}/{tree_def_id}/add_root/",
+            f"/trees/specify_tree/{tree}/{tree_def_id}/add_root/",
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 500)

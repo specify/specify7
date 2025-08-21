@@ -692,7 +692,7 @@ def parse_type(django_type):
 # most tags are generated automatically based on the URL, but here are some
 # exceptions:
 tagMapper = {
-    '/api/specify_tree/': 'specify_tree',
+    '/trees/specify_tree/': 'specify_tree',
     '/api/workbench/': 'workbench',
 }
 

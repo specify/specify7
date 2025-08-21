@@ -235,7 +235,7 @@ def path(request, tree: TREE_TABLE, id: int):
         node.definitionitem.name: obj_to_data(node) for node in get_tree_path(tree_node)
     }
 
-    data["resource_uri"] = "/api/specify_tree/%s/%d/path/" % (tree, id)
+    data["resource_uri"] = "/trees/specify_tree/%s/%d/path/" % (tree, id)
 
     return HttpResponse(toJson(data), content_type="application/json")
 
