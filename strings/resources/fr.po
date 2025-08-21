@@ -327,7 +327,7 @@ msgid "failedParsingXml"
 msgstr "Échec de l'analyse XML"
 
 #: components/Formatters/Element.tsx:103
-#: components/QueryBuilder/FieldFilter.tsx:545
+#: components/QueryBuilder/FieldFilter.tsx:554
 #. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter
 #, fuzzy
 msgid "name"

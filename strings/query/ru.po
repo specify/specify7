@@ -63,20 +63,20 @@ msgstr "Новый запрос"
 msgid "searchFields"
 msgstr "Поля поиска"
 
-#: components/QueryBuilder/FieldFilter.tsx:423
+#: components/QueryBuilder/FieldFilter.tsx:424
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "any"
 msgstr "Любой"
 
-#: components/QueryBuilder/FieldFilter.tsx:338
-#: components/QueryBuilder/FieldFilter.tsx:388
+#: components/QueryBuilder/FieldFilter.tsx:339
+#: components/QueryBuilder/FieldFilter.tsx:389
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "startValue"
 msgstr "Начальное значение"
 
-#: components/QueryBuilder/FieldFilter.tsx:349
+#: components/QueryBuilder/FieldFilter.tsx:350
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "endValue"
@@ -313,13 +313,13 @@ msgstr "(агрегированные)"
 msgid "formattedInline"
 msgstr "(отформатировано)"
 
-#: components/QueryBuilder/FieldFilter.tsx:430
+#: components/QueryBuilder/FieldFilter.tsx:431
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "like"
 msgstr "Нравиться"
 
-#: components/QueryBuilder/FieldFilter.tsx:431
+#: components/QueryBuilder/FieldFilter.tsx:432
 #. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "likeDescription"
@@ -327,103 +327,108 @@ msgstr ""
 "Используйте «%» для сопоставления любого количества символов.\n"
 "Используйте «_» для сопоставления одного символа"
 
-#: components/QueryBuilder/FieldFilter.tsx:438
+#: components/QueryBuilder/FieldFilter.tsx:439
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "equal"
 msgstr "Равный"
 
-#: components/QueryBuilder/FieldFilter.tsx:446
+#: components/QueryBuilder/FieldFilter.tsx:447
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "greaterThan"
 msgstr "Больше чем"
 
-#: components/QueryBuilder/FieldFilter.tsx:454
+#: components/QueryBuilder/FieldFilter.tsx:455
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "lessThan"
 msgstr "Меньше, чем"
 
-#: components/QueryBuilder/FieldFilter.tsx:462
+#: components/QueryBuilder/FieldFilter.tsx:463
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "greaterOrEqualTo"
 msgstr "Больше или равно"
 
-#: components/QueryBuilder/FieldFilter.tsx:470
+#: components/QueryBuilder/FieldFilter.tsx:471
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "lessOrEqualTo"
 msgstr "Меньше или равно"
 
-#: components/QueryBuilder/FieldFilter.tsx:478
+#: components/QueryBuilder/FieldFilter.tsx:479
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "true"
 msgstr "Истинный"
 
-#: components/QueryBuilder/FieldFilter.tsx:485
+#: components/QueryBuilder/FieldFilter.tsx:486
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "false"
 msgstr "ЛОЖЬ"
 
-#: components/QueryBuilder/FieldFilter.tsx:531
+#: components/QueryBuilder/FieldFilter.tsx:540
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "trueOrNull"
 msgstr "Правда или Пусто"
 
-#: components/QueryBuilder/FieldFilter.tsx:538
+#: components/QueryBuilder/FieldFilter.tsx:547
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "falseOrNull"
 msgstr "Ложь или Пусто"
 
-#: components/QueryBuilder/FieldFilter.tsx:492
+#: components/QueryBuilder/FieldFilter.tsx:493
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "between"
 msgstr "Между"
 
-#: components/QueryBuilder/FieldFilter.tsx:500
+#: components/QueryBuilder/FieldFilter.tsx:501
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "in"
 msgstr "В"
 
-#: components/QueryBuilder/FieldFilter.tsx:501
+#: components/QueryBuilder/FieldFilter.tsx:502
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "inDescription"
 msgstr "Список значений, разделенных запятыми"
 
 #: components/Preferences/UserDefinitions.tsx:1432
-#: components/QueryBuilder/FieldFilter.tsx:508
+#: components/QueryBuilder/FieldFilter.tsx:509
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 #, fuzzy
 msgid "contains"
 msgstr "Содержит"
 
-#: components/QueryBuilder/FieldFilter.tsx:524
+#: components/QueryBuilder/FieldFilter.tsx:533
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "empty"
 msgstr "Пустой"
 
-#: components/QueryBuilder/FieldFilter.tsx:344
+#: components/QueryBuilder/FieldFilter.tsx:345
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "and"
 msgstr "и"
 
 #: components/Preferences/UserDefinitions.tsx:1428
-#: components/QueryBuilder/FieldFilter.tsx:516
+#: components/QueryBuilder/FieldFilter.tsx:517
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 #, fuzzy
 msgid "startsWith"
 msgstr "Начинается с"
+
+#: components/QueryBuilder/FieldFilter.tsx:525
+#. Used in: Components > Query Builder > Field Filter
+msgid "endsWith"
+msgstr ""
 
 #: components/QueryBuilder/FieldFilterTool.tsx:60
 #: components/QueryBuilder/FieldFilterTool.tsx:68
@@ -509,7 +514,7 @@ msgstr "Дерево Десиномизирует"
 msgid "treeBulkMove"
 msgstr "Массовая перевозка деревьев"
 
-#: components/QueryBuilder/FieldFilter.tsx:117
+#: components/QueryBuilder/FieldFilter.tsx:118
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "tooLongErrorMessage"
@@ -614,7 +619,7 @@ msgstr "Посмотреть записи"
 msgid "chooseFormatter"
 msgstr "Выбрать форматировщик"
 
-#: components/QueryBuilder/FieldFilter.tsx:553
+#: components/QueryBuilder/FieldFilter.tsx:562
 #. Used in: Components > Query Builder > Field Filter
 #, fuzzy
 msgid "range"

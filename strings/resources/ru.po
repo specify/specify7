@@ -278,7 +278,7 @@ msgid "failedParsingXml"
 msgstr "Не удалось разобрать XML"
 
 #: components/Formatters/Element.tsx:103
-#: components/QueryBuilder/FieldFilter.tsx:545
+#: components/QueryBuilder/FieldFilter.tsx:554
 #. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter
 msgid "name"
 msgstr "Имя"

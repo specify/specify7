@@ -58,18 +58,18 @@ msgstr "Новий запит"
 msgid "searchFields"
 msgstr "Пошукові поля"
 
-#: components/QueryBuilder/FieldFilter.tsx:423
+#: components/QueryBuilder/FieldFilter.tsx:424
 #. Used in: Components > Query Builder > Field Filter
 msgid "any"
 msgstr "Будь-який"
 
-#: components/QueryBuilder/FieldFilter.tsx:338
-#: components/QueryBuilder/FieldFilter.tsx:388
+#: components/QueryBuilder/FieldFilter.tsx:339
+#: components/QueryBuilder/FieldFilter.tsx:389
 #. Used in: Components > Query Builder > Field Filter
 msgid "startValue"
 msgstr "Початкове значення"
 
-#: components/QueryBuilder/FieldFilter.tsx:349
+#: components/QueryBuilder/FieldFilter.tsx:350
 #. Used in: Components > Query Builder > Field Filter
 msgid "endValue"
 msgstr "Кінцеве значення"
@@ -272,99 +272,104 @@ msgstr "(узагальнено)"
 msgid "formattedInline"
 msgstr "(відформатований)"
 
-#: components/QueryBuilder/FieldFilter.tsx:430
+#: components/QueryBuilder/FieldFilter.tsx:431
 #. Used in: Components > Query Builder > Field Filter
 msgid "like"
 msgstr "Люблю"
 
-#: components/QueryBuilder/FieldFilter.tsx:431
+#: components/QueryBuilder/FieldFilter.tsx:432
 #. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter
 msgid "likeDescription"
 msgstr ""
 "Використовуйте \"%\", щоб відповідати будь-якій кількості символів.\n"
 "Використовуйте \"_\", щоб відповідати одному символу"
 
-#: components/QueryBuilder/FieldFilter.tsx:438
+#: components/QueryBuilder/FieldFilter.tsx:439
 #. Used in: Components > Query Builder > Field Filter
 msgid "equal"
 msgstr "Рівні"
 
-#: components/QueryBuilder/FieldFilter.tsx:446
+#: components/QueryBuilder/FieldFilter.tsx:447
 #. Used in: Components > Query Builder > Field Filter
 msgid "greaterThan"
 msgstr "Більш чим"
 
-#: components/QueryBuilder/FieldFilter.tsx:454
+#: components/QueryBuilder/FieldFilter.tsx:455
 #. Used in: Components > Query Builder > Field Filter
 msgid "lessThan"
 msgstr "Менше ніж"
 
-#: components/QueryBuilder/FieldFilter.tsx:462
+#: components/QueryBuilder/FieldFilter.tsx:463
 #. Used in: Components > Query Builder > Field Filter
 msgid "greaterOrEqualTo"
 msgstr "Більше або дорівнює"
 
-#: components/QueryBuilder/FieldFilter.tsx:470
+#: components/QueryBuilder/FieldFilter.tsx:471
 #. Used in: Components > Query Builder > Field Filter
 msgid "lessOrEqualTo"
 msgstr "Менше або дорівнює"
 
-#: components/QueryBuilder/FieldFilter.tsx:478
+#: components/QueryBuilder/FieldFilter.tsx:479
 #. Used in: Components > Query Builder > Field Filter
 msgid "true"
 msgstr "правда"
 
-#: components/QueryBuilder/FieldFilter.tsx:485
+#: components/QueryBuilder/FieldFilter.tsx:486
 #. Used in: Components > Query Builder > Field Filter
 msgid "false"
 msgstr "помилковий"
 
-#: components/QueryBuilder/FieldFilter.tsx:531
+#: components/QueryBuilder/FieldFilter.tsx:540
 #. Used in: Components > Query Builder > Field Filter
 msgid "trueOrNull"
 msgstr "True або Empty"
 
-#: components/QueryBuilder/FieldFilter.tsx:538
+#: components/QueryBuilder/FieldFilter.tsx:547
 #. Used in: Components > Query Builder > Field Filter
 msgid "falseOrNull"
 msgstr "False або Empty"
 
-#: components/QueryBuilder/FieldFilter.tsx:492
+#: components/QueryBuilder/FieldFilter.tsx:493
 #. Used in: Components > Query Builder > Field Filter
 msgid "between"
 msgstr "Між"
 
-#: components/QueryBuilder/FieldFilter.tsx:500
+#: components/QueryBuilder/FieldFilter.tsx:501
 #. Used in: Components > Query Builder > Field Filter
 msgid "in"
 msgstr "в"
 
-#: components/QueryBuilder/FieldFilter.tsx:501
+#: components/QueryBuilder/FieldFilter.tsx:502
 #. Used in: Components > Query Builder > Field Filter
 msgid "inDescription"
 msgstr "Список значень, розділених комами"
 
 #: components/Preferences/UserDefinitions.tsx:1432
-#: components/QueryBuilder/FieldFilter.tsx:508
+#: components/QueryBuilder/FieldFilter.tsx:509
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 msgid "contains"
 msgstr "Містить"
 
-#: components/QueryBuilder/FieldFilter.tsx:524
+#: components/QueryBuilder/FieldFilter.tsx:533
 #. Used in: Components > Query Builder > Field Filter
 msgid "empty"
 msgstr "Порожній"
 
-#: components/QueryBuilder/FieldFilter.tsx:344
+#: components/QueryBuilder/FieldFilter.tsx:345
 #. Used in: Components > Query Builder > Field Filter
 msgid "and"
 msgstr "і"
 
 #: components/Preferences/UserDefinitions.tsx:1428
-#: components/QueryBuilder/FieldFilter.tsx:516
+#: components/QueryBuilder/FieldFilter.tsx:517
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 msgid "startsWith"
 msgstr "Починається з"
+
+#: components/QueryBuilder/FieldFilter.tsx:525
+#. Used in: Components > Query Builder > Field Filter
+msgid "endsWith"
+msgstr ""
 
 #: components/QueryBuilder/FieldFilterTool.tsx:60
 #: components/QueryBuilder/FieldFilterTool.tsx:68
@@ -437,7 +442,7 @@ msgstr "Десинонімізація дерева"
 msgid "treeBulkMove"
 msgstr "Масове переміщення дерева"
 
-#: components/QueryBuilder/FieldFilter.tsx:117
+#: components/QueryBuilder/FieldFilter.tsx:118
 #. Used in: Components > Query Builder > Field Filter
 msgid "tooLongErrorMessage"
 msgstr ""
@@ -526,7 +531,7 @@ msgstr "Переглянути записи"
 msgid "chooseFormatter"
 msgstr "Виберіть форматер"
 
-#: components/QueryBuilder/FieldFilter.tsx:553
+#: components/QueryBuilder/FieldFilter.tsx:562
 #. Used in: Components > Query Builder > Field Filter
 msgid "range"
 msgstr "Діапазон"
