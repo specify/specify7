@@ -2,7 +2,7 @@ from sys import maxsize
 from enum import Enum
 
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
-from specifyweb.specify.models import models as spmodels
+import specifyweb.specify.models as spmodels
 from . import extras
 
 import logging
