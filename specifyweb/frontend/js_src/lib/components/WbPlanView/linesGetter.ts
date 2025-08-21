@@ -15,6 +15,7 @@ import type { MappingLine } from './Mapper';
 import { emptyMapping } from './mappingHelpers';
 import type { ColumnOptions, UploadPlan } from './uploadPlanParser';
 import { parseUploadPlan } from './uploadPlanParser';
+import { getAttachmentsColumnIndexFromHeaders } from '../WorkBench/attachmentHelpers';
 
 export const defaultColumnOptions: ColumnOptions = {
   matchBehavior: 'ignoreNever',
@@ -46,7 +47,9 @@ export function getLinesFromHeaders({
       readonly baseTableName: keyof Tables;
     }
 )): RA<MappingLine> {
-  const lines = headers.map(
+  const filteredHeaders = removeHiddenColumnHeaders(headers);
+
+  const lines = filteredHeaders.map(
     (headerName): MappingLine => ({
       mappingPath: [emptyMapping],
       headerName,
@@ -57,7 +60,7 @@ export function getLinesFromHeaders({
   if (!runAutoMapper || baseTableName === undefined) return lines;
 
   const autoMapperResults: AutoMapperResults = new AutoMapper({
-    headers,
+    headers: filteredHeaders,
     baseTableName,
     scope: 'autoMapper',
     getMappedFields: f.array,
@@ -95,10 +98,12 @@ export function getLinesFromUploadPlan(
   const { baseTable, lines, mustMatchPreferences } =
     parseUploadPlan(uploadPlan);
 
+  const filteredHeaders = removeHiddenColumnHeaders(originalHeaders);
+
   const headers =
-    originalHeaders.length === 0
+    filteredHeaders.length === 0
       ? lines.map(({ headerName }) => headerName)
-      : originalHeaders;
+      : filteredHeaders;
 
   const newLines = lines
     .map((splitMappingPath) => ({
@@ -124,4 +129,12 @@ export function getLinesFromUploadPlan(
     lines: newLines,
     mustMatchPreferences,
   };
+}
+
+function removeHiddenColumnHeaders(
+  headers: RA<string>,
+): RA<string> {
+  // Remove attachments column header so it cannot be mapped
+  const attachmentsColumnIndex = getAttachmentsColumnIndexFromHeaders(headers);
+  return headers.filter((_, index) => index !== attachmentsColumnIndex);
 }

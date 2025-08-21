@@ -46,7 +46,8 @@ exports[`ChronoChart dialog open and close 1`] = `
     id="modal-0-content"
   >
     <div
-      class="flex items-center justify-between"
+      class="flex flex-col items-center justify-center h-full w-full"
+      style="--transition-duration: 0;"
     >
       <div
         class="react-transform-wrapper transform-component-module_wrapper__SPB86 "
@@ -57,14 +58,13 @@ exports[`ChronoChart dialog open and close 1`] = `
         >
           <img
             alt="Chrono Chart"
-            class="h-[70vh]"
+            class="max-w-full max-h-[70vh] object-contain"
             src="/static/img/chronostratChart2023-09.jpg"
-            width="100%"
           />
         </div>
       </div>
       <div
-        class="flex flex-col"
+        class="flex gap-2 mt-4"
       >
         <button
           aria-label="Zoom"
@@ -102,6 +102,26 @@ exports[`ChronoChart dialog open and close 1`] = `
             <path
               clip-rule="evenodd"
               d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </button>
+        <button
+          aria-label="Reset"
+          class="icon link rounded"
+          title="Reset"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="w-6 h-6 flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clip-rule="evenodd"
+              d="M15.312 11.424a5.5 5.5 0 0 1-9.201 2.466l-.312-.311h2.433a.75.75 0 0 0 0-1.5H3.989a.75.75 0 0 0-.75.75v4.242a.75.75 0 0 0 1.5 0v-2.43l.31.31a7 7 0 0 0 11.712-3.138.75.75 0 0 0-1.449-.39Zm1.23-3.723a.75.75 0 0 0 .219-.53V2.929a.75.75 0 0 0-1.5 0V5.36l-.31-.31A7 7 0 0 0 3.239 8.188a.75.75 0 1 0 1.448.389A5.5 5.5 0 0 1 13.89 6.11l.311.31h-2.432a.75.75 0 0 0 0 1.5h4.243a.75.75 0 0 0 .53-.219Z"
               fill-rule="evenodd"
             />
           </svg>

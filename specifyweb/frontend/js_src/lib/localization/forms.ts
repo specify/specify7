@@ -91,6 +91,36 @@ export const formsText = createDictionary({
     "de-ch": "Überprüfen, ob die Ressource gelöscht werden kann …",
     "pt-br": "Verificando se o recurso pode ser excluído…",
   },
+  checkingIfResourceIsUsed: {
+    "en-us": "Checking if this record is currently in use…",
+    "de-ch": "Es wird geprüft, ob dieser Datensatz derzeit verwendet wird …",
+    "es-es": "Comprobando si este registro está actualmente en uso…",
+    "fr-fr": "Vérification si cet enregistrement est actuellement utilisé…",
+    "pt-br": "Verificando se este registro está em uso no momento…",
+    "ru-ru": "Проверяем, используется ли эта запись в данный момент…",
+    "uk-ua": "Перевірка, чи цей запис зараз використовується…",
+  },
+  noLinkedRecords: {
+    "en-us": "No linked records",
+    "de-ch": "Keine verknüpften Datensätze",
+    "es-es": "No hay registros vinculados",
+    "fr-fr": "Aucun enregistrement lié",
+    "pt-br": "Nenhum registro vinculado",
+    "ru-ru": "Нет связанных записей",
+    "uk-ua": "Немає пов'язаних записів",
+  },
+  recordUsedDescription: {
+    "en-us": "This resource is currently linked to the following records:",
+    "de-ch":
+      "Diese Ressource ist derzeit mit den folgenden Datensätzen verknüpft:",
+    "es-es":
+      "Este recurso está actualmente vinculado a los siguientes registros:",
+    "fr-fr":
+      "Cette ressource est actuellement liée aux enregistrements suivants :",
+    "pt-br": "Este recurso está atualmente vinculado aos seguintes registros:",
+    "ru-ru": "В настоящее время этот ресурс связан со следующими записями:",
+    "uk-ua": "Цей ресурс наразі пов’язаний з такими записами:",
+  },
   deleteBlocked: {
     "en-us": "Delete blocked",
     "ru-ru": "Удалить заблокированный",
@@ -931,7 +961,7 @@ export const formsText = createDictionary({
   bulkCarryForwardRangeLimitExceeded: {
     "en-us": "Range exceeds record limit of {limit:number}.",
     "de-ch":
-      "Der Bereich überschreitet das Aufzeichnungslimit von {limit:number}.",
+      "Der Bereich überschreitet die Aufzeichnungsgrenze von {limit:number}.",
     "es-es": "El rango excede el límite de registro de {limit:number}.",
     "fr-fr": "La plage dépasse la limite d'enregistrement de {limit:number}.",
     "pt-br": "O alcance excede o limite recorde de {limit:number}.",
@@ -951,7 +981,7 @@ export const formsText = createDictionary({
   bulkCarryForwardRangeStart: {
     "en-us": "Carry Forward Range Start",
     "de-ch": "Übertragsbereichsanfang",
-    "es-es": "Arranque del rango de transferencia hacia adelante",
+    "es-es": "Arranque del rango de avance",
     "fr-fr": "Début de la plage de report",
     "pt-br": "Início do intervalo de transporte",
     "ru-ru": "Начало диапазона переноса вперед",
