@@ -258,49 +258,12 @@ export function PrepDialogRow({
           </td>
         </tr>
       )}
-      {state.type === 'ResourceDialog' && (
-        <ReadOnlyContext.Provider value>
-          <ResourceView
-            dialog="modal"
-            isDependent={false}
-            isSubForm={false}
-            resource={state.resource}
-            onAdd={undefined}
-            onClose={(): void => setState({ type: 'Main' })}
-            onDeleted={undefined}
-            onSaved={undefined}
-          />
-        </ReadOnlyContext.Provider>
-      )}
-      {state.type === 'CollectionObjectDialog' && (
-        <ReadOnlyContext.Provider value>
-          <ResourceView
-            dialog="modal"
-            isDependent={false}
-            isSubForm={false}
-            resource={state.resource}
-            onAdd={undefined}
-            onClose={(): void => setState({ type: 'Main' })}
-            onDeleted={undefined}
-            onSaved={undefined}
-          />
-        </ReadOnlyContext.Provider>
-      )}
-      {state.type === 'TaxonDialog' && (
-        <ReadOnlyContext.Provider value>
-          <ResourceView
-            dialog="modal"
-            isDependent={false}
-            isSubForm={false}
-            resource={state.resource}
-            onAdd={undefined}
-            onClose={(): void => setState({ type: 'Main' })}
-            onDeleted={undefined}
-            onSaved={undefined}
-          />
-        </ReadOnlyContext.Provider>
-      )}
-      {state.type === 'PreparationDialog' && (
+      {[
+        'ResourceDialog',
+        'CollectionObjectDialog',
+        'TaxonDialog',
+        'PreparationDialog',
+      ].includes(state.type) && (
         <ReadOnlyContext.Provider value>
           <ResourceView
             dialog="modal"
