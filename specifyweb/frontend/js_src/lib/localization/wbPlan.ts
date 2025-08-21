@@ -395,7 +395,7 @@ export const wbPlanText = createDictionary({
     "fr-fr": "Sélectionnez une table de base avec des pièces jointes",
     "pt-br": "Selecione uma tabela base com anexos",
     "ru-ru": "Выберите базовую таблицу с прикреплениями",
-    "uk-ua": "Виберіть базову таблицю з вкладеннями
+    "uk-ua": "Виберіть базову таблицю з вкладеннями",
   },
   dataSetUploaded: {
     "en-us": "Data Set uploaded. This Upload Plan cannot be changed",

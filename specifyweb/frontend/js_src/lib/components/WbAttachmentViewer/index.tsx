@@ -117,6 +117,10 @@ export function WbAttachmentViewerView(): JSX.Element {
       />
     ));
 
+  const onClose = function(): void {
+    window.close()
+  }
+
   return (
     viewerId ?
     <Dialog
@@ -128,17 +132,16 @@ export function WbAttachmentViewerView(): JSX.Element {
           }}>
             {wbText.attachWindow()}
           </Button.Secondary>
-          <Button.Secondary onClick={(): void => onClose()}>
+          <Button.Secondary onClick={onClose}>
             {commonText.close()}
           </Button.Secondary>
         </div>
       }
       className={{container: dialogClassNames.fullScreen}}
+      dimensionsKey="WbAttachmentViewer"
       header={attachmentsText.attachments()}
       buttons={undefined}
-      onClose={() => {
-        window.close();
-      }}
+      onClose={onClose}
     >
       <div className="flex flex-col items-center justify-center h-full w-full p-4">
           {body}
