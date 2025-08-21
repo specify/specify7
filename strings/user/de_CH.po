@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-06-21 02:08+0000\n"
+"PO-Revision-Date: 2025-08-21 00:54+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/user/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.13\n"
 
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > User Tools ⬤ Components > Header > User Tool Definitions ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
 #: components/ChooseCollection/index.tsx:183
@@ -125,10 +125,10 @@ msgstr "Mit „Konto angeben“ anmelden"
 #, fuzzy
 msgid "unknownOicUser"
 msgstr ""
-"Ihrem {providerName:string}-Konto ist derzeit kein Benutzername zugeordnet. "
-"Wenn Sie über einen Benutzernamen und ein Passwort verfügen, können Sie "
-"diese unten eingeben, um diesen Benutzer bei zukünftigen Anmeldungen Ihrem "
-"{providerName:string}-Konto zuzuordnen."
+"Derzeit ist Ihrem {providerName:string}-Konto kein Benutzer zugewiesen. Wenn "
+"Sie über einen Benutzernamen und ein Kennwort verfügen, können Sie diese "
+"unten eingeben, um diesen Benutzer für zukünftige Anmeldungen Ihrem "
+"{providerName:string}-Konto zuzuweisen."
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 #: components/Header/userToolDefinitions.ts:92
@@ -309,7 +309,7 @@ msgstr "In diesem {institutionTable:string} definierte Benutzerkonten"
 #: components/Security/Collection.tsx:151
 #, fuzzy
 msgid "collectionUsers"
-msgstr "Zugewiesene Benutzerkonten {collectionTable:string}"
+msgstr "Diesem {collectionTable:string} zugewiesene Benutzerkonten"
 
 #. Used in: Components > Security > Set Password ⬤ Components > Security > User Components
 #: components/Security/SetPassword.tsx:40
@@ -422,7 +422,7 @@ msgstr "Berechtigungsprofil des Benutzers (schreibgeschützt)"
 msgid "outOfDateWarning"
 msgstr ""
 "Hinweis: Die Vorschau ist möglicherweise veraltet. Speichern Sie die "
-"Änderungen, um die Vorschau zu aktualisieren."
+"Änderungen, um die Vorschau zu aktualisieren"
 
 #. Used in: Components > Security > Preview Components
 #: components/Security/PreviewComponents.tsx:173
@@ -475,7 +475,7 @@ msgstr "Alle Aktionen"
 #: components/Security/UserCollections.tsx:260
 #, fuzzy
 msgid "collectionAccess"
-msgstr "Sammlungszugriff aktivieren"
+msgstr "Zugriff auf die Sammlung aktivieren"
 
 #. Used in: Components > Router > Routes
 #: components/Router/Routes.tsx:150
@@ -553,7 +553,7 @@ msgstr ""
 msgid "noProvidersForUserInviteLink"
 msgstr ""
 "Es ist kein externer Identitätsanbieter konfiguriert. Sie können einige in "
-"den Servereinstellungen festlegen."
+"den 7 Servereinstellungen konfigurieren."
 
 #. Used in: Components > Security > User Components
 #: components/Security/UserComponents.tsx:243
@@ -566,8 +566,8 @@ msgstr "Geben Sie 6 Berechtigungen an"
 #, fuzzy
 msgid "setPasswordBeforeSavePrompt"
 msgstr ""
-"Erwägen Sie, für diesen Benutzer ein Passwort festzulegen. Benutzer ohne "
-"Passwort können sich nicht anmelden."
+"Erwägen Sie, für diesen Benutzer ein Kennwort festzulegen. Benutzer ohne "
+"Kennwort können sich nicht anmelden."
 
 #. Used in: Components > Security > User Collections
 #: components/Security/UserCollections.tsx:133
@@ -621,7 +621,7 @@ msgstr "(Geben Sie 6 Admin an)"
 #: components/Security/Role.tsx:227
 #, fuzzy
 msgid "deleteRoleWithUsers"
-msgstr "Rolle löschen, die Benutzer hat?"
+msgstr "Rolle mit Benutzern löschen?"
 
 #. Used in: Components > Security > Role
 #: components/Security/Role.tsx:230
@@ -654,7 +654,7 @@ msgstr "Es muss mindestens einen Institutionsadministrator in der Institution ge
 #: components/Security/Policies.tsx:42
 #, fuzzy
 msgid "switchToHorizontalLayout"
-msgstr "Zum horizontalen Layout wechseln"
+msgstr "Wechseln Sie zum horizontalen Layout"
 
 #. Used in: Components > Form Editor > Editor ⬤ Components > Security > Policies
 #: components/FormEditor/Editor.tsx:75
