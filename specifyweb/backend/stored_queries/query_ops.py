@@ -23,26 +23,26 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
     """
 
     OPERATIONS = [
-        # operation,               # op number
-        "op_like",  # 0
-        "op_equals",  # 1
-        "op_greaterthan",  # 2
-        "op_lessthan",  # 3
-        "op_greaterthanequals",  # 4
-        "op_lessthanequals",  # 5
-        "op_true",  # 6
-        "op_false",  # 7
-        "op_dontcare",  # 8
-        "op_between",  # 9
-        "op_in",  # 10
-        "op_contains",  # 11
-        "op_empty",  # 12
-        "op_trueornull",  # 13
-        "op_falseornull",  # 14
-        "op_startswith",  # 15
-        "op_age_range",  # 16
-        "op_age_period",  # 17
-        "op_endswith",  # 18
+        # operation,            # op number
+        "op_like",              # 0
+        "op_equals",            # 1
+        "op_greaterthan",       # 2
+        "op_lessthan",          # 3
+        "op_greaterthanequals", # 4
+        "op_lessthanequals",    # 5
+        "op_true",              # 6
+        "op_false",             # 7
+        "op_dontcare",          # 8
+        "op_between",           # 9
+        "op_in",                # 10
+        "op_contains",          # 11
+        "op_empty",             # 12
+        "op_trueornull",        # 13
+        "op_falseornull",       # 14
+        "op_startswith",        # 15
+        "op_age_range",         # 16
+        "op_age_period",        # 17
+        "op_endswith",          # 18
     ]
 
     PRECALCUALTED_OPERATION_NUMS = {16, 17}
