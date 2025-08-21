@@ -19,6 +19,7 @@ import React from 'react';
 import { useUnloadProtect } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
@@ -31,6 +32,7 @@ import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { WbActions } from '../WbActions';
 import { useResults } from '../WbActions/useResults';
+import { usesAttachments } from './attachmentHelpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WbToolkit } from '../WbToolkit';
 import { WbUtilsComponent } from '../WbUtils';
@@ -44,6 +46,7 @@ import type { WbMapping } from './mapping';
 import { parseWbMappings } from './mapping';
 import { WbUploaded } from './Results';
 import { useDisambiguationDialog } from './useDisambiguationDialog';
+import { WbAttachmentsPreview } from './WbAttachmentsPreview';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { WbValidation } from './WbValidation';
 
@@ -152,6 +155,20 @@ export function WbView({
   const [showToolkit, _openToolkit, _closeToolkit, toggleToolkit] =
     useBooleanState();
 
+  const useAttachments = React.useMemo(
+    () => usesAttachments(dataset),
+    [dataset]
+  );
+  const [
+    showAttachments,
+    _openAttachments,
+    _closeAttachments,
+    toggleAttachments,
+  ] = useBooleanState(useAttachments);
+  React.useEffect(() => {
+    hot?.refreshDimensions();
+  }, [showAttachments]);
+
   const { showResults, closeResults, toggleResults } = useResults({
     hot,
     workbench,
@@ -203,6 +220,15 @@ export function WbView({
               {wbPlanText.dataMapper()}
             </Link.Small>
           ) : undefined}
+          {useAttachments && (
+            <Button.Small
+              aria-haspopup="grid"
+              aria-pressed={showAttachments}
+              onClick={toggleAttachments}
+            >
+              {attachmentsText.attachments()}
+            </Button.Small>
+          )}
           <WbActions
             cellCounts={cellCounts}
             checkDeletedFail={checkDeletedFail}
@@ -246,7 +272,7 @@ export function WbView({
             workbench={workbench}
             onClickDisambiguate={openDisambiguationDialog}
           />
-          {showResults && (
+          {showResults ? (
             <aside aria-live="polite">
               <WbUploaded
                 datasetId={dataset.id}
@@ -257,7 +283,17 @@ export function WbView({
                 onClose={closeResults}
               />
             </aside>
-          )}
+          ) : null}
+          {useAttachments ? (
+            <aside aria-live="polite">
+              <WbAttachmentsPreview
+                dataset={dataset}
+                hot={hot}
+                showPanel={showAttachments}
+                onClose={toggleAttachments}
+              />
+            </aside>
+          ) : null}
         </div>
         {disambiguationDialogs}
         <WbUtilsComponent

@@ -1,4 +1,4 @@
-from specifyweb.businessrules.exceptions import TreeBusinessRuleException
+from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
 from specifyweb.specify.models import Determination, Taxon, Taxontreedef
 from specifyweb.specify.tests.test_trees import GeographyTree
 from specifyweb.specify.tree_extras import synonymize

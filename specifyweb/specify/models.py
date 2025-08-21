@@ -2,7 +2,7 @@ from functools import partialmethod
 from django.db import models
 from django.db.models import Q, CheckConstraint
 from django.utils import timezone
-from specifyweb.businessrules.exceptions import AbortSave
+from specifyweb.backend.businessrules.exceptions import AbortSave
 from specifyweb.specify.model_timestamp import save_auto_timestamp_field_with_override
 from specifyweb.specify import model_extras
 from .datamodel import datamodel, Table
@@ -3825,6 +3825,11 @@ class Gift(models.Model):
 
     # Relationships: Many-to-One
     addressofrecord = models.ForeignKey('AddressOfRecord', db_column='AddressOfRecordID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent2 = models.ForeignKey('Agent', db_column='Agent2ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent3 = models.ForeignKey('Agent', db_column='Agent3ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent4 = models.ForeignKey('Agent', db_column='Agent4ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent5 = models.ForeignKey('Agent', db_column='Agent5ID', related_name='+', null=True, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     deaccession = models.ForeignKey('Deaccession', db_column='DeaccessionID', related_name='gifts', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
@@ -4322,6 +4327,11 @@ class Loan(models.Model):
 
     # Relationships: Many-to-One
     addressofrecord = models.ForeignKey('AddressOfRecord', db_column='AddressOfRecordID', related_name='loans', null=True, on_delete=protect_with_blockers)
+    agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent2 = models.ForeignKey('Agent', db_column='Agent2ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent3 = models.ForeignKey('Agent', db_column='Agent3ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent4 = models.ForeignKey('Agent', db_column='Agent4ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent5 = models.ForeignKey('Agent', db_column='Agent5ID', related_name='+', null=True, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
     division = models.ForeignKey('Division', db_column='DivisionID', related_name='+', null=True, on_delete=protect_with_blockers)
