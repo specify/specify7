@@ -3,6 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { Button } from '../Atoms/Button';
+import { tablesWithAttachments } from '../Attachments/utils';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -11,8 +12,10 @@ import { TableList, tablesFilter } from '../SchemaConfig/Tables';
 
 export function ListOfBaseTables({
   onClick: handleClick,
+  onlyAttachmentTables = false,
 }: {
   readonly onClick: (table: keyof Tables) => void;
+  readonly onlyAttachmentTables?: boolean;
 }): JSX.Element {
   const [isNoRestrictionMode] = userPreferences.use(
     'workBench',
@@ -26,12 +29,17 @@ export function ListOfBaseTables({
   );
 
   const filter = React.useCallback(
-    (showAdvancedTables: boolean, table: SpecifyTable) =>
-      tablesFilter(
-        isNoRestrictionMode,
-        showNoAccessTables,
-        showAdvancedTables,
-        table
+    (showAdvancedTables: boolean, table: SpecifyTable) => (
+        tablesFilter(
+          isNoRestrictionMode,
+          showNoAccessTables,
+          showAdvancedTables,
+          table
+        ) &&
+        (!onlyAttachmentTables ||
+          tablesWithAttachments().find(
+            (module) => module.name === table.name
+          ) !== undefined)
       ),
     [isNoRestrictionMode, showNoAccessTables]
   );
