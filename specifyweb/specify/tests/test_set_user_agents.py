@@ -1,11 +1,10 @@
 from django.test import Client
+from specifyweb.backend.accounts.exceptions_types import AgentInUseException, MultipleAgentsException
 from specifyweb.specify.models import Agent, Division, Specifyuser
 from specifyweb.specify.tests.test_api import ApiTests
 
 import json
 from unittest.mock import patch
-
-from specifyweb.specify.views import AgentInUseException, MultipleAgentsException
 
 EMPTY_CALL = lambda x: None
 
