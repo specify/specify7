@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { useLiveState } from '../../hooks/useLiveState';
+import { useDeleteBlockers } from '../../hooks/useDeleteBlockers';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { mergingText } from '../../localization/merging';
 import { treeText } from '../../localization/tree';
 import { StringToJsx } from '../../localization/utils';
 import { ajax } from '../../utils/ajax';
@@ -17,7 +17,6 @@ import { icons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { resourceOn } from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
 import type { Relationship } from '../DataModel/specifyField';
 import { strictGetTable } from '../DataModel/tables';
@@ -34,6 +33,16 @@ import type { DeleteBlocker } from './DeleteBlocked';
 import { DeleteBlockers } from './DeleteBlocked';
 import { parentTableRelationship } from './parentTables';
 
+export type DeleteButtonProps<SCHEMA extends AnySchema> = {
+  readonly resource: SpecifyResource<SCHEMA>;
+  /**
+   * As a performance optimization, can defer checking for delete blockers
+   * until the button is clicked. This is used in the tree viewer as delete
+   * button's resource can change often.
+   */
+  readonly deferred?: boolean;
+};
+
 /**
  * A button to delele a resorce
  * Prompts before deletion
@@ -43,46 +52,19 @@ import { parentTableRelationship } from './parentTables';
 export function DeleteButton<SCHEMA extends AnySchema>({
   resource,
   deletionMessage = formsText.deleteConfirmationDescription(),
-  deferred: initialDeferred = false,
+  deferred = false,
   component: ButtonComponent = Button.Secondary,
   onDeleted: handleDeleted,
   isIcon = false,
-}: {
-  readonly resource: SpecifyResource<SCHEMA>;
+}: DeleteButtonProps<SCHEMA> & {
   readonly deletionMessage?: React.ReactNode;
-  /**
-   * As a performance optimization, can defer checking for delete blockers
-   * until the button is clicked. This is used in the tree viewer as delete
-   * button's resource can change often.
-   */
-  readonly deferred?: boolean;
   readonly component?: (typeof Button)['Secondary'];
   readonly onDeleted?: () => void;
   readonly isIcon?: boolean;
 }): JSX.Element {
-  const [deferred, setDeferred] = useLiveState<boolean>(
-    React.useCallback(() => initialDeferred, [initialDeferred, resource])
-  );
-
-  const [blockers, setBlockers] = useAsyncState<RA<DeleteBlocker>>(
-    React.useCallback(
-      async () => (deferred ? undefined : fetchBlockers(resource)),
-      [resource, deferred]
-    ),
-    false
-  );
-
-  React.useEffect(
-    () =>
-      deferred
-        ? undefined
-        : resourceOn(
-            resource,
-            'saved',
-            () => void fetchBlockers(resource).then(setBlockers),
-            false
-          ),
-    [resource, deferred]
+  const { blockers, setBlockers, fetchBlockers } = useDeleteBlockers(
+    resource,
+    deferred
   );
 
   const [isOpen, handleOpen, handleClose] = useBooleanState();
@@ -100,7 +82,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
           title={isBlocked ? formsText.deleteBlocked() : commonText.delete()}
           onClick={(): void => {
             handleOpen();
-            setDeferred(false);
+            fetchBlockers();
           }}
         />
       ) : (
@@ -108,7 +90,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
           title={isBlocked ? formsText.deleteBlocked() : undefined}
           onClick={(): void => {
             handleOpen();
-            setDeferred(false);
+            fetchBlockers();
           }}
         >
           {isBlocked ? icons.exclamation : undefined}
@@ -116,6 +98,23 @@ export function DeleteButton<SCHEMA extends AnySchema>({
         </ButtonComponent>
       )}
       {isOpen ? (
+        /**
+         * This would be shown if the blockers aren't being fetched and aren't
+         * fetched.
+         * This branch should never be accessed, but just in case
+         */
+        blockers === false ? (
+          <Dialog
+            buttons={commonText.cancel()}
+            className={{ container: dialogClassNames.narrowContainer }}
+            header={mergingText.linkedRecords()}
+            onClose={handleClose}
+          >
+            <Button.Secondary onClick={() => fetchBlockers(true)}>
+              {mergingText.linkedRecords()}
+            </Button.Secondary>
+          </Dialog>
+        ) : // The blockers are being fetched
         blockers === undefined ? (
           <Dialog
             buttons={commonText.cancel()}
@@ -126,7 +125,8 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             {formsText.checkingIfResourceCanBeDeleted()}
             {loadingBar}
           </Dialog>
-        ) : blockers.length === 0 ? (
+        ) : // Blockers have finished fetching, and there are no blockers
+        blockers.length === 0 ? (
           <Dialog
             buttons={
               <>
@@ -171,6 +171,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             </div>
           </Dialog>
         ) : (
+          // There's one or more DeleteBlockers for the resource
           <Dialog
             buttons={commonText.close()}
             className={{
@@ -213,7 +214,7 @@ function resolveParentViaOtherside(
   ]);
 }
 
-export async function fetchBlockers(
+export async function fetchDeleteBlockers(
   resource: SpecifyResource<AnySchema>,
   expectFailure: boolean = false
 ): Promise<RA<DeleteBlocker>> {

@@ -142,7 +142,16 @@ export function useQueryFieldFilterSpecs(): RR<
         types: {
           text: { visible: true },
           number: { visible: true },
-          date: { visible: true },
+          date: { visible: false },
+          id: { visible: true },
+        },
+      },
+      endsWith: {
+        ...queryFieldFilterSpecs.endsWith,
+        types: {
+          text: { visible: true },
+          number: { visible: true },
+          date: { visible: false },
           id: { visible: true },
         },
       },

@@ -57,7 +57,7 @@ export function DeleteBlockers({
                 ...blockers[blockerIndex],
                 blockers: replaceItem(
                   blockers[blockerIndex].blockers,
-                  blockerIndex,
+                  relationshipIndex,
                   {
                     ...blockers[blockerIndex].blockers[relationshipIndex],
                     ids: removeItem(
@@ -82,10 +82,7 @@ function TableBlockersPreview({
 }: {
   readonly blocker: DeleteBlocker;
   readonly parentResource: SpecifyResource<AnySchema>;
-  readonly onDeleted: (
-    relationshipIndex: number,
-    resourceIndex: number
-  ) => void;
+  readonly onDeleted: (blockerIndex: number, resourceIndex: number) => void;
 }): JSX.Element {
   const label = (
     <>
@@ -122,7 +119,7 @@ function TableBlockersPreview({
                 nested
                 parentResource={parentResource}
                 onDeleted={(resourceIndex): void =>
-                  handleDeleted(0, resourceIndex)
+                  handleDeleted(blockerIndex, resourceIndex)
                 }
               />
             ))}

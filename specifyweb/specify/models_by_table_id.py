@@ -216,7 +216,7 @@ model_names_by_table_id = {
     1025: "Tectonicunittreedef",
     1026: "Tectonicunittreedefitem",
     1027: "Tectonicunit",
-    1028: "SpDataSetAttachment",
+    1028: "Spdatasetattachment",
 }
 
 model_names_by_app = {
@@ -246,7 +246,7 @@ model_names_by_app = {
     },
     'workbench': {
         'Spdataset',
-        'SpDataSetAttachment'
+        'Spdatasetattachment'
     },
     'specify': {
         'Accession',
