@@ -1,9 +1,9 @@
+from specifyweb.backend.inheritance.api import cog_inheritance_post_query_processing
 from specifyweb.backend.interactions.tests.test_cog_consolidated_prep_context import (
     TestCogConsolidatedPrepContext,
 )
 from specifyweb.backend.stored_queries.execution import (
     build_query,
-    cog_inheritance_post_query_processing,
 )
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from specifyweb.backend.stored_queries.tests.utils import make_query_fields_test
