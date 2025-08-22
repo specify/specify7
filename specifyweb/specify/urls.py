@@ -2,7 +2,6 @@
 
 from django.urls import include, path, re_path
 
-from . import master_key
 from . import schema
 from . import tree_views
 from . import views
@@ -64,12 +63,4 @@ urlpatterns = [
         re_path(r'^status/(?P<taskid>[0-9a-fA-F-]+)/$', views.localityupdate_status),
         re_path(r'^abort/(?P<taskid>[0-9a-fA-F-]+)/$', views.abort_localityupdate_task),
     ])),
-
-    # generates Sp6 master key
-    path('master_key/', master_key.master_key),
-
-    # set a user's password
-    path('set_password/<int:userid>/', views.set_password),
-    path('set_admin_status/<int:userid>/', views.set_admin_status),
-    path('set_agents/<int:userid>/', views.set_user_agents)
 ]
