@@ -262,16 +262,21 @@ def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
         if len(matching_fields) == len(fields) and len(matching_scopes) == len(scopes): 
             return
 
-    rule = UniquenessRule.objects.create(
+    rule, is_new = UniquenessRule.objects.get_or_create(
         discipline=discipline,
         modelName=model_name,
         isDatabaseConstraint=is_database_constraint,
     )
 
+    if not is_new:
+        return
+
+    logger.info(f"Creating uniqueness rule for {model_name} with fields {fields} and scopes {scopes}")
+
     for field in fields:
-        UniquenessRuleField.objects.create(uniquenessrule=rule, fieldPath=field, isScope=False)
+        UniquenessRuleField.objects.get_or_create(uniquenessrule=rule, fieldPath=field, isScope=False)
     for scope in scopes:
-        UniquenessRuleField.objects.create(uniquenessrule=rule, fieldPath=scope, isScope=True)
+        UniquenessRuleField.objects.get_or_create(uniquenessrule=rule, fieldPath=scope, isScope=True)
 
 def uniquenessrule_exists(UniquenessRule, model_name, discipline, is_database_constraint, fields, scopes):
 
