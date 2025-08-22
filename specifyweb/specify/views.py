@@ -16,6 +16,7 @@ from tempfile import TemporaryDirectory
 from django import http
 from django.conf import settings
 from django.db import router, transaction, connection
+from specifyweb.backend.merge.record_merging import record_merge_task
 from specifyweb.backend.notifications.models import Message, LocalityUpdate
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
