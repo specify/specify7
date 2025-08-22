@@ -16,7 +16,7 @@ class TestSetUserAgents(ApiTests):
         c.force_login(self.specifyuser)
         self.c = c
 
-    @patch("specifyweb.backend.accounts.account_utils. check_collection_access_against_agents", EMPTY_CALL)
+    @patch("specifyweb.backend.accounts.account_utils.check_collection_access_against_agents", EMPTY_CALL)
     def test_user_agent_simple(self):
 
 
