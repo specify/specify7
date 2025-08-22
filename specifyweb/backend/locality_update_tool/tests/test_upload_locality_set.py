@@ -1,49 +1,39 @@
-from unittest.mock import Mock, patch
-from django.test import Client
-from specifyweb.specify.tests.test_api import ApiTests
+from specifyweb.specify.tests.test_update_locality.test_update_locality_context import (
+    TestUpdateLocalityContext,
+)
+from specifyweb.backend.locality_update_tool.update_locality import upload_locality_set
 
-import json
 
-class TestUploadLocalitySet(ApiTests):
-    
-    def setUp(self):
-        super().setUp()
-        c = Client()
-        c.force_login(self.specifyuser)
-        self.c = c
-    
-    def _import(self, background, callback: Mock):
-        data = dict(
-            columnHeaders=['localityName'],
-            data=[['testLocality']],
-            createRecordSet=True,
-            runInBackground=background
-        )
+class TestUploadLocalitySet(TestUpdateLocalityContext):
 
-        callback.return_value = "OK"
+    parse_and_upload_tests = [
+        "_no_guid_in_header",
+        "_locality_matches",
+        "_locality_parse_invalid",
+        "_geocoord_detail_parse",
+        "_simple_locality_data",
+        "_geocoord_detail_for_upload",
+    ]
 
-        response = self.c.post(
-            f"/locality_update_tool/localityset/import/",
-            data,
-            content_type="application/json"
-        )
 
-        callback.assert_called_once_with(
-            self.collection,
-            self.specifyuser,
-            self.agent,
-            data['columnHeaders'],
-            data['data'],
-            data['createRecordSet']
-        )
+def make_test(test_name):
 
-        self._assertStatusCodeEqual(response, 201 if background else 200)
-        self.assertEqual(json.loads(response.content.decode()), "OK")
+    def test(self: TestUploadLocalitySet):
 
-    @patch("specifyweb.specify.views.upload_locality_set_foreground")
-    def test_import_foreground(self, callback):
-        self._import(False, callback)
+        result, uploaded_or_error, parsed = self._do_upload(test_name)
 
-    @patch("specifyweb.specify.views.start_locality_set_background")
-    def test_import_background(self, callback):
-        self._import(True, callback)
+        if result["type"] == "ParseError":
+            self.assertEqual(uploaded_or_error["type"], "ParseError")
+            self.assertCountEqual(uploaded_or_error["errors"], result["errors"])
+        else:
+            self.assertEqual(uploaded_or_error["type"], "Uploaded")
+            # Here, the order should be the same...
+            self.assertEqual(uploaded_or_error["results"], result["results"])
+            for _result, _data in zip(result["results"], parsed[0]):
+                self.assertUploadResultMatches(_result, _data)
+
+    return test
+
+
+for test_name in TestUploadLocalitySet.parse_and_upload_tests:
+    setattr(TestUploadLocalitySet, f"test{test_name}", make_test(test_name))
