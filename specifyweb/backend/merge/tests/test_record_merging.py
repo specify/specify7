@@ -50,7 +50,7 @@ class ReplaceRecordTests(ApiTests):
         )
         # Assert that the api request ran successfully
         response = c.post(
-            f'/api/specify/agent/replace/{agent_2.id}/',
+            f'/merge/agent/replace/{agent_2.id}/',
             data=json.dumps({
                 'old_record_ids': [agent_1.id],
                 'background': False
@@ -69,7 +69,7 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that a new api request will not find the old agent
         response = c.post(
-            f'/api/specify/agent/replace/{agent_2.id}/',
+            f'/merge/agent/replace/{agent_2.id}/',
             data=json.dumps({
                 'old_record_ids': [agent_1.id],
                 'background': False
@@ -128,7 +128,7 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that the api request ran successfully
         response = c.post(
-            f'/api/specify/agent/replace/{agent_2.id}/',
+            f'/merge/agent/replace/{agent_2.id}/',
             data=json.dumps({
                 'old_record_ids': [agent_1.id],
                 'new_record_data': None,
@@ -180,7 +180,7 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that the api request ran successfully
         response = c.post(
-            f'/api/specify/agent/replace/{agent_1.id}/',
+            f'/merge/agent/replace/{agent_1.id}/',
             data=json.dumps({
                 'old_record_ids': [agent_2.id],
                 'new_record_data': None,
@@ -240,7 +240,7 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that the api request ran successfully
         response = c.post(
-            f'/api/specify/agent/replace/{agent_1.id}/',
+            f'/merge/agent/replace/{agent_1.id}/',
             data=json.dumps({
                 'old_record_ids': [
                     agent_2.id,
@@ -356,7 +356,7 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that the api request ran successfully
         response = c.post(
-            f'/api/specify/agent/replace/{agent_2.id}/',
+            f'/merge/agent/replace/{agent_2.id}/',
             data=json.dumps({
                 'old_record_ids': [agent_1.id],
                 'new_record_data': None,
@@ -440,7 +440,7 @@ class ReplaceRecordTests(ApiTests):
         # Agent cannot be deleted while associated to
         # specify user
         response = c.post(
-            f'/api/specify/agent/replace/{agent_2.id}/',
+            f'/merge/agent/replace/{agent_2.id}/',
             data=json.dumps({
                 'old_record_ids': [agent_1.id],
                 'new_record_data': None,
@@ -512,7 +512,7 @@ class ReplaceRecordTests(ApiTests):
             specialtyname="agent_2_specialty_2",
             version=0
         )
-        response = c.post(f'/api/specify/agent/replace/{agent_2.id}/',
+        response = c.post(f'/merge/agent/replace/{agent_2.id}/',
                           data=json.dumps({
                               'old_record_ids': [agent_1.id],
                               'new_record_data': {
@@ -587,7 +587,7 @@ class ReplaceRecordTests(ApiTests):
             attachment=attachment_1
         )
         response = c.post(
-            f'/api/specify/agent/replace/{agent_0.id}/',
+            f'/merge/agent/replace/{agent_0.id}/',
             data=json.dumps({
                 'old_record_ids': [
                     agent_1.id
@@ -774,7 +774,7 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that the api request ran successfully
         response = c.post(
-            f'/api/specify/locality/replace/{locality_2.id}/',
+            f'/merge/locality/replace/{locality_2.id}/',
             data=json.dumps({
                 'old_record_ids': [locality_1.id],
                 'background': False
@@ -802,7 +802,7 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that a new api request will not find the old locality
         response = c.post(
-            f'/api/specify/locality/replace/{locality_2.id}/',
+            f'/merge/locality/replace/{locality_2.id}/',
             data=json.dumps({
                 'old_record_ids': [locality_1.id],
                 'background': False
@@ -842,7 +842,7 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that the api request ran successfully
         response = c.post(
-            f'/api/specify/collectingevent/replace/{collecting_event_2.id}/',
+            f'/merge/collectingevent/replace/{collecting_event_2.id}/',
             data=json.dumps({
                 'old_record_ids': [collecting_event_1.id, collecting_event_3.id],
                 'background': False
@@ -889,7 +889,7 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that a new api request will not find the old collection event
         response = c.post(
-            f'/api/specify/collectingevent/replace/{collecting_event_2.id}/',
+            f'/merge/collectingevent/replace/{collecting_event_2.id}/',
             data=json.dumps({
                 'old_record_ids': [collecting_event_1.id],
                 'background': False
@@ -922,7 +922,7 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that the api request ran successfully
         response = c.post(
-            f'/api/specify/paleocontext/replace/{paleo_context_2.id}/',
+            f'/merge/paleocontext/replace/{paleo_context_2.id}/',
             data=json.dumps({
                 'old_record_ids': [paleo_context_1.id],
                 'background': False
@@ -954,7 +954,7 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that a new api request will not find the old paleo context
         response = c.post(
-            f'/api/specify/paleocontext/replace/{paleo_context_2.id}/',
+            f'/merge/paleocontext/replace/{paleo_context_2.id}/',
             data=json.dumps({
                 'old_record_ids': [paleo_context_1.id],
                 'background': False
