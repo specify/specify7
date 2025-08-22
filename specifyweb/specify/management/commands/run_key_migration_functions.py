@@ -1,4 +1,5 @@
 import logging
+from re import U
 from django.core.management.base import BaseCommand
 from django.apps import apps
 from django.db import transaction
@@ -62,9 +63,11 @@ def fix_schema_config():
 
 def fix_business_rules():
     Discipline = apps.get_model('specify', 'Discipline')
+    UniquenessRule = apps.get_model('businessrules', 'UniquenessRule')
 
     # Maybe not wanted for sp6 to sp7 migrations, don't want to create default uniqueness rules again after deleting.
-    for discipline in Discipline.objects.all():
+    for discipline in Discipline.objects.exclude(
+        id__in=set(UniquenessRule.objects.values_list('discipline_id', flat=True).distinct())):
         apply_default_uniqueness_rules(discipline, registry=apps)
 
     catnum_rule_editable(apps)
