@@ -3,7 +3,7 @@ from django.test import Client
 from specifyweb.specify.tests.test_api import ApiTests
 
 
-from specifyweb.specify.update_locality import ParseError
+from specifyweb.backend.locality_update_tool.update_locality import ParseError
 
 from uuid import uuid4 as base_uuid4
 
@@ -27,7 +27,7 @@ class TestParseLocalitySet(ApiTests):
         callback.return_value = (422, [ParseError(message="guidHeaderNotProvided", field='guid', payload=None, row_number=0)])
 
         response = self.c.post(
-            f"/api/localityset/parse/",
+            f"/locality_update_tool/localityset/parse/",
             data,
             content_type="application/json"
         )
@@ -54,7 +54,7 @@ class TestParseLocalitySet(ApiTests):
         callback.return_value = []
 
         response = self.c.post(
-            f"/api/localityset/parse/",
+            f"/locality_update_tool/localityset/parse/",
             data,
             content_type="application/json"
         )

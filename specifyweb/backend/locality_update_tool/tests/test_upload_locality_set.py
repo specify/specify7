@@ -23,7 +23,7 @@ class TestUploadLocalitySet(ApiTests):
         callback.return_value = "OK"
 
         response = self.c.post(
-            f"/api/localityset/import/",
+            f"/locality_update_tool/localityset/import/",
             data,
             content_type="application/json"
         )

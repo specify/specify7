@@ -8,7 +8,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 import json
 
-from specifyweb.specify.update_locality import LocalityUpdateStatus
+from specifyweb.backend.locality_update_tool.update_locality import LocalityUpdateStatus
 
 class TestLocalityUpdateStatus(ApiTests):
 
@@ -30,7 +30,7 @@ class TestLocalityUpdateStatus(ApiTests):
         
         task_id = "aaaa"
         response = self.c.get(
-            f"/api/localityset/status/{task_id}/"
+            f"/locality_update_tool/localityset/status/{task_id}/"
         )
 
         self._assertStatusCodeEqual(response, http.HttpResponseNotFound.status_code)
@@ -51,7 +51,7 @@ class TestLocalityUpdateStatus(ApiTests):
         self._create_locality_update(task_id)
 
         response = self.c.get(
-            f"/api/localityset/status/{task_id}/"
+            f"/locality_update_tool/localityset/status/{task_id}/"
         )
 
         self._assertStatusCodeEqual(response, 200)
@@ -83,7 +83,7 @@ class TestLocalityUpdateStatus(ApiTests):
         self._create_locality_update(task_id, status=LocalityUpdateStatus.PARSE_FAILED)
 
         response = self.c.get(
-            f"/api/localityset/status/{task_id}/"
+            f"/locality_update_tool/localityset/status/{task_id}/"
         )
 
         self._assertStatusCodeEqual(response, 200)
@@ -132,7 +132,7 @@ class TestLocalityUpdateStatus(ApiTests):
             )
         
         response = self.c.get(
-            f"/api/localityset/status/{task_id}/"
+            f"/locality_update_tool/localityset/status/{task_id}/"
         )
 
         self._assertStatusCodeEqual(response, 200)
@@ -162,7 +162,7 @@ class TestLocalityUpdateStatus(ApiTests):
         self._create_locality_update(task_id, status=LocalityUpdateStatus.SUCCEEDED)
 
         response = self.c.get(
-            f"/api/localityset/status/{task_id}/"
+            f"/locality_update_tool/localityset/status/{task_id}/"
         )
 
         self._assertStatusCodeEqual(response, 200)
@@ -214,7 +214,7 @@ class TestLocalityUpdateStatus(ApiTests):
             )
 
         response = self.c.get(
-            f"/api/localityset/status/{task_id}/"
+            f"/locality_update_tool/localityset/status/{task_id}/"
         )
 
         self._assertStatusCodeEqual(response, 200)

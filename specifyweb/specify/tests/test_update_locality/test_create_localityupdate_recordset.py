@@ -2,7 +2,7 @@ from specifyweb.specify.models import Recordset, Recordsetitem
 from specifyweb.specify.tests.test_update_locality.test_update_locality_context import (
     TestUpdateLocalityContext,
 )
-from specifyweb.specify.update_locality import create_localityupdate_recordset
+from specifyweb.backend.locality_update_tool.update_locality import create_localityupdate_recordset
 
 
 class TestCreateLocalityUpdateRecordset(TestUpdateLocalityContext):
