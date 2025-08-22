@@ -12,7 +12,7 @@ from specifyweb.middleware.general import require_GET
 from specifyweb.backend.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, check_permission_targets, table_permissions_checker
 from specifyweb.celery_tasks import app
-from specifyweb.specify.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
+from specifyweb.backend.merge.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
 from specifyweb.specify.views import login_maybe_required, openapi
 from specifyweb.specify import models as spmodels
 
