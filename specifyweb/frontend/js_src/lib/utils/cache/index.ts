@@ -173,11 +173,7 @@ export const removeCache = <
   key: KEY,
   triggerChange = true
 ) =>
-  genericRemove<CacheDefinitions[CATEGORY][KEY]>(
-    category,
-    key,
-    triggerChange
-  );
+  genericRemove<CacheDefinitions[CATEGORY][KEY]>(category, key, triggerChange);
 
 function genericRemove<TYPE>(
   category: string,
@@ -186,7 +182,7 @@ function genericRemove<TYPE>(
 ): TYPE | undefined {
   if (!eventListenerIsInitialized) initialize();
 
-  const prevValue = genericGet(category, key);
+  const previousValue = genericGet(category, key);
 
   const formattedKey = formatCacheKey(category, key);
 
@@ -195,7 +191,7 @@ function genericRemove<TYPE>(
 
   if (triggerChange) cacheEvents.trigger('change', { category, key });
 
-  return prevValue as TYPE | undefined;
+  return previousValue as TYPE | undefined;
 }
 
 export const exportsForTests = {
