@@ -55,24 +55,24 @@ class TestAbortLocalityUpdateTask(ApiTests):
             dict(type="ABORTED", message=f'Task {taskid} has been aborted.' )    
         )
     
-    @patch('specifyweb.specify.views.record_merge_task.app.control.revoke')
-    @patch('specifyweb.specify.views.record_merge_task.AsyncResult')
+    @patch('specifyweb.backend.merge.record_merging.record_merge_task.app.control.revoke')
+    @patch('specifyweb.backend.merge.record_merging.record_merge_task.AsyncResult')
     def test_revoke_pending(self, AsyncResult, revoke):
         self._revoke_test("aaaa", LocalityUpdateStatus.PENDING, AsyncResult, revoke)
 
-    @patch('specifyweb.specify.views.record_merge_task.app.control.revoke')
-    @patch('specifyweb.specify.views.record_merge_task.AsyncResult')
+    @patch('specifyweb.backend.merge.record_merging.record_merge_task.app.control.revoke')
+    @patch('specifyweb.backend.merge.record_merging.record_merge_task.AsyncResult')
     def test_revoke_parsing(self, AsyncResult, revoke):
         self._revoke_test("aaaa", LocalityUpdateStatus.PARSING, AsyncResult, revoke)
 
 
-    @patch('specifyweb.specify.views.record_merge_task.app.control.revoke')
-    @patch('specifyweb.specify.views.record_merge_task.AsyncResult')
+    @patch('specifyweb.backend.merge.record_merging.record_merge_task.app.control.revoke')
+    @patch('specifyweb.backend.merge.record_merging.record_merge_task.AsyncResult')
     def test_revoke_progress(self, AsyncResult, revoke):
         self._revoke_test("aaaa", LocalityUpdateStatus.PROGRESS, AsyncResult, revoke)
 
-    @patch('specifyweb.specify.views.record_merge_task.app.control.revoke')
-    @patch('specifyweb.specify.views.record_merge_task.AsyncResult')
+    @patch('specifyweb.backend.merge.record_merging.record_merge_task.app.control.revoke')
+    @patch('specifyweb.backend.merge.record_merging.record_merge_task.AsyncResult')
     def test_not_running(self, AsyncResult, revoke):
 
         taskid = "aaaa"
