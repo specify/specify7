@@ -2,6 +2,7 @@ from django.db import migrations, connection
 
 from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
 from specifyweb.specify.datamodel import datamodel
+from specifyweb.specify.load_datamodel import Relationship
 
 
 def remove_directly_cyclical_queryfields(apps, schema_editor):
@@ -20,7 +21,10 @@ def remove_directly_cyclical_queryfields(apps, schema_editor):
 def contains_directly_circular(string_id: str, is_relation: bool) -> bool:
     field_spec = QueryFieldSpec.from_stringid(string_id, is_relation)
     join_path = field_spec.join_path
-    return any(field is datamodel.reverse_relationship(join_path[index - 1])
+    return any((isinstance(field, Relationship)
+                and (field.type.endswith('-to-many')
+                     or datamodel.reverse_relationship(field).type.endswith('-to-many'))
+                and field is datamodel.reverse_relationship(join_path[index - 1]))
                for index, field in enumerate(join_path) if index >= 1)
 
 
