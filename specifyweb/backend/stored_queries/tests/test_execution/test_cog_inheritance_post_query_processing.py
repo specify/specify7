@@ -59,7 +59,7 @@ class TestCogInheritancePostQueryProcessing(
             [(co.id, co.catalognumber, co.guid) for co in self.collectionobjects],
         )
 
-    @patch("specifyweb.backend.stored_queries.execution.get_cat_num_inheritance_setting")
+    @patch("specifyweb.backend.inheritance.utils.get_cat_num_inheritance_setting")
     def test_collectionobject_table_cojo(self, func: Mock):
         func.return_value = True
         table, query_fields = make_query_fields_test(
