@@ -455,7 +455,7 @@ msgstr "Ja"
 msgid "queryResults"
 msgstr "Abfrageergebnisse"
 
-#: components/LocalityUpdate/Status.tsx:318
+#: components/LocalityUpdate/Status.tsx:321
 #: components/QueryBuilder/ToForms.tsx:43
 #. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > To Forms
 #, fuzzy
@@ -609,7 +609,7 @@ msgstr "Wechseln Sie zu absolut"
 msgid "scrollToEditor"
 msgstr "Zum Editor scrollen"
 
-#: components/LocalityUpdate/Status.tsx:305
+#: components/LocalityUpdate/Status.tsx:308
 #: components/QueryBuilder/ResultsTable.tsx:187
 #. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > Results Table
 #, fuzzy

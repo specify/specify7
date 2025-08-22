@@ -51,8 +51,8 @@ msgid "changeBaseTable"
 msgstr "Change Base Table"
 
 #: components/Formatters/Fields.tsx:75
-#: components/LocalityUpdate/Status.tsx:374
-#: components/LocalityUpdate/Status.tsx:419
+#: components/LocalityUpdate/Status.tsx:377
+#: components/LocalityUpdate/Status.tsx:422
 #: components/SchemaConfig/Field.tsx:43
 #: components/WebLinks/Definition.tsx:25
 #. Used in: Components > Formatters > Fields ⬤ Components > Locality Update > Status ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition

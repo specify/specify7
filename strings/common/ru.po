@@ -45,8 +45,8 @@ msgstr "Нет"
 #: components/Interactions/InteractionsDialog.tsx:54
 #: components/Interactions/LoanReturn.tsx:167
 #: components/Interactions/PrepDialog.tsx:125
-#: components/LocalityUpdate/Status.tsx:142
-#: components/LocalityUpdate/Status.tsx:188
+#: components/LocalityUpdate/Status.tsx:145
+#: components/LocalityUpdate/Status.tsx:191
 #: components/Merging/Status.tsx:119
 #: components/Merging/index.tsx:272
 #: components/Merging/index.tsx:381
@@ -212,12 +212,12 @@ msgstr "Создать"
 #: components/Interactions/LoanReturn.tsx:71
 #: components/Interactions/PrepDialog.tsx:122
 #: components/Leaflet/Map.tsx:103
-#: components/LocalityUpdate/Status.tsx:153
-#: components/LocalityUpdate/Status.tsx:222
-#: components/LocalityUpdate/Status.tsx:282
-#: components/LocalityUpdate/Status.tsx:365
-#: components/LocalityUpdate/Status.tsx:464
-#: components/LocalityUpdate/Status.tsx:505
+#: components/LocalityUpdate/Status.tsx:156
+#: components/LocalityUpdate/Status.tsx:225
+#: components/LocalityUpdate/Status.tsx:285
+#: components/LocalityUpdate/Status.tsx:368
+#: components/LocalityUpdate/Status.tsx:467
+#: components/LocalityUpdate/Status.tsx:508
 #: components/LocalityUpdate/index.tsx:124
 #: components/Merging/CompareSubView.tsx:201
 #: components/Merging/InvalidMergeRecords.tsx:79
@@ -835,7 +835,7 @@ msgstr "Экспорт"
 
 #: components/Attachments/index.tsx:238
 #: components/Header/userToolDefinitions.ts:111
-#: components/LocalityUpdate/Status.tsx:229
+#: components/LocalityUpdate/Status.tsx:232
 #: components/LocalityUpdate/index.tsx:135
 #: components/QueryBuilder/Import.tsx:70
 #: components/QueryBuilder/Import.tsx:149
@@ -880,8 +880,8 @@ msgid "results"
 msgstr "Результаты"
 
 #: components/Errors/ErrorDialog.tsx:144
-#: components/LocalityUpdate/Status.tsx:461
-#: components/LocalityUpdate/Status.tsx:502
+#: components/LocalityUpdate/Status.tsx:464
+#: components/LocalityUpdate/Status.tsx:505
 #: components/Merging/Status.tsx:100
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Locality Update > Status ⬤ Components > Merging > Status
 #, fuzzy
@@ -1031,7 +1031,7 @@ msgstr "{header:string}:"
 #: components/Forms/BaseResourceView.tsx:132
 #: components/Forms/Save.tsx:344
 #: components/Leaflet/index.ts:171
-#: components/LocalityUpdate/Status.tsx:519
+#: components/LocalityUpdate/Status.tsx:522
 #: components/LocalityUpdate/utils.ts:64
 #: components/Merging/Header.tsx:213
 #: components/Molecules/FilePicker.tsx:113

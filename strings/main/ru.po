@@ -94,8 +94,8 @@ msgstr ""
 
 #: components/Core/__tests__/Contexts.test.tsx:48
 #: components/Errors/ErrorDialog.tsx:196
-#: components/LocalityUpdate/Status.tsx:375
-#: components/LocalityUpdate/Status.tsx:422
+#: components/LocalityUpdate/Status.tsx:378
+#: components/LocalityUpdate/Status.tsx:425
 #. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog ⬤ Components > Locality Update > Status
 msgid "errorMessage"
 msgstr "Описание ошибки"

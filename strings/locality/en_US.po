@@ -214,7 +214,7 @@ msgstr "Importing Locality Data Set"
 msgid "localityUpdateParsed"
 msgstr "Locality Update Data Set Parsed"
 
-#: components/LocalityUpdate/Status.tsx:467
+#: components/LocalityUpdate/Status.tsx:470
 #: components/LocalityUpdate/utils.ts:38
 #: components/Notifications/NotificationRenderers.tsx:261
 #. Used in: Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
@@ -239,19 +239,19 @@ msgstr "Locality Update Cancelled"
 msgid "localityUpdateSucceeded"
 msgstr "Locality Update Succeeded"
 
-#: components/LocalityUpdate/Status.tsx:471
-#: components/LocalityUpdate/Status.tsx:509
+#: components/LocalityUpdate/Status.tsx:474
+#: components/LocalityUpdate/Status.tsx:512
 #. Used in: Components > Locality Update > Status
 msgid "localityUpdateWentWrong"
 msgstr "Something went wrong during the Locality Update process"
 
-#: components/LocalityUpdate/Status.tsx:368
+#: components/LocalityUpdate/Status.tsx:371
 #. 🟥The file name which is used when Parse Errors are exported. The .csv file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 msgid "localityUpdateParseErrorFileName"
 msgstr "Locality Update Errors - {date:string}"
 
-#: components/LocalityUpdate/Status.tsx:453
-#: components/LocalityUpdate/Status.tsx:494
+#: components/LocalityUpdate/Status.tsx:456
+#: components/LocalityUpdate/Status.tsx:497
 #. 🟥The file name which is used when any Generic non-parsing errors are exported. The .txt file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 msgid "localityUpdateCrashFileName"
 msgstr "Locality Update {taskId: string} Crash Report - {date: string}"
@@ -273,7 +273,7 @@ msgstr ""
 "More than one Locality found with guid: {guid:string}. Locality IDs: "
 "{localityIds: string}"
 
-#: components/LocalityUpdate/Status.tsx:239
+#: components/LocalityUpdate/Status.tsx:242
 #. Used in: Components > Locality Update > Status
 msgid "localityUpdateEffectCounts"
 msgstr ""
@@ -281,7 +281,7 @@ msgstr ""
 "affected by the update and {geoCoordDetailTableLabel: string} records will "
 "be created:"
 
-#: components/LocalityUpdate/Status.tsx:289
+#: components/LocalityUpdate/Status.tsx:292
 #. Used in: Components > Locality Update > Status
 msgid "localityUploadedDescription"
 msgstr ""
@@ -293,13 +293,13 @@ msgstr ""
 msgid "localityUpdateStarted"
 msgstr "The Locality Update process has started"
 
-#: components/LocalityUpdate/Status.tsx:336
+#: components/LocalityUpdate/Status.tsx:339
 #: components/Notifications/NotificationRenderers.tsx:307
 #. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 msgid "localityUpdateResults"
 msgstr "Locality Update Results"
 
-#: components/LocalityUpdate/Status.tsx:397
+#: components/LocalityUpdate/Status.tsx:400
 #: components/Notifications/NotificationRenderers.tsx:239
 #: components/Notifications/NotificationRenderers.tsx:263
 #. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers

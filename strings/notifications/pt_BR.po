@@ -45,7 +45,7 @@ msgstr "Erro"
 #: components/AppResources/EditorComponents.tsx:159
 #: components/Attachments/Cell.tsx:80
 #: components/Attachments/Viewer.tsx:206
-#: components/LocalityUpdate/Status.tsx:393
+#: components/LocalityUpdate/Status.tsx:396
 #: components/Notifications/NotificationRenderers.tsx:80
 #: components/Notifications/NotificationRenderers.tsx:110
 #: components/Notifications/NotificationRenderers.tsx:126

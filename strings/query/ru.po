@@ -452,7 +452,7 @@ msgstr "Да"
 msgid "queryResults"
 msgstr "Результаты запроса"
 
-#: components/LocalityUpdate/Status.tsx:318
+#: components/LocalityUpdate/Status.tsx:321
 #: components/QueryBuilder/ToForms.tsx:43
 #. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > To Forms
 #, fuzzy
@@ -604,7 +604,7 @@ msgstr "Переключиться на абсолютный"
 msgid "scrollToEditor"
 msgstr "Прокрутите до редактора"
 
-#: components/LocalityUpdate/Status.tsx:305
+#: components/LocalityUpdate/Status.tsx:308
 #: components/QueryBuilder/ResultsTable.tsx:187
 #. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > Results Table
 #, fuzzy
