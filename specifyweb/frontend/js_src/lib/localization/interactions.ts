@@ -33,7 +33,7 @@ export const interactionsText = createDictionary({
     "es-es": "{table:string} Regresar",
     "fr-fr": "{table:string} Retour",
     "uk-ua": "{table:string} Повернення",
-    "de-ch": "{table:string} Rückkehr",
+    "de-ch": "{table:string} Zurück",
     "pt-br": "{table:string} Retornar",
   },
   preparationsNotFoundFor: {
@@ -272,7 +272,7 @@ export const interactionsText = createDictionary({
     "fr-fr": "Ouvrir les enregistrements {loanTable:string}",
     "ru-ru": "Открыть {loanTable:string} записи",
     "uk-ua": "Відкрити записи {loanTable:string}",
-    "de-ch": "Öffnen Sie {loanTable:string}-Datensätze",
+    "de-ch": "{loanTable:string}-Datensätze öffnen",
     "pt-br": "Abrir registros {loanTable:string}",
   },
   gifts: {
