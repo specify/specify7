@@ -3,17 +3,19 @@ Implements the RESTful business data API
 """
 
 from calendar import c
+import http
 import json
-import logging
-import re
+import logging 
 from typing import Any, TypedDict, cast
 from collections.abc import Callable
 from collections.abc import Iterable
 
 from urllib.parse import urlencode
 
-from typing_extensions import TypedDict
+from typing_extensions import TypedDict, NotRequired
 
+from specifyweb.backend.setup_tool.api import create_collection, create_discipline, create_division, create_institution, create_specifyuser
+from specifyweb.specify.api_utils import strict_uri_to_model
 from specifyweb.specify.field_change_info import FieldChangeInfo
 from specifyweb.backend.interactions.cog_preps import modify_update_of_interaction_sibling_preps
 
@@ -46,9 +48,6 @@ from .datamodel import datamodel, Table, Relationship
 from .calculated_fields import calculate_extra_fields
 
 ReadPermChecker = Callable[[Any], None]
-
-# Regex matching api uris for extracting the model name and id number.
-URI_RE = re.compile(r'^/api/specify/(\w+)/($|(\d+))')
 
 def strict_get_model(name: str, apps = apps):
     """Fetch an ORM model from the module dynamically so that
@@ -270,9 +269,25 @@ def collection_dispatch(request, model) -> HttpResponse:
         resp = HttpResponse(toJson(data), content_type='application/json')
 
     elif request.method == 'POST':
+        from specifyweb.specify.models import Division
+        data = json.loads(request.body)
+        if '_tableName' in data:
+            # TODO: Add flag in request body to indicate intitialization
+            # TODO: Add condition to make sure this only runs during configuration tool
+            if data['_tableName'] == 'Institution':
+                return create_institution(request)
+            elif data['_tableName'] == 'Division':
+                return create_division(request)
+            elif data['_tableName'] == 'Discipline':
+                return create_discipline(request)
+            elif data['_tableName'] == 'Collection':
+                return create_collection(request)
+            elif data['_tableName'] == 'SpecifyUser':
+                return create_specifyuser(request)
+
         obj = post_resource(request.specify_collection,
                             request.specify_user_agent,
-                            model, json.loads(request.body),
+                            model, data,
                             request.GET.get('recordsetid', None))
 
         resp = HttpResponseCreated(toJson(_obj_to_data(obj, checker)),
@@ -973,19 +988,6 @@ def prepare_value(field, val: Any) -> Any:
         return val.replace('T', ' ')
     return val
 
-def parse_uri(uri: str) -> tuple[str, str]:
-    """Return the model name and id from a resource or collection URI."""
-    match = URI_RE.match(uri)
-    assert match is not None, f"Bad URI: {uri}"
-    groups = match.groups()
-    return groups[0], groups[2]
-
-def strict_uri_to_model(uri: str, model: str) -> tuple[str, int]:
-    uri_model, uri_id = parse_uri(uri)
-    assert model.lower() == uri_model.lower(), f"{model} does not match model in uri: {uri_model}"
-    assert uri_id is not None
-    return uri_model, int(uri_id)
-
 def obj_to_data(obj) -> dict[str, Any]:
     "Wrapper for backwards compat w/ other modules that use this function."
     # TODO: Such functions should be audited for whether they should apply
@@ -1065,6 +1067,7 @@ class CollectionPayloadMeta(TypedDict):
 class CollectionPayload(TypedDict):
     objects: list[dict[str, Any]]
     meta: CollectionPayloadMeta
+    _tableName: NotRequired[str]
 
 def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}) -> CollectionPayload:
     """Return a list of structured data for the objects from 'model'
