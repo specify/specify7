@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-07-23 05:06+0000\n"
+"PO-Revision-Date: 2025-08-23 05:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/specifyNetwork/pt_BR/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.13\n"
 
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
 #: components/Preferences/CollectionDefinitions.tsx:49
@@ -81,10 +81,10 @@ msgstr ""
 #, fuzzy
 msgid "gbifDescription"
 msgstr ""
-"Para dados GBIF, pontos individuais e grupos de pontos são mostrados como "
-"hexágonos de cores diferentes, variando de amarelo a laranja e vermelho. "
-"Hexágonos vermelho-escuros correspondem às distribuições mais densas de "
-"espécimes coletados daquela espécie."
+"Para dados do GBIF, pontos individuais e grupos de pontos são mostrados como "
+"hexágonos de cores diferentes, que variam do amarelo ao laranja e ao "
+"vermelho. Hexágonos vermelho-escuros correspondem às distribuições mais "
+"densas de espécimes coletados daquela espécie."
 
 #. Used in: Components > Specify Network Collection > Setup
 #: components/SpecifyNetworkCollection/Setup.tsx:59
