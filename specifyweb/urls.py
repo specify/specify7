@@ -16,6 +16,7 @@ from specifyweb.backend.permissions import urls as permissions_urls
 from specifyweb.backend.permissions.permissions import skip_collection_access_check
 from specifyweb.backend.report_runner import urls as report_urls
 from .specify import urls as api_urls
+from specifyweb.backend.backup_tool import urls as backup_urls
 from .specify.views import images, properties
 from specifyweb.backend.stored_queries import urls as query_urls
 from specifyweb.backend.workbench import urls as wb_urls
@@ -44,6 +45,7 @@ urlpatterns = [
 
     # primary api
     path('api/', include(api_urls)),
+    path('api/backup/', include(backup_urls)),
     path('images/<path:path>', images),
     re_path(r'^properties/(?P<name>.+).properties$', properties), # Note fully supported since remmoving dependence on specify.jar
 

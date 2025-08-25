@@ -32,3 +32,4 @@ urlpatterns = [
     # this url always triggers a 500 for testing purposes
     re_path(r'^test_error/', views.raise_error),
 ]
+
