@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth import views as auth_views
 from django.urls import path
 
+from specifyweb.backend.accounts import master_key
 from specifyweb.backend.permissions.permissions import skip_collection_access_check
 from . import views
 
@@ -43,6 +44,14 @@ urlpatterns = [
     # Return a list of configured identity providers
     # which the specified user has registered identities with.
     path('oic_providers/<int:userid>/', views.user_providers),
+
+    # generates Sp6 master key
+    path('master_key/', master_key.master_key),
+
+    # set a user's password
+    path('set_password/<int:userid>/', views.set_password),
+    path('set_admin_status/<int:userid>/', views.set_admin_status),
+    path('set_agents/<int:userid>/', views.set_user_agents)
 ]
 
 if settings.OAUTH_LOGIN_PROVIDERS:

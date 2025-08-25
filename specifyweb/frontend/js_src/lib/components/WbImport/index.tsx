@@ -106,7 +106,7 @@ function CsvPicked({
   );
 }
 
-function ChooseName({
+export function ChooseName({
   name,
   onChange: handleChange,
 }: {

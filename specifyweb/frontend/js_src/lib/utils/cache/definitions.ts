@@ -98,6 +98,7 @@ export type CacheDefinitions = {
       }
     >;
   };
+  readonly workBenchAttachmentViewer: Readonly<Record<string, RA<number>>>;
   readonly sortConfig: {
     readonly [KEY in keyof SortConfigs]: SortConfig<SortConfigs[KEY]>;
   };

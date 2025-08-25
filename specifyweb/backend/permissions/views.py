@@ -6,8 +6,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction, connection
 from django.views import View
 
+from specifyweb.backend.accounts.account_utils import check_collection_access_against_agents
 from specifyweb.specify.models import Specifyuser
-from specifyweb.specify.views import openapi, check_collection_access_against_agents
+from specifyweb.specify.views import openapi
 from . import models
 from .permissions import PermissionTarget, PermissionTargetAction, \
     NoAdminUsersException, check_permission_targets, registry, query

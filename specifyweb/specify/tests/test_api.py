@@ -968,7 +968,7 @@ class UserApiTests(ApiTests):
         c = Client()
         c.force_login(self.specifyuser)
         response = c.post(
-            f"/api/set_agents/{self.specifyuser.id}/",
+            f"/accounts/set_agents/{self.specifyuser.id}/",
             data=[self.agent.id],
             content_type="application/json",
         )
@@ -993,7 +993,7 @@ class UserApiTests(ApiTests):
         c.force_login(self.specifyuser)
 
         response = c.post(
-            f"/api/set_agents/{self.specifyuser.id}/",
+            f"/accounts/set_agents/{self.specifyuser.id}/",
             data=[],
             content_type="application/json",
         )
@@ -1021,7 +1021,7 @@ class UserApiTests(ApiTests):
         c = Client()
         c.force_login(self.specifyuser)
         response = c.post(
-            f"/api/set_agents/{self.specifyuser.id}/",
+            f"/accounts/set_agents/{self.specifyuser.id}/",
             data=[self.agent.id, agent2.id],
             content_type="application/json",
         )
@@ -1049,7 +1049,7 @@ class UserApiTests(ApiTests):
         c = Client()
         c.force_login(self.specifyuser)
         response = c.post(
-            f"/api/set_agents/{user2.id}/",
+            f"/accounts/set_agents/{user2.id}/",
             data=[self.agent.id],
             content_type="application/json",
         )

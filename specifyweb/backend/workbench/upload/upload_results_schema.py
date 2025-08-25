@@ -49,6 +49,7 @@ schema = {
                 { '$ref': '#/definitions/Updated' },
                 { '$ref': '#/definitions/Deleted' },
                 { '$ref': '#/definitions/MatchedAndChanged' },
+                { '$ref': '#/definitions/AttachmentFailure' }
             ]
         },
 
@@ -108,6 +109,23 @@ schema = {
                 }
             },
             'required': ['NoMatch'],
+            'additionalProperties': False
+        },
+        'AttachmentFailure': {
+            'type': 'object',
+            'desciption': 'Indicates failure due to an error associated with a row\'s attachments.',
+            'properties': {
+                'AttachmentFailure': {
+                    'type': 'object',
+                    'properties': {
+                        'message': { 'type': 'string', 'description': 'The code of the error message. Code is resolved to localized string by front-end.' },
+                        'info': { '$ref': '#/definitions/ReportInfo' }
+                    },
+                    'required': ['message', 'info'],
+                    'additionalProperties': False
+                }
+            },
+            'required': ['AttachmentFailure'],
             'additionalProperties': False
         },
         'FailedBusinessRule': {

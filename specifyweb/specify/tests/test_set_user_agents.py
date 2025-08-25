@@ -1,11 +1,10 @@
 from django.test import Client
+from specifyweb.backend.accounts.exceptions_types import AgentInUseException, MultipleAgentsException
 from specifyweb.specify.models import Agent, Division, Specifyuser
 from specifyweb.specify.tests.test_api import ApiTests
 
 import json
 from unittest.mock import patch
-
-from specifyweb.specify.views import AgentInUseException, MultipleAgentsException
 
 EMPTY_CALL = lambda x: None
 
@@ -17,7 +16,7 @@ class TestSetUserAgents(ApiTests):
         c.force_login(self.specifyuser)
         self.c = c
 
-    @patch("specifyweb.specify.views.check_collection_access_against_agents", EMPTY_CALL)
+    @patch("specifyweb.backend.accounts.account_utils.check_collection_access_against_agents", EMPTY_CALL)
     def test_user_agent_simple(self):
 
 
@@ -30,7 +29,7 @@ class TestSetUserAgents(ApiTests):
         )
 
         response = self.c.post(
-            f"/api/set_agents/{self.specifyuser.id}/",
+            f"/accounts/set_agents/{self.specifyuser.id}/",
             json.dumps([new_agent.id]),
             content_type='application/x-www-form-urlencoded'
         )
@@ -61,7 +60,7 @@ class TestSetUserAgents(ApiTests):
         )
 
         response = self.c.post(
-            f"/api/set_agents/{self.specifyuser.id}/",
+            f"/accounts/set_agents/{self.specifyuser.id}/",
             json.dumps([new_agent.id]),
             content_type='application/x-www-form-urlencoded'
         )
@@ -110,7 +109,7 @@ class TestSetUserAgents(ApiTests):
         )
 
         response = self.c.post(
-            f"/api/set_agents/{self.specifyuser.id}/",
+            f"/accounts/set_agents/{self.specifyuser.id}/",
             json.dumps([new_agent_1.id, new_agent_2.id, new_agent_3.id, new_agent_4.id, new_agent_5.id]),
             content_type='application/x-www-form-urlencoded'
         )

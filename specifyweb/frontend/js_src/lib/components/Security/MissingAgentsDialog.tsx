@@ -110,7 +110,7 @@ export function MissingAgentsDialog({
           isReadOnly
             ? undefined
             : loading(
-                ajax(`/api/set_agents/${userId}/`, {
+                ajax(`/accounts/set_agents/${userId}/`, {
                   method: 'POST',
                   headers: {},
                   body: filterArray(
