@@ -106,7 +106,7 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
             readonly values: RA<string>;
             readonly existing?: RA<string>;
             readonly error?: string;
-          }>(`/api/specify/series_autonumber_range/`, {
+          }>(`/series/series_autonumber_range/`, {
             method: 'POST',
             headers: { Accept: 'application/json' },
             body: keysToLowerCase({

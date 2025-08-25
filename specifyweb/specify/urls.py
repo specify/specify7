@@ -13,9 +13,6 @@ urlpatterns = [
     # cat num for parent
     re_path(r'^specify/catalog_number_from_parent/$', views.catalog_number_from_parent), 
 
-    # retrieve auto numbered fields
-    re_path(r'^specify/series_autonumber_range', views.series_autonumber_range),
-
     # check if the user is new at login
     re_path(r'^specify/is_new_user/$', views.is_new_user),
 
