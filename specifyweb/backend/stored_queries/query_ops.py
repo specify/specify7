@@ -13,7 +13,7 @@ from sqlalchemy.orm.query import Query
 #     # search_co_ids_in_time_range_mysql,
 #     search_co_ids_in_time_range_mysql_with_age_range,
 # )
-from specifyweb.specify.geo_time import geo_time_query, geo_time_period_query
+from specifyweb.backend.stored_queries.geology_time import geo_time_query, geo_time_period_query
 from specifyweb.specify.uiformatters import CNNField, FormatMismatch
 
 
