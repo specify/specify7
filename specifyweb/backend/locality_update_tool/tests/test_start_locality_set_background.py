@@ -3,7 +3,7 @@ from specifyweb.backend.notifications.models import LocalityUpdate, Message
 from specifyweb.specify.tests.test_api import ApiTests
 from uuid import uuid4 as base_uuid4
 
-from specifyweb.specify.update_locality import LocalityUpdateStatus
+from specifyweb.backend.locality_update_tool.update_locality import LocalityUpdateStatus
 from specifyweb.specify.views import start_locality_set_background
 
 

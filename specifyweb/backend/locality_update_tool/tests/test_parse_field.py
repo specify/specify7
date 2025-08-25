@@ -1,6 +1,6 @@
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify.uiformatters import CNNField, UIFormatter
-from specifyweb.specify.update_locality import ParseError, ParseSuccess, parse_field
+from specifyweb.backend.locality_update_tool.update_locality import ParseError, ParseSuccess, parse_field
 from unittest.mock import patch, Mock
 
 

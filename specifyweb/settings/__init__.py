@@ -224,6 +224,7 @@ SPECIFY_APPS  = [
     'specifyweb.backend.raven_placeholder' if RAVEN_CONFIG is None else 'raven.contrib.django.raven_compat',
     'specifyweb.backend.stats',
     'specifyweb.backend.merge',
+    'specifyweb.backend.locality_update_tool'
 ]
 
 INSTALLED_APPS = (

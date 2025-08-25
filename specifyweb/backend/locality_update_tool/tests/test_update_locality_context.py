@@ -20,7 +20,7 @@ from specifyweb.specify.tests.test_api import ApiTests
 from uuid import uuid4
 import datetime
 
-from specifyweb.specify.update_locality import (
+from specifyweb.backend.locality_update_tool.update_locality import (
     ParseError,
     ParsedRow,
     upload_locality_set,
