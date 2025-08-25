@@ -3,7 +3,7 @@ from jsonschema import validate # type: ignore
 
 from django.core.management.base import BaseCommand, CommandError
 
-from specifyweb.specify.models import Collection, Agent
+from specifyweb.backend.datamodel.models import Collection, Agent
 
 from specifyweb.backend.workbench.upload.upload import do_upload_dataset
 from specifyweb.backend.workbench.models import Spdataset

@@ -5,7 +5,7 @@ import os
 import re
 
 from .specify_jar import specify_jar
-
+# TODO: Seems to be not used
 def check_versions(Spversion):
     """Check schema and application version compatibility."""
     SPECIFY_VERSION = re.findall(r'SPECIFY_VERSION=(.*)',

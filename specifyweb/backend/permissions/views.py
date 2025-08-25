@@ -7,7 +7,7 @@ from django.db import transaction, connection
 from django.views import View
 
 from specifyweb.backend.accounts.account_utils import check_collection_access_against_agents
-from specifyweb.specify.models import Specifyuser
+from specifyweb.backend.datamodel.models import Specifyuser
 from specifyweb.specify.views import openapi
 from . import models
 from .permissions import PermissionTarget, PermissionTargetAction, \

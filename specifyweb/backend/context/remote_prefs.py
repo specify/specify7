@@ -1,6 +1,6 @@
 from django.utils.encoding import force_str
 
-from specifyweb.specify.models import Spappresourcedata
+from specifyweb.backend.datamodel.models import Spappresourcedata
 
 
 def get_remote_prefs() -> str:

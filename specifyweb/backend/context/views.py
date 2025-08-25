@@ -25,11 +25,11 @@ from specifyweb.backend.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, \
     check_permission_targets, skip_collection_access_check, query_pt, \
     CollectionAccessPT
-from specifyweb.specify.models import Collection, Institution, \
+from specifyweb.backend.datamodel.models import Collection, Institution, \
     Specifyuser, Spprincipal, Spversion, Collectionobjecttype
 from specifyweb.specify.schema import base_schema
 from specifyweb.specify.api import uri_for_model
-from specifyweb.specify.serialize_datamodel import datamodel_to_json
+from specifyweb.backend.datamodel.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.specify_jar import specify_jar
 from specifyweb.specify.views import login_maybe_required, openapi
 from .app_resource import get_app_resource, FORM_RESOURCE_EXCLUDED_LST
@@ -438,7 +438,7 @@ datamodel_json = None
 @cache_control(max_age=86400, public=True)
 def datamodel(request):
     "Returns a JSON representation of the Specify datamodel."
-    from specifyweb.specify.models import datamodel
+    from specifyweb.backend.datamodel.models import datamodel
     global datamodel_json
     if datamodel_json is None:
         datamodel_json = datamodel_to_json(datamodel)

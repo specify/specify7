@@ -1,5 +1,5 @@
 from collections import defaultdict
-from specifyweb.specify.models import Collectingevent, Locality
+from specifyweb.backend.datamodel.models import Collectingevent, Locality
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 
 from specifyweb.backend.stored_queries.tests.utils import (

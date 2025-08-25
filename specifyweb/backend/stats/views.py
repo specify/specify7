@@ -4,7 +4,7 @@ from specifyweb.backend.permissions.permissions import check_table_permissions
 from specifyweb.specify.views import openapi
 from django.http import HttpResponse, Http404
 
-from specifyweb.specify.models import Preparation, Determination, Discipline, Locality, Collectionobject, Collectionobjectattachment, Attachment
+from specifyweb.backend.datamodel.models import Preparation, Determination, Discipline, Locality, Collectionobject, Collectionobjectattachment, Attachment
 from specifyweb.specify.views import login_maybe_required
 import logging
 

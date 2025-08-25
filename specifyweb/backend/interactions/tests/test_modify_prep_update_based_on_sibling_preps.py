@@ -2,7 +2,7 @@ from specifyweb.backend.interactions.cog_preps import modify_prep_update_based_o
 from specifyweb.backend.interactions.tests.test_cog_consolidated_prep_sibling_context import (
     TestCogConsolidatedPrepSiblingContext,
 )
-from specifyweb.specify.models import Collectionobject
+from specifyweb.backend.datamodel.models import Collectionobject
 
 
 class TestModifyPrepUpdateBasedOnSiblingPreps(TestCogConsolidatedPrepSiblingContext):

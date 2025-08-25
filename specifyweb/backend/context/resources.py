@@ -4,8 +4,9 @@ from django import http
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.views import View
-from specifyweb.specify import models, api
-from specifyweb.specify.models import Spappresource, Spappresourcedir
+from specifyweb.backend.datamodel import models
+from specifyweb.specify import api
+from specifyweb.backend.datamodel.models import Spappresource, Spappresourcedir
 
 class Resources(View):
     _spappresourcefilter = None

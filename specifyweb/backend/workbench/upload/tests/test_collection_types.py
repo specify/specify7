@@ -2,7 +2,7 @@ from jsonschema import validate # type: ignore
 
 from specifyweb.backend.workbench.upload.tests.base import UploadTestsBase
 from ..upload_plan_schema import schema, parse_plan
-from specifyweb.specify.models import Collectionobjecttype, Collectionobject
+from specifyweb.backend.datamodel.models import Collectionobjecttype, Collectionobject
 from ..scope_context import ScopeContext
 from ..upload import do_upload
 from ..upload_result import UploadResult, Matched, NullRecord

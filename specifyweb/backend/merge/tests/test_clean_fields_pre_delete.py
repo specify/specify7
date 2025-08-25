@@ -1,4 +1,4 @@
-from specifyweb.specify.models import Attachment, Collectionobjectattachment
+from specifyweb.backend.datamodel.models import Attachment, Collectionobjectattachment
 from specifyweb.backend.merge.record_merging import clean_fields_pre_delete
 from specifyweb.specify.tests.test_api import ApiTests
 

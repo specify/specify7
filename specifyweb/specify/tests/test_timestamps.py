@@ -5,7 +5,7 @@ from datetime import datetime
 from django.utils import timezone
 from specifyweb.specify.tests.test_api import ApiTests, skip_perms_check
 from specifyweb.specify import api
-from specifyweb.specify.models import Collectionobject
+from specifyweb.backend.datamodel.models import Collectionobject
 
 class TimeStampTests(ApiTests):
 

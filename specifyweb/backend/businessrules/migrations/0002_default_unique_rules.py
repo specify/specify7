@@ -1,6 +1,6 @@
 from django.db import migrations
 
-from specifyweb.specify.datamodel import datamodel
+from specifyweb.backend.datamodel.datamodel import datamodel
 from specifyweb.backend.businessrules.uniqueness_rules import apply_default_uniqueness_rules, rule_is_global, DEFAULT_UNIQUENESS_RULES
 
 

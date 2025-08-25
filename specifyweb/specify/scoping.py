@@ -3,7 +3,7 @@ from typing import Tuple
 from django.db.models import Model
 from django.core.exceptions import ObjectDoesNotExist
 
-from . import models
+from ..backend.datamodel import models
 
 
 class ScopeType:

@@ -2,7 +2,7 @@ from specifyweb.backend.interactions.cog_preps import (
     get_the_top_consolidated_parent_cog_of_prep,
 )
 from specifyweb.backend.interactions.tests.test_cog import TestCogInteractions
-from specifyweb.specify.models import Collectionobjectgroup, Collectionobjectgroupjoin
+from specifyweb.backend.datamodel.models import Collectionobjectgroup, Collectionobjectgroupjoin
 
 
 class TestGetTopConsolidatedParentCogPrep(TestCogInteractions):

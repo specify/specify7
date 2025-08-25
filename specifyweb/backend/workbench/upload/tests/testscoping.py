@@ -4,7 +4,7 @@ from ..upload_plan_schema import parse_plan
 from ..upload_table import UploadTable, OneToOneTable, ScopedUploadTable, ScopedOneToOneTable
 from ..upload import do_upload
 
-from specifyweb.specify import models
+from specifyweb.backend.datamodel import models
 from specifyweb.specify.tests.test_api import get_table
 from .base import UploadTestsBase
 from . import example_plan

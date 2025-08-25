@@ -1,7 +1,7 @@
 from functools import reduce
 import logging
 
-from specifyweb.specify.datamodel import datamodel, Table
+from specifyweb.backend.datamodel.datamodel import datamodel, Table
 from specifyweb.backend.workbench.upload.auditor import DEFAULT_BATCH_EDIT_PREFS, BatchEditPrefs
 
 from .upload_table import UploadTable, OneToOneTable, MustMatchTable

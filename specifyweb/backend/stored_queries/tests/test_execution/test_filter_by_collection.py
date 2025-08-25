@@ -1,4 +1,4 @@
-from specifyweb.specify.models import (
+from specifyweb.backend.datamodel.models import (
     Accession,
     Agent,
     Conservdescription,

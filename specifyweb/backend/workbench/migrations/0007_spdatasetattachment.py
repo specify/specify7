@@ -6,7 +6,7 @@
 from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
-import specifyweb.specify.models
+import specifyweb.backend.datamodel.models
 from specifyweb.specify.migration_utils.update_schema_config import update_table_field_schema_config_with_defaults, update_table_schema_config_with_defaults, revert_table_field_schema_config, revert_table_schema_config 
 
 MIGRATION_0007_TABLES = [
@@ -55,9 +55,9 @@ class Migration(migrations.Migration):
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
-                ('attachment', models.ForeignKey(db_column='AttachmentID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='spdatasetattachments', to='specify.attachment')),
-                ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
+                ('attachment', models.ForeignKey(db_column='AttachmentID', on_delete=specifyweb.backend.datamodel.models.protect_with_blockers, related_name='spdatasetattachments', to='specify.attachment')),
+                ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.backend.datamodel.models.protect_with_blockers, related_name='+', to='specify.agent')),
+                ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.backend.datamodel.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('spdataset', models.ForeignKey(db_column='SpDataSetID', on_delete=django.db.models.deletion.CASCADE, related_name='spdatasetattachments', to='workbench.spdataset')),
             ],
             options={

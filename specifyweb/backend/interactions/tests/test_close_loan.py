@@ -1,6 +1,6 @@
 from specifyweb.backend.interactions.tests.test_loan_preps_context import TestLoanPrepsContext
 from specifyweb.backend.interactions.views import close_loan
-from specifyweb.specify.models import Loan
+from specifyweb.backend.datamodel.models import Loan
 
 from django.db import connection
 

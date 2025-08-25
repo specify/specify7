@@ -1,4 +1,4 @@
-from specifyweb.specify.models import Determination, Taxon
+from specifyweb.backend.datamodel.models import Determination, Taxon
 from specifyweb.specify.tests.test_trees import GeographyTree
 from specifyweb.specify.tree_extras import desynonymize, synonymize
 

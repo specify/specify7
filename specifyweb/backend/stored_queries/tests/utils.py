@@ -2,7 +2,7 @@
 # TODO: Refactor those tests and make these part of SqlTreeSetup
 from specifyweb.backend.stored_queries.queryfield import QueryField
 from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
-from specifyweb.specify.models import datamodel
+from specifyweb.backend.datamodel.models import datamodel
 
 def make_query_test(field_spec, sort_type=0):
     return QueryField(

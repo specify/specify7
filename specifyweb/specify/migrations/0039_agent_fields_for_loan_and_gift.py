@@ -2,7 +2,7 @@
 
 from django.apps import apps as specify_apps
 from django.db import migrations, models
-from specifyweb.specify.models import protect_with_blockers
+from specifyweb.backend.datamodel.models import protect_with_blockers
 
 from specifyweb.specify.migration_utils.update_schema_config import (
     revert_table_field_schema_config,

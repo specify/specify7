@@ -2,7 +2,7 @@ from specifyweb.backend.interactions.cog_preps import add_consolidated_sibling_c
 from specifyweb.backend.interactions.tests.test_cog_consolidated_prep_context import (
     TestCogConsolidatedPrepContext,
 )
-from specifyweb.specify.models import (
+from specifyweb.backend.datamodel.models import (
     Collectionobjectgroup,
     Collectionobjectgroupjoin,
     Collectionobject,

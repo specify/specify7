@@ -1,6 +1,6 @@
 from django.db import models
 from functools import partialmethod
-from specifyweb.specify.models import Discipline, datamodel, custom_save
+from specifyweb.backend.datamodel.models import Discipline, datamodel, custom_save
 
 class PsuedoManyToManyManager(models.Manager):
     def __init__(self, base_instance, through_model, through_field) -> None:

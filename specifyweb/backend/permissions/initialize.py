@@ -1,8 +1,8 @@
 from django.db import transaction, connection
 from django.apps import apps
 
-from specifyweb.specify.datamodel import datamodel
-from specifyweb.specify.model_extras import is_legacy_admin
+from specifyweb.backend.datamodel.datamodel import datamodel
+from specifyweb.backend.datamodel.model_extras import is_legacy_admin
 
 from .permissions import CollectionAccessPT
 

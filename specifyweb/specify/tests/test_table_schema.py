@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db import IntegrityError, transaction
 from specifyweb.specify.tests.test_api import DefaultsSetup
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
-from specifyweb.specify.models import (
+from specifyweb.backend.datamodel.models import (
     Collectionobject,
     Collectionobjectgroup,
     Collectionobjectgrouptype,

@@ -1,4 +1,4 @@
-from specifyweb.specify.models import Collectionobjectgroup, Collectionobjectgroupjoin, Collectionobjectgrouptype
+from specifyweb.backend.datamodel.models import Collectionobjectgroup, Collectionobjectgroupjoin, Collectionobjectgrouptype
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify.tests.test_api import DefaultsSetup
 

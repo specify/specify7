@@ -5,7 +5,7 @@
 """
 
 from django.db import migrations, models
-import specifyweb.specify.models
+import specifyweb.backend.datamodel.models
 
 
 class Migration(migrations.Migration):
@@ -18,6 +18,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='collectionobjectgroupjoin',
             name='childco',
-            field=models.OneToOneField(db_column='ChildCOID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='cojo', to='specify.collectionobject'),
+            field=models.OneToOneField(db_column='ChildCOID', null=True, on_delete=specifyweb.backend.datamodel.models.protect_with_blockers, related_name='cojo', to='specify.collectionobject'),
         ),
     ]

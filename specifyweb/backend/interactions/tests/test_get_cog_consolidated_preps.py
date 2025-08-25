@@ -2,7 +2,7 @@ from specifyweb.backend.interactions.tests.test_cog_consolidated_prep_context im
     TestCogConsolidatedPrepContext,
 )
 from specifyweb.backend.interactions.cog_preps import get_cog_consolidated_preps
-from specifyweb.specify.models import (
+from specifyweb.backend.datamodel.models import (
     Collectionobjectgroupjoin,
     Preparation,
 )

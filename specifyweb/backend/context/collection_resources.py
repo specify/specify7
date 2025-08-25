@@ -1,5 +1,5 @@
 from specifyweb.backend.context.app_resource import get_usertype
-from specifyweb.specify.models import Spappresource, Spappresourcedir
+from specifyweb.backend.datamodel.models import Spappresource, Spappresourcedir
 from specifyweb.specify.views import openapi
 from specifyweb.backend.context.resources import Resource, Resources
 

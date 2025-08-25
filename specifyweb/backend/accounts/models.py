@@ -1,6 +1,6 @@
 from django.db import models
 from functools import partialmethod
-from specifyweb.specify.models import Specifyuser, datamodel, custom_save
+from specifyweb.backend.datamodel.models import Specifyuser, datamodel, custom_save
 
 class Spuserexternalid(models.Model):
     """Maps external user identities to Specify user accounts."""

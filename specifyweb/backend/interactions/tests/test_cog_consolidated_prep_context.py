@@ -1,7 +1,7 @@
 from specifyweb.backend.interactions.tests.test_cog import TestCogInteractions
 from typing import List, NamedTuple, Any
 
-from specifyweb.specify.models import Collectionobjectgroup, Collectionobjectgroupjoin
+from specifyweb.backend.datamodel.models import Collectionobjectgroup, Collectionobjectgroupjoin
 
 
 class CoAndPreps(NamedTuple):

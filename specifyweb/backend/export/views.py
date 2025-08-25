@@ -21,7 +21,7 @@ from specifyweb.backend.context.app_resource import get_app_resource
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets
-from specifyweb.specify.models import Spquery
+from specifyweb.backend.datamodel.models import Spquery
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.middleware.general import require_GET
 

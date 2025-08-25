@@ -1,13 +1,13 @@
 from django.test import TestCase
 from unittest import skip
 import sqlalchemy
-from specifyweb.specify.build_models import build_models
-from specifyweb.specify.datamodel import datamodel as sp7_datamodel
-from specifyweb.specify.load_datamodel import load_datamodel
-from specifyweb.specify.sp7_build_datamodel import build_datamodel_code_from_xml
-from specifyweb.specify.sp7_build_models import build_model_code, generate_build_model_functions_code, \
+from specifyweb.backend.datamodel.build_models import build_models
+from specifyweb.backend.datamodel.datamodel import datamodel as sp7_datamodel
+from specifyweb.backend.datamodel.load_datamodel import load_datamodel
+from specifyweb.backend.datamodel.sp7_build_datamodel import build_datamodel_code_from_xml
+from specifyweb.backend.datamodel.sp7_build_models import build_model_code, generate_build_model_functions_code, \
     generate_build_model_imports_code
-from specifyweb.specify.models_by_table_id import get_model_by_table_id as sp7_get_model_by_table_id
+from specifyweb.backend.datamodel.models_by_table_id import get_model_by_table_id as sp7_get_model_by_table_id
 from specifyweb.backend.stored_queries.sp7_build_models import gen_sqlalchemy_table_classes_code
 
 class DatamodelTests(TestCase):

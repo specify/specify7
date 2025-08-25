@@ -1,5 +1,5 @@
 from django.test import Client
-from specifyweb.specify.models import Specifyuser
+from specifyweb.backend.datamodel.models import Specifyuser
 from specifyweb.specify.tests.test_api import ApiTests
 
 class TestSetPassword(ApiTests):

@@ -3,7 +3,7 @@ from celery.utils.log import get_task_logger # type: ignore
 
 from django.db import transaction
 
-from specifyweb.specify.models import Collection, Agent
+from specifyweb.backend.datamodel.models import Collection, Agent
 from specifyweb.celery_tasks import LogErrorsTask, app
 
 from .models import Spdataset

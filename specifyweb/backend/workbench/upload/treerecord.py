@@ -9,7 +9,7 @@ from django.db import transaction, IntegrityError
 from typing_extensions import TypedDict
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
-from specifyweb.specify import models
+from specifyweb.backend.datamodel import models
 from specifyweb.backend.workbench.upload.clone import clone_record
 from specifyweb.backend.workbench.upload.predicates import (
     SPECIAL_TREE_FIELDS_TO_SKIP,

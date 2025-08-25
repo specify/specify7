@@ -1,7 +1,7 @@
 from django.db.models import Max
 from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handler
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
-from specifyweb.specify.models import Fundingagent
+from specifyweb.backend.datamodel.models import Fundingagent
 
 
 @orm_signal_handler('pre_save', 'Fundingagent')

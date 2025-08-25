@@ -2,7 +2,7 @@ from sqlalchemy import orm, inspect
 from unittest import expectedFailure
 
 from django.test import TestCase
-import specifyweb.specify.models as spmodels
+import specifyweb.backend.datamodel.models as spmodels
 from specifyweb.specify.tests.test_api import ApiTests
 from MySQLdb.cursors import SSCursor
 from django.conf import settings

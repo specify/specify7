@@ -3,7 +3,7 @@
 # So, the function that performs autonumbering is also mocked.
 # This is why ApiTests are used (instead of transactional ones)
 from specifyweb.specify.autonumbering import autonumber_and_save
-from specifyweb.specify.models import Collectionobject
+from specifyweb.backend.datamodel.models import Collectionobject
 
 from unittest.mock import Mock, patch
 

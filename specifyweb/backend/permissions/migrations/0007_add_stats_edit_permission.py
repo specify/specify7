@@ -1,5 +1,5 @@
 from django.db import migrations
-from specifyweb.specify.models import Collection  # type: ignore
+from specifyweb.backend.datamodel.models import Collection  # type: ignore
 from ..models import Role
 
 

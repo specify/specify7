@@ -1,4 +1,4 @@
-from specifyweb.specify.models import Collectionobject
+from specifyweb.backend.datamodel.models import Collectionobject
 from specifyweb.backend.stored_queries.execution import (
     BuildQueryProps,
     build_query,

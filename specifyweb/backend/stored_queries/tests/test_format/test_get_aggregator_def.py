@@ -1,6 +1,6 @@
 from specifyweb.specify.tests.test_api import ApiTests
 from unittest.mock import patch, Mock
-from specifyweb.specify.models import datamodel
+from specifyweb.backend.datamodel.models import datamodel
 from xml.etree.ElementTree import tostring
 
 from specifyweb.backend.stored_queries.format import ObjectFormatter

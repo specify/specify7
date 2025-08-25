@@ -1,8 +1,8 @@
 import json
 
 from django.test import Client
-from specifyweb.specify.models import datamodel
-from specifyweb.specify.serialize_datamodel import datamodel_to_json
+from specifyweb.backend.datamodel.models import datamodel
+from specifyweb.backend.datamodel.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.tests.test_api import ApiTests
 
 

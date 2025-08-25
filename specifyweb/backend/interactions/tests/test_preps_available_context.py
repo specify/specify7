@@ -1,6 +1,6 @@
 from specifyweb.backend.interactions.tests.utils import _create_interaction_prep_generic
 from specifyweb.specify.tests.test_api import ApiTests
-from specifyweb.specify.models import Disposal, Exchangeout, Preptype, Loan, Gift
+from specifyweb.backend.datamodel.models import Disposal, Exchangeout, Preptype, Loan, Gift
 from django.test import Client
 
 

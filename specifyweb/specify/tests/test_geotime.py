@@ -5,7 +5,7 @@ from unittest import skip
 from .test_api import ApiTests
 from django.test import Client
 from specifyweb.specify import geo_time
-from specifyweb.specify.models import (
+from specifyweb.backend.datamodel.models import (
     Geologictimeperiod,
     Geologictimeperiodtreedefitem,
     Geologictimeperiodtreedef,

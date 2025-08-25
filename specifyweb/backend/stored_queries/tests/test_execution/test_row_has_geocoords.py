@@ -1,4 +1,4 @@
-from specifyweb.specify.models import Locality
+from specifyweb.backend.datamodel.models import Locality
 from specifyweb.backend.stored_queries.execution import getCoordinateColumns, row_has_geocoords
 from specifyweb.backend.stored_queries.tests.test_execution.test_kml_context import (
     TestKMLContext,

@@ -17,10 +17,11 @@ from django.db import router
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST, require_http_methods
+from ..backend.datamodel import models as spmodels
 from specifyweb.specify.api import get_model
 
 from specifyweb.middleware.general import require_GET, require_http_methods
-from . import api, models as spmodels
+from . import api
 from .specify_jar import specify_jar, specify_jar_path
 from .uiformatters import get_uiformatter_by_name
 

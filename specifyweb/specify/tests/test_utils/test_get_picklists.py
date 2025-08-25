@@ -1,4 +1,4 @@
-from specifyweb.specify.models import Collection, Splocalecontainer, Splocalecontaineritem, Picklist, Picklistitem
+from specifyweb.backend.datamodel.models import Collection, Splocalecontainer, Splocalecontaineritem, Picklist, Picklistitem
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify.utils import get_picklists
 

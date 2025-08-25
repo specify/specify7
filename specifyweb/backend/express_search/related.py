@@ -4,7 +4,7 @@ Base class for related search
 
 import logging
 
-from specifyweb.specify.models import datamodel
+from specifyweb.backend.datamodel.models import datamodel
 from specifyweb.backend.stored_queries.execution import BuildQueryProps, build_query
 from specifyweb.backend.stored_queries.query_ops import QueryOps
 from specifyweb.backend.stored_queries.queryfield import QueryField

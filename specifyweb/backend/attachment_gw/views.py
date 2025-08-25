@@ -72,7 +72,7 @@ def get_collection(request=None):
     # do any better than using the first collection
     # and hoping that all the assets are in the same
     # folder.
-    from specifyweb.specify.models import Collection
+    from specifyweb.backend.datamodel.models import Collection
     return Collection.objects.all()[0].collectionname
 
 @openapi(schema={

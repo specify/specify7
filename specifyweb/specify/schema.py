@@ -6,7 +6,7 @@ from django.utils.translation import gettext as _
 from typing import Dict, List, Tuple, cast
 
 from specifyweb.middleware.general import require_GET
-from .datamodel import (
+from ..backend.datamodel.datamodel import (
     Field,
     Relationship,
     Table,

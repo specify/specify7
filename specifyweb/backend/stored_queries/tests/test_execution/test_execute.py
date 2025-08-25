@@ -1,4 +1,4 @@
-from specifyweb.specify.models import Collectionobject, Recordset, Recordsetitem
+from specifyweb.backend.datamodel.models import Collectionobject, Recordset, Recordsetitem
 from specifyweb.backend.stored_queries.execution import execute
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from specifyweb.backend.stored_queries.tests.utils import make_query_fields_test

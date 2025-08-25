@@ -3,7 +3,7 @@ from collections import namedtuple
 from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.orm import aliased
-from .models import datamodel
+from ..backend.datamodel.models import datamodel
 from specifyweb.backend.stored_queries import models
 from sqlalchemy import sql
 

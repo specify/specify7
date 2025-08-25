@@ -6,8 +6,8 @@ import logging
 from django.db.models import Q
 from django.apps import apps
 
-from specifyweb.specify.load_datamodel import Table, FieldDoesNotExistError, TableDoesNotExistError
-from specifyweb.specify.models import (
+from specifyweb.backend.datamodel.load_datamodel import Table, FieldDoesNotExistError, TableDoesNotExistError
+from specifyweb.backend.datamodel.models import (
     datamodel,
 )
 

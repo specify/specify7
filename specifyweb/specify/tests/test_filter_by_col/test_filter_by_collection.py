@@ -1,5 +1,5 @@
 from specifyweb.specify.filter_by_col import HierarchyException, filter_by_collection
-from specifyweb.specify.models import (
+from specifyweb.backend.datamodel.models import (
     Attachment,
     Collection,
     Determination,

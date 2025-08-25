@@ -28,10 +28,10 @@ from specifyweb.backend.accounts.types import ExternalUser, InviteToken, OAuthLo
 from specifyweb.middleware.general import require_GET, require_http_methods
 
 from specifyweb.backend.permissions.permissions import check_permission_targets
-from specifyweb.specify import models as spmodels
+from specifyweb.backend.datamodel import models as spmodels
 from specifyweb.specify.views import login_maybe_required, openapi
 from .models import Spuserexternalid
-from specifyweb.specify.models import Specifyuser
+from specifyweb.backend.datamodel.models import Specifyuser
 from django.views.decorators.http import require_POST
 from specifyweb.backend.permissions.permissions import check_permission_targets
 from django.db import transaction, connection

@@ -1,5 +1,5 @@
 from specifyweb.backend.interactions.tests.test_preps_available_context import TestPrepsAvailableContext
-from specifyweb.specify.models import Collectionobject, Recordset
+from specifyweb.backend.datamodel.models import Collectionobject, Recordset
 
 
 import json

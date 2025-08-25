@@ -1,5 +1,5 @@
 from django.db import migrations
-from specifyweb.specify.models import protect_with_blockers
+from specifyweb.backend.datamodel.models import protect_with_blockers
 
 
 def create_default_tectonic_ranks(apps): 

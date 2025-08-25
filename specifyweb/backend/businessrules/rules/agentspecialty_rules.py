@@ -1,5 +1,5 @@
 from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handler
-from specifyweb.specify.models import Agentspecialty
+from specifyweb.backend.datamodel.models import Agentspecialty
 
 from django.db.models import Max
 
