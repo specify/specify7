@@ -40,6 +40,15 @@ export const commonText = createDictionary({
     "de-ch": "Abbrechen",
     "pt-br": "Cancelar",
   },
+  working: {
+    "en-us": "Working…",
+    "ru-ru": "Работа…",
+    "es-es": "Trabajando…",
+    "fr-fr": "Travail…",
+    "uk-ua": "Працює…",
+    "de-ch": "Arbeiten…",
+    "pt-br": "Trabalhando…",
+  },
   back: {
     "en-us": "Back",
     "ru-ru": "Назад",

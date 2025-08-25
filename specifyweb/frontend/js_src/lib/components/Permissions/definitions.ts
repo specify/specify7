@@ -24,21 +24,23 @@ export const operationPolicies = {
     'copy_from_library',
   ],
   '/permissions/library/roles': ['read', 'create', 'update', 'delete'],
-  '/tree/edit/taxon': ['merge', 'move', 'synonymize', 'desynonymize', 'repair'],
+  '/tree/edit/taxon': ['merge', 'move', 'synonymize', 'desynonymize', 'repair', 'rebuild_full_names'],
   '/tree/edit/geography': [
     'merge',
     'move',
     'synonymize',
     'desynonymize',
     'repair',
+    'rebuild_full_names',
   ],
   '/tree/edit/storage': [
     'merge',
     'move',
+    'bulk_move',
     'synonymize',
     'desynonymize',
     'repair',
-    'bulk_move',
+    'rebuild_full_names',
   ],
   '/tree/edit/geologictimeperiod': [
     'merge',
@@ -46,6 +48,7 @@ export const operationPolicies = {
     'synonymize',
     'desynonymize',
     'repair',
+    'rebuild_full_names',
   ],
   '/tree/edit/lithostrat': [
     'merge',
@@ -53,6 +56,7 @@ export const operationPolicies = {
     'synonymize',
     'desynonymize',
     'repair',
+    'rebuild_full_names',
   ],
   '/tree/edit/tectonicunit': [
     'merge',
@@ -60,6 +64,7 @@ export const operationPolicies = {
     'synonymize',
     'desynonymize',
     'repair',
+    'rebuild_full_names',
   ],
   '/querybuilder/query': [
     'execute',

@@ -82,7 +82,7 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
     repairTree: {
       title: headerText.repairTree(),
       url: '/specify/overlay/tree-repair/',
-      icon: icons.checkCircle,
+      icon: icons.wrench,
       enabled: () =>
         getDisciplineTrees().some((treeName) =>
           hasPermission(`/tree/edit/${toLowerCase(treeName)}`, 'repair')

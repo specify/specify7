@@ -548,6 +548,7 @@ class TaxonMutationPT(PermissionTarget):
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
+    rebuild_fullname = PermissionTargetAction()
 
 
 class GeographyMutationPT(PermissionTarget):
@@ -557,6 +558,7 @@ class GeographyMutationPT(PermissionTarget):
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
+    rebuild_fullname = PermissionTargetAction()
 
 
 class StorageMutationPT(PermissionTarget):
@@ -567,6 +569,7 @@ class StorageMutationPT(PermissionTarget):
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
+    rebuild_fullname = PermissionTargetAction()
 
 
 class GeologictimeperiodMutationPT(PermissionTarget):
@@ -576,6 +579,7 @@ class GeologictimeperiodMutationPT(PermissionTarget):
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
+    rebuild_fullname = PermissionTargetAction()
 
 
 class LithostratMutationPT(PermissionTarget):
@@ -585,6 +589,7 @@ class LithostratMutationPT(PermissionTarget):
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
+    rebuild_fullname = PermissionTargetAction()
 
 class TectonicunitMutationPT(PermissionTarget):
     resource = "/tree/edit/tectonicunit"
@@ -593,6 +598,7 @@ class TectonicunitMutationPT(PermissionTarget):
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
+    rebuild_fullname = PermissionTargetAction()
 
 def perm_target(tree):
     return {
@@ -603,3 +609,77 @@ def perm_target(tree):
         'lithostrat': LithostratMutationPT,
         'tectonicunit':TectonicunitMutationPT
     }[tree]
+
+@openapi(schema={
+    "post": {
+        "parameters": [
+            {
+                "name": "tree",
+                "in": "path",
+                "required": True,
+                "schema": {"enum": list(ALL_TREES)}
+            },
+            {
+                "name": "id",
+                "in": "path",
+                "description": "The id of the tree definition to rebuild full names for.",
+                "required": True,
+                "schema": {"type": "integer", "minimum": 0}
+            },
+            {
+                "name": "rebuild_synonyms",
+                "in": "query",
+                "required": False,
+                "schema": {"type": "boolean"},
+                "description": "If true, also rebuild fullName for synonym (non-accepted) nodes. Defaults to false."
+            }
+        ],
+        "responses": {"200": {"description": "Rebuild executed."}}
+    }
+})
+@login_maybe_required
+@require_POST
+def rebuild_fullname(request, tree: TREE_TABLE, id: int):
+    """Rebuild fullname field values for nodes in the specified tree definition.
+
+    By default only accepted (preferred) nodes are rebuilt. Pass rebuild_synonyms=true
+    to also process synonym nodes (nodes with AcceptedID not null)."""
+    check_permission_targets(
+        request.specify_collection.id,
+        request.specify_user.id,
+        [perm_target(tree).rebuild_fullname],
+    )
+
+    rebuild_synonyms = request.GET.get('rebuild_synonyms', 'false').lower() == 'true'
+
+    tree_name = tree.title()
+    treedef = get_object_or_404(f"{tree_name}treedef", id=id)
+
+    # First pass: accepted (preferred) nodes only
+    accepted_changed = tree_extras.set_fullnames(
+        treedef, null_only=False, include_synonyms=False, synonyms_only=False
+    )
+
+    synonyms_changed = 0
+    if rebuild_synonyms:
+        # Second pass: synonyms only (AcceptedID not null)
+        synonyms_changed = tree_extras.set_fullnames(
+            treedef,
+            null_only=False,
+            include_synonyms=True,
+            synonyms_only=True,
+        )
+
+    total_changed = accepted_changed + synonyms_changed
+
+    payload = {
+        "success": True,
+        "rebuild_synonyms": rebuild_synonyms,
+        "changed": {
+            "accepted": accepted_changed,
+            "synonyms": synonyms_changed,
+            "total": total_changed,
+        },
+    }
+
+    return HttpResponse(toJson(payload), content_type="application/json")
