@@ -303,21 +303,18 @@ function Merging({
         onMerge={(): void => {
           target.bulkSet(removeKey(merged.toJSON(), 'version'));
           loading(
-            ajax(
-              `/api/specify/${table.name.toLowerCase()}/replace/${target.id}/`,
-              {
-                method: 'POST',
-                headers: {
-                  Accept: 'application/json',
-                },
-                body: {
-                  old_record_ids: clones.map((clone) => clone.id),
-                  new_record_data: merged.toJSON(),
-                },
-                expectedErrors: [Http.NOT_ALLOWED],
-                errorMode: 'dismissible',
-              }
-            ).then(({ data, response }) => {
+            ajax(`/merge/${table.name.toLowerCase()}/replace/${target.id}/`, {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+              },
+              body: {
+                old_record_ids: clones.map((clone) => clone.id),
+                new_record_data: merged.toJSON(),
+              },
+              expectedErrors: [Http.NOT_ALLOWED],
+              errorMode: 'dismissible',
+            }).then(({ data, response }) => {
               if (!response.ok) return;
               setMergeId(data);
             })

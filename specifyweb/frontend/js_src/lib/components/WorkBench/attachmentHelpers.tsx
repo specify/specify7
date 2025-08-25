@@ -1,10 +1,10 @@
-import type { RA, WritableArray } from "../../utils/types";
-import type { SerializedResource } from "../DataModel/helperTypes";
+import type { RA, WritableArray } from '../../utils/types';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import type {
   Attachment,
   SpDataSetAttachment,
   Tables,
-} from "../DataModel/types";
+} from '../DataModel/types';
 import type { Dataset } from '../WbPlanView/Wrapped';
 
 export const ATTACHMENTS_COLUMN = '_UPLOADED_ATTACHMENTS';
@@ -24,29 +24,29 @@ type CellAttachments = {
 
 export function attachmentsToCell(
   dataSetAttachments: RA<SerializedResource<SpDataSetAttachment>>,
-  targetTable: AttachmentTargetTable,
+  targetTable: AttachmentTargetTable
 ): string {
   const formattedAttachments: WritableArray<string> = [];
   const att: WritableArray<CellAttachment> = [];
   dataSetAttachments.forEach((dataSetAttachment) => {
-    const attachment = dataSetAttachment.attachment as SerializedResource<Attachment>;
+    const attachment =
+      dataSetAttachment.attachment as SerializedResource<Attachment>;
     att.push({
       id: dataSetAttachment.id,
       table: targetTable,
     } as CellAttachment);
     formattedAttachments.push(attachment.origFilename);
   });
-  
-  const data: CellAttachments = 
-    {
-      attachments: att,
-      formatted: formattedAttachments.join("; "),
-    }
+
+  const data: CellAttachments = {
+    attachments: att,
+    formatted: formattedAttachments.join('; '),
+  };
   return JSON.stringify(data);
 }
 
 export function getAttachmentsFromCell(
-  cellData: string,
+  cellData: string
 ): CellAttachments | undefined {
   if (cellData.length === 0) {
     return undefined;
@@ -58,15 +58,11 @@ export function getAttachmentsFromCell(
   return undefined;
 }
 
-export function usesAttachments(
-  dataset: Dataset,
-): boolean {
+export function usesAttachments(dataset: Dataset): boolean {
   return dataset.columns.includes(ATTACHMENTS_COLUMN);
 }
 
-export function getAttachmentsColumnIndex(
-  dataset: Dataset,
-): number {
+export function getAttachmentsColumnIndex(dataset: Dataset): number {
   if (!usesAttachments(dataset)) {
     return -1;
   }
@@ -79,7 +75,7 @@ export function getAttachmentsColumnIndex(
  * Right now this function doesn't do anything different.
  */
 export function getAttachmentsColumnIndexFromHeaders(
-  headers: RA<string>,
+  headers: RA<string>
 ): number {
   if (!headers.includes(ATTACHMENTS_COLUMN)) {
     return -1;
