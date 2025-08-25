@@ -600,12 +600,12 @@ msgstr ""
 "Politiques personnalisées au niveau de l'institution (s'appliquent à toutes "
 "les collections attribuées)"
 
-#: components/Security/User.tsx:665
+#: components/Security/User.tsx:668
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdmin"
 msgstr "Impossible de supprimer le statut d'administrateur de l'établissement"
 
-#: components/Security/User.tsx:668
+#: components/Security/User.tsx:671
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdminDescription"
 msgstr ""

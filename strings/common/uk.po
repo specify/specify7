@@ -49,7 +49,7 @@ msgstr "Немає"
 #: components/LocalityUpdate/Status.tsx:191
 #: components/Merging/Status.tsx:119
 #: components/Merging/index.tsx:272
-#: components/Merging/index.tsx:381
+#: components/Merging/index.tsx:378
 #: components/Molecules/LinkedRecords.tsx:88
 #: components/Molecules/LinkedRecords.tsx:100
 #: components/Molecules/SyncAttachmentPicker.tsx:109
@@ -249,7 +249,7 @@ msgstr "Створити"
 #: components/Security/Role.tsx:198
 #: components/Security/SetPassword.tsx:36
 #: components/Security/User.tsx:456
-#: components/Security/User.tsx:664
+#: components/Security/User.tsx:667
 #: components/Security/UserCollections.tsx:70
 #: components/Security/UserInviteLink.tsx:55
 #: components/SpecifyNetwork/Overlay.tsx:118
@@ -268,7 +268,7 @@ msgstr "Створити"
 #: components/WbActions/WbNoUploadPlan.tsx:43
 #: components/WbActions/index.tsx:212
 #: components/WbActions/index.tsx:223
-#: components/WbAttachmentViewer/index.tsx:131
+#: components/WbAttachmentViewer/index.tsx:132
 #: components/WbPlanView/MapperComponents.tsx:212
 #: components/WbPlanView/MapperComponents.tsx:428
 #: components/WbPlanView/MapperComponents.tsx:556
@@ -282,7 +282,7 @@ msgstr "Створити"
 #: components/WorkBench/Results.tsx:85
 #: components/WorkBench/Status.tsx:92
 #: components/WorkBench/WbAttachmentsPreview.tsx:142
-#: components/WorkBench/WbAttachmentsPreview.tsx:326
+#: components/WorkBench/WbAttachmentsPreview.tsx:327
 #: components/WorkBench/useDisambiguationDialog.tsx:104
 #. Used in: Components > App Resources > Dialog Editor ⬤ Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Atoms > __tests__ > Link ⬤ Atoms > __tests__ > Submit ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Chrono Chart ⬤ Components > Attachments > Dialog ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Action State ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Batch Edit > Missing Ranks ⬤ Components > Batch Edit > Query Error ⬤ Components > Batch Edit > Index ⬤ Components > Core > Version Mismatch ⬤ Components > Export Feed > Dwca ⬤ Components > Export Feed > Force Update ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Commands > Index ⬤ Components > Form Editor > Create ⬤ Components > Form Editor > Table ⬤ Components > Form Meta > Auto Numbering ⬤ Components > Form Meta > Carry Forward ⬤ Components > Form Meta > Definition ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Index ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Geo Locate ⬤ Components > Form Plugins > Leaflet ⬤ Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Attachment Warning Deletion ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Form Sliders > Record Set ⬤ Components > Formatters > Element ⬤ Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Data Task ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save ⬤ Components > Header > User Tools ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Leaflet > Map ⬤ Components > Locality Update > Status ⬤ Components > Locality Update > Index ⬤ Components > Merging > Compare Sub View ⬤ Components > Merging > Invalid Merge Records ⬤ Components > Merging > Status ⬤ Components > Molecules > Linked Records ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Index ⬤ Components > Preferences > Index ⬤ Components > Query Builder > Check Read Access ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > Export ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Query Builder > Save ⬤ Components > Query Combo Box > Index ⬤ Components > Reports > Report ⬤ Components > Router > Router Utils ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Search Dialog > Index ⬤ Components > Security > Role ⬤ Components > Security > Set Password ⬤ Components > Security > User ⬤ Components > Security > User Collections ⬤ Components > Security > User Invite Link ⬤ Components > Specify Network > Overlay ⬤ Components > Specify Network > Table ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query Tables Edit ⬤ Components > Toolbar > Query Tables Wrapper ⬤ Components > Toolbar > Tree Repair ⬤ Components > Tree View > Actions ⬤ Components > Wb Actions > Wb No Upload Plan ⬤ Components > Wb Actions > Index ⬤ Components > Wb Attachment Viewer > Index ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Work Bench > Advanced Search ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Results ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Wb Attachments Preview ⬤ Components > Work Bench > Use Disambiguation Dialog
 msgid "close"
@@ -411,7 +411,7 @@ msgstr "Попередній"
 msgid "tool"
 msgstr "Інструмент"
 
-#: components/WbToolkit/index.tsx:79
+#: components/WbToolkit/index.tsx:76
 #: components/WorkBench/WbView.tsx:215
 #. Used in: Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb View
 msgid "tools"
@@ -597,7 +597,7 @@ msgid "ignore"
 msgstr "Ігнорувати"
 
 #: components/FormSliders/RecordSelectorFromIds.tsx:282
-#: components/Merging/index.tsx:397
+#: components/Merging/index.tsx:394
 #: components/Toolbar/Language.tsx:108
 #: components/WbActions/WbUpload.tsx:117
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Merging > Index ⬤ Components > Toolbar > Language ⬤ Components > Wb Actions > Wb Upload
@@ -809,7 +809,7 @@ msgstr "Порядковий"
 #: components/SchemaConfig/Tables.tsx:39
 #: components/Security/ImportExport.tsx:252
 #: components/WbToolkit/DevShowPlan.tsx:90
-#: components/WbToolkit/index.tsx:103
+#: components/WbToolkit/index.tsx:100
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Schema Config > Tables ⬤ Components > Security > Import Export ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Wb Toolkit > Index
 msgid "export"
 msgstr "Експорт"
@@ -1063,7 +1063,7 @@ msgstr "Необмежений"
 msgid "change"
 msgstr "Зміна"
 
-#: components/Merging/index.tsx:389
+#: components/Merging/index.tsx:386
 #: components/WbActions/WbUpload.tsx:109
 #. Used in: Components > Merging > Index ⬤ Components > Wb Actions > Wb Upload
 msgid "dontShowAgain"

@@ -9,8 +9,8 @@ msgstr "Record Merging"
 #: components/FormMeta/MergeRecord.tsx:56
 #: components/Merging/index.tsx:89
 #: components/Merging/index.tsx:93
-#: components/Merging/index.tsx:405
-#: components/Merging/index.tsx:418
+#: components/Merging/index.tsx:402
+#: components/Merging/index.tsx:415
 #: components/Router/OverlayRoutes.tsx:223
 #. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
 msgid "mergeRecords"
@@ -21,7 +21,7 @@ msgstr "Merge Records"
 msgid "mergedRecord"
 msgstr "Merged Record"
 
-#: components/Merging/index.tsx:451
+#: components/Merging/index.tsx:448
 #. Used in: Components > Merging > Index
 msgid "showConflictingFieldsOnly"
 msgstr "Show conflicting fields only"
@@ -83,7 +83,7 @@ msgstr "Some records cannot be merged"
 msgid "mergeOthers"
 msgstr "Merge others"
 
-#: components/Merging/index.tsx:408
+#: components/Merging/index.tsx:405
 #. Used in: Components > Merging > Index
 msgid "warningMergeText"
 msgstr ""

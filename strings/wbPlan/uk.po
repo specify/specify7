@@ -30,8 +30,8 @@ msgstr "План завантаження не визначено"
 msgid "noUploadPlanDescription"
 msgstr "Для цього набору даних не визначено план завантаження. Створити зараз?"
 
-#: components/WorkBench/hotProps.tsx:164
-#: components/WorkBench/hotProps.tsx:166
+#: components/WorkBench/hotProps.tsx:161
+#: components/WorkBench/hotProps.tsx:163
 #. Used in: Components > Work Bench > Hot Props
 msgid "unmappedColumn"
 msgstr "Невідповідний стовпець"
@@ -209,7 +209,7 @@ msgstr "Зіставити вибране поле з вибраним заго�
 msgid "relationshipWithTable"
 msgstr "Відношення до таблиці {tableName:string}"
 
-#: components/WbPlanView/State.tsx:105
+#: components/WbPlanView/State.tsx:106
 #. Used in: Components > Wb Plan View > State
 msgid "selectBaseTable"
 msgstr "Виберіть базову таблицю"
@@ -224,7 +224,7 @@ msgstr "Виберіть існуючий план"
 msgid "showAllTables"
 msgstr "Показати всі таблиці"
 
-#: components/WbPlanView/State.tsx:104
+#: components/WbPlanView/State.tsx:105
 #. Used in: Components > Wb Plan View > State
 msgid "selectBaseTableWithAttachments"
 msgstr "Виберіть базову таблицю з вкладеннями"

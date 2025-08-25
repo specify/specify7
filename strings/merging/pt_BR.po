@@ -20,8 +20,8 @@ msgstr "Mesclagem de registros"
 #: components/FormMeta/MergeRecord.tsx:56
 #: components/Merging/index.tsx:89
 #: components/Merging/index.tsx:93
-#: components/Merging/index.tsx:405
-#: components/Merging/index.tsx:418
+#: components/Merging/index.tsx:402
+#: components/Merging/index.tsx:415
 #: components/Router/OverlayRoutes.tsx:223
 #. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
 #, fuzzy
@@ -34,7 +34,7 @@ msgstr "Mesclar registros"
 msgid "mergedRecord"
 msgstr "Registro mesclado"
 
-#: components/Merging/index.tsx:451
+#: components/Merging/index.tsx:448
 #. Used in: Components > Merging > Index
 #, fuzzy
 msgid "showConflictingFieldsOnly"
@@ -108,7 +108,7 @@ msgstr "Alguns registros não podem ser mesclados"
 msgid "mergeOthers"
 msgstr "Mesclar outros"
 
-#: components/Merging/index.tsx:408
+#: components/Merging/index.tsx:405
 #. Used in: Components > Merging > Index
 #, fuzzy
 msgid "warningMergeText"

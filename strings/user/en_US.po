@@ -536,12 +536,12 @@ msgstr "Users will not be deleted, but they would lose this role."
 msgid "institutionPolicies"
 msgstr "Custom Institution-level Policies (applies to all assigned collections)"
 
-#: components/Security/User.tsx:665
+#: components/Security/User.tsx:668
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdmin"
 msgstr "Can't remove Institution Admin status"
 
-#: components/Security/User.tsx:668
+#: components/Security/User.tsx:671
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdminDescription"
 msgstr "There must be at least one Institution Admin in institution"

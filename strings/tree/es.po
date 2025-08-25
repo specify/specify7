@@ -33,9 +33,9 @@ msgstr "Mover"
 
 #: components/Merging/CompareField.tsx:216
 #: components/Merging/CompareField.tsx:218
-#: components/Merging/index.tsx:362
+#: components/Merging/index.tsx:359
+#: components/Merging/index.tsx:364
 #: components/Merging/index.tsx:367
-#: components/Merging/index.tsx:370
 #: components/SearchDialog/SelectRecordSet.tsx:135
 #: components/SearchDialog/SelectRecordSet.tsx:139
 #: components/Toolbar/MergeRecordSets.tsx:79

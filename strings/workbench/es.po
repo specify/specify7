@@ -281,12 +281,12 @@ msgstr "Ahorro..."
 msgid "wbUnloadProtect"
 msgstr "Los cambios a este conjunto de datos no se han guardado."
 
-#: components/WorkBench/WbValidation.tsx:310
+#: components/WorkBench/WbValidation.tsx:313
 #. Used in: Components > Work Bench > Wb Validation
 msgid "noMatchErrorMessage"
 msgstr "No hay registro que coincida en tabla de coincidencia obligada."
 
-#: components/WorkBench/WbValidation.tsx:339
+#: components/WorkBench/WbValidation.tsx:342
 #. Used in: Components > Work Bench > Wb Validation
 msgid "matchedMultipleErrorMessage"
 msgstr ""
@@ -433,7 +433,7 @@ msgstr ""
 #: components/WbActions/WbUpload.tsx:84
 #: components/WbActions/WbValidate.tsx:66
 #: components/WbToolkit/ChangeOwner.tsx:38
-#: components/WbToolkit/index.tsx:100
+#: components/WbToolkit/index.tsx:97
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Index
 msgid "unavailableWhileEditing"
 msgstr "Esta acción requiere que se guarden todos los cambios"
@@ -832,12 +832,12 @@ msgstr "{node:string} {author:string} (en {parent:string})"
 msgid "attachmentsForRow"
 msgstr ""
 
-#: components/WorkBench/WbAttachmentsPreview.tsx:324
+#: components/WorkBench/WbAttachmentsPreview.tsx:325
 #. Used in: Components > Work Bench > Wb Attachments Preview
 msgid "detachWindow"
 msgstr ""
 
-#: components/WbAttachmentViewer/index.tsx:129
+#: components/WbAttachmentViewer/index.tsx:130
 #. Used in: Components > Wb Attachment Viewer > Index
 msgid "attachWindow"
 msgstr ""

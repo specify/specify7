@@ -34,8 +34,8 @@ msgstr ""
 "Aucun plan de téléchargement n'a été défini pour cet ensemble de données. "
 "Voulez-vous en créer un maintenant ?"
 
-#: components/WorkBench/hotProps.tsx:164
-#: components/WorkBench/hotProps.tsx:166
+#: components/WorkBench/hotProps.tsx:161
+#: components/WorkBench/hotProps.tsx:163
 #. Used in: Components > Work Bench > Hot Props
 #, fuzzy
 msgid "unmappedColumn"
@@ -247,7 +247,7 @@ msgstr "Mapper le champ sélectionné à l'en-tête sélectionné"
 msgid "relationshipWithTable"
 msgstr "Relation avec la table {tableName:string}"
 
-#: components/WbPlanView/State.tsx:105
+#: components/WbPlanView/State.tsx:106
 #. Used in: Components > Wb Plan View > State
 #, fuzzy
 msgid "selectBaseTable"
@@ -265,7 +265,7 @@ msgstr "Choisir un plan existant"
 msgid "showAllTables"
 msgstr "Afficher tous les tableaux"
 
-#: components/WbPlanView/State.tsx:104
+#: components/WbPlanView/State.tsx:105
 #. Used in: Components > Wb Plan View > State
 #, fuzzy
 msgid "selectBaseTableWithAttachments"

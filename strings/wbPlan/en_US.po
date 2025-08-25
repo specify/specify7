@@ -19,8 +19,8 @@ msgstr "No Upload Plan is Defined"
 msgid "noUploadPlanDescription"
 msgstr "No Upload Plan has been defined for this Data Set. Create one now?"
 
-#: components/WorkBench/hotProps.tsx:164
-#: components/WorkBench/hotProps.tsx:166
+#: components/WorkBench/hotProps.tsx:161
+#: components/WorkBench/hotProps.tsx:163
 #. Used in: Components > Work Bench > Hot Props
 msgid "unmappedColumn"
 msgstr "Unmapped Column"
@@ -198,7 +198,7 @@ msgstr "Map selected field to selected header"
 msgid "relationshipWithTable"
 msgstr "Relationship to the {tableName:string} table"
 
-#: components/WbPlanView/State.tsx:105
+#: components/WbPlanView/State.tsx:106
 #. Used in: Components > Wb Plan View > State
 msgid "selectBaseTable"
 msgstr "Select a Base Table"
@@ -213,7 +213,7 @@ msgstr "Choose Existing Plan"
 msgid "showAllTables"
 msgstr "Show All Tables"
 
-#: components/WbPlanView/State.tsx:104
+#: components/WbPlanView/State.tsx:105
 #. Used in: Components > Wb Plan View > State
 msgid "selectBaseTableWithAttachments"
 msgstr "Select a Base Table with Attachments"
