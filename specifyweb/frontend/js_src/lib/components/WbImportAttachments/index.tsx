@@ -40,6 +40,7 @@ import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
 import {
   ATTACHMENTS_COLUMN,
+  ATTACHMENTS_FORMATTED_COLUMN,
   attachmentsToCell,
   BASE_TABLE_NAME,
 } from '../WorkBench/attachmentHelpers';
@@ -138,7 +139,7 @@ function FilesPicked({ files }: { readonly files: RA<File> }): JSX.Element {
             dataSet: new tables.Spdataset.Resource({
               name: dataSetName,
               importedfilename: 'attachments',
-              columns: [ATTACHMENTS_COLUMN] as never,
+              columns: [ATTACHMENTS_COLUMN, ATTACHMENTS_FORMATTED_COLUMN] as never,
               data: [[]] as never,
               specifyuser: userInformation.resource_uri,
             }).save(),
@@ -159,12 +160,12 @@ function FilesPicked({ files }: { readonly files: RA<File> }): JSX.Element {
       )
       .then(async ({ dataSet, dataSetAttachments }) => {
         // Put all SpDataSetAttachments IDs into the data set
-        const data = dataSetAttachments.map((dataSetAttachment) => [
+        const data = dataSetAttachments.map((dataSetAttachment) => 
           attachmentsToCell(
             [serializeResource(dataSetAttachment)],
             BASE_TABLE_NAME
           ),
-        ]);
+        );
         dataSet.set('data', data as never);
         dataSet.set('spDataSetAttachments', dataSetAttachments);
         return dataSet.save();

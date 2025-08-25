@@ -8,6 +8,7 @@ import type {
 import type { Dataset } from '../WbPlanView/Wrapped';
 
 export const ATTACHMENTS_COLUMN = '_UPLOADED_ATTACHMENTS';
+export const ATTACHMENTS_FORMATTED_COLUMN = '_UPLOADED_ATTACHMENTS_FORMATTED';
 export const BASE_TABLE_NAME = 'baseTable' as const;
 
 type AttachmentTargetTable = keyof Tables | typeof BASE_TABLE_NAME;
@@ -25,7 +26,7 @@ type CellAttachments = {
 export function attachmentsToCell(
   dataSetAttachments: RA<SerializedResource<SpDataSetAttachment>>,
   targetTable: AttachmentTargetTable
-): string {
+): RA<string> {
   const formattedAttachments: WritableArray<string> = [];
   const att: WritableArray<CellAttachment> = [];
   dataSetAttachments.forEach((dataSetAttachment) => {
@@ -38,11 +39,12 @@ export function attachmentsToCell(
     formattedAttachments.push(attachment.origFilename);
   });
 
+  const formatted = formattedAttachments.join('; ')
   const data: CellAttachments = {
     attachments: att,
-    formatted: formattedAttachments.join('; '),
+    formatted: formatted,
   };
-  return JSON.stringify(data);
+  return [JSON.stringify(data), formatted];
 }
 
 export function getAttachmentsFromCell(
@@ -69,16 +71,23 @@ export function getAttachmentsColumnIndex(dataset: Dataset): number {
   return dataset.columns.indexOf(ATTACHMENTS_COLUMN);
 }
 
+export function getAttachmentsFormattedColumnIndex(dataset: Dataset): number {
+  if (!usesAttachments(dataset)) {
+    return -1;
+  }
+  return dataset.columns.indexOf(ATTACHMENTS_FORMATTED_COLUMN);
+}
+
 /**
  * In contexts where the dataset is not known, this function can be modified to
  * accept an uploadPlan to determine where the attachments column is.
  * Right now this function doesn't do anything different.
  */
-export function getAttachmentsColumnIndexFromHeaders(
+export function getAttachmentsColumnsFromHeaders(
   headers: RA<string>
-): number {
+): RA<number> {
   if (!headers.includes(ATTACHMENTS_COLUMN)) {
-    return -1;
+    return [];
   }
-  return headers.indexOf(ATTACHMENTS_COLUMN);
+  return [headers.indexOf(ATTACHMENTS_COLUMN), headers.indexOf(ATTACHMENTS_FORMATTED_COLUMN)];
 }
