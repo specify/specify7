@@ -148,7 +148,7 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
           );
 
           const backendClones = await ajax<RA<SerializedRecord<SCHEMA>>>(
-            `/api/specify/bulk/${resource.specifyTable.name.toLowerCase()}/`,
+            `/bulk_copy/bulk/${resource.specifyTable.name.toLowerCase()}/`,
             {
               method: 'POST',
               headers: { Accept: 'application/json' },
@@ -231,7 +231,7 @@ function useBulkCarryForwardCount<SCHEMA extends AnySchema>(
           );
 
           return ajax<RA<SerializedRecord<SCHEMA>>>(
-            `/api/specify/bulk/${resource.specifyTable.name.toLowerCase()}/`,
+            `/bulk_copy/bulk/${resource.specifyTable.name.toLowerCase()}/`,
             {
               method: 'POST',
               headers: { Accept: 'application/json' },
