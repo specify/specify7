@@ -54,13 +54,5 @@ urlpatterns = [
         re_path(r'^(?P<treeid>\w+)/add_root/$', tree_views.add_root),
         re_path(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/(?P<sortfield>\w+)/$', tree_views.tree_view),
         path('repair/', tree_views.repair_tree),
-    ])),
-
-    # locality set import endpoints
-    path('localityset/', include([
-        path('parse/', views.parse_locality_set),
-        path('import/', views.upload_locality_set),
-        re_path(r'^status/(?P<taskid>[0-9a-fA-F-]+)/$', views.localityupdate_status),
-        re_path(r'^abort/(?P<taskid>[0-9a-fA-F-]+)/$', views.abort_localityupdate_task),
-    ])),
+    ]))
 ]

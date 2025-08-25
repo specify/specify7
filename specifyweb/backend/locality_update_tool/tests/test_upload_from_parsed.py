@@ -2,7 +2,7 @@ from unittest.mock import Mock, call
 from specifyweb.specify.tests.test_update_locality.test_update_locality_context import (
     TestUpdateLocalityContext,
 )
-from specifyweb.specify.update_locality import (
+from specifyweb.backend.locality_update_tool.update_locality import (
     LocalityUpdateStatus,
     ParsedRow,
     upload_from_parsed,
