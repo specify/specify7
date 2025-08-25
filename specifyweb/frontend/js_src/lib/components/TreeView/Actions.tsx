@@ -321,7 +321,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
 
   const action = async (): Promise<number> =>
     ping(
-      `/api/specify_tree/${tableName.toLowerCase()}/${actionRow.nodeId}/${
+      `/trees/specify_tree/${tableName.toLowerCase()}/${actionRow.nodeId}/${
         frontendToBackendMappingActions[type]
       }/`,
       {
