@@ -36,6 +36,11 @@ export function LeafletImageViewer({
     // Inject reset zoom button
     map.addControl(resetZoomButton(map, boundsRef));
 
+    const resizeObserver = new window.ResizeObserver(() => {
+      map.invalidateSize();
+    });
+    resizeObserver.observe(containerRef.current);
+
     return () => {
       map.remove();
     }
@@ -72,7 +77,7 @@ function resetZoomButton(
       button.innerHTML = '⟳';
       button.title = commonText.reset();
       button.href = "#";
-      button.role = 'button';
+      button.setAttribute('role', 'button');
       button.style.textAlign = 'center';
       button.style.fontSize = '18px';
       button.style.lineHeight = '30px';
