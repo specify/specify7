@@ -57,6 +57,15 @@ export const headerText = createDictionary({
     "de-ch": "DwC-Archiv erstellen",
     "pt-br": "Criar arquivo DwC",
   },
+  backupDatabase: {
+    'en-us': 'Backup Database',
+    'ru-ru': 'Резервное копирование базы данных',
+    'es-es': 'Copia de seguridad de la base de datos',
+    'fr-fr': 'Sauvegarder la base de données',
+    'uk-ua': 'Резервне копіювання бази даних',
+    'de-ch': 'Datenbank sichern',
+    'pt-br': 'Fazer backup do banco de dados',
+  },
   updateExportFeed: {
     "en-us": "Update RSS Feed",
     "ru-ru": "Обновить RSS-канал",
