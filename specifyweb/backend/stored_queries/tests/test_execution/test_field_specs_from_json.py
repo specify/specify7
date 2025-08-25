@@ -1,10 +1,10 @@
-from specifyweb.specify.load_datamodel import Field, Table
+from specifyweb.backend.datamodel.load_datamodel import Field, Table
 from specifyweb.specify.tests.test_api import ApiTests
 import json
 
 from specifyweb.backend.stored_queries.queryfield import fields_from_json
 from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec, TreeRankQuery
-from specifyweb.specify.datamodel import datamodel
+from specifyweb.backend.datamodel.datamodel import datamodel
 
 from specifyweb.backend.stored_queries.tests.static.simple_static_fields import (
     static_simple_field_spec,

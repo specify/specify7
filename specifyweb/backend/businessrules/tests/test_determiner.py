@@ -1,5 +1,5 @@
 from unittest import skipUnless
-from specifyweb.specify import models
+from specifyweb.backend.datamodel import models
 from specifyweb.specify.tests.test_api import ApiTests
 from ..exceptions import BusinessRuleException
 

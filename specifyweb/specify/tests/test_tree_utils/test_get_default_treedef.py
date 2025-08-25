@@ -1,5 +1,5 @@
-from specifyweb.specify.datamodel import datamodel
-from specifyweb.specify.models import Lithostrattreedef, Storagetreedef, Taxontreedef, Tectonicunittreedef
+from specifyweb.backend.datamodel.datamodel import datamodel
+from specifyweb.backend.datamodel.models import Lithostrattreedef, Storagetreedef, Taxontreedef, Tectonicunittreedef
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify.tree_utils import get_default_treedef
 

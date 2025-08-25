@@ -1,8 +1,8 @@
 from typing import Tuple, List
 from django.db.models import Q, Count, Model
 
-import specifyweb.specify.models as spmodels
-from specifyweb.specify.datamodel import datamodel, Table
+import specifyweb.backend.datamodel.models as spmodels
+from specifyweb.backend.datamodel.datamodel import datamodel, Table
 
 lookup = lambda tree: (tree.lower() + 'treedef')
 

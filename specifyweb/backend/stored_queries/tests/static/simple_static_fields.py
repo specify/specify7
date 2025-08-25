@@ -1,7 +1,7 @@
 from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec, TreeRankQuery
 from specifyweb.backend.stored_queries.queryfield import QueryField
 
-from specifyweb.specify.datamodel import datamodel
+from specifyweb.backend.datamodel.datamodel import datamodel
 import specifyweb.backend.stored_queries.models as sql_models
 
 

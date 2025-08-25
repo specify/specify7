@@ -32,7 +32,7 @@ from ..upload_plan_schema import parse_column_options, parse_plan, schema
 
 from jsonschema import validate  # type: ignore
 
-from specifyweb.specify.models import (
+from specifyweb.backend.datamodel.models import (
     Spauditlogfield,
     Collectionobject,
     Agent,

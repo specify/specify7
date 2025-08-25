@@ -14,7 +14,7 @@ from specifyweb.backend.permissions.permissions import PermissionTarget, \
 from specifyweb.celery_tasks import app
 from specifyweb.backend.merge.record_merging import record_merge_fx, record_merge_task, resolve_record_merge_response
 from specifyweb.specify.views import login_maybe_required, openapi
-from specifyweb.specify import models as spmodels
+from specifyweb.backend.datamodel import models as spmodels
 
 class ReplaceRecordPT(PermissionTarget):
     resource = "/record/merge"

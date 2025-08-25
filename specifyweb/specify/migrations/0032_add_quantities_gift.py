@@ -5,7 +5,7 @@ from django.db import migrations, models
 from django.apps import apps as specify_apps
 import django.db.models.deletion
 from specifyweb.specify.migration_utils.update_schema_config import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
-import specifyweb.specify.models
+import specifyweb.backend.datamodel.models
 
 from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0032_FIELDS as SCHEMA_CONFIG_TABLE_FIELDS, MIGRATION_0032_UPDATE_FIELDS as SCHEMA_CONFIG_GIFTPREPARATION_TABLE_FIELDS
 

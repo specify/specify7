@@ -1,3 +1,4 @@
+
 """
 Implements the RESTful business data API
 """
@@ -35,14 +36,14 @@ from specifyweb.backend.permissions.permissions import (
     check_field_permissions,
     table_permissions_checker,
 )
-from specifyweb.specify.models_by_table_id import get_model_by_table_id
+from specifyweb.backend.datamodel.models_by_table_id import get_model_by_table_id
 
-from . import models
+from ..backend.datamodel import models
 from .autonumbering import autonumber_and_save
 from .uiformatters import AutonumberOverflowException
 from .filter_by_col import filter_by_collection
 from .auditlog import auditlog
-from .datamodel import datamodel, Table, Relationship
+from ..backend.datamodel.datamodel import datamodel, Table, Relationship
 from .calculated_fields import calculate_extra_fields
 
 ReadPermChecker = Callable[[Any], None]

@@ -1,7 +1,8 @@
 import json
 from django.test import Client
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
-from specifyweb.specify import api, models
+from specifyweb.backend.datamodel import models
+from specifyweb.specify import api
 from specifyweb.specify.tests.test_api import ApiTests, get_table
 from specifyweb.specify.tree_stats import get_tree_stats
 from specifyweb.specify.tree_extras import set_fullnames

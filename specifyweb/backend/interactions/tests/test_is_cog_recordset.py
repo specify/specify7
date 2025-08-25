@@ -1,6 +1,6 @@
 from specifyweb.backend.interactions.cog_preps import is_cog_recordset
 from specifyweb.backend.interactions.tests.test_cog import TestCogInteractions
-from specifyweb.specify.models import Recordset, Collectionobject, Collectionobjectgroup
+from specifyweb.backend.datamodel.models import Recordset, Collectionobject, Collectionobjectgroup
 
 
 class TestIsCogRecordSet(TestCogInteractions):

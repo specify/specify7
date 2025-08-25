@@ -1,3 +1,4 @@
+
 import csv
 import json
 import logging
@@ -21,9 +22,9 @@ from django.db.utils import OperationalError, IntegrityError
 from jsonschema import validate  # type: ignore
 
 from specifyweb.backend.permissions.permissions import has_target_permission
-from specifyweb.specify import models
+from specifyweb.backend.datamodel import models
 from specifyweb.specify.auditlog import auditlog
-from specifyweb.specify.datamodel import Table
+from specifyweb.backend.datamodel.datamodel import Table
 from specifyweb.specify.func import Func
 from specifyweb.specify.tree_extras import renumber_tree, set_fullnames
 from specifyweb.backend.workbench.permissions import BatchEditDataSetPT

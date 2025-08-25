@@ -3,7 +3,7 @@
 from django.db import migrations
 from django.db.models import Q
 
-from specifyweb.specify.datamodel import datamodel
+from specifyweb.backend.datamodel.datamodel import datamodel
 from specifyweb.specify.migration_utils.update_schema_config import camel_to_spaced_title_case
 
 

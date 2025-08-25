@@ -12,7 +12,7 @@ from xml.sax.saxutils import quoteattr
 
 from django.conf import settings
 
-from specifyweb.specify.models import Spappresourcedir, Spappresourcedata
+from specifyweb.backend.datamodel.models import Spappresourcedir, Spappresourcedata
 
 logger = logging.getLogger(__name__)
 

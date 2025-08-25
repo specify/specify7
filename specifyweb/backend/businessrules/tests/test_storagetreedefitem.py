@@ -1,7 +1,7 @@
 from django.db.models import ProtectedError
 from specifyweb.specify.tests.test_api import ApiTests
 from ..exceptions import TreeBusinessRuleException
-from specifyweb.specify import models
+from specifyweb.backend.datamodel import models
 
 class StorageTreeDefItemTests(ApiTests):
     def setUp(self):

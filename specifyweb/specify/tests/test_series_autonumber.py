@@ -1,7 +1,7 @@
 import json
 from django.test import Client
 from specifyweb.specify.tests.test_api import ApiTests
-from specifyweb.specify.models import (Collectionobject)
+from specifyweb.backend.datamodel.models import (Collectionobject)
 
 class TestSeriesAutonumber(ApiTests):
 

@@ -8,10 +8,10 @@ from django.db import transaction
 from django.core.serializers.json import DjangoJSONEncoder
 from celery.exceptions import Ignore
 
-import specifyweb.specify.models as spmodels
+import specifyweb.backend.datamodel.models as spmodels
 
 from specifyweb.celery_tasks import LogErrorsTask, app
-from specifyweb.specify.datamodel import datamodel
+from specifyweb.backend.datamodel.datamodel import datamodel
 from specifyweb.backend.notifications.models import LocalityUpdate, LocalityUpdateRowResult, Message
 from specifyweb.specify.parse import ParseFailureKey, parse_field as _parse_field, ParseFailure as BaseParseFailure, ParseSucess as BaseParseSuccess
 from specifyweb.specify.uiformatters import get_uiformatter

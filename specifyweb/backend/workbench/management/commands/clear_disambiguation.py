@@ -4,7 +4,7 @@ from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
-from specifyweb.specify import models
+from specifyweb.backend.datamodel import models
 
 from specifyweb.backend.workbench.upload.upload import clear_disambiguation
 from specifyweb.backend.workbench.models import Spdataset

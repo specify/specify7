@@ -1,4 +1,4 @@
-from specifyweb.specify.models import Geographytreedefitem, Taxontreedefitem, Lithostrattreedefitem, Geologictimeperiodtreedefitem, Storagetreedefitem,Tectonicunittreedefitem 
+from specifyweb.backend.datamodel.models import Geographytreedefitem, Taxontreedefitem, Lithostrattreedefitem, Geologictimeperiodtreedefitem, Storagetreedefitem,Tectonicunittreedefitem 
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify.tree_utils import get_treedefitem_model
 

@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 from django.db import connection
 from django.db.models import Model
 
-from specifyweb.specify.models import Agent
-from specifyweb.specify.datamodel import Table
+from specifyweb.backend.datamodel.models import Agent
+from specifyweb.backend.datamodel.datamodel import Table
 
 from . import models
 

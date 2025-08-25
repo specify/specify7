@@ -2,7 +2,7 @@ from django.db.models import signals
 from django.dispatch import receiver
 from django.db import connection
 
-from specifyweb.specify.models import Specifyuser, Spprincipal, Collection
+from specifyweb.backend.datamodel.models import Specifyuser, Spprincipal, Collection
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 
 

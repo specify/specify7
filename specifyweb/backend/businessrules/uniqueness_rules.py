@@ -1,3 +1,4 @@
+
 from functools import reduce
 import logging
 import json
@@ -10,7 +11,7 @@ from django.db.models import Q, Count
 from django.db.migrations.recorder import MigrationRecorder
 from django.core.exceptions import ObjectDoesNotExist
 from specifyweb.specify.api import get_model
-from specifyweb.specify.datamodel import datamodel
+from specifyweb.backend.datamodel.datamodel import datamodel
 from specifyweb.middleware.general import serialize_django_obj
 from specifyweb.specify.scoping import in_same_scope
 from .orm_signal_handler import orm_signal_handler

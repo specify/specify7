@@ -15,7 +15,7 @@
 from decimal import Decimal
 from typing import NamedTuple
 from unittest.mock import Mock
-from specifyweb.specify.models import Geocoorddetail, Locality
+from specifyweb.backend.datamodel.models import Geocoorddetail, Locality
 from specifyweb.specify.tests.test_api import ApiTests
 from uuid import uuid4
 import datetime

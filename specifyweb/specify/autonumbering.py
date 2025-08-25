@@ -10,7 +10,7 @@ from typing import List, Tuple, Set
 from collections.abc import Sequence
 
 from specifyweb.specify.scoping import Scoping
-from specifyweb.specify.datamodel import datamodel
+from specifyweb.backend.datamodel.datamodel import datamodel
 
 logger = logging.getLogger(__name__)
 

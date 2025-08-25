@@ -4,7 +4,7 @@ import logging
 from django.db import migrations, models
 from django.db.models import F
 import django.utils.timezone
-from specifyweb.specify.models import (
+from specifyweb.backend.datamodel.models import (
     protect_with_blockers
 )
 from specifyweb.specify.migration_utils.update_schema_config import (

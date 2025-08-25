@@ -1,4 +1,4 @@
-from specifyweb.specify import models
+from specifyweb.backend.datamodel import models
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify.agent_types import agent_types
 from ..exceptions import BusinessRuleException

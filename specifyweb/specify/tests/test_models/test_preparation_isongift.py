@@ -1,5 +1,5 @@
 from specifyweb.backend.interactions.tests.utils import _create_interaction_prep_generic
-from specifyweb.specify.models import Gift
+from specifyweb.backend.datamodel.models import Gift
 from specifyweb.specify.tests.test_api import ApiTests
 
 

@@ -5,7 +5,7 @@ from typing import Any, NamedTuple, Literal, Union
 from django.db import transaction, IntegrityError
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
-from specifyweb.specify import models
+from specifyweb.backend.datamodel import models
 from specifyweb.specify.func import Func
 from specifyweb.specify.field_change_info import FieldChangeInfo
 from specifyweb.backend.workbench.upload.clone import clone_record

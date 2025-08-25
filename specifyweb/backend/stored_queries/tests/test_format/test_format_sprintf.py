@@ -1,4 +1,4 @@
-from specifyweb.specify.models import Accession
+from specifyweb.backend.datamodel.models import Accession
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from specifyweb.backend.stored_queries.tests.utils import make_query_fields_test
 from unittest.mock import patch, Mock

@@ -1,5 +1,5 @@
 from specifyweb.specify.tests.test_api import DefaultsSetup
-from specifyweb.specify.models import (
+from specifyweb.backend.datamodel.models import (
     Collectionobjectgroup,
     Collectionobjectgrouptype,
     Collectionobjectgroupjoin,

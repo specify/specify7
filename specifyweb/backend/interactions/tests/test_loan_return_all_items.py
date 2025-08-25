@@ -3,7 +3,7 @@ from specifyweb.backend.interactions.tests.test_loan_preps_context import TestLo
 
 import json
 
-from specifyweb.specify.models import Loan
+from specifyweb.backend.datamodel.models import Loan
 
 class TestLoanReturnAllItems(TestLoanPrepsContext):
     

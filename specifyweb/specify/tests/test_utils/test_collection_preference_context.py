@@ -1,5 +1,5 @@
 # TODO: Make this part of generic test infrastructure. Quite useful.
-from specifyweb.specify.models import Spappresource, Spappresourcedata, Spappresourcedir
+from specifyweb.backend.datamodel.models import Spappresource, Spappresourcedata, Spappresourcedir
 from specifyweb.specify.tests.test_api import ApiTests
 
 import json

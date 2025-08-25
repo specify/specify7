@@ -16,7 +16,7 @@ from specifyweb.backend.stored_queries.execution import set_group_concat_max_len
 from specifyweb.backend.stored_queries.group_concat import group_concat
 from specifyweb.specify.tree_utils import get_search_filters
 from specifyweb.specify.field_change_info import FieldChangeInfo
-from specifyweb.specify import models as spmodels
+from specifyweb.backend.datamodel import models as spmodels
 from specifyweb.specify.tree_ranks import tree_rank_count
 from . import tree_extras
 from .api import get_object_or_404, obj_to_data, toJson

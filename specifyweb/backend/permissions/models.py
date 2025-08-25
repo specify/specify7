@@ -1,6 +1,6 @@
 from django.db import models
 from functools import partialmethod
-from specifyweb.specify.models import Collection, Specifyuser, datamodel, custom_save
+from specifyweb.backend.datamodel.models import Collection, Specifyuser, datamodel, custom_save
 
 class UserPolicy(models.Model):
     specify_model = datamodel.get_table('userpolicy')

@@ -2,7 +2,7 @@ from unittest import skip
 
 from django.db.models import ProtectedError
 
-from specifyweb.specify import models
+from specifyweb.backend.datamodel import models
 from specifyweb.specify.tests.test_api import ApiTests
 
 class LithostratTests(ApiTests):

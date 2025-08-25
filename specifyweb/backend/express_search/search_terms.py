@@ -49,7 +49,7 @@ class Term(namedtuple("Term", "term is_suffix is_prefix is_number maybe_year is_
         if (table.name == 'CollectionObject' and
             field.name == 'catalogNumber' and
             self.discipline):
-            from specifyweb.specify.models import Splocalecontaineritem
+            from specifyweb.backend.datamodel.models import Splocalecontaineritem
             fieldinfo = Splocalecontaineritem.objects.get(
                 container__schematype=0, # core schema
                 container__discipline=self.discipline,

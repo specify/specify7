@@ -1,4 +1,4 @@
-from specifyweb.specify.models import Loan, Loanpreparation
+from specifyweb.backend.datamodel.models import Loan, Loanpreparation
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.backend.interactions.tests.utils import _create_interaction_prep_generic
 

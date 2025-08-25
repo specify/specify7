@@ -1,6 +1,6 @@
 from specifyweb.specify.autonumbering import do_autonumbering
 from specifyweb.specify.filter_by_col import filter_by_collection
-from specifyweb.specify.models import Collectionobject, Collection
+from specifyweb.backend.datamodel.models import Collectionobject, Collection
 
 from unittest.mock import Mock, patch
 

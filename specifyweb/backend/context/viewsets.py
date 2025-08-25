@@ -12,7 +12,7 @@ from django.conf import settings
 from django.http import Http404
 from django.utils.encoding import force_bytes
 
-from specifyweb.specify.models import Spappresourcedata
+from specifyweb.backend.datamodel.models import Spappresourcedata
 from . import app_resource as AR
 
 logger = logging.getLogger(__name__)

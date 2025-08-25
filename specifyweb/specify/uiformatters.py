@@ -18,10 +18,10 @@ from django.db import connection
 logger = logging.getLogger(__name__)
 
 from specifyweb.backend.context.app_resource import get_app_resource
-from specifyweb.specify.datamodel import Table
-from specifyweb.specify import models
+from specifyweb.backend.datamodel.datamodel import Table
+from specifyweb.backend.datamodel import models
 
-from .models import Splocalecontaineritem as Item
+from ..backend.datamodel.models import Splocalecontaineritem as Item
 from .filter_by_col import filter_by_collection
 
 class AutonumberOverflowException(Exception):

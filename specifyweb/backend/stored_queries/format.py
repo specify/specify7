@@ -20,9 +20,9 @@ import specifyweb.backend.context.app_resource as app_resource
 from specifyweb.backend.context.remote_prefs import get_remote_prefs
 
 from specifyweb.specify.agent_types import agent_types
-from specifyweb.specify.models import datamodel, Splocalecontainer
+from specifyweb.backend.datamodel.models import datamodel, Splocalecontainer
 
-from specifyweb.specify.datamodel import Field, Relationship, Table
+from specifyweb.backend.datamodel.datamodel import Field, Relationship, Table
 from specifyweb.backend.stored_queries.queryfield import QueryField
 
 from . import models

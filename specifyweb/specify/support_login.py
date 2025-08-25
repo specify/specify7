@@ -6,7 +6,7 @@ from time import time
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 
-from specifyweb.specify.models import Specifyuser
+from specifyweb.backend.datamodel.models import Specifyuser
 
 logger = logging.getLogger(__name__)
 

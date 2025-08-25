@@ -1,6 +1,6 @@
 from django.test import Client
 from specifyweb.backend.accounts.exceptions_types import AgentInUseException, MultipleAgentsException
-from specifyweb.specify.models import Agent, Division, Specifyuser
+from specifyweb.backend.datamodel.models import Agent, Division, Specifyuser
 from specifyweb.specify.tests.test_api import ApiTests
 
 import json

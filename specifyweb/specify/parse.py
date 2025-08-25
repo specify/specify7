@@ -7,7 +7,7 @@ from decimal import Decimal
 
 from specifyweb.specify.agent_types import agent_types
 from specifyweb.backend.stored_queries.format import get_date_format, MYSQL_TO_YEAR, MYSQL_TO_MONTH
-from specifyweb.specify.datamodel import datamodel, Table, Field, Relationship
+from specifyweb.backend.datamodel.datamodel import datamodel, Table, Field, Relationship
 from specifyweb.specify.uiformatters import FormatMismatch, ScopedFormatter
 
 ParseFailureKey = Literal[

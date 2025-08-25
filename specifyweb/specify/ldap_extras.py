@@ -23,7 +23,7 @@ USERTYPES = UserTypes(
 @receiver(populate_user)
 def handle_populate_user(sender, user, ldap_user, **kwargs):
     from django.db import connection
-    from .models import Collection, Division, Agent
+    from ..backend.datamodel.models import Collection, Division, Agent
     from .agent_types import agent_types
     from specifyweb.backend.context.views import set_users_collections
 

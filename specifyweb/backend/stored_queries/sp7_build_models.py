@@ -1,6 +1,6 @@
 from sqlalchemy import Column, ForeignKey, types
 from sqlalchemy.dialects.mysql import BIT as mysql_bit_type
-from specifyweb.specify.load_datamodel import Datamodel, Table, Field, Relationship
+from specifyweb.backend.datamodel.load_datamodel import Datamodel, Table, Field, Relationship
 
 TAB1 = '    '
 TAB2 = TAB1 + TAB1

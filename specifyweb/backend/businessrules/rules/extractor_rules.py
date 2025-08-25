@@ -1,6 +1,6 @@
 from django.db.models import Max
 from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handler
-from specifyweb.specify.models import Extractor
+from specifyweb.backend.datamodel.models import Extractor
 
 
 @orm_signal_handler('pre_save', 'Extractor')

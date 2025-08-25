@@ -8,7 +8,7 @@ from collections.abc import Hashable
 from django.db.models import signals
 from django.dispatch import receiver
 
-from specifyweb.specify import models
+from specifyweb.backend.datamodel import models
 
 logger = logging.getLogger(__name__)
 

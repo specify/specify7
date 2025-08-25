@@ -1,3 +1,4 @@
+
 import json
 from unittest.mock import patch
 
@@ -14,8 +15,8 @@ from specifyweb.backend.stored_queries.tests.base_format import SIMPLE_DEF
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from specifyweb.backend.stored_queries.tests.static import test_plan
 
-from specifyweb.specify.datamodel import datamodel
-import specifyweb.specify.models as models
+from specifyweb.backend.datamodel.datamodel import datamodel
+import specifyweb.backend.datamodel.models as models
 
 from specifyweb.backend.workbench.upload.upload_plan_schema import schema
 from jsonschema import validate

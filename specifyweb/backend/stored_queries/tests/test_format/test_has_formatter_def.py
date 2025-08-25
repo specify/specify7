@@ -2,7 +2,7 @@ from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.backend.stored_queries.format import ObjectFormatter
 from specifyweb.backend.stored_queries.tests.base_format import SIMPLE_DEF
 from unittest.mock import patch, Mock
-from specifyweb.specify.models import datamodel
+from specifyweb.backend.datamodel.models import datamodel
 
 class TestHasFormatterDef(ApiTests):
     

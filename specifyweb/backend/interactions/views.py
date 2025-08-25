@@ -14,7 +14,7 @@ from specifyweb.backend.interactions.cog_preps import (
 from specifyweb.middleware.general import require_GET
 from specifyweb.backend.permissions.permissions import check_table_permissions, table_permissions_checker
 from specifyweb.specify.api import get_resource, toJson, strict_uri_to_model
-from specifyweb.specify.models import Collectionobject, Loan, Loanpreparation, \
+from specifyweb.backend.datamodel.models import Collectionobject, Loan, Loanpreparation, \
     Loanreturnpreparation, Preparation, Recordset, Recordsetitem
 from specifyweb.specify.views import login_maybe_required
 
@@ -286,7 +286,7 @@ def prep_availability(request, prep_id, iprep_id=None, iprep_name=None):
     where p.preparationid = %s 
     """
     if iprep_id is not None:
-        from specifyweb.specify import models
+        from specifyweb.backend.datamodel import models
         keyfld = models.datamodel.get_table(iprep_name).idField.column
         sql += " and " + keyfld + " != %s "
         args.append(iprep_id)

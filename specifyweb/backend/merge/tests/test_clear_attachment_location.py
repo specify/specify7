@@ -1,4 +1,4 @@
-from specifyweb.specify.models import Attachment
+from specifyweb.backend.datamodel.models import Attachment
 from specifyweb.backend.merge.record_merging import _clear_attachment_location
 from specifyweb.specify.tests.test_api import ApiTests
 

@@ -15,7 +15,7 @@ from .search_terms import parse_search_str
 from specifyweb.backend.context.app_resource import get_app_resource
 from specifyweb.backend.permissions.permissions import check_table_permissions
 from specifyweb.specify.api import toJson
-from specifyweb.specify.models import datamodel, Collection
+from specifyweb.backend.datamodel.models import datamodel, Collection
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.backend.stored_queries import models
 from specifyweb.backend.stored_queries.execution import filter_by_collection

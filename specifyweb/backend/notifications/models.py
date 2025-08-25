@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from functools import partialmethod
-from specifyweb.specify.models import Collection, Specifyuser, Agent, Recordset, datamodel, custom_save
+from specifyweb.backend.datamodel.models import Collection, Specifyuser, Agent, Recordset, datamodel, custom_save
 
 class Message(models.Model):
     specify_model = datamodel.get_table('message')

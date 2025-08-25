@@ -2,7 +2,7 @@ from specifyweb.backend.stored_queries.execution import query_to_csv
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from specifyweb.backend.stored_queries.tests.utils import make_query_fields_test
 from unittest.mock import patch
-from specifyweb.specify.models import Recordset, Recordsetitem, datamodel
+from specifyweb.backend.datamodel.models import Recordset, Recordsetitem, datamodel
 
 # Making this a separate dict in case defaults get changed
 default_options = dict(

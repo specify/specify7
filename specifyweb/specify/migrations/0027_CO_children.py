@@ -3,7 +3,7 @@ from django.apps import apps as specify_apps
 from django.db import migrations, models
 import django.db.models.deletion
 from specifyweb.specify.migration_utils.update_schema_config import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
-import specifyweb.specify.models
+import specifyweb.backend.datamodel.models
 
 from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0027_FIELDS as SCHEMA_CONFIG_TABLE_FIELDS, MIGRATION_0027_UPDATE_FIELDS as SCHEMA_CONFIG_CO_TABLE_FIELDS
 

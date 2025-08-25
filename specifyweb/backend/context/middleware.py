@@ -7,7 +7,7 @@ from django.http import HttpResponseBadRequest
 from django.utils.functional import SimpleLazyObject
 
 from specifyweb.specify.filter_by_col import filter_by_collection
-from specifyweb.specify.models import Collection, Specifyuser, Agent
+from specifyweb.backend.datamodel.models import Collection, Specifyuser, Agent
 
 
 def get_cached(attr, func, request):

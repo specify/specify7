@@ -1,6 +1,6 @@
 from specifyweb.backend.interactions.cog_preps import get_availability_count
 from specifyweb.backend.interactions.tests.test_cog import TestCogInteractions
-from specifyweb.specify.models import (
+from specifyweb.backend.datamodel.models import (
     Loan,
     Gift,
     Loanpreparation,

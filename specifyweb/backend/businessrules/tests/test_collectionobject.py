@@ -1,4 +1,4 @@
-from specifyweb.specify.models import Collection, Collectionobject, Collectionobjecttype
+from specifyweb.backend.datamodel.models import Collection, Collectionobject, Collectionobjecttype
 from specifyweb.specify.tests.test_api import ApiTests
 from ..exceptions import BusinessRuleException
 

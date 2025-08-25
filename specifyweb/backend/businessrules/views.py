@@ -10,8 +10,8 @@ from specifyweb.middleware.general import require_http_methods
 from specifyweb.backend.businessrules.models import UniquenessRule
 from specifyweb.backend.businessrules.uniqueness_rules import rule_is_global, check_uniqueness
 from specifyweb.specify.views import login_maybe_required, openapi
-from specifyweb.specify import models
-from specifyweb.specify.models import datamodel
+from specifyweb.backend.datamodel import models
+from specifyweb.backend.datamodel.models import datamodel
 
 
 UniquenessRuleSchema = {

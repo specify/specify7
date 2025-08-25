@@ -2,8 +2,8 @@ from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handl
 
 from django.db import connection
 
-from specifyweb.specify import models
-from specifyweb.specify.models import Recordsetitem
+from specifyweb.backend.datamodel import models
+from specifyweb.backend.datamodel.models import Recordsetitem
 
 
 @orm_signal_handler('post_delete')

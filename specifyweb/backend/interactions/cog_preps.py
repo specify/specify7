@@ -3,7 +3,7 @@ from typing import Any
 from django.db.models import Subquery, Sum, F, Value, IntegerField, ExpressionWrapper, Q
 from django.db.models.query import QuerySet
 from django.db.models.functions import Coalesce
-from specifyweb.specify.models import (
+from specifyweb.backend.datamodel.models import (
     Collectionobject,
     Collectionobjectgroup,
     Collectionobjectgroupjoin,
@@ -15,7 +15,7 @@ from specifyweb.specify.models import (
     Recordset,
     Recordsetitem,
 )
-from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
+from specifyweb.backend.datamodel.models_by_table_id import get_table_id_by_model_name
 from specifyweb.specify import api
 
 logger = logging.getLogger(__name__)

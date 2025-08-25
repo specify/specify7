@@ -3,7 +3,7 @@ from specifyweb.backend.interactions.tests.test_loan_preps_context import TestLo
 from django.db import connection
 
 from specifyweb.backend.interactions.views import resolve_loanpreps
-from specifyweb.specify.models import Loanpreparation
+from specifyweb.backend.datamodel.models import Loanpreparation
 
 class TestResolveLoanPreps(TestLoanPrepsContext):
 

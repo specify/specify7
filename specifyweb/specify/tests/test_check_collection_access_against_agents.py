@@ -1,7 +1,7 @@
 from specifyweb.backend.accounts.account_utils import check_collection_access_against_agents
 from specifyweb.backend.accounts.exceptions_types import MissingAgentForAccessibleCollection
 from specifyweb.backend.permissions.models import UserPolicy
-from specifyweb.specify.models import Agent, Specifyuser
+from specifyweb.backend.datamodel.models import Agent, Specifyuser
 from specifyweb.specify.tests.test_api import ApiTests
 
 from unittest.mock import patch

@@ -5,7 +5,7 @@ from typing import List
 
 from specifyweb.specify.tree_ranks import RankOperation, post_tree_rank_save, pre_tree_rank_deletion, \
     verify_rank_parent_chain_integrity, pre_tree_rank_init, post_tree_rank_deletion
-from specifyweb.specify.model_timestamp import save_auto_timestamp_field_with_override
+from specifyweb.backend.datamodel.model_timestamp import save_auto_timestamp_field_with_override
 from specifyweb.specify.field_change_info import FieldChangeInfo
 logger = logging.getLogger(__name__)
 
@@ -15,7 +15,7 @@ from django.db.models import F, Q, ProtectedError
 from django.conf import settings
 
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
-import specifyweb.specify.models as spmodels
+import specifyweb.backend.datamodel.models as spmodels
 
 from  .auditcodes import TREE_BULK_MOVE, TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
 
@@ -281,7 +281,7 @@ def mutation_log(action, node, agent, parent, dirty_flds: list[FieldChangeInfo])
     auditlog.log_action(action, node, agent, node.parent, dirty_flds)
 
 def merge(node, into, agent):
-    from . import models
+    from ..backend.datamodel import models
     logger.info('merging %s into %s', node, into)
     model = type(node)
     if not type(into) is model: raise AssertionError(
@@ -346,7 +346,7 @@ def merge(node, into, agent):
     assert False, "failed to move all referrences to merged tree node"
 
 def bulk_move(node, into, agent):
-    from . import models
+    from ..backend.datamodel import models
     logger.info('Bulk move preparations from %s to %s', node, into)
     model = type(node)
     if not type(into) is model: raise AssertionError(
@@ -429,7 +429,7 @@ def synonymize(node, into, agent):
 
     if model._meta.db_table == 'taxon':
         node.determinations.update(preferredtaxon=target)
-        from .models import Determination
+        from ..backend.datamodel.models import Determination
         Determination.objects.filter(preferredtaxon=node).update(preferredtaxon=target)
 
 def desynonymize(node, agent):
@@ -728,7 +728,7 @@ def renumber_tree(table):
         ).format(table=table), {'rank': rank})
 
     # Clear the BadNodes and UpdateNodes flags.
-    from .models import datamodel, Sptasksemaphore
+    from ..backend.datamodel.models import datamodel, Sptasksemaphore
     tree_model = datamodel.get_table(table)
     tasknames = [name.format(tree_model.name) for name in ("UpdateNodes{}", "BadNodes{}")]
     Sptasksemaphore.objects.filter(taskname__in=tasknames).update(islocked=False)

@@ -8,7 +8,7 @@ from sqlalchemy import select, union_all, func, cast, DECIMAL, case, or_, and_, 
 from sqlalchemy.orm import aliased
 from decimal import Decimal
 
-from specifyweb.specify.models import (
+from specifyweb.backend.datamodel.models import (
     Absoluteage,
     Relativeage,
     Geologictimeperiod,

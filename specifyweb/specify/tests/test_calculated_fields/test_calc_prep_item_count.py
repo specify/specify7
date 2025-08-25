@@ -2,7 +2,7 @@ from specifyweb.backend.interactions.tests.test_preps_available_context import (
     TestPrepsAvailableContext,
 )
 from specifyweb.specify.calculated_fields import calc_prep_item_count
-from specifyweb.specify.models import Disposalpreparation
+from specifyweb.backend.datamodel.models import Disposalpreparation
 
 
 class TestCalcPrepItemCount(TestPrepsAvailableContext):

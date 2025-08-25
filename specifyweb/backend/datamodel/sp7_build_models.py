@@ -1,5 +1,5 @@
 import logging
-from . import model_extras
+from ..backend.datamodel import model_extras
 
 appname = __name__.split('.')[-2]
 logger = logging.getLogger(__name__)

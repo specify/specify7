@@ -15,7 +15,7 @@ from specifyweb.middleware.general import require_GET, require_http_methods
 from specifyweb.celery_tasks import CELERY_TASK_STATE
 from specifyweb.specify.api import get_object_or_404
 from specifyweb.specify.views import login_maybe_required, openapi
-from specifyweb.specify.models import Recordset, Specifyuser
+from specifyweb.backend.datamodel.models import Recordset, Specifyuser
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.permissions import (
     check_permission_targets,

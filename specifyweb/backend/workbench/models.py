@@ -7,7 +7,7 @@ from django.http import Http404
 from django.utils import timezone
 
 from specifyweb.specify.func import Func
-from specifyweb.specify.models import (
+from specifyweb.backend.datamodel.models import (
     Collection,
     Specifyuser,
     Agent,

@@ -1,6 +1,6 @@
 from django.db import connection
 from specifyweb.backend.accounts.exceptions_types import MissingAgentForAccessibleCollection
-from specifyweb.specify import models as spmodels
+from specifyweb.backend.datamodel import models as spmodels
 
 def check_collection_access_against_agents(userid: int) -> None:
     from specifyweb.backend.context.views import users_collections_for_sp6, users_collections_for_sp7

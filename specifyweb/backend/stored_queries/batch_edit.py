@@ -14,11 +14,11 @@ from collections.abc import Callable
 
 from specifyweb.backend.permissions.permissions import has_target_permission
 from specifyweb.specify.filter_by_col import CONCRETE_HIERARCHY
-from specifyweb.specify.models import datamodel
-from specifyweb.specify.load_datamodel import Field, Relationship, Table
+from specifyweb.backend.datamodel.models import datamodel
+from specifyweb.backend.datamodel.load_datamodel import Field, Relationship, Table
 from specifyweb.specify.tree_views import TREE_INFORMATION, get_all_tree_information
 from specifyweb.specify.tree_utils import SPECIFY_TREES
-from specifyweb.specify.datamodel import is_tree_table
+from specifyweb.backend.datamodel.datamodel import is_tree_table
 from specifyweb.backend.stored_queries.execution import execute
 from specifyweb.backend.stored_queries.queryfield import QueryField, fields_from_json
 from specifyweb.backend.stored_queries.queryfieldspec import (

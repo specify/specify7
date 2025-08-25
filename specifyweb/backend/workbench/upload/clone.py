@@ -8,8 +8,8 @@ from django.db.models import Model
 from django.db import transaction
 
 from specifyweb.specify.func import Func
-from specifyweb.specify.load_datamodel import Table
-from specifyweb.specify.models import ModelWithTable
+from specifyweb.backend.datamodel.load_datamodel import Table
+from specifyweb.backend.datamodel.models import ModelWithTable
 
 FIELDS_TO_NOT_CLONE: dict[str, list[str]] = json.load(
     open("specifyweb/frontend/js_src/lib/components/DataModel/uniqueFields.json")

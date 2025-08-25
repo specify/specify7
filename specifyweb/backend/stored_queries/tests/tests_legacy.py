@@ -1,7 +1,7 @@
 from unittest import TestCase, expectedFailure, skip
 from sqlalchemy import orm, inspect
 
-import specifyweb.specify.models as spmodels
+import specifyweb.backend.datamodel.models as spmodels
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec, find_tree_and_field
 from .. import models

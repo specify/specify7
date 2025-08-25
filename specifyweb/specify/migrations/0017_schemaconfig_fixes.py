@@ -4,7 +4,7 @@ from django.db import migrations
 from django.db.models import F
 
 from specifyweb.specify.migration_utils.update_schema_config import datamodel_type_to_schematype, uncapitilize, camel_to_spaced_title_case
-from specifyweb.specify.datamodel import datamodel
+from specifyweb.backend.datamodel.datamodel import datamodel
 
 from specifyweb.specify.migration_utils.sp7_schemaconfig import (
     # SpLocaleContainer migration changes

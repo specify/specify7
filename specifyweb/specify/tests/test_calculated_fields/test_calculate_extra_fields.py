@@ -5,7 +5,7 @@ from specifyweb.specify.api import obj_to_data
 from specifyweb.specify.calculated_fields import calculate_extra_fields as _cef
 from copy import deepcopy
 
-from specifyweb.specify.models import (
+from specifyweb.backend.datamodel.models import (
     Accession,
     Collectionobjectgroup,
     Collectionobjectgroupjoin,
