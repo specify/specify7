@@ -18,7 +18,7 @@ class TestMergingStatus(ApiTests):
         c = Client()
         c.force_login(self.specifyuser)
 
-        response = c.get("/api/specify/merge/status/aaaa/")
+        response = c.get("/merge/status/aaaa/")
 
         self.assertEqual(response.status_code, http.HttpResponseNotFound.status_code)
         self.assertEqual(response.content.decode(), 'The merge task id is not found: aaaa')
@@ -34,7 +34,7 @@ class TestMergingStatus(ApiTests):
         c = Client()
         c.force_login(self.specifyuser)
 
-        response = c.get("/api/specify/merge/status/aaaa/")
+        response = c.get("/merge/merge/status/aaaa/")
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(

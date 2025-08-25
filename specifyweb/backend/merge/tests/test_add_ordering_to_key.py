@@ -1,5 +1,5 @@
 from specifyweb.specify.models import Agentspecialty
-from specifyweb.specify.record_merging import add_ordering_to_key
+from specifyweb.backend.merge.record_merging import add_ordering_to_key
 from specifyweb.specify.tests.test_api import ApiTests
 
 new_key_fields = ('timestampcreated', 'timestampmodified', 'id')

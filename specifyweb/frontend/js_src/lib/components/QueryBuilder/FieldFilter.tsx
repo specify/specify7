@@ -48,6 +48,7 @@ export type QueryFieldFilter =
   | 'between'
   | 'contains'
   | 'empty'
+  | 'endsWith'
   | 'equal'
   | 'false'
   | 'falseOrNull'
@@ -58,7 +59,6 @@ export type QueryFieldFilter =
   | 'lessOrEqual'
   | 'like'
   | 'startsWith'
-  | 'endsWith'
   | 'true'
   | 'trueOrNull';
 export const filtersWithDefaultValue = new Set<QueryFieldFilter>([
