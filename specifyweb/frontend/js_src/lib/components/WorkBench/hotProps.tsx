@@ -9,8 +9,9 @@ import { getIcon } from '../InitialContext/icons';
 import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { getAttachmentsColumnIndex } from '../WorkBench/attachmentHelpers';
+import { getAttachmentsColumnIndex, getAttachmentsFormattedColumnIndex, usesAttachments } from '../WorkBench/attachmentHelpers';
 import type { WbMapping } from './mapping';
+import type { WritableArray } from '../../utils/types';
 
 const comments = { displayDelay: 100 };
 
@@ -67,7 +68,7 @@ export function useHotProps({
   const enterMoves =
     enterMovesPref === 'col' ? { col: 1, row: 0 } : { col: 0, row: 1 };
 
-  const attachmentsColumnIndex = getAttachmentsColumnIndex(dataset);
+  const attachmentsColumnIndex = getAttachmentsFormattedColumnIndex(dataset);
 
   const colHeaders = React.useCallback(
     (physicalCol: number) => {
@@ -103,13 +104,19 @@ export function useHotProps({
   );
 
   const hiddenColumns = React.useMemo(
-    () => ({
+    () => {
       // Hide the disambiguation column
-      columns: [dataset.columns.length],
+      const columns: WritableArray<number> = [dataset.columns.length];
+      
+      if (usesAttachments(dataset)) {
+        columns.push(getAttachmentsColumnIndex(dataset));
+      }
+      return {
+      columns: columns,
       indicators: false,
       // TODO: Typing possibly doesn't match for handsontable 12.1.0, fixed in 14
       copyPasteEnabled: false,
-    }),
+      }},
     []
   );
 
