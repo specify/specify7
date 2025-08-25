@@ -1,6 +1,6 @@
 from specifyweb.specify.api import obj_to_data
 from specifyweb.specify.models import Address, Agentspecialty, Agent
-from specifyweb.specify.record_merging import fix_orderings
+from specifyweb.backend.merge.record_merging import fix_orderings
 from specifyweb.specify.tests.test_api import ApiTests
 
 from copy import deepcopy
