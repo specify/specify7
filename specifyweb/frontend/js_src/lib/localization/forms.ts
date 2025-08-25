@@ -52,7 +52,7 @@ export const formsText = createDictionary({
     'es-es': 'El valor debe ser exclusivo de la base de datos.',
     'fr-fr': 'La valeur doit être unique dans la base de données',
     'uk-ua': 'Значення має бути унікальним для бази даних',
-    'de-ch': 'Der Wert muss in der Datenbank eindeutig sein',
+    'de-ch': 'Der Wert muss für die Datenbank eindeutig sein',
     'pt-br': 'O valor deve ser exclusivo para o banco de dados',
   },
   valuesOfMustBeUniqueToField: {
@@ -90,6 +90,36 @@ export const formsText = createDictionary({
     'uk-ua': 'Перевірка можливості видалення ресурсу…',
     'de-ch': 'Überprüfen, ob die Ressource gelöscht werden kann …',
     'pt-br': 'Verificando se o recurso pode ser excluído…',
+  },
+  checkingIfResourceIsUsed: {
+    'en-us': 'Checking if this record is currently in use…',
+    'de-ch': 'Es wird geprüft, ob dieser Datensatz derzeit verwendet wird …',
+    'es-es': 'Comprobando si este registro está actualmente en uso…',
+    'fr-fr': 'Vérification si cet enregistrement est actuellement utilisé…',
+    'pt-br': 'Verificando se este registro está em uso no momento…',
+    'ru-ru': 'Проверяем, используется ли эта запись в данный момент…',
+    'uk-ua': 'Перевірка, чи цей запис зараз використовується…',
+  },
+  noLinkedRecords: {
+    'en-us': 'No linked records',
+    'de-ch': 'Keine verknüpften Datensätze',
+    'es-es': 'No hay registros vinculados',
+    'fr-fr': 'Aucun enregistrement lié',
+    'pt-br': 'Nenhum registro vinculado',
+    'ru-ru': 'Нет связанных записей',
+    'uk-ua': "Немає пов'язаних записів",
+  },
+  recordUsedDescription: {
+    'en-us': 'This resource is currently linked to the following records:',
+    'de-ch':
+      'Diese Ressource ist derzeit mit den folgenden Datensätzen verknüpft:',
+    'es-es':
+      'Este recurso está actualmente vinculado a los siguientes registros:',
+    'fr-fr':
+      'Cette ressource est actuellement liée aux enregistrements suivants :',
+    'pt-br': 'Este recurso está atualmente vinculado aos seguintes registros:',
+    'ru-ru': 'В настоящее время этот ресурс связан со следующими записями:',
+    'uk-ua': 'Цей ресурс наразі пов’язаний з такими записами:',
   },
   deleteBlocked: {
     'en-us': 'Delete blocked',
@@ -279,7 +309,7 @@ export const formsText = createDictionary({
   invalidNumericPicklistValue: {
     'en-us': 'Only numeric values are supported in this {pickListTable:string}',
     'de-ch':
-      'Es werden nur numerische Werte unterstützt {pickListTable:string}',
+      'In diesem {pickListTable:string} werden nur numerische Werte unterstützt.',
     'es-es': 'En este {pickListTable:string} solo se admiten valores numéricos',
     'fr-fr':
       'Seules les valeurs numériques sont prises en charge dans ce {pickListTable:string}',
@@ -677,7 +707,7 @@ export const formsText = createDictionary({
     'es-es': 'Resultados adicionales omitidos',
     'fr-fr': 'Résultats supplémentaires omis',
     'uk-ua': 'Додаткові результати пропущені',
-    'de-ch': 'Weitere Ergebnisse ausgelassen',
+    'de-ch': 'Zusätzliche Ergebnisse ausgelassen',
     'pt-br': 'Resultados adicionais omitidos',
   },
   recordSelectorUnloadProtect: {
@@ -788,7 +818,7 @@ export const formsText = createDictionary({
     'es-es': 'Eliminar de {recordSetTable:string}',
     'fr-fr': 'Supprimer de {recordSetTable:string}',
     'uk-ua': 'Видалити з {recordSetTable:string}',
-    'de-ch': 'Entfernen aus {recordSetTable:string}',
+    'de-ch': 'Aus {recordSetTable:string} entfernen',
     'pt-br': 'Remover de {recordSetTable:string}',
   },
   nothingFound: {
@@ -853,7 +883,7 @@ export const formsText = createDictionary({
     'es-es': 'Configurar campos para transferir',
     'fr-fr': 'Configurer les champs à reporter',
     'uk-ua': 'Налаштуйте поля для перенесення',
-    'de-ch': 'Konfigurieren der zu übertragenden Felder',
+    'de-ch': 'Konfigurieren Sie die zu übertragenden Felder',
     'pt-br': 'Configurar campos para levar adiante',
   },
   bulkCarryForwardSettingsDescription: {
@@ -871,8 +901,7 @@ export const formsText = createDictionary({
     'es-es': 'Configurar campos para transferir ({tableName:string})',
     'fr-fr': 'Configurer les champs à reporter ({tableName:string})',
     'uk-ua': 'Налаштуйте поля для перенесення ({tableName:string})',
-    'de-ch':
-      'Konfigurieren Sie die zu übertragenden Felder ({tableName:string})',
+    'de-ch': 'Konfigurieren Sie die Felder zum Übertragen ({tableName:string})',
     'pt-br': 'Configurar campos para levar adiante ({tableName:string})',
   },
   bulkCarryForwardTableSettingsDescription: {
@@ -932,28 +961,12 @@ export const formsText = createDictionary({
   bulkCarryForwardRangeLimitExceeded: {
     'en-us': 'Range exceeds record limit of {limit:number}.',
     'de-ch':
-      'Der Bereich überschreitet das Aufzeichnungslimit von {limit:number}.',
+      'Der Bereich überschreitet die Aufzeichnungsgrenze von {limit:number}.',
     'es-es': 'El rango excede el límite de registro de {limit:number}.',
     'fr-fr': "La plage dépasse la limite d'enregistrement de {limit:number}.",
     'pt-br': 'O alcance excede o limite recorde de {limit:number}.',
     'ru-ru': 'Диапазон превышает предел записи {limit:number}.',
     'uk-ua': 'Діапазон перевищує ліміт записів {limit:number}.',
-  },
-  bulkCarryForwardRangeUnsupportedRelationships: {
-    'en-us':
-      'Some relationships with more than one record are not currently supported by Bulk Carry Forward:',
-    'de-ch':
-      'Einige Beziehungen mit mehr als einem Datensatz werden derzeit von Bulk Carry Forward nicht unterstützt:',
-    'es-es':
-      'Algunas relaciones con más de un registro actualmente no son compatibles con Bulk Carry Forward:',
-    'fr-fr':
-      'Certaines relations avec plusieurs enregistrements ne sont actuellement pas prises en charge par le report en bloc :',
-    'pt-br':
-      'Alguns relacionamentos com mais de um registro não são suportados atualmente pelo Bulk Carry Forward:',
-    'ru-ru':
-      'Некоторые связи с более чем одной записью в настоящее время не поддерживаются функцией массового переноса данных:',
-    'uk-ua':
-      "Деякі зв'язки з кількома записами наразі не підтримуються груповим перенесенням:",
   },
   bulkCarryForwardRangeExistingRecords: {
     'en-us': 'The following numbers for {field:string} are already being used:',
@@ -968,7 +981,7 @@ export const formsText = createDictionary({
   bulkCarryForwardRangeStart: {
     'en-us': 'Carry Forward Range Start',
     'de-ch': 'Übertragsbereichsanfang',
-    'es-es': 'Arranque del rango de transferencia hacia adelante',
+    'es-es': 'Arranque del rango de avance',
     'fr-fr': 'Début de la plage de report',
     'pt-br': 'Início do intervalo de transporte',
     'ru-ru': 'Начало диапазона переноса вперед',
@@ -1052,7 +1065,7 @@ export const formsText = createDictionary({
     'es-es': 'Utilice etiquetas de campo localizadas',
     'fr-fr': 'Utiliser des étiquettes de champ localisées',
     'uk-ua': 'Використовуйте локалізовані мітки полів',
-    'de-ch': 'Lokalisierte Feldbezeichnungen verwenden',
+    'de-ch': 'Verwenden lokalisierter Feldbezeichnungen',
     'pt-br': 'Use rótulos de campo localizados',
   },
   showFieldLabels: {
@@ -1142,7 +1155,7 @@ export const formsText = createDictionary({
     'es-es': 'Usos de la lista de selección "{pickList:string}"',
     'fr-fr': 'Utilisations de la liste de sélection « {pickList:string} »',
     'uk-ua': 'Використання списку вибору "{pickList:string}"',
-    'de-ch': 'Verwendung der Auswahlliste „{pickList:string}“',
+    'de-ch': 'Verwendungen der Auswahlliste „{pickList:string}“',
     'pt-br': 'Usos da lista de seleção "{pickList:string}"',
   },
   subForm: {
@@ -1268,7 +1281,7 @@ export const formsText = createDictionary({
   catalogNumberNumericFormatter: {
     comment: 'Meaning "Catalog Number Numeric formatter"',
     'en-us': 'Catalog Number Numeric',
-    'de-ch': 'Katalognummer Numerisch',
+    'de-ch': 'Katalognummer numerisch',
     'es-es': 'Número de catálogo numérico',
     'fr-fr': 'Numéro de catalogue numérique',
     'ru-ru': 'Номер каталога Цифровой',

@@ -388,6 +388,15 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Erweiterte Tabellen anzeigen',
     'pt-br': 'Mostrar todas as tabelas',
   },
+  selectBaseTableWithAttachments: {
+    'en-us': 'Select a Base Table with Attachments',
+    'de-ch': 'Wählen Sie eine Basistabelle mit Anhängen',
+    'es-es': 'Seleccione una tabla base con archivos adjuntos',
+    'fr-fr': 'Sélectionnez une table de base avec des pièces jointes',
+    'pt-br': 'Selecione uma tabela base com anexos',
+    'ru-ru': 'Выберите базовую таблицу с прикреплениями',
+    'uk-ua': 'Виберіть базову таблицю з вкладеннями',
+  },
   dataSetUploaded: {
     'en-us': 'Data Set uploaded. This Upload Plan cannot be changed',
     'ru-ru': 'Набор данных загружен. Этот план загрузки нельзя изменить',

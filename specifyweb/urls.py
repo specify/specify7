@@ -1,25 +1,27 @@
 from django.urls import include, path, re_path
 from django.views.generic.base import RedirectView
 
-from .accounts import urls as accounts_urls
-from .attachment_gw import urls as attachment_urls
-from .barvis import urls as tt_urls
-from .businessrules import urls as bus_urls
-from .context import urls as context_urls
-from .export import urls as export_urls
-from .express_search import urls as es_urls
+from specifyweb.backend.accounts import urls as accounts_urls
+from specifyweb.backend.attachment_gw import urls as attachment_urls
+from specifyweb.backend.barvis import urls as tt_urls
+from specifyweb.backend.businessrules import urls as bus_urls
+from specifyweb.backend.context import urls as context_urls
+from specifyweb.backend.export import urls as export_urls
+from specifyweb.backend.express_search import urls as es_urls
 from .frontend import urls as frontend_urls, doc_urls
 from .frontend.views import open_search as search_view
-from .interactions import urls as interaction_urls
-from .notifications import urls as notification_urls
-from .permissions import urls as permissions_urls
-from .permissions.permissions import skip_collection_access_check
-from .report_runner import urls as report_urls
+from specifyweb.backend.interactions import urls as interaction_urls
+from specifyweb.backend.notifications import urls as notification_urls
+from specifyweb.backend.permissions import urls as permissions_urls
+from specifyweb.backend.permissions.permissions import skip_collection_access_check
+from specifyweb.backend.report_runner import urls as report_urls
 from .specify import urls as api_urls
 from .specify.views import images, properties
-from .stored_queries import urls as query_urls
-from .workbench import urls as wb_urls
-from .stats import urls as stat_urls
+from specifyweb.backend.stored_queries import urls as query_urls
+from specifyweb.backend.workbench import urls as wb_urls
+from specifyweb.backend.stats import urls as stat_urls
+from specifyweb.backend.merge import urls as merge_urls
+from specifyweb.backend.locality_update_tool import urls as locality_update_tool_urls
 
 # print(get_resolver().reverse_dict.keys()) # Use for debugging urls
 
@@ -61,5 +63,7 @@ urlpatterns = [
     path('export/', include(export_urls)), # permissions added
     path('permissions/', include(permissions_urls)), # permissions added
     # url(r'^testcontext/', include()),
-    path('stats/', include(stat_urls))
+    path('stats/', include(stat_urls)),
+    path('merge/', include(merge_urls)),
+    path('locality_update_tool/', include(locality_update_tool_urls))
 ]

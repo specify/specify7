@@ -66,9 +66,12 @@ export function LocalityUpdateStatus({
   React.useEffect(() => {
     let destructorCalled = false;
     const fetchStatus = () =>
-      void ajax<LocalityUpdateState>(`/api/localityset/status/${taskId}/`, {
-        headers: { Accept: 'application/json' },
-      })
+      void ajax<LocalityUpdateState>(
+        `/locality_update_tool/localityset/status/${taskId}/`,
+        {
+          headers: { Accept: 'application/json' },
+        }
+      )
         .then(({ data }) => {
           setState(data);
           if (
@@ -89,7 +92,7 @@ export function LocalityUpdateStatus({
 
   const handleTaskCancel = React.useCallback(
     () =>
-      void ping(`/api/localityset/abort/${taskId}/`, {
+      void ping(`/locality_update_tool/localityset/abort/${taskId}/`, {
         method: 'POST',
       }).catch(softFail),
     [taskId]
