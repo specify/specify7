@@ -4,7 +4,7 @@ from django.views.decorators.http import require_POST
 from django.conf import settings
 
 from specifyweb.specify.views import openapi
-from .encryption import encrypt
+from ...specify.encryption import encrypt
 
 
 def make_master_key(userpass):

@@ -1,5 +1,5 @@
 """
-A few non-business data resource end points
+A few non-business data resource end points 
 """
 
 import json
@@ -8,25 +8,18 @@ from functools import wraps
 import time
 import logging
 import os
-from uuid import uuid4
 from zipfile import ZipFile, BadZipFile
 from tempfile import TemporaryDirectory
 
 from django import http
 from django.conf import settings
-from django.db import router, transaction, connection
-from specifyweb.backend.merge.record_merging import record_merge_task
-from specifyweb.backend.notifications.models import Message, LocalityUpdate
+from django.db import router
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST, require_http_methods
 from specifyweb.specify.api import get_model
 
 from specifyweb.middleware.general import require_GET, require_http_methods
-from specifyweb.backend.permissions.permissions import PermissionTarget, \
-    PermissionTargetAction, PermissionsException, check_permission_targets, table_permissions_checker
-from specifyweb.celery_tasks import app, CELERY_TASK_STATE
-from specifyweb.specify.update_locality import localityupdate_parse_success, localityupdate_parse_error, parse_locality_set as _parse_locality_set, upload_locality_set as _upload_locality_set, create_localityupdate_recordset, update_locality_task, parse_locality_task, LocalityUpdateStatus
 from . import api, models as spmodels
 from .specify_jar import specify_jar, specify_jar_path
 from .uiformatters import get_uiformatter_by_name

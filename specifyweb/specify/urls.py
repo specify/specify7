@@ -2,7 +2,6 @@
 
 from django.urls import include, path, re_path
 
-from . import master_key
 from . import schema
 from . import tree_views
 from . import views
@@ -50,13 +49,5 @@ urlpatterns = [
         re_path(r'^(?P<treeid>\w+)/add_root/$', tree_views.add_root),
         re_path(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/(?P<sortfield>\w+)/$', tree_views.tree_view),
         path('repair/', tree_views.repair_tree),
-    ])),
-
-    # generates Sp6 master key
-    path('master_key/', master_key.master_key),
-
-    # set a user's password
-    path('set_password/<int:userid>/', views.set_password),
-    path('set_admin_status/<int:userid>/', views.set_admin_status),
-    path('set_agents/<int:userid>/', views.set_user_agents)
+    ]))
 ]
