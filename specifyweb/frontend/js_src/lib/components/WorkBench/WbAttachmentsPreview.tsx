@@ -328,6 +328,7 @@ function AttachmentViewerDialog({
           </Button.Secondary>
         </div>
       }
+      dimensionsKey="WbAttachmentViewer"
       buttons={undefined}
       className={{
         container: dialogClassNames.wideContainer,

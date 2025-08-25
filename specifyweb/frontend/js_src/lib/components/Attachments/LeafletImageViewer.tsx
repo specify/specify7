@@ -11,6 +11,9 @@ export function LeafletImageViewer({
 }): JSX.Element {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
 
+  const defaultBounds = L.latLngBounds([0,0], [512, 512]);
+  const boundsRef = React.useRef<L.LatLngBounds>(defaultBounds);
+
   React.useEffect(() => {
     if (!containerRef.current) return;
 
@@ -18,22 +21,20 @@ export function LeafletImageViewer({
         crs: L.CRS.Simple,
         minZoom: -10,
     });
-    const defaultBounds = L.latLngBounds([0,0], [512, 512]);
-    map.fitBounds(defaultBounds);
-
-    // Inject reset zoom button
-    map.addControl(resetZoomButton(map));
+    boundsRef.current = defaultBounds;
 
     const img = new window.Image();
     img.src = src;
     img.onload = () => {
       // Update viewer bounds once the image is done loading.
-      const bounds = L.latLngBounds([0, 0], [img.height, img.width]);
+      boundsRef.current = L.latLngBounds([0, 0], [img.height, img.width]);
       
-      L.imageOverlay(src, bounds, { alt }).addTo(map);
-      map.fitBounds(bounds);
-      map.setZoom(0);
+      L.imageOverlay(src, boundsRef.current, { alt }).addTo(map);
+      map.fitBounds(boundsRef.current);
     };
+
+    // Inject reset zoom button
+    map.addControl(resetZoomButton(map, boundsRef));
 
     return () => {
       map.remove();
@@ -59,7 +60,10 @@ export function LeafletImageViewer({
   );
 }
 
-function resetZoomButton(map: L.Map): L.Control {
+function resetZoomButton(
+  map: L.Map,
+  boundsRef: React.MutableRefObject<L.LatLngBounds>
+): L.Control {
   const ResetZoomControl = L.Control.extend({
     options: { position: 'topleft' },
     onAdd: function () {
@@ -75,10 +79,11 @@ function resetZoomButton(map: L.Map): L.Control {
       button.style.width = '30px';
       button.style.height = '30px';
 
+      L.DomEvent.disableClickPropagation(container);
+      L.DomEvent.disableScrollPropagation(container);
       L.DomEvent.on(button, 'click', function (e) {
         L.DomEvent.stop(e);
-        const center = map.getBounds().getCenter();
-        map.setView(center, 0);
+        map.fitBounds(boundsRef.current);
       });
 
       return container;

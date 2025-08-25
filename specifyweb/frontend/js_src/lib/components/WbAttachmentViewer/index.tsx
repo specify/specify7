@@ -126,7 +126,6 @@ export function WbAttachmentViewerView(): JSX.Element {
     <Dialog
       buttons={undefined}
       className={{container: dialogClassNames.fullScreen}}
-      dimensionsKey="WbAttachmentViewer"
       header={attachmentsText.attachments()}
       headerButtons={
         <div className="flex items-center gap-2 md:gap-2 ml-auto">
