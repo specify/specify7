@@ -15,7 +15,7 @@ class DatamodelTests(TestCase):
     def setUp(self):
         self.sp6_datamodel = load_datamodel()
 
-    def test_specify_gen_models_code(self):
+    def test_specify_gen_models_code(self): # pragma: no cover
         if self.sp6_datamodel is None:
             return
         model_code = generate_build_model_imports_code()
@@ -27,13 +27,13 @@ class DatamodelTests(TestCase):
         # with open('./specifyweb/specify/specify_models.py', 'w') as f:
         #     f.write(model_code)
 
-    def test_specify_gen_datamodel_code(self):
+    def test_specify_gen_datamodel_code(self): # pragma: no cover
         datamodel_code = build_datamodel_code_from_xml()
         # Uncomment this code if you want to generate the datamodel code
         # with open('./specifyweb/specify/specify_datamodel.py', 'w') as f:
         #     f.write(datamodel_code)
 
-    def test_specify_gen_sqlalchemy_table_classes_code(self):
+    def test_specify_gen_sqlalchemy_table_classes_code(self): # pragma: no cover
         datamodel = sp7_datamodel
         if self.sp6_datamodel is not None:
             datamodel = self.sp6_datamodel
@@ -43,7 +43,7 @@ class DatamodelTests(TestCase):
         #     f.write(sqlalchemy_code)
 
     @skip("This test is not needed anymore as the datamodel has changed from sp6")
-    def test_datamodel_equivalence(self):
+    def test_datamodel_equivalence(self): # pragma: no cover
         # sp7_datamodel = build_datamodel_code_from_xml()
         # sp6_datamodel = load_datamodel()
         if self.sp6_datamodel is None:
@@ -131,7 +131,7 @@ for table in sp7_datamodel.tables:
                 'test_attachments_field_dependent_in_' + table.name,
                 make_attachments_field_dependent_test(table))
 
-def compare_models(dynamic_model, static_model):
+def compare_models(dynamic_model, static_model): # pragma: no cover
     # Compare fields
     dynamic_fields = {f.name: f for f in dynamic_model._meta.get_fields()}
     static_fields = {f.name: f for f in static_model._meta.get_fields()}
