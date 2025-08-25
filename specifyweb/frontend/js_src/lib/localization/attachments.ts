@@ -76,7 +76,7 @@ export const attachmentsText = createDictionary({
     "en-us": "Unable to find related record",
     "es-es": "No se puede encontrar el registro relacionado",
     "fr-fr": "Impossible de trouver l'enregistrement lié",
-    "ru-ru": "Невозможно найти связанную запись",
+    "ru-ru": "Не удалось найти связанную запись",
     "uk-ua": "Неможливо знайти відповідний запис",
     "de-ch": "Verknüpfter Datensatz kann nicht gefunden werden",
     "pt-br": "Não foi possível encontrar o registro relacionado",
@@ -265,7 +265,7 @@ export const attachmentsText = createDictionary({
     "en-us":
       "The upload was in progress when an interruption occurred. Some files may have been uploaded.",
     "de-ch":
-      "Der Upload war im Gange, als es zu einer Unterbrechung kam. Möglicherweise wurden bereits einige Dateien hochgeladen.",
+      "Der Upload war im Gange, als es zu einer Unterbrechung kam. Möglicherweise wurden einige Dateien hochgeladen.",
     "es-es":
       "La carga estaba en curso cuando se produjo una interrupción. Es posible que se hayan cargado algunos archivos.",
     "fr-fr":
@@ -385,7 +385,7 @@ export const attachmentsText = createDictionary({
     "uk-ua":
       "Відкат видалить вкладення з бази даних Specify і сервера ресурсів",
     "pt-br":
-      "A reversão excluirá os anexos do banco de dados Especificar e do Servidor de Ativos",
+      "A reversão excluirá os anexos do banco de dados Especificar e do Asset Server",
   },
   noMatch: {
     "en-us": "No match",
@@ -538,7 +538,7 @@ export const attachmentsText = createDictionary({
   interruptionStopped: {
     "en-us": "Stopped because of error uploading a previous file",
     "de-ch":
-      "Gestoppt wegen eines Fehlers beim Hochladen einer vorherigen Datei",
+      "Wegen eines Fehlers beim Hochladen einer vorherigen Datei angehalten",
     "es-es": "Detenido debido a un error al cargar un archivo anterior",
     "fr-fr":
       "Arrêté à cause d'une erreur de téléchargement du précédent fichier",

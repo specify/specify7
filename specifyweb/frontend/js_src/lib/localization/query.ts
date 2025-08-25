@@ -608,6 +608,9 @@ export const queryText = createDictionary({
     "de-ch": "Beginnt mit",
     "pt-br": "Começa com",
   },
+  endsWith: {
+    'en-us': 'Ends With',
+  },
   or: {
     "en-us": "or",
     "ru-ru": "или",
@@ -992,6 +995,7 @@ export const queryText = createDictionary({
     "uk-ua": "Немає невирішених елементів для повернення",
     "de-ch":
       "Es gibt keine ungelösten Elemente, die zurückgegeben werden müssen",
+    "pt-br": "",
   },
   itemsReturned: {
     "en-us": "Items have been returned",
@@ -1000,5 +1004,6 @@ export const queryText = createDictionary({
     "fr-fr": "Les articles ont été retournés",
     "uk-ua": "Товари повернуто",
     "de-ch": "Artikel wurden zurückgegeben",
+    "pt-br": "",
   },
 } as const);
