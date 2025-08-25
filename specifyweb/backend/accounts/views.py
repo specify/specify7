@@ -18,63 +18,25 @@ from django.template.response import TemplateResponse
 from django.utils import crypto
 from django.utils.http import url_has_allowed_host_and_scheme, urlencode
 from django.views.decorators.cache import never_cache
-from typing import Union, cast
-from typing_extensions import TypedDict
+from typing import cast
 
+from specifyweb.backend.accounts.account_utils import check_collection_access_against_agents, is_provider_info
+from specifyweb.backend.accounts.exceptions_types import AgentInUseException, MissingAgentForAccessibleCollection, MultipleAgentsException
+from specifyweb.backend.accounts.forms_types import CollectionChoiceField
+from specifyweb.backend.accounts.permissions_types import InviteLinkPT, SetPasswordPT, SetUserAgentsPT, Sp6AdminPT, UserOICProvidersPT
+from specifyweb.backend.accounts.types import ExternalUser, InviteToken, OAuthLogin, ProviderConf, ProviderInfo
 from specifyweb.middleware.general import require_GET, require_http_methods
 
-from specifyweb.backend.permissions.permissions import PermissionTarget, \
-    PermissionTargetAction, check_permission_targets
+from specifyweb.backend.permissions.permissions import check_permission_targets
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.views import login_maybe_required, openapi
 from .models import Spuserexternalid
 from specifyweb.specify.models import Specifyuser
+from django.views.decorators.http import require_POST
+from specifyweb.backend.permissions.permissions import check_permission_targets
+from django.db import transaction, connection
 
 logger = logging.getLogger(__name__)
-class ProviderInfo(TypedDict):
-    "Elements of settings.OAUTH_LOGIN_PROVIDERS should have this type."
-    title: str # The name of the provider for UI purposes.
-    client_id: str
-    client_secret: str
-    scope: str
-    # config can be either the OpenId discovery endpoint or
-    # a dictionary of auth and token endpoints.
-    config: Union[str, "ProviderConf"]
-
-def is_provider_info(d: dict) -> bool:
-    required_keys = ["title", "client_id", "client_secret", "scope", "config"]
-    return all(key in d for key in required_keys)
-
-class ProviderConf(TypedDict):
-    """OpenId provider endpoints provided by the settings or by
-    the provider's discovery document."""
-    authorization_endpoint: str
-    token_endpoint: str
-
-
-class OAuthLogin(TypedDict):
-    "Data carried through a session variable during oauth login."
-    state: str
-    provider: str
-    provider_conf: ProviderConf
-
-
-class ExternalUser(TypedDict):
-    """Information passed through a session variable to associate the
-    user's external id to a specifyuser record."""
-    provider: str
-    provider_title: str # For UI purposes.
-    id: str # The user's id in the provider's system.
-    name: str # The user's name for UI purposes.
-    idtoken: dict # The JWT from the provider.
-
-class InviteToken(TypedDict):
-    """Embedded in an invite token."""
-    userid: int  # The Specify user id
-    username: str
-    sequence: int | None # To prevent reuse of token.
-    expires: int # A time.time() value after which the token is expired.
-
 
 @require_http_methods(['GET', 'POST'])
 def oic_login(request: http.HttpRequest) -> http.HttpResponse:
@@ -233,10 +195,6 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
           backend='django.contrib.auth.backends.ModelBackend')
     return http.HttpResponseRedirect('/accounts/choose_collection')
 
-class InviteLinkPT(PermissionTarget):
-    resource = "/admin/user/invite_link"
-    create = PermissionTargetAction()
-
 @require_GET
 @login_maybe_required
 def invite_link(request, userid:int) -> http.HttpResponse:
@@ -285,12 +243,6 @@ def use_invite_link(request) -> http.HttpResponse:
     request.session['invite_token'] = token
     return http.HttpResponseRedirect('/accounts/login/')
 
-
-class UserOICProvidersPT(PermissionTarget):
-    resource = "/admin/user/oic_providers"
-    read = PermissionTargetAction()
-    # an update action could be added to enable/disable certain providers.
-
 @openapi(schema={
     "get": {
         "responses": {
@@ -329,11 +281,6 @@ def user_providers(request, userid: int) -> http.HttpResponse:
         if p in Spuserexternalid.objects.filter(specifyuser_id=userid).values_list('provider', flat=True)
     ]
     return http.JsonResponse(providers, safe=False)
-
-class CollectionChoiceField(forms.ChoiceField):
-    widget = forms.RadioSelect
-    def label_from_instance(self, obj):
-        return obj.collectionname
 
 @login_maybe_required
 @require_http_methods(['GET', 'POST'])
@@ -409,3 +356,220 @@ def support_login(request: http.HttpRequest) -> http.HttpResponse:
         return http.HttpResponseRedirect('/')
     else:
         return http.HttpResponseForbidden()
+
+@openapi(schema={
+    'post': {
+        "requestBody": {
+            "required": True,
+            "description": "New user's password",
+            "content": {
+                "application/x-www-form-urlencoded": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "password": {
+                                "type": "string",
+                                "description": "New user's password",
+                            },
+                        },
+                        'required': ['password'],
+                        'additionalProperties': False
+                    }
+                }
+            }
+        },
+        "responses": {
+            "204": {"description": "Success", },
+            "403": {"description": "Logged in user is not an admin."}
+        }
+    },
+})
+@login_maybe_required
+@require_POST
+def set_password(request, userid):
+    """Set <userid> specify user's password to the value in the 'password'
+    POST parameter.
+    """
+    check_permission_targets(None, request.specify_user.id, [
+                             SetPasswordPT.update])
+    user = spmodels.Specifyuser.objects.get(pk=userid)
+    user.set_password(request.POST['password'])
+    user.save()
+    return http.HttpResponse('', status=204)
+
+@openapi(schema={
+    'post': {
+        "requestBody": {
+            "required": True,
+            "description": "The list of agents to assign to the user represented by their ids.",
+            "content": {
+                "application/x-www-form-urlencoded": {
+                    "schema": {
+                        "type": "array",
+                        "items": {"type": "integer"},
+                        "description": "The agent ids."
+                    }
+                }
+            }
+        },
+        "responses": {
+            "204": {"description": "Success", },
+            "400": {
+                "description": "The request was rejected.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "description": "The error.",
+                            "properties": {
+                                AgentInUseException.__name__: {
+                                    'type': 'array',
+                                    'description': AgentInUseException.__doc__,
+                                    'items': {'type': 'integer'},
+                                },
+                                MultipleAgentsException.__name__: {
+                                    'type': 'array',
+                                    'description': MultipleAgentsException.__doc__,
+                                    'items': {
+                                        'type': 'object',
+                                        'properties': {
+                                            'divisionid': {'type': 'number'},
+                                            'agentid1': {'type': 'number'},
+                                            'agentid2': {'type': 'number'},
+                                        },
+                                    },
+                                },
+                                MissingAgentForAccessibleCollection.__name__: {
+                                    'type': 'object',
+                                    'description': MissingAgentForAccessibleCollection.__doc__,
+                                    'properties': {
+                                        'all_accessible_divisions': {
+                                            'type': 'array',
+                                            'items': {
+                                                'type': 'number',
+                                                'description': 'Division ID',
+                                            },
+                                        },
+                                        'missing_for_6': {
+                                            'type': 'array',
+                                            'items': {
+                                                'type': 'number',
+                                                'description': 'Division ID',
+                                            },
+                                        },
+                                        'missing_for_7': {
+                                            'type': 'array',
+                                            'items': {
+                                                'type': 'number',
+                                                'description': 'Division ID',
+                                            },
+                                        },
+                                    },
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+})
+@login_maybe_required
+@require_POST
+def set_user_agents(request, userid: int):
+    "Sets the agents to represent the user in different disciplines."
+    user = spmodels.Specifyuser.objects.get(pk=userid)
+    new_agentids = json.loads(request.body)
+    cursor = connection.cursor()
+
+    with transaction.atomic():
+        # clear user's existing agents
+        spmodels.Agent.objects.filter(
+            specifyuser_id=userid).update(specifyuser_id=None)
+
+        # check if any of the agents to be assigned are used by other users
+        in_use = spmodels.Agent.objects.select_for_update().filter(
+            pk__in=new_agentids, specifyuser_id__isnull=False)
+        if in_use:
+            raise AgentInUseException([a.id for a in in_use])
+
+        # assign the new agents
+        spmodels.Agent.objects.filter(
+            pk__in=new_agentids).update(specifyuser_id=userid)
+
+        # check for multiple agents assigned to the user
+        # NOTE: This is too aggressive (and inefficient) of a test.
+        # By the time we are here, we can just check if the current agents (in new_agentids)
+        # belong to the same division...
+        cursor.execute(
+            """select divisionid, a1.agentid, a2.agentid
+            from agent a1 join agent a2 using (specifyuserid, divisionid)
+            where a1.agentid < a2.agentid and specifyuserid = %s
+            """, [userid]
+        )
+
+        multiple = [
+            {'divisonid': divisonid, 'agentid1': agentid1, 'agentid2': agentid2}
+            for divisonid, agentid1, agentid2 in cursor.fetchall()
+        ]
+        if multiple:
+            raise MultipleAgentsException(multiple)
+
+        # get the list of collections the agents belong to.
+        collections = spmodels.Collection.objects.filter(
+            discipline__division__members__specifyuser_id=userid).values_list('id', flat=True)
+
+        # check permissions for setting user agents in those collections.
+        for collectionid in collections:
+            check_permission_targets(collectionid, request.specify_user.id, [
+                                     SetUserAgentsPT.update])
+
+        check_collection_access_against_agents(userid)
+
+    return http.HttpResponse('', status=204)
+
+@openapi(schema={
+    'post': {
+        "requestBody": {
+            "required": True,
+            "description": "Set or clear the admin status for a user.",
+            "content": {
+                "application/x-www-form-urlencoded": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "admin_status": {
+                                "type": "string",
+                                'enum': ['true', 'false'],
+                                "description": "Whether the user should be given admin status.",
+                            },
+                        },
+                        'required': ['admin_status'],
+                        'additionalProperties': False
+                    }
+                }
+            }
+        },
+        "responses": {
+            "204": {"description": "Success", },
+            "403": {"description": "Logged in user is not an admin."}
+        }
+    },
+})
+@login_maybe_required
+@require_POST
+def set_admin_status(request, userid):
+    """Sets <userid> specify user's is-admin status to 'true' or 'false'
+    according to the 'admin_status' POST parameter. Must be logged in
+    as an admin, otherwise HTTP 403 is returned.
+    """
+    check_permission_targets(
+        None, request.specify_user.id, [Sp6AdminPT.update])
+    user = spmodels.Specifyuser.objects.get(pk=userid)
+    if request.POST['admin_status'] == 'true':
+        user.set_admin()
+        return http.HttpResponse('true', content_type='text/plain')
+    else:
+        user.clear_admin()
+        return http.HttpResponse('false', content_type='text/plain')
+
