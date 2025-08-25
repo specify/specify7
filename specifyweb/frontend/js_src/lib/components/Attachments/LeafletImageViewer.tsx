@@ -1,6 +1,7 @@
 import React from 'react';
-import L from '../Leaflet/extend';
+
 import { commonText } from '../../localization/common';
+import L from '../Leaflet/extend';
 
 export function LeafletImageViewer({
   src,
@@ -25,13 +26,13 @@ export function LeafletImageViewer({
 
     const img = new window.Image();
     img.src = src;
-    img.onload = () => {
+    img.addEventListener('load', () => {
       // Update viewer bounds once the image is done loading.
       boundsRef.current = L.latLngBounds([0, 0], [img.height, img.width]);
       
       L.imageOverlay(src, boundsRef.current, { alt }).addTo(map);
       map.fitBounds(boundsRef.current);
-    };
+    });
 
     // Inject reset zoom button
     map.addControl(resetZoomButton(map, boundsRef));
@@ -48,8 +49,8 @@ export function LeafletImageViewer({
 
   return (
     <div
-      ref={containerRef}
       className="h-full w-full"
+      ref={containerRef}
       style={
         {
           '--transition-duration': 0,
@@ -71,7 +72,7 @@ function resetZoomButton(
 ): L.Control {
   const ResetZoomControl = L.Control.extend({
     options: { position: 'topleft' },
-    onAdd: function () {
+    onAdd () {
       const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
       const button = L.DomUtil.create('a', '', container) as HTMLAnchorElement;
       button.innerHTML = '⟳';
@@ -86,7 +87,7 @@ function resetZoomButton(
 
       L.DomEvent.disableClickPropagation(container);
       L.DomEvent.disableScrollPropagation(container);
-      L.DomEvent.on(button, 'click', function (e) {
+      L.DomEvent.on(button, 'click', (e) => {
         L.DomEvent.stop(e);
         map.fitBounds(boundsRef.current);
       });
