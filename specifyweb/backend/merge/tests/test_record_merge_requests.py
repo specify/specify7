@@ -65,7 +65,7 @@ class TestRecordMergeRequests(ApiTests):
         )
 
         response = self.c.post(
-            f'/api/specify/agent/replace/{agent_2.id}/',
+            f'/merge/agent/replace/{agent_2.id}/',
             data=json.dumps({
                 'old_record_ids': [agent_1.id],
                 'background': background
@@ -94,7 +94,7 @@ class TestRecordMergeRequests(ApiTests):
             )
 
         response = self.c.post(
-            f'/api/specify/agent/replace/{agent_2.id}/',
+            f'/merge/agent/replace/{agent_2.id}/',
             data=json.dumps({
                 'old_record_ids': [agent_1.id],
                 'background': background
@@ -116,7 +116,7 @@ class TestRecordMergeRequests(ApiTests):
             division=self.division
         )
         response = self.c.post(
-            f'/api/specify/agent/replace/{agent_1.id}/',
+            f'/merge/agent/replace/{agent_1.id}/',
             data=json.dumps({
                 'old_record_ids': None,
                 'background': background
@@ -126,7 +126,7 @@ class TestRecordMergeRequests(ApiTests):
         self._assert_invalid_request(response)
 
         response = self.c.post(
-            f'/api/specify/agent/replace/{agent_1.id}/',
+            f'/merge/agent/replace/{agent_1.id}/',
             data=json.dumps({
                 'old_record_ids': [],
                 'background': background
@@ -211,7 +211,7 @@ class TestRecordMergeRequests(ApiTests):
         test_context.setup()
 
         response = self.c.post(
-            f'/api/specify/agent/replace/{agent_1.id}/',
+            f'/merge/agent/replace/{agent_1.id}/',
             data=json.dumps({
                 'old_record_ids': [agent_2.id],
                 'background': True

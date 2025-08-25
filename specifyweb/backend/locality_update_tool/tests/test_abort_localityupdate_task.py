@@ -3,7 +3,7 @@ from django import http
 from django.test import Client
 from specifyweb.backend.notifications.models import LocalityUpdate, Message
 from specifyweb.specify.tests.test_api import ApiTests
-from specifyweb.specify.update_locality import LocalityUpdateStatus
+from specifyweb.backend.locality_update_tool.update_locality import LocalityUpdateStatus
 
 import json
 
@@ -18,7 +18,7 @@ class TestAbortLocalityUpdateTask(ApiTests):
     def test_locality_update_not_exist(self):
         
         taskid = 'aaaa'
-        response = self.c.post(f'/api/localityset/abort/{taskid}/')
+        response = self.c.post(f'/locality_update_tool/localityset/abort/{taskid}/')
 
         self._assertStatusCodeEqual(response, http.HttpResponseNotFound.status_code)
         self.assertEqual(response.content.decode(), f"The localityupdate with taskid: {taskid} is not found" )
@@ -37,7 +37,7 @@ class TestAbortLocalityUpdateTask(ApiTests):
             collection=self.collection
         )
 
-        response = self.c.post(f'/api/localityset/abort/{taskid}/')
+        response = self.c.post(f'/locality_update_tool/localityset/abort/{taskid}/')
 
         self._assertStatusCodeEqual(response, 200)
 
@@ -55,24 +55,24 @@ class TestAbortLocalityUpdateTask(ApiTests):
             dict(type="ABORTED", message=f'Task {taskid} has been aborted.' )    
         )
     
-    @patch('specifyweb.specify.views.record_merge_task.app.control.revoke')
-    @patch('specifyweb.specify.views.record_merge_task.AsyncResult')
+    @patch('specifyweb.backend.merge.record_merging.record_merge_task.app.control.revoke')
+    @patch('specifyweb.backend.merge.record_merging.record_merge_task.AsyncResult')
     def test_revoke_pending(self, AsyncResult, revoke):
         self._revoke_test("aaaa", LocalityUpdateStatus.PENDING, AsyncResult, revoke)
 
-    @patch('specifyweb.specify.views.record_merge_task.app.control.revoke')
-    @patch('specifyweb.specify.views.record_merge_task.AsyncResult')
+    @patch('specifyweb.backend.merge.record_merging.record_merge_task.app.control.revoke')
+    @patch('specifyweb.backend.merge.record_merging.record_merge_task.AsyncResult')
     def test_revoke_parsing(self, AsyncResult, revoke):
         self._revoke_test("aaaa", LocalityUpdateStatus.PARSING, AsyncResult, revoke)
 
 
-    @patch('specifyweb.specify.views.record_merge_task.app.control.revoke')
-    @patch('specifyweb.specify.views.record_merge_task.AsyncResult')
+    @patch('specifyweb.backend.merge.record_merging.record_merge_task.app.control.revoke')
+    @patch('specifyweb.backend.merge.record_merging.record_merge_task.AsyncResult')
     def test_revoke_progress(self, AsyncResult, revoke):
         self._revoke_test("aaaa", LocalityUpdateStatus.PROGRESS, AsyncResult, revoke)
 
-    @patch('specifyweb.specify.views.record_merge_task.app.control.revoke')
-    @patch('specifyweb.specify.views.record_merge_task.AsyncResult')
+    @patch('specifyweb.backend.merge.record_merging.record_merge_task.app.control.revoke')
+    @patch('specifyweb.backend.merge.record_merging.record_merge_task.AsyncResult')
     def test_not_running(self, AsyncResult, revoke):
 
         taskid = "aaaa"
@@ -90,7 +90,7 @@ class TestAbortLocalityUpdateTask(ApiTests):
             status=LocalityUpdateStatus.PARSE_FAILED
         )
 
-        response = self.c.post(f'/api/localityset/abort/{taskid}/')
+        response = self.c.post(f'/locality_update_tool/localityset/abort/{taskid}/')
 
         self._assertStatusCodeEqual(response, 200)
 

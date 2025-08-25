@@ -1,6 +1,6 @@
 from unittest import skip
 from django import http
-from specifyweb.specify.record_merging import FailedMergingException, resolve_record_merge_response
+from specifyweb.backend.merge.record_merging import FailedMergingException, resolve_record_merge_response
 from specifyweb.specify.tests.test_api import ApiTests
 
 

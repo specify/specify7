@@ -25,9 +25,7 @@ import type {
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import {
-  deserializeResource,
-} from '../DataModel/serializers';
+import { deserializeResource } from '../DataModel/serializers';
 import { serializeResource } from '../DataModel/serializers';
 import type { Attachment } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -41,26 +39,32 @@ export function WbAttachmentViewerView(): JSX.Element {
   );
   const [isImage, setIsImage] = React.useState<boolean>(false);
 
-  const [attachment, setAttachment] = React.useState<SerializedResource<Attachment> | undefined>(undefined);
+  const [attachment, setAttachment] = React.useState<
+    SerializedResource<Attachment> | undefined
+  >(undefined);
   const [selectedAttachment, setSelectedAttachment] = React.useState<number>(0);
 
   /**
    * Get attachment id from cache. Set by the parent workbench window.
    * URL contains the id of this attachment viewer. This makes sure this page
    * is linked to the correct workbench window.
-   */ 
+   */
   const location = useLocation();
   const parameters = new URLSearchParams(location.search);
-  const viewerId = parameters.get("id") ?? '';
-  const [attachmentIds, setAttachmentIds] = React.useState<RA<number> | undefined>(
-    getCache('workBenchAttachmentViewer', viewerId)
-  );
+  const viewerId = parameters.get('id') ?? '';
+  const [attachmentIds, setAttachmentIds] = React.useState<
+    RA<number> | undefined
+  >(getCache('workBenchAttachmentViewer', viewerId));
   React.useEffect(() => {
     function handleStorage(event: StorageEvent) {
       // Update current attachment(s) if this viewer's key changed.
       if (event.key) {
         const parsedKey = parseCacheKey(event.key);
-        if (parsedKey && parsedKey[0] === 'workBenchAttachmentViewer' && parsedKey[1] === viewerId) {
+        if (
+          parsedKey &&
+          parsedKey[0] === 'workBenchAttachmentViewer' &&
+          parsedKey[1] === viewerId
+        ) {
           setAttachmentIds(getCache('workBenchAttachmentViewer', viewerId));
         }
         setSelectedAttachment(0);
@@ -78,14 +82,10 @@ export function WbAttachmentViewerView(): JSX.Element {
           headers: { Accept: 'application/json' },
           method: 'GET',
         }
-      )
-        .then(({ data }) => {
-          const resource = toResource(
-            serializeResource(data),
-            'Attachment'
-          );
-          setAttachment(resource);
-        });
+      ).then(({ data }) => {
+        const resource = toResource(serializeResource(data), 'Attachment');
+        setAttachment(resource);
+      });
     }
   }, [attachmentIds, selectedAttachment]);
 
@@ -143,10 +143,10 @@ export function WbAttachmentViewerView(): JSX.Element {
       onClose={onClose}
     >
       <div className="flex flex-col items-center justify-center h-full w-full p-4">
-          {body}
+        {body}
       </div>
     </Dialog>
-    :
-    <NotFoundView/>
-  )
+  ) : (
+    <NotFoundView />
+  );
 }
