@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-07-26 14:06+0000\n"
+"PO-Revision-Date: 2025-08-25 21:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/query/"
 "ru/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.13\n"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 #: components/Preferences/UserDefinitions.tsx:2039
@@ -99,7 +99,9 @@ msgstr "Сохранить запрос как..."
 #: components/QueryBuilder/Save.tsx:76
 #, fuzzy
 msgid "saveClonedQueryDescription"
-msgstr "Запрос будет сохранен под новым именем, текущий запрос останется неизменным."
+msgstr ""
+"Запрос будет сохранен под новым именем, текущий запрос останется без "
+"изменений."
 
 #. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:172
