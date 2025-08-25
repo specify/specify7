@@ -12,6 +12,7 @@ import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
+import { exportsForTests, setCache } from '../../utils/cache';
 import type { GetSet, RA } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -40,7 +41,6 @@ import {
   getAttachmentsColumnIndex,
   getAttachmentsFromCell,
 } from '../WorkBench/attachmentHelpers';
-import { setCache, exportsForTests } from '../../utils/cache';
 
 const { formatCacheKey } = exportsForTests;
 
@@ -275,7 +275,6 @@ function AttachmentViewerDialog({
     }
   }, [attachment, useWindow]);
 
-
   const [related, setRelated] = React.useState<
     SpecifyResource<AnySchema> | undefined
   >(undefined);
@@ -306,7 +305,9 @@ function AttachmentViewerDialog({
          * We know the window was reattached if the cache key was removed.
          * Not using getCache to avoid using the cached cache (localStorage) value.
          */
-        const value = globalThis.localStorage.getItem(formatCacheKey('workBenchAttachmentViewer', viewerId));
+        const value = globalThis.localStorage.getItem(
+          formatCacheKey('workBenchAttachmentViewer', viewerId)
+        );
         if (value) {
           onClose();
         } else {

@@ -214,10 +214,7 @@ export function getHotPlugin<NAME extends keyof Plugins>(
   return plugins[pluginName]!;
 }
 
-function setColumnWidths(
-  hot: Handsontable,
-  dataset: Dataset
-): void {
+function setColumnWidths(hot: Handsontable, dataset: Dataset): void {
   let colWidths: WritableArray<number> | undefined = undefined;
   /**
    * The attachments column contains text that is different from what is actually displayed.
@@ -227,9 +224,12 @@ function setColumnWidths(
   const attachmentsColumnIndex = getAttachmentsColumnIndex(dataset);
   if (attachmentsColumnIndex !== -1) {
     colWidths = [];
-    colWidths[attachmentsColumnIndex] = Math.min(hot.getColWidth(attachmentsColumnIndex), attachmentColumnMaxWidth)
+    colWidths[attachmentsColumnIndex] = Math.min(
+      hot.getColWidth(attachmentsColumnIndex),
+      attachmentColumnMaxWidth
+    );
   }
   hot.updateSettings({
-    colWidths
+    colWidths,
   });
 }
