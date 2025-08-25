@@ -655,6 +655,10 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Загрузить все найденные вложения',
     'uk-ua': 'Завантажити всі знайдені вкладення',
   },
+  createRecordSetToDownloadAll: {
+    'en-us':
+      'Not all attachments have been loaded. Please create a record set of the query results to download all the attachments.',
+  },
   deleteAttachmentWarning: {
     'en-us': 'Are you sure you want to delete this attachment?',
     'de-ch': 'Möchten Sie diesen Anhang wirklich löschen?',
