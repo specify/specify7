@@ -7,11 +7,6 @@ from . import tree_views
 from . import views
 
 urlpatterns = [
-    # replace record
-    re_path(r'^specify/(?P<model_name>\w+)/replace/(?P<new_model_id>\d+)/$', views.record_merge),
-    re_path(r'^specify/merge/status/(?P<merge_id>[0-9a-fA-F-]+)/$', views.merging_status),
-    re_path(r'^specify/merge/abort/(?P<merge_id>[0-9a-fA-F-]+)/$', views.abort_merge_task),
-
     # cat num for siblings
     re_path(r'^specify/catalog_number_for_sibling/$', views.catalog_number_for_sibling),
 

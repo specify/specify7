@@ -5,13 +5,13 @@ from typing import Any
 from uuid import uuid4
 
 from django import http
+from specifyweb.backend.merge.record_merging import record_merge_task
 from specifyweb.backend.notifications.models import Message, LocalityUpdate
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST
 
 from specifyweb.middleware.general import require_GET
 from specifyweb.celery_tasks import app, CELERY_TASK_STATE
-from specifyweb.specify.record_merging import record_merge_task
 from specifyweb.backend.locality_update_tool.update_locality import localityupdate_parse_success, localityupdate_parse_error, parse_locality_set as _parse_locality_set, upload_locality_set as _upload_locality_set, create_localityupdate_recordset, update_locality_task, parse_locality_task, LocalityUpdateStatus
 from specifyweb.specify.views import login_maybe_required, openapi
 
