@@ -107,7 +107,10 @@ export function WbAttachmentViewerView(): JSX.Element {
   const body =
     attachment !== undefined &&
     (isImage ? (
-      <LeafletImageViewer alt={attachment?.title ?? ''} src={attachmentUrl ?? ''} />
+      <LeafletImageViewer
+        alt={attachment?.title ?? ''}
+        src={attachmentUrl ?? ''}
+      />
     ) : (
       <AttachmentViewer
         attachment={deserializeResource(attachment)}
@@ -117,22 +120,23 @@ export function WbAttachmentViewerView(): JSX.Element {
       />
     ));
 
-  const onClose = function(): void {
-    window.close()
-  }
+  const onClose = function (): void {
+    window.close();
+  };
 
-  return (
-    viewerId ?
+  return viewerId ? (
     <Dialog
       buttons={undefined}
-      className={{container: dialogClassNames.fullScreen}}
+      className={{ container: dialogClassNames.fullScreen }}
       header={attachmentsText.attachments()}
       headerButtons={
         <div className="flex items-center gap-2 md:gap-2 ml-auto">
-          <Button.Secondary onClick={(): void => {
-            removeCache('workBenchAttachmentViewer', viewerId);
-            window.close();
-          }}>
+          <Button.Secondary
+            onClick={(): void => {
+              removeCache('workBenchAttachmentViewer', viewerId);
+              window.close();
+            }}
+          >
             {wbText.attachWindow()}
           </Button.Secondary>
           <Button.Secondary onClick={onClose}>
