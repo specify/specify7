@@ -229,7 +229,7 @@ msgid "localityUpdateProgressing"
 msgstr "Импорт набора данных о местоположении"
 
 #: components/LocalityUpdate/utils.ts:34
-#: components/Notifications/NotificationRenderers.tsx:293
+#: components/Notifications/NotificationRenderers.tsx:294
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateParsed"
@@ -237,28 +237,28 @@ msgstr "Набор данных обновления местоположени�
 
 #: components/LocalityUpdate/Status.tsx:470
 #: components/LocalityUpdate/utils.ts:38
-#: components/Notifications/NotificationRenderers.tsx:261
+#: components/Notifications/NotificationRenderers.tsx:262
 #. Used in: Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateFailed"
 msgstr "Ошибка обновления местоположения"
 
 #: components/LocalityUpdate/utils.ts:39
-#: components/Notifications/NotificationRenderers.tsx:237
+#: components/Notifications/NotificationRenderers.tsx:238
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateParseFailure"
 msgstr "Ошибка анализа обновления местоположения"
 
 #: components/LocalityUpdate/utils.ts:40
-#: components/Notifications/NotificationRenderers.tsx:282
+#: components/Notifications/NotificationRenderers.tsx:283
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateCancelled"
 msgstr "Обновление местоположения отменено"
 
 #: components/LocalityUpdate/utils.ts:41
-#: components/Notifications/NotificationRenderers.tsx:305
+#: components/Notifications/NotificationRenderers.tsx:306
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateSucceeded"
@@ -320,33 +320,33 @@ msgstr ""
 "Следующее количество записей {localityTabelLabel: string} было обновлено и "
 "создано {geoCoordDetailTableLabel: string} записей:"
 
-#: components/Notifications/NotificationRenderers.tsx:225
+#: components/Notifications/NotificationRenderers.tsx:226
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateStarted"
 msgstr "Процесс обновления населенного пункта начался"
 
 #: components/LocalityUpdate/Status.tsx:339
-#: components/Notifications/NotificationRenderers.tsx:307
+#: components/Notifications/NotificationRenderers.tsx:308
 #. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateResults"
 msgstr "Результаты обновления местоположения"
 
 #: components/LocalityUpdate/Status.tsx:400
-#: components/Notifications/NotificationRenderers.tsx:239
-#: components/Notifications/NotificationRenderers.tsx:263
+#: components/Notifications/NotificationRenderers.tsx:240
+#: components/Notifications/NotificationRenderers.tsx:264
 #. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateFailureResults"
 msgstr "Результаты сбоя обновления местоположения"
 
-#: components/Notifications/NotificationRenderers.tsx:227
-#: components/Notifications/NotificationRenderers.tsx:251
-#: components/Notifications/NotificationRenderers.tsx:273
-#: components/Notifications/NotificationRenderers.tsx:284
-#: components/Notifications/NotificationRenderers.tsx:295
-#: components/Notifications/NotificationRenderers.tsx:324
+#: components/Notifications/NotificationRenderers.tsx:228
+#: components/Notifications/NotificationRenderers.tsx:252
+#: components/Notifications/NotificationRenderers.tsx:274
+#: components/Notifications/NotificationRenderers.tsx:285
+#: components/Notifications/NotificationRenderers.tsx:296
+#: components/Notifications/NotificationRenderers.tsx:325
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "taskId"

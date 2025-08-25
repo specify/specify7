@@ -30,8 +30,8 @@ msgid "failedParsingFloat"
 msgstr "o valor \"{value:string}\" não é um valor de ponto flutuante válido"
 
 #: components/WorkBench/CellMeta.ts:159
-#: components/WorkBench/hooks.ts:122
-#: components/WorkBench/hooks.ts:131
+#: components/WorkBench/hooks.ts:123
+#: components/WorkBench/hooks.ts:132
 #: components/WorkBench/resultsParser.ts:268
 #. Used in: Components > Work Bench > Cell Meta ⬤ Components > Work Bench > Hooks ⬤ Components > Work Bench > Results Parser
 #, fuzzy

@@ -1,0 +1,57 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/Toolbar/BackupStatus.tsx:99
+#. Used in: Components > Toolbar > Backup Status
+msgid "completed"
+msgstr ""
+
+#: components/Toolbar/BackupStatus.tsx:90
+#. Used in: Components > Toolbar > Backup Status
+msgid "failed"
+msgstr ""
+
+#: components/Toolbar/BackupDatabase.tsx:97
+#. Used in: Components > Toolbar > Backup Database
+msgid "previousFound"
+msgstr ""
+
+#: components/Toolbar/BackupDatabase.tsx:111
+#. Used in: Components > Toolbar > Backup Database
+msgid "previousNone"
+msgstr ""
+
+#: components/Toolbar/BackupDatabase.tsx:99
+#. Used in: Components > Toolbar > Backup Database
+msgid "previousSizeMB"
+msgstr ""
+
+#: components/Toolbar/BackupDatabase.tsx:105
+#. Used in: Components > Toolbar > Backup Database
+msgid "lastBackupOn"
+msgstr ""
+
+#: components/Toolbar/BackupDatabase.tsx:47
+#. Used in: Components > Toolbar > Backup Database
+msgid "checkPreviousFailed"
+msgstr ""
+
+#: components/Toolbar/BackupDatabase.tsx:65
+#. Used in: Components > Toolbar > Backup Database
+msgid "startFailed"
+msgstr ""
+
+#: components/Notifications/NotificationRenderers.tsx:335
+#. Used in: Components > Notifications > Notification Renderers
+msgid "databaseBackupCompleted"
+msgstr ""
+
+#: components/Notifications/NotificationRenderers.tsx:351
+#. Used in: Components > Notifications > Notification Renderers
+msgid "databaseBackupFailed"
+msgstr ""
+
+#: components/Toolbar/BackupStatus.tsx:106
+#. Used in: Components > Toolbar > Backup Status
+msgid "compressing"
+msgstr ""

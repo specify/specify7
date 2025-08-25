@@ -18,9 +18,9 @@ msgstr ""
 msgid "pageTitle"
 msgstr "Willkommen"
 
-#: components/Header/userToolDefinitions.ts:121
+#: components/Header/userToolDefinitions.ts:127
 #: components/HomePage/AboutSpecify.tsx:68
-#: components/Router/OverlayRoutes.tsx:198
+#: components/Router/OverlayRoutes.tsx:206
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
 msgid "aboutSpecify"
 msgstr "Über Specify 7"

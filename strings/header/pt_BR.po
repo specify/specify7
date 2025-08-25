@@ -38,15 +38,24 @@ msgstr "Atual {collectionTable:string}"
 msgid "dataEntry"
 msgstr "Entrada de dados"
 
-#: components/Header/userToolDefinitions.ts:99
-#: components/Router/OverlayRoutes.tsx:182
+#: components/Header/userToolDefinitions.ts:105
+#: components/Router/OverlayRoutes.tsx:190
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "makeDwca"
 msgstr "Criar arquivo DwC"
 
-#: components/Header/userToolDefinitions.ts:105
-#: components/Router/OverlayRoutes.tsx:190
+#: components/Header/userToolDefinitions.ts:97
+#: components/Router/OverlayRoutes.tsx:182
+#: components/Router/OverlayRoutes.tsx:262
+#: components/Toolbar/BackupDatabase.tsx:87
+#: components/Toolbar/BackupStatus.tsx:84
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Backup Status
+msgid "backupDatabase"
+msgstr "Fazer backup do banco de dados"
+
+#: components/Header/userToolDefinitions.ts:111
+#: components/Router/OverlayRoutes.tsx:198
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "updateExportFeed"
@@ -92,7 +101,7 @@ msgstr ""
 "Exportação iniciada. Você receberá uma notificação quando a exportação for "
 "concluída."
 
-#: components/Header/userToolDefinitions.ts:113
+#: components/Header/userToolDefinitions.ts:119
 #: components/LocalityUpdate/index.tsx:83
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Locality Update > Index
 #, fuzzy
@@ -247,13 +256,13 @@ msgstr ""
 "estar sem localização ou com localização incorreta. Se você tiver interesse "
 "em nos ajudar a concluir a localização, <link>siga as instruções.</link>"
 
-#: components/Header/userToolDefinitions.ts:148
+#: components/Header/userToolDefinitions.ts:154
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "tableApi"
 msgstr "API de tabelas"
 
-#: components/Header/userToolDefinitions.ts:153
+#: components/Header/userToolDefinitions.ts:159
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "operationsApi"
@@ -263,7 +272,7 @@ msgstr "API de operações"
 #: components/AppResources/Create.tsx:133
 #: components/AppResources/Filters.tsx:154
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:235
-#: components/Header/userToolDefinitions.ts:119
+#: components/Header/userToolDefinitions.ts:125
 #: components/Preferences/UserDefinitions.tsx:543
 #: components/Toolbar/WbsDialog.tsx:229
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Toolbar > Wbs Dialog
@@ -277,20 +286,20 @@ msgstr "Documentação"
 msgid "administration"
 msgstr "Ferramentas Administrativas"
 
-#: components/Header/userToolDefinitions.ts:136
+#: components/Header/userToolDefinitions.ts:142
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "developers"
 msgstr "Recursos para desenvolvedores"
 
-#: components/Header/userToolDefinitions.ts:126
+#: components/Header/userToolDefinitions.ts:132
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "forum"
 msgstr "Fórum da Comunidade"
 
 #: components/Errors/ErrorDialog.tsx:152
-#: components/Header/userToolDefinitions.ts:143
+#: components/Header/userToolDefinitions.ts:149
 #: components/Router/Routes.tsx:443
 #: components/RouterCommands/CacheBuster.tsx:39
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
@@ -304,7 +313,7 @@ msgstr "Limpar cache do navegador"
 msgid "cacheCleared"
 msgstr "O cache foi limpo. Recarregue a página."
 
-#: components/Header/userToolDefinitions.ts:131
+#: components/Header/userToolDefinitions.ts:137
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "technicalDocumentation"

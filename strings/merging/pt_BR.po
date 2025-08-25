@@ -22,7 +22,7 @@ msgstr "Mesclagem de registros"
 #: components/Merging/index.tsx:93
 #: components/Merging/index.tsx:402
 #: components/Merging/index.tsx:415
-#: components/Router/OverlayRoutes.tsx:223
+#: components/Router/OverlayRoutes.tsx:231
 #. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "mergeRecords"
@@ -137,31 +137,31 @@ msgstr "Mesclagem bem-sucedida"
 msgid "merging"
 msgstr "Mesclando"
 
-#: components/Notifications/NotificationRenderers.tsx:158
+#: components/Notifications/NotificationRenderers.tsx:159
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasStarted"
 msgstr "O processo de fusão foi iniciado."
 
-#: components/Notifications/NotificationRenderers.tsx:213
+#: components/Notifications/NotificationRenderers.tsx:214
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasSucceeded"
 msgstr "O processo de mesclagem foi bem-sucedido."
 
-#: components/Notifications/NotificationRenderers.tsx:175
+#: components/Notifications/NotificationRenderers.tsx:176
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasFailed"
 msgstr "O processo de mesclagem falhou."
 
-#: components/Notifications/NotificationRenderers.tsx:193
+#: components/Notifications/NotificationRenderers.tsx:194
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasBeenCanceled"
 msgstr "O processo de mesclagem foi cancelado."
 
-#: components/Notifications/NotificationRenderers.tsx:178
+#: components/Notifications/NotificationRenderers.tsx:179
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "retryMerge"

@@ -21,7 +21,7 @@ msgstr "Fusión de registros"
 #: components/Merging/index.tsx:93
 #: components/Merging/index.tsx:402
 #: components/Merging/index.tsx:415
-#: components/Router/OverlayRoutes.tsx:223
+#: components/Router/OverlayRoutes.tsx:231
 #. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
 msgid "mergeRecords"
 msgstr "Fusionar registros"
@@ -119,27 +119,27 @@ msgstr "Fusión exitosa"
 msgid "merging"
 msgstr "Fusionando"
 
-#: components/Notifications/NotificationRenderers.tsx:158
+#: components/Notifications/NotificationRenderers.tsx:159
 #. Used in: Components > Notifications > Notification Renderers
 msgid "mergingHasStarted"
 msgstr "El proceso de fusión ha comenzado."
 
-#: components/Notifications/NotificationRenderers.tsx:213
+#: components/Notifications/NotificationRenderers.tsx:214
 #. Used in: Components > Notifications > Notification Renderers
 msgid "mergingHasSucceeded"
 msgstr "El proceso de fusión ha sido exitoso."
 
-#: components/Notifications/NotificationRenderers.tsx:175
+#: components/Notifications/NotificationRenderers.tsx:176
 #. Used in: Components > Notifications > Notification Renderers
 msgid "mergingHasFailed"
 msgstr "El proceso de fusión ha fallado."
 
-#: components/Notifications/NotificationRenderers.tsx:193
+#: components/Notifications/NotificationRenderers.tsx:194
 #. Used in: Components > Notifications > Notification Renderers
 msgid "mergingHasBeenCanceled"
 msgstr "Se ha cancelado el proceso de fusión."
 
-#: components/Notifications/NotificationRenderers.tsx:178
+#: components/Notifications/NotificationRenderers.tsx:179
 #. Used in: Components > Notifications > Notification Renderers
 msgid "retryMerge"
 msgstr "Reintentar la fusión."

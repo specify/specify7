@@ -34,14 +34,23 @@ msgstr "Actual {collectionTable:string}"
 msgid "dataEntry"
 msgstr "Entrada de datos"
 
-#: components/Header/userToolDefinitions.ts:99
-#: components/Router/OverlayRoutes.tsx:182
+#: components/Header/userToolDefinitions.ts:105
+#: components/Router/OverlayRoutes.tsx:190
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "makeDwca"
 msgstr "Crear un archivo DwC"
 
-#: components/Header/userToolDefinitions.ts:105
-#: components/Router/OverlayRoutes.tsx:190
+#: components/Header/userToolDefinitions.ts:97
+#: components/Router/OverlayRoutes.tsx:182
+#: components/Router/OverlayRoutes.tsx:262
+#: components/Toolbar/BackupDatabase.tsx:87
+#: components/Toolbar/BackupStatus.tsx:84
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Backup Status
+msgid "backupDatabase"
+msgstr "Copia de seguridad de la base de datos"
+
+#: components/Header/userToolDefinitions.ts:111
+#: components/Router/OverlayRoutes.tsx:198
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "updateExportFeed"
 msgstr "Actualizar feed RSS"
@@ -80,7 +89,7 @@ msgstr ""
 "Exportación iniciada. Recibirá una notificación cuando finalice la "
 "exportación."
 
-#: components/Header/userToolDefinitions.ts:113
+#: components/Header/userToolDefinitions.ts:119
 #: components/LocalityUpdate/index.tsx:83
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Locality Update > Index
 msgid "localityUpdateTool"
@@ -214,12 +223,12 @@ msgstr ""
 "Si está interesado en ayudarnos a completar la localización, <link>siga las "
 "instrucciones.</link>"
 
-#: components/Header/userToolDefinitions.ts:148
+#: components/Header/userToolDefinitions.ts:154
 #. Used in: Components > Header > User Tool Definitions
 msgid "tableApi"
 msgstr "API de tablas"
 
-#: components/Header/userToolDefinitions.ts:153
+#: components/Header/userToolDefinitions.ts:159
 #. Used in: Components > Header > User Tool Definitions
 msgid "operationsApi"
 msgstr "API de operaciones"
@@ -228,7 +237,7 @@ msgstr "API de operaciones"
 #: components/AppResources/Create.tsx:133
 #: components/AppResources/Filters.tsx:154
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:235
-#: components/Header/userToolDefinitions.ts:119
+#: components/Header/userToolDefinitions.ts:125
 #: components/Preferences/UserDefinitions.tsx:543
 #: components/Toolbar/WbsDialog.tsx:229
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Toolbar > Wbs Dialog
@@ -240,18 +249,18 @@ msgstr "Documentación"
 msgid "administration"
 msgstr "Herramientas administrativas"
 
-#: components/Header/userToolDefinitions.ts:136
+#: components/Header/userToolDefinitions.ts:142
 #. Used in: Components > Header > User Tool Definitions
 msgid "developers"
 msgstr "Recursos para desarrolladores"
 
-#: components/Header/userToolDefinitions.ts:126
+#: components/Header/userToolDefinitions.ts:132
 #. Used in: Components > Header > User Tool Definitions
 msgid "forum"
 msgstr "Foro Comunitario"
 
 #: components/Errors/ErrorDialog.tsx:152
-#: components/Header/userToolDefinitions.ts:143
+#: components/Header/userToolDefinitions.ts:149
 #: components/Router/Routes.tsx:443
 #: components/RouterCommands/CacheBuster.tsx:39
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
@@ -263,7 +272,7 @@ msgstr "Borrar caché del navegador"
 msgid "cacheCleared"
 msgstr "Se ha borrado la caché. Por favor recarga la página."
 
-#: components/Header/userToolDefinitions.ts:131
+#: components/Header/userToolDefinitions.ts:137
 #. Used in: Components > Header > User Tool Definitions
 msgid "technicalDocumentation"
 msgstr "Documentación"

@@ -263,7 +263,7 @@ msgstr "Field count"
 msgid "relationshipCount"
 msgstr "Relationship count"
 
-#: components/Header/userToolDefinitions.ts:138
+#: components/Header/userToolDefinitions.ts:144
 #: components/Router/Routes.tsx:45
 #: components/Router/Routes.tsx:49
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
@@ -295,7 +295,7 @@ msgstr "ID Field"
 msgid "tableUniquenessRules"
 msgstr "{tableName:string} Uniqueness Rules"
 
-#: components/Router/OverlayRoutes.tsx:237
+#: components/Router/OverlayRoutes.tsx:245
 #: components/SchemaConfig/Table.tsx:93
 #. Used in: Components > Router > Overlay Routes ⬤ Components > Schema Config > Table
 msgid "uniquenessRules"

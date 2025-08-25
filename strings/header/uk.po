@@ -35,14 +35,23 @@ msgstr "Поточна {collectionTable:string}"
 msgid "dataEntry"
 msgstr "Введення даних"
 
-#: components/Header/userToolDefinitions.ts:99
-#: components/Router/OverlayRoutes.tsx:182
+#: components/Header/userToolDefinitions.ts:105
+#: components/Router/OverlayRoutes.tsx:190
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "makeDwca"
 msgstr "Створити архів DwC"
 
-#: components/Header/userToolDefinitions.ts:105
-#: components/Router/OverlayRoutes.tsx:190
+#: components/Header/userToolDefinitions.ts:97
+#: components/Router/OverlayRoutes.tsx:182
+#: components/Router/OverlayRoutes.tsx:262
+#: components/Toolbar/BackupDatabase.tsx:87
+#: components/Toolbar/BackupStatus.tsx:84
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Backup Status
+msgid "backupDatabase"
+msgstr "Резервне копіювання бази даних"
+
+#: components/Header/userToolDefinitions.ts:111
+#: components/Router/OverlayRoutes.tsx:198
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "updateExportFeed"
 msgstr "Оновити RSS-канал"
@@ -79,7 +88,7 @@ msgstr "Розпочато експорт DwCA"
 msgid "dwcaExportStartedDescription"
 msgstr "Експорт розпочато. Коли експорт завершиться, ви отримаєте сповіщення."
 
-#: components/Header/userToolDefinitions.ts:113
+#: components/Header/userToolDefinitions.ts:119
 #: components/LocalityUpdate/index.tsx:83
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Locality Update > Index
 msgid "localityUpdateTool"
@@ -212,12 +221,12 @@ msgstr ""
 "щоб допомогти нам завершити локалізацію, будь ласка, <link>прочитайте "
 "інструкцій.</link>"
 
-#: components/Header/userToolDefinitions.ts:148
+#: components/Header/userToolDefinitions.ts:154
 #. Used in: Components > Header > User Tool Definitions
 msgid "tableApi"
 msgstr "API таблиць"
 
-#: components/Header/userToolDefinitions.ts:153
+#: components/Header/userToolDefinitions.ts:159
 #. Used in: Components > Header > User Tool Definitions
 msgid "operationsApi"
 msgstr "API операцій"
@@ -226,7 +235,7 @@ msgstr "API операцій"
 #: components/AppResources/Create.tsx:133
 #: components/AppResources/Filters.tsx:154
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:235
-#: components/Header/userToolDefinitions.ts:119
+#: components/Header/userToolDefinitions.ts:125
 #: components/Preferences/UserDefinitions.tsx:543
 #: components/Toolbar/WbsDialog.tsx:229
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Toolbar > Wbs Dialog
@@ -238,18 +247,18 @@ msgstr "Документація"
 msgid "administration"
 msgstr "Адміністрування"
 
-#: components/Header/userToolDefinitions.ts:136
+#: components/Header/userToolDefinitions.ts:142
 #. Used in: Components > Header > User Tool Definitions
 msgid "developers"
 msgstr "Для розробників"
 
-#: components/Header/userToolDefinitions.ts:126
+#: components/Header/userToolDefinitions.ts:132
 #. Used in: Components > Header > User Tool Definitions
 msgid "forum"
 msgstr "Форум"
 
 #: components/Errors/ErrorDialog.tsx:152
-#: components/Header/userToolDefinitions.ts:143
+#: components/Header/userToolDefinitions.ts:149
 #: components/Router/Routes.tsx:443
 #: components/RouterCommands/CacheBuster.tsx:39
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
@@ -261,7 +270,7 @@ msgstr "Очистити кеш браузера"
 msgid "cacheCleared"
 msgstr "Кеш очищено. Перезавантажте сторінку."
 
-#: components/Header/userToolDefinitions.ts:131
+#: components/Header/userToolDefinitions.ts:137
 #. Used in: Components > Header > User Tool Definitions
 msgid "technicalDocumentation"
 msgstr "Документація"

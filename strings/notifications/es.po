@@ -21,8 +21,8 @@ msgstr "Notificaciones: …"
 msgid "mostRecentNotificationsTop"
 msgstr "(Ordenados del más reciente al más antiguo.)"
 
-#: components/Notifications/NotificationRenderers.tsx:64
-#: components/Notifications/NotificationRenderers.tsx:94
+#: components/Notifications/NotificationRenderers.tsx:65
+#: components/Notifications/NotificationRenderers.tsx:95
 #. 🟥Used as a label for a button that downloads the error message. Used in: Components > Notifications > Notification Renderers
 msgid "exception"
 msgstr "Excepción"
@@ -31,44 +31,47 @@ msgstr "Excepción"
 #: components/Attachments/Cell.tsx:80
 #: components/Attachments/Viewer.tsx:206
 #: components/LocalityUpdate/Status.tsx:396
-#: components/Notifications/NotificationRenderers.tsx:80
-#: components/Notifications/NotificationRenderers.tsx:110
-#: components/Notifications/NotificationRenderers.tsx:126
-#. Used in: Components > App Resources > Editor Components ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Viewer ⬤ Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:81
+#: components/Notifications/NotificationRenderers.tsx:111
+#: components/Notifications/NotificationRenderers.tsx:127
+#: components/Notifications/NotificationRenderers.tsx:342
+#: components/Toolbar/BackupDatabase.tsx:79
+#: components/Toolbar/BackupStatus.tsx:74
+#. Used in: Components > App Resources > Editor Components ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Viewer ⬤ Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Backup Status
 msgid "download"
 msgstr "Descarga"
 
-#: components/Notifications/NotificationRenderers.tsx:40
+#: components/Notifications/NotificationRenderers.tsx:41
 #. Used in: Components > Notifications > Notification Renderers
 msgid "feedItemUpdated"
 msgstr "Elemento de fuente de datos para exportación actualizado."
 
-#: components/Notifications/NotificationRenderers.tsx:58
+#: components/Notifications/NotificationRenderers.tsx:59
 #. Used in: Components > Notifications > Notification Renderers
 msgid "updateFeedFailed"
 msgstr "Actualización de fuente de datos para exportación fallida."
 
-#: components/Notifications/NotificationRenderers.tsx:72
+#: components/Notifications/NotificationRenderers.tsx:73
 #. Used in: Components > Notifications > Notification Renderers
 msgid "dwcaExportCompleted"
 msgstr "Se ha completado la exportación de DwCA."
 
-#: components/Notifications/NotificationRenderers.tsx:88
+#: components/Notifications/NotificationRenderers.tsx:89
 #. Used in: Components > Notifications > Notification Renderers
 msgid "dwcaExportFailed"
 msgstr "Falló la exportación de DwCA."
 
-#: components/Notifications/NotificationRenderers.tsx:102
+#: components/Notifications/NotificationRenderers.tsx:103
 #. Used in: Components > Notifications > Notification Renderers
 msgid "queryExportToCsvCompleted"
 msgstr "Se ha completado la Exportación de la consulta a un CSV."
 
-#: components/Notifications/NotificationRenderers.tsx:118
+#: components/Notifications/NotificationRenderers.tsx:119
 #. Used in: Components > Notifications > Notification Renderers
 msgid "queryExportToKmlCompleted"
 msgstr "Se ha completado la Exportación de la consulta a un KML."
 
-#: components/Notifications/NotificationRenderers.tsx:144
+#: components/Notifications/NotificationRenderers.tsx:145
 #. Used in: Components > Notifications > Notification Renderers
 msgid "dataSetOwnershipTransferred"
 msgstr ""

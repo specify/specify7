@@ -314,7 +314,7 @@ msgstr "Recuento de campos"
 msgid "relationshipCount"
 msgstr "Recuento de relaciones"
 
-#: components/Header/userToolDefinitions.ts:138
+#: components/Header/userToolDefinitions.ts:144
 #: components/Router/Routes.tsx:45
 #: components/Router/Routes.tsx:49
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
@@ -352,7 +352,7 @@ msgstr "Campo de identificación"
 msgid "tableUniquenessRules"
 msgstr "{tableName:string} Reglas de unicidad"
 
-#: components/Router/OverlayRoutes.tsx:237
+#: components/Router/OverlayRoutes.tsx:245
 #: components/SchemaConfig/Table.tsx:93
 #. Used in: Components > Router > Overlay Routes ⬤ Components > Schema Config > Table
 #, fuzzy

@@ -22,7 +22,7 @@ msgstr "Datensatzzusammenführung"
 #: components/Merging/index.tsx:93
 #: components/Merging/index.tsx:402
 #: components/Merging/index.tsx:415
-#: components/Router/OverlayRoutes.tsx:223
+#: components/Router/OverlayRoutes.tsx:231
 #. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "mergeRecords"
@@ -139,31 +139,31 @@ msgstr "Zusammenführung erfolgreich"
 msgid "merging"
 msgstr "Zusammenführen"
 
-#: components/Notifications/NotificationRenderers.tsx:158
+#: components/Notifications/NotificationRenderers.tsx:159
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasStarted"
 msgstr "Der Zusammenführungsprozess wurde gestartet."
 
-#: components/Notifications/NotificationRenderers.tsx:213
+#: components/Notifications/NotificationRenderers.tsx:214
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasSucceeded"
 msgstr "Der Zusammenführungsprozess war erfolgreich."
 
-#: components/Notifications/NotificationRenderers.tsx:175
+#: components/Notifications/NotificationRenderers.tsx:176
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasFailed"
 msgstr "Der Zusammenführungsprozess ist fehlgeschlagen."
 
-#: components/Notifications/NotificationRenderers.tsx:193
+#: components/Notifications/NotificationRenderers.tsx:194
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasBeenCanceled"
 msgstr "Der Zusammenführungsprozess wurde abgebrochen."
 
-#: components/Notifications/NotificationRenderers.tsx:178
+#: components/Notifications/NotificationRenderers.tsx:179
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "retryMerge"
