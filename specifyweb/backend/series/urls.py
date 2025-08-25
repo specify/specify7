@@ -1,5 +1,3 @@
-# Entrypoint for the routing of the app
-
 from django.urls import include, path, re_path
 
 from specifyweb.backend.series import views
