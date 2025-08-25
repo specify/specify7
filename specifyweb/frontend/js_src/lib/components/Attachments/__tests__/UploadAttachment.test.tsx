@@ -17,7 +17,7 @@ import { testAttachment } from './utils';
 requireContext();
 
 async function uploadFileMock() {
-  return deserializeResource(testAttachment);
+  return deserializeResource(testAttachment)
 }
 
 beforeEach(() => {
