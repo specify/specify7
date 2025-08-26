@@ -43,6 +43,9 @@ typecheck:
 	$(MYPY) --follow-imports silent \
 	specifyweb/backend/permissions specifyweb/backend/workbench specifyweb/backend/accounts \
 	specifyweb/specify/schema.py specifyweb/specify/load_datamodel.py \
-	specifyweb/specify/api.py specifyweb/backend/context/user_resources.py
+	specifyweb/specify/crud.py specifyweb/specify/dispatch.py \
+	specifyweb/specify/validator.py specifyweb/specify/relationships.py \
+	specifyweb/specify/sterilizer.py specifyweb/specify/exceptions.py \
+	specifyweb/specify/api_utils.py specifyweb/backend/context/user_resources.py
 
 .FORCE:
