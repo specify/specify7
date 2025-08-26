@@ -68,6 +68,7 @@ def assign_users_to_roles(apps=apps) -> None:
     Agent = apps.get_model('specify', 'Agent')
     UserPolicy = apps.get_model('permissions', 'UserPolicy')
     UserRole = apps.get_model('permissions', 'UserRole')
+    Specifyuser = apps.get_model('specify', 'Specifyuser')
 
     ROLE_DESCRIPTIONS = {
         "Manager": "Grants full access to all abilities within a collection.",
@@ -106,6 +107,9 @@ def assign_users_to_roles(apps=apps) -> None:
 
     results = cursor.fetchall()
     for user_id, user_name, user_type, collection_id, collection_name in results:
+        user = Specifyuser.objects.get(id=user_id)
+        if is_sp6_user_permissions_migrated(user, apps):
+            continue
         if UserRole.objects.filter(
             specifyuser_id=user_id,
             role__collection_id=collection_id,
