@@ -26,6 +26,11 @@ def wipe_permissions(apps = apps) -> None:
     LibraryRole.objects.all().delete()
     UserPolicy.objects.all().delete()
 
+def is_sp6_user_permissions_migrated(user, apps=apps) -> bool:
+    UserPolicy = apps.get_model('permissions', 'UserPolicy')
+    UserRole = apps.get_model('permissions', 'UserRole')
+    return UserRole.objects.filter(specifyuser=user).exists() or UserPolicy.objects.filter(specifyuser=user).exists()
+
 def initialize(wipe: bool=False, apps=apps) -> None:
     with transaction.atomic():
         if wipe:
@@ -47,6 +52,8 @@ def create_admins(apps=apps) -> None:
 
     users = Specifyuser.objects.all()
     for user in users:
+        if is_sp6_user_permissions_migrated(user, apps):
+            continue
         if is_legacy_admin(user):
             UserPolicy.objects.get_or_create(
                 collection=None,
