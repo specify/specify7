@@ -1,8 +1,8 @@
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { icons } from '../Atoms/Icons';
 
 import { commonText } from '../../localization/common';
+import { icons } from '../Atoms/Icons';
 import L from '../Leaflet/extend';
 
 export function LeafletImageViewer({
