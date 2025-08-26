@@ -85,7 +85,7 @@ dark:text-gray-100\\" type=\\"button\\">Close</button></div>"
     expect(handleDeleted).not.toHaveBeenCalled();
   });
 
-  overrideAjax(`/api/delete_blockers/spappresource/3/`, []);
+  overrideAjax(`/delete_blockers/delete_blockers/spappresource/3/`, []);
   overrideAjax(`/api/specify/spappresource/3/`, {
     id: 3,
     name: 'TestName',

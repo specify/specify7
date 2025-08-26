@@ -27,8 +27,6 @@ urlpatterns = [
     re_path(r'^specify/(?P<model>\w+)/$', views.collection), # permissions added
     re_path(r'^specify_rows/(?P<model>\w+)/$', views.rows), # permissions added  
 
-    re_path(r'^delete_blockers/(?P<model>\w+)/(?P<id>\d+)/$', views.delete_blockers),
-
     # this url always triggers a 500 for testing purposes
     re_path(r'^test_error/', views.raise_error),
 ]
