@@ -3,12 +3,11 @@ import type { Plugins } from 'handsontable/plugins';
 import type { CellProperties } from 'handsontable/settings';
 
 import { getCache } from '../../utils/cache';
-import type { WritableArray } from '../../utils/types';
 import { writable } from '../../utils/types';
 import { schema } from '../DataModel/schema';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { getAttachmentsColumnIndex, getAttachmentsFormattedColumnIndex } from '../WorkBench/attachmentHelpers';
+import { getAttachmentsColumn, getAttachmentsFormattedColumn } from '../WorkBench/attachmentHelpers';
 import type { BatchEditPack } from './batchEditHelpers';
 import { BATCH_EDIT_KEY, isBatchEditNullRecord } from './batchEditHelpers';
 import { getPhysicalColToMappingCol } from './hotHelpers';
@@ -142,8 +141,8 @@ function getIdentifyNullRecords(
 }
 
 function getAttachmentsIdentifier(dataset: Dataset): GetProperty | undefined {
-  const attachmentsColumnIndex = getAttachmentsColumnIndex(dataset);
-  const attachmentsFormattedColumnIndex = getAttachmentsFormattedColumnIndex(dataset);
+  const attachmentsColumnIndex = getAttachmentsColumn(dataset);
+  const attachmentsFormattedColumnIndex = getAttachmentsFormattedColumn(dataset);
   const callback: GetProperty = (_physicalRow, physicalCol, _property) =>
     (physicalCol === attachmentsColumnIndex || physicalCol === attachmentsFormattedColumnIndex)
       ? {

@@ -9,7 +9,7 @@ import { getIcon } from '../InitialContext/icons';
 import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { getAttachmentsColumnIndex, getAttachmentsFormattedColumnIndex, usesAttachments } from '../WorkBench/attachmentHelpers';
+import { getAttachmentsColumn, getAttachmentsFormattedColumn, usesAttachments } from '../WorkBench/attachmentHelpers';
 import type { WbMapping } from './mapping';
 import type { WritableArray } from '../../utils/types';
 
@@ -68,7 +68,7 @@ export function useHotProps({
   const enterMoves =
     enterMovesPref === 'col' ? { col: 1, row: 0 } : { col: 0, row: 1 };
 
-  const attachmentsColumnIndex = getAttachmentsFormattedColumnIndex(dataset);
+  const attachmentsColumnIndex = getAttachmentsFormattedColumn(dataset);
 
   const colHeaders = React.useCallback(
     (physicalCol: number) => {
@@ -106,11 +106,13 @@ export function useHotProps({
   const hiddenColumns = React.useMemo(
     () => {
       // Hide the disambiguation column
-      const columns: WritableArray<number> = [dataset.columns.length];
-      
+      const columns: WritableArray<number> = [];
       if (usesAttachments(dataset)) {
-        columns.push(getAttachmentsColumnIndex(dataset));
+        columns.push(getAttachmentsColumn(dataset));
       }
+      /** The disambiguation column does not need to be hidden explicitly because it has no header.
+       * Adding it causes handsontable to ignore the array completely. */ 
+      //columns.push(dataset.columns.length-1);
       return {
       columns: columns,
       indicators: false,

@@ -43,6 +43,7 @@ import {
   ATTACHMENTS_FORMATTED_COLUMN,
   attachmentsToCell,
   BASE_TABLE_NAME,
+  CellAttachments
 } from '../WorkBench/attachmentHelpers';
 
 export function WbImportAttachmentsView(): JSX.Element {
@@ -160,11 +161,18 @@ function FilesPicked({ files }: { readonly files: RA<File> }): JSX.Element {
       )
       .then(async ({ dataSet, dataSetAttachments }) => {
         // Put all SpDataSetAttachments IDs into the data set
-        const data = dataSetAttachments.map((dataSetAttachment) => 
-          attachmentsToCell(
+        const data = dataSetAttachments.map((dataSetAttachment) => {
+          // Each row has the attachment data and filenames.
+          const attData = attachmentsToCell(
             [serializeResource(dataSetAttachment)],
-            BASE_TABLE_NAME
-          ),
+            BASE_TABLE_NAME,
+            false
+          ) as CellAttachments;
+          return [
+            JSON.stringify(attData),
+            attData.formatted
+          ];
+        }
         );
         dataSet.set('data', data as never);
         dataSet.set('spDataSetAttachments', dataSetAttachments);

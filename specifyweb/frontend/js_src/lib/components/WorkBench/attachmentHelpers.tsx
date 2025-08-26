@@ -18,15 +18,16 @@ type CellAttachment = {
   readonly table: AttachmentTargetTable;
 };
 
-type CellAttachments = {
+export type CellAttachments = {
   readonly attachments: RA<CellAttachment>;
   readonly formatted: string;
 };
 
 export function attachmentsToCell(
   dataSetAttachments: RA<SerializedResource<SpDataSetAttachment>>,
-  targetTable: AttachmentTargetTable
-): RA<string> {
+  targetTable: AttachmentTargetTable,
+  stringify: boolean = true,
+): CellAttachments | string {
   const formattedAttachments: WritableArray<string> = [];
   const att: WritableArray<CellAttachment> = [];
   dataSetAttachments.forEach((dataSetAttachment) => {
@@ -44,7 +45,7 @@ export function attachmentsToCell(
     attachments: att,
     formatted: formatted,
   };
-  return [JSON.stringify(data), formatted];
+  return stringify ? JSON.stringify(data) : data;
 }
 
 export function getAttachmentsFromCell(
@@ -64,14 +65,14 @@ export function usesAttachments(dataset: Dataset): boolean {
   return dataset.columns.includes(ATTACHMENTS_COLUMN);
 }
 
-export function getAttachmentsColumnIndex(dataset: Dataset): number {
+export function getAttachmentsColumn(dataset: Dataset): number {
   if (!usesAttachments(dataset)) {
     return -1;
   }
   return dataset.columns.indexOf(ATTACHMENTS_COLUMN);
 }
 
-export function getAttachmentsFormattedColumnIndex(dataset: Dataset): number {
+export function getAttachmentsFormattedColumn(dataset: Dataset): number {
   if (!usesAttachments(dataset)) {
     return -1;
   }
