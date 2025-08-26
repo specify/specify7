@@ -247,9 +247,17 @@ def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
         'businessrules', 'UniquenessRuleField') if registry else models.UniquenessRuleField
     
     discipline = None if rule_is_global(scopes) else raw_discipline
+    discipline_name = "NULL"
+    if discipline is None:
+        # logger.info (f"!!! Discipline is None for global rule {model_name} with fields {fields} and scopes {scopes}")
+        # return
+        discipline_name = raw_discipline.name if raw_discipline else "NULL"
+    else:
+        discipline_name = discipline.name
 
     # If the rule already exists, skip creating the rule
     if uniquenessrule_exists(UniquenessRule, model_name, discipline, is_database_constraint, fields, scopes):
+        logger.info(f"1. Uniqueness rule for {discipline_name} - {model_name} already exists, skipping creation")
         return
 
     candidate_rules = UniquenessRule.objects.filter(modelName=model_name, isDatabaseConstraint=is_database_constraint, discipline=discipline)
@@ -260,8 +268,14 @@ def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
         matching_scopes = all_fields.filter(fieldPath__in=scopes, isScope=True)
         # If the rule already exists, skip creating the rule
         if len(matching_fields) == len(fields) and len(matching_scopes) == len(scopes): 
+            logger.info(f"2. Uniqueness rule for {discipline_name} - {model_name} already exists, skipping creation")
             return
-
+    
+    is_new = UniquenessRule.objects.filter(discipline=discipline, modelName=model_name, isDatabaseConstraint=is_database_constraint).exists()
+    if is_new:
+        logger.info(f"3. Uniqueness rule for {discipline_name} - {model_name} already exists, skipping creation")
+        return
+    
     rule, is_new = UniquenessRule.objects.get_or_create(
         discipline=discipline,
         modelName=model_name,
@@ -271,7 +285,7 @@ def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
     if not is_new:
         return
 
-    logger.info(f"Creating uniqueness rule for {model_name} with fields {fields} and scopes {scopes}")
+    logger.info(f"Creating uniqueness rule for {discipline_name} - {model_name} with fields {fields} and scopes {scopes}")
 
     for field in fields:
         UniquenessRuleField.objects.get_or_create(uniquenessrule=rule, fieldPath=field, isScope=False)
