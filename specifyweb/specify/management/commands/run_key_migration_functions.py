@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 def fix_cots():
     create_default_collection_types(apps)
-    create_default_discipline_for_tree_defs(apps)
+    # create_default_discipline_for_tree_defs(apps)
     create_cogtype_type_picklist(apps)
     set_discipline_for_taxon_treedefs(apps)
     fix_taxon_treedef_discipline_links(apps)

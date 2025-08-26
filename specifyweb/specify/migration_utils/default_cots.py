@@ -64,7 +64,7 @@ def create_cogtype_type_picklist(apps):
 
     for collection in Collection.objects.all():
         cog_type_picklist, _ = Picklist.objects.get_or_create(
-            name='Default Collection Object Group Types',
+            name='SystemCOGTypes', # Default Collection Object Group Types
             type=0,
             collection=collection,
             defaults={
