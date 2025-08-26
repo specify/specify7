@@ -256,9 +256,9 @@ def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
         discipline_name = discipline.name
 
     # If the rule already exists, skip creating the rule
-    if uniquenessrule_exists(UniquenessRule, model_name, discipline, is_database_constraint, fields, scopes):
-        logger.info(f"Check 1 - Uniqueness rule for {discipline_name} - {model_name} already exists, skipping creation")
-        return
+    # if uniquenessrule_exists(UniquenessRule, model_name, discipline, is_database_constraint, fields, scopes):
+    #     logger.info(f"Check 1 - Uniqueness rule for {discipline_name} - {model_name} already exists, skipping creation")
+    #     return
 
     candidate_rules = UniquenessRule.objects.filter(modelName=model_name, isDatabaseConstraint=is_database_constraint, discipline=discipline)
 
