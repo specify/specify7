@@ -41,7 +41,7 @@ from . import models
 from .autonumbering import autonumber_and_save
 from .uiformatters import AutonumberOverflowException
 from .filter_by_col import filter_by_collection
-from .auditlog import auditlog
+from ..backend.workbench.upload.auditlog import auditlog
 from .datamodel import datamodel, Table, Relationship
 from .calculated_fields import calculate_extra_fields
 
