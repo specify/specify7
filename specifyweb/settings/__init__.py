@@ -226,7 +226,8 @@ SPECIFY_APPS  = [
     'specifyweb.backend.trees',
     'specifyweb.backend.backup_tool',
     'specifyweb.backend.merge',
-    'specifyweb.backend.locality_update_tool'
+    'specifyweb.backend.locality_update_tool',
+    'specifyweb.backend.table_rows'
 ]
 
 INSTALLED_APPS = (
