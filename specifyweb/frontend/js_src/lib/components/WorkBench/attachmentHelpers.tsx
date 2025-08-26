@@ -26,7 +26,7 @@ export type CellAttachments = {
 export function attachmentsToCell(
   dataSetAttachments: RA<SerializedResource<SpDataSetAttachment>>,
   targetTable: AttachmentTargetTable,
-  stringify: boolean = true,
+  stringify: boolean = true
 ): CellAttachments | string {
   const formattedAttachments: WritableArray<string> = [];
   const att: WritableArray<CellAttachment> = [];
@@ -40,10 +40,10 @@ export function attachmentsToCell(
     formattedAttachments.push(attachment.origFilename);
   });
 
-  const formatted = formattedAttachments.join('; ')
+  const formatted = formattedAttachments.join('; ');
   const data: CellAttachments = {
     attachments: att,
-    formatted: formatted,
+    formatted,
   };
   return stringify ? JSON.stringify(data) : data;
 }
@@ -90,5 +90,8 @@ export function getAttachmentsColumnsFromHeaders(
   if (!headers.includes(ATTACHMENTS_COLUMN)) {
     return [];
   }
-  return [headers.indexOf(ATTACHMENTS_COLUMN), headers.indexOf(ATTACHMENTS_FORMATTED_COLUMN)];
+  return [
+    headers.indexOf(ATTACHMENTS_COLUMN),
+    headers.indexOf(ATTACHMENTS_FORMATTED_COLUMN),
+  ];
 }

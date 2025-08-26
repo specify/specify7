@@ -49,7 +49,8 @@ export function WbToolkit({
 
     // Don't export hidden columns
     const hiddenPlugin = hot.getPlugin('hiddenColumns');
-    const hiddenCols: number[] = hiddenPlugin?.getHiddenColumns() ?? [];
+    const hiddenCols: readonly number[] =
+      hiddenPlugin?.getHiddenColumns() ?? [];
     const filteredColumns = dataset.columns.filter(
       (_, index) => !hiddenCols.includes(index)
     );
