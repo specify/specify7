@@ -1,4 +1,6 @@
 import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { icons } from '../Atoms/Icons';
 
 import { commonText } from '../../localization/common';
 import L from '../Leaflet/extend';
@@ -75,13 +77,13 @@ function resetZoomButton(
     onAdd () {
       const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
       const button = L.DomUtil.create('a', '', container) as HTMLAnchorElement;
-      button.innerHTML = '⟳';
+      button.innerHTML = renderToStaticMarkup(icons.arrowPath);
       button.title = commonText.reset();
       button.href = "#";
       button.setAttribute('role', 'button');
-      button.style.textAlign = 'center';
-      button.style.fontSize = '18px';
-      button.style.lineHeight = '30px';
+      button.style.display = 'flex';
+      button.style.alignItems = 'center';
+      button.style.justifyContent = 'center';
       button.style.width = '30px';
       button.style.height = '30px';
 
