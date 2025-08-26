@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2025-08-26 07:01+0000\n"
 "Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
-"backup/uk/>\n"
+"Language-Team: Ukrainian "
+"<https://hosted.weblate.org/projects/specify-7/backup/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
@@ -12,57 +12,57 @@ msgstr ""
 "X-Generator: Weblate 5.13\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. Used in: Components > Toolbar > Backup Status
 #: components/Toolbar/BackupStatus.tsx:99
+#. Used in: Components > Toolbar > Backup Status
 msgid "completed"
 msgstr "Резервне копіювання успішно завершено."
 
-#. Used in: Components > Toolbar > Backup Status
 #: components/Toolbar/BackupStatus.tsx:90
+#. Used in: Components > Toolbar > Backup Status
 msgid "failed"
 msgstr "Не вдалося створити резервну копію."
 
+#: components/Toolbar/BackupDatabase.tsx:94
 #. Used in: Components > Toolbar > Backup Database
-#: components/Toolbar/BackupDatabase.tsx:97
 msgid "previousFound"
 msgstr "Знайдено попередню резервну копію:"
 
+#: components/Toolbar/BackupDatabase.tsx:108
 #. Used in: Components > Toolbar > Backup Database
-#: components/Toolbar/BackupDatabase.tsx:111
 msgid "previousNone"
 msgstr "Попередньої резервної копії не знайдено. Розпочати нову?"
 
+#: components/Toolbar/BackupDatabase.tsx:96
 #. Used in: Components > Toolbar > Backup Database
-#: components/Toolbar/BackupDatabase.tsx:99
 msgid "previousSizeMB"
 msgstr "({size:string} МБ)"
 
+#: components/Toolbar/BackupDatabase.tsx:102
 #. Used in: Components > Toolbar > Backup Database
-#: components/Toolbar/BackupDatabase.tsx:105
 msgid "lastBackupOn"
 msgstr "Цю резервну копію було створено {date:string}"
 
+#: components/Toolbar/BackupDatabase.tsx:44
 #. Used in: Components > Toolbar > Backup Database
-#: components/Toolbar/BackupDatabase.tsx:47
 msgid "checkPreviousFailed"
 msgstr "Не вдалося перевірити попередню резервну копію."
 
+#: components/Toolbar/BackupDatabase.tsx:62
 #. Used in: Components > Toolbar > Backup Database
-#: components/Toolbar/BackupDatabase.tsx:65
 msgid "startFailed"
 msgstr "Не вдалося запустити резервне копіювання."
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:335
+#. Used in: Components > Notifications > Notification Renderers
 msgid "databaseBackupCompleted"
 msgstr "Резервне копіювання бази даних завершено."
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:351
+#. Used in: Components > Notifications > Notification Renderers
 msgid "databaseBackupFailed"
 msgstr "Не вдалося створити резервну копію бази даних."
 
-#. Used in: Components > Toolbar > Backup Status
 #: components/Toolbar/BackupStatus.tsx:106
+#. Used in: Components > Toolbar > Backup Status
 msgid "compressing"
 msgstr "Стиснення..."

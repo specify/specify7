@@ -50,7 +50,7 @@ msgstr "Erro"
 #: components/Notifications/NotificationRenderers.tsx:111
 #: components/Notifications/NotificationRenderers.tsx:127
 #: components/Notifications/NotificationRenderers.tsx:342
-#: components/Toolbar/BackupDatabase.tsx:79
+#: components/Toolbar/BackupDatabase.tsx:76
 #: components/Toolbar/BackupStatus.tsx:74
 #. Used in: Components > App Resources > Editor Components ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Viewer ⬤ Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Backup Status
 #, fuzzy

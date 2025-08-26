@@ -11,32 +11,32 @@ msgstr ""
 msgid "failed"
 msgstr ""
 
-#: components/Toolbar/BackupDatabase.tsx:97
+#: components/Toolbar/BackupDatabase.tsx:94
 #. Used in: Components > Toolbar > Backup Database
 msgid "previousFound"
 msgstr ""
 
-#: components/Toolbar/BackupDatabase.tsx:111
+#: components/Toolbar/BackupDatabase.tsx:108
 #. Used in: Components > Toolbar > Backup Database
 msgid "previousNone"
 msgstr ""
 
-#: components/Toolbar/BackupDatabase.tsx:99
+#: components/Toolbar/BackupDatabase.tsx:96
 #. Used in: Components > Toolbar > Backup Database
 msgid "previousSizeMB"
 msgstr ""
 
-#: components/Toolbar/BackupDatabase.tsx:105
+#: components/Toolbar/BackupDatabase.tsx:102
 #. Used in: Components > Toolbar > Backup Database
 msgid "lastBackupOn"
 msgstr ""
 
-#: components/Toolbar/BackupDatabase.tsx:47
+#: components/Toolbar/BackupDatabase.tsx:44
 #. Used in: Components > Toolbar > Backup Database
 msgid "checkPreviousFailed"
 msgstr ""
 
-#: components/Toolbar/BackupDatabase.tsx:65
+#: components/Toolbar/BackupDatabase.tsx:62
 #. Used in: Components > Toolbar > Backup Database
 msgid "startFailed"
 msgstr ""

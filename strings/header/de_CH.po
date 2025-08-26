@@ -44,7 +44,7 @@ msgstr "DwC-Archiv erstellen"
 #: components/Header/userToolDefinitions.ts:97
 #: components/Router/OverlayRoutes.tsx:182
 #: components/Router/OverlayRoutes.tsx:262
-#: components/Toolbar/BackupDatabase.tsx:87
+#: components/Toolbar/BackupDatabase.tsx:84
 #: components/Toolbar/BackupStatus.tsx:84
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Backup Status
 msgid "backupDatabase"

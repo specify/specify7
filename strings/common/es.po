@@ -258,7 +258,7 @@ msgstr "Crear"
 #: components/Statistics/AddStatDialog.tsx:75
 #: components/Statistics/ResultsDialog.tsx:74
 #: components/Statistics/StatsPageEditing.tsx:42
-#: components/Toolbar/BackupDatabase.tsx:84
+#: components/Toolbar/BackupDatabase.tsx:81
 #: components/Toolbar/BackupStatus.tsx:76
 #: components/Toolbar/BackupStatus.tsx:79
 #: components/Toolbar/Language.tsx:76
@@ -481,7 +481,7 @@ msgstr "Herramientas"
 #: components/Statistics/StatsResult.tsx:57
 #: components/Statistics/StatsResult.tsx:67
 #: components/Statistics/StatsResult.tsx:78
-#: components/Toolbar/BackupDatabase.tsx:92
+#: components/Toolbar/BackupDatabase.tsx:89
 #: components/Toolbar/Language.tsx:224
 #: components/Toolbar/Language.tsx:258
 #: components/TreeView/Row.tsx:229
@@ -562,7 +562,7 @@ msgstr "N/D"
 #: components/FormEditor/Create.tsx:69
 #: components/Security/RoleTemplate.tsx:89
 #: components/Statistics/AddStatDialog.tsx:73
-#: components/Toolbar/BackupDatabase.tsx:83
+#: components/Toolbar/BackupDatabase.tsx:80
 #: components/Toolbar/Query.tsx:213
 #: components/Toolbar/RecordSets.tsx:223
 #. Used in: Components > App Resources > Create ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Form Editor > Create ⬤ Components > Security > Role Template ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets
