@@ -344,3 +344,4 @@ def series_autonumber_range(request: http.HttpRequest):
         })
     except Exception as e:
         return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)
+
