@@ -9,7 +9,7 @@ from django.db import connections
 from django.db.models import Q, Count
 from django.db.migrations.recorder import MigrationRecorder
 from django.core.exceptions import ObjectDoesNotExist
-from specifyweb.specify.api import get_model
+from specifyweb.specify.crud import get_model
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.middleware.general import serialize_django_obj
 from specifyweb.specify.scoping import in_same_scope

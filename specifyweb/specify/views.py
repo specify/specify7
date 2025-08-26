@@ -17,10 +17,13 @@ from django.db import router
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST, require_http_methods
-from specifyweb.specify.api import get_model
 
-from specifyweb.middleware.general import require_GET, require_http_methods
-from . import api, models as spmodels
+from specifyweb.middleware.general import require_http_methods
+from specifyweb.specify.crud import get_model, get_object_or_404
+from specifyweb.specify.dispatch import collection_dispatch, collection_dispatch_bulk, collection_dispatch_bulk_copy, resource_dispatch
+from specifyweb.specify.exceptions import MissingVersionException, StaleObjectException
+from specifyweb.specify.serializers import toJson
+from . import models as spmodels
 from .specify_jar import specify_jar, specify_jar_path
 from .uiformatters import get_uiformatter_by_name
 
@@ -68,19 +71,19 @@ def api_view(dispatch_func):
         """
         try:
             return dispatch_func(request, *args, **kwargs)
-        except api.StaleObjectException as e:
+        except StaleObjectException as e:
             return HttpResponseConflict(e)
-        except api.MissingVersionException as e:
+        except MissingVersionException as e:
             return http.HttpResponseBadRequest(e)
         except http.Http404 as e:
             return http.HttpResponseNotFound(e)
     return view
 
 
-resource = api_view(api.resource_dispatch)
-collection = api_view(api.collection_dispatch)
-collection_bulk_copy = api_view(api.collection_dispatch_bulk_copy)
-collection_bulk = api_view(api.collection_dispatch_bulk)
+resource = api_view(resource_dispatch)
+collection = api_view(collection_dispatch)
+collection_bulk_copy = api_view(collection_dispatch_bulk_copy)
+collection_bulk = api_view(collection_dispatch_bulk)
 
 
 def raise_error(request):
@@ -98,7 +101,7 @@ def delete_blockers(request, model, id):
     resources which prevent the resource <id> of that model from being
     deleted.
     """
-    obj = api.get_object_or_404(model, id=int(id))
+    obj = get_object_or_404(model, id=int(id))
     using = router.db_for_write(obj.__class__, instance=obj)
     collector = Collector(using=using)
     collector.delete_blockers = []
@@ -112,7 +115,7 @@ def delete_blockers(request, model, id):
             }
         ] for field, sub_objs in collector.delete_blockers
     ])
-    return http.HttpResponse(api.toJson(result), content_type='application/json')
+    return http.HttpResponse(toJson(result), content_type='application/json')
 
 
 def flatten(l):
@@ -122,8 +125,9 @@ def flatten(l):
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
 def rows(request, model):
+    from specifyweb.specify.dispatch import rows
     "Returns tuples from the table for <model>."
-    return api.rows(request, model)
+    return rows(request, model)
 
 
 @require_http_methods(['GET', 'HEAD'])

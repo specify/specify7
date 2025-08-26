@@ -1,7 +1,7 @@
 from specifyweb.backend.interactions.tests.test_preps_available_context import (
     TestPrepsAvailableContext,
 )
-from specifyweb.specify.api import obj_to_data
+from specifyweb.specify.serializers import obj_to_data
 from specifyweb.specify.calculated_fields import calculate_extra_fields as _cef
 from copy import deepcopy
 

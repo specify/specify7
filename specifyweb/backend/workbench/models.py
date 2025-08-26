@@ -16,7 +16,7 @@ from specifyweb.specify.models import (
     custom_save,
     protect_with_blockers,
 )
-from specifyweb.specify.api import uri_for_model
+from specifyweb.specify.serializers import uri_for_model
 
 
 class Dataset(models.Model):

@@ -2,8 +2,8 @@ from specifyweb.backend.interactions.cog_preps import enforce_interaction_siblin
 from specifyweb.backend.interactions.tests.test_cog_consolidated_prep_sibling_context import (
     TestCogConsolidatedPrepSiblingContext,
 )
-from specifyweb.specify.api import obj_to_data
 from specifyweb.specify.models import Loan, Loanpreparation, Collectionobject
+from specifyweb.specify.serializers import obj_to_data
 
 
 def _save_in_file(obj, name, ext=".py"):

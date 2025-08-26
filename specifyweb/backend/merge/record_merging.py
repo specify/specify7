@@ -16,10 +16,12 @@ from django.db.models import Q
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.celery_tasks import LogErrorsTask, app
 from specifyweb.specify import models as spmodels
-from specifyweb.specify.api import uri_for_model, delete_obj, is_dependent_field, put_resource
 from specifyweb.specify.build_models import orderings
+from specifyweb.specify.crud import delete_obj, put_resource
 from specifyweb.specify.load_datamodel import Table, FieldDoesNotExistError
 from celery.utils.log import get_task_logger # type: ignore
+from specifyweb.specify.relationships import is_dependent_field
+from specifyweb.specify.serializers import uri_for_model
 from specifyweb.specify.utils import get_app_model
 logger = get_task_logger(__name__)
 

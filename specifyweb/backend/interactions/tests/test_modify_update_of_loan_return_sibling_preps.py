@@ -2,7 +2,7 @@ from specifyweb.backend.interactions.cog_preps import modify_update_of_loan_retu
 from specifyweb.backend.interactions.tests.test_cog_consolidated_prep_sibling_context import (
     TestCogConsolidatedPrepSiblingContext,
 )
-from specifyweb.specify.api import obj_to_data
+from specifyweb.specify.serializers import obj_to_data
 from specifyweb.specify.models import Loan, Loanpreparation, Loanreturnpreparation
 import copy
 

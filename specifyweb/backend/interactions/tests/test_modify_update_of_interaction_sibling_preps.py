@@ -4,8 +4,7 @@ from specifyweb.backend.interactions.cog_preps import modify_update_of_interacti
 from specifyweb.backend.interactions.tests.test_cog_consolidated_prep_sibling_context import (
     TestCogConsolidatedPrepSiblingContext,
 )
-from specifyweb.specify import api
-from specifyweb.specify.api import obj_to_data
+from specifyweb.specify.api_utils import strict_uri_to_model
 from specifyweb.specify.models import (
     Borrow,
     Disposal,
@@ -16,6 +15,8 @@ from specifyweb.specify.models import (
     Loanpreparation,
 )
 import copy
+
+from specifyweb.specify.serializers import obj_to_data
 
 PrepGetter = Callable[["TestModifyUpdateInteractionSiblingPreps"], list[Any]]
 PrepGetterFromPreps = Callable[[list[Any]], list[Any]]
@@ -189,7 +190,7 @@ def _make_consolidated_preps_removal_branched(model_name):
         did_remove = False
         branch_2_inter_preps = []
         for interaction_prep in orig_data[attr]:
-            prep_id = api.strict_uri_to_model(
+            prep_id = strict_uri_to_model(
                 interaction_prep["preparation"], "preparation"
             )[1]
             # Basically, remove all of the first branch's preps

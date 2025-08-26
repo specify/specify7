@@ -1,7 +1,9 @@
 import json
 from django.test import Client
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
-from specifyweb.specify import api, models
+from specifyweb.specify import models
+from specifyweb.specify.crud import create_obj, delete_resource
+from specifyweb.specify.serializers import uri_for_model
 from specifyweb.specify.tests.test_api import ApiTests, get_table
 from specifyweb.backend.trees.stats import get_tree_stats
 from specifyweb.backend.trees.extras import set_fullnames
@@ -468,7 +470,7 @@ class AddDeleteRankResourcesTest(ApiTests):
             "treedef": treedef_geo,
             "rankid": 100,
         }
-        universe_rank = api.create_obj(
+        universe_rank = create_obj(
             self.collection, self.agent, "geographytreedefitem", data
         )
         self.assertEqual(
@@ -478,11 +480,11 @@ class AddDeleteRankResourcesTest(ApiTests):
         # Test adding non-default rank to the end of the heirarchy
         data = {
             "name": "Galaxy",
-            "parent": api.uri_for_model(models.Geographytreedefitem, universe_rank.id),
+            "parent": uri_for_model(models.Geographytreedefitem, universe_rank.id),
             "treedef": treedef_geo,
             "rankid": 200,
         }
-        galaxy_rank = api.create_obj(
+        galaxy_rank = create_obj(
             self.collection, self.agent, "geographytreedefitem", data
         )
         self.assertEqual(
@@ -496,7 +498,7 @@ class AddDeleteRankResourcesTest(ApiTests):
             "treedef": treedef_geo,
             "rankid": 50,
         }
-        multiverse_rank = api.create_obj(
+        multiverse_rank = create_obj(
             self.collection, self.agent, "geographytreedefitem", data
         )
         self.assertEqual(
@@ -506,11 +508,11 @@ class AddDeleteRankResourcesTest(ApiTests):
         # Test adding non-default rank in the middle of the heirarchy
         data = {
             "name": "Dimension",
-            "parent": api.uri_for_model(models.Geographytreedefitem, universe_rank.id),
+            "parent": uri_for_model(models.Geographytreedefitem, universe_rank.id),
             "treedef": treedef_geo,
             "rankid": 150,
         }
-        dimersion_rank = api.create_obj(
+        dimersion_rank = create_obj(
             self.collection, self.agent, "geographytreedefitem", data
         )
         self.assertEqual(
@@ -578,7 +580,7 @@ class AddDeleteRankResourcesTest(ApiTests):
 
         # Test adding default rank on empty heirarchy
         data = {"name": "Taxonomy Root", "parent": None, "treedef": treedef_taxon}
-        taxon_root_rank = api.create_obj(
+        taxon_root_rank = create_obj(
             self.collection, self.agent, "taxontreedefitem", data
         )
         self.assertEqual(
@@ -588,7 +590,7 @@ class AddDeleteRankResourcesTest(ApiTests):
         # Test adding non-default rank in front of rank 0
         data = {"name": "Invalid", "parent": None, "treedef": treedef_taxon}
         with self.assertRaises(TreeBusinessRuleException):
-            api.create_obj(self.collection, self.agent, "taxontreedefitem", data)
+            create_obj(self.collection, self.agent, "taxontreedefitem", data)
         self.assertEqual(
             0, models.Taxontreedefitem.objects.filter(name="Invalid").count()
         )
@@ -596,10 +598,10 @@ class AddDeleteRankResourcesTest(ApiTests):
         # Test adding default rank to the end of the heirarchy
         data = {
             "name": "Division",
-            "parent": api.uri_for_model(models.Taxontreedefitem, taxon_root_rank.id),
+            "parent": uri_for_model(models.Taxontreedefitem, taxon_root_rank.id),
             "treedef": treedef_taxon,
         }
-        division_rank = api.create_obj(
+        division_rank = create_obj(
             self.collection, self.agent, "taxontreedefitem", data
         )
         self.assertEqual(
@@ -609,10 +611,10 @@ class AddDeleteRankResourcesTest(ApiTests):
         # Test adding default rank to the middle of the heirarchy
         data = {
             "name": "Kingdom",
-            "parent": api.uri_for_model(models.Taxontreedefitem, taxon_root_rank.id),
+            "parent": uri_for_model(models.Taxontreedefitem, taxon_root_rank.id),
             "treedef": treedef_taxon,
         }
-        kingdom_rank = api.create_obj(
+        kingdom_rank = create_obj(
             self.collection, self.agent, "taxontreedefitem", data
         )
         self.assertEqual(10, models.Taxontreedefitem.objects.get(name="Kingdom").rankid)
@@ -690,7 +692,7 @@ class AddDeleteRankResourcesTest(ApiTests):
         )
 
         # Test deleting a rank in the middle of the heirarchy
-        api.delete_resource(
+        delete_resource(
             self.collection,
             self.agent,
             "Geologictimeperiodtreedefitem",
@@ -707,7 +709,7 @@ class AddDeleteRankResourcesTest(ApiTests):
         )
 
         # Test deleting a rank at the end of the heirarchy
-        api.delete_resource(
+        delete_resource(
             self.collection,
             self.agent,
             "Geologictimeperiodtreedefitem",
@@ -721,7 +723,7 @@ class AddDeleteRankResourcesTest(ApiTests):
 
         # Test deleting a rank at the head of the heirarchy
         with self.assertRaises(TreeBusinessRuleException):
-            api.delete_resource(
+            delete_resource(
                 self.collection,
                 self.agent,
                 "Geologictimeperiodtreedefitem",
@@ -734,7 +736,7 @@ class AddDeleteRankResourcesTest(ApiTests):
             "name": "Default Taxon Tree",
             "remarks": "A default taxon tree",
             "fullnamedirection": 1,
-            "discipline": api.uri_for_model("Discipline", self.discipline.id),
+            "discipline": uri_for_model("Discipline", self.discipline.id),
             "treedefitems": [
                 {
                     "name": "Life",
@@ -795,7 +797,7 @@ class AddDeleteRankResourcesTest(ApiTests):
             ],
         }
 
-        created_treedef = api.create_obj(
+        created_treedef = create_obj(
             self.collection, self.agent, "Taxontreedef", default_taxon_tree
         )
         root = models.Taxontreedefitem.objects.get(treedef=created_treedef, rankid=0)
