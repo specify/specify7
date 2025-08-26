@@ -16,10 +16,14 @@ from specifyweb.backend.permissions import urls as permissions_urls
 from specifyweb.backend.permissions.permissions import skip_collection_access_check
 from specifyweb.backend.report_runner import urls as report_urls
 from .specify import urls as api_urls
+from specifyweb.backend.backup_tool import urls as backup_urls
 from .specify.views import images, properties
 from specifyweb.backend.stored_queries import urls as query_urls
 from specifyweb.backend.workbench import urls as wb_urls
 from specifyweb.backend.stats import urls as stat_urls
+from specifyweb.backend.trees import urls as trees_urls
+from specifyweb.backend.merge import urls as merge_urls
+from specifyweb.backend.locality_update_tool import urls as locality_update_tool_urls
 
 # print(get_resolver().reverse_dict.keys()) # Use for debugging urls
 
@@ -41,6 +45,7 @@ urlpatterns = [
 
     # primary api
     path('api/', include(api_urls)),
+    path('api/backup/', include(backup_urls)),
     path('images/<path:path>', images),
     re_path(r'^properties/(?P<name>.+).properties$', properties), # Note fully supported since remmoving dependence on specify.jar
 
@@ -61,5 +66,8 @@ urlpatterns = [
     path('export/', include(export_urls)), # permissions added
     path('permissions/', include(permissions_urls)), # permissions added
     # url(r'^testcontext/', include()),
-    path('stats/', include(stat_urls))
+    path('stats/', include(stat_urls)),
+    path('trees/', include(trees_urls)),
+    path('merge/', include(merge_urls)),
+    path('locality_update_tool/', include(locality_update_tool_urls))
 ]

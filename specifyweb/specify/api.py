@@ -511,7 +511,7 @@ def cleanData(model, data: dict[str, Any], parent_relationship: Relationship | N
     # timestampcreated should never be updated.
     #  _maybe_delete(cleaned, 'timestampcreated')
 
-    # Password should be set though the /api/set_password/<id>/ endpoint
+    # Password should be set though the /accounts/set_password/<id>/ endpoint
     if model is models.Specifyuser: 
         _maybe_delete(cleaned, 'password')
 
