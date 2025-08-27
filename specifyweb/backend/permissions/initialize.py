@@ -29,7 +29,28 @@ def wipe_permissions(apps = apps) -> None:
 def is_sp6_user_permissions_migrated(user, apps=apps) -> bool:
     UserPolicy = apps.get_model('permissions', 'UserPolicy')
     UserRole = apps.get_model('permissions', 'UserRole')
-    return UserRole.objects.filter(specifyuser=user).exists() or UserPolicy.objects.filter(specifyuser=user).exists()
+    return UserRole.objects.filter(specifyuser=user).exists() or \
+        UserPolicy.objects.filter(specifyuser=user).exists()
+
+def is_sp6_collection_permissions_migrated(collection, apps=apps) -> bool:
+    UserPolicy = apps.get_model('permissions', 'UserPolicy')
+    Role = apps.get_model('permissions', 'Role')
+    return Role.objects.filter(collection=collection).exists() or \
+        UserPolicy.objects.filter(collection=collection).exists()
+
+def is_sp6_discipline_permissions_migrated(discipline, apps=apps) -> bool:
+    UserPolicy = apps.get_model('permissions', 'UserPolicy')
+    Role = apps.get_model('permissions', 'Role')
+    Collection = apps.get_model('specify', 'Collection')
+    collections = Collection.objects.filter(discipline=discipline)
+    return Role.objects.filter(collection__in=collections).exists() or \
+        UserPolicy.objects.filter(collection__in=collections).exists()
+
+def get_all_collections_without_sp7_roles(apps=apps):
+    Role = apps.get_model('permissions', 'Role')
+    Collection = apps.get_model('specify', 'Collection')
+    collections_with_roles = Role.objects.values_list('collection_id', flat=True).distinct()
+    return Collection.objects.exclude(id__in=collections_with_roles)
 
 def initialize(wipe: bool=False, apps=apps) -> None:
     with transaction.atomic():
@@ -68,7 +89,6 @@ def assign_users_to_roles(apps=apps) -> None:
     Agent = apps.get_model('specify', 'Agent')
     UserPolicy = apps.get_model('permissions', 'UserPolicy')
     UserRole = apps.get_model('permissions', 'UserRole')
-    Specifyuser = apps.get_model('specify', 'Specifyuser')
 
     ROLE_DESCRIPTIONS = {
         "Manager": "Grants full access to all abilities within a collection.",
@@ -83,6 +103,9 @@ def assign_users_to_roles(apps=apps) -> None:
         "LimitedAccess": "Read Only - Legacy",
         "Guest": "Read Only - Legacy",
     }
+
+    sp6_only_collections = get_all_collections_without_sp7_roles(apps)
+    sp6_only_collections_ids = set(sp6_only_collections.values_list('id', flat=True))
 
     cursor = connection.cursor()
     cursor.execute("""
@@ -102,26 +125,20 @@ def assign_users_to_roles(apps=apps) -> None:
             FROM spuserrole ur 
             JOIN sprole r ON r.id = ur.role_id 
             WHERE r.collection_id = p.usergroupscopeid
+        )
+        AND c.collectionId NOT IN (
+            SELECT r.collection_id
+            FROM spuserrole ur 
+            JOIN sprole r ON r.id = ur.role_id 
+            WHERE r.collection_id = p.usergroupscopeid
         );
     """)
 
     results = cursor.fetchall()
+    
     for user_id, user_name, user_type, collection_id, collection_name in results:
-        user = Specifyuser.objects.get(id=user_id)
-        if is_sp6_user_permissions_migrated(user, apps):
+        if collection_id not in sp6_only_collections_ids:
             continue
-        if UserRole.objects.filter(
-            specifyuser_id=user_id,
-            role__collection_id=collection_id,
-        ).exists() or \
-        UserPolicy.objects.filter(
-            specifyuser_id=user_id,
-            collection_id=collection_id,
-            resource=CollectionAccessPT.access.resource(),
-            action=CollectionAccessPT.access.action(),
-        ).exists():
-            continue
-
         if user_type not in {'Manager', 'FullAccess', 'LimitedAccess', 'Guest'}:
             continue
 

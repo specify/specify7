@@ -224,23 +224,42 @@ def join_with_and(fields):
     return ' and '.join(fields)
 
 
-def apply_default_uniqueness_rules(discipline, registry=None):
+def apply_default_uniqueness_rules(discipline, registry=None, calling_from_key_migrations=False):
     UniquenessRule = registry.get_model('businessrules', 'UniquenessRule') if registry else models.UniquenessRule
     has_set_global_rules = len(UniquenessRule.objects.filter(discipline=None)) > 0
 
     for table, rules in DEFAULT_UNIQUENESS_RULES.items():
         model_name = getattr(datamodel.get_table(table), "django_name", None)
         if model_name is None:
+            logger.info(f"!!! Skipping default uniqueness rules for unknown table '{table}'")
             continue
         for rule in rules:
             fields, scopes = rule["rule"]
             isDatabaseConstraint = rule["isDatabaseConstraint"]
 
-            create_uniqueness_rule(
-                model_name, discipline, isDatabaseConstraint, fields, scopes, registry)
+            create_uniqueness_rule(model_name, discipline, isDatabaseConstraint,
+                                   fields, scopes, registry, calling_from_key_migrations)
+            
+        # Run probblematic rules creation - check for other solutions
+        if calling_from_key_migrations:
+            problematic_rules = [
+                ('Collectionobjectgroupjoin', 'childCo' , True),
+                ('Collectionobjectgroupjoin', 'childCog' , True),
+                ('Storage', 'uniqueIdentifier' , True)
+            ]
+            UniquenessRule = registry.get_model('businessrules', 'UniquenessRule') if registry else models.UniquenessRule
+            UniquenessRuleField = registry.get_model('businessrules', 'UniquenessRuleField') if registry else models.UniquenessRuleField
+            for model_name, field, is_database_constraint in problematic_rules:
+                rule = UniquenessRule.objects.create(
+                    discipline=discipline,
+                    modelName=model_name,
+                    isDatabaseConstraint=is_database_constraint,
+                )
+                UniquenessRuleField.objects.create(uniquenessrule=rule, fieldPath=field, isScope=False)
 
 
-def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, fields, scopes, registry=None):
+def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, fields, scopes,
+                           registry=None, calling_from_key_migrations=False):
     UniquenessRule = registry.get_model(
         'businessrules', 'UniquenessRule') if registry else models.UniquenessRule
     UniquenessRuleField = registry.get_model(
@@ -249,18 +268,22 @@ def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
     discipline = None if rule_is_global(scopes) else raw_discipline
     discipline_name = "NULL"
     if discipline is None:
-        # logger.info (f"!!! Discipline is None for global rule {model_name} with fields {fields} and scopes {scopes}")
+        logger.info (f"!!! Discipline is None for global rule {model_name} with fields {fields} and scopes {scopes}")
         # return
         discipline_name = raw_discipline.name if raw_discipline else "NULL"
     else:
         discipline_name = discipline.name
 
     # If the rule already exists, skip creating the rule
-    # if uniquenessrule_exists(UniquenessRule, model_name, discipline, is_database_constraint, fields, scopes):
-    #     logger.info(f"Check 1 - Uniqueness rule for {discipline_name} - {model_name} already exists, skipping creation")
-    #     return
+    if not calling_from_key_migrations and \
+        uniquenessrule_exists(UniquenessRule, model_name, discipline, is_database_constraint, fields, scopes):
+        logger.info(f"Check 1 - Uniqueness rule for {discipline_name} - {model_name} already exists, skipping creation")
+        return
 
-    candidate_rules = UniquenessRule.objects.filter(modelName=model_name, isDatabaseConstraint=is_database_constraint, discipline=discipline)
+    candidate_rules = UniquenessRule.objects.filter(
+        modelName=model_name,
+        isDatabaseConstraint=is_database_constraint,
+        discipline=discipline)
 
     for rule in candidate_rules: 
         all_fields = rule.uniquenessrulefield_set.all()
@@ -269,28 +292,34 @@ def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
         # If the rule already exists, skip creating the rule
         if len(matching_fields) == len(fields) and len(matching_scopes) == len(scopes): 
             logger.info(f"Check 2 - Uniqueness rule for {discipline_name} - {model_name} already exists, skipping creation")
-            return
+            # return
     
-    is_new = UniquenessRule.objects.filter(discipline=discipline, modelName=model_name, isDatabaseConstraint=is_database_constraint).exists()
+    is_new = UniquenessRule.objects.filter(discipline=discipline,
+                                           modelName=model_name,
+                                           isDatabaseConstraint=is_database_constraint).exists()
     if is_new:
         logger.info(f"Check 3 - Uniqueness rule for {discipline_name} - {model_name} already exists, skipping creation")
-        return
+        # return
     
+    # rule = UniquenessRule.objects.create(
     rule, is_new = UniquenessRule.objects.get_or_create(
         discipline=discipline,
         modelName=model_name,
         isDatabaseConstraint=is_database_constraint,
     )
 
-    if not is_new:
-        return
+    # if not is_new:
+    #     logger.info(f"Check 4 - Uniqueness rule for {discipline_name} - {model_name} already exists")
+        # return
 
-    logger.info(f"Creating uniqueness rule for {discipline_name} - {model_name} with fields {fields} and scopes {scopes}")
+    # logger.info(f"Creating uniqueness rule for {discipline_name} - {model_name} with fields {fields} and scopes {scopes}")
 
     for field in fields:
         UniquenessRuleField.objects.get_or_create(uniquenessrule=rule, fieldPath=field, isScope=False)
+        # UniquenessRuleField.objects.create(uniquenessrule=rule, fieldPath=field, isScope=False)
     for scope in scopes:
         UniquenessRuleField.objects.get_or_create(uniquenessrule=rule, fieldPath=scope, isScope=True)
+        # UniquenessRuleField.objects.create(uniquenessrule=rule, fieldPath=scope, isScope=True)
 
 def uniquenessrule_exists(UniquenessRule, model_name, discipline, is_database_constraint, fields, scopes):
 

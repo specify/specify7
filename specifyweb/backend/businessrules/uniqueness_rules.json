@@ -99,6 +99,16 @@
       "isDatabaseConstraint": true
     }
   ],
+  "Collectionobjectgroupjoin": [
+    {
+      "rule": [["childCo"], []],
+      "isDatabaseConstraint": true
+    },
+    {
+      "rule": [["childCog"], []],
+      "isDatabaseConstraint": true
+    }
+  ],
   "Storage": [
     {
       "rule": [["uniqueIdentifier"], []],
