@@ -36,12 +36,9 @@ export function BackupDatabaseOverlay(): JSX.Element | null {
     let mounted = true;
     (async () => {
       try {
-        const { data } = await ajax<BackupInfo>(
-          '/api/backup/previous/',
-          {
-            headers: { Accept: 'application/json' },
-          }
-        );
+        const { data } = await ajax<BackupInfo>('/api/backup/previous/', {
+          headers: { Accept: 'application/json' },
+        });
         if (mounted) setPrevious(data);
       } catch {
         if (mounted) setError(String(backupText.checkPreviousFailed()));

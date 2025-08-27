@@ -90,13 +90,6 @@ def raise_error(request):
     raise Exception('This error is a test. You may now return to your regularly '
                     'scheduled hacking.')
 
-@login_maybe_required
-@require_http_methods(['GET', 'HEAD'])
-def rows(request, model):
-    "Returns tuples from the table for <model>."
-    return api.rows(request, model)
-
-
 @require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=365 * 24 * 60 * 60, public=True)
 def images(request, path):
