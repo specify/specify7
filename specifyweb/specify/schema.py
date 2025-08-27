@@ -745,7 +745,7 @@ def table_to_endpoint(table: Table) -> list[tuple[str, dict]]:
             }
         ),
         (
-            f"/api/delete_blockers/{table.django_name}/{{id}}/",
+            f"/delete_blockers/delete_blockers/{table.django_name}/{{id}}/",
             {
                 "get": {
                     "tags": [table.django_name],
