@@ -25,7 +25,7 @@ from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fi
 from specifyweb.backend.stored_queries.queryfield import fields_from_json
 from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
-from specifyweb.specify.tree_utils import get_search_filters
+from specifyweb.backend.trees.utils import get_search_filters
 
 from . import models
 from .format import ObjectFormatter, ObjectFormatterProps

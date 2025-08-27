@@ -610,6 +610,12 @@ export const queryText = createDictionary({
   },
   endsWith: {
     'en-us': 'Ends With',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   or: {
     'en-us': 'or',
