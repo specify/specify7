@@ -43,8 +43,8 @@ class SpecifyExceptionWrapper():
         if isinstance(self.data, set):
             result['data'] = serialize_django_obj(self.data)
 
-        from ..specify import api
-        return api.toJson(result)
+        from ..specify.serializers import toJson
+        return toJson(result)
 
 
 class GeneralMiddleware:
