@@ -9,7 +9,11 @@ import { getIcon } from '../InitialContext/icons';
 import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { getAttachmentsColumn, getAttachmentsFormattedColumn, usesAttachments } from '../WorkBench/attachmentHelpers';
+import {
+  getAttachmentsColumn,
+  getAttachmentsFormattedColumn,
+  usesAttachments,
+} from '../WorkBench/attachmentHelpers';
 import type { WbMapping } from './mapping';
 import type { RA, WritableArray } from '../../utils/types';
 
