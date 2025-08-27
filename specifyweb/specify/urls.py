@@ -1,35 +1,48 @@
-# Entrypoint for the routing of the app
-
-from django.urls import re_path
-
-from . import schema
-from specifyweb.specify import views
+from django.urls import include, path, re_path
+from . import schema, views
 
 urlpatterns = [
-    # cat num for siblings
-    re_path(r'^specify/catalog_number_for_sibling/$', views.catalog_number_for_sibling),
-
-    # cat num for parent
-    re_path(r'^specify/catalog_number_from_parent/$', views.catalog_number_from_parent), 
-
-    # retrieve auto numbered fields
-    re_path(r'^specify/series_autonumber_range', views.series_autonumber_range),
-
     # check if the user is new at login
     re_path(r'^specify/is_new_user/$', views.is_new_user),
 
     # the main business data API
     re_path(r'^specify_schema/openapi.json$', schema.openapi),
     re_path(r'^specify_schema/(?P<model>\w+)/$', schema.view),
-    re_path(r'^specify/(?P<model>\w+)/(?P<id>\d+)/$', views.resource), # permissions added
-    re_path(r'^specify/bulk/(?P<model>\w+)/(?P<copies>\d+)/$', views.collection_bulk_copy), # permissions added
-    re_path(r'^specify/bulk/(?P<model>\w+)/$', views.collection_bulk), # permissions added
-    re_path(r'^specify/(?P<model>\w+)/$', views.collection), # permissions added
-    re_path(r'^specify_rows/(?P<model>\w+)/$', views.rows), # permissions added  
-
-    re_path(r'^delete_blockers/(?P<model>\w+)/(?P<id>\d+)/$', views.delete_blockers),
+    re_path(r'^specify/(?P<model>\w+)/(?P<id>\d+)/$', views.resource),  # permissions added
+    re_path(r'^specify/(?P<model>\w+)/$', views.collection),  # permissions added
 
     # this url always triggers a 500 for testing purposes
     re_path(r'^test_error/', views.raise_error),
-]
 
+    # === Backwards compatibility ===
+
+    # Merge endpoints
+    re_path(r'^specify/(?P<model_name>\w+)/replace/(?P<new_model_id>\d+)/$', include('specifyweb.backend.merge.urls')),
+    re_path(r'^specify/merge/', include('specifyweb.backend.merge.urls')),
+
+    # Inheritance (catalog number endpoints)
+    re_path(r'^specify/catalog_number_for_sibling/$', include('specifyweb.backend.inheritance.urls')),
+    re_path(r'^specify/catalog_number_from_parent/$', include('specifyweb.backend.inheritance.urls')),
+
+    # Series endpoints
+    re_path(r'^specify/series_autonumber_range', include('specifyweb.backend.series.urls')),
+
+    # Table rows
+    re_path(r'^specify_rows/', include('specifyweb.backend.table_rows.urls')),
+
+    # Delete blockers
+    re_path(r'^delete_blockers/', include('specifyweb.backend.delete_blockers.urls')),
+
+    # Bulk copy
+    re_path(r'^specify/', include('specifyweb.backend.bulk_copy.urls')),
+
+    # Trees
+    path('specify_trees/', include('specifyweb.backend.trees.urls')),
+    re_path(r'^specify_tree/', include('specifyweb.backend.trees.urls')),
+
+    # Locality update tool
+    path('localityset/', include('specifyweb.backend.locality_update_tool.urls')),
+
+    # Master key + User management
+    re_path(r'^', include('specifyweb.backend.account.urls')),
+]
