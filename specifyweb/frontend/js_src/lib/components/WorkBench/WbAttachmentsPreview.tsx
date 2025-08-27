@@ -337,6 +337,10 @@ function AttachmentViewerDialog({
       header={attachmentsText.attachments()}
       modal={false}
       onClose={onClose}
+      defaultSize={{
+        width: 512,
+        height: 512
+      }}
     >
       {body}
     </Dialog>

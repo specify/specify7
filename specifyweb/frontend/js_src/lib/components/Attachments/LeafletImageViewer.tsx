@@ -23,6 +23,7 @@ export function LeafletImageViewer({
     const map = L.map(containerRef.current, {
         crs: L.CRS.Simple,
         minZoom: -10,
+        zoomSnap: 0,
     });
     boundsRef.current = defaultBounds;
 
@@ -57,8 +58,6 @@ export function LeafletImageViewer({
         {
           '--transition-duration': 0,
           zIndex: 0,
-          minWidth: '512px',
-          minHeight: '512px',
           height: '100%',
           width: '100%',
           position: 'relative',
