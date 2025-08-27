@@ -20,7 +20,11 @@ import type { UploadResult } from '../WorkBench/resultsParser';
 import { savePlan } from './helpers';
 import { getLinesFromHeaders, getLinesFromUploadPlan } from './linesGetter';
 import type { MappingLine, ReadonlySpec } from './Mapper';
-import { DEFAULT_ATTACHMENT_PREFS, DEFAULT_BATCH_EDIT_PREFS, Mapper } from './Mapper';
+import {
+  DEFAULT_ATTACHMENT_PREFS,
+  DEFAULT_BATCH_EDIT_PREFS,
+  Mapper,
+} from './Mapper';
 import { BaseTableSelection } from './State';
 import type { UploadPlan } from './uploadPlanParser';
 
@@ -75,13 +79,13 @@ export type Dataset = DatasetBase &
   DatasetBrief & {
     readonly columns: RA<string>;
     readonly rowresults: RA<UploadResult> | null;
-    rows: WritableArray<WritableArray<string>>;
+    readonly rows: WritableArray<WritableArray<string>>;
     readonly uploadplan: UploadPlan | null;
     readonly visualorder: RA<number> | null;
     readonly isupdate: boolean;
     readonly rolledback: boolean;
-    usesattachments: boolean;
-    attachments: RA<string> | null;
+    readonly usesattachments: boolean;
+    readonly attachments: RA<string> | null;
   };
 
 /**
@@ -164,6 +168,10 @@ export function WbPlanView({
     </ProtectedAction>
   ) : (
     <Mapper
+      attachmentPrefs={
+        uploadPlan?.attachmentPrefs ??
+        (hasAttachments ? DEFAULT_ATTACHMENT_PREFS : undefined)
+      }
       baseTableName={state.baseTableName}
       changesMade={state.changesMade}
       dataset={dataset}
@@ -178,7 +186,7 @@ export function WbPlanView({
         lines,
         mustMatchPreferences,
         batchEditPrefs,
-        attachmentPrefs,
+        attachmentPrefs
       ): Promise<void> =>
         savePlan({
           dataset,
@@ -194,10 +202,6 @@ export function WbPlanView({
       batchEditPrefs={
         uploadPlan?.batchEditPrefs ??
         (dataset.isupdate ? DEFAULT_BATCH_EDIT_PREFS : undefined)
-      }
-      attachmentPrefs={
-        uploadPlan?.attachmentPrefs ??
-        (hasAttachments ? DEFAULT_ATTACHMENT_PREFS : undefined)
       }
     />
   );

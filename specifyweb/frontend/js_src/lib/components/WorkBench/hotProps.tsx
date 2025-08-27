@@ -3,6 +3,7 @@ import ReactDOMServer from 'react-dom/server';
 
 import { attachmentsText } from '../../localization/attachments';
 import { wbPlanText } from '../../localization/wbPlan';
+import type { RA, WritableArray } from '../../utils/types';
 import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { getIcon } from '../InitialContext/icons';
@@ -15,7 +16,6 @@ import {
   usesAttachments,
 } from '../WorkBench/attachmentHelpers';
 import type { WbMapping } from './mapping';
-import type { RA, WritableArray } from '../../utils/types';
 
 const comments = { displayDelay: 100 };
 
@@ -108,13 +108,12 @@ export function useHotProps({
   );
 
   const hiddenColumns = React.useMemo(
-    () => {
-      return {
-      columns: getHiddenColumns(dataset) as number[],
+    () => ({
+      columns: getHiddenColumns(dataset) as readonly number[],
       indicators: false,
       // TODO: Typing possibly doesn't match for handsontable 12.1.0, fixed in 14
       copyPasteEnabled: false,
-      }},
+    }),
     [dataset.rows[0]?.length]
   );
 
@@ -154,15 +153,22 @@ function getHiddenColumns(dataset: Dataset): RA<number> {
   if (usesAttachments(dataset)) {
     columns.push(getAttachmentsColumn(dataset));
   }
-  /** The disambiguation column does not always need to be hidden explicitly because it has no header.
-   * Attempting to hide it when it has no data will break the column hiding plugin. */ 
-  if (dataset.rows.length > 0 && dataset.rows[0].length >= dataset.columns.length+1) {
-    console.log("I AM HIDING THE ROW");
+  /**
+   * The disambiguation column does not always need to be hidden explicitly because it has no header.
+   * Attempting to hide it when it has no data will break the column hiding plugin.
+   */
+  if (
+    dataset.rows.length > 0 &&
+    dataset.rows[0].length >= dataset.columns.length + 1
+  ) {
+    console.log('I AM HIDING THE ROW');
     columns.push(dataset.columns.length);
   }
 
-  console.log(`Length reporting. Row 0: ${dataset.rows[0].length}. Dataset.columns ${dataset.columns}`)
-  console.log(dataset.columns.length)
+  console.log(
+    `Length reporting. Row 0: ${dataset.rows[0].length}. Dataset.columns ${dataset.columns}`
+  );
+  console.log(dataset.columns.length);
 
   return columns as RA<number>;
 }

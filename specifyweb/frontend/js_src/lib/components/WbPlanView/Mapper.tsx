@@ -29,6 +29,7 @@ import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { TableIcon } from '../Molecules/TableIcon';
+import { ATTACHMENTS_COLUMN, ATTACHMENTS_FORMATTED_COLUMN } from '../WorkBench/attachmentHelpers';
 import { Layout } from './Header';
 import {
   fetchAutoMapperSuggestions,
@@ -58,7 +59,6 @@ import { getMappingLineData } from './navigator';
 import { navigatorSpecs } from './navigatorSpecs';
 import type { ColumnOptions, DatasetAttachmentPrefs } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
-import { ATTACHMENTS_COLUMN, ATTACHMENTS_FORMATTED_COLUMN } from '../WorkBench/attachmentHelpers';
 
 /*
  * Scope is used to differentiate between mapper definitions that should

@@ -37,7 +37,7 @@ import {
 import { getMappingLineData } from './navigator';
 import { navigatorSpecs } from './navigatorSpecs';
 import { uploadPlanBuilder } from './uploadPlanBuilder';
-import { DatasetAttachmentPrefs } from './uploadPlanParser';
+import type { DatasetAttachmentPrefs } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
 
 export async function savePlan({
