@@ -44,5 +44,5 @@ urlpatterns = [
     path('localityset/', include('specifyweb.backend.locality_update_tool.urls')),
 
     # Master key + User management
-    re_path(r'^', include('specifyweb.backend.account.urls')),
+    re_path(r'^', include('specifyweb.backend.accounts.urls')),
 ]
