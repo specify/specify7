@@ -1,17 +1,37 @@
 from email.policy import strict
 import logging
 from collections import namedtuple
-from typing import Any, NamedTuple
+from typing import Any, NamedTuple, Literal
 
-from .query_ops import QueryOps
+from .query_ops import QueryOps, QUERYFIELD_OPERATION_NUMBER
 from .queryfieldspec import QueryFieldSpec
 
 logger = logging.getLogger(__name__)
 
-EphemeralField = namedtuple(
-    "EphemeralField",
-    "stringId isRelFld operStart startValue isNot isDisplay sortType formatName isStrict",
-)
+
+class QUERYFIELD_SORT:
+    NONE: Literal[0] = 0
+    ASCENDING: Literal[1] = 1
+    DESCENDING: Literal[2] = 2
+
+
+QUREYFIELD_SORT_T = Literal[
+    0,  # NONE
+    1,  # Ascending
+    2  # Descending
+]
+
+# REFACTOR: Base QueryField from this class, or merge the two classes
+class EphemeralField(NamedTuple):
+    stringId: str
+    isRelFld: bool
+    operStart: QUERYFIELD_OPERATION_NUMBER
+    startValue: str
+    isNot: bool
+    isDisplay: bool
+    sortType: QUREYFIELD_SORT_T
+    formatName: str
+    isStrict: bool
 
 
 def fields_from_json(json_fields) -> list["QueryField"]:
@@ -35,18 +55,19 @@ def fields_from_json(json_fields) -> list["QueryField"]:
 
 class QueryField(NamedTuple):
     fieldspec: QueryFieldSpec
-    op_num: int
+    op_num: QUERYFIELD_OPERATION_NUMBER
     value: str | None
     negate: bool
     display: bool
     format_name: str | None
-    sort_type: int
+    sort_type: QUREYFIELD_SORT_T
     strict: bool = False
 
     @classmethod
-    def from_spqueryfield(cls, field: EphemeralField, value=None):
+    def from_spqueryfield(cls, field: EphemeralField, value: str | None=None):
         logger.info("processing field from %r", field)
-        fieldspec = QueryFieldSpec.from_stringid(field.stringId, field.isRelFld)
+        fieldspec = QueryFieldSpec.from_stringid(
+            field.stringId, field.isRelFld)
 
         if field.isRelFld:
             # force no filtering on formatted / aggregated fields

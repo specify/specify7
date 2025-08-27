@@ -1022,7 +1022,7 @@ class RowPlanCanonical(NamedTuple):
 def naive_field_format(fieldspec: QueryFieldSpec):
     field = fieldspec.get_field()
     tree_rank = fieldspec.get_first_tree_rank()
-    prefix = f"{tree_rank[1].treedef_name} - {tree_rank[1].name} - " if tree_rank else ""
+    prefix = f"{tree_rank.treedef_name} - {tree_rank.name} - " if tree_rank else ""
     if field is None:
         return f"{prefix}{fieldspec.table.name} (formatted)"
     if field.is_relationship:

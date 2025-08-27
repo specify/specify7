@@ -83,7 +83,7 @@ class FormatMismatch(ValueError):
 class UIFormatter(NamedTuple):
     model_name: str
     field_name: str
-    fields: list
+    fields: list["Field"]
     format_name: str
 
     def parse_regexp(self) -> str:
