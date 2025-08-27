@@ -31,8 +31,8 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
 import { userPreferences } from '../Preferences/userPreferences';
 import { createQuery } from '../QueryBuilder';
-import type { QueryFieldFilter } from '../QueryBuilder/FieldFilter';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import type { QueryFieldFilter } from '../QueryBuilder/FieldFilterSpec';
+import { queryFieldFilterSpecs } from '../QueryBuilder/FieldFilterSpec';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import type { MappingPath } from '../WbPlanView/Mapper';
@@ -405,7 +405,7 @@ const toQueryFields = <SCHEMA extends AnySchema>(
   filters.map(({ field, queryBuilderFieldPath, operation, isNot, value }) =>
     QueryFieldSpec.fromPath(table.name, queryBuilderFieldPath ?? [field])
       .toSpQueryField()
-      .set('operStart', queryFieldFilters[operation].id)
+      .set('operStart', queryFieldFilterSpecs[operation].id)
       .set('isNot', isNot)
       .set('startValue', value)
   );

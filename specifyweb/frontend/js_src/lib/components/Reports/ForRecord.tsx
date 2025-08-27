@@ -8,7 +8,7 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQuery } from '../DataModel/types';
 import { userPreferences } from '../Preferences/userPreferences';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
-import { useQueryFieldFilters } from '../QueryBuilder/useQueryFieldFilters';
+import { useQueryFieldFilterSpecs } from '../QueryBuilder/useQueryFieldFilterSpecs';
 import { QueryParametersDialog } from './Parameters';
 import { RunReport } from './Run';
 
@@ -27,7 +27,7 @@ export function ReportForRecord({
   readonly resourceId: number;
   readonly onClose: () => void;
 }): JSX.Element {
-  const queryFieldFilters = useQueryFieldFilters();
+  const queryFieldFilterSpecs = useQueryFieldFilterSpecs();
 
   const [clearQueryFilters] = userPreferences.use(
     'reports',
@@ -52,7 +52,7 @@ export function ReportForRecord({
               ...field,
               operStart:
                 clearQueryFilters && field.startValue === ''
-                  ? queryFieldFilters.any.id
+                  ? queryFieldFilterSpecs.any.id
                   : field.operStart,
               startValue: clearQueryFilters ? '' : field.startValue,
               operEnd: null,
@@ -62,7 +62,7 @@ export function ReportForRecord({
     );
     const newField = QueryFieldSpec.fromPath(table.name, [table.idField.name])
       .toSpQueryField()
-      .set('operStart', queryFieldFilters.equal.id)
+      .set('operStart', queryFieldFilterSpecs.equal.id)
       .set('startValue', resourceId.toString())
       .set('position', query.fields.length)
       .set('query', query.resource_uri);
