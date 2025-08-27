@@ -11,7 +11,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { getAttachmentsColumn, getAttachmentsFormattedColumn, usesAttachments } from '../WorkBench/attachmentHelpers';
 import type { WbMapping } from './mapping';
-import type { WritableArray } from '../../utils/types';
+import type { RA, WritableArray } from '../../utils/types';
 
 const comments = { displayDelay: 100 };
 
@@ -105,21 +105,13 @@ export function useHotProps({
 
   const hiddenColumns = React.useMemo(
     () => {
-      // Hide the disambiguation column
-      const columns: WritableArray<number> = [];
-      if (usesAttachments(dataset)) {
-        columns.push(getAttachmentsColumn(dataset));
-      }
-      /** The disambiguation column does not need to be hidden explicitly because it has no header.
-       * Adding it causes handsontable to ignore the array completely. */ 
-      //columns.push(dataset.columns.length-1);
       return {
-      columns: columns,
+      columns: getHiddenColumns(dataset) as number[],
       indicators: false,
       // TODO: Typing possibly doesn't match for handsontable 12.1.0, fixed in 14
       copyPasteEnabled: false,
       }},
-    []
+    [dataset.rows[0]?.length]
   );
 
   const [minSpareRows] = userPreferences.use(
@@ -150,6 +142,25 @@ export function useHotProps({
     tabMoves,
     comments,
   };
+}
+
+function getHiddenColumns(dataset: Dataset): RA<number> {
+  // Hide the disambiguation column and attachment data column
+  const columns: WritableArray<number> = [];
+  if (usesAttachments(dataset)) {
+    columns.push(getAttachmentsColumn(dataset));
+  }
+  /** The disambiguation column does not always need to be hidden explicitly because it has no header.
+   * Attempting to hide it when it has no data will break the column hiding plugin. */ 
+  if (dataset.rows.length > 0 && dataset.rows[0].length >= dataset.columns.length+1) {
+    console.log("I AM HIDING THE ROW");
+    columns.push(dataset.columns.length);
+  }
+
+  console.log(`Length reporting. Row 0: ${dataset.rows[0].length}. Dataset.columns ${dataset.columns}`)
+  console.log(dataset.columns.length)
+
+  return columns as RA<number>;
 }
 
 function ColumnHeader({

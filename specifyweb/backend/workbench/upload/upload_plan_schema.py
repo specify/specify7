@@ -52,6 +52,22 @@ schema: dict = {
                 },
             },
         },
+        "attachmentPrefs": {
+            "type": "object",
+            "properties": {
+                "usesAttachments": {
+                    "type": "boolean",
+                    "default": True,
+                },
+                "attachmentsColumn": {
+                    "type": "string"
+                },
+                "formattedAttachmentsColumn": {
+                    "type": "string"
+                }
+            },
+            "required": ["usesAttachments", "attachmentsColumn", "formattedAttachmentsColumn"],
+        }
     },
     "required": ["baseTableName", "uploadable"],
     "additionalProperties": False,

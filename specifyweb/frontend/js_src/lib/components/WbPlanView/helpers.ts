@@ -37,6 +37,7 @@ import {
 import { getMappingLineData } from './navigator';
 import { navigatorSpecs } from './navigatorSpecs';
 import { uploadPlanBuilder } from './uploadPlanBuilder';
+import { DatasetAttachmentPrefs } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
 
 export async function savePlan({
@@ -45,12 +46,14 @@ export async function savePlan({
   lines,
   mustMatchPreferences,
   batchEditPrefs,
+  attachmentPrefs,
 }: {
   readonly dataset: Dataset;
   readonly baseTableName: keyof Tables;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
   readonly batchEditPrefs?: BatchEditPrefs;
+  readonly attachmentPrefs?: DatasetAttachmentPrefs;
 }): Promise<void> {
   const renamedLines = renameNewlyCreatedHeaders(
     baseTableName,
@@ -71,7 +74,8 @@ export async function savePlan({
     baseTableName,
     renamedLines,
     getMustMatchTables({ baseTableName, lines, mustMatchPreferences }),
-    batchEditPrefs
+    batchEditPrefs,
+    attachmentPrefs
   );
 
   const dataSetRequestUrl = `/api/workbench/dataset/${dataset.id}/`;

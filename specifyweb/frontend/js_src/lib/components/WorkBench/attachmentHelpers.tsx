@@ -61,6 +61,10 @@ export function getAttachmentsFromCell(
   return undefined;
 }
 
+/** TODO: Use the attachment column name from the dataset's upload plan.
+ * For now, it can be safely assumed attachment columns will always be named ATTACHMENTS_COLUMN.
+ * If it needs to be changed for any reason, the upload plan can be referenced for backwards compatibility.
+ */
 export function usesAttachments(dataset: Dataset): boolean {
   return dataset.columns.includes(ATTACHMENTS_COLUMN);
 }

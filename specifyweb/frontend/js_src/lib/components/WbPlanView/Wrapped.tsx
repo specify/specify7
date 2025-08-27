@@ -20,7 +20,7 @@ import type { UploadResult } from '../WorkBench/resultsParser';
 import { savePlan } from './helpers';
 import { getLinesFromHeaders, getLinesFromUploadPlan } from './linesGetter';
 import type { MappingLine, ReadonlySpec } from './Mapper';
-import { DEFAULT_BATCH_EDIT_PREFS, Mapper } from './Mapper';
+import { DEFAULT_ATTACHMENT_PREFS, DEFAULT_BATCH_EDIT_PREFS, Mapper } from './Mapper';
 import { BaseTableSelection } from './State';
 import type { UploadPlan } from './uploadPlanParser';
 
@@ -177,7 +177,8 @@ export function WbPlanView({
       onSave={async (
         lines,
         mustMatchPreferences,
-        batchEditPrefs
+        batchEditPrefs,
+        attachmentPrefs,
       ): Promise<void> =>
         savePlan({
           dataset,
@@ -185,6 +186,7 @@ export function WbPlanView({
           lines,
           mustMatchPreferences,
           batchEditPrefs,
+          attachmentPrefs,
         }).then(() => navigate(`/specify/workbench/${dataset.id}/`))
       }
       readonlySpec={readonlySpec}
@@ -192,6 +194,10 @@ export function WbPlanView({
       batchEditPrefs={
         uploadPlan?.batchEditPrefs ??
         (dataset.isupdate ? DEFAULT_BATCH_EDIT_PREFS : undefined)
+      }
+      attachmentPrefs={
+        uploadPlan?.attachmentPrefs ??
+        (hasAttachments ? DEFAULT_ATTACHMENT_PREFS : undefined)
       }
     />
   );
