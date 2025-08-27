@@ -1,57 +1,78 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2025-08-27 19:01+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
+"specify-7/backup/pt_BR/>\n"
+"Language: pt_BR\n"
+"Content-Type: text/plain\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 5.13\n"
+"Content-Transfer-Encoding: 8bit\n"
 
+#. Used in: Components > Toolbar > Backup Status
 #: components/Toolbar/BackupStatus.tsx:99
-#. Used in: Components > Toolbar > Backup Status
+#, fuzzy
 msgid "completed"
-msgstr ""
+msgstr "Backup concluído com sucesso."
 
+#. Used in: Components > Toolbar > Backup Status
 #: components/Toolbar/BackupStatus.tsx:90
-#. Used in: Components > Toolbar > Backup Status
+#, fuzzy
 msgid "failed"
-msgstr ""
+msgstr "Falha no backup."
 
+#. Used in: Components > Toolbar > Backup Database
 #: components/Toolbar/BackupDatabase.tsx:94
-#. Used in: Components > Toolbar > Backup Database
+#, fuzzy
 msgid "previousFound"
-msgstr ""
+msgstr "Um backup anterior foi encontrado:"
 
+#. Used in: Components > Toolbar > Backup Database
 #: components/Toolbar/BackupDatabase.tsx:108
-#. Used in: Components > Toolbar > Backup Database
+#, fuzzy
 msgid "previousNone"
-msgstr ""
+msgstr "Nenhum backup anterior foi encontrado. Iniciar um novo?"
 
+#. Used in: Components > Toolbar > Backup Database
 #: components/Toolbar/BackupDatabase.tsx:96
-#. Used in: Components > Toolbar > Backup Database
+#, fuzzy
 msgid "previousSizeMB"
-msgstr ""
+msgstr "({size:string} MB)"
 
+#. Used in: Components > Toolbar > Backup Database
 #: components/Toolbar/BackupDatabase.tsx:102
-#. Used in: Components > Toolbar > Backup Database
+#, fuzzy
 msgid "lastBackupOn"
-msgstr ""
+msgstr "Este backup foi criado em {date:string}"
 
+#. Used in: Components > Toolbar > Backup Database
 #: components/Toolbar/BackupDatabase.tsx:44
-#. Used in: Components > Toolbar > Backup Database
+#, fuzzy
 msgid "checkPreviousFailed"
-msgstr ""
+msgstr "Falha ao verificar o backup anterior."
 
-#: components/Toolbar/BackupDatabase.tsx:62
 #. Used in: Components > Toolbar > Backup Database
+#: components/Toolbar/BackupDatabase.tsx:62
+#, fuzzy
 msgid "startFailed"
-msgstr ""
+msgstr "Falha ao iniciar o backup."
 
+#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:335
-#. Used in: Components > Notifications > Notification Renderers
+#, fuzzy
 msgid "databaseBackupCompleted"
-msgstr ""
+msgstr "Backup do banco de dados concluído."
 
-#: components/Notifications/NotificationRenderers.tsx:351
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:351
+#, fuzzy
 msgid "databaseBackupFailed"
-msgstr ""
+msgstr "Falha no backup do banco de dados."
 
-#: components/Toolbar/BackupStatus.tsx:106
 #. Used in: Components > Toolbar > Backup Status
+#: components/Toolbar/BackupStatus.tsx:106
+#, fuzzy
 msgid "compressing"
-msgstr ""
+msgstr "Comprimindo..."
