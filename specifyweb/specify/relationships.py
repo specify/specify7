@@ -2,7 +2,8 @@ import logging
 from collections.abc import Callable
 from django.http import Http404
 from specifyweb.backend.permissions.permissions import check_table_permissions, table_permissions_checker
-from specifyweb.specify import auditlog, models
+from specifyweb.specify import models
+from specifyweb.specify.auditlog import auditlog
 from .datamodel import datamodel, Table, Relationship
 from specifyweb.specify.api_utils import strict_uri_to_model
 from specifyweb.specify.field_change_info import FieldChangeInfo
@@ -273,8 +274,8 @@ class IndependentInline(TypedDict):
     remove: list[str]
 
 def _handle_independent_to_many(collection, agent, obj, field, value: IndependentInline):
-    from crud import get_model, update_or_create_resource, update_obj  
-    from serializers import obj_to_data, uri_for_model
+    from .crud import get_model, update_or_create_resource, update_obj  
+    from .serializers import obj_to_data, uri_for_model
 
     logger.warning("Updating independent collections via the API is experimental and the structure may be changed in the future")
     
