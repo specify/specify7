@@ -24,7 +24,7 @@ export const wbText = createDictionary({
     "es-es":
       "Tenga en cuenta que la validación en vivo es una función experimental y no sustituye a la validación regular.",
     "fr-fr": "Plan de téléchargement",
-    "ru-ru": "Загрузить план",
+    "ru-ru": "План загрузки",
     "uk-ua": "План завантаження",
     "pt-br": "Plano de Upload",
   },
@@ -275,7 +275,7 @@ export const wbText = createDictionary({
     "es-es": "No se puede desambiguar",
     "fr-fr": "Impossible de lever l'ambiguïté",
     "uk-ua": "Неможливо усунути неоднозначність",
-    "de-ch": "Kann nicht eindeutig bestimmt werden",
+    "de-ch": "Kann nicht disambiguiert werden",
     "pt-br": "Incapaz de desambiguar",
   },
   noDisambiguationResultsDescription: {
@@ -292,7 +292,7 @@ export const wbText = createDictionary({
     "de-ch":
       "Keiner der übereinstimmenden Datensätze ist derzeit in der Datenbank vorhanden. Dies kann passieren, wenn alle übereinstimmenden Datensätze seit der Validierung gelöscht wurden oder wenn alle Übereinstimmungen im Vergleich zu anderen Datensätzen in diesem Datensatz mehrdeutig waren. In diesem Fall müssen Sie dem Datensatz Felder und Werte hinzufügen, um die Mehrdeutigkeit zu beheben.",
     "pt-br":
-      "Nenhum dos registros correspondentes existe atualmente no banco de dados. Isso pode ocorrer se todos os registros correspondentes foram excluídos desde o processo de validação ou se todas as correspondências eram ambíguas em relação a outros registros neste conjunto de dados. Neste último caso, você precisará adicionar campos e valores ao conjunto de dados para resolver a ambiguidade.",
+      "Nenhum dos registros correspondentes existe atualmente no banco de dados. Isso pode ocorrer se todos os registros correspondentes foram excluídos desde a ocorrência do processo de validação ou se todas as correspondências forem ambíguas em relação a outros registros neste conjunto de dados. Neste último caso, você precisará adicionar campos e valores ao conjunto de dados para resolver a ambiguidade.",
   },
   disambiguateMatches: {
     "en-us": "Disambiguate Multiple Record Matches",
@@ -429,7 +429,7 @@ export const wbText = createDictionary({
     "uk-ua":
       "Ця дія призведе до скасування всіх змін, внесених до набору даних після останнього збереження.",
     "de-ch":
-      "Durch diese Aktion werden alle Änderungen am Datensatz seit der letzten Speicherung verworfen.",
+      "Durch diese Aktion werden alle Änderungen am Datensatz seit dem letzten Speichern verworfen.",
     "pt-br":
       "Esta ação descartará todas as alterações feitas no Conjunto de Dados desde o último Salvamento.",
   },
@@ -590,7 +590,7 @@ export const wbText = createDictionary({
     "en-us":
       "Validate the Data Set and review the mouseover hints for each error cell, then make the appropriate corrections. Save and retry the {type:string}.",
     "de-ch":
-      "Validieren Sie den Datensatz und überprüfen Sie die Mouseover-Hinweise für jede Fehlerzelle. Nehmen Sie anschließend die entsprechenden Korrekturen vor. Speichern Sie und wiederholen Sie {type:string}.",
+      "Validieren Sie den Datensatz und überprüfen Sie die Mouseover-Hinweise für jede Fehlerzelle. Nehmen Sie anschließend die entsprechenden Korrekturen vor. Speichern Sie und versuchen Sie {type:string} erneut.",
     "es-es":
       "Valide el conjunto de datos y revise las sugerencias al pasar el ratón por cada celda con error. Luego, realice las correcciones pertinentes. Guarde y vuelva a intentar la operación {type:string}.",
     "fr-fr":
@@ -598,7 +598,7 @@ export const wbText = createDictionary({
     "pt-br":
       "Valide o conjunto de dados e revise as dicas de mouseover para cada célula de erro. Em seguida, faça as correções apropriadas. Salve e tente novamente o {type:string}.",
     "ru-ru":
-      "Проверьте набор данных и просмотрите подсказки при наведении мыши на каждую ячейку с ошибкой, затем внесите соответствующие исправления. Сохраните и повторите {type:string}.",
+      "Проверьте набор данных и просмотрите подсказки при наведении курсора на каждую ячейку с ошибкой, затем внесите необходимые исправления. Сохраните и повторите попытку {type:string}.",
     "uk-ua":
       "Перевірте набір даних і перегляньте підказки під час наведення курсора миші для кожної клітинки з помилкою, потім внесіть відповідні виправлення. Збережіть і повторіть спробу {type:string}.",
   },
@@ -783,9 +783,9 @@ export const wbText = createDictionary({
       "Cette action n'est pas disponible lorsque la vérification des données est en cours",
     "uk-ua": "Ця дія недоступна, поки триває перевірка даних",
     "de-ch":
-      "Diese Aktion ist während der laufenden Datenüberprüfung nicht verfügbar.",
+      "Diese Aktion ist während der laufenden Datenprüfung nicht verfügbar.",
     "pt-br":
-      "Esta ação não estará disponível enquanto a Verificação de Dados estiver em andamento",
+      "Esta ação não estará disponível enquanto a verificação de dados estiver em andamento.",
   },
   unavailableWithoutLocality: {
     "en-us": "This tool requires locality columns to be mapped",
@@ -1436,30 +1436,30 @@ export const wbText = createDictionary({
   },
   attachmentsForRow: {
     "en-us": "Attachments for row {row:number}:",
-    "de-ch": "",
-    "es-es": "",
-    "fr-fr": "",
-    "pt-br": "",
-    "ru-ru": "",
-    "uk-ua": "",
+    "de-ch": "Anhänge zur Zeile {row:number}:",
+    "es-es": "Archivos adjuntos para la fila {row:number}:",
+    "fr-fr": "Pièces jointes pour la ligne {row:number} :",
+    "pt-br": "Anexos para linha {row:number}:",
+    "ru-ru": "Навесное оборудование для ряда {row:number}:",
+    "uk-ua": "Вкладення для рядка {row:number}:",
   },
   detachWindow: {
     "en-us": "Detach Window",
-    "de-ch": "",
-    "es-es": "",
-    "fr-fr": "",
-    "pt-br": "",
-    "ru-ru": "",
-    "uk-ua": "",
+    "de-ch": "Fenster abtrennen",
+    "es-es": "Separar ventana",
+    "fr-fr": "Détacher la fenêtre",
+    "pt-br": "Desanexar janela",
+    "ru-ru": "Отсоединить окно",
+    "uk-ua": "Від’єднати вікно",
   },
   attachWindow: {
     "en-us": "Attach Window",
-    "de-ch": "",
-    "es-es": "",
-    "fr-fr": "",
-    "pt-br": "",
-    "ru-ru": "",
-    "uk-ua": "",
+    "de-ch": "Fenster anhängen",
+    "es-es": "Adjuntar ventana",
+    "fr-fr": "Attacher la fenêtre",
+    "pt-br": "Anexar janela",
+    "ru-ru": "Прикрепить окно",
+    "uk-ua": "Прикріпити вікно",
   },
   updatedCells: {
     "en-us": "Updated Cells",
@@ -1503,7 +1503,7 @@ export const wbText = createDictionary({
     "es-es": "Número de nuevos registros afectados en cada tabla:",
     "fr-fr": "Nombre de nouveaux enregistrements affectés dans chaque table :",
     "pt-br": "Número de novos registros afetados em cada tabela:",
-    "ru-ru": "Количество новых затронутых записей в каждой таблице:",
+    "ru-ru": "Количество новых записей, затронутых в каждой таблице:",
     "uk-ua": "Кількість нових записів, на які впливає кожна таблиця:",
   },
   wbAffectedPotentialDescription: {
@@ -1543,18 +1543,18 @@ export const wbText = createDictionary({
     "es-es": "Registros eliminados (sin incluir dependientes)",
     "fr-fr": "Enregistrements supprimés (sans compter les personnes à charge)",
     "pt-br": "Registros excluídos (não incluindo dependentes)",
-    "ru-ru": "Удаленные записи (не включая иждивенцев)",
+    "ru-ru": "Удаленные записи (без учета иждивенцев)",
     "uk-ua": "Записи видалено (без урахування утриманців)",
   },
   recordsMatchedAndChanged: {
     "en-us": "Related records matched to different records",
     "de-ch":
-      "Verwandte Datensätze, die mit anderen Datensätzen abgeglichen wurden",
+      "Zugehörige Datensätze, die mit anderen Datensätzen abgeglichen wurden",
     "es-es": "Registros relacionados que coinciden con diferentes registros",
     "fr-fr":
       "Enregistrements associés correspondant à différents enregistrements",
     "pt-br": "Registros relacionados correspondidos a registros diferentes",
-    "ru-ru": "Связанные записи сопоставлены с разными записями",
+    "ru-ru": "Связанные записи, сопоставленные с разными записями",
     "uk-ua": "Пов’язані записи, що відповідають іншим записам",
   },
   matchAndChanged: {
