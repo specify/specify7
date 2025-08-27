@@ -19,7 +19,7 @@ from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST, require_http_methods
 from specifyweb.specify.api import get_model
 
-from specifyweb.middleware.general import require_GET, require_http_methods
+from specifyweb.middleware.general import require_http_methods
 from . import api, models as spmodels
 from .specify_jar import specify_jar, specify_jar_path
 from .uiformatters import get_uiformatter_by_name
@@ -118,12 +118,6 @@ def delete_blockers(request, model, id):
 def flatten(l):
     return [item for sublist in l for item in sublist]
 
-
-@login_maybe_required
-@require_http_methods(['GET', 'HEAD'])
-def rows(request, model):
-    "Returns tuples from the table for <model>."
-    return api.rows(request, model)
 
 
 @require_http_methods(['GET', 'HEAD'])
