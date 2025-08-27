@@ -59,6 +59,7 @@
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.5",
     "react-modal": "^3.16.1",
+    "react-new-window": "^1.0.1",
     "react-router-dom": "^6.7.0",
     "react-zoom-pan-pinch": "^3.6.1",
     "typesafe-i18n": "^5.17.1",

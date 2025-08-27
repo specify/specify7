@@ -608,6 +608,15 @@ export const queryText = createDictionary({
     "de-ch": "Beginnt mit",
     "pt-br": "Começa com",
   },
+  endsWith: {
+    "en-us": "Ends With",
+    "de-ch": "",
+    "es-es": "",
+    "fr-fr": "",
+    "pt-br": "",
+    "ru-ru": "",
+    "uk-ua": "",
+  },
   or: {
     "en-us": "or",
     "ru-ru": "или",
