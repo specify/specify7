@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-07-28 18:22+0000\n"
+"PO-Revision-Date: 2025-08-27 19:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/preferences/de_CH/>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.13\n"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 #: components/Header/userToolDefinitions.ts:56
@@ -347,7 +347,7 @@ msgstr "Suchalgorithmus (für Beziehungen mit Baumtabellen)"
 #: components/Preferences/UserDefinitions.tsx:1087
 #, fuzzy
 msgid "startsWithInsensitive"
-msgstr "Beginnt mit (ohne Berücksichtigung der Groß- und Kleinschreibung)"
+msgstr "Beginnt mit (Groß-/Kleinschreibung wird nicht beachtet)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1020
@@ -379,7 +379,7 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:1092
 #, fuzzy
 msgid "containsInsensitive"
-msgstr "Enthält (ohne Berücksichtigung der Groß- und Kleinschreibung)"
+msgstr "Enthält (Groß-/Kleinschreibung wird nicht beachtet)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1035
@@ -394,8 +394,8 @@ msgstr "Enthält (Groß-/Kleinschreibung beachten)"
 #, fuzzy
 msgid "containsDescription"
 msgstr ""
-"Suche nach Werten, die eine bestimmte Abfragezeichenfolge enthalten (ohne "
-"Berücksichtigung der Groß-/Kleinschreibung)."
+"Suchen Sie nach Werten, die eine bestimmte Abfragezeichenfolge enthalten ("
+"ohne Berücksichtigung der Groß-/Kleinschreibung)."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1036
@@ -636,7 +636,7 @@ msgstr "Mit der Eingabetaste beginnt die Bearbeitung der Zelle"
 #: components/Preferences/UserDefinitions.tsx:1780
 #, fuzzy
 msgid "tabMoveDirection"
-msgstr "Bewegungsrichtung beim Drücken der Taste <key>Tab</key>"
+msgstr "Bewegungsrichtung beim Drücken der <key>Tab</key>-Taste"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1781
@@ -687,7 +687,7 @@ msgstr "Auswahllistenelemente filtern"
 #: components/Preferences/UserDefinitions.tsx:1843
 #, fuzzy
 msgid "exportFileDelimiter"
-msgstr "Exportdatei-Trennzeichen"
+msgstr "Dateitrennzeichen exportieren"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1626
@@ -709,7 +709,7 @@ msgstr "Groß- und Kleinschreibung beachten"
 #: components/Preferences/UserDefinitions.tsx:1838
 #, fuzzy
 msgid "caseInsensitive"
-msgstr "Groß- und Kleinschreibung wird nicht berücksichtigt"
+msgstr "Groß-/Kleinschreibung wird nicht beachtet"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1566
@@ -759,7 +759,7 @@ msgstr "Erlauben Sie der Autovervollständigung, so weit wie nötig zu wachsen"
 #: components/Preferences/UserDefinitions.tsx:756
 #, fuzzy
 msgid "tableNameInTitle"
-msgstr "Tabellennamen in den Seitentitel des Browsers einschließen"
+msgstr "Tabellennamen in den Seitentitel des Browsers aufnehmen"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:763
@@ -771,7 +771,7 @@ msgstr "Fokus erstes Feld"
 #: components/Preferences/UserDefinitions.tsx:1990
 #, fuzzy
 msgid "doubleClickZoom"
-msgstr "Zum Zoomen doppelklicken"
+msgstr "Zum Vergrößern doppelklicken"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1997
@@ -825,7 +825,7 @@ msgstr "Schließen durch Drücken der Taste <key>ESC</key>"
 #: components/Preferences/UserDefinitions.tsx:479
 #, fuzzy
 msgid "closeOnOutsideClick"
-msgstr "Durch Klicken von außen schließen"
+msgstr "Schließen durch Klicken von außen"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:868
@@ -849,7 +849,7 @@ msgstr "Verwenden Sie die barrierefreie Monatsauswahl"
 #: components/Preferences/UserDefinitions.tsx:889
 #, fuzzy
 msgid "rightAlignNumberFields"
-msgstr "Rechtsbündiges Ausrichten numerischer Felder"
+msgstr "Rechtsbündige Ausrichtung numerischer Felder"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:296
@@ -938,13 +938,13 @@ msgstr "Einzugsgröße"
 #: components/Preferences/UserDefinitions.tsx:1948
 #, fuzzy
 msgid "indentWithTab"
-msgstr "Einrücken mit <key>Tabulator</key>"
+msgstr "Einrücken mit <key>Tab</key>"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:770
 #, fuzzy
 msgid "formHeaderFormat"
-msgstr "Formularkopfzeilenformat"
+msgstr "Formularkopfformat"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:777
@@ -998,7 +998,7 @@ msgstr "Leerzeichen als Trennzeichen verwenden"
 #: components/Preferences/UserDefinitions.tsx:654
 #, fuzzy
 msgid "useCommaAsDelimiter"
-msgstr "Verwenden Sie Kommas als Trennzeichen"
+msgstr "Verwenden Sie Kommas als Trennzeichen."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:675
@@ -1095,7 +1095,7 @@ msgstr ""
 msgid "autoPopulateDescription"
 msgstr ""
 "Füllen Sie den zusammengeführten Datensatz beim Öffnen des "
-"Zusammenführungsdialogs automatisch mit Werten aus Duplikaten auf."
+"Zusammenführungsdialogs automatisch mit Werten aus Duplikaten."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1694
@@ -1146,7 +1146,8 @@ msgstr "Verwenden Sie moderne Tooltips"
 #: components/Preferences/UserDefinitions.tsx:1100
 #, fuzzy
 msgid "alwaysUseQueryBuilder"
-msgstr "Verwenden Sie innerhalb des Suchformulars immer die Abfrage-Generator-Suche"
+msgstr ""
+"Verwenden Sie innerhalb des Suchformulars immer die Abfragegeneratorsuche"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1917
@@ -1194,7 +1195,7 @@ msgstr "Erweiterte Bild-URL"
 #: components/Preferences/UserDefinitions.tsx:603
 #, fuzzy
 msgid "customLogoCollapsed"
-msgstr "URL des minimierten Bilds"
+msgstr "URL des minimierten Bildes"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:600
