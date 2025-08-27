@@ -7,7 +7,6 @@ import re
 from typing import Literal, NamedTuple
 import xml.dom.minidom
 from collections import namedtuple, defaultdict
-from datetime import datetime
 from functools import reduce
 
 from django.conf import settings
@@ -26,7 +25,7 @@ from specifyweb.backend.trees.utils import get_search_filters
 from . import models
 from .format import ObjectFormatter, ObjectFormatterProps
 from .query_construct import QueryConstruct
-from .queryfield import QueryField
+from .queryfield import QUREYFIELD_SORT_T
 from .relative_date_utils import apply_absolute_date
 from .field_spec_maps import apply_specify_user_name
 from specifyweb.backend.notifications.models import Message
@@ -44,15 +43,16 @@ SORT_LITERAL: Literal["asc"] | Literal["desc"] | None = None
 
 SERIES_MAX_ROWS = 10000
 
+
 class QuerySort:
     SORT_TYPES = [None, asc, desc]
 
-    NONE: 0
-    ASC: 1
-    DESC: 2
+    NONE: Literal[0] = 0
+    ASC: Literal[1] = 1
+    DESC: Literal[2] = 2
 
     @staticmethod
-    def by_id(sort_id: int):
+    def by_id(sort_id: QUREYFIELD_SORT_T):
         return QuerySort.SORT_TYPES[sort_id]
 
 class BuildQueryProps(NamedTuple):

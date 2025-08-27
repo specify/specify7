@@ -9,12 +9,6 @@ from .queryfieldspec import QueryFieldSpec
 logger = logging.getLogger(__name__)
 
 
-class QUERYFIELD_SORT:
-    NONE: Literal[0] = 0
-    ASCENDING: Literal[1] = 1
-    DESCENDING: Literal[2] = 2
-
-
 QUREYFIELD_SORT_T = Literal[
     0,  # NONE
     1,  # Ascending
