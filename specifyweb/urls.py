@@ -21,15 +21,12 @@ from .specify.views import images, properties
 from specifyweb.backend.stored_queries import urls as query_urls
 from specifyweb.backend.workbench import urls as wb_urls
 from specifyweb.backend.stats import urls as stat_urls
-<<<<<<< HEAD
 from specifyweb.backend.inheritance import urls as inheritance_urls
-=======
 from specifyweb.backend.trees import urls as trees_urls
 from specifyweb.backend.merge import urls as merge_urls
 from specifyweb.backend.locality_update_tool import urls as locality_update_tool_urls
 from specifyweb.backend.delete_blockers import urls as delete_blockers_urls
 from specifyweb.backend.table_rows import urls as table_rows_urls
->>>>>>> origin/main
 
 # print(get_resolver().reverse_dict.keys()) # Use for debugging urls
 
