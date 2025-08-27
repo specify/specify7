@@ -287,7 +287,7 @@ export function Dialog({
     isOpen,
     dimensionsKey,
     defaultSize,
-    handleResize,
+    handleResize
   );
 
   const [rememberPosition] = userPreferences.use(
@@ -591,7 +591,7 @@ function useDialogSize(
           width: sizes[0],
           height: sizes[1],
         }
-      : defaultSize ?? undefined;
+      : (defaultSize ?? undefined);
   }, [sizeKey]);
 
   // Resize listener

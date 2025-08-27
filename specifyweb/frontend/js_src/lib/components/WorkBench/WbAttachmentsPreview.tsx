@@ -282,7 +282,10 @@ function AttachmentViewerDialog({
   const body =
     attachment !== undefined &&
     (isImage ? (
-      <LeafletImageViewer alt={attachment?.title ?? ''} src={attachmentUrl ?? ''} />
+      <LeafletImageViewer
+        alt={attachment?.title ?? ''}
+        src={attachmentUrl ?? ''}
+      />
     ) : (
       <AttachmentViewer
         attachment={deserializeResource(attachment)}
@@ -319,6 +322,16 @@ function AttachmentViewerDialog({
     </PopupWindow>
   ) : (
     <Dialog
+      buttons={undefined}
+      className={{
+        container: dialogClassNames.wideContainer,
+      }}
+      defaultSize={{
+        width: 512,
+        height: 512,
+      }}
+      dimensionsKey="WbAttachmentViewer"
+      header={attachmentsText.attachments()}
       headerButtons={
         <div className="flex items-center gap-2 md:gap-2 ml-auto">
           <Button.Secondary onClick={(): void => setUseWindow(true)}>
@@ -329,18 +342,8 @@ function AttachmentViewerDialog({
           </Button.Secondary>
         </div>
       }
-      dimensionsKey="WbAttachmentViewer"
-      buttons={undefined}
-      className={{
-        container: dialogClassNames.wideContainer,
-      }}
-      header={attachmentsText.attachments()}
       modal={false}
       onClose={onClose}
-      defaultSize={{
-        width: 512,
-        height: 512
-      }}
     >
       {body}
     </Dialog>
