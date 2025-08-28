@@ -13,7 +13,7 @@ from specifyweb.backend.workbench.upload.auditor import (
 )
 from specifyweb.backend.workbench.upload.tests.base import UploadTestsBase
 from specifyweb.backend.workbench.upload.upload import do_upload
-from specifyweb.specify import auditcodes
+from specifyweb.backend.workbench.upload import auditcodes
 from specifyweb.backend.workbench.upload.upload_result import (
     Deleted,
     MatchedAndChanged,

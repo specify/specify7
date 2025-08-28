@@ -7,7 +7,7 @@ from datetime import date
 from hypothesis import given, strategies as st
 from jsonschema import validate, Draft7Validator  # type: ignore
 
-from specifyweb.specify import auditcodes
+from specifyweb.backend.workbench.upload import auditcodes
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.backend.stored_queries.format import LDLM_TO_MYSQL, MYSQL_TO_MONTH, \
     MYSQL_TO_YEAR

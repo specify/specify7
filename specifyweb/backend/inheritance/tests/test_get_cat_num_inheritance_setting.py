@@ -1,5 +1,5 @@
+from specifyweb.backend.inheritance.utils import get_cat_num_inheritance_setting
 from specifyweb.specify.tests.test_utils.test_collection_preference_context import TestCollectionPreferenceContext
-from specifyweb.specify.api.utils import get_cat_num_inheritance_setting
 
 class TestCatNumInheritanceSetting(TestCollectionPreferenceContext):
 

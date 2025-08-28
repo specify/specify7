@@ -21,7 +21,7 @@ from specifyweb.backend.trees.utils import get_search_filters
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from specifyweb.backend.trees.ranks import tree_rank_count
 from . import extras
-from specifyweb.specify.auditcodes import TREE_MOVE
+from specifyweb.backend.workbench.upload.auditcodes import TREE_MOVE
 from specifyweb.backend.trees.stats import get_tree_stats
 from specifyweb.specify.views import login_maybe_required, openapi
 

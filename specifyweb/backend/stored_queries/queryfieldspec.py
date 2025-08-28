@@ -4,14 +4,13 @@ from datetime import datetime, timedelta
 import re
 from collections import namedtuple, deque
 
-from specifyweb.specify.api.utils import get_parent_cat_num_inheritance_setting
+from specifyweb.backend.inheritance.utils import get_cat_num_inheritance_setting, get_parent_cat_num_inheritance_setting
+from specifyweb.specify.utils.uiformatters import get_uiformatter
 from sqlalchemy import sql, Table as SQLTable
 from sqlalchemy.orm.query import Query
 
 from specifyweb.specify.models_utils.load_datamodel import Field, Table
 from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, datamodel
-from specifyweb.specify.utils.uiformatters import get_uiformatter
-from specifyweb.specify.api.utils import get_cat_num_inheritance_setting
 from specifyweb.backend.stored_queries.models import CollectionObject as sq_CollectionObject
 
 from . import models

@@ -16,7 +16,7 @@ import { exportsForTests } from '../../utils/cache/index';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { fetchOriginalUrl } from '../Attachments/attachments';
-import { ImageViewer } from '../Attachments/ImageViewer';
+import { LeafletImageViewer } from '../Attachments/LeafletImageViewer';
 import { AttachmentViewer } from '../Attachments/Viewer';
 import { toResource } from '../DataModel/helpers';
 import type {
@@ -107,7 +107,10 @@ export function WbAttachmentViewerView(): JSX.Element {
   const body =
     attachment !== undefined &&
     (isImage ? (
-      <ImageViewer alt={attachment?.title ?? ''} src={attachmentUrl ?? ''} />
+      <LeafletImageViewer
+        alt={attachment?.title ?? ''}
+        src={attachmentUrl ?? ''}
+      />
     ) : (
       <AttachmentViewer
         attachment={deserializeResource(attachment)}
@@ -117,10 +120,17 @@ export function WbAttachmentViewerView(): JSX.Element {
       />
     ));
 
+  const onClose = function (): void {
+    window.close();
+  };
+
   return viewerId ? (
     <Dialog
-      buttons={
-        <>
+      buttons={undefined}
+      className={{ container: dialogClassNames.fullScreen }}
+      header={attachmentsText.attachments()}
+      headerButtons={
+        <div className="flex items-center gap-2 md:gap-2 ml-auto">
           <Button.Secondary
             onClick={(): void => {
               removeCache('workBenchAttachmentViewer', viewerId);
@@ -129,16 +139,12 @@ export function WbAttachmentViewerView(): JSX.Element {
           >
             {wbText.attachWindow()}
           </Button.Secondary>
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-        </>
+          <Button.Secondary onClick={onClose}>
+            {commonText.close()}
+          </Button.Secondary>
+        </div>
       }
-      className={{ container: dialogClassNames.fullScreen }}
-      dimensionsKey="LeafletMap"
-      header={attachmentsText.attachments()}
-      headerButtons={undefined}
-      onClose={() => {
-        window.close();
-      }}
+      onClose={onClose}
     >
       <div className="flex flex-col items-center justify-center h-full w-full p-4">
         {body}
