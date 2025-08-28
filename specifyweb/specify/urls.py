@@ -19,8 +19,6 @@ urlpatterns = [
     re_path(r'^specify_schema/openapi.json$', schema.openapi),
     re_path(r'^specify_schema/(?P<model>\w+)/$', schema.view),
     re_path(r'^specify/(?P<model>\w+)/(?P<id>\d+)/$', views.resource), # permissions added
-    re_path(r'^specify/bulk/(?P<model>\w+)/(?P<copies>\d+)/$', views.collection_bulk_copy), # permissions added
-    re_path(r'^specify/bulk/(?P<model>\w+)/$', views.collection_bulk), # permissions added
     re_path(r'^specify/(?P<model>\w+)/$', views.collection), # permissions added
 
     # this url always triggers a 500 for testing purposes

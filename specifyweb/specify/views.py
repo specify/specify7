@@ -17,7 +17,7 @@ from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST, require_http_methods
 
 from specifyweb.middleware.general import require_http_methods
-from specifyweb.specify.api.dispatch import collection_dispatch, collection_dispatch_bulk, collection_dispatch_bulk_copy, resource_dispatch
+from specifyweb.specify.api.dispatch import collection_dispatch, resource_dispatch
 from specifyweb.specify.api.exceptions import MissingVersionException, StaleObjectException
 from . import models as spmodels
 from .utils.specify_jar import specify_jar, specify_jar_path
@@ -77,9 +77,6 @@ def api_view(dispatch_func):
 
 resource = api_view(resource_dispatch)
 collection = api_view(collection_dispatch)
-collection_bulk_copy = api_view(collection_dispatch_bulk_copy)
-collection_bulk = api_view(collection_dispatch_bulk)
-
 
 def raise_error(request):
     """This endpoint intentionally throws an error in the server for
