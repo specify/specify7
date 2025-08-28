@@ -973,13 +973,13 @@ msgstr "{node:string} {author:string} (in {parent:string})"
 msgid "attachmentsForRow"
 msgstr "Anhänge zur Zeile {row:number}:"
 
-#: components/WorkBench/WbAttachmentsPreview.tsx:325
+#: components/WorkBench/WbAttachmentsPreview.tsx:338
 #. Used in: Components > Work Bench > Wb Attachments Preview
 #, fuzzy
 msgid "detachWindow"
 msgstr "Fenster abtrennen"
 
-#: components/WbAttachmentViewer/index.tsx:130
+#: components/WbAttachmentViewer/index.tsx:140
 #. Used in: Components > Wb Attachment Viewer > Index
 #, fuzzy
 msgid "attachWindow"

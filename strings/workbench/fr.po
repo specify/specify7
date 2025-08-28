@@ -862,13 +862,13 @@ msgstr "{node:string} {author:string} (dans {parent:string})"
 msgid "attachmentsForRow"
 msgstr "Pièces jointes pour la ligne {row:number} :"
 
-#: components/WorkBench/WbAttachmentsPreview.tsx:325
+#: components/WorkBench/WbAttachmentsPreview.tsx:338
 #. Used in: Components > Work Bench > Wb Attachments Preview
 #, fuzzy
 msgid "detachWindow"
 msgstr "Détacher la fenêtre"
 
-#: components/WbAttachmentViewer/index.tsx:130
+#: components/WbAttachmentViewer/index.tsx:140
 #. Used in: Components > Wb Attachment Viewer > Index
 #, fuzzy
 msgid "attachWindow"

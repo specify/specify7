@@ -807,12 +807,12 @@ msgstr "{node:string} {author:string} (in {parent:string})"
 msgid "attachmentsForRow"
 msgstr "Attachments for row {row:number}:"
 
-#: components/WorkBench/WbAttachmentsPreview.tsx:325
+#: components/WorkBench/WbAttachmentsPreview.tsx:338
 #. Used in: Components > Work Bench > Wb Attachments Preview
 msgid "detachWindow"
 msgstr "Detach Window"
 
-#: components/WbAttachmentViewer/index.tsx:130
+#: components/WbAttachmentViewer/index.tsx:140
 #. Used in: Components > Wb Attachment Viewer > Index
 msgid "attachWindow"
 msgstr "Attach Window"
