@@ -16,7 +16,7 @@ class TestCatalogNumberFromSibling(TestCogInteractions):
     def test_no_id_error(self):
         co = self.collectionobjects[0]
         response = self.c.post(
-            "/api/specify/catalog_number_for_sibling/",
+            "/inheritance/catalog_number_for_sibling/",
             json.dumps(dict(catalognumber=co.catalognumber)),
             content_type="application/json"
         )
@@ -27,7 +27,7 @@ class TestCatalogNumberFromSibling(TestCogInteractions):
     def test_invalid_body(self):
         co = self.collectionobjects[0]
         response = self.c.post(
-            "/api/specify/catalog_number_for_sibling/",
+            "/inheritance/catalog_number_for_sibling/",
             "Not a JSON: Value",
             content_type="application/json"
         )
@@ -38,7 +38,7 @@ class TestCatalogNumberFromSibling(TestCogInteractions):
     def test_simple_co(self):
         co = self.collectionobjects[0]
         response = self.c.post(
-            "/api/specify/catalog_number_for_sibling/",
+            "/inheritance/catalog_number_for_sibling/",
             json.dumps(dict(id=co.id)),
             content_type="application/json"
         )
@@ -49,7 +49,7 @@ class TestCatalogNumberFromSibling(TestCogInteractions):
     def test_simple_co_catalognumber(self):
         co = self.collectionobjects[0]
         response = self.c.post(
-            "/api/specify/catalog_number_for_sibling/",
+            "/inheritance/catalog_number_for_sibling/",
             json.dumps(dict(id=co.id)),
             content_type="application/json"
         )
@@ -65,7 +65,7 @@ class TestCatalogNumberFromSibling(TestCogInteractions):
 
         co = self.collectionobjects[0]
         response = self.c.post(
-            "/api/specify/catalog_number_for_sibling/",
+            "/inheritance/catalog_number_for_sibling/",
             json.dumps(dict(id=co.id, catalognumber=None)),
             content_type="application/json"
         )
@@ -81,7 +81,7 @@ class TestCatalogNumberFromSibling(TestCogInteractions):
 
         for co in self.collectionobjects[1:3]:
             response = self.c.post(
-                "/api/specify/catalog_number_for_sibling/",
+                "/inheritance/catalog_number_for_sibling/",
                 json.dumps(dict(id=co.id)),
                 content_type="application/json"
             )
@@ -97,7 +97,7 @@ class TestCatalogNumberFromSibling(TestCogInteractions):
 
         for co in self.collectionobjects[1:3]:
             response = self.c.post(
-                "/api/specify/catalog_number_for_sibling/",
+                "/inheritance/catalog_number_for_sibling/",
                 json.dumps(dict(id=co.id)),
                 content_type="application/json"
             )

@@ -6,12 +6,6 @@ from . import schema
 from specifyweb.specify import views
 
 urlpatterns = [
-    # cat num for siblings
-    re_path(r'^specify/catalog_number_for_sibling/$', views.catalog_number_for_sibling),
-
-    # cat num for parent
-    re_path(r'^specify/catalog_number_from_parent/$', views.catalog_number_from_parent), 
-
     # check if the user is new at login
     re_path(r'^specify/is_new_user/$', views.is_new_user),
 
