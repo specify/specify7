@@ -74,8 +74,9 @@ def parse_field(table_name: str, field_name: str, raw_value: str, formatter: Sco
     if field.type in ('java.lang.Integer', 'java.lang.Long', 'java.lang.Byte', 'java.lang.Short'):
         return parse_integer(field_name, raw_value)
 
-    if hasattr(field, 'length') and field.length is not None and len(raw_value) > field.length:
-        return ParseFailure('valueTooLong', {'field': field_name, 'maxLength': field.length})
+    if hasattr(field, "length") and field.length is not None:
+        if len(raw_value) > field.length:
+            return ParseFailure("valueTooLong", {"field": field_name, "maxLength": field.length})
 
     return ParseSucess({field_name.lower(): raw_value})
 
