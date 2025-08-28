@@ -4,3 +4,4 @@ hypothesis>=6.131.9,<7
 hypothesis-jsonschema==0.19.0
 types-requests==2.28.5
 lxml
+coverage
