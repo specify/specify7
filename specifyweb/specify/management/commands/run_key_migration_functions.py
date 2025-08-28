@@ -62,16 +62,11 @@ def fix_schema_config():
 
 def fix_business_rules():
     Discipline = apps.get_model('specify', 'Discipline')
-    # UniquenessRule = apps.get_model('businessrules', 'UniquenessRule')
+    UniquenessRule = apps.get_model('businessrules', 'UniquenessRule')
 
-    # Maybe not wanted for sp6 to sp7 migrations, don't want to create default uniqueness rules again after deleting.
-    # for discipline in Discipline.objects.exclude(
-    #     id__in=set(UniquenessRule.objects.values_list('discipline_id', flat=True).distinct())):
-    for discipline in Discipline.objects.all():
+    for discipline in Discipline.objects.exclude(
+        id__in=set(UniquenessRule.objects.values_list('discipline_id', flat=True).distinct())):
         apply_default_uniqueness_rules(discipline, registry=apps)
-
-        # create_uniqueness_rule("Collectionobjectgroupjoin", discipline, False, ["childCo", "childCog"], [], apps)
-        # create_uniqueness_rule("Storage", discipline, False, ["uniqueIdentifier"], [], apps)
 
     catnum_rule_editable(apps)
     create_uniqueness_rule("Storage", None, True, ["uniqueIdentifier"], [], apps)
