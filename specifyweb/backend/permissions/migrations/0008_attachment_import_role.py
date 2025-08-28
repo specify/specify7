@@ -1,5 +1,5 @@
 from django.db import migrations
-from specifyweb.specify.auditlog import auditlog
+from specifyweb.backend.workbench.upload import auditlog
 
 def add_attachment_import_role(apps, schema_editor):
     LibraryRole = apps.get_model('permissions', 'LibraryRole')
