@@ -11,7 +11,7 @@ from specifyweb.specify.tests.test_autonumbering import TestAutonumberingContext
 # So, need to reset the state of the entire database.
 class TestDoAutonumbering(TestAutonumberingContext):
 
-    @patch("specifyweb.specify.uiformatters.get_autonumber_group_filter")
+    @patch("specifyweb.specify.utils.uiformatters.get_autonumber_group_filter")
     def test_simple_autonumbering(self, group_filter: Mock):
         group_filter.return_value = lambda objs: filter_by_collection(
             objs, self.collection
@@ -44,7 +44,7 @@ class TestDoAutonumbering(TestAutonumberingContext):
         self.assertIsNotNone(second_co.id)
         self.assertEqual(second_co.catalognumber, "000000002")
 
-    @patch("specifyweb.specify.uiformatters.get_autonumber_group_filter")
+    @patch("specifyweb.specify.utils.uiformatters.get_autonumber_group_filter")
     def test_multiple_fields_autonumbering(self, group_filter: Mock):
         group_filter.return_value = lambda objs: filter_by_collection(
             objs, self.collection
@@ -91,7 +91,7 @@ class TestDoAutonumbering(TestAutonumberingContext):
         self.assertEqual(third_co.text1, "AA-001")
         self.assertEqual(third_co.catalognumber, "000000003")
 
-    @patch("specifyweb.specify.uiformatters.get_autonumber_group_filter")
+    @patch("specifyweb.specify.utils.uiformatters.get_autonumber_group_filter")
     def test_increment_across_collections(self, group_filter: Mock):
         # This is as close as we can get...
         second_collection = Collection.objects.create(

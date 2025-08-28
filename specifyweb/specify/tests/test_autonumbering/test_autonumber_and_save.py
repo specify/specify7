@@ -21,8 +21,8 @@ from specifyweb.specify.utils.uiformatters import (
 
 class TestAutonumberAndSave(TestAutonumberingContext):
 
-    @patch("specifyweb.specify.autonumbering.do_autonumbering")
-    @patch("specifyweb.specify.autonumbering.get_uiformatters")
+    @patch("specifyweb.specify.utils.autonumbering.do_autonumbering")
+    @patch("specifyweb.specify.utils.autonumbering.get_uiformatters")
     def test_simple_formatter_case(self, get_formatters: Mock, do_autonumbering: Mock):
 
         get_formatters.return_value = [self.cnn_ui_formatter]
@@ -40,8 +40,8 @@ class TestAutonumberAndSave(TestAutonumberingContext):
         # The CO should technically not have been saved.
         self.assertIsNone(test_co.id)
 
-    @patch("specifyweb.specify.autonumbering.do_autonumbering")
-    @patch("specifyweb.specify.autonumbering.get_uiformatters")
+    @patch("specifyweb.specify.utils.autonumbering.do_autonumbering")
+    @patch("specifyweb.specify.utils.autonumbering.get_uiformatters")
     def test_no_formatter_case(self, get_formatters: Mock, do_autonumbering: Mock):
         get_formatters.return_value = []
         test_co = Collectionobject(
@@ -53,8 +53,8 @@ class TestAutonumberAndSave(TestAutonumberingContext):
 
         self.assertIsNotNone(test_co.id)
 
-    @patch("specifyweb.specify.autonumbering.do_autonumbering")
-    @patch("specifyweb.specify.autonumbering.get_uiformatters")
+    @patch("specifyweb.specify.utils.autonumbering.do_autonumbering")
+    @patch("specifyweb.specify.utils.autonumbering.get_uiformatters")
     def test_autonumbering_field_but_no_value(
         self, get_formatters: Mock, do_autonumbering: Mock
     ):
@@ -73,8 +73,8 @@ class TestAutonumberAndSave(TestAutonumberingContext):
 
         self.assertIsNone(test_co.id)
 
-    @patch("specifyweb.specify.autonumbering.do_autonumbering")
-    @patch("specifyweb.specify.autonumbering.get_uiformatters")
+    @patch("specifyweb.specify.utils.autonumbering.do_autonumbering")
+    @patch("specifyweb.specify.utils.autonumbering.get_uiformatters")
     def test_no_autonumbering_field(self, get_formatters: Mock, do_autonumbering: Mock):
         get_formatters.return_value = [
             UIFormatter(
@@ -95,8 +95,8 @@ class TestAutonumberAndSave(TestAutonumberingContext):
 
         self.assertIsNotNone(test_co.id)
 
-    @patch("specifyweb.specify.autonumbering.do_autonumbering")
-    @patch("specifyweb.specify.autonumbering.get_uiformatters")
+    @patch("specifyweb.specify.utils.autonumbering.do_autonumbering")
+    @patch("specifyweb.specify.utils.autonumbering.get_uiformatters")
     def test_autonumbering_value_exists(
         self, get_formatters: Mock, do_autonumbering: Mock
     ):
@@ -112,8 +112,8 @@ class TestAutonumberAndSave(TestAutonumberingContext):
 
         self.assertIsNotNone(test_co.id)
 
-    @patch("specifyweb.specify.autonumbering.do_autonumbering")
-    @patch("specifyweb.specify.autonumbering.get_uiformatters")
+    @patch("specifyweb.specify.utils.autonumbering.do_autonumbering")
+    @patch("specifyweb.specify.utils.autonumbering.get_uiformatters")
     def test_autonumbering_mismatch(self, get_formatters: Mock, do_autonumbering: Mock):
         get_formatters.return_value = [
             UIFormatter(

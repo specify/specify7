@@ -502,7 +502,370 @@ class VersionCtrlApiTests(ApiTests):
             update_obj(
                 self.collection, self.agent, "collection", data["id"], None, data
             )
+class InlineApiTests(ApiTests):
+    def test_get_resource_with_to_many_inlines(self):
+        for i in range(3):
+            self.collectionobjects[0].determinations.create(iscurrent=False, number1=i)
+        data = get_resource(
+            "collectionobject", self.collectionobjects[0].id, skip_perms_check
+        )
+        self.assertTrue(isinstance(data["determinations"], list))
+        self.assertEqual(len(data["determinations"]), 3)
+        ids = [d["id"] for d in data["determinations"]]
+        for det in self.collectionobjects[0].determinations.all():
+            self.assertTrue(det.id in ids)
 
+    def test_inlined_in_collection(self):
+        dets = [
+            self.collectionobjects[0].determinations.create(iscurrent=False, number1=i)
+            for i in range(3)
+        ]
+
+        data = get_collection(self.collection, "collectionobject", skip_perms_check)
+        for obj in data["objects"]:
+            self.assertTrue(isinstance(obj["determinations"], list))
+            if obj["id"] == self.collectionobjects[0].id:
+                serialized_dets = obj["determinations"]
+                self.assertEqual(len(obj["determinations"]), 3)
+            else:
+                self.assertEqual(len(obj["determinations"]), 0)
+
+        ids = {d["id"] for d in serialized_dets}
+        for det in dets:
+            self.assertTrue(det.id in ids)
+
+    def test_inlined_inlines(self):
+        preptype = Preptype.objects.create(
+            collection=self.collection)
+
+        for i in range(3):
+            self.collectionobjects[0].preparations.create(
+                collectionmemberid=self.collection.id, preptype=preptype
+            )
+        data = get_collection(self.collection, "collectionobject", skip_perms_check)
+        co = next(
+            obj for obj in data["objects"] if obj["id"] == self.collectionobjects[0].id
+        )
+        self.assertTrue(isinstance(co["preparations"], list))
+        self.assertEqual(co["preparations"][0]["preparationattachments"], [])
+
+    def test_get_resource_with_to_one_inlines(self):
+        self.collectionobjects[0].collectionobjectattribute = \
+            Collectionobjectattribute.objects.create(collectionmemberid=self.collection.id)
+        self.collectionobjects[0].save()
+        data = get_resource(
+            "collectionobject", self.collectionobjects[0].id, skip_perms_check
+        )
+        self.assertTrue(isinstance(data["collectionobjectattribute"], dict))
+        self.assertEqual(
+            data["collectionobjectattribute"]["id"],
+            self.collectionobjects[0].collectionobjectattribute.id,
+        )
+
+    def test_create_object_with_inlines(self):
+        data = {
+            "collection": uri_for_model("collection", self.collection.id),
+            "catalognumber": "foobar",
+            "determinations": [
+                {"iscurrent": False, "number1": 1},
+                {"iscurrent": False, "number1": 2},
+            ],
+            "collectionobjectattribute": {"text1": "some text"},
+        }
+
+        obj = create_obj(self.collection, self.agent, "collectionobject", data)
+        co = models.Collectionobject.objects.get(id=obj.id)
+        self.assertEqual(
+            set(co.determinations.values_list("number1", flat=True)), {1, 2}
+        )
+        self.assertEqual(co.collectionobjectattribute.text1, "some text")
+
+    def test_create_object_with_inlined_existing_resource(self):
+        coa = models.Collectionobjectattribute.objects.create(
+            collectionmemberid=self.collection.id
+        )
+
+        coa_data = get_resource(
+            "collectionobjectattribute", coa.id, skip_perms_check
+        )
+        co_data = {
+            'collection': uri_for_model('collection', self.collection.id),
+            'collectionobjectattribute': coa_data,
+            'catalognumber': 'foobar'}
+        obj = create_obj(self.collection, self.agent, 'collectionobject', co_data)
+        co = Collectionobject.objects.get(id=obj.id)
+        self.assertEqual(co.collectionobjectattribute, coa)
+
+    def test_create_recordset_with_inlined_items(self):
+        obj = create_obj(self.collection, self.agent, 'recordset', {
+            'name': "Test",
+            'dbtableid': 1,
+            'specifyuser': f'/api/specify/specifyuser/{self.specifyuser.id}/',
+            'type': 0,
+            'recordsetitems': [
+                {'recordid': 123},
+                {'recordid': 124},
+            ]
+        })
+        rs = Recordset.objects.get(pk=obj.id)
+        self.assertEqual({123, 124}, set(rs.recordsetitems.values_list('recordid', flat=True)))
+
+    def test_update_object_with_inlines(self):
+        self.collectionobjects[0].determinations.create(
+            collectionmemberid=self.collection.id, number1=1, remarks="original value"
+        )
+
+        data = get_resource(
+            "collectionobject", self.collectionobjects[0].id, skip_perms_check
+        )
+        data["determinations"][0]["remarks"] = "changed value"
+        data["determinations"].append({"number1": 2, "remarks": "a new determination"})
+        data["collectionobjectattribute"] = {"text1": "added an attribute"}
+
+        update_obj(
+            self.collection,
+            self.agent,
+            "collectionobject",
+            data["id"],
+            data["version"],
+            data,
+        )
+
+        obj = Collectionobject.objects.get(id=self.collectionobjects[0].id)
+        self.assertEqual(obj.determinations.count(), 2)
+        self.assertEqual(obj.determinations.get(number1=1).remarks, "changed value")
+        self.assertEqual(
+            obj.determinations.get(number1=2).remarks, "a new determination"
+        )
+        self.assertEqual(obj.collectionobjectattribute.text1, "added an attribute")
+
+    def test_update_object_with_more_inlines(self):
+        for i in range(6):
+            self.collectionobjects[0].determinations.create(
+                collectionmemberid=self.collection.id, number1=i
+            )
+
+        data = get_resource(
+            "collectionobject", self.collectionobjects[0].id, skip_perms_check
+        )
+        even_dets = [d for d in data["determinations"] if d["number1"] % 2 == 0]
+        for d in even_dets:
+            data["determinations"].remove(d)
+
+        text1_data = 'look! an attribute'
+
+        data['collectionobjectattribute'] = {'text1': text1_data}
+
+        update_obj(
+            self.collection,
+            self.agent,
+            "collectionobject",
+            data["id"],
+            data["version"],
+            data,
+        )
+
+        obj = Collectionobject.objects.get(id=self.collectionobjects[0].id)
+        self.assertEqual(obj.determinations.count(), 3)
+        for d in obj.determinations.all():
+            self.assertFalse(d.number1 % 2 == 0)
+
+        self.assertEqual(obj.collectionobjectattribute.text1, text1_data)
+
+    def test_independent_to_many_set_inline(self):
+        accession_data = {
+            'accessionnumber': "a",
+            'division': uri_for_model('division', self.division.id),
+            'collectionobjects': {
+                "update": [
+                    obj_to_data(self.collectionobjects[0]),
+                    uri_for_model('collectionobject', self.collectionobjects[1].id)
+                ]
+            }
+        }
+
+        accession = create_obj(self.collection, self.agent, 'Accession', accession_data)
+        self.collectionobjects[0].refresh_from_db()
+        self.collectionobjects[1].refresh_from_db()
+        self.assertEqual(accession, self.collectionobjects[0].accession)
+        self.assertEqual(accession, self.collectionobjects[1].accession)
+
+    def test_independent_to_one_set_inline(self):
+        collection_object_data = {
+            'collection': uri_for_model('collection', self.collection.id),
+            'accession': {
+                'accessionnumber': "a",
+                'division': uri_for_model('division', self.division.id),
+            }
+        }
+
+        created_co = create_obj(self.collection, self.agent, 'Collectionobject', collection_object_data)
+        self.assertIsNotNone(created_co.accession)
+
+    def test_indepenent_to_many_removing_from_inline(self):
+        accession = models.Accession.objects.create(
+            accessionnumber="a",
+            version="0",
+            division=self.division
+        )
+
+        accession.collectionobjects.set(self.collectionobjects)
+
+        self.assertEqual(accession, self.collectionobjects[0].accession)
+
+        collection_objects_to_remove = [self.collectionobjects[0], self.collectionobjects[3]]
+
+        cos_to_keep = [collection_object for collection_object in self.collectionobjects if not collection_object in collection_objects_to_remove]
+
+        accession_data = {
+            'accessionnumber': "a",
+            'division': uri_for_model('division', self.division.id),
+            'collectionobjects': {
+                "remove": [
+                    uri_for_model('collectionobject', collection_object.id) 
+                    for collection_object in collection_objects_to_remove
+                ]
+            }
+        }
+        accession = update_obj(self.collection, self.agent, 'Accession', accession.id, accession.version, accession_data)
+
+        self.assertEqual(list(accession.collectionobjects.all()), cos_to_keep)
+
+        # ensure the other CollectionObjects have not been deleted
+        self.assertEqual(len(models.Collectionobject.objects.all()), len(self.collectionobjects))
+
+    def test_updating_independent_to_many_resource(self): 
+        co_to_modify = obj_to_data(self.collectionobjects[2])
+        co_to_modify.update({
+            'integer1': 10,
+            'determinations': [
+                {
+                    'iscurrent': True,
+                    'collectionmemberid': self.collection.id,
+                    'collectionobject': uri_for_model('Collectionobject', self.collectionobjects[2].id) 
+                }
+            ]
+        })
+
+        accession_data = {
+            'accessionnumber': "a",
+            'division': uri_for_model('division', self.division.id),
+            'collectionobjects': {
+                "update": [
+                co_to_modify
+                ]
+            }
+        }
+
+        self.assertEqual(self.collectionobjects[2].integer1, None)
+        self.assertEqual(list(self.collectionobjects[2].determinations.all()), [])
+        accession = create_obj(self.collection, self.agent, 'Accession', accession_data)
+        self.collectionobjects[2].refresh_from_db()
+        self.assertEqual(self.collectionobjects[2].integer1, 10)
+        self.assertEqual(len(self.collectionobjects[2].determinations.all()), 1)
+
+    def test_updating_independent_to_one_resource(self): 
+        accession_data = {
+            'accessionnumber': "a",
+            'division': uri_for_model('division', self.division.id)
+        }
+        accession = create_obj(self.collection, self.agent, 'Accession', accession_data)
+
+        accession_text = 'someText'
+        accession_data.update({
+            'id': accession.id,
+            'accessionnumber': "a1",
+            'text1': accession_text,
+            'version': accession.version
+        })
+
+        collection_object_data = {
+            'collection': uri_for_model('collection', self.collection.id),
+            'accession': accession_data
+        }
+
+        self.assertEqual(accession.text1, None)
+        self.assertEqual(accession.accessionnumber, 'a')
+        created_co = create_obj(self.collection, self.agent, 'Collectionobject', collection_object_data)
+        accession.refresh_from_db()
+        self.assertEqual(accession.text1, accession_text)
+        self.assertEqual(accession.accessionnumber, 'a1')
+
+    def test_independent_to_many_creating_from_remoteside(self):
+        new_catalognumber = f'num-{len(self.collectionobjects)}'
+        accession_data = {
+            'accessionnumber': "a",
+            'division': uri_for_model('division', self.division.id),
+            'collectionobjects': {
+                "update": [
+                {
+                    'catalognumber': new_catalognumber,
+                    'collection': uri_for_model('Collection', self.collection.id)
+                }
+                ]
+            }
+        }
+
+        accession = create_obj(self.collection, self.agent, 'Accession', accession_data)
+        self.assertTrue(models.Collectionobject.objects.filter(catalognumber=new_catalognumber).exists())
+
+    def test_reassigning_independent_to_many(self): 
+        acc1 = models.Accession.objects.create(
+            accessionnumber="a",
+            division = self.division
+        )
+
+        self.collectionobjects[0].accession = acc1
+        self.collectionobjects[0].save()
+        self.collectionobjects[1].accession = acc1
+        self.collectionobjects[1].save()
+
+        accession_data = {
+            'accessionnumber': "b",
+            'division': uri_for_model('division', self.division.id),
+            'collectionobjects': {
+                "update": [
+                obj_to_data(self.collectionobjects[0]),
+                uri_for_model('collectionobject', self.collectionobjects[1].id)
+                ]
+            }
+        }
+        acc2 = create_obj(self.collection, self.agent, 'Accession', accession_data)
+        self.collectionobjects[0].refresh_from_db()
+        self.collectionobjects[1].refresh_from_db()
+        self.assertEqual(self.collectionobjects[0].accession, acc2)
+        self.assertEqual(self.collectionobjects[1].accession, acc2)
+
+    def test_skipping_redundant_resources(self): 
+        catalog_number = f'num-{len(self.collectionobjects)}'
+        redundant_catalog_number = f'num-{len(self.collectionobjects) + 1}'
+        redundant_accession_number = 'c'
+        accession_data = {
+            'accessionnumber': "b",
+            'division': uri_for_model('division', self.division.id),
+            'collectionobjects': {
+                "update": [
+                    {
+                        "catalogNumber": catalog_number,
+                        'accession': {
+                            "accessionNumber": redundant_accession_number,
+                        },
+                        "determinations": [
+                            {
+                                "text1": "test determination",
+                                "collectionObject": {
+                                    "catalogNumber": redundant_catalog_number
+                                },
+                            }
+                        ],
+                        'collection': uri_for_model('Collection', self.collection.id),
+                    }
+                ]
+            }
+        }
+
+        accession = create_obj(self.collection, self.agent, 'Accession', accession_data)
+        self.assertFalse(models.Accession.objects.filter(accessionnumber=redundant_accession_number).exists())
 
         self.assertFalse(models.Collectionobject.objects.filter(catalognumber=redundant_catalog_number).exists())
 
