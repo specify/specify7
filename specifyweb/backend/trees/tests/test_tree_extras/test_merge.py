@@ -1,7 +1,7 @@
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
 from specifyweb.specify.models import Geography, Locality, Taxon, Taxontreedef
-from specifyweb.specify.tests.test_trees import GeographyTree
-from specifyweb.specify.tree_extras import merge
+from specifyweb.backend.trees.tests.test_trees import GeographyTree
+from specifyweb.backend.trees.extras import merge
 
 class TestMerge(GeographyTree):
     

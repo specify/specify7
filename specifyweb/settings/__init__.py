@@ -223,9 +223,13 @@ SPECIFY_APPS  = [
     'specifyweb.backend.export',
     'specifyweb.backend.raven_placeholder' if RAVEN_CONFIG is None else 'raven.contrib.django.raven_compat',
     'specifyweb.backend.stats',
+    'specifyweb.backend.trees',
+    'specifyweb.backend.backup_tool',
     'specifyweb.backend.merge',
     'specifyweb.backend.locality_update_tool',
-    'specifyweb.backend.series'
+    'specifyweb.backend.series',
+    'specifyweb.backend.delete_blockers',
+    'specifyweb.backend.table_rows'
 ]
 
 INSTALLED_APPS = (

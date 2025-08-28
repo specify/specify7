@@ -3,18 +3,21 @@ from specifyweb.specify.models import (
     Collectionobjecttype,
     Discipline,
     Division,
-    Geographytreedef,
     Institution,
+
+)
+from specifyweb.specify.models import (
+    Geographytreedef,
     Storage,
     Storagetreedef,
-    Taxontreedef,
+    Taxontreedef
 )
 
 from unittest import skip
 
 from specifyweb.specify.tests.test_api import ApiTests
-from specifyweb.specify.tests.test_tree_utils import TestMultipleTaxonTreeContext
-from specifyweb.specify.tree_utils import get_search_filters
+from specifyweb.backend.trees.tests.test_tree_utils import TestMultipleTaxonTreeContext
+from specifyweb.backend.trees.utils import get_search_filters
 
 
 class TestGetSearchFilters(TestMultipleTaxonTreeContext, ApiTests):

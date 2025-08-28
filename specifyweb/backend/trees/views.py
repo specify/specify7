@@ -4,6 +4,7 @@ from typing import Literal, TypedDict, Any
 from django.db import connection, transaction
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
+from specifyweb.specify import models as spmodels
 from sqlalchemy import select, func, distinct, literal
 from sqlalchemy.orm import aliased
 
@@ -14,15 +15,14 @@ from specifyweb.backend.permissions.permissions import PermissionTarget, Permiss
 from specifyweb.backend.stored_queries import models as sqlmodels
 from specifyweb.backend.stored_queries.execution import set_group_concat_max_len
 from specifyweb.backend.stored_queries.group_concat import group_concat
-from specifyweb.specify.tree_utils import get_search_filters
+from specifyweb.backend.trees.utils import get_search_filters
 from specifyweb.specify.field_change_info import FieldChangeInfo
-from specifyweb.specify import models as spmodels
-from specifyweb.specify.tree_ranks import tree_rank_count
-from . import tree_extras
-from .api import get_object_or_404, obj_to_data, toJson
-from .auditcodes import TREE_MOVE
-from .tree_stats import get_tree_stats
-from .views import login_maybe_required, openapi
+from specifyweb.backend.trees.ranks import tree_rank_count
+from . import extras
+from specifyweb.specify.api import get_object_or_404, obj_to_data, toJson
+from specifyweb.specify.auditcodes import TREE_MOVE
+from specifyweb.backend.trees.stats import get_tree_stats
+from specifyweb.specify.views import login_maybe_required, openapi
 
 import logging
 
@@ -235,7 +235,7 @@ def path(request, tree: TREE_TABLE, id: int):
         node.definitionitem.name: obj_to_data(node) for node in get_tree_path(tree_node)
     }
 
-    data["resource_uri"] = "/api/specify_tree/%s/%d/path/" % (tree, id)
+    data["resource_uri"] = "/trees/specify_tree/%s/%d/path/" % (tree, id)
 
     return HttpResponse(toJson(data), content_type="application/json")
 
@@ -259,7 +259,7 @@ def predict_fullname(request, tree: TREE_TABLE, parentid: int):
     reverse = parent.definition.fullnamedirection == -1
     defitemid = int(request.GET["treedefitemid"])
     name = request.GET["name"]
-    fullname = tree_extras.predict_fullname(
+    fullname = extras.predict_fullname(
         parent._meta.db_table, depth, parent.id, defitemid, name, reverse
     )
     return HttpResponse(fullname, content_type="text/plain")
@@ -276,7 +276,7 @@ def merge(request, tree: TREE_TABLE, id: int):
     )
     node = get_object_or_404(tree, id=id)
     target = get_object_or_404(tree, id=request.POST["target"])
-    tree_extras.merge(node, target, request.specify_user_agent)
+    extras.merge(node, target, request.specify_user_agent)
 
 
 @tree_mutation
@@ -305,7 +305,7 @@ def move(request, tree: TREE_TABLE, id: int):
                 field_name="fullname", old_value=old_fullname, new_value=node.fullname
             ),
         ]
-        tree_extras.mutation_log(
+        extras.mutation_log(
             TREE_MOVE, node, request.specify_user_agent, node.parent, field_change_infos
         )
 
@@ -368,7 +368,7 @@ def bulk_move(request, tree: TREE_TABLE, id: int):
     )
     node = get_object_or_404(tree, id=id)
     target = get_object_or_404(tree, id=request.POST["target"])
-    tree_extras.bulk_move(node, target, request.specify_user_agent)
+    extras.bulk_move(node, target, request.specify_user_agent)
 
 
 @tree_mutation
@@ -383,7 +383,7 @@ def synonymize(request, tree: TREE_TABLE, id: int):
     )
     node = get_object_or_404(tree, id=id)
     target = get_object_or_404(tree, id=request.POST["target"])
-    tree_extras.synonymize(node, target, request.specify_user_agent)
+    extras.synonymize(node, target, request.specify_user_agent)
 
 
 @tree_mutation
@@ -395,7 +395,7 @@ def desynonymize(request, tree: TREE_TABLE, id: int):
         [perm_target(tree).desynonymize],
     )
     node = get_object_or_404(tree, id=id)
-    tree_extras.desynonymize(node, request.specify_user_agent)
+    extras.desynonymize(node, request.specify_user_agent)
 
 
 @tree_mutation
@@ -406,8 +406,8 @@ def repair_tree(request, tree: TREE_TABLE):
                              [perm_target(tree).repair])
     tree_model = spmodels.datamodel.get_table(tree)
     table = tree_model.name.lower()
-    tree_extras.renumber_tree(table)
-    tree_extras.validate_tree_numbering(table)
+    extras.renumber_tree(table)
+    extras.validate_tree_numbering(table)
 
 @tree_mutation
 def add_root(request, tree, treeid): 

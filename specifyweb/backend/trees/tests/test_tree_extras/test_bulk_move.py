@@ -1,6 +1,6 @@
 from specifyweb.specify.models import Storagetreedef, Preparation
-from specifyweb.specify.tests.test_trees import GeographyTree
-from specifyweb.specify.tree_extras import bulk_move
+from specifyweb.backend.trees.tests.test_trees import GeographyTree
+from specifyweb.backend.trees.extras import bulk_move
 
 
 class TestBulkMove(GeographyTree):

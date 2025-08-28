@@ -1,6 +1,6 @@
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
-from specifyweb.specify.models import Taxon, Taxontreedefitem
-from specifyweb.specify.tests.test_trees import GeographyTree
+from specifyweb.backend.tress.models import Taxon, Taxontreedefitem
+from specifyweb.backend.trees.tests.test_trees import GeographyTree
 
 from unittest import skip
 from unittest.mock import Mock, patch

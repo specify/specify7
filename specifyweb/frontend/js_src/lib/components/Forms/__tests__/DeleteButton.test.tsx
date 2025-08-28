@@ -9,7 +9,7 @@ mockTime();
 const agentId = 2;
 const loanAgentId = 1;
 const loanId = 3;
-overrideAjax(`/api/delete_blockers/agent/${agentId}/`, [
+overrideAjax(`/delete_blockers/delete_blockers/agent/${agentId}/`, [
   {
     table: 'LoanAgent',
     field: 'agent',

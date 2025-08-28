@@ -2,8 +2,8 @@ from sys import maxsize
 from enum import Enum
 
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
-from . import models as spmodels
-from . import tree_extras
+from specifyweb.specify import models as spmodels
+from . import extras
 
 import logging
 logger = logging.getLogger(__name__)
@@ -127,14 +127,14 @@ def is_tree_rank_empty(tree_rank_model, tree_rank) -> bool:
         return False
     return tree_item_model.objects.filter(definitionitem=tree_rank).count() == 0
 
-def post_tree_rank_save(tree_def_item_model, new_rank: "tree_extras.TreeRank"):
+def post_tree_rank_save(tree_def_item_model, new_rank: "extras.TreeRank"):
     tree_def = new_rank.treedef
     parent_rank = new_rank.parent
     if parent_rank: 
         parent_rank.children.exclude(id=new_rank.id).update(parent=new_rank)
 
     # Regenerate full names
-    tree_extras.set_fullnames(tree_def, null_only=False, node_number_range=None)
+    extras.set_fullnames(tree_def, null_only=False, node_number_range=None)
 
 def pre_tree_rank_deletion(tree_def_item_model, rank):
     tree_def = rank.treedef
@@ -147,17 +147,17 @@ def pre_tree_rank_deletion(tree_def_item_model, rank):
 
 def post_tree_rank_deletion(rank):
     # Regenerate full names
-    tree_extras.set_fullnames(rank.treedef, null_only=False, node_number_range=None)
+    extras.set_fullnames(rank.treedef, null_only=False, node_number_range=None)
 
-def pre_tree_rank_init(new_rank: "tree_extras.TreeRank"): 
+def pre_tree_rank_init(new_rank: "extras.TreeRank"): 
     set_rank_id(new_rank)
     _set_parent(new_rank)
 
-def _set_parent(new_rank: "tree_extras.TreeRank"):
+def _set_parent(new_rank: "extras.TreeRank"):
     if new_rank.parent: return
     new_rank.parent = new_rank._meta.model.objects.filter(treedef=new_rank.treedef, rankid__lt=new_rank.rankid).order_by("-rankid").first()
 
-def set_rank_id(new_rank: "tree_extras.TreeRank"):
+def set_rank_id(new_rank: "extras.TreeRank"):
     """
     Sets the new rank to the specified tree when adding a new rank.
     Expects at least the name, parent, and tree_def of the rank to be set.
