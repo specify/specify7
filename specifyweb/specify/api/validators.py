@@ -5,9 +5,9 @@ import logging
 from django.db.models.fields import FloatField, DecimalField
 
 from specifyweb.specify import models
-from specifyweb.specify.field_change_info import FieldChangeInfo
-from specifyweb.specify.load_datamodel import Relationship
-from specifyweb.specify.relationships import _is_circular_relationship
+from specifyweb.specify.utils.field_change_info import FieldChangeInfo
+from specifyweb.specify.models_utils.load_datamodel import Relationship
+from specifyweb.specify.models_utils.relationships import _is_circular_relationship
 
 logger = logging.getLogger(__name__)
 
@@ -145,7 +145,7 @@ def cleanData(model, data: dict[str, Any], parent_relationship: Relationship | N
 
 
 def fld_change_info(obj, field, val) -> FieldChangeInfo | None:
-    from specifyweb.specify.serializers import prepare_value
+    from specifyweb.specify.api.serializers import prepare_value
 
     if field.name != 'timestampmodified':
         value = prepare_value(field, val)

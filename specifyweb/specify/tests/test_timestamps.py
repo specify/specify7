@@ -3,8 +3,8 @@ Tests for timestamps additional logic
 """
 from datetime import datetime
 from django.utils import timezone
-from specifyweb.specify.crud import create_obj, get_resource, update_obj
-from specifyweb.specify.serializers import uri_for_model
+from specifyweb.specify.api.crud import create_obj, get_resource, update_obj
+from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.tests.test_api import ApiTests, skip_perms_check
 from specifyweb.specify.models import Collectionobject
 

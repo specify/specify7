@@ -6,14 +6,14 @@ from django.utils.translation import gettext as _
 from typing import Dict, List, Tuple, cast
 
 from specifyweb.middleware.general import require_GET
-from .datamodel import (
+from ..datamodel import (
     Field,
     Relationship,
     Table,
     TableDoesNotExistError,
     datamodel,
 )
-from .views import login_maybe_required
+from ..views import login_maybe_required
 
 
 def base_schema(title="Specify 7 API", description="") -> dict:
@@ -665,7 +665,7 @@ def table_to_endpoint(table: Table) -> list[tuple[str, dict]]:
             },
         ),
         (
-            f"/api/specify_rows/{table.django_name}/",
+            f"/table_rows/specify_rows/{table.django_name}/",
             {
                 'get': {
                     "tags": [table.django_name],
@@ -703,7 +703,7 @@ def table_to_endpoint(table: Table) -> list[tuple[str, dict]]:
                     "description": (
                         f"Query multiple records from the {table.django_name} table<br>"
                         f"Filtering is supported by providing field values as GET parameters<br>"
-                        f"Example: /api/specify_rows/sometable/fields=someFields&field=value. Advanced filtering "
+                        f"Example: /table_rows/specify_rows/sometable/fields=someFields&field=value. Advanced filtering "
                         f"options are also supported (e.g. ?numericfield__gte=4). More filters "
                         f"are documented here: "
                         f"<a href=https://docs.djangoproject.com/en/4.0/ref/models/querysets/#field-lookups-1>https://docs.djangoproject.com/en/4.0/ref/models/querysets/#field-lookups-1</a>"
@@ -745,7 +745,7 @@ def table_to_endpoint(table: Table) -> list[tuple[str, dict]]:
             }
         ),
         (
-            f"/api/delete_blockers/{table.django_name}/{{id}}/",
+            f"/delete_blockers/delete_blockers/{table.django_name}/{{id}}/",
             {
                 "get": {
                     "tags": [table.django_name],

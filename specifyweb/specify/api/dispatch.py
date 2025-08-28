@@ -4,11 +4,11 @@ from django.http import (HttpResponse, HttpResponseBadRequest, HttpResponseNotAl
 from django.core.exceptions import FieldError
 
 from specifyweb.backend.permissions.permissions import enforce, table_permissions_checker
-from specifyweb.specify.crud import apply_filters, delete_resource, get_collection, get_resource, post_resource, put_resource
-from specifyweb.specify.exceptions import FilterError, OrderByError
-from specifyweb.specify.filter_by_col import filter_by_collection
-from specifyweb.specify.serializers import _obj_to_data, toJson
-from specifyweb.specify.validators import GetCollectionForm, RowsForm
+from specifyweb.specify.api.crud import apply_filters, delete_resource, get_collection, get_resource, post_resource, put_resource
+from specifyweb.specify.api.exceptions import FilterError, OrderByError
+from specifyweb.specify.api.filter_by_col import filter_by_collection
+from specifyweb.specify.api.serializers import _obj_to_data, toJson
+from specifyweb.specify.api.validators import GetCollectionForm, RowsForm
 
 def resource_dispatch(request, model, id) -> HttpResponse:
     """Handles requests related to individual resources.

@@ -4,10 +4,10 @@ from django.http import Http404
 from specifyweb.backend.permissions.permissions import check_table_permissions, table_permissions_checker
 from specifyweb.specify import models
 from specifyweb.specify.auditlog import auditlog
-from .datamodel import datamodel, Table, Relationship
-from specifyweb.specify.api_utils import strict_uri_to_model
-from specifyweb.specify.field_change_info import FieldChangeInfo
-from specifyweb.specify.load_datamodel import Relationship, Table
+from ..datamodel import datamodel, Table, Relationship
+from specifyweb.specify.api.api_utils import strict_uri_to_model
+from specifyweb.specify.utils.field_change_info import FieldChangeInfo
+from specifyweb.specify.models_utils.load_datamodel import Relationship, Table
 from typing import Any, Iterable, TypedDict, cast
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -73,7 +73,7 @@ def reorder_fields_for_embedding(cls, data: dict[str, Any]) -> Iterable[tuple[st
         yield (key, data[key])
 
 def handle_fk_fields(collection, agent, obj, data: dict[str, Any]) -> tuple[list, list[FieldChangeInfo], Callable[[Any], None]]:
-    from specifyweb.specify.crud import update_or_create_resource
+    from specifyweb.specify.api.crud import update_or_create_resource
     """Where 'obj' is a Django model instance and 'data' is a dict,
     set foreign key fields in the object from the provided data.
     """
@@ -110,8 +110,8 @@ def handle_fk_fields(collection, agent, obj, data: dict[str, Any]) -> tuple[list
     return dependents_to_delete, dirty, _set_remote_to_ones
 
 def _handle_fk_field(collection, agent, obj, field, value, read_checker): 
-    from specifyweb.specify.crud import get_object_or_404, update_or_create_resource
-    from specifyweb.specify.serializers import _obj_to_data
+    from specifyweb.specify.api.crud import get_object_or_404, update_or_create_resource
+    from specifyweb.specify.api.serializers import _obj_to_data
 
     field_name = field.name
     old_related = get_related_or_none(obj, field_name)
@@ -163,8 +163,8 @@ def _handle_fk_field(collection, agent, obj, field, value, read_checker):
     return data, dependents_to_delete, dirty
 
 def _handle_remote_fk_field(obj, field, value, read_checker): 
-    from specifyweb.specify.crud import get_object_or_404
-    from specifyweb.specify.serializers import _obj_to_data
+    from specifyweb.specify.api.crud import get_object_or_404
+    from specifyweb.specify.api.serializers import _obj_to_data
 
     field_name = field.name
     old_related = get_related_or_none(obj, field_name)
@@ -245,7 +245,7 @@ def handle_to_many(collection, agent, obj, data: dict[str, Any]) -> None:
             _handle_independent_to_many(collection, agent, obj, field, val)
 
 def _handle_dependent_to_many(collection, agent, obj, field, value):
-    from specifyweb.specify.crud import update_or_create_resource
+    from specifyweb.specify.api.crud import update_or_create_resource
 
     if not isinstance(value, list): 
         assert isinstance(value, list), f"didn't get inline data for dependent field {field.name} in {obj}: {value!r}"
@@ -274,8 +274,8 @@ class IndependentInline(TypedDict):
     remove: list[str]
 
 def _handle_independent_to_many(collection, agent, obj, field, value: IndependentInline):
-    from .crud import get_model, update_or_create_resource, update_obj  
-    from .serializers import obj_to_data, uri_for_model
+    from ..api.crud import get_model, update_or_create_resource, update_obj  
+    from ..api.serializers import obj_to_data, uri_for_model
 
     logger.warning("Updating independent collections via the API is experimental and the structure may be changed in the future")
     
@@ -334,7 +334,7 @@ class RecordSetInfo(TypedDict):
     next: str | None
 
 def get_recordset_info(obj, recordsetid: int) -> RecordSetInfo | None:
-    from specifyweb.specify.serializers import uri_for_model
+    from specifyweb.specify.api.serializers import uri_for_model
 
     """Return a dict of info about how the resource 'obj' is related to
     the recordset with id 'recordsetid'.

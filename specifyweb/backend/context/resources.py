@@ -5,7 +5,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.views import View
 from specifyweb.specify.models import Spappresource, Spappresourcedir
-from specifyweb.specify.serializers import toJson
+from specifyweb.specify.api.serializers import toJson
 
 class Resources(View):
     _spappresourcefilter = None
@@ -95,6 +95,8 @@ class Resource(View):
             'mimetype': resource.mimetype,
             'metadata': resource.metadata,
             'data': data.data,
+
+            
         }
         return http.HttpResponse(toJson(response_data),
                                  content_type="application/json")

@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.backend.workbench.upload.predicates import filter_match_key
 from .column_options import ExtendedColumnOptions
-from specifyweb.specify.parse import parse_field, is_latlong, ParseSucess, ParseFailure
+from specifyweb.backend.workbench.upload.parse import parse_field, is_latlong, ParseSucess, ParseFailure
 
 Row = dict[str, str]
 Filter = dict[str, Any]

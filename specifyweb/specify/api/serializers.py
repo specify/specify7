@@ -1,9 +1,9 @@
 import json
 from typing import Any
 from specifyweb.specify import models
-from specifyweb.specify.calculated_fields import calculate_extra_fields
-from specifyweb.specify.crud import ReadPermChecker
-from specifyweb.specify.relationships import is_dependent_field
+from specifyweb.specify.api.calculated_fields import calculate_extra_fields
+from specifyweb.specify.api.crud import ReadPermChecker
+from specifyweb.specify.models_utils.relationships import is_dependent_field
 from sqlalchemy.engine import Row
 from django.db.models.fields import DateTimeField
 from urllib.parse import urlencode

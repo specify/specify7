@@ -14,7 +14,7 @@ from specifyweb.middleware.general import require_GET
 from .search_terms import parse_search_str
 from specifyweb.backend.context.app_resource import get_app_resource
 from specifyweb.backend.permissions.permissions import check_table_permissions
-from specifyweb.specify.serializers import toJson
+from specifyweb.specify.api.serializers import toJson
 from specifyweb.specify.models import datamodel, Collection
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.backend.stored_queries import models
@@ -193,8 +193,8 @@ def querycbx_search(request, modelname):
     else:
         ids = []
 
-    from specifyweb.specify.crud import get_model_or_404
-    from specifyweb.specify.serializers import obj_to_data
+    from specifyweb.specify.api.crud import get_model_or_404
+    from specifyweb.specify.api.serializers import obj_to_data
     specify_model = get_model_or_404(modelname)
     qs = specify_model.objects.filter(id__in=ids)
 

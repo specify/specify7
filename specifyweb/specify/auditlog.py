@@ -1,7 +1,7 @@
 import logging
 from time import time
 
-from specifyweb.specify.field_change_info import FieldChangeInfo
+from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 
 
 logger = logging.getLogger(__name__)
@@ -70,7 +70,7 @@ class AuditLog:
         return self._log(auditcodes.INSERT, obj, agent, parent_record)
 
     def remove(self, obj, agent, parent_record=None):
-        from specifyweb.specify.api_utils import parse_uri
+        from specifyweb.specify.api.api_utils import parse_uri
 
         log_obj = self._log(auditcodes.REMOVE, obj, agent, parent_record)
         if log_obj is not None:

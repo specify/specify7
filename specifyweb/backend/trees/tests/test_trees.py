@@ -2,8 +2,8 @@ import json
 from django.test import Client
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
 from specifyweb.specify import models
-from specifyweb.specify.crud import create_obj, delete_resource
-from specifyweb.specify.serializers import uri_for_model
+from specifyweb.specify.api.crud import create_obj, delete_resource
+from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.tests.test_api import ApiTests, get_table
 from specifyweb.backend.trees.stats import get_tree_stats
 from specifyweb.backend.trees.extras import set_fullnames

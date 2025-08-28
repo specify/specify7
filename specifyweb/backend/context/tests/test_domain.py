@@ -1,4 +1,5 @@
-from specifyweb.specify.serializers import uri_for_model
+from specifyweb.specify.api.serializers import uri_for_model
+
 from specifyweb.specify.tests.test_api import ApiTests
 from django.test import Client
 import json

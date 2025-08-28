@@ -1,5 +1,6 @@
+from specifyweb.backend.merge.utils import get_app_model
+
 from specifyweb.specify.tests.test_api import ApiTests
-from specifyweb.specify.utils import get_app_model, APP_MODELS
 
 # These are done as part of tests.
 from specifyweb.backend.accounts import models as acccounts_models

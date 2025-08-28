@@ -3,7 +3,7 @@ from specifyweb.backend.interactions.tests.test_cog_consolidated_prep_sibling_co
     TestCogConsolidatedPrepSiblingContext,
 )
 from specifyweb.specify.models import Loan, Loanpreparation, Collectionobject
-from specifyweb.specify.serializers import obj_to_data
+from specifyweb.specify.api.serializers import obj_to_data
 
 
 def _save_in_file(obj, name, ext=".py"):

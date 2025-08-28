@@ -24,7 +24,7 @@ from specifyweb.backend.permissions.permissions import has_target_permission
 from specifyweb.specify import models
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.datamodel import Table
-from specifyweb.specify.func import Func
+from specifyweb.specify.utils.func import Func
 from specifyweb.backend.trees.extras import renumber_tree, set_fullnames
 from specifyweb.backend.workbench.permissions import BatchEditDataSetPT
 from specifyweb.backend.workbench.upload.auditor import (

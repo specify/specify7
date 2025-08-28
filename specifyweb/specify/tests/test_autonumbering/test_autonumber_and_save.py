@@ -1,14 +1,16 @@
+
+
 # For this test, we don't care if the autonumbering is correct.
 # Actually, we just care if it gets called correctly
 # So, the function that performs autonumbering is also mocked.
 # This is why ApiTests are used (instead of transactional ones)
-from specifyweb.specify.autonumbering import autonumber_and_save
+from specifyweb.specify.utils.autonumbering import autonumber_and_save
 from specifyweb.specify.models import Collectionobject
 
 from unittest.mock import Mock, patch
 
 from specifyweb.specify.tests.test_autonumbering import TestAutonumberingContext
-from specifyweb.specify.uiformatters import (
+from specifyweb.specify.utils.uiformatters import (
     FormatMismatch,
     NumericField,
     AnyCharField,

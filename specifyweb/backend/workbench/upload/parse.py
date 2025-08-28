@@ -5,10 +5,10 @@ from typing import Any, NamedTuple, Literal
 from datetime import datetime
 from decimal import Decimal
 
-from specifyweb.specify.agent_types import agent_types
+from specifyweb.specify.utils.agent_types import agent_types
 from specifyweb.backend.stored_queries.format import get_date_format, MYSQL_TO_YEAR, MYSQL_TO_MONTH
 from specifyweb.specify.datamodel import datamodel, Table, Field, Relationship
-from specifyweb.specify.uiformatters import FormatMismatch, ScopedFormatter
+from specifyweb.specify.utils.uiformatters import FormatMismatch, ScopedFormatter
 
 ParseFailureKey = Literal[
 'valueTooLong',
