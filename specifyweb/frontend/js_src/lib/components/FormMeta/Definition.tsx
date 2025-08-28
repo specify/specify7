@@ -28,7 +28,7 @@ export function Definition({
   return (
     <>
       <Button.Small onClick={handleOpen}>
-        {resourcesText.formDefinition()}
+        {resourcesText.newViewDefinition()}
       </Button.Small>
       {isOpen && (
         <FormDefinitionDialog
