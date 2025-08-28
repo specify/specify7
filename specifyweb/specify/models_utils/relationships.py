@@ -2,7 +2,7 @@ import logging
 from collections.abc import Callable
 from django.http import Http404
 from specifyweb.backend.permissions.permissions import check_table_permissions, table_permissions_checker
-from specifyweb.backend.workbench.upload import auditlog
+from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.specify import models
 from ..datamodel import datamodel, Table, Relationship
 from specifyweb.specify.api.api_utils import strict_uri_to_model
