@@ -75,8 +75,10 @@ def parse_field(table_name: str, field_name: str, raw_value: str, formatter: Sco
         return parse_integer(field_name, raw_value)
 
     if hasattr(field, "length") and field.length is not None:
-        if len(raw_value) > field.length:
-            return ParseFailure("valueTooLong", {"field": field_name, "maxLength": field.length})
+        max_length: int = field.length
+        if len(raw_value) > max_length:
+            return ParseFailure("valueTooLong", {"field": field_name, "maxLength": max_length})
+
 
     return ParseSucess({field_name.lower(): raw_value})
 
