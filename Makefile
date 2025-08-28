@@ -43,13 +43,13 @@ MYPY_TARGETS = \
 	specifyweb/backend/permissions \
 	specifyweb/backend/workbench \
 	specifyweb/backend/accounts \
-	specifyweb/specify/schema.py \
-	specifyweb/specify/load_datamodel.py \
-	specifyweb/specify/crud.py \
-	specifyweb/specify/dispatch.py \
-	specifyweb/specify/validators.py \
-	specifyweb/specify/serializers.py \
-	specifyweb/specify/api_utils.py \
+	specifyweb/specify/models_utils/schema.py \
+	specifyweb/specify/models_utils/load_datamodel.py \
+	specifyweb/specify/api/crud.py \
+	specifyweb/specify/api/dispatch.py \
+	specifyweb/specify/api/validators.py \
+	specifyweb/specify/api/serializers.py \
+	specifyweb/specify/api/api_utils.py \
 	specifyweb/backend/context/user_resources.py
 
 typecheck:
