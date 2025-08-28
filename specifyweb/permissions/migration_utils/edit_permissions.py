@@ -1,6 +1,4 @@
-
-
-from specifyweb.backend.workbench.upload import auditlog
+from specifyweb.backend.workbench.upload.auditlog import auditlog
 
 
 def add_permission(apps, schema_editor=None):
