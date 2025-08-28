@@ -227,7 +227,10 @@ SPECIFY_APPS  = [
     'specifyweb.backend.backup_tool',
     'specifyweb.backend.merge',
     'specifyweb.backend.locality_update_tool',
-    'specifyweb.backend.bulk_copy'
+    'specifyweb.backend.bulk_copy',
+    'specifyweb.backend.series',
+    'specifyweb.backend.delete_blockers',
+    'specifyweb.backend.table_rows'
 ]
 
 INSTALLED_APPS = (
