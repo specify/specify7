@@ -18,7 +18,29 @@ import type { Attachment } from '../DataModel/types';
 import { Dialog } from './Dialog';
 import { Tabs } from './Tabs';
 
-const types = ['url', 'image', 'attachments', 'attachments'] as const;
+// const types = ['url', 'image', 'attachments', 'attachments'] as const;
+const types = ['url', 'image', 'attachments'] as const;
+function deriveAltFromUrl(src?: string, fallback = 'Image preview'): string {
+  if (!src) return fallback;
+  try {
+    const u = new URL(src, window.location.origin);
+    const candidate =
+      u.searchParams.get('downloadname') ||
+      u.searchParams.get('filename') ||
+      u.pathname.split('/').pop() ||
+      '';
+    const decoded = decodeURIComponent(candidate.replace(/\+/g, ' '))
+      .replace(/\u202F|\u00A0/g, ' ')
+      .trim();
+    return decoded || fallback;
+  } catch {
+    const last = (src.split('/').pop() ?? '').replace(/\+/g, ' ');
+    const decoded = decodeURIComponent(last)
+      .replace(/\u202F|\u00A0/g, ' ')
+      .trim();
+    return decoded || fallback;
+  }
+}
 
 export function SyncAttachmentPicker({
   url,
@@ -36,9 +58,10 @@ export function SyncAttachmentPicker({
 
   const [urlNotFound, setUrlNotFound] = React.useState(false);
 
-  const [type, setType] = React.useState<
-    'attachments' | 'attachments' | 'image' | 'url'
-  >('url');
+  // const [type, setType] = React.useState<
+  //   'attachments' | 'attachments' | 'image' | 'url'
+  // >('url');
+  const [type, setType] = React.useState<typeof types[number]>('url');
 
   function handleAttachment(attachment: SerializedResource<Attachment>): void {
     loading(
@@ -73,7 +96,8 @@ export function SyncAttachmentPicker({
 
       {url !== undefined && (
         <img
-          alt={url.slice(url.lastIndexOf('/') + 1) ?? url}
+          // alt={url.slice(url.lastIndexOf('/') + 1) ?? url}
+          alt={deriveAltFromUrl(url)}
           className="h-40 max-h-full w-40 max-w-full object-contain"
           src={url}
         />
