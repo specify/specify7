@@ -1,6 +1,7 @@
 import type Handsontable from 'handsontable';
 import React from 'react';
 
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
@@ -11,6 +12,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
+import { getAttachmentsColumn } from '../WorkBench/attachmentHelpers';
 import { downloadDataSet } from '../WorkBench/helpers';
 import type { WbMapping } from '../WorkBench/mapping';
 import { WbChangeOwner } from './ChangeOwner';
@@ -47,20 +49,19 @@ export function WbToolkit({
       'exportFileDelimiter'
     );
 
-    // Don't export hidden columns
-    const hiddenPlugin = hot.getPlugin('hiddenColumns');
-    const hiddenCols: RA<number> = hiddenPlugin?.getHiddenColumns() ?? [];
-    const filteredColumns = dataset.columns.filter(
-      (_, index) => !hiddenCols.includes(index)
-    );
-    const filteredRows = dataset.rows.map((row) =>
-      row.filter((_, index) => !hiddenCols.includes(index))
-    );
+    let datasetColumns = dataset.columns;
+    // Don't export attachments column
+    const attachmentsColumnIndex = getAttachmentsColumn(dataset);
+    if (attachmentsColumnIndex !== -1) {
+      datasetColumns = dataset.columns.map((col, index) =>
+        index === attachmentsColumnIndex ? attachmentsText.attachments() : col
+      );
+    }
 
     downloadDataSet(
       dataset.name,
-      filteredRows,
-      filteredColumns,
+      dataset.rows,
+      datasetColumns,
       delimiter
     ).catch(raise);
   };

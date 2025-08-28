@@ -19,7 +19,6 @@ logger = logging.getLogger(__name__)
 
 BASE_TABLE_NAME = "baseTable"
 ATTACHMENTS_COLUMN = "_UPLOADED_ATTACHMENTS"
-ATTACHMENTS_FORMATTED_COLUMN = "_UPLOADED_ATTACHMENTS_FORMATTED"
 
 def get_attachments(row: Row):
     if has_attachments(row):
@@ -61,7 +60,7 @@ def validate_attachment(
 def makeAttachmentResult(
     message: str,
 ):
-    info = ReportInfo(tableName="Attachment", columns=[ATTACHMENTS_COLUMN, ATTACHMENTS_FORMATTED_COLUMN], treeInfo=None)
+    info = ReportInfo(tableName="Attachment", columns=[ATTACHMENTS_COLUMN], treeInfo=None)
     return UploadResult(AttachmentFailure(info=info, message=message), {}, {})
 
 def add_attachments_to_plan(

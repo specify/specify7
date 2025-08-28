@@ -62,9 +62,6 @@ schema: dict = {
                 "attachmentsColumn": {
                     "type": "string"
                 },
-                "formattedAttachmentsColumn": {
-                    "type": "string"
-                }
             },
             "required": ["usesAttachments", "attachmentsColumn", "formattedAttachmentsColumn"],
         }

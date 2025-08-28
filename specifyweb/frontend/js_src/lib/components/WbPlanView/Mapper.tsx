@@ -58,7 +58,7 @@ import { getMappingLineData } from './navigator';
 import { navigatorSpecs } from './navigatorSpecs';
 import type { ColumnOptions, DatasetAttachmentPrefs } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
-import { ATTACHMENTS_COLUMN, ATTACHMENTS_FORMATTED_COLUMN } from '../WorkBench/attachmentHelpers';
+import { ATTACHMENTS_COLUMN } from '../WorkBench/attachmentHelpers';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -128,7 +128,6 @@ export const DEFAULT_BATCH_EDIT_PREFS: BatchEditPrefs = {
 export const DEFAULT_ATTACHMENT_PREFS: DatasetAttachmentPrefs = {
   usesAttachments: true,
   attachmentsColumn: ATTACHMENTS_COLUMN,
-  formattedAttachmentsColumn: ATTACHMENTS_FORMATTED_COLUMN,
 } as const;
 
 export const getDefaultMappingState = ({

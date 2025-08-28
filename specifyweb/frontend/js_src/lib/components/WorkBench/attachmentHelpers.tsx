@@ -8,7 +8,6 @@ import type {
 import type { Dataset } from '../WbPlanView/Wrapped';
 
 export const ATTACHMENTS_COLUMN = '_UPLOADED_ATTACHMENTS';
-export const ATTACHMENTS_FORMATTED_COLUMN = '_UPLOADED_ATTACHMENTS_FORMATTED';
 export const BASE_TABLE_NAME = 'baseTable' as const;
 
 type AttachmentTargetTable = keyof Tables | typeof BASE_TABLE_NAME;
@@ -18,16 +17,15 @@ type CellAttachment = {
   readonly table: AttachmentTargetTable;
 };
 
-export type CellAttachments = {
+type CellAttachments = {
   readonly attachments: RA<CellAttachment>;
   readonly formatted: string;
 };
 
 export function attachmentsToCell(
   dataSetAttachments: RA<SerializedResource<SpDataSetAttachment>>,
-  targetTable: AttachmentTargetTable,
-  stringify: boolean = true
-): CellAttachments | string {
+  targetTable: AttachmentTargetTable
+): string {
   const formattedAttachments: WritableArray<string> = [];
   const att: WritableArray<CellAttachment> = [];
   dataSetAttachments.forEach((dataSetAttachment) => {
@@ -40,12 +38,11 @@ export function attachmentsToCell(
     formattedAttachments.push(attachment.origFilename);
   });
 
-  const formatted = formattedAttachments.join('; ');
   const data: CellAttachments = {
     attachments: att,
-    formatted,
+    formatted: formattedAttachments.join('; '),
   };
-  return stringify ? JSON.stringify(data) : data;
+  return JSON.stringify(data);
 }
 
 export function getAttachmentsFromCell(
@@ -59,6 +56,14 @@ export function getAttachmentsFromCell(
     return data;
   }
   return undefined;
+}
+
+export function formatAttachmentsFromCell(
+  value: any
+): string | undefined {
+  return typeof value === 'string' && value.length > 0
+    ? (JSON.parse(value) as CellAttachments | undefined)?.formatted
+    : undefined
 }
 
 /** TODO: Use the attachment column name from the dataset's upload plan.
@@ -76,26 +81,16 @@ export function getAttachmentsColumn(dataset: Dataset): number {
   return dataset.columns.indexOf(ATTACHMENTS_COLUMN);
 }
 
-export function getAttachmentsFormattedColumn(dataset: Dataset): number {
-  if (!usesAttachments(dataset)) {
-    return -1;
-  }
-  return dataset.columns.indexOf(ATTACHMENTS_FORMATTED_COLUMN);
-}
-
 /**
  * In contexts where the dataset is not known, this function can be modified to
  * accept an uploadPlan to determine where the attachments column is.
  * Right now this function doesn't do anything different.
  */
-export function getAttachmentsColumnsFromHeaders(
+export function getAttachmentsColumnFromHeaders(
   headers: RA<string>
-): RA<number> {
+): number {
   if (!headers.includes(ATTACHMENTS_COLUMN)) {
-    return [];
+    return -1;
   }
-  return [
-    headers.indexOf(ATTACHMENTS_COLUMN),
-    headers.indexOf(ATTACHMENTS_FORMATTED_COLUMN),
-  ];
+  return headers.indexOf(ATTACHMENTS_COLUMN);
 }

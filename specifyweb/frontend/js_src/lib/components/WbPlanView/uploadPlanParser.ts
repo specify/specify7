@@ -57,7 +57,6 @@ export type Uploadable = TreeRecordVariety | UploadTableVariety;
 export type DatasetAttachmentPrefs = {
   readonly usesAttachments: boolean;
   readonly attachmentsColumn: string;
-  readonly formattedAttachmentsColumn: string;
 }
 
 export type UploadPlan = {
