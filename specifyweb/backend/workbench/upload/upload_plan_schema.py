@@ -63,7 +63,7 @@ schema: dict = {
                     "type": "string"
                 },
             },
-            "required": ["usesAttachments", "attachmentsColumn", "formattedAttachmentsColumn"],
+            "required": ["usesAttachments", "attachmentsColumn"],
         }
     },
     "required": ["baseTableName", "uploadable"],
