@@ -29,10 +29,10 @@ from .relative_date_utils import apply_absolute_date
 from .field_spec_maps import apply_specify_user_name
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.permissions import check_table_permissions
-from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.models import Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
 from specifyweb.specify.utils import log_sqlalchemy_query
-
+from specifyweb.backend.workbench.upload.auditlog import auditlog
+from specifyweb.specify.utils import log_sqlalchemy_query
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.backend.stored_queries.queryfield import fields_from_json
 

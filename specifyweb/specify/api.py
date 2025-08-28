@@ -15,7 +15,6 @@ from urllib.parse import urlencode
 from typing_extensions import TypedDict
 
 from specifyweb.specify.field_change_info import FieldChangeInfo
-from specifyweb.backend.interactions.cog_preps import modify_update_of_interaction_sibling_preps
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +39,7 @@ from . import models
 from .autonumbering import autonumber_and_save
 from .uiformatters import AutonumberOverflowException
 from .filter_by_col import filter_by_collection
-from .auditlog import auditlog
+from ..backend.workbench.upload.auditlog import auditlog
 from .datamodel import datamodel, Table, Relationship
 from .calculated_fields import calculate_extra_fields
 
@@ -281,52 +280,6 @@ def collection_dispatch(request, model) -> HttpResponse:
         resp = HttpResponseNotAllowed(['GET', 'POST'])
 
     return resp
-
-def collection_dispatch_bulk(request, model) -> HttpResponse:
-    """
-    Do the same as collection_dispatch, but for bulk POST operations.
-    Call this endpoint with a list of objects of the same type to create.
-    This reduces the amount of API calls needed to create multiple objects, like when creating multiple carry forwards.
-    """
-    checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
-
-    if request.method != 'POST':
-        return HttpResponseNotAllowed(['POST'])
-        
-    data = json.loads(request.body)
-    resp_objs = []
-    for obj_data in data:
-        obj = post_resource(
-            request.specify_collection,
-            request.specify_user_agent,
-            model,
-            obj_data,
-            request.GET.get("recordsetid", None),
-        )
-        resp_objs.append(_obj_to_data(obj, checker))
-
-    return HttpResponseCreated(toJson(resp_objs), content_type='application/json')
-
-def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
-    checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
-
-    if request.method != 'POST':
-        return HttpResponseNotAllowed(['POST'])
-
-    data = json.loads(request.body)
-    data = dict(filter(lambda item: item[0] != 'id', data.items())) # Remove ID field before making copies
-    resp_objs = []
-    for _ in range(int(copies)):
-        obj = post_resource(
-            request.specify_collection,
-            request.specify_user_agent,
-            model,
-            data,
-            request.GET.get("recordsetid", None),
-        )
-        resp_objs.append(_obj_to_data(obj, checker))
-
-    return HttpResponseCreated(toJson(resp_objs), content_type='application/json')
 
 def get_model_or_404(name: str):
     """Lookup a specify model by name. Raise Http404 if not found."""
