@@ -3,7 +3,6 @@ import ReactDOMServer from 'react-dom/server';
 
 import { attachmentsText } from '../../localization/attachments';
 import { wbPlanText } from '../../localization/wbPlan';
-import type { RA, WritableArray } from '../../utils/types';
 import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { getIcon } from '../InitialContext/icons';

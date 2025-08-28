@@ -11,7 +11,7 @@ import type { State } from 'typesafe-reducer';
 
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useLiveState } from '../../hooks/useLiveState';
-import type { IR, RA, WritableArray } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import type { Tables } from '../DataModel/types';
 import { useTitle } from '../Molecules/AppTitle';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
@@ -79,7 +79,7 @@ export type Dataset = DatasetBase &
   DatasetBrief & {
     readonly columns: RA<string>;
     readonly rowresults: RA<UploadResult> | null;
-    readonly rows: WritableArray<WritableArray<string>>;
+    readonly rows: RA<RA<string>>;
     readonly uploadplan: UploadPlan | null;
     readonly visualorder: RA<number> | null;
     readonly isupdate: boolean;
