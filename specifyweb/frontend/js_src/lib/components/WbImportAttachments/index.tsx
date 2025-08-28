@@ -41,7 +41,7 @@ import { ChooseName } from '../WbImport/index';
 import {
   ATTACHMENTS_COLUMN,
   attachmentsToCell,
-  BASE_TABLE_NAME
+  BASE_TABLE_NAME,
 } from '../WorkBench/attachmentHelpers';
 
 export function WbImportAttachmentsView(): JSX.Element {
