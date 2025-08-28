@@ -283,7 +283,7 @@ function EditAppResource({
       title={
         type.tableName === 'SpViewSetObj'
           ? formsText.newResourceTitle({
-              tableName: resourcesText.formDefinition(),
+              tableName: resourcesText.newViewDefinition(),
             })
           : undefined
       }
