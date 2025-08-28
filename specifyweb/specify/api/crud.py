@@ -12,8 +12,8 @@ from django.apps import apps
 
 from specifyweb.backend.express_search.related import F
 from specifyweb.backend.permissions.permissions import check_field_permissions, check_table_permissions
+from specifyweb.backend.workbench.upload import auditlog
 from specifyweb.specify import models
-from ..auditlog import auditlog
 from specifyweb.specify.api.api_utils import objs_to_data_, CollectionPayload
 from specifyweb.specify.utils.autonumbering import autonumber_and_save
 from specifyweb.specify.api.exceptions import FilterError, MissingVersionException, OrderByError, RecordSetException, StaleObjectException
