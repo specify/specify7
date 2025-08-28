@@ -781,11 +781,11 @@ describe('treeBusinessRules', () => {
   overrideAjax('/api/specify/taxontreedefitem/2/', speciesResponse);
   overrideAjax('/api/specify/taxontreedefitem/22/', subSpeciesResponse);
   overrideAjax(
-    '/api/specify_tree/taxon/3/predict_fullname/?name=oxyrinchus&treedefitemid=2',
+    '/trees/specify_tree/taxon/3/predict_fullname/?name=oxyrinchus&treedefitemid=2',
     oxyrinchusFullNameResponse
   );
   overrideAjax(
-    '/api/specify_tree/taxon/6/predict_fullname/?name=dauricus&treedefitemid=2',
+    '/trees/specify_tree/taxon/6/predict_fullname/?name=dauricus&treedefitemid=2',
     dauricusFullNameResponse
   );
   overrideAjax('/api/specify/taxon/?limit=1&parent=4&orderby=rankid', {
