@@ -17,7 +17,7 @@ from django.conf import settings
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
 import specifyweb.specify.models as spmodels
 
-from  specifyweb.specify.auditcodes import TREE_BULK_MOVE, TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
+from  specifyweb.backend.workbench.upload.auditcodes import TREE_BULK_MOVE, TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
 
 @contextmanager
 def validate_node_numbers(table, revalidate_after=True):
@@ -277,7 +277,7 @@ def moving_node(to_save):
     to_save.highestchildnodenumber = current.highestchildnodenumber
 
 def mutation_log(action, node, agent, parent, dirty_flds: list[FieldChangeInfo]):
-    from specifyweb.specify.auditlog import auditlog
+    from specifyweb.backend.workbench.upload.auditlog import auditlog
     auditlog.log_action(action, node, agent, node.parent, dirty_flds)
 
 def merge(node, into, agent):

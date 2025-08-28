@@ -225,7 +225,7 @@ export async function fetchDeleteBlockers(
       readonly ids: RA<number>;
     }>
   >(
-    `/api/delete_blockers/${resource.specifyTable.name.toLowerCase()}/${
+    `/delete_blockers/delete_blockers/${resource.specifyTable.name.toLowerCase()}/${
       resource.id
     }/`,
     {
