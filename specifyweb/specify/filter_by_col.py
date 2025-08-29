@@ -6,7 +6,7 @@ from django.core.exceptions import FieldError
 from django.db.models import Q
 
 from .scoping import ScopeType
-from .models import (
+from specifyweb.specify.models import (
     Geography,
     Geologictimeperiod,
     Lithostrat,

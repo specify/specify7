@@ -29,18 +29,16 @@ export function ListOfBaseTables({
   );
 
   const filter = React.useCallback(
-    (showAdvancedTables: boolean, table: SpecifyTable) => (
-        tablesFilter(
-          isNoRestrictionMode,
-          showNoAccessTables,
-          showAdvancedTables,
-          table
-        ) &&
-        (!onlyAttachmentTables ||
-          tablesWithAttachments().find(
-            (module) => module.name === table.name
-          ) !== undefined)
-      ),
+    (showAdvancedTables: boolean, table: SpecifyTable) =>
+      tablesFilter(
+        isNoRestrictionMode,
+        showNoAccessTables,
+        showAdvancedTables,
+        table
+      ) &&
+      (!onlyAttachmentTables ||
+        tablesWithAttachments().find((module) => module.name === table.name) !==
+          undefined),
     [isNoRestrictionMode, showNoAccessTables]
   );
 

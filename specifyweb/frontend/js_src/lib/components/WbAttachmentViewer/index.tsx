@@ -16,7 +16,7 @@ import { exportsForTests } from '../../utils/cache/index';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { fetchOriginalUrl } from '../Attachments/attachments';
-import { ImageViewer } from '../Attachments/ImageViewer';
+import { LeafletImageViewer } from '../Attachments/LeafletImageViewer';
 import { AttachmentViewer } from '../Attachments/Viewer';
 import { toResource } from '../DataModel/helpers';
 import type {
@@ -25,9 +25,7 @@ import type {
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import {
-  deserializeResource,
-} from '../DataModel/serializers';
+import { deserializeResource } from '../DataModel/serializers';
 import { serializeResource } from '../DataModel/serializers';
 import type { Attachment } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -41,26 +39,32 @@ export function WbAttachmentViewerView(): JSX.Element {
   );
   const [isImage, setIsImage] = React.useState<boolean>(false);
 
-  const [attachment, setAttachment] = React.useState<SerializedResource<Attachment> | undefined>(undefined);
+  const [attachment, setAttachment] = React.useState<
+    SerializedResource<Attachment> | undefined
+  >(undefined);
   const [selectedAttachment, setSelectedAttachment] = React.useState<number>(0);
 
   /**
    * Get attachment id from cache. Set by the parent workbench window.
    * URL contains the id of this attachment viewer. This makes sure this page
    * is linked to the correct workbench window.
-   */ 
+   */
   const location = useLocation();
   const parameters = new URLSearchParams(location.search);
-  const viewerId = parameters.get("id") ?? '';
-  const [attachmentIds, setAttachmentIds] = React.useState<RA<number> | undefined>(
-    getCache('workBenchAttachmentViewer', viewerId)
-  );
+  const viewerId = parameters.get('id') ?? '';
+  const [attachmentIds, setAttachmentIds] = React.useState<
+    RA<number> | undefined
+  >(getCache('workBenchAttachmentViewer', viewerId));
   React.useEffect(() => {
     function handleStorage(event: StorageEvent) {
       // Update current attachment(s) if this viewer's key changed.
       if (event.key) {
         const parsedKey = parseCacheKey(event.key);
-        if (parsedKey && parsedKey[0] === 'workBenchAttachmentViewer' && parsedKey[1] === viewerId) {
+        if (
+          parsedKey &&
+          parsedKey[0] === 'workBenchAttachmentViewer' &&
+          parsedKey[1] === viewerId
+        ) {
           setAttachmentIds(getCache('workBenchAttachmentViewer', viewerId));
         }
         setSelectedAttachment(0);
@@ -78,14 +82,10 @@ export function WbAttachmentViewerView(): JSX.Element {
           headers: { Accept: 'application/json' },
           method: 'GET',
         }
-      )
-        .then(({ data }) => {
-          const resource = toResource(
-            serializeResource(data),
-            'Attachment'
-          );
-          setAttachment(resource);
-        });
+      ).then(({ data }) => {
+        const resource = toResource(serializeResource(data), 'Attachment');
+        setAttachment(resource);
+      });
     }
   }, [attachmentIds, selectedAttachment]);
 
@@ -107,7 +107,10 @@ export function WbAttachmentViewerView(): JSX.Element {
   const body =
     attachment !== undefined &&
     (isImage ? (
-      <ImageViewer alt={attachment?.title ?? ''} src={attachmentUrl ?? ''} />
+      <LeafletImageViewer
+        alt={attachment?.title ?? ''}
+        src={attachmentUrl ?? ''}
+      />
     ) : (
       <AttachmentViewer
         attachment={deserializeResource(attachment)}
@@ -117,33 +120,37 @@ export function WbAttachmentViewerView(): JSX.Element {
       />
     ));
 
-  return (
-    viewerId ?
+  const onClose = function (): void {
+    window.close();
+  };
+
+  return viewerId ? (
     <Dialog
-      buttons={
-        <>
-          <Button.Secondary onClick={(): void => {
-            removeCache('workBenchAttachmentViewer', viewerId);
-            window.close();
-          }}>
+      buttons={undefined}
+      className={{ container: dialogClassNames.fullScreen }}
+      header={attachmentsText.attachments()}
+      headerButtons={
+        <div className="flex items-center gap-2 md:gap-2 ml-auto">
+          <Button.Secondary
+            onClick={(): void => {
+              removeCache('workBenchAttachmentViewer', viewerId);
+              window.close();
+            }}
+          >
             {wbText.attachWindow()}
           </Button.Secondary>
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-        </>
+          <Button.Secondary onClick={onClose}>
+            {commonText.close()}
+          </Button.Secondary>
+        </div>
       }
-      className={{container: dialogClassNames.fullScreen}}
-      dimensionsKey="LeafletMap"
-      header={attachmentsText.attachments()}
-      headerButtons={undefined}
-      onClose={() => {
-        window.close();
-      }}
+      onClose={onClose}
     >
       <div className="flex flex-col items-center justify-center h-full w-full p-4">
-          {body}
+        {body}
       </div>
     </Dialog>
-    :
-    <NotFoundView/>
-  )
+  ) : (
+    <NotFoundView />
+  );
 }

@@ -12,11 +12,12 @@ import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
+import { exportsForTests, setCache } from '../../utils/cache';
 import type { GetSet, RA } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { fetchOriginalUrl } from '../Attachments/attachments';
-import { ImageViewer } from '../Attachments/ImageViewer';
+import { LeafletImageViewer } from '../Attachments/LeafletImageViewer';
 import { AttachmentPreview } from '../Attachments/Preview';
 import { AttachmentViewer } from '../Attachments/Viewer';
 import { toResource } from '../DataModel/helpers';
@@ -40,7 +41,6 @@ import {
   getAttachmentsColumnIndex,
   getAttachmentsFromCell,
 } from '../WorkBench/attachmentHelpers';
-import { setCache, exportsForTests } from '../../utils/cache';
 
 const { formatCacheKey } = exportsForTests;
 
@@ -275,7 +275,6 @@ function AttachmentViewerDialog({
     }
   }, [attachment, useWindow]);
 
-
   const [related, setRelated] = React.useState<
     SpecifyResource<AnySchema> | undefined
   >(undefined);
@@ -283,7 +282,10 @@ function AttachmentViewerDialog({
   const body =
     attachment !== undefined &&
     (isImage ? (
-      <ImageViewer alt={attachment?.title ?? ''} src={attachmentUrl ?? ''} />
+      <LeafletImageViewer
+        alt={attachment?.title ?? ''}
+        src={attachmentUrl ?? ''}
+      />
     ) : (
       <AttachmentViewer
         attachment={deserializeResource(attachment)}
@@ -306,7 +308,9 @@ function AttachmentViewerDialog({
          * We know the window was reattached if the cache key was removed.
          * Not using getCache to avoid using the cached cache (localStorage) value.
          */
-        const value = globalThis.localStorage.getItem(formatCacheKey('workBenchAttachmentViewer', viewerId));
+        const value = globalThis.localStorage.getItem(
+          formatCacheKey('workBenchAttachmentViewer', viewerId)
+        );
         if (value) {
           onClose();
         } else {
@@ -318,18 +322,26 @@ function AttachmentViewerDialog({
     </PopupWindow>
   ) : (
     <Dialog
-      buttons={
-        <>
-          <Button.Secondary onClick={(): void => setUseWindow(true)}>
-            {wbText.detachWindow()}
-          </Button.Secondary>
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-        </>
-      }
+      buttons={undefined}
       className={{
         container: dialogClassNames.wideContainer,
       }}
+      defaultSize={{
+        width: 512,
+        height: 512,
+      }}
+      dimensionsKey="WbAttachmentViewer"
       header={attachmentsText.attachments()}
+      headerButtons={
+        <div className="flex items-center gap-2 md:gap-2 ml-auto">
+          <Button.Secondary onClick={(): void => setUseWindow(true)}>
+            {wbText.detachWindow()}
+          </Button.Secondary>
+          <Button.Secondary onClick={(): void => onClose()}>
+            {commonText.close()}
+          </Button.Secondary>
+        </div>
+      }
       modal={false}
       onClose={onClose}
     >

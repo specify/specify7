@@ -106,7 +106,7 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
             readonly values: RA<string>;
             readonly existing?: RA<string>;
             readonly error?: string;
-          }>(`/api/specify/series_autonumber_range/`, {
+          }>(`/series/series_autonumber_range/`, {
             method: 'POST',
             headers: { Accept: 'application/json' },
             body: keysToLowerCase({
@@ -148,7 +148,7 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
           );
 
           const backendClones = await ajax<RA<SerializedRecord<SCHEMA>>>(
-            `/api/specify/bulk/${resource.specifyTable.name.toLowerCase()}/`,
+            `/bulk_copy/bulk/${resource.specifyTable.name.toLowerCase()}/`,
             {
               method: 'POST',
               headers: { Accept: 'application/json' },
@@ -231,7 +231,7 @@ function useBulkCarryForwardCount<SCHEMA extends AnySchema>(
           );
 
           return ajax<RA<SerializedRecord<SCHEMA>>>(
-            `/api/specify/bulk/${resource.specifyTable.name.toLowerCase()}/`,
+            `/bulk_copy/bulk/${resource.specifyTable.name.toLowerCase()}/`,
             {
               method: 'POST',
               headers: { Accept: 'application/json' },

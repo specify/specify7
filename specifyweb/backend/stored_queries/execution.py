@@ -7,34 +7,32 @@ import re
 from typing import Literal, NamedTuple
 import xml.dom.minidom
 from collections import namedtuple, defaultdict
-from datetime import datetime
 from functools import reduce
 
 from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
-from specifyweb.specify.models import Collectionobject
-from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting
+from specifyweb.backend.inheritance.api import cog_inheritance_post_query_processing, parent_inheritance_post_query_processing
+from specifyweb.backend.inheritance.utils import get_parent_cat_num_inheritance_setting
 from sqlalchemy import sql, orm, func, text
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
 from specifyweb.specify.field_change_info import FieldChangeInfo
 from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
-from specifyweb.specify.tree_utils import get_search_filters
+from specifyweb.backend.trees.utils import get_search_filters
 
 from . import models
 from .format import ObjectFormatter, ObjectFormatterProps
 from .query_construct import QueryConstruct
-from .queryfield import QueryField
 from .relative_date_utils import apply_absolute_date
 from .field_spec_maps import apply_specify_user_name
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.permissions import check_table_permissions
-from specifyweb.specify.auditlog import auditlog
-from specifyweb.specify.models import Collectionobjectgroupjoin, Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
-from specifyweb.specify.utils import get_cat_num_inheritance_setting, log_sqlalchemy_query
-
+from specifyweb.specify.models import Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
+from specifyweb.specify.utils import log_sqlalchemy_query
+from specifyweb.backend.workbench.upload.auditlog import auditlog
+from specifyweb.specify.utils import log_sqlalchemy_query
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.backend.stored_queries.queryfield import fields_from_json
 
@@ -1186,63 +1184,4 @@ def apply_special_post_query_processing(query, tableid, field_specs, collection,
     
     if should_list_query:
         return list(query)
-    return query
-
-def parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True): # pragma: no cover
-    if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs if fs.fieldspec.join_path]:
-        if not get_parent_cat_num_inheritance_setting(collection, user):
-            return list(query)
-
-        # Get the catalogNumber field index
-        catalog_number_field_index = [fs.fieldspec.join_path[0].name for fs in field_specs].index('catalogNumber') + 1
-
-        if field_specs[catalog_number_field_index - 1].op_num != 1:
-            return list(query)
-
-        results = list(query)
-        updated_results = []
-
-        # Map results, replacing null catalog numbers with the parent catalog number
-        for result in results:
-            result = list(result)
-            if result[catalog_number_field_index] is None or result[catalog_number_field_index] == '':
-                component_id = result[0]  # Assuming the first column is the child's ID
-                component_obj = Collectionobject.objects.filter(id=component_id).first()
-                if component_obj and component_obj.componentParent:
-                    result[catalog_number_field_index] = component_obj.componentParent.catalognumber
-            updated_results.append(tuple(result))
-
-        return updated_results
-
-    return query
-
-def cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user):
-    if tableid == 1 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs if fs.fieldspec.join_path]:
-        if not get_cat_num_inheritance_setting(collection, user):
-            # query = query.filter(collectionobjectgroupjoin_1.isprimary == 1)
-            return list(query)
-
-        # Get the catalogNumber field index
-        catalog_number_field_index = [fs.fieldspec.join_path[0].name for fs in field_specs if fs.fieldspec.join_path].index('catalogNumber') + 1
-
-        if field_specs[catalog_number_field_index - 1].op_num != 1:
-            return list(query)
-
-        results = list(query)
-        updated_results = []
-
-        # Map results, replacing null catalog numbers with the collection object group primary collection catalog number
-        for result in results:
-            result = list(result)
-            if result[catalog_number_field_index] is None or result[catalog_number_field_index] == '':
-                cojo = Collectionobjectgroupjoin.objects.filter(childco_id=result[0]).first()
-                if cojo:
-                    primary_cojo = Collectionobjectgroupjoin.objects.filter(
-                        parentcog=cojo.parentcog, isprimary=True).first()
-                    if primary_cojo:
-                        result[catalog_number_field_index] = primary_cojo.childco.catalognumber
-            updated_results.append(tuple(result))
-
-        return updated_results
-
     return query
