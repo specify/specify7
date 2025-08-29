@@ -25,7 +25,7 @@ function fileNameFromUrl(imageUrl?: string): string | undefined {
   try {
     const urlObject = new URL(
       imageUrl,
-      typeof window !== 'undefined' ? window.location.origin : 'http://localhost'
+      typeof window === 'undefined' ? 'http://localhost' : window.location.origin
     );
 
     const queryName =
@@ -35,15 +35,15 @@ function fileNameFromUrl(imageUrl?: string): string | undefined {
     const lastPathSegment = urlObject.pathname.split('/').pop() ?? '';
     const raw = queryName ?? lastPathSegment;
 
-    const decodedName = decodeURIComponent(raw.replace(/\+/g, ' '))
-      .replace(/\u202F|\u00A0/g, ' ')
+    const decodedName = decodeURIComponent(raw.replaceAll('+', ' '))
+      .replaceAll(/\u202f|\xa0/g, ' ')
       .trim();
 
     return decodedName || undefined;
   } catch {
     const raw = imageUrl.split('/').pop() ?? '';
-    const decodedName = decodeURIComponent(raw.replace(/\+/g, ' '))
-      .replace(/\u202F|\u00A0/g, ' ')
+    const decodedName = decodeURIComponent(raw.replaceAll('+', ' '))
+      .replaceAll(/\u202f|\xa0/g, ' ')
       .trim();
     return decodedName || undefined;
   }
@@ -69,10 +69,10 @@ export function SyncAttachmentPicker({
 
   const [type, setType] = React.useState<typeof types[number]>('url');
 
-  // state
+  // State
   const [altText, setAltText] = React.useState<string | undefined>(undefined);
 
-  // when user picks an attachment
+  // When user picks an attachment
   function handleAttachment(nextAttachment: SerializedResource<Attachment>): void {
   
     const originalName: string | undefined = (nextAttachment as any)?.origName;
