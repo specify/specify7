@@ -17,7 +17,6 @@ urlpatterns = [
     # === Backwards compatibility ===
 
     # Merge endpoints
-    re_path(r'^specify/(?P<model_name>\w+)/replace/(?P<new_model_id>\d+)', include('specifyweb.backend.merge.urls')),
     re_path(r'^specify/merge/', include('specifyweb.backend.merge.urls')),
 
     # Inheritance (catalog number endpoints)
