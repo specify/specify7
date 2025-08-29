@@ -7,7 +7,7 @@ import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { ajax } from '../../utils/ajax';
-import type { DeepPartial, RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
