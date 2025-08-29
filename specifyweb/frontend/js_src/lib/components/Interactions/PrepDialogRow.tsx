@@ -14,7 +14,14 @@ import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { genericTables, tables } from '../DataModel/tables';
-import type { CollectionObject, ExchangeOut, Gift, Loan, Preparation,Taxon } from '../DataModel/types';
+import type {
+  CollectionObject,
+  ExchangeOut,
+  Gift,
+  Loan,
+  Preparation,
+  Taxon,
+} from '../DataModel/types';
 import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { ResourceView } from '../Forms/ResourceView';
 import { FormattedResource } from '../Molecules/FormattedResource';
@@ -36,12 +43,13 @@ export function PrepDialogRow({
   const checked = selected !== 0;
   const loading = React.useContext(LoadingContext);
   const [state, setState] = React.useState<
-    State<
+    | State<
         'CollectionObjectDialog',
         {
           readonly resource: SpecifyResource<CollectionObject>;
         }
-      > | State<
+      >
+    | State<
         'ItemSelection',
         {
           readonly items: RR<
@@ -52,22 +60,26 @@ export function PrepDialogRow({
             }>
           >;
         }
-      > | State<
+      >
+    | State<
         'PreparationDialog',
         {
           readonly resource: SpecifyResource<Preparation>;
         }
-      > | State<
+      >
+    | State<
         'ResourceDialog',
         {
           readonly resource: SpecifyResource<ExchangeOut | Gift | Loan>;
         }
-      > | State<
+      >
+    | State<
         'TaxonDialog',
         {
           readonly resource: SpecifyResource<Taxon>;
         }
-      > | State<'Main'>
+      >
+    | State<'Main'>
   >({ type: 'Main' });
 
   return (
@@ -104,7 +116,6 @@ export function PrepDialogRow({
             )}
             title={getField(tables.CollectionObject, 'catalogNumber').label}
           >
-            
             <span className="sr-only">
               {getField(tables.CollectionObject, 'catalogNumber').label}
             </span>
@@ -122,14 +133,17 @@ export function PrepDialogRow({
             }
           >
             <FormattedResource
-              resource={new tables.Preparation.Resource({ id: preparation.preparationId })}
+              resource={
+                new tables.Preparation.Resource({
+                  id: preparation.preparationId,
+                })
+              }
             />
           </Button.LikeLink>
           <Link.NewTab
             href={getResourceViewUrl('Preparation', preparation.preparationId)}
             title={tables.Preparation.label}
           >
-            
             <span className="sr-only">{tables.Preparation.label}</span>
           </Link.NewTab>
         </td>
@@ -137,7 +151,6 @@ export function PrepDialogRow({
           {preparation.taxon ? (
             <span className="flex items-center gap-1">
               <Button.LikeLink
-    
                 onClick={(): void =>
                   setState({
                     type: 'TaxonDialog',
@@ -153,7 +166,6 @@ export function PrepDialogRow({
                 href={getResourceViewUrl('Taxon', preparation.taxonId)}
                 title={getField(tables.Determination, 'taxon').label}
               >
-                
                 <span className="sr-only">
                   {getField(tables.Determination, 'taxon').label}
                 </span>
@@ -269,7 +281,7 @@ export function PrepDialogRow({
             dialog="modal"
             isDependent={false}
             isSubForm={false}
-            resource={state.resource}
+            resource={(state as { resource: SpecifyResource<any> }).resource}
             onAdd={undefined}
             onClose={(): void => setState({ type: 'Main' })}
             onDeleted={undefined}
