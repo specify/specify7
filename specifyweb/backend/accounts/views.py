@@ -354,7 +354,7 @@ def support_login(request: http.HttpRequest) -> http.HttpResponse:
 
     user = authenticate(token=request.GET['token'])
     if user is not None:
-        login(request, user, backend='specifyweb.specify.support_login.SupportLoginBackend')
+        login(request, user, backend='specifyweb.specify.auth.support_login.SupportLoginBackend')
         return http.HttpResponseRedirect('/')
     else:
         return http.HttpResponseForbidden()
