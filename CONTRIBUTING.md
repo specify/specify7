@@ -168,3 +168,162 @@ appropriate.
 | General Inquiry | [support@specifysoftware.org](mailto:support@specifysoftware.org)     |
 | Bug Report      | [GitHub Issue](https://github.com/specify/specify7/issues/new/choose) |
 | User Question   | [Discourse Forum](https://discourse.specifysoftware.org/)             |
+
+
+# Installing Specify 7 Locally
+
+## 1) Install required software
+
+- VS Code IDE  
+- DBeaver CE  
+- Docker + Docker Compose (plugin)  
+- Git  
+- (Optional) MariaDB/MySQL client-only CLI (no server)
+
+**Install client only (no server):**  
+- **macOS (Homebrew):**
+  ```bash
+  brew install mysql-client
+  echo 'export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc
+  ```
+- **Ubuntu/Debian:**
+  ```bash
+  sudo apt-get update && sudo apt-get install -y mariadb-client
+  ```
+*(Do NOT install or start a local server. We’ll run the DB in Docker.)*
+
+---
+
+## 2) Clone the Specify 7 repo
+
+```bash
+git clone https://github.com/specify/specify7.git
+```
+> `git clone` checks out the **main** branch by default.
+
+---
+
+## 3) Check out the requested tag
+
+```bash
+cd specify7
+git checkout tags/v7.11.1
+```
+
+---
+
+## 4) Python virtual environment + dependencies
+
+```bash
+# Create a venv
+python3 -m venv specify7/ve
+
+# Activate it (macOS/Linux)
+source specify7/ve/bin/activate
+# On Windows (PowerShell):
+# .\specify7\ve\Scripts\Activate.ps1
+
+# Install deps
+pip3 install wheel
+pip3 install --upgrade -r requirements.txt
+```
+> The app runs in Docker. This venv is just for helper scripts.
+
+---
+
+## 5) Get a seed database
+
+- Use an existing `.sql` database dump.  
+- Open it in an editor and **remove** any line like:
+  ```sql
+  USE DATABASE_NAME;
+  ```
+- Save the file.  
+- Move it into:
+  ```
+  seed_database/
+  ```
+
+---
+
+## 6) Configure DBeaver (MySQL/MariaDB)
+
+In DBeaver: **Database → New Connection → MySQL (or MariaDB)**
+
+Fill:
+
+- **Server Host:** `localhost`  
+- **Port:** `3306`  
+- **Database:** `DATABASE_NAME`  
+- **Show all databases:** ✅ checked  
+- **Username:** `root`  
+- **Password:** must match `MYSQL_ROOT_PASSWORD`  
+
+Click **Test Connection** → **Finish**.
+
+---
+
+## 7) Edit the project `.env`
+
+```dotenv
+MYSQL_ROOT_PASSWORD=root_pw_here
+DATABASE_NAME=DATABASE_NAME
+MASTER_NAME=master_name_here
+MASTER_PASSWORD=master_pw_here
+```
+
+- `DATABASE_NAME` must match the SQL dump you placed in `seed_database/`.
+
+---
+
+## 8) Run Specify 7
+
+```bash
+docker compose up --build
+```
+
+Open: [http://localhost/specify](http://localhost/specify)  
+
+Login:  
+- **Username:** `db_username`  
+- **Password:** `db_pass`
+
+Select any collection.
+
+---
+
+## 9) Troubleshooting
+
+**Access denied / DB not found**
+
+1. Delete containers/images for this project in Docker Desktop.  
+2. Clean up old images/volumes:  
+   ```bash
+   docker image prune -a
+   docker volume prune -a
+   ```
+3. Rebuild:  
+   ```bash
+   docker compose up --build
+   ```
+4. Verify inside the DB container:  
+   ```bash
+   mysql -uroot -p$MYSQL_ROOT_PASSWORD
+   SHOW DATABASES;
+   USE DATABASE_NAME;
+   ```
+
+**DBeaver shows “Unknown database”**
+
+- Ensure `Database` field equals your `.env` `DATABASE_NAME`.  
+- Confirm the `.sql` file didn’t have a `USE ...;` line.  
+- Ensure the `.sql` was placed in `seed_database/` before first run.  
+
+---
+
+## 10) Notes
+
+- App URL: [http://localhost/specify](http://localhost/specify)  
+- Repo: [https://github.com/specify/specify7](https://github.com/specify/specify7)  
+- Common test login: `spadmin` / `testuser`  
+
