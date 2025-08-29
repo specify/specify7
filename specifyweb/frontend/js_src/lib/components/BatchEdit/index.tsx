@@ -235,39 +235,6 @@ function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
 const containsSystemTables = (queryFieldSpec: QueryFieldSpec) =>
   queryFieldSpec.joinPath.some((field) => field.table.isSystem);
 
-const DISALLOWED_FIELDS: DeepPartial<{
-  readonly [TABLE in keyof Tables]: RA<keyof Tables[TABLE]['fields']>;
-}> = {
-  /*
-   * FEATURE: Remove these when lat/long is officially supported
-   * See https://github.com/specify/specify7/issues/6251 and
-   * https://github.com/specify/specify7/issues/6655
-   */
-  Locality: [
-    'latitude1',
-    'longitude1',
-    'lat1text',
-    'long1text',
-    'latitude2',
-    'longitude2',
-    'lat2text',
-    'long2text',
-  ],
-};
-
-function containsDisallowedFields(queryFieldSpec: QueryFieldSpec) {
-  const field = queryFieldSpec.getField();
-  if (
-    field === undefined ||
-    field.isRelationship ||
-    DISALLOWED_FIELDS[field.table.name] === undefined
-  )
-    return false;
-  return (
-    DISALLOWED_FIELDS[field.table.name]?.includes(field.name as never) ?? false
-  );
-}
-
 const hasHierarchyBaseTable = (queryFieldSpec: QueryFieldSpec) =>
   Object.keys(schema.domainLevelIds).includes(
     queryFieldSpec.baseTable.name.toLowerCase() as 'collection'
@@ -285,5 +252,4 @@ const containsDisallowedTables = (query: SpecifyResource<SpQuery>) =>
 const filters: RA<(queryFieldSpec: QueryFieldSpec) => boolean> = [
   containsFaultyNestedToMany,
   containsSystemTables,
-  containsDisallowedFields,
 ];
