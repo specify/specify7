@@ -223,7 +223,6 @@ def serialize_multiple_django(matchable, field_map, fields):
 def join_with_and(fields):
     return ' and '.join(fields)
 
-
 def apply_default_uniqueness_rules(discipline, registry=None):
     for table, rules in DEFAULT_UNIQUENESS_RULES.items():
         model_name = getattr(datamodel.get_table(table), "django_name", None)
@@ -233,8 +232,7 @@ def apply_default_uniqueness_rules(discipline, registry=None):
             fields, scopes = rule["rule"]
             isDatabaseConstraint = rule["isDatabaseConstraint"]
 
-            create_uniqueness_rule(
-                model_name, discipline, isDatabaseConstraint, fields, scopes, registry)
+            create_uniqueness_rule(model_name, discipline, isDatabaseConstraint, fields, scopes, registry)
 
 
 def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, fields, scopes, registry=None):
@@ -245,7 +243,9 @@ def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
     
     discipline = None if rule_is_global(scopes) else raw_discipline
 
-    candidate_rules = UniquenessRule.objects.filter(modelName=model_name, isDatabaseConstraint=is_database_constraint, discipline=discipline)
+    candidate_rules = UniquenessRule.objects.filter(modelName=model_name,
+                                                    isDatabaseConstraint=is_database_constraint,
+                                                    discipline=discipline)
 
     for rule in candidate_rules: 
         all_fields = rule.uniquenessrulefield_set.all()
@@ -265,6 +265,23 @@ def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
         UniquenessRuleField.objects.create(
             uniquenessrule=rule, fieldPath=scope, isScope=True)
 
+def uniquenessrule_exists(UniquenessRule, model_name, discipline, is_database_constraint, fields, scopes):
+
+    model_rules = UniquenessRule.objects.filter(modelName=model_name, discipline=discipline, isDatabaseConstraint=is_database_constraint)
+
+    for rule in model_rules: 
+        rule_fields = rule.uniquenessrulefield_set.all()
+
+        matching_fields = rule_fields.filter(isScope=False, fieldPath__in=fields)
+        matching_scopes = rule_fields.filter(isScope=True, fieldPath__in=scopes)
+
+        if len(matching_fields) == len(fields) and len(matching_scopes) == len(scopes): 
+            return True
+
+    return False
+
+def check_discipline_added_to_uniqueness_rules(discipline):
+    return models.UniquenessRule.objects.filter(discipline=discipline).exists()
 
 def remove_uniqueness_rule(model_name, raw_discipline, is_database_constraint, fields, scopes, registry=None):
     UniquenessRule = registry.get_model(
@@ -295,7 +312,6 @@ relationship scoped above the discipline level, that rule should not be
 scoped to discipline and instead be global
 """
 GLOBAL_RULE_FIELDS = ["division", 'institution']
-
 
 def rule_is_global(scopes: Iterable[str]) -> bool:
     return len(scopes) == 0 or any(any(scope_field.lower() in GLOBAL_RULE_FIELDS for scope_field in scope.split('__')) for scope in scopes)

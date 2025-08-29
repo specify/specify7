@@ -1,24 +1,25 @@
-import React from 'react';
-import { mount } from '../../../tests/reactUtils';
-import { UploadAttachment } from '../Plugin';
-import { clearIdStore } from '../../../hooks/useId';
-import { LoadingContext } from '../../Core/Contexts';
-import { f } from '../../../utils/functools';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { overrideAttachmentSettings } from '../attachments';
-import attachmentSettings from '../../../tests/ajax/static/context/attachment_settings.json';
+import React from 'react';
+
+import { clearIdStore } from '../../../hooks/useId';
 import { overrideAjax } from '../../../tests/ajax';
-import * as Attachments from '../attachments';
+import attachmentSettings from '../../../tests/ajax/static/context/attachment_settings.json';
 import { requireContext } from '../../../tests/helpers';
-import { deserializeResource } from '../../DataModel/serializers';
-import { testAttachment } from './utils';
+import { mount } from '../../../tests/reactUtils';
+import { f } from '../../../utils/functools';
+import { LoadingContext } from '../../Core/Contexts';
 import { SpecifyResource } from '../../DataModel/legacyTypes';
+import { deserializeResource } from '../../DataModel/serializers';
 import { Attachment } from '../../DataModel/types';
+import { overrideAttachmentSettings } from '../attachments';
+import * as Attachments from '../attachments';
+import { UploadAttachment } from '../Plugin';
+import { testAttachment } from './utils';
 
 requireContext();
 
 async function uploadFileMock() {
-  return deserializeResource(testAttachment) as SpecifyResource<Attachment>;
+  return deserializeResource(testAttachment);
 }
 
 beforeEach(() => {
@@ -57,7 +58,7 @@ describe('UploadAttachment', () => {
     fireEvent.change(input, { target: { files: [testFile] } });
 
     await waitFor(() => {
-      expect(handleUploaded).toBeCalled();
+      expect(handleUploaded).toHaveBeenCalled();
     });
   });
 });
