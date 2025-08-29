@@ -21,8 +21,8 @@ from specifyweb.backend.context.app_resource import get_app_resource
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify import models
 
-from .models import Splocalecontaineritem as Item
-from .filter_by_col import filter_by_collection
+from ..models import Splocalecontaineritem as Item
+from ..api.filter_by_col import filter_by_collection
 
 class AutonumberOverflowException(Exception):
     pass

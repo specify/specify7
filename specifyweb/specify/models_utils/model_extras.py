@@ -9,7 +9,7 @@ from .model_timestamp import save_auto_timestamp_field_with_override
 from specifyweb.backend.trees.extras import Tree, TreeRank
 
 if settings.AUTH_LDAP_SERVER_URI is not None:
-    from . import ldap_extras
+    from .auth import ldap_extras
 
 logger = logging.getLogger(__name__)
 
@@ -52,14 +52,14 @@ class Specifyuser(models.Model):
         return self.name
 
     def set_password(self, password):
-        from .encryption import encrypt
+        from ..auth.encryption import encrypt
         self.password = encrypt(password, password)
 
     def set_unusable_password(self):
         self.password = "unusable"
 
     def check_password(self, password):
-        from .encryption import decrypt
+        from ..auth.encryption import decrypt
         if password == '': return False
         try:
             decrypted = decrypt(self.password, password)

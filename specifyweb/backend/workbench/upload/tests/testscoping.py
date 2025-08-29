@@ -1,4 +1,4 @@
-from specifyweb.specify.func import Func
+from specifyweb.specify.utils.func import Func
 from specifyweb.backend.workbench.upload.scope_context import ScopeContext
 from ..upload_plan_schema import parse_plan
 from ..upload_table import UploadTable, OneToOneTable, ScopedUploadTable, ScopedOneToOneTable

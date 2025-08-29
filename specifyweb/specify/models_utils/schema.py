@@ -6,14 +6,14 @@ from django.utils.translation import gettext as _
 from typing import Dict, List, Tuple, cast
 
 from specifyweb.middleware.general import require_GET
-from .datamodel import (
+from ..datamodel import (
     Field,
     Relationship,
     Table,
     TableDoesNotExistError,
     datamodel,
 )
-from .views import login_maybe_required
+from ..views import login_maybe_required
 
 
 def base_schema(title="Specify 7 API", description="") -> dict:

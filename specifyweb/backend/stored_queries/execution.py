@@ -14,11 +14,12 @@ from django.db import transaction
 from django.utils import timezone
 from specifyweb.backend.inheritance.api import cog_inheritance_post_query_processing, parent_inheritance_post_query_processing
 from specifyweb.backend.inheritance.utils import get_parent_cat_num_inheritance_setting
+from specifyweb.backend.stored_queries.utils import log_sqlalchemy_query
 from sqlalchemy import sql, orm, func, text
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
-from specifyweb.specify.field_change_info import FieldChangeInfo
-from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
+from specifyweb.specify.utils.field_change_info import FieldChangeInfo
+from specifyweb.specify.models_utils.models_by_table_id import get_table_id_by_model_name
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.backend.trees.utils import get_search_filters
 
@@ -30,9 +31,7 @@ from .field_spec_maps import apply_specify_user_name
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.permissions import check_table_permissions
 from specifyweb.specify.models import Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
-from specifyweb.specify.utils import log_sqlalchemy_query
 from specifyweb.backend.workbench.upload.auditlog import auditlog
-from specifyweb.specify.utils import log_sqlalchemy_query
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.backend.stored_queries.queryfield import fields_from_json
 
@@ -851,6 +850,8 @@ def execute(
 
         if limit:
             query = query.limit(limit)
+
+
 
         log_sqlalchemy_query(query) # Debugging
         return {"results": apply_special_post_query_processing(query, tableid, field_specs, collection, user)}

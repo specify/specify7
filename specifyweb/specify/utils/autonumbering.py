@@ -4,12 +4,12 @@ Autonumbering logic
 
 
 from .uiformatters import UIFormatter, get_uiformatters
-from .lock_tables import lock_tables
+from ..models_utils.lock_tables import lock_tables
 import logging
 from typing import List, Tuple, Set
 from collections.abc import Sequence
 
-from specifyweb.specify.scoping import Scoping
+from specifyweb.specify.utils.scoping import Scoping
 from specifyweb.specify.datamodel import datamodel
 
 logger = logging.getLogger(__name__)
