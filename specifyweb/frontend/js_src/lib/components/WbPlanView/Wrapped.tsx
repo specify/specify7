@@ -15,6 +15,7 @@ import type { IR, RA } from '../../utils/types';
 import type { Tables } from '../DataModel/types';
 import { useTitle } from '../Molecules/AppTitle';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
+import { usesAttachments } from '../WorkBench/attachmentHelpers';
 import type { UploadResult } from '../WorkBench/resultsParser';
 import { savePlan } from './helpers';
 import { getLinesFromHeaders, getLinesFromUploadPlan } from './linesGetter';
@@ -125,11 +126,17 @@ export function WbPlanView({
   );
   useErrorContext('state', state);
 
+  const hasAttachments = React.useMemo(
+    () => usesAttachments(dataset),
+    [dataset.columns]
+  );
+
   const navigate = useNavigate();
   return state.type === 'SelectBaseTable' ? (
     <ProtectedAction action="update" resource="/workbench/dataset">
       <BaseTableSelection
         headers={headers}
+        onlyAttachmentTables={hasAttachments}
         onClose={(): void => navigate(`/specify/workbench/${dataset.id}/`)}
         onSelected={(baseTableName): void =>
           setState({

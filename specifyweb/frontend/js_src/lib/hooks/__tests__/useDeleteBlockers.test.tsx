@@ -31,7 +31,10 @@ const deleteBlockerResponse = [
   },
 ];
 
-overrideAjax(`/api/delete_blockers/agent/${agentId}/`, deleteBlockerResponse);
+overrideAjax(
+  `/delete_blockers/delete_blockers/agent/${agentId}/`,
+  deleteBlockerResponse
+);
 overrideAjax(
   '/stored_query/ephemeral/',
   {

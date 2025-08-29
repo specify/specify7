@@ -1,4 +1,4 @@
-from specifyweb.specify.api import obj_to_data, toJson
+from specifyweb.specify.api.serializers import obj_to_data, toJson
 from specifyweb.specify.tests.test_api import ApiTests
 from django.test import Client
 import json
