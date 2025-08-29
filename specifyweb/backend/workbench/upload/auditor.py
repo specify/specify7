@@ -2,7 +2,7 @@ import logging
 from typing import Any, NamedTuple, TypedDict
 
 
-from specifyweb.specify.auditlog import AuditLog
+from specifyweb.backend.workbench.upload.auditlog import AuditLog
 from specifyweb.backend.permissions.permissions import (
     TABLE_ACTION,
     check_table_permissions,

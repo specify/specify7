@@ -461,7 +461,7 @@ def table_to_endpoint(table: Table) -> list[tuple[str, dict]]:
             },
         ),
         (
-            f"/api/specify/bulk/{table.django_name}/",
+            f"/bulk_copy/bulk/{table.django_name}/",
             {
                 "post": {
                     "tags": [table.django_name],
@@ -505,7 +505,7 @@ def table_to_endpoint(table: Table) -> list[tuple[str, dict]]:
             }
         ),
         (
-            f"/api/specify/bulk/{table.django_name}/{{copies}}/",
+            f"/bulk_copy/bulk/{table.django_name}/{{copies}}/",
             {
                 "post": {
                     "tags": [table.django_name],
@@ -745,7 +745,7 @@ def table_to_endpoint(table: Table) -> list[tuple[str, dict]]:
             }
         ),
         (
-            f"/api/delete_blockers/{table.django_name}/{{id}}/",
+            f"/delete_blockers/delete_blockers/{table.django_name}/{{id}}/",
             {
                 "get": {
                     "tags": [table.django_name],

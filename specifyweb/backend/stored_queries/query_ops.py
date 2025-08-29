@@ -3,17 +3,7 @@ from sqlalchemy.orm.query import Query
 from collections import namedtuple
 from typing import Literal
 
-# from specifyweb.specify.geo_time import (
-#     modify_query_add_age_range,
-#     query_co_ids_in_time_period,
-#     search_co_ids_in_time_range,
-#     query_co_in_time_range,
-#     query_co_in_time_range_with_joins,
-#     search_co_ids_in_time_period,
-#     # search_co_ids_in_time_range_mysql,
-#     search_co_ids_in_time_range_mysql_with_age_range,
-# )
-from specifyweb.specify.geo_time import geo_time_query, geo_time_period_query
+from specifyweb.backend.stored_queries.geology_time import geo_time_query, geo_time_period_query
 from specifyweb.specify.uiformatters import CNNField, FormatMismatch, UIFormatter
 
 QUERYFIELD_OPERATION_NUMBER = Literal[

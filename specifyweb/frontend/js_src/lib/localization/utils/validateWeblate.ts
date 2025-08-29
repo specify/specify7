@@ -22,7 +22,6 @@ const addOns = {
     component: null,
     threshold: 20,
     auto_source: 'mt',
-    filter_type: 'todo',
   },
   'weblate.cleanup.generic': {},
 };

@@ -41,7 +41,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Ohne Tisch',
     'es-es': 'Sin mesa',
     'fr-fr': 'Sans table',
-    'ru-ru': 'Без таблицы',
+    'ru-ru': 'Без стола',
     'uk-ua': 'Без столу',
     'pt-br': 'Sem mesa',
   },
@@ -110,7 +110,7 @@ export const schemaText = createDictionary({
   },
   setScope: {
     'en-us': 'Set Scope',
-    'de-ch': 'Umfang festlegen',
+    'de-ch': 'Geltungsbereich festlegen',
     'es-es': 'Establecer alcance',
     'fr-fr': 'Définir la portée',
     'ru-ru': 'Установить область действия',
@@ -182,7 +182,7 @@ export const schemaText = createDictionary({
   },
   oneToMany: {
     'en-us': 'One-to-many',
-    'ru-ru': 'Один-ко-многим',
+    'ru-ru': 'Один ко многим',
     'es-es': 'Uno a muchos',
     'fr-fr': 'Un-à-plusieurs',
     'uk-ua': 'Один до багатьох',
@@ -281,7 +281,7 @@ export const schemaText = createDictionary({
   },
   databaseColumn: {
     'en-us': 'Database Column',
-    'ru-ru': 'Колонка базы данных',
+    'ru-ru': 'Столбец базы данных',
     'es-es': 'Columna de base de datos',
     'fr-fr': 'Colonne de base de données',
     'uk-ua': 'Стовпець бази даних',
