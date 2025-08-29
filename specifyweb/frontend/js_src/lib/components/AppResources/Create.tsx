@@ -210,8 +210,10 @@ function ViewSetTemplates({
           errorMode: 'silent',
         })
           .then(({ data }) => {
-            // REFACTOR: Make this part of a effect.
-            // The current logic makes it harder to write tests for.
+            /*
+             * REFACTOR: Make this part of a effect.
+             * The current logic makes it harder to write tests for.
+             */
             if (data.length === 0) handleSelect(false);
             return data;
           })
