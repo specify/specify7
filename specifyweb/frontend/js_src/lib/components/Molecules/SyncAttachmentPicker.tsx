@@ -18,7 +18,37 @@ import type { Attachment } from '../DataModel/types';
 import { Dialog } from './Dialog';
 import { Tabs } from './Tabs';
 
-const types = ['url', 'image', 'attachments', 'attachments'] as const;
+const types = ['url', 'image', 'attachments'] as const;
+
+function fileNameFromUrl(imageUrl?: string): string | undefined {
+  if (!imageUrl) return undefined;
+  try {
+    const urlObject = new URL(
+      imageUrl,
+      typeof window === 'undefined' ? 'http://localhost' : window.location.origin
+    );
+
+    const queryName =
+      urlObject.searchParams.get('downloadname') ??
+      urlObject.searchParams.get('filename');
+
+    const lastPathSegment = urlObject.pathname.split('/').pop() ?? '';
+    const raw = queryName ?? lastPathSegment;
+
+    const decodedName = decodeURIComponent(raw.replaceAll('+', ' '))
+      .replaceAll(/\u202f|\xa0/g, ' ')
+      .trim();
+
+    return decodedName || undefined;
+  } catch {
+    const raw = imageUrl.split('/').pop() ?? '';
+    const decodedName = decodeURIComponent(raw.replaceAll('+', ' '))
+      .replaceAll(/\u202f|\xa0/g, ' ')
+      .trim();
+    return decodedName || undefined;
+  }
+}
+
 
 export function SyncAttachmentPicker({
   url,
@@ -36,14 +66,21 @@ export function SyncAttachmentPicker({
 
   const [urlNotFound, setUrlNotFound] = React.useState(false);
 
-  const [type, setType] = React.useState<
-    'attachments' | 'attachments' | 'image' | 'url'
-  >('url');
 
-  function handleAttachment(attachment: SerializedResource<Attachment>): void {
+  const [type, setType] = React.useState<typeof types[number]>('url');
+
+  // State
+  const [altText, setAltText] = React.useState<string | undefined>(undefined);
+
+  // When user picks an attachment
+  function handleAttachment(nextAttachment: SerializedResource<Attachment>): void {
+  
+    const originalName: string | undefined = (nextAttachment as any)?.origName;
+    if (originalName) setAltText(originalName);
+
     loading(
-      fetchOriginalUrl(attachment).then((url) => {
-        url === undefined ? setUrlNotFound(true) : handleChange(url);
+      fetchOriginalUrl(nextAttachment).then((nextUrl) => {
+        nextUrl === undefined ? setUrlNotFound(true) : handleChange(nextUrl);
       })
     );
     handleToggle();
@@ -65,6 +102,7 @@ export function SyncAttachmentPicker({
           onClick={() => {
             setAttachment(undefined);
             handleChange(undefined);
+            setAltText(undefined);               // ⟵ clear custom alt when deleting
           }}
         >
           {commonText.delete()}
@@ -73,7 +111,7 @@ export function SyncAttachmentPicker({
 
       {url !== undefined && (
         <img
-          alt={url.slice(url.lastIndexOf('/') + 1) ?? url}
+          alt={altText ?? fileNameFromUrl(url) ?? 'Image preview'}
           className="h-40 max-h-full w-40 max-w-full object-contain"
           src={url}
         />
