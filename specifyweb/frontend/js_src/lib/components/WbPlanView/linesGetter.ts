@@ -9,7 +9,7 @@
 import { f } from '../../utils/functools';
 import type { IR, RA, WritableArray } from '../../utils/types';
 import type { Tables } from '../DataModel/types';
-import { getAttachmentsColumnIndexFromHeaders } from '../WorkBench/attachmentHelpers';
+import { getAttachmentsColumnFromHeaders } from '../WorkBench/attachmentHelpers';
 import type { AutoMapperResults } from './autoMapper';
 import { AutoMapper } from './autoMapper';
 import type { MappingLine } from './Mapper';
@@ -133,6 +133,6 @@ export function getLinesFromUploadPlan(
 
 function removeHiddenColumnHeaders(headers: RA<string>): RA<string> {
   // Remove attachments column header so it cannot be mapped
-  const attachmentsColumnIndex = getAttachmentsColumnIndexFromHeaders(headers);
-  return headers.filter((_, index) => index !== attachmentsColumnIndex);
+  const attachmentsColumn = getAttachmentsColumnFromHeaders(headers);
+  return headers.filter((_, index) => index !== attachmentsColumn);
 }

@@ -147,6 +147,26 @@ export function useHotHooks({
 
     afterRedo: (data) => afterUndoRedo(workbench, 'redo', data),
 
+    beforeCopy: (data, coords) => {
+      if (workbench.hot === undefined) return;
+      coords.forEach((coord) => {
+        for (let row = coord.startRow; row <= coord.endRow; row++) {
+          const rowIndex = row - coord.startRow;
+          for (let col = coord.startCol; col <= coord.endCol; col++) {
+            /*
+             * If a column is formatted, copying should use the displayed values.
+             * Currently used for the attachments column.
+             */
+            const colIndex = col - coord.startCol;
+            const cellMeta = workbench.hot!.getCellMeta(row, col);
+            if (cellMeta?.renderer && cellMeta?.formattedValue) {
+              data[rowIndex][colIndex] = cellMeta.formattedValue;
+            }
+          }
+        }
+      });
+    },
+
     beforePaste: () => !isReadOnly,
 
     /*

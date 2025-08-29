@@ -12,7 +12,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
-import { getAttachmentsColumnIndex } from '../WorkBench/attachmentHelpers';
+import { getAttachmentsColumn } from '../WorkBench/attachmentHelpers';
 import { downloadDataSet } from '../WorkBench/helpers';
 import type { WbMapping } from '../WorkBench/mapping';
 import { WbChangeOwner } from './ChangeOwner';
@@ -51,7 +51,7 @@ export function WbToolkit({
 
     let datasetColumns = dataset.columns;
     // Don't export attachments column
-    const attachmentsColumnIndex = getAttachmentsColumnIndex(dataset);
+    const attachmentsColumnIndex = getAttachmentsColumn(dataset);
     if (attachmentsColumnIndex !== -1) {
       datasetColumns = dataset.columns.map((col, index) =>
         index === attachmentsColumnIndex ? attachmentsText.attachments() : col
