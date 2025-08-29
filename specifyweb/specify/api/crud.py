@@ -6,11 +6,10 @@ from typing import Any
 from collections.abc import Callable
 from django.db import transaction
 from django.core.exceptions import FieldError, FieldDoesNotExist
-from django.db.models import Model
+from django.db.models import Model, F
 from django.http import (Http404)
 from django.apps import apps
 
-from specifyweb.backend.express_search.related import F
 from specifyweb.backend.permissions.permissions import check_field_permissions, check_table_permissions
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.specify import models
