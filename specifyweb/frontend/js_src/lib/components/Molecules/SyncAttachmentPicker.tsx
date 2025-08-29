@@ -75,7 +75,7 @@ export function SyncAttachmentPicker({
   // when user picks an attachment
   function handleAttachment(nextAttachment: SerializedResource<Attachment>): void {
   
-    const originalName: string | undefined = nextAttachment?.origName;
+    const originalName: string | undefined = (nextAttachment as any)?.origName;
     if (originalName) setAltText(originalName);
 
     loading(
