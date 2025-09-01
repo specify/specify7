@@ -30,8 +30,8 @@ msgstr "План завантаження не визначено"
 msgid "noUploadPlanDescription"
 msgstr "Для цього набору даних не визначено план завантаження. Створити зараз?"
 
-#: components/WorkBench/hotProps.tsx:161
-#: components/WorkBench/hotProps.tsx:163
+#: components/WorkBench/hotProps.tsx:162
+#: components/WorkBench/hotProps.tsx:164
 #. Used in: Components > Work Bench > Hot Props
 msgid "unmappedColumn"
 msgstr "Невідповідний стовпець"
@@ -91,9 +91,9 @@ msgstr "Приховані поля"
 msgid "revealHiddenFormFields"
 msgstr "Відкрийте приховані поля форми"
 
-#: components/WbPlanView/Mapper.tsx:644
-#: components/WbPlanView/Mapper.tsx:646
-#: components/WbPlanView/Mapper.tsx:654
+#: components/WbPlanView/Mapper.tsx:658
+#: components/WbPlanView/Mapper.tsx:660
+#: components/WbPlanView/Mapper.tsx:668
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mappingOptions"
 msgstr "Параметри відображення"
@@ -188,7 +188,7 @@ msgstr "Продовжити редагування"
 msgid "saveUnfinished"
 msgstr "Зберегти незавершене"
 
-#: components/WbPlanView/Mapper.tsx:540
+#: components/WbPlanView/Mapper.tsx:554
 #. Used in: Components > Wb Plan View > Mapper
 msgid "map"
 msgstr "Карта"
@@ -198,7 +198,7 @@ msgstr "Карта"
 msgid "unmap"
 msgstr "Відмінити карту"
 
-#: components/WbPlanView/Mapper.tsx:537
+#: components/WbPlanView/Mapper.tsx:551
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mapButtonDescription"
 msgstr "Зіставити вибране поле з вибраним заголовком"
@@ -229,12 +229,12 @@ msgstr "Показати всі таблиці"
 msgid "selectBaseTableWithAttachments"
 msgstr "Виберіть базову таблицю з вкладеннями"
 
-#: components/WbPlanView/Mapper.tsx:482
+#: components/WbPlanView/Mapper.tsx:496
 #. Used in: Components > Wb Plan View > Mapper
 msgid "dataSetUploaded"
 msgstr "Набір даних завантажено. Цей план завантаження не можна змінити"
 
-#: components/WbPlanView/Mapper.tsx:480
+#: components/WbPlanView/Mapper.tsx:494
 #. Used in: Components > Wb Plan View > Mapper
 msgid "dataSetUploadedDescription"
 msgstr ""
@@ -242,7 +242,7 @@ msgstr ""
 "Щоб редагувати зіставлення, відкотіть завантажені дані або створіть новий "
 "набір даних"
 
-#: components/WbPlanView/Mapper.tsx:474
+#: components/WbPlanView/Mapper.tsx:488
 #: components/WbPlanView/MapperComponents.tsx:343
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
 msgid "baseTable"
@@ -295,12 +295,12 @@ msgstr "Приховати Field Mapper"
 msgid "showFieldMapper"
 msgstr "Показати Field Mapper"
 
-#: components/WbPlanView/Mapper.tsx:555
+#: components/WbPlanView/Mapper.tsx:569
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mappings"
 msgstr "Відображення"
 
-#: components/WbPlanView/Mapper.tsx:347
+#: components/WbPlanView/Mapper.tsx:361
 #. Used in: Components > Wb Plan View > Mapper
 msgid "clearMappings"
 msgstr "Очистити зіставлення"
@@ -353,7 +353,7 @@ msgstr "Логіка зіставлення недоступна для пото
 msgid "mustMatch"
 msgstr "Має відповідати"
 
-#: components/WbPlanView/Mapper.tsx:181
+#: components/WbPlanView/Mapper.tsx:194
 #. Used in: Components > Wb Plan View > Mapper
 msgid "unloadProtectMessage"
 msgstr "Це відображення не збережено."

@@ -40,7 +40,7 @@ msgstr "Reverter"
 
 #: components/AttachmentsBulkImport/Import.tsx:290
 #: components/WbActions/WbValidate.tsx:73
-#: components/WbPlanView/Mapper.tsx:449
+#: components/WbPlanView/Mapper.tsx:463
 #. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Plan View > Mapper
 #, fuzzy
 msgid "validate"
@@ -201,7 +201,7 @@ msgstr "Novas Células"
 msgid "errorCells"
 msgstr "Células de erro"
 
-#: components/WbPlanView/Mapper.tsx:456
+#: components/WbPlanView/Mapper.tsx:470
 #. Used in: Components > Wb Plan View > Mapper
 #, fuzzy
 msgid "dataEditor"
@@ -807,7 +807,7 @@ msgstr "Propriedades do conjunto de dados"
 
 #: components/AttachmentsBulkImport/Datasets.tsx:152
 #: components/AttachmentsBulkImport/Datasets.tsx:284
-#: components/WbPlanView/Mapper.tsx:473
+#: components/WbPlanView/Mapper.tsx:487
 #: components/WorkBench/DataSetMeta.tsx:211
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 #, fuzzy

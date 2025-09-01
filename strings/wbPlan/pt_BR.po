@@ -34,8 +34,8 @@ msgstr ""
 "Nenhum Plano de Upload foi definido para este Conjunto de Dados. Criar um "
 "agora?"
 
-#: components/WorkBench/hotProps.tsx:161
-#: components/WorkBench/hotProps.tsx:163
+#: components/WorkBench/hotProps.tsx:162
+#: components/WorkBench/hotProps.tsx:164
 #. Used in: Components > Work Bench > Hot Props
 #, fuzzy
 msgid "unmappedColumn"
@@ -106,9 +106,9 @@ msgstr "Campos Ocultos"
 msgid "revealHiddenFormFields"
 msgstr "Revelar campos ocultos do formulário"
 
-#: components/WbPlanView/Mapper.tsx:644
-#: components/WbPlanView/Mapper.tsx:646
-#: components/WbPlanView/Mapper.tsx:654
+#: components/WbPlanView/Mapper.tsx:658
+#: components/WbPlanView/Mapper.tsx:660
+#: components/WbPlanView/Mapper.tsx:668
 #. Used in: Components > Wb Plan View > Mapper
 #, fuzzy
 msgid "mappingOptions"
@@ -221,7 +221,7 @@ msgstr "Continuar editando"
 msgid "saveUnfinished"
 msgstr "Salvar inacabado"
 
-#: components/WbPlanView/Mapper.tsx:540
+#: components/WbPlanView/Mapper.tsx:554
 #. Used in: Components > Wb Plan View > Mapper
 #, fuzzy
 msgid "map"
@@ -233,7 +233,7 @@ msgstr "Mapa"
 msgid "unmap"
 msgstr "Desmapear"
 
-#: components/WbPlanView/Mapper.tsx:537
+#: components/WbPlanView/Mapper.tsx:551
 #. Used in: Components > Wb Plan View > Mapper
 #, fuzzy
 msgid "mapButtonDescription"
@@ -270,13 +270,13 @@ msgstr "Mostrar todas as tabelas"
 msgid "selectBaseTableWithAttachments"
 msgstr "Selecione uma tabela base com anexos"
 
-#: components/WbPlanView/Mapper.tsx:482
+#: components/WbPlanView/Mapper.tsx:496
 #. Used in: Components > Wb Plan View > Mapper
 #, fuzzy
 msgid "dataSetUploaded"
 msgstr "Conjunto de dados carregado. Este plano de upload não pode ser alterado."
 
-#: components/WbPlanView/Mapper.tsx:480
+#: components/WbPlanView/Mapper.tsx:494
 #. Used in: Components > Wb Plan View > Mapper
 #, fuzzy
 msgid "dataSetUploadedDescription"
@@ -285,7 +285,7 @@ msgstr ""
 "Para editar os mapeamentos, reverta os dados carregados ou crie um novo "
 "conjunto de dados."
 
-#: components/WbPlanView/Mapper.tsx:474
+#: components/WbPlanView/Mapper.tsx:488
 #: components/WbPlanView/MapperComponents.tsx:343
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
@@ -347,13 +347,13 @@ msgstr "Ocultar Mapeador de Campo"
 msgid "showFieldMapper"
 msgstr "Mostrar Mapeador de Campo"
 
-#: components/WbPlanView/Mapper.tsx:555
+#: components/WbPlanView/Mapper.tsx:569
 #. Used in: Components > Wb Plan View > Mapper
 #, fuzzy
 msgid "mappings"
 msgstr "Mapeamentos"
 
-#: components/WbPlanView/Mapper.tsx:347
+#: components/WbPlanView/Mapper.tsx:361
 #. Used in: Components > Wb Plan View > Mapper
 #, fuzzy
 msgid "clearMappings"
@@ -416,7 +416,7 @@ msgstr "A lógica de correspondência não está disponível para os mapeamentos
 msgid "mustMatch"
 msgstr "Deve corresponder"
 
-#: components/WbPlanView/Mapper.tsx:181
+#: components/WbPlanView/Mapper.tsx:194
 #. Used in: Components > Wb Plan View > Mapper
 #, fuzzy
 msgid "unloadProtectMessage"
