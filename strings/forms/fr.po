@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-09-01 14:49+0000\n"
-"Last-Translator: Tom Bernard <tombrnd.pro@gmail.com>\n"
+"PO-Revision-Date: 2025-09-01 16:01+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/forms/"
 "fr/>\n"
 "Language: fr\n"
@@ -54,13 +54,13 @@ msgstr ""
 #: components/Forms/DeleteButton.tsx:125
 #, fuzzy
 msgid "checkingIfResourceCanBeDeleted"
-msgstr "Vérification de si la ressource peut être supprimée…"
+msgstr "Vérification si la ressource peut être supprimée…"
 
 #. Used in: Components > Molecules > Linked Records
 #: components/Molecules/LinkedRecords.tsx:105
 #, fuzzy
 msgid "checkingIfResourceIsUsed"
-msgstr "Vérification de si cet enregistrement est actuellement utilisé…"
+msgstr "Vérification si cet enregistrement est actuellement utilisé…"
 
 #. Used in: Components > Molecules > Linked Records
 #: components/Molecules/LinkedRecords.tsx:51
@@ -111,9 +111,9 @@ msgstr "{geographyTable:string} Obligatoire"
 #, fuzzy
 msgid "paleoRequiresGeographyDescription"
 msgstr ""
-"Le plugin Carte Paléo nécessite que les {localityTable:string} aient des "
+"Le plugin Paleo Map nécessite que les {localityTable:string} aient des "
 "coordonnées géographiques et que le contexte paléo ait un âge géographique "
-"avec au moins un temps de début ou/et de fin."
+"avec au moins une heure de début ou une heure de fin renseignée."
 
 #. Used in: Components > Form Plugins > Date Input
 #: components/FormPlugins/DateInput.tsx:85
@@ -442,7 +442,8 @@ msgstr "Continuer sans enregistrer ?"
 #: components/FormSliders/RecordSelectorFromIds.tsx:289
 #, fuzzy
 msgid "recordSelectorUnloadProtectDescription"
-msgstr "Vous devriez peut-être sauvegarder cet enregistrement avant de partir."
+msgstr ""
+"Vous souhaiterez peut-être sauvegarder cet enregistrement avant de partir."
 
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #: components/FormSliders/RecordSelectorFromIds.tsx:227
@@ -464,7 +465,7 @@ msgstr "Avant"
 #: components/PickLists/definitions.ts:153
 #, fuzzy
 msgid "reverse"
-msgstr "Inverser"
+msgstr "Inverse"
 
 #. Used in: Components > Query Builder > Audit Log Formatter
 #: components/QueryBuilder/AuditLogFormatter.tsx:47
