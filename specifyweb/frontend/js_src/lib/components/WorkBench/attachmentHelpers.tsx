@@ -143,7 +143,7 @@ export async function saveDataSetAttachments(
   dataSetAttachments: RA<SpecifyResource<SpDataSetAttachment>>
 ): Promise<RA<SpecifyResource<SpDataSetAttachment>>> {
   return ajax<RA<SerializedRecord<SpDataSetAttachment>>>(
-    `/api/specify/bulk/${tables.SpDataSetAttachment.name.toLowerCase()}/`,
+    `/bulk_copy/bulk/${tables.SpDataSetAttachment.name.toLowerCase()}/`,
     {
       method: 'POST',
       headers: { Accept: 'application/json' },
