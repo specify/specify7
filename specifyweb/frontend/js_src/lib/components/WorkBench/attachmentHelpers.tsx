@@ -1,7 +1,17 @@
+import { ajax } from '../../utils/ajax';
 import type { RA, WritableArray } from '../../utils/types';
+import { uploadFile } from '../Attachments/attachments';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SerializedRecord } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type {
   Attachment,
+  Spdataset,
   SpDataSetAttachment,
   Tables,
 } from '../DataModel/types';
@@ -64,7 +74,8 @@ export function formatAttachmentsFromCell(value: any): string | undefined {
     : undefined;
 }
 
-/** TODO: Use the attachment column name from the dataset's upload plan.
+/**
+ * TODO: Use the attachment column name from the dataset's upload plan.
  * For now, it can be safely assumed attachment columns will always be named ATTACHMENTS_COLUMN.
  * If it needs to be changed for any reason, the upload plan can be referenced for backwards compatibility.
  */
@@ -89,4 +100,59 @@ export function getAttachmentsColumnFromHeaders(headers: RA<string>): number {
     return -1;
   }
   return headers.indexOf(ATTACHMENTS_COLUMN);
+}
+
+export function uploadFiles(
+  files: RA<File>,
+  handleProgress: (progress: (progress: number | undefined) => number) => void
+): RA<Promise<SpecifyResource<Attachment>>> {
+  return files.map(async (file) =>
+    uploadFile(file)
+      .then(async (attachment) =>
+        attachment === undefined
+          ? Promise.reject(`Upload failed for file ${file.name}`)
+          : attachment
+      )
+      .finally(() =>
+        handleProgress((progress) =>
+          typeof progress === 'number' ? progress + 1 : 1
+        )
+      )
+  );
+}
+
+export async function createDataSetAttachments(
+  attachments: RA<SpecifyResource<Attachment>>,
+  dataSet: SpecifyResource<Spdataset> | number
+): Promise<RA<SpecifyResource<SpDataSetAttachment>>> {
+  return Promise.all(
+    attachments.map(
+      (attachment) =>
+        new tables.SpDataSetAttachment.Resource({
+          attachment: attachment as never,
+          spdataset:
+            typeof dataSet === 'number'
+              ? `/api/specify/spdataset/${dataSet}/`
+              : dataSet.url(),
+          ordinal: 0,
+        })
+    )
+  );
+}
+
+export async function saveDataSetAttachments(
+  dataSetAttachments: RA<SpecifyResource<SpDataSetAttachment>>
+): Promise<RA<SpecifyResource<SpDataSetAttachment>>> {
+  return ajax<RA<SerializedRecord<SpDataSetAttachment>>>(
+    `/bulk_copy/bulk/${tables.SpDataSetAttachment.name.toLowerCase()}/`,
+    {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: dataSetAttachments.map((dataSetAttachment) =>
+        serializeResource(dataSetAttachment)
+      ),
+    }
+  ).then(({ data }) =>
+    data.map((resource) => deserializeResource(serializeResource(resource)))
+  );
 }

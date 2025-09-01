@@ -10,25 +10,15 @@ import { useNavigate } from 'react-router-dom';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
-import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { uploadFile } from '../Attachments/attachments';
-import type { SerializedRecord } from '../DataModel/helperTypes';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
-  deserializeResource,
   serializeResource,
 } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
-import type {
-  Attachment,
-  Spdataset,
-  SpDataSetAttachment,
-} from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { useMenuItem } from '../Header/MenuContext';
 import { userInformation } from '../InitialContext/userInformation';
@@ -42,6 +32,9 @@ import {
   ATTACHMENTS_COLUMN,
   attachmentsToCell,
   BASE_TABLE_NAME,
+  uploadFiles,
+  createDataSetAttachments,
+  saveDataSetAttachments,
 } from '../WorkBench/attachmentHelpers';
 
 export function WbImportAttachmentsView(): JSX.Element {
@@ -62,58 +55,6 @@ export function WbImportAttachmentsView(): JSX.Element {
       </div>
       {files !== undefined && files.length > 0 && <FilesPicked files={files} />}
     </Container.Full>
-  );
-}
-
-function uploadFiles(
-  files: RA<File>,
-  handleProgress: (progress: (progress: number | undefined) => number) => void
-): RA<Promise<SpecifyResource<Attachment>>> {
-  return files.map(async (file) =>
-    uploadFile(file)
-      .then(async (attachment) =>
-        attachment === undefined
-          ? Promise.reject(`Upload failed for file ${file.name}`)
-          : attachment
-      )
-      .finally(() =>
-        handleProgress((progress) =>
-          typeof progress === 'number' ? progress + 1 : 1
-        )
-      )
-  );
-}
-
-async function createDataSetAttachments(
-  attachments: RA<SpecifyResource<Attachment>>,
-  dataSet: SpecifyResource<Spdataset>
-): Promise<RA<SpecifyResource<SpDataSetAttachment>>> {
-  return Promise.all(
-    attachments.map(
-      (attachment) =>
-        new tables.SpDataSetAttachment.Resource({
-          attachment: attachment as never,
-          spdataset: dataSet.url(),
-          ordinal: 0,
-        })
-    )
-  );
-}
-
-async function saveDataSetAttachments(
-  dataSetAttachments: RA<SpecifyResource<SpDataSetAttachment>>
-): Promise<RA<SpecifyResource<SpDataSetAttachment>>> {
-  return ajax<RA<SerializedRecord<SpDataSetAttachment>>>(
-    `/bulk_copy/bulk/${tables.SpDataSetAttachment.name.toLowerCase()}/`,
-    {
-      method: 'POST',
-      headers: { Accept: 'application/json' },
-      body: dataSetAttachments.map((dataSetAttachment) =>
-        serializeResource(dataSetAttachment)
-      ),
-    }
-  ).then(({ data }) =>
-    data.map((resource) => deserializeResource(serializeResource(resource)))
   );
 }
 

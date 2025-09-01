@@ -34,29 +34,44 @@ import {
 import type { Attachment, SpDataSetAttachment } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { PopupWindow } from '../Molecules/PopupWindow';
 import { Skeleton } from '../SkeletonLoaders/Skeleton';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import {
+  attachmentsToCell,
   getAttachmentsColumn,
   getAttachmentsFromCell,
+  uploadFiles,
+  createDataSetAttachments,
+  saveDataSetAttachments,
+  BASE_TABLE_NAME,
 } from '../WorkBench/attachmentHelpers';
+import { FilePicker } from '../Molecules/FilePicker';
+import { Progress } from '../Atoms';
+import { loadingBar } from '../Molecules';
+import { raise } from '../Errors/Crash';
+import { f } from '../../utils/functools';
+import { PopupWindow } from '../Molecules/PopupWindow';
 
 const { formatCacheKey } = exportsForTests;
 
 type WbAttachmentPreviewCell = {
   readonly attachment: SerializedResource<Attachment> | undefined;
+  readonly spDataSetAttachment:
+    | SerializedResource<SpDataSetAttachment>
+    | undefined;
   readonly isLoading: boolean;
 };
 
 export function WbAttachmentsPreview({
   hot,
   dataset,
+  isUploaded,
   showPanel,
   onClose: handleClose,
 }: {
   readonly hot: Handsontable | undefined;
   readonly dataset: Dataset;
+  readonly isUploaded: boolean;
   readonly showPanel: boolean;
   readonly onClose: () => void;
 }): JSX.Element {
@@ -106,8 +121,28 @@ export function WbAttachmentsPreview({
     hot.addHook('afterSelectionEnd', handleSelection);
   }, [hot]);
 
+  const [fileUploadLength, setFileUploadLength] = React.useState<number>(0);
+  const [fileUploadProgress, setFileUploadProgress] = React.useState<
+    number | undefined
+  >(undefined);
+
   return (
     <>
+      {fileUploadProgress !== undefined && (
+        <Dialog
+          buttons={undefined}
+          header={attachmentsText.uploadingInline()}
+          onClose={undefined}
+        >
+          <div aria-live="polite">
+            {fileUploadProgress === fileUploadLength ? (
+              loadingBar
+            ) : (
+              <Progress max={fileUploadLength} value={fileUploadProgress} />
+            )}
+          </div>
+        </Dialog>
+      )}
       {showPanel && (
         <ErrorBoundary dismissible>
           <div className="flex h-full w-60 flex-col gap-4 overflow-y-auto">
@@ -137,7 +172,34 @@ export function WbAttachmentsPreview({
                 </div>
               )}
             </div>
-            <div className="flex flex-wrap gap-2">
+
+            <div className="flex flex-col gap-2">
+              {selectedRow !== undefined && !isUploaded && (
+                <FilePicker
+                  acceptedFormats={undefined}
+                  showFileNames={false}
+                  onFilesSelected={async (selectedFiles) => {
+                    if (!hot) return;
+                    await uploadAttachmentsToRow(
+                      Array.from(selectedFiles),
+                      dataset,
+                      hot,
+                      selectedRow,
+                      attachments,
+                      setFileUploadLength,
+                      setFileUploadProgress
+                    );
+                    fetchRowAttachments(
+                      hot,
+                      dataset,
+                      selectedRow,
+                      setAttachments,
+                      setSelectedAttachment
+                    );
+                  }}
+                  containerClassName="h-8 px-2 py-1 text-sm w-auto"
+                />
+              )}
               <Button.Small className="flex-1" onClick={handleClose}>
                 {commonText.close()}
               </Button.Small>
@@ -193,6 +255,7 @@ function fetchRowAttachments(
   setAttachments(
     Array.from({ length: dataSetAttachmentIds.length }, () => ({
       attachment: undefined,
+      spDataSetAttachment: undefined,
       isLoading: true,
     }))
   );
@@ -227,16 +290,77 @@ function fetchRowAttachments(
         }
         insertAttachmentPreviewCell(index, {
           attachment: resource,
+          spDataSetAttachment: serializeResource(data),
           isLoading: false,
         });
       })
       .catch(() => {
         insertAttachmentPreviewCell(index, {
           attachment: undefined,
+          spDataSetAttachment: undefined,
           isLoading: false,
         });
       });
   });
+}
+
+async function uploadAttachmentsToRow(
+  files: RA<File>,
+  dataset: Dataset,
+  hot: Handsontable,
+  selectedRow: number,
+  attachmentCells: RA<WbAttachmentPreviewCell>,
+  setFileUploadLength: React.Dispatch<React.SetStateAction<number>>,
+  setFileUploadProgress: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >
+): Promise<void> {
+  if (!hot) return;
+  if (selectedRow === undefined) return;
+
+  const attachmentColumn = getAttachmentsColumn(dataset);
+  if (attachmentColumn === -1) return;
+  setFileUploadProgress(0);
+  setFileUploadLength(files.length);
+  await Promise.all(uploadFiles(files, setFileUploadProgress))
+    .then(async (attachments) =>
+      // Create SpDataSetAttachments for each attachment
+      f.all({
+        dataSetAttachments: createDataSetAttachments(
+          attachments,
+          dataset.id
+        ).then(async (unsavedDataSetAttachments) => {
+          let ordinal = attachments.length;
+          unsavedDataSetAttachments.forEach((dataSetAttachment) => {
+            ordinal++;
+            dataSetAttachment.set('ordinal', ordinal);
+          });
+          return saveDataSetAttachments(unsavedDataSetAttachments);
+        }),
+      })
+    )
+    .then(async ({ dataSetAttachments }) => {
+      // Put all SpDataSetAttachments IDs into the data set
+      const existingSpDataSetAttachments = attachmentCells
+        .map((cell) => cell.spDataSetAttachment)
+        .filter(
+          (a): a is SerializedResource<SpDataSetAttachment> => a !== undefined
+        );
+      const allSpDataSetAttachments = [
+        ...existingSpDataSetAttachments,
+        ...dataSetAttachments.map(serializeResource),
+      ];
+      dataSetAttachments.map(serializeResource);
+
+      const data = attachmentsToCell(allSpDataSetAttachments, BASE_TABLE_NAME);
+      hot.setDataAtCell(selectedRow, attachmentColumn, data);
+      // TODO: Save dataset
+      setFileUploadProgress(undefined);
+    })
+    .catch(async (error) => {
+      setFileUploadProgress(undefined);
+      raise(error);
+    });
 }
 
 function AttachmentViewerDialog({
