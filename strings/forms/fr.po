@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2025-09-01 16:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Tom Bernard <tombrnd.pro@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/forms/"
 "fr/>\n"
 "Language: fr\n"
@@ -497,22 +497,19 @@ msgstr "Supprimer de {recordSetTable:string}"
 #. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Auto Complete
 #: components/AttachmentsBulkImport/utils.ts:484
 #: components/Molecules/AutoComplete.tsx:532
-#, fuzzy
 msgid "nothingFound"
-msgstr "Rien trouvé"
+msgstr "Rien n'a été trouvé"
 
 #. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 #: components/Forms/BulkCarryForward.tsx:287
 #: components/Forms/Save.tsx:253
-#, fuzzy
 msgid "carryForward"
 msgstr "Reporter"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:121
-#, fuzzy
 msgid "carryForwardEnabled"
-msgstr "Afficher le bouton de report"
+msgstr "Afficher le bouton Reporter"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:201
@@ -528,39 +525,33 @@ msgstr "Nombre de reports en masse"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:254
-#, fuzzy
 msgid "carryForwardDescription"
 msgstr "Créer un nouvel enregistrement avec certains champs reportés"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:124
 #: components/FormMeta/CarryForward.tsx:133
-#, fuzzy
 msgid "carryForwardSettingsDescription"
 msgstr "Configurer les champs à reporter"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:204
 #: components/FormMeta/CarryForward.tsx:225
-#, fuzzy
 msgid "bulkCarryForwardSettingsDescription"
 msgstr "Configurer les champs pour un report en masse"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:393
-#, fuzzy
 msgid "carryForwardTableSettingsDescription"
 msgstr "Configurer les champs à reporter ({tableName:string})"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:390
-#, fuzzy
 msgid "bulkCarryForwardTableSettingsDescription"
 msgstr "Configurer les champs pour un report en masse ({tableName:string})"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:463
-#, fuzzy
 msgid "carryForwardUniqueField"
 msgstr "Ce champ doit être unique. Il ne peut pas être reporté."
 
@@ -571,13 +562,11 @@ msgstr "Ce champ est obligatoire. Il doit être reporté"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:222
-#, fuzzy
 msgid "bulkCarryForwardRangeEnabled"
 msgstr "Afficher la plage de report en masse"
 
 #. Used in: Components > Forms > Bulk Carry Forward
 #: components/Forms/BulkCarryForward.tsx:306
-#, fuzzy
 msgid "bulkCarryForwardRangeErrorDescription"
 msgstr ""
 "Impossible de reporter l'enregistrement sur la plage {field:string} "
@@ -585,25 +574,21 @@ msgstr ""
 
 #. Used in: Components > Forms > Bulk Carry Forward
 #: components/Forms/BulkCarryForward.tsx:300
-#, fuzzy
 msgid "bulkCarryForwardRangeLimitExceeded"
 msgstr "La plage dépasse la limite d'enregistrement de {limit:number}."
 
 #. Used in: Components > Forms > Bulk Carry Forward
 #: components/Forms/BulkCarryForward.tsx:292
-#, fuzzy
 msgid "bulkCarryForwardRangeExistingRecords"
 msgstr "Les numéros suivants pour {field:string} sont déjà utilisés :"
 
 #. Used in: Components > Forms > Bulk Carry Forward
 #: components/Forms/BulkCarryForward.tsx:173
-#, fuzzy
 msgid "bulkCarryForwardRangeStart"
 msgstr "Début de la plage de report"
 
 #. Used in: Components > Forms > Bulk Carry Forward
 #: components/Forms/BulkCarryForward.tsx:181
-#, fuzzy
 msgid "bulkCarryForwardRangeEnd"
 msgstr "Fin de la plage de report"
 
@@ -615,81 +600,68 @@ msgstr "Créer un ensemble d'enregistrements sur le report en masse"
 
 #. Used in: Components > Form Meta > Clone
 #: components/FormMeta/Clone.tsx:31
-#, fuzzy
 msgid "cloneButtonEnabled"
 msgstr "Afficher le bouton Cloner"
 
 #. Used in: Components > Form Meta > Clone
 #: components/FormMeta/Clone.tsx:57
-#, fuzzy
 msgid "addButtonEnabled"
 msgstr "Afficher le bouton Ajouter"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:280
-#, fuzzy
 msgid "addButtonDescription"
 msgstr "Créer un nouvel enregistrement vierge"
 
 #. Used in: Components > Form Meta > Auto Numbering
 #: components/FormMeta/AutoNumbering.tsx:27
 #: components/FormMeta/AutoNumbering.tsx:92
-#, fuzzy
 msgid "autoNumbering"
 msgstr "Numérotation automatique"
 
 #. Used in: Components > Form Meta > Definition
 #: components/FormMeta/Definition.tsx:153
-#, fuzzy
 msgid "editFormDefinition"
 msgstr "Modifier la définition du formulaire"
 
 #. Used in: Components > Form Meta > Definition
 #: components/FormMeta/Definition.tsx:117
-#, fuzzy
 msgid "useAutoGeneratedForm"
 msgstr "Utiliser le formulaire généré automatiquement"
 
 #. Used in: Components > Form Meta > Definition
 #: components/FormMeta/Definition.tsx:134
-#, fuzzy
 msgid "useFieldLabels"
-msgstr "Utiliser des étiquettes de champ localisées"
+msgstr "Utiliser les étiquettes de champs localisées"
 
 #. Used in: Components > Form Editor > Editor
 #: components/FormEditor/Editor.tsx:205
-#, fuzzy
 msgid "showFieldLabels"
 msgstr "Afficher les étiquettes de champ localisées"
 
 #. Used in: Components > Form Editor > Editor
 #: components/FormEditor/Editor.tsx:204
-#, fuzzy
 msgid "showDataModelLabels"
 msgstr "Afficher les noms des champs du modèle de données"
 
 #. Used in: Components > Form Meta > Edit History
 #: components/FormMeta/EditHistory.tsx:34
 #: components/FormMeta/EditHistory.tsx:57
-#, fuzzy
 msgid "editHistory"
 msgstr "Modifier l'historique"
 
 #. Used in: Components > Form Meta > Edit History
 #: components/FormMeta/EditHistory.tsx:82
-#, fuzzy
 msgid "editHistoryQueryName"
-msgstr "Historique des modifications pour « {formattedRecord:string} »"
+msgstr "Modifier l'historique pour « {formattedRecord:string} »"
 
 #. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:149
-#, fuzzy
 msgid "formConfiguration"
 msgstr "Configuration du formulaire"
 
 #. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:181
-#, fuzzy
 msgid "formState"
 msgstr "État du formulaire"
 
@@ -701,7 +673,6 @@ msgstr "Informations sur le dossier"
 
 #. Used in: Components > Form Meta > Share Record
 #: components/FormMeta/ShareRecord.tsx:44
-#, fuzzy
 msgid "shareRecord"
 msgstr "Partager l'enregistrement"
 
@@ -714,51 +685,43 @@ msgstr "Trouver des utilisations"
 
 #. Used in: Components > Form Meta > Pick List Usages
 #: components/FormMeta/PickListUsages.tsx:68
-#, fuzzy
 msgid "usagesOfPickList"
 msgstr "Utilisations de la liste de sélection « {pickList:string} »"
 
 #. Used in: Components > Form Meta > Sub View Meta
 #: components/FormMeta/SubViewMeta.tsx:36
-#, fuzzy
 msgid "subForm"
 msgstr "Sous-formulaire"
 
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #: components/FormMeta/SubViewMeta.tsx:37
 #: components/Preferences/UserDefinitions.tsx:1138
-#, fuzzy
 msgid "formTable"
 msgstr "Grille"
 
 #. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:199
-#, fuzzy
 msgid "subviewConfiguration"
 msgstr "Sous-vue"
 
 #. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
 #: components/FormMeta/ReadOnlyMode.tsx:20
 #: components/Header/UserTools.tsx:91
-#, fuzzy
 msgid "disableReadOnly"
 msgstr "Désactiver le mode lecture seule"
 
 #. Used in: Components > Form Meta > Read Only Mode
 #: components/FormMeta/ReadOnlyMode.tsx:20
-#, fuzzy
 msgid "enableReadOnly"
 msgstr "Activer le mode lecture seule"
 
 #. Used in: Components > Data Entry Tables > Edit
 #: components/DataEntryTables/Edit.tsx:75
-#, fuzzy
 msgid "configureDataEntryTables"
 msgstr "Configurer les tables de saisie de données"
 
 #. Used in: Components > Data Entry Tables > Edit
 #: components/DataEntryTables/Edit.tsx:76
-#, fuzzy
 msgid "configureInteractionTables"
 msgstr "Configurer les tables d'interaction"
 
@@ -782,13 +745,11 @@ msgstr "Nouveau {tableName:string}"
 #. 🟥When resource does not have a formatter defined, this formatter is used. Used in: Components > Formatters > Formatters ⬤ Components > Forms > Data Obj Formatters
 #: components/Formatters/formatters.ts:59
 #: components/Forms/dataObjFormatters.ts:161
-#, fuzzy
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
 #. Used in: Components > Forms > Resource View
 #: components/Forms/ResourceView.tsx:225
-#, fuzzy
 msgid "resourceDeleted"
 msgstr "Ressource supprimée"
 
@@ -800,18 +761,15 @@ msgstr "L'élément a été supprimé avec succès."
 
 #. Used in: Components > Forms > Date Range
 #: components/Forms/DateRange.tsx:53
-#, fuzzy
 msgid "dateRange"
 msgstr "(Plage : {from:string} - {to:string})"
 
 #. 🟥Meaning "Catalog Number Numeric formatter". Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:293
-#, fuzzy
 msgid "catalogNumberNumericFormatter"
 msgstr "Numéro de catalogue numérique"
 
 #. Used in: Components > Form Cells > COJODialog
 #: components/FormCells/COJODialog.tsx:94
-#, fuzzy
 msgid "addCOGChildren"
 msgstr "Ajouter des enfants COG"
