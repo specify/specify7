@@ -1,5 +1,14 @@
+import { ajax } from '../../utils/ajax';
 import type { RA, WritableArray } from '../../utils/types';
+import { uploadFile } from '../Attachments/attachments';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SerializedRecord } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type {
   Attachment,
   Spdataset,
@@ -7,15 +16,6 @@ import type {
   Tables,
 } from '../DataModel/types';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { uploadFile } from '../Attachments/attachments';
-import type { SerializedRecord } from '../DataModel/helperTypes';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { ajax } from '../../utils/ajax';
-import {
-  deserializeResource,
-  serializeResource,
-} from '../DataModel/serializers';
-import { tables } from '../DataModel/tables';
 
 export const ATTACHMENTS_COLUMN = '_UPLOADED_ATTACHMENTS';
 export const BASE_TABLE_NAME = 'baseTable' as const;
@@ -74,7 +74,8 @@ export function formatAttachmentsFromCell(value: any): string | undefined {
     : undefined;
 }
 
-/** TODO: Use the attachment column name from the dataset's upload plan.
+/**
+ * TODO: Use the attachment column name from the dataset's upload plan.
  * For now, it can be safely assumed attachment columns will always be named ATTACHMENTS_COLUMN.
  * If it needs to be changed for any reason, the upload plan can be referenced for backwards compatibility.
  */
