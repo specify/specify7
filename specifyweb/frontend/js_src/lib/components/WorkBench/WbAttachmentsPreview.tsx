@@ -13,8 +13,10 @@ import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { exportsForTests, setCache } from '../../utils/cache';
+import { f } from '../../utils/functools';
 import type { GetSet, RA } from '../../utils/types';
 import { H2 } from '../Atoms';
+import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { fetchOriginalUrl } from '../Attachments/attachments';
 import { LeafletImageViewer } from '../Attachments/LeafletImageViewer';
@@ -32,25 +34,23 @@ import {
   serializeResource,
 } from '../DataModel/serializers';
 import type { Attachment, SpDataSetAttachment } from '../DataModel/types';
+import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { FilePicker } from '../Molecules/FilePicker';
+import { PopupWindow } from '../Molecules/PopupWindow';
 import { Skeleton } from '../SkeletonLoaders/Skeleton';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import {
   attachmentsToCell,
+  BASE_TABLE_NAME,
+  createDataSetAttachments,
   getAttachmentsColumn,
   getAttachmentsFromCell,
-  uploadFiles,
-  createDataSetAttachments,
   saveDataSetAttachments,
-  BASE_TABLE_NAME,
+  uploadFiles,
 } from '../WorkBench/attachmentHelpers';
-import { FilePicker } from '../Molecules/FilePicker';
-import { Progress } from '../Atoms';
-import { loadingBar } from '../Molecules';
-import { raise } from '../Errors/Crash';
-import { f } from '../../utils/functools';
-import { PopupWindow } from '../Molecules/PopupWindow';
 
 const { formatCacheKey } = exportsForTests;
 
@@ -179,6 +179,7 @@ export function WbAttachmentsPreview({
               {selectedRow !== undefined && !isUploaded && (
                 <FilePicker
                   acceptedFormats={undefined}
+                  containerClassName="h-8 px-2 py-1 text-sm w-auto"
                   showFileNames={false}
                   onFilesSelected={async (selectedFiles) => {
                     if (!hot) return;
@@ -199,7 +200,6 @@ export function WbAttachmentsPreview({
                       setSelectedAttachment
                     );
                   }}
-                  containerClassName="h-8 px-2 py-1 text-sm w-auto"
                 />
               )}
               <Button.Small className="flex-1" onClick={handleClose}>
@@ -225,8 +225,8 @@ function DatasetAttachmentPreview({
   attachment,
   onOpen,
 }: {
-  attachment: SerializedResource<Attachment>,
-  onOpen: () => void,
+  readonly attachment: SerializedResource<Attachment>,
+  readonly onOpen: () => void,
 }): JSX.Element {
   return (
     <div className="flex items-center w-full">
