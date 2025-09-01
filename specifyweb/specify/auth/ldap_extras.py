@@ -20,11 +20,12 @@ USERTYPES = UserTypes(
     guest='Guest',
 )
 
+# TODO: seems it's not in use
 @receiver(populate_user)
 def handle_populate_user(sender, user, ldap_user, **kwargs):
     from django.db import connection
-    from .models import Collection, Division, Agent
-    from .agent_types import agent_types
+    from ..models import Collection, Division, Agent
+    from ..utils.agent_types import agent_types
     from specifyweb.backend.context.views import set_users_collections
 
     for division in Division.objects.all():

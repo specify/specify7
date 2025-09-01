@@ -2,7 +2,7 @@
 
 from django.urls import re_path
 
-from . import schema
+from .models_utils import schema
 from specifyweb.specify import views
 
 urlpatterns = [

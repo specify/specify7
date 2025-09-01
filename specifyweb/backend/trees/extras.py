@@ -5,8 +5,8 @@ from typing import List
 
 from specifyweb.backend.trees.ranks import RankOperation, post_tree_rank_save, pre_tree_rank_deletion, \
     verify_rank_parent_chain_integrity, pre_tree_rank_init, post_tree_rank_deletion
-from specifyweb.specify.model_timestamp import save_auto_timestamp_field_with_override
-from specifyweb.specify.field_change_info import FieldChangeInfo
+from specifyweb.specify.models_utils.model_timestamp import save_auto_timestamp_field_with_override
+from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 logger = logging.getLogger(__name__)
 
 
