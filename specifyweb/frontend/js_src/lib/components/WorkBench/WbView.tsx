@@ -289,9 +289,13 @@ export function WbView({
               <WbAttachmentsPreview
                 dataset={dataset}
                 hot={hot}
+                workbench={workbench}
                 isUploaded={isUploaded}
                 showPanel={showAttachments}
                 onClose={toggleAttachments}
+                searchRef={searchRef}
+                checkDeletedFail={checkDeletedFail}
+                onSpreadsheetUpToDate={spreadsheetUpToDate}
               />
             </aside>
           ) : null}

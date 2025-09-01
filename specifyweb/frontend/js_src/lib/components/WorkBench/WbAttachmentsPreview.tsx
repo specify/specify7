@@ -51,6 +51,7 @@ import { loadingBar } from '../Molecules';
 import { raise } from '../Errors/Crash';
 import { f } from '../../utils/functools';
 import { PopupWindow } from '../Molecules/PopupWindow';
+import type { Workbench } from '../WorkBench/WbView';
 
 const { formatCacheKey } = exportsForTests;
 
@@ -65,15 +66,23 @@ type WbAttachmentPreviewCell = {
 export function WbAttachmentsPreview({
   hot,
   dataset,
+  workbench,
   isUploaded,
   showPanel,
   onClose: handleClose,
+  searchRef,
+  checkDeletedFail,
+  onSpreadsheetUpToDate: handleSpreadsheetUpToDate,
 }: {
   readonly hot: Handsontable | undefined;
   readonly dataset: Dataset;
+  readonly workbench: Workbench;
   readonly isUploaded: boolean;
   readonly showPanel: boolean;
   readonly onClose: () => void;
+  readonly searchRef: React.MutableRefObject<HTMLInputElement | null>;
+  readonly checkDeletedFail: (statusCode: number) => void;
+  readonly onSpreadsheetUpToDate: () => void;
 }): JSX.Element {
   const [selectedRow, setSelectedRow] = React.useState<number | undefined>(
     undefined
@@ -186,10 +195,14 @@ export function WbAttachmentsPreview({
                       Array.from(selectedFiles),
                       dataset,
                       hot,
+                      workbench,
                       selectedRow,
                       attachments,
                       setFileUploadLength,
-                      setFileUploadProgress
+                      setFileUploadProgress,
+                      searchRef,
+                      checkDeletedFail,
+                      handleSpreadsheetUpToDate
                     );
                     fetchRowAttachments(
                       hot,
@@ -342,16 +355,22 @@ function fetchRowAttachments(
   });
 }
 
+import { handleWorkbenchSave } from '../WbActions/WbSave'
+
 async function uploadAttachmentsToRow(
   files: RA<File>,
   dataset: Dataset,
   hot: Handsontable,
+  workbench: Workbench,
   selectedRow: number,
   attachmentCells: RA<WbAttachmentPreviewCell>,
   setFileUploadLength: React.Dispatch<React.SetStateAction<number>>,
   setFileUploadProgress: React.Dispatch<
     React.SetStateAction<number | undefined>
-  >
+  >,
+  searchRef: React.MutableRefObject<HTMLInputElement | null>,
+  checkDeletedFail: (statusCode: number) => void,
+  onSpreadsheetUpToDate: () => void,
 ): Promise<void> {
   if (!hot) return;
   if (selectedRow === undefined) return;
@@ -392,7 +411,13 @@ async function uploadAttachmentsToRow(
 
       const data = attachmentsToCell(allSpDataSetAttachments, BASE_TABLE_NAME);
       hot.setDataAtCell(selectedRow, attachmentColumn, data);
-      // TODO: Save dataset
+      // Save dataset automatically, since attachments have already been saved.
+      handleWorkbenchSave(
+        workbench,
+        searchRef,
+        checkDeletedFail,
+        onSpreadsheetUpToDate
+      );
       setFileUploadProgress(undefined);
     })
     .catch(async (error) => {

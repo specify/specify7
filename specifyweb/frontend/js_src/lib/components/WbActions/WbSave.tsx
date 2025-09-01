@@ -12,6 +12,34 @@ import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import type { Workbench } from '../WorkBench/WbView';
 
+export const handleWorkbenchSave = async (
+  workbench: Workbench,
+  searchRef: React.MutableRefObject<HTMLInputElement | null>,
+  checkDeletedFail: (statusCode: number) => void,
+  handleSpreadsheetUpToDate: () => void,
+) => {
+  // Clear validation
+  overwriteReadOnly(workbench.dataset, 'rowresults', null);
+  workbench.validation.stopLiveValidation();
+
+  // Send data
+  ping(`/api/workbench/rows/${workbench.dataset.id}/`, {
+    method: 'PUT',
+    body: workbench.data,
+    expectedErrors: [Http.NO_CONTENT, Http.NOT_FOUND],
+  })
+    .then((status) => checkDeletedFail(status))
+    .then(() => {
+      handleSpreadsheetUpToDate();
+      workbench.cells.cellMeta = [];
+      workbench.utils?.searchCells(
+        { key: 'SettingsChange' },
+        searchRef.current
+      );
+      workbench.hot?.render();
+    });
+};
+
 export function WbSave({
   workbench,
   hasUnsavedChanges,
@@ -28,32 +56,19 @@ export function WbSave({
   const [showProgressBar, openProgressBar, closeProgressBar] =
     useBooleanState();
 
-  const handleSave = () => {
-    // Clear validation
-    overwriteReadOnly(workbench.dataset, 'rowresults', null);
-    workbench.validation.stopLiveValidation();
-
+  const handleSave = async (): Promise<void> => {
     // Show saving progress bar
     openProgressBar();
 
-    // Send data
-    ping(`/api/workbench/rows/${workbench.dataset.id}/`, {
-      method: 'PUT',
-      body: workbench.data,
-      expectedErrors: [Http.NO_CONTENT, Http.NOT_FOUND],
-    })
-      .then((status) => checkDeletedFail(status))
-      .then(() => {
-        handleSpreadsheetUpToDate();
-        workbench.cells.cellMeta = [];
-        workbench.utils?.searchCells(
-          { key: 'SettingsChange' },
-          searchRef.current
-        );
-        workbench.hot?.render();
-        closeProgressBar();
-      });
-  };
+    await handleWorkbenchSave(
+      workbench,
+      searchRef,
+      checkDeletedFail,
+      handleSpreadsheetUpToDate,
+    );
+
+    closeProgressBar();
+  }
 
   return (
     <>
