@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-09-01 13:02+0000\n"
+"PO-Revision-Date: 2025-09-01 14:49+0000\n"
 "Last-Translator: Tom Bernard <tombrnd.pro@gmail.com>\n"
 "Language-Team: French "
 "<https://hosted.weblate.org/projects/specify-7/common/fr/>\n"
@@ -789,7 +789,7 @@ msgstr "Pays"
 #. Used in: Components > Leaflet > Index
 #, fuzzy
 msgid "viewRecord"
-msgstr "Voir l'enregistrement"
+msgstr "Afficher l'enregistrement"
 
 #: components/AppResources/Aside.tsx:400
 #: components/FormCells/index.tsx:315
@@ -911,14 +911,14 @@ msgstr "Copié!"
 #. Used in: Components > Molecules > Copy
 #, fuzzy
 msgid "copyToClipboard"
-msgstr "Copier dans le presse-papiers"
+msgstr "Copier dans le presse-papier"
 
 #: components/Interactions/PrepDialog.tsx:268
 #: components/WbPlanView/CustomSelectElement.tsx:296
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Wb Plan View > Custom Select Element
 #, fuzzy
 msgid "selected"
-msgstr "Choisi"
+msgstr "Sélectionné"
 
 #: components/FormCells/FormTable.tsx:310
 #: components/FormCells/FormTable.tsx:406
@@ -945,14 +945,14 @@ msgstr "Tout développer"
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Header > Index
 #, fuzzy
 msgid "collapse"
-msgstr "Effondrement"
+msgstr "Réduire"
 
 #: components/AppResources/Aside.tsx:189
 #: components/TreeView/index.tsx:306
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 #, fuzzy
 msgid "collapseAll"
-msgstr "Réduire tout"
+msgstr "Tout réduire"
 
 #: components/Attachments/ImageViewer.tsx:59
 #: components/Attachments/LeafletImageViewer.tsx:80
@@ -1091,19 +1091,19 @@ msgstr "{label:string}: <wrap />"
 #. Used in: Components > Interactions > Prep Dialog
 #, fuzzy
 msgid "bulkSelect"
-msgstr "Sélection en vrac"
+msgstr "Sélection groupée"
 
 #: components/Interactions/LoanReturn.tsx:273
 #. Used in: Components > Interactions > Loan Return
 #, fuzzy
 msgid "bulkReturn"
-msgstr "Retour en vrac"
+msgstr "Retour groupé"
 
 #: components/Interactions/LoanReturn.tsx:287
 #. Used in: Components > Interactions > Loan Return
 #, fuzzy
 msgid "bulkResolve"
-msgstr "Résolution en masse"
+msgstr "Résolution groupée"
 
 #: components/WorkBench/RemainingLoadingTime.tsx:45
 #. Used in: Components > Work Bench > Remaining Loading Time
@@ -1122,7 +1122,7 @@ msgstr "Illimité"
 #. 🟥Verb. Used in: Components > Molecules > Sync Attachment Picker ⬤ Components > Specify Network Collection > Index
 #, fuzzy
 msgid "change"
-msgstr "Changement"
+msgstr "Modifier"
 
 #: components/Merging/index.tsx:386
 #: components/WbActions/WbUpload.tsx:109
