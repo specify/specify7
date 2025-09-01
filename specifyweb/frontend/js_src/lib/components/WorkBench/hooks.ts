@@ -15,10 +15,10 @@ import { overwriteReadOnly } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { LoadingContext } from '../Core/Contexts';
 import { schema } from '../DataModel/schema';
+import { getAttachmentsColumn, usesAttachments } from './attachmentHelpers';
 import type { WbMeta } from './CellMeta';
 import { getHotPlugin } from './handsontable';
 import type { Workbench } from './WbView';
-import { getAttachmentsColumn, usesAttachments } from './attachmentHelpers';
 
 export function useHotHooks({
   workbench,
@@ -372,7 +372,7 @@ export function useHotHooks({
         console.log('uses attachments');
         const attachmentsColumn = getAttachmentsColumn(workbench.dataset);
         for (const row of removedRows) {
-          const cellMeta = workbench.hot!.getCellMeta(row, attachmentsColumn);
+          const cellMeta = workbench.hot.getCellMeta(row, attachmentsColumn);
           if (cellMeta)
             // TODO: Check if cell has a value, rather than just getting the meta
             return false;
