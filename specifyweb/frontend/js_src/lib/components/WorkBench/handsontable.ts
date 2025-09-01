@@ -8,7 +8,10 @@ import { writable } from '../../utils/types';
 import { schema } from '../DataModel/schema';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { formatAttachmentsFromCell, getAttachmentsColumn } from '../WorkBench/attachmentHelpers';
+import {
+  formatAttachmentsFromCell,
+  getAttachmentsColumn,
+} from '../WorkBench/attachmentHelpers';
 import type { BatchEditPack } from './batchEditHelpers';
 import { BATCH_EDIT_KEY, isBatchEditNullRecord } from './batchEditHelpers';
 import { getPhysicalColToMappingCol } from './hotHelpers';

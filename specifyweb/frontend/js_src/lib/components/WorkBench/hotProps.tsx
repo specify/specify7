@@ -102,17 +102,15 @@ export function useHotProps({
     'enterBeginsEditing'
   );
 
-  const hiddenColumns = React.useMemo(
-    () => {
-      return {
+  const hiddenColumns = React.useMemo(() => {
+    return {
       // Hide the disambiguation column
       columns: [dataset.columns.length],
       indicators: false,
       // TODO: Typing possibly doesn't match for handsontable 12.1.0, fixed in 14
       copyPasteEnabled: false,
-      }},
-    []
-  );
+    };
+  }, []);
 
   const [minSpareRows] = userPreferences.use(
     'workBench',

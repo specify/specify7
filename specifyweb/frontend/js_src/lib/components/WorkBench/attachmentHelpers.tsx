@@ -58,12 +58,10 @@ export function getAttachmentsFromCell(
   return undefined;
 }
 
-export function formatAttachmentsFromCell(
-  value: any
-): string | undefined {
+export function formatAttachmentsFromCell(value: any): string | undefined {
   return typeof value === 'string' && value.length > 0
     ? (JSON.parse(value) as CellAttachments | undefined)?.formatted
-    : undefined
+    : undefined;
 }
 
 /** TODO: Use the attachment column name from the dataset's upload plan.
@@ -86,9 +84,7 @@ export function getAttachmentsColumn(dataset: Dataset): number {
  * accept an uploadPlan to determine where the attachments column is.
  * Right now this function doesn't do anything different.
  */
-export function getAttachmentsColumnFromHeaders(
-  headers: RA<string>
-): number {
+export function getAttachmentsColumnFromHeaders(headers: RA<string>): number {
   if (!headers.includes(ATTACHMENTS_COLUMN)) {
     return -1;
   }

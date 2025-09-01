@@ -166,7 +166,7 @@ export function Mapper(props: {
     lines: RA<MappingLine>,
     mustMatchPreferences: IR<boolean>,
     batchEditPrefs?: BatchEditPrefs,
-    attachmentPrefs?: DatasetAttachmentPrefs,
+    attachmentPrefs?: DatasetAttachmentPrefs
   ) => Promise<void>;
   // Initial values for the state:
   readonly changesMade: boolean;
