@@ -169,12 +169,10 @@ export function WbAttachmentsPreview({
                       <DatasetAttachmentPreview
                         attachment={cell.attachment}
                         key={index}
-                        onOpen={
-                          (): void => {
-                            handleShowAttachment();
-                            setSelectedAttachment(cell.attachment);
-                          }
-                        }
+                        onOpen={(): void => {
+                          handleShowAttachment();
+                          setSelectedAttachment(cell.attachment);
+                        }}
                       />
                     ) : (
                       <Skeleton.Square key={index} />
@@ -238,16 +236,13 @@ function DatasetAttachmentPreview({
   attachment,
   onOpen,
 }: {
-  readonly attachment: SerializedResource<Attachment>,
-  readonly onOpen: () => void,
+  readonly attachment: SerializedResource<Attachment>;
+  readonly onOpen: () => void;
 }): JSX.Element {
   return (
     <div className="flex items-center w-full">
       <div className="flex-1 min-w-0">
-        <AttachmentPreview
-          attachment={attachment}
-          onOpen={onOpen}
-        />
+        <AttachmentPreview attachment={attachment} onOpen={onOpen} />
       </div>
       <div className="flex flex-col ml-2 gap-1 flex-shrink-0">
         <Button.Icon
@@ -267,7 +262,7 @@ function DatasetAttachmentPreview({
         />
       </div>
     </div>
-  )
+  );
 }
 
 function fetchRowAttachments(
@@ -355,7 +350,7 @@ function fetchRowAttachments(
   });
 }
 
-import { handleWorkbenchSave } from '../WbActions/WbSave'
+import { handleWorkbenchSave } from '../WbActions/WbSave';
 
 async function uploadAttachmentsToRow(
   files: RA<File>,
@@ -370,7 +365,7 @@ async function uploadAttachmentsToRow(
   >,
   searchRef: React.MutableRefObject<HTMLInputElement | null>,
   checkDeletedFail: (statusCode: number) => void,
-  onSpreadsheetUpToDate: () => void,
+  onSpreadsheetUpToDate: () => void
 ): Promise<void> {
   if (!hot) return;
   if (selectedRow === undefined) return;
