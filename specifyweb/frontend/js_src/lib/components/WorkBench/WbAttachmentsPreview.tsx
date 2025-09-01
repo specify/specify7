@@ -157,13 +157,15 @@ export function WbAttachmentsPreview({
                 <div className="flex flex-col gap-2">
                   {attachments.map((cell, index) =>
                     cell !== undefined && !cell.isLoading && cell.attachment ? (
-                      <AttachmentPreview
+                      <DatasetAttachmentPreview
                         attachment={cell.attachment}
                         key={index}
-                        onOpen={(): void => {
-                          handleShowAttachment();
-                          setSelectedAttachment(cell.attachment);
-                        }}
+                        onOpen={
+                          (): void => {
+                            handleShowAttachment();
+                            setSelectedAttachment(cell.attachment);
+                          }
+                        }
                       />
                     ) : (
                       <Skeleton.Square key={index} />
@@ -217,6 +219,42 @@ export function WbAttachmentsPreview({
       )}
     </>
   );
+}
+
+function DatasetAttachmentPreview({
+  attachment,
+  onOpen,
+}: {
+  attachment: SerializedResource<Attachment>,
+  onOpen: () => void,
+}): JSX.Element {
+  return (
+    <div className="flex items-center w-full">
+      <div className="flex-1 min-w-0">
+        <AttachmentPreview
+          attachment={attachment}
+          onOpen={onOpen}
+        />
+      </div>
+      <div className="flex flex-col ml-2 gap-1 flex-shrink-0">
+        <Button.Icon
+          icon="trash"
+          title={commonText.delete()}
+          onClick={() => {}}
+        />
+        <Button.Icon
+          icon="chevronUp"
+          title={commonText.remove()}
+          onClick={() => {}}
+        />
+        <Button.Icon
+          icon="chevronDown"
+          title={commonText.remove()}
+          onClick={() => {}}
+        />
+      </div>
+    </div>
+  )
 }
 
 function fetchRowAttachments(
