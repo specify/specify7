@@ -1,4 +1,4 @@
-from specifyweb.specify.load_datamodel import Field, Table
+from specifyweb.specify.models_utils.load_datamodel import Field, Table
 from specifyweb.specify.tests.test_api import ApiTests
 import json
 

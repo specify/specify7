@@ -3,6 +3,7 @@ from typing import Any
 from django.db.models import Subquery, Sum, F, Value, IntegerField, ExpressionWrapper, Q
 from django.db.models.query import QuerySet
 from django.db.models.functions import Coalesce
+from specifyweb.specify.api.api_utils import strict_uri_to_model
 from specifyweb.specify.models import (
     Collectionobject,
     Collectionobjectgroup,
@@ -15,8 +16,7 @@ from specifyweb.specify.models import (
     Recordset,
     Recordsetitem,
 )
-from specifyweb.specify.models_by_table_id import get_table_id_by_model_name
-from specifyweb.specify import api
+from specifyweb.specify.models_utils.models_by_table_id import get_table_id_by_model_name
 
 logger = logging.getLogger(__name__)
 
@@ -299,7 +299,7 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
     interaction_prep_data = updated_interaction_data[interaction_prep_name]
     updated_prep_ids = {
             # BUG: the preparation can be provided as an object in the request
-            api.strict_uri_to_model(
+            strict_uri_to_model(
                 interaction_prep["preparation"], "preparation")[1]
             for interaction_prep in interaction_prep_data
             if "preparation" in interaction_prep.keys() and interaction_prep["preparation"] is not None
@@ -333,7 +333,7 @@ def modify_update_of_interaction_sibling_preps(original_interaction_obj, updated
         if "preparation" in interaction_prep.keys()
         and interaction_prep["preparation"] is not None
         # BUG: the preparation can be provided as a dict in the request
-        and api.strict_uri_to_model(interaction_prep["preparation"], 'preparation')[1] not in removed_prep_ids
+        and strict_uri_to_model(interaction_prep["preparation"], 'preparation')[1] not in removed_prep_ids
     ]
 
     # Add preps
@@ -380,7 +380,7 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
         # BUG: the preparation can be provided as a dict in the request
         prep_uri = loan_prep_data["preparation"] if "preparation" in loan_prep_data.keys(
         ) else None
-        _, prep_id = api.strict_uri_to_model(
+        _, prep_id = strict_uri_to_model(
             prep_uri, "preparation") if prep_uri is not None else [None, None]
         map_prep_id_to_loan_prep_idx[prep_id] = loan_prep_idx
         loan_prep_idx += 1
@@ -401,7 +401,7 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
 
         loan_return_prep_data = loan_return_prep_data_lst[0]
         # BUG: the loanpreparation can be provided as an object in the request
-        loan_return_loan_prep_id = api.strict_uri_to_model(
+        loan_return_loan_prep_id = strict_uri_to_model(
             loan_return_prep_data["loanpreparation"], "loanpreparation")[1]
         if loan_return_loan_prep_id == loan_prep_id:
             target_prep_ids.update({prep_id})
@@ -560,7 +560,7 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
             in updated_interaction_data["loanpreparations"][loan_prep_idx].keys()
             else None
         )
-        prep_id = api.strict_uri_to_model(prep_uri, "preparation")[1] if prep_uri is not None else None
+        prep_id = strict_uri_to_model(prep_uri, "preparation")[1] if prep_uri is not None else None
         if prep_id in sibling_prep_ids or prep_id in new_loan_return_prep_ids or prep_id in target_prep_ids:
             quantity = updated_interaction_data["loanpreparations"][loan_prep_idx]["quantity"]
             if total_quantity_resolved >= quantity:

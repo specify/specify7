@@ -1,6 +1,6 @@
 from django.http import HttpResponseBadRequest
 from django.test import Client
-from specifyweb.specify.api import toJson, obj_to_data
+from specifyweb.specify.api.serializers import toJson, obj_to_data
 from specifyweb.specify.models import Collection
 from specifyweb.specify.tests.test_api import ApiTests
 import json

@@ -38,7 +38,7 @@ export const batchEditText = createDictionary({
     "en-us":
       "Field not supported for batch edit. Either remove the field, or make it hidden.",
     "de-ch":
-      "Das Feld wird für die Stapelbearbeitung nicht unterstützt. Entfernen Sie das Feld oder blenden Sie es aus.",
+      "Feld wird für die Stapelbearbeitung nicht unterstützt. Entfernen Sie das Feld oder blenden Sie es aus.",
     "es-es":
       "Campo no compatible con la edición por lotes. Elimínelo u ocúltelo.",
     "fr-fr":
@@ -115,7 +115,7 @@ export const batchEditText = createDictionary({
   createUpdateDataSetInstructions: {
     "en-us": "Use the query builder to make a new batch edit dataset",
     "de-ch":
-      "Verwenden Sie den Abfrage-Generator, um einen neuen Datensatz für die Stapelbearbeitung zu erstellen",
+      "Verwenden Sie den Abfrage-Generator, um einen neuen Datensatz zur Stapelbearbeitung zu erstellen",
     "es-es":
       "Utilice el generador de consultas para crear un nuevo conjunto de datos de edición por lotes",
     "fr-fr":
@@ -246,7 +246,7 @@ export const batchEditText = createDictionary({
   startCommit: {
     "en-us": "Begin Data Set Commit?",
     "de-ch": "Mit der Datensatzfestschreibung beginnen?",
-    "es-es": "¿Comenzar conjunto de datos? ¿Confirmar?",
+    "es-es": "¿Comenzar conjunto de datos Confirmar?",
     "fr-fr": "Commencer la validation de l'ensemble de données ?",
     "pt-br": "Iniciar confirmação do conjunto de dados?",
     "ru-ru": "Начать фиксацию набора данных?",
@@ -314,7 +314,7 @@ export const batchEditText = createDictionary({
   },
   deferForMatch: {
     "en-us": "Use only visible fields for match",
-    "de-ch": "Nur sichtbare Felder für die Übereinstimmung verwenden",
+    "de-ch": "Nur sichtbare Felder für den Abgleich verwenden",
     "es-es": "Utilice únicamente campos visibles para la coincidencia",
     "fr-fr": "Utiliser uniquement les champs visibles pour la correspondance",
     "pt-br": "Use apenas campos visíveis para correspondência",
@@ -339,7 +339,8 @@ export const batchEditText = createDictionary({
   },
   deferForNullCheck: {
     "en-us": "Use only visible fields for empty record check",
-    "de-ch": "Nur sichtbare Felder zur Prüfung leerer Datensätze verwenden",
+    "de-ch":
+      "Nur sichtbare Felder für die Prüfung auf leere Datensätze verwenden",
     "es-es":
       "Utilice únicamente campos visibles para la verificación de registros vacíos",
     "fr-fr":
@@ -352,7 +353,7 @@ export const batchEditText = createDictionary({
     "en-us":
       "If true, invisible database fields will not be used for determining whether the record is empty or not. Default value is {default: boolean}",
     "de-ch":
-      "Wenn „true“, werden unsichtbare Datenbankfelder nicht zur Bestimmung verwendet, ob der Datensatz leer ist oder nicht. Der Standardwert ist {default: boolean}",
+      "Wenn diese Option aktiviert ist, werden unsichtbare Datenbankfelder nicht zur Bestimmung verwendet, ob der Datensatz leer ist oder nicht. Der Standardwert ist {default: boolean}",
     "es-es":
       "Si es verdadero, los campos invisibles de la base de datos no se usarán para determinar si el registro está vacío. El valor predeterminado es {default: boolean}.",
     "fr-fr":
@@ -384,7 +385,7 @@ export const batchEditText = createDictionary({
     "en-us":
       "(Batch Edit datasets cannot be edited after rollback - Read Only)",
     "de-ch":
-      "(Datensätze der Stapelbearbeitung können nach dem Rollback nicht bearbeitet werden – schreibgeschützt)",
+      "(Datensätze mit Stapelbearbeitung können nach dem Rollback nicht bearbeitet werden – schreibgeschützt)",
     "es-es":
       "(Los conjuntos de datos de edición por lotes no se pueden editar después de la reversión: solo lectura)",
     "fr-fr":
@@ -409,7 +410,7 @@ export const batchEditText = createDictionary({
     "en-us":
       "Allows batch editing relationships of the base table. Rollback is disabled when relationships are enabled",
     "de-ch":
-      "Ermöglicht die Stapelbearbeitung von Beziehungen der Basistabelle. Rollback ist deaktiviert, wenn Beziehungen aktiviert sind.",
+      "Ermöglicht die Stapelbearbeitung von Beziehungen der Basistabelle. Rollback ist deaktiviert, wenn Beziehungen aktiviert sind",
     "es-es":
       "Permite la edición por lotes de relaciones de la tabla base. La reversión está deshabilitada cuando las relaciones están habilitadas.",
     "fr-fr":

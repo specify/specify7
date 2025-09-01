@@ -12,11 +12,12 @@ import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
-import type { RA } from '../../utils/types';
+import { exportsForTests, setCache } from '../../utils/cache';
+import type { GetSet, RA } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { fetchOriginalUrl } from '../Attachments/attachments';
-import { ImageViewer } from '../Attachments/ImageViewer';
+import { LeafletImageViewer } from '../Attachments/LeafletImageViewer';
 import { AttachmentPreview } from '../Attachments/Preview';
 import { AttachmentViewer } from '../Attachments/Viewer';
 import { toResource } from '../DataModel/helpers';
@@ -37,7 +38,7 @@ import { Skeleton } from '../SkeletonLoaders/Skeleton';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import {
   attachmentsToCell,
-  getAttachmentsColumnIndex,
+  getAttachmentsColumn,
   getAttachmentsFromCell,
   uploadFiles,
   createDataSetAttachments,
@@ -49,6 +50,9 @@ import { Progress } from '../Atoms';
 import { loadingBar } from '../Molecules';
 import { raise } from '../Errors/Crash';
 import { f } from '../../utils/functools';
+import { PopupWindow } from '../Molecules/PopupWindow';
+
+const { formatCacheKey } = exportsForTests;
 
 type WbAttachmentPreviewCell = {
   readonly attachment: SerializedResource<Attachment> | undefined;
@@ -60,11 +64,13 @@ export function WbAttachmentsPreview({
   hot,
   dataset,
   isUploaded,
+  showPanel,
   onClose: handleClose,
 }: {
   readonly hot: Handsontable | undefined;
   readonly dataset: Dataset;
   readonly isUploaded: boolean;
+  readonly showPanel: boolean;
   readonly onClose: () => void;
 }): JSX.Element {
   const [selectedRow, setSelectedRow] = React.useState<number | undefined>(
@@ -79,6 +85,8 @@ export function WbAttachmentsPreview({
 
   const [showAttachment, handleShowAttachment, handleHideAttachment] =
     useBooleanState();
+
+  const [useWindow, setUseWindow] = React.useState<boolean>(false);
 
   const handleSelection = (row: number | undefined): void => {
     if (!hot) return;
@@ -133,71 +141,75 @@ export function WbAttachmentsPreview({
           </div>
         </Dialog>
       )}
-      <ErrorBoundary dismissible>
-        <div className="flex h-full w-60 flex-col gap-4 overflow-y-auto">
-          <div>
-            <H2>{attachmentsText.attachments()}</H2>
-            <p>
-              {selectedRow === undefined
-                ? commonText.noResults()
-                : wbText.attachmentsForRow({ row: selectedRow + 1 })}
-            </p>
-            {selectedRow !== undefined && attachments.length >= 0 && (
-              <div className="flex flex-col gap-2">
-                {attachments.map((cell, index) =>
-                  cell !== undefined && !cell.isLoading && cell.attachment ? (
-                    <AttachmentPreview
-                      attachment={cell.attachment}
-                      key={index}
-                      onOpen={(): void => {
-                        handleShowAttachment();
-                        setSelectedAttachment(cell.attachment);
-                      }}
-                    />
-                  ) : (
-                    <Skeleton.Square key={index} />
-                  )
-                )}
-              </div>
-            )}
+      {showPanel && (
+        <ErrorBoundary dismissible>
+          <div className="flex h-full w-60 flex-col gap-4 overflow-y-auto">
+            <div>
+              <H2>{attachmentsText.attachments()}</H2>
+              <p>
+                {selectedRow === undefined
+                  ? commonText.noResults()
+                  : wbText.attachmentsForRow({ row: selectedRow + 1 })}
+              </p>
+              {selectedRow !== undefined && attachments.length >= 0 && (
+                <div className="flex flex-col gap-2">
+                  {attachments.map((cell, index) =>
+                    cell !== undefined && !cell.isLoading && cell.attachment ? (
+                      <AttachmentPreview
+                        attachment={cell.attachment}
+                        key={index}
+                        onOpen={(): void => {
+                          handleShowAttachment();
+                          setSelectedAttachment(cell.attachment);
+                        }}
+                      />
+                    ) : (
+                      <Skeleton.Square key={index} />
+                    )
+                  )}
+                </div>
+              )}
+            </div>
+            
+            <div className="flex flex-col gap-2">
+              {selectedRow !== undefined && !isUploaded &&
+                <FilePicker
+                  acceptedFormats={undefined}
+                  showFileNames={false}
+                  onFilesSelected={async (selectedFiles) => {
+                    if (!hot) return;
+                    await uploadAttachmentsToRow(
+                      Array.from(selectedFiles),
+                      dataset,
+                      hot,
+                      selectedRow,
+                      attachments,
+                      setFileUploadLength,
+                      setFileUploadProgress
+                    );
+                    fetchRowAttachments(
+                      hot,
+                      dataset,
+                      selectedRow,
+                      setAttachments,
+                      setSelectedAttachment
+                    );
+                  }}
+                  containerClassName="h-8 px-2 py-1 text-sm w-auto"
+                />
+              }
+              <Button.Small className="flex-1" onClick={handleClose}>
+                {commonText.close()}
+              </Button.Small>
+            </div>
           </div>
-          
-          <div className="flex flex-col gap-2">
-            {selectedRow !== undefined && !isUploaded &&
-              <FilePicker
-                acceptedFormats={undefined}
-                showFileNames={false}
-                onFilesSelected={async (selectedFiles) => {
-                  if (!hot) return;
-                  await uploadAttachmentsToRow(
-                    Array.from(selectedFiles),
-                    dataset,
-                    hot,
-                    selectedRow,
-                    attachments,
-                    setFileUploadLength,
-                    setFileUploadProgress
-                  );
-                  fetchRowAttachments(
-                    hot,
-                    dataset,
-                    selectedRow,
-                    setAttachments,
-                    setSelectedAttachment
-                  );
-                }}
-                containerClassName="h-8 px-2 py-1 text-sm w-auto"
-              />
-            }
-            <Button.Small className="flex-1" onClick={handleClose}>
-              {commonText.close()}
-            </Button.Small>
-          </div>
-        </div>
-      </ErrorBoundary>
+        </ErrorBoundary>
+      )}
       {showAttachment && (
         <AttachmentViewerDialog
           attachment={selectedAttachment}
+          viewerId={dataset.id.toString()}
+          window={[useWindow, setUseWindow]}
           onClose={handleHideAttachment}
         />
       )}
@@ -221,7 +233,7 @@ function fetchRowAttachments(
   ) => void
 ): void {
   // Look for Attachments column
-  const attachmentColumnIndex = getAttachmentsColumnIndex(dataset);
+  const attachmentColumnIndex = getAttachmentsColumn(dataset);
   if (attachmentColumnIndex === -1) return;
 
   // Each row should have comma-separated IDs for SpDataSetAttachments
@@ -302,8 +314,8 @@ async function uploadAttachmentsToRow(
   if (!hot) return;
   if (selectedRow === undefined) return;
   
-  const attachmentColumnIndex = getAttachmentsColumnIndex(dataset);
-  if (attachmentColumnIndex === -1) return;
+  const attachmentColumn = getAttachmentsColumn(dataset);
+  if (attachmentColumn === -1) return;
   setFileUploadProgress(0);
   setFileUploadLength(files.length);
   await Promise.all(uploadFiles(files, setFileUploadProgress)).then(async (attachments) =>
@@ -337,7 +349,7 @@ async function uploadAttachmentsToRow(
       allSpDataSetAttachments,
       BASE_TABLE_NAME
     );
-    hot.setDataAtCell(selectedRow, attachmentColumnIndex, data);
+    hot.setDataAtCell(selectedRow, attachmentColumn, data);
     // TODO: Save dataset
     setFileUploadProgress(undefined);
   })
@@ -350,9 +362,13 @@ async function uploadAttachmentsToRow(
 function AttachmentViewerDialog({
   attachment,
   onClose,
+  viewerId,
+  window: [useWindow, setUseWindow],
 }: {
   readonly attachment: SerializedResource<Attachment> | undefined;
   readonly onClose: () => void;
+  readonly viewerId: string;
+  readonly window: GetSet<boolean>;
 }): JSX.Element | null {
   const [attachmentUrl, setAttachmentUrl] = React.useState<string | undefined>(
     undefined
@@ -371,34 +387,85 @@ function AttachmentViewerDialog({
     });
   }, [attachment]);
 
+  // Use cache/localStorage to communicate with WbAttachmentViewer page.
+  React.useEffect(() => {
+    if (attachment === undefined) return;
+    if (useWindow) {
+      setCache('workBenchAttachmentViewer', viewerId, [attachment.id]);
+    }
+  }, [attachment, useWindow]);
+
   const [related, setRelated] = React.useState<
     SpecifyResource<AnySchema> | undefined
   >(undefined);
 
-  return (
+  const body =
+    attachment !== undefined &&
+    (isImage ? (
+      <LeafletImageViewer
+        alt={attachment?.title ?? ''}
+        src={attachmentUrl ?? ''}
+      />
+    ) : (
+      <AttachmentViewer
+        attachment={deserializeResource(attachment)}
+        related={[related, setRelated]}
+        showMeta={false}
+        onViewRecord={undefined}
+      />
+    ));
+
+  return useWindow ? (
+    <PopupWindow
+      title={attachmentsText.attachments()}
+      url={`/specify/workbench-attachment/?id=${encodeURIComponent(viewerId)}`}
+      onBlock={(): void => {
+        setUseWindow(false);
+      }}
+      onUnload={(): void => {
+        /**
+         * Only close the viewer if the user isn't reattaching the window.
+         * We know the window was reattached if the cache key was removed.
+         * Not using getCache to avoid using the cached cache (localStorage) value.
+         */
+        const value = globalThis.localStorage.getItem(
+          formatCacheKey('workBenchAttachmentViewer', viewerId)
+        );
+        if (value) {
+          onClose();
+        } else {
+          setUseWindow(false);
+        }
+      }}
+    >
+      {body}
+    </PopupWindow>
+  ) : (
     <Dialog
-      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+      buttons={undefined}
       className={{
         container: dialogClassNames.wideContainer,
       }}
+      defaultSize={{
+        width: 512,
+        height: 512,
+      }}
+      dimensionsKey="WbAttachmentViewer"
       header={attachmentsText.attachments()}
+      headerButtons={
+        <div className="flex items-center gap-2 md:gap-2 ml-auto">
+          <Button.Secondary onClick={(): void => setUseWindow(true)}>
+            {wbText.detachWindow()}
+          </Button.Secondary>
+          <Button.Secondary onClick={(): void => onClose()}>
+            {commonText.close()}
+          </Button.Secondary>
+        </div>
+      }
       modal={false}
       onClose={onClose}
     >
-      {attachment !== undefined &&
-        (isImage ? (
-          <ImageViewer
-            alt={attachment?.title ?? ''}
-            src={attachmentUrl ?? ''}
-          />
-        ) : (
-          <AttachmentViewer
-            attachment={deserializeResource(attachment)}
-            related={[related, setRelated]}
-            showMeta={false}
-            onViewRecord={undefined}
-          />
-        ))}
+      {body}
     </Dialog>
   );
 }

@@ -1,4 +1,4 @@
-from specifyweb.specify.api import post_resource
+from specifyweb.specify.api.crud import post_resource
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
 from .raw_query import get_simple_query
 from django.test import Client

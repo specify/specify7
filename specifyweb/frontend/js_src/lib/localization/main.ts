@@ -180,7 +180,7 @@ export const mainText = createDictionary({
   leavePageConfirmationDescription: {
     "en-us": "Unsaved changes will be lost if you leave this page.",
     "ru-ru":
-      "Несохраненные изменения будут потеряны, если вы покинете эту страницу.",
+      "Несохраненные изменения будут утеряны, если вы покинете эту страницу.",
     "es-es": "Los cambios no guardados se perderán si abandona esta página.",
     "fr-fr":
       "Les modifications non enregistrées seront perdues si vous quittez cette page.",

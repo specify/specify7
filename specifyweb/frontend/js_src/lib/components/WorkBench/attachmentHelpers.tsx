@@ -1,5 +1,3 @@
-import type Handsontable from 'handsontable';
-
 import type { RA, WritableArray } from "../../utils/types";
 import type { SerializedResource } from "../DataModel/helperTypes";
 import type {
@@ -70,11 +68,21 @@ export function getAttachmentsFromCell(
   return undefined;
 }
 
+export function formatAttachmentsFromCell(value: any): string | undefined {
+  return typeof value === 'string' && value.length > 0
+    ? (JSON.parse(value) as CellAttachments | undefined)?.formatted
+    : undefined;
+}
+
+/** TODO: Use the attachment column name from the dataset's upload plan.
+ * For now, it can be safely assumed attachment columns will always be named ATTACHMENTS_COLUMN.
+ * If it needs to be changed for any reason, the upload plan can be referenced for backwards compatibility.
+ */
 export function usesAttachments(dataset: Dataset): boolean {
   return dataset.columns.includes(ATTACHMENTS_COLUMN);
 }
 
-export function getAttachmentsColumnIndex(dataset: Dataset): number {
+export function getAttachmentsColumn(dataset: Dataset): number {
   if (!usesAttachments(dataset)) {
     return -1;
   }
@@ -86,9 +94,7 @@ export function getAttachmentsColumnIndex(dataset: Dataset): number {
  * accept an uploadPlan to determine where the attachments column is.
  * Right now this function doesn't do anything different.
  */
-export function getAttachmentsColumnIndexFromHeaders(
-  headers: RA<string>
-): number {
+export function getAttachmentsColumnFromHeaders(headers: RA<string>): number {
   if (!headers.includes(ATTACHMENTS_COLUMN)) {
     return -1;
   }

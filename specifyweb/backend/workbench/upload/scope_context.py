@@ -1,6 +1,7 @@
+
 from typing import Any, TypedDict
 
-from specifyweb.specify.uiformatters import UIFormatter
+from specifyweb.specify.utils.uiformatters import UIFormatter
 
 # This stores some info we can reuse for caching. If this is empty, logic doesn't change, just it is slower.
 # IMPORTANT: In the current implementation, if there are no CRs or COTypes, it _automatically_ caches scoped upload plan
