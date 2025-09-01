@@ -287,14 +287,14 @@ export function WbView({
           {useAttachments ? (
             <aside aria-live="polite">
               <WbAttachmentsPreview
+                checkDeletedFail={checkDeletedFail}
                 dataset={dataset}
                 hot={hot}
-                workbench={workbench}
                 isUploaded={isUploaded}
-                showPanel={showAttachments}
-                onClose={toggleAttachments}
                 searchRef={searchRef}
-                checkDeletedFail={checkDeletedFail}
+                showPanel={showAttachments}
+                workbench={workbench}
+                onClose={toggleAttachments}
                 onSpreadsheetUpToDate={spreadsheetUpToDate}
               />
             </aside>
