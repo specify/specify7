@@ -1,5 +1,5 @@
-import type { RA, WritableArray } from "../../utils/types";
-import type { SerializedResource } from "../DataModel/helperTypes";
+import type { RA, WritableArray } from '../../utils/types';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import type {
   Attachment,
   Spdataset,
@@ -129,7 +129,10 @@ export async function createDataSetAttachments(
       (attachment) =>
         new tables.SpDataSetAttachment.Resource({
           attachment: attachment as never,
-          spdataset: typeof dataSet === 'number' ? `/api/specify/spdataset/${dataSet}/` : dataSet.url(),
+          spdataset:
+            typeof dataSet === 'number'
+              ? `/api/specify/spdataset/${dataSet}/`
+              : dataSet.url(),
           ordinal: 0,
         })
     )
