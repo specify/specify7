@@ -86,7 +86,7 @@ export const formsText = createDictionary({
     "en-us": "Checking if resource can be deleted…",
     "ru-ru": "Проверка возможности удаления ресурса…",
     "es-es": "Comprobando si el recurso se puede eliminar…",
-    "fr-fr": "Vérification si la ressource peut être supprimée…",
+    "fr-fr": "Vérification de si la ressource peut être supprimée…",
     "uk-ua": "Перевірка можливості видалення ресурсу…",
     "de-ch": "Überprüfen, ob die Ressource gelöscht werden kann …",
     "pt-br": "Verificando se o recurso pode ser excluído…",
@@ -95,7 +95,7 @@ export const formsText = createDictionary({
     "en-us": "Checking if this record is currently in use…",
     "de-ch": "Es wird geprüft, ob dieser Datensatz derzeit verwendet wird …",
     "es-es": "Comprobando si este registro está actualmente en uso…",
-    "fr-fr": "Vérification si cet enregistrement est actuellement utilisé…",
+    "fr-fr": "Vérification de si cet enregistrement est actuellement utilisé…",
     "pt-br": "Verificando se este registro está em uso no momento…",
     "ru-ru": "Проверяем, используется ли эта запись в данный момент…",
     "uk-ua": "Перевірка, чи цей запис зараз використовується…",
@@ -125,7 +125,7 @@ export const formsText = createDictionary({
     "en-us": "Delete blocked",
     "ru-ru": "Удалить заблокированный",
     "es-es": "Eliminar bloqueado",
-    "fr-fr": "Supprimer bloqué",
+    "fr-fr": "Suppression bloquée",
     "uk-ua": "Видалити заблоковано",
     "de-ch": "Gesperrte löschen",
     "pt-br": "Excluir bloqueado",
@@ -137,7 +137,7 @@ export const formsText = createDictionary({
       "Die Ressource kann nicht gelöscht werden, da sie von den folgenden Ressourcen referenziert wird:",
     "es-es": "encontrar usos",
     "fr-fr":
-      "La ressource ne peut pas être supprimée car elle est référencée par les ressources suivantes :",
+      "La ressource ne peut pas être supprimée car les ressources suivantes y font référence :",
     "ru-ru":
       "Ресурс не может быть удален, поскольку на него ссылаются следующие ресурсы:",
     "uk-ua":
@@ -158,7 +158,7 @@ export const formsText = createDictionary({
     "en-us": "Paleo Map",
     "ru-ru": "Палеокарта",
     "es-es": "Mapa Paleo",
-    "fr-fr": "Carte paléo",
+    "fr-fr": "Carte Paléo",
     "uk-ua": "Палео-мапа",
     "de-ch": "Paläo-Karte",
     "pt-br": "Mapa Paleo",
@@ -180,7 +180,7 @@ export const formsText = createDictionary({
       "Das Paleo Map-Plugin erfordert, dass {localityTable:string} geografische Koordinaten hat und dass der Paläo-Kontext ein geografisches Alter mit mindestens einer ausgefüllten Start- oder Endzeit hat.",
     "es-es": "Seleccionar fuente de tablas",
     "fr-fr":
-      "Le plugin Paleo Map nécessite que les {localityTable:string} aient des coordonnées géographiques et que le contexte paléo ait un âge géographique avec au moins une heure de début ou une heure de fin renseignée.",
+      "Le plugin Carte Paléo nécessite que les {localityTable:string} aient des coordonnées géographiques et que le contexte paléo ait un âge géographique avec au moins un temps de début ou/et de fin.",
     "ru-ru":
       "Для работы плагина Paleo Map требуется, чтобы {localityTable:string} имел географические координаты, а палеоконтекст имел географический возраст с указанием как минимум начального и конечного времени.",
     "uk-ua":
@@ -238,7 +238,7 @@ export const formsText = createDictionary({
     "en-us": "Mon / Year",
     "ru-ru": "Пн / Год",
     "es-es": "Usar configuraciones personalizadas",
-    "fr-fr": "Lun / Année",
+    "fr-fr": "Mois / Année",
     "uk-ua": "Пн / Рік",
     "de-ch": "Mo / Jahr",
     "pt-br": "Seg / Ano",
@@ -267,7 +267,7 @@ export const formsText = createDictionary({
     "en-us": "Set to current date",
     "ru-ru": "Установить на текущую дату",
     "es-es": "Establecer en fecha actual",
-    "fr-fr": "Définir sur la date du jour",
+    "fr-fr": "Définir sur la date actuelle",
     "uk-ua": "Встановити на поточну дату",
     "de-ch": "Auf aktuelles Datum einstellen",
     "pt-br": "Definir para a data atual",
@@ -349,7 +349,7 @@ export const formsText = createDictionary({
     "en-us": "Save record first",
     "ru-ru": "Сначала сохраните запись",
     "es-es": "Guardar el registro primero",
-    "fr-fr": "Enregistrer d'abord l'enregistrement",
+    "fr-fr": "Sauvegarder d'abord l'enregistrement",
     "uk-ua": "Спочатку збережіть запис",
     "de-ch": "Datensatz zuerst speichern",
     "pt-br": "Salvar registro primeiro",
@@ -376,7 +376,7 @@ export const formsText = createDictionary({
     "en-us": "Previous Record",
     "ru-ru": "Предыдущая запись",
     "es-es": "Registro anterior",
-    "fr-fr": "Record précédent",
+    "fr-fr": "Enregistrement précédent",
     "uk-ua": "Попередній запис",
     "de-ch": "Vorheriger Datensatz",
     "pt-br": "Registro anterior",
@@ -385,7 +385,7 @@ export const formsText = createDictionary({
     "en-us": "Next Record",
     "ru-ru": "Следующая запись",
     "es-es": "Próximo récord",
-    "fr-fr": "Prochain enregistrement",
+    "fr-fr": "Enregistrement suivant",
     "uk-ua": "Наступний запис",
     "de-ch": "Nächster Datensatz",
     "pt-br": "Próximo registro",
@@ -438,7 +438,7 @@ export const formsText = createDictionary({
     "en-us": "Save blocked",
     "de-ch": "Speichern blockiert",
     "es-es": "Guardar bloqueado",
-    "fr-fr": "Enregistrer bloqué",
+    "fr-fr": "Enregistrement bloqué",
     "ru-ru": "Сохранить заблокировано",
     "uk-ua": "Зберегти заблоковано",
     "pt-br": "Salvar bloqueado",
@@ -543,7 +543,7 @@ export const formsText = createDictionary({
     "es-es":
       "Este complemento no se puede utilizar en el formulario {currentTable:string}. Intente moverlo a los formularios {supportedTables:string}.",
     "fr-fr":
-      "Ce plugin ne peut pas être utilisé sur le formulaire {currentTable:string}. Essayez de le déplacer vers les formulaires {supportedTables:string}.",
+      "Ce plugin ne peut pas être utilisé dans le formulaire {currentTable:string}. Essayez de le déplacer vers les formulaires {supportedTables:string}.",
     "uk-ua":
       "Цей плагін не можна використовувати на формі {currentTable:string}. Спробуйте перемістити його на форми {supportedTables:string}.",
     "de-ch":
@@ -559,7 +559,7 @@ export const formsText = createDictionary({
     "es-es":
       "El comando no se puede utilizar en el formulario {currentTable:string}. Sólo se puede utilizar en el formulario {correctTable:string}.",
     "fr-fr":
-      "La commande ne peut pas être utilisée sur le formulaire {currentTable:string}. Elle ne peut être utilisée que sur le formulaire {correctTable:string}.",
+      "La commande ne peut pas être utilisée dans le formulaire {currentTable:string}. Elle ne peut être utilisée que dans le formulaire {correctTable:string}.",
     "uk-ua":
       "Команду не можна використовувати у формі {currentTable:string}. Її можна використовувати лише у формі {correctTable:string}.",
     "de-ch":
@@ -584,7 +584,7 @@ export const formsText = createDictionary({
     "en-us": "Illegal value for a Yes/No field",
     "ru-ru": "Недопустимое значение для поля «Да/Нет»",
     "es-es": "Valor ilegal para un campo Sí/No",
-    "fr-fr": "Valeur illégale pour un champ Oui/Non",
+    "fr-fr": "Valeur interdite pour un champ Oui/Non",
     "uk-ua": "Неприпустиме значення для поля «Так/Ні»",
     "de-ch": "Unzulässiger Wert für ein Ja/Nein-Feld",
     "pt-br": "Valor ilegal para um campo Sim/Não",
@@ -675,7 +675,7 @@ export const formsText = createDictionary({
     "en-us": "Entire Table",
     "ru-ru": "Вся таблица",
     "es-es": "Tabla entera",
-    "fr-fr": "Tableau entier",
+    "fr-fr": "Table entière",
     "uk-ua": "Вся таблиця",
     "de-ch": "Gesamte Tabelle",
     "pt-br": "Mesa inteira",
@@ -705,7 +705,7 @@ export const formsText = createDictionary({
     "en-us": "Additional results omitted",
     "ru-ru": "Дополнительные результаты пропущены",
     "es-es": "Resultados adicionales omitidos",
-    "fr-fr": "Résultats supplémentaires omis",
+    "fr-fr": "Résultats supplémentaires masqués",
     "uk-ua": "Додаткові результати пропущені",
     "de-ch": "Zusätzliche Ergebnisse ausgelassen",
     "pt-br": "Resultados adicionais omitidos",
@@ -728,7 +728,7 @@ export const formsText = createDictionary({
     "ru-ru": "Возможно, вы захотите сохранить эту запись, прежде чем уйти.",
     "es-es": "Es posible que desees guardar este registro antes de navegar.",
     "fr-fr":
-      "Vous souhaiterez peut-être sauvegarder cet enregistrement avant de partir.",
+      "Vous devriez peut-être sauvegarder cet enregistrement avant de partir.",
     "uk-ua":
       "Можливо, ви захочете зберегти цей запис, перш ніж залишати сторінку.",
     "de-ch":
@@ -748,7 +748,7 @@ export const formsText = createDictionary({
     "en-us": "Create a new record set",
     "ru-ru": "Создать новый набор записей",
     "es-es": "Crear un nuevo conjunto de registros",
-    "fr-fr": "Créer un nouvel ensemble d'enregistrements",
+    "fr-fr": "Créer un nouveau jeu d'enregistrements",
     "uk-ua": "Створити новий набір записів",
     "de-ch": "Erstellen Sie einen neuen Datensatz",
     "pt-br": "Criar um novo conjunto de registros",
@@ -766,7 +766,7 @@ export const formsText = createDictionary({
     "en-us": "Reverse",
     "ru-ru": "Обеспечить регресс",
     "es-es": "Contrarrestar",
-    "fr-fr": "Inverse",
+    "fr-fr": "Inverser",
     "uk-ua": "Зворотний",
     "de-ch": "Umkehren",
     "pt-br": "Reverter",
