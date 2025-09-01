@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-09-01 13:02+0000\n"
+"PO-Revision-Date: 2025-09-01 14:49+0000\n"
 "Last-Translator: Tom Bernard <tombrnd.pro@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/common/"
 "fr/>\n"
@@ -729,25 +729,21 @@ msgstr "Ensembles de records"
 
 #. Used in: Components > Toolbar > Record Sets
 #: components/Toolbar/RecordSets.tsx:313
-#, fuzzy
 msgid "recordCount"
 msgstr "Nombre d'enregistrements"
 
 #. Used in: Components > Toolbar > Record Sets
 #: components/Toolbar/RecordSets.tsx:172
-#, fuzzy
 msgid "size"
 msgstr "Taille"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:166
-#, fuzzy
 msgid "running"
 msgstr "En cours d'exécution…"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:168
-#, fuzzy
 msgid "noMatches"
 msgstr "Aucune correspondance"
 
@@ -764,7 +760,6 @@ msgstr "Requête de recherche"
 #: components/Attachments/attachments.ts:122
 #: components/HomePage/AboutSpecify.tsx:188
 #: components/HomePage/AboutSpecify.tsx:214
-#, fuzzy
 msgid "unknown"
 msgstr "Inconnu"
 
@@ -781,7 +776,6 @@ msgstr "Langue"
 
 #. Used in: Components > Schema Config > Languages
 #: components/SchemaConfig/Languages.tsx:104
-#, fuzzy
 msgid "country"
 msgstr "Pays"
 
@@ -789,27 +783,24 @@ msgstr "Pays"
 #: components/Leaflet/index.ts:186
 #, fuzzy
 msgid "viewRecord"
-msgstr "Voir l'enregistrement"
+msgstr "Afficher l'enregistrement"
 
 #. Used in: Components > App Resources > Aside ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index
 #: components/AppResources/Aside.tsx:400
 #: components/FormCells/index.tsx:315
 #: components/FormCommands/index.tsx:110
 #: components/FormPlugins/index.tsx:190
-#, fuzzy
 msgid "nullInline"
 msgstr "(nul)"
 
 #. 🟥Generic. Could refer to any file. Used in: Components > Molecules > File Picker
 #: components/Molecules/FilePicker.tsx:107
-#, fuzzy
 msgid "filePickerMessage"
 msgstr "Choisissez un fichier ou faites-le glisser ici"
 
 #. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Molecules > File Picker
 #: components/AttachmentsBulkImport/Import.tsx:204
 #: components/Molecules/FilePicker.tsx:114
-#, fuzzy
 msgid "selectedFileName"
 msgstr "Fichier sélectionné"
 
@@ -818,7 +809,6 @@ msgstr "Fichier sélectionné"
 #: components/Attachments/index.tsx:183
 #: components/Security/registry.ts:117
 #: components/Security/registry.ts:145
-#, fuzzy
 msgid "all"
 msgstr "Tous"
 
@@ -842,7 +832,6 @@ msgstr "Ordinal"
 #: components/Security/ImportExport.tsx:252
 #: components/WbToolkit/DevShowPlan.tsx:90
 #: components/WbToolkit/index.tsx:100
-#, fuzzy
 msgid "export"
 msgstr "Exporter"
 
@@ -857,7 +846,6 @@ msgstr "Exporter"
 #: components/Security/ImportExport.tsx:86
 #: components/Security/ImportExport.tsx:90
 #: components/Toolbar/QueryTablesWrapper.tsx:151
-#, fuzzy
 msgid "import"
 msgstr "Importer"
 
@@ -865,7 +853,6 @@ msgstr "Importer"
 #: components/Errors/ErrorDialog.tsx:177
 #: components/Errors/Toasts.tsx:103
 #: components/Permissions/PermissionDenied.tsx:218
-#, fuzzy
 msgid "dismiss"
 msgstr "Rejeter"
 
@@ -888,7 +875,6 @@ msgstr "Filtre"
 #. Used in: Components > Query Builder > Results ⬤ Components > Wb Actions > Index
 #: components/QueryBuilder/Results.tsx:79
 #: components/WbActions/index.tsx:123
-#, fuzzy
 msgid "results"
 msgstr "Résultats"
 
@@ -897,28 +883,24 @@ msgstr "Résultats"
 #: components/LocalityUpdate/Status.tsx:464
 #: components/LocalityUpdate/Status.tsx:505
 #: components/Merging/Status.tsx:100
-#, fuzzy
 msgid "downloadErrorMessage"
 msgstr "Télécharger le message d'erreur"
 
 #. Used in: Components > Molecules > Copy
 #: components/Molecules/Copy.tsx:29
-#, fuzzy
 msgid "copied"
 msgstr "Copié!"
 
 #. Used in: Components > Molecules > Copy
 #: components/Molecules/Copy.tsx:13
-#, fuzzy
 msgid "copyToClipboard"
-msgstr "Copier dans le presse-papiers"
+msgstr "Copier dans le presse-papier"
 
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Wb Plan View > Custom Select Element
 #: components/Interactions/PrepDialog.tsx:268
 #: components/WbPlanView/CustomSelectElement.tsx:296
-#, fuzzy
 msgid "selected"
-msgstr "Choisi"
+msgstr "Sélectionné"
 
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Formatters > Definitions ⬤ Components > Header > Index ⬤ Components > Molecules > Auto Complete
 #: components/FormCells/FormTable.tsx:310
@@ -943,16 +925,14 @@ msgstr "Tout développer"
 #: components/FormCells/FormTable.tsx:368
 #: components/FormSliders/IntegratedRecordSelector.tsx:110
 #: components/Header/index.tsx:158
-#, fuzzy
 msgid "collapse"
-msgstr "Effondrement"
+msgstr "Réduire"
 
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 #: components/AppResources/Aside.tsx:189
 #: components/TreeView/index.tsx:306
-#, fuzzy
 msgid "collapseAll"
-msgstr "Réduire tout"
+msgstr "Tout réduire"
 
 #. Used in: Components > Attachments > Image Viewer ⬤ Components > Attachments > Leaflet Image Viewer ⬤ Components > Preferences > Index ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Query Tables Edit
 #: components/Attachments/ImageViewer.tsx:59
@@ -960,14 +940,12 @@ msgstr "Réduire tout"
 #: components/Preferences/index.tsx:221
 #: components/Statistics/index.tsx:564
 #: components/Toolbar/QueryTablesEdit.tsx:70
-#, fuzzy
 msgid "reset"
 msgstr "Réinitialiser"
 
 #. Used in: Components > Form Editor > Create ⬤ Components > Search Dialog > Index
 #: components/FormEditor/Create.tsx:210
 #: components/SearchDialog/index.tsx:378
-#, fuzzy
 msgid "select"
 msgstr "Sélectionner"
 
@@ -981,13 +959,11 @@ msgstr "Sélectionner"
 #: components/Security/PreviewComponents.tsx:133
 #: components/Security/PreviewComponents.tsx:190
 #: components/Security/RoleTemplate.tsx:111
-#, fuzzy
 msgid "none"
 msgstr "Aucun"
 
 #. Used in: Components > Schema Config > Components
 #: components/SchemaConfig/Components.tsx:73
-#, fuzzy
 msgid "noneAvailable"
 msgstr "Aucun disponible"
 
@@ -1010,13 +986,11 @@ msgstr "Aucun disponible"
 #: components/WbUtils/datasetVariants.tsx:29
 #: components/WbUtils/datasetVariants.tsx:88
 #: components/WbUtils/datasetVariants.tsx:104
-#, fuzzy
 msgid "countLine"
 msgstr "{resource:string} ({count:number|formatted})"
 
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Aside
 #: components/AppResources/Aside.tsx:250
-#, fuzzy
 msgid "jsxCountLine"
 msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 
@@ -1029,7 +1003,6 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 #: components/Security/RoleTemplate.tsx:182
 #: components/WebLinks/Definition.tsx:44
 #: components/WorkBench/DataSetMeta.tsx:222
-#, fuzzy
 msgid "colonHeader"
 msgstr "{header:string}:"
 
@@ -1070,7 +1043,6 @@ msgstr "{header:string}:"
 #: components/WorkBench/DataSetMeta.tsx:373
 #: components/WorkBench/RemainingLoadingTime.tsx:44
 #: components/WorkBench/Results.tsx:161
-#, fuzzy
 msgid "colonLine"
 msgstr "{label:string}: {value:string}"
 
@@ -1083,46 +1055,39 @@ msgstr "{label:string}: {value:string}"
 #: components/WorkBench/DataSetMeta.tsx:309
 #: components/WorkBench/DataSetMeta.tsx:329
 #: components/WorkBench/DataSetMeta.tsx:339
-#, fuzzy
 msgid "jsxColonLine"
 msgstr "{label:string}: <wrap />"
 
 #. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:161
-#, fuzzy
 msgid "bulkSelect"
-msgstr "Sélection en vrac"
+msgstr "Sélection groupée"
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:273
-#, fuzzy
 msgid "bulkReturn"
-msgstr "Retour en vrac"
+msgstr "Retour groupé"
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:287
-#, fuzzy
 msgid "bulkResolve"
-msgstr "Résolution en masse"
+msgstr "Résolution groupée"
 
 #. Used in: Components > Work Bench > Remaining Loading Time
 #: components/WorkBench/RemainingLoadingTime.tsx:45
-#, fuzzy
 msgid "timeRemaining"
 msgstr "Temps restant"
 
 #. Used in: Components > Molecules > Paginator
 #: components/Molecules/Paginator.tsx:63
-#, fuzzy
 msgid "unlimited"
 msgstr "Illimité"
 
 #. 🟥Verb. Used in: Components > Molecules > Sync Attachment Picker ⬤ Components > Specify Network Collection > Index
 #: components/Molecules/SyncAttachmentPicker.tsx:59
 #: components/SpecifyNetworkCollection/index.tsx:71
-#, fuzzy
 msgid "change"
-msgstr "Changement"
+msgstr "Modifier"
 
 #. Used in: Components > Merging > Index ⬤ Components > Wb Actions > Wb Upload
 #: components/Merging/index.tsx:386
@@ -1134,13 +1099,11 @@ msgstr "Ne plus afficher ceci"
 #. Used in: Components > Molecules > File Picker ⬤ Components > Wb Import Attachments > Index
 #: components/Molecules/FilePicker.tsx:106
 #: components/WbImportAttachments/index.tsx:53
-#, fuzzy
 msgid "multipleFilePickerMessage"
 msgstr "Choisissez des fichiers ou faites-les glisser ici"
 
 #. Used in: Components > Attachments > Image Viewer
 #: components/Attachments/ImageViewer.tsx:49
-#, fuzzy
 msgid "zoom"
 msgstr "Zoom"
 
