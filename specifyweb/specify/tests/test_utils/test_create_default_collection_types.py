@@ -3,7 +3,6 @@ from specifyweb.specify.tests.test_api import ApiTests
 from django.apps import apps
 from specifyweb.specify.models import Collection, Collectionobject, Collectionobjecttype
 
-
 class TestCreateDefaultCollectionTypes(ApiTests):
 
     def test_no_collection_case(self):

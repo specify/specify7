@@ -3,8 +3,8 @@ from django.db.models import Count, Q
 
 from specifyweb.middleware.general import require_GET
 from specifyweb.specify.views import login_maybe_required
-from specifyweb.specify.filter_by_col import filter_by_collection
-from specifyweb.specify.api import toJson
+from specifyweb.specify.api.filter_by_col import filter_by_collection
+from specifyweb.specify.api.serializers import toJson
 from specifyweb.specify.models import Taxon
 
 from django.db import connection

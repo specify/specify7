@@ -1,5 +1,5 @@
 from typing import Literal
-from specifyweb.specify.func import Func
+from specifyweb.specify.utils.func import Func
 from specifyweb.specify.tests.test_api import get_table
 from specifyweb.backend.stored_queries.batch_edit import run_batch_edit_query  # type: ignore
 from specifyweb.backend.stored_queries.queryfield import QueryField, fields_from_json

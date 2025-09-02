@@ -14,16 +14,16 @@ export function LeafletImageViewer({
 }): JSX.Element {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
 
-  const defaultBounds = L.latLngBounds([0,0], [512, 512]);
+  const defaultBounds = L.latLngBounds([0, 0], [512, 512]);
   const boundsRef = React.useRef<L.LatLngBounds>(defaultBounds);
 
   React.useEffect(() => {
     if (!containerRef.current) return;
 
     const map = L.map(containerRef.current, {
-        crs: L.CRS.Simple,
-        minZoom: -10,
-        zoomSnap: 0,
+      crs: L.CRS.Simple,
+      minZoom: -10,
+      zoomSnap: 0,
     });
     boundsRef.current = defaultBounds;
 
@@ -32,7 +32,7 @@ export function LeafletImageViewer({
     img.addEventListener('load', () => {
       // Update viewer bounds once the image is done loading.
       boundsRef.current = L.latLngBounds([0, 0], [img.height, img.width]);
-      
+
       L.imageOverlay(src, boundsRef.current, { alt }).addTo(map);
       map.fitBounds(boundsRef.current);
     });
@@ -47,7 +47,7 @@ export function LeafletImageViewer({
 
     return () => {
       map.remove();
-    }
+    };
   }, [src]);
 
   return (
@@ -73,12 +73,12 @@ function resetZoomButton(
 ): L.Control {
   const ResetZoomControl = L.Control.extend({
     options: { position: 'topleft' },
-    onAdd () {
+    onAdd() {
       const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
       const button = L.DomUtil.create('a', '', container) as HTMLAnchorElement;
       button.innerHTML = renderToStaticMarkup(icons.arrowPath);
       button.title = commonText.reset();
-      button.href = "#";
+      button.href = '#';
       button.setAttribute('role', 'button');
       button.style.display = 'flex';
       button.style.alignItems = 'center';

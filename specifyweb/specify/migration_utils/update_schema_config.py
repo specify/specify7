@@ -7,8 +7,8 @@ from django.db.models import Q, Count
 from django.apps import apps as global_apps
 from django.core.exceptions import MultipleObjectsReturned
 
-from specifyweb.specify.load_datamodel import Table, FieldDoesNotExistError, TableDoesNotExistError
-from specifyweb.specify.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
+from specifyweb.specify.models_utils.load_datamodel import Table, FieldDoesNotExistError, TableDoesNotExistError
+from specifyweb.specify.models_utils.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
 from specifyweb.specify.models import (
     Discipline,
     datamodel,

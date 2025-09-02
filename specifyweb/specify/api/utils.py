@@ -1,27 +1,11 @@
 import logging
 
-from specifyweb.backend.accounts import models as acccounts_models
-from specifyweb.backend.attachment_gw import models as attachment_gw_models
-from specifyweb.backend.businessrules import models as businessrules_models
-from specifyweb.backend.context import models as context_models
-from specifyweb.backend.notifications import models as notifications_models
-from specifyweb.backend.permissions import models as permissions_models
-from specifyweb.backend.interactions import models as interactions_models
-from specifyweb.backend.workbench import models as workbench_models
 from specifyweb.specify import models as spmodels
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 
 logger = logging.getLogger(__name__)
 
-APP_MODELS = [spmodels, acccounts_models, attachment_gw_models, businessrules_models, context_models,
-              notifications_models, permissions_models, interactions_models, workbench_models]
-
-def get_app_model(model_name: str):
-    for app in APP_MODELS:
-        if hasattr(app, model_name):
-            return getattr(app, model_name)
-    return None
-
+# TODO: is this used somewhere? 
 def get_spmodel_class(model_name: str):
     try:
         return getattr(spmodels, model_name.capitalize())
@@ -45,6 +29,42 @@ def log_sqlalchemy_query(query):
     # Run in the storred_queries.execute file, in the execute function, right before the return statement, line 546
     # from specifyweb.specify.utils import log_sqlalchemy_query; log_sqlalchemy_query(query)
 
+def create_default_collection_types(apps):
+    Collection = apps.get_model('specify', 'Collection')
+    Collectionobject = apps.get_model('specify', 'Collectionobject')
+    Collectionobjecttype = apps.get_model('specify', 'Collectionobjecttype')
+    code_set = set(Collection.objects.all().values_list('code', flat=True))
+
+    # Create default collection types for each collection, named after the discipline
+    for collection in Collection.objects.all():
+        discipline = collection.discipline
+        discipline_name = discipline.name
+        cot, created = Collectionobjecttype.objects.get_or_create(
+            name=discipline_name,
+            collection=collection,
+            taxontreedef_id=discipline.taxontreedef_id
+        )
+
+        # Update CollectionObjects' collectionobjecttype for the discipline
+        Collectionobject.objects.filter(collection=collection).update(collectionobjecttype=cot)
+        collection.collectionobjecttype = cot
+        try:
+            collection.save()
+        except BusinessRuleException as e:
+            if 'Collection must have unique code in discipline' in str(e):
+                # May want to do something besides numbering, but users can edit if after the migrqation if they want.
+                i = 1
+                while True:
+                    collection.code = f'{collection.code}-{i}'
+                    i += 1
+                    if collection.code not in code_set:
+                        code_set.add(collection.code)
+                        break
+                try:
+                    collection.save()
+                except BusinessRuleException as e:
+                    logger.warning(f'Problem saving collection {collection}: {e}')
+            continue
 
 def get_picklists(collection: spmodels.Collection, tablename: str, fieldname: str):
     schema_items = spmodels.Splocalecontaineritem.objects.filter(

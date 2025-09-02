@@ -1,3 +1,5 @@
+
+
 # type: ignore
 
 # ^^ The above is because we etensively use recursive typedefs of named tuple in this file not supported on our MyPy 0.97 version.
@@ -13,9 +15,9 @@ from typing import (
 from collections.abc import Callable
 
 from specifyweb.backend.permissions.permissions import has_target_permission
-from specifyweb.specify.filter_by_col import CONCRETE_HIERARCHY
+from specifyweb.specify.api.filter_by_col import CONCRETE_HIERARCHY
 from specifyweb.specify.models import datamodel
-from specifyweb.specify.load_datamodel import Field, Relationship, Table
+from specifyweb.specify.models_utils.load_datamodel import Field, Relationship, Table
 from specifyweb.backend.trees.views import TREE_INFORMATION, get_all_tree_information
 from specifyweb.backend.trees.utils import SPECIFY_TREES
 from specifyweb.specify.datamodel import is_tree_table
@@ -33,7 +35,7 @@ from specifyweb.backend.workbench.upload.upload_plan_schema import parse_column_
 from specifyweb.backend.workbench.upload.upload_table import UploadTable
 from specifyweb.backend.workbench.upload.uploadable import NULL_RECORD, Uploadable
 from specifyweb.backend.workbench.views import regularize_rows
-from specifyweb.specify.func import Func
+from specifyweb.specify.utils.func import Func
 from . import models
 import json
 from .format import ObjectFormatterProps

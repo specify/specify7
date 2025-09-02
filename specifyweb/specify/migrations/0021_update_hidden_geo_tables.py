@@ -5,7 +5,7 @@ This migration updates the geo tables hidden proprety in schema config.
 from django.db import migrations
 from specifyweb.specify.migration_utils import update_schema_config as usc
 from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0021_FIELDS as SCHEMA_CONFIG_MOD_TABLE_FIELDS
-from specifyweb.specify.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
+from specifyweb.specify.models_utils.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
 
 # def fix_hidden_geo_prop(apps, schema_editor):
 #     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')

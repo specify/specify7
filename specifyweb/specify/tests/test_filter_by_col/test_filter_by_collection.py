@@ -1,4 +1,6 @@
-from specifyweb.specify.filter_by_col import HierarchyException, filter_by_collection
+
+
+from specifyweb.specify.api.filter_by_col import HierarchyException, filter_by_collection
 from specifyweb.specify.models import (
     Attachment,
     Collection,
@@ -11,7 +13,7 @@ from specifyweb.specify.models import (
     Taxontreedefitem,
     Taxon,
 )
-from specifyweb.specify.scoping import ScopeType
+from specifyweb.specify.utils.scoping import ScopeType
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
 
 
