@@ -91,17 +91,17 @@
   ],
   "Collectionobjectgroupjoin": [
     {
-      "rule": [[], ["childCo"]],
+      "rule": [["childCo"], []],
       "isDatabaseConstraint": true
     },
     {
-      "rule": [[], ["childCog"]],
+      "rule": [["childCog"], []],
       "isDatabaseConstraint": true
     }
   ],
   "Storage": [
     {
-      "rule": [[], ["uniqueIdentifier"]],
+      "rule": [["uniqueIdentifier"], []],
       "isDatabaseConstraint": true
     }
   ],
