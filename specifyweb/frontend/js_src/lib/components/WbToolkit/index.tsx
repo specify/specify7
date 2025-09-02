@@ -49,11 +49,9 @@ export function WbToolkit({
       "exportFileDelimiter",
     );
 
-    const prepareExport = (dataset: {
-      columns: RA<string>;
-      rows: RA<RA<string>>;
-      visualorder?: RA<number> | null;
-    }): { columns: RA<string>; rows: RA<RA<string>> } => {
+    const prepareExport = (
+      dataset: Dataset,
+    ): { columns: RA<string>; rows: RA<RA<string>> } => {
       const defaultOrder = dataset.columns.map((_, i) => i); // use the existing order as default
 
       const order =
