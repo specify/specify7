@@ -210,3 +210,21 @@ export async function uploadAttachmentsToRow(
       raise(error);
     });
 }
+
+export async function deleteAttachmentsFromRow(
+  dataSetAttachmentIdToDelete: number,
+  dataset: Dataset,
+  hot: Handsontable,
+  row: number,
+  existingAttachments: RA<SerializedResource<SpDataSetAttachment>>,
+): Promise<void> {
+  const attachmentColumn = getAttachmentsColumn(dataset);
+  if (attachmentColumn === -1) return;
+
+  const allDataSetAttachments = existingAttachments.filter((att) => att.id !== dataSetAttachmentIdToDelete)
+
+  const targetTable = BASE_TABLE_NAME;
+  const data = attachmentsToCell(allDataSetAttachments, targetTable);
+  hot.setDataAtCell(row, attachmentColumn, data);
+  // The dataset still needs to be saved after this.
+}
