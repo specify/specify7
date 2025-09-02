@@ -13,7 +13,6 @@ import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { exportsForTests, setCache } from '../../utils/cache';
-import { f } from '../../utils/functools';
 import type { GetSet, RA } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Progress } from '../Atoms';
@@ -34,7 +33,6 @@ import {
   serializeResource,
 } from '../DataModel/serializers';
 import type { Attachment, SpDataSetAttachment } from '../DataModel/types';
-import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -43,15 +41,13 @@ import { PopupWindow } from '../Molecules/PopupWindow';
 import { Skeleton } from '../SkeletonLoaders/Skeleton';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import {
-  attachmentsToCell,
-  BASE_TABLE_NAME,
-  createDataSetAttachments,
   getAttachmentsColumn,
   getAttachmentsFromCell,
-  saveDataSetAttachments,
-  uploadFiles,
+  uploadAttachmentsToRow,
+  BASE_TABLE_NAME
 } from '../WorkBench/attachmentHelpers';
 import type { Workbench } from '../WorkBench/WbView';
+import { handleWorkbenchSave } from '../WbActions/WbSave';
 
 const { formatCacheKey } = exportsForTests;
 
@@ -189,26 +185,37 @@ export function WbAttachmentsPreview({
                   containerClassName="h-8 px-2 py-1 text-sm w-auto"
                   showFileNames={false}
                   onFilesSelected={async (selectedFiles) => {
-                    if (!hot) return;
+                    if (!hot || !selectedRow) return;
+
+                    const existingAttachments = attachments
+                      .map(cell => cell.spDataSetAttachment)
+                      .filter((a) => a !== undefined) as RA<SerializedResource<SpDataSetAttachment>>;
+                    
                     await uploadAttachmentsToRow(
                       Array.from(selectedFiles),
                       dataset,
                       hot,
-                      workbench,
                       selectedRow,
-                      attachments,
+                      existingAttachments,
+                      BASE_TABLE_NAME,
                       setFileUploadLength,
-                      setFileUploadProgress,
-                      searchRef,
-                      checkDeletedFail,
-                      handleSpreadsheetUpToDate
-                    );
-                    fetchRowAttachments(
-                      hot,
-                      dataset,
-                      selectedRow,
-                      setAttachments,
-                      setSelectedAttachment
+                      setFileUploadProgress
+                    ).then(
+                      () => 
+                        handleWorkbenchSave(
+                          workbench,
+                          searchRef,
+                          checkDeletedFail,
+                          handleSpreadsheetUpToDate
+                        ).then(() => 
+                          fetchRowAttachments(
+                            hot,
+                            dataset,
+                            selectedRow,
+                            setAttachments,
+                            setSelectedAttachment
+                          )
+                        )
                     );
                   }}
                 />
@@ -348,77 +355,6 @@ function fetchRowAttachments(
         });
       });
   });
-}
-
-import { handleWorkbenchSave } from '../WbActions/WbSave';
-
-async function uploadAttachmentsToRow(
-  files: RA<File>,
-  dataset: Dataset,
-  hot: Handsontable,
-  workbench: Workbench,
-  selectedRow: number,
-  attachmentCells: RA<WbAttachmentPreviewCell>,
-  setFileUploadLength: React.Dispatch<React.SetStateAction<number>>,
-  setFileUploadProgress: React.Dispatch<
-    React.SetStateAction<number | undefined>
-  >,
-  searchRef: React.MutableRefObject<HTMLInputElement | null>,
-  checkDeletedFail: (statusCode: number) => void,
-  onSpreadsheetUpToDate: () => void
-): Promise<void> {
-  if (!hot) return;
-  if (selectedRow === undefined) return;
-
-  const attachmentColumn = getAttachmentsColumn(dataset);
-  if (attachmentColumn === -1) return;
-  setFileUploadProgress(0);
-  setFileUploadLength(files.length);
-  await Promise.all(uploadFiles(files, setFileUploadProgress))
-    .then(async (attachments) =>
-      // Create SpDataSetAttachments for each attachment
-      f.all({
-        dataSetAttachments: createDataSetAttachments(
-          attachments,
-          dataset.id
-        ).then(async (unsavedDataSetAttachments) => {
-          let ordinal = attachments.length;
-          unsavedDataSetAttachments.forEach((dataSetAttachment) => {
-            ordinal++;
-            dataSetAttachment.set('ordinal', ordinal);
-          });
-          return saveDataSetAttachments(unsavedDataSetAttachments);
-        }),
-      })
-    )
-    .then(async ({ dataSetAttachments }) => {
-      // Put all SpDataSetAttachments IDs into the data set
-      const existingSpDataSetAttachments = attachmentCells
-        .map((cell) => cell.spDataSetAttachment)
-        .filter(
-          (a): a is SerializedResource<SpDataSetAttachment> => a !== undefined
-        );
-      const allSpDataSetAttachments = [
-        ...existingSpDataSetAttachments,
-        ...dataSetAttachments.map(serializeResource),
-      ];
-      dataSetAttachments.map(serializeResource);
-
-      const data = attachmentsToCell(allSpDataSetAttachments, BASE_TABLE_NAME);
-      hot.setDataAtCell(selectedRow, attachmentColumn, data);
-      // Save dataset automatically, since attachments have already been saved.
-      handleWorkbenchSave(
-        workbench,
-        searchRef,
-        checkDeletedFail,
-        onSpreadsheetUpToDate
-      );
-      setFileUploadProgress(undefined);
-    })
-    .catch(async (error) => {
-      setFileUploadProgress(undefined);
-      raise(error);
-    });
 }
 
 function AttachmentViewerDialog({

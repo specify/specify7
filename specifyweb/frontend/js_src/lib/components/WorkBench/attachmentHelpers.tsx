@@ -16,6 +16,9 @@ import type {
   Tables,
 } from '../DataModel/types';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import Handsontable from 'handsontable';
+import { f } from '../../utils/functools';
+import { raise } from '../Errors/Crash';
 
 export const ATTACHMENTS_COLUMN = '_UPLOADED_ATTACHMENTS';
 export const BASE_TABLE_NAME = 'baseTable' as const;
@@ -155,4 +158,55 @@ export async function saveDataSetAttachments(
   ).then(({ data }) =>
     data.map((resource) => deserializeResource(serializeResource(resource)))
   );
+}
+
+export async function uploadAttachmentsToRow(
+  files: RA<File>,
+  dataset: Dataset,
+  hot: Handsontable,
+  row: number,
+  existingAttachments: RA<SerializedResource<SpDataSetAttachment>>,
+  targetTable: AttachmentTargetTable,
+  setFileUploadLength: React.Dispatch<React.SetStateAction<number>>,
+  setFileUploadProgress: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >,
+): Promise<void> {
+  const attachmentColumn = getAttachmentsColumn(dataset);
+  if (attachmentColumn === -1) return;
+  setFileUploadProgress(0);
+  setFileUploadLength(files.length);
+  await Promise.all(uploadFiles(files, setFileUploadProgress))
+    .then(async (attachments) =>
+      // Create SpDataSetAttachments for each attachment
+      f.all({
+        dataSetAttachments: createDataSetAttachments(
+          attachments,
+          dataset.id
+        ).then(async (unsavedDataSetAttachments) => {
+          let ordinal = attachments.length;
+          unsavedDataSetAttachments.forEach((dataSetAttachment) => {
+            ordinal++;
+            dataSetAttachment.set('ordinal', ordinal);
+          });
+          return saveDataSetAttachments(unsavedDataSetAttachments);
+        }),
+      })
+    )
+    .then(async ({ dataSetAttachments }) => {
+      const allDataSetAttachments = [
+        ...existingAttachments,
+        ...dataSetAttachments.map((att) => serializeResource(att))
+      ] as RA<SerializedResource<SpDataSetAttachment>>;
+
+      const data = attachmentsToCell(allDataSetAttachments, targetTable);
+      hot.setDataAtCell(row, attachmentColumn, data);
+
+      setFileUploadProgress(undefined);
+      // The dataset still needs to be saved after this.
+    })
+    .catch(async (error) => {
+      setFileUploadProgress(undefined);
+      raise(error);
+    });
 }
