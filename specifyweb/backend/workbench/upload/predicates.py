@@ -1,3 +1,4 @@
+
 from functools import reduce
 from typing import (
     NamedTuple,
@@ -9,7 +10,7 @@ from typing_extensions import TypedDict
 from django.db.models import QuerySet, Q, F, Model, Exists, OuterRef
 
 import specifyweb.specify.models as spmodels
-from specifyweb.specify.func import Func
+from specifyweb.specify.utils.func import Func
 
 from django.core.exceptions import ObjectDoesNotExist
 

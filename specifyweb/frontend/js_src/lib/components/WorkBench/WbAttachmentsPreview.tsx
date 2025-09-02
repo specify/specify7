@@ -17,7 +17,7 @@ import type { GetSet, RA } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { fetchOriginalUrl } from '../Attachments/attachments';
-import { ImageViewer } from '../Attachments/ImageViewer';
+import { LeafletImageViewer } from '../Attachments/LeafletImageViewer';
 import { AttachmentPreview } from '../Attachments/Preview';
 import { AttachmentViewer } from '../Attachments/Viewer';
 import { toResource } from '../DataModel/helpers';
@@ -38,7 +38,7 @@ import { PopupWindow } from '../Molecules/PopupWindow';
 import { Skeleton } from '../SkeletonLoaders/Skeleton';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import {
-  getAttachmentsColumnIndex,
+  getAttachmentsColumn,
   getAttachmentsFromCell,
 } from '../WorkBench/attachmentHelpers';
 
@@ -173,7 +173,7 @@ function fetchRowAttachments(
   ) => void
 ): void {
   // Look for Attachments column
-  const attachmentColumnIndex = getAttachmentsColumnIndex(dataset);
+  const attachmentColumnIndex = getAttachmentsColumn(dataset);
   if (attachmentColumnIndex === -1) return;
 
   // Each row should have comma-separated IDs for SpDataSetAttachments
@@ -282,7 +282,10 @@ function AttachmentViewerDialog({
   const body =
     attachment !== undefined &&
     (isImage ? (
-      <ImageViewer alt={attachment?.title ?? ''} src={attachmentUrl ?? ''} />
+      <LeafletImageViewer
+        alt={attachment?.title ?? ''}
+        src={attachmentUrl ?? ''}
+      />
     ) : (
       <AttachmentViewer
         attachment={deserializeResource(attachment)}
@@ -319,18 +322,26 @@ function AttachmentViewerDialog({
     </PopupWindow>
   ) : (
     <Dialog
-      buttons={
-        <>
-          <Button.Secondary onClick={(): void => setUseWindow(true)}>
-            {wbText.detachWindow()}
-          </Button.Secondary>
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-        </>
-      }
+      buttons={undefined}
       className={{
         container: dialogClassNames.wideContainer,
       }}
+      defaultSize={{
+        width: 512,
+        height: 512,
+      }}
+      dimensionsKey="WbAttachmentViewer"
       header={attachmentsText.attachments()}
+      headerButtons={
+        <div className="flex items-center gap-2 md:gap-2 ml-auto">
+          <Button.Secondary onClick={(): void => setUseWindow(true)}>
+            {wbText.detachWindow()}
+          </Button.Secondary>
+          <Button.Secondary onClick={(): void => onClose()}>
+            {commonText.close()}
+          </Button.Secondary>
+        </div>
+      }
       modal={false}
       onClose={onClose}
     >

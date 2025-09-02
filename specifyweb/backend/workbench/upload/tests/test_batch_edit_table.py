@@ -1,5 +1,5 @@
 from typing import Literal
-from specifyweb.specify.func import Func
+from specifyweb.specify.utils.func import Func
 from specifyweb.specify.tests.test_api import get_table
 from specifyweb.backend.stored_queries.batch_edit import run_batch_edit_query  # type: ignore
 from specifyweb.backend.stored_queries.queryfield import QueryField, fields_from_json
@@ -13,7 +13,7 @@ from specifyweb.backend.workbench.upload.auditor import (
 )
 from specifyweb.backend.workbench.upload.tests.base import UploadTestsBase
 from specifyweb.backend.workbench.upload.upload import do_upload
-from specifyweb.specify import auditcodes
+from specifyweb.backend.workbench.upload import auditcodes
 from specifyweb.backend.workbench.upload.upload_result import (
     Deleted,
     MatchedAndChanged,

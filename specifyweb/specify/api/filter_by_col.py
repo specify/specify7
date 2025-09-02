@@ -5,7 +5,7 @@ Modules for filtering resources by the collection logged in
 from django.core.exceptions import FieldError
 from django.db.models import Q
 
-from .scoping import ScopeType
+from ..utils.scoping import ScopeType
 from specifyweb.specify.models import (
     Geography,
     Geologictimeperiod,

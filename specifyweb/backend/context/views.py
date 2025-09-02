@@ -28,10 +28,10 @@ from specifyweb.backend.permissions.permissions import PermissionTarget, \
     CollectionAccessPT
 from specifyweb.specify.models import Collection, Institution, \
     Specifyuser, Spprincipal, Spversion, Collectionobjecttype
-from specifyweb.specify.schema import base_schema
-from specifyweb.specify.api import uri_for_model
-from specifyweb.specify.serialize_datamodel import datamodel_to_json
-from specifyweb.specify.specify_jar import specify_jar
+from specifyweb.specify.models_utils.schema import base_schema
+from specifyweb.specify.models_utils.serialize_datamodel import datamodel_to_json
+from specifyweb.specify.api.serializers import uri_for_model
+from specifyweb.specify.utils.specify_jar import specify_jar
 from specifyweb.specify.views import login_maybe_required, openapi
 from .app_resource import get_app_resource, FORM_RESOURCE_EXCLUDED_LST
 from .remote_prefs import get_remote_prefs
@@ -285,7 +285,7 @@ def api_login(request):
 @never_cache
 def collection(request):
     """Allows the frontend to query or set the logged in collection."""
-    from specifyweb.specify.api import obj_to_data, toJson
+    from specifyweb.specify.api.serializers import obj_to_data, toJson
 
     current = request.COOKIES.get('collection', None)
     available_collections = users_collections_for_sp7(request.specify_user.id)
@@ -314,7 +314,7 @@ def collection(request):
 @cache_control(max_age=86400, private=True)
 def user(request):
     """Return json representation of the currently logged in SpecifyUser."""
-    from specifyweb.specify.api import obj_to_data, toJson
+    from specifyweb.specify.api.serializers import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
     data['isauthenticated'] = request.user.is_authenticated
     data['available_collections'] = [
