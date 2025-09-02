@@ -22,22 +22,19 @@ const types = ['url', 'image', 'attachments'] as const;
 function deriveAltFromUrl(source?: string, fallback = 'Image preview'): string {
   if (!source) return fallback;
 
-  const urlObject = new URL(
+  const { searchParams, pathname } = new URL(
     source,
     typeof window === 'undefined' ? 'http://localhost' : window.location.origin
   );
 
-  const downloadName = urlObject.searchParams.get('downloadname');
-  const fileNameFromQuery = urlObject.searchParams.get('filename');
-  const fileNameFromPath = urlObject.pathname.split('/').pop() ?? '';
+  const rawName =
+    searchParams.get('downloadname') ??
+    searchParams.get('filename') ??
+    pathname.split('/').pop();
 
-  const rawName = downloadName ?? fileNameFromQuery ?? fileNameFromPath;
-
-  const decodedName = decodeURIComponent(rawName.replaceAll('+', ' '))
-    .replaceAll(/\u202F|\u00A0/g, ' ')
-    .trim();
-
-  return decodedName || fallback;
+  return rawName
+    ? decodeURIComponent(rawName).replace(/[+]/g, ' ').trim()
+    : fallback;
 }
 
 export function SyncAttachmentPicker({
@@ -53,17 +50,13 @@ export function SyncAttachmentPicker({
   const [isOpen, , , handleToggle] = useBooleanState();
   const loading = React.useContext(LoadingContext);
 
-  const [urlNotFound, setUrlNotFound] = React.useState(false);
+  const [isUrlNotFound, setIsUrlNotFound] = React.useState(false);
   const [type, setType] = React.useState<typeof types[number]>('url');
 
   function handleAttachment(nextAttachment: SerializedResource<Attachment>): void {
-    // Prefer original filename if backend provides it
-    const originalName: string | undefined = (nextAttachment as any)?.origName;
-    if (originalName) setAltText(originalName);
-
     loading(
       fetchOriginalUrl(nextAttachment).then((nextUrl) => {
-        nextUrl === undefined ? setUrlNotFound(true) : handleChange(nextUrl);
+        nextUrl === undefined ? setIsUrlNotFound(true) : handleChange(nextUrl);
       })
     );
     handleToggle();
@@ -84,7 +77,6 @@ export function SyncAttachmentPicker({
           onClick={() => {
             setAttachment(undefined);
             handleChange(undefined);
-            setAltText(undefined); // clear alt text when removing image
           }}
         >
           {commonText.delete()}
@@ -93,7 +85,7 @@ export function SyncAttachmentPicker({
 
       {url !== undefined && (
         <img
-          alt={altText ?? deriveAltFromUrl(url)}
+          alt={(attachment as any)?.origName ?? deriveAltFromUrl(url)}
           className="h-40 max-h-full w-40 max-w-full object-contain"
           src={url}
         />
@@ -124,11 +116,11 @@ export function SyncAttachmentPicker({
             }}
           />
 
-          {urlNotFound && (
+          {isUrlNotFound && (
             <Dialog
               buttons={commonText.cancel()}
               header={attachmentsText.attachments()}
-              onClose={() => setUrlNotFound(false)}
+              onClose={() => setIsUrlNotFound(false)}
             >
               {preferencesText.attachmentFailed()}
             </Dialog>
