@@ -4,13 +4,11 @@ from specifyweb.backend.interactions.cog_preps import modify_update_of_interacti
 from specifyweb.backend.interactions.tests.test_cog_consolidated_prep_sibling_context import (
     TestCogConsolidatedPrepSiblingContext,
 )
-from specifyweb.specify import api
-from specifyweb.specify.api import obj_to_data
+from specifyweb.specify.api.serializers import obj_to_data
 from specifyweb.specify.api_utils import strict_uri_to_model
 from specifyweb.specify.models import (
     Borrow,
     Disposal,
-    Disposalpreparation,
     Gift,
     Giftpreparation,
     Loan,

@@ -6,7 +6,7 @@ from django.db import models
 from django.http import Http404
 from django.utils import timezone
 
-from specifyweb.specify.func import Func
+from specifyweb.specify.utils.func import Func
 from specifyweb.specify.models import (
     Collection,
     Specifyuser,
@@ -16,7 +16,9 @@ from specifyweb.specify.models import (
     custom_save,
     protect_with_blockers,
 )
-from specifyweb.specify.api import uri_for_model
+from specifyweb.specify.api.serializers import uri_for_model
+
+
 
 
 class Dataset(models.Model):
@@ -172,7 +174,7 @@ class Spdataset(Dataset):
     def was_uploaded(self) -> bool:
         return self.uploadresult and self.uploadresult["success"]
 
-class SpDataSetAttachment(models.Model):
+class Spdatasetattachment(models.Model):
     specify_model = datamodel.get_table_strict('spdatasetattachment')
 
     # ID Field

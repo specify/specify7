@@ -2,7 +2,7 @@ import logging
 from django.core.management.base import BaseCommand
 from django.apps import apps
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
-from specifyweb.specify.utils import create_default_collection_types
+from specifyweb.specify.api.utils import create_default_collection_types
 
 logger = logging.getLogger(__name__)
 

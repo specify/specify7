@@ -1,4 +1,4 @@
-from specifyweb.specify import auditcodes
+from specifyweb.backend.workbench.upload import auditcodes
 from specifyweb.specify.tests.test_api import get_table
 from .base import UploadTestsBase
 from ..upload import do_upload, unupload_record

@@ -2,13 +2,13 @@ import logging
 from typing import Any, NamedTuple, TypedDict
 
 
-from specifyweb.specify.auditlog import AuditLog
+from specifyweb.backend.workbench.upload.auditlog import AuditLog
 from specifyweb.backend.permissions.permissions import (
     TABLE_ACTION,
     check_table_permissions,
 )
 from specifyweb.specify.models import Agent
-from specifyweb.specify.field_change_info import FieldChangeInfo
+from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 
 logger = logging.getLogger(__name__)
 

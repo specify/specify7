@@ -98,6 +98,12 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       url: '/specify/overlay/master-key/',
       icon: icons.identification,
     },
+    downloadDatabase: {
+      title: headerText.backupDatabase(),
+      enabled: () => hasPermission('/export/backup', 'execute'),
+      url: '/specify/overlay/backup-database/',
+      icon: icons.download,
+    },
   },
   [commonText.export()]: {
     makeDwca: {

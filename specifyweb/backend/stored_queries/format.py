@@ -1,3 +1,4 @@
+
 import logging
 import re
 from django.utils.translation import gettext as _text
@@ -6,7 +7,7 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import Element
 from xml.sax.saxutils import quoteattr
 
-from specifyweb.specify.utils import get_picklists
+from specifyweb.specify.api.utils import get_picklists
 from sqlalchemy import Table as SQLTable, inspect, case
 from sqlalchemy.orm import aliased, Query
 from sqlalchemy.sql.expression import func, cast, literal, Label
@@ -19,7 +20,7 @@ from sqlalchemy import types
 import specifyweb.backend.context.app_resource as app_resource
 from specifyweb.backend.context.remote_prefs import get_remote_prefs
 
-from specifyweb.specify.agent_types import agent_types
+from specifyweb.specify.utils.agent_types import agent_types
 from specifyweb.specify.models import datamodel, Splocalecontainer
 
 from specifyweb.specify.datamodel import Field, Relationship, Table
@@ -30,6 +31,7 @@ from .group_concat import group_concat
 from .blank_nulls import blank_nulls
 from .query_construct import QueryConstruct
 from .queryfieldspec import QueryFieldSpec
+from typing import NamedTuple
 
 logger = logging.getLogger(__name__)
 
@@ -37,9 +39,17 @@ CollectionObject_model = datamodel.get_table('CollectionObject')
 Agent_model = datamodel.get_table('Agent')
 Spauditlog_model = datamodel.get_table('SpAuditLog')
 
+class ObjectFormatterProps(NamedTuple):
+    format_agent_type: bool = False,
+    format_picklist: bool = False,
+    format_types: bool = True,
+    numeric_catalog_number: bool = True,
+    # format_expr determines if make_expr should call _fieldformat, like in versions before 7.10.2.
+    # Batch edit expects it to be false to correctly handle some edge cases.
+    format_expr: bool = False
 
 class ObjectFormatter:
-    def __init__(self, collection, user, replace_nulls, format_agent_type=False, format_picklist=False):
+    def __init__(self, collection, user, replace_nulls, props: ObjectFormatterProps = ObjectFormatterProps()):
 
         formattersXML, _, __ = app_resource.get_app_resource(collection, user, 'DataObjFormatters')
         self.formattersDom = ElementTree.fromstring(formattersXML)
@@ -49,8 +59,11 @@ class ObjectFormatter:
         self.collection = collection
         self.replace_nulls = replace_nulls
         self.aggregator_count = 0
-        self.format_agent_type = format_agent_type
-        self.format_picklist = format_picklist
+        self.format_agent_type = props.format_agent_type
+        self.format_picklist = props.format_picklist
+        self.format_types = props.format_types
+        self.numeric_catalog_number = props.numeric_catalog_number
+        self.format_expr = props.format_expr
 
     def getFormatterDef(self, specify_model: Table, formatter_name) -> Element | None:
 
@@ -190,6 +203,15 @@ class ObjectFormatter:
             new_query, table, model, specify_field = query.build_join(
                 specify_model, orm_table, formatter_field_spec.join_path)
             new_expr = getattr(table, specify_field.name)
+            
+            if self.format_expr:
+                new_expr = self._fieldformat(formatter_field_spec.table, formatter_field_spec.get_field(), new_expr)
+
+        if 'trimzeros' in fieldNodeAttrib:
+            new_expr = case(
+                [(new_expr.op('REGEXP')('^-?[0-9]+(\\.[0-9]+)?$'), cast(new_expr, types.Numeric(65)))],
+                else_=new_expr
+            )
 
         if 'format' in fieldNodeAttrib:
             new_expr = self.pseudo_sprintf(fieldNodeAttrib['format'], new_expr)
@@ -357,7 +379,7 @@ class ObjectFormatter:
 
     def _dateformat(self, specify_field, field):
         if specify_field.type == "java.sql.Timestamp":
-            return func.date_format(field, self.date_format)
+            return func.date_format(field, "%Y-%m-%dT%H:%i:%s")
 
         prec_fld = getattr(field.class_, specify_field.name + 'Precision', None)
 
@@ -391,13 +413,13 @@ class ObjectFormatter:
             
                 return blank_nulls(_case) if self.replace_nulls else _case
         
-        if specify_field.type == "java.lang.Boolean":
+        if self.format_types and specify_field.type == "java.lang.Boolean":
             return field != 0
 
-        if specify_field.type in ("java.lang.Integer", "java.lang.Short"):
+        if self.format_types and specify_field.type in ("java.lang.Integer", "java.lang.Short"):
             return field
         
-        if specify_field is CollectionObject_model.get_field('catalogNumber') \
+        if self.numeric_catalog_number and specify_field is CollectionObject_model.get_field('catalogNumber') \
                 and all_numeric_catnum_formats(self.collection):
             # While the frontend can format the catalogNumber if needed,
             # processes like reports, labels, and query exports generally
@@ -405,7 +427,7 @@ class ObjectFormatter:
             # See https://github.com/specify/specify7/issues/6464
             return cast(field, types.Numeric(65))
 
-        if specify_field.type == 'json' and isinstance(field.comparator.type, types.JSON):
+        if self.format_types and specify_field.type == 'json' and isinstance(field.comparator.type, types.JSON):
             return cast(field, types.Text)
 
         return field

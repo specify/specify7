@@ -48,6 +48,7 @@ export type QueryFieldFilter =
   | 'between'
   | 'contains'
   | 'empty'
+  | 'endsWith'
   | 'equal'
   | 'false'
   | 'falseOrNull'
@@ -514,6 +515,14 @@ export const queryFieldFilters: RR<QueryFieldFilter, FieldFilter> = {
   startsWith: {
     id: 15,
     label: queryText.startsWith(),
+    description: undefined,
+    renderPickList: false,
+    component: SingleField,
+    hasParser: false,
+  },
+  endsWith: {
+    id: 18,
+    label: queryText.endsWith(),
     description: undefined,
     renderPickList: false,
     component: SingleField,
