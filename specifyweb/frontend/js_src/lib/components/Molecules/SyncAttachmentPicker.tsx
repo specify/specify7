@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { attachmentsText } from '../../localization/attachments';
@@ -33,7 +34,7 @@ function deriveAltFromUrl(source?: string, fallback = 'Image preview'): string {
     pathname.split('/').pop();
 
   return rawName
-    ? decodeURIComponent(rawName).replace(/[+]/g, ' ').trim()
+    ? decodeURIComponent(rawName).replaceAll('+', ' ').trim()
     : fallback;
 }
 
