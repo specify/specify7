@@ -1,14 +1,11 @@
 import json
 from django.http import (JsonResponse)
-import time
 
 from specifyweb.backend.permissions.models import UserPolicy
-from specifyweb.specify import models
 from specifyweb.specify.api_utils import strict_uri_to_model
-from specifyweb.specify.load_datamodel import Datamodel
 from specifyweb.specify.migration_utils.update_schema_config import update_table_schema_config_with_defaults
 from specifyweb.specify.models import Spversion
-from specifyweb.specify.models_by_table_id import model_names_by_table_id
+from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
 
 from django.db.models import Max
 
