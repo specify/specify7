@@ -124,8 +124,8 @@ msgstr "Виберіть усі доступні препарати"
 #: components/Interactions/LoanReturn.tsx:182
 #: components/Interactions/PrepDialog.tsx:133
 #: components/Interactions/PrepDialog.tsx:257
-#: components/Interactions/PrepDialogRow.tsx:64
-#: components/Interactions/PrepDialogRow.tsx:66
+#: components/Interactions/PrepDialogRow.tsx:90
+#: components/Interactions/PrepDialogRow.tsx:92
 #: components/Interactions/PrepReturnRow.tsx:80
 #: components/Interactions/PrepReturnRow.tsx:82
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row ⬤ Components > Interactions > Prep Return Row
@@ -138,8 +138,8 @@ msgstr "Вибрати все"
 #: components/Interactions/LoanReturn.tsx:293
 #: components/Interactions/PrepDialog.tsx:163
 #: components/Interactions/PrepDialog.tsx:167
-#: components/Interactions/PrepDialogRow.tsx:97
-#: components/Interactions/PrepDialogRow.tsx:100
+#: components/Interactions/PrepDialogRow.tsx:181
+#: components/Interactions/PrepDialogRow.tsx:184
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row
 msgid "selectedAmount"
 msgstr "Вибрана сума"
@@ -156,7 +156,7 @@ msgstr "Повернена сума"
 msgid "resolvedAmount"
 msgstr "Вирішена сума"
 
-#: components/Interactions/PrepDialogRow.tsx:179
+#: components/Interactions/PrepDialogRow.tsx:263
 #. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
 msgid "prepReturnFormatter"
 msgstr "{tableName:string}': {resource:string}"
@@ -207,12 +207,12 @@ msgstr ""
 msgid "deselectAll"
 msgstr "Зняти вибір усіх"
 
-#: components/Interactions/PrepDialog.tsx:269
+#: components/Interactions/PrepDialog.tsx:272
 #. Used in: Components > Interactions > Prep Dialog
 msgid "available"
 msgstr "Доступно"
 
-#: components/Interactions/PrepDialog.tsx:270
+#: components/Interactions/PrepDialog.tsx:273
 #. Used in: Components > Interactions > Prep Dialog
 msgid "unavailable"
 msgstr "Недоступно"
@@ -242,7 +242,7 @@ msgstr "Жоден з цих об'єктів не має підготовки. �
 msgid "continue"
 msgstr "Продовжити"
 
-#: components/Interactions/PrepDialogRow.tsx:91
+#: components/Interactions/PrepDialogRow.tsx:175
 #. Used in: Components > Interactions > Prep Dialog Row
 msgid "notAvailable"
 msgstr "Не доступно"

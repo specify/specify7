@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2025-09-02 15:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
-"specify-7/resources/de_CH/>\n"
+"Language-Team: German (Switzerland) "
+"<https://hosted.weblate.org/projects/specify-7/resources/de_CH/>\n"
 "Language: de_CH\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -12,138 +12,138 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.13.1-dev\n"
 
-#. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 #: components/AppResources/Filters.tsx:70
 #: components/AppResources/Filters.tsx:117
 #: components/Header/userToolDefinitions.ts:68
 #: components/Preferences/UserDefinitions.tsx:1941
 #: components/Router/Routes.tsx:251
 #: components/Security/registry.ts:218
+#. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 msgid "appResources"
 msgstr "App Ressourcen"
 
-#. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 #: components/AppResources/Create.tsx:288
 #: components/FormMeta/Definition.tsx:31
 #: components/FormMeta/Definition.tsx:74
 #: components/Preferences/UserDefinitions.tsx:806
+#. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 msgid "formDefinition"
 msgstr "Formular Definition"
 
-#. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 #: components/AppResources/EditorComponents.tsx:51
 #: components/AppResources/Filters.tsx:58
 #: components/AppResources/Filters.tsx:101
 #: components/AppResources/types.tsx:35
+#. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 #, fuzzy
 msgid "formDefinitions"
 msgstr "Formulardefinition"
 
-#. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:265
+#. Used in: Components > Form Editor > Create
 #, fuzzy
 msgid "newViewDefinition"
 msgstr "Neue Ansichtsdefinition"
 
-#. Used in: Components > App Resources > Editor Components
 #: components/AppResources/EditorComponents.tsx:114
 #: components/AppResources/EditorComponents.tsx:119
+#. Used in: Components > App Resources > Editor Components
 msgid "loadFile"
 msgstr "Datei Laden"
 
-#. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:41
+#. Used in: Components > App Resources > Tree
 msgid "globalResources"
 msgstr "Globale Ressourcen"
 
-#. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:47
+#. Used in: Components > App Resources > Tree
 msgid "disciplineResources"
 msgstr "Disziplin-Ressourcen"
 
-#. Used in: Components > App Resources > Create ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
 #: components/AppResources/Create.tsx:96
 #: components/SchemaConfig/Field.tsx:72
 #: components/WebLinks/Definition.tsx:49
+#. Used in: Components > App Resources > Create ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
 msgid "type"
 msgstr "Typ"
 
-#. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:236
+#. Used in: Components > App Resources > Tree
 msgid "userTypes"
 msgstr "Benutzertypen"
 
-#. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
 #: components/AppResources/Aside.tsx:321
 #: components/AppResources/index.tsx:54
+#. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
 msgid "resources"
 msgstr "Ressourcen"
 
-#. Used in: Components > App Resources > Aside
 #: components/AppResources/Aside.tsx:264
+#. Used in: Components > App Resources > Aside
 msgid "subCategories"
 msgstr "Unterkategorien"
 
-#. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 #: components/AppResources/Aside.tsx:331
 #: components/Router/Routes.tsx:259
+#. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 msgid "addResource"
 msgstr "Ressource hinzufügen"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:30
+#. Used in: Components > App Resources > Types
 msgid "appResource"
 msgstr "App Ressource"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:128
+#. Used in: Components > App Resources > Types
 msgid "rssExportFeed"
 msgstr "RSS-Export-Feed"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:102
+#. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "exports"
 msgstr "Exporte"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:136
+#. Used in: Components > App Resources > Types
 msgid "expressSearchConfig"
 msgstr "Express Suche Konfigurieren"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:144
+#. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "typeSearches"
 msgstr "Typsuchen"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:152
+#. Used in: Components > App Resources > Types
 msgid "webLinks"
 msgstr "Weblinks"
 
-#. Used in: Components > App Resources > Types ⬤ Components > Schema Config > Format
 #: components/AppResources/types.tsx:160
 #: components/SchemaConfig/Format.tsx:100
+#. Used in: Components > App Resources > Types ⬤ Components > Schema Config > Format
 #, fuzzy
 msgid "uiFormatters"
 msgstr "Feldformatierer"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:168
+#. Used in: Components > App Resources > Types
 msgid "dataObjectFormatters"
 msgstr "Datensatz-Formatierer"
 
-#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #: components/Formatters/Aggregator.tsx:69
 #: components/Formatters/Element.tsx:128
 #: components/Formatters/Fields.tsx:287
+#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "formatter"
 msgstr "Tabellenformat"
 
-#. Used in: Components > Formatters > Table
 #: components/Formatters/Table.tsx:31
+#. Used in: Components > Formatters > Table
 #, fuzzy
 msgid "formatterDescription"
 msgstr ""
@@ -152,14 +152,14 @@ msgstr ""
 "bestimmt die anzuzeigenden Felder und deren Reihenfolge. Die bedingte "
 "Formatierung kann basierend auf einem Wert im Datensatz konfiguriert werden."
 
-#. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:129
+#. Used in: Components > Formatters > Element
 #, fuzzy
 msgid "aggregator"
 msgstr "Tabellenaggregation"
 
-#. Used in: Components > Formatters > Table
 #: components/Formatters/Table.tsx:32
+#. Used in: Components > Formatters > Table
 #, fuzzy
 msgid "aggregatorDescription"
 msgstr ""
@@ -169,281 +169,281 @@ msgstr ""
 "anpassbar. Die Anzeige kann in Abfrageergebnissen und Tabellenformaten "
 "erfolgen."
 
-#. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:28
+#. Used in: Components > Web Links > Definition
 #, fuzzy
 msgid "formattedResource"
 msgstr "Formatierte Ressource"
 
-#. Used in: Components > Formatters > List
 #: components/Formatters/List.tsx:66
+#. Used in: Components > Formatters > List
 #, fuzzy
 msgid "availableFormatters"
 msgstr "Verfügbare Tabellenformate"
 
-#. Used in: Components > Formatters > List
 #: components/Formatters/List.tsx:67
+#. Used in: Components > Formatters > List
 #, fuzzy
 msgid "availableAggregators"
 msgstr "Verfügbare Tabellenaggregationen"
 
-#. Used in: Components > Web Links > List
 #: components/WebLinks/List.tsx:24
+#. Used in: Components > Web Links > List
 #, fuzzy
 msgid "availableWebLink"
 msgstr "Verfügbare Weblinks"
 
-#. Used in: Components > Formatters > List
 #: components/Formatters/List.tsx:127
+#. Used in: Components > Formatters > List
 #, fuzzy
 msgid "selectDefaultFormatter"
 msgstr "Bitte wählen Sie einen Standard-Datensatzformatierer für diese Tabelle"
 
-#. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:52
+#. Used in: Components > Formatters > Element
 #, fuzzy
 msgid "duplicateFormatters"
 msgstr "Datensatzformatierernamen müssen eindeutig sein"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:176
+#. Used in: Components > App Resources > Types
 msgid "dataEntryTables"
 msgstr "Dateneingabetabellen"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:184
+#. Used in: Components > App Resources > Types
 msgid "interactionsTables"
 msgstr "Interaktionstabellen"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:191
+#. Used in: Components > App Resources > Types
 msgid "otherXmlResource"
 msgstr "Andere XML-Ressource"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:198
+#. Used in: Components > App Resources > Types
 msgid "otherJsonResource"
 msgstr "Andere JSON-Ressource"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:205
+#. Used in: Components > App Resources > Types
 msgid "otherPropertiesResource"
 msgstr "Andere Eigenschaften Ressource"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:212
+#. Used in: Components > App Resources > Types
 msgid "otherAppResource"
 msgstr "Andere Ressource"
 
-#. Used in: Components > App Resources > Filters
 #: components/AppResources/Filters.tsx:48
+#. Used in: Components > App Resources > Filters
 msgid "filters"
 msgstr "Filter"
 
-#. Used in: Components > App Resources > Filters
 #: components/AppResources/Filters.tsx:73
 #: components/AppResources/Filters.tsx:74
 #: components/AppResources/Filters.tsx:83
+#. Used in: Components > App Resources > Filters
 msgid "custom"
 msgstr "Individuell"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:120
+#. Used in: Components > App Resources > Types
 msgid "leafletLayers"
 msgstr "Leaflet-Layer"
 
-#. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:145
+#. Used in: Components > App Resources > Tabs
 msgid "textEditor"
 msgstr "Text-Editor"
 
-#. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:143
+#. Used in: Components > App Resources > Tabs
 #, fuzzy
 msgid "xmlEditor"
 msgstr "XML-Editor"
 
-#. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:144
+#. Used in: Components > App Resources > Tabs
 #, fuzzy
 msgid "jsonEditor"
 msgstr "JSON-Editor"
 
-#. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:142
+#. Used in: Components > App Resources > Tabs
 msgid "visualEditor"
 msgstr "Visueller Editor"
 
-#. Used in: Components > App Resources > Create
 #: components/AppResources/Create.tsx:68
 #: components/AppResources/Create.tsx:90
+#. Used in: Components > App Resources > Create
 msgid "selectResourceType"
 msgstr "Ressourcentyp auswählen"
 
-#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
 #: components/AppResources/tree.ts:121
 #: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:32
 #: components/AppResources/__tests__/getGlobalAllResources.test.ts:38
+#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
 msgid "globalPreferences"
 msgstr "Globale Einstellungen"
 
-#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
 #: components/AppResources/tree.ts:123
 #: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:55
 #: components/AppResources/__tests__/getGlobalAllResources.test.ts:69
+#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
 msgid "remotePreferences"
 msgstr "Remote-Einstellungen"
 
-#. Used in: Components > Formatters > Index
 #: components/Formatters/index.tsx:99
+#. Used in: Components > Formatters > Index
 #, fuzzy
 msgid "failedParsingXml"
 msgstr "XML konnte nicht analysiert werden"
 
-#. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter
 #: components/Formatters/Element.tsx:103
 #: components/QueryBuilder/FieldFilter.tsx:554
+#. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter
 #, fuzzy
 msgid "name"
 msgstr "Name"
 
-#. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
 #: components/ExportFeed/Editor.tsx:50
 #: components/ExportFeed/Editor.tsx:164
 #: components/Formatters/Element.tsx:135
+#. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
 #, fuzzy
 msgid "title"
 msgstr "Titel"
 
-#. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
 #: components/Formatters/Element.tsx:161
 #: components/Formatters/List.tsx:117
+#. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
 #, fuzzy
 msgid "default"
 msgstr "Standard"
 
-#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 #: components/Formatters/Aggregator.tsx:28
 #: components/Formatters/Fields.tsx:74
 #: components/Formatters/Fields.tsx:178
+#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "separator"
 msgstr "Separator"
 
-#. Used in: Components > Formatters > Aggregator
 #: components/Formatters/Aggregator.tsx:41
+#. Used in: Components > Formatters > Aggregator
 #, fuzzy
 msgid "suffix"
 msgstr "Suffix"
 
-#. Used in: Components > Formatters > Aggregator
 #: components/Formatters/Aggregator.tsx:54
+#. Used in: Components > Formatters > Aggregator
 #, fuzzy
 msgid "limit"
 msgstr "Limit"
 
-#. Used in: Components > Formatters > Components ⬤ Components > Query Builder > Formatter
 #: components/Formatters/Components.tsx:72
 #: components/Formatters/Components.tsx:130
 #: components/QueryBuilder/Formatter.tsx:212
+#. Used in: Components > Formatters > Components ⬤ Components > Query Builder > Formatter
 #, fuzzy
 msgid "defaultInline"
 msgstr "(Standard)"
 
-#. Used in: Components > Formatters > Aggregator
 #: components/Formatters/Aggregator.tsx:85
+#. Used in: Components > Formatters > Aggregator
 #, fuzzy
 msgid "sortField"
 msgstr "Sortierfeld"
 
-#. Used in: Components > Form Editor > Create ⬤ Components > Formatters > Preview ⬤ Components > Merging > Header
 #: components/FormEditor/Create.tsx:214
 #: components/Formatters/Preview.tsx:71
 #: components/Merging/Header.tsx:164
+#. Used in: Components > Form Editor > Create ⬤ Components > Formatters > Preview ⬤ Components > Merging > Header
 #, fuzzy
 msgid "preview"
 msgstr "Vorschau"
 
-#. Used in: Components > Formatters > Preview
 #: components/Formatters/Preview.tsx:72
+#. Used in: Components > Formatters > Preview
 #, fuzzy
 msgid "previewExplainer"
 msgstr ""
 "Durchsuchen Sie Ihre Sammlungsdatensätze, um eine Vorschau des "
 "Datensatzformatierers anzuzeigen"
 
-#. Used in: Components > Form Editor > Table ⬤ Components > Formatters > Formatter
 #: components/FormEditor/Table.tsx:86
 #: components/Formatters/Formatter.tsx:33
+#. Used in: Components > Form Editor > Table ⬤ Components > Formatters > Formatter
 #, fuzzy
 msgid "editorNotAvailable"
 msgstr "Für diese Ressource ist kein visueller Editor verfügbar"
 
-#. Used in: Components > Form Editor > Table ⬤ Components > Web Links > Definition
 #: components/FormEditor/Table.tsx:83
 #: components/WebLinks/Definition.tsx:44
+#. Used in: Components > Form Editor > Table ⬤ Components > Web Links > Definition
 #, fuzzy
 msgid "definition"
 msgstr "Definition"
 
-#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:74
 #: components/Formatters/Definitions.tsx:85
+#. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "addDefinition"
 msgstr "Definition hinzufügen"
 
-#. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 #: components/FormEditor/Editor.tsx:133
 #: components/Formatters/Definitions.tsx:172
 #: components/Formatters/Definitions.tsx:253
+#. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 #, fuzzy
 msgid "deleteDefinition"
 msgstr "Definition löschen"
 
-#. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:27
+#. Used in: Components > Web Links > Definition
 #, fuzzy
 msgid "urlPart"
 msgstr "URL-Teil"
 
-#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #: components/Formatters/Definitions.tsx:213
 #: components/Formatters/Fields.tsx:125
+#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "addField"
 msgstr "Feld hinzufügen"
 
-#. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:26
+#. Used in: Components > Web Links > Definition
 #, fuzzy
 msgid "thisField"
 msgstr "Dieses Feld"
 
-#. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:152
 #: components/WebLinks/Definition.tsx:166
+#. Used in: Components > Web Links > Definition
 #, fuzzy
 msgid "selectTableFirst"
 msgstr "Wählen Sie zuerst die Tabelle aus"
 
-#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
 #: components/Formatters/Definitions.tsx:151
 #: components/Formatters/Formatter.tsx:127
+#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
 #, fuzzy
 msgid "conditionFieldValue"
 msgstr "Bedingungsfeldwert"
 
-#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:184
+#. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "conditionDescription"
 msgstr ""
 "Dieses Format wird nur verwendet, wenn der Wert des Bedingungsfelds dieser "
 "Bedingung entspricht und nicht null ist."
 
-#. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:165
+#. Used in: Components > App Resources > Tabs
 #, fuzzy
 msgid "wrongScopeWarning"
 msgstr ""
@@ -451,216 +451,216 @@ msgstr ""
 "Sie sich gerade befinden. Es wird empfohlen, die Sammlung zu wechseln, "
 "bevor Sie diese Ressource bearbeiten."
 
-#. Used in: Components > Web Links > Element
 #: components/WebLinks/Element.tsx:82
+#. Used in: Components > Web Links > Element
 #, fuzzy
 msgid "thisFieldName"
 msgstr "Dieser Feldname (nur für Vorschauzwecke)"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:295
+#. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "publishEveryDays"
 msgstr "Alle N Tage veröffentlichen"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:292
+#. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "publish"
 msgstr "Veröffentlichen"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:184
+#. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "fileName"
 msgstr "Dateiname"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:243
+#. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "runAsUser"
 msgstr "Als Benutzer ausführen"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:258
+#. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "notifyUser"
 msgstr "Abschlussbenachrichtigung an Benutzer senden"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:273
+#. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "runInCollection"
 msgstr "In der Sammlung ausführen"
 
-#. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:73
+#. Used in: Components > Form Editor > Create
 #, fuzzy
 msgid "createNewForm"
 msgstr "Erstellen einer neuen Ansichtsdefinition"
 
-#. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:78
+#. Used in: Components > Form Editor > Create
 #, fuzzy
 msgid "copyFromExistingForm"
 msgstr "Vorhandene Ansichtsdefinition kopieren"
 
-#. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:84
+#. Used in: Components > Form Editor > Create
 #, fuzzy
 msgid "copyDefaultForm"
 msgstr "Standardansichtsdefinition kopieren"
 
-#. Used in: Components > App Resources > Create
 #: components/AppResources/Create.tsx:232
+#. Used in: Components > App Resources > Create
 #, fuzzy
 msgid "copyDefaultForms"
 msgstr "Standardformulare kopieren"
 
-#. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:114
+#. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "saveFormFirst"
 msgstr "Formular zuerst speichern"
 
-#. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:117
+#. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "saveFormFirstDescription"
 msgstr "Sie müssen dieses Formular speichern, bevor Sie ein anderes bearbeiten"
 
-#. Used in: Components > Formatters > Formatter
 #: components/Formatters/Formatter.tsx:77
+#. Used in: Components > Formatters > Formatter
 #, fuzzy
 msgid "conditionalFormatter"
 msgstr "Bedingtes Format"
 
-#. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:136
+#. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "customizeFieldFormatters"
 msgstr "Feldformate anpassen"
 
-#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:262
+#. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "expandConditionalField"
 msgstr "Bedingtes Feld erweitern"
 
-#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:178
+#. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "collapseConditionalField"
 msgstr "Bedingtes Feld reduzieren"
 
-#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:147
+#. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "conditionalFieldValue"
 msgstr "Bedingter Feldwert"
 
-#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:219
+#. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "formatPreview"
 msgstr "Formatvorschau"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:388
 #: components/DataModel/businessRuleDefs.ts:406
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "currentDeterminationRequired"
 msgstr "Eine aktuelle Feststellung ist erforderlich."
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:272
 #: components/DataModel/businessRuleDefs.ts:291
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "cogAddedToItself"
 msgstr "Ein Schwerpunkt kann nicht zu sich selbst addiert werden."
 
-#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #: components/DataModel/businessRuleDefs.ts:221
 #: components/DataModel/__tests__/businessRules.test.ts:393
+#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #, fuzzy
 msgid "primaryCogChildRequired"
 msgstr ""
 "Eine konsolidierte Sammlungsobjektgruppe muss ein primäres "
 "Sammlungsobjekt-Unterobjekt haben"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:309
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deletePrimaryRecord"
 msgstr "Primärdatensatz CO kann nicht gelöscht werden."
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:645
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteLoanedPrep"
 msgstr "Eine ausgeliehene Zubereitung kann nicht gelöscht werden"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:653
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteGiftedPrep"
 msgstr "Eine geschenkte Vorbereitung kann nicht gelöscht werden"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:661
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteDisposedPrep"
 msgstr "Eine entsorgte Zubereitung kann nicht gelöscht werden"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:669
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteExchangeOutPrep"
 msgstr "Ein ausgetauschtes Präparat kann nicht gelöscht werden"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:677
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteExchangeInPrep"
 msgstr "Ein in Vorbereitung befindlicher Austausch kann nicht gelöscht werden"
 
-#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #: components/DataModel/businessRuleDefs.ts:192
 #: components/DataModel/__tests__/businessRules.test.ts:164
+#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #, fuzzy
 msgid "invalidDeterminationTaxon"
 msgstr ""
 "Die Bestimmung gehört nicht zum Taxonbaum, der mit dem Sammlungsobjekttyp "
 "verknüpft ist"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:620
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "preparationUsedInLoan"
 msgstr "Das Präparat dient der Kreditvergabe."
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:613
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "preparationIsNegative"
 msgstr "Die Anzahl der Vorbereitungen darf nicht negativ sein"
 
-#. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:336
 #: components/Formatters/Fields.tsx:337
 #: components/Formatters/Fields.tsx:342
+#. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "configureField"
 msgstr "Feld konfigurieren"
 
-#. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:381
+#. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "trimZeros"
 msgstr "Nullen trimmen"
 
-#. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:375
+#. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "trimZerosDescription"
 msgstr "Entfernen Sie führende Nullen aus numerischen Werten."

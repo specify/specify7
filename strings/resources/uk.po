@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2025-09-02 15:02+0000\n"
 "Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
-"resources/uk/>\n"
+"Language-Team: Ukrainian "
+"<https://hosted.weblate.org/projects/specify-7/resources/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,132 +12,132 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.13.1-dev\n"
 
-#. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 #: components/AppResources/Filters.tsx:70
 #: components/AppResources/Filters.tsx:117
 #: components/Header/userToolDefinitions.ts:68
 #: components/Preferences/UserDefinitions.tsx:1941
 #: components/Router/Routes.tsx:251
 #: components/Security/registry.ts:218
+#. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 msgid "appResources"
 msgstr "Ресурси програми"
 
-#. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 #: components/AppResources/Create.tsx:288
 #: components/FormMeta/Definition.tsx:31
 #: components/FormMeta/Definition.tsx:74
 #: components/Preferences/UserDefinitions.tsx:806
+#. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 msgid "formDefinition"
 msgstr "Визначення форми"
 
-#. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 #: components/AppResources/EditorComponents.tsx:51
 #: components/AppResources/Filters.tsx:58
 #: components/AppResources/Filters.tsx:101
 #: components/AppResources/types.tsx:35
+#. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 msgid "formDefinitions"
 msgstr "Визначення форми"
 
-#. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:265
+#. Used in: Components > Form Editor > Create
 msgid "newViewDefinition"
 msgstr "Нове визначення подання"
 
-#. Used in: Components > App Resources > Editor Components
 #: components/AppResources/EditorComponents.tsx:114
 #: components/AppResources/EditorComponents.tsx:119
+#. Used in: Components > App Resources > Editor Components
 msgid "loadFile"
 msgstr "Завантажити файл"
 
-#. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:41
+#. Used in: Components > App Resources > Tree
 msgid "globalResources"
 msgstr "Глобальні ресурси"
 
-#. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:47
+#. Used in: Components > App Resources > Tree
 msgid "disciplineResources"
 msgstr "Дисциплінарні ресурси"
 
-#. Used in: Components > App Resources > Create ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
 #: components/AppResources/Create.tsx:96
 #: components/SchemaConfig/Field.tsx:72
 #: components/WebLinks/Definition.tsx:49
+#. Used in: Components > App Resources > Create ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
 msgid "type"
 msgstr "Тип"
 
-#. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:236
+#. Used in: Components > App Resources > Tree
 msgid "userTypes"
 msgstr "Типи користувачів"
 
-#. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
 #: components/AppResources/Aside.tsx:321
 #: components/AppResources/index.tsx:54
+#. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
 msgid "resources"
 msgstr "Ресурси"
 
-#. Used in: Components > App Resources > Aside
 #: components/AppResources/Aside.tsx:264
+#. Used in: Components > App Resources > Aside
 msgid "subCategories"
 msgstr "Підкатегорії"
 
-#. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 #: components/AppResources/Aside.tsx:331
 #: components/Router/Routes.tsx:259
+#. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 msgid "addResource"
 msgstr "Додати ресурс"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:30
+#. Used in: Components > App Resources > Types
 msgid "appResource"
 msgstr "Підкатегорії"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:128
+#. Used in: Components > App Resources > Types
 msgid "rssExportFeed"
 msgstr "Канал експорту RSS"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:102
+#. Used in: Components > Export Feed > Editor
 msgid "exports"
 msgstr "Експорт"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:136
+#. Used in: Components > App Resources > Types
 msgid "expressSearchConfig"
 msgstr "Конфігурація експрес-пошуку"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:144
+#. Used in: Components > App Resources > Types
 msgid "typeSearches"
 msgstr "Пошук типів"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:152
+#. Used in: Components > App Resources > Types
 msgid "webLinks"
 msgstr "Веб-посилання"
 
-#. Used in: Components > App Resources > Types ⬤ Components > Schema Config > Format
 #: components/AppResources/types.tsx:160
 #: components/SchemaConfig/Format.tsx:100
+#. Used in: Components > App Resources > Types ⬤ Components > Schema Config > Format
 msgid "uiFormatters"
 msgstr "Форматувальники полів"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:168
+#. Used in: Components > App Resources > Types
 msgid "dataObjectFormatters"
 msgstr "Форматувальники записів"
 
-#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #: components/Formatters/Aggregator.tsx:69
 #: components/Formatters/Element.tsx:128
 #: components/Formatters/Fields.tsx:287
+#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 msgid "formatter"
 msgstr "Формат таблиці"
 
-#. Used in: Components > Formatters > Table
 #: components/Formatters/Table.tsx:31
+#. Used in: Components > Formatters > Table
 msgid "formatterDescription"
 msgstr ""
 "«Формат таблиці» керує тим, як дані з певної таблиці відображаються в "
@@ -145,13 +145,13 @@ msgstr ""
 "поля для відображення та їх порядок. Умовне форматування можна налаштувати "
 "на основі значення в записі."
 
-#. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:129
+#. Used in: Components > Formatters > Element
 msgid "aggregator"
 msgstr "Агрегація таблиць"
 
-#. Used in: Components > Formatters > Table
 #: components/Formatters/Table.tsx:32
+#. Used in: Components > Formatters > Table
 msgid "aggregatorDescription"
 msgstr ""
 "«Агрегація таблиць» контролює, як кілька записів таблиці об’єднуються разом "
@@ -159,433 +159,433 @@ msgstr ""
 "та ліміт попереднього перегляду запису можна налаштувати. Він може "
 "відображатися в результатах запитів і у форматах таблиць."
 
-#. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:28
+#. Used in: Components > Web Links > Definition
 msgid "formattedResource"
 msgstr "Відформатований ресурс"
 
-#. Used in: Components > Formatters > List
 #: components/Formatters/List.tsx:66
+#. Used in: Components > Formatters > List
 msgid "availableFormatters"
 msgstr "Доступні формати таблиць"
 
-#. Used in: Components > Formatters > List
 #: components/Formatters/List.tsx:67
+#. Used in: Components > Formatters > List
 msgid "availableAggregators"
 msgstr "Доступні агрегації таблиць"
 
-#. Used in: Components > Web Links > List
 #: components/WebLinks/List.tsx:24
+#. Used in: Components > Web Links > List
 msgid "availableWebLink"
 msgstr "Доступні веб-посилання"
 
-#. Used in: Components > Formatters > List
 #: components/Formatters/List.tsx:127
+#. Used in: Components > Formatters > List
 msgid "selectDefaultFormatter"
 msgstr "Виберіть стандартний формат запису для цієї таблиці"
 
-#. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:52
+#. Used in: Components > Formatters > Element
 msgid "duplicateFormatters"
 msgstr "Імена форматування записів мають бути унікальними"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:176
+#. Used in: Components > App Resources > Types
 msgid "dataEntryTables"
 msgstr "Таблиці введення даних"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:184
+#. Used in: Components > App Resources > Types
 msgid "interactionsTables"
 msgstr "Таблиці взаємодій"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:191
+#. Used in: Components > App Resources > Types
 msgid "otherXmlResource"
 msgstr "Інший XML-ресурс"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:198
+#. Used in: Components > App Resources > Types
 msgid "otherJsonResource"
 msgstr "Інший JSON-ресурс"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:205
+#. Used in: Components > App Resources > Types
 msgid "otherPropertiesResource"
 msgstr "Ресурс інших властивостей"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:212
+#. Used in: Components > App Resources > Types
 msgid "otherAppResource"
 msgstr "Інший ресурс"
 
-#. Used in: Components > App Resources > Filters
 #: components/AppResources/Filters.tsx:48
+#. Used in: Components > App Resources > Filters
 msgid "filters"
 msgstr "Фільтри"
 
-#. Used in: Components > App Resources > Filters
 #: components/AppResources/Filters.tsx:73
 #: components/AppResources/Filters.tsx:74
 #: components/AppResources/Filters.tsx:83
+#. Used in: Components > App Resources > Filters
 msgid "custom"
 msgstr "Спеціальні"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:120
+#. Used in: Components > App Resources > Types
 msgid "leafletLayers"
 msgstr "Шари листівок"
 
-#. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:145
+#. Used in: Components > App Resources > Tabs
 msgid "textEditor"
 msgstr "Текстовий редактор"
 
-#. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:143
+#. Used in: Components > App Resources > Tabs
 msgid "xmlEditor"
 msgstr "Редактор XML"
 
-#. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:144
+#. Used in: Components > App Resources > Tabs
 msgid "jsonEditor"
 msgstr "Редактор JSON"
 
-#. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:142
+#. Used in: Components > App Resources > Tabs
 msgid "visualEditor"
 msgstr "Візуальний редактор"
 
-#. Used in: Components > App Resources > Create
 #: components/AppResources/Create.tsx:68
 #: components/AppResources/Create.tsx:90
+#. Used in: Components > App Resources > Create
 msgid "selectResourceType"
 msgstr "Виберіть тип ресурсу"
 
-#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
 #: components/AppResources/tree.ts:121
 #: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:32
 #: components/AppResources/__tests__/getGlobalAllResources.test.ts:38
+#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
 msgid "globalPreferences"
 msgstr "Глобальні налаштування"
 
-#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
 #: components/AppResources/tree.ts:123
 #: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:55
 #: components/AppResources/__tests__/getGlobalAllResources.test.ts:69
+#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
 msgid "remotePreferences"
 msgstr "Віддалені параметри"
 
-#. Used in: Components > Formatters > Index
 #: components/Formatters/index.tsx:99
+#. Used in: Components > Formatters > Index
 msgid "failedParsingXml"
 msgstr "Не вдалося проаналізувати XML"
 
-#. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter
 #: components/Formatters/Element.tsx:103
 #: components/QueryBuilder/FieldFilter.tsx:554
+#. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter
 msgid "name"
 msgstr "Ім'я"
 
-#. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
 #: components/ExportFeed/Editor.tsx:50
 #: components/ExportFeed/Editor.tsx:164
 #: components/Formatters/Element.tsx:135
+#. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
 msgid "title"
 msgstr "Назва"
 
-#. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
 #: components/Formatters/Element.tsx:161
 #: components/Formatters/List.tsx:117
+#. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
 msgid "default"
 msgstr "За замовчуванням"
 
-#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 #: components/Formatters/Aggregator.tsx:28
 #: components/Formatters/Fields.tsx:74
 #: components/Formatters/Fields.tsx:178
+#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 msgid "separator"
 msgstr "Роздільник"
 
-#. Used in: Components > Formatters > Aggregator
 #: components/Formatters/Aggregator.tsx:41
+#. Used in: Components > Formatters > Aggregator
 msgid "suffix"
 msgstr "Суфікс"
 
-#. Used in: Components > Formatters > Aggregator
 #: components/Formatters/Aggregator.tsx:54
+#. Used in: Components > Formatters > Aggregator
 msgid "limit"
 msgstr "Ліміт"
 
-#. Used in: Components > Formatters > Components ⬤ Components > Query Builder > Formatter
 #: components/Formatters/Components.tsx:72
 #: components/Formatters/Components.tsx:130
 #: components/QueryBuilder/Formatter.tsx:212
+#. Used in: Components > Formatters > Components ⬤ Components > Query Builder > Formatter
 msgid "defaultInline"
 msgstr "(за умовчанням)"
 
-#. Used in: Components > Formatters > Aggregator
 #: components/Formatters/Aggregator.tsx:85
+#. Used in: Components > Formatters > Aggregator
 msgid "sortField"
 msgstr "Поле сортування"
 
-#. Used in: Components > Form Editor > Create ⬤ Components > Formatters > Preview ⬤ Components > Merging > Header
 #: components/FormEditor/Create.tsx:214
 #: components/Formatters/Preview.tsx:71
 #: components/Merging/Header.tsx:164
+#. Used in: Components > Form Editor > Create ⬤ Components > Formatters > Preview ⬤ Components > Merging > Header
 msgid "preview"
 msgstr "Попередній перегляд"
 
-#. Used in: Components > Formatters > Preview
 #: components/Formatters/Preview.tsx:72
+#. Used in: Components > Formatters > Preview
 msgid "previewExplainer"
 msgstr ""
 "Виконайте пошук у своїх записах колекції, щоб переглянути інструмент "
 "форматування записів"
 
-#. Used in: Components > Form Editor > Table ⬤ Components > Formatters > Formatter
 #: components/FormEditor/Table.tsx:86
 #: components/Formatters/Formatter.tsx:33
+#. Used in: Components > Form Editor > Table ⬤ Components > Formatters > Formatter
 msgid "editorNotAvailable"
 msgstr "Візуальний редактор недоступний для цього ресурсу"
 
-#. Used in: Components > Form Editor > Table ⬤ Components > Web Links > Definition
 #: components/FormEditor/Table.tsx:83
 #: components/WebLinks/Definition.tsx:44
+#. Used in: Components > Form Editor > Table ⬤ Components > Web Links > Definition
 msgid "definition"
 msgstr "Визначення"
 
-#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:74
 #: components/Formatters/Definitions.tsx:85
+#. Used in: Components > Formatters > Definitions
 msgid "addDefinition"
 msgstr "Додайте визначення"
 
-#. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 #: components/FormEditor/Editor.tsx:133
 #: components/Formatters/Definitions.tsx:172
 #: components/Formatters/Definitions.tsx:253
+#. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 msgid "deleteDefinition"
 msgstr "Видалити визначення"
 
-#. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:27
+#. Used in: Components > Web Links > Definition
 msgid "urlPart"
 msgstr "URL-адреса"
 
-#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #: components/Formatters/Definitions.tsx:213
 #: components/Formatters/Fields.tsx:125
+#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 msgid "addField"
 msgstr "Додати поле"
 
-#. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:26
+#. Used in: Components > Web Links > Definition
 msgid "thisField"
 msgstr "Це поле"
 
-#. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:152
 #: components/WebLinks/Definition.tsx:166
+#. Used in: Components > Web Links > Definition
 msgid "selectTableFirst"
 msgstr "Спочатку виберіть таблицю"
 
-#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
 #: components/Formatters/Definitions.tsx:151
 #: components/Formatters/Formatter.tsx:127
+#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
 msgid "conditionFieldValue"
 msgstr "Умова Значення поля"
 
-#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:184
+#. Used in: Components > Formatters > Definitions
 msgid "conditionDescription"
 msgstr ""
 "Цей формат використовуватиметься, лише якщо значення поля умови дорівнює "
 "цій умові й не є нульовим."
 
-#. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:165
+#. Used in: Components > App Resources > Tabs
 msgid "wrongScopeWarning"
 msgstr ""
 "Цей ресурс належить до іншої колекції/дисципліни, ніж та, у якій ви зараз "
 "перебуваєте. Рекомендовано змінити колекцію перед редагуванням цього ресурсу"
 
-#. Used in: Components > Web Links > Element
 #: components/WebLinks/Element.tsx:82
+#. Used in: Components > Web Links > Element
 msgid "thisFieldName"
 msgstr "Назва цього поля (лише для попереднього перегляду)"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:295
+#. Used in: Components > Export Feed > Editor
 msgid "publishEveryDays"
 msgstr "Публікуйте кожні N днів"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:292
+#. Used in: Components > Export Feed > Editor
 msgid "publish"
 msgstr "Опублікувати"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:184
+#. Used in: Components > Export Feed > Editor
 msgid "fileName"
 msgstr "Ім'я файлу"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:243
+#. Used in: Components > Export Feed > Editor
 msgid "runAsUser"
 msgstr "Запуск від імені користувача"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:258
+#. Used in: Components > Export Feed > Editor
 msgid "notifyUser"
 msgstr "Надіслати сповіщення про завершення користувачеві"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:273
+#. Used in: Components > Export Feed > Editor
 msgid "runInCollection"
 msgstr "Запустити в колекції"
 
-#. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:73
+#. Used in: Components > Form Editor > Create
 msgid "createNewForm"
 msgstr "Створіть нове визначення подання"
 
-#. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:78
+#. Used in: Components > Form Editor > Create
 msgid "copyFromExistingForm"
 msgstr "Копіювати існуюче визначення перегляду"
 
-#. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:84
+#. Used in: Components > Form Editor > Create
 msgid "copyDefaultForm"
 msgstr "Формати записів"
 
-#. Used in: Components > App Resources > Create
 #: components/AppResources/Create.tsx:232
+#. Used in: Components > App Resources > Create
 msgid "copyDefaultForms"
 msgstr "Копіювати стандартні форми"
 
-#. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:114
+#. Used in: Components > Form Meta > Index
 msgid "saveFormFirst"
 msgstr "Спочатку збережіть форму"
 
-#. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:117
+#. Used in: Components > Form Meta > Index
 msgid "saveFormFirstDescription"
 msgstr "Вам потрібно зберегти цю форму, перш ніж редагувати іншу"
 
-#. Used in: Components > Formatters > Formatter
 #: components/Formatters/Formatter.tsx:77
+#. Used in: Components > Formatters > Formatter
 msgid "conditionalFormatter"
 msgstr "Умовний формат"
 
-#. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:136
+#. Used in: Components > Formatters > Fields
 msgid "customizeFieldFormatters"
 msgstr "Налаштувати формати полів"
 
-#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:262
+#. Used in: Components > Formatters > Definitions
 msgid "expandConditionalField"
 msgstr "Розгорнути умовне поле"
 
-#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:178
+#. Used in: Components > Formatters > Definitions
 msgid "collapseConditionalField"
 msgstr "Згорнути умовне поле"
 
-#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:147
+#. Used in: Components > Formatters > Definitions
 msgid "conditionalFieldValue"
 msgstr "Умовне значення поля"
 
-#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:219
+#. Used in: Components > Formatters > Definitions
 msgid "formatPreview"
 msgstr "Попередній перегляд формату"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:388
 #: components/DataModel/businessRuleDefs.ts:406
+#. Used in: Components > Data Model > Business Rule Defs
 msgid "currentDeterminationRequired"
 msgstr "Потрібне поточне визначення."
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:272
 #: components/DataModel/businessRuleDefs.ts:291
+#. Used in: Components > Data Model > Business Rule Defs
 msgid "cogAddedToItself"
 msgstr "COG не можна додати до самого себе."
 
-#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #: components/DataModel/businessRuleDefs.ts:221
 #: components/DataModel/__tests__/businessRules.test.ts:393
+#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 msgid "primaryCogChildRequired"
 msgstr ""
 "Консолідована група об'єктів колекції повинна мати дочірній об'єкт "
 "первинної колекції"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:309
+#. Used in: Components > Data Model > Business Rule Defs
 msgid "deletePrimaryRecord"
 msgstr "Основний запис CO неможливо видалити."
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:645
+#. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteLoanedPrep"
 msgstr "Позичений препарат не можна видалити"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:653
+#. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteGiftedPrep"
 msgstr "Подарований препарат не можна видалити"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:661
+#. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteDisposedPrep"
 msgstr "Викинутий препарат не можна видалити"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:669
+#. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteExchangeOutPrep"
 msgstr "Обмінений препарат не можна видалити"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:677
+#. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteExchangeInPrep"
 msgstr "Обмін, що готується, не можна видалити"
 
-#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #: components/DataModel/businessRuleDefs.ts:192
 #: components/DataModel/__tests__/businessRules.test.ts:164
+#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 msgid "invalidDeterminationTaxon"
 msgstr ""
 "Визначення не належить до дерева таксонів, пов'язаного з типом об'єкта "
 "колекції"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:620
+#. Used in: Components > Data Model > Business Rule Defs
 msgid "preparationUsedInLoan"
 msgstr "Препарат використовується у позиці."
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:613
+#. Used in: Components > Data Model > Business Rule Defs
 msgid "preparationIsNegative"
 msgstr "Кількість підготовок не може бути від'ємним значенням"
 
-#. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:336
 #: components/Formatters/Fields.tsx:337
 #: components/Formatters/Fields.tsx:342
+#. Used in: Components > Formatters > Fields
 msgid "configureField"
 msgstr "Налаштувати поле"
 
-#. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:381
+#. Used in: Components > Formatters > Fields
 msgid "trimZeros"
 msgstr "Обрізати нулі"
 
-#. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:375
+#. Used in: Components > Formatters > Fields
 msgid "trimZerosDescription"
 msgstr "Видаліть початкові нулі з числових значень."
