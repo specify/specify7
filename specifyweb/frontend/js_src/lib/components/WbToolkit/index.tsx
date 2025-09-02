@@ -51,14 +51,14 @@ export function WbToolkit({
 
     const prepareExport = (
       dataset: Dataset,
-    ): { columns: RA<string>; rows: RA<RA<string>> } => {
-      const defaultOrder = dataset.columns.map((_, i) => i); // use the existing order as default
+    ): { readonly columns: RA<string>; readonly rows: RA<RA<string>> } => {
+      const defaultOrder = dataset.columns.map((_, i) => i); // Use the existing order as default
 
       const order =
         dataset.visualorder &&
         dataset.visualorder.length === dataset.columns.length
           ? dataset.visualorder
-          : defaultOrder; // try to apply visual order if present, otherwise just fallback to default
+          : defaultOrder; // Try to apply visual order if present, otherwise just fallback to default
 
       let columns = order.map((colIndex) => dataset.columns[colIndex]);
       const rows = dataset.rows.map((row) =>
