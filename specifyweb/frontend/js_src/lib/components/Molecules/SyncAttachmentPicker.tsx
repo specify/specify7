@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { attachmentsText } from '../../localization/attachments';
@@ -20,35 +19,26 @@ import { Tabs } from './Tabs';
 
 const types = ['url', 'image', 'attachments'] as const;
 
-function fileNameFromUrl(imageUrl?: string): string | undefined {
-  if (!imageUrl) return undefined;
-  try {
-    const urlObject = new URL(
-      imageUrl,
-      typeof window === 'undefined' ? 'http://localhost' : window.location.origin
-    );
+function deriveAltFromUrl(source?: string, fallback = 'Image preview'): string {
+  if (!source) return fallback;
 
-    const queryName =
-      urlObject.searchParams.get('downloadname') ??
-      urlObject.searchParams.get('filename');
+  const urlObject = new URL(
+    source,
+    typeof window === 'undefined' ? 'http://localhost' : window.location.origin
+  );
 
-    const lastPathSegment = urlObject.pathname.split('/').pop() ?? '';
-    const raw = queryName ?? lastPathSegment;
+  const downloadName = urlObject.searchParams.get('downloadname');
+  const fileNameFromQuery = urlObject.searchParams.get('filename');
+  const fileNameFromPath = urlObject.pathname.split('/').pop() ?? '';
 
-    const decodedName = decodeURIComponent(raw.replaceAll('+', ' '))
-      .replaceAll(/\u202f|\xa0/g, ' ')
-      .trim();
+  const rawName = downloadName ?? fileNameFromQuery ?? fileNameFromPath;
 
-    return decodedName || undefined;
-  } catch {
-    const raw = imageUrl.split('/').pop() ?? '';
-    const decodedName = decodeURIComponent(raw.replaceAll('+', ' '))
-      .replaceAll(/\u202f|\xa0/g, ' ')
-      .trim();
-    return decodedName || undefined;
-  }
+  const decodedName = decodeURIComponent(rawName.replaceAll('+', ' '))
+    .replaceAll(/\u202F|\u00A0/g, ' ')
+    .trim();
+
+  return decodedName || fallback;
 }
-
 
 export function SyncAttachmentPicker({
   url,
@@ -61,20 +51,13 @@ export function SyncAttachmentPicker({
   useErrorContext('attachment', attachment);
 
   const [isOpen, , , handleToggle] = useBooleanState();
-
   const loading = React.useContext(LoadingContext);
 
   const [urlNotFound, setUrlNotFound] = React.useState(false);
-
-
   const [type, setType] = React.useState<typeof types[number]>('url');
 
-  // State
-  const [altText, setAltText] = React.useState<string | undefined>(undefined);
-
-  // When user picks an attachment
   function handleAttachment(nextAttachment: SerializedResource<Attachment>): void {
-  
+    // Prefer original filename if backend provides it
     const originalName: string | undefined = (nextAttachment as any)?.origName;
     if (originalName) setAltText(originalName);
 
@@ -87,13 +70,12 @@ export function SyncAttachmentPicker({
   }
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+
   return (
     <>
       {!isReadOnly && (
         <Button.Secondary onClick={() => handleToggle()}>
-          {url === undefined
-            ? preferencesText.pickImage()
-            : commonText.change()}
+          {url === undefined ? preferencesText.pickImage() : commonText.change()}
         </Button.Secondary>
       )}
 
@@ -102,7 +84,7 @@ export function SyncAttachmentPicker({
           onClick={() => {
             setAttachment(undefined);
             handleChange(undefined);
-            setAltText(undefined);               // ⟵ clear custom alt when deleting
+            setAltText(undefined); // clear alt text when removing image
           }}
         >
           {commonText.delete()}
@@ -111,7 +93,7 @@ export function SyncAttachmentPicker({
 
       {url !== undefined && (
         <img
-          alt={altText ?? fileNameFromUrl(url) ?? 'Image preview'}
+          alt={altText ?? deriveAltFromUrl(url)}
           className="h-40 max-h-full w-40 max-w-full object-contain"
           src={url}
         />
@@ -131,8 +113,8 @@ export function SyncAttachmentPicker({
               ),
               [wbText.upload()]: (
                 <UploadAttachment
-                  onUploaded={(attachment): void => {
-                    handleAttachment(serializeResource(attachment));
+                  onUploaded={(uploaded): void => {
+                    handleAttachment(serializeResource(uploaded));
                   }}
                 />
               ),
