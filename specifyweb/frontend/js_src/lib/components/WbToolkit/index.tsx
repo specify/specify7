@@ -60,7 +60,7 @@ export function WbToolkit({
           ? dataset.visualorder
           : defaultOrder; // try to apply visual order if present, otherwise just fallback to default
 
-      const columns = order.map((colIndex) => dataset.columns[colIndex]);
+      let columns = order.map((colIndex) => dataset.columns[colIndex]);
       const rows = dataset.rows.map((row) =>
         order.map((colIndex) => row[colIndex] ?? ""),
       );
