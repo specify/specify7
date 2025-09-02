@@ -20,7 +20,7 @@ export const commonText = createDictionary({
     "fr-fr": "Specify 7",
     "uk-ua": "Вкажіть 7",
     "de-ch": "Specify 7",
-    "pt-br": "Especifique 7",
+    "pt-br": "Specify 7",
   },
   no: {
     "en-us": "No",
