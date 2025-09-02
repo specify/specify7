@@ -32,8 +32,8 @@ msgstr ""
 "Für diesen Datensatz wurde noch kein Upload-Plan definiert. Jetzt einen "
 "erstellen?"
 
+#: components/WorkBench/hotProps.tsx:160
 #: components/WorkBench/hotProps.tsx:162
-#: components/WorkBench/hotProps.tsx:164
 #. Used in: Components > Work Bench > Hot Props
 msgid "unmappedColumn"
 msgstr "Nicht gemappte Spalte"

@@ -21,12 +21,11 @@ msgstr ""
 msgid "appResources"
 msgstr "Recursos de la aplicación"
 
-#: components/AppResources/Create.tsx:286
-#: components/FormEditor/Create.tsx:265
+#: components/AppResources/Create.tsx:288
 #: components/FormMeta/Definition.tsx:31
 #: components/FormMeta/Definition.tsx:74
 #: components/Preferences/UserDefinitions.tsx:806
-#. Used in: Components > App Resources > Create ⬤ Components > Form Editor > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
+#. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 msgid "formDefinition"
 msgstr "Definición de formulario"
 
@@ -37,6 +36,11 @@ msgstr "Definición de formulario"
 #. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 msgid "formDefinitions"
 msgstr "Definición de formulario"
+
+#: components/FormEditor/Create.tsx:265
+#. Used in: Components > Form Editor > Create
+msgid "newViewDefinition"
+msgstr ""
 
 #: components/AppResources/EditorComponents.tsx:114
 #: components/AppResources/EditorComponents.tsx:119
@@ -529,7 +533,7 @@ msgstr "Copiar la definición de vista existente"
 msgid "copyDefaultForm"
 msgstr "Copiar la definición de vista predeterminada"
 
-#: components/AppResources/Create.tsx:230
+#: components/AppResources/Create.tsx:232
 #. Used in: Components > App Resources > Create
 #, fuzzy
 msgid "copyDefaultForms"

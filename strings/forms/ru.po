@@ -817,7 +817,7 @@ msgstr "Настроить таблицы взаимодействия"
 msgid "formMeta"
 msgstr "Форма Мета"
 
-#: components/AppResources/Create.tsx:285
+#: components/AppResources/Create.tsx:287
 #: components/AppResources/Editor.tsx:250
 #: components/Formatters/formatters.ts:58
 #: components/Forms/BaseResourceView.tsx:124

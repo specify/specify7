@@ -11,12 +11,11 @@ msgstr "Content-Type: text/plain\n"
 msgid "appResources"
 msgstr "App Resources"
 
-#: components/AppResources/Create.tsx:286
-#: components/FormEditor/Create.tsx:265
+#: components/AppResources/Create.tsx:288
 #: components/FormMeta/Definition.tsx:31
 #: components/FormMeta/Definition.tsx:74
 #: components/Preferences/UserDefinitions.tsx:806
-#. Used in: Components > App Resources > Create ⬤ Components > Form Editor > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
+#. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 msgid "formDefinition"
 msgstr "Form Definition"
 
@@ -27,6 +26,11 @@ msgstr "Form Definition"
 #. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 msgid "formDefinitions"
 msgstr "Form Definition"
+
+#: components/FormEditor/Create.tsx:265
+#. Used in: Components > Form Editor > Create
+msgid "newViewDefinition"
+msgstr "New View Definition"
 
 #: components/AppResources/EditorComponents.tsx:114
 #: components/AppResources/EditorComponents.tsx:119
@@ -444,7 +448,7 @@ msgstr "Copy existing view definition"
 msgid "copyDefaultForm"
 msgstr "Copy default view definition"
 
-#: components/AppResources/Create.tsx:230
+#: components/AppResources/Create.tsx:232
 #. Used in: Components > App Resources > Create
 msgid "copyDefaultForms"
 msgstr "Copy default forms"
