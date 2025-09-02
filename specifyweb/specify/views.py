@@ -14,7 +14,7 @@ from tempfile import TemporaryDirectory
 from django import http
 from django.conf import settings
 from django.views.decorators.cache import cache_control
-from django.views.decorators.http import require_POST, require_http_methods
+from django.views.decorators.http import require_http_methods
 
 from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.api.dispatch import collection_dispatch, resource_dispatch
@@ -27,9 +27,14 @@ logger = logging.getLogger(__name__)
 def login_maybe_required(view):
     @wraps(view)
     def wrapped(request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return http.HttpResponseForbidden()
-        return view(request, *args, **kwargs)
+        if hasattr(request, 'user') and request.user is not None:
+            if request.user.is_authenticated:
+                return view(request, *args, **kwargs)
+
+            if not spmodels.Institution.objects.exists():
+                return view(request, *args, **kwargs)
+
+        return http.HttpResponseForbidden()
     return wrapped
 
 
@@ -146,8 +151,3 @@ def properties(request, name):
         return http.HttpResponseServerError(f"Failed to load {path}.")
 
     return http.HttpResponse(data, content_type='text/plain')
-
-# check if user is new by looking the presence of institution
-def is_new_user(request):
-    is_new_user = len(spmodels.Institution.objects.all()) == 0
-    return http.JsonResponse(is_new_user, safe=False)

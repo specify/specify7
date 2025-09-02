@@ -6,9 +6,6 @@ from .models_utils import schema
 from specifyweb.specify import views
 
 urlpatterns = [
-    # check if the user is new at login
-    re_path(r'^specify/is_new_user/$', views.is_new_user),
-
     # the main business data API
     re_path(r'^specify_schema/openapi.json$', schema.openapi),
     re_path(r'^specify_schema/(?P<model>\w+)/$', schema.view),
