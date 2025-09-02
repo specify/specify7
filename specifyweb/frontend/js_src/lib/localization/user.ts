@@ -1096,4 +1096,7 @@ export const userText = createDictionary({
     'uk-ua': 'Додати користувача',
     'pt-br': 'Adicionar usuário',
   },
+  systemConfigurationTool: {
+    'en-us': 'System Configuration Tool',
+  },
 } as const);
