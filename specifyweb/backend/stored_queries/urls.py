@@ -9,6 +9,6 @@ urlpatterns = [
     path('exportkml/', views.export_kml),
     path('make_recordset/', views.make_recordset),
     path('merge_recordsets/', views.merge_recordsets),
-    # path('return_loan_preps/', views.return_loan_preps),
+    path('return_loan_preps/', views.return_loan_preps),
     path('batch_edit/', views.batch_edit)
 ]

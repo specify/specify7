@@ -56,8 +56,9 @@ import { reducer } from './mappingReducer';
 import { findRequiredMissingFields } from './modelHelpers';
 import { getMappingLineData } from './navigator';
 import { navigatorSpecs } from './navigatorSpecs';
-import type { ColumnOptions } from './uploadPlanParser';
+import type { ColumnOptions, DatasetAttachmentPrefs } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
+import { ATTACHMENTS_COLUMN } from '../WorkBench/attachmentHelpers';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -104,6 +105,7 @@ export type MappingState = State<
     readonly openSelectElement?: SelectElementPosition;
     readonly validationResults: RA<MappingPath>;
     readonly batchEditPrefs?: BatchEditPrefs;
+    readonly attachmentPrefs?: DatasetAttachmentPrefs;
   }
 >;
 
@@ -123,16 +125,23 @@ export const DEFAULT_BATCH_EDIT_PREFS: BatchEditPrefs = {
   deferForNullCheck: false,
 } as const;
 
+export const DEFAULT_ATTACHMENT_PREFS: DatasetAttachmentPrefs = {
+  usesAttachments: true,
+  attachmentsColumn: ATTACHMENTS_COLUMN,
+} as const;
+
 export const getDefaultMappingState = ({
   changesMade,
   lines,
   mustMatchPreferences,
   batchEditPrefs,
+  attachmentPrefs,
 }: {
   readonly changesMade: boolean;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
   readonly batchEditPrefs?: BatchEditPrefs;
+  readonly attachmentPrefs?: DatasetAttachmentPrefs;
 }): MappingState => ({
   type: 'MappingState',
   showHiddenFields: getCache('wbPlanViewUi', 'showHiddenFields') ?? false,
@@ -145,6 +154,7 @@ export const getDefaultMappingState = ({
   changesMade,
   mustMatchPreferences,
   batchEditPrefs,
+  attachmentPrefs,
 });
 
 // REFACTOR: split component into smaller components
@@ -155,7 +165,8 @@ export function Mapper(props: {
   readonly onSave: (
     lines: RA<MappingLine>,
     mustMatchPreferences: IR<boolean>,
-    batchEditPrefs?: BatchEditPrefs
+    batchEditPrefs?: BatchEditPrefs,
+    attachmentPrefs?: DatasetAttachmentPrefs
   ) => Promise<void>;
   // Initial values for the state:
   readonly changesMade: boolean;
@@ -163,6 +174,7 @@ export function Mapper(props: {
   readonly mustMatchPreferences: IR<boolean>;
   readonly readonlySpec?: ReadonlySpec;
   readonly batchEditPrefs?: BatchEditPrefs;
+  readonly attachmentPrefs?: DatasetAttachmentPrefs;
 }): JSX.Element {
   const [state, dispatch] = React.useReducer(
     reducer,
@@ -171,6 +183,7 @@ export function Mapper(props: {
       lines: props.lines,
       mustMatchPreferences: props.mustMatchPreferences,
       batchEditPrefs: props.batchEditPrefs,
+      attachmentPrefs: props.attachmentPrefs,
     },
     getDefaultMappingState
   );
@@ -293,7 +306,8 @@ export function Mapper(props: {
         props.onSave(
           state.lines,
           state.mustMatchPreferences,
-          state.batchEditPrefs
+          state.batchEditPrefs,
+          state.attachmentPrefs
         )
       );
     } else

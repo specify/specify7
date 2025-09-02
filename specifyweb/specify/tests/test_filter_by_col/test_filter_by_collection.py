@@ -1,16 +1,20 @@
-from specifyweb.specify.filter_by_col import HierarchyException, filter_by_collection
+
+
+from specifyweb.specify.api.filter_by_col import HierarchyException, filter_by_collection
 from specifyweb.specify.models import (
     Attachment,
     Collection,
     Determination,
     Discipline,
     Disposal,
+)
+from specifyweb.specify.models import (
     Geography,
     Taxontreedefitem,
     Taxon,
 )
-from specifyweb.specify.scoping import ScopeType
-from specifyweb.specify.tests.test_trees import GeographyTree
+from specifyweb.specify.utils.scoping import ScopeType
+from specifyweb.backend.trees.tests.test_trees import GeographyTree
 
 
 class TestFilterByCollection(GeographyTree):

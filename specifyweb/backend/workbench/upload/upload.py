@@ -4,6 +4,15 @@ import logging
 import time
 from contextlib import contextmanager
 from datetime import datetime, timezone
+from typing import (
+    List,
+    Dict,
+    Union,
+    Callable,
+    Optional,
+    Sized,
+    Tuple,
+)
 from collections.abc import Callable
 from collections.abc import Sized
 
@@ -13,17 +22,17 @@ from jsonschema import validate  # type: ignore
 
 from specifyweb.backend.permissions.permissions import has_target_permission
 from specifyweb.specify import models
-from specifyweb.specify.auditlog import auditlog
+from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.specify.datamodel import Table
-from specifyweb.specify.func import Func
-from specifyweb.specify.tree_extras import renumber_tree, set_fullnames
+from specifyweb.specify.utils.func import Func
+from specifyweb.backend.trees.extras import renumber_tree, set_fullnames
 from specifyweb.backend.workbench.permissions import BatchEditDataSetPT
 from specifyweb.backend.workbench.upload.auditor import (
     DEFAULT_AUDITOR_PROPS,
     AuditorProps,
     BatchEditPrefs,
 )
-from specifyweb.specify.tree_views import ALL_TREES
+from specifyweb.backend.trees.views import ALL_TREES
 
 from . import disambiguation
 from .upload_plan_schema import schema, parse_plan_with_basetable
@@ -47,8 +56,16 @@ from .uploadable import (
     Uploadable,
     BatchEditJson,
 )
+from .upload_table import UploadTable
 from .scope_context import ScopeContext
 from ..models import Spdataset
+
+from .upload_attachments import (
+    has_attachments,
+    validate_attachment,
+    add_attachments_to_plan,
+    unlink_attachments,
+)
 
 Rows = list[Row] | csv.DictReader
 Progress = Callable[[int, int | None], None]
@@ -100,6 +117,8 @@ def unupload_dataset(ds: Spdataset, agent, progress: Progress | None = None) -> 
             current += 1
             if progress is not None:
                 progress(current, total)
+        # Un-link attachments, if any
+        unlink_attachments(ds)
         ds.uploadresult = None
         ds.save(update_fields=["uploadresult"])
 
@@ -336,7 +355,16 @@ def do_upload(
                 # the fact that upload plan is cachable, is invariant across rows.
                 # so, we just apply scoping once. Honestly, see if it causes enough overhead to even warrant caching
 
-                if cached_scope_table is None:
+                if has_attachments(row):
+                    # If there's an attachments column, add attachments to upload plan
+                    attachments_valid, result = validate_attachment(row, upload_plan) # type: ignore
+                    if not attachments_valid:
+                        results.append(result) # type: ignore
+                        cache = _cache
+                        raise Rollback("failed row")
+                    row, row_upload_plan = add_attachments_to_plan(row, upload_plan) # type: ignore
+                    scoped_table = row_upload_plan.apply_scoping(collection, scope_context, row)
+                elif cached_scope_table is None:
                     scoped_table = upload_plan.apply_scoping(collection, scope_context, row)
                     if not scope_context.is_variable:
                         # This forces every row to rescope when not variable
