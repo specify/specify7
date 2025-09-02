@@ -39,15 +39,14 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { PopupWindow } from '../Molecules/PopupWindow';
 import { Skeleton } from '../SkeletonLoaders/Skeleton';
+import { handleWorkbenchSave } from '../WbActions/WbSave';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import {
+  BASE_TABLE_NAME,
   getAttachmentsColumn,
   getAttachmentsFromCell,
-  uploadAttachmentsToRow,
-  BASE_TABLE_NAME
-} from '../WorkBench/attachmentHelpers';
+  uploadAttachmentsToRow} from '../WorkBench/attachmentHelpers';
 import type { Workbench } from '../WorkBench/WbView';
-import { handleWorkbenchSave } from '../WbActions/WbSave';
 
 const { formatCacheKey } = exportsForTests;
 
@@ -201,7 +200,7 @@ export function WbAttachmentsPreview({
                       setFileUploadLength,
                       setFileUploadProgress
                     ).then(
-                      () => 
+                      async () => 
                         handleWorkbenchSave(
                           workbench,
                           searchRef,

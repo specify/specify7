@@ -1,4 +1,7 @@
+import type Handsontable from 'handsontable';
+
 import { ajax } from '../../utils/ajax';
+import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
 import { uploadFile } from '../Attachments/attachments';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -15,10 +18,8 @@ import type {
   SpDataSetAttachment,
   Tables,
 } from '../DataModel/types';
-import type { Dataset } from '../WbPlanView/Wrapped';
-import Handsontable from 'handsontable';
-import { f } from '../../utils/functools';
 import { raise } from '../Errors/Crash';
+import type { Dataset } from '../WbPlanView/Wrapped';
 
 export const ATTACHMENTS_COLUMN = '_UPLOADED_ATTACHMENTS';
 export const BASE_TABLE_NAME = 'baseTable' as const;
@@ -170,7 +171,7 @@ export async function uploadAttachmentsToRow(
   setFileUploadLength: React.Dispatch<React.SetStateAction<number>>,
   setFileUploadProgress: React.Dispatch<
     React.SetStateAction<number | undefined>
-  >,
+  >
 ): Promise<void> {
   const attachmentColumn = getAttachmentsColumn(dataset);
   if (attachmentColumn === -1) return;
@@ -196,7 +197,7 @@ export async function uploadAttachmentsToRow(
     .then(async ({ dataSetAttachments }) => {
       const allDataSetAttachments = [
         ...existingAttachments,
-        ...dataSetAttachments.map((att) => serializeResource(att))
+        ...dataSetAttachments.map((att) => serializeResource(att)),
       ] as RA<SerializedResource<SpDataSetAttachment>>;
 
       const data = attachmentsToCell(allDataSetAttachments, targetTable);
