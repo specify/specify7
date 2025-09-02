@@ -259,9 +259,7 @@ export function PrepDialog({
               <th scope="col">
                 {getField(tables.CollectionObject, 'catalogNumber').label}
               </th>
-              <th scope="col">
-                {tables.Preparation.label}
-              </th>
+              <th scope="col">{tables.Preparation.label}</th>
               <th scope="col">
                 {getField(tables.Determination, 'taxon').label}
               </th>

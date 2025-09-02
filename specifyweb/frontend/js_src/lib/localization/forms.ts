@@ -83,22 +83,22 @@ export const formsText = createDictionary({
       'Os valores de {values:string} devem ser exclusivos do banco de dados',
   },
   checkingIfResourceCanBeDeleted: {
-    "en-us": "Checking if resource can be deleted…",
-    "ru-ru": "Проверка возможности удаления ресурса…",
-    "es-es": "Comprobando si el recurso se puede eliminar…",
-    "fr-fr": "Vérification si la ressource peut être supprimée…",
-    "uk-ua": "Перевірка можливості видалення ресурсу…",
-    "de-ch": "Überprüfen, ob die Ressource gelöscht werden kann …",
-    "pt-br": "Verificando se o recurso pode ser excluído…",
+    'en-us': 'Checking if resource can be deleted…',
+    'ru-ru': 'Проверка возможности удаления ресурса…',
+    'es-es': 'Comprobando si el recurso se puede eliminar…',
+    'fr-fr': 'Vérification si la ressource peut être supprimée…',
+    'uk-ua': 'Перевірка можливості видалення ресурсу…',
+    'de-ch': 'Überprüfen, ob die Ressource gelöscht werden kann …',
+    'pt-br': 'Verificando se o recurso pode ser excluído…',
   },
   checkingIfResourceIsUsed: {
-    "en-us": "Checking if this record is currently in use…",
-    "de-ch": "Es wird geprüft, ob dieser Datensatz derzeit verwendet wird …",
-    "es-es": "Comprobando si este registro está actualmente en uso…",
-    "fr-fr": "Vérification si cet enregistrement est actuellement utilisé…",
-    "pt-br": "Verificando se este registro está em uso no momento…",
-    "ru-ru": "Проверяем, используется ли эта запись в данный момент…",
-    "uk-ua": "Перевірка, чи цей запис зараз використовується…",
+    'en-us': 'Checking if this record is currently in use…',
+    'de-ch': 'Es wird geprüft, ob dieser Datensatz derzeit verwendet wird …',
+    'es-es': 'Comprobando si este registro está actualmente en uso…',
+    'fr-fr': 'Vérification si cet enregistrement est actuellement utilisé…',
+    'pt-br': 'Verificando se este registro está em uso no momento…',
+    'ru-ru': 'Проверяем, используется ли эта запись в данный момент…',
+    'uk-ua': 'Перевірка, чи цей запис зараз використовується…',
   },
   noLinkedRecords: {
     'en-us': 'No linked records',
@@ -174,19 +174,19 @@ export const formsText = createDictionary({
     'pt-br': '{geographyTable:string} Obrigatório',
   },
   paleoRequiresGeographyDescription: {
-    "en-us":
-      "The Paleo Map plugin requires that the {localityTable:string} have geographic coordinates and that the paleo context have a geographic age with at least a start time or and end time populated.",
-    "de-ch":
-      "Das Paleo Map-Plugin erfordert, dass {localityTable:string} geografische Koordinaten hat und dass der Paläo-Kontext ein geografisches Alter mit mindestens einer ausgefüllten Start- oder Endzeit hat.",
-    "es-es": "Seleccionar fuente de tablas",
-    "fr-fr":
-      "Le plugin Paleo Map nécessite que les {localityTable:string} aient des coordonnées géographiques et que le contexte paléo ait un âge géographique avec au moins une heure de début ou une heure de fin renseignée.",
-    "ru-ru":
-      "Для работы плагина Paleo Map требуется, чтобы {localityTable:string} имел географические координаты, а палеоконтекст имел географический возраст с указанием как минимум начального и конечного времени.",
-    "uk-ua":
-      "Плагін Paleo Map вимагає, щоб {localityTable:string} мав географічні координати, а палеодієнтний контекст мав географічний вік із зазначенням принаймні часу початку або часу завершення.",
-    "pt-br":
-      "O plugin Paleo Map requer que o {localityTable:string} tenha coordenadas geográficas e que o contexto paleo tenha uma idade geográfica com pelo menos um horário de início ou término preenchidos.",
+    'en-us':
+      'The Paleo Map plugin requires that the {localityTable:string} have geographic coordinates and that the paleo context have a geographic age with at least a start time or and end time populated.',
+    'de-ch':
+      'Das Paleo Map-Plugin erfordert, dass {localityTable:string} geografische Koordinaten hat und dass der Paläo-Kontext ein geografisches Alter mit mindestens einer ausgefüllten Start- oder Endzeit hat.',
+    'es-es': 'Seleccionar fuente de tablas',
+    'fr-fr':
+      'Le plugin Paleo Map nécessite que les {localityTable:string} aient des coordonnées géographiques et que le contexte paléo ait un âge géographique avec au moins une heure de début ou une heure de fin renseignée.',
+    'ru-ru':
+      'Для работы плагина Paleo Map требуется, чтобы {localityTable:string} имел географические координаты, а палеоконтекст имел географический возраст с указанием как минимум начального и конечного времени.',
+    'uk-ua':
+      'Плагін Paleo Map вимагає, щоб {localityTable:string} мав географічні координати, а палеодієнтний контекст мав географічний вік із зазначенням принаймні часу початку або часу завершення.',
+    'pt-br':
+      'O plugin Paleo Map requer que o {localityTable:string} tenha coordenadas geográficas e que o contexto paleo tenha uma idade geográfica com pelo menos um horário de início ou término preenchidos.',
   },
   invalidDate: {
     'en-us': 'Invalid Date',
@@ -724,16 +724,16 @@ export const formsText = createDictionary({
       When in record set and current record is unsaved and try to navigate to
       another record
     `,
-    "en-us": "You might want to save this record before navigating away.",
-    "ru-ru": "Возможно, вы захотите сохранить эту запись, прежде чем уйти.",
-    "es-es": "Es posible que desees guardar este registro antes de navegar.",
-    "fr-fr":
-      "Vous souhaiterez peut-être sauvegarder cet enregistrement avant de partir.",
-    "uk-ua":
-      "Можливо, ви захочете зберегти цей запис, перш ніж залишати сторінку.",
-    "de-ch":
-      "Möglicherweise möchten Sie diesen Datensatz speichern, bevor Sie wegnavigieren.",
-    "pt-br": "Talvez você queira salvar este registro antes de sair navegando.",
+    'en-us': 'You might want to save this record before navigating away.',
+    'ru-ru': 'Возможно, вы захотите сохранить эту запись, прежде чем уйти.',
+    'es-es': 'Es posible que desees guardar este registro antes de navegar.',
+    'fr-fr':
+      'Vous souhaiterez peut-être sauvegarder cet enregistrement avant de partir.',
+    'uk-ua':
+      'Можливо, ви захочете зберегти цей запис, перш ніж залишати сторінку.',
+    'de-ch':
+      'Möglicherweise möchten Sie diesen Datensatz speichern, bevor Sie wegnavigieren.',
+    'pt-br': 'Talvez você queira salvar este registro antes de sair navegando.',
   },
   creatingNewRecord: {
     'en-us': 'Creating new record',
@@ -763,13 +763,13 @@ export const formsText = createDictionary({
     'pt-br': 'Avançar',
   },
   reverse: {
-    "en-us": "Reverse",
-    "ru-ru": "Обеспечить регресс",
-    "es-es": "Contrarrestar",
-    "fr-fr": "Inverse",
-    "uk-ua": "Зворотний",
-    "de-ch": "Umkehren",
-    "pt-br": "Reverter",
+    'en-us': 'Reverse',
+    'ru-ru': 'Обеспечить регресс',
+    'es-es': 'Contrarrestar',
+    'fr-fr': 'Inverse',
+    'uk-ua': 'Зворотний',
+    'de-ch': 'Umkehren',
+    'pt-br': 'Reverter',
   },
   deletedInline: {
     'en-us': '(deleted)',
@@ -822,13 +822,13 @@ export const formsText = createDictionary({
     'pt-br': 'Remover de {recordSetTable:string}',
   },
   nothingFound: {
-    "en-us": "Nothing found",
-    "ru-ru": "Ничего не найдено",
-    "es-es": "No se encontró nada",
-    "fr-fr": "Rien n'a été trouvé",
-    "uk-ua": "Нічого не знайдено",
-    "de-ch": "Nichts gefunden",
-    "pt-br": "Nada encontrado",
+    'en-us': 'Nothing found',
+    'ru-ru': 'Ничего не найдено',
+    'es-es': 'No se encontró nada',
+    'fr-fr': "Rien n'a été trouvé",
+    'uk-ua': 'Нічого не знайдено',
+    'de-ch': 'Nichts gefunden',
+    'pt-br': 'Nada encontrado',
   },
   carryForward: {
     comment: 'Verb. Button label',
@@ -841,13 +841,13 @@ export const formsText = createDictionary({
     'pt-br': 'Levar adiante',
   },
   carryForwardEnabled: {
-    "en-us": "Show Carry Forward button",
-    "ru-ru": "Показать кнопку «Перенести вперед»",
-    "es-es": "Mostrar el botón Llevar adelante",
-    "fr-fr": "Afficher le bouton Reporter",
-    "uk-ua": "Показати кнопку «Перенести вперед»",
-    "de-ch": "Schaltfläche „Übertrag anzeigen“",
-    "pt-br": "Mostrar botão Transferir para frente",
+    'en-us': 'Show Carry Forward button',
+    'ru-ru': 'Показать кнопку «Перенести вперед»',
+    'es-es': 'Mostrar el botón Llevar adelante',
+    'fr-fr': 'Afficher le bouton Reporter',
+    'uk-ua': 'Показати кнопку «Перенести вперед»',
+    'de-ch': 'Schaltfläche „Übertrag anzeigen“',
+    'pt-br': 'Mostrar botão Transferir para frente',
   },
   bulkCarryForwardEnabled: {
     'en-us': 'Show Bulk Carry Forward count',
@@ -1060,13 +1060,13 @@ export const formsText = createDictionary({
     'pt-br': 'Usar formulário gerado automaticamente',
   },
   useFieldLabels: {
-    "en-us": "Use Localized Field Labels",
-    "ru-ru": "Используйте локализованные метки полей",
-    "es-es": "Utilice etiquetas de campo localizadas",
-    "fr-fr": "Utiliser les étiquettes de champs localisées",
-    "uk-ua": "Використовуйте локалізовані мітки полів",
-    "de-ch": "Verwenden lokalisierter Feldbezeichnungen",
-    "pt-br": "Use rótulos de campo localizados",
+    'en-us': 'Use Localized Field Labels',
+    'ru-ru': 'Используйте локализованные метки полей',
+    'es-es': 'Utilice etiquetas de campo localizadas',
+    'fr-fr': 'Utiliser les étiquettes de champs localisées',
+    'uk-ua': 'Використовуйте локалізовані мітки полів',
+    'de-ch': 'Verwenden lokalisierter Feldbezeichnungen',
+    'pt-br': 'Use rótulos de campo localizados',
   },
   showFieldLabels: {
     'en-us': 'Show Localized Field Labels',
@@ -1096,13 +1096,13 @@ export const formsText = createDictionary({
     'pt-br': 'Editar histórico',
   },
   editHistoryQueryName: {
-    "en-us": 'Edit history for "{formattedRecord:string}"',
-    "ru-ru": "История изменений для «{formattedRecord:string}»",
-    "es-es": 'Historial de edición de "{formattedRecord:string}"',
-    "fr-fr": "Modifier l'historique pour « {formattedRecord:string} »",
-    "uk-ua": 'Історія редагувань для "{formattedRecord:string}"',
-    "de-ch": "Bearbeitungsverlauf für „{formattedRecord:string}“",
-    "pt-br": 'Histórico de edição para "{formattedRecord:string}"',
+    'en-us': 'Edit history for "{formattedRecord:string}"',
+    'ru-ru': 'История изменений для «{formattedRecord:string}»',
+    'es-es': 'Historial de edición de "{formattedRecord:string}"',
+    'fr-fr': "Modifier l'historique pour « {formattedRecord:string} »",
+    'uk-ua': 'Історія редагувань для "{formattedRecord:string}"',
+    'de-ch': 'Bearbeitungsverlauf für „{formattedRecord:string}“',
+    'pt-br': 'Histórico de edição para "{formattedRecord:string}"',
   },
   formConfiguration: {
     'en-us': 'Form Configuration',
