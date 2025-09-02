@@ -69,7 +69,7 @@ export function CreateTree<
   }, []);
 
   const handleClick = async (resourceFile: string): Promise<void> =>
-    ajax('/api/create_default_trees/', {
+    ajax('/trees/create_default_trees/', {
       method: 'POST',
       headers: { Accept: 'application/json' },
       body: { fileName: resourceFile },

@@ -304,7 +304,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'Se requiere asignación',
     'fr-fr': 'La cartographie est requise',
     'uk-ua': 'Потрібне відображення',
-    'de-ch': 'Mapping ist erforderlich',
+    'de-ch': 'Zuordnung ist erforderlich',
     'pt-br': 'O mapeamento é necessário',
   },
   continueEditing: {
@@ -387,6 +387,15 @@ export const wbPlanText = createDictionary({
     'uk-ua': 'Показати всі таблиці',
     'de-ch': 'Erweiterte Tabellen anzeigen',
     'pt-br': 'Mostrar todas as tabelas',
+  },
+  selectBaseTableWithAttachments: {
+    'en-us': 'Select a Base Table with Attachments',
+    'de-ch': 'Wählen Sie eine Basistabelle mit Anhängen',
+    'es-es': 'Seleccione una tabla base con archivos adjuntos',
+    'fr-fr': 'Sélectionnez une table de base avec des pièces jointes',
+    'pt-br': 'Selecione uma tabela base com anexos',
+    'ru-ru': 'Выберите базовую таблицу с прикреплениями',
+    'uk-ua': 'Виберіть базову таблицю з вкладеннями',
   },
   dataSetUploaded: {
     'en-us': 'Data Set uploaded. This Upload Plan cannot be changed',

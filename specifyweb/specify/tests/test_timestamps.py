@@ -3,8 +3,9 @@ Tests for timestamps additional logic
 """
 from datetime import datetime
 from django.utils import timezone
+from specifyweb.specify.api.crud import create_obj, get_resource, update_obj
+from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.tests.test_api import ApiTests, skip_perms_check
-from specifyweb.specify import api
 from specifyweb.specify.models import Collectionobject
 
 class TimeStampTests(ApiTests):
@@ -23,8 +24,8 @@ class TimeStampTests(ApiTests):
         datetime_1 = datetime(1960, 1, 1, 0, 0, 0)
         datetime_2 = datetime(2020, 1, 1, 0, 0, 0)
 
-        obj = api.create_obj(self.collection, self.agent, 'collectionobject', {
-                'collection': api.uri_for_model('collection', self.collection.id),
+        obj = create_obj(self.collection, self.agent, 'collectionobject', {
+                'collection': uri_for_model('collection', self.collection.id),
                 'catalognumber': 'foobar', 
                 'timestampcreated': datetime_1, 'timestampmodified': datetime_2})
 
@@ -36,10 +37,10 @@ class TimeStampTests(ApiTests):
         datetime_2 = datetime(2020, 1, 1, 0, 0, 0)
         current = timezone.now()
         co_to_edit = self.collectionobjects[0]
-        data = api.get_resource('collectionobject', co_to_edit.id, skip_perms_check)
+        data = get_resource('collectionobject', co_to_edit.id, skip_perms_check)
         data['timestampcreated'] = datetime_1
         data['timestampmodified'] = datetime_2
-        obj = api.update_obj(self.collection, self.agent, 'collectionobject', data['id'], data['version'], data)
+        obj = update_obj(self.collection, self.agent, 'collectionobject', data['id'], data['version'], data)
 
         obj.refresh_from_db()
         self.assertNotEqual(obj.timestampcreated, datetime_1, "Was able to override!")

@@ -1,3 +1,4 @@
+
 import logging
 import re
 from django.utils.translation import gettext as _text
@@ -6,7 +7,7 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import Element
 from xml.sax.saxutils import quoteattr
 
-from specifyweb.specify.utils import get_picklists
+from specifyweb.specify.api.utils import get_picklists
 from sqlalchemy import Table as SQLTable, inspect, case
 from sqlalchemy.orm import aliased, Query
 from sqlalchemy.sql.expression import func, cast, literal, Label
@@ -19,7 +20,7 @@ from sqlalchemy import types
 import specifyweb.backend.context.app_resource as app_resource
 from specifyweb.backend.context.remote_prefs import get_remote_prefs
 
-from specifyweb.specify.agent_types import agent_types
+from specifyweb.specify.utils.agent_types import agent_types
 from specifyweb.specify.models import datamodel, Splocalecontainer
 
 from specifyweb.specify.datamodel import Field, Relationship, Table
@@ -378,7 +379,7 @@ class ObjectFormatter:
 
     def _dateformat(self, specify_field, field):
         if specify_field.type == "java.sql.Timestamp":
-            return func.date_format(field, self.date_format)
+            return func.date_format(field, "%Y-%m-%dT%H:%i:%s")
 
         prec_fld = getattr(field.class_, specify_field.name + 'Precision', None)
 

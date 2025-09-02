@@ -1,3 +1,5 @@
+
+
 # generic logic for cloning records. TODO: Make this part of the generic API and server-side cloning
 
 import json
@@ -7,8 +9,8 @@ from collections.abc import Callable
 from django.db.models import Model
 from django.db import transaction
 
-from specifyweb.specify.func import Func
-from specifyweb.specify.load_datamodel import Table
+from specifyweb.specify.utils.func import Func
+from specifyweb.specify.models_utils.load_datamodel import Table
 from specifyweb.specify.models import ModelWithTable
 
 FIELDS_TO_NOT_CLONE: dict[str, list[str]] = json.load(

@@ -323,8 +323,7 @@ export const localityText = createDictionary({
       'Las siguientes columnas son obligatorias pero faltan en el conjunto de datos',
     'fr-fr':
       "Les colonnes suivantes sont obligatoires mais manquantes dans l'ensemble de données",
-    'ru-ru':
-      'Следующие столбцы являются обязательными, но отсутствуют в наборе данных',
+    'ru-ru': 'Следующие столбцы обязательны, но отсутствуют в наборе данных',
     'uk-ua': 'Наступні стовпці є обов’язковими, але відсутні в наборі даних',
     'pt-br':
       'As seguintes colunas são necessárias, mas estão ausentes no conjunto de dados',
@@ -339,7 +338,7 @@ export const localityText = createDictionary({
     'fr-fr':
       "Les colonnes suivantes dans l'ensemble de données ne sont pas reconnues et seront ignorées lors de l'importation",
     'ru-ru':
-      'Следующие столбцы в наборе данных не распознаются и будут проигнорированы при импорте',
+      'Следующие столбцы в наборе данных не распознаются и будут проигнорированы при импорте.',
     'uk-ua':
       'Наступні стовпці в наборі даних не розпізнаються та ігноруватимуться під час імпорту',
     'pt-br':
@@ -359,7 +358,7 @@ export const localityText = createDictionary({
     'de-ch': 'Lokalitätsaktualisierung wird gestartet',
     'es-es': 'Actualización de localidad inicial',
     'fr-fr': 'Mise à jour de la localité de départ',
-    'ru-ru': 'Начало обновления населенного пункта',
+    'ru-ru': 'Начало обновления местоположения',
     'uk-ua': 'Початок оновлення місцевості',
     'pt-br': 'Iniciando atualização de localidade',
   },
@@ -386,7 +385,7 @@ export const localityText = createDictionary({
     'de-ch': 'Lokalitätsaktualisierungsdatensatz analysiert',
     'es-es': 'Conjunto de datos de actualización de localidad analizados',
     'fr-fr': 'Ensemble de données de mise à jour de localité analysé',
-    'ru-ru': 'Набор данных обновления местоположения проанализирован',
+    'ru-ru': 'Проанализирован набор данных обновления местоположения',
     'uk-ua': 'Проаналізовано набір даних оновлення місцевості',
     'pt-br': 'Conjunto de dados de atualização de localidade analisado',
   },
@@ -401,7 +400,7 @@ export const localityText = createDictionary({
   },
   localityUpdateParseFailure: {
     'en-us': 'Locality Update Parsing Failed',
-    'de-ch': 'Lokale Aktualisierungsanalyse fehlgeschlagen',
+    'de-ch': 'Lokalitätsaktualisierungsanalyse fehlgeschlagen',
     'es-es': 'Error en el análisis de actualización de localidad',
     'fr-fr': "Échec de l'analyse de la mise à jour de la localité",
     'ru-ru': 'Ошибка анализа обновления местоположения',
@@ -422,7 +421,7 @@ export const localityText = createDictionary({
     'de-ch': 'Lokalitätsaktualisierung erfolgreich',
     'es-es': 'Actualización de localidad exitosa',
     'fr-fr': 'Mise à jour de la localité réussie',
-    'ru-ru': 'Обновление местоположения прошло успешно',
+    'ru-ru': 'Обновление местоположения выполнено успешно',
     'uk-ua': 'Місцезнаходження оновлено',
     'pt-br': 'Atualização de localidade bem-sucedida',
   },
@@ -432,7 +431,7 @@ export const localityText = createDictionary({
     'es-es': 'Algo salió mal durante el proceso de actualización de localidad',
     'fr-fr':
       "Une erreur s'est produite lors du processus de mise à jour de la localité",
-    'ru-ru': 'Что-то пошло не так в процессе обновления населенного пункта',
+    'ru-ru': 'Что-то пошло не так во время процесса обновления местоположения',
     'uk-ua': 'Щось пішло не так під час процесу оновлення місцевості',
     'pt-br': 'Algo deu errado durante o processo de atualização de localidade',
   },
@@ -442,7 +441,7 @@ export const localityText = createDictionary({
       extension is appended to the end of this string
     `,
     'en-us': 'Locality Update Errors - {date:string}',
-    'de-ch': 'Fehler beim Lokalitätsupdate - {date:string}',
+    'de-ch': 'Fehler bei der Lokalitätsaktualisierung - {date:string}',
     'es-es': 'Errores de actualización de localidad - {date:string}',
     'fr-fr': 'Erreurs de mise à jour de la localité - {date:string}',
     'ru-ru': 'Ошибки обновления местоположения - {date:string}',
@@ -456,7 +455,7 @@ export const localityText = createDictionary({
     `,
     'en-us': 'Locality Update {taskId: string} Crash Report - {date: string}',
     'de-ch':
-      'Ortsaktualisierung {taskId: string} Absturzbericht – {date: string}',
+      'Lokalitätsaktualisierung {taskId: string} Absturzbericht – {date: string}',
     'es-es':
       'Informe de fallos de actualización de localidad {taskId: string} - {date: string}',
     'fr-fr':
@@ -470,7 +469,7 @@ export const localityText = createDictionary({
   },
   guidHeaderNotProvided: {
     'en-us': "The Dataset must contain a 'guid' header",
-    'de-ch': 'Der Datensatz muss einen GUID-Header enthalten',
+    'de-ch': 'Der Datensatz muss einen „GUID“-Header enthalten',
     'es-es': "El conjunto de datos debe contener un encabezado 'guid'",
     'fr-fr': "L'ensemble de données doit contenir un en-tête « guid »",
     'ru-ru': 'Набор данных должен содержать заголовок «guid».',
@@ -490,13 +489,13 @@ export const localityText = createDictionary({
     'en-us':
       'More than one Locality found with guid: {guid:string}. Locality IDs: {localityIds: string}',
     'de-ch':
-      'Mehrere Orte mit GUID gefunden: {guid:string}. Orts-IDs: {localityIds: string}',
+      'Mehr als ein Ort mit GUID gefunden: {guid:string}. Orts-IDs: {localityIds: string}',
     'es-es':
       'Se encontró más de una localidad con guid: {guid:string}. ID de localidad: {localityIds: string}',
     'fr-fr':
       'Plusieurs localités trouvées avec le GUID : {guid:string}. ID de localité : {localityIds: string}',
     'ru-ru':
-      'Найдено более одного населенного пункта с guid: {guid:string}. Идентификаторы населенных пунктов: {localityIds: string}',
+      'Найдено более одного населённого пункта с guid: {guid:string}. Идентификаторы населённых пунктов: {localityIds: string}',
     'uk-ua':
       'За допомогою guid: {guid:string} знайдено більше одного населеного пункту. Ідентифікатори населених пунктів: {localityIds: рядок}',
     'pt-br':
@@ -528,7 +527,7 @@ export const localityText = createDictionary({
     'fr-fr':
       "Le nombre suivant d'enregistrements {localityTabelLabel: string} ont été mis à jour et d'enregistrements {geoCoordDetailTableLabel: string} ont été créés :",
     'ru-ru':
-      'Следующее количество записей {localityTabelLabel: string} было обновлено и создано {geoCoordDetailTableLabel: string} записей:',
+      'Следующее количество записей {localityTabelLabel: string} было обновлено и создано записей {geoCoordDetailTableLabel: string}:',
     'uk-ua':
       'Оновлено таку кількість записів {localityTabelLabel: string} і створено записи {geoCoordDetailTableLabel: string}:',
     'pt-br':
@@ -539,7 +538,7 @@ export const localityText = createDictionary({
     'de-ch': 'Der Locality-Update-Prozess wurde gestartet',
     'es-es': 'El proceso de actualización de localidad ha comenzado',
     'fr-fr': 'Le processus de mise à jour de la localité a commencé',
-    'ru-ru': 'Процесс обновления населенного пункта начался',
+    'ru-ru': 'Процесс обновления местоположения начался',
     'uk-ua': 'Розпочато процес оновлення місцевості',
     'pt-br': 'O processo de atualização da localidade foi iniciado',
   },
