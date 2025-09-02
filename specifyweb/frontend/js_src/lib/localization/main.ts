@@ -18,7 +18,7 @@ export const mainText = createDictionary({
     "fr-fr": "{baseTitle:string} | Specify 7",
     "uk-ua": "{baseTitle:string} | Specify 7",
     "de-ch": "{baseTitle:string} | Specify 7",
-    "pt-br": "{baseTitle:string} | Especifique 7",
+    "pt-br": "{baseTitle:string} | Specify 7",
   },
   baseAppTitle: {
     comment: "Default page title",
@@ -28,7 +28,7 @@ export const mainText = createDictionary({
     "fr-fr": "Specify 7",
     "uk-ua": "Specify 7",
     "de-ch": "Specify 7",
-    "pt-br": "Especifique 7",
+    "pt-br": "Specify 7",
   },
   pageNotFound: {
     comment: "Used in title",
