@@ -281,7 +281,9 @@ export function PrepDialogRow({
             dialog="modal"
             isDependent={false}
             isSubForm={false}
-            resource={(state as { resource: SpecifyResource<any> }).resource}
+            resource={
+              (state as { readonly resource: SpecifyResource<any> }).resource
+            }
             onAdd={undefined}
             onClose={(): void => setState({ type: 'Main' })}
             onDeleted={undefined}
