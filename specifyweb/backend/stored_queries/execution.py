@@ -38,8 +38,6 @@ from specifyweb.backend.stored_queries.queryfield import fields_from_json, QUREY
 
 logger = logging.getLogger(__name__)
 
-SORT_LITERAL: Literal["asc"] | Literal["desc"] | None = None
-
 SERIES_MAX_ROWS = 10000
 
 
