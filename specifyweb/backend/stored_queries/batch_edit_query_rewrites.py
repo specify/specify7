@@ -1,8 +1,10 @@
+
+
 from functools import reduce
 from typing import Any
 from specifyweb.specify.models import datamodel
-from specifyweb.specify.func import Func
-from specifyweb.specify.load_datamodel import Table
+from specifyweb.specify.utils.func import Func
+from specifyweb.specify.models_utils.load_datamodel import Table
 from specifyweb.backend.trees.views import TREE_INFORMATION
 from specifyweb.backend.stored_queries.execution import QuerySort
 from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec, TreeRankQuery

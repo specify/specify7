@@ -3,7 +3,10 @@ import json
 from specifyweb.backend.permissions.permissions import table_permissions_checker
 from django.http import (HttpResponse, HttpResponseNotAllowed)
 
-from specifyweb.specify.api import HttpResponseCreated, _obj_to_data, post_resource, toJson
+from specifyweb.specify.api.crud import post_resource
+from specifyweb.specify.api.dispatch import HttpResponseCreated
+from specifyweb.specify.api.serializers import _obj_to_data, toJson
+
 
 def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
     checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")

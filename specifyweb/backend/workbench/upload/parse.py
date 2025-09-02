@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 import re
 import math
 
@@ -5,10 +6,10 @@ from typing import Any, NamedTuple, Literal
 from datetime import datetime
 from decimal import Decimal
 
-from specifyweb.specify.agent_types import agent_types
+from specifyweb.specify.utils.agent_types import agent_types
 from specifyweb.backend.stored_queries.format import get_date_format, MYSQL_TO_YEAR, MYSQL_TO_MONTH
 from specifyweb.specify.datamodel import datamodel, Table, Field, Relationship
-from specifyweb.specify.uiformatters import FormatMismatch, ScopedFormatter
+from specifyweb.specify.utils.uiformatters import FormatMismatch, ScopedFormatter
 
 ParseFailureKey = Literal[
     'valueTooLong',
@@ -77,6 +78,7 @@ def parse_field(table_name: str, field_name: str, raw_value: str, formatter: Sco
 
     if hasattr(field, 'length') and field.length is not None and len(raw_value) > field.length:
         return ParseFailure('valueTooLong', {'field': field_name, 'maxLength': field.length})
+
 
     return ParseSucess({field_name.lower(): raw_value})
 

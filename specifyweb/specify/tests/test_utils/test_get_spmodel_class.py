@@ -1,7 +1,7 @@
 # These are done as part of tests.
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.tests.test_api import ApiTests
-from specifyweb.specify.utils import get_spmodel_class
+from specifyweb.specify.api.utils import get_spmodel_class
 
 class TestGetSpmodelClass(ApiTests):
     

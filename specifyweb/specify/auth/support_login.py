@@ -19,7 +19,7 @@ def make_token(user):
     msg = f"{user.id}-{int(time())}"
     return msg + '-' + make_digest(msg)
 
-
+# TODO: is this in use somewhere? 
 class SupportLoginBackend:
     def authenticate(self, request, token=None):
         logger.info("attempting support login")

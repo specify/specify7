@@ -1,10 +1,11 @@
+import re
 import sqlalchemy
 from sqlalchemy.orm.query import Query
 from collections import namedtuple
 from typing import Literal
 
 from specifyweb.backend.stored_queries.geology_time import geo_time_query, geo_time_period_query
-from specifyweb.specify.uiformatters import CNNField, FormatMismatch, UIFormatter
+from specifyweb.specify.utils.uiformatters import CNNField, FormatMismatch, UIFormatter
 
 QUERYFIELD_OPERATION_NUMBER = Literal[
     0,  # Like

@@ -13,16 +13,14 @@ from tempfile import TemporaryDirectory
 
 from django import http
 from django.conf import settings
-from django.db import router
-from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST, require_http_methods
-from specifyweb.specify.api import get_model
 
 from specifyweb.middleware.general import require_http_methods
-from . import api, models as spmodels
-from .specify_jar import specify_jar, specify_jar_path
-from .uiformatters import get_uiformatter_by_name
+from specifyweb.specify.api.dispatch import collection_dispatch, resource_dispatch
+from specifyweb.specify.api.exceptions import MissingVersionException, StaleObjectException
+from . import models as spmodels
+from .utils.specify_jar import specify_jar, specify_jar_path
 
 logger = logging.getLogger(__name__)
 
@@ -68,17 +66,17 @@ def api_view(dispatch_func):
         """
         try:
             return dispatch_func(request, *args, **kwargs)
-        except api.StaleObjectException as e:
+        except StaleObjectException as e:
             return HttpResponseConflict(e)
-        except api.MissingVersionException as e:
+        except MissingVersionException as e:
             return http.HttpResponseBadRequest(e)
         except http.Http404 as e:
             return http.HttpResponseNotFound(e)
     return view
 
 
-resource = api_view(api.resource_dispatch)
-collection = api_view(api.collection_dispatch)
+resource = api_view(resource_dispatch)
+collection = api_view(collection_dispatch)
 
 def raise_error(request):
     """This endpoint intentionally throws an error in the server for
