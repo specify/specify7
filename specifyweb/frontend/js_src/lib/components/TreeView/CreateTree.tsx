@@ -23,6 +23,7 @@ import type { TreeInformation } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { defaultTreeDefs } from './defaults';
+import { getSystemInfo } from '../InitialContext/systemInfo';
 
 type TaxonFileDefaultDefinition = {
   readonly discipline: string;
@@ -68,11 +69,13 @@ export function CreateTree<
       });
   }, []);
 
+  const connectedCollection = getSystemInfo().collection;
+
   const handleClick = async (resourceFile: string): Promise<void> =>
     ajax('/trees/create_default_trees/', {
       method: 'POST',
       headers: { Accept: 'application/json' },
-      body: { fileName: resourceFile },
+      body: { fileName: resourceFile, collection: connectedCollection },
     })
       .then(({ data, status }) => {
         if (status === Http.OK) {

@@ -602,11 +602,18 @@ def create_default_trees_view(request):
             raise ValueError(f"Unknown discipline in file name: {file_name}")
     
     data = json.loads(request.body)
+
     file_name = data.get('fileName', '').strip()
+    connected_collection = data.get('collection')
     discipline_name = parse_file_name_to_discipline(file_name)
+
     logged_in_collection_name = request.user.logincollectionname
-    collection = spmodels.Collection.objects.get(collectionname=logged_in_collection_name)
+
+    collection_name = logged_in_collection_name or connected_collection
+    collection = spmodels.Collection.objects.get(collectionname=collection_name)
+
     logged_in_discipline_name = collection.discipline.name
+
     # logged_in_discipline_name = request.user.logindisciplinename
     if discipline_name not in discipline_tree_csv_files:
         return http.JsonResponse({'error': 'Tree not found.'}, status=404)
