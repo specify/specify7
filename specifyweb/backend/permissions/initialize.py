@@ -104,9 +104,6 @@ def assign_users_to_roles(apps=apps) -> None:
         "Guest": "Read Only - Legacy",
     }
 
-    sp6_only_collections = get_all_collections_without_sp7_roles(apps)
-    sp6_only_collections_ids = set(sp6_only_collections.values_list('id', flat=True))
-
     cursor = connection.cursor()
     cursor.execute("""
         SELECT

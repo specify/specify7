@@ -36,26 +36,30 @@ def create_default_discipline_for_tree_defs(apps):
 
     for discipline in Discipline.objects.all():
         geography_tree_def = discipline.geographytreedef
-        geography_tree_def.discipline = discipline
-        geography_tree_def.save()
+        if geography_tree_def and geography_tree_def.discipline_id is None:
+            geography_tree_def.discipline = discipline
+            geography_tree_def.save()
 
         geologic_time_period_tree_def = discipline.geologictimeperiodtreedef
-        geologic_time_period_tree_def.discipline = discipline
-        geologic_time_period_tree_def.save()
+        if geologic_time_period_tree_def and geologic_time_period_tree_def.discipline_id is None:
+            geologic_time_period_tree_def.discipline = discipline
+            geologic_time_period_tree_def.save()
 
         lithostrat_tree_def = discipline.lithostrattreedef
-        if lithostrat_tree_def:
+        if lithostrat_tree_def and lithostrat_tree_def.discipline_id is None:
             lithostrat_tree_def.discipline = discipline
             lithostrat_tree_def.save()
 
         taxon_tree_def = discipline.taxontreedef
-        taxon_tree_def.discipline = discipline
-        taxon_tree_def.save()
+        if taxon_tree_def and taxon_tree_def.discipline_id is None:
+            taxon_tree_def.discipline = discipline
+            taxon_tree_def.save()
 
     for institution in Institution.objects.all():
         storage_tree_def = institution.storagetreedef
-        storage_tree_def.institution = institution
-        storage_tree_def.save()
+        if storage_tree_def.institution_id is None:
+            storage_tree_def.institution = institution
+            storage_tree_def.save()
 
 def create_cogtype_type_picklist(apps):
     Collection = apps.get_model('specify', 'Collection')
