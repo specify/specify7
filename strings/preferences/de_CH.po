@@ -1171,25 +1171,25 @@ msgstr "Lokalisieren Sie die Namen erkannter App-Ressourcen"
 msgid "splitLongXml"
 msgstr "Teilen Sie lange XML-Zeilen in mehrere Zeilen auf"
 
-#: components/Molecules/SyncAttachmentPicker.tsx:91
+#: components/Molecules/SyncAttachmentPicker.tsx:104
 #. Used in: Components > Molecules > Sync Attachment Picker
 #, fuzzy
 msgid "url"
 msgstr "URL"
 
-#: components/Molecules/SyncAttachmentPicker.tsx:85
+#: components/Molecules/SyncAttachmentPicker.tsx:98
 #. Used in: Components > Molecules > Sync Attachment Picker
 #, fuzzy
 msgid "pickAttachment"
 msgstr "Wählen Sie einen Anhang"
 
-#: components/Molecules/SyncAttachmentPicker.tsx:113
+#: components/Molecules/SyncAttachmentPicker.tsx:126
 #. Used in: Components > Molecules > Sync Attachment Picker
 #, fuzzy
 msgid "attachmentFailed"
 msgstr "Der Anhang konnte nicht geladen werden."
 
-#: components/Molecules/SyncAttachmentPicker.tsx:58
+#: components/Molecules/SyncAttachmentPicker.tsx:72
 #. Used in: Components > Molecules > Sync Attachment Picker
 #, fuzzy
 msgid "pickImage"

@@ -1025,22 +1025,22 @@ msgstr "Localize the names of recognized app resources"
 msgid "splitLongXml"
 msgstr "Split long lines of XML into multiple lines"
 
-#: components/Molecules/SyncAttachmentPicker.tsx:91
+#: components/Molecules/SyncAttachmentPicker.tsx:104
 #. Used in: Components > Molecules > Sync Attachment Picker
 msgid "url"
 msgstr "URL"
 
-#: components/Molecules/SyncAttachmentPicker.tsx:85
+#: components/Molecules/SyncAttachmentPicker.tsx:98
 #. Used in: Components > Molecules > Sync Attachment Picker
 msgid "pickAttachment"
 msgstr "Pick an attachment"
 
-#: components/Molecules/SyncAttachmentPicker.tsx:113
+#: components/Molecules/SyncAttachmentPicker.tsx:126
 #. Used in: Components > Molecules > Sync Attachment Picker
 msgid "attachmentFailed"
 msgstr "The attachment failed to load."
 
-#: components/Molecules/SyncAttachmentPicker.tsx:58
+#: components/Molecules/SyncAttachmentPicker.tsx:72
 #. Used in: Components > Molecules > Sync Attachment Picker
 msgid "pickImage"
 msgstr "Pick an image"
