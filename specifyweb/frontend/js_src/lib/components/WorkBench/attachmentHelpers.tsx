@@ -212,18 +212,21 @@ export async function uploadAttachmentsToRow(
     });
 }
 
-export async function deleteAttachmentsFromRow(
-  dataSetAttachmentIdToDelete: number,
+export async function deleteAttachmentFromRow(
+  idToDelete: number,
   dataset: Dataset,
   hot: Handsontable,
   row: number,
-  existingAttachments: RA<SerializedResource<SpDataSetAttachment>>,
+  existingAttachments: RA<SerializedResource<SpDataSetAttachment>>
 ): Promise<void> {
   const attachmentColumn = getAttachmentsColumn(dataset);
   if (attachmentColumn === -1) return;
 
-  const allDataSetAttachments = existingAttachments.filter((att) => att.id !== dataSetAttachmentIdToDelete)
+  const allDataSetAttachments = existingAttachments.filter(
+    (att) => att.id !== idToDelete
+  );
 
+  // The previous target table is not preserved. Safe for now since only uploading to the base table is supported.
   const targetTable = BASE_TABLE_NAME;
   const data = attachmentsToCell(allDataSetAttachments, targetTable);
   hot.setDataAtCell(row, attachmentColumn, data);
