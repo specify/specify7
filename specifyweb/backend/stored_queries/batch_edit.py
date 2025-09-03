@@ -108,8 +108,13 @@ def parse(value: Any | None, query_field: QueryField) -> Any:
     field = query_field.fieldspec.get_field()
     if field is None or value is None:
         return value
-    # FIXME: remove this
-    if field.type in FLOAT_FIELDS and not field.name.lower() in ('latitude1', 'longitude1', 'latitude2', 'longitude2'):
+
+    if field.type in FLOAT_FIELDS and (
+        # REFACTOR: these fields should be parsed as lat1text, long1text, etc.
+        # See #6251, #6655
+        # Find a better way to have this association/mapping?
+        not field.name.lower() in ('latitude1', 'longitude1', 'latitude2',
+                                   'longitude2')):
         return float(value)
     return value
 
