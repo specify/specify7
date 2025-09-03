@@ -19,11 +19,11 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { deserializeResource } from '../DataModel/serializers';
 import type { TaxonTreeDef } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
+import { getSystemInfo } from '../InitialContext/systemInfo';
 import type { TreeInformation } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { defaultTreeDefs } from './defaults';
-import { getSystemInfo } from '../InitialContext/systemInfo';
 
 type TaxonFileDefaultDefinition = {
   readonly discipline: string;
