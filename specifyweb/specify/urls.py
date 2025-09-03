@@ -1,7 +1,9 @@
 # Entrypoint for the routing of the app
 
-from django.urls import include, path, re_path
-from . import schema, views
+from django.urls import include, re_path
+
+from specifyweb.specify import views
+from specifyweb.specify.models_utils import schema
 
 urlpatterns = [
     # check if the user is new at login
