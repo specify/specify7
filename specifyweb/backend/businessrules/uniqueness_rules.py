@@ -6,13 +6,14 @@ from typing import Any, TypedDict
 from collections.abc import Iterable
 
 from django.apps import apps
-from django.db import connections
-from django.db.models import Q, Count
+from django.db import connections, transaction
+from django.db.models import Q, Count, Exists, OuterRef
 from django.db.migrations.recorder import MigrationRecorder
 from django.core.exceptions import ObjectDoesNotExist
 from specifyweb.specify.api.crud import get_model
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.middleware.general import serialize_django_obj
+from specifyweb.specify.models import Discipline
 from specifyweb.specify.utils.scoping import in_same_scope
 from .orm_signal_handler import orm_signal_handler
 from .exceptions import BusinessRuleException
@@ -316,3 +317,56 @@ GLOBAL_RULE_FIELDS = ["division", 'institution']
 
 def rule_is_global(scopes: Iterable[str]) -> bool:
     return len(scopes) == 0 or any(any(scope_field.lower() in GLOBAL_RULE_FIELDS for scope_field in scope.split('__')) for scope in scopes)
+
+def fix_global_default_rules(registry=None):
+    UniquenessRule = registry.get_model('businessrules', 'UniquenessRule') if registry else models.UniquenessRule
+    UniquenessRuleField = registry.get_model('businessrules', 'UniquenessRuleField') if registry else models.UniquenessRuleField
+
+    global_rule_fields = UniquenessRuleField.objects.filter(
+        uniquenessrule__discipline__isnull=True
+    ).values(
+        "uniquenessrule__modelName",
+        "uniquenessrule__isDatabaseConstraint",
+        "fieldPath",
+        "isScope",
+    )
+
+    global_rule_exists = UniquenessRule.objects.filter(
+        discipline__isnull=True,
+        modelName=OuterRef("modelName"),
+        isDatabaseConstraint=OuterRef("isDatabaseConstraint"),
+    )
+
+    discipline_ids = (
+        UniquenessRule.objects.exclude(discipline__isnull=True)
+        .values_list("discipline_id", flat=True)
+        .distinct()
+    )
+
+    for discipline_id in discipline_ids:
+        with transaction.atomic():
+            # Delete matching fields for this discipline
+            matching_fields_qs = UniquenessRuleField.objects.filter(
+                uniquenessrule__discipline_id=discipline_id
+            ).filter(
+                Exists(
+                    global_rule_fields.filter(
+                        **{
+                            "uniquenessrule__modelName": OuterRef("uniquenessrule__modelName"),
+                            "uniquenessrule__isDatabaseConstraint": OuterRef("uniquenessrule__isDatabaseConstraint"),
+                            "fieldPath": OuterRef("fieldPath"),
+                            "isScope": OuterRef("isScope"),
+                        }
+                    )
+                )
+            )
+            matching_fields_qs.delete()
+
+            # Delete UniquenessRule rows for this discipline that are now empty
+            empty_rules_qs = (
+                UniquenessRule.objects.filter(discipline_id=discipline_id)
+                .annotate(field_count=Count("uniquenessrulefield"))
+                .filter(field_count=0)  # now empty after field deletions
+                .filter(Exists(global_rule_exists))
+            )
+            empty_rules_qs.delete()

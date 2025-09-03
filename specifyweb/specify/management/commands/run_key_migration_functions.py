@@ -5,7 +5,8 @@ from django.db import transaction
 from specifyweb.backend.businessrules.migration_utils import catnum_rule_editable
 from specifyweb.backend.businessrules.uniqueness_rules import (
     apply_default_uniqueness_rules,
-    create_uniqueness_rule
+    create_uniqueness_rule,
+    fix_global_default_rules
 )
 from specifyweb.permissions.migration_utils.edit_permissions import add_permission, add_stats_edit_permission
 from specifyweb.specify.migration_utils.default_cots import (
@@ -70,6 +71,7 @@ def fix_business_rules():
 
     catnum_rule_editable(apps)
     create_uniqueness_rule("Storage", None, True, ["uniqueIdentifier"], [], apps)
+    fix_global_default_rules(apps)
 
 def fix_permissions():
     initialize(False, apps)
