@@ -32,7 +32,7 @@ urlpatterns = [
     re_path(r'^', include('specifyweb.backend.delete_blockers.urls')),
 
     ## Bulk copy
-    re_path(r'^', include('specifyweb.backend.bulk_copy.urls')),
+    re_path(r'^specify', include('specifyweb.backend.bulk_copy.urls')),
 
     # Trees
     re_path(r'^', include('specifyweb.backend.trees.urls')),
