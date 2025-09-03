@@ -429,7 +429,7 @@ def make_index(indexdef: ElementTree.Element) -> Index:
 def make_relationship(reldef: ElementTree.Element) -> Relationship:
     rel = Relationship(
         name=reldef.attrib["relationshipname"],
-        type=reldef.attrib["type"],
+        type=cast(RelationshipType, reldef.attrib["type"]),
         required=(reldef.attrib["required"] == "true"),
         relatedModelName=reldef.attrib["classname"].split(".")[-1],
         column=(
