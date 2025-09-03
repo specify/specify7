@@ -23,7 +23,7 @@ urlpatterns = [
     re_path(r'^specify/', include('specifyweb.backend.inheritance.urls')),
 
     # Series endpoints
-    re_path(r'^', include('specifyweb.backend.series.urls')),
+    re_path(r'^specify', include('specifyweb.backend.series.urls')),
 
     # Table rows
     re_path(r'^', include('specifyweb.backend.table_rows.urls')),
