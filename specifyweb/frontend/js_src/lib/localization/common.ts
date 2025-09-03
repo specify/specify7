@@ -14,13 +14,13 @@ export const commonText = createDictionary({
       This is an example of how to provide comments. Comments are visible to
       translators.
     `,
-    'en-us': 'Specify 7',
-    'ru-ru': 'Укажите 7',
-    'es-es': 'Specify 7',
-    'fr-fr': 'Specify 7',
-    'uk-ua': 'Вкажіть 7',
-    'de-ch': 'Specify 7',
-    'pt-br': 'Especifique 7',
+    "en-us": "Specify 7",
+    "ru-ru": "Укажите 7",
+    "es-es": "Specify 7",
+    "fr-fr": "Specify 7",
+    "uk-ua": "Вкажіть 7",
+    "de-ch": "Specify 7",
+    "pt-br": "Specify 7",
   },
   no: {
     'en-us': 'No',
