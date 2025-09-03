@@ -34,8 +34,8 @@ msgstr ""
 "Nenhum Plano de Upload foi definido para este Conjunto de Dados. Criar um "
 "agora?"
 
-#: components/WorkBench/hotProps.tsx:160
-#: components/WorkBench/hotProps.tsx:162
+#: components/WorkBench/hotProps.tsx:161
+#: components/WorkBench/hotProps.tsx:163
 #. Used in: Components > Work Bench > Hot Props
 #, fuzzy
 msgid "unmappedColumn"

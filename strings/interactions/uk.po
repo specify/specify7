@@ -207,12 +207,12 @@ msgstr ""
 msgid "deselectAll"
 msgstr "Зняти вибір усіх"
 
-#: components/Interactions/PrepDialog.tsx:272
+#: components/Interactions/PrepDialog.tsx:270
 #. Used in: Components > Interactions > Prep Dialog
 msgid "available"
 msgstr "Доступно"
 
-#: components/Interactions/PrepDialog.tsx:273
+#: components/Interactions/PrepDialog.tsx:271
 #. Used in: Components > Interactions > Prep Dialog
 msgid "unavailable"
 msgstr "Недоступно"

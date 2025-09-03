@@ -241,13 +241,13 @@ msgstr ""
 msgid "deselectAll"
 msgstr "Desmarcar tudo"
 
-#: components/Interactions/PrepDialog.tsx:272
+#: components/Interactions/PrepDialog.tsx:270
 #. Used in: Components > Interactions > Prep Dialog
 #, fuzzy
 msgid "available"
 msgstr "Disponível"
 
-#: components/Interactions/PrepDialog.tsx:273
+#: components/Interactions/PrepDialog.tsx:271
 #. Used in: Components > Interactions > Prep Dialog
 #, fuzzy
 msgid "unavailable"

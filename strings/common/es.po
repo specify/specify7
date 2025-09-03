@@ -878,7 +878,7 @@ msgstr "¡Copiado!"
 msgid "copyToClipboard"
 msgstr "Copiar al portapapeles"
 
-#: components/Interactions/PrepDialog.tsx:271
+#: components/Interactions/PrepDialog.tsx:269
 #: components/WbPlanView/CustomSelectElement.tsx:296
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Wb Plan View > Custom Select Element
 msgid "selected"

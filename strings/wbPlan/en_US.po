@@ -19,8 +19,8 @@ msgstr "No Upload Plan is Defined"
 msgid "noUploadPlanDescription"
 msgstr "No Upload Plan has been defined for this Data Set. Create one now?"
 
-#: components/WorkBench/hotProps.tsx:160
-#: components/WorkBench/hotProps.tsx:162
+#: components/WorkBench/hotProps.tsx:161
+#: components/WorkBench/hotProps.tsx:163
 #. Used in: Components > Work Bench > Hot Props
 msgid "unmappedColumn"
 msgstr "Unmapped Column"
