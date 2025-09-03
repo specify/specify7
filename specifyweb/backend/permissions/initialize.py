@@ -126,19 +126,17 @@ def assign_users_to_roles(apps=apps) -> None:
             JOIN sprole r ON r.id = ur.role_id 
             WHERE r.collection_id = p.usergroupscopeid
         )
-        AND c.collectionId NOT IN (
-            SELECT r.collection_id
+        AND c.UserGroupScopeId NOT IN (
+            SELECT DISTINCT r.collection_id
             FROM spuserrole ur 
-            JOIN sprole r ON r.id = ur.role_id 
-            WHERE r.collection_id = p.usergroupscopeid
+            JOIN sprole r ON r.id = ur.role_id
+            JOIN collection c ON c.UserGroupScopeId = r.collection_id
         );
     """)
 
     results = cursor.fetchall()
     
     for user_id, user_name, user_type, collection_id, collection_name in results:
-        if collection_id not in sp6_only_collections_ids:
-            continue
         if user_type not in {'Manager', 'FullAccess', 'LimitedAccess', 'Guest'}:
             continue
 
