@@ -20,7 +20,7 @@ urlpatterns = [
     re_path(r'^specify/merge/', include('specifyweb.backend.merge.urls')),
 
     # Inheritance (catalog number endpoints)
-    re_path(r'^', include('specifyweb.backend.inheritance.urls')),
+    re_path(r'^specify/', include('specifyweb.backend.inheritance.urls')),
 
     # Series endpoints
     re_path(r'^', include('specifyweb.backend.series.urls')),
