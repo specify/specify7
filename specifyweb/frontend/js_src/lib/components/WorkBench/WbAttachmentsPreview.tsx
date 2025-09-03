@@ -241,6 +241,7 @@ export function WbAttachmentsPreview({
       {showAttachment && (
         <AttachmentViewerDialog
           attachment={selectedAttachment}
+          attachments={attachments}
           viewerId={dataset.id.toString()}
           window={[useWindow, setUseWindow]}
           onClose={handleHideAttachment}
@@ -394,13 +395,17 @@ function fetchRowAttachments(
   });
 }
 
+import { Slider } from '../FormSliders/Slider';
+
 function AttachmentViewerDialog({
   attachment,
+  attachments,
   onClose,
   viewerId,
   window: [useWindow, setUseWindow],
 }: {
   readonly attachment: SerializedResource<Attachment> | undefined;
+  readonly attachments: RA<WbAttachmentPreviewCell>
   readonly onClose: () => void;
   readonly viewerId: string;
   readonly window: GetSet<boolean>;
@@ -426,7 +431,11 @@ function AttachmentViewerDialog({
   React.useEffect(() => {
     if (attachment === undefined) return;
     if (useWindow) {
-      setCache('workBenchAttachmentViewer', viewerId, [attachment.id]);
+      setCache('workBenchAttachmentViewer', viewerId, attachments.map(
+        (cell) => {
+          return cell.attachment?.id ?? attachment.id
+        }
+      ));
     }
   }, [attachment, useWindow]);
 
@@ -489,6 +498,13 @@ function AttachmentViewerDialog({
       header={attachmentsText.attachments()}
       headerButtons={
         <div className="flex items-center gap-2 md:gap-2 ml-auto">
+          <Slider
+            value={0}
+            count={attachments.length}
+            onChange={(newValue) => {
+
+            }}
+          />
           <Button.Secondary onClick={(): void => setUseWindow(true)}>
             {wbText.detachWindow()}
           </Button.Secondary>
