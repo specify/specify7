@@ -36,7 +36,7 @@ urlpatterns = [
     re_path(r'^specify/', include('specifyweb.backend.bulk_copy.urls')),
 
     # Trees
-    path('specify_trees/', include('specifyweb.backend.trees.urls')),
+    re_path(r'^', include('specifyweb.backend.trees.urls')),
     re_path(r'^specify_tree/', include('specifyweb.backend.trees.urls')),
 
     # Locality update tool
