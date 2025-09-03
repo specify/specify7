@@ -17,30 +17,28 @@ urlpatterns = [
     # === Backwards compatibility ===
 
     # Merge endpoints
-    re_path(r'^specify/merge/', include('specifyweb.backend.merge.urls')),
+    re_path(r'^', include('specifyweb.backend.merge.urls')),
 
     # Inheritance (catalog number endpoints)
-    re_path(r'^specify/catalog_number_for_sibling/', include('specifyweb.backend.inheritance.urls')),
-    re_path(r'^specify/catalog_number_from_parent/', include('specifyweb.backend.inheritance.urls')),
+    re_path(r'^', include('specifyweb.backend.inheritance.urls')),
 
     # Series endpoints
-    re_path(r'^specify/series_autonumber_range', include('specifyweb.backend.series.urls')),
+    re_path(r'^', include('specifyweb.backend.series.urls')),
 
     # Table rows
-    re_path(r'^specify_rows/', include('specifyweb.backend.table_rows.urls')),
+    re_path(r'^', include('specifyweb.backend.table_rows.urls')),
 
     # Delete blockers
-    re_path(r'^delete_blockers/', include('specifyweb.backend.delete_blockers.urls')),
+    re_path(r'^', include('specifyweb.backend.delete_blockers.urls')),
 
-    # Bulk copy
-    re_path(r'^specify/', include('specifyweb.backend.bulk_copy.urls')),
+    ## Bulk copy
+    re_path(r'^', include('specifyweb.backend.bulk_copy.urls')),
 
     # Trees
     re_path(r'^', include('specifyweb.backend.trees.urls')),
-    re_path(r'^specify_tree/', include('specifyweb.backend.trees.urls')),
 
     # Locality update tool
-    path('localityset/', include('specifyweb.backend.locality_update_tool.urls')),
+    re_path(r'^', include('specifyweb.backend.locality_update_tool.urls')),
 
     # Master key + User management
     re_path(r'^', include('specifyweb.backend.accounts.urls')),
