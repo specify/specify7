@@ -133,7 +133,8 @@
     "worker-loader": {
       "loader-utils": "2.0.3"
     },
-    "form-data": ">=4.0.4"
+    "form-data": ">=4.0.4",
+    "braces": "^3.0.3"
   },
   "browserslist": {
     "production": [

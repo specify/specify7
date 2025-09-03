@@ -1,9 +1,10 @@
+
 from collections import namedtuple
 from typing import Tuple
 from django.db.models import Model
 from django.core.exceptions import ObjectDoesNotExist
 
-from . import models
+from .. import models
 
 
 class ScopeType:

@@ -1,3 +1,5 @@
+# Entrypoint for the routing of the app
+
 from django.urls import include, path, re_path
 from . import schema, views
 

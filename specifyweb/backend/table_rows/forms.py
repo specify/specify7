@@ -1,5 +1,6 @@
-from specifyweb.specify.api import GetCollectionForm
 from django import forms
+
+from specifyweb.specify.api.validators import GetCollectionForm
 
 class RowsForm(GetCollectionForm):
     fields = forms.CharField(required=True) # type: ignore

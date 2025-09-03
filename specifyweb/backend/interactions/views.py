@@ -13,9 +13,10 @@ from specifyweb.backend.interactions.cog_preps import (
 )
 from specifyweb.middleware.general import require_GET
 from specifyweb.backend.permissions.permissions import check_table_permissions, table_permissions_checker
-from specifyweb.specify.api import get_resource, toJson, strict_uri_to_model
+from specifyweb.specify.api.api_utils import strict_uri_to_model
 from specifyweb.specify.models import Collectionobject, Loan, Loanpreparation, \
     Loanreturnpreparation, Preparation, Recordset, Recordsetitem
+from specifyweb.specify.api.serializers import toJson
 from specifyweb.specify.views import login_maybe_required
 
 from django.db.models import F, Q, Sum

@@ -36,6 +36,15 @@ export const resourcesText = createDictionary({
     'de-ch': 'Formulardefinition',
     'pt-br': 'Definição de Formulário',
   },
+  newViewDefinition: {
+    'en-us': 'New View Definition',
+    'de-ch': 'Neue Ansichtsdefinition',
+    'es-es': 'Nueva definición de vista',
+    'fr-fr': 'Nouvelle définition de vue',
+    'pt-br': 'Nova Definição de Visualização',
+    'ru-ru': 'Новое определение взгляда',
+    'uk-ua': 'Нове визначення подання',
+  },
   loadFile: {
     'en-us': 'Load File',
     'ru-ru': 'Загрузить файл',

@@ -8,7 +8,7 @@ from specifyweb.backend.permissions.permissions import (
     check_table_permissions,
 )
 from specifyweb.specify.models import Agent
-from specifyweb.specify.field_change_info import FieldChangeInfo
+from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 
 logger = logging.getLogger(__name__)
 

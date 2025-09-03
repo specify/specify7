@@ -38,7 +38,7 @@ import { PopupWindow } from '../Molecules/PopupWindow';
 import { Skeleton } from '../SkeletonLoaders/Skeleton';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import {
-  getAttachmentsColumnIndex,
+  getAttachmentsColumn,
   getAttachmentsFromCell,
 } from '../WorkBench/attachmentHelpers';
 
@@ -173,7 +173,7 @@ function fetchRowAttachments(
   ) => void
 ): void {
   // Look for Attachments column
-  const attachmentColumnIndex = getAttachmentsColumnIndex(dataset);
+  const attachmentColumnIndex = getAttachmentsColumn(dataset);
   if (attachmentColumnIndex === -1) return;
 
   // Each row should have comma-separated IDs for SpDataSetAttachments

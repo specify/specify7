@@ -248,7 +248,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 AUTHENTICATION_BACKENDS = []
 if ALLOW_SUPPORT_LOGIN:
-    AUTHENTICATION_BACKENDS.append('specifyweb.specify.support_login.SupportLoginBackend')
+    AUTHENTICATION_BACKENDS.append('specifyweb.specify.auth.support_login.SupportLoginBackend')
 
 if ALLOW_SPECIFY6_PASSWORDS:
     AUTHENTICATION_BACKENDS.append('django.contrib.auth.backends.ModelBackend')
