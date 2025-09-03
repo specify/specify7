@@ -1084,13 +1084,28 @@ def _get_table_and_field(field: QueryField):
     field_name = None if field.fieldspec.get_field() is None else field.fieldspec.get_field().name
     return (table_name, field_name)
 
-def rewrite_row(row, query_fields: list[QueryField]) -> tuple:
-    join_paths = tuple(tuple(field.name for field in query_field.fieldspec.join_path) for query_field in query_fields)
+def rewrite_coordinate_fields(row, _mapped_rows: dict[tuple[tuple[str, ...], ...], Any], join_paths: tuple[tuple[str, ...], ...]) -> tuple: 
+    """
+        In the QueryResults we want to replace any instances of the decimal
+        coordinate fields (latitude1, longitude1, latitude2, longitude2) with
+        their corresponding text field result (lat1text, long1text, etc.).
+        This is to align BatchEdit behavior with pre-existing WorkBench
+        behavior.
+        See #6251, #6655
 
-    # FIXME: We can't directly use a dict because there may be duplicate fields being
-    # mapped (such as when the user explictly adds ID or version to query)
-    mapped_rows = dict(zip(join_paths, row[1:]))
-    # assert len(mapped_rows) == len(row[1:]), "Row results and query fields have invalid length"
+        REFACTOR: In WB currently, mapping a coordinate text and decimal field
+        can result in the two easily becoming out-of-sync: as there is no 
+        business logic associated with directly mapped textual coordinate
+        fields.
+
+        REFACTOR: Instead of iterating through each of the results, consider
+        rewriting (in batch_edit_query_rewrites.py) the decimal coordinate 
+        fields to the textual coordinate fields before running the query, 
+        running he query, and then replacing the represented field before 
+        parsing.
+    """
+    mapped_rows = _mapped_rows
+
     field_replacement_map = {
         'latitude1': 'lat1text',
         'longitude1': 'long1text',
@@ -1098,14 +1113,25 @@ def rewrite_row(row, query_fields: list[QueryField]) -> tuple:
         'longitude2': 'long2text'
     }
 
-    for join_path, row_value in mapped_rows.items():
+    for join_path in join_paths:
         field_name = join_path[-1]
         replacement_field = field_replacement_map.get(field_name, None)
         replace_join_path = tuple((*join_path[:-1], replacement_field))
         if replacement_field is None or not replace_join_path in mapped_rows.keys():
             continue
+
         mapped_rows[join_path] = mapped_rows[replace_join_path]
-    return tuple((row[0], *mapped_rows.values()))
+
+    result = tuple(mapped_rows[join_path] for join_path in join_paths)
+    return (row[0], *result)
+
+def rewrite_row(row, query_fields: list[QueryField]) -> tuple:
+    """
+        Rewrite the query result row to an "expected form" for batch edit
+    """
+    join_paths = tuple(tuple(field.name for field in query_field.fieldspec.join_path) for query_field in query_fields)
+    mapped_rows = dict(zip(join_paths, row[1:]))
+    return rewrite_coordinate_fields(row, mapped_rows, join_paths)
 
 def run_batch_edit_query(props: BatchEditProps):
 
