@@ -58,19 +58,19 @@ msgstr "Новий запит"
 msgid "searchFields"
 msgstr "Пошукові поля"
 
-#: components/QueryBuilder/FieldFilter.tsx:424
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:424
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "any"
 msgstr "Будь-який"
 
-#: components/QueryBuilder/FieldFilter.tsx:339
-#: components/QueryBuilder/FieldFilter.tsx:389
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:339
+#: components/QueryBuilder/FieldFilterSpec.tsx:389
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "startValue"
 msgstr "Початкове значення"
 
-#: components/QueryBuilder/FieldFilter.tsx:350
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:350
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "endValue"
 msgstr "Кінцеве значення"
 
@@ -216,8 +216,8 @@ msgstr "(будь-яке дерево)"
 
 #: components/Formatters/Fields.tsx:223
 #: components/Formatters/Fields.tsx:224
-#: components/QueryBuilder/QueryLineTools.tsx:108
-#: components/QueryBuilder/QueryLineTools.tsx:110
+#: components/QueryBuilder/QueryLineTools.tsx:103
+#: components/QueryBuilder/QueryLineTools.tsx:105
 #: components/Toolbar/ListEdit.tsx:111
 #. 🟥As in move it up. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
 msgid "moveUp"
@@ -225,27 +225,27 @@ msgstr "Рухатися вгору"
 
 #: components/Formatters/Fields.tsx:230
 #: components/Formatters/Fields.tsx:231
-#: components/QueryBuilder/QueryLineTools.tsx:116
-#: components/QueryBuilder/QueryLineTools.tsx:118
+#: components/QueryBuilder/QueryLineTools.tsx:111
+#: components/QueryBuilder/QueryLineTools.tsx:113
 #: components/Toolbar/ListEdit.tsx:117
 #. 🟥As in move it down. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
 msgid "moveDown"
 msgstr "Рухатися вниз"
 
-#: components/QueryBuilder/QueryLineTools.tsx:81
-#: components/QueryBuilder/QueryLineTools.tsx:91
+#: components/QueryBuilder/QueryLineTools.tsx:76
+#: components/QueryBuilder/QueryLineTools.tsx:86
 #. Used in: Components > Query Builder > Query Line Tools
 msgid "sort"
 msgstr "Сортувати"
 
-#: components/QueryBuilder/QueryLineTools.tsx:78
-#: components/QueryBuilder/QueryLineTools.tsx:88
+#: components/QueryBuilder/QueryLineTools.tsx:73
+#: components/QueryBuilder/QueryLineTools.tsx:83
 #. Used in: Components > Query Builder > Query Line Tools
 msgid "ascendingSort"
 msgstr "Сортування за зростанням"
 
-#: components/QueryBuilder/QueryLineTools.tsx:80
-#: components/QueryBuilder/QueryLineTools.tsx:90
+#: components/QueryBuilder/QueryLineTools.tsx:75
+#: components/QueryBuilder/QueryLineTools.tsx:85
 #. Used in: Components > Query Builder > Query Line Tools
 msgid "descendingSort"
 msgstr "Сортування за спаданням"
@@ -256,8 +256,8 @@ msgstr "Сортування за спаданням"
 msgid "negate"
 msgstr "Заперечувати"
 
-#: components/QueryBuilder/QueryLineTools.tsx:55
-#: components/QueryBuilder/QueryLineTools.tsx:62
+#: components/QueryBuilder/QueryLineTools.tsx:50
+#: components/QueryBuilder/QueryLineTools.tsx:57
 #. Used in: Components > Query Builder > Query Line Tools
 msgid "showButtonDescription"
 msgstr "Показати в результатах"
@@ -272,102 +272,102 @@ msgstr "(узагальнено)"
 msgid "formattedInline"
 msgstr "(відформатований)"
 
-#: components/QueryBuilder/FieldFilter.tsx:431
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:431
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "like"
 msgstr "Люблю"
 
-#: components/QueryBuilder/FieldFilter.tsx:432
-#. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:432
+#. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter Spec
 msgid "likeDescription"
 msgstr ""
 "Використовуйте \"%\", щоб відповідати будь-якій кількості символів.\n"
 "Використовуйте \"_\", щоб відповідати одному символу"
 
-#: components/QueryBuilder/FieldFilter.tsx:439
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:439
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "equal"
 msgstr "Рівні"
 
-#: components/QueryBuilder/FieldFilter.tsx:447
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:447
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "greaterThan"
 msgstr "Більш чим"
 
-#: components/QueryBuilder/FieldFilter.tsx:455
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:455
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "lessThan"
 msgstr "Менше ніж"
 
-#: components/QueryBuilder/FieldFilter.tsx:463
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:463
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "greaterOrEqualTo"
 msgstr "Більше або дорівнює"
 
-#: components/QueryBuilder/FieldFilter.tsx:471
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:471
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "lessOrEqualTo"
 msgstr "Менше або дорівнює"
 
-#: components/QueryBuilder/FieldFilter.tsx:479
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:479
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "true"
 msgstr "правда"
 
-#: components/QueryBuilder/FieldFilter.tsx:486
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:486
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "false"
 msgstr "помилковий"
 
-#: components/QueryBuilder/FieldFilter.tsx:540
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:540
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "trueOrNull"
 msgstr "True або Empty"
 
-#: components/QueryBuilder/FieldFilter.tsx:547
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:547
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "falseOrNull"
 msgstr "False або Empty"
 
-#: components/QueryBuilder/FieldFilter.tsx:493
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:493
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "between"
 msgstr "Між"
 
-#: components/QueryBuilder/FieldFilter.tsx:501
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:501
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "in"
 msgstr "в"
 
-#: components/QueryBuilder/FieldFilter.tsx:502
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:502
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "inDescription"
 msgstr "Список значень, розділених комами"
 
 #: components/Preferences/UserDefinitions.tsx:1432
-#: components/QueryBuilder/FieldFilter.tsx:509
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:509
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 msgid "contains"
 msgstr "Містить"
 
-#: components/QueryBuilder/FieldFilter.tsx:533
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:533
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "empty"
 msgstr "Порожній"
 
-#: components/QueryBuilder/FieldFilter.tsx:345
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:345
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "and"
 msgstr "і"
 
 #: components/Preferences/UserDefinitions.tsx:1428
-#: components/QueryBuilder/FieldFilter.tsx:517
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:517
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 msgid "startsWith"
 msgstr "Починається з"
 
-#: components/QueryBuilder/FieldFilter.tsx:525
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:525
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "endsWith"
 msgstr "Закінчується на"
 
@@ -442,8 +442,8 @@ msgstr "Десинонімізація дерева"
 msgid "treeBulkMove"
 msgstr "Масове переміщення дерева"
 
-#: components/QueryBuilder/FieldFilter.tsx:118
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:118
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "tooLongErrorMessage"
 msgstr ""
 "Значення поля задовге. Максимальна дозволена довжина "
@@ -531,8 +531,8 @@ msgstr "Переглянути записи"
 msgid "chooseFormatter"
 msgstr "Виберіть форматер"
 
-#: components/QueryBuilder/FieldFilter.tsx:562
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:562
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "range"
 msgstr "Діапазон"
 

@@ -507,8 +507,8 @@ msgstr "Uploaded"
 #: components/QueryBuilder/Components.tsx:167
 #: components/QueryBuilder/FieldFilterTool.tsx:100
 #: components/QueryBuilder/FieldFilterTool.tsx:103
-#: components/QueryBuilder/Line.tsx:309
-#: components/QueryBuilder/Line.tsx:313
+#: components/QueryBuilder/Line.tsx:281
+#: components/QueryBuilder/Line.tsx:285
 #: components/SchemaConfig/UniquenessRuleRow.tsx:273
 #: components/Security/Policy.tsx:94
 #: components/Security/Policy.tsx:96
@@ -735,11 +735,11 @@ msgstr "Running…"
 msgid "noMatches"
 msgstr "No Matches"
 
-#: components/QueryBuilder/FieldFilter.tsx:74
-#: components/QueryBuilder/FieldFilter.tsx:239
+#: components/QueryBuilder/FieldFilterSpec.tsx:74
+#: components/QueryBuilder/FieldFilterSpec.tsx:239
 #: components/WbUtils/index.tsx:57
 #: components/WbUtils/index.tsx:62
-#. Used in: Components > Query Builder > Field Filter ⬤ Components > Wb Utils > Index
+#. Used in: Components > Query Builder > Field Filter Spec ⬤ Components > Wb Utils > Index
 msgid "searchQuery"
 msgstr "Search Query"
 
@@ -847,9 +847,9 @@ msgid "id"
 msgstr "ID"
 
 #: components/Attachments/index.tsx:163
-#: components/QueryBuilder/Line.tsx:472
-#: components/QueryBuilder/Line.tsx:480
-#. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Line
+#: components/QueryBuilder/QueryLineFilters.tsx:171
+#: components/QueryBuilder/QueryLineFilters.tsx:179
+#. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Query Line Filters
 msgid "filter"
 msgstr "Filter"
 

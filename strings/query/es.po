@@ -62,21 +62,21 @@ msgstr "Nueva consulta"
 msgid "searchFields"
 msgstr "Campos buscados"
 
-#: components/QueryBuilder/FieldFilter.tsx:424
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:424
+#. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "any"
 msgstr "Cualquier"
 
-#: components/QueryBuilder/FieldFilter.tsx:339
-#: components/QueryBuilder/FieldFilter.tsx:389
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:339
+#: components/QueryBuilder/FieldFilterSpec.tsx:389
+#. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "startValue"
 msgstr "Valor inicial"
 
-#: components/QueryBuilder/FieldFilter.tsx:350
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:350
+#. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "endValue"
 msgstr "Valor final"
@@ -251,8 +251,8 @@ msgstr "(cualquier árbol)"
 
 #: components/Formatters/Fields.tsx:223
 #: components/Formatters/Fields.tsx:224
-#: components/QueryBuilder/QueryLineTools.tsx:108
-#: components/QueryBuilder/QueryLineTools.tsx:110
+#: components/QueryBuilder/QueryLineTools.tsx:103
+#: components/QueryBuilder/QueryLineTools.tsx:105
 #: components/Toolbar/ListEdit.tsx:111
 #. 🟥As in move it up. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
 msgid "moveUp"
@@ -260,27 +260,27 @@ msgstr "Mover hacia arriba"
 
 #: components/Formatters/Fields.tsx:230
 #: components/Formatters/Fields.tsx:231
-#: components/QueryBuilder/QueryLineTools.tsx:116
-#: components/QueryBuilder/QueryLineTools.tsx:118
+#: components/QueryBuilder/QueryLineTools.tsx:111
+#: components/QueryBuilder/QueryLineTools.tsx:113
 #: components/Toolbar/ListEdit.tsx:117
 #. 🟥As in move it down. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
 msgid "moveDown"
 msgstr "Mover hacia abajo"
 
-#: components/QueryBuilder/QueryLineTools.tsx:81
-#: components/QueryBuilder/QueryLineTools.tsx:91
+#: components/QueryBuilder/QueryLineTools.tsx:76
+#: components/QueryBuilder/QueryLineTools.tsx:86
 #. Used in: Components > Query Builder > Query Line Tools
 msgid "sort"
 msgstr "Ordenar"
 
-#: components/QueryBuilder/QueryLineTools.tsx:78
-#: components/QueryBuilder/QueryLineTools.tsx:88
+#: components/QueryBuilder/QueryLineTools.tsx:73
+#: components/QueryBuilder/QueryLineTools.tsx:83
 #. Used in: Components > Query Builder > Query Line Tools
 msgid "ascendingSort"
 msgstr "Orden ascendente"
 
-#: components/QueryBuilder/QueryLineTools.tsx:80
-#: components/QueryBuilder/QueryLineTools.tsx:90
+#: components/QueryBuilder/QueryLineTools.tsx:75
+#: components/QueryBuilder/QueryLineTools.tsx:85
 #. Used in: Components > Query Builder > Query Line Tools
 msgid "descendingSort"
 msgstr "Orden descendente"
@@ -291,8 +291,8 @@ msgstr "Orden descendente"
 msgid "negate"
 msgstr "Negar"
 
-#: components/QueryBuilder/QueryLineTools.tsx:55
-#: components/QueryBuilder/QueryLineTools.tsx:62
+#: components/QueryBuilder/QueryLineTools.tsx:50
+#: components/QueryBuilder/QueryLineTools.tsx:57
 #. Used in: Components > Query Builder > Query Line Tools
 msgid "showButtonDescription"
 msgstr "Mostrar en resultados"
@@ -307,102 +307,102 @@ msgstr "(agregado)"
 msgid "formattedInline"
 msgstr "(formateado)"
 
-#: components/QueryBuilder/FieldFilter.tsx:431
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:431
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "like"
 msgstr "Como"
 
-#: components/QueryBuilder/FieldFilter.tsx:432
-#. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:432
+#. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter Spec
 msgid "likeDescription"
 msgstr ""
 "Usar \"%\" para hacer coincidir cualquier número de caracteres.\n"
 "Usar \"_\" para hacer coincidir un solo carácter"
 
-#: components/QueryBuilder/FieldFilter.tsx:439
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:439
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "equal"
 msgstr "Igual"
 
-#: components/QueryBuilder/FieldFilter.tsx:447
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:447
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "greaterThan"
 msgstr "Mayor que"
 
-#: components/QueryBuilder/FieldFilter.tsx:455
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:455
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "lessThan"
 msgstr "Menor que"
 
-#: components/QueryBuilder/FieldFilter.tsx:463
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:463
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "greaterOrEqualTo"
 msgstr "Mayor o igual a"
 
-#: components/QueryBuilder/FieldFilter.tsx:471
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:471
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "lessOrEqualTo"
 msgstr "Menor o igual a"
 
-#: components/QueryBuilder/FieldFilter.tsx:479
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:479
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "true"
 msgstr "Verdadero"
 
-#: components/QueryBuilder/FieldFilter.tsx:486
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:486
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "false"
 msgstr "Falso"
 
-#: components/QueryBuilder/FieldFilter.tsx:540
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:540
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "trueOrNull"
 msgstr "Verdadero o vacío"
 
-#: components/QueryBuilder/FieldFilter.tsx:547
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:547
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "falseOrNull"
 msgstr "Falso o vacío"
 
-#: components/QueryBuilder/FieldFilter.tsx:493
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:493
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "between"
 msgstr "Entre"
 
-#: components/QueryBuilder/FieldFilter.tsx:501
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:501
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "in"
 msgstr "En"
 
-#: components/QueryBuilder/FieldFilter.tsx:502
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:502
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "inDescription"
 msgstr "Una lista de valores separados por comas"
 
 #: components/Preferences/UserDefinitions.tsx:1432
-#: components/QueryBuilder/FieldFilter.tsx:509
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:509
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 msgid "contains"
 msgstr "Contiene"
 
-#: components/QueryBuilder/FieldFilter.tsx:533
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:533
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "empty"
 msgstr "Vacío"
 
-#: components/QueryBuilder/FieldFilter.tsx:345
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:345
+#. Used in: Components > Query Builder > Field Filter Spec
 msgid "and"
 msgstr "y"
 
 #: components/Preferences/UserDefinitions.tsx:1428
-#: components/QueryBuilder/FieldFilter.tsx:517
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:517
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 msgid "startsWith"
 msgstr "Comienza con"
 
-#: components/QueryBuilder/FieldFilter.tsx:525
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:525
+#. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "endsWith"
 msgstr "Termina con"
@@ -486,8 +486,8 @@ msgstr "Desinonimizar árboles"
 msgid "treeBulkMove"
 msgstr "Movimiento masivo de árboles"
 
-#: components/QueryBuilder/FieldFilter.tsx:118
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:118
+#. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "tooLongErrorMessage"
 msgstr ""
@@ -591,8 +591,8 @@ msgstr "Ver registros"
 msgid "chooseFormatter"
 msgstr "Elija el formateador"
 
-#: components/QueryBuilder/FieldFilter.tsx:562
-#. Used in: Components > Query Builder > Field Filter
+#: components/QueryBuilder/FieldFilterSpec.tsx:562
+#. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "range"
 msgstr "Rango"

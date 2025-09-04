@@ -12,8 +12,8 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.13\n"
 
-#: components/QueryBuilder/QueryLineTools.tsx:45
-#: components/QueryBuilder/QueryLineTools.tsx:47
+#: components/QueryBuilder/QueryLineTools.tsx:40
+#: components/QueryBuilder/QueryLineTools.tsx:42
 #. Used in: Components > Query Builder > Query Line Tools
 msgid "openMap"
 msgstr "Открыть карту"

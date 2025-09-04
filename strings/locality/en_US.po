@@ -1,8 +1,8 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/QueryBuilder/QueryLineTools.tsx:45
-#: components/QueryBuilder/QueryLineTools.tsx:47
+#: components/QueryBuilder/QueryLineTools.tsx:40
+#: components/QueryBuilder/QueryLineTools.tsx:42
 #. Used in: Components > Query Builder > Query Line Tools
 msgid "openMap"
 msgstr "Open Map"

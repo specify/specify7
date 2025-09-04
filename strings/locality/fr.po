@@ -11,8 +11,8 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.12-dev\n"
 
-#: components/QueryBuilder/QueryLineTools.tsx:45
-#: components/QueryBuilder/QueryLineTools.tsx:47
+#: components/QueryBuilder/QueryLineTools.tsx:40
+#: components/QueryBuilder/QueryLineTools.tsx:42
 #. Used in: Components > Query Builder > Query Line Tools
 msgid "openMap"
 msgstr "Ouvrir la carte"
