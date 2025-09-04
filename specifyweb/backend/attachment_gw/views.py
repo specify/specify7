@@ -26,7 +26,7 @@ from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.views import login_maybe_required, openapi
 from specifyweb.specify import models
 from specifyweb.specify.models import Recordsetitem
-from specifyweb.specify.models_by_table_id import get_model_by_table_id
+from specifyweb.specify.models_utils.models_by_table_id import get_model_by_table_id
 
 from .dataset_views import dataset_view, datasets_view
 logger = logging.getLogger(__name__)
