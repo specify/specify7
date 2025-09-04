@@ -20,6 +20,7 @@ import type {
 } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { ping } from '../../utils/ajax/ping';
 
 export const ATTACHMENTS_COLUMN = '_UPLOADED_ATTACHMENTS';
 export const BASE_TABLE_NAME = 'baseTable' as const;
@@ -224,10 +225,15 @@ export async function deleteAttachmentFromRow(
   const allDataSetAttachments = existingAttachments.filter(
     (att) => att.id !== idToDelete
   );
-
+  
   // The previous target table is not preserved. Safe for now since only uploading to the base table is supported.
   const targetTable = BASE_TABLE_NAME;
   const data = attachmentsToCell(allDataSetAttachments, targetTable);
   hot.setDataAtCell(row, attachmentColumn, data);
+
+  await ping(`/api/specify/spdatasetattachment/${idToDelete}/`, {
+    method: 'DELETE',
+  });
+
   // The dataset still needs to be saved after this.
 }
