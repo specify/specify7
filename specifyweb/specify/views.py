@@ -1511,6 +1511,8 @@ def catalog_number_from_parent(request: http.HttpRequest):
 
         if parent and parent.catalognumber:
             return http.JsonResponse(parent.catalognumber, safe=False)
+        elif parent and parent.catalognumber is None:
+            return http.JsonResponse(None, safe=False)
         else:
             return http.JsonResponse({'error': 'Parent or parent catalog number not found.'}, status=404)
 
