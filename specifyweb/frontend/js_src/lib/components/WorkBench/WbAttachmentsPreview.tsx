@@ -198,6 +198,7 @@ export function WbAttachmentsPreview({
                         hot={hot}
                         key={index}
                         selectedRow={selectedRow}
+                        loading={loading}
                         onOpen={(): void => {
                           handleShowAttachment();
                           setSelectedAttachment(cell);
