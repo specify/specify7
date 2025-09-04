@@ -16,10 +16,13 @@ import { exportsForTests, setCache } from '../../utils/cache';
 import type { GetSet, RA } from '../../utils/types';
 import { H2, Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { icons } from '../Atoms/Icons';
 import { fetchOriginalUrl } from '../Attachments/attachments';
 import { LeafletImageViewer } from '../Attachments/LeafletImageViewer';
 import { AttachmentPreview } from '../Attachments/Preview';
 import { AttachmentViewer } from '../Attachments/Viewer';
+import { LoadingContext } from '../Core/Contexts';
 import { toResource } from '../DataModel/helpers';
 import type {
   AnySchema,
@@ -48,9 +51,6 @@ import {
   uploadAttachmentsToRow,
 } from '../WorkBench/attachmentHelpers';
 import type { Workbench } from '../WorkBench/WbView';
-import { icons } from '../Atoms/Icons';
-import { className } from '../Atoms/className';
-import { LoadingContext } from '../Core/Contexts';
 
 const { formatCacheKey } = exportsForTests;
 
@@ -193,12 +193,12 @@ export function WbAttachmentsPreview({
                         attachments={attachments}
                         dataset={dataset}
                         dataSetAttachment={cell.spDataSetAttachment}
-                        saveDataset={saveDataset}
                         handleRefreshSpreadsheet={refreshSpreadsheet}
                         hot={hot}
                         key={index}
-                        selectedRow={selectedRow}
                         loading={loading}
+                        saveDataset={saveDataset}
+                        selectedRow={selectedRow}
                         onOpen={(): void => {
                           handleShowAttachment();
                           setSelectedAttachment(cell);
@@ -236,7 +236,7 @@ export function WbAttachmentsPreview({
                       BASE_TABLE_NAME,
                       setFileUploadLength,
                       setFileUploadProgress
-                    ).then(() =>
+                    ).then(async () =>
                       saveDataset().then(refreshSpreadsheet)
                     ));
                   }}
@@ -253,9 +253,9 @@ export function WbAttachmentsPreview({
         <AttachmentViewerDialog
           attachment={selectedAttachment?.attachment}
           attachments={attachments}
+          selected={[selectedAttachment, setSelectedAttachment]}
           viewerId={dataset.id.toString()}
           window={[useWindow, setUseWindow]}
-          selected={[selectedAttachment, setSelectedAttachment]}
           onClose={handleHideAttachment}
         />
       )}
@@ -294,10 +294,10 @@ function DatasetAttachmentPreview({
       </div>
       <div className="flex flex-col ml-2 gap-1 flex-shrink-0">
         <Button.Small
+          className="h-full"
+          disabled={dataSetAttachment !== attachments.at(-1).spDataSetAttachment}
           title={commonText.delete()}
           variant={className.dangerButton}
-          className="h-full"
-          disabled={dataSetAttachment !== attachments[attachments.length-1].spDataSetAttachment}
           onClick={async () => {
             if (hot === undefined) return;
             const existingAttachments = attachments
@@ -312,7 +312,7 @@ function DatasetAttachmentPreview({
               selectedRow,
               existingAttachments
             ).then(
-              () => saveDataset().then(
+              async () => saveDataset().then(
                 handleRefreshSpreadsheet
               )
             ));
@@ -463,9 +463,7 @@ function AttachmentViewerDialog({
     if (attachment === undefined) return;
     if (useWindow) {
       setCache('workBenchAttachmentViewer', viewerId, attachments.map(
-        (cell) => {
-          return cell.attachment?.id ?? attachment.id
-        }
+        (cell) => cell.attachment?.id ?? attachment.id
       ));
     }
   }, [attachment, useWindow]);
@@ -530,8 +528,8 @@ function AttachmentViewerDialog({
       headerButtons={
         <div className="flex items-center gap-2 md:gap-2 ml-auto">
           <Slider
-            value={selectedAttachment?.spDataSetAttachment?.ordinal ?? 1}
             count={attachments?.length ?? 1}
+            value={selectedAttachment?.spDataSetAttachment?.ordinal ?? 1}
             onChange={(newValue: number) => {
               setSelectedAttachment(attachments[newValue])
             }}
