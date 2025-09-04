@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 def fix_cots():
     create_default_collection_types(apps)
-    # create_default_discipline_for_tree_defs(apps)
+    create_default_discipline_for_tree_defs(apps)
     create_cogtype_type_picklist(apps)
     set_discipline_for_taxon_treedefs(apps)
     fix_taxon_treedef_discipline_links(apps)
@@ -86,28 +86,53 @@ def fix_tectonic_ranks():
 def fix_misc():
     make_selectseries_false(apps) # specify 0031
 
-def key_migration_func_pipeline(command: BaseCommand):
-    # Pipeline of key migration functions, no schema changes, only data changes
-    try:
-        with transaction.atomic():
-            apply_patches(apps)
-            fix_cots()
-            fix_permissions()
-            fix_business_rules()
-            fix_schema_config()
-            fix_tectonic_ranks()
-            fix_misc()
-    except Exception as e:
-        logger.error(f"An error occurred: {e}")
-        raise
-
-def temp(request):
-    from django.http import HttpResponse
-    key_migration_func_pipeline() # remove after debugging
-    return HttpResponse("Key migration functions executed successfully.")
-
 class Command(BaseCommand):
     help = "Runs this Django command to re-run important data migrations functions"
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "function",
+            nargs="?",
+            type=str,
+            help="Optional: specify a single function to run "
+                 "(apply_patches, fix_cots, fix_permissions, fix_business_rules, "
+                 "fix_schema_config, fix_tectonic_ranks, fix_misc)",
+        )
+
     def handle(self, *args, **options):
-        key_migration_func_pipeline(self)
+        func_name = options.get("function")
+
+        funcs = {
+            "apply_patches": lambda: apply_patches(apps),
+            "fix_cots": fix_cots,
+            "fix_permissions": fix_permissions,
+            "fix_business_rules": fix_business_rules,
+            "fix_schema_config": fix_schema_config,
+            "fix_tectonic_ranks": fix_tectonic_ranks,
+            "fix_misc": fix_misc,
+        }
+
+        try:
+            with transaction.atomic():
+                if func_name:
+                    if func_name not in funcs:
+                        self.stderr.write(
+                            self.style.ERROR(f"Unknown function: {func_name}")
+                        )
+                        return
+                    self.stdout.write(
+                        self.style.SUCCESS(f"Running only {func_name}...")
+                    )
+                    funcs[func_name]()
+                else:
+                    self.stdout.write(self.style.SUCCESS("Running full pipeline..."))
+                    apply_patches(apps)
+                    fix_cots()
+                    fix_permissions()
+                    fix_business_rules()
+                    fix_schema_config()
+                    fix_tectonic_ranks()
+                    fix_misc()
+        except Exception as e:
+            logger.error(f"An error occurred: {e}")
+            raise

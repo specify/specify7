@@ -74,7 +74,8 @@ def validate_unique(model, instance):
     rules = UniquenessRule.objects.filter(modelName=model_name)
     for rule in rules:
         rule_fields = UniquenessRuleField.objects.filter(uniquenessrule=rule)
-        if not rule_is_global(tuple(field.fieldPath for field in rule_fields.filter(isScope=True))) and not in_same_scope(rule, instance):
+        if not rule_is_global(tuple(field.fieldPath for field in rule_fields.filter(isScope=True))) \
+            and not in_same_scope(rule, instance):
             continue
 
         field_names = [
@@ -153,7 +154,8 @@ class UniquenessCheck(TypedDict):
     fields: list[ViolatedUniquenessCheck]
 
 
-def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[str], registry=None) -> UniquenessCheck | None:
+def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[str], registry=None) \
+    -> UniquenessCheck | None:
     """
     Given a model, a list of fields, and a list of scopes, check whether there
     are models of model_name which have duplicate values of fields in scopes. 
@@ -181,16 +183,32 @@ def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[st
 
     duplicates_field = '__duplicates'
 
-    duplicates = django_model.objects.values(
-        *all_fields).annotate(**{duplicates_field: Count('id')}).filter(strict_filters).filter(**{f"{duplicates_field}__gt": 1}).order_by(f'-{duplicates_field}')
+    duplicates = (
+        django_model.objects
+        .values(*all_fields)
+        .annotate(**{duplicates_field: Count('id')})
+        .filter(strict_filters)
+        .filter(**{f"{duplicates_field}__gt": 1})
+        .order_by(f'-{duplicates_field}')
+    )
 
     total_duplicates = sum(duplicate[duplicates_field]
                            for duplicate in duplicates)
 
     final = {
         "totalDuplicates": total_duplicates,
-        "fields": [{"duplicates": duplicate[duplicates_field], "fields": {field: value for field, value in duplicate.items() if field != duplicates_field}}
-                   for duplicate in duplicates]}
+        "fields": [
+            {
+                "duplicates": duplicate[duplicates_field],
+                "fields": {
+                    field: value
+                    for field, value in duplicate.items()
+                    if field != duplicates_field
+                },
+            }
+            for duplicate in duplicates
+        ],
+    }
     return final
 
 
@@ -257,19 +275,19 @@ def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
         if len(matching_fields) == len(fields) and len(matching_scopes) == len(scopes): 
             return
 
+    logger.info(f"Creating uniqueness rule on {model_name} with fields {fields} and scopes {scopes} for the discipline {discipline.name if discipline else 'Global'}")
     rule = UniquenessRule.objects.create(
         discipline=discipline, modelName=model_name, isDatabaseConstraint=is_database_constraint)
 
     for field in fields:
-        UniquenessRuleField.objects.create(
-            uniquenessrule=rule, fieldPath=field, isScope=False)
+        UniquenessRuleField.objects.create(uniquenessrule=rule, fieldPath=field, isScope=False)
     for scope in scopes:
-        UniquenessRuleField.objects.create(
-            uniquenessrule=rule, fieldPath=scope, isScope=True)
+        UniquenessRuleField.objects.create(uniquenessrule=rule, fieldPath=scope, isScope=True)
 
 def uniquenessrule_exists(UniquenessRule, model_name, discipline, is_database_constraint, fields, scopes):
 
-    model_rules = UniquenessRule.objects.filter(modelName=model_name, discipline=discipline, isDatabaseConstraint=is_database_constraint)
+    model_rules = UniquenessRule.objects.filter(
+        modelName=model_name, discipline=discipline, isDatabaseConstraint=is_database_constraint)
 
     for rule in model_rules: 
         rule_fields = rule.uniquenessrulefield_set.all()
@@ -293,7 +311,8 @@ def remove_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
 
     discipline = None if rule_is_global(scopes) else raw_discipline
 
-    candidate_rules = UniquenessRule.objects.filter(modelName=model_name, isDatabaseConstraint=is_database_constraint, discipline=discipline)
+    candidate_rules = UniquenessRule.objects.filter(
+        modelName=model_name, isDatabaseConstraint=is_database_constraint, discipline=discipline)
 
     rule_ids = []
     for rule in candidate_rules: 
@@ -316,11 +335,16 @@ scoped to discipline and instead be global
 GLOBAL_RULE_FIELDS = ["division", 'institution']
 
 def rule_is_global(scopes: Iterable[str]) -> bool:
-    return len(scopes) == 0 or any(any(scope_field.lower() in GLOBAL_RULE_FIELDS for scope_field in scope.split('__')) for scope in scopes)
+    return len(scopes) == 0 \
+        or any(any(scope_field.lower() in GLOBAL_RULE_FIELDS for scope_field in scope.split('__')) for scope in scopes)
 
 def fix_global_default_rules(registry=None):
-    UniquenessRule = registry.get_model('businessrules', 'UniquenessRule') if registry else models.UniquenessRule
-    UniquenessRuleField = registry.get_model('businessrules', 'UniquenessRuleField') if registry else models.UniquenessRuleField
+    UniquenessRule = registry.get_model('businessrules', 'UniquenessRule') \
+        if registry \
+        else models.UniquenessRule
+    UniquenessRuleField = registry.get_model('businessrules', 'UniquenessRuleField') \
+        if registry \
+        else models.UniquenessRuleField
 
     global_rule_fields = UniquenessRuleField.objects.filter(
         uniquenessrule__discipline__isnull=True
