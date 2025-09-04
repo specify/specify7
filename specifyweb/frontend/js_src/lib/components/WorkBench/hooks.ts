@@ -54,8 +54,8 @@ export function useHotHooks({
   );
 
   return {
-    afterInit: function () {
-      /* no-op (kept for parity) */
+    afterInit () {
+      /* No-op (kept for parity) */
     },
 
     afterRenderer: (td, visualRow, _visualCol, property) => {
@@ -64,7 +64,7 @@ export function useHotHooks({
         return;
       }
 
-      const colCount = workbench.dataset!.columns.length;
+      const colCount = workbench.dataset.columns.length;
       const physicalRow = workbench.hot!.toPhysicalRow(visualRow);
       const vcol = workbench.hot!.propToCol(property as any);
       const physicalCol = workbench.hot!.toPhysicalColumn(vcol);
@@ -161,7 +161,7 @@ export function useHotHooks({
       if (source !== 'CopyPaste.paste') return true;
       if (!validateWorkbenchState('beforeChange')) return false;
 
-      const colCount = workbench.dataset!.columns.length;
+      const colCount = workbench.dataset.columns.length;
 
       const filteredChanges = unfilteredChanges
         .filter((change): change is CellChange => change !== null)
@@ -199,7 +199,7 @@ export function useHotHooks({
       )
         return;
 
-      const colCount = workbench.dataset!.columns.length;
+      const colCount = workbench.dataset.columns.length;
 
       const changes = unfilteredChanges
         .map(([visualRow, property, oldValue, newValue]) => {
@@ -290,7 +290,7 @@ export function useHotHooks({
       return true;
     },
 
-    beforeRemoveRow: (visualRowStart, amount, _vars, source) => {
+    beforeRemoveRow: (visualRowStart, amount, _variables, source) => {
       if (!validateWorkbenchState('beforeRemoveRow')) return false;
 
       const removedRows = Array.from({ length: amount }, (_, index) =>
@@ -387,7 +387,7 @@ export function useHotHooks({
       return false;
     },
 
-    afterColumnSort: async (_prev, sortConfig) => {
+    afterColumnSort: async (_previous, sortConfig) => {
       if (!validateWorkbenchState('afterColumnSort')) return;
 
       const physicalSortConfig = sortConfig.map((config) => ({
@@ -401,9 +401,7 @@ export function useHotHooks({
       );
     },
 
-    beforeColumnMove: (_columnIndexes, _finalIndex, dropIndex) => {
-      return !isResultsOpen && dropIndex !== undefined && workbench.hot !== undefined;
-    },
+    beforeColumnMove: (_columnIndexes, _finalIndex, dropIndex) => !isResultsOpen && dropIndex !== undefined && workbench.hot !== undefined,
 
     afterColumnMove: (_columnIndexes, _finalIndex, dropIndex) => {
       if (dropIndex === undefined || !validateWorkbenchState('afterColumnMove')) return;
@@ -487,8 +485,8 @@ function afterUndoRedo(
   const colCount = workbench.dataset?.columns?.length ?? -1;
   if (colCount < 0 || physicalCol !== colCount) return;
 
-  const newValue = (safeParseJSON(newData) as any).disambiguation ?? {};
-  const oldValue = (safeParseJSON(oldData) as any).disambiguation ?? {};
+  const newValue = (safeParseJSON(newData) ).disambiguation ?? {};
+  const oldValue = (safeParseJSON(oldData) ).disambiguation ?? {};
 
   if (
     type === 'undo' &&
