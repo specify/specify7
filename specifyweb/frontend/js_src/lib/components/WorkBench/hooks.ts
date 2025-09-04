@@ -499,9 +499,9 @@ function afterUndoRedo(
       workbench.undoRedoIsHandled = true;
       workbench.hot?.undo();
       workbench.undoRedoIsHandled = false;
-      workbench.disambiguination.afterChangeDisambiguation(physicalRow);
+      workbench.disambiguation.afterChangeDisambiguation(physicalRow);
     }, 0);
   } else {
-    workbench.disambiguination.afterChangeDisambiguation(physicalRow);
+    workbench.disambiguation.afterChangeDisambiguation(physicalRow);
   }
 }
