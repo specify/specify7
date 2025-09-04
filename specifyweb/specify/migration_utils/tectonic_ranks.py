@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 def create_default_tectonic_ranks(apps): 
     TectonicUnitTreeDefItem = apps.get_model('specify', 'TectonicUnitTreeDefItem')
     TectonicTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
@@ -8,7 +11,9 @@ def create_default_tectonic_ranks(apps):
     )
 
     for discipline in disciplines:
-        tectonic_tree_def, _ = TectonicTreeDef.objects.get_or_create(name="Tectonic Unit", discipline=discipline)
+        tectonic_tree_def = TectonicTreeDef.objects.filter(discipline=discipline).first()
+        if not tectonic_tree_def:
+            tectonic_tree_def, _ = TectonicTreeDef.objects.get_or_create(name="Tectonic Unit", discipline=discipline)
 
         root, _ = TectonicUnitTreeDefItem.objects.get_or_create(
             name="Root",
@@ -86,26 +91,36 @@ def create_root_tectonic_node(apps):
 
     for discipline in Discipline.objects.all(): 
 
-        tectonic_tree_def, created = TectonicUnitTreeDef.objects.get_or_create(
-            name="Tectonic Unit",
-            discipline=discipline
-        )
+        tectonic_tree_def = TectonicUnitTreeDef.objects.filter(name="Tectonic Unit", discipline=discipline).first()
+        if not tectonic_tree_def:
+            tectonic_tree_def, is_created = TectonicUnitTreeDef.objects.get_or_create(
+                name="Tectonic Unit",
+                discipline=discipline
+            )
 
-        tectonic_tree_def_item, create = TectonicUnitTreeDefItem.objects.get_or_create(
-            name="Root",
-            treedef=tectonic_tree_def,
-            isenforced=True
-        )
+        tectonic_tree_def_item = TectonicUnitTreeDefItem.objects.filter(treedef=tectonic_tree_def, name="Root").first()
+        if not tectonic_tree_def_item:
+            tectonic_tree_def_item, is_created = TectonicUnitTreeDefItem.objects.get_or_create(
+                name="Root",
+                title="Root",
+                treedef=tectonic_tree_def,
+                isenforced=True
+            )
 
-        root, _ = TectonicUnit.objects.get_or_create(
-            name="Root",
-            isaccepted=1,
-            nodenumber=1,
-            rankid=0,
-            parent=None,
-            definition=tectonic_tree_def,
-            definitionitem=tectonic_tree_def_item
-        )
+        root = TectonicUnit.objects.filter(name="Root", definition=tectonic_tree_def).first()
+        if not root:
+            root, is_created = TectonicUnit.objects.get_or_create(
+                name="Root",
+                isaccepted=1,
+                nodenumber=1,
+                rankid=0,
+                parent=None,
+                definition=tectonic_tree_def,
+                definitionitem=tectonic_tree_def_item
+            )
+
+            if is_created:
+                logger.info(f"Created root tectonic unit for discipline {discipline.name}")
 
 def revert_create_root_tectonic_node(apps, schema_editor=None):
     TectonicUnit = apps.get_model('specify', 'TectonicUnit')
