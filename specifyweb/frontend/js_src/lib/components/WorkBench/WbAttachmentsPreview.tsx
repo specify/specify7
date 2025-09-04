@@ -48,6 +48,9 @@ import {
   uploadAttachmentsToRow,
 } from '../WorkBench/attachmentHelpers';
 import type { Workbench } from '../WorkBench/WbView';
+import { icons } from '../Atoms/Icons';
+import { className } from '../Atoms/className';
+import { LoadingContext } from '../Core/Contexts';
 
 const { formatCacheKey } = exportsForTests;
 
@@ -87,11 +90,13 @@ export function WbAttachmentsPreview({
     RA<WbAttachmentPreviewCell>
   >([]);
   const [selectedAttachment, setSelectedAttachment] = React.useState<
-    SerializedResource<Attachment> | undefined
+    WbAttachmentPreviewCell | undefined
   >(undefined);
 
   const [showAttachment, handleShowAttachment, handleHideAttachment] =
     useBooleanState();
+
+  const loading = React.useContext(LoadingContext);
 
   const [useWindow, setUseWindow] = React.useState<boolean>(false);
 
@@ -130,6 +135,15 @@ export function WbAttachmentsPreview({
   const [fileUploadProgress, setFileUploadProgress] = React.useState<
     number | undefined
   >(undefined);
+
+  const saveDataset = async function(): Promise<void> {
+    return handleWorkbenchSave(
+      workbench,
+      searchRef,
+      checkDeletedFail,
+      handleSpreadsheetUpToDate
+    );
+  }
 
   const refreshSpreadsheet = function (): void {
     if (hot === undefined || selectedRow === undefined) return;
@@ -179,13 +193,14 @@ export function WbAttachmentsPreview({
                         attachments={attachments}
                         dataset={dataset}
                         dataSetAttachment={cell.spDataSetAttachment}
+                        saveDataset={saveDataset}
                         handleRefreshSpreadsheet={refreshSpreadsheet}
                         hot={hot}
                         key={index}
                         selectedRow={selectedRow}
                         onOpen={(): void => {
                           handleShowAttachment();
-                          setSelectedAttachment(cell.attachment);
+                          setSelectedAttachment(cell);
                         }}
                       />
                     ) : (
@@ -211,7 +226,7 @@ export function WbAttachmentsPreview({
                       SerializedResource<SpDataSetAttachment>
                     >;
 
-                    await uploadAttachmentsToRow(
+                    loading(uploadAttachmentsToRow(
                       Array.from(selectedFiles),
                       dataset,
                       hot,
@@ -220,14 +235,9 @@ export function WbAttachmentsPreview({
                       BASE_TABLE_NAME,
                       setFileUploadLength,
                       setFileUploadProgress
-                    ).then(async () =>
-                      handleWorkbenchSave(
-                        workbench,
-                        searchRef,
-                        checkDeletedFail,
-                        handleSpreadsheetUpToDate
-                      ).then(refreshSpreadsheet)
-                    );
+                    ).then(() =>
+                      saveDataset().then(refreshSpreadsheet)
+                    ));
                   }}
                 />
               )}
@@ -240,10 +250,11 @@ export function WbAttachmentsPreview({
       )}
       {showAttachment && (
         <AttachmentViewerDialog
-          attachment={selectedAttachment}
+          attachment={selectedAttachment?.attachment}
           attachments={attachments}
           viewerId={dataset.id.toString()}
           window={[useWindow, setUseWindow]}
+          selected={[selectedAttachment, setSelectedAttachment]}
           onClose={handleHideAttachment}
         />
       )}
@@ -258,6 +269,8 @@ function DatasetAttachmentPreview({
   hot,
   selectedRow,
   attachments,
+  loading,
+  saveDataset,
   handleRefreshSpreadsheet,
 }: {
   readonly dataSetAttachment: SerializedResource<SpDataSetAttachment>;
@@ -266,10 +279,12 @@ function DatasetAttachmentPreview({
   readonly hot: Handsontable | undefined;
   readonly selectedRow: number;
   readonly attachments: RA<WbAttachmentPreviewCell>;
+  readonly loading: (promise: Promise<unknown>) => void;
+  readonly saveDataset: () => Promise<void>;
   readonly handleRefreshSpreadsheet: () => void;
 }): JSX.Element {
   return (
-    <div className="flex items-center w-full">
+    <div className="flex items-stretch w-full">
       <div className="flex-1 min-w-0">
         <AttachmentPreview
           attachment={dataSetAttachment.attachment}
@@ -277,9 +292,11 @@ function DatasetAttachmentPreview({
         />
       </div>
       <div className="flex flex-col ml-2 gap-1 flex-shrink-0">
-        <Button.Icon
-          icon="trash"
+        <Button.Small
           title={commonText.delete()}
+          variant={className.dangerButton}
+          className="h-full"
+          disabled={dataSetAttachment !== attachments[attachments.length-1].spDataSetAttachment}
           onClick={async () => {
             if (hot === undefined) return;
             const existingAttachments = attachments
@@ -287,25 +304,35 @@ function DatasetAttachmentPreview({
               .filter((a) => a !== undefined) as RA<
               SerializedResource<SpDataSetAttachment>
             >;
-            await deleteAttachmentFromRow(
+            loading(deleteAttachmentFromRow(
               dataSetAttachment.id,
               dataset,
               hot,
               selectedRow,
               existingAttachments
-            ).then(handleRefreshSpreadsheet);
+            ).then(
+              () => saveDataset().then(
+                handleRefreshSpreadsheet
+              )
+            ));
           }}
-        />
-        <Button.Icon
-          icon="chevronUp"
+        >
+          {icons.trash}
+        </Button.Small>
+        {/* <Button.Small
           title={commonText.remove()}
+          className="h-full"
           onClick={() => {}}
-        />
-        <Button.Icon
-          icon="chevronDown"
+        >
+          {icons.chevronUp}
+        </Button.Small>
+        <Button.Small
           title={commonText.remove()}
+          className="h-full"
           onClick={() => {}}
-        />
+        >
+          {icons.chevronDown}
+        </Button.Small> */}
       </div>
     </div>
   );
@@ -323,7 +350,7 @@ function fetchRowAttachments(
         ) => RA<WbAttachmentPreviewCell>)
   ) => void,
   setSelectedAttachment: (
-    attachment: SerializedResource<Attachment> | undefined
+    attachment: WbAttachmentPreviewCell | undefined
   ) => void
 ): void {
   // Look for Attachments column
@@ -376,14 +403,15 @@ function fetchRowAttachments(
           serializeResource(data.attachment),
           'Attachment'
         );
-        if (resource !== undefined && index === 0) {
-          setSelectedAttachment(resource);
-        }
-        insertAttachmentPreviewCell(index, {
+        const cell: WbAttachmentPreviewCell = {
           attachment: resource,
           spDataSetAttachment: serializeResource(data),
           isLoading: false,
-        });
+        };
+        if (resource !== undefined && index === 0) {
+          setSelectedAttachment(cell);
+        }
+        insertAttachmentPreviewCell(index, cell);
       })
       .catch(() => {
         insertAttachmentPreviewCell(index, {
@@ -402,12 +430,14 @@ function AttachmentViewerDialog({
   attachments,
   onClose,
   viewerId,
+  selected: [selectedAttachment, setSelectedAttachment],
   window: [useWindow, setUseWindow],
 }: {
   readonly attachment: SerializedResource<Attachment> | undefined;
   readonly attachments: RA<WbAttachmentPreviewCell>
   readonly onClose: () => void;
   readonly viewerId: string;
+  readonly selected: GetSet<WbAttachmentPreviewCell | undefined>;
   readonly window: GetSet<boolean>;
 }): JSX.Element | null {
   const [attachmentUrl, setAttachmentUrl] = React.useState<string | undefined>(
@@ -499,10 +529,10 @@ function AttachmentViewerDialog({
       headerButtons={
         <div className="flex items-center gap-2 md:gap-2 ml-auto">
           <Slider
-            value={0}
-            count={attachments.length}
-            onChange={(newValue) => {
-
+            value={selectedAttachment?.spDataSetAttachment?.ordinal ?? 1}
+            count={attachments?.length ?? 1}
+            onChange={(newValue: number) => {
+              setSelectedAttachment(attachments[newValue])
             }}
           />
           <Button.Secondary onClick={(): void => setUseWindow(true)}>

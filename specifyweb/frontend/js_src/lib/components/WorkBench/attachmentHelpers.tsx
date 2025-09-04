@@ -177,6 +177,7 @@ export async function uploadAttachmentsToRow(
   if (attachmentColumn === -1) return;
   setFileUploadProgress(0);
   setFileUploadLength(files.length);
+  const currentCount = existingAttachments.length;
   await Promise.all(uploadFiles(files, setFileUploadProgress))
     .then(async (attachments) =>
       // Create SpDataSetAttachments for each attachment
@@ -185,10 +186,8 @@ export async function uploadAttachmentsToRow(
           attachments,
           dataset.id
         ).then(async (unsavedDataSetAttachments) => {
-          let ordinal = attachments.length;
-          unsavedDataSetAttachments.forEach((dataSetAttachment) => {
-            ordinal++;
-            dataSetAttachment.set('ordinal', ordinal);
+          unsavedDataSetAttachments.forEach((dataSetAttachment, index) => {
+            dataSetAttachment.set('ordinal', currentCount+index);
           });
           return saveDataSetAttachments(unsavedDataSetAttachments);
         }),
