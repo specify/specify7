@@ -13,8 +13,8 @@ import specifyweb.specify.models as spmodels
 from specifyweb.celery_tasks import LogErrorsTask, app
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.backend.notifications.models import LocalityUpdate, LocalityUpdateRowResult, Message
-from specifyweb.specify.parse import ParseFailureKey, parse_field as _parse_field, ParseFailure as BaseParseFailure, ParseSucess as BaseParseSuccess
-from specifyweb.specify.uiformatters import get_uiformatter
+from specifyweb.backend.workbench.upload.parse import ParseFailureKey, parse_field as _parse_field, ParseFailure as BaseParseFailure, ParseSucess as BaseParseSuccess
+from specifyweb.specify.utils.uiformatters import get_uiformatter
 
 LocalityParseErrorMessageKey = Literal[
     'guidHeaderNotProvided',
@@ -247,14 +247,14 @@ class ParsedRow(TypedDict):
 
 
 class ParseSuccess(NamedTuple):
-    to_upload: dict[str, Any]
+    payload: dict[str, Any]
     model: UpdateModel
     locality_id: int | None
     row_number: str | None
 
     @classmethod
     def from_base_parse_success(cls, parse_success: BaseParseSuccess, model: UpdateModel, locality_id: int | None, row_number: int):
-        return cls(parse_success.to_upload, model, locality_id, row_number)
+        return cls(parse_success.payload, model, locality_id, row_number)
 
 
 class UploadSuccessRow(TypedDict):
@@ -421,7 +421,7 @@ def merge_parse_results(results: list[ParseSuccess | ParseError], locality_id: i
         if isinstance(result, ParseError):
             errors.append(result)
         else:
-            to_upload[result.model.lower()].update(result.to_upload)
+            to_upload[result.model.lower()].update(result.payload)
 
     if len(to_upload['geocoorddetail']) == 0:
         to_upload['geocoorddetail'] = None

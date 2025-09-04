@@ -1,5 +1,5 @@
 from typing import Optional
-from specifyweb.specify.load_datamodel import Datamodel, Table, Field, Relationship
+from specifyweb.specify.models_utils.load_datamodel import Datamodel, Table, Field, Relationship
 from sqlalchemy import Table as Table_Sqlalchemy, Column, ForeignKey, types, orm, MetaData
 from sqlalchemy.dialects.mysql import BIT as mysql_bit_type
 metadata = MetaData()

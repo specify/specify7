@@ -36,6 +36,15 @@ export const resourcesText = createDictionary({
     'de-ch': 'Formulardefinition',
     'pt-br': 'Definição de Formulário',
   },
+  newViewDefinition: {
+    'en-us': 'New View Definition',
+    'de-ch': 'Neue Ansichtsdefinition',
+    'es-es': 'Nueva definición de vista',
+    'fr-fr': 'Nouvelle définition de vue',
+    'pt-br': 'Nova Definição de Visualização',
+    'ru-ru': 'Новое определение взгляда',
+    'uk-ua': 'Нове визначення подання',
+  },
   loadFile: {
     'en-us': 'Load File',
     'ru-ru': 'Загрузить файл',
@@ -115,7 +124,7 @@ export const resourcesText = createDictionary({
     'fr-fr': "Ressource d'application",
     'uk-ua': 'Підкатегорії',
     'de-ch': 'App Ressource',
-    'pt-br': 'Recurso do aplicativo',
+    'pt-br': 'Recurso de aplicativo',
   },
   rssExportFeed: {
     'en-us': 'RSS Export Feed',
@@ -193,7 +202,7 @@ export const resourcesText = createDictionary({
     'en-us':
       'The “Table Format” controls how data from a specific table is shown in query results, exports, and query combo boxes. It determines the fields to display and their order. Conditional formatting can be configured based on a value in the record.',
     'de-ch':
-      'Das Tabellenformat steuert die Darstellung von Daten aus einer bestimmten Tabelle in Abfrageergebnissen, Exporten und Abfragekombinationsfeldern. Es bestimmt die anzuzeigenden Felder und deren Reihenfolge. Die bedingte Formatierung kann basierend auf einem Wert im Datensatz konfiguriert werden.',
+      'Das Tabellenformat steuert die Darstellung von Daten aus einer bestimmten Tabelle in Abfrageergebnissen, Exporten und Abfrage-Kombinationsfeldern. Es bestimmt die anzuzeigenden Felder und deren Reihenfolge. Die bedingte Formatierung kann basierend auf einem Wert im Datensatz konfiguriert werden.',
     'es-es':
       'El "Formato de tabla" controla cómo se muestran los datos de una tabla específica en los resultados de consultas, las exportaciones y los cuadros combinados de consultas. Determina los campos que se mostrarán y su orden. El formato condicional se puede configurar según un valor del registro.',
     'fr-fr':
@@ -218,7 +227,7 @@ export const resourcesText = createDictionary({
     'en-us':
       'The “Table Aggregation” controls how multiple table records are consolidated together into a single text string. The table format, separator, suffix, sort field, and record preview limit are customizable. It can be displayed in query results and table formats.',
     'de-ch':
-      'Die „Tabellenaggregation“ steuert, wie mehrere Tabellendatensätze zu einem einzigen Text zusammengefasst werden. Tabellenformat, Trennzeichen, Suffix, Sortierfeld und Datensatzvorschaulimit sind anpassbar. Die Anzeige kann in Abfrageergebnissen und Tabellenformaten erfolgen.',
+      'Die „Tabellenaggregation“ steuert, wie mehrere Tabellendatensätze zu einer einzigen Textzeichenfolge zusammengefasst werden. Tabellenformat, Trennzeichen, Suffix, Sortierfeld und Datensatzvorschaulimit sind anpassbar. Die Anzeige kann in Abfrageergebnissen und Tabellenformaten erfolgen.',
     'es-es':
       'La "Agregación de Tablas" controla cómo se consolidan varios registros de tabla en una sola cadena de texto. El formato de tabla, el separador, el sufijo, el campo de ordenación y el límite de vista previa de registros son personalizables. Se pueden mostrar en los resultados de consultas y en los formatos de tabla.',
     'fr-fr':
@@ -309,7 +318,7 @@ export const resourcesText = createDictionary({
   otherXmlResource: {
     'en-us': 'Other XML Resource',
     'ru-ru': 'Выберите тип ресурса',
-    'es-es': 'Otros recursos XML',
+    'es-es': 'Otro recurso XML',
     'fr-fr': 'Autre ressource XML',
     'uk-ua': 'Інший XML-ресурс',
     'de-ch': 'Andere XML-Ressource',
@@ -839,7 +848,7 @@ export const resourcesText = createDictionary({
     'es-es': 'No se puede agregar un COG a sí mismo.',
     'fr-fr': 'Un COG ne peut pas être ajouté à lui-même.',
     'pt-br': 'Um COG não pode ser adicionado a si mesmo.',
-    'ru-ru': 'COG не может быть добавлен сам к себе.',
+    'ru-ru': 'COG не может быть сложен сам с собой.',
     'uk-ua': 'COG не можна додати до самого себе.',
   },
   primaryCogChildRequired: {
@@ -860,7 +869,7 @@ export const resourcesText = createDictionary({
   },
   deletePrimaryRecord: {
     'en-us': 'Primary record CO cannot be deleted.',
-    'de-ch': 'Der Primärdatensatz CO kann nicht gelöscht werden.',
+    'de-ch': 'Primärdatensatz CO kann nicht gelöscht werden.',
     'es-es': 'El registro primario CO no se puede eliminar.',
     'fr-fr': "L'enregistrement principal CO ne peut pas être supprimé.",
     'pt-br': 'O registro primário CO não pode ser excluído.',
@@ -887,8 +896,8 @@ export const resourcesText = createDictionary({
   },
   deleteDisposedPrep: {
     'en-us': 'A disposed preparation cannot be deleted',
-    'de-ch': 'Eine verworfene Zubereitung kann nicht gelöscht werden',
-    'es-es': 'No se puede eliminar una preparación desechada',
+    'de-ch': 'Eine entsorgte Zubereitung kann nicht gelöscht werden',
+    'es-es': 'Una preparación desechada no se puede eliminar',
     'fr-fr': 'Une préparation éliminée ne peut pas être supprimée',
     'pt-br': 'Uma preparação descartada não pode ser excluída',
     'ru-ru': 'Утилизированный препарат не может быть удален',
@@ -900,7 +909,7 @@ export const resourcesText = createDictionary({
     'es-es': 'No se puede eliminar una preparación intercambiada',
     'fr-fr': 'Une préparation échangée ne peut pas être supprimée',
     'pt-br': 'Uma preparação trocada não pode ser excluída',
-    'ru-ru': 'Замененный препарат не может быть удален',
+    'ru-ru': 'Замененный препарат не может быть удален.',
     'uk-ua': 'Обмінений препарат не можна видалити',
   },
   deleteExchangeInPrep: {
@@ -944,34 +953,34 @@ export const resourcesText = createDictionary({
     'es-es': 'El recuento de preparación no puede ser negativo',
     'fr-fr': 'Le nombre de préparations ne peut pas être négatif',
     'pt-br': 'A contagem de preparação não pode ser negativa',
-    'ru-ru': 'Количество приготовлений не может быть отрицательным',
+    'ru-ru': 'Количество приготовлений не может быть отрицательным.',
     'uk-ua': "Кількість підготовок не може бути від'ємним значенням",
   },
   configureField: {
     'en-us': 'Configure field',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Feld konfigurieren',
+    'es-es': 'Configurar campo',
+    'fr-fr': 'Configurer le champ',
+    'pt-br': 'Configurar campo',
+    'ru-ru': 'Настроить поле',
+    'uk-ua': 'Налаштувати поле',
   },
   trimZeros: {
     'en-us': 'Trim Zeros',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Nullen trimmen',
+    'es-es': 'Recortar ceros',
+    'fr-fr': 'Couper les zéros',
+    'pt-br': 'Aparar Zeros',
+    'ru-ru': 'Trim Zero',
+    'uk-ua': 'Обрізати нулі',
   },
   trimZerosDescription: {
     'en-us': 'Remove leading zeros from numeric values.',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Entfernen Sie führende Nullen aus numerischen Werten.',
+    'es-es': 'Eliminar los ceros iniciales de los valores numéricos.',
+    'fr-fr': 'Supprimez les zéros non significatifs des valeurs numériques.',
+    'pt-br': 'Remova os zeros à esquerda dos valores numéricos.',
+    'ru-ru': 'Удалить начальные нули из числовых значений.',
+    'uk-ua': 'Видаліть початкові нулі з числових значень.',
   },
 } as const);

@@ -7,11 +7,11 @@ from datetime import date
 from hypothesis import given, strategies as st
 from jsonschema import validate, Draft7Validator  # type: ignore
 
-from specifyweb.specify import auditcodes
+from specifyweb.backend.workbench.upload import auditcodes
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.backend.stored_queries.format import LDLM_TO_MYSQL, MYSQL_TO_MONTH, \
     MYSQL_TO_YEAR
-from specifyweb.specify.parse import parse_coord, parse_date, ParseFailure, ParseSucess
+from specifyweb.backend.workbench.upload.parse import parse_coord, parse_date, ParseFailure, ParseSucess
 from .base import UploadTestsBase, get_table
 from ..column_options import ColumnOptions
 from ..treerecord import TreeRecord
@@ -42,7 +42,7 @@ class DateParsingTests(unittest.TestCase):
         result = parse_date(co, 'catalogeddate', format, datestr)
         self.assertIsInstance(result, ParseSucess)
         assert isinstance(result, ParseSucess)
-        self.assertEqual({'catalogeddate': date, 'catalogeddateprecision': 1}, result.to_upload)
+        self.assertEqual({'catalogeddate': date, 'catalogeddateprecision': 1}, result.payload)
 
     @given(st.dates(min_value=date(1000,1,1)), st.sampled_from([f for f in LDLM_TO_MYSQL.values() if '%Y' in f]))
     def test_month(self, date, format) -> None:
@@ -50,7 +50,7 @@ class DateParsingTests(unittest.TestCase):
         result = parse_date(co, 'catalogeddate', format, datestr)
         self.assertIsInstance(result, ParseSucess)
         assert isinstance(result, ParseSucess)
-        self.assertEqual({'catalogeddate': date.replace(day=1), 'catalogeddateprecision': 2}, result.to_upload)
+        self.assertEqual({'catalogeddate': date.replace(day=1), 'catalogeddateprecision': 2}, result.payload)
 
     @given(st.dates(min_value=date(1000,1,1)), st.sampled_from([f for f in LDLM_TO_MYSQL.values() if '%Y' in f]))
     def test_year(self, date, format) -> None:
@@ -58,7 +58,7 @@ class DateParsingTests(unittest.TestCase):
         result = parse_date(co, 'catalogeddate', format, datestr)
         self.assertIsInstance(result, ParseSucess)
         assert isinstance(result, ParseSucess)
-        self.assertEqual({'catalogeddate': date.replace(day=1, month=1), 'catalogeddateprecision': 3}, result.to_upload)
+        self.assertEqual({'catalogeddate': date.replace(day=1, month=1), 'catalogeddateprecision': 3}, result.payload)
 
     @given(st.dates(min_value=date(1000,1,1)), st.sampled_from([f for f in LDLM_TO_MYSQL.values() if '%Y' in f]))
     def test_zero_day(self, date, format) -> None:
@@ -67,7 +67,7 @@ class DateParsingTests(unittest.TestCase):
         result = parse_date(co, 'catalogeddate', format, datestr)
         self.assertIsInstance(result, ParseSucess)
         assert isinstance(result, ParseSucess)
-        self.assertEqual({'catalogeddate': date.replace(day=1), 'catalogeddateprecision': 2}, result.to_upload)
+        self.assertEqual({'catalogeddate': date.replace(day=1), 'catalogeddateprecision': 2}, result.payload)
 
     @given(st.dates(min_value=date(1000,1,1)), st.sampled_from([f for f in LDLM_TO_MYSQL.values() if '%Y' in f and '%b' not in f]))
     def test_zero_month(self, date, format) -> None:
@@ -76,7 +76,7 @@ class DateParsingTests(unittest.TestCase):
         result = parse_date(co, 'catalogeddate', format, datestr)
         self.assertIsInstance(result, ParseSucess)
         assert isinstance(result, ParseSucess)
-        self.assertEqual({'catalogeddate': date.replace(day=1,month=1), 'catalogeddateprecision': 3}, result.to_upload)
+        self.assertEqual({'catalogeddate': date.replace(day=1,month=1), 'catalogeddateprecision': 3}, result.payload)
 
 class ParsingTests(UploadTestsBase):
     def setUp(self) -> None:

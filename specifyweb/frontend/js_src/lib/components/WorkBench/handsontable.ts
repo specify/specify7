@@ -8,7 +8,10 @@ import { writable } from '../../utils/types';
 import { schema } from '../DataModel/schema';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { getAttachmentsColumnIndex } from '../WorkBench/attachmentHelpers';
+import {
+  formatAttachmentsFromCell,
+  getAttachmentsColumn,
+} from '../WorkBench/attachmentHelpers';
 import type { BatchEditPack } from './batchEditHelpers';
 import { BATCH_EDIT_KEY, isBatchEditNullRecord } from './batchEditHelpers';
 import { getPhysicalColToMappingCol } from './hotHelpers';
@@ -143,7 +146,7 @@ function getIdentifyNullRecords(
 }
 
 function getAttachmentsIdentifier(dataset: Dataset): GetProperty | undefined {
-  const attachmentsColumnIndex = getAttachmentsColumnIndex(dataset);
+  const attachmentsColumnIndex = getAttachmentsColumn(dataset);
   const callback: GetProperty = (_physicalRow, physicalCol, _property) =>
     physicalCol === attachmentsColumnIndex
       ? {
@@ -156,15 +159,17 @@ function getAttachmentsIdentifier(dataset: Dataset): GetProperty | undefined {
             value,
             ...rest
           ): void => {
+            const formattedValue = formatAttachmentsFromCell(value);
+            const cellMeta = instance.getCellMeta(row, col);
+            cellMeta.formattedValue = formattedValue;
+
             Handsontable.renderers.TextRenderer(
               instance,
               td,
               row,
               col,
               property,
-              typeof value === 'string' && value.length > 0
-                ? JSON.parse(value)?.formatted
-                : undefined,
+              formattedValue,
               ...rest
             );
           },
@@ -221,7 +226,7 @@ function setColumnWidths(hot: Handsontable, dataset: Dataset): void {
    * For simplicity, the width is limited to 100px to reflect the likely shorter displayed text.
    */
   const attachmentColumnMaxWidth = 100;
-  const attachmentsColumnIndex = getAttachmentsColumnIndex(dataset);
+  const attachmentsColumnIndex = getAttachmentsColumn(dataset);
   if (attachmentsColumnIndex !== -1) {
     colWidths = [];
     colWidths[attachmentsColumnIndex] = Math.min(

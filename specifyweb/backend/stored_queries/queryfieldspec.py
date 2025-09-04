@@ -1,20 +1,22 @@
+
 import logging
+from datetime import datetime, timedelta
 import re
 from collections import namedtuple, deque
+from typing import TypedDict, Iterable
 
-from specifyweb.specify.utils import get_parent_cat_num_inheritance_setting
+from specifyweb.backend.inheritance.utils import get_cat_num_inheritance_setting, get_parent_cat_num_inheritance_setting
+from specifyweb.specify.utils.uiformatters import get_uiformatter
 from sqlalchemy import sql, Table as SQLTable
 from sqlalchemy.orm.query import Query
 
-from specifyweb.specify.load_datamodel import Field, Table
+from specifyweb.specify.models_utils.load_datamodel import Field, Table
 from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, datamodel
-from specifyweb.specify.uiformatters import get_uiformatter
-from specifyweb.specify.utils import get_cat_num_inheritance_setting
 from specifyweb.backend.stored_queries.models import CollectionObject as sq_CollectionObject
 
 from . import models
 from .query_ops import QueryOps
-from specifyweb.specify.load_datamodel import Table, Field, Relationship
+from specifyweb.specify.models_utils.load_datamodel import Table, Field, Relationship
 
 logger = logging.getLogger(__name__)
 
@@ -42,8 +44,14 @@ PRECALCULATED_FIELDS = {
     "CollectionObject": "age",
 }
 
+class SpQueryAttrs(TypedDict):
+    tablelist: str
+    stringid: str
+    fieldname: str
+    isrelfld: bool
 
-def extract_date_part(fieldname):
+
+def extract_date_part(fieldname: str) -> tuple[str, str | None]:
     match = DATE_PART_RE.match(fieldname)
     if match:
         fieldname, date_part = match.groups()[:2]
@@ -53,7 +61,7 @@ def extract_date_part(fieldname):
     return fieldname, date_part
 
 
-def make_table_list(fs):
+def make_table_list(fs: "QueryFieldSpec"):
     path = (
         fs.join_path if not fs.join_path or fs.is_relationship() else fs.join_path[:-1]
     )
@@ -70,14 +78,14 @@ def make_table_list(fs):
     return ",".join(first + rest)
 
 
-def make_tree_fieldnames(table: Table, reverse=False):
+def make_tree_fieldnames(table: Table, reverse: bool = False) -> dict:
     mapping = {"ID": table.idFieldName.lower(), "": "name"}
     if reverse:
         return {value: key for (key, value) in mapping.items()}
     return mapping
 
 
-def find_tree_and_field(table: Table, fieldname: str):
+def find_tree_and_field(table: Table, fieldname: str) -> tuple[None, None] | tuple[str, str]:
     fieldname = fieldname.strip()
     if fieldname == "":
         return None, None
@@ -100,7 +108,7 @@ def find_tree_and_field(table: Table, fieldname: str):
     return tree_rank, mapping.get(field, field)
 
 
-def make_stringid(fs, table_list):
+def make_stringid(fs: "QueryFieldSpec", table_list: list[str]) -> tuple[list[str], str, str]:
     tree_ranks = [f.name for f in fs.join_path if isinstance(f, TreeRankQuery)]
     if tree_ranks:
         field_name = tree_ranks
@@ -172,7 +180,7 @@ class QueryFieldSpec(
     tree_field: str | None
 
     @classmethod
-    def from_path(cls, path_in, add_id=False):
+    def from_path(cls, path_in: Iterable[str], add_id: bool=False):
         path = deque(path_in)
         root_table = datamodel.get_table(path.popleft(), strict=True)
 
@@ -204,7 +212,7 @@ class QueryFieldSpec(
         )
 
     @classmethod
-    def from_stringid(cls, stringid, is_relation):
+    def from_stringid(cls, stringid: str, is_relation: bool):
         path_str, table_name, field_name = STRINGID_RE.match(stringid).groups()
         path = deque(path_str.split(","))
         root_table = datamodel.get_table_by_id(int(path.popleft()))
@@ -270,8 +278,8 @@ class QueryFieldSpec(
         self.validate()
 
     def get_first_tree_rank(self):
-        for node in enumerate(list(self.join_path)):
-            if isinstance(node[1], TreeRankQuery):
+        for node in list(self.join_path):
+            if isinstance(node, TreeRankQuery):
                 return node
         return None
 
@@ -291,7 +299,7 @@ class QueryFieldSpec(
                 },
             )
 
-    def to_spquery_attrs(self):
+    def to_spquery_attrs(self) ->SpQueryAttrs:
         table_list = make_table_list(self)
         stringid = make_stringid(self, table_list)
 
@@ -302,7 +310,7 @@ class QueryFieldSpec(
             "isrelfld": self.is_relationship(),
         }
 
-    def to_stringid(self):
+    def to_stringid(self) -> str:
         table_list = make_table_list(self)
         return ".".join(make_stringid(self, table_list))
 
@@ -472,13 +480,6 @@ class QueryFieldSpec(
                     else:
                         raise
 
-                if field.type == "java.sql.Timestamp":
-                    # Only consider the date portion of timestamp fields.
-                    # This is to replicate the behavior of Sp6. It might
-                    # make sense to condition this on whether there is a
-                    # time component in the input value.
-                    orm_field = sql.func.DATE(orm_field)
-
                 if field.is_temporal() and self.date_part != "Full Date":
                     precision_field_name = field.name + "Precision"
                     precision_field = getattr(orm_model, precision_field_name, None)
@@ -503,6 +504,17 @@ class QueryFieldSpec(
 
         return query, orm_field, field, table
 
+def parse_dates(date_str):
+
+        """
+        Parse a date string in strict YYYY-MM-DD format to a datetime object.
+        Example: parse_dates('2025-08-21') -> datetime(2025, 8, 21, 0, 0)
+        """
+        try:
+                return datetime.strptime(date_str.strip(), "%Y-%m-%d")
+        except (ValueError, AttributeError):
+                return None
+
 def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
     parent_inheritance_pref = get_parent_cat_num_inheritance_setting(collection, user)
 
@@ -510,6 +522,56 @@ def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uifor
         op, orm_field, value = parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
     else: 
         op, orm_field, value = cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
+
+    # Special handling for timestamp fields since the Query Builder provides a plain date string (YYYY-MM-DD) instead of a full datetime.
+
+    try:
+        is_timestamp_field = field is not None and field.is_temporal()
+    except Exception:
+        is_timestamp_field = False
+
+    # Skip this block unless it's a timestamp field, a supported operator,
+    # and the provided value is a string.
+    if not (op_num in {1, 2, 5, 9} and is_timestamp_field and isinstance(value, str)):
+        return op, orm_field, value
+
+    v = value.strip()
+
+    # Operators that use a single date value: Equal, GreaterThan, LessThanOrEqual
+    if op_num in {1, 2, 5}:
+        # Parse the date once and quit if it's not a strict YYYY-MM-DD
+        start_date = parse_dates(v)
+        if not start_date:
+            return op, orm_field, value
+
+        if op_num == 1:
+            # Equal: rewrite to a half-open range that covers the full day.
+            # This is equivalent to: date >= 'YYYY-MM-DD 00:00:00' AND
+            # date <  'YYYY-MM-DD 00:00:00' + 1 day
+            end_date = start_date + timedelta(days=1)
+            op = lambda f, _ignored: (f >= sql.literal(start_date.isoformat())) & (f < sql.literal(end_date.isoformat()))
+        else:
+            # For comparison operators we shift the comparison to the next
+            # day and reuse existing simple ops:
+            #   > 2025-08-21  -> >= 2025-08-22
+            #   <= 2025-08-21 -> <  2025-08-22
+            next_day = start_date + timedelta(days=1)
+            value = next_day.strftime("%Y-%m-%d")
+            op = QueryOps(uiformatter).by_op_num(4 if op_num == 2 else 3)
+
+    else:  # Between operator (op_num == 9)
+        # Expect two comma-separated dates: "YYYY-MM-DD, YYYY-MM-DD".
+        # This expands the upper bound to the start of the next day so the
+        # BETWEEN includes the entirety of the final day.
+        parts = [p.strip() for p in v.split(',')]
+        if len(parts) != 2:
+            return op, orm_field, value
+        start_date = parse_dates(parts[0])
+        end_date = parse_dates(parts[1])
+        if not (start_date and end_date):
+            return op, orm_field, value
+        end_of_end_day = end_date + timedelta(days=1)
+        op = lambda f, _ignored: (f >= sql.literal(start_date.isoformat())) & (f < sql.literal(end_of_end_day.isoformat()))
 
     return op, orm_field, value
 

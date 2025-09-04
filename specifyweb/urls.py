@@ -16,12 +16,19 @@ from specifyweb.backend.permissions import urls as permissions_urls
 from specifyweb.backend.permissions.permissions import skip_collection_access_check
 from specifyweb.backend.report_runner import urls as report_urls
 from .specify import urls as api_urls
+from specifyweb.backend.backup_tool import urls as backup_urls
 from .specify.views import images, properties
 from specifyweb.backend.stored_queries import urls as query_urls
 from specifyweb.backend.workbench import urls as wb_urls
 from specifyweb.backend.stats import urls as stat_urls
+from specifyweb.backend.inheritance import urls as inheritance_urls
+from specifyweb.backend.trees import urls as trees_urls
 from specifyweb.backend.merge import urls as merge_urls
 from specifyweb.backend.locality_update_tool import urls as locality_update_tool_urls
+from specifyweb.backend.bulk_copy import urls as bulk_copy_urls
+from specifyweb.backend.series import urls as series_urls
+from specifyweb.backend.delete_blockers import urls as delete_blockers_urls
+from specifyweb.backend.table_rows import urls as table_rows_urls
 
 # print(get_resolver().reverse_dict.keys()) # Use for debugging urls
 
@@ -43,6 +50,7 @@ urlpatterns = [
 
     # primary api
     path('api/', include(api_urls)),
+    path('api/backup/', include(backup_urls)),
     path('images/<path:path>', images),
     re_path(r'^properties/(?P<name>.+).properties$', properties), # Note fully supported since remmoving dependence on specify.jar
 
@@ -64,6 +72,12 @@ urlpatterns = [
     path('permissions/', include(permissions_urls)), # permissions added
     # url(r'^testcontext/', include()),
     path('stats/', include(stat_urls)),
+    path('inheritance/', include(inheritance_urls)),
+    path('trees/', include(trees_urls)),
     path('merge/', include(merge_urls)),
-    path('locality_update_tool/', include(locality_update_tool_urls))
+    path('locality_update_tool/', include(locality_update_tool_urls)),
+    path('bulk_copy/', include(bulk_copy_urls)),
+    path('series/', include(series_urls)),
+    path('delete_blockers/', include(delete_blockers_urls)),
+    path('table_rows/', include(table_rows_urls))
 ]

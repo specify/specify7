@@ -304,7 +304,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'Se requiere asignación',
     'fr-fr': 'La cartographie est requise',
     'uk-ua': 'Потрібне відображення',
-    'de-ch': 'Mapping ist erforderlich',
+    'de-ch': 'Zuordnung ist erforderlich',
     'pt-br': 'O mapeamento é necessário',
   },
   continueEditing: {

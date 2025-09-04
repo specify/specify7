@@ -18,7 +18,7 @@ export const mainText = createDictionary({
     'fr-fr': '{baseTitle:string} | Specify 7',
     'uk-ua': '{baseTitle:string} | Specify 7',
     'de-ch': '{baseTitle:string} | Specify 7',
-    'pt-br': '{baseTitle:string} | Especifique 7',
+    'pt-br': '{baseTitle:string} | Specify 7',
   },
   baseAppTitle: {
     comment: 'Default page title',
@@ -28,7 +28,7 @@ export const mainText = createDictionary({
     'fr-fr': 'Specify 7',
     'uk-ua': 'Specify 7',
     'de-ch': 'Specify 7',
-    'pt-br': 'Especifique 7',
+    'pt-br': 'Specify 7',
   },
   pageNotFound: {
     comment: 'Used in title',
@@ -180,7 +180,7 @@ export const mainText = createDictionary({
   leavePageConfirmationDescription: {
     'en-us': 'Unsaved changes will be lost if you leave this page.',
     'ru-ru':
-      'Несохраненные изменения будут потеряны, если вы покинете эту страницу.',
+      'Несохраненные изменения будут утеряны, если вы покинете эту страницу.',
     'es-es': 'Los cambios no guardados se perderán si abandona esta página.',
     'fr-fr':
       'Les modifications non enregistrées seront perdues si vous quittez cette page.',

@@ -292,7 +292,9 @@ def choose_collection(request) -> http.HttpResponse:
     id to the user if one is provided.
     """
     from specifyweb.backend.context.views import set_collection_cookie, users_collections_for_sp7
-    from specifyweb.specify.api import obj_to_data, toJson
+
+    
+    from specifyweb.specify.api.serializers import obj_to_data, toJson
 
     if 'external_user' in request.session and request.user.is_authenticated:
         # This will be set if the user logged in with an external IdP
@@ -352,7 +354,7 @@ def support_login(request: http.HttpRequest) -> http.HttpResponse:
 
     user = authenticate(token=request.GET['token'])
     if user is not None:
-        login(request, user, backend='specifyweb.specify.support_login.SupportLoginBackend')
+        login(request, user, backend='specifyweb.specify.auth.support_login.SupportLoginBackend')
         return http.HttpResponseRedirect('/')
     else:
         return http.HttpResponseForbidden()

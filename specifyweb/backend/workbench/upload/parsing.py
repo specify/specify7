@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.backend.workbench.upload.predicates import filter_match_key
 from .column_options import ExtendedColumnOptions
-from specifyweb.specify.parse import parse_field, is_latlong, ParseSucess, ParseFailure
+from specifyweb.backend.workbench.upload.parse import parse_field, is_latlong, ParseSucess, ParseFailure
 
 Row = dict[str, str]
 Filter = dict[str, Any]
@@ -41,7 +41,7 @@ class ParseResult(NamedTuple):
 
     @classmethod
     def from_parse_success(cls, ps: ParseSucess, filter_on: Filter, add_to_picklist: PicklistAddition | None, column: str, missing_required: str | None):
-        return cls(filter_on=filter_on, upload=ps.to_upload, add_to_picklist=add_to_picklist, column=column, missing_required=missing_required)
+        return cls(filter_on=filter_on, upload=ps.payload, add_to_picklist=add_to_picklist, column=column, missing_required=missing_required)
 
     def match_key(self) -> str:
         return filter_match_key(self.filter_on)
@@ -122,13 +122,13 @@ def _parse(tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value
 
     if is_latlong(table, field) and isinstance(parsed, ParseSucess):
         coord_text_field = field.name.replace('itude', '') + 'text' if field.name else ''
-        filter_on = {coord_text_field: parsed.to_upload[coord_text_field]}
+        filter_on = {coord_text_field: parsed.payload[coord_text_field]}
         return ParseResult.from_parse_success(parsed, filter_on, None, colopts.column, None)
 
     if isinstance(parsed, ParseFailure):
         return WorkBenchParseFailure.from_parse_failure(parsed, colopts.column)
     else:
-        return ParseResult.from_parse_success(parsed, parsed.to_upload, None, colopts.column, None)
+        return ParseResult.from_parse_success(parsed, parsed.payload, None, colopts.column, None)
 
 
 def parse_with_picklist(picklist, fieldname: str, value: str, column: str) -> ParseResult | WorkBenchParseFailure | None:

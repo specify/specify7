@@ -6,8 +6,8 @@ from django.views.decorators.http import require_POST
 from django.conf import settings
 
 from specifyweb.middleware.general import require_GET
+from specifyweb.specify.api.serializers import toJson
 from specifyweb.specify.views import login_maybe_required
-from specifyweb.specify.api import toJson
 
 from .models import Message
 
@@ -20,10 +20,23 @@ def get_messages(request):
     since = request.GET.get('since', None)
     time_filter = {'timestampcreated__gt': since} if since is not None else {}
     messages = Message.objects.filter(user=request.specify_user, **time_filter).order_by('timestampcreated')
-    return HttpResponse(toJson([
-        dict(message_id=m.id, read=m.read, timestamp=m.timestampcreated, **json.loads(m.content))
-        for m in messages
-    ]), content_type='application/json')
+
+    def serialize(m: Message):
+        base = {'message_id': m.id, 'read': m.read, 'timestamp': m.timestampcreated}
+        try:
+            content = json.loads(m.content) if m.content else {}
+            if not isinstance(content, dict):
+                content = {'type': 'invalid-notification', 'raw': m.content}
+        except Exception:
+            content = {'type': 'invalid-notification', 'raw': m.content}
+        # Drop any conflicting keys from content
+        content.pop('timestamp', None)
+        content.pop('message_id', None)
+        content.pop('read', None)
+        base.update(content)
+        return base
+
+    return HttpResponse(toJson([serialize(m) for m in messages]), content_type='application/json')
 
 @require_POST
 @login_maybe_required

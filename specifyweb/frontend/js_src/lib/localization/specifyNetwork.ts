@@ -25,7 +25,7 @@ export const specifyNetworkText = createDictionary({
     'fr-fr':
       "Le nom de l'espèce ou le GUID doit être fourni pour afficher cette page",
     'ru-ru':
-      'Для отображения этой страницы необходимо указать название вида или GUID',
+      'Для отображения этой страницы необходимо указать название вида или GUID.',
     'uk-ua':
       'Щоб відобразити цю сторінку, потрібно вказати назву виду або GUID',
     'pt-br':
@@ -96,13 +96,13 @@ export const specifyNetworkText = createDictionary({
     'en-us':
       'Occurrences recorded in iDigBio are shown as round green points, except for those from the current collection recorded in iDigBio that are round red points. Zooming in on the red points brings up a blue teardrop pin, clicking on the pin executes a locality query in Specify that shows all of the species in the current Specify database collected from that location.',
     'de-ch':
-      'In iDigBio erfasste Vorkommen werden als runde grüne Punkte dargestellt, mit Ausnahme der in iDigBio erfassten Vorkommen, die als runde rote Punkte dargestellt werden. Beim Vergrößern der roten Punkte wird eine blaue Stecknadel angezeigt. Ein Klick darauf führt eine Ortsabfrage in Specify aus, die alle an diesem Ort erfassten Arten der aktuellen Specify-Datenbank anzeigt.',
+      'In iDigBio erfasste Vorkommen werden als runde grüne Punkte angezeigt, mit Ausnahme der in iDigBio erfassten Vorkommen, die als runde rote Punkte dargestellt sind. Beim Vergrößern der roten Punkte wird eine blaue Stecknadel angezeigt. Durch Klicken auf diese Stecknadel wird eine Standortabfrage in Specify ausgeführt, die alle an diesem Standort gesammelten Arten der aktuellen Specify-Datenbank anzeigt.',
     'es-es':
       'Los registros recogidos en iDigBio se muestran como puntos verdes redondos, excepto los de esta colección, registrados en iDigBio, que son puntos rojos redondos. Al acercarse a los puntos rojos, aparece una chincheta en forma de lágrima azul; al hacer clic en la chincheta, se ejecuta una consulta de localidad en Specify que muestra todas las especies en la base de datos actual de Specify colectadas en esa localización.',
     'fr-fr':
       "Les occurrences enregistrées dans iDigBio sont représentées par des points verts ronds, à l'exception de celles de la collection actuelle, qui sont représentées par des points rouges ronds. Un zoom sur les points rouges fait apparaître une épingle bleue en forme de larme. Cliquer dessus exécute une requête de localité dans Specify, qui affiche toutes les espèces de la base de données Specify actuelles collectées à cet endroit.",
     'ru-ru':
-      'Встречи, зарегистрированные в iDigBio, показаны круглыми зелеными точками, за исключением тех, которые есть в текущей коллекции, зарегистрированной в iDigBio, которые показаны круглыми красными точками. При увеличении красных точек появляется синяя каплевидная булавка, нажатие на булавку выполняет запрос на местоположение в Specify, который показывает все виды в текущей базе данных Specify, собранные из этого местоположения.',
+      'Встречи, зарегистрированные в iDigBio, отображаются круглыми зелёными точками, за исключением случаев из текущей коллекции, зарегистрированной в iDigBio, которые обозначены круглыми красными точками. При увеличении красных точек появляется синяя каплевидная метка; нажатие на метку выполняет запрос по местоположению в Specify, который отображает все виды из текущей базы данных Specify, собранные в этом месте.',
     'uk-ua':
       'Випадки, записані в iDigBio, відображаються круглими зеленими точками, за винятком випадків із поточної колекції, записаної в iDigBio, які мають круглі червоні точки. Збільшення масштабу червоних крапок відкриває блакитну шпильку-сльозинку, клацання шпильки виконує запит місцевості в Specify, який показує всі види в поточній базі даних Specify, зібрані з цього місця.',
     'pt-br':
@@ -111,14 +111,14 @@ export const specifyNetworkText = createDictionary({
   gbifDescription: {
     'en-us':
       'For GBIF data, individual points and clusters of points are shown as hexagons of different colors ranging from yellow to orange to red. Dark red hexagons corresponding to densest distributions of collected specimens of that species.',
-    'de-ch':
-      'Bei GBIF-Daten werden einzelne Punkte und Punktcluster als Sechsecke in verschiedenen Farben von Gelb über Orange bis Rot dargestellt. Dunkelrote Sechsecke entsprechen der dichtesten Verteilung gesammelter Exemplare dieser Art.',
+    'de-ch
+      'Bei GBIF-Daten werden einzelne Punkte und Punktcluster als Sechsecke in verschiedenen Farben von Gelb über Orange bis Rot angezeigt. Dunkelrote Sechsecke entsprechen der dichtesten Verteilung gesammelter Exemplare dieser Art.',
     'es-es':
       'Para los datos de GBIF, los puntos individuales y los grupos de puntos se muestran como hexágonos de diferentes colores que van del amarillo al naranja y al rojo. Hexágonos de color rojo oscuro que corresponden a las distribuciones más densas de especímenes colectados de esa especie.',
     'fr-fr':
       "Pour les données GBIF, les points individuels et les groupes de points sont représentés par des hexagones de différentes couleurs, allant du jaune à l'orange et au rouge. Les hexagones rouge foncé correspondent aux distributions les plus denses de spécimens collectés de l'espèce.",
     'ru-ru':
-      'Для данных GBIF отдельные точки и кластеры точек показаны в виде шестиугольников разных цветов от желтого до оранжевого и красного. Темно-красные шестиугольники соответствуют наиболее плотным распределениям собранных образцов этого вида.',
+      'В данных GBIF отдельные точки и скопления точек показаны шестиугольниками разных цветов: от жёлтого до оранжевого и красного. Тёмно-красные шестиугольники соответствуют наиболее плотному распределению собранных особей данного вида.',
     'uk-ua':
       'Для даних GBIF окремі точки та кластери точок відображаються у вигляді шестикутників різних кольорів від жовтого до оранжевого та червоного. Темно-червоні шестикутники відповідають найщільнішому розподілу зібраних зразків цього виду.',
     'pt-br':
