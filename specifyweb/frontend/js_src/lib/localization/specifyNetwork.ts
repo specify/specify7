@@ -111,7 +111,7 @@ export const specifyNetworkText = createDictionary({
   gbifDescription: {
     'en-us':
       'For GBIF data, individual points and clusters of points are shown as hexagons of different colors ranging from yellow to orange to red. Dark red hexagons corresponding to densest distributions of collected specimens of that species.',
-    'de-ch
+    'de-ch':
       'Bei GBIF-Daten werden einzelne Punkte und Punktcluster als Sechsecke in verschiedenen Farben von Gelb über Orange bis Rot angezeigt. Dunkelrote Sechsecke entsprechen der dichtesten Verteilung gesammelter Exemplare dieser Art.',
     'es-es':
       'Para los datos de GBIF, los puntos individuales y los grupos de puntos se muestran como hexágonos de diferentes colores que van del amarillo al naranja y al rojo. Hexágonos de color rojo oscuro que corresponden a las distribuciones más densas de especímenes colectados de esa especie.',

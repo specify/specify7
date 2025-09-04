@@ -1239,7 +1239,7 @@ export const preferencesText = createDictionary({
     'pt-br': 'Arrastos do mouse',
   },
   scrollWheelZoom: {
-    'en-us': 'Scroll wheel zoom
+    'en-us': 'Scroll wheel zoom',
     'ru-ru': 'Масштабирование с помощью колеса прокрутки',
     'es-es': 'Zoom con rueda de desplazamiento',
     'fr-fr': 'Zoom avec la molette de défilement',
