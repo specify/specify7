@@ -3,6 +3,7 @@ import logging
 from datetime import datetime, timedelta
 import re
 from collections import namedtuple, deque
+from typing import TypedDict, Iterable
 
 from specifyweb.backend.inheritance.utils import get_cat_num_inheritance_setting, get_parent_cat_num_inheritance_setting
 from specifyweb.specify.utils.uiformatters import get_uiformatter
@@ -43,8 +44,14 @@ PRECALCULATED_FIELDS = {
     "CollectionObject": "age",
 }
 
+class SpQueryAttrs(TypedDict):
+    tablelist: str
+    stringid: str
+    fieldname: str
+    isrelfld: bool
 
-def extract_date_part(fieldname):
+
+def extract_date_part(fieldname: str) -> tuple[str, str | None]:
     match = DATE_PART_RE.match(fieldname)
     if match:
         fieldname, date_part = match.groups()[:2]
@@ -54,7 +61,7 @@ def extract_date_part(fieldname):
     return fieldname, date_part
 
 
-def make_table_list(fs):
+def make_table_list(fs: "QueryFieldSpec"):
     path = (
         fs.join_path if not fs.join_path or fs.is_relationship() else fs.join_path[:-1]
     )
@@ -71,14 +78,14 @@ def make_table_list(fs):
     return ",".join(first + rest)
 
 
-def make_tree_fieldnames(table: Table, reverse=False):
+def make_tree_fieldnames(table: Table, reverse: bool = False) -> dict:
     mapping = {"ID": table.idFieldName.lower(), "": "name"}
     if reverse:
         return {value: key for (key, value) in mapping.items()}
     return mapping
 
 
-def find_tree_and_field(table: Table, fieldname: str):
+def find_tree_and_field(table: Table, fieldname: str) -> tuple[None, None] | tuple[str, str]:
     fieldname = fieldname.strip()
     if fieldname == "":
         return None, None
@@ -101,7 +108,7 @@ def find_tree_and_field(table: Table, fieldname: str):
     return tree_rank, mapping.get(field, field)
 
 
-def make_stringid(fs, table_list):
+def make_stringid(fs: "QueryFieldSpec", table_list: list[str]) -> tuple[list[str], str, str]:
     tree_ranks = [f.name for f in fs.join_path if isinstance(f, TreeRankQuery)]
     if tree_ranks:
         field_name = tree_ranks
@@ -173,7 +180,7 @@ class QueryFieldSpec(
     tree_field: str | None
 
     @classmethod
-    def from_path(cls, path_in, add_id=False):
+    def from_path(cls, path_in: Iterable[str], add_id: bool=False):
         path = deque(path_in)
         root_table = datamodel.get_table(path.popleft(), strict=True)
 
@@ -205,7 +212,7 @@ class QueryFieldSpec(
         )
 
     @classmethod
-    def from_stringid(cls, stringid, is_relation):
+    def from_stringid(cls, stringid: str, is_relation: bool):
         path_str, table_name, field_name = STRINGID_RE.match(stringid).groups()
         path = deque(path_str.split(","))
         root_table = datamodel.get_table_by_id(int(path.popleft()))
@@ -271,8 +278,8 @@ class QueryFieldSpec(
         self.validate()
 
     def get_first_tree_rank(self):
-        for node in enumerate(list(self.join_path)):
-            if isinstance(node[1], TreeRankQuery):
+        for node in list(self.join_path):
+            if isinstance(node, TreeRankQuery):
                 return node
         return None
 
@@ -292,7 +299,7 @@ class QueryFieldSpec(
                 },
             )
 
-    def to_spquery_attrs(self):
+    def to_spquery_attrs(self) ->SpQueryAttrs:
         table_list = make_table_list(self)
         stringid = make_stringid(self, table_list)
 
@@ -303,7 +310,7 @@ class QueryFieldSpec(
             "isrelfld": self.is_relationship(),
         }
 
-    def to_stringid(self):
+    def to_stringid(self) -> str:
         table_list = make_table_list(self)
         return ".".join(make_stringid(self, table_list))
 
