@@ -1,8 +1,7 @@
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handler
+from specifyweb.backend.businessrules.utils import get_unique_catnum_across_comp_co_coll_pref
 from specifyweb.specify.models import Component
-from specifyweb.specify.utils import get_unique_catnum_across_comp_co_coll_pref
-
 
 @orm_signal_handler('pre_save', 'Collectionobject')
 def collectionobject_pre_save(co):
