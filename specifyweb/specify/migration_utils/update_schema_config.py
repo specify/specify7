@@ -1,5 +1,3 @@
-from functools import reduce
-from operator import or_
 import re
 
 from typing import NamedTuple, List
@@ -148,7 +146,7 @@ def revert_table_schema_config(table_name, apps=global_apps):
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
-    containers = Splocalecontainer.objects.filter(name__iexact=table_name)
+    containers = Splocalecontainer.objects.filter(name=table_name)
     items = Splocalecontaineritem.objects.filter(container__in=containers)
     Splocaleitemstr.objects.filter(
         Q(itemname__in=items) |
@@ -194,7 +192,7 @@ def update_table_field_schema_config_with_defaults(
         )
     except MultipleObjectsReturned:
         sp_local_container = Splocalecontainer.objects.filter(
-            name__iexact=table.name.lower(),
+            name=table.name.lower(),
             discipline_id=discipline_id,
             schematype=table_config.schema_type
         ).first()
@@ -249,8 +247,8 @@ def revert_table_field_schema_config(table_name, field_name, apps=global_apps):
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
-    containers = Splocalecontainer.objects.filter(name__iexact=table_name)
-    items = Splocalecontaineritem.objects.filter(container__in=containers, name__iexact=field_name)
+    containers = Splocalecontainer.objects.filter(name=table_name)
+    items = Splocalecontaineritem.objects.filter(container__in=containers, name=field_name)
     Splocaleitemstr.objects.filter(
         Q(itemname__in=items) |
         Q(itemdesc__in=items)
@@ -289,7 +287,7 @@ def update_table_field_schema_config_params(
         )
     except MultipleObjectsReturned:
         sp_local_container = Splocalecontainer.objects.filter(
-            name__iexact=table.name.lower(),
+            name=table.name.lower(),
             discipline_id=discipline_id,
             schematype=table_config.schema_type
         ).first()
@@ -316,7 +314,7 @@ def update_table_field_schema_config_params(
     )
 
     qs = Splocalecontaineritem.objects.filter(
-        name__iexact=field_config.name,
+        name=field_config.name,
         container=sp_local_container,
         type=field_config.java_type, # maybe remove from filter
     )
@@ -371,7 +369,7 @@ def create_cotype_splocalecontaineritem(apps):
 
     # Create a Splocalecontaineritem record for each CollectionObject Splocalecontainer
     # NOTE: Each discipline has its own CollectionObject Splocalecontainer
-    for container in Splocalecontainer.objects.filter(name__iexact='collectionobject', schematype=0):
+    for container in Splocalecontainer.objects.filter(name='collectionobject', schematype=0):
         container_item, _ = Splocalecontaineritem.objects.get_or_create(
             name=COT_FIELD_NAME,
             picklistname=COT_PICKLIST_NAME,
@@ -470,9 +468,9 @@ def update_cog_type_fields(apps):
 
     # Remove duplicate CollectionObject -> collectionObjectType
     container_items = Splocalecontaineritem.objects.filter(
-        name__iexact="collectionObjectType",
+        name="collectionObjectType",
         picklistname=None,
-        container__name__iexact="CollectionObject",
+        container__name="CollectionObject",
     )
     for container_item in container_items:
         Splocaleitemstr.objects.filter(itemname=container_item).delete()
@@ -509,7 +507,7 @@ def create_cogtype_picklist(apps):
 def revert_cogtype_picklist(apps):
     Picklist = apps.get_model('specify', 'Picklist')
 
-    Picklist.objects.filter(name__iexact=COG_PICKLIST_NAME).delete()
+    Picklist.objects.filter(name=COG_PICKLIST_NAME).delete()
 
 
 # Updates COG -> cogtype to use the type 1 picklist created above
@@ -517,9 +515,9 @@ def update_cogtype_splocalecontaineritem(apps):
     Splocalecontaineritem = apps.get_model("specify", "Splocalecontaineritem")
 
     Splocalecontaineritem.objects.filter(
-        container__name__iexact="collectionobjectgroup",
+        container__name="collectionobjectgroup",
         container__schematype=0,
-        name__iexact=COGTYPE_FIELD_NAME,
+        name=COGTYPE_FIELD_NAME,
     ).update(picklistname=COG_PICKLIST_NAME, type="ManyToOne", isrequired=True)
 
 
@@ -527,16 +525,16 @@ def revert_cogtype_splocalecontaineritem(apps):
     Splocalecontaineritem = apps.get_model("specify", "Splocalecontaineritem")
 
     Splocalecontaineritem.objects.filter(
-        container__name__iexact="collectionobjectgroup",
+        container__name="collectionobjectgroup",
         container__schematype=0,
-        name__iexact=COGTYPE_FIELD_NAME,
+        name=COGTYPE_FIELD_NAME,
     ).update(picklistname=None, type=None, isrequired=None)
 
 
 def update_systemcogtypes_picklist(apps):
     Picklist = apps.get_model('specify', 'Picklist')
 
-    Picklist.objects.filter(name__iexact='Default Collection Object Group Types').update(
+    Picklist.objects.filter(name='Default Collection Object Group Types').update(
         name=SYSTEM_COGTYPE_PICKLIST_NAME,
         type=0,
         issystem=True,
@@ -549,7 +547,7 @@ def revert_systemcogtypes_picklist(apps):
     Picklist = apps.get_model('specify', 'Picklist')
 
     # revert only changes the name and not the other attributes as those were incorrect
-    Picklist.objects.filter(name__iexact=SYSTEM_COGTYPE_PICKLIST_NAME).update(
+    Picklist.objects.filter(name=SYSTEM_COGTYPE_PICKLIST_NAME).update(
         name='Default Collection Object Group Types',
     )
 
@@ -559,9 +557,9 @@ def update_cogtype_type_splocalecontaineritem(apps):
     Splocalecontaineritem = apps.get_model("specify", "Splocalecontaineritem")
 
     Splocalecontaineritem.objects.filter(
-        container__name__iexact="collectionobjectgrouptype",
+        container__name="collectionobjectgrouptype",
         container__schematype=0,
-        name__iexact="type",
+        name="type",
     ).update(picklistname=SYSTEM_COGTYPE_PICKLIST_NAME, isrequired=True)
 
 
@@ -569,9 +567,9 @@ def revert_cogtype_type_splocalecontaineritem(apps):
     Splocalecontaineritem = apps.get_model("specify", "Splocalecontaineritem")
 
     Splocalecontaineritem.objects.filter(
-        container__name__iexact="collectionobjectgrouptype",
+        container__name="collectionobjectgrouptype",
         container__schematype=0,
-        name__iexact="type",
+        name="type",
     ).update(picklistname=None, isrequired=None)
 
 # ##########################################
@@ -687,7 +685,7 @@ def fix_table_captions(apps):
                 logger.warning(f"Table does not exist in latest state of the datamodel, skipping Schema Config update for: {table_name}")
                 continue
             containers = Splocalecontainer.objects.filter(
-                name__iexact=table_name.lower(), schematype=0)
+                name=table_name.lower(), schematype=0)
 
             # If needed, correct the label of the table in the schema config
             if table_desc is not None:
@@ -723,7 +721,7 @@ def fix_item_types(apps):
                 logger.warning(f"Table does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name}")
                 continue
             items = Splocalecontaineritem.objects.filter(
-                container__name__iexact=table_name.lower(), container__schematype=0, name__in=fields)
+                container__name=table_name.lower(), container__schematype=0, name__in=fields)
 
             for item in items:
                 datamodel_field = table.get_field(item.name)
@@ -755,7 +753,7 @@ def add_cot_catnum_to_schema(apps, schema_editor=None):
     catalognumber_format_field = CollectionObjectType_Table.get_field_strict(
         'catalogNumberFormatName')
 
-    for container in Splocalecontainer.objects.filter(name__iexact='collectionobjecttype', schematype=0):
+    for container in Splocalecontainer.objects.filter(name='collectionobjecttype', schematype=0):
         schema_item, created = Splocalecontaineritem.objects.get_or_create(
             name=catalognumber_format_field.name, type=catalognumber_format_field.type, container=container)
         if created:
@@ -787,9 +785,9 @@ def remove_cot_catnum_from_schema(apps, schema_editor=None):
         'catalogNumberFormatName')
 
     containers = Splocalecontainer.objects.filter(
-        name__iexact='collectionobjecttype', schematype=0)
+        name='collectionobjecttype', schematype=0)
     items = Splocalecontaineritem.objects.filter(
-        name__iexact='catalogNumberFormatName', container__in=containers)
+        name='catalogNumberFormatName', container__in=containers)
 
     schema_name = camel_to_spaced_title_case(catalognumber_format_field.name)
     filters = Q(language='en', text=schema_name) & (
@@ -832,7 +830,7 @@ def fix_hidden_geo_prop(apps, schema_editor=None):
     for discipline in filtered_disciplines:
         for table, fields in MIGRATION_0021_FIELDS.items():
             containers = Splocalecontainer.objects.filter(
-                name__iexact=table.lower(),
+                name=table.lower(),
                 discipline_id=discipline.id,
             )
             for container in containers:
@@ -854,7 +852,7 @@ def reverse_fix_hidden_geo_prop(apps, schema_editor=None):
     for discipline in filtered_disciplines:
         for table, fields in MIGRATION_0021_FIELDS.items():
             containers = Splocalecontainer.objects.filter(
-                name__iexact=table.lower(),
+                name=table.lower(),
                 discipline_id=discipline.id,
             )
             for container in containers:
@@ -876,70 +874,23 @@ def update_schema_config_field_desc(apps, schema_editor=None):
     for table, fields in MIGRATION_0023_FIELDS.items():
         #i.e: Collection Object
         containers = Splocalecontainer.objects.filter(
-            name__iexact=table.lower(),
+            name=table.lower(),
         )
 
         for container in containers:
             for field_name, new_name, new_desc in fields:
-                # update_table_field_schema_config_params(
-                #     table,
-                #     container.discipline_id,
-                #     field_name,
-                #     {
-                #         "type": None,
-                #         "ishidden": field_name.lower() in HIDDEN_FIELDS,
-                #         "isrequired": False,
-                #         "issystem": container.issystem,
-                #         "version": 0,
-                #     },
-                #     apps
-                # )
-
                 #i.e: COType
                 items = Splocalecontaineritem.objects.filter(
                     container=container,
-                    name__iexact=field_name.lower()
+                    name=field_name.lower()
                 )
-                
-                if not items.exists():
-                    # create Splocalecontaineritem
-                    Splocalecontaineritem.objects.create(
-                        name=field_name,
-                        container=container,
-                        type=None,
-                        ishidden=field_name.lower() in HIDDEN_FIELDS,
-                        isrequired=False,
-                        issystem=container.issystem,
-                        version=0,
-                    )
-                    items = Splocalecontaineritem.objects.filter(
-                        container=container,
-                        name__iexact=field_name.lower()
-                    )
 
                 for item in items:
                     localized_items_desc = Splocaleitemstr.objects.filter(itemdesc_id=item.id).first()
                     localized_items_name = Splocaleitemstr.objects.filter(itemname_id=item.id).first()
 
                     if localized_items_desc is None or localized_items_name is None:
-                        # continue
-                        # update_table_schema_config_with_defaults(table, container.discipline_id, None, apps)
-                        pass
-
-                    if localized_items_desc is None:
-                        localized_items_desc = Splocaleitemstr.objects.create(
-                            language='en',
-                            text=new_desc,
-                            version=0,
-                            itemdesc=item
-                        )
-                    if localized_items_name is None:
-                        localized_items_name = Splocaleitemstr.objects.create(
-                            language='en',
-                            text=new_name,
-                            version=0,
-                            itemname=item
-                        )
+                        continue
 
                     localized_items_desc.text = new_desc
                     localized_items_desc.save() 
@@ -954,12 +905,13 @@ def update_hidden_prop(apps, schema_editor=None):
 
     for table, fields in MIGRATION_0023_FIELDS_BIS.items():
         containers = Splocalecontainer.objects.filter(
-            name__iexact=table.lower(),
+            name=table.lower(),
             schematype=0
         )
         for container in containers:
-            items = Splocalecontaineritem.objects.filter(container=container).filter(
-                reduce(or_, (Q(name__iexact=f) for f in fields))
+            items = Splocalecontaineritem.objects.filter(
+                container=container,
+                name__in=[field_name.lower() for field_name in fields]
             )
             logger.info(f"Updating {items.count()} items for table {table} and container {container.id}")
             items.update(ishidden=True)
@@ -972,7 +924,7 @@ def update_hidden_prop(apps, schema_editor=None):
     for duplicate in duplicates:
         container_id = duplicate['container']
         name = duplicate['name']
-        duplicate_items = Splocalecontaineritem.objects.filter(container_id=container_id, name__iexact=name)
+        duplicate_items = Splocalecontaineritem.objects.filter(container_id=container_id, name=name)
         item_to_keep = duplicate_items.first()
         items_to_delete = duplicate_items.exclude(id=item_to_keep.id)
 
@@ -986,7 +938,7 @@ def reverse_update_hidden_prop(apps, schema_editor=None):
 
     for table, fields in MIGRATION_0023_FIELDS_BIS.items():
         containers = Splocalecontainer.objects.filter(
-            name__iexact=table.lower(),
+            name=table.lower(),
         )
         for container in containers:
             items = Splocalecontaineritem.objects.filter(
@@ -1003,14 +955,14 @@ def reverse_update_schema_config_field_desc(apps, schema_editor=None):
 
     for table, fields in MIGRATION_0023_FIELDS.items():
         containers = Splocalecontainer.objects.filter(
-            name__iexact=table.lower(),
+            name=table.lower(),
         )
 
         for container in containers:
             for field_name, new_name, new_desc in fields:
                 items = Splocalecontaineritem.objects.filter(
                     container=container,
-                    name__iexact=field_name.lower()
+                    name=field_name.lower()
                 )
 
                 for item in items:
@@ -1066,7 +1018,7 @@ def update_co_children_fields(apps):
         for table, fields in MIGRATION_0027_UPDATE_FIELDS.items():
             #i.e: Collection Object
             containers = Splocalecontainer.objects.filter(
-                name__iexact=table.lower(),
+                name=table.lower(),
             )
 
             for container in containers:
@@ -1074,7 +1026,7 @@ def update_co_children_fields(apps):
                     #i.e: COType
                     items = Splocalecontaineritem.objects.filter(
                         container=container,
-                        name__iexact=field_name.lower()
+                        name=field_name.lower()
                     )
 
                     for item in items:
@@ -1105,13 +1057,13 @@ def revert_co_children_fields(apps):
 
         for table, fields in MIGRATION_0027_UPDATE_FIELDS.items():
             containers = Splocalecontainer.objects.filter(
-                name__iexact=table.lower(),
+                name=table.lower(),
             )
             for container in containers:
                 for field_name in fields:
                     items = Splocalecontaineritem.objects.filter(
                         container=container,
-                        name__iexact=field_name
+                        name=field_name
                     )
 
                     for item in items:
@@ -1142,7 +1094,7 @@ def remove_collectionobject_parentco(apps):
         for table, fields in MIGRATION_0029_UPDATE_FIELDS.items():
             #i.e: Collection Object
             containers = Splocalecontainer.objects.filter(
-                name__iexact=table.lower(),
+                name=table.lower(),
             )
 
             for container in containers:
@@ -1150,7 +1102,7 @@ def remove_collectionobject_parentco(apps):
                     #i.e: COType
                     items = Splocalecontaineritem.objects.filter(
                         container=container,
-                        name__iexact=field_name.lower()
+                        name=field_name.lower()
                     )
 
                     for item in items:
@@ -1176,14 +1128,14 @@ def remove_collectionobject_parentco(apps):
         for discipline in disciplines:
             for table, fields in MIGRATION_0029_UPDATE_FIELDS.items():
                 containers = Splocalecontainer.objects.filter(
-                    name__iexact=table.lower(),
+                    name=table.lower(),
                     discipline_id=discipline.id,
                 )
                 for container in containers:
                     for field_name, _, _ in fields:
                         items = Splocalecontaineritem.objects.filter(
                             container=container,
-                            name__iexact=field_name.lower()
+                            name=field_name.lower()
                         )
 
                         for item in items:
@@ -1206,13 +1158,13 @@ def revert_remove_collectionobject_parentco(apps):
 
         for table, fields in MIGRATION_0029_UPDATE_FIELDS.items():
             containers = Splocalecontainer.objects.filter(
-                name__iexact=table.lower(),
+                name=table.lower(),
             )
             for container in containers:
                 for field_name in fields:
                     items = Splocalecontaineritem.objects.filter(
                         container=container,
-                        name__iexact=field_name
+                        name=field_name
                     )
 
                     for item in items:
@@ -1229,14 +1181,14 @@ def revert_remove_collectionobject_parentco(apps):
         for discipline in disciplines:
             for table, fields in MIGRATION_0029_UPDATE_FIELDS.items():
                 containers = Splocalecontainer.objects.filter(
-                    name__iexact=table.lower(),
+                    name=table.lower(),
                     discipline_id=discipline.id,
                 )
                 for container in containers:
                     for field_name, _, _ in fields:
                         items = Splocalecontaineritem.objects.filter(
                             container=container,
-                            name__iexact=field_name.lower()
+                            name=field_name.lower()
                         )
 
                         for item in items:
@@ -1268,7 +1220,7 @@ def add_quantities_gift(apps):
         for table, fields in MIGRATION_0032_UPDATE_FIELDS.items():
             #i.e: Collection Object
             containers = Splocalecontainer.objects.filter(
-                name__iexact=table.lower(),
+                name=table.lower(),
             )
 
             for container in containers:
@@ -1276,7 +1228,7 @@ def add_quantities_gift(apps):
                     #i.e: COType
                     items = Splocalecontaineritem.objects.filter(
                         container=container,
-                        name__iexact=field_name.lower()
+                        name=field_name.lower()
                     )
 
                     for item in items:
@@ -1307,13 +1259,13 @@ def revert_add_quantities_gift(apps):
 
         for table, fields in MIGRATION_0032_UPDATE_FIELDS.items():
             containers = Splocalecontainer.objects.filter(
-                name__iexact=table.lower(),
+                name=table.lower(),
             )
             for container in containers:
                 for field_name in fields:
                     items = Splocalecontaineritem.objects.filter(
                         container=container,
-                        name__iexact=field_name
+                        name=field_name
                     )
 
                     for item in items:
@@ -1333,7 +1285,7 @@ def update_paleo_desc(apps):
         Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
         for table_name, table_desc in MIGRATION_0033_TABLES:
-            containers = Splocalecontainer.objects.filter(name__iexact=table_name.lower(), schematype=0)
+            containers = Splocalecontainer.objects.filter(name=table_name.lower(), schematype=0)
             Splocaleitemstr.objects.filter(containerdesc__in=containers).update(text=table_desc)
 
     fix_table_description(apps)
@@ -1364,12 +1316,12 @@ def update_accession_date_fields(apps):
         Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
         for table, fields in MIGRATION_0034_UPDATE_FIELDS.items():
-            containers = Splocalecontainer.objects.filter(name__iexact=table.lower())
+            containers = Splocalecontainer.objects.filter(name=table.lower())
             for container in containers:
                 for (field_name, new_name, new_desc) in fields:
                     items = Splocalecontaineritem.objects.filter(
                         container=container,
-                        name__iexact=field_name.lower()
+                        name=field_name.lower()
                     )
                     for item in items:
                         item.ishidden = True
@@ -1403,12 +1355,12 @@ def revert_update_accession_date_fields(apps):
         Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
         for table, fields in MIGRATION_0034_UPDATE_FIELDS.items():
-            containers = Splocalecontainer.objects.filter(name__iexact=table.lower())
+            containers = Splocalecontainer.objects.filter(name=table.lower())
             for container in containers:
                 for (field_name, _, _) in fields:
                     items = Splocalecontaineritem.objects.filter(
                         container=container,
-                        name__iexact=field_name.lower()
+                        name=field_name.lower()
                     )
                     for item in items:
                         # If needed, reset ishidden or revert text
