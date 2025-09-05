@@ -914,7 +914,7 @@ msgid "collapseAll"
 msgstr "Collapse All"
 
 #: components/Attachments/ImageViewer.tsx:59
-#: components/Attachments/LeafletImageViewer.tsx:80
+#: components/Attachments/LeafletImageViewer.tsx:83
 #: components/Preferences/index.tsx:221
 #: components/Statistics/index.tsx:564
 #: components/Toolbar/QueryTablesEdit.tsx:70
