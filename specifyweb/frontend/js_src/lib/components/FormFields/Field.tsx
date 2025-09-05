@@ -179,7 +179,7 @@ function Field({
 
   React.useEffect(() => {
     if (resource && displayPrimaryCatNumberPlaceHolder) {
-      ajax<string | null>('/api/specify/catalog_number_for_sibling/', {
+      ajax<string | null>('/inheritance/catalog_number_for_sibling/', {
         method: 'POST',
         headers: { Accept: 'application/json' },
         body: resource,

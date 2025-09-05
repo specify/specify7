@@ -1676,11 +1676,11 @@
 			<columnDef os="exp">p,2px,p:g(2),5px:g,p,2px,p:g(2),25px,p,0px,p,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2dlu"/>
 			<rows>
-			  <cell type="label" labelfor="parent"/>
+				<row>
+					<cell type="label" labelfor="parent"/>
 					<cell type="field" id="parent" uitype="querycbx" isrequired="true" initialize="name=Geography;title=Geography;editbtn=false;newbtn=false;editoncreate=true" name="parent" colspan="3"/>
 					<cell type="label" labelfor="geographyCode"/>
 					<cell type="field" id="geographyCode" name="geographyCode" uitype="text"/>
-				<row>
 				</row>
 				<row>
 					<cell type="label" labelfor="name"/>
@@ -2382,7 +2382,7 @@
 				</row>
 				<row>
 					<cell type="label" labelfor="8"/>
-					<cell type="field" id="8" uitype="text" name="fullNameSeparator" default=", "/>
+					<cell type="field" id="8" uitype="text" name="fullNameSeparator" default=" "/>
 				</row>
 			</rows>
 		</viewdef>

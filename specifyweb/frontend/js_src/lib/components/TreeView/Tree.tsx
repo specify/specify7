@@ -116,7 +116,7 @@ export function Tree<
       softError('treeDefId is undefined');
     } else {
       await ping(
-        `/api/specify_tree/${tableName.toLowerCase()}/${treeDefId}/add_root/`,
+        `/trees/specify_tree/${tableName.toLowerCase()}/${treeDefId}/add_root/`,
         {
           method: 'POST',
           headers: { Accept: 'application/json' },

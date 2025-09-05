@@ -10,7 +10,7 @@ import type { SpQuery, SpQueryField } from '../DataModel/types';
 import { getMainTableFields } from '../Formatters/formatters';
 import { userInformation } from '../InitialContext/userInformation';
 import { userPreferences } from '../Preferences/userPreferences';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { queryFieldFilterSpecs } from '../QueryBuilder/FieldFilterSpec';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
 import type { TypeSearch } from './spec';
@@ -53,8 +53,8 @@ export function makeComboBoxQuery({
     .set(
       'operStart',
       searchAlgorithm === 'contains'
-        ? queryFieldFilters.like.id
-        : queryFieldFilters.startsWith.id
+        ? queryFieldFilterSpecs.like.id
+        : queryFieldFilterSpecs.startsWith.id
     );
 
   const displayField = QueryFieldSpec.fromPath(table.name, [])
@@ -95,7 +95,7 @@ export function getQueryComboBoxConditions({
           .toSpQueryField()
           .set('isDisplay', false)
           .set('isNot', true)
-          .set('operStart', queryFieldFilters.between.id)
+          .set('operStart', queryFieldFilterSpecs.between.id)
           .set(
             'startValue',
             [
@@ -135,7 +135,7 @@ export function getQueryComboBoxConditions({
             .toSpQueryField()
             .set('isDisplay', false)
             .set('startValue', lowestRankId.toString())
-            .set('operStart', queryFieldFilters.less.id)
+            .set('operStart', queryFieldFilterSpecs.less.id)
         );
     } else if (fieldName === 'acceptedParent') {
       // Nothing to do
@@ -154,7 +154,7 @@ export function getQueryComboBoxConditions({
         .toSpQueryField()
         .set('isDisplay', false)
         .set('startValue', strictIdFromUrl(treeDefinition).toString())
-        .set('operStart', queryFieldFilters.equal.id)
+        .set('operStart', queryFieldFilterSpecs.equal.id)
     );
   }
 
@@ -170,7 +170,7 @@ export function getQueryComboBoxConditions({
       )
         .toSpQueryField()
         .set('isDisplay', false)
-        .set('operStart', queryFieldFilters.in.id)
+        .set('operStart', queryFieldFilterSpecs.in.id)
         .set(
           'startValue',
           collectionRelationships[

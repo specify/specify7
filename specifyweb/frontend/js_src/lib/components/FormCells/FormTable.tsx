@@ -209,6 +209,12 @@ export function FormTable<SCHEMA extends AnySchema>({
     )
   );
 
+  const [showSubviewBorders] = userPreferences.use(
+    'form',
+    'ui',
+    'showSubviewBorders'
+  );
+
   const [flexibleColumnWidth] = userPreferences.use(
     'form',
     'definition',
@@ -271,7 +277,9 @@ export function FormTable<SCHEMA extends AnySchema>({
         className={
           isCollapsed
             ? 'hidden'
-            : 'overflow-x-auto border border-gray-500 border-t-0 rounded-b pl-1 pr-1 pb-1'
+            : showSubviewBorders
+              ? 'overflow-x-auto border border-gray-500 border-t-0 rounded-b pl-1 pr-1 pb-1'
+              : 'overflow-x-auto pl-1 pr-1 pb-1'
         }
         onScroll={handleScroll}
       >

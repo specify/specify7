@@ -222,11 +222,34 @@ MIGRATION_0034_UPDATE_FIELDS = {
     ]
 }
 
-MIGRATION_0037_TABLES = [
+MIGRATION_0038_FIELDS = {
+    'Loan': ['agent1', 'agent2', 'agent3', 'agent4', 'agent5'],
+    'Gift': ['agent1', 'agent2', 'agent3', 'agent4', 'agent5'],
+}
+
+MIGRATION_0038_UPDATE_FIELDS = {
+    'Loan': [
+        ('agent1','Agent 1','Agent 1'),
+        ('agent2','Agent 2','Agent 2'),
+        ('agent3','Agent 3','Agent 3'),
+        ('agent4','Agent 4','Agent 4'),
+        ('agent5','Agent 5','Agent 5'),
+    ],
+    'Gift': [
+        ('agent1','Agent 1','Agent 1'),
+        ('agent2','Agent 2','Agent 2'),
+        ('agent3','Agent 3','Agent 3'),
+        ('agent4','Agent 4','Agent 4'),
+        ('agent5','Agent 5','Agent 5'),
+    ]
+}
+
+
+MIGRATION_0040_TABLES = [
     ('Component', None),
 ]
 
-MIGRATION_0037_FIELDS = {
+MIGRATION_0040_FIELDS = {
     'CollectionObject': ['components'],
     'Taxon': ['components'],
     'Agent': ['components'],
@@ -234,7 +257,7 @@ MIGRATION_0037_FIELDS = {
     'AbsoluteAge': ['component'],
 }
 
-MIGRATION_0037_UPDATE_FIELDS = {
+MIGRATION_0040_UPDATE_FIELDS = {
     'Component': [
         ('type', 'Type', 'Determines the valid options for component names.'), 
         ('name', 'Name', 'The name from a taxon tree corresponding to the chosen type.'),
@@ -246,6 +269,6 @@ MIGRATION_0037_UPDATE_FIELDS = {
         ],
 }
 
-MIGRATION_0037_HIDDEN_FIELDS = {
+MIGRATION_0040_HIDDEN_FIELDS = {
     'Component': ['componentid','verbatimname','role', 'proportion','uniqueidentifier','text1','text2','text3', 'text4','text5','text6', 'yesno1','yesno2','yesno3','yesno4','yesno5','yesno6','integer1','integer2','integer3','integer4','integer5','integer6','number1', 'number2','number3','number4','number5','number6','version','collectionobject', 'absoluteages', 'relativeages' ]
 }

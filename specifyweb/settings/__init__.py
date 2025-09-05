@@ -41,7 +41,7 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'specifyweb.hibernateboolsbackend.backends.mysql',
+        'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
         'NAME': DATABASE_NAME,
         'USER': MASTER_NAME,
         'PASSWORD': MASTER_PASSWORD,
@@ -81,7 +81,7 @@ RO_MODE = False
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = os.environ.get('TIME_ZONE', 'America/Chicago')
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -197,35 +197,49 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'specifyweb.context.middleware.ContextMiddleware',
-    'specifyweb.permissions.middleware.PermissionsMiddleware',
+    'specifyweb.backend.context.middleware.ContextMiddleware',
+    'specifyweb.backend.permissions.middleware.PermissionsMiddleware',
     'specifyweb.middleware.general.GeneralMiddleware',
 ]
 
 ROOT_URLCONF = 'specifyweb.urls'
+
+SPECIFY_APPS  = [
+    'specifyweb.specify',
+    'specifyweb.backend.permissions',
+    'specifyweb.backend.accounts',
+    'specifyweb.backend.stored_queries',
+    'specifyweb.backend.businessrules',
+    'specifyweb.backend.express_search',
+    'specifyweb.backend.context',
+    'specifyweb.backend.attachment_gw',
+    'specifyweb.frontend',
+    'specifyweb.backend.barvis',
+    'specifyweb.backend.patches',
+    'specifyweb.backend.report_runner',
+    'specifyweb.backend.interactions',
+    'specifyweb.backend.workbench',
+    'specifyweb.backend.notifications',
+    'specifyweb.backend.export',
+    'specifyweb.backend.raven_placeholder' if RAVEN_CONFIG is None else 'raven.contrib.django.raven_compat',
+    'specifyweb.backend.stats',
+    'specifyweb.backend.inheritance',
+    'specifyweb.backend.trees',
+    'specifyweb.backend.backup_tool',
+    'specifyweb.backend.merge',
+    'specifyweb.backend.locality_update_tool',
+    'specifyweb.backend.bulk_copy',
+    'specifyweb.backend.series',
+    'specifyweb.backend.delete_blockers',
+    'specifyweb.backend.table_rows'
+]
 
 INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.staticfiles',
     'django.contrib.contenttypes',
     'django.contrib.auth',
-    'specifyweb.specify',
-    'specifyweb.permissions',
-    'specifyweb.accounts',
-    'specifyweb.stored_queries',
-    'specifyweb.businessrules',
-    'specifyweb.express_search',
-    'specifyweb.context',
-    'specifyweb.attachment_gw',
-    'specifyweb.frontend',
-    'specifyweb.barvis',
-    'specifyweb.patches',
-    'specifyweb.report_runner',
-    'specifyweb.interactions',
-    'specifyweb.workbench',
-    'specifyweb.notifications',
-    'specifyweb.export',
-    'specifyweb.raven_placeholder' if RAVEN_CONFIG is None else 'raven.contrib.django.raven_compat',
+    *SPECIFY_APPS,
 )
 
 AUTH_USER_MODEL = 'specify.Specifyuser'
@@ -234,7 +248,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 AUTHENTICATION_BACKENDS = []
 if ALLOW_SUPPORT_LOGIN:
-    AUTHENTICATION_BACKENDS.append('specifyweb.specify.support_login.SupportLoginBackend')
+    AUTHENTICATION_BACKENDS.append('specifyweb.specify.auth.support_login.SupportLoginBackend')
 
 if ALLOW_SPECIFY6_PASSWORDS:
     AUTHENTICATION_BACKENDS.append('django.contrib.auth.backends.ModelBackend')

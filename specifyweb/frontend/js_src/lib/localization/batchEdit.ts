@@ -38,7 +38,7 @@ export const batchEditText = createDictionary({
     'en-us':
       'Field not supported for batch edit. Either remove the field, or make it hidden.',
     'de-ch':
-      'Das Feld wird für die Stapelbearbeitung nicht unterstützt. Entfernen Sie das Feld oder blenden Sie es aus.',
+      'Feld wird für die Stapelbearbeitung nicht unterstützt. Entfernen Sie das Feld oder blenden Sie es aus.',
     'es-es':
       'Campo no compatible con la edición por lotes. Elimínelo u ocúltelo.',
     'fr-fr':
@@ -46,7 +46,7 @@ export const batchEditText = createDictionary({
     'pt-br':
       'Campo não suportado para edição em lote. Remova o campo ou oculte-o.',
     'ru-ru':
-      'Поле не поддерживается для пакетного редактирования. Либо удалите поле, либо сделайте его скрытым.',
+      'Поле не поддерживается для пакетного редактирования. Удалите поле или сделайте его скрытым.',
     'uk-ua':
       'Поле не підтримується для пакетного редагування. Видаліть поле або приховайте його.',
   },
@@ -62,7 +62,7 @@ export const batchEditText = createDictionary({
     'pt-br':
       'As seguintes classificações serão adicionadas à consulta para permitir a edição em lote',
     'ru-ru':
-      'Следующие ранги будут добавлены в запрос для включения пакетного редактирования',
+      'Следующие ранги будут добавлены в запрос для обеспечения пакетного редактирования',
     'uk-ua':
       'Наступні ранги будуть додані до запиту, щоб увімкнути пакетне редагування',
   },
@@ -78,7 +78,7 @@ export const batchEditText = createDictionary({
     'pt-br':
       'A(s) classificação(ões) selecionada(s) são encontradas em várias árvores. Selecione a(s) árvore(s) para edição em lote',
     'ru-ru':
-      'Выбранные ранги найдены в нескольких деревьях. Выберите дерево(а) для пакетного редактирования с',
+      'Выбранные ранги найдены в нескольких деревьях. Выберите деревья для пакетного редактирования.',
     'uk-ua':
       'Вибрані ранги знаходяться в кількох деревах. Виберіть дерево(а) для пакетного редагування',
   },
@@ -97,7 +97,7 @@ export const batchEditText = createDictionary({
     'es-es': 'Se encontraron los siguientes errores en la consulta',
     'fr-fr': 'Les erreurs suivantes ont été trouvées dans la requête',
     'pt-br': 'Os seguintes erros foram encontrados na consulta',
-    'ru-ru': 'В запросе обнаружены следующие ошибки',
+    'ru-ru': 'В запросе обнаружены следующие ошибки:',
     'uk-ua': 'У запиті виявлено такі помилки',
   },
   missingRanksInQuery: {
@@ -115,7 +115,7 @@ export const batchEditText = createDictionary({
   createUpdateDataSetInstructions: {
     'en-us': 'Use the query builder to make a new batch edit dataset',
     'de-ch':
-      'Verwenden Sie den Abfrage-Generator, um einen neuen Datensatz für die Stapelbearbeitung zu erstellen',
+      'Verwenden Sie den Abfrage-Generator, um einen neuen Datensatz zur Stapelbearbeitung zu erstellen',
     'es-es':
       'Utilice el generador de consultas para crear un nuevo conjunto de datos de edición por lotes',
     'fr-fr':
@@ -123,7 +123,7 @@ export const batchEditText = createDictionary({
     'pt-br':
       'Use o construtor de consultas para criar um novo conjunto de dados de edição em lote',
     'ru-ru':
-      'Используйте конструктор запросов для создания нового набора данных пакетного редактирования.',
+      'Используйте конструктор запросов для создания нового набора данных для пакетного редактирования.',
     'uk-ua':
       'Використовуйте конструктор запитів для створення нового набору даних для пакетного редагування',
   },
@@ -148,7 +148,7 @@ export const batchEditText = createDictionary({
     'pt-br':
       'Reverter na Edição em Lote é um recurso experimental. Esta preferência ocultará o botão',
     'ru-ru':
-      'Откат в пакетном редактировании — экспериментальная функция. Эта настройка скроет кнопку',
+      'Откат в пакетном редактировании — экспериментальная функция. Эта настройка скроет кнопку.',
     'uk-ua':
       'Відкат у пакетному редагуванні – це експериментальна функція. Цей параметр приховає кнопку',
   },
@@ -173,7 +173,7 @@ export const batchEditText = createDictionary({
     'pt-br':
       'A confirmação do conjunto de dados atualizará, adicionará e excluirá os dados da planilha para o banco de dados Specify.',
     'ru-ru':
-      'При фиксации набора данных данные будут обновлены, добавлены и удалены из электронной таблицы в базу данных Specify.',
+      'При фиксации набора данных данные будут обновляться, добавляться и удаляться из электронной таблицы в базе данных Specify.',
     'uk-ua':
       'Запис набору даних призведе до оновлення, додавання та видалення даних з електронної таблиці до бази даних Specify.',
   },
@@ -221,7 +221,7 @@ export const batchEditText = createDictionary({
     'pt-br':
       'Este conjunto de dados revertido foi salvo, mas não pode ser editado. Execute a consulta novamente.',
     'ru-ru':
-      'Этот откатный набор данных сохранен, однако его нельзя редактировать. Пожалуйста, повторите запрос',
+      'Этот откатенный набор данных сохранён, однако его нельзя редактировать. Пожалуйста, выполните запрос повторно.',
     'uk-ua':
       'Цей відкочений набір даних збережено, проте його не можна редагувати. Будь ласка, повторіть запит',
   },
@@ -246,7 +246,7 @@ export const batchEditText = createDictionary({
   startCommit: {
     'en-us': 'Begin Data Set Commit?',
     'de-ch': 'Mit der Datensatzfestschreibung beginnen?',
-    'es-es': '¿Comenzar conjunto de datos? ¿Confirmar?',
+    'es-es': '¿Comenzar conjunto de datos Confirmar?',
     'fr-fr': "Commencer la validation de l'ensemble de données ?",
     'pt-br': 'Iniciar confirmação do conjunto de dados?',
     'ru-ru': 'Начать фиксацию набора данных?',
@@ -258,7 +258,7 @@ export const batchEditText = createDictionary({
     'es-es': 'Error de confirmación debido a celdas de error',
     'fr-fr': "Échec de la validation en raison de cellules d'erreur",
     'pt-br': 'Falha na confirmação devido a células de erro',
-    'ru-ru': 'Фиксация не удалась из-за ошибок ячеек',
+    'ru-ru': 'Фиксация не удалась из-за ошибок в ячейках',
     'uk-ua': 'Не вдалося виконати фіксацію через комірки з помилками',
   },
   commitErrorsDescription: {
@@ -272,7 +272,7 @@ export const batchEditText = createDictionary({
     'pt-br':
       'A confirmação falhou devido a um ou mais erros de valor de célula.',
     'ru-ru':
-      'Фиксация не удалась из-за одной или нескольких ошибок в значениях ячеек.',
+      'Фиксация не удалась из-за одной или нескольких ошибок значений ячеек.',
     'uk-ua':
       'Фіксацію не вдалося виконати через одну або декілька помилок у значенні клітинки.',
   },
@@ -314,7 +314,7 @@ export const batchEditText = createDictionary({
   },
   deferForMatch: {
     'en-us': 'Use only visible fields for match',
-    'de-ch': 'Nur sichtbare Felder für die Übereinstimmung verwenden',
+    'de-ch': 'Nur sichtbare Felder für den Abgleich verwenden',
     'es-es': 'Utilice únicamente campos visibles para la coincidencia',
     'fr-fr': 'Utiliser uniquement les champs visibles pour la correspondance',
     'pt-br': 'Use apenas campos visíveis para correspondência',
@@ -333,13 +333,14 @@ export const batchEditText = createDictionary({
     'pt-br':
       'Se verdadeiro, os campos invisíveis do banco de dados não serão usados para correspondência. O valor padrão é {default:boolean}',
     'ru-ru':
-      'Если true, невидимые поля базы данных не будут использоваться для сопоставления. Значение по умолчанию {default:boolean}',
+      'Если задано значение true, невидимые поля базы данных не будут использоваться для сопоставления. Значение по умолчанию: {default:boolean}.',
     'uk-ua':
       'Якщо значення true, невидимі поля бази даних не використовуватимуться для зіставлення. Значення за замовчуванням — {default:boolean}',
   },
   deferForNullCheck: {
     'en-us': 'Use only visible fields for empty record check',
-    'de-ch': 'Nur sichtbare Felder zur Prüfung leerer Datensätze verwenden',
+    'de-ch':
+      'Nur sichtbare Felder für die Prüfung auf leere Datensätze verwenden',
     'es-es':
       'Utilice únicamente campos visibles para la verificación de registros vacíos',
     'fr-fr':
@@ -352,7 +353,7 @@ export const batchEditText = createDictionary({
     'en-us':
       'If true, invisible database fields will not be used for determining whether the record is empty or not. Default value is {default: boolean}',
     'de-ch':
-      'Wenn „true“, werden unsichtbare Datenbankfelder nicht zur Bestimmung verwendet, ob der Datensatz leer ist oder nicht. Der Standardwert ist {default: boolean}',
+      'Wenn diese Option aktiviert ist, werden unsichtbare Datenbankfelder nicht zur Bestimmung verwendet, ob der Datensatz leer ist oder nicht. Der Standardwert ist {default: boolean}',
     'es-es':
       'Si es verdadero, los campos invisibles de la base de datos no se usarán para determinar si el registro está vacío. El valor predeterminado es {default: boolean}.',
     'fr-fr':
@@ -360,7 +361,7 @@ export const batchEditText = createDictionary({
     'pt-br':
       'Se verdadeiro, os campos invisíveis do banco de dados não serão usados para determinar se o registro está vazio ou não. O valor padrão é {default: boolean}',
     'ru-ru':
-      'Если true, невидимые поля базы данных не будут использоваться для определения того, пуста ли запись или нет. Значение по умолчанию — {default: boolean}',
+      'Если задано значение true, невидимые поля базы данных не будут использоваться для определения того, пуста ли запись. Значение по умолчанию: {default: boolean}',
     'uk-ua':
       'Якщо значення true, невидимі поля бази даних не використовуватимуться для визначення того, чи є запис порожнім. Значення за замовчуванням: {default: boolean}',
   },
@@ -392,7 +393,7 @@ export const batchEditText = createDictionary({
     'pt-br':
       '(Os conjuntos de dados de edição em lote não podem ser editados após a reversão - Somente leitura)',
     'ru-ru':
-      '(Пакетное редактирование наборов данных невозможно после отката — только чтение)',
+      '(Пакетное редактирование наборов данных невозможно после отката — только для чтения)',
     'uk-ua':
       '(Набори даних пакетного редагування не можна редагувати після відкату – лише для читання)',
   },
@@ -409,7 +410,7 @@ export const batchEditText = createDictionary({
     'en-us':
       'Allows batch editing relationships of the base table. Rollback is disabled when relationships are enabled',
     'de-ch':
-      'Ermöglicht die Stapelbearbeitung von Beziehungen der Basistabelle. Rollback ist deaktiviert, wenn Beziehungen aktiviert sind.',
+      'Ermöglicht die Stapelbearbeitung von Beziehungen der Basistabelle. Rollback ist deaktiviert, wenn Beziehungen aktiviert sind',
     'es-es':
       'Permite la edición por lotes de relaciones de la tabla base. La reversión está deshabilitada cuando las relaciones están habilitadas.',
     'fr-fr':
@@ -417,27 +418,33 @@ export const batchEditText = createDictionary({
     'pt-br':
       'Permite a edição em lote de relacionamentos da tabela base. O rollback é desabilitado quando os relacionamentos são habilitados.',
     'ru-ru':
-      'Позволяет пакетное редактирование связей базовой таблицы. Откат отключен, если связи включены',
+      'Позволяет пакетно редактировать связи базовой таблицы. Откат отключается при включении связей.',
     'uk-ua':
       "Дозволяє пакетне редагування зв'язків базової таблиці. Відкат вимкнено, якщо зв'язки ввімкнено",
   },
   commitDataSet: {
     'en-us': 'Commit Data Set',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Datensatz festschreiben',
+    'es-es': 'Confirmar conjunto de datos',
+    'fr-fr': "Valider l'ensemble de données",
+    'pt-br': 'Conjunto de dados de confirmação',
+    'ru-ru': 'Зафиксировать набор данных',
+    'uk-ua': 'Набір даних для фіксації',
   },
   warningBatchEditText: {
     'en-us':
       'Before proceeding, please note that the following action may interrupt other users. This action may cause delays or temporary unavailability of certain features for Specify users. Please consider the impact on their experience. This action cannot be undone',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch':
+      'Bevor Sie fortfahren, beachten Sie bitte, dass die folgende Aktion andere Benutzer unterbrechen kann. Diese Aktion kann zu Verzögerungen oder zur vorübergehenden Nichtverfügbarkeit bestimmter Funktionen für Specify-Benutzer führen. Bitte bedenken Sie die Auswirkungen auf deren Benutzererfahrung. Diese Aktion kann nicht rückgängig gemacht werden.',
+    'es-es':
+      'Antes de continuar, tenga en cuenta que la siguiente acción podría interrumpir a otros usuarios. Esta acción podría causar retrasos o la indisponibilidad temporal de ciertas funciones para los usuarios de Specify. Tenga en cuenta el impacto en su experiencia. Esta acción no se puede deshacer.',
+    'fr-fr':
+      "Avant de continuer, veuillez noter que l'action suivante peut interrompre l'utilisation d'autres utilisateurs. Elle peut entraîner des retards ou une indisponibilité temporaire de certaines fonctionnalités pour les utilisateurs spécifiés. Veuillez tenir compte de l'impact sur leur expérience. Cette action est irréversible.",
+    'pt-br':
+      'Antes de prosseguir, observe que a ação a seguir pode interromper outros usuários. Esta ação pode causar atrasos ou indisponibilidade temporária de determinados recursos para usuários específicos. Considere o impacto na experiência deles. Esta ação não pode ser desfeita.',
+    'ru-ru':
+      'Прежде чем продолжить, обратите внимание, что следующее действие может помешать другим пользователям. Это действие может привести к задержкам или временной недоступности некоторых функций для пользователей Specify. Пожалуйста, учтите это влияние на их работу. Это действие не может быть отменено.',
+    'uk-ua':
+      'Перш ніж продовжити, зверніть увагу, що наступна дія може перешкодити іншим користувачам. Ця дія може спричинити затримки або тимчасову недоступність певних функцій для певних користувачів. Будь ласка, врахуйте вплив на їхній досвід. Цю дію не можна скасувати',
   },
 } as const);

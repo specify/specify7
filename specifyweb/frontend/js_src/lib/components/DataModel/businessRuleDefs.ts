@@ -574,11 +574,13 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
        * Collection the Determination is leaving contains a current
        * Determination and prevent the operation (via saveblocker?) if so.
        */
-      determination.set('isCurrent', true);
-      collection.models.forEach((otherDetermination) => {
-        if (determination.cid !== otherDetermination.cid)
-          otherDetermination.set('isCurrent', false);
-      });
+      if (determination.createdBy !== 'clone') {
+        determination.set('isCurrent', true);
+        collection.models.forEach((otherDetermination) => {
+          if (determination.cid !== otherDetermination.cid)
+            otherDetermination.set('isCurrent', false);
+        });
+      }
       // Clear any existing save blocker on adding a new current determination
       setSaveBlockers(
         collection.related ?? determination,

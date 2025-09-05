@@ -1,5 +1,5 @@
-from specifyweb.businessrules.exceptions import BusinessRuleException
-from specifyweb.businessrules.orm_signal_handler import orm_signal_handler
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handler
 from specifyweb.specify.models import Component
 from specifyweb.specify.utils import get_unique_catnum_across_comp_co_coll_pref
 
