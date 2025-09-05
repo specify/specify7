@@ -122,6 +122,8 @@ def create_root_tectonic_node(apps):
             if is_created:
                 logger.info(f"Created root tectonic unit for discipline {discipline.name}")
 
+    TectonicUnitTreeDefItem.objects.filter(rankid=0, isenforced__isnull=True).update(isenforced=True)
+
 def revert_create_root_tectonic_node(apps, schema_editor=None):
     TectonicUnit = apps.get_model('specify', 'TectonicUnit')
     TectonicUnitTreeDefItem = apps.get_model('specify', 'TectonicUnitTreeDefItem')
