@@ -17,7 +17,7 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
-import { QueryInputField } from './FieldFilter';
+import { QueryInputField } from './FieldFilterSpec';
 
 export function DateQueryInputField({
   currentValue,
