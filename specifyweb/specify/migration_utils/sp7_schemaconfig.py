@@ -229,7 +229,7 @@ MIGRATION_0037_TABLES = [
 MIGRATION_0037_FIELDS = {
     'CollectionObject': ['components'],
     'Taxon': ['components'],
-    'Determiner': ['components'],
+    'Agent': ['components'],
     'RelativeAge': ['component'],
     'AbsoluteAge': ['component'],
 }
