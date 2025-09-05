@@ -52,9 +52,11 @@ export function SyncAttachmentPicker({
   const loading = React.useContext(LoadingContext);
 
   const [isUrlNotFound, setIsUrlNotFound] = React.useState(false);
-  const [type, setType] = React.useState<typeof types[number]>('url');
+  const [type, setType] = React.useState<(typeof types)[number]>('url');
 
-  function handleAttachment(nextAttachment: SerializedResource<Attachment>): void {
+  function handleAttachment(
+    nextAttachment: SerializedResource<Attachment>
+  ): void {
     loading(
       fetchOriginalUrl(nextAttachment).then((nextUrl) => {
         nextUrl === undefined ? setIsUrlNotFound(true) : handleChange(nextUrl);
@@ -69,7 +71,9 @@ export function SyncAttachmentPicker({
     <>
       {!isReadOnly && (
         <Button.Secondary onClick={() => handleToggle()}>
-          {url === undefined ? preferencesText.pickImage() : commonText.change()}
+          {url === undefined
+            ? preferencesText.pickImage()
+            : commonText.change()}
         </Button.Secondary>
       )}
 
