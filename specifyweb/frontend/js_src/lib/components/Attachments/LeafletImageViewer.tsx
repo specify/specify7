@@ -29,13 +29,14 @@ export function LeafletImageViewer({
 
     const img = new window.Image();
     img.src = src;
-    img.addEventListener('load', () => {
+    const onImageLoad = () => {
       // Update viewer bounds once the image is done loading.
       boundsRef.current = L.latLngBounds([0, 0], [img.height, img.width]);
 
       L.imageOverlay(src, boundsRef.current, { alt }).addTo(map);
       map.fitBounds(boundsRef.current);
-    });
+    };
+    img.addEventListener('load', onImageLoad);
 
     // Inject reset zoom button
     map.addControl(resetZoomButton(map, boundsRef));
@@ -47,6 +48,8 @@ export function LeafletImageViewer({
 
     return () => {
       map.remove();
+      img.removeEventListener('load', onImageLoad);
+      resizeObserver.disconnect();
     };
   }, [src]);
 
