@@ -15,7 +15,7 @@ class TestCatalogNumberFromSibling(ApiTests):
     def test_no_id_error(self):
         co = self.collectionobjects[0]
         response = self.c.post(
-            "/api/specify/catalog_number_from_parent/",
+            "/inheritance/catalog_number_from_parent/",
             json.dumps(dict(catalognumber=co.catalognumber)),
             content_type="application/json"
         )
@@ -25,7 +25,7 @@ class TestCatalogNumberFromSibling(ApiTests):
 
     def test_invalid_body(self):
         response = self.c.post(
-            "/api/specify/catalog_number_from_parent/",
+            "/inheritance/catalog_number_from_parent/",
             "Not a JSON: Value",
             content_type="application/json"
         )
@@ -37,7 +37,7 @@ class TestCatalogNumberFromSibling(ApiTests):
         component = Component.objects.create(collectionobject_id=self.collectionobjects[0].id)
 
         response = self.c.post(
-            "/api/specify/catalog_number_from_parent/",
+            "/inheritance/catalog_number_from_parent/",
             json.dumps(dict(id=component.id)),
             content_type="application/json"
         )
