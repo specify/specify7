@@ -571,6 +571,9 @@ export const backEndText = createDictionary({
     'ru-ru': 'Недопустимый тип для выбранного ранга дерева',
     'uk-ua': 'Недійсний тип для вибраного(их) рангу(ів) дерева',
   },
+  invalidComponentType: {
+    'en-us': 'Invalid {componentType: string} for selected tree rank(s)',
+  },
   attachmentNotFound: {
     'en-us':
       'One or more attachments do not exist. They may have been deleted.',

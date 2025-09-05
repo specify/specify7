@@ -2087,4 +2087,8 @@ export const preferencesText = createDictionary({
     'uk-ua':
       'Увімкнути успадкування батьківського каталожного номера його порожнім дочірнім елементам.',
   },
+  uniqueCatNumberAcrossCompAndCo: {
+    'en-us':
+      'Catalog Number field need to be unique across Component and CO tables',
+  },
 } as const);

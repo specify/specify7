@@ -128,14 +128,15 @@ function Field({
 
   const isNew = resource?.isNew();
   const isCO = resource?.specifyTable.name === 'CollectionObject';
+  const isComponent = resource?.specifyTable.name === 'Component';
 
   const isPartOfCOG = isCO
     ? resource?.get('cojo') !== null && resource?.get('cojo') !== undefined
     : false;
 
-  const hasComponentParent = isCO
-    ? resource.get('componentParent') !== null &&
-      resource.get('componentParent') !== undefined
+  const hasCOParent = isComponent
+    ? resource.get('collectionObject') !== null &&
+      resource.get('collectionObject') !== undefined
     : false;
 
   const isCatNumberField = field?.name === 'catalogNumber';
@@ -163,8 +164,8 @@ function Field({
 
   const displayParentCatNumberPlaceHolder =
     isNew === false &&
-    isCO &&
-    hasComponentParent &&
+    isComponent &&
+    hasCOParent &&
     isCatNumberField &&
     displayParentCatNumberPref;
 
