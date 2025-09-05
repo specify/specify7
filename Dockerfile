@@ -135,7 +135,7 @@ FROM common AS run-common
 RUN set -eux; \
     for i in 1 2 3; do \
       apt-get update && \
-      apt-get -y install --no-install-recommends rsync && \
+      apt-get -y install --no-install-recommends rsync mariadb-client && \
       break; \
       echo "apt-get install rsync failed (attempt $i), retrying in 5s…"; \
       sleep 5; \
@@ -172,6 +172,7 @@ RUN echo \
         "\nCELERY_TASK_DEFAULT_QUEUE = os.getenv('CELERY_TASK_QUEUE', DATABASE_NAME)" \
         "\nANONYMOUS_USER = os.getenv('ANONYMOUS_USER', None)" \
         "\nSPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', '/opt/Specify/config')" \
+        "\nTIME_ZONE = os.environ.get('TIME_ZONE', 'America/Chicago')" \
         # Resolve ALLOWED_HOSTS in the following precedence:
         # - Use the ALLOWED_HOSTS environment variable (if present)
         # - Otherwise, fallback to the default specified in settings/specify_settings.py

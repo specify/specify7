@@ -25,7 +25,7 @@ describe('ChronoChart', () => {
 
     expect(dialog).toMatchSnapshot();
 
-    const closeButton = getAllByRole('button')[3];
+    const closeButton = getAllByRole('button')[4];
 
     await user.click(closeButton);
 
