@@ -1297,7 +1297,363 @@ Minor fixes:
 - Redesigned Tree Viewer
 - Redesigned Attachments Viewer
 
-[Full list of new features and bug fixes](./release-notes/7.7.0.md)
+_\[System Administrators: This release includes seven new system data tables
+exclusively for Specify 7.7. No existing collection data fields or tables in the
+current production database schema (v2.9) are updated in this release, and
+nothing in this update affects the concurrent operation of Specify 6. A future
+update will add and modify science data fields for Specify 6 and 7.]_
+
+**Introduction**
+
+We are pleased to present this Specify 7.7 update. It represents several
+months of extraordinary programming effort by SCC software engineers and
+testing staff. We have updated, streamlined, standardized, re-styled,
+and added components and functions in this update, while significantly
+enhancing the software infrastructure of the Specify 7 web client
+front-end. We made substantial progress filling in some of the missing
+capabilities from Specify 6 while extending and expanding existing
+components and UI elements, in addition to introducing new capabilities
+beyond the Specify 6 benchmark.
+
+Specify 7.7 takes collections data management to new levels of functionality,
+design, and security. We hope you will agree that it is the best Specify
+yet.
+
+We heartily acknowledge the assistance of the members of the SCC Board,
+Advisory Committees and of the many SCC Specify users who provided
+suggestions and feedback for the development of Specify 7.7. We are
+buoyed every day by this grand SCC collaboration. To modestly mutate an
+adage, “It takes a village to make great software”. Congratulations all!
+
+**Improving the User Experience: New Design and Capabilities**
+
+_The Specify 7 Web Interface_ has been transformed, modernized and styled
+with improved visual design, colors, component properties, consistent
+dialogs and by adding a number of user settable interface preferences to
+make customizations like font choices, font sizes, and color palettes
+meet user aesthetics. Underneath the user interface, Specify 7.7’s
+software infrastructure has been re-engineered for accessibility,
+extensibility, and code maintenance. Compliance with accessibility
+standards improves the software interface and enables the use of screen
+readers. Here is our [_Specify 7 Accessibility
+Statement_](https://docs.google.com/document/d/1KXoNTUFQ1_MmyaJ_VRNTYXeyJc_lhcVCKiiVOOQ4x2o/edit)
+.
+Specify’s tree displays have a new look with accessibility enhancements
+and usability improvements like sticky column headers that don’t scroll
+off the screen, rank information in autofill search box drop down lists
+and new action buttons to move, merge, and synonymize taxa. Technical
+documentation for the Specify Forms system and customization options is
+at:
+[_https://github.com/specify/specify7/wiki/Form-System_](https://discourse.specifysoftware.org/t/editing-forms-in-specify/1557)
+.
+
+_User Preferences_ are now accessible through the User Tools menu, click
+on user name to bring up the User Tools dialog. The Preferences page is
+documented here:
+[_https://discourse.specifysoftware.org/t/user-preferences-page/538_](https://discourse.specifysoftware.org/t/user-preferences-page/538)
+.
+
+_The Query Builder_ has been wholly re-engineered by adding a field
+mapper, better filter value validation, embedded pick list support,
+sticky column headers and record previews.
+
+_Record Set_ handling has been enhanced with the ability to add and
+delete records, and to query on Record Sets to create subsets.
+
+_Linking In and Out of Specify_ has been extended. The Specify
+Network now shows local collection objects on the map on the specify
+network page and click on them to go back to the specify form. A little
+noticed feature allows Collection Objects to be referenced by a URL and
+retrieved for a remote user. If you would like to show a remote
+researcher data for a collection object, simply send a URL in this
+format
+\[https://your-server.institution.edu/specify/bycatalog/institution-codon/catalog-number/\]
+to provide read-only access to your Specify 7 web page for the object.
+
+_Schema Configurator._ We built a user interface Schema Configuration
+tool into Specify 7.7 to view field properties, change field captions,
+Insert field/table descriptions, make fields required, and hide fields
+from query builder, assign table formatter and aggregators, assign field
+formatter and web links and assign field pick list and create new
+picklists, among other customization options.
+
+_Localization._ We improved UI localization (language) support in this
+release. We would be happy to work with bilingual volunteers who want to
+contribute further languages to Specify’s polyglot capacity.
+
+**Improving Security**
+
+_Accounts and Security._ Specify 7.7 includes a long-needed, role-based
+access system that allows great flexibility for institutions to identify
+Specify user roles to set access permissions on accounts in a way that
+reflects collection policies. The new access and security system will be
+introduced in a separate document and we will be providing additional
+detailed information on it in coming weeks and months. We also
+implemented two new mechanisms for external authentication of user
+accounts, enabling single sign on for collections that prefer campus
+authentication services. Technical documentation is at:
+[](https://github.com/specify/specify7/blob/151a2f31ec8b2bca9a10656e9487cc15e0443240/specifyweb/settings/specify_settings.py#L84)[_https://github.com/specify/specify7/blob/151a2f31ec8b2bca9a10656e9487cc15e0443240/specifyweb/settings/specify_settings.py\#L84_](https://github.com/specify/specify7/blob/151a2f31ec8b2bca9a10656e9487cc15e0443240/specifyweb/settings/specify_settings.py#L84)
+
+Specify 7.7 includes many other improvements and changes. Below is a
+listing of most of the user visible enhancements, and external facing
+bug fixes.
+
+<span id="anchor"></span>
+
+<span id="anchor-1"></span>**Itemized Improvements**
+
+[**_Full list of addressed GitHub
+issues_**](https://github.com/specify/specify7/milestone/21?closed=1)
+
+**Interface Design, Accessibility, New Components**
+
+- The Specify 7 web interface has been re-styled and standardized
+  across the application. The web interface now uses the font, font
+  size, font weight, size, and colors specified in a new user
+  Preferences page.
+  [_856_](https://github.com/specify/specify7/issues/856),
+  [_1062_](https://github.com/specify/specify7/issues/1062),
+  [_814_](https://github.com/specify/specify7/issues/814)
+- The web interface has been re-designed to be largely compliant with
+  the web accessibility standard - WCAG 2.1 (AA). Accessibility design
+  enables webapps to work for persons with disabilities, adds screen
+  reader support, and enables Specify to be used in collections
+  institutions mandated to use accessible software. [_More
+  details_](https://docs.google.com/document/d/1KXoNTUFQ1_MmyaJ_VRNTYXeyJc_lhcVCKiiVOOQ4x2o/edit?usp=sharing)
+  .
+- Specify 7 now respects interface preferences set in the browser and
+  at the system level for date formats, interface theme (e.g. dark
+  mode), and language.
+- A new User Tools window and menu, accessed by clicking on the
+  logged-in user name, provides quick access to several end-user
+  functions including interface preference settings.
+- A new interface Schema Configurator allows an institution to change
+  captions on fields, add additional fields to data forms to
+  accommodate unique information, or constrain values of fields to
+  improve quality of keystroke data entry.
+  [_503_](https://github.com/specify/specify7/issues/503)
+- A new database schema inspector enables users to review
+  relationships between Specify data tables, field types, max field
+  length, and if needed, and provides the ability to export the data
+  model for external reference. The inspector is accessible by
+  clicking on “Database Schema” in the user tools menu.
+- Tree-viewer has been updated with a refined design, improved search
+  capability and important accessibility-related improvements.
+- Data forms now have the capability to clone the current record
+  including all data, to create a new record, or to create a new blank
+  record (“Add”) with no carry forward data (Minnesota
+  Dragonfly). [_556_](https://github.com/specify/specify7/issues/556),
+  [_1731_](https://github.com/specify/specify7/issues/1731)
+- Data forms are now more stretchy and flexible when resizing.
+- Dialog windows have consistent layout, icons, and headings
+  throughout the application.
+  [_864_](https://github.com/specify/specify7/issues/864)
+- The current page is indicated with a highlight in the top level
+  navigation bar.
+  [_961_](https://github.com/specify/specify7/issues/961)
+- Long titles for data forms no longer grotesquely widen dialog
+  windows (SANBI).
+  [_703_](https://github.com/specify/specify7/issues/703)
+- Inactive Add, Edit, and Search buttons at the bottom of data forms
+  are now gray when disabled.
+  [_993_](https://github.com/specify/specify7/issues/993)
+- Activation of a form’s Save button is evaluated with each keystroke
+  to ensure saving is needed and valid.
+  [_1690_](https://github.com/specify/specify7/issues/1690)
+- Fields are now validated in real time.
+  [_581_](https://github.com/specify/specify7/issues/581)
+- Calendar date fields are now formatted based on the browser settings
+  unless otherwise specified.
+  [_830_](https://github.com/specify/specify7/issues/830)
+- The visibility and order of collection names when logging in, can be
+  configured in user preferences.
+  [_741_](https://github.com/specify/specify7/issues/741)
+- Forms now hide data from users who do not have read access
+  permission. [_16_](https://github.com/specify/specify7/issues/16)
+- A new paginator has been added, replacing the slider for
+  form-embedded subforms.
+  [_1039_](https://github.com/specify/specify7/issues/1039)
+- XML in app resource files and form definitions are validated when
+  editing and uploading.
+  [_499_](https://github.com/specify/specify7/issues/499)
+
+**Query Builder**
+
+- The redesigned Query Builder now has a "Mapper" for selecting fields
+  and specifying filtering conditions. It works similarly to the Field
+  Mapper for specifying Specify database fields to map to Dataset
+  columns in the WorkBench (Kansas).
+  [_1142_](https://github.com/specify/specify7/issues/1142)
+- Pick list fields in the Query Builder now function as pick lists
+  there, allowing the choice of one or more (using the “in” operator)
+  values from the drop down list.
+  [_793_](https://github.com/specify/specify7/issues/793),
+  [_604_](https://github.com/specify/specify7/issues/604)
+- Saved queries can now be sorted by date and name. One can use the
+  same ordering in Specify 6 and 7.
+  [_615_](https://github.com/specify/specify7/issues/615),
+  [_502_](https://github.com/specify/specify7/issues/502)
+- The Query Builder now defaults the filter criterion to “Any” for any
+  row in a query that does not have an explicit filter value
+  specified.
+- Query results can now be viewed in data forms with the “Browse in
+  Forms” button. All results are browsed by default, selecting some
+  rows (checkbox) will browse only those records.
+- The Query Builder now has the capability to include “OR” queries
+  with multiple values specified within a query row for a single query
+  field.
+- Added the ability to return Loan Preparations from Query Builder.
+  [_1676_](https://github.com/specify/specify7/issues/1676)
+
+**Record Set**
+
+- Existing database records (using the “+” symbol) can now be added to
+  a Record Set using Search or the Query Builder.
+  [_840_](https://github.com/specify/specify7/issues/840),
+  [_544_](https://github.com/specify/specify7/issues/544),
+  [_546_](https://github.com/specify/specify7/issues/546)
+- Records can be removed (using the “-” symbol) from a Record Set,
+  while retaining them in the database.
+  [_840_](https://github.com/specify/specify7/issues/840),
+  [_839_](https://github.com/specify/specify7/issues/839)
+- Added the ability to navigate to the first, last, next, previous, or
+  specified “nth” item in a Record Set.
+  [_840_](https://github.com/specify/specify7/issues/840)
+- One can now query a Record Set and optionally create a new
+  (subsetted) Record Set from it.
+  [_744_](https://github.com/specify/specify7/issues/744)
+- Record Sets can now be created from results of queries on
+  tree-structured data.
+  [_561_](https://github.com/specify/specify7/issues/561)
+
+**WorkBench**
+
+- WorkBench performance and record capacity have been improved. The WorkBench
+  can efficiently upload Data Sets of millions of cells into a Specify
+  database using a standard desktop workstation.
+- Users can now customize pick list filtering behavior.
+  [_849_](https://github.com/specify/specify7/issues/849)
+
+**Other Forms and Workflow Improvements**
+
+- Added the capability to import and export queries between users, in
+  addition to using URLs for sharing queries among accounts.
+  [_1220_](https://github.com/specify/specify7/issues/1220)
+- Agent for loanPreparationReturn is automatically assigned to be the
+  logged-in Specify Agent (Edinburgh).
+  [_1151_](https://github.com/specify/specify7/issues/1151)
+- Added ability to add a Taxon field that displays a higher level
+  taxon distinct from Taxon full name in Taxon form (Geneva).
+  [_659_](https://github.com/specify/specify7/issues/659)
+- Added capability to add and edit metadata including file name for
+  attachments (SANBI).
+  [_739_](https://github.com/specify/specify7/issues/739),
+  [_610_](https://github.com/specify/specify7/issues/610)
+- One can now format numeric fields to “x” decimal points in form
+  definitions.
+  [_1207_](https://github.com/specify/specify7/issues/1207)
+  [_330_](https://github.com/specify/specify7/issues/330)
+- Form definition can now specify the default sort order for items in
+  forms and in grid views, e.g. Collection Object ordering in
+  Collecting Event form (CSIRO).
+  [_1213_](https://github.com/specify/specify7/issues/1213)
+  [_1158_](https://github.com/specify/specify7/issues/1158)
+- Users can dynamically sort records in a subform grid by clicking on
+  a column header (Ohio State).
+  [_1159_](https://github.com/specify/specify7/issues/1159)
+- “+ Add” button added to bottom of Query Combo Box (QCBX) options
+  listing for adding new values.
+  [_1546_](https://github.com/specify/specify7/issues/1546)
+- Specify complains if a user-specified query string is too long to
+  save in a query definition.
+  [_1326_](https://github.com/specify/specify7/issues/1326)
+- The tree rank combo box now defaults to the next enforced rank when
+  creating a new tree record.
+  [_345_](https://github.com/specify/specify7/issues/345)
+- In the grid view definition, you can set colSpan for cells. That
+  colSpan now is respected when the grid is rendered. [_801
+  _](https://github.com/specify/specify7/issues/801)
+- Pick lists can now be created, edited, and deleted.
+  [_158_](https://github.com/specify/specify7/issues/158)
+- Specify 7 now supports default values for pick lists.
+  [_743_](https://github.com/specify/specify7/issues/743)
+- Required fields formatted as pick lists now have a blue background,
+  pick lists in optional fields have a white background.
+  [_991_](https://github.com/specify/specify7/issues/991)
+- Information entered into a query combo box is carried over when
+  creating a new record.
+  [_582_](https://github.com/specify/specify7/issues/582)
+- Loan defaults can now be set in the form definition.
+  [_806_](https://github.com/specify/specify7/issues/806)
+- Can change format of partial dates.
+  [_521_](https://github.com/specify/specify7/issues/521)
+- Yes/no fields can now be set in forms to read-only.
+  [_475_](https://github.com/specify/specify7/issues/475)
+
+**Security**
+
+- Implemented a comprehensive Role-Based Access System that provides a
+  mechanism for defining roles for each collection, with settable
+  permissions to grant privileges to all data tables and components by
+  role or by additional policies applied to a user account. Privileged
+  users known as “Institution Administrators” (IA) and “Collection
+  Administrators” (CA) are defined with super powers for user account
+  creation and access permission management.
+- Implemented support for single sign-on using external authentication
+  with SAML2, and for identity providers that have OpenID endpoints.
+  For system administrators this means improved database security and
+  easier password management. For end users it provides the
+  convenience of having fewer passwords to remember.
+  [_513_](https://github.com/specify/specify7/issues/513),
+  [_353_](https://github.com/specify/specify7/issues/353)
+- The minimum password length was extended to eight characters for
+  local accounts. [_909
+  _](https://github.com/specify/specify7/issues/909)
+- Added a “no restrictions" mode to the WorkBench mapper to handle
+  rare cases where uploads require updates to the contents of a system
+  table, e.g. when uploading a new Taxon tree.
+  [_1226_](https://github.com/specify/specify7/issues/1226)
+- Institution Administrators (IA) can set default user account
+  preferences in App Resources.
+  [_1337_](https://github.com/specify/specify7/issues/1337)
+- User accounts must now be assigned to a Specify Agent record.
+  [_406_](https://github.com/specify/specify7/issues/406)
+
+**External-facing Bugs Fixed**
+
+- Collecting Event Authorizations now function properly.
+  [_1198_](https://github.com/specify/specify7/issues/1198)
+- Now, items can only be added to a Record Set once.
+  [_1657_](https://github.com/specify/specify7/issues/1657)
+- The Specify 6 attachment remote preferences are now respected.
+  [_1167_](https://github.com/specify/specify7/issues/1167)
+- Trees data displays now have the search box available at all times.
+  [_1052_](https://github.com/specify/specify7/issues/1052)
+- Query combo boxes (QCBX) now display “Add” if no records are found.
+  [_1008_](https://github.com/specify/specify7/issues/1008)
+- Inactive form buttons are now disabled.
+  [_993_](https://github.com/specify/specify7/issues/993)
+- The current user can no longer delete their own account (Specicide).
+  [_914_](https://github.com/specify/specify7/issues/914)
+- Pick lists now show the title of listed entries rather than their
+  internal value.
+  [_831_](https://github.com/specify/specify7/issues/831)
+- The “in” operator in queries no longer requires padded catalog
+  numbers (e.g. “00001”) when using a numeric format catalog number.
+  [_560_](https://github.com/specify/specify7/issues/560)
+- Users can no longer be associated with multiple Specify Agent
+  records. [_518_](https://github.com/specify/specify7/issues/518)
+- Admin users can no longer assign their own Agent to another user.
+  [_448_](https://github.com/specify/specify7/issues/448)
+- 'Division' field name and pick list items now appear correctly.
+  [_735_](https://github.com/specify/specify7/issues/735)
+- The "Distinct" filter in queries now functions properly.
+  [_331_](https://github.com/specify/specify7/issues/331)
+- Can create users with user types other than manager.
+  [_441_](https://github.com/specify/specify7/issues/441)
+- [_\[Numerous additional internal-facing bugs and design issues
+  corrected.\]_](https://github.com/specify/specify7/milestone/22?closed=1)
+
 
 ## [7.6.1](https://github.com/specify/specify7/compare/v7.6.0...v7.6.1) (1 November 2021)
 
@@ -1326,6 +1682,68 @@ Minor fixes:
 ## [7.6.0](https://github.com/specify/specify7/compare/v7.5.0...v7.6.0) (16 September 2021)
 
 7.6.0 is a major release with a new Workbench and improved API documentation.
+
+This Specify 7.6.0 update is being released simultaneously with
+Specify 6.8.01. Both platforms require a database schema update for
+existing Specify 6 and 7 installations. The new Specify database
+schema is v2.9 updated from current production v2.7 (v2.8 skipped).
+
+Here is the GitHub list of user-facing software issues (except for the
+WorkBench) fixed or enhanced in this release: [Issues Fixed in the
+Specify 7.6.0 Release](https://github.com/specify/specify7/issues?q=is%3Aissue+milestone%3A7.6.0+label%3Afor-release-notes).
+
+See: [Specify Schema Update (v2.9): Additions, Changes, Virtual
+Fields](https://www.specifysoftware.org/wp-content/uploads/2021/09/Specify-Schema-Update-v2.9-15-Sep-2021.pdf)
+for a list of the data tables and fields added and changed in the
+Specify v2.9 schema update, as well as new virtual, calculated fields
+outside of the schema.
+
+The highlight of this Specify 7 release is a new WorkBench
+module. Much SCC software engineering during 2020 through mid-2021 was
+focused on developing it. The WorkBench is an effective tool for
+capturing new records from specimen digitization or for migrating old
+records from legacy systems. We re-designed the WorkBench to be able
+to import and upload more kinds of data into a Specify collection
+database--with increased flexibility for mapping between external data
+columns and Specify database fields; comprehensive error checking,
+validating and editing of Data sets, and with efficient uploading of
+data into the database. The new WorkBench has intuitive features for
+‘everyday uploading’ and advanced settings for more complex mapping
+and uploading workflows. Data sets created with Specify 6 or previous
+versions of Specify 7 will not be compatible with the new WorkBench
+and will be inaccessible in the new version.
+
+This document: [Specify 7.6.0 Release Notes: New
+WorkBench](https://docs.google.com/document/u/0/d/1P5rPb1ij4uMoQuUDFfzCyWTt1musX3Pj2QllOTLHPp8)
+includes a structured walk-through of the operation of the new Specify
+7 WorkBench on a public Specify7 test server.
+
+Another major push in the development of Specify 7.6.0 was the
+elaboration and documentation of Specify 7 server APIs. This was in
+response to increasing community interest in API integrations and for
+a global, digital object based, biodiversity data architecture.
+
+Current Specify API documentation can be viewed on the demonstration
+server at:
+
+http://api.test.specifycloud.org/documentation/api/tables/
+and http://api.test.specifycloud.org/documentation/api/operations/
+
+Each installation of Specify 7.6.0 will have this API documentation
+interface turned on by default and be accessible at the server URL
+with the `/documentation/…` string postpended.
+
+Last but not least with the concurrent 7.6.0 and 6.8.01 Specify
+releases we are excited to announce the creation of the Specify
+Network. With these updates, both Specify 6 and 7 are now integrated
+with it. The Specify Network’s initial API-based integrations find and
+return information held in aggregators and name authorities about
+specimens in your collection.
+
+For an introduction to the new [Specify
+Network](https://www.specifysoftware.org/specify-network/) and its
+current services see the Specify Network page on the Specify
+Collections Consortium site.
 
 [Full list of new features and bug fixes](./release-notes/7.6.0.md)
 
