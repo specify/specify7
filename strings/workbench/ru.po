@@ -429,7 +429,7 @@ msgstr ""
 #: components/WbActions/WbUpload.tsx:84
 #: components/WbActions/WbValidate.tsx:66
 #: components/WbToolkit/ChangeOwner.tsx:38
-#: components/WbToolkit/index.tsx:97
+#: components/WbToolkit/index.tsx:114
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Index
 msgid "unavailableWhileEditing"
 msgstr "Это действие требует сохранения всех изменений"

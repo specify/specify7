@@ -413,7 +413,7 @@ msgstr "Previous"
 msgid "tool"
 msgstr "Tool"
 
-#: components/WbToolkit/index.tsx:76
+#: components/WbToolkit/index.tsx:93
 #: components/WorkBench/WbView.tsx:215
 #. Used in: Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb View
 msgid "tools"
@@ -813,7 +813,7 @@ msgstr "Ordinal"
 #: components/SchemaConfig/Tables.tsx:39
 #: components/Security/ImportExport.tsx:252
 #: components/WbToolkit/DevShowPlan.tsx:90
-#: components/WbToolkit/index.tsx:100
+#: components/WbToolkit/index.tsx:117
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Schema Config > Tables ⬤ Components > Security > Import Export ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Wb Toolkit > Index
 msgid "export"
 msgstr "Export"

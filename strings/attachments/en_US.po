@@ -15,7 +15,7 @@ msgstr "Content-Type: text/plain\n"
 #: components/WbAttachmentViewer/index.tsx:131
 #: components/WbImportAttachments/index.tsx:181
 #: components/WbImportAttachments/index.tsx:215
-#: components/WbToolkit/index.tsx:57
+#: components/WbToolkit/index.tsx:73
 #: components/WorkBench/WbAttachmentsPreview.tsx:115
 #: components/WorkBench/WbAttachmentsPreview.tsx:300
 #: components/WorkBench/WbAttachmentsPreview.tsx:334
