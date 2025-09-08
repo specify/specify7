@@ -419,7 +419,7 @@ def create_agetype_picklist(apps):
         )
         if created: 
             for age_type in DEFAULT_AGE_TYPES:
-                PicklistItem.objects.create(
+                PicklistItem.objects.get_or_create(
                     title=age_type,
                     value=age_type,
                     picklist=age_type_picklist
