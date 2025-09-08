@@ -226,8 +226,13 @@ function setColumnWidths(hot: Handsontable, dataset: Dataset): void {
    * For simplicity, the width is limited to 100px to reflect the likely shorter displayed text.
    */
   const attachmentColumnMaxWidth = 100;
-  const attachmentsColumnIndex = hot.toVisualColumn(getAttachmentsColumn(dataset));
-  if (attachmentsColumnIndex !== -1 && hot.getColWidth(attachmentsColumnIndex) > attachmentColumnMaxWidth) {
+  const attachmentsColumnIndex = hot.toVisualColumn(
+    getAttachmentsColumn(dataset)
+  );
+  if (
+    attachmentsColumnIndex !== -1 &&
+    hot.getColWidth(attachmentsColumnIndex) > attachmentColumnMaxWidth
+  ) {
     colWidths = [];
     colWidths[attachmentsColumnIndex] = Math.min(
       hot.getColWidth(attachmentsColumnIndex),
