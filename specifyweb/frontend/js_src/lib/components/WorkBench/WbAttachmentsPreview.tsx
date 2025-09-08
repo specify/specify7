@@ -295,7 +295,7 @@ function DatasetAttachmentPreview({
       <div className="flex flex-col ml-2 gap-1 flex-shrink-0">
         <Button.Small
           className="h-full"
-          disabled={dataSetAttachment !== attachments.at(-1).spDataSetAttachment}
+          disabled={dataSetAttachment !== attachments.at(-1)?.spDataSetAttachment}
           title={commonText.delete()}
           variant={className.dangerButton}
           onClick={async () => {
@@ -359,7 +359,7 @@ function fetchRowAttachments(
   if (attachmentColumnIndex === -1) return;
 
   // Each row should have comma-separated IDs for SpDataSetAttachments
-  const selectedCell = (hot.getDataAtCell(row, attachmentColumnIndex) ??
+  const selectedCell = (hot.getDataAtCell(row, hot.toVisualColumn(attachmentColumnIndex)) ??
     '') as string;
   const cellData = getAttachmentsFromCell(selectedCell);
   const dataSetAttachmentIds =
