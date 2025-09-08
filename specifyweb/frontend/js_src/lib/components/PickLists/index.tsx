@@ -158,61 +158,44 @@ export function PickListComboBox({
   const name = pickList?.get('name') ?? pickListName;
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+  
+  // FIXED: Always use Select component (dropdown only) - no typing allowed
   return (
     <>
-      {pickList?.get('readOnly') === true || isDisabled ? (
-        <Select
-          id={id}
-          // "null" value is represented as an empty string
-          value={value ?? ''}
-          {...getValidationAttributes(parser)}
-          disabled={isDisabled || isReadOnly}
-          forwardRef={validationRef}
-          name={name}
-          onValueChange={(newValue): void =>
-            newValue === ''
-              ? updateValue('')
-              : items.some(({ value }) => value === newValue)
-                ? updateValue(newValue)
-                : undefined
-          }
-        >
-          {isExistingValue ? (
-            parser.required === true ? undefined : (
-              <option key="nullValue" />
-            )
-          ) : value === null || value.length === 0 ? (
+      <Select
+        id={id}
+        // "null" value is represented as an empty string
+        value={value ?? ''}
+        {...getValidationAttributes(parser)}
+        disabled={isDisabled || isReadOnly}
+        forwardRef={validationRef}
+        name={name}
+        onValueChange={(newValue): void =>
+          newValue === ''
+            ? updateValue('')
+            : items.some(({ value }) => value === newValue)
+              ? updateValue(newValue)
+              : undefined
+        }
+      >
+        {isExistingValue ? (
+          parser.required === true ? undefined : (
             <option key="nullValue" />
-          ) : (
-            <option key="invalidValue">
-              {queryText.invalidPicklistValue({ value })}
-            </option>
-          )}
-          {items.map(({ title, value }) => (
-            // If pick list has duplicate values, this triggers React warnings
-            <option key={value} value={value}>
-              {title}
-            </option>
-          ))}
-        </Select>
-      ) : (
-        <AutoComplete<string>
-          aria-label={undefined}
-          disabled={isDisabled || isReadOnly}
-          filterItems
-          forwardRef={validationRef}
-          inputProps={{
-            id,
-            name,
-            required: parser.required,
-          }}
-          source={autocompleteItems}
-          value={(currentValue?.title || value) ?? ''}
-          onChange={({ data }): void => updateValue(data)}
-          onCleared={(): void => updateValue('')}
-          onNewValue={addNewValue}
-        />
-      )}
+          )
+        ) : value === null || value.length === 0 ? (
+          <option key="nullValue" />
+        ) : (
+          <option key="invalidValue">
+            {queryText.invalidPicklistValue({ value })}
+          </option>
+        )}
+        {items.map(({ title, value }) => (
+          // If pick list has duplicate values, this triggers React warnings
+          <option key={value} value={value}>
+            {title}
+          </option>
+        ))}
+      </Select>
       {typeof pendingNewValue === 'string' &&
         typeof pickList === 'object' &&
         typeof handleAdd === 'function' && (
