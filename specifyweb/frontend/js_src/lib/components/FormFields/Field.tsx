@@ -191,7 +191,7 @@ function Field({
           console.error('Error fetching catalog number:', error);
         });
     } else if (resource && displayParentCatNumberPlaceHolder) {
-      ajax<string | null>('/api/specify/catalog_number_from_parent/', {
+      ajax<string | null>('/inheritance/catalog_number_from_parent/', {
         method: 'POST',
         headers: { Accept: 'application/json' },
         body: resource,
