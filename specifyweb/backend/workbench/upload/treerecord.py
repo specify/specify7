@@ -106,9 +106,9 @@ class TreeRank(NamedTuple):
         """
 
         assert self.rank_name is not None, "Rank name is required"
-        assert self.tree is not None and self.tree.lower() in SPECIFY_TREES, (
-            "Tree is required"
-        )
+        assert (
+            self.tree is not None and self.tree.lower() in SPECIFY_TREES
+        ), "Tree is required"
 
         if self.treedef_id is None:
             logger.info(
@@ -321,9 +321,12 @@ class ScopedTreeRecord(NamedTuple):
             definition_id=target_rank_treedef_id, parent=None
         ).first()
 
-        return self._replace(
-            treedef=target_rank_treedef, treedefitems=treedefitems, root=root
-        ), None
+        return (
+            self._replace(
+                treedef=target_rank_treedef, treedefitems=treedefitems, root=root
+            ),
+            None,
+        )
 
     """
         Adjusts tree scope for TreeRankRecords with NULL treedef_ids.
@@ -689,9 +692,9 @@ class BoundTreeRecord(NamedTuple):
             key = repr(sorted(tdiwpr.match_key() for tdiwpr in tried_to_match))
             return tdiwprs, MatchedMultiple(ids, key, info)
         else:
-            assert n_matches == 0, (
-                f"More than one match found when matching '{tdiwprs}' in '{model}'"
-            )
+            assert (
+                n_matches == 0
+            ), f"More than one match found when matching '{tdiwprs}' in '{model}'"
             if parent is not None:
                 info = ReportInfo(
                     tableName=self.name,
@@ -788,9 +791,9 @@ class BoundTreeRecord(NamedTuple):
         matched: Matched | NoMatch,
         references=None,
     ) -> UploadResult:
-        assert to_upload, (
-            f"Invalid Error: {to_upload}, can not upload matched results: {matched}"
-        )
+        assert (
+            to_upload
+        ), f"Invalid Error: {to_upload}, can not upload matched results: {matched}"
         model = getattr(models, self.name)
 
         parent_info: dict | None
