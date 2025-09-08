@@ -1,5 +1,5 @@
 from specifyweb.backend.inheritance.utils import get_cat_num_inheritance_setting, get_parent_cat_num_inheritance_setting
-from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin
+from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, Component
 
 def parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user):
     if tableid == 1029 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs if fs.fieldspec.join_path]: 
