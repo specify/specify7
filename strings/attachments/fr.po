@@ -17,8 +17,8 @@ msgstr ""
 #: components/FormSliders/AttachmentsCollection.tsx:68
 #: components/FormSliders/AttachmentsCollection.tsx:91
 #: components/Header/menuItemDefinitions.ts:99
-#: components/Molecules/SyncAttachmentPicker.tsx:114
-#: components/Molecules/SyncAttachmentPicker.tsx:123
+#: components/Molecules/SyncAttachmentPicker.tsx:118
+#: components/Molecules/SyncAttachmentPicker.tsx:127
 #: components/Preferences/UserDefinitions.tsx:1324
 #: components/Router/Routes.tsx:182
 #: components/Router/Routes.tsx:477

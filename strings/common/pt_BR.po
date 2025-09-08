@@ -52,7 +52,7 @@ msgstr "Não"
 #: components/Merging/index.tsx:378
 #: components/Molecules/LinkedRecords.tsx:88
 #: components/Molecules/LinkedRecords.tsx:100
-#: components/Molecules/SyncAttachmentPicker.tsx:122
+#: components/Molecules/SyncAttachmentPicker.tsx:126
 #: components/PickLists/index.tsx:282
 #: components/QueryBuilder/Components.tsx:169
 #: components/QueryBuilder/Edit.tsx:174
@@ -227,7 +227,7 @@ msgstr "Criar"
 #: components/Merging/Status.tsx:122
 #: components/Molecules/LinkedRecords.tsx:116
 #: components/Molecules/LinkedRecords.tsx:125
-#: components/Molecules/SyncAttachmentPicker.tsx:97
+#: components/Molecules/SyncAttachmentPicker.tsx:101
 #: components/Notifications/Notifications.tsx:89
 #: components/PickLists/index.tsx:251
 #: components/Preferences/index.tsx:103
@@ -392,7 +392,7 @@ msgstr "Abrir"
 #: components/Forms/DeleteButton.tsx:82
 #: components/Forms/DeleteButton.tsx:97
 #: components/Forms/DeleteButton.tsx:142
-#: components/Molecules/SyncAttachmentPicker.tsx:83
+#: components/Molecules/SyncAttachmentPicker.tsx:87
 #: components/Notifications/Notifications.tsx:166
 #: components/PickLists/definitions.ts:45
 #: components/SchemaConfig/UniquenessRuleRow.tsx:188
@@ -1144,7 +1144,7 @@ msgstr "Tempo restante"
 msgid "unlimited"
 msgstr "Ilimitado"
 
-#: components/Molecules/SyncAttachmentPicker.tsx:72
+#: components/Molecules/SyncAttachmentPicker.tsx:76
 #: components/SpecifyNetworkCollection/index.tsx:71
 #. 🟥Verb. Used in: Components > Molecules > Sync Attachment Picker ⬤ Components > Specify Network Collection > Index
 #, fuzzy

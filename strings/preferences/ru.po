@@ -1207,25 +1207,25 @@ msgstr "Локализуйте названия распознанных рес�
 msgid "splitLongXml"
 msgstr "Разделить длинные строки XML на несколько строк"
 
-#: components/Molecules/SyncAttachmentPicker.tsx:104
+#: components/Molecules/SyncAttachmentPicker.tsx:108
 #. Used in: Components > Molecules > Sync Attachment Picker
 #, fuzzy
 msgid "url"
 msgstr "URL"
 
-#: components/Molecules/SyncAttachmentPicker.tsx:98
+#: components/Molecules/SyncAttachmentPicker.tsx:102
 #. Used in: Components > Molecules > Sync Attachment Picker
 #, fuzzy
 msgid "pickAttachment"
 msgstr "Выберите вложение"
 
-#: components/Molecules/SyncAttachmentPicker.tsx:126
+#: components/Molecules/SyncAttachmentPicker.tsx:130
 #. Used in: Components > Molecules > Sync Attachment Picker
 #, fuzzy
 msgid "attachmentFailed"
 msgstr "Не удалось загрузить вложение."
 
-#: components/Molecules/SyncAttachmentPicker.tsx:72
+#: components/Molecules/SyncAttachmentPicker.tsx:75
 #. Used in: Components > Molecules > Sync Attachment Picker
 #, fuzzy
 msgid "pickImage"
