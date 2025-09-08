@@ -1,25 +1,25 @@
-import type Handsontable from "handsontable";
-import React from "react";
+import type Handsontable from 'handsontable';
+import React from 'react';
 
-import { attachmentsText } from "../../localization/attachments";
-import { commonText } from "../../localization/common";
-import { wbText } from "../../localization/workbench";
-import type { RA } from "../../utils/types";
-import { Button } from "../Atoms/Button";
-import { raise } from "../Errors/Crash";
-import { ErrorBoundary } from "../Errors/ErrorBoundary";
-import { hasTablePermission } from "../Permissions/helpers";
-import { userPreferences } from "../Preferences/userPreferences";
-import type { Dataset } from "../WbPlanView/Wrapped";
-import { resolveVariantFromDataset } from "../WbUtils/datasetVariants";
-import { getAttachmentsColumn } from "../WorkBench/attachmentHelpers";
-import { downloadDataSet } from "../WorkBench/helpers";
-import type { WbMapping } from "../WorkBench/mapping";
-import { WbChangeOwner } from "./ChangeOwner";
-import { WbConvertCoordinates } from "./CoordinateConverter";
-import { WbRawPlan } from "./DevShowPlan";
-import { WbGeoLocate } from "./GeoLocate";
-import { WbLeafletMap } from "./WbLeafletMap";
+import { attachmentsText } from '../../localization/attachments';
+import { commonText } from '../../localization/common';
+import { wbText } from '../../localization/workbench';
+import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { raise } from '../Errors/Crash';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { hasTablePermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
+import type { Dataset } from '../WbPlanView/Wrapped';
+import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
+import { getAttachmentsColumn } from '../WorkBench/attachmentHelpers';
+import { downloadDataSet } from '../WorkBench/helpers';
+import type { WbMapping } from '../WorkBench/mapping';
+import { WbChangeOwner } from './ChangeOwner';
+import { WbConvertCoordinates } from './CoordinateConverter';
+import { WbRawPlan } from './DevShowPlan';
+import { WbGeoLocate } from './GeoLocate';
+import { WbLeafletMap } from './WbLeafletMap';
 
 export function WbToolkit({
   dataset,
@@ -44,13 +44,13 @@ export function WbToolkit({
 }): JSX.Element {
   const handleExport = (): void => {
     const delimiter = userPreferences.get(
-      "workBench",
-      "editor",
-      "exportFileDelimiter",
+      'workBench',
+      'editor',
+      'exportFileDelimiter'
     );
 
     const prepareExport = (
-      dataset: Dataset,
+      dataset: Dataset
     ): { readonly columns: RA<string>; readonly rows: RA<RA<string>> } => {
       const defaultOrder = dataset.columns.map((_, i) => i); // Use the existing order as default
 
@@ -62,7 +62,7 @@ export function WbToolkit({
 
       let columns = order.map((colIndex) => dataset.columns[colIndex]);
       const rows = dataset.rows.map((row) =>
-        order.map((colIndex) => row[colIndex] ?? ""),
+        order.map((colIndex) => row[colIndex] ?? '')
       );
 
       // Don't export attachments column
@@ -71,7 +71,7 @@ export function WbToolkit({
         columns = columns.map((col, i) =>
           order[i] === attachmentsColumnIndex
             ? attachmentsText.attachments()
-            : col,
+            : col
         );
       }
 
@@ -94,7 +94,7 @@ export function WbToolkit({
       className="flex flex-wrap gap-x-1 gap-y-2"
       role="toolbar"
     >
-      {variant.canTransfer() && hasTablePermission("SpecifyUser", "read") ? (
+      {variant.canTransfer() && hasTablePermission('SpecifyUser', 'read') ? (
         <ErrorBoundary dismissible>
           <WbChangeOwner
             dataset={dataset}
