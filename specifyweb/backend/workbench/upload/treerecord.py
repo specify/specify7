@@ -646,7 +646,7 @@ class BoundTreeRecord(NamedTuple):
             matches = None
 
             if da is not None:
-                matches = list(model.objects.filter(id=da).values(*FETCHED_ATTRS)[:10])
+                matches = list(model.objects.filter(id=da).values(*FETCHED_ATTRS))
 
             if not matches:
                 matches = self._find_matching_descendent(
@@ -770,10 +770,10 @@ class BoundTreeRecord(NamedTuple):
 
             if reference_id is not None:
                 query_with_id = query.filter(id=reference_id)
-                matches = list(query_with_id[:10])
+                matches = list(query_with_id)
 
             if not matches:
-                matches = list(query[:10])
+                matches = list(query)
 
             if matches:
                 if self.cache is not None:
