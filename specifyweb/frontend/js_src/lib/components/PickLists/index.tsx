@@ -159,12 +159,10 @@ export function PickListComboBox({
 
   const isReadOnly = React.useContext(ReadOnlyContext);
   
-  // FIXED: Always use Select component (dropdown only) - no typing allowed
   return (
     <>
       <Select
         id={id}
-        // "null" value is represented as an empty string
         value={value ?? ''}
         {...getValidationAttributes(parser)}
         disabled={isDisabled || isReadOnly}
