@@ -49,13 +49,13 @@ export function PickListComboBox({
     () =>
       typeof relatedTable === 'string'
         ? rawItems.map((item) =>
-            typeof f.parseInt(item.value) === 'number'
-              ? {
-                  ...item,
-                  value: getResourceApiUrl(relatedTable, item.value),
-                }
-              : item
-          )
+          typeof f.parseInt(item.value) === 'number'
+            ? {
+              ...item,
+              value: getResourceApiUrl(relatedTable, item.value),
+            }
+            : item
+        )
         : rawItems,
     [rawItems, relatedTable]
   );
@@ -124,7 +124,7 @@ export function PickListComboBox({
   React.useEffect(
     () =>
       typeof pendingNewValue === 'string' &&
-      items.some(({ value }) => value === pendingNewValue)
+        items.some(({ value }) => value === pendingNewValue)
         ? updateValue(pendingNewValue)
         : undefined,
     [items, pendingNewValue, updateValue]
@@ -159,21 +159,16 @@ export function PickListComboBox({
 
   const isReadOnly = React.useContext(ReadOnlyContext);
 
-  const isRankPickList = React.useMemo(() => {
-    const hay = [pickList?.get?.('name'), pickListName, (field as any)?.name]
-      .filter(Boolean)
-      .join(' ')
-      .toLowerCase();
-    return /(rank|taxon.*level|geo.*level|_treelevelcombobox)/i.test(hay);
-  }, [pickList, pickListName, field]);
+  const resolvedName = (pickList?.get?.('name') ?? pickListName) || '';
+  const isFrontEndPicklist = resolvedName.startsWith('_');
+  const isRankPickList =
+    isDisabled || isFrontEndPicklist || pickList?.get?.('readOnly') === true;
 
   return (
     <>
       {isRankPickList ? (
-        // Non-typeable dropdown ONLY for rank picklists
         <Select
           id={id}
-          // "null" value is represented as an empty string
           value={value ?? ''}
           {...getValidationAttributes(parser)}
           disabled={isDisabled || isReadOnly}
