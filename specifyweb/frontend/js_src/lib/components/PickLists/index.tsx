@@ -161,12 +161,12 @@ export function PickListComboBox({
 
   const resolvedName = (pickList?.get?.('name') ?? pickListName) || '';
   const isFrontEndPicklist = resolvedName.startsWith('_');
-  const isRankPickList =
+  const isSpecialPicklist =
     isDisabled || isFrontEndPicklist || pickList?.get?.('readOnly') === true;
 
   return (
     <>
-      {isRankPickList ? (
+      {isSpecialPicklist ? (
         <Select
           id={id}
           value={value ?? ''}
