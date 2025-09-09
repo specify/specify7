@@ -9,7 +9,7 @@ import { getIcon } from '../InitialContext/icons';
 import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { getAttachmentsColumnIndex } from '../WorkBench/attachmentHelpers';
+import { getAttachmentsColumn } from '../WorkBench/attachmentHelpers';
 import type { WbMapping } from './mapping';
 
 const comments = { displayDelay: 100 };
@@ -67,7 +67,7 @@ export function useHotProps({
   const enterMoves =
     enterMovesPref === 'col' ? { col: 1, row: 0 } : { col: 0, row: 1 };
 
-  const attachmentsColumnIndex = getAttachmentsColumnIndex(dataset);
+  const attachmentsColumnIndex = getAttachmentsColumn(dataset);
 
   const colHeaders = React.useCallback(
     (physicalCol: number) => {

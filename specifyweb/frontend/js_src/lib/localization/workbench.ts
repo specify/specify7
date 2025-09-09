@@ -221,7 +221,7 @@ export const wbText = createDictionary({
     'es-es': 'Pinchar para alternar visibilidad',
     'fr-fr': 'Cliquez pour basculer la visibilité',
     'uk-ua': 'Натисніть, щоб увімкнути видимість',
-    'de-ch': 'Klicken, um die Sichtbarkeit umzuschalten',
+    'de-ch': 'Klicken Sie hier, um die Sichtbarkeit umzuschalten',
     'pt-br': 'Clique para alternar a visibilidade',
   },
   configureSearchReplace: {
@@ -338,7 +338,7 @@ export const wbText = createDictionary({
     'uk-ua':
       'Відкат видалить нові записи даних, додані цим набором даних до бази даних Specify. Повний відкат буде скасовано, якщо на будь-які завантажені дані посилалися (повторно використовували) інші записи даних після їх завантаження.',
     'de-ch':
-      'Durch das Zurücksetzen werden die neuen Datensätze entfernt, die dieser Datensatz zur Datenbank „Specify“ hinzugefügt hat. Das gesamte Zurücksetzen wird abgebrochen, wenn hochgeladene Daten seit dem Hochladen von anderen Datensätzen referenziert (wiederverwendet) wurden.',
+      'Durch das Zurücksetzen werden die neuen Datensätze entfernt, die dieser Datensatz zur angegebenen Datenbank hinzugefügt hat. Das gesamte Zurücksetzen wird abgebrochen, wenn auf die hochgeladenen Daten seit dem Hochladen von anderen Datensätzen verwiesen (sie wiederverwendet) wurden.',
     'pt-br':
       'A reversão removerá os novos registros de dados que este Conjunto de Dados adicionou ao banco de dados Especificar. A reversão completa será cancelada se algum dos dados enviados tiver sido referenciado (reutilizado) por outros registros de dados desde o envio.',
   },
@@ -388,7 +388,7 @@ export const wbText = createDictionary({
     'de-ch':
       'Durch das Löschen eines Datensatzes werden dieser und sein Upload-Plan dauerhaft entfernt. Datenzuordnungen können nicht mehr mit anderen Datensätzen wiederverwendet werden. Nach dem Löschen ist für einen hochgeladenen Datensatz auch kein Rollback mehr möglich.',
     'pt-br':
-      'A exclusão de um Conjunto de Dados o remove permanentemente, juntamente com seu Plano de Upload. Os mapeamentos de dados não estarão mais disponíveis para reutilização com outros Conjuntos de Dados. Além disso, após a exclusão, a opção de Reverter não será mais uma opção para um Conjunto de Dados carregado.',
+      'A exclusão de um Conjunto de Dados o remove permanentemente, juntamente com seu Plano de Upload. Os mapeamentos de dados não estarão mais disponíveis para reutilização com outros Conjuntos de Dados. Além disso, após a exclusão, a opção de Reversão não será mais uma opção para um Conjunto de Dados carregado.',
   },
   dataSetDeleted: {
     'en-us': 'Data Set successfully deleted',
@@ -678,7 +678,7 @@ export const wbText = createDictionary({
     'es-es': 'Carga de conjunto de datos cancelada.',
     'fr-fr': "Téléchargement de l'ensemble de données annulé.",
     'uk-ua': 'Завантаження набору даних скасовано.',
-    'de-ch': 'Der Upload des Datensatzes wurde abgebrochen.',
+    'de-ch': 'Datensatz-Upload abgebrochen.',
     'pt-br': 'Upload do conjunto de dados cancelado.',
   },
   coordinateConverter: {
@@ -1521,7 +1521,7 @@ export const wbText = createDictionary({
   },
   recordsCreated: {
     'en-us': 'Records created',
-    'de-ch': 'Erstellte Datensätze',
+    'de-ch': 'Datensätze erstellt',
     'es-es': 'Registros creados',
     'fr-fr': 'Enregistrements créés',
     'pt-br': 'Registros criados',

@@ -1,12 +1,10 @@
 import logging
 import os
-from typing import List, Set
-from django.db import connection
 from django.db.models import Case, FloatField, F, Q, Value, When
 from django.db.models.functions import Coalesce, Greatest, Least, Cast
+from specifyweb.backend.stored_queries.utils import log_sqlalchemy_query
 from sqlalchemy import select, union_all, func, cast, DECIMAL, case, or_, and_, String, join
 from sqlalchemy.orm import aliased
-from decimal import Decimal
 
 from specifyweb.specify.models import (
     Absoluteage,
@@ -15,7 +13,6 @@ from specifyweb.specify.models import (
     Collectionobject,
     Paleocontext,
 )
-from specifyweb.specify.utils import log_sqlalchemy_query
 from specifyweb.backend.stored_queries.models import (
     AbsoluteAge,
     RelativeAge,

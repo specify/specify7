@@ -6,8 +6,8 @@ from uuid import uuid4
 
 from jsonschema import validate  # type: ignore
 
-from specifyweb.specify import auditcodes
-from specifyweb.specify.auditlog import auditlog
+from specifyweb.backend.workbench.upload import auditcodes
+from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.backend.trees.tests.test_trees import TestTree
 from specifyweb.backend.trees.extras import validate_tree_numbering
 from specifyweb.backend.trees.tests.test_trees import get_table
