@@ -7,7 +7,7 @@ import { requireContext } from '../../../tests/helpers';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import { clearIdStore } from '../../../hooks/useId';
 import { LoadingContext } from '../../Core/Contexts';
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 
 requireContext();
 
@@ -53,7 +53,7 @@ describe('CreateAppResource', () => {
     );
 
     const appResourceButton = getAllByRole('button')[0];
-    await user.click(appResourceButton);
+    await act(async () => user.click(appResourceButton));
 
     //  This is a lot more cleaner than the inner HTML
     expect(getByRole('dialog').textContent).toMatchInlineSnapshot(
@@ -79,7 +79,7 @@ describe('CreateAppResource', () => {
     );
 
     const formButton = getAllByRole('button')[1];
-    await user.click(formButton);
+    await act(async () => user.click(formButton));
 
     try {
       await waitFor(() => {
