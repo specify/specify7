@@ -12,21 +12,22 @@ from specifyweb.specify.datamodel import datamodel, Table, Field, Relationship
 from specifyweb.specify.utils.uiformatters import FormatMismatch, ScopedFormatter
 
 ParseFailureKey = Literal[
-'valueTooLong',
-'formatMismatch',
+    'valueTooLong',
+    'formatMismatch',
 
-'failedParsingDecimal',
-'failedParsingFloat',
-'failedParsingBoolean',
-'failedParsingAgentType',
+    'failedParsingDecimal',
+    'failedParsingFloat',
+    'failedParsingBoolean',
+    'failedParsingAgentType',
 
-'invalidYear',
-'badDateFormat',
+    'invalidYear',
+    'badDateFormat',
 
-'coordinateBadFormat',
-'latitudeOutOfRange',
-'longitudeOutOfRange'
+    'coordinateBadFormat',
+    'latitudeOutOfRange',
+    'longitudeOutOfRange'
 ]
+
 
 class ParseFailure(NamedTuple):
     message: ParseFailureKey
@@ -37,7 +38,7 @@ class ParseFailure(NamedTuple):
 
 
 class ParseSucess(NamedTuple):
-    to_upload: dict[str, Any]
+    payload: dict[str, Any]
 
 
 ParseResult = ParseSucess | ParseFailure

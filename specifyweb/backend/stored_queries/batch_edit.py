@@ -79,13 +79,6 @@ BATCH_EDIT_REQUIRED_TREE_FIELDS = ["name"]
 def get_readonly_fields(table: Table):
     fields = [*BATCH_EDIT_SHARED_READONLY_FIELDS, table.idFieldName.lower()]
 
-    # FEATURE: Remove this when lat/long is officially supported
-    # See https://github.com/specify/specify7/issues/6251 and
-    # https://github.com/specify/specify7/issues/6655
-    if table.name.lower() == 'locality':
-        fields.extend(('latitude1', 'longitude1', 'lat1text', 'long1text',
-                      'latitude2', 'longitude2', 'lat2text', 'long2text'))
-
     relationships = [
         rel.name
         for rel in table.relationships
@@ -95,6 +88,15 @@ def get_readonly_fields(table: Table):
         relationships = ["preferredtaxon"]
     elif is_tree_table(table):
         relationships = ["definitionitem"]
+    elif table.name.lower() == 'locality':
+        # The editing of these fields should ideally be done through the
+        # corresponding mapped decimal fields (which act as these text fields
+        # in the Workbench)
+        # If the user maps to any of these fields in the Query, then the
+        # corresponding decimal field will be added to the data set with the
+        # value of these text fields
+        # See batch_edit_query_rewrites.py
+        fields.extend(('lat1text', 'long1text', 'lat2text', 'long2text'))
 
     return fields, [*BATCH_EDIT_SHARED_READONLY_RELATIONSHIPS, *relationships]
 
@@ -106,7 +108,13 @@ def parse(value: Any | None, query_field: QueryField) -> Any:
     field = query_field.fieldspec.get_field()
     if field is None or value is None:
         return value
-    if field.type in FLOAT_FIELDS:
+
+    if field.type in FLOAT_FIELDS and (
+        # REFACTOR: these fields should be parsed as lat1text, long1text, etc.
+        # See #6251, #6655
+        # Find a better way to have this association/mapping?
+        not field.name.lower() in ('latitude1', 'longitude1', 'latitude2',
+                                   'longitude2')):
         return float(value)
     return value
 
@@ -1024,7 +1032,7 @@ class RowPlanCanonical(NamedTuple):
 def naive_field_format(fieldspec: QueryFieldSpec):
     field = fieldspec.get_field()
     tree_rank = fieldspec.get_first_tree_rank()
-    prefix = f"{tree_rank[1].treedef_name} - {tree_rank[1].name} - " if tree_rank else ""
+    prefix = f"{tree_rank.treedef_name} - {tree_rank.name} - " if tree_rank else ""
     if field is None:
         return f"{prefix}{fieldspec.table.name} (formatted)"
     if field.is_relationship:
@@ -1080,6 +1088,55 @@ def _get_table_and_field(field: QueryField):
     table_name = field.fieldspec.table.name
     field_name = None if field.fieldspec.get_field() is None else field.fieldspec.get_field().name
     return (table_name, field_name)
+
+def rewrite_coordinate_fields(row, _mapped_rows: dict[tuple[tuple[str, ...], ...], Any], join_paths: tuple[tuple[str, ...], ...]) -> tuple: 
+    """
+        In the QueryResults we want to replace any instances of the decimal
+        coordinate fields (latitude1, longitude1, latitude2, longitude2) with
+        their corresponding text field result (lat1text, long1text, etc.).
+        This is to align BatchEdit behavior with pre-existing WorkBench
+        behavior.
+        See #6251, #6655
+
+        REFACTOR: In WB currently, mapping a coordinate text and decimal field
+        can result in the two easily becoming out-of-sync: as there is no 
+        business logic associated with directly mapped textual coordinate
+        fields.
+
+        REFACTOR: Instead of iterating through each of the results, consider
+        rewriting (in batch_edit_query_rewrites.py) the decimal coordinate 
+        fields to the textual coordinate fields before running the query, 
+        running he query, and then replacing the represented field before 
+        parsing.
+    """
+    mapped_rows = _mapped_rows
+
+    field_replacement_map = {
+        'latitude1': 'lat1text',
+        'longitude1': 'long1text',
+        'latiude2': 'lat2text',
+        'longitude2': 'long2text'
+    }
+
+    for join_path in join_paths:
+        field_name = join_path[-1]
+        replacement_field = field_replacement_map.get(field_name, None)
+        replace_join_path = tuple((*join_path[:-1], replacement_field))
+        if replacement_field is None or not replace_join_path in mapped_rows.keys():
+            continue
+
+        mapped_rows[join_path] = mapped_rows[replace_join_path]
+
+    result = tuple(mapped_rows[join_path] for join_path in join_paths)
+    return (row[0], *result)
+
+def rewrite_row(row, query_fields: list[QueryField]) -> tuple:
+    """
+        Rewrite the query result row to an "expected form" for batch edit
+    """
+    join_paths = tuple(tuple(field.name for field in query_field.fieldspec.join_path) for query_field in query_fields)
+    mapped_rows = dict(zip(join_paths, row[1:]))
+    return rewrite_coordinate_fields(row, mapped_rows, join_paths)
 
 def run_batch_edit_query(props: BatchEditProps):
 
@@ -1152,7 +1209,8 @@ def run_batch_edit_query(props: BatchEditProps):
     visited_rows: list[RowPlanCanonical] = []
     previous_id = None
     previous_row = RowPlanCanonical(EMPTY_PACK)
-    for row in rows["results"]:
+    for _row in rows["results"]:
+        row = rewrite_row(_row, query_fields)
         _, new_row = previous_row.merge(row, indexed, query_with_hidden)
         to_many_planner = new_row.update_to_manys(to_many_planner)
         if previous_id != new_row.batch_edit_pack.id.value:
