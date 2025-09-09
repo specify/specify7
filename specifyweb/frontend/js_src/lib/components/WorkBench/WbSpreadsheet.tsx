@@ -2,7 +2,7 @@
  * Component for the Handsontable React wrapper
  */
 
-import { HotTable } from '@handsontable/react';
+import { HotTableClass } from '@handsontable/react';
 import type Handsontable from 'handsontable';
 import type { DetailedSettings } from 'handsontable/plugins/contextMenu';
 import { registerAllModules } from 'handsontable/registry';
@@ -47,7 +47,7 @@ function WbSpreadsheetComponent({
   onClickDisambiguate: handleClickDisambiguate,
 }: {
   readonly dataset: Dataset;
-  readonly setHotTable: React.RefCallback<HotTable>;
+  readonly setHotTable: React.RefCallback<HotTableClass>;
   readonly hot: Handsontable | undefined;
   readonly isUploaded: boolean;
   readonly data: RA<RA<string | null>>;
