@@ -15,7 +15,10 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceApiUrl } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import type { PickList } from '../DataModel/types';
-import type { DefaultComboBoxProps, PickListItemSimple} from '../FormFields/ComboBox';
+import type {
+  DefaultComboBoxProps,
+  PickListItemSimple,
+} from '../FormFields/ComboBox';
 import { AutoComplete } from '../Molecules/AutoComplete';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
@@ -27,50 +30,52 @@ export function PickListComboBox({
   field,
   pickListName,
   defaultValue: rawDefaultValue,
-  isRequired: isFieldRequired,
-  isDisabled: isFieldDisabled,
-  items: rawPicklistItems,
+  isRequired: rawIsRequired,
+  isDisabled,
+  items: rawItems,
   pickList,
-  onAdd: handleAddFromCaller,
+  onAdd: rawHandleAdd,
 }: DefaultComboBoxProps & {
   readonly items: RA<PickListItemSimple>;
+  // This may be undefined for front-end only picklists
   readonly pickList: SpecifyResource<PickList> | undefined;
+  // Pick list is considered read only if onAdd is undefined
   readonly onAdd?: (value: string) => void;
 }): JSX.Element {
-  const relatedTableName =
-    field.isRelationship ? field.relatedTable.name : undefined;
-
-  const normalizedItems = React.useMemo(
+  const relatedTable = field.isRelationship
+    ? field.relatedTable.name
+    : undefined;
+  const items = React.useMemo(
     () =>
-      typeof relatedTableName === 'string'
-        ? rawPicklistItems.map((item) =>
+      typeof relatedTable === 'string'
+        ? rawItems.map((item) =>
             typeof f.parseInt(item.value) === 'number'
               ? {
                   ...item,
-                  value: getResourceApiUrl(relatedTableName, item.value),
+                  value: getResourceApiUrl(relatedTable, item.value),
                 }
               : item
           )
-        : rawPicklistItems,
-    [rawPicklistItems, relatedTableName]
+        : rawItems,
+    [rawItems, relatedTable]
   );
 
-  const normalizedDefaultValue = React.useMemo(() => {
-    const matchedDefaultItem =
-      normalizedItems.find(({ value }) => value === rawDefaultValue) ??
-      normalizedItems.find(({ title }) => title === rawDefaultValue);
-
-    if (matchedDefaultItem !== undefined && typeof matchedDefaultItem !== 'object') {
-      console.warn('Default value for picklist is not a member of the picklist', {
-        normalizedItems,
-      });
-    }
-    return matchedDefaultItem?.value ?? rawDefaultValue;
-  }, [rawDefaultValue, normalizedItems]);
+  // Set default value
+  const defaultValue = React.useMemo(() => {
+    const defaultItem =
+      items.find(({ value }) => value === rawDefaultValue) ??
+      items.find(({ title }) => title === rawDefaultValue);
+    if (defaultItem !== undefined && typeof defaultItem !== 'object')
+      console.warn(
+        'default value for picklist is not a member of the picklist',
+        { items }
+      );
+    return defaultItem?.value ?? rawDefaultValue;
+  }, [rawDefaultValue, items]);
 
   const {
-    value: currentRawModelValue,
-    updateValue: updateModelValue,
+    value: rawValue,
+    updateValue: rawUpdateValue,
     validationRef,
     parser,
   } = useResourceValue(
@@ -78,163 +83,158 @@ export function PickListComboBox({
     field,
     React.useMemo(
       () => ({
-        value: normalizedDefaultValue,
-        required: isFieldRequired,
+        value: defaultValue,
+        required: rawIsRequired,
         type: 'text',
       }),
-      [normalizedDefaultValue, isFieldRequired]
+      [defaultValue, rawIsRequired]
     )
   );
-
-  const currentValueAsString = React.useMemo(
+  const value = React.useMemo(
     () =>
-      typeof currentRawModelValue === 'object'
-        ? ((currentRawModelValue as unknown as SpecifyResource<AnySchema>)?.url() ??
-            null)
-        : ((currentRawModelValue as number | string | undefined)?.toString() ??
-            null),
-    [currentRawModelValue]
+      typeof rawValue === 'object'
+        ? ((rawValue as unknown as SpecifyResource<AnySchema>)?.url() ?? null)
+        : ((rawValue as number | string | undefined)?.toString() ?? null),
+    [rawValue]
   );
 
-  const writeModelValue = React.useCallback(
-    (newValueString: string): void =>
-      updateModelValue(
-        newValueString === '' && parser.required !== true
+  const updateValue = React.useCallback(
+    (value: string): void =>
+      rawUpdateValue(
+        value === '' && parser.required !== true
           ? null
           : parser?.type === 'number'
-            ? (f.parseInt(newValueString) ?? null)
-            : newValueString
+            ? (f.parseInt(value) ?? null)
+            : value
       ),
-    [updateModelValue, parser]
+    [rawUpdateValue, parser]
   );
 
+  // Warn on duplicates
   React.useEffect(() => {
-    const itemValues = normalizedItems.map(({ value }) => value) ?? [];
-    if (itemValues.length !== new Set(itemValues).size) {
-      console.error('Duplicate picklist entries found', {
-        normalizedItems,
-        resource,
-      });
-    }
-  }, [normalizedItems, resource]);
+    const values = items.map(({ value }) => value) ?? [];
+    if (values.length !== new Set(values).size)
+      console.error('Duplicate picklist entries found', { items, resource });
+  }, [items, resource]);
 
   const [pendingNewValue, setPendingNewValue] = React.useState<
     string | undefined
   >(undefined);
 
-  // If a pending new value appears in items (after it’s added), write it to the model
   React.useEffect(
     () =>
       typeof pendingNewValue === 'string' &&
-      normalizedItems.some(({ value }) => value === pendingNewValue)
-        ? writeModelValue(pendingNewValue)
+      items.some(({ value }) => value === pendingNewValue)
+        ? updateValue(pendingNewValue)
         : undefined,
-    [normalizedItems, pendingNewValue, writeModelValue]
+    [items, pendingNewValue, updateValue]
   );
 
-  function handleRequestAddNewValue(typedValue: string): void {
-    if (pickList?.get('type') === PickListTypes.FIELDS) {
-      writeModelValue(typedValue);
-    } else if (pickList?.get('type') === PickListTypes.ITEMS) {
-      setPendingNewValue(typedValue);
-    } else {
-      throw new Error('Adding item to wrong type of picklist');
-    }
+  function addNewValue(value: string): void {
+    if (pickList?.get('type') === PickListTypes.FIELDS) updateValue(value);
+    else if (pickList?.get('type') === PickListTypes.ITEMS)
+      setPendingNewValue(value);
+    else throw new Error('Adding item to wrong type of picklist');
   }
 
-  const matchedCurrentItem = normalizedItems.find(
-    (item) => item.value === currentValueAsString
-  );
-  const isCurrentValueInList = typeof matchedCurrentItem === 'object';
+  const currentValue = items.find((item) => item.value === value);
+  const isExistingValue = typeof currentValue === 'object';
 
-  const autoCompleteSourceItems = React.useMemo(
+  const autocompleteItems = React.useMemo(
     () =>
-      normalizedItems
+      items
         .filter(({ value }) => Boolean(value))
         .map((item) => ({
           label: item.title,
           data: item.value,
         })),
-    [normalizedItems]
+    [items]
   );
 
-  const canAddToPicklist = hasToolPermission('pickLists', 'create')
-    ? handleAddFromCaller
+  const handleAdd = hasToolPermission('pickLists', 'create')
+    ? rawHandleAdd
     : undefined;
 
-  const fieldNameForForm = pickList?.get('name') ?? pickListName;
+  const name = pickList?.get('name') ?? pickListName;
+
   const isReadOnly = React.useContext(ReadOnlyContext);
 
-  const isRankOrTreeLevelPickList = React.useMemo(() => {
-    const identifierText = [pickList?.get?.('name'), pickListName, (field as any)?.name]
+  // ⬇️ Option A: detect rank/level picklists (Taxon/Geography/tree-level)
+  const isRankPickList = React.useMemo(() => {
+    const hay = [pickList?.get?.('name'), pickListName, (field as any)?.name]
       .filter(Boolean)
       .join(' ')
       .toLowerCase();
-    return /(rank|taxon.*level|geo.*level|_treelevelcombobox)/i.test(identifierText);
+    return /(rank|taxon.*level|geo.*level|_treelevelcombobox)/i.test(hay);
   }, [pickList, pickListName, field]);
 
   return (
     <>
-      {isRankOrTreeLevelPickList ? (
+      {isRankPickList ? (
+        // Non-typeable dropdown ONLY for rank picklists
         <Select
           id={id}
-          value={currentValueAsString ?? ''}
+          // "null" value is represented as an empty string
+          value={value ?? ''}
           {...getValidationAttributes(parser)}
-          disabled={isFieldDisabled || isReadOnly}
+          disabled={isDisabled || isReadOnly}
           forwardRef={validationRef}
-          name={fieldNameForForm}
-          onValueChange={(newSelectedValue): void =>
-            newSelectedValue === ''
-              ? writeModelValue('')
-              : normalizedItems.some(({ value }) => value === newSelectedValue)
-                ? writeModelValue(newSelectedValue)
+          name={name}
+          onValueChange={(newValue): void =>
+            newValue === ''
+              ? updateValue('')
+              : items.some(({ value }) => value === newValue)
+                ? updateValue(newValue)
                 : undefined
           }
         >
-          {isCurrentValueInList ? (
-            parser.required === true ? undefined : <option key="nullValue" />
-          ) : currentValueAsString === null || currentValueAsString.length === 0 ? (
+          {isExistingValue ? (
+            parser.required === true ? undefined : (
+              <option key="nullValue" />
+            )
+          ) : value === null || value.length === 0 ? (
             <option key="nullValue" />
           ) : (
             <option key="invalidValue">
-              {queryText.invalidPicklistValue({ value: currentValueAsString })}
+              {queryText.invalidPicklistValue({ value })}
             </option>
           )}
-          {normalizedItems.map(({ title, value }) => (
+          {items.map(({ title, value }) => (
+            // If pick list has duplicate values, this triggers React warnings
             <option key={value} value={value}>
               {title}
             </option>
           ))}
         </Select>
       ) : (
+        // Keep AutoComplete for all other picklists (type-to-search + add-new if permitted)
         <AutoComplete<string>
           aria-label={undefined}
-          disabled={isFieldDisabled || isReadOnly}
+          disabled={isDisabled || isReadOnly}
           filterItems
           forwardRef={validationRef}
           inputProps={{
             id,
-            name: fieldNameForForm,
+            name,
             required: parser.required,
           }}
-          source={autoCompleteSourceItems}
-          value={(matchedCurrentItem?.title || currentValueAsString) ?? ''}
-          onChange={({ data }): void => writeModelValue(data)}
-          onCleared={(): void => writeModelValue('')}
-          onNewValue={canAddToPicklist ? handleRequestAddNewValue : undefined}
+          source={autocompleteItems}
+          value={(currentValue?.title || value) ?? ''}
+          onChange={({ data }): void => updateValue(data)}
+          onCleared={(): void => updateValue('')}
+          onNewValue={handleAdd ? addNewValue : undefined}
         />
       )}
-
       {typeof pendingNewValue === 'string' &&
         typeof pickList === 'object' &&
-        typeof canAddToPicklist === 'function' && (
+        typeof handleAdd === 'function' && (
           <AddingToPicklist
             pickList={pickList}
             type={parser.type ?? 'string'}
             value={pendingNewValue}
             onAdd={(): void => {
-              canAddToPicklist?.(pendingNewValue);
-              writeModelValue(pendingNewValue);
+              handleAdd?.(pendingNewValue);
+              updateValue(pendingNewValue);
             }}
             onClose={(): void => setPendingNewValue(undefined)}
           />
@@ -256,10 +256,9 @@ function AddingToPicklist({
   readonly onAdd: () => void;
   readonly onClose: () => void;
 }): JSX.Element {
-  const runWithLoading = React.useContext(LoadingContext);
-  const isInvalidNumericValue = type === 'number' && f.parseInt(value) === undefined;
-
-  return isInvalidNumericValue ? (
+  const loading = React.useContext(LoadingContext);
+  const isInvalidNumeric = type === 'number' && f.parseInt(value) === undefined;
+  return isInvalidNumeric ? (
     <Dialog
       buttons={commonText.close()}
       header={formsText.invalidType()}
@@ -275,14 +274,14 @@ function AddingToPicklist({
         <>
           <Button.Success
             onClick={(): void =>
-              runWithLoading(
+              loading(
                 pickList
                   .rgetCollection('pickListItems')
-                  .then(async (pickListItemsCollection) => {
-                    const newItem = new tables.PickListItem.Resource();
-                    newItem.set('title', value);
-                    newItem.set('value', value);
-                    pickListItemsCollection.add(newItem);
+                  .then(async (items) => {
+                    const item = new tables.PickListItem.Resource();
+                    item.set('title', value);
+                    item.set('value', value);
+                    items.add(item);
                     return pickList.save();
                   })
                   .then(handleClose)
