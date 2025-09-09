@@ -56,7 +56,7 @@ export function PickListComboBox({
     [rawItems, relatedTable]
   );
 
-  // default value normalization
+  // Default value normalization
   const defaultValue = React.useMemo(() => {
     const def =
       items.find(({ value }) => value === rawDefaultValue) ??
