@@ -2,7 +2,7 @@
  * Component for the Handsontable React wrapper
  */
 
-import { HotTableClass } from '@handsontable/react';
+import { HotTable, HotTableClass } from '@handsontable/react';
 import type Handsontable from 'handsontable';
 import type { DetailedSettings } from 'handsontable/plugins/contextMenu';
 import { registerAllModules } from 'handsontable/registry';
@@ -163,10 +163,10 @@ function WbSpreadsheetComponent({
                     !disambiguation.isAmbiguousCell() || isReadOnly,
                   callback: handleClickDisambiguate,
                 },
-                ['separator_1' as 'undo']: '---------',
+                separator_1: '---------',
                 fill_down: fillCellsContextMenuItem(hot, 'down', isReadOnly),
                 fill_up: fillCellsContextMenuItem(hot, 'up', isReadOnly),
-                ['separator_2' as 'redo']: '---------',
+                separator_2: '---------',
                 undo: {
                   disabled: () => !hot.isUndoAvailable() || isReadOnly,
                 },
