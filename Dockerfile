@@ -173,6 +173,8 @@ RUN echo \
         "\nANONYMOUS_USER = os.getenv('ANONYMOUS_USER', None)" \
         "\nSPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', '/opt/Specify/config')" \
         "\nTIME_ZONE = os.environ.get('TIME_ZONE', 'America/Chicago')" \
+        "\nALLOW_SUPPORT_LOGIN = os.environ.get('ALLOW_SUPPORT_LOGIN', False)" \
+        "\nSUPPORT_LOGIN_TTL = int(os.environ.get('SUPPORT_LOGIN_TTL', 300))" \  
         # Resolve ALLOWED_HOSTS in the following precedence:
         # - Use the ALLOWED_HOSTS environment variable (if present)
         # - Otherwise, fallback to the default specified in settings/specify_settings.py
