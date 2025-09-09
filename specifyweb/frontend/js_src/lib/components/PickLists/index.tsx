@@ -158,9 +158,16 @@ export function PickListComboBox({
   const name = pickList?.get('name') ?? pickListName;
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+
+  // Determine if we should use 'select' (read-only) or 'autocomplete' (editable)
+  const shouldUseSelect =
+    pickList?.get('readOnly') === true ||
+    isDisabled ||
+    (pickList === undefined && pickListName.startsWith('_')); // Special pick lists are read-only
+
   return (
     <>
-      {pickList?.get('readOnly') === true || isDisabled || (pickList === undefined && pickListName.startsWith('_')) ? (
+      {shouldUseSelect ? (
         <Select
           id={id}
           // "null" value is represented as an empty string
