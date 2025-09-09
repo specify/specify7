@@ -38,7 +38,7 @@ export function PickListComboBox({
   readonly onAdd?: (value: string) => void;
 }): JSX.Element {
   const relatedTableName =
-    field.isRelationship === true ? field.relatedTable.name : undefined;
+    field.isRelationship ? field.relatedTable.name : undefined;
 
   const normalizedItems = React.useMemo(
     () =>
