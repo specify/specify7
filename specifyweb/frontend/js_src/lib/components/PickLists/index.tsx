@@ -159,7 +159,6 @@ export function PickListComboBox({
 
   const isReadOnly = React.useContext(ReadOnlyContext);
 
-  // ⬇️ Option A: detect rank/level picklists (Taxon/Geography/tree-level)
   const isRankPickList = React.useMemo(() => {
     const hay = [pickList?.get?.('name'), pickListName, (field as any)?.name]
       .filter(Boolean)
