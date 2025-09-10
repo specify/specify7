@@ -32,26 +32,6 @@ def is_sp6_user_permissions_migrated(user, apps=apps) -> bool:
     return UserRole.objects.filter(specifyuser=user).exists() or \
         UserPolicy.objects.filter(specifyuser=user).exists()
 
-def is_sp6_collection_permissions_migrated(collection, apps=apps) -> bool:
-    UserPolicy = apps.get_model('permissions', 'UserPolicy')
-    Role = apps.get_model('permissions', 'Role')
-    return Role.objects.filter(collection=collection).exists() or \
-        UserPolicy.objects.filter(collection=collection).exists()
-
-def is_sp6_discipline_permissions_migrated(discipline, apps=apps) -> bool:
-    UserPolicy = apps.get_model('permissions', 'UserPolicy')
-    Role = apps.get_model('permissions', 'Role')
-    Collection = apps.get_model('specify', 'Collection')
-    collections = Collection.objects.filter(discipline=discipline)
-    return Role.objects.filter(collection__in=collections).exists() or \
-        UserPolicy.objects.filter(collection__in=collections).exists()
-
-def get_all_collections_without_sp7_roles(apps=apps):
-    Role = apps.get_model('permissions', 'Role')
-    Collection = apps.get_model('specify', 'Collection')
-    collections_with_roles = Role.objects.values_list('collection_id', flat=True).distinct()
-    return Collection.objects.exclude(id__in=collections_with_roles)
-
 def initialize(wipe: bool=False, apps=apps) -> None:
     with transaction.atomic():
         if wipe:
