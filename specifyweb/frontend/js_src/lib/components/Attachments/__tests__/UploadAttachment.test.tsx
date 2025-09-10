@@ -8,18 +8,18 @@ import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
 import { f } from '../../../utils/functools';
 import { LoadingContext } from '../../Core/Contexts';
+import { SpecifyResource } from '../../DataModel/legacyTypes';
 import { deserializeResource } from '../../DataModel/serializers';
+import { Attachment } from '../../DataModel/types';
 import { overrideAttachmentSettings } from '../attachments';
 import * as Attachments from '../attachments';
 import { UploadAttachment } from '../Plugin';
 import { testAttachment } from './utils';
-import { SpecifyResource } from '../../DataModel/legacyTypes';
-import { Attachment } from '../../DataModel/types';
 
 requireContext();
 
 async function uploadFileMock() {
-  return deserializeResource(testAttachment) as SpecifyResource<Attachment>;
+  return deserializeResource(testAttachment) ;
 }
 
 beforeEach(() => {
