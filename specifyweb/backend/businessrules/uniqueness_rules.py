@@ -267,7 +267,7 @@ def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
                                                     isDatabaseConstraint=is_database_constraint,
                                                     discipline=discipline)
 
-    for rule in candidate_rules: 
+    for rule in candidate_rules:
         all_fields = rule.uniquenessrulefield_set.all()
         matching_fields = all_fields.filter(fieldPath__in=fields, isScope=False)
         matching_scopes = all_fields.filter(fieldPath__in=scopes, isScope=True)
@@ -283,22 +283,6 @@ def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
         UniquenessRuleField.objects.create(uniquenessrule=rule, fieldPath=field, isScope=False)
     for scope in scopes:
         UniquenessRuleField.objects.create(uniquenessrule=rule, fieldPath=scope, isScope=True)
-
-def uniquenessrule_exists(UniquenessRule, model_name, discipline, is_database_constraint, fields, scopes):
-
-    model_rules = UniquenessRule.objects.filter(
-        modelName=model_name, discipline=discipline, isDatabaseConstraint=is_database_constraint)
-
-    for rule in model_rules: 
-        rule_fields = rule.uniquenessrulefield_set.all()
-
-        matching_fields = rule_fields.filter(isScope=False, fieldPath__in=fields)
-        matching_scopes = rule_fields.filter(isScope=True, fieldPath__in=scopes)
-
-        if len(matching_fields) == len(fields) and len(matching_scopes) == len(scopes): 
-            return True
-
-    return False
 
 def remove_uniqueness_rule(model_name, raw_discipline, is_database_constraint, fields, scopes, registry=None):
     UniquenessRule = registry.get_model(
