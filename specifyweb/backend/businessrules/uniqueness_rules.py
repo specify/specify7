@@ -300,9 +300,6 @@ def uniquenessrule_exists(UniquenessRule, model_name, discipline, is_database_co
 
     return False
 
-def check_discipline_added_to_uniqueness_rules(discipline):
-    return models.UniquenessRule.objects.filter(discipline=discipline).exists()
-
 def remove_uniqueness_rule(model_name, raw_discipline, is_database_constraint, fields, scopes, registry=None):
     UniquenessRule = registry.get_model(
         'businessrules', 'UniquenessRule') if registry else models.UniquenessRule
