@@ -50,19 +50,10 @@ def add_permission(apps, schema_editor=None):
 
 def add_stats_edit_permission(apps, schema_editor=None):
     Role = apps.get_model('permissions', 'Role')
-    RolePolicy = apps.get_model('permissions', 'RolePolicy')
 
     all_full_access_roles = Role.objects.filter(name="Full Access - Legacy")
 
     for full_access_role in all_full_access_roles:
-        if not full_access_role.policies.filter(
-            resource="/preferences/statistics",
-            action="edit",
-        ).exists():
-            new_policy = RolePolicy.objects.create(
-                role=full_access_role,
-                resource="/preferences/statistics",
-                action="edit",
-            )
+        new_policy, created = full_access_role.policies.get_or_create(resource="/preferences/statistics", action="edit")
+        if created:
             auditlog.insert(new_policy, None)
-
