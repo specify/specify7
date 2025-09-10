@@ -909,12 +909,13 @@ def update_hidden_prop(apps, schema_editor=None):
             schematype=0
         )
         for container in containers:
-            items = Splocalecontaineritem.objects.filter(
+            items_updated = Splocalecontaineritem.objects.filter(
                 container=container,
+                ishidden=False,
                 name__in=[field_name.lower() for field_name in fields]
-            )
-            logger.info(f"Updating {items.count()} items for table {table} and container {container.id}")
-            items.update(ishidden=True)
+            ).update(ishidden=True)
+            if items_updated > 0:
+                logger.info(f"Hid {items_updated} items for table {table} and container {container.id}")
 
     duplicates = (
         Splocalecontaineritem.objects.values("container", "name")
