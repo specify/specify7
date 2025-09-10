@@ -122,27 +122,7 @@ def fix_misc(stdout: WriteToStdOut | None = None):
 class Command(BaseCommand):
     help = "Runs this Django command to re-run important data migrations functions"
 
-    def add_arguments(self, parser):
-        parser.add_argument(
-            "function",
-            nargs="?",
-            type=str,
-            help="Optional: specify a single function to run "
-                 "(apply_patches, fix_cots, fix_permissions, fix_business_rules, "
-                 "fix_schema_config, fix_tectonic_ranks, fix_misc)",
-        )
-        parser.add_argument(
-            "--verbose",
-            action='store_true',
-            dest="verbose",
-            default=False,
-        )
-
-    def handle(self, *args, **options):
-        func_name = options.get("function")
-        verbose = options.get("verbose", False)
-
-        funcs = {
+    funcs = {
             "apply_patches": lambda _stdout: apply_patches(apps),
             "fix_cots": fix_cots,
             "fix_permissions": fix_permissions,
@@ -152,21 +132,43 @@ class Command(BaseCommand):
             "fix_misc": fix_misc,
         }
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "functions",
+            nargs="*",
+            type=str,
+            default=[],
+            choices=tuple(self.funcs.keys()),
+            help=f"Optional: specify one or more functions to run",
+        )
+        parser.add_argument(
+            "--verbose",
+            action='store_true',
+            dest="verbose",
+            default=False,
+        )
+
+    def handle(self, *args, **options):
+        functions = options.get("functions")
+        verbose = options.get("verbose", False)
+
         try:
             with transaction.atomic():
-                if func_name:
-                    if func_name not in funcs:
-                        self.stderr.write(
-                            self.style.ERROR(f"Unknown function: {func_name}")
-                        )
-                        return
-                    self.stdout.write(
-                        self.style.SUCCESS(f"Running only {func_name}...")
-                    )
-                    funcs[func_name](self.stdout.write if verbose else None)
+                if len(functions) > 0:
+                    for function in functions:
+                        if function:
+                            if function not in self.funcs:
+                                self.stderr.write(
+                                    self.style.ERROR(f"Unknown function: {function}")
+                                )
+                                return
+                            self.stdout.write(
+                                self.style.SUCCESS(f"Applying {function}...")
+                            )
+                            self.funcs[function](self.stdout.write if verbose else None)
                 else:
                     self.stdout.write(self.style.SUCCESS("Running full pipeline..."))
-                    for func_name, func in funcs.items():
+                    for func_name, func in self.funcs.items():
                         self.stdout.write(self.style.SUCCESS(f"Applying {func_name}..."))
                         func(self.stdout.write if verbose else None)
                         self.stdout.write(self.style.SUCCESS(f"Applied {func_name}"))
