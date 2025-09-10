@@ -137,7 +137,6 @@ class Command(BaseCommand):
             "functions",
             nargs="*",
             type=str,
-            default=[],
             choices=tuple(self.funcs.keys()),
             help=f"Optional: specify one or more functions to run",
         )
