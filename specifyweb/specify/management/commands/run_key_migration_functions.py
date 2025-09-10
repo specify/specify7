@@ -126,13 +126,10 @@ class Command(BaseCommand):
                     funcs[func_name]()
                 else:
                     self.stdout.write(self.style.SUCCESS("Running full pipeline..."))
-                    apply_patches(apps)
-                    fix_cots()
-                    fix_permissions()
-                    fix_business_rules()
-                    fix_schema_config()
-                    fix_tectonic_ranks()
-                    fix_misc()
+                    for func_name, func in funcs.items():
+                        self.stdout.write(f"Applying {func_name}...")
+                        func()
+                        self.stdout.write(self.style.SUCCESS(f"Applied {func_name}"))
         except Exception as e:
             logger.error(f"An error occurred: {e}")
             raise
