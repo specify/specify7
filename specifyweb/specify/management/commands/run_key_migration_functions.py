@@ -28,13 +28,15 @@ from specifyweb.backend.patches.migration_utils import apply_migrations as apply
 logger = logging.getLogger(__name__)
 
 MigrationFunction = Callable[[Any, Any | None], None]
+WriteToStdOut = Callable[[str], None]
 
-def log_and_run(funcs: Iterable[MigrationFunction], stdout = None) -> None:
+def log_and_run(funcs: Iterable[MigrationFunction], stdout: WriteToStdOut | None = None) -> None:
     for func in funcs:
-        (stdout.write if stdout is not None else logger.info)(f"Running {func.__name__}...")
+        if stdout is not None:
+            stdout(f"Running {func.__name__}...")
         func(apps)
 
-def fix_cots(stdout):
+def fix_cots(stdout: WriteToStdOut | None = None):
     funcs = [
         create_default_collection_types,
         create_default_discipline_for_tree_defs,
@@ -45,7 +47,7 @@ def fix_cots(stdout):
     ]
     log_and_run(funcs, stdout)
 
-def fix_schema_config(stdout):
+def fix_schema_config(stdout: WriteToStdOut | None = None):
     funcs = [
         usc.create_geo_table_schema_config_with_defaults, # specify 0002
         usc.create_cotype_splocalecontaineritem, # specify 0003
@@ -84,7 +86,7 @@ def apply_default_uniqueness_rules_to_disciplines(apps):
         apply_default_uniqueness_rules(discipline, registry=apps)
 
 
-def fix_business_rules(stdout):
+def fix_business_rules(stdout: WriteToStdOut | None = None):
     funcs = [
         apply_default_uniqueness_rules_to_disciplines,
         catnum_rule_editable,
@@ -95,7 +97,7 @@ def fix_business_rules(stdout):
 def initialize_permissions(apps):
     initialize(False, apps)
 
-def fix_permissions(stdout):
+def fix_permissions(stdout: WriteToStdOut | None = None):
     funcs = [
         initialize_permissions,
         add_permission,
@@ -103,7 +105,7 @@ def fix_permissions(stdout):
     ]
     log_and_run(funcs, stdout)
 
-def fix_tectonic_ranks(stdout):
+def fix_tectonic_ranks(stdout: WriteToStdOut | None = None):
     funcs = [
         create_default_tectonic_ranks,
         create_root_tectonic_node,
@@ -111,7 +113,7 @@ def fix_tectonic_ranks(stdout):
     ]
     log_and_run(funcs, stdout)
 
-def fix_misc(stdout):
+def fix_misc(stdout: WriteToStdOut | None = None):
     funcs = [
         make_selectseries_false # specify 0031
     ]
@@ -129,9 +131,16 @@ class Command(BaseCommand):
                  "(apply_patches, fix_cots, fix_permissions, fix_business_rules, "
                  "fix_schema_config, fix_tectonic_ranks, fix_misc)",
         )
+        parser.add_argument(
+            "--verbose",
+            action='store_true',
+            dest="verbose",
+            default=False,
+        )
 
     def handle(self, *args, **options):
         func_name = options.get("function")
+        verbose = options.get("verbose", False)
 
         funcs = {
             "apply_patches": lambda _stdout: apply_patches(apps),
@@ -154,12 +163,12 @@ class Command(BaseCommand):
                     self.stdout.write(
                         self.style.SUCCESS(f"Running only {func_name}...")
                     )
-                    funcs[func_name](self.stdout)
+                    funcs[func_name](self.stdout.write if verbose else None)
                 else:
                     self.stdout.write(self.style.SUCCESS("Running full pipeline..."))
                     for func_name, func in funcs.items():
                         self.stdout.write(self.style.SUCCESS(f"Applying {func_name}..."))
-                        func(self.stdout)
+                        func(self.stdout.write if verbose else None)
                         self.stdout.write(self.style.SUCCESS(f"Applied {func_name}"))
         except Exception as e:
             logger.error(f"An error occurred: {e}")
