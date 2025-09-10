@@ -224,7 +224,7 @@ function WbSpreadsheetComponent({
   });
 
   return (
-    <section className="flex-1 overflow-hidden overscroll-none">
+    <section className="flex-1 overflow-hidden overscroll-none h-full">
       <HotTable
         autoWrapCol={autoWrapCol}
         autoWrapRow={autoWrapRow}
