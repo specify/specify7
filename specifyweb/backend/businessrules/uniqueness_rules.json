@@ -78,7 +78,7 @@
   "Collectionobject": [
     {
       "rule": [["catalogNumber"], ["collection"]],
-      "isDatabaseConstraint": true
+      "isDatabaseConstraint": false
     },
     {
       "rule": [["uniqueIdentifier"], []],
@@ -89,7 +89,7 @@
       "isDatabaseConstraint": false
     }
   ],
-  "CollectionObjectGroupJoin": [
+  "Collectionobjectgroupjoin": [
     {
       "rule": [["childCo"], []],
       "isDatabaseConstraint": true

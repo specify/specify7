@@ -6,6 +6,11 @@ from specifyweb.specify.models_utils.model_extras import is_legacy_admin
 
 from .permissions import CollectionAccessPT
 
+import sys
+import logging
+
+logger = logging.getLogger(__name__)
+
 def wipe_permissions(apps = apps) -> None:
     RolePolicy = apps.get_model('permissions', 'RolePolicy')
     UserRole = apps.get_model('permissions', 'UserRole')
@@ -21,13 +26,22 @@ def wipe_permissions(apps = apps) -> None:
     LibraryRole.objects.all().delete()
     UserPolicy.objects.all().delete()
 
+def is_sp6_user_permissions_migrated(user, apps=apps) -> bool:
+    UserPolicy = apps.get_model('permissions', 'UserPolicy')
+    UserRole = apps.get_model('permissions', 'UserRole')
+    return UserRole.objects.filter(specifyuser=user).exists() or \
+        UserPolicy.objects.filter(specifyuser=user).exists()
+
 def initialize(wipe: bool=False, apps=apps) -> None:
     with transaction.atomic():
         if wipe:
             wipe_permissions(apps)
         create_admins(apps)
         create_roles(apps)
-        assign_users_to_roles(apps)
+        if 'test' in ''.join(sys.argv):
+            assign_users_to_roles_during_testing(apps)
+        else:
+            assign_users_to_roles(apps)
 
 def create_admins(apps=apps) -> None:
     UserPolicy = apps.get_model('permissions', 'UserPolicy')
@@ -39,6 +53,8 @@ def create_admins(apps=apps) -> None:
 
     users = Specifyuser.objects.all()
     for user in users:
+        if is_sp6_user_permissions_migrated(user, apps):
+            continue
         if is_legacy_admin(user):
             UserPolicy.objects.get_or_create(
                 collection=None,
@@ -48,6 +64,84 @@ def create_admins(apps=apps) -> None:
             )
 
 def assign_users_to_roles(apps=apps) -> None:
+    Role = apps.get_model('permissions', 'Role')
+    UserPolicy = apps.get_model('permissions', 'UserPolicy')
+    Agent = apps.get_model('specify', 'Agent')
+    UserPolicy = apps.get_model('permissions', 'UserPolicy')
+    UserRole = apps.get_model('permissions', 'UserRole')
+
+    ROLE_DESCRIPTIONS = {
+        "Manager": "Grants full access to all abilities within a collection.",
+        "FullAccess": "This is a legacy role that provides read write access to most Specify resources and is assigned to users in the Full Access group from Specify 6. This is to maintain consistency with the permissions granted these users in previous versions of Specify 7.",
+        "LimitedAccess": "This is a legacy role that provides read only access and is assigned to user in the Limited Access and Guest groups from Specify 6. This is to maintain consistency with the permissions granted these users in previous versions of Specify 7.",
+        "Guest": "This is a legacy role that provides read only access and is assigned to user in the Limited Access and Guest groups from Specify 6. This is to maintain consistency with the permissions granted these users in previous versions of Specify 7.",
+    }
+
+    ROLE_NAMES = {
+        "Manager": "Collection Admin",
+        "FullAccess": "Full Access - Legacy",
+        "LimitedAccess": "Read Only - Legacy",
+        "Guest": "Read Only - Legacy",
+    }
+
+    cursor = connection.cursor()
+    cursor.execute("""
+        SELECT
+            u.SpecifyUserID as user_id,
+            u.Name as user_name,
+            u.UserType as user_type,
+            p.usergroupscopeid as collection_id,
+            c.CollectionName as collection_name
+        FROM specifyuser u
+        JOIN specifyuser_spprincipal up ON up.SpecifyUserID = u.SpecifyUserID
+        JOIN spprincipal p ON p.SpPrincipalID = up.SpPrincipalID
+        JOIN collection c ON c.UserGroupScopeId = p.userGroupScopeID
+        WHERE p.groupType IS NULL
+        AND u.SpecifyUserID NOT IN (
+            SELECT ur.specifyuser_id
+            FROM spuserrole ur 
+            JOIN sprole r ON r.id = ur.role_id 
+            WHERE r.collection_id = p.usergroupscopeid
+        )
+        AND c.UserGroupScopeId NOT IN (
+            SELECT DISTINCT r.collection_id
+            FROM spuserrole ur 
+            JOIN sprole r ON r.id = ur.role_id
+            JOIN collection c ON c.UserGroupScopeId = r.collection_id
+        );
+    """)
+
+    results = cursor.fetchall()
+    
+    for user_id, user_name, user_type, collection_id, collection_name in results:
+        if user_type not in {'Manager', 'FullAccess', 'LimitedAccess', 'Guest'}:
+            continue
+
+        role_name = ROLE_NAMES.get(user_type, f"{user_type} - {collection_name}")
+        role_description = ROLE_DESCRIPTIONS.get(user_type, "No description available.")
+        logger.info(f"Assigned user {user_name} to role {role_name} for collection {collection_name}.")
+
+        role, is_new_role = Role.objects.get_or_create(
+            collection_id=collection_id,
+            name=role_name
+        )
+        if is_new_role:
+            role.description = role_description
+            role.save()
+        UserRole.objects.get_or_create(
+            specifyuser_id=user_id,
+            role=role
+        )
+
+        if Agent.objects.filter(specifyuser_id=user_id, division__disciplines__collections__id=collection_id).exists():
+            UserPolicy.objects.get_or_create(
+                collection_id=collection_id,
+                specifyuser_id=user_id,
+                resource=CollectionAccessPT.access.resource(),
+                action=CollectionAccessPT.access.action()
+            )
+
+def assign_users_to_roles_during_testing(apps=apps) -> None:
     from specifyweb.backend.context.views import users_collections_for_sp6
 
     Role = apps.get_model('permissions', 'Role')
@@ -83,269 +177,284 @@ def create_roles(apps = apps) -> None:
     Collection = apps.get_model('specify', 'Collection')
     Specifyuser = apps.get_model('specify', 'Specifyuser')
     
-    role = LibraryRole.objects.create(name="Assign Roles", description="Gives ability to assign existing roles to existing users.")
-    role.policies.create(resource="/permissions/user/roles", action="read")
-    role.policies.create(resource="/permissions/user/roles", action="update")
-    role.policies.create(resource="/permissions/roles", action="read")
+    role, is_new = LibraryRole.objects.get_or_create(name="Assign Roles", description="Gives ability to assign existing roles to existing users.")
+    if is_new:
+        role.policies.get_or_create(resource="/permissions/user/roles", action="read")
+        role.policies.get_or_create(resource="/permissions/user/roles", action="update")
+        role.policies.get_or_create(resource="/permissions/roles", action="read")
 
-    role = LibraryRole.objects.create(name="Create Data Sets", description="Allows creating new Data Sets in the WorkBench, without ability to upload them.\n\nSuch user would create a Data Sets, map the columns, fix validation issues, and then transfer the Data Set to another user for review and upload.")
-    role.policies.create(resource="/workbench/dataset", action="create")
-    role.policies.create(resource="/workbench/dataset", action="update")
-    role.policies.create(resource="/workbench/dataset", action="delete")
-    role.policies.create(resource="/workbench/dataset", action="validate")
-    role.policies.create(resource="/workbench/dataset", action="transfer")
+    role, is_new = LibraryRole.objects.get_or_create(name="Create Data Sets", description="Allows creating new Data Sets in the WorkBench, without ability to upload them.\n\nSuch user would create a Data Sets, map the columns, fix validation issues, and then transfer the Data Set to another user for review and upload.")
+    if is_new:
+        role.policies.get_or_create(resource="/workbench/dataset", action="create")
+        role.policies.get_or_create(resource="/workbench/dataset", action="update")
+        role.policies.get_or_create(resource="/workbench/dataset", action="delete")
+        role.policies.get_or_create(resource="/workbench/dataset", action="validate")
+        role.policies.get_or_create(resource="/workbench/dataset", action="transfer")
 
-    role = LibraryRole.objects.create(name="Edit Forms and Global Preferences", description="Grants full access to resource editor. This allows editing form definitions and global Specify preferences.")
-    role.policies.create(resource="/table/spappresource", action="read")
-    role.policies.create(resource="/table/spappresource", action="create")
-    role.policies.create(resource="/table/spappresource", action="update")
-    role.policies.create(resource="/table/spappresource", action="delete")
-    role.policies.create(resource="/table/spappresourcedata", action="read")
-    role.policies.create(resource="/table/spappresourcedata", action="create")
-    role.policies.create(resource="/table/spappresourcedata", action="update")
-    role.policies.create(resource="/table/spappresourcedata", action="delete")
-    role.policies.create(resource="/table/spappresourcedir", action="read")
-    role.policies.create(resource="/table/spappresourcedir", action="create")
-    role.policies.create(resource="/table/spappresourcedir", action="update")
-    role.policies.create(resource="/table/spappresourcedir", action="delete")
-    role.policies.create(resource="/table/spviewsetobj", action="read")
-    role.policies.create(resource="/table/spviewsetobj", action="create")
-    role.policies.create(resource="/table/spviewsetobj", action="update")
-    role.policies.create(resource="/table/spviewsetobj", action="delete")
+    role, is_new = LibraryRole.objects.get_or_create(name="Edit Forms and Global Preferences", description="Grants full access to resource editor. This allows editing form definitions and global Specify preferences.")
+    if is_new:
+        role.policies.get_or_create(resource="/table/spappresource", action="read")
+        role.policies.get_or_create(resource="/table/spappresource", action="create")
+        role.policies.get_or_create(resource="/table/spappresource", action="update")
+        role.policies.get_or_create(resource="/table/spappresource", action="delete")
+        role.policies.get_or_create(resource="/table/spappresourcedata", action="read")
+        role.policies.get_or_create(resource="/table/spappresourcedata", action="create")
+        role.policies.get_or_create(resource="/table/spappresourcedata", action="update")
+        role.policies.get_or_create(resource="/table/spappresourcedata", action="delete")
+        role.policies.get_or_create(resource="/table/spappresourcedir", action="read")
+        role.policies.get_or_create(resource="/table/spappresourcedir", action="create")
+        role.policies.get_or_create(resource="/table/spappresourcedir", action="update")
+        role.policies.get_or_create(resource="/table/spappresourcedir", action="delete")
+        role.policies.get_or_create(resource="/table/spviewsetobj", action="read")
+        role.policies.get_or_create(resource="/table/spviewsetobj", action="create")
+        role.policies.get_or_create(resource="/table/spviewsetobj", action="update")
+        role.policies.get_or_create(resource="/table/spviewsetobj", action="delete")
 
-    role = LibraryRole.objects.create(name="Edit Pick lists", description="Gives full access to modifying pick lists.")
-    role.policies.create(resource="/table/picklist", action="read")
-    role.policies.create(resource="/table/picklist", action="create")
-    role.policies.create(resource="/table/picklist", action="update")
-    role.policies.create(resource="/table/picklist", action="delete")
-    role.policies.create(resource="/table/picklistitem", action="read")
-    role.policies.create(resource="/table/picklistitem", action="create")
-    role.policies.create(resource="/table/picklistitem", action="update")
-    role.policies.create(resource="/table/picklistitem", action="delete")
+    role, is_new = LibraryRole.objects.get_or_create(name="Edit Pick lists", description="Gives full access to modifying pick lists.")
+    if is_new:
+        role.policies.get_or_create(resource="/table/picklist", action="read")
+        role.policies.get_or_create(resource="/table/picklist", action="create")
+        role.policies.get_or_create(resource="/table/picklist", action="update")
+        role.policies.get_or_create(resource="/table/picklist", action="delete")
+        role.policies.get_or_create(resource="/table/picklistitem", action="read")
+        role.policies.get_or_create(resource="/table/picklistitem", action="create")
+        role.policies.get_or_create(resource="/table/picklistitem", action="update")
+        role.policies.get_or_create(resource="/table/picklistitem", action="delete")
 
-    role = LibraryRole.objects.create(name="Edit Taxon Tree", description="Gives full access to the Taxon Tree.\n\nWarning: Taxon Tree may be shared between collections. Edits in one collection may affect another.")
-    role.policies.create(resource="/tree/edit/taxon", action="merge")
-    role.policies.create(resource="/tree/edit/taxon", action="move")
-    role.policies.create(resource="/tree/edit/taxon", action="synonymize")
-    role.policies.create(resource="/tree/edit/taxon", action="desynonymize")
-    role.policies.create(resource="/tree/edit/taxon", action="repair")
-    role.policies.create(resource="/table/taxon", action="read")
-    role.policies.create(resource="/table/taxon", action="update")
-    role.policies.create(resource="/table/taxon", action="delete")
-    role.policies.create(resource="/table/taxon", action="create")
-    role.policies.create(resource="/table/taxonattribute", action="read")
-    role.policies.create(resource="/table/taxonattribute", action="delete")
-    role.policies.create(resource="/table/taxonattribute", action="update")
-    role.policies.create(resource="/table/taxonattribute", action="create")
-    role.policies.create(resource="/table/taxoncitation", action="read")
-    role.policies.create(resource="/table/taxoncitation", action="create")
-    role.policies.create(resource="/table/taxoncitation", action="update")
-    role.policies.create(resource="/table/taxoncitation", action="delete")
-    role.policies.create(resource="/table/taxontreedef", action="read")
-    role.policies.create(resource="/table/taxontreedef", action="update")
-    role.policies.create(resource="/table/taxontreedefitem", action="read")
-    role.policies.create(resource="/table/taxontreedefitem", action="update")
-    role.policies.create(resource="/table/taxonattachment", action="read")
-    role.policies.create(resource="/table/taxonattachment", action="create")
-    role.policies.create(resource="/table/taxonattachment", action="update")
-    role.policies.create(resource="/table/taxonattachment", action="delete")
+    role, is_new = LibraryRole.objects.get_or_create(name="Edit Taxon Tree", description="Gives full access to the Taxon Tree.\n\nWarning: Taxon Tree may be shared between collections. Edits in one collection may affect another.")
+    if is_new:
+        role.policies.get_or_create(resource="/tree/edit/taxon", action="merge")
+        role.policies.get_or_create(resource="/tree/edit/taxon", action="move")
+        role.policies.get_or_create(resource="/tree/edit/taxon", action="synonymize")
+        role.policies.get_or_create(resource="/tree/edit/taxon", action="desynonymize")
+        role.policies.get_or_create(resource="/tree/edit/taxon", action="repair")
+        role.policies.get_or_create(resource="/table/taxon", action="read")
+        role.policies.get_or_create(resource="/table/taxon", action="update")
+        role.policies.get_or_create(resource="/table/taxon", action="delete")
+        role.policies.get_or_create(resource="/table/taxon", action="create")
+        role.policies.get_or_create(resource="/table/taxonattribute", action="read")
+        role.policies.get_or_create(resource="/table/taxonattribute", action="delete")
+        role.policies.get_or_create(resource="/table/taxonattribute", action="update")
+        role.policies.get_or_create(resource="/table/taxonattribute", action="create")
+        role.policies.get_or_create(resource="/table/taxoncitation", action="read")
+        role.policies.get_or_create(resource="/table/taxoncitation", action="create")
+        role.policies.get_or_create(resource="/table/taxoncitation", action="update")
+        role.policies.get_or_create(resource="/table/taxoncitation", action="delete")
+        role.policies.get_or_create(resource="/table/taxontreedef", action="read")
+        role.policies.get_or_create(resource="/table/taxontreedef", action="update")
+        role.policies.get_or_create(resource="/table/taxontreedefitem", action="read")
+        role.policies.get_or_create(resource="/table/taxontreedefitem", action="update")
+        role.policies.get_or_create(resource="/table/taxonattachment", action="read")
+        role.policies.get_or_create(resource="/table/taxonattachment", action="create")
+        role.policies.get_or_create(resource="/table/taxonattachment", action="update")
+        role.policies.get_or_create(resource="/table/taxonattachment", action="delete")
 
-    role = LibraryRole.objects.create(name="Export Data", description="Gives ability to export DwC Archive from any table.")
-    role.policies.create(resource="/export/dwca", action="execute")
-    role.policies.create(resource="/table/%", action="read")
+    role, is_new = LibraryRole.objects.get_or_create(name="Export Data", description="Gives ability to export DwC Archive from any table.")
+    if is_new:
+        role.policies.get_or_create(resource="/export/dwca", action="execute")
+        role.policies.get_or_create(resource="/table/%", action="read")
 
-    role = LibraryRole.objects.create(name="Full Data Access", description="Grants read and edit access to all tables")
-    role.policies.create(resource="/table/%", action="read")
-    role.policies.create(resource="/table/%", action="create")
-    role.policies.create(resource="/table/%", action="update")
-    role.policies.create(resource="/table/%", action="delete")
+    role, is_new = LibraryRole.objects.get_or_create(name="Full Data Access", description="Grants read and edit access to all tables")
+    if is_new:
+        role.policies.get_or_create(resource="/table/%", action="read")
+        role.policies.get_or_create(resource="/table/%", action="create")
+        role.policies.get_or_create(resource="/table/%", action="update")
+        role.policies.get_or_create(resource="/table/%", action="delete")
 
-    role = LibraryRole.objects.create(name="Full WorkBench access", description="Gives full access to the WorkBench. Allows creating new records in any table.")
-    role.policies.create(resource="/workbench/dataset", action="create")
-    role.policies.create(resource="/workbench/dataset", action="update")
-    role.policies.create(resource="/workbench/dataset", action="delete")
-    role.policies.create(resource="/workbench/dataset", action="validate")
-    role.policies.create(resource="/workbench/dataset", action="upload")
-    role.policies.create(resource="/workbench/dataset", action="unupload")
-    role.policies.create(resource="/workbench/dataset", action="transfer")
-    role.policies.create(resource="/table/%", action="read")
-    role.policies.create(resource="/table/%", action="create")
+    role, is_new = LibraryRole.objects.get_or_create(name="Full WorkBench access", description="Gives full access to the WorkBench. Allows creating new records in any table.")
+    if is_new:
+        role.policies.get_or_create(resource="/workbench/dataset", action="create")
+        role.policies.get_or_create(resource="/workbench/dataset", action="update")
+        role.policies.get_or_create(resource="/workbench/dataset", action="delete")
+        role.policies.get_or_create(resource="/workbench/dataset", action="validate")
+        role.policies.get_or_create(resource="/workbench/dataset", action="upload")
+        role.policies.get_or_create(resource="/workbench/dataset", action="unupload")
+        role.policies.get_or_create(resource="/workbench/dataset", action="transfer")
+        role.policies.get_or_create(resource="/table/%", action="read")
+        role.policies.get_or_create(resource="/table/%", action="create")
 
-    role = LibraryRole.objects.create(name="Inspect Audit Log", description="Allows to run a query builder query on the Audit Log table.")
-    role.policies.create(resource="/table/spauditlog", action="read")
-    role.policies.create(resource="/table/spauditlogfield", action="read")
-    role.policies.create(resource="/querybuilder/query", action="execute")
+    role, is_new = LibraryRole.objects.get_or_create(name="Inspect Audit Log", description="Allows to run a query builder query on the Audit Log table.")
+    if is_new:
+        role.policies.get_or_create(resource="/table/spauditlog", action="read")
+        role.policies.get_or_create(resource="/table/spauditlogfield", action="read")
+        role.policies.get_or_create(resource="/querybuilder/query", action="execute")
 
-    role = LibraryRole.objects.create(name="Manage Interactions", description="Grants full access to interactions tables.")
-    role.policies.create(resource="/table/appraisal", action="read")
-    role.policies.create(resource="/table/appraisal", action="create")
-    role.policies.create(resource="/table/appraisal", action="update")
-    role.policies.create(resource="/table/appraisal", action="delete")
-    role.policies.create(resource="/table/borrow", action="read")
-    role.policies.create(resource="/table/borrow", action="create")
-    role.policies.create(resource="/table/borrow", action="delete")
-    role.policies.create(resource="/table/borrow", action="update")
-    role.policies.create(resource="/table/borrowagent", action="read")
-    role.policies.create(resource="/table/borrowagent", action="create")
-    role.policies.create(resource="/table/borrowagent", action="update")
-    role.policies.create(resource="/table/borrowagent", action="delete")
-    role.policies.create(resource="/table/borrowmaterial", action="read")
-    role.policies.create(resource="/table/borrowmaterial", action="create")
-    role.policies.create(resource="/table/borrowmaterial", action="update")
-    role.policies.create(resource="/table/borrowmaterial", action="delete")
-    role.policies.create(resource="/table/borrowreturnmaterial", action="read")
-    role.policies.create(resource="/table/borrowreturnmaterial", action="create")
-    role.policies.create(resource="/table/borrowreturnmaterial", action="update")
-    role.policies.create(resource="/table/borrowreturnmaterial", action="delete")
-    role.policies.create(resource="/table/deaccession", action="read")
-    role.policies.create(resource="/table/deaccession", action="create")
-    role.policies.create(resource="/table/deaccession", action="update")
-    role.policies.create(resource="/table/deaccession", action="delete")
-    role.policies.create(resource="/table/deaccessionagent", action="read")
-    role.policies.create(resource="/table/deaccessionagent", action="create")
-    role.policies.create(resource="/table/deaccessionagent", action="update")
-    role.policies.create(resource="/table/deaccessionagent", action="delete")
-    role.policies.create(resource="/table/disposal", action="read")
-    role.policies.create(resource="/table/disposal", action="create")
-    role.policies.create(resource="/table/disposal", action="update")
-    role.policies.create(resource="/table/disposal", action="delete")
-    role.policies.create(resource="/table/disposalagent", action="read")
-    role.policies.create(resource="/table/disposalagent", action="create")
-    role.policies.create(resource="/table/disposalagent", action="update")
-    role.policies.create(resource="/table/disposalagent", action="delete")
-    role.policies.create(resource="/table/disposalpreparation", action="read")
-    role.policies.create(resource="/table/disposalpreparation", action="create")
-    role.policies.create(resource="/table/disposalpreparation", action="update")
-    role.policies.create(resource="/table/disposalpreparation", action="delete")
-    role.policies.create(resource="/table/exchangein", action="read")
-    role.policies.create(resource="/table/exchangein", action="create")
-    role.policies.create(resource="/table/exchangein", action="update")
-    role.policies.create(resource="/table/exchangein", action="delete")
-    role.policies.create(resource="/table/exchangeinprep", action="read")
-    role.policies.create(resource="/table/exchangeinprep", action="create")
-    role.policies.create(resource="/table/exchangeinprep", action="delete")
-    role.policies.create(resource="/table/exchangeinprep", action="update")
-    role.policies.create(resource="/table/exchangeout", action="read")
-    role.policies.create(resource="/table/exchangeout", action="update")
-    role.policies.create(resource="/table/exchangeout", action="delete")
-    role.policies.create(resource="/table/exchangeout", action="create")
-    role.policies.create(resource="/table/exchangeoutprep", action="read")
-    role.policies.create(resource="/table/exchangeoutprep", action="create")
-    role.policies.create(resource="/table/exchangeoutprep", action="update")
-    role.policies.create(resource="/table/exchangeoutprep", action="delete")
-    role.policies.create(resource="/table/gift", action="read")
-    role.policies.create(resource="/table/gift", action="create")
-    role.policies.create(resource="/table/gift", action="update")
-    role.policies.create(resource="/table/gift", action="delete")
-    role.policies.create(resource="/table/giftagent", action="read")
-    role.policies.create(resource="/table/giftagent", action="create")
-    role.policies.create(resource="/table/giftagent", action="update")
-    role.policies.create(resource="/table/giftagent", action="delete")
-    role.policies.create(resource="/table/giftpreparation", action="read")
-    role.policies.create(resource="/table/giftpreparation", action="update")
-    role.policies.create(resource="/table/giftpreparation", action="delete")
-    role.policies.create(resource="/table/giftpreparation", action="create")
-    role.policies.create(resource="/table/inforequest", action="read")
-    role.policies.create(resource="/table/inforequest", action="create")
-    role.policies.create(resource="/table/inforequest", action="update")
-    role.policies.create(resource="/table/inforequest", action="delete")
-    role.policies.create(resource="/table/loan", action="read")
-    role.policies.create(resource="/table/loan", action="create")
-    role.policies.create(resource="/table/loan", action="update")
-    role.policies.create(resource="/table/loan", action="delete")
-    role.policies.create(resource="/table/loanagent", action="read")
-    role.policies.create(resource="/table/loanagent", action="create")
-    role.policies.create(resource="/table/loanagent", action="update")
-    role.policies.create(resource="/table/loanagent", action="delete")
-    role.policies.create(resource="/table/loanpreparation", action="read")
-    role.policies.create(resource="/table/loanpreparation", action="create")
-    role.policies.create(resource="/table/loanpreparation", action="update")
-    role.policies.create(resource="/table/loanpreparation", action="delete")
-    role.policies.create(resource="/table/loanreturnpreparation", action="read")
-    role.policies.create(resource="/table/loanreturnpreparation", action="create")
-    role.policies.create(resource="/table/loanreturnpreparation", action="update")
-    role.policies.create(resource="/table/loanreturnpreparation", action="delete")
-    role.policies.create(resource="/table/permit", action="read")
-    role.policies.create(resource="/table/permit", action="create")
-    role.policies.create(resource="/table/permit", action="update")
-    role.policies.create(resource="/table/permit", action="delete")
-    role.policies.create(resource="/table/shipment", action="read")
-    role.policies.create(resource="/table/shipment", action="create")
-    role.policies.create(resource="/table/shipment", action="update")
-    role.policies.create(resource="/table/shipment", action="delete")
-    role.policies.create(resource="/table/borrowattachment", action="read")
-    role.policies.create(resource="/table/borrowattachment", action="create")
-    role.policies.create(resource="/table/borrowattachment", action="update")
-    role.policies.create(resource="/table/borrowattachment", action="delete")
-    role.policies.create(resource="/table/deaccessionattachment", action="read")
-    role.policies.create(resource="/table/deaccessionattachment", action="create")
-    role.policies.create(resource="/table/deaccessionattachment", action="update")
-    role.policies.create(resource="/table/deaccessionattachment", action="delete")
-    role.policies.create(resource="/table/disposalattachment", action="read")
-    role.policies.create(resource="/table/disposalattachment", action="create")
-    role.policies.create(resource="/table/disposalattachment", action="update")
-    role.policies.create(resource="/table/disposalattachment", action="delete")
-    role.policies.create(resource="/table/giftattachment", action="read")
-    role.policies.create(resource="/table/giftattachment", action="create")
-    role.policies.create(resource="/table/giftattachment", action="update")
-    role.policies.create(resource="/table/giftattachment", action="delete")
-    role.policies.create(resource="/table/loanattachment", action="create")
-    role.policies.create(resource="/table/loanattachment", action="update")
-    role.policies.create(resource="/table/loanattachment", action="delete")
-    role.policies.create(resource="/table/loanattachment", action="read")
-    role.policies.create(resource="/table/permitattachment", action="read")
-    role.policies.create(resource="/table/permitattachment", action="create")
-    role.policies.create(resource="/table/permitattachment", action="update")
-    role.policies.create(resource="/table/permitattachment", action="delete")
+    role, is_new = LibraryRole.objects.get_or_create(name="Manage Interactions", description="Grants full access to interactions tables.")
+    if is_new:
+        role.policies.get_or_create(resource="/table/appraisal", action="read")
+        role.policies.get_or_create(resource="/table/appraisal", action="create")
+        role.policies.get_or_create(resource="/table/appraisal", action="update")
+        role.policies.get_or_create(resource="/table/appraisal", action="delete")
+        role.policies.get_or_create(resource="/table/borrow", action="read")
+        role.policies.get_or_create(resource="/table/borrow", action="create")
+        role.policies.get_or_create(resource="/table/borrow", action="delete")
+        role.policies.get_or_create(resource="/table/borrow", action="update")
+        role.policies.get_or_create(resource="/table/borrowagent", action="read")
+        role.policies.get_or_create(resource="/table/borrowagent", action="create")
+        role.policies.get_or_create(resource="/table/borrowagent", action="update")
+        role.policies.get_or_create(resource="/table/borrowagent", action="delete")
+        role.policies.get_or_create(resource="/table/borrowmaterial", action="read")
+        role.policies.get_or_create(resource="/table/borrowmaterial", action="create")
+        role.policies.get_or_create(resource="/table/borrowmaterial", action="update")
+        role.policies.get_or_create(resource="/table/borrowmaterial", action="delete")
+        role.policies.get_or_create(resource="/table/borrowreturnmaterial", action="read")
+        role.policies.get_or_create(resource="/table/borrowreturnmaterial", action="create")
+        role.policies.get_or_create(resource="/table/borrowreturnmaterial", action="update")
+        role.policies.get_or_create(resource="/table/borrowreturnmaterial", action="delete")
+        role.policies.get_or_create(resource="/table/deaccession", action="read")
+        role.policies.get_or_create(resource="/table/deaccession", action="create")
+        role.policies.get_or_create(resource="/table/deaccession", action="update")
+        role.policies.get_or_create(resource="/table/deaccession", action="delete")
+        role.policies.get_or_create(resource="/table/deaccessionagent", action="read")
+        role.policies.get_or_create(resource="/table/deaccessionagent", action="create")
+        role.policies.get_or_create(resource="/table/deaccessionagent", action="update")
+        role.policies.get_or_create(resource="/table/deaccessionagent", action="delete")
+        role.policies.get_or_create(resource="/table/disposal", action="read")
+        role.policies.get_or_create(resource="/table/disposal", action="create")
+        role.policies.get_or_create(resource="/table/disposal", action="update")
+        role.policies.get_or_create(resource="/table/disposal", action="delete")
+        role.policies.get_or_create(resource="/table/disposalagent", action="read")
+        role.policies.get_or_create(resource="/table/disposalagent", action="create")
+        role.policies.get_or_create(resource="/table/disposalagent", action="update")
+        role.policies.get_or_create(resource="/table/disposalagent", action="delete")
+        role.policies.get_or_create(resource="/table/disposalpreparation", action="read")
+        role.policies.get_or_create(resource="/table/disposalpreparation", action="create")
+        role.policies.get_or_create(resource="/table/disposalpreparation", action="update")
+        role.policies.get_or_create(resource="/table/disposalpreparation", action="delete")
+        role.policies.get_or_create(resource="/table/exchangein", action="read")
+        role.policies.get_or_create(resource="/table/exchangein", action="create")
+        role.policies.get_or_create(resource="/table/exchangein", action="update")
+        role.policies.get_or_create(resource="/table/exchangein", action="delete")
+        role.policies.get_or_create(resource="/table/exchangeinprep", action="read")
+        role.policies.get_or_create(resource="/table/exchangeinprep", action="create")
+        role.policies.get_or_create(resource="/table/exchangeinprep", action="delete")
+        role.policies.get_or_create(resource="/table/exchangeinprep", action="update")
+        role.policies.get_or_create(resource="/table/exchangeout", action="read")
+        role.policies.get_or_create(resource="/table/exchangeout", action="update")
+        role.policies.get_or_create(resource="/table/exchangeout", action="delete")
+        role.policies.get_or_create(resource="/table/exchangeout", action="create")
+        role.policies.get_or_create(resource="/table/exchangeoutprep", action="read")
+        role.policies.get_or_create(resource="/table/exchangeoutprep", action="create")
+        role.policies.get_or_create(resource="/table/exchangeoutprep", action="update")
+        role.policies.get_or_create(resource="/table/exchangeoutprep", action="delete")
+        role.policies.get_or_create(resource="/table/gift", action="read")
+        role.policies.get_or_create(resource="/table/gift", action="create")
+        role.policies.get_or_create(resource="/table/gift", action="update")
+        role.policies.get_or_create(resource="/table/gift", action="delete")
+        role.policies.get_or_create(resource="/table/giftagent", action="read")
+        role.policies.get_or_create(resource="/table/giftagent", action="create")
+        role.policies.get_or_create(resource="/table/giftagent", action="update")
+        role.policies.get_or_create(resource="/table/giftagent", action="delete")
+        role.policies.get_or_create(resource="/table/giftpreparation", action="read")
+        role.policies.get_or_create(resource="/table/giftpreparation", action="update")
+        role.policies.get_or_create(resource="/table/giftpreparation", action="delete")
+        role.policies.get_or_create(resource="/table/giftpreparation", action="create")
+        role.policies.get_or_create(resource="/table/inforequest", action="read")
+        role.policies.get_or_create(resource="/table/inforequest", action="create")
+        role.policies.get_or_create(resource="/table/inforequest", action="update")
+        role.policies.get_or_create(resource="/table/inforequest", action="delete")
+        role.policies.get_or_create(resource="/table/loan", action="read")
+        role.policies.get_or_create(resource="/table/loan", action="create")
+        role.policies.get_or_create(resource="/table/loan", action="update")
+        role.policies.get_or_create(resource="/table/loan", action="delete")
+        role.policies.get_or_create(resource="/table/loanagent", action="read")
+        role.policies.get_or_create(resource="/table/loanagent", action="create")
+        role.policies.get_or_create(resource="/table/loanagent", action="update")
+        role.policies.get_or_create(resource="/table/loanagent", action="delete")
+        role.policies.get_or_create(resource="/table/loanpreparation", action="read")
+        role.policies.get_or_create(resource="/table/loanpreparation", action="create")
+        role.policies.get_or_create(resource="/table/loanpreparation", action="update")
+        role.policies.get_or_create(resource="/table/loanpreparation", action="delete")
+        role.policies.get_or_create(resource="/table/loanreturnpreparation", action="read")
+        role.policies.get_or_create(resource="/table/loanreturnpreparation", action="create")
+        role.policies.get_or_create(resource="/table/loanreturnpreparation", action="update")
+        role.policies.get_or_create(resource="/table/loanreturnpreparation", action="delete")
+        role.policies.get_or_create(resource="/table/permit", action="read")
+        role.policies.get_or_create(resource="/table/permit", action="create")
+        role.policies.get_or_create(resource="/table/permit", action="update")
+        role.policies.get_or_create(resource="/table/permit", action="delete")
+        role.policies.get_or_create(resource="/table/shipment", action="read")
+        role.policies.get_or_create(resource="/table/shipment", action="create")
+        role.policies.get_or_create(resource="/table/shipment", action="update")
+        role.policies.get_or_create(resource="/table/shipment", action="delete")
+        role.policies.get_or_create(resource="/table/borrowattachment", action="read")
+        role.policies.get_or_create(resource="/table/borrowattachment", action="create")
+        role.policies.get_or_create(resource="/table/borrowattachment", action="update")
+        role.policies.get_or_create(resource="/table/borrowattachment", action="delete")
+        role.policies.get_or_create(resource="/table/deaccessionattachment", action="read")
+        role.policies.get_or_create(resource="/table/deaccessionattachment", action="create")
+        role.policies.get_or_create(resource="/table/deaccessionattachment", action="update")
+        role.policies.get_or_create(resource="/table/deaccessionattachment", action="delete")
+        role.policies.get_or_create(resource="/table/disposalattachment", action="read")
+        role.policies.get_or_create(resource="/table/disposalattachment", action="create")
+        role.policies.get_or_create(resource="/table/disposalattachment", action="update")
+        role.policies.get_or_create(resource="/table/disposalattachment", action="delete")
+        role.policies.get_or_create(resource="/table/giftattachment", action="read")
+        role.policies.get_or_create(resource="/table/giftattachment", action="create")
+        role.policies.get_or_create(resource="/table/giftattachment", action="update")
+        role.policies.get_or_create(resource="/table/giftattachment", action="delete")
+        role.policies.get_or_create(resource="/table/loanattachment", action="create")
+        role.policies.get_or_create(resource="/table/loanattachment", action="update")
+        role.policies.get_or_create(resource="/table/loanattachment", action="delete")
+        role.policies.get_or_create(resource="/table/loanattachment", action="read")
+        role.policies.get_or_create(resource="/table/permitattachment", action="read")
+        role.policies.get_or_create(resource="/table/permitattachment", action="create")
+        role.policies.get_or_create(resource="/table/permitattachment", action="update")
+        role.policies.get_or_create(resource="/table/permitattachment", action="delete")
 
-    role = LibraryRole.objects.create(name="Print Reports", description="Gives ability to execute reports from any table.")
-    role.policies.create(resource="/report", action="execute")
-    role.policies.create(resource="/table/%", action="read")
+    role, is_new = LibraryRole.objects.get_or_create(name="Print Reports", description="Gives ability to execute reports from any table.")
+    if is_new:
+        role.policies.get_or_create(resource="/report", action="execute")
+        role.policies.get_or_create(resource="/table/%", action="read")
 
-    role = LibraryRole.objects.create(name="Read-Only Access", description="Grants read access to all tables")
-    role.policies.create(resource="/table/%", action="read")
+    role, is_new = LibraryRole.objects.get_or_create(name="Read-Only Access", description="Grants read access to all tables")
+    if is_new:
+        role.policies.get_or_create(resource="/table/%", action="read")
 
-    role = LibraryRole.objects.create(name="Run Queries", description="Gives access to execute queries on any table, export query results and create record sets.")
-    role.policies.create(resource="/querybuilder/query", action="execute")
-    role.policies.create(resource="/querybuilder/query", action="export_csv")
-    role.policies.create(resource="/querybuilder/query", action="export_kml")
-    role.policies.create(resource="/querybuilder/query", action="create_recordset")
-    role.policies.create(resource="/table/spquery", action="read")
-    role.policies.create(resource="/table/spquery", action="create")
-    role.policies.create(resource="/table/spquery", action="update")
-    role.policies.create(resource="/table/spquery", action="delete")
-    role.policies.create(resource="/table/spqueryfield", action="read")
-    role.policies.create(resource="/table/spqueryfield", action="create")
-    role.policies.create(resource="/table/spqueryfield", action="update")
-    role.policies.create(resource="/table/spqueryfield", action="delete")
-    role.policies.create(resource="/table/recordset", action="read")
-    role.policies.create(resource="/table/recordset", action="create")
-    role.policies.create(resource="/table/recordset", action="update")
-    role.policies.create(resource="/table/recordset", action="delete")
-    role.policies.create(resource="/table/recordsetitem", action="read")
-    role.policies.create(resource="/table/recordsetitem", action="create")
-    role.policies.create(resource="/table/recordsetitem", action="update")
-    role.policies.create(resource="/table/recordsetitem", action="delete")
-    role.policies.create(resource="/table/%", action="read")
+    role, is_new = LibraryRole.objects.get_or_create(name="Run Queries", description="Gives access to execute queries on any table, export query results and create record sets.")
+    if is_new:
+        role.policies.get_or_create(resource="/querybuilder/query", action="execute")
+        role.policies.get_or_create(resource="/querybuilder/query", action="export_csv")
+        role.policies.get_or_create(resource="/querybuilder/query", action="export_kml")
+        role.policies.get_or_create(resource="/querybuilder/query", action="create_recordset")
+        role.policies.get_or_create(resource="/table/spquery", action="read")
+        role.policies.get_or_create(resource="/table/spquery", action="create")
+        role.policies.get_or_create(resource="/table/spquery", action="update")
+        role.policies.get_or_create(resource="/table/spquery", action="delete")
+        role.policies.get_or_create(resource="/table/spqueryfield", action="read")
+        role.policies.get_or_create(resource="/table/spqueryfield", action="create")
+        role.policies.get_or_create(resource="/table/spqueryfield", action="update")
+        role.policies.get_or_create(resource="/table/spqueryfield", action="delete")
+        role.policies.get_or_create(resource="/table/recordset", action="read")
+        role.policies.get_or_create(resource="/table/recordset", action="create")
+        role.policies.get_or_create(resource="/table/recordset", action="update")
+        role.policies.get_or_create(resource="/table/recordset", action="delete")
+        role.policies.get_or_create(resource="/table/recordsetitem", action="read")
+        role.policies.get_or_create(resource="/table/recordsetitem", action="create")
+        role.policies.get_or_create(resource="/table/recordsetitem", action="update")
+        role.policies.get_or_create(resource="/table/recordsetitem", action="delete")
+        role.policies.get_or_create(resource="/table/%", action="read")
 
-    role = LibraryRole.objects.create(name="Security Admin", description="Grants full access to security settings within a collection.")
-    role.policies.create(resource="/permissions/%", action="read")
-    role.policies.create(resource="/permissions/%", action="update")
-    role.policies.create(resource="/permissions/%", action="create")
-    role.policies.create(resource="/permissions/%", action="delete")
-    role.policies.create(resource="/permissions/%", action="copy_from_library")
-    role.policies.create(resource="/table/specifyuser", action="read")
-    role.policies.create(resource="/table/specifyuser", action="create")
-    role.policies.create(resource="/table/specifyuser", action="update")
-    role.policies.create(resource="/table/specifyuser", action="delete")
+    role, is_new = LibraryRole.objects.get_or_create(name="Security Admin", description="Grants full access to security settings within a collection.")
+    if is_new:
+        role.policies.get_or_create(resource="/permissions/%", action="read")
+        role.policies.get_or_create(resource="/permissions/%", action="update")
+        role.policies.get_or_create(resource="/permissions/%", action="create")
+        role.policies.get_or_create(resource="/permissions/%", action="delete")
+        role.policies.get_or_create(resource="/permissions/%", action="copy_from_library")
+        role.policies.get_or_create(resource="/table/specifyuser", action="read")
+        role.policies.get_or_create(resource="/table/specifyuser", action="create")
+        role.policies.get_or_create(resource="/table/specifyuser", action="update")
+        role.policies.get_or_create(resource="/table/specifyuser", action="delete")
 
 
-    collection_admin = LibraryRole.objects.create(
+    collection_admin, is_new = LibraryRole.objects.get_or_create(
         name="Collection Admin",
         description="Grants full access to all abilities within a collection.")
-    collection_admin.policies.create(resource="%", action="%")
+    if is_new:
+        collection_admin.policies.get_or_create(resource="%", action="%")
 
-    read_only = LibraryRole.objects.create(
+    read_only, is_new = LibraryRole.objects.get_or_create(
         name="Read Only - Legacy",
         description="This is a legacy role that provides "
         "read only access and is assigned to user in the "
@@ -353,12 +462,13 @@ def create_roles(apps = apps) -> None:
         "This is to maintain consistency with the permissions "
         "granted these users in previous versions of Specify 7."
     )
-    read_only.policies.create(resource="/field/%", action="%")
-    read_only.policies.create(resource="/table/%", action="read")
+    if is_new:
+        read_only.policies.get_or_create(resource="/field/%", action="%")
+        read_only.policies.get_or_create(resource="/table/%", action="read")
 
-    read_only.policies.create(resource="/querybuilder/%", action="%")
+        read_only.policies.get_or_create(resource="/querybuilder/%", action="%")
 
-    full_access = LibraryRole.objects.create(
+    full_access, is_new = LibraryRole.objects.get_or_create(
         name='Full Access - Legacy',
         description="This is a legacy role that provides "
         "read write access to most Specify resources and "
@@ -366,26 +476,26 @@ def create_roles(apps = apps) -> None:
         "This is to maintain consistency with the permissions "
         "granted these users in previous versions of Specify 7."
     )
-
-    full_access.policies.create(resource="/field/%", action="%")
-    full_access.policies.create(resource="/table/%", action="read")
+    if is_new:
+        full_access.policies.get_or_create(resource="/field/%", action="%")
+        full_access.policies.get_or_create(resource="/table/%", action="read")
 
     for table in datamodel.tables:
         if not table.system or table.name.endswith('Attachment'):
-            full_access.policies.create(resource=f"/table/{table.name.lower()}", action="%")
+            full_access.policies.get_or_create(resource=f"/table/{table.name.lower()}", action="%")
 
-    full_access.policies.create(resource="/table/picklist", action="%")
-    full_access.policies.create(resource="/table/picklistitem", action="%")
+    full_access.policies.get_or_create(resource="/table/picklist", action="%")
+    full_access.policies.get_or_create(resource="/table/picklistitem", action="%")
 
-    full_access.policies.create(resource="/table/recordset", action="%")
-    full_access.policies.create(resource="/table/recordsetitem", action="%")
+    full_access.policies.get_or_create(resource="/table/recordset", action="%")
+    full_access.policies.get_or_create(resource="/table/recordsetitem", action="%")
 
-    full_access.policies.create(resource="/table/spquery", action="%")
-    full_access.policies.create(resource="/table/spqueryfield", action="%")
+    full_access.policies.get_or_create(resource="/table/spquery", action="%")
+    full_access.policies.get_or_create(resource="/table/spqueryfield", action="%")
 
-    full_access.policies.create(resource="/tree/%", action="%")
-    full_access.policies.create(resource="/report", action="%")
-    full_access.policies.create(resource="/querybuilder/%", action="%")
+    full_access.policies.get_or_create(resource="/tree/%", action="%")
+    full_access.policies.get_or_create(resource="/report", action="%")
+    full_access.policies.get_or_create(resource="/querybuilder/%", action="%")
 
     # copy the appropriate roles into the individual collections.
     users = Specifyuser.objects.all()
@@ -393,31 +503,34 @@ def create_roles(apps = apps) -> None:
 
     if 'Guest' in user_types or 'LimitedAccess' in user_types:
         for collection in Collection.objects.all():
-            r = Role.objects.create(
+            r, is_new = Role.objects.get_or_create(
                 collection_id=collection.id,
                 name=read_only.name,
                 description=read_only.description,
             )
-            for lp in read_only.policies.all():
-                r.policies.create(resource=lp.resource, action=lp.action)
+            if is_new:
+                for lp in read_only.policies.all():
+                    r.policies.get_or_create(resource=lp.resource, action=lp.action)
 
     if 'FullAccess' in user_types:
         for collection in Collection.objects.all():
-            r = Role.objects.create(
+            r, is_new = Role.objects.get_or_create(
                 collection_id=collection.id,
                 name=full_access.name,
                 description=full_access.description,
             )
-            for lp in full_access.policies.all():
-                r.policies.create(resource=lp.resource, action=lp.action)
+            if is_new:
+                for lp in full_access.policies.all():
+                    r.policies.get_or_create(resource=lp.resource, action=lp.action)
 
 
     for collection_id in Collection.objects.values_list('id', flat=True):
         # Copy the collection admin role into the collection roles.
-        ca = Role.objects.create(
+        ca, is_new = Role.objects.get_or_create(
             collection_id=collection_id,
             name=collection_admin.name,
             description=collection_admin.description,
         )
-        for lp in collection_admin.policies.all():
-            ca.policies.create(resource=lp.resource, action=lp.action)
+        if is_new:
+            for lp in collection_admin.policies.all():
+                ca.policies.get_or_create(resource=lp.resource, action=lp.action)
