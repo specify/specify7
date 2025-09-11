@@ -3,7 +3,6 @@ import type { Plugins } from 'handsontable/plugins';
 import type { CellProperties } from 'handsontable/settings';
 
 import { getCache } from '../../utils/cache';
-import type { WritableArray } from '../../utils/types';
 import { writable } from '../../utils/types';
 import { schema } from '../DataModel/schema';
 import { userPreferences } from '../Preferences/userPreferences';
