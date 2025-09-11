@@ -142,13 +142,11 @@ repos:
     hooks:
       - id: docker-compose-check
 
-  - repo: https://github.com/markdownlint/markdownlint
-    rev: v0.11.0
+  # Markdown linter
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.18.1
     hooks:
-      - id: markdownlint
-        files: \.md$
-        args:
-          - --git-recurse
+      - id: markdownlint-cli2
 
   - repo: https://github.com/maxpatiiuk/mirrors-jscpd
     rev: v3.3.26
