@@ -9,7 +9,8 @@ import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
 import { className } from '../Atoms/className';
-import { legacyNonJsxIcons } from '../Atoms/Icons';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { icons } from '../Atoms/Icons';
 import { userPreferences } from '../Preferences/userPreferences';
 import { splitJoinedMappingPath } from '../WbPlanView/mappingHelpers';
 import type { LeafletInstance } from './addOns';
@@ -187,7 +188,7 @@ export const formatLocalityData = (
             <span
               title="${commonText.opensInNewTab()}"
               aria-label="${commonText.opensInNewTab()}"
-            >${legacyNonJsxIcons.link}</span>
+            >${renderToStaticMarkup(icons.externalLink)}</span>
           </a>`,
         ]
       : []),
