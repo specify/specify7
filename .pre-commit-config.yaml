@@ -47,9 +47,17 @@ repos:
         types: [python]
         pass_filenames: false
 
-  #- repo: https://github.com/pre-commit/mirrors-mypy
-  #- repo: https://github.com/pre-commit/mirrors-eslint
-  #- repo: https://github.com/awebdeveloper/pre-commit-stylelint
+  - repo: https://github.com/pycqa/flake8
+    rev: "3.9.2"
+    hooks:
+      - id: flake8
+        additional_dependencies:
+          - flake8-bugbear
+        args:
+          # these settings are needed to make flake8 compatible with black
+          - --max-line-length=88
+          - --select=C,E,F,W,B,B950
+          - --extend-ignore=E203,E501
 
   # global hooks:
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -84,18 +92,6 @@ repos:
       - id: black
         args:
           - --line-length=72
-
-  - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.9.2
-    hooks:
-      - id: flake8
-        additional_dependencies:
-          - flake8-bugbear
-        args:
-          # these settings are needed to make flake8 compatible with black
-          - --max-line-length=88
-          - --select=C,E,F,W,B,B950
-          - --extend-ignore=E203,E501
 
   - repo: https://github.com/terrencepreilly/darglint
     rev: v1.8.1
