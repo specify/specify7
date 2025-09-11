@@ -2247,6 +2247,7 @@ datamodel = Datamodel(tables=[
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='identifiedDate', column='IdentifiedDate', indexed=True, unique=False, required=False, type='java.util.Calendar'),
         ],
         indexes=[],
         relationships=[

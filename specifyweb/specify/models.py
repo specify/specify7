@@ -2087,6 +2087,7 @@ class Component(models.Model):
     timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    identifieddate = models.DateTimeField(blank=True, null=True, unique=False, db_column='IdentifiedDate', db_index=False)
 
     # Relationships: Many-to-One
     collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='components', null=False, on_delete=models.CASCADE)

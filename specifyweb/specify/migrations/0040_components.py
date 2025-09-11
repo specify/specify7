@@ -188,6 +188,7 @@ class Migration(migrations.Migration):
                 ('name', models.ForeignKey(db_column='TaxonID', null=True, on_delete=protect_with_blockers, related_name='components', to='specify.taxon')),
                 ('type', models.ForeignKey(db_column='CollectionObjectTypeID', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='components', to='specify.collectionobjecttype')),
                 ('identifiedby', models.ForeignKey(db_column='AgentID', null=True, on_delete=protect_with_blockers, related_name='components', to='specify.agent')),
+                ('identifieddate', models.DateTimeField(blank=True, db_column='IdentifiedDate', default=django.utils.timezone.now, null=True)),
             ],
             options={
                 'db_table': 'component',
