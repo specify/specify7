@@ -1,7 +1,6 @@
-from typing import Tuple
-
 from django.db import migrations
 
+from specifyweb.backend.businessrules.migration_utils import catnum_rule_editable, catnum_rule_uneditable
 from specifyweb.backend.businessrules.uniqueness_rules import create_uniqueness_rule
 
 
