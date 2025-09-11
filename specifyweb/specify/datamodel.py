@@ -350,7 +350,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='organization', type='many-to-one',required=False, relatedModelName='Agent', column='ParentOrganizationID', otherSideName='orgMembers'),
             Relationship(name='specifyUser', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='agents'),
             Relationship(name='variants', type='one-to-many',required=False, relatedModelName='AgentVariant', otherSideName='agent', dependent=True),
-            Relationship(name='components', type='one-to-many',required=False, relatedModelName='Component', otherSideName='determiner'),
+            Relationship(name='components', type='one-to-many',required=False, relatedModelName='Component', otherSideName='identifiedBy'),
         ],
         fieldAliases=[
 
@@ -2252,7 +2252,7 @@ datamodel = Datamodel(tables=[
         relationships=[
             Relationship(name='collectionObject', type='many-to-one',required=True, relatedModelName='CollectionObject', column='CollectionObjectID', otherSideName='components'),
             Relationship(name='name', type='many-to-one',required=False, relatedModelName='Taxon', column='TaxonID', otherSideName='components'),
-            Relationship(name='determiner', type='many-to-one', required=False, relatedModelName='Agent', column='AgentID', otherSideName='components'),
+            Relationship(name='identifiedBy', type='many-to-one', required=False, relatedModelName='Agent', column='AgentID', otherSideName='components'),
             Relationship(name='type', type='many-to-one', required=True, relatedModelName='CollectionObjectType', column='CollectionObjectTypeID'),
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
