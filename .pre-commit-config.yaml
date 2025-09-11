@@ -40,8 +40,7 @@ repos:
       - id: mypy
         name: mypy
         description: Python mypy typechecker
-        entry:
-          /bin/bash -c "docker exec --tty specify7_specify7_1 bash -c
+        entry: /bin/bash -c "docker exec --tty specify7_specify7_1 bash -c
           'VIRTUAL_ENV=./ve make typecheck'"
         language: script
         types: [python]
@@ -79,6 +78,7 @@ repos:
       - id: fix-encoding-pragma
       - id: forbid-new-submodules
 
+  # Spell checker
   - repo: https://github.com/codespell-project/codespell
     rev: v2.1.0
     hooks:
@@ -121,7 +121,7 @@ repos:
       - id: prettier
         additional_dependencies:
           - prettier@2.5.0
-          - '@prettier/plugin-xml@^0.13.1'
+          - "@prettier/plugin-xml@^0.13.1"
           - prettier-plugin-package@^1.3.0
           - prettier-plugin-sh@^0.8.1
           - prettier-plugin-tailwind-css@^1.5.0
