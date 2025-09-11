@@ -21,6 +21,14 @@ repos:
         pass_filenames: false
 
   - repo: https://github.com/maxpatiiuk/pre-commit
+    #   Prevents a commit if changed files matched one of the regex statements from the blacklist dictionary.
+    #
+    #   Useful for making sure the following things don't get committed accidentally:
+    #
+    #   Unresolved #FIX ME comments
+    #   Unresolved merge conflicts (<<<< HEAD)
+    #   Secret keys
+    #   Changes to the config file (`DEVELOPMENT=true)
     rev: v1.0.5
     hooks:
       - id: regex-blacklist
