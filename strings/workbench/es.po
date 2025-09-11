@@ -833,7 +833,7 @@ msgstr "{node:string} {author:string} (en {parent:string})"
 msgid "attachmentsForRow"
 msgstr "Archivos adjuntos para la fila {row:number}:"
 
-#: components/WorkBench/WbAttachmentsPreview.tsx:338
+#: components/WorkBench/WbAttachmentsPreview.tsx:340
 #. Used in: Components > Work Bench > Wb Attachments Preview
 #, fuzzy
 msgid "detachWindow"

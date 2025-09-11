@@ -974,7 +974,7 @@ msgstr "{node:string} {author:string} (em {parent:string})"
 msgid "attachmentsForRow"
 msgstr "Anexos para linha {row:number}:"
 
-#: components/WorkBench/WbAttachmentsPreview.tsx:338
+#: components/WorkBench/WbAttachmentsPreview.tsx:340
 #. Used in: Components > Work Bench > Wb Attachments Preview
 #, fuzzy
 msgid "detachWindow"

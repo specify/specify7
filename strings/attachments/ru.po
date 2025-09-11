@@ -28,8 +28,8 @@ msgstr ""
 #: components/WbImportAttachments/index.tsx:215
 #: components/WbToolkit/index.tsx:73
 #: components/WorkBench/WbAttachmentsPreview.tsx:115
-#: components/WorkBench/WbAttachmentsPreview.tsx:300
-#: components/WorkBench/WbAttachmentsPreview.tsx:334
+#: components/WorkBench/WbAttachmentsPreview.tsx:302
+#: components/WorkBench/WbAttachmentsPreview.tsx:336
 #: components/WorkBench/WbView.tsx:229
 #: components/WorkBench/hotProps.tsx:76
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Wb Attachment Viewer > Index ⬤ Components > Wb Import Attachments > Index ⬤ Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb Attachments Preview ⬤ Components > Work Bench > Wb View ⬤ Components > Work Bench > Hot Props

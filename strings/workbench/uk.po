@@ -822,7 +822,7 @@ msgstr "{node:string} {author:string} (у {parent:string})"
 msgid "attachmentsForRow"
 msgstr "Вкладення для рядка {row:number}:"
 
-#: components/WorkBench/WbAttachmentsPreview.tsx:338
+#: components/WorkBench/WbAttachmentsPreview.tsx:340
 #. Used in: Components > Work Bench > Wb Attachments Preview
 msgid "detachWindow"
 msgstr "Від’єднати вікно"
