@@ -1,4 +1,5 @@
 from django.db import migrations
+from specifyweb.backend.workbench.upload.auditlog import auditlog
 
 def add_attachment_import_role(apps, schema_editor):
     LibraryRole = apps.get_model('permissions', 'LibraryRole')
@@ -6,187 +7,79 @@ def add_attachment_import_role(apps, schema_editor):
         name="Bulk Attachment Import",
         description="Gives full access to the Bulk Attachment Import. Allows creating new attachments for any attachment table"
     )
-    # Attachment dataset permissions
-    role.policies.create(resource='/attachment_import/dataset', action='create')
-    role.policies.create(resource='/attachment_import/dataset', action='update')
-    role.policies.create(resource='/attachment_import/dataset', action='delete')
-    role.policies.create(resource='/attachment_import/dataset', action='upload')
-    role.policies.create(resource='/attachment_import/dataset', action='rollback')
+    auditlog.insert(role)
 
-    # Attachment permissions
-    role.policies.create(resource='/table/attachment', action='create')
-    role.policies.create(resource='/table/attachment', action='read')
-    role.policies.create(resource='/table/attachment', action='delete')
+    # Define policy sets grouped by resource
+    policy_definitions = [
+        # Attachment dataset permissions
+        {'resource': '/attachment_import/dataset', 'actions': ['create', 'update', 'delete', 'upload', 'rollback']},
+        # Attachment permissions
+        {'resource': '/table/attachment', 'actions': ['create', 'read', 'delete']},
+        # Table Specific permissions
+        {'resource': '/table/accession', 'actions': ['read', 'update']},
+        {'resource': '/table/accessionattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/agent', 'actions': ['read', 'update']},
+        {'resource': '/table/agentattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/borrow', 'actions': ['read', 'update']},
+        {'resource': '/table/borrowattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/collectingevent', 'actions': ['read', 'update']},
+        {'resource': '/table/collectingeventattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/collectingtrip', 'actions': ['read', 'update']},
+        {'resource': '/table/collectingtripattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/collectionobject', 'actions': ['read', 'update']},
+        {'resource': '/table/collectionobjectattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/conservdescription', 'actions': ['read', 'update']},
+        {'resource': '/table/conservdescriptionattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/conservevent', 'actions': ['read', 'update']},
+        {'resource': '/table/conserveventattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/dnasequence', 'actions': ['read', 'update']},
+        {'resource': '/table/dnasequenceattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/dnasequencingrun', 'actions': ['read', 'update']},
+        {'resource': '/table/dnasequencingrunattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/deaccession', 'actions': ['read', 'update']},
+        {'resource': '/table/deaccessionattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/disposal', 'actions': ['read', 'update']},
+        {'resource': '/table/disposalattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/exchangein', 'actions': ['read', 'update']},
+        {'resource': '/table/exchangeinattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/exchangeout', 'actions': ['read', 'update']},
+        {'resource': '/table/exchangeoutattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/fieldnotebook', 'actions': ['read', 'update']},
+        {'resource': '/table/fieldnotebookattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/fieldnotebookpage', 'actions': ['read', 'update']},
+        {'resource': '/table/fieldnotebookpageattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/fieldnotebookpageset', 'actions': ['read', 'update']},
+        {'resource': '/table/fieldnotebookpagesetattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/gift', 'actions': ['read', 'update']},
+        {'resource': '/table/giftattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/loan', 'actions': ['read', 'update']},
+        {'resource': '/table/loanattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/locality', 'actions': ['read', 'update']},
+        {'resource': '/table/localityattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/morphbankview', 'actions': ['read', 'update']},
+        {'resource': '/table/attachmentimageattribute', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/permit', 'actions': ['read', 'update']},
+        {'resource': '/table/permitattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/preparation', 'actions': ['read', 'update']},
+        {'resource': '/table/preparationattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/referencework', 'actions': ['read', 'update']},
+        {'resource': '/table/referenceworkattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/repositoryagreement', 'actions': ['read', 'update']},
+        {'resource': '/table/repositoryagreementattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/storage', 'actions': ['read', 'update']},
+        {'resource': '/table/storageattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/taxon', 'actions': ['read', 'update']},
+        {'resource': '/table/taxonattachment', 'actions': ['read', 'create', 'delete']},
+        {'resource': '/table/treatmentevent', 'actions': ['read', 'update']},
+        {'resource': '/table/treatmenteventattachment', 'actions': ['read', 'create', 'delete']},
+    ]
 
-    # Table Specific permissions (Auto-generated)
-    role.policies.create(resource='/table/accession', action='read')
-    role.policies.create(resource='/table/accession', action='update')
-    role.policies.create(resource='/table/accessionattachment', action='read')
-    role.policies.create(resource='/table/accessionattachment', action='create')
-    role.policies.create(resource='/table/accessionattachment', action='delete')
-
-    role.policies.create(resource='/table/agent', action='read')
-    role.policies.create(resource='/table/agent', action='update')
-    role.policies.create(resource='/table/agentattachment', action='read')
-    role.policies.create(resource='/table/agentattachment', action='create')
-    role.policies.create(resource='/table/agentattachment', action='delete')
-
-    role.policies.create(resource='/table/borrow', action='read')
-    role.policies.create(resource='/table/borrow', action='update')
-    role.policies.create(resource='/table/borrowattachment', action='read')
-    role.policies.create(resource='/table/borrowattachment', action='create')
-    role.policies.create(resource='/table/borrowattachment', action='delete')
-
-    role.policies.create(resource='/table/collectingevent', action='read')
-    role.policies.create(resource='/table/collectingevent', action='update')
-    role.policies.create(resource='/table/collectingeventattachment', action='read')
-    role.policies.create(resource='/table/collectingeventattachment', action='create')
-    role.policies.create(resource='/table/collectingeventattachment', action='delete')
-
-    role.policies.create(resource='/table/collectingtrip', action='read')
-    role.policies.create(resource='/table/collectingtrip', action='update')
-    role.policies.create(resource='/table/collectingtripattachment', action='read')
-    role.policies.create(resource='/table/collectingtripattachment', action='create')
-    role.policies.create(resource='/table/collectingtripattachment', action='delete')
-
-    role.policies.create(resource='/table/collectionobject', action='read')
-    role.policies.create(resource='/table/collectionobject', action='update')
-    role.policies.create(resource='/table/collectionobjectattachment', action='read')
-    role.policies.create(resource='/table/collectionobjectattachment', action='create')
-    role.policies.create(resource='/table/collectionobjectattachment', action='delete')
-
-    role.policies.create(resource='/table/conservdescription', action='read')
-    role.policies.create(resource='/table/conservdescription', action='update')
-    role.policies.create(resource='/table/conservdescriptionattachment', action='read')
-    role.policies.create(resource='/table/conservdescriptionattachment', action='create')
-    role.policies.create(resource='/table/conservdescriptionattachment', action='delete')
-
-    role.policies.create(resource='/table/conservevent', action='read')
-    role.policies.create(resource='/table/conservevent', action='update')
-    role.policies.create(resource='/table/conserveventattachment', action='read')
-    role.policies.create(resource='/table/conserveventattachment', action='create')
-    role.policies.create(resource='/table/conserveventattachment', action='delete')
-
-    role.policies.create(resource='/table/dnasequence', action='read')
-    role.policies.create(resource='/table/dnasequence', action='update')
-    role.policies.create(resource='/table/dnasequenceattachment', action='read')
-    role.policies.create(resource='/table/dnasequenceattachment', action='create')
-    role.policies.create(resource='/table/dnasequenceattachment', action='delete')
-
-    role.policies.create(resource='/table/dnasequencingrun', action='read')
-    role.policies.create(resource='/table/dnasequencingrun', action='update')
-    role.policies.create(resource='/table/dnasequencingrunattachment', action='read')
-    role.policies.create(resource='/table/dnasequencingrunattachment', action='create')
-    role.policies.create(resource='/table/dnasequencingrunattachment', action='delete')
-
-    role.policies.create(resource='/table/deaccession', action='read')
-    role.policies.create(resource='/table/deaccession', action='update')
-    role.policies.create(resource='/table/deaccessionattachment', action='read')
-    role.policies.create(resource='/table/deaccessionattachment', action='create')
-    role.policies.create(resource='/table/deaccessionattachment', action='delete')
-
-    role.policies.create(resource='/table/disposal', action='read')
-    role.policies.create(resource='/table/disposal', action='update')
-    role.policies.create(resource='/table/disposalattachment', action='read')
-    role.policies.create(resource='/table/disposalattachment', action='create')
-    role.policies.create(resource='/table/disposalattachment', action='delete')
-
-    role.policies.create(resource='/table/exchangein', action='read')
-    role.policies.create(resource='/table/exchangein', action='update')
-    role.policies.create(resource='/table/exchangeinattachment', action='read')
-    role.policies.create(resource='/table/exchangeinattachment', action='create')
-    role.policies.create(resource='/table/exchangeinattachment', action='delete')
-
-    role.policies.create(resource='/table/exchangeout', action='read')
-    role.policies.create(resource='/table/exchangeout', action='update')
-    role.policies.create(resource='/table/exchangeoutattachment', action='read')
-    role.policies.create(resource='/table/exchangeoutattachment', action='create')
-    role.policies.create(resource='/table/exchangeoutattachment', action='delete')
-
-    role.policies.create(resource='/table/fieldnotebook', action='read')
-    role.policies.create(resource='/table/fieldnotebook', action='update')
-    role.policies.create(resource='/table/fieldnotebookattachment', action='read')
-    role.policies.create(resource='/table/fieldnotebookattachment', action='create')
-    role.policies.create(resource='/table/fieldnotebookattachment', action='delete')
-
-    role.policies.create(resource='/table/fieldnotebookpage', action='read')
-    role.policies.create(resource='/table/fieldnotebookpage', action='update')
-    role.policies.create(resource='/table/fieldnotebookpageattachment', action='read')
-    role.policies.create(resource='/table/fieldnotebookpageattachment', action='create')
-    role.policies.create(resource='/table/fieldnotebookpageattachment', action='delete')
-
-    role.policies.create(resource='/table/fieldnotebookpageset', action='read')
-    role.policies.create(resource='/table/fieldnotebookpageset', action='update')
-    role.policies.create(resource='/table/fieldnotebookpagesetattachment', action='read')
-    role.policies.create(resource='/table/fieldnotebookpagesetattachment', action='create')
-    role.policies.create(resource='/table/fieldnotebookpagesetattachment', action='delete')
-
-    role.policies.create(resource='/table/gift', action='read')
-    role.policies.create(resource='/table/gift', action='update')
-    role.policies.create(resource='/table/giftattachment', action='read')
-    role.policies.create(resource='/table/giftattachment', action='create')
-    role.policies.create(resource='/table/giftattachment', action='delete')
-
-    role.policies.create(resource='/table/loan', action='read')
-    role.policies.create(resource='/table/loan', action='update')
-    role.policies.create(resource='/table/loanattachment', action='read')
-    role.policies.create(resource='/table/loanattachment', action='create')
-    role.policies.create(resource='/table/loanattachment', action='delete')
-
-    role.policies.create(resource='/table/locality', action='read')
-    role.policies.create(resource='/table/locality', action='update')
-    role.policies.create(resource='/table/localityattachment', action='read')
-    role.policies.create(resource='/table/localityattachment', action='create')
-    role.policies.create(resource='/table/localityattachment', action='delete')
-
-    role.policies.create(resource='/table/morphbankview', action='read')
-    role.policies.create(resource='/table/morphbankview', action='update')
-    role.policies.create(resource='/table/attachmentimageattribute', action='read')
-    role.policies.create(resource='/table/attachmentimageattribute', action='create')
-    role.policies.create(resource='/table/attachmentimageattribute', action='delete')
-
-    role.policies.create(resource='/table/permit', action='read')
-    role.policies.create(resource='/table/permit', action='update')
-    role.policies.create(resource='/table/permitattachment', action='read')
-    role.policies.create(resource='/table/permitattachment', action='create')
-    role.policies.create(resource='/table/permitattachment', action='delete')
-
-    role.policies.create(resource='/table/preparation', action='read')
-    role.policies.create(resource='/table/preparation', action='update')
-    role.policies.create(resource='/table/preparationattachment', action='read')
-    role.policies.create(resource='/table/preparationattachment', action='create')
-    role.policies.create(resource='/table/preparationattachment', action='delete')
-
-    role.policies.create(resource='/table/referencework', action='read')
-    role.policies.create(resource='/table/referencework', action='update')
-    role.policies.create(resource='/table/referenceworkattachment', action='read')
-    role.policies.create(resource='/table/referenceworkattachment', action='create')
-    role.policies.create(resource='/table/referenceworkattachment', action='delete')
-
-    role.policies.create(resource='/table/repositoryagreement', action='read')
-    role.policies.create(resource='/table/repositoryagreement', action='update')
-    role.policies.create(resource='/table/repositoryagreementattachment', action='read')
-    role.policies.create(resource='/table/repositoryagreementattachment', action='create')
-    role.policies.create(resource='/table/repositoryagreementattachment', action='delete')
-
-    role.policies.create(resource='/table/storage', action='read')
-    role.policies.create(resource='/table/storage', action='update')
-    role.policies.create(resource='/table/storageattachment', action='read')
-    role.policies.create(resource='/table/storageattachment', action='create')
-    role.policies.create(resource='/table/storageattachment', action='delete')
-
-    role.policies.create(resource='/table/taxon', action='read')
-    role.policies.create(resource='/table/taxon', action='update')
-    role.policies.create(resource='/table/taxonattachment', action='read')
-    role.policies.create(resource='/table/taxonattachment', action='create')
-    role.policies.create(resource='/table/taxonattachment', action='delete')
-
-    role.policies.create(resource='/table/treatmentevent', action='read')
-    role.policies.create(resource='/table/treatmentevent', action='update')
-    role.policies.create(resource='/table/treatmenteventattachment', action='read')
-    role.policies.create(resource='/table/treatmenteventattachment', action='create')
-    role.policies.create(resource='/table/treatmenteventattachment', action='delete')
-
+    # Create each policy and log its creation
+    for policy in policy_definitions:
+        for action in policy['actions']:
+            obj, created = role.policies.get_or_create(resource=policy['resource'], action=action)
+            if created:
+                auditlog.insert(obj)
 
 class Migration(migrations.Migration):
     dependencies = [
