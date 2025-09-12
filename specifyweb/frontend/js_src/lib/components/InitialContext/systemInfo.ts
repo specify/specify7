@@ -48,7 +48,7 @@ export const fetchContext = load<SystemInfo>(
       counts = null;
     }
 
-    const params = {
+    const parameters = {
       version: systemInfo.version,
       dbVersion: systemInfo.database_version,
       institution: systemInfo.institution,
@@ -66,7 +66,7 @@ export const fetchContext = load<SystemInfo>(
     await ping(
       formatUrl(
         systemInfo.stats_url,
-        params,
+        parameters,
         /*
          * I don't know if the receiving server handles GET parameters in a
          * case-sensitive way. Thus, don't convert keys to lower case, but leave
