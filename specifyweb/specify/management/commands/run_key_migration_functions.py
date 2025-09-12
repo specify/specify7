@@ -81,10 +81,8 @@ def apply_default_uniqueness_rules_to_disciplines(apps):
     Discipline = apps.get_model('specify', 'Discipline')
     UniquenessRule = apps.get_model('businessrules', 'UniquenessRule')
 
-    for discipline in Discipline.objects.exclude(
-        id__in=set(UniquenessRule.objects.values_list('discipline_id', flat=True).distinct())):
+    for discipline in Discipline.objects.all():
         apply_default_uniqueness_rules(discipline, registry=apps)
-
 
 def fix_business_rules(stdout: WriteToStdOut | None = None):
     funcs = [
