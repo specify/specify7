@@ -306,20 +306,20 @@ function ActionsMenu({
   return (
     <div className="flex flex-col gap-1 p-2 bg-[color:var(--background)] rounded">
       <div className="flex flex-col gap-2">
-        {visibleActions.map((a) => (
+        {visibleActions.map((action) => (
           <Button.Secondary
             disabled={isRunning}
-            key={a.key}
-            onClick={(e): void => {
-              e.preventDefault();
-              a.run();
+            key={action.key}
+            onClick={(event): void => {
+              event.preventDefault();
+              action.run();
             }}
-            onMouseEnter={(): void => setHoveredAction(a.key)}
+            onMouseEnter={(): void => setHoveredAction(action.key)}
             onMouseLeave={(): void =>
-              setHoveredAction((h) => (h === a.key ? null : h))
+              setHoveredAction((previousHovered) => (previousHovered === action.key ? null : previousHovered))
             }
           >
-            <>{a.label()}</>
+            <>{action.label()}</>
           </Button.Secondary>
         ))}
       </div>
