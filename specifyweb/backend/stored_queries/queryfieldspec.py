@@ -42,7 +42,7 @@ TREE_ID_FIELD_RE = re.compile(r"(.*) (ID)$")
 # Precalculated fields that are not in the database. Map from table name to list of field names.
 PRECALCULATED_FIELDS = {
     "CollectionObject": ["age"],
-    "Preparation": ["actualCountAmt", "isonloan", "isongift", "isondisposal", "isonexchangeout", "isonexchangein"],
+    "Preparation": ["actualCountAmt", "isOnLoan", "isOnGift", "isOnDisposal", "isOnExchangeOut", "isOnExchangeIn"],
     "Loan": ["totalPreps", "totalItems", "unresolvedPreps", "unresolvedItems", "resolvedPreps", "resolvedItems"],
     "Accession": ["totalCountAmt", "actualTotalCountAmt", "collectionObjectCount", "preparationCount"],
     "Disposal": ["totalPreps", "totalItems"],
@@ -78,25 +78,25 @@ def get_calculated_field_expression(table_name: str, field_name: str, orm_model)
             
             return orm_model.countamt - gift_sum - exchangeout_sum - disposal_sum
             
-        elif field_name in ["isonloan", "isongift", "isondisposal", "isonexchangeout", "isonexchangein"]:
+        elif field_name in ["isOnLoan", "isOnGift", "isOnDisposal", "isOnExchangeOut", "isOnExchangeIn"]:
             # These are boolean fields based on existence of related records
-            if field_name == "isonloan":
+            if field_name == "isOnLoan":
                 subquery = select(func.count()).where(
                     models.LoanPreparation.preparationid == orm_model.preparationid
                 ).where(models.LoanPreparation.quantity > func.coalesce(models.LoanPreparation.quantityresolved, 0))
-            elif field_name == "isongift":
+            elif field_name == "isOnGift":
                 subquery = select(func.count()).where(
                     models.GiftPreparation.preparationid == orm_model.preparationid
                 )
-            elif field_name == "isondisposal":
+            elif field_name == "isOnDisposal":
                 subquery = select(func.count()).where(
                     models.DisposalPreparation.preparationid == orm_model.preparationid
                 )
-            elif field_name == "isonexchangeout":
+            elif field_name == "isOnExchangeOut":
                 subquery = select(func.count()).where(
                     models.ExchangeOutPrep.preparationid == orm_model.preparationid
                 )
-            elif field_name == "isonexchangein":
+            elif field_name == "isOnExchangeIn":
                 subquery = select(func.count()).where(
                     models.ExchangeInPrep.preparationid == orm_model.preparationid
                 )
@@ -254,8 +254,8 @@ def get_calculated_field_expression(table_name: str, field_name: str, orm_model)
             
             return disposal_items + gift_items + exchange_items
     
-    # For other cases, fall back to ID
-    return orm_model._id
+    # For unknown calculated fields, raise an error to help with debugging
+    raise NotImplementedError(f"Calculated field '{field_name}' for table '{table_name}' is not implemented")
 
 class SpQueryAttrs(TypedDict):
     tablelist: str
