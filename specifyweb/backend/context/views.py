@@ -26,7 +26,7 @@ from specifyweb.backend.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, \
     check_permission_targets, skip_collection_access_check, query_pt, \
     CollectionAccessPT
-from specifyweb.specify.models import Collection, Institution, \
+from specifyweb.specify.models import Collection, Collectionobject, Institution, \
     Specifyuser, Spprincipal, Spversion, Collectionobjecttype
 from specifyweb.specify.models_utils.schema import base_schema
 from specifyweb.specify.models_utils.serialize_datamodel import datamodel_to_json
@@ -1018,3 +1018,17 @@ def schema_language(request):
         dict(zip(('language', 'country', 'variant'), row))
         for row in schema_languages
     ], safe=False)
+
+@require_http_methods(['GET', 'HEAD'])
+@cache_control(max_age=86400, public=True)
+@login_maybe_required
+def stats_counts(request):
+    """Get the count of collection objects, collections, and users."""
+    co_count = Collectionobject.objects.count()
+    collection_count = Collection.objects.count()
+    user_count = Specifyuser.objects.count()
+    return JsonResponse({
+        'Collectionobject': co_count,
+        'Collection': collection_count,
+        'Specifyuser': user_count,
+    })
