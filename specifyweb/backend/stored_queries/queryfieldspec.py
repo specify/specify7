@@ -39,10 +39,159 @@ GEOGRAPHY_FIELD_RE = re.compile(r"(.*) ((geographyCode))$")
 # Look to see if we are dealing with a tree node ID.
 TREE_ID_FIELD_RE = re.compile(r"(.*) (ID)$")
 
-# Precalculated fields that are not in the database. Map from table name to field name.
+# Precalculated fields that are not in the database. Map from table name to list of field names.
 PRECALCULATED_FIELDS = {
-    "CollectionObject": "age",
+    "CollectionObject": ["age"],
+    "Preparation": ["actualCountAmt", "isonloan", "isongift", "isondisposal", "isonexchangeout", "isonexchangein"],
+    "Loan": ["totalPreps", "totalItems", "unresolvedPreps", "unresolvedItems", "resolvedPreps", "resolvedItems"],
+    "Accession": ["totalCountAmt", "actualTotalCountAmt", "collectionObjectCount", "preparationCount"],
+    "Disposal": ["totalPreps", "totalItems"],
+    "Gift": ["totalPreps", "totalItems"],
+    "ExchangeOut": ["totalPreps", "totalItems"],
+    "Deaccession": ["totalPreps", "totalItems"],
 }
+
+def get_calculated_field_expression(table_name: str, field_name: str, orm_model):
+    """Return SQL expression for calculated fields."""
+    from sqlalchemy import func, select
+    
+    if table_name == "Preparation":
+        if field_name == "actualCountAmt":
+            # actualCountAmt = countamt - (gift_sum + exchangeout_sum + disposal_sum)
+            gift_sum = select(func.coalesce(func.sum(models.GiftPreparation.quantity), 0)).where(
+                models.GiftPreparation.preparationId == orm_model.preparationId
+            ).scalar_subquery()
+            
+            exchangeout_sum = select(func.coalesce(func.sum(models.ExchangeOutPrep.quantity), 0)).where(
+                models.ExchangeOutPrep.preparationId == orm_model.preparationId
+            ).scalar_subquery()
+            
+            disposal_sum = select(func.coalesce(func.sum(models.DisposalPreparation.quantity), 0)).where(
+                models.DisposalPreparation.preparationId == orm_model.preparationId
+            ).scalar_subquery()
+            
+            return orm_model.countAmt - gift_sum - exchangeout_sum - disposal_sum
+            
+        elif field_name in ["isonloan", "isongift", "isondisposal", "isonexchangeout", "isonexchangein"]:
+            # These are boolean fields based on existence of related records
+            if field_name == "isonloan":
+                subquery = select(func.count()).where(
+                    models.LoanPreparation.preparationId == orm_model.preparationId
+                ).where(models.LoanPreparation.quantity > func.coalesce(models.LoanPreparation.quantityResolved, 0))
+            elif field_name == "isongift":
+                subquery = select(func.count()).where(
+                    models.GiftPreparation.preparationId == orm_model.preparationId
+                )
+            elif field_name == "isondisposal":
+                subquery = select(func.count()).where(
+                    models.DisposalPreparation.preparationId == orm_model.preparationId
+                )
+            elif field_name == "isonexchangeout":
+                subquery = select(func.count()).where(
+                    models.ExchangeOutPrep.preparationId == orm_model.preparationId
+                )
+            elif field_name == "isonexchangein":
+                subquery = select(func.count()).where(
+                    models.ExchangeInPrep.preparationId == orm_model.preparationId
+                )
+            return (subquery.scalar_subquery() > 0)
+    
+    elif table_name == "Loan":
+        if field_name == "totalPreps":
+            return select(func.count()).where(
+                models.LoanPreparation.loanId == orm_model.loanId
+            ).scalar_subquery()
+        elif field_name == "totalItems":
+            return select(func.coalesce(func.sum(models.LoanPreparation.quantity), 0)).where(
+                models.LoanPreparation.loanId == orm_model.loanId
+            ).scalar_subquery()
+        elif field_name == "unresolvedPreps":
+            return select(func.count()).where(
+                models.LoanPreparation.loanId == orm_model.loanId
+            ).where(~models.LoanPreparation.isResolved).scalar_subquery()
+        elif field_name == "unresolvedItems":
+            return select(func.coalesce(func.sum(
+                func.greatest(models.LoanPreparation.quantity - func.coalesce(models.LoanPreparation.quantityResolved, 0), 0)
+            ), 0)).where(
+                models.LoanPreparation.loanId == orm_model.loanId
+            ).where(~models.LoanPreparation.isResolved).scalar_subquery()
+        elif field_name == "resolvedPreps":
+            return select(func.count()).where(
+                models.LoanPreparation.loanId == orm_model.loanId
+            ).where(models.LoanPreparation.isResolved).scalar_subquery()
+        elif field_name == "resolvedItems":
+            return select(func.coalesce(func.sum(models.LoanPreparation.quantityResolved), 0)).where(
+                models.LoanPreparation.loanId == orm_model.loanId
+            ).where(models.LoanPreparation.isResolved).scalar_subquery()
+    
+    elif table_name == "Accession":
+        if field_name == "totalCountAmt":
+            return select(func.coalesce(func.sum(models.CollectionObject.totalCountAmt), 0)).where(
+                models.CollectionObject.accessionId == orm_model.accessionId
+            ).scalar_subquery()
+        elif field_name == "actualTotalCountAmt":
+            return select(func.coalesce(func.sum(models.Preparation.actualCountAmt), 0)).where(
+                models.Preparation.collectionObjectId.in_(
+                    select(models.CollectionObject.collectionObjectId).where(
+                        models.CollectionObject.accessionId == orm_model.accessionId
+                    )
+                )
+            ).scalar_subquery()
+        elif field_name == "collectionObjectCount":
+            return select(func.count()).where(
+                models.CollectionObject.accessionId == orm_model.accessionId
+            ).scalar_subquery()
+        elif field_name == "preparationCount":
+            return select(func.count()).where(
+                models.Preparation.collectionObjectId.in_(
+                    select(models.CollectionObject.collectionObjectId).where(
+                        models.CollectionObject.accessionId == orm_model.accessionId
+                    )
+                )
+            ).scalar_subquery()
+    
+    elif table_name == "Disposal":
+        if field_name == "totalPreps":
+            return select(func.count()).where(
+                models.DisposalPreparation.disposalId == orm_model.disposalId
+            ).scalar_subquery()
+        elif field_name == "totalItems":
+            return select(func.coalesce(func.sum(models.DisposalPreparation.quantity), 0)).where(
+                models.DisposalPreparation.disposalId == orm_model.disposalId
+            ).scalar_subquery()
+    
+    elif table_name == "Gift":
+        if field_name == "totalPreps":
+            return select(func.count()).where(
+                models.GiftPreparation.giftId == orm_model.giftId
+            ).scalar_subquery()
+        elif field_name == "totalItems":
+            return select(func.coalesce(func.sum(models.GiftPreparation.quantity), 0)).where(
+                models.GiftPreparation.giftId == orm_model.giftId
+            ).scalar_subquery()
+    
+    elif table_name == "ExchangeOut":
+        if field_name == "totalPreps":
+            return select(func.count()).where(
+                models.ExchangeOutPrep.exchangeOutId == orm_model.exchangeOutId
+            ).scalar_subquery()
+        elif field_name == "totalItems":
+            return select(func.coalesce(func.sum(models.ExchangeOutPrep.quantity), 0)).where(
+                models.ExchangeOutPrep.exchangeOutId == orm_model.exchangeOutId
+            ).scalar_subquery()
+    
+    elif table_name == "Deaccession":
+        if field_name == "totalPreps":
+            return select(func.count()).where(
+                models.DeaccessionPreparation.deaccessionId == orm_model.deaccessionId
+            ).scalar_subquery()
+        elif field_name == "totalItems":
+            return select(func.coalesce(func.sum(models.DeaccessionPreparation.quantity), 0)).where(
+                models.DeaccessionPreparation.deaccessionId == orm_model.deaccessionId
+            ).scalar_subquery()
+    
+    # For other cases, fall back to ID
+    return orm_model._id
 
 class SpQueryAttrs(TypedDict):
     tablelist: str
@@ -473,10 +622,9 @@ class QueryFieldSpec(
                     field_name = self.get_field().name
                     orm_field = getattr(orm_model, field_name)
                 except AttributeError:
-                    if table.name in PRECALCULATED_FIELDS:
-                        field_name = PRECALCULATED_FIELDS[table.name]
-                        # Replace with recordId, future just remove column from results
-                        orm_field = orm_model._id
+                    if table.name in PRECALCULATED_FIELDS and field_name in PRECALCULATED_FIELDS[table.name]:
+                        # Get SQL expression for calculated field
+                        orm_field = get_calculated_field_expression(table.name, field_name, orm_model)
                     else:
                         raise
 

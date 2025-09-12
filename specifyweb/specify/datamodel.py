@@ -72,7 +72,13 @@ datamodel = Datamodel(tables=[
 
         ],
         view='Accession',
-        searchDialog='AccessionSearch'
+        searchDialog='AccessionSearch',
+        virtual_fields=[
+            Field(name='totalCountAmt', column='TotalCountAmt', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='actualTotalCountAmt', column='ActualTotalCountAmt', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='collectionObjectCount', column='CollectionObjectCount', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='preparationCount', column='PreparationCount', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        ]
     ),
     Table(
         classname='edu.ku.brc.specify.datamodel.AccessionAgent',
@@ -2774,7 +2780,11 @@ datamodel = Datamodel(tables=[
 
         ],
         view='Deaccession',
-        searchDialog='DeaccessionSearch'
+        searchDialog='DeaccessionSearch',
+        virtual_fields=[
+            Field(name='totalPreps', column='TotalPreps', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='totalItems', column='TotalItems', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        ]
     ),
     Table(
         classname='edu.ku.brc.specify.datamodel.DeaccessionAgent',
@@ -3056,7 +3066,11 @@ datamodel = Datamodel(tables=[
 
         ],
         view='Disposal',
-        searchDialog='DisposalSearch'
+        searchDialog='DisposalSearch',
+        virtual_fields=[
+            Field(name='totalPreps', column='TotalPreps', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='totalItems', column='TotalItems', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        ]
     ),
     Table(
         classname='edu.ku.brc.specify.datamodel.DisposalAgent',
@@ -3344,7 +3358,11 @@ datamodel = Datamodel(tables=[
 
         ],
         view='ExchangeOut',
-        searchDialog=None
+        searchDialog=None,
+        virtual_fields=[
+            Field(name='totalPreps', column='TotalPreps', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='totalItems', column='TotalItems', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        ]
     ),
     Table(
         classname='edu.ku.brc.specify.datamodel.ExchangeOutAttachment',
@@ -4084,7 +4102,11 @@ datamodel = Datamodel(tables=[
 
         ],
         view='Gift',
-        searchDialog=None
+        searchDialog=None,
+        virtual_fields=[
+            Field(name='totalPreps', column='TotalPreps', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='totalItems', column='TotalItems', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        ]
     ),
     Table(
         classname='edu.ku.brc.specify.datamodel.GiftAgent',
@@ -4614,7 +4636,15 @@ datamodel = Datamodel(tables=[
 
         ],
         view='Loan',
-        searchDialog=None
+        searchDialog=None,
+        virtual_fields=[
+            Field(name='totalPreps', column='TotalPreps', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='totalItems', column='TotalItems', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='unresolvedPreps', column='UnresolvedPreps', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='unresolvedItems', column='UnresolvedItems', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='resolvedPreps', column='ResolvedPreps', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='resolvedItems', column='ResolvedItems', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        ]
     ),
     Table(
         classname='edu.ku.brc.specify.datamodel.LoanAgent',
@@ -5492,7 +5522,15 @@ datamodel = Datamodel(tables=[
 
         ],
         view='Preparation',
-        searchDialog='PreparationSearch'
+        searchDialog='PreparationSearch',
+        virtual_fields=[
+            Field(name='actualCountAmt', column='ActualCountAmt', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='isonloan', column='IsOnLoan', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='isongift', column='IsOnGift', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='isondisposal', column='IsOnDisposal', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='isonexchangeout', column='IsOnExchangeOut', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='isonexchangein', column='IsOnExchangeIn', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+        ]
     ),
     Table(
         classname='edu.ku.brc.specify.datamodel.PreparationAttachment',
