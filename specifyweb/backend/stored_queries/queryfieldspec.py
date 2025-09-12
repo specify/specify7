@@ -55,97 +55,126 @@ def get_calculated_field_expression(table_name: str, field_name: str, orm_model)
     """Return SQL expression for calculated fields."""
     from sqlalchemy import func, select
     
-    if table_name == "Preparation":
+    if table_name == "CollectionObject":
+        if field_name == "age":
+            # For now, return a placeholder value for age
+            # This would need proper geological age calculation logic
+            return func.concat("Age calculation not implemented")
+    
+    elif table_name == "Preparation":
         if field_name == "actualCountAmt":
             # actualCountAmt = countamt - (gift_sum + exchangeout_sum + disposal_sum)
             gift_sum = select(func.coalesce(func.sum(models.GiftPreparation.quantity), 0)).where(
-                models.GiftPreparation.preparationId == orm_model.preparationId
+                models.GiftPreparation.preparationid == orm_model.preparationid
             ).scalar_subquery()
             
             exchangeout_sum = select(func.coalesce(func.sum(models.ExchangeOutPrep.quantity), 0)).where(
-                models.ExchangeOutPrep.preparationId == orm_model.preparationId
+                models.ExchangeOutPrep.preparationid == orm_model.preparationid
             ).scalar_subquery()
             
             disposal_sum = select(func.coalesce(func.sum(models.DisposalPreparation.quantity), 0)).where(
-                models.DisposalPreparation.preparationId == orm_model.preparationId
+                models.DisposalPreparation.preparationid == orm_model.preparationid
             ).scalar_subquery()
             
-            return orm_model.countAmt - gift_sum - exchangeout_sum - disposal_sum
+            return orm_model.countamt - gift_sum - exchangeout_sum - disposal_sum
             
         elif field_name in ["isonloan", "isongift", "isondisposal", "isonexchangeout", "isonexchangein"]:
             # These are boolean fields based on existence of related records
             if field_name == "isonloan":
                 subquery = select(func.count()).where(
-                    models.LoanPreparation.preparationId == orm_model.preparationId
-                ).where(models.LoanPreparation.quantity > func.coalesce(models.LoanPreparation.quantityResolved, 0))
+                    models.LoanPreparation.preparationid == orm_model.preparationid
+                ).where(models.LoanPreparation.quantity > func.coalesce(models.LoanPreparation.quantityresolved, 0))
             elif field_name == "isongift":
                 subquery = select(func.count()).where(
-                    models.GiftPreparation.preparationId == orm_model.preparationId
+                    models.GiftPreparation.preparationid == orm_model.preparationid
                 )
             elif field_name == "isondisposal":
                 subquery = select(func.count()).where(
-                    models.DisposalPreparation.preparationId == orm_model.preparationId
+                    models.DisposalPreparation.preparationid == orm_model.preparationid
                 )
             elif field_name == "isonexchangeout":
                 subquery = select(func.count()).where(
-                    models.ExchangeOutPrep.preparationId == orm_model.preparationId
+                    models.ExchangeOutPrep.preparationid == orm_model.preparationid
                 )
             elif field_name == "isonexchangein":
                 subquery = select(func.count()).where(
-                    models.ExchangeInPrep.preparationId == orm_model.preparationId
+                    models.ExchangeInPrep.preparationid == orm_model.preparationid
                 )
             return (subquery.scalar_subquery() > 0)
     
     elif table_name == "Loan":
         if field_name == "totalPreps":
             return select(func.count()).where(
-                models.LoanPreparation.loanId == orm_model.loanId
+                models.LoanPreparation.loanid == orm_model.loanid
             ).scalar_subquery()
         elif field_name == "totalItems":
             return select(func.coalesce(func.sum(models.LoanPreparation.quantity), 0)).where(
-                models.LoanPreparation.loanId == orm_model.loanId
+                models.LoanPreparation.loanid == orm_model.loanid
             ).scalar_subquery()
         elif field_name == "unresolvedPreps":
             return select(func.count()).where(
-                models.LoanPreparation.loanId == orm_model.loanId
-            ).where(~models.LoanPreparation.isResolved).scalar_subquery()
+                models.LoanPreparation.loanid == orm_model.loanid
+            ).where(~models.LoanPreparation.isresolved).scalar_subquery()
         elif field_name == "unresolvedItems":
             return select(func.coalesce(func.sum(
-                func.greatest(models.LoanPreparation.quantity - func.coalesce(models.LoanPreparation.quantityResolved, 0), 0)
+                func.greatest(models.LoanPreparation.quantity - func.coalesce(models.LoanPreparation.quantityresolved, 0), 0)
             ), 0)).where(
-                models.LoanPreparation.loanId == orm_model.loanId
-            ).where(~models.LoanPreparation.isResolved).scalar_subquery()
+                models.LoanPreparation.loanid == orm_model.loanid
+            ).where(~models.LoanPreparation.isresolved).scalar_subquery()
         elif field_name == "resolvedPreps":
             return select(func.count()).where(
-                models.LoanPreparation.loanId == orm_model.loanId
-            ).where(models.LoanPreparation.isResolved).scalar_subquery()
+                models.LoanPreparation.loanid == orm_model.loanid
+            ).where(models.LoanPreparation.isresolved).scalar_subquery()
         elif field_name == "resolvedItems":
-            return select(func.coalesce(func.sum(models.LoanPreparation.quantityResolved), 0)).where(
-                models.LoanPreparation.loanId == orm_model.loanId
-            ).where(models.LoanPreparation.isResolved).scalar_subquery()
+            return select(func.coalesce(func.sum(models.LoanPreparation.quantityresolved), 0)).where(
+                models.LoanPreparation.loanid == orm_model.loanid
+            ).where(models.LoanPreparation.isresolved).scalar_subquery()
     
     elif table_name == "Accession":
         if field_name == "totalCountAmt":
-            return select(func.coalesce(func.sum(models.CollectionObject.totalCountAmt), 0)).where(
-                models.CollectionObject.accessionId == orm_model.accessionId
+            return select(func.coalesce(func.sum(models.Preparation.countamt), 0)).where(
+                models.Preparation.collectionobjectid.in_(
+                    select(models.CollectionObject.collectionobjectid).where(
+                        models.CollectionObject.accessionid == orm_model.accessionid
+                    )
+                )
             ).scalar_subquery()
         elif field_name == "actualTotalCountAmt":
-            return select(func.coalesce(func.sum(models.Preparation.actualCountAmt), 0)).where(
-                models.Preparation.collectionObjectId.in_(
-                    select(models.CollectionObject.collectionObjectId).where(
-                        models.CollectionObject.accessionId == orm_model.accessionId
+            # This would be a recursive call, so we need to compute the sum manually here
+            # Sum of (countamt - gift_quantities - exchange_quantities - disposal_quantities)
+            return select(func.coalesce(func.sum(
+                models.Preparation.countamt - 
+                func.coalesce((
+                    select(func.coalesce(func.sum(models.GiftPreparation.quantity), 0))
+                    .where(models.GiftPreparation.preparationid == models.Preparation.preparationid)
+                    .scalar_subquery()
+                ), 0) -
+                func.coalesce((
+                    select(func.coalesce(func.sum(models.ExchangeOutPrep.quantity), 0))
+                    .where(models.ExchangeOutPrep.preparationid == models.Preparation.preparationid)
+                    .scalar_subquery()
+                ), 0) -
+                func.coalesce((
+                    select(func.coalesce(func.sum(models.DisposalPreparation.quantity), 0))
+                    .where(models.DisposalPreparation.preparationid == models.Preparation.preparationid)
+                    .scalar_subquery()
+                ), 0)
+            ), 0)).where(
+                models.Preparation.collectionobjectid.in_(
+                    select(models.CollectionObject.collectionobjectid).where(
+                        models.CollectionObject.accessionid == orm_model.accessionid
                     )
                 )
             ).scalar_subquery()
         elif field_name == "collectionObjectCount":
             return select(func.count()).where(
-                models.CollectionObject.accessionId == orm_model.accessionId
+                models.CollectionObject.accessionid == orm_model.accessionid
             ).scalar_subquery()
         elif field_name == "preparationCount":
             return select(func.count()).where(
-                models.Preparation.collectionObjectId.in_(
-                    select(models.CollectionObject.collectionObjectId).where(
-                        models.CollectionObject.accessionId == orm_model.accessionId
+                models.Preparation.collectionobjectid.in_(
+                    select(models.CollectionObject.collectionobjectid).where(
+                        models.CollectionObject.accessionid == orm_model.accessionid
                     )
                 )
             ).scalar_subquery()
@@ -153,42 +182,77 @@ def get_calculated_field_expression(table_name: str, field_name: str, orm_model)
     elif table_name == "Disposal":
         if field_name == "totalPreps":
             return select(func.count()).where(
-                models.DisposalPreparation.disposalId == orm_model.disposalId
+                models.DisposalPreparation.disposalid == orm_model.disposalid
             ).scalar_subquery()
         elif field_name == "totalItems":
             return select(func.coalesce(func.sum(models.DisposalPreparation.quantity), 0)).where(
-                models.DisposalPreparation.disposalId == orm_model.disposalId
+                models.DisposalPreparation.disposalid == orm_model.disposalid
             ).scalar_subquery()
     
     elif table_name == "Gift":
         if field_name == "totalPreps":
             return select(func.count()).where(
-                models.GiftPreparation.giftId == orm_model.giftId
+                models.GiftPreparation.giftid == orm_model.giftid
             ).scalar_subquery()
         elif field_name == "totalItems":
             return select(func.coalesce(func.sum(models.GiftPreparation.quantity), 0)).where(
-                models.GiftPreparation.giftId == orm_model.giftId
+                models.GiftPreparation.giftid == orm_model.giftid
             ).scalar_subquery()
     
     elif table_name == "ExchangeOut":
         if field_name == "totalPreps":
             return select(func.count()).where(
-                models.ExchangeOutPrep.exchangeOutId == orm_model.exchangeOutId
+                models.ExchangeOutPrep.exchangeoutid == orm_model.exchangeoutid
             ).scalar_subquery()
         elif field_name == "totalItems":
             return select(func.coalesce(func.sum(models.ExchangeOutPrep.quantity), 0)).where(
-                models.ExchangeOutPrep.exchangeOutId == orm_model.exchangeOutId
+                models.ExchangeOutPrep.exchangeoutid == orm_model.exchangeoutid
             ).scalar_subquery()
     
     elif table_name == "Deaccession":
         if field_name == "totalPreps":
-            return select(func.count()).where(
-                models.DeaccessionPreparation.deaccessionId == orm_model.deaccessionId
+            # Deaccession totalPreps is sum of preps from all related disposals, gifts, and exchangeouts
+            disposal_preps = select(func.coalesce(func.count(), 0)).where(
+                models.DisposalPreparation.disposalid.in_(
+                    select(models.Disposal.disposalid).where(models.Disposal.deaccessionid == orm_model.deaccessionid)
+                )
             ).scalar_subquery()
+            
+            gift_preps = select(func.coalesce(func.count(), 0)).where(
+                models.GiftPreparation.giftid.in_(
+                    select(models.Gift.giftid).where(models.Gift.deaccessionid == orm_model.deaccessionid)
+                )
+            ).scalar_subquery()
+            
+            exchange_preps = select(func.coalesce(func.count(), 0)).where(
+                models.ExchangeOutPrep.exchangeoutid.in_(
+                    select(models.ExchangeOut.exchangeoutid).where(models.ExchangeOut.deaccessionid == orm_model.deaccessionid)
+                )
+            ).scalar_subquery()
+            
+            return disposal_preps + gift_preps + exchange_preps
+            
         elif field_name == "totalItems":
-            return select(func.coalesce(func.sum(models.DeaccessionPreparation.quantity), 0)).where(
-                models.DeaccessionPreparation.deaccessionId == orm_model.deaccessionId
+            # Deaccession totalItems is sum of quantities from all related disposals, gifts, and exchangeouts
+            disposal_items = select(func.coalesce(func.sum(models.DisposalPreparation.quantity), 0)).where(
+                models.DisposalPreparation.disposalid.in_(
+                    select(models.Disposal.disposalid).where(models.Disposal.deaccessionid == orm_model.deaccessionid)
+                )
             ).scalar_subquery()
+            
+            gift_items = select(func.coalesce(func.sum(models.GiftPreparation.quantity), 0)).where(
+                models.GiftPreparation.giftid.in_(
+                    select(models.Gift.giftid).where(models.Gift.deaccessionid == orm_model.deaccessionid)
+                )
+            ).scalar_subquery()
+            
+            exchange_items = select(func.coalesce(func.sum(models.ExchangeOutPrep.quantity), 0)).where(
+                models.ExchangeOutPrep.exchangeoutid.in_(
+                    select(models.ExchangeOut.exchangeoutid).where(models.ExchangeOut.deaccessionid == orm_model.deaccessionid)
+                )
+            ).scalar_subquery()
+            
+            return disposal_items + gift_items + exchange_items
     
     # For other cases, fall back to ID
     return orm_model._id
