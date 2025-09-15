@@ -10,6 +10,7 @@ import type { Dataset } from '../WbPlanView/Wrapped';
 import {
   formatAttachmentsFromCell,
   getAttachmentsColumn,
+  getVisualAttachmentsColumn,
 } from '../WorkBench/attachmentHelpers';
 import type { BatchEditPack } from './batchEditHelpers';
 import { BATCH_EDIT_KEY, isBatchEditNullRecord } from './batchEditHelpers';
@@ -215,4 +216,27 @@ export function getHotPlugin<NAME extends keyof Plugins>(
   if (plugins[pluginName] === undefined)
     plugins[pluginName] = hot.getPlugin(pluginName);
   return plugins[pluginName]!;
+}
+
+function setColumnWidths(hot: Handsontable, dataset: Dataset): void {
+  let colWidths: WritableArray<number> | undefined = undefined;
+  /**
+   * The attachments column contains text that is different from what is actually displayed.
+   * For simplicity, the width is limited to 100px to reflect the likely shorter displayed text.
+   */
+  const attachmentColumnMaxWidth = 100;
+  const attachmentsColumnIndex = getVisualAttachmentsColumn(dataset, hot);
+  if (
+    attachmentsColumnIndex !== -1 &&
+    hot.getColWidth(attachmentsColumnIndex) > attachmentColumnMaxWidth
+  ) {
+    colWidths = [];
+    colWidths[attachmentsColumnIndex] = Math.min(
+      hot.getColWidth(attachmentsColumnIndex),
+      attachmentColumnMaxWidth
+    );
+  }
+  hot.updateSettings({
+    colWidths,
+  });
 }
