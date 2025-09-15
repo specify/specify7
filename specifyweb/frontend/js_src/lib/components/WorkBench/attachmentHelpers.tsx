@@ -1,3 +1,5 @@
+import type Handsontable from 'handsontable';
+
 import type { RA, WritableArray } from '../../utils/types';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type {
@@ -6,7 +8,6 @@ import type {
   Tables,
 } from '../DataModel/types';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import type Handsontable from 'handsontable';
 
 export const ATTACHMENTS_COLUMN = '_UPLOADED_ATTACHMENTS';
 export const BASE_TABLE_NAME = 'baseTable' as const;
@@ -84,9 +85,12 @@ export function getAttachmentsColumn(dataset: Dataset): number {
   return dataset.columns.indexOf(ATTACHMENTS_COLUMN);
 }
 
-export function getVisualAttachmentsColumn(dataset: Dataset, hot: Handsontable): number {
+export function getVisualAttachmentsColumn(
+  dataset: Dataset,
+  hot: Handsontable
+): number {
   const physical = getAttachmentsColumn(dataset);
-  return (physical !== -1 ? hot.toVisualColumn(physical) : -1)
+  return physical === -1 ? -1 : hot.toVisualColumn(physical);
 }
 
 /**
