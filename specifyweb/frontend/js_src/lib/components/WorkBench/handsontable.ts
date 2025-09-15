@@ -11,6 +11,7 @@ import type { Dataset } from '../WbPlanView/Wrapped';
 import {
   formatAttachmentsFromCell,
   getAttachmentsColumn,
+  getVisualAttachmentsColumn,
 } from '../WorkBench/attachmentHelpers';
 import type { BatchEditPack } from './batchEditHelpers';
 import { BATCH_EDIT_KEY, isBatchEditNullRecord } from './batchEditHelpers';
@@ -226,9 +227,7 @@ function setColumnWidths(hot: Handsontable, dataset: Dataset): void {
    * For simplicity, the width is limited to 100px to reflect the likely shorter displayed text.
    */
   const attachmentColumnMaxWidth = 100;
-  const attachmentsColumnIndex = hot.toVisualColumn(
-    getAttachmentsColumn(dataset)
-  );
+  const attachmentsColumnIndex = getVisualAttachmentsColumn(dataset, hot);
   if (
     attachmentsColumnIndex !== -1 &&
     hot.getColWidth(attachmentsColumnIndex) > attachmentColumnMaxWidth

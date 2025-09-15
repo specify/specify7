@@ -6,6 +6,7 @@ import type {
   Tables,
 } from '../DataModel/types';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import type Handsontable from 'handsontable';
 
 export const ATTACHMENTS_COLUMN = '_UPLOADED_ATTACHMENTS';
 export const BASE_TABLE_NAME = 'baseTable' as const;
@@ -81,6 +82,11 @@ export function getAttachmentsColumn(dataset: Dataset): number {
     return -1;
   }
   return dataset.columns.indexOf(ATTACHMENTS_COLUMN);
+}
+
+export function getVisualAttachmentsColumn(dataset: Dataset, hot: Handsontable): number {
+  const physical = getAttachmentsColumn(dataset);
+  return (physical !== -1 ? hot.toVisualColumn(physical) : -1)
 }
 
 /**

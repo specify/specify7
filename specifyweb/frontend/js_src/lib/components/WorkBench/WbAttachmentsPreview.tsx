@@ -38,8 +38,8 @@ import { PopupWindow } from '../Molecules/PopupWindow';
 import { Skeleton } from '../SkeletonLoaders/Skeleton';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import {
-  getAttachmentsColumn,
   getAttachmentsFromCell,
+  getVisualAttachmentsColumn,
 } from '../WorkBench/attachmentHelpers';
 
 const { formatCacheKey } = exportsForTests;
@@ -173,9 +173,7 @@ function fetchRowAttachments(
   ) => void
 ): void {
   // Look for Attachments column
-  const attachmentColumnIndex = hot.toVisualColumn(
-    getAttachmentsColumn(dataset)
-  );
+  const attachmentColumnIndex = getVisualAttachmentsColumn(dataset, hot);
   if (attachmentColumnIndex === -1) return;
 
   // Each row should have comma-separated IDs for SpDataSetAttachments
