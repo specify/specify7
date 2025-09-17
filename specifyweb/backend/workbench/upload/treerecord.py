@@ -20,7 +20,12 @@ from specifyweb.backend.workbench.upload.predicates import (
     resolve_reference_attributes,
     safe_fetch,
 )
-from specifyweb.backend.trees.utils import SPECIFY_TREES, get_treedef_model, get_models, get_treedefitem_model
+from specifyweb.backend.trees.utils import (
+    SPECIFY_TREES,
+    get_treedef_model,
+    get_models,
+    get_treedefitem_model,
+)
 from specifyweb.backend.workbench.upload.scope_context import ScopeContext
 from .column_options import ColumnOptions, ExtendedColumnOptions
 
@@ -54,6 +59,7 @@ logger = logging.getLogger(__name__)
 # Rank keys in the upload plan have the format: <treename>~><rankname>
 RANK_KEY_DELIMITER = "~>"
 
+
 class TreeRankCell(NamedTuple):
     treedef_id: int
     treedefitem_name: str
@@ -61,10 +67,11 @@ class TreeRankCell(NamedTuple):
     upload_value: str
     column_fullname: str = ""
 
+
 # REFACTOR: The create step can be added to TreeRankRecord directly to simplify things further
 class TreeRank(NamedTuple):
     rank_name: str
-    treedef_id: int | None # Allow NULL for legacy datasets (before MOTs)
+    treedef_id: int | None  # Allow NULL for legacy datasets (before MOTs)
     tree: str
 
     @staticmethod
@@ -72,7 +79,7 @@ class TreeRank(NamedTuple):
         rank_name: str,
         tree: str,
         treedef_id: int | None = None,
-    ) -> 'TreeRank':
+    ) -> "TreeRank":
         """
         Create a TreeRank instance with the given rank name, tree, and optional treedef IDs.
         """
@@ -86,29 +93,34 @@ class TreeRank(NamedTuple):
                 treedef_name = parts[0]
                 rank_name = parts[1]
                 return rank_name, treedef_name
-            
+
             return rank_name, None
 
         rank_name, extracted_treedef_name = extract_treedef_name(rank_name)
 
         return TreeRank(rank_name, treedef_id, tree.lower())
 
-    def tree_rank_record(self) -> 'TreeRankRecord':
+    def tree_rank_record(self) -> "TreeRankRecord":
         """
         Create a TreeRankRecord instance.
         """
 
         assert self.rank_name is not None, "Rank name is required"
-        assert self.tree is not None and self.tree.lower() in SPECIFY_TREES, "Tree is required"
+        assert (
+            self.tree is not None and self.tree.lower() in SPECIFY_TREES
+        ), "Tree is required"
 
         if self.treedef_id is None:
-            logger.info("No treedef id found yet, scope will be deferred to default tree in collection")
+            logger.info(
+                "No treedef id found yet, scope will be deferred to default tree in collection"
+            )
 
         return TreeRankRecord(self.rank_name, self.treedef_id)
 
+
 class TreeRankRecord(NamedTuple):
     rank_name: str
-    treedef_id: int | None # Allow NULL for legacy datasets (before MOTs)
+    treedef_id: int | None  # Allow NULL for legacy datasets (before MOTs)
 
     # Create a TreeRankRecord instance
     def to_json(self) -> dict:
@@ -120,16 +132,18 @@ class TreeRankRecord(NamedTuple):
     # Get the key for the TreeRankRecord instance
     def to_key(self) -> tuple[str, int | None]:
         return (self.rank_name, self.treedef_id)
-    
+
     def validate_rank(self, tableName: str) -> bool:
         if self.treedef_id is None:
             return True  # assume valid until scope is determined
-        
+
         treedefitem_model = get_treedefitem_model(tableName)
 
-        return treedefitem_model.objects.filter(name=self.rank_name, treedef_id=self.treedef_id).exists()
+        return treedefitem_model.objects.filter(
+            name=self.rank_name, treedef_id=self.treedef_id
+        ).exists()
 
-        
+
 class TreeRecord(NamedTuple):
     name: str
     ranks: dict[str | TreeRankRecord, dict[str, ColumnOptions]]
@@ -142,24 +156,31 @@ class TreeRecord(NamedTuple):
         return apply_scoping(self, collection, context)
 
     def get_cols(self) -> set[str]:
-        return {col.column for r in self.ranks.values() for col in r.values() if hasattr(col, 'column')}
+        return {
+            col.column
+            for r in self.ranks.values()
+            for col in r.values()
+            if hasattr(col, "column")
+        }
 
     def to_json(self) -> dict:
-        result = {"ranks": {}} # type: ignore
-        
+        result = {"ranks": {}}  # type: ignore
+
         for rank, cols in self.ranks.items():
             rank_key = rank.rank_name if isinstance(rank, TreeRankRecord) else rank
-            treeNodeCols = {k: v.to_json() if hasattr(v, "to_json") else v for k, v in cols.items()}
-            
+            treeNodeCols = {
+                k: v.to_json() if hasattr(v, "to_json") else v for k, v in cols.items()
+            }
+
             if len(cols) == 1 and not isinstance(rank, TreeRankRecord):
                 result["ranks"][rank_key] = treeNodeCols["name"]
             else:
                 rank_data = {"treeNodeCols": treeNodeCols}
                 if isinstance(rank, TreeRankRecord):
-                    rank_data["treeId"] = rank.treedef_id # type: ignore
+                    rank_data["treeId"] = rank.treedef_id  # type: ignore
                 result["ranks"][rank_key] = rank_data
-        
-        return {'treeRecord': result}
+
+        return {"treeRecord": result}
 
     def unparse(self) -> dict:
         return {"baseTableName": self.name, "uploadable": self.to_json()}
@@ -170,7 +191,7 @@ class ScopedTreeRecord(NamedTuple):
     ranks: dict[TreeRankRecord, dict[str, ExtendedColumnOptions]]
     treedef: Any
     treedefitems: list
-    root: Any | None 
+    root: Any | None
     disambiguation: dict[str, int]
     batch_edit_pack: dict[str, Any] | None
     scoped_cotypes: Any
@@ -203,7 +224,9 @@ class ScopedTreeRecord(NamedTuple):
     def get_treedefs(self) -> set:
         # return set([self.treedef]) # old way
         tree_def_model = get_treedef_model(self.name)
-        treedefids = {tree_rank_record.treedef_id for tree_rank_record in self.ranks.keys()}
+        treedefids = {
+            tree_rank_record.treedef_id for tree_rank_record in self.ranks.keys()
+        }
 
         return set(tree_def_model.objects.filter(id__in=treedefids))
 
@@ -218,20 +241,26 @@ class ScopedTreeRecord(NamedTuple):
 
         # Format the column name
         def format_column(col_name: str, col_opts: Any) -> str:
-            return f'{col_opts.column} - {col_name}' if col_name != 'name' else col_opts.column
+            return (
+                f"{col_opts.column} - {col_name}"
+                if col_name != "name"
+                else col_opts.column
+            )
 
         # Match the column
         def match_column(row_key: str, formatted_column: str) -> bool:
             return formatted_column == row_key
 
         # Create a TreeRankCell instance
-        def create_tree_rank_cell(tree_rank_record: Any, col_name: str, row_value: Any, row_key: Any) -> TreeRankCell:
+        def create_tree_rank_cell(
+            tree_rank_record: Any, col_name: str, row_value: Any, row_key: Any
+        ) -> TreeRankCell:
             return TreeRankCell(
                 tree_rank_record.treedef_id,  # treedefid
                 tree_rank_record.rank_name,  # treedefitem_name
                 col_name,  # tree_node_attribute
                 row_value,  # upload_value
-                row_key # column_fullname
+                row_key,  # column_fullname
             )
 
         # Process the row item
@@ -251,7 +280,9 @@ class ScopedTreeRecord(NamedTuple):
             for cell in process_row_item(row_key, row_value)
         ]
 
-    def rescope_tree_from_row(self, row: Row) -> tuple["ScopedTreeRecord", Optional["WorkBenchParseFailure"]]:
+    def rescope_tree_from_row(
+        self, row: Row
+    ) -> tuple["ScopedTreeRecord", Optional["WorkBenchParseFailure"]]:
         """Rescope tree from row data."""
 
         # Determine the target treedef based on the columns that are not null
@@ -270,81 +301,114 @@ class ScopedTreeRecord(NamedTuple):
         ranks_columns_in_row_not_null = self._get_not_null_ranks_columns_in_row(row)
         targeted_treedef_ids = get_targeted_treedefids(ranks_columns_in_row_not_null)
 
-        validation_result = self._run_validation_checks(targeted_treedef_ids, ranks_columns_in_row_not_null, row)
-        if validation_result: return validation_result
+        validation_result = self._run_validation_checks(
+            targeted_treedef_ids, ranks_columns_in_row_not_null, row
+        )
+        if validation_result:
+            return validation_result
 
         target_rank_treedef_id = targeted_treedef_ids.pop()
-        target_rank_treedef = get_target_rank_treedef(tree_def_model, target_rank_treedef_id)
+        target_rank_treedef = get_target_rank_treedef(
+            tree_def_model, target_rank_treedef_id
+        )
 
         # Based on the target treedef, get the treedefitems and root for the tree
-        treedefitems = list(tree_rank_model.objects.filter(treedef_id=target_rank_treedef_id).order_by("rankid"))
-        root = tree_node_model.objects.filter(definition_id=target_rank_treedef_id, parent=None).first()
+        treedefitems = list(
+            tree_rank_model.objects.filter(treedef_id=target_rank_treedef_id).order_by(
+                "rankid"
+            )
+        )
+        root = tree_node_model.objects.filter(
+            definition_id=target_rank_treedef_id, parent=None
+        ).first()
 
-        return self._replace(treedef=target_rank_treedef, treedefitems=treedefitems, root=root), None
-    
+        return (
+            self._replace(
+                treedef=target_rank_treedef, treedefitems=treedefitems, root=root
+            ),
+            None,
+        )
+
     """
         Adjusts tree scope for TreeRankRecords with NULL treedef_ids.
         Used mainly for legacy (pre-MOTs) datasets.
         Newer datasets will have treeIds specified in the upload plan by the frontend
     """
+
     def _adjust_tree_scope(self):
         adjusted_ranks = {}
         for trr in self.ranks.keys():
             adjusted_trr = trr
             if trr.treedef_id is None:
                 adjusted_trr = trr._replace(treedef_id=self.treedef.id)
-                
+
             adjusted_ranks[adjusted_trr] = self.ranks[trr]
 
         return self._replace(ranks=adjusted_ranks)
-    
-    def _run_validation_checks(self, targeted_treedef_ids: set[int], ranks_columns_in_row_not_null: list[TreeRankCell], row: Row):
+
+    def _run_validation_checks(
+        self,
+        targeted_treedef_ids: set[int],
+        ranks_columns_in_row_not_null: list[TreeRankCell],
+        row: Row,
+    ):
         unique_treedef_ids = {tr.treedef_id for tr in self.ranks.keys()}
-        
-        result = self._handle_multiple_or_no_treedefs(unique_treedef_ids, targeted_treedef_ids, ranks_columns_in_row_not_null)
-        if result: return result
-        
+
+        result = self._handle_multiple_or_no_treedefs(
+            unique_treedef_ids, targeted_treedef_ids, ranks_columns_in_row_not_null
+        )
+        if result:
+            return result
+
         result = self._validate_trees_with_cotype(row, targeted_treedef_ids)
-        if result: return result
+        if result:
+            return result
 
         result = self._validate_trees_with_component_type(row, targeted_treedef_ids)
         if result: return result
 
         return None
-    
+
     # Handle cases where there are multiple or no treedefs
-    def _handle_multiple_or_no_treedefs(self,
-        unique_treedef_ids: set[int | None], targeted_treedefids: set[int], ranks_columns: list[TreeRankCell]
+    def _handle_multiple_or_no_treedefs(
+        self,
+        unique_treedef_ids: set[int | None],
+        targeted_treedefids: set[int],
+        ranks_columns: list[TreeRankCell],
     ) -> tuple["ScopedTreeRecord", Optional["WorkBenchParseFailure"]] | None:
         if not targeted_treedefids:
             return self, None
         elif len(targeted_treedefids) > 1 and len(unique_treedef_ids) > 1:
             logger.warning(f"Multiple treedefs found in row: {targeted_treedefids}")
             error_col_name = ranks_columns[0].column_fullname
-            
-            return self, WorkBenchParseFailure('multipleTreeDefsInRow', {}, error_col_name)
+
+            return self, WorkBenchParseFailure(
+                "multipleTreeDefsInRow", {}, error_col_name
+            )
 
         return None
-    
+
     # Ensure cotype has same taxontreedef for ranks in row
     def _validate_trees_with_cotype(self, row: Row, treedefs_in_row: set[int]):
         if self.name.lower() != "taxon" or self.cotype_column is None:
             return None
-        
+
         def find_cotype_in_row(row: Row):
             if isinstance(self.cotype_column, str) and self.cotype_column in row:
                 return row[self.cotype_column]
             return None
-        
+
         def get_cotype_tree_def(cotype_name: str):
             cotypes = self.scoped_cotypes.filter(name=cotype_name)
             return cotypes[0].taxontreedef.id if len(cotypes) > 0 else None
-    
+
         cotype_value = find_cotype_in_row(row)
-        if not cotype_value: return None
+        if not cotype_value:
+            return None
 
         cotype_treedef_id = get_cotype_tree_def(cotype_value)
-        if not cotype_treedef_id: return None
+        if not cotype_treedef_id:
+            return None
 
         # Check only the first treedef assuming all ranks belong to same tree
         # Validation for multiple ranks is done before this in _handle_multiple_or_no_treedefs
@@ -392,7 +456,7 @@ class ScopedTreeRecord(NamedTuple):
             parseFails.append(parse_fail)
 
         for tree_rank_record, cols in rescoped_tree_record.ranks.items():
-            nameColumn = cols['name']
+            nameColumn = cols["name"]
             presults, pfails = parse_many(self.name, cols, row)
             parsedFields[tree_rank_record] = presults
             parseFails += pfails
@@ -457,11 +521,13 @@ class TreeDefItemWithParseResults(NamedTuple):
 
 MatchResult = NoMatch | Matched | MatchedMultiple
 
+
 class MatchInfo(TypedDict):
     id: int
     name: str
     definitionitem__name: str
     definitionitem__rankid: int
+
 
 FETCHED_ATTRS = ["id", "name", "definitionitem__name", "definitionitem__rankid"]
 
@@ -470,7 +536,7 @@ class BoundTreeRecord(NamedTuple):
     name: str
     treedef: Any
     treedefitems: list
-    root: Any | None 
+    root: Any | None
     parsedFields: dict[TreeRankRecord, list[ParseResult]]
     uploadingAgentId: int | None
     auditor: Auditor
@@ -490,7 +556,7 @@ class BoundTreeRecord(NamedTuple):
         to_one_override: dict[str, UploadResult] = {},
         consider_dependents=False,
         is_origin=False,
-        origin_is_editable=False
+        origin_is_editable=False,
     ) -> DjangoPredicates:
         # Everything is so complicated around here. In an initial implementation, I naively returned SkippablePredicates,
         # but that'll potentially cause null records to be actually processed. (although, there doesn't seem to be a realizable user mapping to do it)
@@ -538,7 +604,6 @@ class BoundTreeRecord(NamedTuple):
         return (None, tdiwprs, references)
 
     def _handle_row(self, must_match: bool) -> UploadResult:
-
         is_null, tdiwprs, references = self._is_null()
         if is_null:
             return is_null
@@ -561,7 +626,6 @@ class BoundTreeRecord(NamedTuple):
             return UploadResult(match_result, {}, {})
 
     def _to_match(self, references=None) -> list[TreeDefItemWithParseResults]:
-
         # Check if the parse results have non-null values
         def has_non_null_values(parse_results):
             return any(
@@ -578,18 +642,21 @@ class BoundTreeRecord(NamedTuple):
         # Check if the TDI is valid
         def is_valid_tdi(tdi):
             tree_rank_names = {trr.rank_name for trr in self.parsedFields.keys()}
-            return tdi.name in tree_rank_names and has_non_null_values(get_parse_results(tdi))
+            return tdi.name in tree_rank_names and has_non_null_values(
+                get_parse_results(tdi)
+            )
 
         # Create a TreeDefItemWithParseResults instance
         return [
             TreeDefItemWithParseResults(tdi, get_parse_results(tdi))
             for tdi in self.treedefitems
-            if is_valid_tdi(tdi) and (
-                    (references is None)
-                    or (tdi.name not in references)
-                    or (references[tdi.name] is None)
-                    or (any(v is not None for v in references[tdi.name]["attrs"]))
-                )
+            if is_valid_tdi(tdi)
+            and (
+                (references is None)
+                or (tdi.name not in references)
+                or (references[tdi.name] is None)
+                or (any(v is not None for v in references[tdi.name]["attrs"]))
+            )
         ]
 
     def _match(
@@ -609,7 +676,7 @@ class BoundTreeRecord(NamedTuple):
             matches = None
 
             if da is not None:
-                matches = list(model.objects.filter(id=da).values(*FETCHED_ATTRS)[:10])
+                matches = list(model.objects.filter(id=da).values(*FETCHED_ATTRS))
 
             if not matches:
                 matches = self._find_matching_descendent(
@@ -733,10 +800,10 @@ class BoundTreeRecord(NamedTuple):
 
             if reference_id is not None:
                 query_with_id = query.filter(id=reference_id)
-                matches = list(query_with_id[:10])
+                matches = list(query_with_id)
 
             if not matches:
-                matches = list(query[:10])
+                matches = list(query)
 
             if matches:
                 if self.cache is not None:
@@ -753,10 +820,10 @@ class BoundTreeRecord(NamedTuple):
     ) -> UploadResult:
         assert (
             to_upload
-        ), f"Invalid Error: {to_upload}, can not upload matched resluts: {matched}"
+        ), f"Invalid Error: {to_upload}, can not upload matched results: {matched}"
         model = getattr(models, self.name)
 
-        parent_info: dict | None 
+        parent_info: dict | None
         if isinstance(matched, Matched):
             parent_info = model.objects.values(*FETCHED_ATTRS).get(id=matched.id)
             parent_result = {"parent": UploadResult(matched, {}, {})}
@@ -916,7 +983,6 @@ class BoundTreeRecord(NamedTuple):
         raise NotImplementedError()
 
     def _get_reference(self) -> dict[str, Any] | None:
-
         # Much simpler than uploadTable. Just fetch all rank's references. Since we also require name to be not null,
         # the "deferForNull" mess is not needed (that's redundant now). We, do, however need to look at deferForMatch, and we are done.
 
