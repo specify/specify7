@@ -226,9 +226,9 @@ export function SetupTool({
               className="rounded-md p-2 w-full"
               id={name}
               name={name}
+              required
               value={formData[name] || ''}
               onChange={handleChange}
-              required
             >
               <option disabled value="">
                 Select a type
@@ -252,10 +252,10 @@ export function SetupTool({
               className="rounded-md p-2 w-full"
               id={name}
               name={name}
+              required
               type={type === 'password' ? 'password' : 'text'}
               value={formData[name] || ''}
               onChange={handleChange}
-              required
             />
           </>
         )}
