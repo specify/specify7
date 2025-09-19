@@ -1,6 +1,6 @@
 import type Handsontable from 'handsontable';
 import type { CellChange } from 'handsontable/common';
-import type { Events } from 'handsontable/pluginHooks';
+import type { Events } from 'handsontable';
 import type { Action } from 'handsontable/plugins/undoRedo';
 import React from 'react';
 
@@ -88,7 +88,7 @@ export function useHotHooks({
       if (Boolean(value) || workbench.hot === undefined) return value;
 
       const visualCol = workbench.hot.propToCol(property);
-      const physicalCol = workbench.hot.toPhysicalColumn(visualCol);
+      const physicalCol = workbench.hot.toPhysicalColumn(visualCol as number);
 
       return workbench.mappings?.defaultValues[physicalCol] ?? value;
     },
@@ -103,7 +103,7 @@ export function useHotHooks({
       const visualCol = workbench.hot.propToCol(property);
 
       const physicalRow = workbench.hot.toPhysicalRow(visualRow);
-      const physicalCol = workbench.hot.toPhysicalColumn(visualCol);
+      const physicalCol = workbench.hot.toPhysicalColumn(visualCol as number);
       const issues = workbench.cells.getCellMeta(
         physicalRow,
         physicalCol,
@@ -221,7 +221,7 @@ export function useHotHooks({
       const changes = unfilteredChanges
         .map(([visualRow, property, oldValue, newValue]) => ({
           visualRow,
-          visualCol: workbench.hot!.propToCol(property),
+          visualCol: workbench.hot!.propToCol(property as number | string) as number,
           physicalRow: workbench.hot!.toPhysicalRow(visualRow),
           physicalCol:
             typeof property === 'number'
