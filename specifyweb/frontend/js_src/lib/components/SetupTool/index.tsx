@@ -228,6 +228,7 @@ export function SetupTool({
               name={name}
               value={formData[name] || ''}
               onChange={handleChange}
+              required
             >
               <option disabled value="">
                 Select a type
@@ -254,6 +255,7 @@ export function SetupTool({
               type={type === 'password' ? 'password' : 'text'}
               value={formData[name] || ''}
               onChange={handleChange}
+              required
             />
           </>
         )}
