@@ -33,23 +33,22 @@ from specifyweb.backend.permissions.permissions import check_table_permissions
 from specifyweb.specify.models import Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
-from specifyweb.backend.stored_queries.queryfield import fields_from_json
+from specifyweb.backend.stored_queries.queryfield import fields_from_json, QUREYFIELD_SORT_T
 
 logger = logging.getLogger(__name__)
 
-SORT_LITERAL: Literal["asc"] | Literal["desc"] | None = None
-
 SERIES_MAX_ROWS = 10000
+
 
 class QuerySort:
     SORT_TYPES = [None, asc, desc]
 
-    NONE: 0
-    ASC: 1
-    DESC: 2
+    NONE: Literal[0] = 0
+    ASC: Literal[1] = 1
+    DESC: Literal[2] = 2
 
     @staticmethod
-    def by_id(sort_id: int):
+    def by_id(sort_id: QUREYFIELD_SORT_T):
         return QuerySort.SORT_TYPES[sort_id]
 
 class BuildQueryProps(NamedTuple):

@@ -3,7 +3,7 @@ import { f } from '../../../utils/functools';
 import { ensure } from '../../../utils/types';
 import { formatNumber } from '../../Atoms/Internationalization';
 import { userInformation } from '../../InitialContext/userInformation';
-import { queryFieldFilters } from '../../QueryBuilder/FieldFilter';
+import { queryFieldFilterSpecs } from '../../QueryBuilder/FieldFilterSpec';
 import { formattedEntry } from '../../WbPlanView/mappingHelpers';
 import { generateDefaultLayout } from '../StatsSpec';
 import type { StatsSpec } from '../types';
@@ -26,7 +26,7 @@ export const statsSpecTest: StatsSpec = {
                   {
                     path: formattedEntry,
                     isDisplay: true,
-                    operStart: queryFieldFilters.any.id,
+                    operStart: queryFieldFilterSpecs.any.id,
                   },
                 ],
               },
@@ -111,7 +111,7 @@ export const statsSpecTest: StatsSpec = {
                   {
                     path: 'cataloger.specifyuser.name',
                     startValue: userInformation.name,
-                    operStart: queryFieldFilters.equal.id,
+                    operStart: queryFieldFilterSpecs.equal.id,
                   },
                 ],
               },

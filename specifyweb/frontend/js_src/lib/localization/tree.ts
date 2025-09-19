@@ -193,7 +193,7 @@ export const treeText = createDictionary({
     'en-us': "Can't synonymize with a synonym",
     'ru-ru': 'Невозможно синонимизировать с помощью синонима',
     'es-es': 'No se puede sinonimizar con un sinónimo',
-    'fr-fr': 'Impossible de faire un synonyme avec un synonyme',
+    'fr-fr': 'Impossible de synonymiser avec un synonyme',
     'uk-ua': 'Не можна синонімізувати синонім',
     'de-ch': 'Kann nicht mit einem Synonym synonymisiert werden',
     'pt-br': 'Não é possível sinonimizar com um sinônimo',
@@ -266,7 +266,7 @@ export const treeText = createDictionary({
     'de-ch':
       'Alle Referenzen zu {treeName:string} "{nodeName:string}" werden mit "{parentName:string}" ersetzt. Alle Nachkommen von "{nodeName:string}" werden nach "{parentName:string}" verschoben, wobei alle Nachkommen, die in Name und Rang übereinstimmen, selbst rekursiv zusammengeführt werden.',
     'pt-br':
-      'Todas as referências ao nó {treeName:string} "{nodeName:string}" serão substituídas por "{parentName:string}", e todos os descendentes de "{nodeName:string}" serão movidos para "{parentName:string}", com quaisquer descendentes que correspondam em nome e classificação sendo eles próprios mesclados recursivamente.',
+      'Todas as referências ao nó {treeName:string} "{nodeName:string}" serão substituídas por "{parentName:string}", e todos os descendentes de "{nodeName:string}" serão movidos para "{parentName:string}", com quaisquer descendentes correspondentes em nome e classificação sendo eles próprios mesclados recursivamente.',
   },
   synonymizeNode: {
     'en-us': 'Synonymize node',
@@ -275,7 +275,7 @@ export const treeText = createDictionary({
     'fr-fr': 'Synonymiser le nœud',
     'uk-ua': 'Синонімізувати вузол',
     'de-ch': 'Knoten synonymisieren',
-    'pt-br': 'Sinonímia de nó',
+    'pt-br': 'Sinonímia do nó',
   },
   makeSynonym: {
     'en-us': 'Make {nodeName:string} a synonym of {synonymName:string}',
@@ -293,7 +293,7 @@ export const treeText = createDictionary({
     'es-es':
       'Seleccione un objetivo para que "{nodeName:string}" se convierta en sinónimo',
     'fr-fr':
-      'Sélectionnez une cible pour que « {nodeName:string} » soit synonyme',
+      'Sélectionnez une cible pour laquelle « {nodeName:string} » doit être synonymisé',
     'uk-ua': 'Виберіть ціль для "{nodeName:string}", який буде синонімічним',
     'de-ch': 'Wähle Ziel um "{nodeName:string}" daran zu synonymisieren',
     'pt-br': 'Selecione um alvo para "{nodeName:string}" ser sinonimizado',
