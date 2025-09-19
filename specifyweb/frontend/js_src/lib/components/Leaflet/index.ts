@@ -4,13 +4,14 @@
  * @module
  */
 
+import { renderToStaticMarkup } from 'react-dom/server';
+
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
-import { renderToStaticMarkup } from 'react-dom/server';
 import { userPreferences } from '../Preferences/userPreferences';
 import { splitJoinedMappingPath } from '../WbPlanView/mappingHelpers';
 import type { LeafletInstance } from './addOns';

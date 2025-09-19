@@ -7,6 +7,7 @@ import type Handsontable from 'handsontable';
 import type { DetailedSettings } from 'handsontable/plugins/contextMenu';
 import { registerAllModules } from 'handsontable/registry';
 import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 
 import { commonText } from '../../localization/common';
 import { LANGUAGE } from '../../localization/utils/config';
@@ -14,7 +15,6 @@ import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
 import { writable } from '../../utils/types';
 import { iconClassName, icons } from '../Atoms/Icons';
-import { renderToStaticMarkup } from 'react-dom/server';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { strictGetTable } from '../DataModel/tables';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
