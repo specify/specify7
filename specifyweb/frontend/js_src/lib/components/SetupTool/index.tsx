@@ -5,6 +5,7 @@ import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
 import type { SetupProgress } from '../Login';
+import { useDarkMode } from '../Preferences/Hooks';
 
 type ResourceFormData = Record<string, any>;
 
@@ -259,6 +260,8 @@ export function SetupTool({
       </div>
     ));
 
+  const isDarkMode = useDarkMode();
+
   return (
     <Container.FullGray className="overflow-auto w-full items-center">
       <H2 className="text-2xl mb-6">Specify Configuration Setup</H2>
@@ -267,7 +270,9 @@ export function SetupTool({
           className="bg-white p-6 rounded shadow-md max-w-xl"
           onSubmit={handleSubmit}
         >
-          <h3 className="text-xl font-semibold mb-4">
+          <h3
+            className={`text-xl font-semibold mb-4 ${isDarkMode ? 'text-gray-900' : ''}`}
+          >
             {resources[currentStep].resourceName}
           </h3>
           {renderFormFields()}
