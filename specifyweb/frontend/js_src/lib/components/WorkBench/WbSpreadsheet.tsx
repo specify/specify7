@@ -115,7 +115,7 @@ function WbSpreadsheetComponent({
                         // REFACTOR: use new table icons
                         const tableSvg = renderToStaticMarkup(
                       <SvgIcon
-                        name={tableName}
+                        name={tableName as keyof typeof strictGetTable}
                         label={tableLabel}
                         className={iconClassName}
                       />
