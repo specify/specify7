@@ -17,6 +17,7 @@ import { writable } from '../../utils/types';
 import { iconClassName, icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { strictGetTable } from '../DataModel/tables';
+import { SvgIcon } from '../Molecules/SvgIcon';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { configureHandsontable } from './handsontable';
 import { useHotHooks } from './hooks';
@@ -29,7 +30,6 @@ import { useHotProps } from './hotProps';
 import type { WbMapping } from './mapping';
 import { fetchWbPickLists } from './pickLists';
 import type { Workbench } from './WbView';
-import { SvgIcon } from '../Molecules/SvgIcon';
 
 registerAllModules();
 
@@ -115,9 +115,9 @@ function WbSpreadsheetComponent({
                         // REFACTOR: use new table icons
                         const tableSvg = renderToStaticMarkup(
                       <SvgIcon
-                        name={tableName as keyof typeof strictGetTable}
-                        label={tableLabel}
                         className={iconClassName}
+                        label={tableLabel}
+                        name={tableName as keyof typeof strictGetTable}
                       />
                     );
 
