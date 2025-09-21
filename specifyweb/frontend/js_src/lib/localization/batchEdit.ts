@@ -11,7 +11,7 @@ export const batchEditText = createDictionary({
     "en-us": "Batch Edit",
     "de-ch": "Stapelbearbeitung",
     "es-es": "Edición por lotes",
-    "fr-fr": "Édition par lots",
+    "fr-fr": "Modification par lots",
     "pt-br": "Edição em lote",
     "ru-ru": "Пакетное редактирование",
     "uk-ua": "Пакетне редагування",
@@ -130,7 +130,7 @@ export const batchEditText = createDictionary({
   showRollback: {
     "en-us": "Show rollback button",
     "de-ch": "Rollback-Schaltfläche anzeigen",
-    "es-es": "Mostrar el botón de reversión",
+    "es-es": "Mostrar botón de reversión",
     "fr-fr": "Afficher le bouton de restauration",
     "pt-br": "Mostrar botão de reversão",
     "ru-ru": "Показать кнопку отката",
@@ -144,7 +144,7 @@ export const batchEditText = createDictionary({
     "es-es":
       "Revertir en la edición por lotes es una función experimental. Esta preferencia ocultará el botón.",
     "fr-fr":
-      "La restauration dans l'édition par lots est une fonctionnalité expérimentale. Cette préférence masquera le bouton.",
+      "La restauration par lot est une fonctionnalité expérimentale. Cette préférence masquera le bouton.",
     "pt-br":
       "Reverter na Edição em Lote é um recurso experimental. Esta preferência ocultará o botão",
     "ru-ru":
@@ -246,7 +246,7 @@ export const batchEditText = createDictionary({
   startCommit: {
     "en-us": "Begin Data Set Commit?",
     "de-ch": "Mit der Datensatzfestschreibung beginnen?",
-    "es-es": "¿Comenzar conjunto de datos Confirmar?",
+    "es-es": "¿Comenzar conjunto de datos? ¿Confirmar?",
     "fr-fr": "Commencer la validation de l'ensemble de données ?",
     "pt-br": "Iniciar confirmação do conjunto de dados?",
     "ru-ru": "Начать фиксацию набора данных?",
@@ -266,9 +266,9 @@ export const batchEditText = createDictionary({
     "de-ch":
       "Das Commit ist aufgrund eines oder mehrerer Zellenwertfehler fehlgeschlagen.",
     "es-es":
-      "La confirmación falló debido a uno o más errores en el valor de la celda.",
+      "La confirmación falló debido a uno o más errores de valor de celda.",
     "fr-fr":
-      "La validation a échoué en raison d'une ou plusieurs erreurs de valeur de cellule.",
+      "La validation a échoué en raison d’une ou plusieurs erreurs de valeur de cellule.",
     "pt-br":
       "A confirmação falhou devido a um ou mais erros de valor de célula.",
     "ru-ru":
@@ -308,8 +308,8 @@ export const batchEditText = createDictionary({
     "de-ch": "BE-Commit von „{dataSet:string}“",
     "es-es": 'Confirmación BE de "{dataSet:string}"',
     "fr-fr": "Validation BE de « {dataSet:string} »",
-    "pt-br": 'Confirmação BE de "{dataSet:string}"',
-    "ru-ru": 'BE-коммит "{dataSet:string}"',
+    "pt-br": 'SEJA commit de "{dataSet:string}"',
+    "ru-ru": "BE-коммит «{dataSet:string}»",
     "uk-ua": 'BE коміт "{dataSet:string}"',
   },
   deferForMatch: {
@@ -342,10 +342,10 @@ export const batchEditText = createDictionary({
     "de-ch":
       "Nur sichtbare Felder für die Prüfung auf leere Datensätze verwenden",
     "es-es":
-      "Utilice únicamente campos visibles para la verificación de registros vacíos",
+      "Utilice sólo campos visibles para la verificación de registros vacíos",
     "fr-fr":
       "Utiliser uniquement les champs visibles pour la vérification des enregistrements vides",
-    "pt-br": "Use apenas campos visíveis para verificação de registros vazios",
+    "pt-br": "Use somente campos visíveis para verificação de registros vazios",
     "ru-ru": "Использовать только видимые поля для проверки пустых записей",
     "uk-ua": "Використовуйте лише видимі поля для перевірки порожніх записів",
   },
@@ -375,7 +375,7 @@ export const batchEditText = createDictionary({
     "fr-fr":
       "L'édition par lots est désactivée pour les tables système et les tables de hiérarchie de portée",
     "pt-br":
-      "A edição em lote está desabilitada para tabelas de sistema e tabelas de hierarquia de escopo",
+      "A edição em lote está desabilitada para tabelas do sistema e tabelas de hierarquia de escopo",
     "ru-ru":
       "Пакетное редактирование отключено для системных таблиц и таблиц иерархии области действия.",
     "uk-ua":
@@ -387,7 +387,7 @@ export const batchEditText = createDictionary({
     "de-ch":
       "(Datensätze mit Stapelbearbeitung können nach dem Rollback nicht bearbeitet werden – schreibgeschützt)",
     "es-es":
-      "(Los conjuntos de datos de edición por lotes no se pueden editar después de la reversión: solo lectura)",
+      "(Los conjuntos de datos de edición por lotes no se pueden editar después de una reversión: solo lectura)",
     "fr-fr":
       "(Les ensembles de données d'édition par lots ne peuvent pas être modifiés après la restauration - Lecture seule)",
     "pt-br":
@@ -416,7 +416,7 @@ export const batchEditText = createDictionary({
     "fr-fr":
       "Permet la modification par lots des relations de la table de base. La restauration est désactivée lorsque les relations sont activées.",
     "pt-br":
-      "Permite a edição em lote de relacionamentos da tabela base. O rollback é desabilitado quando os relacionamentos são habilitados.",
+      "Permite a edição em lote de relacionamentos da tabela base. A reversão é desabilitada quando os relacionamentos são habilitados.",
     "ru-ru":
       "Позволяет пакетно редактировать связи базовой таблицы. Откат отключается при включении связей.",
     "uk-ua":
