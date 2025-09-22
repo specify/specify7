@@ -19,6 +19,7 @@ import React from 'react';
 import { useUnloadProtect } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
@@ -36,6 +37,7 @@ import { WbToolkit } from '../WbToolkit';
 import { WbUtilsComponent } from '../WbUtils';
 import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 import { WbUtils } from '../WbUtils/Utils';
+import { usesAttachments } from './attachmentHelpers';
 import type { WbCellCounts } from './CellMeta';
 import { WbCellMeta } from './CellMeta';
 import { DataSetName } from './DataSetMeta';
@@ -44,6 +46,7 @@ import type { WbMapping } from './mapping';
 import { parseWbMappings } from './mapping';
 import { WbUploaded } from './Results';
 import { useDisambiguationDialog } from './useDisambiguationDialog';
+import { WbAttachmentsPreview } from './WbAttachmentsPreview';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { WbValidation } from './WbValidation';
 
@@ -152,6 +155,20 @@ export function WbView({
   const [showToolkit, _openToolkit, _closeToolkit, toggleToolkit] =
     useBooleanState();
 
+  const useAttachments = React.useMemo(
+    () => usesAttachments(dataset),
+    [dataset]
+  );
+  const [
+    showAttachments,
+    _openAttachments,
+    _closeAttachments,
+    toggleAttachments,
+  ] = useBooleanState(useAttachments);
+  React.useEffect(() => {
+    hot?.refreshDimensions();
+  }, [showAttachments]);
+
   const { showResults, closeResults, toggleResults } = useResults({
     hot,
     workbench,
@@ -169,9 +186,17 @@ export function WbView({
 
   const searchRef = React.useRef<HTMLInputElement | null>(null);
 
+  const hasBatchEditRolledBack = dataset.rolledback && dataset.isupdate;
+
   return (
     <ReadOnlyContext.Provider
-      value={isAlreadyReadOnly || isUploaded || showResults || !canUpdate}
+      value={
+        isAlreadyReadOnly ||
+        isUploaded ||
+        showResults ||
+        !canUpdate ||
+        hasBatchEditRolledBack
+      }
     >
       <section
         className={`wbs-form ${className.containerFull}`}
@@ -190,12 +215,20 @@ export function WbView({
             {commonText.tools()}
           </Button.Small>
           <span className="-ml-1 flex-1" />
-          {/* NOTE: Data Mapper temporarily disabled in #5413 */}
-          {!dataset.isupdate && (canUpdate || isMapped) ? (
+          {canUpdate || isMapped ? (
             <Link.Small href={`/specify/workbench/plan/${dataset.id}/`}>
               {wbPlanText.dataMapper()}
             </Link.Small>
           ) : undefined}
+          {useAttachments && (
+            <Button.Small
+              aria-haspopup="grid"
+              aria-pressed={showAttachments}
+              onClick={toggleAttachments}
+            >
+              {attachmentsText.attachments()}
+            </Button.Small>
+          )}
           <WbActions
             cellCounts={cellCounts}
             checkDeletedFail={checkDeletedFail}
@@ -229,6 +262,7 @@ export function WbView({
             checkDeletedFail={checkDeletedFail}
             data={data}
             dataset={dataset}
+            hasBatchEditRolledBack={hasBatchEditRolledBack}
             hot={hot}
             isResultsOpen={showResults}
             isUploaded={isUploaded}
@@ -238,7 +272,7 @@ export function WbView({
             workbench={workbench}
             onClickDisambiguate={openDisambiguationDialog}
           />
-          {showResults && (
+          {showResults ? (
             <aside aria-live="polite">
               <WbUploaded
                 datasetId={dataset.id}
@@ -249,7 +283,17 @@ export function WbView({
                 onClose={closeResults}
               />
             </aside>
-          )}
+          ) : null}
+          {useAttachments ? (
+            <aside aria-live="polite">
+              <WbAttachmentsPreview
+                dataset={dataset}
+                hot={hot}
+                showPanel={showAttachments}
+                onClose={toggleAttachments}
+              />
+            </aside>
+          ) : null}
         </div>
         {disambiguationDialogs}
         <WbUtilsComponent

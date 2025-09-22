@@ -110,6 +110,15 @@ type FailedBusinessRule = State<
   }
 >;
 
+// Indicates failure due to an error associated with a row's attachments
+type AttachmentFailure = State<
+  'AttachmentFailure',
+  {
+    readonly message: string;
+    readonly info: ReportInfo;
+  }
+>;
+
 /*
  * Indicates failure due to inability to find an expected existing
  * matching record
@@ -154,11 +163,15 @@ type PropagatedFailure = State<'PropagatedFailure'>;
 type MatchedAndChanged = State<'MatchedAndChanged', Omit<Matched, 'type'>>;
 
 type RecordResultTypes =
+  | AttachmentFailure
+  | Deleted
   | Deleted
   | FailedBusinessRule
   | Matched
   | MatchedAndChanged
+  | MatchedAndChanged
   | MatchedMultiple
+  | NoChange
   | NoChange
   | NoMatch
   | NullRecord
@@ -269,6 +282,10 @@ export function resolveValidationMessage(
     return backEndText.fieldRequiredByUploadPlan();
   else if (key === 'invalidTreeStructure')
     return backEndText.invalidTreeStructure();
+  else if (key === 'scopeChangeError') return backEndText.scopeChangeDetected();
+  else if (key === 'multipleTreeDefsInRow')
+    return backEndText.multipleTreeDefsInRow();
+  else if (key === 'invalidCotype') return backEndText.invalidCotype();
   else if (key === 'missingRequiredTreeParent')
     return backEndText.missingRequiredTreeParent({
       names: formatConjunction((payload.names as RA<LocalizedString>) ?? []),
@@ -280,4 +297,18 @@ export function resolveValidationMessage(
         Object.keys(payload).length === 0 ? '' : ` ${JSON.stringify(payload)}`
       }`
     );
+}
+
+export function resolveAttachmentValidationMessage(
+  key: string
+): LocalizedString {
+  if (key === 'attachmentNotFound') {
+    return backEndText.attachmentNotFound();
+  } else if (key === 'tableDoesNotSupportAttachments') {
+    return backEndText.tableDoesNotSupportAttachments();
+  } else if (key === 'attachmentAlreadyLinked') {
+    return backEndText.attachmentAlreadyLinked();
+  } else {
+    return backEndText.attachmentNotFound();
+  }
 }

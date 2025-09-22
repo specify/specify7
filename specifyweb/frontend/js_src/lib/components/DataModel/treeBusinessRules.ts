@@ -122,7 +122,7 @@ const predictFullName = async <
 ): Promise<string> =>
   ajax(
     formatUrl(
-      `/api/specify_tree/${resource.specifyTable.name.toLowerCase()}/${
+      `/trees/specify_tree/${resource.specifyTable.name.toLowerCase()}/${
         parent.id
       }/predict_fullname/`,
       {

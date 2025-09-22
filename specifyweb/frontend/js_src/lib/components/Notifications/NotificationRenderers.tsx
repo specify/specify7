@@ -2,6 +2,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { backupText } from '../../localization/backup';
 import { localityText } from '../../localization/locality';
 import { mergingText } from '../../localization/merging';
 import { notificationsText } from '../../localization/notifications';
@@ -42,7 +43,9 @@ export const notificationRenderers: IR<
           <Link.Success
             className="w-fit normal-case"
             download
-            href={`/static/depository/export_feed/${filename}`}
+            href={`/static/depository/export_feed/${encodeURIComponent(
+              filename
+            )}`}
           >
             {filename}
           </Link.Success>
@@ -71,7 +74,9 @@ export const notificationRenderers: IR<
         <Link.Success
           className="w-fit"
           download
-          href={`/static/depository/${notification.payload.file}`}
+          href={`/static/depository/${encodeURIComponent(
+            notification.payload.file
+          )}`}
         >
           {notificationsText.download()}
         </Link.Success>
@@ -99,7 +104,9 @@ export const notificationRenderers: IR<
         <Link.Success
           className="w-fit"
           download
-          href={`/static/depository/${notification.payload.file}`}
+          href={`/static/depository/${encodeURIComponent(
+            notification.payload.file
+          )}`}
         >
           {notificationsText.download()}
         </Link.Success>
@@ -113,7 +120,9 @@ export const notificationRenderers: IR<
         <Link.Success
           className="w-fit"
           download
-          href={`/static/depository/${notification.payload.file}`}
+          href={`/static/depository/${encodeURIComponent(
+            notification.payload.file
+          )}`}
         >
           {notificationsText.download()}
         </Link.Success>
@@ -316,6 +325,38 @@ export const notificationRenderers: IR<
           <summary>{localityText.taskId()}</summary>
           {notification.payload.taskid}
         </details>
+      </>
+    );
+  },
+  'backup-succeeded'(notification) {
+    const filename = notification.payload.file as unknown as string | undefined;
+    return (
+      <>
+        {backupText.databaseBackupCompleted()}
+        {filename && (
+          <Link.Success
+            className="w-fit"
+            download
+            href={`/static/depository/${encodeURIComponent(filename)}`}
+          >
+            {notificationsText.download()}
+          </Link.Success>
+        )}
+      </>
+    );
+  },
+  'backup-failed'(notification) {
+    return (
+      <>
+        <p>{backupText.databaseBackupFailed()}</p>
+        {notification.payload.traceback && (
+          <details>
+            <summary>Traceback</summary>
+            <pre className="max-h-64 overflow-auto whitespace-pre-wrap text-xs">
+              {String(notification.payload.traceback)}
+            </pre>
+          </details>
+        )}
       </>
     );
   },

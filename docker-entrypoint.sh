@@ -12,6 +12,9 @@ if [ "$1" = 've/bin/gunicorn' ] || [ "$1" = 've/bin/python' ]; then
   set +e
   ./sp7_db_setup_check.sh
   ve/bin/python manage.py migrate --database=migrations
+  # ve/bin/python manage.py base_specify_migration
+  # ve/bin/python manage.py migrate
+  # ve/bin/python manage.py run_key_migration_functions # Uncomment if you want the key migration functions to run on startup.
   set -e
 fi
 exec "$@"

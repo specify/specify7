@@ -4,7 +4,7 @@
  * "NOTE:" comments
  *
  * Schema version: 2.13
- * Date generated: March 3, 2025
+ * Date generated: May 20, 2025
  *
  * The dataModel types were generated using the following code snippet.
  * After schema changes, it needs to be regenerated like this:
@@ -245,8 +245,15 @@ export type Accession = {
     readonly actualTotalCountAmt: number | null;
     readonly collectionObjectCount: number | null;
     readonly dateAccessioned: string | null;
+    readonly dateAccessionedPrecision: number | null;
     readonly dateAcknowledged: string | null;
+    readonly dateAcknowledgedPrecision: number | null;
     readonly dateReceived: string | null;
+    readonly dateReceivedPrecision: number | null;
+    readonly date1: string | null;
+    readonly date1Precision: number | null;
+    readonly date2: string | null;
+    readonly date2Precision: number | null;
     readonly integer1: number | null;
     readonly integer2: number | null;
     readonly integer3: number | null;
@@ -1454,7 +1461,6 @@ export type CollectionObject = {
     readonly modifiedByAgent: Agent | null;
     readonly paleoContext: PaleoContext | null;
     readonly visibilitySetBy: SpecifyUser | null;
-    readonly parentCO: CollectionObject | null;
   };
   readonly toManyDependent: {
     readonly absoluteAges: RA<AbsoluteAge>;
@@ -1473,7 +1479,6 @@ export type CollectionObject = {
     readonly rightSideRels: RA<CollectionRelationship>;
     readonly treatmentEvents: RA<TreatmentEvent>;
     readonly voucherRelationships: RA<VoucherRelationship>;
-    readonly children: RA<CollectionObject>;
   };
   readonly toManyIndependent: { readonly projects: RA<Project> };
 };
@@ -3364,6 +3369,11 @@ export type Gift = {
   };
   readonly toOneDependent: { readonly addressOfRecord: AddressOfRecord | null };
   readonly toOneIndependent: {
+    readonly agent1: Agent | null;
+    readonly agent2: Agent | null;
+    readonly agent3: Agent | null;
+    readonly agent4: Agent | null;
+    readonly agent5: Agent | null;
     readonly createdByAgent: Agent | null;
     readonly deaccession: Deaccession | null;
     readonly discipline: Discipline;
@@ -3424,6 +3434,8 @@ export type GiftPreparation = {
     readonly inComments: string | null;
     readonly outComments: string | null;
     readonly quantity: number | null;
+    readonly quantityResolved: number | null;
+    readonly quantityReturned: number | null;
     readonly receivedComments: string | null;
     readonly text1: string | null;
     readonly text2: string | null;
@@ -3755,6 +3767,11 @@ export type Loan = {
   };
   readonly toOneDependent: { readonly addressOfRecord: AddressOfRecord | null };
   readonly toOneIndependent: {
+    readonly agent1: Agent | null;
+    readonly agent2: Agent | null;
+    readonly agent3: Agent | null;
+    readonly agent4: Agent | null;
+    readonly agent5: Agent | null;
     readonly createdByAgent: Agent | null;
     readonly discipline: Discipline;
     readonly division: Division | null;
@@ -4389,11 +4406,11 @@ export type Preparation = {
     readonly guid: string | null;
     readonly integer1: number | null;
     readonly integer2: number | null;
-    readonly isOnLoan: boolean | null;
-    readonly isOnGift: boolean | null;
     readonly isOnDisposal: boolean | null;
-    readonly isOnExchangeOut: boolean | null;
     readonly isOnExchangeIn: boolean | null;
+    readonly isOnExchangeOut: boolean | null;
+    readonly isOnGift: boolean | null;
+    readonly isOnLoan: boolean | null;
     readonly number1: number | null;
     readonly number2: number | null;
     readonly preparedDate: string | null;
@@ -5324,11 +5341,11 @@ export type SpQueryField = {
     readonly endValue: string | null;
     readonly fieldName: string;
     readonly formatName: string | null;
-    readonly isStrict: boolean;
     readonly isDisplay: boolean;
     readonly isNot: boolean;
     readonly isPrompt: boolean | null;
     readonly isRelFld: boolean | null;
+    readonly isStrict: boolean;
     readonly operEnd: number | null;
     readonly operStart: number;
     readonly position: number;
@@ -5538,8 +5555,8 @@ export type Storage = {
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly timestampVersion: string | null;
-    readonly version: number | null;
     readonly uniqueIdentifier: string | null;
+    readonly version: number | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {

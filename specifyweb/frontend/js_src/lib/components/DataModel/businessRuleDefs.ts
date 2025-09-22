@@ -3,19 +3,21 @@ import { resolveParser } from '../../utils/parser/definitions';
 import type { ValueOf } from '../../utils/types';
 import type { BusinessRuleResult } from './businessRules';
 import {
-  CO_HAS_PARENT,
   COG_PRIMARY_KEY,
   COG_TOITSELF,
   COJO_PRIMARY_DELETE_KEY,
   CURRENT_DETERMINATION_KEY,
   DETERMINATION_TAXON_KEY,
   ensureSingleCollectionObjectCheck,
+  fieldCheckBoolUniqueInCollection,
   hasNoCurrentDetermination,
+  onAddedEnsureBoolInCollection,
   PREPARATION_DISPOSED_KEY,
   PREPARATION_EXCHANGED_IN_KEY,
   PREPARATION_EXCHANGED_OUT_KEY,
   PREPARATION_GIFTED_KEY,
   PREPARATION_LOANED_KEY,
+  PREPARATION_NEGATIVE_KEY,
 } from './businessRuleUtils';
 import { cogTypes } from './helpers';
 import type { AnySchema, CommonFields, TableFields } from './helperTypes';
@@ -28,19 +30,16 @@ import {
   updateLoanPrep,
 } from './interactionBusinessRules';
 import type { SpecifyResource } from './legacyTypes';
-import { idFromUrl } from './resource';
 import { setSaveBlockers } from './saveBlockers';
 import { schema } from './schema';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Collection } from './specifyTable';
 import { tables } from './tables';
 import type {
-  Address,
   BorrowMaterial,
   CollectionObject,
   CollectionObjectGroup,
   CollectionObjectGroupJoin,
-  Collector,
   Determination,
   DNASequence,
   LoanPreparation,
@@ -82,43 +81,10 @@ type MappedBusinessRuleDefs = {
 
 export const businessRuleDefs: MappedBusinessRuleDefs = {
   Address: {
-    customInit: (address) => {
-      if (address.isNew()) {
-        const setPrimary = (): void => {
-          address.set('isPrimary', true);
-          if (address.collection !== undefined) {
-            address.collection.models.forEach(
-              (other: SpecifyResource<Address>) => {
-                if (other.cid !== address.cid) other.set('isPrimary', false);
-              }
-            );
-          }
-        };
-        address.on('add', setPrimary);
-      }
-    },
     fieldChecks: {
-      isPrimary: async (address): Promise<BusinessRuleResult> => {
-        if (address.get('isPrimary') === true) {
-          address.collection?.models.forEach(
-            (other: SpecifyResource<Address>) => {
-              if (other.cid !== address.cid) {
-                other.set('isPrimary', false);
-              }
-            }
-          );
-        }
-        if (
-          address.collection !== undefined &&
-          !address.collection?.models.some((c: SpecifyResource<Address>) =>
-            c.get('isPrimary')
-          )
-        ) {
-          address.set('isPrimary', true);
-        }
-        return { isValid: true };
-      },
+      isPrimary: fieldCheckBoolUniqueInCollection('isPrimary'),
     },
+    onAdded: onAddedEnsureBoolInCollection('isPrimary'),
   },
   BorrowMaterial: {
     fieldChecks: {
@@ -312,33 +278,6 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           saveBlockerKey: COG_TOITSELF,
         };
       },
-      childCo: async (
-        cojo: SpecifyResource<CollectionObjectGroupJoin>
-      ): Promise<BusinessRuleResult> => {
-        const childCO = cojo.get('childCo');
-        const childCOId = idFromUrl(childCO!);
-        const CO: SpecifyResource<CollectionObject> | void =
-          await new tables.CollectionObject.Resource({ id: childCOId })
-            .fetch()
-            .then((co) => co)
-            .catch((error) => {
-              console.error('Failed to fetch CollectionObject:', error);
-            });
-        let coParent;
-        if (CO !== undefined) {
-          coParent = CO.get('parentCO');
-        }
-        return coParent === null
-          ? {
-              isValid: true,
-              saveBlockerKey: CO_HAS_PARENT,
-            }
-          : {
-              isValid: false,
-              reason: resourcesText.coHasParent(),
-              saveBlockerKey: CO_HAS_PARENT,
-            };
-      },
     },
     onAdded: (cojo, collection) => {
       if (
@@ -381,28 +320,14 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
 
   Collector: {
     fieldChecks: {
-      isPrimary: (collector: SpecifyResource<Collector>): void => {
-        if (collector.get('isPrimary') && collector.collection !== undefined) {
-          collector.collection.models.map(
-            (other: SpecifyResource<Collector>) => {
-              if (other.cid !== collector.cid) {
-                other.set('isPrimary', false);
-              }
-            }
-          );
-        }
-      },
+      isPrimary: fieldCheckBoolUniqueInCollection('isPrimary'),
     },
     onRemoved: (collector, collection): void => {
       if (collector.get('isPrimary') && collection.models.length > 0) {
         collection.models[0].set('isPrimary', true);
       }
     },
-    onAdded: (collector, collection): void => {
-      if (collection.models.length === 1) {
-        collector.set('isPrimary', true);
-      }
-    },
+    onAdded: onAddedEnsureBoolInCollection('isPrimary'),
   },
 
   Determination: {
@@ -436,9 +361,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
                     ),
                 };
           }),
-      isCurrent: async (
-        determination: SpecifyResource<Determination>
-      ): Promise<BusinessRuleResult> => {
+      isCurrent: async (determination): Promise<BusinessRuleResult> => {
         /*
          * Disallow multiple determinations being checked as current
          * Unchecks other determination when one of them gets checked
@@ -493,7 +416,19 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         );
     },
     onAdded: (determination, collection): void => {
-      determination.set('isCurrent', true);
+      /**
+       * BUG: Theoretically if the user adds an existing Determination to
+       * a (Backbone) Collection we would also want to make sure the existing
+       * Collection the Determination is leaving contains a current
+       * Determination and prevent the operation (via saveblocker?) if so.
+       */
+      if (determination.createdBy !== 'clone') {
+        determination.set('isCurrent', true);
+        collection.models.forEach((otherDetermination) => {
+          if (determination.cid !== otherDetermination.cid)
+            otherDetermination.set('isCurrent', false);
+        });
+      }
       // Clear any existing save blocker on adding a new current determination
       setSaveBlockers(
         collection.related ?? determination,
@@ -502,6 +437,12 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         CURRENT_DETERMINATION_KEY
       );
     },
+  },
+  Determiner: {
+    fieldChecks: {
+      isPrimary: fieldCheckBoolUniqueInCollection('isPrimary'),
+    },
+    onAdded: onAddedEnsureBoolInCollection('isPrimary'),
   },
   DisposalPreparation: {
     fieldChecks: {
@@ -513,33 +454,23 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       geneSequence: (dnaSequence: SpecifyResource<DNASequence>): void => {
         const current = dnaSequence.get('geneSequence');
         if (current === null) return;
-        const countObject = { a: 0, t: 0, g: 0, c: 0, ambiguous: 0 };
-        for (let i = 0; i < current.length; i++) {
-          const char = current.at(i)?.toLowerCase().trim();
-          if (char !== '') {
-            switch (char) {
-              case 'a': {
-                countObject.a += 1;
-                break;
-              }
-              case 't': {
-                countObject.t += 1;
-                break;
-              }
-              case 'g': {
-                countObject.g += 1;
-                break;
-              }
-              case 'c': {
-                countObject.c += 1;
-                break;
-              }
-              default: {
-                countObject.ambiguous += 1;
-              }
-            }
-          }
-        }
+
+        const countObject = Array.from(current).reduce(
+          (accumulator, currentString) => {
+            const trimmed = currentString.toLowerCase().trim();
+            if (trimmed === '') return accumulator;
+            return trimmed === 'a'
+              ? { ...accumulator, a: accumulator.a + 1 }
+              : trimmed === 't'
+                ? { ...accumulator, t: accumulator.t + 1 }
+                : trimmed === 'g'
+                  ? { ...accumulator, g: accumulator.g + 1 }
+                  : trimmed === 'c'
+                    ? { ...accumulator, c: accumulator.c + 1 }
+                    : { ...accumulator, ambiguous: accumulator.ambiguous + 1 };
+          },
+          { a: 0, t: 0, g: 0, c: 0, ambiguous: 0 }
+        );
         dnaSequence.set('compA', countObject.a);
         dnaSequence.set('compT', countObject.t);
         dnaSequence.set('compG', countObject.g);
@@ -547,14 +478,19 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         dnaSequence.set('ambiguousResidues', countObject.ambiguous);
         dnaSequence.set(
           'totalResidues',
-          countObject.a +
-            countObject.t +
-            countObject.g +
-            countObject.c +
-            countObject.ambiguous
+          Object.values(countObject).reduce(
+            (previous, current) => previous + current,
+            0
+          )
         );
       },
     },
+  },
+  FundingAgent: {
+    fieldChecks: {
+      isPrimary: fieldCheckBoolUniqueInCollection('isPrimary'),
+    },
+    onAdded: onAddedEnsureBoolInCollection('isPrimary'),
   },
   GiftPreparation: {
     fieldChecks: {
@@ -659,6 +595,48 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
     },
   },
   Preparation: {
+    fieldChecks: {
+      countAmt: async (prep): Promise<BusinessRuleResult | undefined> => {
+        const loanPrep = await prep.rgetCollection('loanPreparations');
+        const totalPrep = prep.get('countAmt') ?? 0;
+        let totalPrepLoaned = 0;
+
+        loanPrep.models.forEach((loan) => {
+          const quantity = loan.get('quantity') ?? 0;
+          totalPrepLoaned += quantity;
+        });
+
+        if (totalPrep < 0) {
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [resourcesText.preparationIsNegative()],
+            PREPARATION_NEGATIVE_KEY
+          );
+        } else if (totalPrep < totalPrepLoaned) {
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [resourcesText.preparationUsedInLoan()],
+            PREPARATION_LOANED_KEY
+          );
+        } else {
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [],
+            PREPARATION_LOANED_KEY
+          );
+          setSaveBlockers(
+            prep,
+            prep.specifyTable.field.countAmt,
+            [],
+            PREPARATION_NEGATIVE_KEY
+          );
+        }
+        return undefined;
+      },
+    },
     onRemoved: (preparation, collection): void => {
       if (preparation.get('isOnLoan') === true) {
         setSaveBlockers(
