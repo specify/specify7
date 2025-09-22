@@ -12,7 +12,7 @@
 
 import '../../../css/workbench.css';
 
-import type { HotTable } from '@handsontable/react';
+import type { HotTableClass } from '@handsontable/react';
 import type Handsontable from 'handsontable';
 import React from 'react';
 
@@ -87,7 +87,7 @@ export function WbView({
   );
 
   const spreadsheetContainerRef = React.useRef<HTMLElement>(null);
-  const [hotTable, setHotTable] = React.useState<HotTable | null>(null);
+  const [hotTable, setHotTable] = React.useState<HotTableClass | null>(null);
   const hot = hotTable?.hotInstance ?? undefined;
 
   const isUploaded =

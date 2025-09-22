@@ -2,7 +2,7 @@
  * Component for the Handsontable React wrapper
  */
 
-import { HotTable } from '@handsontable/react';
+import { HotTable, HotTableClass } from '@handsontable/react';
 import type Handsontable from 'handsontable';
 import type { DetailedSettings } from 'handsontable/plugins/contextMenu';
 import { registerAllModules } from 'handsontable/registry';
@@ -47,7 +47,7 @@ function WbSpreadsheetComponent({
   onClickDisambiguate: handleClickDisambiguate,
 }: {
   readonly dataset: Dataset;
-  readonly setHotTable: React.RefCallback<HotTable>;
+  readonly setHotTable: React.RefCallback<HotTableClass>;
   readonly hot: Handsontable | undefined;
   readonly isUploaded: boolean;
   readonly data: RA<RA<string | null>>;
@@ -163,10 +163,10 @@ function WbSpreadsheetComponent({
                     !disambiguation.isAmbiguousCell() || isReadOnly,
                   callback: handleClickDisambiguate,
                 },
-                ['separator_1' as 'undo']: '---------',
+                separator_1: '---------',
                 fill_down: fillCellsContextMenuItem(hot, 'down', isReadOnly),
                 fill_up: fillCellsContextMenuItem(hot, 'up', isReadOnly),
-                ['separator_2' as 'redo']: '---------',
+                separator_2: '---------',
                 undo: {
                   disabled: () => !hot.isUndoAvailable() || isReadOnly,
                 },
@@ -224,8 +224,9 @@ function WbSpreadsheetComponent({
   });
 
   return (
-    <section className="flex-1 overflow-hidden overscroll-none">
+    <section className="flex-1 overflow-hidden overscroll-none h-full">
       <HotTable
+        autoColumnSize={true}
         autoWrapCol={autoWrapCol}
         autoWrapRow={autoWrapRow}
         colHeaders={colHeaders}
@@ -248,7 +249,7 @@ function WbSpreadsheetComponent({
         readOnly={isReadOnly}
         ref={setHotTable}
         rowHeaders
-        stretchH="all"
+        viewportRowRenderingOffset={30}
         tabMoves={tabMoves}
         contextMenu={contextMenuConfig}
         // eslint-disable-next-line functional/prefer-readonly-type
