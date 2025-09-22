@@ -221,7 +221,9 @@ export function useHotHooks({
       const changes = unfilteredChanges
         .map(([visualRow, property, oldValue, newValue]) => ({
           visualRow,
-          visualCol: workbench.hot!.propToCol(property as number | string) as number,
+          visualCol: workbench.hot!.propToCol(
+            property as number | string
+          ) as number,
           physicalRow: workbench.hot!.toPhysicalRow(visualRow),
           physicalCol:
             typeof property === 'number'
@@ -553,13 +555,19 @@ export function useHotHooks({
      */
     afterScrollHorizontally: () => {
       if (workbench.hot === undefined) return;
-      getHotPlugin(workbench.hot, 'autoColumnSize').calculateVisibleColumnsWidth();
+      getHotPlugin(
+        workbench.hot,
+        'autoColumnSize'
+      ).calculateVisibleColumnsWidth();
       workbench.hot.render();
     },
-    
+
     afterScrollVertically: () => {
       if (workbench.hot === undefined) return;
-      getHotPlugin(workbench.hot, 'autoColumnSize').calculateVisibleColumnsWidth();
+      getHotPlugin(
+        workbench.hot,
+        'autoColumnSize'
+      ).calculateVisibleColumnsWidth();
       workbench.hot.render();
     },
   };
