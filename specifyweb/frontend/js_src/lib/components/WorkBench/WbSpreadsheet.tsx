@@ -117,7 +117,7 @@ function WbSpreadsheetComponent({
                       <SvgIcon
                         className={iconClassName}
                         label={tableLabel}
-                        name={tableName as keyof typeof strictGetTable}
+                        name={strictGetTable(tableName).name as keyof Tables}
                       />
                     );
 
