@@ -2,34 +2,7 @@
 
 from django.db import migrations, models
 import specifyweb.specify.models
-from specifyweb.specify.migration_utils.update_schema_config import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
-from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0013_FIELDS as SCHEMA_CONFIG_MOD_TABLE_FIELDS
-
-
-def update_schema_config(apps):
-    revert_table_field_schema_config(
-        'CollectionObjectGroup', 'parentCojo', apps)
-    revert_table_field_schema_config(
-        'CollectionObjectGroup', 'parentCog', apps)
-
-    Discipline = apps.get_model('specify', 'Discipline')
-    for discipline in Discipline.objects.all():
-        for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items():
-            for field in fields:
-                update_table_field_schema_config_with_defaults(
-                    table, discipline.id, field, apps)
-
-
-def revert_update(apps):
-    for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items():
-        for field in fields:
-            revert_table_field_schema_config(table, field, apps)
-
-    Discipline = apps.get_model('specify', 'Discipline')
-    for discipline in Discipline.objects.all():
-        update_table_field_schema_config_with_defaults(
-            'CollectionObjectGroup', discipline.id, 'parentCojo', apps)
-
+from specifyweb.specify.migration_utils import update_schema_config as usc
 
 class Migration(migrations.Migration):
 
@@ -38,10 +11,10 @@ class Migration(migrations.Migration):
     ]
 
     def apply_migration(apps, schema_editor):
-        update_schema_config(apps)
+        usc.update_cog_schema_config(apps)
 
     def revert_migration(apps, schema_editor):
-        revert_update(apps)
+        usc.revert_update_cog_schema_config(apps)
 
     operations = [
         migrations.RemoveField(
