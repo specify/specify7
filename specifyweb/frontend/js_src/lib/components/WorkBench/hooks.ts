@@ -547,6 +547,21 @@ export function useHotHooks({
         workbench.hot?.selectCells(newSelection);
       }
     },
+
+    /*
+     * As of Handsontable 16.0.1 column sizes on large data sets need to be manually recalculated
+     */
+    afterScrollHorizontally: () => {
+      if (workbench.hot === undefined) return;
+      getHotPlugin(workbench.hot, 'autoColumnSize').calculateVisibleColumnsWidth();
+      workbench.hot.render();
+    },
+    
+    afterScrollVertically: () => {
+      if (workbench.hot === undefined) return;
+      getHotPlugin(workbench.hot, 'autoColumnSize').calculateVisibleColumnsWidth();
+      workbench.hot.render();
+    },
   };
 }
 

@@ -226,6 +226,7 @@ function WbSpreadsheetComponent({
   return (
     <section className="flex-1 overflow-hidden overscroll-none h-full">
       <HotTable
+        autoColumnSize={true}
         autoWrapCol={autoWrapCol}
         autoWrapRow={autoWrapRow}
         colHeaders={colHeaders}
@@ -248,7 +249,7 @@ function WbSpreadsheetComponent({
         readOnly={isReadOnly}
         ref={setHotTable}
         rowHeaders
-        stretchH="all"
+        viewportRowRenderingOffset={30}
         tabMoves={tabMoves}
         contextMenu={contextMenuConfig}
         // eslint-disable-next-line functional/prefer-readonly-type
