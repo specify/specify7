@@ -17,6 +17,7 @@ import { writable } from '../../utils/types';
 import { iconClassName, icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { strictGetTable } from '../DataModel/tables';
+import { Tables } from '../DataModel/types';
 import { SvgIcon } from '../Molecules/SvgIcon';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { configureHandsontable } from './handsontable';
@@ -30,7 +31,6 @@ import { useHotProps } from './hotProps';
 import type { WbMapping } from './mapping';
 import { fetchWbPickLists } from './pickLists';
 import type { Workbench } from './WbView';
-import { Tables } from '../DataModel/types';
 
 registerAllModules();
 
@@ -118,7 +118,7 @@ function WbSpreadsheetComponent({
                       <SvgIcon
                         className={iconClassName}
                         label={tableLabel}
-                        name={strictGetTable(tableName).name as keyof Tables}
+                        name={strictGetTable(tableName).name }
                       />
                     );
 
