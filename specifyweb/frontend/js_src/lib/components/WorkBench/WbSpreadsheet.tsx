@@ -30,6 +30,7 @@ import { useHotProps } from './hotProps';
 import type { WbMapping } from './mapping';
 import { fetchWbPickLists } from './pickLists';
 import type { Workbench } from './WbView';
+import { Tables } from '../DataModel/types';
 
 registerAllModules();
 
