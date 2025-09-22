@@ -276,8 +276,11 @@ def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
             return
 
     logger.info(f"Creating uniqueness rule on {model_name} with fields {fields} and scopes {scopes} for the discipline {discipline.name if discipline else 'Global'}")
-    rule = UniquenessRule.objects.get_or_create(
-        discipline=discipline, modelName=model_name, isDatabaseConstraint=is_database_constraint)
+    rule, _ = UniquenessRule.objects.get_or_create(
+        discipline=discipline,
+        modelName=model_name,
+        isDatabaseConstraint=is_database_constraint
+    )
 
     for field in fields:
         UniquenessRuleField.objects.get_or_create(uniquenessrule=rule, fieldPath=field, isScope=False)
