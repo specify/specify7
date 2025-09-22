@@ -82,7 +82,8 @@ def apply_default_uniqueness_rules_to_disciplines(apps):
     UniquenessRule = apps.get_model('businessrules', 'UniquenessRule')
 
     for discipline in Discipline.objects.all():
-        apply_default_uniqueness_rules(discipline, registry=apps)
+        if not UniquenessRule.objects.filter(discipline=discipline, isDatabaseConstraint=True).exists():
+            apply_default_uniqueness_rules(discipline, registry=apps)
 
 def fix_business_rules(stdout: WriteToStdOut | None = None):
     funcs = [
