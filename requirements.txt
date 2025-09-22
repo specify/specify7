@@ -4,7 +4,7 @@ wheel
 # backports.zoneinfo==0.2.1
 kombu==5.5.2
 celery[redis]==5.5.1
-Django==4.2.22
+Django==4.2.24
 mysqlclient==2.1.1
 SQLAlchemy==1.4.54
 sqlalchemy2-stubs
