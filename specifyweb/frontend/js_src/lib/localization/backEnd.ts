@@ -76,8 +76,8 @@ export const backEndText = createDictionary({
       'поганий {agentTypeField:string}: "{badType:string}". Очікується один із {validTypes:string}',
     'de-ch':
       'fehlerhaft {agentTypeField:string}: "{badType:string}". Erwartet wurde einer von {validTypes:string}',
-    'pt-br':
-      'ruim {agentTypeField:string}: "{badType:string}". Esperava um de {validTypes:string}',
+    "pt-br":
+      'ruim {agentTypeField:string}: "{badType:string}". Esperava-se um de {validTypes:string}',
   },
   pickListValueTooLong: {
     'en-us':
@@ -223,10 +223,10 @@ export const backEndText = createDictionary({
       "Valeur de classement parent de l'arborescence requise manquante ou non mappée pour « {names:string} ».",
     'uk-ua':
       'Відсутнє або не зіставлене необхідне значення батьківського рангу дерева для "{names:string}".',
-    'de-ch':
-      'Fehlender oder nicht zugeordneter erforderlicher Rangwert des übergeordneten Baums für „{names:string}“.',
-    'pt-br':
-      'Valor de classificação da árvore pai necessária ausente ou não mapeada para "{names:string}".',
+    "de-ch":
+      "Fehlender oder nicht zugeordneter erforderlicher Rangwert des übergeordneten Baums für „{names:string}“.",
+    "pt-br":
+      'Valor de classificação da árvore pai necessário ausente ou não mapeado para "{names:string}".',
   },
   showTraceback: {
     'en-us': 'Show Traceback',
@@ -348,14 +348,14 @@ export const backEndText = createDictionary({
       'Estructura de árbol incorrecta: se encontraron {badRanks:number|formatted} casos en los que el rango del nodo no es mayor que el de su padre',
     'fr-fr':
       "Mauvaise structure d'arborescence : cas {badRanks:number|formatted} trouvés où le rang du nœud n'est pas supérieur à celui de son parent",
-    'ru-ru':
-      'Плохая структура дерева: обнаружено {badRanks:number|formatted} случаев, когда ранг узла не превышает его родительского',
-    'uk-ua':
-      'Погана структура дерева: знайдено {badRanks:number|formatted} випадків, коли ранг вузла не перевищує його батьківського рівня',
-    'de-ch':
-      'Fehlerhafte Baumstruktur: {badRanks:number|formatted} Fälle gefunden, in denen der Knotenrang nicht größer ist als der des übergeordneten Knotens',
-    'pt-br':
-      'Estrutura de árvore ruim: foram encontrados {badRanks:number|formatted} casos em que a classificação do nó não é maior que a do seu pai',
+    "ru-ru":
+      "Плохая структура дерева: обнаружено {badRanks:number|formatted} случаев, когда ранг узла не превышает ранг его родителя.",
+    "uk-ua":
+      "Погана структура дерева: знайдено {badRanks:number|formatted} випадків, коли ранг вузла не перевищує його батьківського рівня",
+    "de-ch":
+      "Fehlerhafte Baumstruktur: {badRanks:number|formatted} Fälle gefunden, in denen der Knotenrang nicht größer ist als der des übergeordneten Knotens",
+    "pt-br":
+      "Estrutura de árvore ruim: foram encontrados {badRanks:number|formatted} casos em que a classificação do nó não é maior que a do seu pai",
   },
   invalidNodeType: {
     'en-us':
@@ -563,13 +563,13 @@ export const backEndText = createDictionary({
     'uk-ua': 'Кілька визначень дерев у рядку',
   },
   invalidCotype: {
-    'en-us': 'Invalid type for selected tree rank(s)',
-    'de-ch': 'Ungültiger Typ für ausgewählte(n) Baumrang(e)',
-    'es-es': 'Tipo no válido para el rango de árbol seleccionado',
-    'fr-fr': "Type non valide pour le(s) rang(s) d'arbre sélectionné(s)",
-    'pt-br': 'Tipo inválido para classificação de árvore selecionada',
-    'ru-ru': 'Недопустимый тип для выбранного ранга дерева',
-    'uk-ua': 'Недійсний тип для вибраного(их) рангу(ів) дерева',
+    "en-us": "Invalid type for selected tree rank(s)",
+    "de-ch": "Ungültiger Typ für ausgewählte(n) Baumrang(e)",
+    "es-es": "Tipo no válido para el rango de árbol seleccionado",
+    "fr-fr": "Type non valide pour les rangs d'arbres sélectionnés",
+    "pt-br": "Tipo inválido para classificação de árvore selecionada(s)",
+    "ru-ru": "Недопустимый тип для выбранного ранга дерева",
+    "uk-ua": "Недійсний тип для вибраного(их) рангу(ів) дерева",
   },
   attachmentNotFound: {
     'en-us':

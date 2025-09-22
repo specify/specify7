@@ -165,13 +165,13 @@ export const userText = createDictionary({
       'Você foi convidado a associar um login externo à sua conta de usuário do Specify. Isso permitirá que você faça login no Specify com o provedor escolhido a partir de agora.',
   },
   legacyLogin: {
-    'en-us': 'Sign in with Specify Account',
-    'ru-ru': 'Войти, указав учетную запись',
-    'es-es': 'Iniciar sesión con una cuenta de Specify',
-    'fr-fr': 'Connectez-vous avec un compte spécifié',
-    'uk-ua': 'Увійти за допомогою Вказати обліковий запис',
-    'de-ch': 'Mit „Konto angeben“ anmelden',
-    'pt-br': 'Entrar com Especificar Conta',
+    "en-us": "Sign in with Specify Account",
+    "ru-ru": "Войти, указав учетную запись",
+    "es-es": "Iniciar sesión con una cuenta de Specify",
+    "fr-fr": "Connectez-vous avec Spécifier le compte",
+    "uk-ua": "Увійти за допомогою Вказати обліковий запис",
+    "de-ch": "Mit „Konto angeben“ anmelden",
+    "pt-br": "Entrar com Especificar Conta",
   },
   unknownOicUser: {
     'en-us':
@@ -284,17 +284,17 @@ export const userText = createDictionary({
     'pt-br': 'Selecione uma das seguintes coleções:',
   },
   loginToProceed: {
-    comment: 'Example: You can login to the Collection, to proceed:',
-    'en-us': 'You can login to the {collectionTable:string}, to proceed:',
-    'ru-ru': 'Вы можете войти в {collectionTable:string}, чтобы продолжить:',
-    'es-es': 'Puede iniciar sesión en {collectionTable:string} para continuar:',
-    'fr-fr':
-      'Vous pouvez vous connecter au {collectionTable:string} pour continuer :',
-    'uk-ua': 'Ви можете увійти до {collectionTable:string}, щоб продовжити:',
-    'de-ch':
-      'Sie können sich bei {collectionTable:string} anmelden, um fortzufahren:',
-    'pt-br':
-      'Você pode fazer login no {collectionTable:string}, para prosseguir:',
+    comment: "Example: You can login to the Collection, to proceed:",
+    "en-us": "You can login to the {collectionTable:string}, to proceed:",
+    "ru-ru": "Вы можете войти в {collectionTable:string}, чтобы продолжить:",
+    "es-es": "Puede iniciar sesión en {collectionTable:string} para continuar:",
+    "fr-fr":
+      "Vous pouvez vous connecter au {collectionTable:string} pour continuer :",
+    "uk-ua": "Ви можете увійти до {collectionTable:string}, щоб продовжити:",
+    "de-ch":
+      "Sie können sich bei {collectionTable:string} anmelden, um fortzufahren:",
+    "pt-br":
+      "Você pode fazer login no {collectionTable:string} para prosseguir:",
   },
   sessionTimeOut: {
     'en-us': 'Insufficient Privileges',
@@ -365,14 +365,14 @@ export const userText = createDictionary({
       'No se puede abrir {recordSetTable:string} vacío cuando está en modo de solo lectura',
     'fr-fr':
       "Impossible d'ouvrir un {recordSetTable:string} vide en mode lecture seule",
-    'ru-ru':
-      'Невозможно открыть пустой {recordSetTable:string} в режиме «Только чтение»',
-    'uk-ua':
-      'Не вдається відкрити порожній {recordSetTable:string} у режимі лише для читання',
-    'de-ch':
-      'Leeres {recordSetTable:string} kann im schreibgeschützten Modus nicht geöffnet werden',
-    'pt-br':
-      'Não é possível abrir {recordSetTable:string} vazio no modo somente leitura',
+    "ru-ru":
+      "Невозможно открыть пустой {recordSetTable:string} в режиме «Только чтение»",
+    "uk-ua":
+      "Не вдається відкрити порожній {recordSetTable:string} у режимі лише для читання",
+    "de-ch":
+      "Leeres {recordSetTable:string} kann im schreibgeschützten Modus nicht geöffnet werden",
+    "pt-br":
+      "Não é possível abrir {recordSetTable:string} vazio quando em modo somente leitura",
   },
   permissionDeniedForUrl: {
     'en-us': 'Permission denied when accessing <url />',
@@ -392,12 +392,12 @@ export const userText = createDictionary({
       'Al usuario que inició sesión no se le ha dado acceso a ninguna colección de esta base de datos. Debe iniciar sesión como otro usuario.',
     'fr-fr':
       "L'utilisateur connecté n'a accès à aucune collection de cette base de données. Vous devez vous connecter sous un autre nom d'utilisateur.",
-    'uk-ua':
-      'Користувач, який зареєстрований, не має доступу до жодної колекції в цій базі даних. Ви повинні увійти як інший користувач.',
-    'de-ch':
-      'Dem angemeldeten Benutzer wurde kein Zugriff auf Sammlungen in dieser Datenbank gewährt. Sie müssen sich als anderer Benutzer anmelden.',
-    'pt-br':
-      'O usuário logado não recebeu acesso a nenhuma coleção neste banco de dados. Você deve efetuar login como outro usuário.',
+    "uk-ua":
+      "Користувач, який зареєстрований, не має доступу до жодної колекції в цій базі даних. Ви повинні увійти як інший користувач.",
+    "de-ch":
+      "Dem angemeldeten Benutzer wurde kein Zugriff auf Sammlungen in dieser Datenbank gewährt. Sie müssen sich als anderer Benutzer anmelden.",
+    "pt-br":
+      "O usuário conectado não recebeu acesso a nenhuma coleção neste banco de dados. Você deve efetuar login como outro usuário.",
   },
   userAccount: {
     'en-us': 'User Account',
@@ -495,13 +495,13 @@ export const userText = createDictionary({
     'pt-br': 'Definir senha',
   },
   passwordsDoNotMatchError: {
-    'en-us': 'Passwords do not match.',
-    'ru-ru': 'Пароли не совпадают.',
-    'es-es': 'Las contraseñas no coinciden.',
-    'fr-fr': 'Les mots de passe ne correspondent pas.',
-    'uk-ua': 'Паролі не збігаються.',
-    'de-ch': 'Die Passwörter stimmen nicht überein.',
-    'pt-br': 'As senhas não coincidem.',
+    "en-us": "Passwords do not match.",
+    "ru-ru": "Пароли не совпадают.",
+    "es-es": "Las contraseñas no coinciden.",
+    "fr-fr": "Les mots de passe ne correspondent pas.",
+    "uk-ua": "Паролі не збігаються.",
+    "de-ch": "Die Passwörter stimmen nicht überein.",
+    "pt-br": "As senhas não correspondem.",
   },
   confirmPassword: {
     'en-us': 'Confirm',
@@ -576,13 +576,13 @@ export const userText = createDictionary({
     'pt-br': 'Funções de usuário atribuídas',
   },
   rolePolicies: {
-    'en-us': 'Role Permission Policies',
-    'ru-ru': 'Политики разрешений ролей',
-    'es-es': 'Políticas de permisos',
-    'fr-fr': "Politiques d'autorisation des rôles",
-    'uk-ua': 'Політики дозволів для ролей',
-    'de-ch': 'Rollenberechtigungsrichtlinien',
-    'pt-br': 'Políticas de permissão de função',
+    "en-us": "Role Permission Policies",
+    "ru-ru": "Политики разрешений ролей",
+    "es-es": "Políticas de permisos",
+    "fr-fr": "Politiques d'autorisation de rôle",
+    "uk-ua": "Політики дозволів для ролей",
+    "de-ch": "Rollenberechtigungsrichtlinien",
+    "pt-br": "Políticas de permissão de função",
   },
   userPolicies: {
     'en-us': 'User Permission Policies',
@@ -761,13 +761,13 @@ export const userText = createDictionary({
     'pt-br': 'De uma função existente:',
   },
   createNewRoles: {
-    'en-us': 'Create new roles:',
-    'ru-ru': 'Создайте новые роли:',
-    'es-es': 'Crear nuevos roles:',
-    'fr-fr': 'Créer de nouveaux rôles :',
-    'uk-ua': 'Створити нові ролі:',
-    'de-ch': 'Neue Rollen erstellen:',
-    'pt-br': 'Criar novas funções:',
+    "en-us": "Create new roles:",
+    "ru-ru": "Создайте новые роли:",
+    "es-es": "Crear nuevos roles:",
+    "fr-fr": "Créer de nouveaux rôles :",
+    "uk-ua": "Створити нові ролі:",
+    "de-ch": "Neue Rollen erstellen:",
+    "pt-br": "Crie novas funções:",
   },
   updateExistingRoles: {
     'en-us': 'Update existing roles:',
@@ -1009,13 +1009,13 @@ export const userText = createDictionary({
       'Deve haver pelo menos um administrador da instituição na instituição',
   },
   switchToHorizontalLayout: {
-    'en-us': 'Switch to horizontal layout',
-    'ru-ru': 'Переключиться на горизонтальную компоновку',
-    'es-es': 'Cambiar a diseño horizontal',
-    'fr-fr': "Passer à l'affichage horizontal",
-    'uk-ua': 'Перейти до горизонтального розташування',
-    'de-ch': 'Wechseln Sie zum horizontalen Layout',
-    'pt-br': 'Mudar para layout horizontal',
+    "en-us": "Switch to horizontal layout",
+    "ru-ru": "Переключиться на горизонтальную компоновку",
+    "es-es": "Cambiar a diseño horizontal",
+    "fr-fr": "Passer à l'affichage horizontal",
+    "uk-ua": "Перейти до горизонтального розташування",
+    "de-ch": "Zum horizontalen Layout wechseln",
+    "pt-br": "Mudar para layout horizontal",
   },
   switchToVerticalLayout: {
     'en-us': 'Switch to vertical layout',
