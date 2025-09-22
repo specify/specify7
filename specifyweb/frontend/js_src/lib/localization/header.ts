@@ -14,10 +14,10 @@ export const headerText = createDictionary({
     'en-us': 'Skip to Content',
     'ru-ru': 'Перейти к содержанию',
     'es-es': 'Ir al contenido',
-    'fr-fr': 'Passer au contenu',
+    'fr-fr': 'Accéder au contenu',
     'uk-ua': 'Перейти до вмісту',
     'de-ch': 'Weiter zum Inhalt',
-    'pt-br': 'Ir para o conteúdo',
+    'pt-br': 'Pular para o conteúdo',
   },
   main: {
     comment: 'As in "main menu"',
@@ -73,7 +73,7 @@ export const headerText = createDictionary({
     'fr-fr': 'Mettre à jour le flux RSS',
     'uk-ua': 'Оновити RSS-канал',
     'de-ch': 'RSS-Feed aktualisieren',
-    'pt-br': 'Atualizar feed RSS',
+    'pt-br': 'Atualizar Feed RSS',
   },
   updateExportFeedConfirmation: {
     'en-us': 'Update export feed?',
@@ -93,8 +93,7 @@ export const headerText = createDictionary({
       "Mettre à jour tous les éléments du flux d'exportation RSS maintenant ?",
     'uk-ua': 'Оновити всі елементи RSS-експорту?',
     'de-ch': 'Jetzt alle RSS-Export-Feed-Elemente aktualisieren?',
-    'pt-br':
-      'Agora é necessário atualizar todos os itens do feed RSS exportado?',
+    'pt-br': 'Atualizar todos os itens do feed de exportação RSS agora?',
   },
   feedExportStarted: {
     'en-us': 'Export feed update started',
@@ -119,7 +118,7 @@ export const headerText = createDictionary({
     'de-ch':
       'Aktualisierung gestartet. Sie erhalten eine Benachrichtigung für jedes aktualisierte Feed-Element.',
     'pt-br':
-      'Atualização iniciada. Você receberá uma notificação para cada item do feed atualizado.',
+      'Atualização iniciada. Você receberá uma notificação para cada item de feed atualizado.',
   },
   dwcaExportStarted: {
     'en-us': 'DwCA export started',
@@ -128,7 +127,7 @@ export const headerText = createDictionary({
     'fr-fr': "L'exportation DwCA a démarré",
     'uk-ua': 'Розпочато експорт DwCA',
     'de-ch': 'DwCA-Export gestartet',
-    'pt-br': 'A exportação DwCA foi iniciada.',
+    'pt-br': 'Exportação DwCA iniciada',
   },
   dwcaExportStartedDescription: {
     'en-us':
@@ -148,9 +147,9 @@ export const headerText = createDictionary({
   },
   localityUpdateTool: {
     'en-us': 'Locality Update Tool',
-    'de-ch': 'Tool zur Aktualisierung der Ortsinformationen',
+    'de-ch': 'Tool zur Standortaktualisierung',
     'es-es': 'Herramienta de actualización de localidad',
-    'fr-fr': 'Outil de mise à jour de la localisation',
+    'fr-fr': 'Outil de mise à jour de la localité',
     'ru-ru': 'Инструмент обновления местоположения',
     'uk-ua': 'Інструмент оновлення місцевості',
     'pt-br': 'Ferramenta de atualização de localidade',
@@ -162,7 +161,7 @@ export const headerText = createDictionary({
     'uk-ua': 'Назва бірки',
     'de-ch': 'Etikett Name',
     'fr-fr': 'Outils administratifs',
-    'pt-br': 'Nome da etiqueta',
+    'pt-br': 'Nome do rótulo',
   },
   reportName: {
     'en-us': 'Report Name',
@@ -171,7 +170,7 @@ export const headerText = createDictionary({
     'fr-fr': 'Nom du rapport',
     'uk-ua': 'Назва звіту',
     'de-ch': 'Name des Berichts',
-    'pt-br': 'Nome do relatório',
+    'pt-br': 'Nome do Relatório',
   },
   createLabel: {
     'en-us': 'Create new label',
@@ -180,7 +179,7 @@ export const headerText = createDictionary({
     'fr-fr': 'Créer une nouvelle étiquette',
     'uk-ua': 'Створити нову бірку',
     'de-ch': 'Neues Label erstellen',
-    'pt-br': 'Criar nova etiqueta',
+    'pt-br': 'Criar novo rótulo',
   },
   createReport: {
     'en-us': 'Create new report',
@@ -207,7 +206,7 @@ export const headerText = createDictionary({
     'fr-fr': "La réparation de l'arbre est terminée.",
     'uk-ua': 'Ремонт дерева завершено.',
     'de-ch': 'Die Baumreparatur ist abgeschlossen.',
-    'pt-br': 'O reparo da árvore está concluído.',
+    'pt-br': 'O reparo da árvore foi concluído.',
   },
   choose: {
     'en-us': 'Choose',
@@ -231,7 +230,7 @@ export const headerText = createDictionary({
     'en-us': 'DwCA Resource',
     'de-ch': 'DwCA-Ressource',
     'es-es': 'Recurso DwCA',
-    'fr-fr': 'Ressources DwCA',
+    'fr-fr': 'Ressource DwCA',
     'ru-ru': 'Ресурс DwCA',
     'uk-ua': 'Ресурси DwCA',
     'pt-br': 'Recurso DwCA',
@@ -240,10 +239,10 @@ export const headerText = createDictionary({
     'en-us': 'Choose Metadata resource',
     'ru-ru': 'Выберите ресурс метаданных',
     'es-es': 'Elija recurso de metadatos',
-    'fr-fr': 'Choisir une ressource de métadonnées',
+    'fr-fr': 'Choisir la ressource de métadonnées',
     'uk-ua': 'Виберіть ресурс метаданих',
     'de-ch': 'Metadaten-Ressource auswählen',
-    'pt-br': 'Selecione o recurso de metadados',
+    'pt-br': 'Escolha o recurso de metadados',
   },
   metadataResource: {
     'en-us': 'Metadata Resource',
@@ -261,7 +260,7 @@ export const headerText = createDictionary({
     'fr-fr': 'Recherche simple',
     'uk-ua': 'Експрес-пошук',
     'de-ch': 'Express-Suche',
-    'pt-br': 'Busca simples',
+    'pt-br': 'Pesquisa simples',
   },
   primarySearch: {
     'en-us': 'Primary Search',
@@ -270,7 +269,7 @@ export const headerText = createDictionary({
     'fr-fr': 'Recherche principale',
     'uk-ua': 'Первинний пошук',
     'de-ch': 'Primäre Suche',
-    'pt-br': 'Busca principal',
+    'pt-br': 'Pesquisa primária',
   },
   secondarySearch: {
     'en-us': 'Secondary Search',
@@ -315,7 +314,7 @@ export const headerText = createDictionary({
     'fr-fr': 'Aidez à traduire Specify 7',
     'uk-ua': 'Допоможіть перекласти Specify 7',
     'de-ch': 'Hilf beim übersetzen von Specify 7',
-    'pt-br': 'Ajuda Localizar Especificar 7',
+    'pt-br': 'Ajudar a localizar especificar 7',
   },
   helpLocalizeSpecifyDescription: {
     'en-us':
@@ -331,7 +330,7 @@ export const headerText = createDictionary({
     'de-ch':
       'Wir wären sehr dankbar für Ihre Unterstützung bei der Übersetzung der Specify 7 Benutzeroberfläche. Wenn Sie daran interessiert sind, lesen Sie bitte <link>die Anleitung</link>.',
     'pt-br':
-      'Agradecemos muito o seu apoio na localização da Interface de Usuário do Specify 7. Se estiver interessado, por favor, <link>consulte as instruções</link>.',
+      'Ficaremos muito gratos pelo seu apoio na localização da Interface de Usuário do Specify 7. Caso tenha interesse, consulte as instruções.',
   },
   incompleteInline: {
     'en-us': '(incomplete)',
@@ -365,7 +364,7 @@ export const headerText = createDictionary({
     'de-ch':
       'Die Übersetzung in diese Sprache ist noch nicht abgeschlossen. Bei einigen Elementen fehlt möglicherweise die Lokalisierung oder sie sind nicht korrekt lokalisiert. Wenn Sie daran interessiert sind, uns bei der Vervollständigung der Übersetzung zu helfen, <link>befolgen Sie bitte die Anweisungen.</link>',
     'pt-br':
-      'A tradução para este idioma ainda não está completa. Alguns elementos podem estar sem localização ou com localização incorreta. Se você estiver interessado em nos ajudar a concluir a localização, siga as instruções.',
+      'A tradução para este idioma ainda não foi concluída. Alguns elementos podem estar sem localização ou com localização incorreta. Se você tiver interesse em nos ajudar a concluir a localização, <link>siga as instruções.</link>',
   },
   tableApi: {
     'en-us': 'Tables API',
@@ -380,10 +379,10 @@ export const headerText = createDictionary({
     'en-us': 'Operations API',
     'ru-ru': 'Операционный API',
     'es-es': 'API de operaciones',
-    'fr-fr': 'API Opérations',
+    'fr-fr': "API d'opérations",
     'uk-ua': 'API операцій',
     'de-ch': 'Operations-API',
-    'pt-br': 'API de Operações',
+    'pt-br': 'API de operações',
   },
   documentation: {
     'en-us': 'Documentation',
@@ -428,7 +427,7 @@ export const headerText = createDictionary({
     'fr-fr': 'Vider le cache du navigateur',
     'uk-ua': 'Очистити кеш браузера',
     'de-ch': 'Browser-Cache leeren',
-    'pt-br': 'Limpar o cache do navegador',
+    'pt-br': 'Limpar cache do navegador',
   },
   cacheCleared: {
     'en-us': 'Cache has been cleared. Please reload the page.',
@@ -450,11 +449,11 @@ export const headerText = createDictionary({
   },
   chronostratigraphicChart: {
     'en-us': 'Chronostratigraphic Chart',
-    'de-ch': 'Chronostratigraphische Tabelle',
+    'de-ch': 'Chronostratigraphisches Diagramm',
     'es-es': 'Carta cronoestratigráfica',
     'fr-fr': 'Charte chronostratigraphique',
-    'pt-br': 'Carta cronoestratigráfica',
-    'ru-ru': 'Хроностратиграфическая диаграмма',
+    'pt-br': 'Carta Cronoestratigráfica',
+    'ru-ru': 'Хроностратиграфическая карта',
     'uk-ua': 'Хроностратиграфічна діаграма',
   },
 } as const);
