@@ -103,12 +103,12 @@ export const mainText = createDictionary({
       'Lo sentimos, parece que ha encontrado un error en Specify 7 del que no somos conscientes.',
     'fr-fr':
       "Nous sommes désolés, il semble que vous ayez rencontré une erreur dans Specify 7 dont nous n'avons peut-être pas connaissance.",
-    'uk-ua':
-      'Вибачте, здається, ви зіткнулися з помилкою в Specify 7, про яку ми могливо не знаємо.',
-    'de-ch':
-      'Es tut uns leid, aber es scheint, dass Sie auf einen Fehler in Specify 7 gestossen sind, der uns möglicherweise nicht bekannt ist.',
-    'pt-br':
-      'Lamentamos, parece que você encontrou um erro no Specify 7 do qual talvez não estejamos cientes.',
+    "uk-ua":
+      "Вибачте, здається, ви зіткнулися з помилкою в Specify 7, про яку ми могливо не знаємо.",
+    "de-ch":
+      "Es tut uns leid, aber es scheint, dass Sie auf einen Fehler in Specify 7 gestossen sind, der uns möglicherweise nicht bekannt ist.",
+    "pt-br":
+      "Lamentamos, parece que você encontrou um erro no Specify 7 do qual talvez não tenhamos conhecimento.",
   },
   criticalErrorOccurredDescription: {
     'en-us':
@@ -119,12 +119,12 @@ export const mainText = createDictionary({
       'Para evitar corromper los registros de datos, debe comenzar de nuevo desde un lugar seguro: la página de inicio.',
     'fr-fr':
       "Pour éviter de corrompre les enregistrements de données, vous devez recommencer à partir d'un endroit sûr : la page d'accueil.",
-    'uk-ua':
-      'Щоб уникнути пошкодження записів даних, вам потрібно почати знову з безпечного місця – головної сторінки.',
-    'de-ch':
-      'Um eine Beschädigung der Datensätze zu vermeiden, müssen Sie an einer sicheren Stelle neu beginnen – der Startseite.',
-    'pt-br':
-      'Para evitar corromper registros de dados, você precisa começar novamente em um local seguro: a página inicial.',
+    "uk-ua":
+      "Щоб уникнути пошкодження записів даних, вам потрібно почати знову з безпечного місця – головної сторінки.",
+    "de-ch":
+      "Um eine Beschädigung der Datensätze zu vermeiden, müssen Sie an einer sicheren Stelle neu beginnen – der Startseite.",
+    "pt-br":
+      "Para evitar corromper registros de dados, você precisa começar novamente de um ponto seguro: a página inicial.",
   },
   errorResolutionDescription: {
     'en-us':
@@ -135,12 +135,12 @@ export const mainText = createDictionary({
       'Si el problema persiste, póngase en contacto con el servicio de asistencia informática. Si se trata de una base de datos de Specify Cloud, descargue el mensaje de error y envíelo a <email />.',
     'fr-fr':
       "Si ce problème persiste, veuillez contacter votre support informatique. S'il s'agit d'une base de données Specify Cloud, veuillez télécharger le message d'erreur et l'envoyer à <email />.",
-    'uk-ua':
-      'Якщо проблема не зникне, зверніться до служби підтримки ІТ. Якщо це база даних Specify Cloud, завантажте повідомлення про помилку та надішліть його на <email />.',
-    'de-ch':
-      'Wenn dieses Problem weiterhin besteht, wenden Sie sich bitte an Ihren IT-Support. Wenn es sich um eine Specify Cloud-Datenbank handelt, laden Sie bitte die Fehlermeldung herunter und senden Sie sie an <email />.',
-    'pt-br':
-      'Se o problema persistir, entre em contato com o suporte de TI. Se for um banco de dados do Specify Cloud, baixe a mensagem de erro e envie para <email />.',
+    "uk-ua":
+      "Якщо проблема не зникне, зверніться до служби підтримки ІТ. Якщо це база даних Specify Cloud, завантажте повідомлення про помилку та надішліть його на <email />.",
+    "de-ch":
+      "Wenn dieses Problem weiterhin besteht, wenden Sie sich bitte an Ihren IT-Support. Wenn es sich um eine Specify Cloud-Datenbank handelt, laden Sie bitte die Fehlermeldung herunter und senden Sie sie an <email />.",
+    "pt-br":
+      "Se o problema persistir, entre em contato com o suporte de TI. Se for um banco de dados do Specify Cloud, baixe a mensagem de erro e envie-a para <email />.",
   },
   errorResolutionSecondDescription: {
     comment: 'Careful with the <xml> tags when localizing',
@@ -152,12 +152,12 @@ export const mainText = createDictionary({
       'Los usuarios de <memberLink>miembros de las instituciones</memberLink> pueden buscar preguntas respondidas y pedir ayuda en nuestro <discourseLink>Foro</discourseLink>.',
     'fr-fr':
       "Les utilisateurs des <memberLink>institutions membres</memberLink> peuvent rechercher des réponses aux questions et demander de l'aide sur notre <discourseLink>Forum communautaire</discourseLink>.",
-    'uk-ua':
-      'Користувачі <memberLink>установ-членів</memberLink> можуть шукати відповіді на запитання та звертатися за допомогою на нашому <discourseLink>форумі</discourseLink>.',
-    'de-ch':
-      'Benutzer von <memberLink>Mitgliedsinstitutionen</memberLink> können in unserem <discourseLink>Community Forum</discourseLink> nach Antworten suchen und um Hilfe bitten.',
-    'pt-br':
-      'Usuários de <memberLink>instituições membros</memberLink> podem pesquisar perguntas respondidas e pedir ajuda em nosso <discourseLink>Fórum da Comunidade</discourseLink>.',
+    "uk-ua":
+      "Користувачі <memberLink>установ-членів</memberLink> можуть шукати відповіді на запитання та звертатися за допомогою на нашому <discourseLink>форумі</discourseLink>.",
+    "de-ch":
+      "Benutzer von <memberLink>Mitgliedsinstitutionen</memberLink> können in unserem <discourseLink>Community Forum</discourseLink> nach Antworten suchen und um Hilfe bitten.",
+    "pt-br":
+      "Usuários de <memberLink>instituições associadas</memberLink> podem pesquisar perguntas respondidas e pedir ajuda em nosso <discourseLink>Fórum da Comunidade</discourseLink>.",
   },
   errorMessage: {
     'en-us': 'Error Message',
@@ -248,10 +248,10 @@ export const mainText = createDictionary({
       'Instrucciones para resolver la discrepancia de los esquema de Specify',
     'fr-fr':
       "Instructions pour résoudre l'incompatibilité de schéma de Specify",
-    'uk-ua': 'Інструкції щодо вирішення невідповідності версій',
-    'de-ch': 'Anweisungen zur Behebung der Abweichung des Specify Schemas',
-    'pt-br':
-      'Instruções para resolver a incompatibilidade do esquema de especificação',
+    "uk-ua": "Інструкції щодо вирішення невідповідності версій",
+    "de-ch": "Anweisungen zur Behebung der Abweichung des Specify Schemas",
+    "pt-br":
+      "Instruções para resolver a incompatibilidade de esquema de especificação",
   },
   online: {
     'en-us': 'online',
