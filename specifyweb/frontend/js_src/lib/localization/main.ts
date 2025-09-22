@@ -108,7 +108,7 @@ export const mainText = createDictionary({
     "de-ch":
       "Es tut uns leid, aber es scheint, dass Sie auf einen Fehler in Specify 7 gestossen sind, der uns möglicherweise nicht bekannt ist.",
     "pt-br":
-      "Lamentamos, parece que você encontrou um erro no Specify 7 do qual talvez não estejamos cientes.",
+      "Lamentamos, parece que você encontrou um erro no Specify 7 do qual talvez não tenhamos conhecimento.",
   },
   criticalErrorOccurredDescription: {
     "en-us":
@@ -124,7 +124,7 @@ export const mainText = createDictionary({
     "de-ch":
       "Um eine Beschädigung der Datensätze zu vermeiden, müssen Sie an einer sicheren Stelle neu beginnen – der Startseite.",
     "pt-br":
-      "Para evitar corromper registros de dados, você precisa começar novamente em um local seguro: a página inicial.",
+      "Para evitar corromper registros de dados, você precisa começar novamente de um ponto seguro: a página inicial.",
   },
   errorResolutionDescription: {
     "en-us":
@@ -140,7 +140,7 @@ export const mainText = createDictionary({
     "de-ch":
       "Wenn dieses Problem weiterhin besteht, wenden Sie sich bitte an Ihren IT-Support. Wenn es sich um eine Specify Cloud-Datenbank handelt, laden Sie bitte die Fehlermeldung herunter und senden Sie sie an <email />.",
     "pt-br":
-      "Se o problema persistir, entre em contato com o suporte de TI. Se for um banco de dados do Specify Cloud, baixe a mensagem de erro e envie para <email />.",
+      "Se o problema persistir, entre em contato com o suporte de TI. Se for um banco de dados do Specify Cloud, baixe a mensagem de erro e envie-a para <email />.",
   },
   errorResolutionSecondDescription: {
     comment: "Careful with the <xml> tags when localizing",
@@ -157,7 +157,7 @@ export const mainText = createDictionary({
     "de-ch":
       "Benutzer von <memberLink>Mitgliedsinstitutionen</memberLink> können in unserem <discourseLink>Community Forum</discourseLink> nach Antworten suchen und um Hilfe bitten.",
     "pt-br":
-      "Usuários de <memberLink>instituições membros</memberLink> podem pesquisar perguntas respondidas e pedir ajuda em nosso <discourseLink>Fórum da Comunidade</discourseLink>.",
+      "Usuários de <memberLink>instituições associadas</memberLink> podem pesquisar perguntas respondidas e pedir ajuda em nosso <discourseLink>Fórum da Comunidade</discourseLink>.",
   },
   errorMessage: {
     "en-us": "Error Message",
@@ -251,7 +251,7 @@ export const mainText = createDictionary({
     "uk-ua": "Інструкції щодо вирішення невідповідності версій",
     "de-ch": "Anweisungen zur Behebung der Abweichung des Specify Schemas",
     "pt-br":
-      "Instruções para resolver a incompatibilidade do esquema de especificação",
+      "Instruções para resolver a incompatibilidade de esquema de especificação",
   },
   online: {
     "en-us": "online",
