@@ -2173,24 +2173,92 @@
 					<cell type="field" id="1" name="catalogNumber" uitype="formattedtext"/>
 					<cell type="label" labelfor="3"/>
 					<cell type="field" id="3" name="name" uitype="querycbx"/>
-		<!--       <cell type="label" labelfor="n"/>
+					<!--       <cell type="label" labelfor="n"/>
 			<cell type="field" id="n" name="verbatimName" uitype="text"/> -->
 					<cell type="label" labelfor="2"/>
 					<cell type="field" id="2" name="type" uitype="combobox"/>
 					<!-- You can set a default `type` by adding the type name after a default attribute (e.g. `default="Mineral"`) in the line above -->
 				</row>
-		<!-- 		<row>
+		<!--     <row>
+					<cell type="label" labelfor="verbatimName"/>
+					<cell type="field" id="verbatimName" name="verbatimName" uitype="text"/>
+					<cell type="label" labelfor="uniqueIdentifier"/>
+					<cell type="field" id="uniqueIdentifier" name="uniqueIdentifier" uitype="text"/>
+			</row>
+				<row>
+					<cell type="label" labelfor="d1"/>
+					<cell type="field" id="d1" name="identifiedDate" uitype="formattedtext" uifieldformatter="Date"/>
+					<cell type="label" labelfor="identifiedBy"/>
+					<cell type="field" id="identifiedBy" name="identifiedBy" uitype="querycbx"/>
+				</row>
+				<row>
 					<cell type="label" labelfor="role"/>
 					<cell type="field" id="role" name="role" uitype="text"/>
 					<cell type="label" labelfor="proportion"/>
 					<cell type="field" id="proportion" name="proportion" uitype="text"/>
 				</row>
 				<row>
-			<cell type="label" labelfor="d1"/>
-			<cell type="field" id="d1" name="identifiedDate" uitype="formattedtext" uifieldformatter="Date"/>
-					<cell type="label" labelfor="identifiedBy"/>
-					<cell type="field" id="identifiedBy" name="identifiedBy" uitype="querycbx"/>
-				</row> -->
+					<cell type="label" labelfor="text1"/>
+					<cell type="field" id="text1" name="text1" uitype="text"/>
+					<cell type="label" labelfor="text2"/>
+					<cell type="field" id="text2" name="text2" uitype="text"/>
+					<cell type="label" labelfor="text3"/>
+					<cell type="field" id="text3" name="text3" uitype="text"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="text4"/>
+					<cell type="field" id="text4" name="text4" uitype="text"/>
+					<cell type="label" labelfor="text5"/>
+					<cell type="field" id="text5" name="text5" uitype="text"/>
+					<cell type="label" labelfor="text6"/>
+					<cell type="field" id="text6" name="text6" uitype="text"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="integer1"/>
+					<cell type="field" id="integer1" name="integer1" uitype="text"/>
+					<cell type="label" labelfor="integer2"/>
+					<cell type="field" id="integer2" name="integer2" uitype="text"/>
+					<cell type="label" labelfor="integer3"/>
+					<cell type="field" id="integer3" name="integer3" uitype="text"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="integer4"/>
+					<cell type="field" id="integer4" name="integer4" uitype="text"/>
+					<cell type="label" labelfor="integer5"/>
+					<cell type="field" id="integer5" name="integer5" uitype="text"/>
+					<cell type="label" labelfor="integer6"/>
+					<cell type="field" id="integer6" name="integer6" uitype="text"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="number1"/>
+					<cell type="field" id="number1" name="number1" uitype="text"/>
+					<cell type="label" labelfor="number2"/>
+					<cell type="field" id="number2" name="number2" uitype="text"/>
+					<cell type="label" labelfor="number3"/>
+					<cell type="field" id="number3" name="number3" uitype="text"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="number4"/>
+					<cell type="field" id="number4" name="number4" uitype="text"/>
+					<cell type="label" labelfor="number5"/>
+					<cell type="field" id="number5" name="number5" uitype="text"/>
+					<cell type="label" labelfor="number6"/>
+					<cell type="field" id="number6" name="number6" uitype="text"/>
+				</row>
+			<row>
+			<cell type="field" id="yn1" name="yesNo1" uitype="checkbox"/>
+			<cell type="field" id="yn2" name="yesNo2" uitype="checkbox"/>
+			<cell type="field" id="yn3" name="yesNo3" uitype="checkbox"/>
+			<cell type="field" id="yn4" name="yesNo4" uitype="checkbox"/>
+			<cell type="field" id="yn5" name="yesNo5" uitype="checkbox"/>
+			<cell type="field" id="yn6" name="yesNo6" uitype="checkbox"/>
+			</row>
+			<row>
+			<cell type="label" labelfor="tm"/>
+			<cell type="field" id="tm" name="timestampModified" uitype="label" readonly="true"/>
+			<cell type="label" labelfor="tc"/>
+			<cell type="field" id="tc" name="timestampCreated" uitype="label" readonly="true"/>
+			</row> -->
 			</rows>
 		</viewdef>
 		<viewdef type="form" name="CommonNameTx" class="edu.ku.brc.specify.datamodel.CommonNameTx" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
