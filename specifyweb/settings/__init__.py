@@ -52,7 +52,7 @@ DATABASES = {
             }
     },
     'migrations': {
-        'ENGINE': 'specifyweb.hibernateboolsbackend.backends.mysql',
+        'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
         'NAME': DATABASE_NAME,
         'USER': SUPER_NAME,
         'PASSWORD': SUPER_PASSWORD,
