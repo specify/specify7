@@ -5,7 +5,9 @@ import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
 import type { SetupProgress } from '../Login';
-import { useDarkMode } from '../Preferences/Hooks';
+import { setupToolText } from '../../localization/setupTool';
+import { Input, Label, Select } from '../Atoms/Form';
+import { Button } from '../Atoms/Button';
 
 type ResourceFormData = Record<string, any>;
 
@@ -202,33 +204,31 @@ export function SetupTool({
       <div className="mb-4" key={name}>
         {type === 'boolean' ? (
           <div className="flex items-center space-x-2">
-            <label className="font-medium text-gray-700" htmlFor={name}>
+            <Label.Inline>
+              <Input.Checkbox
+                checked={Boolean(formData[name])}
+                onValueChange={(isChecked) => {
+                  setFormData((previous) => ({
+                    ...previous,
+                    [name]: isChecked,
+                  }));
+                }}
+              />
               {label}
-            </label>
-            <input
-              checked={Boolean(formData[name])}
-              className="border border-gray-500 rounded-full"
-              id={name}
-              name={name}
-              type="checkbox"
-              onChange={handleChange}
-            />
+            </Label.Inline>
           </div>
         ) : type === 'select' && Array.isArray(options) ? (
           <div className="mb-4" key={name}>
-            <label
-              className="block font-medium text-gray-700 mb-1"
-              htmlFor={name}
-            >
-              {label}
-            </label>
-            <select
-              className="rounded-md p-2 w-full"
-              id={name}
-              name={name}
-              required
+            <Select
+              aria-label={label}
+              className="w-full min-w-[theme(spacing.40)]"
               value={formData[name] || ''}
-              onChange={handleChange}
+              onValueChange={(value) => {
+                setFormData((previous) => ({
+                  ...previous,
+                  [name]: value,
+                }));
+              }}
             >
               <option disabled value="">
                 Select a type
@@ -238,11 +238,11 @@ export function SetupTool({
                   {value}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
         ) : (
           <>
-            <label
+            {/* <label
               className="block font-medium text-gray-700 mb-1"
               htmlFor={name}
             >
@@ -256,35 +256,52 @@ export function SetupTool({
               type={type === 'password' ? 'password' : 'text'}
               value={formData[name] || ''}
               onChange={handleChange}
-            />
+            /> */}
+            
+            <Label.Block>
+              {label}
+              <Input.Generic
+                required
+                type={type === 'password' ? 'password' : 'text'}
+                value={formData[name] || ''}
+                onValueChange={(value): void => {
+                  setFormData((previous) => ({
+                    ...previous,
+                    [name]: value,
+                  }))
+                }}
+              />
+            </Label.Block>
           </>
         )}
       </div>
     ));
 
-  const isDarkMode = useDarkMode();
+  const isFormValid = resources[currentStep].fields.every(({ name, type }) => {
+    if (type === 'boolean') return true;
+    return formData[name] !== undefined && formData[name] !== '';
+  });
 
   return (
     <Container.FullGray className="overflow-auto w-full items-center">
-      <H2 className="text-2xl mb-6">Specify Configuration Setup</H2>
+      <H2 className="text-2xl mb-6">{setupToolText.specifyConfigurationSetup()}</H2>
       {currentStep < resources.length ? (
-        <form
-          className="bg-white p-6 rounded shadow-md max-w-xl"
-          onSubmit={handleSubmit}
-        >
-          <h3
-            className={`text-xl font-semibold mb-4 ${isDarkMode ? 'text-gray-900' : ''}`}
+        <Container.Center className="p-6 shadow-md max-w-xl">
+          <form
+            onSubmit={handleSubmit}
           >
-            {resources[currentStep].resourceName}
-          </h3>
-          {renderFormFields()}
-          <button
-            className="bg-orange-500 text-white px-4 py-2 rounded mt-4"
-            type="submit"
-          >
-            Save & Continue
-          </button>
-        </form>
+            <h3 className="text-xl font-semibold mb-4">
+              {resources[currentStep].resourceName}
+            </h3>
+            {renderFormFields()}
+            <Button.Save
+              onClick={handleSubmit}
+              disabled={!isFormValid}
+            >
+              {setupToolText.saveAndContinue()}
+            </Button.Save>
+          </form>
+        </Container.Center>
       ) : (
         <p className="mt-6 text-green-600 font-semibold">
           🎉 All resources have been created successfully!
