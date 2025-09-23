@@ -2184,7 +2184,7 @@
 					<cell type="field" id="verbatimName" name="verbatimName" uitype="text"/>
 					<cell type="label" labelfor="uniqueIdentifier"/>
 					<cell type="field" id="uniqueIdentifier" name="uniqueIdentifier" uitype="text"/>
-			</row>
+				</row>
 				<row>
 					<cell type="label" labelfor="d1"/>
 					<cell type="field" id="d1" name="identifiedDate" uitype="formattedtext" uifieldformatter="Date"/>
@@ -2246,18 +2246,18 @@
 					<cell type="field" id="number6" name="number6" uitype="text"/>
 				</row>
 			<row>
-			<cell type="field" id="yn1" name="yesNo1" uitype="checkbox"/>
-			<cell type="field" id="yn2" name="yesNo2" uitype="checkbox"/>
-			<cell type="field" id="yn3" name="yesNo3" uitype="checkbox"/>
-			<cell type="field" id="yn4" name="yesNo4" uitype="checkbox"/>
-			<cell type="field" id="yn5" name="yesNo5" uitype="checkbox"/>
-			<cell type="field" id="yn6" name="yesNo6" uitype="checkbox"/>
+				<cell type="field" id="yn1" name="yesNo1" uitype="checkbox"/>
+				<cell type="field" id="yn2" name="yesNo2" uitype="checkbox"/>
+				<cell type="field" id="yn3" name="yesNo3" uitype="checkbox"/>
+				<cell type="field" id="yn4" name="yesNo4" uitype="checkbox"/>
+				<cell type="field" id="yn5" name="yesNo5" uitype="checkbox"/>
+				<cell type="field" id="yn6" name="yesNo6" uitype="checkbox"/>
 			</row>
 			<row>
-			<cell type="label" labelfor="tm"/>
-			<cell type="field" id="tm" name="timestampModified" uitype="label" readonly="true"/>
-			<cell type="label" labelfor="tc"/>
-			<cell type="field" id="tc" name="timestampCreated" uitype="label" readonly="true"/>
+				<cell type="label" labelfor="tm"/>
+				<cell type="field" id="tm" name="timestampModified" uitype="label" readonly="true"/>
+				<cell type="label" labelfor="tc"/>
+				<cell type="field" id="tc" name="timestampCreated" uitype="label" readonly="true"/>
 			</row> -->
 			</rows>
 		</viewdef>
