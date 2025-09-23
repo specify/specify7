@@ -1,3 +1,5 @@
+import type Handsontable from 'handsontable';
+
 import type { RA, WritableArray } from '../../utils/types';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type {
@@ -81,6 +83,14 @@ export function getAttachmentsColumn(dataset: Dataset): number {
     return -1;
   }
   return dataset.columns.indexOf(ATTACHMENTS_COLUMN);
+}
+
+export function getVisualAttachmentsColumn(
+  dataset: Dataset,
+  hot: Handsontable
+): number {
+  const physical = getAttachmentsColumn(dataset);
+  return physical === -1 ? -1 : hot.toVisualColumn(physical);
 }
 
 /**
