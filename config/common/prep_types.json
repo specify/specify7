@@ -1,0 +1,64 @@
+{
+  "bird": [
+    { "name": "Egg", "isloanable": true },
+    { "name": "Feather", "isloanable": true },
+    { "name": "Misc", "isloanable": true },
+    { "name": "Mounted", "isloanable": true },
+    { "name": "Nest", "isloanable": true },
+    { "name": "Skel", "isloanable": true },
+    { "name": "Skin", "isloanable": true }
+  ],
+  "botany": [
+    { "name": "Boxed", "isloanable": true },
+    { "name": "Dried", "isloanable": true },
+    { "name": "Fluid", "isloanable": true },
+    { "name": "Sheet", "isloanable": true }
+  ],
+  "fish": [
+    { "name": "C&S", "isloanable": true },
+    { "name": "EtOH", "isloanable": true },
+    { "name": "skeleton", "isloanable": true },
+    { "name": "x-ray", "isloanable": true }
+  ],
+  "herpetology": [{ "name": "jar", "isloanable": true }],
+  "insect": [{ "name": "Pinned", "isloanable": true }],
+  "invertebrate": [
+    { "name": "C&S", "isloanable": true },
+    { "name": "EtOH", "isloanable": true },
+    { "name": "skeleton", "isloanable": true },
+    { "name": "x-ray", "isloanable": true }
+  ],
+  "invertpaleo": [{ "name": "Jar", "isloanable": true }],
+  "mammal": [
+    { "name": "C&S", "isloanable": true },
+    { "name": "EtOH", "isloanable": true },
+    { "name": "skeleton", "isloanable": true },
+    { "name": "x-ray", "isloanable": true }
+  ],
+  "reptile": [
+    { "name": "C&S", "isloanable": true },
+    { "name": "Denatured EtoH", "isloanable": true },
+    { "name": "Dry", "isloanable": true },
+    { "name": "EtOH", "isloanable": true },
+    { "name": "Formalin", "isloanable": true },
+    { "name": "Isopropanol", "isloanable": true },
+    { "name": "Misc", "isloanable": true },
+    { "name": "Shell", "isloanable": true },
+    { "name": "Skel", "isloanable": true },
+    { "name": "Skin", "isloanable": true },
+    { "name": "Slide", "isloanable": true },
+    { "name": "Tissue", "isloanable": true }
+  ],
+  "vascplant": [
+    { "name": "Boxed", "isloanable": true },
+    { "name": "Dried", "isloanable": true },
+    { "name": "Fluid", "isloanable": true },
+    { "name": "Sheet", "isloanable": true }
+  ],
+  "vertpaleo": [
+    { "name": "C&S", "isloanable": true },
+    { "name": "EtOH", "isloanable": true },
+    { "name": "skeleton", "isloanable": true },
+    { "name": "x-ray", "isloanable": true }
+  ]
+}
