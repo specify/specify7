@@ -1,0 +1,767 @@
+{
+  "bird": [
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [{ "title": "shot", "value": "shot" }]
+    },
+    {
+      "name": "CollObjPrepMeth",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [{ "title": "Sheet", "value": "sheet" }]
+    },
+    {
+      "name": "Method",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "No data", "value": "No Data" },
+        { "title": "hand", "value": "hand" },
+        { "title": "net", "value": "net" },
+        { "title": "trap", "value": "trap" }
+      ]
+    },
+    {
+      "name": "BiologicalSex",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Both", "value": "Both" },
+        { "title": "Female", "value": "Female" },
+        { "title": "Male", "value": "Male" }
+      ]
+    },
+    {
+      "name": "LatLongMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "No Data", "value": "No Data" },
+        { "title": "dead reckoning", "value": "dead reckoning" },
+        { "title": "gazetteer", "value": "gazetteer" },
+        { "title": "GPS", "value": "GPS" },
+        { "title": "Map", "value": "Map" },
+        { "title": "None", "value": "None" },
+        { "title": "sextant", "value": "sextant" }
+      ]
+    },
+    {
+      "name": "Age",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 7,
+      "items": [
+        { "title": "No Data", "value": "No Data" },
+        { "title": "adult", "value": "adult" },
+        { "title": "egg", "value": "egg" },
+        { "title": "hatchling", "value": "hatchling" },
+        { "title": "immature", "value": "immature" },
+        { "title": "juvenile", "value": "juvenile" }
+      ]
+    },
+    {
+      "name": "Preparation",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "Egg", "value": "Egg" },
+        { "title": "Feather", "value": "Feather" },
+        { "title": "Misc", "value": "Misc" },
+        { "title": "Mounted", "value": "Mounted" },
+        { "title": "Nest", "value": "Nest" },
+        { "title": "Skel", "value": "Skel" },
+        { "title": "Skin", "value": "Skin" },
+        { "title": "Tissue", "value": "Tissue" }
+      ]
+    }
+  ],
+  "botany": [
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [{ "title": "cut", "value": "cut" }]
+    },
+    {
+      "name": "CollObjPrepMeth",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [{ "title": "Sheet", "value": "sheet" }]
+    },
+    {
+      "name": "TypeStatus",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 6,
+      "items": [
+        { "title": "No Data", "value": "No Data" },
+        { "title": "Cotype", "value": "Cotype" },
+        { "title": "Holotype", "value": "Holotype" },
+        { "title": "Paratype", "value": "Paratype" },
+        { "title": "Syntype", "value": "Syntype" },
+        { "title": "Type", "value": "Type" }
+      ]
+    },
+    {
+      "name": "Phenology",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 6,
+      "items": [
+        { "title": "No Data", "value": "No Data" },
+        { "title": "flowering", "value": "flowering" },
+        {
+          "title": "flowering and fruiting",
+          "value": "flowering and fruiting"
+        },
+        { "title": "fruiting", "value": "fruiting" },
+        { "title": "mature", "value": "mature" },
+        { "title": "seed", "value": "seed" },
+        { "title": "seedling", "value": "seedling" },
+        { "title": "senescent", "value": "senescent" }
+      ]
+    }
+  ],
+  "fish": [
+    {
+      "name": "Sex",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Both", "value": "Both" },
+        { "title": "Female", "value": "Female" },
+        { "title": "Male", "value": "Male" }
+      ]
+    },
+    {
+      "name": "BiologicalStage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "egg", "value": "egg" },
+        { "title": "juvenile", "value": "juvenile" },
+        { "title": "nymph", "value": "nymph" },
+        { "title": "immature", "value": "immature" },
+        { "title": "embryo", "value": "embryo" },
+        { "title": "seed", "value": "seed" },
+        { "title": "hatchling", "value": "hatchling" },
+        { "title": "adult", "value": "adult" },
+        { "title": "larva", "value": "larva" },
+        { "title": "pupa", "value": "pupa" }
+      ]
+    },
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "trap", "value": "trap" },
+        { "title": "boat electro-shocker", "value": "boat electro-shocker" },
+        { "title": "seine", "value": "seine" },
+        { "title": "<no data>", "value": "<no data>" },
+        { "title": "hook & line", "value": "hook & line" }
+      ]
+    },
+    {
+      "name": "HabitatType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 8,
+      "items": [
+        { "title": "Reef", "value": "reef" },
+        { "title": "Sand", "value": "sand" },
+        { "title": "Rock", "value": "rock" },
+        { "title": "Sand/Rock Interface", "value": "sand/rock interface" },
+        { "title": "Vegetation", "value": "vegetation" },
+        { "title": "Open Water", "value": "open water" },
+        { "title": "Riffle", "value": "riffle" },
+        { "title": "Pelagic", "value": "Pelagic" }
+      ]
+    },
+    {
+      "name": "CollObjPrepMeth",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "EtOH", "value": "EtOH" },
+        { "title": "C&S", "value": "C&S" },
+        { "title": "x-ray", "value": "x-ray" },
+        { "title": "image", "value": "image" },
+        { "title": "skeleton", "value": "skeleton" }
+      ]
+    }
+  ],
+  "herpetology": [
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [{ "title": "trap", "value": "trap" }]
+    },
+    {
+      "name": "CollObjPrepMeth",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [{ "title": "Sheet", "value": "sheet" }]
+    },
+    {
+      "name": "Method",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "No data", "value": "No Data" },
+        { "title": "hand", "value": "hand" },
+        { "title": "net", "value": "net" },
+        { "title": "trap", "value": "trap" }
+      ]
+    },
+    {
+      "name": "Sex",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "unknown", "value": "unknown" },
+        { "title": "male", "value": "male" },
+        { "title": "female", "value": "female" },
+        { "title": "both", "value": "both" }
+      ]
+    },
+    {
+      "name": "Stage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 8,
+      "items": [
+        { "title": "No data", "value": "No data" },
+        { "title": "adult", "value": "adult" },
+        { "title": "egg", "value": "egg" },
+        { "title": "embryo", "value": "embryo" },
+        { "title": "hatchling", "value": "hatchling" },
+        { "title": "juvenile", "value": "juvenile" },
+        { "title": "larvae", "value": "larvae" },
+        { "title": "meta-young", "value": "meta-young" },
+        { "title": "young", "value": "young" }
+      ]
+    }
+  ],
+  "insect": [
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [{ "title": "trap", "value": "trap" }]
+    },
+    {
+      "name": "CollObjPrepMeth",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [{ "title": "Sheet", "value": "sheet" }]
+    },
+    {
+      "name": "Confidence",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "No data", "value": "No data" },
+        { "title": "high", "value": "high" },
+        { "title": "low", "value": "low" },
+        { "title": "medium", "value": "medium" },
+        { "title": "unknown", "value": "unknown" }
+      ]
+    },
+    {
+      "name": "Sex",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 3,
+      "items": [
+        { "title": "unknown", "value": "unknown" },
+        { "title": "male", "value": "male" },
+        { "title": "female", "value": "female" }
+      ]
+    },
+    {
+      "name": "Stage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "adult", "value": "adult" },
+        { "title": "egg", "value": "egg" },
+        { "title": "larva", "value": "larva" },
+        { "title": "nymph", "value": "nymph" },
+        { "title": "pupa", "value": "pupa" }
+      ]
+    },
+    {
+      "name": "Method",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 50,
+      "items": [
+        { "title": "beating", "value": "beating" },
+        { "title": "bee baits", "value": "bee baits" },
+        {
+          "title": "Berlese funnel extraction",
+          "value": "Berlese funnel extraction"
+        },
+        { "title": "carrion trap", "value": "carrion trap" },
+        { "title": "cineole, attracted to", "value": "cineole, attracted to" },
+        { "title": "dung trap", "value": "dung trap" },
+        { "title": "eucalyptus oil", "value": "eucalyptus oil" },
+        { "title": "flight intercept trap", "value": "flight intercept trap" },
+        { "title": "fruit trap", "value": "fruit trap" },
+        { "title": "funnel trap", "value": "funnel trap" },
+        { "title": "light trap", "value": "light trap" },
+        { "title": "light, at", "value": "light, at" },
+        {
+          "title": "light, incandescent, at",
+          "value": "light, incandescent, at"
+        },
+        {
+          "title": "light, mercury vapor, at",
+          "value": "light, mercury vapor, at"
+        },
+        { "title": "light, uv, at", "value": "light, uv, at" },
+        { "title": "Malaise trap", "value": "Malaise trap" },
+        {
+          "title": "methyl salicylate, attracted to",
+          "value": "methyl salicylate, attracted to"
+        },
+        {
+          "title": "miscellaneous collecting",
+          "value": "miscellaneous collecting"
+        },
+        { "title": "Molassas trap", "value": "Molassas trap" },
+        { "title": "pan trap", "value": "pan trap" },
+        { "title": "pheromone trap", "value": "pheromone trap" },
+        { "title": "pitfall trap", "value": "pitfall trap" },
+        {
+          "title": "pyrethrum/insecticide fogging",
+          "value": "pyrethrum/insecticide fogging"
+        },
+        { "title": "sifting", "value": "sifting" },
+        { "title": "skatol, attracted to", "value": "skatol, attracted to" },
+        { "title": "sweep net", "value": "sweep net" },
+        { "title": "washing", "value": "washing" }
+      ]
+    }
+  ],
+  "invertebrate": [
+    {
+      "name": "BiologicalSex",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Both", "value": "Both" },
+        { "title": "Female", "value": "Female" },
+        { "title": "Male", "value": "Male" }
+      ]
+    },
+    {
+      "name": "BiologicalStage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "egg", "value": "egg" },
+        { "title": "juvenile", "value": "juvenile" },
+        { "title": "nymph", "value": "nymph" },
+        { "title": "immature", "value": "immature" },
+        { "title": "embryo", "value": "embryo" },
+        { "title": "seed", "value": "seed" },
+        { "title": "hatchling", "value": "hatchling" },
+        { "title": "adult", "value": "adult" },
+        { "title": "larva", "value": "larva" },
+        { "title": "pupa", "value": "pupa" }
+      ]
+    },
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "trap", "value": "trap" },
+        { "title": "boat electro-shocker", "value": "boat electro-shocker" },
+        { "title": "seine", "value": "seine" },
+        { "title": "<no data>", "value": "<no data>" },
+        { "title": "hook & line", "value": "hook & line" }
+      ]
+    },
+    {
+      "name": "CollObjPrepMeth",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "EtOH", "value": "EtOH" },
+        { "title": "C&S", "value": "C&S" },
+        { "title": "x-ray", "value": "x-ray" },
+        { "title": "image", "value": "image" },
+        { "title": "skeleton", "value": "skeleton" }
+      ]
+    },
+    {
+      "name": "Typestatus",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 11,
+      "items": [
+        { "title": "No Data", "value": "No Data" },
+        { "title": "Cotype", "value": "Cotype" },
+        { "title": "Holotype", "value": "Holotype" },
+        { "title": "Lectotype", "value": "Lectotype" },
+        { "title": "Neotype", "value": "Neotype" },
+        { "title": "Paralectotype", "value": "Paralectotype" },
+        { "title": "Paratopotype", "value": "Paratopotype" },
+        { "title": "Paratype", "value": "Paratype" },
+        { "title": "Syntype", "value": "Syntype" },
+        { "title": "Topotype", "value": "Topotype" },
+        { "title": "Type", "value": "Type" }
+      ]
+    }
+  ],
+  "invertpaleo": [
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [{ "title": "Dug", "value": "Dug" }]
+    },
+    {
+      "name": "CollObjPrepMeth",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [{ "title": "Sheet", "value": "sheet" }]
+    }
+  ],
+  "mammal": [
+    {
+      "name": "BiologicalSex",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Both", "value": "Both" },
+        { "title": "Female", "value": "Female" },
+        { "title": "Male", "value": "Male" }
+      ]
+    },
+    {
+      "name": "BiologicalStage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "egg", "value": "egg" },
+        { "title": "juvenile", "value": "juvenile" },
+        { "title": "nymph", "value": "nymph" },
+        { "title": "immature", "value": "immature" },
+        { "title": "embryo", "value": "embryo" },
+        { "title": "seed", "value": "seed" },
+        { "title": "hatchling", "value": "hatchling" },
+        { "title": "adult", "value": "adult" },
+        { "title": "larva", "value": "larva" },
+        { "title": "pupa", "value": "pupa" }
+      ]
+    },
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "trap", "value": "trap" },
+        { "title": "boat electro-shocker", "value": "boat electro-shocker" },
+        { "title": "seine", "value": "seine" },
+        { "title": "<no data>", "value": "<no data>" },
+        { "title": "hook & line", "value": "hook & line" }
+      ]
+    },
+    {
+      "name": "CollObjPrepMeth",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "EtOH", "value": "EtOH" },
+        { "title": "C&S", "value": "C&S" },
+        { "title": "x-ray", "value": "x-ray" },
+        { "title": "image", "value": "image" },
+        { "title": "skeleton", "value": "skeleton" }
+      ]
+    },
+    {
+      "name": "Age",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "No data", "value": "No data" },
+        { "title": "adult", "value": "adult" },
+        { "title": "juvenile", "value": "juvenile" }
+      ]
+    }
+  ],
+  "reptile": [
+    {
+      "name": "BiologicalSex",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Both", "value": "Both" },
+        { "title": "Female", "value": "Female" },
+        { "title": "Male", "value": "Male" }
+      ]
+    },
+    {
+      "name": "Stage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "egg", "value": "egg" },
+        { "title": "juvenile", "value": "juvenile" },
+        { "title": "immature", "value": "immature" },
+        { "title": "embryo", "value": "embryo" },
+        { "title": "adult", "value": "adult" }
+      ]
+    },
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "trap", "value": "trap" },
+        { "title": "boat electro-shocker", "value": "boat electro-shocker" },
+        { "title": "seine", "value": "seine" },
+        { "title": "<no data>", "value": "<no data>" },
+        { "title": "hook & line", "value": "hook & line" }
+      ]
+    },
+    {
+      "name": "CollObjPrepMeth",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 12,
+      "items": [
+        { "title": "EtoH", "value": "EtOH" },
+        { "title": "Denatured EtoH", "value": "Denatured EtOH" },
+        { "title": "C&S", "value": "C&S" },
+        { "title": "Dry", "value": "Dry" },
+        { "title": "Formalin", "value": "Formalin" },
+        { "title": "Isopropanol", "value": "Isopropanol" },
+        { "title": "Misc", "value": "Misc" },
+        { "title": "Shell", "value": "Shell" },
+        { "title": "Skel", "value": "Skel" },
+        { "title": "Skin", "value": "Skin" },
+        { "title": "Slide", "value": "Slide" },
+        { "title": "Tissue", "value": "Tissue" }
+      ]
+    },
+    {
+      "name": "TypeStatus",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 12,
+      "items": [
+        { "title": "No Data", "value": "No Data" },
+        { "title": "Cotype", "value": "Cotype" },
+        { "title": "Holotype", "value": "Holotype" },
+        { "title": "Lectotype", "value": "Lectotype" },
+        { "title": "Neotype", "value": "Neotype" },
+        { "title": "Paralectotype", "value": "Paralectotype" },
+        { "title": "Paratopotype", "value": "Paratopotype" },
+        { "title": "Paratype", "value": "Paratype" },
+        { "title": "Syntype", "value": "Syntype" },
+        { "title": "Topotype", "value": "Topotype" },
+        { "title": "Type", "value": "Type" }
+      ]
+    }
+  ],
+  "vascplant": [
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [{ "title": "cut", "value": "cut" }]
+    },
+    {
+      "name": "CollObjPrepMeth",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [{ "title": "Sheet", "value": "sheet" }]
+    },
+    {
+      "name": "TypeStatus",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 6,
+      "items": [
+        { "title": "No Data", "value": "No Data" },
+        { "title": "Cotype", "value": "Cotype" },
+        { "title": "Holotype", "value": "Holotype" },
+        { "title": "Paratype", "value": "Paratype" },
+        { "title": "Syntype", "value": "Syntype" },
+        { "title": "Type", "value": "Type" }
+      ]
+    },
+    {
+      "name": "Phenology",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 6,
+      "items": [
+        { "title": "No Data", "value": "No Data" },
+        { "title": "flowering", "value": "flowering" },
+        {
+          "title": "flowering and fruiting",
+          "value": "flowering and fruiting"
+        },
+        { "title": "fruiting", "value": "fruiting" },
+        { "title": "mature", "value": "mature" },
+        { "title": "seed", "value": "seed" },
+        { "title": "seedling", "value": "seedling" },
+        { "title": "senescent", "value": "senescent" }
+      ]
+    }
+  ],
+  "vertpaleo": [
+    {
+      "name": "BiologicalSex",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Both", "value": "Both" },
+        { "title": "Female", "value": "Female" },
+        { "title": "Male", "value": "Male" }
+      ]
+    },
+    {
+      "name": "BiologicalStage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "egg", "value": "egg" },
+        { "title": "juvenile", "value": "juvenile" },
+        { "title": "nymph", "value": "nymph" },
+        { "title": "immature", "value": "immature" },
+        { "title": "embryo", "value": "embryo" },
+        { "title": "seed", "value": "seed" },
+        { "title": "hatchling", "value": "hatchling" },
+        { "title": "adult", "value": "adult" },
+        { "title": "larva", "value": "larva" },
+        { "title": "pupa", "value": "pupa" }
+      ]
+    },
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [{ "title": "Dug", "value": "dug" }]
+    },
+    {
+      "name": "CollObjPrepMeth",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "EtOH", "value": "EtOH" },
+        { "title": "C&S", "value": "C&S" },
+        { "title": "x-ray", "value": "x-ray" },
+        { "title": "image", "value": "image" },
+        { "title": "skeleton", "value": "skeleton" }
+      ]
+    }
+  ]
+}
