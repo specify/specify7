@@ -3,117 +3,14 @@ import React from 'react';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
-import { Container, H2 } from '../Atoms';
+import { Container, H2, H3 } from '../Atoms';
 import type { SetupProgress } from '../Login';
 import { setupToolText } from '../../localization/setupTool';
-import { Input, Label, Select } from '../Atoms/Form';
-import { Button } from '../Atoms/Button';
+import { Input, Label, Form, Select } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
+import { resources } from "./setupResources";
 
 type ResourceFormData = Record<string, any>;
-
-type ResourceConfig = {
-  readonly resourceName: string;
-  readonly endpoint: string;
-  readonly fields: RA<FieldConfig>;
-};
-
-type FieldConfig = {
-  readonly name: string;
-  readonly label: string;
-  readonly type?: 'boolean' | 'password' | 'select' | 'text';
-  readonly options?: RA<string>;
-};
-
-const disciplineTypeOptions = [
-  'fish',
-  'herpetology',
-  'paleobotany',
-  'invertpaleo',
-  'vertpaleo',
-  'bird',
-  'mammal',
-  'insect',
-  'botany',
-  'invertebrate',
-  'minerals',
-  'geology',
-  'anthropology',
-  /*
-   * 'vascplant',
-   * 'fungi',
-   */
-];
-
-const catalogNumberFormats = [
-  'CatalogNumber',
-  'CatalogNumberAlphaNumByYear',
-  'CatalogNumberNumeric',
-  'CatalogNumberString',
-];
-
-const resources: RA<ResourceConfig> = [
-  {
-    resourceName: 'Institution',
-    endpoint: '/setup_tool/institution/create/',
-    fields: [
-      { name: 'name', label: 'Name' },
-      { name: 'code', label: 'Code' },
-      {
-        name: 'isAccessionsGlobal',
-        label: 'Define Accession Globally',
-        type: 'boolean',
-      },
-      {
-        name: 'isSingleGeographyTree',
-        label: 'Use Single Geography Tree',
-        type: 'boolean',
-      },
-    ],
-  },
-  {
-    resourceName: 'Division',
-    endpoint: '/setup_tool/division/create/',
-    fields: [
-      { name: 'name', label: 'Name' },
-      { name: 'abbrev', label: 'Abbreviation' },
-    ],
-  },
-  {
-    resourceName: 'Discipline',
-    endpoint: '/setup_tool/discipline/create/',
-    fields: [
-      { name: 'name', label: 'Name' },
-      {
-        name: 'type',
-        label: 'Type',
-        type: 'select',
-        options: disciplineTypeOptions,
-      },
-    ],
-  },
-  {
-    resourceName: 'Collection',
-    endpoint: '/setup_tool/collection/create/',
-    fields: [
-      { name: 'collectionName', label: 'Collection Name' },
-      { name: 'code', label: 'Code' },
-      {
-        name: 'catalogNumFormatName',
-        label: 'Catalog Number Format',
-        type: 'select',
-        options: catalogNumberFormats,
-      },
-    ],
-  },
-  {
-    resourceName: 'SpecifyUser',
-    endpoint: '/setup_tool/specifyuser/create/',
-    fields: [
-      { name: 'name', label: 'Username' },
-      { name: 'password', label: 'Password', type: 'password' },
-    ],
-  },
-];
 
 const stepOrder: RA<keyof SetupProgress> = [
   'institution',
@@ -165,21 +62,23 @@ export function SetupTool({
         throw error;
       });
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ): void => {
-    const { name, value, type } = event.target;
+  // TODO: Use this.
 
-    const newValue =
-      type === 'checkbox' && 'checked' in event.target
-        ? (event.target as HTMLInputElement).checked
-        : value;
+  // const handleChange = (
+  //   event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  // ): void => {
+  //   const { name, value, type } = event.target;
 
-    setFormData((previous) => ({
-      ...previous,
-      [name]: newValue,
-    }));
-  };
+  //   const newValue =
+  //     type === 'checkbox' && 'checked' in event.target
+  //       ? (event.target as HTMLInputElement).checked
+  //       : value;
+
+  //   setFormData((previous) => ({
+  //     ...previous,
+  //     [name]: newValue,
+  //   }));
+  // };
 
   const handleSubmit = (event: React.FormEvent): void => {
     event.preventDefault();
@@ -200,13 +99,15 @@ export function SetupTool({
   };
 
   const renderFormFields = () =>
-    resources[currentStep].fields.map(({ name, label, type, options }) => (
+    resources[currentStep].fields.map(({ name, label, type, required = false, description, options }) => (
       <div className="mb-4" key={name}>
         {type === 'boolean' ? (
           <div className="flex items-center space-x-2">
-            <Label.Inline>
+            <Label.Inline title={description}>
               <Input.Checkbox
                 checked={Boolean(formData[name])}
+                id={name}
+                name={name}
                 onValueChange={(isChecked) => {
                   setFormData((previous) => ({
                     ...previous,
@@ -219,50 +120,40 @@ export function SetupTool({
           </div>
         ) : type === 'select' && Array.isArray(options) ? (
           <div className="mb-4" key={name}>
-            <Select
-              aria-label={label}
-              className="w-full min-w-[theme(spacing.40)]"
-              value={formData[name] || ''}
-              onValueChange={(value) => {
-                setFormData((previous) => ({
-                  ...previous,
-                  [name]: value,
-                }));
-              }}
-            >
-              <option disabled value="">
-                Select a type
-              </option>
-              {options.map((value) => (
-                <option key={value} value={value}>
-                  {value}
+            <Label.Block title={description}>
+              {label}
+              <Select
+                aria-label={label}
+                className="w-full min-w-[theme(spacing.40)]"
+                id={name}
+                name={name}
+                value={formData[name] || ''}
+                onValueChange={(value) => {
+                  setFormData((previous) => ({
+                    ...previous,
+                    [name]: value,
+                  }));
+                }}
+              >
+                <option disabled value="">
+                  Select a type
                 </option>
-              ))}
-            </Select>
+                {options.map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </Select>
+            </Label.Block>
           </div>
         ) : (
           <>
-            {/* <label
-              className="block font-medium text-gray-700 mb-1"
-              htmlFor={name}
-            >
-              {label}
-            </label>
-            <input
-              className="rounded-md p-2 w-full"
-              id={name}
-              name={name}
-              required
-              type={type === 'password' ? 'password' : 'text'}
-              value={formData[name] || ''}
-              onChange={handleChange}
-            /> */}
-            
-            <Label.Block>
+            <Label.Block title={description}>
               {label}
               <Input.Generic
-                required
+                required={required}
                 type={type === 'password' ? 'password' : 'text'}
+                name={name}
                 value={formData[name] || ''}
                 onValueChange={(value): void => {
                   setFormData((previous) => ({
@@ -277,30 +168,23 @@ export function SetupTool({
       </div>
     ));
 
-  const isFormValid = resources[currentStep].fields.every(({ name, type }) => {
-    if (type === 'boolean') return true;
-    return formData[name] !== undefined && formData[name] !== '';
-  });
-
   return (
     <Container.FullGray className="overflow-auto w-full items-center">
       <H2 className="text-2xl mb-6">{setupToolText.specifyConfigurationSetup()}</H2>
       {currentStep < resources.length ? (
-        <Container.Center className="p-6 shadow-md max-w-xl">
-          <form
+        <Container.Center className="p-3 shadow-md max-w-sm">
+          <Form
+            className="flex-1 overflow-auto gap-2"
             onSubmit={handleSubmit}
           >
-            <h3 className="text-xl font-semibold mb-4">
+            <H3 className="text-xl font-semibold mb-4">
               {resources[currentStep].resourceName}
-            </h3>
+            </H3>
             {renderFormFields()}
-            <Button.Save
-              onClick={handleSubmit}
-              disabled={!isFormValid}
-            >
+            <Submit.Save className="self-start">
               {setupToolText.saveAndContinue()}
-            </Button.Save>
-          </form>
+            </Submit.Save>
+          </Form>
         </Container.Center>
       ) : (
         <p className="mt-6 text-green-600 font-semibold">
