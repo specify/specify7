@@ -734,7 +734,7 @@ const testFiles = eslintConfig.config.find(
 if (testFiles === undefined)
 	throw new Error("Unable to find test files selector");
 
-const abbreviationsConfig = eslintConfig
+const abbreviationsConfig = eslintConfig.config
 	.map((rules) =>
 		typeof rules === "object" && typeof rules.rules === "object"
 			? Object.entries(rules.rules).find(
@@ -748,7 +748,7 @@ if (abbreviationsConfig === undefined)
 	throw new Error("Unable to find unicorn/prevent-abbreviations config");
 
 export default [
-	...eslintConfig,
+	...eslintConfig.config,
 	...eslintConfigReact,
 	{
 		languageOptions: {
