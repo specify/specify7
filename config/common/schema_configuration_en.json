@@ -132,5 +132,243 @@
     "defaultui": null,
     "name": "Sp Export Schema",
     "desc": "System Table:"
+  },
+  "address": {
+    "items": {
+      "agent": {
+        "type": "ManyToOne",
+        "ishidden": true,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Agent",
+        "desc": "Agent"
+      },
+      "version": {
+        "ishidden": true,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Version",
+        "desc": "Version"
+      },
+      "isCurrent": {
+        "ishidden": true,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Is Current",
+        "desc": "Indicates if this is the current address."
+      },
+      "isShipping": {
+        "ishidden": true,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Is Shipping",
+        "desc": "Indicates if this is the shipping address."
+      },
+      "typeOfAddr": {
+        "ishidden": true,
+        "isuiformatter": false,
+        "picklistname": "TypeOfAddr",
+        "isrequired": false,
+        "name": "Type Of Addr",
+        "desc": "Type Of Addr"
+      },
+      "phone1": {
+        "type": "java.lang.String",
+        "ishidden": false,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Phone1",
+        "desc": "The primary phone number."
+      },
+      "address5": {
+        "ishidden": true,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Address5",
+        "desc": "Address5"
+      },
+      "remarks": {
+        "type": "text",
+        "ishidden": true,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Remarks",
+        "desc": "Additional comments."
+      },
+      "isPrimary": {
+        "type": "java.lang.Boolean",
+        "ishidden": false,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Is Primary",
+        "desc": "Indicates whether this is the primary address."
+      },
+      "fax": {
+        "type": "java.lang.String",
+        "ishidden": false,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Fax",
+        "desc": "The fax number."
+      },
+      "state": {
+        "type": "java.lang.String",
+        "ishidden": false,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "State",
+        "desc": "The state within the country."
+      },
+      "roomOrBuilding": {
+        "type": "java.lang.String",
+        "ishidden": false,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Room/Building",
+        "desc": "The room or building of the agent."
+      },
+      "insitutions": {
+        "ishidden": true,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Instiutions",
+        "desc": "Instiutions"
+      },
+      "address4": {
+        "ishidden": true,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Address4",
+        "desc": "Address4"
+      },
+      "ordinal": {
+        "ishidden": true,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Ordinal",
+        "desc": "Allows multiple addresses to be ordered."
+      },
+      "modifiedByAgent": {
+        "ishidden": true,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Modified By Agent",
+        "desc": "Modified By Agent"
+      },
+      "endDate": {
+        "type": "java.util.Calendar",
+        "ishidden": true,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "End Date",
+        "desc": "The last date the agent was at the address."
+      },
+      "country": {
+        "type": "java.lang.String",
+        "ishidden": false,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Country",
+        "desc": "The country."
+      },
+      "city": {
+        "type": "java.lang.String",
+        "ishidden": false,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "City",
+        "desc": "The city."
+      },
+      "divisions": {
+        "ishidden": true,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Divisions",
+        "desc": "Divisions"
+      },
+      "startDate": {
+        "type": "java.util.Calendar",
+        "ishidden": true,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Start Date",
+        "desc": "The first date the agent was at this address."
+      },
+      "address2": {
+        "type": "java.lang.String",
+        "ishidden": false,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Address2",
+        "desc": "Second line of address (optional)."
+      },
+      "positionHeld": {
+        "type": "java.lang.String",
+        "ishidden": true,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Position Held",
+        "desc": "The position held by the agent while at this address."
+      },
+      "address3": {
+        "ishidden": true,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Address3",
+        "desc": "Address3"
+      },
+      "createdByAgent": {
+        "ishidden": true,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Created By Agent",
+        "desc": "Created By Agent"
+      },
+      "postalCode": {
+        "type": "java.lang.String",
+        "ishidden": false,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Postal Code",
+        "desc": "Postal code (Zip Code)."
+      },
+      "timestampModified": {
+        "type": "java.sql.Timestamp",
+        "ishidden": true,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Timestamp Modified",
+        "desc": "The timestamp the record was last modified."
+      },
+      "timestampCreated": {
+        "type": "java.sql.Timestamp",
+        "ishidden": true,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Timestamp Created",
+        "desc": "The timestamp the record was created."
+      },
+      "address": {
+        "type": "java.lang.String",
+        "ishidden": false,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Address",
+        "desc": "Address as it should appear on mailing labels."
+      },
+      "phone2": {
+        "type": "java.lang.String",
+        "ishidden": false,
+        "isuiformatter": false,
+        "isrequired": false,
+        "name": "Phone2",
+        "desc": "The secondary phone number."
+      }
+    },
+    "ishidden": false,
+    "format": "Address",
+    "isuiformatter": false,
+    "name": "Address",
+    "desc": "The address of an Agent. This also captures a start and end date for the address and the position held while at the address."
   }
 }
