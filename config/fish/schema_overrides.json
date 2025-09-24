@@ -1,0 +1,440 @@
+{
+  "containers": [
+    {
+      "name": "collectionobjectattribute",
+      "isHidden": false,
+      "version": 0,
+      "isSystem": false,
+      "schemaType": 0,
+      "items": [
+        {
+          "name": "text8",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Color in Life"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text5",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "TL"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text6",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "SL"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text4",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "pickListName": "BiologicalStage",
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Stage"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text1",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "pickListName": "Sex",
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Sex"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text7",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Total Length"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text3",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "ReproCondition"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text2",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Weight"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        }
+      ],
+      "names": [],
+      "descs": []
+    },
+    {
+      "name": "collectingeventattribute",
+      "isHidden": false,
+      "version": 0,
+      "isSystem": false,
+      "schemaType": 0,
+      "items": [
+        {
+          "name": "text4",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Current"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text8",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Vegetation"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text3",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Temp"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "remarks",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Remarks"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text1",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Min Depth"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text6",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Salinity"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text9",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "pickListName": "HabitatType",
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Habitat Type"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text5",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Clarity"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text7",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Turbidity"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text2",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Max Depth"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        }
+      ],
+      "names": [],
+      "descs": []
+    },
+    {
+      "name": "collectionobject",
+      "isHidden": false,
+      "version": 0,
+      "isSystem": false,
+      "schemaType": 0,
+      "items": [
+        {
+          "name": "text1",
+          "type": "java.lang.String",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Other number"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        }
+      ],
+      "names": [],
+      "descs": []
+    }
+  ]
+}

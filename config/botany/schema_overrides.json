@@ -1,160 +1,158 @@
 {
-  "vector": {
-    "containers": [
-      {
-        "name": "collectingevent",
-        "isHidden": false,
-        "version": 0,
-        "isSystem": false,
-        "schemaType": 0,
-        "items": [
-          {
-            "name": "stationFieldNumber",
-            "type": "java.lang.String",
-            "isHidden": false,
-            "isUIFormatter": false,
-            "isRequired": false,
-            "version": 0,
-            "isSystem": false,
-            "names": [
-              {
-                "language": "en",
-                "version": 0,
-                "text": "Collector Number"
-              }
-            ],
-            "descs": [
-              {
-                "reference": "../../names/str"
-              }
-            ],
-            "spExportSchemaItems": []
-          },
-          {
-            "name": "remarks",
-            "type": "text",
-            "isHidden": false,
-            "isUIFormatter": false,
-            "isRequired": false,
-            "version": 0,
-            "isSystem": false,
-            "names": [
-              {
-                "language": "en",
-                "version": 0,
-                "text": "Locality and\n Habitat Notes"
-              }
-            ],
-            "descs": [
-              {
-                "reference": "../../names/str"
-              }
-            ],
-            "spExportSchemaItems": []
-          }
-        ],
-        "names": [],
-        "descs": []
-      },
-      {
-        "name": "collectionobject",
-        "isHidden": false,
-        "version": 0,
-        "isSystem": false,
-        "schemaType": 0,
-        "items": [
-          {
-            "name": "text1",
-            "type": "java.lang.String",
-            "isHidden": false,
-            "isUIFormatter": false,
-            "pickListName": "Phenology",
-            "isRequired": false,
-            "version": 0,
-            "isSystem": false,
-            "names": [
-              {
-                "language": "en",
-                "version": 0,
-                "text": "Phenology"
-              }
-            ],
-            "descs": [
-              {
-                "reference": "../../names/str"
-              }
-            ],
-            "spExportSchemaItems": []
-          },
-          {
-            "name": "description",
-            "type": "java.lang.String",
-            "isHidden": false,
-            "isUIFormatter": false,
-            "isRequired": false,
-            "version": 0,
-            "isSystem": false,
-            "names": [
-              {
-                "language": "en",
-                "version": 0,
-                "text": "Specimen\nDescription"
-              }
-            ],
-            "descs": [
-              {
-                "reference": "../../names/str"
-              }
-            ],
-            "spExportSchemaItems": []
-          },
-          {
-            "name": "exsiccataItems",
-            "isHidden": false,
-            "isUIFormatter": false,
-            "isRequired": false,
-            "version": 0,
-            "isSystem": false,
-            "names": [
-              {
-                "language": "en",
-                "version": 0,
-                "text": "Exsiccata Items"
-              }
-            ],
-            "descs": [
-              {
-                "reference": "../../names/str"
-              }
-            ],
-            "spExportSchemaItems": []
-          },
-          {
-            "name": "collectionObjectAttribute",
-            "type": "ManyToOne",
-            "isHidden": true,
-            "isUIFormatter": false,
-            "isRequired": false,
-            "version": 0,
-            "isSystem": false,
-            "names": [
-              {
-                "language": "en",
-                "version": 0,
-                "text": "Col Obj Attribute"
-              }
-            ],
-            "descs": [
-              {
-                "reference": "../../names/str"
-              }
-            ],
-            "spExportSchemaItems": []
-          }
-        ],
-        "names": [],
-        "descs": []
-      }
-    ]
-  }
+  "containers": [
+    {
+      "name": "collectingevent",
+      "isHidden": false,
+      "version": 0,
+      "isSystem": false,
+      "schemaType": 0,
+      "items": [
+        {
+          "name": "stationFieldNumber",
+          "type": "java.lang.String",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Collector Number"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "remarks",
+          "type": "text",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Locality and\n Habitat Notes"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        }
+      ],
+      "names": [],
+      "descs": []
+    },
+    {
+      "name": "collectionobject",
+      "isHidden": false,
+      "version": 0,
+      "isSystem": false,
+      "schemaType": 0,
+      "items": [
+        {
+          "name": "text1",
+          "type": "java.lang.String",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "pickListName": "Phenology",
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Phenology"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "description",
+          "type": "java.lang.String",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Specimen\nDescription"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "exsiccataItems",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Exsiccata Items"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "collectionObjectAttribute",
+          "type": "ManyToOne",
+          "isHidden": true,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Col Obj Attribute"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        }
+      ],
+      "names": [],
+      "descs": []
+    }
+  ]
 }
