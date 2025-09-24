@@ -1,0 +1,137 @@
+{
+  "containers": [
+    {
+      "name": "collectionobjectattribute",
+      "isHidden": false,
+      "version": 0,
+      "isSystem": false,
+      "schemaType": 0,
+      "items": [
+        {
+          "name": "positionState",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "names": [
+            { "language": "en", "version": 0, "text": "Position State" }
+          ],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "direction",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "names": [{ "language": "en", "version": 0, "text": "Direction" }],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "distanceUnits",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "names": [
+            { "language": "en", "version": 0, "text": "Distance Units" }
+          ],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "bottomDistance",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "names": [
+            { "language": "en", "version": 0, "text": "Bottom Distance" }
+          ],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "topDistance",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "names": [{ "language": "en", "version": 0, "text": "Top Distance" }],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text1",
+          "isHidden": true,
+          "isUIFormatter": false,
+          "isRequired": false
+        },
+        {
+          "name": "text2",
+          "isHidden": true,
+          "isUIFormatter": false,
+          "isRequired": false
+        },
+        {
+          "name": "text3",
+          "isHidden": true,
+          "isUIFormatter": false,
+          "isRequired": false
+        },
+        {
+          "name": "text4",
+          "isHidden": true,
+          "isUIFormatter": false,
+          "isRequired": false
+        },
+        {
+          "name": "text5",
+          "isHidden": true,
+          "isUIFormatter": false,
+          "isRequired": false
+        },
+        {
+          "name": "text6",
+          "isHidden": true,
+          "isUIFormatter": false,
+          "isRequired": false
+        },
+        {
+          "name": "text7",
+          "isHidden": true,
+          "isUIFormatter": false,
+          "isRequired": false
+        },
+        {
+          "name": "text8",
+          "isHidden": true,
+          "isUIFormatter": false,
+          "isRequired": false
+        }
+      ],
+      "names": [],
+      "descs": []
+    },
+    {
+      "name": "collectionobject",
+      "isHidden": false,
+      "version": 0,
+      "isSystem": false,
+      "schemaType": 0,
+      "items": [
+        {
+          "name": "collectionObjectAttribute",
+          "type": "ManyToOne",
+          "isHidden": true,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "names": [
+            { "language": "en", "version": 0, "text": "Col Obj Attribute" }
+          ],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        }
+      ],
+      "names": [],
+      "descs": []
+    }
+  ]
+}
