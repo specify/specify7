@@ -82,6 +82,11 @@ def apply_default_uniqueness_rules_to_disciplines(apps):
     UniquenessRule = apps.get_model('businessrules', 'UniquenessRule')
 
     for discipline in Discipline.objects.all():
+        # Currently, only apply default rules to a Discipline if there no rules
+        # which have isDatabaseConstraint. This caveat of this approach is if a
+        # migration introduces a rule where isDatabaseConstraint=True
+        # then default rules will not be applied.
+        # See #7413, #6308
         if not UniquenessRule.objects.filter(discipline=discipline, isDatabaseConstraint=True).exists():
             apply_default_uniqueness_rules(discipline, registry=apps)
 
