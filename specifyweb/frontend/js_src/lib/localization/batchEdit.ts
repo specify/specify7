@@ -8,13 +8,13 @@ import { createDictionary } from './utils';
 
 export const batchEditText = createDictionary({
   batchEdit: {
-    "en-us": "Batch Edit",
-    "de-ch": "Stapelbearbeitung",
-    "es-es": "Edición por lotes",
-    "fr-fr": "Modification par lots",
-    "pt-br": "Edição em lote",
-    "ru-ru": "Пакетное редактирование",
-    "uk-ua": "Пакетне редагування",
+    'en-us': 'Batch Edit',
+    'de-ch': 'Stapelbearbeitung',
+    'es-es': 'Edición por lotes',
+    'fr-fr': 'Modification par lots',
+    'pt-br': 'Edição em lote',
+    'ru-ru': 'Пакетное редактирование',
+    'uk-ua': 'Пакетне редагування',
   },
   batchEditPrefs: {
     'en-us': 'Batch Edit Preferences',
@@ -128,29 +128,29 @@ export const batchEditText = createDictionary({
       'Використовуйте конструктор запитів для створення нового набору даних для пакетного редагування',
   },
   showRollback: {
-    "en-us": "Show rollback button",
-    "de-ch": "Rollback-Schaltfläche anzeigen",
-    "es-es": "Mostrar botón para revertir",
-    "fr-fr": "Afficher le bouton de restauration",
-    "pt-br": "Mostrar botão de reversão",
-    "ru-ru": "Показать кнопку отката",
-    "uk-ua": "Показати кнопку відкату",
+    'en-us': 'Show rollback button',
+    'de-ch': 'Rollback-Schaltfläche anzeigen',
+    'es-es': 'Mostrar botón para revertir',
+    'fr-fr': 'Afficher le bouton de restauration',
+    'pt-br': 'Mostrar botão de reversão',
+    'ru-ru': 'Показать кнопку отката',
+    'uk-ua': 'Показати кнопку відкату',
   },
   showRollbackDescription: {
-    "en-us":
-      "Rollback in Batch Edit is an experimental feature. This preference will hide the button",
-    "de-ch":
-      "Rollback in der Stapelbearbeitung ist eine experimentelle Funktion. Diese Einstellung blendet die Schaltfläche",
-    "es-es":
-      "Revertir en la edición por lotes es una función experimental. Esta preferencia ocultará el botón.",
-    "fr-fr":
-      "La restauration par lot est une fonctionnalité expérimentale. Cette préférence masquera le bouton.",
-    "pt-br":
-      "Reverter na Edição em Lote é um recurso experimental. Esta preferência ocultará o botão",
-    "ru-ru":
-      "Откат в пакетном редактировании — экспериментальная функция. Эта настройка скроет кнопку.",
-    "uk-ua":
-      "Відкат у пакетному редагуванні – це експериментальна функція. Цей параметр приховає кнопку",
+    'en-us':
+      'Rollback in Batch Edit is an experimental feature. This preference will hide the button',
+    'de-ch':
+      'Rollback in der Stapelbearbeitung ist eine experimentelle Funktion. Diese Einstellung blendet die Schaltfläche',
+    'es-es':
+      'Revertir en la edición por lotes es una función experimental. Esta preferencia ocultará el botón.',
+    'fr-fr':
+      'La restauration par lot est une fonctionnalité expérimentale. Cette préférence masquera le bouton.',
+    'pt-br':
+      'Reverter na Edição em Lote é um recurso experimental. Esta preferência ocultará o botão',
+    'ru-ru':
+      'Откат в пакетном редактировании — экспериментальная функция. Эта настройка скроет кнопку.',
+    'uk-ua':
+      'Відкат у пакетному редагуванні – це експериментальна функція. Цей параметр приховає кнопку',
   },
   commit: {
     'en-us': 'Commit',
@@ -244,13 +244,13 @@ export const batchEditText = createDictionary({
     'uk-ua': 'Стан фіксації набору даних',
   },
   startCommit: {
-    "en-us": "Begin Data Set Commit?",
-    "de-ch": "Mit der Datensatzfestschreibung beginnen?",
-    "es-es": "¿Comenzar conjunto de datos? ¿Confirmar?",
-    "fr-fr": "Commencer la validation de l'ensemble de données ?",
-    "pt-br": "Iniciar confirmação do conjunto de dados?",
-    "ru-ru": "Начать фиксацию набора данных?",
-    "uk-ua": "Почати фіксацію набору даних?",
+    'en-us': 'Begin Data Set Commit?',
+    'de-ch': 'Mit der Datensatzfestschreibung beginnen?',
+    'es-es': '¿Comenzar conjunto de datos? ¿Confirmar?',
+    'fr-fr': "Commencer la validation de l'ensemble de données ?",
+    'pt-br': 'Iniciar confirmação do conjunto de dados?',
+    'ru-ru': 'Начать фиксацию набора данных?',
+    'uk-ua': 'Почати фіксацію набору даних?',
   },
   commitErrors: {
     'en-us': 'Commit Failed due to Error Cells',
@@ -262,19 +262,19 @@ export const batchEditText = createDictionary({
     'uk-ua': 'Не вдалося виконати фіксацію через комірки з помилками',
   },
   commitErrorsDescription: {
-    "en-us": "The Commit failed due to one or more cell value errors.",
-    "de-ch":
-      "Das Commit ist aufgrund eines oder mehrerer Zellenwertfehler fehlgeschlagen.",
-    "es-es":
-      "La confirmación falló debido a uno o más errores de valor de celda.",
-    "fr-fr":
-      "La validation a échoué en raison d’une ou plusieurs erreurs de valeur de cellule.",
-    "pt-br":
-      "A confirmação falhou devido a um ou mais erros de valor de célula.",
-    "ru-ru":
-      "Фиксация не удалась из-за одной или нескольких ошибок значений ячеек.",
-    "uk-ua":
-      "Фіксацію не вдалося виконати через одну або декілька помилок у значенні клітинки.",
+    'en-us': 'The Commit failed due to one or more cell value errors.',
+    'de-ch':
+      'Das Commit ist aufgrund eines oder mehrerer Zellenwertfehler fehlgeschlagen.',
+    'es-es':
+      'La confirmación falló debido a uno o más errores de valor de celda.',
+    'fr-fr':
+      'La validation a échoué en raison d’une ou plusieurs erreurs de valeur de cellule.',
+    'pt-br':
+      'A confirmação falhou devido a um ou mais erros de valor de célula.',
+    'ru-ru':
+      'Фиксация не удалась из-за одной или нескольких ошибок значений ячеек.',
+    'uk-ua':
+      'Фіксацію не вдалося виконати через одну або декілька помилок у значенні клітинки.',
   },
   commitCancelled: {
     'en-us': 'Commit Cancelled',
@@ -304,13 +304,13 @@ export const batchEditText = createDictionary({
     'uk-ua': 'Коміт завершено без помилок',
   },
   batchEditRecordSetName: {
-    "en-us": 'BE commit of "{dataSet:string}"',
-    "de-ch": "BE-Commit von „{dataSet:string}“",
-    "es-es": 'Confirmación BE de "{dataSet:string}"',
-    "fr-fr": "Validation BE de « {dataSet:string} »",
-    "pt-br": 'SEJA commit de "{dataSet:string}"',
-    "ru-ru": "BE-коммит «{dataSet:string}»",
-    "uk-ua": 'BE коміт "{dataSet:string}"',
+    'en-us': 'BE commit of "{dataSet:string}"',
+    'de-ch': 'BE-Commit von „{dataSet:string}“',
+    'es-es': 'Confirmación BE de "{dataSet:string}"',
+    'fr-fr': 'Validation BE de « {dataSet:string} »',
+    'pt-br': 'SEJA commit de "{dataSet:string}"',
+    'ru-ru': 'BE-коммит «{dataSet:string}»',
+    'uk-ua': 'BE коміт "{dataSet:string}"',
   },
   deferForMatch: {
     'en-us': 'Use only visible fields for match',
@@ -338,16 +338,16 @@ export const batchEditText = createDictionary({
       'Якщо значення true, невидимі поля бази даних не використовуватимуться для зіставлення. Значення за замовчуванням — {default:boolean}',
   },
   deferForNullCheck: {
-    "en-us": "Use only visible fields for empty record check",
-    "de-ch":
-      "Nur sichtbare Felder für die Prüfung auf leere Datensätze verwenden",
-    "es-es":
-      "Utilice sólo campos visibles para la verificación de registros vacíos",
-    "fr-fr":
-      "Utiliser uniquement les champs visibles pour la vérification des enregistrements vides",
-    "pt-br": "Use somente campos visíveis para verificação de registros vazios",
-    "ru-ru": "Использовать только видимые поля для проверки пустых записей",
-    "uk-ua": "Використовуйте лише видимі поля для перевірки порожніх записів",
+    'en-us': 'Use only visible fields for empty record check',
+    'de-ch':
+      'Nur sichtbare Felder für die Prüfung auf leere Datensätze verwenden',
+    'es-es':
+      'Utilice sólo campos visibles para la verificación de registros vacíos',
+    'fr-fr':
+      'Utiliser uniquement les champs visibles pour la vérification des enregistrements vides',
+    'pt-br': 'Use somente campos visíveis para verificação de registros vazios',
+    'ru-ru': 'Использовать только видимые поля для проверки пустых записей',
+    'uk-ua': 'Використовуйте лише видимі поля для перевірки порожніх записів',
   },
   deferForNullCheckDescription: {
     'en-us':
@@ -374,21 +374,21 @@ export const batchEditText = createDictionary({
       'La edición por lotes está deshabilitada para las tablas del sistema y las tablas de jerarquía de alcance',
     'fr-fr':
       "L'édition par lots est désactivée pour les tables système et les tables de hiérarchie de portée",
-    "pt-br":
-      "A edição em lote está desabilitada para tabelas do sistema e tabelas de hierarquia de escopo",
-    "ru-ru":
-      "Пакетное редактирование отключено для системных таблиц и таблиц иерархии области действия.",
-    "uk-ua":
-      "Пакетне редагування вимкнено для системних таблиць та таблиць ієрархії області видимості",
+    'pt-br':
+      'A edição em lote está desabilitada para tabelas do sistema e tabelas de hierarquia de escopo',
+    'ru-ru':
+      'Пакетное редактирование отключено для системных таблиц и таблиц иерархии области действия.',
+    'uk-ua':
+      'Пакетне редагування вимкнено для системних таблиць та таблиць ієрархії області видимості',
   },
   cannotEditAfterRollback: {
-    "en-us":
-      "(Batch Edit datasets cannot be edited after rollback - Read Only)",
-    "de-ch":
-      "(Datensätze mit Stapelbearbeitung können nach dem Rollback nicht bearbeitet werden – schreibgeschützt)",
-    "es-es":
-      "(Los conjuntos de datos de edición por lotes no se pueden editar después de una reversión: solo lectura)",
-    "fr-fr":
+    'en-us':
+      '(Batch Edit datasets cannot be edited after rollback - Read Only)',
+    'de-ch':
+      '(Datensätze mit Stapelbearbeitung können nach dem Rollback nicht bearbeitet werden – schreibgeschützt)',
+    'es-es':
+      '(Los conjuntos de datos de edición por lotes no se pueden editar después de una reversión: solo lectura)',
+    'fr-fr':
       "(Les ensembles de données d'édition par lots ne peuvent pas être modifiés après la restauration - Lecture seule)",
     'pt-br':
       '(Os conjuntos de dados de edição em lote não podem ser editados após a reversão - Somente leitura)',
@@ -407,19 +407,19 @@ export const batchEditText = createDictionary({
     'uk-ua': "Увімкнути зв'язки",
   },
   enableRelationshipsDescription: {
-    "en-us":
-      "Allows batch editing relationships of the base table. Rollback is disabled when relationships are enabled",
-    "de-ch":
-      "Ermöglicht die Stapelbearbeitung von Beziehungen der Basistabelle. Rollback ist deaktiviert, wenn Beziehungen aktiviert sind",
-    "es-es":
-      "Permite la edición por lotes de relaciones de la tabla base. La reversión está deshabilitada cuando las relaciones están habilitadas.",
-    "fr-fr":
-      "Permet la modification par lots des relations de la table de base. La restauration est désactivée lorsque les relations sont activées.",
-    "pt-br":
-      "Permite a edição em lote de relacionamentos da tabela base. A reversão é desabilitada quando os relacionamentos são habilitados.",
-    "ru-ru":
-      "Позволяет пакетно редактировать связи базовой таблицы. Откат отключается при включении связей.",
-    "uk-ua":
+    'en-us':
+      'Allows batch editing relationships of the base table. Rollback is disabled when relationships are enabled',
+    'de-ch':
+      'Ermöglicht die Stapelbearbeitung von Beziehungen der Basistabelle. Rollback ist deaktiviert, wenn Beziehungen aktiviert sind',
+    'es-es':
+      'Permite la edición por lotes de relaciones de la tabla base. La reversión está deshabilitada cuando las relaciones están habilitadas.',
+    'fr-fr':
+      'Permet la modification par lots des relations de la table de base. La restauration est désactivée lorsque les relations sont activées.',
+    'pt-br':
+      'Permite a edição em lote de relacionamentos da tabela base. A reversão é desabilitada quando os relacionamentos são habilitados.',
+    'ru-ru':
+      'Позволяет пакетно редактировать связи базовой таблицы. Откат отключается при включении связей.',
+    'uk-ua':
       "Дозволяє пакетне редагування зв'язків базової таблиці. Відкат вимкнено, якщо зв'язки ввімкнено",
   },
   commitDataSet: {
