@@ -62,13 +62,13 @@ export const resources: RA<ResourceConfig> = [
       {
         name: 'isAccessionsGlobal',
         label: 'Define Accession Globally',
-        description: 'Controls accession numbering. Options: Global (default) or Divisional. A tooltip will explain: "Global scope allows you to share Accessions between all divisions. Divisional scope ensures Accessions are specific to each division',
+        description: 'Global scope allows you to share Accessions between all divisions. Divisional scope ensures Accessions are specific to each division.',
         type: 'boolean',
       },
       {
         name: 'isSingleGeographyTree',
         label: 'Use Single Geography Tree',
-        description: 'Controls geography definitions. Options: Global (default) or by Discipline. A tooltip will explain: "A global geography tree is shared by all disciplines. Otherwise, geography trees are managed separately within each discipline."',
+        description: 'A global geography tree is shared by all disciplines. Otherwise, geography trees are managed separately within each discipline.',
         type: 'boolean',
       },
     ],
@@ -112,8 +112,26 @@ export const resources: RA<ResourceConfig> = [
     resourceName: 'SpecifyUser',
     endpoint: '/setup_tool/specifyuser/create/',
     fields: [
-      { name: 'name', label: 'Username', required: true },
-      { name: 'password', label: 'Password', type: 'password', required: true },
+      { 
+        name: 'name',
+        label: 'Username',
+        description: 'The username for the primary administrator account (e.g., "spadmin").',
+        required: true
+      },
+      {
+        name: 'password',
+        label: 'Password',
+        description: 'The password for the account.',
+        type: 'password',
+        required: true
+      },
+      {
+        name: 'password',
+        label: 'Confirm Password',
+        description: 'Must match the password entered above.',
+        type: 'password',
+        required: true
+      },
     ],
   },
 ];
