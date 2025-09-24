@@ -173,7 +173,9 @@ function fetchRowAttachments(
   ) => void
 ): void {
   // Look for Attachments column
-  const attachmentColumnIndex = hot.toVisualColumn(getAttachmentsColumn(dataset));
+  const attachmentColumnIndex = hot.toVisualColumn(
+    getAttachmentsColumn(dataset)
+  );
   if (attachmentColumnIndex === -1) return;
 
   // Each row should have comma-separated IDs for SpDataSetAttachments
