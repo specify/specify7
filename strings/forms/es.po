@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-09-18 14:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-09-24 15:01+0000\n"
+"Last-Translator: Miguel Díaz de León <migueldlm1307@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/forms/"
 "es/>\n"
 "Language: es\n"
@@ -55,20 +55,17 @@ msgstr "Comprobando si el recurso se puede eliminar…"
 
 #. Used in: Components > Molecules > Linked Records
 #: components/Molecules/LinkedRecords.tsx:105
-#, fuzzy
 msgid "checkingIfResourceIsUsed"
 msgstr "Comprobando si este registro está actualmente en uso…"
 
 #. Used in: Components > Molecules > Linked Records
 #: components/Molecules/LinkedRecords.tsx:51
 #: components/Molecules/LinkedRecords.tsx:119
-#, fuzzy
 msgid "noLinkedRecords"
 msgstr "No hay registros vinculados"
 
 #. Used in: Components > Molecules > Linked Records
 #: components/Molecules/LinkedRecords.tsx:133
-#, fuzzy
 msgid "recordUsedDescription"
 msgstr "Este recurso está actualmente vinculado a los siguientes registros:"
 
@@ -150,7 +147,6 @@ msgstr "Establecer en la fecha actual"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:285
-#, fuzzy
 msgid "addToPickListConfirmation"
 msgstr "¿Añadir a {pickListTable:string}?"
 
@@ -164,7 +160,6 @@ msgstr ""
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:252
-#, fuzzy
 msgid "invalidType"
 msgstr "Tipo inválido"
 
