@@ -9,6 +9,8 @@ import { setupToolText } from '../../localization/setupTool';
 import { Input, Label, Form, Select } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { resources } from "./setupResources";
+import { LoadingContext } from '../Core/Contexts';
+import type { LocalizedString } from 'typesafe-i18n';
 
 type ResourceFormData = Record<string, any>;
 
@@ -33,6 +35,8 @@ export function SetupTool({
 
   const initialStep = findInitialStep(setupProgress);
   const [currentStep, setCurrentStep] = React.useState(initialStep);
+  
+  const loading = React.useContext(LoadingContext);
 
   const onResourceSaved = async (
     endpoint: string,
@@ -62,40 +66,34 @@ export function SetupTool({
         throw error;
       });
 
-  // TODO: Use this.
-
-  // const handleChange = (
-  //   event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  // ): void => {
-  //   const { name, value, type } = event.target;
-
-  //   const newValue =
-  //     type === 'checkbox' && 'checked' in event.target
-  //       ? (event.target as HTMLInputElement).checked
-  //       : value;
-
-  //   setFormData((previous) => ({
-  //     ...previous,
-  //     [name]: newValue,
-  //   }));
-  // };
+  const handleChange = (
+    name: string,
+    newValue: LocalizedString | boolean
+  ): void => {
+    setFormData((previous) => ({
+      ...previous,
+      [name]: newValue,
+    }));
+  };
 
   const handleSubmit = (event: React.FormEvent): void => {
     event.preventDefault();
     const { endpoint, resourceName } = resources[currentStep];
 
-    onResourceSaved(endpoint, resourceName, formData)
-      .then(() => {
-        if (resourceName === 'SpecifyUser') {
-          globalThis.location.reload();
-        } else {
-          setFormData({});
-          setCurrentStep((previous) => previous + 1);
-        }
-      })
-      .catch((error) => {
-        console.error('Form submission failed:', error);
-      });
+    loading(
+      onResourceSaved(endpoint, resourceName, formData)
+        .then(() => {
+          if (resourceName === 'SpecifyUser') {
+            globalThis.location.reload();
+          } else {
+            setFormData({});
+            setCurrentStep((previous) => previous + 1);
+          }
+        })
+        .catch((error) => {
+          console.error('Form submission failed:', error);
+        })
+      );
   };
 
   const renderFormFields = () =>
@@ -108,12 +106,7 @@ export function SetupTool({
                 checked={Boolean(formData[name])}
                 id={name}
                 name={name}
-                onValueChange={(isChecked) => {
-                  setFormData((previous) => ({
-                    ...previous,
-                    [name]: isChecked,
-                  }));
-                }}
+                onValueChange={(isChecked) => handleChange(name, isChecked)}
               />
               {label}
             </Label.Inline>
@@ -128,12 +121,7 @@ export function SetupTool({
                 id={name}
                 name={name}
                 value={formData[name] || ''}
-                onValueChange={(value) => {
-                  setFormData((previous) => ({
-                    ...previous,
-                    [name]: value,
-                  }));
-                }}
+                onValueChange={(value) => handleChange(name, value)}
               >
                 <option disabled value="">
                   Select a type
@@ -155,12 +143,7 @@ export function SetupTool({
                 type={type === 'password' ? 'password' : 'text'}
                 name={name}
                 value={formData[name] || ''}
-                onValueChange={(value): void => {
-                  setFormData((previous) => ({
-                    ...previous,
-                    [name]: value,
-                  }))
-                }}
+                onValueChange={(value) => handleChange(name, value)}
               />
             </Label.Block>
           </>
@@ -174,7 +157,7 @@ export function SetupTool({
       {currentStep < resources.length ? (
         <Container.Center className="p-3 shadow-md max-w-sm">
           <Form
-            className="flex-1 overflow-auto gap-2"
+            className="flex-1 overflow-auto gap-1"
             onSubmit={handleSubmit}
           >
             <H3 className="text-xl font-semibold mb-4">

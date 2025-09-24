@@ -1,5 +1,4 @@
 import type { RA } from '../../utils/types';
-import { setupToolText } from '../../localization/setupTool';
 
 type ResourceConfig = {
   readonly resourceName: string;
@@ -10,7 +9,7 @@ type ResourceConfig = {
 type FieldConfig = {
   readonly name: string;
   readonly label: string;
-  readonly type?: 'boolean' | 'password' | 'select' | 'text';
+  readonly type?: 'boolean' | 'password' | 'repeat-password' | 'select' | 'text';
   readonly required?: boolean;
   readonly description?: string;
   readonly options?: RA<string>;
@@ -98,13 +97,14 @@ export const resources: RA<ResourceConfig> = [
     resourceName: 'Collection',
     endpoint: '/setup_tool/collection/create/',
     fields: [
-      { name: 'collectionName', label: 'Collection Name' },
-      { name: 'code', label: 'Code' },
+      { name: 'collectionName', label: 'Collection Name', required: true },
+      { name: 'code', label: 'Code', required: true },
       {
         name: 'catalogNumFormatName',
         label: 'Catalog Number Format',
         type: 'select',
         options: catalogNumberFormats,
+        required: true,
       },
     ],
   },
@@ -126,10 +126,10 @@ export const resources: RA<ResourceConfig> = [
         required: true
       },
       {
-        name: 'password',
+        name: 'confirmPassword',
         label: 'Confirm Password',
         description: 'Must match the password entered above.',
-        type: 'password',
+        type: 'repeat-password',
         required: true
       },
     ],

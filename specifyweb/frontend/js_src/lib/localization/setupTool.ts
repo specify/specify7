@@ -1,5 +1,5 @@
 /**
- * Localization strings used in the Schema Config and data model viewer
+ * Localization strings for the Specify Configuration Setup.
  *
  * @module
  */
