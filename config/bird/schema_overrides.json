@@ -1,0 +1,275 @@
+{
+  "containers": [
+    {
+      "name": "collectingevent",
+      "isHidden": false,
+      "version": 0,
+      "isSystem": false,
+      "schemaType": 0,
+      "items": [
+        {
+          "name": "stationFieldNumber",
+          "type": "java.lang.String",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Field Number"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "method",
+          "type": "java.lang.String",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "pickListName": "Method",
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Method"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        }
+      ],
+      "names": [],
+      "descs": []
+    },
+    {
+      "name": "collectionobjectattribute",
+      "isHidden": false,
+      "version": 0,
+      "isSystem": false,
+      "schemaType": 0,
+      "items": [
+        {
+          "name": "text5",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Stomach"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text3",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "ReproCondition"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text6",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Gonads"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text8",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Weight"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text2",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "pickListName": "BiologicalSex",
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Sex"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text4",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Body"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text1",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "pickListName": "Age",
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Age"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text7",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Molt"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        }
+      ],
+      "names": [],
+      "descs": []
+    },
+    {
+      "name": "determination",
+      "isHidden": false,
+      "version": 0,
+      "isSystem": false,
+      "schemaType": 0,
+      "items": [
+        {
+          "name": "typeStatusName",
+          "type": "java.lang.String",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "pickListName": "TypeStatus",
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Type Status"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        }
+      ],
+      "names": [],
+      "descs": []
+    }
+  ]
+}
