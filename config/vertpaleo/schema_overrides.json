@@ -1,0 +1,227 @@
+{
+  "containers": [
+    {
+      "name": "collectionobjectattribute",
+      "isHidden": false,
+      "version": 0,
+      "isSystem": false,
+      "schemaType": 0,
+      "items": [
+        {
+          "name": "text1",
+          "isHidden": true,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Text1",
+              "itemDesc": { "reference": "../../.." },
+              "itemName": { "reference": "../../.." }
+            }
+          ],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text2",
+          "isHidden": true,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Text2",
+              "itemDesc": { "reference": "../../.." },
+              "itemName": { "reference": "../../.." }
+            }
+          ],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text3",
+          "isHidden": true,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Text3",
+              "itemDesc": { "reference": "../../.." },
+              "itemName": { "reference": "../../.." }
+            }
+          ],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text4",
+          "isHidden": true,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Text4",
+              "itemDesc": { "reference": "../../.." },
+              "itemName": { "reference": "../../.." }
+            }
+          ],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text5",
+          "isHidden": true,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Text5",
+              "itemDesc": { "reference": "../../.." },
+              "itemName": { "reference": "../../.." }
+            }
+          ],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text6",
+          "isHidden": true,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Text6",
+              "itemDesc": { "reference": "../../.." },
+              "itemName": { "reference": "../../.." }
+            }
+          ],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text7",
+          "isHidden": true,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Text7",
+              "itemDesc": { "reference": "../../.." },
+              "itemName": { "reference": "../../.." }
+            }
+          ],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text8",
+          "isHidden": true,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Text8",
+              "itemDesc": { "reference": "../../.." },
+              "itemName": { "reference": "../../.." }
+            }
+          ],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "direction",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "names": [{ "language": "en", "text": "Direction" }],
+          "descs": [{ "reference": "../../names/str" }]
+        },
+        {
+          "name": "distanceUnits",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "names": [{ "language": "en", "text": "Distance Units" }],
+          "descs": [{ "reference": "../../names/str" }]
+        },
+        {
+          "name": "bottomDistance",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "names": [{ "language": "en", "text": "Bottom Distance" }],
+          "descs": [{ "reference": "../../names/str" }]
+        },
+        {
+          "name": "topDistance",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "names": [{ "language": "en", "text": "Top Distance" }],
+          "descs": [{ "reference": "../../names/str" }]
+        },
+        {
+          "name": "positionState",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "names": [{ "language": "en", "text": "Position State" }],
+          "descs": [{ "reference": "../../names/str" }]
+        }
+      ],
+      "names": [],
+      "descs": []
+    },
+    {
+      "name": "collectionobject",
+      "isHidden": false,
+      "version": 0,
+      "isSystem": false,
+      "schemaType": 0,
+      "items": [
+        {
+          "name": "collectionObjectAttribute",
+          "type": "ManyToOne",
+          "isHidden": true,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "names": [{ "language": "en", "text": "Col Obj Attribute" }],
+          "descs": [{ "reference": "../../names/str" }]
+        }
+      ],
+      "names": [],
+      "descs": []
+    }
+  ]
+}
