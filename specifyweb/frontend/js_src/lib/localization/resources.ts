@@ -120,7 +120,7 @@ export const resourcesText = createDictionary({
   appResource: {
     "en-us": "App Resource",
     "ru-ru": "Подкатегории",
-    "es-es": "Recurso de la aplicación",
+    "es-es": "Recursos de la aplicación",
     "fr-fr": "Ressource d'application",
     "uk-ua": "Підкатегорії",
     "de-ch": "App Ressource",
