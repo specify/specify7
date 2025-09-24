@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-09-20 23:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-09-24 15:02+0000\n"
+"Last-Translator: Miguel Díaz de León <migueldlm1307@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "resources/es/>\n"
 "Language: es\n"
@@ -39,7 +39,6 @@ msgstr "Definición de formulario"
 
 #. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:265
-#, fuzzy
 msgid "newViewDefinition"
 msgstr "Nueva definición de vista"
 
@@ -56,7 +55,6 @@ msgstr "Recursos globales"
 
 #. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:47
-#, fuzzy
 msgid "disciplineResources"
 msgstr "Recursos de disciplina"
 
@@ -64,41 +62,35 @@ msgstr "Recursos de disciplina"
 #: components/AppResources/Create.tsx:96
 #: components/SchemaConfig/Field.tsx:72
 #: components/WebLinks/Definition.tsx:49
-#, fuzzy
 msgid "type"
 msgstr "Tipo"
 
 #. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:236
-#, fuzzy
 msgid "userTypes"
 msgstr "Tipos de usuarios"
 
 #. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
 #: components/AppResources/Aside.tsx:321
 #: components/AppResources/index.tsx:54
-#, fuzzy
 msgid "resources"
 msgstr "Recursos"
 
 #. Used in: Components > App Resources > Aside
 #: components/AppResources/Aside.tsx:264
-#, fuzzy
 msgid "subCategories"
 msgstr "Subcategorías"
 
 #. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 #: components/AppResources/Aside.tsx:331
 #: components/Router/Routes.tsx:259
-#, fuzzy
 msgid "addResource"
 msgstr "Agregar recurso"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:30
-#, fuzzy
 msgid "appResource"
-msgstr "Recurso de la aplicación"
+msgstr "Recursos de la aplicación"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:128
@@ -108,38 +100,32 @@ msgstr "Fuente de exportación RSS"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:102
-#, fuzzy
 msgid "exports"
 msgstr "Exportaciones"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:136
-#, fuzzy
 msgid "expressSearchConfig"
 msgstr "Configuración de búsqueda rápida"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:144
-#, fuzzy
 msgid "typeSearches"
 msgstr "Búsquedas de tipos"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:152
-#, fuzzy
 msgid "webLinks"
 msgstr "Enlaces web"
 
 #. Used in: Components > App Resources > Types ⬤ Components > Schema Config > Format
 #: components/AppResources/types.tsx:160
 #: components/SchemaConfig/Format.tsx:100
-#, fuzzy
 msgid "uiFormatters"
 msgstr "Formateadores de campos"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:168
-#, fuzzy
 msgid "dataObjectFormatters"
 msgstr "Formateadores de registros"
 
@@ -147,7 +133,6 @@ msgstr "Formateadores de registros"
 #: components/Formatters/Aggregator.tsx:69
 #: components/Formatters/Element.tsx:128
 #: components/Formatters/Fields.tsx:287
-#, fuzzy
 msgid "formatter"
 msgstr "Formato de tabla"
 
@@ -163,7 +148,6 @@ msgstr ""
 
 #. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:129
-#, fuzzy
 msgid "aggregator"
 msgstr "Agregación de tablas"
 
@@ -180,25 +164,21 @@ msgstr ""
 
 #. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:28
-#, fuzzy
 msgid "formattedResource"
 msgstr "Recurso formateado"
 
 #. Used in: Components > Formatters > List
 #: components/Formatters/List.tsx:66
-#, fuzzy
 msgid "availableFormatters"
 msgstr "Formatos de tabla disponibles"
 
 #. Used in: Components > Formatters > List
 #: components/Formatters/List.tsx:67
-#, fuzzy
 msgid "availableAggregators"
 msgstr "Agregaciones de tablas disponibles"
 
 #. Used in: Components > Web Links > List
 #: components/WebLinks/List.tsx:24
-#, fuzzy
 msgid "availableWebLink"
 msgstr "Enlaces web disponibles"
 
