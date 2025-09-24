@@ -1,0 +1,121 @@
+{
+  "tree": {
+    "treedef": {
+      "levels": [
+        {
+          "name": "Life",
+          "enforced": true,
+          "infullname": false,
+          "rank": 0,
+          "locale": { "lang": "pt", "text": "Vida" }
+        },
+        {
+          "name": "Kingdom",
+          "enforced": true,
+          "infullname": false,
+          "rank": 10,
+          "locale": { "lang": "pt", "text": "Reino" }
+        },
+        {
+          "name": "Phylum",
+          "enforced": true,
+          "infullname": false,
+          "rank": 30,
+          "locale": { "lang": "pt", "text": "Filo" }
+        },
+        {
+          "name": "Class",
+          "enforced": true,
+          "infullname": false,
+          "rank": 60,
+          "locale": { "lang": "pt", "text": "Classe" }
+        },
+        {
+          "name": "Subclass",
+          "enforced": false,
+          "infullname": false,
+          "rank": 70,
+          "locale": { "lang": "pt", "text": "Subclasse" }
+        },
+        {
+          "name": "Superorder",
+          "enforced": false,
+          "infullname": false,
+          "rank": 90,
+          "locale": { "lang": "pt", "text": "Superordem" }
+        },
+        {
+          "name": "Order",
+          "enforced": true,
+          "infullname": false,
+          "rank": 100,
+          "locale": { "lang": "pt", "text": "Ordem" }
+        },
+        {
+          "name": "Suborder",
+          "enforced": false,
+          "infullname": false,
+          "rank": 110,
+          "locale": { "lang": "pt", "text": "Subordem" }
+        },
+        {
+          "name": "Family",
+          "enforced": true,
+          "infullname": false,
+          "rank": 140,
+          "locale": { "lang": "pt", "text": "Família" }
+        },
+        {
+          "name": "Subfamily",
+          "enforced": false,
+          "infullname": false,
+          "rank": 150,
+          "locale": { "lang": "pt", "text": "Subamília" }
+        },
+        {
+          "name": "Tribe",
+          "enforced": false,
+          "infullname": false,
+          "rank": 160,
+          "locale": { "lang": "pt", "text": "Tribo" }
+        },
+        {
+          "name": "Subtribe",
+          "enforced": false,
+          "infullname": false,
+          "rank": 170,
+          "locale": { "lang": "pt", "text": "Subtribo" }
+        },
+        {
+          "name": "Genus",
+          "enforced": true,
+          "infullname": true,
+          "rank": 180,
+          "locale": { "lang": "pt", "text": "Género" }
+        },
+        {
+          "name": "Subgenus",
+          "enforced": false,
+          "infullname": false,
+          "rank": 190,
+          "locale": { "lang": "pt", "text": "Subgénero" }
+        },
+        {
+          "name": "Species",
+          "enforced": true,
+          "infullname": true,
+          "rank": 220,
+          "locale": { "lang": "pt", "text": "Espécie" }
+        },
+        {
+          "name": "Subspecies",
+          "enforced": false,
+          "infullname": true,
+          "rank": 230,
+          "locale": { "lang": "pt", "text": "Subespécie" }
+        }
+      ]
+    },
+    "nodes": []
+  }
+}
