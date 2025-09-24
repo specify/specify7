@@ -1,0 +1,416 @@
+{
+  "picklists": [
+    {
+      "name": "Division",
+      "issystem": true,
+      "type": 1,
+      "tablename": "division",
+      "formatter": "Division",
+      "readonly": true,
+      "sizelimit": -1,
+      "items": []
+    },
+    {
+      "name": "Department",
+      "issystem": true,
+      "type": 2,
+      "tablename": "accession",
+      "fieldname": "text1",
+      "readonly": true,
+      "sizelimit": -1,
+      "items": []
+    },
+    {
+      "name": "PrepType",
+      "issystem": true,
+      "type": 1,
+      "tablename": "preptype",
+      "formatter": "PrepType",
+      "readonly": true,
+      "sizelimit": -1,
+      "items": []
+    },
+    {
+      "name": "Discipline",
+      "issystem": true,
+      "type": 1,
+      "tablename": "discipline",
+      "formatter": "Discipline",
+      "readonly": true,
+      "sizelimit": -1,
+      "items": []
+    },
+    {
+      "name": "PermitType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "US Dept Wildlife", "value": "udw" },
+        { "title": "State", "value": "state" },
+        { "title": "International", "value": "int" },
+        { "title": "Federal", "value": "fed" },
+        { "title": "no data", "value": "no data" }
+      ]
+    },
+    {
+      "name": "LoanAgentRole",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 12,
+      "items": [
+        { "title": "Borrower", "value": "borrower" },
+        { "title": "Benefactor", "value": "benefactor" },
+        { "title": "Contributor", "value": "contributor" },
+        { "title": "Donor", "value": "donor" },
+        { "title": "Guest", "value": "guest" },
+        { "title": "Other", "value": "other" },
+        { "title": "Preparer", "value": "preparer" },
+        { "title": "Receiver", "value": "receiver" },
+        { "title": "Sponsor", "value": "sponsor" },
+        { "title": "Staff", "value": "staff" },
+        { "title": "Student", "value": "student" }
+      ]
+    },
+    {
+      "name": "BorrowRole",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 12,
+      "items": [
+        { "title": "Borrower", "value": "borrower" },
+        { "title": "Benefactor", "value": "benefactor" },
+        { "title": "Contributor", "value": "contributor" },
+        { "title": "Donor", "value": "donor" },
+        { "title": "Guest", "value": "guest" },
+        { "title": "Other", "value": "other" },
+        { "title": "Preparer", "value": "preparer" },
+        { "title": "Receiver", "value": "receiver" },
+        { "title": "Sponsor", "value": "sponsor" },
+        { "title": "Staff", "value": "staff" },
+        { "title": "Student", "value": "student" }
+      ]
+    },
+    {
+      "name": "AccessionStatus",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 3,
+      "items": [
+        { "title": "No Data", "value": "nodata" },
+        { "title": "In Process", "value": "inprocess" },
+        { "title": "Complete", "value": "complete" }
+      ]
+    },
+    {
+      "name": "ShipmentMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "DHL", "value": "dhl" },
+        { "title": "Fed Ex", "value": "fedex" },
+        { "title": "By Hand", "value": "hand" },
+        { "title": "UPS", "value": "ups" },
+        { "title": "USPS", "value": "usps" }
+      ]
+    },
+    {
+      "name": "AccessionType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 2,
+      "items": [
+        { "title": "Gift", "value": "gift" },
+        { "title": "Collection", "value": "cln" },
+        { "title": "Field Work", "value": "field_work" }
+      ]
+    },
+    {
+      "name": "AgentVariant",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": -1,
+      "items": [
+        { "title": "Variant", "value": "0" },
+        { "title": "Vernacular", "value": "1" },
+        { "title": "Author", "value": "2" },
+        { "title": "Author Abbrev.", "value": "3" },
+        { "title": "Label Name", "value": "4" }
+      ]
+    },
+    {
+      "name": "AccessionRole",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "Collector", "value": "collector" },
+        { "title": "Staff", "value": "staff" },
+        { "title": "Donor", "value": "donor" },
+        { "title": "Reviewer", "value": "reviewer" },
+        { "title": "Receiver", "value": "receiver" }
+      ]
+    },
+    {
+      "name": "ContainerType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "None", "value": "0" },
+        { "title": "Folder", "value": "1" },
+        { "title": "Sheet", "value": "2" },
+        { "title": "Specimen", "value": "3" }
+      ]
+    },
+    {
+      "name": "ReferenceWorkType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 6,
+      "tablename": "referencework",
+      "fieldname": "referenceWorkType",
+      "items": [
+        { "title": "Book", "value": "0" },
+        { "title": "Electronic Media", "value": "1" },
+        { "title": "Paper", "value": "2" },
+        { "title": "Technical Report", "value": "3" },
+        { "title": "Thesis", "value": "4" },
+        { "title": "Section in Book", "value": "5" }
+      ]
+    },
+    {
+      "name": "TaxonLabelFormatter",
+      "issystem": true,
+      "type": 0,
+      "readonly": false,
+      "sizelimit": 500,
+      "items": [
+        { "title": "%G %S", "value": "%G %S" },
+        { "title": "%G %S (%A1 ex. %A2)", "value": "%G %S (%A1 ex. %A2)" }
+      ]
+    },
+    {
+      "name": "AgentTitles",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 6,
+      "items": [
+        { "title": "Asst. Director", "value": "asstdir" },
+        { "title": "Curator", "value": "curator" },
+        { "title": "Mr.", "value": "mr" },
+        { "title": "Mrs.", "value": "mrs" },
+        { "title": "Ms.", "value": "ms" },
+        { "title": "Dr.", "value": "dr" }
+      ]
+    },
+    {
+      "name": "NameUsages",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 100,
+      "items": [
+        { "title": "Shelved By", "value": "shelved by" },
+        { "title": "Flora of Kansas", "value": "flora of kansas" }
+      ]
+    },
+    {
+      "name": "TreatmentType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "Bug Room", "value": "bugroom" },
+        { "title": "CO2", "value": "co2" }
+      ]
+    },
+    {
+      "name": "TypeOfAddr",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "tablename": "address",
+      "sizelimit": 2,
+      "items": [
+        { "title": "Home", "value": "home" },
+        { "title": "Work", "value": "work" }
+      ]
+    },
+    {
+      "name": "TypeStatus",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": -1,
+      "sort": 2,
+      "items": [
+        { "title": "None", "value": "|null|" },
+        { "title": "Allolectotype", "value": "allolectotype" },
+        { "title": "Alloneotype", "value": "alloneotype" },
+        { "title": "Allotype", "value": "allotype" },
+        { "title": "Cotype", "value": "cotype" },
+        { "title": "Epitype", "value": "epitype" },
+        { "title": "Ex Epitype", "value": "exepitype" },
+        { "title": "Ex Holotype", "value": "exholotype" },
+        { "title": "Ex Isotype", "value": "exisotype" },
+        { "title": "Ex Lectotype", "value": "exlectotype" },
+        { "title": "Ex Neotype", "value": "exneotype" },
+        { "title": "Ex Paratype", "value": "exparatype" },
+        { "title": "Ex Syntype", "value": "exsyntype" },
+        { "title": "Ex Type", "value": "extype" },
+        { "title": "Hapantotype", "value": "hapantotype" },
+        { "title": "Holotype", "value": "holotype" },
+        { "title": "Iconotype", "value": "iconotype" },
+        { "title": "Isolectotype", "value": "isolectotype" },
+        { "title": "Isoneotype", "value": "isoneotype" },
+        { "title": "Isosyntype", "value": "isosyntype" },
+        { "title": "Isotype", "value": "isotype" },
+        { "title": "Lectotype", "value": "lectotype" },
+        { "title": "Neotype", "value": "neotype" },
+        { "title": "Paralectotype", "value": "paralectotype" },
+        { "title": "Paraneotype", "value": "paraneotype" },
+        { "title": "Paratype", "value": "paratype" },
+        { "title": "Plastoholotype", "value": "plastoholotype" },
+        { "title": "Plastoisotype", "value": "plastoisotype" },
+        { "title": "Plastolectotype", "value": "plastolectotype" },
+        { "title": "Plastoneotype", "value": "plastoneotype" },
+        { "title": "Plastoparatype", "value": "plastoparatype" },
+        { "title": "Plastosyntype", "value": "plastosyntype" },
+        { "title": "Plastotype", "value": "plastotype" },
+        { "title": "Secondary Type", "value": "decondaryyype" },
+        { "title": "Supplementary Type", "value": "supplementaryyype" },
+        { "title": "Syntype", "value": "syntype" },
+        { "title": "Topotype", "value": "topotype" },
+        { "title": "Type", "value": "type" }
+      ]
+    },
+    {
+      "name": "NumberingScheme",
+      "issystem": true,
+      "type": 1,
+      "tablename": "autonumberingscheme",
+      "formatter": "AutoNumberingScheme",
+      "readonly": true,
+      "sizelimit": -1,
+      "items": []
+    },
+    {
+      "name": "MaterialSample",
+      "type": 0,
+      "tablename": "none",
+      "readonly": true,
+      "sizelimit": 50,
+      "issystem": false,
+      "sort": 1,
+      "timestampCreated": "2017-08-30 12:22:23.0",
+      "timestampModified": "2017-08-30 12:22:23.0",
+      "version": 1,
+      "items": [
+        {
+          "title": "Extract",
+          "value": "Extract",
+          "ordinal": 0,
+          "timestampCreated": "2017-08-30 12:22:23.0",
+          "timestampModified": "2017-08-30 12:22:23.0",
+          "version": 0
+        }
+      ]
+    },
+    {
+      "name": "MoleculeType",
+      "type": 0,
+      "tablename": "none",
+      "readonly": false,
+      "sizelimit": 20,
+      "issystem": false,
+      "sort": 1,
+      "timestampCreated": "2017-08-30 12:22:46.0",
+      "timestampModified": "2017-08-30 12:22:46.0",
+      "version": 1,
+      "items": []
+    },
+    {
+      "name": "DeaccessionType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "Gift", "value": "Gift" },
+        { "title": "Destructive Sampling", "value": "Destructive Sampling" },
+        { "title": "Exchange", "value": "Exchange" },
+        { "title": "Lost", "value": "Lost" }
+      ]
+    },
+    {
+      "name": "DeaccessionStatus",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 3,
+      "items": [
+        { "title": "No Data", "value": "No Data" },
+        { "title": "In Process", "value": "In Process" },
+        { "title": "Complete", "value": "Complete" }
+      ]
+    },
+    {
+      "name": "DeaccessionAgentRole",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 12,
+      "items": [
+        { "title": "Approver", "value": "Approver" },
+        { "title": "Other", "value": "Other" },
+        { "title": "Preparer", "value": "Preparer" },
+        { "title": "Receiver", "value": "Receiver" },
+        { "title": "Sponsor", "value": "Sponsor" },
+        { "title": "Staff", "value": "Staff" },
+        { "title": "Student", "value": "Student" }
+      ]
+    },
+    {
+      "name": "DisposalAgentRole",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 12,
+      "items": [
+        { "title": "Approver", "value": "Approver" },
+        { "title": "Other", "value": "Other" },
+        { "title": "Preparer", "value": "Preparer" },
+        { "title": "Receiver", "value": "Receiver" },
+        { "title": "Sponsor", "value": "Sponsor" },
+        { "title": "Staff", "value": "Staff" },
+        { "title": "Student", "value": "Student" }
+      ]
+    },
+    {
+      "name": "DisposalType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 3,
+      "items": [
+        { "title": "Destroyed", "value": "Destroyed" },
+        { "title": "Destructive Sampling", "value": "Destructive Sampling" },
+        { "title": "Lost", "value": "lost" }
+      ]
+    }
+  ]
+}
