@@ -9,7 +9,12 @@ type ResourceConfig = {
 type FieldConfig = {
   readonly name: string;
   readonly label: string;
-  readonly type?: 'boolean' | 'password' | 'repeat-password' | 'select' | 'text';
+  readonly type?:
+    | 'boolean'
+    | 'password'
+    | 'repeat-password'
+    | 'select'
+    | 'text';
   readonly required?: boolean;
   readonly description?: string;
   readonly options?: RA<string>;
@@ -50,24 +55,29 @@ export const resources: RA<ResourceConfig> = [
       {
         name: 'name',
         label: 'Name',
-        description: 'The full, official name of the institution (e.g., "University of Kansas Biodiversity Institute").',
+        description:
+          'The full, official name of the institution (e.g., "University of Kansas Biodiversity Institute").',
         required: true,
       },
-      { name: 'code',
+      {
+        name: 'code',
         label: 'Code',
-        description: 'A short, unique code or acronym for the institution (e.g., "KUBI").',
+        description:
+          'A short, unique code or acronym for the institution (e.g., "KUBI").',
         required: true,
       },
       {
         name: 'isAccessionsGlobal',
         label: 'Define Accession Globally',
-        description: 'Global scope allows you to share Accessions between all divisions. Divisional scope ensures Accessions are specific to each division.',
+        description:
+          'Global scope allows you to share Accessions between all divisions. Divisional scope ensures Accessions are specific to each division.',
         type: 'boolean',
       },
       {
         name: 'isSingleGeographyTree',
         label: 'Use Single Geography Tree',
-        description: 'A global geography tree is shared by all disciplines. Otherwise, geography trees are managed separately within each discipline.',
+        description:
+          'A global geography tree is shared by all disciplines. Otherwise, geography trees are managed separately within each discipline.',
         type: 'boolean',
       },
     ],
@@ -112,25 +122,26 @@ export const resources: RA<ResourceConfig> = [
     resourceName: 'SpecifyUser',
     endpoint: '/setup_tool/specifyuser/create/',
     fields: [
-      { 
+      {
         name: 'name',
         label: 'Username',
-        description: 'The username for the primary administrator account (e.g., "spadmin").',
-        required: true
+        description:
+          'The username for the primary administrator account (e.g., "spadmin").',
+        required: true,
       },
       {
         name: 'password',
         label: 'Password',
         description: 'The password for the account.',
         type: 'password',
-        required: true
+        required: true,
       },
       {
         name: 'confirmPassword',
         label: 'Confirm Password',
         description: 'Must match the password entered above.',
         type: 'repeat-password',
-        required: true
+        required: true,
       },
     ],
   },

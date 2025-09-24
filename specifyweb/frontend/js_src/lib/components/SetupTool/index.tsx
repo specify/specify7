@@ -1,16 +1,16 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
+import { setupToolText } from '../../localization/setupTool';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
 import { Container, H2, H3 } from '../Atoms';
-import type { SetupProgress } from '../Login';
-import { setupToolText } from '../../localization/setupTool';
-import { Input, Label, Form, Select } from '../Atoms/Form';
+import { Form, Input, Label, Select } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import { resources } from "./setupResources";
 import { LoadingContext } from '../Core/Contexts';
-import type { LocalizedString } from 'typesafe-i18n';
+import type { SetupProgress } from '../Login';
+import { resources } from "./setupResources";
 
 type ResourceFormData = Record<string, any>;
 
@@ -135,18 +135,16 @@ export function SetupTool({
             </Label.Block>
           </div>
         ) : (
-          <>
-            <Label.Block title={description}>
+          <Label.Block title={description}>
               {label}
               <Input.Generic
+                name={name}
                 required={required}
                 type={type === 'password' ? 'password' : 'text'}
-                name={name}
                 value={formData[name] || ''}
                 onValueChange={(value) => handleChange(name, value)}
               />
             </Label.Block>
-          </>
         )}
       </div>
     ));
