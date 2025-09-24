@@ -1,0 +1,93 @@
+{
+  "containers": [
+    {
+      "name": "collectionobjectattribute",
+      "isHidden": false,
+      "version": 0,
+      "isSystem": false,
+      "schemaType": 0,
+      "items": [
+        {
+          "name": "text1",
+          "pickListName": "BiologicalSex",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "names": [{ "language": "en", "version": 0, "text": "Sex" }],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text2",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "names": [{ "language": "en", "version": 0, "text": "Weight" }],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text3",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "names": [
+            { "language": "en", "version": 0, "text": "ReproCondition" }
+          ],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text4",
+          "pickListName": "BiologicalStage",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "names": [{ "language": "en", "version": 0, "text": "Stage" }],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text5",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "names": [{ "language": "en", "version": 0, "text": "Head Length" }],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text6",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "names": [{ "language": "en", "version": 0, "text": "Body Length" }],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text7",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "names": [{ "language": "en", "version": 0, "text": "Total Length" }],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text8",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "names": [
+            { "language": "en", "version": 0, "text": "# Shark Attacks" }
+          ],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        }
+      ],
+      "names": [],
+      "descs": []
+    }
+  ]
+}
