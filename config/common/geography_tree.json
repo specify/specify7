@@ -1,0 +1,69 @@
+{
+  "geography_tree": {
+    "treedef": {
+      "levels": [
+        {
+          "name": "Earth",
+          "enforced": true,
+          "infullname": false,
+          "rank": 0,
+          "locale": {
+            "lang": "pt",
+            "country": "",
+            "var": "",
+            "text": "Terra"
+          }
+        },
+        {
+          "name": "Continent",
+          "enforced": true,
+          "infullname": false,
+          "rank": 100,
+          "locale": {
+            "lang": "pt",
+            "country": "",
+            "var": "",
+            "text": "Continente"
+          }
+        },
+        {
+          "name": "Country",
+          "enforced": true,
+          "infullname": false,
+          "rank": 200,
+          "locale": {
+            "lang": "pt",
+            "country": "",
+            "var": "",
+            "text": "País"
+          }
+        },
+        {
+          "name": "State",
+          "enforced": true,
+          "infullname": false,
+          "rank": 300,
+          "locale": {
+            "lang": "pt",
+            "country": "",
+            "var": "",
+            "text": "Estado"
+          }
+        },
+        {
+          "name": "County",
+          "enforced": true,
+          "infullname": false,
+          "rank": 400,
+          "locale": {
+            "lang": "pt",
+            "country": "",
+            "var": "",
+            "text": "Distrito"
+          }
+        }
+      ]
+    },
+    "nodes": []
+  }
+}
