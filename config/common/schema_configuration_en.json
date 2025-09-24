@@ -1,0 +1,136 @@
+{
+  "spexportschema": {
+    "items": {
+      "description": {
+        "format": null,
+        "ishidden": true,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null,
+        "name": "Description",
+        "desc": "description"
+      },
+      "timestampmodified": {
+        "format": null,
+        "ishidden": true,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null,
+        "name": "Timestamp Modified",
+        "desc": "timestampModified"
+      },
+      "discipline": {
+        "format": null,
+        "ishidden": true,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null,
+        "name": "Discipline",
+        "desc": "discipline"
+      },
+      "spexportschemamappings": {
+        "format": null,
+        "ishidden": true,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null,
+        "name": "Sp Export Schema Mappings",
+        "desc": "spExportSchemaMappings"
+      },
+      "spexportschemaitems": {
+        "format": null,
+        "ishidden": true,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null,
+        "name": "Sp Export Schema Items",
+        "desc": "spExportSchemaItems"
+      },
+      "version": {
+        "format": null,
+        "ishidden": true,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null,
+        "name": "Version",
+        "desc": "version"
+      },
+      "modifiedbyagent": {
+        "format": null,
+        "ishidden": true,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null,
+        "name": "Modified By Agent",
+        "desc": "modifiedByAgent"
+      },
+      "schemaname": {
+        "format": null,
+        "ishidden": true,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null,
+        "name": "Schema Name",
+        "desc": "schemaName"
+      },
+      "schemaversion": {
+        "format": null,
+        "ishidden": true,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null,
+        "name": "Schema Version",
+        "desc": "schemaVersion"
+      },
+      "timestampcreated": {
+        "format": null,
+        "ishidden": true,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null,
+        "name": "Timestamp Created",
+        "desc": "timestampCreated"
+      },
+      "createdbyagent": {
+        "format": null,
+        "ishidden": true,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null,
+        "name": "Created By Agent",
+        "desc": "createdByAgent"
+      }
+    },
+    "format": null,
+    "ishidden": false,
+    "isuiformatter": null,
+    "picklistname": null,
+    "type": null,
+    "aggregator": null,
+    "defaultui": null,
+    "name": "Sp Export Schema",
+    "desc": "System Table:"
+  }
+}

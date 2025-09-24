@@ -1,0 +1,136 @@
+{
+  "spexportschema": {
+    "items": {
+      "description": {
+        "name": "Опис",
+        "desc": "description",
+        "ishidden": true,
+        "format": null,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null
+      },
+      "timestampmodified": {
+        "name": "Дата редагування",
+        "desc": "timestampModified",
+        "ishidden": true,
+        "format": null,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null
+      },
+      "discipline": {
+        "name": "Дисципліна",
+        "desc": "discipline",
+        "ishidden": true,
+        "format": null,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null
+      },
+      "spexportschemamappings": {
+        "name": "Відображення схеми експорту sp",
+        "desc": "spExportSchemaMappings",
+        "ishidden": true,
+        "format": null,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null
+      },
+      "spexportschemaitems": {
+        "name": "Елементи схеми експорту sp",
+        "desc": "spExportSchemaItems",
+        "ishidden": true,
+        "format": null,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null
+      },
+      "version": {
+        "name": "Версія",
+        "desc": "version",
+        "ishidden": true,
+        "format": null,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null
+      },
+      "modifiedbyagent": {
+        "name": "Модифіковано агентом",
+        "desc": "modifiedByAgent",
+        "ishidden": true,
+        "format": null,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null
+      },
+      "schemaname": {
+        "name": "Ім'я схеми",
+        "desc": "schemaName",
+        "ishidden": true,
+        "format": null,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null
+      },
+      "schemaversion": {
+        "name": "Версія схеми",
+        "desc": "schemaVersion",
+        "ishidden": true,
+        "format": null,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null
+      },
+      "timestampcreated": {
+        "name": "Дата створення",
+        "desc": "timestampCreated",
+        "ishidden": true,
+        "format": null,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null
+      },
+      "createdbyagent": {
+        "name": "Створено агентом",
+        "desc": "createdByAgent",
+        "ishidden": true,
+        "format": null,
+        "isuiformatter": null,
+        "picklistname": null,
+        "type": null,
+        "isrequired": false,
+        "weblinkname": null
+      }
+    },
+    "name": "Схема експорту sp",
+    "desc": "Системна таблиця:",
+    "ishidden": false,
+    "format": null,
+    "isuiformatter": null,
+    "picklistname": null,
+    "type": null,
+    "aggregator": null,
+    "defaultui": null
+  }
+}
