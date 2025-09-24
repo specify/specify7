@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-09-21 17:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-09-24 15:02+0000\n"
+"Last-Translator: Miguel Díaz de León <migueldlm1307@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "batchEdit/es/>\n"
 "Language: es\n"
@@ -18,32 +18,27 @@ msgstr ""
 #: components/Router/OverlayRoutes.tsx:254
 #: components/WbUtils/datasetVariants.tsx:89
 #: components/WbUtils/datasetVariants.tsx:105
-#, fuzzy
 msgid "batchEdit"
 msgstr "Edición por lotes"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:550
 #: components/WbPlanView/MapperComponents.tsx:560
-#, fuzzy
 msgid "batchEditPrefs"
 msgstr "Preferencias de edición por lotes"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2072
-#, fuzzy
 msgid "numberOfRecords"
 msgstr "Número de registros seleccionados de la consulta"
 
 #. Used in: Components > Batch Edit > Query Error
 #: components/BatchEdit/QueryError.tsx:42
-#, fuzzy
 msgid "removeField"
 msgstr "Campo no compatible con la edición por lotes. Elimínelo u ocúltelo."
 
 #. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:73
-#, fuzzy
 msgid "addTreeRank"
 msgstr ""
 "Los siguientes rangos se agregarán a la consulta para permitir la edición "
@@ -51,7 +46,6 @@ msgstr ""
 
 #. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:89
-#, fuzzy
 msgid "pickTreesToFilter"
 msgstr ""
 "Los rangos seleccionados se encuentran en varios árboles. Seleccione los "
@@ -59,25 +53,21 @@ msgstr ""
 
 #. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:162
-#, fuzzy
 msgid "datasetName"
 msgstr "{queryName:string} {datePart:string}"
 
 #. Used in: Components > Batch Edit > Query Error
 #: components/BatchEdit/QueryError.tsx:24
-#, fuzzy
 msgid "errorInQuery"
 msgstr "Se encontraron los siguientes errores en la consulta"
 
 #. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:48
-#, fuzzy
 msgid "missingRanksInQuery"
 msgstr "La consulta requiere rangos adicionales para la edición por lotes"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:111
-#, fuzzy
 msgid "createUpdateDataSetInstructions"
 msgstr ""
 "Utilice el generador de consultas para crear un nuevo conjunto de datos de "
@@ -85,13 +75,11 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2095
-#, fuzzy
 msgid "showRollback"
-msgstr "Mostrar botón de reversión"
+msgstr "Mostrar botón para revertir"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2100
-#, fuzzy
 msgid "showRollbackDescription"
 msgstr ""
 "Revertir en la edición por lotes es una función experimental. Esta "
@@ -113,7 +101,6 @@ msgstr ""
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:125
-#, fuzzy
 msgid "startRevertDescription"
 msgstr ""
 "Al revertir el conjunto de datos se volverán a actualizar los valores, se "
@@ -121,7 +108,6 @@ msgstr ""
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:126
-#, fuzzy
 msgid "commitSuccessfulDescription"
 msgstr ""
 "Haga clic en el botón \"Resultados\" para ver el número de registros "
@@ -129,7 +115,6 @@ msgstr ""
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:127
-#, fuzzy
 msgid "dateSetRevertDescription"
 msgstr ""
 "Este conjunto de datos revertido se ha guardado, pero no se puede editar. "
@@ -143,7 +128,6 @@ msgstr "Comprometerse"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:129
-#, fuzzy
 msgid "beStatusCommit"
 msgstr "Estado de confirmación del conjunto de datos"
 
