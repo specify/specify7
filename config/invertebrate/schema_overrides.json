@@ -1,0 +1,219 @@
+{
+  "containers": [
+    {
+      "name": "collectingevent",
+      "isHidden": false,
+      "version": 0,
+      "isSystem": false,
+      "schemaType": 0,
+      "items": [
+        {
+          "name": "method",
+          "type": "java.lang.String",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "pickListName": "CollectingMethod",
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Method"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        }
+      ],
+      "names": [],
+      "descs": []
+    },
+    {
+      "name": "collectionobjectattribute",
+      "isHidden": false,
+      "version": 0,
+      "isSystem": false,
+      "schemaType": 0,
+      "items": [
+        {
+          "name": "text4",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "pickListName": "BiologicalStage",
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Stage"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text6",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Body Width"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text1",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "pickListName": "BiologicalSex",
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Sex"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text8",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Range of Size"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text3",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "ReproCondition"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text7",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Total Length"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text2",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Weight"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "text5",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Head Width"
+            }
+          ],
+          "descs": [
+            {
+              "reference": "../../names/str"
+            }
+          ],
+          "spExportSchemaItems": []
+        }
+      ],
+      "names": [],
+      "descs": []
+    }
+  ]
+}
