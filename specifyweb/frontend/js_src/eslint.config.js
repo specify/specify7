@@ -4,7 +4,7 @@ import globals from 'globals';
 import parser from '@typescript-eslint/parser';
 import restrictedGlobals from 'confusing-browser-globals';
 import typescript from '@typescript-eslint/eslint-plugin';
-import markdown from 'eslint-plugin-markdown';
+import markdown from '@eslint/markdown';
 import promise from 'eslint-plugin-promise';
 import sonarjs from 'eslint-plugin-sonarjs';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
