@@ -1,0 +1,127 @@
+{
+  "containers": [
+    {
+      "name": "collectionobjectattribute",
+      "isHidden": false,
+      "version": 0,
+      "isSystem": false,
+      "schemaType": 0,
+      "items": [
+        {
+          "name": "distanceUnits",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Distance Units"
+            }
+          ],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "direction",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            {
+              "language": "en",
+              "version": 0,
+              "text": "Direction"
+            }
+          ],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "bottomDistance",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            { "language": "en", "version": 0, "text": "Bottom Distance" },
+            {
+              "language": "ru",
+              "country": "RU",
+              "version": 0,
+              "text": "Нижнее расстояние"
+            },
+            {
+              "language": "uk",
+              "country": "UA",
+              "version": 0,
+              "text": "Відстань внизу"
+            }
+          ],
+          "descs": [
+            { "reference": "../../names/str" },
+            { "reference": "../../names/str[2]" },
+            { "reference": "../../names/str[3]" }
+          ],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "positionState",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            { "language": "en", "version": 0, "text": "Position State" }
+          ],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        },
+        {
+          "name": "topDistance",
+          "isHidden": false,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [{ "language": "en", "version": 0, "text": "Top Distance" }],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        }
+      ],
+      "names": [],
+      "descs": []
+    },
+    {
+      "name": "collectionobject",
+      "isHidden": false,
+      "version": 0,
+      "isSystem": false,
+      "schemaType": 0,
+      "items": [
+        {
+          "name": "collectionObjectAttribute",
+          "type": "ManyToOne",
+          "isHidden": true,
+          "isUIFormatter": false,
+          "isRequired": false,
+          "version": 0,
+          "isSystem": false,
+          "names": [
+            { "language": "en", "version": 0, "text": "Col Obj Attribute" }
+          ],
+          "descs": [{ "reference": "../../names/str" }],
+          "spExportSchemaItems": []
+        }
+      ],
+      "names": [],
+      "descs": []
+    }
+  ]
+}
