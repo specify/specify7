@@ -1,0 +1,129 @@
+{
+  "storage_tree": {
+    "treedef": {
+      "levels": [
+        {
+          "name": "Site",
+          "enforced": true,
+          "infullname": false,
+          "rank": 0,
+          "locale": {
+            "lang": "pt",
+            "country": "",
+            "var": "",
+            "text": "Sítio"
+          }
+        },
+        {
+          "name": "Building",
+          "enforced": false,
+          "infullname": false,
+          "rank": 100,
+          "locale": {
+            "lang": "pt",
+            "country": "",
+            "var": "",
+            "text": "Edifício"
+          }
+        },
+        {
+          "name": "Collection",
+          "enforced": false,
+          "infullname": false,
+          "rank": 150,
+          "locale": {
+            "lang": "pt",
+            "country": "",
+            "var": "",
+            "text": "Coleção"
+          }
+        },
+        {
+          "name": "Room",
+          "enforced": false,
+          "infullname": false,
+          "rank": 200,
+          "locale": {
+            "lang": "pt",
+            "country": "",
+            "var": "",
+            "text": "Sala"
+          }
+        },
+        {
+          "name": "Aisle",
+          "enforced": false,
+          "infullname": false,
+          "rank": 250,
+          "locale": {
+            "lang": "pt",
+            "country": "",
+            "var": "",
+            "text": "Corredor"
+          }
+        },
+        {
+          "name": "Cabinet",
+          "enforced": false,
+          "infullname": false,
+          "rank": 300,
+          "locale": {
+            "lang": "pt",
+            "country": "",
+            "var": "",
+            "text": "Armário"
+          }
+        },
+        {
+          "name": "Shelf",
+          "enforced": false,
+          "infullname": false,
+          "rank": 350,
+          "locale": {
+            "lang": "pt",
+            "country": "",
+            "var": "",
+            "text": "Estante"
+          }
+        },
+        {
+          "name": "Box",
+          "enforced": false,
+          "infullname": false,
+          "rank": 400,
+          "locale": {
+            "lang": "pt",
+            "country": "",
+            "var": "",
+            "text": "Caixa"
+          }
+        },
+        {
+          "name": "Rack",
+          "enforced": false,
+          "infullname": "Rack",
+          "rank": 450,
+          "locale": {
+            "lang": "pt",
+            "country": "",
+            "var": "",
+            "text": "Prateleira"
+          }
+        },
+        {
+          "name": "Vial",
+          "enforced": false,
+          "infullname": false,
+          "rank": 500,
+          "locale": {
+            "lang": "pt",
+            "country": "",
+            "var": "",
+            "text": "Frasco"
+          }
+        }
+      ]
+    },
+    "nodes": []
+  }
+}
