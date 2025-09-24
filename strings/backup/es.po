@@ -1,80 +1,69 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-08-27 19:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Spanish "
-"<https://hosted.weblate.org/projects/specify-7/backup/es/>\n"
+"PO-Revision-Date: 2025-09-24 15:02+0000\n"
+"Last-Translator: Miguel Díaz de León <migueldlm1307@gmail.com>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/backup/"
+"es/>\n"
 "Language: es\n"
 "Content-Type: text/plain\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.14-dev\n"
 
-#: components/Toolbar/BackupStatus.tsx:99
 #. Used in: Components > Toolbar > Backup Status
-#, fuzzy
+#: components/Toolbar/BackupStatus.tsx:99
 msgid "completed"
 msgstr "Copia de seguridad completada exitosamente."
 
-#: components/Toolbar/BackupStatus.tsx:90
 #. Used in: Components > Toolbar > Backup Status
-#, fuzzy
+#: components/Toolbar/BackupStatus.tsx:90
 msgid "failed"
 msgstr "La copia de seguridad falló."
 
-#: components/Toolbar/BackupDatabase.tsx:94
 #. Used in: Components > Toolbar > Backup Database
-#, fuzzy
+#: components/Toolbar/BackupDatabase.tsx:94
 msgid "previousFound"
 msgstr "Se encontró una copia de seguridad anterior:"
 
-#: components/Toolbar/BackupDatabase.tsx:108
 #. Used in: Components > Toolbar > Backup Database
-#, fuzzy
+#: components/Toolbar/BackupDatabase.tsx:108
 msgid "previousNone"
 msgstr ""
 "No se encontró ninguna copia de seguridad anterior. ¿Quieres iniciar una "
 "nueva?"
 
-#: components/Toolbar/BackupDatabase.tsx:96
 #. Used in: Components > Toolbar > Backup Database
-#, fuzzy
+#: components/Toolbar/BackupDatabase.tsx:96
 msgid "previousSizeMB"
 msgstr "({size:string} MB)"
 
-#: components/Toolbar/BackupDatabase.tsx:102
 #. Used in: Components > Toolbar > Backup Database
-#, fuzzy
+#: components/Toolbar/BackupDatabase.tsx:102
 msgid "lastBackupOn"
 msgstr "Esta copia de seguridad se creó el {date:string}"
 
-#: components/Toolbar/BackupDatabase.tsx:44
 #. Used in: Components > Toolbar > Backup Database
-#, fuzzy
+#: components/Toolbar/BackupDatabase.tsx:44
 msgid "checkPreviousFailed"
 msgstr "No se pudo comprobar la copia de seguridad anterior."
 
-#: components/Toolbar/BackupDatabase.tsx:62
 #. Used in: Components > Toolbar > Backup Database
-#, fuzzy
+#: components/Toolbar/BackupDatabase.tsx:62
 msgid "startFailed"
 msgstr "Error al iniciar la copia de seguridad."
 
-#: components/Notifications/NotificationRenderers.tsx:335
 #. Used in: Components > Notifications > Notification Renderers
-#, fuzzy
+#: components/Notifications/NotificationRenderers.tsx:335
 msgid "databaseBackupCompleted"
 msgstr "Copia de seguridad de la base de datos completada."
 
-#: components/Notifications/NotificationRenderers.tsx:351
 #. Used in: Components > Notifications > Notification Renderers
-#, fuzzy
+#: components/Notifications/NotificationRenderers.tsx:351
 msgid "databaseBackupFailed"
 msgstr "Error en la copia de seguridad de la base de datos."
 
-#: components/Toolbar/BackupStatus.tsx:106
 #. Used in: Components > Toolbar > Backup Status
-#, fuzzy
+#: components/Toolbar/BackupStatus.tsx:106
 msgid "compressing"
-msgstr "Apresamiento..."
+msgstr "Comprimiendo..."
