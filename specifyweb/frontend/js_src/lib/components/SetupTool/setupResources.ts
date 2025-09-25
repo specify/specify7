@@ -72,7 +72,7 @@ export const resources: RA<ResourceConfig> = [
         label: 'Address',
         type: 'object',
         description:
-          'Optional address of the institution',
+          'The address of the institution. Optional.',
         required: true,
         fields: [
           {

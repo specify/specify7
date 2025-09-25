@@ -180,7 +180,7 @@ export function SetupTool({
         // Subforms
         <>
           <div className="border border-gray-500 rounded-b p-1">
-            <H3 className="text-xl font-semibold mb-4">
+            <H3 className="text-xl font-semibold mb-4" title={description}>
               {label}
             </H3>
             {fields === undefined ? undefined : fields.map((field) => renderFormField(field, name))}
