@@ -20,8 +20,12 @@
     { "name": "skeleton", "isloanable": true },
     { "name": "x-ray", "isloanable": true }
   ],
-  "herpetology": [{ "name": "jar", "isloanable": true }],
-  "insect": [{ "name": "Pinned", "isloanable": true }],
+  "herpetology": [
+    { "name": "jar", "isloanable": true }
+  ],
+  "insect": [
+    { "name": "Pinned", "isloanable": true }
+  ],
   "invertebrate": [
     { "name": "C&S", "isloanable": true },
     { "name": "EtOH", "isloanable": true },
