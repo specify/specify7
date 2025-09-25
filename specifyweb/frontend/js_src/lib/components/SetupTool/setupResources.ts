@@ -139,7 +139,7 @@ export const resources: RA<ResourceConfig> = [
           name: 'confirmPassword',
           label: 'Confirm Password',
           description: 'Must match the password entered above.',
-        }
+        },
       },
     ],
   },

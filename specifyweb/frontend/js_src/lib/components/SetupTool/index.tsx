@@ -2,6 +2,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { setupToolText } from '../../localization/setupTool';
+import { userText } from '../../localization/user'
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
@@ -9,9 +10,8 @@ import { Container, H2, H3 } from '../Atoms';
 import { Form, Input, Label, Select } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
-import { userText } from '../../localization/user'
 import type { SetupProgress } from '../Login';
+import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
 import { resources } from "./setupResources";
 
 type ResourceFormData = Record<string, any>;
@@ -34,7 +34,7 @@ export function SetupTool({
   readonly setupProgress: SetupProgress;
 }): JSX.Element {
   const [formData, setFormData] = React.useState<ResourceFormData>({});
-  const [tempFormData, setTempFormData] = React.useState<ResourceFormData>({}); // For front-end only.
+  const [temporaryFormData, setTemporaryFormData] = React.useState<ResourceFormData>({}); // For front-end only.
 
   const initialStep = findInitialStep(setupProgress);
   const [currentStep, setCurrentStep] = React.useState(initialStep);
@@ -142,11 +142,11 @@ export function SetupTool({
             <Label.Block title={description}>
               {label}
               <Input.Generic
+                minLength={MIN_PASSWORD_LENGTH}
                 name={name}
                 required={required}
                 type='password'
                 value={formData[name] ?? ''}
-                minLength={MIN_PASSWORD_LENGTH}
                 onValueChange={(value) => handleChange(name, value)}
               />
             </Label.Block>
@@ -155,36 +155,34 @@ export function SetupTool({
               <Label.Block title={passwordRepeat.description}>
                 {passwordRepeat.label}
                 <Input.Generic
+                  minLength={MIN_PASSWORD_LENGTH}
+                  name={passwordRepeat.name}
                   required={required}
                   type='password'
-                  name={passwordRepeat.name}
-                  value={tempFormData[passwordRepeat.name] ?? ''}
-                  minLength={MIN_PASSWORD_LENGTH}
-                  onValueChange={(value) => setTempFormData((previous) => ({
+                  value={temporaryFormData[passwordRepeat.name] ?? ''}
+                  onChange={({ target }): void => {
+                    target.setCustomValidity(
+                      target.value === formData[name] ? "" : userText.passwordsDoNotMatchError()
+                    );
+                  }}
+                  onValueChange={(value) => setTemporaryFormData((previous) => ({
                     ...previous,
                     [passwordRepeat.name]: value,
                   }))}
-                  onChange={({ target }): void => {
-                    target.setCustomValidity(
-                      target.value !== formData[name] ? userText.passwordsDoNotMatchError() : ""
-                    );
-                  }}
                 />
               </Label.Block>
             )}
           </>
         ) : (
-          <>
-            <Label.Block title={description}>
+          <Label.Block title={description}>
               {label}
               <Input.Text
-                required={required}
                 name={name}
+                required={required}
                 value={formData[name] ?? ''}
                 onValueChange={(value) => handleChange(name, value)}
               />
             </Label.Block>
-          </>
         )}
       </div>
     ));
