@@ -286,15 +286,15 @@ export const interactionsText = createDictionary({
     'pt-br': '{giftTable:string} registros',
   },
   exchanges: {
-    comment: "Example: Exchange In / Exchnage Out records",
-    "en-us": "{exhangeInTable:string} / {exhangeOutTable:string} records",
-    "es-es": "{exhangeInTable:string} / {exhangeOutTable:string} registros",
-    "fr-fr":
-      "{exhangeInTable:string} / {exhangeOutTable:string} enregistrements",
-    "ru-ru": "{exhangeInTable:string} / {exhangeOutTable:string} записи",
-    "uk-ua": "Записи {exhangeInTable:string} / {exhangeOutTable:string}",
-    "de-ch": "{exhangeInTable:string} / {exhangeOutTable:string} Datensätze",
-    "pt-br": "{exhangeInTable:string} / {exhangeOutTable:string} registros",
+    comment: 'Example: Exchange In / Exchnage Out records',
+    'en-us': '{exhangeInTable:string} / {exhangeOutTable:string} records',
+    'es-es': '{exhangeInTable:string} / {exhangeOutTable:string} registros',
+    'fr-fr':
+      '{exhangeInTable:string} / {exhangeOutTable:string} enregistrements',
+    'ru-ru': '{exhangeInTable:string} / {exhangeOutTable:string} записи',
+    'uk-ua': 'Записи {exhangeInTable:string} / {exhangeOutTable:string}',
+    'de-ch': '{exhangeInTable:string} / {exhangeOutTable:string} Datensätze',
+    'pt-br': '{exhangeInTable:string} / {exhangeOutTable:string} registros',
   },
   unCataloged: {
     'en-us': 'uncataloged',
@@ -316,21 +316,21 @@ export const interactionsText = createDictionary({
     'pt-br': 'Registros retornados {tablePreparation:string}',
   },
   returnedAndSaved: {
-    comment: "Example: 2 Preparation records have been returned and saved",
-    "en-us":
-      "{count:number|formatted} {tablePreparation:string} records have been returned and saved",
-    "es-es":
-      "{count:number|formatted} {tablePreparation:string} registros han sido devueltos y guardados",
-    "fr-fr":
-      "{count:number|formatted} {tablePreparation:string} enregistrements ont été renvoyés et enregistrés",
-    "ru-ru":
-      "{count:number|formatted} {tablePreparation:string} записей были возвращены и сохранены",
-    "uk-ua":
-      "Повернуто та збережено записів {count:number|formatted} {tablePreparation:string}",
-    "de-ch":
-      "{count:number|formatted} {tablePreparation:string} Datensätze wurden zurückgegeben und gespeichert",
-    "pt-br":
-      "{count:number|formatted} {tablePreparation:string} registros foram retornados e salvos",
+    comment: 'Example: 2 Preparation records have been returned and saved',
+    'en-us':
+      '{count:number|formatted} {tablePreparation:string} records have been returned and saved',
+    'es-es':
+      '{count:number|formatted} {tablePreparation:string} registros han sido devueltos y guardados',
+    'fr-fr':
+      '{count:number|formatted} {tablePreparation:string} enregistrements ont été renvoyés et enregistrés',
+    'ru-ru':
+      '{count:number|formatted} {tablePreparation:string} записей были возвращены и сохранены',
+    'uk-ua':
+      'Повернуто та збережено записів {count:number|formatted} {tablePreparation:string}',
+    'de-ch':
+      '{count:number|formatted} {tablePreparation:string} Datensätze wurden zurückgegeben und gespeichert',
+    'pt-br':
+      '{count:number|formatted} {tablePreparation:string} registros foram retornados e salvos',
   },
   deselectAll: {
     'en-us': 'Deselect all',
@@ -380,16 +380,16 @@ export const interactionsText = createDictionary({
     'pt-br': 'Criar {table:string}',
   },
   noPreparationsWarning: {
-    "en-us":
-      "None of these objects have preparations. Would you like to continue?",
-    "de-ch":
-      "Für keines dieser Objekte liegen Vorbereitungen vor. Möchten Sie fortfahren?",
-    "es-es":
-      "Ninguno de estos objetos tiene preparaciones. ¿Quieres continuar?",
-    "fr-fr": "Aucun de ces objets n'a été préparé. Voulez-vous continuer ?",
-    "ru-ru": "Ни один из этих объектов не имеет подготовки. Хотите продолжить?",
-    "uk-ua": "Жоден з цих об'єктів не має підготовки. Бажаєте продовжити?",
-    "pt-br": "Nenhum destes objetos possui preparação. Deseja continuar?",
+    'en-us':
+      'None of these objects have preparations. Would you like to continue?',
+    'de-ch':
+      'Für keines dieser Objekte liegen Vorbereitungen vor. Möchten Sie fortfahren?',
+    'es-es':
+      'Ninguno de estos objetos tiene preparaciones. ¿Quieres continuar?',
+    'fr-fr': "Aucun de ces objets n'a été préparé. Voulez-vous continuer ?",
+    'ru-ru': 'Ни один из этих объектов не имеет подготовки. Хотите продолжить?',
+    'uk-ua': "Жоден з цих об'єктів не має підготовки. Бажаєте продовжити?",
+    'pt-br': 'Nenhum destes objetos possui preparação. Deseja continuar?',
   },
   continue: {
     'en-us': 'Continue',
