@@ -60,6 +60,10 @@ def get_tables_to_lock(collection, obj, field_names) -> set[str]:
     tables = {obj._meta.db_table, 'django_migrations', UniquenessRule._meta.db_table, 'discipline',
               scope_table._meta.db_table}
 
+    # Special case: if the table is 'component', also lock 'collectionobject'
+    if obj_table == 'component':
+        tables.add('collectionobject')
+
     rules = UniquenessRule.objects.filter(
         modelName=obj_table, discipline=collection.discipline)
 

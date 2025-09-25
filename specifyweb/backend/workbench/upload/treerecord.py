@@ -196,6 +196,7 @@ class ScopedTreeRecord(NamedTuple):
     batch_edit_pack: dict[str, Any] | None
     scoped_cotypes: Any
     cotype_column: str | None
+    component_type_column: str | None
 
     def disambiguate(self, disambiguation: DA) -> "ScopedTreeRecord":
         return (
@@ -363,6 +364,9 @@ class ScopedTreeRecord(NamedTuple):
         if result:
             return result
 
+        result = self._validate_trees_with_component_type(row, targeted_treedef_ids)
+        if result: return result
+
         return None
 
     # Handle cases where there are multiple or no treedefs
@@ -392,7 +396,6 @@ class ScopedTreeRecord(NamedTuple):
         def find_cotype_in_row(row: Row):
             if isinstance(self.cotype_column, str) and self.cotype_column in row:
                 return row[self.cotype_column]
-
             return None
 
         def get_cotype_tree_def(cotype_name: str):
@@ -411,8 +414,32 @@ class ScopedTreeRecord(NamedTuple):
         # Validation for multiple ranks is done before this in _handle_multiple_or_no_treedefs
         if len(treedefs_in_row) > 0 and cotype_treedef_id == list(treedefs_in_row)[0]:
             return None
+        return self, WorkBenchParseFailure('invalidCotype', {}, self.cotype_column)
 
-        return self, WorkBenchParseFailure("invalidCotype", {}, self.cotype_column)
+    # Ensure component type has same taxontreedef for ranks in row
+    def _validate_trees_with_component_type(self, row: Row, treedefs_in_row: set[int]):
+        if self.name.lower() != "taxon" or self.component_type_column is None:
+            return None
+        
+        def find_component_type_in_row(row: Row):
+            if isinstance(self.component_type_column, str) and self.component_type_column in row:
+                return row[self.component_type_column]
+            return None
+        def get_component_type_tree_def(component_type_name: str):
+            component_types = self.scoped_cotypes.filter(name=component_type_name)
+            return component_types[0].taxontreedef.id if len(component_types) > 0 else None
+    
+        component_type_value = find_component_type_in_row(row)
+        if not component_type_value: return None
+
+        component_type_treedef_id = get_component_type_tree_def(component_type_value)
+        if not component_type_treedef_id: return None
+
+        # Check only the first treedef assuming all ranks belong to same tree
+        # Validation for multiple ranks is done before this in _handle_multiple_or_no_treedefs
+        if len(treedefs_in_row) > 0 and component_type_treedef_id == list(treedefs_in_row)[0]:
+            return None
+        return self, WorkBenchParseFailure('invalidComponentType', {}, self.component_type_column)
 
     def bind(
         self,
