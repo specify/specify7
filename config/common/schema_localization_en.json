@@ -4406,7 +4406,7 @@
 			},
 			"number1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -4417,7 +4417,7 @@
 			},
 			"number2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -4450,7 +4450,7 @@
 			},
 			"text1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -4461,7 +4461,7 @@
 			},
 			"text2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -4549,7 +4549,7 @@
 			},
 			"yesno1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -4560,7 +4560,7 @@
 			},
 			"yesno2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -5496,7 +5496,7 @@
 			},
 			"yesno1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": "java.lang.Boolean",
@@ -5898,7 +5898,7 @@
 			},
 			"text1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -5909,7 +5909,7 @@
 			},
 			"text2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8391,7 +8391,7 @@
 			},
 			"number1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8402,7 +8402,7 @@
 			},
 			"number10": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8413,7 +8413,7 @@
 			},
 			"number11": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8424,7 +8424,7 @@
 			},
 			"number12": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8435,7 +8435,7 @@
 			},
 			"number13": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8446,7 +8446,7 @@
 			},
 			"number2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8457,7 +8457,7 @@
 			},
 			"number3": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8468,7 +8468,7 @@
 			},
 			"number4": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8479,7 +8479,7 @@
 			},
 			"number5": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8490,7 +8490,7 @@
 			},
 			"number6": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8501,7 +8501,7 @@
 			},
 			"number7": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8512,7 +8512,7 @@
 			},
 			"number8": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8523,7 +8523,7 @@
 			},
 			"number9": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8545,7 +8545,7 @@
 			},
 			"text1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8556,7 +8556,7 @@
 			},
 			"text10": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8567,7 +8567,7 @@
 			},
 			"text11": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8578,7 +8578,7 @@
 			},
 			"text12": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8589,7 +8589,7 @@
 			},
 			"text13": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8600,7 +8600,7 @@
 			},
 			"text14": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8611,7 +8611,7 @@
 			},
 			"text15": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8622,7 +8622,7 @@
 			},
 			"text16": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8633,7 +8633,7 @@
 			},
 			"text17": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8644,7 +8644,7 @@
 			},
 			"text2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8655,7 +8655,7 @@
 			},
 			"text3": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8666,7 +8666,7 @@
 			},
 			"text4": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8677,7 +8677,7 @@
 			},
 			"text5": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8688,7 +8688,7 @@
 			},
 			"text6": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8699,7 +8699,7 @@
 			},
 			"text7": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8710,7 +8710,7 @@
 			},
 			"text8": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8721,7 +8721,7 @@
 			},
 			"text9": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8765,7 +8765,7 @@
 			},
 			"yesno1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8776,7 +8776,7 @@
 			},
 			"yesno2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8787,7 +8787,7 @@
 			},
 			"yesno3": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8798,7 +8798,7 @@
 			},
 			"yesno4": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -8809,7 +8809,7 @@
 			},
 			"yesno5": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -11373,7 +11373,7 @@
 			},
 			"text1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -11494,7 +11494,7 @@
 			},
 			"text2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -11615,7 +11615,7 @@
 			},
 			"text3": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -11637,7 +11637,7 @@
 			},
 			"text31": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -11648,7 +11648,7 @@
 			},
 			"text32": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -11659,7 +11659,7 @@
 			},
 			"text33": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -11670,7 +11670,7 @@
 			},
 			"text34": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -11681,7 +11681,7 @@
 			},
 			"text35": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -11692,7 +11692,7 @@
 			},
 			"text36": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -11703,7 +11703,7 @@
 			},
 			"text37": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -11714,7 +11714,7 @@
 			},
 			"text38": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -11725,7 +11725,7 @@
 			},
 			"text39": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -11736,7 +11736,7 @@
 			},
 			"text4": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -11747,7 +11747,7 @@
 			},
 			"text40": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -11758,7 +11758,7 @@
 			},
 			"text5": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -11769,7 +11769,7 @@
 			},
 			"text6": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -11780,7 +11780,7 @@
 			},
 			"text7": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -11791,7 +11791,7 @@
 			},
 			"text8": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -12455,7 +12455,7 @@
 			},
 			"text3": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": null,
 				"picklistname": null,
 				"type": "java.lang.String",
@@ -13704,7 +13704,7 @@
 			},
 			"number1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -14045,7 +14045,7 @@
 			},
 			"text1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -14518,7 +14518,7 @@
 			},
 			"yesno1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -14639,7 +14639,7 @@
 			},
 			"yesno2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -14661,7 +14661,7 @@
 			},
 			"yesno3": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -15230,7 +15230,7 @@
 			},
 			"text1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -15241,7 +15241,7 @@
 			},
 			"text2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -15285,7 +15285,7 @@
 			},
 			"yesno1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -15296,7 +15296,7 @@
 			},
 			"yesno2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -16571,7 +16571,7 @@
 			},
 			"number1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -16582,7 +16582,7 @@
 			},
 			"number2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -16615,7 +16615,7 @@
 			},
 			"text1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -16626,7 +16626,7 @@
 			},
 			"text2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -16714,7 +16714,7 @@
 			},
 			"yesno1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -16725,7 +16725,7 @@
 			},
 			"yesno2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -21944,7 +21944,7 @@
 			},
 			"number1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -21977,7 +21977,7 @@
 			},
 			"text1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -21988,7 +21988,7 @@
 			},
 			"text2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -22533,7 +22533,7 @@
 			},
 			"number1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -22566,7 +22566,7 @@
 			},
 			"text1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -22577,7 +22577,7 @@
 			},
 			"text2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -22812,7 +22812,7 @@
 			},
 			"number": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -22946,7 +22946,7 @@
 			},
 			"text2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -28889,6 +28889,7 @@
 				"name": "Text After",
 				"desc": "User definable"
 			},
+
 			"textbefore": {
 				"format": null,
 				"ishidden": false,
@@ -33046,7 +33047,7 @@
 			},
 			"text1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -36487,7 +36488,7 @@
 			},
 			"number1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -36630,7 +36631,7 @@
 			},
 			"number21": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -36839,7 +36840,7 @@
 			},
 			"text1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -37312,7 +37313,7 @@
 			},
 			"yesno1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -45489,6 +45490,7 @@
 				"name": "Text After",
 				"desc": "User definable"
 			},
+
 			"textbefore": {
 				"format": null,
 				"ishidden": false,
@@ -47147,7 +47149,7 @@
 			},
 			"text1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -47818,7 +47820,7 @@
 			},
 			"yesno1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -49208,6 +49210,7 @@
 				"name": "Text After",
 				"desc": "User definable"
 			},
+
 			"textbefore": {
 				"format": null,
 				"ishidden": false,
@@ -49520,7 +49523,7 @@
 			},
 			"text2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": null,
 				"picklistname": null,
 				"type": "java.lang.String",
@@ -49874,6 +49877,7 @@
 				"name": "Text After",
 				"desc": "Text After"
 			},
+
 			"textbefore": {
 				"format": null,
 				"ishidden": false,
@@ -50814,7 +50818,7 @@
 			},
 			"number1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -50825,7 +50829,7 @@
 			},
 			"number2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -50836,7 +50840,7 @@
 			},
 			"number3": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -50858,7 +50862,7 @@
 			},
 			"text1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -50869,7 +50873,7 @@
 			},
 			"text2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -50880,7 +50884,7 @@
 			},
 			"text3": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -50946,7 +50950,7 @@
 			},
 			"yesno1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -50957,7 +50961,7 @@
 			},
 			"yesno2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -50968,7 +50972,7 @@
 			},
 			"yesno3": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
