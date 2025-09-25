@@ -1,219 +1,145 @@
 {
-  "containers": [
-    {
-      "name": "collectingevent",
-      "isHidden": false,
-      "version": 0,
-      "isSystem": false,
-      "schemaType": 0,
-      "items": [
-        {
-          "name": "method",
+  "collectingevent": {
+    "items": [
+      {
+        "method": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": "CollectingMethod",
           "type": "java.lang.String",
-          "isHidden": false,
-          "isUIFormatter": false,
-          "pickListName": "CollectingMethod",
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [
-            {
-              "language": "en",
-              "version": 0,
-              "text": "Method"
-            }
-          ],
-          "descs": [
-            {
-              "reference": "../../names/str"
-            }
-          ],
-          "spExportSchemaItems": []
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Method",
+          "desc": "Method"
         }
-      ],
-      "names": [],
-      "descs": []
-    },
-    {
-      "name": "collectionobjectattribute",
-      "isHidden": false,
-      "version": 0,
-      "isSystem": false,
-      "schemaType": 0,
-      "items": [
-        {
-          "name": "text4",
-          "isHidden": false,
-          "isUIFormatter": false,
-          "pickListName": "BiologicalStage",
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [
-            {
-              "language": "en",
-              "version": 0,
-              "text": "Stage"
-            }
-          ],
-          "descs": [
-            {
-              "reference": "../../names/str"
-            }
-          ],
-          "spExportSchemaItems": []
-        },
-        {
-          "name": "text6",
-          "isHidden": false,
-          "isUIFormatter": false,
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [
-            {
-              "language": "en",
-              "version": 0,
-              "text": "Body Width"
-            }
-          ],
-          "descs": [
-            {
-              "reference": "../../names/str"
-            }
-          ],
-          "spExportSchemaItems": []
-        },
-        {
-          "name": "text1",
-          "isHidden": false,
-          "isUIFormatter": false,
-          "pickListName": "BiologicalSex",
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [
-            {
-              "language": "en",
-              "version": 0,
-              "text": "Sex"
-            }
-          ],
-          "descs": [
-            {
-              "reference": "../../names/str"
-            }
-          ],
-          "spExportSchemaItems": []
-        },
-        {
-          "name": "text8",
-          "isHidden": false,
-          "isUIFormatter": false,
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [
-            {
-              "language": "en",
-              "version": 0,
-              "text": "Range of Size"
-            }
-          ],
-          "descs": [
-            {
-              "reference": "../../names/str"
-            }
-          ],
-          "spExportSchemaItems": []
-        },
-        {
-          "name": "text3",
-          "isHidden": false,
-          "isUIFormatter": false,
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [
-            {
-              "language": "en",
-              "version": 0,
-              "text": "ReproCondition"
-            }
-          ],
-          "descs": [
-            {
-              "reference": "../../names/str"
-            }
-          ],
-          "spExportSchemaItems": []
-        },
-        {
-          "name": "text7",
-          "isHidden": false,
-          "isUIFormatter": false,
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [
-            {
-              "language": "en",
-              "version": 0,
-              "text": "Total Length"
-            }
-          ],
-          "descs": [
-            {
-              "reference": "../../names/str"
-            }
-          ],
-          "spExportSchemaItems": []
-        },
-        {
-          "name": "text2",
-          "isHidden": false,
-          "isUIFormatter": false,
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [
-            {
-              "language": "en",
-              "version": 0,
-              "text": "Weight"
-            }
-          ],
-          "descs": [
-            {
-              "reference": "../../names/str"
-            }
-          ],
-          "spExportSchemaItems": []
-        },
-        {
-          "name": "text5",
-          "isHidden": false,
-          "isUIFormatter": false,
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [
-            {
-              "language": "en",
-              "version": 0,
-              "text": "Head Width"
-            }
-          ],
-          "descs": [
-            {
-              "reference": "../../names/str"
-            }
-          ],
-          "spExportSchemaItems": []
+      }
+    ],
+    "format": null,
+    "ishidden": false,
+    "isuiformatter": null,
+    "picklistname": null,
+    "type": null,
+    "aggregator": null,
+    "defaultui": null,
+    "name": "Collecting Event",
+    "desc": "Collecting Event"
+  },
+  "collectionobjectattribute": {
+    "items": [
+      {
+        "text4": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": "BiologicalStage",
+          "type": "java.lang.String",
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Stage",
+          "desc": "Stage"
         }
-      ],
-      "names": [],
-      "descs": []
-    }
-  ]
+      },
+      {
+        "text6": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": null,
+          "type": "java.lang.String",
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Body Width",
+          "desc": "Body Width"
+        }
+      },
+      {
+        "text1": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": "BiologicalSex",
+          "type": "java.lang.String",
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Sex",
+          "desc": "Sex"
+        }
+      },
+      {
+        "text8": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": null,
+          "type": "java.lang.String",
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Range of Size",
+          "desc": "Range of Size"
+        }
+      },
+      {
+        "text3": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": null,
+          "type": "java.lang.String",
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "ReproCondition",
+          "desc": "ReproCondition"
+        }
+      },
+      {
+        "text7": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": null,
+          "type": "java.lang.String",
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Total Length",
+          "desc": "Total Length"
+        }
+      },
+      {
+        "text2": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": null,
+          "type": "java.lang.String",
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Weight",
+          "desc": "Weight"
+        }
+      },
+      {
+        "text5": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": null,
+          "type": "java.lang.String",
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Head Width",
+          "desc": "Head Width"
+        }
+      }
+    ],
+    "format": null,
+    "ishidden": false,
+    "isuiformatter": null,
+    "picklistname": null,
+    "type": null,
+    "aggregator": null,
+    "defaultui": null,
+    "name": "Collection Object Attribute",
+    "desc": "Collection Object Attribute"
+  }
 }
