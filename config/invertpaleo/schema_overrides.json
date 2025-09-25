@@ -1,127 +1,106 @@
 {
-  "containers": [
-    {
-      "name": "collectionobjectattribute",
-      "isHidden": false,
-      "version": 0,
-      "isSystem": false,
-      "schemaType": 0,
-      "items": [
-        {
-          "name": "distanceUnits",
-          "isHidden": false,
-          "isUIFormatter": false,
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [
-            {
-              "language": "en",
-              "version": 0,
-              "text": "Distance Units"
-            }
-          ],
-          "descs": [{ "reference": "../../names/str" }],
-          "spExportSchemaItems": []
-        },
-        {
-          "name": "direction",
-          "isHidden": false,
-          "isUIFormatter": false,
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [
-            {
-              "language": "en",
-              "version": 0,
-              "text": "Direction"
-            }
-          ],
-          "descs": [{ "reference": "../../names/str" }],
-          "spExportSchemaItems": []
-        },
-        {
-          "name": "bottomDistance",
-          "isHidden": false,
-          "isUIFormatter": false,
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [
-            { "language": "en", "version": 0, "text": "Bottom Distance" },
-            {
-              "language": "ru",
-              "country": "RU",
-              "version": 0,
-              "text": "Нижнее расстояние"
-            },
-            {
-              "language": "uk",
-              "country": "UA",
-              "version": 0,
-              "text": "Відстань внизу"
-            }
-          ],
-          "descs": [
-            { "reference": "../../names/str" },
-            { "reference": "../../names/str[2]" },
-            { "reference": "../../names/str[3]" }
-          ],
-          "spExportSchemaItems": []
-        },
-        {
-          "name": "positionState",
-          "isHidden": false,
-          "isUIFormatter": false,
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [
-            { "language": "en", "version": 0, "text": "Position State" }
-          ],
-          "descs": [{ "reference": "../../names/str" }],
-          "spExportSchemaItems": []
-        },
-        {
-          "name": "topDistance",
-          "isHidden": false,
-          "isUIFormatter": false,
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [{ "language": "en", "version": 0, "text": "Top Distance" }],
-          "descs": [{ "reference": "../../names/str" }],
-          "spExportSchemaItems": []
+  "collectionobjectattribute": {
+    "items": [
+      {
+        "distanceUnits": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": null,
+          "type": null,
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Distance Units",
+          "desc": "Distance Units"
         }
-      ],
-      "names": [],
-      "descs": []
-    },
-    {
-      "name": "collectionobject",
-      "isHidden": false,
-      "version": 0,
-      "isSystem": false,
-      "schemaType": 0,
-      "items": [
-        {
-          "name": "collectionObjectAttribute",
+      },
+      {
+        "direction": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": null,
+          "type": null,
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Direction",
+          "desc": "Direction"
+        }
+      },
+      {
+        "bottomDistance": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": null,
+          "type": null,
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Bottom Distance",
+          "desc": "Bottom Distance"
+        }
+      },
+      {
+        "positionState": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": null,
+          "type": null,
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Position State",
+          "desc": "Position State"
+        }
+      },
+      {
+        "topDistance": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": null,
+          "type": null,
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Top Distance",
+          "desc": "Top Distance"
+        }
+      }
+    ],
+    "format": null,
+    "ishidden": false,
+    "isuiformatter": null,
+    "picklistname": null,
+    "type": null,
+    "aggregator": null,
+    "defaultui": null,
+    "name": "Collection Object Attribute",
+    "desc": "Collection Object Attribute"
+  },
+  "collectionobject": {
+    "items": [
+      {
+        "collectionObjectAttribute": {
+          "format": null,
+          "ishidden": true,
+          "isuiformatter": false,
+          "picklistname": null,
           "type": "ManyToOne",
-          "isHidden": true,
-          "isUIFormatter": false,
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [
-            { "language": "en", "version": 0, "text": "Col Obj Attribute" }
-          ],
-          "descs": [{ "reference": "../../names/str" }],
-          "spExportSchemaItems": []
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Col Obj Attribute",
+          "desc": "Col Obj Attribute"
         }
-      ],
-      "names": [],
-      "descs": []
-    }
-  ]
+      }
+    ],
+    "format": null,
+    "ishidden": false,
+    "isuiformatter": null,
+    "picklistname": null,
+    "type": null,
+    "aggregator": null,
+    "defaultui": null,
+    "name": "Collection Object",
+    "desc": "Collection Object"
+  }
 }
