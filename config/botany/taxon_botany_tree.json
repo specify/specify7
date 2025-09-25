@@ -86,25 +86,25 @@
         "rank": 230
       },
       {
-        "name": "variety",
+        "name": "Variety",
         "enforced": false,
         "infullname": true,
         "rank": 240
       },
       {
-        "name": "subvariety",
+        "name": "Subvariety",
         "enforced": false,
         "infullname": true,
         "rank": 250
       },
       {
-        "name": "forma",
+        "name": "Forma",
         "enforced": false,
         "infullname": true,
         "rank": 260
       },
       {
-        "name": "subforma",
+        "name": "Subforma",
         "enforced": false,
         "infullname": true,
         "rank": 270
