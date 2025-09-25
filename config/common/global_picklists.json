@@ -7,7 +7,7 @@
       "tablename": "division",
       "formatter": "Division",
       "readonly": true,
-      "sizelimit": -1,
+      "sizelimit": 100,
       "items": []
     },
     {
@@ -17,7 +17,7 @@
       "tablename": "accession",
       "fieldname": "text1",
       "readonly": true,
-      "sizelimit": -1,
+      "sizelimit": 100,
       "items": []
     },
     {
@@ -27,7 +27,7 @@
       "tablename": "preptype",
       "formatter": "PrepType",
       "readonly": true,
-      "sizelimit": -1,
+      "sizelimit": 100,
       "items": []
     },
     {
@@ -37,7 +37,7 @@
       "tablename": "discipline",
       "formatter": "Discipline",
       "readonly": true,
-      "sizelimit": -1,
+      "sizelimit": 100,
       "items": []
     },
     {
@@ -125,7 +125,7 @@
       "issystem": true,
       "type": 0,
       "readonly": true,
-      "sizelimit": 2,
+      "sizelimit": 5,
       "items": [
         { "title": "Gift", "value": "gift" },
         { "title": "Collection", "value": "cln" },
@@ -137,7 +137,7 @@
       "issystem": true,
       "type": 0,
       "readonly": true,
-      "sizelimit": -1,
+      "sizelimit": 10,
       "items": [
         { "title": "Variant", "value": "0" },
         { "title": "Vernacular", "value": "1" },
@@ -255,7 +255,7 @@
       "issystem": true,
       "type": 0,
       "readonly": true,
-      "sizelimit": -1,
+      "sizelimit": 100,
       "sort": 2,
       "items": [
         { "title": "None", "value": "|null|" },
@@ -291,8 +291,6 @@
         { "title": "Plastoparatype", "value": "plastoparatype" },
         { "title": "Plastosyntype", "value": "plastosyntype" },
         { "title": "Plastotype", "value": "plastotype" },
-        { "title": "Secondary Type", "value": "decondaryyype" },
-        { "title": "Supplementary Type", "value": "supplementaryyype" },
         { "title": "Syntype", "value": "syntype" },
         { "title": "Topotype", "value": "topotype" },
         { "title": "Type", "value": "type" }
@@ -305,7 +303,7 @@
       "tablename": "autonumberingscheme",
       "formatter": "AutoNumberingScheme",
       "readonly": true,
-      "sizelimit": -1,
+      "sizelimit": 100,
       "items": []
     },
     {
@@ -316,17 +314,11 @@
       "sizelimit": 50,
       "issystem": false,
       "sort": 1,
-      "timestampCreated": "2017-08-30 12:22:23.0",
-      "timestampModified": "2017-08-30 12:22:23.0",
-      "version": 1,
       "items": [
         {
           "title": "Extract",
           "value": "Extract",
-          "ordinal": 0,
-          "timestampCreated": "2017-08-30 12:22:23.0",
-          "timestampModified": "2017-08-30 12:22:23.0",
-          "version": 0
+          "ordinal": 0
         }
       ]
     },
@@ -338,9 +330,6 @@
       "sizelimit": 20,
       "issystem": false,
       "sort": 1,
-      "timestampCreated": "2017-08-30 12:22:46.0",
-      "timestampModified": "2017-08-30 12:22:46.0",
-      "version": 1,
       "items": []
     },
     {
