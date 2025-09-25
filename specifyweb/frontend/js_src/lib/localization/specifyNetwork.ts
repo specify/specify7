@@ -62,7 +62,7 @@ export const specifyNetworkText = createDictionary({
     'en-us': 'Reported by {provider:string}',
     'de-ch': 'Gemeldet von {provider:string}',
     'es-es': 'Reportado por {provider:string}',
-    'fr-fr': 'Rapporté par {provider:string}',
+    'fr-fr': 'Signalé par {provider:string}',
     'ru-ru': 'Сообщил {provider:string}',
     'uk-ua': 'Повідомив {provider:string}',
     'pt-br': 'Reportado por {provider:string}',
@@ -100,7 +100,7 @@ export const specifyNetworkText = createDictionary({
     'es-es':
       'Los registros recogidos en iDigBio se muestran como puntos verdes redondos, excepto los de esta colección, registrados en iDigBio, que son puntos rojos redondos. Al acercarse a los puntos rojos, aparece una chincheta en forma de lágrima azul; al hacer clic en la chincheta, se ejecuta una consulta de localidad en Specify que muestra todas las especies en la base de datos actual de Specify colectadas en esa localización.',
     'fr-fr':
-      "Les occurrences enregistrées dans iDigBio sont représentées par des points verts ronds, à l'exception de celles de la collection actuelle, qui sont représentées par des points rouges ronds. Un zoom sur les points rouges fait apparaître une épingle bleue en forme de larme. Cliquer dessus exécute une requête de localité dans Specify, qui affiche toutes les espèces de la base de données Specify actuelles collectées à cet endroit.",
+      "Les occurrences enregistrées dans iDigBio sont représentées par des points verts ronds, à l'exception de celles de la collection actuelle, qui sont représentées par des points rouges ronds. Un zoom sur les points rouges fait apparaître une épingle bleue en forme de larme. Cliquer dessus exécute une requête de localité dans Specify, qui affiche toutes les espèces de la base de données Specify collectées à cet endroit.",
     'ru-ru':
       'Встречи, зарегистрированные в iDigBio, отображаются круглыми зелёными точками, за исключением случаев из текущей коллекции, зарегистрированной в iDigBio, которые обозначены круглыми красными точками. При увеличении красных точек появляется синяя каплевидная метка; нажатие на метку выполняет запрос по местоположению в Specify, который отображает все виды из текущей базы данных Specify, собранные в этом месте.',
     'uk-ua':
@@ -122,13 +122,13 @@ export const specifyNetworkText = createDictionary({
     'uk-ua':
       'Для даних GBIF окремі точки та кластери точок відображаються у вигляді шестикутників різних кольорів від жовтого до оранжевого та червоного. Темно-червоні шестикутники відповідають найщільнішому розподілу зібраних зразків цього виду.',
     'pt-br':
-      'Para dados do GBIF, pontos individuais e grupos de pontos são mostrados como hexágonos de cores diferentes, que variam do amarelo ao laranja e ao vermelho. Hexágonos vermelho-escuros correspondem às distribuições mais densas de espécimes coletados daquela espécie.',
+      'Para dados GBIF, pontos individuais e grupos de pontos são mostrados como hexágonos de cores diferentes, variando de amarelo a laranja e vermelho. Hexágonos vermelho-escuros correspondem às distribuições mais densas de espécimes coletados daquela espécie.',
   },
   connectToGbif: {
     'en-us': 'Connect to GBIF',
     'de-ch': 'Mit GBIF verbinden',
     'es-es': 'Conectarse a GBIF',
-    'fr-fr': 'Connectez-vous au GBIF',
+    'fr-fr': 'Se connecter au GBIF',
     'ru-ru': 'Подключиться к ГБИФ',
     'uk-ua': 'Підключіться до GBIF',
     'pt-br': 'Conecte-se ao GBIF',
@@ -150,7 +150,7 @@ export const specifyNetworkText = createDictionary({
     'es-es':
       'Mapa de distribución de todos los ejemplares digitalizados conservados en su Institución',
     'fr-fr':
-      'Carte de répartition de tous les spécimens numérisés conservés dans votre institution',
+      'Carte de distribution de tous les spécimens numérisés conservés dans votre institution',
     'ru-ru':
       'Карта распределения всех оцифрованных образцов, хранящихся в вашем учреждении',
     'uk-ua':

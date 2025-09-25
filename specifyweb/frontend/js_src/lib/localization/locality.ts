@@ -104,7 +104,7 @@ export const localityText = createDictionary({
   occurrencePoints: {
     'en-us': 'Pins',
     'ru-ru': 'Точки',
-    'es-es': 'Patas',
+    'es-es': 'Puntos',
     'fr-fr': 'Épingles',
     'uk-ua': 'Шпильки',
     'de-ch': 'Stecknadeln',

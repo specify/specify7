@@ -182,7 +182,7 @@ export const formsText = createDictionary({
     'fr-fr':
       'Le plugin Paleo Map nécessite que les {localityTable:string} aient des coordonnées géographiques et que le contexte paléo ait un âge géographique avec au moins une heure de début ou une heure de fin renseignée.',
     'ru-ru':
-      'Для работы плагина Paleo Map требуется, чтобы {localityTable:string} имел географические координаты, а палеоконтекст имел географический возраст с указанием как минимум начального и конечного времени.',
+      'Плагин Paleo Map требует, чтобы {localityTable:string} имел географические координаты и чтобы палеоконтекст имел географический возраст с указанием как минимум начального и конечного времени.',
     'uk-ua':
       'Плагін Paleo Map вимагає, щоб {localityTable:string} мав географічні координати, а палеодієнтний контекст мав географічний вік із зазначенням принаймні часу початку або часу завершення.',
     'pt-br':
@@ -266,7 +266,7 @@ export const formsText = createDictionary({
   todayButtonDescription: {
     'en-us': 'Set to current date',
     'ru-ru': 'Установить на текущую дату',
-    'es-es': 'Establecer en fecha actual',
+    'es-es': 'Establecer en la fecha actual',
     'fr-fr': 'Définir sur la date actuelle',
     'uk-ua': 'Встановити на поточну дату',
     'de-ch': 'Auf aktuelles Datum einstellen',
@@ -327,7 +327,7 @@ export const formsText = createDictionary({
     'fr-fr': 'Aucune donnée.',
     'uk-ua': 'Немає даних.',
     'de-ch': 'Keine Daten.',
-    'pt-br': 'Nenhum dado.',
+    'pt-br': 'Sem dados.',
   },
   recordSetDeletionWarning: {
     'en-us':
@@ -348,7 +348,7 @@ export const formsText = createDictionary({
   saveRecordFirst: {
     'en-us': 'Save record first',
     'ru-ru': 'Сначала сохраните запись',
-    'es-es': 'Guardar el registro primero',
+    'es-es': 'Guardar registro primero',
     'fr-fr': "Sauvegarder d'abord l'enregistrement",
     'uk-ua': 'Спочатку збережіть запис',
     'de-ch': 'Datensatz zuerst speichern',
@@ -413,7 +413,7 @@ export const formsText = createDictionary({
     'en-us': 'Save conflict',
     'ru-ru': 'Сохранить конфликт',
     'es-es': 'Guardar conflicto',
-    'fr-fr': 'Enregistrer le conflit',
+    'fr-fr': 'Sauvegarder le conflit',
     'uk-ua': 'Зберегти конфлікт',
     'de-ch': 'Konflikt speichern',
     'pt-br': 'Salvar conflito',
@@ -837,7 +837,7 @@ export const formsText = createDictionary({
     'es-es': 'Llevar adelante',
     'fr-fr': 'Reporter',
     'uk-ua': 'Перенести далі',
-    'de-ch': 'Übertrag',
+    'de-ch': 'Weitertragen',
     'pt-br': 'Levar adiante',
   },
   carryForwardEnabled: {
@@ -863,7 +863,7 @@ export const formsText = createDictionary({
     'de-ch': 'Anzahl der Massenüberträge',
     'es-es': 'Recuento de transferencia masiva',
     'fr-fr': 'Nombre de reports en masse',
-    'pt-br': 'Contagem de transporte de carga a granel',
+    'pt-br': 'Contagem de transporte em massa',
     'ru-ru': 'Подсчет массового переноса данных',
     'uk-ua': 'Кількість перенесених даних',
   },
@@ -898,7 +898,7 @@ export const formsText = createDictionary({
   carryForwardTableSettingsDescription: {
     'en-us': 'Configure fields to carry forward ({tableName:string})',
     'ru-ru': 'Настройте поля для переноса ({tableName:string})',
-    'es-es': 'Configurar campos para transferir ({tableName:string})',
+    'es-es': 'Configurar campos para trasladar ({tableName:string})',
     'fr-fr': 'Configurer les champs à reporter ({tableName:string})',
     'uk-ua': 'Налаштуйте поля для перенесення ({tableName:string})',
     'de-ch': 'Konfigurieren Sie die Felder zum Übertragen ({tableName:string})',
@@ -932,7 +932,7 @@ export const formsText = createDictionary({
     'fr-fr': 'Ce champ est obligatoire. Il doit être reporté',
     'uk-ua': "Це поле обов'язкове. Його потрібно перенести",
     'de-ch': 'Dieses Feld ist erforderlich. Es muss übertragen werden',
-    'pt-br': 'Este campo é obrigatório. Deve ser levado adiante',
+    'pt-br': 'Este campo é obrigatório. Deve ser transportado para a frente',
   },
   bulkCarryForwardRangeEnabled: {
     'en-us': 'Show Bulk Carry Forward range',
@@ -1065,7 +1065,7 @@ export const formsText = createDictionary({
     'es-es': 'Utilice etiquetas de campo localizadas',
     'fr-fr': 'Utiliser les étiquettes de champs localisées',
     'uk-ua': 'Використовуйте локалізовані мітки полів',
-    'de-ch': 'Verwenden lokalisierter Feldbezeichnungen',
+    'de-ch': 'Lokalisierte Feldbezeichnungen verwenden',
     'pt-br': 'Use rótulos de campo localizados',
   },
   showFieldLabels: {
@@ -1075,7 +1075,7 @@ export const formsText = createDictionary({
     'fr-fr': 'Afficher les étiquettes de champ localisées',
     'ru-ru': 'Показать локализованные метки полей',
     'uk-ua': 'Показати локалізовані підписи полів',
-    'pt-br': 'Mostrar rótulos de campos localizados',
+    'pt-br': 'Mostrar rótulos de campo localizados',
   },
   showDataModelLabels: {
     'en-us': 'Show Data Model Field Names',
@@ -1126,7 +1126,7 @@ export const formsText = createDictionary({
     'en-us': 'Record Information',
     'ru-ru': 'Запись информации',
     'es-es': 'Información de registro',
-    'fr-fr': 'Informations sur le dossier',
+    'fr-fr': "Informations sur l'enregistrement",
     'uk-ua': 'Інформація про запис',
     'de-ch': 'Datensatzinformationen',
     'pt-br': 'Informações do registro',
@@ -1263,7 +1263,7 @@ export const formsText = createDictionary({
   resourceDeletedDescription: {
     'en-us': 'Item was deleted successfully.',
     'ru-ru': 'Элемент был успешно удален.',
-    'es-es': 'El artículo fue eliminado exitosamente',
+    'es-es': 'El artículo fue eliminado exitosamente.',
     'fr-fr': "L'élément a été supprimé avec succès.",
     'uk-ua': 'Елемент успішно видалено.',
     'de-ch': 'Element wurde erfolgreich gelöscht.',
