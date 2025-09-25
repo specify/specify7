@@ -9,7 +9,7 @@ type ResourceConfig = {
 export type FieldConfig = {
   readonly name: string;
   readonly label: string;
-  readonly type?: 'boolean' | 'password' | 'select' | 'text' | 'object';
+  readonly type?: 'boolean' | 'object' | 'password' | 'select' | 'text';
   readonly required?: boolean;
   readonly description?: string;
   readonly options?: RA<string>;
@@ -71,50 +71,43 @@ export const resources: RA<ResourceConfig> = [
         name: 'address',
         label: 'Address',
         type: 'object',
-        description:
-          'Optional address of the institution',
+        description: 'Optional address of the institution',
         required: true,
         fields: [
           {
             name: 'address',
             label: 'Address',
-            description:
-              'The street address of the institution.',
+            description: 'The street address of the institution.',
             required: false,
           },
           {
             name: 'city',
             label: 'City',
-            description:
-              'The city where the institution is located.',
+            description: 'The city where the institution is located.',
             required: false,
           },
           {
             name: 'state',
             label: 'State/Providence',
-            description:
-              'The state or province.',
+            description: 'The state or province.',
             required: false,
           },
           {
             name: 'country',
             label: 'Country',
-            description:
-              'The country.',
+            description: 'The country.',
             required: false,
           },
           {
             name: 'postalCode',
             label: 'Zip/Postal Code',
-            description:
-              'The postal code.',
+            description: 'The postal code.',
             required: false,
           },
           {
             name: 'phone',
             label: 'Phone',
-            description:
-              'A contact phone number.',
+            description: 'A contact phone number.',
             required: false,
           },
         ],

@@ -12,7 +12,8 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import type { SetupProgress } from '../Login';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
-import { resources, FieldConfig } from "./setupResources";
+import type { FieldConfig} from "./setupResources";
+import {resources } from "./setupResources";
 
 type ResourceFormData = Record<string, any>;
 
@@ -102,7 +103,7 @@ export function SetupTool({
   const renderFormField = (field: FieldConfig, parentName?: string) => {
     const { name, label, type, required = false, description, options, fields, passwordRepeat } = field;
 
-    const fieldName = parentName !== undefined ? `${parentName}.${name}` : name
+    const fieldName = parentName === undefined ? name : `${parentName}.${name}`
 
     return <div className="mb-2" key={fieldName}>
       {type === 'boolean' ? (
@@ -145,11 +146,11 @@ export function SetupTool({
           <Label.Block title={description}>
             {label}
             <Input.Generic
+              minLength={MIN_PASSWORD_LENGTH}
               name={fieldName}
               required={required}
               type='password'
               value={formData[fieldName] ?? ''}
-              minLength={MIN_PASSWORD_LENGTH}
               onValueChange={(value) => handleChange(fieldName, value)}
             />
           </Label.Block>
@@ -158,46 +159,42 @@ export function SetupTool({
             <Label.Block title={passwordRepeat.description}>
               {passwordRepeat.label}
               <Input.Generic
+                minLength={MIN_PASSWORD_LENGTH}
+                name={passwordRepeat.name}
                 required={required}
                 type='password'
-                name={passwordRepeat.name}
                 value={temporaryFormData[passwordRepeat.name] ?? ''}
-                minLength={MIN_PASSWORD_LENGTH}
+                onChange={({ target }): void => {
+                  target.setCustomValidity(
+                    target.value === formData[fieldName] ? "" : userText.passwordsDoNotMatchError()
+                  );
+                }}
                 onValueChange={(value) => setTemporaryFormData((previous) => ({
                   ...previous,
                   [passwordRepeat.name]: value,
                 }))}
-                onChange={({ target }): void => {
-                  target.setCustomValidity(
-                    target.value !== formData[fieldName] ? userText.passwordsDoNotMatchError() : ""
-                  );
-                }}
               />
             </Label.Block>
           )}
         </>
       ) : type === 'object' ? (
         // Subforms
-        <>
-          <div className="border border-gray-500 rounded-b p-1">
+        <div className="border border-gray-500 rounded-b p-1">
             <H3 className="text-xl font-semibold mb-4">
               {label}
             </H3>
             {fields === undefined ? undefined : fields.map((field) => renderFormField(field, name))}
           </div>
-        </>
       ) : (
-        <>
-          <Label.Block title={description}>
+        <Label.Block title={description}>
             {label}
             <Input.Text
-              required={required}
               name={fieldName}
+              required={required}
               value={formData[fieldName] ?? ''}
               onValueChange={(value) => handleChange(fieldName, value)}
             />
           </Label.Block>
-        </>
       )}
     </div>;
   };
@@ -238,7 +235,7 @@ function flattenToNested(data: Record<string, any>): Record<string, any> {
   for (const [key, value] of Object.entries(data)) {
     if (key.includes('.')) {
       const [prefix, field] = key.split('.', 2);
-      if (!result[prefix]) result[prefix] = {};
+      result[prefix] ||= {};
       result[prefix][field] = value;
     } else {
       result[key] = value;
