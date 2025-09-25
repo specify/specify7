@@ -98,22 +98,22 @@ export const interactionsText = createDictionary({
     'pt-br': 'Ao inserir {fieldName:string}s',
   },
   withoutPreparations: {
-    'en-us': 'Without preparations',
-    'ru-ru': 'Без подготовки',
-    'es-es': 'Sin preparativos',
-    'fr-fr': 'Sans préparations',
-    'uk-ua': 'Без підготовки',
-    'de-ch': 'Ohne Präparate',
-    'pt-br': 'Sem preparativos',
+    "en-us": "Without preparations",
+    "ru-ru": "Без подготовки",
+    "es-es": "Sin preparaciones",
+    "fr-fr": "Sans préparations",
+    "uk-ua": "Без підготовки",
+    "de-ch": "Ohne Präparate",
+    "pt-br": "Sem preparativos",
   },
   continueWithoutPreparations: {
-    'en-us': 'Continue without preparations',
-    'de-ch': 'Ohne Vorbereitungen weitermachen',
-    'es-es': 'Continuar sin preparativos',
-    'fr-fr': 'Continuer sans préparation',
-    'ru-ru': 'Продолжить без подготовки',
-    'uk-ua': 'Продовжуйте без підготовки',
-    'pt-br': 'Continuar sem preparações',
+    "en-us": "Continue without preparations",
+    "de-ch": "Ohne Vorbereitungen weitermachen",
+    "es-es": "Continuar sin preparaciones",
+    "fr-fr": "Continuer sans préparation",
+    "ru-ru": "Продолжить без подготовки",
+    "uk-ua": "Продовжуйте без підготовки",
+    "pt-br": "Continuar sem preparações",
   },
   addUnassociated: {
     'en-us': 'Add unassociated item',
@@ -125,42 +125,42 @@ export const interactionsText = createDictionary({
     'pt-br': 'Adicionar item não associado',
   },
   preparations: {
-    'en-us': 'Preparations',
-    'ru-ru': 'Препараты',
-    'es-es': 'Preparativos',
-    'fr-fr': 'Preparations',
-    'uk-ua': 'Підготовка',
-    'de-ch': 'Präparate',
-    'pt-br': 'Preparativos',
+    "en-us": "Preparations",
+    "ru-ru": "Препараты",
+    "es-es": "Preparaciones",
+    "fr-fr": "Preparations",
+    "uk-ua": "Підготовка",
+    "de-ch": "Präparate",
+    "pt-br": "Preparativos",
   },
   preparationsCanNotBeReturned: {
-    'en-us': 'Preparations cannot be returned in this context.',
-    'ru-ru': 'Препараты в данном случае возврату не подлежат.',
-    'es-es': 'En este contexto no es posible retomar los preparativos.',
-    'fr-fr': 'Les preparations ne peuvent être renvoyées dans ce contexte.',
-    'uk-ua': 'У цьому контексті препарати не можна повернути.',
-    'de-ch': 'Präparate können in diesem Kontext nicht zurückgegeben werden.',
-    'pt-br': 'Os preparativos não podem ser devolvidos neste contexto.',
+    "en-us": "Preparations cannot be returned in this context.",
+    "ru-ru": "Препараты в данном случае возврату не подлежат.",
+    "es-es": "En este contexto no es posible retomar las preparaciones",
+    "fr-fr": "Les preparations ne peuvent être renvoyées dans ce contexte.",
+    "uk-ua": "У цьому контексті препарати не можна повернути.",
+    "de-ch": "Präparate können in diesem Kontext nicht zurückgegeben werden.",
+    "pt-br": "Os preparativos não podem ser devolvidos neste contexto.",
   },
   noUnresolvedPreparations: {
-    'en-us': 'There are no unresolved preparations for this loan.',
-    'ru-ru':
-      'Никаких нерешенных подготовительных вопросов по данному кредиту нет.',
-    'es-es': 'No existen preparativos pendientes para este préstamo.',
-    'fr-fr': 'Il n’y a pas de preparations non retournées pour ce prêt.',
-    'uk-ua':
-      'Немає жодних невирішених питань щодо підготовки до цього кредиту.',
-    'de-ch': 'Für dieses Ausleihe bestehen keine ungelösten Vorbereitungen.',
-    'pt-br': 'Não há preparativos não resolvidos para este empréstimo.',
+    "en-us": "There are no unresolved preparations for this loan.",
+    "ru-ru":
+      "Никаких нерешенных подготовительных вопросов по данному кредиту нет.",
+    "es-es": "No existen preparaciones pendientes para este préstamo.",
+    "fr-fr": "Il n’y a pas de preparations non retournées pour ce prêt.",
+    "uk-ua":
+      "Немає жодних невирішених питань щодо підготовки до цього кредиту.",
+    "de-ch": "Für dieses Ausleihe bestehen keine ungelösten Vorbereitungen.",
+    "pt-br": "Não há preparativos não resolvidos para este empréstimo.",
   },
   unresolved: {
-    'en-us': 'Unresolved',
-    'ru-ru': 'Нерешенный',
-    'es-es': 'Irresoluto',
-    'fr-fr': 'Non résolu',
-    'uk-ua': 'Невирішено',
-    'de-ch': 'Ungelöst',
-    'pt-br': 'Não resolvido',
+    "en-us": "Unresolved",
+    "ru-ru": "Нерешенный",
+    "es-es": "Sin resolver",
+    "fr-fr": "Non résolu",
+    "uk-ua": "Невирішено",
+    "de-ch": "Ungelöst",
+    "pt-br": "Não resolvido",
   },
   return: {
     comment: 'Verb',
@@ -286,15 +286,15 @@ export const interactionsText = createDictionary({
     'pt-br': '{giftTable:string} registros',
   },
   exchanges: {
-    comment: 'Example: Exchange In / Exchnage Out records',
-    'en-us': '{exhangeInTable:string} / {exhangeOutTable:string} records',
-    'es-es': '{exhangeInTable:string} / {exhangeOutTable:string} registros',
-    'fr-fr':
-      '{exhangeInTable:string} / {exhangeOutTable:string} enregistrements',
-    'ru-ru': '{exhangeInTable:string} / {exhangeOutTable:string} записи',
-    'uk-ua': 'Записи {exhangeInTable:string} / {exhangeOutTable:string}',
-    'de-ch': '{exhangeInTable:string} / {exhangeOutTable:string} Datensätze',
-    'pt-br': 'Registros {exhangeInTable:string} / {exhangeOutTable:string}',
+    comment: "Example: Exchange In / Exchnage Out records",
+    "en-us": "{exhangeInTable:string} / {exhangeOutTable:string} records",
+    "es-es": "{exhangeInTable:string} / {exhangeOutTable:string} registros",
+    "fr-fr":
+      "{exhangeInTable:string} / {exhangeOutTable:string} enregistrements",
+    "ru-ru": "{exhangeInTable:string} / {exhangeOutTable:string} записи",
+    "uk-ua": "Записи {exhangeInTable:string} / {exhangeOutTable:string}",
+    "de-ch": "{exhangeInTable:string} / {exhangeOutTable:string} Datensätze",
+    "pt-br": "{exhangeInTable:string} / {exhangeOutTable:string} registros",
   },
   unCataloged: {
     'en-us': 'uncataloged',
@@ -316,21 +316,21 @@ export const interactionsText = createDictionary({
     'pt-br': 'Registros retornados {tablePreparation:string}',
   },
   returnedAndSaved: {
-    comment: 'Example: 2 Preparation records have been returned and saved',
-    'en-us':
-      '{count:number|formatted} {tablePreparation:string} records have been returned and saved',
-    'es-es':
-      'Se han devuelto y guardado {count:number|formatted} {tablePreparation:string} registros',
-    'fr-fr':
-      '{count:number|formatted} {tablePreparation:string} enregistrements ont été renvoyés et enregistrés',
-    'ru-ru':
-      '{count:number|formatted} {tablePreparation:string} записей были возвращены и сохранены',
-    'uk-ua':
-      'Повернуто та збережено записів {count:number|formatted} {tablePreparation:string}',
-    'de-ch':
-      '{count:number|formatted} {tablePreparation:string} Datensätze wurden zurückgegeben und gespeichert',
-    'pt-br':
-      '{count:number|formatted} {tablePreparation:string} registros foram retornados e salvos',
+    comment: "Example: 2 Preparation records have been returned and saved",
+    "en-us":
+      "{count:number|formatted} {tablePreparation:string} records have been returned and saved",
+    "es-es":
+      "{count:number|formatted} {tablePreparation:string} registros han sido devueltos y guardados",
+    "fr-fr":
+      "{count:number|formatted} {tablePreparation:string} enregistrements ont été renvoyés et enregistrés",
+    "ru-ru":
+      "{count:number|formatted} {tablePreparation:string} записей были возвращены и сохранены",
+    "uk-ua":
+      "Повернуто та збережено записів {count:number|formatted} {tablePreparation:string}",
+    "de-ch":
+      "{count:number|formatted} {tablePreparation:string} Datensätze wurden zurückgegeben und gespeichert",
+    "pt-br":
+      "{count:number|formatted} {tablePreparation:string} registros foram retornados e salvos",
   },
   deselectAll: {
     'en-us': 'Deselect all',
@@ -380,15 +380,16 @@ export const interactionsText = createDictionary({
     'pt-br': 'Criar {table:string}',
   },
   noPreparationsWarning: {
-    'en-us':
-      'None of these objects have preparations. Would you like to continue?',
-    'de-ch':
-      'Für keines dieser Objekte liegen Vorbereitungen vor. Möchten Sie fortfahren?',
-    'es-es': 'Ninguno de estos objetos tiene preparativos. ¿Quieres continuar?',
-    'fr-fr': "Aucun de ces objets n'a été préparé. Voulez-vous continuer ?",
-    'ru-ru': 'Ни один из этих объектов не имеет подготовки. Хотите продолжить?',
-    'uk-ua': "Жоден з цих об'єктів не має підготовки. Бажаєте продовжити?",
-    'pt-br': 'Nenhum destes objetos possui preparação. Deseja continuar?',
+    "en-us":
+      "None of these objects have preparations. Would you like to continue?",
+    "de-ch":
+      "Für keines dieser Objekte liegen Vorbereitungen vor. Möchten Sie fortfahren?",
+    "es-es":
+      "Ninguno de estos objetos tiene preparaciones. ¿Quieres continuar?",
+    "fr-fr": "Aucun de ces objets n'a été préparé. Voulez-vous continuer ?",
+    "ru-ru": "Ни один из этих объектов не имеет подготовки. Хотите продолжить?",
+    "uk-ua": "Жоден з цих об'єктів не має підготовки. Бажаєте продовжити?",
+    "pt-br": "Nenhum destes objetos possui preparação. Deseja continuar?",
   },
   continue: {
     'en-us': 'Continue',
