@@ -136,31 +136,37 @@ def validate_unique(model, instance):
         if len(matchable.keys()) == 0 or set(all_fields) != set(field_map.keys()):
             continue
 
+        # Helper: one-liner with a clear name
+        is_name_field = lambda field_path: field_path.split('__')[-1].lower() == 'name'
+
         conflicts = model.objects.only('id')
-        
-        where_clauses = []
-        params = []
-        regular_filters = {}
-        
+        regular_filters: dict[str, Any] = {}
+        binary_where_clauses: list[str] = []
+        binary_params: list[Any] = []
+        username_case_insensitive_q = Q()
+
         for field_path, value in matchable.items():
             if isinstance(value, str):
-                where_clauses.append(f"BINARY {field_path} = %s")
-                params.append(value)
+                if model_name == "Specifyuser" and is_name_field(field_path):
+                    username_case_insensitive_q &= Q(**{f"{field_path}__iexact": value})
+                else:
+                    binary_where_clauses.append(f"BINARY {field_path} = %s")
+                    binary_params.append(value)
             else:
                 regular_filters[field_path] = value
-        
+
         if regular_filters:
             conflicts = conflicts.filter(**regular_filters)
-        
-        if where_clauses:
-            conflicts = conflicts.extra(where=where_clauses, params=params)
-        
+        if binary_where_clauses:
+            conflicts = conflicts.extra(where=binary_where_clauses, params=binary_params)
+        if username_case_insensitive_q:
+            conflicts = conflicts.filter(username_case_insensitive_q)
+
         if instance.id is not None:
             conflicts = conflicts.exclude(id=instance.id)
 
         if conflicts:
             raise get_exception(conflicts, matchable, field_map)
-
 
 class ViolatedUniquenessCheck(TypedDict):
     duplicates: int
