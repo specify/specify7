@@ -6,13 +6,14 @@ type ResourceConfig = {
   readonly fields: RA<FieldConfig>;
 };
 
-type FieldConfig = {
+export type FieldConfig = {
   readonly name: string;
   readonly label: string;
-  readonly type?: 'boolean' | 'password' | 'select' | 'text';
+  readonly type?: 'boolean' | 'password' | 'select' | 'text' | 'object';
   readonly required?: boolean;
   readonly description?: string;
   readonly options?: RA<string>;
+  readonly fields?: RA<FieldConfig>;
   readonly passwordRepeat?: {
     readonly name: string;
     readonly label: string;
@@ -65,6 +66,58 @@ export const resources: RA<ResourceConfig> = [
         description:
           'A short, unique code or acronym for the institution (e.g., "KUBI").',
         required: true,
+      },
+      {
+        name: 'address',
+        label: 'Address',
+        type: 'object',
+        description:
+          'Optional address of the institution',
+        required: true,
+        fields: [
+          {
+            name: 'address',
+            label: 'Address',
+            description:
+              'The street address of the institution.',
+            required: false,
+          },
+          {
+            name: 'city',
+            label: 'City',
+            description:
+              'The city where the institution is located.',
+            required: false,
+          },
+          {
+            name: 'state',
+            label: 'State/Providence',
+            description:
+              'The state or province.',
+            required: false,
+          },
+          {
+            name: 'country',
+            label: 'Country',
+            description:
+              'The country.',
+            required: false,
+          },
+          {
+            name: 'postalCode',
+            label: 'Zip/Postal Code',
+            description:
+              'The postal code.',
+            required: false,
+          },
+          {
+            name: 'phone',
+            label: 'Phone',
+            description:
+              'A contact phone number.',
+            required: false,
+          },
+        ],
       },
       {
         name: 'isAccessionsGlobal',

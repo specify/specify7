@@ -12,7 +12,7 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import type { SetupProgress } from '../Login';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
-import { resources } from "./setupResources";
+import { resources, FieldConfig } from "./setupResources";
 
 type ResourceFormData = Record<string, any>;
 
@@ -52,7 +52,7 @@ export function SetupTool({
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(flattenToNested(data)),
       errorMode: 'visible',
       expectedErrors: [Http.CREATED],
     })
@@ -89,8 +89,8 @@ export function SetupTool({
           if (resourceName === 'SpecifyUser') {
             globalThis.location.reload();
           } else {
+            setFormData({});
             setCurrentStep((previous) => previous + 1);
-            setTimeout(() => setFormData({}), 0);
           }
         })
         .catch((error) => {
@@ -99,93 +99,111 @@ export function SetupTool({
       );
   };
 
-  const renderFormFields = () =>
-    resources[currentStep].fields.map(({ name, label, type, required = false, description, options, passwordRepeat }) => (
-      <div className="mb-4" key={name}>
-        {type === 'boolean' ? (
-          <div className="flex items-center space-x-2">
-            <Label.Inline title={description}>
-              <Input.Checkbox
-                checked={Boolean(formData[name])}
-                id={name}
-                name={name}
-                onValueChange={(isChecked) => handleChange(name, isChecked)}
-              />
-              {label}
-            </Label.Inline>
-          </div>
-        ) : type === 'select' && Array.isArray(options) ? (
-          <div className="mb-4" key={name}>
-            <Label.Block title={description}>
-              {label}
-              <Select
-                aria-label={label}
-                className="w-full min-w-[theme(spacing.40)]"
-                id={name}
-                name={name}
-                value={formData[name] ?? ''}
-                onValueChange={(value) => handleChange(name, value)}
-              >
-                <option disabled value="">
-                  Select a type
+  const renderFormField = (field: FieldConfig, parentName?: string) => {
+    const { name, label, type, required = false, description, options, fields, passwordRepeat } = field;
+
+    const fieldName = parentName !== undefined ? `${parentName}.${name}` : name
+
+    return <div className="mb-2" key={fieldName}>
+      {type === 'boolean' ? (
+        <div className="flex items-center space-x-2">
+          <Label.Inline title={description}>
+            <Input.Checkbox
+              checked={Boolean(formData[fieldName])}
+              id={fieldName}
+              name={fieldName}
+              onValueChange={(isChecked) => handleChange(fieldName, isChecked)}
+            />
+            {label}
+          </Label.Inline>
+        </div>
+      ) : type === 'select' && Array.isArray(options) ? (
+        <div className="mb-4" key={fieldName}>
+          <Label.Block title={description}>
+            {label}
+            <Select
+              aria-label={label}
+              className="w-full min-w-[theme(spacing.40)]"
+              id={fieldName}
+              name={fieldName}
+              value={formData[fieldName] ?? ''}
+              onValueChange={(value) => handleChange(fieldName, value)}
+            >
+              <option disabled value="">
+                Select a type
+              </option>
+              {options.map((value) => (
+                <option key={value} value={value}>
+                  {value}
                 </option>
-                {options.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </Select>
-            </Label.Block>
-          </div>
-        ) : type === 'password' ? (
-          <>
-            <Label.Block title={description}>
-              {label}
+              ))}
+            </Select>
+          </Label.Block>
+        </div>
+      ) : type === 'password' ? (
+        <>
+          <Label.Block title={description}>
+            {label}
+            <Input.Generic
+              name={fieldName}
+              required={required}
+              type='password'
+              value={formData[fieldName] ?? ''}
+              minLength={MIN_PASSWORD_LENGTH}
+              onValueChange={(value) => handleChange(fieldName, value)}
+            />
+          </Label.Block>
+          {
+            passwordRepeat === undefined ? undefined : (
+            <Label.Block title={passwordRepeat.description}>
+              {passwordRepeat.label}
               <Input.Generic
-                minLength={MIN_PASSWORD_LENGTH}
-                name={name}
                 required={required}
                 type='password'
-                value={formData[name] ?? ''}
-                onValueChange={(value) => handleChange(name, value)}
+                name={passwordRepeat.name}
+                value={temporaryFormData[passwordRepeat.name] ?? ''}
+                minLength={MIN_PASSWORD_LENGTH}
+                onValueChange={(value) => setTemporaryFormData((previous) => ({
+                  ...previous,
+                  [passwordRepeat.name]: value,
+                }))}
+                onChange={({ target }): void => {
+                  target.setCustomValidity(
+                    target.value !== formData[fieldName] ? userText.passwordsDoNotMatchError() : ""
+                  );
+                }}
               />
             </Label.Block>
-            {
-              passwordRepeat === undefined ? undefined : (
-              <Label.Block title={passwordRepeat.description}>
-                {passwordRepeat.label}
-                <Input.Generic
-                  minLength={MIN_PASSWORD_LENGTH}
-                  name={passwordRepeat.name}
-                  required={required}
-                  type='password'
-                  value={temporaryFormData[passwordRepeat.name] ?? ''}
-                  onChange={({ target }): void => {
-                    target.setCustomValidity(
-                      target.value === formData[name] ? "" : userText.passwordsDoNotMatchError()
-                    );
-                  }}
-                  onValueChange={(value) => setTemporaryFormData((previous) => ({
-                    ...previous,
-                    [passwordRepeat.name]: value,
-                  }))}
-                />
-              </Label.Block>
-            )}
-          </>
-        ) : (
-          <Label.Block title={description}>
+          )}
+        </>
+      ) : type === 'object' ? (
+        // Subforms
+        <>
+          <div className="border border-gray-500 rounded-b p-1">
+            <H3 className="text-xl font-semibold mb-4">
               {label}
-              <Input.Text
-                name={name}
-                required={required}
-                value={formData[name] ?? ''}
-                onValueChange={(value) => handleChange(name, value)}
-              />
-            </Label.Block>
-        )}
-      </div>
-    ));
+            </H3>
+            {fields === undefined ? undefined : fields.map((field) => renderFormField(field, name))}
+          </div>
+        </>
+      ) : (
+        <>
+          <Label.Block title={description}>
+            {label}
+            <Input.Text
+              required={required}
+              name={fieldName}
+              value={formData[fieldName] ?? ''}
+              onValueChange={(value) => handleChange(fieldName, value)}
+            />
+          </Label.Block>
+        </>
+      )}
+    </div>;
+  };
+
+  const renderFormFields = () =>
+    resources[currentStep].fields.map((field) => renderFormField(field));
 
   return (
     <Container.FullGray className="overflow-auto w-full items-center">
@@ -193,7 +211,7 @@ export function SetupTool({
       {currentStep < resources.length ? (
         <Container.Center className="p-3 shadow-md max-w-sm">
           <Form
-            className="flex-1 overflow-auto gap-1"
+            className="flex-1 overflow-auto gap-2"
             onSubmit={handleSubmit}
           >
             <H3 className="text-xl font-semibold mb-4">
@@ -212,4 +230,19 @@ export function SetupTool({
       )}
     </Container.FullGray>
   );
+}
+
+// Turn 'table.field' keys to nested objects to send to the backend
+function flattenToNested(data: Record<string, any>): Record<string, any> {
+  const result: Record<string, any> = {};
+  for (const [key, value] of Object.entries(data)) {
+    if (key.includes('.')) {
+      const [prefix, field] = key.split('.', 2);
+      if (!result[prefix]) result[prefix] = {};
+      result[prefix][field] = value;
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
 }

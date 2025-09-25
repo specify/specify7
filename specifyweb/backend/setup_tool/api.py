@@ -8,6 +8,10 @@ from specifyweb.specify.models import Spversion
 from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
 
 from django.db.models import Max
+from django.db import transaction
+
+import logging
+logger = logging.getLogger(__name__)
 
 def _guided_setup_condition(request):
     from specifyweb.specify.models import Specifyuser
@@ -19,7 +23,7 @@ def _guided_setup_condition(request):
     return True
 
 def create_institution(request, direct=False):
-    from specifyweb.specify.models import Institution
+    from specifyweb.specify.models import Institution, Address
 
     # Check permission
     if not _guided_setup_condition(request):
@@ -34,12 +38,23 @@ def create_institution(request, direct=False):
     # Normalize keys: lowercase everything
     data = {k.lower(): v for k, v in raw_data.items()}
 
+    # Get address fields (if any)
+    address_data = data.pop('address', None)
+
     # New DB: force id = 1
     data['id'] = 1
 
     try:
-        new_institution = Institution.objects.create(**data)
-        Spversion.objects.create(appversion='7', schemaversion='2.10')
+        # Create address
+        with transaction.atomic():
+            if address_data:
+                address_obj = Address.objects.create(**address_data)
+                data['address_id'] = address_obj.id
+
+            # Create institution
+            new_institution = Institution.objects.create(**data)
+            Spversion.objects.create(appversion='7', schemaversion='2.10')
+        
         return JsonResponse({"success": True, "institution_id": new_institution.id}, status=200)
 
     except Exception as e:
