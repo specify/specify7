@@ -32,7 +32,9 @@
     { "name": "skeleton", "isloanable": true },
     { "name": "x-ray", "isloanable": true }
   ],
-  "invertpaleo": [{ "name": "Jar", "isloanable": true }],
+  "invertpaleo": [
+    { "name": "Jar", "isloanable": true }
+  ],
   "mammal": [
     { "name": "C&S", "isloanable": true },
     { "name": "EtOH", "isloanable": true },
