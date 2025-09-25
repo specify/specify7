@@ -47,7 +47,7 @@
       "issystem": true,
       "type": 0,
       "readonly": true,
-      "sizelimit": 5,
+      "sizelimit": 7,
       "items": [
         { "title": "No Data", "value": "No Data" },
         { "title": "dead reckoning", "value": "dead reckoning" },
@@ -128,7 +128,7 @@
       "issystem": true,
       "type": 0,
       "readonly": true,
-      "sizelimit": 6,
+      "sizelimit": 8,
       "items": [
         { "title": "No Data", "value": "No Data" },
         { "title": "flowering", "value": "flowering" },
@@ -271,7 +271,7 @@
       "issystem": true,
       "type": 0,
       "readonly": true,
-      "sizelimit": 8,
+      "sizelimit": 9,
       "items": [
         { "title": "No data", "value": "No data" },
         { "title": "adult", "value": "adult" },
@@ -692,7 +692,7 @@
       "issystem": true,
       "type": 0,
       "readonly": true,
-      "sizelimit": 6,
+      "sizelimit": 8,
       "items": [
         { "title": "No Data", "value": "No Data" },
         { "title": "flowering", "value": "flowering" },
