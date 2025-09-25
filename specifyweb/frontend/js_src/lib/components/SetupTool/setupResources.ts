@@ -71,8 +71,7 @@ export const resources: RA<ResourceConfig> = [
         name: 'address',
         label: 'Address',
         type: 'object',
-        description:
-          'The address of the institution. Optional.',
+        description: 'The address of the institution. Optional.',
         required: true,
         fields: [
           {
