@@ -9,10 +9,15 @@ type ResourceConfig = {
 type FieldConfig = {
   readonly name: string;
   readonly label: string;
-  readonly type?: 'boolean' | 'password' | 'repeat-password' | 'select' | 'text';
+  readonly type?: 'boolean' | 'password' | 'select' | 'text';
   readonly required?: boolean;
   readonly description?: string;
   readonly options?: RA<string>;
+  readonly passwordRepeat?: {
+    readonly name: string;
+    readonly label: string;
+    readonly description: string;
+  };
 };
 
 const disciplineTypeOptions = [
@@ -123,14 +128,12 @@ export const resources: RA<ResourceConfig> = [
         label: 'Password',
         description: 'The password for the account.',
         type: 'password',
-        required: true
-      },
-      {
-        name: 'confirmPassword',
-        label: 'Confirm Password',
-        description: 'Must match the password entered above.',
-        type: 'repeat-password',
-        required: true
+        required: true,
+        passwordRepeat: {
+          name: 'confirmPassword',
+          label: 'Confirm Password',
+          description: 'Must match the password entered above.',
+        }
       },
     ],
   },

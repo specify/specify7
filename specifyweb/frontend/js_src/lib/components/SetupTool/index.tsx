@@ -11,6 +11,8 @@ import { Submit } from '../Atoms/Submit';
 import { resources } from "./setupResources";
 import { LoadingContext } from '../Core/Contexts';
 import type { LocalizedString } from 'typesafe-i18n';
+import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
+import { userText } from '../../localization/user'
 
 type ResourceFormData = Record<string, any>;
 
@@ -32,6 +34,7 @@ export function SetupTool({
   readonly setupProgress: SetupProgress;
 }): JSX.Element {
   const [formData, setFormData] = React.useState<ResourceFormData>({});
+  const [tempFormData, setTempFormData] = React.useState<ResourceFormData>({}); // For front-end only.
 
   const initialStep = findInitialStep(setupProgress);
   const [currentStep, setCurrentStep] = React.useState(initialStep);
@@ -86,8 +89,8 @@ export function SetupTool({
           if (resourceName === 'SpecifyUser') {
             globalThis.location.reload();
           } else {
-            setFormData({});
             setCurrentStep((previous) => previous + 1);
+            setTimeout(() => setFormData({}), 0);
           }
         })
         .catch((error) => {
@@ -97,7 +100,7 @@ export function SetupTool({
   };
 
   const renderFormFields = () =>
-    resources[currentStep].fields.map(({ name, label, type, required = false, description, options }) => (
+    resources[currentStep].fields.map(({ name, label, type, required = false, description, options, passwordRepeat }) => (
       <div className="mb-4" key={name}>
         {type === 'boolean' ? (
           <div className="flex items-center space-x-2">
@@ -120,7 +123,7 @@ export function SetupTool({
                 className="w-full min-w-[theme(spacing.40)]"
                 id={name}
                 name={name}
-                value={formData[name] || ''}
+                value={formData[name] ?? ''}
                 onValueChange={(value) => handleChange(name, value)}
               >
                 <option disabled value="">
@@ -134,15 +137,50 @@ export function SetupTool({
               </Select>
             </Label.Block>
           </div>
-        ) : (
+        ) : type === 'password' ? (
           <>
             <Label.Block title={description}>
               {label}
               <Input.Generic
                 required={required}
-                type={type === 'password' ? 'password' : 'text'}
+                type='password'
                 name={name}
-                value={formData[name] || ''}
+                value={formData[name] ?? ''}
+                minLength={MIN_PASSWORD_LENGTH}
+                onValueChange={(value) => handleChange(name, value)}
+              />
+            </Label.Block>
+            {
+              passwordRepeat === undefined ? undefined : (
+              <Label.Block title={passwordRepeat.description}>
+                {passwordRepeat.label}
+                <Input.Generic
+                  required={required}
+                  type='password'
+                  name={passwordRepeat.name}
+                  value={tempFormData[passwordRepeat.name] ?? ''}
+                  minLength={MIN_PASSWORD_LENGTH}
+                  onValueChange={(value) => setTempFormData((previous) => ({
+                    ...previous,
+                    [passwordRepeat.name]: value,
+                  }))}
+                  onChange={({ target }): void => {
+                    target.setCustomValidity(
+                      target.value !== formData[name] ? userText.passwordsDoNotMatchError() : ""
+                    );
+                  }}
+                />
+              </Label.Block>
+            )}
+          </>
+        ) : (
+          <>
+            <Label.Block title={description}>
+              {label}
+              <Input.Text
+                required={required}
+                name={name}
+                value={formData[name] ?? ''}
                 onValueChange={(value) => handleChange(name, value)}
               />
             </Label.Block>
