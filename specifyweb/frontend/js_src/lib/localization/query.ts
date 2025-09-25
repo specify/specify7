@@ -61,7 +61,7 @@ export const queryText = createDictionary({
   any: {
     "en-us": "Any",
     "ru-ru": "Любой",
-    "es-es": "Cualquier",
+    "es-es": "Cualquiera",
     "fr-fr": "N'importe lequel",
     "uk-ua": "Будь-який",
     "de-ch": "Beliebig",
@@ -204,7 +204,7 @@ export const queryText = createDictionary({
   queryExportStarted: {
     "en-us": "Export File Being Created",
     "ru-ru": "Создается экспортный файл",
-    "es-es": "Archivo de exportación en creación",
+    "es-es": "Creando archivo de exportación",
     "fr-fr": "Fichier d'exportation en cours de création",
     "uk-ua": "Експортний файл створюється",
     "de-ch": "Exportdatei wird erstellt",
@@ -276,7 +276,7 @@ export const queryText = createDictionary({
     comment: "Verb",
     "en-us": "Count",
     "ru-ru": "Считать",
-    "es-es": "Contar",
+    "es-es": "Conteo",
     "fr-fr": "Compter",
     "uk-ua": "Рахувати",
     "de-ch": "Zählen",

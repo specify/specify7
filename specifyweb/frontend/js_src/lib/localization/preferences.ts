@@ -94,7 +94,7 @@ export const preferencesText = createDictionary({
     comment: "Light mode",
     "en-us": "Light",
     "ru-ru": "Свет",
-    "es-es": "Luz",
+    "es-es": "Claro",
     "fr-fr": "Lumière",
     "uk-ua": "світло",
     "de-ch": "Hell",

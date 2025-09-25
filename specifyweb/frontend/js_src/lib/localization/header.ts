@@ -239,7 +239,7 @@ export const headerText = createDictionary({
     "en-us": "Choose Metadata resource",
     "ru-ru": "Выберите ресурс метаданных",
     "es-es": "Elija recurso de metadatos",
-    "fr-fr": "Choisir la ressource de métadonnées",
+    "fr-fr": "Choisir une ressource de métadonnées",
     "uk-ua": "Виберіть ресурс метаданих",
     "de-ch": "Metadaten-Ressource auswählen",
     "pt-br": "Escolha o recurso de metadados",
