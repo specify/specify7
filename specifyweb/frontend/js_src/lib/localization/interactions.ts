@@ -294,7 +294,7 @@ export const interactionsText = createDictionary({
     "ru-ru": "{exhangeInTable:string} / {exhangeOutTable:string} записи",
     "uk-ua": "Записи {exhangeInTable:string} / {exhangeOutTable:string}",
     "de-ch": "{exhangeInTable:string} / {exhangeOutTable:string} Datensätze",
-    "pt-br": "Registros {exhangeInTable:string} / {exhangeOutTable:string}",
+    "pt-br": "{exhangeInTable:string} / {exhangeOutTable:string} registros",
   },
   unCataloged: {
     "en-us": "uncataloged",
@@ -320,7 +320,7 @@ export const interactionsText = createDictionary({
     "en-us":
       "{count:number|formatted} {tablePreparation:string} records have been returned and saved",
     "es-es":
-      "Se han devuelto y guardado {count:number|formatted} {tablePreparation:string} registros",
+      "{count:number|formatted} {tablePreparation:string} registros han sido devueltos y guardados",
     "fr-fr":
       "{count:number|formatted} {tablePreparation:string} enregistrements ont été renvoyés et enregistrés",
     "ru-ru":
@@ -384,7 +384,8 @@ export const interactionsText = createDictionary({
       "None of these objects have preparations. Would you like to continue?",
     "de-ch":
       "Für keines dieser Objekte liegen Vorbereitungen vor. Möchten Sie fortfahren?",
-    "es-es": "Ninguno de estos objetos tiene preparativos. ¿Quieres continuar?",
+    "es-es":
+      "Ninguno de estos objetos tiene preparaciones. ¿Quieres continuar?",
     "fr-fr": "Aucun de ces objets n'a été préparé. Voulez-vous continuer ?",
     "ru-ru": "Ни один из этих объектов не имеет подготовки. Хотите продолжить?",
     "uk-ua": "Жоден з цих об'єктів не має підготовки. Бажаєте продовжити?",
