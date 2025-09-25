@@ -10,10 +10,10 @@ import { createDictionary } from './utils';
 
 export const setupToolText = createDictionary({
   specifyConfigurationSetup: {
-    'en-us': 'Specify Configuration Setup'
+    'en-us': 'Specify Configuration Setup',
   },
 
   saveAndContinue: {
-    'en-us': 'Save & Continue'
-  }
+    'en-us': 'Save & Continue',
+  },
 } as const);
