@@ -182,7 +182,7 @@ export function BatchEditFromQuery({
         disabled={isDisabled}
         title={isDisabled ? batchEditText.batchEditDisabled() : undefined}
         onClick={() => {
-          if (saveRequired || query.needsSaved) openWarningDialog();
+          if (saveRequired || (query as any).needsSaved) openWarningDialog();
           else handleClickBatchEdit();
         }}
       >
@@ -221,7 +221,7 @@ function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
   if (joinPath.length <= 1) return false;
   const nestedToManyCount = joinPath.filter(
     (relationship) =>
-      relationship.isRelationship && relationshipIsToMany(relationship)
+      (relationship as any).isRelationship && relationshipIsToMany(relationship as any)
   );
 
   const isTreeOnlyQuery =
@@ -232,8 +232,29 @@ function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
   return nestedToManyCount.length > allowedToMany;
 }
 
-const containsSystemTables = (queryFieldSpec: QueryFieldSpec) =>
-  queryFieldSpec.joinPath.some((field) => field.table.isSystem);
+const isAttachmentFamilyTable = (t: any): boolean => {
+  const className =
+    ((t?.classname ?? t?.className) as string | undefined)?.split('.')?.pop() ??
+    '';
+  const sqlName = (t?.table ?? t?.sqlName ?? t?.name ?? '')
+    .toString()
+    .toLowerCase();
+  // Allow if either the class name or SQL name contains "attachment"
+  return /attachment/i.test(className) || /attachment/i.test(sqlName);
+};
+
+const containsSystemTables = (queryFieldSpec: QueryFieldSpec) => {
+  // Block system tables unless they are part of the Attachment family
+  const pathHasBlockedSystem = queryFieldSpec.joinPath?.some(
+    (field) => (field as any)?.table?.isSystem && !isAttachmentFamilyTable((field as any).table)
+  );
+
+  const baseIsBlocked =
+    (queryFieldSpec.baseTable as any)?.isSystem &&
+    !isAttachmentFamilyTable((queryFieldSpec as any).baseTable);
+
+  return Boolean(pathHasBlockedSystem || baseIsBlocked);
+};
 
 const hasHierarchyBaseTable = (queryFieldSpec: QueryFieldSpec) =>
   Object.keys(schema.domainLevelIds).includes(
