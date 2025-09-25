@@ -1,4 +1,3 @@
-
 from functools import reduce
 import logging
 import json
@@ -96,8 +95,8 @@ def validate_unique(model, instance):
                 except ObjectDoesNotExist:
                     return None
 
-            matchable = {}
-            field_mapping = {}
+            matchable: dict[str, Any] = {}
+            field_mapping: dict[str, str] = {}
             for field in all_fields:
                 matched_or_none = best_match_or_none(field)
                 if matched_or_none is not None:
@@ -106,7 +105,7 @@ def validate_unique(model, instance):
 
             return field_mapping, matchable
 
-        def get_exception(conflicts, matchable, field_map):
+        def get_exception(conflicts, matchable_dict, field_map):
             error_message = '{} must have unique {}'.format(model_name,
                                                             join_with_and(field_names))
 
@@ -115,14 +114,14 @@ def validate_unique(model, instance):
                         if scope is None
                         else "childFieldNotUnique",
                         "fieldName": ','.join(field_names),
-                        "fieldData": serialize_multiple_django(matchable, field_map, field_names),
+                        "fieldData": serialize_multiple_django(matchable_dict, field_map, field_names),
                         }
 
             if scope is not None:
                 error_message += f' in {scope.fieldPath.lower()}'
                 response.update({
                     "parentField": scope.fieldPath,
-                    "parentData": serialize_multiple_django(matchable, field_map, [scope.fieldPath.lower()])
+                    "parentData": serialize_multiple_django(matchable_dict, field_map, [scope.fieldPath.lower()])
                 })
             response['conflicting'] = list(
                 conflicts.values_list('id', flat=True)[:100])
@@ -136,11 +135,11 @@ def validate_unique(model, instance):
         if len(matchable.keys()) == 0 or set(all_fields) != set(field_map.keys()):
             continue
 
-        # Helper: one-liner with a clear name
+      
         is_name_field = lambda field_path: field_path.split('__')[-1].lower() == 'name'
 
         conflicts = model.objects.only('id')
-        regular_filters: dict[str, Any] = {}
+        exact_filters: dict[str, Any] = {}
         binary_where_clauses: list[str] = []
         binary_params: list[Any] = []
         username_case_insensitive_q = Q()
@@ -153,10 +152,10 @@ def validate_unique(model, instance):
                     binary_where_clauses.append(f"BINARY {field_path} = %s")
                     binary_params.append(value)
             else:
-                regular_filters[field_path] = value
+                exact_filters[field_path] = value
 
-        if regular_filters:
-            conflicts = conflicts.filter(**regular_filters)
+        if exact_filters:
+            conflicts = conflicts.filter(**exact_filters)
         if binary_where_clauses:
             conflicts = conflicts.extra(where=binary_where_clauses, params=binary_params)
         if username_case_insensitive_q:
@@ -183,10 +182,8 @@ def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[st
     -> UniquenessCheck | None:
     """
     Given a model, a list of fields, and a list of scopes, check whether there
-    are models of model_name which have duplicate values of fields in scopes. 
+    are models of model_name which have duplicate values of fields in scopes.
     Returns None if model_name is invalid.
-    
-    Note: This function now performs case-sensitive duplicate detection for string fields.
     """
     table = datamodel.get_table(model_name)
     django_model = get_model(model_name, registry or apps)
@@ -210,65 +207,20 @@ def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[st
 
     duplicates_field = '__duplicates'
 
-    
-    string_fields = []
-    non_string_fields = []
-    
-    for field in all_fields:
-        table_field = table.get_field(field)
-        if table_field and hasattr(table_field, 'type') and table_field.type in ['java.lang.String', 'text']:
-            string_fields.append(field)
-        else:
-            non_string_fields.append(field)
+    duplicates = (
+        django_model.objects
+        .values(*all_fields)
+        .annotate(**{duplicates_field: Count('id')})
+        .filter(strict_filters)
+        .filter(**{f"{duplicates_field}__gt": 1})
+        .order_by(f'-{duplicates_field}')
+    )
 
-    if string_fields:
-        select_clause = []
-        for field in all_fields:
-            if field in string_fields:
-                select_clause.append(f"BINARY {field} as {field}")
-            else:
-                select_clause.append(field)
-        
-        raw_sql = f"""
-        SELECT {', '.join(select_clause)}, COUNT(*) as {duplicates_field}
-        FROM {django_model._meta.db_table}
-        WHERE """ + " AND ".join([f"{field} IS NOT NULL" for field in all_fields if not required_fields.get(field, True)]) + f"""
-        GROUP BY {', '.join([f"BINARY {field}" if field in string_fields else field for field in all_fields])}
-        HAVING COUNT(*) > 1
-        ORDER BY COUNT(*) DESC
-        """
-        
-        from django.db import connection
-        with connection.cursor() as cursor:
-            cursor.execute(raw_sql)
-            columns = [col[0] for col in cursor.description]
-            results = cursor.fetchall()
-            
-        duplicates = []
-        total_duplicates = 0
-        
-        for row in results:
-            row_dict = dict(zip(columns, row))
-            duplicate_count = row_dict[duplicates_field]
-            total_duplicates += duplicate_count
-            
-            field_values = {field: value for field, value in row_dict.items() if field != duplicates_field}
-            duplicates.append({
-                "duplicates": duplicate_count,
-                "fields": field_values
-            })
-    else:
-        duplicates = (
-            django_model.objects
-            .values(*all_fields)
-            .annotate(**{duplicates_field: Count('id')})
-            .filter(strict_filters)
-            .filter(**{f"{duplicates_field}__gt": 1})
-            .order_by(f'-{duplicates_field}')
-        )
+    total_duplicates = sum(duplicate[duplicates_field] for duplicate in duplicates)
 
-        total_duplicates = sum(duplicate[duplicates_field] for duplicate in duplicates)
-        duplicates = [
+    final = {
+        "totalDuplicates": total_duplicates,
+        "fields": [
             {
                 "duplicates": duplicate[duplicates_field],
                 "fields": {
@@ -278,11 +230,7 @@ def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[st
                 },
             }
             for duplicate in duplicates
-        ]
-
-    final = {
-        "totalDuplicates": total_duplicates,
-        "fields": duplicates,
+        ],
     }
     return final
 
