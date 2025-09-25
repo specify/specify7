@@ -714,12 +714,13 @@
       "issystem": true,
       "type": 0,
       "readonly": true,
-      "sizelimit": 4,
+      "sizelimit": 5,
       "items": [
-        { "title": "Unknown", "value": "Unknown" },
-        { "title": "Both", "value": "Both" },
+        { "title": "Indeterminate", "value": "Indeterminate" },
+        { "title": "Mixed", "value": "Mixed" },
+        { "title": "Male", "value": "Male" },
         { "title": "Female", "value": "Female" },
-        { "title": "Male", "value": "Male" }
+        { "title": "Other", "value": "Other" }
       ]
     },
     {
