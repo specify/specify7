@@ -6,134 +6,115 @@
           "name": "Life",
           "enforced": true,
           "infullname": false,
-          "rank": 0,
-          "locale": { "lang": "pt", "text": "Vida" }
+          "rank": 0
         },
         {
           "name": "Kingdom",
           "enforced": true,
           "infullname": false,
-          "rank": 10,
-          "locale": { "lang": "pt", "text": "Reino" }
+          "rank": 10
         },
         {
           "name": "Phylum",
           "enforced": true,
           "infullname": false,
-          "rank": 30,
-          "locale": { "lang": "pt", "text": "Filo" }
+          "rank": 30
         },
         {
           "name": "Subphylum",
           "enforced": false,
           "infullname": false,
-          "rank": 40,
-          "locale": { "lang": "pt", "text": "Subfilo" }
+          "rank": 40
         },
         {
           "name": "Class",
           "enforced": true,
           "infullname": false,
-          "rank": 60,
-          "locale": { "lang": "pt", "text": "Classe" }
+          "rank": 60
         },
         {
           "name": "Subclass",
           "enforced": false,
           "infullname": false,
-          "rank": 70,
-          "locale": { "lang": "pt", "text": "Subclasse" }
+          "rank": 70
         },
         {
           "name": "Infraclass",
           "enforced": false,
           "infullname": false,
-          "rank": 80,
-          "locale": { "lang": "pt", "text": "Infraclasse" }
+          "rank": 80
         },
         {
           "name": "Superorder",
           "enforced": false,
           "infullname": false,
-          "rank": 90,
-          "locale": { "lang": "pt", "text": "Superordem" }
+          "rank": 90
         },
         {
           "name": "Order",
           "enforced": true,
           "infullname": false,
-          "rank": 100,
-          "locale": { "lang": "pt", "text": "Ordem" }
+          "rank": 100
         },
         {
           "name": "Suborder",
           "enforced": false,
           "infullname": false,
-          "rank": 110,
-          "locale": { "lang": "pt", "text": "Subordem" }
+          "rank": 110
         },
         {
           "name": "Infraorder",
           "enforced": false,
           "infullname": false,
-          "rank": 120,
-          "locale": { "lang": "pt", "text": "Infraordem" }
+          "rank": 120
         },
         {
           "name": "Family",
           "enforced": true,
           "infullname": false,
-          "rank": 140,
-          "locale": { "lang": "pt", "text": "Família" }
+          "rank": 140
         },
         {
           "name": "Subfamily",
           "enforced": false,
           "infullname": false,
-          "rank": 150,
-          "locale": { "lang": "pt", "text": "Subamília" }
+          "rank": 150
         },
         {
           "name": "Tribe",
           "enforced": false,
           "infullname": false,
-          "rank": 160,
-          "locale": { "lang": "pt", "text": "Tribo" }
+          "rank": 160
         },
         {
           "name": "Subtribe",
           "enforced": false,
           "infullname": false,
-          "rank": 170,
-          "locale": { "lang": "pt", "text": "Subtribo" }
+          "rank": 170
         },
         {
           "name": "Genus",
           "enforced": true,
           "infullname": true,
-          "rank": 180,
-          "locale": { "lang": "pt", "text": "Género" }
+          "rank": 180
         },
         {
           "name": "Subgenus",
           "enforced": false,
           "infullname": false,
-          "rank": 190,
-          "locale": { "lang": "pt", "text": "Subgénero" }
+          "rank": 190
         },
         {
           "name": "Species",
           "enforced": true,
           "infullname": true,
-          "rank": 220,
-          "locale": { "lang": "pt", "text": "Espécie" }
+          "rank": 220
         },
         {
           "name": "Subspecies",
           "enforced": false,
           "infullname": true,
-          "rank": 230,
-          "locale": { "lang": "pt", "text": "Subespécie" }
+          "rank": 230
         }
       ]
     },

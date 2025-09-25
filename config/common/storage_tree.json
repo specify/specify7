@@ -6,121 +6,61 @@
           "name": "Site",
           "enforced": true,
           "infullname": false,
-          "rank": 0,
-          "locale": {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Sítio"
-          }
+          "rank": 0
         },
         {
           "name": "Building",
           "enforced": false,
           "infullname": false,
-          "rank": 100,
-          "locale": {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Edifício"
-          }
+          "rank": 100
         },
         {
           "name": "Collection",
           "enforced": false,
           "infullname": false,
-          "rank": 150,
-          "locale": {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Coleção"
-          }
+          "rank": 150
         },
         {
           "name": "Room",
           "enforced": false,
           "infullname": false,
-          "rank": 200,
-          "locale": {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Sala"
-          }
+          "rank": 200
         },
         {
           "name": "Aisle",
           "enforced": false,
           "infullname": false,
-          "rank": 250,
-          "locale": {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Corredor"
-          }
+          "rank": 250
         },
         {
           "name": "Cabinet",
           "enforced": false,
           "infullname": false,
-          "rank": 300,
-          "locale": {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Armário"
-          }
+          "rank": 300
         },
         {
           "name": "Shelf",
           "enforced": false,
           "infullname": false,
-          "rank": 350,
-          "locale": {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Estante"
-          }
+          "rank": 350
         },
         {
           "name": "Box",
           "enforced": false,
           "infullname": false,
-          "rank": 400,
-          "locale": {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Caixa"
-          }
+          "rank": 400
         },
         {
           "name": "Rack",
           "enforced": false,
           "infullname": "Rack",
-          "rank": 450,
-          "locale": {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Prateleira"
-          }
+          "rank": 450
         },
         {
           "name": "Vial",
           "enforced": false,
           "infullname": false,
-          "rank": 500,
-          "locale": {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Frasco"
-          }
+          "rank": 500
         }
       ]
     },
