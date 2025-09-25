@@ -75,8 +75,8 @@
           "type": null,
           "isrequired": false,
           "weblinkname": null,
-          "name": null,
-          "desc": null
+          "name": "Text 1",
+          "desc": "Text 1"
         }
       },
       {
@@ -88,8 +88,8 @@
           "type": null,
           "isrequired": false,
           "weblinkname": null,
-          "name": null,
-          "desc": null
+          "name": "Text 2",
+          "desc": "Text 2"
         }
       },
       {
@@ -101,8 +101,8 @@
           "type": null,
           "isrequired": false,
           "weblinkname": null,
-          "name": null,
-          "desc": null
+          "name": "Text 3",
+          "desc": "Text 3"
         }
       },
       {
@@ -114,8 +114,8 @@
           "type": null,
           "isrequired": false,
           "weblinkname": null,
-          "name": null,
-          "desc": null
+          "name": "Text 4",
+          "desc": "Text 4"
         }
       },
       {
@@ -127,8 +127,8 @@
           "type": null,
           "isrequired": false,
           "weblinkname": null,
-          "name": null,
-          "desc": null
+          "name": "Text 5",
+          "desc": "Text 5"
         }
       },
       {
@@ -140,8 +140,8 @@
           "type": null,
           "isrequired": false,
           "weblinkname": null,
-          "name": null,
-          "desc": null
+          "name": "Text 6",
+          "desc": "Text 6"
         }
       },
       {
@@ -153,8 +153,8 @@
           "type": null,
           "isrequired": false,
           "weblinkname": null,
-          "name": null,
-          "desc": null
+          "name": "Text 7",
+          "desc": "Text 7"
         }
       },
       {
@@ -166,8 +166,8 @@
           "type": null,
           "isrequired": false,
           "weblinkname": null,
-          "name": null,
-          "desc": null
+          "name":"Text 8",
+          "desc": "Text 8"
         }
       }
     ],
