@@ -128,13 +128,13 @@ export const batchEditText = createDictionary({
       'Використовуйте конструктор запитів для створення нового набору даних для пакетного редагування',
   },
   showRollback: {
-    "en-us": "Show rollback button",
-    "de-ch": "Rollback-Schaltfläche anzeigen",
-    "es-es": "Mostrar botón para revertir",
-    "fr-fr": "Afficher le bouton de restauration",
-    "pt-br": "Mostrar botão de reversão",
-    "ru-ru": "Показать кнопку отката",
-    "uk-ua": "Показати кнопку відкату",
+    'en-us': 'Show rollback button',
+    'de-ch': 'Rollback-Schaltfläche anzeigen',
+    'es-es': 'Mostrar botón para revertir',
+    'fr-fr': 'Afficher le bouton de restauration',
+    'pt-br': 'Mostrar botão de reversão',
+    'ru-ru': 'Показать кнопку отката',
+    'uk-ua': 'Показати кнопку відкату',
   },
   showRollbackDescription: {
     'en-us':
