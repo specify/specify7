@@ -9547,8 +9547,8 @@
 				"type": "ManyToOne",
 				"isrequired": false,
 				"weblinkname": null,
-				"name": "Collection Object Attribute",
-				"desc": "Collection Object Attribute"
+				"name": "Col Obj Attribute",
+				"desc": "Col Obj Attribute"
 			},
 			"collectionobjectattrs": {
 				"format": null,

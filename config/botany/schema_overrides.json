@@ -1,158 +1,106 @@
 {
-  "containers": [
-    {
-      "name": "collectingevent",
-      "isHidden": false,
-      "version": 0,
-      "isSystem": false,
-      "schemaType": 0,
-      "items": [
-        {
-          "name": "stationFieldNumber",
+  "collectingevent": {
+    "items": [
+      {
+        "stationFieldNumber": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": null,
           "type": "java.lang.String",
-          "isHidden": false,
-          "isUIFormatter": false,
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [
-            {
-              "language": "en",
-              "version": 0,
-              "text": "Collector Number"
-            }
-          ],
-          "descs": [
-            {
-              "reference": "../../names/str"
-            }
-          ],
-          "spExportSchemaItems": []
-        },
-        {
-          "name": "remarks",
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Collector Number",
+          "desc": "Collector Number"
+        }
+      },
+      {
+        "remarks": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": null,
           "type": "text",
-          "isHidden": false,
-          "isUIFormatter": false,
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [
-            {
-              "language": "en",
-              "version": 0,
-              "text": "Locality and\n Habitat Notes"
-            }
-          ],
-          "descs": [
-            {
-              "reference": "../../names/str"
-            }
-          ],
-          "spExportSchemaItems": []
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Locality and Habitat Notes",
+          "desc": "Locality and Habitat Notes"
         }
-      ],
-      "names": [],
-      "descs": []
-    },
-    {
-      "name": "collectionobject",
-      "isHidden": false,
-      "version": 0,
-      "isSystem": false,
-      "schemaType": 0,
-      "items": [
-        {
-          "name": "text1",
+      }
+    ],
+    "format": null,
+    "ishidden": false,
+    "isuiformatter": null,
+    "picklistname": null,
+    "type": null,
+    "aggregator": null,
+    "defaultui": null,
+    "name": "Collecting Event",
+    "desc": "Collecting Event"
+  },
+  "collectionobject": {
+    "items": [
+      {
+        "text1": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": "Phenology",
           "type": "java.lang.String",
-          "isHidden": false,
-          "isUIFormatter": false,
-          "pickListName": "Phenology",
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [
-            {
-              "language": "en",
-              "version": 0,
-              "text": "Phenology"
-            }
-          ],
-          "descs": [
-            {
-              "reference": "../../names/str"
-            }
-          ],
-          "spExportSchemaItems": []
-        },
-        {
-          "name": "description",
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Phenology",
+          "desc": "Phenology"
+        }
+      },
+      {
+        "description": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": null,
           "type": "java.lang.String",
-          "isHidden": false,
-          "isUIFormatter": false,
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [
-            {
-              "language": "en",
-              "version": 0,
-              "text": "Specimen\nDescription"
-            }
-          ],
-          "descs": [
-            {
-              "reference": "../../names/str"
-            }
-          ],
-          "spExportSchemaItems": []
-        },
-        {
-          "name": "exsiccataItems",
-          "isHidden": false,
-          "isUIFormatter": false,
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [
-            {
-              "language": "en",
-              "version": 0,
-              "text": "Exsiccata Items"
-            }
-          ],
-          "descs": [
-            {
-              "reference": "../../names/str"
-            }
-          ],
-          "spExportSchemaItems": []
-        },
-        {
-          "name": "collectionObjectAttribute",
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Specimen Description",
+          "desc": "Specimen Description"
+        }
+      },
+      {
+        "exsiccataItems": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": null,
+          "type": null,
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Exsiccata Items",
+          "desc": "Exsiccata Items"
+        }
+      },
+      {
+        "collectionObjectAttribute": {
+          "format": null,
+          "ishidden": true,
+          "isuiformatter": false,
+          "picklistname": null,
           "type": "ManyToOne",
-          "isHidden": true,
-          "isUIFormatter": false,
-          "isRequired": false,
-          "version": 0,
-          "isSystem": false,
-          "names": [
-            {
-              "language": "en",
-              "version": 0,
-              "text": "Col Obj Attribute"
-            }
-          ],
-          "descs": [
-            {
-              "reference": "../../names/str"
-            }
-          ],
-          "spExportSchemaItems": []
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Col Obj Attribute",
+          "desc": "Col Obj Attribute"
         }
-      ],
-      "names": [],
-      "descs": []
-    }
-  ]
+      }
+    ],
+    "format": null,
+    "ishidden": false,
+    "isuiformatter": null,
+    "picklistname": null,
+    "type": null,
+    "aggregator": null,
+    "defaultui": null,
+    "name": "Collection Object",
+    "desc": "Collection Object"
+  }
 }
