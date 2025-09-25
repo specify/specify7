@@ -5,155 +5,67 @@
         "name": "Life",
         "enforced": true,
         "infullname": false,
-        "rank": 0,
-        "locales": [
-          {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Vida"
-          }
-        ]
+        "rank": 0
       },
       {
         "name": "Kingdom",
         "enforced": true,
         "infullname": false,
-        "rank": 10,
-        "locales": [
-          {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Reino"
-          }
-        ]
+        "rank": 10
       },
       {
         "name": "Phylum",
         "enforced": true,
         "infullname": false,
-        "rank": 30,
-        "locales": [
-          {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Filo"
-          }
-        ]
+        "rank": 30
       },
       {
         "name": "Subphylum",
         "enforced": false,
         "infullname": false,
-        "rank": 40,
-        "locales": [
-          {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Subfilo"
-          }
-        ]
+        "rank": 40
       },
       {
         "name": "Class",
         "enforced": true,
         "infullname": false,
-        "rank": 60,
-        "locales": [
-          {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Classe"
-          }
-        ]
+        "rank": 60
       },
       {
         "name": "Order",
         "enforced": true,
         "infullname": false,
-        "rank": 100,
-        "locales": [
-          {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Ordem"
-          }
-        ]
+        "rank": 100
       },
       {
         "name": "Family",
         "enforced": true,
         "infullname": false,
-        "rank": 140,
-        "locales": [
-          {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Família"
-          }
-        ]
+        "rank": 140
       },
       {
         "name": "Subfamily",
         "enforced": false,
         "infullname": false,
-        "rank": 150,
-        "locales": [
-          {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Subfamília"
-          }
-        ]
+        "rank": 150
       },
       {
         "name": "Genus",
         "enforced": true,
         "infullname": true,
-        "rank": 180,
-        "locales": [
-          {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Género"
-          }
-        ]
+        "rank": 180
       },
       {
         "name": "Species",
         "enforced": true,
         "infullname": true,
-        "rank": 220,
-        "locales": [
-          {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Espécie"
-          }
-        ]
+        "rank": 220
       },
       {
         "name": "Subspecies",
         "enforced": false,
         "infullname": true,
-        "rank": 230,
-        "locales": [
-          {
-            "lang": "pt",
-            "country": "",
-            "var": "",
-            "text": "Subespécie"
-          }
-        ]
+        "rank": 230
       }
     ]
   },
