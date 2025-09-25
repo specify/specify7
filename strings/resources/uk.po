@@ -583,7 +583,7 @@ msgstr "Налаштувати поле"
 #: components/Formatters/Fields.tsx:381
 #. Used in: Components > Formatters > Fields
 msgid "trimZeros"
-msgstr "Обрізати нулі"
+msgstr "Видалити початкові нулі"
 
 #: components/Formatters/Fields.tsx:375
 #. Used in: Components > Formatters > Fields

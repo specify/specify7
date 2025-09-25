@@ -3,128 +3,126 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2025-09-24 15:02+0000\n"
 "Last-Translator: Miguel Díaz de León <migueldlm1307@gmail.com>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
-"interactions/es/>\n"
+"Language-Team: Spanish "
+"<https://hosted.weblate.org/projects/specify-7/interactions/es/>\n"
 "Language: es\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.14-dev\n"
 
-#. Used in: Components > Form Commands > Show Transactions ⬤ Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #: components/FormCommands/ShowTransactions.tsx:119
 #: components/Header/menuItemDefinitions.ts:61
 #: components/Interactions/InteractionsDialog.tsx:58
 #: components/Preferences/UserDefinitions.tsx:614
 #: components/Router/OverlayRoutes.tsx:87
+#. Used in: Components > Form Commands > Show Transactions ⬤ Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 msgid "interactions"
 msgstr "Interacciones"
 
-#. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 #: components/Interactions/InteractionDialog.tsx:378
 #: components/Interactions/PrepDialog.tsx:146
+#. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 msgid "addItems"
 msgstr "Agregar elementos"
 
-#. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:380
+#. Used in: Components > Interactions > Interaction Dialog
 msgid "recordReturn"
 msgstr "{table:string} Regresar"
 
-#. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:428
+#. Used in: Components > Interactions > Interaction Dialog
 msgid "preparationsNotFoundFor"
 msgstr "No se encontraron preparaciones para los siguientes registros:"
 
-#. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:437
+#. Used in: Components > Interactions > Interaction Dialog
 msgid "preparationsNotAvailableFor"
 msgstr ""
-"No hay preparaciones disponibles para al menos un tipo de preparación en los "
-"siguientes registros:"
+"No hay preparaciones disponibles para al menos un tipo de preparación en "
+"los siguientes registros:"
 
-#. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:418
+#. Used in: Components > Interactions > Interaction Dialog
 msgid "problemsFound"
 msgstr "Hay problemas con la entrada:"
 
-#. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:387
+#. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
 msgid "byChoosingRecordSet"
-msgstr ""
-"Al elegir un conjunto de registros ({{count:none | one | ??}} disponibles)"
+msgstr "Al elegir un conjunto de registros ({{count:none | one | ??}} disponibles)"
 
-#. 🟥Field name is localized. Coming from Schema Configuration. I.e, By entering Catalog Numbers. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:393
+#. 🟥Field name is localized. Coming from Schema Configuration. I.e, By entering Catalog Numbers. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "byEnteringNumbers"
 msgstr "Ingresando {fieldName:string}s"
 
-#. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:358
+#. Used in: Components > Interactions > Interaction Dialog
 msgid "withoutPreparations"
 msgstr "Sin preparaciones"
 
-#. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:315
 #: components/Interactions/InteractionDialog.tsx:319
+#. Used in: Components > Interactions > Interaction Dialog
 msgid "continueWithoutPreparations"
 msgstr "Continuar sin preparaciones"
 
-#. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:354
+#. Used in: Components > Interactions > Interaction Dialog
 msgid "addUnassociated"
 msgstr "Agregar elemento no asociado"
 
-#. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:157
+#. Used in: Components > Interactions > Prep Dialog
 msgid "preparations"
 msgstr "Preparaciones"
 
-#. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:101
+#. Used in: Components > Form Commands > Index
 msgid "preparationsCanNotBeReturned"
 msgstr "En este contexto no es posible retomar las preparaciones"
 
-#. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:75
+#. Used in: Components > Interactions > Loan Return
 msgid "noUnresolvedPreparations"
 msgstr "No existen preparaciones pendientes para este préstamo."
 
-#. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:315
+#. Used in: Components > Interactions > Loan Return
 msgid "unresolved"
 msgstr "Sin resolver"
 
-#. 🟥Verb. Used in: Components > Interactions > Loan Return ⬤ Components > Query Builder > Loan Return
 #: components/Interactions/LoanReturn.tsx:318
 #: components/QueryBuilder/LoanReturn.tsx:164
+#. 🟥Verb. Used in: Components > Interactions > Loan Return ⬤ Components > Query Builder > Loan Return
 msgid "return"
 msgstr "Devolver"
 
-#. 🟥As in "Resolve preparations". Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:321
+#. 🟥As in "Resolve preparations". Used in: Components > Interactions > Loan Return
 msgid "resolve"
 msgstr "Resolver"
 
-#. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:170
+#. Used in: Components > Interactions > Loan Return
 #, fuzzy
 msgid "returnAllPreparations"
 msgstr "Devolver todos los preparativos"
 
-#. Used in: Components > Interactions > Loan Return ⬤ Components > Query Builder > Loan Return
 #: components/Interactions/LoanReturn.tsx:201
 #: components/QueryBuilder/LoanReturn.tsx:162
+#. Used in: Components > Interactions > Loan Return ⬤ Components > Query Builder > Loan Return
 msgid "returnSelectedPreparations"
 msgstr "Devolver preparaciones seleccionadas"
 
-#. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:128
+#. Used in: Components > Interactions > Prep Dialog
 msgid "selectAllAvailablePreparations"
 msgstr "Seleccione todas las preparaciones disponibles"
 
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row ⬤ Components > Interactions > Prep Return Row
 #: components/FormMeta/CarryForward.tsx:361
 #: components/Interactions/LoanReturn.tsx:182
 #: components/Interactions/PrepDialog.tsx:133
@@ -133,10 +131,10 @@ msgstr "Seleccione todas las preparaciones disponibles"
 #: components/Interactions/PrepDialogRow.tsx:92
 #: components/Interactions/PrepReturnRow.tsx:80
 #: components/Interactions/PrepReturnRow.tsx:82
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row ⬤ Components > Interactions > Prep Return Row
 msgid "selectAll"
 msgstr "Seleccionar todo"
 
-#. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row
 #: components/Interactions/LoanReturn.tsx:275
 #: components/Interactions/LoanReturn.tsx:279
 #: components/Interactions/LoanReturn.tsx:289
@@ -145,122 +143,123 @@ msgstr "Seleccionar todo"
 #: components/Interactions/PrepDialog.tsx:167
 #: components/Interactions/PrepDialogRow.tsx:181
 #: components/Interactions/PrepDialogRow.tsx:184
+#. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row
 msgid "selectedAmount"
 msgstr "Cantidad seleccionada"
 
-#. Used in: Components > Interactions > Prep Return Row
 #: components/Interactions/PrepReturnRow.tsx:101
 #: components/Interactions/PrepReturnRow.tsx:105
+#. Used in: Components > Interactions > Prep Return Row
 #, fuzzy
 msgid "returnedAmount"
 msgstr "Cantidad devuelta"
 
-#. Used in: Components > Interactions > Prep Return Row
 #: components/Interactions/PrepReturnRow.tsx:121
 #: components/Interactions/PrepReturnRow.tsx:125
+#. Used in: Components > Interactions > Prep Return Row
 #, fuzzy
 msgid "resolvedAmount"
 msgstr "Monto Resuelto"
 
-#. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
 #: components/Interactions/PrepDialogRow.tsx:263
+#. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
 msgid "prepReturnFormatter"
 msgstr "{tableName:string}: {resource:string}"
 
-#. 🟥Example: Resolved Loan records. Used in: Components > Form Commands > Show Transactions
 #: components/FormCommands/ShowTransactions.tsx:136
+#. 🟥Example: Resolved Loan records. Used in: Components > Form Commands > Show Transactions
 msgid "resolvedLoans"
 msgstr "Registros {loanTable:string} resueltos"
 
-#. 🟥Example: Open Loan records. Used in: Components > Form Commands > Show Transactions
 #: components/FormCommands/ShowTransactions.tsx:125
+#. 🟥Example: Open Loan records. Used in: Components > Form Commands > Show Transactions
 msgid "openLoans"
 msgstr "Abrir {loanTable:string} registros"
 
-#. 🟥Example: Gift records. Used in: Components > Form Commands > Show Transactions
 #: components/FormCommands/ShowTransactions.tsx:147
+#. 🟥Example: Gift records. Used in: Components > Form Commands > Show Transactions
 msgid "gifts"
 msgstr "{giftTable:string} registros"
 
-#. 🟥Example: Exchange In / Exchnage Out records. Used in: Components > Form Commands > Show Transactions
 #: components/FormCommands/ShowTransactions.tsx:159
+#. 🟥Example: Exchange In / Exchnage Out records. Used in: Components > Form Commands > Show Transactions
 #, fuzzy
 msgid "exchanges"
 msgstr "{exhangeInTable:string} / {exhangeOutTable:string} registros"
 
-#. Used in: Components > Interactions > Prep Return Row
 #: components/Interactions/PrepReturnRow.tsx:41
+#. Used in: Components > Interactions > Prep Return Row
 #, fuzzy
 msgid "unCataloged"
 msgstr "sin catalogar"
 
-#. 🟥Example: Preparation records. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:284
 #: components/Interactions/InteractionDialog.tsx:325
+#. 🟥Example: Preparation records. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "returnedPreparations"
 msgstr "Se devolvieron {tablePreparation:string} registros"
 
-#. 🟥Example: 2 Preparation records have been returned and saved. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:289
+#. 🟥Example: 2 Preparation records have been returned and saved. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "returnedAndSaved"
 msgstr ""
 "Se han devuelto y guardado {count:number|formatted} "
 "{tablePreparation:string} registros"
 
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Query Builder > Results
 #: components/FormMeta/CarryForward.tsx:381
 #: components/Interactions/LoanReturn.tsx:197
 #: components/Interactions/PrepDialog.tsx:140
 #: components/QueryBuilder/Results.tsx:211
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Query Builder > Results
 #, fuzzy
 msgid "deselectAll"
 msgstr "Deseleccionar todo"
 
-#. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:270
+#. Used in: Components > Interactions > Prep Dialog
 #, fuzzy
 msgid "available"
 msgstr "Disponible"
 
-#. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:271
+#. Used in: Components > Interactions > Prep Dialog
 #, fuzzy
 msgid "unavailable"
 msgstr "Indisponible"
 
-#. 🟥Example: Return Loan records. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return
 #: components/Interactions/InteractionsDialog.tsx:81
 #: components/QueryBuilder/LoanReturn.tsx:148
+#. 🟥Example: Return Loan records. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return
 #, fuzzy
 msgid "returnLoan"
 msgstr "Devolver {tableLoan:string} registros"
 
-#. 🟥Example: Create a Loan. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 #: components/Interactions/InteractionDialog.tsx:381
 #: components/Interactions/PrepDialog.tsx:147
+#. 🟥Example: Create a Loan. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 #, fuzzy
 msgid "createRecord"
 msgstr "Crear {table:string}"
 
-#. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:330
+#. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "noPreparationsWarning"
 msgstr "Ninguno de estos objetos tiene preparativos. ¿Quieres continuar?"
 
-#. Used in: Components > Batch Edit > Missing Ranks ⬤ Components > Form Sliders > Attachment Warning Deletion ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Tree View > Add Rank
 #: components/BatchEdit/MissingRanks.tsx:44
 #: components/FormSliders/AttachmentWarningDeletion.tsx:53
 #: components/Interactions/InteractionDialog.tsx:370
 #: components/TreeView/AddRank.tsx:62
+#. Used in: Components > Batch Edit > Missing Ranks ⬤ Components > Form Sliders > Attachment Warning Deletion ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Tree View > Add Rank
 #, fuzzy
 msgid "continue"
 msgstr "Continuar"
 
-#. Used in: Components > Interactions > Prep Dialog Row
 #: components/Interactions/PrepDialogRow.tsx:175
+#. Used in: Components > Interactions > Prep Dialog Row
 #, fuzzy
 msgid "notAvailable"
 msgstr "No disponible"

@@ -599,7 +599,7 @@ msgstr "Настроить поле"
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "trimZeros"
-msgstr "Trim Zero"
+msgstr "Удалить ведущие нули"
 
 #: components/Formatters/Fields.tsx:375
 #. Used in: Components > Formatters > Fields

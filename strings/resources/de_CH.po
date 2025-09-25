@@ -657,7 +657,7 @@ msgstr "Feld konfigurieren"
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "trimZeros"
-msgstr "Nullen trimmen"
+msgstr "Führende Nullen entfernen"
 
 #: components/Formatters/Fields.tsx:375
 #. Used in: Components > Formatters > Fields
