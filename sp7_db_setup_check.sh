@@ -55,7 +55,7 @@ NEW_USER_CREATED=0
 
 # Wait for MariaDB to be up and running
 echo "Checking if MariaDB instance is up and running..."
-while ! mysqladmin ping -h "$DB_HOST" -P "$DB_PORT" --silent; do
+until (exec 3<>/dev/tcp/"$DB_HOST"/"$DB_PORT") 2>/dev/null; do
   echo "MariaDB is not available yet. Retrying in 5 seconds..."
   sleep 5
 done
