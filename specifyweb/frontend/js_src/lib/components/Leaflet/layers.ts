@@ -6,7 +6,7 @@ import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import type { IR, RA, RR } from '../../utils/types';
 import { softFail } from '../Errors/Crash';
 import {
-  cachableUrl,
+  cacheableUrl,
   contextUnlockedPromise,
   foreverFetch,
 } from '../InitialContext';
@@ -190,14 +190,14 @@ export const fetchLeafletLayers = async (): Promise<Layers<L.TileLayer>> =>
 const layersPromise: Promise<Layers<SerializedLayer>> =
   contextUnlockedPromise.then(async (entrypoint) =>
     entrypoint === 'main'
-      ? ajax(cachableUrl(getAppResourceUrl('leaflet-layers', 'quiet')), {
+      ? ajax(cacheableUrl(getAppResourceUrl('leaflet-layers', 'quiet')), {
           headers: { Accept: 'text/plain' },
           errorMode: 'silent',
         })
           .then(async ({ data, status }) =>
             status === Http.NO_CONTENT
               ? ajax<Layers<SerializedLayer>>(
-                  cachableUrl(leafletLayersEndpoint),
+                  cacheableUrl(leafletLayersEndpoint),
                   {
                     headers: { Accept: 'application/json' },
                     errorMode: 'silent',

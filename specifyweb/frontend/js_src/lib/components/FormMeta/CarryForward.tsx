@@ -259,11 +259,11 @@ export const tableValidForBulkClone = (
   !(
     tables.CollectionObject.strictGetLiteralField('catalogNumber')
       .getUiFormatter(resource ?? undefined)
-      ?.fields.some(
-        (field) =>
-          field.type === 'regex' ||
-          field.type === 'alphanumeric' ||
-          (field.type === 'numeric' && !field.canAutonumber())
+      ?.parts.some(
+        (parts) =>
+          parts.type === 'regex' ||
+          parts.type === 'alphanumeric' ||
+          (parts.type === 'numeric' && !parts.canAutonumber())
       ) ?? false
   );
 
