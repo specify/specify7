@@ -9,7 +9,7 @@ import { tables } from '../DataModel/tables';
 import type { PickList, SpQuery } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { createQuery } from '../QueryBuilder';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { queryFieldFilterSpecs } from '../QueryBuilder/FieldFilterSpec';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
@@ -84,7 +84,7 @@ function usePickListQuery(
         QueryFieldSpec.fromPath('SpLocaleContainerItem', ['pickListName'])
           .toSpQueryField()
           .set('isDisplay', false)
-          .set('operStart', queryFieldFilters.equal.id)
+          .set('operStart', queryFieldFilterSpecs.equal.id)
           .set('startValue', resource.get('name')),
       ]),
     [resource]

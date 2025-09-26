@@ -8,9 +8,9 @@ import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import { mappingElementDivider } from '../WbPlanView/LineComponents';
 import { IsQueryBasicContext } from './Context';
-import { resolvePickListItem } from './FieldFilter';
+import { resolvePickListItem } from './FieldFilterSpec';
 import type { QueryField } from './helpers';
-import { useQueryFieldFilters } from './useQueryFieldFilters';
+import { useQueryFieldFilterSpecs } from './useQueryFieldFilterSpecs';
 
 export function QueryLineFilter({
   filter,
@@ -27,9 +27,9 @@ export function QueryLineFilter({
   readonly enforceLengthLimit: boolean;
   readonly onChange: ((newValue: string) => void) | undefined;
 }): JSX.Element | null {
-  const queryFieldFilters = useQueryFieldFilters();
+  const queryFieldFilterSpecs = useQueryFieldFilterSpecs();
 
-  const parser = queryFieldFilters[filter.type].hasParser
+  const parser = queryFieldFilterSpecs[filter.type].hasParser
     ? originalParser
     : ({
         ...removeKey(
@@ -67,7 +67,7 @@ export function QueryLineFilter({
     if (newStartValue !== filter.startValue) handleChange?.(newStartValue);
   }, [pickListItems, filter]);
 
-  const Component = queryFieldFilters[filter.type].component;
+  const Component = queryFieldFilterSpecs[filter.type].component;
 
   const isBasic = React.useContext(IsQueryBasicContext);
 
@@ -82,7 +82,7 @@ export function QueryLineFilter({
         fieldName={fieldName}
         parser={parser}
         pickListItems={
-          queryFieldFilters[filter.type].renderPickList
+          queryFieldFilterSpecs[filter.type].renderPickList
             ? pickListItems === false
               ? undefined
               : pickListItems

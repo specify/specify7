@@ -1,5 +1,5 @@
 from specifyweb.specify.tests.test_api import ApiTransactionTests
-from specifyweb.specify.uiformatters import (
+from specifyweb.specify.utils.uiformatters import (
     AnyCharField,
     CNNField,
     NumericField,
