@@ -47,11 +47,11 @@
       "readonly": true,
       "sizelimit": 5,
       "items": [
-        { "title": "US Dept Wildlife", "value": "udw" },
-        { "title": "State", "value": "state" },
-        { "title": "International", "value": "int" },
-        { "title": "Federal", "value": "fed" },
-        { "title": "no data", "value": "no data" }
+        { "title": "US Dept Wildlife", "value": "Udw" },
+        { "title": "State", "value": "State" },
+        { "title": "International", "value": "Int" },
+        { "title": "Federal", "value": "Fed" },
+        { "title": "No Data", "value": "No Data" }
       ]
     },
     {
@@ -61,17 +61,17 @@
       "readonly": true,
       "sizelimit": 12,
       "items": [
-        { "title": "Borrower", "value": "borrower" },
-        { "title": "Benefactor", "value": "benefactor" },
-        { "title": "Contributor", "value": "contributor" },
-        { "title": "Donor", "value": "donor" },
-        { "title": "Guest", "value": "guest" },
-        { "title": "Other", "value": "other" },
-        { "title": "Preparer", "value": "preparer" },
-        { "title": "Receiver", "value": "receiver" },
-        { "title": "Sponsor", "value": "sponsor" },
-        { "title": "Staff", "value": "staff" },
-        { "title": "Student", "value": "student" }
+        { "title": "Borrower", "value": "Borrower" },
+        { "title": "Benefactor", "value": "Benefactor" },
+        { "title": "Contributor", "value": "Contributor" },
+        { "title": "Donor", "value": "Donor" },
+        { "title": "Guest", "value": "Guest" },
+        { "title": "Other", "value": "Other" },
+        { "title": "Preparer", "value": "Preparer" },
+        { "title": "Receiver", "value": "Receiver" },
+        { "title": "Sponsor", "value": "Sponsor" },
+        { "title": "Staff", "value": "Staff" },
+        { "title": "Student", "value": "Student" }
       ]
     },
     {
@@ -81,17 +81,17 @@
       "readonly": true,
       "sizelimit": 12,
       "items": [
-        { "title": "Borrower", "value": "borrower" },
-        { "title": "Benefactor", "value": "benefactor" },
-        { "title": "Contributor", "value": "contributor" },
-        { "title": "Donor", "value": "donor" },
-        { "title": "Guest", "value": "guest" },
-        { "title": "Other", "value": "other" },
-        { "title": "Preparer", "value": "preparer" },
-        { "title": "Receiver", "value": "receiver" },
-        { "title": "Sponsor", "value": "sponsor" },
-        { "title": "Staff", "value": "staff" },
-        { "title": "Student", "value": "student" }
+        { "title": "Borrower", "value": "Borrower" },
+        { "title": "Benefactor", "value": "Benefactor" },
+        { "title": "Contributor", "value": "Contributor" },
+        { "title": "Donor", "value": "Donor" },
+        { "title": "Guest", "value": "Guest" },
+        { "title": "Other", "value": "Other" },
+        { "title": "Preparer", "value": "Preparer" },
+        { "title": "Receiver", "value": "Receiver" },
+        { "title": "Sponsor", "value": "Sponsor" },
+        { "title": "Staff", "value": "Staff" },
+        { "title": "Student", "value": "Student" }
       ]
     },
     {
@@ -101,9 +101,9 @@
       "readonly": true,
       "sizelimit": 3,
       "items": [
-        { "title": "No Data", "value": "nodata" },
-        { "title": "In Process", "value": "inprocess" },
-        { "title": "Complete", "value": "complete" }
+        { "title": "No Data", "value": "Nodata" },
+        { "title": "In Process", "value": "Inprocess" },
+        { "title": "Complete", "value": "Complete" }
       ]
     },
     {
@@ -113,11 +113,11 @@
       "readonly": true,
       "sizelimit": 5,
       "items": [
-        { "title": "DHL", "value": "dhl" },
-        { "title": "Fed Ex", "value": "fedex" },
-        { "title": "By Hand", "value": "hand" },
-        { "title": "UPS", "value": "ups" },
-        { "title": "USPS", "value": "usps" }
+        { "title": "DHL", "value": "DHL" },
+        { "title": "Fed Ex", "value": "FedEx" },
+        { "title": "By Hand", "value": "Hand" },
+        { "title": "UPS", "value": "UPS" },
+        { "title": "USPS", "value": "USPS" }
       ]
     },
     {
@@ -127,9 +127,9 @@
       "readonly": true,
       "sizelimit": 5,
       "items": [
-        { "title": "Gift", "value": "gift" },
-        { "title": "Collection", "value": "cln" },
-        { "title": "Field Work", "value": "field_work" }
+        { "title": "Gift", "value": "Gift" },
+        { "title": "Collection", "value": "Cln" },
+        { "title": "Field Work", "value": "Field_work" }
       ]
     },
     {
@@ -153,11 +153,11 @@
       "readonly": true,
       "sizelimit": 5,
       "items": [
-        { "title": "Collector", "value": "collector" },
-        { "title": "Staff", "value": "staff" },
-        { "title": "Donor", "value": "donor" },
-        { "title": "Reviewer", "value": "reviewer" },
-        { "title": "Receiver", "value": "receiver" }
+        { "title": "Collector", "value": "Collector" },
+        { "title": "Staff", "value": "Staff" },
+        { "title": "Donor", "value": "Donor" },
+        { "title": "Reviewer", "value": "Reviewer" },
+        { "title": "Receiver", "value": "Receiver" }
       ]
     },
     {
@@ -187,7 +187,7 @@
         { "title": "Paper", "value": "2" },
         { "title": "Technical Report", "value": "3" },
         { "title": "Thesis", "value": "4" },
-        { "title": "Section in Book", "value": "5" }
+        { "title": "Section In Book", "value": "5" }
       ]
     },
     {
@@ -197,8 +197,8 @@
       "readonly": false,
       "sizelimit": 500,
       "items": [
-        { "title": "%G %S", "value": "%G %S" },
-        { "title": "%G %S (%A1 ex. %A2)", "value": "%G %S (%A1 ex. %A2)" }
+        { "title": "%g %s", "value": "%g %s" },
+        { "title": "%g %s (%a1 Ex. %a2)", "value": "%g %s (%a1 Ex. %a2)" }
       ]
     },
     {
@@ -208,12 +208,12 @@
       "readonly": true,
       "sizelimit": 6,
       "items": [
-        { "title": "Asst. Director", "value": "asstdir" },
-        { "title": "Curator", "value": "curator" },
-        { "title": "Mr.", "value": "mr" },
-        { "title": "Mrs.", "value": "mrs" },
-        { "title": "Ms.", "value": "ms" },
-        { "title": "Dr.", "value": "dr" }
+        { "title": "Asst. Director", "value": "Asstdir" },
+        { "title": "Curator", "value": "Curator" },
+        { "title": "Mr.", "value": "Mr" },
+        { "title": "Mrs.", "value": "Mrs" },
+        { "title": "Ms.", "value": "Ms" },
+        { "title": "Dr.", "value": "Dr" }
       ]
     },
     {
@@ -223,8 +223,8 @@
       "readonly": true,
       "sizelimit": 100,
       "items": [
-        { "title": "Shelved By", "value": "shelved by" },
-        { "title": "Flora of Kansas", "value": "flora of kansas" }
+        { "title": "Shelved By", "value": "Shelved By" },
+        { "title": "Flora of Kansas", "value": "Flora of Kansas" }
       ]
     },
     {
@@ -234,8 +234,8 @@
       "readonly": true,
       "sizelimit": 10,
       "items": [
-        { "title": "Bug Room", "value": "bugroom" },
-        { "title": "CO2", "value": "co2" }
+        { "title": "Bug Room", "value": "Bugroom" },
+        { "title": "CO2", "value": "CO2" }
       ]
     },
     {
@@ -246,8 +246,8 @@
       "tablename": "address",
       "sizelimit": 2,
       "items": [
-        { "title": "Home", "value": "home" },
-        { "title": "Work", "value": "work" }
+        { "title": "Home", "value": "Home" },
+        { "title": "Work", "value": "Work" }
       ]
     },
     {
@@ -259,41 +259,41 @@
       "sort": 2,
       "items": [
         { "title": "None", "value": "|null|" },
-        { "title": "Allolectotype", "value": "allolectotype" },
-        { "title": "Alloneotype", "value": "alloneotype" },
-        { "title": "Allotype", "value": "allotype" },
-        { "title": "Cotype", "value": "cotype" },
-        { "title": "Epitype", "value": "epitype" },
-        { "title": "Ex Epitype", "value": "exepitype" },
-        { "title": "Ex Holotype", "value": "exholotype" },
-        { "title": "Ex Isotype", "value": "exisotype" },
-        { "title": "Ex Lectotype", "value": "exlectotype" },
-        { "title": "Ex Neotype", "value": "exneotype" },
-        { "title": "Ex Paratype", "value": "exparatype" },
-        { "title": "Ex Syntype", "value": "exsyntype" },
-        { "title": "Ex Type", "value": "extype" },
-        { "title": "Hapantotype", "value": "hapantotype" },
-        { "title": "Holotype", "value": "holotype" },
-        { "title": "Iconotype", "value": "iconotype" },
-        { "title": "Isolectotype", "value": "isolectotype" },
-        { "title": "Isoneotype", "value": "isoneotype" },
-        { "title": "Isosyntype", "value": "isosyntype" },
-        { "title": "Isotype", "value": "isotype" },
-        { "title": "Lectotype", "value": "lectotype" },
-        { "title": "Neotype", "value": "neotype" },
-        { "title": "Paralectotype", "value": "paralectotype" },
-        { "title": "Paraneotype", "value": "paraneotype" },
-        { "title": "Paratype", "value": "paratype" },
-        { "title": "Plastoholotype", "value": "plastoholotype" },
-        { "title": "Plastoisotype", "value": "plastoisotype" },
-        { "title": "Plastolectotype", "value": "plastolectotype" },
-        { "title": "Plastoneotype", "value": "plastoneotype" },
-        { "title": "Plastoparatype", "value": "plastoparatype" },
-        { "title": "Plastosyntype", "value": "plastosyntype" },
-        { "title": "Plastotype", "value": "plastotype" },
-        { "title": "Syntype", "value": "syntype" },
-        { "title": "Topotype", "value": "topotype" },
-        { "title": "Type", "value": "type" }
+        { "title": "Allolectotype", "value": "Allolectotype" },
+        { "title": "Alloneotype", "value": "Alloneotype" },
+        { "title": "Allotype", "value": "Allotype" },
+        { "title": "Cotype", "value": "Cotype" },
+        { "title": "Epitype", "value": "Epitype" },
+        { "title": "Ex Epitype", "value": "Exepitype" },
+        { "title": "Ex Holotype", "value": "Exholotype" },
+        { "title": "Ex Isotype", "value": "Exisotype" },
+        { "title": "Ex Lectotype", "value": "Exlectotype" },
+        { "title": "Ex Neotype", "value": "Exneotype" },
+        { "title": "Ex Paratype", "value": "Exparatype" },
+        { "title": "Ex Syntype", "value": "Exsyntype" },
+        { "title": "Ex Type", "value": "Extype" },
+        { "title": "Hapantotype", "value": "Hapantotype" },
+        { "title": "Holotype", "value": "Holotype" },
+        { "title": "Iconotype", "value": "Iconotype" },
+        { "title": "Isolectotype", "value": "Isolectotype" },
+        { "title": "Isoneotype", "value": "Isoneotype" },
+        { "title": "Isosyntype", "value": "Isosyntype" },
+        { "title": "Isotype", "value": "Isotype" },
+        { "title": "Lectotype", "value": "Lectotype" },
+        { "title": "Neotype", "value": "Neotype" },
+        { "title": "Paralectotype", "value": "Paralectotype" },
+        { "title": "Paraneotype", "value": "Paraneotype" },
+        { "title": "Paratype", "value": "Paratype" },
+        { "title": "Plastoholotype", "value": "Plastoholotype" },
+        { "title": "Plastoisotype", "value": "Plastoisotype" },
+        { "title": "Plastolectotype", "value": "Plastolectotype" },
+        { "title": "Plastoneotype", "value": "Plastoneotype" },
+        { "title": "Plastoparatype", "value": "Plastoparatype" },
+        { "title": "Plastosyntype", "value": "Plastosyntype" },
+        { "title": "Plastotype", "value": "Plastotype" },
+        { "title": "Syntype", "value": "Syntype" },
+        { "title": "Topotype", "value": "Topotype" },
+        { "title": "Type", "value": "Type" }
       ]
     },
     {
@@ -398,7 +398,7 @@
       "items": [
         { "title": "Destroyed", "value": "Destroyed" },
         { "title": "Destructive Sampling", "value": "Destructive Sampling" },
-        { "title": "Lost", "value": "lost" }
+        { "title": "Lost", "value": "Lost" }
       ]
     }
   ]

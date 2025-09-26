@@ -6,7 +6,9 @@
       "type": 0,
       "readonly": true,
       "sizelimit": 5,
-      "items": [{ "title": "shot", "value": "shot" }]
+      "items": [
+        { "title": "Shot", "value": "Shot" }
+      ]
     },
     {
       "name": "CollObjPrepMeth",
@@ -14,7 +16,9 @@
       "type": 0,
       "readonly": true,
       "sizelimit": 5,
-      "items": [{ "title": "Sheet", "value": "sheet" }]
+      "items": [
+        { "title": "Sheet", "value": "Sheet" }
+      ]
     },
     {
       "name": "Method",
@@ -23,10 +27,10 @@
       "readonly": true,
       "sizelimit": 4,
       "items": [
-        { "title": "No data", "value": "No Data" },
-        { "title": "hand", "value": "hand" },
-        { "title": "net", "value": "net" },
-        { "title": "trap", "value": "trap" }
+        { "title": "No Data", "value": "No Data" },
+        { "title": "Hand", "value": "Hand" },
+        { "title": "Net", "value": "Net" },
+        { "title": "Trap", "value": "Trap" }
       ]
     },
     {
@@ -50,12 +54,12 @@
       "sizelimit": 7,
       "items": [
         { "title": "No Data", "value": "No Data" },
-        { "title": "dead reckoning", "value": "dead reckoning" },
-        { "title": "gazetteer", "value": "gazetteer" },
+        { "title": "Dead Reckoning", "value": "Dead Reckoning" },
+        { "title": "Gazetteer", "value": "Gazetteer" },
         { "title": "GPS", "value": "GPS" },
         { "title": "Map", "value": "Map" },
         { "title": "None", "value": "None" },
-        { "title": "sextant", "value": "sextant" }
+        { "title": "Sextant", "value": "Sextant" }
       ]
     },
     {
@@ -66,13 +70,13 @@
       "sizelimit": 9,
       "items": [
         { "title": "Unknown", "value": "Unknown" },
-        { "title": "adult", "value": "adult" },
-        { "title": "egg", "value": "egg" },
-        { "title": "hatchling", "value": "hatchling" },
-        { "title": "nestling", "value": "nestling" },
-        { "title": "fledgling", "value": "fledgling" },
-        { "title": "immature", "value": "immature" },
-        { "title": "juvenile", "value": "juvenile" }
+        { "title": "Adult", "value": "Adult" },
+        { "title": "Egg", "value": "Egg" },
+        { "title": "Hatchling", "value": "Hatchling" },
+        { "title": "Nestling", "value": "Nestling" },
+        { "title": "Fledgling", "value": "Fledgling" },
+        { "title": "Immature", "value": "Immature" },
+        { "title": "Juvenile", "value": "Juvenile" }
       ]
     },
     {
@@ -100,7 +104,9 @@
       "type": 0,
       "readonly": true,
       "sizelimit": 5,
-      "items": [{ "title": "cut", "value": "cut" }]
+      "items": [
+        { "title": "Cut", "value": "Cut" }
+      ]
     },
     {
       "name": "CollObjPrepMeth",
@@ -108,7 +114,9 @@
       "type": 0,
       "readonly": true,
       "sizelimit": 5,
-      "items": [{ "title": "Sheet", "value": "sheet" }]
+      "items": [
+        { "title": "Sheet", "value": "Sheet" }
+      ]
     },
     {
       "name": "LifeStage",
@@ -118,13 +126,13 @@
       "sizelimit": 8,
       "items": [
         { "title": "Unknown", "value": "Unknown" },
-        { "title": "seedling", "value": "seedling" },
-        { "title": "flowering", "value": "flowering" },
-        { "title": "fruiting", "value": "fruiting" },
-        { "title": "mature", "value": "mature" },
-        { "title": "embryo", "value": "embryo" },
-        { "title": "seed", "value": "seed" },
-        { "title": "senescent", "value": "senescent" }
+        { "title": "Seedling", "value": "Seedling" },
+        { "title": "Flowering", "value": "Flowering" },
+        { "title": "Fruiting", "value": "Fruiting" },
+        { "title": "Mature", "value": "Mature" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Seed", "value": "Seed" },
+        { "title": "Senescent", "value": "Senescent" }
       ]
     },
     {
@@ -150,16 +158,13 @@
       "sizelimit": 8,
       "items": [
         { "title": "No Data", "value": "No Data" },
-        { "title": "flowering", "value": "flowering" },
-        {
-          "title": "flowering and fruiting",
-          "value": "flowering and fruiting"
-        },
-        { "title": "fruiting", "value": "fruiting" },
-        { "title": "mature", "value": "mature" },
-        { "title": "seed", "value": "seed" },
-        { "title": "seedling", "value": "seedling" },
-        { "title": "senescent", "value": "senescent" }
+        { "title": "Flowering", "value": "Flowering" },
+        { "title": "Flowering And Fruiting", "value": "Flowering And Fruiting" },
+        { "title": "Fruiting", "value": "Fruiting" },
+        { "title": "Mature", "value": "Mature" },
+        { "title": "Seed", "value": "Seed" },
+        { "title": "Seedling", "value": "Seedling" },
+        { "title": "Senescent", "value": "Senescent" }
       ]
     }
   ],
@@ -185,15 +190,15 @@
       "sizelimit": 10,
       "items": [
         { "title": "Unknown", "value": "Unknown" },
-        { "title": "adult", "value": "adult" },
-        { "title": "juvenile", "value": "juvenile" },
-        { "title": "immature", "value": "immature" },
-        { "title": "embryo", "value": "embryo" },
-        { "title": "egg", "value": "egg" },
-        { "title": "hatchling", "value": "hatchling" },
-        { "title": "larva", "value": "larva" },
-        { "title": "nymph", "value": "nymph" },
-        { "title": "pupa", "value": "pupa" }
+        { "title": "Adult", "value": "Adult" },
+        { "title": "Juvenile", "value": "Juvenile" },
+        { "title": "Immature", "value": "Immature" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Egg", "value": "Egg" },
+        { "title": "Hatchling", "value": "Hatchling" },
+        { "title": "Larva", "value": "Larva" },
+        { "title": "Nymph", "value": "Nymph" },
+        { "title": "Pupa", "value": "Pupa" }
       ]
     },
     {
@@ -203,11 +208,11 @@
       "readonly": true,
       "sizelimit": 5,
       "items": [
-        { "title": "trap", "value": "trap" },
-        { "title": "boat electro-shocker", "value": "boat electro-shocker" },
-        { "title": "seine", "value": "seine" },
-        { "title": "<no data>", "value": "<no data>" },
-        { "title": "hook & line", "value": "hook & line" }
+        { "title": "Trap", "value": "Trap" },
+        { "title": "Boat Electro-Shocker", "value": "Boat Electro-Shocker" },
+        { "title": "Seine", "value": "Seine" },
+        { "title": "<No Data>", "value": "<No Data>" },
+        { "title": "Hook & Line", "value": "Hook & Line" }
       ]
     },
     {
@@ -217,13 +222,13 @@
       "readonly": true,
       "sizelimit": 8,
       "items": [
-        { "title": "Reef", "value": "reef" },
-        { "title": "Sand", "value": "sand" },
-        { "title": "Rock", "value": "rock" },
-        { "title": "Sand/Rock Interface", "value": "sand/rock interface" },
-        { "title": "Vegetation", "value": "vegetation" },
-        { "title": "Open Water", "value": "open water" },
-        { "title": "Riffle", "value": "riffle" },
+        { "title": "Reef", "value": "Reef" },
+        { "title": "Sand", "value": "Sand" },
+        { "title": "Rock", "value": "Rock" },
+        { "title": "Sand/Rock Interface", "value": "Sand/Rock Interface" },
+        { "title": "Vegetation", "value": "Vegetation" },
+        { "title": "Open Water", "value": "Open Water" },
+        { "title": "Riffle", "value": "Riffle" },
         { "title": "Pelagic", "value": "Pelagic" }
       ]
     },
@@ -236,9 +241,9 @@
       "items": [
         { "title": "EtOH", "value": "EtOH" },
         { "title": "C&S", "value": "C&S" },
-        { "title": "x-ray", "value": "x-ray" },
-        { "title": "image", "value": "image" },
-        { "title": "skeleton", "value": "skeleton" }
+        { "title": "X-Ray", "value": "X-Ray" },
+        { "title": "Image", "value": "Image" },
+        { "title": "Skeleton", "value": "Skeleton" }
       ]
     }
   ],
@@ -249,7 +254,9 @@
       "type": 0,
       "readonly": true,
       "sizelimit": 5,
-      "items": [{ "title": "trap", "value": "trap" }]
+      "items": [
+        { "title": "Trap", "value": "Trap" }
+      ]
     },
     {
       "name": "CollObjPrepMeth",
@@ -257,7 +264,9 @@
       "type": 0,
       "readonly": true,
       "sizelimit": 5,
-      "items": [{ "title": "Sheet", "value": "sheet" }]
+      "items": [
+        { "title": "Sheet", "value": "Sheet" }
+      ]
     },
     {
       "name": "Method",
@@ -266,10 +275,10 @@
       "readonly": true,
       "sizelimit": 4,
       "items": [
-        { "title": "No data", "value": "No Data" },
-        { "title": "hand", "value": "hand" },
-        { "title": "net", "value": "net" },
-        { "title": "trap", "value": "trap" }
+        { "title": "No Data", "value": "No Data" },
+        { "title": "Hand", "value": "Hand" },
+        { "title": "Net", "value": "Net" },
+        { "title": "Trap", "value": "Trap" }
       ]
     },
     {
@@ -279,10 +288,10 @@
       "readonly": true,
       "sizelimit": 4,
       "items": [
-        { "title": "unknown", "value": "unknown" },
-        { "title": "male", "value": "male" },
-        { "title": "female", "value": "female" },
-        { "title": "both", "value": "both" }
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Male", "value": "Male" },
+        { "title": "Female", "value": "Female" },
+        { "title": "Both", "value": "Both" }
       ]
     },
     {
@@ -293,14 +302,14 @@
       "sizelimit": 9,
       "items": [
         { "title": "Unknown", "value": "Unknown" },
-        { "title": "adult", "value": "adult" },
-        { "title": "egg", "value": "egg" },
-        { "title": "embryo", "value": "embryo" },
-        { "title": "hatchling", "value": "hatchling" },
-        { "title": "juvenile", "value": "juvenile" },
-        { "title": "larva", "value": "larva" },
-        { "title": "meta-young", "value": "meta-young" },
-        { "title": "young", "value": "young" }
+        { "title": "Adult", "value": "Adult" },
+        { "title": "Egg", "value": "Egg" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Hatchling", "value": "Hatchling" },
+        { "title": "Juvenile", "value": "Juvenile" },
+        { "title": "Larva", "value": "Larva" },
+        { "title": "Meta-Young", "value": "Meta-Young" },
+        { "title": "Young", "value": "Young" }
       ]
     }
   ],
@@ -311,7 +320,9 @@
       "type": 0,
       "readonly": true,
       "sizelimit": 5,
-      "items": [{ "title": "trap", "value": "trap" }]
+      "items": [
+        { "title": "Trap", "value": "Trap" }
+      ]
     },
     {
       "name": "CollObjPrepMeth",
@@ -319,7 +330,9 @@
       "type": 0,
       "readonly": true,
       "sizelimit": 5,
-      "items": [{ "title": "Sheet", "value": "sheet" }]
+      "items": [
+        { "title": "Sheet", "value": "Sheet" }
+      ]
     },
     {
       "name": "Confidence",
@@ -328,11 +341,11 @@
       "readonly": true,
       "sizelimit": 5,
       "items": [
-        { "title": "No data", "value": "No data" },
-        { "title": "high", "value": "high" },
-        { "title": "low", "value": "low" },
-        { "title": "medium", "value": "medium" },
-        { "title": "unknown", "value": "unknown" }
+        { "title": "No Data", "value": "No Data" },
+        { "title": "High", "value": "High" },
+        { "title": "Low", "value": "Low" },
+        { "title": "Medium", "value": "Medium" },
+        { "title": "Unknown", "value": "Unknown" }
       ]
     },
     {
@@ -342,9 +355,9 @@
       "readonly": true,
       "sizelimit": 3,
       "items": [
-        { "title": "unknown", "value": "unknown" },
-        { "title": "male", "value": "male" },
-        { "title": "female", "value": "female" }
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Male", "value": "Male" },
+        { "title": "Female", "value": "Female" }
       ]
     },
     {
@@ -354,11 +367,11 @@
       "readonly": true,
       "sizelimit": 5,
       "items": [
-        { "title": "adult", "value": "adult" },
-        { "title": "egg", "value": "egg" },
-        { "title": "larva", "value": "larva" },
-        { "title": "nymph", "value": "nymph" },
-        { "title": "pupa", "value": "pupa" }
+        { "title": "Adult", "value": "Adult" },
+        { "title": "Egg", "value": "Egg" },
+        { "title": "Larva", "value": "Larva" },
+        { "title": "Nymph", "value": "Nymph" },
+        { "title": "Pupa", "value": "Pupa" }
       ]
     },
     {
@@ -368,51 +381,33 @@
       "readonly": true,
       "sizelimit": 50,
       "items": [
-        { "title": "beating", "value": "beating" },
-        { "title": "bee baits", "value": "bee baits" },
-        {
-          "title": "Berlese funnel extraction",
-          "value": "Berlese funnel extraction"
-        },
-        { "title": "carrion trap", "value": "carrion trap" },
-        { "title": "cineole, attracted to", "value": "cineole, attracted to" },
-        { "title": "dung trap", "value": "dung trap" },
-        { "title": "eucalyptus oil", "value": "eucalyptus oil" },
-        { "title": "flight intercept trap", "value": "flight intercept trap" },
-        { "title": "fruit trap", "value": "fruit trap" },
-        { "title": "funnel trap", "value": "funnel trap" },
-        { "title": "light trap", "value": "light trap" },
-        { "title": "light, at", "value": "light, at" },
-        {
-          "title": "light, incandescent, at",
-          "value": "light, incandescent, at"
-        },
-        {
-          "title": "light, mercury vapor, at",
-          "value": "light, mercury vapor, at"
-        },
-        { "title": "light, uv, at", "value": "light, uv, at" },
-        { "title": "Malaise trap", "value": "Malaise trap" },
-        {
-          "title": "methyl salicylate, attracted to",
-          "value": "methyl salicylate, attracted to"
-        },
-        {
-          "title": "miscellaneous collecting",
-          "value": "miscellaneous collecting"
-        },
-        { "title": "Molassas trap", "value": "Molassas trap" },
-        { "title": "pan trap", "value": "pan trap" },
-        { "title": "pheromone trap", "value": "pheromone trap" },
-        { "title": "pitfall trap", "value": "pitfall trap" },
-        {
-          "title": "pyrethrum/insecticide fogging",
-          "value": "pyrethrum/insecticide fogging"
-        },
-        { "title": "sifting", "value": "sifting" },
-        { "title": "skatol, attracted to", "value": "skatol, attracted to" },
-        { "title": "sweep net", "value": "sweep net" },
-        { "title": "washing", "value": "washing" }
+        { "title": "Beating", "value": "Beating" },
+        { "title": "Bee Baits", "value": "Bee Baits" },
+        { "title": "Berlese Funnel Extraction", "value": "Berlese Funnel Extraction" },
+        { "title": "Carrion Trap", "value": "Carrion Trap" },
+        { "title": "Cineole, Attracted To", "value": "Cineole, Attracted To" },
+        { "title": "Dung Trap", "value": "Dung Trap" },
+        { "title": "Eucalyptus Oil", "value": "Eucalyptus Oil" },
+        { "title": "Flight Intercept Trap", "value": "Flight Intercept Trap" },
+        { "title": "Fruit Trap", "value": "Fruit Trap" },
+        { "title": "Funnel Trap", "value": "Funnel Trap" },
+        { "title": "Light Trap", "value": "Light Trap" },
+        { "title": "Light, At", "value": "Light, At" },
+        { "title": "Light, Incandescent, At", "value": "Light, Incandescent, At" },
+        { "title": "Light, Mercury Vapor, At", "value": "Light, Mercury Vapor, At" },
+        { "title": "Light, Uv, At", "value": "Light, Uv, At" },
+        { "title": "Malaise Trap", "value": "Malaise Trap" },
+        { "title": "Methyl Salicylate, Attracted To", "value": "Methyl Salicylate, Attracted To" },
+        { "title": "Miscellaneous Collecting", "value": "Miscellaneous Collecting" },
+        { "title": "Molassas Trap", "value": "Molassas Trap" },
+        { "title": "Pan Trap", "value": "Pan Trap" },
+        { "title": "Pheromone Trap", "value": "Pheromone Trap" },
+        { "title": "Pitfall Trap", "value": "Pitfall Trap" },
+        { "title": "Pyrethrum/Insecticide Fogging", "value": "Pyrethrum/Insecticide Fogging" },
+        { "title": "Sifting", "value": "Sifting" },
+        { "title": "Skatol, Attracted To", "value": "Skatol, Attracted To" },
+        { "title": "Sweep Net", "value": "Sweep Net" },
+        { "title": "Washing", "value": "Washing" }
       ]
     }
   ],
@@ -438,15 +433,15 @@
       "sizelimit": 10,
       "items": [
         { "title": "Unknown", "value": "Unknown" },
-        { "title": "adult", "value": "adult" },
-        { "title": "juvenile", "value": "juvenile" },
-        { "title": "immature", "value": "immature" },
-        { "title": "embryo", "value": "embryo" },
-        { "title": "egg", "value": "egg" },
-        { "title": "hatchling", "value": "hatchling" },
-        { "title": "larva", "value": "larva" },
-        { "title": "nymph", "value": "nymph" },
-        { "title": "pupa", "value": "pupa" }
+        { "title": "Adult", "value": "Adult" },
+        { "title": "Juvenile", "value": "Juvenile" },
+        { "title": "Immature", "value": "Immature" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Egg", "value": "Egg" },
+        { "title": "Hatchling", "value": "Hatchling" },
+        { "title": "Larva", "value": "Larva" },
+        { "title": "Nymph", "value": "Nymph" },
+        { "title": "Pupa", "value": "Pupa" }
       ]
     },
     {
@@ -456,11 +451,11 @@
       "readonly": true,
       "sizelimit": 5,
       "items": [
-        { "title": "trap", "value": "trap" },
-        { "title": "boat electro-shocker", "value": "boat electro-shocker" },
-        { "title": "seine", "value": "seine" },
-        { "title": "<no data>", "value": "<no data>" },
-        { "title": "hook & line", "value": "hook & line" }
+        { "title": "Trap", "value": "Trap" },
+        { "title": "Boat Electro-Shocker", "value": "Boat Electro-Shocker" },
+        { "title": "Seine", "value": "Seine" },
+        { "title": "<No Data>", "value": "<No Data>" },
+        { "title": "Hook & Line", "value": "Hook & Line" }
       ]
     },
     {
@@ -472,9 +467,9 @@
       "items": [
         { "title": "EtOH", "value": "EtOH" },
         { "title": "C&S", "value": "C&S" },
-        { "title": "x-ray", "value": "x-ray" },
-        { "title": "image", "value": "image" },
-        { "title": "skeleton", "value": "skeleton" }
+        { "title": "X-Ray", "value": "X-Ray" },
+        { "title": "Image", "value": "Image" },
+        { "title": "Skeleton", "value": "Skeleton" }
       ]
     },
     {
@@ -505,7 +500,9 @@
       "type": 0,
       "readonly": true,
       "sizelimit": 5,
-      "items": [{ "title": "Dug", "value": "Dug" }]
+      "items": [
+        { "title": "Dug", "value": "Dug" }
+      ]
     },
     {
       "name": "CollObjPrepMeth",
@@ -513,7 +510,9 @@
       "type": 0,
       "readonly": true,
       "sizelimit": 5,
-      "items": [{ "title": "Sheet", "value": "sheet" }]
+      "items": [
+        { "title": "Sheet", "value": "Sheet" }
+      ]
     }
   ],
   "mammal": [
@@ -538,15 +537,15 @@
       "sizelimit": 10,
       "items": [
         { "title": "Unknown", "value": "Unknown" },
-        { "title": "adult", "value": "adult" },
-        { "title": "juvenile", "value": "juvenile" },
-        { "title": "immature", "value": "immature" },
-        { "title": "embryo", "value": "embryo" },
-        { "title": "egg", "value": "egg" },
-        { "title": "hatchling", "value": "hatchling" },
-        { "title": "larva", "value": "larva" },
-        { "title": "nymph", "value": "nymph" },
-        { "title": "pupa", "value": "pupa" }
+        { "title": "Adult", "value": "Adult" },
+        { "title": "Juvenile", "value": "Juvenile" },
+        { "title": "Immature", "value": "Immature" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Egg", "value": "Egg" },
+        { "title": "Hatchling", "value": "Hatchling" },
+        { "title": "Larva", "value": "Larva" },
+        { "title": "Nymph", "value": "Nymph" },
+        { "title": "Pupa", "value": "Pupa" }
       ]
     },
     {
@@ -556,11 +555,11 @@
       "readonly": true,
       "sizelimit": 5,
       "items": [
-        { "title": "trap", "value": "trap" },
-        { "title": "boat electro-shocker", "value": "boat electro-shocker" },
-        { "title": "seine", "value": "seine" },
-        { "title": "<no data>", "value": "<no data>" },
-        { "title": "hook & line", "value": "hook & line" }
+        { "title": "Trap", "value": "Trap" },
+        { "title": "Boat Electro-Shocker", "value": "Boat Electro-Shocker" },
+        { "title": "Seine", "value": "Seine" },
+        { "title": "<No Data>", "value": "<No Data>" },
+        { "title": "Hook & Line", "value": "Hook & Line" }
       ]
     },
     {
@@ -572,9 +571,9 @@
       "items": [
         { "title": "EtOH", "value": "EtOH" },
         { "title": "C&S", "value": "C&S" },
-        { "title": "x-ray", "value": "x-ray" },
-        { "title": "image", "value": "image" },
-        { "title": "skeleton", "value": "skeleton" }
+        { "title": "X-Ray", "value": "X-Ray" },
+        { "title": "Image", "value": "Image" },
+        { "title": "Skeleton", "value": "Skeleton" }
       ]
     },
     {
@@ -584,9 +583,9 @@
       "readonly": true,
       "sizelimit": 5,
       "items": [
-        { "title": "No data", "value": "No data" },
-        { "title": "adult", "value": "adult" },
-        { "title": "juvenile", "value": "juvenile" }
+        { "title": "No Data", "value": "No Data" },
+        { "title": "Adult", "value": "Adult" },
+        { "title": "Juvenile", "value": "Juvenile" }
       ]
     }
   ],
@@ -597,7 +596,9 @@
       "type": 0,
       "readonly": true,
       "sizelimit": 5,
-      "items": [{ "title": "Dug", "value": "Dug" }]
+      "items": [
+        { "title": "Dug", "value": "Dug" }
+      ]
     },
     {
       "name": "LifeStage",
@@ -607,13 +608,13 @@
       "sizelimit": 8,
       "items": [
         { "title": "Unknown", "value": "Unknown" },
-        { "title": "seedling", "value": "seedling" },
-        { "title": "flowering", "value": "flowering" },
-        { "title": "fruiting", "value": "fruiting" },
-        { "title": "mature", "value": "mature" },
-        { "title": "embryo", "value": "embryo" },
-        { "title": "seed", "value": "seed" },
-        { "title": "senescent", "value": "senescent" }
+        { "title": "Seedling", "value": "Seedling" },
+        { "title": "Flowering", "value": "Flowering" },
+        { "title": "Fruiting", "value": "Fruiting" },
+        { "title": "Mature", "value": "Mature" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Seed", "value": "Seed" },
+        { "title": "Senescent", "value": "Senescent" }
       ]
     },
     {
@@ -622,7 +623,9 @@
       "type": 0,
       "readonly": true,
       "sizelimit": 5,
-      "items": [{ "title": "Sheet", "value": "sheet" }]
+      "items": [
+        { "title": "Sheet", "value": "Sheet" }
+      ]
     }
   ],
   "reptile": [
@@ -646,11 +649,11 @@
       "readonly": true,
       "sizelimit": 10,
       "items": [
-        { "title": "egg", "value": "egg" },
-        { "title": "juvenile", "value": "juvenile" },
-        { "title": "immature", "value": "immature" },
-        { "title": "embryo", "value": "embryo" },
-        { "title": "adult", "value": "adult" }
+        { "title": "Egg", "value": "Egg" },
+        { "title": "Juvenile", "value": "Juvenile" },
+        { "title": "Immature", "value": "Immature" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Adult", "value": "Adult" }
       ]
     },
     {
@@ -660,11 +663,11 @@
       "readonly": true,
       "sizelimit": 5,
       "items": [
-        { "title": "trap", "value": "trap" },
-        { "title": "boat electro-shocker", "value": "boat electro-shocker" },
-        { "title": "seine", "value": "seine" },
-        { "title": "<no data>", "value": "<no data>" },
-        { "title": "hook & line", "value": "hook & line" }
+        { "title": "Trap", "value": "Trap" },
+        { "title": "Boat Electro-Shocker", "value": "Boat Electro-Shocker" },
+        { "title": "Seine", "value": "Seine" },
+        { "title": "<No Data>", "value": "<No Data>" },
+        { "title": "Hook & Line", "value": "Hook & Line" }
       ]
     },
     {
@@ -674,8 +677,8 @@
       "readonly": true,
       "sizelimit": 12,
       "items": [
-        { "title": "EtoH", "value": "EtOH" },
-        { "title": "Denatured EtoH", "value": "Denatured EtOH" },
+        { "title": "EtOH", "value": "EtOH" },
+        { "title": "Denatured EtOH", "value": "Denatured EtOH" },
         { "title": "C&S", "value": "C&S" },
         { "title": "Dry", "value": "Dry" },
         { "title": "Formalin", "value": "Formalin" },
@@ -716,7 +719,9 @@
       "type": 0,
       "readonly": true,
       "sizelimit": 5,
-      "items": [{ "title": "cut", "value": "cut" }]
+      "items": [
+        { "title": "Cut", "value": "Cut" }
+      ]
     },
     {
       "name": "CollObjPrepMeth",
@@ -724,7 +729,9 @@
       "type": 0,
       "readonly": true,
       "sizelimit": 5,
-      "items": [{ "title": "Sheet", "value": "sheet" }]
+      "items": [
+        { "title": "Sheet", "value": "Sheet" }
+      ]
     },
     {
       "name": "LifeStage",
@@ -734,13 +741,13 @@
       "sizelimit": 8,
       "items": [
         { "title": "Unknown", "value": "Unknown" },
-        { "title": "seedling", "value": "seedling" },
-        { "title": "flowering", "value": "flowering" },
-        { "title": "fruiting", "value": "fruiting" },
-        { "title": "mature", "value": "mature" },
-        { "title": "embryo", "value": "embryo" },
-        { "title": "seed", "value": "seed" },
-        { "title": "senescent", "value": "senescent" }
+        { "title": "Seedling", "value": "Seedling" },
+        { "title": "Flowering", "value": "Flowering" },
+        { "title": "Fruiting", "value": "Fruiting" },
+        { "title": "Mature", "value": "Mature" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Seed", "value": "Seed" },
+        { "title": "Senescent", "value": "Senescent" }
       ]
     },
     {
@@ -766,16 +773,13 @@
       "sizelimit": 8,
       "items": [
         { "title": "No Data", "value": "No Data" },
-        { "title": "flowering", "value": "flowering" },
-        {
-          "title": "flowering and fruiting",
-          "value": "flowering and fruiting"
-        },
-        { "title": "fruiting", "value": "fruiting" },
-        { "title": "mature", "value": "mature" },
-        { "title": "seed", "value": "seed" },
-        { "title": "seedling", "value": "seedling" },
-        { "title": "senescent", "value": "senescent" }
+        { "title": "Flowering", "value": "Flowering" },
+        { "title": "Flowering and Fruiting", "value": "Flowering and Fruiting" },
+        { "title": "Fruiting", "value": "Fruiting" },
+        { "title": "Mature", "value": "Mature" },
+        { "title": "Seed", "value": "Seed" },
+        { "title": "Seedling", "value": "Seedling" },
+        { "title": "Senescent", "value": "Senescent" }
       ]
     }
   ],
@@ -802,15 +806,15 @@
       "sizelimit": 10,
       "items": [
         { "title": "Unknown", "value": "Unknown" },
-        { "title": "adult", "value": "adult" },
-        { "title": "juvenile", "value": "juvenile" },
-        { "title": "immature", "value": "immature" },
-        { "title": "embryo", "value": "embryo" },
-        { "title": "egg", "value": "egg" },
-        { "title": "hatchling", "value": "hatchling" },
-        { "title": "larva", "value": "larva" },
-        { "title": "nymph", "value": "nymph" },
-        { "title": "pupa", "value": "pupa" }
+        { "title": "Adult", "value": "Adult" },
+        { "title": "Juvenile", "value": "Juvenile" },
+        { "title": "Immature", "value": "Immature" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Egg", "value": "Egg" },
+        { "title": "Hatchling", "value": "Hatchling" },
+        { "title": "Larva", "value": "Larva" },
+        { "title": "Nymph", "value": "Nymph" },
+        { "title": "Pupa", "value": "Pupa" }
       ]
     },
     {
@@ -819,7 +823,9 @@
       "type": 0,
       "readonly": true,
       "sizelimit": 5,
-      "items": [{ "title": "Dug", "value": "dug" }]
+      "items": [
+        { "title": "Dug", "value": "Dug" }
+      ]
     },
     {
       "name": "CollObjPrepMeth",
@@ -830,9 +836,9 @@
       "items": [
         { "title": "EtOH", "value": "EtOH" },
         { "title": "C&S", "value": "C&S" },
-        { "title": "x-ray", "value": "x-ray" },
-        { "title": "image", "value": "image" },
-        { "title": "skeleton", "value": "skeleton" }
+        { "title": "X-Ray", "value": "X-Ray" },
+        { "title": "Image", "value": "Image" },
+        { "title": "Skeleton", "value": "Skeleton" }
       ]
     }
   ]
