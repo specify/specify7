@@ -4,7 +4,7 @@ Autonumbering logic
 
 
 from .uiformatters import UIFormatter, get_uiformatters
-from ..models_utils.lock_tables import lock_tables
+from ..models_utils.lock_tables import mysql_named_lock
 import logging
 from typing import List, Tuple, Set
 from collections.abc import Sequence
@@ -43,12 +43,16 @@ def do_autonumbering(collection, obj, fields: list[tuple[UIFormatter, Sequence[s
         for formatter, vals in fields
     ]
 
-    with lock_tables(*get_tables_to_lock(collection, obj, [formatter.field_name for formatter, _ in fields])):
+    # Build a stable mutex key that scopes contention correctly.
+    # Example: per-discipline + model + the specific fields being autonumbered.
+    key_fields = ",".join(sorted(f.field_name for f, _ in fields))
+    lock_name = f"autonumber:{collection.discipline_id}:{obj._meta.db_table}:{key_fields}"
+
+    # Serialize the autonumbering critical section without table locks.
+    with mysql_named_lock(lock_name, timeout=10):
         for apply_autonumbering_to in thunks:
             apply_autonumbering_to(obj)
-
         obj.save()
-
 
 def get_tables_to_lock(collection, obj, field_names) -> set[str]:
     # TODO: Include the fix for https://github.com/specify/specify7/issues/4148
