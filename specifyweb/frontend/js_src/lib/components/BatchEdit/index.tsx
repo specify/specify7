@@ -232,29 +232,21 @@ function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
   return nestedToManyCount.length > allowedToMany;
 }
 
-const isAttachmentFamilyTable = (tableMeta: any): boolean => {
-  const className =
-    ((tableMeta?.classname ?? tableMeta?.className) as string | undefined)?.split('.')?.pop() ??
-    '';
-  const sqlName = (tableMeta?.table ?? tableMeta?.sqlName ?? tableMeta?.name ?? '')
-    .toString()
-    .toLowerCase();
-  // Allow if either the class name or SQL name contains "attachment"
-  return /attachment/i.test(className) || /attachment/i.test(sqlName);
-};
-
 const containsSystemTables = (queryFieldSpec: QueryFieldSpec) => {
-  // Block system tables unless they are part of the Attachment family
-  const pathHasBlockedSystem = queryFieldSpec.joinPath?.some(
-    (field) => (field as any)?.table?.isSystem && !isAttachmentFamilyTable((field as any).table)
-  );
-
   const baseIsBlocked =
-    (queryFieldSpec.baseTable as any)?.isSystem &&
-    !isAttachmentFamilyTable((queryFieldSpec as any).baseTable);
+    queryFieldSpec.baseTable?.isSystem &&
+    !queryFieldSpec.baseTable?.name?.toLowerCase?.().includes('attachment');
 
-  return Boolean(pathHasBlockedSystem || baseIsBlocked);
+  const pathHasBlockedSystem = queryFieldSpec.joinPath?.some((field: any) => {
+    const isAttachment =
+      field?.relatedTable?.name?.toLowerCase?.().includes('attachment') ||
+      field?.table?.name?.toLowerCase?.().includes('attachment');
+    return field?.table?.isSystem && !isAttachment;
+  });
+
+  return Boolean(baseIsBlocked || pathHasBlockedSystem);
 };
+
 
 const hasHierarchyBaseTable = (queryFieldSpec: QueryFieldSpec) =>
   Object.keys(schema.domainLevelIds).includes(
