@@ -114,10 +114,11 @@
       "sizelimit": 5,
       "items": [
         { "title": "DHL", "value": "DHL" },
-        { "title": "Fed Ex", "value": "FedEx" },
+        { "title": "FedEx", "value": "FedEx" },
         { "title": "By Hand", "value": "Hand" },
         { "title": "UPS", "value": "UPS" },
-        { "title": "USPS", "value": "USPS" }
+        { "title": "USPS", "value": "USPS" },
+        { "title": "Other", "value": "Other" }
       ]
     },
     {
@@ -144,6 +145,18 @@
         { "title": "Author", "value": "2" },
         { "title": "Author Abbrev.", "value": "3" },
         { "title": "Label Name", "value": "4" }
+      ]
+    },
+    {
+      "name": "AgentIdentifierType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "ORCID", "value": "ORCID" },
+        { "title": "Wikidata", "value": "Wikidata" },
+        { "title": "Other", "value": "Other" }
       ]
     },
     {

@@ -3045,9 +3045,9 @@
 				"format": null,
 				"ishidden": false,
 				"isuiformatter": false,
-				"picklistname": null,
+				"picklistname": "AgentIdentifierType",
 				"type": "java.lang.String",
-				"isrequired": false,
+				"isrequired": true,
 				"weblinkname": null,
 				"name": "Identifier Type",
 				"desc": "Identifier Type (e.g. ORCID)"
