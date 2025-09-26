@@ -164,12 +164,12 @@ DATABASE_HOST = os.environ['DATABASE_HOST']
 DATABASE_PORT = os.environ.get('DATABASE_PORT', '')
 
 ROOT_PASSWORD = os.environ['MYSQL_ROOT_PASSWORD']
-MASTER_NAME = os.getenv('MASTER_NAME')
-MASTER_PASSWORD = os.getenv('MASTER_PASSWORD')
+MASTER_NAME = os.getenv('MASTER_NAME', 'root')
+MASTER_PASSWORD = os.getenv('MASTER_PASSWORD', 'root')
 SUPER_NAME = os.getenv('SUPER_NAME', os.getenv('MASTER_NAME', 'root'))
-SUPER_PASSWORD = os.getenv('SUPER_PASSWORD')
+SUPER_PASSWORD = os.getenv('SUPER_PASSWORD', os.getenv('MASTER_PASSWORD', 'root'))
 TARGET_NAME = os.getenv('TARGET_NAME', MASTER_NAME)
-TARGET_PASSWORD = os.getenv('TARGET_PASSWORD')
+TARGET_PASSWORD = os.getenv('TARGET_PASSWORD', MASTER_PASSWORD)
 
 DEPOSITORY_DIR = '/volumes/static-files/depository'
 
