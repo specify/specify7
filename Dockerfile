@@ -163,8 +163,13 @@ DATABASE_NAME = os.environ['DATABASE_NAME']
 DATABASE_HOST = os.environ['DATABASE_HOST']
 DATABASE_PORT = os.environ.get('DATABASE_PORT', '')
 
-MASTER_NAME = os.environ['MASTER_NAME']
-MASTER_PASSWORD = os.environ['MASTER_PASSWORD']
+ROOT_PASSWORD = os.environ['MYSQL_ROOT_PASSWORD']
+MASTER_NAME = os.getenv('MASTER_NAME')
+MASTER_PASSWORD = os.getenv('MASTER_PASSWORD')
+SUPER_NAME = os.getenv('SUPER_NAME', os.getenv('MASTER_NAME', 'root'))
+SUPER_PASSWORD = os.getenv('SUPER_PASSWORD')
+TARGET_NAME = os.getenv('TARGET_NAME', MASTER_NAME)
+TARGET_PASSWORD = os.getenv('TARGET_PASSWORD')
 
 DEPOSITORY_DIR = '/volumes/static-files/depository'
 
@@ -251,7 +256,7 @@ USER specify
 
 COPY requirements-testing.txt /home/specify/
 
-#RUN ve/bin/pip install --no-cache-dir -r /home/specify/requirements-testing.txt
+# RUN ve/bin/pip install --no-cache-dir -r /home/specify/requirements-testing.txt
 
 COPY mypy.ini ./
 
