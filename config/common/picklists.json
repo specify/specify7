@@ -603,11 +603,17 @@
       "issystem": true,
       "type": 0,
       "readonly": true,
-      "sizelimit": 5,
+      "sizelimit": 10,
       "items": [
         { "title": "Unknown", "value": "Unknown" },
         { "title": "Adult", "value": "Adult" },
-        { "title": "Juvenile", "value": "Juvenile" }
+        { "title": "Juvenile", "value": "Juvenile" },
+        { "title": "Subadult", "value": "Subadult" },
+        { "title": "Fetus", "value": "Fetus" },
+        { "title": "Neonate", "value": "Neonate" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Egg", "value": "Egg" },
+        { "title": "Zygote", "value": "Zygote" }
       ]
     }
   ],
