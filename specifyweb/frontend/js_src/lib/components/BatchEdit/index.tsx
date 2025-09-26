@@ -232,11 +232,11 @@ function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
   return nestedToManyCount.length > allowedToMany;
 }
 
-const isAttachmentFamilyTable = (t: any): boolean => {
+const isAttachmentFamilyTable = (tableMeta: any): boolean => {
   const className =
-    ((t?.classname ?? t?.className) as string | undefined)?.split('.')?.pop() ??
+    ((tableMeta?.classname ?? tableMeta?.className) as string | undefined)?.split('.')?.pop() ??
     '';
-  const sqlName = (t?.table ?? t?.sqlName ?? t?.name ?? '')
+  const sqlName = (tableMeta?.table ?? tableMeta?.sqlName ?? tableMeta?.name ?? '')
     .toString()
     .toLowerCase();
   // Allow if either the class name or SQL name contains "attachment"
