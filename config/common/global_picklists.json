@@ -409,6 +409,19 @@
         { "title": "Consolidated", "value": "Consolidated" },
         { "title": "Drill Core", "value": "Drill Core" }
       ]
+    },
+    {
+      "name": "AgeType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "Sedimentation", "value": "Sedimentation" },
+        { "title": "Metamorphism", "value": "Metamorphism" },
+        { "title": "Erosion", "value": "Erosion" },
+        { "title": "Diagenetic", "value": "Diagenetic" }
+      ]
     }
   ]
 }
