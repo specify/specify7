@@ -506,9 +506,13 @@
       "issystem": true,
       "type": 0,
       "readonly": true,
-      "sizelimit": 5,
+      "sizelimit": 10,
       "items": [
-        { "title": "Dug", "value": "Dug" }
+        { "title": "Dug", "value": "Dug" },
+        { "title": "By Hand", "value": "By Hand" },
+        { "title": "Excavation", "value": "Excavation" },
+        { "title": "Surface Collection", "value": "Surface Collection" },
+        { "title": "Trawling", "value": "Trawling" }
       ]
     },
     {
@@ -563,10 +567,14 @@
       "sizelimit": 5,
       "items": [
         { "title": "Trap", "value": "Trap" },
-        { "title": "Boat Electro-Shocker", "value": "Boat Electro-Shocker" },
-        { "title": "Seine", "value": "Seine" },
-        { "title": "<No Data>", "value": "<No Data>" },
-        { "title": "Hook & Line", "value": "Hook & Line" }
+        { "title": "Sherman Trap", "value": "Sherman Trap" },
+        { "title": "Elliot Trap", "value": "Elliot Trap" },
+        { "title": "Pitfall Trap", "value": "Pitfall Trap" },
+        { "title": "Sample-Release", "value": "Sample-Release" },
+        { "title": "Roadkill", "value": "Roadkill" },
+        { "title": "Salvage", "value": "Salvage" },
+        { "title": "Mist Net", "value": "Mist Net" },
+        { "title": "Firearm", "value": "Firearm" }
       ]
     },
     {
