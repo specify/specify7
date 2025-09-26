@@ -968,10 +968,10 @@ export const resourcesText = createDictionary({
   trimZeros: {
     'en-us': 'Trim Leading Zeros',
     'de-ch': 'Führende Nullen entfernen',
-    'es-es': 'Eliminar ceros iniciales',
-    'fr-fr': 'Supprimer les zéros initiaux',
-    'pt-br': 'Remover zeros à esquerda',
-    'ru-ru': 'Удалить ведущие нули',
+    'es-es': 'Recortar ceros iniciales',
+    'fr-fr': 'Couper les zéros non significatifs',
+    'pt-br': 'Aparar zeros à esquerda',
+    'ru-ru': 'Удалить начальные нули',
     'uk-ua': 'Видалити початкові нулі',
   },
   trimZerosDescription: {

@@ -136,7 +136,7 @@ export const queryText = createDictionary({
     'es-es':
       'Hay campos sin completar en la definición de la consulta. ¿Desea eliminarlos?',
     'fr-fr':
-      'La définition de la requête contient des champs non renseignés. Voulez-vous les supprimer ?',
+      'Il y a des champs incomplets dans la définition de la requête. Voulez-vous les supprimer ?',
     'uk-ua': 'У визначенні запиту є незаповнені поля. Ви хочете видалити їх?',
     'de-ch':
       'Die Abfragedefinition enthält unvollständige Felder. Möchten Sie diese entfernen?',
@@ -890,7 +890,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Перейдіть до редактора',
     'fr-fr': "Faites défiler jusqu'à l'éditeur",
     'ru-ru': 'Прокрутите до редактора',
-    'pt-br': 'Rolar para o editor',
+    'pt-br': 'Vá até o editor',
   },
   viewRecords: {
     'en-us': 'View records',
@@ -942,7 +942,7 @@ export const queryText = createDictionary({
     'de-ch': 'Katalognummernvererbung',
     'es-es': 'Herencia del número de catálogo',
     'fr-fr': 'Héritage du numéro de catalogue',
-    'pt-br': 'Herança de Número de Catálogo',
+    'pt-br': 'Herança de números de catálogo',
     'ru-ru': 'Наследование каталожного номера',
     'uk-ua': 'Успадкування каталожних номерів',
   },

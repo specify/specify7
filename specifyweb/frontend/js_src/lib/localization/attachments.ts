@@ -92,7 +92,7 @@ export const attachmentsText = createDictionary({
     'de-ch':
       'Es konnte kein Datensatz gefunden werden, auf den sich dieser Anhang bezieht.',
     'pt-br':
-      'Não é possível encontrar um registro ao qual este anexo esteja relacionado.',
+      'Não foi possível encontrar um registro ao qual este anexo esteja relacionado.',
   },
   showForm: {
     'en-us': 'Show Form',
@@ -166,7 +166,7 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Déjà téléchargé',
     'ru-ru': 'Уже загружено',
     'uk-ua': 'Вже завантажено',
-    'pt-br': 'Já Enviado',
+    'pt-br': 'Já carregado',
   },
   skipped: {
     'en-us': 'Skipped',
@@ -196,7 +196,7 @@ export const attachmentsText = createDictionary({
     'ru-ru':
       '{action:string} был в процессе выполнения, когда произошло прерывание',
     'uk-ua': 'Виконувався {action:string}, коли сталася перерва',
-    'pt-br': '{action:string} estava em andamento quando ocorreu a interrupção',
+    'pt-br': '{action:string} estava em andamento quando a interrupção ocorreu',
   },
   matchError: {
     'en-us': 'Match Error',
@@ -284,7 +284,7 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Retour en arrière interrompu',
     'ru-ru': 'Откат прерван',
     'uk-ua': 'Відкат перервано',
-    'pt-br': 'Reversão interrompida',
+    'pt-br': 'Rollback interrompido',
   },
   rollbackInterruptedDescription: {
     'en-us':
@@ -300,7 +300,7 @@ export const attachmentsText = createDictionary({
     'es-es':
       'La reversión estaba en curso cuando se produjo una interrupción. Es posible que se hayan eliminado algunos archivos.',
     'pt-br':
-      'A reversão estava em andamento quando ocorreu uma interrupção. Alguns arquivos podem ter sido excluídos',
+      'A reversão estava em andamento quando ocorreu uma interrupção. Alguns arquivos podem ter sido excluídos.',
   },
   attachmentId: {
     'en-us': 'Attachment ID',
@@ -375,7 +375,7 @@ export const attachmentsText = createDictionary({
     'en-us':
       'Rollback will delete the attachments from the Specify database and Asset Server',
     'de-ch':
-      'Rollback löscht die Anhänge aus der Datenbank und dem Asset Server.',
+      'Rollback löscht die Anhänge aus der Datenbank und dem Asset Server',
     'es-es':
       'La reversión eliminará los archivos adjuntos de la base de datos Specify y del servidor de activos.',
     'fr-fr':
