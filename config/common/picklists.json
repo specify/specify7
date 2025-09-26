@@ -319,9 +319,16 @@
       "issystem": true,
       "type": 0,
       "readonly": true,
-      "sizelimit": 5,
+      "sizelimit": 10,
       "items": [
-        { "title": "Trap", "value": "Trap" }
+        { "title": "Trap", "value": "Trap" },
+        { "title": "Malaise Trap", "value": "Malaise Trap" },
+        { "title": "Light Trap", "value": "Light Trap" },
+        { "title": "Bowl Trap", "value": "Bowl Trap" },
+        { "title": "Pitfall Trap", "value": "Pitfall Trap" },
+        { "title": "Flight Intercept Trap", "value": "Flight Intercept Trap" },
+        { "title": "Netting", "value": "Netting" },
+        { "title": "Sweeping", "value": "Sweeping" }
       ]
     },
     {
