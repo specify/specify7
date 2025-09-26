@@ -7,7 +7,11 @@
       "readonly": true,
       "sizelimit": 5,
       "items": [
-        { "title": "Shot", "value": "Shot" }
+        { "title": "Shot", "value": "Shot" },
+        { "title": "Salvage", "value": "Salvage" },
+        { "title": "Mist Net", "value": "Mist Net" },
+        { "title": "Egg Collecting", "value": "Egg Collecting" },
+        { "title": "Trap", "value": "Trap" }
       ]
     },
     {
@@ -27,7 +31,7 @@
       "readonly": true,
       "sizelimit": 4,
       "items": [
-        { "title": "No Data", "value": "No Data" },
+        { "title": "Unknown", "value": "Unknown" },
         { "title": "Hand", "value": "Hand" },
         { "title": "Net", "value": "Net" },
         { "title": "Trap", "value": "Trap" }
@@ -40,10 +44,11 @@
       "readonly": true,
       "sizelimit": 4,
       "items": [
-        { "title": "Unknown", "value": "Unknown" },
-        { "title": "Both", "value": "Both" },
+        { "title": "Indeterminate", "value": "Indeterminate" },
+        { "title": "Mixed", "value": "Mixed" },
         { "title": "Female", "value": "Female" },
-        { "title": "Male", "value": "Male" }
+        { "title": "Male", "value": "Male" },
+        { "title": "Other", "value": "Other" }
       ]
     },
     {
@@ -53,7 +58,7 @@
       "readonly": true,
       "sizelimit": 7,
       "items": [
-        { "title": "No Data", "value": "No Data" },
+        { "title": "Unknown", "value": "Unknown" },
         { "title": "Dead Reckoning", "value": "Dead Reckoning" },
         { "title": "Gazetteer", "value": "Gazetteer" },
         { "title": "GPS", "value": "GPS" },
@@ -142,7 +147,7 @@
       "readonly": true,
       "sizelimit": 6,
       "items": [
-        { "title": "No Data", "value": "No Data" },
+        { "title": "Unknown", "value": "Unknown" },
         { "title": "Cotype", "value": "Cotype" },
         { "title": "Holotype", "value": "Holotype" },
         { "title": "Paratype", "value": "Paratype" },
@@ -157,7 +162,7 @@
       "readonly": true,
       "sizelimit": 8,
       "items": [
-        { "title": "No Data", "value": "No Data" },
+        { "title": "Unknown", "value": "Unknown" },
         { "title": "Flowering", "value": "Flowering" },
         { "title": "Flowering And Fruiting", "value": "Flowering And Fruiting" },
         { "title": "Fruiting", "value": "Fruiting" },
@@ -209,10 +214,12 @@
       "sizelimit": 5,
       "items": [
         { "title": "Trap", "value": "Trap" },
+        { "title": "Sweep Net", "value": "Sweep Net" },
         { "title": "Boat Electro-Shocker", "value": "Boat Electro-Shocker" },
         { "title": "Seine", "value": "Seine" },
-        { "title": "<No Data>", "value": "<No Data>" },
-        { "title": "Hook & Line", "value": "Hook & Line" }
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Hook & Line", "value": "Hook & Line" },
+        { "title": "By Hand", "value": "By Hand" }
       ]
     },
     {
@@ -275,7 +282,7 @@
       "readonly": true,
       "sizelimit": 4,
       "items": [
-        { "title": "No Data", "value": "No Data" },
+        { "title": "Unknown", "value": "Unknown" },
         { "title": "Hand", "value": "Hand" },
         { "title": "Net", "value": "Net" },
         { "title": "Trap", "value": "Trap" }
@@ -348,7 +355,7 @@
       "readonly": true,
       "sizelimit": 5,
       "items": [
-        { "title": "No Data", "value": "No Data" },
+        { "title": "Unknown", "value": "Unknown" },
         { "title": "High", "value": "High" },
         { "title": "Low", "value": "Low" },
         { "title": "Medium", "value": "Medium" },
@@ -461,7 +468,7 @@
         { "title": "Trap", "value": "Trap" },
         { "title": "Boat Electro-Shocker", "value": "Boat Electro-Shocker" },
         { "title": "Seine", "value": "Seine" },
-        { "title": "<No Data>", "value": "<No Data>" },
+        { "title": "Unknown", "value": "Unknown" },
         { "title": "Hook & Line", "value": "Hook & Line" }
       ]
     },
@@ -486,7 +493,7 @@
       "readonly": true,
       "sizelimit": 11,
       "items": [
-        { "title": "No Data", "value": "No Data" },
+        { "title": "Unknown", "value": "Unknown" },
         { "title": "Cotype", "value": "Cotype" },
         { "title": "Holotype", "value": "Holotype" },
         { "title": "Lectotype", "value": "Lectotype" },
@@ -574,7 +581,7 @@
         { "title": "Roadkill", "value": "Roadkill" },
         { "title": "Salvage", "value": "Salvage" },
         { "title": "Mist Net", "value": "Mist Net" },
-        { "title": "Firearm", "value": "Firearm" }
+        { "title": "Shot", "value": "Shot" }
       ]
     },
     {
@@ -598,7 +605,7 @@
       "readonly": true,
       "sizelimit": 5,
       "items": [
-        { "title": "No Data", "value": "No Data" },
+        { "title": "Unknown", "value": "Unknown" },
         { "title": "Adult", "value": "Adult" },
         { "title": "Juvenile", "value": "Juvenile" }
       ]
@@ -681,7 +688,7 @@
         { "title": "Trap", "value": "Trap" },
         { "title": "Boat Electro-Shocker", "value": "Boat Electro-Shocker" },
         { "title": "Seine", "value": "Seine" },
-        { "title": "<No Data>", "value": "<No Data>" },
+        { "title": "Unknown", "value": "Unknown" },
         { "title": "Hook & Line", "value": "Hook & Line" }
       ]
     },
@@ -713,7 +720,7 @@
       "readonly": true,
       "sizelimit": 12,
       "items": [
-        { "title": "No Data", "value": "No Data" },
+        { "title": "Unknown", "value": "Unknown" },
         { "title": "Cotype", "value": "Cotype" },
         { "title": "Holotype", "value": "Holotype" },
         { "title": "Lectotype", "value": "Lectotype" },
@@ -772,7 +779,7 @@
       "readonly": true,
       "sizelimit": 6,
       "items": [
-        { "title": "No Data", "value": "No Data" },
+        { "title": "Unknown", "value": "Unknown" },
         { "title": "Cotype", "value": "Cotype" },
         { "title": "Holotype", "value": "Holotype" },
         { "title": "Paratype", "value": "Paratype" },
@@ -787,7 +794,7 @@
       "readonly": true,
       "sizelimit": 8,
       "items": [
-        { "title": "No Data", "value": "No Data" },
+        { "title": "Unknown", "value": "Unknown" },
         { "title": "Flowering", "value": "Flowering" },
         { "title": "Flowering and Fruiting", "value": "Flowering and Fruiting" },
         { "title": "Fruiting", "value": "Fruiting" },
