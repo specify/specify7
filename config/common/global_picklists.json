@@ -217,17 +217,6 @@
       ]
     },
     {
-      "name": "NameUsages",
-      "issystem": true,
-      "type": 0,
-      "readonly": true,
-      "sizelimit": 100,
-      "items": [
-        { "title": "Shelved By", "value": "Shelved By" },
-        { "title": "Flora of Kansas", "value": "Flora of Kansas" }
-      ]
-    },
-    {
       "name": "TreatmentType",
       "issystem": true,
       "type": 0,

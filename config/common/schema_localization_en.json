@@ -18017,12 +18017,12 @@
 				"format": null,
 				"ishidden": true,
 				"isuiformatter": false,
-				"picklistname": "NameUsages",
+				"picklistname": "null",
 				"type": null,
 				"isrequired": false,
 				"weblinkname": null,
 				"name": "Name Usage",
-				"desc": "User customizable picklist used to describe the context of the name entered into the taxon or Alternate name fields."
+				"desc": "Used to describe the context of the name entered into the taxon or Alternate name fields."
 			},
 			"number1": {
 				"format": null,
