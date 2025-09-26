@@ -397,6 +397,18 @@
         { "title": "Destructive Sampling", "value": "Destructive Sampling" },
         { "title": "Lost", "value": "Lost" }
       ]
+    },
+    {
+      "name": "SystemCOGTypes",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 3,
+      "items": [
+        { "title": "Discrete", "value": "Discrete" },
+        { "title": "Consolidated", "value": "Consolidated" },
+        { "title": "Drill Core", "value": "Drill Core" }
+      ]
     }
   ]
 }
