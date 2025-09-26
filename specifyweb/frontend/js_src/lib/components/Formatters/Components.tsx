@@ -199,14 +199,24 @@ export function ResourceMapping({
 
   const isReadOnly = React.useContext(ReadOnlyContext);
   const lineData = React.useMemo(() => {
-    const data = getMappingLineData({
+    let data = getMappingLineData({
       baseTableName: table.name,
       mappingPath,
       showHiddenFields: true,
       generateFieldData: 'all',
       spec: navigatorSpecs.formatterEditor,
-    });
-    return typeof fieldFilter === 'function' ? data.map(fieldFilter) : data;
+    }).map((line) => ({
+      ...line,
+      fieldsData: Object.fromEntries(
+        Object.entries(line.fieldsData).filter(([key]) => key !== 'age')
+      ),
+    }));
+
+    if (typeof fieldFilter === 'function') {
+      data = data.map(fieldFilter);
+    }
+
+    return data;
   }, [table.name, mappingPath, fieldFilter]);
 
   const validation = React.useMemo(

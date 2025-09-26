@@ -28,12 +28,44 @@ export const fetchContext = Promise.all([
 ]).then(([formatters]) => {
   uiFormatters = Object.fromEntries(
     filterArray(
+<<<<<<< HEAD
       xmlToSpec(formatters, fieldFormattersSpec()).fieldFormatters.map(
         (formatter, index) => {
           const resolvedFormatter = resolveFieldFormatter(formatter, index);
           return resolvedFormatter === undefined
             ? undefined
             : [formatter.name, resolvedFormatter];
+=======
+      xmlToSpec(formatters, fieldFormattersSpec()).formatters.map(
+        (formatter) => {
+          let resolvedFormatter;
+          if (typeof formatter.external === 'string') {
+            if (
+              parseJavaClassName(formatter.external) ===
+              'CatalogNumberUIFieldFormatter'
+            )
+              resolvedFormatter = new CatalogNumberNumeric();
+            else return undefined;
+          } else {
+            const fields = filterArray(
+              formatter.fields.map((field) =>
+                typeof field.type === 'string'
+                  ? new formatterTypeMapper[field.type](field)
+                  : undefined
+              )
+            );
+            resolvedFormatter = new UiFormatter(
+              formatter.isSystem,
+              formatter.title ?? formatter.name,
+              fields,
+              formatter.table,
+              formatter.field,
+              formatter.name
+            );
+          }
+
+          return [formatter.name, resolvedFormatter];
+>>>>>>> origin/main
         }
       )
     )
@@ -81,7 +113,11 @@ export class UiFormatter {
     public readonly table: SpecifyTable | undefined,
     // The field which this formatter is formatting
     public readonly field: LiteralField | undefined,
+<<<<<<< HEAD
     public readonly originalIndex = 0
+=======
+    public readonly name: string
+>>>>>>> origin/main
   ) {}
 
   public get defaultValue(): string {
@@ -124,6 +160,10 @@ export class UiFormatter {
     return this.parts.some((part) => part.canAutonumber());
   }
 
+  public canAutoIncrement(): boolean {
+    return this.fields.some((field) => field.autoIncrement);
+  }
+
   public format(value: string): LocalizedString | undefined {
     const parsed = this.parse(value);
     return parsed === undefined ? undefined : this.canonicalize(parsed);
@@ -146,7 +186,7 @@ abstract class Part {
 
   public readonly regexPlaceholder: LocalizedString | undefined;
 
-  private readonly autoIncrement: boolean;
+  public readonly autoIncrement: boolean;
 
   private readonly byYear: boolean;
 
@@ -297,7 +337,8 @@ export class CatalogNumberNumeric extends UiFormatter {
         }),
       ],
       tables.CollectionObject,
-      tables.CollectionObject?.getLiteralField('catalogNumber')
+      tables.CollectionObject?.getLiteralField('catalogNumber'),
+      'CatalogNumberNumeric'
     );
   }
 }

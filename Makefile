@@ -16,11 +16,7 @@ pip_requirements:
 
 django_migrations:
 	$(PYTHON) manage.py base_specify_migration
-	$(PYTHON) manage.py migrate specify
-	$(PYTHON) manage.py migrate notifications
-	$(PYTHON) manage.py migrate workbench
-	$(PYTHON) manage.py migrate accounts
-	$(PYTHON) manage.py migrate permissions
+	$(PYTHON) manage.py migrate
 
 specifyweb/settings/build_version.py: .FORCE
 	if [ -z "${BUILD_VERSION}" ]; \
@@ -43,10 +39,20 @@ runserver:
 webpack_watch:
 	$(MAKE) -C specifyweb/frontend/js_src watch
 
+MYPY_TARGETS = \
+	specifyweb/backend/permissions \
+	specifyweb/backend/workbench \
+	specifyweb/backend/accounts \
+	specifyweb/specify/models_utils/schema.py \
+	specifyweb/specify/models_utils/load_datamodel.py \
+	specifyweb/specify/api/crud.py \
+	specifyweb/specify/api/dispatch.py \
+	specifyweb/specify/api/validators.py \
+	specifyweb/specify/api/serializers.py \
+	specifyweb/specify/api/api_utils.py \
+	specifyweb/backend/context/user_resources.py
+
 typecheck:
-	$(MYPY) --follow-imports silent \
-	specifyweb/permissions specifyweb/workbench specifyweb/accounts \
-	specifyweb/specify/schema.py specifyweb/specify/load_datamodel.py \
-	specifyweb/specify/api.py specifyweb/context/user_resources.py
+	$(MYPY) --follow-imports silent $(MYPY_TARGETS)
 
 .FORCE:

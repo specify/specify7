@@ -16,6 +16,7 @@ export const reportsText = createDictionary({
     'fr-fr': 'Étiquette',
     'uk-ua': 'Етикетка',
     'de-ch': 'Etikett',
+    'pt-br': 'Rótulo',
   },
   labels: {
     'en-us': 'Labels',
@@ -24,6 +25,7 @@ export const reportsText = createDictionary({
     'fr-fr': 'Étiquettes',
     'uk-ua': 'Етикетки',
     'de-ch': 'Etiketten',
+    'pt-br': 'Etiquetas',
   },
   report: {
     'en-us': 'Report',
@@ -32,6 +34,7 @@ export const reportsText = createDictionary({
     'fr-fr': 'Rapport',
     'uk-ua': 'Звіт',
     'de-ch': 'Auswertung',
+    'pt-br': 'Relatório',
   },
   reports: {
     'en-us': 'Reports',
@@ -40,6 +43,7 @@ export const reportsText = createDictionary({
     'fr-fr': 'Rapports',
     'uk-ua': 'Звіти',
     'de-ch': 'Berichte',
+    'pt-br': 'Relatórios',
   },
   reportProblems: {
     'en-us': 'Problems with report',
@@ -48,6 +52,7 @@ export const reportsText = createDictionary({
     'fr-fr': 'Problèmes avec le rapport',
     'uk-ua': 'Проблеми зі звітом',
     'de-ch': 'Probleme mit Bericht',
+    'pt-br': 'Problemas com o relatório',
   },
   reportProblemsDescription: {
     'en-us': 'The selected report has the following problems:',
@@ -56,6 +61,7 @@ export const reportsText = createDictionary({
     'fr-fr': 'Le rapport sélectionné présente les problèmes suivants :',
     'uk-ua': 'Вибраний звіт має такі проблеми:',
     'de-ch': 'Der ausgewählte Bericht hat folgende Probleme:',
+    'pt-br': 'O relatório selecionado apresenta os seguintes problemas:',
   },
   missingAttachments: {
     'en-us': 'Missing attachments',
@@ -64,6 +70,7 @@ export const reportsText = createDictionary({
     'fr-fr': 'Pièces jointes manquantes',
     'uk-ua': 'Відсутні вкладення',
     'de-ch': 'Fehlende Anhänge',
+    'pt-br': 'Anexos ausentes',
   },
   fix: {
     'en-us': 'Fix',
@@ -72,6 +79,7 @@ export const reportsText = createDictionary({
     'fr-fr': 'Corriger',
     'uk-ua': 'Виправити',
     'de-ch': 'Korrektur',
+    'pt-br': 'Consertar',
   },
   chooseFile: {
     'en-us': 'Choose file',
@@ -80,6 +88,7 @@ export const reportsText = createDictionary({
     'fr-fr': 'Sélectionner un fichier',
     'uk-ua': 'Виберіть файл',
     'de-ch': 'Datei auswählen',
+    'pt-br': 'Escolha o arquivo',
   },
   reportParameters: {
     'en-us': 'Report Parameters',
@@ -88,6 +97,7 @@ export const reportsText = createDictionary({
     'fr-fr': 'Paramètres du rapport',
     'uk-ua': 'Параметри звіту',
     'de-ch': 'Parameter des Berichts',
+    'pt-br': 'Parâmetros do relatório',
   },
   runReport: {
     'en-us': 'Run Report',
@@ -96,6 +106,7 @@ export const reportsText = createDictionary({
     'fr-fr': 'Effectuer le rapport',
     'uk-ua': 'Запустити звіт',
     'de-ch': 'Bericht ausführen',
+    'pt-br': 'Relatório de execução',
   },
   missingReportQuery: {
     'en-us': 'Missing Report Query',
@@ -104,6 +115,7 @@ export const reportsText = createDictionary({
     'fr-fr': 'Requête de rapport manquante',
     'uk-ua': 'Відсутній запит звіту',
     'de-ch': 'Fehlende Berichtsabfrage',
+    'pt-br': 'Consulta de relatório ausente',
   },
   missingReportQueryDescription: {
     'en-us': 'This report does not have an associated query',
@@ -112,6 +124,7 @@ export const reportsText = createDictionary({
     'fr-fr': "Ce rapport n'a pas de requête associée",
     'uk-ua': 'Цей звіт не має прив’язаного запиту',
     'de-ch': 'Dieser Bericht hat keine zugehörige Abfrage',
+    'pt-br': 'Este relatório não possui uma consulta associada',
   },
   missingReport: {
     'en-us': 'Missing report',
@@ -120,20 +133,20 @@ export const reportsText = createDictionary({
     'fr-fr': 'Rapport manquant',
     'uk-ua': 'Відсутній звіт',
     'de-ch': 'Fehlender Bericht',
+    'pt-br': 'Relatório ausente',
   },
   missingReportDescription: {
     'en-us': 'Unable to find an SpReport record for this App Resource',
     'ru-ru': 'Не удалось найти запись SpReport для этого ресурса приложения',
-    'es-es': `
-      No se puede encontrar un registro SpReport para este recurso de aplicación
-    `,
-    'fr-fr': `
-      Impossible de trouver un enregistrement SpReport pour cette ressource
-      d'application
-    `,
+    'es-es':
+      'No se puede encontrar un registro SpReport para este recurso de aplicación',
+    'fr-fr':
+      "Impossible de trouver un enregistrement SpReport pour cette ressource d'application",
     'uk-ua':
       'Не вдалося знайти запис таблиці SpReport для цього ресурсу програми',
     'de-ch': 'Es kann kein SpReport für diese App-Ressource gefunden werden',
+    'pt-br':
+      'Não é possível encontrar um registro SpReport para este recurso de aplicativo',
   },
   generateLabel: {
     'en-us': 'Generate label',
@@ -142,6 +155,7 @@ export const reportsText = createDictionary({
     'fr-fr': 'Générer une étiquette',
     'uk-ua': 'Створити етикетку',
     'de-ch': 'Etikett generieren',
+    'pt-br': 'Gerar rótulo',
   },
   generateLabelOnSave: {
     'en-us': 'Generate label on save',
@@ -150,6 +164,7 @@ export const reportsText = createDictionary({
     'fr-fr': "Générer une étiquette lors de l'enregistrement",
     'uk-ua': 'Створити етикетку під час збереження',
     'de-ch': 'Etikett beim Speichern generieren',
+    'pt-br': 'Gerar rótulo ao salvar',
   },
   generateReport: {
     'en-us': 'Generate report',
@@ -158,6 +173,7 @@ export const reportsText = createDictionary({
     'fr-fr': 'Générer un rapport',
     'uk-ua': 'Створити звіт',
     'de-ch': 'Bericht generieren',
+    'pt-br': 'Gerar relatório',
   },
   generateReportOnSave: {
     'en-us': 'Generate report on save',
@@ -166,5 +182,6 @@ export const reportsText = createDictionary({
     'fr-fr': "Générer un rapport lors de l'enregistrement",
     'uk-ua': 'Створити звіт при збереженні',
     'de-ch': 'Bericht beim Speichern generieren',
+    'pt-br': 'Gerar relatório ao salvar',
   },
 } as const);

@@ -31,8 +31,8 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
 import { userPreferences } from '../Preferences/userPreferences';
 import { createQuery } from '../QueryBuilder';
-import type { QueryFieldFilter } from '../QueryBuilder/FieldFilter';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import type { QueryFieldFilter } from '../QueryBuilder/FieldFilterSpec';
+import { queryFieldFilterSpecs } from '../QueryBuilder/FieldFilterSpec';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import type { MappingPath } from '../WbPlanView/Mapper';
@@ -82,6 +82,7 @@ export function SearchDialog<SCHEMA extends AnySchema>(
   const [useQueryBuilder, handleUseQueryBuilder] = useBooleanState(
     props.onlyUseQueryBuilder ? true : alwaysUseQueryBuilder
   );
+
   return useQueryBuilder ? (
     <QueryBuilderSearch
       // BUG: pass on extraFilters
@@ -158,6 +159,7 @@ function testFilter<SCHEMA extends AnySchema>(
         ? // Cast numbers to strings
           values.some((value) => {
             const fieldValue = resource.get(field);
+
             return isRelationship
               ? value == strictIdFromUrl(fieldValue!).toString()
               : value == fieldValue;
@@ -184,6 +186,7 @@ function SearchForm<SCHEMA extends AnySchema>({
   onClose: handleClose,
   onUseQueryBuilder: handleUseQueryBuilder,
   onAdd: handleAdd,
+  multiple,
 }: {
   readonly forceCollection: number | undefined;
   readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>> | undefined;
@@ -195,6 +198,7 @@ function SearchForm<SCHEMA extends AnySchema>({
   readonly onAdd?:
     | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
     | undefined;
+  readonly multiple?: boolean;
 }): JSX.Element | null {
   const templateResource = React.useMemo(
     () =>
@@ -238,11 +242,13 @@ function SearchForm<SCHEMA extends AnySchema>({
               {queryText.queryBuilder()}
             </Button.Info>
           </ProtectedAction>
-          <SelectRecordSets
-            handleParentClose={handleClose}
-            table={table}
-            onAdd={handleAdd}
-          />
+          {multiple === true && (
+            <SelectRecordSets
+              handleParentClose={handleClose}
+              table={table}
+              onAdd={handleAdd}
+            />
+          )}
           <Submit.Success form={id('form')}>
             {commonText.search()}
           </Submit.Success>
@@ -399,7 +405,7 @@ const toQueryFields = <SCHEMA extends AnySchema>(
   filters.map(({ field, queryBuilderFieldPath, operation, isNot, value }) =>
     QueryFieldSpec.fromPath(table.name, queryBuilderFieldPath ?? [field])
       .toSpQueryField()
-      .set('operStart', queryFieldFilters[operation].id)
+      .set('operStart', queryFieldFilterSpecs[operation].id)
       .set('isNot', isNot)
       .set('startValue', value)
   );

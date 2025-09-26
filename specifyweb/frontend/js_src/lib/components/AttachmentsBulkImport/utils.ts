@@ -30,7 +30,7 @@ import {
 import { strictGetTable, tables } from '../DataModel/tables';
 import type { CollectionObject, SpQuery, Tables } from '../DataModel/types';
 import type { UiFormatter } from '../FieldFormatters';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { queryFieldFilterSpecs } from '../QueryBuilder/FieldFilterSpec';
 import { makeQueryField } from '../QueryBuilder/fromTree';
 import type { QueryFieldWithPath } from '../Statistics/types';
 import type { AttachmentUploadSpec } from './Import';
@@ -96,7 +96,7 @@ function generateInQueryResource(
         ? inQueryField.field
         : {
             isDisplay: true,
-            operStart: queryFieldFilters.in.id,
+            operStart: queryFieldFilterSpecs.in.id,
             // Just unique values are necessary. Also decreases the number of values to send to backend
             startValue: f.unique(filterArray(inQueryField.lookUp)).join(','),
             ...inQueryField.field,
@@ -374,7 +374,7 @@ export async function reconstructUploadingAttachmentSpec(
         field: {
           path: attachmentTableId,
           isDisplay: true,
-          id: queryFieldFilters.any.id,
+          id: queryFieldFilterSpecs.any.id,
         },
       },
       {

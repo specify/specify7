@@ -202,17 +202,16 @@ function FormatterLine({
           isReadOnly={isReadOnly}
           name={id('format')}
           value="none"
-          onChange={(): void =>
-            handleFormatted(
-              name,
-              // Select first option if there is such
-              typeof values === 'object'
-                ? (Object.values(values).at(0)?.at(0)?.at(0) ??
-                    Object.values(values).at(1)?.at(0)?.at(0) ??
-                    null)
-                : null
-            )
-          }
+          onChange={(): void => {
+            const firstValue =
+              typeof values === 'object' && values !== null
+                ? (Object.values(values)?.[0]?.[0]?.[0] ??
+                  values['Field Formatters']?.[0]?.[0] ??
+                  null)
+                : null;
+
+            handleFormatted(name, firstValue);
+          }}
         />
         {label}
       </Label.Inline>

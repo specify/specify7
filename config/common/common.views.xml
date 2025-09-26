@@ -140,8 +140,8 @@
 		<view name="Collectors" class="edu.ku.brc.specify.datamodel.Collector" busrules="edu.ku.brc.specify.datamodel.busrules.CollectorBusRules">
 			<desc>The Collectors Subform.</desc>
 			<altviews>
-				<!-- <altview name="Collectors Icon View"  viewdef="CollectorsIconView" mode="view"/>
-                <altview name="Collectors Icon Edit"  viewdef="CollectorsIconView" mode="edit"/>  -->
+				<!-- <altview name="Collectors Icon View" viewdef="CollectorsIconView" mode="view"/>
+                <altview name="Collectors Icon Edit" viewdef="CollectorsIconView" mode="edit"/>  -->
 				<altview name="Collectors Table View" viewdef="Collectors Table" mode="view"/>
 				<altview name="Collectors Table Edit" viewdef="Collectors Table" mode="edit" default="true"/>
 			</altviews>
@@ -374,8 +374,8 @@
 		<view name="Determiners" class="edu.ku.brc.specify.datamodel.Determiner" busrules="edu.ku.brc.specify.datamodel.busrules.DeterminerBusRules">
 			<desc>The Determiners Subform.</desc>
 			<altviews>
-				<!-- <altview name="Determiners Icon View"  viewdef="DeterminersIconView" mode="view"/>
-                <altview name="Determiners Icon Edit"  viewdef="DeterminersIconView" mode="edit"/>  -->
+				<!-- <altview name="Determiners Icon View" viewdef="DeterminersIconView" mode="view"/>
+                <altview name="Determiners Icon Edit" viewdef="DeterminersIconView" mode="edit"/>  -->
 				<altview name="Determiners Table View" viewdef="Determiners Table" mode="view"/>
 				<altview name="Determiners Table Edit" viewdef="Determiners Table" mode="edit" default="true"/>
 			</altviews>
@@ -521,8 +521,8 @@
 		<view name="FundingAgents" class="edu.ku.brc.specify.datamodel.FundingAgent" busrules="edu.ku.brc.specify.datamodel.busrules.FundingAgentBusRules">
 			<desc>The FundingAgents Subform.</desc>
 			<altviews>
-				<!-- <altview name="FundingAgents Icon View"  viewdef="FundingAgentsIconView" mode="view"/>
-                <altview name="FundingAgents Icon Edit"  viewdef="FundingAgentsIconView" mode="edit"/>  -->
+				<!-- <altview name="FundingAgents Icon View" viewdef="FundingAgentsIconView" mode="view"/>
+                <altview name="FundingAgents Icon Edit" viewdef="FundingAgentsIconView" mode="edit"/>  -->
 				<altview name="FundingAgents Table View" viewdef="FundingAgents Table" mode="view"/>
 				<altview name="FundingAgents Table Edit" viewdef="FundingAgents Table" mode="edit" default="true"/>
 			</altviews>
@@ -1003,9 +1003,9 @@
 					<cell type="label" id="divLabel" label=" " initialize="align=right"/>
 					<cell type="field" id="4" name="divisionCBX" uitype="combobox" ignore="true"/>
 					<cell type="label" labelfor="5"/>
-					<cell type="field" id="5" name="dateAccessioned" uitype="formattedtext" uifieldformatter="Date" default="today"/>
+					<cell type="field" uitype="plugin" id="5" name="dateAccessioned" initialize="name=PartialDateUI;df=dateAccessioned;tp=dateAccessionedPrecision" uifieldformatter="Date"  default="today"/>
 					<cell type="label" labelfor="6"/>
-					<cell type="field" id="6" name="dateReceived" uitype="formattedtext" uifieldformatter="Date" default="today"/>
+					<cell type="field" uitype="plugin" id="6" name="dateReceived" initialize="name=PartialDateUI;df=dateReceived;tp=dateReceivedPrecision" uifieldformatter="Date"  default="today"/>
 				</row>
 				<row>
 					<cell type="label" label="Total Items:" initialize="align=right"/>
@@ -1203,9 +1203,9 @@
 				</row>
 				<!--<row>
                     <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                 </row>
                 <row>
                     <cell type="label" labelfor="11"/>
@@ -1234,9 +1234,9 @@
 				</row>
 				<!--<row>
                     <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                 </row>
                 <row>
                     <cell type="label" labelfor="11"/>
@@ -1304,9 +1304,9 @@
                 </row>
                 <row>
                     <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                 </row>
                 <row>
                     <cell type="label" labelfor="11"/>
@@ -1349,9 +1349,9 @@
 				</row>
 				<!--<row>
                     <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                 </row>
                 <row>
                     <cell type="label" labelfor="11"/>
@@ -1428,9 +1428,9 @@
                 </row>
                 <row>
                     <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                 </row>
                 <row>
                     <cell type="label" labelfor="11"/>
@@ -1465,9 +1465,9 @@
 				</row>
 				<!--<row>
                     <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                 </row>
                 <row>
                     <cell type="label" labelfor="11"/>
@@ -1514,9 +1514,9 @@
                 </row>
                 <row>
                     <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                 </row>
                 <row>
                     <cell type="label" labelfor="11"/>
@@ -1550,9 +1550,9 @@
 				</row>
 				<!--<row>
                     <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                 </row>
                 <row>
                     <cell type="label" labelfor="11"/>
@@ -1667,9 +1667,9 @@
                 </row>
                 <row>
                     <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                 </row>
                 <row>
                     <cell type="label" labelfor="11"/>
@@ -1840,9 +1840,9 @@
 				</row>
 				<!--<row>
                     <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" id="divLabel" label=" " initialize="align=right"/>
                     <cell type="field" id="4" name="divisionCBX" uitype="combobox" ignore="true"/>
                 </row>
@@ -1903,9 +1903,9 @@
 				</row>
 				<!--<row>
                     <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                 </row>
                 <row>
                     <cell type="label" labelfor="11"/>
@@ -2147,47 +2147,6 @@
 					<cell type="label" labelfor="4"/>
 					<cell type="field" id="4" name="projectNumber" uitype="text"/>
 				</row>
-			</rows>
-		</viewdef>
-		<viewdef type="form" name="CommonNameTx" class="edu.ku.brc.specify.datamodel.CommonNameTx" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-			<desc>Common Name form</desc>
-			<enableRules/>
-			<columnDef>200px,2px,p,10px,p,2px,p,2px,p,2px,200px,p:g</columnDef>
-			<rowDef auto="true" cell="p" sep="2px"/>
-			<rows>
-				<row>
-					<cell type="label" labelfor="1"/>
-					<cell type="field" id="1" name="name" uitype="text"/>
-				</row>
-				<row>
-					<cell type="label" labelfor="2"/>
-					<cell type="field" id="2" name="language" uitype="combobox" picklist="Languages" colspan="10"/>
-				</row>
-				<row>
-					<cell type="label" labelfor="3"/>
-					<cell type="field" id="3" name="country" uitype="text" colspan="10"/>
-				</row>
-				<!--<row>
-                    <cell type="label" labelfor="au"/>
-                    <cell type="field" id="au" name="author" uitype="text"/>
-                    <cell type="label" labelfor="var"/>
-                    <cell type="field" id="var" name="variant" uitype="text"/>
-                </row> 
-                <row>
-                    <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
-                    <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
-                </row>
-                <row>
-                    <cell type="label" labelfor="11"/>
-                    <cell type="field" id="11" name="timestampModified" uitype="label" readonly="true"/>
-                    <cell type="label" labelfor="12"/>
-                    <cell type="field" id="12" name="timestampCreated" uitype="label" readonly="true"/>
-                </row>
-                <row>
-                    <cell type="subview" id="10" viewname="CommonNameTXCitation" name="citations" colspan="12"/>
-                </row> -->
 			</rows>
 		</viewdef>
 		<viewdef type="form" name="ConservDescription" class="edu.ku.brc.specify.datamodel.ConservDescription" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
@@ -2578,7 +2537,7 @@
                 </row-->
 				<!--row>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="11"/>
                     <cell type="field" id="11" name="timestampModified" uitype="label" readonly="true" />
                 </row-->
@@ -2683,7 +2642,7 @@
 					<cell type="label" labelfor="ldqx"/>
 					<cell type="field" id="ldqx" name="deaccession" uitype="querycbx" initialize="name=Deaccession;title=Deaccession" colspan="9"/>
 				</row>
-				<row><!--<cell type="label" labelfor="3"/>
+				<row>					<!--<cell type="label" labelfor="3"/>
                     <cell type="field" id="3" name="accession" uitype="querycbx" initialize="name=AccessionCO;title=Accession;newbtn=false;editbtn=false"/>--></row>
 				<row>
 					<cell type="subview" viewname="DisposalAgent" id="8" name="disposalAgents" desc="Agents" colspan="13" rows="3"/>
@@ -2926,9 +2885,9 @@
 				</row>
 				<!--<row>
                     <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" id="divLabel" label=" " initialize="align=right"/>
                     <cell type="field" id="4" name="divisionCBX" uitype="combobox" ignore="true"/>
                 </row>
@@ -3555,7 +3514,8 @@
                     <cell type="field" id="11" name="timestampModified" uitype="label" readonly="true"/>
                     <cell type="label" labelfor="12"/>
                     <cell type="field" id="12" name="timestampCreated" uitype="label" readonly="true"/>
-                </row>-->
+                </row>
+				-->
 			</rows>
 		</viewdef>
 		<viewdef type="form" name="ExchangeOut" class="edu.ku.brc.specify.datamodel.ExchangeOut" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
@@ -3900,9 +3860,9 @@
 				</row>
 				<!--<row>
                     <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" id="divLabel" label=" " initialize="align=right"/>
                     <cell type="field" id="4" name="divisionCBX" uitype="combobox" ignore="true"/>
                 </row>
@@ -4243,7 +4203,22 @@
                     <cell type="field" id="11" name="timestampModified" uitype="label" readonly="true"/>
                     <cell type="label" labelfor="12"/>
                     <cell type="field" id="12" name="timestampCreated" uitype="label" readonly="true"/>
-                </row>-->
+                </row>
+				<row>
+					<cell type="label" labelfor="a1"/>
+					<cell type="field" id="a1" name="agent1" uitype="querycbx" colspan="3"/>
+					<cell type="label" labelfor="a2"/>
+					<cell type="field" id="a2" name="agent2" uitype="querycbx"/>
+					<cell type="label" labelfor="a3"/>
+					<cell type="field" id="a3" name="agent3" uitype="querycbx" colspan="3"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="a4"/>
+					<cell type="field" id="a4" name="agent4" uitype="querycbx" colspan="3"/>
+					<cell type="label" labelfor="a5"/>
+					<cell type="field" id="a5" name="agent5" uitype="querycbx"/>
+				</row>
+				-->
 			</rows>
 		</viewdef>
 		<viewdef type="form" name="GiftSub" class="edu.ku.brc.specify.datamodel.Gift" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
@@ -4333,7 +4308,7 @@
 					<cell type="label" labelfor="1"/>
 					<cell type="field" id="1" name="preparation.barCode" uitype="formattedtext"/>
 					<!--<cell type="label" labelfor="3"/>
-                    <cell type="field" id="3" name="giftDate" uitype="formattedtext" uifieldformatter="Date"  default="today"/>
+                    <cell type="field" id="3" name="giftDate" uitype="formattedtext" uifieldformatter="Date" default="today"/>
                     <cell type="label" labelfor="4"/>-->
 				</row>
 				<!--<row>
@@ -4823,7 +4798,21 @@
                     <cell type="field" id="11" name="timestampModified" uitype="label" readonly="true"/>
                     <cell type="label" labelfor="12"/>
                     <cell type="field" id="12" name="timestampCreated" uitype="label" readonly="true"/>
-                </row>-->
+                </row>
+				<row>
+					<cell type="label" labelfor="a1"/>
+					<cell type="field" id="a1" name="agent1" uitype="querycbx" colspan="3"/>
+					<cell type="label" labelfor="a2"/>
+					<cell type="field" id="a2" name="agent2" uitype="querycbx"/>
+					<cell type="label" labelfor="a3"/>
+					<cell type="field" id="a3" name="agent3" uitype="querycbx" colspan="3"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="a4"/>
+					<cell type="field" id="a4" name="agent4" uitype="querycbx" colspan="3"/>
+					<cell type="label" labelfor="a5"/>
+					<cell type="field" id="a5" name="agent5" uitype="querycbx"/>
+				</row>-->
 			</rows>
 		</viewdef>
 		<viewdef type="formtable" name="LoanAgent Table" class="edu.ku.brc.specify.datamodel.LoanAgent" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
@@ -4943,9 +4932,9 @@
 				</row>
 				<row>
 					<cell type="label" labelfor="3"/>
-					<cell type="field" id="3" name="quantityReturned" uitype="spinner" initialize="max=5000"/>
+					<cell type="field" id="3" name="quantityReturned" uitype="spinner" initialize="max=5000; min=0"/>
 					<cell type="label" labelfor="5"/>
-					<cell type="field" id="5" name="quantityResolved" uitype="spinner" initialize="max=5000"/>
+					<cell type="field" id="5" name="quantityResolved" uitype="spinner" initialize="max=5000; min=0"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="4"/>
@@ -5537,9 +5526,9 @@
                 </row>
                 <row>
                     <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                 </row>
                 <row>
                     <cell type="label" labelfor="11"/>
@@ -5568,9 +5557,9 @@
 				</row>
 				<!--<row>
                     <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" id="divLabel" label=" " initialize="align=right"/>
                     <cell type="field" id="4" name="divisionCBX" uitype="combobox" ignore="true"/>
                 </row>
@@ -6213,9 +6202,9 @@
 				</row>
 				<!--<row>
                     <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                 </row>
                 <row>
                     <cell type="label" labelfor="11"/>
@@ -6244,9 +6233,9 @@
 				</row>
 				<!--<row>
                     <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                 </row>
                 <row>
                     <cell type="label" labelfor="11"/>
@@ -6308,9 +6297,9 @@
                 </row>
                 <row>
                     <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                 </row>
                 <row>
                     <cell type="label" labelfor="11"/>
@@ -6386,9 +6375,9 @@
                 </row>
                 <row>
                     <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                 </row>
                 <row>
                     <cell type="label" labelfor="11"/>
@@ -6457,9 +6446,9 @@
                 </row>
                 <row>
                     <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                     <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true"  uifieldformatter="Agent"/>
+                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
                 </row>
                 <row>
                     <cell type="label" labelfor="11"/>
@@ -6519,7 +6508,7 @@
 					<cell type="label" labelfor="1"/>
 					<cell type="field" id="1" name="name" uitype="text" colspan="6" isrequired="true"/>
 				</row>
-				<row><!--<cell type="label" label=""/>
+				<row>					<!--<cell type="label" label=""/>
                     <cell type="field" id="11" name="isAccessionsGlobal" uitype="checkbox"/>--></row>
 				<row>
 					<cell type="label" labelfor="2"/>
@@ -7016,100 +7005,6 @@
 				<row>
 					<cell type="label" labelfor="7"/>
 					<cell type="field" id="7" name="remarks" uitype="text" colspan="3"/>
-				</row>
-			</rows>
-		</viewdef>
-		<viewdef name="Collection Object" class="edu.ku.brc.specify.datamodel.CollectionObject" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-			<desc>The Collection Object form.</desc>
-			<enableRules/>
-			<columnDef>100px,2px,195px,5px,96px,2px,50px,10px,150px,5px,94px,2px,176px,15px,p:g</columnDef>
-			<columnDef os="lnx">100px,2px,195px,5px,60px,2px,60px,10px,140px,5px,70px,2px,181px,15px,50px,2px,p:g</columnDef>
-			<columnDef os="mac">130px,2px,215px,5px,128px,2px,105px,10px,145px,5px,138px,2px,195px,15px,p:g</columnDef>
-			<columnDef os="exp">p,2px,min(p;250px),5px:g,p,2px,p:g(2),10px,p:g(2),5px:g,p,2px,p:g,p,p:g</columnDef>
-			<rowDef auto="true" cell="p" sep="2px"/>
-			<rows>
-				<row>
-					<cell type="label" labelfor="1"/>
-					<cell type="field" id="1" name="catalogNumber" uitype="formattedtext"/>
-					<cell type="label" labelfor="cot"/>
-					<cell type="field" id="cot" name="collectionObjectType" uitype="combobox" colspan="3"/>
-					<cell type="label" labelfor="14"/>
-					<cell type="field" id="14" name="altCatalogNumber" uitype="text"/>
-				</row>
-				<row>
-					<cell type="label" labelfor="3"/>
-					<cell type="field" id="3" name="accession" uitype="querycbx" initialize="name=AccessionCO;title=AccessionCO" isrequired="false"/>
-					<cell type="label" labelfor="4"/>
-					<cell type="field" id="4" name="cataloger" uitype="querycbx" initialize="name=Agent;title=Catalog Agent" colspan="3"/>
-					<cell type="label" labelfor="5"/>
-					<cell type="field" id="5" uitype="plugin" name="this" initialize="name=PartialDateUI;df=catalogedDate;tp=catalogedDatePrecision" uifieldformatter="Date"/>
-				</row>
-				<row>
-					<cell type="label" labelfor="21"/>
-					<cell type="field" id="21" name="collectingEvent" uitype="querycbx" colspan="12"/>
-				</row>
-				<row>
-					<cell type="label" labelfor="43"/>
-					<cell type="field" id="43" name="paleoContext" uitype="querycbx" colspan="12"/>
-				</row>
-				<row>
-					<cell type="separator" label="Collection Object Metadata" colspan="18"/>
-				</row>
-				<row>
-					<cell type="panel" colspan="18">
-						<rows>
-							<row>
-								<cell type="label" label="Determinations"/>
-								<cell type="subview" viewname="MineralDetermination" id="6" name="determinations" initialize="btn=true;verticalAlign=center"/>
-								<cell type="panel" colspan="3">
-									<row>
-										<cell type="label" label="Collection Object Attributes"/>
-										<cell type="subview" id="colObjAttr" name="collectionObjectAttribute" viewname="AllAttributes" initialize="btn=true;align=left;verticalAlign=center" colspan="18"/>
-									</row>
-									<rows condition="text8=Mineral">
-										<row>
-											<cell type="label" label="Attributes"/>
-											<cell type="subview" id="colObjAttr" name="collectionObjectAttribute" viewname="MineralAttributes" initialize="btn=true;align=left;verticalAlign=center" colspan="18"/>
-										</row>
-									</rows>
-									<rows condition="text8=Rock">
-										<row>
-											<cell type="label" label="Attributes"/>
-											<cell type="subview" id="colObjAttr" name="collectionObjectAttribute" viewname="RockAttributes" initialize="btn=true;align=left;verticalAlign=center" colspan="18"/>
-										</row>
-									</rows>
-									<rows condition="text8=Meteorite">
-										<row>
-											<cell type="label" label="Attributes"/>
-											<cell type="subview" id="colObjAttr" name="collectionObjectAttribute" viewname="MeteoriteAttributes" initialize="btn=true;align=left;verticalAlign=center" colspan="18"/>
-										</row>
-									</rows>
-									<rows condition="text8=Fossil">
-										<row>
-											<cell type="label" label="Attributes"/>
-											<cell type="subview" id="colObjAttr" name="collectionObjectAttribute" viewname="FossilAttributes" initialize="btn=true;align=left;verticalAlign=center" colspan="18"/>
-										</row>
-									</rows>
-								</cell>
-								<!-- 						<cell type="label" label="Collecting Event"/>
-						<cell type="subview" viewname="CollectingEventSub" id="21" name="collectingEvent" initialize="btn=true;align=left;verticalAlign=center" colspan="1" rows="5"/> -->
-								<cell type="label" label="Geologic Context"/>
-								<cell type="subview" uitype="querycbx" id="pcsh" name="paleoContext" initialize="name=PaleoContext;btn=true;align=left;verticalAlign=center" colspan="1"/>
-								<cell type="label" label="Relative Ages"/>
-								<cell type="subview" id="ageData" name="relativeAges" initialize="btn=true;align=left;verticalAlign=center"/>
-								<cell type="label" label="Absolute Ages"/>
-								<cell type="subview" id="ageData" name="absoluteAges" initialize="btn=true;align=left;verticalAlign=center"/>
-								<cell type="label" label="Treatment Events"/>
-								<cell type="subview" id="treatmentEvents" name="treatmentEvents" viewname="TreatmentEvent" initialize="btn=true;align=left;verticalAlign=center"/>
-								<cell type="label" label="Preparation"/>
-								<cell type="subview" viewname="Preparation" id="8" name="preparations" initialize="btn=true;align=left;verticalAlign=center" defaulttype="table" colspan="1" rows="3"/>
-								<cell type="label" label="Citations"/>
-								<cell type="subview" id="7" name="collectionObjectCitations" viewname="CollectionObjectCitation" initialize="btn=true;align=left;verticalAlign=center"/>
-								<cell type="label" label="Attachments"/>
-								<cell type="subview" id="attachments" viewname="ObjectAttachment" name="collectionObjectAttachments" initialize="icon=CollectionObjectAttachment;btn=true;align=left;verticalAlign=center" defaulttype="icon"/>
-							</row>
-						</rows>
-					</cell>
 				</row>
 			</rows>
 		</viewdef>

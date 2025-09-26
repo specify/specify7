@@ -29,6 +29,7 @@ import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { TableIcon } from '../Molecules/TableIcon';
+import { ATTACHMENTS_COLUMN } from '../WorkBench/attachmentHelpers';
 import { Layout } from './Header';
 import {
   fetchAutoMapperSuggestions,
@@ -40,6 +41,7 @@ import type { MappingElementProps } from './LineComponents';
 import { getMappingLineProps, MappingLineComponent } from './LineComponents';
 import { columnOptionsAreDefault } from './linesGetter';
 import {
+  BatchEditPrefsView,
   ChangeBaseTable,
   EmptyDataSetDialog,
   mappingOptionsMenu,
@@ -55,7 +57,7 @@ import { reducer } from './mappingReducer';
 import { findRequiredMissingFields } from './modelHelpers';
 import { getMappingLineData } from './navigator';
 import { navigatorSpecs } from './navigatorSpecs';
-import type { ColumnOptions } from './uploadPlanParser';
+import type { ColumnOptions, DatasetAttachmentPrefs } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
 
 /*
@@ -102,17 +104,44 @@ export type MappingState = State<
     readonly autoMapperSuggestions?: RA<AutoMapperSuggestion>;
     readonly openSelectElement?: SelectElementPosition;
     readonly validationResults: RA<MappingPath>;
+    readonly batchEditPrefs?: BatchEditPrefs;
+    readonly attachmentPrefs?: DatasetAttachmentPrefs;
   }
 >;
+
+export type ReadonlySpec = {
+  readonly mustMatch: boolean;
+  readonly columnOptions: boolean;
+  readonly batchEditPrefs: boolean;
+};
+
+export type BatchEditPrefs = {
+  readonly deferForNullCheck: boolean;
+  readonly deferForMatch: boolean;
+};
+
+export const DEFAULT_BATCH_EDIT_PREFS: BatchEditPrefs = {
+  deferForMatch: true,
+  deferForNullCheck: false,
+} as const;
+
+export const DEFAULT_ATTACHMENT_PREFS: DatasetAttachmentPrefs = {
+  usesAttachments: true,
+  attachmentsColumn: ATTACHMENTS_COLUMN,
+} as const;
 
 export const getDefaultMappingState = ({
   changesMade,
   lines,
   mustMatchPreferences,
+  batchEditPrefs,
+  attachmentPrefs,
 }: {
   readonly changesMade: boolean;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
+  readonly batchEditPrefs?: BatchEditPrefs;
+  readonly attachmentPrefs?: DatasetAttachmentPrefs;
 }): MappingState => ({
   type: 'MappingState',
   showHiddenFields: getCache('wbPlanViewUi', 'showHiddenFields') ?? false,
@@ -124,6 +153,8 @@ export const getDefaultMappingState = ({
   focusedLine: 0,
   changesMade,
   mustMatchPreferences,
+  batchEditPrefs,
+  attachmentPrefs,
 });
 
 // REFACTOR: split component into smaller components
@@ -133,12 +164,17 @@ export function Mapper(props: {
   readonly onChangeBaseTable: () => void;
   readonly onSave: (
     lines: RA<MappingLine>,
-    mustMatchPreferences: IR<boolean>
+    mustMatchPreferences: IR<boolean>,
+    batchEditPrefs?: BatchEditPrefs,
+    attachmentPrefs?: DatasetAttachmentPrefs
   ) => Promise<void>;
   // Initial values for the state:
   readonly changesMade: boolean;
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
+  readonly readonlySpec?: ReadonlySpec;
+  readonly batchEditPrefs?: BatchEditPrefs;
+  readonly attachmentPrefs?: DatasetAttachmentPrefs;
 }): JSX.Element {
   const [state, dispatch] = React.useReducer(
     reducer,
@@ -146,6 +182,8 @@ export function Mapper(props: {
       changesMade: props.changesMade,
       lines: props.lines,
       mustMatchPreferences: props.mustMatchPreferences,
+      batchEditPrefs: props.batchEditPrefs,
+      attachmentPrefs: props.attachmentPrefs,
     },
     getDefaultMappingState
   );
@@ -264,7 +302,14 @@ export function Mapper(props: {
     const validationResults = ignoreValidation ? [] : validate();
     if (validationResults.length === 0) {
       unsetUnloadProtect();
-      loading(props.onSave(state.lines, state.mustMatchPreferences));
+      loading(
+        props.onSave(
+          state.lines,
+          state.mustMatchPreferences,
+          state.batchEditPrefs,
+          state.attachmentPrefs
+        )
+      );
     } else
       dispatch({
         type: 'ValidationAction',
@@ -293,6 +338,11 @@ export function Mapper(props: {
     state.lines.length > 0 &&
     mappingPathIsComplete(state.mappingView) &&
     getMappedFieldsBind(state.mappingView).length === 0;
+
+  const disableSave =
+    props.readonlySpec === undefined
+      ? isReadOnly
+      : Object.values(props.readonlySpec).every(Boolean);
 
   return (
     <Layout
@@ -337,38 +387,61 @@ export function Mapper(props: {
               })
             }
           />
-          <MustMatch
-            getMustMatchPreferences={(): IR<boolean> =>
-              getMustMatchTables({
-                baseTableName: props.baseTableName,
-                lines: state.lines,
-                mustMatchPreferences: state.mustMatchPreferences,
-              })
-            }
-            onChange={(mustMatchPreferences): void =>
-              dispatch({
-                type: 'MustMatchPrefChangeAction',
-                mustMatchPreferences,
-              })
-            }
-            onClose={(): void => {
-              /*
-               * Since setting table as must match causes all of its fields to
-               * be optional, we may have to rerun validation on
-               * mustMatchPreferences changes
-               */
-              if (
-                state.validationResults.length > 0 &&
-                state.lines.some(({ mappingPath }) =>
-                  mappingPathIsComplete(mappingPath)
-                )
-              )
+          {typeof props.batchEditPrefs === 'object' ? (
+            <ReadOnlyContext.Provider
+              value={
+                props.dataset.uploadresult?.success ??
+                props.readonlySpec?.batchEditPrefs ??
+                isReadOnly
+              }
+            >
+              <BatchEditPrefsView
+                prefs={props.batchEditPrefs}
+                onChange={(prefs) =>
+                  dispatch({
+                    type: 'ChangeBatchEditPrefs',
+                    prefs,
+                  })
+                }
+              />
+            </ReadOnlyContext.Provider>
+          ) : null}
+          <ReadOnlyContext.Provider
+            value={props.readonlySpec?.mustMatch ?? isReadOnly}
+          >
+            <MustMatch
+              getMustMatchPreferences={(): IR<boolean> =>
+                getMustMatchTables({
+                  baseTableName: props.baseTableName,
+                  lines: state.lines,
+                  mustMatchPreferences: state.mustMatchPreferences,
+                })
+              }
+              onChange={(mustMatchPreferences): void =>
                 dispatch({
-                  type: 'ValidationAction',
-                  validationResults: validate(),
-                });
-            }}
-          />
+                  type: 'ChangeMustMatchPrefAction',
+                  mustMatchPreferences,
+                })
+              }
+              onClose={(): void => {
+                /*
+                 * Since setting table as must match causes all of its fields to
+                 * be optional, we may have to rerun validation on
+                 * mustMatchPreferences changes
+                 */
+                if (
+                  state.validationResults.length > 0 &&
+                  state.lines.some(({ mappingPath }) =>
+                    mappingPathIsComplete(mappingPath)
+                  )
+                )
+                  dispatch({
+                    type: 'ValidationAction',
+                    validationResults: validate(),
+                  });
+              }}
+            />
+          </ReadOnlyContext.Provider>
           {!isReadOnly && (
             <Button.Small
               className={
@@ -396,11 +469,12 @@ export function Mapper(props: {
           >
             {isReadOnly ? wbText.dataEditor() : commonText.cancel()}
           </Link.Small>
-          {!isReadOnly && (
+          {!disableSave && (
             <Button.Small
               disabled={!state.changesMade}
               variant={className.saveButton}
-              onClick={(): void => handleSave(false)}
+              // This is a bit complicated to resolve correctly. Each component should have its own validator..
+              onClick={(): void => handleSave(isReadOnly)}
             >
               {commonText.save()}
             </Button.Small>
@@ -557,7 +631,7 @@ export function Mapper(props: {
                   customSelectSubtype: 'simple',
                   fieldsData: mappingOptionsMenu({
                     id: (suffix) => id(`column-options-${line}-${suffix}`),
-                    isReadOnly,
+                    isReadOnly: props.readonlySpec?.columnOptions ?? isReadOnly,
                     columnOptions,
                     onChangeMatchBehaviour: (matchBehavior) =>
                       dispatch({

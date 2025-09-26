@@ -3,6 +3,7 @@ import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { handleAjaxResponse } from '../../utils/ajax/response';
 import type { IR, RA } from '../../utils/types';
+import { keysToLowerCase } from '../../utils/utils';
 import type { UploadAttachmentSpec } from '../AttachmentsBulkImport/types';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -10,9 +11,23 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { load } from '../InitialContext';
-import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { getPref } from '../InitialContext/remotePrefs';
+import { downloadFile } from '../Molecules/FilePicker';
 import { formatUrl } from '../Router/queryString';
+// Import SVG icons, but better than in Icons.tsx
+import applicationJsonIcon from './MimetypeIcons/application-json.svg';
+import applicationPdfIcon from './MimetypeIcons/application-pdf.svg';
+import audioXGenericIcon from './MimetypeIcons/audio-x-generic.svg';
+import imageXGenericIcon from './MimetypeIcons/image-x-generic.svg';
+import modelIcon from './MimetypeIcons/model.svg';
+import packageXgeneric from './MimetypeIcons/package-x-generic.svg';
+import textHtmlIcon from './MimetypeIcons/text-html.svg';
+import textXGenericIcon from './MimetypeIcons/text-x-generic.svg';
+import textXMakefileIcon from './MimetypeIcons/text-x-makefile.svg';
+import videoXGenericIcon from './MimetypeIcons/video-x-generic.svg';
+import xOfficeDocumentIcon from './MimetypeIcons/x-office-document.svg';
+import xOfficePresentationIcon from './MimetypeIcons/x-office-presentation.svg';
+import xOfficeSpreadsheetIcon from './MimetypeIcons/x-office-spreadsheet.svg';
 
 type AttachmentSettings = {
   readonly collection: string;
@@ -36,6 +51,16 @@ export const attachmentSettingsPromise = load<AttachmentSettings | IR<never>>(
 
 export const attachmentsAvailable = (): boolean => typeof settings === 'object';
 
+/*
+ * This function is useful when testing functions that depend on the settings.
+ * This function is only used in automated tests.
+ */
+export const overrideAttachmentSettings = (
+  newSettings: AttachmentSettings | undefined
+): void => {
+  settings = newSettings;
+};
+
 const thumbnailable = new Set([
   'image/jpeg',
   'image/gif',
@@ -48,31 +73,56 @@ function iconForMimeType(mimeType: string): {
   readonly alt: string;
   readonly src: string;
 } {
-  if (mimeType === 'text/plain')
-    return { alt: 'text', src: getIcon('text') ?? unknownIcon };
-  if (mimeType === 'text/html')
-    return { alt: 'html', src: getIcon('html') ?? unknownIcon };
+  const iconMap: Record<
+    string,
+    { readonly alt: string; readonly src: string }
+  > = {
+    'application/json': { alt: 'json', src: applicationJsonIcon },
+    'application/pdf': { alt: 'pdf', src: applicationPdfIcon },
+    'audio/x-generic': { alt: 'audio', src: audioXGenericIcon },
+    'image/x-generic': { alt: 'image', src: imageXGenericIcon },
+    model: { alt: 'model', src: modelIcon },
+    'text/html': { alt: 'html', src: textHtmlIcon },
+    'text/xml': { alt: 'html', src: textHtmlIcon },
+    'text/plain': { alt: 'text', src: textXGenericIcon },
+    'text/x-makefile': { alt: 'makefile', src: textXMakefileIcon },
+    'application/x-yaml': { alt: 'yaml', src: textXMakefileIcon },
+    'video/x-generic': { alt: 'video', src: videoXGenericIcon },
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': {
+      alt: 'MSWord',
+      src: xOfficeDocumentIcon,
+    },
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+      { alt: 'MSPowerPoint', src: xOfficePresentationIcon },
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': {
+      alt: 'MSExcel',
+      src: xOfficeSpreadsheetIcon,
+    },
+    'application/zip': { alt: 'zip', src: packageXgeneric },
+  };
 
-  const parts = mimeType.split('/');
-  const type = parts[0];
-  const subtype = parts[1];
-
-  if (['audio', 'video', 'image', 'text'].includes(type))
-    return { alt: type, src: getIcon(type) ?? unknownIcon };
-
-  if (type === 'application') {
-    const iconName = {
-      pdf: 'pdf',
-      'vnd.ms-excel': 'MSExcel',
-      'vnd.ms-word': 'MSWord',
-      'vnd.ms-powerpoint': 'MSPowerPoint',
-    }[subtype];
-
-    if (typeof iconName === 'string')
-      return { alt: iconName, src: getIcon(iconName) ?? unknownIcon };
-  }
-
-  return { alt: commonText.unknown(), src: getIcon('unknown') ?? unknownIcon };
+  return (
+    iconMap[mimeType] ??
+    (mimeType.startsWith('video/')
+      ? { alt: 'video', src: videoXGenericIcon }
+      : null) ??
+    (mimeType.startsWith('audio/')
+      ? { alt: 'audio', src: audioXGenericIcon }
+      : null) ??
+    (mimeType.startsWith('image/')
+      ? { alt: 'image', src: imageXGenericIcon }
+      : null) ??
+    (mimeType.endsWith('presentation') || mimeType.includes('powerpoint')
+      ? { alt: 'presentation', src: xOfficePresentationIcon }
+      : null) ??
+    (mimeType.includes('wordprocessing') || mimeType.endsWith('word')
+      ? { alt: 'document', src: xOfficeDocumentIcon }
+      : null) ??
+    (mimeType == null ? { alt: 'image', src: textXGenericIcon } : null) ?? {
+      alt: commonText.unknown(),
+      src: textXGenericIcon,
+    }
+  );
 }
 
 export const fetchAssetToken = async (
@@ -85,7 +135,9 @@ export const fetchAssetToken = async (
     expectedErrors: silent ? Object.values(Http) : [Http.OK],
   }).then(({ data, status }) => (status === Http.OK ? data : undefined));
 
-const fetchToken = async (fileName: string): Promise<string | undefined> =>
+export const fetchToken = async (
+  fileName: string
+): Promise<string | undefined> =>
   settings?.token_required_for_get === true
     ? fetchAssetToken(fileName)
     : Promise.resolve(undefined);
@@ -108,7 +160,7 @@ export async function fetchThumbnail(
       : iconForMimeType(mimeType);
 
   // Display an icon for resources that don't have a custom thumbnail
-  if (typeof thumbnail === 'object' && thumbnail?.src !== unknownIcon)
+  if (typeof thumbnail === 'object')
     return {
       ...thumbnail,
       width: scale,
@@ -133,6 +185,9 @@ export async function fetchThumbnail(
   };
 }
 
+export const cleanAttachmentDownloadName = (origFilename: string): string =>
+  origFilename.replace(/^.*[/\\]/u, '');
+
 export const formatAttachmentUrl = (
   attachment: SerializedResource<Attachment>,
   token: string | undefined
@@ -142,7 +197,9 @@ export const formatAttachmentUrl = (
         coll: settings.collection,
         type: 'O',
         fileName: attachment.attachmentLocation,
-        downloadName: attachment.origFilename?.replace(/^.*[/\\]/u, ''),
+        downloadName: attachment.origFilename
+          ? cleanAttachmentDownloadName(attachment.origFilename)
+          : undefined,
         token,
       })
     : undefined;
@@ -158,7 +215,7 @@ export const fetchOriginalUrl = async (
 
 export async function uploadFile(
   file: File,
-  handleProgress: (percentage: number | true) => void,
+  handleProgress?: (percentage: number | true) => void,
   uploadAttachmentSpec?: UploadAttachmentSpec,
   strict = true
 ): Promise<SpecifyResource<Attachment> | undefined> {
@@ -195,9 +252,11 @@ export async function uploadFile(
    */
 
   const xhr = new XMLHttpRequest();
-  xhr.upload?.addEventListener('progress', (event) =>
-    handleProgress(event.lengthComputable ? event.loaded / event.total : true)
-  );
+  if (handleProgress !== undefined) {
+    xhr.upload?.addEventListener('progress', (event) =>
+      handleProgress(event.lengthComputable ? event.loaded / event.total : true)
+    );
+  }
   xhr.open('POST', settings.write);
   xhr.send(formData);
   const DONE = 4;
@@ -240,7 +299,7 @@ export async function uploadFile(
  * See: https://github.com/specify/specify7/issues/1141
  * REFACTOR: remove this once that issue is fixed
  */
-function fixMimeType(originalMimeType: string): string {
+export function fixMimeType(originalMimeType: string): string {
   const maxLength = getField(tables.Attachment, 'mimeType').length;
   if (maxLength === undefined || originalMimeType.length < maxLength)
     return originalMimeType;
@@ -251,5 +310,64 @@ function fixMimeType(originalMimeType: string): string {
         ` to "${mimeType}" due to length limit`
     );
     return mimeType;
+  }
+}
+
+export function downloadAttachment(
+  attachment: SerializedResource<Attachment>
+): void {
+  fetchOriginalUrl(attachment).then((url) => {
+    if (typeof url === 'string') {
+      const fileName = cleanAttachmentDownloadName(
+        attachment.origFilename ?? attachment.attachmentLocation
+      );
+      downloadFile(
+        fileName,
+        `/attachment_gw/proxy/${new URL(url).search}`,
+        true
+      );
+    }
+  });
+}
+
+export async function downloadAllAttachments(
+  attachments: readonly SerializedResource<Attachment>[],
+  archiveName?: string
+): Promise<void> {
+  if (attachments.length === 0) return;
+  if (attachments.length === 1) {
+    downloadAttachment(attachments[0]);
+    return;
+  }
+
+  const attachmentLocations = attachments
+    .map((attachment) => attachment.attachmentLocation)
+    .filter((name): name is string => name !== null);
+  const origFilenames = attachments
+    .map((attachment) =>
+      cleanAttachmentDownloadName(
+        attachment.origFilename ?? attachment.attachmentLocation
+      )
+    )
+    .filter((name): name is string => name !== null);
+
+  const response = await ajax<Blob>('/attachment_gw/download_all/', {
+    method: 'POST',
+    body: keysToLowerCase({
+      attachmentLocations,
+      origFilenames,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/octet-stream',
+    },
+    errorMode: 'dismissible',
+  });
+
+  if (response.status === Http.OK) {
+    const fileName = `Attachments - ${(archiveName ?? new Date().toDateString()).replaceAll(':', '')}.zip`;
+    downloadFile(fileName, response.data);
+  } else {
+    throw new Error(`Attachment archive download failed: ${response}`);
   }
 }

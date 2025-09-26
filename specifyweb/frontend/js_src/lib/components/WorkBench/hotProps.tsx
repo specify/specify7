@@ -1,11 +1,15 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
+import { attachmentsText } from '../../localization/attachments';
 import { wbPlanText } from '../../localization/wbPlan';
 import { icons } from '../Atoms/Icons';
+import { ReadOnlyContext } from '../Core/Contexts';
+import { getIcon } from '../InitialContext/icons';
 import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { getAttachmentsColumn } from '../WorkBench/attachmentHelpers';
 import type { WbMapping } from './mapping';
 
 const comments = { displayDelay: 100 };
@@ -26,6 +30,7 @@ export function useHotProps({
   readonly mappings: WbMapping | undefined;
   readonly physicalColToMappingCol: (physicalCol: number) => number | undefined;
 }) {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const [autoWrapCol] = userPreferences.use(
     'workBench',
     'editor',
@@ -46,9 +51,12 @@ export function useHotProps({
         (_, physicalCol) => ({
           // Get data from nth column for nth column
           data: physicalCol,
+          readOnly:
+            isReadOnly ||
+            [-1, undefined].includes(physicalColToMappingCol(physicalCol)),
         })
       ),
-    [dataset.columns.length]
+    [dataset.columns.length, isReadOnly]
   );
 
   const [enterMovesPref] = userPreferences.use(
@@ -59,9 +67,17 @@ export function useHotProps({
   const enterMoves =
     enterMovesPref === 'col' ? { col: 1, row: 0 } : { col: 0, row: 1 };
 
+  const attachmentsColumnIndex = getAttachmentsColumn(dataset);
+
   const colHeaders = React.useCallback(
     (physicalCol: number) => {
-      const tableIconUrl = mappings?.mappedHeaders?.[physicalCol];
+      const isAttachmentsColumn = physicalCol === attachmentsColumnIndex;
+      const columnName = isAttachmentsColumn
+        ? attachmentsText.attachments()
+        : dataset.columns[physicalCol];
+      const tableIconUrl = isAttachmentsColumn
+        ? getIcon('Attachment')
+        : mappings?.mappedHeaders?.[physicalCol];
       const isMapped = tableIconUrl !== undefined;
       const mappingCol = physicalColToMappingCol(physicalCol);
       const tableName =
@@ -71,7 +87,7 @@ export function useHotProps({
 
       return ReactDOMServer.renderToString(
         <ColumnHeader
-          columnName={dataset.columns[physicalCol]}
+          columnName={columnName}
           isMapped={isMapped}
           tableName={tableName}
         />
@@ -111,6 +127,7 @@ export function useHotProps({
   const tabMoves =
     tabMovesPref === 'col' ? { col: 1, row: 0 } : { col: 0, row: 1 };
 
+  const adjustedMinRows = dataset.isupdate ? 0 : minSpareRows;
   return {
     autoWrapCol,
     autoWrapRow,
@@ -120,7 +137,7 @@ export function useHotProps({
     enterBeginsEditing,
     hiddenRows,
     hiddenColumns,
-    minSpareRows,
+    minSpareRows: adjustedMinRows,
     tabMoves,
     comments,
   };
