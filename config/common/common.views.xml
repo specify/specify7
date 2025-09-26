@@ -5402,11 +5402,11 @@
                 </row>-->
 			</rows>
 		</viewdef>
-		<viewdef name="AgentIdentifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj" useresourcelabels="true">
+		<viewdef name="AgentIdentifiers" class="edu.ku.brc.specify.datamodel.AgentIdentifier" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj" useresourcelabels="true">
 			<desc>subform on the Agent form.</desc>
 			<enableRules/>
 			<columnDef>100px,2px,473px,5px,120px,2px,125px,0px,15px,p:g</columnDef>
-			<columnDef os="lnx">115px,2px,510px,5px,120px,2px,198px,0px,15px,p:g</columnDef>
+			<columnDef os="lnx">115px,2px,510px,5px,120px,2px,198px,2px,50px,2px,50px,2px,50px,0px,15px,p:g</columnDef>
 			<columnDef os="mac">130px,2px,530px,5px,105px,2px,218px,0px,15px,p:g</columnDef>
 			<columnDef os="exp">p,2px,473px,5px:g,p,2px,125px,0px,15px,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2dlu"/>
@@ -5416,23 +5416,28 @@
 					<cell type="field" id="1" name="identifier" uitype="text"/>
 					<cell type="label" labelfor="2"/>
 					<cell type="field" id="2" name="identifierType" uitype="combobox"/>
+					<cell type="panel">
+						<!-- Default state if no conditions are matched or using Specify 6 -->
+						<rows><!-- Nothing is shown --></rows>
+						<!-- Shown if the Identifier Type is ORCID -->
+						<rows condition="identifierType=ORCID">
+							<row>
+								<cell type="field" id="ORCID" name="this" uitype="plugin" initialize="name=WebLinkButton;weblink=ORCID;icon=https://orcid.org/assets/vectors/orcid.logo.icon.svg"/>
+								<cell type="field" id="Bionomia" name="this" uitype="plugin" initialize="name=WebLinkButton;weblink=Bionomia;icon=https://upload.wikimedia.org/wikipedia/commons/e/e4/Logo_for_Bionomia.png"/>
+							</row>
+						</rows>
+						<!-- Shown if the Identifier Type is Wikidata -->
+						<rows condition="identifierType=Wikidata">
+							<row>
+								<cell type="field" id="Wikidata" name="this" uitype="plugin" initialize="name=WebLinkButton;weblink=Wikidata;icon=https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Wikidata-logo.svg/2560px-Wikidata-logo.svg.png"/>
+							</row>
+						</rows>
+					</cell>
 				</row>
 				<row>
 					<cell type="label" labelfor="7"/>
-					<cell type="field" id="7" name="remarks" uitype="textareabrief" rows="2" colspan="6"/>
+					<cell type="field" id="7" name="remarks" uitype="textareabrief" rows="2" colspan="14"/>
 				</row>
-				<!--<row>
-                    <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
-                    <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
-                </row>
-                <row>
-                    <cell type="label" labelfor="11"/>
-                    <cell type="field" id="11" name="timestampModified" uitype="label" readonly="true"/>
-                    <cell type="label" labelfor="12"/>
-                    <cell type="field" id="12" name="timestampCreated" uitype="label" readonly="true"/>
-                </row>-->
 			</rows>
 		</viewdef>
 		<viewdef type="formtable" name="VoucherRelationship Table" class="edu.ku.brc.specify.datamodel.VoucherRelationship" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
