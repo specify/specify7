@@ -4,6 +4,65 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.11.2](https://github.com/specify/specify7/compare/v7.11.1...v7.11.2) (27 September 2025)
+
+### Added
+
+* Support for Attachment data sets in the WorkBench ([#6257](https://github.com/specify/specify7/pull/6257))
+* The 'Ends With" operator to the Query Builder ([#7076](https://github.com/specify/specify7/pull/7076))
+* Support for viewing `TIFF` image thumbnails ([#7121](https://github.com/specify/specify7/pull/7121))
+* A user preference for showing or hiding subview borders ([#7041](https://github.com/specify/specify7/pull/7041))
+* A new [database backup utility](https://discourse.specifysoftware.org/t/how-to-create-a-full-database-backup-in-specify/2798) ([#7300](https://github.com/spcify/specify7/pull/7300))
+* Support for time in timestamp fields (`TimestampCreated` and `TimestampModified`) ([#7317](https://github.com/specify/specify7/pull/7317))
+* Feat(datamodel): Add agent fields to Loan and Gift ([#7190](https://github.com/specify/specify7/pull/7190))
+* A “Linked Records” button to all data forms ([#6328](https://github.com/specify/specify7/pull/6328))
+* A “Trim Zeros” option to Table Format fields ([#7080](https://github.com/specify/specify7/pull/7080))
+* A support for using Batch Edit with Locality coordinate fields ([#7379](https://github.com/specify/specify7/pull/7379))
+
+### Time Zone Support
+
+* Adds support for `TIME_ZONE` as .env variable, replacing `America/Chicago` as the system time zone ([#6817](https://github.com/specify/specify7/pull/6817))
+* Notifications can now be fetched using the server time ([#7122](https://github.com/specify/specify7/pull/7122))
+
+### Changed
+
+* Backend modernization and reorganization ([#6618](https://github.com/specify/specify7/pull/6618), [#6626](https://github.com/specify/specify7/pull/6626), [#6704](https://github.com/specify/specify7/pull/6704), [#6706](https://github.com/specify/specify7/pull/6706), [#6709](https://github.com/specify/specify7/pull/6709), [#6729](https://github.com/specify/specify7/pull/6729), [#6735](https://github.com/specify/specify7/pull/6735), [#6743](https://github.com/specify/specify7/pull/6743), [#6758](https://github.com/specify/specify7/pull/6758), [#6765](https://github.com/specify/specify7/pull/6765), [#6770](https://github.com/specify/specify7/pull/6770), [#6778](https://github.com/specify/specify7/pull/6778), [#6794](https://github.com/specify/specify7/pull/6794), [#6826](https://github.com/specify/specify7/pull/6826), [#6834](https://github.com/specify/specify7/pull/6834), [#7302](https://github.com/specify/specify7/pull/7302), [#7345](https://github.com/specify/specify7/pull/7345), [#6577](https://github.com/specify/specify7/pull/6577), [#7109](https://github.com/specify/specify7/pull/7109), [#7343](https://github.com/specify/specify7/pull/7343), [#7347](https://github.com/specify/specify7/pull/7347), [#7353](https://github.com/specify/specify7/pull/7353), [#7358](https://github.com/specify/specify7/pull/7358), [#7335](https://github.com/specify/specify7/pull/7335), [#7368](https://github.com/specify/specify7/pull/7368), [#7370](https://github.com/specify/specify7/pull/7370), [#7360](https://github.com/specify/specify7/pull/7360))
+* Attachment thumbnails now use the original filename as alternate text ([#7374](https://github.com/specify/specify7/pull/7374))
+* Release notes have been consolidated into a single document ([#7384](https://github.com/specify/specify7/pull/7384))
+* Disambiguation in the WorkBench now supports more than 10 records at a time ([#7397](https://github.com/specify/specify7/pull/7397))
+
+### Fixed
+
+* When exporting a data set from WorkBench, the visual order of columns will now be preserved ([#7380](https://github.com/specify/specify7/pull/7380))
+* Restores the Loan Return button in the Query Builder when searching for Loan Preparations ([#7314](https://github.com/specify/specify7/pull/7314))
+* Fixes an issue that prevents tree ranks without nodes from being deleted ([#7284](https://github.com/specify/specify7/pull/7284))
+* Fixes an issue where `isPrimary` and `isCurrent` would not be set properly when cloning a record ([#7289](https://github.com/specify/specify7/pull/7289))
+* Fixes an issue where old queries could not be used with Batch Edit ([#7283](https://github.com/specify/specify7/pull/7283))
+* Fixes an issue that allows a taxon node from a tree linked to a different Collection Object Type to be added to a Determination ([#7279](https://github.com/specify/specify7/pull/7279))
+* Fixes an issue preventing the Catalog Number field from displaying the format selector when accessing it via a related table ([#6994](https://github.com/specify/specify7/pull/6994))
+* Fixes an issue where new Taxon trees used `, ` as a separator instead of ` ` ([#7285](https://github.com/specify/specify7/pull/7285))
+* Fixes an issue that did not prompt the user to save when toggling `Distinct` or `Series` in the Query Builder ([#6605](https://github.com/specify/specify7/pull/6605))
+* Fixes an issue where a new record would not be created when [independent](https://discourse.specifysoftware.org/t/dependent-vs-independent-relationships/2635) relationship fields are cleared in Batch Edit ([#7087](https://github.com/specify/specify7/pull/7087))
+* Fixes an issue causing “Deselect All” to remove even required Carry Forward fields ([#7286](https://github.com/specify/specify7/pull/7286))
+* Fixes an issue with the position and appearance of the configure item and table list ([#7062](https://github.com/specify/specify7/pull/7062))
+* Fixes an issue where white space was not preserved when modifying `textBefore` and `textAfter` for tree ranks ([#7332](https://github.com/specify/specify7/pull/7332))
+* GeoMap no longer displays a description about GBIF and iDigBio when not relevant ([#7070](https://github.com/specify/specify7/pull/7070))
+* Fixes an issue when the root node in the Tectonic Unit tree was not assigned a full name ([#6553](https://github.com/specify/specify7/issues/6553))
+
+### Dependency Updates
+
+* Upgrades `form-data` from version `4.0.0` to `4.0.4` ([#7297](https://github.com/specify/specify7/pull/7297))
+* Upgrades `css-tools` from `4.0.1` to `4.4.3` ([#7091](https://github.com/specify/specify7/pull/7091))
+* Upgrades `loader-utils` to `2.0.3` ([#7299](https://github.com/specify/specify7/pull/7299))
+* Upgrades `underscore` from `1.8.3` to `1.12.1` ([#7298](https://github.com/specify/specify7/pull/7298))
+* Upgrades `pyjwt` from `2.3.0` to `2.4.0` ([#7328](https://github.com/specify/specify7/pull/7328))
+* Upgrades `babel-loader` from `8.2.5` to `10.0.0`
+* Upgrades `jest-silent-reporter` to use `braces` ([#7378](https://github.com/specify/specify7/pull/7378))
+* Upgrades Specify Web Portal dependencies ([#90](https://github.com/specify/webportal-installer/pull/90))
+  * Upgrades `python2` to `python3`
+  * Upgrades `ubuntu:18.04` to `ubuntu:24.04`
+  * Upgrades `solr` from `7.6` to `9.6`
+
 ## [7.11.1](https://github.com/specify/specify7/compare/v7.11.0.2...v7.11.1) (8 August 2025)
 
 ### Added
