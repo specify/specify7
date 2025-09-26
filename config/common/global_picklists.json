@@ -287,8 +287,8 @@
         { "title": "Plastosyntype", "value": "Plastosyntype" },
         { "title": "Plastotype", "value": "Plastotype" },
         { "title": "Plesiotype", "value": "Plesiotype" },
-        { "title": "SecondaryType", "value": "SecondaryType" },
-        { "title": "SupplementaryType", "value": "SupplementaryType" },
+        { "title": "Secondary Type", "value": "SecondaryType" },
+        { "title": "Supplementary Type", "value": "SupplementaryType" },
         { "title": "Syntype", "value": "Syntype" },
         { "title": "Topotype", "value": "Topotype" }
       ]
