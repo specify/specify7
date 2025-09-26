@@ -141,21 +141,6 @@
       ]
     },
     {
-      "name": "TypeStatus",
-      "issystem": true,
-      "type": 0,
-      "readonly": true,
-      "sizelimit": 6,
-      "items": [
-        { "title": "Unknown", "value": "Unknown" },
-        { "title": "Cotype", "value": "Cotype" },
-        { "title": "Holotype", "value": "Holotype" },
-        { "title": "Paratype", "value": "Paratype" },
-        { "title": "Syntype", "value": "Syntype" },
-        { "title": "Type", "value": "Type" }
-      ]
-    },
-    {
       "name": "Phenology",
       "issystem": true,
       "type": 0,
@@ -485,26 +470,6 @@
         { "title": "Image", "value": "Image" },
         { "title": "Skeleton", "value": "Skeleton" }
       ]
-    },
-    {
-      "name": "Typestatus",
-      "issystem": true,
-      "type": 0,
-      "readonly": true,
-      "sizelimit": 11,
-      "items": [
-        { "title": "Unknown", "value": "Unknown" },
-        { "title": "Cotype", "value": "Cotype" },
-        { "title": "Holotype", "value": "Holotype" },
-        { "title": "Lectotype", "value": "Lectotype" },
-        { "title": "Neotype", "value": "Neotype" },
-        { "title": "Paralectotype", "value": "Paralectotype" },
-        { "title": "Paratopotype", "value": "Paratopotype" },
-        { "title": "Paratype", "value": "Paratype" },
-        { "title": "Syntype", "value": "Syntype" },
-        { "title": "Topotype", "value": "Topotype" },
-        { "title": "Type", "value": "Type" }
-      ]
     }
   ],
   "invertpaleo": [
@@ -718,26 +683,6 @@
         { "title": "Slide", "value": "Slide" },
         { "title": "Tissue", "value": "Tissue" }
       ]
-    },
-    {
-      "name": "TypeStatus",
-      "issystem": true,
-      "type": 0,
-      "readonly": true,
-      "sizelimit": 12,
-      "items": [
-        { "title": "Unknown", "value": "Unknown" },
-        { "title": "Cotype", "value": "Cotype" },
-        { "title": "Holotype", "value": "Holotype" },
-        { "title": "Lectotype", "value": "Lectotype" },
-        { "title": "Neotype", "value": "Neotype" },
-        { "title": "Paralectotype", "value": "Paralectotype" },
-        { "title": "Paratopotype", "value": "Paratopotype" },
-        { "title": "Paratype", "value": "Paratype" },
-        { "title": "Syntype", "value": "Syntype" },
-        { "title": "Topotype", "value": "Topotype" },
-        { "title": "Type", "value": "Type" }
-      ]
     }
   ],
   "vascplant": [
@@ -776,21 +721,6 @@
         { "title": "Embryo", "value": "Embryo" },
         { "title": "Seed", "value": "Seed" },
         { "title": "Senescent", "value": "Senescent" }
-      ]
-    },
-    {
-      "name": "TypeStatus",
-      "issystem": true,
-      "type": 0,
-      "readonly": true,
-      "sizelimit": 6,
-      "items": [
-        { "title": "Unknown", "value": "Unknown" },
-        { "title": "Cotype", "value": "Cotype" },
-        { "title": "Holotype", "value": "Holotype" },
-        { "title": "Paratype", "value": "Paratype" },
-        { "title": "Syntype", "value": "Syntype" },
-        { "title": "Type", "value": "Type" }
       ]
     },
     {
