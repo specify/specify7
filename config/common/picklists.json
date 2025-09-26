@@ -63,12 +63,14 @@
       "issystem": true,
       "type": 0,
       "readonly": true,
-      "sizelimit": 7,
+      "sizelimit": 9,
       "items": [
-        { "title": "No Data", "value": "No Data" },
+        { "title": "Unknown", "value": "Unknown" },
         { "title": "adult", "value": "adult" },
         { "title": "egg", "value": "egg" },
         { "title": "hatchling", "value": "hatchling" },
+        { "title": "nestling", "value": "nestling" },
+        { "title": "fledgling", "value": "fledgling" },
         { "title": "immature", "value": "immature" },
         { "title": "juvenile", "value": "juvenile" }
       ]
@@ -107,6 +109,23 @@
       "readonly": true,
       "sizelimit": 5,
       "items": [{ "title": "Sheet", "value": "sheet" }]
+    },
+    {
+      "name": "LifeStage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 8,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "seedling", "value": "seedling" },
+        { "title": "flowering", "value": "flowering" },
+        { "title": "fruiting", "value": "fruiting" },
+        { "title": "mature", "value": "mature" },
+        { "title": "embryo", "value": "embryo" },
+        { "title": "seed", "value": "seed" },
+        { "title": "senescent", "value": "senescent" }
+      ]
     },
     {
       "name": "TypeStatus",
@@ -165,15 +184,15 @@
       "readonly": true,
       "sizelimit": 10,
       "items": [
-        { "title": "egg", "value": "egg" },
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "adult", "value": "adult" },
         { "title": "juvenile", "value": "juvenile" },
-        { "title": "nymph", "value": "nymph" },
         { "title": "immature", "value": "immature" },
         { "title": "embryo", "value": "embryo" },
-        { "title": "seed", "value": "seed" },
+        { "title": "egg", "value": "egg" },
         { "title": "hatchling", "value": "hatchling" },
-        { "title": "adult", "value": "adult" },
         { "title": "larva", "value": "larva" },
+        { "title": "nymph", "value": "nymph" },
         { "title": "pupa", "value": "pupa" }
       ]
     },
@@ -273,13 +292,13 @@
       "readonly": true,
       "sizelimit": 9,
       "items": [
-        { "title": "No data", "value": "No data" },
+        { "title": "Unknown", "value": "Unknown" },
         { "title": "adult", "value": "adult" },
         { "title": "egg", "value": "egg" },
         { "title": "embryo", "value": "embryo" },
         { "title": "hatchling", "value": "hatchling" },
         { "title": "juvenile", "value": "juvenile" },
-        { "title": "larvae", "value": "larvae" },
+        { "title": "larva", "value": "larva" },
         { "title": "meta-young", "value": "meta-young" },
         { "title": "young", "value": "young" }
       ]
@@ -418,15 +437,15 @@
       "readonly": true,
       "sizelimit": 10,
       "items": [
-        { "title": "egg", "value": "egg" },
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "adult", "value": "adult" },
         { "title": "juvenile", "value": "juvenile" },
-        { "title": "nymph", "value": "nymph" },
         { "title": "immature", "value": "immature" },
         { "title": "embryo", "value": "embryo" },
-        { "title": "seed", "value": "seed" },
+        { "title": "egg", "value": "egg" },
         { "title": "hatchling", "value": "hatchling" },
-        { "title": "adult", "value": "adult" },
         { "title": "larva", "value": "larva" },
+        { "title": "nymph", "value": "nymph" },
         { "title": "pupa", "value": "pupa" }
       ]
     },
@@ -518,15 +537,15 @@
       "readonly": true,
       "sizelimit": 10,
       "items": [
-        { "title": "egg", "value": "egg" },
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "adult", "value": "adult" },
         { "title": "juvenile", "value": "juvenile" },
-        { "title": "nymph", "value": "nymph" },
         { "title": "immature", "value": "immature" },
         { "title": "embryo", "value": "embryo" },
-        { "title": "seed", "value": "seed" },
+        { "title": "egg", "value": "egg" },
         { "title": "hatchling", "value": "hatchling" },
-        { "title": "adult", "value": "adult" },
         { "title": "larva", "value": "larva" },
+        { "title": "nymph", "value": "nymph" },
         { "title": "pupa", "value": "pupa" }
       ]
     },
@@ -569,6 +588,41 @@
         { "title": "adult", "value": "adult" },
         { "title": "juvenile", "value": "juvenile" }
       ]
+    }
+  ],
+  "paleobotany": [
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [{ "title": "Dug", "value": "Dug" }]
+    },
+    {
+      "name": "LifeStage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 8,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "seedling", "value": "seedling" },
+        { "title": "flowering", "value": "flowering" },
+        { "title": "fruiting", "value": "fruiting" },
+        { "title": "mature", "value": "mature" },
+        { "title": "embryo", "value": "embryo" },
+        { "title": "seed", "value": "seed" },
+        { "title": "senescent", "value": "senescent" }
+      ]
+    },
+    {
+      "name": "CollObjPrepMeth",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [{ "title": "Sheet", "value": "sheet" }]
     }
   ],
   "reptile": [
@@ -673,6 +727,23 @@
       "items": [{ "title": "Sheet", "value": "sheet" }]
     },
     {
+      "name": "LifeStage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 8,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "seedling", "value": "seedling" },
+        { "title": "flowering", "value": "flowering" },
+        { "title": "fruiting", "value": "fruiting" },
+        { "title": "mature", "value": "mature" },
+        { "title": "embryo", "value": "embryo" },
+        { "title": "seed", "value": "seed" },
+        { "title": "senescent", "value": "senescent" }
+      ]
+    },
+    {
       "name": "TypeStatus",
       "issystem": true,
       "type": 0,
@@ -730,15 +801,15 @@
       "readonly": true,
       "sizelimit": 10,
       "items": [
-        { "title": "egg", "value": "egg" },
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "adult", "value": "adult" },
         { "title": "juvenile", "value": "juvenile" },
-        { "title": "nymph", "value": "nymph" },
         { "title": "immature", "value": "immature" },
         { "title": "embryo", "value": "embryo" },
-        { "title": "seed", "value": "seed" },
+        { "title": "egg", "value": "egg" },
         { "title": "hatchling", "value": "hatchling" },
-        { "title": "adult", "value": "adult" },
         { "title": "larva", "value": "larva" },
+        { "title": "nymph", "value": "nymph" },
         { "title": "pupa", "value": "pupa" }
       ]
     },
