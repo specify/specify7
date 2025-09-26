@@ -935,28 +935,28 @@ export const formsText = createDictionary({
     'pt-br': 'Este campo é obrigatório. Deve ser transportado para a frente',
   },
   bulkCarryForwardRangeEnabled: {
-    "en-us": "Show Bulk Carry Forward range",
-    "de-ch": "Bulk Carry Forward-Bereich anzeigen",
-    "es-es": "Mostrar rango de transferencia masiva",
-    "fr-fr": "Afficher la plage de report en masse",
-    "pt-br": "Mostrar intervalo de transporte em massa",
-    "ru-ru": "Показать диапазон массового переноса данных",
-    "uk-ua": "Показати діапазон масового перенесення",
+    'en-us': 'Show Bulk Carry Forward range',
+    'de-ch': 'Bulk Carry Forward-Bereich anzeigen',
+    'es-es': 'Mostrar rango de transferencia masiva',
+    'fr-fr': 'Afficher la plage de report en masse',
+    'pt-br': 'Mostrar intervalo de transporte em massa',
+    'ru-ru': 'Показать диапазон массового переноса данных',
+    'uk-ua': 'Показати діапазон масового перенесення',
   },
   bulkCarryForwardRangeErrorDescription: {
-    "en-us":
-      "Cannot carry forward record through the specified {field:string} range.",
-    "de-ch":
-      "Der Datensatz kann nicht über den angegebenen Bereich {field:string} übertragen werden.",
-    "es-es":
-      "No se puede trasladar el registro a través del rango {field:string} especificado.",
-    "fr-fr":
+    'en-us':
+      'Cannot carry forward record through the specified {field:string} range.',
+    'de-ch':
+      'Der Datensatz kann nicht über den angegebenen Bereich {field:string} übertragen werden.',
+    'es-es':
+      'No se puede trasladar el registro a través del rango {field:string} especificado.',
+    'fr-fr':
       "Impossible de reporter l'enregistrement sur la plage {field:string} spécifiée.",
-    "pt-br":
-      "Não é possível transferir o registro através do intervalo especificado {field:string}.",
-    "ru-ru":
-      "Невозможно перенести запись через указанный диапазон {field:string}.",
-    "uk-ua": "Неможливо перенести запис у вказаний діапазон {field:string}.",
+    'pt-br':
+      'Não é possível transferir o registro através do intervalo especificado {field:string}.',
+    'ru-ru':
+      'Невозможно перенести запись через указанный диапазон {field:string}.',
+    'uk-ua': 'Неможливо перенести запис у вказаний діапазон {field:string}.',
   },
   bulkCarryForwardRangeLimitExceeded: {
     'en-us': 'Range exceeds record limit of {limit:number}.',
@@ -979,31 +979,31 @@ export const formsText = createDictionary({
     'uk-ua': 'Наступні номери для {field:string} вже використовуються:',
   },
   bulkCarryForwardRangeStart: {
-    "en-us": "Carry Forward Range Start",
-    "de-ch": "Übertragsbereichsanfang",
-    "es-es": "Arranque del rango de avance",
-    "fr-fr": "Début de la plage de report",
-    "pt-br": "Início do intervalo de transporte para frente",
-    "ru-ru": "Начало диапазона переноса вперед",
-    "uk-ua": "Початок діапазону перенесення вперед",
+    'en-us': 'Carry Forward Range Start',
+    'de-ch': 'Übertragsbereichsanfang',
+    'es-es': 'Arranque del rango de avance',
+    'fr-fr': 'Début de la plage de report',
+    'pt-br': 'Início do intervalo de transporte para frente',
+    'ru-ru': 'Начало диапазона переноса вперед',
+    'uk-ua': 'Початок діапазону перенесення вперед',
   },
   bulkCarryForwardRangeEnd: {
-    "en-us": "Carry Forward Range End",
-    "de-ch": "Übertragsbereichsende",
-    "es-es": "Llevar adelante el final del rango",
-    "fr-fr": "Fin de la plage de report",
-    "pt-br": "Fim do intervalo de transporte para frente",
-    "ru-ru": "Конец диапазона переноса вперед",
-    "uk-ua": "Кінець діапазону перенесення вперед",
+    'en-us': 'Carry Forward Range End',
+    'de-ch': 'Übertragsbereichsende',
+    'es-es': 'Llevar adelante el final del rango',
+    'fr-fr': 'Fin de la plage de report',
+    'pt-br': 'Fim do intervalo de transporte para frente',
+    'ru-ru': 'Конец диапазона переноса вперед',
+    'uk-ua': 'Кінець діапазону перенесення вперед',
   },
   createRecordSetOnBulkCarryForward: {
-    "en-us": "Create record set on Bulk Carry Forward",
-    "de-ch": "Datensatz für Massenübertrag erstellen",
-    "es-es": "Crear un conjunto de registros en Bulk Carry Forward",
-    "fr-fr": "Créer un ensemble d'enregistrements sur le report en masse",
-    "pt-br": "Criar conjunto de registros em Bulk Carry Forward",
-    "ru-ru": "Создать набор записей для массового переноса данных",
-    "uk-ua": "Створення набору записів для групового перенесення",
+    'en-us': 'Create record set on Bulk Carry Forward',
+    'de-ch': 'Datensatz für Massenübertrag erstellen',
+    'es-es': 'Crear un conjunto de registros en Bulk Carry Forward',
+    'fr-fr': "Créer un ensemble d'enregistrements sur le report en masse",
+    'pt-br': 'Criar conjunto de registros em Bulk Carry Forward',
+    'ru-ru': 'Создать набор записей для массового переноса данных',
+    'uk-ua': 'Створення набору записів для групового перенесення',
   },
   cloneButtonEnabled: {
     'en-us': 'Show Clone button',
