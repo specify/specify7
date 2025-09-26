@@ -5,41 +5,52 @@
     { "name": "Misc", "isloanable": true },
     { "name": "Mounted", "isloanable": true },
     { "name": "Nest", "isloanable": true },
-    { "name": "Skel", "isloanable": true },
-    { "name": "Skin", "isloanable": true }
+    { "name": "Skeleton", "isloanable": true },
+    { "name": "Skin", "isloanable": true },
+    { "name": "Wing", "isloanable": true },
+    { "name": "Tissue", "isloanable": true }
   ],
   "botany": [
     { "name": "Boxed", "isloanable": true },
     { "name": "Dried", "isloanable": true },
-    { "name": "Fluid", "isloanable": true },
-    { "name": "Sheet", "isloanable": true }
+    { "name": "Wet", "isloanable": true },
+    { "name": "Sheet", "isloanable": true },
+    { "name": "Packet", "isloanable": true }
   ],
   "fish": [
     { "name": "C&S", "isloanable": true },
     { "name": "EtOH", "isloanable": true },
-    { "name": "skeleton", "isloanable": true },
-    { "name": "x-ray", "isloanable": true }
+    { "name": "Skeleton", "isloanable": true },
+    { "name": "X-Ray", "isloanable": true }
   ],
   "herpetology": [
     { "name": "jar", "isloanable": true }
   ],
   "insect": [
-    { "name": "Pinned", "isloanable": true }
+    { "name": "Pinned", "isloanable": true },
+    { "name": "Slide", "isloanable": true },
+    { "name": "Vial", "isloanable": true },
+    { "name": "Alcohol", "isloanable": true },
+    { "name": "Envelope", "isloanable": true },
+    { "name": "Carded", "isloanable": true }
   ],
   "invertebrate": [
     { "name": "C&S", "isloanable": true },
     { "name": "EtOH", "isloanable": true },
-    { "name": "skeleton", "isloanable": true },
-    { "name": "x-ray", "isloanable": true }
+    { "name": "Skeleton", "isloanable": true },
+    { "name": "X-Ray", "isloanable": true }
   ],
   "invertpaleo": [
     { "name": "Jar", "isloanable": true }
   ],
+  "paleobotany": [
+    { "name": "Sheet", "isloanable": true }
+  ],
   "mammal": [
     { "name": "C&S", "isloanable": true },
     { "name": "EtOH", "isloanable": true },
-    { "name": "skeleton", "isloanable": true },
-    { "name": "x-ray", "isloanable": true }
+    { "name": "Skeleton", "isloanable": true },
+    { "name": "X-Ray", "isloanable": true }
   ],
   "reptile": [
     { "name": "C&S", "isloanable": true },
@@ -50,7 +61,7 @@
     { "name": "Isopropanol", "isloanable": true },
     { "name": "Misc", "isloanable": true },
     { "name": "Shell", "isloanable": true },
-    { "name": "Skel", "isloanable": true },
+    { "name": "Skeleton", "isloanable": true },
     { "name": "Skin", "isloanable": true },
     { "name": "Slide", "isloanable": true },
     { "name": "Tissue", "isloanable": true }
@@ -64,7 +75,7 @@
   "vertpaleo": [
     { "name": "C&S", "isloanable": true },
     { "name": "EtOH", "isloanable": true },
-    { "name": "skeleton", "isloanable": true },
-    { "name": "x-ray", "isloanable": true }
+    { "name": "Skeleton", "isloanable": true },
+    { "name": "X-Ray", "isloanable": true }
   ]
 }
