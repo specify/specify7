@@ -1,4 +1,3 @@
-
 from functools import reduce
 import logging
 import json
@@ -96,8 +95,8 @@ def validate_unique(model, instance):
                 except ObjectDoesNotExist:
                     return None
 
-            matchable = {}
-            field_mapping = {}
+            matchable: dict[str, Any] = {}
+            field_mapping: dict[str, str] = {}
             for field in all_fields:
                 matched_or_none = best_match_or_none(field)
                 if matched_or_none is not None:
@@ -106,7 +105,7 @@ def validate_unique(model, instance):
 
             return field_mapping, matchable
 
-        def get_exception(conflicts, matchable, field_map):
+        def get_exception(conflicts, matchable_dict, field_map):
             error_message = '{} must have unique {}'.format(model_name,
                                                             join_with_and(field_names))
 
@@ -115,14 +114,14 @@ def validate_unique(model, instance):
                         if scope is None
                         else "childFieldNotUnique",
                         "fieldName": ','.join(field_names),
-                        "fieldData": serialize_multiple_django(matchable, field_map, field_names),
+                        "fieldData": serialize_multiple_django(matchable_dict, field_map, field_names),
                         }
 
             if scope is not None:
                 error_message += f' in {scope.fieldPath.lower()}'
                 response.update({
                     "parentField": scope.fieldPath,
-                    "parentData": serialize_multiple_django(matchable, field_map, [scope.fieldPath.lower()])
+                    "parentData": serialize_multiple_django(matchable_dict, field_map, [scope.fieldPath.lower()])
                 })
             response['conflicting'] = list(
                 conflicts.values_list('id', flat=True)[:100])
@@ -136,12 +135,37 @@ def validate_unique(model, instance):
         if len(matchable.keys()) == 0 or set(all_fields) != set(field_map.keys()):
             continue
 
-        conflicts = model.objects.only('id').filter(**matchable)
+      
+        is_name_field = lambda field_path: field_path.split('__')[-1].lower() == 'name'
+
+        conflicts = model.objects.only('id')
+        exact_filters: dict[str, Any] = {}
+        binary_where_clauses: list[str] = []
+        binary_params: list[Any] = []
+        username_case_insensitive_q = Q()
+
+        for field_path, value in matchable.items():
+            if isinstance(value, str):
+                if model_name == "Specifyuser" and is_name_field(field_path):
+                    username_case_insensitive_q &= Q(**{f"{field_path}__iexact": value})
+                else:
+                    binary_where_clauses.append(f"BINARY {field_path} = %s")
+                    binary_params.append(value)
+            else:
+                exact_filters[field_path] = value
+
+        if exact_filters:
+            conflicts = conflicts.filter(**exact_filters)
+        if binary_where_clauses:
+            conflicts = conflicts.extra(where=binary_where_clauses, params=binary_params)
+        if username_case_insensitive_q:
+            conflicts = conflicts.filter(username_case_insensitive_q)
+
         if instance.id is not None:
             conflicts = conflicts.exclude(id=instance.id)
+
         if conflicts:
             raise get_exception(conflicts, matchable, field_map)
-
 
 class ViolatedUniquenessCheck(TypedDict):
     duplicates: int
@@ -158,7 +182,7 @@ def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[st
     -> UniquenessCheck | None:
     """
     Given a model, a list of fields, and a list of scopes, check whether there
-    are models of model_name which have duplicate values of fields in scopes. 
+    are models of model_name which have duplicate values of fields in scopes.
     Returns None if model_name is invalid.
     """
     table = datamodel.get_table(model_name)
@@ -192,8 +216,7 @@ def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[st
         .order_by(f'-{duplicates_field}')
     )
 
-    total_duplicates = sum(duplicate[duplicates_field]
-                           for duplicate in duplicates)
+    total_duplicates = sum(duplicate[duplicates_field] for duplicate in duplicates)
 
     final = {
         "totalDuplicates": total_duplicates,
@@ -378,3 +401,4 @@ def fix_global_default_rules(registry=None):
                 .filter(Exists(global_rule_exists))
             )
             empty_rules_qs.delete()
+          
