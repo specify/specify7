@@ -96,7 +96,7 @@ ANONYMOUS_USER = None
 RAVEN_CONFIG = None
 
 # Support login mechanism.
-ALLOW_SUPPORT_LOGIN = False
+ALLOW_SUPPORT_LOGIN = True
 SUPPORT_LOGIN_TTL = 300
 
 # Usage stats are transmitted to the following address.
