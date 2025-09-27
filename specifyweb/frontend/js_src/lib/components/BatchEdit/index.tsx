@@ -182,7 +182,7 @@ export function BatchEditFromQuery({
         disabled={isDisabled}
         title={isDisabled ? batchEditText.batchEditDisabled() : undefined}
         onClick={() => {
-          if (saveRequired || query.needsSaved) openWarningDialog();
+          if (saveRequired || (query as any).needsSaved) openWarningDialog();
           else handleClickBatchEdit();
         }}
       >
@@ -221,7 +221,7 @@ function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
   if (joinPath.length <= 1) return false;
   const nestedToManyCount = joinPath.filter(
     (relationship) =>
-      relationship.isRelationship && relationshipIsToMany(relationship)
+      (relationship as any).isRelationship && relationshipIsToMany(relationship as any)
   );
 
   const isTreeOnlyQuery =
@@ -232,8 +232,21 @@ function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
   return nestedToManyCount.length > allowedToMany;
 }
 
-const containsSystemTables = (queryFieldSpec: QueryFieldSpec) =>
-  queryFieldSpec.joinPath.some((field) => field.table.isSystem);
+const containsSystemTables = (queryFieldSpec: QueryFieldSpec) => {
+  const baseIsBlocked =
+    queryFieldSpec.baseTable?.isSystem &&
+    !queryFieldSpec.baseTable?.name?.toLowerCase?.().includes('attachment');
+
+  const pathHasBlockedSystem = queryFieldSpec.joinPath?.some((field: any) => {
+    const isAttachment =
+      field?.relatedTable?.name?.toLowerCase?.().includes('attachment') ||
+      field?.table?.name?.toLowerCase?.().includes('attachment');
+    return field?.table?.isSystem && !isAttachment;
+  });
+
+  return Boolean(baseIsBlocked || pathHasBlockedSystem);
+};
+
 
 const hasHierarchyBaseTable = (queryFieldSpec: QueryFieldSpec) =>
   Object.keys(schema.domainLevelIds).includes(
