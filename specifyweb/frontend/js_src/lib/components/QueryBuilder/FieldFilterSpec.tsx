@@ -29,6 +29,63 @@ import { DateQueryInputField } from './RelativeDate';
 import { SpecifyUserAutoComplete } from './SpecifyUserAutoComplete';
 
 /**
+ * This function enables users to specify ranges like "33043-33049" or abbreviated ranges 
+ * like "352000-26" (meaning 352000-352026) in query filters for any numeric field.
+ */
+function expandNumericRanges(valueStr: string): string {
+  if (typeof valueStr !== 'string') return valueStr;
+  
+  function expandRange(rangeStr: string): string[] {
+    const trimmed = rangeStr.trim();
+    
+    if (!trimmed.includes('-')) return [trimmed];
+    
+    const parts = trimmed.split('-', 2);
+    if (parts.length !== 2) return [trimmed];
+    
+    const [startStr, endStr] = parts.map(s => s.trim());
+    
+    if (!/^\d+$/.test(startStr) || !/^\d+$/.test(endStr)) return [trimmed];
+    
+    let startNum = parseInt(startStr, 10);
+    let endNum = parseInt(endStr, 10);
+    
+    // Handle abbreviated ranges like "352000-26" -> "352000-352026"
+    if (endStr.length < startStr.length) {
+      const prefix = startStr.slice(0, startStr.length - endStr.length);
+      const fullEndStr = prefix + endStr;
+      const reconstructedEnd = parseInt(fullEndStr, 10);
+      
+      if (reconstructedEnd >= startNum) {
+        endNum = reconstructedEnd;
+      } else {
+        return [trimmed]; // Invalid range
+      }
+    }
+    
+    if (startNum > endNum) return [trimmed]; // Invalid range
+    
+    const expanded: string[] = [];
+    for (let num = startNum; num <= endNum; num++) {
+      // Format with leading zeros to match original start format
+      const formatted = num.toString().padStart(startStr.length, '0');
+      expanded.push(formatted);
+    }
+    
+    return expanded;
+  }
+  
+  const parts = valueStr.split(',');
+  const allExpanded: string[] = [];
+  
+  for (const part of parts) {
+    allExpanded.push(...expandRange(part));
+  }
+
+  return allExpanded.join(',');
+}
+
+/**
  * Formatters and aggregators don't yet support any filtering options.
  * See https://github.com/specify/specify7/issues/318
  */
@@ -89,7 +146,15 @@ export function QueryInputField({
   const { inputRef, validationRef, setValidation } = useValidation<
     HTMLInputElement | HTMLSelectElement
   >();
-  const validationAttributes = getValidationAttributes(parser);
+  
+  // Get validation attributes, but disable pattern validation for "In" operator with ranges
+  const baseValidationAttributes = getValidationAttributes(parser);
+  const shouldSkipPattern = listInput && value.includes('-');
+  const validationAttributes = shouldSkipPattern
+    ? Object.fromEntries(
+        Object.entries(baseValidationAttributes).filter(([key]) => key !== 'pattern')
+      )
+    : baseValidationAttributes;
   const extractValues = (
     target: HTMLInputElement | HTMLSelectElement
   ): RA<string> =>
@@ -140,10 +205,21 @@ export function QueryInputField({
 
       if (hasNativeErrors(input)) return;
 
-      const parseResults = extractValues(target)
+      // For "In" operator, expand numeric ranges before parsing
+      let values = extractValues(target)
         .map(f.trim)
-        .filter(Boolean)
-        .map((value) => parseValue(parser, input, value));
+        .filter(Boolean);
+      
+      if (listInput) {
+        // Apply range expansion to each value for the "In" operator
+        values = values.map(value => expandNumericRanges(value))
+          .join(',')
+          .split(',')
+          .map(f.trim)
+          .filter(Boolean);
+      }
+
+      const parseResults = values.map((value) => parseValue(parser, input, value));
       const errorMessages = parseResults
         .filter((result): result is InvalidParseResult => !result.isValid)
         .map(({ reason, value }) => `${reason} (${value})`);

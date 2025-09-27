@@ -515,7 +515,100 @@ def parse_dates(date_str):
         except (ValueError, AttributeError):
                 return None
 
+
+def expand_numeric_ranges(value_str):
+    """
+    This function enables users to specify ranges like "33043-33049" or abbreviated ranges 
+    like "352000-26" (meaning 352000-352026) in query filters for any numeric field, similar to how it worked in Specify 6.
+    
+    Examples:
+        - "33043-33049" -> "33043,33044,33045,33046,33047,33048,33049"
+        - "352000-26" -> "352000,352001,...,352026" 
+        - "352028-49" -> "352028,352029,...,352049"
+        - "33043-33049, 352000-26, 33040" -> all expanded ranges + individual numbers
+        - "123456789" -> "123456789" (single numbers remain unchanged)
+        - "abc-def" -> "abc-def" (non-numeric ranges remain unchanged)
+    
+    Args:
+        value_str: Comma-separated string that may contain ranges (e.g., "33043-33049")
+        
+    Returns:
+        String with numeric ranges expanded to individual numbers
+        
+    Note:
+        - Only processes string inputs; other types are returned unchanged
+        - Abbreviated ranges (e.g., "352000-26") are interpreted by taking the prefix 
+          from the start number and appending the end digits
+        - Invalid ranges (where start > end after reconstruction) are left unchanged
+        - Non-numeric ranges are left unchanged
+    """
+    if not isinstance(value_str, str):
+        return value_str
+    
+    def expand_range(range_str):
+        """Expand a single range like '33043-33049' or '352000-26'."""
+        range_str = range_str.strip()
+        
+        # Check if this looks like a range (contains a dash and numbers)
+        if '-' not in range_str:
+            return [range_str]
+        
+        parts = range_str.split('-', 1)  # Split only on first dash
+        if len(parts) != 2:
+            return [range_str]
+        
+        start_str, end_str = parts[0].strip(), parts[1].strip()
+        
+        # Both parts must be numeric
+        if not (start_str.isdigit() and end_str.isdigit()):
+            return [range_str]
+        
+        start_num = int(start_str)
+        end_num = int(end_str)
+        
+        # Handle cases like "352000-26" where end is shorter than start
+        if len(end_str) < len(start_str):
+            # Take the prefix from start and append the end digits
+            start_prefix = start_str[:-len(end_str)]
+            full_end_str = start_prefix + end_str
+            reconstructed_end_num = int(full_end_str)
+            
+            # Ensure the reconstructed end makes sense (>= start)
+            if reconstructed_end_num >= start_num:
+                end_num = reconstructed_end_num
+            else:
+                # Invalid abbreviated range (e.g., "1000-50" where 1050 < 1000)
+                return [range_str]
+        
+        # Ensure start <= end for valid range  
+        if start_num > end_num:
+            return [range_str]
+        
+        # Generate the range
+        expanded = []
+        for num in range(start_num, end_num + 1):
+            # Format with leading zeros to match the original start format
+            formatted_num = str(num).zfill(len(start_str))
+            expanded.append(formatted_num)
+        
+        return expanded
+    
+    # Split by commas and process each part
+    parts = value_str.split(',')
+    all_expanded = []
+    
+    for part in parts:
+        expanded_part = expand_range(part)
+        all_expanded.extend(expanded_part)
+    
+    return ','.join(all_expanded)
+
 def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
+    # Handle range expansion for any field using "In" operator (op_num 10)
+    # This should happen before inheritance cases to ensure ranges are expanded first
+    if op_num == 10 and isinstance(value, str):
+        value = expand_numeric_ranges(value)
+    
     parent_inheritance_pref = get_parent_cat_num_inheritance_setting(collection, user)
 
     if parent_inheritance_pref: 
