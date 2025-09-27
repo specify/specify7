@@ -32,51 +32,51 @@ import { SpecifyUserAutoComplete } from './SpecifyUserAutoComplete';
  * This function enables users to specify ranges like "33043-33049" or abbreviated ranges 
  * like "352000-26" (meaning 352000-352026) in query filters for any numeric field.
  */
-function expandNumericRanges(valueStr: string): string {
-  if (typeof valueStr !== 'string') return valueStr;
+function expandNumericRanges(valueString: string): string {
+  if (typeof valueString !== 'string') return valueString;
   
-  function expandRange(rangeStr: string): string[] {
-    const trimmed = rangeStr.trim();
+  function expandRange(rangeString: string): readonly string[] {
+    const trimmed = rangeString.trim();
     
     if (!trimmed.includes('-')) return [trimmed];
     
     const parts = trimmed.split('-', 2);
     if (parts.length !== 2) return [trimmed];
     
-    const [startStr, endStr] = parts.map(s => s.trim());
+    const [startString, endString] = parts.map(s => s.trim());
     
-    if (!/^\d+$/.test(startStr) || !/^\d+$/.test(endStr)) return [trimmed];
+    if (!/^\d+$/.test(startString) || !/^\d+$/.test(endString)) return [trimmed];
     
-    let startNum = parseInt(startStr, 10);
-    let endNum = parseInt(endStr, 10);
+    const startNumber = Number.parseInt(startString, 10);
+    let endNumber = Number.parseInt(endString, 10);
     
     // Handle abbreviated ranges like "352000-26" -> "352000-352026"
-    if (endStr.length < startStr.length) {
-      const prefix = startStr.slice(0, startStr.length - endStr.length);
-      const fullEndStr = prefix + endStr;
-      const reconstructedEnd = parseInt(fullEndStr, 10);
+    if (endString.length < startString.length) {
+      const prefix = startString.slice(0, startString.length - endString.length);
+      const fullEndString = prefix + endString;
+      const reconstructedEnd = Number.parseInt(fullEndString, 10);
       
-      if (reconstructedEnd >= startNum) {
-        endNum = reconstructedEnd;
+      if (reconstructedEnd >= startNumber) {
+        endNumber = reconstructedEnd;
       } else {
         return [trimmed]; // Invalid range
       }
     }
     
-    if (startNum > endNum) return [trimmed]; // Invalid range
+    if (startNumber > endNumber) return [trimmed]; // Invalid range
     
-    const expanded: string[] = [];
-    for (let num = startNum; num <= endNum; num++) {
+    const expanded: readonly string[] = [];
+    for (let number_ = startNumber; number_ <= endNumber; number_++) {
       // Format with leading zeros to match original start format
-      const formatted = num.toString().padStart(startStr.length, '0');
+      const formatted = number_.toString().padStart(startString.length, '0');
       expanded.push(formatted);
     }
     
     return expanded;
   }
   
-  const parts = valueStr.split(',');
-  const allExpanded: string[] = [];
+  const parts = valueString.split(',');
+  const allExpanded: readonly string[] = [];
   
   for (const part of parts) {
     allExpanded.push(...expandRange(part));
