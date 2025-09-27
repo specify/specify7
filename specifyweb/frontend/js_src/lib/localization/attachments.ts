@@ -659,7 +659,7 @@ export const attachmentsText = createDictionary({
     "en-us": "Are you sure you want to delete this attachment?",
     "de-ch": "Möchten Sie diesen Anhang wirklich löschen?",
     "es-es": "¿Está seguro que desea eliminar este archivo adjunto?",
-    "fr-fr": "Êtes-vous sûr de vouloir supprimer cette pièce jointe ?",
+    "fr-fr": "Etes-vous sûr de vouloir supprimer cette pièce jointe ?",
     "pt-br": "Tem certeza de que deseja excluir este anexo?",
     "ru-ru": "Вы уверены, что хотите удалить это вложение?",
     "uk-ua": "Ви впевнені, що хочете видалити цей вкладений файл?",
