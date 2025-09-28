@@ -151,7 +151,7 @@ export const preferencesText = createDictionary({
     "de-ch":
       "Durchsichtige Hintergründe für Benutzeroberflächenkomponenten wann immer möglich deaktivieren (z. B. Tabellenüberschriften in der Baumansicht).",
     "pt-br":
-      "Se deve ou não desabilitar fundos translúcidos para componentes da interface do usuário sempre que possível (por exemplo, cabeçalhos de tabela na visualização em árvore).",
+      "Se deve desabilitar fundos translúcidos para componentes da interface do usuário sempre que possível (por exemplo, cabeçalhos de tabela na visualização em árvore).",
   },
   contrast: {
     "en-us": "Contrast",
@@ -280,7 +280,7 @@ export const preferencesText = createDictionary({
   requiredFieldBackground: {
     "en-us": "Required field background",
     "ru-ru": "Обязательное поле фон",
-    "es-es": "Antecedentes del campo obligatorio",
+    "es-es": "Fondo del campo obligatorio",
     "fr-fr": "Contexte du champ obligatoire",
     "uk-ua": "Обов'язковий фон поля",
     "de-ch": "Feldhintergrund erforderlich",
@@ -522,7 +522,7 @@ export const preferencesText = createDictionary({
   treeSearchAlgorithm: {
     "en-us": "Search Algorithm (for relationships with tree tables)",
     "ru-ru": "Алгоритм поиска (для связей с древовидными таблицами)",
-    "es-es": "Algoritmo de búsqueda (para relaciones con tablas de árbol)",
+    "es-es": "Algoritmo de búsqueda (para relaciones con tablas de árboles)",
     "fr-fr":
       "Algorithme de recherche (pour les relations avec les tables arborescentes)",
     "uk-ua": "Алгоритм пошуку (для зв’язків із деревоподібними таблицями)",
@@ -536,7 +536,7 @@ export const preferencesText = createDictionary({
     "fr-fr": "Commence par (insensible à la casse)",
     "uk-ua": "Починається з (без урахування регістру)",
     "de-ch": "Beginnt mit (Groß-/Kleinschreibung wird nicht beachtet)",
-    "pt-br": "Começa com (sem distinção de maiúsculas e minúsculas)",
+    "pt-br": "Começa com (sem distinção entre maiúsculas e minúsculas)",
   },
   startsWithDescription: {
     "en-us": "Search for values that begin with a given query string.",
@@ -549,7 +549,7 @@ export const preferencesText = createDictionary({
     "de-ch":
       "Suchen Sie nach Werten, die mit einer bestimmten Abfragezeichenfolge beginnen.",
     "pt-br":
-      "Pesquisar valores que começam com uma determinada sequência de consulta.",
+      "Pesquise valores que começam com uma determinada sequência de consulta.",
   },
   startsWithCaseSensitive: {
     "en-us": "Starts With (case-sensitive)",
@@ -571,7 +571,7 @@ export const preferencesText = createDictionary({
     "de-ch":
       "Suchen Sie nach Werten, die mit einer bestimmten Abfragezeichenfolge beginnen.",
     "pt-br":
-      "Pesquisar valores que começam com uma determinada sequência de consulta.",
+      "Pesquise valores que começam com uma determinada sequência de consulta.",
   },
   containsInsensitive: {
     "en-us": "Contains (case-insensitive)",
@@ -1091,10 +1091,10 @@ export const preferencesText = createDictionary({
   caseInsensitive: {
     "en-us": "Case-insensitive",
     "ru-ru": "Без учета регистра",
-    "es-es": "Sin distinción entre mayúsculas y minúsculas",
+    "es-es": "No distingue entre mayúsculas y minúsculas",
     "fr-fr": "Insensible à la casse",
     "uk-ua": "Регістр не враховується",
-    "de-ch": "Groß-/Kleinschreibung wird nicht beachtet",
+    "de-ch": "Groß- und Kleinschreibung wird nicht berücksichtigt",
     "pt-br": "Não diferencia maiúsculas de minúsculas",
   },
   showNoReadTables: {
@@ -1191,7 +1191,7 @@ export const preferencesText = createDictionary({
     "fr-fr": "Concentrez-vous sur le premier champ",
     "ru-ru": "Фокус первого поля",
     "uk-ua": "Перейти до першого поля",
-    "pt-br": "Foco primeiro no campo",
+    "pt-br": "Foco primeiro campo",
   },
   doubleClickZoom: {
     "en-us": "Double click to zoom",
@@ -1214,7 +1214,7 @@ export const preferencesText = createDictionary({
   animateTransitions: {
     "en-us": "Animate transitions",
     "ru-ru": "Анимированные переходы",
-    "es-es": "Transiciones animadas",
+    "es-es": "Animar transiciones",
     "fr-fr": "Animer les transitions",
     "uk-ua": "Анімація переходів",
     "de-ch": "Übergänge animieren",
@@ -1262,7 +1262,7 @@ export const preferencesText = createDictionary({
     "es-es": "Ancho de columna de cuadrícula de subvista flexible",
     "fr-fr": "Largeur de colonne de grille de sous-vue flexible",
     "uk-ua": "Гнучка ширина стовпця сітки вкладеного перегляду",
-    "de-ch": "Flexible Spaltenbreite des Unteransichtsrasters",
+    "de-ch": "Flexible Rasterspaltenbreite der Unteransicht",
     "pt-br": "Largura flexível da coluna da grade de subvisualização",
   },
   closeOnEsc: {
@@ -1344,7 +1344,7 @@ export const preferencesText = createDictionary({
     "fr-fr": "Limiter la largeur maximale du champ",
     "uk-ua": "Обмеження максимальної ширини поля",
     "de-ch": "Maximale Feldbreite begrenzen",
-    "pt-br": "Limite máximo de largura do campo",
+    "pt-br": "Limite a largura máxima do campo",
   },
   condenseQueryResults: {
     "en-us": "Condense query results",
@@ -1559,7 +1559,7 @@ export const preferencesText = createDictionary({
     "es-es": "Utilice la coma como delimitador",
     "fr-fr": "Utiliser la virgule comme délimiteur",
     "uk-ua": "Використовуйте кому як роздільник",
-    "de-ch": "Verwenden Sie Kommas als Trennzeichen.",
+    "de-ch": "Verwenden Sie Kommas als Trennzeichen",
     "pt-br": "Use vírgula como delimitador",
   },
   useNewLineAsDelimiter: {
@@ -1606,7 +1606,7 @@ export const preferencesText = createDictionary({
     "uk-ua": "Визначати автоматично на основі формату номера каталогу.",
     "de-ch": "Automatische Erkennung basierend auf dem Katalognummernformat.",
     "pt-br":
-      "Detecte automaticamente com base no formato do número de catálogo.",
+      "Detectar automaticamente com base no formato do número de catálogo.",
   },
   use: {
     comment: "Verb",
@@ -1731,7 +1731,7 @@ export const preferencesText = createDictionary({
     "de-ch":
       "Beim Zusammenführen von Agenten werden automatisch {agentVariantTable:string}-Datensätze basierend auf den Variationen von Vorname/Nachname erstellt.",
     "es-es":
-      "Al fusionar agentes, cree automáticamente registros {agentVariantTable:string} basados en las variaciones de nombre/apellido.",
+      "Al fusionar agentes, se crean automáticamente registros {agentVariantTable:string} basados en las variaciones de nombre/apellido.",
     "fr-fr":
       "Lors de la fusion d'agents, créez automatiquement des enregistrements {agentVariantTable:string} en fonction des variations du prénom/nom.",
     "uk-ua":
@@ -1898,7 +1898,7 @@ export const preferencesText = createDictionary({
   saveButtonColor: {
     "en-us": "Save button color",
     "de-ch": "Farbe der Schaltfläche „Speichern“",
-    "es-es": "Guardar el color del botón",
+    "es-es": "Guardar color del botón",
     "fr-fr": "Couleur du bouton Enregistrer",
     "ru-ru": "Сохранить цвет кнопки",
     "uk-ua": "Зберегти колір кнопки",
@@ -2063,9 +2063,9 @@ export const preferencesText = createDictionary({
     "es-es":
       "Habilitar la herencia del número de catálogo principal a sus hermanos vacíos.",
     "fr-fr":
-      "Activez l'héritage du numéro de catalogue principal vers ses frères vides.",
+      "Activer l'héritage du numéro de catalogue principal à ses frères vides.",
     "pt-br":
-      "Habilitar a herança do número do catálogo primário para seus irmãos vazios.",
+      "Habilitar a herança do número de catálogo primário para seus irmãos vazios.",
     "ru-ru":
       "Включить наследование основного каталожного номера его пустыми родственными номерами.",
     "uk-ua":
@@ -2081,7 +2081,7 @@ export const preferencesText = createDictionary({
     "fr-fr":
       "Activer l'héritage du numéro de catalogue parent à ses enfants vides.",
     "pt-br":
-      "Habilitar a herança do número do catálogo pai para seus filhos vazios.",
+      "Habilita a herança do número do catálogo pai para seus filhos vazios.",
     "ru-ru":
       "Включить наследование родительского каталожного номера его пустыми дочерними элементами.",
     "uk-ua":
