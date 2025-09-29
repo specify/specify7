@@ -707,6 +707,10 @@ export const commonText = createDictionary({
     'de-ch': '{resource:string} ({count:number|formatted})',
     'pt-br': '{resource:string} ({count:number|formatted})',
   },
+  countLineOrMore: {
+    comment: 'Example usage: Record Sets (1,234+)',
+    'en-us': '{resource:string} ({count:number|formatted}+)',
+  },
   jsxCountLine: {
     comment: 'Example usage: Record Sets (1,234)',
     'en-us': '{resource:string} <wrap>({count:number|formatted})</wrap>',
