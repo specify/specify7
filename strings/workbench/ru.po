@@ -561,12 +561,12 @@ msgstr "Импортировать набор данных"
 msgid "wbImportHeader"
 msgstr "Импортируйте файл для создания нового набора данных"
 
-#: components/Molecules/FilePicker.tsx:277
+#: components/Molecules/FilePicker.tsx:273
 #. Used in: Components > Molecules > File Picker
 msgid "previewDataSet"
 msgstr "Предварительный просмотр набора данных"
 
-#: components/Molecules/FilePicker.tsx:317
+#: components/Molecules/FilePicker.tsx:313
 #. Used in: Components > Molecules > File Picker
 msgid "errorImporting"
 msgstr "При импорте файла произошли следующие ошибки:"
@@ -635,12 +635,12 @@ msgstr "Определить автоматически"
 msgid "chooseDataSetName"
 msgstr "Имя для нового набора данных:"
 
-#: components/Molecules/FilePicker.tsx:254
+#: components/Molecules/FilePicker.tsx:250
 #. Used in: Components > Molecules > File Picker
 msgid "firstRowIsHeader"
 msgstr "Первая строка является заголовок:"
 
-#: components/Molecules/FilePicker.tsx:229
+#: components/Molecules/FilePicker.tsx:225
 #: components/Toolbar/WbsDialog.tsx:200
 #. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
 msgid "importFile"

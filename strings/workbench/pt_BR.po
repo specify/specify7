@@ -661,13 +661,13 @@ msgstr "Importar conjunto de dados"
 msgid "wbImportHeader"
 msgstr "Importar um arquivo para criar um novo conjunto de dados"
 
-#: components/Molecules/FilePicker.tsx:277
+#: components/Molecules/FilePicker.tsx:273
 #. Used in: Components > Molecules > File Picker
 #, fuzzy
 msgid "previewDataSet"
 msgstr "Visualizar conjunto de dados"
 
-#: components/Molecules/FilePicker.tsx:317
+#: components/Molecules/FilePicker.tsx:313
 #. Used in: Components > Molecules > File Picker
 #, fuzzy
 msgid "errorImporting"
@@ -747,13 +747,13 @@ msgstr "Determinar automaticamente"
 msgid "chooseDataSetName"
 msgstr "Nome para o novo conjunto de dados:"
 
-#: components/Molecules/FilePicker.tsx:254
+#: components/Molecules/FilePicker.tsx:250
 #. Used in: Components > Molecules > File Picker
 #, fuzzy
 msgid "firstRowIsHeader"
 msgstr "A primeira linha é o cabeçalho:"
 
-#: components/Molecules/FilePicker.tsx:229
+#: components/Molecules/FilePicker.tsx:225
 #: components/Toolbar/WbsDialog.tsx:200
 #. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
 #, fuzzy
