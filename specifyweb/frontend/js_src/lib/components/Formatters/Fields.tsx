@@ -19,7 +19,7 @@ import type {
   CustomSelectElementPropsOpen,
 } from '../WbPlanView/CustomSelectElement';
 import { CustomSelectElement } from '../WbPlanView/CustomSelectElement';
-import type { HtmlGeneratorFieldData } from '../WbPlanView/LineComponents';
+import type { MapperComponentData } from '../WbPlanView/LineComponents';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import {
   FormattersPickList,
@@ -368,7 +368,7 @@ function fieldOptionsMenu({
   readonly isReadOnly: boolean;
   readonly columnOptions: FormatterFieldOptions;
   readonly onToggleTrimZeros: (trimZeros: boolean) => void;
-}): IR<HtmlGeneratorFieldData> {
+}): IR<MapperComponentData> {
   return {
     trimZeros: {
       optionLabel: (
