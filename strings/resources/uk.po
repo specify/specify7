@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-09-29 14:25+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-09-29 15:50+0000\n"
+"Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "resources/uk/>\n"
 "Language: uk\n"
@@ -565,7 +565,6 @@ msgstr ""
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:408
-#, fuzzy
 msgid "invalidNameTaxon"
 msgstr ""
 "{taxonName: string} не належить до дерева {taxonTableLabel: string}, "
@@ -574,7 +573,6 @@ msgstr ""
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:236
 #: components/DataModel/businessRuleDefs.ts:471
-#, fuzzy
 msgid "catalogNumberAlreadyUsed"
 msgstr ""
 "{catalogNumberFieldName: string} {catalogNumber: string} вже "
