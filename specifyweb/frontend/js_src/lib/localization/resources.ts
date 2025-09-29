@@ -939,35 +939,35 @@ export const resourcesText = createDictionary({
       "Визначення не належить до дерева таксонів, пов'язаного з типом об'єкта колекції",
   },
   invalidNameTaxon: {
-    "en-us":
-      "{taxonName: string} does not belong to the {taxonTableLabel: string} tree associated with {typeName: string}",
-    "de-ch":
-      "{taxonName: string} gehört nicht zum {taxonTableLabel: string}-Baum, der mit {typeName: string} verknüpft ist",
-    "es-es":
-      "{taxonName: string} no pertenece al árbol {taxonTableLabel: string} asociado con {typeName: string}",
-    "fr-fr":
+    'en-us':
+      '{taxonName: string} does not belong to the {taxonTableLabel: string} tree associated with {typeName: string}',
+    'de-ch':
+      '{taxonName: string} gehört nicht zum {taxonTableLabel: string}-Baum, der mit {typeName: string} verknüpft ist',
+    'es-es':
+      '{taxonName: string} no pertenece al árbol {taxonTableLabel: string} asociado con {typeName: string}',
+    'fr-fr':
       "{taxonName: string} n'appartient pas à l'arbre {taxonTableLabel: string} associé à {typeName: string}",
-    "pt-br":
-      "{taxonName: string} não pertence à árvore {taxonTableLabel: string} associada a {typeName: string}",
-    "ru-ru":
-      "{taxonName: string} не принадлежит дереву {taxonTableLabel: string}, связанному с {typeName: string}",
-    "uk-ua":
+    'pt-br':
+      '{taxonName: string} não pertence à árvore {taxonTableLabel: string} associada a {typeName: string}',
+    'ru-ru':
+      '{taxonName: string} не принадлежит дереву {taxonTableLabel: string}, связанному с {typeName: string}',
+    'uk-ua':
       "{taxonName: string} не належить до дерева {taxonTableLabel: string}, пов'язаного з {typeName: string}",
   },
   catalogNumberAlreadyUsed: {
-    "en-us":
-      "{catalogNumberFieldName: string} {catalogNumber: string} is already in use for another Component or Collection Object in this collection.",
-    "de-ch":
-      "{catalogNumberFieldName: string} {catalogNumber: string} wird bereits für eine andere Komponente oder ein anderes Sammlungsobjekt in dieser Sammlung verwendet.",
-    "es-es":
-      "{catalogNumberFieldName: string} {catalogNumber: string} ya está en uso para otro componente u objeto de colección en esta colección.",
-    "fr-fr":
-      "{catalogNumberFieldName: string} {catalogNumber: string} est déjà utilisé pour un autre composant ou objet de collection dans cette collection.",
-    "pt-br":
-      "{catalogNumberFieldName: string} {catalogNumber: string} já está em uso para outro Componente ou Objeto de Coleção nesta coleção.",
-    "ru-ru":
-      "{catalogNumberFieldName: string} {catalogNumber: string} уже используется для другого компонента или объекта коллекции в этой коллекции.",
-    "uk-ua":
+    'en-us':
+      '{catalogNumberFieldName: string} {catalogNumber: string} is already in use for another Component or Collection Object in this collection.',
+    'de-ch':
+      '{catalogNumberFieldName: string} {catalogNumber: string} wird bereits für eine andere Komponente oder ein anderes Sammlungsobjekt in dieser Sammlung verwendet.',
+    'es-es':
+      '{catalogNumberFieldName: string} {catalogNumber: string} ya está en uso para otro componente u objeto de colección en esta colección.',
+    'fr-fr':
+      '{catalogNumberFieldName: string} {catalogNumber: string} est déjà utilisé pour un autre composant ou objet de collection dans cette collection.',
+    'pt-br':
+      '{catalogNumberFieldName: string} {catalogNumber: string} já está em uso para outro Componente ou Objeto de Coleção nesta coleção.',
+    'ru-ru':
+      '{catalogNumberFieldName: string} {catalogNumber: string} уже используется для другого компонента или объекта коллекции в этой коллекции.',
+    'uk-ua':
       "{catalogNumberFieldName: string} {catalogNumber: string} вже використовується для іншого компонента або об'єкта колекції в цій колекції.",
   },
   preparationUsedInLoan: {
