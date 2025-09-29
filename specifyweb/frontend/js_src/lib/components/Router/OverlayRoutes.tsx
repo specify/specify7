@@ -178,6 +178,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           ),
       },
       {
+        path: 'backup-database',
+        title: headerText.backupDatabase(),
+        element: () =>
+          import('../Toolbar/BackupDatabase').then(
+            ({ BackupDatabaseOverlay }) => BackupDatabaseOverlay
+          ),
+      },
+      {
         path: 'make-dwca',
         title: headerText.makeDwca(),
         element: () =>
@@ -247,6 +255,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         element: () =>
           import('../Toolbar/WbsDialog').then(
             ({ BatchEditDataSetsOverlay }) => BatchEditDataSetsOverlay
+          ),
+      },
+      {
+        path: 'backup-status/:taskId',
+        title: headerText.backupDatabase(),
+        element: () =>
+          import('../Toolbar/BackupStatus').then(
+            ({ BackupStatusOverlay }) => BackupStatusOverlay
           ),
       },
     ],

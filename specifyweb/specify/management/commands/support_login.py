@@ -3,7 +3,7 @@ from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 
-from specifyweb.specify.support_login import make_token
+from specifyweb.specify.auth.support_login import make_token
 from specifyweb.specify.models import Specifyuser
 
 TTL = settings.SUPPORT_LOGIN_TTL

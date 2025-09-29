@@ -103,11 +103,16 @@ export function AttachmentViewer({
   const Component = typeof originalUrl === 'string' ? Link.Info : Button.Info;
   const [autoPlay] = userPreferences.use('attachments', 'behavior', 'autoPlay');
   const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
+  /*
+   * Tiff files cannot be shown by chrome or firefox,
+   * so fallback to the thumbnail regardless of user preference
+   */
+  const isTiffImage = mimeType === 'image/tiff' || mimeType === 'image/tif';
 
   return (
     <>
       <div className="flex min-h-[theme(spacing.60)] w-full min-w-[theme(spacing.60)] flex-1 items-center justify-center">
-        {displayOriginal === 'full' ? (
+        {displayOriginal === 'full' && !isTiffImage ? (
           originalUrl === undefined ? (
             loadingGif
           ) : type === 'image' ? (

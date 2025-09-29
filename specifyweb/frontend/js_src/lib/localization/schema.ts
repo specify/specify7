@@ -12,7 +12,7 @@ export const schemaText = createDictionary({
   table: {
     'en-us': 'Table',
     'ru-ru': 'Стол',
-    'es-es': 'Mesa',
+    'es-es': 'Tabla',
     'fr-fr': 'Tableau',
     'uk-ua': 'Таблиця',
     'de-ch': 'Tabelle',
@@ -39,9 +39,9 @@ export const schemaText = createDictionary({
   withoutTable: {
     'en-us': 'Without Table',
     'de-ch': 'Ohne Tisch',
-    'es-es': 'Sin mesa',
+    'es-es': 'Sin tabla',
     'fr-fr': 'Sans table',
-    'ru-ru': 'Без таблицы',
+    'ru-ru': 'Без стола',
     'uk-ua': 'Без столу',
     'pt-br': 'Sem mesa',
   },
@@ -57,7 +57,7 @@ export const schemaText = createDictionary({
   unsavedSchemaUnloadProtect: {
     'en-us': 'Schema changes have not been saved',
     'ru-ru': 'Изменения схемы не были сохранены',
-    'es-es': 'Los cambios de esquema no se han guardado',
+    'es-es': 'Los cambios en el esquema no se han guardado',
     'fr-fr': "Les modifications du schéma n'ont pas été enregistrées",
     'uk-ua': 'Зміни схеми не збережено',
     'de-ch': 'Schema Änderungen wurden nicht gespeichert',
@@ -110,7 +110,7 @@ export const schemaText = createDictionary({
   },
   setScope: {
     'en-us': 'Set Scope',
-    'de-ch': 'Umfang festlegen',
+    'de-ch': 'Geltungsbereich festlegen',
     'es-es': 'Establecer alcance',
     'fr-fr': 'Définir la portée',
     'ru-ru': 'Установить область действия',
@@ -120,7 +120,7 @@ export const schemaText = createDictionary({
   caption: {
     'en-us': 'Caption',
     'ru-ru': 'Подпись',
-    'es-es': 'Subtítulo',
+    'es-es': 'Título',
     'fr-fr': 'Légende',
     'uk-ua': 'Підпис',
     'de-ch': 'Beschriftung',
@@ -174,7 +174,7 @@ export const schemaText = createDictionary({
   oneToOne: {
     'en-us': 'One-to-one',
     'ru-ru': 'Один на один',
-    'es-es': 'Cara a cara',
+    'es-es': 'Uno-a-uno',
     'fr-fr': 'Un à un',
     'uk-ua': 'Один на один',
     'de-ch': 'Eins zu eins',
@@ -182,7 +182,7 @@ export const schemaText = createDictionary({
   },
   oneToMany: {
     'en-us': 'One-to-many',
-    'ru-ru': 'Один-ко-многим',
+    'ru-ru': 'Один ко многим',
     'es-es': 'Uno a muchos',
     'fr-fr': 'Un-à-plusieurs',
     'uk-ua': 'Один до багатьох',
@@ -201,7 +201,7 @@ export const schemaText = createDictionary({
   manyToMany: {
     'en-us': 'many-to-many',
     'ru-ru': 'многие-ко-многим',
-    'es-es': 'de muchos a muchos',
+    'es-es': 'muchos a muchos',
     'fr-fr': 'plusieurs à plusieurs',
     'uk-ua': 'багато-до-багатьох',
     'de-ch': 'Viele zu viele',
@@ -281,7 +281,7 @@ export const schemaText = createDictionary({
   },
   databaseColumn: {
     'en-us': 'Database Column',
-    'ru-ru': 'Колонка базы данных',
+    'ru-ru': 'Столбец базы данных',
     'es-es': 'Columna de base de datos',
     'fr-fr': 'Colonne de base de données',
     'uk-ua': 'Стовпець бази даних',

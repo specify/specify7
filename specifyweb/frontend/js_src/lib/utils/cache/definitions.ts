@@ -98,6 +98,7 @@ export type CacheDefinitions = {
       }
     >;
   };
+  readonly workBenchAttachmentViewer: Readonly<Record<string, RA<number>>>;
   readonly sortConfig: {
     readonly [KEY in keyof SortConfigs]: SortConfig<SortConfigs[KEY]>;
   };
@@ -164,6 +165,9 @@ export type CacheDefinitions = {
     readonly statsValue: RA<
       RA<RA<{ readonly itemName: string; readonly value: number | string }>>
     >;
+  };
+  readonly batchEdit: {
+    readonly warningBatchEditDialog: boolean;
   };
 };
 

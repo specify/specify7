@@ -1,9 +1,10 @@
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
+import { useDelay } from '../../hooks/useDelay';
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
+import { SECOND } from '../Atoms/timeUnits';
 import { crash } from '../Errors/Crash';
 import { useMenuItems } from '../Header/menuItemProcessing';
 import { initialContext } from '../InitialContext';
@@ -11,7 +12,7 @@ import { Main } from './Main';
 import { SplashScreen } from './SplashScreen';
 
 // Show loading splash screen if didn't finish load within 2 seconds
-const LOADING_TIMEOUT = 2000;
+const LOADING_TIMEOUT = 2 * SECOND;
 
 const fetchContext = async (): Promise<true | void> =>
   initialContext.then(f.true).catch(crash);
@@ -30,19 +31,7 @@ export function ContextLoader(): JSX.Element | null {
    * Show loading screen only if didn't finish loading within 2 seconds.
    * This prevents briefly flashing the loading dialog on fast systems.
    */
-  const [showLoadingScreen, setShowLoadingScreen] = useBooleanState();
-  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined
-  );
-  React.useEffect(() => {
-    if (timeoutRef.current !== undefined)
-      globalThis.clearTimeout(timeoutRef.current);
-    if (!isLoaded)
-      timeoutRef.current = globalThis.setTimeout(
-        setShowLoadingScreen,
-        LOADING_TIMEOUT
-      );
-  }, [isLoaded, setShowLoadingScreen]);
+  const showLoadingScreen = useDelay(!isLoaded, LOADING_TIMEOUT);
 
   return isLoaded ? (
     <Main menuItems={menuItems} />

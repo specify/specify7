@@ -36,6 +36,15 @@ export const resourcesText = createDictionary({
     'de-ch': 'Formulardefinition',
     'pt-br': 'Definição de Formulário',
   },
+  newViewDefinition: {
+    'en-us': 'New View Definition',
+    'de-ch': 'Neue Ansichtsdefinition',
+    'es-es': 'Nueva definición de vista',
+    'fr-fr': 'Nouvelle définition de vue',
+    'pt-br': 'Nova Definição de Visualização',
+    'ru-ru': 'Новое определение взгляда',
+    'uk-ua': 'Нове визначення подання',
+  },
   loadFile: {
     'en-us': 'Load File',
     'ru-ru': 'Загрузить файл',
@@ -111,7 +120,7 @@ export const resourcesText = createDictionary({
   appResource: {
     'en-us': 'App Resource',
     'ru-ru': 'Подкатегории',
-    'es-es': 'Recurso de la aplicación',
+    'es-es': 'Recursos de la aplicación',
     'fr-fr': "Ressource d'application",
     'uk-ua': 'Підкатегорії',
     'de-ch': 'App Ressource',
@@ -193,23 +202,23 @@ export const resourcesText = createDictionary({
     'en-us':
       'The “Table Format” controls how data from a specific table is shown in query results, exports, and query combo boxes. It determines the fields to display and their order. Conditional formatting can be configured based on a value in the record.',
     'de-ch':
-      'Das Tabellenformat steuert die Darstellung von Daten aus einer bestimmten Tabelle in Abfrageergebnissen, Exporten und Abfragekombinationsfeldern. Es bestimmt die anzuzeigenden Felder und deren Reihenfolge. Die bedingte Formatierung kann basierend auf einem Wert im Datensatz konfiguriert werden.',
+      'Das Tabellenformat steuert die Darstellung von Daten aus einer bestimmten Tabelle in Abfrageergebnissen, Exporten und Abfrage-Kombinationsfeldern. Es bestimmt die anzuzeigenden Felder und deren Reihenfolge. Die bedingte Formatierung kann basierend auf einem Wert im Datensatz konfiguriert werden.',
     'es-es':
       'El "Formato de tabla" controla cómo se muestran los datos de una tabla específica en los resultados de consultas, las exportaciones y los cuadros combinados de consultas. Determina los campos que se mostrarán y su orden. El formato condicional se puede configurar según un valor del registro.',
     'fr-fr':
-      "Le « Format de table » contrôle l'affichage des données d'une table spécifique dans les résultats de requête, les exportations et les zones de liste déroulante. Il détermine les champs à afficher et leur ordre. La mise en forme conditionnelle peut être configurée en fonction d'une valeur de l'enregistrement.",
+      "Le « Format de table » contrôle l'affichage des données d'une table spécifique dans les résultats de requête, les exportations et les listes déroulantes. Il détermine les champs à afficher et leur ordre. La mise en forme conditionnelle peut être configurée en fonction d'une valeur de l'enregistrement.",
     'ru-ru':
       '«Формат таблицы» определяет, как данные из определенной таблицы отображаются в результатах запроса, экспорте и полях со списком запроса. Он определяет поля для отображения и их порядок. Условное форматирование можно настроить на основе значения в записи.',
     'uk-ua':
       '«Формат таблиці» керує тим, як дані з певної таблиці відображаються в результатах запитів, експорті та комбінованих полях запитів. Він визначає поля для відображення та їх порядок. Умовне форматування можна налаштувати на основі значення в записі.',
     'pt-br':
-      'O "Formato da Tabela" controla como os dados de uma tabela específica são exibidos nos resultados da consulta, exportações e caixas de combinação da consulta. Ele determina os campos a serem exibidos e sua ordem. A formatação condicional pode ser configurada com base em um valor no registro.',
+      'O “Formato da Tabela” controla como os dados de uma tabela específica são exibidos nos resultados da consulta, exportações e caixas de combinação da consulta. Ele determina os campos a serem exibidos e sua ordem. A formatação condicional pode ser configurada com base em um valor no registro.',
   },
   aggregator: {
     'en-us': 'Table Aggregation',
     'de-ch': 'Tabellenaggregation',
     'es-es': 'Agregación de tablas',
-    'fr-fr': 'Agrégation de tables',
+    'fr-fr': 'Agrégation de table',
     'ru-ru': 'Агрегация таблиц',
     'uk-ua': 'Агрегація таблиць',
     'pt-br': 'Agregação de tabelas',
@@ -218,7 +227,7 @@ export const resourcesText = createDictionary({
     'en-us':
       'The “Table Aggregation” controls how multiple table records are consolidated together into a single text string. The table format, separator, suffix, sort field, and record preview limit are customizable. It can be displayed in query results and table formats.',
     'de-ch':
-      'Die „Tabellenaggregation“ steuert, wie mehrere Tabellendatensätze zu einem einzigen Text zusammengefasst werden. Tabellenformat, Trennzeichen, Suffix, Sortierfeld und Datensatzvorschaulimit sind anpassbar. Die Anzeige kann in Abfrageergebnissen und Tabellenformaten erfolgen.',
+      'Die „Tabellenaggregation“ steuert, wie mehrere Tabellendatensätze zu einer einzigen Textzeichenfolge zusammengefasst werden. Tabellenformat, Trennzeichen, Suffix, Sortierfeld und Datensatzvorschaulimit sind anpassbar. Die Anzeige kann in Abfrageergebnissen und Tabellenformaten erfolgen.',
     'es-es':
       'La "Agregación de Tablas" controla cómo se consolidan varios registros de tabla en una sola cadena de texto. El formato de tabla, el separador, el sufijo, el campo de ordenación y el límite de vista previa de registros son personalizables. Se pueden mostrar en los resultados de consultas y en los formatos de tabla.',
     'fr-fr':
@@ -228,7 +237,7 @@ export const resourcesText = createDictionary({
     'uk-ua':
       '«Агрегація таблиць» контролює, як кілька записів таблиці об’єднуються разом в один текстовий рядок. Формат таблиці, роздільник, суфікс, поле сортування та ліміт попереднього перегляду запису можна налаштувати. Він може відображатися в результатах запитів і у форматах таблиць.',
     'pt-br':
-      'A "Agregação de Tabela" controla como vários registros de tabela são consolidados em uma única sequência de texto. O formato da tabela, o separador, o sufixo, o campo de classificação e o limite de visualização de registros são personalizáveis. A funcionalidade pode ser exibida nos resultados da consulta e nos formatos de tabela.',
+      'A "Agregação de Tabelas" controla como vários registros de tabelas são consolidados em uma única sequência de texto. O formato da tabela, o separador, o sufixo, o campo de classificação e o limite de visualização de registros são personalizáveis. Ele pode ser exibido nos resultados da consulta e nos formatos de tabela.',
   },
   formattedResource: {
     'en-us': 'Formatted Resource',
@@ -283,7 +292,7 @@ export const resourcesText = createDictionary({
     'en-us': 'Record formatter names must be unique',
     'de-ch': 'Datensatzformatierernamen müssen eindeutig sein',
     'es-es': 'Los nombres de los formateadores de registros deben ser únicos',
-    'fr-fr': "Les noms des formateurs d'enregistrements doivent être uniques",
+    'fr-fr': "Les noms des formateurs d'enregistrement doivent être uniques",
     'ru-ru': 'Имена средств форматирования записей должны быть уникальными.',
     'uk-ua': 'Імена форматування записів мають бути унікальними',
     'pt-br': 'Os nomes dos formatadores de registro devem ser exclusivos',
@@ -337,7 +346,7 @@ export const resourcesText = createDictionary({
     'en-us': 'Other Resource',
     'ru-ru': 'Другой ресурс',
     'es-es': 'Otros recursos',
-    'fr-fr': 'Autres ressources',
+    'fr-fr': 'Autre ressource',
     'uk-ua': 'Інший ресурс',
     'de-ch': 'Andere Ressource',
     'pt-br': 'Outros recursos',
@@ -409,7 +418,7 @@ export const resourcesText = createDictionary({
     'en-us': 'Select Resource Type',
     'ru-ru': 'Выберите тип ресурса',
     'es-es': 'Seleccionar el tipo de recurso',
-    'fr-fr': 'Sélectionnez le type de ressource',
+    'fr-fr': 'Sélectionner le type de ressource',
     'uk-ua': 'Виберіть тип ресурсу',
     'de-ch': 'Ressourcentyp auswählen',
     'pt-br': 'Selecione o tipo de recurso',
@@ -520,7 +529,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Avance',
     'fr-fr': 'Aperçu',
     'uk-ua': 'Попередній перегляд',
-    'pt-br': 'Visualização',
+    'pt-br': 'Pré-visualização',
   },
   previewExplainer: {
     'en-us': 'Search your collection records to preview the record formatter',
@@ -529,7 +538,7 @@ export const resourcesText = createDictionary({
     'es-es':
       'Busque en sus registros de colección para obtener una vista previa del formateador de registros',
     'fr-fr':
-      "Recherchez vos enregistrements de collection pour prévisualiser le formateur d'enregistrements",
+      "Recherchez dans vos enregistrements de collection pour prévisualiser le formateur d'enregistrements",
     'ru-ru':
       'Выполните поиск в записях своей коллекции, чтобы просмотреть средство форматирования записей.',
     'uk-ua':
@@ -626,7 +635,7 @@ export const resourcesText = createDictionary({
     'es-es':
       'Este formato se utilizará solo si el valor del campo de condición es igual a esta condición y no es nulo.',
     'fr-fr':
-      "Ce format ne sera utilisé que si la valeur du champ de condition est égale à cette condition et n'est pas nulle.",
+      "Ce format sera utilisé uniquement si la valeur du champ de condition est égale à cette condition et n'est pas nulle.",
     'ru-ru':
       'Этот формат будет использоваться только в том случае, если значение поля условия равно этому условию и не равно нулю.',
     'uk-ua':
@@ -764,7 +773,7 @@ export const resourcesText = createDictionary({
       'Sie müssen dieses Formular speichern, bevor Sie ein anderes bearbeiten',
     'es-es': 'Debes guardar este formulario antes de editar otro.',
     'fr-fr':
-      "Vous devez enregistrer ce formulaire avant d'en modifier un autre",
+      "Vous devez enregistrer ce formulaire avant d'en modifier un autre.",
     'ru-ru':
       'Вам необходимо сохранить эту форму, прежде чем редактировать другую.',
     'uk-ua': 'Вам потрібно зберегти цю форму, перш ніж редагувати іншу',
@@ -777,7 +786,7 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Format conditionnel',
     'ru-ru': 'Условный формат',
     'uk-ua': 'Умовний формат',
-    'pt-br': 'Formato Condicional',
+    'pt-br': 'Formato condicional',
   },
   customizeFieldFormatters: {
     'en-us': 'Customize Field Formats',
@@ -839,18 +848,8 @@ export const resourcesText = createDictionary({
     'es-es': 'No se puede agregar un COG a sí mismo.',
     'fr-fr': 'Un COG ne peut pas être ajouté à lui-même.',
     'pt-br': 'Um COG não pode ser adicionado a si mesmo.',
-    'ru-ru': 'COG не может быть добавлен сам к себе.',
+    'ru-ru': 'COG не может быть сложен сам с собой.',
     'uk-ua': 'COG не можна додати до самого себе.',
-  },
-  coHasParent: {
-    'en-us': 'A CO with a parent cannot be added to a COG.',
-    'de-ch':
-      'Eine CO mit einem übergeordneten Element kann nicht zu einer COG hinzugefügt werden.',
-    'es-es': 'No es posible agregar un CO con un padre a un COG.',
-    'fr-fr': 'Un CO avec un parent ne peut pas être ajouté à un COG.',
-    'pt-br': 'Um CO com um pai não pode ser adicionado a um COG.',
-    'ru-ru': 'CO с родительским элементом не может быть добавлен в COG.',
-    'uk-ua': 'CO з батьківським елементом не можна додати до COG.',
   },
   primaryCogChildRequired: {
     'en-us':
@@ -862,7 +861,7 @@ export const resourcesText = createDictionary({
     'fr-fr':
       "Un groupe d'objets de collection consolidé doit avoir un objet de collection enfant principal",
     'pt-br':
-      'Um Grupo de Objetos de Coleção Consolidada deve ter um filho de Objeto de Coleção primário',
+      'Um Grupo de Objetos de Coleção Consolidada deve ter um Objeto de Coleção primário filho',
     'ru-ru':
       'Группа объектов консолидированной коллекции должна иметь основной дочерний объект коллекции.',
     'uk-ua':
@@ -870,7 +869,7 @@ export const resourcesText = createDictionary({
   },
   deletePrimaryRecord: {
     'en-us': 'Primary record CO cannot be deleted.',
-    'de-ch': 'Der Primärdatensatz CO kann nicht gelöscht werden.',
+    'de-ch': 'Primärdatensatz CO kann nicht gelöscht werden.',
     'es-es': 'El registro primario CO no se puede eliminar.',
     'fr-fr': "L'enregistrement principal CO ne peut pas être supprimé.",
     'pt-br': 'O registro primário CO não pode ser excluído.',
@@ -880,9 +879,9 @@ export const resourcesText = createDictionary({
   deleteLoanedPrep: {
     'en-us': 'A loaned preparation cannot be deleted',
     'de-ch': 'Eine ausgeliehene Zubereitung kann nicht gelöscht werden',
-    'es-es': 'No se puede eliminar una preparación prestada',
+    'es-es': 'Una preparación prestada no se puede eliminar',
     'fr-fr': 'Une préparation prêtée ne peut pas être supprimée',
-    'pt-br': 'Uma preparação emprestada não pode ser apagada',
+    'pt-br': 'Uma preparação emprestada não pode ser excluída',
     'ru-ru': 'Заимствованный препарат не может быть удален',
     'uk-ua': 'Позичений препарат не можна видалити',
   },
@@ -897,8 +896,8 @@ export const resourcesText = createDictionary({
   },
   deleteDisposedPrep: {
     'en-us': 'A disposed preparation cannot be deleted',
-    'de-ch': 'Eine verworfene Zubereitung kann nicht gelöscht werden',
-    'es-es': 'No se puede eliminar una preparación desechada',
+    'de-ch': 'Eine entsorgte Zubereitung kann nicht gelöscht werden',
+    'es-es': 'Una preparación desechada no se puede eliminar',
     'fr-fr': 'Une préparation éliminée ne peut pas être supprimée',
     'pt-br': 'Uma preparação descartada não pode ser excluída',
     'ru-ru': 'Утилизированный препарат не может быть удален',
@@ -910,7 +909,7 @@ export const resourcesText = createDictionary({
     'es-es': 'No se puede eliminar una preparación intercambiada',
     'fr-fr': 'Une préparation échangée ne peut pas être supprimée',
     'pt-br': 'Uma preparação trocada não pode ser excluída',
-    'ru-ru': 'Замененный препарат не может быть удален',
+    'ru-ru': 'Замененный препарат не может быть удален.',
     'uk-ua': 'Обмінений препарат не можна видалити',
   },
   deleteExchangeInPrep: {
@@ -939,6 +938,14 @@ export const resourcesText = createDictionary({
     'uk-ua':
       "Визначення не належить до дерева таксонів, пов'язаного з типом об'єкта колекції",
   },
+  invalidNameTaxon: {
+    'en-us':
+      '{taxonName: string} does not belong to the {taxonTableLabel: string} tree associated with {typeName: string}',
+  },
+  catalogNumberAlreadyUsed: {
+    'en-us':
+      '{catalogNumberFieldName: string} {catalogNumber: string} is already in use for another Component or Collection Object in this collection.',
+  },
   preparationUsedInLoan: {
     'en-us': 'The preparation is used in a loan.',
     'de-ch': 'Das Präparat dient der Kreditvergabe.',
@@ -954,7 +961,34 @@ export const resourcesText = createDictionary({
     'es-es': 'El recuento de preparación no puede ser negativo',
     'fr-fr': 'Le nombre de préparations ne peut pas être négatif',
     'pt-br': 'A contagem de preparação não pode ser negativa',
-    'ru-ru': 'Количество приготовлений не может быть отрицательным',
+    'ru-ru': 'Количество приготовлений не может быть отрицательным.',
     'uk-ua': "Кількість підготовок не може бути від'ємним значенням",
+  },
+  configureField: {
+    'en-us': 'Configure field',
+    'de-ch': 'Feld konfigurieren',
+    'es-es': 'Configurar campo',
+    'fr-fr': 'Configurer le champ',
+    'pt-br': 'Configurar campo',
+    'ru-ru': 'Настроить поле',
+    'uk-ua': 'Налаштувати поле',
+  },
+  trimZeros: {
+    'en-us': 'Trim Leading Zeros',
+    'de-ch': 'Führende Nullen entfernen',
+    'es-es': 'Recortar ceros iniciales',
+    'fr-fr': 'Couper les zéros non significatifs',
+    'pt-br': 'Aparar zeros à esquerda',
+    'ru-ru': 'Удалить начальные нули',
+    'uk-ua': 'Видалити початкові нулі',
+  },
+  trimZerosDescription: {
+    'en-us': 'Remove leading zeros from numeric values.',
+    'de-ch': 'Entfernen Sie führende Nullen aus numerischen Werten.',
+    'es-es': 'Eliminar los ceros iniciales de los valores numéricos.',
+    'fr-fr': 'Supprimez les zéros non significatifs des valeurs numériques.',
+    'pt-br': 'Remova os zeros à esquerda dos valores numéricos.',
+    'ru-ru': 'Удалить начальные нули из числовых значений.',
+    'uk-ua': 'Видаліть початкові нулі з числових значень.',
   },
 } as const);

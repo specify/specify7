@@ -145,6 +145,7 @@ export function Dialog({
   forceToTop = false,
   // eslint-disable-next-line react/no-object-type-as-default-prop
   forwardRef: { content: contentRef, container: externalContainerRef } = {},
+  defaultSize,
 }: {
   readonly isOpen?: boolean;
   readonly header: LocalizedString;
@@ -183,6 +184,7 @@ export function Dialog({
     readonly content?: React.Ref<HTMLDivElement>;
     readonly container?: React.RefCallback<HTMLDivElement>;
   };
+  readonly defaultSize?: { readonly width: number; readonly height: number };
 }): JSX.Element {
   const id = useId('modal');
 
@@ -284,6 +286,7 @@ export function Dialog({
     container,
     isOpen,
     dimensionsKey,
+    defaultSize,
     handleResize
   );
 
@@ -564,6 +567,7 @@ function useDialogSize(
   container: HTMLElement | null,
   isOpen: boolean,
   dimensionsKey: string | undefined,
+  defaultSize: { readonly width: number; readonly height: number } | undefined,
   handleResize: ((container: HTMLElement) => void) | undefined
 ): { readonly width: number; readonly height: number } | undefined {
   const [rememberSize] = userPreferences.use(
@@ -587,7 +591,7 @@ function useDialogSize(
           width: sizes[0],
           height: sizes[1],
         }
-      : undefined;
+      : (defaultSize ?? undefined);
   }, [sizeKey]);
 
   // Resize listener

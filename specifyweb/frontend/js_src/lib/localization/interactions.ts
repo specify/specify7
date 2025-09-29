@@ -33,7 +33,7 @@ export const interactionsText = createDictionary({
     'es-es': '{table:string} Regresar',
     'fr-fr': '{table:string} Retour',
     'uk-ua': '{table:string} Повернення',
-    'de-ch': '{table:string} Rückkehr',
+    'de-ch': '{table:string} Zurück',
     'pt-br': '{table:string} Retornar',
   },
   preparationsNotFoundFor: {
@@ -42,7 +42,7 @@ export const interactionsText = createDictionary({
     'es-es': 'No se encontraron preparaciones para los siguientes registros:',
     'fr-fr':
       "Aucune préparation n'a été trouvée pour les enregistrements suivants :",
-    'ru-ru': 'Не обнаружено никаких препаратов для следующих записей:',
+    'ru-ru': 'Препаратов для следующих записей не обнаружено:',
     'uk-ua': 'Для наступних записів не знайдено жодних підготовчих матеріалів:',
     'pt-br': 'Não foram encontradas preparações para os seguintes registros:',
   },
@@ -100,7 +100,7 @@ export const interactionsText = createDictionary({
   withoutPreparations: {
     'en-us': 'Without preparations',
     'ru-ru': 'Без подготовки',
-    'es-es': 'Sin preparativos',
+    'es-es': 'Sin preparaciones',
     'fr-fr': 'Sans préparations',
     'uk-ua': 'Без підготовки',
     'de-ch': 'Ohne Präparate',
@@ -109,7 +109,7 @@ export const interactionsText = createDictionary({
   continueWithoutPreparations: {
     'en-us': 'Continue without preparations',
     'de-ch': 'Ohne Vorbereitungen weitermachen',
-    'es-es': 'Continuar sin preparativos',
+    'es-es': 'Continuar sin preparaciones',
     'fr-fr': 'Continuer sans préparation',
     'ru-ru': 'Продолжить без подготовки',
     'uk-ua': 'Продовжуйте без підготовки',
@@ -127,7 +127,7 @@ export const interactionsText = createDictionary({
   preparations: {
     'en-us': 'Preparations',
     'ru-ru': 'Препараты',
-    'es-es': 'Preparativos',
+    'es-es': 'Preparaciones',
     'fr-fr': 'Preparations',
     'uk-ua': 'Підготовка',
     'de-ch': 'Präparate',
@@ -135,8 +135,8 @@ export const interactionsText = createDictionary({
   },
   preparationsCanNotBeReturned: {
     'en-us': 'Preparations cannot be returned in this context.',
-    'ru-ru': 'В этом контексте препараты не подлежат возврату.',
-    'es-es': 'En este contexto no es posible retomar los preparativos.',
+    'ru-ru': 'Препараты в данном случае возврату не подлежат.',
+    'es-es': 'En este contexto no es posible retomar las preparaciones',
     'fr-fr': 'Les preparations ne peuvent être renvoyées dans ce contexte.',
     'uk-ua': 'У цьому контексті препарати не можна повернути.',
     'de-ch': 'Präparate können in diesem Kontext nicht zurückgegeben werden.',
@@ -144,8 +144,9 @@ export const interactionsText = createDictionary({
   },
   noUnresolvedPreparations: {
     'en-us': 'There are no unresolved preparations for this loan.',
-    'ru-ru': 'По данному кредиту нет нерешенных вопросов подготовки.',
-    'es-es': 'No existen preparativos pendientes para este préstamo.',
+    'ru-ru':
+      'Никаких нерешенных подготовительных вопросов по данному кредиту нет.',
+    'es-es': 'No existen preparaciones pendientes para este préstamo.',
     'fr-fr': 'Il n’y a pas de preparations non retournées pour ce prêt.',
     'uk-ua':
       'Немає жодних невирішених питань щодо підготовки до цього кредиту.',
@@ -155,7 +156,7 @@ export const interactionsText = createDictionary({
   unresolved: {
     'en-us': 'Unresolved',
     'ru-ru': 'Нерешенный',
-    'es-es': 'Irresoluto',
+    'es-es': 'Sin resolver',
     'fr-fr': 'Non résolu',
     'uk-ua': 'Невирішено',
     'de-ch': 'Ungelöst',
@@ -259,7 +260,7 @@ export const interactionsText = createDictionary({
     'en-us': 'Resolved {loanTable:string} records',
     'es-es': 'Registros {loanTable:string} resueltos',
     'fr-fr': 'Enregistrements résolus {loanTable:string}',
-    'ru-ru': 'Решено {loanTable:string} записей',
+    'ru-ru': 'Решенные {loanTable:string} записи',
     'uk-ua': 'Вирішено записів {loanTable:string}',
     'de-ch': 'Aufgelöste {loanTable:string}-Datensätze',
     'pt-br': 'Registros resolvidos {loanTable:string}',
@@ -271,7 +272,7 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Ouvrir les enregistrements {loanTable:string}',
     'ru-ru': 'Открыть {loanTable:string} записи',
     'uk-ua': 'Відкрити записи {loanTable:string}',
-    'de-ch': 'Öffnen Sie {loanTable:string}-Datensätze',
+    'de-ch': '{loanTable:string}-Datensätze öffnen',
     'pt-br': 'Abrir registros {loanTable:string}',
   },
   gifts: {
