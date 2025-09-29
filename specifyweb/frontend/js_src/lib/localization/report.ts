@@ -142,11 +142,11 @@ export const reportsText = createDictionary({
       'No se puede encontrar un registro SpReport para este recurso de aplicación',
     'fr-fr':
       "Impossible de trouver un enregistrement SpReport pour cette ressource d'application",
-    'uk-ua':
-      'Не вдалося знайти запис таблиці SpReport для цього ресурсу програми',
-    'de-ch': 'Es kann kein SpReport für diese App-Ressource gefunden werden',
-    'pt-br':
-      'Não é possível encontrar um registro SpReport para este recurso de aplicativo',
+    "uk-ua":
+      "Не вдалося знайти запис таблиці SpReport для цього ресурсу програми",
+    "de-ch": "Es kann kein SpReport für diese App-Ressource gefunden werden",
+    "pt-br":
+      "Não foi possível encontrar um registro SpReport para este recurso de aplicativo",
   },
   generateLabel: {
     'en-us': 'Generate label',

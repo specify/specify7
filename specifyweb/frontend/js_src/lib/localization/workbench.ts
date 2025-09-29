@@ -19,14 +19,14 @@ export const wbText = createDictionary({
     'pt-br': 'Bancada de trabalho',
   },
   uploadPlan: {
-    'en-us': 'Upload Plan',
-    'de-ch': 'Upload-Plan',
-    'es-es':
-      'Tenga en cuenta que la validación en vivo es una función experimental y no sustituye a la validación regular.',
-    'fr-fr': 'Plan de téléchargement',
-    'ru-ru': 'План загрузки',
-    'uk-ua': 'План завантаження',
-    'pt-br': 'Plano de Upload',
+    "en-us": "Upload Plan",
+    "de-ch": "Upload-Plan",
+    "es-es":
+      "Tenga en cuenta que la validación en vivo es una función experimental y no sustituye a la validación regular.",
+    "fr-fr": "Plan de téléchargement",
+    "ru-ru": "План загрузки",
+    "uk-ua": "План завантаження",
+    "pt-br": "Plano de upload",
   },
   rollback: {
     'en-us': 'Roll Back',
@@ -74,13 +74,13 @@ export const wbText = createDictionary({
     'pt-br': 'Revertendo',
   },
   uploading: {
-    'en-us': 'Uploading',
-    'ru-ru': 'Загрузка',
-    'es-es': 'Cargando',
-    'fr-fr': 'Téléchargement',
-    'uk-ua': 'Завантаження',
-    'de-ch': 'Hochladen',
-    'pt-br': 'Enviando',
+    "en-us": "Uploading",
+    "ru-ru": "Загрузка",
+    "es-es": "Cargando",
+    "fr-fr": "Téléchargement",
+    "uk-ua": "Завантаження",
+    "de-ch": "Hochladen",
+    "pt-br": "Carregando",
   },
   validating: {
     'en-us': 'Validating',
@@ -216,13 +216,13 @@ export const wbText = createDictionary({
     'pt-br': 'Resultados da pesquisa',
   },
   clickToToggle: {
-    'en-us': 'Click to toggle visibility',
-    'ru-ru': 'Нажмите, чтобы переключить видимость',
-    'es-es': 'Pinchar para alternar visibilidad',
-    'fr-fr': 'Cliquez pour basculer la visibilité',
-    'uk-ua': 'Натисніть, щоб увімкнути видимість',
-    'de-ch': 'Klicken Sie hier, um die Sichtbarkeit umzuschalten',
-    'pt-br': 'Clique para alternar a visibilidade',
+    "en-us": "Click to toggle visibility",
+    "ru-ru": "Нажмите, чтобы переключить видимость",
+    "es-es": "Pinchar para alternar visibilidad",
+    "fr-fr": "Cliquez pour basculer la visibilité",
+    "uk-ua": "Натисніть, щоб увімкнути видимість",
+    "de-ch": "Klicken Sie, um die Sichtbarkeit umzuschalten",
+    "pt-br": "Clique para alternar a visibilidade",
   },
   configureSearchReplace: {
     'en-us': 'Configure Search & Replace',
@@ -287,12 +287,12 @@ export const wbText = createDictionary({
       'Ninguno de los registros coincidentes existe actualmente en la base de datos. Esto puede suceder si se eliminaron todos los registros coincidentes desde que se produjo el proceso de validación, o si todas las coincidencias fueron ambiguas con respecto a otros registros en este conjunto de datos. En el último caso, deberá agregar campos y valores al conjunto de datos para resolver la ambigüedad.',
     'fr-fr':
       "Aucun des enregistrements correspondants n'existe actuellement dans la base de données. Cela peut se produire si tous les enregistrements correspondants ont été supprimés depuis le processus de validation, ou si toutes les correspondances étaient ambiguës par rapport aux autres enregistrements de cet ensemble de données. Dans ce dernier cas, vous devrez ajouter des champs et des valeurs à l'ensemble de données pour lever l'ambiguïté.",
-    'uk-ua':
-      'Жоден із відповідних записів наразі не існує в базі даних. Це може статися, якщо всі відповідні записи було видалено після процесу перевірки або якщо всі збіги були неоднозначними щодо інших записів у цьому наборі даних. В останньому випадку вам потрібно буде додати поля та значення до набору даних, щоб усунути неоднозначність.',
-    'de-ch':
-      'Keiner der übereinstimmenden Datensätze ist derzeit in der Datenbank vorhanden. Dies kann passieren, wenn alle übereinstimmenden Datensätze seit der Validierung gelöscht wurden oder wenn alle Übereinstimmungen im Vergleich zu anderen Datensätzen in diesem Datensatz mehrdeutig waren. In diesem Fall müssen Sie dem Datensatz Felder und Werte hinzufügen, um die Mehrdeutigkeit zu beheben.',
-    'pt-br':
-      'Nenhum dos registros correspondentes existe atualmente no banco de dados. Isso pode ocorrer se todos os registros correspondentes foram excluídos desde a ocorrência do processo de validação ou se todas as correspondências forem ambíguas em relação a outros registros neste conjunto de dados. Neste último caso, você precisará adicionar campos e valores ao conjunto de dados para resolver a ambiguidade.',
+    "uk-ua":
+      "Жоден із відповідних записів наразі не існує в базі даних. Це може статися, якщо всі відповідні записи було видалено після процесу перевірки або якщо всі збіги були неоднозначними щодо інших записів у цьому наборі даних. В останньому випадку вам потрібно буде додати поля та значення до набору даних, щоб усунути неоднозначність.",
+    "de-ch":
+      "Keiner der übereinstimmenden Datensätze ist derzeit in der Datenbank vorhanden. Dies kann passieren, wenn alle übereinstimmenden Datensätze seit der Validierung gelöscht wurden oder wenn alle Übereinstimmungen im Vergleich zu anderen Datensätzen in diesem Datensatz mehrdeutig waren. In diesem Fall müssen Sie dem Datensatz Felder und Werte hinzufügen, um die Mehrdeutigkeit zu beheben.",
+    "pt-br":
+      "Nenhum dos registros correspondentes existe atualmente no banco de dados. Isso pode ocorrer se todos os registros correspondentes foram excluídos desde o início do processo de validação ou se todas as correspondências eram ambíguas em relação a outros registros neste conjunto de dados. Neste último caso, você precisará adicionar campos e valores ao conjunto de dados para resolver a ambiguidade.",
   },
   disambiguateMatches: {
     'en-us': 'Disambiguate Multiple Record Matches',
@@ -646,13 +646,13 @@ export const wbText = createDictionary({
     'pt-br': 'Validação do conjunto de dados cancelada.',
   },
   rollbackCanceled: {
-    'en-us': 'Rollback Cancelled',
-    'ru-ru': 'Загрузка отменена',
-    'es-es': 'Reversión cancelada',
-    'fr-fr': 'Restauration annulée',
-    'uk-ua': 'Відкат скасовано',
-    'de-ch': 'Rollback abgebrochen',
-    'pt-br': 'Reversão cancelada',
+    "en-us": "Rollback Cancelled",
+    "ru-ru": "Загрузка отменена",
+    "es-es": "Reversión cancelada",
+    "fr-fr": "Restauration annulée",
+    "uk-ua": "Відкат скасовано",
+    "de-ch": "Rollback abgebrochen",
+    "pt-br": "Reverter cancelado",
   },
   rollbackCanceledDescription: {
     'en-us': 'Data Set Rollback cancelled.',
@@ -673,13 +673,13 @@ export const wbText = createDictionary({
     'pt-br': 'Upload cancelado',
   },
   uploadCanceledDescription: {
-    'en-us': 'Data Set Upload cancelled.',
-    'ru-ru': 'Загрузка набора данных отменена.',
-    'es-es': 'Carga de conjunto de datos cancelada.',
-    'fr-fr': "Téléchargement de l'ensemble de données annulé.",
-    'uk-ua': 'Завантаження набору даних скасовано.',
-    'de-ch': 'Datensatz-Upload abgebrochen.',
-    'pt-br': 'Upload do conjunto de dados cancelado.',
+    "en-us": "Data Set Upload cancelled.",
+    "ru-ru": "Загрузка набора данных отменена.",
+    "es-es": "Carga de conjunto de datos cancelada.",
+    "fr-fr": "Téléchargement de l'ensemble de données annulé.",
+    "uk-ua": "Завантаження набору даних скасовано.",
+    "de-ch": "Der Upload des Datensatzes wurde abgebrochen.",
+    "pt-br": "Upload do conjunto de dados cancelado.",
   },
   coordinateConverter: {
     'en-us': 'Geocoordinate Format',
@@ -738,14 +738,14 @@ export const wbText = createDictionary({
       'Um Plano de Upload precisa ser definido antes que este Conjunto de Dados possa ser Validado',
   },
   unavailableWhileEditing: {
-    'en-us': 'This action requires all changes to be saved',
-    'ru-ru': 'Это действие требует сохранения всех изменений',
-    'es-es': 'Esta acción requiere que se guarden todos los cambios',
-    'fr-fr':
-      'Cette action nécessite que toutes les modifications soient enregistrées',
-    'uk-ua': 'Ця дія вимагає збереження всіх змін',
-    'de-ch': 'Diese Aktion erfordert das Speichern aller Änderungen',
-    'pt-br': 'Esta ação requer que todas as alterações sejam salvas',
+    "en-us": "This action requires all changes to be saved",
+    "ru-ru": "Это действие требует сохранения всех изменений",
+    "es-es": "Esta acción requiere que se guarden todos los cambios",
+    "fr-fr":
+      "Cette action nécessite que toutes les modifications soient enregistrées",
+    "uk-ua": "Ця дія вимагає збереження всіх змін",
+    "de-ch": "Für diese Aktion müssen alle Änderungen gespeichert werden",
+    "pt-br": "Esta ação requer que todas as alterações sejam salvas",
   },
   uploadUnavailableWhileHasErrors: {
     'en-us': 'Upload is unavailable while some cells have validation errors',
@@ -781,11 +781,11 @@ export const wbText = createDictionary({
     'es-es': 'Acción no disponible durante la Comprobación de Datos',
     'fr-fr':
       "Cette action n'est pas disponible lorsque la vérification des données est en cours",
-    'uk-ua': 'Ця дія недоступна, поки триває перевірка даних',
-    'de-ch':
-      'Diese Aktion ist während der laufenden Datenprüfung nicht verfügbar.',
-    'pt-br':
-      'Esta ação não estará disponível enquanto a verificação de dados estiver em andamento.',
+    "uk-ua": "Ця дія недоступна, поки триває перевірка даних",
+    "de-ch":
+      "Diese Aktion ist während der laufenden Datenprüfung nicht verfügbar.",
+    "pt-br":
+      "Esta ação não estará disponível enquanto a verificação de dados estiver em andamento",
   },
   unavailableWithoutLocality: {
     'en-us': 'This tool requires locality columns to be mapped',
@@ -856,13 +856,13 @@ export const wbText = createDictionary({
     'pt-br': 'Opções de navegação',
   },
   cursorPriority: {
-    'en-us': 'Cursor Priority',
-    'ru-ru': 'Приоритет курсора',
-    'es-es': 'Prioridad del cursor',
-    'fr-fr': 'Priorité du curseur',
-    'uk-ua': 'Пріоритет курсору',
-    'de-ch': 'Cursorpriorität',
-    'pt-br': 'Prioridade do cursor',
+    "en-us": "Cursor Priority",
+    "ru-ru": "Приоритет курсора",
+    "es-es": "Prioridad del cursor",
+    "fr-fr": "Priorité du curseur",
+    "uk-ua": "Пріоритет курсору",
+    "de-ch": "Cursorpriorität",
+    "pt-br": "Prioridade do Cursor",
   },
   columnFirst: {
     'en-us': 'Column first',
@@ -1417,13 +1417,13 @@ export const wbText = createDictionary({
     comment: `
       Default name of the record that would be created based on upload results
     `,
-    'en-us': 'WB upload of "{dataSet:string}"',
-    'ru-ru': 'WB загрузка "{dataSet:string}"',
-    'es-es': 'Carga de WB de "{dataSet:string}"',
-    'fr-fr': 'Téléchargement WB de "{dataSet:string}"',
-    'uk-ua': 'WB завантаження "{dataSet:string}"',
-    'de-ch': 'WB-Upload von „{dataSet:string}“',
-    'pt-br': 'Envio do WB de "{dataSet:string}"',
+    "en-us": 'WB upload of "{dataSet:string}"',
+    "ru-ru": 'WB загрузка "{dataSet:string}"',
+    "es-es": 'Carga de WB de "{dataSet:string}"',
+    "fr-fr": 'Téléchargement WB de "{dataSet:string}"',
+    "uk-ua": 'WB завантаження "{dataSet:string}"',
+    "de-ch": "WB-Upload von „{dataSet:string}“",
+    "pt-br": 'Envio de "{dataSet:string}" pela WB',
   },
   ambiguousTaxaChild: {
     'en-us': '{node:string} {author:string} (in {parent:string})',
@@ -1471,22 +1471,22 @@ export const wbText = createDictionary({
     'uk-ua': 'Оновлені комірки',
   },
   deletedCells: {
-    'en-us': 'Deleted Cells',
-    'de-ch': 'Gelöschte Zellen',
-    'es-es': 'Células eliminadas',
-    'fr-fr': 'Cellules supprimées',
-    'pt-br': 'Células Excluídas',
-    'ru-ru': 'Удаленные ячейки',
-    'uk-ua': 'Видалені клітинки',
+    "en-us": "Deleted Cells",
+    "de-ch": "Gelöschte Zellen",
+    "es-es": "Células eliminadas",
+    "fr-fr": "Cellules supprimées",
+    "pt-br": "Células excluídas",
+    "ru-ru": "Удаленные ячейки",
+    "uk-ua": "Видалені клітинки",
   },
   affectedResults: {
-    'en-us': 'Records affected',
-    'de-ch': 'Betroffene Datensätze',
-    'es-es': 'Registros afectados',
-    'fr-fr': 'Dossiers concernés',
-    'pt-br': 'Registros afetados',
-    'ru-ru': 'Записи, затронутые',
-    'uk-ua': 'Зафіксовані записи',
+    "en-us": "Records affected",
+    "de-ch": "Betroffene Datensätze",
+    "es-es": "Registros afectados",
+    "fr-fr": "Enregistrements concernés",
+    "pt-br": "Registros afetados",
+    "ru-ru": "Записи, затронутые",
+    "uk-ua": "Зафіксовані записи",
   },
   potentialAffectedResults: {
     'en-us': 'Potential records affected',
@@ -1529,13 +1529,13 @@ export const wbText = createDictionary({
     'uk-ua': 'Створені записи',
   },
   recordsUpdated: {
-    'en-us': 'Records updated',
-    'de-ch': 'Datensätze aktualisiert',
-    'es-es': 'Registros actualizados',
-    'fr-fr': 'Dossiers mis à jour',
-    'pt-br': 'Registros atualizados',
-    'ru-ru': 'Записи обновлены',
-    'uk-ua': 'Записи оновлено',
+    "en-us": "Records updated",
+    "de-ch": "Datensätze aktualisiert",
+    "es-es": "Registros actualizados",
+    "fr-fr": "Mise à jour des enregistrements",
+    "pt-br": "Registros atualizados",
+    "ru-ru": "Записи обновлены",
+    "uk-ua": "Записи оновлено",
   },
   recordsDeleted: {
     'en-us': 'Records deleted (not including dependents)',
@@ -1547,15 +1547,15 @@ export const wbText = createDictionary({
     'uk-ua': 'Записи видалено (без урахування утриманців)',
   },
   recordsMatchedAndChanged: {
-    'en-us': 'Related records matched to different records',
-    'de-ch':
-      'Zugehörige Datensätze, die mit anderen Datensätzen abgeglichen wurden',
-    'es-es': 'Registros relacionados que coinciden con diferentes registros',
-    'fr-fr':
-      'Enregistrements associés correspondant à différents enregistrements',
-    'pt-br': 'Registros relacionados correspondidos a registros diferentes',
-    'ru-ru': 'Связанные записи, сопоставленные с разными записями',
-    'uk-ua': 'Пов’язані записи, що відповідають іншим записам',
+    "en-us": "Related records matched to different records",
+    "de-ch":
+      "Zugehörige Datensätze, die mit anderen Datensätzen abgeglichen wurden",
+    "es-es": "Registros relacionados coincidentes con diferentes registros",
+    "fr-fr":
+      "Enregistrements associés correspondant à différents enregistrements",
+    "pt-br": "Registros relacionados correspondidos a registros diferentes",
+    "ru-ru": "Связанные записи, сопоставленные с разными записями",
+    "uk-ua": "Пов’язані записи, що відповідають іншим записам",
   },
   matchAndChanged: {
     'en-us': 'Matched and changed cells',
