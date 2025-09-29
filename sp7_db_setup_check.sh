@@ -95,7 +95,7 @@ fi
 if [[ "$NEW_USER_CREATED" -eq 1 ]]; then
   echo "Granting privileges to new user..."
   echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$SUPER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${TARGET_USER_NAME}'@'${TARGET_USER_HOST}'; FLUSH PRIVILEGES;\""
-  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$SUPER_USER_NAME" --password="$SUPER_USER_PASSWORD" -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${TARGET_USER_NAME}'@'${TARGET_USER_HOST}'; FLUSH PRIVILEGES;"; then
+  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$SUPER_USER_NAME" --password="$SUPER_USER_PASSWORD" -e "GRANT SELECT, INSERT, UPDATE, ALTER, INDEX, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${TARGET_USER_NAME}'@'${TARGET_USER_HOST}'; FLUSH PRIVILEGES;"; then
     echo "Error: Failed to grant privileges to new user."
     exit 1
   fi
