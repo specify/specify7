@@ -13,14 +13,20 @@ import { LoadingContext } from '../Core/Contexts';
 import type { SetupProgress } from '../Login';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
 import type { FieldConfig} from "./setupResources";
-import {resources } from "./setupResources";
+import { resources } from "./setupResources";
+import { useId } from '../../hooks/useId';
 
 type ResourceFormData = Record<string, any>;
 
 const stepOrder: RA<keyof SetupProgress> = [
   'institution',
+  'storageTree',
+  'globalGeographyTree',
   'division',
   'discipline',
+  'geographyTree',
+  'schemaConfig',
+  'taxonTree',
   'collection',
   'specifyUser',
 ];
@@ -34,6 +40,7 @@ export function SetupTool({
 }: {
   readonly setupProgress: SetupProgress;
 }): JSX.Element {
+  const formRef = React.useRef<HTMLFormElement | null>(null);
   const [formData, setFormData] = React.useState<ResourceFormData>({});
   const [temporaryFormData, setTemporaryFormData] = React.useState<ResourceFormData>({}); // For front-end only.
 
@@ -105,7 +112,8 @@ export function SetupTool({
 
     const fieldName = parentName === undefined ? name : `${parentName}.${name}`
 
-    return <div className="mb-2" key={fieldName}>
+    const colSpan = (type === 'object') ? 2 : 1
+    return <div className={`mb-2 col-span-${colSpan}`} key={fieldName}>
       {type === 'boolean' ? (
         <div className="flex items-center space-x-2">
           <Label.Inline title={description}>
@@ -183,43 +191,56 @@ export function SetupTool({
             <H3 className="text-xl font-semibold mb-4" title={description}>
               {label}
             </H3>
-            {fields === undefined ? undefined : fields.map((field) => renderFormField(field, name))}
+            {fields === undefined ? undefined : renderFormFields(fields, name)}
           </div>
       ) : (
         <Label.Block title={description}>
-            {label}
-            <Input.Text
-              name={fieldName}
-              required={required}
-              value={formData[fieldName] ?? ''}
-              onValueChange={(value) => handleChange(fieldName, value)}
-            />
-          </Label.Block>
+          {label}
+          <Input.Text
+            name={fieldName}
+            required={required}
+            value={formData[fieldName] ?? ''}
+            onValueChange={(value) => handleChange(fieldName, value)}
+          />
+        </Label.Block>
       )}
     </div>;
   };
 
-  const renderFormFields = () =>
-    resources[currentStep].fields.map((field) => renderFormField(field));
+  const renderFormFields = (fields: RA<FieldConfig>, parentName?: string) => (
+    <div className="grid grid-cols-2 gap-4">
+      {fields.map((field) => renderFormField(field, parentName))}
+    </div>
+  );
+
+  const id = useId('setup-tool');
 
   return (
     <Container.FullGray className="overflow-auto w-full items-center">
+      <img
+        src="/static/img/logo.svg"
+        className="w-auto h-12 mx-auto"
+      />
       <H2 className="text-2xl mb-6">{setupToolText.specifyConfigurationSetup()}</H2>
       {currentStep < resources.length ? (
-        <Container.Center className="p-3 shadow-md max-w-sm">
-          <Form
-            className="flex-1 overflow-auto gap-2"
-            onSubmit={handleSubmit}
-          >
-            <H3 className="text-xl font-semibold mb-4">
-              {resources[currentStep].resourceName}
-            </H3>
-            {renderFormFields()}
-            <Submit.Save className="self-start">
+        <>
+          <Container.Center className="p-3 shadow-md max-w-lg">
+            <Form
+              forwardRef={formRef}
+              className="flex-1 overflow-auto gap-2"
+              onSubmit={handleSubmit}
+              id={id('form')}
+            >
+              <H3 className="text-xl font-semibold mb-4">
+                {resources[currentStep].resourceName}
+              </H3>
+              {renderFormFields(resources[currentStep].fields)}
+            </Form>
+            <Submit.Save className="self-start" form={id('form')}>
               {setupToolText.saveAndContinue()}
             </Submit.Save>
-          </Form>
-        </Container.Center>
+          </Container.Center>
+        </>
       ) : (
         <p className="mt-6 text-green-600 font-semibold">
           🎉 All resources have been created successfully!
@@ -232,14 +253,15 @@ export function SetupTool({
 // Turn 'table.field' keys to nested objects to send to the backend
 function flattenToNested(data: Record<string, any>): Record<string, any> {
   const result: Record<string, any> = {};
-  for (const [key, value] of Object.entries(data)) {
+  Object.entries(data).forEach(([key, value]) => {
     if (key.includes('.')) {
       const [prefix, field] = key.split('.', 2);
-      result[prefix] ||= {};
+      if (!result[prefix])
+        result[prefix] = {}
       result[prefix][field] = value;
     } else {
       result[key] = value;
     }
-  }
+  });
   return result;
 }

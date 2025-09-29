@@ -1,4 +1,5 @@
 import type { RA } from '../../utils/types';
+import { setupToolText } from '../../localization/setupTool';
 
 type ResourceConfig = {
   readonly resourceName: string;
@@ -21,6 +22,7 @@ export type FieldConfig = {
   };
 };
 
+// Discipline list from backend/context/app_resource.py
 const disciplineTypeOptions = [
   'fish',
   'herpetology',
@@ -32,13 +34,7 @@ const disciplineTypeOptions = [
   'insect',
   'botany',
   'invertebrate',
-  'minerals',
   'geology',
-  'anthropology',
-  /*
-   * 'vascplant',
-   * 'fungi',
-   */
 ];
 
 const catalogNumberFormats = [
@@ -50,7 +46,7 @@ const catalogNumberFormats = [
 
 export const resources: RA<ResourceConfig> = [
   {
-    resourceName: 'Institution',
+    resourceName: setupToolText.institution(),
     endpoint: '/setup_tool/institution/create/',
     fields: [
       {
@@ -126,6 +122,31 @@ export const resources: RA<ResourceConfig> = [
           'A global geography tree is shared by all disciplines. Otherwise, geography trees are managed separately within each discipline.',
         type: 'boolean',
       },
+    ],
+  },
+  {
+    resourceName: 'Storage',
+    endpoint: '/setup_tool/storage_tree/create/',
+    fields: [
+      {
+        name: 'ranks',
+        label: 'Ranks',
+        required: false,
+        type: 'object',
+        fields: [
+          { name: '0', label: 'Site', type: 'boolean' },
+          { name: '100', label: 'Building', type: 'boolean' },
+          { name: '150', label: 'Collection', type: 'boolean' },
+          { name: '200', label: 'Room', type: 'boolean' },
+          { name: '250', label: 'Aisle', type: 'boolean' },
+          { name: '300', label: 'Cabinet', type: 'boolean' },
+          { name: '350', label: 'Shelf', type: 'boolean' },
+          { name: '400', label: 'Box', type: 'boolean' },
+          { name: '450', label: 'Rack', type: 'boolean' },
+          { name: '500', label: 'Vial', type: 'boolean' },
+        ]
+      },
+      { name: 'fullNameFormat', label: 'Full Name Format', required: true },
     ],
   },
   {
