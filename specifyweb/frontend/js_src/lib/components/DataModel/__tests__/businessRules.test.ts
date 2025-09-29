@@ -627,7 +627,7 @@ describe('uniqueness rules', () => {
         {
           id: 1,
           name: 'sPadmin',
-          resource_uri: getResourceApiUrl('Specifyuser', 1),
+          resource_uri: getResourceApiUrl('SpecifyUser', 1),
         },
       ],
       meta: {
@@ -639,7 +639,7 @@ describe('uniqueness rules', () => {
   );
   overrideAjax(
     formatUrl('/api/specify/loanagent/', {
-      domainfilter: false,
+      domainfilter: 'false',
       role: 'borrower',
       agent: 1,
       loan: 1,
@@ -664,7 +664,7 @@ describe('uniqueness rules', () => {
   );
   overrideAjax(
     formatUrl('/api/specify/collectionobject/', {
-      domainfilter: false,
+      domainfilter: 'false',
       catalognumber: 'Abc',
       collection: 4,
       offset: 0,
@@ -705,14 +705,14 @@ describe('uniqueness rules', () => {
   });
 
   test('case insensitive uniqueness rule', async () => {
-    const specifyUser = new tables.Specifyuser.Resource({
+    const specifyUser = new tables.SpecifyUser.Resource({
       name: 'spadmin',
     });
 
     await specifyUser.businessRuleManager?.checkField('name');
 
     const { result } = renderHook(() =>
-      useSaveBlockers(specifyUser, tables.Specifyuser.getField('name'))
+      useSaveBlockers(specifyUser, tables.SpecifyUser.getField('name'))
     );
 
     expect(result.current[0]).toStrictEqual([
