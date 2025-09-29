@@ -1119,6 +1119,8 @@ def rewrite_coordinate_fields(row, _mapped_rows: dict[tuple[tuple[str, ...], ...
     }
 
     for join_path in join_paths:
+        if len(join_path) == 0:
+            continue
         field_name = join_path[-1]
         replacement_field = field_replacement_map.get(field_name, None)
         replace_join_path = tuple((*join_path[:-1], replacement_field))

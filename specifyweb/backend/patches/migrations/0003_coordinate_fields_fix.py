@@ -2,6 +2,8 @@
 
 from django.db import migrations
 
+from specifyweb.backend.patches.migration_utils import update_coordinates
+
 
 class Migration(migrations.Migration):
 
@@ -14,25 +16,6 @@ class Migration(migrations.Migration):
         # the accompanying text fields are not populated. In cases where the text fields are not populated,
         # it appears the records do not have coordinates. This script will populate the text fields with the
         # decimal values where the text fields are empty but the decimal values are not.
-        migrations.RunSQL(
-            """
-            UPDATE locality
-            SET Lat1text = Latitude1
-            WHERE Lat1text IS NULL AND Latitude1 IS NOT NULL;
-
-            UPDATE locality 
-            SET Long1text = Longitude1 
-            WHERE Long1text IS NULL AND Longitude1 IS NOT NULL;
-
-            UPDATE locality
-            SET Lat2text = Latitude2
-            WHERE Lat2text IS NULL AND Latitude2 IS NOT NULL;
-
-            UPDATE locality 
-            SET Long2text = Longitude2 
-            WHERE Long2text IS NULL AND Longitude2 IS NOT NULL;
-            """,
-            # This SQL statment should not be reversed, but this allows for rollback
-            reverse_sql=''
-        )
+        migrations.RunPython(update_coordinates,
+                             migrations.RunPython.noop, atomic=True),
     ]

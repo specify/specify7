@@ -49,21 +49,38 @@ export function WbToolkit({
       'exportFileDelimiter'
     );
 
-    let datasetColumns = dataset.columns;
-    // Don't export attachments column
-    const attachmentsColumnIndex = getAttachmentsColumn(dataset);
-    if (attachmentsColumnIndex !== -1) {
-      datasetColumns = dataset.columns.map((col, index) =>
-        index === attachmentsColumnIndex ? attachmentsText.attachments() : col
-      );
-    }
+    const prepareExport = (
+      dataset: Dataset
+    ): { readonly columns: RA<string>; readonly rows: RA<RA<string>> } => {
+      const defaultOrder = dataset.columns.map((_, i) => i); // Use the existing order as default
 
-    downloadDataSet(
-      dataset.name,
-      dataset.rows,
-      datasetColumns,
-      delimiter
-    ).catch(raise);
+      const order =
+        dataset.visualorder &&
+        dataset.visualorder.length === dataset.columns.length
+          ? dataset.visualorder
+          : defaultOrder; // Try to apply visual order if present, otherwise just fallback to default
+
+      let columns = order.map((colIndex) => dataset.columns[colIndex]);
+      const rows = dataset.rows.map((row) =>
+        order.map((colIndex) => row[colIndex] ?? '')
+      );
+
+      // Don't export attachments column
+      const attachmentsColumnIndex = getAttachmentsColumn(dataset);
+      if (attachmentsColumnIndex !== -1) {
+        columns = columns.map((col, i) =>
+          order[i] === attachmentsColumnIndex
+            ? attachmentsText.attachments()
+            : col
+        );
+      }
+
+      return { columns, rows };
+    };
+
+    const { columns, rows } = prepareExport(dataset);
+
+    downloadDataSet(dataset.name, rows, columns, delimiter).catch(raise);
   };
 
   const hasLocality =

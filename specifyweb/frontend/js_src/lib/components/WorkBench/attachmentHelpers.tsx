@@ -73,6 +73,9 @@ export function usesAttachments(dataset: Dataset): boolean {
   return dataset.columns.includes(ATTACHMENTS_COLUMN);
 }
 
+/**
+ * Returns the *physical* column index of the attachment JSON data.
+ */
 export function getAttachmentsColumn(dataset: Dataset): number {
   if (!usesAttachments(dataset)) {
     return -1;
