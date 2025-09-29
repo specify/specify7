@@ -4,7 +4,7 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { ajax } from '../../utils/ajax';
 import {
-  formatterToParser,
+  fieldFormatterToParser,
   getValidationAttributes,
 } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
@@ -78,7 +78,7 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
   const formatter = field.getUiFormatter(resource);
   const canAutoNumberFormatter = formatter?.canAutoIncrement() ?? false;
   const parser =
-    formatter === undefined ? undefined : formatterToParser(field, formatter);
+    formatter === undefined ? undefined : fieldFormatterToParser(field, formatter);
 
   const [carryForwardRangeEnd, setCarryForwardRangeEnd] =
     React.useState<string>('');
@@ -173,7 +173,7 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
           aria-label={formsText.bulkCarryForwardRangeStart()}
           className="!w-fit"
           isReadOnly
-          placeholder={formatter.valueOrWild()}
+          placeholder={formatter.defaultValue}
           value={resource.get('catalogNumber') ?? ''}
           width={field.datamodelDefinition.length}
         />
@@ -181,7 +181,7 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
           aria-label={formsText.bulkCarryForwardRangeEnd()}
           className="!w-fit"
           {...getValidationAttributes(parser)}
-          placeholder={formatter.valueOrWild()}
+          placeholder={formatter.defaultValue}
           value={carryForwardRangeEnd}
           onValueChange={(value): void => setCarryForwardRangeEnd(value)}
         />
@@ -225,7 +225,7 @@ function useBulkCarryForwardCount<SCHEMA extends AnySchema>(
           const clones = await Promise.all(
             Array.from({ length: carryForwardAmount }, async () => {
               const clonedResource = await resource.clone(false, true);
-              clonedResource.set(field.name, formatter.valueOrWild() as never);
+              clonedResource.set(field.name, formatter.defaultValue as never);
               return clonedResource;
             })
           );
