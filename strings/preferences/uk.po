@@ -454,6 +454,7 @@ msgstr "URL-адреса сторінки, яка буде вбудована н
 
 #: components/Preferences/CollectionDefinitions.tsx:96
 #: components/Preferences/CollectionDefinitions.tsx:115
+#: components/Preferences/CollectionDefinitions.tsx:134
 #: components/Preferences/UserDefinitions.tsx:502
 #: components/Preferences/UserDefinitions.tsx:738
 #: components/Preferences/UserDefinitions.tsx:1327
@@ -1177,3 +1178,8 @@ msgid "inheritanceCatNumberParentCOPref"
 msgstr ""
 "Увімкнути успадкування батьківського каталожного номера його порожнім "
 "дочірнім елементам."
+
+#: components/Preferences/CollectionDefinitions.tsx:137
+#. Used in: Components > Preferences > Collection Definitions
+msgid "uniqueCatNumberAcrossCompAndCo"
+msgstr ""

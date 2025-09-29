@@ -209,7 +209,7 @@ msgstr "{giftTable:string} registros"
 #. 🟥Example: Exchange In / Exchnage Out records. Used in: Components > Form Commands > Show Transactions
 #, fuzzy
 msgid "exchanges"
-msgstr "{exhangeInTable:string} / {exhangeOutTable:string} registros"
+msgstr "Registros {exhangeInTable:string} / {exhangeOutTable:string}"
 
 #: components/Interactions/PrepReturnRow.tsx:41
 #. Used in: Components > Interactions > Prep Return Row

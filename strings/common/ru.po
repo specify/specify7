@@ -198,7 +198,7 @@ msgstr "Создать"
 #: components/FormSliders/RecordSet.tsx:522
 #: components/Formatters/Element.tsx:66
 #: components/Formatters/Element.tsx:88
-#: components/Forms/BulkCarryForward.tsx:284
+#: components/Forms/BulkCarryForward.tsx:285
 #: components/Forms/DataTask.tsx:134
 #: components/Forms/DeleteButton.tsx:176
 #: components/Forms/ResourceView.tsx:224
@@ -238,7 +238,7 @@ msgstr "Создать"
 #: components/QueryBuilder/LoanReturn.tsx:156
 #: components/QueryBuilder/LoanReturn.tsx:222
 #: components/QueryBuilder/Save.tsx:66
-#: components/QueryComboBox/index.tsx:578
+#: components/QueryComboBox/index.tsx:595
 #: components/Reports/Report.tsx:51
 #: components/Reports/Report.tsx:60
 #: components/Router/RouterUtils.tsx:193
@@ -458,7 +458,7 @@ msgstr "Инструменты"
 #: components/QueryBuilder/QueryLineFilter.tsx:75
 #: components/QueryBuilder/Results.tsx:199
 #: components/QueryBuilder/Results.tsx:200
-#: components/QueryComboBox/index.tsx:416
+#: components/QueryComboBox/index.tsx:433
 #: components/SchemaConfig/Fields.tsx:62
 #: components/SchemaConfig/index.tsx:165
 #: components/SchemaConfig/index.tsx:166
@@ -508,8 +508,8 @@ msgstr "Загружено"
 #: components/QueryBuilder/Components.tsx:167
 #: components/QueryBuilder/FieldFilterTool.tsx:100
 #: components/QueryBuilder/FieldFilterTool.tsx:103
-#: components/QueryBuilder/Line.tsx:281
 #: components/QueryBuilder/Line.tsx:285
+#: components/QueryBuilder/Line.tsx:289
 #: components/SchemaConfig/UniquenessRuleRow.tsx:273
 #: components/Security/Policy.tsx:94
 #: components/Security/Policy.tsx:96

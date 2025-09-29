@@ -100,7 +100,7 @@ msgstr "el campo es obligatorio para la asignación del plan de mapeo"
 msgid "invalidTreeStructure"
 msgstr "¡Hay varios valores de marcador de posición \"Subidos\" en el árbol!"
 
-#: components/WorkBench/resultsParser.ts:290
+#: components/WorkBench/resultsParser.ts:294
 #. Used in: Components > Work Bench > Results Parser
 msgid "missingRequiredTreeParent"
 msgstr ""
@@ -265,20 +265,25 @@ msgstr "Varias definiciones de árboles en fila"
 msgid "invalidCotype"
 msgstr "Tipo no válido para el rango de árbol seleccionado"
 
-#: components/WorkBench/resultsParser.ts:306
-#: components/WorkBench/resultsParser.ts:312
+#: components/WorkBench/resultsParser.ts:290
+#. Used in: Components > Work Bench > Results Parser
+msgid "invalidComponentType"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:310
+#: components/WorkBench/resultsParser.ts:316
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "attachmentNotFound"
 msgstr "Uno o más archivos adjuntos no existen. Es posible que se hayan eliminado."
 
-#: components/WorkBench/resultsParser.ts:308
+#: components/WorkBench/resultsParser.ts:312
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "tableDoesNotSupportAttachments"
 msgstr "La tabla de destino del archivo adjunto no admite archivos adjuntos."
 
-#: components/WorkBench/resultsParser.ts:310
+#: components/WorkBench/resultsParser.ts:314
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "attachmentAlreadyLinked"

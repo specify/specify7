@@ -205,8 +205,8 @@ msgstr "Se devolvieron {tablePreparation:string} registros"
 #, fuzzy
 msgid "returnedAndSaved"
 msgstr ""
-"{count:number|formatted} {tablePreparation:string} registros han sido "
-"devueltos y guardados"
+"Se han devuelto y guardado {count:number|formatted} "
+"{tablePreparation:string} registros"
 
 #: components/FormMeta/CarryForward.tsx:381
 #: components/Interactions/LoanReturn.tsx:197
@@ -247,7 +247,7 @@ msgstr "Crear {table:string}"
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "noPreparationsWarning"
-msgstr "Ninguno de estos objetos tiene preparaciones. ¿Quieres continuar?"
+msgstr "Ninguno de estos objetos tiene preparativos. ¿Quieres continuar?"
 
 #: components/BatchEdit/MissingRanks.tsx:44
 #: components/FormSliders/AttachmentWarningDeletion.tsx:53

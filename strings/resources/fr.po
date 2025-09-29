@@ -596,21 +596,21 @@ msgstr "Valeur du champ conditionnel"
 msgid "formatPreview"
 msgstr "Aperçu du format"
 
-#: components/DataModel/businessRuleDefs.ts:388
-#: components/DataModel/businessRuleDefs.ts:406
+#: components/DataModel/businessRuleDefs.ts:540
+#: components/DataModel/businessRuleDefs.ts:558
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "currentDeterminationRequired"
 msgstr "Une détermination actuelle est requise."
 
-#: components/DataModel/businessRuleDefs.ts:272
-#: components/DataModel/businessRuleDefs.ts:291
+#: components/DataModel/businessRuleDefs.ts:320
+#: components/DataModel/businessRuleDefs.ts:339
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "cogAddedToItself"
 msgstr "Un COG ne peut pas être ajouté à lui-même."
 
-#: components/DataModel/businessRuleDefs.ts:221
+#: components/DataModel/businessRuleDefs.ts:269
 #: components/DataModel/__tests__/businessRules.test.ts:393
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #, fuzzy
@@ -619,43 +619,43 @@ msgstr ""
 "Un groupe d'objets de collection consolidé doit avoir un objet de "
 "collection enfant principal"
 
-#: components/DataModel/businessRuleDefs.ts:309
+#: components/DataModel/businessRuleDefs.ts:357
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deletePrimaryRecord"
 msgstr "L'enregistrement principal CO ne peut pas être supprimé."
 
-#: components/DataModel/businessRuleDefs.ts:645
+#: components/DataModel/businessRuleDefs.ts:797
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteLoanedPrep"
 msgstr "Une préparation prêtée ne peut pas être supprimée"
 
-#: components/DataModel/businessRuleDefs.ts:653
+#: components/DataModel/businessRuleDefs.ts:805
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteGiftedPrep"
 msgstr "Une préparation surdouée ne peut pas être supprimée"
 
-#: components/DataModel/businessRuleDefs.ts:661
+#: components/DataModel/businessRuleDefs.ts:813
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteDisposedPrep"
 msgstr "Une préparation éliminée ne peut pas être supprimée"
 
-#: components/DataModel/businessRuleDefs.ts:669
+#: components/DataModel/businessRuleDefs.ts:821
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteExchangeOutPrep"
 msgstr "Une préparation échangée ne peut pas être supprimée"
 
-#: components/DataModel/businessRuleDefs.ts:677
+#: components/DataModel/businessRuleDefs.ts:829
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteExchangeInPrep"
 msgstr "Un échange en préparation ne peut pas être supprimé"
 
-#: components/DataModel/businessRuleDefs.ts:192
+#: components/DataModel/businessRuleDefs.ts:196
 #: components/DataModel/__tests__/businessRules.test.ts:164
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #, fuzzy
@@ -664,13 +664,24 @@ msgstr ""
 "La détermination n'appartient pas à l'arbre taxonomique associé au type "
 "d'objet de collection"
 
-#: components/DataModel/businessRuleDefs.ts:620
+#: components/DataModel/businessRuleDefs.ts:408
+#. Used in: Components > Data Model > Business Rule Defs
+msgid "invalidNameTaxon"
+msgstr ""
+
+#: components/DataModel/businessRuleDefs.ts:236
+#: components/DataModel/businessRuleDefs.ts:471
+#. Used in: Components > Data Model > Business Rule Defs
+msgid "catalogNumberAlreadyUsed"
+msgstr ""
+
+#: components/DataModel/businessRuleDefs.ts:772
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "preparationUsedInLoan"
 msgstr "La préparation est utilisée dans un prêt."
 
-#: components/DataModel/businessRuleDefs.ts:613
+#: components/DataModel/businessRuleDefs.ts:765
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "preparationIsNegative"

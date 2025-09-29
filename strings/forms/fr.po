@@ -358,7 +358,7 @@ msgstr "Le champ est obligatoire."
 
 #: components/ExportFeed/Editor.tsx:399
 #: components/ExportFeed/Editor.tsx:403
-#: components/QueryComboBox/index.tsx:194
+#: components/QueryComboBox/index.tsx:192
 #: utils/parser/__tests__/definitions.test.ts:205
 #: utils/parser/__tests__/definitions.test.ts:207
 #: utils/parser/__tests__/definitions.test.ts:223
@@ -497,7 +497,7 @@ msgstr "Supprimer de {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Rien n'a été trouvé"
 
-#: components/Forms/BulkCarryForward.tsx:287
+#: components/Forms/BulkCarryForward.tsx:288
 #: components/Forms/Save.tsx:253
 #. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 msgid "carryForward"
@@ -514,7 +514,7 @@ msgstr "Afficher le bouton Reporter"
 msgid "bulkCarryForwardEnabled"
 msgstr "Afficher le nombre de reports en masse"
 
-#: components/Forms/BulkCarryForward.tsx:251
+#: components/Forms/BulkCarryForward.tsx:252
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardCount"
@@ -562,29 +562,29 @@ msgstr "Ce champ est obligatoire. Il doit être reporté"
 msgid "bulkCarryForwardRangeEnabled"
 msgstr "Afficher la plage de report en masse"
 
-#: components/Forms/BulkCarryForward.tsx:306
+#: components/Forms/BulkCarryForward.tsx:307
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeErrorDescription"
 msgstr ""
 "Impossible de reporter l'enregistrement sur la plage {field:string} "
 "spécifiée."
 
-#: components/Forms/BulkCarryForward.tsx:300
+#: components/Forms/BulkCarryForward.tsx:301
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeLimitExceeded"
 msgstr "La plage dépasse la limite d'enregistrement de {limit:number}."
 
-#: components/Forms/BulkCarryForward.tsx:292
+#: components/Forms/BulkCarryForward.tsx:293
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeExistingRecords"
 msgstr "Les numéros suivants pour {field:string} sont déjà utilisés :"
 
-#: components/Forms/BulkCarryForward.tsx:173
+#: components/Forms/BulkCarryForward.tsx:174
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeStart"
 msgstr "Début de la plage de report"
 
-#: components/Forms/BulkCarryForward.tsx:181
+#: components/Forms/BulkCarryForward.tsx:182
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeEnd"
 msgstr "Fin de la plage de report"

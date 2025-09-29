@@ -92,9 +92,7 @@ msgstr "Não foi possível encontrar o registro relacionado"
 #. Used in: Components > Attachments > Cell
 #, fuzzy
 msgid "unableToFindRelatedRecordDescription"
-msgstr ""
-"Não foi possível encontrar um registro ao qual este anexo esteja "
-"relacionado."
+msgstr "Não é possível encontrar um registro ao qual este anexo esteja relacionado."
 
 #: components/Attachments/Dialog.tsx:87
 #. Used in: Components > Attachments > Dialog
@@ -143,7 +141,7 @@ msgstr "Formatado incorretamente"
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "alreadyUploaded"
-msgstr "Já carregado"
+msgstr "Já Enviado"
 
 #: components/AttachmentsBulkImport/utils.ts:471
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -162,7 +160,7 @@ msgstr "Cancelado"
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "frontEndInterruption"
-msgstr "{action:string} estava em andamento quando a interrupção ocorreu"
+msgstr "{action:string} estava em andamento quando ocorreu a interrupção"
 
 #: components/AttachmentsBulkImport/utils.ts:473
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -218,7 +216,7 @@ msgstr ""
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "rollbackInterrupted"
-msgstr "Rollback interrompido"
+msgstr "Reversão interrompida"
 
 #: components/AttachmentsBulkImport/Import.tsx:410
 #. Used in: Components > Attachments Bulk Import > Import
@@ -226,7 +224,7 @@ msgstr "Rollback interrompido"
 msgid "rollbackInterruptedDescription"
 msgstr ""
 "A reversão estava em andamento quando ocorreu uma interrupção. Alguns "
-"arquivos podem ter sido excluídos."
+"arquivos podem ter sido excluídos"
 
 #: components/AttachmentsBulkImport/Import.tsx:227
 #. Used in: Components > Attachments Bulk Import > Import

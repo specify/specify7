@@ -100,7 +100,7 @@ msgstr "field is required by upload plan mapping"
 msgid "invalidTreeStructure"
 msgstr "There are multiple \"Uploaded\" placeholder values in the tree!"
 
-#: components/WorkBench/resultsParser.ts:290
+#: components/WorkBench/resultsParser.ts:294
 #. Used in: Components > Work Bench > Results Parser
 msgid "missingRequiredTreeParent"
 msgstr "Missing or unmapped required tree parent rank value for \"{names:string}\"."
@@ -257,18 +257,23 @@ msgstr "Multiple tree definitions in row"
 msgid "invalidCotype"
 msgstr "Invalid type for selected tree rank(s)"
 
-#: components/WorkBench/resultsParser.ts:306
-#: components/WorkBench/resultsParser.ts:312
+#: components/WorkBench/resultsParser.ts:290
+#. Used in: Components > Work Bench > Results Parser
+msgid "invalidComponentType"
+msgstr "Invalid {componentType: string} for selected tree rank(s)"
+
+#: components/WorkBench/resultsParser.ts:310
+#: components/WorkBench/resultsParser.ts:316
 #. Used in: Components > Work Bench > Results Parser
 msgid "attachmentNotFound"
 msgstr "One or more attachments do not exist. They may have been deleted."
 
-#: components/WorkBench/resultsParser.ts:308
+#: components/WorkBench/resultsParser.ts:312
 #. Used in: Components > Work Bench > Results Parser
 msgid "tableDoesNotSupportAttachments"
 msgstr "The attachment's destination table does not support attachments."
 
-#: components/WorkBench/resultsParser.ts:310
+#: components/WorkBench/resultsParser.ts:314
 #. Used in: Components > Work Bench > Results Parser
 msgid "attachmentAlreadyLinked"
 msgstr "One or more attachments are already associated with an uploaded record."

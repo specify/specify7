@@ -158,7 +158,7 @@ msgstr "Format de tableau"
 #. Used in: Components > Formatters > Types ⬤ Components > Schema Config > Table
 #, fuzzy
 msgid "tableAggregation"
-msgstr "Agrégation de table"
+msgstr "Agrégation de tables"
 
 #: components/SchemaConfig/helpers.ts:85
 #. Used in: Components > Schema Config > Helpers

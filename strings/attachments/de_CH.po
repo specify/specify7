@@ -268,7 +268,7 @@ msgstr "Unterbrochen. Erneuter Versuch in {remainingTime:string}"
 #. Used in: Components > Attachments Bulk Import > Rollback
 #, fuzzy
 msgid "rollbackDescription"
-msgstr "Rollback löscht die Anhänge aus der Datenbank und dem Asset Server"
+msgstr "Rollback löscht die Anhänge aus der Datenbank und dem Asset Server."
 
 #: components/AttachmentsBulkImport/utils.ts:485
 #. Used in: Components > Attachments Bulk Import > Utils

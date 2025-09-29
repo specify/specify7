@@ -109,7 +109,7 @@ msgstr ""
 "Il existe plusieurs valeurs d'espace réservé « Téléchargé » dans "
 "l'arborescence !"
 
-#: components/WorkBench/resultsParser.ts:290
+#: components/WorkBench/resultsParser.ts:294
 #. Used in: Components > Work Bench > Results Parser
 msgid "missingRequiredTreeParent"
 msgstr ""
@@ -277,8 +277,13 @@ msgstr "Plusieurs définitions d'arbres dans la ligne"
 msgid "invalidCotype"
 msgstr "Type non valide pour les rangs d'arbres sélectionnés"
 
-#: components/WorkBench/resultsParser.ts:306
-#: components/WorkBench/resultsParser.ts:312
+#: components/WorkBench/resultsParser.ts:290
+#. Used in: Components > Work Bench > Results Parser
+msgid "invalidComponentType"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:310
+#: components/WorkBench/resultsParser.ts:316
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "attachmentNotFound"
@@ -286,7 +291,7 @@ msgstr ""
 "Une ou plusieurs pièces jointes n'existent pas. Elles ont peut-être été "
 "supprimées."
 
-#: components/WorkBench/resultsParser.ts:308
+#: components/WorkBench/resultsParser.ts:312
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "tableDoesNotSupportAttachments"
@@ -294,7 +299,7 @@ msgstr ""
 "La table de destination de la pièce jointe ne prend pas en charge les "
 "pièces jointes."
 
-#: components/WorkBench/resultsParser.ts:310
+#: components/WorkBench/resultsParser.ts:314
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "attachmentAlreadyLinked"

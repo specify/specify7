@@ -532,6 +532,7 @@ msgstr "URL-адрес страницы, которая будет встрое�
 
 #: components/Preferences/CollectionDefinitions.tsx:96
 #: components/Preferences/CollectionDefinitions.tsx:115
+#: components/Preferences/CollectionDefinitions.tsx:134
 #: components/Preferences/UserDefinitions.tsx:502
 #: components/Preferences/UserDefinitions.tsx:738
 #: components/Preferences/UserDefinitions.tsx:1327
@@ -1386,3 +1387,8 @@ msgid "inheritanceCatNumberParentCOPref"
 msgstr ""
 "Включить наследование родительского каталожного номера его пустыми "
 "дочерними элементами."
+
+#: components/Preferences/CollectionDefinitions.tsx:137
+#. Used in: Components > Preferences > Collection Definitions
+msgid "uniqueCatNumberAcrossCompAndCo"
+msgstr ""

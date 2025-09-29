@@ -357,7 +357,7 @@ msgstr "Se requiere campo."
 
 #: components/ExportFeed/Editor.tsx:399
 #: components/ExportFeed/Editor.tsx:403
-#: components/QueryComboBox/index.tsx:194
+#: components/QueryComboBox/index.tsx:192
 #: utils/parser/__tests__/definitions.test.ts:205
 #: utils/parser/__tests__/definitions.test.ts:207
 #: utils/parser/__tests__/definitions.test.ts:223
@@ -505,7 +505,7 @@ msgstr "Eliminar de {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "No se encontró nada"
 
-#: components/Forms/BulkCarryForward.tsx:287
+#: components/Forms/BulkCarryForward.tsx:288
 #: components/Forms/Save.tsx:253
 #. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 #, fuzzy
@@ -524,7 +524,7 @@ msgstr "Mostrar el botón Llevar adelante"
 msgid "bulkCarryForwardEnabled"
 msgstr "Mostrar recuento de transferencia masiva"
 
-#: components/Forms/BulkCarryForward.tsx:251
+#: components/Forms/BulkCarryForward.tsx:252
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardCount"
@@ -579,43 +579,41 @@ msgstr "Este campo es obligatorio. Debe ser transferido"
 msgid "bulkCarryForwardRangeEnabled"
 msgstr "Mostrar rango de transferencia masiva"
 
-#: components/Forms/BulkCarryForward.tsx:306
+#: components/Forms/BulkCarryForward.tsx:307
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeErrorDescription"
-msgstr ""
-"No se puede trasladar el registro a través del rango {field:string} "
-"especificado."
+msgstr "No se puede trasladar la grabación al rango {field:string} especificado."
 
-#: components/Forms/BulkCarryForward.tsx:300
+#: components/Forms/BulkCarryForward.tsx:301
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeLimitExceeded"
 msgstr "El rango excede el límite de registro de {limit:number}."
 
-#: components/Forms/BulkCarryForward.tsx:292
+#: components/Forms/BulkCarryForward.tsx:293
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeExistingRecords"
 msgstr "Los siguientes números para {field:string} ya se están utilizando:"
 
-#: components/Forms/BulkCarryForward.tsx:173
+#: components/Forms/BulkCarryForward.tsx:174
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeStart"
 msgstr "Arranque del rango de avance"
 
-#: components/Forms/BulkCarryForward.tsx:181
+#: components/Forms/BulkCarryForward.tsx:182
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeEnd"
-msgstr "Llevar adelante el final del rango"
+msgstr "Fin del rango de arrastre"
 
 #: components/FormMeta/CarryForward.tsx:240
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "createRecordSetOnBulkCarryForward"
-msgstr "Crear un conjunto de registros en Bulk Carry Forward"
+msgstr "Crear un conjunto de registros en la transferencia masiva"
 
 #: components/FormMeta/Clone.tsx:31
 #. Used in: Components > Form Meta > Clone

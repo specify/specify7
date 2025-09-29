@@ -558,6 +558,11 @@ msgstr "Успадкування каталожних номерів"
 msgid "catalogNumberParentCOInheritance"
 msgstr "Успадкування батьківського об'єкта колекції за номером каталогу"
 
+#: components/Preferences/CollectionDefinitions.tsx:131
+#. Used in: Components > Preferences > Collection Definitions
+msgid "uniqueCatalogNumberAcrossComponentAndCo"
+msgstr ""
+
 #: components/QueryBuilder/Formatter.tsx:127
 #. 🟥Used to indicate a text field will be formatted with a specific format. If a format can be identified/named in more than one way, names can be displayed in a comma-separated format Example: Format As: Ichthyology Example: Format As: Rock, Mineral. Used in: Components > Query Builder > Formatter
 msgid "formatInputAs"

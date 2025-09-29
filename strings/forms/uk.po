@@ -344,7 +344,7 @@ msgstr "Поле обов'язкове для заповнення."
 
 #: components/ExportFeed/Editor.tsx:399
 #: components/ExportFeed/Editor.tsx:403
-#: components/QueryComboBox/index.tsx:194
+#: components/QueryComboBox/index.tsx:192
 #: utils/parser/__tests__/definitions.test.ts:205
 #: utils/parser/__tests__/definitions.test.ts:207
 #: utils/parser/__tests__/definitions.test.ts:223
@@ -479,7 +479,7 @@ msgstr "Видалити з {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Нічого не знайдено"
 
-#: components/Forms/BulkCarryForward.tsx:287
+#: components/Forms/BulkCarryForward.tsx:288
 #: components/Forms/Save.tsx:253
 #. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 msgid "carryForward"
@@ -495,7 +495,7 @@ msgstr "Показати кнопку «Перенести вперед»"
 msgid "bulkCarryForwardEnabled"
 msgstr "Показати кількість групового перенесення"
 
-#: components/Forms/BulkCarryForward.tsx:251
+#: components/Forms/BulkCarryForward.tsx:252
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardCount"
 msgstr "Кількість перенесених даних"
@@ -542,27 +542,27 @@ msgstr "Це поле обов'язкове. Його потрібно пере�
 msgid "bulkCarryForwardRangeEnabled"
 msgstr "Показати діапазон масового перенесення"
 
-#: components/Forms/BulkCarryForward.tsx:306
+#: components/Forms/BulkCarryForward.tsx:307
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeErrorDescription"
 msgstr "Неможливо перенести запис у вказаний діапазон {field:string}."
 
-#: components/Forms/BulkCarryForward.tsx:300
+#: components/Forms/BulkCarryForward.tsx:301
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeLimitExceeded"
 msgstr "Діапазон перевищує ліміт записів {limit:number}."
 
-#: components/Forms/BulkCarryForward.tsx:292
+#: components/Forms/BulkCarryForward.tsx:293
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeExistingRecords"
 msgstr "Наступні номери для {field:string} вже використовуються:"
 
-#: components/Forms/BulkCarryForward.tsx:173
+#: components/Forms/BulkCarryForward.tsx:174
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeStart"
 msgstr "Початок діапазону перенесення вперед"
 
-#: components/Forms/BulkCarryForward.tsx:181
+#: components/Forms/BulkCarryForward.tsx:182
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeEnd"
 msgstr "Кінець діапазону перенесення вперед"

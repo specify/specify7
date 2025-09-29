@@ -103,7 +103,7 @@ msgstr "це поле є обов’язковим (згідно з визнач
 msgid "invalidTreeStructure"
 msgstr "У дереві є кілька вузлів з назвою \"Uploaded\"!"
 
-#: components/WorkBench/resultsParser.ts:290
+#: components/WorkBench/resultsParser.ts:294
 #. Used in: Components > Work Bench > Results Parser
 msgid "missingRequiredTreeParent"
 msgstr ""
@@ -260,18 +260,23 @@ msgstr "Кілька визначень дерев у рядку"
 msgid "invalidCotype"
 msgstr "Недійсний тип для вибраного(их) рангу(ів) дерева"
 
-#: components/WorkBench/resultsParser.ts:306
-#: components/WorkBench/resultsParser.ts:312
+#: components/WorkBench/resultsParser.ts:290
+#. Used in: Components > Work Bench > Results Parser
+msgid "invalidComponentType"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:310
+#: components/WorkBench/resultsParser.ts:316
 #. Used in: Components > Work Bench > Results Parser
 msgid "attachmentNotFound"
 msgstr "Один або декілька вкладень не існують. Можливо, їх було видалено."
 
-#: components/WorkBench/resultsParser.ts:308
+#: components/WorkBench/resultsParser.ts:312
 #. Used in: Components > Work Bench > Results Parser
 msgid "tableDoesNotSupportAttachments"
 msgstr "Таблиця призначення вкладення не підтримує вкладення."
 
-#: components/WorkBench/resultsParser.ts:310
+#: components/WorkBench/resultsParser.ts:314
 #. Used in: Components > Work Bench > Results Parser
 msgid "attachmentAlreadyLinked"
 msgstr "Один або декілька вкладень вже пов’язані із завантаженим записом."

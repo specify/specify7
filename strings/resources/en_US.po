@@ -493,19 +493,19 @@ msgstr "Conditional Field Value"
 msgid "formatPreview"
 msgstr "Format Preview"
 
-#: components/DataModel/businessRuleDefs.ts:388
-#: components/DataModel/businessRuleDefs.ts:406
+#: components/DataModel/businessRuleDefs.ts:540
+#: components/DataModel/businessRuleDefs.ts:558
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "currentDeterminationRequired"
 msgstr "A current determination is required."
 
-#: components/DataModel/businessRuleDefs.ts:272
-#: components/DataModel/businessRuleDefs.ts:291
+#: components/DataModel/businessRuleDefs.ts:320
+#: components/DataModel/businessRuleDefs.ts:339
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "cogAddedToItself"
 msgstr "A COG cannot be added to itself."
 
-#: components/DataModel/businessRuleDefs.ts:221
+#: components/DataModel/businessRuleDefs.ts:269
 #: components/DataModel/__tests__/businessRules.test.ts:393
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 msgid "primaryCogChildRequired"
@@ -513,37 +513,37 @@ msgstr ""
 "A Consolidated Collection Object Group must have a primary Collection "
 "Object child"
 
-#: components/DataModel/businessRuleDefs.ts:309
+#: components/DataModel/businessRuleDefs.ts:357
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deletePrimaryRecord"
 msgstr "Primary record CO cannot be deleted."
 
-#: components/DataModel/businessRuleDefs.ts:645
+#: components/DataModel/businessRuleDefs.ts:797
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteLoanedPrep"
 msgstr "A loaned preparation cannot be deleted"
 
-#: components/DataModel/businessRuleDefs.ts:653
+#: components/DataModel/businessRuleDefs.ts:805
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteGiftedPrep"
 msgstr "A gifted preparation cannot be deleted"
 
-#: components/DataModel/businessRuleDefs.ts:661
+#: components/DataModel/businessRuleDefs.ts:813
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteDisposedPrep"
 msgstr "A disposed preparation cannot be deleted"
 
-#: components/DataModel/businessRuleDefs.ts:669
+#: components/DataModel/businessRuleDefs.ts:821
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteExchangeOutPrep"
 msgstr "A exchanged out preparation cannot be deleted"
 
-#: components/DataModel/businessRuleDefs.ts:677
+#: components/DataModel/businessRuleDefs.ts:829
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteExchangeInPrep"
 msgstr "A exchanged in preparation cannot be deleted"
 
-#: components/DataModel/businessRuleDefs.ts:192
+#: components/DataModel/businessRuleDefs.ts:196
 #: components/DataModel/__tests__/businessRules.test.ts:164
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 msgid "invalidDeterminationTaxon"
@@ -551,12 +551,27 @@ msgstr ""
 "Determination does not belong to the taxon tree associated with the "
 "Collection Object Type"
 
-#: components/DataModel/businessRuleDefs.ts:620
+#: components/DataModel/businessRuleDefs.ts:408
+#. Used in: Components > Data Model > Business Rule Defs
+msgid "invalidNameTaxon"
+msgstr ""
+"{taxonName: string} does not belong to the {taxonTableLabel: string} tree "
+"associated with {typeName: string}"
+
+#: components/DataModel/businessRuleDefs.ts:236
+#: components/DataModel/businessRuleDefs.ts:471
+#. Used in: Components > Data Model > Business Rule Defs
+msgid "catalogNumberAlreadyUsed"
+msgstr ""
+"{catalogNumberFieldName: string} {catalogNumber: string} is already in use "
+"for another Component or Collection Object in this collection."
+
+#: components/DataModel/businessRuleDefs.ts:772
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "preparationUsedInLoan"
 msgstr "The preparation is used in a loan."
 
-#: components/DataModel/businessRuleDefs.ts:613
+#: components/DataModel/businessRuleDefs.ts:765
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "preparationIsNegative"
 msgstr "Preparation count cannot be negative"

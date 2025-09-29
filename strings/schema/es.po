@@ -107,7 +107,7 @@ msgstr "Establecer alcance"
 #. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table
 #, fuzzy
 msgid "caption"
-msgstr "Subtítulo"
+msgstr "Título"
 
 #: components/ExportFeed/Editor.tsx:62
 #: components/ExportFeed/Editor.tsx:174
@@ -163,7 +163,7 @@ msgstr "Muchos a uno"
 #. Used in: Components > Schema Config > Helpers
 #, fuzzy
 msgid "manyToMany"
-msgstr "de muchos a muchos"
+msgstr "muchos a muchos"
 
 #: components/SchemaConfig/Field.tsx:68
 #: components/SchemaViewer/Fields.tsx:64

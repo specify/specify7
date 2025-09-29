@@ -606,7 +606,7 @@ msgstr "Mudar para absoluto"
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "scrollToEditor"
-msgstr "Vá até o editor"
+msgstr "Rolar para o editor"
 
 #: components/LocalityUpdate/Status.tsx:308
 #: components/QueryBuilder/ResultsTable.tsx:187
@@ -647,13 +647,18 @@ msgstr "Não rigoroso"
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "catalogNumberInheritance"
-msgstr "Herança de números de catálogo"
+msgstr "Herança de Número de Catálogo"
 
 #: components/Preferences/CollectionDefinitions.tsx:112
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "catalogNumberParentCOInheritance"
 msgstr "Herança de objeto de coleção pai de número de catálogo"
+
+#: components/Preferences/CollectionDefinitions.tsx:131
+#. Used in: Components > Preferences > Collection Definitions
+msgid "uniqueCatalogNumberAcrossComponentAndCo"
+msgstr ""
 
 #: components/QueryBuilder/Formatter.tsx:127
 #. 🟥Used to indicate a text field will be formatted with a specific format. If a format can be identified/named in more than one way, names can be displayed in a comma-separated format Example: Format As: Ichthyology Example: Format As: Rock, Mineral. Used in: Components > Query Builder > Formatter
