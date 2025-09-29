@@ -333,10 +333,11 @@ export function downloadAttachment(
 }
 
 export async function downloadAllAttachments(
-  attachments: readonly SerializedResource<Attachment>[],
-  archiveName?: string
+  attachments: RA<SerializedResource<Attachment>>,
+  archiveName?: string,
+  recordSetId?: number
 ): Promise<void> {
-  if (attachments.length === 0) return;
+  if (attachments.length === 0 && recordSetId === undefined) return;
   if (attachments.length === 1) {
     downloadAttachment(attachments[0]);
     return;
@@ -357,6 +358,7 @@ export async function downloadAllAttachments(
     method: 'POST',
     body: keysToLowerCase({
       attachmentLocations,
+      recordSetId: recordSetId ?? undefined,
       origFilenames,
     }),
     headers: {
