@@ -2,6 +2,7 @@ from functools import reduce
 import logging
 import json
 from typing import Any, TypedDict
+from collections import defaultdict
 from collections.abc import Iterable
 
 from django.apps import apps
@@ -178,6 +179,30 @@ class UniquenessCheck(TypedDict):
     fields: list[ViolatedUniquenessCheck]
 
 
+def _group_case_sensitive(rows: list[dict], keys: list[str]) -> list[dict]:
+    """Group rows using exact value comparison for the provided keys."""
+    grouped_rows: dict[tuple, list[dict]] = defaultdict(list)
+
+    for row in rows:
+        key = tuple(row.get(key_name) for key_name in keys)
+        grouped_rows[key].append(row)
+
+    grouped: list[dict] = []
+    for key, items in grouped_rows.items():
+        if len(items) > 1:
+            grouped.append(
+                {
+                    "duplicates": len(items),
+                    "fields": {
+                        field_name: value for field_name, value in zip(keys, key)
+                    },
+                }
+            )
+
+    grouped.sort(key=lambda item: item["duplicates"], reverse=True)
+    return grouped
+
+
 def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[str], registry=None) \
     -> UniquenessCheck | None:
     """
@@ -205,34 +230,24 @@ def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[st
 
     all_fields = [*fields, *scopes]
 
-    duplicates_field = '__duplicates'
-
-    duplicates = (
+    rows = list(
         django_model.objects
-        .values(*all_fields)
-        .annotate(**{duplicates_field: Count('id')})
+        .values(*all_fields, 'id')
         .filter(strict_filters)
-        .filter(**{f"{duplicates_field}__gt": 1})
-        .order_by(f'-{duplicates_field}')
     )
 
-    total_duplicates = sum(duplicate[duplicates_field] for duplicate in duplicates)
+    compact_rows = [
+        {field: row[field] for field in all_fields}
+        for row in rows
+    ]
 
-    final = {
+    duplicates = _group_case_sensitive(compact_rows, all_fields)
+    total_duplicates = sum(duplicate["duplicates"] for duplicate in duplicates)
+
+    return {
         "totalDuplicates": total_duplicates,
-        "fields": [
-            {
-                "duplicates": duplicate[duplicates_field],
-                "fields": {
-                    field: value
-                    for field, value in duplicate.items()
-                    if field != duplicates_field
-                },
-            }
-            for duplicate in duplicates
-        ],
+        "fields": duplicates,
     }
-    return final
 
 
 def field_path_with_value(instance, model_name: str, field_path: str, default):
