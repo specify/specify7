@@ -79,7 +79,9 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
   const formatter = field.getUiFormatter(resource);
   const canAutoNumberFormatter = formatter?.canAutoIncrement() ?? false;
   const parser =
-    formatter === undefined ? undefined : fieldFormatterToParser(field, formatter);
+    formatter === undefined
+      ? undefined
+      : fieldFormatterToParser(field, formatter);
 
   const [carryForwardRangeEnd, setCarryForwardRangeEnd] =
     React.useState<string>('');
