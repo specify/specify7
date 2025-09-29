@@ -2,61 +2,61 @@
  * Localization strings for the Specify Network integration
  */
 
-import { createDictionary } from './utils';
+import { createDictionary } from "./utils";
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const specifyNetworkText = createDictionary({
   specifyNetwork: {
-    'en-us': 'Specify Network',
-    'ru-ru': 'Укажите сеть',
-    'es-es': 'Specify red',
-    'fr-fr': 'Réseau Specify',
-    'uk-ua': 'Specify Network',
-    'de-ch': 'Specify Network',
-    'pt-br': 'Especificar rede',
+    "en-us": "Specify Network",
+    "ru-ru": "Укажите сеть",
+    "es-es": "Specify red",
+    "fr-fr": "Réseau Specify",
+    "uk-ua": "Specify Network",
+    "de-ch": "Specify Network",
+    "pt-br": "Especificar rede",
   },
   occurrenceOrGuidRequired: {
-    'en-us': 'Species Name or GUID must be provided to display this page',
-    'de-ch':
-      'Zur Anzeige dieser Seite muss der Artname oder die GUID angegeben werden',
-    'es-es':
-      'Se debe proporcionar el nombre de especie o el GUID para mostrar esta página',
-    'fr-fr':
+    "en-us": "Species Name or GUID must be provided to display this page",
+    "de-ch":
+      "Zur Anzeige dieser Seite muss der Artname oder die GUID angegeben werden",
+    "es-es":
+      "Se debe proporcionar el nombre de especie o el GUID para mostrar esta página",
+    "fr-fr":
       "Le nom de l'espèce ou le GUID doit être fourni pour afficher cette page",
-    'ru-ru':
-      'Для отображения этой страницы необходимо указать название вида или GUID.',
-    'uk-ua':
-      'Щоб відобразити цю сторінку, потрібно вказати назву виду або GUID',
-    'pt-br':
-      'O nome da espécie ou GUID deve ser fornecido para exibir esta página',
+    "ru-ru":
+      "Для отображения этой страницы необходимо указать название вида или GUID.",
+    "uk-ua":
+      "Щоб відобразити цю сторінку, потрібно вказати назву виду або GUID",
+    "pt-br":
+      "O nome da espécie ou GUID deve ser fornecido para exibir esta página",
   },
   noDataError: {
-    'en-us': 'Unable to find any data for this request',
-    'de-ch': 'Zu dieser Anfrage konnten keine Daten gefunden werden',
-    'es-es': 'No se encuentran datos para esta solicitud',
-    'fr-fr': 'Impossible de trouver des données pour cette demande',
-    'ru-ru': 'Не удалось найти данные по этому запросу.',
-    'uk-ua': 'Неможливо знайти дані для цього запиту',
-    'pt-br': 'Não foi possível encontrar nenhum dado para esta solicitação',
+    "en-us": "Unable to find any data for this request",
+    "de-ch": "Zu dieser Anfrage konnten keine Daten gefunden werden",
+    "es-es": "No se encuentran datos para esta solicitud",
+    "fr-fr": "Impossible de trouver des données pour cette demande",
+    "ru-ru": "Не удалось найти данные по этому запросу.",
+    "uk-ua": "Неможливо знайти дані для цього запиту",
+    "pt-br": "Não foi possível encontrar nenhum dado para esta solicitação",
   },
   noDataErrorDescription: {
-    'en-us': 'Please try searching for a different record',
-    'de-ch': 'Versuchen Sie bitte, nach einem anderen Datensatz zu suchen',
-    'es-es': 'Intente buscar un registro diferente',
-    'fr-fr': 'Veuillez essayer de rechercher un autre enregistrement',
-    'ru-ru': 'Попробуйте поискать другую запись.',
-    'uk-ua': 'Будь ласка, спробуйте знайти інший запис',
-    'pt-br': 'Por favor, tente procurar um registro diferente',
+    "en-us": "Please try searching for a different record",
+    "de-ch": "Versuchen Sie bitte, nach einem anderen Datensatz zu suchen",
+    "es-es": "Intente buscar un registro diferente",
+    "fr-fr": "Veuillez essayer de rechercher un autre enregistrement",
+    "ru-ru": "Попробуйте поискать другую запись.",
+    "uk-ua": "Будь ласка, спробуйте знайти інший запис",
+    "pt-br": "Por favor, tente procurar um registro diferente",
   },
   dataQuality: {
-    'en-us': 'Data Quality',
-    'de-ch': 'Datenqualität',
-    'es-es': 'Calidad de datos',
-    'fr-fr': 'Qualité des données',
-    'ru-ru': 'Качество данных',
-    'uk-ua': 'Якість даних',
-    'pt-br': 'Qualidade de dados',
+    "en-us": "Data Quality",
+    "de-ch": "Datenqualität",
+    "es-es": "Calidad de datos",
+    "fr-fr": "Qualité des données",
+    "ru-ru": "Качество данных",
+    "uk-ua": "Якість даних",
+    "pt-br": "Qualidade de dados",
   },
   reportedBy: {
     "en-us": "Reported by {provider:string}",
@@ -68,29 +68,29 @@ export const specifyNetworkText = createDictionary({
     "pt-br": "Reportado por {provider:string}",
   },
   collectionDate: {
-    'en-us': 'Collection Date',
-    'de-ch': 'Abholdatum',
-    'es-es': 'Fecha de colecta',
-    'fr-fr': 'Date de collecte',
-    'ru-ru': 'Дата сбора',
-    'uk-ua': 'Дата збору',
-    'pt-br': 'Data de coleta',
+    "en-us": "Collection Date",
+    "de-ch": "Abholdatum",
+    "es-es": "Fecha de colecta",
+    "fr-fr": "Date de collecte",
+    "ru-ru": "Дата сбора",
+    "uk-ua": "Дата збору",
+    "pt-br": "Data de coleta",
   },
   mapDescription: {
-    'en-us':
-      'This map shows occurrences of this taxon from the iDigBio and GBIF aggregators.',
-    'de-ch':
-      'Diese Karte zeigt Vorkommen dieses Taxons aus den Aggregatoren iDigBio und GBIF.',
-    'es-es':
-      'Este mapa muestra los registros de este taxón en los agregadores iDigBio y GBIF.',
-    'fr-fr':
-      'Cette carte montre les occurrences de ce taxon à partir des agrégateurs iDigBio et GBIF.',
-    'ru-ru':
-      'На этой карте показаны случаи встречаемости этого таксона по данным агрегаторов iDigBio и GBIF.',
-    'uk-ua':
-      'Ця карта показує випадки появи цього таксону з агрегаторів iDigBio та GBIF.',
-    'pt-br':
-      'Este mapa mostra ocorrências deste táxon dos agregadores iDigBio e GBIF.',
+    "en-us":
+      "This map shows occurrences of this taxon from the iDigBio and GBIF aggregators.",
+    "de-ch":
+      "Diese Karte zeigt Vorkommen dieses Taxons aus den Aggregatoren iDigBio und GBIF.",
+    "es-es":
+      "Este mapa muestra los registros de este taxón en los agregadores iDigBio y GBIF.",
+    "fr-fr":
+      "Cette carte montre les occurrences de ce taxon à partir des agrégateurs iDigBio et GBIF.",
+    "ru-ru":
+      "На этой карте показаны случаи встречаемости этого таксона по данным агрегаторов iDigBio и GBIF.",
+    "uk-ua":
+      "Ця карта показує випадки появи цього таксону з агрегаторів iDigBio та GBIF.",
+    "pt-br":
+      "Este mapa mostra ocorrências deste táxon dos agregadores iDigBio e GBIF.",
   },
   iDigBioDescription: {
     "en-us":
@@ -109,13 +109,13 @@ export const specifyNetworkText = createDictionary({
       "As ocorrências registradas no iDigBio são mostradas como pontos verdes redondos, exceto aquelas da coleção atual registrada no iDigBio, que são pontos vermelhos redondos. Ao ampliar os pontos vermelhos, um alfinete azul em forma de lágrima é exibido. Clicar no alfinete executa uma consulta de localidade no Specify, que mostra todas as espécies coletadas naquele local no banco de dados do Specify atual.",
   },
   gbifDescription: {
-    'en-us':
-      'For GBIF data, individual points and clusters of points are shown as hexagons of different colors ranging from yellow to orange to red. Dark red hexagons corresponding to densest distributions of collected specimens of that species.',
-    'de-ch':
-      'Bei GBIF-Daten werden einzelne Punkte und Punktcluster als Sechsecke in verschiedenen Farben von Gelb über Orange bis Rot angezeigt. Dunkelrote Sechsecke entsprechen der dichtesten Verteilung gesammelter Exemplare dieser Art.',
-    'es-es':
-      'Para los datos de GBIF, los puntos individuales y los grupos de puntos se muestran como hexágonos de diferentes colores que van del amarillo al naranja y al rojo. Hexágonos de color rojo oscuro que corresponden a las distribuciones más densas de especímenes colectados de esa especie.',
-    'fr-fr':
+    "en-us":
+      "For GBIF data, individual points and clusters of points are shown as hexagons of different colors ranging from yellow to orange to red. Dark red hexagons corresponding to densest distributions of collected specimens of that species.",
+    "de-ch":
+      "Bei GBIF-Daten werden einzelne Punkte und Punktcluster als Sechsecke in verschiedenen Farben von Gelb über Orange bis Rot angezeigt. Dunkelrote Sechsecke entsprechen der dichtesten Verteilung gesammelter Exemplare dieser Art.",
+    "es-es":
+      "Para los datos de GBIF, los puntos individuales y los grupos de puntos se muestran como hexágonos de diferentes colores que van del amarillo al naranja y al rojo. Hexágonos de color rojo oscuro que corresponden a las distribuciones más densas de especímenes colectados de esa especie.",
+    "fr-fr":
       "Pour les données GBIF, les points individuels et les groupes de points sont représentés par des hexagones de différentes couleurs, allant du jaune à l'orange et au rouge. Les hexagones rouge foncé correspondent aux distributions les plus denses de spécimens collectés de l'espèce.",
     "ru-ru":
       "В данных GBIF отдельные точки и скопления точек показаны шестиугольниками разных цветов: от жёлтого до оранжевого и красного. Тёмно-красные шестиугольники соответствуют наиболее плотному распределению собранных особей данного вида.",
@@ -134,13 +134,13 @@ export const specifyNetworkText = createDictionary({
     "pt-br": "Conecte-se ao GBIF",
   },
   searchForInstitution: {
-    'en-us': 'Search for your institution:',
-    'de-ch': 'Suchen Sie nach Ihrer Institution:',
-    'es-es': 'Busque su institución:',
-    'fr-fr': 'Recherchez votre établissement :',
-    'ru-ru': 'Поиск вашего учреждения:',
-    'uk-ua': 'Підключіться до GBIF',
-    'pt-br': 'Pesquise sua instituição:',
+    "en-us": "Search for your institution:",
+    "de-ch": "Suchen Sie nach Ihrer Institution:",
+    "es-es": "Busque su institución:",
+    "fr-fr": "Recherchez votre établissement :",
+    "ru-ru": "Поиск вашего учреждения:",
+    "uk-ua": "Підключіться до GBIF",
+    "pt-br": "Pesquise sua instituição:",
   },
   institutionDistributionMap: {
     "en-us":
@@ -159,36 +159,36 @@ export const specifyNetworkText = createDictionary({
       "Mapa de distribuição de todos os espécimes digitalizados e curados em sua Instituição",
   },
   collectionDistributionMap: {
-    'en-us':
-      'Distribution map of all of the digitized specimens curated in your Collection',
-    'de-ch': 'Verbreitungskarte aller digitalisierten Exemplare Ihrer Sammlung',
-    'es-es':
-      'Mapa de distribución de todos los ejemplares digitalizados conservados en su Colección',
-    'fr-fr':
-      'Carte de répartition de tous les spécimens numérisés conservés dans votre collection',
-    'ru-ru':
-      'Карта распределения всех оцифрованных образцов, хранящихся в вашей коллекции',
-    'uk-ua':
-      'Карта розповсюдження всіх оцифрованих зразків, збережених у вашій колекції',
-    'pt-br':
-      'Mapa de distribuição de todos os espécimes digitalizados selecionados em sua coleção',
+    "en-us":
+      "Distribution map of all of the digitized specimens curated in your Collection",
+    "de-ch": "Verbreitungskarte aller digitalisierten Exemplare Ihrer Sammlung",
+    "es-es":
+      "Mapa de distribución de todos los ejemplares digitalizados conservados en su Colección",
+    "fr-fr":
+      "Carte de répartition de tous les spécimens numérisés conservés dans votre collection",
+    "ru-ru":
+      "Карта распределения всех оцифрованных образцов, хранящихся в вашей коллекции",
+    "uk-ua":
+      "Карта розповсюдження всіх оцифрованих зразків, збережених у вашій колекції",
+    "pt-br":
+      "Mapa de distribuição de todos os espécimes digitalizados selecionados em sua coleção",
   },
   startYear: {
-    'en-us': 'Start Year',
-    'de-ch': 'Startjahr',
-    'es-es': 'Año de inicio',
-    'fr-fr': 'Année de début',
-    'ru-ru': 'Год начала',
-    'uk-ua': 'Рік початку',
-    'pt-br': 'Ano de início',
+    "en-us": "Start Year",
+    "de-ch": "Startjahr",
+    "es-es": "Año de inicio",
+    "fr-fr": "Année de début",
+    "ru-ru": "Год начала",
+    "uk-ua": "Рік початку",
+    "pt-br": "Ano de início",
   },
   endYear: {
-    'en-us': 'End Year',
-    'de-ch': 'Jahresende',
-    'es-es': 'Año final',
-    'fr-fr': "Fin d'année",
-    'ru-ru': 'Конец года',
-    'uk-ua': 'Кінцевий рік',
-    'pt-br': 'Fim de ano',
+    "en-us": "End Year",
+    "de-ch": "Jahresende",
+    "es-es": "Año final",
+    "fr-fr": "Fin d'année",
+    "ru-ru": "Конец года",
+    "uk-ua": "Кінцевий рік",
+    "pt-br": "Fim de ano",
   },
 } as const);
