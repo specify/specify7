@@ -377,13 +377,6 @@ const subViewSpec = (
             );
             return undefined;
           }
-          if (
-            field?.table.name === 'CollectionObject' &&
-            ['components', 'componentparent'].includes(field.name.toLowerCase())
-          ) {
-            console.error('Component relatiosnhips are not supported');
-            return undefined;
-          }
           if (field?.type === 'many-to-many') {
             // ResourceApi does not support .rget() on a many-to-many
             console.warn('Many-to-many relationships are not supported');
