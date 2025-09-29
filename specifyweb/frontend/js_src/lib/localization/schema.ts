@@ -120,7 +120,7 @@ export const schemaText = createDictionary({
   caption: {
     "en-us": "Caption",
     "ru-ru": "Подпись",
-    "es-es": "Título",
+    "es-es": "Subtítulo",
     "fr-fr": "Légende",
     "uk-ua": "Підпис",
     "de-ch": "Beschriftung",
@@ -166,7 +166,7 @@ export const schemaText = createDictionary({
     "en-us": "Table Aggregation",
     "ru-ru": "Агрегация таблиц",
     "es-es": "Agregación de tablas",
-    "fr-fr": "Agrégation de tables",
+    "fr-fr": "Agrégation de table",
     "uk-ua": "Агрегація таблиць",
     "de-ch": "Tabellenaggregation",
     "pt-br": "Agregação de tabelas",
@@ -201,7 +201,7 @@ export const schemaText = createDictionary({
   manyToMany: {
     "en-us": "many-to-many",
     "ru-ru": "многие-ко-многим",
-    "es-es": "muchos a muchos",
+    "es-es": "de muchos a muchos",
     "fr-fr": "plusieurs à plusieurs",
     "uk-ua": "багато-до-багатьох",
     "de-ch": "Viele zu viele",

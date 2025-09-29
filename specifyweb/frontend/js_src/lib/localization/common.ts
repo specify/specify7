@@ -638,7 +638,7 @@ export const commonText = createDictionary({
     "en-us": "Expand All",
     "ru-ru": "Развернуть все",
     "es-es": "Desplegar todo",
-    "fr-fr": "Tout développer",
+    "fr-fr": "Développer tout",
     "uk-ua": "Розгорнути все",
     "de-ch": "Alle aufklappen",
     "pt-br": "Expandir tudo",
