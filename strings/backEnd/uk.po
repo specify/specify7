@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-09-29 15:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-09-29 15:50+0000\n"
+"Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "backEnd/uk/>\n"
 "Language: uk\n"
@@ -262,7 +262,6 @@ msgstr "Недійсний тип для вибраного(их) рангу(і�
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:290
-#, fuzzy
 msgid "invalidComponentType"
 msgstr "Недійсний {componentType: string} для вибраного(их) рангу(ів) дерева"
 
