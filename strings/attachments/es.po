@@ -11,8 +11,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.12-dev\n"
 
-#: components/Attachments/RecordSetAttachment.tsx:145
-#: components/Attachments/RecordSetAttachment.tsx:147
+#: components/Attachments/RecordSetAttachment.tsx:159
+#: components/Attachments/RecordSetAttachment.tsx:162
+#: components/Attachments/RecordSetAttachment.tsx:166
 #: components/Attachments/index.tsx:161
 #: components/FormSliders/AttachmentsCollection.tsx:68
 #: components/FormSliders/AttachmentsCollection.tsx:91
@@ -69,7 +70,7 @@ msgid "uploadingInline"
 msgstr "Subiendo…"
 
 #: components/Attachments/Gallery.tsx:137
-#: components/Attachments/RecordSetAttachment.tsx:155
+#: components/Attachments/RecordSetAttachment.tsx:174
 #: components/AttachmentsBulkImport/utils.ts:474
 #. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 msgid "noAttachments"
@@ -245,12 +246,12 @@ msgstr ""
 msgid "noMatch"
 msgstr "Sin coincidencia"
 
-#: components/Attachments/RecordSetAttachment.tsx:158
+#: components/Attachments/RecordSetAttachment.tsx:177
 #. Used in: Components > Attachments > Record Set Attachment
 msgid "attachmentHaltLimit"
 msgstr "No se han encontrado adjuntos en los primeros {halt:number} registros."
 
-#: components/Attachments/RecordSetAttachment.tsx:166
+#: components/Attachments/RecordSetAttachment.tsx:185
 #. Used in: Components > Attachments > Record Set Attachment
 msgid "fetchNextAttachments"
 msgstr "Buscar más adjuntos"
@@ -369,19 +370,25 @@ msgstr ""
 "Error al cargar el archivo adjunto. Es posible que el servidor de archivos "
 "adjuntos no esté disponible o hubo un error al leer el archivo."
 
-#: components/Attachments/RecordSetAttachment.tsx:134
+#: components/Attachments/RecordSetAttachment.tsx:148
+#: components/Attachments/RecordSetAttachment.tsx:221
 #: components/FormSliders/AttachmentsCollection.tsx:84
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #, fuzzy
 msgid "downloadAll"
 msgstr "Descargar todo"
 
-#: components/Attachments/RecordSetAttachment.tsx:124
+#: components/Attachments/RecordSetAttachment.tsx:134
 #: components/FormSliders/AttachmentsCollection.tsx:79
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #, fuzzy
 msgid "downloadAllDescription"
 msgstr "Descargar todos los archivos adjuntos encontrados"
+
+#: components/Attachments/RecordSetAttachment.tsx:224
+#. Used in: Components > Attachments > Record Set Attachment
+msgid "createRecordSetToDownloadAll"
+msgstr ""
 
 #: components/FormSliders/AttachmentWarningDeletion.tsx:60
 #. Used in: Components > Form Sliders > Attachment Warning Deletion
