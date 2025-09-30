@@ -291,17 +291,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Доступні форматувальники полів',
   },
   selectDefaultFormatter: {
-    'en-us': 'Please select a default record formatter for this table',
-    'de-ch':
-      'Bitte wählen Sie einen Standard-Datensatzformatierer für diese Tabelle',
-    'es-es':
-      'Seleccione un formateador de registro predeterminado para esta tabla',
-    'fr-fr':
-      "Veuillez sélectionner un formateur d'enregistrement par défaut pour cette table",
-    'ru-ru':
-      'Пожалуйста, выберите форматирование записей по умолчанию для этой таблицы.',
-    'uk-ua': 'Виберіть стандартний формат запису для цієї таблиці',
-    'pt-br': 'Selecione um formatador de registro padrão para esta tabela',
+    'en-us': 'Please designate one of the formatters as default',
   },
   duplicateFormatters: {
     'en-us': 'Record formatter names must be unique',
