@@ -666,7 +666,6 @@ describe('uniqueness rules', () => {
     formatUrl('/api/specify/collectionobject/', {
       domainfilter: 'false',
       guid: 'Abc',
-      collection: 4,
       offset: 0,
     }),
     {
