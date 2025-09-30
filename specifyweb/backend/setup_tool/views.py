@@ -49,14 +49,17 @@ def create_specifyuser_view(request):
 
 # check which resource are present in a new db to define setup step
 def get_setup_progress(request):
+    institution = models.Institution.objects.first()
+    globalGeographyTree = institution and institution.issinglegeographytree
+
     progress = {
         "institution": models.Institution.objects.exists(),
-        "storageTree": models.Storagetreedef.objects.exists(),
-        "globalGeographyTree": models.Geographytreedef.objects.exists(),
+        "storageTreeDef": models.Storagetreedef.objects.exists(),
+        "globalGeographyTreeDef": (not globalGeographyTree) or models.Geographytreedef.objects.exists(),
         "division": models.Division.objects.exists(),
         "discipline": models.Discipline.objects.exists(),
-        "geographyTree": models.Geographytreedef.objects.exists(),
-        "taxonTree": models.Taxontreedef.objects.exists(),
+        "geographyTreeDef": models.Geographytreedef.objects.exists(),
+        "taxonTreeDef": models.Taxontreedef.objects.exists(),
         "collection": models.Collection.objects.exists(),
         "specifyUser": models.Specifyuser.objects.exists(),
     }
