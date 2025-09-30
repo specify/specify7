@@ -8,7 +8,7 @@ from xml.etree.ElementTree import Element
 from xml.sax.saxutils import quoteattr
 
 from specifyweb.specify.api.utils import get_picklists
-from sqlalchemy import Table as SQLTable, inspect, case
+from sqlalchemy import Table as SQLTable, inspect, case, type_coerce
 from sqlalchemy.orm import aliased, Query
 from sqlalchemy.sql.expression import func, cast, literal, Label
 from sqlalchemy.sql.functions import concat
