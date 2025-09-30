@@ -49,13 +49,13 @@ export function PickListComboBox({
     () =>
       typeof relatedTable === 'string'
         ? rawItems.map((item) =>
-            typeof f.parseInt(item.value) === 'number'
-              ? {
-                  ...item,
-                  value: getResourceApiUrl(relatedTable, item.value),
-                }
-              : item
-          )
+          typeof f.parseInt(item.value) === 'number'
+            ? {
+              ...item,
+              value: getResourceApiUrl(relatedTable, item.value),
+            }
+            : item
+        )
         : rawItems,
     [rawItems, relatedTable]
   );
@@ -124,7 +124,7 @@ export function PickListComboBox({
   React.useEffect(
     () =>
       typeof pendingNewValue === 'string' &&
-      items.some(({ value }) => value === pendingNewValue)
+        items.some(({ value }) => value === pendingNewValue)
         ? updateValue(pendingNewValue)
         : undefined,
     [items, pendingNewValue, updateValue]
@@ -158,12 +158,17 @@ export function PickListComboBox({
   const name = pickList?.get('name') ?? pickListName;
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+
+  const isSpecialByPrefix =
+  typeof pickListName === 'string' && pickListName.startsWith('_');
+  const isSpecialPicklist =
+    isDisabled || isSpecialByPrefix || pickList?.get?.('readOnly') === true;
+
   return (
     <>
-      {pickList?.get('readOnly') === true || isDisabled ? (
+      {isSpecialPicklist ? (
         <Select
           id={id}
-          // "null" value is represented as an empty string
           value={value ?? ''}
           {...getValidationAttributes(parser)}
           disabled={isDisabled || isReadOnly}
@@ -196,6 +201,7 @@ export function PickListComboBox({
           ))}
         </Select>
       ) : (
+        // Keep AutoComplete for all other picklists (type-to-search + add-new if permitted)
         <AutoComplete<string>
           aria-label={undefined}
           disabled={isDisabled || isReadOnly}
@@ -210,7 +216,7 @@ export function PickListComboBox({
           value={(currentValue?.title || value) ?? ''}
           onChange={({ data }): void => updateValue(data)}
           onCleared={(): void => updateValue('')}
-          onNewValue={addNewValue}
+          onNewValue={handleAdd ? addNewValue : undefined}
         />
       )}
       {typeof pendingNewValue === 'string' &&
