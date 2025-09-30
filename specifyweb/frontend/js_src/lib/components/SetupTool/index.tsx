@@ -12,7 +12,7 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import type { SetupProgress } from '../Login';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
-import type { FieldConfig} from "./setupResources";
+import type { FieldConfig, ResourceConfig } from "./setupResources";
 import { resources } from "./setupResources";
 import { useId } from '../../hooks/useId';
 
@@ -20,19 +20,50 @@ type ResourceFormData = Record<string, any>;
 
 const stepOrder: RA<keyof SetupProgress> = [
   'institution',
-  'storageTree',
-  'globalGeographyTree',
+  'storageTreeDef',
+  'globalGeographyTreeDef',
   'division',
   'discipline',
-  'geographyTree',
-  'schemaConfig',
-  'taxonTree',
+  'geographyTreeDef',
+  'taxonTreeDef',
   'collection',
   'specifyUser',
 ];
 
 function findInitialStep(progress: SetupProgress): number {
   return stepOrder.findIndex((key) => !progress[key]);
+}
+
+function useFormDefaults(
+  resource: ResourceConfig,
+  setFormData: (data: ResourceFormData) => void,
+): void {
+  const defaultFormData: ResourceFormData = {};
+  const applyFieldDefaults = (field: FieldConfig, parentName?: string) =>
+    { 
+      const fieldName = parentName === undefined ? field.name : `${parentName}.${field.name}`
+      if (field.type === 'object' && field.fields !== undefined)
+        field.fields.forEach((field) => applyFieldDefaults(field, fieldName));
+      if (field.default !== undefined)
+        defaultFormData[fieldName] = field.default;
+    }
+  resource.fields.forEach(
+    (field) => applyFieldDefaults(field)
+  )
+  console.log(defaultFormData);
+  setFormData(defaultFormData);
+}
+
+function goToStep(
+  nextStep: number,
+  resourceName: string,
+  setCurrentStep: React.Dispatch<React.SetStateAction<number>>,
+): void {
+  if (resourceName === 'SpecifyUser') {
+    globalThis.location.reload();
+  } else {
+    setCurrentStep(nextStep);
+  }
 }
 
 export function SetupTool({
@@ -46,6 +77,10 @@ export function SetupTool({
 
   const initialStep = findInitialStep(setupProgress);
   const [currentStep, setCurrentStep] = React.useState(initialStep);
+
+  React.useEffect(() => {
+    useFormDefaults(resources[currentStep], setFormData);
+  }, [currentStep])
   
   const loading = React.useContext(LoadingContext);
 
@@ -94,12 +129,8 @@ export function SetupTool({
     loading(
       onResourceSaved(endpoint, resourceName, formData)
         .then(() => {
-          if (resourceName === 'SpecifyUser') {
-            globalThis.location.reload();
-          } else {
-            setFormData({});
-            setCurrentStep((previous) => previous + 1);
-          }
+          const nextStep = currentStep + 1;
+          goToStep(nextStep, resourceName, setCurrentStep);
         })
         .catch((error) => {
           console.error('Form submission failed:', error);
@@ -232,7 +263,7 @@ export function SetupTool({
               id={id('form')}
             >
               <H3 className="text-xl font-semibold mb-4">
-                {resources[currentStep].resourceName}
+                {resources[currentStep].label}
               </H3>
               {renderFormFields(resources[currentStep].fields)}
             </Form>

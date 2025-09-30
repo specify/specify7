@@ -27,13 +27,12 @@ import { OicLogin } from './OicLogin';
 
 export type SetupProgress = {
   readonly institution: boolean;
-  readonly storageTree: boolean;
-  readonly globalGeographyTree: boolean;
+  readonly storageTreeDef: boolean;
+  readonly globalGeographyTreeDef: boolean;
   readonly division: boolean;
   readonly discipline: boolean;
-  readonly geographyTree: boolean;
-  readonly schemaConfig: boolean;
-  readonly taxonTree: boolean;
+  readonly geographyTreeDef: boolean;
+  readonly taxonTreeDef: boolean;
   readonly collection: boolean;
   readonly specifyUser: boolean;
 };

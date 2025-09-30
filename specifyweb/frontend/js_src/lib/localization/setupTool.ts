@@ -37,5 +37,29 @@ export const setupToolText = createDictionary({
   },
   institutionAddressDescription: {
     'en-us': 'The address of the institution. Optional.',
-  }
+  },
+
+  storageTree: {
+    'en-us': 'Storage Tree',
+  },
+
+  geographyTree: {
+    'en-us': 'Geography Tree',
+  },
+
+  division: {
+    'en-us': 'Division',
+  },
+
+  discipline: {
+    'en-us': 'Discipline',
+  },
+
+  collection: {
+    'en-us': 'Collection',
+  },
+
+  specifyUser: {
+    'en-us': 'Specify User',
+  },
 } as const);

@@ -1,8 +1,10 @@
 import type { RA } from '../../utils/types';
 import { setupToolText } from '../../localization/setupTool';
+import { LocalizedString } from 'typesafe-i18n';
 
-type ResourceConfig = {
+export type ResourceConfig = {
   readonly resourceName: string;
+  readonly label: LocalizedString;
   readonly endpoint: string;
   readonly fields: RA<FieldConfig>;
 };
@@ -12,6 +14,7 @@ export type FieldConfig = {
   readonly label: string;
   readonly type?: 'boolean' | 'object' | 'password' | 'select' | 'text';
   readonly required?: boolean;
+  readonly default?: string | boolean;
   readonly description?: string;
   readonly options?: RA<string>;
   readonly fields?: RA<FieldConfig>;
@@ -46,7 +49,8 @@ const catalogNumberFormats = [
 
 export const resources: RA<ResourceConfig> = [
   {
-    resourceName: setupToolText.institution(),
+    resourceName: 'Institution',
+    label: setupToolText.institution(),
     endpoint: '/setup_tool/institution/create/',
     fields: [
       {
@@ -125,16 +129,18 @@ export const resources: RA<ResourceConfig> = [
     ],
   },
   {
-    resourceName: 'Storage',
-    endpoint: '/setup_tool/storage_tree/create/',
+    resourceName: 'StorageTreeDef',
+    label: setupToolText.storageTree(),
+    endpoint: '/setup_tool/storagetreedef/create/',
     fields: [
       {
         name: 'ranks',
-        label: 'Ranks',
+        label: 'Tree Ranks',
         required: false,
         type: 'object',
+        // TODO: Rank fields should be generated from a .json file.
         fields: [
-          { name: '0', label: 'Site', type: 'boolean' },
+          { name: '0', label: 'Site', type: 'boolean', default: true },
           { name: '100', label: 'Building', type: 'boolean' },
           { name: '150', label: 'Collection', type: 'boolean' },
           { name: '200', label: 'Room', type: 'boolean' },
@@ -146,11 +152,34 @@ export const resources: RA<ResourceConfig> = [
           { name: '500', label: 'Vial', type: 'boolean' },
         ]
       },
-      { name: 'fullNameFormat', label: 'Full Name Format', required: true },
+      // TODO: This should be name direction. Each rank should have configurable formats, too.
+      { name: 'fullNameDirection', label: 'Full Name Direction', required: true },
+    ],
+  },
+  {
+    resourceName: 'globalGeographyTreeDef',
+    label: setupToolText.geographyTree(),
+    endpoint: '/setup_tool/global_geographytreedef/create/',
+    fields: [
+      {
+        name: 'ranks',
+        label: 'Tree Ranks',
+        required: false,
+        type: 'object',
+        fields: [
+          { name: '0', label: 'Earth', type: 'boolean', default: true },
+          { name: '100', label: 'Continent', type: 'boolean', default: true },
+          { name: '200', label: 'Country', type: 'boolean', default: true },
+          { name: '300', label: 'State', type: 'boolean', default: true },
+          { name: '400', label: 'County', type: 'boolean', default: true },
+        ]
+      },
+      { name: 'fullNameDirection', label: 'Full Name Direction', required: true },
     ],
   },
   {
     resourceName: 'Division',
+    label: setupToolText.division(),
     endpoint: '/setup_tool/division/create/',
     fields: [
       { name: 'name', label: 'Name', required: true },
@@ -159,6 +188,7 @@ export const resources: RA<ResourceConfig> = [
   },
   {
     resourceName: 'Discipline',
+    label: setupToolText.discipline(),
     endpoint: '/setup_tool/discipline/create/',
     fields: [
       { name: 'name', label: 'Name', required: true },
@@ -171,7 +201,58 @@ export const resources: RA<ResourceConfig> = [
     ],
   },
   {
+    resourceName: 'geographyTreeDef',
+    label: setupToolText.geographyTree(),
+    endpoint: '/setup_tool/geographytreedef/create/',
+    fields: [
+      {
+        name: 'ranks',
+        label: 'Tree Ranks',
+        required: false,
+        type: 'object',
+        fields: [
+          { name: '0', label: 'Earth', type: 'boolean', default: true },
+          { name: '100', label: 'Continent', type: 'boolean', default: true },
+          { name: '200', label: 'Country', type: 'boolean', default: true },
+          { name: '300', label: 'State', type: 'boolean', default: true },
+          { name: '400', label: 'County', type: 'boolean', default: true },
+        ]
+      },
+      { name: 'fullNameDirection', label: 'Full Name Direction', required: true },
+    ],
+  },
+  {
+    resourceName: 'taxonTreeDef',
+    label: setupToolText.taxonTree(),
+    endpoint: '/setup_tool/taxontreedef/create/',
+    fields: [
+      {
+        name: 'ranks',
+        label: 'Tree Ranks',
+        required: false,
+        type: 'object',
+        fields: [
+          { name: '0', label: 'Life', type: 'boolean', default: true },
+          { name: '10', label: 'Kingdom', type: 'boolean', default: true },
+          { name: '30', label: 'Phylum', type: 'boolean', default: true },
+          { name: '40', label: 'Subphylum', type: 'boolean', default: true },
+          { name: '60', label: 'Class', type: 'boolean', default: true },
+          { name: '70', label: 'Subclass', type: 'boolean', default: false },
+          { name: '90', label: 'Superorder', type: 'boolean', default: false },
+          { name: '100', label: 'Order', type: 'boolean', default: true },
+          { name: '140', label: 'Family', type: 'boolean', default: true },
+          { name: '150', label: 'Subfamily', type: 'boolean', default: false },
+          { name: '180', label: 'Genus', type: 'boolean', default: true },
+          { name: '220', label: 'Species', type: 'boolean', default: true },
+          { name: '230', label: 'Subspecies', type: 'boolean', default: false },
+        ]
+      },
+      { name: 'fullNameDirection', label: 'Full Name Direction', required: true },
+    ],
+  },
+  {
     resourceName: 'Collection',
+    label: setupToolText.collection(),
     endpoint: '/setup_tool/collection/create/',
     fields: [
       { name: 'collectionName', label: 'Collection Name', required: true },
@@ -187,6 +268,7 @@ export const resources: RA<ResourceConfig> = [
   },
   {
     resourceName: 'SpecifyUser',
+    label: setupToolText.specifyUser(),
     endpoint: '/setup_tool/specifyuser/create/',
     fields: [
       {

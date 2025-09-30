@@ -285,3 +285,17 @@ def create_specifyuser(request, direct=False):
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
+
+# Trees
+
+def create_storage_tree(request, direct=False):
+    return JsonResponse({"success": True}, status=200)
+
+def create_global_geography_tree(request, direct=False):
+    return JsonResponse({"success": True}, status=200)
+
+def create_geography_tree(request, direct=False):
+    return JsonResponse({"success": True}, status=200)
+
+def create_taxon_tree(request, direct=False):
+    return JsonResponse({"success": True}, status=200)

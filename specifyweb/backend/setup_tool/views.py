@@ -32,22 +32,17 @@ def create_global_geography_tree_view(request):
 def create_division_view(request):
     return api.create_division(request, direct=True)
 
-
 def create_discipline_view(request):
     return api.create_discipline(request, direct=True)
 
 def create_geography_tree_view(request):
     return api.create_geography_tree(request, direct=True)
 
-def create_schema_config_view(request):
-    return api.create_schema_config(request, direct=True)
-
 def create_taxon_tree_view(request):
     return api.create_taxon_tree(request, direct=True)
 
 def create_collection_view(request):
     return api.create_collection(request, direct=True)
-
 
 def create_specifyuser_view(request):
     return api.create_specifyuser(request, direct=True)
@@ -61,7 +56,6 @@ def get_setup_progress(request):
         "division": models.Division.objects.exists(),
         "discipline": models.Discipline.objects.exists(),
         "geographyTree": models.Geographytreedef.objects.exists(),
-        "schemaConfig": models.Splocalecontainer.objects.exists(),
         "taxonTree": models.Taxontreedef.objects.exists(),
         "collection": models.Collection.objects.exists(),
         "specifyUser": models.Specifyuser.objects.exists(),
