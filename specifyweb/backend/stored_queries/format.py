@@ -7,8 +7,9 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import Element
 from xml.sax.saxutils import quoteattr
 
+from specifyweb.backend.stored_queries.utils import ensure_string_type_if_null
 from specifyweb.specify.api.utils import get_picklists
-from sqlalchemy import Table as SQLTable, inspect, case
+from sqlalchemy import Table as SQLTable, inspect, case, type_coerce
 from sqlalchemy.orm import aliased, Query
 from sqlalchemy.sql.expression import func, cast, literal, Label
 from sqlalchemy.sql.functions import concat
@@ -208,9 +209,14 @@ class ObjectFormatter:
                 new_expr = self._fieldformat(formatter_field_spec.table, formatter_field_spec.get_field(), new_expr)
 
         if 'trimzeros' in fieldNodeAttrib:
+            # new_expr = case(
+            #     [(new_expr.op('REGEXP')('^-?[0-9]+(\\.[0-9]+)?$'), cast(new_expr, types.Numeric(65)))],
+            #     else_=new_expr
+            # )
+            numeric_str = cast(cast(new_expr, types.Numeric(65)), types.String())
             new_expr = case(
-                [(new_expr.op('REGEXP')('^-?[0-9]+(\\.[0-9]+)?$'), cast(new_expr, types.Numeric(65)))],
-                else_=new_expr
+                (new_expr.op('REGEXP')('^-?[0-9]+(\\.[0-9]+)?$'), numeric_str),
+                else_=cast(new_expr, types.String()),
             )
 
         if 'format' in fieldNodeAttrib:
@@ -377,17 +383,25 @@ class ObjectFormatter:
 
         prec_fld = getattr(field.class_, specify_field.name + 'Precision', None)
 
-        format_expr = (
-            case(
-                [
-                    (prec_fld == 2, self.date_format_month),
-                    (prec_fld == 3, self.date_format_year),
-                ],
-                else_=self.date_format,
+        # format_expr = (
+        #     case(
+        #         [
+        #             (prec_fld == 2, self.date_format_month),
+        #             (prec_fld == 3, self.date_format_year),
+        #         ],
+        #         else_=self.date_format,
+        #     )
+        #     if prec_fld is not None
+        #     else self.date_format
+        # )
+        if prec_fld is not None:
+            format_expr = case(
+                (prec_fld == 2, literal(self.date_format_month, type_=types.String())),
+                (prec_fld == 3, literal(self.date_format_year,  type_=types.String())),
+                else_=ensure_string_type_if_null(literal(self.date_format, type_=types.String())),
             )
-            if prec_fld is not None
-            else self.date_format
-        )
+        else:
+            format_expr = literal(self.date_format, type_=types.String())
 
         return func.date_format(field, format_expr)
 
@@ -395,16 +409,29 @@ class ObjectFormatter:
                      field: InstrumentedAttribute | Extract):
         
         if self.format_agent_type and specify_field is Agent_model.get_field("agenttype"):
-            cases = [(field == _id, name) for (_id, name) in enumerate(agent_types)]
-            _case = case(cases)
+            # cases = [(field == _id, name) for (_id, name) in enumerate(agent_types)]
+            # _case = case(cases)
+            cases = [(field == _id, ensure_string_type_if_null(literal(name, type_=types.String()))) for (_id, name) in enumerate(agent_types)]
+            _case = case(cases, else_=ensure_string_type_if_null(literal('', type_=types.String())))
             return blank_nulls(_case) if self.replace_nulls else _case
         
         if self.format_picklist:
             picklists, _ = get_picklists(self.collection, table.table, specify_field.name)
             if picklists:
-                cases = [(field == item.value, item.title) for item in picklists[0].picklistitems.all()]
-                _case = case(cases, else_=field)
-            
+                # cases = [(field == item.value, item.title) for item in picklists[0].picklistitems.all()]
+                # _case = case(cases, else_=field)
+                items = list(picklists[0].picklistitems.all())
+                if not items:
+                    expr = cast(field, types.String())
+                    return blank_nulls(expr) if self.replace_nulls else expr
+        
+                cases = [
+                    (field == item.value, ensure_string_type_if_null(literal(item.title or "")))
+                    for item in items
+                ]
+                _case = case(cases, else_=cast(field, types.String()))
+                _case = type_coerce(_case, types.String())
+                
                 return blank_nulls(_case) if self.replace_nulls else _case
         
         if self.format_types and specify_field.type == "java.lang.Boolean":

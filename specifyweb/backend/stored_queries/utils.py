@@ -1,6 +1,7 @@
 import logging
 from typing import Any, Optional
 
+from sqlalchemy import type_coerce, types
 from sqlalchemy.dialects import mysql as mysql_dialect
 from sqlalchemy.sql.elements import ClauseElement
 from sqlalchemy.sql.selectable import Select
@@ -83,3 +84,7 @@ def log_sqlalchemy_query(
     except Exception as e:
         logger.log(level, "[query logging failed: %s]", e, exc_info=True)
         return None
+
+def ensure_string_type_if_null(expr):
+    t = getattr(expr, "type", None)
+    return type_coerce(expr, types.String()) if t is None or isinstance(t, NullType) else expr
