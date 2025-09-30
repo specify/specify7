@@ -6,6 +6,7 @@ import { mockTime, requireContext } from '../../../tests/helpers';
 import type { RA } from '../../../utils/types';
 import { overwriteReadOnly } from '../../../utils/types';
 import { getPref } from '../../InitialContext/remotePrefs';
+import { formatUrl } from '../../Router/queryString';
 import { cogTypes } from '../helpers';
 import type { SerializedResource } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
@@ -13,7 +14,6 @@ import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
 import type { SpecifyTable } from '../specifyTable';
 import { tables } from '../tables';
-import { formatUrl } from '../../Router/queryString';
 import type {
   CollectingEvent,
   CollectionObjectType,
