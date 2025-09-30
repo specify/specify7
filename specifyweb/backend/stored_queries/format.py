@@ -402,9 +402,20 @@ class ObjectFormatter:
         if self.format_picklist:
             picklists, _ = get_picklists(self.collection, table.table, specify_field.name)
             if picklists:
-                cases = [(field == item.value, item.title) for item in picklists[0].picklistitems.all()]
-                _case = case(cases, else_=field)
-            
+                # cases = [(field == item.value, item.title) for item in picklists[0].picklistitems.all()]
+                # _case = case(cases, else_=field)
+                items = list(picklists[0].picklistitems.all())
+                if not items:
+                    expr = cast(field, types.String())
+                    return blank_nulls(expr) if self.replace_nulls else expr
+        
+                cases = [
+                    (field == item.value, literal(item.title or "", type_=types.String()))
+                    for item in items
+                ]
+                _case = case(cases, else_=cast(field, types.String()))
+                _case = type_coerce(_case, types.String())
+                
                 return blank_nulls(_case) if self.replace_nulls else _case
         
         if self.format_types and specify_field.type == "java.lang.Boolean":
