@@ -561,7 +561,6 @@
 			                </row>
 			                <row>
 			                    <cell label="TT_SHOW_COUNTS_BELOW" labelfor="1" type="label" />
-			                    <cell colspan="3" id="1" ignore="true" name="TreeEditor.Rank.Threshold.Taxon" type="field" uitype="combobox" />
 			                </row>
 			                <row>
 			                    <cell label="TT_COL_CLR_1" labelfor="TreeColColor1.Taxon" type="label" />
@@ -584,7 +583,6 @@
 			                </row>
 			                <row>
 			                    <cell label="GT_SHOW_COUNTS_BELOW" labelfor="2" type="label" />
-			                    <cell colspan="3" id="2" ignore="true" name="TreeEditor.Rank.Threshold.Geography" type="field" uitype="combobox" />
 			                </row>
 			               <row>
 			                    <cell label="GT_COL_CLR_1" labelfor="TreeColColor1.Geography" type="label" />
@@ -610,7 +608,6 @@
 			                </row>
 			                <row>
 			                    <cell label="LT_SHOW_COUNTS_BELOW" labelfor="3" type="label" />
-			                    <cell colspan="3" id="3" ignore="true" name="TreeEditor.Rank.Threshold.LithoStrat" type="field" uitype="combobox" />
 			                </row>
 			               <row>
 			                    <cell label="LT_COL_CLR_1" labelfor="TreeColColor1.LithoStrat" type="label" />
@@ -633,7 +630,6 @@
 			                </row>
 			                <row>
 			                    <cell label="GP_SHOW_COUNTS_BELOW" labelfor="4" type="label" />
-			                    <cell colspan="3" id="4" ignore="true" name="TreeEditor.Rank.Threshold.GeologicTimePeriod" type="field" uitype="combobox" />
 			                </row>
 			               <row>
 			                    <cell label="GP_COL_CLR_1" labelfor="TreeColColor1.GeologicTimePeriod" type="label" />
@@ -658,7 +654,6 @@
                             </row>
                             <row>
                                 <cell label="ST_SHOW_COUNTS_BELOW" labelfor="5" type="label" />
-                                <cell colspan="3" id="5" ignore="true" name="TreeEditor.Rank.Threshold.Storage" type="field" uitype="combobox" />
                             </row>
                             <row>
                                 <cell label="ST_COL_CLR_1" labelfor="TreeColColor1.Storage" type="label" />
