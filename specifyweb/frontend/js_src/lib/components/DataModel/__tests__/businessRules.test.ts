@@ -14,7 +14,6 @@ import { schema } from '../schema';
 import type { SpecifyTable } from '../specifyTable';
 import { tables } from '../tables';
 import { formatUrl } from '../../Router/queryString';
-import { getUniquenessRules } from '../uniquenessRules';
 import type {
   CollectingEvent,
   CollectionObjectType,
@@ -666,7 +665,7 @@ describe('uniqueness rules', () => {
   overrideAjax(
     formatUrl('/api/specify/collectionobject/', {
       domainfilter: 'false',
-      catalognumber: 'Abc',
+      guid: 'Abc',
       collection: 4,
       offset: 0,
     }),
@@ -674,7 +673,7 @@ describe('uniqueness rules', () => {
       objects: [
         {
           id: 2,
-          catalogNumber: 'abc',
+          guid: 'abc',
           collection: '/api/specify/collection/4/',
           resource_uri: getResourceApiUrl('CollectionObject', 2),
         },
@@ -740,33 +739,18 @@ describe('uniqueness rules', () => {
   });
 
   test('non database uniqueness rule remains case sensitive', async () => {
-    const tableRules = getUniquenessRules('CollectionObject');
-    const catalogRule = tableRules?.find(({ rule }) =>
-      rule.fields.length === 1 && rule.fields.at(0)?.toLowerCase() === 'catalognumber'
+    const collectionObject = new tables.CollectionObject.Resource({
+      collection: '/api/specify/collection/4/',
+      guid: 'Abc',
+    });
+
+    await collectionObject.businessRuleManager?.checkField('guid');
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(collectionObject, tables.CollectionObject.getField('guid'))
     );
-    const originalConstraint = catalogRule?.rule.isDatabaseConstraint;
-    if (catalogRule !== undefined) catalogRule.rule.isDatabaseConstraint = false;
 
-    try {
-      const collectionObject = new tables.CollectionObject.Resource({
-        collection: '/api/specify/collection/4/',
-        catalogNumber: 'Abc',
-      });
-
-      await collectionObject.businessRuleManager?.checkField('catalogNumber');
-
-      const { result } = renderHook(() =>
-        useSaveBlockers(
-          collectionObject,
-          tables.CollectionObject.getField('catalogNumber')
-        )
-      );
-
-      expect(result.current[0]).toStrictEqual([]);
-    } finally {
-      if (catalogRule !== undefined && originalConstraint !== undefined)
-        catalogRule.rule.isDatabaseConstraint = originalConstraint;
-    }
+    expect(result.current[0]).toStrictEqual([]);
   });
 
   overrideAjax(getResourceApiUrl('Agent', 1), {
