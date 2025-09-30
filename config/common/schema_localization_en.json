@@ -35674,7 +35674,7 @@
 		"items": {
 			"agent1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -35894,7 +35894,7 @@
 			},
 			"collectionmemberid": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -35905,7 +35905,7 @@
 			},
 			"createdbyagent": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -35916,7 +35916,7 @@
 			},
 			"date1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -35949,7 +35949,7 @@
 			},
 			"date12": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -36147,7 +36147,7 @@
 			},
 			"integer1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -36477,7 +36477,7 @@
 			},
 			"modifiedbyagent": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -36829,7 +36829,7 @@
 			},
 			"remarks": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -36840,7 +36840,7 @@
 			},
 			"text1": {
 				"format": null,
-				"ishidden": true,
+				"ishidden": false,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -37280,7 +37280,7 @@
 			},
 			"timestampcreated": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -37291,7 +37291,7 @@
 			},
 			"timestampmodified": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -37533,7 +37533,7 @@
 			}
 		},
 		"format": null,
-		"ishidden": false,
+		"ishidden": true,
 		"isuiformatter": null,
 		"picklistname": null,
 		"type": null,
