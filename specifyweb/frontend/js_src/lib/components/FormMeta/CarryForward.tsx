@@ -263,6 +263,7 @@ export const tableValidForBulkClone = (
         (parts) =>
           parts.type === 'regex' ||
           parts.type === 'alphanumeric' ||
+          parts.type === 'alpha' ||
           (parts.type === 'numeric' && !parts.canAutonumber())
       ) ?? false
   );
