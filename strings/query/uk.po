@@ -143,7 +143,7 @@ msgstr ""
 "Коли файл експорту буде завершено та готовий до завантаження, з’явиться "
 "сповіщення."
 
-#: components/PickLists/index.tsx:188
+#: components/PickLists/index.tsx:193
 #: components/QueryBuilder/Formatter.tsx:220
 #: components/SchemaConfig/Components.tsx:90
 #. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Query Builder > Formatter ⬤ Components > Schema Config > Components

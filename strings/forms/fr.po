@@ -155,24 +155,24 @@ msgstr "Aujourd'hui"
 msgid "todayButtonDescription"
 msgstr "Définir sur la date actuelle"
 
-#: components/PickLists/index.tsx:285
+#: components/PickLists/index.tsx:291
 #. Used in: Components > Pick Lists > Index
 msgid "addToPickListConfirmation"
 msgstr "Ajouter à {pickListTable:string} ?"
 
-#: components/PickLists/index.tsx:290
+#: components/PickLists/index.tsx:296
 #. Used in: Components > Pick Lists > Index
 msgid "addToPickListConfirmationDescription"
 msgstr ""
 "Ajouter la valeur « {value:string} » au {pickListTable:string} nommé « "
 "{pickListName:string} » ?"
 
-#: components/PickLists/index.tsx:252
+#: components/PickLists/index.tsx:258
 #. Used in: Components > Pick Lists > Index
 msgid "invalidType"
 msgstr "Type invalide"
 
-#: components/PickLists/index.tsx:255
+#: components/PickLists/index.tsx:261
 #. Used in: Components > Pick Lists > Index
 msgid "invalidNumericPicklistValue"
 msgstr ""
