@@ -11,6 +11,7 @@ from django.views.decorators.http import require_POST
 from jsonschema import validate  # type: ignore
 from jsonschema.exceptions import ValidationError  # type: ignore
 
+from specifyweb.backend.workbench.permissions import BatchEditDataSetPT, DataSetPT
 from specifyweb.middleware.general import require_GET, require_http_methods
 from specifyweb.celery_tasks import CELERY_TASK_STATE
 from specifyweb.specify.api.crud import get_object_or_404
@@ -23,7 +24,6 @@ from specifyweb.backend.permissions.permissions import (
 )
 from . import models, tasks
 from .upload import upload as uploader, upload_plan_schema
-from .permissions import DataSetPT, BatchEditDataSetPT
 
 logger = logging.getLogger(__name__)
 
