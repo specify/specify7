@@ -49,13 +49,13 @@ export function PickListComboBox({
     () =>
       typeof relatedTable === 'string'
         ? rawItems.map((item) =>
-          typeof f.parseInt(item.value) === 'number'
-            ? {
-              ...item,
-              value: getResourceApiUrl(relatedTable, item.value),
-            }
-            : item
-        )
+            typeof f.parseInt(item.value) === 'number'
+              ? {
+                  ...item,
+                  value: getResourceApiUrl(relatedTable, item.value),
+                }
+              : item
+          )
         : rawItems,
     [rawItems, relatedTable]
   );
@@ -124,7 +124,7 @@ export function PickListComboBox({
   React.useEffect(
     () =>
       typeof pendingNewValue === 'string' &&
-        items.some(({ value }) => value === pendingNewValue)
+      items.some(({ value }) => value === pendingNewValue)
         ? updateValue(pendingNewValue)
         : undefined,
     [items, pendingNewValue, updateValue]
@@ -160,7 +160,7 @@ export function PickListComboBox({
   const isReadOnly = React.useContext(ReadOnlyContext);
 
   const isSpecialByPrefix =
-  typeof pickListName === 'string' && pickListName.startsWith('_');
+    typeof pickListName === 'string' && pickListName.startsWith('_');
   const isSpecialPicklist =
     isDisabled || isSpecialByPrefix || pickList?.get?.('readOnly') === true;
 
