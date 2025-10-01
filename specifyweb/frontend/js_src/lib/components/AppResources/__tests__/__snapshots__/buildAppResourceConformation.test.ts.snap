@@ -1,0 +1,165 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`buildAppResourceConformation multi-level completely empty tree 1`] = `
+[
+  {
+    "children": [
+      {
+        "children": [],
+        "key": "TestKey1",
+      },
+      {
+        "children": [],
+        "key": "TestKey5",
+      },
+      {
+        "children": [],
+        "key": "TestKey9",
+      },
+    ],
+    "key": "TestKey0",
+  },
+  {
+    "children": [
+      {
+        "children": [],
+        "key": "TestKey14",
+      },
+      {
+        "children": [],
+        "key": "TestKey18",
+      },
+      {
+        "children": [],
+        "key": "TestKey22",
+      },
+    ],
+    "key": "TestKey13",
+  },
+  {
+    "children": [
+      {
+        "children": [],
+        "key": "TestKey27",
+      },
+      {
+        "children": [],
+        "key": "TestKey31",
+      },
+      {
+        "children": [],
+        "key": "TestKey35",
+      },
+    ],
+    "key": "TestKey26",
+  },
+]
+`;
+
+exports[`buildAppResourceConformation multi-level tree 1`] = `
+[
+  {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [],
+            "key": "TestKey2",
+          },
+          {
+            "children": [],
+            "key": "TestKey3",
+          },
+        ],
+        "key": "TestKey1",
+      },
+      {
+        "children": [
+          {
+            "children": [],
+            "key": "TestKey5",
+          },
+          {
+            "children": [],
+            "key": "TestKey6",
+          },
+        ],
+        "key": "TestKey4",
+      },
+    ],
+    "key": "TestKey0",
+  },
+  {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [],
+            "key": "TestKey10",
+          },
+        ],
+        "key": "TestKey8",
+      },
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [],
+                "key": "TestKey13",
+              },
+            ],
+            "key": "TestKey12",
+          },
+          {
+            "children": [],
+            "key": "TestKey14",
+          },
+        ],
+        "key": "TestKey11",
+      },
+    ],
+    "key": "TestKey7",
+  },
+  {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [],
+                "key": "TestKey18",
+              },
+              {
+                "children": [],
+                "key": "TestKey19",
+              },
+            ],
+            "key": "TestKey17",
+          },
+        ],
+        "key": "TestKey16",
+      },
+    ],
+    "key": "TestKey15",
+  },
+]
+`;
+
+exports[`buildAppResourceConformation simple 1-level case 1`] = `
+[
+  {
+    "children": [],
+    "key": "TestKey0",
+  },
+  {
+    "children": [],
+    "key": "TestKey1",
+  },
+  {
+    "children": [],
+    "key": "TestKey2",
+  },
+]
+`;

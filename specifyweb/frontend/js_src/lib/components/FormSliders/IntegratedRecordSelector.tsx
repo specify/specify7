@@ -33,6 +33,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { AttachmentsCollection } from './AttachmentsCollection';
 import { shouldBeToOne } from './helpers';
+import { AttachmentWarningDeletion } from './AttachmentWarningDeletion';
 import { RecordSelectorFromCollection } from './RecordSelectorFromCollection';
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
@@ -167,6 +168,8 @@ export function IntegratedRecordSelector({
   const disableRemove =
     isLoanPrep &&
     (collection.related?.isNew() === true || collection.related?.needsSaved);
+
+  const [isWarningOpen, handleWarning, closeWarning] = useBooleanState();
 
   return (
     <ReadOnlyContext.Provider value={isReadOnly}>
@@ -316,7 +319,11 @@ export function IntegratedRecordSelector({
                             disableRemove
                           }
                           onClick={(): void => {
-                            handleRemove('minusButton');
+                            if (isAttachmentTable) {
+                              handleWarning();
+                            } else {
+                              handleRemove('minusButton');
+                            }
                           }}
                         />
                       ) : undefined}
@@ -325,7 +332,6 @@ export function IntegratedRecordSelector({
                           dialog === false ? '-ml-2' : '-ml-4'
                         }`}
                       />
-
                       {isAttachmentTable && (
                         <AttachmentsCollection collection={collection} />
                       )}
@@ -375,9 +381,14 @@ export function IntegratedRecordSelector({
                       }
                 }
                 onClose={handleClose}
-                onDelete={(_resource, index): void => {
-                  if (isCollapsed) handleExpand();
-                  handleDelete?.(index, 'minusButton');
+                onDelete={(resource, index): void => {
+                  if (isAttachmentTable) {
+                    handleWarning();
+                  } else {
+                    collection.remove(resource);
+                    if (isCollapsed) handleExpand();
+                    handleDelete?.(index, 'minusButton');
+                  }
                 }}
                 onFetchMore={handleFetch}
               />
@@ -399,6 +410,21 @@ export function IntegratedRecordSelector({
                 }}
               />
             ) : null}
+            {isWarningOpen &&
+            typeof handleRemove === 'function' &&
+            isAttachmentTable ? (
+              <AttachmentWarningDeletion
+                closeWarning={closeWarning}
+                collection={collection}
+                formType={formType}
+                index={index}
+                isCollapsed={isCollapsed}
+                resource={resource}
+                onDelete={handleDelete}
+                onExpand={handleExpand}
+                onRemove={handleRemove}
+              />
+            ) : undefined}
           </>
         )}
       </RecordSelectorFromCollection>

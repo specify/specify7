@@ -104,7 +104,7 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
         onChange={({ label, data }): void => {
           setSearchValue(label as string);
           ajax<IR<string | { readonly rankid: number; readonly id: number }>>(
-            `/api/specify_tree/${tableName.toLowerCase()}/${data.id}/path/`,
+            `/trees/specify_tree/${tableName.toLowerCase()}/${data.id}/path/`,
             {
               headers: { Accept: 'application/json' },
             }

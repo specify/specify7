@@ -5,13 +5,14 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { f } from '../../utils/functools';
 import type { RR, ValueOf } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
-import { H2, Ul } from '../Atoms';
+import { H2, H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { formatNumber } from '../Atoms/Internationalization';
 import { strictGetTable } from '../DataModel/tables';
@@ -19,18 +20,29 @@ import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { TableIcon } from '../Molecules/TableIcon';
 import { CreateRecordSetButton } from './RecordSet';
+import type { RecordCounts } from './WbValidation';
+import { RecordCountPriority } from './WbValidation';
+
+const localizationMap: Record<keyof RecordCounts, LocalizedString> = {
+  Uploaded: wbText.recordsCreated(),
+  Deleted: wbText.recordsDeleted(),
+  MatchedAndChanged: wbText.recordsMatchedAndChanged(),
+  Updated: wbText.recordsUpdated(),
+};
 
 export function WbUploaded({
   recordCounts,
   datasetId,
   datasetName,
   isUploaded,
+  isUpdate,
   onClose: handleClose,
 }: {
-  readonly recordCounts: Partial<Record<Lowercase<keyof Tables>, number>>;
+  readonly recordCounts: RecordCounts;
   readonly datasetId: number;
   readonly datasetName: string;
   readonly isUploaded: boolean;
+  readonly isUpdate: boolean;
   readonly onClose: () => void;
 }): JSX.Element {
   return (
@@ -39,35 +51,32 @@ export function WbUploaded({
         <div>
           <H2>
             {isUploaded
-              ? wbText.uploadResults()
-              : wbText.potentialUploadResults()}
+              ? wbText.affectedResults()
+              : wbText.potentialAffectedResults()}
           </H2>
           <p>
             {isUploaded
-              ? wbText.wbUploadedDescription()
-              : wbText.wbUploadedPotentialDescription()}
+              ? wbText.wbAffectedDescription()
+              : wbText.wbAffectedPotentialDescription()}
           </p>
         </div>
         <Ul className="flex flex-1 flex-col gap-2">
           {Object.entries(recordCounts)
-            .sort(
-              sortFunction(([_tableName, recordCount]) => recordCount, false)
-            )
-            .map(([tableName, recordCount], index) =>
-              typeof recordCount === 'number' ? (
-                <TableResults
-                  key={index}
-                  recordCount={recordCount}
-                  tableName={tableName}
-                />
-              ) : null
-            )}
+            .sort(sortFunction(([value]) => RecordCountPriority.indexOf(value)))
+            .map(([resultType, recordsPerType], id) => (
+              <ResultsPerType
+                key={id}
+                recordsPerType={recordsPerType}
+                resultType={resultType}
+              />
+            ))}
         </Ul>
         <div className="flex flex-wrap gap-2">
           {isUploaded && (
             <CreateRecordSetButton
               datasetId={datasetId}
               datasetName={datasetName}
+              isUpdate={isUpdate}
               small
               onClose={f.void}
             />
@@ -78,6 +87,31 @@ export function WbUploaded({
         </div>
       </div>
     </ErrorBoundary>
+  );
+}
+
+function ResultsPerType({
+  resultType,
+  recordsPerType,
+}: {
+  readonly resultType: keyof RecordCounts;
+  readonly recordsPerType: ValueOf<RecordCounts>;
+}): JSX.Element {
+  return (
+    <>
+      <H3>{localizationMap[resultType]}</H3>
+      {Object.entries(recordsPerType ?? {})
+        .sort(sortFunction(([_tableName, recordCount]) => recordCount, false))
+        .map(([tableName, recordCount], index) =>
+          typeof recordCount === 'number' ? (
+            <TableResults
+              key={index}
+              recordCount={recordCount}
+              tableName={tableName}
+            />
+          ) : null
+        )}
+    </>
   );
 }
 

@@ -9,6 +9,7 @@ import type { GetOrSet, RA } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -83,18 +84,20 @@ export function useResourcePreview(
                 className="flex gap-2 rounded bg-[color:var(--form-background)] p-2"
                 key={index}
               >
-                <ResourceLink
-                  component={Link.Icon}
-                  props={{
-                    icon: 'eye',
-                  }}
-                  resource={resource}
-                  resourceView={{
-                    onDeleted: (): void =>
-                      setResources(removeItem(resources, index)),
-                  }}
-                />
-                <output className="whitespace-pre-wrap">{output}</output>
+                <ReadOnlyContext.Provider value>
+                  <ResourceLink
+                    component={Link.Icon}
+                    props={{
+                      icon: 'eye',
+                    }}
+                    resource={resource}
+                    resourceView={{
+                      onDeleted: (): void =>
+                        setResources(removeItem(resources, index)),
+                    }}
+                  />
+                  <output className="whitespace-pre-wrap">{output}</output>
+                </ReadOnlyContext.Provider>
               </div>
             );
           })

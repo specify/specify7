@@ -195,6 +195,7 @@ export function ResourceMapping({
   }, [mappingPath, sourcePath]);
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+
   const lineData = React.useMemo(
     () =>
       getMappingLineData({
@@ -203,7 +204,12 @@ export function ResourceMapping({
         showHiddenFields: true,
         generateFieldData: 'all',
         spec: navigatorSpecs.formatterEditor,
-      }),
+      }).map((line) => ({
+        ...line,
+        fieldsData: Object.fromEntries(
+          Object.entries(line.fieldsData).filter(([key]) => key !== 'age')
+        ),
+      })),
     [table.name, mappingPath]
   );
 

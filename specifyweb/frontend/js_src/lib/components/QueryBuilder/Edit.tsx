@@ -60,7 +60,6 @@ function EditQueryDialog({
   >('default');
 
   const loading = React.useContext(LoadingContext);
-  const navigate = useNavigate();
   return state === 'default' ? (
     <ResourceView
       dialog="modal"
@@ -87,7 +86,7 @@ function EditQueryDialog({
       onAdd={undefined}
       onClose={handleClose}
       onDeleted={handleClose}
-      onSaved={(): void => navigate(`/specify/query/${queryResource.id}/`)}
+      onSaved={(): void => globalThis.location.reload()}
     >
       {queryResource.isNew() ? undefined : (
         <div className="flex flex-col">

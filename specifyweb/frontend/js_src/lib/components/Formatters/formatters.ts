@@ -145,6 +145,7 @@ async function formatField(
     aggregator,
     fieldFormatter,
     formatFieldValue = true,
+    trimZeros = false,
   }: Formatter['definition']['fields'][number]['fields'][number] & {
     readonly formatFieldValue?: boolean;
   },
@@ -195,6 +196,11 @@ async function formatField(
       ? naiveFormatter(parentResource.specifyTable.name, parentResource.id)
       : userText.noPermission();
 
+  if (trimZeros)
+    formatted = Number.isNaN(Number(formatted))
+      ? formatted
+      : Number(formatted).toString();
+
   return {
     formatted: formatted?.toString() ?? '',
     separator: (formatted ?? '') === '' ? '' : separator,
@@ -218,6 +224,7 @@ export async function fetchPathAsString(
       aggregator: undefined,
       fieldFormatter: undefined,
       formatFieldValue,
+      trimZeros: false,
     },
     baseResource
   );
@@ -266,6 +273,7 @@ const autoGenerateFormatter = (table: SpecifyTable): Formatter => ({
             formatter: undefined,
             aggregator: undefined,
             fieldFormatter: undefined,
+            trimZeros: false,
           })),
       },
     ],

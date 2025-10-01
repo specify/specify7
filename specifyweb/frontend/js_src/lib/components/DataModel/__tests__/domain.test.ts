@@ -130,11 +130,10 @@ describe('Resource initialization preferences', () => {
 
   test('CO_CREATE_DET', async () => {
     const collectionObject = new tables.CollectionObject.Resource();
-    await expect(
-      collectionObject
-        .rgetCollection('determinations')
-        .then((collection) => collection.models.length)
-    ).resolves.toBe(1);
+    const determinations =
+      collectionObject.getDependentResource('determinations');
+    expect(determinations).toHaveLength(1);
+    expect(determinations?.models.at(0)?.get('isCurrent')).toBe(true);
   });
 
   test('Cloning resource does not create duplicates', async () => {

@@ -251,4 +251,5 @@ export function SubView({
 
 const RECURSIVE_RENDERING_EXCEPTIONS = new Set<SpecifyTable>([
   tables.CollectionObjectGroup,
+  tables.CollectionObject,
 ]);

@@ -218,6 +218,7 @@ function generateForm(
                         typeSearch: undefined,
                         searchView: undefined,
                         isReadOnly: mode === 'view',
+                        defaultRecord: undefined,
                       },
                       isRequired: false,
                       viewName: undefined,

@@ -252,3 +252,10 @@ export const cogTypes = {
   CONSOLIDATED: 'Consolidated',
   DRILL_CORE: 'Drill Core',
 };
+
+export const agentTypes = {
+  ORGANIZATION: 0,
+  PERSON: 1,
+  OTHER: 2,
+  GROUP: 3,
+} as const;

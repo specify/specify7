@@ -5,6 +5,7 @@ import type { State } from 'typesafe-reducer';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
 import { userText } from '../../localization/user';
 import { f } from '../../utils/functools';
 import { getValidationAttributes } from '../../utils/parser/definitions';
@@ -24,10 +25,8 @@ import { serializeResource } from '../DataModel/serializers';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
-import type {
-  CollectionObject,
-  CollectionObjectType,
-} from '../DataModel/types';
+import type { CollectionObject } from '../DataModel/types';
+import type { CollectionObjectType } from '../DataModel/types';
 import { format, naiveFormatter } from '../Formatters/formatters';
 import type { FormType } from '../FormParse';
 import { ResourceView, RESTRICT_ADDING } from '../Forms/ResourceView';
@@ -47,6 +46,7 @@ import {
   getRelatedCollectionId,
   makeComboBoxQuery,
   pendingValueToResource,
+  useQueryComboBoxDefaults,
 } from './helpers';
 import type { TypeSearch } from './spec';
 import { useCollectionRelationships } from './useCollectionRelationships';
@@ -72,6 +72,7 @@ export function QueryComboBox({
   typeSearch: initialTypeSearch,
   forceCollection,
   searchView,
+  defaultRecord,
   relatedTable: initialRelatedTable,
 }: {
   readonly id: string | undefined;
@@ -87,38 +88,12 @@ export function QueryComboBox({
   readonly typeSearch: TypeSearch | string | undefined;
   readonly forceCollection: number | undefined;
   readonly searchView?: string;
+  readonly defaultRecord?: string | undefined;
   readonly relatedTable?: SpecifyTable | undefined;
 }): JSX.Element {
   React.useEffect(() => {
-    if (resource === undefined || !resource.isNew()) return;
-    if (field.name === 'cataloger') {
-      const record = toTable(resource, 'CollectionObject');
-      record?.set(
-        'cataloger',
-        record?.get('cataloger') ?? userInformation.agent.resource_uri,
-        {
-          silent: true,
-        }
-      );
-    }
-    if (field.name === 'specifyUser') {
-      const record = toTable(resource, 'RecordSet');
-      record?.set(
-        'specifyUser',
-        record?.get('specifyUser') ?? userInformation.resource_uri
-      );
-    }
-    if (field.name === 'receivedBy') {
-      const record = toTable(resource, 'LoanReturnPreparation');
-      record?.set(
-        'receivedBy',
-        record?.get('receivedBy') ?? userInformation.agent.resource_uri,
-        {
-          silent: true,
-        }
-      );
-    }
-  }, [resource, field]);
+    useQueryComboBoxDefaults({ resource, field, defaultRecord });
+  }, [resource, field, defaultRecord]);
 
   const treeData = useTreeData(resource, field);
   const collectionRelationships = useCollectionRelationships(resource);
@@ -132,7 +107,7 @@ export function QueryComboBox({
     treeData !== undefined &&
     collectionRelationships !== undefined &&
     typeSearch !== undefined;
-  const { value, updateValue, validationRef, inputRef, parser } =
+  const { value, updateValue, validationRef, inputRef, parser, setValidation } =
     useResourceValue(resource, field, undefined);
 
   /**
@@ -184,30 +159,42 @@ export function QueryComboBox({
            */
           field.isDependent())
           ? resource
-              .rgetPromise<string, AnySchema>(field.name)
-              .then(async (resource) =>
-                resource === undefined || resource === null
-                  ? {
-                      label: localized(''),
-                      resource: undefined,
-                    }
-                  : (value === formattedRef.current?.value &&
+              .rgetPromise<string, AnySchema>(field.name, true, false)
+              .then(async (resource) => {
+                setValidation([]);
+                if (resource === undefined || resource === null) {
+                  return {
+                    label: localized(''),
+                    resource: undefined,
+                  };
+                } else {
+                  const formatted =
+                    value === formattedRef.current?.value &&
                     typeof formattedRef.current === 'object'
-                      ? Promise.resolve(formattedRef.current.formatted)
-                      : format(
+                      ? await Promise.resolve(formattedRef.current.formatted)
+                      : await format(
                           resource,
                           typeof typeSearch === 'object'
                             ? typeSearch.formatter
                             : undefined,
                           true
-                        )
-                    ).then((formatted) => ({
-                      label:
-                        formatted ??
-                        naiveFormatter(field.relatedTable.label, resource.id),
-                      resource,
-                    }))
-              )
+                        );
+
+                  return {
+                    label:
+                      formatted ??
+                      naiveFormatter(field.relatedTable.label, resource.id),
+                    resource,
+                  };
+                }
+              })
+              .catch((_) => {
+                setValidation([formsText.invalidValue()]);
+                return {
+                  label: localized(''),
+                  resource: undefined,
+                };
+              })
           : { label: userText.noPermission(), resource: undefined },
       [version, value, resource, field, typeSearch]
     ),
@@ -261,6 +248,10 @@ export function QueryComboBox({
     (typeof typeSearch === 'object' ? typeSearch?.table : undefined) ??
     field.relatedTable;
 
+  // Used to fetch again tree def if the component type changes
+  const componentType =
+    resource?.specifyTable === tables.Component ? resource?.get('type') : null;
+
   const [fetchedTreeDefinition] = useAsyncState(
     React.useCallback(async () => {
       if (resource?.specifyTable === tables.Determination) {
@@ -276,6 +267,17 @@ export function QueryComboBox({
                 ) => collectionObjectType?.get('taxonTreeDef')
               )
           : undefined;
+      } else if (resource?.specifyTable === tables.Component) {
+        const typeResource = await toTable(resource, 'Component')?.rgetPromise(
+          'type'
+        );
+        if (typeResource === undefined || typeResource === null) {
+          console.warn('Could not scope Component -> name without type', {
+            component: resource,
+          });
+          return undefined;
+        }
+        return typeResource.get('taxonTreeDef');
       } else if (resource?.specifyTable === tables.Taxon) {
         const definition = resource.get('definition');
         const parentDefinition = (
@@ -284,7 +286,11 @@ export function QueryComboBox({
         return definition || parentDefinition;
       }
       return undefined;
-    }, [resource, resource?.collection?.related?.get('collectionObjectType')]),
+    }, [
+      resource,
+      resource?.collection?.related?.get('collectionObjectType'),
+      componentType,
+    ]),
     false
   );
 
@@ -390,6 +396,7 @@ export function QueryComboBox({
       onClick={(): void => handleOpenRelated(true)}
     />
   );
+
   return (
     <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
       <TreeDefinitionContext.Provider value={treeDefinition}>

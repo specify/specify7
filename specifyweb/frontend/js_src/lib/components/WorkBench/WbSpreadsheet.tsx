@@ -20,7 +20,11 @@ import { getIcon, unknownIcon } from '../InitialContext/icons';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { configureHandsontable } from './handsontable';
 import { useHotHooks } from './hooks';
-import { getSelectedRegions, setHotData } from './hotHelpers';
+import {
+  getPhysicalColToMappingCol,
+  getSelectedRegions,
+  setHotData,
+} from './hotHelpers';
 import { useHotProps } from './hotProps';
 import type { WbMapping } from './mapping';
 import { fetchWbPickLists } from './pickLists';
@@ -37,6 +41,7 @@ function WbSpreadsheetComponent({
   workbench,
   mappings,
   isResultsOpen,
+  hasBatchEditRolledBack,
   checkDeletedFail,
   spreadsheetChanged,
   onClickDisambiguate: handleClickDisambiguate,
@@ -49,15 +54,13 @@ function WbSpreadsheetComponent({
   readonly workbench: Workbench;
   readonly mappings: WbMapping | undefined;
   readonly isResultsOpen: boolean;
+  readonly hasBatchEditRolledBack: boolean;
   readonly checkDeletedFail: (statusCode: number) => boolean;
   readonly spreadsheetChanged: () => void;
   readonly onClickDisambiguate: () => void;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
-  const physicalColToMappingCol = (physicalCol: number): number | undefined =>
-    mappings?.lines.findIndex(
-      ({ headerName }) => headerName === dataset.columns[physicalCol]
-    );
+  const physicalColToMappingCol = getPhysicalColToMappingCol(mappings, dataset);
 
   const { validation, cells, disambiguation } = workbench;
 
@@ -71,22 +74,24 @@ function WbSpreadsheetComponent({
                 upload_results: {
                   disableSelection: true,
                   isCommand: false,
-                  renderer: (hot, wrapper) => {
+                  renderer: (_, wrapper) => {
                     const { endRow: visualRow, endCol: visualCol } =
                       getSelectedRegions(hot).at(-1) ?? {};
                     const physicalRow = hot.toPhysicalRow(visualRow ?? 0);
                     const physicalCol = hot.toPhysicalColumn(visualCol ?? 0);
 
                     const createdRecords =
-                      validation.uploadResults.newRecords[physicalRow]?.[
-                        physicalCol
-                      ];
+                      validation.uploadResults.interestingRecords[
+                        physicalRow
+                      ]?.[physicalCol];
 
                     if (
                       visualRow === undefined ||
                       visualCol === undefined ||
                       createdRecords === undefined ||
-                      !cells.getCellMeta(physicalRow, physicalCol, 'isNew')
+                      !cells.isResultCell(
+                        cells.getCellMetaArray(physicalRow, physicalCol)
+                      )
                     ) {
                       wrapper.textContent = wbText.noUploadResultsAvailable();
                       wrapper.parentElement?.classList.add('htDisabled');
@@ -132,21 +137,24 @@ function WbSpreadsheetComponent({
               } as const)
             : ({
                 row_above: {
-                  disabled: () => isReadOnly,
+                  disabled: () => isReadOnly || dataset.isupdate,
                 },
                 row_below: {
-                  disabled: () => isReadOnly,
+                  disabled: () => isReadOnly || dataset.isupdate,
                 },
                 remove_row: {
                   disabled: () => {
                     if (isReadOnly) return true;
                     // Or if called on the last row
                     const selectedRegions = getSelectedRegions(hot);
-                    return (
-                      selectedRegions.length === 1 &&
-                      selectedRegions[0].startRow === data.length - 1 &&
-                      selectedRegions[0].startRow === selectedRegions[0].endRow
-                    );
+                    // Allow removing last row in Batch Edit since rows cannot be added in Batch Edit
+                    const disableRemoveLastRow = dataset.isupdate
+                      ? false
+                      : selectedRegions[0].startRow === data.length - 1 &&
+                        selectedRegions[0].startRow ===
+                          selectedRegions[0].endRow;
+
+                    return selectedRegions.length === 1 && disableRemoveLastRow;
                   },
                 },
                 disambiguate: {
@@ -169,7 +177,7 @@ function WbSpreadsheetComponent({
         };
 
   React.useEffect(() => {
-    if (hot === undefined) return;
+    if (hot === undefined || hasBatchEditRolledBack) return;
     hot.batch(() => {
       (mappings === undefined
         ? Promise.resolve({})
@@ -224,9 +232,6 @@ function WbSpreadsheetComponent({
         columns={columns}
         commentedCellClassName="htCommentCell"
         comments={comments}
-        contextMenu={contextMenuConfig}
-        // eslint-disable-next-line functional/prefer-readonly-type
-        data={data as (string | null)[][]}
         enterBeginsEditing={enterBeginsEditing}
         enterMoves={enterMoves}
         hiddenColumns={hiddenColumns}
@@ -245,6 +250,9 @@ function WbSpreadsheetComponent({
         rowHeaders
         stretchH="all"
         tabMoves={tabMoves}
+        contextMenu={contextMenuConfig}
+        // eslint-disable-next-line functional/prefer-readonly-type
+        data={data as (string | null)[][]}
         {...hooks}
       />
     </section>

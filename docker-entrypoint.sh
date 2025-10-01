@@ -1,3 +1,4 @@
+#!/bin/bash
 set -e
 if [ -z "$(ls -A /volumes/static-files/specify-config)" ]; then
   mkdir -p /volumes/static-files/specify-config/config/
@@ -11,6 +12,7 @@ if [ "$1" = 've/bin/gunicorn' ] || [ "$1" = 've/bin/python' ]; then
   set +e
   ve/bin/python manage.py base_specify_migration
   ve/bin/python manage.py migrate
+  # ve/bin/python manage.py run_key_migration_functions # Uncomment if you want the key migration functions to run on startup.
   set -e
 fi
 exec "$@"

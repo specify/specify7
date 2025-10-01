@@ -74,7 +74,8 @@ const uiFormatter = new UiFormatter(
   localized('test'),
   formatterFields,
   tables.CollectionObject,
-  undefined
+  undefined,
+  'test'
 );
 const title = formsText.requiredFormat({ format: uiFormatter.pattern()! });
 

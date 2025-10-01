@@ -116,7 +116,7 @@ export function Tree<
       softError('treeDefId is undefined');
     } else {
       await ping(
-        `/api/specify_tree/${tableName.toLowerCase()}/${treeDefId}/add_root/`,
+        `/trees/specify_tree/${tableName.toLowerCase()}/${treeDefId}/add_root/`,
         {
           method: 'POST',
           headers: { Accept: 'application/json' },
@@ -157,12 +157,6 @@ export function Tree<
         // If user wants to edit tree ranks, allow tree ranks to receive focus
         if (isEditingRanks) return;
         event.preventDefault();
-        // Unset and set focus path to trigger a useEffect hook in <TreeNode>
-        setFocusPath([-1]);
-        globalThis.setTimeout(
-          () => setFocusPath(focusPath.length > 0 ? focusPath : [0]),
-          0
-        );
       }}
     >
       <div role="none rowgroup">

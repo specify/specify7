@@ -452,7 +452,7 @@ const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 /** Record ID column index in Query Results when not in distinct mode */
 export const queryIdField = 0;
 
-function canMerge(table: SpecifyTable): boolean {
+export function canMerge(table: SpecifyTable): boolean {
   const isEmbeddedCollectingEvent = schema.embeddedCollectingEvent;
   const isEmbeddedPaleoContext = schema.embeddedPaleoContext;
   const canMerge =
