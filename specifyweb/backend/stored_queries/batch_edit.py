@@ -887,7 +887,8 @@ class RowPlanCanonical(NamedTuple):
     def to_upload_plan(
         self,
         base_table: Table,
-        localization_dump: dict[str, dict[str, str]],
+        # localization_dump: dict[str, dict[str, str]],
+        localization_dump: dict[str, list[tuple[str, str, bool]]],
         query_fields: list[QueryField],
         fields_added: dict[str, int],
         get_column_id: Callable[[str], int],
@@ -909,13 +910,30 @@ class RowPlanCanonical(NamedTuple):
                 _id - 1
             ]  # Need to go off by 1, bc we added 1 to account for id fields
             table_name, field_name = _get_table_and_field(field)
-            field_labels = localization_dump.get(table_name, {})
+            field_labels = localization_dump.get(table_name, [])
             # It could happen that the field we saw doesn't exist.
             # Plus, the default options get chosen in the cases of
-            if field_name not in field_labels or field.fieldspec.contains_tree_rank():
+            if field_name not in [fl[0] for fl in field_labels] or field.fieldspec.contains_tree_rank():
                 localized_label = naive_field_format(field.fieldspec)
             else:
-                localized_label = field_labels[field_name]
+                localized_label = None
+                # localized_label_idx = None
+                # localized_label_idx = 0
+                localized_label_idx = len(field_labels) - 1
+                for i, fl in enumerate(field_labels):
+                    if fl[0] == field_name and not fl[2]:
+                        localized_label = fl[1]
+                        # set the localized_label that was just retrieved from field_lables to a tuple ending in True to mark it as used
+                        # field_labels[i] = (fl[0], fl[1], True)
+                        localized_label_idx = i
+                        break
+
+                field_labels[localized_label_idx] = (field_labels[localized_label_idx][0], field_labels[localized_label_idx][1], True)
+                localization_dump[table_name] = field_labels
+
+            if localized_label is None:
+                localized_label = field_labels[localized_label_idx][1]
+                
             string_id = field.fieldspec.to_stringid()
             fields_added[localized_label] = fields_added.get(localized_label, 0) + 1
             _count = fields_added[localized_label]
@@ -1159,11 +1177,29 @@ def run_batch_edit_query(props: BatchEditProps):
     ), "Got misaligned captions!"
 
     localization_dump = {}
+    # if captions:
+    #     for (field, caption) in zip(visible_fields, captions):
+    #         table_name, field_name = _get_table_and_field(field)
+    #         field_labels = localization_dump.get(table_name, {})
+    #         field_labels[field_name] = caption
+    # if captions:
+    #     for (field, caption) in zip(visible_fields, captions):
+    #         table_name, field_name = _get_table_and_field(field)
+    #         field_labels = localization_dump.get(table_name, {})
+    #         while field_name in field_labels.keys():
+    #             field_name += "_"
+    #         field_labels[field_name] = caption
+    #         if table_name not in localization_dump.keys():
+    #             localization_dump[table_name] = field_labels
+    #         else:
+    #             existing_field_labels = localization_dump[table_name]
+    #             localization_dump[table_name] = {**existing_field_labels, **field_labels}
     if captions:
         for (field, caption) in zip(visible_fields, captions):
             table_name, field_name = _get_table_and_field(field)
-            field_labels = localization_dump.get(table_name, {})
-            field_labels[field_name] = caption
+            field_labels = localization_dump.get(table_name, [])
+            new_field_label = (field_name, caption, False)
+            field_labels.append(new_field_label)
             localization_dump[table_name] = field_labels
 
     naive_row_plan = RowPlanMap.get_row_plan(visible_fields)
