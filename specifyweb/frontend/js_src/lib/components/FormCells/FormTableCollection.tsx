@@ -7,7 +7,6 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Collection } from '../DataModel/specifyTable';
 import { shouldBeToOne } from '../FormSliders/helpers';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormTable } from './FormTable';
 
 export function FormTableCollection({
