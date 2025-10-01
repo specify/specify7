@@ -560,9 +560,6 @@
 			                    <cell colspan="5" label="TAXON_TREE" type="separator" />
 			                </row>
 			                <row>
-			                    <cell label="TT_SHOW_COUNTS_BELOW" labelfor="1" type="label" />
-			                </row>
-			                <row>
 			                    <cell label="TT_COL_CLR_1" labelfor="TreeColColor1.Taxon" type="label" />
 			                    <cell id="TreeColColor1.Taxon" name="Treeeditor.TreeColColor1.Taxon" type="field" uitype="colorchooser" />
 			                </row>
