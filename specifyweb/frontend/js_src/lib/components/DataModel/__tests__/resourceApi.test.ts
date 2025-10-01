@@ -11,9 +11,9 @@ import { deserializeResource, serializeResource } from '../serializers';
 import type { Collection } from '../specifyTable';
 import { tables } from '../tables';
 import type {
+  CollectionObject,
   CollectionObjectAttribute,
   CollectionObjectType,
-  CollectionObject,
   Determination,
 } from '../types';
 
