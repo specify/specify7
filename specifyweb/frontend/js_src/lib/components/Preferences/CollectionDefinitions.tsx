@@ -11,6 +11,36 @@ import type { GenericPreferences } from './types';
 import { definePref } from './types';
 
 export const collectionPreferenceDefinitions = {
+  general: {
+    title: preferencesText.general(),
+    subCategories: {
+      behavior: {
+        title: preferencesText.behavior(),
+        items: {
+          sp7_scope_table_picklists: definePref<boolean>({
+            title: localized(
+              "Limit 'Entire Table' picklists to values used by this collection"
+            ),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            renderer: f.never,
+            container: 'label',
+            type: 'java.lang.Boolean',
+          }),
+          'attachment.is_public_default': definePref<boolean>({
+            title: localized('Make new attachments public by default'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            renderer: f.never,
+            container: 'label',
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
   statistics: {
     title: statsText.statistics(),
     subCategories: {
@@ -28,7 +58,7 @@ export const collectionPreferenceDefinitions = {
           showPreparationsTotal: definePref<boolean>({
             title: localized('Defines if preparation stats include total'),
             requiresReload: false,
-            visible: false,
+            visible: true,
             defaultValue: true,
             renderer: f.never,
             container: 'label',
@@ -37,7 +67,7 @@ export const collectionPreferenceDefinitions = {
           refreshRate: definePref<number>({
             title: localized('_Defines the rate of auto refresh in hours'),
             requiresReload: false,
-            visible: false,
+            visible: true,
             defaultValue: 24,
             renderer: f.never,
             container: 'label',
