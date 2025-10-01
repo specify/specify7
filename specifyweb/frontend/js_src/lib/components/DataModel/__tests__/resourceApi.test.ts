@@ -73,8 +73,6 @@ const collectionObjectResponse = {
   determinations: determinationsResponse,
 };
 
-overrideAjax(getResourceApiUrl('CollectionObjectType', 1), {});
-
 overrideAjax(collectionObjectUrl, collectionObjectResponse);
 overrideAjax(
   '/api/specify/collectionobject/?domainfilter=false&catalognumber=000029432&collection=4&offset=0',
