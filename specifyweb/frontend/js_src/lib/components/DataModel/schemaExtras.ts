@@ -3,15 +3,12 @@
  */
 
 import type { IR, RA, RR } from '../../utils/types';
-import { overwriteReadOnly } from '../../utils/types';
-import { caseInsensitiveHash } from '../../utils/utils';
 import { getField } from './helpers';
-import type { AnyPaleoContextChild, TableFields } from './helperTypes';
+import type { TableFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { schema } from './schema';
 import { LiteralField, Relationship } from './specifyField';
 import type { SpecifyTable } from './specifyTable';
-import { tables } from './tables';
 import type { CollectionObject, Tables } from './types';
 
 export const schemaAliases: RR<'', IR<string>> & {
