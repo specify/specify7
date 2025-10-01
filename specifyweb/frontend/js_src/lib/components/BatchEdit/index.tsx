@@ -182,7 +182,7 @@ export function BatchEditFromQuery({
         disabled={isDisabled}
         title={isDisabled ? batchEditText.batchEditDisabled() : undefined}
         onClick={() => {
-          if (saveRequired || (query as any).needsSaved) openWarningDialog();
+          if (saveRequired || query.needsSaved) openWarningDialog();
           else handleClickBatchEdit();
         }}
       >
@@ -221,7 +221,7 @@ function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
   if (joinPath.length <= 1) return false;
   const nestedToManyCount = joinPath.filter(
     (relationship) =>
-      (relationship as any).isRelationship && relationshipIsToMany(relationship as any)
+      relationship.isRelationship && relationshipIsToMany(relationship)
   );
 
   const isTreeOnlyQuery =
