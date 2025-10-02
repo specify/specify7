@@ -536,7 +536,7 @@
       "issystem": true,
       "type": 0,
       "readonly": true,
-      "sizelimit": 5,
+      "sizelimit": 9,
       "items": [
         { "title": "Trap", "value": "Trap" },
         { "title": "Sherman Trap", "value": "Sherman Trap" },
