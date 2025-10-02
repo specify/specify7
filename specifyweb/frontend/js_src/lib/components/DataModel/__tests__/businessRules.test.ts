@@ -25,6 +25,45 @@ import type {
 mockTime();
 requireContext();
 
+const overrideCollectionObjectIexact = (
+  encodedCatalogNumber: string,
+  hasDuplicate: boolean
+): void => {
+  overrideAjax(
+    `/api/specify/collectionobject/?domainfilter=false&catalognumber__iexact=${encodedCatalogNumber}&collection=4&offset=0`,
+    {
+      objects: hasDuplicate
+        ? [
+            {
+              id: 1,
+              catalogNumber: decodeURIComponent(encodedCatalogNumber),
+              collection: '/api/specify/collection/4/',
+            },
+          ]
+        : [],
+      meta: {
+        limit: 20,
+        offset: 0,
+        total_count: hasDuplicate ? 1 : 0,
+      },
+    },
+    {},
+    true
+  );
+};
+
+(
+  [
+    ['000000001', true],
+    ['%23%23%23%23%23%23%23%23%23', false],
+    ['', false],
+    ['7', false],
+    ['2022-%23%23%23%23%23%23', false],
+  ] as const
+).forEach(([value, hasDuplicate]) =>
+  overrideCollectionObjectIexact(value, hasDuplicate)
+);
+
 describe('Borrow Material business rules', () => {
   const borrowMaterialId = 1;
   const borrowMaterialUrl = getResourceApiUrl(
@@ -602,39 +641,6 @@ describe('Funding Agent business rules', () => {
 });
 
 describe('uniqueness rules', () => {
-  const overrideCollectionObjectRequest = (
-    encodedCatalogNumber: string,
-    hasDuplicate: boolean
-  ): void => {
-    overrideAjax(
-      `/api/specify/collectionobject/?domainfilter=false&catalognumber__iexact=${encodedCatalogNumber}&collection=4&offset=0`,
-      {
-        objects: hasDuplicate
-          ? [
-              {
-                id: 1,
-                catalogNumber: decodeURIComponent(encodedCatalogNumber),
-                collection: '/api/specify/collection/4/',
-              },
-            ]
-          : [],
-        meta: {
-          limit: 20,
-          offset: 0,
-          total_count: hasDuplicate ? 1 : 0,
-        },
-      },
-      {},
-      true
-    );
-  };
-
-  overrideCollectionObjectRequest('000000001', true);
-  overrideCollectionObjectRequest('%23%23%23%23%23%23%23%23%23', false);
-  overrideCollectionObjectRequest('', false);
-  overrideCollectionObjectRequest('7', false);
-  overrideCollectionObjectRequest('2022-%23%23%23%23%23%23', false);
-
   overrideAjax(
     '/api/specify/collectionobject/?domainfilter=false&catalognumber=000000001&collection=4&offset=0',
     {
