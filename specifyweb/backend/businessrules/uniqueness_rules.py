@@ -6,10 +6,11 @@ from typing import Any, TypedDict
 from collections.abc import Iterable
 
 from django.apps import apps
-from django.db import connections, transaction
-from django.db.models import Q, Count, Exists, OuterRef
+from django.db import connections, router, transaction
+from django.db.models import Q, Count, Exists, OuterRef, F, Func
+from django.db import models as dj_models
 from django.db.migrations.recorder import MigrationRecorder
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, FieldDoesNotExist
 from specifyweb.specify.api.crud import get_model
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.middleware.general import serialize_django_obj
@@ -33,6 +34,21 @@ NO_FIELD_VALUE = {}
 
 
 logger = logging.getLogger(__name__)
+
+
+def resolve_model_field(model, field_path: str):
+    current_model = model
+    resolved_field = None
+    for part in field_path.split('__'):
+        try:
+            resolved_field = current_model._meta.get_field(part)
+        except FieldDoesNotExist:
+            return None
+        remote_field = getattr(resolved_field, 'remote_field', None)
+        remote_model = getattr(remote_field, 'model', None) if remote_field else None
+        if remote_model is not None:
+            current_model = remote_model
+    return resolved_field
 
 
 @orm_signal_handler('pre_save', None, dispatch_uid=UNIQUENESS_DISPATCH_UID)
@@ -136,7 +152,46 @@ def validate_unique(model, instance):
         if len(matchable.keys()) == 0 or set(all_fields) != set(field_map.keys()):
             continue
 
-        conflicts = model.objects.only('id').filter(**matchable)
+        conflicts_query = model.objects.only('id')
+
+        db_alias = router.db_for_read(model)
+        connection = connections[db_alias]
+
+        filter_kwargs = dict(matchable)
+
+        apply_case_sensitive = connection.vendor == 'mysql' and not rule.isDatabaseConstraint
+
+        if apply_case_sensitive:
+            annotations: dict[str, Func] = {}
+            transformed_filters: dict[str, object] = {}
+
+            case_sensitive_field_types = (
+                dj_models.CharField,
+                dj_models.TextField,
+                dj_models.SlugField,
+                dj_models.EmailField,
+                dj_models.UUIDField,
+            )
+
+            for index, (field_path, value) in enumerate(matchable.items()):
+                if not isinstance(value, str):
+                    continue
+                resolved_field = resolve_model_field(model, field_path)
+                if isinstance(resolved_field, case_sensitive_field_types):
+                    alias = f"__binary_filter__{index}"
+                    annotations[alias] = Func(
+                        F(field_path),
+                        function='BINARY',
+                        output_field=dj_models.TextField(),
+                    )
+                    transformed_filters[alias] = value
+                    filter_kwargs.pop(field_path, None)
+
+            if annotations:
+                conflicts_query = conflicts_query.annotate(**annotations)
+                filter_kwargs.update(transformed_filters)
+
+        conflicts = conflicts_query.filter(**filter_kwargs)
         if instance.id is not None:
             conflicts = conflicts.exclude(id=instance.id)
         if conflicts:
@@ -183,9 +238,39 @@ def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[st
 
     duplicates_field = '__duplicates'
 
+    db_alias = router.db_for_read(django_model)
+    connection = connections[db_alias]
+
+    queryset = django_model.objects
+    value_fields: list[str] = [*all_fields]
+
+    if connection.vendor == 'mysql':
+        case_sensitive_field_types = (
+            dj_models.CharField,
+            dj_models.TextField,
+            dj_models.SlugField,
+            dj_models.EmailField,
+            dj_models.UUIDField,
+        )
+
+        binary_annotations: dict[str, Func] = {}
+        for index, field in enumerate(all_fields):
+            resolved_field = resolve_model_field(django_model, field)
+            if isinstance(resolved_field, case_sensitive_field_types):
+                alias = f"__binary__{index}"
+                binary_annotations[alias] = Func(
+                    F(field),
+                    function='BINARY',
+                    output_field=dj_models.TextField(),
+                )
+                value_fields.append(alias)
+
+        if binary_annotations:
+            queryset = queryset.annotate(**binary_annotations)
+
     duplicates = (
-        django_model.objects
-        .values(*all_fields)
+        queryset
+        .values(*value_fields)
         .annotate(**{duplicates_field: Count('id')})
         .filter(strict_filters)
         .filter(**{f"{duplicates_field}__gt": 1})
@@ -201,9 +286,8 @@ def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[st
             {
                 "duplicates": duplicate[duplicates_field],
                 "fields": {
-                    field: value
-                    for field, value in duplicate.items()
-                    if field != duplicates_field
+                    field: duplicate[field]
+                    for field in all_fields
                 },
             }
             for duplicate in duplicates
