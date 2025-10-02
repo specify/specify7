@@ -27,7 +27,7 @@ export function QueryToForms({
   readonly totalCount: number | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const ids = useSelectedResults(results, selectedRows, isOpen);
+  const ids = useSelectedResults(results, selectedRows, isOpen, totalCount);
 
   const unParseIndex = (index: number): number =>
     selectedRows.size === 0
@@ -71,6 +71,14 @@ export function QueryToForms({
               handleDelete(unParseIndex(index));
             }
           }}
+          onFetch={
+            handleFetchMore
+              ? async (index) => {
+                  handleFetchMore(index);
+                  return undefined;
+                }
+              : undefined
+          }
           onSaved={f.void}
           onSlide={
             typeof handleFetchMore === 'function'
@@ -89,13 +97,23 @@ export function QueryToForms({
 function useSelectedResults(
   results: RA<QueryResultRow | undefined>,
   selectedRows: ReadonlySet<number>,
-  isOpen: boolean
+  isOpen: boolean,
+  totalCount: number | undefined
 ): RA<number | undefined> {
   return React.useMemo(
     () =>
       isOpen
         ? selectedRows.size === 0
-          ? (results.map((row) => row?.[queryIdField]) as RA<number>)
+          ? totalCount
+            ? ([
+                ...results.map((row) => row?.[queryIdField]),
+                ...Array.from({ length: totalCount - results.length }).fill(
+                  undefined
+                ),
+              ] as RA<number | undefined>)
+            : (results.map((row) => row?.[queryIdField]) as RA<
+                number | undefined
+              >)
           : Array.from(selectedRows)
         : [],
     [results, isOpen, selectedRows]
