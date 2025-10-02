@@ -1,4 +1,5 @@
 from django.db import migrations
+from django.db.models import Count
 
 def deduplicate_picklists(apps, schema_editor):
     Picklist = apps.get_model('specify', 'Picklist')
