@@ -633,6 +633,7 @@ describe('uniqueness rules', () => {
   overrideCollectionObjectRequest('%23%23%23%23%23%23%23%23%23', false);
   overrideCollectionObjectRequest('', false);
   overrideCollectionObjectRequest('7', false);
+  overrideCollectionObjectRequest('2022-%23%23%23%23%23%23', false);
 
   overrideAjax(
     '/api/specify/collectionobject/?domainfilter=false&catalognumber=000000001&collection=4&offset=0',
