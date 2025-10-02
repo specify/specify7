@@ -7,6 +7,7 @@ from specifyweb.specify.migration_utils.update_schema_config import update_table
 from specifyweb.specify.models import Spversion
 from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
 from specifyweb.specify import models
+from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults
 
 from django.db.models import Max
 from django.db import transaction
@@ -190,11 +191,7 @@ def create_discipline(request, direct=False):
 
         # During setup, create Splocalecontainers for all datamodel tables
         if not division_url:
-            for model_name in model_names_by_table_id.values():
-                update_table_schema_config_with_defaults(
-                    table_name=model_name,
-                    discipline_id=new_discipline.id
-                )
+            apply_schema_defaults(new_discipline)
 
         return JsonResponse({"success": True, "discipline_id": new_discipline.id, "setup_progress": get_setup_progress()}, status=200)
 

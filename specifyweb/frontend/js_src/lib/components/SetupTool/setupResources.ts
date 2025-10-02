@@ -65,23 +65,21 @@ export const resources: RA<ResourceConfig> = [
     fields: [
       {
         name: 'name',
-        label: 'Name',
-        description:
-          'The full, official name of the institution (e.g., "University of Kansas Biodiversity Institute").',
+        label: setupToolText.institutionName(),
+        description: setupToolText.institutionNameDescription(),
         required: true,
       },
       {
         name: 'code',
-        label: 'Code',
-        description:
-          'A short, unique code or acronym for the institution (e.g., "KUBI").',
+        label: setupToolText.institutionCode(),
+        description: setupToolText.institutionCodeDescription(),
         required: true,
       },
       {
         name: 'address',
-        label: 'Address',
+        label: setupToolText.institutionAddress(),
         type: 'object',
-        description: 'The address of the institution. Optional.',
+        description: setupToolText.institutionAddressDescription(),
         required: true,
         fields: [
           {
