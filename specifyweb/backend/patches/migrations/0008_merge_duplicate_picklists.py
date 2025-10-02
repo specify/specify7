@@ -8,8 +8,8 @@ def deduplicate_picklists(apps, schema_editor):
     duplicate_picklist_groups = (
         Picklist.objects
         .values(
-            collection_name=F('collection__collectionname'),
-            name=F('name'),
+            'collection__collectionname',
+            'name',
             tablename=F('tablename'),
         )
         .annotate(pl_count=Count('picklistid'))
