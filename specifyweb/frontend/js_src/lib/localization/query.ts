@@ -61,7 +61,7 @@ export const queryText = createDictionary({
   any: {
     'en-us': 'Any',
     'ru-ru': 'Любой',
-    'es-es': 'Cualquiera',
+    'es-es': 'Cualquier',
     'fr-fr': "N'importe lequel",
     'uk-ua': 'Будь-який',
     'de-ch': 'Beliebig',
@@ -136,7 +136,7 @@ export const queryText = createDictionary({
     'es-es':
       'Hay campos sin completar en la definición de la consulta. ¿Desea eliminarlos?',
     'fr-fr':
-      'Il y a des champs incomplets dans la définition de la requête. Voulez-vous les supprimer ?',
+      'La définition de la requête contient des champs non renseignés. Voulez-vous les supprimer ?',
     'uk-ua': 'У визначенні запиту є незаповнені поля. Ви хочете видалити їх?',
     'de-ch':
       'Die Abfragedefinition enthält unvollständige Felder. Möchten Sie diese entfernen?',
@@ -204,7 +204,7 @@ export const queryText = createDictionary({
   queryExportStarted: {
     'en-us': 'Export File Being Created',
     'ru-ru': 'Создается экспортный файл',
-    'es-es': 'Creando archivo de exportación',
+    'es-es': 'Archivo de exportación en creación',
     'fr-fr': "Fichier d'exportation en cours de création",
     'uk-ua': 'Експортний файл створюється',
     'de-ch': 'Exportdatei wird erstellt',
@@ -276,7 +276,7 @@ export const queryText = createDictionary({
     comment: 'Verb',
     'en-us': 'Count',
     'ru-ru': 'Считать',
-    'es-es': 'Conteo',
+    'es-es': 'Contar',
     'fr-fr': 'Compter',
     'uk-ua': 'Рахувати',
     'de-ch': 'Zählen',
@@ -890,7 +890,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Перейдіть до редактора',
     'fr-fr': "Faites défiler jusqu'à l'éditeur",
     'ru-ru': 'Прокрутите до редактора',
-    'pt-br': 'Vá até o editor',
+    'pt-br': 'Rolar para o editor',
   },
   viewRecords: {
     'en-us': 'View records',
@@ -942,7 +942,7 @@ export const queryText = createDictionary({
     'de-ch': 'Katalognummernvererbung',
     'es-es': 'Herencia del número de catálogo',
     'fr-fr': 'Héritage du numéro de catalogue',
-    'pt-br': 'Herança de números de catálogo',
+    'pt-br': 'Herança de Número de Catálogo',
     'ru-ru': 'Наследование каталожного номера',
     'uk-ua': 'Успадкування каталожних номерів',
   },
@@ -955,18 +955,6 @@ export const queryText = createDictionary({
     'pt-br': 'Herança de objeto de coleção pai de número de catálogo',
     'ru-ru': 'Номер каталога Родительская коллекция Объект Наследование',
     'uk-ua': "Успадкування батьківського об'єкта колекції за номером каталогу",
-  },
-  uniqueCatalogNumberAcrossComponentAndCo: {
-    'en-us': 'Catalog Number Uniqueness Across Component And CO tables',
-    'de-ch': 'Eindeutigkeit der Katalognummer in Komponenten- und CO-Tabellen',
-    'es-es':
-      'Unicidad del número de catálogo en las tablas de componentes y CO',
-    'fr-fr':
-      'Unicité des numéros de catalogue entre les tableaux de composants et de CO',
-    'pt-br':
-      'Exclusividade do número de catálogo nas tabelas de componentes e CO',
-    'ru-ru': 'Уникальность каталожного номера в таблицах компонентов и CO',
-    'uk-ua': 'Унікальність каталожних номерів у таблицях компонентів та CO',
   },
   formatInputAs: {
     comment: `
