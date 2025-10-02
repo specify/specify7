@@ -6,6 +6,7 @@ from . import (
     attachment_rules,
     author_rules,
     collectionobject_rules,
+    component_rules,
     collector_rules,
     determination_rules,
     determiner_rules,
