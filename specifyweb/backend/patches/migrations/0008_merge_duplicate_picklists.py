@@ -12,7 +12,7 @@ def deduplicate_picklists(apps, schema_editor):
             'tablename',
             collection_name=F('collection__collectionname'),
         )
-        .annotate(pl_count=Count('picklistid'))
+        .annotate(pl_count=Count('id'))
         .filter(pl_count__gt=1)
     )
 
@@ -21,7 +21,7 @@ def deduplicate_picklists(apps, schema_editor):
             collection__collectionname=group['collection_name'],
             name=group['name'],
             tablename=group['tablename'],
-        ).order_by('picklistid')
+        ).order_by('id')
 
         if picklists.count() < 2:
             continue
