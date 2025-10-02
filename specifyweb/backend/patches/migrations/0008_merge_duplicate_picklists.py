@@ -8,7 +8,7 @@ def deduplicate_picklists(apps, schema_editor):
     duplicate_picklist_groups = (
         Picklist.objects
         .values(
-            collection_name=F('collection__collectionName'),
+            collection_name=F('collection__collectionname'),
             name=F('name'),
             tablename=F('tablename'),
         )
@@ -18,7 +18,7 @@ def deduplicate_picklists(apps, schema_editor):
 
     for group in duplicate_picklist_groups:
         picklists = Picklist.objects.filter(
-            collection__collectionName=group['collection_name'],
+            collection__collectionname=group['collection_name'],
             name=group['name'],
             tablename=group['tablename'],
         ).order_by('picklistid')
@@ -34,7 +34,7 @@ def deduplicate_picklists(apps, schema_editor):
         for duplicate in duplicate_picklists:
             items = PicklistItem.objects.filter(picklist=duplicate).order_by('picklistitemid')
             for item in items:
-                existing_item = PicklistItem.objects.filter( # TODO: Verify these are the right fields to check for duplicates
+                existing_item = PicklistItem.objects.filter( # Verify these are the right fields to check for duplicates
                     picklist=primary_picklist,
                     value=item.value,
                     displayvalue=item.displayvalue
@@ -43,7 +43,6 @@ def deduplicate_picklists(apps, schema_editor):
                     item.picklist = primary_picklist
                     item.save()
                 else:
-                    # TODO: Update references to the duplicate picklist if necessary
                     item.delete()
 
             duplicate.delete()
