@@ -42,7 +42,7 @@
       "issystem": true,
       "type": 0,
       "readonly": true,
-      "sizelimit": 4,
+      "sizelimit": 5,
       "items": [
         { "title": "Indeterminate", "value": "Indeterminate" },
         { "title": "Mixed", "value": "Mixed" },
