@@ -658,6 +658,18 @@ export const attachmentsText = createDictionary({
   createRecordSetToDownloadAll: {
     'en-us':
       'Not all attachments have been loaded. Please create a record set of the query results to download all the attachments.',
+    'ru-ru':
+      'Не все вложения были загружены. Создайте набор записей из результатов запроса, чтобы скачать все вложения.',
+    'uk-ua':
+      'Не всі вкладення були завантажені. Створіть набір записів із результатів запиту, щоб завантажити всі вкладення.',
+    'fr-fr':
+      "Toutes les pièces jointes n'ont pas été chargées. Créez un jeu d'enregistrements à partir des résultats de la requête pour télécharger toutes les pièces jointes.",
+    'es-es':
+      'No se han cargado todos los archivos adjuntos. Cree un conjunto de registros con los resultados de la consulta para descargar todos los archivos adjuntos.',
+    'de-ch':
+      'Nicht alle Anhänge wurden geladen. Erstellen Sie einen Datensatz aus den Suchergebnissen, um alle Anhänge herunterzuladen.',
+    'pt-br':
+      'Nem todos os anexos foram carregados. Crie um conjunto de registros com os resultados da consulta para baixar todos os anexos.',
   },
   deleteAttachmentWarning: {
     'en-us': 'Are you sure you want to delete this attachment?',
