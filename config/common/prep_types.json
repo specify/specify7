@@ -24,7 +24,7 @@
     { "name": "X-Ray", "isloanable": true }
   ],
   "herpetology": [
-    { "name": "jar", "isloanable": true }
+    { "name": "Jar", "isloanable": true }
   ],
   "insect": [
     { "name": "Pinned", "isloanable": true },
