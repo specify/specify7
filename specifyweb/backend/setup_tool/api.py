@@ -6,12 +6,29 @@ from specifyweb.specify.api_utils import strict_uri_to_model
 from specifyweb.specify.migration_utils.update_schema_config import update_table_schema_config_with_defaults
 from specifyweb.specify.models import Spversion
 from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
+from specifyweb.specify import models
 
 from django.db.models import Max
 from django.db import transaction
 
 import logging
 logger = logging.getLogger(__name__)
+
+def get_setup_progress():
+    institution = models.Institution.objects.first()
+    globalGeographyTree = institution and institution.issinglegeographytree
+
+    return {
+        "institution": models.Institution.objects.exists(),
+        "storageTreeDef": models.Storagetreedef.objects.exists(),
+        "globalGeographyTreeDef": (not globalGeographyTree) or models.Geographytreedef.objects.exists(),
+        "division": models.Division.objects.exists(),
+        "discipline": models.Discipline.objects.exists(),
+        "geographyTreeDef": models.Geographytreedef.objects.exists(),
+        "taxonTreeDef": models.Taxontreedef.objects.exists(),
+        "collection": models.Collection.objects.exists(),
+        "specifyUser": models.Specifyuser.objects.exists(),
+    }
 
 def _guided_setup_condition(request):
     from specifyweb.specify.models import Specifyuser
@@ -55,7 +72,7 @@ def create_institution(request, direct=False):
             new_institution = Institution.objects.create(**data)
             Spversion.objects.create(appversion='7', schemaversion='2.10')
         
-        return JsonResponse({"success": True, "institution_id": new_institution.id}, status=200)
+        return JsonResponse({"success": True, "institution_id": new_institution.id, "setup_progress": get_setup_progress()}, status=200)
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
@@ -78,7 +95,7 @@ def create_division(request, direct=False):
     if existing_id:
         existing_division = Division.objects.filter(id=existing_id).first()
         if existing_division:
-            return JsonResponse({"success": True, "division_id": existing_division.id}, status=200)
+            return JsonResponse({"success": True, "division_id": existing_division.id, "setup_progress": get_setup_progress()}, status=200)
 
 
     # Determine new Division ID
@@ -104,7 +121,7 @@ def create_division(request, direct=False):
     # Create new division
     try:
         new_division = Division.objects.create(**data)
-        return JsonResponse({"success": True, "division_id": new_division.id}, status=200)
+        return JsonResponse({"success": True, "division_id": new_division.id, "setup_progress": get_setup_progress()}, status=200)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
 
@@ -131,7 +148,7 @@ def create_discipline(request, direct=False):
     if existing_id:
         existing_discipline = Discipline.objects.filter(id=existing_id).first()
         if existing_discipline:
-            return JsonResponse({"success": True, "discipline_id": existing_discipline.id}, status=200)
+            return JsonResponse({"success": True, "discipline_id": existing_discipline.id, "setup_progress": get_setup_progress()}, status=200)
 
     # Resolve division
     division_url = data.get('division')
@@ -179,7 +196,7 @@ def create_discipline(request, direct=False):
                     discipline_id=new_discipline.id
                 )
 
-        return JsonResponse({"success": True, "discipline_id": new_discipline.id}, status=200)
+        return JsonResponse({"success": True, "discipline_id": new_discipline.id, "setup_progress": get_setup_progress()}, status=200)
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
@@ -204,7 +221,7 @@ def create_collection(request, direct=False):
     if existing_id:
         existing_collection = Collection.objects.filter(id=existing_id).first()
         if existing_collection:
-            return JsonResponse({"success": True, "collection_id": existing_collection.id}, status=200)
+            return JsonResponse({"success": True, "collection_id": existing_collection.id, "setup_progress": get_setup_progress()}, status=200)
 
     # Assign new Collection ID
     max_id = Collection.objects.aggregate(Max('id'))['id__max'] or 0
@@ -234,7 +251,7 @@ def create_collection(request, direct=False):
     # Create new Collection
     try:
         new_collection = Collection.objects.create(**data)
-        return JsonResponse({"success": True, "collection_id": new_collection.id}, status=200)
+        return JsonResponse({"success": True, "collection_id": new_collection.id, "setup_progress": get_setup_progress()}, status=200)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
 
@@ -281,21 +298,69 @@ def create_specifyuser(request, direct=False):
         agent.specifyuser = new_user
         agent.save()
 
-        return JsonResponse({"success": True, "user_id": new_user.id}, status=200)
+        return JsonResponse({"success": True, "user_id": new_user.id, "setup_progress": get_setup_progress()}, status=200)
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
 
 # Trees
-
 def create_storage_tree(request, direct=False):
-    return JsonResponse({"success": True}, status=200)
+    # TODO: Use trees/create_default_trees
+    # https://github.com/specify/specify7/pull/6429
+    from specifyweb.specify.models import Storagetreedef
+    raw_data = json.loads(request.body)
+    data = {k.lower(): v for k, v in raw_data.items()}
+    ranks = data.pop('ranks')
+    logger.debug(data)
+    # Placeholder treedef:
+    try:
+        Storagetreedef.objects.create(**data)
+        return JsonResponse({"success": True, "setup_progress": get_setup_progress()}, status=200)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
+
 
 def create_global_geography_tree(request, direct=False):
-    return JsonResponse({"success": True}, status=200)
+    # TODO: Use trees/create_default_trees
+    # https://github.com/specify/specify7/pull/6429
+    from specifyweb.specify.models import Geographytreedef
+    raw_data = json.loads(request.body)
+    data = {k.lower(): v for k, v in raw_data.items()}
+    ranks = data.pop('ranks')
+    logger.debug(data)
+    # Placeholder treedef:
+    try:
+        Geographytreedef.objects.create(**data)
+        return JsonResponse({"success": True, "setup_progress": get_setup_progress()}, status=200)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
 
 def create_geography_tree(request, direct=False):
-    return JsonResponse({"success": True}, status=200)
+    # TODO: Use trees/create_default_trees
+    # https://github.com/specify/specify7/pull/6429
+    from specifyweb.specify.models import Geographytreedef
+    raw_data = json.loads(request.body)
+    data = {k.lower(): v for k, v in raw_data.items()}
+    ranks = data.pop('ranks')
+    logger.debug(data)
+    # Placeholder treedef:
+    try:
+        Geographytreedef.objects.create(**data)
+        return JsonResponse({"success": True, "setup_progress": get_setup_progress()}, status=200)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
 
 def create_taxon_tree(request, direct=False):
-    return JsonResponse({"success": True}, status=200)
+    # TODO: Use trees/create_default_trees
+    # https://github.com/specify/specify7/pull/6429
+    from specifyweb.specify.models import Taxontreedef
+    raw_data = json.loads(request.body)
+    data = {k.lower(): v for k, v in raw_data.items()}
+    ranks = data.pop('ranks')
+    logger.debug(data)
+    # Placeholder treedef:
+    try:
+        Taxontreedef.objects.create(**data)
+        return JsonResponse({"success": True, "setup_progress": get_setup_progress()}, status=200)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)

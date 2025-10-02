@@ -38,7 +38,7 @@ export type SetupProgress = {
 };
 
 export function Login(): JSX.Element {
-  const [setupProgress] = useAsyncState(
+  const [setupProgress, setSetupProgress] = useAsyncState(
     React.useCallback(
       async () =>
         ajax<SetupProgress>(`/setup_tool/setup_progress/`, {
@@ -63,7 +63,7 @@ export function Login(): JSX.Element {
     if (setupProgress === undefined) return <LoadingScreen />;
 
     if (Object.values(setupProgress).includes(false)) {
-      return <SetupTool setupProgress={setupProgress} />;
+      return <SetupTool setupProgress={setupProgress} setSetupProgress={setSetupProgress}/>;
     }
 
     return providers.length > 0 ? (

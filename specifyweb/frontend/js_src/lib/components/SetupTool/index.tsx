@@ -50,7 +50,6 @@ function useFormDefaults(
   resource.fields.forEach(
     (field) => applyFieldDefaults(field)
   )
-  console.log(defaultFormData);
   setFormData(defaultFormData);
 }
 
@@ -68,15 +67,17 @@ function goToStep(
 
 export function SetupTool({
   setupProgress,
+  setSetupProgress,
 }: {
   readonly setupProgress: SetupProgress;
+  readonly setSetupProgress: (value: SetupProgress | ((oldValue: SetupProgress | undefined) => SetupProgress | undefined) | undefined) => void;
 }): JSX.Element {
   const formRef = React.useRef<HTMLFormElement | null>(null);
   const [formData, setFormData] = React.useState<ResourceFormData>({});
   const [temporaryFormData, setTemporaryFormData] = React.useState<ResourceFormData>({}); // For front-end only.
 
   const initialStep = findInitialStep(setupProgress);
-  const [currentStep, setCurrentStep] = React.useState(initialStep);
+  const currentStep = initialStep;
 
   React.useEffect(() => {
     useFormDefaults(resources[currentStep], setFormData);
@@ -88,8 +89,8 @@ export function SetupTool({
     endpoint: string,
     resourceLabel: string,
     data: ResourceFormData
-  ): Promise<void> =>
-    ajax(endpoint, {
+  ): Promise<any> =>
+    ajax<any>(endpoint, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -102,6 +103,7 @@ export function SetupTool({
       .then(({ data, status }) => {
         if (status === Http.OK) {
           console.log(`${resourceLabel} created successfully:`, data);
+          return data
         } else {
           console.error(`Error creating ${resourceLabel}:`, data);
           throw new Error(`Issue when creating ${resourceLabel}`);
@@ -128,9 +130,11 @@ export function SetupTool({
 
     loading(
       onResourceSaved(endpoint, resourceName, formData)
-        .then(() => {
-          const nextStep = currentStep + 1;
-          goToStep(nextStep, resourceName, setCurrentStep);
+        .then((data) => {
+          console.log(data);
+          setSetupProgress(data.setup_progress as SetupProgress);
+          // const nextStep = currentStep + 1;
+          // goToStep(nextStep, resourceName, setCurrentStep);
         })
         .catch((error) => {
           console.error('Form submission failed:', error);
