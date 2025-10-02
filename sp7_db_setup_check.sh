@@ -80,7 +80,7 @@ fi
 
 # Create target user if it doesn't exist
 USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse "SELECT COUNT(*) FROM mysql.user WHERE user = '$SUPER_USER_NAME' AND host = '$SUPER_USER_HOST';")
-if [[ "$USER_EXISTS" -eq 0 ]]; then
+if [[ "$USER_EXISTS" -eq 0 && "$TARGET_USER_NAME" != "root" ]]; then
   echo "Creating user '$SUPER_USER_NAME'..."
   echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${SUPER_USER_NAME}'@'${SUPER_USER_HOST}' IDENTIFIED BY '${SUPER_USER_PASSWORD}';\""
   if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "CREATE USER '${SUPER_USER_NAME}'@'${SUPER_USER_HOST}' IDENTIFIED BY '${SUPER_USER_PASSWORD}';"; then
@@ -107,7 +107,7 @@ fi
 
 # Create target user if it doesn't exist
 USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse "SELECT COUNT(*) FROM mysql.user WHERE user = '$TARGET_USER_NAME' AND host = '$TARGET_USER_HOST';")
-if [[ "$USER_EXISTS" -eq 0 ]]; then
+if [[ "$USER_EXISTS" -eq 0 && "$TARGET_USER_NAME" != "root" ]]; then
   echo "Creating user '$TARGET_USER_NAME'..."
   echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${TARGET_USER_NAME}'@'${TARGET_USER_HOST}' IDENTIFIED BY '${TARGET_USER_PASSWORD}';\""
   if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "CREATE USER '${TARGET_USER_NAME}'@'${TARGET_USER_HOST}' IDENTIFIED BY '${TARGET_USER_PASSWORD}';"; then
