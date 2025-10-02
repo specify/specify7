@@ -151,3 +151,8 @@ def properties(request, name):
         return http.HttpResponseServerError(f"Failed to load {path}.")
 
     return http.HttpResponse(data, content_type='text/plain')
+
+# check if user is new by looking the presence of institution
+def is_new_user(request):
+    is_new_user = len(spmodels.Institution.objects.all()) == 0
+    return http.JsonResponse(is_new_user, safe=False)                

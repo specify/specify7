@@ -162,14 +162,7 @@ export function useContainerItems(
               .filter(
                 (item) =>
                   /* Ignore removed fields (i.e, Accession->deaccessions) */
-                  getTable(container.name)!.getField(item.name) !== undefined &&
-                  /* Remove components and componentParent relationships in `v7.11.0` */
-                  !(
-                    getTable(container.name)?.name === 'CollectionObject' &&
-                    ['components', 'componentparent'].includes(
-                      item.name.toLowerCase()
-                    )
-                  )
+                  getTable(container.name)!.getField(item.name) !== undefined
               )
               .map((item) => ({
                 ...item,

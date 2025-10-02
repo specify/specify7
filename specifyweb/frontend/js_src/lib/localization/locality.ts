@@ -459,7 +459,7 @@ export const localityText = createDictionary({
     'es-es':
       'Informe de fallos de actualización de localidad {taskId: string} - {date: string}',
     'fr-fr':
-      "Mise à jour de la localité {taskId: string} Rapport d'incident - {date: string}",
+      "Mise à jour de la localité {taskId : chaîne} Rapport d'incident - {date : chaîne}",
     'ru-ru':
       'Обновление местоположения {taskId: string} Отчет о сбое - {date: string}',
     'uk-ua':
@@ -491,7 +491,7 @@ export const localityText = createDictionary({
     'de-ch':
       'Mehr als ein Ort mit GUID gefunden: {guid:string}. Orts-IDs: {localityIds: string}',
     'es-es':
-      'Se encontró más de una localidad con guid: {guid:string}. ID de localidad: {localityIds: string}',
+      'Se encontró más de una localidad con guid: {guid:string}. ID de localidad: {localityIds: string}.',
     'fr-fr':
       'Plusieurs localités trouvées avec le GUID : {guid:string}. ID de localité : {localityIds: string}',
     'ru-ru':
@@ -525,13 +525,13 @@ export const localityText = createDictionary({
     'es-es':
       'Se actualizó la siguiente cantidad de registros {localityTabelLabel: string} y se crearon registros {geoCoordDetailTableLabel: string}:',
     'fr-fr':
-      "Le nombre suivant d'enregistrements {localityTabelLabel: string} ont été mis à jour et d'enregistrements {geoCoordDetailTableLabel: string} ont été créés :",
+      "Le nombre suivant d'enregistrements {localityTabelLabel: string} ont été mis à jour et les enregistrements {geoCoordDetailTableLabel: string} ont été créés :",
     'ru-ru':
       'Следующее количество записей {localityTabelLabel: string} было обновлено и создано записей {geoCoordDetailTableLabel: string}:',
     'uk-ua':
       'Оновлено таку кількість записів {localityTabelLabel: string} і створено записи {geoCoordDetailTableLabel: string}:',
     'pt-br':
-      'O seguinte número de registros {localityTabelLabel: string} foi atualizado e os registros {geoCoordDetailTableLabel: string} foram criados:',
+      'O seguinte número de registros {localityTabelLabel: string} foi atualizado e {geoCoordDetailTableLabel: string} registros foram criados:',
   },
   localityUpdateStarted: {
     'en-us': 'The Locality Update process has started',
@@ -554,7 +554,7 @@ export const localityText = createDictionary({
   localityUpdateFailureResults: {
     'en-us': 'Locality Update Failure Results',
     'de-ch': 'Ergebnisse der fehlgeschlagenen Lokalitätsaktualisierung',
-    'es-es': 'Resultados de errores de actualización de localidad',
+    'es-es': 'Resultados de fallas en la actualización de localidad',
     'fr-fr': "Résultats de l'échec de la mise à jour de la localité",
     'ru-ru': 'Результаты сбоя обновления местоположения',
     'uk-ua': 'Результати помилки оновлення місцевості',
