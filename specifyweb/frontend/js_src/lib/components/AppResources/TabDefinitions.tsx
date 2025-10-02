@@ -26,6 +26,7 @@ import { formattersSpec } from '../Formatters/spec';
 import { FormEditor } from '../FormEditor';
 import { viewSetsSpec } from '../FormEditor/spec';
 import { UserPreferencesEditor } from '../Preferences/Editor';
+import { CollectionPreferencesEditor } from '../Preferences/CollectionPreferencesPage';
 import { useDarkMode } from '../Preferences/Hooks';
 import type { BaseSpec } from '../Syncer';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
@@ -154,7 +155,7 @@ export const visualAppResourceEditors = f.store<
     json: AppResourceTextEditor,
   },
   collectionPreferences: {
-    // FEATURE: add visual editor
+    visual: CollectionPreferencesEditor,
     json: AppResourceTextEditor,
   },
   leafletLayers: undefined,
