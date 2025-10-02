@@ -186,7 +186,7 @@ function ConditionalFormatter({
           </Label.Block>
         </div>
       )}
-      {expandedNoCondition || isReadOnly ? null : fields.length === 0 ? (
+      {expandedNoCondition || isReadOnly ? undefined : fields.length === 0 ? (
         <div className="flex flex-col p-2">
           <span className="flex-1" />
           <Button.Small

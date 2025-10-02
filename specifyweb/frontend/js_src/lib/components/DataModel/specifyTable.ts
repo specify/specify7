@@ -458,7 +458,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
    *
    * I.e, table can be scoped to collection using a "collectionMemberId" field
    * (which is not a relationship - sad). Back-end looks at that relationship
-   * for scoping inconsistenly. Front-end does not look at all.
+   * for scoping inconsistently. Front-end does not look at all.
    */
   public getScopingRelationship(): Relationship | undefined {
     this.scopingRelationship ??=

@@ -15,7 +15,7 @@ export const cachableUrls = new Set<string>();
  * Mark URL as cachable -> should have its cache cleared when cache buster is
  * invoked
  */
-export function cachableUrl(url: string): string {
+export function cacheableUrl(url: string): string {
   cachableUrls.add(url);
   return url;
 }
@@ -57,7 +57,7 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
     // Doing async import to avoid a circular dependency
     const { ajax } = await import('../../utils/ajax');
 
-    const { data } = await ajax<T>(cachableUrl(path), {
+    const { data } = await ajax<T>(cacheableUrl(path), {
       errorMode: 'visible',
       headers: { Accept: mimeType },
     });

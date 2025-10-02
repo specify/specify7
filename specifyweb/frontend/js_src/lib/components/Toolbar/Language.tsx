@@ -29,7 +29,7 @@ import { Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { raise } from '../Errors/Crash';
-import { cachableUrl } from '../InitialContext';
+import { cacheableUrl } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type {
   PreferenceItem,
@@ -170,7 +170,7 @@ export function LanguageSelection<LANGUAGES extends string>({
   );
 }
 
-const url = cachableUrl(
+const url = cacheableUrl(
   formatUrl('/context/language/', {
     languages: languages.join(','),
   })
