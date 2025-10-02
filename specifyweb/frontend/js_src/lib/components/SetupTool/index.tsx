@@ -3,6 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { setupToolText } from '../../localization/setupTool';
 import { userText } from '../../localization/user'
+import { commonText } from '../../localization/common'
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
@@ -15,6 +16,7 @@ import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
 import type { FieldConfig, ResourceConfig } from "./setupResources";
 import { resources } from "./setupResources";
 import { useId } from '../../hooks/useId';
+import { Progress } from '../Atoms';
 
 type ResourceFormData = Record<string, any>;
 
@@ -53,18 +55,6 @@ function useFormDefaults(
   setFormData(defaultFormData);
 }
 
-function goToStep(
-  nextStep: number,
-  resourceName: string,
-  setCurrentStep: React.Dispatch<React.SetStateAction<number>>,
-): void {
-  if (resourceName === 'SpecifyUser') {
-    globalThis.location.reload();
-  } else {
-    setCurrentStep(nextStep);
-  }
-}
-
 export function SetupTool({
   setupProgress,
   setSetupProgress,
@@ -76,8 +66,7 @@ export function SetupTool({
   const [formData, setFormData] = React.useState<ResourceFormData>({});
   const [temporaryFormData, setTemporaryFormData] = React.useState<ResourceFormData>({}); // For front-end only.
 
-  const initialStep = findInitialStep(setupProgress);
-  const currentStep = initialStep;
+  const currentStep = findInitialStep(setupProgress);
 
   React.useEffect(() => {
     useFormDefaults(resources[currentStep], setFormData);
@@ -133,8 +122,6 @@ export function SetupTool({
         .then((data) => {
           console.log(data);
           setSetupProgress(data.setup_progress as SetupProgress);
-          // const nextStep = currentStep + 1;
-          // goToStep(nextStep, resourceName, setCurrentStep);
         })
         .catch((error) => {
           console.error('Form submission failed:', error);
@@ -173,12 +160,12 @@ export function SetupTool({
               value={formData[fieldName] ?? ''}
               onValueChange={(value) => handleChange(fieldName, value)}
             >
-              <option disabled value="">
-                Select a type
+              <option disabled value={field.default as string ?? ''}>
+                {commonText.select()}
               </option>
-              {options.map((value) => (
-                <option key={value} value={value}>
-                  {value}
+              {options.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label ?? option.value}
                 </option>
               ))}
             </Select>
@@ -275,10 +262,13 @@ export function SetupTool({
               {setupToolText.saveAndContinue()}
             </Submit.Save>
           </Container.Center>
+          <Container.Center className="p-3 shadow-md max-w-lg">
+            <Progress max={stepOrder.length} value={currentStep} />
+          </Container.Center>
         </>
       ) : (
         <p className="mt-6 text-green-600 font-semibold">
-          🎉 All resources have been created successfully!
+          {setupToolText.setupComplete()}
         </p>
       )}
     </Container.FullGray>

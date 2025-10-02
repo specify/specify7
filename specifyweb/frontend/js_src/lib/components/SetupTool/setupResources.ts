@@ -9,6 +9,11 @@ export type ResourceConfig = {
   readonly fields: RA<FieldConfig>;
 };
 
+type Option = {
+  value: string | number;
+  label?: string;
+}
+
 export type FieldConfig = {
   readonly name: string;
   readonly label: string;
@@ -16,7 +21,7 @@ export type FieldConfig = {
   readonly required?: boolean;
   readonly default?: string | boolean;
   readonly description?: string;
-  readonly options?: RA<string>;
+  readonly options?: RA<Option>;
   readonly fields?: RA<FieldConfig>;
   readonly passwordRepeat?: {
     readonly name: string;
@@ -27,25 +32,30 @@ export type FieldConfig = {
 
 // Discipline list from backend/context/app_resource.py
 const disciplineTypeOptions = [
-  'fish',
-  'herpetology',
-  'paleobotany',
-  'invertpaleo',
-  'vertpaleo',
-  'bird',
-  'mammal',
-  'insect',
-  'botany',
-  'invertebrate',
-  'geology',
+  {value: 'fish'},
+  {value: 'herpetology'},
+  {value: 'paleobotany'},
+  {value: 'invertpaleo'},
+  {value: 'vertpaleo'},
+  {value: 'bird'},
+  {value: 'mammal'},
+  {value: 'insect'},
+  {value: 'botany'},
+  {value: 'invertebrate'},
+  {value: 'geology'},
 ];
 
 const catalogNumberFormats = [
-  'CatalogNumber',
-  'CatalogNumberAlphaNumByYear',
-  'CatalogNumberNumeric',
-  'CatalogNumberString',
+  {value: 'CatalogNumber'},
+  {value: 'CatalogNumberAlphaNumByYear'},
+  {value: 'CatalogNumberNumeric'},
+  {value: 'CatalogNumberString'},
 ];
+
+const fullNameDirections = [
+  {value: 1, label: "Forward"},
+  {value: -1, label: "Reverse"}
+]
 
 export const resources: RA<ResourceConfig> = [
   {
@@ -153,7 +163,7 @@ export const resources: RA<ResourceConfig> = [
         ]
       },
       // TODO: This should be name direction. Each rank should have configurable formats, too.
-      { name: 'fullNameDirection', label: 'Full Name Direction', required: true },
+      { name: 'fullNameDirection', label: 'Full Name Direction', type: 'select', options: fullNameDirections, required: true },
     ],
   },
   {
@@ -174,7 +184,7 @@ export const resources: RA<ResourceConfig> = [
           { name: '400', label: 'County', type: 'boolean', default: true },
         ]
       },
-      { name: 'fullNameDirection', label: 'Full Name Direction', required: true },
+      { name: 'fullNameDirection', label: 'Full Name Direction', type: 'select', options: fullNameDirections, required: true },
     ],
   },
   {
@@ -218,7 +228,7 @@ export const resources: RA<ResourceConfig> = [
           { name: '400', label: 'County', type: 'boolean', default: true },
         ]
       },
-      { name: 'fullNameDirection', label: 'Full Name Direction', required: true },
+      { name: 'fullNameDirection', label: 'Full Name Direction', type: 'select', options: fullNameDirections, required: true },
     ],
   },
   {
@@ -247,7 +257,7 @@ export const resources: RA<ResourceConfig> = [
           { name: '230', label: 'Subspecies', type: 'boolean', default: false },
         ]
       },
-      { name: 'fullNameDirection', label: 'Full Name Direction', required: true },
+      { name: 'fullNameDirection', label: 'Full Name Direction', type: 'select', options: fullNameDirections, required: true },
     ],
   },
   {

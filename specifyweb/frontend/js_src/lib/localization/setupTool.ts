@@ -17,6 +17,10 @@ export const setupToolText = createDictionary({
     'en-us': 'Save & Continue',
   },
 
+  setupComplete: {
+    'en-us': '🎉 All resources have been created successfully!',
+  },
+
   institution: {
     'en-us': 'Institution',
   },
@@ -53,6 +57,10 @@ export const setupToolText = createDictionary({
 
   discipline: {
     'en-us': 'Discipline',
+  },
+
+  taxonTree: {
+    'en-us': 'Taxon Tree',
   },
 
   collection: {
