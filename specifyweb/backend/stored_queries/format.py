@@ -415,11 +415,15 @@ class ObjectFormatter:
         
         if self.numeric_catalog_number and specify_field is CollectionObject_model.get_field('catalogNumber') \
                 and all_numeric_catnum_formats(self.collection):
+            # Cast to Numeric only if the value is numeric to avoid casting strings like 'F-235694' to 0
             # While the frontend can format the catalogNumber if needed,
             # processes like reports, labels, and query exports generally
             # expect the catalogNumber to be numeric if possible.
             # See https://github.com/specify/specify7/issues/6464
-            return cast(field, types.Numeric(65))
+            return case(
+                [(field.op('REGEXP')('^-?[0-9]+(\.[0-9]+)?$'), cast(field, types.Numeric(65)))],
+                else_=field
+            )
 
         if self.format_types and specify_field.type == 'json' and isinstance(field.comparator.type, types.JSON):
             return cast(field, types.Text)
