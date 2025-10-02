@@ -128,15 +128,14 @@ function Field({
 
   const isNew = resource?.isNew();
   const isCO = resource?.specifyTable.name === 'CollectionObject';
-  const isComponent = resource?.specifyTable.name === 'Component';
 
   const isPartOfCOG = isCO
     ? resource?.get('cojo') !== null && resource?.get('cojo') !== undefined
     : false;
 
-  const hasCOParent = isComponent
-    ? resource.get('collectionObject') !== null &&
-      resource.get('collectionObject') !== undefined
+  const hasComponentParent = isCO
+    ? resource.get('componentParent') !== null &&
+      resource.get('componentParent') !== undefined
     : false;
 
   const isCatNumberField = field?.name === 'catalogNumber';
@@ -164,8 +163,8 @@ function Field({
 
   const displayParentCatNumberPlaceHolder =
     isNew === false &&
-    isComponent &&
-    hasCOParent &&
+    isCO &&
+    hasComponentParent &&
     isCatNumberField &&
     displayParentCatNumberPref;
 
@@ -191,7 +190,7 @@ function Field({
           console.error('Error fetching catalog number:', error);
         });
     } else if (resource && displayParentCatNumberPlaceHolder) {
-      ajax<string | null>('/inheritance/catalog_number_from_parent/', {
+      ajax<string | null>('/api/specify/catalog_number_from_parent/', {
         method: 'POST',
         headers: { Accept: 'application/json' },
         body: resource,

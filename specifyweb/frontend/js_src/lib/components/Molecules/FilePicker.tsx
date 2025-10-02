@@ -137,7 +137,8 @@ export function FilePicker({
  */
 export const downloadFile = async (
   fileName: string,
-  data: Blob | string
+  data: Blob | string,
+  isUrl?: boolean
 ): Promise<void> =>
   new Promise((resolve) => {
     let fileDownloaded = false;
@@ -147,7 +148,10 @@ export const downloadFile = async (
       if (iframe.contentWindow === null || fileDownloaded) return;
       let dataUrl: string | undefined;
       const element = iframe.contentWindow.document.createElement('a');
-      if (typeof data === 'string') {
+      if (isUrl === true) {
+        element.setAttribute('href', data as string);
+        element.setAttribute('download', fileName);
+      } else if (typeof data === 'string') {
         element.setAttribute(
           'href',
           `data:text/plain;charset=utf-8,${encodeURIComponent(data)}`

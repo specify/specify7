@@ -26,8 +26,7 @@ export type BulkCarryRangeError =
   | boolean
   | 'ExistingNumbers'
   | 'InvalidRange'
-  | 'LimitExceeded'
-  | 'UnsupportedRelationships';
+  | 'LimitExceeded';
 
 const bulkCarryLimit = 500;
 

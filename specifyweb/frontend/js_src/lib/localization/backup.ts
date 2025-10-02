@@ -104,7 +104,7 @@ export const backupText = createDictionary({
   compressing: {
     'en-us': 'Compressing...',
     'de-ch': 'Komprimieren...',
-    'es-es': 'Comprimiendo...',
+    'es-es': 'Apresamiento...',
     'fr-fr': 'Compression...',
     'pt-br': 'Comprimindo...',
     'ru-ru': 'Сжатие...',

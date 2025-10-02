@@ -26,7 +26,7 @@ export const wbText = createDictionary({
     'fr-fr': 'Plan de téléchargement',
     'ru-ru': 'План загрузки',
     'uk-ua': 'План завантаження',
-    'pt-br': 'Plano de upload',
+    'pt-br': 'Plano de Upload',
   },
   rollback: {
     'en-us': 'Roll Back',
@@ -80,7 +80,7 @@ export const wbText = createDictionary({
     'fr-fr': 'Téléchargement',
     'uk-ua': 'Завантаження',
     'de-ch': 'Hochladen',
-    'pt-br': 'Carregando',
+    'pt-br': 'Enviando',
   },
   validating: {
     'en-us': 'Validating',
@@ -221,7 +221,7 @@ export const wbText = createDictionary({
     'es-es': 'Pinchar para alternar visibilidad',
     'fr-fr': 'Cliquez pour basculer la visibilité',
     'uk-ua': 'Натисніть, щоб увімкнути видимість',
-    'de-ch': 'Klicken Sie, um die Sichtbarkeit umzuschalten',
+    'de-ch': 'Klicken Sie hier, um die Sichtbarkeit umzuschalten',
     'pt-br': 'Clique para alternar a visibilidade',
   },
   configureSearchReplace: {
@@ -292,7 +292,7 @@ export const wbText = createDictionary({
     'de-ch':
       'Keiner der übereinstimmenden Datensätze ist derzeit in der Datenbank vorhanden. Dies kann passieren, wenn alle übereinstimmenden Datensätze seit der Validierung gelöscht wurden oder wenn alle Übereinstimmungen im Vergleich zu anderen Datensätzen in diesem Datensatz mehrdeutig waren. In diesem Fall müssen Sie dem Datensatz Felder und Werte hinzufügen, um die Mehrdeutigkeit zu beheben.',
     'pt-br':
-      'Nenhum dos registros correspondentes existe atualmente no banco de dados. Isso pode ocorrer se todos os registros correspondentes foram excluídos desde o início do processo de validação ou se todas as correspondências eram ambíguas em relação a outros registros neste conjunto de dados. Neste último caso, você precisará adicionar campos e valores ao conjunto de dados para resolver a ambiguidade.',
+      'Nenhum dos registros correspondentes existe atualmente no banco de dados. Isso pode ocorrer se todos os registros correspondentes foram excluídos desde a ocorrência do processo de validação ou se todas as correspondências forem ambíguas em relação a outros registros neste conjunto de dados. Neste último caso, você precisará adicionar campos e valores ao conjunto de dados para resolver a ambiguidade.',
   },
   disambiguateMatches: {
     'en-us': 'Disambiguate Multiple Record Matches',
@@ -652,7 +652,7 @@ export const wbText = createDictionary({
     'fr-fr': 'Restauration annulée',
     'uk-ua': 'Відкат скасовано',
     'de-ch': 'Rollback abgebrochen',
-    'pt-br': 'Reverter cancelado',
+    'pt-br': 'Reversão cancelada',
   },
   rollbackCanceledDescription: {
     'en-us': 'Data Set Rollback cancelled.',
@@ -678,7 +678,7 @@ export const wbText = createDictionary({
     'es-es': 'Carga de conjunto de datos cancelada.',
     'fr-fr': "Téléchargement de l'ensemble de données annulé.",
     'uk-ua': 'Завантаження набору даних скасовано.',
-    'de-ch': 'Der Upload des Datensatzes wurde abgebrochen.',
+    'de-ch': 'Datensatz-Upload abgebrochen.',
     'pt-br': 'Upload do conjunto de dados cancelado.',
   },
   coordinateConverter: {
@@ -744,7 +744,7 @@ export const wbText = createDictionary({
     'fr-fr':
       'Cette action nécessite que toutes les modifications soient enregistrées',
     'uk-ua': 'Ця дія вимагає збереження всіх змін',
-    'de-ch': 'Für diese Aktion müssen alle Änderungen gespeichert werden',
+    'de-ch': 'Diese Aktion erfordert das Speichern aller Änderungen',
     'pt-br': 'Esta ação requer que todas as alterações sejam salvas',
   },
   uploadUnavailableWhileHasErrors: {
@@ -785,7 +785,7 @@ export const wbText = createDictionary({
     'de-ch':
       'Diese Aktion ist während der laufenden Datenprüfung nicht verfügbar.',
     'pt-br':
-      'Esta ação não estará disponível enquanto a verificação de dados estiver em andamento',
+      'Esta ação não estará disponível enquanto a verificação de dados estiver em andamento.',
   },
   unavailableWithoutLocality: {
     'en-us': 'This tool requires locality columns to be mapped',
@@ -862,7 +862,7 @@ export const wbText = createDictionary({
     'fr-fr': 'Priorité du curseur',
     'uk-ua': 'Пріоритет курсору',
     'de-ch': 'Cursorpriorität',
-    'pt-br': 'Prioridade do Cursor',
+    'pt-br': 'Prioridade do cursor',
   },
   columnFirst: {
     'en-us': 'Column first',
@@ -1423,7 +1423,7 @@ export const wbText = createDictionary({
     'fr-fr': 'Téléchargement WB de "{dataSet:string}"',
     'uk-ua': 'WB завантаження "{dataSet:string}"',
     'de-ch': 'WB-Upload von „{dataSet:string}“',
-    'pt-br': 'Envio de "{dataSet:string}" pela WB',
+    'pt-br': 'Envio do WB de "{dataSet:string}"',
   },
   ambiguousTaxaChild: {
     'en-us': '{node:string} {author:string} (in {parent:string})',
@@ -1475,7 +1475,7 @@ export const wbText = createDictionary({
     'de-ch': 'Gelöschte Zellen',
     'es-es': 'Células eliminadas',
     'fr-fr': 'Cellules supprimées',
-    'pt-br': 'Células excluídas',
+    'pt-br': 'Células Excluídas',
     'ru-ru': 'Удаленные ячейки',
     'uk-ua': 'Видалені клітинки',
   },
@@ -1483,7 +1483,7 @@ export const wbText = createDictionary({
     'en-us': 'Records affected',
     'de-ch': 'Betroffene Datensätze',
     'es-es': 'Registros afectados',
-    'fr-fr': 'Enregistrements concernés',
+    'fr-fr': 'Dossiers concernés',
     'pt-br': 'Registros afetados',
     'ru-ru': 'Записи, затронутые',
     'uk-ua': 'Зафіксовані записи',
@@ -1532,7 +1532,7 @@ export const wbText = createDictionary({
     'en-us': 'Records updated',
     'de-ch': 'Datensätze aktualisiert',
     'es-es': 'Registros actualizados',
-    'fr-fr': 'Mise à jour des enregistrements',
+    'fr-fr': 'Dossiers mis à jour',
     'pt-br': 'Registros atualizados',
     'ru-ru': 'Записи обновлены',
     'uk-ua': 'Записи оновлено',
@@ -1550,7 +1550,7 @@ export const wbText = createDictionary({
     'en-us': 'Related records matched to different records',
     'de-ch':
       'Zugehörige Datensätze, die mit anderen Datensätzen abgeglichen wurden',
-    'es-es': 'Registros relacionados coincidentes con diferentes registros',
+    'es-es': 'Registros relacionados que coinciden con diferentes registros',
     'fr-fr':
       'Enregistrements associés correspondant à différents enregistrements',
     'pt-br': 'Registros relacionados correspondidos a registros diferentes',
