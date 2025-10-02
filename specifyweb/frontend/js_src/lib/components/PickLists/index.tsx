@@ -158,6 +158,12 @@ export function PickListComboBox({
   const name = pickList?.get('name') ?? pickListName;
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+
+  const isSpecialByPrefix =
+    typeof pickListName === 'string' && pickListName.startsWith('_');
+  const isSpecialPicklist =
+    isDisabled || isSpecialByPrefix || pickList?.get?.('readOnly') === true;
+
   return (
     <>
       {pickList?.get('readOnly') === true || isDisabled ? (
