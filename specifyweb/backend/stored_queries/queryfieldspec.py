@@ -161,10 +161,28 @@ class TreeRankQuery(Relationship):
         # Treedef id included to make it easier to pass it to batch edit
         return f"{self.treedef_name}{RANK_KEY_DELIMITER}{self.name}{RANK_KEY_DELIMITER}{self.treedef_id}"
 
+def null_safe_not(field_expr, predicate):
+
+    """Return a NOT clause that still matches NULL values on the target field.
+
+    SQL's ``NOT IN`` and similar predicates exclude rows where the filtered column
+    is ``NULL``. Historical Specify 6 behaviour (and user expectation) is to keep
+    those "empty" rows when a negated filter is applied.  This helper wraps the
+    negated predicate in an OR that explicitly re-includes NULL rows for the
+    relevant field expression.
+
+    """
+        
+    if predicate is None or isinstance(predicate, Query):
+        return predicate
+    target = field_expr if field_expr is not None else getattr(predicate, "left", None)
+    if target is None:
+        return sql.not_(predicate)
+    return sql.or_(target == None, sql.not_(predicate))
+
 
 QueryNode = Field | Relationship | TreeRankQuery
 FieldSpecJoinPath = tuple[QueryNode]
-
 
 class QueryFieldSpec(
     namedtuple(
@@ -383,6 +401,7 @@ class QueryFieldSpec(
 
             query_op = QueryOps(uiformatter)
             op = query_op.by_op_num(op_num)
+            mod_orm_field = orm_field
             if query_op.is_precalculated(op_num):
                 f = op(
                     orm_field, value, query, is_strict=strict
@@ -399,7 +418,10 @@ class QueryFieldSpec(
                 op, mod_orm_field, value = apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
                 f = op(mod_orm_field, value)
 
-            predicate = sql.not_(f) if negate else f
+            if negate:
+                predicate = null_safe_not(mod_orm_field or orm_field, f)
+            else:
+                predicate = f
         else:
             predicate = None
 
