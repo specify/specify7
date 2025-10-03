@@ -9,7 +9,7 @@ def deduplicate_picklists(apps, schema_editor):
     duplicate_groups = (
         Picklist.objects
         .values('name', 'tablename', 'fieldname', 'collection')  # <-- use field names
-        .annotate(pl_count=migrations.models.Count('id'))
+        .annotate(pl_count=Count('id'))
         .filter(pl_count__gt=1)
     )
 
