@@ -90,6 +90,35 @@ class UniquenessTests(ApiTests):
 
         self.assertEqual(response_content, expected_response)
 
+    def test_case_sensitive_duplicates_not_reported(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        first = self.collectionobjects[0]
+        second = self.collectionobjects[1]
+
+        first.text1 = 'abc'
+        first.save()
+
+        second.text1 = 'aBc'
+        second.save()
+
+        response = c.post(
+            '/businessrules/uniqueness_rules/validate/',
+            data=json.dumps({
+                "table": "Collectionobject",
+                "rule": {
+                    "fields": ["text1"],
+                    "scopes": []
+                }
+            }),
+            content_type='application/json'
+        )
+
+        response_content = json.loads(response.content.decode())
+
+        self.assertEqual(response_content, {"totalDuplicates": 0, "fields": []})
+
     def test_creating_uniqueness_rule(self):
         c = Client()
         c.force_login(self.specifyuser)

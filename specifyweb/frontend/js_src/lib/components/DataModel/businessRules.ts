@@ -30,6 +30,11 @@ import type { UniquenessRule } from './uniquenessRules';
 import { getUniqueInvalidReason, getUniquenessRules } from './uniquenessRules';
 
 /* eslint-disable functional/no-this-expression */
+
+const uniquenessStringCollator = new Intl.Collator(undefined, {
+  sensitivity: 'accent',
+  usage: 'search',
+});
 // eslint-disable-next-line functional/no-class
 export class BusinessRuleManager<SCHEMA extends AnySchema> {
   // eslint-disable-next-line functional/prefer-readonly-type
@@ -316,6 +321,24 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         )
       );
 
+    const treatStringsCaseInsensitive = rule.isDatabaseConstraint === true;
+
+    const valuesMatch = (
+      field: LiteralField | Relationship | undefined,
+      left: number | string | null | undefined,
+      right: number | string | null | undefined
+    ): boolean => {
+      if (left === right) return true;
+      if (
+        treatStringsCaseInsensitive &&
+        typeof left === 'string' &&
+        typeof right === 'string' &&
+        (field === undefined || field.isRelationship === false)
+      )
+        return uniquenessStringCollator.compare(left, right) === 0;
+      return false;
+    };
+
     const hasSameValues = async (
       other: SpecifyResource<SCHEMA>,
       fieldValues: IR<{
@@ -355,7 +378,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
           return (
             otherId === undefined &&
             otherCid === undefined &&
-            otherValue === value
+            valuesMatch(field, otherValue, value)
           );
         }
       );

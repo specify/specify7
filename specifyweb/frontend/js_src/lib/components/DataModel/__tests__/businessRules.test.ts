@@ -6,6 +6,7 @@ import { mockTime, requireContext } from '../../../tests/helpers';
 import type { RA } from '../../../utils/types';
 import { overwriteReadOnly } from '../../../utils/types';
 import { getPref } from '../../InitialContext/remotePrefs';
+import { formatUrl } from '../../Router/queryString';
 import { cogTypes } from '../helpers';
 import type { SerializedResource } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
@@ -619,6 +620,70 @@ describe('uniqueness rules', () => {
       },
     }
   );
+  overrideAjax(
+    '/api/specify/specifyuser/?domainfilter=false&name=spadmin&offset=0',
+    {
+      objects: [
+        {
+          id: 1,
+          name: 'sPadmin',
+          resource_uri: getResourceApiUrl('SpecifyUser', 1),
+        },
+      ],
+      meta: {
+        limit: 20,
+        offset: 0,
+        total_count: 1,
+      },
+    }
+  );
+  overrideAjax(
+    formatUrl('/api/specify/loanagent/', {
+      domainfilter: 'false',
+      role: 'borrower',
+      agent: 1,
+      loan: 1,
+      offset: 0,
+    }),
+    {
+      objects: [
+        {
+          id: 1,
+          role: 'Borrower',
+          agent: getResourceApiUrl('Agent', 1),
+          loan: getResourceApiUrl('Loan', 1),
+          resource_uri: getResourceApiUrl('LoanAgent', 1),
+        },
+      ],
+      meta: {
+        limit: 20,
+        offset: 0,
+        total_count: 1,
+      },
+    }
+  );
+  overrideAjax(
+    formatUrl('/api/specify/collectionobject/', {
+      domainfilter: 'false',
+      guid: 'Abc',
+      offset: 0,
+    }),
+    {
+      objects: [
+        {
+          id: 2,
+          guid: 'abc',
+          collection: '/api/specify/collection/4/',
+          resource_uri: getResourceApiUrl('CollectionObject', 2),
+        },
+      ],
+      meta: {
+        limit: 20,
+        offset: 0,
+        total_count: 1,
+      },
+    }
+  );
   test('simple uniqueness rule', async () => {
     const collectionObject = new tables.CollectionObject.Resource({
       collection: '/api/specify/collection/4/',
@@ -636,6 +701,55 @@ describe('uniqueness rules', () => {
     expect(result.current[0]).toStrictEqual([
       'Value must be unique to Collection',
     ]);
+  });
+
+  test('case insensitive uniqueness rule', async () => {
+    const specifyUser = new tables.SpecifyUser.Resource({
+      name: 'spadmin',
+    });
+
+    await specifyUser.businessRuleManager?.checkField('name');
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(specifyUser, tables.SpecifyUser.getField('name'))
+    );
+
+    expect(result.current[0]).toStrictEqual([
+      'Value must be unique to database',
+    ]);
+  });
+
+  test('case insensitive uniqueness rule with scope', async () => {
+    const loanAgent = new tables.LoanAgent.Resource({
+      agent: getResourceApiUrl('Agent', 1),
+      loan: getResourceApiUrl('Loan', 1),
+      role: 'borrower',
+    });
+
+    await loanAgent.businessRuleManager?.checkField('role');
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(loanAgent, tables.LoanAgent.getField('role'))
+    );
+
+    expect(result.current[0]).toStrictEqual([
+      'Values of Role and Agent must be unique to Loan',
+    ]);
+  });
+
+  test('non database uniqueness rule remains case sensitive', async () => {
+    const collectionObject = new tables.CollectionObject.Resource({
+      collection: '/api/specify/collection/4/',
+      guid: 'Abc',
+    });
+
+    await collectionObject.businessRuleManager?.checkField('guid');
+
+    const { result } = renderHook(() =>
+      useSaveBlockers(collectionObject, tables.CollectionObject.getField('guid'))
+    );
+
+    expect(result.current[0]).toStrictEqual([]);
   });
 
   overrideAjax(getResourceApiUrl('Agent', 1), {
@@ -657,7 +771,7 @@ describe('uniqueness rules', () => {
     const accessionAgent2 = new tables.AccessionAgent.Resource({
       accession: getResourceApiUrl('Accession', accessionId),
       agent: getResourceApiUrl('Agent', 1),
-      role: 'Borrower',
+      role: 'borrower',
     });
 
     accession.set('accessionAgents', [accessionAgent1, accessionAgent2]);
