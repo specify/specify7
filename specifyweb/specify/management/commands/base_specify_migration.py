@@ -10,7 +10,19 @@ from django.db import connection
 class Command(BaseCommand):
     help = "Add initial specify migration to django_migrations table."
 
+    def add_arguments(self, parser):
+        # Add a positional argument to accept 0 or 1
+        parser.add_argument(
+            'use_override',
+            type=int,
+            default=1,
+            choices=[0, 1],
+            help='Pass 1 to override or 0 to not override.',
+        )
+
     def handle(self, *args, **options):
+        use_override = bool(options['use_override'])
+
         with connection.cursor() as cursor:
             # Check django table
             try:
@@ -36,17 +48,18 @@ class Command(BaseCommand):
                 """)
 
             # Check if the record in the django_migrations table exists with app 'specify' and name '0001_initial'
-            cursor.execute("""
-                SELECT 1
-                FROM django_migrations
-                WHERE app = 'specify' AND name = '0001_initial'
-                LIMIT 1;
-            """)
-            record_exists = cursor.fetchone() is not None
+            if use_override:
+              cursor.execute("""
+                  SELECT 1
+                  FROM django_migrations
+                  WHERE app = 'specify' AND name = '0001_initial'
+                  LIMIT 1;
+              """)
+              record_exists = cursor.fetchone() is not None
 
-            if not record_exists:
-                # Insert the initial migration record for the specify app
-                cursor.execute("""
-                    INSERT INTO django_migrations (app, name, applied)
-                    VALUES ('specify', '0001_initial', NOW());
-                """)
+              if not record_exists:
+                  # Insert the initial migration record for the specify app
+                  cursor.execute("""
+                      INSERT INTO django_migrations (app, name, applied)
+                      VALUES ('specify', '0001_initial', NOW());
+                  """)
