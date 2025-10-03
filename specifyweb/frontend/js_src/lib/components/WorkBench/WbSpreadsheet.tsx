@@ -17,7 +17,6 @@ import { writable } from '../../utils/types';
 import { iconClassName, icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { strictGetTable } from '../DataModel/tables';
-import { Tables } from '../DataModel/types';
 import { SvgIcon } from '../Molecules/SvgIcon';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { configureHandsontable } from './handsontable';
