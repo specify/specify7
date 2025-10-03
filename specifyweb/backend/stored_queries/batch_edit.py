@@ -606,6 +606,71 @@ class RowPlanMap(NamedTuple):
 # RowPlanMap is just a map, this stores actual data (to many is a dict of list, rather than just a dict)
 # maybe unify that with RowPlanMap?
 
+class FieldLabel(NamedTuple):
+    field_name: str
+    caption: str
+    is_used: bool = False
+
+class TableFieldLabels:
+    table_name: str
+    field_labels: list[FieldLabel]
+
+    def __init__(self, table_name: str):
+        self.table_name = table_name
+        self.field_labels = []
+
+    def __iter__(self):
+        return iter(self.field_labels)
+
+    def add_field_label(self, field_label: FieldLabel):
+        self.field_labels.append(field_label)
+
+    def get_field_label_names(self) -> list[str]:
+        return [field.field_name for field in self.field_labels]
+
+    def has_field_label(self, field_name: str) -> bool:
+        return any(field.field_name == field_name for field in self.field_labels)
+
+    def use_field_label(self, field_name: str) -> FieldLabel | None:
+        last_match_idx: int | None = None
+        for idx, field_label in enumerate(self.field_labels):
+            if field_label.field_name != field_name:
+                continue
+            last_match_idx = idx
+            if not field_label.is_used:
+                updated = field_label._replace(is_used=True)
+                self.field_labels[idx] = updated
+                return updated
+        if last_match_idx is not None:
+            updated = self.field_labels[last_match_idx]._replace(is_used=True)
+            self.field_labels[last_match_idx] = updated
+            return updated
+        return None
+
+class BatchEditMetaTables:
+    table_labels: dict[str, TableFieldLabels] = {}
+
+    def __init__(self):
+        self.table_labels = {}
+
+    def __init__(self, localization_dump: dict[str, list[tuple[str, str, bool]]]):
+        self.table_labels = {}
+        for table_name, field_labels in localization_dump.items():
+            table_field_labels = TableFieldLabels(table_name)
+            for field_label in field_labels:
+                table_field_labels.add_field_label(FieldLabel(field_label[0], field_label[1], field_label[2]))
+            self.table_labels[table_name] = table_field_labels
+
+    def add_field_label(self, table_name: str, field_label: FieldLabel):
+        if table_name not in self.table_labels:
+            self.table_labels[table_name] = TableFieldLabels(table_name)
+        self.table_labels[table_name].add_field_label(field_label)
+
+    def get_table_field_labels(self, table_name: str) -> TableFieldLabels | None:
+        return self.table_labels.get(table_name, None)
+
+    def get_all_table_names(self) -> list[str]:
+        return list(self.table_labels.keys())
 
 class RowPlanCanonical(NamedTuple):
     batch_edit_pack: BatchEditPack
@@ -887,8 +952,7 @@ class RowPlanCanonical(NamedTuple):
     def to_upload_plan(
         self,
         base_table: Table,
-        # localization_dump: dict[str, dict[str, str]],
-        localization_dump: dict[str, list[tuple[str, str, bool]]],
+        batch_edit_meta_tables: BatchEditMetaTables,
         query_fields: list[QueryField],
         fields_added: dict[str, int],
         get_column_id: Callable[[str], int],
@@ -909,30 +973,21 @@ class RowPlanCanonical(NamedTuple):
             field = query_fields[
                 _id - 1
             ]  # Need to go off by 1, bc we added 1 to account for id fields
-            table_name, field_name = _get_table_and_field(field)
-            field_labels = localization_dump.get(table_name, [])
             # It could happen that the field we saw doesn't exist.
             # Plus, the default options get chosen in the cases of
-            if field_name not in [fl[0] for fl in field_labels] or field.fieldspec.contains_tree_rank():
+            table_name, field_name = _get_table_and_field(field)
+            table_field_labels = batch_edit_meta_tables.get_table_field_labels(table_name)
+            if (
+                table_field_labels is None
+                or not table_field_labels.has_field_label(field_name)
+                or field.fieldspec.contains_tree_rank()
+            ):
                 localized_label = naive_field_format(field.fieldspec)
             else:
-                localized_label = None
-                # localized_label_idx = None
-                # localized_label_idx = 0
-                localized_label_idx = len(field_labels) - 1
-                for i, fl in enumerate(field_labels):
-                    if fl[0] == field_name and not fl[2]:
-                        localized_label = fl[1]
-                        # set the localized_label that was just retrieved from field_lables to a tuple ending in True to mark it as used
-                        # field_labels[i] = (fl[0], fl[1], True)
-                        localized_label_idx = i
-                        break
-
-                field_labels[localized_label_idx] = (field_labels[localized_label_idx][0], field_labels[localized_label_idx][1], True)
-                localization_dump[table_name] = field_labels
-
-            if localized_label is None:
-                localized_label = field_labels[localized_label_idx][1]
+                field_label = table_field_labels.use_field_label(field_name)
+                localized_label = (
+                    field_label.caption if field_label is not None else naive_field_format(field.fieldspec)
+                )
                 
             string_id = field.fieldspec.to_stringid()
             fields_added[localized_label] = fields_added.get(localized_label, 0) + 1
@@ -976,7 +1031,7 @@ class RowPlanCanonical(NamedTuple):
             )
             return _self.to_upload_plan(
                 related_model,
-                localization_dump,
+                batch_edit_meta_tables,
                 query_fields,
                 fields_added,
                 get_column_id,
@@ -1177,23 +1232,6 @@ def run_batch_edit_query(props: BatchEditProps):
     ), "Got misaligned captions!"
 
     localization_dump = {}
-    # if captions:
-    #     for (field, caption) in zip(visible_fields, captions):
-    #         table_name, field_name = _get_table_and_field(field)
-    #         field_labels = localization_dump.get(table_name, {})
-    #         field_labels[field_name] = caption
-    # if captions:
-    #     for (field, caption) in zip(visible_fields, captions):
-    #         table_name, field_name = _get_table_and_field(field)
-    #         field_labels = localization_dump.get(table_name, {})
-    #         while field_name in field_labels.keys():
-    #             field_name += "_"
-    #         field_labels[field_name] = caption
-    #         if table_name not in localization_dump.keys():
-    #             localization_dump[table_name] = field_labels
-    #         else:
-    #             existing_field_labels = localization_dump[table_name]
-    #             localization_dump[table_name] = {**existing_field_labels, **field_labels}
     if captions:
         for (field, caption) in zip(visible_fields, captions):
             table_name, field_name = _get_table_and_field(field)
@@ -1202,6 +1240,7 @@ def run_batch_edit_query(props: BatchEditProps):
             field_labels.append(new_field_label)
             localization_dump[table_name] = field_labels
 
+    batch_edit_meta_tables = BatchEditMetaTables(localization_dump)
     naive_row_plan = RowPlanMap.get_row_plan(visible_fields)
     all_tree_info = get_all_tree_information(props["collection"], props["user"].id)
     base_table = datamodel.get_table_by_id_strict(tableid, strict=True)
@@ -1295,7 +1334,7 @@ def run_batch_edit_query(props: BatchEditProps):
     # The keys are lookups into original query field (not modified by us). Used to get ids in the original one.
     key_and_headers, upload_plan = extend_row.to_upload_plan(
         base_table,
-        localization_dump,
+        batch_edit_meta_tables,
         query_fields,
         {},
         _get_orig_column,
