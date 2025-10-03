@@ -5,8 +5,10 @@ import { ReactLazy } from '../Router/ReactLazy';
  * things. Replace with async import to split the bundle
  */
 export const AttachmentPicker = ReactLazy(async () =>
-  // comments
-  // other chnages
+  /*
+   * Comments
+   * other chnages
+   */
   import('./SyncAttachmentPicker').then(
     ({ SyncAttachmentPicker }) => SyncAttachmentPicker
   )
