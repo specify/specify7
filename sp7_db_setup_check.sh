@@ -55,12 +55,6 @@ NEW_DATABASE_CREATED=0
 NEW_MIGRATOR_USER_CREATED=0
 NEW_APP_USER_CREATED=0
 
-# Check that the root login works
-if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "SELECT 1;" &> /dev/null; then
-  echo "Error: Unable to connect to MariaDB with provided master user credentials."
-  exit 1
-fi
-
 # Wait for MariaDB to be up and running
 echo "Checking if MariaDB instance is up and running..."
 until (exec 3<>/dev/tcp/"$DB_HOST"/"$DB_PORT") 2>/dev/null; do
@@ -68,6 +62,12 @@ until (exec 3<>/dev/tcp/"$DB_HOST"/"$DB_PORT") 2>/dev/null; do
   sleep 5
 done
 echo "MariaDB is up and running."
+
+# Check that the root login works
+if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "SELECT 1;" &> /dev/null; then
+  echo "Error: Unable to connect to MariaDB with provided master user credentials."
+  exit 1
+fi
 
 # Create database if it doesn't exist
 DB_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = '$DB_NAME';")
