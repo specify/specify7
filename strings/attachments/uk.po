@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-10-03 04:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-10-03 06:01+0000\n"
+"Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "attachments/uk/>\n"
 "Language: uk\n"
@@ -378,7 +378,6 @@ msgstr "Завантажити всі знайдені вкладення"
 
 #. Used in: Components > Attachments > Record Set Attachment
 #: components/Attachments/RecordSetAttachment.tsx:224
-#, fuzzy
 msgid "createRecordSetToDownloadAll"
 msgstr ""
 "Не всі вкладення завантажено. Будь ласка, створіть набір записів результатів "
