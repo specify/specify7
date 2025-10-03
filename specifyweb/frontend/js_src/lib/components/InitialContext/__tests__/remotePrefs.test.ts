@@ -17,8 +17,8 @@ describe('Parsing Remote Prefs', () => {
   test('parses numeric value', () =>
     expect(getPref('attachment.preview_size')).toBe(123));
   test('uses default value if pref is not set', () =>
-    expect(getPref('form.definition.columnSource')).toBe(
-      remotePrefsDefinitions()['form.definition.columnSource'].defaultValue
+    expect(getPref('ui.formatting.scrmonthformat')).toBe(
+      remotePrefsDefinitions()['ui.formatting.scrmonthformat'].defaultValue
     ));
 });
 
