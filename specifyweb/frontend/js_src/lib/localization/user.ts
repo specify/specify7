@@ -168,7 +168,7 @@ export const userText = createDictionary({
     "en-us": "Sign in with Specify Account",
     "ru-ru": "Войти, указав учетную запись",
     "es-es": "Iniciar sesión con una cuenta de Specify",
-    "fr-fr": "Connectez-vous avec un compte spécifié",
+    "fr-fr": "Connectez-vous avec Spécifier le compte",
     "uk-ua": "Увійти за допомогою Вказати обліковий запис",
     "de-ch": "Mit „Konto angeben“ anmelden",
     "pt-br": "Entrar com Especificar Conta",
@@ -294,7 +294,7 @@ export const userText = createDictionary({
     "de-ch":
       "Sie können sich bei {collectionTable:string} anmelden, um fortzufahren:",
     "pt-br":
-      "Você pode fazer login no {collectionTable:string}, para prosseguir:",
+      "Você pode fazer login no {collectionTable:string} para prosseguir:",
   },
   sessionTimeOut: {
     "en-us": "Insufficient Privileges",
@@ -372,7 +372,7 @@ export const userText = createDictionary({
     "de-ch":
       "Leeres {recordSetTable:string} kann im schreibgeschützten Modus nicht geöffnet werden",
     "pt-br":
-      "Não é possível abrir {recordSetTable:string} vazio no modo somente leitura",
+      "Não é possível abrir {recordSetTable:string} vazio quando em modo somente leitura",
   },
   permissionDeniedForUrl: {
     "en-us": "Permission denied when accessing <url />",
@@ -397,7 +397,7 @@ export const userText = createDictionary({
     "de-ch":
       "Dem angemeldeten Benutzer wurde kein Zugriff auf Sammlungen in dieser Datenbank gewährt. Sie müssen sich als anderer Benutzer anmelden.",
     "pt-br":
-      "O usuário logado não recebeu acesso a nenhuma coleção neste banco de dados. Você deve efetuar login como outro usuário.",
+      "O usuário conectado não recebeu acesso a nenhuma coleção neste banco de dados. Você deve efetuar login como outro usuário.",
   },
   userAccount: {
     "en-us": "User Account",
@@ -501,7 +501,7 @@ export const userText = createDictionary({
     "fr-fr": "Les mots de passe ne correspondent pas.",
     "uk-ua": "Паролі не збігаються.",
     "de-ch": "Die Passwörter stimmen nicht überein.",
-    "pt-br": "As senhas não coincidem.",
+    "pt-br": "As senhas não correspondem.",
   },
   confirmPassword: {
     "en-us": "Confirm",
@@ -579,7 +579,7 @@ export const userText = createDictionary({
     "en-us": "Role Permission Policies",
     "ru-ru": "Политики разрешений ролей",
     "es-es": "Políticas de permisos",
-    "fr-fr": "Politiques d'autorisation des rôles",
+    "fr-fr": "Politiques d'autorisation de rôle",
     "uk-ua": "Політики дозволів для ролей",
     "de-ch": "Rollenberechtigungsrichtlinien",
     "pt-br": "Políticas de permissão de função",
@@ -767,7 +767,7 @@ export const userText = createDictionary({
     "fr-fr": "Créer de nouveaux rôles :",
     "uk-ua": "Створити нові ролі:",
     "de-ch": "Neue Rollen erstellen:",
-    "pt-br": "Criar novas funções:",
+    "pt-br": "Crie novas funções:",
   },
   updateExistingRoles: {
     "en-us": "Update existing roles:",
@@ -1014,7 +1014,7 @@ export const userText = createDictionary({
     "es-es": "Cambiar a diseño horizontal",
     "fr-fr": "Passer à l'affichage horizontal",
     "uk-ua": "Перейти до горизонтального розташування",
-    "de-ch": "Wechseln Sie zum horizontalen Layout",
+    "de-ch": "Zum horizontalen Layout wechseln",
     "pt-br": "Mudar para layout horizontal",
   },
   switchToVerticalLayout: {

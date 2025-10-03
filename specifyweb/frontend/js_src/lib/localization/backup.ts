@@ -42,7 +42,7 @@ export const backupText = createDictionary({
     "es-es":
       "No se encontró ninguna copia de seguridad anterior. ¿Quieres iniciar una nueva?",
     "fr-fr":
-      "Aucune sauvegarde précédente n'a été trouvée. Voulez-vous en créer une nouvelle ?",
+      "Aucune sauvegarde précédente n'a été trouvée. En créer une nouvelle ?",
     "pt-br": "Nenhum backup anterior foi encontrado. Iniciar um novo?",
     "ru-ru": "Предыдущая резервная копия не найдена. Создать новую?",
     "uk-ua": "Попередньої резервної копії не знайдено. Розпочати нову?",
@@ -58,7 +58,7 @@ export const backupText = createDictionary({
   },
   lastBackupOn: {
     "en-us": "This backup was created on {date:string}",
-    "de-ch": "Dieses Backup wurde erstellt auf {date:string}",
+    "de-ch": "Dieses Backup wurde auf {date:string} erstellt.",
     "es-es": "Esta copia de seguridad se creó el {date:string}",
     "fr-fr": "Cette sauvegarde a été créée le {date:string}",
     "pt-br": "Este backup foi criado em {date:string}",
@@ -104,7 +104,7 @@ export const backupText = createDictionary({
   compressing: {
     "en-us": "Compressing...",
     "de-ch": "Komprimieren...",
-    "es-es": "Apresamiento...",
+    "es-es": "Comprimiendo...",
     "fr-fr": "Compression...",
     "pt-br": "Comprimindo...",
     "ru-ru": "Сжатие...",

@@ -92,7 +92,7 @@ export const attachmentsText = createDictionary({
     "de-ch":
       "Es konnte kein Datensatz gefunden werden, auf den sich dieser Anhang bezieht.",
     "pt-br":
-      "Não é possível encontrar um registro ao qual este anexo esteja relacionado.",
+      "Não foi possível encontrar um registro ao qual este anexo esteja relacionado.",
   },
   showForm: {
     "en-us": "Show Form",
@@ -166,7 +166,7 @@ export const attachmentsText = createDictionary({
     "fr-fr": "Déjà téléchargé",
     "ru-ru": "Уже загружено",
     "uk-ua": "Вже завантажено",
-    "pt-br": "Já Enviado",
+    "pt-br": "Já carregado",
   },
   skipped: {
     "en-us": "Skipped",
@@ -196,7 +196,7 @@ export const attachmentsText = createDictionary({
     "ru-ru":
       "{action:string} был в процессе выполнения, когда произошло прерывание",
     "uk-ua": "Виконувався {action:string}, коли сталася перерва",
-    "pt-br": "{action:string} estava em andamento quando ocorreu a interrupção",
+    "pt-br": "{action:string} estava em andamento quando a interrupção ocorreu",
   },
   matchError: {
     "en-us": "Match Error",
@@ -284,7 +284,7 @@ export const attachmentsText = createDictionary({
     "fr-fr": "Retour en arrière interrompu",
     "ru-ru": "Откат прерван",
     "uk-ua": "Відкат перервано",
-    "pt-br": "Reversão interrompida",
+    "pt-br": "Rollback interrompido",
   },
   rollbackInterruptedDescription: {
     "en-us":
@@ -300,7 +300,7 @@ export const attachmentsText = createDictionary({
     "es-es":
       "La reversión estaba en curso cuando se produjo una interrupción. Es posible que se hayan eliminado algunos archivos.",
     "pt-br":
-      "A reversão estava em andamento quando ocorreu uma interrupção. Alguns arquivos podem ter sido excluídos",
+      "A reversão estava em andamento quando ocorreu uma interrupção. Alguns arquivos podem ter sido excluídos.",
   },
   attachmentId: {
     "en-us": "Attachment ID",
@@ -375,7 +375,7 @@ export const attachmentsText = createDictionary({
     "en-us":
       "Rollback will delete the attachments from the Specify database and Asset Server",
     "de-ch":
-      "Rollback löscht die Anhänge aus der Datenbank und dem Asset Server.",
+      "Rollback löscht die Anhänge aus der Datenbank und dem Asset Server",
     "es-es":
       "La reversión eliminará los archivos adjuntos de la base de datos Specify y del servidor de activos.",
     "fr-fr":
@@ -655,11 +655,27 @@ export const attachmentsText = createDictionary({
     "ru-ru": "Загрузить все найденные вложения",
     "uk-ua": "Завантажити всі знайдені вкладення",
   },
+  createRecordSetToDownloadAll: {
+    "en-us":
+      "Not all attachments have been loaded. Please create a record set of the query results to download all the attachments.",
+    "de-ch":
+      "Es wurden nicht alle Anhänge geladen. Bitte erstellen Sie einen Datensatz der Abfrageergebnisse, um alle Anhänge herunterzuladen.",
+    "es-es":
+      "No se han cargado todos los archivos adjuntos. Cree un conjunto de registros con los resultados de la consulta para descargarlos todos.",
+    "fr-fr":
+      "Toutes les pièces jointes n'ont pas été chargées. Veuillez créer un ensemble d'enregistrements des résultats de la requête pour télécharger toutes les pièces jointes.",
+    "pt-br":
+      "Nem todos os anexos foram carregados. Crie um conjunto de registros dos resultados da consulta para baixar todos os anexos.",
+    "ru-ru":
+      "Не все вложения загружены. Создайте набор записей результатов запроса, чтобы загрузить все вложения.",
+    "uk-ua":
+      "Не всі вкладення завантажено. Будь ласка, створіть набір записів результатів запиту, щоб завантажити всі вкладення.",
+  },
   deleteAttachmentWarning: {
     "en-us": "Are you sure you want to delete this attachment?",
     "de-ch": "Möchten Sie diesen Anhang wirklich löschen?",
     "es-es": "¿Está seguro que desea eliminar este archivo adjunto?",
-    "fr-fr": "Êtes-vous sûr de vouloir supprimer cette pièce jointe ?",
+    "fr-fr": "Etes-vous sûr de vouloir supprimer cette pièce jointe ?",
     "pt-br": "Tem certeza de que deseja excluir este anexo?",
     "ru-ru": "Вы уверены, что хотите удалить это вложение?",
     "uk-ua": "Ви впевнені, що хочете видалити цей вкладений файл?",

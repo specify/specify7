@@ -242,7 +242,7 @@ export const mergingText = createDictionary({
     "fr-fr": "Quelque chose s'est mal passé pendant le processus de fusion.",
     "ru-ru": "Что-то пошло не так во время процесса слияния.",
     "uk-ua": "Під час процесу об'єднання сталася помилка.",
-    "pt-br": "Algo deu errado durante o processo de mesclagem.",
+    "pt-br": "Algo deu errado durante o processo de fusão.",
   },
   linkedRecords: {
     "en-us": "Linked Records",

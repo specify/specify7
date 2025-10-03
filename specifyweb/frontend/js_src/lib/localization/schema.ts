@@ -12,7 +12,7 @@ export const schemaText = createDictionary({
   table: {
     "en-us": "Table",
     "ru-ru": "Стол",
-    "es-es": "Mesa",
+    "es-es": "Tabla",
     "fr-fr": "Tableau",
     "uk-ua": "Таблиця",
     "de-ch": "Tabelle",
@@ -39,7 +39,7 @@ export const schemaText = createDictionary({
   withoutTable: {
     "en-us": "Without Table",
     "de-ch": "Ohne Tisch",
-    "es-es": "Sin mesa",
+    "es-es": "Sin tabla",
     "fr-fr": "Sans table",
     "ru-ru": "Без стола",
     "uk-ua": "Без столу",
@@ -57,7 +57,7 @@ export const schemaText = createDictionary({
   unsavedSchemaUnloadProtect: {
     "en-us": "Schema changes have not been saved",
     "ru-ru": "Изменения схемы не были сохранены",
-    "es-es": "Los cambios de esquema no se han guardado",
+    "es-es": "Los cambios en el esquema no se han guardado",
     "fr-fr": "Les modifications du schéma n'ont pas été enregistrées",
     "uk-ua": "Зміни схеми не збережено",
     "de-ch": "Schema Änderungen wurden nicht gespeichert",
@@ -166,7 +166,7 @@ export const schemaText = createDictionary({
     "en-us": "Table Aggregation",
     "ru-ru": "Агрегация таблиц",
     "es-es": "Agregación de tablas",
-    "fr-fr": "Agrégation de tables",
+    "fr-fr": "Agrégation de table",
     "uk-ua": "Агрегація таблиць",
     "de-ch": "Tabellenaggregation",
     "pt-br": "Agregação de tabelas",
@@ -174,7 +174,7 @@ export const schemaText = createDictionary({
   oneToOne: {
     "en-us": "One-to-one",
     "ru-ru": "Один на один",
-    "es-es": "Cara a cara",
+    "es-es": "Uno-a-uno",
     "fr-fr": "Un à un",
     "uk-ua": "Один на один",
     "de-ch": "Eins zu eins",
