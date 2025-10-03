@@ -5,16 +5,14 @@ def deduplicate_picklists(apps, schema_editor):
     Picklist = apps.get_model('specify', 'Picklist')
     PicklistItem = apps.get_model('specify', 'PicklistItem')
 
-    # Find groups that are duplicates by business key
     duplicate_groups = (
         Picklist.objects
-        .values('name', 'tablename', 'fieldname', 'collection')  # <-- use field names
+        .values('name', 'tablename', 'fieldname', 'collection')
         .annotate(pl_count=Count('id'))
         .filter(pl_count__gt=1)
     )
 
     for group in duplicate_groups:
-        # Order by id so the lowest-id is the "primary"
         picklists = (
             Picklist.objects
             .filter(
@@ -26,14 +24,12 @@ def deduplicate_picklists(apps, schema_editor):
             .order_by('id')
         )
 
-        # Sanity
         if picklists.count() < 2:
             continue
 
         primary = picklists.first()
-        duplicates = picklists.exclude(id=primary.id)  # <-- use 'id'
+        duplicates = picklists.exclude(id=primary.id)
 
-        # Preload existing (title, value) pairs from the primary to avoid dupes
         existing_pairs = set(
             PicklistItem.objects
             .filter(picklist=primary)
@@ -41,7 +37,6 @@ def deduplicate_picklists(apps, schema_editor):
         )
 
         for dup in duplicates:
-            # Grab all items on the duplicate picklist
             dup_items = list(
                 PicklistItem.objects
                 .filter(picklist=dup)
@@ -49,7 +44,7 @@ def deduplicate_picklists(apps, schema_editor):
                 .order_by('id')
             )
 
-            # Partition into items we should move vs delete
+            # Partition into items to be either move or delete
             to_move = []
             to_delete_ids = []
             for it in dup_items:
@@ -59,7 +54,7 @@ def deduplicate_picklists(apps, schema_editor):
                 else:
                     it.picklist = primary
                     to_move.append(it)
-                    existing_pairs.add(key)  # avoid creating a dupe on later items
+                    existing_pairs.add(key)
 
             if to_move:
                 PicklistItem.objects.bulk_update(to_move, ['picklist'])
