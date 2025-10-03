@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-10-03 03:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-10-03 06:02+0000\n"
+"Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "common/uk/>\n"
 "Language: uk\n"
@@ -972,7 +972,6 @@ msgstr "{resource:string}({count:number|formatted})"
 
 #. 🟥Example usage: Record Sets (1,234+). Used in: Components > Attachments > Record Set Attachment
 #: components/Attachments/RecordSetAttachment.tsx:165
-#, fuzzy
 msgid "countLineOrMore"
 msgstr "{resource:string} ({count:number|formatted}+)"
 
