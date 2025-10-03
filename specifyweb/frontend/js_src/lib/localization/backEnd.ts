@@ -582,8 +582,7 @@ export const backEndText = createDictionary({
     "pt-br":
       "{componentType: string} inválido para a(s) classificação(ões) da árvore selecionada(s)",
     "ru-ru": "Недопустимый {componentType: string} для выбранных рангов дерева",
-    "uk-ua":
-      "Недійсний {componentType: string} для вибраного(их) рангу(ів) дерева",
+    "uk-ua": "Недійсний {componentType: string} для вибраних рангів дерев",
   },
   attachmentNotFound: {
     "en-us":
