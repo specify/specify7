@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { attachmentsText } from '../../localization/attachments';
-import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
@@ -9,38 +8,16 @@ import { statsText } from '../../localization/stats';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { ensure, localized } from '../../utils/types';
-import { Link } from '../Atoms/Link';
 import type { StatLayout } from '../Statistics/types';
 import type { GenericPreferences } from './types';
 import { definePref } from './types';
 
-const documentationLink = (url: string) => (
-  <Link.NewTab href={url}>{headerText.documentation()}</Link.NewTab>
-);
-
-const picklistDocs = documentationLink(
-  'https://discourse.specifysoftware.org/t/picklists-in-specify-7/2562'
-);
-
-const attachmentDocs = documentationLink(
-  'https://discourse.specifysoftware.org/t/attachments-security-and-permissions/640'
-);
-
-const treeDocs = documentationLink(
-  'https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987/4'
-);
-
-const statisticsDocs = documentationLink(
-  'https://discourse.specifysoftware.org/t/specify-7-statistics/1715'
-);
-
-const specifyNetworkDocs = documentationLink(
-  'https://discourse.specifysoftware.org/t/specify-network-gbif-integration/2793'
-);
-
-const catalogDocs = documentationLink(
-  'https://discourse.specifysoftware.org/t/catalog-number-inheritance/2859'
-);
+const picklistDocs = 'https://discourse.specifysoftware.org/t/picklists-in-specify-7/2562';
+const attachmentDocs = 'https://discourse.specifysoftware.org/t/attachments-security-and-permissions/640';
+const treeDocs = 'https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987/4';
+const statisticsDocs = 'https://discourse.specifysoftware.org/t/specify-7-statistics/1715';
+const specifyNetworkDocs = 'https://discourse.specifysoftware.org/t/specify-network-gbif-integration/2793';
+const catalogDocs = 'https://discourse.specifysoftware.org/t/catalog-number-inheritance/2859';
 
 export const collectionPreferenceDefinitions = {
   general: {
