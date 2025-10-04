@@ -15,6 +15,23 @@ import type { StatLayout } from '../Statistics/types';
 import type { GenericPreferences } from './types';
 import { definePref } from './types';
 
+const specifyNetworkItems = {
+  publishingOrganization: definePref<string | undefined>({
+    title: localized('Publishing organization key'),
+    requiresReload: false,
+    visible: true,
+    defaultValue: undefined,
+    type: 'java.lang.String',
+  }),
+  collectionKey: definePref<string | undefined>({
+    title: localized('Collection key'),
+    requiresReload: false,
+    visible: true,
+    defaultValue: undefined,
+    type: 'java.lang.String',
+  }),
+} as const;
+
 export const collectionPreferenceDefinitions = {
   general: {
     title: preferencesText.general(),
@@ -131,14 +148,14 @@ export const collectionPreferenceDefinitions = {
         items: {
           display: definePref<{
             readonly basicView: RA<number>;
-            readonly detailedView: Record<string, unknown>;
+            readonly detailedView: RA<number>;
           }>({
             title: preferencesText.displayBasicView(),
             requiresReload: false,
             visible: false,
             defaultValue: {
               basicView: [],
-              detailedView: {},
+              detailedView: [],
             },
             renderer: f.never,
             container: 'label',
@@ -184,6 +201,10 @@ export const collectionPreferenceDefinitions = {
           }),
         },
       },
+      specifyNetwork: {
+        title: specifyNetworkText.specifyNetwork(),
+        items: specifyNetworkItems,
+      },
     },
   },
 
@@ -192,22 +213,7 @@ export const collectionPreferenceDefinitions = {
     subCategories: {
       gbif: {
         title: localized('GBIF'),
-        items: {
-          publishingOrg: definePref<string | undefined>({
-            title: localized('Publishing organization key'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: undefined,
-            type: 'java.lang.String',
-          }),
-          datasetKey: definePref<string | undefined>({
-            title: localized('Collection key'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: undefined,
-            type: 'java.lang.String',
-          }),
-        },
+        items: specifyNetworkItems,
       },
     },
   },
