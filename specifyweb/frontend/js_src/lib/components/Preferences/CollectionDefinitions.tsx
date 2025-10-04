@@ -20,7 +20,9 @@ export const collectionPreferenceDefinitions = {
     title: preferencesText.general(),
     subCategories: {
       pickLists: {
-        title: preferencesText.filterPickLists?.() ?? (localized('Pick lists') as LocalizedString),
+        title:
+          preferencesText.filterPickLists?.() ??
+          (localized('Pick lists') as LocalizedString),
         items: {
           sp7_scope_table_picklists: definePref<boolean>({
             title: localized('Scope “Entire Table” picklists'),
@@ -71,13 +73,14 @@ export const collectionPreferenceDefinitions = {
               defaultValue: false,
               type: 'java.lang.Boolean',
             }),
-          'sp7.allow_adding_child_to_synonymized_parent.Taxon': definePref<boolean>({
-            title: localized('Allow children under synonymized Taxon nodes'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: false,
-            type: 'java.lang.Boolean',
-          }),
+          'sp7.allow_adding_child_to_synonymized_parent.Taxon':
+            definePref<boolean>({
+              title: localized('Allow children under synonymized Taxon nodes'),
+              requiresReload: false,
+              visible: true,
+              defaultValue: false,
+              type: 'java.lang.Boolean',
+            }),
           'sp7.allow_adding_child_to_synonymized_parent.Geography':
             definePref<boolean>({
               title: localized(
@@ -120,6 +123,32 @@ export const collectionPreferenceDefinitions = {
       },
     },
   },
+  queryBuilder: {
+    title: queryText.queryBuilder(),
+    subCategories: {
+      appearance: {
+        title: preferencesText.appearance(),
+        items: {
+          display: definePref<{
+            readonly basicView: RA<number>;
+            // detailedView shape isn’t used here; keep it permissive
+            readonly detailedView: unknown;
+          }>({
+            title: preferencesText.displayBasicView(),
+            requiresReload: false,
+            visible: false,
+            defaultValue: {
+              basicView: [],
+              detailedView: {},
+            },
+            renderer: f.never,
+            container: 'label',
+          }),
+        },
+      },
+    },
+  },
+
   statistics: {
     title: statsText.statistics(),
     subCategories: {
@@ -158,20 +187,22 @@ export const collectionPreferenceDefinitions = {
       },
     },
   },
+
   specifyNetwork: {
     title: specifyNetworkText.specifyNetwork(),
     subCategories: {
       gbif: {
         title: localized('GBIF'),
         items: {
-          publishingOrganization: definePref<string | undefined>({
+          // Names chosen to match SpecifyNetworkCollection components
+          publishingOrg: definePref<string | undefined>({
             title: localized('Publishing organization key'),
             requiresReload: false,
             visible: true,
             defaultValue: undefined,
             type: 'java.lang.String',
           }),
-          collectionKey: definePref<string | undefined>({
+          datasetKey: definePref<string | undefined>({
             title: localized('Collection key'),
             requiresReload: false,
             visible: true,
@@ -203,6 +234,7 @@ export const collectionPreferenceDefinitions = {
       },
     },
   },
+
   catalogNumberParentInheritance: {
     title: queryText.catalogNumberParentCOInheritance(),
     description: localized(
@@ -223,6 +255,7 @@ export const collectionPreferenceDefinitions = {
       },
     },
   },
+
   uniqueCatalogNumberAccrossComponentAndCO: {
     title: queryText.uniqueCatalogNumberAcrossComponentAndCo(),
     subCategories: {
@@ -244,4 +277,5 @@ export const collectionPreferenceDefinitions = {
   },
 } as const;
 
+// Keep the same type-assert pattern as UserDefinitions
 ensure<GenericPreferences>()(collectionPreferenceDefinitions);
