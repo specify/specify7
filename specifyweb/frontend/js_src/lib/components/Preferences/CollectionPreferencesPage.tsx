@@ -3,11 +3,9 @@
  */
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { usePromise } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
 import { headerText } from '../../localization/header';
@@ -16,9 +14,8 @@ import { f } from '../../utils/functools';
 import { Container, Key } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { Form } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ProtectedTool } from '../Permissions/PermissionDenied';
 import { hasPermission } from '../Permissions/helpers';
@@ -306,41 +303,11 @@ function FormatString({
 }
 
 function CollectionPreferences(): JSX.Element {
-  const [changesMade, markChangesMade, clearChanges] = useBooleanState();
-  const loading = React.useContext(LoadingContext);
-  const navigate = useNavigate();
-
-  React.useEffect(
-    () => collectionPreferences.events.on('update', () => markChangesMade()),
-    [markChangesMade]
-  );
-
-
   return (
     <ProtectedTool action="update" tool="resources">
-     
-        <>
-
-        <Form
-          className="contents"
-          onSubmit={(): void =>
-            loading(
-              collectionPreferences.awaitSynced().then(() => {
-                clearChanges();
-                navigate('/specify/');
-              })
-            )
-          }
-        >
-          <div className="relative flex flex-col gap-6 overflow-y-auto">
-            <ReadOnlyContext.Provider value={false}>
-              <CollectionPreferencesContent />
-            </ReadOnlyContext.Provider>
-          </div>
-
-      
-        </Form>
-</>
+      <div className="relative flex flex-col gap-6 overflow-y-auto">
+        <CollectionPreferencesContent />
+      </div>
     </ProtectedTool>
   );
 }
