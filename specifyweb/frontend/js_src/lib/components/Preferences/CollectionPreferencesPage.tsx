@@ -1,176 +1,177 @@
+/**
+ * Edit collection preferences
+ */
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
-import { Container, H2 } from '../Atoms';
+import { headerText } from '../../localization/header';
+import { StringToJsx } from '../../localization/utils';
+import { f } from '../../utils/functools';
+import { Container, Key } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Form } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import { Submit } from '../Atoms/Submit';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ProtectedTool } from '../Permissions/PermissionDenied';
-import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
-import { fetchContext as fetchRemotePrefs, getCollectionPref, getPref } from '../InitialContext/remotePrefs';
-import { schema } from '../DataModel/schema';
+import { hasPermission } from '../Permissions/helpers';
+
 import { collectionPreferences } from './collectionPreferences';
 import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 import { DefaultPreferenceItemRender } from './Renderers';
-import type { GenericPreferences } from './types';
-import { BasePreferences } from './BasePreferences';
-import { useTopChild } from './useTopChild';
+import type { GenericPreferences, PreferenceItem } from './types';
 
-const preferencesPromise = collectionPreferences.fetch().then(() => true);
+const preferencesPromise = Promise.all([collectionPreferences.fetch()]).then(
+  f.true
+);
 
-type CollectionPreferencesInstance = BasePreferences<typeof collectionPreferenceDefinitions>;
-type ItemEntry = ReturnType<typeof useCollectionPrefDefinitions>[number][1]['subCategories'][number][1]['items'][number];
+const DOCS = {
+  picklists:
+    'https://discourse.specifysoftware.org/t/picklists-in-specify-7/2562',
+  attachments:
+    'https://discourse.specifysoftware.org/t/attachments-security-and-permissions/640',
+  trees:
+    'https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987/4',
+  stats: 'https://discourse.specifysoftware.org/t/specify-7-statistics/1715',
+  specifyNetwork:
+    'https://discourse.specifysoftware.org/t/specify-network-gbif-integration/2793',
+  catalogNumbers:
+    'https://discourse.specifysoftware.org/t/catalog-number-inheritance/2859',
+} as const;
 
-function useCollectionPrefDefinitions() {
+export function useCollectionPrefDefinitions() {
   const visibilityContext = React.useMemo(
     () => ({ isDarkMode: false, isRedirecting: false }),
     []
   );
-  return React.useMemo(() =>
-    Object.entries(collectionPreferenceDefinitions as GenericPreferences)
-      .map(([category, { subCategories, ...categoryData }]) => [
-        category,
-        {
-          ...categoryData,
-          subCategories: Object.entries(subCategories)
-            .map(([subcategory, { items, ...subcategoryData }]) => [
-              subcategory,
+  return React.useMemo(
+    () =>
+      Object.entries(collectionPreferenceDefinitions as GenericPreferences)
+        .map(
+          ([category, { subCategories, ...categoryData }]) =>
+            [
+              category,
               {
-                ...subcategoryData,
-                items: Object.entries(items).filter(([, item]) =>
-                  typeof item.visible === 'function'
-                    ? item.visible(visibilityContext)
-                    : item.visible !== false
-                ),
+                ...categoryData,
+                subCategories: Object.entries(subCategories)
+                  .map(
+                    ([subCategory, { items, ...subCategoryData }]) =>
+                      [
+                        subCategory,
+                        {
+                          ...subCategoryData,
+                          items: Object.entries(items).filter(
+                            ([_name, { visible }]) =>
+                              typeof visible === 'function'
+                                ? visible(visibilityContext)
+                                : visible !== false
+                          ),
+                        },
+                      ] as const
+                  )
+                  .filter(([_name, { items }]) => items.length > 0),
               },
-            ] as const)
-            .filter(([, { items }]) => items.length > 0),
-        },
-      ] as const)
-      .filter(([, { subCategories }]) => subCategories.length > 0),
-  [visibilityContext]);
-}
-
-function CollectionPreferencesAside({
-  definitions,
-  activeCategory,
-  setActiveCategory,
-  references,
-}: {
-  readonly definitions: ReturnType<typeof useCollectionPrefDefinitions>;
-  readonly activeCategory: number | undefined;
-  readonly setActiveCategory: (index: number | undefined) => void;
-  readonly references: ReturnType<typeof useTopChild>['references'];
-}): JSX.Element {
-  return (
-    <aside
-      className="top-0 flex min-w-fit flex-shrink-0 flex-col divide-y-4 divide-[color:var(--form-background)] overflow-y-auto md:sticky md:flex-1"
-    >
-      {definitions.map(([category, { title }], index) => (
-        <Link.Secondary
-          aria-current={activeCategory === index ? 'page' : undefined}
-          href={`#${category}`}
-          key={category}
-          onClick={(event): void => {
-            event.preventDefault();
-            setActiveCategory(index);
-            const element = references.current?.[index];
-            element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }}
-        >
-          {typeof title === 'function' ? title() : title}
-        </Link.Secondary>
-      ))}
-    </aside>
+            ] as const
+        )
+        .filter(([_name, { subCategories }]) => subCategories.length > 0),
+    [visibilityContext]
   );
 }
 
-function CollectionPreferencesContent({
-  definitions,
-  preferences,
-  forwardRefs,
-}: {
-  readonly definitions: ReturnType<typeof useCollectionPrefDefinitions>;
-  readonly preferences: CollectionPreferencesInstance;
-  readonly forwardRefs?: (index: number, element: HTMLElement | null) => void;
-}): JSX.Element {
-  const isReadOnly = React.useContext(ReadOnlyContext);
+type ItemEntry = ReturnType<
+  typeof useCollectionPrefDefinitions
+>[number][1]['subCategories'][number][1]['items'][number];
+
+export function CollectionPreferencesContent(): JSX.Element {
+  const definitions = useCollectionPrefDefinitions();
 
   return (
     <div className="flex h-fit flex-col gap-6">
-      {definitions.map(([category, { title, description, subCategories }], index) => (
-        <ErrorBoundary dismissible key={category}>
-          <Container.Center
-            className="gap-8 overflow-y-visible"
-            forwardRef={forwardRefs?.bind(undefined, index)}
-            id={category}
-          >
-            <h3 className="text-2xl">{typeof title === 'function' ? title() : title}</h3>
-            {description !== undefined && (
-              <p>
-                {typeof description === 'function' ? description() : description}
-              </p>
-            )}
-            {subCategories.map(([subcategory, { title: subTitle, description: subDescription, items }]) => (
-              <section className="flex flex-col items-start gap-4 md:items-stretch" key={subcategory}>
-                <div className="flex items-center gap-2">
-                  <h4 className={`${className.headerGray} text-xl md:text-center`}>
-                    {typeof subTitle === 'function' ? subTitle() : subTitle}
-                  </h4>
-                  <div className="flex flex-1 justify-end">
-                    <Button.Small
-                      disabled={isReadOnly}
-                      onClick={(): void =>
-                        items.forEach(([name]) => {
-                          const definition = preferences.definition(
-                            category as never,
-                            subcategory as never,
-                            name as never
-                          );
-                          preferences.set(
-                            category as never,
-                            subcategory as never,
-                            name as never,
-                            definition.defaultValue as never
-                          );
-                        })
-                      }
-                    >
-                      {commonText.reset()}
-                    </Button.Small>
-                  </div>
-                </div>
-                {subDescription !== undefined && (
-                  <p>
-                    {typeof subDescription === 'function'
-                      ? subDescription()
-                      : subDescription}
-                  </p>
-                )}
-                {items.map((itemEntry) => (
-                  <CollectionPreferenceItem
-                    category={category}
-                    isReadOnly={isReadOnly}
-                    itemEntry={itemEntry}
-                    preferences={preferences}
-                    key={itemEntry[0]}
-                    subcategory={subcategory}
-                  />
-                ))}
-              </section>
-            ))}
-          </Container.Center>
-        </ErrorBoundary>
-      ))}
+      {definitions.map(
+        (
+          [category, { title, description = undefined, subCategories }]) => (
+          <ErrorBoundary dismissible key={category}>
+            <Container.Center
+              className="gap-8 overflow-y-visible"
+              id={category}
+            >
+              <h3 className="text-2xl">
+                {typeof title === 'function' ? title() : title}
+              </h3>
+
+              {description !== undefined && (
+                <p>
+                  {typeof description === 'function'
+                    ? description()
+                    : description}
+                </p>
+              )}
+
+              {subCategories.map(
+                ([subcategory, { title, description: subDesc, items }]) => (
+                  <section
+                    className="flex flex-col items-start gap-4 md:items-stretch"
+                    key={subcategory}
+                  >
+                    <div className="flex items-center gap-2">
+                      <h4
+                        className={`${className.headerGray} text-xl md:text-center`}
+                      >
+                        {typeof title === 'function' ? title() : title}
+                      </h4>
+
+                      <div className="flex flex-1 justify-end">
+                        <Button.Small
+                          onClick={(): void =>
+                            items.forEach(([name]) => {
+                              const def = collectionPreferences.definition(
+                                category as never,
+                                subcategory as never,
+                                name as never
+                              );
+                              collectionPreferences.set(
+                                category as never,
+                                subcategory as never,
+                                name as never,
+                                (def as { defaultValue: unknown })
+                                  .defaultValue as never
+                              );
+                            })
+                          }
+                        >
+                          {commonText.reset()}
+                        </Button.Small>
+                      </div>
+                    </div>
+
+                    {subDesc !== undefined && (
+                      <p>
+                        {typeof subDesc === 'function' ? subDesc() : subDesc}
+                      </p>
+                    )}
+
+                    {items.map((entry) => (
+                      <CollectionPreferenceItem
+                        key={entry[0]}
+                        category={category}
+                        subcategory={subcategory}
+                        itemEntry={entry}
+                      />
+                    ))}
+                  </section>
+                )
+              )}
+            </Container.Center>
+          </ErrorBoundary>
+        )
+      )}
     </div>
   );
 }
@@ -179,59 +180,97 @@ function CollectionPreferenceItem({
   category,
   subcategory,
   itemEntry,
-  preferences,
-  isReadOnly,
 }: {
   readonly category: string;
   readonly subcategory: string;
   readonly itemEntry: ItemEntry;
-  readonly preferences: CollectionPreferencesInstance;
-  readonly isReadOnly: boolean;
 }): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const [name, item] = itemEntry;
-  const [value, setValue] = preferences.use(
+
+  const canEdit =
+    !isReadOnly &&
+    (item.visible !== 'protected' ||
+      hasPermission('/preferences/user', 'edit_protected'));
+
+  const [value, setValue] = collectionPreferences.use(
     category as never,
     subcategory as never,
     name as never
   );
 
-  const handleChange = React.useCallback(
-    (newValue: unknown) => {
-      if (isReadOnly) return;
-      setValue(newValue as never);
-    },
-    [isReadOnly, setValue]
-  );
+  const Renderer =
+    'renderer' in item ? item.renderer : DefaultPreferenceItemRender;
 
-  const Renderer = 'renderer' in item ? item.renderer : DefaultPreferenceItemRender;
-  const props = {
-    className: `flex items-start gap-2 md:flex-row flex-col ${
-      isReadOnly ? '!cursor-not-allowed' : ''
-    }`,
-    key: name,
+  // Minimal doc link mapping
+  const docHref: string | undefined = (() => {
+    if (name === 'sp7_scope_table_picklists') return DOCS.picklists;
+    if (name === 'attachment.is_public_default') return DOCS.attachments;
+    if (name.startsWith('sp7.allow_adding_child_to_synonymized_parent.'))
+      return DOCS.trees;
+    if (name === 'showPreparationsTotal' || name === 'refreshRate')
+      return DOCS.stats;
+    if (name === 'publishingOrganization' || name === 'collectionKey')
+      return DOCS.specifyNetwork;
+    if (category.startsWith('catalogNumber')) return DOCS.catalogNumbers;
+    return undefined;
+  })();
+
+  const wrapperProps = {
+    className: `
+      flex items-start gap-2 md:flex-row flex-col
+      ${canEdit ? '' : '!cursor-not-allowed'}
+    `,
+    title: canEdit ? undefined : preferencesText.adminsOnlyPreference(),
   } as const;
 
   const content = (
     <>
       <div className="flex flex-col items-start gap-2 md:flex-1 md:items-stretch">
         <p className="flex min-h-[theme(spacing.8)] flex-1 items-center justify-end md:text-right">
-          {typeof item.title === 'function' ? item.title() : item.title}
+          <FormatString
+            text={
+              typeof item.title === 'function'
+                ? item.title()
+                : (item.title as LocalizedString)
+            }
+          />
         </p>
-        {item.description !== undefined && (
+
+        {(item.description !== undefined || docHref) && (
           <p className="flex flex-1 justify-end text-gray-500 md:text-right">
-            {typeof item.description === 'function' ? item.description() : item.description}
+            {item.description !== undefined && (
+              <FormatString
+                text={
+                  typeof item.description === 'function'
+                    ? item.description()
+                    : (item.description as LocalizedString)
+                }
+              />
+            )}
+            {docHref && (
+              <>
+                {item.description ? ' ' : null}
+                <Link.NewTab href={docHref}>
+                  {headerText.documentation
+                    ? headerText.documentation()
+                    : ('Documentation' as LocalizedString)}
+                </Link.NewTab>
+              </>
+            )}
           </p>
         )}
       </div>
+
       <div className="flex min-h-[theme(spacing.8)] flex-1 flex-col justify-center gap-2">
-        <ReadOnlyContext.Provider value={isReadOnly}>
+        <ReadOnlyContext.Provider value={!canEdit}>
           <Renderer
             category={category}
-            definition={item}
+            definition={item as PreferenceItem<any>}
             item={name}
             subcategory={subcategory}
             value={value}
-            onChange={handleChange}
+            onChange={setValue}
           />
         </ReadOnlyContext.Provider>
       </div>
@@ -239,9 +278,30 @@ function CollectionPreferenceItem({
   );
 
   return 'container' in item && item.container === 'div' ? (
-    <div {...props}>{content}</div>
+    <div {...wrapperProps}>{content}</div>
   ) : (
-    <label {...props}>{content}</label>
+    <label {...wrapperProps}>{content}</label>
+  );
+}
+
+function FormatString({
+  text,
+}: {
+  readonly text: JSX.Element | LocalizedString;
+}): JSX.Element {
+  return typeof text === 'object' ? (
+    text
+  ) : text.includes('<key>') ? (
+    <span>
+      <StringToJsx
+        components={{
+          key: (key) => <Key>{key}</Key>,
+        }}
+        string={text}
+      />
+    </span>
+  ) : (
+    <>{text}</>
   );
 }
 
@@ -249,169 +309,43 @@ function CollectionPreferences(): JSX.Element {
   const [changesMade, markChangesMade, clearChanges] = useBooleanState();
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
-  const {
-    visibleChild,
-    setVisibleChild,
-    forwardRefs,
-    references,
-    scrollContainerRef,
-  } = useTopChild();
-  const definitions = useCollectionPrefDefinitions();
 
-  React.useEffect(() => {
-    let cancelled = false;
+  React.useEffect(
+    () => collectionPreferences.events.on('update', () => markChangesMade()),
+    [markChangesMade]
+  );
 
-    const migrateFromRemotePrefs = async () => {
-      await fetchRemotePrefs;
-      if (cancelled) return;
-
-      const collectionId = schema.domainLevelIds.collection;
-      const migrationTargets: ReadonlyArray<{
-        readonly category: string;
-        readonly subcategory: string;
-        readonly name: string;
-        readonly value: () => boolean;
-      }> = [
-        {
-          category: 'general',
-          subcategory: 'pickLists',
-          name: 'sp7_scope_table_picklists',
-          value: () => getCollectionPref('sp7_scope_table_picklists', collectionId),
-        },
-        {
-          category: 'general',
-          subcategory: 'attachments',
-          name: 'attachment.is_public_default',
-          value: () => getPref('attachment.is_public_default'),
-        },
-        ...['GeologicTimePeriod', 'Taxon', 'Geography', 'LithoStrat', 'Storage', 'TectonicUnit'].map(
-          (treeName) => ({
-            category: 'treeManagement',
-            subcategory: 'synonymized',
-            name: `sp7.allow_adding_child_to_synonymized_parent.${treeName}`,
-            value: () => getPref(`sp7.allow_adding_child_to_synonymized_parent.${treeName}`),
-          })
-        ),
-      ];
-
-      migrationTargets.forEach(({ category, subcategory, name, value }) => {
-        const current = (collectionPreferences.getRaw() as Record<string, any>)[category]?.[subcategory]?.[name];
-        if (current !== undefined) return;
-        const definition = collectionPreferences.definition(
-          category as never,
-          subcategory as never,
-          name as never
-        );
-        const remoteValue = value();
-        if (remoteValue === definition.defaultValue) return;
-        collectionPreferences.set(
-          category as never,
-          subcategory as never,
-          name as never,
-          remoteValue as never
-        );
-      });
-    };
-
-    void migrateFromRemotePrefs();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  React.useEffect(() =>
-    collectionPreferences.events.on('update', () => {
-      markChangesMade();
-    }), [markChangesMade]);
 
   return (
     <ProtectedTool action="update" tool="resources">
-      <Container.FullGray>
-        <H2 className="text-2xl">{preferencesText.collectionPreferences()}</H2>
+     
+        <>
+
         <Form
           className="contents"
           onSubmit={(): void =>
             loading(
-              collectionPreferences
-                .awaitSynced()
-                .then(() => {
-                  clearChanges();
-                  navigate('/specify/');
-                })
+              collectionPreferences.awaitSynced().then(() => {
+                clearChanges();
+                navigate('/specify/');
+              })
             )
           }
         >
-          <div
-            className="relative flex flex-col gap-6 overflow-y-auto md:flex-row"
-            ref={scrollContainerRef}
-          >
-            <CollectionPreferencesAside
-              activeCategory={visibleChild}
-              definitions={definitions}
-              references={references}
-              setActiveCategory={setVisibleChild}
-            />
-            <CollectionPreferencesContent
-              definitions={definitions}
-              preferences={collectionPreferences}
-              forwardRefs={forwardRefs}
-            />
-            <span className="flex-1" />
+          <div className="relative flex flex-col gap-6 overflow-y-auto">
+            <ReadOnlyContext.Provider value={false}>
+              <CollectionPreferencesContent />
+            </ReadOnlyContext.Provider>
           </div>
-          <div className="flex justify-end">
-            {changesMade ? (
-              <Submit.Save>{commonText.save()}</Submit.Save>
-            ) : (
-              <Link.Secondary href="/specify/">
-                {commonText.close()}
-              </Link.Secondary>
-            )}
-          </div>
+
+      
         </Form>
-      </Container.FullGray>
+</>
     </ProtectedTool>
   );
 }
 
 export function CollectionPreferencesWrapper(): JSX.Element | null {
   const [hasFetched] = usePromise(preferencesPromise, true);
-  return hasFetched ? <CollectionPreferences /> : null;
-}
-
-export function CollectionPreferencesEditor({
-  data,
-  onChange,
-}: AppResourceTabProps): JSX.Element {
-  const [preferencesInstance] = useLiveState(
-    React.useCallback(() => {
-      const prefs = new BasePreferences({
-        definitions: collectionPreferenceDefinitions,
-        values: {
-          resourceName: 'CollectionPreferences',
-          fetchUrl: '/context/collection_resource/',
-        },
-        defaultValues: undefined,
-        developmentGlobal: '_editingCollectionPreferences',
-        syncChanges: false,
-      });
-      prefs.setRaw(JSON.parse(data === null || data.length === 0 ? '{}' : data));
-      prefs.events.on('update', () => onChange(JSON.stringify(prefs.getRaw())));
-      return prefs;
-    }, [onChange])
-  );
-
-  const definitions = useCollectionPrefDefinitions();
-  const Context = preferencesInstance.Context;
-
-  return (
-    <Context.Provider value={preferencesInstance}>
-      <ReadOnlyContext.Provider value={false}>
-        <CollectionPreferencesContent
-          definitions={definitions}
-          preferences={preferencesInstance}
-        />
-      </ReadOnlyContext.Provider>
-    </Context.Provider>
-  );
+  return hasFetched === true ? <CollectionPreferences /> : null;
 }
