@@ -6,6 +6,9 @@ import { PreferencesContent } from '../Preferences';
 import { BasePreferences } from '../Preferences/BasePreferences';
 import { userPreferenceDefinitions } from '../Preferences/UserDefinitions';
 import { userPreferences } from '../Preferences/userPreferences';
+import { CollectionPreferencesContent } from './CollectionPreferencesPage'; 
+import { collectionPreferenceDefinitions } from './CollectionDefinitions';
+import { collectionPreferences } from './collectionPreferences';
 
 export function UserPreferencesEditor({
   data,
@@ -37,6 +40,39 @@ export function UserPreferencesEditor({
   return (
     <Context.Provider value={preferencesContext}>
       <PreferencesContent />
+    </Context.Provider>
+  );
+}
+
+export function CollectionPreferencesEditor({
+  data,
+  onChange,
+}: AppResourceTabProps): JSX.Element {
+  const [preferencesInstance] = useLiveState(
+    React.useCallback(() => {
+      const tmpCollectionPrefs = new BasePreferences({
+        definitions: collectionPreferenceDefinitions,
+        values: {
+          resourceName: 'CollectionPreferences',
+          fetchUrl: '/context/collection_resource/',
+        },
+        defaultValues: undefined,
+        developmentGlobal: '_editingCollectionPreferences',
+        syncChanges: false, 
+      });
+      tmpCollectionPrefs.setRaw(JSON.parse(!data || data.length === 0 ? '{}' : data));
+      tmpCollectionPrefs.events.on('update', () =>
+        onChange(JSON.stringify(tmpCollectionPrefs.getRaw()))
+      );
+
+      return tmpCollectionPrefs;
+    }, [data, onChange])
+  );
+  const Context = collectionPreferences.Context;
+
+  return (
+    <Context.Provider value={preferencesInstance}>
+        <CollectionPreferencesContent />
     </Context.Provider>
   );
 }

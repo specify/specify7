@@ -1,4 +1,7 @@
-import React from 'react';
+/**
+ * Definitions for Collection preferences
+ */
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { attachmentsText } from '../../localization/attachments';
 import { preferencesText } from '../../localization/preferences';
@@ -12,29 +15,17 @@ import type { StatLayout } from '../Statistics/types';
 import type { GenericPreferences } from './types';
 import { definePref } from './types';
 
-const picklistDocs = 'https://discourse.specifysoftware.org/t/picklists-in-specify-7/2562';
-const attachmentDocs = 'https://discourse.specifysoftware.org/t/attachments-security-and-permissions/640';
-const treeDocs = 'https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987/4';
-const statisticsDocs = 'https://discourse.specifysoftware.org/t/specify-7-statistics/1715';
-const specifyNetworkDocs = 'https://discourse.specifysoftware.org/t/specify-network-gbif-integration/2793';
-const catalogDocs = 'https://discourse.specifysoftware.org/t/catalog-number-inheritance/2859';
-
 export const collectionPreferenceDefinitions = {
   general: {
     title: preferencesText.general(),
     subCategories: {
       pickLists: {
-        title: localized('Pick lists'),
+        title: preferencesText.filterPickLists?.() ?? (localized('Pick lists') as LocalizedString),
         items: {
           sp7_scope_table_picklists: definePref<boolean>({
             title: localized('Scope “Entire Table” picklists'),
-            description: (
-              <>
-                {localized(
-                  'Restrict “Entire Table” picklists to values used by records in this collection.'
-                )}{' '}
-                {picklistDocs}
-              </>
+            description: localized(
+              'Restrict “Entire Table” picklists to values used by records in this collection.'
             ),
             requiresReload: false,
             visible: true,
@@ -48,13 +39,8 @@ export const collectionPreferenceDefinitions = {
         items: {
           'attachment.is_public_default': definePref<boolean>({
             title: localized('New attachments are public'),
-            description: (
-              <>
-                {localized(
-                  'Set the default visibility for attachments created within this collection.'
-                )}{' '}
-                {attachmentDocs}
-              </>
+            description: localized(
+              'Set the default visibility for attachments created within this collection.'
             ),
             requiresReload: false,
             visible: true,
@@ -65,12 +51,15 @@ export const collectionPreferenceDefinitions = {
       },
     },
   },
+
   treeManagement: {
     title: localized('Tree management'),
     subCategories: {
       synonymized: {
         title: localized('Synonymized nodes'),
-        description: treeDocs,
+        description: localized(
+          'Allow creating children under synonymized nodes in specific trees.'
+        ),
         items: {
           'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod':
             definePref<boolean>({
@@ -147,13 +136,8 @@ export const collectionPreferenceDefinitions = {
           }),
           showPreparationsTotal: definePref<boolean>({
             title: localized('Show preparation totals'),
-            description: (
-              <>
-                {localized(
-                  'Include an overall total across preparation types on the statistics page.'
-                )}{' '}
-                {statisticsDocs}
-              </>
+            description: localized(
+              'Include an overall total across preparation types on the statistics page.'
             ),
             requiresReload: false,
             visible: true,
@@ -162,13 +146,8 @@ export const collectionPreferenceDefinitions = {
           }),
           refreshRate: definePref<number>({
             title: localized('Auto-refresh rate (hours)'),
-            description: (
-              <>
-                {localized(
-                  'Specify how frequently shared statistics refresh their data.'
-                )}{' '}
-                {statisticsDocs}
-              </>
+            description: localized(
+              'Specify how frequently shared statistics refresh their data.'
             ),
             requiresReload: false,
             visible: true,
@@ -179,7 +158,7 @@ export const collectionPreferenceDefinitions = {
       },
     },
   },
-     specifyNetwork: {
+  specifyNetwork: {
     title: specifyNetworkText.specifyNetwork(),
     subCategories: {
       gbif: {
@@ -187,14 +166,6 @@ export const collectionPreferenceDefinitions = {
         items: {
           publishingOrganization: definePref<string | undefined>({
             title: localized('Publishing organization key'),
-            description: (
-              <>
-                {localized(
-                  'GBIF publishingOrgKey for this collection when contributing to the Specify Network.'
-                )}{' '}
-                {specifyNetworkDocs}
-              </>
-            ),
             requiresReload: false,
             visible: true,
             defaultValue: undefined,
@@ -202,14 +173,6 @@ export const collectionPreferenceDefinitions = {
           }),
           collectionKey: definePref<string | undefined>({
             title: localized('Collection key'),
-            description: (
-              <>
-                {localized(
-                  'GBIF dataSetKey used for this collection in the Specify Network.'
-                )}{' '}
-                {specifyNetworkDocs}
-              </>
-            ),
             requiresReload: false,
             visible: true,
             defaultValue: undefined,
@@ -219,16 +182,11 @@ export const collectionPreferenceDefinitions = {
       },
     },
   },
-  
+
   catalogNumberInheritance: {
     title: queryText.catalogNumberInheritance(),
-    description: (
-      <>
-        {localized(
-          'Configure whether sibling Collection Objects inherit catalog numbers from the primary record.'
-        )}{' '}
-        {catalogDocs}
-      </>
+    description: localized(
+      'Configure whether sibling Collection Objects inherit catalog numbers from the primary record.'
     ),
     subCategories: {
       behavior: {
@@ -247,13 +205,8 @@ export const collectionPreferenceDefinitions = {
   },
   catalogNumberParentInheritance: {
     title: queryText.catalogNumberParentCOInheritance(),
-    description: (
-      <>
-        {localized(
-          'Control whether component records inherit catalog numbers from their parent Collection Object.'
-        )}{' '}
-        {catalogDocs}
-      </>
+    description: localized(
+      'Control whether component records inherit catalog numbers from their parent Collection Object.'
     ),
     subCategories: {
       behavior: {

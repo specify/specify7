@@ -28,7 +28,7 @@ import { formattersSpec } from '../Formatters/spec';
 import { FormEditor } from '../FormEditor';
 import { viewSetsSpec } from '../FormEditor/spec';
 import { UserPreferencesEditor } from '../Preferences/Editor';
-import { CollectionPreferencesEditor } from '../Preferences/CollectionPreferencesPage';
+import { CollectionPreferencesEditor } from '../Preferences/Editor';
 import { useDarkMode } from '../Preferences/Hooks';
 import type { BaseSpec } from '../Syncer';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
