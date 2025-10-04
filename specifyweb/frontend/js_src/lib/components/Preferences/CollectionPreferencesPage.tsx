@@ -7,8 +7,8 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { usePromise } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
-import { preferencesText } from '../../localization/preferences';
 import { headerText } from '../../localization/header';
+import { preferencesText } from '../../localization/preferences';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
 import { Container, Key } from '../Atoms';
@@ -17,11 +17,10 @@ import { className } from '../Atoms/className';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { ProtectedTool } from '../Permissions/PermissionDenied';
 import { hasPermission } from '../Permissions/helpers';
-
-import { collectionPreferences } from './collectionPreferences';
+import { ProtectedTool } from '../Permissions/PermissionDenied';
 import { collectionPreferenceDefinitions } from './CollectionDefinitions';
+import { collectionPreferences } from './collectionPreferences';
 import { DefaultPreferenceItemRender } from './Renderers';
 import type { GenericPreferences, PreferenceItem } from './types';
 
@@ -92,8 +91,7 @@ export function CollectionPreferencesContent(): JSX.Element {
   return (
     <div className="flex h-fit flex-col gap-6">
       {definitions.map(
-        (
-          [category, { title, description = undefined, subCategories }]) => (
+        ([category, { title, description = undefined, subCategories }]) => (
           <ErrorBoundary dismissible key={category}>
             <Container.Center
               className="gap-8 overflow-y-visible"
@@ -137,7 +135,7 @@ export function CollectionPreferencesContent(): JSX.Element {
                                 category as never,
                                 subcategory as never,
                                 name as never,
-                                (def as { defaultValue: unknown })
+                                (def as { readonly defaultValue: unknown })
                                   .defaultValue as never
                               );
                             })
@@ -156,10 +154,10 @@ export function CollectionPreferencesContent(): JSX.Element {
 
                     {items.map((entry) => (
                       <CollectionPreferenceItem
-                        key={entry[0]}
                         category={category}
-                        subcategory={subcategory}
                         itemEntry={entry}
+                        key={entry[0]}
+                        subcategory={subcategory}
                       />
                     ))}
                   </section>
@@ -200,7 +198,7 @@ function CollectionPreferenceItem({
     'renderer' in item ? item.renderer : DefaultPreferenceItemRender;
 
   // Minimal doc link mapping
-  const docHref: string | undefined = (() => {
+  const documentHref: string | undefined = (() => {
     if (name === 'sp7_scope_table_picklists') return DOCS.picklists;
     if (name === 'attachment.is_public_default') return DOCS.attachments;
     if (name.startsWith('sp7.allow_adding_child_to_synonymized_parent.'))
@@ -234,7 +232,7 @@ function CollectionPreferenceItem({
           />
         </p>
 
-        {(item.description !== undefined || docHref) && (
+        {(item.description !== undefined || documentHref) && (
           <p className="flex flex-1 justify-end text-gray-500 md:text-right">
             {item.description !== undefined && (
               <FormatString
@@ -245,10 +243,10 @@ function CollectionPreferenceItem({
                 }
               />
             )}
-            {docHref && (
+            {documentHref && (
               <>
                 {item.description ? ' ' : null}
-                <Link.NewTab href={docHref}>
+                <Link.NewTab href={documentHref}>
                   {headerText.documentation()}
                 </Link.NewTab>
               </>
@@ -261,7 +259,7 @@ function CollectionPreferenceItem({
         <ReadOnlyContext.Provider value={!canEdit}>
           <Renderer
             category={category}
-            definition={item as PreferenceItem<any>}
+            definition={item}
             item={name}
             subcategory={subcategory}
             value={value}
