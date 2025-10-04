@@ -1,7 +1,6 @@
 /**
  * Definitions for Collection preferences
  */
-import type { LocalizedString } from 'typesafe-i18n';
 
 import { attachmentsText } from '../../localization/attachments';
 import { preferencesText } from '../../localization/preferences';
@@ -37,9 +36,7 @@ export const collectionPreferenceDefinitions = {
     title: preferencesText.general(),
     subCategories: {
       pickLists: {
-        title:
-          preferencesText.filterPickLists?.() ??
-          (localized('Pick lists') as LocalizedString),
+        title: preferencesText.filterPickLists(),
         items: {
           sp7_scope_table_picklists: definePref<boolean>({
             title: localized('Scope "Entire Table" picklists'),
