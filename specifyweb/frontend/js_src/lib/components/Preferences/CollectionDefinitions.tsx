@@ -25,9 +25,9 @@ export const collectionPreferenceDefinitions = {
           (localized('Pick lists') as LocalizedString),
         items: {
           sp7_scope_table_picklists: definePref<boolean>({
-            title: localized('Scope “Entire Table” picklists'),
+            title: localized('Scope "Entire Table" picklists'),
             description: localized(
-              'Restrict “Entire Table” picklists to values used by records in this collection.'
+              'Restrict "Entire Table" picklists to values used by records in this collection.'
             ),
             requiresReload: false,
             visible: true,
@@ -131,8 +131,7 @@ export const collectionPreferenceDefinitions = {
         items: {
           display: definePref<{
             readonly basicView: RA<number>;
-            // detailedView shape isn’t used here; keep it permissive
-            readonly detailedView: unknown;
+            readonly detailedView: Record<string, unknown>;
           }>({
             title: preferencesText.displayBasicView(),
             requiresReload: false,
@@ -194,7 +193,6 @@ export const collectionPreferenceDefinitions = {
       gbif: {
         title: localized('GBIF'),
         items: {
-          // Names chosen to match SpecifyNetworkCollection components
           publishingOrg: definePref<string | undefined>({
             title: localized('Publishing organization key'),
             requiresReload: false,
@@ -277,5 +275,4 @@ export const collectionPreferenceDefinitions = {
   },
 } as const;
 
-// Keep the same type-assert pattern as UserDefinitions
 ensure<GenericPreferences>()(collectionPreferenceDefinitions);
