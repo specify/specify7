@@ -249,9 +249,7 @@ function CollectionPreferenceItem({
               <>
                 {item.description ? ' ' : null}
                 <Link.NewTab href={docHref}>
-                  {headerText.documentation
-                    ? headerText.documentation()
-                    : ('Documentation' as LocalizedString)}
+                  {headerText.documentation()}
                 </Link.NewTab>
               </>
             )}
