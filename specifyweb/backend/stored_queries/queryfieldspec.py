@@ -177,7 +177,7 @@ def null_safe_not(field_expr, predicate):
     target = field_expr if field_expr is not None else getattr(predicate, "left", None)
     if target is None:
         return sql.not_(predicate)
-    return sql.or_(target == None, sql.not_(predicate))
+    return sql.or_(target.is_(None), sql.not_(predicate))
 
 
 QueryNode = Field | Relationship | TreeRankQuery
