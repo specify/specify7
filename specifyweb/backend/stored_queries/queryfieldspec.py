@@ -172,7 +172,6 @@ def null_safe_not(field_expr, predicate):
     relevant field expression.
 
     """
-        
     if predicate is None or isinstance(predicate, Query):
         return predicate
     target = field_expr if field_expr is not None else getattr(predicate, "left", None)
