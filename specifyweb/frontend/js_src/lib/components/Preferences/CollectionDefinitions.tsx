@@ -155,7 +155,7 @@ export const collectionPreferenceDefinitions = {
               detailedView: [],
             },
             renderer: f.never,
-            container: 'label',
+            container: 'div',
           }),
         },
       },
@@ -200,16 +200,6 @@ export const collectionPreferenceDefinitions = {
       },
       specifyNetwork: {
         title: specifyNetworkText.specifyNetwork(),
-        items: specifyNetworkItems,
-      },
-    },
-  },
-
-  specifyNetwork: {
-    title: specifyNetworkText.specifyNetwork(),
-    subCategories: {
-      gbif: {
-        title: localized('GBIF'),
         items: specifyNetworkItems,
       },
     },
