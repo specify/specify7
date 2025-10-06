@@ -957,16 +957,16 @@ export const queryText = createDictionary({
     'uk-ua': "Успадкування батьківського об'єкта колекції за номером каталогу",
   },
   uniqueCatalogNumberAcrossComponentAndCo: {
-    "en-us": "Catalog Number Uniqueness Across Component And CO tables",
-    "de-ch": "Eindeutigkeit der Katalognummer in Komponenten- und CO-Tabellen",
-    "es-es":
-      "Unicidad del número de catálogo en las tablas de componentes y CO",
-    "fr-fr":
-      "Unicité des numéros de catalogue entre les tableaux de composants et de CO",
-    "pt-br":
-      "Exclusividade do número de catálogo nas tabelas de componentes e CO",
-    "ru-ru": "Уникальность каталожного номера в таблицах компонентов и CO",
-    "uk-ua": "Унікальність каталожних номерів у таблицях компонентів та CO",
+    'en-us': 'Catalog Number Uniqueness Across Component And CO tables',
+    'de-ch': 'Eindeutigkeit der Katalognummer in Komponenten- und CO-Tabellen',
+    'es-es':
+      'Unicidad del número de catálogo en las tablas de componentes y CO',
+    'fr-fr':
+      'Unicité des numéros de catalogue entre les tableaux de composants et de CO',
+    'pt-br':
+      'Exclusividade do número de catálogo nas tabelas de componentes e CO',
+    'ru-ru': 'Уникальность каталожного номера в таблицах компонентов и CO',
+    'uk-ua': 'Унікальність каталожних номерів у таблицях компонентів та CO',
   },
   formatInputAs: {
     comment: `
