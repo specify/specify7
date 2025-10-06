@@ -313,5 +313,20 @@ export const statsText = createDictionary({
   categoryToDelete: {
     'en-us': 'This will permanently delete the following category',
   },
+  layoutPreference: {
+    'en-us': 'Defines the layout of the statistics page',
+  },
+  showPreparationsTotal: {
+    'en-us': 'Show preparation totals',
+  },
+  showPreparationsTotalDescription: {
+    'en-us': 'Include an overall total across preparation types on the statistics page.',
+  },
+  autoRefreshRate: {
+    'en-us': 'Auto-refresh rate (hours)',
+  },
+  autoRefreshRateDescription: {
+    'en-us': 'Specify how frequently shared statistics refresh their data.',
+  },
 });
 /* eslint-enable @typescript-eslint/naming-convention */
