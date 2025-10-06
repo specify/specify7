@@ -722,9 +722,6 @@ class RowPlanCanonical(NamedTuple):
             # It could happen that the field we saw doesn't exist.
             # Plus, the default options get chosen in the cases of
             table_name, field_name = _get_table_and_field(field)
-            # field_caption = field_caption_lookup.get(
-            #     field, _reconstruct_field_caption(field)
-            # )
             field_caption = query_field_caption_lookup[field]
             table_field_labels = batch_edit_meta_tables.get_table_field_labels(table_name)
             if (
@@ -900,18 +897,6 @@ def _get_table_and_field(field: QueryField):
     table_name = field.fieldspec.table.name
     field_name = None if field.fieldspec.get_field() is None else field.fieldspec.get_field().name
     return (table_name, field_name)
-
-def _reconstruct_field_caption(field: QueryField):
-    join_path = field.fieldspec.join_path
-    base_field_name = join_path[0].name if join_path else field.fieldspec.table.name
-    field_name = (
-        None
-        if field.fieldspec.get_field() is None
-        else field.fieldspec.get_field().name
-    )
-    if field_name is None:
-        return base_field_name
-    return f"{base_field_name} - {field_name}"
 
 def rewrite_coordinate_fields(row, _mapped_rows: dict[tuple[tuple[str, ...], ...], Any], join_paths: tuple[tuple[str, ...], ...]) -> tuple: 
     """
