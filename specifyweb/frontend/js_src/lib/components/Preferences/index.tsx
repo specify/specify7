@@ -22,6 +22,7 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { hasPermission } from '../Permissions/helpers';
+import { ProtectedTool } from '../Permissions/PermissionDenied';
 import { PreferencesAside } from './Aside';
 import type { BasePreferences } from './BasePreferences';
 import { collectionPreferenceDefinitions } from './CollectionDefinitions';
@@ -32,7 +33,6 @@ import type { GenericPreferences, PreferenceItem } from './types';
 import { userPreferenceDefinitions } from './UserDefinitions';
 import { userPreferences } from './userPreferences';
 import { useTopChild } from './useTopChild';
-import { ProtectedTool } from '../Permissions/PermissionDenied';
 
 const DOCS = {
   picklists:
@@ -58,7 +58,7 @@ const preferenceDefinitions = {
   collection: collectionPreferenceDefinitions as GenericPreferences,
 } as const;
 
-const resolveCollectionDocHref = (
+const resolveCollectionDocumentHref = (
   category: string,
   _subcategory: string,
   name: string
@@ -75,9 +75,9 @@ const resolveCollectionDocHref = (
   return undefined;
 };
 
-const docHrefResolvers = {
+const documentHrefResolvers = {
   user: undefined,
-  collection: resolveCollectionDocHref,
+  collection: resolveCollectionDocumentHref,
 } as const;
 
 export type PreferenceType = keyof typeof preferenceInstances;
@@ -231,7 +231,7 @@ export function PreferencesContent({
   const isReadOnly = React.useContext(ReadOnlyContext);
   const definitions = usePrefDefinitions(prefType);
   const preferences = preferenceInstances[prefType];
-  const resolveDocHref = docHrefResolvers[prefType];
+  const resolveDocumentHref = documentHrefResolvers[prefType];
   return (
     <div className="flex h-fit flex-col gap-6">
       {definitions.map(
@@ -301,9 +301,13 @@ export function PreferencesContent({
                         !isReadOnly &&
                         (item.visible !== 'protected' ||
                           hasPermission('/preferences/user', 'edit_protected'));
-                      const docHref = resolveDocHref?.(category, subcategory, name);
+                      const documentHref = resolveDocumentHref?.(
+                        category,
+                        subcategory,
+                        name
+                      );
                       const stackDocumentation =
-                        prefType === 'collection' && docHref !== undefined;
+                        prefType === 'collection' && documentHref !== undefined;
                       const props = {
                         className: `
                             flex items-start gap-2 md:flex-row flex-col
@@ -332,7 +336,7 @@ export function PreferencesContent({
                               />
                             </p>
                             {(item.description !== undefined ||
-                              docHref !== undefined) && (
+                              documentHref !== undefined) && (
                               <p
                                 className={
                                   stackDocumentation
@@ -349,10 +353,14 @@ export function PreferencesContent({
                                     }
                                   />
                                 )}
-                                {docHref !== undefined && (
+                                {documentHref !== undefined && (
                                   <Link.NewTab
-                                    className={stackDocumentation ? 'self-end' : undefined}
-                                    href={docHref}
+                                    className={
+                                      stackDocumentation
+                                        ? 'self-end'
+                                        : undefined
+                                    }
+                                    href={documentHref}
                                   >
                                     {headerText.documentation()}
                                   </Link.NewTab>

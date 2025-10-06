@@ -117,7 +117,9 @@ export const collectionPreferenceDefinitions = {
             }),
           'sp7.allow_adding_child_to_synonymized_parent.Storage':
             definePref<boolean>({
-              title: localized('Allow children under synonymized Storage nodes'),
+              title: localized(
+                'Allow children under synonymized Storage nodes'
+              ),
               requiresReload: false,
               visible: true,
               defaultValue: false,
