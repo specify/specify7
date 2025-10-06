@@ -687,12 +687,19 @@ export const attachmentsText = createDictionary({
     'pt-br': 'New attachments are public',
   },
   publicDefaultDescription: {
-    'en-us': 'Set the default visibility for attachments created within this collection.',
-    'ru-ru': 'Set the default visibility for attachments created within this collection.',
-    'es-es': 'Set the default visibility for attachments created within this collection.',
-    'fr-fr': 'Set the default visibility for attachments created within this collection.',
-    'uk-ua': 'Set the default visibility for attachments created within this collection.',
-    'de-ch': 'Set the default visibility for attachments created within this collection.',
-    'pt-br': 'Set the default visibility for attachments created within this collection.',
+    'en-us':
+      'Set the default visibility for attachments created within this collection.',
+    'ru-ru':
+      'Set the default visibility for attachments created within this collection.',
+    'es-es':
+      'Set the default visibility for attachments created within this collection.',
+    'fr-fr':
+      'Set the default visibility for attachments created within this collection.',
+    'uk-ua':
+      'Set the default visibility for attachments created within this collection.',
+    'de-ch':
+      'Set the default visibility for attachments created within this collection.',
+    'pt-br':
+      'Set the default visibility for attachments created within this collection.',
   },
 } as const);
