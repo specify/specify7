@@ -696,8 +696,10 @@ class RowPlanCanonical(NamedTuple):
         base_table: Table,
         batch_edit_meta_tables: BatchEditMetaTables,
         query_fields: list[QueryField],
+        query_field_caption_lookup: dict[QueryField, str],
         fields_added: dict[str, int],
         get_column_id: Callable[[str], int],
+        field_caption_lookup: dict[QueryField, str],
         omit_relationships: bool,
     ) -> tuple[list[tuple[tuple[int, int], str]], Uploadable]:
         # Yuk, finally.
@@ -718,6 +720,10 @@ class RowPlanCanonical(NamedTuple):
             # It could happen that the field we saw doesn't exist.
             # Plus, the default options get chosen in the cases of
             table_name, field_name = _get_table_and_field(field)
+            # field_caption = field_caption_lookup.get(
+            #     field, _reconstruct_field_caption(field)
+            # )
+            field_caption = query_field_caption_lookup[field]
             table_field_labels = batch_edit_meta_tables.get_table_field_labels(table_name)
             if (
                 table_field_labels is None
@@ -726,7 +732,7 @@ class RowPlanCanonical(NamedTuple):
             ):
                 localized_label = naive_field_format(field.fieldspec)
             else:
-                field_label = table_field_labels.use_field_label(field_name)
+                field_label = table_field_labels.use_field_label(field_name, field_caption)
                 localized_label = (
                     field_label.caption if field_label is not None else naive_field_format(field.fieldspec)
                 )
@@ -775,8 +781,10 @@ class RowPlanCanonical(NamedTuple):
                 related_model,
                 batch_edit_meta_tables,
                 query_fields,
+                query_field_caption_lookup,
                 fields_added,
                 get_column_id,
+                field_caption_lookup,
                 omit_relationships,
             )
 
@@ -891,6 +899,18 @@ def _get_table_and_field(field: QueryField):
     field_name = None if field.fieldspec.get_field() is None else field.fieldspec.get_field().name
     return (table_name, field_name)
 
+def _reconstruct_field_caption(field: QueryField):
+    join_path = field.fieldspec.join_path
+    base_field_name = join_path[0].name if join_path else field.fieldspec.table.name
+    field_name = (
+        None
+        if field.fieldspec.get_field() is None
+        else field.fieldspec.get_field().name
+    )
+    if field_name is None:
+        return base_field_name
+    return f"{base_field_name} - {field_name}"
+
 def rewrite_coordinate_fields(row, _mapped_rows: dict[tuple[tuple[str, ...], ...], Any], join_paths: tuple[tuple[str, ...], ...]) -> tuple: 
     """
         In the QueryResults we want to replace any instances of the decimal
@@ -951,8 +971,12 @@ def run_batch_edit_query(props: BatchEditProps):
 
     recordsetid = props["recordsetid"]
     fields = props["fields"]
-
     visible_fields = [field for field in fields if field.display]
+    
+    field_with_captions = zip(fields, captions)
+    query_field_caption_lookup = dict(field_with_captions)
+    if len(fields) != len(set(fields)):
+        logger.info("Key Collision: query field appears more than once.")
 
     treedefsfilter = props["treedefsfilter"]
 
@@ -960,14 +984,21 @@ def run_batch_edit_query(props: BatchEditProps):
         len(visible_fields) == len(captions)
     ), "Got misaligned captions!"
 
-    localization_dump = {}
+    field_caption_pairs: list[tuple[QueryField, str]] = []
     if captions:
-        for (field, caption) in zip(visible_fields, captions):
-            table_name, field_name = _get_table_and_field(field)
-            field_labels = localization_dump.get(table_name, [])
-            new_field_label = (field_name, caption, False)
-            field_labels.append(new_field_label)
-            localization_dump[table_name] = field_labels
+        field_caption_pairs = list(zip(visible_fields, captions))
+
+    query_field_caption_lookup: dict[QueryField, str] = {
+        field: caption for field, caption in field_caption_pairs
+    }
+
+    localization_dump: dict[str, list[tuple[str, str, bool]]] = {}
+    for field, caption in field_caption_pairs:
+        table_name, field_name = _get_table_and_field(field)
+        field_labels = localization_dump.get(table_name, [])
+        new_field_label = (field_name, caption, False)
+        field_labels.append(new_field_label)
+        localization_dump[table_name] = field_labels
 
     batch_edit_meta_tables = BatchEditMetaTables(localization_dump)
     naive_row_plan = RowPlanMap.get_row_plan(visible_fields)
@@ -1065,8 +1096,10 @@ def run_batch_edit_query(props: BatchEditProps):
         base_table,
         batch_edit_meta_tables,
         query_fields,
+        query_field_caption_lookup,
         {},
         _get_orig_column,
+        query_field_caption_lookup,
         omit_relationships,
     )
 

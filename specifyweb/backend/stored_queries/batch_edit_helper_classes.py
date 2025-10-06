@@ -12,36 +12,11 @@ from typing import (
 )
 from collections.abc import Callable
 
-from specifyweb.backend.permissions.permissions import has_target_permission
 from specifyweb.specify.api.filter_by_col import CONCRETE_HIERARCHY
-from specifyweb.specify.models import datamodel
-from specifyweb.specify.models_utils.load_datamodel import Field, Relationship, Table
-from specifyweb.backend.trees.views import TREE_INFORMATION, get_all_tree_information
-from specifyweb.backend.trees.utils import SPECIFY_TREES
-from specifyweb.specify.datamodel import is_tree_table
-from specifyweb.backend.stored_queries.execution import execute
-from specifyweb.backend.stored_queries.queryfield import QueryField, fields_from_json
-from specifyweb.backend.stored_queries.queryfieldspec import (
-    QueryFieldSpec,
-    QueryNode,
-    TreeRankQuery,
-)
-from specifyweb.backend.workbench.models import Spdataset
-from specifyweb.backend.workbench.permissions import BatchEditDataSetPT
-from specifyweb.backend.workbench.upload.treerecord import TreeRecord, TreeRankRecord, RANK_KEY_DELIMITER
-from specifyweb.backend.workbench.upload.upload_plan_schema import parse_column_options
-from specifyweb.backend.workbench.upload.upload_table import UploadTable
-from specifyweb.backend.workbench.upload.uploadable import NULL_RECORD, Uploadable
-from specifyweb.backend.workbench.views import regularize_rows
+from specifyweb.specify.models_utils.load_datamodel import Field
+from specifyweb.backend.stored_queries.queryfield import QueryField
+from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec, TreeRankQuery
 from specifyweb.specify.utils.func import Func
-from . import models
-import json
-from .format import ObjectFormatterProps
-
-from specifyweb.backend.workbench.upload.upload_plan_schema import schema
-from jsonschema import validate
-
-from django.db import transaction
 
 MaybeField = Callable[[QueryFieldSpec], Field | None]
 
@@ -242,6 +217,17 @@ class FieldLabel(NamedTuple):
     caption: str
     is_used: bool = False
 
+    def __str__(self) -> str:
+        return (
+            "FieldLabel("
+            f"field_name={self.field_name!r}, "
+            f"caption={self.caption!r}, "
+            f"is_used={self.is_used}"
+            ")"
+        )
+
+    __repr__ = __str__
+
 class TableFieldLabels:
     table_name: str
     field_labels: list[FieldLabel]
@@ -262,13 +248,21 @@ class TableFieldLabels:
     def has_field_label(self, field_name: str) -> bool:
         return any(field.field_name == field_name for field in self.field_labels)
 
-    def use_field_label(self, field_name: str) -> FieldLabel | None:
+    def use_field_label(
+        self,
+        field_name: str,
+        expected_caption: str | None = None,
+    ) -> FieldLabel | None:
         last_match_idx: int | None = None
         for idx, field_label in enumerate(self.field_labels):
             if field_label.field_name != field_name:
                 continue
+            caption_matches = (
+                expected_caption is None
+                or field_label.caption.lower() == expected_caption.lower()
+            )
             last_match_idx = idx
-            if not field_label.is_used:
+            if not field_label.is_used and caption_matches:
                 updated = field_label._replace(is_used=True)
                 self.field_labels[idx] = updated
                 return updated
@@ -277,6 +271,27 @@ class TableFieldLabels:
             self.field_labels[last_match_idx] = updated
             return updated
         return None
+
+    def __str__(self) -> str:
+        indent_str = " " * indent
+        inner_indent = " " * (indent + 2)
+        if not self.field_labels:
+            return (
+                f"{indent_str}TableFieldLabels("
+                f"table_name={self.table_name!r}, field_labels=[]"
+                ")"
+            )
+        lines = [
+            f"{indent_str}TableFieldLabels(",
+            f"{indent_str}  table_name={self.table_name!r},",
+            f"{indent_str}  field_labels=[",
+        ]
+        lines.extend(f"{inner_indent}{label}" for label in self.field_labels)
+        lines.append(f"{indent_str}  ]")
+        lines.append(f"{indent_str})")
+        return "\n".join(lines)
+
+    __repr__ = __str__
 
 class BatchEditMetaTables:
     table_labels: dict[str, TableFieldLabels] = {}
@@ -302,6 +317,20 @@ class BatchEditMetaTables:
 
     def get_all_table_names(self) -> list[str]:
         return list(self.table_labels.keys())
+
+    def __str__(self) -> str:
+        indent_str = " " * indent
+        if not self.table_labels:
+            return f"{indent_str}BatchEditMetaTables(table_labels={{}})"
+        lines = [f"{indent_str}BatchEditMetaTables("]
+        for table_name in sorted(self.table_labels.keys()):
+            table_lines = self.table_labels[table_name].to_pretty_string(indent + 4)
+            lines.append(f"{indent_str}  {table_name!r}:")
+            lines.append(table_lines)
+        lines.append(f"{indent_str})")
+        return "\n".join(lines)
+
+    __repr__ = __str__
 
 class BatchEditProps(TypedDict):
     collection: Any
