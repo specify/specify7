@@ -49,7 +49,7 @@ export function CollectionPreferencesEditor({
 }: AppResourceTabProps): JSX.Element {
   const [preferencesInstance] = useLiveState(
     React.useCallback(() => {
-      const tmpCollectionPrefs = new BasePreferences({
+      const temporaryCollectionPrefs = new BasePreferences({
         definitions: collectionPreferenceDefinitions,
         values: {
           resourceName: 'CollectionPreferences',
@@ -57,14 +57,16 @@ export function CollectionPreferencesEditor({
         },
         defaultValues: undefined,
         developmentGlobal: '_editingCollectionPreferences',
-        syncChanges: false, 
+        syncChanges: false,
       });
-      tmpCollectionPrefs.setRaw(JSON.parse(!data || data.length === 0 ? '{}' : data));
-      tmpCollectionPrefs.events.on('update', () =>
-        onChange(JSON.stringify(tmpCollectionPrefs.getRaw()))
+      temporaryCollectionPrefs.setRaw(
+        JSON.parse(!data || data.length === 0 ? '{}' : data)
+      );
+      temporaryCollectionPrefs.events.on('update', () =>
+        onChange(JSON.stringify(temporaryCollectionPrefs.getRaw()))
       );
 
-      return tmpCollectionPrefs;
+      return temporaryCollectionPrefs;
     }, [data, onChange])
   );
   const Context = collectionPreferences.Context;
