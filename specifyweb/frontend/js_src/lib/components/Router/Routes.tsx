@@ -380,7 +380,7 @@ export const routes: RA<EnhancedRoute> = [
     path: 'collection-preferences',
     title: preferencesText.collectionPreferences(),
     element: () =>
-      import('../Preferences/CollectionPreferencesPage').then(
+      import('../Preferences').then(
         ({ CollectionPreferencesWrapper }) => CollectionPreferencesWrapper
       ),
   },

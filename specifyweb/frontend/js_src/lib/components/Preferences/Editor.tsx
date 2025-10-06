@@ -6,7 +6,6 @@ import { PreferencesContent } from '../Preferences';
 import { BasePreferences } from '../Preferences/BasePreferences';
 import { userPreferenceDefinitions } from '../Preferences/UserDefinitions';
 import { userPreferences } from '../Preferences/userPreferences';
-import { CollectionPreferencesContent } from './CollectionPreferencesPage'; 
 import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 import { collectionPreferences } from './collectionPreferences';
 
@@ -72,7 +71,7 @@ export function CollectionPreferencesEditor({
 
   return (
     <Context.Provider value={preferencesInstance}>
-        <CollectionPreferencesContent />
+      <PreferencesContent prefType="collection" />
     </Context.Provider>
   );
 }

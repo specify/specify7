@@ -9,6 +9,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
@@ -22,6 +23,8 @@ import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { hasPermission } from '../Permissions/helpers';
 import { PreferencesAside } from './Aside';
+import type { BasePreferences } from './BasePreferences';
+import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 import { collectionPreferences } from './collectionPreferences';
 import { useDarkMode } from './Hooks';
 import { DefaultPreferenceItemRender } from './Renderers';
@@ -29,6 +32,59 @@ import type { GenericPreferences, PreferenceItem } from './types';
 import { userPreferenceDefinitions } from './UserDefinitions';
 import { userPreferences } from './userPreferences';
 import { useTopChild } from './useTopChild';
+import { ProtectedTool } from '../Permissions/PermissionDenied';
+
+const DOCS = {
+  picklists:
+    'https://discourse.specifysoftware.org/t/picklists-in-specify-7/2562',
+  attachments:
+    'https://discourse.specifysoftware.org/t/attachments-security-and-permissions/640',
+  trees:
+    'https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987/4',
+  stats: 'https://discourse.specifysoftware.org/t/specify-7-statistics/1715',
+  specifyNetwork:
+    'https://discourse.specifysoftware.org/t/specify-network-gbif-integration/2793',
+  catalogNumbers:
+    'https://discourse.specifysoftware.org/t/catalog-number-inheritance/2859',
+} as const;
+
+const preferenceInstances = {
+  user: userPreferences as BasePreferences<GenericPreferences>,
+  collection: collectionPreferences as BasePreferences<GenericPreferences>,
+} as const;
+
+const preferenceDefinitions = {
+  user: userPreferenceDefinitions as GenericPreferences,
+  collection: collectionPreferenceDefinitions as GenericPreferences,
+} as const;
+
+const resolveCollectionDocHref = (
+  category: string,
+  _subcategory: string,
+  name: string
+): string | undefined => {
+  if (name === 'sp7_scope_table_picklists') return DOCS.picklists;
+  if (name === 'attachment.is_public_default') return DOCS.attachments;
+  if (name.startsWith('sp7.allow_adding_child_to_synonymized_parent.'))
+    return DOCS.trees;
+  if (name === 'showPreparationsTotal' || name === 'refreshRate')
+    return DOCS.stats;
+  if (name === 'publishingOrganization' || name === 'collectionKey')
+    return DOCS.specifyNetwork;
+  if (category.startsWith('catalogNumber')) return DOCS.catalogNumbers;
+  return undefined;
+};
+
+const docHrefResolvers = {
+  user: undefined,
+  collection: resolveCollectionDocHref,
+} as const;
+
+export type PreferenceType = keyof typeof preferenceInstances;
+
+const collectionPreferencesPromise = Promise.all([
+  collectionPreferences.fetch(),
+]).then(f.true);
 
 /**
  * Fetch app resource that stores current user preferences
@@ -110,10 +166,10 @@ function Preferences(): JSX.Element {
 }
 
 /** Hide invisible preferences. Remote empty categories and subCategories */
-export function usePrefDefinitions() {
+export function usePrefDefinitions(prefType: PreferenceType = 'user') {
   const isDarkMode = useDarkMode();
   const isRedirecting = React.useContext(userPreferences.Context) !== undefined;
-  const preferencesVisibilityContext = React.useMemo(
+  const userVisibilityContext = React.useMemo(
     () => ({
       isDarkMode,
       isRedirecting,
@@ -121,9 +177,19 @@ export function usePrefDefinitions() {
     [isDarkMode, isRedirecting]
   );
 
+  const collectionVisibilityContext = React.useMemo(
+    () => ({ isDarkMode: false, isRedirecting: false }),
+    []
+  );
+
+  const visibilityContext =
+    prefType === 'user' ? userVisibilityContext : collectionVisibilityContext;
+
+  const definitions = preferenceDefinitions[prefType];
+
   return React.useMemo(
     () =>
-      Object.entries(userPreferenceDefinitions as GenericPreferences)
+      Object.entries(definitions)
         .map(
           ([category, { subCategories, ...categoryData }]) =>
             [
@@ -140,7 +206,7 @@ export function usePrefDefinitions() {
                           items: Object.entries(items).filter(
                             ([_name, { visible }]) =>
                               typeof visible === 'function'
-                                ? visible(preferencesVisibilityContext)
+                                ? visible(visibilityContext)
                                 : visible !== false
                           ),
                         },
@@ -151,17 +217,21 @@ export function usePrefDefinitions() {
             ] as const
         )
         .filter(([_name, { subCategories }]) => subCategories.length > 0),
-    [preferencesVisibilityContext]
+    [definitions, visibilityContext]
   );
 }
 
 export function PreferencesContent({
   forwardRefs,
+  prefType = 'user',
 }: {
   readonly forwardRefs?: (index: number, element: HTMLElement | null) => void;
+  readonly prefType?: PreferenceType;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
-  const definitions = usePrefDefinitions();
+  const definitions = usePrefDefinitions(prefType);
+  const preferences = preferenceInstances[prefType];
+  const resolveDocHref = docHrefResolvers[prefType];
   return (
     <div className="flex h-fit flex-col gap-6">
       {definitions.map(
@@ -201,19 +271,16 @@ export function PreferencesContent({
                         <Button.Small
                           onClick={(): void =>
                             items.forEach(([name]) => {
-                              userPreferences.set(
-                                category as 'general',
-                                subcategory as 'ui',
-                                name as 'theme',
-                                /*
-                                 * Need to get default value via this
-                                 * function as defaults may be changed
-                                 */
-                                userPreferences.definition(
-                                  category as 'general',
-                                  subcategory as 'ui',
-                                  name as 'theme'
-                                ).defaultValue
+                              const definition = preferences.definition(
+                                category as never,
+                                subcategory as never,
+                                name as never
+                              );
+                              preferences.set(
+                                category as never,
+                                subcategory as never,
+                                name as never,
+                                definition.defaultValue as never
                               );
                             })
                           }
@@ -234,6 +301,9 @@ export function PreferencesContent({
                         !isReadOnly &&
                         (item.visible !== 'protected' ||
                           hasPermission('/preferences/user', 'edit_protected'));
+                      const docHref = resolveDocHref?.(category, subcategory, name);
+                      const stackDocumentation =
+                        prefType === 'collection' && docHref !== undefined;
                       const props = {
                         className: `
                             flex items-start gap-2 md:flex-row flex-col
@@ -261,15 +331,32 @@ export function PreferencesContent({
                                 }
                               />
                             </p>
-                            {item.description !== undefined && (
-                              <p className="flex flex-1 justify-end text-gray-500 md:text-right">
-                                <FormatString
-                                  text={
-                                    typeof item.description === 'function'
-                                      ? item.description()
-                                      : item.description
-                                  }
-                                />
+                            {(item.description !== undefined ||
+                              docHref !== undefined) && (
+                              <p
+                                className={
+                                  stackDocumentation
+                                    ? 'flex flex-1 flex-col items-end gap-1 text-gray-500 md:text-right'
+                                    : 'flex flex-1 justify-end text-gray-500 md:text-right'
+                                }
+                              >
+                                {item.description !== undefined && (
+                                  <FormatString
+                                    text={
+                                      typeof item.description === 'function'
+                                        ? item.description()
+                                        : item.description
+                                    }
+                                  />
+                                )}
+                                {docHref !== undefined && (
+                                  <Link.NewTab
+                                    className={stackDocumentation ? 'self-end' : undefined}
+                                    href={docHref}
+                                  >
+                                    {headerText.documentation()}
+                                  </Link.NewTab>
+                                )}
                               </p>
                             )}
                           </div>
@@ -284,6 +371,7 @@ export function PreferencesContent({
                                 category={category}
                                 item={item}
                                 name={name}
+                                preferences={preferences}
                                 subcategory={subcategory}
                               />
                             </ReadOnlyContext.Provider>
@@ -333,19 +421,20 @@ function Item({
   category,
   subcategory,
   name,
+  preferences,
 }: {
   readonly item: PreferenceItem<any>;
   readonly category: string;
   readonly subcategory: string;
   readonly name: string;
+  readonly preferences: BasePreferences<GenericPreferences>;
 }): JSX.Element {
   const Renderer =
     'renderer' in item ? item.renderer : DefaultPreferenceItemRender;
-  const [value, setValue] = userPreferences.use(
-    // Asserting types just to simplify typing
-    category as 'general',
-    subcategory as 'ui',
-    name as 'theme'
+  const [value, setValue] = preferences.use(
+    category as never,
+    subcategory as never,
+    name as never
   );
   const children = (
     <Renderer
@@ -367,4 +456,19 @@ function Item({
 export function PreferencesWrapper(): JSX.Element | null {
   const [hasFetched] = usePromise(preferencesPromise, true);
   return hasFetched === true ? <Preferences /> : null;
+}
+
+function CollectionPreferences(): JSX.Element {
+  return (
+    <ProtectedTool action="update" tool="resources">
+      <div className="relative flex flex-col gap-6 overflow-y-auto">
+        <PreferencesContent prefType="collection" />
+      </div>
+    </ProtectedTool>
+  );
+}
+
+export function CollectionPreferencesWrapper(): JSX.Element | null {
+  const [hasFetched] = usePromise(collectionPreferencesPromise, true);
+  return hasFetched === true ? <CollectionPreferences /> : null;
 }
