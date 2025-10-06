@@ -93,7 +93,7 @@ export const wbPlanText = createDictionary({
     "en-us": "Column Mapping",
     "ru-ru": "Сопоставление столбцов",
     "es-es": "Asignación/Mapeo de columnas",
-    "fr-fr": "Mappage des colonnes",
+    "fr-fr": "Mappage de colonnes",
     "uk-ua": "Відображення стовпців",
     "de-ch": "Spaltenzuordnung",
     "pt-br": "Mapeamento de colunas",
@@ -175,7 +175,7 @@ export const wbPlanText = createDictionary({
     "de-ch":
       'Bei der Einstellung "Bei leer ignorieren" werden leere Werte in dieser Spalte beim Abgleich nicht berücksichtigt. Leere Werte werden beim Abgleich ignoriert, auch wenn ein Standardwert angegeben ist',
     "pt-br":
-      'Quando definido como "Ignorar quando em branco", valores em branco nesta coluna não serão considerados para fins de correspondência. Valores em branco são ignorados durante a correspondência, mesmo que um valor padrão seja fornecido.',
+      'Quando definido como "Ignorar quando em branco", os valores em branco nesta coluna não serão considerados para fins de correspondência. Os valores em branco serão ignorados durante a correspondência, mesmo que um valor padrão seja fornecido.',
   },
   ignoreAlways: {
     "en-us": "Always Ignore",
@@ -408,7 +408,7 @@ export const wbPlanText = createDictionary({
     "de-ch":
       "Datensatz hochgeladen. Dieser Upload-Plan kann nicht geändert werden",
     "pt-br":
-      "Conjunto de dados carregado. Este plano de upload não pode ser alterado.",
+      "Conjunto de dados carregado. Este plano de upload não pode ser alterado",
   },
   dataSetUploadedDescription: {
     "en-us":
@@ -418,7 +418,7 @@ export const wbPlanText = createDictionary({
     "es-es":
       "Está viendo las asignaciones de campos/mapeo para un conjunto de datos ya cargado.\n\nPara editar los mapeos, d´s marcha-atrás para los datos cargados o cree un nuevo conjunto de datos",
     "fr-fr":
-      "Vous consultez les mappages d'un jeu de données téléchargé.\n\nPour modifier les mappages, restaurez les données téléchargées ou créez un nouveau jeu de données.",
+      "Vous consultez les correspondances d'un jeu de données téléchargé.\n\nPour modifier les correspondances, restaurez les données téléchargées ou créez un nouveau jeu de données.",
     "uk-ua":
       "Ви переглядаєте зіставлення для завантаженого набору даних.\n\nЩоб редагувати зіставлення, відкотіть завантажені дані або створіть новий набір даних",
     "de-ch":
@@ -442,7 +442,7 @@ export const wbPlanText = createDictionary({
     "es-es":
       "¿Cambiar la tabla base para mapear columnas de conjuntos de datos?",
     "fr-fr":
-      "Modifier la table de base pour mapper les colonnes de l'ensemble de données ?",
+      "Modifier la table de base pour le mappage des colonnes de l’ensemble de données ?",
     "uk-ua": "Змінити базову таблицю для зіставлення стовпців набору даних?",
     "de-ch": "Die Basistabelle für die Zuordnung von Datensatzspalten ändern?",
     "pt-br": "Alterar a tabela base para mapear colunas do conjunto de dados?",
@@ -461,7 +461,7 @@ export const wbPlanText = createDictionary({
     "de-ch":
       "Durch Auswahl einer anderen Basistabelle für einen Datensatz-Upload wird diese Tabelle zum neuen Ausgangspunkt für die Zuordnung von Spalten zu Datenfeldern und die bestehenden Zuordnungen werden gelöscht. Der AutoMapper wird versuchen, die Spalten den neuen Basistabellenfeldern zuzuordnen.",
     "pt-br":
-      "Escolher uma Tabela Base diferente para o upload de um Conjunto de Dados tornará essa tabela o novo ponto de partida para mapeamentos de campos de coluna para dados e apagará os mapeamentos existentes. O Mapeador Automático tentará mapear colunas para os novos campos da Tabela Base.",
+      "Escolher uma Tabela Base diferente para o upload de um Conjunto de Dados tornará essa tabela o novo ponto de partida para mapeamentos de campos de coluna para dados e apagará os mapeamentos existentes. O AutoMapper tentará mapear colunas para os novos campos da Tabela Base.",
   },
   clearMapping: {
     "en-us": "Clear Mapping",
@@ -479,7 +479,7 @@ export const wbPlanText = createDictionary({
     "fr-fr": "Réexécuter AutoMapper",
     "uk-ua": "Перезапустіть AutoMapper",
     "de-ch": "AutoMapper erneut ausführen",
-    "pt-br": "Reexecutar AutoMapper",
+    "pt-br": "Reexecutar o AutoMapper",
   },
   autoMapper: {
     "en-us": "AutoMapper",
@@ -576,7 +576,7 @@ export const wbPlanText = createDictionary({
     "de-ch": "Automap, um einen neuen Upload-Plan zu starten?",
     "fr-fr": "Automap pour démarrer un nouveau plan de téléchargement ?",
     "uk-ua": "Автоматична карта, щоб почати новий план завантаження?",
-    "pt-br": "Mapear automaticamente para iniciar um novo Plano de Upload?",
+    "pt-br": "Mapeamento automático para iniciar um novo plano de upload?",
   },
   reRunAutoMapperConfirmationDescription: {
     "en-us": "This will erase existing data field mappings.",
@@ -631,7 +631,7 @@ export const wbPlanText = createDictionary({
     "en-us": "This mapping has not been saved.",
     "ru-ru": "Это сопоставление не было сохранено.",
     "es-es": "No se hna guardado estas asignaciones/mapeo.",
-    "fr-fr": "Ce mappage n'a pas été enregistré.",
+    "fr-fr": "Cette cartographie n'a pas été enregistrée.",
     "uk-ua": "Це відображення не збережено.",
     "de-ch": "Dieses Mapping wurde nicht gespeichert.",
     "pt-br": "Este mapeamento não foi salvo.",

@@ -59,7 +59,7 @@ export const welcomeText = createDictionary({
     "de-ch":
       "Zeigt Taxa mit {count:number|formatted} oder mehr {collectionObjectTable:string} Datensätzen",
     "pt-br":
-      "Exibindo Taxa com {count:number|formatted} ou mais {collectionObjectTable:string} registros",
+      "Exibindo táxons com {count:number|formatted} ou mais {collectionObjectTable:string} registros",
   },
   fullAddress: {
     "en-us":
@@ -75,7 +75,7 @@ export const welcomeText = createDictionary({
     "de-ch":
       "Specify Collections Consortium <br />\n\nBiodiversity Institute <br />\n\nUniversity of Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 USA",
     "pt-br":
-      "Consórcio de Coleções Específicas <br />\n\nInstituto de Biodiversidade <br />\n\nUniversidade do Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 EUA",
+      "Consórcio de Coleções Especificadas <br />\n\nInstituto de Biodiversidade <br />\n\nUniversidade do Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 EUA",
   },
   disclosure: {
     "en-us":
@@ -101,13 +101,13 @@ export const welcomeText = createDictionary({
     "es-es":
       "Specify 7 Copyright © 2025 University of Kansas Center for Research. Specify viene SIN NINGUNA GARANTÍA EN ABSOLUTO. Este es un programa libre, bajo licencia GNU General Public License 2 (GPL2).",
     "fr-fr":
-      "Specify 7, Copyright 2025, Centre de recherche de l'Université du Kansas. Specify est fourni sans AUCUNE GARANTIE. Il s'agit d'un logiciel libre et open source, sous licence GNU General Public License v2.",
+      "Specify 7, Copyright 2025, Centre de recherche de l'Université du Kansas. Specify est fourni sans AUCUNE GARANTIE. Il s'agit d'un logiciel libre et open source sous licence GNU General Public License v2.",
     "uk-ua":
       "Укажіть 7, авторське право 2025, Дослідницький центр Канзаського університету. Specify поставляється без АБСОЛЮТНОЇ ГАРАНТІЇ. Це безкоштовне програмне забезпечення з відкритим кодом, ліцензоване згідно з GNU General Public License v2.",
     "de-ch":
       "Specify 7, Copyright 2025, University of Kansas Center for Research. Specify kommt mit ABSOLUT KEINER GARANTIE. Dies ist freie, quelloffene Software, lizenziert unter GNU General Public License v2.",
     "pt-br":
-      "Especifique 7, Copyright 2025, Centro de Pesquisa da Universidade do Kansas. Especifique NÃO OFERECE NENHUMA GARANTIA. Este é um software gratuito e de código aberto, licenciado sob a Licença Pública Geral GNU v2.",
+      "Especifique 7, Copyright 2025, Centro de Pesquisa da Universidade do Kansas. Especifique NÃO OFERECE NENHUMA GARANTIA. Este é um software gratuito e de código aberto, licenciado sob a GNU General Public License v2.",
   },
   systemInformation: {
     "en-us": "System Information",
@@ -167,7 +167,7 @@ export const welcomeText = createDictionary({
     "en-us": "DB Schema Version",
     "ru-ru": "Версия схемы базы данных",
     "es-es": "Versión del Esquema de base de datos",
-    "fr-fr": "Version du schéma de la base de données",
+    "fr-fr": "Version du schéma de base de données",
     "uk-ua": "Версія схеми БД",
     "de-ch": "Datenbankschema-Version",
     "pt-br": "Versão do esquema do banco de dados",
