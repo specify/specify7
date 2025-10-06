@@ -6,24 +6,25 @@ import { attachmentsText } from '../../localization/attachments';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
+import { treeText } from '../../localization/tree';
 import { statsText } from '../../localization/stats';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { ensure, localized } from '../../utils/types';
+import { ensure } from '../../utils/types';
 import type { StatLayout } from '../Statistics/types';
 import type { GenericPreferences } from './types';
 import { definePref } from './types';
 
 const specifyNetworkItems = {
   publishingOrganization: definePref<string | undefined>({
-    title: localized('Publishing organization key'),
+    title: specifyNetworkText.publishingOrganizationKey(),
     requiresReload: false,
     visible: true,
     defaultValue: undefined,
     type: 'java.lang.String',
   }),
   collectionKey: definePref<string | undefined>({
-    title: localized('Collection key'),
+    title: specifyNetworkText.collectionKey(),
     requiresReload: false,
     visible: true,
     defaultValue: undefined,
@@ -39,10 +40,8 @@ export const collectionPreferenceDefinitions = {
         title: preferencesText.filterPickLists(),
         items: {
           sp7_scope_table_picklists: definePref<boolean>({
-            title: localized('Scope "Entire Table" picklists'),
-            description: localized(
-              'Restrict "Entire Table" picklists to values used by records in this collection.'
-            ),
+            title: preferencesText.scopeEntireTablePicklists(),
+            description: preferencesText.scopeEntireTablePicklistsDescription(),
             requiresReload: false,
             visible: true,
             defaultValue: false,
@@ -54,10 +53,8 @@ export const collectionPreferenceDefinitions = {
         title: attachmentsText.attachments(),
         items: {
           'attachment.is_public_default': definePref<boolean>({
-            title: localized('New attachments are public'),
-            description: localized(
-              'Set the default visibility for attachments created within this collection.'
-            ),
+            title: attachmentsText.publicDefault(),
+            description: attachmentsText.publicDefaultDescription(),
             requiresReload: false,
             visible: true,
             defaultValue: false,
@@ -69,19 +66,15 @@ export const collectionPreferenceDefinitions = {
   },
 
   treeManagement: {
-    title: localized('Tree management'),
+    title: treeText.treeManagement(),
     subCategories: {
       synonymized: {
-        title: localized('Synonymized nodes'),
-        description: localized(
-          'Allow creating children under synonymized nodes in specific trees.'
-        ),
+        title: treeText.synonymizedNodes(),
+        description: treeText.synonymizedNodesDescription(),
         items: {
           'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod':
             definePref<boolean>({
-              title: localized(
-                'Allow children under synonymized Geologic Time Period nodes'
-              ),
+              title: treeText.allowSynonymizedGeologicTimePeriodChildren(),
               requiresReload: false,
               visible: true,
               defaultValue: false,
@@ -89,7 +82,7 @@ export const collectionPreferenceDefinitions = {
             }),
           'sp7.allow_adding_child_to_synonymized_parent.Taxon':
             definePref<boolean>({
-              title: localized('Allow children under synonymized Taxon nodes'),
+              title: treeText.allowSynonymizedTaxonChildren(),
               requiresReload: false,
               visible: true,
               defaultValue: false,
@@ -97,9 +90,7 @@ export const collectionPreferenceDefinitions = {
             }),
           'sp7.allow_adding_child_to_synonymized_parent.Geography':
             definePref<boolean>({
-              title: localized(
-                'Allow children under synonymized Geography nodes'
-              ),
+              title: treeText.allowSynonymizedGeographyChildren(),
               requiresReload: false,
               visible: true,
               defaultValue: false,
@@ -107,9 +98,7 @@ export const collectionPreferenceDefinitions = {
             }),
           'sp7.allow_adding_child_to_synonymized_parent.LithoStrat':
             definePref<boolean>({
-              title: localized(
-                'Allow children under synonymized Lithostratigraphy nodes'
-              ),
+              title: treeText.allowSynonymizedLithostratChildren(),
               requiresReload: false,
               visible: true,
               defaultValue: false,
@@ -117,9 +106,7 @@ export const collectionPreferenceDefinitions = {
             }),
           'sp7.allow_adding_child_to_synonymized_parent.Storage':
             definePref<boolean>({
-              title: localized(
-                'Allow children under synonymized Storage nodes'
-              ),
+              title: treeText.allowSynonymizedStorageChildren(),
               requiresReload: false,
               visible: true,
               defaultValue: false,
@@ -127,9 +114,7 @@ export const collectionPreferenceDefinitions = {
             }),
           'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit':
             definePref<boolean>({
-              title: localized(
-                'Allow children under synonymized Tectonic Unit nodes'
-              ),
+              title: treeText.allowSynonymizedTectonicUnitChildren(),
               requiresReload: false,
               visible: true,
               defaultValue: false,
@@ -171,7 +156,7 @@ export const collectionPreferenceDefinitions = {
         title: preferencesText.appearance(),
         items: {
           layout: definePref<RA<StatLayout> | undefined>({
-            title: localized('_Defines the layout of the stats page'),
+            title: statsText.layoutPreference(),
             requiresReload: false,
             visible: false,
             defaultValue: undefined,
@@ -179,20 +164,16 @@ export const collectionPreferenceDefinitions = {
             container: 'label',
           }),
           showPreparationsTotal: definePref<boolean>({
-            title: localized('Show preparation totals'),
-            description: localized(
-              'Include an overall total across preparation types on the statistics page.'
-            ),
+            title: statsText.showPreparationsTotal(),
+            description: statsText.showPreparationsTotalDescription(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
           refreshRate: definePref<number>({
-            title: localized('Auto-refresh rate (hours)'),
-            description: localized(
-              'Specify how frequently shared statistics refresh their data.'
-            ),
+            title: statsText.autoRefreshRate(),
+            description: statsText.autoRefreshRateDescription(),
             requiresReload: false,
             visible: true,
             defaultValue: 24,
@@ -209,9 +190,7 @@ export const collectionPreferenceDefinitions = {
 
   catalogNumberInheritance: {
     title: queryText.catalogNumberInheritance(),
-    description: localized(
-      'Configure whether sibling Collection Objects inherit catalog numbers from the primary record.'
-    ),
+    description: preferencesText.catalogNumberInheritanceDescription(),
     subCategories: {
       behavior: {
         title: preferencesText.behavior(),
@@ -230,9 +209,7 @@ export const collectionPreferenceDefinitions = {
 
   catalogNumberParentInheritance: {
     title: queryText.catalogNumberParentCOInheritance(),
-    description: localized(
-      'Control whether component records inherit catalog numbers from their parent Collection Object.'
-    ),
+    description: preferencesText.catalogNumberParentInheritanceDescription(),
     subCategories: {
       behavior: {
         title: preferencesText.behavior(),

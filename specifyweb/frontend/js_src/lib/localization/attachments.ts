@@ -677,4 +677,22 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Удаление вложения',
     'uk-ua': 'Видалення вкладень',
   },
+  publicDefault: {
+    'en-us': 'New attachments are public',
+    'ru-ru': 'New attachments are public',
+    'es-es': 'New attachments are public',
+    'fr-fr': 'New attachments are public',
+    'uk-ua': 'New attachments are public',
+    'de-ch': 'New attachments are public',
+    'pt-br': 'New attachments are public',
+  },
+  publicDefaultDescription: {
+    'en-us': 'Set the default visibility for attachments created within this collection.',
+    'ru-ru': 'Set the default visibility for attachments created within this collection.',
+    'es-es': 'Set the default visibility for attachments created within this collection.',
+    'fr-fr': 'Set the default visibility for attachments created within this collection.',
+    'uk-ua': 'Set the default visibility for attachments created within this collection.',
+    'de-ch': 'Set the default visibility for attachments created within this collection.',
+    'pt-br': 'Set the default visibility for attachments created within this collection.',
+  },
 } as const);
