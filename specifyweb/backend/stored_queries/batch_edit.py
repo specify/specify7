@@ -960,8 +960,11 @@ def run_batch_edit_query(props: BatchEditProps):
     fields = props["fields"]
     visible_fields = [field for field in fields if field.display]
     
-    field_with_captions = zip(fields, captions)
-    query_field_caption_lookup = dict(field_with_captions)
+    field_caption_pairs: list[tuple[QueryField, str]] = []
+    query_field_caption_lookup: dict[QueryField, str] = {}
+    if captions is not None:
+        field_caption_pairs = list(zip(visible_fields, captions))
+        query_field_caption_lookup = dict(field_caption_pairs)
     if len(fields) != len(set(fields)):
         logger.info("Key Collision: query field appears more than once.")
 
