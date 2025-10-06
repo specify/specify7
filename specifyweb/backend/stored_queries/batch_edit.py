@@ -722,7 +722,7 @@ class RowPlanCanonical(NamedTuple):
             # It could happen that the field we saw doesn't exist.
             # Plus, the default options get chosen in the cases of
             table_name, field_name = _get_table_and_field(field)
-            field_caption = query_field_caption_lookup[field]
+            field_caption = query_field_caption_lookup.get(field, None)
             table_field_labels = batch_edit_meta_tables.get_table_field_labels(table_name)
             if (
                 table_field_labels is None
