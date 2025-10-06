@@ -10,6 +10,8 @@ from specifyweb.backend.stored_queries.query_construct import QueryConstruct
 # class changed from FunctionElement to ColumnElement
 class group_concat(expression.ColumnElement):
     name = "group_concat"
+    inherit_cache = True
+    
     def __init__(self, expr, separator=None, order_by=None):
         self.expr = expr
         self.separator = separator
