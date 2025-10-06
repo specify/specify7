@@ -8,7 +8,6 @@ from functools import reduce
 from typing import (
     Any,
     NamedTuple,
-    TypedDict,
 )
 from collections.abc import Callable
 
@@ -25,7 +24,6 @@ from specifyweb.backend.stored_queries.batch_edit_helper_classes import (
     BatchEditMetaTables,
     BatchEditPack,
     BatchEditProps,
-    MaybeField
 )
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.models_utils.load_datamodel import Relationship, Table
@@ -55,6 +53,10 @@ from specifyweb.backend.workbench.upload.upload_plan_schema import schema
 from jsonschema import validate
 
 from django.db import transaction
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 def get_readonly_fields(table: Table):
     fields = [*BATCH_EDIT_SHARED_READONLY_FIELDS, table.idFieldName.lower()]
