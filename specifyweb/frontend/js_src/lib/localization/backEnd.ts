@@ -572,17 +572,17 @@ export const backEndText = createDictionary({
     'uk-ua': 'Недійсний тип для вибраного(их) рангу(ів) дерева',
   },
   invalidComponentType: {
-    "en-us": "Invalid {componentType: string} for selected tree rank(s)",
-    "de-ch":
-      "Ungültiger {componentType: string} für ausgewählte(n) Baumrang(e)",
-    "es-es":
-      "{componentType: string} no válido para los rangos de árbol seleccionados",
-    "fr-fr":
+    'en-us': 'Invalid {componentType: string} for selected tree rank(s)',
+    'de-ch':
+      'Ungültiger {componentType: string} für ausgewählte(n) Baumrang(e)',
+    'es-es':
+      '{componentType: string} no válido para los rangos de árbol seleccionados',
+    'fr-fr':
       "{componentType: string} non valide pour le(s) rang(s) d'arbre sélectionné(s)",
-    "pt-br":
-      "{componentType: string} inválido para a(s) classificação(ões) da árvore selecionada(s)",
-    "ru-ru": "Недопустимый {componentType: string} для выбранных рангов дерева",
-    "uk-ua": "Недійсний {componentType: string} для вибраних рангів дерев",
+    'pt-br':
+      '{componentType: string} inválido para a(s) classificação(ões) da árvore selecionada(s)',
+    'ru-ru': 'Недопустимый {componentType: string} для выбранных рангов дерева',
+    'uk-ua': 'Недійсний {componentType: string} для вибраних рангів дерев',
   },
   attachmentNotFound: {
     'en-us':
