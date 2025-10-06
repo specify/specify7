@@ -20,12 +20,12 @@ export const specifyNetworkText = createDictionary({
     'en-us': 'Publishing organization key',
     'ru-ru': 'Publishing organization key',
     'es-es': 'Publishing organization key',
-    'fr-fr': "Clé d’organisation de publication",
+    'fr-fr': 'Clé d’organisation de publication',
     'uk-ua': 'Publishing organization key',
     'de-ch': 'Publishing organization key',
     'pt-br': 'Chave da organização publicadora',
   },
- collectionKey: {
+  collectionKey: {
     'en-us': 'Collection key',
     'ru-ru': 'Collection key',
     'es-es': 'Collection key',

@@ -722,13 +722,20 @@ export const treeText = createDictionary({
     'pt-br': 'Synonymized nodes',
   },
   synonymizedNodesDescription: {
-    'en-us': 'Allow creating children under synonymized nodes in specific trees.',
-    'ru-ru': 'Allow creating children under synonymized nodes in specific trees.',
-    'es-es': 'Allow creating children under synonymized nodes in specific trees.',
-    'fr-fr': 'Allow creating children under synonymized nodes in specific trees.',
-    'uk-ua': 'Allow creating children under synonymized nodes in specific trees.',
-    'de-ch': 'Allow creating children under synonymized nodes in specific trees.',
-    'pt-br': 'Allow creating children under synonymized nodes in specific trees.',
+    'en-us':
+      'Allow creating children under synonymized nodes in specific trees.',
+    'ru-ru':
+      'Allow creating children under synonymized nodes in specific trees.',
+    'es-es':
+      'Allow creating children under synonymized nodes in specific trees.',
+    'fr-fr':
+      'Allow creating children under synonymized nodes in specific trees.',
+    'uk-ua':
+      'Allow creating children under synonymized nodes in specific trees.',
+    'de-ch':
+      'Allow creating children under synonymized nodes in specific trees.',
+    'pt-br':
+      'Allow creating children under synonymized nodes in specific trees.',
   },
   allowSynonymizedGeologicTimePeriodChildren: {
     'en-us': 'Allow children under synonymized Geologic Time Period nodes',

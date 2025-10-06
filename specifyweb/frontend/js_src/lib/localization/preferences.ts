@@ -1293,19 +1293,28 @@ export const preferencesText = createDictionary({
     'pt-br': 'Scope "Entire Table" picklists',
   },
   scopeEntireTablePicklistsDescription: {
-    'en-us': 'Restrict "Entire Table" picklists to values used by records in this collection.',
-    'ru-ru': 'Restrict "Entire Table" picklists to values used by records in this collection.',
-    'es-es': 'Restrict "Entire Table" picklists to values used by records in this collection.',
-    'fr-fr': 'Restrict "Entire Table" picklists to values used by records in this collection.',
-    'uk-ua': 'Restrict "Entire Table" picklists to values used by records in this collection.',
-    'de-ch': 'Restrict "Entire Table" picklists to values used by records in this collection.',
-    'pt-br': 'Restrict "Entire Table" picklists to values used by records in this collection.',
+    'en-us':
+      'Restrict "Entire Table" picklists to values used by records in this collection.',
+    'ru-ru':
+      'Restrict "Entire Table" picklists to values used by records in this collection.',
+    'es-es':
+      'Restrict "Entire Table" picklists to values used by records in this collection.',
+    'fr-fr':
+      'Restrict "Entire Table" picklists to values used by records in this collection.',
+    'uk-ua':
+      'Restrict "Entire Table" picklists to values used by records in this collection.',
+    'de-ch':
+      'Restrict "Entire Table" picklists to values used by records in this collection.',
+    'pt-br':
+      'Restrict "Entire Table" picklists to values used by records in this collection.',
   },
-  catalogNumberInheritanceDescription:{
-    'en-us': 'Configure whether sibling Collection Objects inherit catalog numbers from the primary record.',
+  catalogNumberInheritanceDescription: {
+    'en-us':
+      'Configure whether sibling Collection Objects inherit catalog numbers from the primary record.',
   },
-  catalogNumberParentInheritanceDescription:{
-    'en-us': 'Control whether component records inherit catalog numbers from their parent Collection Object.'
+  catalogNumberParentInheritanceDescription: {
+    'en-us':
+      'Control whether component records inherit catalog numbers from their parent Collection Object.',
   },
   specifyNetworkBadge: {
     'en-us': 'Specify Network Badge',
@@ -1316,7 +1325,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Netzwerk-Badge angeben',
     'pt-br': 'Especificar emblema de rede',
   },
-   useAccessibleFullDatePicker: {
+  useAccessibleFullDatePicker: {
     'en-us': 'Use accessible full date picker',
     'ru-ru': 'Используйте доступный полный выбор даты',
     'es-es': 'Utilice el selector de fecha completo y accesible',

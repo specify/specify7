@@ -320,7 +320,8 @@ export const statsText = createDictionary({
     'en-us': 'Show preparation totals',
   },
   showPreparationsTotalDescription: {
-    'en-us': 'Include an overall total across preparation types on the statistics page.',
+    'en-us':
+      'Include an overall total across preparation types on the statistics page.',
   },
   autoRefreshRate: {
     'en-us': 'Auto-refresh rate (hours)',
