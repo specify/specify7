@@ -35,25 +35,12 @@ import { userPreferences } from './userPreferences';
 import { useTopChild } from './useTopChild';
 import type { IR } from '../../utils/types';
 
-const DOCS = {
-  picklists:
-    'https://discourse.specifysoftware.org/t/picklists-in-specify-7/2562',
-  attachments:
-    'https://discourse.specifysoftware.org/t/attachments-security-and-permissions/640',
-  trees:
-    'https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987/4',
-  stats: 'https://discourse.specifysoftware.org/t/specify-7-statistics/1715',
-  specifyNetwork:
-    'https://discourse.specifysoftware.org/t/specify-network-gbif-integration/2793',
-  catalogNumbers:
-    'https://discourse.specifysoftware.org/t/catalog-number-inheritance/2859',
-} as const;
-
 export type PreferenceType = keyof typeof preferenceInstances;
 
 const preferenceInstances: IR<BasePreferences<GenericPreferences>> = {
   user: userPreferences as unknown as BasePreferences<GenericPreferences>,
-  collection: collectionPreferences as unknown as BasePreferences<GenericPreferences>,
+  collection:
+    collectionPreferences as unknown as BasePreferences<GenericPreferences>,
 };
 
 const preferenceDefinitions: IR<GenericPreferences> = {
@@ -89,11 +76,15 @@ const resolveCollectionDocumentHref = (
   return undefined;
 };
 
-type DocHrefResolver =
-  | ((category: string, subcategory: string, name: string) => string | undefined)
+type DocumentHrefResolver =
+  | ((
+      category: string,
+      subcategory: string,
+      name: string
+    ) => string | undefined)
   | undefined;
 
-const documentHrefResolvers: IR<DocHrefResolver> = {
+const documentHrefResolvers: IR<DocumentHrefResolver> = {
   user: undefined,
   collection: resolveCollectionDocumentHref,
 };
