@@ -9,71 +9,74 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 import { collectionPreferences } from './collectionPreferences';
 
-export function UserPreferencesEditor({
-  data,
-  onChange: handleChange,
-}: AppResourceTabProps): JSX.Element {
-  const [preferencesContext] = useLiveState<typeof userPreferences>(
-    React.useCallback(() => {
-      const userPreferences = new BasePreferences({
-        definitions: userPreferenceDefinitions,
-        values: {
-          resourceName: 'UserPreferences',
-          fetchUrl: '/context/user_resource/',
-        },
-        defaultValues: undefined,
-        developmentGlobal: '_editingUserPreferences',
-        syncChanges: false,
-      });
-      userPreferences.setRaw(
-        JSON.parse(data === null || data.length === 0 ? '{}' : data)
-      );
-      userPreferences.events.on('update', () =>
-        handleChange(JSON.stringify(userPreferences.getRaw()))
-      );
-      return userPreferences;
-    }, [handleChange])
-  );
+type CreatePreferencesEditorArgs = {
+  contextModule: { Context: React.Context<any> };
+  definitions: typeof userPreferenceDefinitions | typeof collectionPreferenceDefinitions;
+  resourceName: 'UserPreferences' | 'CollectionPreferences';
+  fetchUrl: '/context/user_resource/' | '/context/collection_resource/';
+  developmentGlobal:
+    | '_editingUserPreferences'
+    | '_editingCollectionPreferences';
+  prefType?: 'collection' | 'user';
+};
+function createPreferencesEditor({
+  contextModule,
+  definitions,
+  resourceName,
+  fetchUrl,
+  developmentGlobal,
+  prefType,
+}: CreatePreferencesEditorArgs) {
+  const Editor = ({ data, onChange }: AppResourceTabProps): JSX.Element => {
+    const [preferencesInstance] = useLiveState(
+      React.useCallback(() => {
+        const prefs = new BasePreferences({
+          definitions,
+          values: {
+            resourceName,
+            fetchUrl,
+          },
+          defaultValues: undefined,
+          developmentGlobal,
+          syncChanges: false,
+        });
+        prefs.setRaw(JSON.parse(!data || data.length === 0 ? '{}' : data));
+        prefs.events.on('update', () => onChange(JSON.stringify(prefs.getRaw())));
 
-  const Context = userPreferences.Context;
-  return (
-    <Context.Provider value={preferencesContext}>
-      <PreferencesContent />
-    </Context.Provider>
-  );
+        return prefs;
+      }, [data, onChange])
+    );
+
+    const Context = contextModule.Context;
+
+    return (
+      <Context.Provider value={preferencesInstance}>
+        {prefType ? (
+          <PreferencesContent prefType={prefType} />
+        ) : (
+          <PreferencesContent />
+        )}
+      </Context.Provider>
+    );
+  };
+  Editor.displayName = `${resourceName}Editor`;
+
+  return Editor;
 }
 
-export function CollectionPreferencesEditor({
-  data,
-  onChange,
-}: AppResourceTabProps): JSX.Element {
-  const [preferencesInstance] = useLiveState(
-    React.useCallback(() => {
-      const temporaryCollectionPrefs = new BasePreferences({
-        definitions: collectionPreferenceDefinitions,
-        values: {
-          resourceName: 'CollectionPreferences',
-          fetchUrl: '/context/collection_resource/',
-        },
-        defaultValues: undefined,
-        developmentGlobal: '_editingCollectionPreferences',
-        syncChanges: false,
-      });
-      temporaryCollectionPrefs.setRaw(
-        JSON.parse(!data || data.length === 0 ? '{}' : data)
-      );
-      temporaryCollectionPrefs.events.on('update', () =>
-        onChange(JSON.stringify(temporaryCollectionPrefs.getRaw()))
-      );
+export const UserPreferencesEditor = createPreferencesEditor({
+  contextModule: userPreferences,
+  definitions: userPreferenceDefinitions,
+  resourceName: 'UserPreferences',
+  fetchUrl: '/context/user_resource/',
+  developmentGlobal: '_editingUserPreferences',
+});
 
-      return temporaryCollectionPrefs;
-    }, [data, onChange])
-  );
-  const Context = collectionPreferences.Context;
-
-  return (
-    <Context.Provider value={preferencesInstance}>
-      <PreferencesContent prefType="collection" />
-    </Context.Provider>
-  );
-}
+export const CollectionPreferencesEditor = createPreferencesEditor({
+  contextModule: collectionPreferences,
+  definitions: collectionPreferenceDefinitions,
+  resourceName: 'CollectionPreferences',
+  fetchUrl: '/context/collection_resource/',
+  developmentGlobal: '_editingCollectionPreferences',
+  prefType: 'collection',
+});
