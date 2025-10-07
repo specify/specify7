@@ -56,8 +56,8 @@ type IR<T> = {
 };
 
 const preferenceInstances: IR<BasePreferences<GenericPreferences>> = {
-  user: userPreferences,
-  collection: collectionPreferences,
+  user: userPreferences as unknown as BasePreferences<GenericPreferences>,
+  collection: collectionPreferences as unknown as BasePreferences<GenericPreferences>,
 };
 
 const preferenceDefinitions: IR<GenericPreferences> = {
