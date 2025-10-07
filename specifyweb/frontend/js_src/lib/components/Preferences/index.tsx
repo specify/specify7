@@ -48,15 +48,22 @@ const DOCS = {
     'https://discourse.specifysoftware.org/t/catalog-number-inheritance/2859',
 } as const;
 
-const preferenceInstances = {
-  user: userPreferences as BasePreferences<GenericPreferences>,
-  collection: collectionPreferences as BasePreferences<GenericPreferences>,
-} as const;
+export type PreferenceType = keyof typeof preferenceInstances;
 
-const preferenceDefinitions = {
-  user: userPreferenceDefinitions as GenericPreferences,
-  collection: collectionPreferenceDefinitions as GenericPreferences,
-} as const;
+type IR<T> = {
+  user: T;
+  collection: T;
+};
+
+const preferenceInstances: IR<BasePreferences<GenericPreferences>> = {
+  user: userPreferences,
+  collection: collectionPreferences,
+};
+
+const preferenceDefinitions: IR<GenericPreferences> = {
+  user: userPreferenceDefinitions,
+  collection: collectionPreferenceDefinitions,
+};
 
 const resolveCollectionDocumentHref = (
   category: string,
@@ -75,12 +82,14 @@ const resolveCollectionDocumentHref = (
   return undefined;
 };
 
-const documentHrefResolvers = {
+type DocHrefResolver =
+  | ((category: string, subcategory: string, name: string) => string | undefined)
+  | undefined;
+
+const documentHrefResolvers: IR<DocHrefResolver> = {
   user: undefined,
   collection: resolveCollectionDocumentHref,
-} as const;
-
-export type PreferenceType = keyof typeof preferenceInstances;
+};
 
 const collectionPreferencesPromise = Promise.all([
   collectionPreferences.fetch(),
