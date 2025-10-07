@@ -13,10 +13,12 @@ MASTER_USER_NAME="${MASTER_NAME:-$MASTER_USER_NAME}"
 MASTER_USER_PASSWORD="${MASTER_PASSWORD:-$MASTER_USER_PASSWORD}"
 MIGRATOR_NAME="${MIGRATOR_NAME}"
 MIGRATOR_PASSWORD="${MIGRATOR_PASSWORD}"
+MIGRATOR_USER_HOST="%"
 DB_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}"
 DB_NAME="${DATABASE_NAME}"
 APP_USER_NAME="${APP_USER_NAME}"
 APP_USER_PASSWORD="${APP_USER_PASSWORD}"
+APP_USER_HOST="%"
 
 # Use fallback values if needed
 MIGRATOR_PASSWORD=${MIGRATOR_PASSWORD:-$DB_ROOT_PASSWORD}
@@ -85,11 +87,11 @@ else
 fi
 
 # Create migrator user if it doesn't exist
-USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse "SELECT COUNT(*) FROM mysql.user WHERE user = '$MIGRATOR_NAME' AND host = '$SUPER_USER_HOST';")
+USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse "SELECT COUNT(*) FROM mysql.user WHERE user = '$MIGRATOR_NAME' AND host = '$MIGRATOR_USER_HOST';")
 if [[ "$USER_EXISTS" -eq 0 && "$APP_USER_NAME" != "root" ]]; then
   echo "Creating user '$MIGRATOR_NAME'..."
-  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${MIGRATOR_NAME}'@'${SUPER_USER_HOST}' IDENTIFIED BY '${MIGRATOR_PASSWORD}';\""
-  if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "CREATE USER '${MIGRATOR_NAME}'@'${SUPER_USER_HOST}' IDENTIFIED BY '${MIGRATOR_PASSWORD}';"; then
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' IDENTIFIED BY '${MIGRATOR_PASSWORD}';\""
+  if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "CREATE USER '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' IDENTIFIED BY '${MIGRATOR_PASSWORD}';"; then
     NEW_MIGRATOR_USER_CREATED=1
   else
     echo "Error: Failed to create user."
@@ -102,8 +104,8 @@ fi
 # Grant privileges only if a migrator new user was created
 if [[ "$NEW_MIGRATOR_USER_CREATED" -eq 1 ]]; then
   echo "Granting privileges to new user..."
-  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${SUPER_USER_HOST}'; FLUSH PRIVILEGES;\""
-  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${SUPER_USER_HOST}'; FLUSH PRIVILEGES;"; then
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'; FLUSH PRIVILEGES;\""
+  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'; FLUSH PRIVILEGES;"; then
     echo "Error: Failed to grant privileges to new user."
     exit 1
   fi
