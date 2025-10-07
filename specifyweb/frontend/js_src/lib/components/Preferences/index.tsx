@@ -51,13 +51,14 @@ const DOCS = {
 export type PreferenceType = keyof typeof preferenceInstances;
 
 type IR<T> = {
-  user: T;
-  collection: T;
+  readonly user: T;
+  readonly collection: T;
 };
 
 const preferenceInstances: IR<BasePreferences<GenericPreferences>> = {
   user: userPreferences as unknown as BasePreferences<GenericPreferences>,
-  collection: collectionPreferences as unknown as BasePreferences<GenericPreferences>,
+  collection:
+    collectionPreferences as unknown as BasePreferences<GenericPreferences>,
 };
 
 const preferenceDefinitions: IR<GenericPreferences> = {
@@ -82,11 +83,15 @@ const resolveCollectionDocumentHref = (
   return undefined;
 };
 
-type DocHrefResolver =
-  | ((category: string, subcategory: string, name: string) => string | undefined)
+type DocumentHrefResolver =
+  | ((
+      category: string,
+      subcategory: string,
+      name: string
+    ) => string | undefined)
   | undefined;
 
-const documentHrefResolvers: IR<DocHrefResolver> = {
+const documentHrefResolvers: IR<DocumentHrefResolver> = {
   user: undefined,
   collection: resolveCollectionDocumentHref,
 };
