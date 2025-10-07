@@ -78,10 +78,10 @@ const resolveCollectionDocumentHref = (
 
 type DocumentHrefResolver =
   | ((
-      category: string,
-      subcategory: string,
-      name: string
-    ) => string | undefined)
+    category: string,
+    subcategory: string,
+    name: string
+  ) => string | undefined)
   | undefined;
 
 const documentHrefResolvers: IR<DocumentHrefResolver> = {
@@ -177,13 +177,13 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
   const isDarkMode = useDarkMode();
   const isRedirecting = React.useContext(userPreferences.Context) !== undefined;
 
-const visibilityContext = React.useMemo(
-  () =>
-    prefType === 'user'
-      ? { isDarkMode, isRedirecting }
-      : { isDarkMode: false, isRedirecting: false },
-  [prefType, isDarkMode, isRedirecting]
-);
+  const visibilityContext = React.useMemo(
+    () =>
+      prefType === 'user'
+        ? { isDarkMode, isRedirecting }
+        : { isDarkMode: false, isRedirecting: false },
+    [prefType, isDarkMode, isRedirecting]
+  );
 
   const definitions = preferenceDefinitions[prefType];
 
@@ -337,36 +337,33 @@ export function PreferencesContent({
                             </p>
                             {(item.description !== undefined ||
                               documentHref !== undefined) && (
-                              <p
-                                className={
-                                  stackDocumentation
-                                    ? 'flex flex-1 flex-col items-end gap-1 text-gray-500 md:text-right'
-                                    : 'flex flex-1 justify-end text-gray-500 md:text-right'
-                                }
-                              >
-                                {item.description !== undefined && (
-                                  <FormatString
-                                    text={
-                                      typeof item.description === 'function'
-                                        ? item.description()
-                                        : item.description
-                                    }
-                                  />
-                                )}
-                                {documentHref !== undefined && (
-                                  <Link.NewTab
-                                    className={
-                                      stackDocumentation
-                                        ? 'self-end'
-                                        : undefined
-                                    }
-                                    href={documentHref}
-                                  >
-                                    {headerText.documentation()}
-                                  </Link.NewTab>
-                                )}
-                              </p>
-                            )}
+                                <p
+                                  className={`flex flex-1 text-gray-500 md:text-right ${stackDocumentation ? 'flex-col items-end gap-1' : 'justify-end'
+                                    }`}
+                                >
+                                  {item.description !== undefined && (
+                                    <FormatString
+                                      text={
+                                        typeof item.description === 'function'
+                                          ? item.description()
+                                          : item.description
+                                      }
+                                    />
+                                  )}
+                                  {documentHref !== undefined && (
+                                    <Link.NewTab
+                                      className={
+                                        stackDocumentation
+                                          ? 'self-end'
+                                          : undefined
+                                      }
+                                      href={documentHref}
+                                    >
+                                      {headerText.documentation()}
+                                    </Link.NewTab>
+                                  )}
+                                </p>
+                              )}
                           </div>
                           <div
                             className={`
