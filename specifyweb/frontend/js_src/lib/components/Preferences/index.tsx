@@ -33,7 +33,6 @@ import type { GenericPreferences, PreferenceItem } from './types';
 import { userPreferenceDefinitions } from './UserDefinitions';
 import { userPreferences } from './userPreferences';
 import { useTopChild } from './useTopChild';
-import type { IR } from '../../utils/types';
 
 const DOCS = {
   picklists:
@@ -51,9 +50,15 @@ const DOCS = {
 
 export type PreferenceType = keyof typeof preferenceInstances;
 
+type IR<T> = {
+  readonly user: T;
+  readonly collection: T;
+};
+
 const preferenceInstances: IR<BasePreferences<GenericPreferences>> = {
   user: userPreferences as unknown as BasePreferences<GenericPreferences>,
-  collection: collectionPreferences as unknown as BasePreferences<GenericPreferences>,
+  collection:
+    collectionPreferences as unknown as BasePreferences<GenericPreferences>,
 };
 
 const preferenceDefinitions: IR<GenericPreferences> = {
@@ -61,39 +66,32 @@ const preferenceDefinitions: IR<GenericPreferences> = {
   collection: collectionPreferenceDefinitions,
 };
 
-const NAME_DOCS_MAP: Record<string, string> = {
-  sp7_scope_table_picklists:
-    'https://discourse.specifysoftware.org/t/picklists-in-specify-7/2562',
-  'attachment.is_public_default':
-    'https://discourse.specifysoftware.org/t/attachments-security-and-permissions/640',
-  showPreparationsTotal:
-    'https://discourse.specifysoftware.org/t/specify-7-statistics/1715',
-  refreshRate:
-    'https://discourse.specifysoftware.org/t/specify-7-statistics/1715',
-  publishingOrganization:
-    'https://discourse.specifysoftware.org/t/specify-network-gbif-integration/2793',
-  collectionKey:
-    'https://discourse.specifysoftware.org/t/specify-network-gbif-integration/2793',
-};
-
 const resolveCollectionDocumentHref = (
   category: string,
   _subcategory: string,
   name: string
 ): string | undefined => {
-  if (NAME_DOCS_MAP[name]) return NAME_DOCS_MAP[name];
+  if (name === 'sp7_scope_table_picklists') return DOCS.picklists;
+  if (name === 'attachment.is_public_default') return DOCS.attachments;
   if (name.startsWith('sp7.allow_adding_child_to_synonymized_parent.'))
-    return 'https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987/4';
-  if (category.startsWith('catalogNumber'))
-    return 'https://discourse.specifysoftware.org/t/catalog-number-inheritance/2859';
+    return DOCS.trees;
+  if (name === 'showPreparationsTotal' || name === 'refreshRate')
+    return DOCS.stats;
+  if (name === 'publishingOrganization' || name === 'collectionKey')
+    return DOCS.specifyNetwork;
+  if (category.startsWith('catalogNumber')) return DOCS.catalogNumbers;
   return undefined;
 };
 
-type DocHrefResolver =
-  | ((category: string, subcategory: string, name: string) => string | undefined)
+type DocumentHrefResolver =
+  | ((
+      category: string,
+      subcategory: string,
+      name: string
+    ) => string | undefined)
   | undefined;
 
-const documentHrefResolvers: IR<DocHrefResolver> = {
+const documentHrefResolvers: IR<DocumentHrefResolver> = {
   user: undefined,
   collection: resolveCollectionDocumentHref,
 };
