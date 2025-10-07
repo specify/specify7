@@ -13,6 +13,7 @@ import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
+import type { IR } from '../../utils/types';
 import { Container, H2, Key } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -33,7 +34,6 @@ import type { GenericPreferences, PreferenceItem } from './types';
 import { userPreferenceDefinitions } from './UserDefinitions';
 import { userPreferences } from './userPreferences';
 import { useTopChild } from './useTopChild';
-import type { IR } from '../../utils/types';
 
 export type PreferenceType = keyof typeof preferenceInstances;
 
