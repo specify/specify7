@@ -1285,27 +1285,9 @@ export const preferencesText = createDictionary({
   },
   scopeEntireTablePicklists: {
     'en-us': 'Scope "Entire Table" picklists',
-    'ru-ru': 'Scope "Entire Table" picklists',
-    'es-es': 'Scope "Entire Table" picklists',
-    'fr-fr': 'Scope "Entire Table" picklists',
-    'uk-ua': 'Scope "Entire Table" picklists',
-    'de-ch': 'Scope "Entire Table" picklists',
-    'pt-br': 'Scope "Entire Table" picklists',
   },
   scopeEntireTablePicklistsDescription: {
     'en-us':
-      'Restrict "Entire Table" picklists to values used by records in this collection.',
-    'ru-ru':
-      'Restrict "Entire Table" picklists to values used by records in this collection.',
-    'es-es':
-      'Restrict "Entire Table" picklists to values used by records in this collection.',
-    'fr-fr':
-      'Restrict "Entire Table" picklists to values used by records in this collection.',
-    'uk-ua':
-      'Restrict "Entire Table" picklists to values used by records in this collection.',
-    'de-ch':
-      'Restrict "Entire Table" picklists to values used by records in this collection.',
-    'pt-br':
       'Restrict "Entire Table" picklists to values used by records in this collection.',
   },
   catalogNumberInheritanceDescription: {
