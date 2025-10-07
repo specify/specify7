@@ -468,11 +468,6 @@ function Item({
   );
 }
 
-export function PreferencesWrapper(): JSX.Element | null {
-  const [hasFetched] = usePromise(preferencesPromise, true);
-  return hasFetched === true ? <Preferences /> : null;
-}
-
 function CollectionPreferences(): JSX.Element {
   return (
     <ProtectedTool action="update" tool="resources">
@@ -483,7 +478,29 @@ function CollectionPreferences(): JSX.Element {
   );
 }
 
+function FetchGate({
+  promise,
+  children,
+}: {
+  readonly promise: Promise<unknown>;
+  readonly children?: React.ReactNode;
+}): JSX.Element | null {
+  const [hasFetched] = usePromise(promise, true);
+  return hasFetched ? <>{children}</> : null;
+}
+
+export function PreferencesWrapper(): JSX.Element | null {
+  return (
+    <FetchGate promise={preferencesPromise}>
+      <Preferences />
+    </FetchGate>
+  );
+}
+
 export function CollectionPreferencesWrapper(): JSX.Element | null {
-  const [hasFetched] = usePromise(collectionPreferencesPromise, true);
-  return hasFetched === true ? <CollectionPreferences /> : null;
+  return (
+    <FetchGate promise={collectionPreferencesPromise}>
+      <CollectionPreferences />
+    </FetchGate>
+  );
 }
