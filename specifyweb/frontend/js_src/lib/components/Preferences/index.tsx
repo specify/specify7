@@ -176,21 +176,14 @@ function Preferences(): JSX.Element {
 export function usePrefDefinitions(prefType: PreferenceType = 'user') {
   const isDarkMode = useDarkMode();
   const isRedirecting = React.useContext(userPreferences.Context) !== undefined;
-  const userVisibilityContext = React.useMemo(
-    () => ({
-      isDarkMode,
-      isRedirecting,
-    }),
-    [isDarkMode, isRedirecting]
-  );
 
-  const collectionVisibilityContext = React.useMemo(
-    () => ({ isDarkMode: false, isRedirecting: false }),
-    []
-  );
-
-  const visibilityContext =
-    prefType === 'user' ? userVisibilityContext : collectionVisibilityContext;
+const visibilityContext = React.useMemo(
+  () =>
+    prefType === 'user'
+      ? { isDarkMode, isRedirecting }
+      : { isDarkMode: false, isRedirecting: false },
+  [prefType, isDarkMode, isRedirecting]
+);
 
   const definitions = preferenceDefinitions[prefType];
 
