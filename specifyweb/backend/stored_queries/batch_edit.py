@@ -701,7 +701,6 @@ class RowPlanCanonical(NamedTuple):
         query_field_caption_lookup: dict[QueryField, str],
         fields_added: dict[str, int],
         get_column_id: Callable[[str], int],
-        field_caption_lookup: dict[QueryField, str],
         omit_relationships: bool,
     ) -> tuple[list[tuple[tuple[int, int], str]], Uploadable]:
         # Yuk, finally.
@@ -1089,7 +1088,6 @@ def run_batch_edit_query(props: BatchEditProps):
         query_field_caption_lookup,
         {},
         _get_orig_column,
-        query_field_caption_lookup,
         omit_relationships,
     )
 
