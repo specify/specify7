@@ -10,14 +10,13 @@ import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 import { collectionPreferences } from './collectionPreferences';
 
 type CreatePreferencesEditorArgs = {
-  contextModule: { Context: React.Context<any> };
-  definitions: typeof userPreferenceDefinitions | typeof collectionPreferenceDefinitions;
-  resourceName: 'UserPreferences' | 'CollectionPreferences';
-  fetchUrl: '/context/user_resource/' | '/context/collection_resource/';
-  developmentGlobal:
-    | '_editingUserPreferences'
-    | '_editingCollectionPreferences';
-  prefType?: 'collection' | 'user';
+  readonly contextModule: { readonly Context: React.Context<any> };
+  readonly definitions: typeof collectionPreferenceDefinitions | typeof userPreferenceDefinitions;
+  readonly resourceName: 'CollectionPreferences' | 'UserPreferences';
+  readonly fetchUrl: '/context/collection_resource/' | '/context/user_resource/';
+  readonly developmentGlobal:
+    '_editingCollectionPreferences' | '_editingUserPreferences';
+  readonly prefType?: 'collection' | 'user';
 };
 function createPreferencesEditor({
   contextModule,
@@ -27,7 +26,7 @@ function createPreferencesEditor({
   developmentGlobal,
   prefType,
 }: CreatePreferencesEditorArgs) {
-  const Editor = ({ data, onChange }: AppResourceTabProps): JSX.Element => {
+  function Editor({ data, onChange }: AppResourceTabProps): JSX.Element {
     const [preferencesInstance] = useLiveState(
       React.useCallback(() => {
         const prefs = new BasePreferences({
@@ -58,7 +57,7 @@ function createPreferencesEditor({
         )}
       </Context.Provider>
     );
-  };
+  }
   Editor.displayName = `${resourceName}Editor`;
 
   return Editor;
