@@ -782,7 +782,6 @@ class RowPlanCanonical(NamedTuple):
                 query_field_caption_lookup,
                 fields_added,
                 get_column_id,
-                field_caption_lookup,
                 omit_relationships,
             )
 
