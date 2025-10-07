@@ -13,6 +13,7 @@ import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
+import type { IR } from '../../utils/types';
 import { Container, H2, Key } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -34,26 +35,7 @@ import { userPreferenceDefinitions } from './UserDefinitions';
 import { userPreferences } from './userPreferences';
 import { useTopChild } from './useTopChild';
 
-const DOCS = {
-  picklists:
-    'https://discourse.specifysoftware.org/t/picklists-in-specify-7/2562',
-  attachments:
-    'https://discourse.specifysoftware.org/t/attachments-security-and-permissions/640',
-  trees:
-    'https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987/4',
-  stats: 'https://discourse.specifysoftware.org/t/specify-7-statistics/1715',
-  specifyNetwork:
-    'https://discourse.specifysoftware.org/t/specify-network-gbif-integration/2793',
-  catalogNumbers:
-    'https://discourse.specifysoftware.org/t/catalog-number-inheritance/2859',
-} as const;
-
 export type PreferenceType = keyof typeof preferenceInstances;
-
-type IR<T> = {
-  readonly user: T;
-  readonly collection: T;
-};
 
 const preferenceInstances: IR<BasePreferences<GenericPreferences>> = {
   user: userPreferences as unknown as BasePreferences<GenericPreferences>,
@@ -66,20 +48,31 @@ const preferenceDefinitions: IR<GenericPreferences> = {
   collection: collectionPreferenceDefinitions,
 };
 
+const NAME_DOCS_MAP: Record<string, string> = {
+  sp7_scope_table_picklists:
+    'https://discourse.specifysoftware.org/t/picklists-in-specify-7/2562',
+  'attachment.is_public_default':
+    'https://discourse.specifysoftware.org/t/attachments-security-and-permissions/640',
+  showPreparationsTotal:
+    'https://discourse.specifysoftware.org/t/specify-7-statistics/1715',
+  refreshRate:
+    'https://discourse.specifysoftware.org/t/specify-7-statistics/1715',
+  publishingOrganization:
+    'https://discourse.specifysoftware.org/t/specify-network-gbif-integration/2793',
+  collectionKey:
+    'https://discourse.specifysoftware.org/t/specify-network-gbif-integration/2793',
+};
+
 const resolveCollectionDocumentHref = (
   category: string,
   _subcategory: string,
   name: string
 ): string | undefined => {
-  if (name === 'sp7_scope_table_picklists') return DOCS.picklists;
-  if (name === 'attachment.is_public_default') return DOCS.attachments;
+  if (NAME_DOCS_MAP[name]) return NAME_DOCS_MAP[name];
   if (name.startsWith('sp7.allow_adding_child_to_synonymized_parent.'))
-    return DOCS.trees;
-  if (name === 'showPreparationsTotal' || name === 'refreshRate')
-    return DOCS.stats;
-  if (name === 'publishingOrganization' || name === 'collectionKey')
-    return DOCS.specifyNetwork;
-  if (category.startsWith('catalogNumber')) return DOCS.catalogNumbers;
+    return 'https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987/4';
+  if (category.startsWith('catalogNumber'))
+    return 'https://discourse.specifysoftware.org/t/catalog-number-inheritance/2859';
   return undefined;
 };
 
@@ -183,14 +176,21 @@ function Preferences(): JSX.Element {
 export function usePrefDefinitions(prefType: PreferenceType = 'user') {
   const isDarkMode = useDarkMode();
   const isRedirecting = React.useContext(userPreferences.Context) !== undefined;
+  const userVisibilityContext = React.useMemo(
+    () => ({
+      isDarkMode,
+      isRedirecting,
+    }),
+    [isDarkMode, isRedirecting]
+  );
 
-const visibilityContext = React.useMemo(
-  () =>
-    prefType === 'user'
-      ? { isDarkMode, isRedirecting }
-      : { isDarkMode: false, isRedirecting: false },
-  [prefType, isDarkMode, isRedirecting]
-);
+  const collectionVisibilityContext = React.useMemo(
+    () => ({ isDarkMode: false, isRedirecting: false }),
+    []
+  );
+
+  const visibilityContext =
+    prefType === 'user' ? userVisibilityContext : collectionVisibilityContext;
 
   const definitions = preferenceDefinitions[prefType];
 
