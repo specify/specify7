@@ -3,33 +3,54 @@ import React from 'react';
 import { useLiveState } from '../../hooks/useLiveState';
 import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
 import { PreferencesContent } from '../Preferences';
+import type { PreferenceType } from '../Preferences';
 import { BasePreferences } from '../Preferences/BasePreferences';
 import { userPreferenceDefinitions } from '../Preferences/UserDefinitions';
 import { userPreferences } from '../Preferences/userPreferences';
 import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 import { collectionPreferences } from './collectionPreferences';
+import type { GenericPreferences } from './types';
 
-type CreatePreferencesEditorArgs = {
-  readonly contextModule: { readonly Context: React.Context<any> };
-  readonly definitions: typeof collectionPreferenceDefinitions | typeof userPreferenceDefinitions;
-  readonly resourceName: 'CollectionPreferences' | 'UserPreferences';
-  readonly fetchUrl: '/context/collection_resource/' | '/context/user_resource/';
-  readonly developmentGlobal:
-    '_editingCollectionPreferences' | '_editingUserPreferences';
-  readonly prefType?: 'collection' | 'user';
+type EditorDependencies = Pick<AppResourceTabProps, 'data' | 'onChange'>;
+
+type PreferencesEditorConfig<DEFINITIONS extends GenericPreferences> = {
+  readonly definitions: DEFINITIONS;
+  readonly Context: BasePreferences<DEFINITIONS>['Context'];
+  readonly resourceName: string;
+  readonly fetchUrl: string;
+  readonly developmentGlobal: string;
+  readonly prefType?: PreferenceType;
+  readonly dependencyResolver?: (
+    inputs: EditorDependencies
+  ) => React.DependencyList;
 };
-function createPreferencesEditor({
-  contextModule,
-  definitions,
-  resourceName,
-  fetchUrl,
-  developmentGlobal,
-  prefType,
-}: CreatePreferencesEditorArgs) {
-  function Editor({ data, onChange }: AppResourceTabProps): JSX.Element {
-    const [preferencesInstance] = useLiveState(
+
+const defaultDependencyResolver = ({ onChange }: EditorDependencies) => [
+  onChange,
+];
+
+function createPreferencesEditor<DEFINITIONS extends GenericPreferences>(
+  config: PreferencesEditorConfig<DEFINITIONS>
+) {
+  const {
+    definitions,
+    Context,
+    resourceName,
+    fetchUrl,
+    developmentGlobal,
+    prefType,
+    dependencyResolver = defaultDependencyResolver,
+  } = config;
+
+  return function PreferencesEditor({
+    data,
+    onChange,
+  }: AppResourceTabProps): JSX.Element {
+    const dependencies = dependencyResolver({ data, onChange });
+
+    const [preferencesInstance] = useLiveState<BasePreferences<DEFINITIONS>>(
       React.useCallback(() => {
-        const prefs = new BasePreferences({
+        const preferences = new BasePreferences<DEFINITIONS>({
           definitions,
           values: {
             resourceName,
@@ -39,43 +60,45 @@ function createPreferencesEditor({
           developmentGlobal,
           syncChanges: false,
         });
-        prefs.setRaw(JSON.parse(!data || data.length === 0 ? '{}' : data));
-        prefs.events.on('update', () => onChange(JSON.stringify(prefs.getRaw())));
 
-        return prefs;
-      }, [data, onChange])
+        preferences.setRaw(
+          JSON.parse(data === null || data.length === 0 ? '{}' : data)
+        );
+
+        preferences.events.on('update', () =>
+          onChange(JSON.stringify(preferences.getRaw()))
+        );
+
+        return preferences;
+      }, dependencies)
     );
 
-    const Context = contextModule.Context;
+    const Provider = Context.Provider;
+    const contentProps = prefType === undefined ? {} : { prefType };
 
     return (
-      <Context.Provider value={preferencesInstance}>
-        {prefType ? (
-          <PreferencesContent prefType={prefType} />
-        ) : (
-          <PreferencesContent />
-        )}
-      </Context.Provider>
+      <Provider value={preferencesInstance}>
+        <PreferencesContent {...contentProps} />
+      </Provider>
     );
-  }
-  Editor.displayName = `${resourceName}Editor`;
-
-  return Editor;
+  };
 }
 
 export const UserPreferencesEditor = createPreferencesEditor({
-  contextModule: userPreferences,
   definitions: userPreferenceDefinitions,
+  Context: userPreferences.Context,
   resourceName: 'UserPreferences',
   fetchUrl: '/context/user_resource/',
   developmentGlobal: '_editingUserPreferences',
+  dependencyResolver: ({ onChange }) => [onChange],
 });
 
 export const CollectionPreferencesEditor = createPreferencesEditor({
-  contextModule: collectionPreferences,
   definitions: collectionPreferenceDefinitions,
+  Context: collectionPreferences.Context,
   resourceName: 'CollectionPreferences',
   fetchUrl: '/context/collection_resource/',
   developmentGlobal: '_editingCollectionPreferences',
   prefType: 'collection',
+  dependencyResolver: ({ data, onChange }) => [data, onChange],
 });
