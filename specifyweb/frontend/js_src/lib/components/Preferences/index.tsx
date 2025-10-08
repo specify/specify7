@@ -37,10 +37,9 @@ import { useTopChild } from './useTopChild';
 
 export type PreferenceType = keyof typeof preferenceInstances;
 
-const preferenceInstances: IR<BasePreferences<GenericPreferences>> = {
-  user: userPreferences as unknown as BasePreferences<GenericPreferences>,
-  collection:
-    collectionPreferences as unknown as BasePreferences<GenericPreferences>,
+const preferenceInstances: IR<BasePreferences<any>> = {
+  user: userPreferences,
+  collection: collectionPreferences,
 };
 
 const preferenceDefinitions: IR<GenericPreferences> = {
