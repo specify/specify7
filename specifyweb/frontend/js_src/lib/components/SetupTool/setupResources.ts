@@ -1,6 +1,7 @@
-import type { RA } from '../../utils/types';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { setupToolText } from '../../localization/setupTool';
-import { LocalizedString } from 'typesafe-i18n';
+import type { RA } from '../../utils/types';
 
 export type ResourceConfig = {
   readonly resourceName: string;
@@ -10,8 +11,8 @@ export type ResourceConfig = {
 };
 
 type Option = {
-  value: string | number;
-  label?: string;
+  readonly value: number | string;
+  readonly label?: string;
 }
 
 export type FieldConfig = {
@@ -19,7 +20,7 @@ export type FieldConfig = {
   readonly label: string;
   readonly type?: 'boolean' | 'object' | 'password' | 'select' | 'text';
   readonly required?: boolean;
-  readonly default?: string | boolean;
+  readonly default?: boolean | string;
   readonly description?: string;
   readonly options?: RA<Option>;
   readonly fields?: RA<FieldConfig>;
