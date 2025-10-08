@@ -3,9 +3,7 @@ from django.http import (JsonResponse)
 
 from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.specify.api_utils import strict_uri_to_model
-from specifyweb.specify.migration_utils.update_schema_config import update_table_schema_config_with_defaults
 from specifyweb.specify.models import Spversion
-from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
 from specifyweb.specify import models
 from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults
 
@@ -14,6 +12,9 @@ from django.db import transaction
 
 import logging
 logger = logging.getLogger(__name__)
+
+APP_VERSION = "7"
+SCHEMA_VERSION = "2.10"
 
 def get_setup_progress():
     institution = models.Institution.objects.first()
@@ -71,7 +72,7 @@ def create_institution(request, direct=False):
 
             # Create institution
             new_institution = Institution.objects.create(**data)
-            Spversion.objects.create(appversion='7', schemaversion='2.10')
+            Spversion.objects.create(appversion=APP_VERSION, schemaversion=SCHEMA_VERSION)
         
         return JsonResponse({"success": True, "institution_id": new_institution.id, "setup_progress": get_setup_progress()}, status=200)
 

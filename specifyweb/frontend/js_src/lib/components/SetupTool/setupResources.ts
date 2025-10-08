@@ -32,17 +32,17 @@ export type FieldConfig = {
 
 // Discipline list from backend/context/app_resource.py
 const disciplineTypeOptions = [
-  {value: 'fish'},
-  {value: 'herpetology'},
-  {value: 'paleobotany'},
-  {value: 'invertpaleo'},
-  {value: 'vertpaleo'},
-  {value: 'bird'},
-  {value: 'mammal'},
-  {value: 'insect'},
-  {value: 'botany'},
-  {value: 'invertebrate'},
-  {value: 'geology'},
+  {value: 'fish', label: 'Fish'},
+  {value: 'herpetology', label: 'Herpetology'},
+  { value: 'paleobotany', label: 'Paleobotany' },
+  { value: 'invertpaleo', label: 'Invertebrate Paleontology' },
+  { value: 'vertpaleo', label: 'Vertebrate Paleontology' },
+  { value: 'bird', label: 'Bird' },
+  { value: 'mammal', label: 'Mammal' },
+  { value: 'insect', label: 'Insect' },
+  { value: 'botany', label: 'Botany' },
+  { value: 'invertebrate', label: 'Invertebrate' },
+  { value: 'geology', label: 'Geology' },
 ];
 
 const catalogNumberFormats = [
@@ -205,6 +205,7 @@ export const resources: RA<ResourceConfig> = [
         label: 'Type',
         type: 'select',
         options: disciplineTypeOptions,
+        required: true,
       },
     ],
   },

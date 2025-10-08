@@ -143,6 +143,7 @@ export function SetupTool({
               checked={Boolean(formData[fieldName])}
               id={fieldName}
               name={fieldName}
+              required={required}
               onValueChange={(isChecked) => handleChange(fieldName, isChecked)}
             />
             {label}
@@ -157,6 +158,7 @@ export function SetupTool({
               className="w-full min-w-[theme(spacing.40)]"
               id={fieldName}
               name={fieldName}
+              required={required}
               value={formData[fieldName] ?? ''}
               onValueChange={(value) => handleChange(fieldName, value)}
             >
