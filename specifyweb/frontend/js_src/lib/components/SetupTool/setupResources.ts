@@ -21,7 +21,7 @@ export type FieldConfig = {
   readonly label: string;
   readonly type?: 'boolean' | 'object' | 'password' | 'select' | 'text';
   readonly required?: boolean;
-  readonly default?: boolean | string | number;
+  readonly default?: boolean | number | string;
   readonly description?: string;
   readonly options?: RA<Option>;
   readonly fields?: RA<FieldConfig>;
@@ -170,7 +170,7 @@ export const resources: RA<ResourceConfig> = [
         type: 'select',
         options: fullNameDirections,
         required: true,
-        default: fullNameDirections[0].value.toString()
+        default: fullNameDirections[0].value.toString(),
       },
     ],
   },
@@ -198,7 +198,7 @@ export const resources: RA<ResourceConfig> = [
         type: 'select',
         options: fullNameDirections,
         required: true,
-        default: fullNameDirections[0].value.toString()
+        default: fullNameDirections[0].value.toString(),
       },
     ],
   },
@@ -257,7 +257,7 @@ export const resources: RA<ResourceConfig> = [
         type: 'select',
         options: fullNameDirections,
         required: true,
-        default: fullNameDirections[0].value.toString()
+        default: fullNameDirections[0].value.toString(),
       },
     ],
   },
@@ -300,7 +300,7 @@ export const resources: RA<ResourceConfig> = [
         type: 'select',
         options: fullNameDirections,
         required: true,
-        default: fullNameDirections[0].value.toString()
+        default: fullNameDirections[0].value.toString(),
       },
     ],
   },

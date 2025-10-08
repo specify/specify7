@@ -162,7 +162,7 @@ export function SetupTool({
               value={formData[fieldName] ?? ''}
               onValueChange={(value) => handleChange(fieldName, value)}
             >
-              <option disabled value={''}>
+              <option disabled value="">
                 {commonText.select()}
               </option>
               {options.map((option) => (
