@@ -77,10 +77,10 @@ const resolveCollectionDocumentHref = (
 
 type DocumentHrefResolver =
   | ((
-    category: string,
-    subcategory: string,
-    name: string
-  ) => string | undefined)
+      category: string,
+      subcategory: string,
+      name: string
+    ) => string | undefined)
   | undefined;
 
 const documentHrefResolvers: IR<DocumentHrefResolver> = {
@@ -336,33 +336,36 @@ export function PreferencesContent({
                             </p>
                             {(item.description !== undefined ||
                               documentHref !== undefined) && (
-                                <p
-                                  className={`flex flex-1 text-gray-500 md:text-right ${stackDocumentation ? 'flex-col items-end gap-1' : 'justify-end'
-                                    }`}
-                                >
-                                  {item.description !== undefined && (
-                                    <FormatString
-                                      text={
-                                        typeof item.description === 'function'
-                                          ? item.description()
-                                          : item.description
-                                      }
-                                    />
-                                  )}
-                                  {documentHref !== undefined && (
-                                    <Link.NewTab
-                                      className={
-                                        stackDocumentation
-                                          ? 'self-end'
-                                          : undefined
-                                      }
-                                      href={documentHref}
-                                    >
-                                      {headerText.documentation()}
-                                    </Link.NewTab>
-                                  )}
-                                </p>
-                              )}
+                              <p
+                                className={`flex flex-1 text-gray-500 md:text-right ${
+                                  stackDocumentation
+                                    ? 'flex-col items-end gap-1'
+                                    : 'justify-end'
+                                }`}
+                              >
+                                {item.description !== undefined && (
+                                  <FormatString
+                                    text={
+                                      typeof item.description === 'function'
+                                        ? item.description()
+                                        : item.description
+                                    }
+                                  />
+                                )}
+                                {documentHref !== undefined && (
+                                  <Link.NewTab
+                                    className={
+                                      stackDocumentation
+                                        ? 'self-end'
+                                        : undefined
+                                    }
+                                    href={documentHref}
+                                  >
+                                    {headerText.documentation()}
+                                  </Link.NewTab>
+                                )}
+                              </p>
+                            )}
                           </div>
                           <div
                             className={`

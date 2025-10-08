@@ -2157,7 +2157,8 @@ export const preferencesText = createDictionary({
     'en-us': 'Thumbnail Size (px)',
   },
   attachmentPreviewSizeDescription: {
-    'en-us': 'Controls the rendered height used when generating preview thumbnails for attachments.',
+    'en-us':
+      'Controls the rendered height used when generating preview thumbnails for attachments.',
   },
   dateFormatIso: {
     'en-us': '2012-12-31 (ISO 8601)',
