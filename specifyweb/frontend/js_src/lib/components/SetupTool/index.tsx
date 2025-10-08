@@ -258,11 +258,11 @@ export function SetupTool({
               <H3 className="text-xl font-semibold mb-4">
                 {resources[currentStep].label}
               </H3>
-              {resources[currentStep].description !== undefined ? (
+              {resources[currentStep].description === undefined ? undefined : (
                 <p className="text-md font-semibold mb-4">
                   {resources[currentStep].description}
                 </p>
-              ) : undefined}
+              )}
               {renderFormFields(resources[currentStep].fields)}
             </Form>
             <Submit.Save className="self-start" form={id('form')}>

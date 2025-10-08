@@ -31,13 +31,15 @@ export const setupToolText = createDictionary({
     'en-us': 'Name',
   },
   institutionNameDescription: {
-    'en-us': 'The full, official name of the institution (e.g., "University of Kansas Biodiversity Institute").',
+    'en-us':
+      'The full, official name of the institution (e.g., "University of Kansas Biodiversity Institute").',
   },
   institutionCode: {
     'en-us': 'Code',
   },
   institutionCodeDescription: {
-    'en-us': 'A short, unique code or acronym for the institution (e.g., "KUBI").',
+    'en-us':
+      'A short, unique code or acronym for the institution (e.g., "KUBI").',
   },
   institutionAddress: {
     'en-us': 'Address',
