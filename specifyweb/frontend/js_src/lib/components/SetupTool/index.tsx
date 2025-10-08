@@ -1,13 +1,15 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common'
 import { setupToolText } from '../../localization/setupTool';
 import { userText } from '../../localization/user'
-import { commonText } from '../../localization/common'
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
 import { Container, H2, H3 } from '../Atoms';
+import { Progress } from '../Atoms';
 import { Form, Input, Label, Select } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
@@ -15,8 +17,6 @@ import type { SetupProgress } from '../Login';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
 import type { FieldConfig, ResourceConfig } from "./setupResources";
 import { resources } from "./setupResources";
-import { useId } from '../../hooks/useId';
-import { Progress } from '../Atoms';
 
 type ResourceFormData = Record<string, any>;
 
@@ -242,18 +242,18 @@ export function SetupTool({
   return (
     <Container.FullGray className="overflow-auto w-full items-center">
       <img
-        src="/static/img/logo.svg"
         className="w-auto h-12 mx-auto"
+        src="/static/img/logo.svg"
       />
       <H2 className="text-2xl mb-6">{setupToolText.specifyConfigurationSetup()}</H2>
       {currentStep < resources.length ? (
         <>
           <Container.Center className="p-3 shadow-md max-w-lg">
             <Form
-              forwardRef={formRef}
               className="flex-1 overflow-auto gap-2"
-              onSubmit={handleSubmit}
+              forwardRef={formRef}
               id={id('form')}
+              onSubmit={handleSubmit}
             >
               <H3 className="text-xl font-semibold mb-4">
                 {resources[currentStep].label}
@@ -283,8 +283,7 @@ function flattenToNested(data: Record<string, any>): Record<string, any> {
   Object.entries(data).forEach(([key, value]) => {
     if (key.includes('.')) {
       const [prefix, field] = key.split('.', 2);
-      if (!result[prefix])
-        result[prefix] = {}
+      result[prefix] ||= {}
       result[prefix][field] = value;
     } else {
       result[key] = value;

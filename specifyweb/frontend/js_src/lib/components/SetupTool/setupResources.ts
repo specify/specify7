@@ -13,7 +13,7 @@ export type ResourceConfig = {
 type Option = {
   readonly value: number | string;
   readonly label?: string;
-}
+};
 
 export type FieldConfig = {
   readonly name: string;
@@ -33,8 +33,8 @@ export type FieldConfig = {
 
 // Discipline list from backend/context/app_resource.py
 const disciplineTypeOptions = [
-  {value: 'fish', label: 'Fish'},
-  {value: 'herpetology', label: 'Herpetology'},
+  { value: 'fish', label: 'Fish' },
+  { value: 'herpetology', label: 'Herpetology' },
   { value: 'paleobotany', label: 'Paleobotany' },
   { value: 'invertpaleo', label: 'Invertebrate Paleontology' },
   { value: 'vertpaleo', label: 'Vertebrate Paleontology' },
@@ -47,16 +47,16 @@ const disciplineTypeOptions = [
 ];
 
 const catalogNumberFormats = [
-  {value: 'CatalogNumber'},
-  {value: 'CatalogNumberAlphaNumByYear'},
-  {value: 'CatalogNumberNumeric'},
-  {value: 'CatalogNumberString'},
+  { value: 'CatalogNumber' },
+  { value: 'CatalogNumberAlphaNumByYear' },
+  { value: 'CatalogNumberNumeric' },
+  { value: 'CatalogNumberString' },
 ];
 
 const fullNameDirections = [
-  {value: 1, label: "Forward"},
-  {value: -1, label: "Reverse"}
-]
+  { value: 1, label: 'Forward' },
+  { value: -1, label: 'Reverse' },
+];
 
 export const resources: RA<ResourceConfig> = [
   {
@@ -159,10 +159,16 @@ export const resources: RA<ResourceConfig> = [
           { name: '400', label: 'Box', type: 'boolean' },
           { name: '450', label: 'Rack', type: 'boolean' },
           { name: '500', label: 'Vial', type: 'boolean' },
-        ]
+        ],
       },
       // TODO: This should be name direction. Each rank should have configurable formats, too.
-      { name: 'fullNameDirection', label: 'Full Name Direction', type: 'select', options: fullNameDirections, required: true },
+      {
+        name: 'fullNameDirection',
+        label: 'Full Name Direction',
+        type: 'select',
+        options: fullNameDirections,
+        required: true,
+      },
     ],
   },
   {
@@ -181,9 +187,15 @@ export const resources: RA<ResourceConfig> = [
           { name: '200', label: 'Country', type: 'boolean', default: true },
           { name: '300', label: 'State', type: 'boolean', default: true },
           { name: '400', label: 'County', type: 'boolean', default: true },
-        ]
+        ],
       },
-      { name: 'fullNameDirection', label: 'Full Name Direction', type: 'select', options: fullNameDirections, required: true },
+      {
+        name: 'fullNameDirection',
+        label: 'Full Name Direction',
+        type: 'select',
+        options: fullNameDirections,
+        required: true,
+      },
     ],
   },
   {
@@ -226,9 +238,15 @@ export const resources: RA<ResourceConfig> = [
           { name: '200', label: 'Country', type: 'boolean', default: true },
           { name: '300', label: 'State', type: 'boolean', default: true },
           { name: '400', label: 'County', type: 'boolean', default: true },
-        ]
+        ],
       },
-      { name: 'fullNameDirection', label: 'Full Name Direction', type: 'select', options: fullNameDirections, required: true },
+      {
+        name: 'fullNameDirection',
+        label: 'Full Name Direction',
+        type: 'select',
+        options: fullNameDirections,
+        required: true,
+      },
     ],
   },
   {
@@ -255,9 +273,15 @@ export const resources: RA<ResourceConfig> = [
           { name: '180', label: 'Genus', type: 'boolean', default: true },
           { name: '220', label: 'Species', type: 'boolean', default: true },
           { name: '230', label: 'Subspecies', type: 'boolean', default: false },
-        ]
+        ],
       },
-      { name: 'fullNameDirection', label: 'Full Name Direction', type: 'select', options: fullNameDirections, required: true },
+      {
+        name: 'fullNameDirection',
+        label: 'Full Name Direction',
+        type: 'select',
+        options: fullNameDirections,
+        required: true,
+      },
     ],
   },
   {
