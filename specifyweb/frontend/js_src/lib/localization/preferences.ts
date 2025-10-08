@@ -2103,4 +2103,73 @@ export const preferencesText = createDictionary({
     "uk-ua":
       "Поле «Номер у каталозі» має бути унікальним у таблицях «Компонент» та «CO»",
   },
+  auditing: {
+    'en-us': 'Auditing',
+  },
+  enableAuditLog: {
+    'en-us': 'Enable Audit Log',
+  },
+  enableAuditLogDescription: {
+    'en-us':
+      'Track record creation, modification, and deletion across every collection in this database.',
+  },
+  logFieldLevelChanges: {
+    'en-us': 'Log Field-Level Changes',
+  },
+  logFieldLevelChangesDescription: {
+    'en-us':
+      'Include the before and after values for each field when Audit Log entries are recorded.',
+  },
+  dateFormatting: {
+    'en-us': 'Date Formatting',
+  },
+  fullDateFormat: {
+    'en-us': 'Full Date Format',
+  },
+  fullDateFormatDescription: {
+    'en-us': 'Displayed whenever a complete day, month, and year are known.',
+  },
+  monthYearDateFormat: {
+    'en-us': 'Month/Year Date Format',
+  },
+  monthYearDateFormatDescription: {
+    'en-us': 'Displayed when only a month and year are provided.',
+  },
+  attachmentsThumbnails: {
+    'en-us': 'Attachment Thumbnails',
+  },
+  attachmentPreviewSize: {
+    'en-us': 'Thumbnail Size (px)',
+  
+  },
+  attachmentPreviewSizeDescription: {
+    'en-us': 'Controls the rendered height used when generating preview thumbnails for attachments.',
+  },
+  dateFormatIso: {
+    'en-us': '2012-12-31 (ISO 8601)',
+  },
+  dateFormatMonthDayYearSlash: {
+    'en-us': '12/31/2012',
+  },
+  dateFormatDayMonthYearSlash: {
+    'en-us': '31/12/2012',
+  },
+  dateFormatIsoSlash: {
+    'en-us': '2012/12/31',
+  },
+  dateFormatMonthDayYearDash: {
+    'en-us': '12-31-2012',
+  },
+  monthFormatIso: {
+    'en-us': '2012-12',
+  },
+  monthFormatMonthYearSlash: {
+    'en-us': '12/2012',
+  },
+  monthFormatYearMonthSlash: {
+    'en-us': '2012/12',
+  },
+  globalPreferences: {
+    'en-us': 'Global Preferences',
+    },
 } as const);
