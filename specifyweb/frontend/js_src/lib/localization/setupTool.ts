@@ -24,6 +24,9 @@ export const setupToolText = createDictionary({
   institution: {
     'en-us': 'Institution',
   },
+  institutionDescription: {
+    'en-us': 'Enter Institution Information.',
+  },
   institutionName: {
     'en-us': 'Name',
   },

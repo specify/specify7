@@ -7,6 +7,7 @@ export type ResourceConfig = {
   readonly resourceName: string;
   readonly label: LocalizedString;
   readonly endpoint: string;
+  readonly description?: LocalizedString;
   readonly fields: RA<FieldConfig>;
 };
 
@@ -62,6 +63,7 @@ export const resources: RA<ResourceConfig> = [
   {
     resourceName: 'Institution',
     label: setupToolText.institution(),
+    description: setupToolText.institutionDescription(),
     endpoint: '/setup_tool/institution/create/',
     fields: [
       {
