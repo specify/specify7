@@ -20,7 +20,7 @@ export type FieldConfig = {
   readonly label: string;
   readonly type?: 'boolean' | 'object' | 'password' | 'select' | 'text';
   readonly required?: boolean;
-  readonly default?: boolean | string;
+  readonly default?: boolean | string | number;
   readonly description?: string;
   readonly options?: RA<Option>;
   readonly fields?: RA<FieldConfig>;
@@ -162,7 +162,7 @@ export const resources: RA<ResourceConfig> = [
         ]
       },
       // TODO: This should be name direction. Each rank should have configurable formats, too.
-      { name: 'fullNameDirection', label: 'Full Name Direction', type: 'select', options: fullNameDirections, required: true },
+      { name: 'fullNameDirection', label: 'Full Name Direction', type: 'select', options: fullNameDirections, required: true, default: fullNameDirections[0].value.toString() },
     ],
   },
   {
@@ -183,7 +183,7 @@ export const resources: RA<ResourceConfig> = [
           { name: '400', label: 'County', type: 'boolean', default: true },
         ]
       },
-      { name: 'fullNameDirection', label: 'Full Name Direction', type: 'select', options: fullNameDirections, required: true },
+      { name: 'fullNameDirection', label: 'Full Name Direction', type: 'select', options: fullNameDirections, required: true, default: fullNameDirections[0].value.toString() },
     ],
   },
   {
@@ -228,7 +228,7 @@ export const resources: RA<ResourceConfig> = [
           { name: '400', label: 'County', type: 'boolean', default: true },
         ]
       },
-      { name: 'fullNameDirection', label: 'Full Name Direction', type: 'select', options: fullNameDirections, required: true },
+      { name: 'fullNameDirection', label: 'Full Name Direction', type: 'select', options: fullNameDirections, required: true, default: fullNameDirections[0].value.toString() },
     ],
   },
   {
@@ -257,7 +257,7 @@ export const resources: RA<ResourceConfig> = [
           { name: '230', label: 'Subspecies', type: 'boolean', default: false },
         ]
       },
-      { name: 'fullNameDirection', label: 'Full Name Direction', type: 'select', options: fullNameDirections, required: true },
+      { name: 'fullNameDirection', label: 'Full Name Direction', type: 'select', options: fullNameDirections, required: true, default: fullNameDirections[0].value.toString() },
     ],
   },
   {
