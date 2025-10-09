@@ -1,8 +1,6 @@
 import json
 from unittest.mock import patch
 
-from django.test import Client
-
 from specifyweb.backend.stored_queries.batch_edit import (
     BatchEditPack,
     BatchEditProps,
@@ -2314,302 +2312,9 @@ class QueryConstructionTests(SQLAlchemySetup):
         self.assertEqual(correct_packs, packs)
 
     def test_column_key_collision(self):
-        c = Client()
-        c.force_login(self.specifyuser)
-
-        # Create test records for query
-        test_collection = models.Collection.objects.first()
-        agent_1 = models.Agent.objects.create(
-            agenttype=0,
-            firstname="agent_test_be_key_collision_1",
-            lastname="agent_test_be_key_collision",
-            guid="agent-test-be-key-collision-1",
-            specifyuser=self.specifyuser
-        )
-        agent_2 = models.Agent.objects.create(
-            agenttype=0,
-            firstname="agent_test_be_key_collision_2",
-            lastname="agent_test_be_key_collision",
-            guid="agent-test-be-key-collision-2",
-            specifyuser=self.specifyuser
-        )
-        test_catalognumber = '194836194083'
-        co_test = models.Collectionobject.objects.create(
-            catalognumber=test_catalognumber,
-            cataloger=agent_1,
-            collection=models.Collection.objects.first()
-        )
-        determiner_test = models.Determination.objects.create(
-            collectionobject=co_test,
-            iscurrent=True,
-            determiner=agent_2
-        )
-
-        # Create test QB query
-        qb_query_response = c.post(
-            '/stored_query/ephemeral/',
-            data=json.dumps(
-                {
-                    "name": "New Query",
-                    "contextname": "CollectionObject",
-                    "contexttableid": 1,
-                    "selectdistinct": False,
-                    "smushed": False,
-                    "countonly": False,
-                    "formatauditrecids": False,
-                    "specifyuser": f"/api/specify/specifyuser/{self.specifyuser.id}/",
-                    "isfavorite": True,
-                    # "ordinal": 32767,
-                    "fields": [
-                        {
-                            "tablelist": "1,5-cataloger",
-                            "stringid": "1,5-cataloger.agent.guid",
-                            "fieldname": "guid",
-                            "isrelfld": False,
-                            "sorttype": 0,
-                            "position": 0,
-                            "isdisplay": True,
-                            "operstart": 8,
-                            "startvalue": "",
-                            "isnot": False,
-                            "isstrict": False
-                        },
-                        {
-                            "tablelist": "1,9-determinations,5-determiner",
-                            "stringid": "1,9-determinations,5-determiner.agent.guid",
-                            "fieldname": "guid",
-                            "isrelfld": False,
-                            "sorttype": 0,
-                            "position": 1,
-                            "isdisplay": True,
-                            "operstart": 8,
-                            "startvalue": "",
-                            "isnot": False,
-                            "isstrict": False
-                        }
-                    ],
-                    "_tablename": "SpQuery",
-                    "remarks": None,
-                    "searchsynonymy": None,
-                    "sqlstr": None,
-                    "timestampcreated": "2025-10-07",
-                    "timestampmodified": None,
-                    "version": 1,
-                    "createdbyagent": None,
-                    "modifiedbyagent": None,
-                    "offset": 0,
-                    "limit": 1
-                }
-            ),
-            content_type='application/json'
-        )
-        self.assertEqual(qb_query_response.status_code, 200)
-        qb_query_results = qb_query_response.json().get('results')
-
-        saved_qb_query_response = c.post(
-            '/api/specify/spquery/',
-            data = json.dumps(
-                {
-                    "name": "batch_edit_key_collision_test",
-                    "contextname": "CollectionObject",
-                    "contexttableid": 1,
-                    "selectdistinct": False,
-                    "smushed": False,
-                    "countonly": False,
-                    "formatauditrecids": False,
-                    "specifyuser": f"/api/specify/specifyuser/{self.specifyuser.id}/",
-                    "isfavorite": True,
-                    # "ordinal": 32767,
-                    "fields": [
-                        {
-                            "tablelist": "1,5-cataloger",
-                            "stringid": "1,5-cataloger.agent.guid",
-                            "fieldname": "guid",
-                            "isrelfld": False,
-                            "sorttype": 0,
-                            "position": 0,
-                            "isdisplay": True,
-                            "operstart": 8,
-                            "startvalue": "",
-                            "isnot": False,
-                            "isstrict": False,
-                            "_tableName": "SpQueryField"
-                        },
-                        {
-                            "tablelist": "1,9-determinations,5-determiner",
-                            "stringid": "1,9-determinations,5-determiner.agent.guid",
-                            "fieldname": "guid",
-                            "isrelfld": False,
-                            "sorttype": 0,
-                            "position": 1,
-                            "isdisplay": True,
-                            "operstart": 8,
-                            "startvalue": "",
-                            "isnot": False,
-                            "isstrict": False,
-                            "_tableName": "SpQueryField"
-                        }
-                    ],
-                    "_tableName": "SpQuery"
-                }
-            ),
-            content_type='application/json'
-        )
-        self.assertEqual(saved_qb_query_response.status_code, 201)
-        saved_qb_query = saved_qb_query_response.json()
-        saved_qb_query_id = saved_qb_query.get('id')
-        saved_qb_query_fields = saved_qb_query.get('fields')
-        saved_qb_query_field_ids = [field.get('id') for field in saved_qb_query_fields]
-
-        # Run batch edit on test query
-        batch_edit_response = c.post(
-            '/stored_query/batch_edit/',
-            data=json.dumps(
-                {
-                    "id": saved_qb_query_id,
-                    "contextname": "CollectionObject",
-                    "contexttableid": 1,
-                    "countonly": False,
-                    "formatauditrecids": False,
-                    "isfavorite": True,
-                    "name": "batch_edit_key_collision_test",
-                    # "ordinal": 32767,
-                    "remarks": None,
-                    "searchsynonymy": None,
-                    "selectdistinct": False,
-                    "smushed": False,
-                    "sqlstr": None,
-                    "timestampcreated": "2025-10-07T15:01:52",
-                    "timestampmodified": "2025-10-07T15:01:52",
-                    "version": 0,
-                    "createdbyagent": f"/api/speacify/agent/{agent_1.id}/",
-                    "modifiedbyagent": None,
-                    "specifyuser": f"/api/specify/specifyuser/{agent_1.id}/",
-                    "reports": f"/api/specify/spreport/?query={saved_qb_query_id}",
-                    "resource_uri": f"/api/specify/spquery/{saved_qb_query_id}/",
-                    "fields": [
-                        {
-                            "id": saved_qb_query_field_ids[0],
-                            "allownulls": None,
-                            "alwaysfilter": None,
-                            "columnalias": None,
-                            "contexttableident": None,
-                            "endvalue": None,
-                            "fieldname": "guid",
-                            "formatname": None,
-                            "isdisplay": True,
-                            "isnot": False,
-                            "isprompt": None,
-                            "isrelfld": False,
-                            "operend": None,
-                            "operstart": 8,
-                            "position": 0,
-                            "sorttype": 0,
-                            "startvalue": "",
-                            "stringid": "1,5-cataloger.agent.guid",
-                            "tablelist": "1,5-cataloger",
-                            "timestampcreated": "2025-10-07T15:01:52",
-                            "timestampmodified": "2025-10-07T15:01:52",
-                            "version": 0,
-                            "isstrict": False,
-                            "createdbyagent": f"/api/specify/agent/{agent_1.id}/",
-                            "modifiedbyagent": None,
-                            "query": f"/api/specify/spquery/{saved_qb_query_id}/",
-                            "mappings": f"/api/specify/spexportschemaitemmapping/?queryfield={saved_qb_query_field_ids[0]}",
-                            "resource_uri": f"/api/specify/spqueryfield/{saved_qb_query_field_ids[0]}/",
-                            "_tablename": "SpQueryField"
-                        },
-                        {
-                            "id": saved_qb_query_field_ids[1],
-                            "allownulls": None,
-                            "alwaysfilter": None,
-                            "columnalias": None,
-                            "contexttableident": None,
-                            "endvalue": None,
-                            "fieldname": "guid",
-                            "formatname": None,
-                            "isdisplay": True,
-                            "isnot": False,
-                            "isprompt": None,
-                            "isrelfld": False,
-                            "operend": None,
-                            "operstart": 8,
-                            "position": 1,
-                            "sorttype": 0,
-                            "startvalue": "",
-                            "stringid": "1,9-determinations,5-determiner.agent.guid",
-                            "tablelist": "1,9-determinations,5-determiner",
-                            "timestampcreated": "2025-10-07T15:01:52",
-                            "timestampmodified": "2025-10-07T15:01:52",
-                            "version": 0,
-                            "isstrict": False,
-                            "createdbyagent": f"/api/specify/agent/{agent_1.id}/",
-                            "modifiedbyagent": None,
-                            "query": f"/api/specify/spquery/{saved_qb_query_id}/",
-                            "mappings": f"/api/specify/spexportschemaitemmapping/?queryfield={saved_qb_query_field_ids[1]}",
-                            "resource_uri": f"/api/specify/spqueryfield/{saved_qb_query_field_ids[1]}/",
-                            "_tablename": "SpQueryField"
-                        }
-                    ],
-                    "_tablename": "SpQuery",
-                    "captions": [
-                        "Cataloger - GUID",
-                        "Determiner - GUID"
-                    ],
-                    "limit": 1,
-                    "treedefsfilter": {},
-                    "omitrelationships": False
-                }
-            ),
-            content_type='application/json'
-        )
-        self.assertEqual(batch_edit_response.status_code, 201)
-        batch_edit_id = batch_edit_response.json().get('id')
-
-        batch_edit_workbench_response = c.get(
-            f'/api/workbench/dataset/{batch_edit_id}/'
-        )
-        self.assertEqual(batch_edit_workbench_response.status_code, 200)
-        batch_edit_dataset = batch_edit_workbench_response.json()
-
-        # Asset the columns and data match the query results
-        pass
-
-    @patch(OBJ_FORMATTER_PATH, new=fake_obj_formatter)
-    def test_column_key_collision_2(self):
-        c = Client()
-        c.force_login(self.specifyuser)
-
-        # Create test records for query
-        test_collection = models.Collection.objects.first()
-        agent_1 = models.Agent.objects.create(
-            agenttype=0,
-            firstname="agent_test_be_key_collision_1",
-            lastname="agent_test_be_key_collision",
-            guid="agent-test-be-key-collision-1",
-            specifyuser=self.specifyuser
-        )
-        agent_2 = models.Agent.objects.create(
-            agenttype=0,
-            firstname="agent_test_be_key_collision_2",
-            lastname="agent_test_be_key_collision",
-            guid="agent-test-be-key-collision-2",
-            specifyuser=self.specifyuser
-        )
-        test_catalognumber = '194836194083'
-        co_test = models.Collectionobject.objects.create(
-            catalognumber=test_catalognumber,
-            cataloger=agent_1,
-            collection=models.Collection.objects.first()
-        )
-        determiner_test = models.Determination.objects.create(
-            collectionobject=co_test,
-            iscurrent=True,
-            determiner=agent_2
-        )
-
         # Build QB Query
         base_table = "collectionobject"
+        expected_captions = ['Cataloger - GUID', 'Determiner - GUID']
         query_paths = [
             ["cataloger", "GUID"],
             ["determinations", "Determiner", "GUID"],
@@ -2622,8 +2327,19 @@ class QueryConstructionTests(SQLAlchemySetup):
             for path in added
         ]
 
-        props = self.build_props(query_fields, base_table)
-
+        props = BatchEditProps(
+            collection=self.collection,
+            user=self.specifyuser,
+            contexttableid=datamodel.get_table_strict(base_table).tableId,
+            fields=query_fields,
+            session_maker=QueryConstructionTests.test_session_context,
+            captions=expected_captions,
+            limit=None,
+            recordsetid=None,
+            omit_relationships=False,
+            treedefsfilter=None
+        )
         (headers, rows, packs, plan, order) = run_batch_edit_query(props)
 
+        self.assertEqual(headers, expected_captions)
         
