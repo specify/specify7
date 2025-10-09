@@ -2184,4 +2184,7 @@ export const preferencesText = createDictionary({
   monthFormatYearMonthSlash: {
     'en-us': '2012/12',
   },
+  globalPreferencesTitle: {
+    'en-us': 'Global Preferences',
+  },
 } as const);

@@ -102,6 +102,15 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     icon: icons.cog,
     label: preferencesText.defaultUserPreferences(),
   },
+  globalPreferences: {
+    mimeType: 'application/json',
+    name: 'preferences',
+    documentationUrl: undefined,
+    icon: icons.cog,
+    label: resourcesText.globalPreferences(),
+    scope: ['global'],
+    useTemplate: false,
+  },
   // TODO: There should be useTemplate: false below? (like it is for userPreferences)
   collectionPreferences: {
     mimeType: 'application/json',
