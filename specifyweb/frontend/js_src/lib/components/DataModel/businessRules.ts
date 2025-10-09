@@ -7,7 +7,7 @@ import { softFail } from '../Errors/Crash';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import type { BusinessRuleDefs } from './businessRuleDefs';
 import { businessRuleDefs } from './businessRuleDefs';
-import { backendFilter, backboneFieldSeparator, djangoLookupSeparator } from './helpers';
+import { backboneFieldSeparator, backendFilter, djangoLookupSeparator } from './helpers';
 import type {
   AnySchema,
   AnyTree,
@@ -402,7 +402,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
           rule.isDatabaseConstraint &&
           typeof value === 'string' &&
           leafField !== undefined &&
-          leafField.isRelationship === false
+          !leafField.isRelationship
         )
           return Object.entries(
             backendFilter(fieldName).caseInsensitiveEquals(value)
