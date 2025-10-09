@@ -7,7 +7,7 @@ import { softFail } from '../Errors/Crash';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import type { BusinessRuleDefs } from './businessRuleDefs';
 import { businessRuleDefs } from './businessRuleDefs';
-import { backboneFieldSeparator, djangoLookupSeparator } from './helpers';
+import { backendFilter, backboneFieldSeparator, djangoLookupSeparator } from './helpers';
 import type {
   AnySchema,
   AnyTree,
@@ -398,15 +398,17 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
           this.resource.specifyTable,
           fieldName
         ).at(-1);
-          if (
-            rule.isDatabaseConstraint &&
-            typeof value === 'string' &&
-            leafField !== undefined &&
-            leafField.isRelationship === false
-          )
-            return [`${fieldName}${djangoLookupSeparator}iexact`, value];
-          return [fieldName, value];
-        })
+        if (
+          rule.isDatabaseConstraint &&
+          typeof value === 'string' &&
+          leafField !== undefined &&
+          leafField.isRelationship === false
+        )
+          return Object.entries(
+            backendFilter(fieldName).caseInsensitiveEquals(value)
+          ).at(0)!;
+        return [fieldName, value];
+      })
     );
 
     if (Object.values(partialFilters).includes(undefined)) return validResponse;

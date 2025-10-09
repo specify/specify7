@@ -48,6 +48,9 @@ const _backendFilters = (field: string, ...fieldTransforms: RA<string>) =>
     equals: (value: number | string) => ({
       [[field, ...fieldTransforms, 'exact'].join(djangoLookupSeparator)]: value,
     }),
+    caseInsensitiveEquals: (value: string) => ({
+      [[field, ...fieldTransforms, 'iexact'].join(djangoLookupSeparator)]: value,
+    }),
     contains: (value: string) => ({
       [[field, ...fieldTransforms, 'contains'].join(djangoLookupSeparator)]:
         value,

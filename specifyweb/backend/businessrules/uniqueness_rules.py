@@ -51,6 +51,38 @@ def resolve_model_field(model, field_path: str):
     return resolved_field
 
 
+def apply_case_sensitive_filters(queryset, model, matchable, filter_kwargs):
+    annotations: dict[str, Func] = {}
+    transformed_filters: dict[str, object] = {}
+
+    case_sensitive_field_types = (
+        dj_models.CharField,
+        dj_models.TextField,
+        dj_models.SlugField,
+        dj_models.EmailField,
+        dj_models.UUIDField,
+    )
+
+    for index, (field_path, value) in enumerate(matchable.items()):
+        if not isinstance(value, str):
+            continue
+        resolved_field = resolve_model_field(model, field_path)
+        if isinstance(resolved_field, case_sensitive_field_types):
+            alias = f"__binary_filter__{index}"
+            annotations[alias] = Func(
+                F(field_path),
+                function='BINARY',
+                output_field=dj_models.TextField(),
+            )
+            transformed_filters[alias] = value
+            filter_kwargs.pop(field_path, None)
+
+    if annotations:
+        queryset = queryset.annotate(**annotations)
+
+    return queryset, transformed_filters
+
+
 @orm_signal_handler('pre_save', None, dispatch_uid=UNIQUENESS_DISPATCH_UID)
 def validate_unique(model, instance):
     """
@@ -162,33 +194,13 @@ def validate_unique(model, instance):
         apply_case_sensitive = connection.vendor == 'mysql' and not rule.isDatabaseConstraint
 
         if apply_case_sensitive:
-            annotations: dict[str, Func] = {}
-            transformed_filters: dict[str, object] = {}
-
-            case_sensitive_field_types = (
-                dj_models.CharField,
-                dj_models.TextField,
-                dj_models.SlugField,
-                dj_models.EmailField,
-                dj_models.UUIDField,
+            conflicts_query, transformed_filters = apply_case_sensitive_filters(
+                conflicts_query,
+                model,
+                matchable,
+                filter_kwargs,
             )
-
-            for index, (field_path, value) in enumerate(matchable.items()):
-                if not isinstance(value, str):
-                    continue
-                resolved_field = resolve_model_field(model, field_path)
-                if isinstance(resolved_field, case_sensitive_field_types):
-                    alias = f"__binary_filter__{index}"
-                    annotations[alias] = Func(
-                        F(field_path),
-                        function='BINARY',
-                        output_field=dj_models.TextField(),
-                    )
-                    transformed_filters[alias] = value
-                    filter_kwargs.pop(field_path, None)
-
-            if annotations:
-                conflicts_query = conflicts_query.annotate(**annotations)
+            if transformed_filters:
                 filter_kwargs.update(transformed_filters)
 
         conflicts = conflicts_query.filter(**filter_kwargs)
