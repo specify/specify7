@@ -22,6 +22,7 @@ import type {
 import type { SortConfig } from '../../components/Molecules/Sorting';
 import type { PartialPreferences } from '../../components/Preferences/BasePreferences';
 import type { collectionPreferenceDefinitions } from '../../components/Preferences/CollectionDefinitions';
+import type { globalPreferenceDefinitions } from '../../components/Preferences/GlobalDefinitions';
 import type { userPreferenceDefinitions } from '../../components/Preferences/UserDefinitions';
 import type { Conformations } from '../../components/TreeView/helpers';
 import type { WbSearchPreferences } from '../../components/WorkBench/AdvancedSearch';
@@ -140,6 +141,9 @@ export type CacheDefinitions = {
   };
   readonly collectionPreferences: {
     readonly cached: PartialPreferences<typeof collectionPreferenceDefinitions>;
+  };
+  readonly globalPreferences: {
+    readonly cached: PartialPreferences<typeof globalPreferenceDefinitions>;
   };
   readonly securityTool: {
     readonly policiesLayout: 'horizontal' | 'vertical';
