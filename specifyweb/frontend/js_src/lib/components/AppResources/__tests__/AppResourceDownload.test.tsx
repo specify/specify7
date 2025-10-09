@@ -39,7 +39,7 @@ describe('AppResourceDownload', () => {
     await user.click(button);
     expect(mockDownload).toHaveBeenCalled();
     expect(mockDownload.mock.lastCall).toEqual([
-      'preferences.properties',
+      'preferences.json',
       'testString',
     ]);
   });
