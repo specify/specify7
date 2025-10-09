@@ -8,6 +8,7 @@ test('allAppResources', () => {
       "dataObjectFormatters",
       "defaultUserPreferences",
       "expressSearchConfig",
+      "globalPreferences",
       "interactionsTables",
       "label",
       "leafletLayers",

@@ -58,6 +58,7 @@ describe('AppResourcesFilters', () => {
         'dataObjectFormatters',
         'defaultUserPreferences',
         'expressSearchConfig',
+        'globalPreferences',
         'interactionsTables',
         'label',
         'leafletLayers',
