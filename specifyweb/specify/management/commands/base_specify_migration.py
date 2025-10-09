@@ -11,17 +11,17 @@ class Command(BaseCommand):
     help = "Add initial specify migration to django_migrations table."
 
     def add_arguments(self, parser):
-        # Add a positional argument to accept 0 or 1
+        # Optional Override flag; defaults to False
         parser.add_argument(
-            'use_override',
-            type=int,
-            default=1,
-            choices=[0, 1],
-            help='Pass 1 to override or 0 to not override.',
+            "--use-override",
+            dest="use_override",
+            action="store_true",
+            default=False,
+            help="Insert initial 'specify' migration record if missing.",
         )
 
     def handle(self, *args, **options):
-        use_override = bool(options['use_override'])
+        use_override = bool(options.get('use_override', False))
 
         with connection.cursor() as cursor:
             # Check django table

@@ -140,16 +140,18 @@ else
   echo "Skipping privilege grant: user already exists."
 fi
 
-# Determine overall result
-CREATED_FLAG=$([[ "$NEW_DATABASE_CREATED" -eq 1 ]] && echo 1 || echo 0)
-
 echo "--------------------------------------------------"
 echo "Database and user setup complete."
 echo "New database created: $NEW_DATABASE_CREATED"
 echo "New migrator user created: $NEW_MIGRATOR_USER_CREATED"
 echo "New app user created: $NEW_APP_USER_CREATED"
-echo "Passing flag $CREATED_FLAG to migration script..."
 echo "--------------------------------------------------"
 
-# Run the Python migration script with the flag
-ve/bin/python manage.py base_specify_migration --database=migrations "$CREATED_FLAG"
+# Run the base_specify_migration script
+if [[ "$NEW_DATABASE_CREATED" -eq 0 ]]; then
+  echo "Existing database detected."
+  ve/bin/python manage.py base_specify_migration --use-override
+else
+  echo "New database detected."
+  ve/bin/python manage.py base_specify_migration
+fi
