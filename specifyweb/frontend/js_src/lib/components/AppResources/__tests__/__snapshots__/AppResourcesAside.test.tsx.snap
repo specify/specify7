@@ -30,7 +30,7 @@ exports[`AppResourcesAside (expanded case) expanded case 1`] = `
           <span
             class="pl-2 text-neutral-500"
           >
-            (2)
+            (3)
           </span>
         </button>
       </li>
@@ -137,7 +137,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
           <span
             class="pl-2 text-neutral-500"
           >
-            (2)
+            (3)
           </span>
         </button>
         <ul
@@ -149,6 +149,32 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
             <a
               class="link [&:not([aria-current]):not(:hover)]:!text-neutral-500"
               href="/specify/resources/app-resource/1/"
+            >
+              <span
+                aria-hidden="true"
+                title="Other Properties Resource"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="w-6 h-6 flex-shrink-0"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    clip-rule="evenodd"
+                    d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                    fill-rule="evenodd"
+                  />
+                </svg>
+              </span>
+              Global Preferences
+            </a>
+          </li>
+          <li>
+            <a
+              class="link [&:not([aria-current]):not(:hover)]:!text-neutral-500"
+              href="/specify/resources/app-resource/7/"
             >
               <span
                 aria-hidden="true"
@@ -716,7 +742,7 @@ exports[`AppResourcesAside (simple no conformation case) simple no conformation 
           <span
             class="pl-2 text-neutral-500"
           >
-            (2)
+            (3)
           </span>
         </button>
       </li>
