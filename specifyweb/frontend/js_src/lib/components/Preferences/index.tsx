@@ -23,7 +23,7 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { hasPermission } from '../Permissions/helpers';
-import { ProtectedTool } from '../Permissions/PermissionDenied';
+import { ProtectedAction, ProtectedTool } from '../Permissions/PermissionDenied';
 import { PreferencesAside } from './Aside';
 import type { BasePreferences } from './BasePreferences';
 import { collectionPreferenceDefinitions } from './CollectionDefinitions';
@@ -34,17 +34,21 @@ import type { GenericPreferences, PreferenceItem } from './types';
 import { userPreferenceDefinitions } from './UserDefinitions';
 import { userPreferences } from './userPreferences';
 import { useTopChild } from './useTopChild';
+import { globalPreferenceDefinitions } from './GlobalDefinitions';
+import { globalPreferences } from './globalPreferences';
 
 export type PreferenceType = keyof typeof preferenceInstances;
 
 const preferenceInstances: IR<BasePreferences<any>> = {
   user: userPreferences,
   collection: collectionPreferences,
+  global: globalPreferences,
 };
 
 const preferenceDefinitions: IR<GenericPreferences> = {
   user: userPreferenceDefinitions,
   collection: collectionPreferenceDefinitions,
+  global: globalPreferenceDefinitions,
 };
 
 const NAME_DOCS_MAP: Record<string, string> = {
@@ -83,14 +87,32 @@ type DocumentHrefResolver =
     ) => string | undefined)
   | undefined;
 
+const GLOBAL_DOCS_MAP: Record<string, string | undefined> = {
+  'auditing.do_audits':
+    'https://discourse.specifysoftware.org/tag/audit-log',
+  'auditing.audit_field_updates':
+    'https://discourse.specifysoftware.org/tag/audit-log',
+  'ui.formatting.scrdateformat':
+    'https://discourse.specifysoftware.org/tag/date-format',
+  'ui.formatting.scrmonthformat':
+    'https://discourse.specifysoftware.org/tag/date-format',
+  'attachment.preview_size':
+    'https://discourse.specifysoftware.org/tag/attachments',
+};
+
 const documentHrefResolvers: IR<DocumentHrefResolver> = {
   user: undefined,
   collection: resolveCollectionDocumentHref,
+  global: (_category, _subcategory, name) => GLOBAL_DOCS_MAP[name],
 };
 
 const collectionPreferencesPromise = Promise.all([
   collectionPreferences.fetch(),
 ]).then(f.true);
+
+const globalPreferencesPromise = Promise.all([globalPreferences.fetch()]).then(
+  f.true
+);
 
 /**
  * Fetch app resource that stores current user preferences
@@ -306,7 +328,7 @@ export function PreferencesContent({
                         name
                       );
                       const stackDocumentation =
-                        prefType === 'collection' && documentHref !== undefined;
+                        prefType !== 'user' && documentHref !== undefined;
                       const props = {
                         className: `
                             flex items-start gap-2 md:flex-row flex-col
@@ -470,6 +492,16 @@ function CollectionPreferences(): JSX.Element {
   );
 }
 
+function GlobalPreferences(): JSX.Element {
+  return (
+    <ProtectedAction resource="%" action="%">
+      <div className="relative flex flex-col gap-6 overflow-y-auto">
+        <PreferencesContent prefType="global" />
+      </div>
+    </ProtectedAction>
+  );
+}
+
 function FetchGate({
   promise,
   children,
@@ -493,6 +525,14 @@ export function CollectionPreferencesWrapper(): JSX.Element | null {
   return (
     <FetchGate promise={collectionPreferencesPromise}>
       <CollectionPreferences />
+    </FetchGate>
+  );
+}
+
+export function GlobalPreferencesWrapper(): JSX.Element | null {
+  return (
+    <FetchGate promise={globalPreferencesPromise}>
+      <GlobalPreferences />
     </FetchGate>
   );
 }
