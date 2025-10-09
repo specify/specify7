@@ -186,8 +186,7 @@ def validate_unique(model, instance):
 
         conflicts_query = model.objects.only('id')
 
-        db_alias = router.db_for_read(model)
-        connection = connections[db_alias]
+        connection = connections['default']
 
         filter_kwargs = dict(matchable)
 
