@@ -56,13 +56,13 @@ const SUBCATEGORY_DOCS_MAP: Record<string, Record<string, SubcategoryDocumentati
   treeManagement: {
     synonymized: {
       href: 'https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987/4',
-      label: headerText.documentation,
+      label: headerText.documentation(),
     },
   },
   statistics: {
     appearance: {
       href: 'https://discourse.specifysoftware.org/t/specify-7-statistics/1715',
-      label: headerText.documentation,
+      label: headerText.documentation(),
     },
   },
 };
