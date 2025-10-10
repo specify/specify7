@@ -258,7 +258,7 @@ export function PreferencesContent({
       },
       options: { readonly hideTitle?: boolean } = {}
     ): JSX.Element => {
-      const subcategoryDoc =
+      const subcategoryDocument =
         SUBCATEGORY_DOCS_MAP[categoryKey]?.[subcategoryKey];
       const { hideTitle = false } = options;
 
@@ -269,9 +269,9 @@ export function PreferencesContent({
         >
           <div className="flex items-center gap-2">
             <h4
-              aria-hidden={hideTitle === true}
+              aria-hidden={hideTitle}
               className={`${className.headerGray} text-xl md:text-center ${
-                hideTitle === true ? 'invisible' : ''
+                hideTitle ? 'invisible' : ''
               }`}
             >
               {typeof title === 'function' ? title() : title}
@@ -298,14 +298,14 @@ export function PreferencesContent({
               </Button.Small>
             </div>
           </div>
-          {subcategoryDoc !== undefined && (
+          {subcategoryDocument !== undefined && (
             <p className="text-gray-500">
-              <Link.NewTab href={subcategoryDoc.href}>
+              <Link.NewTab href={subcategoryDocument.href}>
                 <FormatString
                   text={
-                    typeof subcategoryDoc.label === 'function'
-                      ? subcategoryDoc.label()
-                      : subcategoryDoc.label
+                    typeof subcategoryDocument.label === 'function'
+                      ? subcategoryDocument.label()
+                      : subcategoryDocument.label
                   }
                 />
               </Link.NewTab>
