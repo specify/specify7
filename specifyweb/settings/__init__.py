@@ -43,8 +43,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
         'NAME': DATABASE_NAME,
-        'USER': MIGRATOR_NAME,
-        'PASSWORD': MIGRATOR_PASSWORD,
+        'USER': MASTER_NAME,
+        'PASSWORD': MASTER_PASSWORD,
         'HOST': DATABASE_HOST,
         'PORT': DATABASE_PORT,
         'OPTIONS': DATABASE_OPTIONS,

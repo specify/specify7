@@ -1,6 +1,6 @@
 from genericpath import exists
 from django.core.management.base import BaseCommand
-from django.db import connection
+from django.db import connection, transaction
 
 
 # Mock the initial Django migration for the specify app.
@@ -19,47 +19,50 @@ class Command(BaseCommand):
             default=False,
             help="Insert initial 'specify' migration record if missing.",
         )
+        parser.add_argument("--database", default="migrations")
 
     def handle(self, *args, **options):
         use_override = bool(options.get('use_override', False))
+        alias = options["database"]
 
-        with connection.cursor() as cursor:
-            # Check django table
-            try:
-                cursor.execute("""
-                    SELECT 1
-                    FROM django_migrations
-                    LIMIT 1;
-                """)
-                exists = True
-            except:
-                exists = False
-            
-            if not exists:
-                # Check if the django_migrations table exists and create it if it doesn't
-                cursor.execute("""
-                    CREATE TABLE IF NOT EXISTS `django_migrations` (
-                        `id` int(11) NOT NULL AUTO_INCREMENT,
-                        `app` varchar(255) NOT NULL,
-                        `name` varchar(255) NOT NULL,
-                        `applied` datetime NOT NULL,
-                        PRIMARY KEY (`id`)
-                    );
-                """)
+        with transaction.atomic(using=alias):
+            with connection.cursor() as cursor:
+                # Check django table
+                try:
+                    cursor.execute("""
+                        SELECT 1
+                        FROM django_migrations
+                        LIMIT 1;
+                    """)
+                    exists = True
+                except:
+                    exists = False
+                
+                if not exists:
+                    # Check if the django_migrations table exists and create it if it doesn't
+                    cursor.execute("""
+                        CREATE TABLE IF NOT EXISTS `django_migrations` (
+                            `id` int(11) NOT NULL AUTO_INCREMENT,
+                            `app` varchar(255) NOT NULL,
+                            `name` varchar(255) NOT NULL,
+                            `applied` datetime NOT NULL,
+                            PRIMARY KEY (`id`)
+                        );
+                    """)
 
-            # Check if the record in the django_migrations table exists with app 'specify' and name '0001_initial'
-            if use_override:
-              cursor.execute("""
-                  SELECT 1
-                  FROM django_migrations
-                  WHERE app = 'specify' AND name = '0001_initial'
-                  LIMIT 1;
-              """)
-              record_exists = cursor.fetchone() is not None
+                # Check if the record in the django_migrations table exists with app 'specify' and name '0001_initial'
+                if use_override:
+                    cursor.execute("""
+                        SELECT 1
+                        FROM django_migrations
+                        WHERE app = 'specify' AND name = '0001_initial'
+                        LIMIT 1;
+                    """)
+                    record_exists = cursor.fetchone() is not None
 
-              if not record_exists:
-                  # Insert the initial migration record for the specify app
-                  cursor.execute("""
-                      INSERT INTO django_migrations (app, name, applied)
-                      VALUES ('specify', '0001_initial', NOW());
-                  """)
+                    if not record_exists:
+                        # Insert the initial migration record for the specify app
+                        cursor.execute("""
+                            INSERT INTO django_migrations (app, name, applied)
+                            VALUES ('specify', '0001_initial', NOW());
+                        """)
