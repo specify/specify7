@@ -110,7 +110,28 @@ if [[ "$NEW_MIGRATOR_USER_CREATED" -eq 1 ]]; then
     exit 1
   fi
 else
-  echo "Skipping privilege grant: user already exists."
+  echo "Skipping privilege grant for migrator user: user already exists. Verifying privileges on '${DB_NAME}'..."
+
+  GRANTS_OUTPUT="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+                   -e "SHOW GRANTS FOR '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}';" 2>/dev/null || true)"
+
+  if [[ -z "$GRANTS_OUTPUT" ]]; then
+    echo "Error: Could not retrieve grants for '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'."
+    exit 1
+  fi
+
+  GRANTS_PARSED="$(echo "$GRANTS_OUTPUT" | tr -s '[:space:]' ' ')"
+
+  # Pass if we see either global (*.*) or DB-scoped (`DB_NAME`.*) privileges.
+  # Be lenient about quoting/backticks and omit the trailing semicolon requirement.
+  if echo "$GRANTS_PARSED" | grep -Eiq '^GRANT .* ON[[:space:]]+\*\.\*[[:space:]]' \
+     || echo "$GRANTS_PARSED" | grep -Eiq "GRANT .* ON[[:space:]]+(\`?${DB_NAME}\`?)\.\*[[:space:]]"; then
+    echo "Verified: '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' has access to '${DB_NAME}'."
+  else
+    echo "Error: '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' does NOT have privileges on '${DB_NAME}'."
+    echo "$GRANTS_OUTPUT"
+    # exit 1
+  fi
 fi
 
 # Create app user if it doesn't exist
@@ -137,7 +158,65 @@ if [[ "$NEW_APP_USER_CREATED" -eq 1 ]]; then
     exit 1
   fi
 else
-  echo "Skipping privilege grant: user already exists."
+  echo "Skipping privilege grant for app user: user already exists. Verifying privileges on '${DB_NAME}'..."
+
+  REQUIRED_PRIVS=("SELECT" "INSERT" "UPDATE" "ALTER" "INDEX" "DELETE" "CREATE TEMPORARY TABLES" "LOCK TABLES" "EXECUTE")
+  APP_GRANTS_RAW="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+                    -e "SHOW GRANTS FOR '${APP_USER_NAME}'@'${APP_USER_HOST}';" 2>/dev/null || true)"
+
+  if [[ -z "$APP_GRANTS_RAW" ]]; then
+    echo "Error: Could not retrieve grants for '${APP_USER_NAME}'@'${APP_USER_HOST}'."
+    exit 1
+  fi
+
+  mapfile -t APP_GRANTS_LINES < <(echo "$APP_GRANTS_RAW" | tr -s '[:space:]' ' ')
+
+  has_required=false
+
+  # Helper: check if a single GRANT line contains all REQUIRED_PRIVS
+  has_all_privs_in_line() {
+    local line="$1"
+    local missing=()
+    for p in "${REQUIRED_PRIVS[@]}"; do
+      # match whole words; spaces already canonicalized
+      if ! grep -qiE "(^|[, ])${p}(,| |$)" <<<"$line"; then
+        missing+=("$p")
+      fi
+    done
+    if [[ ${#missing[@]} -eq 0 ]]; then
+      return 0
+    else
+      return 1
+    fi
+  }
+
+  # Evaluate each grant line
+  for g in "${APP_GRANTS_LINES[@]}"; do
+    # If global ALL PRIVILEGES, good enough
+    if grep -qiE "^GRANT .*ALL PRIVILEGES.* ON \*\.\* TO " <<<"$g"; then
+      has_required=true; break
+    fi
+
+    # If global with at least required subset
+    if grep -qiE " ON \*\.\* TO " <<<"$g" && has_all_privs_in_line "$g"; then
+      has_required=true; break
+    fi
+
+    # If DB-scoped to this database and has required subset
+    if grep -qiE " ON (\`?${DB_NAME}\`?)\.\* TO " <<<"$g" && has_all_privs_in_line "$g"; then
+      has_required=true; break
+    fi
+  done
+
+  if [[ "$has_required" == true ]]; then
+    echo "Verified: '${APP_USER_NAME}'@'${APP_USER_HOST}' has required privileges on '${DB_NAME}'."
+  else
+    echo "Error: '${APP_USER_NAME}'@'${APP_USER_HOST}' lacks required privileges on '${DB_NAME}'."
+    echo "Required (any one GRANT must include all of): ${REQUIRED_PRIVS[*]}"
+    echo "Grants found:"
+    echo "$APP_GRANTS_RAW"
+    # exit 1
+  fi
 fi
 
 echo "--------------------------------------------------"
