@@ -142,9 +142,9 @@ fi
 
 echo "--------------------------------------------------"
 echo "Database and user setup complete."
-echo "New database created: $NEW_DATABASE_CREATED"
-echo "New migrator user created: $NEW_MIGRATOR_USER_CREATED"
-echo "New app user created: $NEW_APP_USER_CREATED"
+echo "New database created: $([[ "$NEW_DATABASE_CREATED" -eq 1 ]] && echo True || echo False)"
+echo "New migrator user created: $([[ "$NEW_MIGRATOR_USER_CREATED" -eq 1 ]] && echo True || echo False)"
+echo "New app user created: $([[ "$NEW_APP_USER_CREATED" -eq 1 ]] && echo True || echo False)"
 echo "--------------------------------------------------"
 
 # Run the base_specify_migration script
