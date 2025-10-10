@@ -11,6 +11,8 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
+import { statsText } from '../../localization/stats';
+import { treeText } from '../../localization/tree';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
@@ -47,32 +49,24 @@ const preferenceDefinitions: IR<GenericPreferences> = {
   collection: collectionPreferenceDefinitions,
 };
 
-const NAME_DOCS_MAP: Record<string, string> = {
-  sp7_scope_table_picklists:
-    'https://discourse.specifysoftware.org/t/picklists-in-specify-7/2562',
-  'attachment.is_public_default':
-    'https://discourse.specifysoftware.org/t/attachments-security-and-permissions/640',
-  showPreparationsTotal:
-    'https://discourse.specifysoftware.org/t/specify-7-statistics/1715',
-  refreshRate:
-    'https://discourse.specifysoftware.org/t/specify-7-statistics/1715',
-  publishingOrganization:
-    'https://discourse.specifysoftware.org/t/specify-network-gbif-integration/2793',
-  collectionKey:
-    'https://discourse.specifysoftware.org/t/specify-network-gbif-integration/2793',
+type SubcategoryDocumentation = {
+  readonly href: string;
+  readonly label: LocalizedString | (() => LocalizedString);
 };
 
-const resolveCollectionDocumentHref = (
-  category: string,
-  _subcategory: string,
-  name: string
-): string | undefined => {
-  if (NAME_DOCS_MAP[name]) return NAME_DOCS_MAP[name];
-  if (name.startsWith('sp7.allow_adding_child_to_synonymized_parent.'))
-    return 'https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987/4';
-  if (category.startsWith('catalogNumber'))
-    return 'https://discourse.specifysoftware.org/t/catalog-number-inheritance/2859';
-  return undefined;
+const SUBCATEGORY_DOCS_MAP: Record<string, Record<string, SubcategoryDocumentation>> = {
+  treeManagement: {
+    synonymized: {
+      href: 'https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987/4',
+      label: headerText.documentation,
+    },
+  },
+  statistics: {
+    appearance: {
+      href: 'https://discourse.specifysoftware.org/t/specify-7-statistics/1715',
+      label: headerText.documentation,
+    },
+  },
 };
 
 type DocumentHrefResolver =
@@ -85,7 +79,7 @@ type DocumentHrefResolver =
 
 const documentHrefResolvers: IR<DocumentHrefResolver> = {
   user: undefined,
-  collection: resolveCollectionDocumentHref,
+  collection: undefined,
 };
 
 const collectionPreferencesPromise = Promise.all([
@@ -231,169 +225,232 @@ export function PreferencesContent({
   const definitions = usePrefDefinitions(prefType);
   const preferences = preferenceInstances[prefType];
   const resolveDocumentHref = documentHrefResolvers[prefType];
+  const definitionsMap = React.useMemo(
+    () => new Map(definitions),
+    [definitions]
+  );
+
+  const renderSubCategory = React.useCallback(
+    (
+      categoryKey: string,
+      subcategoryKey: string,
+      {
+        title,
+        description = undefined,
+        items,
+      }: {
+        readonly title: LocalizedString | (() => LocalizedString);
+        readonly description?: LocalizedString | (() => LocalizedString);
+        readonly items: readonly (readonly [string, PreferenceItem<any>])[];
+      },
+      options: { readonly hideTitle?: boolean } = {}
+    ): JSX.Element => {
+      const subcategoryDoc =
+        SUBCATEGORY_DOCS_MAP[categoryKey]?.[subcategoryKey];
+      const { hideTitle = false } = options;
+
+      return (
+        <section
+          className="flex flex-col items-start gap-4 md:items-stretch"
+          key={`${categoryKey}-${subcategoryKey}`}
+        >
+          <div className="flex items-center gap-2">
+            <h4
+              aria-hidden={hideTitle === true}
+              className={`${className.headerGray} text-xl md:text-center ${
+                hideTitle === true ? 'invisible' : ''
+              }`}
+            >
+              {typeof title === 'function' ? title() : title}
+            </h4>
+            <div className="flex flex-1 justify-end">
+              <Button.Small
+                onClick={(): void =>
+                  items.forEach(([name]) => {
+                    const definition = preferences.definition(
+                      categoryKey as never,
+                      subcategoryKey as never,
+                      name as never
+                    );
+                    preferences.set(
+                      categoryKey as never,
+                      subcategoryKey as never,
+                      name as never,
+                      definition.defaultValue as never
+                    );
+                  })
+                }
+              >
+                {commonText.reset()}
+              </Button.Small>
+            </div>
+          </div>
+          {subcategoryDoc !== undefined && (
+            <p className="text-gray-500">
+              <Link.NewTab href={subcategoryDoc.href}>
+                <FormatString
+                  text={
+                    typeof subcategoryDoc.label === 'function'
+                      ? subcategoryDoc.label()
+                      : subcategoryDoc.label
+                  }
+                />
+              </Link.NewTab>
+            </p>
+          )}
+          {description !== undefined && (
+            <p>
+              {typeof description === 'function' ? description() : description}
+            </p>
+          )}
+        {items.map(([name, item]) => {
+          const canEdit =
+            !isReadOnly &&
+            (item.visible !== 'protected' ||
+              hasPermission('/preferences/user', 'edit_protected'));
+          const documentHref = resolveDocumentHref?.(
+            categoryKey,
+            subcategoryKey,
+            name
+          );
+          const stackDocumentation =
+            prefType === 'collection' && documentHref !== undefined;
+          const props = {
+            className: `
+                flex items-start gap-2 md:flex-row flex-col
+                ${canEdit ? '' : '!cursor-not-allowed'}
+              `,
+            key: name,
+            title: canEdit ? undefined : preferencesText.adminsOnlyPreference(),
+          };
+          const children = (
+            <>
+              <div className="flex flex-col items-start gap-2 md:flex-1 md:items-stretch">
+                <p
+                  className={`
+                    flex min-h-[theme(spacing.8)] flex-1 items-center
+                    justify-end md:text-right
+                  `}
+                >
+                  <FormatString
+                    text={
+                      typeof item.title === 'function'
+                        ? item.title()
+                        : item.title
+                    }
+                  />
+                </p>
+                {(item.description !== undefined ||
+                  documentHref !== undefined) && (
+                    <p
+                      className={`flex flex-1 text-gray-500 md:text-right ${
+                        stackDocumentation ? 'flex-col items-end gap-1' : 'justify-end'
+                      }`}
+                    >
+                      {item.description !== undefined && (
+                        <FormatString
+                          text={
+                            typeof item.description === 'function'
+                              ? item.description()
+                              : item.description
+                          }
+                        />
+                      )}
+                      {documentHref !== undefined && (
+                        <Link.NewTab
+                          className={stackDocumentation ? 'self-end' : undefined}
+                          href={documentHref}
+                        >
+                          {headerText.documentation()}
+                        </Link.NewTab>
+                      )}
+                    </p>
+                  )}
+              </div>
+              <div
+                className={`
+                  flex min-h-[theme(spacing.8)] flex-1 flex-col justify-center
+                  gap-2
+                `}
+              >
+                <ReadOnlyContext.Provider value={!canEdit}>
+                  <Item
+                    category={categoryKey}
+                    item={item}
+                    name={name}
+                    preferences={preferences}
+                    subcategory={subcategoryKey}
+                  />
+                </ReadOnlyContext.Provider>
+              </div>
+            </>
+          );
+          return 'container' in item && item.container === 'div' ? (
+            <div {...props}>{children}</div>
+          ) : (
+            <label {...props}>{children}</label>
+          );
+        })}
+        </section>
+      );
+    },
+    [
+      isReadOnly,
+      prefType,
+      preferences,
+      resolveDocumentHref,
+    ]
+  );
+
   return (
     <div className="flex h-fit flex-col gap-6">
       {definitions.map(
         (
           [category, { title, description = undefined, subCategories }],
           index
-        ) => (
-          <ErrorBoundary dismissible key={category}>
-            <Container.Center
-              className="gap-8 overflow-y-visible"
-              forwardRef={forwardRefs?.bind(undefined, index)}
-              id={category}
-            >
-              <h3 className="text-2xl">
-                {typeof title === 'function' ? title() : title}
-              </h3>
-              {description !== undefined && (
-                <p>
-                  {typeof description === 'function'
-                    ? description()
-                    : description}
-                </p>
-              )}
-              {subCategories.map(
-                ([subcategory, { title, description = undefined, items }]) => (
-                  <section
-                    className="flex flex-col items-start gap-4 md:items-stretch"
-                    key={subcategory}
-                  >
-                    <div className="flex items-center gap-2">
-                      <h4
-                        className={`${className.headerGray} text-xl md:text-center`}
-                      >
-                        {typeof title === 'function' ? title() : title}
-                      </h4>
-                      <div className="flex flex-1 justify-end">
-                        <Button.Small
-                          onClick={(): void =>
-                            items.forEach(([name]) => {
-                              const definition = preferences.definition(
-                                category as never,
-                                subcategory as never,
-                                name as never
-                              );
-                              preferences.set(
-                                category as never,
-                                subcategory as never,
-                                name as never,
-                                definition.defaultValue as never
-                              );
-                            })
-                          }
-                        >
-                          {commonText.reset()}
-                        </Button.Small>
-                      </div>
-                    </div>
-                    {description !== undefined && (
-                      <p>
-                        {typeof description === 'function'
-                          ? description()
-                          : description}
-                      </p>
-                    )}
-                    {items.map(([name, item]) => {
-                      const canEdit =
-                        !isReadOnly &&
-                        (item.visible !== 'protected' ||
-                          hasPermission('/preferences/user', 'edit_protected'));
-                      const documentHref = resolveDocumentHref?.(
-                        category,
-                        subcategory,
-                        name
-                      );
-                      const stackDocumentation =
-                        prefType === 'collection' && documentHref !== undefined;
-                      const props = {
-                        className: `
-                            flex items-start gap-2 md:flex-row flex-col
-                            ${canEdit ? '' : '!cursor-not-allowed'}
-                          `,
-                        key: name,
-                        title: canEdit
-                          ? undefined
-                          : preferencesText.adminsOnlyPreference(),
-                      };
-                      const children = (
-                        <>
-                          <div className="flex flex-col items-start gap-2 md:flex-1 md:items-stretch">
-                            <p
-                              className={`
-                                flex min-h-[theme(spacing.8)] flex-1 items-center
-                                justify-end md:text-right
-                              `}
-                            >
-                              <FormatString
-                                text={
-                                  typeof item.title === 'function'
-                                    ? item.title()
-                                    : item.title
-                                }
-                              />
-                            </p>
-                            {(item.description !== undefined ||
-                              documentHref !== undefined) && (
-                                <p
-                                  className={`flex flex-1 text-gray-500 md:text-right ${stackDocumentation ? 'flex-col items-end gap-1' : 'justify-end'
-                                    }`}
-                                >
-                                  {item.description !== undefined && (
-                                    <FormatString
-                                      text={
-                                        typeof item.description === 'function'
-                                          ? item.description()
-                                          : item.description
-                                      }
-                                    />
-                                  )}
-                                  {documentHref !== undefined && (
-                                    <Link.NewTab
-                                      className={
-                                        stackDocumentation
-                                          ? 'self-end'
-                                          : undefined
-                                      }
-                                      href={documentHref}
-                                    >
-                                      {headerText.documentation()}
-                                    </Link.NewTab>
-                                  )}
-                                </p>
-                              )}
-                          </div>
-                          <div
-                            className={`
-                              flex min-h-[theme(spacing.8)] flex-1 flex-col justify-center
-                              gap-2
-                            `}
-                          >
-                            <ReadOnlyContext.Provider value={!canEdit}>
-                              <Item
-                                category={category}
-                                item={item}
-                                name={name}
-                                preferences={preferences}
-                                subcategory={subcategory}
-                              />
-                            </ReadOnlyContext.Provider>
-                          </div>
-                        </>
-                      );
-                      return 'container' in item && item.container === 'div' ? (
-                        <div {...props}>{children}</div>
-                      ) : (
-                        <label {...props}>{children}</label>
-                      );
-                    })}
-                  </section>
-                )
-              )}
-            </Container.Center>
-          </ErrorBoundary>
-        )
+        ) => {
+          if (prefType === 'collection' && category === 'catalogNumberParentInheritance')
+            return null;
+
+          const isCatalogInheritance =
+            prefType === 'collection' && category === 'catalogNumberInheritance';
+          const parentDefinition = isCatalogInheritance
+            ? definitionsMap.get('catalogNumberParentInheritance') ?? undefined
+            : undefined;
+
+          return (
+            <ErrorBoundary dismissible key={category}>
+              <Container.Center
+                className="gap-8 overflow-y-visible"
+                forwardRef={forwardRefs?.bind(undefined, index)}
+                id={category}
+              >
+                <h3 className="text-2xl">
+                  {typeof title === 'function' ? title() : title}
+                </h3>
+                {description !== undefined && (
+                  <p>
+                    {typeof description === 'function'
+                      ? description()
+                      : description}
+                  </p>
+                )}
+                {subCategories.map(([subcategory, data]) =>
+                  renderSubCategory(category, subcategory, data)
+                )}
+                {isCatalogInheritance &&
+                  parentDefinition?.subCategories.map(([subcategory, data]) =>
+                    renderSubCategory(
+                      'catalogNumberParentInheritance',
+                      subcategory,
+                      data,
+                      { hideTitle: true }
+                    )
+                  )}
+              </Container.Center>
+            </ErrorBoundary>
+          );
+        }
       )}
     </div>
   );

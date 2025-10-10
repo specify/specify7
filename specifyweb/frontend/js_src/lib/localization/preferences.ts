@@ -1292,7 +1292,7 @@ export const preferencesText = createDictionary({
   },
   catalogNumberInheritanceDescription: {
     'en-us':
-      'Configure whether sibling Collection Objects inherit catalog numbers from the primary record.',
+      'Configure whether sibling Collection Objects and their child Collection Objects inherit catalog numbers from the primary or parent record.',
   },
   catalogNumberParentInheritanceDescription: {
     'en-us':
