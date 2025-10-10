@@ -57,12 +57,12 @@ DATABASE_OPTIONS = {}
 
 # The master user login. This is the MySQL user used to connect to the
 # database. This can be the same as the Specify 6 master user.
-MASTER_NAME = 'MasterUser'
-MASTER_PASSWORD = 'MasterPassword'
-SUPER_NAME='MasterUser'
-SUPER_PASSWORD='MasterPassword'
-TARGET_NAME='MasterUser'
-TARGET_PASSWORD='MasterPassword'
+MASTER_NAME = os.environ.get('MASTER_NAME', 'root')
+MASTER_PASSWORD = os.environ.get('MASTER_NAME', 'root')
+MIGRATOR_NAME = os.environ.get('MIGRATOR_NAME', MASTER_NAME)
+MIGRATOR_PASSWORD = os.environ.get('MIGRATOR_PASSWORD', MASTER_PASSWORD)
+APP_USER_NAME = os.environ.get('APP_USER_NAME', MIGRATOR_NAME)
+APP_USER_PASSWORD = os.environ.get('APP_USER_PASSWORD', MIGRATOR_PASSWORD)
 
 # The Specify web attachment server URL.
 WEB_ATTACHMENT_URL = None
