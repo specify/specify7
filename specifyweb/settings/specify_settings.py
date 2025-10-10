@@ -61,8 +61,8 @@ MASTER_NAME = 'MasterUser'
 MASTER_PASSWORD = 'MasterPassword'
 MIGRATOR_NAME = 'MasterUser'
 MIGRATOR_PASSWORD = 'MasterPassword'
-TARGET_NAME = 'MasterUser'
-TARGET_PASSWORD = 'MasterPassword'
+APP_USER_NAME = 'MasterUser'
+APP_USER_PASSWORD = 'MasterPassword'
 
 # MASTER_NAME = os.environ.get('MASTER_NAME', 'root')
 # MASTER_PASSWORD = os.environ.get('MASTER_NAME', 'password')
