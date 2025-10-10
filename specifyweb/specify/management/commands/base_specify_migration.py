@@ -1,7 +1,8 @@
-from genericpath import exists
 from django.core.management.base import BaseCommand
-from django.db import connection, transaction
+from django.db import connections, transaction
+import logging
 
+logger = logging.getLogger(__name__)
 
 # Mock the initial Django migration for the specify app.
 # Most of the Django models we defined in Specify 6 and so already exists in the
@@ -24,9 +25,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         use_override = bool(options.get('use_override', False))
         alias = options["database"]
+        conn = connections[alias]
+        logger.info(f"Running base_specify_migration using database alias '{alias}'")
 
         with transaction.atomic(using=alias):
-            with connection.cursor() as cursor:
+            with conn.cursor() as cursor:
                 # Check django table
                 try:
                     cursor.execute("""
@@ -66,3 +69,5 @@ class Command(BaseCommand):
                             INSERT INTO django_migrations (app, name, applied)
                             VALUES ('specify', '0001_initial', NOW());
                         """)
+        
+        logger.info(f"Completed using database alias '{alias}'")

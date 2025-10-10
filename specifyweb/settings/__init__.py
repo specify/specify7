@@ -44,12 +44,21 @@ DATABASES = {
         'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
         'NAME': DATABASE_NAME,
         'USER': MASTER_NAME,
-        'PASSWORD': MASTER_PASSWORD,
+        'PASSWORD': MASTER_NAME,
         'HOST': DATABASE_HOST,
         'PORT': DATABASE_PORT,
         'OPTIONS': DATABASE_OPTIONS,
-        'TEST': {
-            }
+        'TEST': {}
+    },
+    'app': {
+        'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
+        'NAME': DATABASE_NAME,
+        'USER': APP_USER_NAME,
+        'PASSWORD': APP_USER_PASSWORD,
+        'HOST': DATABASE_HOST,
+        'PORT': DATABASE_PORT,
+        'OPTIONS': DATABASE_OPTIONS,
+        'TEST': {}
     },
     'migrations': {
         'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
@@ -59,10 +68,24 @@ DATABASES = {
         'HOST': DATABASE_HOST,
         'PORT': DATABASE_PORT,
         'OPTIONS': DATABASE_OPTIONS,
-        'TEST': {
-            }
+        'TEST': {}
     },
- }
+    'master': {
+        'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
+        'NAME': DATABASE_NAME,
+        'USER': MASTER_NAME,
+        'PASSWORD': MASTER_PASSWORD,
+        'HOST': DATABASE_HOST,
+        'PORT': DATABASE_PORT,
+        'OPTIONS': DATABASE_OPTIONS,
+        'TEST': {}
+    },
+}
+
+DB_ALIAS = os.getenv("DJANGO_DB_ALIAS", "default") # Might want to set to "app" in the future
+if DB_ALIAS != "default":
+    from copy import deepcopy
+    DATABASES['default'] = deepcopy(DATABASES[DB_ALIAS])
 
 def get_sa_db_url(db_name):
     return 'mysql://{}:{}@{}:{}/{}?charset=utf8'.format(

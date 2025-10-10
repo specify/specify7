@@ -150,8 +150,8 @@ echo "--------------------------------------------------"
 # Run the base_specify_migration script
 if [[ "$NEW_DATABASE_CREATED" -eq 0 ]]; then
   echo "Existing database detected."
-  ve/bin/python manage.py base_specify_migration --use-override
+  ve/bin/python manage.py base_specify_migration --use-override --database=migrations
 else
   echo "New database detected."
-  ve/bin/python manage.py base_specify_migration
+  ve/bin/python manage.py base_specify_migration --database=migrations
 fi
