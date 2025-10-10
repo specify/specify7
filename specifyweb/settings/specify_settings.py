@@ -58,7 +58,7 @@ DATABASE_OPTIONS = {}
 # The master user login. This is the MySQL user used to connect to the
 # database. This can be the same as the Specify 6 master user.
 MASTER_NAME = os.environ.get('MASTER_NAME', 'root')
-MASTER_PASSWORD = os.environ.get('MASTER_NAME', 'root')
+MASTER_PASSWORD = os.environ.get('MASTER_NAME', 'password')
 MIGRATOR_NAME = os.environ.get('MIGRATOR_NAME', MASTER_NAME)
 MIGRATOR_PASSWORD = os.environ.get('MIGRATOR_PASSWORD', MASTER_PASSWORD)
 APP_USER_NAME = os.environ.get('APP_USER_NAME', MIGRATOR_NAME)
