@@ -60,8 +60,8 @@ jobs:
         ports:
           - 3306
         env:
-          MYSQL_USER: MasterUser
-          MYSQL_PASSWORD: MasterPassword
+          MYSQL_USER: root
+          MYSQL_PASSWORD: password
           MYSQL_DATABASE: test_SpecifyDB
           MYSQL_ROOT_PASSWORD: password
         options:
