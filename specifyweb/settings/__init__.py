@@ -43,8 +43,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
         'NAME': DATABASE_NAME,
-        'USER': TARGET_NAME,
-        'PASSWORD': TARGET_PASSWORD,
+        'USER': MIGRATOR_NAME,
+        'PASSWORD': MIGRATOR_PASSWORD,
         'HOST': DATABASE_HOST,
         'PORT': DATABASE_PORT,
         'OPTIONS': DATABASE_OPTIONS,
@@ -54,8 +54,8 @@ DATABASES = {
     'migrations': {
         'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
         'NAME': DATABASE_NAME,
-        'USER': SUPER_NAME,
-        'PASSWORD': SUPER_PASSWORD,
+        'USER': MIGRATOR_NAME,
+        'PASSWORD': MIGRATOR_PASSWORD,
         'HOST': DATABASE_HOST,
         'PORT': DATABASE_PORT,
         'OPTIONS': DATABASE_OPTIONS,
