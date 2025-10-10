@@ -11,8 +11,6 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
-import { statsText } from '../../localization/stats';
-import { treeText } from '../../localization/tree';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
