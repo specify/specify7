@@ -6,7 +6,7 @@ from base64 import b64encode, b64decode, urlsafe_b64encode, urlsafe_b64decode
 from collections.abc import Iterable
 from hashlib import sha256
 
-from jwt.exceptions import InvalidSignatureError, ExpiredSignatureError
+from jwt.exceptions import InvalidTokenError
 from Crypto.Cipher import AES
 from Crypto.Protocol.KDF import HKDF
 from Crypto.Hash import SHA256
@@ -108,7 +108,12 @@ def decode_token(encoded_token: str, signing_key: bytes, required_keys: Iterable
     try:
         decoded_payload = jwt.decode(
             encoded_token, signing_key, options=jwt_decode_options, algorithms=algorithms)
-    except (InvalidSignatureError, ExpiredSignatureError):
+        # InvalidTokenError is a base class from which all decode exceptions 
+        # are derived.
+        # See:
+        # https://pyjwt.readthedocs.io/en/stable/api.html#jwt.exceptions.InvalidTokenError
+        # https://github.com/jpadilla/pyjwt/blob/6293865c82ef24af76455c2522806ac2b1c75d6b/jwt/exceptions.py#L9
+    except InvalidTokenError:
         raise PermissionDenied()
 
     payload = {k: b64decode(v) if k in required_keys
