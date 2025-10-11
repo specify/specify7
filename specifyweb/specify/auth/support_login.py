@@ -76,7 +76,7 @@ def make_token(user, key: bytes):
     encryption_key, signing_key = derive_key_pair(key, 32, salt)
     cipher = AES.new(encryption_key, AES.MODE_GCM)
     issue_time = int(time.time())
-    msg = f"{user.id}-{issue_time}"
+    msg = f"{user.id}-{user.name}-{issue_time}"
 
     ciphertext, tag = cipher.encrypt_and_digest(msg.encode())
     payload = {
@@ -128,10 +128,10 @@ def decrypt_ciphertext(encryption_key, cipher_text, nonce, tag):
         # See https://pycryptodome.readthedocs.io/en/latest/src/cipher/modern.html#decrypt_and_verify
         plain_text = cipher.decrypt_and_verify(
             cipher_text, tag).decode("utf-8")
-        user_id, timestamp = plain_text.split("-")
+        user_id, *user_name, timestamp = plain_text.split("-")
     except ValueError:
-        return None, None
-    return user_id, timestamp
+        return None, None, None
+    return user_id, "-".join(user_name), timestamp
 
 
 class SupportLoginBackend:
@@ -152,19 +152,22 @@ class SupportLoginBackend:
         required_keys = ["nonce", "tag", "text"]
         payload = decode_token(token, signing_key, required_keys)
 
-        user_id, timestamp = decrypt_ciphertext(
+        user_id, user_name, timestamp = decrypt_ciphertext(
             encryption_key, payload["text"], payload["nonce"], payload["tag"])
 
-        if user_id is None or timestamp is None:
+        if user_id is None or user_name is None or timestamp is None:
             raise PermissionDenied()
 
         if int(timestamp) + TTL > time.time():
-            return self.get_user(user_id)
+            return self.get_user(user_id, name=user_name)
         else:
             raise PermissionDenied()
 
-    def get_user(self, user_id):
+    def get_user(self, user_id, name=None):
+        filters = {}
+        if name is not None:
+            filters["name"] = name
         try:
-            return Specifyuser.objects.get(pk=user_id)
+            return Specifyuser.objects.get(pk=user_id, **filters)
         except Specifyuser.DoesNotExist:
             return None
