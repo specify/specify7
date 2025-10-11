@@ -809,6 +809,14 @@ export const queryText = createDictionary({
     "uk-ua": "років",
     "pt-br": "Anos",
   },
+  year: {
+    'en-us': 'Year',
+    'de-ch': 'Jahr',
+    'es-es': 'Año',
+    'fr-fr': 'Année',
+    'ru-ru': 'Год',
+    'uk-ua': 'рік',
+  },
   relativeDate: {
     comment: `
       Used in query builder lines, will be shown as a number followed by a

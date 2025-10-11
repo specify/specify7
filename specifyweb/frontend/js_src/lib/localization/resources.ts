@@ -180,6 +180,13 @@ export const resourcesText = createDictionary({
     "de-ch": "Feldformatierer",
     "pt-br": "Formatadores de campo",
   },
+  fieldFormattersDescription: {
+    'en-us': `
+      The “Field Format” controls how data for a specific table field is
+      displayed in query results, exports, and forms. It manages autonumbering
+      and the composition of various parts that define the field.
+    `,
+  },
   dataObjectFormatters: {
     "en-us": "Record Formatters",
     "ru-ru": "Форматеры записи",
@@ -275,18 +282,16 @@ export const resourcesText = createDictionary({
     "uk-ua": "Доступні веб-посилання",
     "pt-br": "Links da Web disponíveis",
   },
+  availableFieldFormatters: {
+    'en-us': 'Available Field Formatters',
+    'de-ch': 'Verfügbare Feldformatierer',
+    'es-es': 'Formateadores de campo disponibles',
+    'fr-fr': 'Formateurs de champs disponibles',
+    'ru-ru': 'Доступные форматеры полей',
+    'uk-ua': 'Доступні форматувальники полів',
+  },
   selectDefaultFormatter: {
-    "en-us": "Please select a default record formatter for this table",
-    "de-ch":
-      "Bitte wählen Sie einen Standard-Datensatzformatierer für diese Tabelle",
-    "es-es":
-      "Seleccione un formateador de registro predeterminado para esta tabla",
-    "fr-fr":
-      "Veuillez sélectionner un formateur d'enregistrement par défaut pour cette table",
-    "ru-ru":
-      "Пожалуйста, выберите форматирование записей по умолчанию для этой таблицы.",
-    "uk-ua": "Виберіть стандартний формат запису для цієї таблиці",
-    "pt-br": "Selecione um formatador de registro padrão para esta tabela",
+    'en-us': 'Please designate one of the formatters as default',
   },
   duplicateFormatters: {
     "en-us": "Record formatter names must be unique",
@@ -1014,5 +1019,48 @@ export const resourcesText = createDictionary({
     "pt-br": "Remova os zeros à esquerda dos valores numéricos.",
     "ru-ru": "Удалить начальные нули из числовых значений.",
     "uk-ua": "Видаліть початкові нулі з числових значень.",
+  },
+  formatterPreviewUnavailable: {
+    'en-us': 'Preview for formatter of this type is not available',
+  },
+  nonConformingInline: {
+    'en-us': '(non-conforming)',
+  },
+  value: {
+    'en-us': 'Value',
+    'de-ch': 'Wert',
+    'es-es': 'Valor',
+    'fr-fr': 'Valeur',
+    'ru-ru': 'Значение',
+    'uk-ua': 'Значення',
+  },
+  constant: {
+    'en-us': 'Constant',
+  },
+  alpha: {
+    'en-us': 'Alpha',
+  },
+  numeric: {
+    'en-us': 'Numeric',
+  },
+  alphanumeric: {
+    'en-us': 'Alphanumeric',
+  },
+  anychar: {
+    'en-us': 'Any character',
+  },
+  regex: {
+    'en-us': 'Regular expression',
+  },
+  exampleField: {
+    'en-us': 'Example Field',
+    'de-ch': 'Beispielfeld',
+    'es-es': 'Campo de ejemplo',
+    'fr-fr': "Champ d'exemple",
+    'ru-ru': 'Пример поля',
+    'uk-ua': 'Приклад поле',
+  },
+  pattern: {
+    'en-us': 'Pattern',
   },
 } as const);
