@@ -10,6 +10,7 @@ from specifyweb.specify.models import Specifyuser
 
 TTL = settings.SUPPORT_LOGIN_TTL
 
+
 class Command(BaseCommand):
     help = 'Creates a token for support login as the given user.'
 
@@ -51,7 +52,7 @@ class Command(BaseCommand):
         # - 256 bit (32 byte)
         # We use the most cryptographically secure key here: doesn't seem to impact
         # performance too much
-        # This key is essentially a private key, it is used in conjuction with 
+        # This key is essentially a private key, it is used in conjuction with
         # the SECRET_KEY of the server to encrypt, decrypt, and sign information
         # associated with the token
         key = get_random_bytes(32)
@@ -62,6 +63,7 @@ class Command(BaseCommand):
             raise CommandError('No user with name "%s"' % username)
 
         self.stdout.write("The following token is good for %d seconds:" % TTL)
-        self.stdout.write(f"Append the token to your server domain to login as {username}")
+        self.stdout.write(
+            f"Append the token to your server domain to login as {username}")
         self.stdout.write(
             f"/accounts/support_login/?token={quote_plus(make_token(user, key))}&key={bytes_to_b64_url(key)}")

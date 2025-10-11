@@ -70,7 +70,7 @@ def b64_url_to_bytes(url: str) -> bytes:
 
 def make_token(user, key: bytes):
     # We randomly generate the salt value for the key pair generation.
-    # This is later stored in memory via Redis with the configured TTL to 
+    # This is later stored in memory via Redis with the configured TTL to
     # prevent attacks where the server SECRET_KEY is exposed
     salt = get_random_bytes(32)
     encryption_key, signing_key = derive_key_pair(key, 32, salt)
@@ -108,7 +108,7 @@ def decode_token(encoded_token: str, signing_key: bytes, required_keys: Iterable
     try:
         decoded_payload = jwt.decode(
             encoded_token, signing_key, options=jwt_decode_options, algorithms=algorithms)
-        # InvalidTokenError is a base class from which all decode exceptions 
+        # InvalidTokenError is a base class from which all decode exceptions
         # are derived.
         # See:
         # https://pyjwt.readthedocs.io/en/stable/api.html#jwt.exceptions.InvalidTokenError
@@ -145,7 +145,7 @@ class SupportLoginBackend:
 
         if token is None or key is None:
             return None
-        
+
         # A key should always be "consumed" and deleted from Redis once used:
         # all suport login tokens are a one-time use
         salt = get_bytes(key, delete_key=True)
