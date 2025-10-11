@@ -52,7 +52,8 @@ class Command(BaseCommand):
         # We use the most cryptographically secure key here: doesn't seem to impact
         # performance too much
         # This key is essentially a private key, it is used in conjuction with 
-        # the SECRET_KEY of the server to encrypt/decrtpy
+        # the SECRET_KEY of the server to encrypt, decrypt, and sign information
+        # associated with the token
         key = get_random_bytes(32)
 
         try:
