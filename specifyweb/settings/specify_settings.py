@@ -82,6 +82,11 @@ WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = False
 REPORT_RUNNER_HOST = ''
 REPORT_RUNNER_PORT = ''
 
+# Information to connect to a Redis database
+REDIS_HOST="redis"
+REDIS_PORT=6379
+REDIS_DB_INDEX=0
+
 # The message queue for the Specify 7 worker(s).
 # This should point to a Redis server for sending jobs
 # and retrieving results from the worker.
@@ -95,9 +100,13 @@ ANONYMOUS_USER = None
 # For exception logging using Sentry (https://github.com/getsentry/sentry).
 RAVEN_CONFIG = None
 
-# Support login mechanism.
+# Enabling this option allows administrators with access to the
+# backend Specify instance to log in as any user for support
+# purposes without knowing their password.
+# https://discourse.specifysoftware.org/t/allow-support-login-documentation/2838
 ALLOW_SUPPORT_LOGIN = True
-SUPPORT_LOGIN_TTL = 300
+# The amount of time in seconds each token is valid for
+SUPPORT_LOGIN_TTL = 180
 
 # Usage stats are transmitted to the following address.
 # Set to None to disable.
