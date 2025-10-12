@@ -92,20 +92,12 @@ export type AjaxProps = Omit<RequestInit, 'body' | 'headers' | 'method'> & {
  * - Handlers errors (including permission errors)
  * - Helps with request mocking in tests
  */
-let cachedAjaxMock:
-  | typeof import('../../tests/ajax')
+let ajaxMockModulePromise:
+  | Promise<typeof import('../../tests/ajax')>
   | undefined;
 
-const loadAjaxMock = (): typeof import('../../tests/ajax').ajaxMock => {
-  if (cachedAjaxMock === undefined) {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    cachedAjaxMock = require('../../tests/ajax') as typeof import('../../tests/ajax');
-  }
-  const { ajaxMock } = cachedAjaxMock;
-  if (typeof ajaxMock !== 'function')
-    throw new Error('Expected ajaxMock to be a function in test environment');
-  return ajaxMock;
-};
+if (process.env.NODE_ENV === 'test')
+  ajaxMockModulePromise = import('../../tests/ajax');
 
 export async function ajax<RESPONSE_TYPE = string>(
   url: string,
@@ -122,10 +114,14 @@ export async function ajax<RESPONSE_TYPE = string>(
   /**
    * When running in a test environment, mock the calls rather than make
    * actual requests
-   */
+  */
   // REFACTOR: replace this with a mock
   if (process.env.NODE_ENV === 'test') {
-    const ajaxMock = loadAjaxMock();
+    if (ajaxMockModulePromise === undefined)
+      throw new Error('Ajax mock module failed to load in test environment');
+    const { ajaxMock } = await ajaxMockModulePromise;
+    if (typeof ajaxMock !== 'function')
+      throw new Error('Expected ajaxMock to be a function in test environment');
     return ajaxMock(url, {
       headers: { Accept: accept, ...headers },
       method,
