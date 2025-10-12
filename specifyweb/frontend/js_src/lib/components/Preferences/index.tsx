@@ -14,18 +14,34 @@ import { preferencesText } from '../../localization/preferences';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
-import { AppResourceEditor } from '../AppResources/Editor';
-import { getScope, globalResourceKey } from '../AppResources/tree';
-import type { ScopedAppResourceDir } from '../AppResources/types';
 import { Container, H2, Key } from '../Atoms';
+import { DataEntry } from '../Atoms/DataEntry';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { DataEntry } from '../Atoms/DataEntry';
 import { Form } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
-import type { SerializedResource } from '../DataModel/helperTypes';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { AppResourceEditor } from '../AppResources/Editor';
+import { getScope, globalResourceKey } from '../AppResources/tree';
+import type { ScopedAppResourceDir } from '../AppResources/types';
+import { hasPermission } from '../Permissions/helpers';
+import { ProtectedTool } from '../Permissions/PermissionDenied';
+import { PreferencesAside } from './Aside';
+import type { BasePreferences } from './BasePreferences';
+import { collectionPreferenceDefinitions } from './CollectionDefinitions';
+import { globalPreferenceDefinitions } from './GlobalDefinitions';
+import { collectionPreferences } from './collectionPreferences';
+import { globalPreferences } from './globalPreferences';
+import { useDarkMode } from './Hooks';
+import { DefaultPreferenceItemRender } from './Renderers';
+import type { GenericPreferences, PreferenceItem } from './types';
+import { userPreferenceDefinitions } from './UserDefinitions';
+import { userPreferences } from './userPreferences';
+import { useTopChild } from './useTopChild';
+import { formatUrl } from '../Router/queryString';
+import { fetchCollection } from '../DataModel/collection';
 import { fetchResource, strictIdFromUrl } from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
 import type {
@@ -33,32 +49,21 @@ import type {
   SpAppResourceDir,
   SpViewSetObj,
 } from '../DataModel/types';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { hasPermission } from '../Permissions/helpers';
-import { ProtectedTool } from '../Permissions/PermissionDenied';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import { userTypes } from '../PickLists/definitions';
-import { formatUrl } from '../Router/queryString';
-import { PreferencesAside } from './Aside';
-import type { BasePreferences } from './BasePreferences';
-import { collectionPreferenceDefinitions } from './CollectionDefinitions';
-import { collectionPreferences } from './collectionPreferences';
-import { useDarkMode } from './Hooks';
-import { DefaultPreferenceItemRender } from './Renderers';
-import type { GenericPreferences, PreferenceItem } from './types';
-import { userPreferenceDefinitions } from './UserDefinitions';
-import { userPreferences } from './userPreferences';
-import { useTopChild } from './useTopChild';
 
 export type PreferenceType = keyof typeof preferenceInstances;
 
 const preferenceInstances: IR<BasePreferences<any>> = {
   user: userPreferences,
   collection: collectionPreferences,
+  global: globalPreferences,
 };
 
 const preferenceDefinitions: IR<GenericPreferences> = {
   user: userPreferenceDefinitions,
   collection: collectionPreferenceDefinitions,
+  global: globalPreferenceDefinitions,
 };
 
 type SubcategoryDocumentation = {
@@ -66,10 +71,7 @@ type SubcategoryDocumentation = {
   readonly label: LocalizedString | (() => LocalizedString);
 };
 
-const SUBCATEGORY_DOCS_MAP: Record<
-  string,
-  Record<string, SubcategoryDocumentation>
-> = {
+const SUBCATEGORY_DOCS_MAP: Record<string, Record<string, SubcategoryDocumentation>> = {
   treeManagement: {
     synonymized: {
       href: 'https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987/4',
@@ -86,15 +88,18 @@ const SUBCATEGORY_DOCS_MAP: Record<
 
 type DocumentHrefResolver =
   | ((
-      category: string,
-      subcategory: string,
-      name: string
-    ) => string | undefined)
+    category: string,
+    subcategory: string,
+    name: string
+  ) => string | undefined)
   | undefined;
+
+const resolveGlobalDocumentHref = (): undefined => undefined;
 
 const documentHrefResolvers: IR<DocumentHrefResolver> = {
   user: undefined,
   collection: undefined,
+  global: resolveGlobalDocumentHref,
 };
 
 const collectionPreferencesPromise = Promise.all([
@@ -239,8 +244,7 @@ export function PreferencesContent({
   const isReadOnly = React.useContext(ReadOnlyContext);
   const definitions = usePrefDefinitions(prefType);
   const basePreferences = preferenceInstances[prefType];
-  const preferences =
-    React.useContext(basePreferences.Context) ?? basePreferences;
+  const preferences = React.useContext(basePreferences.Context) ?? basePreferences;
   const resolveDocumentHref = documentHrefResolvers[prefType];
   const definitionsMap = React.useMemo(
     () => new Map(definitions),
@@ -320,52 +324,48 @@ export function PreferencesContent({
               {typeof description === 'function' ? description() : description}
             </p>
           )}
-          {items.map(([name, item]) => {
-            const canEdit =
-              !isReadOnly &&
-              (item.visible !== 'protected' ||
-                hasPermission('/preferences/user', 'edit_protected'));
-            const documentHref = resolveDocumentHref?.(
-              categoryKey,
-              subcategoryKey,
-              name
-            );
-            const stackDocumentation =
-              prefType === 'collection' && documentHref !== undefined;
-            const props = {
-              className: `
+        {items.map(([name, item]) => {
+          const canEdit =
+            !isReadOnly &&
+            (item.visible !== 'protected' ||
+              hasPermission('/preferences/user', 'edit_protected'));
+          const documentHref = resolveDocumentHref?.(
+            categoryKey,
+            subcategoryKey,
+            name
+          );
+          const stackDocumentation =
+            prefType === 'collection' && documentHref !== undefined;
+          const props = {
+            className: `
                 flex items-start gap-2 md:flex-row flex-col
                 ${canEdit ? '' : '!cursor-not-allowed'}
               `,
-              key: name,
-              title: canEdit
-                ? undefined
-                : preferencesText.adminsOnlyPreference(),
-            };
-            const children = (
-              <>
-                <div className="flex flex-col items-start gap-2 md:flex-1 md:items-stretch">
-                  <p
-                    className={`
+            key: name,
+            title: canEdit ? undefined : preferencesText.adminsOnlyPreference(),
+          };
+          const children = (
+            <>
+              <div className="flex flex-col items-start gap-2 md:flex-1 md:items-stretch">
+                <p
+                  className={`
                     flex min-h-[theme(spacing.8)] flex-1 items-center
                     justify-end md:text-right
                   `}
-                  >
-                    <FormatString
-                      text={
-                        typeof item.title === 'function'
-                          ? item.title()
-                          : item.title
-                      }
-                    />
-                  </p>
-                  {(item.description !== undefined ||
-                    documentHref !== undefined) && (
+                >
+                  <FormatString
+                    text={
+                      typeof item.title === 'function'
+                        ? item.title()
+                        : item.title
+                    }
+                  />
+                </p>
+                {(item.description !== undefined ||
+                  documentHref !== undefined) && (
                     <p
                       className={`flex flex-1 text-gray-500 md:text-right ${
-                        stackDocumentation
-                          ? 'flex-col items-end gap-1'
-                          : 'justify-end'
+                        stackDocumentation ? 'flex-col items-end gap-1' : 'justify-end'
                       }`}
                     >
                       {item.description !== undefined && (
@@ -379,9 +379,7 @@ export function PreferencesContent({
                       )}
                       {documentHref !== undefined && (
                         <Link.NewTab
-                          className={
-                            stackDocumentation ? 'self-end' : undefined
-                          }
+                          className={stackDocumentation ? 'self-end' : undefined}
                           href={documentHref}
                         >
                           {headerText.documentation()}
@@ -389,35 +387,40 @@ export function PreferencesContent({
                       )}
                     </p>
                   )}
-                </div>
-                <div
-                  className={`
+              </div>
+              <div
+                className={`
                   flex min-h-[theme(spacing.8)] flex-1 flex-col justify-center
                   gap-2
                 `}
-                >
-                  <ReadOnlyContext.Provider value={!canEdit}>
-                    <Item
-                      category={categoryKey}
-                      item={item}
-                      name={name}
-                      preferences={preferences}
-                      subcategory={subcategoryKey}
-                    />
-                  </ReadOnlyContext.Provider>
-                </div>
-              </>
-            );
-            return 'container' in item && item.container === 'div' ? (
-              <div {...props}>{children}</div>
-            ) : (
-              <label {...props}>{children}</label>
-            );
-          })}
+              >
+                <ReadOnlyContext.Provider value={!canEdit}>
+                  <Item
+                    category={categoryKey}
+                    item={item}
+                    name={name}
+                    preferences={preferences}
+                    subcategory={subcategoryKey}
+                  />
+                </ReadOnlyContext.Provider>
+              </div>
+            </>
+          );
+          return 'container' in item && item.container === 'div' ? (
+            <div {...props}>{children}</div>
+          ) : (
+            <label {...props}>{children}</label>
+          );
+        })}
         </section>
       );
     },
-    [isReadOnly, prefType, preferences, resolveDocumentHref]
+    [
+      isReadOnly,
+      prefType,
+      preferences,
+      resolveDocumentHref,
+    ]
   );
 
   return (
@@ -427,18 +430,13 @@ export function PreferencesContent({
           [category, { title, description = undefined, subCategories }],
           index
         ) => {
-          if (
-            prefType === 'collection' &&
-            category === 'catalogNumberParentInheritance'
-          )
+          if (prefType === 'collection' && category === 'catalogNumberParentInheritance')
             return null;
 
           const isCatalogInheritance =
-            prefType === 'collection' &&
-            category === 'catalogNumberInheritance';
+            prefType === 'collection' && category === 'catalogNumberInheritance';
           const parentDefinition = isCatalogInheritance
-            ? (definitionsMap.get('catalogNumberParentInheritance') ??
-              undefined)
+            ? definitionsMap.get('catalogNumberParentInheritance') ?? undefined
             : undefined;
 
           return (
@@ -572,12 +570,30 @@ export function CollectionPreferencesWrapper(): JSX.Element | null {
   );
 }
 
+export function GlobalPreferencesWrapper(): JSX.Element {
+  return <GlobalPreferences />;
+}
+
+function GlobalPreferences(): JSX.Element {
+  return (
+    <ProtectedTool action="update" tool="resources">
+      <GlobalPreferencesStandalone />
+    </ProtectedTool>
+  );
+}
+
 type ResourceWithData = {
   readonly id: number;
   readonly data: string | null;
   readonly name: string;
   readonly mimetype: string | null;
   readonly metadata: string | null;
+};
+
+type LoadedGlobalPreferences = {
+  readonly resource: SerializedResource<SpAppResource>;
+  readonly directory: ScopedAppResourceDir;
+  readonly data: ResourceWithData;
 };
 
 type LoadedCollectionPreferences = {
@@ -591,21 +607,175 @@ const isAppResource = (
 ): resource is SerializedResource<SpAppResource> =>
   resource._tableName === 'SpAppResource';
 
+function GlobalPreferencesStandalone(): JSX.Element {
+  const navigate = useNavigate();
+  const [state, setState] = React.useState<LoadedGlobalPreferences | undefined>(
+    undefined
+  );
+  const [error, setError] = React.useState<unknown>(undefined);
+  const isMountedRef = React.useRef(true);
+
+  const renderStatus = React.useCallback(
+    (body: React.ReactNode, role?: 'alert'): JSX.Element => (
+      <Container.FullGray>
+        <H2 className="text-2xl">{preferencesText.globalPreferences()}</H2>
+        <div className={role === 'alert' ? 'text-red-600' : undefined} role={role}>
+          {body}
+        </div>
+      </Container.FullGray>
+    ),
+    []
+  );
+
+  const loadPreferences = React.useCallback(async () => {
+    const { records: directories } = await fetchCollection('SpAppResourceDir', {
+      limit: 1,
+      domainFilter: false,
+    },
+    {
+      usertype: 'Global Prefs',
+    });
+
+    const directoryRecord = directories[0];
+    if (directoryRecord === undefined)
+      throw new Error('Global preferences directory not found');
+
+    const scopedDirectory: ScopedAppResourceDir = {
+      ...directoryRecord,
+      scope: getScope(directoryRecord),
+    };
+
+    const { records: resources } = await fetchCollection('SpAppResource', {
+      limit: 1,
+      domainFilter: false,
+    },
+    {
+      spappresourcedir: directoryRecord.id,
+      name: 'preferences',
+    });
+
+    const resource = resources[0];
+    if (resource === undefined)
+      throw new Error('Global preferences resource not found');
+
+    const { records: dataRecords } = await fetchCollection('SpAppResourceData', {
+      limit: 1,
+      domainFilter: false,
+    },
+    {
+      spappresource: resource.id,
+    });
+
+    const resourceData = dataRecords[0];
+    if (resourceData === undefined)
+      throw new Error('Global preferences data not found');
+
+    return {
+      resource,
+      directory: scopedDirectory,
+      data: {
+        id: resource.id,
+        name: resource.name ?? 'preferences',
+        mimetype: resource.mimeType ?? 'text/x-java-properties',
+        metadata: (resource as { metaData?: string | null }).metaData ?? null,
+        data: resourceData.data ?? '',
+      },
+    } as LoadedGlobalPreferences;
+  }, []);
+
+  const refresh = React.useCallback(() => {
+    loadPreferences()
+      .then((loaded) => {
+        if (!isMountedRef.current) return;
+        setState(loaded);
+        setError(undefined);
+      })
+      .catch((loadError) => {
+        if (!isMountedRef.current) return;
+        setError(loadError);
+      });
+  }, [loadPreferences]);
+
+  React.useEffect(() => {
+    isMountedRef.current = true;
+    refresh();
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, [refresh]);
+
+  const handleClone = React.useCallback(
+    (
+      clonedResource: SerializedResource<SpAppResource | SpViewSetObj>,
+      cloneId: number | undefined
+    ) => {
+      const appResourceClone = isAppResource(clonedResource)
+        ? clonedResource
+        : undefined;
+      if (appResourceClone === undefined) return;
+      const directoryKey =
+        state?.directory !== undefined
+          ? getDirectoryKey(state.directory) ?? globalResourceKey
+          : globalResourceKey;
+      navigate(
+        formatUrl('/specify/resources/app-resource/new/', {
+          directoryKey,
+          name: appResourceClone.name,
+          ...(appResourceClone.mimeType == null
+            ? {}
+            : { mimeType: appResourceClone.mimeType }),
+          clone: cloneId,
+        })
+      );
+    },
+    [navigate, state]
+  );
+
+  if (error !== undefined && state === undefined)
+    return renderStatus(
+      'Failed to open global preferences. Try accessing them through App Resources.',
+      'alert'
+    );
+
+  if (state === undefined) return renderStatus(commonText.loading());
+
+  return (
+    <Container.FullGray className="flex flex-1 flex-col gap-4 overflow-hidden">
+      <AppResourceEditor
+        directory={state.directory}
+        initialData={state.data.data ?? ''}
+        resource={state.resource}
+        onClone={handleClone}
+        onDeleted={undefined}
+        onSaved={refresh}
+      >
+        {({ headerJsx, headerButtons, form, footer }): JSX.Element => (
+          <Container.Base className="flex-1 overflow-hidden">
+            <DataEntry.Header className="flex-wrap">
+              {headerJsx}
+              {headerButtons}
+            </DataEntry.Header>
+            {form}
+            <DataEntry.Footer>{footer}</DataEntry.Footer>
+          </Container.Base>
+        )}
+      </AppResourceEditor>
+    </Container.FullGray>
+  );
+}
+
 function CollectionPreferencesStandalone(): JSX.Element {
   const navigate = useNavigate();
-  const [state, setState] = React.useState<
-    LoadedCollectionPreferences | undefined
-  >(undefined);
+  const [state, setState] = React.useState<LoadedCollectionPreferences | undefined>(
+    undefined
+  );
   const [error, setError] = React.useState<unknown>(undefined);
 
   const renderStatus = React.useCallback(
     (body: React.ReactNode, role?: 'alert'): JSX.Element => (
       <Container.FullGray>
         <H2 className="text-2xl">{preferencesText.collectionPreferences()}</H2>
-        <div
-          className={role === 'alert' ? 'text-red-600' : undefined}
-          role={role}
-        >
+        <div className={role === 'alert' ? 'text-red-600' : undefined} role={role}>
           {body}
         </div>
       </Container.FullGray>
@@ -617,8 +787,7 @@ function CollectionPreferencesStandalone(): JSX.Element {
     let isMounted = true;
     const load = async () => {
       try {
-        const rawData =
-          (await collectionPreferences.fetch()) as ResourceWithData;
+        const rawData = (await collectionPreferences.fetch()) as ResourceWithData;
         const data: ResourceWithData = {
           ...rawData,
           data: rawData.data ?? '',
@@ -652,7 +821,7 @@ function CollectionPreferencesStandalone(): JSX.Element {
       const directoryKey =
         state === undefined
           ? globalResourceKey
-          : (getDirectoryKey(state.directory) ?? globalResourceKey);
+          : getDirectoryKey(state.directory) ?? globalResourceKey;
       navigate(
         formatUrl('/specify/resources/app-resource/new/', {
           directoryKey,

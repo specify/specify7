@@ -385,6 +385,14 @@ export const routes: RA<EnhancedRoute> = [
       ),
   },
   {
+    path: 'global-preferences',
+    title: preferencesText.globalPreferences(),
+    element: () =>
+      import('../Preferences').then(
+        ({ GlobalPreferencesWrapper }) => GlobalPreferencesWrapper
+      ),
+  },
+  {
     path: 'schema-config',
     title: schemaText.schemaConfig(),
     element: () =>
