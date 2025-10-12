@@ -314,6 +314,11 @@ export function DefaultPreferenceItemRender({
       : undefined;
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+  const selectedValueDefinition =
+    'values' in definition
+      ? definition.values.find((item) => item.value === value)
+      : undefined;
+
   return 'values' in definition ? (
     <>
       <Select
@@ -329,7 +334,7 @@ export function DefaultPreferenceItemRender({
         ))}
       </Select>
       {f.maybe(
-        definition.values.find((item) => item.value === value).description,
+        selectedValueDefinition?.description,
         (description) => (
           <p>{description}</p>
         )
