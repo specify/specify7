@@ -10,6 +10,7 @@ import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
+import { resourcesText } from '../../localization/resources';
 import { preferencesText } from '../../localization/preferences';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
@@ -618,7 +619,7 @@ function GlobalPreferencesStandalone(): JSX.Element {
   const renderStatus = React.useCallback(
     (body: React.ReactNode, role?: 'alert'): JSX.Element => (
       <Container.FullGray>
-        <H2 className="text-2xl">{preferencesText.globalPreferences()}</H2>
+        <H2 className="text-2xl">{resourcesText.globalPreferences()}</H2>
         <div className={role === 'alert' ? 'text-red-600' : undefined} role={role}>
           {body}
         </div>
