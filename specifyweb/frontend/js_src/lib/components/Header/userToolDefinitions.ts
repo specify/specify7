@@ -58,7 +58,7 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       icon: icons.cog,
     },
     globalPreferences: {
-      title: preferencesText.globalPreferences(),
+      title: resourcesText.globalPreferences(),
       url: '/specify/global-preferences/',
       icon: icons.globe,
       enabled: () => userInformation.isadmin,

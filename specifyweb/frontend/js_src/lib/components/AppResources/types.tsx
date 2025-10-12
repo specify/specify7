@@ -116,7 +116,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     name: 'preferences',
     documentationUrl: 'https://discourse.specifysoftware.org/t/specify-7-global-preferences/3100',
     icon: icons.cog,
-    label: preferencesText.globalPreferences(),
+    label: resourcesText.globalPreferences(),
     scope: ['global'],
     useTemplate: false,
   },

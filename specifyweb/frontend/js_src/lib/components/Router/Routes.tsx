@@ -386,7 +386,7 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'global-preferences',
-    title: preferencesText.globalPreferences(),
+    title: resourcesText.globalPreferences(),
     element: () =>
       import('../Preferences').then(
         ({ GlobalPreferencesWrapper }) => GlobalPreferencesWrapper
