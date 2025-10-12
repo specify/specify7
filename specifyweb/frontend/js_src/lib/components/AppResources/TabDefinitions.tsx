@@ -25,8 +25,7 @@ import { DataObjectFormatter } from '../Formatters';
 import { formattersSpec } from '../Formatters/spec';
 import { FormEditor } from '../FormEditor';
 import { viewSetsSpec } from '../FormEditor/spec';
-import { UserPreferencesEditor } from '../Preferences/Editor';
-import { CollectionPreferencesEditor } from '../Preferences/Editor';
+import { UserPreferencesEditor, CollectionPreferencesEditor, GlobalPreferencesEditor } from '../Preferences/Editor';
 import { useDarkMode } from '../Preferences/Hooks';
 import type { BaseSpec } from '../Syncer';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
@@ -156,6 +155,10 @@ export const visualAppResourceEditors = f.store<
   },
   collectionPreferences: {
     visual: CollectionPreferencesEditor,
+    json: AppResourceTextEditor,
+  },
+  remotePreferences: {
+    visual: GlobalPreferencesEditor,
     json: AppResourceTextEditor,
   },
   leafletLayers: undefined,
