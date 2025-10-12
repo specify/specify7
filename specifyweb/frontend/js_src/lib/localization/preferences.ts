@@ -1763,9 +1763,6 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Налаштування',
     'pt-br': 'Preferências de coleção',
   },
-  globalPreferences: {
-    'en-us': 'Global Preferences',
-  },
   auditing: {
     'en-us': 'Auditing',
   },
