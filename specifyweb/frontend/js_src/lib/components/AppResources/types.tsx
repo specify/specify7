@@ -111,6 +111,15 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     label: preferencesText.collectionPreferences(),
     scope: ['collection'],
   },
+   remotePreferences: {
+    mimeType: 'text/x-java-properties',
+    name: 'preferences',
+    documentationUrl: 'https://discourse.specifysoftware.org/t/specify-7-global-preferences/3100',
+    icon: icons.cog,
+    label: preferencesText.globalPreferences(),
+    scope: ['global'],
+    useTemplate: false,
+  },
   leafletLayers: {
     mimeType: 'application/json',
     name: 'leaflet-layers',
