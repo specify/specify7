@@ -92,6 +92,21 @@ export type AjaxProps = Omit<RequestInit, 'body' | 'headers' | 'method'> & {
  * - Handlers errors (including permission errors)
  * - Helps with request mocking in tests
  */
+let cachedAjaxMock:
+  | typeof import('../../tests/ajax')
+  | undefined;
+
+const loadAjaxMock = (): typeof import('../../tests/ajax').ajaxMock => {
+  if (cachedAjaxMock === undefined) {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    cachedAjaxMock = require('../../tests/ajax') as typeof import('../../tests/ajax');
+  }
+  const { ajaxMock } = cachedAjaxMock;
+  if (typeof ajaxMock !== 'function')
+    throw new Error('Expected ajaxMock to be a function in test environment');
+  return ajaxMock;
+};
+
 export async function ajax<RESPONSE_TYPE = string>(
   url: string,
   /** These options are passed directly to fetch() */
@@ -110,7 +125,7 @@ export async function ajax<RESPONSE_TYPE = string>(
    */
   // REFACTOR: replace this with a mock
   if (process.env.NODE_ENV === 'test') {
-    const { ajaxMock } = await import('../../tests/ajax');
+    const ajaxMock = loadAjaxMock();
     return ajaxMock(url, {
       headers: { Accept: accept, ...headers },
       method,

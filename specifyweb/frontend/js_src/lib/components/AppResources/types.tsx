@@ -111,7 +111,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     label: preferencesText.collectionPreferences(),
     scope: ['collection'],
   },
-   remotePreferences: {
+  remotePreferences: {
     mimeType: 'text/x-java-properties',
     name: 'preferences',
     documentationUrl: 'https://discourse.specifysoftware.org/t/specify-7-global-preferences/3100',

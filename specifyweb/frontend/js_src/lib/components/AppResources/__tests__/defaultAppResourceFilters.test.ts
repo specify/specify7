@@ -16,6 +16,7 @@ test('defaultAppResourceFilters', () => {
         "otherJsonResource",
         "otherPropertiesResource",
         "otherXmlResource",
+        "remotePreferences",
         "report",
         "rssExportFeed",
         "typeSearches",
