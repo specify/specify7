@@ -31,7 +31,9 @@ import { ProtectedTool } from '../Permissions/PermissionDenied';
 import { PreferencesAside } from './Aside';
 import type { BasePreferences } from './BasePreferences';
 import { collectionPreferenceDefinitions } from './CollectionDefinitions';
+import { globalPreferenceDefinitions } from './GlobalDefinitions';
 import { collectionPreferences } from './collectionPreferences';
+import { globalPreferences } from './globalPreferences';
 import { useDarkMode } from './Hooks';
 import { DefaultPreferenceItemRender } from './Renderers';
 import type { GenericPreferences, PreferenceItem } from './types';
@@ -39,6 +41,7 @@ import { userPreferenceDefinitions } from './UserDefinitions';
 import { userPreferences } from './userPreferences';
 import { useTopChild } from './useTopChild';
 import { formatUrl } from '../Router/queryString';
+import { fetchCollection } from '../DataModel/collection';
 import { fetchResource, strictIdFromUrl } from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
 import type {
@@ -54,11 +57,13 @@ export type PreferenceType = keyof typeof preferenceInstances;
 const preferenceInstances: IR<BasePreferences<any>> = {
   user: userPreferences,
   collection: collectionPreferences,
+  global: globalPreferences,
 };
 
 const preferenceDefinitions: IR<GenericPreferences> = {
   user: userPreferenceDefinitions,
   collection: collectionPreferenceDefinitions,
+  global: globalPreferenceDefinitions,
 };
 
 type SubcategoryDocumentation = {
@@ -89,9 +94,12 @@ type DocumentHrefResolver =
   ) => string | undefined)
   | undefined;
 
+const resolveGlobalDocumentHref = (): undefined => undefined;
+
 const documentHrefResolvers: IR<DocumentHrefResolver> = {
   user: undefined,
   collection: undefined,
+  global: resolveGlobalDocumentHref,
 };
 
 const collectionPreferencesPromise = Promise.all([
@@ -562,12 +570,30 @@ export function CollectionPreferencesWrapper(): JSX.Element | null {
   );
 }
 
+export function GlobalPreferencesWrapper(): JSX.Element {
+  return <GlobalPreferences />;
+}
+
+function GlobalPreferences(): JSX.Element {
+  return (
+    <ProtectedTool action="update" tool="resources">
+      <GlobalPreferencesStandalone />
+    </ProtectedTool>
+  );
+}
+
 type ResourceWithData = {
   readonly id: number;
   readonly data: string | null;
   readonly name: string;
   readonly mimetype: string | null;
   readonly metadata: string | null;
+};
+
+type LoadedGlobalPreferences = {
+  readonly resource: SerializedResource<SpAppResource>;
+  readonly directory: ScopedAppResourceDir;
+  readonly data: ResourceWithData;
 };
 
 type LoadedCollectionPreferences = {
@@ -580,6 +606,163 @@ const isAppResource = (
   resource: SerializedResource<SpAppResource | SpViewSetObj>
 ): resource is SerializedResource<SpAppResource> =>
   resource._tableName === 'SpAppResource';
+
+function GlobalPreferencesStandalone(): JSX.Element {
+  const navigate = useNavigate();
+  const [state, setState] = React.useState<LoadedGlobalPreferences | undefined>(
+    undefined
+  );
+  const [error, setError] = React.useState<unknown>(undefined);
+  const isMountedRef = React.useRef(true);
+
+  const renderStatus = React.useCallback(
+    (body: React.ReactNode, role?: 'alert'): JSX.Element => (
+      <Container.FullGray>
+        <H2 className="text-2xl">{preferencesText.globalPreferences()}</H2>
+        <div className={role === 'alert' ? 'text-red-600' : undefined} role={role}>
+          {body}
+        </div>
+      </Container.FullGray>
+    ),
+    []
+  );
+
+  const loadPreferences = React.useCallback(async () => {
+    const { records: directories } = await fetchCollection('SpAppResourceDir', {
+      limit: 1,
+      domainFilter: false,
+    },
+    {
+      usertype: 'Global Prefs',
+    });
+
+    const directoryRecord = directories[0];
+    if (directoryRecord === undefined)
+      throw new Error('Global preferences directory not found');
+
+    const scopedDirectory: ScopedAppResourceDir = {
+      ...directoryRecord,
+      scope: getScope(directoryRecord),
+    };
+
+    const { records: resources } = await fetchCollection('SpAppResource', {
+      limit: 1,
+      domainFilter: false,
+    },
+    {
+      spappresourcedir: directoryRecord.id,
+      name: 'preferences',
+    });
+
+    const resource = resources[0];
+    if (resource === undefined)
+      throw new Error('Global preferences resource not found');
+
+    const { records: dataRecords } = await fetchCollection('SpAppResourceData', {
+      limit: 1,
+      domainFilter: false,
+    },
+    {
+      spappresource: resource.id,
+    });
+
+    const resourceData = dataRecords[0];
+    if (resourceData === undefined)
+      throw new Error('Global preferences data not found');
+
+    return {
+      resource,
+      directory: scopedDirectory,
+      data: {
+        id: resource.id,
+        name: resource.name ?? 'preferences',
+        mimetype: resource.mimeType ?? 'text/x-java-properties',
+        metadata: (resource as { metaData?: string | null }).metaData ?? null,
+        data: resourceData.data ?? '',
+      },
+    } as LoadedGlobalPreferences;
+  }, []);
+
+  const refresh = React.useCallback(() => {
+    loadPreferences()
+      .then((loaded) => {
+        if (!isMountedRef.current) return;
+        setState(loaded);
+        setError(undefined);
+      })
+      .catch((loadError) => {
+        if (!isMountedRef.current) return;
+        setError(loadError);
+      });
+  }, [loadPreferences]);
+
+  React.useEffect(() => {
+    isMountedRef.current = true;
+    refresh();
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, [refresh]);
+
+  const handleClone = React.useCallback(
+    (
+      clonedResource: SerializedResource<SpAppResource | SpViewSetObj>,
+      cloneId: number | undefined
+    ) => {
+      const appResourceClone = isAppResource(clonedResource)
+        ? clonedResource
+        : undefined;
+      if (appResourceClone === undefined) return;
+      const directoryKey =
+        state?.directory !== undefined
+          ? getDirectoryKey(state.directory) ?? globalResourceKey
+          : globalResourceKey;
+      navigate(
+        formatUrl('/specify/resources/app-resource/new/', {
+          directoryKey,
+          name: appResourceClone.name,
+          ...(appResourceClone.mimeType == null
+            ? {}
+            : { mimeType: appResourceClone.mimeType }),
+          clone: cloneId,
+        })
+      );
+    },
+    [navigate, state]
+  );
+
+  if (error !== undefined && state === undefined)
+    return renderStatus(
+      'Failed to open global preferences. Try accessing them through App Resources.',
+      'alert'
+    );
+
+  if (state === undefined) return renderStatus(commonText.loading());
+
+  return (
+    <Container.FullGray className="flex flex-1 flex-col gap-4 overflow-hidden">
+      <AppResourceEditor
+        directory={state.directory}
+        initialData={state.data.data ?? ''}
+        resource={state.resource}
+        onClone={handleClone}
+        onDeleted={undefined}
+        onSaved={refresh}
+      >
+        {({ headerJsx, headerButtons, form, footer }): JSX.Element => (
+          <Container.Base className="flex-1 overflow-hidden">
+            <DataEntry.Header className="flex-wrap">
+              {headerJsx}
+              {headerButtons}
+            </DataEntry.Header>
+            {form}
+            <DataEntry.Footer>{footer}</DataEntry.Footer>
+          </Container.Base>
+        )}
+      </AppResourceEditor>
+    </Container.FullGray>
+  );
+}
 
 function CollectionPreferencesStandalone(): JSX.Element {
   const navigate = useNavigate();

@@ -123,7 +123,7 @@ export const remotePrefsDefinitions = f.store(
       },
       'ui.formatting.scrmonthformat': {
         description: 'Month Date format',
-        defaultValue: 'MM/YYYY',
+        defaultValue: 'YYYY-MM',
         formatters: [formatter.trim, formatter.toUpperCase],
       },
       'GeologicTimePeriod.treeview_sort_field': {
@@ -225,7 +225,7 @@ export const remotePrefsDefinitions = f.store(
       },
       'attachment.preview_size': {
         description: 'The size in px of the generated attachment thumbnails',
-        defaultValue: 123,
+        defaultValue: 256,
         parser: 'java.lang.Long',
         isLegacy: true,
       },
