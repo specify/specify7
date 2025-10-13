@@ -46,7 +46,10 @@ export const globalPreferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: 'YYYY-MM-DD',
-            values: FULL_DATE_FORMAT_OPTIONS.slice(),
+            values: FULL_DATE_FORMAT_OPTIONS.map((value) => ({
+              value,
+              title: value,
+            })),
           }),
           monthYearDateFormat: definePref<string>({
             title: preferencesText.monthYearDateFormat(),
@@ -54,7 +57,10 @@ export const globalPreferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: 'YYYY-MM',
-            values: MONTH_YEAR_FORMAT_OPTIONS.slice(),
+            values: MONTH_YEAR_FORMAT_OPTIONS.map((value) => ({
+              value,
+              title: value,
+            })),
           }),
         },
       },
