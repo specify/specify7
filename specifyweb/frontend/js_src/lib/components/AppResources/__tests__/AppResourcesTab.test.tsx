@@ -25,7 +25,7 @@ function Component(props: AppResourceTabProps) {
 
 describe('AppResourcesTab', () => {
   test('simple render', () => {
-    const { container, getByRole } = mount(
+    const { getByRole } = mount(
       <AppResourcesTab
         appResource={deserializeResource(testAppResources.appResources[0])}
         data="TestData"
