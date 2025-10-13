@@ -655,9 +655,14 @@ function GlobalPreferencesStandalone(): JSX.Element {
       name: 'preferences',
     });
 
-    const resource = resources[0];
-    if (resource === undefined)
+    const rawResource = resources[0];
+    if (rawResource === undefined)
       throw new Error('Global preferences resource not found');
+
+    const resource: typeof rawResource = {
+      ...rawResource,
+      mimeType: rawResource.mimeType ?? 'text/x-java-properties',
+    };
 
     const { records: dataRecords } = await fetchCollection('SpAppResourceData', {
       limit: 1,
