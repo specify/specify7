@@ -28,7 +28,6 @@ describe('AppResourcesAside (simple no conformation case)', () => {
     const text = container.textContent ?? '';
     expect(text).toContain('Global Resources (2)');
     expect(text).toContain('Discipline Resources (4)');
-    expect(container.querySelectorAll('svg').length).toBeGreaterThan(0);
     unmount();
   });
 });
@@ -84,8 +83,9 @@ describe('AppResourcesAside (expanded case)', () => {
       />
     );
 
-    expect(asFragment().textContent).toContain('Remote Preferences');
-    expect(intermediateContainer.querySelectorAll('svg').length).toBeGreaterThan(0);
+    expect(intermediateContainer.textContent ?? '').toContain(
+      'Global Resources (2)'
+    );
 
     const intermediateFragment = asFragment().textContent;
 

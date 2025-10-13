@@ -25,7 +25,7 @@ function Component(props: AppResourceTabProps) {
 
 describe('AppResourcesTab', () => {
   test('simple render', () => {
-    const { container, getByText } = mount(
+    const { container, getByRole } = mount(
       <AppResourcesTab
         appResource={deserializeResource(testAppResources.appResources[0])}
         data="TestData"
@@ -41,7 +41,9 @@ describe('AppResourcesTab', () => {
       />
     );
 
-    expect(getByText('Data: TestData')).toBeInTheDocument();
+    expect(
+      getByRole('heading', { level: 1, name: /data:\s*testdata/i })
+    ).toBeInTheDocument();
     expect(container.querySelector('svg')).not.toBeNull();
   });
 
@@ -65,7 +67,12 @@ describe('AppResourcesTab', () => {
     );
 
     const dialog = getByRole('dialog');
-    expect(within(dialog).getByText('Data: TestData')).toBeInTheDocument();
+    expect(
+      within(dialog).getByRole('heading', {
+        level: 1,
+        name: /data:\s*testdata/i,
+      })
+    ).toBeInTheDocument();
     expect(dialog.querySelector('svg')).not.toBeNull();
   });
 });

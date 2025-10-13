@@ -206,7 +206,6 @@ export const testAppResources = {
       spReports: '/api/specify/spreport/?appresource=1',
       resource_uri: '/api/specify/spappresource/1/',
       _tableName: 'SpAppResource',
-      label: 'Global Preferences',
     },
     {
       id: 2,
@@ -229,7 +228,6 @@ export const testAppResources = {
       spReports: '/api/specify/spreport/?appresource=2',
       resource_uri: '/api/specify/spappresource/2/',
       _tableName: 'SpAppResource',
-      label: 'Remote Preferences',
     },
     {
       id: 3,

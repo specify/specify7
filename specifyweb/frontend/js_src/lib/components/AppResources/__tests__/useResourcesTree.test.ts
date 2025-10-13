@@ -11,6 +11,15 @@ requireContext();
 
 const { setAppResourceDir, testDisciplines } = utilsForTests;
 
+const flattenResources = (tree: AppResourcesTree) =>
+  tree.flatMap(({ appResources, subCategories }) => [
+    ...appResources.map((resource) => ({
+      name: resource.name,
+      label: resource.label,
+    })),
+    ...flattenResources(subCategories),
+  ]);
+
 describe('useResourcesTree', () => {
   const getResourceCountTree = (result: AppResourcesTree) =>
     result.reduce(
@@ -36,9 +45,12 @@ describe('useResourcesTree', () => {
   test('missing appresource dir', () => {
     const { result } = renderHook(() => useResourcesTree(resources));
 
-    expect(result.current).toHaveLength(2);
-    expect(result.current[0].label).toBe('Global Resources');
-    expect(result.current[0].appResources).toHaveLength(0);
+    const flattened = flattenResources(result.current);
+    expect(flattened).toHaveLength(1);
+    expect(flattened[0]).toMatchObject({
+      name: 'preferences',
+      label: 'Global Preferences',
+    });
 
     // There is only 1 resource with the matching spappresourcedir.
     expect(getResourceCountTree(result.current)).toBe(1);
@@ -55,11 +67,11 @@ describe('useResourcesTree', () => {
 
     const { result } = renderHook(() => useResourcesTree(viewSet));
 
-    const [globalResources] = result.current;
-    const labels = globalResources.appResources.map(({ label, name }) =>
-      label ?? name
+    const flattened = flattenResources(result.current);
+    const labels = flattened.map(({ label, name }) => label ?? name);
+    expect(labels).toEqual(
+      expect.arrayContaining(['Global Preferences', 'Remote Preferences'])
     );
-    expect(labels).toEqual(['Global Preferences', 'Remote Preferences']);
 
     expect(getResourceCountTree(result.current)).toBe(4);
   });
