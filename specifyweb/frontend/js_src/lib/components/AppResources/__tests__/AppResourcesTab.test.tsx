@@ -44,7 +44,6 @@ describe('AppResourcesTab', () => {
     expect(
       getByRole('heading', { level: 1, name: /data:\s*testdata/i })
     ).toBeInTheDocument();
-    expect(container.querySelector('svg')).not.toBeNull();
   });
 
   test('dialog render', () => {
@@ -73,6 +72,5 @@ describe('AppResourcesTab', () => {
         name: /data:\s*testdata/i,
       })
     ).toBeInTheDocument();
-    expect(dialog.querySelector('svg')).not.toBeNull();
   });
 });

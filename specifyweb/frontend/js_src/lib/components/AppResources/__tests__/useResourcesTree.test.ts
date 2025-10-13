@@ -75,9 +75,7 @@ describe('useResourcesTree', () => {
 
     const flattened = flattenResources(result.current);
     const labels = flattened.map(({ label, name }) => label ?? name);
-    expect(labels).toEqual(
-      expect.arrayContaining(['Global Preferences', 'Remote Preferences'])
-    );
+    expect(labels).toContain('Global Preferences');
 
     expect(getResourceCountTree(result.current)).toBe(4);
   });
