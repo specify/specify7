@@ -1,5 +1,6 @@
 import { preferencesText } from '../../localization/preferences';
 import { attachmentsText } from '../../localization/attachments';
+import { localized } from '../../utils/types';
 import { definePref } from './types';
 
 export const FULL_DATE_FORMAT_OPTIONS = [
@@ -48,7 +49,7 @@ export const globalPreferenceDefinitions = {
             defaultValue: 'YYYY-MM-DD',
             values: FULL_DATE_FORMAT_OPTIONS.map((value) => ({
               value,
-              title: value,
+              title: localized(value),
             })),
           }),
           monthYearDateFormat: definePref<string>({
@@ -59,7 +60,7 @@ export const globalPreferenceDefinitions = {
             defaultValue: 'YYYY-MM',
             values: MONTH_YEAR_FORMAT_OPTIONS.map((value) => ({
               value,
-              title: value,
+              title: localized(value),
             })),
           }),
         },
