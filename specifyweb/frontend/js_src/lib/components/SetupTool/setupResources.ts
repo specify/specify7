@@ -8,6 +8,7 @@ export type ResourceConfig = {
   readonly label: LocalizedString;
   readonly endpoint: string;
   readonly description?: LocalizedString;
+  readonly condition?: Record<string, Record<string, boolean | number | string>>;
   readonly fields: RA<FieldConfig>;
 };
 
@@ -61,7 +62,7 @@ const fullNameDirections = [
 
 export const resources: RA<ResourceConfig> = [
   {
-    resourceName: 'Institution',
+    resourceName: 'institution',
     label: setupToolText.institution(),
     description: setupToolText.institutionDescription(),
     endpoint: '/setup_tool/institution/create/',
@@ -136,11 +137,12 @@ export const resources: RA<ResourceConfig> = [
         description:
           'A global geography tree is shared by all disciplines. Otherwise, geography trees are managed separately within each discipline.',
         type: 'boolean',
+        default: false,
       },
     ],
   },
   {
-    resourceName: 'StorageTreeDef',
+    resourceName: 'storageTreeDef',
     label: setupToolText.storageTree(),
     endpoint: '/setup_tool/storagetreedef/create/',
     fields: [
@@ -178,6 +180,11 @@ export const resources: RA<ResourceConfig> = [
     resourceName: 'globalGeographyTreeDef',
     label: setupToolText.geographyTree(),
     endpoint: '/setup_tool/global_geographytreedef/create/',
+    condition: {
+      institution: {
+        isSingleGeographyTree: true
+      },
+    },
     fields: [
       {
         name: 'ranks',
@@ -203,7 +210,7 @@ export const resources: RA<ResourceConfig> = [
     ],
   },
   {
-    resourceName: 'Division',
+    resourceName: 'division',
     label: setupToolText.division(),
     endpoint: '/setup_tool/division/create/',
     fields: [
@@ -212,7 +219,7 @@ export const resources: RA<ResourceConfig> = [
     ],
   },
   {
-    resourceName: 'Discipline',
+    resourceName: 'discipline',
     label: setupToolText.discipline(),
     endpoint: '/setup_tool/discipline/create/',
     fields: [
@@ -230,6 +237,11 @@ export const resources: RA<ResourceConfig> = [
     resourceName: 'geographyTreeDef',
     label: setupToolText.geographyTree(),
     endpoint: '/setup_tool/geographytreedef/create/',
+    condition: {
+      institution: {
+        isSingleGeographyTree: false
+      },
+    },
     fields: [
       {
         name: 'ranks',
@@ -243,13 +255,6 @@ export const resources: RA<ResourceConfig> = [
           { name: '300', label: 'State', type: 'boolean', default: true },
           { name: '400', label: 'County', type: 'boolean', default: true },
         ],
-      },
-      {
-        name: 'fullNameDirection',
-        label: 'Full Name Direction',
-        type: 'select',
-        options: fullNameDirections,
-        required: true,
       },
       {
         name: 'fullNameDirection',
@@ -293,19 +298,12 @@ export const resources: RA<ResourceConfig> = [
         type: 'select',
         options: fullNameDirections,
         required: true,
-      },
-      {
-        name: 'fullNameDirection',
-        label: 'Full Name Direction',
-        type: 'select',
-        options: fullNameDirections,
-        required: true,
         default: fullNameDirections[0].value.toString(),
       },
     ],
   },
   {
-    resourceName: 'Collection',
+    resourceName: 'collection',
     label: setupToolText.collection(),
     endpoint: '/setup_tool/collection/create/',
     fields: [
@@ -321,7 +319,7 @@ export const resources: RA<ResourceConfig> = [
     ],
   },
   {
-    resourceName: 'SpecifyUser',
+    resourceName: 'specifyUser',
     label: setupToolText.specifyUser(),
     endpoint: '/setup_tool/specifyuser/create/',
     fields: [

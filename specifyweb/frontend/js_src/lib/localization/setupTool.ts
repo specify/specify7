@@ -21,6 +21,10 @@ export const setupToolText = createDictionary({
     'en-us': '🎉 All resources have been created successfully!',
   },
 
+  overview: {
+    'en-us': 'Overview',
+  },
+
   institution: {
     'en-us': 'Institution',
   },

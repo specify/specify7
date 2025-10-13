@@ -6,6 +6,7 @@ from specifyweb.specify.api_utils import strict_uri_to_model
 from specifyweb.specify.models import Spversion
 from specifyweb.specify import models
 from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults
+from specifyweb.backend.setup_tool.setup_tasks import setup_database_background
 
 from django.db.models import Max
 from django.db import transaction
@@ -41,9 +42,13 @@ def _guided_setup_condition(request):
             return False
     return True
 
-def create_institution(request, direct=False):
-    from specifyweb.specify.models import Institution, Address
+def normalize_keys(obj):
+    if isinstance(obj, dict):
+        return {k.lower(): normalize_keys(v) for k, v in obj.items()}
+    else:
+        return obj
 
+def handle_request(request, create_resource, direct=False):
     # Check permission
     if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
@@ -53,9 +58,34 @@ def create_institution(request, direct=False):
         return JsonResponse({"error": "Invalid request"}, status=400)
 
     raw_data = json.loads(request.body)
+    data = normalize_keys(raw_data)
 
-    # Normalize keys: lowercase everything
-    data = {k.lower(): v for k, v in raw_data.items()}
+    try:
+        response = create_resource(data)
+        return JsonResponse({"success": True, "setup_progress": get_setup_progress(), **response}, status=200)
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
+
+def setup_database(request, direct=False):
+    if not _guided_setup_condition(request):
+        return JsonResponse({"error": "Not permitted"}, status=401)
+    if request.method != 'POST':
+        return JsonResponse({"error": "Invalid request"}, status=400)
+    
+    try:
+        logger.debug("Starting Database Setup.")
+        raw_data = json.loads(request.body)
+        data = normalize_keys(raw_data)
+        logger.debug(data)
+        task_id = setup_database_background(data)
+        logger.debug("Database setup stared successfuly.")
+        return JsonResponse({"success": True, "setup_progress": get_setup_progress()}, status=200)
+    except Exception as e:
+        return JsonResponse({'error': 'An internal server error occurred.'}, status=500)
+
+def create_institution(data):
+    from specifyweb.specify.models import Institution, Address
 
     # Get address fields (if any)
     address_data = data.pop('address', None)
@@ -63,42 +93,27 @@ def create_institution(request, direct=False):
     # New DB: force id = 1
     data['id'] = 1
 
-    try:
-        # Create address
-        with transaction.atomic():
-            if address_data:
-                address_obj = Address.objects.create(**address_data)
-                data['address_id'] = address_obj.id
+    # Create address
+    with transaction.atomic():
+        if address_data:
+            address_obj = Address.objects.create(**address_data)
+            data['address_id'] = address_obj.id
 
-            # Create institution
-            new_institution = Institution.objects.create(**data)
-            Spversion.objects.create(appversion=APP_VERSION, schemaversion=SCHEMA_VERSION)
-        
-        return JsonResponse({"success": True, "institution_id": new_institution.id, "setup_progress": get_setup_progress()}, status=200)
+        # Create institution
+        new_institution = Institution.objects.create(**data)
+        Spversion.objects.create(appversion=APP_VERSION, schemaversion=SCHEMA_VERSION)
+    return {'institution_id': new_institution}
 
-    except Exception as e:
-        return JsonResponse({"error": str(e)}, status=400)
-
-def create_division(request, direct=False):
+def create_division(data):
     from specifyweb.specify.models import Division, Institution
-
-    # Check permission
-    if not _guided_setup_condition(request):
-        return JsonResponse({"error": "Not permitted"}, status=401)
-
-    # Only allow POST requests
-    if request.method != 'POST':
-        return JsonResponse({"error": "Invalid request"}, status=400)
-
-    data = json.loads(request.body)
 
     # If division_id is provided and exists, return success
     existing_id = data.get('division_id')
     if existing_id:
         existing_division = Division.objects.filter(id=existing_id).first()
         if existing_division:
+            # TODO
             return JsonResponse({"success": True, "division_id": existing_division.id, "setup_progress": get_setup_progress()}, status=200)
-
 
     # Determine new Division ID
     max_id = Division.objects.aggregate(Max('id'))['id__max'] or 0
@@ -123,27 +138,16 @@ def create_division(request, direct=False):
     # Create new division
     try:
         new_division = Division.objects.create(**data)
-        return JsonResponse({"success": True, "division_id": new_division.id, "setup_progress": get_setup_progress()}, status=200)
+        return {"division_id": new_division.id}
     except Exception as e:
+        # TODO
         return JsonResponse({"error": str(e)}, status=400)
 
-def create_discipline(request, direct=False):
+def create_discipline(data):
     from specifyweb.specify.models import (
         Discipline, Division, Datatype,
         Geographytreedef, Geologictimeperiodtreedef
     )
-
-    # Permission check
-    if not _guided_setup_condition(request):
-        return JsonResponse({"error": "Not permitted"}, status=401)
-
-    # Only allow POST requests
-    if request.method != 'POST':
-        return JsonResponse({"error": "Invalid request"}, status=400)
-
-    # Load and normalize data keys
-    raw_data = json.loads(request.body)
-    data = {k.lower(): v for k, v in raw_data.items()}
 
     # Check if discipline_id is provided and already exists
     existing_id = data.get('discipline_id')
@@ -194,25 +198,13 @@ def create_discipline(request, direct=False):
         if not division_url:
             apply_schema_defaults(new_discipline)
 
-        return JsonResponse({"success": True, "discipline_id": new_discipline.id, "setup_progress": get_setup_progress()}, status=200)
+        return {"discipline_id": new_discipline.id}
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
 
-def create_collection(request, direct=False):
+def create_collection(data):
     from specifyweb.specify.models import Collection, Discipline
-
-    # Permission check
-    if not _guided_setup_condition(request):
-        return JsonResponse({"error": "Not permitted"}, status=401)
-
-    # Only allow POST requests
-    if request.method != 'POST':
-        return JsonResponse({"error": "Invalid request"}, status=400)
-
-    # Load and normalize data keys
-    raw_data = json.loads(request.body)
-    data = {k.lower(): v for k, v in raw_data.items()}
 
     # If collection_id is provided and exists, return success
     existing_id = data.get('collection_id')
@@ -249,20 +241,12 @@ def create_collection(request, direct=False):
     # Create new Collection
     try:
         new_collection = Collection.objects.create(**data)
-        return JsonResponse({"success": True, "collection_id": new_collection.id, "setup_progress": get_setup_progress()}, status=200)
+        return {"collection_id": new_collection.id}
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
 
-def create_specifyuser(request, direct=False):
+def create_specifyuser(data):
     from specifyweb.specify.models import Specifyuser, Agent, Division, Collection
-
-    if not _guided_setup_condition(request):
-        return JsonResponse({"error": "Not permitted"}, status=401)
-
-    if request.method != 'POST':
-        return JsonResponse({"error": "Invalid request"}, status=400)
-
-    data = json.loads(request.body)
 
     # Assign ID manually
     max_id = Specifyuser.objects.aggregate(Max('id'))['id__max'] or 0
@@ -296,69 +280,58 @@ def create_specifyuser(request, direct=False):
         agent.specifyuser = new_user
         agent.save()
 
-        return JsonResponse({"success": True, "user_id": new_user.id, "setup_progress": get_setup_progress()}, status=200)
+        return {"user_id": new_user.id}
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
 
 # Trees
-def create_storage_tree(request, direct=False):
+def create_storage_tree(data):
     # TODO: Use trees/create_default_trees
     # https://github.com/specify/specify7/pull/6429
     from specifyweb.specify.models import Storagetreedef
-    raw_data = json.loads(request.body)
-    data = {k.lower(): v for k, v in raw_data.items()}
-    ranks = data.pop('ranks')
     logger.debug(data)
+    ranks = data.pop('ranks')
     # Placeholder treedef:
     try:
         Storagetreedef.objects.create(**data)
-        return JsonResponse({"success": True, "setup_progress": get_setup_progress()}, status=200)
+        return {}
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
 
 
-def create_global_geography_tree(request, direct=False):
+def create_global_geography_tree(data):
     # TODO: Use trees/create_default_trees
     # https://github.com/specify/specify7/pull/6429
     from specifyweb.specify.models import Geographytreedef
-    raw_data = json.loads(request.body)
-    data = {k.lower(): v for k, v in raw_data.items()}
     ranks = data.pop('ranks')
-    logger.debug(data)
     # Placeholder treedef:
     try:
         Geographytreedef.objects.create(**data)
-        return JsonResponse({"success": True, "setup_progress": get_setup_progress()}, status=200)
+        return {}
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
 
-def create_geography_tree(request, direct=False):
+def create_geography_tree(data):
     # TODO: Use trees/create_default_trees
     # https://github.com/specify/specify7/pull/6429
     from specifyweb.specify.models import Geographytreedef
-    raw_data = json.loads(request.body)
-    data = {k.lower(): v for k, v in raw_data.items()}
     ranks = data.pop('ranks')
-    logger.debug(data)
     # Placeholder treedef:
     try:
         Geographytreedef.objects.create(**data)
-        return JsonResponse({"success": True, "setup_progress": get_setup_progress()}, status=200)
+        return {}
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
 
-def create_taxon_tree(request, direct=False):
+def create_taxon_tree(data):
     # TODO: Use trees/create_default_trees
     # https://github.com/specify/specify7/pull/6429
     from specifyweb.specify.models import Taxontreedef
-    raw_data = json.loads(request.body)
-    data = {k.lower(): v for k, v in raw_data.items()}
     ranks = data.pop('ranks')
-    logger.debug(data)
     # Placeholder treedef:
     try:
         Taxontreedef.objects.create(**data)
-        return JsonResponse({"success": True, "setup_progress": get_setup_progress()}, status=200)
+        return {}
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)

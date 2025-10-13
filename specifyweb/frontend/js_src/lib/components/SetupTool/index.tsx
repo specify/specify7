@@ -12,6 +12,7 @@ import { Container, H2, H3 } from '../Atoms';
 import { Progress } from '../Atoms';
 import { Form, Input, Label, Select } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
+import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import type { SetupProgress } from '../Login';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
@@ -32,14 +33,46 @@ const stepOrder: RA<keyof SetupProgress> = [
   'specifyUser',
 ];
 
-function findInitialStep(progress: SetupProgress): number {
-  return stepOrder.findIndex((key) => !progress[key]);
+// function findInitialStep(progress: SetupProgress): number {
+//   return stepOrder.findIndex((key) => !progress[key]);
+// }
+
+function findNextStep(currentStep: number, formData: ResourceFormData, direction: number = 1): number {
+  // Find the next *accessible* form.
+  // Handles conditional pages, like the global geography tree.
+  let step = currentStep + direction;
+  while (step >= 0 && step < resources.length) {
+    const resource = resources[step];
+    if (resource.condition === undefined) {
+      return step;
+    }
+    // Check condition
+    let pass = true;
+    for (const [resourceName, fields] of Object.entries(resource.condition)) {
+      for (const [fieldName, requiredValue] of Object.entries(fields)) {
+        if (formData[resourceName][fieldName] !== requiredValue) {
+          pass = false;
+          break;
+        }
+      }
+      if (pass === false) break;
+    }
+    if (pass) return step;
+    step += direction;
+  }
+  return currentStep;
+}
+
+function getFormValue(formData: ResourceFormData, currentStep: number, fieldName: string): string | number | undefined {
+  return formData[resources[currentStep].resourceName][fieldName]
 }
 
 function useFormDefaults(
   resource: ResourceConfig,
   setFormData: (data: ResourceFormData) => void,
+  currentStep: number,
 ): void {
+  const resourceName = resources[currentStep].resourceName;
   const defaultFormData: ResourceFormData = {};
   const applyFieldDefaults = (field: FieldConfig, parentName?: string) =>
     { 
@@ -52,7 +85,13 @@ function useFormDefaults(
   resource.fields.forEach(
     (field) => applyFieldDefaults(field)
   )
-  setFormData(defaultFormData);
+  setFormData((prev: any) => ({
+    ...prev,
+    [resourceName]: {
+      ...defaultFormData,
+      ...prev[resourceName],
+    },
+  }));
 }
 
 export function SetupTool({
@@ -63,13 +102,17 @@ export function SetupTool({
   readonly setSetupProgress: (value: SetupProgress | ((oldValue: SetupProgress | undefined) => SetupProgress | undefined) | undefined) => void;
 }): JSX.Element {
   const formRef = React.useRef<HTMLFormElement | null>(null);
-  const [formData, setFormData] = React.useState<ResourceFormData>({});
+  const [formData, setFormData] = React.useState<ResourceFormData>(
+    Object.fromEntries(
+      stepOrder.map((key) => [key, {}])
+    )
+  );
   const [temporaryFormData, setTemporaryFormData] = React.useState<ResourceFormData>({}); // For front-end only.
 
-  const currentStep = findInitialStep(setupProgress);
+  const [currentStep, setCurrentStep] = React.useState<number>(0);
 
   React.useEffect(() => {
-    useFormDefaults(resources[currentStep], setFormData);
+    useFormDefaults(resources[currentStep], setFormData, currentStep);
   }, [currentStep])
   
   const loading = React.useContext(LoadingContext);
@@ -85,7 +128,7 @@ export function SetupTool({
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(flattenToNested(data)),
+      body: JSON.stringify(flattenAllResources(data)),
       errorMode: 'visible',
       expectedErrors: [Http.CREATED],
     })
@@ -107,27 +150,44 @@ export function SetupTool({
     name: string,
     newValue: LocalizedString | boolean
   ): void => {
-    setFormData((previous) => ({
-      ...previous,
-      [name]: newValue,
-    }));
+    setFormData((previous) => {
+      const resourceName = resources[currentStep].resourceName;
+      return {
+        ...previous,
+        [resourceName]: {
+          ...previous[resourceName],
+          [name]: newValue,
+        },
+      };
+    });
   };
 
   const handleSubmit = (event: React.FormEvent): void => {
     event.preventDefault();
-    const { endpoint, resourceName } = resources[currentStep];
 
-    loading(
-      onResourceSaved(endpoint, resourceName, formData)
-        .then((data) => {
-          console.log(data);
-          setSetupProgress(data.setup_progress as SetupProgress);
-        })
-        .catch((error) => {
-          console.error('Form submission failed:', error);
-        })
-      );
+    if (currentStep === resources.length-1) {
+      // Send resources to backend to start the setup
+      // const { endpoint, resourceName } = resources[currentStep];
+      const endpoint = '/setup_tool/setup_database/create/';
+      loading(
+        onResourceSaved(endpoint, 'TEMPORARY_LABEL', formData)
+          .then((data) => {
+            console.log(data);
+            setSetupProgress(data.setup_progress as SetupProgress);
+          })
+          .catch((error) => {
+            console.error('Form submission failed:', error);
+          })
+        );
+    } else {
+      // Continue onto the next resource/form
+      setCurrentStep(findNextStep(currentStep, formData, 1));
+    }
   };
+
+  const handleBack = (): void => {
+    setCurrentStep(findNextStep(currentStep, formData, -1));
+  }
 
   const renderFormField = (field: FieldConfig, parentName?: string) => {
     const { name, label, type, required = false, description, options, fields, passwordRepeat } = field;
@@ -140,7 +200,7 @@ export function SetupTool({
         <div className="flex items-center space-x-2">
           <Label.Inline title={description}>
             <Input.Checkbox
-              checked={Boolean(formData[fieldName])}
+              checked={Boolean(getFormValue(formData, currentStep, fieldName))}
               id={fieldName}
               name={fieldName}
               required={required}
@@ -150,7 +210,7 @@ export function SetupTool({
           </Label.Inline>
         </div>
       ) : type === 'select' && Array.isArray(options) ? (
-        <div className="mb-4" key={fieldName}>
+        <div className="mb-4" key={`${resources[currentStep].resourceName}.fieldName`}>
           <Label.Block title={description}>
             {label}
             <Select
@@ -159,7 +219,7 @@ export function SetupTool({
               id={fieldName}
               name={fieldName}
               required={required}
-              value={formData[fieldName] ?? ''}
+              value={getFormValue(formData, currentStep, fieldName) ?? ''}
               onValueChange={(value) => handleChange(fieldName, value)}
             >
               <option disabled value="">
@@ -182,7 +242,7 @@ export function SetupTool({
               name={fieldName}
               required={required}
               type='password'
-              value={formData[fieldName] ?? ''}
+              value={getFormValue(formData, currentStep, fieldName) ?? ''}
               onValueChange={(value) => handleChange(fieldName, value)}
             />
           </Label.Block>
@@ -198,7 +258,7 @@ export function SetupTool({
                 value={temporaryFormData[passwordRepeat.name] ?? ''}
                 onChange={({ target }): void => {
                   target.setCustomValidity(
-                    target.value === formData[fieldName] ? "" : userText.passwordsDoNotMatchError()
+                    target.value === getFormValue(formData, currentStep, fieldName) ? "" : userText.passwordsDoNotMatchError()
                   );
                 }}
                 onValueChange={(value) => setTemporaryFormData((previous) => ({
@@ -223,7 +283,7 @@ export function SetupTool({
           <Input.Text
             name={fieldName}
             required={required}
-            value={formData[fieldName] ?? ''}
+            value={getFormValue(formData, currentStep, fieldName) ?? ''}
             onValueChange={(value) => handleChange(fieldName, value)}
           />
         </Label.Block>
@@ -248,30 +308,49 @@ export function SetupTool({
       <H2 className="text-2xl mb-6">{setupToolText.specifyConfigurationSetup()}</H2>
       {currentStep < resources.length ? (
         <>
-          <Container.Center className="p-3 shadow-md max-w-lg">
-            <Form
-              className="flex-1 overflow-auto gap-2"
-              forwardRef={formRef}
-              id={id('form')}
-              onSubmit={handleSubmit}
-            >
-              <H3 className="text-xl font-semibold mb-4">
-                {resources[currentStep].label}
-              </H3>
-              {resources[currentStep].description !== undefined ? (
-                <p className="text-md font-semibold mb-4">
-                  {resources[currentStep].description}
-                </p>
-              ) : undefined}
-              {renderFormFields(resources[currentStep].fields)}
-            </Form>
-            <Submit.Save className="self-start" form={id('form')}>
-              {setupToolText.saveAndContinue()}
-            </Submit.Save>
-          </Container.Center>
-          <Container.Center className="p-3 shadow-md max-w-lg">
-            <Progress max={stepOrder.length} value={currentStep} />
-          </Container.Center>
+          <div className="flex w-full justify-center gap-8">
+            <div>
+              <Container.Center className="p-3 shadow-md max-w-lg h-full">
+                <H3 className="text-xl font-semibold mb-4">
+                  {setupToolText.overview()}
+                </H3>
+                <pre className="text-xs whitespace-pre-wrap break-all">
+                  {JSON.stringify(formData, null, 2)}
+                </pre>
+              </Container.Center>
+            </div>
+            <div>
+              <Container.Center className="p-3 shadow-md max-w-lg">
+                <Form
+                  className="flex-1 overflow-auto gap-2"
+                  forwardRef={formRef}
+                  id={id('form')}
+                  onSubmit={handleSubmit}
+                >
+                  <H3 className="text-xl font-semibold mb-4">
+                    {resources[currentStep].label}
+                  </H3>
+                  {resources[currentStep].description !== undefined ? (
+                    <p className="text-md font-semibold mb-4">
+                      {resources[currentStep].description}
+                    </p>
+                  ) : undefined}
+                  {renderFormFields(resources[currentStep].fields)}
+                </Form>
+                <div className="flex flex-row gap-2 justify-end">
+                  <Button.Secondary className="self-start" onClick={handleBack}>
+                    {commonText.back()}
+                  </Button.Secondary>
+                  <Submit.Save className="self-start" form={id('form')}>
+                    {setupToolText.saveAndContinue()}
+                  </Submit.Save>
+                </div>
+              </Container.Center>
+              <Container.Center className="p-3 shadow-md max-w-lg">
+                <Progress max={stepOrder.length} value={currentStep} />
+              </Container.Center>
+            </div>
+          </div>
         </>
       ) : (
         <p className="mt-6 text-green-600 font-semibold">
@@ -293,6 +372,13 @@ function flattenToNested(data: Record<string, any>): Record<string, any> {
     } else {
       result[key] = value;
     }
+  });
+  return result;
+}
+function flattenAllResources(data: Record<string, any>): Record<string, any> {
+  const result: Record<string, any> = {};
+  Object.entries(data).forEach(([key, value]) => {
+    result[key] = flattenToNested(value);
   });
   return result;
 }
