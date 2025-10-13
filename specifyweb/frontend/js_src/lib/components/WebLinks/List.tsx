@@ -18,7 +18,7 @@ export function WebLinkList({
 
   return (
     <div className="flex flex-col gap-2 overflow-auto">
-      <h4 className="text-xl">{resourcesText.availableWebLinks()}</h4>
+      <h4 className="text-xl">{resourcesText.availableWebLink()}</h4>
       <Ul className="grid grid-cols-[auto_1fr] gap-1 overflow-y-auto">
         {items.map((item, index) => (
           <li className="contents" key={index}>
