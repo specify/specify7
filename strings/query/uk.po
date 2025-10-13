@@ -379,7 +379,7 @@ msgid "or"
 msgstr "або"
 
 #: utils/__tests__/fieldFormat.test.ts:92
-#: utils/parser/definitions.ts:119
+#: utils/parser/definitions.ts:121
 #. Used in: Utils > __tests__ > Field Format ⬤ Utils > Parser > Definitions
 msgid "yes"
 msgstr "Так"
@@ -461,23 +461,28 @@ msgstr "в минулому"
 
 #: components/QueryBuilder/RelativeDate.tsx:169
 #. Used in: Components > Query Builder > Relative Date
-msgid "day"
+msgid "days"
 msgstr "днів"
 
 #: components/QueryBuilder/RelativeDate.tsx:170
 #. Used in: Components > Query Builder > Relative Date
-msgid "week"
+msgid "weeks"
 msgstr "тижнів"
 
 #: components/QueryBuilder/RelativeDate.tsx:171
 #. Used in: Components > Query Builder > Relative Date
-msgid "month"
+msgid "months"
 msgstr "Місяці"
 
 #: components/QueryBuilder/RelativeDate.tsx:172
 #. Used in: Components > Query Builder > Relative Date
-msgid "year"
+msgid "years"
 msgstr "років"
+
+#: components/FieldFormatters/index.ts:326
+#. Used in: Components > Field Formatters > Index
+msgid "year"
+msgstr "рік"
 
 #: components/QueryBuilder/RelativeDate.tsx:190
 #. 🟥Used in query builder lines, will be shown as a number followed by a period of time (ie: day, month or week) then a direction (past or future). Used in: Components > Query Builder > Relative Date

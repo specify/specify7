@@ -238,7 +238,7 @@ msgstr "Objeto actual (de {total:number|formatted})"
 msgid "unsavedFormUnloadProtect"
 msgstr "Este formulario no ha sido guardado."
 
-#: components/AttachmentsBulkImport/utils.ts:482
+#: components/AttachmentsBulkImport/utils.ts:471
 #: components/Forms/Save.tsx:305
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 #, fuzzy
@@ -337,9 +337,9 @@ msgstr ""
 msgid "pluginName"
 msgstr "Nombre del complemento"
 
-#: utils/parser/definitions.ts:112
+#: utils/parser/definitions.ts:114
+#: utils/parser/__tests__/definitions.test.ts:184
 #: utils/parser/__tests__/definitions.test.ts:186
-#: utils/parser/__tests__/definitions.test.ts:188
 #. 🟥Yes/No probably shouldn't be translated as Specify 7 does not support changing which values are recognized as Yes/No in a given language. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
 msgid "illegalBool"
 msgstr "Valor ilegal para un campo Sí/No"
@@ -358,27 +358,27 @@ msgstr "Se requiere campo."
 #: components/ExportFeed/Editor.tsx:399
 #: components/ExportFeed/Editor.tsx:403
 #: components/QueryComboBox/index.tsx:192
+#: utils/parser/__tests__/definitions.test.ts:203
 #: utils/parser/__tests__/definitions.test.ts:205
-#: utils/parser/__tests__/definitions.test.ts:207
+#: utils/parser/__tests__/definitions.test.ts:221
 #: utils/parser/__tests__/definitions.test.ts:223
-#: utils/parser/__tests__/definitions.test.ts:225
 #. Used in: Components > Export Feed > Editor ⬤ Components > Query Combo Box > Index ⬤ Parser > __tests__ > Definitions
 msgid "invalidValue"
 msgstr "Hoy"
 
 #: components/FormPlugins/DateInput.tsx:82
 #: components/FormPlugins/DateInput.tsx:84
-#: utils/parser/definitions.ts:206
 #: utils/parser/definitions.ts:208
+#: utils/parser/definitions.ts:210
 #: utils/parser/definitions.ts:374
-#: utils/parser/__tests__/definitions.test.ts:80
+#: utils/parser/__tests__/definitions.test.ts:78
 #: utils/parser/__tests__/parse.test.ts:228
 #. 🟥Used in field validation messages on the form. Used in: Components > Form Plugins > Date Input ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
 msgid "requiredFormat"
 msgstr "Formato requerido: {format:string}."
 
 #: hooks/__tests__/useResourceValue.test.tsx:195
-#: utils/parser/definitions.ts:51
+#: utils/parser/definitions.ts:52
 #: utils/parser/__tests__/parse.test.ts:139
 #: utils/parser/__tests__/parse.test.ts:158
 #: utils/parser/__tests__/parse.test.ts:181
@@ -498,14 +498,14 @@ msgstr "Añadir a {recordSetTable:string}"
 msgid "removeFromRecordSet"
 msgstr "Eliminar de {recordSetTable:string}"
 
-#: components/AttachmentsBulkImport/utils.ts:484
+#: components/AttachmentsBulkImport/utils.ts:473
 #: components/Molecules/AutoComplete.tsx:532
 #. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Auto Complete
 #, fuzzy
 msgid "nothingFound"
 msgstr "No se encontró nada"
 
-#: components/Forms/BulkCarryForward.tsx:288
+#: components/Forms/BulkCarryForward.tsx:290
 #: components/Forms/Save.tsx:253
 #. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 #, fuzzy
@@ -524,7 +524,7 @@ msgstr "Mostrar el botón Llevar adelante"
 msgid "bulkCarryForwardEnabled"
 msgstr "Mostrar recuento de transferencia masiva"
 
-#: components/Forms/BulkCarryForward.tsx:252
+#: components/Forms/BulkCarryForward.tsx:254
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardCount"
@@ -550,25 +550,25 @@ msgstr "Configurar campos para transferir"
 msgid "bulkCarryForwardSettingsDescription"
 msgstr "Configurar campos para transferirlos en masa"
 
-#: components/FormMeta/CarryForward.tsx:393
+#: components/FormMeta/CarryForward.tsx:394
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardTableSettingsDescription"
 msgstr "Configurar campos para trasladar ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:390
+#: components/FormMeta/CarryForward.tsx:391
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardTableSettingsDescription"
 msgstr "Configurar campos para transferirlos en masa ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:463
+#: components/FormMeta/CarryForward.tsx:464
 #. Used in: Components > Form Meta > Carry Forward
 #, fuzzy
 msgid "carryForwardUniqueField"
 msgstr "Este campo debe ser único. No se puede transferir."
 
-#: components/FormMeta/CarryForward.tsx:465
+#: components/FormMeta/CarryForward.tsx:466
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardRequiredField"
 msgstr "Este campo es obligatorio. Debe ser transferido"
@@ -579,7 +579,7 @@ msgstr "Este campo es obligatorio. Debe ser transferido"
 msgid "bulkCarryForwardRangeEnabled"
 msgstr "Mostrar rango de transferencia masiva"
 
-#: components/Forms/BulkCarryForward.tsx:307
+#: components/Forms/BulkCarryForward.tsx:309
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeErrorDescription"
@@ -587,25 +587,25 @@ msgstr ""
 "No se puede trasladar el registro a través del rango {field:string} "
 "especificado."
 
-#: components/Forms/BulkCarryForward.tsx:301
+#: components/Forms/BulkCarryForward.tsx:303
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeLimitExceeded"
 msgstr "El rango excede el límite de registro de {limit:number}."
 
-#: components/Forms/BulkCarryForward.tsx:293
+#: components/Forms/BulkCarryForward.tsx:295
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeExistingRecords"
 msgstr "Los siguientes números para {field:string} ya se están utilizando:"
 
-#: components/Forms/BulkCarryForward.tsx:174
+#: components/Forms/BulkCarryForward.tsx:176
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeStart"
 msgstr "Arranque del rango de avance"
 
-#: components/Forms/BulkCarryForward.tsx:182
+#: components/Forms/BulkCarryForward.tsx:184
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeEnd"
@@ -641,6 +641,16 @@ msgstr "Crear un nuevo registro en blanco"
 #, fuzzy
 msgid "autoNumbering"
 msgstr "Numeración automática"
+
+#: components/FieldFormatters/Parts.tsx:205
+#. Used in: Components > Field Formatters > Parts
+msgid "autoNumberByYear"
+msgstr "Auto-número por año"
+
+#: components/FieldFormatters/Parts.tsx:191
+#. Used in: Components > Field Formatters > Parts
+msgid "autoNumber"
+msgstr "Auto-número"
 
 #: components/FormMeta/Definition.tsx:153
 #. Used in: Components > Form Meta > Definition
@@ -807,7 +817,7 @@ msgstr "El artículo fue eliminado exitosamente."
 msgid "dateRange"
 msgstr "(Rango: {from:string} - {to:string})"
 
-#: components/FieldFormatters/index.ts:293
+#: components/FieldFormatters/index.ts:296
 #. 🟥Meaning "Catalog Number Numeric formatter". Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "catalogNumberNumericFormatter"

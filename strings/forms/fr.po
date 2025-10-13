@@ -239,7 +239,7 @@ msgstr "Objet actuel (sur {total:number|formatted})"
 msgid "unsavedFormUnloadProtect"
 msgstr "Ce formulaire n'a pas été enregistré."
 
-#: components/AttachmentsBulkImport/utils.ts:482
+#: components/AttachmentsBulkImport/utils.ts:471
 #: components/Forms/Save.tsx:305
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 #, fuzzy
@@ -337,9 +337,9 @@ msgstr ""
 msgid "pluginName"
 msgstr "Nom du plugin"
 
-#: utils/parser/definitions.ts:112
+#: utils/parser/definitions.ts:114
+#: utils/parser/__tests__/definitions.test.ts:184
 #: utils/parser/__tests__/definitions.test.ts:186
-#: utils/parser/__tests__/definitions.test.ts:188
 #. 🟥Yes/No probably shouldn't be translated as Specify 7 does not support changing which values are recognized as Yes/No in a given language. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
 msgid "illegalBool"
 msgstr "Valeur interdite pour un champ Oui/Non"
@@ -359,27 +359,27 @@ msgstr "Le champ est obligatoire."
 #: components/ExportFeed/Editor.tsx:399
 #: components/ExportFeed/Editor.tsx:403
 #: components/QueryComboBox/index.tsx:192
+#: utils/parser/__tests__/definitions.test.ts:203
 #: utils/parser/__tests__/definitions.test.ts:205
-#: utils/parser/__tests__/definitions.test.ts:207
+#: utils/parser/__tests__/definitions.test.ts:221
 #: utils/parser/__tests__/definitions.test.ts:223
-#: utils/parser/__tests__/definitions.test.ts:225
 #. Used in: Components > Export Feed > Editor ⬤ Components > Query Combo Box > Index ⬤ Parser > __tests__ > Definitions
 msgid "invalidValue"
 msgstr "Valeur invalide"
 
 #: components/FormPlugins/DateInput.tsx:82
 #: components/FormPlugins/DateInput.tsx:84
-#: utils/parser/definitions.ts:206
 #: utils/parser/definitions.ts:208
+#: utils/parser/definitions.ts:210
 #: utils/parser/definitions.ts:374
-#: utils/parser/__tests__/definitions.test.ts:80
+#: utils/parser/__tests__/definitions.test.ts:78
 #: utils/parser/__tests__/parse.test.ts:228
 #. 🟥Used in field validation messages on the form. Used in: Components > Form Plugins > Date Input ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
 msgid "requiredFormat"
 msgstr "Format requis : {format:string}."
 
 #: hooks/__tests__/useResourceValue.test.tsx:195
-#: utils/parser/definitions.ts:51
+#: utils/parser/definitions.ts:52
 #: utils/parser/__tests__/parse.test.ts:139
 #: utils/parser/__tests__/parse.test.ts:158
 #: utils/parser/__tests__/parse.test.ts:181
@@ -491,13 +491,13 @@ msgstr "Ajouter à {recordSetTable:string}"
 msgid "removeFromRecordSet"
 msgstr "Supprimer de {recordSetTable:string}"
 
-#: components/AttachmentsBulkImport/utils.ts:484
+#: components/AttachmentsBulkImport/utils.ts:473
 #: components/Molecules/AutoComplete.tsx:532
 #. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Auto Complete
 msgid "nothingFound"
 msgstr "Rien n'a été trouvé"
 
-#: components/Forms/BulkCarryForward.tsx:288
+#: components/Forms/BulkCarryForward.tsx:290
 #: components/Forms/Save.tsx:253
 #. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 msgid "carryForward"
@@ -514,7 +514,7 @@ msgstr "Afficher le bouton Reporter"
 msgid "bulkCarryForwardEnabled"
 msgstr "Afficher le nombre de reports en masse"
 
-#: components/Forms/BulkCarryForward.tsx:252
+#: components/Forms/BulkCarryForward.tsx:254
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardCount"
@@ -537,22 +537,22 @@ msgstr "Configurer les champs à reporter"
 msgid "bulkCarryForwardSettingsDescription"
 msgstr "Configurer les champs pour un report en masse"
 
-#: components/FormMeta/CarryForward.tsx:393
+#: components/FormMeta/CarryForward.tsx:394
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardTableSettingsDescription"
 msgstr "Configurer les champs à reporter ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:390
+#: components/FormMeta/CarryForward.tsx:391
 #. Used in: Components > Form Meta > Carry Forward
 msgid "bulkCarryForwardTableSettingsDescription"
 msgstr "Configurer les champs pour un report en masse ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:463
+#: components/FormMeta/CarryForward.tsx:464
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardUniqueField"
 msgstr "Ce champ doit être unique. Il ne peut pas être reporté."
 
-#: components/FormMeta/CarryForward.tsx:465
+#: components/FormMeta/CarryForward.tsx:466
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardRequiredField"
 msgstr "Ce champ est obligatoire. Il doit être reporté"
@@ -562,29 +562,29 @@ msgstr "Ce champ est obligatoire. Il doit être reporté"
 msgid "bulkCarryForwardRangeEnabled"
 msgstr "Afficher la plage de report en masse"
 
-#: components/Forms/BulkCarryForward.tsx:307
+#: components/Forms/BulkCarryForward.tsx:309
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeErrorDescription"
 msgstr ""
 "Impossible de reporter l'enregistrement sur la plage {field:string} "
 "spécifiée."
 
-#: components/Forms/BulkCarryForward.tsx:301
+#: components/Forms/BulkCarryForward.tsx:303
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeLimitExceeded"
 msgstr "La plage dépasse la limite d'enregistrement de {limit:number}."
 
-#: components/Forms/BulkCarryForward.tsx:293
+#: components/Forms/BulkCarryForward.tsx:295
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeExistingRecords"
 msgstr "Les numéros suivants pour {field:string} sont déjà utilisés :"
 
-#: components/Forms/BulkCarryForward.tsx:174
+#: components/Forms/BulkCarryForward.tsx:176
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeStart"
 msgstr "Début de la plage de report"
 
-#: components/Forms/BulkCarryForward.tsx:182
+#: components/Forms/BulkCarryForward.tsx:184
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeEnd"
 msgstr "Fin de la plage de report"
@@ -615,6 +615,16 @@ msgstr "Créer un nouvel enregistrement vierge"
 #. Used in: Components > Form Meta > Auto Numbering
 msgid "autoNumbering"
 msgstr "Numérotation automatique"
+
+#: components/FieldFormatters/Parts.tsx:205
+#. Used in: Components > Field Formatters > Parts
+msgid "autoNumberByYear"
+msgstr "Auto-numéro par année"
+
+#: components/FieldFormatters/Parts.tsx:191
+#. Used in: Components > Field Formatters > Parts
+msgid "autoNumber"
+msgstr "Auto-numéro"
 
 #: components/FormMeta/Definition.tsx:153
 #. Used in: Components > Form Meta > Definition
@@ -761,7 +771,7 @@ msgstr "L'élément a été supprimé avec succès."
 msgid "dateRange"
 msgstr "(Plage : {from:string} - {to:string})"
 
-#: components/FieldFormatters/index.ts:293
+#: components/FieldFormatters/index.ts:296
 #. 🟥Meaning "Catalog Number Numeric formatter". Used in: Components > Field Formatters > Index
 msgid "catalogNumberNumericFormatter"
 msgstr "Numéro de catalogue numérique"

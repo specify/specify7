@@ -232,7 +232,7 @@ msgstr "Поточний об'єкт (з {total:number|formatted})"
 msgid "unsavedFormUnloadProtect"
 msgstr "Цю форму не збережено."
 
-#: components/AttachmentsBulkImport/utils.ts:482
+#: components/AttachmentsBulkImport/utils.ts:471
 #: components/Forms/Save.tsx:305
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 msgid "saveConflict"
@@ -324,9 +324,9 @@ msgstr ""
 msgid "pluginName"
 msgstr "Назва плагіна"
 
-#: utils/parser/definitions.ts:112
+#: utils/parser/definitions.ts:114
+#: utils/parser/__tests__/definitions.test.ts:184
 #: utils/parser/__tests__/definitions.test.ts:186
-#: utils/parser/__tests__/definitions.test.ts:188
 #. 🟥Yes/No probably shouldn't be translated as Specify 7 does not support changing which values are recognized as Yes/No in a given language. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
 msgid "illegalBool"
 msgstr "Неприпустиме значення для поля «Так/Ні»"
@@ -345,27 +345,27 @@ msgstr "Поле обов'язкове для заповнення."
 #: components/ExportFeed/Editor.tsx:399
 #: components/ExportFeed/Editor.tsx:403
 #: components/QueryComboBox/index.tsx:192
+#: utils/parser/__tests__/definitions.test.ts:203
 #: utils/parser/__tests__/definitions.test.ts:205
-#: utils/parser/__tests__/definitions.test.ts:207
+#: utils/parser/__tests__/definitions.test.ts:221
 #: utils/parser/__tests__/definitions.test.ts:223
-#: utils/parser/__tests__/definitions.test.ts:225
 #. Used in: Components > Export Feed > Editor ⬤ Components > Query Combo Box > Index ⬤ Parser > __tests__ > Definitions
 msgid "invalidValue"
 msgstr "Недійсне значення"
 
 #: components/FormPlugins/DateInput.tsx:82
 #: components/FormPlugins/DateInput.tsx:84
-#: utils/parser/definitions.ts:206
 #: utils/parser/definitions.ts:208
+#: utils/parser/definitions.ts:210
 #: utils/parser/definitions.ts:374
-#: utils/parser/__tests__/definitions.test.ts:80
+#: utils/parser/__tests__/definitions.test.ts:78
 #: utils/parser/__tests__/parse.test.ts:228
 #. 🟥Used in field validation messages on the form. Used in: Components > Form Plugins > Date Input ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
 msgid "requiredFormat"
 msgstr "Необхідний формат: {format:string}."
 
 #: hooks/__tests__/useResourceValue.test.tsx:195
-#: utils/parser/definitions.ts:51
+#: utils/parser/definitions.ts:52
 #: utils/parser/__tests__/parse.test.ts:139
 #: utils/parser/__tests__/parse.test.ts:158
 #: utils/parser/__tests__/parse.test.ts:181
@@ -473,13 +473,13 @@ msgstr "Додати до {recordSetTable:string}"
 msgid "removeFromRecordSet"
 msgstr "Видалити з {recordSetTable:string}"
 
-#: components/AttachmentsBulkImport/utils.ts:484
+#: components/AttachmentsBulkImport/utils.ts:473
 #: components/Molecules/AutoComplete.tsx:532
 #. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Auto Complete
 msgid "nothingFound"
 msgstr "Нічого не знайдено"
 
-#: components/Forms/BulkCarryForward.tsx:288
+#: components/Forms/BulkCarryForward.tsx:290
 #: components/Forms/Save.tsx:253
 #. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 msgid "carryForward"
@@ -495,7 +495,7 @@ msgstr "Показати кнопку «Перенести вперед»"
 msgid "bulkCarryForwardEnabled"
 msgstr "Показати кількість групового перенесення"
 
-#: components/Forms/BulkCarryForward.tsx:252
+#: components/Forms/BulkCarryForward.tsx:254
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardCount"
 msgstr "Кількість перенесених даних"
@@ -517,22 +517,22 @@ msgstr "Налаштуйте поля для перенесення"
 msgid "bulkCarryForwardSettingsDescription"
 msgstr "Налаштуйте поля для масового перенесення"
 
-#: components/FormMeta/CarryForward.tsx:393
+#: components/FormMeta/CarryForward.tsx:394
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardTableSettingsDescription"
 msgstr "Налаштуйте поля для перенесення ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:390
+#: components/FormMeta/CarryForward.tsx:391
 #. Used in: Components > Form Meta > Carry Forward
 msgid "bulkCarryForwardTableSettingsDescription"
 msgstr "Налаштуйте поля для масового перенесення ({tableName:string})"
 
-#: components/FormMeta/CarryForward.tsx:463
+#: components/FormMeta/CarryForward.tsx:464
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardUniqueField"
 msgstr "Це поле має бути унікальним. Його не можна переносити"
 
-#: components/FormMeta/CarryForward.tsx:465
+#: components/FormMeta/CarryForward.tsx:466
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardRequiredField"
 msgstr "Це поле обов'язкове. Його потрібно перенести"
@@ -542,27 +542,27 @@ msgstr "Це поле обов'язкове. Його потрібно пере�
 msgid "bulkCarryForwardRangeEnabled"
 msgstr "Показати діапазон масового перенесення"
 
-#: components/Forms/BulkCarryForward.tsx:307
+#: components/Forms/BulkCarryForward.tsx:309
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeErrorDescription"
 msgstr "Неможливо перенести запис у вказаний діапазон {field:string}."
 
-#: components/Forms/BulkCarryForward.tsx:301
+#: components/Forms/BulkCarryForward.tsx:303
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeLimitExceeded"
 msgstr "Діапазон перевищує ліміт записів {limit:number}."
 
-#: components/Forms/BulkCarryForward.tsx:293
+#: components/Forms/BulkCarryForward.tsx:295
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeExistingRecords"
 msgstr "Наступні номери для {field:string} вже використовуються:"
 
-#: components/Forms/BulkCarryForward.tsx:174
+#: components/Forms/BulkCarryForward.tsx:176
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeStart"
 msgstr "Початок діапазону перенесення вперед"
 
-#: components/Forms/BulkCarryForward.tsx:182
+#: components/Forms/BulkCarryForward.tsx:184
 #. Used in: Components > Forms > Bulk Carry Forward
 msgid "bulkCarryForwardRangeEnd"
 msgstr "Кінець діапазону перенесення вперед"
@@ -592,6 +592,16 @@ msgstr "Створити новий пустий запис"
 #. Used in: Components > Form Meta > Auto Numbering
 msgid "autoNumbering"
 msgstr "Автоматична нумерація"
+
+#: components/FieldFormatters/Parts.tsx:205
+#. Used in: Components > Field Formatters > Parts
+msgid "autoNumberByYear"
+msgstr "Автонумерація за роком"
+
+#: components/FieldFormatters/Parts.tsx:191
+#. Used in: Components > Field Formatters > Parts
+msgid "autoNumber"
+msgstr "Автонумерація"
 
 #: components/FormMeta/Definition.tsx:153
 #. Used in: Components > Form Meta > Definition
@@ -733,7 +743,7 @@ msgstr "Елемент успішно видалено."
 msgid "dateRange"
 msgstr "(Діапазон: {from:string} - {to:string})"
 
-#: components/FieldFormatters/index.ts:293
+#: components/FieldFormatters/index.ts:296
 #. 🟥Meaning "Catalog Number Numeric formatter". Used in: Components > Field Formatters > Index
 msgid "catalogNumberNumericFormatter"
 msgstr "Номер у каталозі (числовий)"

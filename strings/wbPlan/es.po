@@ -85,7 +85,7 @@ msgstr "Campos Opcionales"
 msgid "hiddenFields"
 msgstr "Campos Ocultos"
 
-#: components/FormMeta/CarryForward.tsx:425
+#: components/FormMeta/CarryForward.tsx:426
 #: components/QueryBuilder/Toolbar.tsx:42
 #: components/WbPlanView/MapperComponents.tsx:76
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
@@ -175,7 +175,7 @@ msgstr ""
 "cargar por su configuración de Especificar. Agregue las asignaciones "
 "faltantes que se muestran o guarde este plan de carga como inacabado."
 
-#: components/Formatters/Components.tsx:220
+#: components/Formatters/Components.tsx:226
 #. 🟥I.e, this field must be mapped before you can continue. Used in: Components > Formatters > Components
 msgid "mappingIsRequired"
 msgstr "Se requiere asignación"

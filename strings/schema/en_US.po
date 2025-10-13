@@ -50,16 +50,17 @@ msgstr "Schema changes have not been saved"
 msgid "changeBaseTable"
 msgstr "Change Base Table"
 
+#: components/FieldFormatters/FieldFormatter.tsx:59
 #: components/Formatters/Fields.tsx:75
 #: components/LocalityUpdate/Status.tsx:377
 #: components/LocalityUpdate/Status.tsx:422
 #: components/SchemaConfig/Field.tsx:43
 #: components/WebLinks/Definition.tsx:25
-#. Used in: Components > Formatters > Fields ⬤ Components > Locality Update > Status ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
+#. Used in: Components > Field Formatters > Field Formatter ⬤ Components > Formatters > Fields ⬤ Components > Locality Update > Status ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
 msgid "field"
 msgstr "Field"
 
-#: components/FormMeta/CarryForward.tsx:404
+#: components/FormMeta/CarryForward.tsx:405
 #: components/Forms/generateFormDefinition.ts:130
 #: components/SchemaConfig/Fields.tsx:49
 #: components/SchemaConfig/Fields.tsx:60
@@ -69,7 +70,7 @@ msgstr "Field"
 msgid "fields"
 msgstr "Fields"
 
-#: components/FormMeta/CarryForward.tsx:413
+#: components/FormMeta/CarryForward.tsx:414
 #: components/Forms/generateFormDefinition.ts:168
 #: components/SchemaConfig/Fields.tsx:68
 #: components/SchemaConfig/UniquenessRuleRow.tsx:254
@@ -168,28 +169,28 @@ msgstr "Length"
 msgid "readOnly"
 msgstr "Read-only"
 
-#: components/SchemaConfig/Format.tsx:66
+#: components/SchemaConfig/Format.tsx:67
 #. Used in: Components > Schema Config > Format
 msgid "fieldFormat"
 msgstr "Field Format"
 
-#: components/SchemaConfig/Format.tsx:83
+#: components/SchemaConfig/Format.tsx:91
 #. Used in: Components > Schema Config > Format
 msgid "uiFormattersForField"
 msgstr "Field Formatters for {fieldLabel:string}"
 
-#: components/SchemaConfig/Format.tsx:76
+#: components/SchemaConfig/Format.tsx:84
 #. Used in: Components > Schema Config > Format
 msgid "formatted"
 msgstr "Formatted"
 
-#: components/SchemaConfig/Format.tsx:123
+#: components/SchemaConfig/Format.tsx:131
 #: components/WebLinks/Element.tsx:26
 #. Used in: Components > Schema Config > Format ⬤ Components > Web Links > Element
 msgid "webLink"
 msgstr "Web Link"
 
-#: components/SchemaConfig/Format.tsx:151
+#: components/SchemaConfig/Format.tsx:159
 #. Used in: Components > Schema Config > Format
 msgid "userDefined"
 msgstr "User Defined"

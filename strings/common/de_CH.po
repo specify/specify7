@@ -19,7 +19,7 @@ msgstr "Specify 7"
 
 #: components/Preferences/UserDefinitions.tsx:1860
 #: components/WorkBench/DataSetMeta.tsx:286
-#: utils/parser/definitions.ts:120
+#: utils/parser/definitions.ts:122
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
 msgid "no"
 msgstr "Nein"
@@ -103,9 +103,10 @@ msgstr "Nein"
 msgid "cancel"
 msgstr "Abbrechen"
 
+#: components/Formatters/List.tsx:115
 #: components/SchemaConfig/Languages.tsx:73
 #: components/SchemaConfig/Tables.tsx:45
-#. Used in: Components > Schema Config > Languages ⬤ Components > Schema Config > Tables
+#. Used in: Components > Formatters > List ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Tables
 msgid "back"
 msgstr "Zurück"
 
@@ -179,7 +180,7 @@ msgstr "Erstellen"
 #: components/FormEditor/Create.tsx:208
 #: components/FormEditor/Table.tsx:82
 #: components/FormMeta/AutoNumbering.tsx:91
-#: components/FormMeta/CarryForward.tsx:384
+#: components/FormMeta/CarryForward.tsx:385
 #: components/FormMeta/Definition.tsx:73
 #: components/FormMeta/EditHistory.tsx:53
 #: components/FormMeta/PickListUsages.tsx:44
@@ -197,9 +198,9 @@ msgstr "Erstellen"
 #: components/FormSliders/AttachmentWarningDeletion.tsx:39
 #: components/FormSliders/AttachmentsCollection.tsx:87
 #: components/FormSliders/RecordSet.tsx:523
-#: components/Formatters/Element.tsx:66
-#: components/Formatters/Element.tsx:88
-#: components/Forms/BulkCarryForward.tsx:285
+#: components/Formatters/Element.tsx:65
+#: components/Formatters/Element.tsx:87
+#: components/Forms/BulkCarryForward.tsx:287
 #: components/Forms/DataTask.tsx:134
 #: components/Forms/DeleteButton.tsx:176
 #: components/Forms/ResourceView.tsx:224
@@ -348,14 +349,15 @@ msgstr "Speichern"
 #: components/Atoms/DataEntry.tsx:148
 #: components/ExportFeed/Editor.tsx:137
 #: components/FormSliders/RecordSelectorFromIds.tsx:180
-#: components/Formatters/List.tsx:138
+#: components/Formatters/List.tsx:149
 #: components/Forms/Save.tsx:279
 #: components/Merging/CompareSubView.tsx:184
 #: components/Molecules/AutoComplete.tsx:524
 #: components/PickLists/index.tsx:286
 #: components/QueryBuilder/Wrapped.tsx:484
-#: components/SchemaConfig/Format.tsx:291
-#: components/SchemaConfig/Format.tsx:339
+#: components/SchemaConfig/Format.tsx:299
+#: components/SchemaConfig/Format.tsx:349
+#: components/SchemaConfig/Format.tsx:394
 #: components/SchemaConfig/Languages.tsx:75
 #: components/SchemaConfig/Table.tsx:178
 #: components/SchemaConfig/UniquenessRuleRow.tsx:298
@@ -369,7 +371,7 @@ msgstr "Speichern"
 #: components/Toolbar/ListEdit.tsx:144
 #: components/WbPlanView/navigator.ts:350
 #: components/WebLinks/Definition.tsx:117
-#: components/WebLinks/List.tsx:53
+#: components/WebLinks/List.tsx:50
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > List ⬤ Components > Forms > Save ⬤ Components > Merging > Compare Sub View ⬤ Components > Molecules > Auto Complete ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Wrapped ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Table ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Security > Collection Role ⬤ Components > Security > Policies ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Toolbar > List Edit ⬤ Components > Wb Plan View > Navigator ⬤ Components > Web Links > Definition ⬤ Components > Web Links > List
 msgid "add"
 msgstr "Hinzufügen"
@@ -380,7 +382,7 @@ msgid "open"
 msgstr "Öffnen"
 
 #: components/FormSliders/RecordSelectorFromIds.tsx:185
-#: components/Formatters/Element.tsx:83
+#: components/Formatters/Element.tsx:82
 #: components/Forms/DeleteButton.tsx:82
 #: components/Forms/DeleteButton.tsx:97
 #: components/Forms/DeleteButton.tsx:142
@@ -432,8 +434,8 @@ msgstr "Tools"
 #: components/FormFields/Field.tsx:84
 #: components/FormPlugins/CollectionRelOneToMany.tsx:158
 #: components/FormPlugins/CollectionRelOneToOne.tsx:43
-#: components/Formatters/Preview.tsx:105
-#: components/Formatters/Preview.tsx:146
+#: components/Formatters/Preview.tsx:108
+#: components/Formatters/Preview.tsx:155
 #: components/Forms/BaseResourceView.tsx:61
 #: components/Forms/DeleteButton.tsx:122
 #: components/Forms/SubView.tsx:196
@@ -444,7 +446,7 @@ msgstr "Tools"
 #: components/Interactions/PrepReturnRow.tsx:93
 #: components/Interactions/PrepReturnRow.tsx:94
 #: components/Interactions/PrepReturnRow.tsx:96
-#: components/Leaflet/index.ts:194
+#: components/Leaflet/index.ts:196
 #: components/Merging/Usages.tsx:49
 #: components/Molecules/AutoComplete.tsx:440
 #: components/Molecules/FormattedResource.tsx:16
@@ -493,7 +495,7 @@ msgid "loading"
 msgstr "Laden …"
 
 #: components/AttachmentsBulkImport/Upload.tsx:270
-#: components/AttachmentsBulkImport/utils.ts:468
+#: components/AttachmentsBulkImport/utils.ts:457
 #: components/WorkBench/DataSetMeta.tsx:293
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Work Bench > Data Set Meta
 msgid "uploaded"
@@ -502,6 +504,8 @@ msgstr "Hochgeladen"
 #: components/Atoms/DataEntry.tsx:163
 #: components/ExportFeed/Editor.tsx:155
 #: components/ExportFeed/Editor.tsx:157
+#: components/FieldFormatters/Parts.tsx:222
+#: components/FieldFormatters/Parts.tsx:223
 #: components/FormCells/FormTable.tsx:497
 #: components/FormCells/FormTable.tsx:509
 #: components/FormPlugins/CollectionRelOneToMany.tsx:136
@@ -519,12 +523,12 @@ msgstr "Hochgeladen"
 #: components/Statistics/StatsPageEditing.tsx:37
 #: components/Statistics/StatsResult.tsx:62
 #: components/Toolbar/ListEdit.tsx:150
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Form Cells > Form Table ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Formatters > Fields ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Field Filter Tool ⬤ Components > Query Builder > Line ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Policy ⬤ Components > Security > Role ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > List Edit
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Field Formatters > Parts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Formatters > Fields ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Field Filter Tool ⬤ Components > Query Builder > Line ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Policy ⬤ Components > Security > Role ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > List Edit
 msgid "remove"
 msgstr "Entfernen"
 
 #: components/Atoms/DataEntry.tsx:158
-#: components/Formatters/Preview.tsx:75
+#: components/Formatters/Preview.tsx:78
 #: components/Header/ExpressSearchTask.tsx:50
 #: components/Header/ExpressSearchTask.tsx:90
 #: components/Header/ExpressSearchTask.tsx:95
@@ -582,8 +586,9 @@ msgstr "Neu"
 #: components/Molecules/ResourceLink.tsx:140
 #: components/Reports/index.tsx:258
 #: components/Reports/index.tsx:262
-#: components/SchemaConfig/Format.tsx:270
-#: components/SchemaConfig/Format.tsx:326
+#: components/SchemaConfig/Format.tsx:278
+#: components/SchemaConfig/Format.tsx:338
+#: components/SchemaConfig/Format.tsx:383
 #: components/SchemaConfig/Table.tsx:165
 #: components/Security/UserComponents.tsx:154
 #: components/Security/UserComponents.tsx:158
@@ -654,11 +659,11 @@ msgstr "Ansicht"
 
 #: components/Atoms/Link.tsx:45
 #: components/Atoms/Link.tsx:46
-#: components/Leaflet/index.ts:184
-#: components/Leaflet/index.ts:188
-#: components/Leaflet/index.ts:189
-#: components/WorkBench/WbSpreadsheet.tsx:125
-#: components/WorkBench/WbSpreadsheet.tsx:126
+#: components/Leaflet/index.ts:186
+#: components/Leaflet/index.ts:190
+#: components/Leaflet/index.ts:191
+#: components/WorkBench/WbSpreadsheet.tsx:132
+#: components/WorkBench/WbSpreadsheet.tsx:133
 #. 🟥Used in a hover-over message for links that open in new tab. Used in: Components > Atoms > Link ⬤ Components > Leaflet > Index ⬤ Components > Work Bench > Wb Spreadsheet
 msgid "opensInNewTab"
 msgstr "(Öffnet sich in einer neuen Registerkarte)"
@@ -723,8 +728,10 @@ msgstr "Satzgruppen"
 msgid "recordCount"
 msgstr "Anzahl der Datensätze"
 
+#: components/FieldFormatters/Parts.tsx:52
+#: components/FieldFormatters/Parts.tsx:138
 #: components/Toolbar/RecordSets.tsx:172
-#. Used in: Components > Toolbar > Record Sets
+#. Used in: Components > Field Formatters > Parts ⬤ Components > Toolbar > Record Sets
 msgid "size"
 msgstr "Grösse"
 
@@ -768,7 +775,7 @@ msgstr "Sprache"
 msgid "country"
 msgstr "Land"
 
-#: components/Leaflet/index.ts:186
+#: components/Leaflet/index.ts:188
 #. Used in: Components > Leaflet > Index
 msgid "viewRecord"
 msgstr "Datensatz anzeigen"
@@ -934,7 +941,7 @@ msgstr "Auswählen"
 #: components/PickLists/definitions.ts:54
 #: components/Preferences/Renderers.tsx:158
 #: components/SchemaConfig/Components.tsx:77
-#: components/SchemaConfig/Format.tsx:69
+#: components/SchemaConfig/Format.tsx:70
 #: components/Security/Collection.tsx:157
 #: components/Security/ImportExport.tsx:120
 #: components/Security/PreviewComponents.tsx:133
@@ -983,7 +990,7 @@ msgid "jsxCountLine"
 msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 
 #: components/ChooseCollection/index.tsx:138
-#: components/Formatters/List.tsx:108
+#: components/Formatters/List.tsx:119
 #: components/HomePage/AboutSpecify.tsx:123
 #: components/HomePage/AboutSpecify.tsx:127
 #: components/HomePage/AboutSpecify.tsx:131
@@ -996,16 +1003,16 @@ msgstr "{header:string}:"
 
 #: components/AttachmentsBulkImport/ActionState.tsx:29
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:159
-#: components/AttachmentsBulkImport/utils.ts:500
+#: components/AttachmentsBulkImport/utils.ts:489
 #: components/FormCells/index.tsx:318
 #: components/FormCommands/index.tsx:128
 #: components/FormPlugins/index.tsx:207
 #: components/FormSliders/RecordSet.tsx:394
-#: components/Formatters/Element.tsx:92
+#: components/Formatters/Element.tsx:91
 #: components/Formatters/Formatter.tsx:126
 #: components/Forms/BaseResourceView.tsx:132
 #: components/Forms/Save.tsx:344
-#: components/Leaflet/index.ts:171
+#: components/Leaflet/index.ts:173
 #: components/LocalityUpdate/Status.tsx:522
 #: components/LocalityUpdate/utils.ts:64
 #: components/Merging/Header.tsx:213

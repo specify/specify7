@@ -71,7 +71,7 @@ msgstr "Subiendo…"
 
 #: components/Attachments/Gallery.tsx:137
 #: components/Attachments/RecordSetAttachment.tsx:174
-#: components/AttachmentsBulkImport/utils.ts:474
+#: components/AttachmentsBulkImport/utils.ts:463
 #. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 msgid "noAttachments"
 msgstr "No hay adjuntos"
@@ -102,12 +102,12 @@ msgid "fileSize"
 msgstr "Tamaño del archivo"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:149
-#: components/AttachmentsBulkImport/utils.ts:469
+#: components/AttachmentsBulkImport/utils.ts:458
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils
 msgid "deleted"
 msgstr "Eliminado"
 
-#: components/AttachmentsBulkImport/utils.ts:467
+#: components/AttachmentsBulkImport/utils.ts:456
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "noFile"
 msgstr "Ningún archivo"
@@ -117,43 +117,43 @@ msgstr "Ningún archivo"
 msgid "pleaseReselectAllFiles"
 msgstr "Por favor, vuelva a seleccionar todos los archivos antes de cargarlos."
 
-#: components/AttachmentsBulkImport/utils.ts:466
+#: components/AttachmentsBulkImport/utils.ts:455
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "incorrectFormatter"
 msgstr "Formateado incorrectamente"
 
-#: components/AttachmentsBulkImport/utils.ts:470
+#: components/AttachmentsBulkImport/utils.ts:459
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "alreadyUploaded"
 msgstr "Ya se ha cargado"
 
-#: components/AttachmentsBulkImport/utils.ts:471
+#: components/AttachmentsBulkImport/utils.ts:460
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "skipped"
 msgstr "Omitido"
 
-#: components/AttachmentsBulkImport/utils.ts:472
+#: components/AttachmentsBulkImport/utils.ts:461
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "cancelled"
 msgstr "Anulado"
 
-#: components/AttachmentsBulkImport/utils.ts:475
-#: components/AttachmentsBulkImport/utils.ts:478
+#: components/AttachmentsBulkImport/utils.ts:464
+#: components/AttachmentsBulkImport/utils.ts:467
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "frontEndInterruption"
 msgstr "{action:string} estaba en curso cuando se produjo la interrupción"
 
-#: components/AttachmentsBulkImport/utils.ts:473
+#: components/AttachmentsBulkImport/utils.ts:462
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "matchError"
 msgstr "Error de coincidencia"
 
-#: components/AttachmentsBulkImport/utils.ts:481
+#: components/AttachmentsBulkImport/utils.ts:470
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "errorReadingFile"
 msgstr "Error al leer el archivo"
 
-#: components/AttachmentsBulkImport/utils.ts:483
+#: components/AttachmentsBulkImport/utils.ts:472
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "unhandledFatalResourceError"
 msgstr "Error de recurso fatal no controlado:"
@@ -241,7 +241,7 @@ msgstr ""
 "La reversión eliminará los archivos adjuntos de la base de datos Specify y "
 "del servidor de activos."
 
-#: components/AttachmentsBulkImport/utils.ts:485
+#: components/AttachmentsBulkImport/utils.ts:474
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "noMatch"
 msgstr "Sin coincidencia"
@@ -261,7 +261,7 @@ msgstr "Buscar más adjuntos"
 msgid "hideForm"
 msgstr "Ocultar formulario"
 
-#: components/AttachmentsBulkImport/utils.ts:486
+#: components/AttachmentsBulkImport/utils.ts:475
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "multipleMatches"
 msgstr "Múltiples coincidencias"
@@ -276,12 +276,12 @@ msgstr "Múltiples coincidencias. Haga clic para eliminar la ambigüedad"
 msgid "totalFiles"
 msgstr "Archivos totales"
 
-#: components/AttachmentsBulkImport/utils.ts:487
+#: components/AttachmentsBulkImport/utils.ts:476
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "correctlyFormatted"
 msgstr "Formateado correctamente"
 
-#: components/AttachmentsBulkImport/utils.ts:488
+#: components/AttachmentsBulkImport/utils.ts:477
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "stoppedByUser"
 msgstr "Detenido por el usuario"
@@ -311,17 +311,17 @@ msgstr ""
 "Los siguientes archivos no están seleccionados porque ya existen en este "
 "conjunto de datos."
 
-#: components/AttachmentsBulkImport/utils.ts:490
+#: components/AttachmentsBulkImport/utils.ts:479
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "errorFetchingRecord"
 msgstr "Error al obtener el registro"
 
-#: components/AttachmentsBulkImport/utils.ts:491
+#: components/AttachmentsBulkImport/utils.ts:480
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "errorSavingRecord"
 msgstr "Error al guardar el registro"
 
-#: components/AttachmentsBulkImport/utils.ts:489
+#: components/AttachmentsBulkImport/utils.ts:478
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "interruptionStopped"
@@ -363,7 +363,7 @@ msgstr ""
 "de carga. Además, después de la eliminación, la Reversión ya no será una "
 "opción para un conjunto de datos cargado."
 
-#: components/AttachmentsBulkImport/utils.ts:492
+#: components/AttachmentsBulkImport/utils.ts:481
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "attachmentUploadError"
 msgstr ""

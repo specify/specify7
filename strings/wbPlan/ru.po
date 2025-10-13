@@ -84,7 +84,7 @@ msgstr "Необязательные поля"
 msgid "hiddenFields"
 msgstr "Скрытые поля"
 
-#: components/FormMeta/CarryForward.tsx:425
+#: components/FormMeta/CarryForward.tsx:426
 #: components/QueryBuilder/Toolbar.tsx:42
 #: components/WbPlanView/MapperComponents.tsx:76
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
@@ -174,7 +174,7 @@ msgstr ""
 "недостающие сопоставления или сохраните этот план загрузки как "
 "незавершенный."
 
-#: components/Formatters/Components.tsx:220
+#: components/Formatters/Components.tsx:226
 #. 🟥I.e, this field must be mapped before you can continue. Used in: Components > Formatters > Components
 msgid "mappingIsRequired"
 msgstr "Необходимо сопоставление"

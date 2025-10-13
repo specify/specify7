@@ -62,9 +62,11 @@ msgid "disciplineResources"
 msgstr "Disziplin-Ressourcen"
 
 #: components/AppResources/Create.tsx:96
+#: components/FieldFormatters/Parts.tsx:51
+#: components/FieldFormatters/Parts.tsx:117
 #: components/SchemaConfig/Field.tsx:72
 #: components/WebLinks/Definition.tsx:49
-#. Used in: Components > App Resources > Create ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
+#. Used in: Components > App Resources > Create ⬤ Components > Field Formatters > Parts ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
 msgid "type"
 msgstr "Typ"
 
@@ -123,11 +125,17 @@ msgid "webLinks"
 msgstr "Weblinks"
 
 #: components/AppResources/types.tsx:160
-#: components/SchemaConfig/Format.tsx:100
-#. Used in: Components > App Resources > Types ⬤ Components > Schema Config > Format
+#: components/FieldFormatters/Element.tsx:16
+#: components/SchemaConfig/Format.tsx:108
+#. Used in: Components > App Resources > Types ⬤ Components > Field Formatters > Element ⬤ Components > Schema Config > Format
 #, fuzzy
 msgid "uiFormatters"
 msgstr "Feldformatierer"
+
+#: components/FieldFormatters/Table.tsx:28
+#. Used in: Components > Field Formatters > Table
+msgid "fieldFormattersDescription"
+msgstr ""
 
 #: components/AppResources/types.tsx:168
 #. Used in: Components > App Resources > Types
@@ -135,7 +143,7 @@ msgid "dataObjectFormatters"
 msgstr "Datensatz-Formatierer"
 
 #: components/Formatters/Aggregator.tsx:69
-#: components/Formatters/Element.tsx:128
+#: components/Formatters/Element.tsx:132
 #: components/Formatters/Fields.tsx:287
 #. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #, fuzzy
@@ -152,7 +160,7 @@ msgstr ""
 "bestimmt die anzuzeigenden Felder und deren Reihenfolge. Die bedingte "
 "Formatierung kann basierend auf einem Wert im Datensatz konfiguriert werden."
 
-#: components/Formatters/Element.tsx:129
+#: components/Formatters/Element.tsx:133
 #. Used in: Components > Formatters > Element
 #, fuzzy
 msgid "aggregator"
@@ -175,31 +183,36 @@ msgstr ""
 msgid "formattedResource"
 msgstr "Formatierte Ressource"
 
-#: components/Formatters/List.tsx:66
+#: components/Formatters/List.tsx:68
 #. Used in: Components > Formatters > List
 #, fuzzy
 msgid "availableFormatters"
 msgstr "Verfügbare Tabellenformate"
 
-#: components/Formatters/List.tsx:67
+#: components/Formatters/List.tsx:69
 #. Used in: Components > Formatters > List
 #, fuzzy
 msgid "availableAggregators"
 msgstr "Verfügbare Tabellenaggregationen"
 
-#: components/WebLinks/List.tsx:24
+#: components/WebLinks/List.tsx:21
 #. Used in: Components > Web Links > List
 #, fuzzy
 msgid "availableWebLink"
 msgstr "Verfügbare Weblinks"
 
-#: components/Formatters/List.tsx:127
+#: components/FieldFormatters/List.tsx:73
+#. Used in: Components > Field Formatters > List
+msgid "availableFieldFormatters"
+msgstr "Verfügbare Feldformatierer"
+
+#: components/Formatters/List.tsx:138
 #. Used in: Components > Formatters > List
 #, fuzzy
 msgid "selectDefaultFormatter"
-msgstr "Bitte wählen Sie einen Standard-Datensatzformatierer für diese Tabelle"
+msgstr ""
 
-#: components/Formatters/Element.tsx:52
+#: components/Formatters/Element.tsx:51
 #. Used in: Components > Formatters > Element
 #, fuzzy
 msgid "duplicateFormatters"
@@ -300,7 +313,7 @@ msgstr "Remote-Einstellungen"
 msgid "failedParsingXml"
 msgstr "XML konnte nicht analysiert werden"
 
-#: components/Formatters/Element.tsx:103
+#: components/Formatters/Element.tsx:102
 #: components/QueryBuilder/FieldFilterSpec.tsx:554
 #. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter Spec
 #, fuzzy
@@ -309,23 +322,24 @@ msgstr "Name"
 
 #: components/ExportFeed/Editor.tsx:50
 #: components/ExportFeed/Editor.tsx:164
-#: components/Formatters/Element.tsx:135
+#: components/Formatters/Element.tsx:169
 #. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
 #, fuzzy
 msgid "title"
 msgstr "Titel"
 
-#: components/Formatters/Element.tsx:161
-#: components/Formatters/List.tsx:117
+#: components/Formatters/Element.tsx:193
+#: components/Formatters/List.tsx:128
 #. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
 #, fuzzy
 msgid "default"
 msgstr "Standard"
 
+#: components/FieldFormatters/index.ts:332
 #: components/Formatters/Aggregator.tsx:28
 #: components/Formatters/Fields.tsx:74
 #: components/Formatters/Fields.tsx:178
-#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
+#. Used in: Components > Field Formatters > Index ⬤ Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "separator"
 msgstr "Separator"
@@ -342,8 +356,8 @@ msgstr "Suffix"
 msgid "limit"
 msgstr "Limit"
 
-#: components/Formatters/Components.tsx:72
-#: components/Formatters/Components.tsx:130
+#: components/Formatters/Components.tsx:73
+#: components/Formatters/Components.tsx:131
 #: components/QueryBuilder/Formatter.tsx:212
 #. Used in: Components > Formatters > Components ⬤ Components > Query Builder > Formatter
 #, fuzzy
@@ -357,14 +371,14 @@ msgid "sortField"
 msgstr "Sortierfeld"
 
 #: components/FormEditor/Create.tsx:214
-#: components/Formatters/Preview.tsx:71
+#: components/Formatters/Preview.tsx:74
 #: components/Merging/Header.tsx:164
 #. Used in: Components > Form Editor > Create ⬤ Components > Formatters > Preview ⬤ Components > Merging > Header
 #, fuzzy
 msgid "preview"
 msgstr "Vorschau"
 
-#: components/Formatters/Preview.tsx:72
+#: components/Formatters/Preview.tsx:75
 #. Used in: Components > Formatters > Preview
 #, fuzzy
 msgid "previewExplainer"
@@ -372,9 +386,10 @@ msgstr ""
 "Durchsuchen Sie Ihre Sammlungsdatensätze, um eine Vorschau des "
 "Datensatzformatierers anzuzeigen"
 
+#: components/FieldFormatters/FieldFormatter.tsx:40
 #: components/FormEditor/Table.tsx:86
 #: components/Formatters/Formatter.tsx:33
-#. Used in: Components > Form Editor > Table ⬤ Components > Formatters > Formatter
+#. Used in: Components > Field Formatters > Field Formatter ⬤ Components > Form Editor > Table ⬤ Components > Formatters > Formatter
 #, fuzzy
 msgid "editorNotAvailable"
 msgstr "Für diese Ressource ist kein visueller Editor verfügbar"
@@ -407,9 +422,10 @@ msgstr "Definition löschen"
 msgid "urlPart"
 msgstr "URL-Teil"
 
+#: components/FieldFormatters/Parts.tsx:90
 #: components/Formatters/Definitions.tsx:213
 #: components/Formatters/Fields.tsx:125
-#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Fields
+#. Used in: Components > Field Formatters > Parts ⬤ Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "addField"
 msgstr "Feld hinzufügen"
@@ -682,3 +698,61 @@ msgstr "Führende Nullen entfernen"
 #, fuzzy
 msgid "trimZerosDescription"
 msgstr "Entfernen Sie führende Nullen aus numerischen Werten."
+
+#: components/FieldFormatters/FieldFormatter.tsx:139
+#. Used in: Components > Field Formatters > Field Formatter
+msgid "formatterPreviewUnavailable"
+msgstr ""
+
+#: components/FieldFormatters/FieldFormatter.tsx:150
+#: components/FieldFormatters/FieldFormatter.tsx:178
+#. Used in: Components > Field Formatters > Field Formatter
+msgid "nonConformingInline"
+msgstr ""
+
+#: components/FieldFormatters/Parts.tsx:53
+#: components/FieldFormatters/Parts.tsx:157
+#. Used in: Components > Field Formatters > Parts
+msgid "value"
+msgstr "Wert"
+
+#: components/FieldFormatters/index.ts:325
+#. Used in: Components > Field Formatters > Index
+msgid "constant"
+msgstr ""
+
+#: components/FieldFormatters/index.ts:327
+#. Used in: Components > Field Formatters > Index
+msgid "alpha"
+msgstr ""
+
+#: components/FieldFormatters/index.ts:328
+#. Used in: Components > Field Formatters > Index
+msgid "numeric"
+msgstr ""
+
+#: components/FieldFormatters/index.ts:329
+#. Used in: Components > Field Formatters > Index
+msgid "alphanumeric"
+msgstr ""
+
+#: components/FieldFormatters/index.ts:330
+#. Used in: Components > Field Formatters > Index
+msgid "anychar"
+msgstr ""
+
+#: components/FieldFormatters/index.ts:331
+#. Used in: Components > Field Formatters > Index
+msgid "regex"
+msgstr ""
+
+#: components/FieldFormatters/FieldFormatter.tsx:177
+#. Used in: Components > Field Formatters > Field Formatter
+msgid "exampleField"
+msgstr "Beispielfeld"
+
+#: components/FieldFormatters/Parts.tsx:248
+#: components/FieldFormatters/Parts.tsx:250
+#. Used in: Components > Field Formatters > Parts
+msgid "pattern"
+msgstr ""

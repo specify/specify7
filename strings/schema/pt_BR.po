@@ -67,17 +67,18 @@ msgstr "As alterações de esquema não foram salvas"
 msgid "changeBaseTable"
 msgstr "Alterar tabela base"
 
+#: components/FieldFormatters/FieldFormatter.tsx:59
 #: components/Formatters/Fields.tsx:75
 #: components/LocalityUpdate/Status.tsx:377
 #: components/LocalityUpdate/Status.tsx:422
 #: components/SchemaConfig/Field.tsx:43
 #: components/WebLinks/Definition.tsx:25
-#. Used in: Components > Formatters > Fields ⬤ Components > Locality Update > Status ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
+#. Used in: Components > Field Formatters > Field Formatter ⬤ Components > Formatters > Fields ⬤ Components > Locality Update > Status ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
 #, fuzzy
 msgid "field"
 msgstr "Campo"
 
-#: components/FormMeta/CarryForward.tsx:404
+#: components/FormMeta/CarryForward.tsx:405
 #: components/Forms/generateFormDefinition.ts:130
 #: components/SchemaConfig/Fields.tsx:49
 #: components/SchemaConfig/Fields.tsx:60
@@ -88,7 +89,7 @@ msgstr "Campo"
 msgid "fields"
 msgstr "Campos"
 
-#: components/FormMeta/CarryForward.tsx:413
+#: components/FormMeta/CarryForward.tsx:414
 #: components/Forms/generateFormDefinition.ts:168
 #: components/SchemaConfig/Fields.tsx:68
 #: components/SchemaConfig/UniquenessRuleRow.tsx:254
@@ -202,32 +203,32 @@ msgstr "Comprimento"
 msgid "readOnly"
 msgstr "Somente leitura"
 
-#: components/SchemaConfig/Format.tsx:66
+#: components/SchemaConfig/Format.tsx:67
 #. Used in: Components > Schema Config > Format
 #, fuzzy
 msgid "fieldFormat"
 msgstr "Formato de campo"
 
-#: components/SchemaConfig/Format.tsx:83
+#: components/SchemaConfig/Format.tsx:91
 #. Used in: Components > Schema Config > Format
 #, fuzzy
 msgid "uiFormattersForField"
 msgstr "Formatadores de campo para {fieldLabel:string}"
 
-#: components/SchemaConfig/Format.tsx:76
+#: components/SchemaConfig/Format.tsx:84
 #. Used in: Components > Schema Config > Format
 #, fuzzy
 msgid "formatted"
 msgstr "Formatado"
 
-#: components/SchemaConfig/Format.tsx:123
+#: components/SchemaConfig/Format.tsx:131
 #: components/WebLinks/Element.tsx:26
 #. Used in: Components > Schema Config > Format ⬤ Components > Web Links > Element
 #, fuzzy
 msgid "webLink"
 msgstr "Link da Web"
 
-#: components/SchemaConfig/Format.tsx:151
+#: components/SchemaConfig/Format.tsx:159
 #. Used in: Components > Schema Config > Format
 #, fuzzy
 msgid "userDefined"

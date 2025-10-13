@@ -72,7 +72,7 @@ msgstr "Закачивание…"
 
 #: components/Attachments/Gallery.tsx:137
 #: components/Attachments/RecordSetAttachment.tsx:174
-#: components/AttachmentsBulkImport/utils.ts:474
+#: components/AttachmentsBulkImport/utils.ts:463
 #. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 msgid "noAttachments"
 msgstr "В вашей коллекции нет вложений"
@@ -107,13 +107,13 @@ msgid "fileSize"
 msgstr "Размер файла"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:149
-#: components/AttachmentsBulkImport/utils.ts:469
+#: components/AttachmentsBulkImport/utils.ts:458
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "deleted"
 msgstr "Удалено"
 
-#: components/AttachmentsBulkImport/utils.ts:467
+#: components/AttachmentsBulkImport/utils.ts:456
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "noFile"
@@ -125,50 +125,50 @@ msgstr "Нет файла"
 msgid "pleaseReselectAllFiles"
 msgstr "Пожалуйста, повторно выберите все файлы перед загрузкой."
 
-#: components/AttachmentsBulkImport/utils.ts:466
+#: components/AttachmentsBulkImport/utils.ts:455
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "incorrectFormatter"
 msgstr "Неправильно отформатировано"
 
-#: components/AttachmentsBulkImport/utils.ts:470
+#: components/AttachmentsBulkImport/utils.ts:459
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "alreadyUploaded"
 msgstr "Уже загружено"
 
-#: components/AttachmentsBulkImport/utils.ts:471
+#: components/AttachmentsBulkImport/utils.ts:460
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "skipped"
 msgstr "Пропущено"
 
-#: components/AttachmentsBulkImport/utils.ts:472
+#: components/AttachmentsBulkImport/utils.ts:461
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "cancelled"
 msgstr "Отменено"
 
-#: components/AttachmentsBulkImport/utils.ts:475
-#: components/AttachmentsBulkImport/utils.ts:478
+#: components/AttachmentsBulkImport/utils.ts:464
+#: components/AttachmentsBulkImport/utils.ts:467
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "frontEndInterruption"
 msgstr "{action:string} был в процессе выполнения, когда произошло прерывание"
 
-#: components/AttachmentsBulkImport/utils.ts:473
+#: components/AttachmentsBulkImport/utils.ts:462
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "matchError"
 msgstr "Ошибка соответствия"
 
-#: components/AttachmentsBulkImport/utils.ts:481
+#: components/AttachmentsBulkImport/utils.ts:470
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "errorReadingFile"
 msgstr "Ошибка чтения файла"
 
-#: components/AttachmentsBulkImport/utils.ts:483
+#: components/AttachmentsBulkImport/utils.ts:472
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "unhandledFatalResourceError"
@@ -269,7 +269,7 @@ msgstr "Прервано. Повторная попытка через {remainin
 msgid "rollbackDescription"
 msgstr "Откат приведет к удалению вложений из базы данных Specify и сервера Asset."
 
-#: components/AttachmentsBulkImport/utils.ts:485
+#: components/AttachmentsBulkImport/utils.ts:474
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "noMatch"
@@ -293,7 +293,7 @@ msgstr "Найдите больше вложений"
 msgid "hideForm"
 msgstr "Скрыть форму"
 
-#: components/AttachmentsBulkImport/utils.ts:486
+#: components/AttachmentsBulkImport/utils.ts:475
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "multipleMatches"
@@ -311,13 +311,13 @@ msgstr "Несколько совпадений. Нажмите, чтобы ус
 msgid "totalFiles"
 msgstr "Всего файлов"
 
-#: components/AttachmentsBulkImport/utils.ts:487
+#: components/AttachmentsBulkImport/utils.ts:476
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "correctlyFormatted"
 msgstr "Правильно отформатировано"
 
-#: components/AttachmentsBulkImport/utils.ts:488
+#: components/AttachmentsBulkImport/utils.ts:477
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "stoppedByUser"
@@ -352,19 +352,19 @@ msgstr ""
 "Следующие файлы не выбраны, поскольку они уже существуют в этом наборе "
 "данных."
 
-#: components/AttachmentsBulkImport/utils.ts:490
+#: components/AttachmentsBulkImport/utils.ts:479
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "errorFetchingRecord"
 msgstr "Ошибка при извлечении записи"
 
-#: components/AttachmentsBulkImport/utils.ts:491
+#: components/AttachmentsBulkImport/utils.ts:480
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "errorSavingRecord"
 msgstr "Ошибка сохранения записи"
 
-#: components/AttachmentsBulkImport/utils.ts:489
+#: components/AttachmentsBulkImport/utils.ts:478
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "interruptionStopped"
@@ -412,7 +412,7 @@ msgstr ""
 "путём загрузки. Кроме того, после удаления откат загруженного набора данных "
 "больше не будет доступен."
 
-#: components/AttachmentsBulkImport/utils.ts:492
+#: components/AttachmentsBulkImport/utils.ts:481
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "attachmentUploadError"

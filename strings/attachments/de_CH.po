@@ -72,7 +72,7 @@ msgstr "Am Hochladen…"
 
 #: components/Attachments/Gallery.tsx:137
 #: components/Attachments/RecordSetAttachment.tsx:174
-#: components/AttachmentsBulkImport/utils.ts:474
+#: components/AttachmentsBulkImport/utils.ts:463
 #. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 msgid "noAttachments"
 msgstr "Es gibt keine Anhänge"
@@ -107,13 +107,13 @@ msgid "fileSize"
 msgstr "Dateigröße"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:149
-#: components/AttachmentsBulkImport/utils.ts:469
+#: components/AttachmentsBulkImport/utils.ts:458
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "deleted"
 msgstr "Gelöscht"
 
-#: components/AttachmentsBulkImport/utils.ts:467
+#: components/AttachmentsBulkImport/utils.ts:456
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "noFile"
@@ -125,50 +125,50 @@ msgstr "Keine Datei"
 msgid "pleaseReselectAllFiles"
 msgstr "Bitte wählen Sie vor dem Hochladen alle Dateien erneut aus."
 
-#: components/AttachmentsBulkImport/utils.ts:466
+#: components/AttachmentsBulkImport/utils.ts:455
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "incorrectFormatter"
 msgstr "Falsch formatiert"
 
-#: components/AttachmentsBulkImport/utils.ts:470
+#: components/AttachmentsBulkImport/utils.ts:459
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "alreadyUploaded"
 msgstr "Bereits hochgeladen"
 
-#: components/AttachmentsBulkImport/utils.ts:471
+#: components/AttachmentsBulkImport/utils.ts:460
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "skipped"
 msgstr "Übersprungen"
 
-#: components/AttachmentsBulkImport/utils.ts:472
+#: components/AttachmentsBulkImport/utils.ts:461
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "cancelled"
 msgstr "Abgesagt"
 
-#: components/AttachmentsBulkImport/utils.ts:475
-#: components/AttachmentsBulkImport/utils.ts:478
+#: components/AttachmentsBulkImport/utils.ts:464
+#: components/AttachmentsBulkImport/utils.ts:467
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "frontEndInterruption"
 msgstr "{action:string} war im Gange, als die Unterbrechung auftrat"
 
-#: components/AttachmentsBulkImport/utils.ts:473
+#: components/AttachmentsBulkImport/utils.ts:462
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "matchError"
 msgstr "Übereinstimmungsfehler"
 
-#: components/AttachmentsBulkImport/utils.ts:481
+#: components/AttachmentsBulkImport/utils.ts:470
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "errorReadingFile"
 msgstr "Fehler beim Lesen der Datei"
 
-#: components/AttachmentsBulkImport/utils.ts:483
+#: components/AttachmentsBulkImport/utils.ts:472
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "unhandledFatalResourceError"
@@ -271,7 +271,7 @@ msgstr "Unterbrochen. Erneuter Versuch in {remainingTime:string}"
 msgid "rollbackDescription"
 msgstr "Rollback löscht die Anhänge aus der Datenbank und dem Asset Server"
 
-#: components/AttachmentsBulkImport/utils.ts:485
+#: components/AttachmentsBulkImport/utils.ts:474
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "noMatch"
@@ -295,7 +295,7 @@ msgstr "Suchen Sie nach weiteren Anhängen"
 msgid "hideForm"
 msgstr "Formular ausblenden"
 
-#: components/AttachmentsBulkImport/utils.ts:486
+#: components/AttachmentsBulkImport/utils.ts:475
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "multipleMatches"
@@ -315,13 +315,13 @@ msgstr ""
 msgid "totalFiles"
 msgstr "Gesamtzahl der Dateien"
 
-#: components/AttachmentsBulkImport/utils.ts:487
+#: components/AttachmentsBulkImport/utils.ts:476
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "correctlyFormatted"
 msgstr "Korrekt formatiert"
 
-#: components/AttachmentsBulkImport/utils.ts:488
+#: components/AttachmentsBulkImport/utils.ts:477
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "stoppedByUser"
@@ -356,19 +356,19 @@ msgstr ""
 "Die folgenden Dateien werden nicht ausgewählt, da sie in diesem Datensatz "
 "bereits vorhanden sind."
 
-#: components/AttachmentsBulkImport/utils.ts:490
+#: components/AttachmentsBulkImport/utils.ts:479
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "errorFetchingRecord"
 msgstr "Fehler beim Abrufen des Datensatzes"
 
-#: components/AttachmentsBulkImport/utils.ts:491
+#: components/AttachmentsBulkImport/utils.ts:480
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "errorSavingRecord"
 msgstr "Fehler beim Speichern des Datensatzes"
 
-#: components/AttachmentsBulkImport/utils.ts:489
+#: components/AttachmentsBulkImport/utils.ts:478
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "interruptionStopped"
@@ -416,7 +416,7 @@ msgstr ""
 "dauerhaft entfernt. Nach dem Löschen ist für einen hochgeladenen Datensatz "
 "auch kein Rollback mehr möglich."
 
-#: components/AttachmentsBulkImport/utils.ts:492
+#: components/AttachmentsBulkImport/utils.ts:481
 #. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "attachmentUploadError"

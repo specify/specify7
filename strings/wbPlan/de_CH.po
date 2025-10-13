@@ -86,7 +86,7 @@ msgstr "Optionale Felder"
 msgid "hiddenFields"
 msgstr "Versteckte Felder"
 
-#: components/FormMeta/CarryForward.tsx:425
+#: components/FormMeta/CarryForward.tsx:426
 #: components/QueryBuilder/Toolbar.tsx:42
 #: components/WbPlanView/MapperComponents.tsx:76
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
@@ -176,7 +176,7 @@ msgstr ""
 "die fehlenden Mappings hinzu oder speichern Sie diesen Upload-Plan als "
 "unvollendet."
 
-#: components/Formatters/Components.tsx:220
+#: components/Formatters/Components.tsx:226
 #. 🟥I.e, this field must be mapped before you can continue. Used in: Components > Formatters > Components
 #, fuzzy
 msgid "mappingIsRequired"

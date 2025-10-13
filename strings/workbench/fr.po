@@ -28,7 +28,7 @@ msgstr "Plan de téléchargement"
 #: components/AttachmentsBulkImport/Rollback.tsx:29
 #: components/AttachmentsBulkImport/Rollback.tsx:93
 #: components/AttachmentsBulkImport/Rollback.tsx:130
-#: components/AttachmentsBulkImport/utils.ts:479
+#: components/AttachmentsBulkImport/utils.ts:468
 #: components/WbUtils/datasetVariants.tsx:48
 #: components/WbUtils/datasetVariants.tsx:123
 #: components/WorkBench/Status.tsx:80
@@ -50,7 +50,7 @@ msgstr "Validation"
 
 #: components/AttachmentsBulkImport/Upload.tsx:210
 #: components/AttachmentsBulkImport/Upload.tsx:236
-#: components/AttachmentsBulkImport/utils.ts:476
+#: components/AttachmentsBulkImport/utils.ts:465
 #: components/Molecules/SyncAttachmentPicker.tsx:111
 #: components/WbUtils/datasetVariants.tsx:41
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Wb Utils > Dataset Variants
@@ -75,17 +75,17 @@ msgstr "Téléchargement"
 msgid "validating"
 msgstr "Validation"
 
-#: components/WorkBench/WbSpreadsheet.tsx:161
+#: components/WorkBench/WbSpreadsheet.tsx:168
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "disambiguate"
 msgstr "Lever l'ambiguïté"
 
-#: components/WorkBench/WbSpreadsheet.tsx:270
+#: components/WorkBench/WbSpreadsheet.tsx:277
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillDown"
 msgstr "Remplissez"
 
-#: components/WorkBench/WbSpreadsheet.tsx:270
+#: components/WorkBench/WbSpreadsheet.tsx:277
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillUp"
 msgstr "Remplir"
@@ -504,7 +504,7 @@ msgstr "Inclure les symboles DMS"
 msgid "uploadResults"
 msgstr "Télécharger les résultats"
 
-#: components/WorkBench/WbSpreadsheet.tsx:96
+#: components/WorkBench/WbSpreadsheet.tsx:97
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "noUploadResultsAvailable"
 msgstr "Aucun résultat de téléchargement n'est disponible pour cette cellule"

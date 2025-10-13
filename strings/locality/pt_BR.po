@@ -169,8 +169,8 @@ msgstr "Longitude"
 
 #: components/AppResources/Editor.tsx:177
 #: components/AppResources/Editor.tsx:179
-#: components/Leaflet/extend.ts:46
 #: components/Leaflet/extend.ts:47
+#: components/Leaflet/extend.ts:48
 #. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend
 #, fuzzy
 msgid "toggleFullScreen"

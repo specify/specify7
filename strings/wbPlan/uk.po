@@ -84,7 +84,7 @@ msgstr "Необов'язкові поля"
 msgid "hiddenFields"
 msgstr "Приховані поля"
 
-#: components/FormMeta/CarryForward.tsx:425
+#: components/FormMeta/CarryForward.tsx:426
 #: components/QueryBuilder/Toolbar.tsx:42
 #: components/WbPlanView/MapperComponents.tsx:76
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
@@ -173,7 +173,7 @@ msgstr ""
 "для завантаження вашою конфігурацією Specify. Додайте відсутні відображення "
 "або збережіть цей план завантаження як незавершений."
 
-#: components/Formatters/Components.tsx:220
+#: components/Formatters/Components.tsx:226
 #. 🟥I.e, this field must be mapped before you can continue. Used in: Components > Formatters > Components
 msgid "mappingIsRequired"
 msgstr "Потрібне відображення"

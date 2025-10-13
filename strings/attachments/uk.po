@@ -72,7 +72,7 @@ msgstr "Завантаження…"
 
 #: components/Attachments/Gallery.tsx:137
 #: components/Attachments/RecordSetAttachment.tsx:174
-#: components/AttachmentsBulkImport/utils.ts:474
+#: components/AttachmentsBulkImport/utils.ts:463
 #. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 msgid "noAttachments"
 msgstr "Прикріплень нема"
@@ -103,12 +103,12 @@ msgid "fileSize"
 msgstr "Розмір файлу"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:149
-#: components/AttachmentsBulkImport/utils.ts:469
+#: components/AttachmentsBulkImport/utils.ts:458
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils
 msgid "deleted"
 msgstr "Видалено"
 
-#: components/AttachmentsBulkImport/utils.ts:467
+#: components/AttachmentsBulkImport/utils.ts:456
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "noFile"
 msgstr "Немає файлу"
@@ -118,43 +118,43 @@ msgstr "Немає файлу"
 msgid "pleaseReselectAllFiles"
 msgstr "Перед завантаженням повторно виберіть усі файли."
 
-#: components/AttachmentsBulkImport/utils.ts:466
+#: components/AttachmentsBulkImport/utils.ts:455
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "incorrectFormatter"
 msgstr "Неправильно відформатований"
 
-#: components/AttachmentsBulkImport/utils.ts:470
+#: components/AttachmentsBulkImport/utils.ts:459
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "alreadyUploaded"
 msgstr "Вже завантажено"
 
-#: components/AttachmentsBulkImport/utils.ts:471
+#: components/AttachmentsBulkImport/utils.ts:460
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "skipped"
 msgstr "Пропущено"
 
-#: components/AttachmentsBulkImport/utils.ts:472
+#: components/AttachmentsBulkImport/utils.ts:461
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "cancelled"
 msgstr "Скасовано"
 
-#: components/AttachmentsBulkImport/utils.ts:475
-#: components/AttachmentsBulkImport/utils.ts:478
+#: components/AttachmentsBulkImport/utils.ts:464
+#: components/AttachmentsBulkImport/utils.ts:467
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "frontEndInterruption"
 msgstr "Виконувався {action:string}, коли сталася перерва"
 
-#: components/AttachmentsBulkImport/utils.ts:473
+#: components/AttachmentsBulkImport/utils.ts:462
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "matchError"
 msgstr "Помилка збігу"
 
-#: components/AttachmentsBulkImport/utils.ts:481
+#: components/AttachmentsBulkImport/utils.ts:470
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "errorReadingFile"
 msgstr "Помилка читання файлу"
 
-#: components/AttachmentsBulkImport/utils.ts:483
+#: components/AttachmentsBulkImport/utils.ts:472
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "unhandledFatalResourceError"
 msgstr "Необроблена критична помилка ресурсу:"
@@ -237,7 +237,7 @@ msgstr "Перерваний. Повторна спроба через {remainin
 msgid "rollbackDescription"
 msgstr "Відкат видалить вкладення з бази даних Specify і сервера ресурсів"
 
-#: components/AttachmentsBulkImport/utils.ts:485
+#: components/AttachmentsBulkImport/utils.ts:474
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "noMatch"
 msgstr "Немає відповідності"
@@ -257,7 +257,7 @@ msgstr "Шукайте більше вкладень"
 msgid "hideForm"
 msgstr "Сховати форму"
 
-#: components/AttachmentsBulkImport/utils.ts:486
+#: components/AttachmentsBulkImport/utils.ts:475
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "multipleMatches"
 msgstr "Кілька збігів"
@@ -272,12 +272,12 @@ msgstr "Кілька збігів. Натисніть, щоб усунути н�
 msgid "totalFiles"
 msgstr "Всього файлів"
 
-#: components/AttachmentsBulkImport/utils.ts:487
+#: components/AttachmentsBulkImport/utils.ts:476
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "correctlyFormatted"
 msgstr "Правильно відформатований"
 
-#: components/AttachmentsBulkImport/utils.ts:488
+#: components/AttachmentsBulkImport/utils.ts:477
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "stoppedByUser"
 msgstr "Зупинено користувачем"
@@ -305,17 +305,17 @@ msgstr "Знайдено дублікати файлів"
 msgid "duplicateFilesDescription"
 msgstr "Наступні файли не вибрано, оскільки вони вже існують у цьому наборі даних."
 
-#: components/AttachmentsBulkImport/utils.ts:490
+#: components/AttachmentsBulkImport/utils.ts:479
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "errorFetchingRecord"
 msgstr "Помилка отримання запису"
 
-#: components/AttachmentsBulkImport/utils.ts:491
+#: components/AttachmentsBulkImport/utils.ts:480
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "errorSavingRecord"
 msgstr "Помилка збереження запису"
 
-#: components/AttachmentsBulkImport/utils.ts:489
+#: components/AttachmentsBulkImport/utils.ts:478
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "interruptionStopped"
 msgstr "Зупинено через помилку завантаження попереднього файлу"
@@ -356,7 +356,7 @@ msgstr ""
 "Крім того, після видалення відкат більше не буде доступним для "
 "завантаженого набору даних."
 
-#: components/AttachmentsBulkImport/utils.ts:492
+#: components/AttachmentsBulkImport/utils.ts:481
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "attachmentUploadError"
 msgstr ""

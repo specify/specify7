@@ -120,7 +120,7 @@ msgstr "Повернути вибрані препарати"
 msgid "selectAllAvailablePreparations"
 msgstr "Виберіть усі доступні препарати"
 
-#: components/FormMeta/CarryForward.tsx:361
+#: components/FormMeta/CarryForward.tsx:362
 #: components/Interactions/LoanReturn.tsx:182
 #: components/Interactions/PrepDialog.tsx:133
 #: components/Interactions/PrepDialog.tsx:257
@@ -199,7 +199,7 @@ msgstr ""
 "Повернуто та збережено записів {count:number|formatted} "
 "{tablePreparation:string}"
 
-#: components/FormMeta/CarryForward.tsx:381
+#: components/FormMeta/CarryForward.tsx:382
 #: components/Interactions/LoanReturn.tsx:197
 #: components/Interactions/PrepDialog.tsx:140
 #: components/QueryBuilder/Results.tsx:211
