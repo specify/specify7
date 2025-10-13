@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { requireContext } from '../../../tests/helpers';
 import { getAppResourceCount } from '../helpers';
@@ -11,7 +12,12 @@ requireContext();
 
 const { setAppResourceDir, testDisciplines } = utilsForTests;
 
-const flattenResources = (tree: AppResourcesTree) =>
+const flattenResources = (
+  tree: AppResourcesTree
+): ReadonlyArray<{
+  readonly name: string | undefined;
+  readonly label: LocalizedString | undefined;
+}> =>
   tree.flatMap(({ appResources, subCategories }) => [
     ...appResources.map((resource) => ({
       name: resource.name,
