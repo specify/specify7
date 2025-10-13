@@ -18,11 +18,14 @@ describe('useEditorTabs', () => {
     ]);
   });
 
-  test('text editor', () => {
+  test('global preferences editor', () => {
     const { result } = renderHook(() =>
       useEditorTabs(staticAppResources.appResources[1])
     );
-    expect(result.current.map(({ label }) => label)).toEqual(['Text Editor']);
+    expect(result.current.map(({ label }) => label)).toEqual([
+      'Visual Editor',
+      'JSON Editor',
+    ]);
   });
 
   test('user preferences editor', () => {

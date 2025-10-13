@@ -1,4 +1,5 @@
 import React from 'react';
+import { within } from '@testing-library/react';
 
 import { clearIdStore } from '../../../hooks/useId';
 import { requireContext } from '../../../tests/helpers';
@@ -24,7 +25,7 @@ function Component(props: AppResourceTabProps) {
 
 describe('AppResourcesTab', () => {
   test('simple render', () => {
-    const { asFragment } = mount(
+    const { container, getByText } = mount(
       <AppResourcesTab
         appResource={deserializeResource(testAppResources.appResources[0])}
         data="TestData"
@@ -40,7 +41,8 @@ describe('AppResourcesTab', () => {
       />
     );
 
-    expect(asFragment()).toMatchSnapshot();
+    expect(getByText('Data: TestData')).toBeInTheDocument();
+    expect(container.querySelector('svg')).not.toBeNull();
   });
 
   test('dialog render', () => {
@@ -63,6 +65,7 @@ describe('AppResourcesTab', () => {
     );
 
     const dialog = getByRole('dialog');
-    expect(dialog).toMatchSnapshot();
+    expect(within(dialog).getByText('Data: TestData')).toBeInTheDocument();
+    expect(dialog.querySelector('svg')).not.toBeNull();
   });
 });

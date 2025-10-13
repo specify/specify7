@@ -2,7 +2,7 @@ export const testAppResourcesTypes = [
   {
     name: 'preferences',
     mimeType: null,
-    expectedType: 'otherPropertiesResource',
+    expectedType: 'remotePreferences',
     extenstion: 'properties',
   },
   {

@@ -66,7 +66,10 @@ export function overrideAjax(
     };
   });
   afterAll(() => {
-    overrides[url]![method] = undefined;
+    if (overrides[url] && typeof overrides[url] === 'object') {
+      if (Object.prototype.hasOwnProperty.call(overrides[url]!, method))
+        overrides[url]![method] = undefined;
+    }
   });
 }
 
@@ -98,7 +101,11 @@ export async function ajaxMock<RESPONSE_TYPE>(
   if (url.startsWith('https://stats.specifycloud.org/capture'))
     return formatResponse('', accept, expectedErrors, undefined);
 
-  const parsedUrl = new URL(url, globalThis?.location.origin);
+  const baseOrigin =
+    typeof globalThis?.location?.origin === 'string'
+      ? globalThis.location.origin
+      : 'http://localhost';
+  const parsedUrl = new URL(url, baseOrigin);
   const urlWithoutQuery = `${parsedUrl.origin}${parsedUrl.pathname}`;
   const overwrittenData =
     overrides[url]?.[requestMethod] ??

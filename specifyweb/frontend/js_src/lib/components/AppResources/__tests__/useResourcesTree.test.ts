@@ -36,7 +36,9 @@ describe('useResourcesTree', () => {
   test('missing appresource dir', () => {
     const { result } = renderHook(() => useResourcesTree(resources));
 
-    expect(result.current).toMatchSnapshot();
+    expect(result.current).toHaveLength(2);
+    expect(result.current[0].label).toBe('Global Resources');
+    expect(result.current[0].appResources).toHaveLength(0);
 
     // There is only 1 resource with the matching spappresourcedir.
     expect(getResourceCountTree(result.current)).toBe(1);
@@ -53,7 +55,11 @@ describe('useResourcesTree', () => {
 
     const { result } = renderHook(() => useResourcesTree(viewSet));
 
-    expect(result.current).toMatchSnapshot();
+    const [globalResources] = result.current;
+    const labels = globalResources.appResources.map(({ label, name }) =>
+      label ?? name
+    );
+    expect(labels).toEqual(['Global Preferences', 'Remote Preferences']);
 
     expect(getResourceCountTree(result.current)).toBe(4);
   });

@@ -192,6 +192,7 @@ export const staticAppResources = {
       spReports: '/api/specify/spreport/?appresource=4',
       resource_uri: '/api/specify/spappresource/4/',
       _tableName: 'SpAppResource',
+      label: 'Global Preferences',
     },
     {
       id: 73,
