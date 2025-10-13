@@ -1,5 +1,5 @@
-import { preferencesText } from '../../localization/preferences';
 import { attachmentsText } from '../../localization/attachments';
+import { preferencesText } from '../../localization/preferences';
 import { localized } from '../../utils/types';
 import { definePref } from './types';
 
