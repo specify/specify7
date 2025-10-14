@@ -34,7 +34,6 @@ import {
   setLogContext,
 } from '../Errors/logContext';
 import { cacheableUrl } from '../InitialContext';
-import { getPref } from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { toSimpleXmlNode, xmlToJson } from '../Syncer/xmlToJson';
