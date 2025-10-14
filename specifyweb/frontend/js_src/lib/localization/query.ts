@@ -773,7 +773,7 @@ export const queryText = createDictionary({
     'uk-ua': 'в минулому',
     'pt-br': 'no passado',
   },
-  day: {
+  days: {
     'en-us': 'Days',
     'es-es': 'Días',
     'fr-fr': 'Jours',
@@ -782,7 +782,7 @@ export const queryText = createDictionary({
     'de-ch': 'Tage',
     'pt-br': 'Dias',
   },
-  week: {
+  weeks: {
     'en-us': 'Weeks',
     'de-ch': 'Wochen',
     'es-es': 'Semanas',
@@ -791,7 +791,7 @@ export const queryText = createDictionary({
     'uk-ua': 'тижнів',
     'pt-br': 'Semanas',
   },
-  month: {
+  months: {
     'en-us': 'Months',
     'de-ch': 'Monate',
     'es-es': 'Meses',
@@ -800,7 +800,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Місяці',
     'pt-br': 'Meses',
   },
-  year: {
+  years: {
     'en-us': 'Years',
     'de-ch': 'Jahre',
     'es-es': 'Años',
@@ -808,6 +808,14 @@ export const queryText = createDictionary({
     'ru-ru': 'Годы',
     'uk-ua': 'років',
     'pt-br': 'Anos',
+  },
+  year: {
+    'en-us': 'Year',
+    'de-ch': 'Jahr',
+    'es-es': 'Año',
+    'fr-fr': 'Année',
+    'ru-ru': 'Год',
+    'uk-ua': 'рік',
   },
   relativeDate: {
     comment: `

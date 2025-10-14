@@ -104,7 +104,6 @@ exports[`fetches and parses remotePrefs correctly 1`] = `
   "selected_node\\\\:TaxonTreeDef\\\\:1": "21",
   "settings.email.accounttype": "In Use",
   "settings.email.email": "abentley@ku.edu",
-  "settings.email.password": "EB69B9A128B26FDC2D9964E2A0CCDEEDFBA5332AFBFF014F",
   "settings.email.port": "25",
   "settings.email.security": "TLS",
   "settings.email.smtp": "authsmtp.ku.edu",
