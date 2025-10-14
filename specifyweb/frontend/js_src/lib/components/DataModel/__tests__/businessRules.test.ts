@@ -25,45 +25,6 @@ import type {
 mockTime();
 requireContext();
 
-const overrideCollectionObjectIexact = (
-  encodedCatalogNumber: string,
-  hasDuplicate: boolean
-): void => {
-  overrideAjax(
-    `/api/specify/collectionobject/?domainfilter=false&catalognumber__iexact=${encodedCatalogNumber}&collection=4&offset=0`,
-    {
-      objects: hasDuplicate
-        ? [
-            {
-              id: 1,
-              catalogNumber: decodeURIComponent(encodedCatalogNumber),
-              collection: '/api/specify/collection/4/',
-            },
-          ]
-        : [],
-      meta: {
-        limit: 20,
-        offset: 0,
-        total_count: hasDuplicate ? 1 : 0,
-      },
-    },
-    {},
-    true
-  );
-};
-
-(
-  [
-    ['000000001', true],
-    ['%23%23%23%23%23%23%23%23%23', false],
-    ['', false],
-    ['7', false],
-    ['2022-%23%23%23%23%23%23', false],
-  ] as const
-).forEach(([value, hasDuplicate]) =>
-  overrideCollectionObjectIexact(value, hasDuplicate)
-);
-
 describe('Borrow Material business rules', () => {
   const borrowMaterialId = 1;
   const borrowMaterialUrl = getResourceApiUrl(
