@@ -655,6 +655,7 @@ def system_info(request):
         database_version=spversion.appversion,
         schema_version=spversion.schemaversion,
         stats_url=settings.STATS_URL,
+        stats_2_url=settings.STATS_2_URL,
         database=settings.DATABASE_NAME,
         institution=institution.name,
         institution_guid=institution.guid,
