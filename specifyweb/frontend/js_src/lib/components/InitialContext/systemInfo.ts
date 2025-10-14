@@ -40,11 +40,11 @@ function buildStatsLambdaUrl(base: string | null | undefined): string | null {
 
   if (!/^https?:\/\//i.test(u)) u = `https://${u}`;
 
-  const hasRoute = /\/(prod|default)\/[^/\s]+/.test(u);
+  const hasRoute = /\/(prod|default)\/[^\s/]+/.test(u);
   if (!hasRoute) {
     const stage = 'prod';
     const route = 'AggrgatedSp7Stats';
-    u = u.replace(/\/$/, '') + `/${stage}/${route}`;
+    u = `${u.replace(/\/$/, '')  }/${stage}/${route}`;
   }
   return u;
 }
@@ -93,10 +93,12 @@ export const fetchContext = load<SystemInfo>(
       { errorMode: 'silent' }
     ).catch(softFail);
 
-    // await ping(
-    //   formatUrl(systemInfo.stats_2_url, parameters, false),
-    //   { errorMode: 'silent' }
-    // ).catch(softFail);
+    /*
+     * Await ping(
+     *   formatUrl(systemInfo.stats_2_url, parameters, false),
+     *   { errorMode: 'silent' }
+     * ).catch(softFail);
+     */
 
     const lambdaUrl = buildStatsLambdaUrl(systemInfo.stats_2_url);
     if (lambdaUrl) {
