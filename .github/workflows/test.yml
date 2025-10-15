@@ -64,6 +64,10 @@ jobs:
           MYSQL_PASSWORD: MasterPassword
           MYSQL_DATABASE: test_SpecifyDB
           MYSQL_ROOT_PASSWORD: password
+          MIGRATOR_NAME: MasterUser
+          MIGRATOR_PASSWORD: MasterPassword
+          APP_USER_NAME: MasterUser
+          APP_USER_PASSWORD: MasterPassword 
         options:
           --health-cmd="mariadb-admin ping" --health-interval=5s
           --health-timeout=2s --health-retries=3
