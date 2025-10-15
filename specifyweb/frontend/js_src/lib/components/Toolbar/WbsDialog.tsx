@@ -87,7 +87,7 @@ export function DataSetMetaOverlay(): JSX.Element | null {
       dataset={dataset}
       onChange={handleClose}
       onClose={handleClose}
-      onDeleted={(): void => navigate('/specify/', { replace: true })}
+      onDeleted= { handleClose } //{(): void => navigate('/specify/', { replace: true })}
     />
   ) : null;
 }
