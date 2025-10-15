@@ -132,31 +132,33 @@ jobs:
       - name: Force DB settings for CI
         run: |
           cat >> specifyweb/settings/local_specify_settings.py <<'PY'
-          # --- CI overrides to ensure Django uses the right creds/database ---
-          DATABASE_NAME = 'test_SpecifyDB'
+          # --- FINAL CI overrides (do not rely on other vars) ---
+          from django.conf import settings as _s
+
+          # Ensure DATABASES exists
+          try:
+              _s.DATABASES
+          except Exception:
+              _s.DATABASES = {}
+
+          if 'default' not in _s.DATABASES:
+              _s.DATABASES['default'] = {}
+
+          # Hard-set *literal* values so nothing upstream can mangle them.
+          _s.DATABASES['default'].update({
+              'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
+              'NAME': 'test_SpecifyDB',
+              'USER': 'MasterUser',
+              'PASSWORD': 'MasterPassword',
+              'HOST': '127.0.0.1',
+              'PORT': ${ { job.services.mariadb.ports[3306] } },  # GitHub injects the number
+              'TEST': { 'NAME': 'test_SpecifyDB' },
+          })
+
+          # Belt-and-suspenders: mirror to module-level constants
           APP_USER_NAME = 'MasterUser'
           APP_USER_PASSWORD = 'MasterPassword'
-
-          # If base settings already defined DATABASES, update it; otherwise define it.
-          try:
-              DATABASES
-          except NameError:
-              DATABASES = {}
-
-          if 'default' not in DATABASES:
-              DATABASES['default'] = {}
-
-          DATABASES['default'].update({
-              'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
-              'NAME': DATABASE_NAME,
-              'USER': APP_USER_NAME,
-              'PASSWORD': APP_USER_PASSWORD,
-              'HOST': DATABASE_HOST,
-              'PORT': DATABASE_PORT,
-              'TEST': {
-                  'NAME': 'test_SpecifyDB',
-              },
-          })
+          DATABASE_NAME = 'test_SpecifyDB'
           PY
       
       - name: Need these files to be present
@@ -211,10 +213,9 @@ jobs:
 
           s = settings.DATABASES['default']
           print("Django DATABASES['default']:")
-          for k in ("ENGINE", "NAME", "USER", "PASSWORD", "HOST", "PORT"):
+          for k in ("ENGINE","NAME","USER","PASSWORD","HOST","PORT"):
               print(f"  {k}: {s.get(k)}")
 
-          # Try a real round-trip through Django's connection
           try:
               with connections['default'].cursor() as cur:
                   cur.execute("SELECT CURRENT_USER(), USER()")
