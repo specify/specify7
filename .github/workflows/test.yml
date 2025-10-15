@@ -142,6 +142,48 @@ jobs:
             sleep 1
           done
 
+      - name: Prepare DB user/grants for Django tests
+        env:
+          PORT: ${{ job.services.mariadb.ports[3306] }}
+        run: |
+          set -eux
+          mysql -h 127.0.0.1 -P "$PORT" -u root -p'password' -e "
+            -- Ensure only the '%' account is used (containers connect from 172.*)
+            DROP USER IF EXISTS 'MasterUser'@'localhost';
+            DROP USER IF EXISTS 'MasterUser'@'127.0.0.1';
+            DROP USER IF EXISTS 'MasterUser'@'::1';
+
+            CREATE USER IF NOT EXISTS 'MasterUser'@'%' IDENTIFIED BY 'MasterPassword';
+            -- Force the password in case the user pre-existed with a different one
+            ALTER USER 'MasterUser'@'%' IDENTIFIED BY 'MasterPassword';
+
+            -- Give enough rights for Django test runner to create/drop test DBs
+            GRANT ALL PRIVILEGES ON *.* TO 'MasterUser'@'%' WITH GRANT OPTION;
+            FLUSH PRIVILEGES;
+
+            SELECT user,host,plugin FROM mysql.user WHERE user='MasterUser';
+            SHOW GRANTS FOR 'MasterUser'@'%';
+          "
+
+      - name: Prove login as MasterUser (from runner)
+        env:
+          PORT: ${{ job.services.mariadb.ports[3306] }}
+        run: |
+          set -eux
+          mysql -h 127.0.0.1 -P "$PORT" -u MasterUser -p'MasterPassword' -e "SELECT CURRENT_USER() AS matched_account, USER() AS login_user;"
+
+      - name: Print Django DB settings
+        run: |
+          ./ve/bin/python - <<'PY'
+          from django.conf import settings
+          s = settings.DATABASES['default']
+          print("DB USER:", s['USER'])
+          print("DB HOST:", s['HOST'])
+          print("DB PORT:", s['PORT'])
+          print("DB NAME:", s['NAME'])
+          print("TEST:", s.get('TEST'))
+          PY
+
       - name: Run Mypy type checker
         run: VIRTUAL_ENV=./ve make typecheck
 
