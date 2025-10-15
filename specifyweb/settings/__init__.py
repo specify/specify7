@@ -58,7 +58,7 @@ DATABASES = {
         'HOST': DATABASE_HOST,
         'PORT': DATABASE_PORT,
         'OPTIONS': DATABASE_OPTIONS,
-        'TEST': {}
+        'TEST': {'NAME': 'test_SpecifyDB'}
     },
     'migrations': {
         'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
@@ -68,7 +68,7 @@ DATABASES = {
         'HOST': DATABASE_HOST,
         'PORT': DATABASE_PORT,
         'OPTIONS': DATABASE_OPTIONS,
-        'TEST': {}
+        'TEST': {'NAME': 'test_SpecifyDB'}
     },
     'master': {
         'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
@@ -78,7 +78,7 @@ DATABASES = {
         'HOST': DATABASE_HOST,
         'PORT': DATABASE_PORT,
         'OPTIONS': DATABASE_OPTIONS,
-        'TEST': {}
+        'TEST': {'NAME': 'test_SpecifyDB'}
     },
 }
 
