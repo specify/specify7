@@ -17,12 +17,12 @@ export const setupToolText = createDictionary({
     'en-us': 'Save & Continue',
   },
 
-  setupComplete: {
-    'en-us': '🎉 All resources have been created successfully!',
-  },
-
   overview: {
     'en-us': 'Overview',
+  },
+
+  settingUp: {
+    'en-us': 'Setting up the database...',
   },
 
   institution: {

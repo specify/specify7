@@ -18,6 +18,7 @@ import type { SetupProgress } from '../Login';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
 import type { FieldConfig, ResourceConfig } from "./setupResources";
 import { resources } from "./setupResources";
+import { loadingBar } from '../Molecules';
 
 type ResourceFormData = Record<string, any>;
 
@@ -110,10 +111,38 @@ export function SetupTool({
   const [temporaryFormData, setTemporaryFormData] = React.useState<ResourceFormData>({}); // For front-end only.
 
   const [currentStep, setCurrentStep] = React.useState<number>(0);
-
   React.useEffect(() => {
     useFormDefaults(resources[currentStep], setFormData, currentStep);
   }, [currentStep])
+
+  // Is the database currrently being created?
+  const [inProgress, setInProgress] = React.useState<boolean>(false);
+  const nextIncompleteStep = stepOrder.findIndex((resourceName) => setupProgress[resourceName] !== true);
+  React.useEffect(() => {
+    if (Object.values(setupProgress).includes(true)) {
+      setInProgress(true);
+      console.log(setupProgress);
+    }
+  }, [setupProgress])
+  React.useEffect(() => {
+    // Poll for the latest setup progress.
+    if (!inProgress) return;
+
+    const interval = setInterval(async () =>
+        ajax<SetupProgress>(`/setup_tool/setup_progress/`, {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+          errorMode: 'silent',
+        })
+          .then(({ data }) => setSetupProgress(data))
+          .catch((error) => {
+            console.error('Failed to fetch setup progress:', error);
+            return undefined;
+          })
+    , 2000);
+
+    return () => clearInterval(interval);
+}, [inProgress, setSetupProgress]);
   
   const loading = React.useContext(LoadingContext);
 
@@ -174,6 +203,7 @@ export function SetupTool({
           .then((data) => {
             console.log(data);
             setSetupProgress(data.setup_progress as SetupProgress);
+            setInProgress(true);
           })
           .catch((error) => {
             console.error('Form submission failed:', error);
@@ -306,7 +336,20 @@ export function SetupTool({
         src="/static/img/logo.svg"
       />
       <H2 className="text-2xl mb-6">{setupToolText.specifyConfigurationSetup()}</H2>
-      {currentStep < resources.length ? (
+      {inProgress ? (
+        <>
+          <Container.Center className="p-3 shadow-md max-w-lg">
+            <H3 className="text-xl font-semibold mb-4">
+              {setupToolText.settingUp()}
+            </H3>
+            <H3 className="text-md mb-4">
+              {nextIncompleteStep !== -1 ? resources[nextIncompleteStep].label
+                : setupToolText.settingUp()}
+            </H3>
+            {loadingBar}
+          </Container.Center>
+        </>
+      ) : 
         <>
           <div className="flex w-full justify-center gap-8">
             <div>
@@ -352,11 +395,7 @@ export function SetupTool({
             </div>
           </div>
         </>
-      ) : (
-        <p className="mt-6 text-green-600 font-semibold">
-          {setupToolText.setupComplete()}
-        </p>
-      )}
+      }
     </Container.FullGray>
   );
 }

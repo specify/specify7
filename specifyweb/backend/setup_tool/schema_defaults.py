@@ -7,18 +7,23 @@ from uuid import uuid4
 import logging
 logger = logging.getLogger(__name__)
 
-def apply_schema_defaults(discipline):
-    task_id = str(uuid4())
+def apply_schema_defaults(discipline, background=False):
+    if background:
+        task_id = str(uuid4())
 
-    args = [discipline.id]
+        args = [discipline.id]
 
-    task = apply_schema_defaults_task.apply_async(args, task_id=task_id)
-    
-    return task.id
-
+        task = apply_schema_defaults_task.apply_async(args, task_id=task_id)
+        
+        return task.id
+    else:
+        _apply_schema_defaults(discipline.id)
 
 @app.task(bind=True)
 def apply_schema_defaults_task(self, discipline_id):
+    _apply_schema_defaults(discipline_id)
+
+def _apply_schema_defaults(discipline_id):
     for model_name in model_names_by_table_id.values():
         logger.debug(f'applying defaults for {model_name}')
         update_table_schema_config_with_defaults(
