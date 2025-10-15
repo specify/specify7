@@ -162,8 +162,7 @@ class SupportLoginBackend:
 
         if user_id is None or user_name is None or timestamp is None:
             raise PermissionDenied()
-
-        if int(timestamp) + TTL > time.time():
+        if (int(timestamp) + TTL > time.time()) and (int(timestamp) <= time.time() - TTL):
             return self.get_user(user_id, name=user_name)
         else:
             raise PermissionDenied()
