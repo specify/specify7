@@ -174,15 +174,19 @@ jobs:
 
       - name: Print Django DB settings
         run: |
-          ./ve/bin/python - <<'PY'
-          from django.conf import settings
-          s = settings.DATABASES['default']
-          print("DB USER:", s['USER'])
-          print("DB HOST:", s['HOST'])
-          print("DB PORT:", s['PORT'])
-          print("DB NAME:", s['NAME'])
-          print("TEST:", s.get('TEST'))
-          PY
+          ./ve/bin/python manage.py shell -c "
+        from django.conf import settings; 
+        from django.db import connections;
+        s = settings.DATABASES['default'];
+        print('DB USER:', s['USER']); 
+        print('DB HOST:', s['HOST']); 
+        print('DB PORT:', s['PORT']); 
+        print('DB NAME:', s['NAME']); 
+        print('TEST:', s.get('TEST'));
+        with connections['default'].cursor() as cur:
+            cur.execute('SELECT CURRENT_USER(), USER()'); 
+            print('Django CURRENT_USER/USER:', cur.fetchone());
+        "
 
       - name: Run Mypy type checker
         run: VIRTUAL_ENV=./ve make typecheck
