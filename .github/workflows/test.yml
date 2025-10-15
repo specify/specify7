@@ -141,13 +141,6 @@ jobs:
           while ! mysqladmin ping -h"127.0.0.1" -P"$PORT" --silent; do
             sleep 1
           done
-
-      - name: Prove login as MasterUser (from runner)
-        env:
-          PORT: ${{ job.services.mariadb.ports[3306] }}
-        run: |
-          set -eux
-          mysql -h 127.0.0.1 -P "$PORT" -u MasterUser -p'MasterPassword' -e "SELECT CURRENT_USER() AS matched_account, USER() AS login_user;"
       
       - name: Run Mypy type checker
         run: VIRTUAL_ENV=./ve make typecheck
