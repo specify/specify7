@@ -35,4 +35,4 @@ def create_specifyuser_view(request):
 
 # check which resource are present in a new db to define setup step
 def get_setup_progress(request):
-    return http.JsonResponse(api.get_setup_progress(request))
+    return http.JsonResponse(api.get_setup_progress())

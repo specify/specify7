@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 APP_VERSION = "7"
 SCHEMA_VERSION = "2.10"
 
-def get_setup_progress(request):
+def get_setup_progress():
     institution_created = models.Institution.objects.exists()
     institution = models.Institution.objects.first()
     globalGeographyTree = institution and institution.issinglegeographytree
