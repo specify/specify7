@@ -64,6 +64,8 @@ jobs:
           MYSQL_PASSWORD: MasterPassword
           MYSQL_DATABASE: test_SpecifyDB
           MYSQL_ROOT_PASSWORD: password
+          MASTER_NAME: MasterUser
+          MASTER_PASSWORD: MasterPassword
           MIGRATOR_NAME: MasterUser
           MIGRATOR_PASSWORD: MasterPassword
           APP_USER_NAME: MasterUser
@@ -120,6 +122,12 @@ jobs:
           echo "THICK_CLIENT_LOCATION = '${{ github.workspace }}/Specify6'" >> specifyweb/settings/local_specify_settings.py
           echo "DATABASE_HOST = '127.0.0.1'" >> specifyweb/settings/local_specify_settings.py
           echo "DATABASE_PORT = ${{ job.services.mariadb.ports[3306] }}" >> specifyweb/settings/local_specify_settings.py
+          echo "MASTER_NAME = 'MasterUser'" >> specifyweb/settings/local_specify_settings.py
+          echo "MASTER_PASSWORD = 'MasterPassword'" >> specifyweb/settings/local_specify_settings.py
+          echo "MIGRATOR_NAME = 'MasterUser'" >> specifyweb/settings/local_specify_settings.py
+          echo "MIGRATOR_PASSWORD = 'MasterPassword'" >> specifyweb/settings/local_specify_settings.py
+          echo "APP_USER_NAME = 'MasterUser'" >> specifyweb/settings/local_specify_settings.py
+          echo "APP_USER_PASSWORD = 'MasterPassword'" >> specifyweb/settings/local_specify_settings.py
 
       - name: Need these files to be present
         run:
