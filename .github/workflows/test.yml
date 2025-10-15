@@ -204,28 +204,28 @@ jobs:
           set -eux
           mysql -h 127.0.0.1 -P "$PORT" -u MasterUser -p'MasterPassword' -e "SELECT CURRENT_USER() AS matched_account, USER() AS login_user;"
 
-      - name: Print Django DB settings (via Django)
-        shell: bash
-        run: |
-          cat > print_db_settings.py <<'PY'
-          from django.conf import settings
-          from django.db import connections
+      # - name: Print Django DB settings (via Django)
+      #   shell: bash
+      #   run: |
+      #     cat > print_db_settings.py <<'PY'
+      #     from django.conf import settings
+      #     from django.db import connections
 
-          s = settings.DATABASES['default']
-          print("Django DATABASES['default']:")
-          for k in ("ENGINE","NAME","USER","PASSWORD","HOST","PORT"):
-              print(f"  {k}: {s.get(k)}")
+      #     s = settings.DATABASES['default']
+      #     print("Django DATABASES['default']:")
+      #     for k in ("ENGINE","NAME","USER","PASSWORD","HOST","PORT"):
+      #         print(f"  {k}: {s.get(k)}")
 
-          try:
-              with connections['default'].cursor() as cur:
-                  cur.execute("SELECT CURRENT_USER(), USER()")
-                  print("Django CURRENT_USER/USER:", cur.fetchone())
-          except Exception as e:
-              print("Django connection failed:", repr(e))
-              raise
-          PY
+      #     try:
+      #         with connections['default'].cursor() as cur:
+      #             cur.execute("SELECT CURRENT_USER(), USER()")
+      #             print("Django CURRENT_USER/USER:", cur.fetchone())
+      #     except Exception as e:
+      #         print("Django connection failed:", repr(e))
+      #         raise
+      #     PY
 
-          ./ve/bin/python manage.py shell < print_db_settings.py
+      #     ./ve/bin/python manage.py shell < print_db_settings.py
       
       - name: Run Mypy type checker
         run: VIRTUAL_ENV=./ve make typecheck

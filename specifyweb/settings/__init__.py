@@ -48,7 +48,7 @@ DATABASES = {
         'HOST': DATABASE_HOST,
         'PORT': DATABASE_PORT,
         'OPTIONS': DATABASE_OPTIONS,
-        'TEST': {}
+        'TEST': {'NAME': 'test_SpecifyDB'}
     },
     'app': {
         'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
