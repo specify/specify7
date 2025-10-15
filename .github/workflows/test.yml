@@ -128,38 +128,6 @@ jobs:
           echo "MIGRATOR_PASSWORD = 'MasterPassword'" >> specifyweb/settings/local_specify_settings.py
           echo "APP_USER_NAME = 'MasterUser'" >> specifyweb/settings/local_specify_settings.py
           echo "APP_USER_PASSWORD = 'MasterPassword'" >> specifyweb/settings/local_specify_settings.py
-
-      # - name: Force DB settings for CI
-      #   run: |
-      #     cat >> specifyweb/settings/local_specify_settings.py <<'PY'
-      #     # --- FINAL CI overrides (do not rely on other vars) ---
-      #     from django.conf import settings as _s
-
-      #     # Ensure DATABASES exists
-      #     try:
-      #         _s.DATABASES
-      #     except Exception:
-      #         _s.DATABASES = {}
-
-      #     if 'default' not in _s.DATABASES:
-      #         _s.DATABASES['default'] = {}
-
-      #     # Hard-set *literal* values so nothing upstream can mangle them.
-      #     _s.DATABASES['default'].update({
-      #         'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
-      #         'NAME': 'test_SpecifyDB',
-      #         'USER': 'MasterUser',
-      #         'PASSWORD': 'MasterPassword',
-      #         'HOST': '127.0.0.1',
-      #         'PORT': ${ { job.services.mariadb.ports[3306] } },  # GitHub injects the number
-      #         'TEST': { 'NAME': 'test_SpecifyDB' },
-      #     })
-
-      #     # Belt-and-suspenders: mirror to module-level constants
-      #     APP_USER_NAME = 'MasterUser'
-      #     APP_USER_PASSWORD = 'MasterPassword'
-      #     DATABASE_NAME = 'test_SpecifyDB'
-      #     PY
       
       - name: Need these files to be present
         run:
@@ -174,58 +142,12 @@ jobs:
             sleep 1
           done
 
-      # - name: Prepare DB user/grants for Django tests
-      #   env:
-      #     PORT: ${{ job.services.mariadb.ports[3306] }}
-      #   run: |
-      #     set -eux
-      #     mysql -h 127.0.0.1 -P "$PORT" -u root -p'password' -e "
-      #       -- Ensure only the '%' account is used (containers connect from 172.*)
-      #       DROP USER IF EXISTS 'MasterUser'@'localhost';
-      #       DROP USER IF EXISTS 'MasterUser'@'127.0.0.1';
-      #       DROP USER IF EXISTS 'MasterUser'@'::1';
-
-      #       CREATE USER IF NOT EXISTS 'MasterUser'@'%' IDENTIFIED BY 'MasterPassword';
-      #       -- Force the password in case the user pre-existed with a different one
-      #       ALTER USER 'MasterUser'@'%' IDENTIFIED BY 'MasterPassword';
-
-      #       -- Give enough rights for Django test runner to create/drop test DBs
-      #       GRANT ALL PRIVILEGES ON *.* TO 'MasterUser'@'%' WITH GRANT OPTION;
-      #       FLUSH PRIVILEGES;
-
-      #       SELECT user,host,plugin FROM mysql.user WHERE user='MasterUser';
-      #       SHOW GRANTS FOR 'MasterUser'@'%';
-      #     "
-
       - name: Prove login as MasterUser (from runner)
         env:
           PORT: ${{ job.services.mariadb.ports[3306] }}
         run: |
           set -eux
           mysql -h 127.0.0.1 -P "$PORT" -u MasterUser -p'MasterPassword' -e "SELECT CURRENT_USER() AS matched_account, USER() AS login_user;"
-
-      # - name: Print Django DB settings (via Django)
-      #   shell: bash
-      #   run: |
-      #     cat > print_db_settings.py <<'PY'
-      #     from django.conf import settings
-      #     from django.db import connections
-
-      #     s = settings.DATABASES['default']
-      #     print("Django DATABASES['default']:")
-      #     for k in ("ENGINE","NAME","USER","PASSWORD","HOST","PORT"):
-      #         print(f"  {k}: {s.get(k)}")
-
-      #     try:
-      #         with connections['default'].cursor() as cur:
-      #             cur.execute("SELECT CURRENT_USER(), USER()")
-      #             print("Django CURRENT_USER/USER:", cur.fetchone())
-      #     except Exception as e:
-      #         print("Django connection failed:", repr(e))
-      #         raise
-      #     PY
-
-      #     ./ve/bin/python manage.py shell < print_db_settings.py
       
       - name: Run Mypy type checker
         run: VIRTUAL_ENV=./ve make typecheck

@@ -48,7 +48,7 @@ DATABASES = {
         'HOST': DATABASE_HOST,
         'PORT': DATABASE_PORT,
         'OPTIONS': DATABASE_OPTIONS,
-        'TEST': {'NAME': None}
+        'TEST': {}
     },
     'app': {
         'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
@@ -58,7 +58,7 @@ DATABASES = {
         'HOST': DATABASE_HOST,
         'PORT': DATABASE_PORT,
         'OPTIONS': DATABASE_OPTIONS,
-        'TEST': {'NAME': None}
+        'TEST': {}
     },
     'migrations': {
         'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
@@ -78,7 +78,7 @@ DATABASES = {
         'HOST': DATABASE_HOST,
         'PORT': DATABASE_PORT,
         'OPTIONS': DATABASE_OPTIONS,
-        'TEST': {'NAME': None}
+        'TEST': {}
     },
 }
 
