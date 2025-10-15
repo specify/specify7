@@ -129,6 +129,36 @@ jobs:
           echo "APP_USER_NAME = 'MasterUser'" >> specifyweb/settings/local_specify_settings.py
           echo "APP_USER_PASSWORD = 'MasterPassword'" >> specifyweb/settings/local_specify_settings.py
 
+      - name: Force DB settings for CI
+        run: |
+          cat >> specifyweb/settings/local_specify_settings.py <<'PY'
+          # --- CI overrides to ensure Django uses the right creds/database ---
+          DATABASE_NAME = 'test_SpecifyDB'
+          APP_USER_NAME = 'MasterUser'
+          APP_USER_PASSWORD = 'MasterPassword'
+
+          # If base settings already defined DATABASES, update it; otherwise define it.
+          try:
+              DATABASES
+          except NameError:
+              DATABASES = {}
+
+          if 'default' not in DATABASES:
+              DATABASES['default'] = {}
+
+          DATABASES['default'].update({
+              'ENGINE': 'specifyweb.backend.hibernateboolsbackend.backends.mysql',
+              'NAME': DATABASE_NAME,
+              'USER': APP_USER_NAME,
+              'PASSWORD': APP_USER_PASSWORD,
+              'HOST': DATABASE_HOST,
+              'PORT': DATABASE_PORT,
+              'TEST': {
+                  'NAME': 'test_SpecifyDB',
+              },
+          })
+          PY
+      
       - name: Need these files to be present
         run:
           make specifyweb/settings/build_version.py
