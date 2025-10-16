@@ -28,6 +28,11 @@ class Command(BaseCommand):
         conn = connections[alias]
         logger.info(f"Running base_specify_migration using database alias '{alias}'")
 
+        try:
+            transaction.atomic(using=alias)
+        except:
+            alias = 'master'
+
         with transaction.atomic(using=alias):
             with conn.cursor() as cursor:
                 # Check django table
