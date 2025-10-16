@@ -117,7 +117,7 @@ export const resources: RA<ResourceConfig> = [
             required: false,
           },
           {
-            name: 'phone',
+            name: 'phone1',
             label: 'Phone',
             description: 'A contact phone number.',
             required: false,

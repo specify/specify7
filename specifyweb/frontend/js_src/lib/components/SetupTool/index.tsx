@@ -34,10 +34,6 @@ const stepOrder: RA<keyof SetupProgress> = [
   'specifyUser',
 ];
 
-// function findInitialStep(progress: SetupProgress): number {
-//   return stepOrder.findIndex((key) => !progress[key]);
-// }
-
 function findNextStep(currentStep: number, formData: ResourceFormData, direction: number = 1): number {
   // Find the next *accessible* form.
   // Handles conditional pages, like the global geography tree.
@@ -351,19 +347,22 @@ export function SetupTool({
         </>
       ) : 
         <>
-          <div className="flex w-full justify-center gap-8">
-            <div>
+          <div className="flex flex-col md:flex-row w-full justify-center gap-8">
+            <div className="w-[18rem] h-full overflow-auto">
               <Container.Center className="p-3 shadow-md max-w-lg h-full">
                 <H3 className="text-xl font-semibold mb-4">
                   {setupToolText.overview()}
                 </H3>
-                <pre className="text-xs whitespace-pre-wrap break-all">
-                  {JSON.stringify(formData, null, 2)}
-                </pre>
+                <div className="overflow-auto">
+                  <SetupOverview
+                    formData={formData}
+                    currentStep={currentStep}
+                  />
+                </div>
               </Container.Center>
             </div>
-            <div>
-              <Container.Center className="p-3 shadow-md max-w-lg">
+            <div className="w-[32rem]">
+              <Container.Center className="p-3 shadow-md">
                 <Form
                   className="flex-1 overflow-auto gap-2"
                   forwardRef={formRef}
@@ -398,6 +397,56 @@ export function SetupTool({
       }
     </Container.FullGray>
   );
+}
+
+function SetupOverview({
+  formData,
+  currentStep
+}: {
+  readonly formData: ResourceFormData,
+  readonly currentStep: number
+}): JSX.Element {
+  // Display all previously filled out forms.
+  return (
+    <div className="space-y-4 max-h-[70vh] overflow-auto ">
+      <table className="w-full text-sm border-collapse table-fixed">
+        <colgroup>
+          <col style={{ width: '60%' }} />
+          <col style={{ width: '40%' }} />
+        </colgroup>
+        <tbody>
+          {resources.map((resource, step) => {
+            // Display only the forms that have been visited.
+            if (Object.keys(formData[resource.resourceName]).length > 0 || step <= currentStep) {
+              return (<React.Fragment key={resource.resourceName}>
+                <tr key={`${resource.resourceName}`}>
+                  <td className="font-bold py-1 pr-2" colSpan={2}>{resource.label}</td>
+                </tr>
+                {resource.fields.map((field) => {
+                  let value = formData[resource.resourceName]?.[field.name]?.toString() ?? '-'
+                  if (field.type === 'object') {
+                    value = '●'
+                  } else if (field.type === 'password') {
+                    value = (formData[resource.resourceName]?.[field.name]) ? '***' : '-'
+                  } else if (field.type === 'select'  && Array.isArray(field.options)) {
+                    const match = field.options.find((option) => String(option.value) === value);
+                    value = match ? (match.label ?? match.value) : value;
+                  }
+                  return (
+                    <tr key={`${resource.resourceName}-${field.name}`}>
+                      <td className="font-medium py-1 pr-2">{field.label}</td>
+                      <td className="py-1">{value}</td>
+                    </tr>
+                  );
+                })}
+              </React.Fragment>)
+            }
+            return undefined;
+          })}
+        </tbody>
+      </table>
+    </div>
+  )
 }
 
 // Turn 'table.field' keys to nested objects to send to the backend
