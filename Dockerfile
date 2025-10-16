@@ -155,6 +155,10 @@ COPY --from=build-backend /opt/specify7 /opt/specify7
 WORKDIR /opt/specify7
 RUN cp -r specifyweb/settings .
 
+ENV PATH="/opt/specify7/ve/bin:$PATH"
+
+RUN echo 'export PATH="/opt/specify7/ve/bin:$PATH"' > ~/.bashrc
+
 RUN cat <<'EOF' > settings/local_specify_settings.py
 import os
 from . import specify_settings as specify_defaults
