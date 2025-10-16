@@ -240,7 +240,7 @@ export const resources: RA<ResourceConfig> = [
         name: 'name',
         label: 'Name',
         required: true,
-        maxLength: 64
+        maxLength: 64,
       },
       {
         name: 'type',
