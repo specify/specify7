@@ -10,15 +10,15 @@ import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
 import { Container, H2, H3 } from '../Atoms';
 import { Progress } from '../Atoms';
+import { Button } from '../Atoms/Button';
 import { Form, Input, Label, Select } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import type { SetupProgress } from '../Login';
+import { loadingBar } from '../Molecules';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
 import type { FieldConfig, ResourceConfig } from "./setupResources";
 import { resources } from "./setupResources";
-import { loadingBar } from '../Molecules';
 
 type ResourceFormData = Record<string, any>;
 
@@ -35,8 +35,10 @@ const stepOrder: RA<keyof SetupProgress> = [
 ];
 
 function findNextStep(currentStep: number, formData: ResourceFormData, direction: number = 1): number {
-  // Find the next *accessible* form.
-  // Handles conditional pages, like the global geography tree.
+  /*
+   * Find the next *accessible* form.
+   * Handles conditional pages, like the global geography tree.
+   */
   let step = currentStep + direction;
   while (step >= 0 && step < resources.length) {
     const resource = resources[step];
@@ -52,7 +54,7 @@ function findNextStep(currentStep: number, formData: ResourceFormData, direction
           break;
         }
       }
-      if (pass === false) break;
+      if (!pass) break;
     }
     if (pass) return step;
     step += direction;
@@ -60,7 +62,7 @@ function findNextStep(currentStep: number, formData: ResourceFormData, direction
   return currentStep;
 }
 
-function getFormValue(formData: ResourceFormData, currentStep: number, fieldName: string): string | number | undefined {
+function getFormValue(formData: ResourceFormData, currentStep: number, fieldName: string): number | string | undefined {
   return formData[resources[currentStep].resourceName][fieldName]
 }
 
@@ -82,11 +84,11 @@ function useFormDefaults(
   resource.fields.forEach(
     (field) => applyFieldDefaults(field)
   )
-  setFormData((prev: any) => ({
-    ...prev,
+  setFormData((previous: any) => ({
+    ...previous,
     [resourceName]: {
       ...defaultFormData,
-      ...prev[resourceName],
+      ...previous[resourceName],
     },
   }));
 }
@@ -113,7 +115,7 @@ export function SetupTool({
 
   // Is the database currrently being created?
   const [inProgress, setInProgress] = React.useState<boolean>(false);
-  const nextIncompleteStep = stepOrder.findIndex((resourceName) => setupProgress[resourceName] !== true);
+  const nextIncompleteStep = stepOrder.findIndex((resourceName) => !setupProgress[resourceName]);
   React.useEffect(() => {
     if (Object.values(setupProgress).includes(true)) {
       setInProgress(true);
@@ -191,8 +193,10 @@ export function SetupTool({
     event.preventDefault();
 
     if (currentStep === resources.length-1) {
-      // Send resources to backend to start the setup
-      // const { endpoint, resourceName } = resources[currentStep];
+      /*
+       * Send resources to backend to start the setup
+       * const { endpoint, resourceName } = resources[currentStep];
+       */
       const endpoint = '/setup_tool/setup_database/create/';
       loading(
         onResourceSaved(endpoint, 'TEMPORARY_LABEL', formData)
@@ -333,21 +337,18 @@ export function SetupTool({
       />
       <H2 className="text-2xl mb-6">{setupToolText.specifyConfigurationSetup()}</H2>
       {inProgress ? (
-        <>
-          <Container.Center className="p-3 shadow-md max-w-lg">
+        <Container.Center className="p-3 shadow-md max-w-lg">
             <H3 className="text-xl font-semibold mb-4">
               {setupToolText.settingUp()}
             </H3>
             <H3 className="text-md mb-4">
-              {nextIncompleteStep !== -1 ? resources[nextIncompleteStep].label
-                : setupToolText.settingUp()}
+              {nextIncompleteStep === -1 ? setupToolText.settingUp()
+                : resources[nextIncompleteStep].label}
             </H3>
             {loadingBar}
           </Container.Center>
-        </>
       ) : 
-        <>
-          <div className="flex flex-col md:flex-row w-full justify-center gap-8">
+        <div className="flex flex-col md:flex-row w-full justify-center gap-8">
             <div className="w-[18rem] h-full overflow-auto">
               <Container.Center className="p-3 shadow-md max-w-lg h-full">
                 <H3 className="text-xl font-semibold mb-4">
@@ -355,8 +356,8 @@ export function SetupTool({
                 </H3>
                 <div className="overflow-auto">
                   <SetupOverview
-                    formData={formData}
                     currentStep={currentStep}
+                    formData={formData}
                   />
                 </div>
               </Container.Center>
@@ -372,11 +373,11 @@ export function SetupTool({
                   <H3 className="text-xl font-semibold mb-4">
                     {resources[currentStep].label}
                   </H3>
-                  {resources[currentStep].description !== undefined ? (
+                  {resources[currentStep].description === undefined ? undefined : (
                     <p className="text-md font-semibold mb-4">
                       {resources[currentStep].description}
                     </p>
-                  ) : undefined}
+                  )}
                   {renderFormFields(resources[currentStep].fields)}
                 </Form>
                 <div className="flex flex-row gap-2 justify-end">
@@ -393,7 +394,6 @@ export function SetupTool({
               </Container.Center>
             </div>
           </div>
-        </>
       }
     </Container.FullGray>
   );

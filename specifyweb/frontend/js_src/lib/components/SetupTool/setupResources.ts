@@ -8,7 +8,10 @@ export type ResourceConfig = {
   readonly label: LocalizedString;
   readonly endpoint: string;
   readonly description?: LocalizedString;
-  readonly condition?: Record<string, Record<string, boolean | number | string>>;
+  readonly condition?: Record<
+    string,
+    Record<string, boolean | number | string>
+  >;
   readonly fields: RA<FieldConfig>;
 };
 
@@ -182,7 +185,7 @@ export const resources: RA<ResourceConfig> = [
     endpoint: '/setup_tool/global_geographytreedef/create/',
     condition: {
       institution: {
-        isSingleGeographyTree: true
+        isSingleGeographyTree: true,
       },
     },
     fields: [
@@ -239,7 +242,7 @@ export const resources: RA<ResourceConfig> = [
     endpoint: '/setup_tool/geographytreedef/create/',
     condition: {
       institution: {
-        isSingleGeographyTree: false
+        isSingleGeographyTree: false,
       },
     },
     fields: [
