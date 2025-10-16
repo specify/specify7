@@ -88,7 +88,8 @@ def update_table_schema_config_with_defaults(
     table_name,
     discipline_id: int,
     description: str = None,
-    apps = global_apps
+    apps = global_apps,
+    overrides: dict = None
 ):
     logger.debug(f"(1) Starting: {str(table_name)}")
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
@@ -144,8 +145,19 @@ def update_table_schema_config_with_defaults(
 
     logger.debug(f"(3) Created all {len(item_str_bulk)} Splocaleitemstrs")
 
+    # Create dict of field overrides
+    field_overrides = dict()
+    if overrides is not None and overrides.get(table_name, None) is not None:
+        table_overrides = overrides.get(table_name, None)
+        items = table_overrides.get('items', [])
+        # Items contains a list of dicts (item).
+        for item in items:
+            # Each item is a dict with only one entry.
+            for key, override_dict in item:
+                field_overrides[key.lower()] = override_dict
+
     for field in table.all_fields:
-        update_table_field_schema_config_with_defaults(table_name, discipline_id, field.name, apps)
+        update_table_field_schema_config_with_defaults(table_name, discipline_id, field.name, apps, overrides=field_overrides.get(field.name.lower(), None))
         logger.debug(f"(4) Updated field defaults for {field.name}")
 
 
@@ -169,7 +181,8 @@ def update_table_field_schema_config_with_defaults(
     table_name,
     discipline_id: int,
     field_name: str,
-    apps = global_apps
+    apps = global_apps,
+    overrides: dict = None
 ):
     table = datamodel.get_table(table_name)
 
@@ -219,12 +232,21 @@ def update_table_field_schema_config_with_defaults(
             f"Field does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name} -> {field_name}"
         )
         return
+    
+    # Apply overrides if they exist
+    field_name = field.name
+    field_desc = camel_to_spaced_title_case(field.name)
+    picklist_name = None
+    if overrides is not None:
+        field_name = overrides.get('name', field_name)
+        field_desc = overrides.get('desc', field_desc)
+        picklist_name = overrides.get('picklistname', picklist_name)
 
     field_config = FieldSchemaConfig(
         name=field_name,
         column=field.column,
         java_type=datamodel_type_to_schematype(field.type) if field.is_relationship else field.type,
-        description=camel_to_spaced_title_case(field.name),
+        description=field_desc,
         language="en"
     )
 
@@ -236,6 +258,7 @@ def update_table_field_schema_config_with_defaults(
         isrequired=field.required,
         issystem=table.system,
         version=0,
+        picklistname=picklist_name
     )
 
     itm_str_bulk = []

@@ -17,6 +17,10 @@ logger = logging.getLogger(__name__)
 APP_VERSION = "7"
 SCHEMA_VERSION = "2.10"
 
+class SetupError(Exception):
+    """Raised by any setup tasks."""
+    pass
+
 def get_setup_progress():
     institution_created = models.Institution.objects.exists()
     institution = models.Institution.objects.first()
@@ -113,8 +117,7 @@ def create_division(data):
     if existing_id:
         existing_division = Division.objects.filter(id=existing_id).first()
         if existing_division:
-            # TODO
-            return JsonResponse({"success": True, "division_id": existing_division.id, "setup_progress": get_setup_progress()}, status=200)
+            return {"division_id": existing_division.id}
 
     # Determine new Division ID
     max_id = Division.objects.aggregate(Max('id'))['id__max'] or 0
@@ -141,8 +144,8 @@ def create_division(data):
         new_division = Division.objects.create(**data)
         return {"division_id": new_division.id}
     except Exception as e:
-        # TODO
-        return JsonResponse({"error": str(e)}, status=400)
+        logger.exception(f'Division error: {e}')
+        raise SetupError(e)
 
 def create_discipline(data):
     from specifyweb.specify.models import (
@@ -155,7 +158,7 @@ def create_discipline(data):
     if existing_id:
         existing_discipline = Discipline.objects.filter(id=existing_id).first()
         if existing_discipline:
-            return JsonResponse({"success": True, "discipline_id": existing_discipline.id, "setup_progress": get_setup_progress()}, status=200)
+            return {"discipline_id": existing_discipline.id}
 
     # Resolve division
     division_url = data.get('division')
@@ -164,11 +167,11 @@ def create_discipline(data):
             division_id = int(division_url.rstrip('/').split('/')[-1])
             division = Division.objects.get(id=division_id)
         except (ValueError, Division.DoesNotExist):
-            return JsonResponse({"error": "Invalid division URL"}, status=400)
+            raise SetupError("Invalid division URL")
     else:
         division = Division.objects.last()
         if not division:
-            return JsonResponse({"error": "No Division available to assign"}, status=400)
+            raise SetupError("No Division available to assign")
 
     data['division'] = division
 
@@ -202,7 +205,7 @@ def create_discipline(data):
         return {"discipline_id": new_discipline.id}
 
     except Exception as e:
-        return JsonResponse({"error": str(e)}, status=400)
+        raise SetupError(e)
 
 def create_collection(data):
     from specifyweb.specify.models import Collection, Discipline
@@ -212,7 +215,7 @@ def create_collection(data):
     if existing_id:
         existing_collection = Collection.objects.filter(id=existing_id).first()
         if existing_collection:
-            return JsonResponse({"success": True, "collection_id": existing_collection.id, "setup_progress": get_setup_progress()}, status=200)
+            return {"collection_id": existing_collection.id}
 
     # Assign new Collection ID
     max_id = Collection.objects.aggregate(Max('id'))['id__max'] or 0
@@ -225,7 +228,7 @@ def create_collection(data):
             discipline_id = int(discipline_url.rstrip('/').split('/')[-1])
             data['discipline_id'] = discipline_id
         except ValueError:
-            return JsonResponse({"error": "Invalid discipline URL"}, status=400)
+            raise SetupError("Invalid discipline URL")
 
     # Fallback to last Discipline if none provided
     if not data.get('discipline_id'):
@@ -233,7 +236,7 @@ def create_collection(data):
         if last_discipline:
             data['discipline_id'] = last_discipline.id
         else:
-            return JsonResponse({"error": "No discipline available"}, status=400)
+            raise SetupError("No discipline available")
 
     # Remove keys that should not be passed to model
     for key in ['discipline', '_tablename', 'success', 'collection_id']:
@@ -244,7 +247,7 @@ def create_collection(data):
         new_collection = Collection.objects.create(**data)
         return {"collection_id": new_collection.id}
     except Exception as e:
-        return JsonResponse({"error": str(e)}, status=400)
+        raise SetupError(e)
 
 def create_specifyuser(data):
     from specifyweb.specify.models import Specifyuser, Agent, Division, Collection
@@ -284,7 +287,7 @@ def create_specifyuser(data):
         return {"user_id": new_user.id}
 
     except Exception as e:
-        return JsonResponse({"error": str(e)}, status=400)
+        raise SetupError(e)
 
 # Trees
 def create_storage_tree(data):
@@ -298,7 +301,7 @@ def create_storage_tree(data):
         Storagetreedef.objects.create(**data)
         return {}
     except Exception as e:
-        return JsonResponse({"error": str(e)}, status=400)
+        raise SetupError(e)
 
 
 def create_global_geography_tree(data):
@@ -311,7 +314,7 @@ def create_global_geography_tree(data):
         Geographytreedef.objects.create(**data)
         return {}
     except Exception as e:
-        return JsonResponse({"error": str(e)}, status=400)
+        raise SetupError(e)
 
 def create_geography_tree(data):
     # TODO: Use trees/create_default_trees
@@ -323,7 +326,7 @@ def create_geography_tree(data):
         Geographytreedef.objects.create(**data)
         return {}
     except Exception as e:
-        return JsonResponse({"error": str(e)}, status=400)
+        raise SetupError(e)
 
 def create_taxon_tree(data):
     # TODO: Use trees/create_default_trees
@@ -335,4 +338,4 @@ def create_taxon_tree(data):
         Taxontreedef.objects.create(**data)
         return {}
     except Exception as e:
-        return JsonResponse({"error": str(e)}, status=400)
+        raise SetupError(e)
