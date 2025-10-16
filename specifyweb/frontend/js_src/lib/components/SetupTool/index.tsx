@@ -18,7 +18,7 @@ import type { SetupProgress } from '../Login';
 import { loadingBar } from '../Molecules';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
 import type { FieldConfig, ResourceConfig } from "./setupResources";
-import { resources } from "./setupResources";
+import { resources, FIELD_MAX_LENGTH } from "./setupResources";
 
 type ResourceFormData = Record<string, any>;
 
@@ -269,6 +269,7 @@ export function SetupTool({
             {label}
             <Input.Generic
               minLength={MIN_PASSWORD_LENGTH}
+              maxLength={field.maxLength ?? FIELD_MAX_LENGTH}
               name={fieldName}
               required={required}
               type='password'
@@ -282,6 +283,7 @@ export function SetupTool({
               {passwordRepeat.label}
               <Input.Generic
                 minLength={MIN_PASSWORD_LENGTH}
+              maxLength={field.maxLength ?? FIELD_MAX_LENGTH}
                 name={passwordRepeat.name}
                 required={required}
                 type='password'
@@ -315,6 +317,7 @@ export function SetupTool({
             required={required}
             value={getFormValue(formData, currentStep, fieldName) ?? ''}
             onValueChange={(value) => handleChange(fieldName, value)}
+            maxLength={field.maxLength ?? FIELD_MAX_LENGTH}
           />
         </Label.Block>
       )}

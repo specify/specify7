@@ -3,6 +3,8 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { setupToolText } from '../../localization/setupTool';
 import type { RA } from '../../utils/types';
 
+export const FIELD_MAX_LENGTH = 64;
+
 export type ResourceConfig = {
   readonly resourceName: string;
   readonly label: LocalizedString;
@@ -34,6 +36,7 @@ export type FieldConfig = {
     readonly label: string;
     readonly description: string;
   };
+  readonly maxLength?: number;
 };
 
 // Discipline list from backend/context/app_resource.py
@@ -75,12 +78,14 @@ export const resources: RA<ResourceConfig> = [
         label: setupToolText.institutionName(),
         description: setupToolText.institutionNameDescription(),
         required: true,
+        maxLength: 256,
       },
       {
         name: 'code',
         label: setupToolText.institutionCode(),
         description: setupToolText.institutionCodeDescription(),
         required: true,
+        maxLength: 64,
       },
       {
         name: 'address',
@@ -100,30 +105,35 @@ export const resources: RA<ResourceConfig> = [
             label: 'City',
             description: 'The city where the institution is located.',
             required: false,
+            maxLength: 64,
           },
           {
             name: 'state',
             label: 'State/Providence',
             description: 'The state or province.',
             required: false,
+            maxLength: 64,
           },
           {
             name: 'country',
             label: 'Country',
             description: 'The country.',
             required: false,
+            maxLength: 64,
           },
           {
             name: 'postalCode',
             label: 'Zip/Postal Code',
             description: 'The postal code.',
             required: false,
+            maxLength: 32,
           },
           {
             name: 'phone1',
             label: 'Phone',
             description: 'A contact phone number.',
             required: false,
+            maxLength: 50,
           },
         ],
       },
@@ -226,7 +236,12 @@ export const resources: RA<ResourceConfig> = [
     label: setupToolText.discipline(),
     endpoint: '/setup_tool/discipline/create/',
     fields: [
-      { name: 'name', label: 'Name', required: true },
+      {
+        name: 'name',
+        label: 'Name',
+        required: true,
+        maxLength: 64
+      },
       {
         name: 'type',
         label: 'Type',
@@ -310,8 +325,18 @@ export const resources: RA<ResourceConfig> = [
     label: setupToolText.collection(),
     endpoint: '/setup_tool/collection/create/',
     fields: [
-      { name: 'collectionName', label: 'Collection Name', required: true },
-      { name: 'code', label: 'Code', required: true },
+      {
+        name: 'collectionName',
+        label: 'Collection Name',
+        required: true,
+        maxLength: 50,
+      },
+      {
+        name: 'code',
+        label: 'Code',
+        required: true,
+        maxLength: 50,
+      },
       {
         name: 'catalogNumFormatName',
         label: 'Catalog Number Format',
@@ -332,6 +357,7 @@ export const resources: RA<ResourceConfig> = [
         description:
           'The username for the primary administrator account (e.g., "spadmin").',
         required: true,
+        maxLength: 64,
       },
       {
         name: 'password',
@@ -344,6 +370,7 @@ export const resources: RA<ResourceConfig> = [
           label: 'Confirm Password',
           description: 'Must match the password entered above.',
         },
+        maxLength: 256,
       },
     ],
   },
