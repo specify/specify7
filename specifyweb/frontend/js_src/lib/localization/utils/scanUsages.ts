@@ -168,11 +168,9 @@ export async function scanUsages(
           categoryName,
           strings: Object.fromEntries(
             Object.keys(strings).map((key) => {
-              const rawStrings =
-                (Reflect.getOwnPropertyDescriptor(strings, key)?.value ??
-                  (strings as LanguageDictionary)[
-                    key as keyof LanguageDictionary
-                  ]) as LocalizationEntry;
+              const rawStrings = (Reflect.getOwnPropertyDescriptor(strings, key)
+                ?.value ??
+                (strings as LanguageDictionary)[key]) as LocalizationEntry;
 
               Object.keys(rawStrings)
                 .filter((language) => !f.has(expectedKeys, language))
