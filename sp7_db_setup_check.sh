@@ -2,8 +2,6 @@
 
 # This script sets up a master user for Specify 7 to use in MySQL/MariaDB using env vars from the Linux environment.
 
-APP_USER_HOST='%'
-
 echo "Starting MariaDB database and user creation script..."
 
 # Read variables from environment
