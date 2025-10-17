@@ -317,17 +317,17 @@ export const statsText = createDictionary({
     'en-us': 'Defines the layout of the statistics page',
   },
   showPreparationsTotal: {
-    'en-us': 'Show preparation totals',
+    'en-us': 'Show Preparations Totals',
   },
   showPreparationsTotalDescription: {
     'en-us':
-      'Include an overall total across preparation types on the statistics page.',
+      'If enabled, the default Preparations statistics panel will include a total count for each preparation of a particular preparation type alongside the overall total. This is useful for lot-based collections.',
   },
   autoRefreshRate: {
-    'en-us': 'Auto-refresh rate (hours)',
+    'en-us': 'Auto-Refresh Rate (Hours)',
   },
   autoRefreshRateDescription: {
-    'en-us': 'Specify how frequently shared statistics refresh their data.',
+    'en-us': 'The time interval, in hours, at which the statistics page will automatically refresh its data. Default is 24.',
   },
 });
 /* eslint-enable @typescript-eslint/naming-convention */
