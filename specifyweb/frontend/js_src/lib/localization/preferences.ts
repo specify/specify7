@@ -3,10 +3,10 @@
  *
  * @module
  */
-import { createDictionary } from './utils';
 import { preferencesBehaviorDictionary } from './preferences.behavior';
 import { preferencesContentDictionary } from './preferences.content';
 import { preferencesGeneralDictionary } from './preferences.general';
+import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 const preferencesDictionary = {
   ...preferencesGeneralDictionary,
