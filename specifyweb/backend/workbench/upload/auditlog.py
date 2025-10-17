@@ -25,11 +25,15 @@ Division = datamodel.get_table_strict('Division')
 
 
 from . import auditcodes
-    
-def truncate_str_to_bytes(string: str, bytes: int) -> str:
+
+def str_to_bytes(string: str, max_length: int) -> bytes: 
     str_as_bytes = string.encode()
+    return str_as_bytes[:max_length]
+
+def truncate_str_to_bytes(string: str, max_length: int) -> str:
+    str_as_bytes = str_to_bytes(string, max_length)
     try:
-        return str_as_bytes[:bytes].decode()
+        return str_as_bytes.decode()
     except UnicodeDecodeError as err:
         return str_as_bytes[:err.start].decode()
 

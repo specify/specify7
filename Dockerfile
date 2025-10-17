@@ -163,6 +163,9 @@ RUN echo \
         "\nDEPOSITORY_DIR = '/volumes/static-files/depository'" \
         "\nREPORT_RUNNER_HOST = os.getenv('REPORT_RUNNER_HOST', '')" \
         "\nREPORT_RUNNER_PORT = os.getenv('REPORT_RUNNER_PORT', '')" \
+        "\nREDIS_HOST = os.getenv('REDIS_HOST', 'redis')" \
+        "\nREDIS_PORT = os.getenv('REDIS_PORT', 6379)" \
+        "\nREDIS_DB_INDEX = os.getenv('REDIS_DB_INDEX', 0)" \
         "\nWEB_ATTACHMENT_URL = os.getenv('ASSET_SERVER_URL', None)" \
         "\nWEB_ATTACHMENT_KEY = os.getenv('ASSET_SERVER_KEY', None)" \
         "\nWEB_ATTACHMENT_COLLECTION = os.getenv('ASSET_SERVER_COLLECTION', None)" \
@@ -173,6 +176,8 @@ RUN echo \
         "\nANONYMOUS_USER = os.getenv('ANONYMOUS_USER', None)" \
         "\nSPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', '/opt/Specify/config')" \
         "\nTIME_ZONE = os.environ.get('TIME_ZONE', 'America/Chicago')" \
+        "\nALLOW_SUPPORT_LOGIN = os.environ.get('ALLOW_SUPPORT_LOGIN', False)" \
+        "\nSUPPORT_LOGIN_TTL = int(os.environ.get('SUPPORT_LOGIN_TTL', 180))" \  
         # Resolve ALLOWED_HOSTS in the following precedence:
         # - Use the ALLOWED_HOSTS environment variable (if present)
         # - Otherwise, fallback to the default specified in settings/specify_settings.py
