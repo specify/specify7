@@ -4,10 +4,14 @@
  * @module
  */
 import { createDictionary } from './utils';
-import { preferencesContentDict } from './preferences.content';
-import { preferencesBehaviorDict } from './preferences.behavior';
+import {
+  preferencesContentText,
+} from './preferences.content';
+import {
+  preferencesBehaviorText,
+} from './preferences.behavior';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
-export const preferencesGeneralDict= createDictionary({
+export const preferencesGeneralStrings = {
   preferences: {
     'en-us': 'Preferences',
     'ru-ru': 'Настройки',
@@ -705,14 +709,18 @@ export const preferencesGeneralDict= createDictionary({
     'uk-ua': 'Домашня сторінка',
     'de-ch': 'Startseite',
     'pt-br': 'Página inicial',
-  }, 
+  },
 
-} as const);
-
-const aggregatedPreferences = {
-  ...preferencesGeneralDict,
-  ...preferencesContentDict,
-  ...preferencesBehaviorDict,
 } as const;
 
-export const preferencesText = (aggregatedPreferences);
+export const preferencesGeneralDict = createDictionary(preferencesGeneralStrings);
+
+type PreferencesText = typeof preferencesGeneralDict &
+  typeof preferencesContentText &
+  typeof preferencesBehaviorText;
+
+export const preferencesText = Object.assign(
+  preferencesGeneralDict,
+  preferencesContentText,
+  preferencesBehaviorText
+) as PreferencesText;

@@ -5,7 +5,7 @@
  */
 import { createDictionary } from './utils';
 
-export const preferencesBehaviorDict = createDictionary ({
+export const preferencesBehaviorStrings = {
   altClickToSupressNewTab: {
     'en-us':
       '<key>{altKeyName:string}</key>+<key>Click</key> to suppress new tab',
@@ -727,6 +727,10 @@ export const preferencesBehaviorDict = createDictionary ({
     'uk-ua':
       'Поле «Номер у каталозі» має бути унікальним у таблицях «Компонент» та «CO».',
   },
-} as const);
+} as const;
 
-export default preferencesBehaviorDict;
+export const preferencesBehaviorText = createDictionary(
+  preferencesBehaviorStrings
+);
+
+export default preferencesBehaviorText;
