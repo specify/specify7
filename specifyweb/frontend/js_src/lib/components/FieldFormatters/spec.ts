@@ -39,8 +39,8 @@ export const fieldFormattersSpec = f.store(() =>
                   ? javaClass
                   : undefined),
               rawAutoNumber: formatter.parts.some(isAutoNumbering)
-                ? legacyAutoNumber ??
-                  inferLegacyAutoNumber(table, formatter.parts)
+                ? (legacyAutoNumber ??
+                  inferLegacyAutoNumber(table, formatter.parts))
                 : undefined,
             })
           ),
@@ -149,10 +149,10 @@ export function normalizeFieldFormatterPart(
     part.type === 'regex'
       ? localized(trimRegexString(part.placeholder))
       : part.type === 'year'
-      ? fieldFormatterTypeMapper.year.placeholder
-      : part.type === 'numeric'
-      ? fieldFormatterTypeMapper.numeric.buildPlaceholder(part.size)
-      : part.placeholder;
+        ? fieldFormatterTypeMapper.year.placeholder
+        : part.type === 'numeric'
+          ? fieldFormatterTypeMapper.numeric.buildPlaceholder(part.size)
+          : part.placeholder;
   const size = fieldFormatterTypesWithForcedSize.has(part.type as 'constant')
     ? placeholder.length
     : part.size;
