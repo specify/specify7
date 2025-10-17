@@ -5,7 +5,7 @@
  */
 import { createDictionary } from './utils';
 
-export const preferencesContentDict = createDictionary({
+export const preferencesContentStrings = {
   content: {
     'en-us': 'Content',
     'ru-ru': 'Содержание',
@@ -696,6 +696,10 @@ export const preferencesContentDict = createDictionary({
     'de-ch': 'Standardmäßig zu öffnender Datensatz',
     'pt-br': 'Gravar para abrir por padrão',
   },
-} as const);
+} as const;
 
-export default preferencesContentDict;
+export const preferencesContentText = createDictionary(
+  preferencesContentStrings
+);
+
+export default preferencesContentText;
