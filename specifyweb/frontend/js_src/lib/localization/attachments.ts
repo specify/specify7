@@ -678,10 +678,10 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Видалення вкладень',
   },
   publicDefault: {
-    'en-us': 'New attachments are public',
+    'en-us': 'Make Attachments Public by Default',
   },
   publicDefaultDescription: {
     'en-us':
-      'Set the default visibility for attachments created within this collection.',
+      'This controls whether or not new attachments added to this collection are flagged as "Public" by default. Public attachments will be visible for everyone viewing a linked Specify Web Portal. This setting can be overridden on a per-attachment basis and does not affect existing attachments.',
   },
 } as const);
