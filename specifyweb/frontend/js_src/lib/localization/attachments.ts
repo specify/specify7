@@ -682,6 +682,6 @@ export const attachmentsText = createDictionary({
   },
   publicDefaultDescription: {
     'en-us':
-      'This controls whether or not new attachments added to this collection are flagged as "Public" by default. Public attachments will be visible for everyone viewing a linked Specify Web Portal. This setting can be overridden on a per-attachment basis and does not affect existing attachments.',
+      'This controls whether or not new attachments added to this collection are flagged as "Public" by default. Public attachments will automatically be visible on a Specify Web Portal. This setting can be overridden on a per-attachment basis and does not affect existing attachments.',
   },
 } as const);
