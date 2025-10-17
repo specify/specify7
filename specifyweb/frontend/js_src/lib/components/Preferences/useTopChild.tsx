@@ -54,10 +54,20 @@ export function useTopChild(): {
 
     const observer = new ResizeObserver(handleChange);
     observer.observe(container);
-    const scroll = listen(container, 'scroll', handleChange);
+    const scrollTargets: HTMLElement[] = [];
+    for (
+      let element: HTMLElement | null = container;
+      element !== null;
+      element = element.parentElement
+    )
+      scrollTargets.push(element);
+    const uniqueScrollTargets = Array.from(new Set(scrollTargets));
+    const scrollCleanups = uniqueScrollTargets.map((target) =>
+      listen(target, 'scroll', handleChange)
+    );
     return (): void => {
       observer.disconnect();
-      scroll();
+      scrollCleanups.forEach((cleanup) => cleanup());
     };
   }, [container]);
 

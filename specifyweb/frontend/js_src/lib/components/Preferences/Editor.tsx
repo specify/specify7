@@ -4,7 +4,9 @@ import { useLiveState } from '../../hooks/useLiveState';
 import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
 import type { PreferenceType } from '../Preferences';
 import { PreferencesContent } from '../Preferences';
+import { PreferencesAside } from '../Preferences/Aside';
 import { BasePreferences } from '../Preferences/BasePreferences';
+import { useTopChild } from '../Preferences/useTopChild';
 import { userPreferenceDefinitions } from '../Preferences/UserDefinitions';
 import { userPreferences } from '../Preferences/userPreferences';
 import { collectionPreferenceDefinitions } from './CollectionDefinitions';
@@ -75,10 +77,30 @@ function createPreferencesEditor<DEFINITIONS extends GenericPreferences>(
 
     const Provider = Context.Provider;
     const contentProps = prefType === undefined ? {} : { prefType };
+    const {
+      visibleChild,
+      setVisibleChild,
+      references,
+      forwardRefs,
+      scrollContainerRef,
+    } = useTopChild();
+    const asidePrefType = prefType ?? 'user';
 
     return (
       <Provider value={preferencesInstance}>
-        <PreferencesContent {...contentProps} />
+        <div
+          className="relative flex h-full min-h-0 flex-col gap-6 overflow-y-auto md:flex-row"
+          ref={scrollContainerRef}
+        >
+          <PreferencesAside
+            activeCategory={visibleChild}
+            prefType={asidePrefType}
+            references={references}
+            setActiveCategory={setVisibleChild}
+          />
+          <PreferencesContent forwardRefs={forwardRefs} {...contentProps} />
+          <span className="flex-1" />
+        </div>
       </Provider>
     );
   };
