@@ -84,14 +84,6 @@ export const collectionPreferenceDefinitions = {
         title: treeText.synonymizedNodes(),
         description: treeText.synonymizedNodesDescription(),
         items: {
-          'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod':
-            definePref<boolean>({
-              title: () => tableLabel('GeologicTimePeriod'),
-              requiresReload: false,
-              visible: true,
-              defaultValue: false,
-              type: 'java.lang.Boolean',
-            }),
           'sp7.allow_adding_child_to_synonymized_parent.Taxon':
             definePref<boolean>({
               title: () => tableLabel('Taxon'),
@@ -108,17 +100,25 @@ export const collectionPreferenceDefinitions = {
               defaultValue: false,
               type: 'java.lang.Boolean',
             }),
-          'sp7.allow_adding_child_to_synonymized_parent.LithoStrat':
+          'sp7.allow_adding_child_to_synonymized_parent.Storage':
             definePref<boolean>({
-              title: () => tableLabel('LithoStrat'),
+              title: () => tableLabel('Storage'),
               requiresReload: false,
               visible: true,
               defaultValue: false,
               type: 'java.lang.Boolean',
             }),
-          'sp7.allow_adding_child_to_synonymized_parent.Storage':
+          'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod':
             definePref<boolean>({
-              title: () => tableLabel('Storage'),
+              title: () => tableLabel('GeologicTimePeriod'),
+              requiresReload: false,
+              visible: true,
+              defaultValue: false,
+              type: 'java.lang.Boolean',
+            }),
+          'sp7.allow_adding_child_to_synonymized_parent.LithoStrat':
+            definePref<boolean>({
+              title: () => tableLabel('LithoStrat'),
               requiresReload: false,
               visible: true,
               defaultValue: false,
