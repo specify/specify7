@@ -707,7 +707,7 @@ export const treeText = createDictionary({
     'en-us': 'Tree Management',
   },
   synonymizedNodes: {
-    'en-us': 'Synonym Behavior',
+    'en-us': 'Expand Synonym Behavior',
   },
   synonymizedNodesDescription: {
     'en-us':
