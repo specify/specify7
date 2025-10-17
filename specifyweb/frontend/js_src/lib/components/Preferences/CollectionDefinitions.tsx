@@ -26,6 +26,7 @@ const tableLabel = (tableName: keyof Tables): LocalizedString =>
 const specifyNetworkItems = {
   publishingOrganization: definePref<string | undefined>({
     title: specifyNetworkText.publishingOrganizationKey(),
+    description: specifyNetworkText.publishingOrganizationKeyDescription(),
     requiresReload: false,
     visible: true,
     defaultValue: undefined,
@@ -33,6 +34,7 @@ const specifyNetworkItems = {
   }),
   collectionKey: definePref<string | undefined>({
     title: specifyNetworkText.collectionKey(),
+    description: specifyNetworkText.collectionKeyDescription(),
     requiresReload: false,
     visible: true,
     defaultValue: undefined,

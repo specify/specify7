@@ -17,10 +17,18 @@ export const specifyNetworkText = createDictionary({
     'pt-br': 'Especificar rede',
   },
   publishingOrganizationKey: {
-    'en-us': 'Publishing organization key',
+    'en-us': 'GBIF Publishing Organization Key',
+  },
+  publishingOrganizationKeyDescription: {
+    'en-us':
+      'The GBIF "publishingOrgKey" (a UUID) for this collection, used for Specify Network integration.',
   },
   collectionKey: {
-    'en-us': 'Collection key',
+    'en-us': 'GBIF Data Set Key',
+  },
+  collectionKeyDescription: {
+    'en-us':
+      'The GBIF "dataSetKey" (a UUID) for this collection, used for Specify Network integration.',
   },
   occurrenceOrGuidRequired: {
     'en-us': 'Species Name or GUID must be provided to display this page',
