@@ -693,10 +693,6 @@ export const preferencesBehaviorDictionary = {
     'en-us':
       'If enabled, picklists of type "Entire Table" will only show items that are in use within the current collection.',
   },
-  catalogNumberInheritanceDescription: {
-    'en-us':
-      'Configure whether sibling Collection Objects and their child Collection Objects inherit catalog numbers from the primary or parent record.',
-  },
   catalogNumberParentInheritanceDescription: {
     'en-us':
       'Control whether component records inherit catalog numbers from their parent Collection Object.',
@@ -1142,35 +1138,19 @@ altClickToSupressNewTab: {
   },
   inheritanceCatNumberPref: {
     'en-us':
-      'Enable the inheritance of the primary catalog number to its empty siblings.',
-    'de-ch':
-      'Aktivieren Sie die Vererbung der primären Katalognummer an ihre leeren Geschwister.',
-    'es-es':
-      'Habilitar la herencia del número de catálogo principal a sus hermanos vacíos.',
-    'fr-fr':
-      "Activer l'héritage du numéro de catalogue principal à ses frères vides.",
-    'pt-br':
-      'Habilitar a herança do número de catálogo primário para seus irmãos vazios.',
-    'ru-ru':
-      'Включить наследование основного каталожного номера его пустыми родственными номерами.',
-    'uk-ua':
-      'Увімкнути успадкування основного каталожного номера його порожнім братам і сестрам.',
+      'Enable Catalog Number Inheritance From Primary CO',
+  },
+  inheritanceCatNumberPrefDescription: {
+    'en-us':
+      'Control whether component records inherit catalog numbers from their primary Collection Object.',
   },
   inheritanceCatNumberParentCOPref: {
     'en-us':
-      'Enable the inheritance of the parent catalog number to its empty children.',
-    'de-ch':
-      'Aktivieren Sie die Vererbung der übergeordneten Katalognummer an ihre leeren untergeordneten Elemente.',
-    'es-es':
-      'Habilitar la herencia del número de catálogo padre a sus hijos vacíos.',
-    'fr-fr':
-      "Activer l'héritage du numéro de catalogue parent à ses enfants vides.",
-    'pt-br':
-      'Habilita a herança do número do catálogo pai para seus filhos vazios.',
-    'ru-ru':
-      'Включить наследование родительского каталожного номера его пустыми дочерними элементами.',
-    'uk-ua':
-      'Увімкнути успадкування батьківського каталожного номера його порожнім дочірнім елементам.',
+      'Enable Catalog Number Inheritance From Parent CO',
+  },
+  inheritanceCatNumberParentCOPrefDescription: {
+    'en-us':
+      'Control whether component records inherit catalog numbers from their parent Collection Object.',
   },
   uniqueCatNumberAcrossCompAndCo: {
     'en-us':
