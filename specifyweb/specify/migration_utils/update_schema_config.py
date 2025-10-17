@@ -88,8 +88,10 @@ def update_table_schema_config_with_defaults(
     table_name,
     discipline_id: int,
     description: str = None,
-    apps = global_apps
+    apps = global_apps,
+    overrides: dict = None
 ):
+    logger.debug(f"(1) Starting: {str(table_name)}")
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
@@ -123,8 +125,11 @@ def update_table_schema_config_with_defaults(
     )
     if not is_new:
         return  # If the container already exists, we don't need to update it
+    
+    logger.debug("(2) Created Splocalecontainer")
 
     # Create a Splocaleitemstr for the table name and description
+    item_str_bulk = []
     for k, text in {
         "containername": camel_to_spaced_title_case(uncapitilize(table.name)),
         "containerdesc": table_config.description,
@@ -135,10 +140,25 @@ def update_table_schema_config_with_defaults(
             "version": 0,
         }
         item_str[k] = sp_local_container
-        Splocaleitemstr.objects.get_or_create(**item_str)
+        item_str_bulk.append(Splocaleitemstr(**item_str))
+    Splocaleitemstr.objects.bulk_create(item_str_bulk, ignore_conflicts=True)
+
+    logger.debug(f"(3) Created all {len(item_str_bulk)} Splocaleitemstrs")
+
+    # Create dict of field overrides
+    field_overrides = dict()
+    if overrides is not None and overrides.get(table_name, None) is not None:
+        table_overrides = overrides.get(table_name, None)
+        items = table_overrides.get('items', [])
+        # Items contains a list of dicts (item).
+        for item in items:
+            # Each item is a dict with only one entry.
+            for key, override_dict in item:
+                field_overrides[key.lower()] = override_dict
 
     for field in table.all_fields:
-        update_table_field_schema_config_with_defaults(table_name, discipline_id, field.name, apps)
+        update_table_field_schema_config_with_defaults(table_name, discipline_id, field.name, apps, overrides=field_overrides.get(field.name.lower(), None))
+        logger.debug(f"(4) Updated field defaults for {field.name}")
 
 
 def revert_table_schema_config(table_name, apps=global_apps):
@@ -161,7 +181,8 @@ def update_table_field_schema_config_with_defaults(
     table_name,
     discipline_id: int,
     field_name: str,
-    apps = global_apps
+    apps = global_apps,
+    overrides: dict = None
 ):
     table = datamodel.get_table(table_name)
 
@@ -211,12 +232,21 @@ def update_table_field_schema_config_with_defaults(
             f"Field does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name} -> {field_name}"
         )
         return
+    
+    # Apply overrides if they exist
+    field_name = field.name
+    field_desc = camel_to_spaced_title_case(field.name)
+    picklist_name = None
+    if overrides is not None:
+        field_name = overrides.get('name', field_name)
+        field_desc = overrides.get('desc', field_desc)
+        picklist_name = overrides.get('picklistname', picklist_name)
 
     field_config = FieldSchemaConfig(
         name=field_name,
         column=field.column,
         java_type=datamodel_type_to_schematype(field.type) if field.is_relationship else field.type,
-        description=camel_to_spaced_title_case(field.name),
+        description=field_desc,
         language="en"
     )
 
@@ -228,8 +258,10 @@ def update_table_field_schema_config_with_defaults(
         isrequired=field.required,
         issystem=table.system,
         version=0,
+        picklistname=picklist_name
     )
 
+    itm_str_bulk = []
     for k, text in {
         "itemname": field_config.description,
         "itemdesc": field_config.description,
@@ -240,7 +272,8 @@ def update_table_field_schema_config_with_defaults(
             'version': 0,
         }
         itm_str[k] = sp_local_container_item
-        Splocaleitemstr.objects.get_or_create(**itm_str)
+        itm_str_bulk.append(Splocaleitemstr(**itm_str))
+    Splocaleitemstr.objects.bulk_create(itm_str_bulk, ignore_conflicts=True)
 
 def revert_table_field_schema_config(table_name, field_name, apps=global_apps):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
