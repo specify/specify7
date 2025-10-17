@@ -200,13 +200,26 @@ export const collectionPreferenceDefinitions = {
 
   catalogNumberInheritance: {
     title: queryText.catalogNumberInheritance(),
-    description: preferencesText.catalogNumberInheritanceDescription(),
     subCategories: {
-      behavior: {
-        title: preferencesText.behavior(),
+      collectionObject: {
+        title: () => tableLabel('CollectionObjectGroup'),
         items: {
           inheritance: definePref<boolean>({
             title: preferencesText.inheritanceCatNumberPref(),
+            description: preferencesText.inheritanceCatNumberPrefDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+      component: {
+        title: () => camelToHuman('Component'),
+        items: {
+          inheritance: definePref<boolean>({
+            title: preferencesText.inheritanceCatNumberParentCOPref(),
+            description: preferencesText.inheritanceCatNumberParentCOPrefDescription(),
             requiresReload: false,
             visible: true,
             defaultValue: false,
@@ -217,24 +230,7 @@ export const collectionPreferenceDefinitions = {
     },
   },
 
-  catalogNumberParentInheritance: {
-    title: queryText.catalogNumberParentCOInheritance(),
-    description: preferencesText.catalogNumberParentInheritanceDescription(),
-    subCategories: {
-      behavior: {
-        title: preferencesText.behavior(),
-        items: {
-          inheritance: definePref<boolean>({
-            title: preferencesText.inheritanceCatNumberParentCOPref(),
-            requiresReload: false,
-            visible: true,
-            defaultValue: false,
-            type: 'java.lang.Boolean',
-          }),
-        },
-      },
-    },
-  },
+  /* catalogNumberParentInheritance removed - folded into catalogNumberInheritance */
 
   uniqueCatalogNumberAccrossComponentAndCO: {
     title: queryText.uniqueCatalogNumberAcrossComponentAndCo(),
