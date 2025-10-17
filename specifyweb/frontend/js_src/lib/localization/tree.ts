@@ -704,31 +704,13 @@ export const treeText = createDictionary({
     'uk-ua': 'Метеорити',
   },
   treeManagement: {
-    'en-us': 'Tree management',
+    'en-us': 'Tree Management',
   },
   synonymizedNodes: {
-    'en-us': 'Synonymized nodes',
+    'en-us': 'Synonym Behavior',
   },
   synonymizedNodesDescription: {
     'en-us':
-      'Allow creating children under synonymized nodes in specific trees.',
-  },
-  allowSynonymizedGeologicTimePeriodChildren: {
-    'en-us': 'Allow children under synonymized Geologic Time Period nodes',
-  },
-  allowSynonymizedTaxonChildren: {
-    'en-us': 'Allow children under synonymized Taxon nodes',
-  },
-  allowSynonymizedGeographyChildren: {
-    'en-us': 'Allow children under synonymized Geography nodes',
-  },
-  allowSynonymizedLithostratChildren: {
-    'en-us': 'Allow children under synonymized Lithostratigraphy nodes',
-  },
-  allowSynonymizedStorageChildren: {
-    'en-us': 'Allow children under synonymized Storage nodes',
-  },
-  allowSynonymizedTectonicUnitChildren: {
-    'en-us': 'Allow children under synonymized Tectonic Unit nodes',
+      'If enabled, this allows users to add children to synonymized parents and to synonymize a node with children.',
   },
 } as const);

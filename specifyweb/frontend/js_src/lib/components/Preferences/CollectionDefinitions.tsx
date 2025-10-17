@@ -2,6 +2,8 @@
  * Definitions for Collection preferences
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { attachmentsText } from '../../localization/attachments';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
@@ -11,9 +13,15 @@ import { treeText } from '../../localization/tree';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { ensure } from '../../utils/types';
+import { camelToHuman } from '../../utils/utils';
 import type { StatLayout } from '../Statistics/types';
+import { genericTables } from '../DataModel/tables';
+import type { Tables } from '../DataModel/types';
 import type { GenericPreferences } from './types';
 import { definePref } from './types';
+
+const tableLabel = (tableName: keyof Tables): LocalizedString =>
+  genericTables[tableName]?.label ?? camelToHuman(tableName);
 
 const specifyNetworkItems = {
   publishingOrganization: definePref<string | undefined>({
@@ -74,7 +82,7 @@ export const collectionPreferenceDefinitions = {
         items: {
           'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod':
             definePref<boolean>({
-              title: treeText.allowSynonymizedGeologicTimePeriodChildren(),
+              title: () => tableLabel('GeologicTimePeriod'),
               requiresReload: false,
               visible: true,
               defaultValue: false,
@@ -82,7 +90,7 @@ export const collectionPreferenceDefinitions = {
             }),
           'sp7.allow_adding_child_to_synonymized_parent.Taxon':
             definePref<boolean>({
-              title: treeText.allowSynonymizedTaxonChildren(),
+              title: () => tableLabel('Taxon'),
               requiresReload: false,
               visible: true,
               defaultValue: false,
@@ -90,7 +98,7 @@ export const collectionPreferenceDefinitions = {
             }),
           'sp7.allow_adding_child_to_synonymized_parent.Geography':
             definePref<boolean>({
-              title: treeText.allowSynonymizedGeographyChildren(),
+              title: () => tableLabel('Geography'),
               requiresReload: false,
               visible: true,
               defaultValue: false,
@@ -98,7 +106,7 @@ export const collectionPreferenceDefinitions = {
             }),
           'sp7.allow_adding_child_to_synonymized_parent.LithoStrat':
             definePref<boolean>({
-              title: treeText.allowSynonymizedLithostratChildren(),
+              title: () => tableLabel('LithoStrat'),
               requiresReload: false,
               visible: true,
               defaultValue: false,
@@ -106,7 +114,7 @@ export const collectionPreferenceDefinitions = {
             }),
           'sp7.allow_adding_child_to_synonymized_parent.Storage':
             definePref<boolean>({
-              title: treeText.allowSynonymizedStorageChildren(),
+              title: () => tableLabel('Storage'),
               requiresReload: false,
               visible: true,
               defaultValue: false,
@@ -114,7 +122,7 @@ export const collectionPreferenceDefinitions = {
             }),
           'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit':
             definePref<boolean>({
-              title: treeText.allowSynonymizedTectonicUnitChildren(),
+              title: () => tableLabel('TectonicUnit'),
               requiresReload: false,
               visible: true,
               defaultValue: false,

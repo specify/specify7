@@ -442,13 +442,13 @@ export const preferencesBehaviorDictionary = {
       'Você pode mover na direção oposta pressionando <key>Shift</key>+<key>Enter</key>.',
   },
   filterPickLists: {
-    'en-us': 'Filter pick list items',
-    'ru-ru': 'Фильтрация элементов списка выбора',
-    'es-es': 'Filtrar elementos de la lista de selección',
-    'fr-fr': 'Filtrer les éléments de la liste de sélection',
-    'uk-ua': 'Фільтр вибору елементів списку',
-    'de-ch': 'Auswahllistenelemente filtern',
-    'pt-br': 'Filtrar itens da lista de seleção',
+    'en-us': 'Pick List Filtering',
+    'ru-ru': 'Фильтрация списка выбора',
+    'es-es': 'Filtrado de lista de selección',
+    'fr-fr': 'Filtrage de la liste de sélection',
+    'uk-ua': 'Фільтрація списку вибору',
+    'de-ch': 'Picklistenfilterung',
+    'pt-br': 'Filtragem de lista de seleção',
   },
   exportFileDelimiter: {
     'en-us': 'Export file delimiter',
@@ -687,11 +687,11 @@ export const preferencesBehaviorDictionary = {
     'pt-br': 'Fechar com clique externo',
   },
   scopeEntireTablePicklists: {
-    'en-us': 'Scope "Entire Table" picklists',
+    'en-us': 'Scope "Entire Table" Picklists',
   },
   scopeEntireTablePicklistsDescription: {
     'en-us':
-      'Restrict "Entire Table" picklists to values used by records in this collection.',
+      'If enabled, picklists of type "Entire Table" will only show items that are in use within the current collection.',
   },
   catalogNumberInheritanceDescription: {
     'en-us':
