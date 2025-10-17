@@ -1138,19 +1138,19 @@ altClickToSupressNewTab: {
   },
   inheritanceCatNumberPref: {
     'en-us':
-      'Enable Catalog Number Inheritance From Primary CO',
+      'Enable {catalogNumber:string} Inheritance From Primary {collectionObject:string}',
   },
   inheritanceCatNumberPrefDescription: {
     'en-us':
-      'Control whether component records inherit catalog numbers from their primary Collection Object.',
+      'Control whether component records inherit the {catalogNumber:string} from the primary {collectionObject:string}.',
   },
   inheritanceCatNumberParentCOPref: {
     'en-us':
-      'Enable Catalog Number Inheritance From Parent CO',
+      'Enable {catalogNumber:string} Inheritance From Parent {collectionObject:string}',
   },
   inheritanceCatNumberParentCOPrefDescription: {
     'en-us':
-      'Control whether component records inherit catalog numbers from their parent Collection Object.',
+      'Control whether component records inherit the {catalogNumber:string} from the parent {collectionObject:string}.',
   },
   uniqueCatNumberAcrossCompAndCo: {
     'en-us':
