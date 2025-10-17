@@ -3,8 +3,9 @@
  *
  * @module
  */
+import { createDictionary } from './utils';
 
-export const preferencesContentDict = {
+export const preferencesContentDict = createDictionary({
   content: {
     'en-us': 'Content',
     'ru-ru': 'Содержание',
@@ -695,6 +696,6 @@ export const preferencesContentDict = {
     'de-ch': 'Standardmäßig zu öffnender Datensatz',
     'pt-br': 'Gravar para abrir por padrão',
   },
-} as const;
+} as const);
 
 export default preferencesContentDict;

@@ -7,7 +7,7 @@ import { createDictionary } from './utils';
 import { preferencesContentDict } from './preferences.content';
 import { preferencesBehaviorDict } from './preferences.behavior';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
-export const preferencesGeneralDict= {
+export const preferencesGeneralDict= createDictionary({
   preferences: {
     'en-us': 'Preferences',
     'ru-ru': 'Настройки',
@@ -707,7 +707,7 @@ export const preferencesGeneralDict= {
     'pt-br': 'Página inicial',
   }, 
 
-} as const;
+} as const);
 
 const aggregatedPreferences = {
   ...preferencesGeneralDict,
@@ -715,4 +715,4 @@ const aggregatedPreferences = {
   ...preferencesBehaviorDict,
 } as const;
 
-export const preferencesText = createDictionary(aggregatedPreferences);
+export const preferencesText = (aggregatedPreferences);
