@@ -12,6 +12,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 import { formatConjunction } from '../../components/Atoms/Internationalization';
 import { f } from '../../utils/functools';
@@ -76,13 +77,11 @@ export async function extractStrings(): Promise<ExtractedStrings> {
         return undefined;
 
       const compiledFilePath = path.join(localizationDirectory, filePath);
-      const filePathWithoutExtension = compiledFilePath
-        .split('.')
-        .slice(0, -1)
-        .join('.');
-      const fileName = filePathWithoutExtension.split('/').at(-1)!;
+      const fileUrl = pathToFileURL(compiledFilePath).href;
+      const { name: fileName } = path.parse(compiledFilePath);
+      if (fileName.includes('.')) return undefined;
 
-      const dictionaryFile = await import(filePathWithoutExtension);
+      const dictionaryFile = await import(fileUrl);
 
       const dictionaries = Object.keys(dictionaryFile ?? {}).filter(
         (dictionaryName) => dictionaryName.endsWith('Text')
@@ -168,9 +167,15 @@ export async function scanUsages(
         {
           categoryName,
           strings: Object.fromEntries(
-            Object.entries(strings).map(([key, strings]) => {
-              Object.keys(strings)
-                .filter((key) => !f.has(expectedKeys, key))
+            Object.keys(strings).map((key) => {
+              const rawStrings =
+                (Reflect.getOwnPropertyDescriptor(strings, key)?.value ??
+                  (strings as LanguageDictionary)[
+                    key as keyof LanguageDictionary
+                  ]) as LocalizationEntry;
+
+              Object.keys(rawStrings)
+                .filter((language) => !f.has(expectedKeys, language))
                 .forEach((language) =>
                   error(
                     [
@@ -189,7 +194,7 @@ export async function scanUsages(
                 );
 
               // Search for blacklisted characters
-              Object.entries(strings).forEach(([language, string]) => {
+              Object.entries(rawStrings).forEach(([language, string]) => {
                 if (f.includes(localizationMetaKeys, language)) return;
 
                 characterBlacklist[language]
@@ -211,9 +216,9 @@ export async function scanUsages(
                 key,
                 {
                   strings: {
-                    ...strings,
+                    ...rawStrings,
                     comment: f.maybe(
-                      localized(strings.comment),
+                      localized(rawStrings.comment),
                       whitespaceSensitive
                     ),
                   },

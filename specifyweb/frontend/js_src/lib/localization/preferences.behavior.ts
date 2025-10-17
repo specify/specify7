@@ -1,12 +1,743 @@
 /**
- * Localization strings for behavioral and advanced preferences.
+ * Localization strings for behavioral preferences.
  *
  * @module
  */
 import { createDictionary } from './utils';
-
-export const preferencesBehaviorStrings = {
-  altClickToSupressNewTab: {
+// Refer to "Guidelines for Programmers" in ./README.md before editing this file
+export const preferencesBehaviorDictionary = {
+  alwaysPrompt: {
+    'en-us': 'Always prompt to choose collection',
+    'ru-ru': 'Всегда предлагайте выбрать коллекцию',
+    'es-es': 'Siempre dispuesto a elegir la colección',
+    'fr-fr': 'Toujours invité à choisir la collection',
+    'uk-ua': 'Завжди підкажуть вибрати колекцію',
+    'de-ch': 'Immer zur Auswahl der Sammlung auffordern',
+    'pt-br': 'Sempre pronto para escolher a coleção',
+  },
+  showNewDataSetWarning: {
+    'en-us': 'Show new Data Set warning',
+    'ru-ru': 'Показать предупреждение о новом наборе данных',
+    'es-es': 'Mostrar nueva advertencia de conjunto de datos',
+    'fr-fr': "Afficher un nouvel avertissement sur l'ensemble de données",
+    'uk-ua': 'Показати попередження про новий набір даних',
+    'de-ch': 'Warnung für neuen Datensatz anzeigen',
+    'pt-br': 'Mostrar novo aviso de conjunto de dados',
+  },
+  showNewDataSetWarningDescription: {
+    'en-us': 'Show an informational message when creating a new Data Set.',
+    'ru-ru':
+      'Показывать информационное сообщение при создании нового набора данных.',
+    'es-es':
+      'Mostrar un mensaje informativo al crear un nuevo conjunto de datos.',
+    'fr-fr':
+      "Afficher un message d'information lors de la création d'un nouvel ensemble de données.",
+    'uk-ua':
+      'Показувати інформаційне повідомлення під час створення нового набору даних.',
+    'de-ch': 'Zeige eine Meldung beim erstellen eines neuen Datensatzes an.',
+    'pt-br':
+      'Exibir uma mensagem informativa ao criar um novo conjunto de dados.',
+  },
+  allowDismissingErrors: {
+    'en-us': 'Allow dismissing error messages',
+    'ru-ru': 'Разрешить отклонять сообщения об ошибках',
+    'es-es': 'Permitir descartar mensajes de error',
+    'fr-fr': "Autoriser le rejet des messages d'erreur",
+    'uk-ua': 'Дозволити закривати повідомлення про помилки',
+    'de-ch': 'Erlaube das Verwerfen von Fehlermeldungen',
+    'pt-br': 'Permitir descartar mensagens de erro',
+  },
+  updatePageTitle: {
+    'en-us': 'Update page title',
+    'ru-ru': 'Обновить заголовок страницы',
+    'es-es': 'Actualizar el título de la página',
+    'fr-fr': 'Mettre à jour le titre de la page',
+    'uk-ua': 'Оновити назву сторінки',
+    'de-ch': 'Seitentitel aktualisieren',
+    'pt-br': 'Atualizar título da página',
+  },
+  updatePageTitleDescription: {
+    'en-us':
+      "Whether to update the title of the page to match dialog's header.",
+    'ru-ru':
+      'Обновлять ли заголовок страницы в соответствии с заголовком диалогового окна.',
+    'es-es':
+      'Si se debe actualizar el título de la página para que coincida con el encabezado del cuadro de diálogo.',
+    'fr-fr':
+      "S'il faut mettre à jour le titre de la page pour qu'il corresponde à l'en-tête de la boîte de dialogue.",
+    'uk-ua':
+      'Чи оновлювати назву сторінки відповідно до заголовка діалогового вікна.',
+    'de-ch':
+      'Titel der Seite so aktualisieren, dass er mit der Kopfzeile des Dialogs übereinstimmt.',
+    'pt-br':
+      'Se o título da página deve ser atualizado para corresponder ao cabeçalho da caixa de diálogo.',
+  },
+  updatePageTitleFormDescription: {
+    'en-us': 'Whether to update the title of the page to match current record.',
+    'ru-ru':
+      'Следует ли обновить заголовок страницы в соответствии с текущей записью.',
+    'es-es':
+      'Si desea actualizar el título de la página para que coincida con el registro actual.',
+    'fr-fr':
+      "S'il faut mettre à jour le titre de la page pour qu'il corresponde à l'enregistrement actuel.",
+    'uk-ua': 'Чи оновлювати назву сторінки відповідно до поточного запису.',
+    'de-ch':
+      'Titel der Seite aktualisieren, damit er mit dem aktuellen Datensatz übereinstimmt.',
+    'pt-br':
+      'Se o título da página deve ser atualizado para corresponder ao registro atual.',
+  },
+  queryComboBox: {
+    'en-us': 'Query Combo Box',
+    'ru-ru': 'Поле со списком запросов',
+    'es-es': 'Cuadro combinado de consulta',
+    'uk-ua': 'Поле зі списком запитів',
+    'de-ch': 'Abfrage-Kombinationsfeld',
+    'fr-fr': 'Zone de liste déroulante de requête',
+    'pt-br': 'Caixa de combinação de consulta',
+  },
+  searchAlgorithm: {
+    'en-us': 'Search Algorithm',
+    'ru-ru': 'Алгоритм поиска',
+    'es-es': 'Algoritmo de búsqueda',
+    'fr-fr': 'Algorithme de recherche',
+    'uk-ua': 'Алгоритм пошуку',
+    'de-ch': 'Suchalgorithmus',
+    'pt-br': 'Algoritmo de Busca',
+  },
+  treeSearchAlgorithm: {
+    'en-us': 'Search Algorithm (for relationships with tree tables)',
+    'ru-ru': 'Алгоритм поиска (для связей с древовидными таблицами)',
+    'es-es': 'Algoritmo de búsqueda (para relaciones con tablas de árboles)',
+    'fr-fr':
+      'Algorithme de recherche (pour les relations avec les tables arborescentes)',
+    'uk-ua': 'Алгоритм пошуку (для зв’язків із деревоподібними таблицями)',
+    'de-ch': 'Suchalgorithmus (für Beziehungen mit Baumtabellen)',
+    'pt-br': 'Algoritmo de busca (para relacionamentos com tabelas de árvore)',
+  },
+  startsWithInsensitive: {
+    'en-us': 'Starts With (case-insensitive)',
+    'ru-ru': 'Начинается с (без учета регистра)',
+    'es-es': 'Comienza con (sin distinguir entre mayúsculas y minúsculas)',
+    'fr-fr': 'Commence par (insensible à la casse)',
+    'uk-ua': 'Починається з (без урахування регістру)',
+    'de-ch': 'Beginnt mit (Groß-/Kleinschreibung wird nicht beachtet)',
+    'pt-br': 'Começa com (sem distinção entre maiúsculas e minúsculas)',
+  },
+  startsWithDescription: {
+    'en-us': 'Search for values that begin with a given query string.',
+    'ru-ru': 'Поиск значений, начинающихся с заданной строки запроса.',
+    'es-es':
+      'Busque valores que comiencen con una cadena de consulta determinada.',
+    'fr-fr':
+      'Rechercher des valeurs commençant par une chaîne de requête donnée.',
+    'uk-ua': 'Пошук значень, які починаються з заданого рядка запиту.',
+    'de-ch':
+      'Suchen Sie nach Werten, die mit einer bestimmten Abfragezeichenfolge beginnen.',
+    'pt-br':
+      'Pesquise valores que começam com uma determinada sequência de consulta.',
+  },
+  startsWithCaseSensitive: {
+    'en-us': 'Starts With (case-sensitive)',
+    'ru-ru': 'Начинается с (с учетом регистра)',
+    'es-es': 'Comienza con (sensible a mayúsculas y minúsculas)',
+    'fr-fr': 'Commence par (sensible à la casse)',
+    'uk-ua': 'Починається з (з урахуванням регістру)',
+    'de-ch': 'Beginnt mit (Groß-/Kleinschreibung beachten)',
+    'pt-br': 'Começa com (diferencia maiúsculas de minúsculas)',
+  },
+  startsWithCaseSensitiveDescription: {
+    'en-us': 'Search for values that begin with a given query string.',
+    'ru-ru': 'Поиск значений, начинающихся с заданной строки запроса.',
+    'es-es':
+      'Busque valores que comiencen con una cadena de consulta determinada.',
+    'fr-fr':
+      'Recherchez les valeurs qui commencent par une chaîne de requête donnée.',
+    'uk-ua': 'Пошук значень, які починаються з заданого рядка запиту.',
+    'de-ch':
+      'Suchen Sie nach Werten, die mit einer bestimmten Abfragezeichenfolge beginnen.',
+    'pt-br':
+      'Pesquise valores que começam com uma determinada sequência de consulta.',
+  },
+  containsInsensitive: {
+    'en-us': 'Contains (case-insensitive)',
+    'ru-ru': 'Содержит (без учета регистра)',
+    'es-es': 'Contiene (sin distinguir entre mayúsculas y minúsculas)',
+    'fr-fr': 'Contient (insensible à la casse)',
+    'uk-ua': 'Містить (незалежно від регістру)',
+    'de-ch': 'Enthält (Groß-/Kleinschreibung wird nicht beachtet)',
+    'pt-br': 'Contém (sem distinção entre maiúsculas e minúsculas)',
+  },
+  containsCaseSensitive: {
+    'en-us': 'Contains (case-sensitive)',
+    'ru-ru': 'Содержит (с учетом регистра)',
+    'es-es': 'Contiene (sensible a mayúsculas y minúsculas)',
+    'fr-fr': 'Contient (sensible à la casse)',
+    'uk-ua': 'Містить (з урахуванням регістру)',
+    'de-ch': 'Enthält (Groß-/Kleinschreibung beachten)',
+    'pt-br': 'Contém (diferencia maiúsculas de minúsculas)',
+  },
+  containsDescription: {
+    'en-us':
+      'Search for values that contain a given query string (case-insensitive).',
+    'ru-ru':
+      'Поиск значений, содержащих заданную строку запроса (без учета регистра).',
+    'es-es':
+      'Busque valores que contengan una cadena de consulta determinada (sin distinguir entre mayúsculas y minúsculas).',
+    'uk-ua':
+      'Пошук значень, які містять заданий рядок запиту (незалежно від регістру).',
+    'de-ch':
+      'Suchen Sie nach Werten, die eine bestimmte Abfragezeichenfolge enthalten (ohne Berücksichtigung der Groß-/Kleinschreibung).',
+    'fr-fr':
+      'Recherchez les valeurs contenant une chaîne de requête donnée (insensible à la casse).',
+    'pt-br':
+      'Pesquisar valores que contenham uma determinada sequência de consulta (sem distinção de maiúsculas e minúsculas).',
+  },
+  containsCaseSensitiveDescription: {
+    'en-us':
+      'Search for values that contain a given query string (case-sensitive).',
+    'ru-ru':
+      'Поиск значений, содержащих заданную строку запроса (с учетом регистра).',
+    'es-es':
+      'Busque valores que contengan una cadena de consulta determinada (distingue entre mayúsculas y minúsculas).',
+    'fr-fr':
+      'Recherchez les valeurs contenant une chaîne de requête donnée (sensible à la casse).',
+    'uk-ua':
+      'Пошук значень, які містять заданий рядок запиту (з урахуванням регістру).',
+    'de-ch':
+      'Suchen Sie nach Werten, die eine bestimmte Abfragezeichenfolge enthalten (Groß-/Kleinschreibung beachten).',
+    'pt-br':
+      'Pesquisar valores que contenham uma determinada sequência de consulta (diferencia maiúsculas de minúsculas).',
+  },
+  containsSecondDescription: {
+    'en-us':
+      'Can use _ to match any single character or % to match any number of characters.',
+    'ru-ru':
+      'Можно использовать _ для соответствия любому отдельному символу или % для соответствия любому количеству символов.',
+    'es-es':
+      'Puede utilizar _ para que coincida con cualquier carácter individual o % para que coincida con cualquier número de caracteres.',
+    'fr-fr':
+      "Peut utiliser _ pour correspondre à n'importe quel caractère ou % pour correspondre à n'importe quel nombre de caractères.",
+    'uk-ua':
+      'Можна використовувати _ для відповідності будь-якому одному символу або % для відповідності будь-якій кількості символів.',
+    'de-ch':
+      'Sie können _ verwenden, um ein beliebiges einzelnes Zeichen abzugleichen, oder %, um eine beliebige Anzahl von Zeichen abzugleichen.',
+    'pt-br':
+      'Pode usar _ para corresponder a qualquer caractere único ou % para corresponder a qualquer número de caracteres.',
+  },
+  highlightMatch: {
+    'en-us': 'Highlight matched substring',
+    'ru-ru': 'Выделить совпавшую подстроку',
+    'es-es': 'Resaltar la subcadena coincidente',
+    'fr-fr': 'Mettre en surbrillance la sous-chaîne correspondante',
+    'uk-ua': 'Виділіть збіг підрядка',
+    'de-ch': 'Markieren Sie übereinstimmende Teilzeichenfolgen',
+    'pt-br': 'Destacar substring correspondente',
+  },
+  languageDescription: {
+    'en-us': 'Determines field captions, usage notes and table captions.',
+    'ru-ru':
+      'Определяет заголовки полей, примечания по использованию и заголовки таблиц.',
+    'es-es': 'Determina títulos de campos, notas de uso y títulos de tablas.',
+    'fr-fr':
+      "Détermine les légendes des champs, les notes d'utilisation et les légendes des tableaux.",
+    'uk-ua':
+      'Визначає підписи полів, примітки щодо використання та підписи таблиць.',
+    'de-ch':
+      'Legt Feldbeschriftungen, Verwendungshinweise und Tabellenbeschriftungen fest.',
+    'pt-br': 'Determina legendas de campo, notas de uso e legendas de tabela.',
+  },
+  behavior: {
+    'en-us': 'Behavior',
+    'ru-ru': 'Поведение',
+    'es-es': 'Comportamiento',
+    'fr-fr': 'Comportement',
+    'uk-ua': 'Поведінка',
+    'de-ch': 'Verhalten',
+    'pt-br': 'Comportamento',
+  },
+  noRestrictionsMode: {
+    'en-us': 'No restrictions mode',
+    'ru-ru': 'Режим без ограничений',
+    'es-es': 'Modo sin restricciones',
+    'fr-fr': 'Mode sans restriction',
+    'uk-ua': 'Режим без обмежень',
+    'de-ch': 'Modus „Keine Einschränkungen“',
+    'pt-br': 'Modo sem restrições',
+  },
+  noRestrictionsModeWbDescription: {
+    'en-us': 'Allows uploading data to any field in any table.',
+    'ru-ru': 'Позволяет загружать данные в любое поле любой таблицы.',
+    'es-es': 'Permite cargar datos a cualquier campo de cualquier tabla.',
+    'fr-fr':
+      "Permet de télécharger des données dans n'importe quel champ de n'importe quelle table.",
+    'uk-ua': 'Дозволяє завантажувати дані в будь-яке поле будь-якої таблиці.',
+    'de-ch':
+      'Ermöglicht das Hochladen von Daten in jedes Feld einer beliebigen Tabelle.',
+    'pt-br': 'Permite carregar dados em qualquer campo de qualquer tabela.',
+  },
+  noRestrictionsModeQueryDescription: {
+    'en-us': 'Allows querying data from any field in any table.',
+    'ru-ru': 'Позволяет запрашивать данные из любого поля любой таблицы.',
+    'es-es': 'Permite consultar datos de cualquier campo de cualquier tabla.',
+    'fr-fr':
+      "Permet d'interroger les données de n'importe quel champ de n'importe quelle table.",
+    'uk-ua': 'Дозволяє запитувати дані з будь-якого поля будь-якої таблиці.',
+    'de-ch':
+      'Ermöglicht das Abfragen von Daten aus jedem Feld in jeder Tabelle.',
+    'pt-br': 'Permite consultar dados de qualquer campo em qualquer tabela.',
+  },
+  noRestrictionsModeWarning: {
+    'en-us':
+      'WARNING: enabling this may lead to data loss or database corruption. Please make sure you know what you are doing.',
+    'ru-ru':
+      'ВНИМАНИЕ: включение этой функции может привести к потере данных или повреждению базы данных. Убедитесь, что вы понимаете, что делаете.',
+    'es-es':
+      'ADVERTENCIA: Habilitar esta opción podría provocar la pérdida de datos o la corrupción de la base de datos. Asegúrese de saber lo que está haciendo.',
+    'uk-ua':
+      'ПОПЕРЕДЖЕННЯ: увімкнення цієї функції може призвести до втрати даних або пошкодження бази даних. Переконайтеся, що ви знаєте, що робите.',
+    'de-ch':
+      'WARNUNG: Das Aktivieren dieser Option kann zu Datenverlust oder Datenbankbeschädigung führen. Bitte stellen Sie sicher, dass Sie wissen, was Sie tun.',
+    'fr-fr':
+      "AVERTISSEMENT : l'activation de cette option peut entraîner une perte de données ou une corruption de la base de données. Veuillez vous assurer que vous savez ce que vous faites.",
+    'pt-br':
+      'AVISO: habilitar esta opção pode levar à perda de dados ou à corrupção do banco de dados. Certifique-se de saber o que está fazendo.',
+  },
+  adminsOnlyPreference: {
+    'en-us': "You don't have permission to change this option",
+    'ru-ru': 'У вас нет разрешения на изменение этой опции.',
+    'es-es': 'No tienes permiso para cambiar esta opción',
+    'fr-fr': "Vous n'êtes pas autorisé à modifier cette option",
+    'uk-ua': 'Ви не маєте дозволу змінювати цей параметр',
+    'de-ch': 'Sie haben keine Berechtigung, diese Option zu ändern',
+    'pt-br': 'Você não tem permissão para alterar esta opção',
+  },
+  stickyScrolling: {
+    'en-us': 'Sticky scroll bar',
+    'ru-ru': 'Липкая полоса прокрутки',
+    'es-es': 'Barra de desplazamiento fija',
+    'fr-fr': 'Barre de défilement collante',
+    'uk-ua': 'Липка смуга прокрутки',
+    'de-ch': 'Klebrige Bildlaufleiste',
+    'pt-br': 'Barra de rolagem fixa',
+  },
+  spreadsheet: {
+    'en-us': 'Spreadsheet',
+    'ru-ru': 'Электронная таблица',
+    'es-es': 'Hoja de cálculo',
+    'fr-fr': 'Tableur',
+    'uk-ua': 'Електронна таблиця',
+    'de-ch': 'Kalkulationstabelle',
+    'pt-br': 'Planilha',
+  },
+  minSpareRows: {
+    'en-us': 'Number of blank rows at the end',
+    'ru-ru': 'Количество пустых строк в конце',
+    'es-es': 'Número de filas en blanco al final',
+    'fr-fr': 'Nombre de lignes vides à la fin',
+    'uk-ua': 'Кількість порожніх рядків у кінці',
+    'de-ch': 'Anzahl der leeren Zeilen am Ende',
+    'pt-br': 'Número de linhas em branco no final',
+  },
+  autoWrapCols: {
+    'en-us': 'Navigate to the other side when reaching the edge column',
+    'ru-ru': 'Достигнув крайней колонны, перейдите на другую сторону.',
+    'es-es': 'Navegue hacia el otro lado al llegar a la columna del borde.',
+    'fr-fr':
+      'Naviguez de l’autre côté lorsque vous atteignez la colonne de bord',
+    'uk-ua': 'Перейдіть на іншу сторону, коли досягнете краю колонки',
+    'de-ch':
+      'Navigieren Sie zur anderen Seite, wenn Sie die Randspalte erreichen',
+    'pt-br': 'Navegue para o outro lado ao atingir a coluna da borda',
+  },
+  autoWrapRows: {
+    'en-us': 'Navigate to the other side when reaching the edge row',
+    'ru-ru': 'Достигнув крайнего ряда, перейдите на другую сторону.',
+    'es-es': 'Navegue hacia el otro lado al llegar a la fila del borde.',
+    'fr-fr':
+      'Naviguez de l’autre côté lorsque vous atteignez la rangée de bord',
+    'uk-ua': 'Перейдіть на іншу сторону, коли досягнете крайнього ряду',
+    'de-ch':
+      'Navigieren Sie zur anderen Seite, wenn Sie die Randreihe erreichen',
+    'pt-br': 'Navegue para o outro lado ao atingir a fileira de bordas',
+  },
+  enterBeginsEditing: {
+    'en-us': 'Enter key begins editing cell',
+    'ru-ru': 'Клавиша Enter начинает редактирование ячейки.',
+    'es-es': 'La tecla Enter inicia la edición de la celda',
+    'fr-fr': 'La touche Entrée commence à modifier la cellule',
+    'uk-ua': 'Клавіша Enter починає редагування клітинки',
+    'de-ch': 'Mit der Eingabetaste beginnt die Bearbeitung der Zelle',
+    'pt-br': 'A tecla Enter inicia a edição da célula',
+  },
+  tabMoveDirection: {
+    'en-us': 'Direction of movement when <key>Tab</key> key is pressed',
+    'ru-ru': 'Направление движения при нажатии клавиши <key>Tab</key>',
+    'es-es':
+      'Dirección de movimiento cuando se presiona la tecla <key>Tab</key>',
+    'fr-fr':
+      'Sens de déplacement lorsque la touche <key>Tabulation</key> est enfoncée',
+    'uk-ua': 'Напрямок руху при натисканні клавіші <key>Tab</key>',
+    'de-ch': 'Bewegungsrichtung beim Drücken der <key>Tab</key>-Taste',
+    'pt-br': 'Direção do movimento quando a tecla <key>Tab</key> é pressionada',
+  },
+  tabMoveDirectionDescription: {
+    'en-us':
+      'You can move in the opposite direction by pressing <key>Shift</key>+<key>Tab</key>.',
+    'ru-ru':
+      'Вы можете двигаться в обратном направлении, нажав <key>Shift</key>+<key>Tab</key>.',
+    'es-es':
+      'Puedes moverte en la dirección opuesta presionando <key>Shift</key>+<key>Tab</key>.',
+    'fr-fr':
+      'Vous pouvez vous déplacer dans la direction opposée en appuyant sur <key>Shift</key>+<key>Tab</key>.',
+    'uk-ua':
+      'Ви можете рухатися в протилежному напрямку, натискаючи <key>Shift</key>+<key>Tab</key>.',
+    'de-ch':
+      'Sie können sich in die entgegengesetzte Richtung bewegen, indem Sie <key>Umschalt</key>+<key>Tab</key> drücken.',
+    'pt-br':
+      'Você pode mover na direção oposta pressionando <key>Shift</key>+<key>Tab</key>.',
+  },
+  column: {
+    'en-us': 'Column',
+    'ru-ru': 'Столбец',
+    'es-es': 'Columna',
+    'fr-fr': 'Colonne',
+    'uk-ua': 'Колонка',
+    'de-ch': 'Spalte',
+    'pt-br': 'Coluna',
+  },
+  row: {
+    'en-us': 'Row',
+    'ru-ru': 'Ряд',
+    'es-es': 'Fila',
+    'fr-fr': 'Rangée',
+    'uk-ua': 'рядок',
+    'de-ch': 'Reihe',
+    'pt-br': 'Linha',
+  },
+  enterMoveDirection: {
+    'en-us': 'Direction of movement when <key>Enter</key> key is pressed',
+    'ru-ru': 'Направление движения при нажатии клавиши <key>Enter</key>',
+    'es-es':
+      'Dirección de movimiento cuando se presiona la tecla <key>Enter</key>',
+    'uk-ua': 'Напрямок руху, коли натиснуто клавішу <key>Enter</key>',
+    'de-ch': 'Bewegungsrichtung beim Drücken der Taste <key>Enter</key>',
+    'fr-fr':
+      'Direction du mouvement lorsque la touche <key>Entrer</key> est enfoncée',
+    'pt-br':
+      'Direção do movimento quando a tecla <key>Enter</key> é pressionada',
+  },
+  enterMoveDirectionDescription: {
+    'en-us':
+      'You can move in the opposite direction by pressing <key>Shift</key>+<key>Enter</key>.',
+    'ru-ru':
+      'Вы можете двигаться в противоположном направлении, нажав <key>Shift</key>+<key>Enter</key>.',
+    'es-es':
+      'Puedes moverte en la dirección opuesta presionando <key>Shift</key>+<key>Enter</key>.',
+    'fr-fr': 'Synonyme couleur.',
+    'uk-ua':
+      'Ви можете рухатися у протилежному напрямку, натискаючи <key>Shift</key>+<key>Enter</key>.',
+    'de-ch':
+      'Sie können sich in die entgegengesetzte Richtung bewegen, indem Sie <key>Umschalt</key>+<key>Eingabe</key> drücken.',
+    'pt-br':
+      'Você pode mover na direção oposta pressionando <key>Shift</key>+<key>Enter</key>.',
+  },
+  filterPickLists: {
+    'en-us': 'Filter pick list items',
+    'ru-ru': 'Фильтрация элементов списка выбора',
+    'es-es': 'Filtrar elementos de la lista de selección',
+    'fr-fr': 'Filtrer les éléments de la liste de sélection',
+    'uk-ua': 'Фільтр вибору елементів списку',
+    'de-ch': 'Auswahllistenelemente filtern',
+    'pt-br': 'Filtrar itens da lista de seleção',
+  },
+  exportFileDelimiter: {
+    'en-us': 'Export file delimiter',
+    'ru-ru': 'Разделитель файлов экспорта',
+    'es-es': 'Delimitador de archivo de exportación',
+    'fr-fr': "Délimiteur de fichier d'exportation",
+    'uk-ua': 'Роздільник файлу експорту',
+    'de-ch': 'Dateitrennzeichen exportieren',
+    'pt-br': 'Delimitador de arquivo de exportação',
+  },
+  exportCsvUtf8Bom: {
+    'en-us': 'Add UTF-8 BOM to CSV file exports',
+    'ru-ru': 'Добавить UTF-8 BOM в экспорт CSV-файла',
+    'es-es': 'Agregar BOM UTF-8 a las exportaciones de archivos CSV',
+    'fr-fr': 'Ajouter UTF-8 BOM aux exportations de fichiers CSV',
+    'uk-ua': 'Додайте специфікацію UTF-8 до експорту файлу CSVу',
+    'de-ch': 'UTF-8 BOM zum CSV-Dateiexport hinzufügen',
+    'pt-br': 'Adicionar UTF-8 BOM às exportações de arquivos CSV',
+  },
+  exportCsvUtf8BomDescription: {
+    'en-us':
+      'Adds a BOM (Byte Order Mark) to exported CSV files to ensure that the file is correctly recognized and displayed by various programs (Excel, OpenRefine, etc.), preventing issues with special characters and formatting.',
+    'ru-ru': 'Корректное отображение экспортированных CSV-файлов в Excel.',
+    'es-es':
+      'Agrega una BOM (marca de orden de bytes) a los archivos CSV exportados para garantizar que el archivo sea reconocido y mostrado correctamente por varios programas (Excel, OpenRefine, etc.), evitando problemas con caracteres especiales y formato.',
+    'fr-fr':
+      "Permet aux exportations de fichiers CSV de s'afficher correctement dans Excel.",
+    'uk-ua': 'Змушує експорт файлів CSV правильно відображатися в Excel.',
+    'de-ch':
+      'Sorgt dafür, dass CSV-Dateiexporte in Excel korrekt angezeigt werden.',
+    'pt-br':
+      'Adiciona uma BOM (Byte Order Mark) aos arquivos CSV exportados para garantir que o arquivo seja reconhecido e exibido corretamente por vários programas (Excel, OpenRefine, etc.), evitando problemas com caracteres especiais e formatação.',
+  },
+  caseSensitive: {
+    'en-us': 'Case-sensitive',
+    'ru-ru': 'С учетом регистра',
+    'es-es': 'Distingue mayúsculas y minúsculas',
+    'fr-fr': 'Sensible aux majuscules et minuscules',
+    'uk-ua': 'Чутливий до регістру',
+    'de-ch': 'Groß- und Kleinschreibung beachten',
+    'pt-br': 'Maiúsculas e minúsculas',
+  },
+  caseInsensitive: {
+    'en-us': 'Case-insensitive',
+    'ru-ru': 'Без учета регистра',
+    'es-es': 'No distingue entre mayúsculas y minúsculas',
+    'fr-fr': 'Insensible à la casse',
+    'uk-ua': 'Регістр не враховується',
+    'de-ch': 'Groß- und Kleinschreibung wird nicht berücksichtigt',
+    'pt-br': 'Não diferencia maiúsculas de minúsculas',
+  },
+  showNoReadTables: {
+    'en-us': 'Show tables without "Read" access',
+    'ru-ru': 'Показывать таблицы без доступа «Чтение»',
+    'es-es': 'Mostrar tablas sin acceso de "Lectura"',
+    'fr-fr': 'Afficher les tableaux sans accès "Lecture"',
+    'uk-ua': 'Показувати таблиці без доступу «Читання»',
+    'de-ch': 'Tabellen ohne Lesezugriff anzeigen',
+    'pt-br': 'Mostrar tabelas sem acesso de "Leitura"',
+  },
+  showNoAccessTables: {
+    'en-us': 'Show tables without "Create" access',
+    'ru-ru': 'Показывать таблицы без права «Создать»',
+    'es-es': 'Mostrar tablas sin acceso "Crear"',
+    'fr-fr': 'Afficher les tableaux sans accès "Créer"',
+    'uk-ua': 'Показувати таблиці без доступу «Створити»',
+    'de-ch': 'Tabellen ohne „Erstellen“-Zugriff anzeigen',
+    'pt-br': 'Mostrar tabelas sem acesso "Criar"',
+  },
+  textAreaAutoGrow: {
+    'en-us': 'Text boxes grow automatically',
+    'ru-ru': 'Текстовые поля увеличиваются автоматически',
+    'es-es': 'Los cuadros de texto crecen automáticamente',
+    'fr-fr': "Les zones de texte s'agrandissent automatiquement",
+    'uk-ua': 'Текстові поля збільшуються автоматично',
+    'de-ch': 'Textfelder werden automatisch vergrößert',
+    'pt-br': 'As caixas de texto crescem automaticamente',
+  },
+  clearQueryFilters: {
+    'en-us': 'Reset query filters',
+    'ru-ru': 'Сбросить фильтры запроса',
+    'es-es': 'Restablecer filtros de consulta',
+    'fr-fr': 'Réinitialiser les filtres de requête',
+    'uk-ua': 'Скинути фільтри запитів',
+    'de-ch': 'Abfragefilter zurücksetzen',
+    'pt-br': 'Redefinir filtros de consulta',
+  },
+  clearQueryFiltersDescription: {
+    'en-us': 'Clears all query filters when running a Report from a Form.',
+    'de-ch':
+      'Löscht alle Abfragefilter, wenn ein Bericht aus einem Formular ausgeführt wird.',
+    'es-es':
+      'Borra todos los filtros de consulta al ejecutar un informe desde un formulario.',
+    'fr-fr':
+      "Efface tous les filtres de requête lors de l'exécution d'un rapport à partir d'un formulaire.",
+    'ru-ru': 'Очищает все фильтры запроса при запуске отчета из формы.',
+    'uk-ua': 'Очищає всі фільтри запитів під час запуску звіту з форми.',
+    'pt-br':
+      'Limpa todos os filtros de consulta ao executar um relatório de um formulário.',
+  },
+  queryParamtersFromForm: {
+    'en-us': 'Show query filters when running a Report from a Form',
+    'de-ch':
+      'Abfragefilter anzeigen, wenn ein Bericht aus einem Formular ausgeführt wird',
+    'es-es':
+      'Mostrar filtros de consulta al ejecutar un informe desde un formulario',
+    'fr-fr':
+      "Afficher les filtres de requête lors de l'exécution d'un rapport à partir d'un formulaire",
+    'ru-ru': 'Показывать фильтры запроса при запуске отчета из формы',
+    'uk-ua': 'Показувати фільтри запитів під час запуску звіту з форми',
+    'pt-br':
+      'Mostrar filtros de consulta ao executar um relatório de um formulário',
+  },
+  autoGrowAutoComplete: {
+    'en-us': 'Allow autocomplete to grow as wide as need',
+    'ru-ru':
+      'Разрешить автозаполнению расширяться настолько, насколько это необходимо',
+    'es-es': 'Permitir que el autocompletado crezca tanto como sea necesario',
+    'fr-fr':
+      'Sens de déplacement lorsque la touche [X27X]Tabulation[X35X] est enfoncée',
+    'uk-ua':
+      'Дозволити автозаповнення розширюватися настільки, наскільки потрібно',
+    'de-ch':
+      'Erlauben Sie der Autovervollständigung, so weit wie nötig zu wachsen',
+    'pt-br':
+      'Permitir que o preenchimento automático cresça o quanto for necessário',
+  },
+  tableNameInTitle: {
+    'en-us': 'Include table name in the browser page title',
+    'ru-ru': 'Включить имя таблицы в заголовок страницы браузера',
+    'es-es':
+      'Incluir el nombre de la tabla en el título de la página del navegador',
+    'fr-fr':
+      'Inclure le nom de la table dans le titre de la page du navigateur',
+    'uk-ua': 'Включіть назву таблиці в заголовок сторінки браузера',
+    'de-ch': 'Tabellennamen in den Seitentitel des Browsers aufnehmen',
+    'pt-br': 'Incluir nome da tabela no título da página do navegador',
+  },
+  focusFirstField: {
+    'en-us': 'Focus first field',
+    'de-ch': 'Fokus erstes Feld',
+    'es-es': 'Enfoque el primer campo',
+    'fr-fr': 'Concentrez-vous sur le premier champ',
+    'ru-ru': 'Фокус первого поля',
+    'uk-ua': 'Перейти до першого поля',
+    'pt-br': 'Foco primeiro campo',
+  },
+  doubleClickZoom: {
+    'en-us': 'Double click to zoom',
+    'ru-ru': 'Дважды щелкните, чтобы увеличить',
+    'es-es': 'Haga doble clic para ampliar',
+    'fr-fr': 'Double-cliquez pour zoomer',
+    'uk-ua': 'Двічі клацніть, щоб збільшити',
+    'de-ch': 'Zum Vergrößern doppelklicken',
+    'pt-br': 'Clique duas vezes para ampliar',
+  },
+  closePopupOnClick: {
+    'en-us': 'Close pop-up on outside click',
+    'ru-ru': 'Закрытие всплывающего окна при внешнем щелчке',
+    'es-es': 'Cerrar ventana emergente al hacer clic desde fuera',
+    'fr-fr': "Fermer la pop-up lors d'un clic extérieur",
+    'uk-ua': 'Закрити спливаюче вікно при зовнішньому клацанні',
+    'de-ch': 'Popup bei externem Klick schließen',
+    'pt-br': 'Fechar pop-up ao clicar fora',
+  },
+  animateTransitions: {
+    'en-us': 'Animate transitions',
+    'ru-ru': 'Анимированные переходы',
+    'es-es': 'Animar transiciones',
+    'fr-fr': 'Animer les transitions',
+    'uk-ua': 'Анімація переходів',
+    'de-ch': 'Übergänge animieren',
+    'pt-br': 'Transições animadas',
+  },
+  panInertia: {
+    'en-us': 'Pan inertia',
+    'ru-ru': 'Инерция пан',
+    'es-es': 'Inercia de la sartén',
+    'fr-fr': 'Inertie du bac',
+    'uk-ua': 'Інерція панорами',
+    'de-ch': 'Schwenkträgheit',
+    'pt-br': 'Inércia da panela',
+  },
+  mouseDrags: {
+    'en-us': 'Mouse drags',
+    'ru-ru': 'Перетаскивание мышью',
+    'es-es': 'El ratón arrastra',
+    'uk-ua': 'Виділіть відповідний підрядок',
+    'de-ch': 'Maus zieht',
+    'fr-fr': 'Mettre en surbrillance la sous-chaîne correspondante',
+    'pt-br': 'Arrastos do mouse',
+  },
+  scrollWheelZoom: {
+    'en-us': 'Scroll wheel zoom',
+    'ru-ru': 'Масштабирование с помощью колеса прокрутки',
+    'es-es': 'Zoom con rueda de desplazamiento',
+    'fr-fr': 'Zoom avec la molette de défilement',
+    'uk-ua': 'Масштаб колеса прокрутки',
+    'de-ch': 'Scrollrad-Zoom',
+    'pt-br': 'Zoom da roda de rolagem',
+  },
+  flexibleColumnWidth: {
+    'en-us': 'Flexible column width',
+    'ru-ru': 'Гибкая ширина столбца',
+    'es-es': 'Ancho de columna flexible',
+    'fr-fr': 'Largeur de colonne flexible',
+    'uk-ua': 'Гнучка ширина колонки',
+    'de-ch': 'Flexible Spaltenbreite',
+    'pt-br': 'Largura de coluna flexível',
+  },
+  flexibleSubGridColumnWidth: {
+    'en-us': 'Flexible subview grid column width',
+    'ru-ru': 'Гибкая ширина столбца сетки подпредставлений',
+    'es-es': 'Ancho de columna de cuadrícula de subvista flexible',
+    'fr-fr': 'Largeur de colonne de grille de sous-vue flexible',
+    'uk-ua': 'Гнучка ширина стовпця сітки вкладеного перегляду',
+    'de-ch': 'Flexible Rasterspaltenbreite der Unteransicht',
+    'pt-br': 'Largura flexível da coluna da grade de subvisualização',
+  },
+  closeOnEsc: {
+    'en-us': 'Close on <key>ESC</key> key press',
+    'ru-ru': 'Закрыть нажатием клавиши <key>ESC</key>',
+    'es-es': 'Cerrar al presionar la tecla <key>ESC</key>',
+    'fr-fr': 'Icône et nom de la table',
+    'uk-ua': 'Закриття натисканням клавіші <key>ESC</key>',
+    'de-ch': 'Schließen durch Drücken der Taste <key>ESC</key>',
+    'pt-br': 'Fechar ao pressionar a tecla <key>ESC</key>',
+  },
+  closeOnOutsideClick: {
+    'en-us': 'Close on outside click',
+    'ru-ru': 'Закрытие по внешнему щелчку',
+    'es-es': 'Cerrar al hacer clic desde fuera',
+    'fr-fr': 'Fermer sur clic extérieur',
+    'uk-ua': 'Закрийте зовнішнім клацанням',
+    'de-ch': 'Schließen durch Klicken von außen',
+    'pt-br': 'Fechar com clique externo',
+  },
+  scopeEntireTablePicklists: {
+    'en-us': 'Scope "Entire Table" picklists',
+  },
+  scopeEntireTablePicklistsDescription: {
+    'en-us':
+      'Restrict "Entire Table" picklists to values used by records in this collection.',
+  },
+  catalogNumberInheritanceDescription: {
+    'en-us':
+      'Configure whether sibling Collection Objects and their child Collection Objects inherit catalog numbers from the primary or parent record.',
+  },
+  catalogNumberParentInheritanceDescription: {
+    'en-us':
+      'Control whether component records inherit catalog numbers from their parent Collection Object.',
+  },
+  useAccessibleFullDatePicker: {
+    'en-us': 'Use accessible full date picker',
+    'ru-ru': 'Используйте доступный полный выбор даты',
+    'es-es': 'Utilice el selector de fecha completo y accesible',
+    'fr-fr': 'Utiliser un sélecteur de date complet accessible',
+    'uk-ua': 'Використовуйте доступний повний засіб вибору дати',
+    'de-ch': 'Verwenden Sie eine barrierefreie Datumsauswahl',
+    'pt-br': 'Use o seletor de data completo acessível',
+  },
+  useAccessibleMonthPicker: {
+    'en-us': 'Use accessible month picker',
+    'ru-ru': 'Используйте доступный выбор месяца',
+    'es-es': 'Utilice el selector de meses accesible',
+    'fr-fr': 'Utiliser le sélecteur de mois accessible',
+    'uk-ua': 'Використовуйте доступний засіб вибору місяця',
+    'de-ch': 'Verwenden Sie die barrierefreie Monatsauswahl',
+    'pt-br': 'Use o seletor de meses acessível',
+  },
+  collectionSortOrderDescription: {
+    'en-us': 'This determines the visual order of collections.',
+    'ru-ru': 'Это определяет визуальный порядок коллекций.',
+    'es-es': 'Esto determina el orden visual de las colecciones.',
+    'fr-fr': "Ceci détermine l'ordre visuel des collections.",
+    'uk-ua': 'Це визначає візуальний порядок колекцій.',
+    'de-ch': 'Dies bestimmt die visuelle Reihenfolge der Sammlungen.',
+    'pt-br': 'Isso determina a ordem visual das coleções.',
+  },
+  recordSetRecordToOpen: {
+    'en-us': 'Record to open by default',
+    'ru-ru': 'Запись для открытия по умолчанию',
+    'es-es': 'Registro para abrir por defecto',
+    'fr-fr': 'Enregistrement à ouvrir par défaut',
+    'uk-ua': 'Запис відкривається за умовчанням',
+    'de-ch': 'Standardmäßig zu öffnender Datensatz',
+    'pt-br': 'Gravar para abrir por padrão',
+  },
+altClickToSupressNewTab: {
     'en-us':
       '<key>{altKeyName:string}</key>+<key>Click</key> to suppress new tab',
     'ru-ru':
@@ -66,98 +797,6 @@ export const preferencesBehaviorStrings = {
     'pt-br': 'Ordenar por campo',
     'ru-ru': 'Сортировать по полю',
     'uk-ua': 'Сортувати за полем',
-  },
-  lineWrap: {
-    'en-us': 'Line wrap',
-    'ru-ru': 'Перенос строки',
-    'es-es': 'Ajuste de línea',
-    'fr-fr': 'Retour à la ligne',
-    'uk-ua': 'Обтікання лініями',
-    'de-ch': 'Zeilenumbruch',
-    'pt-br': 'Quebra de linha',
-  },
-  indentSize: {
-    'en-us': 'Indent size',
-    'ru-ru': 'Размер отступа',
-    'es-es': 'Tamaño de sangría',
-    'fr-fr': 'Taille du retrait',
-    'uk-ua': 'Розмір відступу',
-    'de-ch': 'Einzugsgröße',
-    'pt-br': 'Tamanho do recuo',
-  },
-  indentWithTab: {
-    'en-us': 'Indent with <key>Tab</key>',
-    'ru-ru': 'Отступ с помощью <key>Tab</key>',
-    'es-es': 'Sangría con <key>Tab</key>',
-    'fr-fr': 'Indenter avec <key>Tabulation</key>',
-    'uk-ua': 'Відступ із <key>Tab</key>',
-    'de-ch': 'Einrücken mit <key>Tab</key>',
-    'pt-br': 'Recuo com <key>Tab</key>',
-  },
-  formHeaderFormat: {
-    'en-us': 'Form header format',
-    'ru-ru': 'Формат заголовка формы',
-    'es-es': 'Formato del encabezado del formulario',
-    'fr-fr': "Format d'en-tête de formulaire",
-    'uk-ua': 'Формат заголовка форми',
-    'de-ch': 'Formularkopfformat',
-    'pt-br': 'Formato do cabeçalho do formulário',
-  },
-  iconAndTableName: {
-    'en-us': 'Icon and table name',
-    'ru-ru': 'Значок и название таблицы',
-    'es-es': 'Icono y nombre de la tabla',
-    'fr-fr': 'Icône et nom de la table',
-    'uk-ua': 'Значок і назва таблиці',
-    'de-ch': 'Symbol und Tabellenname',
-    'pt-br': 'Ícone e nome da tabela',
-  },
-  tableIcon: {
-    'en-us': 'Table icon',
-    'ru-ru': 'Значок таблицы',
-    'es-es': 'Icono de tabla',
-    'fr-fr': 'Icône de tableau',
-    'uk-ua': 'Значок таблиці',
-    'de-ch': 'Tabellensymbol',
-    'pt-br': 'Ícone de tabela',
-  },
-  maxHeight: {
-    'en-us': 'Max height',
-    'ru-ru': 'Максимальная высота',
-    'es-es': 'Altura máxima',
-    'fr-fr': 'hauteur maximum',
-    'uk-ua': 'Максимальна висота',
-    'de-ch': 'Maximale Höhe',
-    'pt-br': 'Altura máxima',
-  },
-  autoComplete: {
-    'en-us': 'Auto complete',
-    'ru-ru': 'Автозаполнение',
-    'es-es': 'Autocompletar',
-    'fr-fr':
-      "Détermine les légendes des champs, les notes d'utilisation et les légendes des tableaux",
-    'uk-ua':
-      'Визначає підписи полів, примітки щодо використання та підписи таблиць',
-    'de-ch': 'Autovervollständigung',
-    'pt-br': 'Preenchimento automático',
-  },
-  searchCaseSensitive: {
-    'en-us': 'Case-sensitive search',
-    'es-es': 'Búsqueda que distingue entre mayúsculas y minúsculas',
-    'fr-fr': 'Recherche sensible à la casse',
-    'uk-ua': 'Пошук з урахуванням регістру',
-    'de-ch': 'Groß- und Kleinschreibung beachten',
-    'ru-ru': 'Поиск с учетом регистра',
-    'pt-br': 'Pesquisa com diferenciação entre maiúsculas e minúsculas',
-  },
-  searchField: {
-    'en-us': 'Search Field',
-    'ru-ru': 'Поле поиска',
-    'es-es': 'Campo de búsqueda',
-    'fr-fr': 'Champ de recherche',
-    'uk-ua': 'Поле пошуку',
-    'de-ch': 'Suchfeld',
-    'pt-br': 'Campo de pesquisa',
   },
   createInteractions: {
     'en-us': 'Creating an interaction',
@@ -440,148 +1079,6 @@ export const preferencesBehaviorStrings = {
     'uk-ua': 'Розділіть довгі рядки XML на кілька рядків',
     'pt-br': 'Dividir longas linhas de XML em várias linhas',
   },
-  url: {
-    'en-us': 'URL',
-    'de-ch': 'URL',
-    'es-es': 'URL',
-    'fr-fr': 'URL',
-    'uk-ua': 'URL',
-    'ru-ru': 'URL',
-    'pt-br': 'URL',
-  },
-  pickAttachment: {
-    'en-us': 'Pick an attachment',
-    'es-es': 'Elige un archivo adjunto',
-    'fr-fr': 'Choisissez une pièce jointe',
-    'ru-ru': 'Выберите вложение',
-    'uk-ua': 'Виберіть вкладення',
-    'de-ch': 'Wählen Sie einen Anhang',
-    'pt-br': 'Escolha um anexo',
-  },
-  attachmentFailed: {
-    'en-us': 'The attachment failed to load.',
-    'de-ch': 'Der Anhang konnte nicht geladen werden.',
-    'es-es': 'No se pudo cargar el archivo adjunto.',
-    'fr-fr': "La pièce jointe n'a pas pu être chargée.",
-    'ru-ru': 'Не удалось загрузить вложение.',
-    'uk-ua': 'Не вдалося завантажити вкладений файл.',
-    'pt-br': 'O anexo não pôde ser carregado.',
-  },
-  pickImage: {
-    'en-us': 'Pick an image',
-    'de-ch': 'Wählen Sie ein Bild aus',
-    'es-es': 'Elige una imagen',
-    'fr-fr': 'Choisissez une image',
-    'ru-ru': 'Выберите изображение',
-    'uk-ua': 'Виберіть зображення',
-    'pt-br': 'Escolha uma imagem',
-  },
-  customLogo: {
-    'en-us': 'Expanded Image URL',
-    'de-ch': 'Erweiterte Bild-URL',
-    'es-es': 'URL de imagen expandida',
-    'fr-fr': "URL de l'image étendue",
-    'ru-ru': 'URL-адрес развернутого изображения',
-    'uk-ua': 'Розширена URL-адреса зображення',
-    'pt-br': 'URL da imagem expandida',
-  },
-  customLogoCollapsed: {
-    'en-us': 'Collapsed Image URL',
-    'de-ch': 'URL des minimierten Bildes',
-    'es-es': 'URL de imagen contraída',
-    'fr-fr': "URL de l'image réduite",
-    'ru-ru': 'URL-адрес свернутого изображения',
-    'uk-ua': 'URL-адреса згорнутого зображення',
-    'pt-br': 'URL da imagem recolhida',
-  },
-  customLogoDescription: {
-    'en-us':
-      'A URL to an image that would be displayed next to the Specify logo in the navigation menu.',
-    'de-ch':
-      'Eine URL zu einem Bild, das neben dem angegebenen Logo im Navigationsmenü angezeigt wird.',
-    'es-es':
-      'Una URL a una imagen que se mostrará junto al logotipo Especificar en el menú de navegación.',
-    'fr-fr':
-      'Une URL vers une image qui serait affichée à côté du logo Specify dans le menu de navigation.',
-    'ru-ru':
-      'URL-адрес изображения, которое будет отображаться рядом с логотипом «Укажите» в меню навигации.',
-    'uk-ua':
-      'URL-адреса зображення, яке відображатиметься поруч із «Вказати логотип» у меню навігації.',
-    'pt-br':
-      'Um URL para uma imagem que seria exibida ao lado do logotipo Especificar no menu de navegação.',
-  },
-  showLineNumber: {
-    'en-us': 'Show query result line number',
-    'de-ch': 'Zeilennummer des Abfrageergebnisses anzeigen',
-    'es-es': 'Mostrar el número de línea del resultado de la consulta',
-    'fr-fr': 'Afficher le numéro de ligne du résultat de la requête',
-    'ru-ru': 'Показать номер строки результата запроса',
-    'uk-ua': 'Показати номер рядка результату запиту',
-    'pt-br': 'Mostrar número da linha do resultado da consulta',
-  },
-  saveButtonColor: {
-    'en-us': 'Save button color',
-    'de-ch': 'Farbe der Schaltfläche „Speichern“',
-    'es-es': 'Guardar color del botón',
-    'fr-fr': 'Couleur du bouton Enregistrer',
-    'ru-ru': 'Сохранить цвет кнопки',
-    'uk-ua': 'Зберегти колір кнопки',
-    'pt-br': 'Cor do botão Salvar',
-  },
-  secondaryButtonColor: {
-    'en-us': 'Secondary button color',
-    'es-es': 'Color del botón secundario',
-    'fr-fr': 'Couleur du bouton secondaire',
-    'ru-ru': 'Цвет вторичной кнопки',
-    'uk-ua': 'Колір вторинної кнопки',
-    'de-ch': 'Sekundäre Schaltflächenfarbe',
-    'pt-br': 'Cor do botão secundário',
-  },
-  secondaryLightButtonColor: {
-    'en-us': 'Secondary light button color',
-    'de-ch': 'Farbe der sekundären Lichttaste',
-    'es-es': 'Color del botón de luz secundaria',
-    'fr-fr': 'Couleur du bouton lumineux secondaire',
-    'ru-ru': 'Цвет кнопки дополнительного освещения',
-    'uk-ua': 'Колір вторинної світлової кнопки',
-    'pt-br': 'Cor do botão de luz secundária',
-  },
-  dangerButtonColor: {
-    'en-us': 'Danger button color',
-    'de-ch': 'Farbe der Gefahrenschaltfläche',
-    'es-es': 'Color del botón de peligro',
-    'fr-fr': 'Couleur du bouton de danger',
-    'ru-ru': 'Цвет кнопки «Опасность»',
-    'uk-ua': 'Колір кнопки небезпеки',
-    'pt-br': 'Cor do botão de perigo',
-  },
-  infoButtonColor: {
-    'en-us': 'Info button color',
-    'de-ch': 'Farbe der Info-Schaltfläche',
-    'es-es': 'Color del botón de información',
-    'fr-fr': "Couleur du bouton d'information",
-    'ru-ru': 'Цвет кнопки информации',
-    'uk-ua': 'Колір інформаційної кнопки',
-    'pt-br': 'Cor do botão de informações',
-  },
-  warningButtonColor: {
-    'en-us': 'Warning button color',
-    'de-ch': 'Farbe der Warnschaltfläche',
-    'es-es': 'Color del botón de advertencia',
-    'fr-fr': "Couleur du bouton d'avertissement",
-    'ru-ru': 'Цвет кнопки предупреждения',
-    'uk-ua': 'Колір кнопки попередження',
-    'pt-br': 'Cor do botão de aviso',
-  },
-  successButtonColor: {
-    'en-us': 'Success button color',
-    'de-ch': 'Farbe der Schaltfläche „Erfolg“',
-    'es-es': 'Color del botón de éxito',
-    'fr-fr': 'Couleur du bouton de réussite',
-    'ru-ru': 'Цвет кнопки «Успех»',
-    'uk-ua': 'Колір кнопки успіху',
-    'pt-br': 'Cor do botão de sucesso',
-  },
   openAsReadOnly: {
     'en-us': 'Open all records in read-only mode',
     'de-ch': 'Alle Datensätze im schreibgeschützten Modus öffnen',
@@ -643,42 +1140,6 @@ export const preferencesBehaviorStrings = {
     'uk-ua': 'Детальний вигляд',
     'pt-br': 'Visão detalhada',
   },
-  attachmentPreviewMode: {
-    'en-us': 'Attachment preview mode',
-    'de-ch': 'Anhangsvorschaumodus',
-    'es-es': 'Modo de vista previa de archivos adjuntos',
-    'fr-fr': "Mode d'aperçu des pièces jointes",
-    'ru-ru': 'Режим предварительного просмотра вложений',
-    'uk-ua': 'Режим попереднього перегляду вкладених файлів',
-    'pt-br': 'Modo de visualização de anexos',
-  },
-  fullResolution: {
-    'en-us': 'Full Resolution',
-    'de-ch': 'Volle Auflösung',
-    'es-es': 'Resolución completa',
-    'fr-fr': 'Pleine résolution',
-    'ru-ru': 'Полное разрешение',
-    'uk-ua': 'Повна роздільна здатність',
-    'pt-br': 'Resolução completa',
-  },
-  thumbnail: {
-    'en-us': 'Thumbnail',
-    'de-ch': 'Miniaturansicht',
-    'es-es': 'Uña del pulgar',
-    'fr-fr': 'Vignette',
-    'ru-ru': 'Миниатюра',
-    'uk-ua': 'Мініатюра',
-    'pt-br': 'Miniatura',
-  },
-  addSearchBarHomePage: {
-    'en-us': 'Add Search Bar on home page',
-    'de-ch': 'Suchleiste auf der Startseite hinzufügen',
-    'es-es': 'Agregar barra de búsqueda en la página de inicio',
-    'fr-fr': "Ajouter une barre de recherche sur la page d'accueil",
-    'ru-ru': 'Добавить панель поиска на домашнюю страницу',
-    'uk-ua': 'Додайте рядок пошуку на головну сторінку',
-    'pt-br': 'Adicionar barra de pesquisa na página inicial',
-  },
   inheritanceCatNumberPref: {
     'en-us':
       'Enable the inheritance of the primary catalog number to its empty siblings.',
@@ -730,7 +1191,5 @@ export const preferencesBehaviorStrings = {
 } as const;
 
 export const preferencesBehaviorText = createDictionary(
-  preferencesBehaviorStrings
+  preferencesBehaviorDictionary
 );
-
-export default preferencesBehaviorText;
