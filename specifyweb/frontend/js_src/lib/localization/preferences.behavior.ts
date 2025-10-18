@@ -693,10 +693,6 @@ export const preferencesBehaviorDictionary = {
     'en-us':
       'If enabled, picklists of type "Entire Table" will only show items that are in use within the current collection.',
   },
-  catalogNumberParentInheritanceDescription: {
-    'en-us':
-      'Control whether component records inherit catalog numbers from their parent Collection Object.',
-  },
   useAccessibleFullDatePicker: {
     'en-us': 'Use accessible full date picker',
     'ru-ru': 'Используйте доступный полный выбор даты',

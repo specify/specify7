@@ -713,8 +713,4 @@ export const treeText = createDictionary({
     'en-us':
       'If enabled, this allows users to add children to synonymized parents and to synonymize a node with children.',
   },
-  synonymizedNodesPermissionDescription: {
-    'en-us':
-      'Enable adding children to synonymized parents on this tree. When enabled, users may add child nodes beneath parents that have been marked as synonyms.',
-  },
 } as const);

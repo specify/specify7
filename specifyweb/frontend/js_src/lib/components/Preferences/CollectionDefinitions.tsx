@@ -235,12 +235,12 @@ export const collectionPreferenceDefinitions = {
         items: {
           inheritance: definePref<boolean>({
             title: () =>
-              preferencesText.inheritanceCatNumberPref({
+              preferencesText.inheritanceCatNumberParentCOPref({
                 catalogNumber: getField(
                   tables.CollectionObject,
                   'catalogNumber'
                 ).label,
-                 collectionObject: tables.CollectionObject.label,
+                collectionObject: tables.CollectionObject.label,
               }),
             description: () => 
               preferencesText.inheritanceCatNumberParentCOPrefDescription({
