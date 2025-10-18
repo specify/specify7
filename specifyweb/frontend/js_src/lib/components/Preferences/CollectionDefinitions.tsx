@@ -14,13 +14,13 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
-import type { StatLayout } from '../Statistics/types';
+import { getField } from '../DataModel/helpers';
 import { genericTables } from '../DataModel/tables';
+import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
+import type { StatLayout } from '../Statistics/types';
 import type { GenericPreferences } from './types';
 import { definePref } from './types';
-import { tables } from '../DataModel/tables';
-import { getField } from '../DataModel/helpers';
 
 const tableLabel = (tableName: keyof Tables): LocalizedString =>
   genericTables[tableName]?.label ?? camelToHuman(tableName);

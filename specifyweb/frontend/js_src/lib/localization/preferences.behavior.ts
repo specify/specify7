@@ -729,7 +729,7 @@ export const preferencesBehaviorDictionary = {
     'de-ch': 'Standardmäßig zu öffnender Datensatz',
     'pt-br': 'Gravar para abrir por padrão',
   },
-altClickToSupressNewTab: {
+  altClickToSupressNewTab: {
     'en-us':
       '<key>{altKeyName:string}</key>+<key>Click</key> to suppress new tab',
     'ru-ru':
