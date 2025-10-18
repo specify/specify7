@@ -53,7 +53,7 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
   },
   [preferencesText.customization()]: {
     userPreferences: {
-      title: preferencesText.preferences(),
+      title: preferencesText.userPreferences(),
       url: '/specify/user-preferences/',
       icon: icons.cog,
     },
@@ -66,7 +66,7 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
     collectionPreferences: {
       title: preferencesText.collectionPreferences(),
       url: '/specify/collection-preferences/',
-      icon: icons.collection,
+      icon: icons.office,
       enabled: () => hasToolPermission('resources', 'update'),
     },
     schemaConfig: {

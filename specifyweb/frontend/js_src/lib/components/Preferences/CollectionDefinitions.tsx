@@ -2,6 +2,8 @@
  * Definitions for Collection preferences
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { attachmentsText } from '../../localization/attachments';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
@@ -11,13 +13,22 @@ import { treeText } from '../../localization/tree';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { ensure } from '../../utils/types';
+import { camelToHuman } from '../../utils/utils';
+import { getField } from '../DataModel/helpers';
+import { genericTables } from '../DataModel/tables';
+import { tables } from '../DataModel/tables';
+import type { Tables } from '../DataModel/types';
 import type { StatLayout } from '../Statistics/types';
 import type { GenericPreferences } from './types';
 import { definePref } from './types';
 
+const tableLabel = (tableName: keyof Tables): LocalizedString =>
+  genericTables[tableName]?.label ?? camelToHuman(tableName);
+
 const specifyNetworkItems = {
   publishingOrganization: definePref<string | undefined>({
     title: specifyNetworkText.publishingOrganizationKey(),
+    description: specifyNetworkText.publishingOrganizationKeyDescription(),
     requiresReload: false,
     visible: true,
     defaultValue: undefined,
@@ -25,6 +36,7 @@ const specifyNetworkItems = {
   }),
   collectionKey: definePref<string | undefined>({
     title: specifyNetworkText.collectionKey(),
+    description: specifyNetworkText.collectionKeyDescription(),
     requiresReload: false,
     visible: true,
     defaultValue: undefined,
@@ -72,17 +84,9 @@ export const collectionPreferenceDefinitions = {
         title: treeText.synonymizedNodes(),
         description: treeText.synonymizedNodesDescription(),
         items: {
-          'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod':
-            definePref<boolean>({
-              title: treeText.allowSynonymizedGeologicTimePeriodChildren(),
-              requiresReload: false,
-              visible: true,
-              defaultValue: false,
-              type: 'java.lang.Boolean',
-            }),
           'sp7.allow_adding_child_to_synonymized_parent.Taxon':
             definePref<boolean>({
-              title: treeText.allowSynonymizedTaxonChildren(),
+              title: () => tableLabel('Taxon'),
               requiresReload: false,
               visible: true,
               defaultValue: false,
@@ -90,15 +94,7 @@ export const collectionPreferenceDefinitions = {
             }),
           'sp7.allow_adding_child_to_synonymized_parent.Geography':
             definePref<boolean>({
-              title: treeText.allowSynonymizedGeographyChildren(),
-              requiresReload: false,
-              visible: true,
-              defaultValue: false,
-              type: 'java.lang.Boolean',
-            }),
-          'sp7.allow_adding_child_to_synonymized_parent.LithoStrat':
-            definePref<boolean>({
-              title: treeText.allowSynonymizedLithostratChildren(),
+              title: () => tableLabel('Geography'),
               requiresReload: false,
               visible: true,
               defaultValue: false,
@@ -106,7 +102,23 @@ export const collectionPreferenceDefinitions = {
             }),
           'sp7.allow_adding_child_to_synonymized_parent.Storage':
             definePref<boolean>({
-              title: treeText.allowSynonymizedStorageChildren(),
+              title: () => tableLabel('Storage'),
+              requiresReload: false,
+              visible: true,
+              defaultValue: false,
+              type: 'java.lang.Boolean',
+            }),
+          'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod':
+            definePref<boolean>({
+              title: () => tableLabel('GeologicTimePeriod'),
+              requiresReload: false,
+              visible: true,
+              defaultValue: false,
+              type: 'java.lang.Boolean',
+            }),
+          'sp7.allow_adding_child_to_synonymized_parent.LithoStrat':
+            definePref<boolean>({
+              title: () => tableLabel('LithoStrat'),
               requiresReload: false,
               visible: true,
               defaultValue: false,
@@ -114,7 +126,7 @@ export const collectionPreferenceDefinitions = {
             }),
           'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit':
             definePref<boolean>({
-              title: treeText.allowSynonymizedTectonicUnitChildren(),
+              title: () => tableLabel('TectonicUnit'),
               requiresReload: false,
               visible: true,
               defaultValue: false,
@@ -190,13 +202,27 @@ export const collectionPreferenceDefinitions = {
 
   catalogNumberInheritance: {
     title: queryText.catalogNumberInheritance(),
-    description: preferencesText.catalogNumberInheritanceDescription(),
     subCategories: {
-      behavior: {
-        title: preferencesText.behavior(),
+      collectionObject: {
+        title: () => tableLabel('CollectionObjectGroup'),
         items: {
           inheritance: definePref<boolean>({
-            title: preferencesText.inheritanceCatNumberPref(),
+            title: () =>
+              preferencesText.inheritanceCatNumberPref({
+                catalogNumber: getField(
+                  tables.CollectionObject,
+                  'catalogNumber'
+                ).label,
+                 collectionObject: tables.CollectionObject.label,
+              }),
+            description: () => 
+              preferencesText.inheritanceCatNumberPrefDescription({
+                catalogNumber: getField(
+                  tables.CollectionObject,
+                  'catalogNumber'
+                ).label,
+                collectionObject: tables.CollectionObject.label,
+              }),
             requiresReload: false,
             visible: true,
             defaultValue: false,
@@ -204,18 +230,26 @@ export const collectionPreferenceDefinitions = {
           }),
         },
       },
-    },
-  },
-
-  catalogNumberParentInheritance: {
-    title: queryText.catalogNumberParentCOInheritance(),
-    description: preferencesText.catalogNumberParentInheritanceDescription(),
-    subCategories: {
-      behavior: {
-        title: preferencesText.behavior(),
+      component: {
+        title: () => camelToHuman('Component'),
         items: {
           inheritance: definePref<boolean>({
-            title: preferencesText.inheritanceCatNumberParentCOPref(),
+            title: () =>
+              preferencesText.inheritanceCatNumberParentCOPref({
+                catalogNumber: getField(
+                  tables.CollectionObject,
+                  'catalogNumber'
+                ).label,
+                collectionObject: tables.CollectionObject.label,
+              }),
+            description: () => 
+              preferencesText.inheritanceCatNumberParentCOPrefDescription({
+                catalogNumber: getField(
+                  tables.CollectionObject,
+                  'catalogNumber'
+                ).label,
+                collectionObject: tables.CollectionObject.label,
+              }),
             requiresReload: false,
             visible: true,
             defaultValue: false,

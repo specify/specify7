@@ -75,13 +75,13 @@ type SubcategoryDocumentation = {
 const SUBCATEGORY_DOCS_MAP: Record<string, Record<string, SubcategoryDocumentation>> = {
   treeManagement: {
     synonymized: {
-      href: 'https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987/4',
+      href: 'https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987',
       label: headerText.documentation(),
     },
   },
   statistics: {
     appearance: {
-      href: 'https://discourse.specifysoftware.org/t/specify-7-statistics/1715',
+      href: 'https://discourse.specifysoftware.org/t/statistics-page/1135',
       label: headerText.documentation(),
     },
   },
@@ -119,20 +119,29 @@ const preferencesPromise = Promise.all([
   collectionPreferences.fetch(),
 ]).then(f.true);
 
-function Preferences(): JSX.Element {
+function Preferences({
+  prefType = 'user',
+}: {
+  readonly prefType?: PreferenceType;
+} = {}): JSX.Element {
   const [changesMade, handleChangesMade] = useBooleanState();
   const [needsRestart, handleRestartNeeded] = useBooleanState();
 
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
+  const basePreferences = preferenceInstances[prefType];
+  const heading =
+    prefType === 'collection'
+      ? preferencesText.collectionPreferences()
+      : preferencesText.preferences();
 
   React.useEffect(
     () =>
-      userPreferences.events.on('update', (payload) => {
+      basePreferences.events.on('update', (payload) => {
         if (payload?.definition?.requiresReload === true) handleRestartNeeded();
         handleChangesMade();
       }),
-    [handleChangesMade, handleRestartNeeded]
+    [basePreferences, handleChangesMade, handleRestartNeeded]
   );
 
   const {
@@ -145,12 +154,12 @@ function Preferences(): JSX.Element {
 
   return (
     <Container.FullGray>
-      <H2 className="text-2xl">{preferencesText.preferences()}</H2>
+      <H2 className="text-2xl">{heading}</H2>
       <Form
         className="contents"
         onSubmit={(): void =>
           loading(
-            userPreferences
+            basePreferences
               .awaitSynced()
               .then(() =>
                 needsRestart
@@ -166,10 +175,11 @@ function Preferences(): JSX.Element {
         >
           <PreferencesAside
             activeCategory={visibleChild}
+            prefType={prefType}
             references={references}
             setActiveCategory={setVisibleChild}
           />
-          <PreferencesContent forwardRefs={forwardRefs} />
+          <PreferencesContent forwardRefs={forwardRefs} prefType={prefType} />
           <span className="flex-1" />
         </div>
         <div className="flex justify-end">
@@ -539,7 +549,7 @@ function Item({
 function CollectionPreferences(): JSX.Element {
   return (
     <ProtectedTool action="update" tool="resources">
-      <CollectionPreferencesStandalone />
+      <Preferences prefType="collection" />
     </ProtectedTool>
   );
 }

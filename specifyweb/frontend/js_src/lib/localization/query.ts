@@ -773,7 +773,7 @@ export const queryText = createDictionary({
     'uk-ua': 'в минулому',
     'pt-br': 'no passado',
   },
-  day: {
+  days: {
     'en-us': 'Days',
     'es-es': 'Días',
     'fr-fr': 'Jours',
@@ -782,7 +782,7 @@ export const queryText = createDictionary({
     'de-ch': 'Tage',
     'pt-br': 'Dias',
   },
-  week: {
+  weeks: {
     'en-us': 'Weeks',
     'de-ch': 'Wochen',
     'es-es': 'Semanas',
@@ -791,7 +791,7 @@ export const queryText = createDictionary({
     'uk-ua': 'тижнів',
     'pt-br': 'Semanas',
   },
-  month: {
+  months: {
     'en-us': 'Months',
     'de-ch': 'Monate',
     'es-es': 'Meses',
@@ -800,7 +800,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Місяці',
     'pt-br': 'Meses',
   },
-  year: {
+  years: {
     'en-us': 'Years',
     'de-ch': 'Jahre',
     'es-es': 'Años',
@@ -808,6 +808,15 @@ export const queryText = createDictionary({
     'ru-ru': 'Годы',
     'uk-ua': 'років',
     'pt-br': 'Anos',
+  },
+  year: {
+    'en-us': 'Year',
+    'de-ch': 'Jahr',
+    'es-es': 'Año',
+    'fr-fr': 'Année',
+    'ru-ru': 'Год',
+    'uk-ua': 'рік',
+    'pt-br': '',
   },
   relativeDate: {
     comment: `
@@ -945,16 +954,6 @@ export const queryText = createDictionary({
     'pt-br': 'Herança de números de catálogo',
     'ru-ru': 'Наследование каталожного номера',
     'uk-ua': 'Успадкування каталожних номерів',
-  },
-  catalogNumberParentCOInheritance: {
-    'en-us': 'Catalog Number Parent Collection Object Inheritance',
-    'de-ch': 'Katalognummer Übergeordnete Sammlung Objektvererbung',
-    'es-es':
-      'Herencia de objetos de la colección principal del número de catálogo',
-    'fr-fr': "Numéro de catalogue Collection parente Héritage d'objet",
-    'pt-br': 'Herança de objeto de coleção pai de número de catálogo',
-    'ru-ru': 'Номер каталога Родительская коллекция Объект Наследование',
-    'uk-ua': "Успадкування батьківського об'єкта колекції за номером каталогу",
   },
   uniqueCatalogNumberAcrossComponentAndCo: {
     'en-us': 'Catalog Number Uniqueness Across Component And CO tables',

@@ -119,12 +119,7 @@ function Field({
     (field?.isReadOnly === true && !isInSearchDialog);
 
   const validationAttributes = getValidationAttributes(parser);
-
-  const [rightAlignNumberFields] = userPreferences.use(
-    'form',
-    'ui',
-    'rightAlignNumberFields'
-  );
+  const rightAlignClassName = useRightAlignClassName(parser.type, isReadOnly);
 
   const isNew = resource?.isNew();
   const isCO = resource?.specifyTable.name === 'CollectionObject';
@@ -144,14 +139,14 @@ function Field({
   // Check if collection pref wants to inherit primary cat num for empty CO cat num sibilings inside of a COG
   const [displayPrimaryCatNumberPref] = collectionPreferences.use(
     'catalogNumberInheritance',
-    'behavior',
+    'collectionObject',
     'inheritance'
   );
 
   // Check if collection pref wants to inherit parent cat num for empty CO cat num children
   const [displayParentCatNumberPref] = collectionPreferences.use(
-    'catalogNumberParentInheritance',
-    'behavior',
+    'catalogNumberInheritance',
+    'component',
     'inheritance'
   );
 
@@ -225,17 +220,7 @@ function Field({
             : undefined
       }
       {...validationAttributes}
-      className={
-        /*
-         * Disable "text-align: right" in non webkit browsers
-         * as they don't support spinner's arrow customization
-         */
-        parser.type === 'number' &&
-        rightAlignNumberFields &&
-        globalThis.navigator.userAgent.toLowerCase().includes('webkit')
-          ? `text-right ${isReadOnly ? '' : 'pr-6'}`
-          : ''
-      }
+      className={rightAlignClassName}
       id={id}
       isReadOnly={isReadOnly}
       required={'required' in validationAttributes && !isInSearchDialog}
@@ -260,4 +245,25 @@ function Field({
       }}
     />
   );
+}
+
+export function useRightAlignClassName(
+  type: Parser['type'],
+  isReadOnly: boolean
+): string | undefined {
+  const [rightAlignNumberFields] = userPreferences.use(
+    'form',
+    'ui',
+    'rightAlignNumberFields'
+  );
+
+  /*
+   * Disable "text-align: right" in non webkit browsers
+   * as they don't support spinner's arrow customization
+   */
+  return type === 'number' &&
+    rightAlignNumberFields &&
+    globalThis.navigator.userAgent.toLowerCase().includes('webkit')
+    ? `text-right ${isReadOnly ? '' : 'pr-6'}`
+    : '';
 }
