@@ -30,15 +30,19 @@ const DATE_FORMAT_NORMALIZER = new Set<string>([
 ]);
 
 export const DEFAULT_VALUES: GlobalPreferenceValues = {
-  general: {
+  auditing: {
     auditing: {
       enableAuditLog: true,
       logFieldLevelChanges: true,
     },
+  },
+  formatting: {
     formatting: {
       fullDateFormat: 'YYYY-MM-DD',
       monthYearDateFormat: 'YYYY-MM',
     },
+  },
+  attachments: {
     attachments: {
       attachmentThumbnailSize: 256,
     },
@@ -90,36 +94,40 @@ function parseNumber(value: string | undefined, fallback: number): number {
 
 export function preferencesFromMap(map: Record<string, string>): GlobalPreferenceValues {
   const fullDateFormat = normalizeFormat(
-    map[PREFERENCE_KEYS.fullDateFormat] ?? DEFAULT_VALUES.general.formatting.fullDateFormat
+    map[PREFERENCE_KEYS.fullDateFormat] ?? DEFAULT_VALUES.formatting.formatting.fullDateFormat
   );
   const monthYearFormat = normalizeFormat(
-    map[PREFERENCE_KEYS.monthYearDateFormat] ?? DEFAULT_VALUES.general.formatting.monthYearDateFormat
+    map[PREFERENCE_KEYS.monthYearDateFormat] ?? DEFAULT_VALUES.formatting.formatting.monthYearDateFormat
   );
 
   return {
-    general: {
+    auditing: {
       auditing: {
         enableAuditLog: parseBoolean(
           map[PREFERENCE_KEYS.enableAuditLog],
-          DEFAULT_VALUES.general.auditing.enableAuditLog
+          DEFAULT_VALUES.auditing.auditing.enableAuditLog
         ),
         logFieldLevelChanges: parseBoolean(
           map[PREFERENCE_KEYS.logFieldLevelChanges],
-          DEFAULT_VALUES.general.auditing.logFieldLevelChanges
+          DEFAULT_VALUES.auditing.auditing.logFieldLevelChanges
         ),
       },
+    },
+    formatting: {
       formatting: {
         fullDateFormat,
         monthYearDateFormat: MONTH_YEAR_FORMAT_OPTIONS.includes(
           monthYearFormat as (typeof MONTH_YEAR_FORMAT_OPTIONS)[number]
         )
           ? (monthYearFormat as (typeof MONTH_YEAR_FORMAT_OPTIONS)[number])
-          : DEFAULT_VALUES.general.formatting.monthYearDateFormat,
+          : DEFAULT_VALUES.formatting.formatting.monthYearDateFormat,
       },
+    },
+    attachments: {
       attachments: {
         attachmentThumbnailSize: parseNumber(
           map[PREFERENCE_KEYS.attachmentThumbnailSize],
-          DEFAULT_VALUES.general.attachments.attachmentThumbnailSize
+          DEFAULT_VALUES.attachments.attachments.attachmentThumbnailSize
         ),
       },
     },
@@ -139,26 +147,30 @@ function normalizeValues(
 ): GlobalPreferenceValues {
   const merged = values ?? DEFAULT_VALUES;
   return {
-    general: {
+    auditing: {
       auditing: {
         enableAuditLog:
-          merged.general?.auditing?.enableAuditLog ?? DEFAULT_VALUES.general.auditing.enableAuditLog,
+          merged.auditing?.auditing?.enableAuditLog ?? DEFAULT_VALUES.auditing.auditing.enableAuditLog,
         logFieldLevelChanges:
-          merged.general?.auditing?.logFieldLevelChanges ??
-          DEFAULT_VALUES.general.auditing.logFieldLevelChanges,
+          merged.auditing?.auditing?.logFieldLevelChanges ??
+          DEFAULT_VALUES.auditing.auditing.logFieldLevelChanges,
       },
+    },
+    formatting: {
       formatting: {
         fullDateFormat:
-          merged.general?.formatting?.fullDateFormat ??
-          DEFAULT_VALUES.general.formatting.fullDateFormat,
+          merged.formatting?.formatting?.fullDateFormat ??
+          DEFAULT_VALUES.formatting.formatting.fullDateFormat,
         monthYearDateFormat:
-          merged.general?.formatting?.monthYearDateFormat ??
-          DEFAULT_VALUES.general.formatting.monthYearDateFormat,
+          merged.formatting?.formatting?.monthYearDateFormat ??
+          DEFAULT_VALUES.formatting.formatting.monthYearDateFormat,
       },
+    },
+    attachments: {
       attachments: {
         attachmentThumbnailSize:
-          merged.general?.attachments?.attachmentThumbnailSize ??
-          DEFAULT_VALUES.general.attachments.attachmentThumbnailSize,
+          merged.attachments?.attachments?.attachmentThumbnailSize ??
+          DEFAULT_VALUES.attachments.attachments.attachmentThumbnailSize,
       },
     },
   };
@@ -166,15 +178,15 @@ function normalizeValues(
 
 function preferencesToKeyValue(values: GlobalPreferenceValues): Record<string, string> {
   return {
-    [PREFERENCE_KEYS.enableAuditLog]: values.general.auditing.enableAuditLog ? 'true' : 'false',
-    [PREFERENCE_KEYS.logFieldLevelChanges]: values.general.auditing.logFieldLevelChanges
+    [PREFERENCE_KEYS.enableAuditLog]: values.auditing.auditing.enableAuditLog ? 'true' : 'false',
+    [PREFERENCE_KEYS.logFieldLevelChanges]: values.auditing.auditing.logFieldLevelChanges
       ? 'true'
       : 'false',
-    [PREFERENCE_KEYS.fullDateFormat]: normalizeFormat(values.general.formatting.fullDateFormat),
+    [PREFERENCE_KEYS.fullDateFormat]: normalizeFormat(values.formatting.formatting.fullDateFormat),
     [PREFERENCE_KEYS.monthYearDateFormat]: normalizeFormat(
-      values.general.formatting.monthYearDateFormat
+      values.formatting.formatting.monthYearDateFormat
     ),
-    [PREFERENCE_KEYS.attachmentThumbnailSize]: values.general.attachments.attachmentThumbnailSize.toString(),
+    [PREFERENCE_KEYS.attachmentThumbnailSize]: values.attachments.attachments.attachmentThumbnailSize.toString(),
   };
 }
 

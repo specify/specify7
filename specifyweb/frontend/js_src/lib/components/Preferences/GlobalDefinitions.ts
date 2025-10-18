@@ -2,44 +2,34 @@ import { attachmentsText } from '../../localization/attachments';
 import { preferencesText } from '../../localization/preferences';
 import { localized } from '../../utils/types';
 import { definePref } from './types';
+import type { GenericPreferences } from './types';
 
 export const FULL_DATE_FORMAT_OPTIONS = [
-  'YYYY-MM-DD',
-  'MM/DD/YYYY',
-  'DD/MM/YYYY',
-  'YYYY/MM/DD',
-  'DD MMM YYYY',
+  'yyyy-MM-dd',
+  'yyyy MM dd',
+  'yyyy.MM.dd',
+  'yyyy/MM/dd',
+  'MM dd yyyy',
+  'MM-dd-yyyy',
+  'MM.dd.yyyy',
+  'MM/dd/yyyy',
+  'dd MM yyyy',
+  'dd MMM yyyy',
+  'dd-MM-yyyy',
+  'dd-MMM-yyyy',
+  'dd.MM.yyyy',
+  'dd.MMM.yyyy',
+  'dd/MM/yyyy',
 ] as const;
 
 export const MONTH_YEAR_FORMAT_OPTIONS = ['YYYY-MM', 'MM/YYYY', 'YYYY/MM'] as const;
 
 export const globalPreferenceDefinitions = {
-  general: {
-    title: preferencesText.general(),
+formatting: {
+    title: preferencesText.formatting,
     subCategories: {
-      auditing: {
-        title: preferencesText.auditing(),
-        items: {
-          enableAuditLog: definePref<boolean>({
-            title: preferencesText.enableAuditLog(),
-            description: preferencesText.enableAuditLogDescription(),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
-          logFieldLevelChanges: definePref<boolean>({
-            title: preferencesText.logFieldLevelChanges(),
-            description: preferencesText.logFieldLevelChangesDescription(),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
-        },
-      },
       formatting: {
-        title: preferencesText.formatting(),
+        title: preferencesText.general(),
         items: {
           fullDateFormat: definePref<string>({
             title: preferencesText.fullDateFormat(),
@@ -65,8 +55,39 @@ export const globalPreferenceDefinitions = {
           }),
         },
       },
+    },
+  },
+  auditing: {
+    title: preferencesText.auditing(),
+    subCategories: {
+      auditing: {
+        title: preferencesText.general(),
+        items: {
+          enableAuditLog: definePref<boolean>({
+            title: preferencesText.enableAuditLog(),
+            description: preferencesText.enableAuditLogDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          logFieldLevelChanges: definePref<boolean>({
+            title: preferencesText.logFieldLevelChanges(),
+            description: preferencesText.logFieldLevelChangesDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
+  attachments: {
+    title: attachmentsText.attachments,
+    subCategories: {
       attachments: {
-        title: attachmentsText.attachments(),
+        title: preferencesText.general(),
         items: {
           attachmentThumbnailSize: definePref<number>({
             title: preferencesText.attachmentThumbnailSize(),

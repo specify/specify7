@@ -1007,14 +1007,14 @@ export const preferencesBehaviorDictionary = {
     'en-us': 'Auditing',
   },
   formatting: {
-    'en-us': 'Formatting',
+    'en-us': 'Date Format',
   },
   enableAuditLog: {
     'en-us': 'Enable Audit Log',
   },
   enableAuditLogDescription: {
     'en-us':
-      'Globally enables or disables the audit log feature for all collections.',
+      'Globally enables or disables the audit log for all collections.',
   },
   logFieldLevelChanges: {
     'en-us': 'Log field-level changes',
@@ -1027,7 +1027,7 @@ export const preferencesBehaviorDictionary = {
     'en-us': 'Full date format',
   },
   fullDateFormatDescription: {
-    'en-us': 'Select the display format for complete dates across the application.',
+    'en-us': 'This determines the date format used for full dates in the WorkBench, queries, and data exports.',
   },
   monthYearDateFormat: {
     'en-us': 'Month/year date format',
