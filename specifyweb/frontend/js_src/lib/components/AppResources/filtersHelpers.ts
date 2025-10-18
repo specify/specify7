@@ -62,11 +62,21 @@ export const getResourceType = (
 
 export const getAppResourceType = (
   resource: SerializedResource<SpAppResource>
-): keyof typeof appResourceSubTypes =>
-  resource.name === 'preferences' && (resource.mimeType ?? '') === ''
-    ? 'otherPropertiesResource'
-    : (Object.entries(appResourceSubTypes).find(([_key, { name, mimeType }]) =>
-        name === undefined
-          ? mimeType === resource.mimeType
-          : name === resource.name
-      )?.[KEY] ?? 'otherAppResources');
+): keyof typeof appResourceSubTypes => {
+  const normalize = (value: string | null | undefined): string | undefined =>
+    typeof value === 'string' ? value.toLowerCase() : undefined;
+
+  const matchedType = Object.entries(appResourceSubTypes).find(
+    ([_key, { name, mimeType }]) =>
+      name === undefined
+        ? normalize(mimeType) === normalize(resource.mimeType)
+        : normalize(name) === normalize(resource.name)
+  )?.[KEY];
+
+  if (matchedType !== undefined) return matchedType;
+
+  if (normalize(resource.name) === 'preferences' && normalize(resource.mimeType) === undefined)
+    return 'otherPropertiesResource';
+
+  return 'otherAppResources';
+};

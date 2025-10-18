@@ -92,6 +92,13 @@ export type AjaxProps = Omit<RequestInit, 'body' | 'headers' | 'method'> & {
  * - Handlers errors (including permission errors)
  * - Helps with request mocking in tests
  */
+let ajaxMockModulePromise:
+  | Promise<typeof import('../../tests/ajax')>
+  | undefined;
+
+if (process.env.NODE_ENV === 'test')
+  ajaxMockModulePromise = import('../../tests/ajax');
+
 export async function ajax<RESPONSE_TYPE = string>(
   url: string,
   /** These options are passed directly to fetch() */
@@ -107,10 +114,14 @@ export async function ajax<RESPONSE_TYPE = string>(
   /**
    * When running in a test environment, mock the calls rather than make
    * actual requests
-   */
+  */
   // REFACTOR: replace this with a mock
   if (process.env.NODE_ENV === 'test') {
-    const { ajaxMock } = await import('../../tests/ajax');
+    if (ajaxMockModulePromise === undefined)
+      throw new Error('Ajax mock module failed to load in test environment');
+    const { ajaxMock } = await ajaxMockModulePromise;
+    if (typeof ajaxMock !== 'function')
+      throw new Error('Expected ajaxMock to be a function in test environment');
     return ajaxMock(url, {
       headers: { Accept: accept, ...headers },
       method,

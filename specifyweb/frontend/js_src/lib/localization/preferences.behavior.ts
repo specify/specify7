@@ -1003,6 +1003,44 @@ export const preferencesBehaviorDictionary = {
     'uk-ua': 'Налаштування',
     'pt-br': 'Preferências de coleção',
   },
+  auditing: {
+    'en-us': 'Auditing',
+  },
+  formatting: {
+    'en-us': 'Date Format',
+  },
+  enableAuditLog: {
+    'en-us': 'Enable Audit Log',
+  },
+  enableAuditLogDescription: {
+    'en-us':
+      'Globally enables or disables the audit log for all collections.',
+  },
+  logFieldLevelChanges: {
+    'en-us': 'Log field-level changes',
+  },
+  logFieldLevelChangesDescription: {
+    'en-us':
+      'When auditing is enabled, record changes to individual field values in addition to record creation and deletion.',
+  },
+  fullDateFormat: {
+    'en-us': 'Full date format',
+  },
+  fullDateFormatDescription: {
+    'en-us': 'This determines the date format used for full dates in the WorkBench, queries, and data exports.',
+  },
+  monthYearDateFormat: {
+    'en-us': 'Month/year date format',
+  },
+  monthYearDateFormatDescription: {
+    'en-us': 'Choose how partial dates that only include a month and year should be displayed.',
+  },
+  attachmentThumbnailSize: {
+    'en-us': 'Attachment thumbnail size (px)',
+  },
+  attachmentThumbnailSizeDescription: {
+    'en-us': 'Set the pixel dimensions used when generating attachment preview thumbnails.',
+  },
   rememberDialogSizes: {
     'en-us': 'Remember dialog window sizes',
     'ru-ru': 'Запомните размеры диалоговых окон',

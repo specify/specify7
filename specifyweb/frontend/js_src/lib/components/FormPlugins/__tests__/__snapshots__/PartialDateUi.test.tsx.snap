@@ -58,7 +58,7 @@ exports[`PartialDateUi renders without errors 2`] = `
     >
       <input
         class="not-touched w-full"
-        placeholder="MM/YYYY"
+        placeholder="YYYY-MM"
         type="month"
         value=""
       />

@@ -1,3 +1,4 @@
+import { within } from '@testing-library/react';
 import React from 'react';
 
 import { clearIdStore } from '../../../hooks/useId';
@@ -24,7 +25,7 @@ function Component(props: AppResourceTabProps) {
 
 describe('AppResourcesTab', () => {
   test('simple render', () => {
-    const { asFragment } = mount(
+    const { getByRole } = mount(
       <AppResourcesTab
         appResource={deserializeResource(testAppResources.appResources[0])}
         data="TestData"
@@ -40,7 +41,9 @@ describe('AppResourcesTab', () => {
       />
     );
 
-    expect(asFragment()).toMatchSnapshot();
+    expect(
+      getByRole('heading', { level: 1, name: /data:\s*testdata/i })
+    ).toBeInTheDocument();
   });
 
   test('dialog render', () => {
@@ -63,6 +66,11 @@ describe('AppResourcesTab', () => {
     );
 
     const dialog = getByRole('dialog');
-    expect(dialog).toMatchSnapshot();
+    expect(
+      within(dialog).getByRole('heading', {
+        level: 1,
+        name: /data:\s*testdata/i,
+      })
+    ).toBeInTheDocument();
   });
 });
