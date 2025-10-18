@@ -416,6 +416,7 @@ export async function scanUsages(
             ),
             'Value:\n',
             instances.at(-1)?.originalValue ?? valueString,
+            '\n',
           ].join('')
         );
       })
