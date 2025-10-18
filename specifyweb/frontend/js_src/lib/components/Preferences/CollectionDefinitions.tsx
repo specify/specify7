@@ -260,8 +260,6 @@ export const collectionPreferenceDefinitions = {
     },
   },
 
-  /* catalogNumberParentInheritance removed - folded into catalogNumberInheritance */
-
   uniqueCatalogNumberAccrossComponentAndCO: {
     title: queryText.uniqueCatalogNumberAcrossComponentAndCo(),
     subCategories: {
