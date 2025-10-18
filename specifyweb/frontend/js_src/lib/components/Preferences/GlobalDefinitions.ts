@@ -2,7 +2,6 @@ import { attachmentsText } from '../../localization/attachments';
 import { preferencesText } from '../../localization/preferences';
 import { localized } from '../../utils/types';
 import { definePref } from './types';
-import type { GenericPreferences } from './types';
 
 export const FULL_DATE_FORMAT_OPTIONS = [
   'yyyy-MM-dd',
