@@ -111,7 +111,7 @@ export const UserPreferencesEditor = createPreferencesEditor({
   Context: userPreferences.Context,
   resourceName: 'UserPreferences',
   fetchUrl: '/context/user_resource/',
-  developmentGlobal: '_editingUserPreferences',
+  developmentGlobal: 'editingUserPreferences',
   dependencyResolver: ({ onChange }) => [onChange],
 });
 
@@ -120,7 +120,7 @@ export const CollectionPreferencesEditor = createPreferencesEditor({
   Context: collectionPreferences.Context,
   resourceName: 'CollectionPreferences',
   fetchUrl: '/context/collection_resource/',
-  developmentGlobal: '_editingCollectionPreferences',
+  developmentGlobal: 'editingCollectionPreferences',
   prefType: 'collection',
   dependencyResolver: ({ data, onChange }) => [data, onChange],
 });
