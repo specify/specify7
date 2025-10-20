@@ -15,23 +15,32 @@ def apply_schema_defaults(discipline, background=False):
     if background:
         task_id = str(uuid4())
 
-        args = [discipline.id, discipline.name]
+        args = [discipline.id, discipline.type]
 
         task = apply_schema_defaults_task.apply_async(args, task_id=task_id)
         
         return task.id
     else:
-        _apply_schema_defaults(discipline.id, discipline.name)
+        _apply_schema_defaults(discipline.id, discipline.type)
 
 @app.task(bind=True)
-def apply_schema_defaults_task(self, discipline_id, discipline_name):
-    _apply_schema_defaults(discipline_id, discipline_name)
+def apply_schema_defaults_task(self, discipline_id, discipline_type):
+    _apply_schema_defaults(discipline_id, discipline_type)
 
-def _apply_schema_defaults(discipline_id, discipline_name):
+def _apply_schema_defaults(discipline_id, discipline_type):
+    # Get default schema localization
+    defaults = None
+    schema_localization_file = (Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'schema_localization_en.json')
+    if schema_localization_file.exists() and schema_localization_file.is_file():
+        try:
+            with schema_localization_file.open('r', encoding='utf-8') as fh:
+                defaults = json.load(fh)
+        except Exception as e:
+            logger.exception(f'Failed to load schema localization frile from {schema_localization_file}: {e}')
+            defaults = None
+
     # Read schema overrides file for the discipline, if it exists
-    overrides = None
-    schema_overrides_file = (Path(__file__).parent.parent / 'config' / discipline_name / 'schema_overrides.json')
-    logger.debug(schema_overrides_file)
+    schema_overrides_file = (Path(__file__).parent.parent.parent.parent / 'config' / discipline_type / 'schema_overrides.json')
     if schema_overrides_file.exists() and schema_overrides_file.is_file():
         try:
             with schema_overrides_file.open('r', encoding='utf-8') as fh:
@@ -45,13 +54,14 @@ def _apply_schema_defaults(discipline_id, discipline_name):
         logger.debug(f'Applying schema defaults for {model_name}. Using overrides: {overrides is not None}.')
     
         # Table information
-        table_name = get_table_override(overrides, model_name, 'name') if not None else model_name
-        table_description = get_table_override(overrides, model_name, 'desc')
+        table_name = get_table_override(defaults, model_name, 'name') if not None else model_name
+        table_description = get_table_override(defaults, model_name, 'desc')
 
         update_table_schema_config_with_defaults(
             table_name=model_name,
             description=table_description,
             discipline_id=discipline_id,
+            defaults=defaults,
             overrides=overrides,
         )
 

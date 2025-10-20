@@ -191,7 +191,7 @@ export const resources: RA<ResourceConfig> = [
   },
   {
     resourceName: 'globalGeographyTreeDef',
-    label: setupToolText.geographyTree(),
+    label: setupToolText.globalGeographyTree(),
     endpoint: '/setup_tool/global_geographytreedef/create/',
     condition: {
       institution: {
