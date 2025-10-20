@@ -153,7 +153,7 @@ export const makeXmlEditorShellSlot = <
     readonly title: string | undefined;
     readonly isDefault: boolean;
     readonly table: SpecifyTable | undefined;
-  }
+  },
 >(
   children: (getSet: GetSet<ITEM>) => JSX.Element,
   index: string | undefined,
