@@ -17,6 +17,7 @@ import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type { SpLocaleContainerItem } from '../DataModel/types';
 import { ResourceLink } from '../Molecules/ResourceLink';
@@ -73,6 +74,13 @@ export function SchemaConfigFormat({
       />
       <FormatterLine
         {...lineProps}
+        extraComponents={
+          <FieldFormatterEditing
+            schemaData={schemaData}
+            table={field.table}
+            value={item.format}
+          />
+        }
         label={schemaText.formatted()}
         name="formatted"
         value={item.format}
@@ -306,6 +314,9 @@ function PickListEditing({
   );
 }
 
+const overlayPrefix = '/specify/overlay/resources/app-resource/';
+const fullScreenPrefix = '/specify/resources/app-resource/';
+
 function WebLinkEditing({
   value,
   schemaData,
@@ -316,34 +327,76 @@ function WebLinkEditing({
   const index = schemaData.webLinks.find(({ name }) => name === value)?.index;
   const resourceId = appResourceIds.WebLinks;
   const navigate = useNavigate();
+
   return typeof resourceId === 'number' ? (
     <>
       {typeof index === 'number' && (
         <Link.Icon
           className={className.dataEntryEdit}
-          href={`/specify/resources/app-resource/${resourceId}/web-link/${index}/`}
+          href={`${fullScreenPrefix}${resourceId}/web-link/${index}`}
           icon="pencil"
           title={commonText.edit()}
           onClick={(event): void => {
             event.preventDefault();
-            navigate(
-              `/specify/overlay/resources/app-resource/${resourceId}/web-link/${index}/`
-            );
+            navigate(`${overlayPrefix}${resourceId}/web-link/${index}`);
           }}
         />
       )}
       <Link.Icon
         className={className.dataEntryAdd}
-        href={`/specify/resources/app-resource/${resourceId}/web-link/`}
+        href={`${fullScreenPrefix}${resourceId}/web-link`}
         icon="plus"
         title={commonText.add()}
         onClick={(event): void => {
           event.preventDefault();
-          navigate(
-            `/specify/overlay/resources/app-resource/${resourceId}/web-link/`
-          );
+          navigate(`${overlayPrefix}${resourceId}/web-link`);
         }}
       />
     </>
   ) : null;
+}
+
+function FieldFormatterEditing({
+  table,
+  value,
+  schemaData,
+}: {
+  readonly table: SpecifyTable;
+  readonly value: string | null;
+  readonly schemaData: SchemaData;
+}): JSX.Element | null {
+  const index = schemaData.uiFormatters.find(
+    ({ name }) => name === value
+  )?.index;
+  const resourceId = appResourceIds.UIFormatters;
+  const navigate = useNavigate();
+  if (resourceId === undefined) return null;
+
+  const commonUrl = `${resourceId}/field-formatters/${table.name}`;
+  return (
+    <>
+      {typeof index === 'number' && (
+        <Link.Icon
+          className={className.dataEntryEdit}
+          href={`${fullScreenPrefix}${commonUrl}/${index}`}
+          icon="pencil"
+          title={commonText.edit()}
+          onClick={(event): void => {
+            event.preventDefault();
+            navigate(`${overlayPrefix}${commonUrl}/${index}`);
+          }}
+        />
+      )}
+      <Link.Icon
+        className={className.dataEntryAdd}
+        href={`${fullScreenPrefix}${commonUrl}`}
+        icon="plus"
+        title={commonText.add()}
+        onClick={(event): void => {
+          event.preventDefault();
+          navigate(`${overlayPrefix}${commonUrl}`);
+        }}
+      />
+    </>
+  );
 }

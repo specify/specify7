@@ -37,15 +37,15 @@ export const backupText = createDictionary({
     'uk-ua': 'Знайдено попередню резервну копію:',
   },
   previousNone: {
-    'en-us': 'No previous backup was found. Start a new one?',
-    'de-ch': 'Es wurde kein vorheriges Backup gefunden. Ein neues starten?',
-    'es-es':
-      'No se encontró ninguna copia de seguridad anterior. ¿Quieres iniciar una nueva?',
-    'fr-fr':
-      "Aucune sauvegarde précédente n'a été trouvée. Voulez-vous en créer une nouvelle ?",
-    'pt-br': 'Nenhum backup anterior foi encontrado. Iniciar um novo?',
-    'ru-ru': 'Предыдущая резервная копия не найдена. Создать новую?',
-    'uk-ua': 'Попередньої резервної копії не знайдено. Розпочати нову?',
+    "en-us": "No previous backup was found. Start a new one?",
+    "de-ch": "Es wurde kein vorheriges Backup gefunden. Ein neues starten?",
+    "es-es":
+      "No se encontró ninguna copia de seguridad anterior. ¿Quieres iniciar una nueva?",
+    "fr-fr":
+      "Aucune sauvegarde précédente n'a été trouvée. En créer une nouvelle ?",
+    "pt-br": "Nenhum backup anterior foi encontrado. Iniciar um novo?",
+    "ru-ru": "Предыдущая резервная копия не найдена. Создать новую?",
+    "uk-ua": "Попередньої резервної копії не знайдено. Розпочати нову?",
   },
   previousSizeMB: {
     'en-us': '({size:string} MB)',
@@ -57,13 +57,13 @@ export const backupText = createDictionary({
     'uk-ua': '({size:string} МБ)',
   },
   lastBackupOn: {
-    'en-us': 'This backup was created on {date:string}',
-    'de-ch': 'Dieses Backup wurde erstellt auf {date:string}',
-    'es-es': 'Esta copia de seguridad se creó el {date:string}',
-    'fr-fr': 'Cette sauvegarde a été créée le {date:string}',
-    'pt-br': 'Este backup foi criado em {date:string}',
-    'ru-ru': 'Эта резервная копия была создана {date:string}',
-    'uk-ua': 'Цю резервну копію було створено {date:string}',
+    "en-us": "This backup was created on {date:string}",
+    "de-ch": "Dieses Backup wurde auf {date:string} erstellt.",
+    "es-es": "Esta copia de seguridad se creó el {date:string}",
+    "fr-fr": "Cette sauvegarde a été créée le {date:string}",
+    "pt-br": "Este backup foi criado em {date:string}",
+    "ru-ru": "Эта резервная копия была создана {date:string}",
+    "uk-ua": "Цю резервну копію було створено {date:string}",
   },
   checkPreviousFailed: {
     'en-us': 'Failed to check previous backup.',

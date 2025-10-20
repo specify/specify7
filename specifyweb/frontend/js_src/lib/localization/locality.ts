@@ -453,19 +453,19 @@ export const localityText = createDictionary({
       The file name which is used when any Generic non-parsing errors are
       exported. The .txt file extension is appended to the end of this string
     `,
-    'en-us': 'Locality Update {taskId: string} Crash Report - {date: string}',
-    'de-ch':
-      'Lokalitätsaktualisierung {taskId: string} Absturzbericht – {date: string}',
-    'es-es':
-      'Informe de fallos de actualización de localidad {taskId: string} - {date: string}',
-    'fr-fr':
-      "Mise à jour de la localité {taskId: string} Rapport d'incident - {date: string}",
-    'ru-ru':
-      'Обновление местоположения {taskId: string} Отчет о сбое - {date: string}',
-    'uk-ua':
-      'Оновлення місцевості {taskId: string} Звіт про збій - {date: string}',
-    'pt-br':
-      'Relatório de falha de atualização de localidade {taskId: string} - {date: string}',
+    "en-us": "Locality Update {taskId: string} Crash Report - {date: string}",
+    "de-ch":
+      "Lokalitätsaktualisierung {taskId: string} Absturzbericht – {date: string}",
+    "es-es":
+      "Informe de fallos de actualización de localidad {taskId: string} - {date: string}",
+    "fr-fr":
+      "Mise à jour de la localité {taskId : chaîne} Rapport d'incident - {date : chaîne}",
+    "ru-ru":
+      "Обновление местоположения {taskId: string} Отчет о сбое - {date: string}",
+    "uk-ua":
+      "Оновлення місцевості {taskId: string} Звіт про збій - {date: string}",
+    "pt-br":
+      "Relatório de falha de atualização de localidade {taskId: string} - {date: string}",
   },
   guidHeaderNotProvided: {
     'en-us': "The Dataset must contain a 'guid' header",
@@ -486,20 +486,20 @@ export const localityText = createDictionary({
     'pt-br': "Nenhuma localidade com guid: '{guid:string}'",
   },
   multipleLocalitiesWithGuid: {
-    'en-us':
-      'More than one Locality found with guid: {guid:string}. Locality IDs: {localityIds: string}',
-    'de-ch':
-      'Mehr als ein Ort mit GUID gefunden: {guid:string}. Orts-IDs: {localityIds: string}',
-    'es-es':
-      'Se encontró más de una localidad con guid: {guid:string}. ID de localidad: {localityIds: string}',
-    'fr-fr':
-      'Plusieurs localités trouvées avec le GUID : {guid:string}. ID de localité : {localityIds: string}',
-    'ru-ru':
-      'Найдено более одного населённого пункта с guid: {guid:string}. Идентификаторы населённых пунктов: {localityIds: string}',
-    'uk-ua':
-      'За допомогою guid: {guid:string} знайдено більше одного населеного пункту. Ідентифікатори населених пунктів: {localityIds: рядок}',
-    'pt-br':
-      'Mais de uma localidade encontrada com guid: {guid:string}. IDs de localidade: {localityIds: string}',
+    "en-us":
+      "More than one Locality found with guid: {guid:string}. Locality IDs: {localityIds: string}",
+    "de-ch":
+      "Mehr als ein Ort mit GUID gefunden: {guid:string}. Orts-IDs: {localityIds: string}",
+    "es-es":
+      "Se encontró más de una localidad con guid: {guid:string}. ID de localidad: {localityIds: string}.",
+    "fr-fr":
+      "Plusieurs localités trouvées avec le GUID : {guid:string}. ID de localité : {localityIds: string}",
+    "ru-ru":
+      "Найдено более одного населённого пункта с guid: {guid:string}. Идентификаторы населённых пунктов: {localityIds: string}",
+    "uk-ua":
+      "За допомогою guid: {guid:string} знайдено більше одного населеного пункту. Ідентифікатори населених пунктів: {localityIds: рядок}",
+    "pt-br":
+      "Mais de uma localidade encontrada com guid: {guid:string}. IDs de localidade: {localityIds: string}",
   },
   localityUpdateEffectCounts: {
     'en-us':
@@ -518,20 +518,20 @@ export const localityText = createDictionary({
       'O seguinte número de registros {localityTabelLabel: string} será afetado pela atualização e os registros {geoCoordDetailTableLabel: string} serão criados:',
   },
   localityUploadedDescription: {
-    'en-us':
-      'The following number of {localityTabelLabel: string} records were updated and {geoCoordDetailTableLabel: string} records were created:',
-    'de-ch':
-      'Die folgende Anzahl von {localityTabelLabel: string}-Datensätzen wurde aktualisiert und {geoCoordDetailTableLabel: string}-Datensätzen erstellt:',
-    'es-es':
-      'Se actualizó la siguiente cantidad de registros {localityTabelLabel: string} y se crearon registros {geoCoordDetailTableLabel: string}:',
-    'fr-fr':
-      "Le nombre suivant d'enregistrements {localityTabelLabel: string} ont été mis à jour et d'enregistrements {geoCoordDetailTableLabel: string} ont été créés :",
-    'ru-ru':
-      'Следующее количество записей {localityTabelLabel: string} было обновлено и создано записей {geoCoordDetailTableLabel: string}:',
-    'uk-ua':
-      'Оновлено таку кількість записів {localityTabelLabel: string} і створено записи {geoCoordDetailTableLabel: string}:',
-    'pt-br':
-      'O seguinte número de registros {localityTabelLabel: string} foi atualizado e os registros {geoCoordDetailTableLabel: string} foram criados:',
+    "en-us":
+      "The following number of {localityTabelLabel: string} records were updated and {geoCoordDetailTableLabel: string} records were created:",
+    "de-ch":
+      "Die folgende Anzahl von {localityTabelLabel: string}-Datensätzen wurde aktualisiert und {geoCoordDetailTableLabel: string}-Datensätzen erstellt:",
+    "es-es":
+      "Se actualizó la siguiente cantidad de registros {localityTabelLabel: string} y se crearon registros {geoCoordDetailTableLabel: string}:",
+    "fr-fr":
+      "Le nombre suivant d'enregistrements {localityTabelLabel: string} ont été mis à jour et les enregistrements {geoCoordDetailTableLabel: string} ont été créés :",
+    "ru-ru":
+      "Следующее количество записей {localityTabelLabel: string} было обновлено и создано записей {geoCoordDetailTableLabel: string}:",
+    "uk-ua":
+      "Оновлено таку кількість записів {localityTabelLabel: string} і створено записи {geoCoordDetailTableLabel: string}:",
+    "pt-br":
+      "O seguinte número de registros {localityTabelLabel: string} foi atualizado e {geoCoordDetailTableLabel: string} registros foram criados:",
   },
   localityUpdateStarted: {
     'en-us': 'The Locality Update process has started',
@@ -552,13 +552,13 @@ export const localityText = createDictionary({
     'pt-br': 'Resultados da atualização de localidade',
   },
   localityUpdateFailureResults: {
-    'en-us': 'Locality Update Failure Results',
-    'de-ch': 'Ergebnisse der fehlgeschlagenen Lokalitätsaktualisierung',
-    'es-es': 'Resultados de errores de actualización de localidad',
-    'fr-fr': "Résultats de l'échec de la mise à jour de la localité",
-    'ru-ru': 'Результаты сбоя обновления местоположения',
-    'uk-ua': 'Результати помилки оновлення місцевості',
-    'pt-br': 'Resultados de falha na atualização de localidade',
+    "en-us": "Locality Update Failure Results",
+    "de-ch": "Ergebnisse der fehlgeschlagenen Lokalitätsaktualisierung",
+    "es-es": "Resultados de fallas en la actualización de localidad",
+    "fr-fr": "Résultats de l'échec de la mise à jour de la localité",
+    "ru-ru": "Результаты сбоя обновления местоположения",
+    "uk-ua": "Результати помилки оновлення місцевості",
+    "pt-br": "Resultados de falha na atualização de localidade",
   },
   taskId: {
     'en-us': 'Task ID',

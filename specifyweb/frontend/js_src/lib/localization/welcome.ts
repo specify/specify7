@@ -46,36 +46,36 @@ export const welcomeText = createDictionary({
     'pt-br': 'Telhas de táxons',
   },
   taxonTilesDescription: {
-    'en-us':
-      'Showing Taxa with {count:number|formatted} or more {collectionObjectTable:string} records',
-    'ru-ru':
-      'Показаны таксоны с {count:number|formatted} или более {collectionObjectTable:string} записями',
-    'es-es':
-      'Mostrando taxones con {count:number|formatted} o más {collectionObjectTable:string} registros',
-    'fr-fr':
-      'Affichage des taxons avec des enregistrements {count:number|formatted} ou plus {collectionObjectTable:string}',
-    'uk-ua':
-      'Показано таксони з {count:number|formatted} або більше {collectionObjectTable:string} записів',
-    'de-ch':
-      'Zeigt Taxa mit {count:number|formatted} oder mehr {collectionObjectTable:string} Datensätzen',
-    'pt-br':
-      'Exibindo Taxa com {count:number|formatted} ou mais {collectionObjectTable:string} registros',
+    "en-us":
+      "Showing Taxa with {count:number|formatted} or more {collectionObjectTable:string} records",
+    "ru-ru":
+      "Показаны таксоны с {count:number|formatted} или более {collectionObjectTable:string} записями",
+    "es-es":
+      "Mostrando taxones con {count:number|formatted} o más {collectionObjectTable:string} registros",
+    "fr-fr":
+      "Affichage des taxons avec des enregistrements {count:number|formatted} ou plus {collectionObjectTable:string}",
+    "uk-ua":
+      "Показано таксони з {count:number|formatted} або більше {collectionObjectTable:string} записів",
+    "de-ch":
+      "Zeigt Taxa mit {count:number|formatted} oder mehr {collectionObjectTable:string} Datensätzen",
+    "pt-br":
+      "Exibindo táxons com {count:number|formatted} ou mais {collectionObjectTable:string} registros",
   },
   fullAddress: {
-    'en-us':
-      'Specify Collections Consortium <br />\n\nBiodiversity Institute <br />\n\nUniversity of Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 USA',
-    'ru-ru':
-      'Specify Collections Consortium <br />\n\nBiodiversity Institute <br />\n\nUniversity of Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 USA',
-    'es-es':
-      'Specify Collections Consortium <br />\n\nBiodiversity Institute <br />\n\nUniversity of Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 USA',
-    'fr-fr':
-      'Préciser le consortium de collections <br />\n\nInstitut de la Biodiversité <br />\n\nUniversité du Kansas <br />\n\n1345, boulevard Jayhawk. <br />\n\nLawrence, KS 66045 États-Unis',
-    'uk-ua':
-      'Укажіть консорціум колекцій <br />\n\nІнститут біорізноманіття <br />\n\nУніверситет Канзасу <br />\n\n1345 Jayhawk Blvd. <br />\n\nЛоуренс, KS 66045 США',
-    'de-ch':
-      'Specify Collections Consortium <br />\n\nBiodiversity Institute <br />\n\nUniversity of Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 USA',
-    'pt-br':
-      'Consórcio de Coleções Específicas <br />\n\nInstituto de Biodiversidade <br />\n\nUniversidade do Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 EUA',
+    "en-us":
+      "Specify Collections Consortium <br />\n\nBiodiversity Institute <br />\n\nUniversity of Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 USA",
+    "ru-ru":
+      "Specify Collections Consortium <br />\n\nBiodiversity Institute <br />\n\nUniversity of Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 USA",
+    "es-es":
+      "Specify Collections Consortium <br />\n\nBiodiversity Institute <br />\n\nUniversity of Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 USA",
+    "fr-fr":
+      "Préciser le consortium de collections <br />\n\nInstitut de la Biodiversité <br />\n\nUniversité du Kansas <br />\n\n1345, boulevard Jayhawk. <br />\n\nLawrence, KS 66045 États-Unis",
+    "uk-ua":
+      "Укажіть консорціум колекцій <br />\n\nІнститут біорізноманіття <br />\n\nУніверситет Канзасу <br />\n\n1345 Jayhawk Blvd. <br />\n\nЛоуренс, KS 66045 США",
+    "de-ch":
+      "Specify Collections Consortium <br />\n\nBiodiversity Institute <br />\n\nUniversity of Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 USA",
+    "pt-br":
+      "Consórcio de Coleções Especificadas <br />\n\nInstituto de Biodiversidade <br />\n\nUniversidade do Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 EUA",
   },
   disclosure: {
     'en-us':
@@ -94,20 +94,20 @@ export const welcomeText = createDictionary({
       "O software Specify é um produto do Consórcio de Coleções Specify, administrado e financiado por suas instituições associadas. Os membros fundadores do consórcio incluem: Organização de Pesquisa Científica e Industrial da Commonwealth (CSIRO), Consejo Superior de Investigaciones Científicas, Consórcio de Museus da Dinamarca, Muséum d'Histoire Naturelle Geneva, Universidade da Flórida, Universidade do Kansas e Universidade de Michigan. O consórcio opera sob o status tributário americano 501(c)3, sem fins lucrativos, do Centro de Pesquisa da Universidade do Kansas. O Specify foi apoiado de 1996 a 2018 por doações da Fundação Nacional de Ciências dos EUA.",
   },
   licence: {
-    'en-us':
-      'Specify 7, Copyright 2025, University of Kansas Center for Research. Specify comes with ABSOLUTELY NO WARRANTY. This is free, open-source software licensed under GNU General Public License v2.',
-    'ru-ru':
-      'Specify 7, Авторские права 2025, University of Kansas для исследования. Specify поставляется с СОВЕРШЕННО ОТСУТСТВИЕМ ГАРАНТИИ. Это бесплатное программное обеспечение с открытым исходным кодом под лицензией GNU General Public License v2.',
-    'es-es':
-      'Specify 7 Copyright © 2025 University of Kansas Center for Research. Specify viene SIN NINGUNA GARANTÍA EN ABSOLUTO. Este es un programa libre, bajo licencia GNU General Public License 2 (GPL2).',
-    'fr-fr':
-      "Specify 7, Copyright 2025, Centre de recherche de l'Université du Kansas. Specify est fourni sans AUCUNE GARANTIE. Il s'agit d'un logiciel libre et open source, sous licence GNU General Public License v2.",
-    'uk-ua':
-      'Укажіть 7, авторське право 2025, Дослідницький центр Канзаського університету. Specify поставляється без АБСОЛЮТНОЇ ГАРАНТІЇ. Це безкоштовне програмне забезпечення з відкритим кодом, ліцензоване згідно з GNU General Public License v2.',
-    'de-ch':
-      'Specify 7, Copyright 2025, University of Kansas Center for Research. Specify kommt mit ABSOLUT KEINER GARANTIE. Dies ist freie, quelloffene Software, lizenziert unter GNU General Public License v2.',
-    'pt-br':
-      'Especifique 7, Copyright 2025, Centro de Pesquisa da Universidade do Kansas. Especifique NÃO OFERECE NENHUMA GARANTIA. Este é um software gratuito e de código aberto, licenciado sob a Licença Pública Geral GNU v2.',
+    "en-us":
+      "Specify 7, Copyright 2025, University of Kansas Center for Research. Specify comes with ABSOLUTELY NO WARRANTY. This is free, open-source software licensed under GNU General Public License v2.",
+    "ru-ru":
+      "Specify 7, Авторские права 2025, University of Kansas для исследования. Specify поставляется с СОВЕРШЕННО ОТСУТСТВИЕМ ГАРАНТИИ. Это бесплатное программное обеспечение с открытым исходным кодом под лицензией GNU General Public License v2.",
+    "es-es":
+      "Specify 7 Copyright © 2025 University of Kansas Center for Research. Specify viene SIN NINGUNA GARANTÍA EN ABSOLUTO. Este es un programa libre, bajo licencia GNU General Public License 2 (GPL2).",
+    "fr-fr":
+      "Specify 7, Copyright 2025, Centre de recherche de l'Université du Kansas. Specify est fourni sans AUCUNE GARANTIE. Il s'agit d'un logiciel libre et open source sous licence GNU General Public License v2.",
+    "uk-ua":
+      "Укажіть 7, авторське право 2025, Дослідницький центр Канзаського університету. Specify поставляється без АБСОЛЮТНОЇ ГАРАНТІЇ. Це безкоштовне програмне забезпечення з відкритим кодом, ліцензоване згідно з GNU General Public License v2.",
+    "de-ch":
+      "Specify 7, Copyright 2025, University of Kansas Center for Research. Specify kommt mit ABSOLUT KEINER GARANTIE. Dies ist freie, quelloffene Software, lizenziert unter GNU General Public License v2.",
+    "pt-br":
+      "Especifique 7, Copyright 2025, Centro de Pesquisa da Universidade do Kansas. Especifique NÃO OFERECE NENHUMA GARANTIA. Este é um software gratuito e de código aberto, licenciado sob a GNU General Public License v2.",
   },
   systemInformation: {
     'en-us': 'System Information',
@@ -164,13 +164,13 @@ export const welcomeText = createDictionary({
     'pt-br': 'Versão do banco de dados:',
   },
   schemaVersion: {
-    'en-us': 'DB Schema Version',
-    'ru-ru': 'Версия схемы базы данных',
-    'es-es': 'Versión del Esquema de base de datos',
-    'fr-fr': 'Version du schéma de la base de données',
-    'uk-ua': 'Версія схеми БД',
-    'de-ch': 'Datenbankschema-Version',
-    'pt-br': 'Versão do esquema do banco de dados',
+    "en-us": "DB Schema Version",
+    "ru-ru": "Версия схемы базы данных",
+    "es-es": "Versión del Esquema de base de datos",
+    "fr-fr": "Version du schéma de base de données",
+    "uk-ua": "Версія схеми БД",
+    "de-ch": "Datenbankschema-Version",
+    "pt-br": "Versão do esquema do banco de dados",
   },
   databaseName: {
     'en-us': 'Database Name:',

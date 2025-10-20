@@ -90,13 +90,13 @@ export const wbPlanText = createDictionary({
     'pt-br': 'Comportamento da partida:',
   },
   columnMapping: {
-    'en-us': 'Column Mapping',
-    'ru-ru': 'Сопоставление столбцов',
-    'es-es': 'Asignación/Mapeo de columnas',
-    'fr-fr': 'Mappage des colonnes',
-    'uk-ua': 'Відображення стовпців',
-    'de-ch': 'Spaltenzuordnung',
-    'pt-br': 'Mapeamento de colunas',
+    "en-us": "Column Mapping",
+    "ru-ru": "Сопоставление столбцов",
+    "es-es": "Asignación/Mapeo de columnas",
+    "fr-fr": "Mappage de colonnes",
+    "uk-ua": "Відображення стовпців",
+    "de-ch": "Spaltenzuordnung",
+    "pt-br": "Mapeamento de colunas",
   },
   suggestedMappings: {
     'en-us': 'Suggested Mappings:',
@@ -174,8 +174,8 @@ export const wbPlanText = createDictionary({
       'Якщо встановлено значення «Ignore when Blank», порожні значення в цьому стовпці не розглядатимуться для цілей зіставлення. Порожні значення ігноруються під час збігу, навіть якщо вказано значення за умовчанням',
     'de-ch':
       'Bei der Einstellung "Bei leer ignorieren" werden leere Werte in dieser Spalte beim Abgleich nicht berücksichtigt. Leere Werte werden beim Abgleich ignoriert, auch wenn ein Standardwert angegeben ist',
-    'pt-br':
-      'Quando definido como "Ignorar quando em branco", valores em branco nesta coluna não serão considerados para fins de correspondência. Valores em branco são ignorados durante a correspondência, mesmo que um valor padrão seja fornecido.',
+    "pt-br":
+      'Quando definido como "Ignorar quando em branco", os valores em branco nesta coluna não serão considerados para fins de correspondência. Os valores em branco serão ignorados durante a correspondência, mesmo que um valor padrão seja fornecido.',
   },
   ignoreAlways: {
     'en-us': 'Always Ignore',
@@ -398,33 +398,33 @@ export const wbPlanText = createDictionary({
     'uk-ua': 'Виберіть базову таблицю з вкладеннями',
   },
   dataSetUploaded: {
-    'en-us': 'Data Set uploaded. This Upload Plan cannot be changed',
-    'ru-ru': 'Набор данных загружен. Этот план загрузки нельзя изменить',
-    'es-es':
-      'Conjunto de Datos cargado. El Plan de Carga ya no puede modificarse',
-    'fr-fr':
-      'Ensemble de données téléchargé. Ce plan de téléchargement ne peut pas être modifié.',
-    'uk-ua': 'Набір даних завантажено. Цей план завантаження не можна змінити',
-    'de-ch':
-      'Datensatz hochgeladen. Dieser Upload-Plan kann nicht geändert werden',
-    'pt-br':
-      'Conjunto de dados carregado. Este plano de upload não pode ser alterado.',
+    "en-us": "Data Set uploaded. This Upload Plan cannot be changed",
+    "ru-ru": "Набор данных загружен. Этот план загрузки нельзя изменить",
+    "es-es":
+      "Conjunto de Datos cargado. El Plan de Carga ya no puede modificarse",
+    "fr-fr":
+      "Ensemble de données téléchargé. Ce plan de téléchargement ne peut pas être modifié.",
+    "uk-ua": "Набір даних завантажено. Цей план завантаження не можна змінити",
+    "de-ch":
+      "Datensatz hochgeladen. Dieser Upload-Plan kann nicht geändert werden",
+    "pt-br":
+      "Conjunto de dados carregado. Este plano de upload não pode ser alterado",
   },
   dataSetUploadedDescription: {
-    'en-us':
-      'You are viewing the mappings for an uploaded dataset.\n\nTo edit the mappings, rollback the uploaded data or create a new dataset',
-    'ru-ru':
-      'Вы просматриваете сопоставления для загруженного набора данных.\n\nЧтобы изменить сопоставления, откатите загруженные данные или создайте новый набор данных',
-    'es-es':
-      'Está viendo las asignaciones de campos/mapeo para un conjunto de datos ya cargado.\n\nPara editar los mapeos, d´s marcha-atrás para los datos cargados o cree un nuevo conjunto de datos',
-    'fr-fr':
-      "Vous consultez les mappages d'un jeu de données téléchargé.\n\nPour modifier les mappages, restaurez les données téléchargées ou créez un nouveau jeu de données.",
-    'uk-ua':
-      'Ви переглядаєте зіставлення для завантаженого набору даних.\n\nЩоб редагувати зіставлення, відкотіть завантажені дані або створіть новий набір даних',
-    'de-ch':
-      'Sie betrachten gerade die Datenzuordnungen für einen hochgeladenen Datensatz.\n\nUm die Zuordnungen zu bearbeiten, die hochgeladenen Daten zurückzusetzen oder einen neuen Datensatz erstellen',
-    'pt-br':
-      'Você está visualizando os mapeamentos de um conjunto de dados carregado.\n\nPara editar os mapeamentos, reverta os dados carregados ou crie um novo conjunto de dados.',
+    "en-us":
+      "You are viewing the mappings for an uploaded dataset.\n\nTo edit the mappings, rollback the uploaded data or create a new dataset",
+    "ru-ru":
+      "Вы просматриваете сопоставления для загруженного набора данных.\n\nЧтобы изменить сопоставления, откатите загруженные данные или создайте новый набор данных",
+    "es-es":
+      "Está viendo las asignaciones de campos/mapeo para un conjunto de datos ya cargado.\n\nPara editar los mapeos, d´s marcha-atrás para los datos cargados o cree un nuevo conjunto de datos",
+    "fr-fr":
+      "Vous consultez les correspondances d'un jeu de données téléchargé.\n\nPour modifier les correspondances, restaurez les données téléchargées ou créez un nouveau jeu de données.",
+    "uk-ua":
+      "Ви переглядаєте зіставлення для завантаженого набору даних.\n\nЩоб редагувати зіставлення, відкотіть завантажені дані або створіть новий набір даних",
+    "de-ch":
+      "Sie betrachten gerade die Datenzuordnungen für einen hochgeladenen Datensatz.\n\nUm die Zuordnungen zu bearbeiten, die hochgeladenen Daten zurückzusetzen oder einen neuen Datensatz erstellen",
+    "pt-br":
+      "Você está visualizando os mapeamentos de um conjunto de dados carregado.\n\nPara editar os mapeamentos, reverta os dados carregados ou crie um novo conjunto de dados.",
   },
   baseTable: {
     'en-us': 'Base Table',
@@ -436,16 +436,16 @@ export const wbPlanText = createDictionary({
     'pt-br': 'Mesa Base',
   },
   goToBaseTable: {
-    'en-us': 'Change the Base Table for Mapping Data Set Columns?',
-    'ru-ru':
-      'Изменить базовую таблицу для сопоставления столбцов набора данных?',
-    'es-es':
-      '¿Cambiar la tabla base para mapear columnas de conjuntos de datos?',
-    'fr-fr':
-      "Modifier la table de base pour mapper les colonnes de l'ensemble de données ?",
-    'uk-ua': 'Змінити базову таблицю для зіставлення стовпців набору даних?',
-    'de-ch': 'Die Basistabelle für die Zuordnung von Datensatzspalten ändern?',
-    'pt-br': 'Alterar a tabela base para mapear colunas do conjunto de dados?',
+    "en-us": "Change the Base Table for Mapping Data Set Columns?",
+    "ru-ru":
+      "Изменить базовую таблицу для сопоставления столбцов набора данных?",
+    "es-es":
+      "¿Cambiar la tabla base para mapear columnas de conjuntos de datos?",
+    "fr-fr":
+      "Modifier la table de base pour le mappage des colonnes de l’ensemble de données ?",
+    "uk-ua": "Змінити базову таблицю для зіставлення стовпців набору даних?",
+    "de-ch": "Die Basistabelle für die Zuordnung von Datensatzspalten ändern?",
+    "pt-br": "Alterar a tabela base para mapear colunas do conjunto de dados?",
   },
   goToBaseTableDescription: {
     'en-us':
@@ -456,12 +456,12 @@ export const wbPlanText = createDictionary({
       'Si elige una tabla base diferente para la carga de un conjunto de datos, esa tabla se convertirá en el nuevo punto de partida para las asignaciones de campo de columna a datos y borrará las asignaciones existentes. El AutoMapper intentará asignar columnas a los nuevos campos de la tabla base.',
     'fr-fr':
       "Choisir une autre table de base pour le téléchargement d'un ensemble de données fera de cette table le nouveau point de départ des mappages colonnes-champs de données et effacera les mappages existants. L'AutoMapper tentera de mapper les colonnes aux nouveaux champs de la table de base.",
-    'uk-ua':
-      'Вибір іншої базової таблиці для завантаження набору даних зробить цю таблицю новою відправною точкою для зіставлення стовпців і полів даних і видалить існуючі зіставлення. AutoMapper спробує зіставити стовпці з новими полями базової таблиці.',
-    'de-ch':
-      'Durch Auswahl einer anderen Basistabelle für einen Datensatz-Upload wird diese Tabelle zum neuen Ausgangspunkt für die Zuordnung von Spalten zu Datenfeldern und die bestehenden Zuordnungen werden gelöscht. Der AutoMapper wird versuchen, die Spalten den neuen Basistabellenfeldern zuzuordnen.',
-    'pt-br':
-      'Escolher uma Tabela Base diferente para o upload de um Conjunto de Dados tornará essa tabela o novo ponto de partida para mapeamentos de campos de coluna para dados e apagará os mapeamentos existentes. O Mapeador Automático tentará mapear colunas para os novos campos da Tabela Base.',
+    "uk-ua":
+      "Вибір іншої базової таблиці для завантаження набору даних зробить цю таблицю новою відправною точкою для зіставлення стовпців і полів даних і видалить існуючі зіставлення. AutoMapper спробує зіставити стовпці з новими полями базової таблиці.",
+    "de-ch":
+      "Durch Auswahl einer anderen Basistabelle für einen Datensatz-Upload wird diese Tabelle zum neuen Ausgangspunkt für die Zuordnung von Spalten zu Datenfeldern und die bestehenden Zuordnungen werden gelöscht. Der AutoMapper wird versuchen, die Spalten den neuen Basistabellenfeldern zuzuordnen.",
+    "pt-br":
+      "Escolher uma Tabela Base diferente para o upload de um Conjunto de Dados tornará essa tabela o novo ponto de partida para mapeamentos de campos de coluna para dados e apagará os mapeamentos existentes. O AutoMapper tentará mapear colunas para os novos campos da Tabela Base.",
   },
   clearMapping: {
     'en-us': 'Clear Mapping',
@@ -473,13 +473,13 @@ export const wbPlanText = createDictionary({
     'pt-br': 'Mapeamento claro',
   },
   reRunAutoMapper: {
-    'en-us': 'Rerun AutoMapper',
-    'ru-ru': 'Перезапустить AutoMapper',
-    'es-es': 'Volver a ejecutar AutoMapper',
-    'fr-fr': 'Réexécuter AutoMapper',
-    'uk-ua': 'Перезапустіть AutoMapper',
-    'de-ch': 'AutoMapper erneut ausführen',
-    'pt-br': 'Reexecutar AutoMapper',
+    "en-us": "Rerun AutoMapper",
+    "ru-ru": "Перезапустить AutoMapper",
+    "es-es": "Volver a ejecutar AutoMapper",
+    "fr-fr": "Réexécuter AutoMapper",
+    "uk-ua": "Перезапустіть AutoMapper",
+    "de-ch": "AutoMapper erneut ausführen",
+    "pt-br": "Reexecutar o AutoMapper",
   },
   autoMapper: {
     'en-us': 'AutoMapper',
@@ -570,13 +570,13 @@ export const wbPlanText = createDictionary({
       'Pressione o botão "Adicionar nova coluna" abaixo das linhas de mapeamento para adicionar novas colunas.',
   },
   reRunAutoMapperConfirmation: {
-    'en-us': 'Automap to start a new Upload Plan?',
-    'ru-ru': 'Автоматически сопоставить?',
-    'es-es': '¿Automap para iniciar un nuevo plan de carga?',
-    'de-ch': 'Automap, um einen neuen Upload-Plan zu starten?',
-    'fr-fr': 'Automap pour démarrer un nouveau plan de téléchargement ?',
-    'uk-ua': 'Автоматична карта, щоб почати новий план завантаження?',
-    'pt-br': 'Mapear automaticamente para iniciar um novo Plano de Upload?',
+    "en-us": "Automap to start a new Upload Plan?",
+    "ru-ru": "Автоматически сопоставить?",
+    "es-es": "¿Automap para iniciar un nuevo plan de carga?",
+    "de-ch": "Automap, um einen neuen Upload-Plan zu starten?",
+    "fr-fr": "Automap pour démarrer un nouveau plan de téléchargement ?",
+    "uk-ua": "Автоматична карта, щоб почати новий план завантаження?",
+    "pt-br": "Mapeamento automático para iniciar um novo plano de upload?",
   },
   reRunAutoMapperConfirmationDescription: {
     'en-us': 'This will erase existing data field mappings.',
@@ -628,13 +628,13 @@ export const wbPlanText = createDictionary({
     'pt-br': 'Deve corresponder',
   },
   unloadProtectMessage: {
-    'en-us': 'This mapping has not been saved.',
-    'ru-ru': 'Это сопоставление не было сохранено.',
-    'es-es': 'No se hna guardado estas asignaciones/mapeo.',
-    'fr-fr': "Ce mappage n'a pas été enregistré.",
-    'uk-ua': 'Це відображення не збережено.',
-    'de-ch': 'Dieses Mapping wurde nicht gespeichert.',
-    'pt-br': 'Este mapeamento não foi salvo.',
+    "en-us": "This mapping has not been saved.",
+    "ru-ru": "Это сопоставление не было сохранено.",
+    "es-es": "No se hna guardado estas asignaciones/mapeo.",
+    "fr-fr": "Cette cartographie n'a pas été enregistrée.",
+    "uk-ua": "Це відображення не збережено.",
+    "de-ch": "Dieses Mapping wurde nicht gespeichert.",
+    "pt-br": "Este mapeamento não foi salvo.",
   },
   newHeaderName: {
     'en-us': 'New Column {index:number}',

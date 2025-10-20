@@ -180,6 +180,17 @@ export const resourcesText = createDictionary({
     'de-ch': 'Feldformatierer',
     'pt-br': 'Formatadores de campo',
   },
+  fieldFormattersDescription: {
+    "en-us":
+      "The “Field Format” controls how data for a specific table field is displayed in query results, exports, and forms. It manages autonumbering and the composition of various parts that define the field.",
+    "de-ch": "",
+    "es-es": "",
+    "fr-fr": "",
+    "pt-br": "",
+    "ru-ru": "",
+    "uk-ua":
+      "«Формат поля» контролює, як дані для певного поля таблиці відображаються в результатах запиту, експорті та формах. Він керує автонумерацією та композицією різних частин, що визначають поле.",
+  },
   dataObjectFormatters: {
     'en-us': 'Record Formatters',
     'ru-ru': 'Форматеры записи',
@@ -275,18 +286,23 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Доступні веб-посилання',
     'pt-br': 'Links da Web disponíveis',
   },
+  availableFieldFormatters: {
+    "en-us": "Available Field Formatters",
+    "de-ch": "Verfügbare Feldformatierer",
+    "es-es": "Formateadores de campo disponibles",
+    "fr-fr": "Formateurs de champs disponibles",
+    "ru-ru": "Доступные форматеры полей",
+    "uk-ua": "Доступні форматувальники полів",
+    "pt-br": "",
+  },
   selectDefaultFormatter: {
-    'en-us': 'Please select a default record formatter for this table',
-    'de-ch':
-      'Bitte wählen Sie einen Standard-Datensatzformatierer für diese Tabelle',
-    'es-es':
-      'Seleccione un formateador de registro predeterminado para esta tabla',
-    'fr-fr':
-      "Veuillez sélectionner un formateur d'enregistrement par défaut pour cette table",
-    'ru-ru':
-      'Пожалуйста, выберите форматирование записей по умолчанию для этой таблицы.',
-    'uk-ua': 'Виберіть стандартний формат запису для цієї таблиці',
-    'pt-br': 'Selecione um formatador de registro padrão para esta tabela',
+    "en-us": "Please designate one of the formatters as default",
+    "de-ch": "",
+    "es-es": "",
+    "fr-fr": "",
+    "pt-br": "",
+    "ru-ru": "",
+    "uk-ua": "Будь ласка, призначте один із форматувальників як стандартний",
   },
   duplicateFormatters: {
     'en-us': 'Record formatter names must be unique',
@@ -938,6 +954,38 @@ export const resourcesText = createDictionary({
     'uk-ua':
       "Визначення не належить до дерева таксонів, пов'язаного з типом об'єкта колекції",
   },
+  invalidNameTaxon: {
+    "en-us":
+      "{taxonName: string} does not belong to the {taxonTableLabel: string} tree associated with {typeName: string}",
+    "de-ch":
+      "{taxonName: string} gehört nicht zum {taxonTableLabel: string}-Baum, der mit {typeName: string} verknüpft ist",
+    "es-es":
+      "{taxonName: string} no pertenece al árbol {taxonTableLabel: string} asociado con {typeName: string}",
+    "fr-fr":
+      "{taxonName: string} n'appartient pas à l'arbre {taxonTableLabel: string} associé à {typeName: string}",
+    "pt-br":
+      "{taxonName: string} não pertence à árvore {taxonTableLabel: string} associada a {typeName: string}",
+    "ru-ru":
+      "{taxonName: string} не принадлежит дереву {taxonTableLabel: string}, связанному с {typeName: string}",
+    "uk-ua":
+      "{taxonName: string} не належить до дерева {taxonTableLabel: string}, пов'язаного з {typeName: string}",
+  },
+  catalogNumberAlreadyUsed: {
+    "en-us":
+      "{catalogNumberFieldName: string} {catalogNumber: string} is already in use for another Component or Collection Object in this collection.",
+    "de-ch":
+      "{catalogNumberFieldName: string} {catalogNumber: string} wird bereits für eine andere Komponente oder ein anderes Sammlungsobjekt in dieser Sammlung verwendet.",
+    "es-es":
+      "{catalogNumberFieldName: string} {catalogNumber: string} ya está en uso para otro componente u objeto de colección en esta colección.",
+    "fr-fr":
+      "{catalogNumberFieldName: string} {catalogNumber: string} est déjà utilisé pour un autre composant ou objet de collection dans cette collection.",
+    "pt-br":
+      "{catalogNumberFieldName: string} {catalogNumber: string} já está em uso para outro Componente ou Objeto de Coleção nesta coleção.",
+    "ru-ru":
+      "{catalogNumberFieldName: string} {catalogNumber: string} уже используется для другого компонента или объекта коллекции в этой коллекции.",
+    "uk-ua":
+      "{catalogNumberFieldName: string} {catalogNumber: string} вже використовується для іншого компонента або об'єкта колекції в цій колекції.",
+  },
   preparationUsedInLoan: {
     'en-us': 'The preparation is used in a loan.',
     'de-ch': 'Das Präparat dient der Kreditvergabe.',
@@ -982,5 +1030,104 @@ export const resourcesText = createDictionary({
     'pt-br': 'Remova os zeros à esquerda dos valores numéricos.',
     'ru-ru': 'Удалить начальные нули из числовых значений.',
     'uk-ua': 'Видаліть початкові нулі з числових значень.',
+  },
+  formatterPreviewUnavailable: {
+    "en-us": "Preview for formatter of this type is not available",
+    "de-ch": "",
+    "es-es": "",
+    "fr-fr": "",
+    "pt-br": "",
+    "ru-ru": "",
+    "uk-ua": "Попередній перегляд для форматера цього типу недоступний",
+  },
+  nonConformingInline: {
+    "en-us": "(non-conforming)",
+    "de-ch": "",
+    "es-es": "",
+    "fr-fr": "",
+    "pt-br": "",
+    "ru-ru": "",
+    "uk-ua": "(невідповідний)",
+  },
+  value: {
+    "en-us": "Value",
+    "de-ch": "Wert",
+    "es-es": "Valor",
+    "fr-fr": "Valeur",
+    "ru-ru": "Значение",
+    "uk-ua": "Значення",
+    "pt-br": "",
+  },
+  constant: {
+    "en-us": "Constant",
+    "de-ch": "",
+    "es-es": "",
+    "fr-fr": "",
+    "pt-br": "",
+    "ru-ru": "",
+    "uk-ua": "Постійна",
+  },
+  alpha: {
+    "en-us": "Alpha",
+    "de-ch": "",
+    "es-es": "",
+    "fr-fr": "",
+    "pt-br": "",
+    "ru-ru": "",
+    "uk-ua": "Альфа",
+  },
+  numeric: {
+    "en-us": "Numeric",
+    "de-ch": "",
+    "es-es": "",
+    "fr-fr": "",
+    "pt-br": "",
+    "ru-ru": "",
+    "uk-ua": "Числовий",
+  },
+  alphanumeric: {
+    "en-us": "Alphanumeric",
+    "de-ch": "",
+    "es-es": "",
+    "fr-fr": "",
+    "pt-br": "",
+    "ru-ru": "",
+    "uk-ua": "Буквено-цифровий",
+  },
+  anychar: {
+    "en-us": "Any character",
+    "de-ch": "",
+    "es-es": "",
+    "fr-fr": "",
+    "pt-br": "",
+    "ru-ru": "",
+    "uk-ua": "Будь-який символ",
+  },
+  regex: {
+    "en-us": "Regular expression",
+    "de-ch": "",
+    "es-es": "",
+    "fr-fr": "",
+    "pt-br": "",
+    "ru-ru": "",
+    "uk-ua": "Регулярний вираз",
+  },
+  exampleField: {
+    "en-us": "Example Field",
+    "de-ch": "Beispielfeld",
+    "es-es": "Campo de ejemplo",
+    "fr-fr": "Champ d'exemple",
+    "ru-ru": "Пример поля",
+    "uk-ua": "Приклад поле",
+    "pt-br": "",
+  },
+  pattern: {
+    "en-us": "Pattern",
+    "de-ch": "",
+    "es-es": "",
+    "fr-fr": "",
+    "pt-br": "",
+    "ru-ru": "",
+    "uk-ua": "Візерунок",
   },
 } as const);

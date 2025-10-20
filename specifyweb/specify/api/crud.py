@@ -325,6 +325,8 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
         elif param.endswith('__in') or param.endswith('__range'):
             # this is a bit kludgy
             val = val.split(',')
+        elif isinstance(val, str) and val.lower() in ("true", "false"):
+            val = val.lower() == "true"
 
         filters.update({param: val})
 
