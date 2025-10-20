@@ -25,7 +25,7 @@ export const MONTH_YEAR_FORMAT_OPTIONS = ['YYYY-MM', 'MM/YYYY', 'YYYY/MM'] as co
 
 export const globalPreferenceDefinitions = {
 formatting: {
-    title: preferencesText.formatting,
+    title: preferencesText.formatting(),
     subCategories: {
       formatting: {
         title: preferencesText.general(),
@@ -83,7 +83,7 @@ formatting: {
     },
   },
   attachments: {
-    title: attachmentsText.attachments,
+    title: attachmentsText.attachments(),
     subCategories: {
       attachments: {
         title: preferencesText.general(),
