@@ -13,7 +13,7 @@ export function FieldFormatterWrapper(): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <XmlEditorShell<FieldFormatter, FieldFormattersOutlet>
-      header={resourcesText.fieldFormatters()}
+      header={resourcesText.uiFormatters()}
     >
       {makeXmlEditorShellSlot(
         (getSet) => (
