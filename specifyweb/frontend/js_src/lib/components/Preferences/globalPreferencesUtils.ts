@@ -111,26 +111,26 @@ function hasProperties<T extends Record<string, unknown>>(object: T): object is 
 export function partialPreferencesFromMap(
   map: Readonly<Record<string, string>>
 ): Partial<GlobalPreferenceValues> {
-  const partial: Partial<GlobalPreferenceValues> = {};
+  const partial: Record<string, unknown> = {};
 
-  const auditing: Partial<GlobalPreferenceValues['auditing']['auditing']> = {};
+  const auditingValues: Record<string, unknown> = {};
   const enableAuditLog = parseBoolean(map[PREFERENCE_KEYS.enableAuditLog]);
-  if (enableAuditLog !== undefined) auditing.enableAuditLog = enableAuditLog;
+  if (enableAuditLog !== undefined) auditingValues.enableAuditLog = enableAuditLog;
 
   const logFieldLevelChanges = parseBoolean(map[PREFERENCE_KEYS.logFieldLevelChanges]);
   if (logFieldLevelChanges !== undefined)
-    auditing.logFieldLevelChanges = logFieldLevelChanges;
+    auditingValues.logFieldLevelChanges = logFieldLevelChanges;
 
-  if (hasProperties(auditing)) {
+  if (hasProperties(auditingValues)) {
     partial.auditing = {
-      auditing: auditing as GlobalPreferenceValues['auditing']['auditing'],
+      auditing: auditingValues,
     };
   }
 
-  const formatting: Partial<GlobalPreferenceValues['formatting']['formatting']> = {};
+  const formattingValues: Record<string, unknown> = {};
   const fullDateFormatRaw = map[PREFERENCE_KEYS.fullDateFormat];
   if (fullDateFormatRaw !== undefined)
-    formatting.fullDateFormat = normalizeFormat(fullDateFormatRaw);
+    formattingValues.fullDateFormat = normalizeFormat(fullDateFormatRaw);
 
   const monthYearDateFormatRaw = map[PREFERENCE_KEYS.monthYearDateFormat];
   if (monthYearDateFormatRaw !== undefined) {
@@ -140,29 +140,29 @@ export function partialPreferencesFromMap(
         monthYearFormat as (typeof MONTH_YEAR_FORMAT_OPTIONS)[number]
       )
     )
-      formatting.monthYearDateFormat = monthYearFormat;
+      formattingValues.monthYearDateFormat = monthYearFormat;
   }
 
-  if (hasProperties(formatting)) {
+  if (hasProperties(formattingValues)) {
     partial.formatting = {
-      formatting: formatting as GlobalPreferenceValues['formatting']['formatting'],
+      formatting: formattingValues,
     };
   }
 
-  const attachments: Partial<GlobalPreferenceValues['attachments']['attachments']> = {};
+  const attachmentValues: Record<string, unknown> = {};
   const attachmentThumbnailSize = parseNumber(
     map[PREFERENCE_KEYS.attachmentThumbnailSize]
   );
   if (attachmentThumbnailSize !== undefined)
-    attachments.attachmentThumbnailSize = attachmentThumbnailSize;
+    attachmentValues.attachmentThumbnailSize = attachmentThumbnailSize;
 
-  if (hasProperties(attachments)) {
+  if (hasProperties(attachmentValues)) {
     partial.attachments = {
-      attachments: attachments as GlobalPreferenceValues['attachments']['attachments'],
+      attachments: attachmentValues,
     };
   }
 
-  return partial;
+  return partial as Partial<GlobalPreferenceValues>;
 }
 
 export function mergeWithDefaultValues(

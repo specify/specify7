@@ -31,16 +31,20 @@ function mergeMissingFromRemote(
 
   const remoteFormatting = remote.formatting?.formatting;
   if (remoteFormatting !== undefined) {
-    const currentFormatting = existing.formatting?.formatting ?? {};
-    const updatedFormatting: Partial<GlobalPreferenceValues['formatting']['formatting']> = {
-      ...currentFormatting,
+    const currentFormatting = existing.formatting?.formatting;
+    const updatedFormatting: Record<
+      keyof GlobalPreferenceValues['formatting']['formatting'],
+      string | undefined
+    > = {
+      fullDateFormat: currentFormatting?.fullDateFormat,
+      monthYearDateFormat: currentFormatting?.monthYearDateFormat,
     };
 
     (['fullDateFormat', 'monthYearDateFormat'] as const).forEach((key) => {
       const remoteValue = remoteFormatting[key];
       if (
         remoteValue !== undefined &&
-        updatedFormatting[key] === undefined &&
+        (updatedFormatting[key] ?? undefined) === undefined &&
         remoteValue !== DEFAULT_VALUES.formatting.formatting[key]
       ) {
         updatedFormatting[key] = remoteValue;
@@ -48,13 +52,20 @@ function mergeMissingFromRemote(
       }
     });
 
-    if (changed)
+    if (changed) {
+      const formattingPayload: Record<string, unknown> = {};
+      if (updatedFormatting.fullDateFormat !== undefined)
+        formattingPayload.fullDateFormat = updatedFormatting.fullDateFormat;
+      if (updatedFormatting.monthYearDateFormat !== undefined)
+        formattingPayload.monthYearDateFormat = updatedFormatting.monthYearDateFormat;
+
       merged = {
         ...merged,
         formatting: {
-          formatting: updatedFormatting as GlobalPreferenceValues['formatting']['formatting'],
+          formatting: formattingPayload as GlobalPreferenceValues['formatting']['formatting'],
         },
       };
+    }
   }
 
   return { merged, changed };
