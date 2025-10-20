@@ -6,6 +6,7 @@ from specifyweb.specify.api_utils import strict_uri_to_model
 from specifyweb.specify.models import Spversion
 from specifyweb.specify import models
 from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults
+from specifyweb.backend.setup_tool.picklist_defaults import create_picklist_defaults
 from specifyweb.backend.setup_tool.setup_tasks import setup_database_background
 
 from django.db.models import Max
@@ -245,6 +246,14 @@ def create_collection(data):
     # Create new Collection
     try:
         new_collection = Collection.objects.create(**data)
+
+        # Create Preparation Types
+        # TODO
+        # Create picklists
+        create_picklist_defaults(new_collection)
+        # Create Collection Object Type
+        # TODO
+
         return {"collection_id": new_collection.id}
     except Exception as e:
         raise SetupError(e)

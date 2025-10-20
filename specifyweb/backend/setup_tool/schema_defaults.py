@@ -36,7 +36,7 @@ def _apply_schema_defaults(discipline_id, discipline_type):
             with schema_localization_file.open('r', encoding='utf-8') as fh:
                 defaults = json.load(fh)
         except Exception as e:
-            logger.exception(f'Failed to load schema localization frile from {schema_localization_file}: {e}')
+            logger.exception(f'Failed to load default schema localization from {schema_localization_file}: {e}')
             defaults = None
 
     # Read schema overrides file for the discipline, if it exists
