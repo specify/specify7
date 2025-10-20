@@ -1,14 +1,14 @@
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
-import { formatUrl } from '../Router/queryString';
+import { keysToLowerCase } from '../../utils/utils';
 import { contextUnlockedPromise, foreverFetch } from '../InitialContext';
 import { fetchContext as fetchRemotePrefs, remotePrefs } from '../InitialContext/remotePrefs';
-import { keysToLowerCase } from '../../utils/utils';
+import { formatUrl } from '../Router/queryString';
 import { type PartialPreferences } from './BasePreferences';
-import { globalPreferenceDefinitions } from './GlobalDefinitions';
-import { globalPreferences } from './globalPreferences';
+import type { globalPreferenceDefinitions } from './GlobalDefinitions';
 import type { GlobalPreferenceValues } from './globalPreferences';
+import { globalPreferences } from './globalPreferences';
 import {
   DEFAULT_VALUES,
   mergeWithDefaultValues,
@@ -78,7 +78,7 @@ export const loadGlobalPreferences = async (): Promise<void> => {
     return;
   }
 
-  const { data, status, response } = await ajax<string>(
+  const { data, status, response } = await ajax(
     formatUrl('/context/app.resource', {
       name: 'GlobalPreferences',
       quiet: '',
@@ -123,20 +123,17 @@ export const loadGlobalPreferences = async (): Promise<void> => {
           data: serialized.data,
         });
 
-        if (typeof resourceId === 'number' && Number.isFinite(resourceId) && resourceId >= 0)
-          await ping(`${GLOBAL_RESOURCE_URL}${resourceId}/`, {
+        await (typeof resourceId === 'number' && Number.isFinite(resourceId) && resourceId >= 0 ? ping(`${GLOBAL_RESOURCE_URL}${resourceId}/`, {
             method: 'PUT',
             body: payload,
             headers: { Accept: 'application/json' },
             errorMode: 'silent',
-          });
-        else
-          await ping(GLOBAL_RESOURCE_URL, {
+          }) : ping(GLOBAL_RESOURCE_URL, {
             method: 'POST',
             body: payload,
             headers: { Accept: 'application/json' },
             errorMode: 'silent',
-          });
+          }));
       }
     } catch (error) {
       console.error('Failed migrating remote preferences into GlobalPreferences', error);

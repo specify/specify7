@@ -1,15 +1,18 @@
-import type { PreferenceItem } from './types';
+import {
+  FULL_DATE_FORMAT_OPTIONS,
+  MONTH_YEAR_FORMAT_OPTIONS,
+} from './GlobalDefinitions';
 import type { GlobalPreferenceValues } from './globalPreferences';
-import { FULL_DATE_FORMAT_OPTIONS, MONTH_YEAR_FORMAT_OPTIONS } from './GlobalDefinitions';
+import type { PreferenceItem } from './types';
 
 export type PropertyLine =
-  | { readonly type: 'comment' | 'empty'; readonly raw: string }
   | {
       readonly type: 'entry';
       readonly key: string;
       readonly value: string;
       readonly raw: string;
-    };
+    }
+  | { readonly type: 'comment' | 'empty'; readonly raw: string };
 
 const PREFERENCE_KEYS = {
   enableAuditLog: 'auditing.do_audits',
@@ -20,7 +23,7 @@ const PREFERENCE_KEYS = {
 } as const;
 
 type ParsedProperties = {
-  readonly lines: ReadonlyArray<PropertyLine>;
+  readonly lines: readonly PropertyLine[];
   readonly map: Record<string, string>;
 };
 
@@ -68,7 +71,7 @@ function normalizeFormat(value: string): string {
 
 function parseProperties(data: string): ParsedProperties {
   const lines = data.split(/\r?\n/u);
-  const parsed: PropertyLine[] = [];
+  const parsed: readonly PropertyLine[] = [];
   const map: Record<string, string> = {};
 
   lines.forEach((line) => {
@@ -104,7 +107,9 @@ function parseNumber(value: string | undefined): number | undefined {
   return Number.isNaN(parsed) ? undefined : parsed;
 }
 
-function hasProperties<T extends Record<string, unknown>>(object: T): object is T {
+function hasProperties<T extends Record<string, unknown>>(
+  object: T
+): object is T {
   return Object.keys(object).length > 0;
 }
 
@@ -115,9 +120,12 @@ export function partialPreferencesFromMap(
 
   const auditingValues: Record<string, unknown> = {};
   const enableAuditLog = parseBoolean(map[PREFERENCE_KEYS.enableAuditLog]);
-  if (enableAuditLog !== undefined) auditingValues.enableAuditLog = enableAuditLog;
+  if (enableAuditLog !== undefined)
+    auditingValues.enableAuditLog = enableAuditLog;
 
-  const logFieldLevelChanges = parseBoolean(map[PREFERENCE_KEYS.logFieldLevelChanges]);
+  const logFieldLevelChanges = parseBoolean(
+    map[PREFERENCE_KEYS.logFieldLevelChanges]
+  );
   if (logFieldLevelChanges !== undefined)
     auditingValues.logFieldLevelChanges = logFieldLevelChanges;
 
@@ -201,46 +209,57 @@ export function mergeWithDefaultValues(
   };
 }
 
-export function parseGlobalPreferences(
-  data: string | null
-): {
+export function parseGlobalPreferences(data: string | null): {
   readonly raw: Partial<GlobalPreferenceValues>;
-  readonly metadata: ReadonlyArray<PropertyLine>;
+  readonly metadata: readonly PropertyLine[];
 } {
   const parsed = parseProperties(data ?? '');
   const values = partialPreferencesFromMap(parsed.map);
   return { raw: values, metadata: parsed.lines };
 }
 
-function preferencesToKeyValue(values: GlobalPreferenceValues): Record<string, string> {
+function preferencesToKeyValue(
+  values: GlobalPreferenceValues
+): Record<string, string> {
   return {
-    [PREFERENCE_KEYS.enableAuditLog]: values.auditing.auditing.enableAuditLog ? 'true' : 'false',
-    [PREFERENCE_KEYS.logFieldLevelChanges]: values.auditing.auditing.logFieldLevelChanges
+    [PREFERENCE_KEYS.enableAuditLog]: values.auditing.auditing.enableAuditLog
       ? 'true'
       : 'false',
-    [PREFERENCE_KEYS.fullDateFormat]: normalizeFormat(values.formatting.formatting.fullDateFormat),
+    [PREFERENCE_KEYS.logFieldLevelChanges]: values.auditing.auditing
+      .logFieldLevelChanges
+      ? 'true'
+      : 'false',
+    [PREFERENCE_KEYS.fullDateFormat]: normalizeFormat(
+      values.formatting.formatting.fullDateFormat
+    ),
     [PREFERENCE_KEYS.monthYearDateFormat]: normalizeFormat(
       values.formatting.formatting.monthYearDateFormat
     ),
-    [PREFERENCE_KEYS.attachmentThumbnailSize]: values.attachments.attachments.attachmentThumbnailSize.toString(),
+    [PREFERENCE_KEYS.attachmentThumbnailSize]:
+      values.attachments.attachments.attachmentThumbnailSize.toString(),
   };
 }
 
 export function applyUpdates(
-  lines: ReadonlyArray<PropertyLine>,
+  lines: readonly PropertyLine[],
   updates: Record<string, string>
-): { readonly lines: ReadonlyArray<PropertyLine>; readonly text: string } {
+): { readonly lines: readonly PropertyLine[]; readonly text: string } {
   const remaining = new Set(Object.keys(updates));
   const updatedLines = lines.map((line) => {
     if (line.type === 'entry' && remaining.has(line.key)) {
       const value = updates[line.key];
       remaining.delete(line.key);
-      return { type: 'entry', key: line.key, value, raw: `${line.key}=${value}` } as PropertyLine;
+      return {
+        type: 'entry',
+        key: line.key,
+        value,
+        raw: `${line.key}=${value}`,
+      } as PropertyLine;
     }
     return line;
   });
 
-  const appended: PropertyLine[] = Array.from(remaining).map((key) => ({
+  const appended: readonly PropertyLine[] = Array.from(remaining, (key) => ({
     type: 'entry',
     key,
     value: updates[key],
@@ -248,20 +267,26 @@ export function applyUpdates(
   }));
 
   const finalLines = [...updatedLines, ...appended];
-  return { lines: finalLines, text: finalLines.map((line) => line.raw).join('\n') };
+  return {
+    lines: finalLines,
+    text: finalLines.map((line) => line.raw).join('\n'),
+  };
 }
 
 export function serializeGlobalPreferences(
   raw: GlobalPreferenceValues | Partial<GlobalPreferenceValues> | undefined,
-  metadata: ReadonlyArray<PropertyLine>,
+  metadata: readonly PropertyLine[],
   options?: { readonly fallback?: GlobalPreferenceValues }
-): { readonly data: string; readonly metadata: ReadonlyArray<PropertyLine> } {
+): { readonly data: string; readonly metadata: readonly PropertyLine[] } {
   const fallback = options?.fallback ?? globalPreferenceFallback;
   const normalized = mergeWithDefaultValues(
     raw as Partial<GlobalPreferenceValues> | undefined,
     fallback
   );
-  const { lines, text } = applyUpdates(metadata, preferencesToKeyValue(normalized));
+  const { lines, text } = applyUpdates(
+    metadata,
+    preferencesToKeyValue(normalized)
+  );
   return { data: text, metadata: lines };
 }
 
@@ -270,8 +295,10 @@ export function formatGlobalPreferenceValue(
   value: unknown
 ): string {
   if ('type' in definition) {
-    if (definition.type === 'java.lang.Boolean') return value ? 'true' : 'false';
-    if (definition.type === 'java.lang.Integer') return Number(value).toString();
+    if (definition.type === 'java.lang.Boolean')
+      return value ? 'true' : 'false';
+    if (definition.type === 'java.lang.Integer')
+      return Number(value).toString();
   }
   return String(value ?? '');
 }
