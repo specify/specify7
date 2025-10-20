@@ -12,6 +12,11 @@ import type { IR, R, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import type { JavaType } from '../DataModel/specifyField';
 import { cacheableUrl, contextUnlockedPromise } from './index';
+import {
+  mergeWithDefaultValues,
+  partialPreferencesFromMap,
+  setGlobalPreferenceFallback,
+} from '../Preferences/globalPreferencesUtils';
 
 const preferences: R<string> = {};
 
@@ -35,7 +40,13 @@ export const fetchContext = contextUnlockedPromise.then(async (entrypoint) =>
                 preferences[key.trim()] = value.trim();
             })
         )
-        .then(() => preferences)
+        .then(() => {
+          const fallback = mergeWithDefaultValues(
+            partialPreferencesFromMap(preferences)
+          );
+          setGlobalPreferenceFallback(fallback);
+          return preferences;
+        })
     : undefined
 );
 

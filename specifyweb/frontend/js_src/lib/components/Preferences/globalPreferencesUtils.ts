@@ -49,6 +49,18 @@ export const DEFAULT_VALUES: GlobalPreferenceValues = {
   },
 };
 
+let globalPreferenceFallback: GlobalPreferenceValues = DEFAULT_VALUES;
+
+export function setGlobalPreferenceFallback(
+  fallback: GlobalPreferenceValues
+): void {
+  globalPreferenceFallback = fallback;
+}
+
+export function getGlobalPreferenceFallback(): GlobalPreferenceValues {
+  return globalPreferenceFallback;
+}
+
 function normalizeFormat(value: string): string {
   const upper = value.toUpperCase();
   return DATE_FORMAT_NORMALIZER.has(upper) ? upper : upper;
@@ -79,56 +91,111 @@ function parseProperties(data: string): ParsedProperties {
   return { lines: parsed, map };
 }
 
-function parseBoolean(value: string | undefined, fallback: boolean): boolean {
-  if (typeof value !== 'string') return fallback;
+function parseBoolean(value: string | undefined): boolean | undefined {
+  if (typeof value !== 'string') return undefined;
   if (value.toLowerCase() === 'true') return true;
   if (value.toLowerCase() === 'false') return false;
-  return fallback;
+  return undefined;
 }
 
-function parseNumber(value: string | undefined, fallback: number): number {
-  if (typeof value !== 'string') return fallback;
+function parseNumber(value: string | undefined): number | undefined {
+  if (typeof value !== 'string') return undefined;
   const parsed = Number.parseInt(value, 10);
-  return Number.isNaN(parsed) ? fallback : parsed;
+  return Number.isNaN(parsed) ? undefined : parsed;
 }
 
-export function preferencesFromMap(map: Record<string, string>): GlobalPreferenceValues {
-  const fullDateFormat = normalizeFormat(
-    map[PREFERENCE_KEYS.fullDateFormat] ?? DEFAULT_VALUES.formatting.formatting.fullDateFormat
-  );
-  const monthYearFormat = normalizeFormat(
-    map[PREFERENCE_KEYS.monthYearDateFormat] ?? DEFAULT_VALUES.formatting.formatting.monthYearDateFormat
-  );
+function hasProperties<T extends Record<string, unknown>>(object: T): object is T {
+  return Object.keys(object).length > 0;
+}
 
+export function partialPreferencesFromMap(
+  map: Readonly<Record<string, string>>
+): Partial<GlobalPreferenceValues> {
+  const partial: Partial<GlobalPreferenceValues> = {};
+
+  const auditing: Partial<GlobalPreferenceValues['auditing']['auditing']> = {};
+  const enableAuditLog = parseBoolean(map[PREFERENCE_KEYS.enableAuditLog]);
+  if (enableAuditLog !== undefined) auditing.enableAuditLog = enableAuditLog;
+
+  const logFieldLevelChanges = parseBoolean(map[PREFERENCE_KEYS.logFieldLevelChanges]);
+  if (logFieldLevelChanges !== undefined)
+    auditing.logFieldLevelChanges = logFieldLevelChanges;
+
+  if (hasProperties(auditing)) {
+    partial.auditing = {
+      auditing: auditing as GlobalPreferenceValues['auditing']['auditing'],
+    };
+  }
+
+  const formatting: Partial<GlobalPreferenceValues['formatting']['formatting']> = {};
+  const fullDateFormatRaw = map[PREFERENCE_KEYS.fullDateFormat];
+  if (fullDateFormatRaw !== undefined)
+    formatting.fullDateFormat = normalizeFormat(fullDateFormatRaw);
+
+  const monthYearDateFormatRaw = map[PREFERENCE_KEYS.monthYearDateFormat];
+  if (monthYearDateFormatRaw !== undefined) {
+    const monthYearFormat = normalizeFormat(monthYearDateFormatRaw);
+    if (
+      MONTH_YEAR_FORMAT_OPTIONS.includes(
+        monthYearFormat as (typeof MONTH_YEAR_FORMAT_OPTIONS)[number]
+      )
+    )
+      formatting.monthYearDateFormat = monthYearFormat;
+  }
+
+  if (hasProperties(formatting)) {
+    partial.formatting = {
+      formatting: formatting as GlobalPreferenceValues['formatting']['formatting'],
+    };
+  }
+
+  const attachments: Partial<GlobalPreferenceValues['attachments']['attachments']> = {};
+  const attachmentThumbnailSize = parseNumber(
+    map[PREFERENCE_KEYS.attachmentThumbnailSize]
+  );
+  if (attachmentThumbnailSize !== undefined)
+    attachments.attachmentThumbnailSize = attachmentThumbnailSize;
+
+  if (hasProperties(attachments)) {
+    partial.attachments = {
+      attachments: attachments as GlobalPreferenceValues['attachments']['attachments'],
+    };
+  }
+
+  return partial;
+}
+
+export function mergeWithDefaultValues(
+  values: Partial<GlobalPreferenceValues> | undefined,
+  fallback: GlobalPreferenceValues = globalPreferenceFallback
+): GlobalPreferenceValues {
+  const merged = values ?? {};
   return {
     auditing: {
       auditing: {
-        enableAuditLog: parseBoolean(
-          map[PREFERENCE_KEYS.enableAuditLog],
-          DEFAULT_VALUES.auditing.auditing.enableAuditLog
-        ),
-        logFieldLevelChanges: parseBoolean(
-          map[PREFERENCE_KEYS.logFieldLevelChanges],
-          DEFAULT_VALUES.auditing.auditing.logFieldLevelChanges
-        ),
+        enableAuditLog:
+          merged.auditing?.auditing?.enableAuditLog ??
+          fallback.auditing.auditing.enableAuditLog,
+        logFieldLevelChanges:
+          merged.auditing?.auditing?.logFieldLevelChanges ??
+          fallback.auditing.auditing.logFieldLevelChanges,
       },
     },
     formatting: {
       formatting: {
-        fullDateFormat,
-        monthYearDateFormat: MONTH_YEAR_FORMAT_OPTIONS.includes(
-          monthYearFormat as (typeof MONTH_YEAR_FORMAT_OPTIONS)[number]
-        )
-          ? (monthYearFormat as (typeof MONTH_YEAR_FORMAT_OPTIONS)[number])
-          : DEFAULT_VALUES.formatting.formatting.monthYearDateFormat,
+        fullDateFormat:
+          merged.formatting?.formatting?.fullDateFormat ??
+          fallback.formatting.formatting.fullDateFormat,
+        monthYearDateFormat:
+          merged.formatting?.formatting?.monthYearDateFormat ??
+          fallback.formatting.formatting.monthYearDateFormat,
       },
     },
     attachments: {
       attachments: {
-        attachmentThumbnailSize: parseNumber(
-          map[PREFERENCE_KEYS.attachmentThumbnailSize],
-          DEFAULT_VALUES.attachments.attachments.attachmentThumbnailSize
-        ),
+        attachmentThumbnailSize:
+          merged.attachments?.attachments?.attachmentThumbnailSize ??
+          fallback.attachments.attachments.attachmentThumbnailSize,
       },
     },
   };
@@ -136,44 +203,13 @@ export function preferencesFromMap(map: Record<string, string>): GlobalPreferenc
 
 export function parseGlobalPreferences(
   data: string | null
-): { readonly raw: GlobalPreferenceValues; readonly metadata: ReadonlyArray<PropertyLine> } {
+): {
+  readonly raw: Partial<GlobalPreferenceValues>;
+  readonly metadata: ReadonlyArray<PropertyLine>;
+} {
   const parsed = parseProperties(data ?? '');
-  const values = preferencesFromMap(parsed.map);
+  const values = partialPreferencesFromMap(parsed.map);
   return { raw: values, metadata: parsed.lines };
-}
-
-function normalizeValues(
-  values: GlobalPreferenceValues | Partial<GlobalPreferenceValues> | undefined
-): GlobalPreferenceValues {
-  const merged = values ?? DEFAULT_VALUES;
-  return {
-    auditing: {
-      auditing: {
-        enableAuditLog:
-          merged.auditing?.auditing?.enableAuditLog ?? DEFAULT_VALUES.auditing.auditing.enableAuditLog,
-        logFieldLevelChanges:
-          merged.auditing?.auditing?.logFieldLevelChanges ??
-          DEFAULT_VALUES.auditing.auditing.logFieldLevelChanges,
-      },
-    },
-    formatting: {
-      formatting: {
-        fullDateFormat:
-          merged.formatting?.formatting?.fullDateFormat ??
-          DEFAULT_VALUES.formatting.formatting.fullDateFormat,
-        monthYearDateFormat:
-          merged.formatting?.formatting?.monthYearDateFormat ??
-          DEFAULT_VALUES.formatting.formatting.monthYearDateFormat,
-      },
-    },
-    attachments: {
-      attachments: {
-        attachmentThumbnailSize:
-          merged.attachments?.attachments?.attachmentThumbnailSize ??
-          DEFAULT_VALUES.attachments.attachments.attachmentThumbnailSize,
-      },
-    },
-  };
 }
 
 function preferencesToKeyValue(values: GlobalPreferenceValues): Record<string, string> {
@@ -217,9 +253,14 @@ export function applyUpdates(
 
 export function serializeGlobalPreferences(
   raw: GlobalPreferenceValues | Partial<GlobalPreferenceValues> | undefined,
-  metadata: ReadonlyArray<PropertyLine>
+  metadata: ReadonlyArray<PropertyLine>,
+  options?: { readonly fallback?: GlobalPreferenceValues }
 ): { readonly data: string; readonly metadata: ReadonlyArray<PropertyLine> } {
-  const normalized = normalizeValues(raw as GlobalPreferenceValues | undefined);
+  const fallback = options?.fallback ?? globalPreferenceFallback;
+  const normalized = mergeWithDefaultValues(
+    raw as Partial<GlobalPreferenceValues> | undefined,
+    fallback
+  );
   const { lines, text } = applyUpdates(metadata, preferencesToKeyValue(normalized));
   return { data: text, metadata: lines };
 }

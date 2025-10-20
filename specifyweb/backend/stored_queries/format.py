@@ -18,7 +18,7 @@ from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy import types
 
 import specifyweb.backend.context.app_resource as app_resource
-from specifyweb.backend.context.remote_prefs import get_remote_prefs
+from specifyweb.backend.context.remote_prefs import get_global_prefs, get_remote_prefs
 
 from specifyweb.specify.utils.agent_types import agent_types
 from specifyweb.specify.models import datamodel, Splocalecontainer
@@ -439,8 +439,14 @@ class ObjectFormatter:
 
 
 def get_date_format() -> str:
-    match = re.search(r'ui\.formatting\.scrdateformat=(.+)', get_remote_prefs())
-    date_format = match.group(1).strip() if match is not None else 'yyyy-MM-dd'
+    date_format_text = 'yyyy-MM-dd'
+    for prefs in (get_global_prefs(), get_remote_prefs()):
+        match = re.search(r'ui\.formatting\.scrdateformat=(.+)', prefs)
+        if match is not None:
+            date_format_text = match.group(1).strip()
+            break
+
+    date_format = date_format_text
     mysql_date_format = LDLM_TO_MYSQL.get(date_format, "%Y-%m-%d")
     logger.debug("dateformat = %s = %s", date_format, mysql_date_format)
     return mysql_date_format
