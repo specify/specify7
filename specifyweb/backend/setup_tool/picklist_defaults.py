@@ -1,7 +1,7 @@
-import re
 import json
 from pathlib import Path
 from django.db import transaction
+from .utils import load_json_from_file
 
 import logging
 
@@ -13,30 +13,44 @@ from specifyweb.specify.models import (
 
 logger = logging.getLogger(__name__)
 
-def create_picklist_defaults(collection: Collection):
+def create_default_picklists(collection: Collection, discipline_type: str | None):
+    """
+    Creates defaults picklists for -one- collection, including discipline specific picklists.
+    """
     # Global picklists
     logger.debug('Creating default global picklists.')
     # Get from defaults file
-    defaults = None
-    global_picklists_file = (Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'global_picklists.json')
-    if global_picklists_file.exists() and global_picklists_file.is_file():
-        try:
-            with global_picklists_file.open('r', encoding='utf-8') as fh:
-                defaults = json.load(fh)
-        except Exception as e:
-            logger.exception(f'Failed to load global picklists from {global_picklists_file}: {e}')
-            defaults = None
+    defaults = load_json_from_file(Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'global_picklists.json')
     
-    global_picklists = defaults.get('picklists', None)
+    global_picklists = defaults.get('picklists', None) if defaults is not None else None
     if global_picklists is None:
         logger.exception('No global picklists found in global_picklists.json.')
         return
+    create_picklists(global_picklists, collection)
+
+    # Create discipline picklists
+    logger.debug('Creating default discipline picklists.')
+    if discipline_type is None:
+        return
+    discipline_defaults = load_json_from_file(Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'picklists.json')
+    
+    discipline_picklists = discipline_defaults.get(discipline_type, None)
+    if discipline_picklists is None:
+        logger.exception(f'No picklists found for discipline "{discipline_type}" in picklists.json.')
+        return
+    create_picklists(discipline_picklists, collection)
+ 
+def create_picklists(configuraton: list, collection: Collection):
+    """
+    Create a set of picklists from a configuration list.
+    """
+    # Create picklists from a list of picklist configuration dicts.
     try:
         with transaction.atomic():
             # Create picklists in bulk
-            global_picklists_blk = []
-            for picklist in global_picklists:
-                global_picklists_blk.append(
+            picklists_bulk = []
+            for picklist in configuraton:
+                picklists_bulk.append(
                     Picklist(
                         collection=collection,
                         name=picklist.get('name'),
@@ -48,25 +62,25 @@ def create_picklist_defaults(collection: Collection):
                         sizelimit=picklist.get('sizelimit'),
                     )
                 )
-            Picklist.objects.bulk_create(global_picklists_blk, ignore_conflicts=True)
+            Picklist.objects.bulk_create(picklists_bulk, ignore_conflicts=True)
 
             # Create picklist items in bulk
-            names = [p.name for p in global_picklists_blk]
-            db_picklists = Picklist.objects.filter(name__in=names)
-            name_to_obj = {pl.name: pl for pl in db_picklists}
+            names = [p.name for p in picklists_bulk]
+            picklist_records = Picklist.objects.filter(name__in=names)
+            name_to_obj = {pl.name: pl for pl in picklist_records}
 
-            global_picklistitems_blk = []
-            for picklist in global_picklists:
+            picklistitems_bulk = []
+            for picklist in configuraton:
                 parent = name_to_obj.get(picklist['name'])
                 for picklistitem in picklist['items']:
-                    global_picklistitems_blk.append(
+                    picklistitems_bulk.append(
                         Picklistitem(
                             picklist=parent,
                             title=picklistitem.get('title'),
                             value=picklistitem.get('value'),
                         )
                     )
-            Picklistitem.objects.bulk_create(global_picklistitems_blk, ignore_conflicts=True)
+            Picklistitem.objects.bulk_create(picklistitems_bulk, ignore_conflicts=True)
 
     except Exception:
         logger.exception('An error occured when creating default picklists.')

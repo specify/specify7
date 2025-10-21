@@ -6,7 +6,8 @@ from specifyweb.specify.api_utils import strict_uri_to_model
 from specifyweb.specify.models import Spversion
 from specifyweb.specify import models
 from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults
-from specifyweb.backend.setup_tool.picklist_defaults import create_picklist_defaults
+from specifyweb.backend.setup_tool.picklist_defaults import create_default_picklists
+from specifyweb.backend.setup_tool.prep_type_defaults import create_default_prep_types
 from specifyweb.backend.setup_tool.setup_tasks import setup_database_background
 
 from django.db.models import Max
@@ -223,6 +224,7 @@ def create_collection(data):
     data['id'] = max_id + 1
 
     # Handle discipline reference from URL
+    discipline_id = data.get('discipline_id', None)
     discipline_url = data.get('discipline')
     if discipline_url:
         try:
@@ -235,10 +237,16 @@ def create_collection(data):
     if not data.get('discipline_id'):
         last_discipline = Discipline.objects.last()
         if last_discipline:
-            data['discipline_id'] = last_discipline.id
+            discipline_id = last_discipline.id
+            data['discipline_id'] = discipline_id
         else:
             raise SetupError("No discipline available")
-
+    
+    try:
+        discipline = Discipline.objects.get(pk=discipline_id)
+    except Discipline.DoesNotExist:
+        raise SetupError(f"Discipline with id {discipline_id} not found")
+    
     # Remove keys that should not be passed to model
     for key in ['discipline', '_tablename', 'success', 'collection_id']:
         data.pop(key, None)
@@ -248,9 +256,9 @@ def create_collection(data):
         new_collection = Collection.objects.create(**data)
 
         # Create Preparation Types
-        # TODO
+        create_default_prep_types(new_collection, discipline.type)
         # Create picklists
-        create_picklist_defaults(new_collection)
+        create_default_picklists(new_collection, discipline.type)
         # Create Collection Object Type
         # TODO
 
