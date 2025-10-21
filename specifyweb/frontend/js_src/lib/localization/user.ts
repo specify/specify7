@@ -1014,7 +1014,7 @@ export const userText = createDictionary({
     "es-es": "Cambiar a diseño horizontal",
     "fr-fr": "Passer à l'affichage horizontal",
     "uk-ua": "Перейти до горизонтального розташування",
-    "de-ch": "Zum horizontalen Layout wechseln",
+    "de-ch": "Wechseln Sie zum horizontalen Layout",
     "pt-br": "Mudar para layout horizontal",
   },
   switchToVerticalLayout: {
