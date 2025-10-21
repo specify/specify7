@@ -459,17 +459,26 @@ class QueryFieldSpec(
                     cycle_detector,
                 )
         else:
-            query, orm_model, table, field = self.build_join(query, self.join_path)
-            if isinstance(field, TreeRankQuery):
-                tree_rank_idx = self.join_path.index(field)
+            tree_rank_idxs = [i for i, n in enumerate(self.join_path) if isinstance(n, TreeRankQuery)]
+            if tree_rank_idxs:
+                tree_rank_idx = tree_rank_idxs[0]
+                prefix = self.join_path[:tree_rank_idx] # up to (but not including) the tree-rank node
+                tree_rank_node = self.join_path[tree_rank_idx]
+                suffix = self.join_path[tree_rank_idx + 1 :] # field after the rank, e.g., "Name"
+
+                # Join only the prefix to obtain the correct starting alias (e.g., HostTaxon)
+                query, orm_model, table, _ = self.build_join(query, prefix)
+
+                # Build the CASE/joins for the tree rank starting at that alias
                 query, orm_field, field, table = query.handle_tree_field(
                     orm_model,
                     table,
-                    field,
-                    self.join_path[tree_rank_idx + 1 :],
+                    tree_rank_node,
+                    suffix,
                     self,
                 )
             else:
+                query, orm_model, table, field = self.build_join(query, self.join_path)
                 try:
                     field_name = self.get_field().name
                     orm_field = getattr(orm_model, field_name)
