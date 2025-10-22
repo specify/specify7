@@ -3,11 +3,12 @@ Autonumbering logic
 """
 
 
+from specifyweb.specify.api.utils import get_spmodel_class
 from .uiformatters import UIFormatter, get_uiformatters
-from ..models_utils.lock_tables import lock_tables
 import logging
 from typing import List, Tuple, Set
 from collections.abc import Sequence
+from django.db import transaction
 
 from specifyweb.specify.utils.scoping import Scoping
 from specifyweb.specify.datamodel import datamodel
@@ -43,11 +44,19 @@ def do_autonumbering(collection, obj, fields: list[tuple[UIFormatter, Sequence[s
         for formatter, vals in fields
     ]
 
-    with lock_tables(*get_tables_to_lock(collection, obj, [formatter.field_name for formatter, _ in fields])):
+    with transaction.atomic():
+        for lock_table_name in get_tables_to_lock(collection, obj, [formatter.field_name for formatter, _ in fields]):
+            try:
+                SpModel = get_spmodel_class(lock_table_name)
+            except AttributeError:
+                continue
+            
+            SpModel.objects.all().select_for_update() # maybe try filtering by collection_id, if it has the field to limit locking
+
         for apply_autonumbering_to in thunks:
             apply_autonumbering_to(obj)
 
-        obj.save()
+            obj.save()
 
 
 def get_tables_to_lock(collection, obj, field_names) -> set[str]:
