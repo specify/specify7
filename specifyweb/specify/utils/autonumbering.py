@@ -8,6 +8,7 @@ from ..models_utils.lock_tables import lock_tables
 import logging
 from typing import List, Tuple, Set
 from collections.abc import Sequence
+from django.db import transaction
 
 from specifyweb.specify.utils.scoping import Scoping
 from specifyweb.specify.datamodel import datamodel
@@ -35,17 +36,25 @@ def autonumber_and_save(collection, user, obj) -> None:
 def do_autonumbering(collection, obj, fields: list[tuple[UIFormatter, Sequence[str]]]) -> None:
     logger.debug("autonumbering %s fields: %s", obj, fields)
 
-    # The autonumber action is prepared and thunked outside the locked table
-    # context since it looks at other tables and that is not allowed by mysql
-    # if those tables are not also locked.
-    thunks = [
-        formatter.prepare_autonumber_thunk(collection, obj.__class__, vals)
-        for formatter, vals in fields
-    ]
+    with transaction.atomic():
+        for fmt, vals in fields:
+            fieldname = fmt.field_name.lower()
+            with_year = fmt.fillin_year(vals, None)
 
-    with lock_tables(*get_tables_to_lock(collection, obj, [formatter.field_name for formatter, _ in fields])):
-        for apply_autonumbering_to in thunks:
-            apply_autonumbering_to(obj)
+            # Build the queryset used to find the current max
+            qs = fmt._autonumber_queryset(collection, obj.__class__, fieldname, with_year)
+
+            # Apply row locks
+            biggest = (qs.select_for_update()
+                         .order_by('-' + fieldname)
+                         .first())
+
+            if biggest is None:
+                filled_vals = fmt.fill_vals_no_prior(with_year)
+            else:
+                filled_vals = fmt.fill_vals_after(getattr(biggest, fieldname))
+
+            setattr(obj, fieldname, ''.join(filled_vals))
 
         obj.save()
 
