@@ -309,7 +309,7 @@ export const batchEditText = createDictionary({
     "es-es": 'Confirmación BE de "{dataSet:string}"',
     "fr-fr": "Validation BE de « {dataSet:string} »",
     "pt-br": 'SEJA commit de "{dataSet:string}"',
-    "ru-ru": "BE-коммит «{dataSet:string}»",
+    "ru-ru": 'BE-коммит "{dataSet:string}"',
     "uk-ua": 'BE коміт "{dataSet:string}"',
   },
   deferForMatch: {
@@ -329,7 +329,7 @@ export const batchEditText = createDictionary({
     "es-es":
       "Si es verdadero, los campos invisibles de la base de datos no se usarán para la coincidencia. El valor predeterminado es {default:boolean}.",
     "fr-fr":
-      "Si cette option est définie sur « true », les champs invisibles de la base de données ne seront pas utilisés pour la correspondance. La valeur par défaut est {default:boolean}.",
+      "Si cette option est définie sur « vrai », les champs invisibles de la base de données ne seront pas utilisés pour la correspondance. La valeur par défaut est {default:boolean}.",
     "pt-br":
       "Se verdadeiro, os campos invisíveis do banco de dados não serão usados para correspondência. O valor padrão é {default:boolean}",
     "ru-ru":
