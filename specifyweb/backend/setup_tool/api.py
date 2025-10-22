@@ -306,53 +306,75 @@ def create_specifyuser(data):
     except Exception as e:
         raise SetupError(e)
 
+from .tree_defaults import create_default_tree
+
 # Trees
 def create_storage_tree(data):
-    # TODO: Use trees/create_default_trees
-    # https://github.com/specify/specify7/pull/6429
-    from specifyweb.specify.models import Storagetreedef
-    logger.debug(data)
-    ranks = data.pop('ranks')
-    # Placeholder treedef:
-    try:
-        Storagetreedef.objects.create(**data)
-        return {}
-    except Exception as e:
-        raise SetupError(e)
-
+    return create_tree('Storage', data)
 
 def create_global_geography_tree(data):
-    # TODO: Use trees/create_default_trees
-    # https://github.com/specify/specify7/pull/6429
-    from specifyweb.specify.models import Geographytreedef
-    ranks = data.pop('ranks')
-    # Placeholder treedef:
-    try:
-        Geographytreedef.objects.create(**data)
-        return {}
-    except Exception as e:
-        raise SetupError(e)
+    return create_tree('Geography', data)
 
 def create_geography_tree(data):
-    # TODO: Use trees/create_default_trees
-    # https://github.com/specify/specify7/pull/6429
-    from specifyweb.specify.models import Geographytreedef
-    ranks = data.pop('ranks')
-    # Placeholder treedef:
-    try:
-        Geographytreedef.objects.create(**data)
-        return {}
-    except Exception as e:
-        raise SetupError(e)
+    return create_tree('Geography', data)
 
 def create_taxon_tree(data):
+    return create_tree('Taxon', data)
+
+def create_geologictimeperiod_tree(data):
+    return create_tree('Geologictimeperiod', data)
+
+def create_lithostrat_tree(data):
+    return create_tree('Lithostrat', data)
+
+def create_tectonicunit_tree(data):
+    return create_tree('Tectonicunit', data)
+
+def create_tree(name: str, data):
     # TODO: Use trees/create_default_trees
     # https://github.com/specify/specify7/pull/6429
-    from specifyweb.specify.models import Taxontreedef
-    ranks = data.pop('ranks')
-    # Placeholder treedef:
+    from specifyweb.specify.models import Institution, Discipline
+
+    # Handle institution assignment
+    if 'institution' in data:
+        institution_url = data.pop('institution')
+        institution = strict_uri_to_model(institution_url, 'institution')
+        data['institution_id'] = institution[1]
+    else:
+        institution = Institution.objects.last()
+        data['institution_id'] = institution.id if institution else None
+
+    # Handle discipline reference from URL
+    if name != 'Storage':
+        discipline_id = data.get('discipline_id', None)
+        discipline_url = data.get('discipline')
+        if discipline_url:
+            try:
+                discipline_id = int(discipline_url.rstrip('/').split('/')[-1])
+                data['discipline_id'] = discipline_id
+            except ValueError:
+                raise SetupError("Invalid discipline URL")
+        if not data.get('discipline_id'):
+            last_discipline = Discipline.objects.last()
+            if last_discipline:
+                discipline_id = last_discipline.id
+                data['discipline_id'] = discipline_id
+            else:
+                raise SetupError("No discipline available")
+        discipline = Discipline.objects.get(pk=discipline_id)
+
+    # Get tree configuration
+    ranks = data.pop('ranks', dict())
+    
     try:
-        Taxontreedef.objects.create(**data)
-        return {}
+        kwargs = {}
+        kwargs['fullnamedirection'] = data.get('fullnamedirection', 1)
+        if name == 'Storage':
+            kwargs['institution'] = institution
+        else:
+            kwargs['discipline'] = discipline
+
+        treedef = create_default_tree(name, kwargs, ranks)
+        return {'treedef_id': treedef.id}
     except Exception as e:
         raise SetupError(e)

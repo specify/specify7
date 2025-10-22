@@ -1,5 +1,6 @@
 from specifyweb.celery_tasks import LogErrorsTask, app
 from specifyweb.backend.setup_tool import api
+from django.db import transaction
 
 from uuid import uuid4
 import logging
@@ -20,37 +21,63 @@ def setup_database_background(data):
 @app.task(bind=True)
 def setup_database_task(self, data):
     try:
-        logger.debug('## SETTING UP DATABASE WITH SETTINGS:##')
-        logger.debug(data)
+        with transaction.atomic():
+            logger.debug('## SETTING UP DATABASE WITH SETTINGS:##')
+            logger.debug(data)
 
-        logger.debug('Creating institution')
-        api.create_institution(data['institution'])
+            logger.debug('Creating institution')
+            api.create_institution(data['institution'])
 
-        logger.debug('Creating storage tree')
-        api.create_storage_tree(data['storagetreedef'])
+            logger.debug('Creating storage tree')
+            api.create_storage_tree(data['storagetreedef'])
 
-        if data['institution'].get('issinglegeographytree', False) == True:
-            logger.debug('Creating singular geography tree')
-            api.create_global_geography_tree(data['globalgeographytreedef'])
+            if data['institution'].get('issinglegeographytree', False) == True:
+                logger.debug('Creating singular geography tree')
+                api.create_global_geography_tree(data['globalgeographytreedef'])
 
-        logger.debug('Creating division')
-        api.create_division(data['division'])
+            logger.debug('Creating division')
+            api.create_division(data['division'])
 
-        logger.debug('Creating discipline')
-        api.create_discipline(data['discipline'])
+            logger.debug('Creating discipline')
+            api.create_discipline(data['discipline'])
 
-        if data['institution'].get('issinglegeographytree', False) == False:
-            logger.debug('Creating geography tree')
-            api.create_geography_tree(data['geographytreedef'])
+            discipline_type = data['discipline'].get('type', '')
+            if discipline_type == 'geology' or 'paleo' in discipline_type:
+                logger.debug('Creating Chronostratigraphy tree')
+                api.create_geologictimeperiod_tree({
+                    'fullnamedirection': 1,
+                    'ranks': {
+                        '0': True
+                    }
+                })
+                logger.debug('Creating Lithostratigraphy tree')
+                api.create_lithostrat_tree({
+                    'fullnamedirection': 1,
+                    'ranks': {
+                        '0': True
+                    }
+                })
+                logger.debug('Creating Tectonic Unit tree')
+                api.create_tectonicunit_tree({
+                    'fullnamedirection': 1,
+                    'ranks': {
+                        '0': True
+                    }
+                })
 
-        logger.debug('Creating taxon tree')
-        api.create_taxon_tree(data['taxontreedef'])
 
-        logger.debug('Creating collection')
-        api.create_collection(data['collection'])
+            if data['institution'].get('issinglegeographytree', False) == False:
+                logger.debug('Creating geography tree')
+                api.create_geography_tree(data['geographytreedef'])
 
-        logger.debug('Creating specify user')
-        api.create_specifyuser(data['specifyuser'])
+            logger.debug('Creating taxon tree')
+            api.create_taxon_tree(data['taxontreedef'])
+
+            logger.debug('Creating collection')
+            api.create_collection(data['collection'])
+
+            logger.debug('Creating specify user')
+            api.create_specifyuser(data['specifyuser'])
     except Exception as e:
         logger.exception(f'Error setting up database: {e}')
         raise
