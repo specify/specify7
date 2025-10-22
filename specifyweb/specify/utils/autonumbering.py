@@ -4,10 +4,11 @@ Autonumbering logic
 
 
 from .uiformatters import UIFormatter, get_uiformatters
-from ..models_utils.lock_tables import lock_tables
+from ..models_utils.lock_tables import lock_tables, autonumbering_full_lock
 import logging
 from typing import List, Tuple, Set
 from collections.abc import Sequence
+from django.db import transaction
 
 from specifyweb.specify.utils.scoping import Scoping
 from specifyweb.specify.datamodel import datamodel
@@ -43,7 +44,8 @@ def do_autonumbering(collection, obj, fields: list[tuple[UIFormatter, Sequence[s
         for formatter, vals in fields
     ]
 
-    with lock_tables(*get_tables_to_lock(collection, obj, [formatter.field_name for formatter, _ in fields])):
+    tables_to_lock = list(get_tables_to_lock(collection, obj, [formatter.field_name for formatter, _ in fields]))
+    with autonumbering_full_lock(collection, tables_to_lock):
         for apply_autonumbering_to in thunks:
             apply_autonumbering_to(obj)
 

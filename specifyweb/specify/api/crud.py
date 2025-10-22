@@ -44,32 +44,35 @@ def get_resource(name, id, checker: ReadPermChecker, recordsetid=None) -> dict:
 
 def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, parent_relationship=None):
     """Create a new instance of 'model' and populate it with 'data'."""
-    logger.debug("creating %s with data: %s", model, data)
-    if isinstance(model, str):
-        model = get_model_or_404(model)
+    with transaction.atomic():
+        logger.debug("creating %s with data: %s", model, data)
+        if isinstance(model, str):
+            model = get_model_or_404(model)
 
-    data = cleanData(model, data, parent_relationship)
-    obj = model()
-    _, _, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
-    set_fields_from_data(obj, data)
-    set_field_if_exists(obj, 'createdbyagent', agent)
-    set_field_if_exists(obj, 'collectionmemberid', collection.id)
+        data = cleanData(model, data, parent_relationship)
+        obj = model()
+        _, _, handle_remote_to_ones = handle_fk_fields(collection, agent, obj, data)
+        set_fields_from_data(obj, data)
+        set_field_if_exists(obj, 'createdbyagent', agent)
+        set_field_if_exists(obj, 'collectionmemberid', collection.id)
+    
     try:
         autonumber_and_save(collection, agent.specifyuser, obj)
     except AutonumberOverflowException as e:
         logger.warn("autonumbering overflow: %s", e)
 
-    if obj.id is not None: # was the object actually saved?
-        check_table_permissions(collection, agent, obj, "create")
-        auditlog.insert(obj, agent, parent_obj)
+    with transaction.atomic():
+        if obj.id is not None: # was the object actually saved?
+            check_table_permissions(collection, agent, obj, "create")
+            auditlog.insert(obj, agent, parent_obj)
 
-    handle_remote_to_ones(obj)
-    handle_to_many(collection, agent, obj, data)
-    _handle_special_update_posts(obj)
+        handle_remote_to_ones(obj)
+        handle_to_many(collection, agent, obj, data)
+        _handle_special_update_posts(obj)
+    
     return obj
 
 
-@transaction.atomic
 def post_resource(collection, agent, name: str, data, recordsetid: int | None=None):
     """Create a new resource in the database.
 
