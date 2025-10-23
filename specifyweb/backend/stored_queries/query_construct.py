@@ -4,6 +4,7 @@ from collections import namedtuple, deque
 from sqlalchemy import orm, sql, or_
 from sqlalchemy import inspect
 from sqlalchemy.orm.util import AliasedClass
+from sqlalchemy.inspection import inspect as sa_inspect
 
 import specifyweb.specify.models as spmodels
 from specifyweb.backend.trees.utils import get_treedefs
@@ -31,19 +32,24 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
     def handle_tree_field(self, node, table, tree_rank: TreeRankQuery, next_join_path, current_field_spec: QueryFieldSpec):
         query = self
-        if query.collection is None: raise AssertionError( # Not sure it makes sense to query across collections
-            f"No Collection found in Query for {table}",
-            {"table" : table,
-             "localizationKey" : "noCollectionInQuery"}) 
-        logger.info('handling treefield %s rank: %s field: %s', table, tree_rank.name, next_join_path)
+        if query.collection is None:
+            raise AssertionError(
+                f"No Collection found in Query for {table}",
+                {"table": table, "localizationKey": "noCollectionInQuery"},
+            )
+        logger.info("handling treefield %s rank: %s field: %s", table, tree_rank.name, next_join_path)
 
         treedefitem_column = table.name + 'TreeDefItemID'
         treedef_column = table.name + 'TreeDefID'
 
-        # Ensure 'node' is an ORM alias (start anchor). If it’s a mapped class, alias it.
-        start_alias = node if isinstance(node, AliasedClass) else orm.aliased(node)
+        # Determine starting anchor correctly:
+        # If node is already an alias (from a relationship path), use that alias.
+        # If node is the mapped class (base table), don't alias it, start from the base table.
+        is_alias = isinstance(node, AliasedClass)
+        start_alias = node                       # keep as-is
+        mapped_cls = sa_inspect(node).mapper.class_ if is_alias else node
 
-        # Use the specific start alias in the join cache key so different branches don't collide
+        # Use the specific start anchor in the cache key, so each branch has its own chain
         cache_key = (start_alias, "TreeRanks")
 
         if cache_key in query.join_cache:
@@ -51,17 +57,12 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             ancestors, treedefs = query.join_cache[cache_key]
         else:
             treedefs = get_treedefs(query.collection, table.name)
-
-            # We need to take the max here. Otherwise, it is possible that the same rank
-            # name may not occur at the same level across tree defs.
             max_depth = max(depth for _, depth in treedefs)
 
             # Start ancestry from the provided alias (e.g., HostTaxon alias)
             ancestors = [start_alias]
 
-            # Create new aliases of the *mapped class* behind the start alias
-            mapped_cls = inspect(start_alias).mapper.class_
-
+            # Build parent chain using aliases of the mapped class
             for _ in range(max_depth - 1):
                 ancestor = orm.aliased(mapped_cls)
                 query = query.outerjoin(ancestor, ancestors[-1].ParentID == ancestor._id)
