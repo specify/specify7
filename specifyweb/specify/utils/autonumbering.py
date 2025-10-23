@@ -4,10 +4,11 @@ Autonumbering logic
 
 
 from .uiformatters import UIFormatter, get_uiformatters
-from ..models_utils.lock_tables import mysql_named_lock
+from ..models_utils.lock_tables import mysql_named_lock, autonumbering_lock_table
 import logging
 from typing import List, Tuple, Set
 from collections.abc import Sequence
+from django.db import transaction
 
 from specifyweb.specify.utils.scoping import Scoping
 from specifyweb.specify.datamodel import datamodel
@@ -49,10 +50,15 @@ def do_autonumbering(collection, obj, fields: list[tuple[UIFormatter, Sequence[s
     lock_name = f"autonumber:{collection.discipline_id}:{obj._meta.db_table}:{key_fields}"
 
     # Serialize the autonumbering critical section without table locks.
-    with mysql_named_lock(lock_name, timeout=10):
+    db_name = transaction.get_connection().alias
+    table_name = obj._meta.db_table
+    with autonumbering_lock_table(db_name, table_name):
         for apply_autonumbering_to in thunks:
             apply_autonumbering_to(obj)
         obj.save()
+
+def verify_autonumbering(collection, obj, fields):
+    pass
 
 def get_tables_to_lock(collection, obj, field_names) -> set[str]:
     # TODO: Include the fix for https://github.com/specify/specify7/issues/4148
@@ -81,6 +87,30 @@ def get_tables_to_lock(collection, obj, field_names) -> set[str]:
 
     return tables
 
+def get_tables_to_lock_new(collection, obj, field_names) -> list[str]:
+    from django.apps import apps
+    from specifyweb.backend.businessrules.models import UniquenessRule, UniquenessRuleField  # adjust
+    obj_table = obj._meta.db_table
+
+    # Start with the target table
+    needed = {obj_table}
+
+    # If you will query group mappings INSIDE the lock, add them:
+    # Pick exactly one mapping table based on scope; example for collection:
+    needed |= {"autonumberingscheme", "autonumsch_coll"}  # or _dsp / _div
+
+    # If you read rules/fields INSIDE the lock, add both:
+    needed |= {UniquenessRule._meta.db_table, UniquenessRuleField._meta.db_table}
+
+    # If your scope traversal touches a related FK table INSIDE the lock, add it:
+    Discipline = apps.get_model("specify", "Discipline")
+    needed.add(Discipline._meta.db_table)  # only if actually read under the lock
+
+    if obj_table == "component":
+        needed.add("collectionobject")
+
+    # Return in deterministic order for consistent lock ordering (reduces deadlocks)
+    return sorted(needed)
 
 def get_tables_from_field_path(model: str, field_path: str) -> list[str]:
     tables = []

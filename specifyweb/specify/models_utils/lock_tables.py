@@ -1,4 +1,4 @@
-from django.db import connection
+from django.db import connection, transaction
 from contextlib import contextmanager
 import logging
 
@@ -20,7 +20,7 @@ def lock_tables(*tables):
             cursor.execute('unlock tables')
 
 @contextmanager
-def mysql_named_lock(name: str, timeout: int = 10):
+def mysql_named_lock(lock_name: str, timeout: int = 10):
     """
     Connection-scoped mutex using MySQL GET_LOCK/RELEASE_LOCK.
     Safe to use inside transaction.atomic().
@@ -30,17 +30,27 @@ def mysql_named_lock(name: str, timeout: int = 10):
         return
 
     with connection.cursor() as cur:
-        cur.execute("SELECT GET_LOCK(%s, %s)", [name, timeout])
+        cur.execute("SELECT GET_LOCK(%s, %s)", [lock_name, timeout])
         got = cur.fetchone()[0]
 
     if not got:
-        raise TimeoutError(f"Could not acquire MySQL named lock {name!r}")
+        raise TimeoutError(f"Could not acquire MySQL named lock {lock_name!r}")
 
     try:
         yield
     finally:
         try:
             with connection.cursor() as cur:
-                cur.execute("SELECT RELEASE_LOCK(%s)", [name])
+                cur.execute("SELECT RELEASE_LOCK(%s)", [lock_name])
         except Exception:
-            logger.info("Failed to release MySQL named lock %r", name, exc_info=True)
+            logger.info("Failed to release MySQL named lock %r", lock_name, exc_info=True)
+
+def get_autonumbering_lock_name(db_name, table_name):
+    return f"autonumbering:{db_name.to_lower()}:{table_name.to_lower()}"
+
+@contextmanager
+def autonumbering_lock_table(db_name, table_name):
+    lock_name = get_autonumbering_lock_name(db_name, table_name)
+    with mysql_named_lock(lock_name):
+        yield
+
