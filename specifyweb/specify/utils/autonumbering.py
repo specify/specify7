@@ -33,7 +33,7 @@ def autonumber_and_save(collection, user, obj) -> None:
         obj.save()
 
 
-def do_autonumbering(collection, obj, fields: list[tuple[UIFormatter, Sequence[str]]]) -> None:
+def do_autonumbering_old(collection, obj, fields: list[tuple[UIFormatter, Sequence[str]]]) -> None:
     logger.debug("autonumbering %s fields: %s", obj, fields)
 
     # The autonumber action is prepared and thunked outside the locked table
@@ -44,11 +44,6 @@ def do_autonumbering(collection, obj, fields: list[tuple[UIFormatter, Sequence[s
         for formatter, vals in fields
     ]
 
-    # Build a stable mutex key that scopes contention correctly.
-    # Example: per-discipline + model + the specific fields being autonumbered.
-    key_fields = ",".join(sorted(f.field_name for f, _ in fields))
-    lock_name = f"autonumber:{collection.discipline_id}:{obj._meta.db_table}:{key_fields}"
-
     # Serialize the autonumbering critical section without table locks.
     db_name = transaction.get_connection().alias
     table_name = obj._meta.db_table
@@ -56,6 +51,51 @@ def do_autonumbering(collection, obj, fields: list[tuple[UIFormatter, Sequence[s
         for apply_autonumbering_to in thunks:
             apply_autonumbering_to(obj)
         obj.save()
+
+def do_autonumbering(collection, obj, fields: list[tuple[UIFormatter, Sequence[str]]]) -> None:
+    logger.debug("autonumbering %s fields: %s", obj, fields)
+
+    # Prepare the thunks/queries (ok to prep outside transaction)
+    prepared = []
+    for formatter, vals in fields:
+        with_year = formatter.fillin_year(vals, None)
+        fieldname = formatter.field_name.lower()
+        prepared.append((formatter, fieldname, with_year))
+
+    db_name = transaction.get_connection().alias
+    table_name = obj._meta.db_table
+    with autonumbering_lock_table(db_name, table_name):
+        with transaction.atomic():
+            for formatter, fieldname, with_year in prepared:
+                # Build the exact queryset that limits by regex and scope
+                # Use django's select_for_update() to lock the current max row itself
+                qs_max = formatter._autonumber_queryset(collection, obj.__class__, fieldname, with_year)
+                biggest_obj = (qs_max
+                            .select_for_update()
+                            .order_by('-' + fieldname)
+                            .first())
+
+                if biggest_obj is None:
+                    filled_vals = formatter.fill_vals_no_prior(with_year)
+                    setattr(obj, fieldname, ''.join(filled_vals))
+                    continue
+
+                # Lock the range of all rows in-scope with field >= biggest_value
+                biggest_value = getattr(biggest_obj, fieldname)
+                formatter.lock_ge_range(
+                    collection=collection,
+                    model=obj.__class__,
+                    fieldname=fieldname,
+                    with_year=with_year,
+                    biggest_value=biggest_value,
+                )
+
+                # Get next value off the locked biggest and assign
+                filled_vals = formatter.fill_vals_after(biggest_value)
+                setattr(obj, fieldname, ''.join(filled_vals))
+
+            # Save once after all fields are assigned
+            obj.save()
 
 def verify_autonumbering(collection, obj, fields):
     pass
