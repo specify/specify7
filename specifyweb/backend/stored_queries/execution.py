@@ -57,6 +57,7 @@ class BuildQueryProps(NamedTuple):
     formatauditobjs: bool = False
     distinct: bool = False
     series: bool = False
+    search_synonymy: bool = False
     implicit_or: bool = True
     formatter_props: ObjectFormatterProps = ObjectFormatterProps(
         format_agent_type = False,
@@ -582,6 +583,7 @@ def run_ephemeral_query(collection, user, spquery):
     recordsetid = spquery.get("recordsetid", None)
     distinct = spquery["selectdistinct"]
     series = spquery.get('smushed', None)
+    search_synonymy = spquery['searchsynonymy'] 
     tableid = spquery["contexttableid"]
     count_only = spquery["countonly"]
     format_audits = spquery.get("formatauditrecids", False)
@@ -595,6 +597,7 @@ def run_ephemeral_query(collection, user, spquery):
             tableid=tableid,
             distinct=distinct,
             series=series,
+            search_synonymy=search_synonymy,
             count_only=count_only,
             field_specs=field_specs,
             limit=limit,
@@ -783,6 +786,7 @@ def execute(
     tableid,
     distinct,
     series,
+    search_synonymy,
     count_only,
     field_specs,
     limit,
@@ -805,6 +809,7 @@ def execute(
             formatauditobjs=formatauditobjs,
             distinct=distinct,
             series=series,
+            search_synonymy=search_synonymy,
             formatter_props=formatter_props,
         ),
     )
@@ -891,6 +896,8 @@ def build_query(
     series = (only for CO) if True, group by all display fields.
     Group catalog numbers that fall within the same range together.
     Return all record IDs associated with a row.
+
+    search_synonymy = if True, search synonym nodes as well, and return all record IDs associated with parent node
     """
     model = models.models_by_tableid[tableid]
     id_field = model._id
