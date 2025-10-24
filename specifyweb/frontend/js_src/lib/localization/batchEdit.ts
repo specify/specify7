@@ -304,13 +304,13 @@ export const batchEditText = createDictionary({
     'uk-ua': 'Коміт завершено без помилок',
   },
   batchEditRecordSetName: {
-    "en-us": 'BE commit of "{dataSet:string}"',
-    "de-ch": "BE-Commit von „{dataSet:string}“",
-    "es-es": 'Confirmación BE de "{dataSet:string}"',
-    "fr-fr": "Validation BE de « {dataSet:string} »",
-    "pt-br": 'SEJA commit de "{dataSet:string}"',
-    "ru-ru": 'BE-коммит "{dataSet:string}"',
-    "uk-ua": 'BE коміт "{dataSet:string}"',
+    'en-us': 'BE commit of "{dataSet:string}"',
+    'de-ch': 'BE-Commit von „{dataSet:string}“',
+    'es-es': 'Confirmación BE de "{dataSet:string}"',
+    'fr-fr': 'Validation BE de « {dataSet:string} »',
+    'pt-br': 'SEJA commit de "{dataSet:string}"',
+    'ru-ru': 'BE-коммит "{dataSet:string}"',
+    'uk-ua': 'BE коміт "{dataSet:string}"',
   },
   deferForMatch: {
     'en-us': 'Use only visible fields for match',
@@ -322,20 +322,20 @@ export const batchEditText = createDictionary({
     'uk-ua': 'Використовувати лише видимі поля для збігу',
   },
   deferForMatchDescription: {
-    "en-us":
-      "If true, invisible database fields will not be used for matching. Default value is {default:boolean}",
-    "de-ch":
-      "Wenn diese Option aktiviert ist, werden unsichtbare Datenbankfelder nicht für den Abgleich verwendet. Der Standardwert ist {default:boolean}.",
-    "es-es":
-      "Si es verdadero, los campos invisibles de la base de datos no se usarán para la coincidencia. El valor predeterminado es {default:boolean}.",
-    "fr-fr":
-      "Si cette option est définie sur « vrai », les champs invisibles de la base de données ne seront pas utilisés pour la correspondance. La valeur par défaut est {default:boolean}.",
-    "pt-br":
-      "Se verdadeiro, os campos invisíveis do banco de dados não serão usados para correspondência. O valor padrão é {default:boolean}",
-    "ru-ru":
-      "Если задано значение true, невидимые поля базы данных не будут использоваться для сопоставления. Значение по умолчанию: {default:boolean}.",
-    "uk-ua":
-      "Якщо значення true, невидимі поля бази даних не використовуватимуться для зіставлення. Значення за замовчуванням — {default:boolean}",
+    'en-us':
+      'If true, invisible database fields will not be used for matching. Default value is {default:boolean}',
+    'de-ch':
+      'Wenn diese Option aktiviert ist, werden unsichtbare Datenbankfelder nicht für den Abgleich verwendet. Der Standardwert ist {default:boolean}.',
+    'es-es':
+      'Si es verdadero, los campos invisibles de la base de datos no se usarán para la coincidencia. El valor predeterminado es {default:boolean}.',
+    'fr-fr':
+      'Si cette option est définie sur « vrai », les champs invisibles de la base de données ne seront pas utilisés pour la correspondance. La valeur par défaut est {default:boolean}.',
+    'pt-br':
+      'Se verdadeiro, os campos invisíveis do banco de dados não serão usados para correspondência. O valor padrão é {default:boolean}',
+    'ru-ru':
+      'Если задано значение true, невидимые поля базы данных не будут использоваться для сопоставления. Значение по умолчанию: {default:boolean}.',
+    'uk-ua':
+      'Якщо значення true, невидимі поля бази даних не використовуватимуться для зіставлення. Значення за замовчуванням — {default:boolean}',
   },
   deferForNullCheck: {
     'en-us': 'Use only visible fields for empty record check',

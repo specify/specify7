@@ -128,9 +128,9 @@ export const treeText = createDictionary({
       'Узел {treeName:string} «{nodeName:string}» будет помещен вместе со всеми его потомками под новый родительский узел «{parentName:string}».',
     'es-es':
       'El nodo {treeName:string} "{nodeName:string}" se colocará, junto con todos sus descendientes, bajo el nuevo padre "{parentName:string}".',
-    "fr-fr":
-      "Le nœud {treeName:string} « {nodeName:string} » sera placé, avec tous ses descendants, sous le nouveau parent « {parentName:string} ».",
-    "uk-ua":
+    'fr-fr':
+      'Le nœud {treeName:string} « {nodeName:string} » sera placé, avec tous ses descendants, sous le nouveau parent « {parentName:string} ».',
+    'uk-ua':
       'Вузол {treeName:string} "{nodeName:string}" буде розміщено разом із усіма його нащадками під новим батьківським вузлом "{parentName:string}".',
     'de-ch':
       'Der {treeName:string} Knoten "{nodeName:string}" wird zusammen mit allen seinen Unterknoten unter den neuen übergeordneten Knoten "{parentName:string}" platziert.',
@@ -292,11 +292,11 @@ export const treeText = createDictionary({
     'ru-ru': 'Выберите цель для синонимизации «{nodeName:string}»',
     'es-es':
       'Seleccione un objetivo para que "{nodeName:string}" se convierta en sinónimo',
-    "fr-fr":
-      "Sélectionnez une cible pour laquelle « {nodeName:string} » doit être synonyme",
-    "uk-ua": 'Виберіть ціль для "{nodeName:string}", який буде синонімічним',
-    "de-ch": 'Wähle Ziel um "{nodeName:string}" daran zu synonymisieren',
-    "pt-br": 'Selecione um alvo para "{nodeName:string}" ser sinonimizado',
+    'fr-fr':
+      'Sélectionnez une cible pour laquelle « {nodeName:string} » doit être synonyme',
+    'uk-ua': 'Виберіть ціль для "{nodeName:string}", який буде синонімічним',
+    'de-ch': 'Wähle Ziel um "{nodeName:string}" daran zu synonymisieren',
+    'pt-br': 'Selecione um alvo para "{nodeName:string}" ser sinonimizado',
   },
   synonymizeMessage: {
     'en-us':

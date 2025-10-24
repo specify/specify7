@@ -84,34 +84,43 @@ def assign_users_to_roles(apps=apps) -> None:
         "Guest": "Read Only - Legacy",
     }
 
-    cursor = connection.cursor()
-    cursor.execute("""
-        SELECT
-            u.SpecifyUserID as user_id,
-            u.Name as user_name,
-            u.UserType as user_type,
-            p.usergroupscopeid as collection_id,
-            c.CollectionName as collection_name
-        FROM specifyuser u
-        JOIN specifyuser_spprincipal up ON up.SpecifyUserID = u.SpecifyUserID
-        JOIN spprincipal p ON p.SpPrincipalID = up.SpPrincipalID
-        JOIN collection c ON c.UserGroupScopeId = p.userGroupScopeID
-        WHERE p.groupType IS NULL
-        AND u.SpecifyUserID NOT IN (
-            SELECT ur.specifyuser_id
-            FROM spuserrole ur 
-            JOIN sprole r ON r.id = ur.role_id 
-            WHERE r.collection_id = p.usergroupscopeid
-        )
-        AND c.UserGroupScopeId NOT IN (
-            SELECT DISTINCT r.collection_id
-            FROM spuserrole ur 
-            JOIN sprole r ON r.id = ur.role_id
-            JOIN collection c ON c.UserGroupScopeId = r.collection_id
-        );
-    """)
+    results = []
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM information_schema.tables
+            WHERE table_name IN ('specifyuser_spprincipal', 'spuserrole')
+            AND table_schema = DATABASE();
+        """)
+        if cursor.fetchone()[0] < 2:
+            return # Newly created sp7 databases don't have these sp6 specific tables.
+        cursor.execute("""
+            SELECT
+                u.SpecifyUserID as user_id,
+                u.Name as user_name,
+                u.UserType as user_type,
+                p.usergroupscopeid as collection_id,
+                c.CollectionName as collection_name
+            FROM specifyuser u
+            JOIN specifyuser_spprincipal up ON up.SpecifyUserID = u.SpecifyUserID
+            JOIN spprincipal p ON p.SpPrincipalID = up.SpPrincipalID
+            JOIN collection c ON c.UserGroupScopeId = p.userGroupScopeID
+            WHERE p.groupType IS NULL
+            AND u.SpecifyUserID NOT IN (
+                SELECT ur.specifyuser_id
+                FROM spuserrole ur 
+                JOIN sprole r ON r.id = ur.role_id 
+                WHERE r.collection_id = p.usergroupscopeid
+            )
+            AND c.UserGroupScopeId NOT IN (
+                SELECT DISTINCT r.collection_id
+                FROM spuserrole ur 
+                JOIN sprole r ON r.id = ur.role_id
+                JOIN collection c ON c.UserGroupScopeId = r.collection_id
+            );
+        """)
 
-    results = cursor.fetchall()
+        results = cursor.fetchall()
     
     for user_id, user_name, user_type, collection_id, collection_name in results:
         if user_type not in {'Manager', 'FullAccess', 'LimitedAccess', 'Guest'}:

@@ -276,14 +276,14 @@ export const backEndText = createDictionary({
       'Não é possível excluir o item de definição da árvore de nível raiz',
   },
   nodeParentInvalidRank: {
-    "en-us": "Tree node's parent has rank greater than itself",
-    "es-es": "El padre de un nodo del árbol tiene un rango mayor que él mismo",
-    "fr-fr": "Le parent du nœud d'arbre a un rang supérieur à lui-même",
-    "ru-ru": "Родительский узел дерева имеет ранг выше, чем он сам.",
-    "uk-ua": "Батько вузла дерева має ранг, вищий за нього самого",
-    "de-ch":
-      "Der übergeordnete Knoten des Baumknotens hat einen höheren Rang als er selbst",
-    "pt-br": "O nó pai da árvore tem classificação maior que a sua",
+    'en-us': "Tree node's parent has rank greater than itself",
+    'es-es': 'El padre de un nodo del árbol tiene un rango mayor que él mismo',
+    'fr-fr': "Le parent du nœud d'arbre a un rang supérieur à lui-même",
+    'ru-ru': 'Родительский узел дерева имеет ранг выше, чем он сам.',
+    'uk-ua': 'Батько вузла дерева має ранг, вищий за нього самого',
+    'de-ch':
+      'Der übergeordnete Knoten des Baumknotens hat einen höheren Rang als er selbst',
+    'pt-br': 'O nó pai da árvore tem classificação maior que a sua',
   },
   nodeChildrenInvalidRank: {
     'en-us': "Tree node's rank is greater than some of its children",

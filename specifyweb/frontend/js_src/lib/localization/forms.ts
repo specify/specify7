@@ -419,13 +419,13 @@ export const formsText = createDictionary({
     'pt-br': 'Salvar conflito',
   },
   saveConflictDescription: {
-    "en-us":
-      "The data shown on this page has been changed by another user or in another browser tab and is out of date. The page must be reloaded to prevent inconsistent data from being saved.",
-    "ru-ru":
-      "Данные на этой странице были изменены другим пользователем или на другой вкладке браузера и устарели. Необходимо перезагрузить страницу, чтобы предотвратить сохранение несоответствующих данных.",
-    "es-es":
-      "Los datos que se muestran en esta página han sido modificados por otro usuario o en otra pestaña del navegador y están desactualizados. Es necesario recargar la página para evitar que se guarden datos incoherentes.",
-    "fr-fr":
+    'en-us':
+      'The data shown on this page has been changed by another user or in another browser tab and is out of date. The page must be reloaded to prevent inconsistent data from being saved.',
+    'ru-ru':
+      'Данные на этой странице были изменены другим пользователем или на другой вкладке браузера и устарели. Необходимо перезагрузить страницу, чтобы предотвратить сохранение несоответствующих данных.',
+    'es-es':
+      'Los datos que se muestran en esta página han sido modificados por otro usuario o en otra pestaña del navegador y están desactualizados. Es necesario recargar la página para evitar que se guarden datos incoherentes.',
+    'fr-fr':
       "Les données affichées sur cette page ont été modifiées par un autre utilisateur ou dans un autre onglet du navigateur et sont obsolètes. La page doit être rechargée pour éviter l'enregistrement de données incohérentes.",
     'uk-ua':
       'Дані, що відображаються на цій сторінці, були змінені іншим користувачем або в іншій вкладці браузера та застарілі. Сторінку необхідно перезавантажити, щоб запобігти збереженню невідповідних даних.',
@@ -831,14 +831,14 @@ export const formsText = createDictionary({
     'pt-br': 'Nada encontrado',
   },
   carryForward: {
-    comment: "Verb. Button label",
-    "en-us": "Carry Forward",
-    "ru-ru": "Перенести вперед",
-    "es-es": "Llevar adelante",
-    "fr-fr": "Reporter",
-    "uk-ua": "Перенести далі",
-    "de-ch": "Übertrag",
-    "pt-br": "Levar adiante",
+    comment: 'Verb. Button label',
+    'en-us': 'Carry Forward',
+    'ru-ru': 'Перенести вперед',
+    'es-es': 'Llevar adelante',
+    'fr-fr': 'Reporter',
+    'uk-ua': 'Перенести далі',
+    'de-ch': 'Übertrag',
+    'pt-br': 'Levar adiante',
   },
   carryForwardEnabled: {
     'en-us': 'Show Carry Forward button',
@@ -1042,22 +1042,22 @@ export const formsText = createDictionary({
     'pt-br': 'Numeração automática',
   },
   autoNumberByYear: {
-    "en-us": "Auto-number by year",
-    "de-ch": "Auto-Nummer nach Jahr",
-    "es-es": "Auto-número por año",
-    "fr-fr": "Auto-numéro par année",
-    "ru-ru": "Автонумерация по году",
-    "uk-ua": "Автонумерація за роком",
-    "pt-br": "Numeração automática por ano",
+    'en-us': 'Auto-number by year',
+    'de-ch': 'Auto-Nummer nach Jahr',
+    'es-es': 'Auto-número por año',
+    'fr-fr': 'Auto-numéro par année',
+    'ru-ru': 'Автонумерация по году',
+    'uk-ua': 'Автонумерація за роком',
+    'pt-br': 'Numeração automática por ano',
   },
   autoNumber: {
-    "en-us": "Auto-number",
-    "de-ch": "Auto-Nummer",
-    "es-es": "Auto-número",
-    "fr-fr": "Auto-numéro",
-    "ru-ru": "Автонумерация",
-    "uk-ua": "Автонумерація",
-    "pt-br": "Numeração automática",
+    'en-us': 'Auto-number',
+    'de-ch': 'Auto-Nummer',
+    'es-es': 'Auto-número',
+    'fr-fr': 'Auto-numéro',
+    'ru-ru': 'Автонумерация',
+    'uk-ua': 'Автонумерація',
+    'pt-br': 'Numeração automática',
   },
   editFormDefinition: {
     'en-us': 'Edit Form Definition',
