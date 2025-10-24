@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
@@ -69,7 +69,21 @@ export const createEmptyDataSet = async <
 export function DataSetMetaOverlay(): JSX.Element | null {
   const { dataSetId = '' } = useParams();
   const handleClose = React.useContext(OverlayContext);
-  const [dataset] = useAsyncState<Dataset>(
+  const [dataset] = useAsyncState<Dataset>
+  const navigate = useNavigate();
+
+
+  // const handleDelete = async () => {
+  //   try {
+  //     await ajax<void>(`/api/workbench/dataset/${dataSetId}/`, {
+  //       method: 'DELETE',
+  //       headers: { Accept: 'application/json' },
+  //     });
+  //     navigate("specify/", { replace: true });
+  //   } catch (error) {
+  //     console.error('Failed to delete dataset:', error);
+  //   }
+
     React.useCallback(
       async () =>
         ajax<Dataset>(`/api/workbench/dataset/${dataSetId}/`, {
@@ -79,15 +93,13 @@ export function DataSetMetaOverlay(): JSX.Element | null {
     ),
     true
   );
-
-  const navigate = useNavigate();
-
+  
   return typeof dataset === 'object' ? (
     <WbDataSetMeta
       dataset={dataset}
       onChange={handleClose}
       onClose={handleClose}
-      onDeleted= { handleClose } //{(): void => navigate('/specify/', { replace: true })}
+      onDeleted={handleClose}
     />
   ) : null;
 }
