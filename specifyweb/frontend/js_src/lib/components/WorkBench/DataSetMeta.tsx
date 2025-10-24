@@ -31,6 +31,9 @@ import { unsafeNavigate } from '../Router/Router';
 import { getMaxDataSetLength, uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { datasetVariants } from '../WbUtils/datasetVariants';
+import { resourceEvents } from '../DataModel/resource';
+import { SpecifyResource } from '../DataModel/legacyTypes';
+import { AnySchema } from '../DataModel/helperTypes';
 
 const syncNameAndRemarks = async (
   name: LocalizedString,
@@ -144,6 +147,8 @@ export function DataSetMeta({
                     expectedErrors: [Http.NOT_FOUND, Http.NO_CONTENT],
                   }).then(() => {
                     setIsDeleted(true);
+                    resourceEvents.trigger('deleted',
+                      { id : dataset.id, specifyTable: tables.Spdataset, } as unknown as SpecifyResource<AnySchema> );
                   })
                 );
               }}

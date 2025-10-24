@@ -14,6 +14,7 @@ import '../../../css/workbench.css';
 
 import type { HotTable } from '@handsontable/react';
 import type Handsontable from 'handsontable';
+import { useNavigate } from 'react-router-dom';
 import React from 'react';
 
 import { useUnloadProtect } from '../../hooks/navigation';
@@ -49,6 +50,7 @@ import { useDisambiguationDialog } from './useDisambiguationDialog';
 import { WbAttachmentsPreview } from './WbAttachmentsPreview';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { WbValidation } from './WbValidation';
+import { resourceEvents } from '../DataModel/resource';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -85,6 +87,14 @@ export function WbView({
         : dataset.rows,
     [dataset]
   );
+const navigate = useNavigate();
+    React.useEffect(() => {
+      resourceEvents.on('deleted', (resource) => {
+              if (resource.specifyTable.name === 'Spdataset' && resource.id === dataset.id) {
+                navigate('/specify/', { replace: true });
+              }
+          });
+  }, [dataset.id]);
 
   const spreadsheetContainerRef = React.useRef<HTMLElement>(null);
   const [hotTable, setHotTable] = React.useState<HotTable | null>(null);

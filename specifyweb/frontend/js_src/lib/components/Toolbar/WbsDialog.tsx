@@ -69,21 +69,7 @@ export const createEmptyDataSet = async <
 export function DataSetMetaOverlay(): JSX.Element | null {
   const { dataSetId = '' } = useParams();
   const handleClose = React.useContext(OverlayContext);
-  const [dataset] = useAsyncState<Dataset>
-  const navigate = useNavigate();
-
-
-  // const handleDelete = async () => {
-  //   try {
-  //     await ajax<void>(`/api/workbench/dataset/${dataSetId}/`, {
-  //       method: 'DELETE',
-  //       headers: { Accept: 'application/json' },
-  //     });
-  //     navigate("specify/", { replace: true });
-  //   } catch (error) {
-  //     console.error('Failed to delete dataset:', error);
-  //   }
-
+   const [dataset] = useAsyncState<Dataset>(
     React.useCallback(
       async () =>
         ajax<Dataset>(`/api/workbench/dataset/${dataSetId}/`, {
