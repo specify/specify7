@@ -43,6 +43,11 @@ jobs:
         run: |
           npm run pullFromWeblate -- --directory ../../../../strings
 
+      - name: Format code with prettier
+        working-directory: specify7/specifyweb/frontend/js_src/lib/localization
+        run: |
+          npx prettier --write *.ts
+
       - name: Commit updated localization strings
         working-directory: specify7
         run: |
