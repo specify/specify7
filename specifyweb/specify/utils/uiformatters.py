@@ -224,8 +224,11 @@ class UIFormatter(NamedTuple):
         base_qs = model.objects.all()
         scoped_qs = group_filter(base_qs)
 
+        # Lock rows needed for autonumbering with select_for_update(). 
+        # Avoid deadlocks in select_for_update() with nowait.
+        # Rely on the sql named lock for avoiding autonumbering race conditions.
         ge_filter = {f"{fieldname}__gte": biggest_value}
-        qs = scoped_qs.filter(**ge_filter).select_for_update()
+        qs = scoped_qs.filter(**ge_filter).select_for_update(nowait=True)
 
         # Force evaluation so the locks are actually taken
         list(qs.values_list("pk", flat=True))

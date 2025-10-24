@@ -85,7 +85,8 @@ class Accession(models.Model):
         ordering = ()
         indexes = [
             models.Index(fields=['accessionnumber'], name='AccessionNumberIDX'),
-            models.Index(fields=['dateaccessioned'], name='AccessionDateIDX')
+            models.Index(fields=['dateaccessioned'], name='AccessionDateIDX'),
+            models.Index(fields=['division_id', 'accessionnumber'], name='AccScopeAccessionsnumberIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -1516,7 +1517,8 @@ class Collectionobject(models.Model):
             models.Index(fields=['uniqueidentifier'], name='COUniqueIdentifierIDX'),
             models.Index(fields=['altcatalognumber'], name='AltCatalogNumberIDX'),
             models.Index(fields=['guid'], name='ColObjGuidIDX'),
-            models.Index(fields=['collectionmemberid'], name='COColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='COColMemIDX'),
+            models.Index(fields=['collectionmemberid', 'catalognumber'], name='ColObjScopeCatalognumberIDX'), # composite index for autonumbering range/gap locks
         ]
 
     

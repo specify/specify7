@@ -34,6 +34,20 @@ def mysql_named_lock(lock_name: str, timeout: int = 10):
         got = cur.fetchone()[0]
 
     if not got:
+        with connection.cursor() as cur:
+                cur.execute("SELECT IS_USED_LOCK(%s)", [lock_name])
+                locking_db_process_id = cur.fetchone()[0]
+                if locking_db_process_id is not None:
+                    logger.warning(
+                        "Failed to acquire lock %r. It is currently held by DB Process %d.",
+                        lock_name, 
+                        locking_db_process_id
+                    )
+                else:
+                    logger.error(
+                        "Failed to acquire lock %r after timeout, but IS_USED_LOCK() reports it is FREE. Check for internal MySQL/connection issues.",
+                        lock_name
+                    )
         raise TimeoutError(f"Could not acquire MySQL named lock {lock_name!r}")
 
     try:
