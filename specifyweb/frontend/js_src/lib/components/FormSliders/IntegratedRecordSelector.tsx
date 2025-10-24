@@ -32,6 +32,7 @@ import { InteractionDialog } from '../Interactions/InteractionDialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { AttachmentsCollection } from './AttachmentsCollection';
+import { AttachmentWarningDeletion } from './AttachmentWarningDeletion';
 import { RecordSelectorFromCollection } from './RecordSelectorFromCollection';
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
@@ -163,16 +164,12 @@ export function IntegratedRecordSelector({
   const isTaxonTreeDefItemTable =
     collection.table.specifyTable.name === 'TaxonTreeDefItem';
 
-  const isCOJOFull =
-    relationship.relatedTable.name === 'CollectionObjectGroupJoin'
-      ? typeof collection.models[0] === 'object' &&
-        typeof collection.models[0].get('parentCog') === 'string'
-      : false;
-
   const isLoanPrep = relationship.relatedTable.name === 'LoanPreparation';
   const disableRemove =
     isLoanPrep &&
     (collection.related?.isNew() === true || collection.related?.needsSaved);
+
+  const [isWarningOpen, handleWarning, closeWarning] = useBooleanState();
 
   return (
     <ReadOnlyContext.Provider value={isReadOnly}>
@@ -311,9 +308,7 @@ export function IntegratedRecordSelector({
                       {hasTablePermission(
                         relationship.relatedTable.name,
                         isDependent ? 'delete' : 'read'
-                      ) &&
-                      typeof handleRemove === 'function' &&
-                      !isCOJOFull ? (
+                      ) && typeof handleRemove === 'function' ? (
                         <DataEntry.Remove
                           disabled={
                             isReadOnly ||
@@ -324,7 +319,11 @@ export function IntegratedRecordSelector({
                             disableRemove
                           }
                           onClick={(): void => {
-                            handleRemove('minusButton');
+                            if (isAttachmentTable) {
+                              handleWarning();
+                            } else {
+                              handleRemove('minusButton');
+                            }
                           }}
                         />
                       ) : undefined}
@@ -333,7 +332,6 @@ export function IntegratedRecordSelector({
                           dialog === false ? '-ml-2' : '-ml-4'
                         }`}
                       />
-
                       {isAttachmentTable && (
                         <AttachmentsCollection collection={collection} />
                       )}
@@ -381,9 +379,14 @@ export function IntegratedRecordSelector({
                       }
                 }
                 onClose={handleClose}
-                onDelete={(_resource, index): void => {
-                  if (isCollapsed) handleExpand();
-                  handleDelete?.(index, 'minusButton');
+                onDelete={(resource, index): void => {
+                  if (isAttachmentTable) {
+                    handleWarning();
+                  } else {
+                    collection.remove(resource);
+                    if (isCollapsed) handleExpand();
+                    handleDelete?.(index, 'minusButton');
+                  }
                 }}
                 onFetchMore={handleFetch}
               />
@@ -405,6 +408,21 @@ export function IntegratedRecordSelector({
                 }}
               />
             ) : null}
+            {isWarningOpen &&
+            typeof handleRemove === 'function' &&
+            isAttachmentTable ? (
+              <AttachmentWarningDeletion
+                closeWarning={closeWarning}
+                collection={collection}
+                formType={formType}
+                index={index}
+                isCollapsed={isCollapsed}
+                resource={resource}
+                onDelete={handleDelete}
+                onExpand={handleExpand}
+                onRemove={handleRemove}
+              />
+            ) : undefined}
           </>
         )}
       </RecordSelectorFromCollection>

@@ -21,8 +21,8 @@ import {
   splitJoinedMappingPath,
   valueIsToManyIndex,
 } from '../WbPlanView/mappingHelpers';
-import type { QueryFieldFilter } from './FieldFilter';
-import { queryFieldFilters } from './FieldFilter';
+import type { QueryFieldFilter } from './FieldFilterSpec';
+import { queryFieldFilterSpecs } from './FieldFilterSpec';
 import { QueryFieldSpec } from './fieldSpec';
 import { currentUserValue } from './SpecifyUserAutoComplete';
 
@@ -43,12 +43,20 @@ export type QueryField = {
   readonly mappingPath: MappingPath;
   readonly sortType: SortTypes;
   readonly isDisplay: boolean;
-  readonly dataObjFormatter: string | undefined;
   readonly filters: RA<{
     readonly type: QueryFieldFilter;
     readonly startValue: string;
     readonly isNot: boolean;
     readonly isStrict: boolean;
+    /**
+     * Can either be a Record Formatter (for formatted/aggregated query fields)
+     * or a Field Formatter that can be set for each filter
+     *
+     * Currently the only configurable Field Formatter in the UI is
+     * CollectionObject -> catalogNumber
+     * See https://github.com/specify/specify7/issues/5474
+     */
+    readonly fieldFormat?: string;
   }>;
 };
 
@@ -97,14 +105,14 @@ export function parseQueryFields(
             id: index,
             mappingPath,
             sortType: sortTypes[field.sortType],
-            dataObjFormatter: field.formatName ?? undefined,
             filter: {
               type: defined(
-                Object.entries(queryFieldFilters).find(
+                Object.entries(queryFieldFilterSpecs).find(
                   ([_, { id }]) => id === field.operStart
                 ),
                 `Unknown SpQueryField.operStart value: ${field.operStart}`
               )[KEY],
+              fieldFormat: field.formatName ?? undefined,
               isNot,
               isStrict,
               startValue,
@@ -211,7 +219,6 @@ const addQueryFields = (
           sortType: undefined,
           isDisplay: true,
           parser: undefined,
-          dataObjFormatter: undefined,
           filters: [
             {
               type: 'any',
@@ -282,7 +289,6 @@ export const addFormattedField = (fields: RA<QueryField>): RA<QueryField> =>
           mappingPath: [formattedEntry],
           sortType: undefined,
           isDisplay: true,
-          dataObjFormatter: undefined,
           filters: [
             {
               type: 'any',
@@ -304,7 +310,6 @@ export const unParseQueryFields = (
     ([field, fieldSpec], index) => {
       const commonData = {
         ...fieldSpec.toSpQueryAttributes(),
-        formatName: field.dataObjFormatter,
         sortType: sortTypes.indexOf(field.sortType),
         position: index,
         isDisplay: field.isDisplay,
@@ -317,12 +322,13 @@ export const unParseQueryFields = (
           hasFilters ? filter.type !== 'any' : index === 0
         )
         .map(
-          ({ type, startValue, isNot, isStrict }, index) =>
+          ({ type, startValue, isNot, isStrict, fieldFormat }, index) =>
             ({
               ...commonData,
+              formatName: fieldFormat,
               operStart: defined(
                 // Back-end treats "equal" with blank startValue as "any"
-                Object.entries(queryFieldFilters).find(
+                Object.entries(queryFieldFilterSpecs).find(
                   ([name]) => name === type
                 ),
                 `Unknown query field filter type: ${type}`
@@ -381,6 +387,20 @@ const containsRelativeDate = (
       fieldSpec.datePart === 'fullDate'
   );
 
+const containsExpandedStringComparisons = (
+  fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>
+) =>
+  fieldSpecMapped.some(([queryField, fieldSpec]) =>
+    queryField.filters.some(
+      (filter) =>
+        fieldSpec.getField()?.type === 'java.lang.String' &&
+        (filter.type === 'greater' ||
+          filter.type === 'less' ||
+          filter.type === 'greaterOrEqual' ||
+          filter.type === 'lessOrEqual')
+    )
+  );
+
 // If contains modern fields/functionality set isFavourite to false, to not appear directly in 6
 export function isModern(query: SpecifyResource<SpQuery>): boolean {
   const serializedQuery = serializeResource(query);
@@ -396,7 +416,8 @@ export function isModern(query: SpecifyResource<SpQuery>): boolean {
   return (
     containsOr(fieldSpecsMapped) ||
     containsSpecifyUsername(baseTableName, fieldSpecsMapped) ||
-    containsRelativeDate(fieldSpecsMapped)
+    containsRelativeDate(fieldSpecsMapped) ||
+    containsExpandedStringComparisons(fieldSpecsMapped)
   );
 }
 

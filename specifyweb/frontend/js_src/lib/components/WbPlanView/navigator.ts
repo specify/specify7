@@ -15,11 +15,12 @@ import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getFrontEndOnlyFields, strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
+import { getSystemInfo } from '../InitialContext/systemInfo';
 import { getTreeDefinitions, isTreeTable } from '../InitialContext/treeRanks';
 import { hasTablePermission, hasTreeAccess } from '../Permissions/helpers';
 import type { CustomSelectSubtype } from './CustomSelectElement';
 import type {
-  HtmlGeneratorFieldData,
+  MapperComponentData,
   MappingElementProps,
 } from './LineComponents';
 import type { MappingPath } from './Mapper';
@@ -35,6 +36,7 @@ import {
   getNameFromTreeDefinitionName,
   getNameFromTreeRankName,
   parsePartialField,
+  relationshipIsRemoteToOne,
   relationshipIsToMany,
   valueIsPartialField,
   valueIsToManyIndex,
@@ -120,12 +122,31 @@ function navigator({
   if (next === undefined) return;
 
   const childrenAreToManyElements =
-    relationshipIsToMany(parentRelationship) &&
+    (relationshipIsToMany(parentRelationship) ||
+      relationshipIsRemoteToOne(parentRelationship)) &&
     !valueIsToManyIndex(parentPartName) &&
     !valueIsTreeMeta(parentPartName);
 
   const childrenAreRanks =
     isTreeTable(table.name) && !valueIsTreeMeta(parentPartName);
+
+  const disciplineType = getSystemInfo().discipline_type?.toLowerCase();
+  const geoPaleoDisciplines = [
+    'geology',
+    'invertpaleo',
+    'vertpaleo',
+    'paleobotany',
+  ];
+  const isNonGeoDiscipline = !geoPaleoDisciplines.includes(disciplineType);
+
+  if (
+    isNonGeoDiscipline &&
+    (table.name === 'PaleoContext' ||
+      table.name === 'LithoStrat' ||
+      table.name === 'TectonicUnit')
+  ) {
+    return;
+  }
 
   const callbackPayload = {
     table,
@@ -203,13 +224,6 @@ export type MappingLineData = Pick<
   readonly defaultValue: string;
 };
 
-const queryBuilderTreeFields = new Set([
-  'fullName',
-  'author',
-  'groupNumber',
-  'geographyCode',
-]);
-
 /**
  * Get data required to build a mapping line from a source mapping path
  * Handles circular dependencies and must match tables
@@ -281,7 +295,7 @@ export function getMappingLineData({
   const commitInstanceData = (
     customSelectSubtype: CustomSelectSubtype,
     table: SpecifyTable,
-    fieldsData: RA<readonly [string, HtmlGeneratorFieldData] | undefined>
+    fieldsData: RA<readonly [string, MapperComponentData] | undefined>
   ): void =>
     void internalState.mappingLineData.push({
       customSelectSubtype,
@@ -327,7 +341,9 @@ export function getMappingLineData({
         internalState.defaultValue,
       ]);
 
-      const isToOne = parentRelationship?.type === 'zero-to-one';
+      const isToOne =
+        parentRelationship?.type === 'one-to-one' ||
+        parentRelationship?.type === 'zero-to-one';
       const toManyLimit = isToOne ? 1 : Number.POSITIVE_INFINITY;
       const additional =
         maxMappedElementNumber < toManyLimit
@@ -479,8 +495,7 @@ export function getMappingLineData({
         ((generateFieldData === 'all' &&
           (!isTreeTable(table.name) ||
             mappingPath[internalState.position - 1] ===
-              formatTreeRank(anyTreeRank) ||
-            queryBuilderTreeFields.has(formattedEntry))) ||
+              formatTreeRank(anyTreeRank))) ||
           internalState.defaultValue === formattedEntry)
           ? ([
               formattedEntry,
@@ -541,6 +556,16 @@ export function getMappingLineData({
           .filter((field) => {
             let isIncluded = true;
 
+            const disciplineType =
+              getSystemInfo().discipline_type?.toLowerCase();
+            const geoPaleoDisciplines = ['geology', 'invertpaleo', 'vertpaleo'];
+            if (
+              field.name === 'age' &&
+              !geoPaleoDisciplines.includes(disciplineType)
+            ) {
+              return false;
+            }
+
             isIncluded &&=
               generateFieldData === 'all' ||
               field.name === internalState.parsedDefaultValue[0];
@@ -558,13 +583,6 @@ export function getMappingLineData({
               spec.includeReadOnly ||
               !field.overrides.isReadOnly;
 
-            isIncluded &&=
-              spec.includeAllTreeFields ||
-              !isTreeTable(table.name) ||
-              mappingPath[internalState.position - 1] ===
-                formatTreeRank(anyTreeRank) ||
-              queryBuilderTreeFields.has(field.name);
-
             // Hide frontend only field
             isIncluded &&= !(
               getFrontEndOnlyFields()[table.name]?.includes(field.name) ===
@@ -573,13 +591,15 @@ export function getMappingLineData({
 
             if (field.isRelationship) {
               isIncluded &&=
-                spec.allowNestedToMany ||
                 parentRelationship === undefined ||
                 (!isCircularRelationship(parentRelationship, field) &&
-                  !(
-                    relationshipIsToMany(field) &&
-                    relationshipIsToMany(parentRelationship)
-                  ));
+                  (spec.allowNestedToMany ||
+                    !(
+                      (relationshipIsToMany(field) ||
+                        relationshipIsRemoteToOne(field)) &&
+                      (relationshipIsToMany(parentRelationship) ||
+                        relationshipIsRemoteToOne(parentRelationship))
+                    )));
 
               isIncluded &&=
                 !canDoAction ||
@@ -592,7 +612,10 @@ export function getMappingLineData({
                     ));
 
               isIncluded &&=
-                spec.includeRelationshipsFromTree || !isTreeTable(table.name);
+                (spec.includeRelationshipsFromTree &&
+                  mappingPath[internalState.position - 1] ===
+                    formatTreeRank(anyTreeRank)) ||
+                !isTreeTable(table.name);
 
               isIncluded &&=
                 spec.includeToManyToTree ||
@@ -600,7 +623,10 @@ export function getMappingLineData({
                  * Hide -to-many relationships to a tree table as they are
                  * not supported by the WorkBench
                  */
-                !relationshipIsToMany(field) ||
+                !(
+                  relationshipIsToMany(field) ||
+                  relationshipIsRemoteToOne(field)
+                ) ||
                 !isTreeTable(field.relatedTable.name);
             }
 

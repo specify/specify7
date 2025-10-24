@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { attachmentsText } from '../../localization/attachments';
+import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
@@ -177,6 +178,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           ),
       },
       {
+        path: 'backup-database',
+        title: headerText.backupDatabase(),
+        element: () =>
+          import('../Toolbar/BackupDatabase').then(
+            ({ BackupDatabaseOverlay }) => BackupDatabaseOverlay
+          ),
+      },
+      {
         path: 'make-dwca',
         title: headerText.makeDwca(),
         element: () =>
@@ -237,6 +246,23 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         element: () =>
           import('../SchemaConfig/TableUniquenessRules').then(
             ({ TableUniquenessRules }) => TableUniquenessRules
+          ),
+      },
+      {
+        // There's no physical difference between a workbench and batch-edit dataset, but separating them out helps UI.
+        path: 'batch-edit',
+        title: batchEditText.batchEdit(),
+        element: () =>
+          import('../Toolbar/WbsDialog').then(
+            ({ BatchEditDataSetsOverlay }) => BatchEditDataSetsOverlay
+          ),
+      },
+      {
+        path: 'backup-status/:taskId',
+        title: headerText.backupDatabase(),
+        element: () =>
+          import('../Toolbar/BackupStatus').then(
+            ({ BackupStatusOverlay }) => BackupStatusOverlay
           ),
       },
     ],

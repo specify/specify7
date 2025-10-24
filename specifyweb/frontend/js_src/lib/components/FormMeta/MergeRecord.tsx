@@ -60,6 +60,7 @@ export function MergeRecord({
           extraFilters={[
             {
               field: 'id',
+              isRelationship: false,
               operation: 'in',
               isNot: true,
               value: resource.id.toString(),

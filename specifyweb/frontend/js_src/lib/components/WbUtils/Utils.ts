@@ -402,11 +402,12 @@ export class WbUtils {
               this.workbench.hot!.getDataAtCell(visualRow, visualCol) || '';
             // Don't replace cells with default values
             if (cellValue === '') return;
-            modifications.push([
-              visualRow,
-              visualCol,
-              getNewCellValue(cellValue),
-            ]);
+            if (!this.workbench.hot?.getCellMeta(visualRow, visualCol).readOnly)
+              modifications.push([
+                visualRow,
+                visualCol,
+                getNewCellValue(cellValue),
+              ]);
           })
       );
       this.workbench.hot.setDataAtCell(modifications);
@@ -436,11 +437,13 @@ export class WbUtils {
 
       if (!Array.isArray(nextCell)) return;
 
+      if (this.workbench.hot?.getCellMeta(nextCell[0], nextCell[1]).readOnly)
+        return;
+
       this.workbench.hot.setDataAtCell(
         ...nextCell,
         getNewCellValue(this.workbench.hot.getDataAtCell(...nextCell))
       );
-
       nextCellOfType();
     }
   }

@@ -33,7 +33,7 @@ import { useTopChild } from './useTopChild';
 /**
  * Fetch app resource that stores current user preferences
  *
- * If app resource data with user preferences does not exists does not exist,
+ * If app resource data with user preferences does not exist,
  * check if SpAppResourceDir and SpAppResource exist and create them if needed,
  * then, create the app resource data itself
  */

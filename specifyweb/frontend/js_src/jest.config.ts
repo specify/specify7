@@ -24,6 +24,7 @@ import type { Config } from '@jest/types';
  */
 
 const config: Config.InitialOptions = {
+  prettierPath: null,
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
@@ -114,6 +115,7 @@ const config: Config.InitialOptions = {
   moduleNameMapper: {
     '\\.(jpg|jpeg|png|webp|svg|ttf|webm)$':
       '<rootDir>/lib/tests/__mocks__/fileMock.ts',
+      '^react-dom/server$': 'react-dom/server.node',
     '\\.(css)$': '<rootDir>/lib/tests/__mocks__/styleFileMock.ts',
   },
 

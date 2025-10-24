@@ -151,10 +151,12 @@ const fieldRenderers: {
       hasEditButton,
       hasSearchButton,
       hasViewButton,
+      defaultRecord,
     },
   }) {
     return field === undefined || !field.isRelationship ? null : (
       <QueryComboBox
+        defaultRecord={defaultRecord}
         field={field}
         forceCollection={undefined}
         formType={formType}

@@ -4,11 +4,11 @@ import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import type { RA } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import type { AnyTree } from '../DataModel/helperTypes';
-import { getPref } from '../InitialContext/remotePrefs';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Conformations, KeyAction, Row, Stats } from './helpers';
 import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
@@ -74,18 +74,37 @@ export function TreeRow<SCHEMA extends AnyTree>({
   const isExpanded = Array.isArray(conformation);
   const isLoading = isExpanded && !Array.isArray(rows);
   const displayChildren = isExpanded && typeof rows?.[0] === 'object';
+  const orderByField = userPreferences.get(
+    'treeEditor',
+    'behavior',
+    'orderByField'
+  );
+
   React.useEffect(() => {
     if (!isLoading) return undefined;
 
-    void getRows(row.nodeId).then((rows) =>
-      destructorCalled ? undefined : setRows(rows)
-    );
+    void getRows(row.nodeId).then((fetchedRows: RA<Row>) => {
+      const sortedRows = Array.from(fetchedRows).sort(
+        sortFunction<Row, number | string>(
+          orderByField === 'rankId'
+            ? (row) => row.rankId
+            : orderByField === 'nodeNumber'
+              ? (row) => row.nodeNumber
+              : orderByField === 'name'
+                ? (row) => row.name
+                : orderByField === 'fullName'
+                  ? (row) => row.fullName
+                  : () => 0
+        )
+      );
+      destructorCalled ? undefined : setRows(sortedRows);
+    });
 
     let destructorCalled = false;
     return (): void => {
       destructorCalled = true;
     };
-  }, [isLoading, getRows, row]);
+  }, [isLoading, getRows, row, orderByField]);
 
   // Fetch children stats
   const isLoadingStats = displayChildren && childStats === undefined;
@@ -133,7 +152,11 @@ export function TreeRow<SCHEMA extends AnyTree>({
   const id = useId('tree-node');
   const isAction = actionRow === row;
 
-  const doIncludeAuthorPref = getPref(`TaxonTreeEditor.DisplayAuthor`);
+  const doIncludeAuthorPref = userPreferences.get(
+    'treeEditor',
+    'taxon',
+    'displayAuthor'
+  );
 
   const handleRef = React.useCallback(
     (element: HTMLButtonElement | null): void => {

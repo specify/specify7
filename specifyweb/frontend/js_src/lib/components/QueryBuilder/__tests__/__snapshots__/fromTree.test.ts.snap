@@ -87,6 +87,7 @@ exports[`queryFromTree 1`] = `
     "ordinal": 32767,
     "searchsynonymy": false,
     "selectdistinct": false,
+    "smushed": false,
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
@@ -162,6 +163,7 @@ exports[`queryFromTree 1`] = `
     "ordinal": 32767,
     "searchsynonymy": false,
     "selectdistinct": false,
+    "smushed": false,
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
@@ -237,6 +239,7 @@ exports[`queryFromTree 1`] = `
     "ordinal": 32767,
     "searchsynonymy": false,
     "selectdistinct": false,
+    "smushed": false,
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
@@ -312,6 +315,7 @@ exports[`queryFromTree 1`] = `
     "ordinal": 32767,
     "searchsynonymy": false,
     "selectdistinct": false,
+    "smushed": false,
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
@@ -387,6 +391,7 @@ exports[`queryFromTree 1`] = `
     "ordinal": 32767,
     "searchsynonymy": false,
     "selectdistinct": false,
+    "smushed": false,
     "specifyuser": "/api/specify/specifyuser/2/",
   },
   {
@@ -461,6 +466,7 @@ exports[`queryFromTree 1`] = `
     "name": "Collection Object using \\"Plate\\"",
     "ordinal": 32767,
     "selectdistinct": false,
+    "smushed": false,
     "specifyuser": "/api/specify/specifyuser/2/",
   },
 ]

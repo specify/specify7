@@ -80,7 +80,10 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
     const checks: RA<Promise<BusinessRuleResult<SCHEMA> | undefined>> = [
       ...this.checkUnique(processedFieldName),
-      this.invokeRule('fieldChecks', processedFieldName, [this.resource]),
+      this.invokeRule('fieldChecks', processedFieldName, [
+        this.resource,
+        field,
+      ]),
       isTreeResource(this.resource as SpecifyResource<AnySchema>)
         ? treeBusinessRules(
             this.resource as SpecifyResource<AnyTree>,

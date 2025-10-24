@@ -7,7 +7,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { commonText } from '../../localization/common';
 import { getCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
-import type { IR, R, RA } from '../../utils/types';
+import type { DeepPartial, IR, R, RA } from '../../utils/types';
 import { defined, filterArray, localized } from '../../utils/types';
 import { camelToHuman, multiSortFunction } from '../../utils/utils';
 import { error } from '../Errors/assert';
@@ -166,7 +166,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
    * https://github.com/microsoft/TypeScript/issues/48339
    */
   public readonly Resource: new <RESOURCE extends AnySchema = SCHEMA>(
-    props?: Partial<
+    props?: DeepPartial<
       | SerializedResource<RESOURCE>
       | SerializedRecord<RESOURCE>
       /*
@@ -458,7 +458,7 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
    *
    * I.e, table can be scoped to collection using a "collectionMemberId" field
    * (which is not a relationship - sad). Back-end looks at that relationship
-   * for scoping inconsistenly. Front-end does not look at all.
+   * for scoping inconsistently. Front-end does not look at all.
    */
   public getScopingRelationship(): Relationship | undefined {
     this.scopingRelationship ??=

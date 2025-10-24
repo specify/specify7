@@ -6,7 +6,7 @@ import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import type { IR, RA, RR } from '../../utils/types';
 import { softFail } from '../Errors/Crash';
 import {
-  cachableUrl,
+  cacheableUrl,
   contextUnlockedPromise,
   foreverFetch,
 } from '../InitialContext';
@@ -51,7 +51,7 @@ export const preferredOverlay = 'Labels and boundaries';
  * leafletLayersEndpoint
  *
  * Documentation:
- * https://github.com/specify/specify7/wiki/Adding-Custom-Tile-Servers
+ * https://discourse.specifysoftware.org/t/adding-custom-tile-servers-geomap/2593
  *
  * Adding "dark:invert-leaflet-layer' smartly inverts the layer colors when in
  * dark mode
@@ -190,14 +190,14 @@ export const fetchLeafletLayers = async (): Promise<Layers<L.TileLayer>> =>
 const layersPromise: Promise<Layers<SerializedLayer>> =
   contextUnlockedPromise.then(async (entrypoint) =>
     entrypoint === 'main'
-      ? ajax(cachableUrl(getAppResourceUrl('leaflet-layers', 'quiet')), {
+      ? ajax(cacheableUrl(getAppResourceUrl('leaflet-layers', 'quiet')), {
           headers: { Accept: 'text/plain' },
           errorMode: 'silent',
         })
           .then(async ({ data, status }) =>
             status === Http.NO_CONTENT
               ? ajax<Layers<SerializedLayer>>(
-                  cachableUrl(leafletLayersEndpoint),
+                  cacheableUrl(leafletLayersEndpoint),
                   {
                     headers: { Accept: 'application/json' },
                     errorMode: 'silent',

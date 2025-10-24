@@ -142,8 +142,7 @@ export function generateMappingPathPreview(
   const fieldNameFormatted =
     fieldsToHide.has(databaseFieldName) ||
     (databaseTableOrRankName !== 'CollectionObject' &&
-      databaseFieldName === 'name' &&
-      !isAnyRank)
+      databaseFieldName === 'name')
       ? undefined
       : fieldName;
 

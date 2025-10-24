@@ -193,6 +193,7 @@ export const fetchRows = async <
     readonly fields: FIELDS;
     readonly distinct?: boolean;
     readonly limit?: number;
+    readonly filterChronostrat?: boolean;
   },
   /**
    * Advanced filters, not type-safe.
@@ -205,7 +206,7 @@ export const fetchRows = async <
 ): Promise<RA<FieldsToTypes<FIELDS>>> => {
   const { data } = await ajax<RA<RA<boolean | number | string | null>>>(
     formatUrl(
-      `/api/specify_rows/${tableName.toLowerCase()}/`,
+      `/table_rows/specify_rows/${tableName.toLowerCase()}/`,
       Object.fromEntries(
         filterArray(
           Array.from(
