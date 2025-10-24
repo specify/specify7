@@ -51,6 +51,15 @@ class QuerySort:
     def by_id(sort_id: QUREYFIELD_SORT_T):
         return QuerySort.SORT_TYPES[sort_id]
 
+def DefaultQueryFormatterProps():
+    return ObjectFormatterProps(
+        format_agent_type=False,
+        format_picklist=False,
+        format_types=True,
+        numeric_catalog_number=True,
+        format_expr=True
+    )
+
 class BuildQueryProps(NamedTuple):
     recordsetid: int | None = None
     replace_nulls: bool = False
@@ -58,13 +67,7 @@ class BuildQueryProps(NamedTuple):
     distinct: bool = False
     series: bool = False
     implicit_or: bool = True
-    formatter_props: ObjectFormatterProps = ObjectFormatterProps(
-        format_agent_type = False,
-        format_picklist = False,
-        format_types = True,
-        numeric_catalog_number = True,
-        format_expr = True,
-    )
+    formatter_props: ObjectFormatterProps = DefaultQueryFormatterProps()
 
 
 def set_group_concat_max_len(connection):
@@ -789,9 +792,12 @@ def execute(
     offset,
     recordsetid=None,
     formatauditobjs=False,
-    formatter_props=ObjectFormatterProps(),
+    formatter_props=None,
 ):
     "Build and execute a query, returning the results as a data structure for json serialization"
+
+    if formatter_props is None:
+        formatter_props = DefaultQueryFormatterProps()
 
     set_group_concat_max_len(session.info["connection"])
     query, order_by_exprs = build_query(
