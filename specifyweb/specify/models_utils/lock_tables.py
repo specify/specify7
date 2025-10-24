@@ -46,7 +46,7 @@ def mysql_named_lock(lock_name: str, timeout: int = 10):
             logger.info("Failed to release MySQL named lock %r", lock_name, exc_info=True)
 
 def get_autonumbering_lock_name(db_name, table_name):
-    return f"autonumbering:{db_name.to_lower()}:{table_name.to_lower()}"
+    return f"autonumbering:{db_name.lower()}:{table_name.lower()}"
 
 @contextmanager
 def autonumbering_lock_table(db_name, table_name):

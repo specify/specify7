@@ -13,7 +13,7 @@ from xml.etree import ElementTree
 from xml.sax.saxutils import quoteattr
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import connection
+from django.db import connection, transaction
 
 logger = logging.getLogger(__name__)
 
@@ -205,6 +205,30 @@ class UIFormatter(NamedTuple):
                 canonicalized = self.canonicalize(parsed)
             return canonicalized
         return parser
+
+    def lock_ge_range(
+        self,
+        collection,
+        model,
+        fieldname: str,
+        with_year: list[str],
+        biggest_value: str,
+    ) -> None:
+        assert transaction.get_connection().in_atomic_block, \
+            "lock_ge_range() must be used inside transaction.atomic()"
+
+        # Apply the scope logic used by _autonumber_queryset
+        group_filter = get_autonumber_group_filter(model, collection, self.format_name)
+
+        # Filter by scope, then filter and lock the >= range
+        base_qs = model.objects.all()
+        scoped_qs = group_filter(base_qs)
+
+        ge_filter = {f"{fieldname}__gte": biggest_value}
+        qs = scoped_qs.filter(**ge_filter).select_for_update()
+
+        # Force evaluation so the locks are actually taken
+        list(qs.values_list("pk", flat=True))
 
 class Field(NamedTuple):
     size: int

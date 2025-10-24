@@ -9,9 +9,11 @@ import logging
 from typing import List, Tuple, Set
 from collections.abc import Sequence
 from django.db import transaction
+from django.apps import apps
 
 from specifyweb.specify.utils.scoping import Scoping
 from specifyweb.specify.datamodel import datamodel
+from specifyweb.backend.businessrules.models import UniquenessRule, UniquenessRuleField
 
 logger = logging.getLogger(__name__)
 
@@ -127,29 +129,19 @@ def get_tables_to_lock(collection, obj, field_names) -> set[str]:
 
     return tables
 
-def get_tables_to_lock_new(collection, obj, field_names) -> list[str]:
-    from django.apps import apps
-    from specifyweb.backend.businessrules.models import UniquenessRule, UniquenessRuleField  # adjust
+def get_tables_to_lock_strict(obj) -> list[str]:
     obj_table = obj._meta.db_table
 
-    # Start with the target table
     needed = {obj_table}
-
-    # If you will query group mappings INSIDE the lock, add them:
-    # Pick exactly one mapping table based on scope; example for collection:
     needed |= {"autonumberingscheme", "autonumsch_coll"}  # or _dsp / _div
-
-    # If you read rules/fields INSIDE the lock, add both:
     needed |= {UniquenessRule._meta.db_table, UniquenessRuleField._meta.db_table}
 
-    # If your scope traversal touches a related FK table INSIDE the lock, add it:
     Discipline = apps.get_model("specify", "Discipline")
-    needed.add(Discipline._meta.db_table)  # only if actually read under the lock
+    needed.add(Discipline._meta.db_table)
 
     if obj_table == "component":
         needed.add("collectionobject")
 
-    # Return in deterministic order for consistent lock ordering (reduces deadlocks)
     return sorted(needed)
 
 def get_tables_from_field_path(model: str, field_path: str) -> list[str]:
