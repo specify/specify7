@@ -44,7 +44,7 @@ function buildStatsLambdaUrl(base: string | null | undefined): string | null {
   if (!hasRoute) {
     const stage = 'prod';
     const route = 'AggrgatedSp7Stats';
-    u = `${u.replace(/\/$/, '')  }/${stage}/${route}`;
+    u = `${u.replace(/\/$/, '')}/${stage}/${route}`;
   }
   return u;
 }
@@ -58,7 +58,10 @@ export const fetchContext = load<SystemInfo>(
   if (systemInfo.stats_url !== null) {
     let counts: StatsCounts | null = null;
     try {
-      counts = await load<StatsCounts>('/context/stats_counts.json', 'application/json');
+      counts = await load<StatsCounts>(
+        '/context/stats_counts.json',
+        'application/json'
+      );
     } catch {
       // If counts fetch fails, proceed without them.
       counts = null;
@@ -102,8 +105,9 @@ export const fetchContext = load<SystemInfo>(
 
     const lambdaUrl = buildStatsLambdaUrl(systemInfo.stats_2_url);
     if (lambdaUrl) {
-      await ping(formatUrl(lambdaUrl, parameters, false), { errorMode: 'silent' })
-        .catch(softFail);
+      await ping(formatUrl(lambdaUrl, parameters, false), {
+        errorMode: 'silent',
+      }).catch(softFail);
     }
   }
 
