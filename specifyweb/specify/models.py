@@ -751,6 +751,32 @@ class Autonumberingscheme(models.Model):
     
     save = partialmethod(custom_save)
 
+class AutonumschColl(models.Model):
+    collectionid = models.ForeignKey('Collection', models.DO_NOTHING, db_column='CollectionID', primary_key=True)
+    autonumberingschemeid = models.ForeignKey(Autonumberingscheme, models.DO_NOTHING, db_column='AutoNumberingSchemeID')
+
+    class Meta:
+        managed = False
+        db_table = 'autonumsch_coll'
+        unique_together = (('collectionid', 'autonumberingschemeid'))
+
+class AutonumschDiv(models.Model):
+    divisionid = models.ForeignKey('Division', models.DO_NOTHING, db_column='DivisionID', primary_key=True)
+    autonumberingschemeid = models.ForeignKey(Autonumberingscheme, models.DO_NOTHING, db_column='AutoNumberingSchemeID')
+    class Meta:
+        managed = False
+        db_table = 'autonumsch_div'
+        unique_together = (('divisionid', 'autonumberingschemeid'))
+
+
+class AutonumschDsp(models.Model):
+    disciplineid = models.ForeignKey('Discipline', models.DO_NOTHING, db_column='DisciplineID', primary_key=True)
+    autonumberingschemeid = models.ForeignKey(Autonumberingscheme, models.DO_NOTHING, db_column='AutoNumberingSchemeID')
+    class Meta:
+        managed = False
+        db_table = 'autonumsch_dsp'
+        unique_together = (('disciplineid', 'autonumberingschemeid'))
+
 class Borrow(models.Model):
     specify_model = datamodel.get_table_strict('borrow')
 
