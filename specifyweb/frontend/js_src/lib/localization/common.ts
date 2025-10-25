@@ -841,7 +841,7 @@ export const commonText = createDictionary({
     'en-us': 'Zoom',
     'fr-fr': 'Zoom',
     'de-ch': 'Zoom',
-    'es-es': 'Zoom',
+    'es-es': 'Ampliar',
     'pt-br': 'Ampliação',
     'ru-ru': 'Увеличить',
     'uk-ua': 'Збільшити масштаб',
