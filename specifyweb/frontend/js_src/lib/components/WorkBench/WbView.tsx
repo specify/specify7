@@ -87,13 +87,14 @@ export function WbView({
         : dataset.rows,
     [dataset]
   );
-const navigate = useNavigate();
-    React.useEffect(() => {
+// switch to home page on dataset deleted if current dataset is deleted
+  const navigate = useNavigate();
+  React.useEffect(() => {
       resourceEvents.on('deleted', (resource) => {
               if (resource.specifyTable.name === 'Spdataset' && resource.id === dataset.id) {
                 navigate('/specify/', { replace: true });
               }
-          });
+      });
   }, [dataset.id]);
 
   const spreadsheetContainerRef = React.useRef<HTMLElement>(null);
