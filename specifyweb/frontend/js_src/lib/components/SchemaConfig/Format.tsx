@@ -88,7 +88,7 @@ export function SchemaConfigFormat({
           [`${
             field === undefined
               ? ''
-              : schemaText.fieldFormattersForField({ fieldLabel: field.label })
+              : schemaText.uiFormattersForField({ fieldLabel: field.label })
           }`]: formattersForField
             .map(
               ({ name, isSystem, value }) =>
@@ -105,7 +105,7 @@ export function SchemaConfigFormat({
                 ] as const
             )
             .sort(sortFunction((value) => value[1])),
-          [resourcesText.fieldFormatters()]: otherFormatters
+          [resourcesText.uiFormatters()]: otherFormatters
             .map(
               ({ name, isSystem, value }) =>
                 [
