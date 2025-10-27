@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { useNavigate, useParams} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
@@ -79,7 +79,7 @@ export function DataSetMetaOverlay(): JSX.Element | null {
     ),
     true
   );
-  
+
   return typeof dataset === 'object' ? (
     <WbDataSetMeta
       dataset={dataset}
