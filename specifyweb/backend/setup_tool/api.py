@@ -1,17 +1,19 @@
 import json
 from django.http import (JsonResponse)
+from django.db.models import Max
+from django.core.cache import cache
+from django.db import transaction
 
+from specifyweb.celery_tasks import app
 from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.specify.api_utils import strict_uri_to_model
 from specifyweb.specify.models import Spversion
 from specifyweb.specify import models
+from specifyweb.backend.setup_tool.utils import normalize_keys
 from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults
 from specifyweb.backend.setup_tool.picklist_defaults import create_default_picklists
 from specifyweb.backend.setup_tool.prep_type_defaults import create_default_prep_types
-from specifyweb.backend.setup_tool.setup_tasks import setup_database_background
-
-from django.db.models import Max
-from django.db import transaction
+from specifyweb.backend.setup_tool.setup_tasks import setup_database_background, get_active_setup_task
 
 import logging
 logger = logging.getLogger(__name__)
@@ -24,6 +26,26 @@ class SetupError(Exception):
     pass
 
 def get_setup_progress():
+    """Returns a dictionary of the status of the database setup."""
+    # Check if setup is currently in progress
+    active_setup_task, busy = get_active_setup_task()
+
+    completed_resources = None
+    if active_setup_task:
+        info = getattr(active_setup_task, "info", None) or getattr(active_setup_task, "result", None)
+        if isinstance(info, dict):
+            completed_resources = info.get('progress')
+    
+    if completed_resources is None:
+        completed_resources = get_setup_resource_progress()
+
+    return {
+        "resources": completed_resources,
+        "busy": busy,
+    }
+
+def get_setup_resource_progress() -> dict:
+    """Returns a dictionary of the status of database setup resources."""
     institution_created = models.Institution.objects.exists()
     institution = models.Institution.objects.first()
     globalGeographyTree = institution and institution.issinglegeographytree
@@ -49,13 +71,8 @@ def _guided_setup_condition(request):
             return False
     return True
 
-def normalize_keys(obj):
-    if isinstance(obj, dict):
-        return {k.lower(): normalize_keys(v) for k, v in obj.items()}
-    else:
-        return obj
-
 def handle_request(request, create_resource, direct=False):
+    """Generic handler for any setup resource POST request."""
     # Check permission
     if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
@@ -75,18 +92,24 @@ def handle_request(request, create_resource, direct=False):
         return JsonResponse({"error": str(e)}, status=400)
 
 def setup_database(request, direct=False):
+    """Creates all database setup resources sequentially in the background. Atomic."""
     if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
     if request.method != 'POST':
         return JsonResponse({"error": "Invalid request"}, status=400)
     
+    active_setup_task, busy = get_active_setup_task()
+    if busy:
+        return JsonResponse({"error": "Database setup is already in progress."}, status=400)
+    
     try:
         logger.debug("Starting Database Setup.")
         raw_data = json.loads(request.body)
         data = normalize_keys(raw_data)
-        logger.debug(data)
+
         task_id = setup_database_background(data)
-        logger.debug("Database setup stared successfuly.")
+
+        logger.debug("Database setup started successfully.")
         return JsonResponse({"success": True, "setup_progress": get_setup_progress()}, status=200)
     except Exception as e:
         return JsonResponse({'error': 'An internal server error occurred.'}, status=500)

@@ -14,7 +14,7 @@ import { Button } from '../Atoms/Button';
 import { Form, Input, Label, Select } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import type { SetupProgress } from '../Login';
+import type { SetupProgress, SetupResources } from '../Login';
 import { loadingBar } from '../Molecules';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
 import type { FieldConfig, ResourceConfig } from "./setupResources";
@@ -22,7 +22,7 @@ import { FIELD_MAX_LENGTH,resources } from "./setupResources";
 
 type ResourceFormData = Record<string, any>;
 
-const stepOrder: RA<keyof SetupProgress> = [
+const stepOrder: RA<keyof SetupResources> = [
   'institution',
   'storageTreeDef',
   'globalGeographyTreeDef',
@@ -115,11 +115,11 @@ export function SetupTool({
 
   // Is the database currrently being created?
   const [inProgress, setInProgress] = React.useState<boolean>(false);
-  const nextIncompleteStep = stepOrder.findIndex((resourceName) => !setupProgress[resourceName]);
+  const nextIncompleteStep = stepOrder.findIndex((resourceName) => !setupProgress.resources[resourceName]);
   React.useEffect(() => {
-    if (Object.values(setupProgress).includes(true)) {
+    console.log(setupProgress);
+    if (setupProgress.busy) {
       setInProgress(true);
-      console.log(setupProgress);
     }
   }, [setupProgress])
   React.useEffect(() => {

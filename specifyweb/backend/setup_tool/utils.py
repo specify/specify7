@@ -22,3 +22,9 @@ def load_json_from_file(path: Path):
     else:
         logger.exception('JSON file at %s does not exist.', path)
         return None
+
+def normalize_keys(obj):
+    if isinstance(obj, dict):
+        return {k.lower(): normalize_keys(v) for k, v in obj.items()}
+    else:
+        return obj
