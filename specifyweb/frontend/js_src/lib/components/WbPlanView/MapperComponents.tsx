@@ -21,7 +21,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import { ButtonWithConfirmation } from './Components';
 import type {
-  HtmlGeneratorFieldData,
+  MapperComponentData,
   MappingElementProps,
 } from './LineComponents';
 import { MappingPathComponent } from './LineComponents';
@@ -236,7 +236,7 @@ export function mappingOptionsMenu({
   readonly onChangeMatchBehaviour: (matchBehavior: MatchBehaviors) => void;
   readonly onToggleAllowNulls: (allowNull: boolean) => void;
   readonly onChangeDefaultValue: (defaultValue: string | null) => void;
-}): IR<HtmlGeneratorFieldData> {
+}): IR<MapperComponentData> {
   return {
     matchBehavior: {
       optionLabel: (

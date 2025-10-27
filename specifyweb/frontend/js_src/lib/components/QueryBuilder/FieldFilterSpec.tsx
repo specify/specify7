@@ -418,7 +418,7 @@ type FieldFilter = {
  * So that they can still be easily accessed if needed by helper functions, but
  * in a potentially stale state.
  */
-export const queryFieldFilters: RR<QueryFieldFilter, FieldFilter> = {
+export const queryFieldFilterSpecs: RR<QueryFieldFilter, FieldFilter> = {
   any: {
     id: 8,
     label: queryText.any(),

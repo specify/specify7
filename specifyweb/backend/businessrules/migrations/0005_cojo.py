@@ -6,7 +6,7 @@ from specifyweb.backend.businessrules.uniqueness_rules import create_uniqueness_
     Applies the COJO uniqueness rule to the database.
 """
 def apply_migration(apps, schema_editor):
-    cojo_rules = DEFAULT_UNIQUENESS_RULES["CollectionObjectGroupJoin"]
+    cojo_rules = DEFAULT_UNIQUENESS_RULES["Collectionobjectgroupjoin"]
     Discipline = apps.get_model('specify', 'Discipline')
 
     for rule in cojo_rules:

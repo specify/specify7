@@ -1,5 +1,3 @@
-
-
 # type: ignore
 
 # ^^ The above is because we etensively use recursive typedefs of named tuple in this file not supported on our MyPy 0.97 version.
@@ -10,14 +8,25 @@ from functools import reduce
 from typing import (
     Any,
     NamedTuple,
-    TypedDict,
 )
 from collections.abc import Callable
 
 from specifyweb.backend.permissions.permissions import has_target_permission
-from specifyweb.specify.api.filter_by_col import CONCRETE_HIERARCHY
+from specifyweb.backend.stored_queries.batch_edit_helper_classes import (
+    BATCH_EDIT_NULL_RECORD_DESCRIPTION,
+    BATCH_EDIT_READONLY_TABLES,
+    BATCH_EDIT_SHARED_READONLY_FIELDS,
+    BATCH_EDIT_SHARED_READONLY_RELATIONSHIPS,
+    EMPTY_FIELD,
+    EMPTY_PACK,
+    FLOAT_FIELDS,
+    BatchEditFieldPack,
+    BatchEditMetaTables,
+    BatchEditPack,
+    BatchEditProps,
+)
 from specifyweb.specify.models import datamodel
-from specifyweb.specify.models_utils.load_datamodel import Field, Relationship, Table
+from specifyweb.specify.models_utils.load_datamodel import Relationship, Table
 from specifyweb.backend.trees.views import TREE_INFORMATION, get_all_tree_information
 from specifyweb.backend.trees.utils import SPECIFY_TREES
 from specifyweb.specify.datamodel import is_tree_table
@@ -30,7 +39,7 @@ from specifyweb.backend.stored_queries.queryfieldspec import (
 )
 from specifyweb.backend.workbench.models import Spdataset
 from specifyweb.backend.workbench.permissions import BatchEditDataSetPT
-from specifyweb.backend.workbench.upload.treerecord import TreeRecord, TreeRankRecord, RANK_KEY_DELIMITER
+from specifyweb.backend.workbench.upload.treerecord import TreeRecord, TreeRankRecord
 from specifyweb.backend.workbench.upload.upload_plan_schema import parse_column_options
 from specifyweb.backend.workbench.upload.upload_table import UploadTable
 from specifyweb.backend.workbench.upload.uploadable import NULL_RECORD, Uploadable
@@ -45,46 +54,12 @@ from jsonschema import validate
 
 from django.db import transaction
 
-MaybeField = Callable[[QueryFieldSpec], Field | None]
+import logging
 
-# TODO:
-# Investigate if any/some/most of the logic for making an upload plan could be moved to frontend and reused.
-#   - does generation of upload plan in the backend bc upload plan is not known (we don't know count of to-many).
-#       - seemed complicated to merge upload plan from the frontend
-#   - need to place id markers at correct level, so need to follow upload plan anyways.
-# REFACTOR: Break this file into smaller pieaces
-
-# TODO: Play-around with localizing
-BATCH_EDIT_NULL_RECORD_DESCRIPTION = ""
-
-# TODO: add backend support for making system tables readonly
-BATCH_EDIT_READONLY_TABLES = [*CONCRETE_HIERARCHY]
-
-BATCH_EDIT_SHARED_READONLY_FIELDS = [
-    "timestampcreated",
-    "timestampmodified",
-    "version",
-    "nodenumber",
-    "highestchildnodenumber",
-    "rankid",
-    "fullname",
-    "age",
-]
-
-BATCH_EDIT_SHARED_READONLY_RELATIONSHIPS = ["createdbyagent", "modifiedbyagent"]
-
-BATCH_EDIT_REQUIRED_TREE_FIELDS = ["name"]
-
+logger = logging.getLogger(__name__)
 
 def get_readonly_fields(table: Table):
     fields = [*BATCH_EDIT_SHARED_READONLY_FIELDS, table.idFieldName.lower()]
-
-    # FEATURE: Remove this when lat/long is officially supported
-    # See https://github.com/specify/specify7/issues/6251 and
-    # https://github.com/specify/specify7/issues/6655
-    if table.name.lower() == 'locality':
-        fields.extend(('latitude1', 'longitude1', 'lat1text', 'long1text',
-                      'latitude2', 'longitude2', 'lat2text', 'long2text'))
 
     relationships = [
         rel.name
@@ -95,194 +70,37 @@ def get_readonly_fields(table: Table):
         relationships = ["preferredtaxon"]
     elif is_tree_table(table):
         relationships = ["definitionitem"]
+    elif table.name.lower() == 'locality':
+        # The editing of these fields should ideally be done through the
+        # corresponding mapped decimal fields (which act as these text fields
+        # in the Workbench)
+        # If the user maps to any of these fields in the Query, then the
+        # corresponding decimal field will be added to the data set with the
+        # value of these text fields
+        # See batch_edit_query_rewrites.py
+        fields.extend(('lat1text', 'long1text', 'lat2text', 'long2text'))
 
     return fields, [*BATCH_EDIT_SHARED_READONLY_RELATIONSHIPS, *relationships]
-
-
-FLOAT_FIELDS = ["java.lang.Float", "java.lang.Double", "java.math.BigDecimal"]
-
 
 def parse(value: Any | None, query_field: QueryField) -> Any:
     field = query_field.fieldspec.get_field()
     if field is None or value is None:
         return value
-    if field.type in FLOAT_FIELDS:
+
+    if field.type in FLOAT_FIELDS and (
+        # REFACTOR: these fields should be parsed as lat1text, long1text, etc.
+        # See #6251, #6655
+        # Find a better way to have this association/mapping?
+        not field.name.lower() in ('latitude1', 'longitude1', 'latitude2',
+                                   'longitude2')):
         return float(value)
     return value
-
-
-def _get_nested_order(field_spec: QueryFieldSpec):
-    # don't care about ordernumber if it ain't nested
-    # won't affect logic, just data being saved.
-    if len(field_spec.join_path) == 0:
-        return None
-    return field_spec.table.get_field("ordernumber")
-
-
-batch_edit_fields: dict[str, tuple[MaybeField, int]] = {
-    # technically, if version updates are correct, this is useless beyond base tables
-    # and to-manys. TODO: Do just that. remove it. sorts asc. using sort, the optimized
-    # dataset construction takes place.
-    "id": (lambda field_spec: field_spec.table.idField, 1),
-    # version control gets added here. no sort.
-    "version": (lambda field_spec: field_spec.table.get_field("version"), 0),
-    # ordernumber. no sort (actually adding a sort here is useless)
-    "order": (_get_nested_order, 1),
-}
-
-
-class BatchEditFieldPack(NamedTuple):
-    field: QueryField | None = None
-    idx: int | None = None  # default value not there, for type safety
-    value: Any = None  # stricten this?
-
-
-class BatchEditPack(NamedTuple):
-    id: BatchEditFieldPack
-    order: BatchEditFieldPack
-    version: BatchEditFieldPack
-
-    # extends a path to contain the last field + for a defined fields
-    @staticmethod
-    def from_field_spec(field_spec: QueryFieldSpec) -> "BatchEditPack":
-        # don't care about which way. bad things will happen if not sorted.
-        # not using assert () since it can be optimised out.
-        if batch_edit_fields["id"][1] == 0 or batch_edit_fields["order"][1] == 0:
-            raise Exception("the ID field should always be sorted!")
-
-        def extend_callback(sort_type):
-            def _callback(field):
-                return BatchEditPack._query_field(
-                    field_spec._replace(
-                        join_path=(*field_spec.join_path, field), date_part=None
-                    ),
-                    sort_type,
-                )
-
-            return _callback
-
-        new_field_specs = {
-            key: BatchEditFieldPack(
-                idx=None,
-                field=Func.maybe(callback(field_spec), extend_callback(sort_type)),
-                value=None,
-            )
-            for key, (callback, sort_type) in batch_edit_fields.items()
-        }
-        return BatchEditPack(**new_field_specs)
-
-    def merge(self, other: "BatchEditPack") -> "BatchEditPack":
-        return BatchEditPack(
-            id=self.id if self.id.field is not None else other.id,
-            version=self.version if self.version.field is not None else other.version,
-            order=self.order if self.order.field is not None else other.order,
-        )
-
-    # a basic query field spec to field
-    @staticmethod
-    def _query_field(field_spec: QueryFieldSpec, sort_type: int):
-        return QueryField(
-            fieldspec=field_spec,
-            op_num=8,
-            value=None,
-            negate=False,
-            display=True,
-            format_name=None,
-            sort_type=sort_type,
-            strict=False,
-        )
-
-    def _index(
-        self,
-        start_idx: int,
-        current: tuple[dict[str, BatchEditFieldPack], list[QueryField]],
-        next: tuple[int, tuple[str, tuple[MaybeField, int]]],
-    ):
-        current_dict, fields = current
-        field_idx, (field_name, _) = next
-        value: BatchEditFieldPack = getattr(self, field_name)
-        new_dict = {
-            **current_dict,
-            field_name: value._replace(
-                field=None, idx=((field_idx + start_idx) if value.field else None)
-            ),
-        }
-        new_fields = fields if value.field is None else [*fields, value.field]
-        return new_dict, new_fields
-
-    def index_plan(self, start_index=0) -> tuple["BatchEditPack", list[QueryField]]:
-        init: tuple[dict[str, BatchEditFieldPack], list[QueryField]] = (
-            {},
-            [],
-        )
-        _dict, fields = reduce(
-            lambda accum, next: self._index(
-                start_idx=start_index, current=accum, next=next
-            ),
-            enumerate(batch_edit_fields.items()),
-            init,
-        )
-        return BatchEditPack(**_dict), fields
-
-    def bind(self, row: tuple[Any]):
-        return BatchEditPack(
-            id=self.id._replace(
-                value=row[self.id.idx] if self.id.idx is not None else None,
-            ),
-            order=self.order._replace(
-                value=row[self.order.idx] if self.order.idx is not None else None
-            ),
-            version=self.version._replace(
-                value=row[self.version.idx] if self.version.idx is not None else None
-            ),
-        )
-
-    def to_json(self) -> dict[str, Any]:
-        return {
-            "id": self.id.value,
-            "ordernumber": self.order.value,
-            "version": self.version.value,
-        }
-
-    # we not only care that it is part of tree, but also care that there is rank to tree
-    def is_part_of_tree(self, query_fields: list[QueryField]) -> bool:
-        if self.id.idx is None:
-            return False
-        id_field = self.id.idx
-        field = query_fields[id_field - 1]
-        join_path = field.fieldspec.join_path
-        if len(join_path) < 2:
-            return False
-        return isinstance(join_path[-2], TreeRankQuery)
-    
-    @staticmethod
-    def replace_tree_rank(fieldspec: QueryFieldSpec, tree_rank: TreeRankQuery) -> QueryFieldSpec:
-        return fieldspec._replace(
-            join_path=tuple(
-                [
-                    tree_rank if isinstance(node, TreeRankQuery) else node
-                    for node in fieldspec.join_path
-                ]
-            )
-        )
-    
-    def readjust_tree_rank(self, tree_rank: TreeRankQuery):
-        id_field = self.id._replace(field=self.id.field._replace(fieldspec=BatchEditPack.replace_tree_rank(self.id.field.fieldspec, tree_rank))) if self.id.field is not None else self.id
-        order_field = self.order._replace(field=self.order.field._replace(fieldspec=BatchEditPack.replace_tree_rank(self.order.field.fieldspec, tree_rank))) if self.order.field is not None else self.order
-        version_field  = self.version._replace(field=self.version.field._replace(fieldspec=BatchEditPack.replace_tree_rank(self.version.field.fieldspec, tree_rank))) if self.version.field is not None else self.version
-        return BatchEditPack(id=id_field, order=order_field, version=version_field)
     
 def get_tree_rank_record(key) -> TreeRankRecord:
     from specifyweb.backend.workbench.upload.treerecord import RANK_KEY_DELIMITER
 
     tree_name, rank_name, tree_def_id = tuple(key.split(RANK_KEY_DELIMITER))
     return TreeRankRecord(RANK_KEY_DELIMITER.join([tree_name, rank_name]), int(tree_def_id))
-
-
-# These constants are purely for memory optimization, no code depends and/or cares if this is constant.
-EMPTY_FIELD = BatchEditFieldPack()
-EMPTY_PACK = BatchEditPack(id=EMPTY_FIELD, order=EMPTY_FIELD, version=EMPTY_FIELD)
-
 
 # FUTURE: this already supports nested-to-many for most part
 # wb plan, but contains query fields along with indexes to look-up in a result row.
@@ -598,7 +416,6 @@ class RowPlanMap(NamedTuple):
 # RowPlanMap is just a map, this stores actual data (to many is a dict of list, rather than just a dict)
 # maybe unify that with RowPlanMap?
 
-
 class RowPlanCanonical(NamedTuple):
     batch_edit_pack: BatchEditPack
     columns: list[BatchEditFieldPack] = []
@@ -879,8 +696,9 @@ class RowPlanCanonical(NamedTuple):
     def to_upload_plan(
         self,
         base_table: Table,
-        localization_dump: dict[str, dict[str, str]],
+        batch_edit_meta_tables: BatchEditMetaTables,
         query_fields: list[QueryField],
+        query_field_caption_lookup: dict[QueryField, str],
         fields_added: dict[str, int],
         get_column_id: Callable[[str], int],
         omit_relationships: bool,
@@ -900,14 +718,23 @@ class RowPlanCanonical(NamedTuple):
             field = query_fields[
                 _id - 1
             ]  # Need to go off by 1, bc we added 1 to account for id fields
-            table_name, field_name = _get_table_and_field(field)
-            field_labels = localization_dump.get(table_name, {})
             # It could happen that the field we saw doesn't exist.
             # Plus, the default options get chosen in the cases of
-            if field_name not in field_labels or field.fieldspec.contains_tree_rank():
+            table_name, field_name = _get_table_and_field(field)
+            field_caption = query_field_caption_lookup.get(field, None)
+            table_field_labels = batch_edit_meta_tables.get_table_field_labels(table_name)
+            if (
+                table_field_labels is None
+                or not table_field_labels.has_field_label(field_name)
+                or field.fieldspec.contains_tree_rank()
+            ):
                 localized_label = naive_field_format(field.fieldspec)
             else:
-                localized_label = field_labels[field_name]
+                field_label = table_field_labels.use_field_label(field_name, field_caption)
+                localized_label = (
+                    field_label.caption if field_label is not None else naive_field_format(field.fieldspec)
+                )
+                
             string_id = field.fieldspec.to_stringid()
             fields_added[localized_label] = fields_added.get(localized_label, 0) + 1
             _count = fields_added[localized_label]
@@ -950,8 +777,9 @@ class RowPlanCanonical(NamedTuple):
             )
             return _self.to_upload_plan(
                 related_model,
-                localization_dump,
+                batch_edit_meta_tables,
                 query_fields,
+                query_field_caption_lookup,
                 fields_added,
                 get_column_id,
                 omit_relationships,
@@ -1024,7 +852,7 @@ class RowPlanCanonical(NamedTuple):
 def naive_field_format(fieldspec: QueryFieldSpec):
     field = fieldspec.get_field()
     tree_rank = fieldspec.get_first_tree_rank()
-    prefix = f"{tree_rank[1].treedef_name} - {tree_rank[1].name} - " if tree_rank else ""
+    prefix = f"{tree_rank.treedef_name} - {tree_rank.name} - " if tree_rank else ""
     if field is None:
         return f"{prefix}{fieldspec.table.name} (formatted)"
     if field.is_relationship:
@@ -1063,23 +891,61 @@ def run_batch_edit(collection, user, spquery, agent):
         visual_order=visual_order,
     )
 
-
-class BatchEditProps(TypedDict):
-    collection: Any
-    user: Any
-    contexttableid: int
-    captions: Any
-    limit: int | None
-    recordsetid: int | None
-    session_maker: Any
-    fields: list[QueryField]
-    omit_relationships: bool | None 
-    treedefsfilter: Any
-
 def _get_table_and_field(field: QueryField):
     table_name = field.fieldspec.table.name
     field_name = None if field.fieldspec.get_field() is None else field.fieldspec.get_field().name
     return (table_name, field_name)
+
+def rewrite_coordinate_fields(row, _mapped_rows: dict[tuple[tuple[str, ...], ...], Any], join_paths: tuple[tuple[str, ...], ...]) -> tuple: 
+    """
+        In the QueryResults we want to replace any instances of the decimal
+        coordinate fields (latitude1, longitude1, latitude2, longitude2) with
+        their corresponding text field result (lat1text, long1text, etc.).
+        This is to align BatchEdit behavior with pre-existing WorkBench
+        behavior.
+        See #6251, #6655
+
+        REFACTOR: In WB currently, mapping a coordinate text and decimal field
+        can result in the two easily becoming out-of-sync: as there is no 
+        business logic associated with directly mapped textual coordinate
+        fields.
+
+        REFACTOR: Instead of iterating through each of the results, consider
+        rewriting (in batch_edit_query_rewrites.py) the decimal coordinate 
+        fields to the textual coordinate fields before running the query, 
+        running he query, and then replacing the represented field before 
+        parsing.
+    """
+    mapped_rows = _mapped_rows
+
+    field_replacement_map = {
+        'latitude1': 'lat1text',
+        'longitude1': 'long1text',
+        'latiude2': 'lat2text',
+        'longitude2': 'long2text'
+    }
+
+    for join_path in join_paths:
+        if len(join_path) == 0:
+            continue
+        field_name = join_path[-1]
+        replacement_field = field_replacement_map.get(field_name, None)
+        replace_join_path = tuple((*join_path[:-1], replacement_field))
+        if replacement_field is None or not replace_join_path in mapped_rows.keys():
+            continue
+
+        mapped_rows[join_path] = mapped_rows[replace_join_path]
+
+    result = tuple(mapped_rows[join_path] for join_path in join_paths)
+    return (row[0], *result)
+
+def rewrite_row(row, query_fields: list[QueryField]) -> tuple:
+    """
+        Rewrite the query result row to an "expected form" for batch edit
+    """
+    join_paths = tuple(tuple(field.name for field in query_field.fieldspec.join_path) for query_field in query_fields)
+    mapped_rows = dict(zip(join_paths, row[1:]))
+    return rewrite_coordinate_fields(row, mapped_rows, join_paths)
 
 def run_batch_edit_query(props: BatchEditProps):
 
@@ -1090,8 +956,15 @@ def run_batch_edit_query(props: BatchEditProps):
 
     recordsetid = props["recordsetid"]
     fields = props["fields"]
-
     visible_fields = [field for field in fields if field.display]
+    
+    field_caption_pairs: list[tuple[QueryField, str]] = []
+    query_field_caption_lookup: dict[QueryField, str] = {}
+    if captions is not None:
+        field_caption_pairs = list(zip(visible_fields, captions))
+        query_field_caption_lookup = dict(field_caption_pairs)
+    if len(fields) != len(set(fields)):
+        logger.info("Key Collision: query field appears more than once.")
 
     treedefsfilter = props["treedefsfilter"]
 
@@ -1099,14 +972,23 @@ def run_batch_edit_query(props: BatchEditProps):
         len(visible_fields) == len(captions)
     ), "Got misaligned captions!"
 
-    localization_dump = {}
+    field_caption_pairs: list[tuple[QueryField, str]] = []
     if captions:
-        for (field, caption) in zip(visible_fields, captions):
-            table_name, field_name = _get_table_and_field(field)
-            field_labels = localization_dump.get(table_name, {})
-            field_labels[field_name] = caption
-            localization_dump[table_name] = field_labels
+        field_caption_pairs = list(zip(visible_fields, captions))
 
+    query_field_caption_lookup: dict[QueryField, str] = {
+        field: caption for field, caption in field_caption_pairs
+    }
+
+    localization_dump: dict[str, list[tuple[str, str, bool]]] = {}
+    for field, caption in field_caption_pairs:
+        table_name, field_name = _get_table_and_field(field)
+        field_labels = localization_dump.get(table_name, [])
+        new_field_label = (field_name, caption, False)
+        field_labels.append(new_field_label)
+        localization_dump[table_name] = field_labels
+
+    batch_edit_meta_tables = BatchEditMetaTables(localization_dump)
     naive_row_plan = RowPlanMap.get_row_plan(visible_fields)
     all_tree_info = get_all_tree_information(props["collection"], props["user"].id)
     base_table = datamodel.get_table_by_id_strict(tableid, strict=True)
@@ -1152,7 +1034,8 @@ def run_batch_edit_query(props: BatchEditProps):
     visited_rows: list[RowPlanCanonical] = []
     previous_id = None
     previous_row = RowPlanCanonical(EMPTY_PACK)
-    for row in rows["results"]:
+    for _row in rows["results"]:
+        row = rewrite_row(_row, query_fields)
         _, new_row = previous_row.merge(row, indexed, query_with_hidden)
         to_many_planner = new_row.update_to_manys(to_many_planner)
         if previous_id != new_row.batch_edit_pack.id.value:
@@ -1199,8 +1082,9 @@ def run_batch_edit_query(props: BatchEditProps):
     # The keys are lookups into original query field (not modified by us). Used to get ids in the original one.
     key_and_headers, upload_plan = extend_row.to_upload_plan(
         base_table,
-        localization_dump,
+        batch_edit_meta_tables,
         query_fields,
+        query_field_caption_lookup,
         {},
         _get_orig_column,
         omit_relationships,

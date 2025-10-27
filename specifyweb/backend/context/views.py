@@ -16,6 +16,7 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest, \
 from django.urls import URLPattern
 from django.utils.translation import get_language_info
 from django.utils.translation import gettext as _
+from django.utils import timezone
 from django.views.decorators.cache import cache_control, never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.i18n import LANGUAGE_QUERY_PARAMETER
@@ -25,7 +26,7 @@ from specifyweb.backend.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, \
     check_permission_targets, skip_collection_access_check, query_pt, \
     CollectionAccessPT
-from specifyweb.specify.models import Collection, Institution, \
+from specifyweb.specify.models import Collection, Collectionobject, Institution, \
     Specifyuser, Spprincipal, Spversion, Collectionobjecttype
 from specifyweb.specify.models_utils.schema import base_schema
 from specifyweb.specify.models_utils.serialize_datamodel import datamodel_to_json
@@ -635,6 +636,10 @@ def remote_prefs(request):
     return HttpResponse(get_remote_prefs(), content_type='text/x-java-properties')
 
 @require_http_methods(['GET', 'HEAD'])
+def get_server_time(request):
+    return JsonResponse({"server_time": timezone.now().isoformat()})
+
+@require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, public=True)
 @skip_collection_access_check
 def system_info(request):
@@ -650,6 +655,7 @@ def system_info(request):
         database_version=spversion.appversion,
         schema_version=spversion.schemaversion,
         stats_url=settings.STATS_URL,
+        stats_2_url=settings.STATS_2_URL,
         database=settings.DATABASE_NAME,
         institution=institution.name,
         institution_guid=institution.guid,
@@ -1013,3 +1019,17 @@ def schema_language(request):
         dict(zip(('language', 'country', 'variant'), row))
         for row in schema_languages
     ], safe=False)
+
+@require_http_methods(['GET', 'HEAD'])
+@cache_control(max_age=86400, public=True)
+@login_maybe_required
+def stats_counts(request):
+    """Get the count of collection objects, collections, and users."""
+    co_count = Collectionobject.objects.count()
+    collection_count = Collection.objects.count()
+    user_count = Specifyuser.objects.count()
+    return JsonResponse({
+        'Collectionobject': co_count,
+        'Collection': collection_count,
+        'Specifyuser': user_count,
+    })

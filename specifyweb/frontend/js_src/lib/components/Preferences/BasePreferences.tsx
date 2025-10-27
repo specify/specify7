@@ -13,7 +13,7 @@ import { keysToLowerCase, replaceKey } from '../../utils/utils';
 import { SECOND } from '../Atoms/timeUnits';
 import { softFail } from '../Errors/Crash';
 import {
-  cachableUrl,
+  cacheableUrl,
   contextUnlockedPromise,
   foreverFetch,
 } from '../InitialContext';
@@ -429,7 +429,7 @@ export const fetchResourceId = async (
   fetchUrl: string,
   resourceName: string
 ): Promise<number | undefined> =>
-  ajax<RA<UserResource>>(cachableUrl(fetchUrl), {
+  ajax<RA<UserResource>>(cacheableUrl(fetchUrl), {
     headers: { Accept: mimeType },
   }).then(
     ({ data }) =>
@@ -445,7 +445,7 @@ const fetchResourceData = async (
   fetchUrl: string,
   appResourceId: number
 ): Promise<ResourceWithData> =>
-  ajax<ResourceWithData>(cachableUrl(`${fetchUrl}${appResourceId}/`), {
+  ajax<ResourceWithData>(cacheableUrl(`${fetchUrl}${appResourceId}/`), {
     headers: { Accept: mimeType },
   }).then(({ data }) => data);
 

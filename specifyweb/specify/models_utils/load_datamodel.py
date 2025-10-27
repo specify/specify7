@@ -1,4 +1,4 @@
-from typing import Union, Optional, TypeVar, cast
+from typing import Union, Optional, TypeVar, cast, Literal
 from collections.abc import Callable
 from collections.abc import Iterable
 from xml.etree import ElementTree
@@ -313,11 +313,13 @@ class IdField(Field):
         return "<SpecifyIdField: %s>" % self.name
 
 
+RelationshipType = Literal["one-to-many", "one-to-one", "many-to-one", "many-to-many", "zero-to-one"]
+
 class Relationship(Field):
     is_relationship: bool = True
     dependent: bool = False
     name: str
-    type: str | None
+    type: RelationshipType | None
     required: bool
     relatedModelName: str
     column: str | None = None 
@@ -326,7 +328,7 @@ class Relationship(Field):
     def __init__(
         self,
         name: str | None = None,
-        type: str | None = None,
+        type: RelationshipType | None = None,
         required: bool | None = None,
         relatedModelName: str | None = None,
         column: str | None = None,
@@ -427,7 +429,7 @@ def make_index(indexdef: ElementTree.Element) -> Index:
 def make_relationship(reldef: ElementTree.Element) -> Relationship:
     rel = Relationship(
         name=reldef.attrib["relationshipname"],
-        type=reldef.attrib["type"],
+        type=cast(RelationshipType, reldef.attrib["type"]),
         required=(reldef.attrib["required"] == "true"),
         relatedModelName=reldef.attrib["classname"].split(".")[-1],
         column=(

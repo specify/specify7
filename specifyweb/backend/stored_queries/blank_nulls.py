@@ -16,6 +16,8 @@ See the sqlalchemy docs on FunctionElement for more information
 """
 class blank_nulls(expression.FunctionElement):
     name = 'blank_nulls'
+    type = String()
+    inherit_cache = True
 
 """ The `@compiles` decorator tells sqlalchemy to run this function whenever 
 a blank_nulls object needs to be compiled.

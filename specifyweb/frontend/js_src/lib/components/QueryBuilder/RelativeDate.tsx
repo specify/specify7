@@ -17,7 +17,7 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
-import { QueryInputField } from './FieldFilter';
+import { QueryInputField } from './FieldFilterSpec';
 
 export function DateQueryInputField({
   currentValue,
@@ -166,10 +166,10 @@ function DateSplit({
                 handleChanging?.();
               }}
             >
-              <option value="day">{queryText.day()}</option>
-              <option value="week">{queryText.week()}</option>
-              <option value="month">{queryText.month()}</option>
-              <option value="year">{queryText.year()}</option>
+              <option value="day">{queryText.days()}</option>
+              <option value="week">{queryText.weeks()}</option>
+              <option value="month">{queryText.months()}</option>
+              <option value="year">{queryText.years()}</option>
             </Select>
           ),
           direction: (direction) => (

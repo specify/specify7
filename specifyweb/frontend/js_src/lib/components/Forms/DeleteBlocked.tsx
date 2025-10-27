@@ -13,7 +13,7 @@ import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import { TableIcon } from '../Molecules/TableIcon';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { queryFieldFilterSpecs } from '../QueryBuilder/FieldFilterSpec';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { DateRange } from './DateRange';
 
@@ -175,13 +175,13 @@ function BlockerPreview({
       rawQueryField
         ?.toSpQueryField()
         .set('isDisplay', false)
-        .set('operStart', queryFieldFilters.equal.id)
+        .set('operStart', queryFieldFilterSpecs.equal.id)
         .set('startValue', parentResource.id.toString()) ??
       QueryFieldSpec.fromPath(table.name, ['id'])
         .toSpQueryField()
         .set('isDisplay', false)
         .set('startValue', resolvedIds.join(','))
-        .set('operStart', queryFieldFilters.in.id)
+        .set('operStart', queryFieldFilterSpecs.in.id)
     );
   }, [resolvedIds]);
   return (

@@ -47,7 +47,7 @@ export const notificationsText = createDictionary({
     'fr-fr': '(Classé du plus récent au plus ancien.)',
     'uk-ua': '(У порядку від останнього до найстарішого.)',
     'de-ch': '(Geordnet von neu zu alt)',
-    'pt-br': '(Ordenados do mais recente para o mais antigo.)',
+    'pt-br': '(Ordenado do mais recente para o mais antigo.)',
   },
   exception: {
     comment: 'Used as a label for a button that downloads the error message',
@@ -93,7 +93,7 @@ export const notificationsText = createDictionary({
     'fr-fr': 'Exportation DwCA terminée.',
     'uk-ua': 'Експорт DwCA завершено.',
     'de-ch': 'Der DwCA-Export wurde abgeschlossen.',
-    'pt-br': 'Exportação do DwCA concluída.',
+    'pt-br': 'Exportação DwCA concluída.',
   },
   dwcaExportFailed: {
     'en-us': 'DwCA export failed.',

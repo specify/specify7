@@ -2,24 +2,25 @@ import React from 'react';
 
 import type { RR } from '../../utils/types';
 import { userPreferences } from '../Preferences/userPreferences';
-import type { QueryFieldFilter, QueryFieldType } from './FieldFilter';
-import { queryFieldFilters } from './FieldFilter';
+import type { QueryFieldFilter, QueryFieldType } from './FieldFilterSpec';
+import { queryFieldFilterSpecs } from './FieldFilterSpec';
 
-type ExpandedFieldFilter = (typeof queryFieldFilters)[QueryFieldFilter] & {
-  readonly types: Partial<
-    RR<
-      QueryFieldType,
-      /**
-       * A type can be supported by the front/backend, but not be visible to
-       * users (e.g., showing comparison operators for text fields if the
-       * corresponding preference is set)
-       */
-      { readonly visible: boolean }
-    >
-  >;
-};
+export type ExpandedFieldFilter =
+  (typeof queryFieldFilterSpecs)[QueryFieldFilter] & {
+    readonly types: Partial<
+      RR<
+        QueryFieldType,
+        /**
+         * A type can be supported by the front/backend, but not be visible to
+         * users (e.g., showing comparison operators for text fields if the
+         * corresponding preference is set)
+         */
+        { readonly visible: boolean }
+      >
+    >;
+  };
 
-export function useQueryFieldFilters(): RR<
+export function useQueryFieldFilterSpecs(): RR<
   QueryFieldFilter,
   ExpandedFieldFilter
 > {
@@ -32,7 +33,7 @@ export function useQueryFieldFilters(): RR<
   return React.useMemo(
     () => ({
       any: {
-        ...queryFieldFilters.any,
+        ...queryFieldFilterSpecs.any,
         types: {
           checkbox: { visible: true },
           date: { visible: true },
@@ -45,7 +46,7 @@ export function useQueryFieldFilters(): RR<
         },
       },
       like: {
-        ...queryFieldFilters.like,
+        ...queryFieldFilterSpecs.like,
         types: {
           text: { visible: true },
           number: { visible: true },
@@ -54,7 +55,7 @@ export function useQueryFieldFilters(): RR<
         },
       },
       equal: {
-        ...queryFieldFilters.equal,
+        ...queryFieldFilterSpecs.equal,
         types: {
           text: { visible: true },
           number: { visible: true },
@@ -63,7 +64,7 @@ export function useQueryFieldFilters(): RR<
         },
       },
       greater: {
-        ...queryFieldFilters.greater,
+        ...queryFieldFilterSpecs.greater,
         types: {
           text: { visible: showComparisonOperatorsForString },
           number: { visible: true },
@@ -72,7 +73,7 @@ export function useQueryFieldFilters(): RR<
         },
       },
       less: {
-        ...queryFieldFilters.less,
+        ...queryFieldFilterSpecs.less,
         types: {
           text: { visible: showComparisonOperatorsForString },
           number: { visible: true },
@@ -81,7 +82,7 @@ export function useQueryFieldFilters(): RR<
         },
       },
       greaterOrEqual: {
-        ...queryFieldFilters.greaterOrEqual,
+        ...queryFieldFilterSpecs.greaterOrEqual,
         types: {
           text: { visible: showComparisonOperatorsForString },
           number: { visible: true },
@@ -90,7 +91,7 @@ export function useQueryFieldFilters(): RR<
         },
       },
       lessOrEqual: {
-        ...queryFieldFilters.lessOrEqual,
+        ...queryFieldFilterSpecs.lessOrEqual,
         types: {
           text: { visible: showComparisonOperatorsForString },
           number: { visible: true },
@@ -99,15 +100,15 @@ export function useQueryFieldFilters(): RR<
         },
       },
       true: {
-        ...queryFieldFilters.true,
+        ...queryFieldFilterSpecs.true,
         types: { checkbox: { visible: true } },
       },
       false: {
-        ...queryFieldFilters.false,
+        ...queryFieldFilterSpecs.false,
         types: { checkbox: { visible: true } },
       },
       between: {
-        ...queryFieldFilters.between,
+        ...queryFieldFilterSpecs.between,
         types: {
           text: { visible: true },
           number: { visible: true },
@@ -116,7 +117,7 @@ export function useQueryFieldFilters(): RR<
         },
       },
       in: {
-        ...queryFieldFilters.in,
+        ...queryFieldFilterSpecs.in,
         /*
          * Can't use "date" for IN because date picker does not allow separating
          * multiple values with a comma. Instead, OR filters should be used
@@ -128,7 +129,7 @@ export function useQueryFieldFilters(): RR<
         },
       },
       contains: {
-        ...queryFieldFilters.contains,
+        ...queryFieldFilterSpecs.contains,
         types: {
           text: { visible: true },
           number: { visible: true },
@@ -137,7 +138,7 @@ export function useQueryFieldFilters(): RR<
         },
       },
       startsWith: {
-        ...queryFieldFilters.startsWith,
+        ...queryFieldFilterSpecs.startsWith,
         types: {
           text: { visible: true },
           number: { visible: true },
@@ -146,7 +147,7 @@ export function useQueryFieldFilters(): RR<
         },
       },
       endsWith: {
-        ...queryFieldFilters.endsWith,
+        ...queryFieldFilterSpecs.endsWith,
         types: {
           text: { visible: true },
           number: { visible: true },
@@ -155,7 +156,7 @@ export function useQueryFieldFilters(): RR<
         },
       },
       empty: {
-        ...queryFieldFilters.empty,
+        ...queryFieldFilterSpecs.empty,
         types: {
           checkbox: { visible: true },
           date: { visible: true },
@@ -165,19 +166,19 @@ export function useQueryFieldFilters(): RR<
         },
       },
       trueOrNull: {
-        ...queryFieldFilters.trueOrNull,
+        ...queryFieldFilterSpecs.trueOrNull,
         types: { checkbox: { visible: true } },
       },
       falseOrNull: {
-        ...queryFieldFilters.falseOrNull,
+        ...queryFieldFilterSpecs.falseOrNull,
         types: { checkbox: { visible: true } },
       },
       ageName: {
-        ...queryFieldFilters.ageName,
+        ...queryFieldFilterSpecs.ageName,
         types: { age: { visible: true } },
       },
       ageRange: {
-        ...queryFieldFilters.ageRange,
+        ...queryFieldFilterSpecs.ageRange,
         types: { age: { visible: true } },
       },
     }),
