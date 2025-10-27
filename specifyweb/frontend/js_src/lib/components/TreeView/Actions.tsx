@@ -69,7 +69,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   const resourceName = `/tree/edit/${toLowerCase(tableName)}` as const;
   const isSynonym = typeof focusedRow?.acceptedId === 'number';
 
-  const doExpandSynonymActionsPref = getPref(
+  const doExpandSynonymActionsPref = getCollectionPref(
     `sp7.allow_adding_child_to_synonymized_parent.${tableName}`
   );
 
