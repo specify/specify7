@@ -28,7 +28,7 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
-import { queryFieldFilters } from './FieldFilter';
+import { queryFieldFilterSpecs } from './FieldFilterSpec';
 
 const reStringId = /^([^.]*)\.([^.]*)\.(.*)$/;
 
@@ -142,7 +142,7 @@ export class QueryFieldSpec {
       .set('isDisplay', true)
       .set('isNot', false)
       .set('startValue', '')
-      .set('operStart', queryFieldFilters.any.id)
+      .set('operStart', queryFieldFilterSpecs.any.id)
       .set('sortType', 0)
       .set('tableList', attributes.tableList)
       .set('stringId', attributes.stringId)

@@ -18,33 +18,36 @@ def create_institution(request):
             return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)
     return http.JsonResponse({"error": "Invalid request"}, status=400)
 
+def setup_database_view(request):
+    return api.setup_database(request)
 
 def create_institution_view(request):
-    return api.create_institution(request, direct=True)
+    return api.handle_request(request, api.create_institution)
 
+def create_storage_tree_view(request):
+    return api.handle_request(request, api.create_storage_tree)
+
+def create_global_geography_tree_view(request):
+    return api.handle_request(request, api.create_global_geography_tree)
 
 def create_division_view(request):
-    return api.create_division(request, direct=True)
-
+    return api.handle_request(request, api.create_division)
 
 def create_discipline_view(request):
-    return api.create_discipline(request, direct=True)
+    return api.handle_request(request, api.create_discipline)
 
+def create_geography_tree_view(request):
+    return api.handle_request(request, api.create_geography_tree)
+
+def create_taxon_tree_view(request):
+    return api.handle_request(request, api.create_taxon_tree)
 
 def create_collection_view(request):
-    return api.create_collection(request, direct=True)
-
+    return api.handle_request(request, api.create_collection)
 
 def create_specifyuser_view(request):
-    return api.create_specifyuser(request, direct=True)
+    return api.handle_request(request, api.create_specifyuser)
 
 # check which resource are present in a new db to define setup step
 def get_setup_progress(request):
-    progress = {
-        "institution": models.Institution.objects.exists(),
-        "division": models.Division.objects.exists(),
-        "discipline": models.Discipline.objects.exists(),
-        "collection": models.Collection.objects.exists(),
-        "specifyUser": models.Specifyuser.objects.exists(),
-    }
-    return http.JsonResponse(progress)
+    return http.JsonResponse(api.get_setup_progress())

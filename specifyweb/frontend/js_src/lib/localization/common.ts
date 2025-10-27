@@ -20,7 +20,7 @@ export const commonText = createDictionary({
     'fr-fr': 'Specify 7',
     'uk-ua': 'Вкажіть 7',
     'de-ch': 'Specify 7',
-    'pt-br': 'Especifique 7',
+    'pt-br': 'Specify 7',
   },
   no: {
     'en-us': 'No',
@@ -638,7 +638,7 @@ export const commonText = createDictionary({
     'en-us': 'Expand All',
     'ru-ru': 'Развернуть все',
     'es-es': 'Desplegar todo',
-    'fr-fr': 'Tout développer',
+    'fr-fr': 'Développer tout',
     'uk-ua': 'Розгорнути все',
     'de-ch': 'Alle aufklappen',
     'pt-br': 'Expandir tudo',
@@ -706,6 +706,10 @@ export const commonText = createDictionary({
     'uk-ua': '{resource:string}({count:number|formatted})',
     'de-ch': '{resource:string} ({count:number|formatted})',
     'pt-br': '{resource:string} ({count:number|formatted})',
+  },
+  countLineOrMore: {
+    comment: 'Example usage: Record Sets (1,234+)',
+    'en-us': '{resource:string} ({count:number|formatted}+)',
   },
   jsxCountLine: {
     comment: 'Example usage: Record Sets (1,234)',

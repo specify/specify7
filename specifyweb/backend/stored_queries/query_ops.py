@@ -1,28 +1,39 @@
-
-
-from collections import namedtuple
 import re
 import sqlalchemy
 from sqlalchemy.orm.query import Query
+from collections import namedtuple
+from typing import Literal
 
-# from specifyweb.specify.geo_time import (
-#     modify_query_add_age_range,
-#     query_co_ids_in_time_period,
-#     search_co_ids_in_time_range,
-#     query_co_in_time_range,
-#     query_co_in_time_range_with_joins,
-#     search_co_ids_in_time_period,
-#     # search_co_ids_in_time_range_mysql,
-#     search_co_ids_in_time_range_mysql_with_age_range,
-# )
 from specifyweb.backend.stored_queries.geology_time import geo_time_query, geo_time_period_query
-from specifyweb.specify.utils.uiformatters import CNNField, FormatMismatch
+from specifyweb.specify.utils.uiformatters import CNNField, FormatMismatch, UIFormatter
 
+QUERYFIELD_OPERATION_NUMBER = Literal[
+    0,  # Like
+    1,  # Equals
+    2,  # Greater Than
+    3,  # Less Than
+    4,  # Greater Than or Equals
+    5,  # Less Than or Equals
+    6,  # True
+    7,  # False
+    8,  # Dont Care / Any
+    9,  # Between
+    10, # In
+    11, # Contains
+    12, # Null / Empty
+    13, # True or Null/Empty
+    14, # False or Null/Empty
+    15, # Starts With
+    16, # Age Range
+    17, # Age Period
+    18  # Ends With
+]
 
 class QueryOps(namedtuple("QueryOps", "uiformatter")):
     """Instances of this class turn Spqueryfield operation numbers into
     functions that turn lookup keys and predicate values into Django filters.
     """
+    uiformatter: UIFormatter | None
 
     OPERATIONS = [
         # operation,            # op number

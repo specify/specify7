@@ -3,6 +3,7 @@ import logging
 from datetime import datetime, timedelta
 import re
 from collections import namedtuple, deque
+from typing import TypedDict, Iterable
 
 from specifyweb.backend.inheritance.utils import get_cat_num_inheritance_setting, get_parent_cat_num_inheritance_setting
 from specifyweb.specify.utils.uiformatters import get_uiformatter
@@ -10,8 +11,9 @@ from sqlalchemy import sql, Table as SQLTable
 from sqlalchemy.orm.query import Query
 
 from specifyweb.specify.models_utils.load_datamodel import Field, Table
-from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, datamodel
+from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, Component, datamodel
 from specifyweb.backend.stored_queries.models import CollectionObject as sq_CollectionObject
+from specifyweb.backend.stored_queries.models import Component as sq_Component
 
 from . import models
 from .query_ops import QueryOps
@@ -43,8 +45,14 @@ PRECALCULATED_FIELDS = {
     "CollectionObject": "age",
 }
 
+class SpQueryAttrs(TypedDict):
+    tablelist: str
+    stringid: str
+    fieldname: str
+    isrelfld: bool
 
-def extract_date_part(fieldname):
+
+def extract_date_part(fieldname: str) -> tuple[str, str | None]:
     match = DATE_PART_RE.match(fieldname)
     if match:
         fieldname, date_part = match.groups()[:2]
@@ -54,7 +62,7 @@ def extract_date_part(fieldname):
     return fieldname, date_part
 
 
-def make_table_list(fs):
+def make_table_list(fs: "QueryFieldSpec"):
     path = (
         fs.join_path if not fs.join_path or fs.is_relationship() else fs.join_path[:-1]
     )
@@ -71,14 +79,14 @@ def make_table_list(fs):
     return ",".join(first + rest)
 
 
-def make_tree_fieldnames(table: Table, reverse=False):
+def make_tree_fieldnames(table: Table, reverse: bool = False) -> dict:
     mapping = {"ID": table.idFieldName.lower(), "": "name"}
     if reverse:
         return {value: key for (key, value) in mapping.items()}
     return mapping
 
 
-def find_tree_and_field(table: Table, fieldname: str):
+def find_tree_and_field(table: Table, fieldname: str) -> tuple[None, None] | tuple[str, str]:
     fieldname = fieldname.strip()
     if fieldname == "":
         return None, None
@@ -101,7 +109,7 @@ def find_tree_and_field(table: Table, fieldname: str):
     return tree_rank, mapping.get(field, field)
 
 
-def make_stringid(fs, table_list):
+def make_stringid(fs: "QueryFieldSpec", table_list: list[str]) -> tuple[list[str], str, str]:
     tree_ranks = [f.name for f in fs.join_path if isinstance(f, TreeRankQuery)]
     if tree_ranks:
         field_name = tree_ranks
@@ -173,7 +181,7 @@ class QueryFieldSpec(
     tree_field: str | None
 
     @classmethod
-    def from_path(cls, path_in, add_id=False):
+    def from_path(cls, path_in: Iterable[str], add_id: bool=False):
         path = deque(path_in)
         root_table = datamodel.get_table(path.popleft(), strict=True)
 
@@ -205,7 +213,7 @@ class QueryFieldSpec(
         )
 
     @classmethod
-    def from_stringid(cls, stringid, is_relation):
+    def from_stringid(cls, stringid: str, is_relation: bool):
         path_str, table_name, field_name = STRINGID_RE.match(stringid).groups()
         path = deque(path_str.split(","))
         root_table = datamodel.get_table_by_id(int(path.popleft()))
@@ -271,8 +279,8 @@ class QueryFieldSpec(
         self.validate()
 
     def get_first_tree_rank(self):
-        for node in enumerate(list(self.join_path)):
-            if isinstance(node[1], TreeRankQuery):
+        for node in list(self.join_path):
+            if isinstance(node, TreeRankQuery):
                 return node
         return None
 
@@ -292,7 +300,7 @@ class QueryFieldSpec(
                 },
             )
 
-    def to_spquery_attrs(self):
+    def to_spquery_attrs(self) ->SpQueryAttrs:
         table_list = make_table_list(self)
         stringid = make_stringid(self, table_list)
 
@@ -303,7 +311,7 @@ class QueryFieldSpec(
             "isrelfld": self.is_relationship(),
         }
 
-    def to_stringid(self):
+    def to_stringid(self) -> str:
         table_list = make_table_list(self)
         return ".".join(make_stringid(self, table_list))
 
@@ -510,10 +518,12 @@ def parse_dates(date_str):
 
 def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
     parent_inheritance_pref = get_parent_cat_num_inheritance_setting(collection, user)
+    cog_inheritance_pref = get_cat_num_inheritance_setting(collection, user)
 
     if parent_inheritance_pref: 
         op, orm_field, value = parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
-    else: 
+
+    if cog_inheritance_pref: 
         op, orm_field, value = cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
 
     # Special handling for timestamp fields since the Query Builder provides a plain date string (YYYY-MM-DD) instead of a full datetime.
@@ -573,7 +583,6 @@ def cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uif
         table.name == "CollectionObject"
         and field.name == "catalogNumber"
         and op_num == 1
-        and get_cat_num_inheritance_setting(collection, user)
     ):
         sibling_ids = cog_primary_co_sibling_ids(value, collection)
         if sibling_ids:
@@ -609,30 +618,39 @@ def cog_primary_co_sibling_ids(cat_num, collection):
 
 def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
     if (
-        table.name == "CollectionObject"
+        table.name == "Component"
         and field.name == "catalogNumber"
         and op_num == 1
-        and get_parent_cat_num_inheritance_setting(collection, user)
     ):
         components_ids = co_components_ids(value, collection)
         if components_ids:
-            # Modify the query to filter operation and values for component collection objects
+            # Modify the query to filter operation and values for component
             value = ','.join(components_ids)
-            orm_field = getattr(sq_CollectionObject, 'collectionObjectId')
+            orm_field = getattr(sq_Component, 'componentId')
             op = QueryOps(uiformatter).by_op_num(10)
 
     return op, orm_field, value
 
 def co_components_ids(cat_num, collection):
     # Get the collection object with the given catalog number
-    parentcomponent = Collectionobject.objects.filter(catalognumber=cat_num, collection=collection).first()
-    if not parentcomponent:
+    coparent = Collectionobject.objects.filter(catalognumber=cat_num, collection=collection).first()
+
+    if not coparent:
         return []
+    
+    # Get component objects with the same cat num than the CO parent
+    components_with_cat_num = Component.objects.filter(catalognumber=cat_num)
 
-    # Get component objects directly from the related name
-    components = parentcomponent.components.filter(catalognumber=None)
+    # Get component objects directly from the parent CO
+    empty_cat_num_components = coparent.components.filter(catalognumber=None)
 
-    # Get their IDs
-    target_component_co_ids = components.values_list('id', flat=True)
+    # Get component ids
+    ids_with_cat_num = components_with_cat_num.values_list('id', flat=True)
+    ids_with_no_cat_num = empty_cat_num_components.values_list('id', flat=True)
 
-    return [str(i) for i in [parentcomponent.id] + list(target_component_co_ids)]
+    # Combine all IDs and add the parent ID, convert to strings and remove duplicates
+    all_ids = {str(coparent.id)}
+    all_ids.update(str(i) for i in ids_with_cat_num)
+    all_ids.update(str(i) for i in ids_with_no_cat_num)
+
+    return list(all_ids)

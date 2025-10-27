@@ -1,0 +1,427 @@
+{
+  "picklists": [
+    {
+      "name": "Division",
+      "issystem": true,
+      "type": 1,
+      "tablename": "division",
+      "formatter": "Division",
+      "readonly": true,
+      "sizelimit": 100,
+      "items": []
+    },
+    {
+      "name": "Department",
+      "issystem": true,
+      "type": 2,
+      "tablename": "accession",
+      "fieldname": "text1",
+      "readonly": true,
+      "sizelimit": 100,
+      "items": []
+    },
+    {
+      "name": "PrepType",
+      "issystem": true,
+      "type": 1,
+      "tablename": "preptype",
+      "formatter": "PrepType",
+      "readonly": true,
+      "sizelimit": 100,
+      "items": []
+    },
+    {
+      "name": "Discipline",
+      "issystem": true,
+      "type": 1,
+      "tablename": "discipline",
+      "formatter": "Discipline",
+      "readonly": true,
+      "sizelimit": 100,
+      "items": []
+    },
+    {
+      "name": "PermitType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "US Dept Wildlife", "value": "Udw" },
+        { "title": "State", "value": "State" },
+        { "title": "International", "value": "Int" },
+        { "title": "Federal", "value": "Fed" },
+        { "title": "No Data", "value": "No Data" }
+      ]
+    },
+    {
+      "name": "LoanAgentRole",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 12,
+      "items": [
+        { "title": "Borrower", "value": "Borrower" },
+        { "title": "Benefactor", "value": "Benefactor" },
+        { "title": "Contributor", "value": "Contributor" },
+        { "title": "Donor", "value": "Donor" },
+        { "title": "Guest", "value": "Guest" },
+        { "title": "Other", "value": "Other" },
+        { "title": "Preparer", "value": "Preparer" },
+        { "title": "Receiver", "value": "Receiver" },
+        { "title": "Sponsor", "value": "Sponsor" },
+        { "title": "Staff", "value": "Staff" },
+        { "title": "Student", "value": "Student" }
+      ]
+    },
+    {
+      "name": "BorrowRole",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 12,
+      "items": [
+        { "title": "Borrower", "value": "Borrower" },
+        { "title": "Benefactor", "value": "Benefactor" },
+        { "title": "Contributor", "value": "Contributor" },
+        { "title": "Donor", "value": "Donor" },
+        { "title": "Guest", "value": "Guest" },
+        { "title": "Other", "value": "Other" },
+        { "title": "Preparer", "value": "Preparer" },
+        { "title": "Receiver", "value": "Receiver" },
+        { "title": "Sponsor", "value": "Sponsor" },
+        { "title": "Staff", "value": "Staff" },
+        { "title": "Student", "value": "Student" }
+      ]
+    },
+    {
+      "name": "AccessionStatus",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 3,
+      "items": [
+        { "title": "No Data", "value": "Nodata" },
+        { "title": "In Process", "value": "Inprocess" },
+        { "title": "Complete", "value": "Complete" }
+      ]
+    },
+    {
+      "name": "ShipmentMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "DHL", "value": "DHL" },
+        { "title": "FedEx", "value": "FedEx" },
+        { "title": "By Hand", "value": "Hand" },
+        { "title": "UPS", "value": "UPS" },
+        { "title": "USPS", "value": "USPS" },
+        { "title": "Other", "value": "Other" }
+      ]
+    },
+    {
+      "name": "AccessionType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "Gift", "value": "Gift" },
+        { "title": "Collection", "value": "Cln" },
+        { "title": "Field Work", "value": "Field_work" }
+      ]
+    },
+    {
+      "name": "AgentVariant",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "Variant", "value": "0" },
+        { "title": "Vernacular", "value": "1" },
+        { "title": "Author", "value": "2" },
+        { "title": "Author Abbrev.", "value": "3" },
+        { "title": "Label Name", "value": "4" }
+      ]
+    },
+    {
+      "name": "AgentIdentifierType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "ORCID", "value": "ORCID" },
+        { "title": "Wikidata", "value": "Wikidata" },
+        { "title": "Other", "value": "Other" }
+      ]
+    },
+    {
+      "name": "AccessionRole",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "Collector", "value": "Collector" },
+        { "title": "Staff", "value": "Staff" },
+        { "title": "Donor", "value": "Donor" },
+        { "title": "Reviewer", "value": "Reviewer" },
+        { "title": "Receiver", "value": "Receiver" }
+      ]
+    },
+    {
+      "name": "ContainerType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "None", "value": "0" },
+        { "title": "Folder", "value": "1" },
+        { "title": "Sheet", "value": "2" },
+        { "title": "Specimen", "value": "3" }
+      ]
+    },
+    {
+      "name": "ReferenceWorkType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 6,
+      "tablename": "referencework",
+      "fieldname": "referenceWorkType",
+      "items": [
+        { "title": "Book", "value": "0" },
+        { "title": "Electronic Media", "value": "1" },
+        { "title": "Paper", "value": "2" },
+        { "title": "Technical Report", "value": "3" },
+        { "title": "Thesis", "value": "4" },
+        { "title": "Section In Book", "value": "5" }
+      ]
+    },
+    {
+      "name": "TaxonLabelFormatter",
+      "issystem": true,
+      "type": 0,
+      "readonly": false,
+      "sizelimit": 500,
+      "items": [
+        { "title": "%g %s", "value": "%g %s" },
+        { "title": "%g %s (%a1 Ex. %a2)", "value": "%g %s (%a1 Ex. %a2)" }
+      ]
+    },
+    {
+      "name": "AgentTitles",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 6,
+      "items": [
+        { "title": "Asst. Director", "value": "Asstdir" },
+        { "title": "Curator", "value": "Curator" },
+        { "title": "Mr.", "value": "Mr" },
+        { "title": "Mrs.", "value": "Mrs" },
+        { "title": "Ms.", "value": "Ms" },
+        { "title": "Dr.", "value": "Dr" }
+      ]
+    },
+    {
+      "name": "TreatmentType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "Bug Room", "value": "Bugroom" },
+        { "title": "CO2", "value": "CO2" }
+      ]
+    },
+    {
+      "name": "TypeOfAddr",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "tablename": "address",
+      "sizelimit": 2,
+      "items": [
+        { "title": "Home", "value": "Home" },
+        { "title": "Work", "value": "Work" }
+      ]
+    },
+    {
+      "name": "TypeStatus",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 100,
+      "sort": 2,
+      "items": [
+        { "title": "Allotype", "value": "Allotype" },
+        { "title": "Clonotype", "value": "Clonotype" },
+        { "title": "Cotype", "value": "Cotype" },
+        { "title": "Epitype", "value": "Epitype" },
+        { "title": "Exepitype", "value": "Exepitype" },
+        { "title": "Exholotype", "value": "Exholotype" },
+        { "title": "Exparatype", "value": "Exparatype" },
+        { "title": "Exsyntype", "value": "Exsyntype" },
+        { "title": "Extype", "value": "Extype" },
+        { "title": "Hapantotype", "value": "Hapantotype" },
+        { "title": "Holotype", "value": "Holotype" },
+        { "title": "Homeotype", "value": "Homeotype" },
+        { "title": "Hypotype", "value": "Hypotype" },
+        { "title": "Iconotype", "value": "Iconotype" },
+        { "title": "Isoepitype", "value": "Isoepitype" },
+        { "title": "Isoparatype", "value": "Isoparatype" },
+        { "title": "Isosyntype", "value": "Isosyntype" },
+        { "title": "Lectotype", "value": "Lectotype" },
+        { "title": "Metatype", "value": "Metatype" },
+        { "title": "Neotype", "value": "Neotype" },
+        { "title": "Paratype", "value": "Paratype" },
+        { "title": "Paratopotype", "value": "Paratopotype" },
+        { "title": "Plastoholotype", "value": "Plastoholotype" },
+        { "title": "Plastoparatype", "value": "Plastoparatype" },
+        { "title": "Plastosyntype", "value": "Plastosyntype" },
+        { "title": "Plastotype", "value": "Plastotype" },
+        { "title": "Plesiotype", "value": "Plesiotype" },
+        { "title": "Secondary Type", "value": "SecondaryType" },
+        { "title": "Supplementary Type", "value": "SupplementaryType" },
+        { "title": "Syntype", "value": "Syntype" },
+        { "title": "Topotype", "value": "Topotype" }
+      ]
+    },
+    {
+      "name": "NumberingScheme",
+      "issystem": true,
+      "type": 1,
+      "tablename": "autonumberingscheme",
+      "formatter": "AutoNumberingScheme",
+      "readonly": true,
+      "sizelimit": 100,
+      "items": []
+    },
+    {
+      "name": "MaterialSample",
+      "type": 0,
+      "tablename": "none",
+      "readonly": true,
+      "sizelimit": 50,
+      "issystem": false,
+      "sort": 1,
+      "items": [
+        {
+          "title": "Extract",
+          "value": "Extract",
+          "ordinal": 0
+        }
+      ]
+    },
+    {
+      "name": "MoleculeType",
+      "type": 0,
+      "tablename": "none",
+      "readonly": false,
+      "sizelimit": 20,
+      "issystem": false,
+      "sort": 1,
+      "items": []
+    },
+    {
+      "name": "DeaccessionType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "Gift", "value": "Gift" },
+        { "title": "Destructive Sampling", "value": "Destructive Sampling" },
+        { "title": "Exchange", "value": "Exchange" },
+        { "title": "Lost", "value": "Lost" }
+      ]
+    },
+    {
+      "name": "DeaccessionStatus",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 3,
+      "items": [
+        { "title": "No Data", "value": "No Data" },
+        { "title": "In Process", "value": "In Process" },
+        { "title": "Complete", "value": "Complete" }
+      ]
+    },
+    {
+      "name": "DeaccessionAgentRole",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 12,
+      "items": [
+        { "title": "Approver", "value": "Approver" },
+        { "title": "Other", "value": "Other" },
+        { "title": "Preparer", "value": "Preparer" },
+        { "title": "Receiver", "value": "Receiver" },
+        { "title": "Sponsor", "value": "Sponsor" },
+        { "title": "Staff", "value": "Staff" },
+        { "title": "Student", "value": "Student" }
+      ]
+    },
+    {
+      "name": "DisposalAgentRole",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 12,
+      "items": [
+        { "title": "Approver", "value": "Approver" },
+        { "title": "Other", "value": "Other" },
+        { "title": "Preparer", "value": "Preparer" },
+        { "title": "Receiver", "value": "Receiver" },
+        { "title": "Sponsor", "value": "Sponsor" },
+        { "title": "Staff", "value": "Staff" },
+        { "title": "Student", "value": "Student" }
+      ]
+    },
+    {
+      "name": "DisposalType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 3,
+      "items": [
+        { "title": "Destroyed", "value": "Destroyed" },
+        { "title": "Destructive Sampling", "value": "Destructive Sampling" },
+        { "title": "Lost", "value": "Lost" }
+      ]
+    },
+    {
+      "name": "SystemCOGTypes",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 3,
+      "items": [
+        { "title": "Discrete", "value": "Discrete" },
+        { "title": "Consolidated", "value": "Consolidated" },
+        { "title": "Drill Core", "value": "Drill Core" }
+      ]
+    },
+    {
+      "name": "AgeType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "Sedimentation", "value": "Sedimentation" },
+        { "title": "Metamorphism", "value": "Metamorphism" },
+        { "title": "Erosion", "value": "Erosion" },
+        { "title": "Diagenetic", "value": "Diagenetic" }
+      ]
+    }
+  ]
+}

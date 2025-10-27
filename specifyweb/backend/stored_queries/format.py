@@ -8,7 +8,7 @@ from xml.etree.ElementTree import Element
 from xml.sax.saxutils import quoteattr
 
 from specifyweb.specify.api.utils import get_picklists
-from sqlalchemy import Table as SQLTable, inspect, case
+from sqlalchemy import Table as SQLTable, inspect, case, type_coerce
 from sqlalchemy.orm import aliased, Query
 from sqlalchemy.sql.expression import func, cast, literal, Label
 from sqlalchemy.sql.functions import concat
@@ -321,13 +321,7 @@ class ObjectFormatter:
         aliased_orm_table = aliased(orm_table)
 
         if is_self_join_aggregation: # Handle self join aggregation
-            if field.name in {'children', 'components'} and field.relatedModelName == 'CollectionObject':
-                # Child = aliased(orm_table)
-                subquery_query = Query([]) \
-                    .select_from(aliased_orm_table) \
-                    .filter(aliased_orm_table.ComponentParentID == rel_table._id) \
-                    .correlate(rel_table)
-            elif field.is_relationship and \
+            if field.is_relationship and \
                 field.type == 'one-to-many' and \
                 field.otherSideName in [fld.name for fld in specify_model.relationships]:
                 # Handle self join aggregation in the general case
@@ -408,9 +402,20 @@ class ObjectFormatter:
         if self.format_picklist:
             picklists, _ = get_picklists(self.collection, table.table, specify_field.name)
             if picklists:
-                cases = [(field == item.value, item.title) for item in picklists[0].picklistitems.all()]
-                _case = case(cases, else_=field)
-            
+                # cases = [(field == item.value, item.title) for item in picklists[0].picklistitems.all()]
+                # _case = case(cases, else_=field)
+                items = list(picklists[0].picklistitems.all())
+                if not items:
+                    expr = cast(field, types.String())
+                    return blank_nulls(expr) if self.replace_nulls else expr
+        
+                cases = [
+                    (field == item.value, literal(item.title or "", type_=types.String()))
+                    for item in items
+                ]
+                _case = case(cases, else_=cast(field, types.String()))
+                _case = type_coerce(_case, types.String())
+                
                 return blank_nulls(_case) if self.replace_nulls else _case
         
         if self.format_types and specify_field.type == "java.lang.Boolean":
