@@ -14,8 +14,8 @@ import '../../../css/workbench.css';
 
 import type { HotTable } from '@handsontable/react';
 import type Handsontable from 'handsontable';
-import { useNavigate } from 'react-router-dom';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useUnloadProtect } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -31,6 +31,7 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
+import { resourceEvents } from '../DataModel/resource';
 import { WbActions } from '../WbActions';
 import { useResults } from '../WbActions/useResults';
 import type { Dataset } from '../WbPlanView/Wrapped';
@@ -50,7 +51,6 @@ import { useDisambiguationDialog } from './useDisambiguationDialog';
 import { WbAttachmentsPreview } from './WbAttachmentsPreview';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { WbValidation } from './WbValidation';
-import { resourceEvents } from '../DataModel/resource';
 
 export type WbStatus = 'unupload' | 'upload' | 'validate';
 
@@ -87,14 +87,17 @@ export function WbView({
         : dataset.rows,
     [dataset]
   );
-// switch to home page on dataset deleted if current dataset is deleted
+  // Switch to home page on dataset deleted if current dataset is deleted
   const navigate = useNavigate();
   React.useEffect(() => {
-      resourceEvents.on('deleted', (resource) => {
-              if (resource.specifyTable.name === 'Spdataset' && resource.id === dataset.id) {
-                navigate('/specify/', { replace: true });
-              }
-      });
+    resourceEvents.on('deleted', (resource) => {
+      if (
+        resource.specifyTable.name === 'Spdataset' &&
+        resource.id === dataset.id
+      ) {
+        navigate('/specify/', { replace: true });
+      }
+    });
   }, [dataset.id]);
 
   const spreadsheetContainerRef = React.useRef<HTMLElement>(null);

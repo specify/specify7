@@ -19,6 +19,7 @@ import { Submit } from '../Atoms/Submit';
 import type { EagerDataSet } from '../AttachmentsBulkImport/Import';
 import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
+import { resourceEvents } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import { useTitle } from '../Molecules/AppTitle';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
@@ -31,7 +32,6 @@ import { unsafeNavigate } from '../Router/Router';
 import { getMaxDataSetLength, uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { datasetVariants } from '../WbUtils/datasetVariants';
-import { resourceEvents } from '../DataModel/resource';
 
 const syncNameAndRemarks = async (
   name: LocalizedString,
@@ -145,7 +145,7 @@ export function DataSetMeta({
                     expectedErrors: [Http.NOT_FOUND, Http.NO_CONTENT],
                   }).then(() => {
                     setIsDeleted(true);
-                    const resource = new tables.Spdataset.Resource({id: dataset.id }); // dummy resource to trigger deleted event
+                    const resource = new tables.Spdataset.Resource({id: dataset.id }); // Dummy resource to trigger deleted event
                     resourceEvents.trigger('deleted',resource);
                   })
                 );
