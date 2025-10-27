@@ -136,7 +136,7 @@ export const queryText = createDictionary({
     'es-es':
       'Hay campos sin completar en la definición de la consulta. ¿Desea eliminarlos?',
     'fr-fr':
-      'Il y a des champs incomplets dans la définition de la requête. Voulez-vous les supprimer ?',
+      'La définition de la requête contient des champs incomplets. Voulez-vous les supprimer ?',
     'uk-ua': 'У визначенні запиту є незаповнені поля. Ви хочете видалити їх?',
     'de-ch':
       'Die Abfragedefinition enthält unvollständige Felder. Möchten Sie diese entfernen?',
@@ -717,7 +717,7 @@ export const queryText = createDictionary({
     'fr-fr': "Synonyme d'arbre",
     'uk-ua': 'Синонімізувати дерево',
     'de-ch': 'Baum synonymisieren',
-    'pt-br': 'Árvore Sinonímia',
+    'pt-br': 'Sinonímia de árvore',
   },
   treeDesynonymize: {
     comment: 'Audit Log Action Type',
@@ -773,7 +773,7 @@ export const queryText = createDictionary({
     'uk-ua': 'в минулому',
     'pt-br': 'no passado',
   },
-  day: {
+  days: {
     'en-us': 'Days',
     'es-es': 'Días',
     'fr-fr': 'Jours',
@@ -782,7 +782,7 @@ export const queryText = createDictionary({
     'de-ch': 'Tage',
     'pt-br': 'Dias',
   },
-  week: {
+  weeks: {
     'en-us': 'Weeks',
     'de-ch': 'Wochen',
     'es-es': 'Semanas',
@@ -791,7 +791,7 @@ export const queryText = createDictionary({
     'uk-ua': 'тижнів',
     'pt-br': 'Semanas',
   },
-  month: {
+  months: {
     'en-us': 'Months',
     'de-ch': 'Monate',
     'es-es': 'Meses',
@@ -800,7 +800,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Місяці',
     'pt-br': 'Meses',
   },
-  year: {
+  years: {
     'en-us': 'Years',
     'de-ch': 'Jahre',
     'es-es': 'Años',
@@ -808,6 +808,15 @@ export const queryText = createDictionary({
     'ru-ru': 'Годы',
     'uk-ua': 'років',
     'pt-br': 'Anos',
+  },
+  year: {
+    'en-us': 'Year',
+    'de-ch': 'Jahr',
+    'es-es': 'Año',
+    'fr-fr': 'Année',
+    'ru-ru': 'Год',
+    'uk-ua': 'рік',
+    'pt-br': 'Ano',
   },
   relativeDate: {
     comment: `

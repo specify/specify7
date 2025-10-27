@@ -283,7 +283,7 @@ export const backEndText = createDictionary({
     'uk-ua': 'Батько вузла дерева має ранг, вищий за нього самого',
     'de-ch':
       'Der übergeordnete Knoten des Baumknotens hat einen höheren Rang als er selbst',
-    'pt-br': 'O nó pai da árvore tem classificação maior que ele mesmo',
+    'pt-br': 'O nó pai da árvore tem classificação maior que a sua',
   },
   nodeChildrenInvalidRank: {
     'en-us': "Tree node's rank is greater than some of its children",
@@ -582,8 +582,7 @@ export const backEndText = createDictionary({
     'pt-br':
       '{componentType: string} inválido para a(s) classificação(ões) da árvore selecionada(s)',
     'ru-ru': 'Недопустимый {componentType: string} для выбранных рангов дерева',
-    'uk-ua':
-      'Недійсний {componentType: string} для вибраного(их) рангу(ів) дерева',
+    'uk-ua': 'Недійсний {componentType: string} для вибраних рангів дерев',
   },
   attachmentNotFound: {
     'en-us':
