@@ -2,6 +2,21 @@ from django import http
 import json
 
 from specifyweb.backend.setup_tool import api
+from specifyweb.specify import models
+
+def create_institution(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            new_institution = models.Institution.objects.create(**data)
+            return http.JsonResponse(
+                {"success": True, "institution_id": new_institution.id},
+                status=201
+            )
+        except Exception as e:
+            print(f"Error creating institution: {e}")
+            return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)
+    return http.JsonResponse({"error": "Invalid request"}, status=400)
 
 def setup_database_view(request):
     return api.setup_database(request)
