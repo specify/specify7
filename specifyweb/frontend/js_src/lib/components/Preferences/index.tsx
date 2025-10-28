@@ -10,6 +10,7 @@ import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
+import { resourcesText } from '../../localization/resources';
 import { preferencesText } from '../../localization/preferences';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
@@ -27,7 +28,10 @@ import { ProtectedTool } from '../Permissions/PermissionDenied';
 import { PreferencesAside } from './Aside';
 import type { BasePreferences } from './BasePreferences';
 import { collectionPreferenceDefinitions } from './CollectionDefinitions';
+import { globalPreferenceDefinitions } from './GlobalDefinitions';
 import { collectionPreferences } from './collectionPreferences';
+import { globalPreferences } from './globalPreferences';
+import { loadGlobalPreferences } from './globalPreferencesLoader';
 import { useDarkMode } from './Hooks';
 import { DefaultPreferenceItemRender } from './Renderers';
 import type { GenericPreferences, PreferenceItem } from './types';
@@ -40,11 +44,13 @@ export type PreferenceType = keyof typeof preferenceInstances;
 const preferenceInstances: IR<BasePreferences<any>> = {
   user: userPreferences,
   collection: collectionPreferences,
+  global: globalPreferences,
 };
 
 const preferenceDefinitions: IR<GenericPreferences> = {
   user: userPreferenceDefinitions,
   collection: collectionPreferenceDefinitions,
+  global: globalPreferenceDefinitions,
 };
 
 type SubcategoryDocumentation = {
@@ -81,11 +87,16 @@ type DocumentHrefResolver =
 const documentHrefResolvers: IR<DocumentHrefResolver> = {
   user: undefined,
   collection: undefined,
+  global: undefined,
 };
 
 const collectionPreferencesPromise = Promise.all([
   collectionPreferences.fetch(),
 ]).then(f.true);
+
+const globalPreferencesPromise = Promise.all([loadGlobalPreferences()]).then(
+  f.true
+);
 
 /**
  * Fetch app resource that stores current user preferences
@@ -113,7 +124,9 @@ function Preferences({
   const heading =
     prefType === 'collection'
       ? preferencesText.collectionPreferences()
-      : preferencesText.preferences();
+      : prefType === 'global'
+        ? resourcesText.globalPreferences()
+        : preferencesText.preferences();
 
   React.useEffect(
     () =>
@@ -565,5 +578,21 @@ export function CollectionPreferencesWrapper(): JSX.Element | null {
     <FetchGate promise={collectionPreferencesPromise}>
       <CollectionPreferences />
     </FetchGate>
+  );
+}
+
+export function GlobalPreferencesWrapper(): JSX.Element | null {
+  return (
+    <FetchGate promise={globalPreferencesPromise}>
+      <GlobalPreferences />
+    </FetchGate>
+  );
+}
+
+function GlobalPreferences(): JSX.Element {
+  return (
+    <ProtectedTool action="update" tool="resources">
+      <Preferences prefType="global" />
+    </ProtectedTool>
   );
 }

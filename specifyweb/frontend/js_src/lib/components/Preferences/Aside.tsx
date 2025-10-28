@@ -21,6 +21,12 @@ export function PreferencesAside({
   readonly references: React.RefObject<WritableArray<HTMLElement | undefined>>;
   readonly prefType?: PreferenceType;
 }): JSX.Element {
+  const preferenceRoutes: Record<PreferenceType, string> = {
+    user: '/specify/user-preferences/',
+    collection: '/specify/collection-preferences/',
+    global: '/specify/global-preferences/',
+  };
+  const preferencesPath = preferenceRoutes[prefType];
   const definitions = usePrefDefinitions(prefType);
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,13 +36,10 @@ export function PreferencesAside({
     () =>
       isInOverlay || activeCategory === undefined
         ? undefined
-        : navigate(
-            `/specify/user-preferences/#${definitions[activeCategory][0]}`,
-            {
-              replace: true,
-            }
-          ),
-    [isInOverlay, definitions, activeCategory]
+        : navigate(`${preferencesPath}#${definitions[activeCategory][0]}`, {
+            replace: true,
+          }),
+    [isInOverlay, definitions, activeCategory, preferencesPath]
   );
 
   const [freezeCategory, setFreezeCategory] = useFrozenCategory();

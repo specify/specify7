@@ -137,7 +137,7 @@ export function AppResourceEditor({
   });
   const isInOverlay = isOverlay(React.useContext(OverlayContext));
 
-  const tabs = useEditorTabs(resource);
+  const tabs = useEditorTabs(resource, directory);
   // Return to first tab on resource type change
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const [tabIndex, setTab] = useLiveState(React.useCallback(() => 0, [tabs]));

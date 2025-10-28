@@ -94,7 +94,8 @@ export function AppResourcesTab({
 type Component = (props: AppResourceTabProps) => JSX.Element;
 
 export function useEditorTabs(
-  resource: SerializedResource<SpAppResource | SpViewSetObject>
+  resource: SerializedResource<SpAppResource | SpViewSetObject>,
+  directory?: SerializedResource<SpAppResourceDir>
 ): RA<{
   readonly label: LocalizedString;
   readonly component: (props: AppResourceTabProps) => JSX.Element;
@@ -103,6 +104,23 @@ export function useEditorTabs(
     f.maybe(toResource(resource, 'SpAppResource'), getAppResourceType) ??
     'viewSet';
   return React.useMemo(() => {
+    const normalizedUserType =
+      typeof directory?.userType === 'string'
+        ? directory.userType.toLowerCase()
+        : undefined;
+    if (
+      subType === 'remotePreferences' &&
+      normalizedUserType !== 'global prefs'
+    )
+      return [
+        {
+          label: labels.generic,
+          component(props): JSX.Element {
+            return <AppResourceTextEditor {...props} />;
+          },
+        },
+      ];
+
     const editors =
       typeof subType === 'string'
         ? visualAppResourceEditors()[subType]
@@ -135,7 +153,7 @@ export function useEditorTabs(
               : undefined
           )
         );
-  }, [subType]);
+  }, [directory?.userType, subType]);
 }
 
 const labels: RR<AppResourceEditorType, LocalizedString> = {
