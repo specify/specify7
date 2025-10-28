@@ -69,7 +69,7 @@ export function Login(): JSX.Element {
     if (setupProgress === undefined) return <LoadingScreen />;
 
     if (setupProgress.busy || (setupProgress.hasOwnProperty('resources') && Object.values(setupProgress.resources).includes(false))) {
-      return <SetupTool setupProgress={setupProgress} setSetupProgress={setSetupProgress}/>;
+      return <SetupTool setSetupProgress={setSetupProgress} setupProgress={setupProgress}/>;
     }
 
     return providers.length > 0 ? (
