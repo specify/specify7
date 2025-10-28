@@ -2,47 +2,44 @@
 # https://stackoverflow.com/questions/19205850/how-do-i-write-a-group-concat-function-in-sqlalchemy
 
 import sqlalchemy
-from sqlalchemy.sql import expression
+from sqlalchemy.sql import expression, bindparam
 from sqlalchemy.ext import compiler
+from sqlalchemy.sql.elements import ClauseElement
+from sqlalchemy.types import String
 
 from specifyweb.backend.stored_queries.query_construct import QueryConstruct
 
-# class changed from FunctionElement to ColumnElement
 class group_concat(expression.ColumnElement):
+    # MySQL GROUP_CONCAT(expr [ORDER BY ...] [SEPARATOR ...])
     name = "group_concat"
+    type = String()
     inherit_cache = True
-    
-    def __init__(self, expr, separator=None, order_by=None):
+
+    def __init__(self, expr: ClauseElement, separator=None, order_by: ClauseElement | None = None):
+        super().__init__()
         self.expr = expr
         self.separator = separator
         self.order_by = order_by
 
 @compiler.compiles(group_concat)
 def _group_concat_mysql(element, compiler, **kwargs):
-    # Old way of extracting clauses, when group_concat was a FunctionElement
-    # expr, separator, order_by = extract_clauses(element, compiler)
-
-    inner_expr= compiler.process(element.expr, **kwargs)
+    inner_expr = compiler.process(element.expr, **kwargs)
 
     if element.order_by is not None:
-        order_by = compiler.process(element.order_by, **kwargs)
-        inner_expr+= " ORDER BY %s" % order_by
+        if isinstance(element.order_by, (list, tuple, set)):
+            ob = ", ".join(compiler.process(ob, **kwargs) for ob in element.order_by)
+        else:
+            ob = compiler.process(element.order_by, **kwargs)
+        inner_expr += f" ORDER BY {ob}"
+
     if element.separator is not None:
-        # Resorting to text() + bindparams to avoid SQL injection and fix parameter ordering bug
-        separator = compiler.process(sqlalchemy.text(" SEPARATOR :sep").bindparams(sep=element.separator), **kwargs)
-        inner_expr+= " %s" % separator
+        if isinstance(element.separator, ClauseElement):
+            sep_sql = compiler.process(element.separator, **kwargs)
+        else:
+            sep_sql = compiler.process(bindparam("sep", element.separator, type_=String()), **kwargs)
+        inner_expr += f" SEPARATOR {sep_sql}"
 
     return 'GROUP_CONCAT(%s)' % inner_expr
-
-def extract_clauses(element, compiler):
-    expr = compiler.process(element.clauses.clauses[0])
-    def process_clause(idx):
-        return compiler.process(element.clauses.clauses[idx])
-
-    separator = process_clause(1) if len(element.clauses) > 1 else None
-    order_by = process_clause(2) if len(element.clauses) > 2 else None
-
-    return expr, separator, order_by
 
 def group_by_displayed_fields(query: QueryConstruct, fields, ignore_cat_num=False):
     for field in fields:

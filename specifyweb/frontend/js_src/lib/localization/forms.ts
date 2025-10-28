@@ -422,7 +422,7 @@ export const formsText = createDictionary({
     'en-us':
       'The data shown on this page has been changed by another user or in another browser tab and is out of date. The page must be reloaded to prevent inconsistent data from being saved.',
     'ru-ru':
-      'Данные на этой странице были изменены другим пользователем или на другой вкладке браузера и устарели. Для предотвращения сохранения несоответствующих данных необходимо перезагрузить страницу.',
+      'Данные на этой странице были изменены другим пользователем или на другой вкладке браузера и устарели. Необходимо перезагрузить страницу, чтобы предотвратить сохранение несоответствующих данных.',
     'es-es':
       'Los datos que se muestran en esta página han sido modificados por otro usuario o en otra pestaña del navegador y están desactualizados. Es necesario recargar la página para evitar que se guarden datos incoherentes.',
     'fr-fr':
@@ -837,7 +837,7 @@ export const formsText = createDictionary({
     'es-es': 'Llevar adelante',
     'fr-fr': 'Reporter',
     'uk-ua': 'Перенести далі',
-    'de-ch': 'Weitertragen',
+    'de-ch': 'Übertrag',
     'pt-br': 'Levar adiante',
   },
   carryForwardEnabled: {
@@ -1039,6 +1039,24 @@ export const formsText = createDictionary({
     'fr-fr': 'Numérotation automatique',
     'uk-ua': 'Автоматична нумерація',
     'de-ch': 'Automatische Nummerierung',
+    'pt-br': 'Numeração automática',
+  },
+  autoNumberByYear: {
+    'en-us': 'Auto-number by year',
+    'de-ch': 'Auto-Nummer nach Jahr',
+    'es-es': 'Auto-número por año',
+    'fr-fr': 'Auto-numéro par année',
+    'ru-ru': 'Автонумерация по году',
+    'uk-ua': 'Автонумерація за роком',
+    'pt-br': 'Numeração automática por ano',
+  },
+  autoNumber: {
+    'en-us': 'Auto-number',
+    'de-ch': 'Auto-Nummer',
+    'es-es': 'Auto-número',
+    'fr-fr': 'Auto-numéro',
+    'ru-ru': 'Автонумерация',
+    'uk-ua': 'Автонумерація',
     'pt-br': 'Numeração automática',
   },
   editFormDefinition: {
