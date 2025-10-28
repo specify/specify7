@@ -101,7 +101,7 @@
         "fields": ["catalogNumber"],
         "scopes": ["collection"],
         "modelName": "Collectionobject",
-        "isDatabaseConstraint": true
+        "isDatabaseConstraint": false
       }
     },
     {
