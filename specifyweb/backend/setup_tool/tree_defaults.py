@@ -11,7 +11,7 @@ def create_default_tree(name: str, kwargs: dict, ranks: dict):
         tree_def_model, tree_rank_model, tree_node_model = get_models(name)
 
         if tree_def_model.objects.count() > 0:
-            raise f'Tree {name} already exists, cannot create default.'
+            raise RuntimeError(f'Tree {name} already exists, cannot create default.')
 
         # Create tree definition
         treedef = tree_def_model.objects.create(
@@ -52,3 +52,8 @@ def create_default_tree(name: str, kwargs: dict, ranks: dict):
         )
 
         return treedef
+    
+def update_tree_scoping(treedef, discipline_id):
+    """Trees may be created before a discipline is created. This will update their discipline."""
+    setattr(treedef, "discipline_id", discipline_id)
+    treedef.save(update_fields=["discipline_id"])

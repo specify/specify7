@@ -14,6 +14,7 @@ from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults
 from specifyweb.backend.setup_tool.picklist_defaults import create_default_picklists
 from specifyweb.backend.setup_tool.prep_type_defaults import create_default_prep_types
 from specifyweb.backend.setup_tool.setup_tasks import setup_database_background, get_active_setup_task
+from specifyweb.backend.setup_tool.tree_defaults import create_default_tree, update_tree_scoping
 
 import logging
 logger = logging.getLogger(__name__)
@@ -226,9 +227,14 @@ def create_discipline(data):
     try:
         new_discipline = Discipline.objects.create(**data)
 
-        # During setup, create Splocalecontainers for all datamodel tables
+        # Check if initial setup.
         if not division_url:
-            pass # apply_schema_defaults(new_discipline)
+            # Create Splocalecontainers for all datamodel tables
+            # apply_schema_defaults(new_discipline)
+
+            # Update tree scoping
+            update_tree_scoping(geography_def, new_discipline.id)
+            update_tree_scoping(geologic_time_def, new_discipline.id)
 
         return {"discipline_id": new_discipline.id}
 
@@ -331,8 +337,6 @@ def create_specifyuser(data):
 
     except Exception as e:
         raise SetupError(e)
-
-from .tree_defaults import create_default_tree
 
 # Trees
 def create_storage_tree(data):

@@ -112,8 +112,3 @@ def setup_database_task(self, data):
     except Exception as e:
         logger.exception(f'Error setting up database: {e}')
         raise
-
-def create_request(request, data, key_to_use):
-    copy = request.copy()
-    copy.data = data[key_to_use.lower()]
-    return copy
