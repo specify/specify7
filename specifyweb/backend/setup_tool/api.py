@@ -117,6 +117,9 @@ def setup_database(request, direct=False):
 def create_institution(data):
     from specifyweb.specify.models import Institution, Address
 
+    if Institution.objects.count() > 0:
+        raise SetupError('An institution already exists, cannot create another.')
+
     # Get address fields (if any)
     address_data = data.pop('address', None)
 
@@ -199,7 +202,7 @@ def create_discipline(data):
             raise SetupError("No Division available to assign")
 
     data['division'] = division
-
+    
     # Ensure required foreign key objects exist
     datatype = Datatype.objects.last() or Datatype.objects.create(id=1, name='Biota')
     geography_def = Geographytreedef.objects.last() or Geographytreedef.objects.create(id=1, name='Geography')
@@ -225,7 +228,7 @@ def create_discipline(data):
 
         # During setup, create Splocalecontainers for all datamodel tables
         if not division_url:
-            apply_schema_defaults(new_discipline)
+            pass # apply_schema_defaults(new_discipline)
 
         return {"discipline_id": new_discipline.id}
 
@@ -371,10 +374,12 @@ def create_tree(name: str, data):
     if name != 'Storage':
         discipline_id = data.get('discipline_id', None)
         discipline_url = data.get('discipline')
+        discipline = None
         if discipline_url:
             try:
                 discipline_id = int(discipline_url.rstrip('/').split('/')[-1])
                 data['discipline_id'] = discipline_id
+                discipline = Discipline.objects.get(pk=discipline_id)
             except ValueError:
                 raise SetupError("Invalid discipline URL")
         if not data.get('discipline_id'):
@@ -382,9 +387,9 @@ def create_tree(name: str, data):
             if last_discipline:
                 discipline_id = last_discipline.id
                 data['discipline_id'] = discipline_id
-            else:
-                raise SetupError("No discipline available")
-        discipline = Discipline.objects.get(pk=discipline_id)
+                discipline = Discipline.objects.get(pk=discipline_id)
+            # else
+                # raise SetupError("No discipline available")
 
     # Get tree configuration
     ranks = data.pop('ranks', dict())
@@ -394,7 +399,7 @@ def create_tree(name: str, data):
         kwargs['fullnamedirection'] = data.get('fullnamedirection', 1)
         if name == 'Storage':
             kwargs['institution'] = institution
-        else:
+        elif discipline is not None:
             kwargs['discipline'] = discipline
 
         treedef = create_default_tree(name, kwargs, ranks)

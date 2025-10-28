@@ -72,37 +72,31 @@ def setup_database_task(self, data):
             api.create_division(data['division'])
             update_progress()
 
-            logger.debug('Creating discipline')
-            api.create_discipline(data['discipline'])
-            update_progress()
-
             discipline_type = data['discipline'].get('type', '')
             if discipline_type == 'geology' or 'paleo' in discipline_type:
+                default_tree = {
+                    'fullnamedirection': 1,
+                    'ranks': {
+                        '0': True
+                    }
+                }
+
                 logger.debug('Creating Chronostratigraphy tree')
-                api.create_geologictimeperiod_tree({
-                    'fullnamedirection': 1,
-                    'ranks': {
-                        '0': True
-                    }
-                })
+                api.create_geologictimeperiod_tree(default_tree.copy())
+
                 logger.debug('Creating Lithostratigraphy tree')
-                api.create_lithostrat_tree({
-                    'fullnamedirection': 1,
-                    'ranks': {
-                        '0': True
-                    }
-                })
+                api.create_lithostrat_tree(default_tree.copy())
+
                 logger.debug('Creating Tectonic Unit tree')
-                api.create_tectonicunit_tree({
-                    'fullnamedirection': 1,
-                    'ranks': {
-                        '0': True
-                    }
-                })
+                api.create_tectonicunit_tree(default_tree.copy())
 
             if data['institution'].get('issinglegeographytree', False) == False:
                 logger.debug('Creating geography tree')
                 api.create_geography_tree(data['geographytreedef'])
+
+            logger.debug('Creating discipline')
+            api.create_discipline(data['discipline'])
+            update_progress()
 
             logger.debug('Creating taxon tree')
             api.create_taxon_tree(data['taxontreedef'])

@@ -1,17 +1,21 @@
 from django.db import transaction
 
-from specifyweb.specify.models import Institution
 from ..trees.utils import get_models
 
 import logging
 logger = logging.getLogger(__name__)
 
 def create_default_tree(name: str, kwargs: dict, ranks: dict):
+    """Creates an initial empty tree. This should not be used outside of the database setup."""
     with transaction.atomic():
         tree_def_model, tree_rank_model, tree_node_model = get_models(name)
 
+        if tree_def_model.objects.count() > 0:
+            raise f'Tree {name} already exists, cannot create default.'
+
         # Create tree definition
         treedef = tree_def_model.objects.create(
+            name=name,
             **kwargs,
         )
 
@@ -35,7 +39,7 @@ def create_default_tree(name: str, kwargs: dict, ranks: dict):
         )
 
         # Create root node
-        # TODO: Avoid duplicate code from add_root endpoint
+        # TODO: Avoid duplicated code from add_root endpoint
         root_node = tree_node_model.objects.create(
             name="Root",
             isaccepted=1,
