@@ -213,9 +213,9 @@ export const collectionPreferenceDefinitions = {
                   tables.CollectionObject,
                   'catalogNumber'
                 ).label,
-                 collectionObject: tables.CollectionObject.label,
+                collectionObject: tables.CollectionObject.label,
               }),
-            description: () => 
+            description: () =>
               preferencesText.inheritanceCatNumberPrefDescription({
                 catalogNumber: getField(
                   tables.CollectionObject,
@@ -242,7 +242,7 @@ export const collectionPreferenceDefinitions = {
                 ).label,
                 collectionObject: tables.CollectionObject.label,
               }),
-            description: () => 
+            description: () =>
               preferencesText.inheritanceCatNumberParentCOPrefDescription({
                 catalogNumber: getField(
                   tables.CollectionObject,
