@@ -47,6 +47,7 @@ def get_active_setup_task() -> Tuple[Optional[AsyncResult], bool]:
 
 @app.task(bind=True)
 def setup_database_task(self, data):
+    """Execute all database setup steps in order."""
     self.update_state(state='STARTED', meta={'progress': api.get_setup_resource_progress()})
     def update_progress():
         self.update_state(state='STARTED', meta={'progress': api.get_setup_resource_progress()})
