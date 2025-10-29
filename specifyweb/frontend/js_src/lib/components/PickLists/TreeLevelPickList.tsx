@@ -140,24 +140,29 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
   React.useEffect(() => {
     if (props.resource === undefined) return undefined;
     const resource = toTreeTable(props.resource);
-    const definitionItem = resource?.get('definitionItem');
+    const rawDefinitionItem = resource?.get('definitionItem');
+    const definitionItem = typeof rawDefinitionItem === 'string'
+      ? rawDefinitionItem
+      : typeof rawDefinitionItem === 'object' && rawDefinitionItem !== null
+        ? rawDefinitionItem?.resource_uri ?? ''
+        : '';
 
-    const defaultDefinitionItem =
-      typeof props.defaultValue === 'string' && props.defaultValue.length > 0
-        ? items?.find(
-            ({ value, title }) =>
-              value === props.defaultValue || title === props.defaultValue
-          )?.value ?? props.defaultValue
-        : undefined;
     const newDefinitionItem =
-      defaultDefinitionItem ?? items?.slice(-1)[0]?.value ?? '';
+      props.defaultValue ??
+      definitionItem ??
+      items?.slice(-1)[0]?.value ??
+      '';
 
     const isDifferentDefinitionItem =
-      newDefinitionItem !== (definitionItem ?? '');
+      (typeof rawDefinitionItem === 'object' && rawDefinitionItem !== null) ||
+      newDefinitionItem !== definitionItem;
 
+    const itemValues = items?.map(({ value }) => value);
+    const isKnownDefinitionItem =
+      itemValues === undefined || itemValues.includes(definitionItem);
     const invalidDefinitionItem =
-      typeof definitionItem !== 'string' ||
-      (!(items?.map(({ value }) => value).includes(definitionItem) ?? true) &&
+      definitionItem === '' ||
+      (!isKnownDefinitionItem &&
         !Object.keys(resource?.changed ?? {}).includes('definitionitem'));
 
     if (
@@ -166,9 +171,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       invalidDefinitionItem
     ) {
       resource?.set('definitionItem', newDefinitionItem);
-      resource?.businessRuleManager?.checkField('definitionItem');
-      resource?.businessRuleManager?.checkField('parent');
-      return undefined;
+      return void resource?.businessRuleManager?.checkField('parent');
     }
     return undefined;
   }, [items]);
