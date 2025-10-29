@@ -143,27 +143,37 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     const definitionItem = resource?.get('definitionItem');
 
     const newDefinitionItem =
-      props.defaultValue ?? items?.slice(-1)[0]?.value ?? '';
+      props.defaultValue ?? items?.slice(-1)[0]?.value;
+
+    if (typeof newDefinitionItem !== 'string') return undefined;
+
+    const definitionItemValue =
+      typeof definitionItem === 'string' ? definitionItem : undefined;
 
     const isDifferentDefinitionItem =
-      newDefinitionItem !== (definitionItem ?? '');
+      newDefinitionItem !== (definitionItemValue ?? '');
 
     const invalidDefinitionItem =
-      typeof definitionItem !== 'string' ||
-      (items !== undefined &&
-        !items.map(({ value }) => value).includes(definitionItem) &&
+      definitionItemValue === undefined ||
+      (!(items
+        ?.map(({ value }) => value)
+        .includes(definitionItemValue) ?? true) &&
         !Object.keys(resource?.changed ?? {}).includes('definitionitem'));
+
+    const isParentLoaded = typeof resource?.get('parent') !== 'string';
+    const hasAvailableItems = (items?.length ?? 0) > 0;
 
     if (
       isDifferentDefinitionItem &&
-      (items !== undefined || typeof resource?.get('parent') !== 'string') &&
-      invalidDefinitionItem
+      invalidDefinitionItem &&
+      hasAvailableItems &&
+      isParentLoaded
     ) {
       resource?.set('definitionItem', newDefinitionItem);
       return void resource?.businessRuleManager?.checkField('parent');
     }
     return undefined;
-  }, [items]);
+  }, [items, props.defaultValue, props.resource]);
 
   return (
     <PickListComboBox
