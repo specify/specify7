@@ -142,12 +142,15 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     const resource = toTreeTable(props.resource);
     const definitionItem = resource?.get('definitionItem');
 
-    const hasDefaultDefinitionItem =
-      typeof props.defaultValue === 'string' && props.defaultValue.length > 0;
+    const defaultDefinitionItem =
+      typeof props.defaultValue === 'string' && props.defaultValue.length > 0
+        ? items?.find(
+            ({ value, title }) =>
+              value === props.defaultValue || title === props.defaultValue
+          )?.value ?? props.defaultValue
+        : undefined;
     const newDefinitionItem =
-      (hasDefaultDefinitionItem
-        ? props.defaultValue
-        : items?.slice(-1)[0]?.value) ?? '';
+      defaultDefinitionItem ?? items?.slice(-1)[0]?.value ?? '';
 
     const isDifferentDefinitionItem =
       newDefinitionItem !== (definitionItem ?? '');
