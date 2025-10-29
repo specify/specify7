@@ -140,32 +140,18 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
   React.useEffect(() => {
     if (props.resource === undefined) return undefined;
     const resource = toTreeTable(props.resource);
-    const rawDefinitionItem = resource?.get('definitionItem');
-    const definitionItem =
-      typeof rawDefinitionItem === 'string'
-        ? rawDefinitionItem
-        : typeof rawDefinitionItem === 'object' &&
-            rawDefinitionItem !== null &&
-            'resource_uri' in rawDefinitionItem
-          ? (rawDefinitionItem as { readonly resource_uri?: string }).resource_uri ?? ''
-          : '';
+    const definitionItem = resource?.get('definitionItem');
 
     const newDefinitionItem =
-      props.defaultValue ??
-      definitionItem ??
-      items?.slice(-1)[0]?.value ??
-      '';
+      props.defaultValue ?? items?.slice(-1)[0]?.value ?? '';
 
     const isDifferentDefinitionItem =
-      (typeof rawDefinitionItem === 'object' && rawDefinitionItem !== null) ||
-      newDefinitionItem !== definitionItem;
+      newDefinitionItem !== (definitionItem ?? '');
 
-    const itemValues = items?.map(({ value }) => value);
-    const isKnownDefinitionItem =
-      itemValues === undefined || itemValues.includes(definitionItem);
     const invalidDefinitionItem =
-      definitionItem === '' ||
-      (!isKnownDefinitionItem &&
+      typeof definitionItem !== 'string' ||
+      (items !== undefined &&
+        !items.map(({ value }) => value).includes(definitionItem) &&
         !Object.keys(resource?.changed ?? {}).includes('definitionitem'));
 
     if (
