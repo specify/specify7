@@ -142,8 +142,12 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     const resource = toTreeTable(props.resource);
     const definitionItem = resource?.get('definitionItem');
 
+    const hasDefaultDefinitionItem =
+      typeof props.defaultValue === 'string' && props.defaultValue.length > 0;
     const newDefinitionItem =
-      props.defaultValue ?? items?.slice(-1)[0]?.value ?? '';
+      (hasDefaultDefinitionItem
+        ? props.defaultValue
+        : items?.slice(-1)[0]?.value) ?? '';
 
     const isDifferentDefinitionItem =
       newDefinitionItem !== (definitionItem ?? '');
@@ -159,7 +163,9 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       invalidDefinitionItem
     ) {
       resource?.set('definitionItem', newDefinitionItem);
-      return void resource?.businessRuleManager?.checkField('parent');
+      resource?.businessRuleManager?.checkField('definitionItem');
+      resource?.businessRuleManager?.checkField('parent');
+      return undefined;
     }
     return undefined;
   }, [items]);
