@@ -147,7 +147,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
         : typeof rawDefinitionItem === 'object' &&
             rawDefinitionItem !== null &&
             'resource_uri' in rawDefinitionItem
-          ? (rawDefinitionItem as { resource_uri?: string }).resource_uri ?? ''
+          ? (rawDefinitionItem as { readonly resource_uri?: string }).resource_uri ?? ''
           : '';
 
     const newDefinitionItem =
