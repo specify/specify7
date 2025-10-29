@@ -32,6 +32,9 @@ import { unsafeNavigate } from '../Router/Router';
 import { getMaxDataSetLength, uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { datasetVariants } from '../WbUtils/datasetVariants';
+import { SpecifyResource } from '../DataModel/legacyTypes';
+import { SpecifyTable } from '../DataModel/specifyTable';
+import { Spdataset } from '../DataModel/types';
 
 const syncNameAndRemarks = async (
   name: LocalizedString,
@@ -145,7 +148,7 @@ export function DataSetMeta({
                     expectedErrors: [Http.NOT_FOUND, Http.NO_CONTENT],
                   }).then(() => {
                     setIsDeleted(true);
-                    const resource = new tables.Spdataset.Resource({id: dataset.id }); // Dummy resource to trigger deleted event
+                    const resource = {id: dataset.id, specifyTable: tables.Spdataset } as SpecifyResource<Spdataset>;
                     resourceEvents.trigger('deleted',resource);
                   })
                 );

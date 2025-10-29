@@ -90,7 +90,7 @@ export function WbView({
   // Switch to home page on dataset deleted if current dataset is deleted
   const navigate = useNavigate();
   React.useEffect(() => {
-    resourceEvents.on('deleted', (resource) => {
+     return resourceEvents.on('deleted', (resource) => {
       if (
         resource.specifyTable.name === 'Spdataset' &&
         resource.id === dataset.id
