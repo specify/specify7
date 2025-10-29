@@ -1,16 +1,12 @@
 import json
 from django.http import (JsonResponse)
-from django.db.models import Max, Model as DjangoModel
-from django.core.cache import cache
+from django.db.models import Max
 from django.db import transaction
-from typing import Optional, Type
 
-from specifyweb.celery_tasks import app
 from specifyweb.backend.permissions.models import UserPolicy
-from specifyweb.specify.api_utils import strict_uri_to_model
 from specifyweb.specify.models import Spversion
 from specifyweb.specify import models
-from specifyweb.backend.setup_tool.utils import normalize_keys
+from specifyweb.backend.setup_tool.utils import normalize_keys, resolve_uri_or_fallback
 from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults
 from specifyweb.backend.setup_tool.picklist_defaults import create_default_picklists
 from specifyweb.backend.setup_tool.prep_type_defaults import create_default_prep_types
@@ -116,24 +112,6 @@ def setup_database(request, direct=False):
         return JsonResponse({"success": True, "setup_progress": get_setup_progress(), "task_id": task_id}, status=200)
     except Exception as e:
         return JsonResponse({'error': 'An internal server error occurred.'}, status=500)
-    
-def resolve_uri_or_fallback(uri: Optional[str], id: Optional[int], table: Type[DjangoModel]) -> Optional[DjangoModel]:
-    """Retrieves a record from a URI or ID, falling back to the last created record if it exists."""
-    if uri is not None:
-        # Try to resolve uri. It must be valid.
-        try:
-            uri_table, uri_id = strict_uri_to_model(uri, table.name.lower())
-            return table.objects.filter(pk=uri_id).first()
-        except Exception as e:
-            return SetupError(e)
-    elif id is not None:
-        # Try to use the provided id. It must be valid.
-        try:
-            return table.objects.get(pk=id)
-        except table.DoesNotExist:
-            raise SetupError(f"{table.name} with id {id} not found")
-    # Fallback to last created record.
-    return table.objects.last()
 
 def create_institution(data):
     from specifyweb.specify.models import Institution, Address
@@ -216,13 +194,18 @@ def create_discipline(data):
     
     # Ensure required foreign key objects exist
     datatype = Datatype.objects.last() or Datatype.objects.create(id=1, name='Biota')
-    geography_def = Geographytreedef.objects.last() or Geographytreedef.objects.create(id=1, name='Geography')
-    geologic_time_def = Geologictimeperiodtreedef.objects.last() or Geologictimeperiodtreedef.objects.create(id=1, name='Chronostratigraphy')
+    geographytreedef_url = data.pop('geographytreedef', None)
+    geologictimeperiodtreedef_url = data.pop('geologictimeperiodtreedef', None)
+    geographytreedef = resolve_uri_or_fallback(geographytreedef_url, None, Geographytreedef)
+    geologictimeperiodtreedef = resolve_uri_or_fallback(geologictimeperiodtreedef_url, None, Geologictimeperiodtreedef)
+
+    if geographytreedef is None or geologictimeperiodtreedef is None:
+        raise SetupError("A Geography tree and Chronostratigraphy tree must exist before creating an institution.")
 
     data.update({
         'datatype_id': datatype.id,
-        'geographytreedef_id': geography_def.id,
-        'geologictimeperiodtreedef_id': geologic_time_def.id
+        'geographytreedef_id': geographytreedef.id,
+        'geologictimeperiodtreedef_id': geologictimeperiodtreedef.id
     })
 
     # Assign new Discipline ID
@@ -240,11 +223,11 @@ def create_discipline(data):
         # Check if initial setup.
         if not division_url:
             # Create Splocalecontainers for all datamodel tables
-            # apply_schema_defaults(new_discipline)
+            apply_schema_defaults(new_discipline)
 
             # Update tree scoping
-            update_tree_scoping(geography_def, new_discipline.id)
-            update_tree_scoping(geologic_time_def, new_discipline.id)
+            update_tree_scoping(geographytreedef, new_discipline.id)
+            update_tree_scoping(geologictimeperiodtreedef, new_discipline.id)
 
         return {"discipline_id": new_discipline.id}
 

@@ -4,6 +4,7 @@ from celery.result import AsyncResult
 from specifyweb.backend.setup_tool import api
 from django.db import transaction
 import threading
+from specifyweb.specify.models_utils.model_extras import PALEO_DISCIPLINES, GEOLOGY_DISCIPLINES
 
 from uuid import uuid4
 import logging
@@ -74,22 +75,17 @@ def setup_database_task(self, data):
             update_progress()
 
             discipline_type = data['discipline'].get('type', '')
-            if discipline_type == 'geology' or 'paleo' in discipline_type:
-                default_tree = {
-                    'fullnamedirection': 1,
-                    'ranks': {
-                        '0': True
-                    }
+            is_paleo_geo = discipline_type in PALEO_DISCIPLINES or discipline_type in GEOLOGY_DISCIPLINES
+            default_tree = {
+                'fullnamedirection': 1,
+                'ranks': {
+                    '0': True
                 }
+            }
 
+            if is_paleo_geo:
                 logger.debug('Creating Chronostratigraphy tree')
                 api.create_geologictimeperiod_tree(default_tree.copy())
-
-                logger.debug('Creating Lithostratigraphy tree')
-                api.create_lithostrat_tree(default_tree.copy())
-
-                logger.debug('Creating Tectonic Unit tree')
-                api.create_tectonicunit_tree(default_tree.copy())
 
             if data['institution'].get('issinglegeographytree', False) == False:
                 logger.debug('Creating geography tree')
@@ -98,6 +94,13 @@ def setup_database_task(self, data):
             logger.debug('Creating discipline')
             api.create_discipline(data['discipline'])
             update_progress()
+
+            if is_paleo_geo:
+                logger.debug('Creating Lithostratigraphy tree')
+                api.create_lithostrat_tree(default_tree.copy())
+
+                logger.debug('Creating Tectonic Unit tree')
+                api.create_tectonicunit_tree(default_tree.copy())
 
             logger.debug('Creating taxon tree')
             api.create_taxon_tree(data['taxontreedef'])
