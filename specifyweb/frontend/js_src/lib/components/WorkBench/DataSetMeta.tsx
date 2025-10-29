@@ -19,8 +19,10 @@ import { Submit } from '../Atoms/Submit';
 import type { EagerDataSet } from '../AttachmentsBulkImport/Import';
 import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceEvents } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
+import type { Spdataset } from '../DataModel/types';
 import { useTitle } from '../Molecules/AppTitle';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { DateElement } from '../Molecules/DateElement';
@@ -32,8 +34,6 @@ import { unsafeNavigate } from '../Router/Router';
 import { getMaxDataSetLength, uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { datasetVariants } from '../WbUtils/datasetVariants';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { Spdataset } from '../DataModel/types';
 
 const syncNameAndRemarks = async (
   name: LocalizedString,
