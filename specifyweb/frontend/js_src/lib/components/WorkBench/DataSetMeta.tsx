@@ -33,7 +33,6 @@ import { getMaxDataSetLength, uniquifyDataSetName } from '../WbImport/helpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { datasetVariants } from '../WbUtils/datasetVariants';
 import { SpecifyResource } from '../DataModel/legacyTypes';
-import { SpecifyTable } from '../DataModel/specifyTable';
 import { Spdataset } from '../DataModel/types';
 
 const syncNameAndRemarks = async (
