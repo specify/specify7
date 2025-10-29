@@ -59,6 +59,17 @@ DATABASE_OPTIONS = {}
 # database. This can be the same as the Specify 6 master user.
 MASTER_NAME = 'MasterUser'
 MASTER_PASSWORD = 'MasterPassword'
+MIGRATOR_NAME = 'MasterUser'
+MIGRATOR_PASSWORD = 'MasterPassword'
+APP_USER_NAME = 'MasterUser'
+APP_USER_PASSWORD = 'MasterPassword'
+
+# MASTER_NAME = os.environ.get('MASTER_NAME', 'root')
+# MASTER_PASSWORD = os.environ.get('MASTER_NAME', 'password')
+# MIGRATOR_NAME = os.environ.get('MIGRATOR_NAME', MASTER_NAME)
+# MIGRATOR_PASSWORD = os.environ.get('MIGRATOR_PASSWORD', MASTER_PASSWORD)
+# APP_USER_NAME = os.environ.get('APP_USER_NAME', MIGRATOR_NAME)
+# APP_USER_PASSWORD = os.environ.get('APP_USER_PASSWORD', MIGRATOR_PASSWORD)
 
 # The Specify web attachment server URL.
 WEB_ATTACHMENT_URL = None
@@ -102,6 +113,8 @@ SUPPORT_LOGIN_TTL = 300
 # Usage stats are transmitted to the following address.
 # Set to None to disable.
 STATS_URL = "https://stats.specifycloud.org/capture"
+# STATS_2_URL = "https://stats-2.specifycloud.org/prod/AggrgatedSp7Stats"
+STATS_2_URL = "pj9lpoo1pc.execute-api.us-east-1.amazonaws.com"
 
 # Workbench uploader log directory.
 # Must exist and be writeable by the web server process.
