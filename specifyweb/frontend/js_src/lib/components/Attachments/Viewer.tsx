@@ -127,21 +127,24 @@ export function AttachmentViewer({
           originalUrl === undefined ? (
             loadingGif
           ) : type === 'image' ? (
-            <TransformWrapper
-              centerOnInit
-              maxScale={8}
-              minScale={0.5}
-              wheel={{ step: 0.15 }}
-            >
-              <ImageTransformContent
-                alt={typeof title === 'string' ? title : ''}
-                canToggleSidebar={canToggleSidebar}
-                isSidebarExpanded={isSidebarExpanded}
-                onToggleSidebar={onToggleSidebar}
-                src={originalUrl}
-                thumbnail={thumbnail?.src}
-              />
-            </TransformWrapper>
+            <div className="h-full w-full">
+              <TransformWrapper
+                centerOnInit
+                centerZoomedOut
+                maxScale={8}
+                minScale={0.5}
+                wheel={{ step: 0.15 }}
+              >
+                <ImageTransformContent
+                  alt={typeof title === 'string' ? title : ''}
+                  canToggleSidebar={canToggleSidebar}
+                  isSidebarExpanded={isSidebarExpanded}
+                  onToggleSidebar={onToggleSidebar}
+                  src={originalUrl}
+                  thumbnail={thumbnail?.src}
+                />
+              </TransformWrapper>
+            </div>
           ) : type === 'video' ? (
             /*
              * Subtitles for attachments not yet supported
@@ -266,6 +269,7 @@ function ImageTransformContent({
   readonly src: string;
   readonly thumbnail: string | undefined;
 }): JSX.Element {
+  const { resetTransform } = useControls();
   const handleError = React.useCallback(
     (event: React.SyntheticEvent<HTMLImageElement>) => {
       if (typeof thumbnail === 'string') {
@@ -277,19 +281,24 @@ function ImageTransformContent({
     [thumbnail]
   );
 
+  const handleLoad = React.useCallback(() => {
+    resetTransform(0);
+  }, [resetTransform]);
   return (
     <div
       className="relative flex h-full w-full items-center justify-center"
       style={{ '--transition-duration': 0 } as React.CSSProperties}
     >
       <TransformComponent
-        contentClass="max-h-full max-w-full"
-        wrapperClass="h-full w-full flex items-center justify-center"
+        contentClass="h-full w-full max-h-full max-w-full"
+        wrapperClass="flex h-full w-full items-center justify-center"
+        wrapperStyle={{ height: '100%', width: '100%' }}
       >
         <img
           alt={alt}
-          className="max-h-full max-w-full object-contain"
+          className="h-full w-full max-h-full max-w-full object-contain"
           src={src}
+          onLoad={handleLoad}
           onError={handleError}
         />
       </TransformComponent>
@@ -338,7 +347,7 @@ function ZoomControls({
         icon="arrowPath"
         title={commonText.reset()}
         onClick={(): void => {
-          resetTransform();
+          resetTransform(0);
         }}
       />
       {canToggleSidebar && typeof onToggleSidebar === 'function' ? (
