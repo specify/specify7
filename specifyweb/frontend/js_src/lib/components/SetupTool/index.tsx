@@ -20,6 +20,8 @@ import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
 import type { FieldConfig, ResourceConfig } from './setupResources';
 import { FIELD_MAX_LENGTH, resources } from './setupResources';
 import { dialogIcons } from '../Atoms/Icons';
+import { headerText } from '../../localization/header';
+import { Link } from '../Atoms/Link';
 
 type ResourceFormData = Record<string, any>;
 
@@ -414,9 +416,16 @@ export function SetupTool({
                 id={id('form')}
                 onSubmit={handleSubmit}
               >
-                <H3 className="text-xl font-semibold mb-4">
-                  {resources[currentStep].label}
-                </H3>
+                <div className="flex items-center justify-between mb-4">
+                  <H3 className="text-xl font-semibold mb-4">
+                    {resources[currentStep].label}
+                  </H3>
+                  {typeof resources[currentStep].documentationUrl === 'string' && (
+                    <Link.NewTab href={resources[currentStep].documentationUrl}>
+                      {headerText.documentation()}
+                    </Link.NewTab>
+                  )}
+                </div>
                 {resources[currentStep].description ===
                 undefined ? undefined : (
                   <p className="text-md mb-4">

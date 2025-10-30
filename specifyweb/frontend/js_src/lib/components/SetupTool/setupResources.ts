@@ -3,6 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { setupToolText } from '../../localization/setupTool';
 import type { RA } from '../../utils/types';
 
+// Default for max field length.
 export const FIELD_MAX_LENGTH = 64;
 
 export type ResourceConfig = {
@@ -14,6 +15,7 @@ export type ResourceConfig = {
     string,
     Record<string, boolean | number | string>
   >;
+  readonly documentationUrl?: string;
   readonly fields: RA<FieldConfig>;
 };
 
@@ -72,6 +74,7 @@ export const resources: RA<ResourceConfig> = [
     label: setupToolText.institution(),
     description: setupToolText.institutionDescription(),
     endpoint: '/setup_tool/institution/create/',
+    documentationUrl: 'https://discourse.specifysoftware.org/t/specify-setup-configuration-checklist/1056',
     fields: [
       {
         name: 'name',
