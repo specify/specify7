@@ -138,42 +138,44 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
   }, [props.resource, props.defaultValue]);
 
   React.useEffect(() => {
-    if (props.resource === undefined) return undefined;
+    if (props.resource === undefined || items === undefined) return undefined;
     const resource = toTreeTable(props.resource);
     const definitionItem = resource?.get('definitionItem');
 
     const newDefinitionItem =
-      props.defaultValue ?? items?.slice(-1)[0]?.value;
-
-    if (typeof newDefinitionItem !== 'string') return undefined;
-
-    const definitionItemValue =
-      typeof definitionItem === 'string' ? definitionItem : undefined;
+      props.defaultValue ?? items?.slice(-1)[0]?.value ?? '';
 
     const isDifferentDefinitionItem =
-      newDefinitionItem !== (definitionItemValue ?? '');
+      newDefinitionItem !== (definitionItem ?? '');
 
     const invalidDefinitionItem =
-      definitionItemValue === undefined ||
-      (!(items
-        ?.map(({ value }) => value)
-        .includes(definitionItemValue) ?? true) &&
+      typeof definitionItem !== 'string' ||
+      (!items.map(({ value }) => value).includes(definitionItem) &&
         !Object.keys(resource?.changed ?? {}).includes('definitionitem'));
-
-    const isParentLoaded = typeof resource?.get('parent') !== 'string';
-    const hasAvailableItems = (items?.length ?? 0) > 0;
 
     if (
       isDifferentDefinitionItem &&
-      invalidDefinitionItem &&
-      hasAvailableItems &&
-      isParentLoaded
+      (items !== undefined || typeof resource?.get('parent') !== 'string') &&
+      invalidDefinitionItem
     ) {
       resource?.set('definitionItem', newDefinitionItem);
       return void resource?.businessRuleManager?.checkField('parent');
     }
     return undefined;
-  }, [items, props.defaultValue, props.resource]);
+  }, [items]);
+
+  // Force revalidation when items are loaded
+  React.useEffect(() => {
+    if (items !== undefined && props.resource !== undefined) {
+      const resource = toTreeTable(props.resource);
+      const definitionItem = resource?.get('definitionItem');
+      
+      // Trigger revalidation by touching the field
+      if (typeof definitionItem === 'string' && items.map(({ value }) => value).includes(definitionItem)) {
+        resource?.businessRuleManager?.checkField('definitionItem');
+      }
+    }
+  }, [items, props.resource]);
 
   return (
     <PickListComboBox
