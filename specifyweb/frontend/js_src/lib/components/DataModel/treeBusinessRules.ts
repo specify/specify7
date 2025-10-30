@@ -1,7 +1,6 @@
 import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
-import { getPref } from '../InitialContext/remotePrefs';
 import { fetchPossibleRanks } from '../PickLists/TreeLevelPickList';
 import { formatUrl } from '../Router/queryString';
 import type { BusinessRuleResult } from './businessRules';
@@ -9,6 +8,30 @@ import type { AnyTree, TableFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { idFromUrl } from './resource';
 import type { Tables } from './types';
+import { schema } from './schema';
+import {
+  getCollectionPref,
+  getPref,
+  ensureCollectionPreferencesLoaded,
+  collectionPrefsDefinitions,
+  remotePrefsDefinitions,
+} from '../InitialContext/remotePrefs';
+
+export const expandSynonymPrefItemsByTable: Record<
+  AnyTree['tableName'],
+  readonly string[]
+> = {
+  Taxon: ['sp7.allow_adding_child_to_synonymized_parent.Taxon'],
+  Geography: ['sp7.allow_adding_child_to_synonymized_parent.Geography'],
+  Storage: ['sp7.allow_adding_child_to_synonymized_parent.Storage'],
+  GeologicTimePeriod: [
+    'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod',
+    'sp7.allow_adding_child_to_synonymized_parent.ChronosStrat',
+    'sp7.allow_adding_child_to_synonymized_parent.ChronoStrat',
+  ],
+  LithoStrat: ['sp7.allow_adding_child_to_synonymized_parent.LithoStrat'],
+  TectonicUnit: ['sp7.allow_adding_child_to_synonymized_parent.TectonicUnit'],
+};
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
 export type TreeDefItem<TREE extends AnyTree> =
@@ -40,8 +63,8 @@ export const treeBusinessRules = async (
             idFromUrl(parentDefItem.get('treeDef'))!
           );
 
-    const doExpandSynonymActionsPref = getPref(
-      `sp7.allow_adding_child_to_synonymized_parent.${resource.specifyTable.name}`
+    const doExpandSynonymActionsPref = await getSynonymPreferenceForTree(
+      resource.specifyTable.name
     );
     const isParentSynonym = !parent.get('isAccepted');
 
@@ -88,6 +111,55 @@ export const treeBusinessRules = async (
       })
     );
   });
+
+export async function getSynonymPreferenceForTree(
+  tableName: AnyTree['tableName']
+): Promise<boolean> {
+  const preferenceKeys = expandSynonymPrefItemsByTable[tableName] ?? [];
+  const [primaryKey] = preferenceKeys;
+  if (typeof primaryKey !== 'string') return false;
+
+  const collectionId = schema.domainLevelIds.collection;
+
+  try {
+    const collectionPreferences =
+      await ensureCollectionPreferencesLoaded();
+    const rawSynonymPrefs =
+      collectionPreferences.getRaw()?.treeManagement?.synonymized ?? {};
+
+    for (const key of preferenceKeys)
+      if (Object.prototype.hasOwnProperty.call(rawSynonymPrefs, key)) {
+        const value = rawSynonymPrefs[key as keyof typeof rawSynonymPrefs];
+        if (typeof value === 'boolean') return value;
+      }
+
+    return collectionPreferences.get('treeManagement', 'synonymized', primaryKey);
+  } catch {
+    /* ignore and try fallbacks */
+  }
+
+  for (const key of preferenceKeys)
+    if (Object.prototype.hasOwnProperty.call(collectionPrefsDefinitions, key))
+      try {
+        return getCollectionPref(
+          key as keyof typeof collectionPrefsDefinitions,
+          collectionId
+        );
+      } catch {
+        /* continue */
+      }
+
+  const remoteDefinitions = remotePrefsDefinitions();
+  for (const key of preferenceKeys)
+    if (Object.prototype.hasOwnProperty.call(remoteDefinitions, key))
+      try {
+        return getPref(key as keyof typeof remoteDefinitions);
+      } catch {
+        /* continue */
+      }
+
+  return false;
+}
 
 const getRelatedTreeTables = async <
   TREE extends AnyTree,

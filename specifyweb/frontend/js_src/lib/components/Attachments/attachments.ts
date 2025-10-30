@@ -11,9 +11,14 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { load } from '../InitialContext';
-import { getPref } from '../InitialContext/remotePrefs';
+import {
+  ensureCollectionPreferencesLoaded,
+  getCollectionPref,
+  getPref,
+} from '../InitialContext/remotePrefs';
 import { downloadFile } from '../Molecules/FilePicker';
 import { formatUrl } from '../Router/queryString';
+import { schema } from '../DataModel/schema';
 // Import SVG icons, but better than in Icons.tsx
 import applicationJsonIcon from './MimetypeIcons/application-json.svg';
 import applicationPdfIcon from './MimetypeIcons/application-pdf.svg';
@@ -284,13 +289,38 @@ export async function uploadFile(
         }
     })
   );
+  const isPublicDefault = await getAttachmentPublicDefault();
+
   return new tables.Attachment.Resource({
     attachmentlocation: data.attachmentLocation,
     mimetype: fixMimeType(file.type),
     origfilename: file.name,
     title: file.name,
-    isPublic: getPref('attachment.is_public_default'),
+    isPublic: isPublicDefault,
   });
+}
+
+async function getAttachmentPublicDefault(): Promise<boolean> {
+  const collectionId = schema.domainLevelIds.collection;
+  try {
+    const collectionPreferences = await ensureCollectionPreferencesLoaded();
+    const rawValue =
+      collectionPreferences
+        .getRaw()
+        ?.general?.attachments?.['attachment.is_public_default'];
+    if (typeof rawValue === 'boolean') return rawValue;
+    return collectionPreferences.get(
+      'general',
+      'attachments',
+      'attachment.is_public_default'
+    );
+  } catch {
+    try {
+      return getCollectionPref('attachment.is_public_default', collectionId);
+    } catch {
+      return getPref('attachment.is_public_default');
+    }
+  }
 }
 
 /**

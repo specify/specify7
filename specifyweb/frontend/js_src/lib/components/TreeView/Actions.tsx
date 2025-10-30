@@ -17,12 +17,15 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables } from '../DataModel/tables';
 import { DeleteButton } from '../Forms/DeleteButton';
-import { getPref } from '../InitialContext/remotePrefs';
 import { Dialog } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { Row } from './helpers';
 import { checkMoveViolatesEnforced } from './helpers';
+import {
+  expandSynonymPrefItemsByTable,
+  getSynonymPreferenceForTree,
+} from '../DataModel/treeBusinessRules';
 
 const treeActions = [
   'add',
@@ -69,9 +72,46 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   const resourceName = `/tree/edit/${toLowerCase(tableName)}` as const;
   const isSynonym = typeof focusedRow?.acceptedId === 'number';
 
-  const doExpandSynonymActionsPref = getPref(
-    `sp7.allow_adding_child_to_synonymized_parent.${tableName}`
-  );
+  const [doExpandSynonymActionsPref, setDoExpandSynonymActionsPref] =
+    React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    if (
+      (expandSynonymPrefItemsByTable[tableName] ?? []).length === 0
+    ) {
+      setDoExpandSynonymActionsPref(false);
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    const update = (): void => {
+      getSynonymPreferenceForTree(tableName)
+        .then((value) => {
+          if (isMounted) setDoExpandSynonymActionsPref(value);
+        })
+        .catch(() => {
+          if (isMounted) setDoExpandSynonymActionsPref(false);
+        });
+    };
+
+    update();
+
+    let unsubscribe: (() => void) | undefined;
+
+    import('../Preferences/collectionPreferences')
+      .then(({ collectionPreferences }) => {
+        if (!isMounted) return;
+        unsubscribe = collectionPreferences.events.on('update', update);
+      })
+      .catch(() => undefined);
+
+    return () => {
+      isMounted = false;
+      unsubscribe?.();
+    };
+  }, [tableName]);
 
   const disableButtons =
     focusedRow === undefined || typeof currentAction === 'string';

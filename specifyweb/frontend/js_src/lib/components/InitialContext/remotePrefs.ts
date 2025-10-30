@@ -126,31 +126,6 @@ export const remotePrefsDefinitions = f.store(
         defaultValue: 'MM/YYYY',
         formatters: [formatter.trim, formatter.toUpperCase],
       },
-      'attachment.is_public_default': {
-        description: 'Whether new Attachments are public by default',
-        defaultValue: true,
-        parser: 'java.lang.Boolean',
-        isLegacy: true,
-      },
-      'attachment.preview_size': {
-        description: 'The size in px of the generated attachment thumbnails',
-        defaultValue: 123,
-        parser: 'java.lang.Long',
-        isLegacy: true,
-      },
-      // These are used on the back end only:
-      'auditing.do_audits': {
-        description: 'Whether Audit Log is enabled',
-        defaultValue: true,
-        parser: 'java.lang.Boolean',
-        isLegacy: true,
-      },
-      'auditing.audit_field_updates': {
-        description: 'Whether Audit Log records field value changes',
-        defaultValue: true,
-        parser: 'java.lang.Boolean',
-        isLegacy: true,
-      },
       'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod': {
         description:
           'Allowed to add children to synopsized Geologic Time Period records',
@@ -158,8 +133,16 @@ export const remotePrefsDefinitions = f.store(
         parser: 'java.lang.Boolean',
         isLegacy: false,
       },
-      'sp7.allow_adding_child_to_synonymized_parent.Taxon': {
-        description: 'Allowed to add children to synopsized Taxon records',
+      'sp7.allow_adding_child_to_synonymized_parent.ChronosStrat': {
+        description:
+          'Allowed to add children to synopsized Chronostratigraphy records',
+        defaultValue: false,
+        parser: 'java.lang.Boolean',
+        isLegacy: false,
+      },
+      'sp7.allow_adding_child_to_synonymized_parent.ChronoStrat': {
+        description:
+          'Allowed to add children to synopsized Chronostratigraphy records',
         defaultValue: false,
         parser: 'java.lang.Boolean',
         isLegacy: false,
@@ -182,12 +165,37 @@ export const remotePrefsDefinitions = f.store(
         parser: 'java.lang.Boolean',
         isLegacy: false,
       },
+      'sp7.allow_adding_child_to_synonymized_parent.Taxon': {
+        description: 'Allowed to add children to synopsized Taxon records',
+        defaultValue: false,
+        parser: 'java.lang.Boolean',
+        isLegacy: false,
+      },
       'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit': {
         description:
           'Allowed to add children to synopsized TectonicUnit records',
         defaultValue: false,
         parser: 'java.lang.Boolean',
         isLegacy: false,
+      },
+      'attachment.preview_size': {
+        description: 'The size in px of the generated attachment thumbnails',
+        defaultValue: 123,
+        parser: 'java.lang.Long',
+        isLegacy: true,
+      },
+      // These are used on the back end only:
+      'auditing.do_audits': {
+        description: 'Whether Audit Log is enabled',
+        defaultValue: true,
+        parser: 'java.lang.Boolean',
+        isLegacy: true,
+      },
+      'auditing.audit_field_updates': {
+        description: 'Whether Audit Log records field value changes',
+        defaultValue: true,
+        parser: 'java.lang.Boolean',
+        isLegacy: true,
       },
       // This is actually stored in Global Prefs:
       /*
@@ -227,6 +235,50 @@ export const collectionPrefsDefinitions = {
     defaultValue: false,
     parser: 'java.lang.Boolean',
   },
+  'attachment.is_public_default': {
+    separator: '_',
+    description: 'Whether new Attachments are public by default',
+    defaultValue: false,
+    parser: 'java.lang.Boolean',
+  },
+  'sp7.allow_adding_child_to_synonymized_parent.Taxon': {
+    separator: '_',
+    description: 'Allowed to add children to synopsized Taxon records',
+    defaultValue: false,
+    parser: 'java.lang.Boolean',
+  },
+  'sp7.allow_adding_child_to_synonymized_parent.Geography': {
+    separator: '_',
+    description: 'Allowed to add children to synopsized Geography records',
+    defaultValue: false,
+    parser: 'java.lang.Boolean',
+  },
+  'sp7.allow_adding_child_to_synonymized_parent.Storage': {
+    separator: '_',
+    description: 'Allowed to add children to synopsized Storage records',
+    defaultValue: false,
+    parser: 'java.lang.Boolean',
+  },
+  'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod': {
+    separator: '_',
+    description:
+      'Allowed to add children to synopsized Geologic Time Period records',
+    defaultValue: false,
+    parser: 'java.lang.Boolean',
+  },
+  'sp7.allow_adding_child_to_synonymized_parent.LithoStrat': {
+    separator: '_',
+    description: 'Allowed to add children to synopsized LithoStrat records',
+    defaultValue: false,
+    parser: 'java.lang.Boolean',
+  },
+  'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit': {
+    separator: '_',
+    description:
+      'Allowed to add children to synopsized TectonicUnit records',
+    defaultValue: false,
+    parser: 'java.lang.Boolean',
+  },
   sp7_scope_table_picklists: {
     separator: '_',
     description:
@@ -235,3 +287,22 @@ export const collectionPrefsDefinitions = {
     parser: 'java.lang.Boolean',
   },
 } as const;
+
+let collectionPrefsFetchPromise: Promise<void> | undefined;
+
+export async function ensureCollectionPreferencesLoaded(): Promise<
+  typeof import('../Preferences/collectionPreferences')['collectionPreferences']
+> {
+  const { collectionPreferences } = await import(
+    '../Preferences/collectionPreferences'
+  );
+  if (Object.keys(collectionPreferences.getRaw()).length === 0) {
+    if (collectionPrefsFetchPromise === undefined)
+      collectionPrefsFetchPromise = collectionPreferences
+        .fetch()
+        .catch(() => undefined)
+        .then(() => undefined);
+    await collectionPrefsFetchPromise;
+  }
+  return collectionPreferences;
+}
