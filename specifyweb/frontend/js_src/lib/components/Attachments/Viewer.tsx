@@ -6,6 +6,7 @@ import { notificationsText } from '../../localization/notifications';
 import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
 import { localized } from '../../utils/types';
+import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
@@ -116,11 +117,18 @@ export function AttachmentViewer({
           originalUrl === undefined ? (
             loadingGif
           ) : type === 'image' ? (
-            <img
-              alt={title}
-              className="max-h-full max-w-full object-contain"
-              src={originalUrl}
-            />
+            <TransformWrapper maxScale={8} minScale={0.5}>
+              <TransformComponent
+                contentClass="max-h-full max-w-full"
+                wrapperClass="h-full w-full flex items-center justify-center"
+              >
+                <img
+                  alt={title}
+                  className="max-h-full max-w-full object-contain"
+                  src={originalUrl}
+                />
+              </TransformComponent>
+            </TransformWrapper>
           ) : type === 'video' ? (
             /*
              * Subtitles for attachments not yet supported
@@ -158,10 +166,7 @@ export function AttachmentViewer({
             </object>
           )
         ) : (
-          <Thumbnail
-            attachment={serializeResource(attachment)}
-            thumbnail={thumbnail}
-          />
+          <Thumbnail attachment={serialized} thumbnail={thumbnail} />
         )}
       </div>
 
