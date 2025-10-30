@@ -79,6 +79,33 @@ const ranksToPicklistItems = (
     title: (rank.title?.length ?? 0) === 0 ? rank.name : rank.title!,
   }));
 
+const getDefinitionItemUri = (
+  definitionItem:
+    | string
+    | null
+    | undefined
+    | SerializedResource<TreeDefItem<AnyTree>>
+    | SpecifyResource<TreeDefItem<AnyTree>>
+): string | undefined => {
+  if (typeof definitionItem === 'string') return definitionItem;
+  if (definitionItem !== null && typeof definitionItem === 'object') {
+    const specifyResource = definitionItem as SpecifyResource<
+      TreeDefItem<AnyTree>
+    >;
+    if (typeof specifyResource.get === 'function') {
+      const resourceUri = specifyResource.get('resource_uri');
+      if (typeof resourceUri === 'string') return resourceUri;
+    }
+    const serialized = definitionItem as Partial<
+      SerializedResource<TreeDefItem<AnyTree>>
+    >;
+    if (typeof serialized.resource_uri === 'string') {
+      return serialized.resource_uri;
+    }
+  }
+  return undefined;
+};
+
 /**
  * Pick list to choose a tree rank for a tree node
  */
@@ -138,63 +165,54 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
   }, [props.resource, props.defaultValue]);
 
   React.useEffect(() => {
-    if (props.resource === undefined) return undefined;
+    if (props.resource === undefined || items === undefined) return undefined;
+
     const resource = toTreeTable(props.resource);
-    const definitionItem = resource?.get('definitionItem');
+    if (resource === undefined) return undefined;
 
-    // Don't run validation logic until items are loaded
-    if (items === undefined) return undefined;
+    const definitionItem = resource.get('definitionItem');
+    const definitionItemUri = getDefinitionItemUri(definitionItem);
+    const itemValues = items.map(({ value }: PickListItemSimple) => value);
+    const hasDefinitionItem =
+      typeof definitionItemUri === 'string' &&
+      itemValues.includes(definitionItemUri);
 
-    const newDefinitionItem =
-      props.defaultValue ?? items?.slice(-1)[0]?.value ?? '';
+    if (hasDefinitionItem) {
+      // Normalise stored value so business rules don't see an object vs string mismatch
+      if (typeof definitionItem !== 'string') {
+        resource.set('definitionItem', definitionItemUri);
+      }
+      resource.businessRuleManager?.checkField('definitionItem');
+      resource.businessRuleManager?.checkField('parent');
+      return undefined;
+    }
 
-    const isDifferentDefinitionItem =
-      newDefinitionItem !== (definitionItem ?? '');
+    const defaultDefinitionItem =
+      typeof props.defaultValue === 'string' && props.defaultValue.length > 0
+        ? items.find(
+            ({ value, title }: PickListItemSimple) =>
+              value === props.defaultValue || title === props.defaultValue
+          )?.value ?? props.defaultValue
+        : undefined;
 
-    // Check if current definitionItem is in the loaded items list
-    const isDefinitionItemInList = 
-      typeof definitionItem === 'string' &&
-      items.map(({ value }) => value).includes(definitionItem);
+    const fallbackDefinitionItem =
+      defaultDefinitionItem ?? itemValues[itemValues.length - 1];
 
-    const isDefinitionItemChanged = 
-      Object.keys(resource?.changed ?? {}).includes('definitionitem');
-
-    const invalidDefinitionItem =
-      typeof definitionItem !== 'string' ||
-      (!isDefinitionItemInList && !isDefinitionItemChanged);
+    const hasUserChangedDefinitionItem = Object.keys(
+      resource.changed ?? {}
+    ).includes('definitionitem');
 
     if (
-      isDifferentDefinitionItem &&
-      (items !== undefined || typeof resource?.get('parent') !== 'string') &&
-      invalidDefinitionItem
+      typeof fallbackDefinitionItem === 'string' &&
+      !hasUserChangedDefinitionItem
     ) {
-      resource?.set('definitionItem', newDefinitionItem);
-      return void resource?.businessRuleManager?.checkField('parent');
+      resource.set('definitionItem', fallbackDefinitionItem);
+      resource.businessRuleManager?.checkField('definitionItem');
+      resource.businessRuleManager?.checkField('parent');
     }
-    return undefined;
-  }, [items]);
 
-  // Force field revalidation after items load to clear stale validation errors
-  React.useEffect(() => {
-    if (items === undefined || props.resource === undefined) return;
-    
-    const resource = toTreeTable(props.resource);
-    if (resource === undefined) return;
-    
-    const definitionItem = resource.get('definitionItem');
-    
-    // Only revalidate if we have a valid definitionItem that exists in items
-    if (typeof definitionItem === 'string') {
-      const isInList = items.map(({ value }) => value).includes(definitionItem);
-      
-      if (isInList) {
-        // Use setTimeout to ensure this runs after React finishes rendering
-        setTimeout(() => {
-          resource.businessRuleManager?.checkField('definitionItem');
-        }, 0);
-      }
-    }
-  }, [items, props.resource]);
+    return undefined;
+  }, [items, props.resource, props.defaultValue]);
 
   return (
     <PickListComboBox
