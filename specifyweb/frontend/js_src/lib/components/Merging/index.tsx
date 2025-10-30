@@ -219,7 +219,7 @@ function Merging({
               autoMerge(
                 table,
                 initialRecords.current,
-                userPreferences.get(
+                !userPreferences.get(
                   'recordMerging',
                   'behavior',
                   'autoPopulate'
