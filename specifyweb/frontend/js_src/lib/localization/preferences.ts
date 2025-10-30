@@ -1443,6 +1443,31 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Сортировать по полю',
     'uk-ua': 'Сортувати за полем',
   },
+  treeStatsThreshold: {
+    'en-us': 'Minimum rank for Collection Object counts',
+    'ru-ru': 'Минимальный ранг для подсчета коллекционных объектов',
+    'es-es': 'Rango mínimo para recuentos de objetos de colección',
+    'fr-fr': 'Rang minimal pour les comptes des objets de collection',
+    'uk-ua': 'Мінімальний ранг для підрахунку колекційних об’єктів',
+    'de-ch': 'Minimaler Rang für Sammlungsobjektzählungen',
+    'pt-br': 'Classificação mínima para contagens de objetos de coleção',
+  },
+  treeStatsThresholdDescription: {
+    'en-us':
+      'Show Collection Object counts only for nodes with RankID greater than or equal to this value.',
+    'ru-ru':
+      'Показывать количество коллекционных объектов только для узлов с RankID больше или равным этому значению.',
+    'es-es':
+      'Mostrar recuentos de objetos de colección solo para nodos con RankID mayor o igual que este valor.',
+    'fr-fr':
+      'Afficher les comptes d’objets de collection uniquement pour les nœuds dont le RankID est supérieur ou égal à cette valeur.',
+    'uk-ua':
+      'Показувати кількість колекційних об’єктів лише для вузлів з RankID, що дорівнює або перевищує це значення.',
+    'de-ch':
+      'Zeige Zählungen von Sammlungsobjekten nur für Knoten mit einem RankID grösser oder gleich diesem Wert.',
+    'pt-br':
+      'Mostrar contagens de objetos de coleção apenas para nós com RankID maior ou igual a este valor.',
+  },
   lineWrap: {
     'en-us': 'Line wrap',
     'ru-ru': 'Перенос строки',
