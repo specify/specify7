@@ -6,7 +6,11 @@ import { notificationsText } from '../../localization/notifications';
 import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
 import { localized } from '../../utils/types';
-import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
+import {
+  TransformComponent,
+  TransformWrapper,
+  useControls,
+} from 'react-zoom-pan-pinch';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
@@ -117,17 +121,17 @@ export function AttachmentViewer({
           originalUrl === undefined ? (
             loadingGif
           ) : type === 'image' ? (
-            <TransformWrapper maxScale={8} minScale={0.5}>
-              <TransformComponent
-                contentClass="max-h-full max-w-full"
-                wrapperClass="h-full w-full flex items-center justify-center"
-              >
-                <img
-                  alt={title}
-                  className="max-h-full max-w-full object-contain"
-                  src={originalUrl}
-                />
-              </TransformComponent>
+            <TransformWrapper
+              centerOnInit
+              maxScale={8}
+              minScale={0.5}
+              wheel={{ step: 0.15 }}
+            >
+              <ImageTransformContent
+                alt={typeof title === 'string' ? title : ''}
+                src={originalUrl}
+                thumbnail={thumbnail?.src}
+              />
             </TransformWrapper>
           ) : type === 'video' ? (
             /*
@@ -234,6 +238,79 @@ export function AttachmentViewer({
           </div>
         ) : undefined
       }
+    </>
+  );
+}
+
+function ImageTransformContent({
+  alt,
+  src,
+  thumbnail,
+}: {
+  readonly alt: string;
+  readonly src: string;
+  readonly thumbnail: string | undefined;
+}): JSX.Element {
+  const handleError = React.useCallback(
+    (event: React.SyntheticEvent<HTMLImageElement>) => {
+      if (typeof thumbnail === 'string') {
+        const image = event.currentTarget;
+        image.onerror = null;
+        image.src = thumbnail;
+      }
+    },
+    [thumbnail]
+  );
+
+  return (
+    <div
+      className="flex h-full w-full flex-col items-center justify-center gap-4"
+      style={{ '--transition-duration': 0 } as React.CSSProperties}
+    >
+      <TransformComponent
+        contentClass="max-h-full max-w-full"
+        wrapperClass="h-full w-full flex items-center justify-center"
+      >
+        <img
+          alt={alt}
+          className="max-h-full max-w-full object-contain"
+          src={src}
+          onError={handleError}
+        />
+      </TransformComponent>
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        <ZoomControls />
+      </div>
+    </div>
+  );
+}
+
+function ZoomControls(): JSX.Element {
+  const { zoomIn, zoomOut, resetTransform } = useControls();
+
+  return (
+    <>
+      <Button.Icon
+        icon="plus"
+        title={commonText.zoom()}
+        onClick={(): void => {
+          zoomIn();
+        }}
+      />
+      <Button.Icon
+        icon="minus"
+        title={commonText.unzoom()}
+        onClick={(): void => {
+          zoomOut();
+        }}
+      />
+      <Button.Icon
+        icon="arrowPath"
+        title={commonText.reset()}
+        onClick={(): void => {
+          resetTransform();
+        }}
+      />
     </>
   );
 }
