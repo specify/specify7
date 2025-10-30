@@ -138,9 +138,12 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
   }, [props.resource, props.defaultValue]);
 
   React.useEffect(() => {
-    if (props.resource === undefined || items === undefined) return undefined;
+    if (props.resource === undefined) return undefined;
     const resource = toTreeTable(props.resource);
     const definitionItem = resource?.get('definitionItem');
+
+    // Don't run validation logic until items are loaded
+    if (items === undefined) return undefined;
 
     const newDefinitionItem =
       props.defaultValue ?? items?.slice(-1)[0]?.value ?? '';
@@ -148,10 +151,17 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     const isDifferentDefinitionItem =
       newDefinitionItem !== (definitionItem ?? '');
 
+    // Check if current definitionItem is in the loaded items list
+    const isDefinitionItemInList = 
+      typeof definitionItem === 'string' &&
+      items.map(({ value }) => value).includes(definitionItem);
+
+    const isDefinitionItemChanged = 
+      Object.keys(resource?.changed ?? {}).includes('definitionitem');
+
     const invalidDefinitionItem =
       typeof definitionItem !== 'string' ||
-      (!items.map(({ value }) => value).includes(definitionItem) &&
-        !Object.keys(resource?.changed ?? {}).includes('definitionitem'));
+      (!isDefinitionItemInList && !isDefinitionItemChanged);
 
     if (
       isDifferentDefinitionItem &&
@@ -164,15 +174,24 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     return undefined;
   }, [items]);
 
-  // Force revalidation when items are loaded
+  // Force field revalidation after items load to clear stale validation errors
   React.useEffect(() => {
-    if (items !== undefined && props.resource !== undefined) {
-      const resource = toTreeTable(props.resource);
-      const definitionItem = resource?.get('definitionItem');
+    if (items === undefined || props.resource === undefined) return;
+    
+    const resource = toTreeTable(props.resource);
+    if (resource === undefined) return;
+    
+    const definitionItem = resource.get('definitionItem');
+    
+    // Only revalidate if we have a valid definitionItem that exists in items
+    if (typeof definitionItem === 'string') {
+      const isInList = items.map(({ value }) => value).includes(definitionItem);
       
-      // Trigger revalidation by touching the field
-      if (typeof definitionItem === 'string' && items.map(({ value }) => value).includes(definitionItem)) {
-        resource?.businessRuleManager?.checkField('definitionItem');
+      if (isInList) {
+        // Use setTimeout to ensure this runs after React finishes rendering
+        setTimeout(() => {
+          resource.businessRuleManager?.checkField('definitionItem');
+        }, 0);
       }
     }
   }, [items, props.resource]);
