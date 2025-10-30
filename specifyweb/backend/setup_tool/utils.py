@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 from django.db.models import Model as DjangoModel
-
 from typing import Optional, Type
 from specifyweb.specify.api_utils import strict_uri_to_model
 

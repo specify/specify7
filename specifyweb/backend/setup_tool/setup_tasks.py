@@ -14,8 +14,24 @@ logger = logging.getLogger(__name__)
 _active_setup_task_id: Optional[str] = None
 _active_setup_lock = threading.Lock()
 
-def setup_database_background(data):
-    global _active_setup_task_id
+# Keep track of last error.
+_last_error: Optional[str] = None
+_last_error_lock = threading.Lock()
+
+class MissingWorkerError(Exception):
+    """Raised when worker is not running."""
+    pass
+
+def setup_database_background(data: dict) -> str:
+    global _active_setup_task_id, _last_error
+
+    # Clear any previous error logs.
+    set_last_setup_error(None)
+
+    if not is_worker_alive():
+        set_last_setup_error("The Specify Worker is not running.")
+        raise MissingWorkerError("The Specify Worker is not running.")
+
     task_id = str(uuid4())
     logger.debug(f'task_id: {task_id}')
 
@@ -27,6 +43,14 @@ def setup_database_background(data):
         _active_setup_task_id = task.id
     
     return task.id
+
+def is_worker_alive():
+    """Pings the worker to see if its running."""
+    try:
+        res = app.control.inspect(timeout=1).ping()
+        return bool(res)
+    except Exception:
+        return False
 
 def get_active_setup_task() -> Tuple[Optional[AsyncResult], bool]:
     """Return the current setup task if it is active, and also if it is busy."""
@@ -47,7 +71,7 @@ def get_active_setup_task() -> Tuple[Optional[AsyncResult], bool]:
     return res, busy
 
 @app.task(bind=True)
-def setup_database_task(self, data):
+def setup_database_task(self, data: dict):
     """Execute all database setup steps in order."""
     self.update_state(state='STARTED', meta={'progress': api.get_setup_resource_progress()})
     def update_progress():
@@ -115,4 +139,14 @@ def setup_database_task(self, data):
             update_progress()
     except Exception as e:
         logger.exception(f'Error setting up database: {e}')
+        self.update_state(state='FAILURE', meta={'error': str(e)})
         raise
+
+def get_last_setup_error() -> Optional[str]:
+    global _last_error
+    return _last_error
+
+def set_last_setup_error(error_text: Optional[str]):
+    global _last_error
+    with _last_error_lock:
+        _last_error = error_text

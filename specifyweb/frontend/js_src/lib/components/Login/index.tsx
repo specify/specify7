@@ -40,6 +40,7 @@ export type SetupResources = {
 export type SetupProgress = {
   readonly resources: SetupResources;
   readonly busy: boolean;
+  readonly error?: string;
 };
 
 export function Login(): JSX.Element {

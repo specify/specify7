@@ -10,7 +10,7 @@ from specifyweb.backend.setup_tool.utils import normalize_keys, resolve_uri_or_f
 from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults
 from specifyweb.backend.setup_tool.picklist_defaults import create_default_picklists
 from specifyweb.backend.setup_tool.prep_type_defaults import create_default_prep_types
-from specifyweb.backend.setup_tool.setup_tasks import setup_database_background, get_active_setup_task
+from specifyweb.backend.setup_tool.setup_tasks import setup_database_background, get_active_setup_task, get_last_setup_error, set_last_setup_error, MissingWorkerError
 from specifyweb.backend.setup_tool.tree_defaults import create_default_tree, update_tree_scoping
 from specifyweb.specify.models import Institution, Discipline
 
@@ -24,22 +24,29 @@ class SetupError(Exception):
     """Raised by any setup tasks."""
     pass
 
-def get_setup_progress():
+def get_setup_progress() -> dict:
     """Returns a dictionary of the status of the database setup."""
     # Check if setup is currently in progress
     active_setup_task, busy = get_active_setup_task()
 
     completed_resources = None
+    last_error = None
+    # Get setup progress if its currently in progress.
     if active_setup_task:
         info = getattr(active_setup_task, "info", None) or getattr(active_setup_task, "result", None)
         if isinstance(info, dict):
-            completed_resources = info.get('progress')
+            completed_resources = info.get('progress', None)
+            last_error = info.get('error', get_last_setup_error())
+            if last_error is not None:
+                set_last_setup_error(last_error)
     
     if completed_resources is None:
         completed_resources = get_setup_resource_progress()
+        last_error = get_last_setup_error()
 
     return {
         "resources": completed_resources,
+        "last_error": last_error,
         "busy": busy,
     }
 
@@ -61,7 +68,7 @@ def get_setup_resource_progress() -> dict:
         "specifyUser": models.Specifyuser.objects.exists(),
     }
 
-def _guided_setup_condition(request):
+def _guided_setup_condition(request) -> bool:
     from specifyweb.specify.models import Specifyuser
     if Specifyuser.objects.exists():
         is_auth = request.user.is_authenticated
@@ -110,7 +117,11 @@ def setup_database(request, direct=False):
 
         logger.debug("Database setup started successfully.")
         return JsonResponse({"success": True, "setup_progress": get_setup_progress(), "task_id": task_id}, status=200)
+    except MissingWorkerError as e:
+        logger.exception(str(e))
+        return JsonResponse({'error': str(e)}, status=500)
     except Exception as e:
+        logger.exception(str(e))
         return JsonResponse({'error': 'An internal server error occurred.'}, status=500)
 
 def create_institution(data):
@@ -338,7 +349,7 @@ def create_lithostrat_tree(data):
 def create_tectonicunit_tree(data):
     return create_tree('Tectonicunit', data)
 
-def create_tree(name: str, data):
+def create_tree(name: str, data: dict) -> dict:
     # TODO: Use trees/create_default_trees
     # https://github.com/specify/specify7/pull/6429
 

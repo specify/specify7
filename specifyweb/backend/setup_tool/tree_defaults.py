@@ -1,4 +1,6 @@
 from django.db import transaction
+from django.db.models import Model as DjangoModel
+from typing import Type
 
 from ..trees.utils import get_models
 
@@ -39,7 +41,7 @@ def create_default_tree(name: str, kwargs: dict, ranks: dict):
         )
 
         # Create root node
-        # TODO: Avoid duplicated code from add_root endpoint
+        # TODO: Avoid having duplicated code from add_root endpoint
         root_node = tree_node_model.objects.create(
             name="Root",
             isaccepted=1,
@@ -53,7 +55,7 @@ def create_default_tree(name: str, kwargs: dict, ranks: dict):
 
         return treedef
     
-def update_tree_scoping(treedef, discipline_id):
+def update_tree_scoping(treedef: Type[DjangoModel], discipline_id: int):
     """Trees may be created before a discipline is created. This will update their discipline."""
     setattr(treedef, "discipline_id", discipline_id)
     treedef.save(update_fields=["discipline_id"])

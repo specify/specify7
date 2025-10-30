@@ -7,7 +7,7 @@ import { setupToolText } from '../../localization/setupTool';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
-import type { RA } from '../../utils/types';
+import { localized, type RA } from '../../utils/types';
 import { Container, H2, H3 } from '../Atoms';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -19,6 +19,7 @@ import { loadingBar } from '../Molecules';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
 import type { FieldConfig, ResourceConfig } from './setupResources';
 import { FIELD_MAX_LENGTH, resources } from './setupResources';
+import { dialogIcons } from '../Atoms/Icons';
 
 type ResourceFormData = Record<string, any>;
 
@@ -122,13 +123,15 @@ export function SetupTool({
     useFormDefaults(resources[currentStep], setFormData, currentStep);
   }, [currentStep]);
 
+  // Keep track of the last backend error.
+  const [setupError, setSetupError] = React.useState<string | undefined>(undefined);
+
   // Is the database currrently being created?
   const [inProgress, setInProgress] = React.useState<boolean>(false);
   const nextIncompleteStep = stepOrder.findIndex(
     (resourceName) => !setupProgress.resources[resourceName]
   );
   React.useEffect(() => {
-    console.log(setupProgress);
     if (setupProgress.busy) {
       setInProgress(true);
     }
@@ -142,14 +145,18 @@ export function SetupTool({
         ajax<SetupProgress>(`/setup_tool/setup_progress/`, {
           method: 'GET',
           headers: { Accept: 'application/json' },
-          errorMode: 'silent',
+          errorMode: 'dismissible',
         })
-          .then(({ data }) => setSetupProgress(data))
+          .then(({ data }) => {
+            setSetupProgress(data);
+            if (data.error !== undefined)
+              setSetupError(data.error);
+          })
           .catch((error) => {
             console.error('Failed to fetch setup progress:', error);
             return undefined;
           }),
-      2000
+      3000
     );
 
     return () => clearInterval(interval);
@@ -182,7 +189,9 @@ export function SetupTool({
         }
       })
       .catch((error) => {
+        console.log(error)
         console.error(`Request failed for ${resourceLabel}:`, error);
+        setSetupError(String(error));
         throw error;
       });
 
@@ -397,7 +406,7 @@ export function SetupTool({
               </div>
             </Container.Center>
           </div>
-          <div className="w-[32rem]">
+          <div className="w-[32rem] flex flex-col gap-y-4">
             <Container.Center className="p-3 shadow-md">
               <Form
                 className="flex-1 overflow-auto gap-2"
@@ -410,7 +419,7 @@ export function SetupTool({
                 </H3>
                 {resources[currentStep].description ===
                 undefined ? undefined : (
-                  <p className="text-md font-semibold mb-4">
+                  <p className="text-md mb-4">
                     {resources[currentStep].description}
                   </p>
                 )}
@@ -428,6 +437,19 @@ export function SetupTool({
             <Container.Center className="p-3 shadow-md max-w-lg">
               <Progress max={stepOrder.length} value={currentStep} />
             </Container.Center>
+            {
+              setupError === undefined ? undefined : (
+                <Container.Center className="p-3 shadow-md max-w-lg">
+                  <span className="text-red-500">{dialogIcons.warning}</span>
+                  <H3 className="text-xl font-semibold mb-4">
+                    {setupToolText.setupError()}
+                  </H3>
+                  <p className="text-md mb-4">
+                    {localized(setupError)}
+                  </p>
+                </Container.Center>
+              )
+            }
           </div>
         </div>
       )}
