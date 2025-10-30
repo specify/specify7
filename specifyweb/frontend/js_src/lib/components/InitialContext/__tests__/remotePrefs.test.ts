@@ -26,9 +26,7 @@ test('can retrieve collection pref', () =>
   expect(getCollectionPref('CO_CREATE_COA', 32_678)).toBe(false));
 
 test('parses collection boolean pref', () =>
-  expect(
-    getCollectionPref('attachment.is_public_default', 32_768)
-  ).toBe(true));
+  expect(getCollectionPref('attachment.is_public_default', 32_768)).toBe(true));
 
 test('parses collection tree synonym pref', () =>
   expect(

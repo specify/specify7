@@ -8,6 +8,7 @@ import type { UploadAttachmentSpec } from '../AttachmentsBulkImport/types';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
 import { tables } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { load } from '../InitialContext';
@@ -18,7 +19,6 @@ import {
 } from '../InitialContext/remotePrefs';
 import { downloadFile } from '../Molecules/FilePicker';
 import { formatUrl } from '../Router/queryString';
-import { schema } from '../DataModel/schema';
 // Import SVG icons, but better than in Icons.tsx
 import applicationJsonIcon from './MimetypeIcons/application-json.svg';
 import applicationPdfIcon from './MimetypeIcons/application-pdf.svg';

@@ -16,15 +16,13 @@ import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables } from '../DataModel/tables';
+import { getSynonymPreferenceForTree } from '../DataModel/treeBusinessRules';
 import { DeleteButton } from '../Forms/DeleteButton';
 import { Dialog } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { Row } from './helpers';
 import { checkMoveViolatesEnforced } from './helpers';
-import {
-  getSynonymPreferenceForTree,
-} from '../DataModel/treeBusinessRules';
 
 const treeActions = [
   'add',

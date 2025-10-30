@@ -280,8 +280,7 @@ export const collectionPrefsDefinitions = {
   },
   'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit': {
     separator: '_',
-    description:
-      'Allowed to add children to synopsized TectonicUnit records',
+    description: 'Allowed to add children to synopsized TectonicUnit records',
     defaultValue: false,
     parser: 'java.lang.Boolean',
   },
@@ -297,7 +296,7 @@ export const collectionPrefsDefinitions = {
 let collectionPrefsFetchPromise: Promise<void> | undefined;
 
 export async function ensureCollectionPreferencesLoaded(): Promise<
-  typeof import('../Preferences/collectionPreferences')['collectionPreferences']
+  (typeof import('../Preferences/collectionPreferences'))['collectionPreferences']
 > {
   const { collectionPreferences } = await import(
     '../Preferences/collectionPreferences'

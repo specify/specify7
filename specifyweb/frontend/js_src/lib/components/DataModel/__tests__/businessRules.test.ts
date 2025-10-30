@@ -6,13 +6,13 @@ import { mockTime, requireContext } from '../../../tests/helpers';
 import type { RA } from '../../../utils/types';
 import { overwriteReadOnly } from '../../../utils/types';
 import { cogTypes } from '../helpers';
-import { getSynonymPreferenceForTree } from '../treeBusinessRules';
 import type { SerializedResource } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
 import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
 import type { SpecifyTable } from '../specifyTable';
 import { tables } from '../tables';
+import { getSynonymPreferenceForTree } from '../treeBusinessRules';
 import type {
   CollectingEvent,
   CollectionObjectType,
@@ -907,7 +907,8 @@ describe('treeBusinessRules', () => {
         ...originalRaw.treeManagement,
         synonymized: {
           ...originalRaw.treeManagement?.synonymized,
-          'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod': true,
+          'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod':
+            true,
         },
       },
     } as typeof originalRaw);

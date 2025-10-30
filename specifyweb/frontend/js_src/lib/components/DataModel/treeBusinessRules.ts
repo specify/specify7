@@ -1,44 +1,54 @@
 import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
+import {
+  ensureCollectionPreferencesLoaded,
+  getCollectionPref,
+  getPref,
+  remotePrefsDefinitions,
+} from '../InitialContext/remotePrefs';
 import { fetchPossibleRanks } from '../PickLists/TreeLevelPickList';
 import { formatUrl } from '../Router/queryString';
 import type { BusinessRuleResult } from './businessRules';
 import type { AnyTree, TableFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { idFromUrl } from './resource';
-import type { Tables } from './types';
 import { schema } from './schema';
-import {
-  getCollectionPref,
-  getPref,
-  ensureCollectionPreferencesLoaded,
-  remotePrefsDefinitions,
-} from '../InitialContext/remotePrefs';
+import type { Tables } from './types';
 
 const remoteSynonymPrefKeysByTable = {
   Taxon: ['sp7.allow_adding_child_to_synonymized_parent.Taxon'] as const,
-  Geography: ['sp7.allow_adding_child_to_synonymized_parent.Geography'] as const,
+  Geography: [
+    'sp7.allow_adding_child_to_synonymized_parent.Geography',
+  ] as const,
   Storage: ['sp7.allow_adding_child_to_synonymized_parent.Storage'] as const,
   GeologicTimePeriod: [
     'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod',
     'sp7.allow_adding_child_to_synonymized_parent.ChronosStrat',
     'sp7.allow_adding_child_to_synonymized_parent.ChronoStrat',
   ] as const,
-  LithoStrat: ['sp7.allow_adding_child_to_synonymized_parent.LithoStrat'] as const,
-  TectonicUnit: ['sp7.allow_adding_child_to_synonymized_parent.TectonicUnit'] as const,
+  LithoStrat: [
+    'sp7.allow_adding_child_to_synonymized_parent.LithoStrat',
+  ] as const,
+  TectonicUnit: [
+    'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit',
+  ] as const,
 } as const;
 
-type RemoteSynonymPrefKey = typeof remoteSynonymPrefKeysByTable[keyof typeof remoteSynonymPrefKeysByTable][number];
+type RemoteSynonymPrefKey =
+  (typeof remoteSynonymPrefKeysByTable)[keyof typeof remoteSynonymPrefKeysByTable][number];
 
-type CollectionSynonymPrefKey = typeof remoteSynonymPrefKeysByTable[keyof typeof remoteSynonymPrefKeysByTable][0];
+type CollectionSynonymPrefKey =
+  (typeof remoteSynonymPrefKeysByTable)[keyof typeof remoteSynonymPrefKeysByTable][0];
 
 export const expandSynonymPrefItemsByTable = remoteSynonymPrefKeysByTable;
 
 const collectionSynonymPrefKeyMap = Object.fromEntries(
-  (Object.values(remoteSynonymPrefKeysByTable) as ReadonlyArray<
-    readonly RemoteSynonymPrefKey[]
-  >).flatMap((keys) => {
+  (
+    Object.values(
+      remoteSynonymPrefKeysByTable
+    ) as readonly (readonly RemoteSynonymPrefKey[])[]
+  ).flatMap((keys) => {
     const [primary, ...aliases] = keys;
     return [[primary, primary], ...aliases.map((alias) => [alias, primary])];
   })
@@ -133,22 +143,19 @@ export async function getSynonymPreferenceForTree(
   const collectionId = schema.domainLevelIds.collection;
 
   try {
-    const collectionPreferences =
-      await ensureCollectionPreferencesLoaded();
+    const collectionPreferences = await ensureCollectionPreferencesLoaded();
     const rawSynonymPrefs =
       collectionPreferences.getRaw()?.treeManagement?.synonymized ?? {};
 
     for (const key of preferenceKeys)
-      if (Object.prototype.hasOwnProperty.call(rawSynonymPrefs, key)) {
+      if (Object.hasOwn(rawSynonymPrefs, key)) {
         const value = rawSynonymPrefs[key as keyof typeof rawSynonymPrefs];
         if (typeof value === 'boolean') return value;
       }
 
     const defaultCollectionKey = preferenceKeys
       .map((key) => collectionSynonymPrefKeyMap[key])
-      .find(
-        (key): key is CollectionSynonymPrefKey => key !== undefined
-      );
+      .find((key): key is CollectionSynonymPrefKey => key !== undefined);
     if (defaultCollectionKey !== undefined)
       return collectionPreferences.get(
         'treeManagement',
@@ -156,7 +163,7 @@ export async function getSynonymPreferenceForTree(
         defaultCollectionKey
       );
   } catch {
-    /* ignore and try fallbacks */
+    /* Ignore and try fallbacks */
   }
 
   for (const key of preferenceKeys) {
@@ -165,7 +172,7 @@ export async function getSynonymPreferenceForTree(
       try {
         return getCollectionPref(collectionKey, collectionId);
       } catch {
-        /* continue */
+        /* Continue */
       }
   }
 
@@ -173,11 +180,9 @@ export async function getSynonymPreferenceForTree(
   for (const key of preferenceKeys)
     if (key in remoteDefinitions)
       try {
-        return getPref(
-          key as keyof ReturnType<typeof remotePrefsDefinitions>
-        );
+        return getPref(key as keyof ReturnType<typeof remotePrefsDefinitions>);
       } catch {
-        /* continue */
+        /* Continue */
       }
 
   return false;
