@@ -421,8 +421,8 @@ export function SetupTool({
                   <H3 className="text-xl font-semibold mb-4">
                     {resources[currentStep].label}
                   </H3>
-                  {typeof resources[currentStep].documentationUrl === 'string' && (
-                    <Link.NewTab href={resources[currentStep].documentationUrl}>
+                  {resources[currentStep].documentationUrl !== undefined && (
+                    <Link.NewTab href={resources[currentStep].documentationUrl as string}>
                       {headerText.documentation()}
                     </Link.NewTab>
                   )}
