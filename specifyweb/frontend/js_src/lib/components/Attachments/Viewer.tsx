@@ -320,7 +320,7 @@ function ImageTransformContent({
       </TransformComponent>
       {showControls ? (
         <div
-          className="absolute right-2 top-2 flex items-center gap-2 rounded bg-white/60 p-1 text-white shadow-md backdrop-blur-sm dark:bg-black/60"
+          className="absolute right-2 top-2 flex items-center gap-2 rounded bg-white/60 p-1 text-white shadow-md dark:bg-black/60"
           style={{ pointerEvents: 'auto' }}
         >
           <ZoomControls
