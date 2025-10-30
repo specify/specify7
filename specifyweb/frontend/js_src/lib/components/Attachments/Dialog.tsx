@@ -20,8 +20,8 @@ import { tables } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { SaveButton } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
-import { AttachmentViewer } from './Viewer';
 import { userPreferences } from '../Preferences/userPreferences';
+import { AttachmentViewer } from './Viewer';
 
 export function AttachmentDialog({
   attachment,
@@ -59,8 +59,8 @@ export function AttachmentDialog({
     'behavior',
     'showControls'
   );
-  const areControlsVisible = controlsVisiblePreference !== false;
-  const preferCollapsed = collapseFormByDefault === true && areControlsVisible;
+  const areControlsVisible = controlsVisiblePreference;
+  const preferCollapsed = collapseFormByDefault && areControlsVisible;
 
   const [showMeta, , , toggleShowMeta] = useBooleanState(!preferCollapsed);
 

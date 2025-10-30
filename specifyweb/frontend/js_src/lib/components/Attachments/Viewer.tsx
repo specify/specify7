@@ -1,17 +1,17 @@
 import React from 'react';
-
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { commonText } from '../../localization/common';
-import { attachmentsText } from '../../localization/attachments';
-import { notificationsText } from '../../localization/notifications';
-import { f } from '../../utils/functools';
-import type { GetSet } from '../../utils/types';
-import { localized } from '../../utils/types';
 import {
   TransformComponent,
   TransformWrapper,
   useControls,
 } from 'react-zoom-pan-pinch';
+
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { attachmentsText } from '../../localization/attachments';
+import { commonText } from '../../localization/common';
+import { notificationsText } from '../../localization/notifications';
+import { f } from '../../utils/functools';
+import type { GetSet } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
@@ -121,9 +121,9 @@ export function AttachmentViewer({
     'showControls'
   );
   const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
-  const areControlsVisible = controlsVisiblePreference !== false;
-  const defaultCollapsed = collapseFormByDefault === true && areControlsVisible;
-  const shouldShowMeta = (showMeta ?? !defaultCollapsed) === true;
+  const areControlsVisible = controlsVisiblePreference;
+  const defaultCollapsed = collapseFormByDefault && areControlsVisible;
+  const shouldShowMeta = showMeta ?? !defaultCollapsed;
   const isSidebarExpanded = shouldShowMeta || attachment.isNew();
   const canToggleSidebar =
     typeof onToggleSidebar === 'function' && !attachment.isNew();
@@ -152,10 +152,10 @@ export function AttachmentViewer({
                   alt={typeof title === 'string' ? title : ''}
                   canToggleSidebar={canToggleSidebar}
                   isSidebarExpanded={isSidebarExpanded}
-                  onToggleSidebar={onToggleSidebar}
                   showControls={areControlsVisible}
                   src={originalUrl}
                   thumbnail={thumbnail?.src}
+                  onToggleSidebar={onToggleSidebar}
                 />
               </TransformWrapper>
             </div>
@@ -314,8 +314,8 @@ function ImageTransformContent({
           alt={alt}
           className="h-full w-full max-h-full max-w-full object-contain"
           src={src}
-          onLoad={handleLoad}
           onError={handleError}
+          onLoad={handleLoad}
         />
       </TransformComponent>
       {showControls ? (
@@ -372,7 +372,9 @@ function ZoomControls({
         <Button.Icon
           icon={isSidebarExpanded ? 'chevronDoubleRight' : 'chevronDoubleLeft'}
           title={
-            isSidebarExpanded ? attachmentsText.hideForm() : attachmentsText.showForm()
+            isSidebarExpanded
+              ? attachmentsText.hideForm()
+              : attachmentsText.showForm()
           }
           onClick={(): void => {
             onToggleSidebar();

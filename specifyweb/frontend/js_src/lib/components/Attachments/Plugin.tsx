@@ -23,10 +23,10 @@ import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
+import { userPreferences } from '../Preferences/userPreferences';
 import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { attachmentSettingsPromise, uploadFile } from './attachments';
 import { AttachmentViewer } from './Viewer';
-import { userPreferences } from '../Preferences/userPreferences';
 
 export function AttachmentsPlugin(
   props: Parameters<typeof ProtectedAttachmentsPlugin>[0]
@@ -81,8 +81,8 @@ function ProtectedAttachmentsPlugin({
     'behavior',
     'showControls'
   );
-  const areControlsVisible = controlsVisiblePreference !== false;
-  const preferCollapsed = collapseFormByDefault === true && areControlsVisible;
+  const areControlsVisible = controlsVisiblePreference;
+  const preferCollapsed = collapseFormByDefault && areControlsVisible;
 
   const [showMeta, handleShowMeta, handleHideMeta, toggleShowMeta] =
     useBooleanState(!preferCollapsed);
@@ -106,9 +106,9 @@ function ProtectedAttachmentsPlugin({
       {typeof attachment === 'object' ? (
         <AttachmentViewer
           attachment={attachment}
-          onToggleSidebar={toggleShowMeta}
           related={related}
           showMeta={showMeta}
+          onToggleSidebar={toggleShowMeta}
           onViewRecord={undefined}
         />
       ) : isReadOnly ? (
