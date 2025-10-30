@@ -23,7 +23,6 @@ import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { Row } from './helpers';
 import { checkMoveViolatesEnforced } from './helpers';
 import {
-  expandSynonymPrefItemsByTable,
   getSynonymPreferenceForTree,
 } from '../DataModel/treeBusinessRules';
 
