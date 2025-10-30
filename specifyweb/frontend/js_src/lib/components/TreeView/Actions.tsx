@@ -77,14 +77,6 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
 
   React.useEffect(() => {
     let isMounted = true;
-    if (
-      (expandSynonymPrefItemsByTable[tableName] ?? []).length === 0
-    ) {
-      setDoExpandSynonymActionsPref(false);
-      return () => {
-        isMounted = false;
-      };
-    }
 
     const update = (): void => {
       getSynonymPreferenceForTree(tableName)
