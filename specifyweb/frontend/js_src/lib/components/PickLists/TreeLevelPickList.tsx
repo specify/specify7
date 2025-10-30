@@ -110,9 +110,16 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     undefined
   );
 
+  const treeResource = React.useMemo(
+    () =>
+      props.resource === undefined ? undefined : toTreeTable(props.resource),
+    [props.resource]
+  );
+  const definitionItemValue = treeResource?.get('definitionItem');
+
   React.useEffect(() => {
     if (props.resource === undefined) return undefined;
-    const resource = toTreeTable(props.resource);
+    const resource = treeResource;
     if (
       resource === undefined ||
       !hasTreeAccess(resource.specifyTable.name, 'read')
@@ -161,9 +168,9 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
   }, [props.resource, props.defaultValue]);
 
   React.useEffect(() => {
-    if (props.resource === undefined || items === undefined) return undefined;
+    if (treeResource === undefined || items === undefined) return undefined;
 
-    const resource = toTreeTable(props.resource);
+    const resource = treeResource;
     if (resource === undefined) return undefined;
 
     const definitionItem = resource.get('definitionItem');
@@ -208,7 +215,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     }
 
     return undefined;
-  }, [items, props.resource, props.defaultValue]);
+  }, [items, treeResource, props.defaultValue, definitionItemValue]);
 
   return (
     <PickListComboBox
