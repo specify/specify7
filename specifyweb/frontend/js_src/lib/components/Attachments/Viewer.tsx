@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
+import { attachmentsText } from '../../localization/attachments';
 import { notificationsText } from '../../localization/notifications';
 import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
@@ -36,11 +37,13 @@ export function AttachmentViewer({
   attachment,
   related: [related, setRelated],
   showMeta = true,
+  onToggleSidebar,
   onViewRecord: handleViewRecord,
 }: {
   readonly attachment: SpecifyResource<Attachment>;
   readonly related: GetSet<SpecifyResource<AnySchema> | undefined>;
   readonly showMeta?: boolean;
+  readonly onToggleSidebar?: (() => void) | undefined;
   readonly onViewRecord:
     | ((table: SpecifyTable, recordId: number) => void)
     | undefined;
@@ -108,6 +111,9 @@ export function AttachmentViewer({
   const Component = typeof originalUrl === 'string' ? Link.Info : Button.Info;
   const [autoPlay] = userPreferences.use('attachments', 'behavior', 'autoPlay');
   const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
+  const isSidebarExpanded = showMeta || attachment.isNew();
+  const canToggleSidebar =
+    typeof onToggleSidebar === 'function' && !attachment.isNew();
   /*
    * Tiff files cannot be shown by chrome or firefox,
    * so fallback to the thumbnail regardless of user preference
@@ -129,6 +135,9 @@ export function AttachmentViewer({
             >
               <ImageTransformContent
                 alt={typeof title === 'string' ? title : ''}
+                canToggleSidebar={canToggleSidebar}
+                isSidebarExpanded={isSidebarExpanded}
+                onToggleSidebar={onToggleSidebar}
                 src={originalUrl}
                 thumbnail={thumbnail?.src}
               />
@@ -180,8 +189,8 @@ export function AttachmentViewer({
          * be displayed as otherwise, default values defined in form definition
          * won't be applied
          */
-        showMeta || attachment.isNew() ? (
-          <div className="flex flex-col gap-2">
+        isSidebarExpanded ? (
+          <div className="flex flex-col gap-0">
             <ResourceView
               dialog={false}
               isDependent={false}
@@ -244,10 +253,16 @@ export function AttachmentViewer({
 
 function ImageTransformContent({
   alt,
+  canToggleSidebar,
+  isSidebarExpanded,
+  onToggleSidebar,
   src,
   thumbnail,
 }: {
   readonly alt: string;
+  readonly canToggleSidebar: boolean;
+  readonly isSidebarExpanded: boolean;
+  readonly onToggleSidebar: (() => void) | undefined;
   readonly src: string;
   readonly thumbnail: string | undefined;
 }): JSX.Element {
@@ -282,13 +297,25 @@ function ImageTransformContent({
         className="absolute right-2 top-2 flex items-center gap-2 rounded bg-black/60 p-1 text-white shadow-lg dark:bg-black/70"
         style={{ pointerEvents: 'auto' }}
       >
-        <ZoomControls />
+        <ZoomControls
+          canToggleSidebar={canToggleSidebar}
+          isSidebarExpanded={isSidebarExpanded}
+          onToggleSidebar={onToggleSidebar}
+        />
       </div>
     </div>
   );
 }
 
-function ZoomControls(): JSX.Element {
+function ZoomControls({
+  canToggleSidebar,
+  isSidebarExpanded,
+  onToggleSidebar,
+}: {
+  readonly canToggleSidebar: boolean;
+  readonly isSidebarExpanded: boolean;
+  readonly onToggleSidebar: (() => void) | undefined;
+}): JSX.Element {
   const { zoomIn, zoomOut, resetTransform } = useControls();
 
   return (
@@ -314,6 +341,17 @@ function ZoomControls(): JSX.Element {
           resetTransform();
         }}
       />
+      {canToggleSidebar && typeof onToggleSidebar === 'function' ? (
+        <Button.Icon
+          icon={isSidebarExpanded ? 'chevronDoubleRight' : 'chevronDoubleLeft'}
+          title={
+            isSidebarExpanded ? attachmentsText.hideForm() : attachmentsText.showForm()
+          }
+          onClick={(): void => {
+            onToggleSidebar();
+          }}
+        />
+      ) : undefined}
     </>
   );
 }

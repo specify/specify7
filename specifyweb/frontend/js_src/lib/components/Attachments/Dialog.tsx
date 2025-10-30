@@ -104,6 +104,7 @@ export function AttachmentDialog({
             attachment={resource}
             related={related}
             showMeta={showMeta}
+            onToggleSidebar={toggleShowMeta}
             onViewRecord={handleViewRecord}
           />
         </Form>
