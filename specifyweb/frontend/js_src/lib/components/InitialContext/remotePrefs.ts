@@ -126,6 +126,12 @@ export const remotePrefsDefinitions = f.store(
         defaultValue: 'MM/YYYY',
         formatters: [formatter.trim, formatter.toUpperCase],
       },
+      'attachment.is_public_default': {
+        description: 'Whether new Attachments are public by default',
+        defaultValue: true,
+        parser: 'java.lang.Boolean',
+        isLegacy: true,
+      },
       'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod': {
         description:
           'Allowed to add children to synopsized Geologic Time Period records',

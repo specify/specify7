@@ -144,7 +144,13 @@ export async function getSynonymPreferenceForTree(
         if (typeof value === 'boolean') return value;
       }
 
-    return collectionPreferences.get('treeManagement', 'synonymized', primaryKey);
+    const defaultCollectionKey = preferenceKeys.find(isCollectionPrefKey);
+    if (defaultCollectionKey !== undefined)
+      return collectionPreferences.get(
+        'treeManagement',
+        'synonymized',
+        defaultCollectionKey
+      );
   } catch {
     /* ignore and try fallbacks */
   }
