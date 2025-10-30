@@ -20,4 +20,8 @@ urlpatterns = [
         re_path(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/(?P<sortfield>\w+)/$', views.tree_view),
         path('repair/', views.repair_tree),
     ])),
+
+    # Create new trees
+    path('create_default_trees/', views.create_default_trees_view),
+    re_path(r'^create_default_trees/status/(?P<task_id>[0-9a-fA-F-]+)/$', views.default_tree_upload_status),
 ]
