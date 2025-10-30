@@ -316,7 +316,21 @@ export function SetupTool({
                 required={required}
                 type="password"
                 value={getFormValue(formData, currentStep, fieldName) ?? ''}
-                onValueChange={(value) => handleChange(fieldName, value)}
+                onValueChange={(value) => {
+                  handleChange(fieldName, value);
+                  if (passwordRepeat !== undefined && formRef.current) {
+                    const target = formRef.current.elements.namedItem(
+                      passwordRepeat.name
+                    ) as HTMLInputElement | null;
+                    if (target) {
+                      target.setCustomValidity(
+                        target.value && target.value === value
+                          ? ''
+                          : userText.passwordsDoNotMatchError()
+                      );
+                    }
+                  }
+                }}
               />
             </Label.Block>
             {passwordRepeat === undefined ? undefined : (
@@ -449,10 +463,12 @@ export function SetupTool({
             </Container.Center>
             {setupError === undefined ? undefined : (
               <Container.Center className="p-3 shadow-md max-w-lg">
-                <span className="text-red-500">{dialogIcons.warning}</span>
-                <H3 className="text-xl font-semibold mb-4">
-                  {setupToolText.setupError()}
-                </H3>
+                <div className="flex items-center justify-start gap-3 w-full">
+                  <span className="text-red-500">{dialogIcons.warning}</span>
+                  <H3 className="text-xl font-semibold m-0 leading-none">
+                    {setupToolText.setupError()}
+                  </H3>
+                </div>
                 <p className="text-md mb-4">{localized(setupError)}</p>
               </Container.Center>
             )}
