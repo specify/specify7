@@ -26,7 +26,7 @@ export const setupToolText = createDictionary({
   },
 
   setupError: {
-    'en-us': 'An error occurred during the last setup attempt.'
+    'en-us': 'An error occurred during the last setup attempt.',
   },
 
   institution: {
