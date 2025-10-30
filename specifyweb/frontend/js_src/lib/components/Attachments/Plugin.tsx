@@ -70,6 +70,11 @@ function ProtectedAttachmentsPlugin({
   const related = useTriggerState(
     resource?.specifyTable.name === 'Attachment' ? undefined : resource
   );
+  const [showMeta, handleShowMeta, , toggleShowMeta] = useBooleanState(true);
+
+  React.useEffect(() => {
+    if (typeof attachment === 'object') handleShowMeta();
+  }, [attachment, handleShowMeta]);
   return attachment === undefined ? (
     <AttachmentPluginSkeleton />
   ) : (
@@ -81,7 +86,9 @@ function ProtectedAttachmentsPlugin({
       {typeof attachment === 'object' ? (
         <AttachmentViewer
           attachment={attachment}
+          onToggleSidebar={toggleShowMeta}
           related={related}
+          showMeta={showMeta}
           onViewRecord={undefined}
         />
       ) : isReadOnly ? (
