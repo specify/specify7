@@ -294,7 +294,7 @@ function ImageTransformContent({
         />
       </TransformComponent>
       <div
-        className="absolute right-2 top-2 flex items-center gap-2 rounded bg-black/60 p-1 text-white shadow-lg dark:bg-black/70"
+        className="absolute right-2 top-2 flex items-center gap-2 rounded bg-white/60 p-1 text-white shadow-lg dark:bg-black/70"
         style={{ pointerEvents: 'auto' }}
       >
         <ZoomControls
