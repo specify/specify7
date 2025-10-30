@@ -3,6 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { setupToolText } from '../../localization/setupTool';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
@@ -13,6 +14,7 @@ import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label, Select } from '../Atoms/Form';
 import { dialogIcons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import type { SetupProgress, SetupResources } from '../Login';
@@ -20,8 +22,6 @@ import { loadingBar } from '../Molecules';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
 import type { FieldConfig, ResourceConfig } from './setupResources';
 import { FIELD_MAX_LENGTH, resources } from './setupResources';
-import { headerText } from '../../localization/header';
-import { Link } from '../Atoms/Link';
 
 type ResourceFormData = Record<string, any>;
 
@@ -422,7 +422,7 @@ export function SetupTool({
                     {resources[currentStep].label}
                   </H3>
                   {resources[currentStep].documentationUrl !== undefined && (
-                    <Link.NewTab href={resources[currentStep].documentationUrl as string}>
+                    <Link.NewTab href={resources[currentStep].documentationUrl!}>
                       {headerText.documentation()}
                     </Link.NewTab>
                   )}
