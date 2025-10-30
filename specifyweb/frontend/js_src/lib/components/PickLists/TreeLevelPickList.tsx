@@ -79,29 +79,6 @@ const ranksToPicklistItems = (
     title: (rank.title?.length ?? 0) === 0 ? rank.name : rank.title!,
   }));
 
-const getDefinitionItemUri = (
-  definitionItem:
-    SerializedResource<TreeDefItem<AnyTree>> | SpecifyResource<TreeDefItem<AnyTree>> | string | null | undefined
-): string | undefined => {
-  if (typeof definitionItem === 'string') return definitionItem;
-  if (definitionItem !== null && typeof definitionItem === 'object') {
-    const specifyResource = definitionItem as SpecifyResource<
-      TreeDefItem<AnyTree>
-    >;
-    if (typeof specifyResource.get === 'function') {
-      const resourceUri = specifyResource.get('resource_uri');
-      if (typeof resourceUri === 'string') return resourceUri;
-    }
-    const serialized = definitionItem as Partial<
-      SerializedResource<TreeDefItem<AnyTree>>
-    >;
-    if (typeof serialized.resource_uri === 'string') {
-      return serialized.resource_uri;
-    }
-  }
-  return undefined;
-};
-
 /**
  * Pick list to choose a tree rank for a tree node
  */
@@ -110,16 +87,9 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     undefined
   );
 
-  const treeResource = React.useMemo(
-    () =>
-      props.resource === undefined ? undefined : toTreeTable(props.resource),
-    [props.resource]
-  );
-  const definitionItemValue = treeResource?.get('definitionItem');
-
   React.useEffect(() => {
     if (props.resource === undefined) return undefined;
-    const resource = treeResource;
+    const resource = toTreeTable(props.resource);
     if (
       resource === undefined ||
       !hasTreeAccess(resource.specifyTable.name, 'read')
@@ -168,54 +138,31 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
   }, [props.resource, props.defaultValue]);
 
   React.useEffect(() => {
-    if (treeResource === undefined || items === undefined) return undefined;
+    if (props.resource === undefined) return undefined;
+    const resource = toTreeTable(props.resource);
+    const definitionItem = resource?.get('definitionItem');
 
-    const resource = treeResource;
-    if (resource === undefined) return undefined;
+    const newDefinitionItem =
+      props.defaultValue ?? items?.slice(-1)[0]?.value ?? '';
 
-    const definitionItem = resource.get('definitionItem');
-    const definitionItemUri = getDefinitionItemUri(definitionItem);
-    const itemValues = items.map(({ value }: PickListItemSimple) => value);
-    const hasDefinitionItem =
-      typeof definitionItemUri === 'string' &&
-      itemValues.includes(definitionItemUri);
+    const isDifferentDefinitionItem =
+      newDefinitionItem !== (definitionItem ?? '');
 
-    if (hasDefinitionItem) {
-      // Normalise stored value so business rules don't see an object vs string mismatch
-      if (typeof definitionItem !== 'string') {
-        resource.set('definitionItem', definitionItemUri);
-      }
-      resource.businessRuleManager?.checkField('definitionItem');
-      resource.businessRuleManager?.checkField('parent');
-      return undefined;
-    }
-
-    const defaultDefinitionItem =
-      typeof props.defaultValue === 'string' && props.defaultValue.length > 0
-        ? items.find(
-            ({ value, title }: PickListItemSimple) =>
-              value === props.defaultValue || title === props.defaultValue
-          )?.value ?? props.defaultValue
-        : undefined;
-
-    const fallbackDefinitionItem =
-      defaultDefinitionItem ?? itemValues.at(-1);
-
-    const hasUserChangedDefinitionItem = Object.keys(
-      resource.changed ?? {}
-    ).includes('definitionitem');
+    const invalidDefinitionItem =
+      typeof definitionItem !== 'string' ||
+      (!(items?.map(({ value }) => value).includes(definitionItem) ?? true) &&
+        !Object.keys(resource?.changed ?? {}).includes('definitionitem'));
 
     if (
-      typeof fallbackDefinitionItem === 'string' &&
-      !hasUserChangedDefinitionItem
+      isDifferentDefinitionItem &&
+      (items !== undefined || typeof resource?.get('parent') !== 'string') &&
+      invalidDefinitionItem
     ) {
-      resource.set('definitionItem', fallbackDefinitionItem);
-      resource.businessRuleManager?.checkField('definitionItem');
-      resource.businessRuleManager?.checkField('parent');
+      resource?.set('definitionItem', newDefinitionItem);
+      return void resource?.businessRuleManager?.checkField('parent');
     }
-
     return undefined;
-  }, [items, treeResource, props.defaultValue, definitionItemValue]);
+  }, [items]);
 
   return (
     <PickListComboBox

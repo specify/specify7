@@ -159,10 +159,13 @@ export function PickListComboBox({
 
   const isReadOnly = React.useContext(ReadOnlyContext);
 
+  const isTreeLevelComboBox = pickListName === '_treeLevelComboBox';
   const isSpecialByPrefix =
     typeof pickListName === 'string' && pickListName.startsWith('_');
   const isSpecialPicklist =
-    isDisabled || isSpecialByPrefix || pickList?.get?.('readOnly') === true;
+    isDisabled ||
+    (isSpecialByPrefix && !isTreeLevelComboBox) ||
+    pickList?.get?.('readOnly') === true;
 
   return (
     <>
