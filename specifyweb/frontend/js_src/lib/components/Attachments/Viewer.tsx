@@ -264,7 +264,7 @@ function ImageTransformContent({
 
   return (
     <div
-      className="flex h-full w-full flex-col items-center justify-center gap-4"
+      className="relative flex h-full w-full items-center justify-center"
       style={{ '--transition-duration': 0 } as React.CSSProperties}
     >
       <TransformComponent
@@ -278,7 +278,10 @@ function ImageTransformContent({
           onError={handleError}
         />
       </TransformComponent>
-      <div className="flex flex-wrap items-center justify-center gap-2">
+      <div
+        className="absolute right-2 top-2 flex items-center gap-2 rounded bg-black/60 p-1 text-white shadow-lg dark:bg-black/70"
+        style={{ pointerEvents: 'auto' }}
+      >
         <ZoomControls />
       </div>
     </div>
