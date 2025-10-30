@@ -625,7 +625,11 @@ def validate_tree_numbering(table):
         f"found {not_nested_count} nodenumbers not nested by parent"
 
 def path_expr(table, depth):
-    return CONCAT([ID(table, i) for i in reversed(list(range(depth)))], ',')
+    # Build a path from root→leaf with zero-padded IDs so lexical order == numeric order.
+    # Up to 12 digits is handled
+    return "concat_ws(',', {})".format(
+        ", ".join([f"LPAD(t{i}.{table}id, 12, '0')" for i in reversed(range(depth))])
+    )
 
 def print_paths(table, depth):
     cursor = connection.cursor()
