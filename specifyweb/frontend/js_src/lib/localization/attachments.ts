@@ -428,6 +428,56 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Сховати форму',
     'pt-br': 'Ocultar formulário',
   },
+  collapseFormByDefault: {
+    'en-us': 'Collapse form by default',
+    'de-ch': 'Formular standardmäßig einklappen',
+    'es-es': 'Contraer el formulario de forma predeterminada',
+    'fr-fr': 'Réduire le formulaire par défaut',
+    'ru-ru': 'Сворачивать форму по умолчанию',
+    'uk-ua': 'Згортати форму за замовчуванням',
+    'pt-br': 'Recolher formulário por padrão',
+  },
+  collapseFormByDefaultDescription: {
+    'en-us':
+      'Whether or not to collapse the attachment form by default when viewing existing attachments. If attachment controls are hidden, this setting has no effect.',
+    'de-ch':
+      'Ob das Anhangsformular standardmäßig eingeklappt werden soll oder nicht, wenn vorhandene Anhänge angezeigt werden.',
+    'es-es':
+      'Indica si se debe contraer o no el formulario de adjuntos de forma predeterminada al ver los adjuntos existentes.',
+    'fr-fr':
+      "Indique si le formulaire de pièce jointe doit être réduit par défaut lors de l'affichage des pièces jointes existantes.",
+    'ru-ru':
+      'Сворачивать или не сворачивать форму вложения по умолчанию при просмотре существующих вложений.',
+    'uk-ua':
+      'Згортати чи не згортати форму вкладення за замовчуванням під час перегляду існуючих вкладень.',
+    'pt-br':
+      'Se deve ou não recolher o formulário de anexos por padrão ao visualizar anexos existentes.',
+  },
+  showControls: {
+    'en-us': 'Show attachment controls',
+    'de-ch': 'Anhangssteuerungen anzeigen',
+    'es-es': 'Mostrar controles de adjuntos',
+    'fr-fr': 'Afficher les contrôles des pièces jointes',
+    'ru-ru': 'Показывать элементы управления вложениями',
+    'uk-ua': 'Показувати елементи керування вкладеннями',
+    'pt-br': 'Mostrar controles de anexos',
+  },
+  showControlsDescription: {
+    'en-us':
+      'Show or hide the attachment zoom in, zoom out, reset, and hide/show form buttons when viewing an attachment.',
+    'de-ch':
+      'Zeigen oder verbergen Sie die Schaltflächen Vergrößern, Verkleinern, Zurücksetzen und Formular ein-/ausblenden im Anhangsbetrachter.',
+    'es-es':
+      'Mostrar u ocultar los botones de acercar, alejar, restablecer y ocultar/mostrar formulario en el visor de archivos adjuntos.',
+    'fr-fr':
+      "Afficher ou masquer les boutons d'agrandissement, de réduction, de réinitialisation et d'affichage/masquage du formulaire dans le visualiseur de pièces jointes.",
+    'ru-ru':
+      'Показать или скрыть кнопки увеличения, уменьшения, сброса и скрытия/показа формы в просмотрщике вложений.',
+    'uk-ua':
+      'Показати або приховати кнопки збільшення, зменшення, скидання та приховування/показу форми у переглядачі вкладень.',
+    'pt-br':
+      'Mostrar ou ocultar os botões de zoom, zoom out, reset e ocultar/mostrar formulário no visualizador de anexos.',
+  },
   multipleMatches: {
     'en-us': 'Multiple matches',
     'de-ch': 'Mehrere Übereinstimmungen',
