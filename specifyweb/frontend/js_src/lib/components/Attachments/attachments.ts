@@ -301,6 +301,8 @@ export async function uploadFile(
 }
 
 async function getAttachmentPublicDefault(): Promise<boolean> {
+  const collectionPrefKey =
+    'attachment.is_public_default' as const;
   const collectionId = schema.domainLevelIds.collection;
   try {
     const collectionPreferences = await ensureCollectionPreferencesLoaded();
@@ -316,9 +318,9 @@ async function getAttachmentPublicDefault(): Promise<boolean> {
     );
   } catch {
     try {
-      return getCollectionPref('attachment.is_public_default', collectionId);
+      return getCollectionPref(collectionPrefKey, collectionId);
     } catch {
-      return getPref('attachment.is_public_default');
+      return getPref(collectionPrefKey);
     }
   }
 }

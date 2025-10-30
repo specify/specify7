@@ -33,6 +33,17 @@ export const expandSynonymPrefItemsByTable: Record<
   TectonicUnit: ['sp7.allow_adding_child_to_synonymized_parent.TectonicUnit'],
 };
 
+const isCollectionPrefKey = (
+  key: string
+): key is keyof typeof collectionPrefsDefinitions =>
+  Object.prototype.hasOwnProperty.call(collectionPrefsDefinitions, key);
+
+const isRemotePrefKey = (
+  definitions: ReturnType<typeof remotePrefsDefinitions>,
+  key: string
+): key is keyof typeof definitions =>
+  Object.prototype.hasOwnProperty.call(definitions, key);
+
 // eslint-disable-next-line unicorn/prevent-abbreviations
 export type TreeDefItem<TREE extends AnyTree> =
   Tables[`${TREE['tableName']}TreeDefItem`];
@@ -139,21 +150,18 @@ export async function getSynonymPreferenceForTree(
   }
 
   for (const key of preferenceKeys)
-    if (Object.prototype.hasOwnProperty.call(collectionPrefsDefinitions, key))
+    if (isCollectionPrefKey(key))
       try {
-        return getCollectionPref(
-          key as keyof typeof collectionPrefsDefinitions,
-          collectionId
-        );
+        return getCollectionPref(key, collectionId);
       } catch {
         /* continue */
       }
 
   const remoteDefinitions = remotePrefsDefinitions();
   for (const key of preferenceKeys)
-    if (Object.prototype.hasOwnProperty.call(remoteDefinitions, key))
+    if (isRemotePrefKey(remoteDefinitions, key))
       try {
-        return getPref(key as keyof typeof remoteDefinitions);
+        return getPref(key);
       } catch {
         /* continue */
       }
