@@ -847,12 +847,12 @@ export const commonText = createDictionary({
     'uk-ua': 'Збільшити масштаб',
   },
   unzoom: {
-    'en-us': 'Unzoom',
-    'de-ch': 'Zoomen aufheben',
-    'es-es': 'Desenfocar',
-    'fr-fr': 'Dézoom',
-    'pt-br': 'Desacelerar',
-    'ru-ru': 'Убрать масштаб',
+    'en-us': 'Zoom Out',
+    'fr-fr': 'Dézoomer',
+    'de-ch': 'Rauszoomen',
+    'es-es': 'Disminuir el zoom',
+    'pt-br': 'Reduzir zoom',
+    'ru-ru': 'Уменьшить масштаб',
     'uk-ua': 'Зменшити масштаб',
   },
 } as const);
