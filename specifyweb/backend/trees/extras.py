@@ -528,10 +528,10 @@ def fullname_expr(depth, reverse):
     return IF(IN_NAME(0), fullname, NAME(0))
 
 def parent_joins(table, depth):
-    return '\n'.join([
-        "left join {table} t{1} on t{0}.parentid = t{1}.{table}id".format(j-1, j, table=table)
+    return "\n".join(
+        f"LEFT JOIN {table} t{j} ON t{j-1}.parentid = t{j}.{table}id"
         for j in range(1, depth)
-    ])
+    )
 
 def definition_joins(table, depth):
     return '\n'.join([
@@ -625,7 +625,9 @@ def validate_tree_numbering(table):
         f"found {not_nested_count} nodenumbers not nested by parent"
 
 def path_expr(table, depth):
-    return CONCAT([ID(table, i) for i in reversed(list(range(depth)))], ',')
+    # Highest ancestor first → leaf; LPAD keeps lexical == numeric
+    parts = ", ".join([f"LPAD(t{i}.{table}id, 12, '0')" for i in reversed(range(depth))])
+    return f"CONCAT_WS(',', {parts})"
 
 def print_paths(table, depth):
     cursor = connection.cursor()
@@ -639,7 +641,7 @@ def print_paths(table, depth):
         print(r)
     print(sql)
 
-def renumber_tree(table):
+def renumber_tree_old(table):
     logger.info('renumbering tree')
     cursor = connection.cursor()
 
@@ -742,3 +744,85 @@ def is_treedef(obj):
     return issubclass(obj.__class__, Tree) or bool(
         re.search(r"treedef'>$", str(obj.__class__), re.IGNORECASE)
     )
+
+def renumber_tree(table):
+    logger.info("renumbering tree (fast fixed-depth enumeration, synonyms INCLUDED)")
+    cursor = connection.cursor()
+
+    # Ensure rankid is synced from treedefitem
+    sql_sync = (
+        f"UPDATE {table} t "
+        f"JOIN {table}treedefitem d ON t.{table}treedefitemid = d.{table}treedefitemid "
+        f"SET t.rankid = d.rankid"
+    )
+    logger.debug("\n=== Executing SQL (sync rankid) ===\n", sql_sync, "\n")
+    cursor.execute(sql_sync)
+
+    # Diagnostic
+    sql_diag = (
+        f"SELECT p.{table}id, p.fullname, t.{table}id, t.fullname, tdef.title "
+        f"FROM {table} t "
+        f"JOIN {table} p ON t.parentid = p.{table}id "
+        f"JOIN {table}treedefitem tdef ON t.{table}treedefitemid = tdef.{table}treedefitemid "
+        f"WHERE t.rankid <= p.rankid AND t.acceptedid IS NULL"
+    )
+    logger.debug("\n=== Executing SQL (diagnostic: bad ranks) ===\n", sql_diag, "\n")
+    cursor.execute(sql_diag)
+    if cursor.fetchall():
+        logger.warning("Bad Tree Structure: some nodes have rank <= parent (synonyms excluded).")
+
+    # Depth across ALL nodes
+    sql_depth = f"SELECT COUNT(DISTINCT rankid) FROM {table}"
+    logger.debug("\n=== Executing SQL (compute depth) ===\n", sql_depth, "\n")
+    cursor.execute(sql_depth)
+    depth = cursor.fetchone()[0] or 1
+
+    # Preorder renumber ALL rows
+    sql_init_rn = "SET @rn := 0"
+    logger.debug("\n=== Executing SQL (init rownum) ===\n", sql_init_rn, "\n")
+    cursor.execute(sql_init_rn)
+
+    sql_preorder = (
+        f"UPDATE {table} t\n"
+        f"JOIN (\n"
+        f"  SELECT (@rn := @rn + 1) AS nn, p.id AS id\n"
+        f"  FROM (\n"
+        f"    SELECT t0.{table}id AS id, {path_expr(table, depth)} AS path\n"
+        f"    FROM {table} t0\n"
+        f"{parent_joins(table, depth)}\n"
+        f"    /* include ALL nodes (synonyms too) */\n"
+        f"    ORDER BY path\n"
+        f"  ) AS p\n"
+        f") AS r ON t.{table}id = r.id\n"
+        f"SET t.nodenumber = r.nn,\n"
+        f"    t.highestchildnodenumber = r.nn"
+    )
+    logger.debug("\n=== Executing SQL (preorder renumber) ===\n", sql_preorder, "\n")
+    cursor.execute(sql_preorder)
+
+    # highestchildnodenumber per-rank on ALL nodes
+    sql_ranks = f"SELECT DISTINCT rankid FROM {table} ORDER BY rankid DESC"
+    logger.debug("\n=== Executing SQL (get ranks) ===\n", sql_ranks, "\n")
+    cursor.execute(sql_ranks)
+    ranks = [r[0] for r in cursor.fetchall()]
+
+    for rank in ranks[1:]:
+        sql_hcnn = (
+            f"UPDATE {table} t\n"
+            f"JOIN (\n"
+            f"  SELECT parentid, MAX(highestchildnodenumber) AS hcnn\n"
+            f"  FROM {table}\n"
+            f"  WHERE rankid > %(rank)s\n"
+            f"  GROUP BY parentid\n"
+            f") AS sub ON sub.parentid = t.{table}id\n"
+            f"SET t.highestchildnodenumber = sub.hcnn\n"
+            f"WHERE t.rankid = %(rank)s"
+        )
+        logger.debug("\n=== Executing SQL (update hcnn for rank) ===\n", sql_hcnn, {"rank": rank}, "\n")
+        cursor.execute(sql_hcnn, {"rank": rank})
+
+    # Clear task semaphores
+    from specifyweb.specify.models import datamodel, Sptasksemaphore
+    tree_model = datamodel.get_table(table)
+    tasknames = [name.format(tree_model.name) for name in ("UpdateNodes{}", "BadNodes{}")]
+    Sptasksemaphore.objects.filter(taskname__in=tasknames).update(islocked=False)
