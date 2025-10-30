@@ -19,24 +19,42 @@ import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { SplashScreen } from '../Core/SplashScreen';
+import { LoadingScreen } from '../Molecules/Dialog';
+import { SetupTool } from '../SetupTool';
 import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
 import type { OicProvider } from './OicLogin';
 import { OicLogin } from './OicLogin';
 
+export type SetupResources = {
+  readonly institution: boolean;
+  readonly storageTreeDef: boolean;
+  readonly globalGeographyTreeDef: boolean;
+  readonly division: boolean;
+  readonly discipline: boolean;
+  readonly geographyTreeDef: boolean;
+  readonly taxonTreeDef: boolean;
+  readonly collection: boolean;
+  readonly specifyUser: boolean;
+}
+
+export type SetupProgress = {
+  readonly resources: SetupResources;
+  readonly busy: boolean;
+  readonly error?: string;
+};
+
 export function Login(): JSX.Element {
-  const [isNewUser] = useAsyncState(
+  const [setupProgress, setSetupProgress] = useAsyncState(
     React.useCallback(
       async () =>
-        ajax<boolean>(`/api/specify/is_new_user/`, {
+        ajax<SetupProgress>(`/setup_tool/setup_progress/`, {
           method: 'GET',
-          headers: {
-            Accept: 'application/json',
-          },
+          headers: { Accept: 'application/json' },
           errorMode: 'silent',
         })
           .then(({ data }) => data)
           .catch((error) => {
-            console.error('Failed to fetch isNewUser:', error);
+            console.error('Failed to fetch setup progress:', error);
             return undefined;
           }),
       []
@@ -48,9 +66,11 @@ export function Login(): JSX.Element {
     const nextUrl = parseDjangoDump<string>('next-url') ?? '/specify/';
     const providers = parseDjangoDump<RA<OicProvider>>('providers') ?? [];
 
-    if (isNewUser === true || isNewUser === undefined) {
-      // Display here the new setup pages
-      return <p>Welcome! No institutions are available at the moment.</p>;
+    console.log(setupProgress);
+    if (setupProgress === undefined) return <LoadingScreen />;
+
+    if (setupProgress.busy || (setupProgress.hasOwnProperty('resources') && Object.values(setupProgress.resources).includes(false))) {
+      return <SetupTool setSetupProgress={setSetupProgress} setupProgress={setupProgress}/>;
     }
 
     return providers.length > 0 ? (
@@ -85,7 +105,7 @@ export function Login(): JSX.Element {
         }
       />
     );
-  }, [isNewUser]);
+  }, [setupProgress]);
 }
 
 const nextDestination = '/accounts/choose_collection/?next=';
