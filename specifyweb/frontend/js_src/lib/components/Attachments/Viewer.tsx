@@ -36,7 +36,7 @@ import { Thumbnail } from './Preview';
 export function AttachmentViewer({
   attachment,
   related: [related, setRelated],
-  showMeta = true,
+  showMeta,
   onToggleSidebar,
   onViewRecord: handleViewRecord,
 }: {
@@ -110,8 +110,21 @@ export function AttachmentViewer({
 
   const Component = typeof originalUrl === 'string' ? Link.Info : Button.Info;
   const [autoPlay] = userPreferences.use('attachments', 'behavior', 'autoPlay');
+  const [collapseFormByDefault] = userPreferences.use(
+    'attachments',
+    'behavior',
+    'collapseFormByDefault'
+  );
+  const [controlsVisiblePreference] = userPreferences.use(
+    'attachments',
+    'behavior',
+    'showControls'
+  );
   const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
-  const isSidebarExpanded = showMeta || attachment.isNew();
+  const areControlsVisible = controlsVisiblePreference !== false;
+  const defaultCollapsed = collapseFormByDefault === true && areControlsVisible;
+  const shouldShowMeta = (showMeta ?? !defaultCollapsed) === true;
+  const isSidebarExpanded = shouldShowMeta || attachment.isNew();
   const canToggleSidebar =
     typeof onToggleSidebar === 'function' && !attachment.isNew();
   /*
@@ -140,6 +153,7 @@ export function AttachmentViewer({
                   canToggleSidebar={canToggleSidebar}
                   isSidebarExpanded={isSidebarExpanded}
                   onToggleSidebar={onToggleSidebar}
+                  showControls={areControlsVisible}
                   src={originalUrl}
                   thumbnail={thumbnail?.src}
                 />
@@ -259,6 +273,7 @@ function ImageTransformContent({
   canToggleSidebar,
   isSidebarExpanded,
   onToggleSidebar,
+  showControls,
   src,
   thumbnail,
 }: {
@@ -266,6 +281,7 @@ function ImageTransformContent({
   readonly canToggleSidebar: boolean;
   readonly isSidebarExpanded: boolean;
   readonly onToggleSidebar: (() => void) | undefined;
+  readonly showControls: boolean;
   readonly src: string;
   readonly thumbnail: string | undefined;
 }): JSX.Element {
@@ -302,16 +318,18 @@ function ImageTransformContent({
           onError={handleError}
         />
       </TransformComponent>
-      <div
-        className="absolute right-2 top-2 flex items-center gap-2 rounded bg-white/60 p-1 text-white shadow-lg dark:bg-black/70"
-        style={{ pointerEvents: 'auto' }}
-      >
-        <ZoomControls
-          canToggleSidebar={canToggleSidebar}
-          isSidebarExpanded={isSidebarExpanded}
-          onToggleSidebar={onToggleSidebar}
-        />
-      </div>
+      {showControls ? (
+        <div
+          className="absolute right-2 top-2 flex items-center gap-2 rounded bg-white/60 p-1 text-white shadow-md backdrop-blur-sm dark:bg-black/60"
+          style={{ pointerEvents: 'auto' }}
+        >
+          <ZoomControls
+            canToggleSidebar={canToggleSidebar}
+            isSidebarExpanded={isSidebarExpanded}
+            onToggleSidebar={onToggleSidebar}
+          />
+        </div>
+      ) : undefined}
     </div>
   );
 }
