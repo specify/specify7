@@ -67,9 +67,9 @@ exports[`ChronoChart dialog open and close 1`] = `
         class="flex gap-2 mt-4"
       >
         <button
-          aria-label="Zoom"
+          aria-label="Zoom In"
           class="icon link rounded"
-          title="Zoom"
+          title="Zoom In"
           type="button"
         >
           <svg
@@ -80,16 +80,19 @@ exports[`ChronoChart dialog open and close 1`] = `
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
+              d="M5 8a1 1 0 011-1h1V6a1 1 0 012 0v1h1a1 1 0 110 2H9v1a1 1 0 11-2 0V9H6a1 1 0 01-1-1z"
+            />
+            <path
               clip-rule="evenodd"
-              d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+              d="M2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8zm6-4a4 4 0 100 8 4 4 0 000-8z"
               fill-rule="evenodd"
             />
           </svg>
         </button>
         <button
-          aria-label="Unzoom"
+          aria-label="Zoom Out"
           class="icon link rounded"
-          title="Unzoom"
+          title="Zoom Out"
           type="button"
         >
           <svg
@@ -101,7 +104,12 @@ exports[`ChronoChart dialog open and close 1`] = `
           >
             <path
               clip-rule="evenodd"
-              d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+              fill-rule="evenodd"
+            />
+            <path
+              clip-rule="evenodd"
+              d="M5 8a1 1 0 011-1h4a1 1 0 110 2H6a1 1 0 01-1-1z"
               fill-rule="evenodd"
             />
           </svg>
