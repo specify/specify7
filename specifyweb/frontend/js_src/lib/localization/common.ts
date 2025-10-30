@@ -838,12 +838,12 @@ export const commonText = createDictionary({
     'pt-br': 'Selecione os arquivos ou arraste-os aqui',
   },
   zoom: {
-    'en-us': 'Zoom',
-    'fr-fr': 'Zoom',
-    'de-ch': 'Zoom',
-    'es-es': 'Ampliar',
-    'pt-br': 'Ampliação',
-    'ru-ru': 'Увеличить',
+    'en-us': 'Zoom In',
+    'fr-fr': 'Zoomer',
+    'de-ch': 'Hineinzoomen',
+    'es-es': 'Acercar',
+    'pt-br': 'Aumentar zoom',
+    'ru-ru': 'Увеличить масштаб',
     'uk-ua': 'Збільшити масштаб',
   },
   unzoom: {
