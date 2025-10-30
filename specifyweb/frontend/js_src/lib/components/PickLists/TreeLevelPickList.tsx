@@ -81,11 +81,7 @@ const ranksToPicklistItems = (
 
 const getDefinitionItemUri = (
   definitionItem:
-    | string
-    | null
-    | undefined
-    | SerializedResource<TreeDefItem<AnyTree>>
-    | SpecifyResource<TreeDefItem<AnyTree>>
+    SerializedResource<TreeDefItem<AnyTree>> | SpecifyResource<TreeDefItem<AnyTree>> | string | null | undefined
 ): string | undefined => {
   if (typeof definitionItem === 'string') return definitionItem;
   if (definitionItem !== null && typeof definitionItem === 'object') {
@@ -196,7 +192,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
         : undefined;
 
     const fallbackDefinitionItem =
-      defaultDefinitionItem ?? itemValues[itemValues.length - 1];
+      defaultDefinitionItem ?? itemValues.at(-1);
 
     const hasUserChangedDefinitionItem = Object.keys(
       resource.changed ?? {}
