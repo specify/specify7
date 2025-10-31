@@ -745,66 +745,61 @@ def is_treedef(obj):
         re.search(r"treedef'>$", str(obj.__class__), re.IGNORECASE)
     )
 
-def renumber_tree(table):
-    logger.info("renumbering tree (fast fixed-depth enumeration, synonyms INCLUDED)")
+def renumber_tree(table: str) -> None:
     cursor = connection.cursor()
+    print(f"[renumber_tree] running for {table}")
 
-    # Ensure rankid is synced from treedefitem
+    cursor.execute("SET SESSION sql_safe_updates = 0") # might be needed for MariaDB 11
+
+    # Sync rankid
     sql_sync = (
         f"UPDATE {table} t "
         f"JOIN {table}treedefitem d ON t.{table}treedefitemid = d.{table}treedefitemid "
         f"SET t.rankid = d.rankid"
     )
-    logger.debug("\n=== Executing SQL (sync rankid) ===\n", sql_sync, "\n")
+    print(sql_sync)
     cursor.execute(sql_sync)
 
-    # Diagnostic
-    sql_diag = (
-        f"SELECT p.{table}id, p.fullname, t.{table}id, t.fullname, tdef.title "
-        f"FROM {table} t "
-        f"JOIN {table} p ON t.parentid = p.{table}id "
-        f"JOIN {table}treedefitem tdef ON t.{table}treedefitemid = tdef.{table}treedefitemid "
-        f"WHERE t.rankid <= p.rankid AND t.acceptedid IS NULL"
-    )
-    logger.debug("\n=== Executing SQL (diagnostic: bad ranks) ===\n", sql_diag, "\n")
-    cursor.execute(sql_diag)
-    if cursor.fetchall():
-        logger.warning("Bad Tree Structure: some nodes have rank <= parent (synonyms excluded).")
-
-    # Depth across ALL nodes
-    sql_depth = f"SELECT COUNT(DISTINCT rankid) FROM {table}"
-    logger.debug("\n=== Executing SQL (compute depth) ===\n", sql_depth, "\n")
-    cursor.execute(sql_depth)
+    # Compute max logical depth (just to size the LEFT JOIN ladder)
+    cursor.execute(f"SELECT COUNT(DISTINCT rankid) FROM {table}")
     depth = cursor.fetchone()[0] or 1
 
-    # Preorder renumber ALL rows
-    sql_init_rn = "SET @rn := 0"
-    logger.debug("\n=== Executing SQL (init rownum) ===\n", sql_init_rn, "\n")
-    cursor.execute(sql_init_rn)
+    def parent_joins(tbl: str, d: int) -> str:
+        if d <= 1:
+            return ""  # only t0 exists
+        return "\n".join(
+            f"LEFT JOIN {tbl} t{j} ON t{j-1}.parentid = t{j}.{tbl}id"
+            for j in range(1, d)
+        )
 
+    def path_expr(tbl: str, d: int) -> str:
+        # Highest ancestor first, leaf last; LPAD stabilizes lexical order
+        parts = ", ".join([f"LPAD(t{i}.{tbl}id, 12, '0')" for i in reversed(range(d))])
+        return f"CONCAT_WS(',', {parts})"
+
+    # Preorder numbering using ROW_NUMBER()
     sql_preorder = (
         f"UPDATE {table} t\n"
         f"JOIN (\n"
-        f"  SELECT (@rn := @rn + 1) AS nn, p.id AS id\n"
-        f"  FROM (\n"
-        f"    SELECT t0.{table}id AS id, {path_expr(table, depth)} AS path\n"
+        f"  SELECT id, rn FROM (\n"
+        f"    SELECT\n"
+        f"      t0.{table}id AS id,\n"
+        f"      ROW_NUMBER() OVER (ORDER BY {path_expr(table, depth)}, t0.{table}id) AS rn\n"
         f"    FROM {table} t0\n"
         f"{parent_joins(table, depth)}\n"
-        f"    /* include ALL nodes (synonyms too) */\n"
-        f"    ORDER BY path\n"
-        f"  ) AS p\n"
-        f") AS r ON t.{table}id = r.id\n"
-        f"SET t.nodenumber = r.nn,\n"
-        f"    t.highestchildnodenumber = r.nn"
+        f"  ) ordered\n"
+        f") r ON r.id = t.{table}id\n"
+        f"SET t.nodenumber = r.rn,\n"
+        f"    t.highestchildnodenumber = r.rn"
     )
-    logger.debug("\n=== Executing SQL (preorder renumber) ===\n", sql_preorder, "\n")
+    print(sql_preorder)
     cursor.execute(sql_preorder)
 
-    # highestchildnodenumber per-rank on ALL nodes
+    # Compute highestchildnodenumber bottom-up (same logic as before)
     sql_ranks = f"SELECT DISTINCT rankid FROM {table} ORDER BY rankid DESC"
-    logger.debug("\n=== Executing SQL (get ranks) ===\n", sql_ranks, "\n")
+    print(sql_ranks)
     cursor.execute(sql_ranks)
-    ranks = [r[0] for r in cursor.fetchall()]
+    ranks = [row[0] for row in cursor.fetchall()]
 
     for rank in ranks[1:]:
         sql_hcnn = (
@@ -814,11 +809,11 @@ def renumber_tree(table):
             f"  FROM {table}\n"
             f"  WHERE rankid > %(rank)s\n"
             f"  GROUP BY parentid\n"
-            f") AS sub ON sub.parentid = t.{table}id\n"
+            f") sub ON sub.parentid = t.{table}id\n"
             f"SET t.highestchildnodenumber = sub.hcnn\n"
             f"WHERE t.rankid = %(rank)s"
         )
-        logger.debug("\n=== Executing SQL (update hcnn for rank) ===\n", sql_hcnn, {"rank": rank}, "\n")
+        print(sql_hcnn, {"rank": rank})
         cursor.execute(sql_hcnn, {"rank": rank})
 
     # Clear task semaphores
