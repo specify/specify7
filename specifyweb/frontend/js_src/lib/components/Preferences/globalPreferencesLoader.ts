@@ -1,7 +1,10 @@
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { contextUnlockedPromise, foreverFetch } from '../InitialContext';
-import { fetchContext as fetchRemotePrefs, remotePrefs } from '../InitialContext/remotePrefs';
+import {
+  fetchContext as fetchRemotePrefs,
+  remotePrefs,
+} from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
 import { type PartialPreferences } from './BasePreferences';
 import type { globalPreferenceDefinitions } from './GlobalDefinitions';
@@ -59,12 +62,14 @@ function mergeMissingFromRemote(
       if (updatedFormatting.fullDateFormat !== undefined)
         formattingPayload.fullDateFormat = updatedFormatting.fullDateFormat;
       if (updatedFormatting.monthYearDateFormat !== undefined)
-        formattingPayload.monthYearDateFormat = updatedFormatting.monthYearDateFormat;
+        formattingPayload.monthYearDateFormat =
+          updatedFormatting.monthYearDateFormat;
 
       merged = {
         ...merged,
         formatting: {
-          formatting: formattingPayload as GlobalPreferenceValues['formatting']['formatting'],
+          formatting:
+            formattingPayload as GlobalPreferenceValues['formatting']['formatting'],
         },
       };
     }
@@ -98,7 +103,9 @@ export const loadGlobalPreferences = async (): Promise<void> => {
       ? response.headers.get('X-Record-ID')
       : null;
   const parsedResourceId =
-    resourceIdHeader === null ? undefined : Number.parseInt(resourceIdHeader, 10);
+    resourceIdHeader === null
+      ? undefined
+      : Number.parseInt(resourceIdHeader, 10);
   setGlobalPreferencesResourceId(
     Number.isFinite(parsedResourceId) ? parsedResourceId : undefined
   );
@@ -115,7 +122,10 @@ export const loadGlobalPreferences = async (): Promise<void> => {
   );
   setGlobalPreferencesMetadata(metadata);
 
-  const { merged: migratedRaw, changed } = mergeMissingFromRemote(raw, remotePartial);
+  const { merged: migratedRaw, changed } = mergeMissingFromRemote(
+    raw,
+    remotePartial
+  );
 
   if (changed) {
     try {
@@ -133,13 +143,18 @@ export const loadGlobalPreferences = async (): Promise<void> => {
         });
       }
     } catch (error) {
-      console.error('Failed migrating remote preferences into GlobalPreferences', error);
+      console.error(
+        'Failed migrating remote preferences into GlobalPreferences',
+        error
+      );
     }
   } else {
     setGlobalPreferencesMetadata(metadata);
   }
 
   globalPreferences.setRaw(
-    (changed ? migratedRaw : raw) as PartialPreferences<typeof globalPreferenceDefinitions>
+    (changed ? migratedRaw : raw) as PartialPreferences<
+      typeof globalPreferenceDefinitions
+    >
   );
 };

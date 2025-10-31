@@ -11,7 +11,7 @@ describe('globalPreferencesUtils', () => {
     setGlobalPreferenceFallback(DEFAULT_VALUES);
   });
 
-  it('builds partial values from remote preferences map', () => {
+  test('builds partial values from remote preferences map', () => {
     const partial = partialPreferencesFromMap({
       'ui.formatting.scrdateformat': 'MM/dd/yyyy',
       'auditing.do_audits': 'false',
@@ -22,7 +22,7 @@ describe('globalPreferencesUtils', () => {
     expect(partial.attachments).toBeUndefined();
   });
 
-  it('merges partial values with fallback defaults', () => {
+  test('merges partial values with fallback defaults', () => {
     const remotePartial = partialPreferencesFromMap({
       'ui.formatting.scrdateformat': 'MM/dd/yyyy',
     });
@@ -35,7 +35,7 @@ describe('globalPreferencesUtils', () => {
     );
   });
 
-  it('serializes using configured fallback values', () => {
+  test('serializes using configured fallback values', () => {
     const fallback = mergeWithDefaultValues(
       partialPreferencesFromMap({
         'ui.formatting.scrdateformat': 'MM/dd/yyyy',
