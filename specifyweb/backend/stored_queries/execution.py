@@ -34,6 +34,7 @@ from specifyweb.specify.models import Loan, Loanpreparation, Loanreturnpreparati
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.backend.stored_queries.queryfield import fields_from_json, QUREYFIELD_SORT_T
+from specifyweb.backend.stored_queries.synonomy import synonymize_taxon_query
 
 logger = logging.getLogger(__name__)
 
@@ -1015,6 +1016,11 @@ def build_query(
         query = group_by_displayed_fields(query, selected_fields, ignore_cat_num=True)
     elif props.distinct:
         query = group_by_displayed_fields(query, selected_fields)
+    
+    if props.search_synonymy:
+        log_sqlalchemy_query(query.query)
+        synonymized_query = synonymize_taxon_query(query.query)
+        query = query._replace(query=synonymized_query)
 
     internal_predicate = query.get_internal_filters()
     query = query.filter(internal_predicate)

@@ -22,7 +22,7 @@ def get_treedef(collection, tree_name):
             if tree_name == 'Storage' else
             getattr(collection.discipline, tree_name.lower() + "treedef"))
 
-class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache tree_rank_count internal_filters searchSynonymy')):
+class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache tree_rank_count internal_filters')):
 
     def __new__(cls, *args, **kwargs):
         kwargs['join_cache'] = dict()
