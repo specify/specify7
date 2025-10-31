@@ -93,7 +93,10 @@ export const loadGlobalPreferences = async (): Promise<void> => {
   );
 
   await fetchRemotePrefs.catch(() => undefined);
-  const resourceIdHeader = response.headers.get('X-Record-ID');
+  const resourceIdHeader =
+    typeof response === 'object' && 'headers' in response
+      ? response.headers.get('X-Record-ID')
+      : null;
   const parsedResourceId =
     resourceIdHeader === null ? undefined : Number.parseInt(resourceIdHeader, 10);
   setGlobalPreferencesResourceId(

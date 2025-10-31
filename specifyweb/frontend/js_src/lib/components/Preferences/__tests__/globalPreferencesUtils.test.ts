@@ -17,7 +17,7 @@ describe('globalPreferencesUtils', () => {
       'auditing.do_audits': 'false',
     });
 
-    expect(partial.formatting?.formatting?.fullDateFormat).toBe('MM/DD/YYYY');
+    expect(partial.formatting?.formatting?.fullDateFormat).toBe('MM/dd/yyyy');
     expect(partial.auditing?.auditing?.enableAuditLog).toBe(false);
     expect(partial.attachments).toBeUndefined();
   });
@@ -29,7 +29,7 @@ describe('globalPreferencesUtils', () => {
 
     const merged = mergeWithDefaultValues(remotePartial);
 
-    expect(merged.formatting.formatting.fullDateFormat).toBe('MM/DD/YYYY');
+    expect(merged.formatting.formatting.fullDateFormat).toBe('MM/dd/yyyy');
     expect(merged.attachments.attachments.attachmentThumbnailSize).toBe(
       DEFAULT_VALUES.attachments.attachments.attachmentThumbnailSize
     );
@@ -45,7 +45,7 @@ describe('globalPreferencesUtils', () => {
 
     const { data } = serializeGlobalPreferences(undefined, [], { fallback });
 
-    expect(data).toContain('ui.formatting.scrdateformat=MM/DD/YYYY');
+    expect(data).toContain('ui.formatting.scrdateformat=MM/dd/yyyy');
     expect(data).toContain('auditing.do_audits=true');
   });
 });
