@@ -73,7 +73,7 @@ function normalizeFormat(value: string): string {
 
 function parseProperties(data: string): ParsedProperties {
   const lines = data.split(/\r?\n/u);
-  const parsed: readonly PropertyLine[] = [];
+  const parsed: PropertyLine[] = [];
   const map: Record<string, string> = {};
 
   lines.forEach((line) => {

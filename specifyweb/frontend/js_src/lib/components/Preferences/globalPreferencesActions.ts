@@ -39,8 +39,9 @@ export async function saveGlobalPreferences(): Promise<void> {
   );
   const keyValues = globalPreferencesToKeyValue(mergedValues);
 
+  const mutableRemotePrefs = remotePrefs as Record<string, string>;
   Object.entries(keyValues).forEach(([key, value]) => {
-    remotePrefs[key] = value;
+    mutableRemotePrefs[key] = value;
   });
 
   setGlobalPreferenceFallback(mergedValues);

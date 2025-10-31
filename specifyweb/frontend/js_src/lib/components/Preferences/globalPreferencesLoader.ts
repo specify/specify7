@@ -73,7 +73,6 @@ function mergeMissingFromRemote(
   return { merged, changed };
 }
 
-type ResourceResponse = { readonly id: number };
 export const loadGlobalPreferences = async (): Promise<void> => {
   const entryPoint = await contextUnlockedPromise;
   if (entryPoint !== 'main') {
