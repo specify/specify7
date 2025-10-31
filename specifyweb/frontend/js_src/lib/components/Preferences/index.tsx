@@ -31,6 +31,7 @@ import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 import { globalPreferenceDefinitions } from './GlobalDefinitions';
 import { collectionPreferences } from './collectionPreferences';
 import { globalPreferences } from './globalPreferences';
+import { saveGlobalPreferences } from './globalPreferencesActions';
 import { loadGlobalPreferences } from './globalPreferencesLoader';
 import { useDarkMode } from './Hooks';
 import { DefaultPreferenceItemRender } from './Renderers';
@@ -152,8 +153,10 @@ function Preferences({
         className="contents"
         onSubmit={(): void =>
           loading(
-            basePreferences
-              .awaitSynced()
+            (prefType === 'global'
+              ? saveGlobalPreferences()
+              : basePreferences.awaitSynced()
+            )
               .then(() =>
                 needsRestart
                   ? globalThis.location.assign('/specify/')

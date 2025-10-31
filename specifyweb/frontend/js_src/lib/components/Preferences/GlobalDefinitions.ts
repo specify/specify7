@@ -35,7 +35,7 @@ formatting: {
             description: preferencesText.fullDateFormatDescription(),
             requiresReload: false,
             visible: true,
-            defaultValue: 'YYYY-MM-DD',
+            defaultValue: 'yyyy-MM-dd',
             values: FULL_DATE_FORMAT_OPTIONS.map((value) => ({
               value,
               title: localized(value),

@@ -27,10 +27,12 @@ type ParsedProperties = {
   readonly map: Record<string, string>;
 };
 
-const DATE_FORMAT_NORMALIZER = new Set<string>([
-  ...FULL_DATE_FORMAT_OPTIONS,
-  ...MONTH_YEAR_FORMAT_OPTIONS,
-]);
+const DATE_FORMAT_OPTIONS_LOOKUP = new Map<string, string>(
+  [...FULL_DATE_FORMAT_OPTIONS, ...MONTH_YEAR_FORMAT_OPTIONS].map((value) => [
+    value.toUpperCase(),
+    value,
+  ])
+);
 
 export const DEFAULT_VALUES: GlobalPreferenceValues = {
   auditing: {
@@ -41,7 +43,7 @@ export const DEFAULT_VALUES: GlobalPreferenceValues = {
   },
   formatting: {
     formatting: {
-      fullDateFormat: 'YYYY-MM-DD',
+      fullDateFormat: 'yyyy-MM-dd',
       monthYearDateFormat: 'YYYY-MM',
     },
   },
@@ -66,7 +68,7 @@ export function getGlobalPreferenceFallback(): GlobalPreferenceValues {
 
 function normalizeFormat(value: string): string {
   const upper = value.toUpperCase();
-  return DATE_FORMAT_NORMALIZER.has(upper) ? upper : upper;
+  return DATE_FORMAT_OPTIONS_LOOKUP.get(upper) ?? value;
 }
 
 function parseProperties(data: string): ParsedProperties {
@@ -301,4 +303,10 @@ export function formatGlobalPreferenceValue(
       return Number(value).toString();
   }
   return String(value ?? '');
+}
+
+export function globalPreferencesToKeyValue(
+  values: GlobalPreferenceValues
+): Record<string, string> {
+  return preferencesToKeyValue(values);
 }

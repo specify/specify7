@@ -1,7 +1,5 @@
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
-import { ping } from '../../utils/ajax/ping';
-import { keysToLowerCase } from '../../utils/utils';
 import { contextUnlockedPromise, foreverFetch } from '../InitialContext';
 import { fetchContext as fetchRemotePrefs, remotePrefs } from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
@@ -9,6 +7,12 @@ import { type PartialPreferences } from './BasePreferences';
 import type { globalPreferenceDefinitions } from './GlobalDefinitions';
 import type { GlobalPreferenceValues } from './globalPreferences';
 import { globalPreferences } from './globalPreferences';
+import {
+  buildGlobalPreferencesPayload,
+  setGlobalPreferencesMetadata,
+  setGlobalPreferencesResourceId,
+  upsertGlobalPreferencesResource,
+} from './globalPreferencesResource';
 import {
   DEFAULT_VALUES,
   mergeWithDefaultValues,
@@ -19,8 +23,6 @@ import {
 } from './globalPreferencesUtils';
 
 type PartialGlobalValues = Partial<GlobalPreferenceValues>;
-
-const GLOBAL_RESOURCE_URL = '/context/app.resource/';
 
 function mergeMissingFromRemote(
   existing: PartialGlobalValues,
@@ -71,6 +73,7 @@ function mergeMissingFromRemote(
   return { merged, changed };
 }
 
+type ResourceResponse = { readonly id: number };
 export const loadGlobalPreferences = async (): Promise<void> => {
   const entryPoint = await contextUnlockedPromise;
   if (entryPoint !== 'main') {
@@ -91,6 +94,12 @@ export const loadGlobalPreferences = async (): Promise<void> => {
   );
 
   await fetchRemotePrefs.catch(() => undefined);
+  const resourceIdHeader = response.headers.get('X-Record-ID');
+  const parsedResourceId =
+    resourceIdHeader === null ? undefined : Number.parseInt(resourceIdHeader, 10);
+  setGlobalPreferencesResourceId(
+    Number.isFinite(parsedResourceId) ? parsedResourceId : undefined
+  );
 
   const remotePartial = partialPreferencesFromMap(remotePrefs);
   const remoteDefaults = mergeWithDefaultValues(remotePartial);
@@ -102,6 +111,7 @@ export const loadGlobalPreferences = async (): Promise<void> => {
   const { raw, metadata } = parseGlobalPreferences(
     status === Http.NO_CONTENT ? null : data
   );
+  setGlobalPreferencesMetadata(metadata);
 
   const { merged: migratedRaw, changed } = mergeMissingFromRemote(raw, remotePartial);
 
@@ -110,34 +120,21 @@ export const loadGlobalPreferences = async (): Promise<void> => {
       const serialized = serializeGlobalPreferences(migratedRaw, metadata, {
         fallback: remoteDefaults,
       });
+      setGlobalPreferencesMetadata(serialized.metadata);
       const originalData = status === Http.NO_CONTENT ? '' : data;
 
       if (serialized.data.trim() !== originalData.trim()) {
-        const resourceIdHeader = response.headers.get('X-Record-ID');
-        const resourceId =
-          resourceIdHeader === null ? undefined : Number.parseInt(resourceIdHeader, 10);
-        const payload = keysToLowerCase({
-          name: 'GlobalPreferences',
-          mimeType: 'text/plain',
-          metaData: '',
-          data: serialized.data,
+        const payload = buildGlobalPreferencesPayload(serialized.data);
+        await upsertGlobalPreferencesResource({
+          payload,
+          errorMode: 'silent',
         });
-
-        await (typeof resourceId === 'number' && Number.isFinite(resourceId) && resourceId >= 0 ? ping(`${GLOBAL_RESOURCE_URL}${resourceId}/`, {
-            method: 'PUT',
-            body: payload,
-            headers: { Accept: 'application/json' },
-            errorMode: 'silent',
-          }) : ping(GLOBAL_RESOURCE_URL, {
-            method: 'POST',
-            body: payload,
-            headers: { Accept: 'application/json' },
-            errorMode: 'silent',
-          }));
       }
     } catch (error) {
       console.error('Failed migrating remote preferences into GlobalPreferences', error);
     }
+  } else {
+    setGlobalPreferencesMetadata(metadata);
   }
 
   globalPreferences.setRaw(
