@@ -17,11 +17,6 @@ def _safe_filter(query):
         return query.first()
     raise Exception(f"Got more than one matching: {list(query)}")
 
-def get_treedef(collection, tree_name):
-    return (collection.discipline.division.institution.storagetreedef
-            if tree_name == 'Storage' else
-            getattr(collection.discipline, tree_name.lower() + "treedef"))
-
 class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache tree_rank_count internal_filters')):
 
     def __new__(cls, *args, **kwargs):
