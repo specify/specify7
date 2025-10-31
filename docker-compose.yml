@@ -15,7 +15,7 @@
 services:
   mariadb:
     container_name: mariadb
-    image: mariadb:10.11
+    image: mariadb:11.8
     volumes:
       - "database:/var/lib/mysql" # the data directory for mariadb
       - "./seed-database:/docker-entrypoint-initdb.d"
