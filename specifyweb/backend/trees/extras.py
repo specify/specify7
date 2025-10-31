@@ -1,8 +1,6 @@
-from doctest import debug
 import re
 from contextlib import contextmanager
 import logging
-from typing import List
 
 from specifyweb.backend.trees.ranks import RankOperation, post_tree_rank_save, pre_tree_rank_deletion, \
     verify_rank_parent_chain_integrity, pre_tree_rank_init, post_tree_rank_deletion
