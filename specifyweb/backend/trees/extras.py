@@ -1,3 +1,4 @@
+from doctest import debug
 import re
 from contextlib import contextmanager
 import logging
@@ -528,10 +529,10 @@ def fullname_expr(depth, reverse):
     return IF(IN_NAME(0), fullname, NAME(0))
 
 def parent_joins(table, depth):
-    return "\n".join(
-        f"LEFT JOIN {table} t{j} ON t{j-1}.parentid = t{j}.{table}id"
+    return '\n'.join([
+        "left join {table} t{1} on t{0}.parentid = t{1}.{table}id".format(j-1, j, table=table)
         for j in range(1, depth)
-    )
+    ])
 
 def definition_joins(table, depth):
     return '\n'.join([
@@ -625,9 +626,7 @@ def validate_tree_numbering(table):
         f"found {not_nested_count} nodenumbers not nested by parent"
 
 def path_expr(table, depth):
-    # Highest ancestor first → leaf; LPAD keeps lexical == numeric
-    parts = ", ".join([f"LPAD(t{i}.{table}id, 12, '0')" for i in reversed(range(depth))])
-    return f"CONCAT_WS(',', {parts})"
+    return CONCAT([ID(table, i) for i in reversed(list(range(depth)))], ',')
 
 def print_paths(table, depth):
     cursor = connection.cursor()
@@ -747,7 +746,7 @@ def is_treedef(obj):
 
 def renumber_tree(table: str) -> None:
     cursor = connection.cursor()
-    print(f"[renumber_tree] running for {table}")
+    logger.debug(f"[renumber_tree] running for {table}")
 
     cursor.execute("SET SESSION sql_safe_updates = 0") # might be needed for MariaDB 11
 
@@ -757,14 +756,14 @@ def renumber_tree(table: str) -> None:
         f"JOIN {table}treedefitem d ON t.{table}treedefitemid = d.{table}treedefitemid "
         f"SET t.rankid = d.rankid"
     )
-    print(sql_sync)
+    logger.debug(sql_sync)
     cursor.execute(sql_sync)
 
     # Compute max logical depth (just to size the LEFT JOIN ladder)
     cursor.execute(f"SELECT COUNT(DISTINCT rankid) FROM {table}")
     depth = cursor.fetchone()[0] or 1
 
-    def parent_joins(tbl: str, d: int) -> str:
+    def tree_parent_joins(tbl: str, d: int) -> str:
         if d <= 1:
             return ""  # only t0 exists
         return "\n".join(
@@ -772,7 +771,7 @@ def renumber_tree(table: str) -> None:
             for j in range(1, d)
         )
 
-    def path_expr(tbl: str, d: int) -> str:
+    def tree_path_expr(tbl: str, d: int) -> str:
         # Highest ancestor first, leaf last; LPAD stabilizes lexical order
         parts = ", ".join([f"LPAD(t{i}.{tbl}id, 12, '0')" for i in reversed(range(d))])
         return f"CONCAT_WS(',', {parts})"
@@ -784,20 +783,20 @@ def renumber_tree(table: str) -> None:
         f"  SELECT id, rn FROM (\n"
         f"    SELECT\n"
         f"      t0.{table}id AS id,\n"
-        f"      ROW_NUMBER() OVER (ORDER BY {path_expr(table, depth)}, t0.{table}id) AS rn\n"
+        f"      ROW_NUMBER() OVER (ORDER BY {tree_path_expr(table, depth)}, t0.{table}id) AS rn\n"
         f"    FROM {table} t0\n"
-        f"{parent_joins(table, depth)}\n"
+        f"{tree_parent_joins(table, depth)}\n"
         f"  ) ordered\n"
         f") r ON r.id = t.{table}id\n"
         f"SET t.nodenumber = r.rn,\n"
         f"    t.highestchildnodenumber = r.rn"
     )
-    print(sql_preorder)
+    logger.debug(sql_preorder)
     cursor.execute(sql_preorder)
 
     # Compute highestchildnodenumber bottom-up (same logic as before)
     sql_ranks = f"SELECT DISTINCT rankid FROM {table} ORDER BY rankid DESC"
-    print(sql_ranks)
+    logger.debug(sql_ranks)
     cursor.execute(sql_ranks)
     ranks = [row[0] for row in cursor.fetchall()]
 
@@ -813,7 +812,7 @@ def renumber_tree(table: str) -> None:
             f"SET t.highestchildnodenumber = sub.hcnn\n"
             f"WHERE t.rankid = %(rank)s"
         )
-        print(sql_hcnn, {"rank": rank})
+        logger.debug(sql_hcnn, {"rank": rank})
         cursor.execute(sql_hcnn, {"rank": rank})
 
     # Clear task semaphores
