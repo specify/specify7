@@ -641,6 +641,7 @@ def print_paths(table, depth):
     print(sql)
 
 def renumber_tree_old(table):
+    # NOTE: This old implementation doesn't work in MariaDB 11.8
     logger.info('renumbering tree')
     cursor = connection.cursor()
 
@@ -759,7 +760,7 @@ def renumber_tree(table: str) -> None:
     logger.debug(sql_sync)
     cursor.execute(sql_sync)
 
-    # Compute max logical depth (just to size the LEFT JOIN ladder)
+    # Compute max logical depth to size the LEFT JOIN ladder
     cursor.execute(f"SELECT COUNT(DISTINCT rankid) FROM {table}")
     depth = cursor.fetchone()[0] or 1
 
@@ -794,7 +795,7 @@ def renumber_tree(table: str) -> None:
     logger.debug(sql_preorder)
     cursor.execute(sql_preorder)
 
-    # Compute highestchildnodenumber bottom-up (same logic as before)
+    # Compute highestchildnodenumber bottom-up
     sql_ranks = f"SELECT DISTINCT rankid FROM {table} ORDER BY rankid DESC"
     logger.debug(sql_ranks)
     cursor.execute(sql_ranks)
