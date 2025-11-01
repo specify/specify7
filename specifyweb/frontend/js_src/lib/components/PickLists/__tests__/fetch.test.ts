@@ -141,7 +141,7 @@ describe('fetchPickListItems', () => {
     objects: [{ id: 1, _tableName: 'Collection', collectionname: 'abc' }],
   });
 
-  overrideAjax('/api/specify/collection/?limit=0', {
+overrideAjax('/api/specify/collection/?domainfilter=false&limit=0', {
     meta: {
       total_count: 2,
     },

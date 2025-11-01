@@ -148,9 +148,12 @@ async function fetchFromTable(
   }
 
   const tableHasScope = specifyTable.getScope() !== undefined;
+  const tableSupportsDomainFilter =
+    tableHasScope ||
+    !f.includes(Object.keys(schema.domainLevelIds), toLowerCase(tableName));
   const { records } = await fetchCollection(tableName, {
     domainFilter:
-      tableHasScope === false
+      tableSupportsDomainFilter === false
         ? undefined
         : scopeTablePicklist
           ? true
