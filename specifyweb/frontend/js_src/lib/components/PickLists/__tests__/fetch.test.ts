@@ -18,6 +18,10 @@ const { unsafeFetchPickList, fetchPickListItems } = exportsForTests;
 
 requireContext();
 
+afterEach(() => {
+  jest.restoreAllMocks();
+});
+
 describe('unsafeFetchPickList', () => {
   test('front-end pick list', async () => {
     const resource = await unsafeFetchPickList('_AgentTypeComboBox');
@@ -148,6 +152,12 @@ describe('fetchPickListItems', () => {
   });
 
   test('Picklistitems for Entire Table scoped by default', async () => {
+    const remotePrefs = await import('../../InitialContext/remotePrefs');
+    jest
+      .spyOn(remotePrefs, 'ensureCollectionPreferencesLoaded')
+      .mockRejectedValue(new Error('no prefs'));
+    jest.spyOn(remotePrefs, 'getCollectionPref').mockReturnValue(true);
+
     const picklist = deserializeResource(
       addMissingFields('PickList', {
         type: PickListTypes.TABLE,
@@ -163,6 +173,9 @@ describe('fetchPickListItems', () => {
 
   test('Picklistitems unscoped for sp7_scope_table_picklists', async () => {
     const remotePrefs = await import('../../InitialContext/remotePrefs');
+    jest
+      .spyOn(remotePrefs, 'ensureCollectionPreferencesLoaded')
+      .mockRejectedValue(new Error('no prefs'));
     jest
       .spyOn(remotePrefs, 'getCollectionPref')
       .mockImplementation(() => false);
