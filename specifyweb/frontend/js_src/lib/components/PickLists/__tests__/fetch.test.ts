@@ -126,12 +126,18 @@ overrideAjax('/api/specify/locality/?domainfilter=false&limit=0', {
     { id: 4, _tableName: 'Locality', localityname: 'def' },
   ],
 });
-  test('pick list from entire table', async () => {
-    const pickList = deserializeResource(
-      addMissingFields('PickList', {
-        type: PickListTypes.TABLE,
-        tableName: 'Locality',
-        pickListItems: [
+test('pick list from entire table', async () => {
+  const remotePrefs = await import('../../InitialContext/remotePrefs');
+  jest
+    .spyOn(remotePrefs, 'ensureCollectionPreferencesLoaded')
+    .mockRejectedValue(new Error('no prefs'));
+  jest.spyOn(remotePrefs, 'getCollectionPref').mockReturnValue(true);
+
+  const pickList = deserializeResource(
+    addMissingFields('PickList', {
+      type: PickListTypes.TABLE,
+      tableName: 'Locality',
+      pickListItems: [
           // Should ignore this pick list item
           addMissingFields('PickListItem', { title: 'a', value: 'b' }),
         ],
