@@ -1,10 +1,76 @@
+import json
+
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
-from specifyweb.specify.models import Determination, Taxon, Taxontreedef
+from specifyweb.specify.models import (
+    Determination,
+    Spappresource,
+    Spappresourcedata,
+    Spappresourcedir,
+    Taxon,
+    Taxontreedef,
+)
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
 from specifyweb.backend.trees.extras import synonymize
 
 
 class TestSynonymize(GeographyTree):
+
+    def _set_synonym_pref(self, key: str, value: bool = True) -> None:
+        app_dir = Spappresourcedir.objects.filter(
+            ispersonal=False,
+            collection=self.collection,
+            discipline=self.discipline,
+            specifyuser=self.specifyuser,
+        ).first()
+        if app_dir is None:
+            app_dir = Spappresourcedir.objects.create(
+                ispersonal=False,
+                collection=self.collection,
+                discipline=self.discipline,
+                specifyuser=self.specifyuser,
+            )
+
+        app_resource = Spappresource.objects.filter(
+            spappresourcedir=app_dir,
+            name="CollectionPreferences",
+            specifyuser=self.specifyuser,
+        ).first()
+        if app_resource is None:
+            app_resource = Spappresource.objects.create(
+                spappresourcedir=app_dir,
+                name="CollectionPreferences",
+                level=0,
+                metadata="",
+                mimetype="application/json",
+                specifyuser=self.specifyuser,
+            )
+
+        app_data = Spappresourcedata.objects.filter(
+            spappresource=app_resource
+        ).first()
+        if app_data is None:
+            app_data = Spappresourcedata.objects.create(
+                spappresource=app_resource,
+                data=json.dumps({}),
+            )
+
+        raw_data = app_data.data
+        if isinstance(raw_data, memoryview):
+            raw_data = raw_data.tobytes()
+        if isinstance(raw_data, (bytes, bytearray)):
+            raw_data = raw_data.decode('utf-8')
+
+        try:
+            prefs = json.loads(raw_data if raw_data else '{}')
+        except (TypeError, ValueError):
+            prefs = {}
+
+        tree_management = prefs.setdefault('treeManagement', {})
+        synonymized = tree_management.setdefault('synonymized', {})
+        synonymized[key] = value
+
+        app_data.data = json.dumps(prefs)
+        app_data.save()
 
     def test_different_type(self):
         with self.assertRaises(AssertionError) as context:
@@ -68,6 +134,19 @@ class TestSynonymize(GeographyTree):
             synonymize(self.kansas, self.mo, self.agent)
 
         self.assertEqual(context.exception.args[1]['localizationKey'], "nodeSynonimizeWithChildren")
+
+    def test_synonymize_geography_target_children_with_collection_pref(self):
+        self._set_synonym_pref(
+            'sp7.allow_adding_child_to_synonymized_parent.Geography',
+            True,
+        )
+
+        try:
+            synonymize(self.kansas, self.mo, self.agent)
+        except TreeBusinessRuleException:
+            self.fail(
+                'synonymize raised TreeBusinessRuleException despite collection preference override'
+            )
 
     def test_synonymize_taxon_no_target_children(self):
 

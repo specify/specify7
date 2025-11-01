@@ -24,3 +24,24 @@ describe('Parsing Remote Prefs', () => {
 
 test('can retrieve collection pref', () =>
   expect(getCollectionPref('CO_CREATE_COA', 32_678)).toBe(false));
+
+test('parses collection boolean pref', () =>
+  expect(
+    getCollectionPref('attachment.is_public_default', 32_768)
+  ).toBe(true));
+
+test('parses collection tree synonym pref', () =>
+  expect(
+    getCollectionPref(
+      'sp7.allow_adding_child_to_synonymized_parent.Taxon',
+      32_768
+    )
+  ).toBe(true));
+
+test('parses collection chronostrat synonym pref', () =>
+  expect(
+    getCollectionPref(
+      'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod',
+      32_768
+    )
+  ).toBe(true));
