@@ -139,13 +139,13 @@ function Field({
   // Check if collection pref wants to inherit primary cat num for empty CO cat num sibilings inside of a COG
   const [displayPrimaryCatNumberPref] = collectionPreferences.use(
     'catalogNumberInheritance',
-    'collectionObject',
+    'behavior',
     'inheritance'
   );
 
   // Check if collection pref wants to inherit parent cat num for empty CO cat num children
   const [displayParentCatNumberPref] = collectionPreferences.use(
-    'catalogNumberInheritance',
+    'catalogNumberParentInheritance',
     'component',
     'inheritance'
   );

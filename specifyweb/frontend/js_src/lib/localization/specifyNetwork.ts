@@ -30,20 +30,6 @@ export const specifyNetworkText = createDictionary({
     'en-us':
       'The GBIF "dataSetKey" (a UUID) for this collection, used for Specify Network integration.',
   },
-  publishingOrganizationKey: {
-    'en-us': 'GBIF Publishing Organization Key',
-  },
-  publishingOrganizationKeyDescription: {
-    'en-us':
-      'The GBIF "publishingOrgKey" (a UUID) for this collection, used for Specify Network integration.',
-  },
-  collectionKey: {
-    'en-us': 'GBIF Data Set Key',
-  },
-  collectionKeyDescription: {
-    'en-us':
-      'The GBIF "dataSetKey" (a UUID) for this collection, used for Specify Network integration.',
-  },
   occurrenceOrGuidRequired: {
     'en-us': 'Species Name or GUID must be provided to display this page',
     'de-ch':
