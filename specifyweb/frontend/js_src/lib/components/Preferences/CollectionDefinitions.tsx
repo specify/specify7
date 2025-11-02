@@ -203,7 +203,7 @@ export const collectionPreferenceDefinitions = {
   catalogNumberInheritance: {
     title: queryText.catalogNumberInheritance(),
     subCategories: {
-      collectionObject: {
+      behavior: {
         title: () => tableLabel('CollectionObjectGroup'),
         items: {
           inheritance: definePref<boolean>({
@@ -213,10 +213,54 @@ export const collectionPreferenceDefinitions = {
                   tables.CollectionObject,
                   'catalogNumber'
                 ).label,
-                 collectionObject: tables.CollectionObject.label,
+                collectionObject: tables.CollectionObject.label,
               }),
-            description: () => 
+            description: () =>
               preferencesText.inheritanceCatNumberPrefDescription({
+                catalogNumber: getField(
+                  tables.CollectionObject,
+                  'catalogNumber'
+                ).label,
+                collectionObject: tables.CollectionObject.label,
+              }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          refreshRate: definePref<number>({
+            title: statsText.autoRefreshRate(),
+            description: statsText.autoRefreshRateDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 24,
+            type: 'java.lang.Integer',
+          }),
+        },
+      },
+      specifyNetwork: {
+        title: specifyNetworkText.specifyNetwork(),
+        items: specifyNetworkItems,
+      },
+    },
+  },
+  catalogNumberParentInheritance: {
+    title: queryText.catalogNumberInheritance(),
+    subCategories: {
+      behavior: {
+        title: () => camelToHuman('Component'),
+        items: {
+          inheritance: definePref<boolean>({
+            title: () =>
+              preferencesText.inheritanceCatNumberParentCOPref({
+                catalogNumber: getField(
+                  tables.CollectionObject,
+                  'catalogNumber'
+                ).label,
+                collectionObject: tables.CollectionObject.label,
+              }),
+            description: () =>
+              preferencesText.inheritanceCatNumberParentCOPrefDescription({
                 catalogNumber: getField(
                   tables.CollectionObject,
                   'catalogNumber'

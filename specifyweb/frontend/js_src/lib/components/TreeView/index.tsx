@@ -27,7 +27,6 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables, getTable } from '../DataModel/tables';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useMenuItem } from '../Header/MenuContext';
-import { getPref } from '../InitialContext/remotePrefs';
 import type { TreeInformation } from '../InitialContext/treeRanks';
 import {
   getTreeDefinitions,
@@ -155,8 +154,12 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
 
   useTitle(treeText.treeViewTitle({ treeName: table.label }));
 
-  // Node sort order
-  const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`);
+  // Node sort order and author display are user preferences
+  const sortField = userPreferences.get(
+    'treeEditor',
+    'behavior',
+    'orderByField'
+  );
 
   const includeAuthor = userPreferences.get(
     'treeEditor',
@@ -175,7 +178,7 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
           includeAuthor: includeAuthor.toString(),
         })
       ),
-    [baseUrl, sortField]
+    [baseUrl, includeAuthor, sortField]
   );
 
   const [rows, setRows] = useAsyncState<RA<Row>>(

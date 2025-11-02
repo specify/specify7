@@ -137,97 +137,6 @@ export const remotePrefsDefinitions = f.store(
         defaultValue: 'YYYY-MM',
         formatters: [formatter.trim, formatter.toUpperCase],
       },
-      'GeologicTimePeriod.treeview_sort_field': {
-        description: 'Sort order for nodes in the tree viewer',
-        defaultValue: 'name',
-        formatters: [formatter.trim],
-        isLegacy: true,
-      },
-      'Taxon.treeview_sort_field': {
-        description: 'Sort order for nodes in the tree viewer',
-        defaultValue: 'name',
-        formatters: [formatter.trim],
-        isLegacy: true,
-      },
-      'Geography.treeview_sort_field': {
-        description: 'Sort order for nodes in the tree viewer',
-        defaultValue: 'name',
-        formatters: [formatter.trim],
-        isLegacy: true,
-      },
-      'LithoStrat.treeview_sort_field': {
-        description: 'Sort order for nodes in the tree viewer',
-        defaultValue: 'name',
-        formatters: [formatter.trim],
-        isLegacy: true,
-      },
-      'Storage.treeview_sort_field': {
-        description: 'Sort order for nodes in the tree viewer',
-        defaultValue: 'name',
-        formatters: [formatter.trim],
-        isLegacy: true,
-      },
-      'TectonicUnit.treeview_sort_field': {
-        description: 'Sort order for nodes in the tree viewer',
-        defaultValue: 'name',
-        formatters: [formatter.trim],
-        isLegacy: false,
-      },
-      'TreeEditor.Rank.Threshold.GeologicTimePeriod': {
-        description:
-          'Show Collection Object count only for nodes with RankID >= than this value',
-        defaultValue: 99_999,
-        parser: 'java.lang.Long',
-        isLegacy: true,
-      },
-      'TreeEditor.Rank.Threshold.Taxon': {
-        description:
-          'Show Collection Object count only for nodes with RankID >= than this value',
-        defaultValue: 99_999,
-        parser: 'java.lang.Long',
-        isLegacy: true,
-      },
-      'TreeEditor.Rank.Threshold.Geography': {
-        description:
-          'Show Collection Object count only for nodes with RankID >= than this value',
-        defaultValue: 99_999,
-        parser: 'java.lang.Long',
-        isLegacy: true,
-      },
-      'TreeEditor.Rank.Threshold.LithoStrat': {
-        description:
-          'Show Collection Object count only for nodes with RankID >= than this value',
-        defaultValue: 99_999,
-        parser: 'java.lang.Long',
-        isLegacy: true,
-      },
-      'TreeEditor.Rank.Threshold.Storage': {
-        description:
-          'Show Collection Object count only for nodes with RankID >= than this value',
-        defaultValue: 99_999,
-        parser: 'java.lang.Long',
-        isLegacy: true,
-      },
-      'TreeEditor.Rank.Threshold.TectonicUnit': {
-        description:
-          'Show Collection Object count only for nodes with RankID >= than this value',
-        defaultValue: 99_999,
-        parser: 'java.lang.Long',
-        isLegacy: true,
-      },
-
-      /*
-       * This pref was implemented in Specify 7 in https://github.com/specify/specify7/pull/2818
-       * and went through many iterations and changes.
-       * See the Pull Request for the full context and implementation/design decision.
-       */
-      'TaxonTreeEditor.DisplayAuthor': {
-        description:
-          'Display Authors of Taxons next to nodes in the Tree Viewer',
-        defaultValue: false,
-        parser: 'java.lang.Boolean',
-        isLegacy: true,
-      },
       'attachment.is_public_default': {
         description: 'Whether new Attachments are public by default',
         defaultValue: true,
@@ -250,15 +159,6 @@ export const remotePrefsDefinitions = f.store(
       'auditing.audit_field_updates': {
         description: 'Whether Audit Log records field value changes',
         defaultValue: true,
-        parser: 'java.lang.Boolean',
-        isLegacy: true,
-      },
-      'form.definition.columnSource': {
-        description: 'The platform to use as a source of columns',
-        defaultValue: 'lnx',
-        formatter: [formatter.trim],
-        isLegacy: false,
-      },
       'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod': {
         description:
           'Allowed to add children to synopsized Geologic Time Period records',
@@ -266,8 +166,16 @@ export const remotePrefsDefinitions = f.store(
         parser: 'java.lang.Boolean',
         isLegacy: false,
       },
-      'sp7.allow_adding_child_to_synonymized_parent.Taxon': {
-        description: 'Allowed to add children to synopsized Taxon records',
+      'sp7.allow_adding_child_to_synonymized_parent.ChronosStrat': {
+        description:
+          'Allowed to add children to synopsized Chronostratigraphy records',
+        defaultValue: false,
+        parser: 'java.lang.Boolean',
+        isLegacy: false,
+      },
+      'sp7.allow_adding_child_to_synonymized_parent.ChronoStrat': {
+        description:
+          'Allowed to add children to synopsized Chronostratigraphy records',
         defaultValue: false,
         parser: 'java.lang.Boolean',
         isLegacy: false,
@@ -290,12 +198,37 @@ export const remotePrefsDefinitions = f.store(
         parser: 'java.lang.Boolean',
         isLegacy: false,
       },
+      'sp7.allow_adding_child_to_synonymized_parent.Taxon': {
+        description: 'Allowed to add children to synopsized Taxon records',
+        defaultValue: false,
+        parser: 'java.lang.Boolean',
+        isLegacy: false,
+      },
       'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit': {
         description:
           'Allowed to add children to synopsized TectonicUnit records',
         defaultValue: false,
         parser: 'java.lang.Boolean',
         isLegacy: false,
+      },
+      'attachment.preview_size': {
+        description: 'The size in px of the generated attachment thumbnails',
+        defaultValue: 123,
+        parser: 'java.lang.Long',
+        isLegacy: true,
+      },
+      // These are used on the back end only:
+      'auditing.do_audits': {
+        description: 'Whether Audit Log is enabled',
+        defaultValue: true,
+        parser: 'java.lang.Boolean',
+        isLegacy: true,
+      },
+      'auditing.audit_field_updates': {
+        description: 'Whether Audit Log records field value changes',
+        defaultValue: true,
+        parser: 'java.lang.Boolean',
+        isLegacy: true,
       },
       // This is actually stored in Global Prefs:
       /*
@@ -335,6 +268,49 @@ export const collectionPrefsDefinitions = {
     defaultValue: false,
     parser: 'java.lang.Boolean',
   },
+  'attachment.is_public_default': {
+    separator: '_',
+    description: 'Whether new Attachments are public by default',
+    defaultValue: false,
+    parser: 'java.lang.Boolean',
+  },
+  'sp7.allow_adding_child_to_synonymized_parent.Taxon': {
+    separator: '_',
+    description: 'Allowed to add children to synopsized Taxon records',
+    defaultValue: false,
+    parser: 'java.lang.Boolean',
+  },
+  'sp7.allow_adding_child_to_synonymized_parent.Geography': {
+    separator: '_',
+    description: 'Allowed to add children to synopsized Geography records',
+    defaultValue: false,
+    parser: 'java.lang.Boolean',
+  },
+  'sp7.allow_adding_child_to_synonymized_parent.Storage': {
+    separator: '_',
+    description: 'Allowed to add children to synopsized Storage records',
+    defaultValue: false,
+    parser: 'java.lang.Boolean',
+  },
+  'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod': {
+    separator: '_',
+    description:
+      'Allowed to add children to synopsized Geologic Time Period records',
+    defaultValue: false,
+    parser: 'java.lang.Boolean',
+  },
+  'sp7.allow_adding_child_to_synonymized_parent.LithoStrat': {
+    separator: '_',
+    description: 'Allowed to add children to synopsized LithoStrat records',
+    defaultValue: false,
+    parser: 'java.lang.Boolean',
+  },
+  'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit': {
+    separator: '_',
+    description: 'Allowed to add children to synopsized TectonicUnit records',
+    defaultValue: false,
+    parser: 'java.lang.Boolean',
+  },
   sp7_scope_table_picklists: {
     separator: '_',
     description:
@@ -343,3 +319,22 @@ export const collectionPrefsDefinitions = {
     parser: 'java.lang.Boolean',
   },
 } as const;
+
+let collectionPrefsFetchPromise: Promise<void> | undefined;
+
+export async function ensureCollectionPreferencesLoaded(): Promise<
+  (typeof import('../Preferences/collectionPreferences'))['collectionPreferences']
+> {
+  const { collectionPreferences } = await import(
+    '../Preferences/collectionPreferences'
+  );
+  if (Object.keys(collectionPreferences.getRaw()).length === 0) {
+    if (collectionPrefsFetchPromise === undefined)
+      collectionPrefsFetchPromise = collectionPreferences
+        .fetch()
+        .catch(() => undefined)
+        .then(() => undefined);
+    await collectionPrefsFetchPromise;
+  }
+  return collectionPreferences;
+}

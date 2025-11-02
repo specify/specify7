@@ -1,7 +1,8 @@
+import json
 import re
 from contextlib import contextmanager
 import logging
-from typing import List
+from typing import Iterable
 
 from specifyweb.backend.trees.ranks import RankOperation, post_tree_rank_save, pre_tree_rank_deletion, \
     verify_rank_parent_chain_integrity, pre_tree_rank_init, post_tree_rank_deletion
@@ -17,7 +18,97 @@ from django.conf import settings
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
 import specifyweb.specify.models as spmodels
 
-from  specifyweb.backend.workbench.upload.auditcodes import TREE_BULK_MOVE, TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
+from specifyweb.backend.workbench.upload.auditcodes import TREE_BULK_MOVE, TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
+
+_SYNONYM_PREF_KEYS_BY_TABLE: dict[str, tuple[str, ...]] = {
+    'GeologicTimePeriod': (
+        'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod',
+        'sp7.allow_adding_child_to_synonymized_parent.ChronosStrat',
+        'sp7.allow_adding_child_to_synonymized_parent.ChronoStrat',
+    ),
+    'ChronosStrat': (
+        'sp7.allow_adding_child_to_synonymized_parent.ChronosStrat',
+        'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod',
+        'sp7.allow_adding_child_to_synonymized_parent.ChronoStrat',
+    ),
+    'ChronoStrat': (
+        'sp7.allow_adding_child_to_synonymized_parent.ChronoStrat',
+        'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod',
+        'sp7.allow_adding_child_to_synonymized_parent.ChronosStrat',
+    ),
+}
+
+
+def _synonym_pref_keys(node) -> tuple[str, ...]:
+    table_name = node.specify_model.name
+    base_key = f'sp7.allow_adding_child_to_synonymized_parent.{table_name}'
+    keys = _SYNONYM_PREF_KEYS_BY_TABLE.get(table_name)
+    if keys is None:
+        return (base_key,)
+
+    if keys and keys[0] == base_key:
+        return keys
+    return (base_key, *keys)
+
+
+def _collection_synonym_pref_enabled(keys: Iterable[str]) -> bool:
+    from specifyweb.specify.models import Spappresourcedata
+
+    qs = Spappresourcedata.objects.filter(
+        spappresource__name='CollectionPreferences'
+    ).values_list('data', flat=True)
+
+    for raw_data in qs:
+        if not raw_data:
+            continue
+        if isinstance(raw_data, memoryview):
+            raw_data = raw_data.tobytes()
+        if isinstance(raw_data, (bytes, bytearray)):
+            try:
+                raw_data = raw_data.decode('utf-8')
+            except UnicodeDecodeError:
+                continue
+        try:
+            prefs = json.loads(raw_data)
+        except (TypeError, ValueError):
+            continue
+
+        if not isinstance(prefs, dict):
+            continue
+
+        tree_management = prefs.get('treeManagement')
+        if not isinstance(tree_management, dict):
+            continue
+
+        synonymized = tree_management.get('synonymized')
+        if not isinstance(synonymized, dict):
+            continue
+
+        for key in keys:
+            value = synonymized.get(key)
+            if value is True:
+                return True
+
+    return False
+
+
+def _remote_synonym_pref_enabled(keys: Iterable[str]) -> bool:
+    from specifyweb.backend.context.remote_prefs import get_remote_prefs
+
+    prefs_text = get_remote_prefs()
+    for key in keys:
+        pattern = r'^' + re.escape(key) + r'(?:_\d+)?=(.+)'
+        override = re.search(pattern, prefs_text, re.MULTILINE)
+        if override is not None and override.group(1).strip().lower() == "true":
+            return True
+    return False
+
+
+def _synonym_override_enabled(node) -> bool:
+    """Return True when collection or remote prefs allow actions on synonymized parents."""
+
+    keys = _synonym_pref_keys(node)
+    return _collection_synonym_pref_enabled(keys) or _remote_synonym_pref_enabled(keys)
 
 @contextmanager
 def validate_node_numbers(table, revalidate_after=True):
@@ -209,11 +300,10 @@ def adding_node(node):
     model = type(node)
     parent = model.objects.select_for_update().get(id=node.parent.id)
     if parent.accepted_id is not None:
-        from specifyweb.backend.context.remote_prefs import get_remote_prefs
-        # This business rule can be overriden by a remote pref.
-        pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
-        override = re.search(pattern, get_remote_prefs(), re.MULTILINE)
-        if override is None or override.group(1).strip().lower() != "true":
+        if not _synonym_override_enabled(node):
+            node_children = [] if node.pk is None else list(node.children.values('id', 'fullname'))
+            parent_children = list(parent.children.values('id', 'fullname'))
+            parent_parent_id = parent.parent.id if parent.parent_id else None
             raise TreeBusinessRuleException(
                 f'Adding node "{node.fullname}" to synonymized parent "{parent.fullname}"',
                 {"tree" : "Taxon",
@@ -224,14 +314,14 @@ def adding_node(node):
                     "rankid" : node.rankid,
                     "fullName" : node.fullname,
                     "parentid": node.parent.id,
-                    "children": list(node.children.values('id', 'fullname'))
+                    "children": node_children
                  },
                  "parent" : {
                     "id" : parent.id,
                     "rankid" : parent.rankid,
                     "fullName" : parent.fullname,
-                    "parentid": parent.parent.id,
-                    "children": list(parent.children.values('id', 'fullname'))
+                    "parentid": parent_parent_id,
+                    "children": parent_children
                  }})
 
     insertion_point = open_interval(model, parent.nodenumber, 1)
@@ -397,11 +487,8 @@ def synonymize(node, into, agent):
     node.isaccepted = False
     node.save()
 
-    # This check can be disabled by a remote pref
-    from specifyweb.backend.context.remote_prefs import get_remote_prefs
-    pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
-    override = re.search(pattern, get_remote_prefs(), re.MULTILINE)
-    if node.children.count() > 0 and (override is None or override.group(1).strip().lower() != "true"):
+    # This check can be disabled by a remote or collection preference override
+    if node.children.count() > 0 and not _synonym_override_enabled(node):
         raise TreeBusinessRuleException(
             f'Synonymizing node "{node.fullname}" which has children',
             {"tree" : "Taxon",
