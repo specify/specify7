@@ -111,33 +111,33 @@ describe('fetchPickListItems', () => {
     await expect(fetchPickListItems(pickList)).resolves.toEqual(pickListItems);
   });
 
-overrideAjax('/api/specify/locality/?domainfilter=true&limit=0', {
-  meta: {
-    total_count: 1,
-  },
-  objects: [{ id: 3, _tableName: 'Locality', localityname: 'abc' }],
-});
-overrideAjax('/api/specify/locality/?domainfilter=false&limit=0', {
-  meta: {
-    total_count: 2,
-  },
-  objects: [
-    { id: 3, _tableName: 'Locality', localityname: 'abc' },
-    { id: 4, _tableName: 'Locality', localityname: 'def' },
-  ],
-});
-test('pick list from entire table', async () => {
-  const remotePrefs = await import('../../InitialContext/remotePrefs');
-  jest
-    .spyOn(remotePrefs, 'ensureCollectionPreferencesLoaded')
-    .mockRejectedValue(new Error('no prefs'));
-  jest.spyOn(remotePrefs, 'getCollectionPref').mockReturnValue(true);
+  overrideAjax('/api/specify/locality/?domainfilter=true&limit=0', {
+    meta: {
+      total_count: 1,
+    },
+    objects: [{ id: 3, _tableName: 'Locality', localityname: 'abc' }],
+  });
+  overrideAjax('/api/specify/locality/?domainfilter=false&limit=0', {
+    meta: {
+      total_count: 2,
+    },
+    objects: [
+      { id: 3, _tableName: 'Locality', localityname: 'abc' },
+      { id: 4, _tableName: 'Locality', localityname: 'def' },
+    ],
+  });
+  test('pick list from entire table', async () => {
+    const remotePrefs = await import('../../InitialContext/remotePrefs');
+    jest
+      .spyOn(remotePrefs, 'ensureCollectionPreferencesLoaded')
+      .mockRejectedValue(new Error('no prefs'));
+    jest.spyOn(remotePrefs, 'getCollectionPref').mockReturnValue(true);
 
-  const pickList = deserializeResource(
-    addMissingFields('PickList', {
-      type: PickListTypes.TABLE,
-      tableName: 'Locality',
-      pickListItems: [
+    const pickList = deserializeResource(
+      addMissingFields('PickList', {
+        type: PickListTypes.TABLE,
+        tableName: 'Locality',
+        pickListItems: [
           // Should ignore this pick list item
           addMissingFields('PickListItem', { title: 'a', value: 'b' }),
         ],
@@ -149,42 +149,42 @@ test('pick list from entire table', async () => {
     ]);
   });
 
-overrideAjax('/api/specify/locality/?limit=0', {
-  meta: {
-    total_count: 2,
-  },
-  objects: [
-    { id: 3, _tableName: 'Locality', localityname: 'abc' },
-    { id: 4, _tableName: 'Locality', localityname: 'def' },
-  ],
-});
+  overrideAjax('/api/specify/locality/?limit=0', {
+    meta: {
+      total_count: 2,
+    },
+    objects: [
+      { id: 3, _tableName: 'Locality', localityname: 'abc' },
+      { id: 4, _tableName: 'Locality', localityname: 'def' },
+    ],
+  });
 
-overrideAjax('/api/specify/collection/?domainfilter=true&limit=0', {
-  meta: {
-    total_count: 1,
-  },
-  objects: [{ id: 1, _tableName: 'Collection', collectionname: 'abc' }],
-});
+  overrideAjax('/api/specify/collection/?domainfilter=true&limit=0', {
+    meta: {
+      total_count: 1,
+    },
+    objects: [{ id: 1, _tableName: 'Collection', collectionname: 'abc' }],
+  });
 
-overrideAjax('/api/specify/collection/?domainfilter=false&limit=0', {
-  meta: {
-    total_count: 2,
-  },
-  objects: [
-    { id: 1, _tableName: 'Collection', collectionname: 'abc' },
-    { id: 2, _tableName: 'Collection', collectionname: 'cba' },
-  ],
-});
+  overrideAjax('/api/specify/collection/?domainfilter=false&limit=0', {
+    meta: {
+      total_count: 2,
+    },
+    objects: [
+      { id: 1, _tableName: 'Collection', collectionname: 'abc' },
+      { id: 2, _tableName: 'Collection', collectionname: 'cba' },
+    ],
+  });
 
-overrideAjax('/api/specify/collection/?limit=0', {
-  meta: {
-    total_count: 2,
-  },
-  objects: [
-    { id: 1, _tableName: 'Collection', collectionname: 'abc' },
-    { id: 2, _tableName: 'Collection', collectionname: 'cba' },
-  ],
-});
+  overrideAjax('/api/specify/collection/?limit=0', {
+    meta: {
+      total_count: 2,
+    },
+    objects: [
+      { id: 1, _tableName: 'Collection', collectionname: 'abc' },
+      { id: 2, _tableName: 'Collection', collectionname: 'cba' },
+    ],
+  });
 
   test('Picklistitems for Entire Table scoped by default', async () => {
     const remotePrefs = await import('../../InitialContext/remotePrefs');

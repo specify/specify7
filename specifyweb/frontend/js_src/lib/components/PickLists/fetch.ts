@@ -129,9 +129,8 @@ async function fetchFromTable(
   try {
     const collectionPreferences = await ensureCollectionPreferencesLoaded();
     const rawValue =
-      collectionPreferences
-        .getRaw()
-        ?.general?.pickLists?.sp7_scope_table_picklists;
+      collectionPreferences.getRaw()?.general?.pickLists
+        ?.sp7_scope_table_picklists;
     scopeTablePicklist =
       typeof rawValue === 'boolean'
         ? rawValue
@@ -152,12 +151,9 @@ async function fetchFromTable(
     tableHasScope ||
     !f.includes(Object.keys(schema.domainLevelIds), toLowerCase(tableName));
   const { records } = await fetchCollection(tableName, {
-    domainFilter:
-      tableSupportsDomainFilter === false
-        ? undefined
-        : scopeTablePicklist
-          ? true
-          : false,
+    domainFilter: tableSupportsDomainFilter
+      ? Boolean(scopeTablePicklist)
+      : undefined,
     limit,
   });
   return Promise.all(
