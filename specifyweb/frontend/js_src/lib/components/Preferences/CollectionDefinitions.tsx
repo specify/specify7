@@ -203,7 +203,7 @@ export const collectionPreferenceDefinitions = {
   catalogNumberInheritance: {
     title: queryText.catalogNumberInheritance(),
     subCategories: {
-      collectionObject: {
+      behavior: {
         title: () => tableLabel('CollectionObjectGroup'),
         items: {
           inheritance: definePref<boolean>({
@@ -230,7 +230,12 @@ export const collectionPreferenceDefinitions = {
           }),
         },
       },
-      component: {
+    },
+  },
+  catalogNumberParentInheritance: {
+    title: queryText.catalogNumberInheritance(),
+    subCategories: {
+      behavior: {
         title: () => camelToHuman('Component'),
         items: {
           inheritance: definePref<boolean>({
