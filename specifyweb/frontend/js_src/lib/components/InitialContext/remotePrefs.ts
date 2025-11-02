@@ -159,6 +159,9 @@ export const remotePrefsDefinitions = f.store(
       'auditing.audit_field_updates': {
         description: 'Whether Audit Log records field value changes',
         defaultValue: true,
+        parser: 'java.lang.Boolean',
+        isLegacy: true,
+      },
       'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod': {
         description:
           'Allowed to add children to synopsized Geologic Time Period records',
@@ -210,25 +213,6 @@ export const remotePrefsDefinitions = f.store(
         defaultValue: false,
         parser: 'java.lang.Boolean',
         isLegacy: false,
-      },
-      'attachment.preview_size': {
-        description: 'The size in px of the generated attachment thumbnails',
-        defaultValue: 123,
-        parser: 'java.lang.Long',
-        isLegacy: true,
-      },
-      // These are used on the back end only:
-      'auditing.do_audits': {
-        description: 'Whether Audit Log is enabled',
-        defaultValue: true,
-        parser: 'java.lang.Boolean',
-        isLegacy: true,
-      },
-      'auditing.audit_field_updates': {
-        description: 'Whether Audit Log records field value changes',
-        defaultValue: true,
-        parser: 'java.lang.Boolean',
-        isLegacy: true,
       },
       // This is actually stored in Global Prefs:
       /*

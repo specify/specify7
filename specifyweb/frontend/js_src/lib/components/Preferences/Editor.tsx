@@ -234,4 +234,3 @@ export const GlobalPreferencesEditor = createPreferencesEditor({
   parse: parseGlobalPreferenceData,
   serialize: serializeGlobalPreferenceData,
 });
-});
