@@ -528,7 +528,7 @@ def fullname_expr(depth, reverse):
 
 def parent_joins(table, depth):
     return '\n'.join([
-        "left join {table} t{1} on t{0}.parentid = t{1}.{table}id".format(j-1, j, table=table)
+        "LEFT JOIN {table} t{1} ON t{0}.parentid = t{1}.{table}id".format(j-1, j, table=table)
         for j in range(1, depth)
     ])
 
@@ -762,7 +762,7 @@ def renumber_tree(table: str) -> None:
     cursor.execute(f"SELECT COUNT(DISTINCT rankid) FROM {table}")
     depth = cursor.fetchone()[0] or 1
 
-    def tree_parent_joins(tbl: str, d: int) -> str:
+    def tree_parent_joins(tbl: str, d: int) -> str: # replace parent_joins if join errors occur
         if d <= 1:
             return ""  # only t0 exists
         return "\n".join(
@@ -770,7 +770,7 @@ def renumber_tree(table: str) -> None:
             for j in range(1, d)
         )
 
-    def tree_path_expr(tbl: str, d: int) -> str:
+    def tree_path_expr(tbl: str, d: int) -> str: # replace path_expr if ordering issues arise
         # Highest ancestor first, leaf last; LPAD stabilizes lexical order
         parts = ", ".join([f"LPAD(t{i}.{tbl}id, 12, '0')" for i in reversed(range(d))])
         return f"CONCAT_WS(',', {parts})"
@@ -782,9 +782,9 @@ def renumber_tree(table: str) -> None:
         f"  SELECT id, rn FROM (\n"
         f"    SELECT\n"
         f"      t0.{table}id AS id,\n"
-        f"      ROW_NUMBER() OVER (ORDER BY {tree_path_expr(table, depth)}, t0.{table}id) AS rn\n"
+        f"      ROW_NUMBER() OVER (ORDER BY {path_expr(table, depth)}, t0.{table}id) AS rn\n"
         f"    FROM {table} t0\n"
-        f"{tree_parent_joins(table, depth)}\n"
+        f"{parent_joins(table, depth)}\n"
         f"  ) ordered\n"
         f") r ON r.id = t.{table}id\n"
         f"SET t.nodenumber = r.rn,\n"
