@@ -747,7 +747,7 @@ def renumber_tree(table: str) -> None:
     cursor = connection.cursor()
     logger.debug(f"[renumber_tree] running for {table}")
 
-    cursor.execute("SET SESSION sql_safe_updates = 0") # might be needed for MariaDB 11
+    # cursor.execute("SET SESSION sql_safe_updates = 0") # might be needed for MariaDB 11, uncomment if updates don't occur
 
     # Sync rankid
     sql_sync = (
