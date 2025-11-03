@@ -146,7 +146,7 @@ function Field({
   // Check if collection pref wants to inherit parent cat num for empty CO cat num children
   const [displayParentCatNumberPref] = collectionPreferences.use(
     'catalogNumberParentInheritance',
-    'component',
+    'behavior',
     'inheritance'
   );
 
