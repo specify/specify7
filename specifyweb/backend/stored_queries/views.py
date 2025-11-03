@@ -86,6 +86,7 @@ def query(request, id):
         sp_query = session.query(models.SpQuery).get(int(id))
         distinct = sp_query.selectDistinct
         series = sp_query.smushed
+        search_synonymy = sp_query.searchSynonymy
         tableid = sp_query.contextTableId
         count_only = sp_query.countOnly
 
@@ -99,6 +100,7 @@ def query(request, id):
             tableid=tableid, 
             distinct=distinct, 
             series=series,
+            search_synonymy=search_synonymy,
             count_only=count_only, 
             field_specs=field_specs, 
             limit=limit, 

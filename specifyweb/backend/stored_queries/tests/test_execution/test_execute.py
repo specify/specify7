@@ -232,6 +232,7 @@ class TestExecute(SQLAlchemySetup):
                 table.tableId,
                 distinct=False,
                 series=True,
+                search_synonymy=False,
                 count_only=True,
                 field_specs=query_fields,
                 limit=0,
