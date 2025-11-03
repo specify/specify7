@@ -465,6 +465,7 @@ exports[`queryFromTree 1`] = `
     "isfavorite": true,
     "name": "Collection Object using \\"Plate\\"",
     "ordinal": 32767,
+    "searchsynonymy": false,
     "selectdistinct": false,
     "smushed": false,
     "specifyuser": "/api/specify/specifyuser/2/",
