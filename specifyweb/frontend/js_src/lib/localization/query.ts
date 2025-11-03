@@ -136,7 +136,7 @@ export const queryText = createDictionary({
     'es-es':
       'Hay campos sin completar en la definición de la consulta. ¿Desea eliminarlos?',
     'fr-fr':
-      'Il y a des champs incomplets dans la définition de la requête. Voulez-vous les supprimer ?',
+      'La définition de la requête contient des champs incomplets. Voulez-vous les supprimer ?',
     'uk-ua': 'У визначенні запиту є незаповнені поля. Ви хочете видалити їх?',
     'de-ch':
       'Die Abfragedefinition enthält unvollständige Felder. Möchten Sie diese entfernen?',
@@ -717,7 +717,7 @@ export const queryText = createDictionary({
     'fr-fr': "Synonyme d'arbre",
     'uk-ua': 'Синонімізувати дерево',
     'de-ch': 'Baum synonymisieren',
-    'pt-br': 'Árvore Sinonímia',
+    'pt-br': 'Sinonímia de árvore',
   },
   treeDesynonymize: {
     comment: 'Audit Log Action Type',
@@ -816,7 +816,7 @@ export const queryText = createDictionary({
     'fr-fr': 'Année',
     'ru-ru': 'Год',
     'uk-ua': 'рік',
-    'pt-br': '',
+    'pt-br': 'Ano',
   },
   relativeDate: {
     comment: `
