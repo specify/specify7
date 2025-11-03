@@ -12,6 +12,7 @@ import { userText } from '../../localization/user';
 import type { Language } from '../../localization/utils/config';
 import { devLanguage, LANGUAGE } from '../../localization/utils/config';
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { parseDjangoDump } from '../../utils/ajax/csrfToken';
 import type { RA } from '../../utils/types';
 import { ErrorMessage } from '../Atoms';
@@ -43,6 +44,37 @@ export function Login(): JSX.Element {
     ),
     true
   );
+  const [loginNotice] = useAsyncState(
+    React.useCallback(async () => {
+      try {
+        const { data, status } = await ajax<{ readonly message: string }>(
+          '/context/login_notice/',
+          {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
+            },
+            errorMode: 'silent',
+            expectedErrors: [Http.NO_CONTENT],
+          }
+        );
+        if (status === Http.NO_CONTENT) return undefined;
+        return data?.message ?? undefined;
+      } catch (error) {
+        if (
+          typeof error === 'object' &&
+          error !== null &&
+          'response' in error &&
+          (error as { readonly response?: Response }).response?.status ===
+            Http.NO_CONTENT
+        )
+          return undefined;
+        console.error('Failed to fetch login notice:', error);
+        return undefined;
+      }
+    }, []),
+    false
+  );
 
   return React.useMemo(() => {
     const nextUrl = parseDjangoDump<string>('next-url') ?? '/specify/';
@@ -61,6 +93,7 @@ export function Login(): JSX.Element {
           languages: parseDjangoDump('languages') ?? [],
           csrfToken: parseDjangoDump('csrf-token') ?? '',
         }}
+        loginNotice={loginNotice}
         nextUrl={
           // REFACTOR: use parseUrl() and formatUrl() instead
           nextUrl.startsWith(nextDestination)
@@ -78,6 +111,7 @@ export function Login(): JSX.Element {
           languages: parseDjangoDump('languages') ?? [],
           csrfToken: parseDjangoDump('csrf-token') ?? '',
         }}
+        loginNotice={loginNotice}
         nextUrl={
           nextUrl.startsWith(nextDestination)
             ? nextUrl
@@ -85,10 +119,23 @@ export function Login(): JSX.Element {
         }
       />
     );
-  }, [isNewUser]);
+  }, [isNewUser, loginNotice]);
 }
 
 const nextDestination = '/accounts/choose_collection/?next=';
+
+export function LoginNoticeBanner({
+  notice,
+}: {
+  readonly notice?: string;
+}): JSX.Element | null {
+  if (typeof notice !== 'string' || notice.trim().length === 0) return null;
+  return (
+    <div className="mb-6 max-h-[180px] overflow-y-scroll pr-2 text-sm leading-relaxed text-gray-900 [&_a]:text-blue-600 [&_a]:underline dark:text-neutral-100 dark:[&_a]:text-blue-400">
+      <div dangerouslySetInnerHTML={{ __html: notice }} />
+    </div>
+  );
+}
 
 export function LoginLanguageChooser({
   languages,
@@ -115,6 +162,7 @@ export function LoginLanguageChooser({
 function LegacyLogin({
   data,
   nextUrl,
+  loginNotice,
 }: {
   readonly data: {
     readonly formErrors: RA<string>;
@@ -130,6 +178,7 @@ function LegacyLogin({
     readonly csrfToken: string;
   };
   readonly nextUrl: string;
+  readonly loginNotice?: string;
 }): JSX.Element {
   const [formErrors] = React.useState(data.formErrors);
 
@@ -140,6 +189,7 @@ function LegacyLogin({
 
   return (
     <SplashScreen>
+      <LoginNoticeBanner notice={loginNotice} />
       <Label.Block>
         {commonText.language()}
         <LoginLanguageChooser languages={data.languages} />

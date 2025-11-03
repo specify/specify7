@@ -15,7 +15,7 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { SplashScreen } from '../Core/SplashScreen';
 import { formatUrl } from '../Router/queryString';
-import { LoginLanguageChooser } from './index';
+import { LoginLanguageChooser, LoginNoticeBanner } from './index';
 
 export type OicProvider = {
   readonly provider: string;
@@ -25,6 +25,7 @@ export type OicProvider = {
 export function OicLogin({
   data,
   nextUrl,
+  loginNotice,
 }: {
   readonly data: {
     readonly inviteToken: '' | { readonly username: string };
@@ -33,12 +34,14 @@ export function OicLogin({
     readonly csrfToken: string;
   };
   readonly nextUrl: string;
+  readonly loginNotice?: string;
 }): JSX.Element {
   const providerRef = React.useRef<HTMLInputElement | null>(null);
   const formRef = React.useRef<HTMLFormElement | null>(null);
   const [next = ''] = useSearchParameter('next');
   return (
     <SplashScreen>
+      <LoginNoticeBanner notice={loginNotice} />
       <LoginLanguageChooser languages={data.languages} />
       <Form forwardRef={formRef} method="post">
         {typeof data.inviteToken === 'object' && (

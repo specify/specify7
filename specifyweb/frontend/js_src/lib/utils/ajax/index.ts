@@ -114,7 +114,7 @@ export async function ajax<RESPONSE_TYPE = string>(
   /**
    * When running in a test environment, mock the calls rather than make
    * actual requests
-  */
+   */
   // REFACTOR: replace this with a mock
   if (process.env.NODE_ENV === 'test') {
     if (ajaxMockModulePromise === undefined)

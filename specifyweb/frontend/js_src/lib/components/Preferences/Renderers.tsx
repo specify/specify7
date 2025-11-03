@@ -333,12 +333,9 @@ export function DefaultPreferenceItemRender({
           </option>
         ))}
       </Select>
-      {f.maybe(
-        selectedValueDefinition?.description,
-        (description) => (
-          <p>{description}</p>
-        )
-      )}
+      {f.maybe(selectedValueDefinition?.description, (description) => (
+        <p>{description}</p>
+      ))}
     </>
   ) : parser?.type === 'checkbox' ? (
     <Input.Checkbox

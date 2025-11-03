@@ -156,12 +156,11 @@ function Preferences({
             (prefType === 'global'
               ? saveGlobalPreferences()
               : basePreferences.awaitSynced()
+            ).then(() =>
+              needsRestart
+                ? globalThis.location.assign('/specify/')
+                : navigate('/specify/')
             )
-              .then(() =>
-                needsRestart
-                  ? globalThis.location.assign('/specify/')
-                  : navigate('/specify/')
-              )
           )
         }
       >

@@ -16,7 +16,8 @@ import {
 } from './globalPreferencesUtils';
 
 export async function saveGlobalPreferences(): Promise<void> {
-  const rawValues = globalPreferences.getRaw() as Partial<GlobalPreferenceValues>;
+  const rawValues =
+    globalPreferences.getRaw() as Partial<GlobalPreferenceValues>;
   const fallback = getGlobalPreferenceFallback();
   const metadata = getGlobalPreferencesMetadata();
 

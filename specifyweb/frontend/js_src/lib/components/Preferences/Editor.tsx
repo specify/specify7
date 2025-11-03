@@ -34,9 +34,7 @@ type PreferencesEditorConfig<DEFINITIONS extends GenericPreferences> = {
   readonly dependencyResolver?: (
     inputs: EditorDependencies
   ) => React.DependencyList;
-  readonly parse?: (
-    data: string | null
-  ) => {
+  readonly parse?: (data: string | null) => {
     readonly raw: PartialPreferences<DEFINITIONS>;
     readonly metadata?: unknown;
   };
@@ -59,7 +57,9 @@ const parseJsonPreferences = <DEFINITIONS extends GenericPreferences>(
   readonly raw: PartialPreferences<DEFINITIONS>;
   readonly metadata?: undefined;
 } => ({
-  raw: JSON.parse(data === null || data.length === 0 ? '{}' : data) as PartialPreferences<DEFINITIONS>,
+  raw: JSON.parse(
+    data === null || data.length === 0 ? '{}' : data
+  ) as PartialPreferences<DEFINITIONS>,
 });
 
 const serializeJsonPreferences = <DEFINITIONS extends GenericPreferences>(
@@ -80,7 +80,9 @@ const parseGlobalPreferenceData = (
 } => {
   const { raw, metadata } = parseGlobalPreferences(data);
   return {
-    raw: raw as unknown as PartialPreferences<typeof globalPreferenceDefinitions>,
+    raw: raw as unknown as PartialPreferences<
+      typeof globalPreferenceDefinitions
+    >,
     metadata,
   };
 };
@@ -122,8 +124,7 @@ function createPreferencesEditor<DEFINITIONS extends GenericPreferences>(
     const dependencies = dependencyResolver({ data, onChange });
     const parse =
       config.parse ??
-      ((rawData: string | null) =>
-        parseJsonPreferences<DEFINITIONS>(rawData));
+      ((rawData: string | null) => parseJsonPreferences<DEFINITIONS>(rawData));
     const serialize =
       config.serialize ??
       ((raw: PartialPreferences<DEFINITIONS>, metadata: unknown) =>
@@ -149,14 +150,17 @@ function createPreferencesEditor<DEFINITIONS extends GenericPreferences>(
           syncChanges: false,
         });
 
-        preferences.setRaw(initialRaw as PartialPreferences<GenericPreferences> as PartialPreferences<DEFINITIONS>);
+        preferences.setRaw(
+          initialRaw as PartialPreferences<GenericPreferences> as PartialPreferences<DEFINITIONS>
+        );
 
         preferences.events.on('update', () => {
           const result = serialize(
             preferences.getRaw() as PartialPreferences<DEFINITIONS>,
             metadataRef.current
           );
-          if (result.metadata !== undefined) metadataRef.current = result.metadata;
+          if (result.metadata !== undefined)
+            metadataRef.current = result.metadata;
           onChange(result.data);
         });
 
@@ -219,8 +223,10 @@ export const CollectionPreferencesEditor = createPreferencesEditor({
   developmentGlobal: 'editingCollectionPreferences',
   prefType: 'collection',
   dependencyResolver: ({ data, onChange }) => [data, onChange],
-  parse: (data) => parseJsonPreferences<typeof collectionPreferenceDefinitions>(data),
-  serialize: (raw) => serializeJsonPreferences<typeof collectionPreferenceDefinitions>(raw),
+  parse: (data) =>
+    parseJsonPreferences<typeof collectionPreferenceDefinitions>(data),
+  serialize: (raw) =>
+    serializeJsonPreferences<typeof collectionPreferenceDefinitions>(raw),
 });
 
 export const GlobalPreferencesEditor = createPreferencesEditor({

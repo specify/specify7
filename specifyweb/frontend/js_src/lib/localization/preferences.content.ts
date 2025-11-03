@@ -185,6 +185,31 @@ export const preferencesContentDictionary = {
     'uk-ua': 'Додайте рядок пошуку на головну сторінку',
     'pt-br': 'Adicionar barra de pesquisa na página inicial',
   },
+  loginPageNotice: {
+    'en-us': 'Login Page Notice',
+  },
+  loginPageNoticeDescription: {
+    'en-us':
+      'Show a short message above the login form for all users of this institution.',
+  },
+  loginPageNoticeEnabled: {
+    'en-us': 'Show on login page',
+  },
+  loginPageNoticePlaceholder: {
+    'en-us': 'Welcome to Specify. Please contact the admin desk for assistance.',
+  },
+  loginPageNoticeSaving: {
+    'en-us': 'Saving notice…',
+  },
+  loginPageNoticeSaved: {
+    'en-us': 'Login notice saved.',
+  },
+  loginPageNoticeLoadError: {
+    'en-us': 'Unable to load the current login notice.',
+  },
+  loginPageNoticeSaveError: {
+    'en-us': 'Unable to save the login notice. Please try again.',
+  },
 } as const;
 
 export const preferencesContentText = createDictionary(
