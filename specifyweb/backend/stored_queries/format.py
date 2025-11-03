@@ -41,10 +41,10 @@ Agent_model = datamodel.get_table('Agent')
 Spauditlog_model = datamodel.get_table('SpAuditLog')
 
 class ObjectFormatterProps(NamedTuple):
-    format_agent_type: bool = False,
-    format_picklist: bool = False,
-    format_types: bool = True,
-    numeric_catalog_number: bool = True,
+    format_agent_type: bool = False
+    format_picklist: bool = False
+    format_types: bool = True
+    numeric_catalog_number: bool = True
     # format_expr determines if make_expr should call _fieldformat, like in versions before 7.10.2.
     # Batch edit expects it to be false to correctly handle some edge cases.
     format_expr: bool = False
