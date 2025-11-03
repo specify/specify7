@@ -354,7 +354,10 @@ def domain(request):
 
 
 def _get_login_notice() -> LoginNotice:
-    notice, _created = LoginNotice.objects.get_or_create(id=1)
+    notice, _created = LoginNotice.objects.get_or_create(
+        scope='login',
+        defaults={'content': '', 'is_enabled': False},
+    )
     return notice
 
 
@@ -365,7 +368,7 @@ def login_notice(request):
     Public endpoint that returns the sanitized login notice HTML.
     """
 
-    notice = LoginNotice.objects.filter(is_enabled=True).first()
+    notice = LoginNotice.objects.filter(scope='login', is_enabled=True).first()
     if notice is None:
         return HttpResponse(status=204)
 

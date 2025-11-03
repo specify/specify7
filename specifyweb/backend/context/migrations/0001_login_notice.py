@@ -13,13 +13,18 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='LoginNotice',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('sp_global_messages_id', models.AutoField(db_column='SpGlobalMessagesID', primary_key=True, serialize=False)),
+                ('scope', models.TextField(default='login')),
                 ('content', models.TextField(blank=True, default='')),
                 ('is_enabled', models.BooleanField(default=False)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
             ],
             options={
-                'db_table': 'login_notice',
+                'db_table': 'spglobalmessages',
             },
+        ),
+        migrations.AddConstraint(
+            model_name='loginnotice',
+            constraint=models.UniqueConstraint(fields=('scope',), name='spglobalmessages_scope_unique'),
         ),
     ]
