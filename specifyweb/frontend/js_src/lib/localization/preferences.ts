@@ -522,7 +522,7 @@ export const preferencesText = createDictionary({
   treeSearchAlgorithm: {
     'en-us': 'Search Algorithm (for relationships with tree tables)',
     'ru-ru': 'Алгоритм поиска (для связей с древовидными таблицами)',
-    'es-es': 'Algoritmo de búsqueda (para relaciones con tablas de árboles)',
+    'es-es': 'Algoritmo de búsqueda (para relaciones con tablas de árbol)',
     'fr-fr':
       'Algorithme de recherche (pour les relations avec les tables arborescentes)',
     'uk-ua': 'Алгоритм пошуку (для зв’язків із деревоподібними таблицями)',
@@ -1559,7 +1559,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Utilice la coma como delimitador',
     'fr-fr': 'Utiliser la virgule comme délimiteur',
     'uk-ua': 'Використовуйте кому як роздільник',
-    'de-ch': 'Verwenden Sie Kommas als Trennzeichen',
+    'de-ch': 'Verwenden Sie Kommas als Trennzeichen.',
     'pt-br': 'Use vírgula como delimitador',
   },
   useNewLineAsDelimiter: {
@@ -2091,16 +2091,16 @@ export const preferencesText = createDictionary({
     'en-us':
       'Catalog Number field need to be unique across Component and CO tables',
     'de-ch':
-      'Das Feld „Katalognummer“ muss in allen Komponenten- und CO-Tabellen eindeutig sein',
+      'Das Feld „Katalognummer“ muss in allen Komponenten- und CO-Tabellen eindeutig sein.',
     'es-es':
-      'El campo Número de catálogo debe ser único en las tablas de componentes y CO',
+      'El campo Número de catálogo debe ser único en las tablas de componentes y CO.',
     'fr-fr':
       'Le champ Numéro de catalogue doit être unique dans les tables Composant et CO',
     'pt-br':
-      'O campo Número de catálogo precisa ser exclusivo nas tabelas Componente e CO',
+      'O campo Número de Catálogo precisa ser único em todas as tabelas de Componente e CO.',
     'ru-ru':
       'Поле «Номер каталога» должно быть уникальным в таблицах «Компонент» и «CO».',
     'uk-ua':
-      'Поле «Номер у каталозі» має бути унікальним у таблицях «Компонент» та «CO».',
+      'Поле «Номер у каталозі» має бути унікальним у таблицях «Компонент» та «CO»',
   },
 } as const);

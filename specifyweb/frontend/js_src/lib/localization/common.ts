@@ -341,7 +341,7 @@ export const commonText = createDictionary({
     'fr-fr': 'Ouvrir dans un nouvel onglet',
     'uk-ua': 'Відкрити в новій вкладці',
     'de-ch': 'Öffnet sich in einer neuen Registerkarte',
-    'pt-br': 'Abrir em nova aba',
+    'pt-br': 'Abrir em Nova Aba',
   },
   goToHomepage: {
     'en-us': 'Go to Home Page',
@@ -350,7 +350,7 @@ export const commonText = createDictionary({
     'fr-fr': "Accéder à la page d'accueil",
     'uk-ua': 'Перейдіть на домашню сторінку',
     'de-ch': 'Zur Startseite gehen',
-    'pt-br': 'Ir para a página inicial',
+    'pt-br': 'Ir Para a Página Inicial',
   },
   actions: {
     'en-us': 'Actions',
@@ -368,7 +368,7 @@ export const commonText = createDictionary({
     'fr-fr': 'Choisir une collection',
     'uk-ua': 'Виберіть колекцію',
     'de-ch': 'Sammlung auswählen',
-    'pt-br': 'Escolha a coleção',
+    'pt-br': 'Escolha a Coleção',
   },
   ascending: {
     comment: 'As in "Ascending sort"',
@@ -710,6 +710,12 @@ export const commonText = createDictionary({
   countLineOrMore: {
     comment: 'Example usage: Record Sets (1,234+)',
     'en-us': '{resource:string} ({count:number|formatted}+)',
+    'de-ch': '{resource:string} ({count:number|formatted}+)',
+    'es-es': '{resource:string} ({count:number|formatted}+)',
+    'fr-fr': '{resource:string} ({count:number|formatted}+)',
+    'pt-br': '{resource:string} ({count:number|formatted}+)',
+    'ru-ru': '{resource:string} ({count:number|formatted}+)',
+    'uk-ua': '{resource:string} ({count:number|formatted}+)',
   },
   jsxCountLine: {
     comment: 'Example usage: Record Sets (1,234)',
@@ -829,13 +835,13 @@ export const commonText = createDictionary({
     'fr-fr': 'Choisissez des fichiers ou faites-les glisser ici',
     'ru-ru': 'Выберите файлы или перетащите их сюда',
     'uk-ua': 'Виберіть файли або перетягніть їх сюди',
-    'pt-br': 'Selecione os arquivos ou arraste-os para cá',
+    'pt-br': 'Selecione os arquivos ou arraste-os aqui',
   },
   zoom: {
     'en-us': 'Zoom',
     'fr-fr': 'Zoom',
     'de-ch': 'Zoom',
-    'es-es': 'Zoom',
+    'es-es': 'Ampliar',
     'pt-br': 'Ampliação',
     'ru-ru': 'Увеличить',
     'uk-ua': 'Збільшити масштаб',
