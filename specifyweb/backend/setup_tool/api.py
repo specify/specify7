@@ -1,3 +1,8 @@
+"""
+API for creating database setup resources (Institution, Discipline, etc.).
+These will be called in the correct order by the background setup task in setup_tasks.py.
+"""
+
 import json
 from django.http import (JsonResponse)
 from django.db.models import Max
@@ -211,7 +216,7 @@ def create_discipline(data):
     geologictimeperiodtreedef = resolve_uri_or_fallback(geologictimeperiodtreedef_url, None, Geologictimeperiodtreedef)
 
     if geographytreedef is None or geologictimeperiodtreedef is None:
-        raise SetupError("A Geography tree and Chronostratigraphy tree must exist before creating an institution.")
+        raise SetupError("A Geography tree and Chronostratigraphy tree must exist before creating a discipline.")
 
     data.update({
         'datatype_id': datatype.id,

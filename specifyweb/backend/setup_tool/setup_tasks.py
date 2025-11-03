@@ -1,10 +1,15 @@
-from specifyweb.celery_tasks import LogErrorsTask, app
+"""
+A Celery task for setting up the database in the background.
+"""
+
+from specifyweb.celery_tasks import app
 from typing import Tuple, Optional
 from celery.result import AsyncResult
 from specifyweb.backend.setup_tool import api
 from django.db import transaction
 import threading
 from specifyweb.specify.models_utils.model_extras import PALEO_DISCIPLINES, GEOLOGY_DISCIPLINES
+import traceback
 
 from uuid import uuid4
 import logging
@@ -139,7 +144,10 @@ def setup_database_task(self, data: dict):
             update_progress()
     except Exception as e:
         logger.exception(f'Error setting up database: {e}')
-        self.update_state(state='FAILURE', meta={'error': str(e)})
+        self.update_state(state='PROGRESS', meta={
+            'error': str(e),
+        })
+        set_last_setup_error(str(e)) # This does nothing.
         raise
 
 def get_last_setup_error() -> Optional[str]:

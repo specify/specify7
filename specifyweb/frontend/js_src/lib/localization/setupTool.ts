@@ -13,8 +13,8 @@ export const setupToolText = createDictionary({
     'en-us': 'Specify Configuration Setup',
   },
 
-  saveAndContinue: {
-    'en-us': 'Save & Continue',
+  progress: {
+    'en-us': 'Progress:',
   },
 
   overview: {
@@ -29,6 +29,7 @@ export const setupToolText = createDictionary({
     'en-us': 'An error occurred during the last setup attempt.',
   },
 
+  // Institution
   institution: {
     'en-us': 'Institution',
   },
@@ -56,10 +57,12 @@ export const setupToolText = createDictionary({
     'en-us': 'The address of the institution. Optional.',
   },
 
+  // Storage Tree
   storageTree: {
     'en-us': 'Storage Tree',
   },
 
+  // Geography Tree
   globalGeographyTree: {
     'en-us': 'Global Geography Tree',
   },
@@ -68,22 +71,27 @@ export const setupToolText = createDictionary({
     'en-us': 'Geography Tree',
   },
 
+  // Division
   division: {
     'en-us': 'Division',
   },
 
+  // Discipline
   discipline: {
     'en-us': 'Discipline',
   },
 
+  // Taxon Tree
   taxonTree: {
     'en-us': 'Taxon Tree',
   },
 
+  // Collection
   collection: {
     'en-us': 'Collection',
   },
 
+  // Specify User
   specifyUser: {
     'en-us': 'Specify User',
   },

@@ -8,7 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 def create_default_tree(name: str, kwargs: dict, ranks: dict):
-    """Creates an initial empty tree. This should not be used outside of the database setup."""
+    """Creates an initial empty tree. This should not be used outside of the initial database setup."""
     with transaction.atomic():
         tree_def_model, tree_rank_model, tree_node_model = get_models(name)
 

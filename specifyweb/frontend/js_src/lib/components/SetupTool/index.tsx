@@ -453,12 +453,21 @@ export function SetupTool({
                 <Button.Secondary className="self-start" onClick={handleBack}>
                   {commonText.back()}
                 </Button.Secondary>
-                <Submit.Save className="self-start" form={id('form')}>
-                  {setupToolText.saveAndContinue()}
-                </Submit.Save>
+                {
+                  (currentStep === resources.length - 1) ? 
+                  <Submit.Save className="self-start" form={id('form')}>
+                    {commonText.create()}
+                  </Submit.Save>
+                  :
+                  <Submit.Save className="self-start" form={id('form')}>
+                    {commonText.next()}
+                  </Submit.Save>
+                }
+                
               </div>
             </Container.Center>
             <Container.Center className="p-3 shadow-md max-w-lg">
+              <p className="text-md mb-4">{setupToolText.progress()}</p>
               <Progress max={stepOrder.length} value={currentStep} />
             </Container.Center>
             {setupError === undefined ? undefined : (

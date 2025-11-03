@@ -8,7 +8,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 def resolve_uri_or_fallback(uri: Optional[str], id: Optional[int], table: Type[DjangoModel]) -> Optional[DjangoModel]:
-    """Retrieves a record from a URI or ID, falling back to the last created record if it exists."""
+    """
+    Retrieves a record from a URI or ID, falling back to the last created record if it exists.
+    """
     if uri is not None:
         # Try to resolve uri. It must be valid.
         try:
