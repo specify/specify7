@@ -19,7 +19,8 @@ _SCHEMA_COMPONENTS = {
                 "collection": {"type": "boolean"},
                 "specifyUser": {"type": "boolean"}
             },
-            "required": [],
+            "required": ["institution", "storageTreeDef", "globalTreeDef", "division", "discipline",
+                         "geographyTreeDef", "taxonTreeDef", "collection", "specifyUser"],
             "description": "A list of which required database resources have been created so far."
         },
         "SetupProgress": {

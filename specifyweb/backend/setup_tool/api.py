@@ -100,7 +100,7 @@ def handle_request(request, create_resource, direct=False):
 
 def setup_database(request, direct=False):
     """Creates all database setup resources sequentially in the background. Atomic."""
-    # Check permission and only allow POST requests
+    # Check permission
     if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
     

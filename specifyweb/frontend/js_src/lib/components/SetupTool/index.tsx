@@ -22,6 +22,7 @@ import { loadingBar } from '../Molecules';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
 import type { FieldConfig, ResourceConfig } from './setupResources';
 import { FIELD_MAX_LENGTH, resources } from './setupResources';
+import { flattenAllResources } from './utils';
 
 type ResourceFormData = Record<string, any>;
 
@@ -37,6 +38,26 @@ const stepOrder: RA<keyof SetupResources> = [
   'specifyUser',
 ];
 
+function checkFormCondition(
+  formData: ResourceFormData,
+  resource: ResourceConfig,
+): boolean {
+  if (resource.condition === undefined) {
+    return true;
+  }
+  let pass = true;
+  for (const [resourceName, fields] of Object.entries(resource.condition)) {
+    for (const [fieldName, requiredValue] of Object.entries(fields)) {
+      if (formData[resourceName][fieldName] !== requiredValue) {
+        pass = false;
+        break;
+      }
+    }
+    if (!pass) break;
+  }
+  return pass
+}
+
 function findNextStep(
   currentStep: number,
   formData: ResourceFormData,
@@ -49,20 +70,8 @@ function findNextStep(
   let step = currentStep + direction;
   while (step >= 0 && step < resources.length) {
     const resource = resources[step];
-    if (resource.condition === undefined) {
-      return step;
-    }
     // Check condition
-    let pass = true;
-    for (const [resourceName, fields] of Object.entries(resource.condition)) {
-      for (const [fieldName, requiredValue] of Object.entries(fields)) {
-        if (formData[resourceName][fieldName] !== requiredValue) {
-          pass = false;
-          break;
-        }
-      }
-      if (!pass) break;
-    }
+    const pass = checkFormCondition(formData, resource);
     if (pass) return step;
     step += direction;
   }
@@ -507,8 +516,9 @@ function SetupOverview({
           {resources.map((resource, step) => {
             // Display only the forms that have been visited.
             if (
-              Object.keys(formData[resource.resourceName]).length > 0 ||
-              step <= currentStep
+              (Object.keys(formData[resource.resourceName]).length > 0 ||
+              step <= currentStep) &&
+              checkFormCondition(formData, resource)
             ) {
               return (
                 <React.Fragment key={resource.resourceName}>
@@ -553,26 +563,4 @@ function SetupOverview({
       </table>
     </div>
   );
-}
-
-// Turn 'table.field' keys to nested objects to send to the backend
-function flattenToNested(data: Record<string, any>): Record<string, any> {
-  const result: Record<string, any> = {};
-  Object.entries(data).forEach(([key, value]) => {
-    if (key.includes('.')) {
-      const [prefix, field] = key.split('.', 2);
-      result[prefix] ||= {};
-      result[prefix][field] = value;
-    } else {
-      result[key] = value;
-    }
-  });
-  return result;
-}
-function flattenAllResources(data: Record<string, any>): Record<string, any> {
-  const result: Record<string, any> = {};
-  Object.entries(data).forEach(([key, value]) => {
-    result[key] = flattenToNested(value);
-  });
-  return result;
 }
