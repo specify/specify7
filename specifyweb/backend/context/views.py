@@ -33,10 +33,12 @@ from specifyweb.specify.models_utils.serialize_datamodel import datamodel_to_jso
 from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.utils.specify_jar import specify_jar
 from specifyweb.specify.views import login_maybe_required, openapi
+from .models import LoginNotice
 from .app_resource import get_app_resource, FORM_RESOURCE_EXCLUDED_LST
 from .remote_prefs import get_remote_prefs
 from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_views
+from .sanitizers import sanitize_login_notice_html
 
 
 def set_collection_cookie(response, collection_id): # pragma: no cover
@@ -349,6 +351,80 @@ def domain(request):
     }
 
     return HttpResponse(json.dumps(domain), content_type='application/json')
+
+
+def _get_login_notice() -> LoginNotice:
+    notice, _created = LoginNotice.objects.get_or_create(id=1)
+    return notice
+
+
+@require_http_methods(['GET'])
+@cache_control(max_age=60, public=True)
+def login_notice(request):
+    """
+    Public endpoint that returns the sanitized login notice HTML.
+    """
+
+    notice = LoginNotice.objects.filter(is_enabled=True).first()
+    if notice is None:
+        return HttpResponse(status=204)
+
+    html = notice.content.strip()
+    if not html:
+        return HttpResponse(status=204)
+
+    return JsonResponse({'message': html})
+
+
+@login_maybe_required
+@require_http_methods(['GET', 'PUT'])
+@never_cache
+def manage_login_notice(request):
+    """
+    Allow institution administrators to view and update the login notice.
+    """
+
+    if not request.specify_user.is_admin():
+        return HttpResponseForbidden()
+
+    notice = _get_login_notice()
+
+    if request.method == 'GET':
+        return JsonResponse(
+            {
+                'enabled': notice.is_enabled and notice.content.strip() != '',
+                'content': notice.content,
+                'updated_at': notice.updated_at.isoformat(),
+            }
+        )
+
+    try:
+        payload = json.loads(request.body or '{}')
+    except json.JSONDecodeError:
+        return HttpResponseBadRequest('Invalid JSON payload.')
+
+    content = payload.get('content', '')
+    enabled = payload.get('enabled', False)
+
+    if not isinstance(content, str):
+        return HttpResponseBadRequest('"content" must be a string.')
+    if not isinstance(enabled, bool):
+        return HttpResponseBadRequest('"enabled" must be a boolean.')
+
+    sanitized = sanitize_login_notice_html(content)
+    is_enabled = enabled and sanitized.strip() != ''
+
+    notice.content = sanitized
+    notice.is_enabled = is_enabled
+    notice.save(update_fields=['content', 'is_enabled', 'updated_at'])
+
+    return JsonResponse(
+        {
+            'enabled': notice.is_enabled,
+            'content': notice.content,
+            'updated_at': notice.updated_at.isoformat(),
+        }
+    )
 
 @openapi(schema={
     "parameters": [
