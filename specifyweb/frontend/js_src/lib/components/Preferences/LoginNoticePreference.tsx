@@ -2,8 +2,8 @@ import React from 'react';
 
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
-import { Input, Label, Textarea } from '../Atoms/Form';
 import { ErrorMessage } from '../Atoms';
+import { Input, Label, Textarea } from '../Atoms/Form';
 import {
   fetchLoginNoticeSettings,
   updateLoginNoticeSettings,
@@ -48,8 +48,7 @@ export function useLoginNoticeEditor(): LoginNoticeEditorResult {
       })
       .catch((fetchError) => {
         console.error('Failed to load login notice settings', fetchError);
-        if (isMounted)
-          setError(preferencesText.loginPageNoticeLoadError());
+        if (isMounted) setError(preferencesText.loginPageNoticeLoadError());
       })
       .finally(() => {
         if (isMounted) setIsLoading(false);
@@ -66,16 +65,18 @@ export function useLoginNoticeEditor(): LoginNoticeEditorResult {
       initialRef.current.content !== state.content);
 
   const setEnabled = React.useCallback((enabled: boolean) => {
-    setState((prev) =>
-      typeof prev === 'object' ? { ...prev, enabled } : { enabled, content: '' }
+    setState((previous) =>
+      typeof previous === 'object'
+        ? { ...previous, enabled }
+        : { enabled, content: '' }
     );
   }, []);
 
   const setContent = React.useCallback((value: string) => {
-    setState((prev) =>
-      typeof prev === 'object'
+    setState((previous) =>
+      typeof previous === 'object'
         ? {
-            ...prev,
+            ...previous,
             content: value,
           }
         : { enabled: false, content: value }
@@ -162,10 +163,10 @@ export function LoginNoticeForm({
           <Textarea
             autoGrow
             disabled={isSaving}
-            onValueChange={onContentChange}
             placeholder={preferencesText.loginPageNoticePlaceholder()}
             rows={6}
             value={state.content}
+            onValueChange={onContentChange}
           />
           {isSaving && (
             <p>{savingLabel ?? preferencesText.loginPageNoticeSaving()}</p>

@@ -59,12 +59,12 @@ export function LoginNoticeOverlay(): JSX.Element {
       <LoginNoticeForm
       description={preferencesText.loginPageNoticeDescription()}
       error={error}
-      successMessage={
-        hasSaved ? preferencesText.loginPageNoticeSaved() : undefined
-      }
       isLoading={isLoading}
       isSaving={isSaving}
       state={state}
+      successMessage={
+        hasSaved ? preferencesText.loginPageNoticeSaved() : undefined
+      }
         onContentChange={(value) => {
           resetSaved();
           setContent(value);

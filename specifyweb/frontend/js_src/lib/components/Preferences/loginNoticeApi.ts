@@ -13,23 +13,29 @@ export type LoginNoticeUpdate = {
 };
 
 export async function fetchLoginNoticeSettings(): Promise<LoginNoticeSettings> {
-  const { data } = await ajax<LoginNoticeSettings>('/context/login_notice/manage/', {
-    method: 'GET',
-    headers: { Accept: 'application/json' },
-    errorMode: 'dismissible',
-  });
+  const { data } = await ajax<LoginNoticeSettings>(
+    '/context/login_notice/manage/',
+    {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      errorMode: 'dismissible',
+    }
+  );
   return data;
 }
 
 export async function updateLoginNoticeSettings(
   payload: LoginNoticeUpdate
 ): Promise<LoginNoticeSettings> {
-  const { data } = await ajax<LoginNoticeSettings>('/context/login_notice/manage/', {
-    method: 'PUT',
-    body: payload,
-    headers: { Accept: 'application/json' },
-    errorMode: 'dismissible',
-    expectedErrors: [Http.BAD_REQUEST, Http.FORBIDDEN],
-  });
+  const { data } = await ajax<LoginNoticeSettings>(
+    '/context/login_notice/manage/',
+    {
+      method: 'PUT',
+      body: payload,
+      headers: { Accept: 'application/json' },
+      errorMode: 'dismissible',
+      expectedErrors: [Http.BAD_REQUEST, Http.FORBIDDEN],
+    }
+  );
   return data;
 }
