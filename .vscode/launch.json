@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Django",
+      "type": "python",
+      "request": "attach",
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}/specifyweb",
+          "remoteRoot": "/opt/specify7/specifyweb"
+        }
+      ],
+      "port": 3000,
+      "host": "127.0.0.1",
+    },
+    {
+      "name": "Run Worker",
+      "type": "python",
+      "request": "attach",
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}/specifyweb",
+          "remoteRoot": "/opt/specify7/specifyweb"
+        }
+      ],
+      "port": 3001,
+      "host": "127.0.0.1",
+    }
+  ]
+}

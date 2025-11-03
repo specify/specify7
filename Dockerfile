@@ -260,7 +260,26 @@ USER specify
 
 COPY requirements-testing.txt /home/specify/
 
-# RUN ve/bin/pip install --no-cache-dir -r /home/specify/requirements-testing.txt
+RUN ve/bin/pip install --no-cache-dir -r /home/specify/requirements-testing.txt
+
+# RUN mkdir /opt/specify7/.vscode
+# RUN echo "[pytest]\nDJANGO_SETTINGS_MODULE=specifyweb.settings\npython_files=*test*.py testparsing.py\naddopts = --ignore=specifyweb/specify/selenium_tests.py" > /opt/specify7/specifyweb/pytest.ini 
+# RUN cat <<EOF > .vscode/settings.json
+# {
+# 	"python.pythonPath": "ve/bin/python/",
+# 	"python.testing.pytestArgs": [
+# 		"specifyweb",
+# 		"-s",
+# 		"-vv",
+# 		"-o",
+# 		"python_files=*test*.py"
+# 	],
+# 	"python.testing.pytestEnabled": true,
+# 	"python.testing.nosetestsEnabled": false,
+# 	"python.testing.unittestEnabled": false
+# }
+
+# EOF
 
 COPY mypy.ini ./
 
