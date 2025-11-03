@@ -100,6 +100,12 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
           hasPermission(`/tree/edit/${toLowerCase(treeName)}`, 'repair')
         ),
     },
+    loginNotice: {
+      title: preferencesText.loginPageNotice(),
+      url: '/specify/overlay/login-notice/',
+      icon: icons.informationCircle,
+      enabled: () => userInformation.isadmin,
+    },
     generateMasterKey: {
       title: userText.generateMasterKey(),
       url: '/specify/overlay/master-key/',

@@ -13,6 +13,7 @@ import { treeText } from '../../localization/tree';
 import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
+import { preferencesText } from '../../localization/preferences';
 import type { RA } from '../../utils/types';
 import { Redirect } from './Redirect';
 import type { EnhancedRoute } from './RouterUtils';
@@ -44,6 +45,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         element: () =>
           import('../Header/UserTools').then(
             ({ UserToolsOverlay }) => UserToolsOverlay
+          ),
+      },
+      {
+        path: 'login-notice',
+        title: preferencesText.loginPageNotice(),
+        element: () =>
+          import('../Preferences/LoginNoticeOverlay').then(
+            ({ LoginNoticeOverlay }) => LoginNoticeOverlay
           ),
       },
       {
