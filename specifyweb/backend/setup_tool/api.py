@@ -84,11 +84,9 @@ def _guided_setup_condition(request) -> bool:
 
 def handle_request(request, create_resource, direct=False):
     """Generic handler for any setup resource POST request."""
-    # Check permission and only allow POST requests
+    # Check permission
     if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
-    if request.method != 'POST':
-        return JsonResponse({"error": "Invalid request"}, status=400)
 
     raw_data = json.loads(request.body)
     data = normalize_keys(raw_data)
@@ -105,13 +103,11 @@ def setup_database(request, direct=False):
     # Check permission and only allow POST requests
     if not _guided_setup_condition(request):
         return JsonResponse({"error": "Not permitted"}, status=401)
-    if request.method != 'POST':
-        return JsonResponse({"error": "Invalid request"}, status=400)
     
     # Check that there isn't another setup task running.
     active_setup_task, busy = get_active_setup_task()
     if busy:
-        return JsonResponse({"error": "Database setup is already in progress."}, status=400)
+        return JsonResponse({"error": "Database setup is already in progress."}, status=409)
     
     try:
         logger.debug("Starting Database Setup.")

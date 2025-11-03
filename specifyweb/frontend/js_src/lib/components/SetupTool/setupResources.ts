@@ -363,7 +363,7 @@ export const resources: RA<ResourceConfig> = [
       {
         name: 'password',
         label: setupToolText.specifyUserPassword(),
-        description: setupToolText.specifyUserConfirmPasswordDescription(),
+        description: setupToolText.specifyUserPasswordDescription(),
         type: 'password',
         required: true,
         passwordRepeat: {
