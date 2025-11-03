@@ -327,7 +327,8 @@ export const statsText = createDictionary({
     'en-us': 'Auto-Refresh Rate (Hours)',
   },
   autoRefreshRateDescription: {
-    'en-us': 'The time interval, in hours, at which the statistics page will automatically refresh its data. Default is 24.',
+    'en-us':
+      'The time interval, in hours, at which the statistics page will automatically refresh its data. Default is 24.',
   },
 });
 /* eslint-enable @typescript-eslint/naming-convention */

@@ -21,10 +21,14 @@ export const FULL_DATE_FORMAT_OPTIONS = [
   'dd/MM/yyyy',
 ] as const;
 
-export const MONTH_YEAR_FORMAT_OPTIONS = ['YYYY-MM', 'MM/YYYY', 'YYYY/MM'] as const;
+export const MONTH_YEAR_FORMAT_OPTIONS = [
+  'YYYY-MM',
+  'MM/YYYY',
+  'YYYY/MM',
+] as const;
 
 export const globalPreferenceDefinitions = {
-formatting: {
+  formatting: {
     title: preferencesText.formatting(),
     subCategories: {
       formatting: {

@@ -301,15 +301,14 @@ export async function uploadFile(
 }
 
 async function getAttachmentPublicDefault(): Promise<boolean> {
-  const collectionPrefKey =
-    'attachment.is_public_default' as const;
+  const collectionPrefKey = 'attachment.is_public_default' as const;
   const collectionId = schema.domainLevelIds.collection;
   try {
     const collectionPreferences = await ensureCollectionPreferencesLoaded();
     const rawValue =
-      collectionPreferences
-        .getRaw()
-        ?.general?.attachments?.['attachment.is_public_default'];
+      collectionPreferences.getRaw()?.general?.attachments?.[
+        'attachment.is_public_default'
+      ];
     if (typeof rawValue === 'boolean') return rawValue;
     return collectionPreferences.get(
       'general',

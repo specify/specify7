@@ -1013,8 +1013,7 @@ export const preferencesBehaviorDictionary = {
     'en-us': 'Enable Audit Log',
   },
   enableAuditLogDescription: {
-    'en-us':
-      'Globally enables or disables the audit log for all collections.',
+    'en-us': 'Globally enables or disables the audit log for all collections.',
   },
   logFieldLevelChanges: {
     'en-us': 'Log field-level changes',
@@ -1027,19 +1026,22 @@ export const preferencesBehaviorDictionary = {
     'en-us': 'Full date format',
   },
   fullDateFormatDescription: {
-    'en-us': 'This determines the date format used for full dates in the WorkBench, queries, and data exports.',
+    'en-us':
+      'This determines the date format used for full dates in the WorkBench, queries, and data exports.',
   },
   monthYearDateFormat: {
     'en-us': 'Month/year date format',
   },
   monthYearDateFormatDescription: {
-    'en-us': 'Choose how partial dates that only include a month and year should be displayed.',
+    'en-us':
+      'Choose how partial dates that only include a month and year should be displayed.',
   },
   attachmentThumbnailSize: {
     'en-us': 'Attachment thumbnail size (px)',
   },
   attachmentThumbnailSizeDescription: {
-    'en-us': 'Set the pixel dimensions used when generating attachment preview thumbnails.',
+    'en-us':
+      'Set the pixel dimensions used when generating attachment preview thumbnails.',
   },
   rememberDialogSizes: {
     'en-us': 'Remember dialog window sizes',

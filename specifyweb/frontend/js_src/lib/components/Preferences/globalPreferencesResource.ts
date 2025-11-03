@@ -30,9 +30,7 @@ export const setGlobalPreferencesResourceId = (
   globalPreferencesResourceId = id;
 };
 
-export const buildGlobalPreferencesPayload = (
-  data: string
-): IR<unknown> =>
+export const buildGlobalPreferencesPayload = (data: string): IR<unknown> =>
   keysToLowerCase({
     name: 'GlobalPreferences',
     mimeType: 'text/plain',
@@ -69,16 +67,13 @@ export const upsertGlobalPreferencesResource = async ({
   }
 
   if (shouldCreate) {
-    const { data, status } = await ajax<ResourceResponse>(
-      GLOBAL_RESOURCE_URL,
-      {
-        method: 'POST',
-        body: payload,
-        headers: { Accept: 'application/json' },
-        errorMode,
-        expectedErrors: [Http.CREATED],
-      }
-    );
+    const { data, status } = await ajax<ResourceResponse>(GLOBAL_RESOURCE_URL, {
+      method: 'POST',
+      body: payload,
+      headers: { Accept: 'application/json' },
+      errorMode,
+      expectedErrors: [Http.CREATED],
+    });
     setGlobalPreferencesResourceId(
       status === Http.CREATED && typeof data?.id === 'number'
         ? data.id
