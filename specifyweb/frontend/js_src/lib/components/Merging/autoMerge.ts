@@ -150,8 +150,8 @@ function mergeField(
     // Pick the longest value
     return (
       Array.from(nonFalsyValues).sort(
-        sortFunction((string) =>
-          typeof string === 'string' ? string.length : 0,
+        sortFunction(
+          (string) => (typeof string === 'string' ? string.length : 0),
           true
         )
       )[0] ?? firstValue

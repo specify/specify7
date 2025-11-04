@@ -22,8 +22,8 @@ import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import { runAllFieldChecks } from '../DataModel/businessRules';
 import { addMissingFields } from '../DataModel/addMissingFields';
+import { runAllFieldChecks } from '../DataModel/businessRules';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchResource, resourceEvents } from '../DataModel/resource';
@@ -211,40 +211,36 @@ function Merging({
   const clones = sortedResources.slice(1);
 
   const [merged, setMerged] = useAsyncState(
-    React.useCallback(
-      async () => {
-        if (
-          records === undefined ||
-          initialRecords.current === undefined ||
-          target === undefined
-        )
-          return undefined;
+    React.useCallback(async () => {
+      if (
+        records === undefined ||
+        initialRecords.current === undefined ||
+        target === undefined
+      )
+        return undefined;
 
-        const shouldAutoPopulate = userPreferences.get(
-          'recordMerging',
-          'behavior',
-          'autoPopulate'
-        );
+      const shouldAutoPopulate = userPreferences.get(
+        'recordMerging',
+        'behavior',
+        'autoPopulate'
+      );
 
-        const mergedPayload = shouldAutoPopulate
-          ? await postMergeResource(
-              initialRecords.current,
-              autoMerge(table, initialRecords.current, false, target.id)
-            )
-          : addMissingFields(
-              table.name,
-              {} as Partial<SerializedResource<AnySchema>>
-            );
+      const mergedPayload = shouldAutoPopulate
+        ? await postMergeResource(
+            initialRecords.current,
+            autoMerge(table, initialRecords.current, false, target.id)
+          )
+        : addMissingFields(
+            table.name,
+            {} as Partial<SerializedResource<AnySchema>>
+          );
 
-        const mergedResource = deserializeResource(
-          mergedPayload as SerializedResource<AnySchema>
-        );
-        if (mergedPayload !== undefined)
-          await runAllFieldChecks(mergedResource);
-        return mergedResource;
-      },
-      [table, records, target]
-    ),
+      const mergedResource = deserializeResource(
+        mergedPayload as SerializedResource<AnySchema>
+      );
+      if (mergedPayload !== undefined) await runAllFieldChecks(mergedResource);
+      return mergedResource;
+    }, [table, records, target]),
     true
   );
 
