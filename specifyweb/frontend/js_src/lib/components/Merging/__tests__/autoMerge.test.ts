@@ -636,4 +636,17 @@ describe('autoMerge', () => {
       }
     `);
   });
+
+  test('prefers longest string values when auto populating', () => {
+    const merged = autoMerge(
+      tables.Agent,
+      [
+        addMissingFields('Agent', { lastName: '' }),
+        addMissingFields('Agent', { lastName: 'Longer Value' }),
+        addMissingFields('Agent', { lastName: 'Mid' }),
+      ] as unknown as RA<SerializedResource<AnySchema>>,
+      false
+    );
+    expect(merged.lastName).toBe('Longer Value');
+  });
 });

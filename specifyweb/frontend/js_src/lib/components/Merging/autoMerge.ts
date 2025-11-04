@@ -151,7 +151,8 @@ function mergeField(
     return (
       Array.from(nonFalsyValues).sort(
         sortFunction((string) =>
-          typeof string === 'string' ? string.length : 0
+          typeof string === 'string' ? string.length : 0,
+          true
         )
       )[0] ?? firstValue
     );
