@@ -3,7 +3,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0040_components'),
+        ('specify', '0041_add_missing_schema_after_reorganization'),
     ]
 
     operations = [
