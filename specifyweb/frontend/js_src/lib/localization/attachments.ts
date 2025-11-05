@@ -43,7 +43,7 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Настройте сервер вложений',
     'uk-ua': 'Налаштуйте сервер прикріплень',
     'de-ch': 'Richten Sie Ihren Attachment-Server ein',
-    'pt-br': 'Configure seu servidor de anexos',
+    'pt-br': 'Configure seu servidor de anexos.',
   },
   orderBy: {
     'en-us': 'Order By',
@@ -52,7 +52,7 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Trier par',
     'uk-ua': 'Сортувати по',
     'de-ch': 'Sortiere nach',
-    'pt-br': 'Ordenar por',
+    'pt-br': 'Ordem por',
   },
   uploadingInline: {
     'en-us': 'Uploading…',
@@ -61,7 +61,7 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Envoi en cours…',
     'uk-ua': 'Завантаження…',
     'de-ch': 'Am Hochladen…',
-    'pt-br': 'Enviando…',
+    'pt-br': 'Carregando…',
   },
   noAttachments: {
     'en-us': 'There are no attachments',
@@ -70,7 +70,7 @@ export const attachmentsText = createDictionary({
     'fr-fr': "Il n'y a pas de pièces jointes",
     'uk-ua': 'Прикріплень нема',
     'de-ch': 'Es gibt keine Anhänge',
-    'pt-br': 'Não há anexos',
+    'pt-br': 'Não há anexos.',
   },
   unableToFindRelatedRecord: {
     'en-us': 'Unable to find related record',
@@ -79,7 +79,7 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Не удалось найти связанную запись',
     'uk-ua': 'Неможливо знайти відповідний запис',
     'de-ch': 'Verknüpfter Datensatz kann nicht gefunden werden',
-    'pt-br': 'Não foi possível encontrar o registro relacionado',
+    'pt-br': 'Não foi possível encontrar o registro relacionado.',
   },
   unableToFindRelatedRecordDescription: {
     'en-us': 'Unable to find a record that this attachment is related to.',
@@ -92,7 +92,7 @@ export const attachmentsText = createDictionary({
     'de-ch':
       'Es konnte kein Datensatz gefunden werden, auf den sich dieser Anhang bezieht.',
     'pt-br':
-      'Não foi possível encontrar um registro ao qual este anexo esteja relacionado.',
+      'Não foi possível encontrar nenhum registro ao qual este anexo esteja relacionado.',
   },
   showForm: {
     'en-us': 'Show Form',
@@ -141,14 +141,15 @@ export const attachmentsText = createDictionary({
   },
   pleaseReselectAllFiles: {
     'en-us': 'Please reselect all files before uploading.',
-    'de-ch': 'Bitte wählen Sie vor dem Hochladen alle Dateien erneut aus.',
+    'de-ch': 'Bitte wählen Sie alle Dateien vor dem Hochladen erneut aus.',
     'es-es':
       'Por favor, vuelva a seleccionar todos los archivos antes de cargarlos.',
     'fr-fr':
       'Veuillez resélectionner tous les fichiers avant de les télécharger.',
     'ru-ru': 'Пожалуйста, повторно выберите все файлы перед загрузкой.',
     'uk-ua': 'Перед завантаженням повторно виберіть усі файли.',
-    'pt-br': 'Selecione novamente todos os arquivos antes de fazer o upload.',
+    'pt-br':
+      'Por favor, selecione todos os arquivos novamente antes de fazer o upload.',
   },
   incorrectFormatter: {
     'en-us': 'Incorrectly Formatted',
@@ -157,7 +158,7 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Incorrectement formaté',
     'ru-ru': 'Неправильно отформатировано',
     'uk-ua': 'Неправильно відформатований',
-    'pt-br': 'Formatado incorretamente',
+    'pt-br': 'Formatação incorreta',
   },
   alreadyUploaded: {
     'en-us': 'Already Uploaded',
@@ -166,13 +167,13 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Déjà téléchargé',
     'ru-ru': 'Уже загружено',
     'uk-ua': 'Вже завантажено',
-    'pt-br': 'Já carregado',
+    'pt-br': 'Já foi carregado',
   },
   skipped: {
     'en-us': 'Skipped',
     'de-ch': 'Übersprungen',
     'es-es': 'Omitido',
-    'fr-fr': 'Sauté',
+    'fr-fr': 'Omission',
     'ru-ru': 'Пропущено',
     'uk-ua': 'Пропущено',
     'pt-br': 'Ignorado',
@@ -188,7 +189,7 @@ export const attachmentsText = createDictionary({
   },
   frontEndInterruption: {
     'en-us': '{action:string} was in progress when interruption occurred',
-    'de-ch': '{action:string} war im Gange, als die Unterbrechung auftrat',
+    'de-ch': '{action:string} war im Gange, als es zu einer Unterbrechung kam.',
     'es-es':
       '{action:string} estaba en curso cuando se produjo la interrupción',
     'fr-fr':
@@ -196,7 +197,8 @@ export const attachmentsText = createDictionary({
     'ru-ru':
       '{action:string} был в процессе выполнения, когда произошло прерывание',
     'uk-ua': 'Виконувався {action:string}, коли сталася перерва',
-    'pt-br': '{action:string} estava em andamento quando a interrupção ocorreu',
+    'pt-br':
+      '{action:string} estava em andamento quando ocorreu a interrupção.',
   },
   matchError: {
     'en-us': 'Match Error',
@@ -218,9 +220,9 @@ export const attachmentsText = createDictionary({
   },
   unhandledFatalResourceError: {
     'en-us': 'Unhandled fatal resource error:',
-    'de-ch': 'Nicht behandelter schwerwiegender Ressourcenfehler:',
+    'de-ch': 'Unbehandelter schwerwiegender Ressourcenfehler:',
     'es-es': 'Error de recurso fatal no controlado:',
-    'fr-fr': 'Erreur de ressource fatale non gérée :',
+    'fr-fr': 'Erreur fatale de ressource non gérée :',
     'ru-ru': 'Необработанная фатальная ошибка ресурса:',
     'uk-ua': 'Необроблена критична помилка ресурсу:',
     'pt-br': 'Erro fatal de recurso não tratado:',
@@ -241,7 +243,7 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Nouveau jeu de données de pièces jointes {date: string}',
     'ru-ru': 'Новый набор данных о вложениях {дата: строка}',
     'uk-ua': 'Новий набір даних вкладень {date: string}',
-    'pt-br': 'Novo conjunto de dados de anexo {data: string}',
+    'pt-br': 'Novo conjunto de dados de anexos {date: string}',
   },
   newAttachmentDatasetBase: {
     'en-us': 'New Attachment Data Set',
@@ -250,7 +252,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Новий набір даних вкладення',
     'fr-fr': 'Nouveau jeu de données de pièces jointes',
     'ru-ru': 'Новый набор данных о вложениях',
-    'pt-br': 'Novo conjunto de dados de anexo',
+    'pt-br': 'Novo conjunto de dados de anexos',
   },
   uploadInterrupted: {
     'en-us': 'Upload Interrupted',
@@ -265,7 +267,7 @@ export const attachmentsText = createDictionary({
     'en-us':
       'The upload was in progress when an interruption occurred. Some files may have been uploaded.',
     'de-ch':
-      'Der Upload war im Gange, als es zu einer Unterbrechung kam. Möglicherweise wurden einige Dateien hochgeladen.',
+      'Der Upload war im Gange, als es zu einer Unterbrechung kam. Möglicherweise wurden einige Dateien bereits hochgeladen.',
     'es-es':
       'La carga estaba en curso cuando se produjo una interrupción. Es posible que se hayan cargado algunos archivos.',
     'fr-fr':
@@ -275,7 +277,7 @@ export const attachmentsText = createDictionary({
     'uk-ua':
       'Під час завантаження виникла перерва. Можливо, деякі файли було завантажено.',
     'pt-br':
-      'O upload estava em andamento quando ocorreu uma interrupção. Alguns arquivos podem ter sido enviados.',
+      'O carregamento estava em andamento quando ocorreu uma interrupção. Alguns arquivos podem ter sido carregados.',
   },
   rollbackInterrupted: {
     'en-us': 'Rollback Interrupted',
@@ -284,13 +286,13 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Retour en arrière interrompu',
     'ru-ru': 'Откат прерван',
     'uk-ua': 'Відкат перервано',
-    'pt-br': 'Rollback interrompido',
+    'pt-br': 'Reversão interrompida',
   },
   rollbackInterruptedDescription: {
     'en-us':
       'The rollback was in progress when an interruption occurred. Some files may have been deleted',
     'de-ch':
-      'Das Rollback war im Gange, als eine Unterbrechung auftrat. Einige Dateien wurden möglicherweise gelöscht',
+      'Der Rollback war im Gange, als es zu einer Unterbrechung kam. Einige Dateien wurden möglicherweise gelöscht.',
     'fr-fr':
       "Le retour en arrière était en cours lorsqu'une interruption s'est produite. Certains fichiers peuvent avoir été supprimés",
     'ru-ru':
@@ -300,7 +302,7 @@ export const attachmentsText = createDictionary({
     'es-es':
       'La reversión estaba en curso cuando se produjo una interrupción. Es posible que se hayan eliminado algunos archivos.',
     'pt-br':
-      'A reversão estava em andamento quando ocorreu uma interrupção. Alguns arquivos podem ter sido excluídos.',
+      'O processo de reversão estava em andamento quando ocorreu uma interrupção. Alguns arquivos podem ter sido excluídos.',
   },
   attachmentId: {
     'en-us': 'Attachment ID',
@@ -313,7 +315,7 @@ export const attachmentsText = createDictionary({
   },
   choosePath: {
     'en-us': 'Choose Path',
-    'de-ch': 'Pfad wählen',
+    'de-ch': 'Wähle den Weg',
     'es-es': 'Seleccione la ruta',
     'fr-fr': 'Choisir le chemin',
     'ru-ru': 'Выбрать путь',
@@ -322,27 +324,27 @@ export const attachmentsText = createDictionary({
   },
   beginAttachmentUpload: {
     'en-us': 'Begin Attachment Upload?',
-    'de-ch': 'Mit dem Hochladen des Anhangs beginnen?',
+    'de-ch': 'Anhang hochladen?',
     'es-es': '¿Comenzar a cargar archivos adjuntos?',
     'fr-fr': 'Commencer le téléchargement des pièces jointes ?',
     'ru-ru': 'Начать загрузку вложения?',
     'uk-ua': 'Почати завантаження вкладених файлів?',
-    'pt-br': 'Iniciar upload de anexo?',
+    'pt-br': 'Iniciar o envio do anexo?',
   },
   beginUploadDescription: {
     'en-us':
       'Uploading the attachments will make attachments in the asset server and in the Specify database',
     'de-ch':
-      'Durch das Hochladen der Anhänge werden Anhänge im Asset-Server und in der Specify-Datenbank erstellt.',
+      'Durch das Hochladen der Anhänge werden diese auf dem Asset-Server und in der Specify-Datenbank erstellt.',
     'es-es': 'Interrumpido. Reintentando en [X25X]',
     'fr-fr':
-      "Le téléchargement des pièces jointes créera des pièces jointes dans le serveur d'actifs et dans la base de données de spécification",
+      'Le chargement des pièces jointes les ajoutera au serveur de ressources et à la base de données Specification.',
     'ru-ru':
       'Загрузка вложений создаст вложения на сервере активов и в базе данных Specify.',
     'uk-ua':
       'Завантаження вкладень призведе до створення вкладень на сервері активів і в базі даних Specify',
     'pt-br':
-      'O upload dos anexos fará com que os anexos sejam criados no servidor de ativos e no banco de dados do Specify',
+      'O envio dos anexos os criará no servidor de ativos e no banco de dados especificado.',
   },
   interrupted: {
     'en-us': 'Interrupted',
@@ -355,7 +357,7 @@ export const attachmentsText = createDictionary({
   },
   tryNow: {
     'en-us': 'Try Now',
-    'de-ch': 'Jetzt testen',
+    'de-ch': 'Jetzt ausprobieren',
     'es-es': 'Probar ahora',
     'fr-fr': 'Essayez maintenant',
     'ru-ru': 'Попробуйте сейчас',
@@ -364,7 +366,7 @@ export const attachmentsText = createDictionary({
   },
   interruptedTime: {
     'en-us': 'Interrupted. Retrying in {remainingTime:string}',
-    'de-ch': 'Unterbrochen. Erneuter Versuch in {remainingTime:string}',
+    'de-ch': 'Unterbrechung. Wiederholungsversuch in {remainingTime:string}',
     'es-es': 'Interrumpido. Reintentando en {remainingTime:string}',
     'fr-fr': 'Interrompu. Réessayer dans {remainingTime:string}',
     'ru-ru': 'Прервано. Повторная попытка через {remainingTime:string}',
@@ -375,21 +377,21 @@ export const attachmentsText = createDictionary({
     'en-us':
       'Rollback will delete the attachments from the Specify database and Asset Server',
     'de-ch':
-      'Rollback löscht die Anhänge aus der Datenbank und dem Asset Server',
+      'Durch das Rollback werden die Anhänge aus der Specify-Datenbank und dem Asset-Server gelöscht.',
     'es-es':
       'La reversión eliminará los archivos adjuntos de la base de datos Specify y del servidor de activos.',
     'fr-fr':
-      "La restauration supprimera les pièces jointes de la base de données spécifiée et du serveur d'actifs.",
+      "La restauration supprimera les pièces jointes de la base de données Specification et du serveur d'actifs.",
     'ru-ru':
       'Откат приведет к удалению вложений из базы данных Specify и сервера Asset.',
     'uk-ua':
       'Відкат видалить вкладення з бази даних Specify і сервера ресурсів',
     'pt-br':
-      'A reversão excluirá os anexos do banco de dados Especificar e do Asset Server',
+      'A reversão excluirá os anexos do banco de dados especificado e do servidor de ativos.',
   },
   noMatch: {
     'en-us': 'No match',
-    'de-ch': 'Keine Übereinstimmung',
+    'de-ch': 'Kein Spiel',
     'es-es': 'Sin coincidencia',
     'fr-fr': 'Aucune correspondance',
     'ru-ru': 'Нет совпадений',
@@ -412,7 +414,7 @@ export const attachmentsText = createDictionary({
   },
   fetchNextAttachments: {
     'en-us': 'Look for more attachments',
-    'de-ch': 'Suchen Sie nach weiteren Anhängen',
+    'de-ch': 'Suchen Sie nach weiteren Anhängen.',
     'es-es': 'Buscar más adjuntos',
     'fr-fr': 'Rechercher plus de pièces jointes',
     'ru-ru': 'Найдите больше вложений',
@@ -485,21 +487,21 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Plusieurs correspondances',
     'ru-ru': 'Несколько совпадений',
     'uk-ua': 'Кілька збігів',
-    'pt-br': 'Várias correspondências',
+    'pt-br': 'Vários confrontos',
   },
   multipleMatchesClick: {
     'en-us': 'Multiple Matches. Click To Disambiguate',
     'de-ch':
-      'Mehrere Übereinstimmungen. Klicken Sie hier, um die Mehrdeutigkeit aufzuheben.',
+      'Mehrere Treffer. Klicken Sie hier, um die Begriffsbestimmungen aufzulösen.',
     'es-es': 'Múltiples coincidencias. Haga clic para eliminar la ambigüedad',
     'fr-fr': 'Plusieurs correspondances. Cliquez pour clarifier',
     'ru-ru': 'Несколько совпадений. Нажмите, чтобы устранить неоднозначность.',
     'uk-ua': 'Кілька збігів. Натисніть, щоб усунути неоднозначність',
-    'pt-br': 'Várias correspondências. Clique para desambiguar',
+    'pt-br': 'Vários resultados. Clique para desambiguar.',
   },
   totalFiles: {
     'en-us': 'Total files',
-    'de-ch': 'Gesamtzahl der Dateien',
+    'de-ch': 'Gesamtdateien',
     'es-es': 'Archivos totales',
     'fr-fr': 'Total des fichiers',
     'ru-ru': 'Всего файлов',
@@ -513,7 +515,7 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Correctement formaté',
     'ru-ru': 'Правильно отформатировано',
     'uk-ua': 'Правильно відформатований',
-    'pt-br': 'Formatado corretamente',
+    'pt-br': 'Formatação correta',
   },
   stoppedByUser: {
     'en-us': 'Stopped By User',
@@ -522,7 +524,7 @@ export const attachmentsText = createDictionary({
     'fr-fr': "Arrêté par l'utilisateur",
     'ru-ru': 'Остановлено пользователем',
     'uk-ua': 'Зупинено користувачем',
-    'pt-br': 'Parado pelo usuário',
+    'pt-br': 'Interrompido pelo usuário',
   },
   importAttachments: {
     'en-us': 'Import Attachments',
@@ -535,7 +537,7 @@ export const attachmentsText = createDictionary({
   },
   onFile: {
     'en-us': 'On File',
-    'de-ch': 'In Datei',
+    'de-ch': 'In der Akte',
     'es-es': 'En archivo',
     'ru-ru': 'В деле',
     'uk-ua': 'У файлі',
@@ -561,7 +563,7 @@ export const attachmentsText = createDictionary({
     'ru-ru':
       'Следующие файлы не выбраны, поскольку они уже существуют в этом наборе данных.',
     'de-ch':
-      'Die folgenden Dateien werden nicht ausgewählt, da sie in diesem Datensatz bereits vorhanden sind.',
+      'Die folgenden Dateien wurden nicht ausgewählt, da sie bereits in diesem Datensatz vorhanden sind.',
     'uk-ua':
       'Наступні файли не вибрано, оскільки вони вже існують у цьому наборі даних.',
     'pt-br':
@@ -583,18 +585,18 @@ export const attachmentsText = createDictionary({
     'fr-fr': "Erreur lors de la sauvegarde de l'enregistrement",
     'ru-ru': 'Ошибка сохранения записи',
     'uk-ua': 'Помилка збереження запису',
-    'pt-br': 'Erro ao salvar registro',
+    'pt-br': 'Erro ao salvar o registro',
   },
   interruptionStopped: {
     'en-us': 'Stopped because of error uploading a previous file',
     'de-ch':
-      'Wegen eines Fehlers beim Hochladen einer vorherigen Datei angehalten',
-    'es-es': 'Detenido debido a un error al cargar un archivo anterior',
+      'Der Vorgang wurde aufgrund eines Fehlers beim Hochladen einer vorherigen Datei abgebrochen.',
+    'es-es': 'Se detuvo debido a un error al cargar un archivo anterior.',
     'fr-fr':
       "Arrêté à cause d'une erreur de téléchargement du précédent fichier",
     'ru-ru': 'Остановлено из-за ошибки при загрузке предыдущего файла',
     'uk-ua': 'Зупинено через помилку завантаження попереднього файлу',
-    'pt-br': 'Interrompido devido a erro ao carregar um arquivo anterior',
+    'pt-br': 'Interrompido devido a erro ao carregar um arquivo anterior.',
   },
   chooseFilesToGetStarted: {
     'en-us': 'Choose files or drag them here to get started.',
@@ -605,7 +607,7 @@ export const attachmentsText = createDictionary({
       'Choisissez des fichiers ou faites-les glisser ici pour commencer.',
     'ru-ru': 'Чтобы начать, выберите файлы или перетащите их сюда.',
     'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
-    'pt-br': 'Escolha os arquivos ou arraste-os aqui para começar.',
+    'pt-br': 'Selecione os arquivos ou arraste-os para cá para começar.',
   },
   selectIdentifier: {
     'en-us': 'Select an identifier to match the files name against.',
@@ -618,8 +620,7 @@ export const attachmentsText = createDictionary({
     'ru-ru':
       'Выберите идентификатор, с которым будет сопоставляться имя файла.',
     'uk-ua': 'Виберіть ідентифікатор для відповідності імені файлу.',
-    'pt-br':
-      'Selecione um identificador para comparar com o nome dos arquivos.',
+    'pt-br': 'Selecione um identificador para comparar com o nome do arquivo.',
   },
   progress: {
     'en-us': 'Progress',
@@ -643,7 +644,7 @@ export const attachmentsText = createDictionary({
     'en-us':
       '{success: number} out of the {total: number} attachments in the data set have been {action: string}.',
     'de-ch':
-      '{success: number} der {total: number} Anhänge im Datensatz waren {action: string}.',
+      '{success: number} von den {total: number} Anhängen im Datensatz wurden {action: string} ausgeführt.',
     'es-es':
       '{éxito: número} de los {total: número} archivos adjuntos en el conjunto de datos han sido {acción: cadena}.',
     'fr-fr':
@@ -659,7 +660,7 @@ export const attachmentsText = createDictionary({
     'en-us':
       'Deleting a Data Set permanently removes it and its Upload Path. Also after deleting, Rollback will no longer be an option for an uploaded Data Set.',
     'de-ch':
-      'Durch das Löschen eines Datensatzes werden dieser und sein Upload-Pfad dauerhaft entfernt. Nach dem Löschen ist für einen hochgeladenen Datensatz auch kein Rollback mehr möglich.',
+      'Durch das Löschen eines Datensatzes werden dieser und sein Upload-Pfad endgültig entfernt. Nach dem Löschen ist die Option „Rollback“ für einen hochgeladenen Datensatz nicht mehr verfügbar.',
     'es-es':
       'Al eliminar un conjunto de datos, se elimina permanentemente este y su ruta de carga. Además, después de la eliminación, la Reversión ya no será una opción para un conjunto de datos cargado.',
     'fr-fr':
@@ -669,13 +670,13 @@ export const attachmentsText = createDictionary({
     'uk-ua':
       'Видалення набору даних остаточно видаляє його та його шлях завантаження. Крім того, після видалення відкат більше не буде доступним для завантаженого набору даних.',
     'pt-br':
-      'Excluir um Conjunto de Dados remove permanentemente o conjunto e seu Caminho de Upload. Além disso, após a exclusão, a opção de Reverter não será mais uma opção para um Conjunto de Dados carregado.',
+      'A exclusão de um conjunto de dados remove permanentemente o conjunto e seu caminho de upload. Além disso, após a exclusão, a opção de reversão (rollback) não estará mais disponível para o conjunto de dados carregado.',
   },
   attachmentUploadError: {
     'en-us':
       'Error Uploading Attachment. Attachment server maybe unavailable or there was an error reading the file.',
     'de-ch':
-      'Fehler beim Hochladen des Anhangs. Der Anhangsserver ist möglicherweise nicht verfügbar oder beim Lesen der Datei ist ein Fehler aufgetreten.',
+      'Fehler beim Hochladen des Anhangs. Der Server für den Anhang ist möglicherweise nicht verfügbar oder es ist ein Fehler beim Lesen der Datei aufgetreten.',
     'es-es':
       'Error al cargar el archivo adjunto. Es posible que el servidor de archivos adjuntos no esté disponible o hubo un error al leer el archivo.',
     'fr-fr':
@@ -685,13 +686,13 @@ export const attachmentsText = createDictionary({
     'uk-ua':
       'Помилка завантаження вкладення. Можливо, сервер вкладень недоступний або під час читання файлу сталася помилка.',
     'pt-br':
-      'Erro ao carregar anexo. O servidor de anexos pode estar indisponível ou ocorreu um erro ao ler o arquivo.',
+      'Erro ao enviar o anexo. O servidor de anexos pode estar indisponível ou ocorreu um erro ao ler o arquivo.',
   },
   downloadAll: {
     'en-us': 'Download All',
-    'de-ch': 'Alles herunterladen',
+    'de-ch': 'Alle herunterladen',
     'es-es': 'Descargar todo',
-    'fr-fr': 'Télécharger tout',
+    'fr-fr': 'Tout télécharger',
     'pt-br': 'Baixar tudo',
     'ru-ru': 'Скачать все',
     'uk-ua': 'Завантажити все',
@@ -711,11 +712,11 @@ export const attachmentsText = createDictionary({
     'de-ch':
       'Es wurden nicht alle Anhänge geladen. Bitte erstellen Sie einen Datensatz der Abfrageergebnisse, um alle Anhänge herunterzuladen.',
     'es-es':
-      'No se han cargado todos los archivos adjuntos. Cree un conjunto de registros con los resultados de la consulta para descargarlos todos.',
+      'No se han cargado todos los archivos adjuntos. Cree un conjunto de registros con los resultados de la consulta para descargar todos los archivos adjuntos.',
     'fr-fr':
-      "Toutes les pièces jointes n'ont pas été chargées. Veuillez créer un ensemble d'enregistrements des résultats de la requête pour télécharger toutes les pièces jointes.",
+      "Toutes les pièces jointes n'ont pas été chargées. Veuillez créer un enregistrement des résultats de la requête pour télécharger toutes les pièces jointes.",
     'pt-br':
-      'Nem todos os anexos foram carregados. Crie um conjunto de registros dos resultados da consulta para baixar todos os anexos.',
+      'Nem todos os anexos foram carregados. Crie um conjunto de registros com os resultados da consulta para baixar todos os anexos.',
     'ru-ru':
       'Не все вложения загружены. Создайте набор записей результатов запроса, чтобы загрузить все вложения.',
     'uk-ua':
@@ -724,17 +725,17 @@ export const attachmentsText = createDictionary({
   deleteAttachmentWarning: {
     'en-us': 'Are you sure you want to delete this attachment?',
     'de-ch': 'Möchten Sie diesen Anhang wirklich löschen?',
-    'es-es': '¿Está seguro que desea eliminar este archivo adjunto?',
-    'fr-fr': 'Etes-vous sûr de vouloir supprimer cette pièce jointe ?',
+    'es-es': '¿Seguro que quieres eliminar este archivo adjunto?',
+    'fr-fr': 'Êtes-vous sûr de vouloir supprimer cette pièce jointe ?',
     'pt-br': 'Tem certeza de que deseja excluir este anexo?',
     'ru-ru': 'Вы уверены, что хотите удалить это вложение?',
     'uk-ua': 'Ви впевнені, що хочете видалити цей вкладений файл?',
   },
   attachmentDelition: {
     'en-us': 'Attachment deletion',
-    'de-ch': 'Löschen von Anhängen',
+    'de-ch': 'Anhang löschen',
     'es-es': 'Eliminación de archivos adjuntos',
-    'fr-fr': 'Suppression des pièces jointes',
+    'fr-fr': 'Suppression de la pièce jointe',
     'pt-br': 'Exclusão de anexos',
     'ru-ru': 'Удаление вложения',
     'uk-ua': 'Видалення вкладень',
