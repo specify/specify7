@@ -200,15 +200,17 @@ class ObjectFormatter:
                 formatter,
                 aggregator, previous_tables)
 
+            raw_expr = new_expr
         else:
             new_query, table, model, specify_field = query.build_join(
                 specify_model, orm_table, formatter_field_spec.join_path)
             new_expr = getattr(table, specify_field.name)
-            
+            raw_expr = new_expr
+
             if self.format_expr:
                 new_expr = self._fieldformat(formatter_field_spec.table, formatter_field_spec.get_field(), new_expr)
 
-        if 'trimzeros' in fieldNodeAttrib:
+        if 'trimzeros' in fieldNodeAttrib and fieldNodeAttrib['trimzeros'] == 'true':
             # new_expr = case(
             #     [(new_expr.op('REGEXP')('^-?[0-9]+(\\.[0-9]+)?$'), cast(new_expr, types.Numeric(65)))],
             #     else_=new_expr
@@ -225,7 +227,22 @@ class ObjectFormatter:
         if 'sep' in fieldNodeAttrib:
             new_expr = concat(fieldNodeAttrib['sep'], new_expr)
 
-        return new_query, blank_nulls(new_expr) if do_blank_null else new_expr, formatter_field_spec
+        if do_blank_null:
+            sf = formatter_field_spec.get_field()
+            is_catalog_num = (
+                sf is not None
+                and sf is CollectionObject_model.get_field('catalogNumber')
+            )
+            if (
+                is_catalog_num
+                and self.numeric_catalog_number
+                and all_numeric_catnum_formats(self.collection)
+            ):
+                return new_query, blank_nulls(raw_expr), formatter_field_spec
+
+            return new_query, blank_nulls(new_expr), formatter_field_spec
+
+        return new_query, new_expr, formatter_field_spec
 
     def objformat(self, query: QueryConstruct, orm_table: SQLTable,
                   formatter_name, cycle_detector=[]) -> tuple[QueryConstruct, blank_nulls]:
