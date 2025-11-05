@@ -42,8 +42,8 @@ msgstr "Вложения"
 msgid "scale"
 msgstr "Масштаб"
 
-#: components/Attachments/Plugin.tsx:39
-#: components/Attachments/Plugin.tsx:117
+#: components/Attachments/Plugin.tsx:40
+#: components/Attachments/Plugin.tsx:144
 #: components/Attachments/index.tsx:54
 #: components/AttachmentsBulkImport/Upload.tsx:250
 #: components/AttachmentsBulkImport/Upload.tsx:257
@@ -64,7 +64,7 @@ msgstr "Настройте сервер вложений"
 msgid "orderBy"
 msgstr "Сортировать по"
 
-#: components/Attachments/Plugin.tsx:121
+#: components/Attachments/Plugin.tsx:148
 #: components/WbImportAttachments/index.tsx:190
 #. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index
 msgid "uploadingInline"
@@ -88,8 +88,9 @@ msgstr "Не удалось найти связанную запись"
 msgid "unableToFindRelatedRecordDescription"
 msgstr "Не удалось найти запись, к которой относится это вложение."
 
-#: components/Attachments/Dialog.tsx:87
-#. Used in: Components > Attachments > Dialog
+#: components/Attachments/Dialog.tsx:101
+#: components/Attachments/Viewer.tsx:377
+#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #, fuzzy
 msgid "showForm"
 msgstr "Показать форму"
@@ -287,11 +288,36 @@ msgstr "В первых записях {halt:number} вложений не об�
 msgid "fetchNextAttachments"
 msgstr "Найдите больше вложений"
 
-#: components/Attachments/Dialog.tsx:87
-#. Used in: Components > Attachments > Dialog
+#: components/Attachments/Dialog.tsx:101
+#: components/Attachments/Viewer.tsx:376
+#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #, fuzzy
 msgid "hideForm"
 msgstr "Скрыть форму"
+
+#: components/Preferences/UserDefinitions.tsx:1361
+#. Used in: Components > Preferences > User Definitions
+msgid "collapseFormByDefault"
+msgstr "Сворачивать форму по умолчанию"
+
+#: components/Preferences/UserDefinitions.tsx:1362
+#. Used in: Components > Preferences > User Definitions
+msgid "collapseFormByDefaultDescription"
+msgstr ""
+"Сворачивать или не сворачивать форму вложения по умолчанию при просмотре "
+"существующих вложений."
+
+#: components/Preferences/UserDefinitions.tsx:1353
+#. Used in: Components > Preferences > User Definitions
+msgid "showControls"
+msgstr "Показывать элементы управления вложениями"
+
+#: components/Preferences/UserDefinitions.tsx:1354
+#. Used in: Components > Preferences > User Definitions
+msgid "showControlsDescription"
+msgstr ""
+"Показать или скрыть кнопки увеличения, уменьшения, сброса и скрытия/показа "
+"формы в просмотрщике вложений."
 
 #: components/AttachmentsBulkImport/utils.ts:475
 #. Used in: Components > Attachments Bulk Import > Utils

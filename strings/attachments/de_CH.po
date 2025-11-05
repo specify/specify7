@@ -42,8 +42,8 @@ msgstr "Anhänge"
 msgid "scale"
 msgstr "Massstab"
 
-#: components/Attachments/Plugin.tsx:39
-#: components/Attachments/Plugin.tsx:117
+#: components/Attachments/Plugin.tsx:40
+#: components/Attachments/Plugin.tsx:144
 #: components/Attachments/index.tsx:54
 #: components/AttachmentsBulkImport/Upload.tsx:250
 #: components/AttachmentsBulkImport/Upload.tsx:257
@@ -64,7 +64,7 @@ msgstr "Richten Sie Ihren Attachment-Server ein"
 msgid "orderBy"
 msgstr "Sortiere nach"
 
-#: components/Attachments/Plugin.tsx:121
+#: components/Attachments/Plugin.tsx:148
 #: components/WbImportAttachments/index.tsx:190
 #. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index
 msgid "uploadingInline"
@@ -89,8 +89,9 @@ msgstr ""
 "Es konnte kein Datensatz gefunden werden, auf den sich dieser Anhang "
 "bezieht."
 
-#: components/Attachments/Dialog.tsx:87
-#. Used in: Components > Attachments > Dialog
+#: components/Attachments/Dialog.tsx:101
+#: components/Attachments/Viewer.tsx:377
+#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 msgid "showForm"
 msgstr "Formular anzeigen"
 
@@ -289,11 +290,36 @@ msgstr "In den ersten {halt:number}-Datensätzen wurden keine Anhänge gefunden.
 msgid "fetchNextAttachments"
 msgstr "Suchen Sie nach weiteren Anhängen"
 
-#: components/Attachments/Dialog.tsx:87
-#. Used in: Components > Attachments > Dialog
+#: components/Attachments/Dialog.tsx:101
+#: components/Attachments/Viewer.tsx:376
+#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #, fuzzy
 msgid "hideForm"
 msgstr "Formular ausblenden"
+
+#: components/Preferences/UserDefinitions.tsx:1361
+#. Used in: Components > Preferences > User Definitions
+msgid "collapseFormByDefault"
+msgstr "Formular standardmäßig einklappen"
+
+#: components/Preferences/UserDefinitions.tsx:1362
+#. Used in: Components > Preferences > User Definitions
+msgid "collapseFormByDefaultDescription"
+msgstr ""
+"Ob das Anhangsformular standardmäßig eingeklappt werden soll oder nicht, "
+"wenn vorhandene Anhänge angezeigt werden."
+
+#: components/Preferences/UserDefinitions.tsx:1353
+#. Used in: Components > Preferences > User Definitions
+msgid "showControls"
+msgstr "Anhangssteuerungen anzeigen"
+
+#: components/Preferences/UserDefinitions.tsx:1354
+#. Used in: Components > Preferences > User Definitions
+msgid "showControlsDescription"
+msgstr ""
+"Zeigen oder verbergen Sie die Schaltflächen Vergrößern, Verkleinern, "
+"Zurücksetzen und Formular ein-/ausblenden im Anhangsbetrachter."
 
 #: components/AttachmentsBulkImport/utils.ts:475
 #. Used in: Components > Attachments Bulk Import > Utils

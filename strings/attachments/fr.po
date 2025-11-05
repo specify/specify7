@@ -41,8 +41,8 @@ msgstr "Pièces jointes"
 msgid "scale"
 msgstr "Échelle"
 
-#: components/Attachments/Plugin.tsx:39
-#: components/Attachments/Plugin.tsx:117
+#: components/Attachments/Plugin.tsx:40
+#: components/Attachments/Plugin.tsx:144
 #: components/Attachments/index.tsx:54
 #: components/AttachmentsBulkImport/Upload.tsx:250
 #: components/AttachmentsBulkImport/Upload.tsx:257
@@ -63,7 +63,7 @@ msgstr "Configurez votre serveur de pièces jointes"
 msgid "orderBy"
 msgstr "Trier par"
 
-#: components/Attachments/Plugin.tsx:121
+#: components/Attachments/Plugin.tsx:148
 #: components/WbImportAttachments/index.tsx:190
 #. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index
 msgid "uploadingInline"
@@ -86,8 +86,9 @@ msgstr "Impossible de trouver l'enregistrement lié"
 msgid "unableToFindRelatedRecordDescription"
 msgstr "Impossible de trouver un enregistrement auquel cette pièce jointe est liée."
 
-#: components/Attachments/Dialog.tsx:87
-#. Used in: Components > Attachments > Dialog
+#: components/Attachments/Dialog.tsx:101
+#: components/Attachments/Viewer.tsx:377
+#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #, fuzzy
 msgid "showForm"
 msgstr "Afficher le formulaire"
@@ -264,11 +265,37 @@ msgstr ""
 msgid "fetchNextAttachments"
 msgstr "Rechercher plus de pièces jointes"
 
-#: components/Attachments/Dialog.tsx:87
-#. Used in: Components > Attachments > Dialog
+#: components/Attachments/Dialog.tsx:101
+#: components/Attachments/Viewer.tsx:376
+#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #, fuzzy
 msgid "hideForm"
 msgstr "Masquer le formulaire"
+
+#: components/Preferences/UserDefinitions.tsx:1361
+#. Used in: Components > Preferences > User Definitions
+msgid "collapseFormByDefault"
+msgstr "Réduire le formulaire par défaut"
+
+#: components/Preferences/UserDefinitions.tsx:1362
+#. Used in: Components > Preferences > User Definitions
+msgid "collapseFormByDefaultDescription"
+msgstr ""
+"Indique si le formulaire de pièce jointe doit être réduit par défaut lors "
+"de l'affichage des pièces jointes existantes."
+
+#: components/Preferences/UserDefinitions.tsx:1353
+#. Used in: Components > Preferences > User Definitions
+msgid "showControls"
+msgstr "Afficher les contrôles des pièces jointes"
+
+#: components/Preferences/UserDefinitions.tsx:1354
+#. Used in: Components > Preferences > User Definitions
+msgid "showControlsDescription"
+msgstr ""
+"Afficher ou masquer les boutons d'agrandissement, de réduction, de "
+"réinitialisation et d'affichage/masquage du formulaire dans le visualiseur "
+"de pièces jointes."
 
 #: components/AttachmentsBulkImport/utils.ts:475
 #. Used in: Components > Attachments Bulk Import > Utils

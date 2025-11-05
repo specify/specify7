@@ -13,7 +13,7 @@ msgstr ""
 
 #: components/BatchEdit/index.tsx:189
 #: components/Header/menuItemDefinitions.ts:115
-#: components/Preferences/UserDefinitions.tsx:2066
+#: components/Preferences/UserDefinitions.tsx:2082
 #: components/Router/OverlayRoutes.tsx:254
 #: components/WbUtils/datasetVariants.tsx:89
 #: components/WbUtils/datasetVariants.tsx:105
@@ -29,7 +29,7 @@ msgstr "Modification par lots"
 msgid "batchEditPrefs"
 msgstr "Préférences d'édition par lots"
 
-#: components/Preferences/UserDefinitions.tsx:2072
+#: components/Preferences/UserDefinitions.tsx:2088
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "numberOfRecords"
@@ -85,13 +85,13 @@ msgstr ""
 "Utilisez le générateur de requêtes pour créer un nouvel ensemble de données "
 "d'édition par lots"
 
-#: components/Preferences/UserDefinitions.tsx:2095
+#: components/Preferences/UserDefinitions.tsx:2111
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "showRollback"
 msgstr "Afficher le bouton de restauration"
 
-#: components/Preferences/UserDefinitions.tsx:2100
+#: components/Preferences/UserDefinitions.tsx:2116
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "showRollbackDescription"
@@ -242,13 +242,13 @@ msgstr ""
 "(Les ensembles de données d'édition par lots ne peuvent pas être modifiés "
 "après la restauration - Lecture seule)"
 
-#: components/Preferences/UserDefinitions.tsx:2087
+#: components/Preferences/UserDefinitions.tsx:2103
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "enableRelationships"
 msgstr "Activer les relations"
 
-#: components/Preferences/UserDefinitions.tsx:2092
+#: components/Preferences/UserDefinitions.tsx:2108
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "enableRelationshipsDescription"

@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.14.1-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:2069
+#: components/Preferences/UserDefinitions.tsx:2085
 #: components/QueryBuilder/Header.tsx:97
 #: components/QueryBuilder/Toolbar.tsx:75
 #: components/Reports/RecordSets.tsx:95
@@ -35,7 +35,7 @@ msgid "queries"
 msgstr "Requêtes"
 
 #: components/Preferences/CollectionDefinitions.tsx:72
-#: components/Preferences/UserDefinitions.tsx:1578
+#: components/Preferences/UserDefinitions.tsx:1594
 #: components/SearchDialog/index.tsx:242
 #: components/SearchDialog/index.tsx:386
 #: components/Security/registry.ts:210
@@ -404,7 +404,7 @@ msgstr "Dans"
 msgid "inDescription"
 msgstr "Une liste de valeurs séparées par des virgules"
 
-#: components/Preferences/UserDefinitions.tsx:1432
+#: components/Preferences/UserDefinitions.tsx:1448
 #: components/QueryBuilder/FieldFilterSpec.tsx:509
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 #, fuzzy
@@ -423,7 +423,7 @@ msgstr "Vide"
 msgid "and"
 msgstr "et"
 
-#: components/Preferences/UserDefinitions.tsx:1428
+#: components/Preferences/UserDefinitions.tsx:1444
 #: components/QueryBuilder/FieldFilterSpec.tsx:517
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 #, fuzzy

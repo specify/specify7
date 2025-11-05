@@ -179,7 +179,7 @@ msgstr ""
 "Seules les valeurs numériques sont prises en charge dans ce "
 "{pickListTable:string}"
 
-#: components/Attachments/Plugin.tsx:88
+#: components/Attachments/Plugin.tsx:115
 #: components/FormCells/FormTable.tsx:274
 #: components/FormCells/FormTable.tsx:608
 #: components/Forms/BaseResourceView.tsx:106

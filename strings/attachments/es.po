@@ -41,8 +41,8 @@ msgstr "Adjuntos"
 msgid "scale"
 msgstr "Escala"
 
-#: components/Attachments/Plugin.tsx:39
-#: components/Attachments/Plugin.tsx:117
+#: components/Attachments/Plugin.tsx:40
+#: components/Attachments/Plugin.tsx:144
 #: components/Attachments/index.tsx:54
 #: components/AttachmentsBulkImport/Upload.tsx:250
 #: components/AttachmentsBulkImport/Upload.tsx:257
@@ -63,7 +63,7 @@ msgstr "Configura tu servidor de adjuntos"
 msgid "orderBy"
 msgstr "Ordenar por"
 
-#: components/Attachments/Plugin.tsx:121
+#: components/Attachments/Plugin.tsx:148
 #: components/WbImportAttachments/index.tsx:190
 #. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index
 msgid "uploadingInline"
@@ -86,8 +86,9 @@ msgstr "No se puede encontrar el registro relacionado"
 msgid "unableToFindRelatedRecordDescription"
 msgstr "No se puede encontrar un registro con el que esté relacionado este adjunto."
 
-#: components/Attachments/Dialog.tsx:87
-#. Used in: Components > Attachments > Dialog
+#: components/Attachments/Dialog.tsx:101
+#: components/Attachments/Viewer.tsx:377
+#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 msgid "showForm"
 msgstr "Mostrar formulario"
 
@@ -256,10 +257,35 @@ msgstr "No se han encontrado adjuntos en los primeros {halt:number} registros."
 msgid "fetchNextAttachments"
 msgstr "Buscar más adjuntos"
 
-#: components/Attachments/Dialog.tsx:87
-#. Used in: Components > Attachments > Dialog
+#: components/Attachments/Dialog.tsx:101
+#: components/Attachments/Viewer.tsx:376
+#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 msgid "hideForm"
 msgstr "Ocultar formulario"
+
+#: components/Preferences/UserDefinitions.tsx:1361
+#. Used in: Components > Preferences > User Definitions
+msgid "collapseFormByDefault"
+msgstr "Contraer el formulario de forma predeterminada"
+
+#: components/Preferences/UserDefinitions.tsx:1362
+#. Used in: Components > Preferences > User Definitions
+msgid "collapseFormByDefaultDescription"
+msgstr ""
+"Indica si se debe contraer o no el formulario de adjuntos de forma "
+"predeterminada al ver los adjuntos existentes."
+
+#: components/Preferences/UserDefinitions.tsx:1353
+#. Used in: Components > Preferences > User Definitions
+msgid "showControls"
+msgstr "Mostrar controles de adjuntos"
+
+#: components/Preferences/UserDefinitions.tsx:1354
+#. Used in: Components > Preferences > User Definitions
+msgid "showControlsDescription"
+msgstr ""
+"Mostrar u ocultar los botones de acercar, alejar, restablecer y "
+"ocultar/mostrar formulario en el visor de archivos adjuntos."
 
 #: components/AttachmentsBulkImport/utils.ts:475
 #. Used in: Components > Attachments Bulk Import > Utils

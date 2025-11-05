@@ -42,8 +42,8 @@ msgstr "Прикріплення"
 msgid "scale"
 msgstr "масштаб"
 
-#: components/Attachments/Plugin.tsx:39
-#: components/Attachments/Plugin.tsx:117
+#: components/Attachments/Plugin.tsx:40
+#: components/Attachments/Plugin.tsx:144
 #: components/Attachments/index.tsx:54
 #: components/AttachmentsBulkImport/Upload.tsx:250
 #: components/AttachmentsBulkImport/Upload.tsx:257
@@ -64,7 +64,7 @@ msgstr "Налаштуйте сервер прикріплень"
 msgid "orderBy"
 msgstr "Сортувати по"
 
-#: components/Attachments/Plugin.tsx:121
+#: components/Attachments/Plugin.tsx:148
 #: components/WbImportAttachments/index.tsx:190
 #. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index
 msgid "uploadingInline"
@@ -87,8 +87,9 @@ msgstr "Неможливо знайти відповідний запис"
 msgid "unableToFindRelatedRecordDescription"
 msgstr "Не вдалося знайти запис, до якого відноситься це вкладення."
 
-#: components/Attachments/Dialog.tsx:87
-#. Used in: Components > Attachments > Dialog
+#: components/Attachments/Dialog.tsx:101
+#: components/Attachments/Viewer.tsx:377
+#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 msgid "showForm"
 msgstr "Показати форму"
 
@@ -252,10 +253,35 @@ msgstr "У перших записах {halt:number} вкладень не зн�
 msgid "fetchNextAttachments"
 msgstr "Шукайте більше вкладень"
 
-#: components/Attachments/Dialog.tsx:87
-#. Used in: Components > Attachments > Dialog
+#: components/Attachments/Dialog.tsx:101
+#: components/Attachments/Viewer.tsx:376
+#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 msgid "hideForm"
 msgstr "Сховати форму"
+
+#: components/Preferences/UserDefinitions.tsx:1361
+#. Used in: Components > Preferences > User Definitions
+msgid "collapseFormByDefault"
+msgstr "Згортати форму за замовчуванням"
+
+#: components/Preferences/UserDefinitions.tsx:1362
+#. Used in: Components > Preferences > User Definitions
+msgid "collapseFormByDefaultDescription"
+msgstr ""
+"Згортати чи не згортати форму вкладення за замовчуванням під час перегляду "
+"існуючих вкладень."
+
+#: components/Preferences/UserDefinitions.tsx:1353
+#. Used in: Components > Preferences > User Definitions
+msgid "showControls"
+msgstr "Показувати елементи керування вкладеннями"
+
+#: components/Preferences/UserDefinitions.tsx:1354
+#. Used in: Components > Preferences > User Definitions
+msgid "showControlsDescription"
+msgstr ""
+"Показати або приховати кнопки збільшення, зменшення, скидання та "
+"приховування/показу форми у переглядачі вкладень."
 
 #: components/AttachmentsBulkImport/utils.ts:475
 #. Used in: Components > Attachments Bulk Import > Utils

@@ -43,8 +43,8 @@ msgstr "Anexos"
 msgid "scale"
 msgstr "Escala"
 
-#: components/Attachments/Plugin.tsx:39
-#: components/Attachments/Plugin.tsx:117
+#: components/Attachments/Plugin.tsx:40
+#: components/Attachments/Plugin.tsx:144
 #: components/Attachments/index.tsx:54
 #: components/AttachmentsBulkImport/Upload.tsx:250
 #: components/AttachmentsBulkImport/Upload.tsx:257
@@ -68,7 +68,7 @@ msgstr "Configure seu servidor de anexos"
 msgid "orderBy"
 msgstr "Ordenar por"
 
-#: components/Attachments/Plugin.tsx:121
+#: components/Attachments/Plugin.tsx:148
 #: components/WbImportAttachments/index.tsx:190
 #. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index
 #, fuzzy
@@ -97,8 +97,9 @@ msgstr ""
 "Não foi possível encontrar um registro ao qual este anexo esteja "
 "relacionado."
 
-#: components/Attachments/Dialog.tsx:87
-#. Used in: Components > Attachments > Dialog
+#: components/Attachments/Dialog.tsx:101
+#: components/Attachments/Viewer.tsx:377
+#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #, fuzzy
 msgid "showForm"
 msgstr "Mostrar formulário"
@@ -300,11 +301,36 @@ msgstr "Nenhum anexo foi encontrado nos primeiros registros {halt:number}."
 msgid "fetchNextAttachments"
 msgstr "Procure mais anexos"
 
-#: components/Attachments/Dialog.tsx:87
-#. Used in: Components > Attachments > Dialog
+#: components/Attachments/Dialog.tsx:101
+#: components/Attachments/Viewer.tsx:376
+#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #, fuzzy
 msgid "hideForm"
 msgstr "Ocultar formulário"
+
+#: components/Preferences/UserDefinitions.tsx:1361
+#. Used in: Components > Preferences > User Definitions
+msgid "collapseFormByDefault"
+msgstr "Recolher formulário por padrão"
+
+#: components/Preferences/UserDefinitions.tsx:1362
+#. Used in: Components > Preferences > User Definitions
+msgid "collapseFormByDefaultDescription"
+msgstr ""
+"Se deve ou não recolher o formulário de anexos por padrão ao visualizar "
+"anexos existentes."
+
+#: components/Preferences/UserDefinitions.tsx:1353
+#. Used in: Components > Preferences > User Definitions
+msgid "showControls"
+msgstr "Mostrar controles de anexos"
+
+#: components/Preferences/UserDefinitions.tsx:1354
+#. Used in: Components > Preferences > User Definitions
+msgid "showControlsDescription"
+msgstr ""
+"Mostrar ou ocultar os botões de zoom, zoom out, reset e ocultar/mostrar "
+"formulário no visualizador de anexos."
 
 #: components/AttachmentsBulkImport/utils.ts:475
 #. Used in: Components > Attachments Bulk Import > Utils

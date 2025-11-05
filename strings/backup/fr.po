@@ -3,76 +3,76 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2025-11-02 22:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/specify-7/backup/"
-"fr/>\n"
+"Language-Team: French "
+"<https://hosted.weblate.org/projects/specify-7/backup/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.14.1-dev\n"
 
-#. Used in: Components > Toolbar > Backup Status
 #: components/Toolbar/BackupStatus.tsx:99
+#. Used in: Components > Toolbar > Backup Status
 #, fuzzy
 msgid "completed"
 msgstr "Sauvegarde effectuée avec succès."
 
-#. Used in: Components > Toolbar > Backup Status
 #: components/Toolbar/BackupStatus.tsx:90
+#. Used in: Components > Toolbar > Backup Status
 #, fuzzy
 msgid "failed"
 msgstr "La sauvegarde a échoué."
 
-#. Used in: Components > Toolbar > Backup Database
 #: components/Toolbar/BackupDatabase.tsx:94
+#. Used in: Components > Toolbar > Backup Database
 #, fuzzy
 msgid "previousFound"
 msgstr "Une sauvegarde précédente a été trouvée :"
 
-#. Used in: Components > Toolbar > Backup Database
 #: components/Toolbar/BackupDatabase.tsx:108
+#. Used in: Components > Toolbar > Backup Database
 #, fuzzy
 msgid "previousNone"
 msgstr "Aucune sauvegarde précédente n'a été trouvée. En créer une nouvelle ?"
 
-#. Used in: Components > Toolbar > Backup Database
 #: components/Toolbar/BackupDatabase.tsx:96
+#. Used in: Components > Toolbar > Backup Database
 #, fuzzy
 msgid "previousSizeMB"
 msgstr "({size:string} Mo)"
 
-#. Used in: Components > Toolbar > Backup Database
 #: components/Toolbar/BackupDatabase.tsx:102
+#. Used in: Components > Toolbar > Backup Database
 #, fuzzy
 msgid "lastBackupOn"
 msgstr "Cette sauvegarde a été créée sur {date:string}"
 
-#. Used in: Components > Toolbar > Backup Database
 #: components/Toolbar/BackupDatabase.tsx:44
+#. Used in: Components > Toolbar > Backup Database
 #, fuzzy
 msgid "checkPreviousFailed"
 msgstr "Impossible de vérifier la sauvegarde précédente."
 
-#. Used in: Components > Toolbar > Backup Database
 #: components/Toolbar/BackupDatabase.tsx:62
+#. Used in: Components > Toolbar > Backup Database
 #, fuzzy
 msgid "startFailed"
 msgstr "Échec du démarrage de la sauvegarde."
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:335
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "databaseBackupCompleted"
 msgstr "Sauvegarde de la base de données terminée."
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:351
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "databaseBackupFailed"
 msgstr "La sauvegarde de la base de données a échoué."
 
-#. Used in: Components > Toolbar > Backup Status
 #: components/Toolbar/BackupStatus.tsx:106
+#. Used in: Components > Toolbar > Backup Status
 #, fuzzy
 msgid "compressing"
 msgstr "Compression..."

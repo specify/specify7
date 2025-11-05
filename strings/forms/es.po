@@ -169,7 +169,7 @@ msgstr "Tipo inválido"
 msgid "invalidNumericPicklistValue"
 msgstr "En este {pickListTable:string} solo se admiten valores numéricos"
 
-#: components/Attachments/Plugin.tsx:88
+#: components/Attachments/Plugin.tsx:115
 #: components/FormCells/FormTable.tsx:274
 #: components/FormCells/FormTable.tsx:608
 #: components/Forms/BaseResourceView.tsx:106
