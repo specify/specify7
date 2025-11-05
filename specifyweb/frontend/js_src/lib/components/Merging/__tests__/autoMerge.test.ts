@@ -248,7 +248,7 @@ describe('autoMerge', () => {
         "agentAttachments": [],
         "agentGeographies": [],
         "agentSpecialties": [],
-        "agentType": 1,
+        "agentType": 0,
         "catalogerOf": "/api/specify/CollectionObject?cataloger=2305",
         "collContentContact": null,
         "collTechContact": null,
@@ -257,7 +257,7 @@ describe('autoMerge', () => {
         "date1": null,
         "date1Precision": null,
         "date2": null,
-        "date2Precision": null,
+        "date2Precision": 2,
         "dateOfBirth": null,
         "dateOfBirthPrecision": null,
         "dateOfDeath": null,
@@ -415,7 +415,7 @@ describe('autoMerge', () => {
         "agentAttachments": [],
         "agentGeographies": [],
         "agentSpecialties": [],
-        "agentType": 1,
+        "agentType": 0,
         "catalogerOf": "/api/specify/CollectionObject?cataloger=2305",
         "collContentContact": null,
         "collTechContact": null,
@@ -424,7 +424,7 @@ describe('autoMerge', () => {
         "date1": "2020-01-01",
         "date1Precision": null,
         "date2": null,
-        "date2Precision": null,
+        "date2Precision": 2,
         "dateOfBirth": null,
         "dateOfBirthPrecision": null,
         "dateOfDeath": null,
@@ -582,7 +582,7 @@ describe('autoMerge', () => {
         "agentAttachments": [],
         "agentGeographies": [],
         "agentSpecialties": [],
-        "agentType": 1,
+        "agentType": 0,
         "catalogerOf": "/api/specify/CollectionObject?cataloger=2305",
         "collContentContact": null,
         "collTechContact": null,
@@ -591,7 +591,7 @@ describe('autoMerge', () => {
         "date1": null,
         "date1Precision": null,
         "date2": null,
-        "date2Precision": null,
+        "date2Precision": 2,
         "dateOfBirth": null,
         "dateOfBirthPrecision": null,
         "dateOfDeath": null,
@@ -648,5 +648,25 @@ describe('autoMerge', () => {
       false
     );
     expect(merged.lastName).toBe('Longer Value');
+  });
+
+  test('fills dependent precision even if newest record lacks it', () => {
+    const merged = autoMerge(
+      tables.Agent,
+      [
+        addMissingFields('Agent', {
+          timestampModified: '2024-01-01',
+          dateOfDeath: '2023-01-01',
+          dateOfDeathPrecision: null,
+        }),
+        addMissingFields('Agent', {
+          timestampModified: '2023-01-01',
+          dateOfDeath: '2023-01-01',
+          dateOfDeathPrecision: 0,
+        }),
+      ] as unknown as RA<SerializedResource<AnySchema>>,
+      false
+    );
+    expect(merged.dateOfDeathPrecision).toBe(0);
   });
 });
