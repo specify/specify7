@@ -2,6 +2,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { treeText } from '../../localization/tree';
 import { backupText } from '../../localization/backup';
 import { localityText } from '../../localization/locality';
 import { mergingText } from '../../localization/merging';
@@ -359,6 +360,50 @@ export const notificationRenderers: IR<
         )}
       </>
     );
+  },
+  'create-default-tree-starting'(notification) {
+    return (
+      <>
+        <p>{treeText.defaultTreeTaskStarting()}</p>
+        <details>
+          <summary>{localityText.taskId()}</summary>
+          {notification.payload.name}
+        </details>
+      </>
+    )
+  },
+  'create-default-tree-running'(notification) {
+    return (
+      <>
+        <p>{treeText.defaultTreeTaskRunning()}</p>
+        <details>
+          <summary>{localityText.taskId()}</summary>
+          {notification.payload.name}
+        </details>
+      </>
+    )
+  },
+  'create-default-tree-failed'(notification) {
+    return (
+      <>
+        <p>{treeText.defaultTreeTaskFailed()}</p>
+        <details>
+          <summary>{localityText.taskId()}</summary>
+          {notification.payload.name}
+        </details>
+      </>
+    )
+  },
+  'create-default-tree-completed'(notification) {
+    return (
+      <>
+        <p>{treeText.defaultTreeTaskCompleted()}</p>
+        <details>
+          <summary>{localityText.taskId()}</summary>
+          {notification.payload.name}
+        </details>
+      </>
+    )
   },
   default(notification) {
     console.error('Unknown notification type', { notification });

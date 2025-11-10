@@ -49,6 +49,7 @@ export function CreateTree<
   const treeNameArray = treeDefinitions.map((tree) => tree.definition.name);
 
   const [isActive, setIsActive] = React.useState(0);
+  const [isTreeCreationStarted, setIsTreeCreationStarted] = React.useState(false);
 
   const [selectedResource, setSelectedResource] = React.useState<
     SpecifyResource<AnySchema> | undefined
@@ -80,6 +81,10 @@ export function CreateTree<
       .then(({ data, status }) => {
         if (status === Http.OK) {
           console.log(`${resourceFile} created successfully:`, data);
+        } else if (status === Http.ACCEPTED) {
+          // Tree is being created in the background.
+          console.log(data, status);
+          setIsTreeCreationStarted(true);
         }
       })
       .catch((error) => {
@@ -156,6 +161,21 @@ export function CreateTree<
               </li>
             ))}
           </Ul>
+          <>
+            {isTreeCreationStarted ? (
+              <Dialog
+                buttons={
+                  <Button.DialogClose component={Button.BorderedGray}>
+                    {commonText.close()}
+                  </Button.DialogClose>
+                }
+                header={treeText.defaultTreeTaskStarting()}
+                onClose={() => {setIsTreeCreationStarted(false); setIsActive(0)}}
+              >
+                {treeText.defaultTreeTaskStartingDescription()}
+              </Dialog>
+            ) : undefined}
+          </>
         </Dialog>
       ) : null}
       {isActive === 2 && selectedResource !== undefined ? (

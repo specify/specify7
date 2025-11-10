@@ -4,17 +4,14 @@ import requests
 import csv
 
 from django.db import transaction
-
 from django.db.models import Q, Count, Model
-
-import logging
 
 from specifyweb.backend.notifications.models import Message
 from specifyweb.celery_tasks import LogErrorsTask, app
-
 import specifyweb.specify.models as spmodels
 from specifyweb.specify.datamodel import datamodel, Table
 
+import logging
 logger = logging.getLogger(__name__)
 
 lookup = lambda tree: (tree.lower() + 'treedef')
