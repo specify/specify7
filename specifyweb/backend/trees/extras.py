@@ -1,7 +1,6 @@
 import re
 from contextlib import contextmanager
 import logging
-from typing import List
 
 from specifyweb.backend.trees.ranks import RankOperation, post_tree_rank_save, pre_tree_rank_deletion, \
     verify_rank_parent_chain_integrity, pre_tree_rank_init, post_tree_rank_deletion
@@ -529,7 +528,7 @@ def fullname_expr(depth, reverse):
 
 def parent_joins(table, depth):
     return '\n'.join([
-        "left join {table} t{1} on t{0}.parentid = t{1}.{table}id".format(j-1, j, table=table)
+        "LEFT JOIN {table} t{1} ON t{0}.parentid = t{1}.{table}id".format(j-1, j, table=table)
         for j in range(1, depth)
     ])
 
@@ -639,7 +638,8 @@ def print_paths(table, depth):
         print(r)
     print(sql)
 
-def renumber_tree(table):
+def renumber_tree_old(table):
+    # NOTE: This old implementation doesn't work in MariaDB 11.8
     logger.info('renumbering tree')
     cursor = connection.cursor()
 
@@ -742,3 +742,80 @@ def is_treedef(obj):
     return issubclass(obj.__class__, Tree) or bool(
         re.search(r"treedef'>$", str(obj.__class__), re.IGNORECASE)
     )
+
+def renumber_tree(table: str) -> None:
+    cursor = connection.cursor()
+    logger.debug(f"[renumber_tree] running for {table}")
+
+    # cursor.execute("SET SESSION sql_safe_updates = 0") # might be needed for MariaDB 11, uncomment if updates don't occur
+
+    # Sync rankid
+    sql_sync = (
+        f"UPDATE {table} t "
+        f"JOIN {table}treedefitem d ON t.{table}treedefitemid = d.{table}treedefitemid "
+        f"SET t.rankid = d.rankid"
+    )
+    logger.debug(sql_sync)
+    cursor.execute(sql_sync)
+
+    # Compute max logical depth to size the LEFT JOIN ladder
+    cursor.execute(f"SELECT COUNT(DISTINCT rankid) FROM {table}")
+    depth = cursor.fetchone()[0] or 1
+
+    def tree_parent_joins(tbl: str, d: int) -> str: # replace parent_joins if join errors occur
+        if d <= 1:
+            return ""  # only t0 exists
+        return "\n".join(
+            f"LEFT JOIN {tbl} t{j} ON t{j-1}.parentid = t{j}.{tbl}id"
+            for j in range(1, d)
+        )
+
+    def tree_path_expr(tbl: str, d: int) -> str: # replace path_expr if ordering issues arise
+        # Highest ancestor first, leaf last; LPAD stabilizes lexical order
+        parts = ", ".join([f"LPAD(t{i}.{tbl}id, 12, '0')" for i in reversed(range(d))])
+        return f"CONCAT_WS(',', {parts})"
+
+    # Preorder numbering using ROW_NUMBER()
+    sql_preorder = (
+        f"UPDATE {table} t\n"
+        f"JOIN (\n"
+        f"  SELECT id, rn FROM (\n"
+        f"    SELECT\n"
+        f"      t0.{table}id AS id,\n"
+        f"      ROW_NUMBER() OVER (ORDER BY {path_expr(table, depth)}, t0.{table}id) AS rn\n"
+        f"    FROM {table} t0\n"
+        f"{parent_joins(table, depth)}\n"
+        f"  ) ordered\n"
+        f") r ON r.id = t.{table}id\n"
+        f"SET t.nodenumber = r.rn,\n"
+        f"    t.highestchildnodenumber = r.rn"
+    )
+    logger.debug(sql_preorder)
+    cursor.execute(sql_preorder)
+
+    # Compute highestchildnodenumber bottom-up
+    sql_ranks = f"SELECT DISTINCT rankid FROM {table} ORDER BY rankid DESC"
+    logger.debug(sql_ranks)
+    cursor.execute(sql_ranks)
+    ranks = [row[0] for row in cursor.fetchall()]
+
+    for rank in ranks[1:]:
+        sql_hcnn = (
+            f"UPDATE {table} t\n"
+            f"JOIN (\n"
+            f"  SELECT parentid, MAX(highestchildnodenumber) AS hcnn\n"
+            f"  FROM {table}\n"
+            f"  WHERE rankid > %(rank)s\n"
+            f"  GROUP BY parentid\n"
+            f") sub ON sub.parentid = t.{table}id\n"
+            f"SET t.highestchildnodenumber = sub.hcnn\n"
+            f"WHERE t.rankid = %(rank)s"
+        )
+        logger.debug(sql_hcnn, {"rank": rank})
+        cursor.execute(sql_hcnn, {"rank": rank})
+
+    # Clear task semaphores
+    from specifyweb.specify.models import datamodel, Sptasksemaphore
+    tree_model = datamodel.get_table(table)
+    tasknames = [name.format(tree_model.name) for name in ("UpdateNodes{}", "BadNodes{}")]
+    Sptasksemaphore.objects.filter(taskname__in=tasknames).update(islocked=False)
