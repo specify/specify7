@@ -4,6 +4,7 @@ from django.db.models import Max
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handler
+from specifyweb.backend.inheritance.utils import get_cat_num_inheritance_setting
 from specifyweb.specify.models import Collectionobjectgroupjoin
 
 
@@ -71,3 +72,52 @@ def cojo_post_save(cojo):
         first_child = co_children.first()
         first_child.isprimary = True
         first_child.save()
+
+    _inherit_catalog_number_if_configured(cojo)
+
+
+def _inherit_catalog_number_if_configured(cojo: Collectionobjectgroupjoin) -> None:
+    child = cojo.childco
+    if child is None:
+        return
+
+    collection = child.collection
+    if collection is None:
+        return
+
+    agent = getattr(cojo, 'createdbyagent', None) or child.createdbyagent
+    specify_user = getattr(agent, 'specifyuser', None) if agent else None
+
+    try:
+        inherit_enabled = get_cat_num_inheritance_setting(collection, specify_user)
+        if not inherit_enabled and specify_user is not None:
+            inherit_enabled = get_cat_num_inheritance_setting(collection, None)
+    except Exception:
+        inherit_enabled = False
+
+    if not inherit_enabled:
+        return
+
+    primary_cojo = (
+        Collectionobjectgroupjoin.objects.filter(parentcog=cojo.parentcog, isprimary=True)
+        .select_related('childco')
+        .first()
+    )
+
+    if primary_cojo is None or primary_cojo.childco is None:
+        return
+
+    if primary_cojo.id == cojo.id:
+        return
+
+    primary_catalog_number = primary_cojo.childco.catalognumber
+    if not primary_catalog_number:
+        return
+
+    if child.catalognumber == primary_catalog_number:
+        return
+
+    child.__class__.objects.filter(pk=child.pk).update(
+        catalognumber=primary_catalog_number
+    )
+    child.catalognumber = primary_catalog_number
