@@ -185,6 +185,9 @@ WEB_ATTACHMENT_KEY = os.getenv('ASSET_SERVER_KEY', None)
 WEB_ATTACHMENT_COLLECTION = os.getenv('ASSET_SERVER_COLLECTION', None)
 SEPARATE_WEB_ATTACHMENT_FOLDERS = os.getenv('SEPARATE_WEB_ATTACHMENT_FOLDERS', None)
 
+REDIS_HOST = os.getenv('REDIS_HOST', 'redis')
+REDIS_PORT = os.getenv('REDIS_PORT', 6379)
+REDIS_DB_INDEX = os.getenv('REDIS_DB_INDEX', 0)
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', None)
 CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', None)
 CELERY_TASK_DEFAULT_QUEUE = os.getenv('CELERY_TASK_QUEUE', DATABASE_NAME)
@@ -192,6 +195,8 @@ CELERY_TASK_DEFAULT_QUEUE = os.getenv('CELERY_TASK_QUEUE', DATABASE_NAME)
 ANONYMOUS_USER = os.getenv('ANONYMOUS_USER', None)
 SPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', '/opt/Specify/config')
 TIME_ZONE = os.environ.get('TIME_ZONE', 'America/Chicago')
+ALLOW_SUPPORT_LOGIN = os.environ.get('ALLOW_SUPPORT_LOGIN', False)
+SUPPORT_LOGIN_TTL = int(os.environ.get('SUPPORT_LOGIN_TTL', 180))
 
 # Resolve ALLOWED_HOSTS in the following precedence:
 # - Use the ALLOWED_HOSTS environment variable (if present)
