@@ -146,6 +146,12 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
     # To make things "simpler", it doesn't apply any filters, but returns a single predicate
     # @model is an input parameter, because cannot guess if it is aliased or not (callers are supposed to know that)
     def get_internal_filters(self):
+        # If nothing to filter on, return TRUE so .where(...) can run safely
+        if not self.internal_filters:
+            return sql.true()
+        # Avoid OR on a single element
+        if len(self.internal_filters) == 1:
+            return self.internal_filters[0]
         return sql.or_(*self.internal_filters)
 
 def add_proxy_method(name):
