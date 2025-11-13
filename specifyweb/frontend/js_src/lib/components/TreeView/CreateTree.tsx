@@ -73,7 +73,7 @@ export function CreateTree<
   const connectedCollection = getSystemInfo().collection;
 
   const handleClick = async (resourceFile: string): Promise<void> =>
-    ajax('/trees/create_default_trees/', {
+    ajax('/trees/create_default_tree/', {
       method: 'POST',
       headers: { Accept: 'application/json' },
       body: { fileName: resourceFile, collection: connectedCollection },

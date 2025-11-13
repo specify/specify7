@@ -26,7 +26,7 @@ from specifyweb.backend.stored_queries.execution import set_group_concat_max_len
 from specifyweb.backend.stored_queries.group_concat import group_concat
 from specifyweb.backend.notifications.models import Message
 
-from specifyweb.backend.trees.utils import add_default_taxon, create_default_trees_task, get_search_filters, initialize_default_taxon_tree
+from specifyweb.backend.trees.utils import add_default_taxon, create_default_tree_task, get_search_filters, initialize_default_taxon_tree
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from specifyweb.backend.trees.ranks import tree_rank_count
 from . import extras
@@ -555,10 +555,77 @@ def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMA
 #     update = PermissionTargetAction()
 #     delete = PermissionTargetAction()
 
+@openapi(schema={
+    "post": {
+        "requestBody": {
+            "required": True,
+            "content": {
+                "application/json": {
+                    "schema": {"$ref": "#/components/schemas/TreeCreationRequest"}
+                }
+            }
+        },
+        "responses": {
+            "201": {
+                "description": 'Default tree created.',
+                "content": {
+                    "application/json": {
+                        "schema": {"$ref": "#/components/schemas/Success"}
+                    }
+                }
+            },
+            "202": {
+                "description": 'Default tree creation started in the background.',
+                "content": {
+                    "application/json": {
+                        "schema": {"$ref": "#/components/schemas/SuccessBackground"}
+                    }
+                }
+            }
+        }
+    }},
+    components={
+        "schemas": {
+            "TreeCreationRequest": {
+                "type": "object",
+                "properties": {
+                    "fileName": {
+                        "type": "string",
+                        "description": "Filename of the default tree CSV to be imported."
+                    },
+                    "collection": {
+                        "type": "string",
+                        "description": "The name of the destination collection. The logged in colleciton will be used otherwise."
+                    },
+                    "runInBackground": {
+                        "type": "boolean",
+                        "description": "Whether or not to create the tree in the background."
+                    }
+                },
+                "required": ["fileName"],
+                "additionalProperties": False
+            },
+            "SuccessBackground": {
+                "type": "object",
+                "properties": {
+                    "message": {"type": "string"},
+                    "task_id": {"type": "string"}
+                },
+                "required": ["message", "task_id"]
+            },
+            "Success": {
+                "type": "object",
+                "properties": {"message": {"type": "string"}},
+                "required": ["message"]
+            }
+        }
+    })
 @login_maybe_required
 @require_POST
 @transaction.atomic
-def create_default_trees_view(request):
+def create_default_tree_view(request):
+    """Creates or populates a tree with default records from a CSV file.
+    """
     # Default tree files copied
     # from https://files.specifysoftware.org/taxonfiles/
     # to https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/
@@ -623,9 +690,7 @@ def create_default_trees_view(request):
     tree_name = discipline_name.capitalize()
     rank_count = int(tree_rank_count(tree_name, 8))
     
-    background = True
-    if 'background' in data:
-        background = data['background']
+    run_in_background = data.get('runInBackground', True)
 
     def stream_csv_from_url(url: str, discipline_name: str, rank_count: int) -> Iterator[Dict[str, str]]:
         nonlocal tree_name
@@ -644,7 +709,7 @@ def create_default_trees_view(request):
     if not url:
         return http.JsonResponse({'error': 'Tree not found.'}, status=404)
 
-    if background:
+    if run_in_background:
         Message.objects.create(user=request.specify_user, content=json.dumps({
             'type': 'create-default-tree-starting',
             'name': "Create_Default_Tree_" + discipline_name,
@@ -653,10 +718,10 @@ def create_default_trees_view(request):
         }))
 
         task_id = str(uuid4())
-        async_result = create_default_trees_task.apply_async(
+        async_result = create_default_tree_task.apply_async(
             args=[url, discipline_name, logged_in_discipline_name, rank_count,
                   request.specify_collection.id, request.specify_user.id],
-            task_id=f"create_default_trees_{discipline_name}_{task_id}",
+            task_id=f"create_default_tree_{discipline_name}_{task_id}",
             taskid=task_id
         )
         return http.JsonResponse({
@@ -676,7 +741,7 @@ def create_default_trees_view(request):
 def default_tree_upload_status(request, task_id: int) -> http.HttpResponse:
     """Returns the task status for the default tree upload celery task"""
 
-    result = create_default_trees_task.AsyncResult(task_id)
+    result = create_default_tree_task.AsyncResult(task_id)
 
     status = {
         'taskstatus': result.status,

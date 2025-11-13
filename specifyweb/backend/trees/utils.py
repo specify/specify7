@@ -393,7 +393,7 @@ def add_default_taxon(row, tree_name, discipline_name):
         rank_id += 10
 
 @app.task(base=LogErrorsTask, bind=True)
-def create_default_trees_task(self, url: str, discipline_name: str, logged_in_discipline_name: str, rank_count: int,
+def create_default_tree_task(self, url: str, discipline_name: str, logged_in_discipline_name: str, rank_count: int,
                               specify_collection_id: int, specify_user_id: int):
     logger.info(f'starting task {str(self.request.id)}')
 

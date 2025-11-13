@@ -22,6 +22,6 @@ urlpatterns = [
     ])),
 
     # Create new trees
-    path('create_default_trees/', views.create_default_trees_view),
-    re_path(r'^create_default_trees/status/(?P<task_id>[0-9a-fA-F-]+)/$', views.default_tree_upload_status),
+    path('create_default_tree/', views.create_default_tree_view),
+    re_path(r'^create_default_tree/status/(?P<task_id>[0-9a-fA-F-]+)/$', views.default_tree_upload_status),
 ]
