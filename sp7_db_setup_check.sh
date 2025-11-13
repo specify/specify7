@@ -119,7 +119,7 @@ GRANTS_OUTPUT="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" \
                   -e "SHOW GRANTS FOR '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}';" 2>/dev/null || true)"
 
 if [[ -z "$GRANTS_OUTPUT" ]]; then
-  echo "Error: Could not retrieve grants for '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'."
+  echo "Error: Could not retrieve migrator grants for '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'."
   exit 1
 fi
 
@@ -184,7 +184,7 @@ APP_GRANTS_RAW="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME"
                   -e "SHOW GRANTS FOR '${APP_USER_NAME}'@'${APP_USER_HOST}';" 2>/dev/null || true)"
 
 if [[ -z "$APP_GRANTS_RAW" ]]; then
-  echo "Error: Could not retrieve grants for '${APP_USER_NAME}'@'${APP_USER_HOST}'."
+  echo "Error: Could not retrieve app grants for '${APP_USER_NAME}'@'${APP_USER_HOST}'."
   exit 1
 fi
 
