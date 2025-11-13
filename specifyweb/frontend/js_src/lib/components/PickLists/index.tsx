@@ -25,12 +25,7 @@ import { hasToolPermission } from '../Permissions/helpers';
 import { PickListTypes } from './definitions';
 
 type PickListRawValue =
-  | SpecifyResource<AnySchema>
-  | string
-  | number
-  | boolean
-  | null
-  | undefined;
+  SpecifyResource<AnySchema> | boolean | number | string | null | undefined;
 
 export function PickListComboBox({
   id,
@@ -339,6 +334,6 @@ function isSpecifyResource(
     typeof rawValue === 'object' &&
     rawValue !== null &&
     'get' in rawValue &&
-    typeof (rawValue as SpecifyResource<AnySchema>).get === 'function'
+    typeof (rawValue ).get === 'function'
   );
 }
