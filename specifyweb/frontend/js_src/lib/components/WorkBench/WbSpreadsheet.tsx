@@ -114,14 +114,14 @@ function WbSpreadsheetComponent({
                             : label;
                         // REFACTOR: use new table icons
                         const tableSvg = renderToStaticMarkup(
-                      <SvgIcon
-                        className={iconClassName}
-                        label={tableLabel}
-                        name={strictGetTable(tableName).name }
-                      />
-                    );
+                          <SvgIcon
+                            className={iconClassName}
+                            label={tableLabel}
+                            name={strictGetTable(tableName).name}
+                          />
+                        );
 
-                    return `<a
+                        return `<a
                     class="link"
                     href="/specify/view/${tableName}/${recordId}/"
                     target="_blank"

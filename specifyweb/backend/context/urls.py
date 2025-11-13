@@ -19,6 +19,7 @@ urlpatterns = [
     re_path(r'^api_endpoints.json$', views.api_endpoints),
     re_path(r'^api_endpoints_all.json$', views.api_endpoints_all),
     re_path(r'^user.json$', views.user),
+    re_path(r'^stats_counts.json$', views.stats_counts),
     re_path(r'^system_info.json$', views.system_info),
     re_path(r'^server_time.json$', views.get_server_time),
     re_path(r'^domain.json$', views.domain),
@@ -39,6 +40,5 @@ urlpatterns = [
 
     path('collection_resource/', collection_resources.collection_resources),
     path('collection_resource/<int:resourceid>/', collection_resources.collection_resource),
-
 
 ]
