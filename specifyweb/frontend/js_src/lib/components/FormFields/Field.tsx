@@ -16,6 +16,13 @@ import { fetchPathAsString } from '../Formatters/formatters';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
 
+const primaryCatalogNumberCache = new Map<number, string>();
+const parentCatalogNumberCache = new Map<number, string>();
+
+type CatalogNumberInheritanceMetadata = {
+  readonly _catalogNumberInheritancePending?: boolean;
+};
+
 export function UiField({
   field,
   ...props
@@ -103,10 +110,71 @@ function Field({
   readonly field: LiteralField | undefined;
   readonly parser?: Parser;
 }): JSX.Element {
+  const PRIMARY_PLACEHOLDER_MAX_RETRIES = 5;
+  const PRIMARY_PLACEHOLDER_RETRY_DELAY = 750;
+
+  const isNew = resource?.isNew();
+  const isCO = resource?.specifyTable.name === 'CollectionObject';
+  const isComponent = resource?.specifyTable.name === 'Component';
+
+  const inheritanceMetadata = resource as CatalogNumberInheritanceMetadata &
+    SpecifyResource<AnySchema>;
+  const cojoMembership = resource?.get('cojo');
+  const isPartOfCOG =
+    isCO &&
+    (resource?.get('isMemberOfCOG') === true ||
+      (cojoMembership !== null && cojoMembership !== undefined));
+  const isPendingCatalogNumberInheritance =
+    inheritanceMetadata?._catalogNumberInheritancePending === true;
+
+  const hasCOParent =
+    isComponent &&
+    resource?.get('collectionObject') !== null &&
+    resource?.get('collectionObject') !== undefined;
+
+  const isCatNumberField = field?.name === 'catalogNumber';
+
+  const [displayPrimaryCatNumberPref] = collectionPreferences.use(
+    'catalogNumberInheritance',
+    'behavior',
+    'inheritance'
+  );
+
+  const [displayParentCatNumberPref] = collectionPreferences.use(
+    'catalogNumberParentInheritance',
+    'behavior',
+    'inheritance'
+  );
+
+  const shouldShowPrimaryCatalogPlaceholder =
+    isCatNumberField &&
+    displayPrimaryCatNumberPref &&
+    (isPartOfCOG || isPendingCatalogNumberInheritance);
+
+  const shouldShowParentCatalogPlaceholder =
+    isComponent &&
+    hasCOParent &&
+    isCatNumberField &&
+    displayParentCatNumberPref;
+
+  const shouldSkipCatalogNumberDefault =
+    isNew === true && shouldShowPrimaryCatalogPlaceholder;
+
+  React.useEffect(() => {
+    if (
+      isPartOfCOG &&
+      inheritanceMetadata?._catalogNumberInheritancePending === true
+    )
+      delete inheritanceMetadata._catalogNumberInheritancePending;
+  }, [isPartOfCOG, inheritanceMetadata]);
+
   const { value, updateValue, validationRef, parser } = useResourceValue(
     resource,
     field,
-    defaultParser
+    defaultParser,
+    {
+      skipParserDefaultValue: shouldSkipCatalogNumberDefault,
+    }
   );
 
   /*
@@ -118,81 +186,126 @@ function Field({
     React.useContext(ReadOnlyContext) ||
     (field?.isReadOnly === true && !isInSearchDialog);
 
-  const validationAttributes = getValidationAttributes(parser);
-  const rightAlignClassName = useRightAlignClassName(parser.type, isReadOnly);
-
-  const isNew = resource?.isNew();
-  const isCO = resource?.specifyTable.name === 'CollectionObject';
-  const isComponent = resource?.specifyTable.name === 'Component';
-
-  const isPartOfCOG = isCO
-    ? resource?.get('cojo') !== null && resource?.get('cojo') !== undefined
-    : false;
-
-  const hasCOParent = isComponent
-    ? resource.get('collectionObject') !== null &&
-      resource.get('collectionObject') !== undefined
-    : false;
-
-  const isCatNumberField = field?.name === 'catalogNumber';
-
-  // Check if collection pref wants to inherit primary cat num for empty CO cat num sibilings inside of a COG
-  const [displayPrimaryCatNumberPref] = collectionPreferences.use(
-    'catalogNumberInheritance',
-    'behavior',
-    'inheritance'
-  );
-
-  // Check if collection pref wants to inherit parent cat num for empty CO cat num children
-  const [displayParentCatNumberPref] = collectionPreferences.use(
-    'catalogNumberParentInheritance',
-    'behavior',
-    'inheritance'
-  );
-
-  const displayPrimaryCatNumberPlaceHolder =
-    isNew === false &&
-    isCO &&
-    isPartOfCOG &&
-    isCatNumberField &&
-    displayPrimaryCatNumberPref;
-
-  const displayParentCatNumberPlaceHolder =
-    isNew === false &&
-    isComponent &&
-    hasCOParent &&
-    isCatNumberField &&
-    displayParentCatNumberPref;
-
   const [primaryCatalogNumber, setPrimaryCatalogNumber] = React.useState<
     string | null
-  >(null);
+  >(() =>
+    typeof resource?.id === 'number'
+      ? (primaryCatalogNumberCache.get(resource.id) ?? null)
+      : null
+  );
 
   const [parentCatalogNumber, setParentCatalogNumber] = React.useState<
     string | null
-  >(null);
+  >(() =>
+    typeof resource?.id === 'number'
+      ? (parentCatalogNumberCache.get(resource.id) ?? null)
+      : null
+  );
+
+  const displayPrimaryCatNumberPlaceHolder =
+    shouldShowPrimaryCatalogPlaceholder ||
+    typeof primaryCatalogNumber === 'string';
+
+  const displayParentCatNumberPlaceHolder = shouldShowParentCatalogPlaceholder;
+
+  const validationAttributes = getValidationAttributes(parser);
+  const { placeholder: parserPlaceholder, ...inputValidationAttributes } =
+    validationAttributes;
+  const rightAlignClassName = useRightAlignClassName(parser.type, isReadOnly);
+
+  const [primaryPlaceholderRetryCount, setPrimaryPlaceholderRetryCount] =
+    React.useState(0);
+  const primaryPlaceholderRetryTimeout = React.useRef<
+    ReturnType<typeof setTimeout> | undefined
+  >(undefined);
 
   React.useEffect(() => {
-    if (resource && displayPrimaryCatNumberPlaceHolder) {
+    primaryPlaceholderRetryTimeout.current === undefined
+      ? undefined
+      : globalThis.clearTimeout(primaryPlaceholderRetryTimeout.current);
+    return () => {
+      primaryPlaceholderRetryTimeout.current === undefined
+        ? undefined
+        : globalThis.clearTimeout(primaryPlaceholderRetryTimeout.current);
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (!displayPrimaryCatNumberPlaceHolder) return;
+    setPrimaryPlaceholderRetryCount((current) => (current === 0 ? current : 0));
+  }, [resource?.id, displayPrimaryCatNumberPlaceHolder]);
+
+  React.useEffect(() => {
+    if (
+      isCatNumberField &&
+      isNew === true &&
+      displayPrimaryCatNumberPref &&
+      (isPartOfCOG || isPendingCatalogNumberInheritance) &&
+      typeof parser.value === 'string' &&
+      resource?.get('catalogNumber') === parser.value
+    )
+      resource?.unset?.('catalogNumber', { silent: true });
+  }, [
+    resource,
+    isCatNumberField,
+    isNew,
+    displayPrimaryCatNumberPref,
+    isPartOfCOG,
+    isPendingCatalogNumberInheritance,
+    parser.value,
+  ]);
+
+  React.useEffect(() => {
+    const shouldRequestPrimaryCatalogNumber =
+      resource !== undefined &&
+      resource.id !== undefined &&
+      isCatNumberField &&
+      displayPrimaryCatNumberPref;
+
+    if (shouldRequestPrimaryCatalogNumber) {
+      const requestPayload = { id: resource.id };
       ajax<string | null>('/inheritance/catalog_number_for_sibling/', {
         method: 'POST',
         headers: { Accept: 'application/json' },
-        body: resource,
+        body: requestPayload,
       })
         .then((response) => {
+          if (
+            response.data === null &&
+            primaryPlaceholderRetryCount < PRIMARY_PLACEHOLDER_MAX_RETRIES
+          ) {
+            primaryPlaceholderRetryTimeout.current = globalThis.setTimeout(
+              () => setPrimaryPlaceholderRetryCount((value) => value + 1),
+              PRIMARY_PLACEHOLDER_RETRY_DELAY
+            );
+            return;
+          }
           setPrimaryCatalogNumber(response.data);
+          if (typeof resource?.id === 'number')
+            if (typeof response.data === 'string')
+              primaryCatalogNumberCache.set(resource.id, response.data);
+            else primaryCatalogNumberCache.delete(resource.id);
         })
         .catch((error) => {
           console.error('Error fetching catalog number:', error);
         });
-    } else if (resource && displayParentCatNumberPlaceHolder) {
+    } else if (
+      resource &&
+      displayParentCatNumberPlaceHolder &&
+      resource.id !== undefined
+    ) {
+      const requestPayload = { id: resource.id };
       ajax<string | null>('/inheritance/catalog_number_from_parent/', {
         method: 'POST',
         headers: { Accept: 'application/json' },
-        body: resource,
+        body: requestPayload,
       })
         .then((response) => {
           setParentCatalogNumber(response.data);
+          if (typeof resource?.id === 'number')
+            if (typeof response.data === 'string')
+              parentCatalogNumberCache.set(resource.id, response.data);
+            else parentCatalogNumberCache.delete(resource.id);
         })
         .catch((error) => {
           console.error('Error fetching catalog number:', error);
@@ -200,9 +313,25 @@ function Field({
     }
   }, [
     resource,
+    resource?.id,
+    cojoMembership,
+    isCatNumberField,
+    displayPrimaryCatNumberPref,
+    primaryPlaceholderRetryCount,
     displayPrimaryCatNumberPlaceHolder,
     displayParentCatNumberPlaceHolder,
   ]);
+
+  const defaultPlaceholder = isCatNumberField ? undefined : parserPlaceholder;
+  const placeholder = displayPrimaryCatNumberPlaceHolder
+    ? typeof primaryCatalogNumber === 'string'
+      ? primaryCatalogNumber
+      : undefined
+    : displayParentCatNumberPlaceHolder
+      ? typeof parentCatalogNumber === 'string'
+        ? parentCatalogNumber
+        : undefined
+      : defaultPlaceholder;
 
   return (
     <Input.Generic
@@ -210,20 +339,12 @@ function Field({
       key={parser.title}
       max={Number.MAX_SAFE_INTEGER}
       name={name}
-      placeholder={
-        displayPrimaryCatNumberPlaceHolder &&
-        typeof primaryCatalogNumber === 'string'
-          ? primaryCatalogNumber
-          : displayParentCatNumberPlaceHolder &&
-              typeof parentCatalogNumber === 'string'
-            ? parentCatalogNumber
-            : undefined
-      }
-      {...validationAttributes}
+      placeholder={placeholder}
+      {...inputValidationAttributes}
       className={rightAlignClassName}
       id={id}
       isReadOnly={isReadOnly}
-      required={'required' in validationAttributes && !isInSearchDialog}
+      required={'required' in inputValidationAttributes && !isInSearchDialog}
       tabIndex={isReadOnly ? -1 : undefined}
       value={value?.toString() ?? ''}
       onBlur={

@@ -179,4 +179,30 @@ describe('useParserDefaultValue', () => {
 
     expect(resource.get(field.name as never)).toBe(getFakeDate());
   });
+
+  test('Skips default value when instructed', () => {
+    const resource = new tables.ExchangeOut.Resource();
+    const field = tables.ExchangeOut.strictGetLiteralField('number1');
+    const parser: Parser = {
+      type: 'number',
+      value: '2',
+    };
+    renderHook(() => useParserDefaultValue(resource, field, parser, true));
+
+    expect(resource.get(field.name as never)).toBeUndefined();
+  });
+
+  test('Skips catalog number default when inheritance placeholder present', () => {
+    const resource = new tables.CollectionObject.Resource();
+    Object.assign(resource, {
+      _catalogNumberInheritancePlaceholder: 'TEMP',
+    });
+    const field =
+      tables.CollectionObject.strictGetLiteralField('catalogNumber');
+    const { result } = renderHook(() => useParser(field, resource));
+
+    renderHook(() => useParserDefaultValue(resource, field, result.current));
+
+    expect(resource.get(field.name as never)).toBeUndefined();
+  });
 });
