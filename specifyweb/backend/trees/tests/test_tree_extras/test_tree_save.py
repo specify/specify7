@@ -1,6 +1,6 @@
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
 from specifyweb.backend.trees.extras import renumber_tree
-from specifyweb.backend.tress.models import Taxon, Taxontreedefitem
+from specifyweb.specify.models import Taxon, Taxontreedefitem
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
 
 from unittest import skip
@@ -230,6 +230,22 @@ class TestTreeSave(GeographyTree):
         test_phylum = self.make_taxontree("TestPhylum", "Phylum", parent=animalia)
 
     def test_renumbering_tree(self):
+        # Create a small but branching taxon tree to be renumbered
+        (
+            animalia,
+            plantae,
+            test_phylum,
+            test_class_1,
+            test_class_2,
+            test_phylum_plantae,
+            test_plantae_class_1,
+            test_plantae_class_2,
+        ) = self._create_tree_structure()
+
+        # Make sure we have the latest values from DB before renumbering
+        for node in self._node_list:
+            node.refresh_from_db()
+
         table = 'taxon'
         renumber_tree(table)
 
