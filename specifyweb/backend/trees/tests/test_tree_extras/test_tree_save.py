@@ -1,9 +1,12 @@
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
+from specifyweb.backend.trees.extras import renumber_tree
 from specifyweb.backend.tress.models import Taxon, Taxontreedefitem
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
 
 from unittest import skip
 from unittest.mock import Mock, patch
+
+from django.db.models import F, Q
 
 class TestTreeSave(GeographyTree):
 
@@ -225,3 +228,25 @@ class TestTreeSave(GeographyTree):
         animalia.save()
 
         test_phylum = self.make_taxontree("TestPhylum", "Phylum", parent=animalia)
+
+    def test_renumbering_tree(self):
+        table = 'taxon'
+        renumber_tree(table)
+
+        # Test that the node numbers in the tree are correct
+        bad_node_number_count = (
+            Taxon.objects
+            .filter(parent__isnull=False)
+            .filter(
+                nodenumber__isnull=False,
+                parent__nodenumber__isnull=False,
+                parent__highestchildnodenumber__isnull=False,
+            )
+            .filter(
+                Q(nodenumber__lt=F('parent__nodenumber')) |
+                Q(nodenumber__gt=F('parent__highestchildnodenumber'))
+            )
+            .count()
+        )
+
+        self.assertEqual(bad_node_number_count, 0)
