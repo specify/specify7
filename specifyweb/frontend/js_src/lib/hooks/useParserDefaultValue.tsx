@@ -37,9 +37,8 @@ export function useParserDefaultValue(
   React.useLayoutEffect(() => {
     if (field === undefined || resource === undefined) return;
 
-    const metadata =
-      resource as SpecifyResource<AnySchema> &
-        CatalogNumberInheritancePlaceholder;
+    const metadata = resource as CatalogNumberInheritancePlaceholder &
+      SpecifyResource<AnySchema>;
 
     const shouldSkipCatalogNumberDefault =
       resource.isNew() &&

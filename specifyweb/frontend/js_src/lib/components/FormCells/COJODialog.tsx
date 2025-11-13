@@ -6,8 +6,8 @@ import { formsText } from '../../localization/forms';
 import { DataEntry } from '../Atoms/DataEntry';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { createResource } from '../DataModel/resource';
+import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type {
   CollectionObject,
@@ -101,17 +101,20 @@ export function COJODialog({
         } as Partial<CollectionObjectGroupJoin> as never);
         newCOJO.set(serialized as never, undefined as never);
         if (resourceToUse.specifyTable.name === 'CollectionObject') {
-          (
-            resourceToUse as SpecifyResource<CollectionObject>
-          ).set('cojo', newCOJO as never);
+          (resourceToUse as SpecifyResource<CollectionObject>).set(
+            'cojo',
+            newCOJO as never
+          );
           if (
-            (resourceToUse as SpecifyResource<CollectionObject> & {
-              _catalogNumberInheritancePending?: boolean;
-            })._catalogNumberInheritancePending
+            (
+              resourceToUse as SpecifyResource<CollectionObject> & {
+                readonly _catalogNumberInheritancePending?: boolean;
+              }
+            )._catalogNumberInheritancePending
           )
             delete (
               resourceToUse as SpecifyResource<CollectionObject> & {
-                _catalogNumberInheritancePending?: boolean;
+                readonly _catalogNumberInheritancePending?: boolean;
               }
             )._catalogNumberInheritancePending;
         }

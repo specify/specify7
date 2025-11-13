@@ -20,7 +20,7 @@ const primaryCatalogNumberCache = new Map<number, string>();
 const parentCatalogNumberCache = new Map<number, string>();
 
 type CatalogNumberInheritanceMetadata = {
-  _catalogNumberInheritancePending?: boolean;
+  readonly _catalogNumberInheritancePending?: boolean;
 };
 
 export function UiField({
@@ -117,8 +117,8 @@ function Field({
   const isCO = resource?.specifyTable.name === 'CollectionObject';
   const isComponent = resource?.specifyTable.name === 'Component';
 
-  const inheritanceMetadata =
-    resource as SpecifyResource<AnySchema> & CatalogNumberInheritanceMetadata;
+  const inheritanceMetadata = resource as CatalogNumberInheritanceMetadata &
+    SpecifyResource<AnySchema>;
   const cojoMembership = resource?.get('cojo');
   const isPartOfCOG =
     isCO &&
@@ -190,7 +190,7 @@ function Field({
     string | null
   >(() =>
     typeof resource?.id === 'number'
-      ? primaryCatalogNumberCache.get(resource.id) ?? null
+      ? (primaryCatalogNumberCache.get(resource.id) ?? null)
       : null
   );
 
@@ -198,7 +198,7 @@ function Field({
     string | null
   >(() =>
     typeof resource?.id === 'number'
-      ? parentCatalogNumberCache.get(resource.id) ?? null
+      ? (parentCatalogNumberCache.get(resource.id) ?? null)
       : null
   );
 
@@ -232,9 +232,7 @@ function Field({
 
   React.useEffect(() => {
     if (!displayPrimaryCatNumberPlaceHolder) return;
-    setPrimaryPlaceholderRetryCount((current) =>
-      current === 0 ? current : 0
-    );
+    setPrimaryPlaceholderRetryCount((current) => (current === 0 ? current : 0));
   }, [resource?.id, displayPrimaryCatNumberPlaceHolder]);
 
   React.useEffect(() => {
@@ -277,8 +275,7 @@ function Field({
             primaryPlaceholderRetryCount < PRIMARY_PLACEHOLDER_MAX_RETRIES
           ) {
             primaryPlaceholderRetryTimeout.current = globalThis.setTimeout(
-              () =>
-                setPrimaryPlaceholderRetryCount((value) => value + 1),
+              () => setPrimaryPlaceholderRetryCount((value) => value + 1),
               PRIMARY_PLACEHOLDER_RETRY_DELAY
             );
             return;
