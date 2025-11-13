@@ -1,9 +1,16 @@
+import csv
 from functools import wraps
+import json
+from uuid import uuid4
 from django import http
-from typing import Literal, TypedDict, Any
+from typing import Iterator, Literal, TypedDict, Any, Dict
 from django.db import connection, transaction
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
+import requests
+from specifyweb.backend.trees.tree_mutations import perm_target
+from specifyweb.specify.views import login_maybe_required, openapi
+from sqlalchemy import distinct
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.api.crud import get_object_or_404
 from specifyweb.specify.api.serializers import obj_to_data, toJson
@@ -12,18 +19,19 @@ from sqlalchemy.orm import aliased
 
 from specifyweb.middleware.general import require_GET
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
-from specifyweb.backend.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets, has_table_permission
+from specifyweb.backend.permissions.permissions import check_permission_targets, has_table_permission
 
 from specifyweb.backend.stored_queries import models as sqlmodels
 from specifyweb.backend.stored_queries.execution import set_group_concat_max_len
 from specifyweb.backend.stored_queries.group_concat import group_concat
-from specifyweb.backend.trees.utils import get_search_filters
+from specifyweb.backend.notifications.models import Message
+
+from specifyweb.backend.trees.utils import add_default_taxon, create_default_tree_task, get_search_filters, initialize_default_taxon_tree
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from specifyweb.backend.trees.ranks import tree_rank_count
 from . import extras
 from specifyweb.backend.workbench.upload.auditcodes import TREE_MOVE
 from specifyweb.backend.trees.stats import get_tree_stats
-from specifyweb.specify.views import login_maybe_required, openapi
 
 import logging
 
@@ -542,65 +550,258 @@ def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMA
 
     return result
 
-class TaxonMutationPT(PermissionTarget):
-    resource = "/tree/edit/taxon"
-    merge = PermissionTargetAction()
-    move = PermissionTargetAction()
-    synonymize = PermissionTargetAction()
-    desynonymize = PermissionTargetAction()
-    repair = PermissionTargetAction()
+# class DefaultTreePT(PermissionTarget):
+#     resource = "/tree/default"
+#     update = PermissionTargetAction()
+#     delete = PermissionTargetAction()
 
+@openapi(schema={
+    "post": {
+        "requestBody": {
+            "required": True,
+            "content": {
+                "application/json": {
+                    "schema": {"$ref": "#/components/schemas/TreeCreationRequest"}
+                }
+            }
+        },
+        "responses": {
+            "201": {
+                "description": 'Default tree created.',
+                "content": {
+                    "application/json": {
+                        "schema": {"$ref": "#/components/schemas/Success"}
+                    }
+                }
+            },
+            "202": {
+                "description": 'Default tree creation started in the background.',
+                "content": {
+                    "application/json": {
+                        "schema": {"$ref": "#/components/schemas/SuccessBackground"}
+                    }
+                }
+            }
+        }
+    }},
+    components={
+        "schemas": {
+            "TreeCreationRequest": {
+                "type": "object",
+                "properties": {
+                    "fileName": {
+                        "type": "string",
+                        "description": "Filename of the default tree CSV to be imported."
+                    },
+                    "collection": {
+                        "type": "string",
+                        "description": "The name of the destination collection. The logged in colleciton will be used otherwise."
+                    },
+                    "runInBackground": {
+                        "type": "boolean",
+                        "description": "Whether or not to create the tree in the background."
+                    }
+                },
+                "required": ["fileName"],
+                "additionalProperties": False
+            },
+            "SuccessBackground": {
+                "type": "object",
+                "properties": {
+                    "message": {"type": "string"},
+                    "task_id": {"type": "string"}
+                },
+                "required": ["message", "task_id"]
+            },
+            "Success": {
+                "type": "object",
+                "properties": {"message": {"type": "string"}},
+                "required": ["message"]
+            }
+        }
+    })
+@login_maybe_required
+@require_POST
+@transaction.atomic
+def create_default_tree_view(request):
+    """Creates or populates a tree with default records from a CSV file.
+    """
+    # Default tree files copied
+    # from https://files.specifysoftware.org/taxonfiles/
+    # to https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/
+    discipline_tree_csv_files = {
+        'ichthyology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_fishes.csv',
+        # 'ichthyology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/test22_fishes.csv',
+        'herpetology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_herps.csv',
+        'ornothology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_aves.csv',
+        'mammology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_mammalia.csv',
+        'entomology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_orthoptera.csv',
+        'botany': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_poales.csv',
+        'invertebrate': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_inverts.csv'
+    }
+    title_to_discipline = {
+        'fishes': 'ichthyology',
+        'herps': 'herpetology',
+        'aves': 'ornothology',
+        'mammalia': 'mammology',
+        'orthoptera': 'entomology',
+        'poales': 'botany',
+        'inverts': 'invertebrate'
+    }
 
-class GeographyMutationPT(PermissionTarget):
-    resource = "/tree/edit/geography"
-    merge = PermissionTargetAction()
-    move = PermissionTargetAction()
-    synonymize = PermissionTargetAction()
-    desynonymize = PermissionTargetAction()
-    repair = PermissionTargetAction()
+    # Check permissions in the normal case and for the case of intial database setup.
+    # check_permission_targets(request.specify_collection.id, request.specify_user.id, [DefaultTreePT.create])
 
+    def parse_file_name_to_discipline(file_name: str) -> str:
+        """Extracts the discipline name from the file name."""
+        # Assuming the file name is in the format 'col2008_<discipline>.csv'
+        parts = file_name.split('_')
+        title = ''
+        if len(parts) > 1:
+            title = parts[1].replace('.csv', '').replace('.xls', '').lower()
+        else:
+            return title
+        discipline_name = title_to_discipline.get(title, '')
+        if discipline_name:
+            # return discipline_name.capitalize()
+            return discipline_name
+        else:
+            raise ValueError(f"Unknown discipline in file name: {file_name}")
+    
+    data = json.loads(request.body)
 
-class StorageMutationPT(PermissionTarget):
-    resource = "/tree/edit/storage"
-    merge = PermissionTargetAction()
-    move = PermissionTargetAction()
-    bulk_move = PermissionTargetAction()
-    synonymize = PermissionTargetAction()
-    desynonymize = PermissionTargetAction()
-    repair = PermissionTargetAction()
+    file_name = data.get('fileName', '').strip()
+    connected_collection = data.get('collection')
+    discipline_name = parse_file_name_to_discipline(file_name)
 
+    logged_in_collection_name = request.user.logincollectionname
 
-class GeologictimeperiodMutationPT(PermissionTarget):
-    resource = "/tree/edit/geologictimeperiod"
-    merge = PermissionTargetAction()
-    move = PermissionTargetAction()
-    synonymize = PermissionTargetAction()
-    desynonymize = PermissionTargetAction()
-    repair = PermissionTargetAction()
+    collection_name = logged_in_collection_name or connected_collection
+    collection = spmodels.Collection.objects.get(collectionname=collection_name)
 
+    logged_in_discipline_name = collection.discipline.name
 
-class LithostratMutationPT(PermissionTarget):
-    resource = "/tree/edit/lithostrat"
-    merge = PermissionTargetAction()
-    move = PermissionTargetAction()
-    synonymize = PermissionTargetAction()
-    desynonymize = PermissionTargetAction()
-    repair = PermissionTargetAction()
+    # logged_in_discipline_name = request.user.logindisciplinename
+    if discipline_name not in discipline_tree_csv_files:
+        return http.JsonResponse({'error': 'Tree not found.'}, status=404)
 
-class TectonicunitMutationPT(PermissionTarget):
-    resource = "/tree/edit/tectonicunit"
-    merge = PermissionTargetAction()
-    move = PermissionTargetAction()
-    synonymize = PermissionTargetAction()
-    desynonymize = PermissionTargetAction()
-    repair = PermissionTargetAction()
+    url = discipline_tree_csv_files.get(discipline_name)
+    # discipline_name = data.get('discipline', '').capitalize()
+    tree_name = discipline_name.capitalize()
+    rank_count = int(tree_rank_count(tree_name, 8))
+    
+    run_in_background = data.get('runInBackground', True)
 
-def perm_target(tree):
-    return {
-        'taxon': TaxonMutationPT,
-        'geography': GeographyMutationPT,
-        'storage': StorageMutationPT,
-        'geologictimeperiod': GeologictimeperiodMutationPT,
-        'lithostrat': LithostratMutationPT,
-        'tectonicunit':TectonicunitMutationPT
-    }[tree]
+    def stream_csv_from_url(url: str, discipline_name: str, rank_count: int) -> Iterator[Dict[str, str]]:
+        nonlocal tree_name
+        with requests.get(url, stream=True) as resp:
+            resp.raise_for_status()
+            lines = (line.decode('utf-8') for line in resp.iter_lines(decode_unicode=False))
+            reader = csv.DictReader(lines)
+
+            rank_names_lst = reader.fieldnames[:rank_count]
+            tree_name = initialize_default_taxon_tree(tree_name, discipline_name, 
+                                                      logged_in_discipline_name, rank_names_lst)
+            
+            for row in reader:
+                yield row
+
+    if not url:
+        return http.JsonResponse({'error': 'Tree not found.'}, status=404)
+
+    if run_in_background:
+        Message.objects.create(user=request.specify_user, content=json.dumps({
+            'type': 'create-default-tree-starting',
+            'name': "Create_Default_Tree_" + discipline_name,
+            'collection_id': request.specify_collection.id,
+            'discipline_name': logged_in_discipline_name,
+        }))
+
+        task_id = str(uuid4())
+        async_result = create_default_tree_task.apply_async(
+            args=[url, discipline_name, logged_in_discipline_name, rank_count,
+                  request.specify_collection.id, request.specify_user.id],
+            task_id=f"create_default_tree_{discipline_name}_{task_id}",
+            taskid=task_id
+        )
+        return http.JsonResponse({
+            'message': 'Trees creation started in the background.',
+            'task_id': async_result.id
+        }, status=202)
+
+    try:
+        for row in stream_csv_from_url(url, discipline_name, rank_count):
+            add_default_taxon(row, tree_name, discipline_name)
+    except requests.HTTPError:
+        return http.JsonResponse({'error': 'Failed to fetch the tree data.'}, status=500)
+
+    return http.JsonResponse({'message': 'Trees created successfully.'}, status=201)
+
+@openapi(schema={
+    "get": {
+        "parameters": [
+            {
+                "name": "task_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+                "description": "ID of the default tree creation task"
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": 'Status of the tree creation task',
+                "content": {
+                    "application/json": {
+                        "schema": {"$ref": "#/components/schemas/Progress"}
+                    }
+                }
+            },
+        }
+    }},
+    components={
+        "schemas": {
+            "Progress": {
+                "type": "object",
+                "properties": {
+                    "taskstatus": {
+                        "type": "string",
+                        "description": "Celery task status (PENDING, STARTED, RUNNING, SUCCESS, FAILURE, REVOKED)"
+                    },
+                    "taskprogress": {
+                        "oneOf": [
+                            {"type": "string"},
+                            {
+                                "type": "object",
+                                "description": "Progress info for the task.",
+                                "properties": {
+                                    "current": {"type": "integer", "minimum": 0},
+                                    "total": {"type": "integer", "minimum": 0}
+                                },
+                                "required": ["current", "total"]
+                            }
+                        ],
+                        "description": "Info returned by the task"
+                    },
+                    "taskid": {
+                        "type": "integer",
+                        "description": "The id of the task you queried"
+                    }
+                },
+                "required": ["taskstatus", "taskid"]
+            }
+        }
+    })
+@require_GET
+def default_tree_upload_status(request, task_id: int) -> http.HttpResponse:
+    """Returns the task status for the default tree upload celery task"""
+
+    result = create_default_tree_task.AsyncResult(task_id)
+
+    status = {
+        'taskstatus': result.status,
+        'taskprogress': result.info if isinstance(result.info, dict) else repr(result.info),
+        'taskid': task_id
+    }
+
+    return http.JsonResponse(status)
