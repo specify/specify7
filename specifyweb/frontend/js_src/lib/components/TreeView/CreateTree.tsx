@@ -62,6 +62,7 @@ export function CreateTree<
   const [isTreeCreationStarted, setIsTreeCreationStarted] = React.useState(false);
   const [treeCreationTaskId, setTreeCreationTaskId] = React.useState<string | undefined>(undefined);
   const [treeCreationProgress, setTreeCreationProgress] = React.useState<number>(0);
+  const [treeCreationProgressTotal, setTreeCreationProgressTotal] = React.useState<number>(1);
 
   const [selectedResource, setSelectedResource] = React.useState<
     SpecifyResource<AnySchema> | undefined
@@ -71,6 +72,7 @@ export function CreateTree<
     TaxonFileDefaultList | undefined
   >(undefined);
 
+  // Fetch list of available default trees.
   React.useEffect(() => {
     fetch('https://files.specifysoftware.org/taxonfiles/taxonfiles.json')
       .then(async (response) => response.json())
@@ -84,6 +86,7 @@ export function CreateTree<
 
   const connectedCollection = getSystemInfo().collection;
 
+  // Start default tree creation
   const handleClick = async (resourceFile: string): Promise<void> => {
     setIsTreeCreationStarted(true);
     return ajax<TreeCreationInfo>('/trees/create_default_tree/', {
@@ -118,7 +121,14 @@ export function CreateTree<
           errorMode: 'silent',
         })
           .then(({ data }) => {
-            setTreeCreationProgress((data.taskprogress.current || 0) / (data.taskprogress.total || 1))
+            if (data.taskstatus === 'RUNNING') {
+              setTreeCreationProgress(data.taskprogress.current || 0);
+              setTreeCreationProgressTotal(data.taskprogress.total || 1);
+            } else if (data.taskstatus === 'FAILURE') {
+              throw data.taskprogress;
+            } else if (data.taskstatus === 'SUCCESS') {
+              globalThis.location.reload();
+            }
           }),
       5000
     );
@@ -205,8 +215,12 @@ export function CreateTree<
                 header={treeText.defaultTreeTaskStarting()}
                 onClose={() => {setIsTreeCreationStarted(false); setIsActive(0)}}
               >
+                {treeText.defaultTreeCreationProgress({
+                  current: treeCreationProgress,
+                  total: treeCreationProgressTotal
+                })}
+                <Progress max={treeCreationProgressTotal} value={treeCreationProgress}/>
                 {treeText.defaultTreeTaskStartingDescription()}
-                <Progress max={1} value={treeCreationProgress}/>
               </Dialog>
             ) : undefined}
           </>

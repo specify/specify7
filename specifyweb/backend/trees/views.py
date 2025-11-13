@@ -766,7 +766,7 @@ def create_default_tree_view(request):
                 "properties": {
                     "taskstatus": {
                         "type": "string",
-                        "description": "Celery task status (PENDING, STARTED, SUCCESS, FAILURE, REVOKED)"
+                        "description": "Celery task status (PENDING, STARTED, RUNNING, SUCCESS, FAILURE, REVOKED)"
                     },
                     "taskprogress": {
                         "oneOf": [
