@@ -1,13 +1,13 @@
 from django.db import transaction
 from django.db.models import Model as DjangoModel
-from typing import Type
+from typing import Type, Optional
 
 from ..trees.utils import get_models
 
 import logging
 logger = logging.getLogger(__name__)
 
-def create_default_tree(name: str, kwargs: dict, ranks: dict):
+def create_default_tree(name: str, kwargs: dict, ranks: dict, preload_tree: Optional[str]):
     """Creates an initial empty tree. This should not be used outside of the initial database setup."""
     with transaction.atomic():
         tree_def_model, tree_rank_model, tree_node_model = get_models(name)
@@ -52,6 +52,10 @@ def create_default_tree(name: str, kwargs: dict, ranks: dict):
             definitionitem=tree_def_item,
             fullname="Root"
         )
+
+        # TODO: Preload tree
+        if preload_tree is not None:
+            pass
 
         return treedef
     

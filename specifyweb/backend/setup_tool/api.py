@@ -375,6 +375,10 @@ def create_tree(name: str, data: dict) -> dict:
 
     # Get tree configuration
     ranks = data.pop('ranks', dict())
+
+    # Pre-load Default Tree
+    # TODO: trees/create_default_trees
+    preload_tree = data.pop('default', None)
     
     try:
         kwargs = {}
@@ -384,7 +388,7 @@ def create_tree(name: str, data: dict) -> dict:
         if use_discipline and discipline is not None:
             kwargs['discipline'] = discipline
 
-        treedef = create_default_tree(name, kwargs, ranks)
+        treedef = create_default_tree(name, kwargs, ranks, preload_tree)
         return {'treedef_id': treedef.id}
     except Exception as e:
         raise SetupError(e)

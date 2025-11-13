@@ -222,6 +222,11 @@ export const resources: RA<ResourceConfig> = [
         required: true,
         default: fullNameDirections[0].value.toString(),
       },
+      // {
+      //   name: 'default',
+      //   label: setupToolText.defaultTree(),
+      //   type: 'boolean',
+      // },
     ],
   },
   {
@@ -284,6 +289,11 @@ export const resources: RA<ResourceConfig> = [
         required: true,
         default: fullNameDirections[0].value.toString(),
       },
+      // {
+      //   name: 'default',
+      //   label: setupToolText.defaultTree(),
+      //   type: 'boolean',
+      // },
     ],
   },
   {
@@ -320,6 +330,12 @@ export const resources: RA<ResourceConfig> = [
         required: true,
         default: fullNameDirections[0].value.toString(),
       },
+      // TODO: Select which Taxon tree to import (Re-use dialog from default tree creation in tree viewer)
+      // {
+      //   name: 'default',
+      //   label: setupToolText.defaultTree(),
+      //   type: 'boolean',
+      // },
     ],
   },
   {
