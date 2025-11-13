@@ -737,6 +737,61 @@ def create_default_tree_view(request):
 
     return http.JsonResponse({'message': 'Trees created successfully.'}, status=201)
 
+@openapi(schema={
+    "get": {
+        "parameters": [
+            {
+                "name": "task_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+                "description": "ID of the default tree creation task"
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": 'Status of the tree creation task',
+                "content": {
+                    "application/json": {
+                        "schema": {"$ref": "#/components/schemas/Progress"}
+                    }
+                }
+            },
+        }
+    }},
+    components={
+        "schemas": {
+            "Progress": {
+                "type": "object",
+                "properties": {
+                    "taskstatus": {
+                        "type": "string",
+                        "description": "Celery task status (PENDING, STARTED, SUCCESS, FAILURE, REVOKED)"
+                    },
+                    "taskprogress": {
+                        "oneOf": [
+                            {"type": "string"},
+                            {
+                                "type": "object",
+                                "description": "Progress info for the task.",
+                                "properties": {
+                                    "current": {"type": "integer", "minimum": 0},
+                                    "total": {"type": "integer", "minimum": 0}
+                                },
+                                "required": ["current", "total"]
+                            }
+                        ],
+                        "description": "Info returned by the task"
+                    },
+                    "taskid": {
+                        "type": "integer",
+                        "description": "The id of the task you queried"
+                    }
+                },
+                "required": ["taskstatus", "taskid"]
+            }
+        }
+    })
 @require_GET
 def default_tree_upload_status(request, task_id: int) -> http.HttpResponse:
     """Returns the task status for the default tree upload celery task"""
