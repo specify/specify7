@@ -37,6 +37,14 @@ import { useFieldValidation } from './useFieldValidation';
  * REFACTOR: consider breaking this hook into smaller hooks
  *
  */
+
+type UseResourceValueOptions =
+  | boolean
+  | {
+      readonly trim?: boolean;
+      readonly skipParserDefaultValue?: boolean;
+    };
+
 export function useResourceValue<
   T extends boolean | number | string | null,
   INPUT extends Input = Input,
@@ -46,7 +54,7 @@ export function useResourceValue<
   field: LiteralField | Relationship | undefined,
   // Default parser is usually coming from the form definition
   defaultParser: Parser | undefined,
-  trim?: boolean
+  options?: UseResourceValueOptions
 ): {
   readonly value: T | undefined;
   readonly updateValue: (newValue: T, reportErrors?: boolean) => void;
@@ -58,7 +66,15 @@ export function useResourceValue<
 } {
   const parser = useParser(field, resource, defaultParser);
 
-  useParserDefaultValue(resource, field, parser);
+  const { trim, skipParserDefaultValue } =
+    typeof options === 'object'
+      ? {
+          trim: options.trim,
+          skipParserDefaultValue: options.skipParserDefaultValue,
+        }
+      : { trim: options, skipParserDefaultValue: undefined };
+
+  useParserDefaultValue(resource, field, parser, skipParserDefaultValue);
 
   const { inputRef, validationRef, setValidation } = useFieldValidation<INPUT>(
     resource,

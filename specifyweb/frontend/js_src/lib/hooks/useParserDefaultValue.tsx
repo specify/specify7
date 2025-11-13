@@ -24,13 +24,30 @@ import { parseAnyDate } from '../utils/relativeDate';
  * ```
  *
  */
+type CatalogNumberInheritancePlaceholder = {
+  readonly _catalogNumberInheritancePlaceholder?: string;
+};
+
 export function useParserDefaultValue(
   resource: SpecifyResource<AnySchema> | undefined,
   field: LiteralField | Relationship | undefined,
-  parser: Parser
+  parser: Parser,
+  skipDefaultValue?: boolean
 ) {
   React.useLayoutEffect(() => {
     if (field === undefined || resource === undefined) return;
+
+    const metadata =
+      resource as SpecifyResource<AnySchema> &
+        CatalogNumberInheritancePlaceholder;
+
+    const shouldSkipCatalogNumberDefault =
+      resource.isNew() &&
+      field.name === 'catalogNumber' &&
+      resource.specifyTable.name === 'CollectionObject' &&
+      metadata._catalogNumberInheritancePlaceholder !== undefined;
+
+    if (skipDefaultValue || shouldSkipCatalogNumberDefault) return;
     /*
      * Don't auto set numeric to "0" or boolean fields to false, unless it is the default value
      * in the form definition
@@ -73,5 +90,5 @@ export function useParserDefaultValue(
           : parser.value) as never,
         { silent: true }
       );
-  }, [parser, resource, field]);
+  }, [parser, resource, field, skipDefaultValue]);
 }

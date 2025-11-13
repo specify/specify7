@@ -7,10 +7,12 @@ import { DataEntry } from '../Atoms/DataEntry';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
+import { createResource } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import type {
   CollectionObject,
   CollectionObjectGroup,
+  CollectionObjectGroupJoin,
 } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
@@ -49,9 +51,16 @@ export function COJODialog({
       const createdResource = new resourceTable.Resource() as
         | SpecifyResource<CollectionObject>
         | SpecifyResource<CollectionObjectGroup>;
+      if (
+        resourceTable.name === 'CollectionObject' &&
+        parentResource !== undefined
+      )
+        Object.assign(createdResource, {
+          _catalogNumberInheritancePending: true,
+        });
       setNewResource(createdResource);
     }
-  }, [resourceTable]);
+  }, [resourceTable, parentResource]);
 
   const handleCOJOCreation = (
     selectedResource?:
@@ -76,6 +85,42 @@ export function COJODialog({
     newCOJO.set(field, resourceUrl as never);
     newCOJO.set('parentCog', parentResourceUrl as never);
     collection?.add(newCOJO);
+
+    const persistCojo = async (): Promise<void> => {
+      if (resourceUrl === undefined) return;
+      try {
+        const serialized = await createResource('CollectionObjectGroupJoin', {
+          [field]: resourceUrl as never,
+          parentCog: parentResourceUrl as never,
+          isPrimary: newCOJO.get('isPrimary') ?? undefined,
+          isSubstrate: newCOJO.get('isSubstrate') ?? undefined,
+          precedence: newCOJO.get('precedence') ?? undefined,
+          text1: newCOJO.get('text1') ?? undefined,
+          text2: newCOJO.get('text2') ?? undefined,
+          text3: newCOJO.get('text3') ?? undefined,
+        } as Partial<CollectionObjectGroupJoin> as never);
+        newCOJO.set(serialized as never, undefined as never);
+        if (resourceToUse.specifyTable.name === 'CollectionObject') {
+          (
+            resourceToUse as SpecifyResource<CollectionObject>
+          ).set('cojo', newCOJO as never);
+          if (
+            (resourceToUse as SpecifyResource<CollectionObject> & {
+              _catalogNumberInheritancePending?: boolean;
+            })._catalogNumberInheritancePending
+          )
+            delete (
+              resourceToUse as SpecifyResource<CollectionObject> & {
+                _catalogNumberInheritancePending?: boolean;
+              }
+            )._catalogNumberInheritancePending;
+        }
+      } catch (error) {
+        console.error('Failed to save CollectionObjectGroupJoin', error);
+      }
+    };
+
+    void persistCojo();
   };
 
   const handleStates = (): void => {
