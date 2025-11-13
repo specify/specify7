@@ -40,8 +40,8 @@ export const resourcesText = createDictionary({
     'en-us': 'New View Definition',
     'de-ch': 'Neue Ansichtsdefinition',
     'es-es': 'Nueva definición de vista',
-    'fr-fr': 'Nouvelle définition de vue',
-    'pt-br': 'Nova Definição de Visualização',
+    'fr-fr': 'Définition de la nouvelle vue',
+    'pt-br': 'Nova definição de visualização',
     'ru-ru': 'Новое определение взгляда',
     'uk-ua': 'Нове визначення подання',
   },
@@ -964,7 +964,7 @@ export const resourcesText = createDictionary({
     'en-us':
       '{taxonName: string} does not belong to the {taxonTableLabel: string} tree associated with {typeName: string}',
     'de-ch':
-      '{taxonName: string} gehört nicht zum {taxonTableLabel: string}-Baum, der mit {typeName: string} verknüpft ist',
+      '{taxonName: string} gehört nicht zum {taxonTableLabel: string}-Baum, der mit {typeName: string} verknüpft ist.',
     'es-es':
       '{taxonName: string} no pertenece al árbol {taxonTableLabel: string} asociado con {typeName: string}',
     'fr-fr':
@@ -982,11 +982,11 @@ export const resourcesText = createDictionary({
     'de-ch':
       '{catalogNumberFieldName: string} {catalogNumber: string} wird bereits für eine andere Komponente oder ein anderes Sammlungsobjekt in dieser Sammlung verwendet.',
     'es-es':
-      '{catalogNumberFieldName: string} {catalogNumber: string} ya está en uso para otro componente u objeto de colección en esta colección.',
+      '{catalogNumberFieldName: string} {catalogNumber: string} ya está en uso para otro Componente u Objeto de Colección en esta colección.',
     'fr-fr':
       '{catalogNumberFieldName: string} {catalogNumber: string} est déjà utilisé pour un autre composant ou objet de collection dans cette collection.',
     'pt-br':
-      '{catalogNumberFieldName: string} {catalogNumber: string} já está em uso para outro Componente ou Objeto de Coleção nesta coleção.',
+      '{catalogNumberFieldName: string} {catalogNumber: string} já está em uso para outro componente ou objeto de coleção nesta coleção.',
     'ru-ru':
       '{catalogNumberFieldName: string} {catalogNumber: string} уже используется для другого компонента или объекта коллекции в этой коллекции.',
     'uk-ua':
@@ -1013,7 +1013,7 @@ export const resourcesText = createDictionary({
   configureField: {
     'en-us': 'Configure field',
     'de-ch': 'Feld konfigurieren',
-    'es-es': 'Configurar campo',
+    'es-es': 'Campo de configuración',
     'fr-fr': 'Configurer le champ',
     'pt-br': 'Configurar campo',
     'ru-ru': 'Настроить поле',
@@ -1022,18 +1022,18 @@ export const resourcesText = createDictionary({
   trimZeros: {
     'en-us': 'Trim Leading Zeros',
     'de-ch': 'Führende Nullen entfernen',
-    'es-es': 'Recortar ceros iniciales',
-    'fr-fr': 'Couper les zéros non significatifs',
-    'pt-br': 'Aparar zeros à esquerda',
+    'es-es': 'Eliminar ceros a la izquierda',
+    'fr-fr': 'Supprimer les zéros non significatifs',
+    'pt-br': 'Eliminar zeros à esquerda',
     'ru-ru': 'Удалить начальные нули',
     'uk-ua': 'Видалити початкові нулі',
   },
   trimZerosDescription: {
     'en-us': 'Remove leading zeros from numeric values.',
-    'de-ch': 'Entfernen Sie führende Nullen aus numerischen Werten.',
-    'es-es': 'Eliminar los ceros iniciales de los valores numéricos.',
-    'fr-fr': 'Supprimez les zéros non significatifs des valeurs numériques.',
-    'pt-br': 'Remova os zeros à esquerda dos valores numéricos.',
+    'de-ch': 'Führende Nullen von numerischen Werten entfernen.',
+    'es-es': 'Eliminar los ceros a la izquierda de los valores numéricos.',
+    'fr-fr': 'Supprimer les zéros non significatifs des valeurs numériques.',
+    'pt-br': 'Remover zeros à esquerda de valores numéricos.',
     'ru-ru': 'Удалить начальные нули из числовых значений.',
     'uk-ua': 'Видаліть початкові нулі з числових значень.',
   },
