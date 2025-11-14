@@ -235,7 +235,7 @@ function Row({
 }
 
 const getCellClassName = (condenseQueryResults: boolean): string =>
-  `border-gray-500 border-r bg-[color:var(--bg)] ${
+  `border-gray-500 border-r bg-[color:var(--bg)] min-w-0 overflow-hidden break-words ${
     condenseQueryResults ? 'p-0.5' : 'p-1'
   } first:border-l ${
     condenseQueryResults ? 'min-h-[theme(spacing.4)' : 'min-h-[theme(spacing.8)'

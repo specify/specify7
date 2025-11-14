@@ -420,6 +420,7 @@ function TableHeaderCell({
       className="bg-brand-100 dark:bg-brand-500 sticky z-[2] w-full
         min-w-max border-b border-gray-500 p-1 [inset-block-start:_0]"
       role={typeof content === 'object' ? `columnheader` : 'cell'}
+      style={{ overflow: 'auto', resize: 'horizontal' }}
     >
       {typeof handleSortChange === 'function' ? (
         <Button.LikeLink
