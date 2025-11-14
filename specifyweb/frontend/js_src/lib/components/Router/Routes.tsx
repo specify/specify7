@@ -377,6 +377,14 @@ export const routes: RA<EnhancedRoute> = [
       ),
   },
   {
+    path: 'collection-preferences',
+    title: preferencesText.collectionPreferences(),
+    element: () =>
+      import('../Preferences').then(
+        ({ CollectionPreferencesWrapper }) => CollectionPreferencesWrapper
+      ),
+  },
+  {
     path: 'schema-config',
     title: schemaText.schemaConfig(),
     element: () =>

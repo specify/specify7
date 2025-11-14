@@ -16,8 +16,8 @@ import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables } from '../DataModel/tables';
+import { getSynonymPreferenceForTree } from '../DataModel/treeBusinessRules';
 import { DeleteButton } from '../Forms/DeleteButton';
-import { getPref } from '../InitialContext/remotePrefs';
 import { Dialog } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
@@ -69,9 +69,38 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   const resourceName = `/tree/edit/${toLowerCase(tableName)}` as const;
   const isSynonym = typeof focusedRow?.acceptedId === 'number';
 
-  const doExpandSynonymActionsPref = getPref(
-    `sp7.allow_adding_child_to_synonymized_parent.${tableName}`
-  );
+  const [doExpandSynonymActionsPref, setDoExpandSynonymActionsPref] =
+    React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    let isMounted = true;
+
+    const update = (): void => {
+      getSynonymPreferenceForTree(tableName)
+        .then((value) => {
+          if (isMounted) setDoExpandSynonymActionsPref(value);
+        })
+        .catch(() => {
+          if (isMounted) setDoExpandSynonymActionsPref(false);
+        });
+    };
+
+    update();
+
+    let unsubscribe: (() => void) | undefined;
+
+    import('../Preferences/collectionPreferences')
+      .then(({ collectionPreferences }) => {
+        if (!isMounted) return;
+        unsubscribe = collectionPreferences.events.on('update', update);
+      })
+      .catch(() => undefined);
+
+    return () => {
+      isMounted = false;
+      unsubscribe?.();
+    };
+  }, [tableName]);
 
   const disableButtons =
     focusedRow === undefined || typeof currentAction === 'string';
