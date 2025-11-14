@@ -45,12 +45,12 @@ function Controls(): JSX.Element {
   return (
     <>
       <Button.Icon
-        icon="plus"
+        icon="zoomIn"
         title={commonText.zoom()}
         onClick={(): void => zoomIn()}
       />
       <Button.Icon
-        icon="minus"
+        icon="zoomOut"
         title={commonText.unzoom()}
         onClick={(): void => zoomOut()}
       />
