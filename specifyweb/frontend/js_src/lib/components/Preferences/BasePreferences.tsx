@@ -94,15 +94,16 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
       if (typeof this.resourcePromise === 'object') return this.resourcePromise;
 
       const { values, defaultValues } = this.options;
+      const isAppResourceEndpoint = values.fetchUrl.includes('app.resource');
 
-      const valuesResource = fetchResourceId(
-        values.fetchUrl,
-        values.resourceName
-      ).then(async (appResourceId) =>
-        typeof appResourceId === 'number'
-          ? fetchResourceData(values.fetchUrl, appResourceId)
-          : createDataResource(values.fetchUrl, values.resourceName)
-      );
+      const valuesResource = isAppResourceEndpoint
+        ? fetchGlobalResource(values.fetchUrl, values.resourceName)
+        : fetchResourceId(values.fetchUrl, values.resourceName).then(
+            async (appResourceId) =>
+              typeof appResourceId === 'number'
+                ? fetchResourceData(values.fetchUrl, appResourceId)
+                : createDataResource(values.fetchUrl, values.resourceName)
+          );
 
       const defaultValuesResource =
         defaultValues === undefined
@@ -425,6 +426,8 @@ const mimeType = 'application/json';
 /**
  * Fetch ID of app resource containing preferences
  */
+const appResourceMimeType = 'text/plain';
+
 export const fetchResourceId = async (
   fetchUrl: string,
   resourceName: string
@@ -448,6 +451,32 @@ const fetchResourceData = async (
   ajax<ResourceWithData>(cacheableUrl(`${fetchUrl}${appResourceId}/`), {
     headers: { Accept: mimeType },
   }).then(({ data }) => data);
+
+const fetchGlobalResource = async (
+  fetchUrl: string,
+  resourceName: string
+): Promise<ResourceWithData> => {
+  const url = cacheableUrl(
+    formatUrl(fetchUrl, {
+      name: resourceName,
+      quiet: '',
+    })
+  );
+  const { data, status, response } = await ajax<string>(url, {
+    headers: { Accept: appResourceMimeType },
+    expectedErrors: [Http.NO_CONTENT],
+  });
+
+  const parsedId = f.parseInt(response.headers.get('X-Record-ID') ?? undefined);
+
+  return {
+    id: parsedId ?? -1,
+    data: status === Http.OK ? data : '',
+    metadata: null,
+    mimetype: response.headers.get('Content-Type') ?? appResourceMimeType,
+    name: resourceName,
+  };
+};
 
 /**
  * Fetch default values overrides, if exist
