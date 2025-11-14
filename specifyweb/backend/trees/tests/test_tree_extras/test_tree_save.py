@@ -3,6 +3,7 @@ from specifyweb.backend.trees.extras import renumber_tree
 from specifyweb.specify.models import Taxon, Taxontreedefitem
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
 
+import random
 from unittest import skip
 from unittest.mock import Mock, patch
 
@@ -265,6 +266,21 @@ class TestTreeSave(GeographyTree):
         # Refresh values from DB before renumbering
         for node in self._node_list:
             node.refresh_from_db()
+
+        # Randomly shuffle the existing node numbers
+        all_taxa = list(Taxon.objects.all())
+        count = len(all_taxa)
+        nodenums = list(range(1, count + 1))
+        random.shuffle(nodenums)
+        highnums = list(range(1, count + 1))
+        random.shuffle(highnums)
+
+        # Assign each taxon a unique random nodenumber and highestchildnodenumber
+        for t, nn, hcnn in zip(all_taxa, nodenums, highnums):
+            t.nodenumber = nn
+            t.highestchildnodenumber = hcnn
+
+        Taxon.objects.bulk_update(all_taxa, ["nodenumber", "highestchildnodenumber"])
 
         table = 'taxon'
         renumber_tree(table)
