@@ -129,7 +129,7 @@ export const treeText = createDictionary({
     'es-es':
       'El nodo {treeName:string} "{nodeName:string}" se colocará, junto con todos sus descendientes, bajo el nuevo padre "{parentName:string}".',
     'fr-fr':
-      'Le nœud {treeName:string} « {nodeName:string} » sera placé, ainsi que tous ses descendants, sous le nouveau parent « {parentName:string} ».',
+      'Le nœud {treeName:string} « {nodeName:string} » sera placé, avec tous ses descendants, sous le nouveau parent « {parentName:string} ».',
     'uk-ua':
       'Вузол {treeName:string} "{nodeName:string}" буде розміщено разом із усіма його нащадками під новим батьківським вузлом "{parentName:string}".',
     'de-ch':
@@ -293,7 +293,7 @@ export const treeText = createDictionary({
     'es-es':
       'Seleccione un objetivo para que "{nodeName:string}" se convierta en sinónimo',
     'fr-fr':
-      'Sélectionnez une cible pour laquelle « {nodeName:string} » doit être synonymisé',
+      'Sélectionnez une cible pour laquelle « {nodeName:string} » doit être synonyme',
     'uk-ua': 'Виберіть ціль для "{nodeName:string}", який буде синонімічним',
     'de-ch': 'Wähle Ziel um "{nodeName:string}" daran zu synonymisieren',
     'pt-br': 'Selecione um alvo para "{nodeName:string}" ser sinonimizado',

@@ -93,10 +93,10 @@ export const formsText = createDictionary({
   },
   checkingIfResourceIsUsed: {
     'en-us': 'Checking if this record is currently in use…',
-    'de-ch': 'Es wird geprüft, ob dieser Datensatz derzeit verwendet wird …',
+    'de-ch': 'Es wird geprüft, ob dieser Datensatz aktuell verwendet wird…',
     'es-es': 'Comprobando si este registro está actualmente en uso…',
-    'fr-fr': 'Vérification si cet enregistrement est actuellement utilisé…',
-    'pt-br': 'Verificando se este registro está em uso no momento…',
+    'fr-fr': 'Vérification de la disponibilité de cet enregistrement…',
+    'pt-br': 'Verificando se este registro está em uso…',
     'ru-ru': 'Проверяем, используется ли эта запись в данный момент…',
     'uk-ua': 'Перевірка, чи цей запис зараз використовується…',
   },
@@ -111,8 +111,7 @@ export const formsText = createDictionary({
   },
   recordUsedDescription: {
     'en-us': 'This resource is currently linked to the following records:',
-    'de-ch':
-      'Diese Ressource ist derzeit mit den folgenden Datensätzen verknüpft:',
+    'de-ch': 'Diese Ressource ist derzeit mit folgenden Datensätzen verknüpft:',
     'es-es':
       'Este recurso está actualmente vinculado a los siguientes registros:',
     'fr-fr':
@@ -422,7 +421,7 @@ export const formsText = createDictionary({
     'en-us':
       'The data shown on this page has been changed by another user or in another browser tab and is out of date. The page must be reloaded to prevent inconsistent data from being saved.',
     'ru-ru':
-      'Данные на этой странице были изменены другим пользователем или на другой вкладке браузера и устарели. Для предотвращения сохранения несоответствующих данных необходимо перезагрузить страницу.',
+      'Данные на этой странице были изменены другим пользователем или на другой вкладке браузера и устарели. Необходимо перезагрузить страницу, чтобы предотвратить сохранение несоответствующих данных.',
     'es-es':
       'Los datos que se muestran en esta página han sido modificados por otro usuario o en otra pestaña del navegador y están desactualizados. Es necesario recargar la página para evitar que se guarden datos incoherentes.',
     'fr-fr':
@@ -936,10 +935,10 @@ export const formsText = createDictionary({
   },
   bulkCarryForwardRangeEnabled: {
     'en-us': 'Show Bulk Carry Forward range',
-    'de-ch': 'Bulk Carry Forward-Bereich anzeigen',
-    'es-es': 'Mostrar rango de transferencia masiva',
+    'de-ch': 'Bereich für Massenüberträge anzeigen',
+    'es-es': 'Mostrar gama de productos para llevar a granel',
     'fr-fr': 'Afficher la plage de report en masse',
-    'pt-br': 'Mostrar intervalo de transporte em massa',
+    'pt-br': 'Mostrar intervalo de transferência de peso',
     'ru-ru': 'Показать диапазон массового переноса данных',
     'uk-ua': 'Показати діапазон масового перенесення',
   },
@@ -947,32 +946,30 @@ export const formsText = createDictionary({
     'en-us':
       'Cannot carry forward record through the specified {field:string} range.',
     'de-ch':
-      'Der Datensatz kann nicht über den angegebenen Bereich {field:string} übertragen werden.',
+      'Der Datensatz kann nicht über den angegebenen Bereich {field:string} hinaus fortgeführt werden.',
     'es-es':
-      'No se puede trasladar el registro a través del rango {field:string} especificado.',
+      'No se puede transferir el registro a través del rango {field:string} especificado.',
     'fr-fr':
       "Impossible de reporter l'enregistrement sur la plage {field:string} spécifiée.",
     'pt-br':
-      'Não é possível transferir o registro através do intervalo especificado {field:string}.',
+      'Não é possível prosseguir com o registro através do intervalo especificado {field:string}.',
     'ru-ru':
       'Невозможно перенести запись через указанный диапазон {field:string}.',
     'uk-ua': 'Неможливо перенести запис у вказаний діапазон {field:string}.',
   },
   bulkCarryForwardRangeLimitExceeded: {
     'en-us': 'Range exceeds record limit of {limit:number}.',
-    'de-ch':
-      'Der Bereich überschreitet die Aufzeichnungsgrenze von {limit:number}.',
+    'de-ch': 'Der Bereich überschreitet den Rekordwert von {limit:number}.',
     'es-es': 'El rango excede el límite de registro de {limit:number}.',
     'fr-fr': "La plage dépasse la limite d'enregistrement de {limit:number}.",
-    'pt-br': 'O alcance excede o limite recorde de {limit:number}.',
+    'pt-br': 'O alcance excede o limite de registro de {limit:number}.',
     'ru-ru': 'Диапазон превышает предел записи {limit:number}.',
     'uk-ua': 'Діапазон перевищує ліміт записів {limit:number}.',
   },
   bulkCarryForwardRangeExistingRecords: {
     'en-us': 'The following numbers for {field:string} are already being used:',
     'de-ch': 'Folgende Nummern für {field:string} werden bereits verwendet:',
-    'es-es':
-      'Los siguientes números para {field:string} ya se están utilizando:',
+    'es-es': 'Los siguientes números para {field:string} ya están en uso:',
     'fr-fr': 'Les numéros suivants pour {field:string} sont déjà utilisés :',
     'pt-br': 'Os seguintes números para {field:string} já estão sendo usados:',
     'ru-ru': 'Следующие номера для {field:string} уже используются:',
@@ -980,28 +977,28 @@ export const formsText = createDictionary({
   },
   bulkCarryForwardRangeStart: {
     'en-us': 'Carry Forward Range Start',
-    'de-ch': 'Übertragsbereichsanfang',
-    'es-es': 'Arranque del rango de avance',
+    'de-ch': 'Vorwärtsbewegung Reichweite Start',
+    'es-es': 'Rango de inicio de arrastre',
     'fr-fr': 'Début de la plage de report',
-    'pt-br': 'Início do intervalo de transporte para frente',
+    'pt-br': 'Início do intervalo de transferência',
     'ru-ru': 'Начало диапазона переноса вперед',
     'uk-ua': 'Початок діапазону перенесення вперед',
   },
   bulkCarryForwardRangeEnd: {
     'en-us': 'Carry Forward Range End',
-    'de-ch': 'Übertragsbereichsende',
-    'es-es': 'Llevar adelante el final del rango',
+    'de-ch': 'Reichweitenende für Weitertragen',
+    'es-es': 'Rango de arrastre final',
     'fr-fr': 'Fin de la plage de report',
-    'pt-br': 'Fim do intervalo de transporte para frente',
+    'pt-br': 'Fim do intervalo de transporte',
     'ru-ru': 'Конец диапазона переноса вперед',
     'uk-ua': 'Кінець діапазону перенесення вперед',
   },
   createRecordSetOnBulkCarryForward: {
     'en-us': 'Create record set on Bulk Carry Forward',
     'de-ch': 'Datensatz für Massenübertrag erstellen',
-    'es-es': 'Crear un conjunto de registros en Bulk Carry Forward',
+    'es-es': 'Crear conjunto de registros en Transferencia masiva',
     'fr-fr': "Créer un ensemble d'enregistrements sur le report en masse",
-    'pt-br': 'Criar conjunto de registros em Bulk Carry Forward',
+    'pt-br': 'Criar conjunto de registros em Transferência em Massa',
     'ru-ru': 'Создать набор записей для массового переноса данных',
     'uk-ua': 'Створення набору записів для групового перенесення',
   },
@@ -1048,7 +1045,7 @@ export const formsText = createDictionary({
     'fr-fr': 'Auto-numéro par année',
     'ru-ru': 'Автонумерация по году',
     'uk-ua': 'Автонумерація за роком',
-    'pt-br': '',
+    'pt-br': 'Numeração automática por ano',
   },
   autoNumber: {
     'en-us': 'Auto-number',
@@ -1057,7 +1054,7 @@ export const formsText = createDictionary({
     'fr-fr': 'Auto-numéro',
     'ru-ru': 'Автонумерация',
     'uk-ua': 'Автонумерація',
-    'pt-br': '',
+    'pt-br': 'Numeração automática',
   },
   editFormDefinition: {
     'en-us': 'Edit Form Definition',
