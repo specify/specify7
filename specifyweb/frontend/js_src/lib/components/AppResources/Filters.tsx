@@ -22,6 +22,7 @@ import {
   isAllAppResourceTypes,
 } from './filtersHelpers';
 import type { AppResources } from './hooks';
+import { shouldShowCollectionPreferenceSubType } from './permissions';
 import { appResourceSubTypes, appResourceTypes } from './types';
 
 export function AppResourcesFilters({
@@ -33,12 +34,23 @@ export function AppResourcesFilters({
     'appResources',
     'filters'
   );
+  const canSeeCollectionPreferences = shouldShowCollectionPreferenceSubType();
+  const visibleAppResources = React.useMemo(
+    () =>
+      canSeeCollectionPreferences
+        ? allAppResources
+        : allAppResources.filter((type) => type !== 'collectionPreferences'),
+    [canSeeCollectionPreferences]
+  );
 
-  const showAllResources = isAllAppResourceTypes(filters.appResources);
+  const showAllResources = isAllAppResourceTypes(
+    filters.appResources,
+    visibleAppResources
+  );
   const handleToggleResources = (): void =>
     setFilters({
       ...filters,
-      appResources: showAllResources ? [] : allAppResources,
+      appResources: showAllResources ? [] : visibleAppResources,
     });
 
   const [isOpen, handleOpen, handleClose] = useBooleanState();
@@ -63,7 +75,9 @@ export function AppResourcesFilters({
             setFilters({
               viewSets: false,
               appResources:
-                filters.viewSets || !showAllResources ? allAppResources : [],
+                filters.viewSets || !showAllResources
+                  ? visibleAppResources
+                  : [],
             })
           }
         >
@@ -116,14 +130,19 @@ export function AppResourcesFilters({
                 {commonText.countLine({
                   resource: resourcesText.appResources(),
                   count: countAppResources(initialResources, {
-                    appResources: allAppResources,
+                    appResources: visibleAppResources,
                     viewSets: false,
                   }),
                 })}
               </Label.Inline>
               <Ul className="pl-6">
-                {Object.entries(appResourceSubTypes).map(
-                  ([key, { label, icon, documentationUrl }]): JSX.Element => (
+                {Object.entries(appResourceSubTypes)
+                  .filter(
+                    ([key]) =>
+                      key !== 'collectionPreferences' ||
+                      canSeeCollectionPreferences
+                  )
+                  .map(([key, { label, icon, documentationUrl }]): JSX.Element => (
                     <li key={key}>
                       <Label.Inline>
                         <Input.Checkbox
@@ -156,8 +175,7 @@ export function AppResourcesFilters({
                         )}
                       </Label.Inline>
                     </li>
-                  )
-                )}
+                  ))}
               </Ul>
             </li>
           </Ul>

@@ -14,11 +14,8 @@ import type { MenuItem } from '../Core/Main';
 import { getDisciplineTrees } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
 import { fetchContext as userPermission } from '../Permissions';
-import {
-  hasPermission,
-  hasTablePermission,
-  hasToolPermission,
-} from '../Permissions/helpers';
+import { hasPermission, hasTablePermission, hasToolPermission } from '../Permissions/helpers';
+import { canAccessCollectionPreferencesResource } from '../AppResources/permissions';
 import { clearAllCache } from '../RouterCommands/CacheBuster';
 import { filterMenuItems } from './menuItemProcessing';
 
@@ -61,7 +58,7 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       title: preferencesText.collectionPreferences(),
       url: '/specify/collection-preferences/',
       icon: icons.office,
-      enabled: () => hasToolPermission('resources', 'update'),
+      enabled: () => canAccessCollectionPreferencesResource(),
     },
     schemaConfig: {
       title: schemaText.schemaConfig(),

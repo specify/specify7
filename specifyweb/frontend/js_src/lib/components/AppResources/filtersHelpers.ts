@@ -5,6 +5,7 @@ import { toResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import type { AppResources } from './hooks';
+import { filterCollectionPreferencesResources } from './permissions';
 import { appResourceSubTypes } from './types';
 
 export const allAppResources = Array.from(
@@ -25,10 +26,11 @@ export type AppResourceFilters = {
  * Determine if all app resource types are visible
  */
 export const isAllAppResourceTypes = (
-  appResources: RA<keyof typeof appResourceSubTypes>
+  appResources: RA<keyof typeof appResourceSubTypes>,
+  universe: RA<keyof typeof appResourceSubTypes> = allAppResources
 ): boolean =>
   JSON.stringify(Array.from(appResources).sort(sortFunction(f.id))) ===
-  JSON.stringify(allAppResources);
+  JSON.stringify(universe);
 
 export function countAppResources(
   resources: AppResources,
@@ -44,14 +46,15 @@ export const filterAppResources = (
 ): AppResources => ({
   ...resources,
   viewSets: filters.viewSets ? resources.viewSets : [],
-  appResources:
+  appResources: filterCollectionPreferencesResources(
     filters.appResources.length === 0
       ? []
       : isAllAppResourceTypes(filters.appResources)
         ? resources.appResources
         : resources.appResources.filter((resource) =>
             filters.appResources.includes(getAppResourceType(resource))
-          ),
+          )
+  ),
 });
 
 export const getResourceType = (
