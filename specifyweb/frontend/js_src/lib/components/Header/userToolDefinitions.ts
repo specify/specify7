@@ -9,13 +9,17 @@ import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { toLowerCase } from '../../utils/utils';
+import { canAccessCollectionPreferencesResource } from '../AppResources/permissions';
 import { icons } from '../Atoms/Icons';
 import type { MenuItem } from '../Core/Main';
 import { getDisciplineTrees } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
 import { fetchContext as userPermission } from '../Permissions';
-import { hasPermission, hasTablePermission, hasToolPermission } from '../Permissions/helpers';
-import { canAccessCollectionPreferencesResource } from '../AppResources/permissions';
+import {
+  hasPermission,
+  hasTablePermission,
+  hasToolPermission,
+} from '../Permissions/helpers';
 import { clearAllCache } from '../RouterCommands/CacheBuster';
 import { filterMenuItems } from './menuItemProcessing';
 

@@ -31,8 +31,8 @@ import { formatUrl } from '../Router/queryString';
 import type { AppResourcesTree } from './hooks';
 import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
-import type { AppResourceType, ScopedAppResourceDir } from './types';
 import { shouldShowCollectionPreferenceSubType } from './permissions';
+import type { AppResourceType, ScopedAppResourceDir } from './types';
 import { appResourceSubTypes, appResourceTypes } from './types';
 
 /**

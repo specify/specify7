@@ -142,40 +142,42 @@ export function AppResourcesFilters({
                       key !== 'collectionPreferences' ||
                       canSeeCollectionPreferences
                   )
-                  .map(([key, { label, icon, documentationUrl }]): JSX.Element => (
-                    <li key={key}>
-                      <Label.Inline>
-                        <Input.Checkbox
-                          checked={filters.appResources.includes(key)}
-                          onValueChange={(): void =>
-                            setFilters({
-                              ...filters,
-                              appResources: toggleItem(
-                                filters.appResources,
-                                key
-                              ),
-                            })
-                          }
-                        />
-                        {icon}
-                        {commonText.countLine({
-                          resource: label,
-                          count: countAppResources(initialResources, {
-                            appResources: [key],
-                            viewSets: false,
-                          }),
-                        })}
-                        {typeof documentationUrl === 'string' && (
-                          <Link.Icon
-                            href={documentationUrl}
-                            icon="externalLink"
-                            target="_blank"
-                            title={headerText.documentation()}
+                  .map(
+                    ([key, { label, icon, documentationUrl }]): JSX.Element => (
+                      <li key={key}>
+                        <Label.Inline>
+                          <Input.Checkbox
+                            checked={filters.appResources.includes(key)}
+                            onValueChange={(): void =>
+                              setFilters({
+                                ...filters,
+                                appResources: toggleItem(
+                                  filters.appResources,
+                                  key
+                                ),
+                              })
+                            }
                           />
-                        )}
-                      </Label.Inline>
-                    </li>
-                  ))}
+                          {icon}
+                          {commonText.countLine({
+                            resource: label,
+                            count: countAppResources(initialResources, {
+                              appResources: [key],
+                              viewSets: false,
+                            }),
+                          })}
+                          {typeof documentationUrl === 'string' && (
+                            <Link.Icon
+                              href={documentationUrl}
+                              icon="externalLink"
+                              target="_blank"
+                              title={headerText.documentation()}
+                            />
+                          )}
+                        </Label.Inline>
+                      </li>
+                    )
+                  )}
               </Ul>
             </li>
           </Ul>

@@ -17,7 +17,8 @@ const getOperationPermissionMap = (): OperationPermissionMap => {
   const collectionId = getCollectionId();
   return collectionId === -1
     ? ({} as OperationPermissionMap)
-    : ((getOperationPermissions()[collectionId] ?? {}) as OperationPermissionMap);
+    : ((getOperationPermissions()[collectionId] ??
+        {}) as OperationPermissionMap);
 };
 
 const getTablePermissionMap = (): TablePermissionMap => {
@@ -34,7 +35,7 @@ const hasOperationPermission = (resource: string, action: string): boolean => {
 
 const hasToolTablePermission = (
   tool: keyof ReturnType<typeof toolDefinitions>,
-  action: 'read' | 'create' | 'update' | 'delete'
+  action: 'create' | 'delete' | 'read' | 'update'
 ): boolean => {
   const tablePermissions = getTablePermissionMap();
   const tables = toolDefinitions()[tool].tables as RA<keyof Tables>;
@@ -63,8 +64,10 @@ export const canAccessCollectionPreferencesResource = (): boolean => {
 };
 
 export const filterCollectionPreferencesResources = <
-  RESOURCE extends SerializedResource<SpAppResource>
->(resources: RA<RESOURCE>): RA<RESOURCE> =>
+  RESOURCE extends SerializedResource<SpAppResource>,
+>(
+  resources: RA<RESOURCE>
+): RA<RESOURCE> =>
   canAccessCollectionPreferencesResource()
     ? resources
     : resources.filter(

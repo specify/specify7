@@ -12,7 +12,8 @@ jest.mock('../permissions', () => {
   const actual = jest.requireActual('../permissions');
   return {
     ...actual,
-    filterCollectionPreferencesResources: (resources: any[]) => resources,
+    filterCollectionPreferencesResources: (resources: readonly any[]) =>
+      resources,
     canAccessCollectionPreferencesResource: () => true,
   };
 });

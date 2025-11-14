@@ -16,7 +16,7 @@ jest.mock('../permissions', () => {
       mockCanSeeCollectionPreferences(),
     shouldShowCollectionPreferenceSubType: () =>
       mockCanSeeCollectionPreferences(),
-    filterCollectionPreferencesResources: (resources: any[]) =>
+    filterCollectionPreferencesResources: (resources: readonly any[]) =>
       mockCanSeeCollectionPreferences()
         ? resources
         : resources.filter(
