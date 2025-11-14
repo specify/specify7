@@ -235,7 +235,7 @@ function Row({
 }
 
 const getCellClassName = (condenseQueryResults: boolean): string =>
-  `border-gray-500 border-r bg-[color:var(--bg)] min-w-0 overflow-hidden break-words ${
+  `border-gray-500 border-r bg-[color:var(--bg)] ${
     condenseQueryResults ? 'p-0.5' : 'p-1'
   } first:border-l ${
     condenseQueryResults ? 'min-h-[theme(spacing.4)' : 'min-h-[theme(spacing.8)'
@@ -271,6 +271,7 @@ function Cell({
         ${getCellClassName(condenseQueryResults)}
         ${value === null ? 'text-gray-700 dark:text-neutral-500' : ''}
         ${fieldSpec?.parser.type === 'number' ? 'justify-end tabular-nums' : ''}
+        whitespace-pre-wrap [overflow-wrap:anywhere] min-w-max max-w-[60rem] w-full
       `}
       role="cell"
       title={
