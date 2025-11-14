@@ -465,8 +465,7 @@ export function PreferencesContent({
                     renderSubCategory(
                       'catalogNumberParentInheritance',
                       subcategory,
-                      data,
-                      { hideTitle: true }
+                      data
                     )
                   )}
               </Container.Center>

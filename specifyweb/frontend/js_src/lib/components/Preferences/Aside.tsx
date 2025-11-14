@@ -41,6 +41,22 @@ export function PreferencesAside({
 
   const [freezeCategory, setFreezeCategory] = useFrozenCategory();
   const currentIndex = freezeCategory ?? activeCategory;
+  const visibleDefinitions = React.useMemo(
+    () =>
+      definitions
+        .map(
+          (definition, index) =>
+            [index, definition] as const
+        )
+        .filter(
+          ([, [category]]) =>
+            !(
+              prefType === 'collection' &&
+              category === 'catalogNumberParentInheritance'
+            )
+        ),
+    [definitions, prefType]
+  );
 
   React.useEffect(() => {
     const active = location.hash.replace('#', '').toLowerCase();
@@ -61,12 +77,14 @@ export function PreferencesAside({
         overflow-y-auto md:sticky md:flex-1
       `}
     >
-      {definitions.map(([category, { title }], index) => (
+      {visibleDefinitions.map(([definitionIndex, [category, { title }]]) => (
         <Link.Secondary
-          aria-current={currentIndex === index ? 'page' : undefined}
+          aria-current={
+            currentIndex === definitionIndex ? 'page' : undefined
+          }
           href={`#${category}`}
           key={category}
-          onClick={(): void => setFreezeCategory(index)}
+          onClick={(): void => setFreezeCategory(definitionIndex)}
         >
           {typeof title === 'function' ? title() : title}
         </Link.Secondary>
