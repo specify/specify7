@@ -1,11 +1,11 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 
-import { ThresholdRank } from '../Renderers';
+import { preferencesText } from '../../../localization/preferences';
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import * as treeRanks from '../../InitialContext/treeRanks';
-import { preferencesText } from '../../../localization/preferences';
+import { ThresholdRank } from '../Renderers';
 import type { PreferenceItem } from '../types';
 
 overrideAjax('/context/schema_localization.json', {});
@@ -49,9 +49,9 @@ describe('ThresholdRank', () => {
         definition={definition}
         item="rankThreshold"
         subcategory="geography"
-        onChange={jest.fn()}
         tableName="Geography"
         value={50}
+        onChange={jest.fn()}
       />
     );
 
