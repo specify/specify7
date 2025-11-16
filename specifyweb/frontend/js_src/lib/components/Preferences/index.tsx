@@ -24,7 +24,10 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { hasPermission } from '../Permissions/helpers';
-import { ProtectedTool } from '../Permissions/PermissionDenied';
+import {
+  ProtectedAction,
+  ProtectedTool,
+} from '../Permissions/PermissionDenied';
 import { PreferencesAside } from './Aside';
 import type { BasePreferences } from './BasePreferences';
 import { collectionPreferenceDefinitions } from './CollectionDefinitions';
@@ -478,8 +481,7 @@ export function PreferencesContent({
                     renderSubCategory(
                       'catalogNumberParentInheritance',
                       subcategory,
-                      data,
-                      { hideTitle: true }
+                      data
                     )
                   )}
               </Container.Center>
@@ -551,9 +553,14 @@ function Item({
 
 function CollectionPreferences(): JSX.Element {
   return (
-    <ProtectedTool action="update" tool="resources">
-      <Preferences prefType="collection" />
-    </ProtectedTool>
+    <ProtectedAction
+      action="edit_collection"
+      resource="/preferences/collection"
+    >
+      <ProtectedTool action="update" tool="resources">
+        <Preferences prefType="collection" />
+      </ProtectedTool>
+    </ProtectedAction>
   );
 }
 

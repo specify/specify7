@@ -40,8 +40,8 @@ export const resourcesText = createDictionary({
     'en-us': 'New View Definition',
     'de-ch': 'Neue Ansichtsdefinition',
     'es-es': 'Nueva definición de vista',
-    'fr-fr': 'Nouvelle définition de vue',
-    'pt-br': 'Nova Definição de Visualização',
+    'fr-fr': 'Définition de la nouvelle vue',
+    'pt-br': 'Nova definição de visualização',
     'ru-ru': 'Новое определение взгляда',
     'uk-ua': 'Нове визначення подання',
   },
@@ -183,11 +183,16 @@ export const resourcesText = createDictionary({
   fieldFormattersDescription: {
     'en-us':
       'The “Field Format” controls how data for a specific table field is displayed in query results, exports, and forms. It manages autonumbering and the composition of various parts that define the field.',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'pt-br': '',
-    'ru-ru': '',
+    'de-ch':
+      'Das „Feldformat“ steuert, wie Daten für ein bestimmtes Tabellenfeld in Abfrageergebnissen, Exporten und Formularen angezeigt werden. Es verwaltet die automatische Nummerierung und die Zusammensetzung verschiedener Teile, die das Feld definieren.',
+    'es-es':
+      'El "Formato de campo" controla cómo se muestran los datos de un campo de tabla específico en los resultados de consultas, exportaciones y formularios. Gestiona la numeración automática y la composición de las distintas partes que definen el campo.',
+    'fr-fr':
+      "Le « Format de champ » contrôle l'affichage des données d'un champ de table spécifique dans les résultats de requête, les exportations et les formulaires. Il gère la numérotation automatique et la composition des différentes parties qui définissent le champ.",
+    'pt-br':
+      'O “Formato de Campo” controla como os dados de um campo específico da tabela são exibidos nos resultados de consultas, exportações e formulários. Ele gerencia a numeração automática e a composição das várias partes que definem o campo.',
+    'ru-ru':
+      '«Формат поля» определяет, как данные для конкретного поля таблицы отображаются в результатах запроса, экспортируемых данных и формах. Он управляет автоматической нумерацией и составом различных частей, определяющих поле.',
     'uk-ua':
       '«Формат поля» контролює, як дані для певного поля таблиці відображаються в результатах запиту, експорті та формах. Він керує автонумерацією та композицією різних частин, що визначають поле.',
   },
@@ -217,7 +222,7 @@ export const resourcesText = createDictionary({
     'es-es':
       'El "Formato de tabla" controla cómo se muestran los datos de una tabla específica en los resultados de consultas, las exportaciones y los cuadros combinados de consultas. Determina los campos que se mostrarán y su orden. El formato condicional se puede configurar según un valor del registro.',
     'fr-fr':
-      "Le « Format de table » contrôle l'affichage des données d'une table spécifique dans les résultats de requête, les exportations et les listes déroulantes. Il détermine les champs à afficher et leur ordre. La mise en forme conditionnelle peut être configurée en fonction d'une valeur de l'enregistrement.",
+      "Le « Format de table » contrôle l'affichage des données d'une table spécifique dans les résultats de requête, les exportations et les zones de liste déroulante. Il détermine les champs à afficher et leur ordre. La mise en forme conditionnelle peut être configurée en fonction d'une valeur de l'enregistrement.",
     'ru-ru':
       '«Формат таблицы» определяет, как данные из определенной таблицы отображаются в результатах запроса, экспорте и полях со списком запроса. Он определяет поля для отображения и их порядок. Условное форматирование можно настроить на основе значения в записи.',
     'uk-ua':
@@ -293,15 +298,16 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Formateurs de champs disponibles',
     'ru-ru': 'Доступные форматеры полей',
     'uk-ua': 'Доступні форматувальники полів',
-    'pt-br': '',
+    'pt-br': 'Formatadores de campo disponíveis',
   },
   selectDefaultFormatter: {
     'en-us': 'Please designate one of the formatters as default',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'pt-br': '',
-    'ru-ru': '',
+    'de-ch': 'Bitte legen Sie einen der Formatierer als Standard fest',
+    'es-es': 'Designe uno de los formateadores como predeterminado',
+    'fr-fr': "Veuillez désigner l'un des formateurs par défaut",
+    'pt-br': 'Por favor, designe um dos formatadores como padrão',
+    'ru-ru':
+      'Пожалуйста, назначьте один из форматировщиков как форматировщик по умолчанию.',
     'uk-ua': 'Будь ласка, призначте один із форматувальників як стандартний',
   },
   duplicateFormatters: {
@@ -958,7 +964,7 @@ export const resourcesText = createDictionary({
     'en-us':
       '{taxonName: string} does not belong to the {taxonTableLabel: string} tree associated with {typeName: string}',
     'de-ch':
-      '{taxonName: string} gehört nicht zum {taxonTableLabel: string}-Baum, der mit {typeName: string} verknüpft ist',
+      '{taxonName: string} gehört nicht zum {taxonTableLabel: string}-Baum, der mit {typeName: string} verknüpft ist.',
     'es-es':
       '{taxonName: string} no pertenece al árbol {taxonTableLabel: string} asociado con {typeName: string}',
     'fr-fr':
@@ -976,11 +982,11 @@ export const resourcesText = createDictionary({
     'de-ch':
       '{catalogNumberFieldName: string} {catalogNumber: string} wird bereits für eine andere Komponente oder ein anderes Sammlungsobjekt in dieser Sammlung verwendet.',
     'es-es':
-      '{catalogNumberFieldName: string} {catalogNumber: string} ya está en uso para otro componente u objeto de colección en esta colección.',
+      '{catalogNumberFieldName: string} {catalogNumber: string} ya está en uso para otro Componente u Objeto de Colección en esta colección.',
     'fr-fr':
       '{catalogNumberFieldName: string} {catalogNumber: string} est déjà utilisé pour un autre composant ou objet de collection dans cette collection.',
     'pt-br':
-      '{catalogNumberFieldName: string} {catalogNumber: string} já está em uso para outro Componente ou Objeto de Coleção nesta coleção.',
+      '{catalogNumberFieldName: string} {catalogNumber: string} já está em uso para outro componente ou objeto de coleção nesta coleção.',
     'ru-ru':
       '{catalogNumberFieldName: string} {catalogNumber: string} уже используется для другого компонента или объекта коллекции в этой коллекции.',
     'uk-ua':
@@ -1007,7 +1013,7 @@ export const resourcesText = createDictionary({
   configureField: {
     'en-us': 'Configure field',
     'de-ch': 'Feld konfigurieren',
-    'es-es': 'Configurar campo',
+    'es-es': 'Campo de configuración',
     'fr-fr': 'Configurer le champ',
     'pt-br': 'Configurar campo',
     'ru-ru': 'Настроить поле',
@@ -1016,37 +1022,40 @@ export const resourcesText = createDictionary({
   trimZeros: {
     'en-us': 'Trim Leading Zeros',
     'de-ch': 'Führende Nullen entfernen',
-    'es-es': 'Recortar ceros iniciales',
-    'fr-fr': 'Couper les zéros non significatifs',
-    'pt-br': 'Aparar zeros à esquerda',
+    'es-es': 'Eliminar ceros a la izquierda',
+    'fr-fr': 'Supprimer les zéros non significatifs',
+    'pt-br': 'Eliminar zeros à esquerda',
     'ru-ru': 'Удалить начальные нули',
     'uk-ua': 'Видалити початкові нулі',
   },
   trimZerosDescription: {
     'en-us': 'Remove leading zeros from numeric values.',
-    'de-ch': 'Entfernen Sie führende Nullen aus numerischen Werten.',
-    'es-es': 'Eliminar los ceros iniciales de los valores numéricos.',
-    'fr-fr': 'Supprimez les zéros non significatifs des valeurs numériques.',
-    'pt-br': 'Remova os zeros à esquerda dos valores numéricos.',
+    'de-ch': 'Führende Nullen von numerischen Werten entfernen.',
+    'es-es': 'Eliminar los ceros a la izquierda de los valores numéricos.',
+    'fr-fr': 'Supprimer les zéros non significatifs des valeurs numériques.',
+    'pt-br': 'Remover zeros à esquerda de valores numéricos.',
     'ru-ru': 'Удалить начальные нули из числовых значений.',
     'uk-ua': 'Видаліть початкові нулі з числових значень.',
   },
   formatterPreviewUnavailable: {
     'en-us': 'Preview for formatter of this type is not available',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'pt-br': '',
-    'ru-ru': '',
+    'de-ch': 'Vorschau für Formatierer dieses Typs ist nicht verfügbar',
+    'es-es':
+      'La vista previa para el formateador de este tipo no está disponible',
+    'fr-fr': "L'aperçu pour le formateur de ce type n'est pas disponible",
+    'pt-br':
+      'A pré-visualização para este tipo de formatador não está disponível',
+    'ru-ru':
+      'Предварительный просмотр для форматировщика этого типа недоступен.',
     'uk-ua': 'Попередній перегляд для форматера цього типу недоступний',
   },
   nonConformingInline: {
     'en-us': '(non-conforming)',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'pt-br': '',
-    'ru-ru': '',
+    'de-ch': '(nicht konform)',
+    'es-es': '(no conforme)',
+    'fr-fr': '(non conforme)',
+    'pt-br': '(não conforme)',
+    'ru-ru': '(несоответствующий)',
     'uk-ua': '(невідповідний)',
   },
   value: {
@@ -1056,60 +1065,60 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Valeur',
     'ru-ru': 'Значение',
     'uk-ua': 'Значення',
-    'pt-br': '',
+    'pt-br': 'Valor',
   },
   constant: {
     'en-us': 'Constant',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'pt-br': '',
-    'ru-ru': '',
+    'de-ch': 'Konstante',
+    'es-es': 'Constante',
+    'fr-fr': 'Constante',
+    'pt-br': 'Constante',
+    'ru-ru': 'Постоянный',
     'uk-ua': 'Постійна',
   },
   alpha: {
     'en-us': 'Alpha',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'pt-br': '',
-    'ru-ru': '',
+    'de-ch': 'Alpha',
+    'es-es': 'Alfa',
+    'fr-fr': 'Alpha',
+    'pt-br': 'Alfa',
+    'ru-ru': 'Альфа',
     'uk-ua': 'Альфа',
   },
   numeric: {
     'en-us': 'Numeric',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'pt-br': '',
-    'ru-ru': '',
+    'de-ch': 'Numerisch',
+    'es-es': 'Numérico',
+    'fr-fr': 'Numérique',
+    'pt-br': 'Numérico',
+    'ru-ru': 'Числовой',
     'uk-ua': 'Числовий',
   },
   alphanumeric: {
     'en-us': 'Alphanumeric',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'pt-br': '',
-    'ru-ru': '',
+    'de-ch': 'Alphanumerisch',
+    'es-es': 'Alfanumérico',
+    'fr-fr': 'Alphanumérique',
+    'pt-br': 'Alfanumérico',
+    'ru-ru': 'Буквенно-цифровой',
     'uk-ua': 'Буквено-цифровий',
   },
   anychar: {
     'en-us': 'Any character',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'pt-br': '',
-    'ru-ru': '',
+    'de-ch': 'Beliebiger Charakter',
+    'es-es': 'Cualquier personaje',
+    'fr-fr': "N'importe quel personnage",
+    'pt-br': 'Qualquer personagem',
+    'ru-ru': 'Любой персонаж',
     'uk-ua': 'Будь-який символ',
   },
   regex: {
     'en-us': 'Regular expression',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'pt-br': '',
-    'ru-ru': '',
+    'de-ch': 'Regulärer Ausdruck',
+    'es-es': 'Expresión regular',
+    'fr-fr': 'Expression régulière',
+    'pt-br': 'Expressão regular',
+    'ru-ru': 'Регулярное выражение',
     'uk-ua': 'Регулярний вираз',
   },
   exampleField: {
@@ -1119,15 +1128,15 @@ export const resourcesText = createDictionary({
     'fr-fr': "Champ d'exemple",
     'ru-ru': 'Пример поля',
     'uk-ua': 'Приклад поле',
-    'pt-br': '',
+    'pt-br': 'Campo de exemplo',
   },
   pattern: {
     'en-us': 'Pattern',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'pt-br': '',
-    'ru-ru': '',
+    'de-ch': 'Muster',
+    'es-es': 'Patrón',
+    'fr-fr': 'Modèle',
+    'pt-br': 'Padrão',
+    'ru-ru': 'Шаблон',
     'uk-ua': 'Візерунок',
   },
 } as const);

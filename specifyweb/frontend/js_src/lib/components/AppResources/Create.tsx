@@ -31,6 +31,7 @@ import { formatUrl } from '../Router/queryString';
 import type { AppResourcesTree } from './hooks';
 import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
+import { shouldShowCollectionPreferenceSubType } from './permissions';
 import type { AppResourceType, ScopedAppResourceDir } from './types';
 import { appResourceSubTypes, appResourceTypes } from './types';
 
@@ -60,6 +61,7 @@ export function CreateAppResource(): JSX.Element {
   const [templateFile, setTemplateFile] = React.useState<
     string | false | undefined
   >(undefined);
+  const canSeeCollectionPreferences = shouldShowCollectionPreferenceSubType();
   return directory === undefined ? (
     <NotFoundView container={false} />
   ) : type === undefined ? (
@@ -98,11 +100,16 @@ export function CreateAppResource(): JSX.Element {
           </tr>
         </thead>
         <tbody>
-          {Object.entries(appResourceSubTypes).map(
-            ([
-              key,
-              { icon, mimeType, name = '', documentationUrl, label, ...rest },
-            ]) =>
+          {Object.entries(appResourceSubTypes)
+            .filter(
+              ([key]) =>
+                key !== 'collectionPreferences' || canSeeCollectionPreferences
+            )
+            .map(
+              ([
+                key,
+                { icon, mimeType, name = '', documentationUrl, label, ...rest },
+              ]) =>
               'scope' in rest &&
               !f.includes(rest.scope, directory.scope) ? undefined : (
                 <tr key={key}>

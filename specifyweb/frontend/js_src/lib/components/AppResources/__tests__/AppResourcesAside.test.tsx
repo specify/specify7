@@ -8,6 +8,16 @@ import type { AppResourcesConformation } from '../Aside';
 import { AppResourcesAside } from '../Aside';
 import { testAppResources } from './testAppResources';
 
+jest.mock('../permissions', () => {
+  const actual = jest.requireActual('../permissions');
+  return {
+    ...actual,
+    filterCollectionPreferencesResources: (resources: readonly any[]) =>
+      resources,
+    canAccessCollectionPreferencesResource: () => true,
+  };
+});
+
 requireContext();
 
 describe('AppResourcesAside (simple no conformation case)', () => {
