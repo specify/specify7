@@ -7,6 +7,7 @@ import type { AppResourcesTree } from '../hooks';
 import { useResourcesTree } from '../hooks';
 import { staticAppResources } from './staticAppResources';
 import { utilsForTests } from './utils';
+import { userInformation } from '../../InitialContext/userInformation';
 
 requireContext();
 
@@ -78,5 +79,27 @@ describe('useResourcesTree', () => {
     expect(labels).toContain('Global Preferences');
 
     expect(getResourceCountTree(result.current)).toBe(4);
+  });
+
+  test('hides global preferences for non-admin users', () => {
+    const originalIsAdmin = userInformation.isadmin;
+    Object.defineProperty(userInformation, 'isadmin', {
+      value: false,
+      configurable: true,
+      writable: true,
+    });
+
+    const { result } = renderHook(() => useResourcesTree(resources));
+
+    const flattened = flattenResources(result.current);
+    expect(flattened.map(({ label, name }) => label ?? name)).not.toContain(
+      'Global Preferences'
+    );
+
+    Object.defineProperty(userInformation, 'isadmin', {
+      value: originalIsAdmin,
+      configurable: true,
+      writable: true,
+    });
   });
 });

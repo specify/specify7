@@ -600,8 +600,10 @@ export function GlobalPreferencesWrapper(): JSX.Element | null {
 
 function GlobalPreferences(): JSX.Element {
   return (
-    <ProtectedTool action="update" tool="resources">
-      <Preferences prefType="global" />
-    </ProtectedTool>
+    <ProtectedAction action="%" resource="%">
+      <ProtectedTool action="update" tool="resources">
+        <Preferences prefType="global" />
+      </ProtectedTool>
+    </ProtectedAction>
   );
 }

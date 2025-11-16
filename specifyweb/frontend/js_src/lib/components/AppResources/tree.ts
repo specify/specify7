@@ -7,6 +7,7 @@ import { sortFunction } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { getResourceApiUrl } from '../DataModel/resource';
+import { userInformation } from '../InitialContext/userInformation';
 import type {
   Collection,
   Discipline,
@@ -109,21 +110,32 @@ const disambiguateGlobalPrefs = (
   appResources: RA<SerializedResource<SpAppResource>>,
   directories: RA<SerializedResource<SpAppResourceDir>>
 ): AppResourcesTree[number]['appResources'] =>
-  appResources.map((resource) => {
-    if (resource.name !== prefResource) return resource;
-    const directory = directories.find(
-      ({ id }) =>
-        getResourceApiUrl('SpAppResourceDir', id) === resource.spAppResourceDir
-    );
-    // Pretty sure this is redundant... that is, directory should always be defined.
-    if (!directory) return resource;
-    const userType = directory.userType?.toLowerCase();
-    if (userType === globalUserType)
-      return { ...resource, label: resourcesText.globalPreferences() };
-    else if (userType === remoteUserType)
-      return { ...resource, label: resourcesText.remotePreferences() };
-    else return resource;
-  });
+  appResources
+    .filter((resource) => {
+      if (resource.name !== prefResource) return true;
+      const directory = directories.find(
+        ({ id }) =>
+          getResourceApiUrl('SpAppResourceDir', id) === resource.spAppResourceDir
+      );
+      const userType = directory?.userType?.toLowerCase();
+      const isGlobalPrefs = userType === globalUserType;
+      return !(isGlobalPrefs && userInformation.isadmin === false);
+    })
+    .map((resource) => {
+      if (resource.name !== prefResource) return resource;
+      const directory = directories.find(
+        ({ id }) =>
+          getResourceApiUrl('SpAppResourceDir', id) === resource.spAppResourceDir
+      );
+      // Pretty sure this is redundant... that is, directory should always be defined.
+      if (!directory) return resource;
+      const userType = directory.userType?.toLowerCase();
+      if (userType === globalUserType)
+        return { ...resource, label: resourcesText.globalPreferences() };
+      else if (userType === remoteUserType)
+        return { ...resource, label: resourcesText.remotePreferences() };
+      else return resource;
+    });
 
 /**
  * Merge resources from several directories into a single one.
