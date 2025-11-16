@@ -37,7 +37,7 @@ describe('ThresholdRank', () => {
     ]);
 
     const definition: PreferenceItem<number> = {
-      title: preferencesText.rankThreshold,
+      title: preferencesText.rankThreshold(),
       requiresReload: false,
       visible: true,
       defaultValue: 0,
