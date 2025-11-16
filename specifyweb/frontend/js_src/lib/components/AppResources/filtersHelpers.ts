@@ -78,7 +78,10 @@ export const getAppResourceType = (
 
   if (matchedType !== undefined) return matchedType;
 
-  if (normalize(resource.name) === 'preferences' && normalize(resource.mimeType) === undefined)
+  if (
+    normalize(resource.name) === 'preferences' &&
+    normalize(resource.mimeType) === undefined
+  )
     return 'otherPropertiesResource';
 
   return 'otherAppResources';

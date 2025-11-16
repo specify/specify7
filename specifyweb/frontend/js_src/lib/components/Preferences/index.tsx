@@ -10,8 +10,8 @@ import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
-import { resourcesText } from '../../localization/resources';
 import { preferencesText } from '../../localization/preferences';
+import { resourcesText } from '../../localization/resources';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
@@ -31,8 +31,8 @@ import {
 import { PreferencesAside } from './Aside';
 import type { BasePreferences } from './BasePreferences';
 import { collectionPreferenceDefinitions } from './CollectionDefinitions';
-import { globalPreferenceDefinitions } from './GlobalDefinitions';
 import { collectionPreferences } from './collectionPreferences';
+import { globalPreferenceDefinitions } from './GlobalDefinitions';
 import { globalPreferences } from './globalPreferences';
 import { saveGlobalPreferences } from './globalPreferencesActions';
 import { loadGlobalPreferences } from './globalPreferencesLoader';
@@ -159,12 +159,11 @@ function Preferences({
             (prefType === 'global'
               ? saveGlobalPreferences()
               : basePreferences.awaitSynced()
+            ).then(() =>
+              needsRestart
+                ? globalThis.location.assign('/specify/')
+                : navigate('/specify/')
             )
-              .then(() =>
-                needsRestart
-                  ? globalThis.location.assign('/specify/')
-                  : navigate('/specify/')
-              )
           )
         }
       >

@@ -140,16 +140,16 @@ describe('AppResourcesAside (expanded case)', () => {
       unmount: unmountExpandedll,
       container: expandedContainer,
     } = mount(
-        <Router.MemoryRouter initialEntries={['/specify/resources/']}>
-          <AppResourcesAside
-            conformations={[_conformations, setConformations]}
-            filters={undefined}
-            isEmbedded
-            resources={testAppResources}
-            onOpen={onOpen}
-          />
-        </Router.MemoryRouter>
-      );
+      <Router.MemoryRouter initialEntries={['/specify/resources/']}>
+        <AppResourcesAside
+          conformations={[_conformations, setConformations]}
+          filters={undefined}
+          isEmbedded
+          resources={testAppResources}
+          onOpen={onOpen}
+        />
+      </Router.MemoryRouter>
+    );
 
     const expandedAllFragment = asFragmentAllExpanded().textContent;
 
