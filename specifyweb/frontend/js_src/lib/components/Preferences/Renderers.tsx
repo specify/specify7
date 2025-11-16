@@ -24,7 +24,7 @@ import type { RA } from '../../utils/types';
 import { Input, Select, Textarea } from '../Atoms/Form';
 import { iconClassName } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
-import type { AnySchema } from '../DataModel/helperTypes';
+import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type { Collection } from '../DataModel/types';
@@ -33,6 +33,7 @@ import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
 import { AttachmentPicker } from '../Molecules/AttachmentPicker';
 import { AutoComplete } from '../Molecules/AutoComplete';
 import { ListEdit } from '../Toolbar/ListEdit';
+import { getTreeDefinitions, treeRanksPromise } from '../InitialContext/treeRanks';
 import type { PreferenceItem, PreferenceRendererProps } from './types';
 import { userPreferences } from './userPreferences';
 
@@ -389,31 +390,39 @@ export function ThresholdRank({
   value,
   onChange,
   tableName,
-}: PreferenceRendererProps<number> & { readonly tableName: string }): JSX.Element {
+}: PreferenceRendererProps<number> & {
+  readonly tableName: AnyTree['tableName'];
+}): JSX.Element {
   const [items, setItems] = React.useState<readonly Rank[]>([]);
+
   React.useEffect(() => {
-    fetch(`/api/specify/${tableName.toLowerCase()}treedefitem/`)
-      .then(async res => {
-        if (!res.ok) throw new Error('Failed to fetch ThresholdRank items');
-        return res.json();
-      })
-      .then((data: { readonly objects?: readonly { readonly rankid: number; readonly name: string }[] }) =>
+    let isMounted = true;
+    treeRanksPromise
+      .then(() => {
+        const definitions = getTreeDefinitions(tableName);
+        const activeDefinition = definitions[0];
+        /**
+         * Only expose ranks from the treedef tied to the current discipline.
+         * Otherwise ranks from unrelated trees leak into the dropdown.
+         */
+        const ranks = activeDefinition?.ranks ?? [];
+        if (!isMounted) return;
         setItems(
-          (data.objects ?? [])
-        .map(
-          // Map the results to the Rank type
-          (item: { readonly rankid: number; readonly name: string }): Rank => ({
-            rankId: item.rankid,
-            name: item.name,
-          })
-        ) // This sorts the ranks so they appear in ascending order in the dropdown
-        .sort((rankA, rankB) => rankA.rankId - rankB.rankId) 
-        )
-      )
+          ranks
+            .map<Rank>(({ rankId, name }) => ({
+              rankId,
+              name,
+            }))
+            .sort((rankA, rankB) => rankA.rankId - rankB.rankId)
+        );
+      })
       .catch((error: unknown) => {
         console.error('Error fetching ThresholdRank items:', error);
-        setItems([]);
+        if (isMounted) setItems([]);
       });
+    return () => {
+      isMounted = false;
+    };
   }, [tableName]);
 
   return (
