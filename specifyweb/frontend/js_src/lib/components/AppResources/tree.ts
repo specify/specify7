@@ -1,4 +1,3 @@
-
 import { resourcesText } from '../../localization/resources';
 import { userText } from '../../localization/user';
 import type { RA } from '../../utils/types';
@@ -7,7 +6,6 @@ import { sortFunction } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { getResourceApiUrl } from '../DataModel/resource';
-import { userInformation } from '../InitialContext/userInformation';
 import type {
   Collection,
   Discipline,
@@ -15,6 +13,7 @@ import type {
   SpAppResourceDir,
   SpViewSetObj,
 } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
 import { userTypes } from '../PickLists/definitions';
 import type { AppResources, AppResourcesTree } from './hooks';
 import type { AppResourceScope, ScopedAppResourceDir } from './types';
@@ -115,17 +114,19 @@ const disambiguateGlobalPrefs = (
       if (resource.name !== prefResource) return true;
       const directory = directories.find(
         ({ id }) =>
-          getResourceApiUrl('SpAppResourceDir', id) === resource.spAppResourceDir
+          getResourceApiUrl('SpAppResourceDir', id) ===
+          resource.spAppResourceDir
       );
       const userType = directory?.userType?.toLowerCase();
       const isGlobalPrefs = userType === globalUserType;
-      return !(isGlobalPrefs && userInformation.isadmin === false);
+      return !(isGlobalPrefs && !userInformation.isadmin);
     })
     .map((resource) => {
       if (resource.name !== prefResource) return resource;
       const directory = directories.find(
         ({ id }) =>
-          getResourceApiUrl('SpAppResourceDir', id) === resource.spAppResourceDir
+          getResourceApiUrl('SpAppResourceDir', id) ===
+          resource.spAppResourceDir
       );
       // Pretty sure this is redundant... that is, directory should always be defined.
       if (!directory) return resource;
