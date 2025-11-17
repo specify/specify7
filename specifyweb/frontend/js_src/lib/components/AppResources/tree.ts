@@ -119,7 +119,9 @@ const disambiguateGlobalPrefs = (
       );
       const userType = directory?.userType?.toLowerCase();
       const isGlobalPrefs = userType === globalUserType;
-      return !(isGlobalPrefs && !userInformation.isadmin);
+      const isNonAdmin = userInformation.isadmin === false;
+
+      return !(isGlobalPrefs && isNonAdmin);
     })
     .map((resource) => {
       if (resource.name !== prefResource) return resource;
