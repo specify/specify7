@@ -191,7 +191,7 @@ if [[ -z "$APP_GRANTS_RAW" ]]; then
   exit 1
 fi
 
-mapfile -t APP_GRANTS_LINES < <(echo "$APP_GRANTS_RAW" | tr -s '[:space:]' ' ')
+mapfile -t APP_GRANTS_LINES < <(printf '%s\n' "$APP_GRANTS_RAW" | sed 's/[[:space:]]\+/ /g')
 
 app_has_required_permissions=false
 
