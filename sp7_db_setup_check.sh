@@ -87,31 +87,42 @@ else
   echo "Database '$DB_NAME' already exists."
 fi
 
-# Create migrator user if it doesn't exist
-USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse "SELECT COUNT(*) FROM mysql.user WHERE user = '$MIGRATOR_NAME' AND host = '$MIGRATOR_USER_HOST';")
-if [[ "$USER_EXISTS" -eq 0 && "$APP_USER_NAME" != "root" ]]; then
-  echo "Creating user '$MIGRATOR_NAME'..."
+########################################
+# MIGRATOR USER
+########################################
+
+# Check if migrator user exists (any host)
+USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+              -sse "SELECT COUNT(*) FROM mysql.user WHERE user = '$MIGRATOR_NAME';")
+
+if [[ "$USER_EXISTS" -eq 0 && "$MIGRATOR_NAME" != "root" ]]; then
+  echo "Creating user '$MIGRATOR_NAME'@'$MIGRATOR_USER_HOST'..."
   echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' IDENTIFIED BY '<hidden>';\""
-  if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "CREATE USER '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' IDENTIFIED BY '${MIGRATOR_PASSWORD}';"; then
+  if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+       -e "CREATE USER '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' IDENTIFIED BY '${MIGRATOR_PASSWORD}';"; then
     NEW_MIGRATOR_USER_CREATED=1
   else
-    echo "Error: Failed to create user."
+    echo "Error: Failed to create migrator user."
     exit 1
   fi
 else
-  echo "User '$MIGRATOR_NAME' already exists."
+  echo "Migrator user '$MIGRATOR_NAME' already exists in mysql.user."
+  echo "Existing hosts for '$MIGRATOR_NAME':"
+  mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+        -sse "SELECT CONCAT(\"'\", user, \"'@'\", host, \"'\") FROM mysql.user WHERE user = '$MIGRATOR_NAME';"
 fi
 
-# Grant privileges only if a migrator new user was created
+# Grant privileges only if a new migrator user was created
 if [[ "$NEW_MIGRATOR_USER_CREATED" -eq 1 ]]; then
-  echo "Granting privileges to new user..."
+  echo "Granting privileges to new migrator user..."
   echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'; FLUSH PRIVILEGES;\""
-  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'; FLUSH PRIVILEGES;"; then
-    echo "Error: Failed to grant privileges to new user."
+  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+        -e "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'; FLUSH PRIVILEGES;"; then
+    echo "Error: Failed to grant privileges to new migrator user."
     exit 1
   fi
 else
-  echo "Skipping privilege grant for migrator user: user already exists. Verifying privileges on '${DB_NAME}'..."
+  echo "Skipping privilege grant for migrator user: user already exists. Verifying privileges on '${DB_NAME}' for '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'..."
 fi
 
 GRANTS_OUTPUT="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" \
@@ -120,6 +131,7 @@ GRANTS_OUTPUT="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" \
 
 if [[ -z "$GRANTS_OUTPUT" ]]; then
   echo "Error: Could not retrieve grants for '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'."
+  echo "Check whether this user exists with a different host (e.g. 'localhost' instead of '%')."
   exit 1
 fi
 
@@ -147,39 +159,49 @@ if [[ "$migrator_has_access" == true ]]; then
   echo "Verified: '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' has usable access to '${DB_NAME}'."
 else
   echo "Notice: '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' lacks usable access to '${DB_NAME}'."
-  echo "Make corrections to the intended MIGRATOR user permissions to resolve. Run the following command in the database:"
-  echo "GRANT ALL PRIVILEGES on ${DB_NAME}.* to '${MIGRATOR_NAME}'@'%'; FLUSH PRIVILEGES;"
+  echo "Make corrections to the intended MIGRATOR user permissions to resolve."
+  echo "  GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${APP_USER_HOST}'; FLUSH PRIVILEGES;"
   MIGRATOR_NAME="$MASTER_USER_NAME"
   MIGRATOR_PASSWORD="$MASTER_USER_PASSWORD"
   MIGRATION_DB_ALIAS="master"
 fi
 
+########################################
+# APP USER
+########################################
 
-# Create app user if it doesn't exist
-USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse "SELECT COUNT(*) FROM mysql.user WHERE user = '$APP_USER_NAME' AND host = '$APP_USER_HOST';")
+# Check if app user exists (any host)
+USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+              -sse "SELECT COUNT(*) FROM mysql.user WHERE user = '$APP_USER_NAME';")
+
 if [[ "$USER_EXISTS" -eq 0 && "$APP_USER_NAME" != "root" ]]; then
-  echo "Creating user '$APP_USER_NAME'..."
+  echo "Creating user '$APP_USER_NAME'@'$APP_USER_HOST'..."
   echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${APP_USER_NAME}'@'${APP_USER_HOST}' IDENTIFIED BY '<hidden>';\""
-  if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "CREATE USER '${APP_USER_NAME}'@'${APP_USER_HOST}' IDENTIFIED BY '${APP_USER_PASSWORD}';"; then
+  if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+       -e "CREATE USER '${APP_USER_NAME}'@'${APP_USER_HOST}' IDENTIFIED BY '${APP_USER_PASSWORD}';"; then
     NEW_APP_USER_CREATED=1
   else
-    echo "Error: Failed to create user."
+    echo "Error: Failed to create app user."
     exit 1
   fi
 else
-  echo "User '$APP_USER_NAME' already exists."
+  echo "App user '$APP_USER_NAME' already exists in mysql.user."
+  echo "Existing hosts for '$APP_USER_NAME':"
+  mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+        -sse "SELECT CONCAT(\"'\", user, \"'@'\", host, \"'\") FROM mysql.user WHERE user = '$APP_USER_NAME';"
 fi
 
 # Grant privileges only if a new app user was created
 if [[ "$NEW_APP_USER_CREATED" -eq 1 ]]; then
-  echo "Granting privileges to new user..."
+  echo "Granting privileges to new app user..."
   echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${APP_USER_NAME}'@'${APP_USER_HOST}'; FLUSH PRIVILEGES;\""
-  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT SELECT, INSERT, UPDATE, ALTER, INDEX, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${APP_USER_NAME}'@'${APP_USER_HOST}'; FLUSH PRIVILEGES;"; then
-    echo "Error: Failed to grant privileges to new user."
+  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+        -e "GRANT SELECT, INSERT, UPDATE, ALTER, INDEX, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${APP_USER_NAME}'@'${APP_USER_HOST}'; FLUSH PRIVILEGES;"; then
+    echo "Error: Failed to grant privileges to new app user."
     exit 1
   fi
 else
-  echo "Skipping privilege grant for app user: user already exists. Verifying privileges on '${DB_NAME}'..."
+  echo "Skipping privilege grant for app user: user already exists. Verifying privileges on '${DB_NAME}' for '${APP_USER_NAME}'@'${APP_USER_HOST}'..."
 fi
 
 REQUIRED_PRIVS=("SELECT" "INSERT" "UPDATE" "ALTER" "INDEX" "DELETE" "CREATE TEMPORARY TABLES" "LOCK TABLES" "EXECUTE")
@@ -188,6 +210,7 @@ APP_GRANTS_RAW="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME"
 
 if [[ -z "$APP_GRANTS_RAW" ]]; then
   echo "Error: Could not retrieve grants for '${APP_USER_NAME}'@'${APP_USER_HOST}'."
+  echo "Check whether this user exists only with different hosts (e.g. 'localhost' instead of '%')."
   exit 1
 fi
 
