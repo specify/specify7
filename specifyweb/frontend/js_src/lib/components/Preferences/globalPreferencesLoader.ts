@@ -1,6 +1,10 @@
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
-import { contextUnlockedPromise, foreverFetch } from '../InitialContext';
+import {
+  cacheableUrl,
+  contextUnlockedPromise,
+  foreverFetch,
+} from '../InitialContext';
 import {
   fetchContext as fetchRemotePrefs,
   remotePrefs,
@@ -86,10 +90,12 @@ export const loadGlobalPreferences = async (): Promise<void> => {
   }
 
   const { data, status, response } = await ajax(
-    formatUrl('/context/app.resource', {
-      name: 'GlobalPreferences',
-      quiet: '',
-    }),
+    cacheableUrl(
+      formatUrl('/context/app.resource', {
+        name: 'GlobalPreferences',
+        quiet: '',
+      })
+    ),
     {
       headers: { Accept: 'text/plain' },
       expectedErrors: [Http.NO_CONTENT],
