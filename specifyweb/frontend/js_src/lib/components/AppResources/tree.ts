@@ -119,7 +119,7 @@ const disambiguateGlobalPrefs = (
       );
       const userType = directory?.userType?.toLowerCase();
       const isGlobalPrefs = userType === globalUserType;
-      const isNonAdmin = userInformation.isadmin === false;
+      const isNonAdmin = !userInformation.isadmin;
 
       return !(isGlobalPrefs && isNonAdmin);
     })
