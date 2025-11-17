@@ -7,16 +7,27 @@ echo "Starting MariaDB database and user creation script..."
 # Read variables from environment
 DB_HOST="${DATABASE_HOST}"
 DB_PORT="${DATABASE_PORT}"
+
 MASTER_USER_NAME="${MASTER_NAME:-$MASTER_USER_NAME}"
 MASTER_USER_PASSWORD="${MASTER_PASSWORD:-$MASTER_USER_PASSWORD}"
+MASTER_USER_HOST="${MASTER_HOST}"
+
 MIGRATOR_NAME="${MIGRATOR_NAME}"
 MIGRATOR_PASSWORD="${MIGRATOR_PASSWORD}"
-MIGRATOR_USER_HOST="%"
+MIGRATOR_USER_HOST="${MIGRATOR_HOST}"
+
 DB_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}"
+
 DB_NAME="${DATABASE_NAME}"
+
 APP_USER_NAME="${APP_USER_NAME}"
 APP_USER_PASSWORD="${APP_USER_PASSWORD}"
-APP_USER_HOST="%"
+APP_USER_HOST="${APP_HOST}"
+
+# --------- Host defaults (use '%' if not provided) ---------
+MASTER_USER_HOST="${MASTER_USER_HOST:-%}"
+MIGRATOR_USER_HOST="${MIGRATOR_USER_HOST:-%}"
+APP_USER_HOST="${APP_USER_HOST:-%}"
 
 # Use fallback values if needed
 MIGRATOR_PASSWORD=${MIGRATOR_PASSWORD:-$DB_ROOT_PASSWORD}
@@ -48,9 +59,9 @@ echo "DB Configuration:"
 echo "  DB Host: $DB_HOST"
 echo "  DB Port: $DB_PORT"
 echo "  DB Name: $DB_NAME"
-echo "  Master User: $MASTER_USER_NAME"
-echo "  Migrator User: $MIGRATOR_NAME"
-echo "  App User: $APP_USER_NAME"
+echo "  Master User: $MASTER_USER_NAME@$MASTER_USER_HOST"
+echo "  Migrator User: $MIGRATOR_NAME@$MIGRATOR_USER_HOST"
+echo "  App User: $APP_USER_NAME@$APP_USER_HOST"
 echo "--------------------------------------------------"
 
 NEW_DATABASE_CREATED=0
@@ -68,7 +79,7 @@ echo "MariaDB is up and running."
 
 # Check that the root login works
 if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "SELECT 1;" &> /dev/null; then
-  echo "Error: Unable to connect to MariaDB with provided master user credentials."
+  echo "Error: Unable to connect to MariaDB with provided master user credentials ($MASTER_USER_NAME@$MASTER_USER_HOST)."
   exit 1
 fi
 
@@ -131,7 +142,7 @@ GRANTS_OUTPUT="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" \
 
 if [[ -z "$GRANTS_OUTPUT" ]]; then
   echo "Error: Could not retrieve grants for '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'."
-  echo "Check whether this user exists with a different host (e.g. 'localhost' instead of '%')."
+  echo "Check whether this user exists with a different host (e.g. 'localhost' instead of '$MIGRATOR_USER_HOST')."
   exit 1
 fi
 
@@ -160,7 +171,7 @@ if [[ "$migrator_has_access" == true ]]; then
 else
   echo "Notice: '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' lacks usable access to '${DB_NAME}'."
   echo "Make corrections to the intended MIGRATOR user permissions to resolve."
-  echo "  GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${APP_USER_HOST}'; FLUSH PRIVILEGES;"
+  echo "  GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'; FLUSH PRIVILEGES;"
   MIGRATOR_NAME="$MASTER_USER_NAME"
   MIGRATOR_PASSWORD="$MASTER_USER_PASSWORD"
   MIGRATION_DB_ALIAS="master"
@@ -210,7 +221,7 @@ APP_GRANTS_RAW="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME"
 
 if [[ -z "$APP_GRANTS_RAW" ]]; then
   echo "Error: Could not retrieve grants for '${APP_USER_NAME}'@'${APP_USER_HOST}'."
-  echo "Check whether this user exists only with different hosts (e.g. 'localhost' instead of '%')."
+  echo "Check whether this user exists only with different hosts (e.g. 'localhost' instead of '$APP_USER_HOST')."
   exit 1
 fi
 
