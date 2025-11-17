@@ -1,4 +1,4 @@
-from typing import Dict, Iterator
+from typing import Callable, Dict, Iterator
 import json
 import requests
 import csv
@@ -290,19 +290,16 @@ def initialize_default_taxon_tree(taxon_tree_name, discipline_name, logged_in_di
             discipline = spmodels.Discipline.objects.all().first()
     
     tree_def = None
+    unique_tree_name = taxon_tree_name
     if spmodels.Taxontreedef.objects.filter(name=taxon_tree_name).exists():
         i = 1
         while spmodels.Taxontreedef.objects.filter(name=f"{taxon_tree_name}_{i}").exists():
             i += 1
-        tree_def, _ = spmodels.Taxontreedef.objects.get_or_create(
-            name=f"{taxon_tree_name}_{i}",
-            discipline=discipline
-        )
-    else:
-        tree_def = spmodels.Taxontreedef.objects.create(
-            name=taxon_tree_name,
-            discipline=discipline
-        )
+        unique_tree_name = f"{taxon_tree_name}_{i}"
+    tree_def, _ = spmodels.Taxontreedef.objects.create(
+        name=unique_tree_name,
+        discipline=discipline
+    )
     
     tree_rank, _ = spmodels.Taxontreedefitem.objects.get_or_create(
         name="Root",
@@ -426,29 +423,19 @@ def create_default_tree_task(self, url: str, discipline_name: str, logged_in_dis
         if current > total:
             current = total
         self.update_state(state='RUNNING', meta={'current': current, 'total': total})
-    
-    def stream_csv_from_url(url: str, discipline_name: str, rank_count: int) -> Iterator[Dict[str, str]]:
-        nonlocal tree_name
-        with requests.get(url, stream=True) as resp:
-            resp.raise_for_status()
-            lines = (line.decode('utf-8') for line in resp.iter_lines(decode_unicode=False))
-            reader = csv.DictReader(lines)
 
-            rank_names_lst = reader.fieldnames[:rank_count]
-            tree_name = initialize_default_taxon_tree(tree_name, discipline_name,
-                                                      logged_in_discipline_name, rank_names_lst)
-            
-            for row in reader:
-                yield row
+    def set_tree(name: str) -> None:
+        nonlocal tree_name
+        tree_name = name
 
     try:
         row_count = count_csv_rows(url) - 2
         progress(0, row_count)
         with transaction.atomic():
-            for row in stream_csv_from_url(url, discipline_name, rank_count):
+            for row in stream_csv_from_url(url, discipline_name, rank_count, logged_in_discipline_name, set_tree):
                 add_default_taxon(row, tree_name, discipline_name)
                 progress(1, 0)
-    except requests.HTTPError:
+    except Exception as e:
         Message.objects.create(
             user=specify_user,
             content=json.dumps({
@@ -459,6 +446,7 @@ def create_default_tree_task(self, url: str, discipline_name: str, logged_in_dis
                 # 'error': str(e)
             })
         )
+        return
 
     Message.objects.create(
         user=specify_user,
@@ -469,3 +457,23 @@ def create_default_tree_task(self, url: str, discipline_name: str, logged_in_dis
             'discipline_name': logged_in_discipline_name,
         })
     )
+
+def stream_csv_from_url(url: str, discipline_name: str, rank_count: int, logged_in_discipline_name: str, set_tree: Callable[[str], None]) -> Iterator[Dict[str, str]]:
+    """
+    Streams a taxon CSV from a URL. Yields each row.
+    """
+    with requests.get(url, stream=True) as resp:
+        try:
+            resp.raise_for_status()
+        except requests.HTTPError:
+            raise
+        lines = (line.decode('utf-8') for line in resp.iter_lines(decode_unicode=False))
+        reader = csv.DictReader(lines)
+
+        rank_names_lst = reader.fieldnames[:rank_count]
+        tree_name = initialize_default_taxon_tree(tree_name, discipline_name,
+                                                    logged_in_discipline_name, rank_names_lst)
+        set_tree(tree_name)
+        
+        for row in reader:
+            yield row

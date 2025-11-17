@@ -26,7 +26,7 @@ from specifyweb.backend.stored_queries.execution import set_group_concat_max_len
 from specifyweb.backend.stored_queries.group_concat import group_concat
 from specifyweb.backend.notifications.models import Message
 
-from specifyweb.backend.trees.utils import add_default_taxon, create_default_tree_task, get_search_filters, initialize_default_taxon_tree
+from specifyweb.backend.trees.utils import add_default_taxon, create_default_tree_task, get_search_filters, stream_csv_from_url
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from specifyweb.backend.trees.ranks import tree_rank_count
 from . import extras
@@ -589,9 +589,13 @@ def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMA
             "TreeCreationRequest": {
                 "type": "object",
                 "properties": {
-                    "fileName": {
+                    "url": {
                         "type": "string",
-                        "description": "Filename of the default tree CSV to be imported."
+                        "description": "The URL of the tree CSV file."
+                    },
+                    "disciplineName": {
+                        "type": "string",
+                        "description": "Name of the disicpline the tree belongs to."
                     },
                     "collection": {
                         "type": "string",
@@ -602,7 +606,7 @@ def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMA
                         "description": "Whether or not to create the tree in the background."
                     }
                 },
-                "required": ["fileName"],
+                "required": ["url", "disciplineName"],
                 "additionalProperties": False
             },
             "SuccessBackground": {
@@ -626,53 +630,15 @@ def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMA
 def create_default_tree_view(request):
     """Creates or populates a tree with default records from a CSV file.
     """
-    # Default tree files copied
-    # from https://files.specifysoftware.org/taxonfiles/
-    # to https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/
-    discipline_tree_csv_files = {
-        'ichthyology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_fishes.csv',
-        # 'ichthyology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/test22_fishes.csv',
-        'herpetology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_herps.csv',
-        'ornothology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_aves.csv',
-        'mammology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_mammalia.csv',
-        'entomology': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_orthoptera.csv',
-        'botany': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_poales.csv',
-        'invertebrate': 'https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_inverts.csv'
-    }
-    title_to_discipline = {
-        'fishes': 'ichthyology',
-        'herps': 'herpetology',
-        'aves': 'ornothology',
-        'mammalia': 'mammology',
-        'orthoptera': 'entomology',
-        'poales': 'botany',
-        'inverts': 'invertebrate'
-    }
-
     # Check permissions in the normal case and for the case of intial database setup.
     # check_permission_targets(request.specify_collection.id, request.specify_user.id, [DefaultTreePT.create])
-
-    def parse_file_name_to_discipline(file_name: str) -> str:
-        """Extracts the discipline name from the file name."""
-        # Assuming the file name is in the format 'col2008_<discipline>.csv'
-        parts = file_name.split('_')
-        title = ''
-        if len(parts) > 1:
-            title = parts[1].replace('.csv', '').replace('.xls', '').lower()
-        else:
-            return title
-        discipline_name = title_to_discipline.get(title, '')
-        if discipline_name:
-            # return discipline_name.capitalize()
-            return discipline_name
-        else:
-            raise ValueError(f"Unknown discipline in file name: {file_name}")
     
     data = json.loads(request.body)
 
-    file_name = data.get('fileName', '').strip()
     connected_collection = data.get('collection')
-    discipline_name = parse_file_name_to_discipline(file_name)
+    discipline_name = data.get('disciplineName', None)
+    if not discipline_name:
+        return http.JsonResponse({'error': 'Discipline name was not provided.'}, status=400)
 
     logged_in_collection_name = request.user.logincollectionname
 
@@ -682,29 +648,17 @@ def create_default_tree_view(request):
     logged_in_discipline_name = collection.discipline.name
 
     # logged_in_discipline_name = request.user.logindisciplinename
-    if discipline_name not in discipline_tree_csv_files:
-        return http.JsonResponse({'error': 'Tree not found.'}, status=404)
 
-    url = discipline_tree_csv_files.get(discipline_name)
-    # discipline_name = data.get('discipline', '').capitalize()
+    url = data.get('url', None)
+
     tree_name = discipline_name.capitalize()
     rank_count = int(tree_rank_count(tree_name, 8))
     
     run_in_background = data.get('runInBackground', True)
 
-    def stream_csv_from_url(url: str, discipline_name: str, rank_count: int) -> Iterator[Dict[str, str]]:
+    def set_tree(name: str) -> None:
         nonlocal tree_name
-        with requests.get(url, stream=True) as resp:
-            resp.raise_for_status()
-            lines = (line.decode('utf-8') for line in resp.iter_lines(decode_unicode=False))
-            reader = csv.DictReader(lines)
-
-            rank_names_lst = reader.fieldnames[:rank_count]
-            tree_name = initialize_default_taxon_tree(tree_name, discipline_name, 
-                                                      logged_in_discipline_name, rank_names_lst)
-            
-            for row in reader:
-                yield row
+        tree_name = name
 
     if not url:
         return http.JsonResponse({'error': 'Tree not found.'}, status=404)
@@ -730,7 +684,7 @@ def create_default_tree_view(request):
         }, status=202)
 
     try:
-        for row in stream_csv_from_url(url, discipline_name, rank_count):
+        for row in stream_csv_from_url(url, discipline_name, rank_count, logged_in_discipline_name, set_tree):
             add_default_taxon(row, tree_name, discipline_name)
     except requests.HTTPError:
         return http.JsonResponse({'error': 'Failed to fetch the tree data.'}, status=500)

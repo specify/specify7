@@ -61,7 +61,7 @@ export function CreateTree<
   const [isActive, setIsActive] = React.useState(0);
   const [isTreeCreationStarted, setIsTreeCreationStarted] = React.useState(false);
   const [treeCreationTaskId, setTreeCreationTaskId] = React.useState<string | undefined>(undefined);
-  const [treeCreationProgress, setTreeCreationProgress] = React.useState<number>(0);
+  const [treeCreationProgress, setTreeCreationProgress] = React.useState<number | undefined>(undefined);
   const [treeCreationProgressTotal, setTreeCreationProgressTotal] = React.useState<number>(1);
 
   const [selectedResource, setSelectedResource] = React.useState<
@@ -87,24 +87,29 @@ export function CreateTree<
   const connectedCollection = getSystemInfo().collection;
 
   // Start default tree creation
-  const handleClick = async (resourceFile: string): Promise<void> => {
+  const handleClick = async (resourceUrl: string, disciplineName: string): Promise<void> => {
     setIsTreeCreationStarted(true);
+    setTreeCreationProgress(undefined);
     return ajax<TreeCreationInfo>('/trees/create_default_tree/', {
       method: 'POST',
       headers: { Accept: 'application/json' },
-      body: { fileName: resourceFile, collection: connectedCollection },
+      body: {
+        url: resourceUrl,
+        collection: connectedCollection,
+        disciplineName: disciplineName
+      },
     })
       .then(({ data, status }) => {
         if (status === Http.OK) {
-          console.log(`${resourceFile} created successfully:`, data);
+          console.log(`${disciplineName} tree created successfully:`, data);
         } else if (status === Http.ACCEPTED) {
           // Tree is being created in the background.
-          console.log(`${resourceFile} creation started successfully:`, data);
+          console.log(`${disciplineName} tree creation started successfully:`, data);
           setTreeCreationTaskId(data.task_id);
         }
       })
       .catch((error) => {
-        console.error(`Request failed for ${resourceFile}:`, error);
+        console.error(`Request failed for ${resourceUrl}:`, error);
         throw error;
       });
   }
@@ -125,6 +130,7 @@ export function CreateTree<
               setTreeCreationProgress(data.taskprogress.current || 0);
               setTreeCreationProgressTotal(data.taskprogress.total || 1);
             } else if (data.taskstatus === 'FAILURE') {
+              setTreeCreationProgress(undefined);
               throw data.taskprogress;
             } else if (data.taskstatus === 'SUCCESS') {
               globalThis.location.reload();
@@ -180,7 +186,7 @@ export function CreateTree<
                   <li key={index}>
                     <Button.LikeLink
                       onClick={(): void => {
-                        handleClick(resource.file).catch(console.error);
+                        handleClick(resource.file, resource.discipline).catch(console.error);
                       }}
                     >
                       {localized(resource.title)}
@@ -215,11 +221,20 @@ export function CreateTree<
                 header={treeText.defaultTreeTaskStarting()}
                 onClose={() => {setIsTreeCreationStarted(false); setIsActive(0)}}
               >
-                {treeText.defaultTreeCreationProgress({
-                  current: treeCreationProgress,
-                  total: treeCreationProgressTotal
-                })}
-                <Progress max={treeCreationProgressTotal} value={treeCreationProgress}/>
+                {
+                  (treeCreationProgress !== undefined ? 
+                    (
+                      <>
+                        {treeText.defaultTreeCreationProgress({
+                          current: treeCreationProgress,
+                          total: treeCreationProgressTotal
+                        })}
+                        <Progress max={treeCreationProgressTotal} value={treeCreationProgress}/>
+                      </>
+                    ) : undefined
+                  )
+                }
+                
                 {treeText.defaultTreeTaskStartingDescription()}
               </Dialog>
             ) : undefined}
