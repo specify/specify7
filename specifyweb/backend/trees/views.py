@@ -646,7 +646,6 @@ def create_default_tree_view(request):
     collection = spmodels.Collection.objects.get(collectionname=collection_name)
 
     logged_in_discipline_name = collection.discipline.name
-
     # logged_in_discipline_name = request.user.logindisciplinename
 
     url = data.get('url', None)

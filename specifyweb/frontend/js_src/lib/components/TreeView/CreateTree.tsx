@@ -127,9 +127,11 @@ export function CreateTree<
         })
           .then(({ data }) => {
             if (data.taskstatus === 'RUNNING') {
-              setTreeCreationProgress(data.taskprogress.current || 0);
-              setTreeCreationProgressTotal(data.taskprogress.total || 1);
+              setTreeCreationProgress(data.taskprogress.current ?? 0);
+              setTreeCreationProgressTotal(data.taskprogress.total ?? 1);
             } else if (data.taskstatus === 'FAILURE') {
+              setIsTreeCreationStarted(false);
+              setTreeCreationTaskId(undefined);
               setTreeCreationProgress(undefined);
               throw data.taskprogress;
             } else if (data.taskstatus === 'SUCCESS') {
@@ -139,7 +141,7 @@ export function CreateTree<
       5000
     );
     return () => clearInterval(interval);
-  });
+  }, [treeCreationTaskId]);
 
   const handleClickEmptyTree = (
     resource: DeepPartial<SerializedResource<TaxonTreeDef>>

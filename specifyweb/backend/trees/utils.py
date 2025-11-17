@@ -446,7 +446,7 @@ def create_default_tree_task(self, url: str, discipline_name: str, logged_in_dis
                 # 'error': str(e)
             })
         )
-        return
+        raise
 
     Message.objects.create(
         user=specify_user,
