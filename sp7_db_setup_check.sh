@@ -123,22 +123,25 @@ if [[ -z "$GRANTS_OUTPUT" ]]; then
   exit 1
 fi
 
-# Canonicalize whitespace
-GRANTS_PARSED="$(echo "$GRANTS_OUTPUT" | tr -s '[:space:]' ' ')"
-
 migrator_has_access=false
-while IFS= read -r line; do
-  # Only consider grants that target either *.* or the intended DB `${DB_NAME}`.*
+
+while IFS= read -r raw_line; do
+  # normalize spaces but keep line boundaries
+  line="$(echo "$raw_line" | tr -s '[:space:]' ' ')"
+
   if echo "$line" | grep -Eiq " ON (\*\.\*|(\`?${DB_NAME}\`?)\.\*) "; then
     # Extract the privilege list between "GRANT " and " ON"
     privs="$(echo "$line" | sed -E 's/^GRANT (.+) ON .+$/\1/I')"
-    # If the list is more than just USAGE, we accept. "ALL PRIVILEGES" also qualifies.
-    if ! echo "$privs" | grep -Eiq '(^|[, ])USAGE([, ]|$)'; then
-      migrator_has_access=true
-      break
+
+    # Treat it as "no access" ONLY if it's pure USAGE
+    if echo "$privs" | grep -Eiq '^[[:space:]]*USAGE[[:space:]]*$'; then
+      continue
     fi
+
+    migrator_has_access=true
+    break
   fi
-done <<< "$GRANTS_PARSED"
+done <<< "$GRANTS_OUTPUT"
 
 if [[ "$migrator_has_access" == true ]]; then
   echo "Verified: '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' has usable access to '${DB_NAME}'."
