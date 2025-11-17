@@ -103,7 +103,7 @@ def get_models(name: str):
 # orthptera   kingdom,phylum,class,order,superfamily,family,genus,species,subspecies,species author,species source,species lsid,species common name,family common name,subspecies author,subspecies source,subspecies lsid,subspecies common name
 # poales      kingdom,division,class,order,family,genus,species,subspecies,variety,species author,species source,species lsid,species common name,subspecies author,subspecies source,subspecies lsid,subspecies common name,variety author,variety source,variety lsid,variety common name
 DISCIPLINE_TAXON_CSV_COLUMNS = {
-    'ichthyology': {
+    'fish': {
         'all_columns': ['kingdom','phylum','class','order','family','genus','species','subspecies','family common name','species author','species source','species lsid','species common name','subspecies author','subspecies source','subspecies lsid','subspecies common name'],
         'taxon_ranks': [
             {'kingdom': {'kingdom': 'name'}},
@@ -186,7 +186,7 @@ DISCIPLINE_TAXON_CSV_COLUMNS = {
             }
         ],
     },
-    'mammology': {
+    'mammal': {
         'all_columns': ['kingdom','phylum','class','order','family','genus','species','subspecies','family common name','species author','species source','species lsid','species common name','subspecies author','subspecies source','subspecies lsid','subspecies common name'],
         'taxon_ranks': [
             {'kingdom': {'kingdom': 'name'}},
@@ -214,7 +214,7 @@ DISCIPLINE_TAXON_CSV_COLUMNS = {
             }
         ],
     },
-    'entomology': {
+    'insect': {
         'all_columns': ['kingdom','phylum','class','order','superfamily','family','genus','species','subspecies','species author','species source','species lsid','species common name','family common name','subspecies author','subspecies source','subspecies lsid','subspecies common name'],
         'taxon_ranks': [
             {'kingdom': {'kingdom': 'name'}},
@@ -283,50 +283,71 @@ def initialize_default_taxon_tree(taxon_tree_name, discipline_name, logged_in_di
     """
     Initialize the default taxon tree for a given collection.
     """
+    
     discipline = spmodels.Discipline.objects.filter(name=discipline_name).first()
     if not discipline:
         discipline = spmodels.Discipline.objects.filter(name=logged_in_discipline_name).first()
         if not discipline:
             discipline = spmodels.Discipline.objects.all().first()
     
-    tree_def = None
-    unique_tree_name = taxon_tree_name
-    if spmodels.Taxontreedef.objects.filter(name=taxon_tree_name).exists():
-        i = 1
-        while spmodels.Taxontreedef.objects.filter(name=f"{taxon_tree_name}_{i}").exists():
-            i += 1
-        unique_tree_name = f"{taxon_tree_name}_{i}"
-    tree_def, _ = spmodels.Taxontreedef.objects.create(
-        name=unique_tree_name,
-        discipline=discipline
-    )
+    # Add Root rank
+    rank_names_lst = rank_names_lst.copy()
+    rank_names_lst.insert(0, "Root")
     
-    tree_rank, _ = spmodels.Taxontreedefitem.objects.get_or_create(
-        name="Root",
-        treedef=tree_def,
-        rankid=0
-    )
+    return initialize_default_tree("taxon", taxon_tree_name, discipline, rank_names_lst)
+    
 
-    rank_id = 10
-    for rank_name in rank_names_lst:
-        spmodels.Taxontreedefitem.objects.get_or_create(
-            name=rank_name,
-            treedef=tree_def,
-            rankid=rank_id
+def initialize_default_tree(name, tree_name: str, discipline: str, rank_names_lst):
+    """Creates an initial empty tree."""
+    with transaction.atomic():
+        tree_def_model, tree_rank_model, tree_node_model = get_models(name)
+        
+        # Uniquify name
+        tree_def = None
+        unique_tree_name = tree_name
+        if tree_def_model.objects.filter(name=tree_name).exists():
+            i = 1
+            while tree_def_model.objects.filter(name=f"{tree_name}_{i}").exists():
+                i += 1
+            unique_tree_name = f"{tree_name}_{i}"
+        
+        # Create tree definition
+        tree_def, _ = tree_def_model.objects.get_or_create(
+            name=unique_tree_name,
+            discipline=discipline
         )
-        rank_id += 10
+        
+        # Create tree ranks
+        treedefitems_bulk = []
+        rank_id = 0
+        for rank_name in rank_names_lst:
+            logger.debug(f"######### RANK NAME -> {rank_name} and {rank_id}")
 
-    tree_node, _ = spmodels.Taxon.objects.get_or_create(
-        name="Root",
-        fullname="Root",
-        nodenumber=1,
-        definition=tree_def,
-        definitionitem=tree_rank,
-        parent=None
-    )
+            treedefitems_bulk.append(
+                tree_rank_model(
+                    treedef=tree_def,
+                    name=rank_name, # TODO: allow rank name configuration
+                    rankid=int(rank_id),
+                )
+            )
+            rank_id += 10
+        if treedefitems_bulk:
+            tree_rank_model.objects.bulk_create(treedefitems_bulk, ignore_conflicts=False)
 
-    tree_name = tree_def.name
-    return tree_name
+            # Create root node
+            # TODO: Avoid having duplicated code from add_root endpoint
+            root_rank = tree_rank_model.objects.get(treedef=tree_def, rankid=0)
+            tree_node, _ = tree_node_model.objects.get_or_create(
+                name="Root",
+                fullname="Root",
+                nodenumber=1,
+                definition=tree_def,
+                definitionitem=root_rank,
+                parent=None
+            )
+
+        tree_name = tree_def.name
+        return tree_name
 
 def add_default_taxon(row, tree_name, discipline_name):
     """
@@ -432,7 +453,7 @@ def create_default_tree_task(self, url: str, discipline_name: str, logged_in_dis
         row_count = count_csv_rows(url) - 2
         progress(0, row_count)
         with transaction.atomic():
-            for row in stream_csv_from_url(url, discipline_name, rank_count, logged_in_discipline_name, set_tree):
+            for row in stream_csv_from_url(url, discipline_name, rank_count, logged_in_discipline_name, tree_name, set_tree):
                 add_default_taxon(row, tree_name, discipline_name)
                 progress(1, 0)
     except Exception as e:
@@ -458,7 +479,7 @@ def create_default_tree_task(self, url: str, discipline_name: str, logged_in_dis
         })
     )
 
-def stream_csv_from_url(url: str, discipline_name: str, rank_count: int, logged_in_discipline_name: str, set_tree: Callable[[str], None]) -> Iterator[Dict[str, str]]:
+def stream_csv_from_url(url: str, discipline_name: str, rank_count: int, logged_in_discipline_name: str, initial_tree_name: str, set_tree: Callable[[str], None]) -> Iterator[Dict[str, str]]:
     """
     Streams a taxon CSV from a URL. Yields each row.
     """
@@ -471,7 +492,7 @@ def stream_csv_from_url(url: str, discipline_name: str, rank_count: int, logged_
         reader = csv.DictReader(lines)
 
         rank_names_lst = reader.fieldnames[:rank_count]
-        tree_name = initialize_default_taxon_tree(tree_name, discipline_name,
+        tree_name = initialize_default_taxon_tree(initial_tree_name, discipline_name,
                                                     logged_in_discipline_name, rank_names_lst)
         set_tree(tree_name)
         
