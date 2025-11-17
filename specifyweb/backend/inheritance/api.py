@@ -51,7 +51,7 @@ def cog_inheritance_post_query_processing(query, tableid, field_specs, collectio
             result = list(result)
             if result[catalog_number_field_index] is None or result[catalog_number_field_index] == '':
                 cojo = Collectionobjectgroupjoin.objects.filter(childco_id=result[0]).first()
-                if cojo:
+                if cojo and getattr(getattr(cojo.parentcog, 'cogtype', None), 'type', None) == 'Consolidated':
                     primary_cojo = Collectionobjectgroupjoin.objects.filter(
                         parentcog=cojo.parentcog, isprimary=True).first()
                     if primary_cojo:

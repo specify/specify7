@@ -35,6 +35,13 @@ def catalog_number_for_sibling(request: http.HttpRequest):
 
         parent_cog_id = requesting_cojo['parentcog_id']
 
+        parent_cog = models.Collectionobjectgroup.objects.select_related(
+            'cogtype'
+        ).filter(id=parent_cog_id).first()
+
+        if parent_cog is None or parent_cog.cogtype is None or parent_cog.cogtype.type != 'Consolidated':
+            return http.JsonResponse(None, safe=False)
+
         primary_cojo = models.Collectionobjectgroupjoin.objects.filter(
             parentcog_id=parent_cog_id,
             isprimary=True
