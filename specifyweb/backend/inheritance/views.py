@@ -21,7 +21,7 @@ def catalog_number_for_sibling(request: http.HttpRequest):
     if object_id is None:
         return http.JsonResponse({'error': "'id' field is required."}, status=400)
 
-    if provided_catalog_number is not None:
+    if provided_catalog_number not in (None, ''):
         return http.JsonResponse(None, safe=False)
 
     try:

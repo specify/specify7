@@ -103,23 +103,10 @@ function Field({
   readonly field: LiteralField | undefined;
   readonly parser?: Parser;
 }): JSX.Element {
-  const { value, updateValue, validationRef, parser } = useResourceValue(
-    resource,
-    field,
-    defaultParser
-  );
-
-  /*
-   * REFACTOR: consider moving this into useResoruceValue
-   *    (it will be added to parser)
-   */
   const isInSearchDialog = React.useContext(SearchDialogContext);
   const isReadOnly =
     React.useContext(ReadOnlyContext) ||
     (field?.isReadOnly === true && !isInSearchDialog);
-
-  const validationAttributes = getValidationAttributes(parser);
-  const rightAlignClassName = useRightAlignClassName(parser.type, isReadOnly);
 
   const isNew = resource?.isNew();
   const isCO = resource?.specifyTable.name === 'CollectionObject';
@@ -150,12 +137,19 @@ function Field({
     'inheritance'
   );
 
+  const { value, updateValue, validationRef, parser } = useResourceValue(
+    resource,
+    field,
+    defaultParser
+  );
+
   const displayPrimaryCatNumberPlaceHolder =
     isNew === false &&
     isCO &&
     isPartOfCOG &&
     isCatNumberField &&
-    displayPrimaryCatNumberPref;
+    displayPrimaryCatNumberPref &&
+    (value === null || value === '');
 
   const displayParentCatNumberPlaceHolder =
     isNew === false &&
@@ -164,6 +158,13 @@ function Field({
     isCatNumberField &&
     displayParentCatNumberPref;
 
+  /*
+   * REFACTOR: consider moving this into useResoruceValue
+   *    (it will be added to parser)
+   */
+  const validationAttributes = getValidationAttributes(parser);
+  const rightAlignClassName = useRightAlignClassName(parser.type, isReadOnly);
+
   const [primaryCatalogNumber, setPrimaryCatalogNumber] = React.useState<
     string | null
   >(null);
@@ -171,6 +172,14 @@ function Field({
   const [parentCatalogNumber, setParentCatalogNumber] = React.useState<
     string | null
   >(null);
+
+  const normalizeCatValue = (val: string | null | undefined): string | null =>
+    isCO &&
+    isCatNumberField &&
+    displayPrimaryCatNumberPref &&
+    (val === '' || val === undefined)
+      ? null
+      : val ?? null;
 
   React.useEffect(() => {
     if (resource && displayPrimaryCatNumberPlaceHolder) {
@@ -204,22 +213,26 @@ function Field({
     displayParentCatNumberPlaceHolder,
   ]);
 
+  const customPlaceholder =
+    displayPrimaryCatNumberPlaceHolder &&
+    typeof primaryCatalogNumber === 'string'
+      ? primaryCatalogNumber
+      : displayParentCatNumberPlaceHolder &&
+          typeof parentCatalogNumber === 'string'
+        ? parentCatalogNumber
+        : undefined;
+
+  const { placeholder: parserPlaceholder, ...restValidationAttributes } =
+    validationAttributes;
+
   return (
     <Input.Generic
       forwardRef={validationRef}
       key={parser.title}
       max={Number.MAX_SAFE_INTEGER}
       name={name}
-      placeholder={
-        displayPrimaryCatNumberPlaceHolder &&
-        typeof primaryCatalogNumber === 'string'
-          ? primaryCatalogNumber
-          : displayParentCatNumberPlaceHolder &&
-              typeof parentCatalogNumber === 'string'
-            ? parentCatalogNumber
-            : undefined
-      }
-      {...validationAttributes}
+      placeholder={customPlaceholder ?? parserPlaceholder}
+      {...restValidationAttributes}
       className={rightAlignClassName}
       id={id}
       isReadOnly={isReadOnly}
@@ -227,9 +240,11 @@ function Field({
       tabIndex={isReadOnly ? -1 : undefined}
       value={value?.toString() ?? ''}
       onBlur={
-        isReadOnly ? undefined : ({ target }): void => updateValue(target.value)
+        isReadOnly
+          ? undefined
+          : ({ target }): void => updateValue(normalizeCatValue(target.value))
       }
-      onValueChange={(value): void => updateValue(value, false)}
+      onValueChange={(value): void => updateValue(normalizeCatValue(value), false)}
       /*
        * Update data model value before onBlur, as onBlur fires after onSubmit
        * if form is submitted using the ENTER key
@@ -241,7 +256,7 @@ function Field({
          * field is blurred, unless user tried to paste a date (see definition
          * of Input.Generic)
          */
-        updateValue(input.value, event.type === 'paste');
+        updateValue(normalizeCatValue(input.value), event.type === 'paste');
       }}
     />
   );

@@ -27,10 +27,12 @@ import { parseAnyDate } from '../utils/relativeDate';
 export function useParserDefaultValue(
   resource: SpecifyResource<AnySchema> | undefined,
   field: LiteralField | Relationship | undefined,
-  parser: Parser
+  parser: Parser,
+  suppressDefaultValue = false
 ) {
   React.useLayoutEffect(() => {
-    if (field === undefined || resource === undefined) return;
+    if (suppressDefaultValue || field === undefined || resource === undefined)
+      return;
     /*
      * Don't auto set numeric to "0" or boolean fields to false, unless it is the default value
      * in the form definition

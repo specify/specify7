@@ -46,7 +46,7 @@ export function useResourceValue<
   field: LiteralField | Relationship | undefined,
   // Default parser is usually coming from the form definition
   defaultParser: Parser | undefined,
-  trim?: boolean
+  trimOrOptions?: boolean | { readonly trim?: boolean; readonly suppressDefaultValue?: boolean }
 ): {
   readonly value: T | undefined;
   readonly updateValue: (newValue: T, reportErrors?: boolean) => void;
@@ -56,9 +56,17 @@ export function useResourceValue<
   readonly setValidation: (message: RA<string> | string) => void;
   readonly parser: Parser;
 } {
+  const { trim, suppressDefaultValue } =
+    typeof trimOrOptions === 'object'
+      ? {
+          trim: trimOrOptions.trim,
+          suppressDefaultValue: trimOrOptions.suppressDefaultValue ?? false,
+        }
+      : { trim: trimOrOptions, suppressDefaultValue: false };
+
   const parser = useParser(field, resource, defaultParser);
 
-  useParserDefaultValue(resource, field, parser);
+  useParserDefaultValue(resource, field, parser, suppressDefaultValue);
 
   const { inputRef, validationRef, setValidation } = useFieldValidation<INPUT>(
     resource,
