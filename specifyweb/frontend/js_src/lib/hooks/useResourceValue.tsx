@@ -12,9 +12,9 @@ import type { Input } from '../components/Forms/validationHelpers';
 import type { Parser } from '../utils/parser/definitions';
 import type { RA } from '../utils/types';
 import { useParser } from './resource';
-import { useParserDefaultValue } from './useParserDefaultValue';
 import { useFieldParser } from './useFieldParser';
 import { useFieldValidation } from './useFieldValidation';
+import { useParserDefaultValue } from './useParserDefaultValue';
 
 /**
  * A hook to integrate an Input with a field on a Backbone resource
@@ -46,7 +46,9 @@ export function useResourceValue<
   field: LiteralField | Relationship | undefined,
   // Default parser is usually coming from the form definition
   defaultParser: Parser | undefined,
-  trimOrOptions?: boolean | { readonly trim?: boolean; readonly suppressDefaultValue?: boolean }
+  trimOrOptions?:
+    | boolean
+    | { readonly trim?: boolean; readonly suppressDefaultValue?: boolean }
 ): {
   readonly value: T | undefined;
   readonly updateValue: (newValue: T, reportErrors?: boolean) => void;
