@@ -67,17 +67,17 @@ done
 echo "MariaDB is up and running."
 
 # Check that the root login works
-if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "SELECT 1;" &> /dev/null; then
+if ! mariadb -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "SELECT 1;" &> /dev/null; then
   echo "Error: Unable to connect to MariaDB with provided master user credentials."
   exit 1
 fi
 
 # Create database if it doesn't exist
-DB_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = '$DB_NAME';")
+DB_EXISTS=$(mariadb -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = '$DB_NAME';")
 if [[ "$DB_EXISTS" -eq 0 ]]; then
   echo "Creating database '$DB_NAME'..."
-  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE DATABASE \`$DB_NAME\`;\""
-  if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "CREATE DATABASE \`$DB_NAME\`;"; then
+  echo "Executing: mariadb -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE DATABASE \`$DB_NAME\`;\""
+  if mariadb -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "CREATE DATABASE \`$DB_NAME\`;"; then
     NEW_DATABASE_CREATED=1
   else
     echo "Error: Failed to create database."
@@ -88,11 +88,11 @@ else
 fi
 
 # Create migrator user if it doesn't exist
-USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse "SELECT COUNT(*) FROM mysql.user WHERE user = '$MIGRATOR_NAME' AND host = '$MIGRATOR_USER_HOST';")
+USER_EXISTS=$(mariadb -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse "SELECT COUNT(*) FROM mysql.user WHERE user = '$MIGRATOR_NAME' AND host = '$MIGRATOR_USER_HOST';")
 if [[ "$USER_EXISTS" -eq 0 && "$APP_USER_NAME" != "root" ]]; then
   echo "Creating user '$MIGRATOR_NAME'..."
-  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' IDENTIFIED BY '<hidden>';\""
-  if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "CREATE USER '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' IDENTIFIED BY '${MIGRATOR_PASSWORD}';"; then
+  echo "Executing: mariadb -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' IDENTIFIED BY '<hidden>';\""
+  if mariadb -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "CREATE USER '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' IDENTIFIED BY '${MIGRATOR_PASSWORD}';"; then
     NEW_MIGRATOR_USER_CREATED=1
   else
     echo "Error: Failed to create user."
@@ -105,8 +105,8 @@ fi
 # Grant privileges only if a migrator new user was created
 if [[ "$NEW_MIGRATOR_USER_CREATED" -eq 1 ]]; then
   echo "Granting privileges to new user..."
-  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'; FLUSH PRIVILEGES;\""
-  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'; FLUSH PRIVILEGES;"; then
+  echo "Executing: mariadb -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'; FLUSH PRIVILEGES;\""
+  if ! mariadb -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'; FLUSH PRIVILEGES;"; then
     echo "Error: Failed to grant privileges to new user."
     exit 1
   fi
@@ -114,7 +114,7 @@ else
   echo "Skipping privilege grant for migrator user: user already exists. Verifying privileges on '${DB_NAME}'..."
 fi
 
-GRANTS_OUTPUT="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" \
+GRANTS_OUTPUT="$(mariadb -N -B -h "$DB_HOST" -P "$DB_PORT" \
                   -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
                   -e "SHOW GRANTS FOR '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}';" 2>/dev/null || true)"
 
@@ -153,11 +153,11 @@ fi
 
 
 # Create app user if it doesn't exist
-USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse "SELECT COUNT(*) FROM mysql.user WHERE user = '$APP_USER_NAME' AND host = '$APP_USER_HOST';")
+USER_EXISTS=$(mariadb -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse "SELECT COUNT(*) FROM mysql.user WHERE user = '$APP_USER_NAME' AND host = '$APP_USER_HOST';")
 if [[ "$USER_EXISTS" -eq 0 && "$APP_USER_NAME" != "root" ]]; then
   echo "Creating user '$APP_USER_NAME'..."
-  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${APP_USER_NAME}'@'${APP_USER_HOST}' IDENTIFIED BY '<hidden>';\""
-  if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "CREATE USER '${APP_USER_NAME}'@'${APP_USER_HOST}' IDENTIFIED BY '${APP_USER_PASSWORD}';"; then
+  echo "Executing: mariadb -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${APP_USER_NAME}'@'${APP_USER_HOST}' IDENTIFIED BY '<hidden>';\""
+  if mariadb -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "CREATE USER '${APP_USER_NAME}'@'${APP_USER_HOST}' IDENTIFIED BY '${APP_USER_PASSWORD}';"; then
     NEW_APP_USER_CREATED=1
   else
     echo "Error: Failed to create user."
@@ -170,8 +170,8 @@ fi
 # Grant privileges only if a new app user was created
 if [[ "$NEW_APP_USER_CREATED" -eq 1 ]]; then
   echo "Granting privileges to new user..."
-  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${APP_USER_NAME}'@'${APP_USER_HOST}'; FLUSH PRIVILEGES;\""
-  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT SELECT, INSERT, UPDATE, ALTER, INDEX, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${APP_USER_NAME}'@'${APP_USER_HOST}'; FLUSH PRIVILEGES;"; then
+  echo "Executing: mariadb -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${APP_USER_NAME}'@'${APP_USER_HOST}'; FLUSH PRIVILEGES;\""
+  if ! mariadb -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT SELECT, INSERT, UPDATE, ALTER, INDEX, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${APP_USER_NAME}'@'${APP_USER_HOST}'; FLUSH PRIVILEGES;"; then
     echo "Error: Failed to grant privileges to new user."
     exit 1
   fi
@@ -180,7 +180,7 @@ else
 fi
 
 REQUIRED_PRIVS=("SELECT" "INSERT" "UPDATE" "ALTER" "INDEX" "DELETE" "CREATE TEMPORARY TABLES" "LOCK TABLES" "EXECUTE")
-APP_GRANTS_RAW="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+APP_GRANTS_RAW="$(mariadb -N -B -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
                   -e "SHOW GRANTS FOR '${APP_USER_NAME}'@'${APP_USER_HOST}';" 2>/dev/null || true)"
 
 if [[ -z "$APP_GRANTS_RAW" ]]; then
