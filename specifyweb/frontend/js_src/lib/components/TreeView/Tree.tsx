@@ -98,11 +98,11 @@ export function Tree<
   );
 
   const [statsThreshold] = userPreferences.use(
-  'treeEditor',
-  treeToPref[tableName],
-  'rankThreshold'
+    'treeEditor',
+    treeToPref[tableName],
+    'rankThreshold'
   );
-  
+
   const getStats = React.useCallback(
     async (nodeId: number | 'null', rankId: number): Promise<Stats> =>
       rankId >= statsThreshold
