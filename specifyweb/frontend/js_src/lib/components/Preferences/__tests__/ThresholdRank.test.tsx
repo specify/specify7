@@ -11,10 +11,7 @@ import type { PreferenceItem } from '../types';
 overrideAjax('/context/schema_localization.json', {});
 requireContext();
 
-const mockedGetTreeDefinitions = jest.spyOn(
-  treeRanks,
-  'getTreeDefinitions'
-);
+const mockedGetTreeDefinitions = jest.spyOn(treeRanks, 'getTreeDefinitions');
 
 describe('ThresholdRank', () => {
   beforeEach(() => {
@@ -57,7 +54,9 @@ describe('ThresholdRank', () => {
 
     await waitFor(() => expect(screen.getAllByRole('option')).toHaveLength(3));
 
-    const labels = screen.getAllByRole('option').map((option) => option.textContent);
+    const labels = screen
+      .getAllByRole('option')
+      .map((option) => option.textContent);
     expect(labels).toEqual(['None', 'Active Rank A', 'Active Rank B']);
     expect(screen.queryByText('Inactive Rank')).not.toBeInTheDocument();
   });

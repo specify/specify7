@@ -30,10 +30,13 @@ import { tables } from '../DataModel/tables';
 import type { Collection } from '../DataModel/types';
 import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
 import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
+import {
+  getTreeDefinitions,
+  treeRanksPromise,
+} from '../InitialContext/treeRanks';
 import { AttachmentPicker } from '../Molecules/AttachmentPicker';
 import { AutoComplete } from '../Molecules/AutoComplete';
 import { ListEdit } from '../Toolbar/ListEdit';
-import { getTreeDefinitions, treeRanksPromise } from '../InitialContext/treeRanks';
 import type { PreferenceItem, PreferenceRendererProps } from './types';
 import { userPreferences } from './userPreferences';
 
@@ -426,10 +429,15 @@ export function ThresholdRank({
   }, [tableName]);
 
   return (
-    <select value={value ?? ''} onChange={e => onChange(Number(e.target.value))}>
+    <select
+      value={value ?? ''}
+      onChange={(e) => onChange(Number(e.target.value))}
+    >
       <option value="">None</option>
       {items.map(({ rankId, name }) => (
-        <option key={rankId} value={rankId}>{name}</option>
+        <option key={rankId} value={rankId}>
+          {name}
+        </option>
       ))}
     </select>
   );

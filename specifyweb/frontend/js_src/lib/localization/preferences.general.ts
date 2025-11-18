@@ -2114,7 +2114,8 @@ export const preferencesGeneralDictionary = {
   },
   rankThresholdDescription: {
     'en-us':
-      'Show the count of linked Collection Objects for all ranks below this one.',},
+      'Show the count of linked Collection Objects for all ranks below this one.',
+  },
 } as const;
 
 export const preferencesGeneralText = createDictionary(
