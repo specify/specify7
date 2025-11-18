@@ -69,6 +69,7 @@ export type Tables = {
   readonly Collector: Collector;
   readonly CommonNameTx: CommonNameTx;
   readonly CommonNameTxCitation: CommonNameTxCitation;
+  readonly Component: Component;
   readonly ConservDescription: ConservDescription;
   readonly ConservDescriptionAttachment: ConservDescriptionAttachment;
   readonly ConservEvent: ConservEvent;
@@ -1479,6 +1480,7 @@ export type CollectionObject = {
     readonly rightSideRels: RA<CollectionRelationship>;
     readonly treatmentEvents: RA<TreatmentEvent>;
     readonly voucherRelationships: RA<VoucherRelationship>;
+    readonly components: RA<Component>;
   };
   readonly toManyIndependent: { readonly projects: RA<Project> };
 };
@@ -1973,6 +1975,57 @@ export type CommonNameTxCitation = {
     readonly referenceWork: ReferenceWork;
   };
   readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
+export type Component = {
+  readonly tableName: 'Component';
+  readonly fields: {
+    readonly catalogNumber: string | null;
+    readonly verbatimName: string | null;
+    readonly role: string | null;
+    readonly proportion: number | null;
+    readonly uniqueIdentifier: string | null;
+    readonly text1: string | null;
+    readonly text2: string | null;
+    readonly text3: string | null;
+    readonly text4: string | null;
+    readonly text5: string | null;
+    readonly text6: string | null;
+    readonly yesNo1: boolean | null;
+    readonly yesNo2: boolean | null;
+    readonly yesNo3: boolean | null;
+    readonly yesNo4: boolean | null;
+    readonly yesNo5: boolean | null;
+    readonly yesNo6: boolean | null;
+    readonly integer1: number | null;
+    readonly integer2: number | null;
+    readonly integer3: number | null;
+    readonly integer4: number | null;
+    readonly integer5: number | null;
+    readonly integer6: number | null;
+    readonly number1: number | null;
+    readonly number2: number | null;
+    readonly number3: number | null;
+    readonly number4: number | null;
+    readonly number5: number | null;
+    readonly number6: number | null;
+    readonly version: number | null;
+    readonly timestampCreated: string;
+    readonly timestampModified: string | null;
+  };
+  readonly toOneDependent: {
+    readonly collectionObject: CollectionObject | null;
+  };
+  readonly toOneIndependent: {
+    readonly type: CollectionObjectType;
+    readonly name: Taxon | null;
+    readonly createdByAgent: Agent | null;
+    readonly modifiedByAgent: Agent | null;
+  };
+  readonly toManyDependent: {
+    readonly absoluteAges: RA<AbsoluteAge>;
+    readonly relativeAges: RA<RelativeAge>;
+  };
   readonly toManyIndependent: RR<never, never>;
 };
 export type ConservDescription = {
@@ -3369,6 +3422,11 @@ export type Gift = {
   };
   readonly toOneDependent: { readonly addressOfRecord: AddressOfRecord | null };
   readonly toOneIndependent: {
+    readonly agent1: Agent | null;
+    readonly agent2: Agent | null;
+    readonly agent3: Agent | null;
+    readonly agent4: Agent | null;
+    readonly agent5: Agent | null;
     readonly createdByAgent: Agent | null;
     readonly deaccession: Deaccession | null;
     readonly discipline: Discipline;
@@ -3762,6 +3820,11 @@ export type Loan = {
   };
   readonly toOneDependent: { readonly addressOfRecord: AddressOfRecord | null };
   readonly toOneIndependent: {
+    readonly agent1: Agent | null;
+    readonly agent2: Agent | null;
+    readonly agent3: Agent | null;
+    readonly agent4: Agent | null;
+    readonly agent5: Agent | null;
     readonly createdByAgent: Agent | null;
     readonly discipline: Discipline;
     readonly division: Division | null;
@@ -6615,6 +6678,7 @@ export type AbsoluteAge = {
     readonly collectionObject: CollectionObject;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
+    readonly component: Component;
   };
   readonly toManyDependent: {
     readonly absoluteAgeAttachments: RA<AbsoluteAgeAttachment>;
@@ -6655,6 +6719,7 @@ export type RelativeAge = {
     readonly collectionObject: CollectionObject;
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
+    readonly component: Component;
   };
   readonly toManyDependent: {
     readonly relativeAgeAttachments: RA<RelativeAgeAttachment>;

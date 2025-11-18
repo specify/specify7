@@ -164,7 +164,7 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
     'displayAuthor'
   );
 
-  const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
+  const baseUrl = `/trees/specify_tree/${tableName.toLowerCase()}/${
     treeDefinition.id
   }`;
 

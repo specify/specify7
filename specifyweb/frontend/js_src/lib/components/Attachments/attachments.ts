@@ -215,7 +215,7 @@ export const fetchOriginalUrl = async (
 
 export async function uploadFile(
   file: File,
-  handleProgress: (percentage: number | true) => void,
+  handleProgress?: (percentage: number | true) => void,
   uploadAttachmentSpec?: UploadAttachmentSpec,
   strict = true
 ): Promise<SpecifyResource<Attachment> | undefined> {
@@ -252,9 +252,11 @@ export async function uploadFile(
    */
 
   const xhr = new XMLHttpRequest();
-  xhr.upload?.addEventListener('progress', (event) =>
-    handleProgress(event.lengthComputable ? event.loaded / event.total : true)
-  );
+  if (handleProgress !== undefined) {
+    xhr.upload?.addEventListener('progress', (event) =>
+      handleProgress(event.lengthComputable ? event.loaded / event.total : true)
+    );
+  }
   xhr.open('POST', settings.write);
   xhr.send(formData);
   const DONE = 4;
@@ -319,20 +321,23 @@ export function downloadAttachment(
       const fileName = cleanAttachmentDownloadName(
         attachment.origFilename ?? attachment.attachmentLocation
       );
-      downloadFile(
-        fileName,
-        `/attachment_gw/proxy/${new URL(url).search}`,
-        true
-      );
+      // Cannot use downloadFile because of iframe restrictions
+      const element = document.createElement('a');
+      element.href = `/attachment_gw/proxy/${new URL(url).search}`;
+      element.download = fileName;
+      document.body.append(element);
+      element.click();
+      element.remove();
     }
   });
 }
 
 export async function downloadAllAttachments(
-  attachments: readonly SerializedResource<Attachment>[],
-  archiveName?: string
+  attachments: RA<SerializedResource<Attachment>>,
+  archiveName?: string,
+  recordSetId?: number
 ): Promise<void> {
-  if (attachments.length === 0) return;
+  if (attachments.length === 0 && recordSetId === undefined) return;
   if (attachments.length === 1) {
     downloadAttachment(attachments[0]);
     return;
@@ -353,6 +358,7 @@ export async function downloadAllAttachments(
     method: 'POST',
     body: keysToLowerCase({
       attachmentLocations,
+      recordSetId: recordSetId ?? undefined,
       origFilenames,
     }),
     headers: {

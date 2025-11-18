@@ -21,8 +21,8 @@ import {
   splitJoinedMappingPath,
   valueIsToManyIndex,
 } from '../WbPlanView/mappingHelpers';
-import type { QueryFieldFilter } from './FieldFilter';
-import { queryFieldFilters } from './FieldFilter';
+import type { QueryFieldFilter } from './FieldFilterSpec';
+import { queryFieldFilterSpecs } from './FieldFilterSpec';
 import { QueryFieldSpec } from './fieldSpec';
 import { currentUserValue } from './SpecifyUserAutoComplete';
 
@@ -107,7 +107,7 @@ export function parseQueryFields(
             sortType: sortTypes[field.sortType],
             filter: {
               type: defined(
-                Object.entries(queryFieldFilters).find(
+                Object.entries(queryFieldFilterSpecs).find(
                   ([_, { id }]) => id === field.operStart
                 ),
                 `Unknown SpQueryField.operStart value: ${field.operStart}`
@@ -328,7 +328,7 @@ export const unParseQueryFields = (
               formatName: fieldFormat,
               operStart: defined(
                 // Back-end treats "equal" with blank startValue as "any"
-                Object.entries(queryFieldFilters).find(
+                Object.entries(queryFieldFilterSpecs).find(
                   ([name]) => name === type
                 ),
                 `Unknown query field filter type: ${type}`

@@ -263,13 +263,7 @@
     "version",
     "timestampModified"
   ],
-  "determination": [
-    "guid",
-    "timestampCreated",
-    "version",
-    "isCurrent",
-    "timestampModified"
-  ],
+  "determination": ["guid", "timestampCreated", "version", "timestampModified"],
   "determinationcitation": ["timestampCreated", "version", "timestampModified"],
   "determiner": ["timestampCreated", "version", "timestampModified"],
   "discipline": ["timestampCreated", "version", "timestampModified"],

@@ -3,76 +3,7 @@
 from django.db import migrations, models
 
 from django.apps import apps as specify_apps
-import django.db.models.deletion
-from specifyweb.specify.migration_utils.update_schema_config import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
-import specifyweb.specify.models
-
-from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0032_FIELDS as SCHEMA_CONFIG_TABLE_FIELDS, MIGRATION_0032_UPDATE_FIELDS as SCHEMA_CONFIG_GIFTPREPARATION_TABLE_FIELDS
-
-def update_fields(apps):
-    Discipline = apps.get_model('specify', 'Discipline')
-
-    for discipline in Discipline.objects.all():
-        for table, fields in SCHEMA_CONFIG_TABLE_FIELDS.items(): 
-            for field in fields: 
-                update_table_field_schema_config_with_defaults(table, discipline.id, field, apps)
-
-def update_schema_config_field_desc(apps, schema_editor):
-    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
-    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
-    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
-
-    for table, fields in SCHEMA_CONFIG_GIFTPREPARATION_TABLE_FIELDS.items():
-        #i.e: Collection Object
-        containers = Splocalecontainer.objects.filter(
-            name=table.lower(),
-        )
-
-        for container in containers:
-            for field_name, new_name, new_desc in fields:
-                #i.e: COType
-                items = Splocalecontaineritem.objects.filter(
-                    container=container,
-                    name=field_name.lower()
-                )
-
-                for item in items:
-                    localized_items_desc = Splocaleitemstr.objects.filter(itemdesc_id=item.id).first()
-                    localized_items_name = Splocaleitemstr.objects.filter(itemname_id=item.id).first()
-
-                    if localized_items_desc is None or localized_items_name is None:
-                        continue
-
-                    localized_items_desc.text = new_desc
-                    localized_items_desc.save() 
-
-                    localized_items_name.text = new_name
-                    localized_items_name.save() 
-
-def revert_update_fields(apps):
-    for table, fields in SCHEMA_CONFIG_TABLE_FIELDS.items(): 
-        for field in fields: 
-            revert_table_field_schema_config(table, field, apps)
-
-def revert_update_schema_field(apps, schema_editor):
-    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
-    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
-
-    for table, fields in SCHEMA_CONFIG_GIFTPREPARATION_TABLE_FIELDS.items():
-        containers = Splocalecontainer.objects.filter(
-            name=table.lower(),
-        )
-        for container in containers:
-            for field_name in fields:
-                items = Splocalecontaineritem.objects.filter(
-                    container=container,
-                    name=field_name
-                )
-
-                for item in items:
-                    item.ishidden = False
-                    item.save()
-
+from specifyweb.specify.migration_utils import update_schema_config as usc
 
 class Migration(migrations.Migration):
 
@@ -80,13 +11,11 @@ class Migration(migrations.Migration):
         ('specify', '0031_add_default_for_selectseries'),
     ]
 
-    def consolidated_python_django_migration_operations(apps, schema_editor):
-        update_fields(apps)
-        update_schema_config_field_desc(apps, schema_editor)
+    def apply_migration(apps, schema_editor):
+        usc.add_quantities_gift(apps)
 
-    def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
-        revert_update_fields(apps)
-        revert_update_schema_field(apps, schema_editor)
+    def revert_migration(apps, schema_editor):
+        usc.revert_add_quantities_gift(apps)
 
     operations = [
         migrations.AddField(
@@ -99,5 +28,5 @@ class Migration(migrations.Migration):
             name='quantityreturned',
             field=models.IntegerField(blank=True, db_column='QuantityReturned', null=True),
         ),
-        migrations.RunPython(consolidated_python_django_migration_operations, revert_cosolidated_python_django_migration_operations, atomic=True),
+        migrations.RunPython(apply_migration, revert_migration, atomic=True),
     ]

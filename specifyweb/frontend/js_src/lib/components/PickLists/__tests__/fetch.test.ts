@@ -182,7 +182,7 @@ describe('fetchPickListItems', () => {
   });
 
   overrideAjax(
-    '/api/specify_rows/locality/?limit=0&domainfilter=true&filterchronostrat=false&distinct=true&fields=localityname',
+    '/table_rows/specify_rows/locality/?limit=0&domainfilter=true&filterchronostrat=false&distinct=true&fields=localityname',
     [['abc']]
   );
   test('entire column', async () => {

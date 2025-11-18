@@ -1,4 +1,4 @@
-from specifyweb.specify.autonumbering import get_tables_from_field_path
+from specifyweb.specify.utils.autonumbering import get_tables_from_field_path
 from specifyweb.specify.tests.test_api import ApiTests
 
 

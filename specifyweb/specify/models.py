@@ -2,9 +2,9 @@ from functools import partialmethod
 from django.db import models
 from django.db.models import Q, CheckConstraint
 from django.utils import timezone
-from specifyweb.businessrules.exceptions import AbortSave
-from specifyweb.specify.model_timestamp import save_auto_timestamp_field_with_override
-from specifyweb.specify import model_extras
+from specifyweb.backend.businessrules.exceptions import AbortSave
+from specifyweb.specify.models_utils.model_timestamp import save_auto_timestamp_field_with_override
+from specifyweb.specify.models_utils import model_extras
 from .datamodel import datamodel, Table
 import logging
 
@@ -1478,7 +1478,6 @@ class Collectionobject(models.Model):
     paleocontext = models.ForeignKey('PaleoContext', db_column='PaleoContextID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
     visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
     collectionobjecttype = models.ForeignKey('CollectionObjectType', db_column='CollectionObjectTypeID', related_name='collectionobjects', null=True, on_delete=models.SET_NULL)
-    componentParent = models.ForeignKey('CollectionObject', db_column='ComponentParentID', related_name='components', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'collectionobject'
@@ -2049,6 +2048,60 @@ class Commonnametx(models.Model):
     
     save = partialmethod(custom_save)
 
+class Component(models.Model): 
+    specify_model = datamodel.get_table_strict('component')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='componentid')
+
+    # Fields
+    catalognumber = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='CatalogNumber', db_index=False)
+    verbatimname = models.TextField(blank=True, null=True, unique=False, db_column='VerbatimName', db_index=False)
+    role = models.CharField(blank=False, max_length=50, null=True, unique=False, db_column='Role', db_index=False)
+    proportion= models.IntegerField(blank=True, null=True, unique=False, db_column='Proportion', db_index=False)
+    uniqueidentifier = models.CharField(blank=True, max_length=128, null=True, unique=False, db_column='UniqueIdentifier', db_index=False)
+    text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
+    text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
+    text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
+    text4 = models.TextField(blank=True, null=True, unique=False, db_column='Text4', db_index=False)
+    text5 = models.TextField(blank=True, null=True, unique=False, db_column='Text5', db_index=False)
+    text6 = models.TextField(blank=True, null=True, unique=False, db_column='Text6', db_index=False)
+    yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
+    yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
+    yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
+    yesno4 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo4', db_index=False)
+    yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
+    yesno6 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo6', db_index=False)
+    integer1 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer1', db_index=False)
+    integer2 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer2', db_index=False)
+    integer3 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer3', db_index=False)
+    integer4 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer4', db_index=False)
+    integer5 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer5', db_index=False)
+    integer6 = models.IntegerField(blank=True, null=True, unique=False, db_column='Integer6', db_index=False)
+    number1 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number1', db_index=False)
+    number2 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number2', db_index=False)
+    number3 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number3', db_index=False)
+    number4 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number4', db_index=False)
+    number5 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number5', db_index=False)
+    number6 = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='Number6', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='Version', db_index=False, default=0)
+    identifieddate = models.DateTimeField(blank=True, null=True, unique=False, db_column='IdentifiedDate', db_index=False)
+
+    # Relationships: Many-to-One
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='components', null=False, on_delete=models.CASCADE)
+    name = models.ForeignKey('Taxon', db_column='TaxonID', related_name='components', null=True, on_delete=protect_with_blockers)
+    identifiedby = models.ForeignKey('Agent', db_column='AgentID', related_name='components', null=True, on_delete=protect_with_blockers)
+    type = models.ForeignKey('CollectionObjectType', db_column='CollectionObjectTypeID', related_name='components', null=True, on_delete=models.SET_NULL)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'component'
+        ordering = ()
+
+    save = partialmethod(custom_save)
 class Commonnametxcitation(models.Model):
     specify_model = datamodel.get_table_strict('commonnametxcitation')
 
@@ -3825,6 +3878,11 @@ class Gift(models.Model):
 
     # Relationships: Many-to-One
     addressofrecord = models.ForeignKey('AddressOfRecord', db_column='AddressOfRecordID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent2 = models.ForeignKey('Agent', db_column='Agent2ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent3 = models.ForeignKey('Agent', db_column='Agent3ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent4 = models.ForeignKey('Agent', db_column='Agent4ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent5 = models.ForeignKey('Agent', db_column='Agent5ID', related_name='+', null=True, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     deaccession = models.ForeignKey('Deaccession', db_column='DeaccessionID', related_name='gifts', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
@@ -4322,6 +4380,11 @@ class Loan(models.Model):
 
     # Relationships: Many-to-One
     addressofrecord = models.ForeignKey('AddressOfRecord', db_column='AddressOfRecordID', related_name='loans', null=True, on_delete=protect_with_blockers)
+    agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent2 = models.ForeignKey('Agent', db_column='Agent2ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent3 = models.ForeignKey('Agent', db_column='Agent3ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent4 = models.ForeignKey('Agent', db_column='Agent4ID', related_name='+', null=True, on_delete=protect_with_blockers)
+    agent5 = models.ForeignKey('Agent', db_column='Agent5ID', related_name='+', null=True, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers)
     division = models.ForeignKey('Division', db_column='DivisionID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -6262,7 +6325,7 @@ class Spquery(models.Model):
     # Fields
     contextname = models.CharField(blank=False, max_length=64, null=False, unique=False, db_column='ContextName', db_index=False)
     contexttableid = models.SmallIntegerField(blank=False, null=False, unique=False, db_column='ContextTableId', db_index=False)
-    countonly = models.BooleanField(blank=True, null=True, unique=False, db_column='CountOnly', db_index=False)
+    countonly = models.BooleanField(blank=True, null=True, unique=False, db_column='CountOnly', db_index=False, default=False)
     formatauditrecids = models.BooleanField(blank=True, null=True, unique=False, db_column='FormatAuditRecIds', db_index=False)
     isfavorite = models.BooleanField(blank=True, null=True, unique=False, db_column='IsFavorite', db_index=False)
     name = models.CharField(blank=False, max_length=256, null=False, unique=False, db_column='Name', db_index=False)
@@ -7101,7 +7164,7 @@ class Taxontreedefitem(model_extras.Taxontreedefitem):
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('TaxonTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=models.CASCADE)
+    parent = models.ForeignKey('TaxonTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=models.DO_NOTHING)
     treedef = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='treedefitems', null=False, on_delete=models.CASCADE)
 
     class Meta:
@@ -7667,6 +7730,7 @@ class Absoluteage(models.Model):
     absoluteagecitation = models.ForeignKey(db_column='AbsoluteAgeCitationID', null=True, on_delete=protect_with_blockers, related_name='absoluteages', to='specify.absoluteagecitation')
     createdbyagent = models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')
     modifiedbyagent = models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')
+    component = models.ForeignKey('Component', db_column='ComponentID', related_name='absoluteages', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'absoluteage'
@@ -7712,6 +7776,7 @@ class Relativeage(models.Model):
     relativeagecitation = models.ForeignKey(db_column='RelativeAgeCitationID', null=True, on_delete=protect_with_blockers, related_name='relativeages', to='specify.relativeagecitation')
     createdbyagent = models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')
     modifiedbyagent = models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent')
+    component = models.ForeignKey('Component', db_column='ComponentID', related_name='relativeages', null=True, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'relativeage'

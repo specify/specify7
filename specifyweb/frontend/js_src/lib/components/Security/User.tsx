@@ -485,7 +485,7 @@ function UserView({
                  */
                 loading(
                   (hasPermission('/admin/user/agents', 'update')
-                    ? ajax(`/api/set_agents/${userResource.id}/`, {
+                    ? ajax(`/accounts/set_agents/${userResource.id}/`, {
                         method: 'POST',
                         headers: {},
                         body: filterArray(
@@ -546,10 +546,13 @@ function UserView({
                       canContinue === true
                         ? Promise.all([
                             typeof password === 'string' && password !== ''
-                              ? ping(`/api/set_password/${userResource.id}/`, {
-                                  method: 'POST',
-                                  body: formData({ password }),
-                                })
+                              ? ping(
+                                  `/accounts/set_password/${userResource.id}/`,
+                                  {
+                                    method: 'POST',
+                                    body: formData({ password }),
+                                  }
+                                )
                               : undefined,
                             ...Object.entries(userRoles ?? {})
                               .filter(

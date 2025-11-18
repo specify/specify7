@@ -11,7 +11,7 @@ export const batchEditText = createDictionary({
     'en-us': 'Batch Edit',
     'de-ch': 'Stapelbearbeitung',
     'es-es': 'Edición por lotes',
-    'fr-fr': 'Édition par lots',
+    'fr-fr': 'Modification par lots',
     'pt-br': 'Edição em lote',
     'ru-ru': 'Пакетное редактирование',
     'uk-ua': 'Пакетне редагування',
@@ -38,7 +38,7 @@ export const batchEditText = createDictionary({
     'en-us':
       'Field not supported for batch edit. Either remove the field, or make it hidden.',
     'de-ch':
-      'Das Feld wird für die Stapelbearbeitung nicht unterstützt. Entfernen Sie das Feld oder blenden Sie es aus.',
+      'Feld wird für die Stapelbearbeitung nicht unterstützt. Entfernen Sie das Feld oder blenden Sie es aus.',
     'es-es':
       'Campo no compatible con la edición por lotes. Elimínelo u ocúltelo.',
     'fr-fr':
@@ -115,7 +115,7 @@ export const batchEditText = createDictionary({
   createUpdateDataSetInstructions: {
     'en-us': 'Use the query builder to make a new batch edit dataset',
     'de-ch':
-      'Verwenden Sie den Abfrage-Generator, um einen neuen Datensatz für die Stapelbearbeitung zu erstellen',
+      'Verwenden Sie den Abfrage-Generator, um einen neuen Datensatz zur Stapelbearbeitung zu erstellen',
     'es-es':
       'Utilice el generador de consultas para crear un nuevo conjunto de datos de edición por lotes',
     'fr-fr':
@@ -130,7 +130,7 @@ export const batchEditText = createDictionary({
   showRollback: {
     'en-us': 'Show rollback button',
     'de-ch': 'Rollback-Schaltfläche anzeigen',
-    'es-es': 'Mostrar el botón de reversión',
+    'es-es': 'Mostrar botón para revertir',
     'fr-fr': 'Afficher le bouton de restauration',
     'pt-br': 'Mostrar botão de reversão',
     'ru-ru': 'Показать кнопку отката',
@@ -144,7 +144,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'Revertir en la edición por lotes es una función experimental. Esta preferencia ocultará el botón.',
     'fr-fr':
-      "La restauration dans l'édition par lots est une fonctionnalité expérimentale. Cette préférence masquera le bouton.",
+      'La restauration par lot est une fonctionnalité expérimentale. Cette préférence masquera le bouton.',
     'pt-br':
       'Reverter na Edição em Lote é um recurso experimental. Esta preferência ocultará o botão',
     'ru-ru':
@@ -266,9 +266,9 @@ export const batchEditText = createDictionary({
     'de-ch':
       'Das Commit ist aufgrund eines oder mehrerer Zellenwertfehler fehlgeschlagen.',
     'es-es':
-      'La confirmación falló debido a uno o más errores en el valor de la celda.',
+      'La confirmación falló debido a uno o más errores de valor de celda.',
     'fr-fr':
-      "La validation a échoué en raison d'une ou plusieurs erreurs de valeur de cellule.",
+      'La validation a échoué en raison d’une ou plusieurs erreurs de valeur de cellule.',
     'pt-br':
       'A confirmação falhou devido a um ou mais erros de valor de célula.',
     'ru-ru':
@@ -308,13 +308,13 @@ export const batchEditText = createDictionary({
     'de-ch': 'BE-Commit von „{dataSet:string}“',
     'es-es': 'Confirmación BE de "{dataSet:string}"',
     'fr-fr': 'Validation BE de « {dataSet:string} »',
-    'pt-br': 'Confirmação BE de "{dataSet:string}"',
+    'pt-br': 'SEJA commit de "{dataSet:string}"',
     'ru-ru': 'BE-коммит "{dataSet:string}"',
     'uk-ua': 'BE коміт "{dataSet:string}"',
   },
   deferForMatch: {
     'en-us': 'Use only visible fields for match',
-    'de-ch': 'Nur sichtbare Felder für die Übereinstimmung verwenden',
+    'de-ch': 'Nur sichtbare Felder für den Abgleich verwenden',
     'es-es': 'Utilice únicamente campos visibles para la coincidencia',
     'fr-fr': 'Utiliser uniquement les champs visibles pour la correspondance',
     'pt-br': 'Use apenas campos visíveis para correspondência',
@@ -329,7 +329,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'Si es verdadero, los campos invisibles de la base de datos no se usarán para la coincidencia. El valor predeterminado es {default:boolean}.',
     'fr-fr':
-      'Si cette option est définie sur « true », les champs invisibles de la base de données ne seront pas utilisés pour la correspondance. La valeur par défaut est {default:boolean}.',
+      'Si cette option est définie sur « vrai », les champs invisibles de la base de données ne seront pas utilisés pour la correspondance. La valeur par défaut est {default:boolean}.',
     'pt-br':
       'Se verdadeiro, os campos invisíveis do banco de dados não serão usados para correspondência. O valor padrão é {default:boolean}',
     'ru-ru':
@@ -339,12 +339,13 @@ export const batchEditText = createDictionary({
   },
   deferForNullCheck: {
     'en-us': 'Use only visible fields for empty record check',
-    'de-ch': 'Nur sichtbare Felder zur Prüfung leerer Datensätze verwenden',
+    'de-ch':
+      'Nur sichtbare Felder für die Prüfung auf leere Datensätze verwenden',
     'es-es':
-      'Utilice únicamente campos visibles para la verificación de registros vacíos',
+      'Utilice sólo campos visibles para la verificación de registros vacíos',
     'fr-fr':
       'Utiliser uniquement les champs visibles pour la vérification des enregistrements vides',
-    'pt-br': 'Use apenas campos visíveis para verificação de registros vazios',
+    'pt-br': 'Use somente campos visíveis para verificação de registros vazios',
     'ru-ru': 'Использовать только видимые поля для проверки пустых записей',
     'uk-ua': 'Використовуйте лише видимі поля для перевірки порожніх записів',
   },
@@ -352,7 +353,7 @@ export const batchEditText = createDictionary({
     'en-us':
       'If true, invisible database fields will not be used for determining whether the record is empty or not. Default value is {default: boolean}',
     'de-ch':
-      'Wenn „true“, werden unsichtbare Datenbankfelder nicht zur Bestimmung verwendet, ob der Datensatz leer ist oder nicht. Der Standardwert ist {default: boolean}',
+      'Wenn diese Option aktiviert ist, werden unsichtbare Datenbankfelder nicht zur Bestimmung verwendet, ob der Datensatz leer ist oder nicht. Der Standardwert ist {default: boolean}',
     'es-es':
       'Si es verdadero, los campos invisibles de la base de datos no se usarán para determinar si el registro está vacío. El valor predeterminado es {default: boolean}.',
     'fr-fr':
@@ -374,7 +375,7 @@ export const batchEditText = createDictionary({
     'fr-fr':
       "L'édition par lots est désactivée pour les tables système et les tables de hiérarchie de portée",
     'pt-br':
-      'A edição em lote está desabilitada para tabelas de sistema e tabelas de hierarquia de escopo',
+      'A edição em lote está desabilitada para tabelas do sistema e tabelas de hierarquia de escopo',
     'ru-ru':
       'Пакетное редактирование отключено для системных таблиц и таблиц иерархии области действия.',
     'uk-ua':
@@ -384,9 +385,9 @@ export const batchEditText = createDictionary({
     'en-us':
       '(Batch Edit datasets cannot be edited after rollback - Read Only)',
     'de-ch':
-      '(Datensätze der Stapelbearbeitung können nach dem Rollback nicht bearbeitet werden – schreibgeschützt)',
+      '(Datensätze mit Stapelbearbeitung können nach dem Rollback nicht bearbeitet werden – schreibgeschützt)',
     'es-es':
-      '(Los conjuntos de datos de edición por lotes no se pueden editar después de la reversión: solo lectura)',
+      '(Los conjuntos de datos de edición por lotes no se pueden editar después de una reversión: solo lectura)',
     'fr-fr':
       "(Les ensembles de données d'édition par lots ne peuvent pas être modifiés après la restauration - Lecture seule)",
     'pt-br':
@@ -409,13 +410,13 @@ export const batchEditText = createDictionary({
     'en-us':
       'Allows batch editing relationships of the base table. Rollback is disabled when relationships are enabled',
     'de-ch':
-      'Ermöglicht die Stapelbearbeitung von Beziehungen der Basistabelle. Rollback ist deaktiviert, wenn Beziehungen aktiviert sind.',
+      'Ermöglicht die Stapelbearbeitung von Beziehungen der Basistabelle. Rollback ist deaktiviert, wenn Beziehungen aktiviert sind',
     'es-es':
       'Permite la edición por lotes de relaciones de la tabla base. La reversión está deshabilitada cuando las relaciones están habilitadas.',
     'fr-fr':
       'Permet la modification par lots des relations de la table de base. La restauration est désactivée lorsque les relations sont activées.',
     'pt-br':
-      'Permite a edição em lote de relacionamentos da tabela base. O rollback é desabilitado quando os relacionamentos são habilitados.',
+      'Permite a edição em lote de relacionamentos da tabela base. A reversão é desabilitada quando os relacionamentos são habilitados.',
     'ru-ru':
       'Позволяет пакетно редактировать связи базовой таблицы. Откат отключается при включении связей.',
     'uk-ua':

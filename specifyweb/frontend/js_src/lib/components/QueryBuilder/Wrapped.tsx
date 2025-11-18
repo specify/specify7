@@ -588,19 +588,20 @@ function Wrapped({
                     ? runQuery('regular')
                     : undefined
                 }
-                onToggleDistinct={(): void =>
+                onToggleDistinct={(): void => {
                   setQuery({
                     ...query,
                     selectDistinct: !(query.selectDistinct ?? false),
-                  })
-                }
+                  });
+                  setSaveRequired(true);
+                }}
                 onToggleHidden={setShowHiddenFields}
-                onToggleSeries={(): void =>
+                onToggleSeries={(): void => {
                   setQuery({
                     ...query,
                     smushed: !(query.smushed ?? false),
-                  })
-                }
+                  });
+                }}
               />
             </div>
             {hasPermission('/querybuilder/query', 'execute') && (

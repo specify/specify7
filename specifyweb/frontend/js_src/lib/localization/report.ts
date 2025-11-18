@@ -97,7 +97,7 @@ export const reportsText = createDictionary({
     'fr-fr': 'Paramètres du rapport',
     'uk-ua': 'Параметри звіту',
     'de-ch': 'Parameter des Berichts',
-    'pt-br': 'Parâmetros do Relatório',
+    'pt-br': 'Parâmetros do relatório',
   },
   runReport: {
     'en-us': 'Run Report',
@@ -146,7 +146,7 @@ export const reportsText = createDictionary({
       'Не вдалося знайти запис таблиці SpReport для цього ресурсу програми',
     'de-ch': 'Es kann kein SpReport für diese App-Ressource gefunden werden',
     'pt-br':
-      'Não é possível encontrar um registro SpReport para este recurso de aplicativo',
+      'Não foi possível encontrar um registro SpReport para este recurso de aplicativo',
   },
   generateLabel: {
     'en-us': 'Generate label',
