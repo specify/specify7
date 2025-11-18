@@ -103,18 +103,12 @@ export function Tree<
     'statsThreshold'
   );
 
-  const [rankThreshold] = userPreferences.use(
-    'treeEditor',
-    treeToPref[tableName],
-    'rankThreshold'
-  );
-
   const getStats = React.useCallback(
     async (nodeId: number | 'null', rankId: number): Promise<Stats> =>
-      rankId >= rankThreshold || rankId >= statsThreshold
+      rankId >= statsThreshold
         ? fetchStats(`${baseUrl}/${nodeId}/stats/`)
         : Promise.resolve({}),
-    [baseUrl, rankThreshold, statsThreshold]
+    [baseUrl, statsThreshold]
   );
 
   const treeDefinition = treeDefinitionItems[0].treeDef;
