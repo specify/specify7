@@ -20,6 +20,7 @@ import { tables } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { SaveButton } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
+import { userPreferences } from '../Preferences/userPreferences';
 import { AttachmentViewer } from './Viewer';
 
 export function AttachmentDialog({
@@ -48,7 +49,20 @@ export function AttachmentDialog({
 
   const isModified = useIsModified(resource);
 
-  const [showMeta, _, __, toggleShowMeta] = useBooleanState(true);
+  const [collapseFormByDefault] = userPreferences.use(
+    'attachments',
+    'behavior',
+    'collapseFormByDefault'
+  );
+  const [controlsVisiblePreference] = userPreferences.use(
+    'attachments',
+    'behavior',
+    'showControls'
+  );
+  const areControlsVisible = controlsVisiblePreference;
+  const preferCollapsed = collapseFormByDefault && areControlsVisible;
+
+  const [showMeta, , , toggleShowMeta] = useBooleanState(!preferCollapsed);
 
   return (
     <Dialog
@@ -104,6 +118,7 @@ export function AttachmentDialog({
             attachment={resource}
             related={related}
             showMeta={showMeta}
+            onToggleSidebar={toggleShowMeta}
             onViewRecord={handleViewRecord}
           />
         </Form>
