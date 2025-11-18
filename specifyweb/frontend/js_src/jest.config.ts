@@ -115,6 +115,7 @@ const config: Config.InitialOptions = {
   moduleNameMapper: {
     '\\.(jpg|jpeg|png|webp|svg|ttf|webm)$':
       '<rootDir>/lib/tests/__mocks__/fileMock.ts',
+      '^react-dom/server$': 'react-dom/server.node',
     '\\.(css)$': '<rootDir>/lib/tests/__mocks__/styleFileMock.ts',
   },
 

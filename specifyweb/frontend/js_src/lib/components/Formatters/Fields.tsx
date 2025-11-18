@@ -19,7 +19,7 @@ import type {
   CustomSelectElementPropsOpen,
 } from '../WbPlanView/CustomSelectElement';
 import { CustomSelectElement } from '../WbPlanView/CustomSelectElement';
-import type { HtmlGeneratorFieldData } from '../WbPlanView/LineComponents';
+import type { MapperComponentData } from '../WbPlanView/LineComponents';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import {
   FormattersPickList,
@@ -53,7 +53,7 @@ export function Fields({
 
   return (
     <>
-      {fields.length === 0 ? null : (
+      {fields.length === 0 ? undefined : (
         <table
           /*
            * REFACTOR: replace min-w-[35rem] with a container query that replaces
@@ -105,7 +105,7 @@ export function Fields({
           </tbody>
         </table>
       )}
-      {isReadOnly ? null : (
+      {isReadOnly ? undefined : (
         <div className="flex gap-2 pt-2">
           <Button.Secondary
             onClick={(): void =>
@@ -209,7 +209,7 @@ function Field({
         </td>
       )}
       <td>
-        {isReadOnly ? null : (
+        {isReadOnly ? undefined : (
           <>
             <Button.Small
               aria-label={commonText.remove()}
@@ -368,7 +368,7 @@ function fieldOptionsMenu({
   readonly isReadOnly: boolean;
   readonly columnOptions: FormatterFieldOptions;
   readonly onToggleTrimZeros: (trimZeros: boolean) => void;
-}): IR<HtmlGeneratorFieldData> {
+}): IR<MapperComponentData> {
   return {
     trimZeros: {
       optionLabel: (
