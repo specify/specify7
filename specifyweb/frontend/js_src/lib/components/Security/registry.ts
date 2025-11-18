@@ -1,6 +1,7 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
+import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
@@ -65,6 +66,13 @@ export const isUncommonPermissionTable = ({
 
 /** Build a registry of all permissions, their labels and possible actions */
 const buildRegistry = f.store((): IR<Registry> => {
+  const frontEndLocalizedOverrides: Record<string, RA<LocalizedString>> = {
+    '/preferences/collection': [
+      preferencesText.preferences(),
+      preferencesText.collectionPreferences(),
+    ],
+  };
+
   const rules: RA<{
     readonly resource: string;
     readonly localized: RA<LocalizedString>;
@@ -95,7 +103,9 @@ const buildRegistry = f.store((): IR<Registry> => {
     })),
     ...Object.entries(frontEndPermissions).map(([resource, actions]) => ({
       resource,
-      localized: resourceNameToParts(resource).map(lowerToHuman),
+      localized:
+        frontEndLocalizedOverrides[resource] ??
+        resourceNameToParts(resource).map(lowerToHuman),
       actions,
       groupName: localized(''),
     })),

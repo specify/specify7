@@ -733,11 +733,18 @@ export const attachmentsText = createDictionary({
   },
   attachmentDelition: {
     'en-us': 'Attachment deletion',
-    'de-ch': 'Anhang löschen',
+    'de-ch': 'Löschen von Anhängen',
     'es-es': 'Eliminación de archivos adjuntos',
-    'fr-fr': 'Suppression de la pièce jointe',
+    'fr-fr': 'Suppression des pièces jointes',
     'pt-br': 'Exclusão de anexos',
     'ru-ru': 'Удаление вложения',
     'uk-ua': 'Видалення вкладень',
+  },
+  publicDefault: {
+    'en-us': 'Make Attachments Public by Default',
+  },
+  publicDefaultDescription: {
+    'en-us':
+      'This controls whether or not new attachments added to this collection are flagged as "Public" by default. Public attachments will automatically be visible on a Specify Web Portal. This setting can be overridden on a per-attachment basis and does not affect existing attachments.',
   },
 } as const);

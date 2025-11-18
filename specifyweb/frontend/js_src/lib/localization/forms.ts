@@ -836,7 +836,7 @@ export const formsText = createDictionary({
     'es-es': 'Llevar adelante',
     'fr-fr': 'Reporter',
     'uk-ua': 'Перенести далі',
-    'de-ch': 'Übertrag',
+    'de-ch': 'Weitertragen',
     'pt-br': 'Levar adiante',
   },
   carryForwardEnabled: {
