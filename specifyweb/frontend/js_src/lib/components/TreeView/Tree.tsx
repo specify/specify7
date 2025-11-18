@@ -114,7 +114,7 @@ export function Tree<
       rankId >= rankThreshold || rankId >= statsThreshold
         ? fetchStats(`${baseUrl}/${nodeId}/stats/`)
         : Promise.resolve({}),
-    [baseUrl,rankThreshold, statsThreshold]
+    [baseUrl, rankThreshold, statsThreshold]
   );
 
   const treeDefinition = treeDefinitionItems[0].treeDef;
