@@ -2109,6 +2109,12 @@ export const preferencesGeneralDictionary = {
     'uk-ua':
       'Увімкнути успадкування батьківського каталожного номера його порожнім дочірнім елементам.',
   },
+  rankThreshold: {
+    'en-us': 'Show object count below',
+  },
+  rankThresholdDescription: {
+    'en-us':
+      'Show the count of linked Collection Objects for all ranks below this one.',},
 } as const;
 
 export const preferencesGeneralText = createDictionary(
