@@ -173,13 +173,13 @@ function Field({
     string | null
   >(null);
 
-  const normalizeCatValue = (val: string | null | undefined): string | null =>
+  const normalizeCatValue = (value_: string | null | undefined): string | null =>
     isCO &&
     isCatNumberField &&
     displayPrimaryCatNumberPref &&
-    (val === '' || val === undefined)
+    (value_ === '' || value_ === undefined)
       ? null
-      : val ?? null;
+      : value_ ?? null;
 
   React.useEffect(() => {
     if (resource && displayPrimaryCatNumberPlaceHolder) {
