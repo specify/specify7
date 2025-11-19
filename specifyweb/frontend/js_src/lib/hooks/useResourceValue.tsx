@@ -12,9 +12,9 @@ import type { Input } from '../components/Forms/validationHelpers';
 import type { Parser } from '../utils/parser/definitions';
 import type { RA } from '../utils/types';
 import { useParser } from './resource';
+import { useParserDefaultValue } from './useParserDefaultValue';
 import { useFieldParser } from './useFieldParser';
 import { useFieldValidation } from './useFieldValidation';
-import { useParserDefaultValue } from './useParserDefaultValue';
 
 /**
  * A hook to integrate an Input with a field on a Backbone resource
@@ -46,13 +46,7 @@ export function useResourceValue<
   field: LiteralField | Relationship | undefined,
   // Default parser is usually coming from the form definition
   defaultParser: Parser | undefined,
-<<<<<<< HEAD
-  trimOrOptions?:
-    | boolean
-    | { readonly trim?: boolean; readonly suppressDefaultValue?: boolean }
-=======
   trim?: boolean
->>>>>>> e4326dfce0 (removed additional logic)
 ): {
   readonly value: T | undefined;
   readonly updateValue: (newValue: T, reportErrors?: boolean) => void;
@@ -62,21 +56,9 @@ export function useResourceValue<
   readonly setValidation: (message: RA<string> | string) => void;
   readonly parser: Parser;
 } {
-  const { trim, suppressDefaultValue } =
-    typeof trimOrOptions === 'object'
-      ? {
-          trim: trimOrOptions.trim,
-          suppressDefaultValue: trimOrOptions.suppressDefaultValue ?? false,
-        }
-      : { trim: trimOrOptions, suppressDefaultValue: false };
-
   const parser = useParser(field, resource, defaultParser);
 
-<<<<<<< HEAD
-  useParserDefaultValue(resource, field, parser, suppressDefaultValue);
-=======
   useParserDefaultValue(resource, field, parser);
->>>>>>> e4326dfce0 (removed additional logic)
 
   const { inputRef, validationRef, setValidation } = useFieldValidation<INPUT>(
     resource,

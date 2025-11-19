@@ -103,91 +103,21 @@ function Field({
   readonly field: LiteralField | undefined;
   readonly parser?: Parser;
 }): JSX.Element {
-<<<<<<< HEAD
-  const isInSearchDialog = React.useContext(SearchDialogContext);
-  const isReadOnly =
-    React.useContext(ReadOnlyContext) ||
-    (field?.isReadOnly === true && !isInSearchDialog);
-
-  const isNew = resource?.isNew();
-  const isCO = resource?.specifyTable.name === 'CollectionObject';
-  const isComponent = resource?.specifyTable.name === 'Component';
-
-  const isPartOfCOG = isCO
-    ? resource?.get('cojo') !== null && resource?.get('cojo') !== undefined
-    : false;
-
-  const hasCOParent = isComponent
-    ? resource.get('collectionObject') !== null &&
-      resource.get('collectionObject') !== undefined
-    : false;
-
-  const isCatNumberField = field?.name === 'catalogNumber';
-
-  // Check if collection pref wants to inherit primary cat num for empty CO cat num sibilings inside of a COG
-  const [displayPrimaryCatNumberPref] = collectionPreferences.use(
-    'catalogNumberInheritance',
-    'behavior',
-    'inheritance'
-  );
-
-  // Check if collection pref wants to inherit parent cat num for empty CO cat num children
-  const [displayParentCatNumberPref] = collectionPreferences.use(
-    'catalogNumberParentInheritance',
-    'behavior',
-    'inheritance'
-  );
-
-=======
->>>>>>> e4326dfce0 (removed additional logic)
   const { value, updateValue, validationRef, parser } = useResourceValue(
     resource,
     field,
     defaultParser
   );
 
-<<<<<<< HEAD
-  const displayPrimaryCatNumberPlaceHolder =
-    isNew === false &&
-    isCO &&
-    isPartOfCOG &&
-    isCatNumberField &&
-    displayPrimaryCatNumberPref &&
-    (value === null || value === '');
-
-  const displayParentCatNumberPlaceHolder =
-    isNew === false &&
-    isComponent &&
-    hasCOParent &&
-    isCatNumberField &&
-    displayParentCatNumberPref;
-
-=======
->>>>>>> e4326dfce0 (removed additional logic)
   /*
    * REFACTOR: consider moving this into useResoruceValue
    *    (it will be added to parser)
    */
-  const validationAttributes = getValidationAttributes(parser);
-  const rightAlignClassName = useRightAlignClassName(parser.type, isReadOnly);
+  const isInSearchDialog = React.useContext(SearchDialogContext);
+  const isReadOnly =
+    React.useContext(ReadOnlyContext) ||
+    (field?.isReadOnly === true && !isInSearchDialog);
 
-<<<<<<< HEAD
-  const [primaryCatalogNumber, setPrimaryCatalogNumber] = React.useState<
-    string | null
-  >(null);
-
-  const [parentCatalogNumber, setParentCatalogNumber] = React.useState<
-    string | null
-  >(null);
-
-  const normalizeCatValue = (value_: string | null | undefined): string | null =>
-    isCO &&
-    isCatNumberField &&
-    displayPrimaryCatNumberPref &&
-    (value_ === '' || value_ === undefined)
-      ? null
-      : value_ ?? null;
-=======
   const validationAttributes = getValidationAttributes(parser);
   const rightAlignClassName = useRightAlignClassName(parser.type, isReadOnly);
 
@@ -250,7 +180,6 @@ function Field({
     (val === '' || val === undefined)
       ? null
       : val ?? null;
->>>>>>> e4326dfce0 (removed additional logic)
 
   React.useEffect(() => {
     if (resource && displayPrimaryCatNumberPlaceHolder) {

@@ -21,7 +21,7 @@ def catalog_number_for_sibling(request: http.HttpRequest):
     if object_id is None:
         return http.JsonResponse({'error': "'id' field is required."}, status=400)
 
-    if provided_catalog_number not in (None, ''):
+    if provided_catalog_number is not None:
         return http.JsonResponse(None, safe=False)
 
     try:
@@ -34,13 +34,6 @@ def catalog_number_for_sibling(request: http.HttpRequest):
             return http.JsonResponse(None, safe=False)
 
         parent_cog_id = requesting_cojo['parentcog_id']
-
-        parent_cog = models.Collectionobjectgroup.objects.select_related(
-            'cogtype'
-        ).filter(id=parent_cog_id).first()
-
-        if parent_cog is None or parent_cog.cogtype is None or parent_cog.cogtype.type != 'Consolidated':
-            return http.JsonResponse(None, safe=False)
 
         primary_cojo = models.Collectionobjectgroupjoin.objects.filter(
             parentcog_id=parent_cog_id,

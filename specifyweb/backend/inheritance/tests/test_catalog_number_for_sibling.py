@@ -59,9 +59,9 @@ class TestCatalogNumberFromSibling(TestCogInteractions):
 
     def test_self_is_primary(self):
         # In this case, the provided CO is itself primary.
-        self._link_co_cog(self.collectionobjects[0], self.test_cog_consolidated, isprimary=True)
-        self._link_co_cog(self.collectionobjects[1], self.test_cog_consolidated, isprimary=False)
-        self._link_co_cog(self.collectionobjects[2], self.test_cog_consolidated, isprimary=False)
+        self._link_co_cog(self.collectionobjects[0], self.test_cog_discrete, isprimary=True)
+        self._link_co_cog(self.collectionobjects[1], self.test_cog_discrete, isprimary=False)
+        self._link_co_cog(self.collectionobjects[2], self.test_cog_discrete, isprimary=False)
 
         co = self.collectionobjects[0]
         response = self.c.post(
@@ -75,9 +75,9 @@ class TestCatalogNumberFromSibling(TestCogInteractions):
 
     def test_other_is_primary(self):
 
-        self._link_co_cog(self.collectionobjects[0], self.test_cog_consolidated, isprimary=True)
-        self._link_co_cog(self.collectionobjects[1], self.test_cog_consolidated, isprimary=False)
-        self._link_co_cog(self.collectionobjects[2], self.test_cog_consolidated, isprimary=False)
+        self._link_co_cog(self.collectionobjects[0], self.test_cog_discrete, isprimary=True)
+        self._link_co_cog(self.collectionobjects[1], self.test_cog_discrete, isprimary=False)
+        self._link_co_cog(self.collectionobjects[2], self.test_cog_discrete, isprimary=False)
 
         for co in self.collectionobjects[1:3]:
             response = self.c.post(
@@ -91,9 +91,9 @@ class TestCatalogNumberFromSibling(TestCogInteractions):
 
     def test_none_is_primary(self):
         # Not sure if this is ever possible, but code handles it.
-        self._link_co_cog(self.collectionobjects[0], self.test_cog_consolidated, isprimary=False)
-        self._link_co_cog(self.collectionobjects[1], self.test_cog_consolidated, isprimary=False)
-        self._link_co_cog(self.collectionobjects[2], self.test_cog_consolidated, isprimary=False)
+        self._link_co_cog(self.collectionobjects[0], self.test_cog_discrete, isprimary=False)
+        self._link_co_cog(self.collectionobjects[1], self.test_cog_discrete, isprimary=False)
+        self._link_co_cog(self.collectionobjects[2], self.test_cog_discrete, isprimary=False)
 
         for co in self.collectionobjects[1:3]:
             response = self.c.post(
@@ -104,16 +104,3 @@ class TestCatalogNumberFromSibling(TestCogInteractions):
 
             self._assertStatusCodeEqual(response, 200)
             self.assertEqual(json.loads(response.content.decode()), None)
-
-    def test_discrete_type_returns_none(self):
-        self._link_co_cog(self.collectionobjects[0], self.test_cog_discrete, isprimary=True)
-        self._link_co_cog(self.collectionobjects[1], self.test_cog_discrete, isprimary=False)
-
-        response = self.c.post(
-            "/inheritance/catalog_number_for_sibling/",
-            json.dumps(dict(id=self.collectionobjects[1].id)),
-            content_type="application/json"
-        )
-
-        self._assertStatusCodeEqual(response, 200)
-        self.assertEqual(json.loads(response.content.decode()), None)
