@@ -20,6 +20,7 @@ import { fetchOriginalUrl } from '../Attachments/attachments';
 import { LeafletImageViewer } from '../Attachments/LeafletImageViewer';
 import { AttachmentPreview } from '../Attachments/Preview';
 import { AttachmentViewer } from '../Attachments/Viewer';
+import { useAttachmentThumbnailPreference } from '../Attachments/utils';
 import { toResource } from '../DataModel/helpers';
 import type {
   AnySchema,
@@ -74,6 +75,7 @@ export function WbAttachmentsPreview({
     useBooleanState();
 
   const [useWindow, setUseWindow] = React.useState<boolean>(false);
+  const thumbnailSize = useAttachmentThumbnailPreference();
 
   const handleSelection = (row: number | undefined): void => {
     if (!hot) return;
@@ -129,6 +131,7 @@ export function WbAttachmentsPreview({
                           handleShowAttachment();
                           setSelectedAttachment(cell.attachment);
                         }}
+                        thumbnailSize={thumbnailSize}
                       />
                     ) : (
                       <Skeleton.Square key={index} />

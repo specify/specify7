@@ -28,7 +28,19 @@ import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { OrderPicker } from '../Preferences/Renderers';
 import { attachmentSettingsPromise } from './attachments';
 import { AttachmentGallery } from './Gallery';
-import { allTablesWithAttachments, tablesWithAttachments } from './utils';
+import {
+  allTablesWithAttachments,
+  tablesWithAttachments,
+  useAttachmentThumbnailPreference,
+} from './utils';
+
+const fallbackRootFontSize = 16;
+const getRootFontSize = (): number =>
+  typeof window === 'undefined'
+    ? fallbackRootFontSize
+    : Number.parseFloat(
+        window.getComputedStyle(document.documentElement).fontSize
+      ) || fallbackRootFontSize;
 
 export const defaultAttachmentScale = 10;
 const minScale = 4;
@@ -80,6 +92,12 @@ function Attachments({
     'filter'
   );
 
+  const attachmentThumbnailSize = useAttachmentThumbnailPreference();
+  const preferredScale = React.useMemo(
+    () => Math.round(attachmentThumbnailSize / getRootFontSize()),
+    [attachmentThumbnailSize]
+  );
+
   const [collectionSizes] = useAsyncState(
     React.useCallback(
       async () =>
@@ -120,10 +138,10 @@ function Attachments({
     false
   );
 
-  const [scale = defaultAttachmentScale, setScale] = useCachedState(
-    'attachments',
-    'scale'
-  );
+  const [scale, setScale] = useCachedState('attachments', 'scale');
+  const safeScale = Number.isFinite(preferredScale)
+    ? Math.min(maxScale, Math.max(minScale, scale ?? preferredScale))
+    : scale ?? defaultAttachmentScale;
 
   const [collection, setCollection, fetchMore] = useSerializedCollection(
     React.useCallback(
@@ -226,7 +244,7 @@ function Attachments({
                 max={maxScale}
                 min={minScale}
                 type="range"
-                value={scale}
+                value={safeScale}
                 onValueChange={(value): void =>
                   setScale(Number.parseInt(value))
                 }
@@ -247,7 +265,7 @@ function Attachments({
           collection.totalCount === collection.records.length
         }
         key={`${order}_${JSON.stringify(filter)}`}
-        scale={scale}
+        scale={safeScale}
         onChange={(attachment, index): void =>
           collection === undefined
             ? undefined

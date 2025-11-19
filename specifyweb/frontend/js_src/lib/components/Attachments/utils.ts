@@ -1,9 +1,14 @@
+import React from 'react';
+
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables, getTable } from '../DataModel/tables';
 import { hasTablePermission } from '../Permissions/helpers';
+import { softFail } from '../Errors/Crash';
+import { ensureGlobalPreferencesLoaded } from '../Preferences/globalPreferencesLoader';
+import { globalPreferences } from '../Preferences/globalPreferences';
 
 export const attachmentRelatedTables = f.store(() =>
   Object.keys(genericTables).filter((tableName) =>
@@ -53,4 +58,17 @@ export const getAttachmentRelationship = (
         );
       })
     : commonRelationship;
+};
+
+export const useAttachmentThumbnailPreference = (): number => {
+  React.useEffect(() => {
+    ensureGlobalPreferencesLoaded().catch(softFail);
+  }, []);
+
+  const [size] = globalPreferences.use(
+    'attachments',
+    'attachments',
+    'attachmentThumbnailSize'
+  );
+  return size;
 };

@@ -9,12 +9,17 @@ import { fetchThumbnail } from './attachments';
 export function AttachmentPreview({
   attachment,
   onOpen: handleOpen,
+  thumbnailSize,
 }: {
   readonly attachment: SerializedResource<Attachment>;
   readonly onOpen: () => void;
+  readonly thumbnailSize: number;
 }): JSX.Element {
   const [thumbnail] = useAsyncState(
-    React.useCallback(async () => fetchThumbnail(attachment), [attachment]),
+    React.useCallback(
+      async () => fetchThumbnail(attachment, thumbnailSize),
+      [attachment, thumbnailSize]
+    ),
     false
   );
 

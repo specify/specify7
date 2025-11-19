@@ -12,13 +12,19 @@ import type { Attachment } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ResourceView } from '../Forms/ResourceView';
-import { getPref } from '../InitialContext/remotePrefs';
 import { AttachmentGallerySkeleton } from '../SkeletonLoaders/AttachmentGallery';
 import { AttachmentCell } from './Cell';
 import { AttachmentDialog } from './Dialog';
 
 const defaultPreFetchDistance = 200;
 const attachmentSkeletonRows = 2;
+const fallbackRootFontSize = 16;
+const getRootFontSize = (): number =>
+  typeof window === 'undefined'
+    ? fallbackRootFontSize
+    : Number.parseFloat(
+        window.getComputedStyle(document.documentElement).fontSize
+      ) || fallbackRootFontSize;
 
 export function AttachmentGallery({
   attachments,
@@ -44,22 +50,36 @@ export function AttachmentGallery({
     defaultPreFetchDistance
   );
   const [columns, setColumns] = React.useState<number>(3);
-  const attachmentHeight = getPref('attachment.preview_size');
+  const [rootFontSize, setRootFontSize] = React.useState<number>(
+    getRootFontSize
+  );
+  const thumbnailSize = Math.max(1, Math.round(scale * rootFontSize));
   React.useEffect(() => {
     const calculateColumns = (ref: React.RefObject<HTMLElement | null>) => {
       if (ref.current) {
-        const rootFontSize = Number.parseFloat(
-          window.getComputedStyle(document.documentElement).fontSize
-        ); // Equivalent to 1rem
-        const gap = rootFontSize;
-        const columnWidth = scale * rootFontSize + gap;
+        const currentRootFontSize = getRootFontSize(); // Equivalent to 1rem
+        const gap = currentRootFontSize;
+        const columnWidth = Math.max(
+          1,
+          scale * currentRootFontSize + gap
+        );
+        const currentThumbnailSize = Math.max(
+          1,
+          Math.round(scale * currentRootFontSize)
+        );
+        setRootFontSize(currentRootFontSize);
         setPreFetchDistance(
           Math.max(
             defaultPreFetchDistance,
-            (attachmentHeight + gap) * attachmentSkeletonRows + gap
+            (currentThumbnailSize + gap) * attachmentSkeletonRows + gap
           )
         );
-        setColumns(Math.floor((ref.current.clientWidth - gap) / columnWidth));
+        setColumns(
+          Math.max(
+            1,
+            Math.floor((ref.current.clientWidth - gap) / columnWidth)
+          )
+        );
       }
     };
     calculateColumns(containerRef);
@@ -74,7 +94,7 @@ export function AttachmentGallery({
         containerRef.current.scrollHeight - containerRef.current.clientHeight
         ? handleFetchMore?.().catch(raise)
         : undefined,
-    [handleFetchMore]
+    [handleFetchMore, preFetchDistance]
   );
 
   const fillPage = handleFetchMore === undefined ? undefined : rawFillPage;
@@ -119,6 +139,7 @@ export function AttachmentGallery({
           <AttachmentCell
             attachment={attachment}
             key={index}
+            thumbnailSize={thumbnailSize}
             related={[
               related[index],
               (item): void => setRelated(replaceItem(related, index, item)),

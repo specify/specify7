@@ -164,3 +164,14 @@ export const loadGlobalPreferences = async (): Promise<void> => {
     >
   );
 };
+
+let loadPromise: Promise<void> | undefined;
+
+export const ensureGlobalPreferencesLoaded = (): Promise<void> => {
+  if (loadPromise === undefined)
+    loadPromise = loadGlobalPreferences().catch((error) => {
+      loadPromise = undefined;
+      throw error;
+    });
+  return loadPromise;
+};

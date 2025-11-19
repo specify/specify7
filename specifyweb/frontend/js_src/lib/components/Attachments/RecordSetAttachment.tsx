@@ -18,9 +18,21 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { defaultAttachmentScale } from '.';
 import { downloadAllAttachments } from './attachments';
 import { AttachmentGallery } from './Gallery';
-import { getAttachmentRelationship } from './utils';
+import {
+  getAttachmentRelationship,
+  useAttachmentThumbnailPreference,
+} from './utils';
 
 const haltIncrementSize = 300;
+const fallbackRootFontSize = 16;
+const getRootFontSize = (): number =>
+  typeof window === 'undefined'
+    ? fallbackRootFontSize
+    : Number.parseFloat(
+        window.getComputedStyle(document.documentElement).fontSize
+      ) || fallbackRootFontSize;
+const minScale = 4;
+const maxScale = 50;
 
 export function RecordSetAttachments<SCHEMA extends AnySchema>({
   records,
@@ -102,10 +114,15 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   const halt =
     attachments?.attachments.length === 0 && records.length >= haltValue;
 
-  const [scale = defaultAttachmentScale] = useCachedState(
-    'attachments',
-    'scale'
+  const [scale] = useCachedState('attachments', 'scale');
+  const attachmentThumbnailSize = useAttachmentThumbnailPreference();
+  const preferredScale = React.useMemo(
+    () => Math.round(attachmentThumbnailSize / getRootFontSize()),
+    [attachmentThumbnailSize]
   );
+  const safeScale = Number.isFinite(preferredScale)
+    ? Math.min(maxScale, Math.max(minScale, scale ?? preferredScale))
+    : scale ?? defaultAttachmentScale;
 
   const isComplete = fetchedCount.current === recordCount;
 
@@ -192,7 +209,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
             <AttachmentGallery
               attachments={attachmentsRef?.current?.attachments ?? []}
               isComplete={isComplete}
-              scale={scale}
+              scale={safeScale}
               onChange={(attachment, index): void =>
                 void attachments?.related[index].set(`attachment`, attachment)
               }
