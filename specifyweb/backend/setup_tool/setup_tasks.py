@@ -112,9 +112,10 @@ def setup_database_task(self, data: dict):
                 }
             }
 
-            if is_paleo_geo:
-                logger.debug('Creating Chronostratigraphy tree')
-                api.create_geologictimeperiod_tree(default_tree.copy())
+            # if is_paleo_geo:
+            # Create an empty chronostrat tree no matter what because discipline needs it.
+            logger.debug('Creating Chronostratigraphy tree')
+            api.create_geologictimeperiod_tree(default_tree.copy())
 
             if data['institution'].get('issinglegeographytree', False) == False:
                 logger.debug('Creating geography tree')
