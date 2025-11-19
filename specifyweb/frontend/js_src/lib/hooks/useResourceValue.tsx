@@ -10,9 +10,9 @@ import type {
 } from '../components/DataModel/specifyField';
 import type { Input } from '../components/Forms/validationHelpers';
 import type { Parser } from '../utils/parser/definitions';
-import { useParserDefaultValue } from './useParserDefaultValue';
 import type { RA } from '../utils/types';
 import { useParser } from './resource';
+import { useParserDefaultValue } from './useParserDefaultValue';
 import { useFieldParser } from './useFieldParser';
 import { useFieldValidation } from './useFieldValidation';
 
