@@ -5,10 +5,10 @@ import { filterArray } from '../../utils/types';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables, getTable } from '../DataModel/tables';
-import { hasTablePermission } from '../Permissions/helpers';
 import { softFail } from '../Errors/Crash';
-import { ensureGlobalPreferencesLoaded } from '../Preferences/globalPreferencesLoader';
+import { hasTablePermission } from '../Permissions/helpers';
 import { globalPreferences } from '../Preferences/globalPreferences';
+import { ensureGlobalPreferencesLoaded } from '../Preferences/globalPreferencesLoader';
 
 export const attachmentRelatedTables = f.store(() =>
   Object.keys(genericTables).filter((tableName) =>

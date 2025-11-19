@@ -122,7 +122,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
   );
   const safeScale = Number.isFinite(preferredScale)
     ? Math.min(maxScale, Math.max(minScale, scale ?? preferredScale))
-    : scale ?? defaultAttachmentScale;
+    : (scale ?? defaultAttachmentScale);
 
   const isComplete = fetchedCount.current === recordCount;
 

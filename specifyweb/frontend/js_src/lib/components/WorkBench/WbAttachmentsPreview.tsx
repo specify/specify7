@@ -19,8 +19,8 @@ import { Button } from '../Atoms/Button';
 import { fetchOriginalUrl } from '../Attachments/attachments';
 import { LeafletImageViewer } from '../Attachments/LeafletImageViewer';
 import { AttachmentPreview } from '../Attachments/Preview';
-import { AttachmentViewer } from '../Attachments/Viewer';
 import { useAttachmentThumbnailPreference } from '../Attachments/utils';
+import { AttachmentViewer } from '../Attachments/Viewer';
 import { toResource } from '../DataModel/helpers';
 import type {
   AnySchema,
@@ -127,11 +127,11 @@ export function WbAttachmentsPreview({
                       <AttachmentPreview
                         attachment={cell.attachment}
                         key={index}
+                        thumbnailSize={thumbnailSize}
                         onOpen={(): void => {
                           handleShowAttachment();
                           setSelectedAttachment(cell.attachment);
                         }}
-                        thumbnailSize={thumbnailSize}
                       />
                     ) : (
                       <Skeleton.Square key={index} />

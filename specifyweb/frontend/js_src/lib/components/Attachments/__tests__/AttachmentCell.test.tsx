@@ -118,9 +118,9 @@ describe('AttachmentCell', () => {
           attachment={testAttachment}
           options={options}
           related={[undefined, setRelated]}
+          thumbnailSize={123}
           onOpen={handleOpen}
           onViewRecord={handleViewRecord}
-          thumbnailSize={123}
         />
       </LoadingContext.Provider>
     );
@@ -135,9 +135,9 @@ describe('AttachmentCell', () => {
           attachment={testAttachment}
           options={options}
           related={[undefined, setRelated]}
+          thumbnailSize={123}
           onOpen={handleOpen}
           onViewRecord={handleViewRecord}
-          thumbnailSize={123}
         />
       </LoadingContext.Provider>
     );

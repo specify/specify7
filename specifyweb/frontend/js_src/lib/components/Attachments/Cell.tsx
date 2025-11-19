@@ -64,6 +64,7 @@ export function AttachmentCell({
       ) : undefined}
       <AttachmentPreview
         attachment={attachment}
+        thumbnailSize={thumbnailSize}
         onOpen={(): void => {
           if (related === undefined && typeof table === 'object')
             fetchAttachmentParent(table, attachment)
@@ -71,7 +72,6 @@ export function AttachmentCell({
               .catch(softFail);
           handleOpen();
         }}
-        thumbnailSize={thumbnailSize}
       />
       {typeof originalUrl === 'string' && (
         <Link.Icon

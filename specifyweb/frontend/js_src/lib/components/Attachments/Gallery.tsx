@@ -50,19 +50,15 @@ export function AttachmentGallery({
     defaultPreFetchDistance
   );
   const [columns, setColumns] = React.useState<number>(3);
-  const [rootFontSize, setRootFontSize] = React.useState<number>(
-    getRootFontSize
-  );
+  const [rootFontSize, setRootFontSize] =
+    React.useState<number>(getRootFontSize);
   const thumbnailSize = Math.max(1, Math.round(scale * rootFontSize));
   React.useEffect(() => {
     const calculateColumns = (ref: React.RefObject<HTMLElement | null>) => {
       if (ref.current) {
         const currentRootFontSize = getRootFontSize(); // Equivalent to 1rem
         const gap = currentRootFontSize;
-        const columnWidth = Math.max(
-          1,
-          scale * currentRootFontSize + gap
-        );
+        const columnWidth = Math.max(1, scale * currentRootFontSize + gap);
         const currentThumbnailSize = Math.max(
           1,
           Math.round(scale * currentRootFontSize)
@@ -75,10 +71,7 @@ export function AttachmentGallery({
           )
         );
         setColumns(
-          Math.max(
-            1,
-            Math.floor((ref.current.clientWidth - gap) / columnWidth)
-          )
+          Math.max(1, Math.floor((ref.current.clientWidth - gap) / columnWidth))
         );
       }
     };
@@ -139,11 +132,11 @@ export function AttachmentGallery({
           <AttachmentCell
             attachment={attachment}
             key={index}
-            thumbnailSize={thumbnailSize}
             related={[
               related[index],
               (item): void => setRelated(replaceItem(related, index, item)),
             ]}
+            thumbnailSize={thumbnailSize}
             onOpen={(): void =>
               typeof handleClick === 'function'
                 ? handleClick(attachment)

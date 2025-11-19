@@ -141,7 +141,7 @@ function Attachments({
   const [scale, setScale] = useCachedState('attachments', 'scale');
   const safeScale = Number.isFinite(preferredScale)
     ? Math.min(maxScale, Math.max(minScale, scale ?? preferredScale))
-    : scale ?? defaultAttachmentScale;
+    : (scale ?? defaultAttachmentScale);
 
   const [collection, setCollection, fetchMore] = useSerializedCollection(
     React.useCallback(
