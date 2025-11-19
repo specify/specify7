@@ -237,114 +237,119 @@ fi
 # APP USER
 ########################################
 
-echo "Ensuring app user '$APP_USER_NAME' exists for relevant hosts..."
+if [[ "$APP_USER_NAME" == "root" ]]; then
+  echo "App user is 'root'; skipping creation/grant steps for a separate app account."
+  echo "Relying on existing root privileges (e.g. 'root'@'%' / 'root'@'localhost')."
+else
+  echo "Ensuring app user '$APP_USER_NAME' exists for relevant hosts..."
 
-APP_HOSTS_SEEN=""
-for h in "$APP_USER_HOST" "$CLIENT_HOST"; do
-  [[ -z "$h" ]] && continue
-  if [[ " $APP_HOSTS_SEEN " == *" $h "* ]]; then
-    continue
-  fi
-  APP_HOSTS_SEEN+=" $h"
-
-  USER_EXISTS_HOST=$(mariadb -h "$DB_HOST" -P "$DB_PORT" \
-    -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-    -sse "SELECT COUNT(*) FROM mysql.user WHERE user = '$APP_USER_NAME' AND host = '$h';")
-
-  if [[ "$USER_EXISTS_HOST" -eq 0 && "$APP_USER_NAME" != "root" ]]; then
-    echo "Creating user '${APP_USER_NAME}'@'${h}'..."
-    echo "Executing: CREATE USER '${APP_USER_NAME}'@'${h}' IDENTIFIED BY '<hidden>'"
-    if mariadb -h "$DB_HOST" -P "$DB_PORT" \
-         -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-         -e "CREATE USER '${APP_USER_NAME}'@'${h}' IDENTIFIED BY '${APP_USER_PASSWORD}';"; then
-      NEW_APP_USER_CREATED=1
-    else
-      echo "Error: Failed to create app user '${APP_USER_NAME}'@'${h}'."
-      exit 1
+  APP_HOSTS_SEEN=""
+  for h in "$APP_USER_HOST" "$CLIENT_HOST"; do
+    [[ -z "$h" ]] && continue
+    if [[ " $APP_HOSTS_SEEN " == *" $h "* ]]; then
+      continue
     fi
-  else
-    echo "App user '${APP_USER_NAME}'@'${h}' already exists (or is 'root')."
-  fi
-done
+    APP_HOSTS_SEEN+=" $h"
 
-echo "Existing hosts for '$APP_USER_NAME' in mysql.user:"
-mariadb -h "$DB_HOST" -P "$DB_PORT" \
-  -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-  -sse "SELECT CONCAT(\"'\", user, \"'@'\", host, \"'\") FROM mysql.user WHERE user = '$APP_USER_NAME';"
-
-# Grant app privileges to all relevant app hosts
-REQUIRED_PRIVS=("SELECT" "INSERT" "UPDATE" "ALTER" "INDEX" "DELETE" "CREATE TEMPORARY TABLES" "LOCK TABLES" "EXECUTE")
-
-echo "Granting required privileges to app user '$APP_USER_NAME' for relevant hosts..."
-APP_GRANT_HOSTS_SEEN=""
-for h in "$APP_USER_HOST" "$CLIENT_HOST"; do
-  [[ -z "$h" ]] && continue
-  if [[ " $APP_GRANT_HOSTS_SEEN " == *" $h "* ]]; then
-    continue
-  fi
-  APP_GRANT_HOSTS_SEEN+=" $h"
-
-  echo "Granting app privileges on \`${DB_NAME}\`.* to '${APP_USER_NAME}'@'${h}'..."
-  if ! mariadb -h "$DB_HOST" -P "$DB_PORT" \
-        -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-        -e "GRANT SELECT, INSERT, UPDATE, ALTER, INDEX, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${APP_USER_NAME}'@'${h}';"; then
-    echo "Error: Failed to grant privileges to app user '${APP_USER_NAME}'@'${h}'."
-    exit 1
-  fi
-done
-
-if ! mariadb -h "$DB_HOST" -P "$DB_PORT" \
+    USER_EXISTS_HOST=$(mariadb -h "$DB_HOST" -P "$DB_PORT" \
       -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-      -e "FLUSH PRIVILEGES;"; then
-  echo "Error: Failed to FLUSH PRIVILEGES for app user."
-  exit 1
-fi
+      -sse "SELECT COUNT(*) FROM mysql.user WHERE user = '$APP_USER_NAME' AND host = '$h';")
 
-APP_GRANTS_RAW="$(mariadb -N -B -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-                  -e "SHOW GRANTS FOR '${APP_USER_NAME}'@'${APP_USER_HOST}';" 2>/dev/null || true)"
-
-if [[ -z "$APP_GRANTS_RAW" ]]; then
-  echo "Error: Could not retrieve grants for '${APP_USER_NAME}'@'${APP_USER_HOST}'."
-  echo "Check whether this user exists only with different hosts (e.g. 'localhost' instead of '$APP_USER_HOST')."
-  exit 1
-fi
-
-mapfile -t APP_GRANTS_LINES < <(printf '%s\n' "$APP_GRANTS_RAW" | sed 's/[[:space:]]\+/ /g')
-
-app_has_required_permissions=false
-
-has_all_privs_in_line() {
-  local line="$1"
-  local missing=()
-  for p in "${REQUIRED_PRIVS[@]}"; do
-    if ! grep -qiE "(^|[, ])${p}(,| |$)" <<<"$line"; then
-      missing+=("$p")
+    if [[ "$USER_EXISTS_HOST" -eq 0 ]]; then
+      echo "Creating user '${APP_USER_NAME}'@'${h}'..."
+      echo "Executing: CREATE USER '${APP_USER_NAME}'@'${h}' IDENTIFIED BY '<hidden>'"
+      if mariadb -h "$DB_HOST" -P "$DB_PORT" \
+           -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+           -e "CREATE USER '${APP_USER_NAME}'@'${h}' IDENTIFIED BY '${APP_USER_PASSWORD}';"; then
+        NEW_APP_USER_CREATED=1
+      else
+        echo "Error: Failed to create app user '${APP_USER_NAME}'@'${h}'."
+        exit 1
+      fi
+    else
+      echo "App user '${APP_USER_NAME}'@'${h}' already exists."
     fi
   done
-  [[ ${#missing[@]} -eq 0 ]]
-}
 
-for g in "${APP_GRANTS_LINES[@]}"; do
-  if grep -qiE "^GRANT .*ALL PRIVILEGES.* ON \*\.\* TO " <<<"$g"; then
-    app_has_required_permissions=true; break
-  fi
-  if grep -qiE " ON \*\.\* TO " <<<"$g" && has_all_privs_in_line "$g"; then
-    app_has_required_permissions=true; break
-  fi
-  if grep -qiE " ON (\`?${DB_NAME}\`?)\.\* TO " <<<"$g" && has_all_privs_in_line "$g"; then
-    app_has_required_permissions=true; break
-  fi
-done
+  echo "Existing hosts for '$APP_USER_NAME' in mysql.user:"
+  mariadb -h "$DB_HOST" -P "$DB_PORT" \
+    -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+    -sse "SELECT CONCAT(\"'\", user, \"'@'\", host, \"'\") FROM mysql.user WHERE user = '$APP_USER_NAME';"
 
-if [[ "$app_has_required_permissions" == true ]]; then
-  echo "Verified: '${APP_USER_NAME}'@'${APP_USER_HOST}' has required privileges on '${DB_NAME}'."
-else
-  echo "Error: '${APP_USER_NAME}'@'${APP_USER_HOST}' lacks required privileges on '${DB_NAME}'."
-  echo "Required (any one GRANT must include all of): ${REQUIRED_PRIVS[*]}"
-  echo "Grants found:"
-  echo "$APP_GRANTS_RAW"
-  APP_USER_NAME="$MIGRATOR_NAME"
-  APP_USER_PASSWORD="$MIGRATOR_PASSWORD"
+  # Grant app privileges to all relevant app hosts
+  REQUIRED_PRIVS=("SELECT" "INSERT" "UPDATE" "ALTER" "INDEX" "DELETE" "CREATE TEMPORARY TABLES" "LOCK TABLES" "EXECUTE")
+
+  echo "Granting required privileges to app user '$APP_USER_NAME' for relevant hosts..."
+  APP_GRANT_HOSTS_SEEN=""
+  for h in "$APP_USER_HOST" "$CLIENT_HOST"; do
+    [[ -z "$h" ]] && continue
+    if [[ " $APP_GRANT_HOSTS_SEEN " == *" $h "* ]]; then
+      continue
+    fi
+    APP_GRANT_HOSTS_SEEN+=" $h"
+
+    echo "Granting app privileges on \`${DB_NAME}\`.* to '${APP_USER_NAME}'@'${h}'..."
+    if ! mariadb -h "$DB_HOST" -P "$DB_PORT" \
+          -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+          -e "GRANT SELECT, INSERT, UPDATE, ALTER, INDEX, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${APP_USER_NAME}'@'${h}';"; then
+      echo "Error: Failed to grant privileges to app user '${APP_USER_NAME}'@'${h}'."
+      exit 1
+    fi
+  done
+
+  if ! mariadb -h "$DB_HOST" -P "$DB_PORT" \
+        -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+        -e "FLUSH PRIVILEGES;"; then
+    echo "Error: Failed to FLUSH PRIVILEGES for app user."
+    exit 1
+  fi
+
+  APP_GRANTS_RAW="$(mariadb -N -B -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+                    -e "SHOW GRANTS FOR '${APP_USER_NAME}'@'${APP_USER_HOST}';" 2>/dev/null || true)"
+
+  if [[ -z "$APP_GRANTS_RAW" ]]; then
+    echo "Error: Could not retrieve grants for '${APP_USER_NAME}'@'${APP_USER_HOST}'."
+    echo "Check whether this user exists only with different hosts (e.g. 'localhost' instead of '$APP_USER_HOST')."
+    exit 1
+  fi
+
+  mapfile -t APP_GRANTS_LINES < <(printf '%s\n' "$APP_GRANTS_RAW" | sed 's/[[:space:]]\+/ /g')
+
+  app_has_required_permissions=false
+
+  has_all_privs_in_line() {
+    local line="$1"
+    local missing=()
+    for p in "${REQUIRED_PRIVS[@]}"; do
+      if ! grep -qiE "(^|[, ])${p}(,| |$)" <<<"$line"; then
+        missing+=("$p")
+      fi
+    done
+    [[ ${#missing[@]} -eq 0 ]]
+  }
+
+  for g in "${APP_GRANTS_LINES[@]}"; do
+    if grep -qiE "^GRANT .*ALL PRIVILEGES.* ON \*\.\* TO " <<<"$g"; then
+      app_has_required_permissions=true; break
+    fi
+    if grep -qiE " ON \*\.\* TO " <<<"$g" && has_all_privs_in_line "$g"; then
+      app_has_required_permissions=true; break
+    fi
+    if grep -qiE " ON (\`?${DB_NAME}\`?)\.\* TO " <<<"$g" && has_all_privs_in_line "$g"; then
+      app_has_required_permissions=true; break
+    fi
+  done
+
+  if [[ "$app_has_required_permissions" == true ]]; then
+    echo "Verified: '${APP_USER_NAME}'@'${APP_USER_HOST}' has required privileges on '${DB_NAME}'."
+  else
+    echo "Error: '${APP_USER_NAME}'@'${APP_USER_HOST}' lacks required privileges on '${DB_NAME}'."
+    echo "Required (any one GRANT must include all of): ${REQUIRED_PRIVS[*]}"
+    echo "Grants found:"
+    echo "$APP_GRANTS_RAW"
+    APP_USER_NAME="$MIGRATOR_NAME"
+    APP_USER_PASSWORD="$MIGRATOR_PASSWORD"
+  fi
 fi
 
 echo "--------------------------------------------------"
