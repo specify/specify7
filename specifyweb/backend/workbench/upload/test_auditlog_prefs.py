@@ -25,3 +25,8 @@ class AuditLogPreferenceTests(SimpleTestCase):
     @patch('specifyweb.backend.workbench.upload.auditlog.get_remote_prefs', return_value="")
     def test_default_false_when_missing_everywhere(self, _mock_remote, _mock_global) -> None:
         self.assertFalse(_get_pref_bool("auditing.do_audits"))
+
+    @patch('specifyweb.backend.workbench.upload.auditlog.get_global_prefs', return_value="")
+    @patch('specifyweb.backend.workbench.upload.auditlog.get_remote_prefs', return_value="")
+    def test_default_value_used_when_requested(self, _mock_remote, _mock_global) -> None:
+        self.assertTrue(_get_pref_bool("auditing.do_audits", default=True))

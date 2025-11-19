@@ -100,7 +100,7 @@ export function Tree<
   const [statsThreshold] = userPreferences.use(
     'treeEditor',
     treeToPref[tableName],
-    'statsThreshold'
+    'rankThreshold'
   );
 
   const getStats = React.useCallback(

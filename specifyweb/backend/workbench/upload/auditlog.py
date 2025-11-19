@@ -47,8 +47,7 @@ def _get_pref_bool(pref_key: str, default: bool = False) -> bool:
     """
     Return the preference value for the given key, preferring the new
     GlobalPreferences resource and falling back to the legacy remote
-    preferences. When missing, default to the provided value (false to
-    ensure auditing runs only when explicitly enabled).
+    preferences. When missing, default to the provided value.
     """
     for source in (get_global_prefs, get_remote_prefs):
         value = _extract_pref_bool(source(), pref_key)
@@ -82,8 +81,8 @@ class AuditLog:
         if settings.DISABLE_AUDITING:
             return False
         if self._auditing is None or self._lastCheck is None or time() - self._lastCheck > self._checkInterval:
-            self._auditing = _get_pref_bool('auditing.do_audits')
-            self._auditingFlds = _get_pref_bool('auditing.audit_field_updates')
+            self._auditing = _get_pref_bool('auditing.do_audits', default=True)
+            self._auditingFlds = _get_pref_bool('auditing.audit_field_updates', default=True)
             self.purge()
             self._lastCheck = time()
         return self._auditing;
