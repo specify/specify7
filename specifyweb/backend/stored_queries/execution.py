@@ -13,12 +13,12 @@ from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
 from specifyweb.backend.inheritance.api import cog_inheritance_post_query_processing, parent_inheritance_post_query_processing
-from specifyweb.backend.inheritance.utils import get_parent_cat_num_inheritance_setting
+from specifyweb.backend.inheritance.utils import get_cat_num_inheritance_setting, get_parent_cat_num_inheritance_setting
 from specifyweb.backend.stored_queries.utils import log_sqlalchemy_query
+from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from sqlalchemy import sql, orm, func, text
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
-from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from specifyweb.specify.models_utils.models_by_table_id import get_table_id_by_model_name
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.backend.trees.utils import get_search_filters
@@ -51,6 +51,16 @@ class QuerySort:
     def by_id(sort_id: QUREYFIELD_SORT_T):
         return QuerySort.SORT_TYPES[sort_id]
 
+
+def DefaultQueryFormatterProps():
+    return ObjectFormatterProps(
+        format_agent_type=False,
+        format_picklist=False,
+        format_types=True,
+        numeric_catalog_number=True,
+        format_expr=True
+    )
+
 class BuildQueryProps(NamedTuple):
     recordsetid: int | None = None
     replace_nulls: bool = False
@@ -58,13 +68,7 @@ class BuildQueryProps(NamedTuple):
     distinct: bool = False
     series: bool = False
     implicit_or: bool = True
-    formatter_props: ObjectFormatterProps = ObjectFormatterProps(
-        format_agent_type = False,
-        format_picklist = False,
-        format_types = True,
-        numeric_catalog_number = True,
-        format_expr = True,
-    )
+    formatter_props: ObjectFormatterProps = DefaultQueryFormatterProps()
 
 
 def set_group_concat_max_len(connection):
@@ -789,9 +793,12 @@ def execute(
     offset,
     recordsetid=None,
     formatauditobjs=False,
-    formatter_props=ObjectFormatterProps(),
+    formatter_props=None,
 ):
     "Build and execute a query, returning the results as a data structure for json serialization"
+
+    if formatter_props is None:
+        formatter_props = DefaultQueryFormatterProps()
 
     set_group_concat_max_len(session.info["connection"])
     query, order_by_exprs = build_query(
@@ -1176,12 +1183,15 @@ def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair
 
 def apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
     parent_inheritance_pref = get_parent_cat_num_inheritance_setting(collection, user)
-    
+    cog_inheritance_pref = get_cat_num_inheritance_setting(collection, user)
+
     if parent_inheritance_pref:
         query = parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
-    else: 
+
+    if cog_inheritance_pref: 
         query = cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
     
     if should_list_query:
         return list(query)
+
     return query

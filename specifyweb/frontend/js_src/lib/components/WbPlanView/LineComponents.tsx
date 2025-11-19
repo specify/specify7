@@ -28,7 +28,7 @@ import {
 import type { AutoMapperSuggestion } from './Mapper';
 import type { MappingLineData } from './navigator';
 
-export type HtmlGeneratorFieldData = {
+export type MapperComponentData = {
   readonly optionLabel: JSX.Element | string;
   readonly title?: LocalizedString;
   readonly isEnabled?: boolean;
@@ -49,7 +49,7 @@ type MappingLineBaseProps = {
 };
 
 export type MappingElementProps = {
-  readonly fieldsData: IR<HtmlGeneratorFieldData>;
+  readonly fieldsData: IR<MapperComponentData>;
 } & (
   | Omit<CustomSelectElementPropsClosed, 'fieldNames'>
   | (Omit<CustomSelectElementPropsOpenBase, 'autoMapperSuggestions'> & {

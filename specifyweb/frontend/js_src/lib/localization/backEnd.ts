@@ -76,7 +76,7 @@ export const backEndText = createDictionary({
       'поганий {agentTypeField:string}: "{badType:string}". Очікується один із {validTypes:string}',
     'de-ch':
       'fehlerhaft {agentTypeField:string}: "{badType:string}". Erwartet wurde einer von {validTypes:string}',
-    "pt-br":
+    'pt-br':
       'ruim {agentTypeField:string}: "{badType:string}". Esperava-se um de {validTypes:string}',
   },
   pickListValueTooLong: {
@@ -223,9 +223,9 @@ export const backEndText = createDictionary({
       "Valeur de classement parent de l'arborescence requise manquante ou non mappée pour « {names:string} ».",
     'uk-ua':
       'Відсутнє або не зіставлене необхідне значення батьківського рангу дерева для "{names:string}".',
-    "de-ch":
-      "Fehlender oder nicht zugeordneter erforderlicher Rangwert des übergeordneten Baums für „{names:string}“.",
-    "pt-br":
+    'de-ch':
+      'Fehlender oder nicht zugeordneter erforderlicher Rangwert des übergeordneten Baums für „{names:string}“.',
+    'pt-br':
       'Valor de classificação da árvore pai necessário ausente ou não mapeado para "{names:string}".',
   },
   showTraceback: {
@@ -283,7 +283,7 @@ export const backEndText = createDictionary({
     'uk-ua': 'Батько вузла дерева має ранг, вищий за нього самого',
     'de-ch':
       'Der übergeordnete Knoten des Baumknotens hat einen höheren Rang als er selbst',
-    'pt-br': 'O nó pai da árvore tem classificação maior que ele mesmo',
+    'pt-br': 'O nó pai da árvore tem classificação maior que a sua',
   },
   nodeChildrenInvalidRank: {
     'en-us': "Tree node's rank is greater than some of its children",
@@ -348,14 +348,14 @@ export const backEndText = createDictionary({
       'Estructura de árbol incorrecta: se encontraron {badRanks:number|formatted} casos en los que el rango del nodo no es mayor que el de su padre',
     'fr-fr':
       "Mauvaise structure d'arborescence : cas {badRanks:number|formatted} trouvés où le rang du nœud n'est pas supérieur à celui de son parent",
-    "ru-ru":
-      "Плохая структура дерева: обнаружено {badRanks:number|formatted} случаев, когда ранг узла не превышает ранг его родителя.",
-    "uk-ua":
-      "Погана структура дерева: знайдено {badRanks:number|formatted} випадків, коли ранг вузла не перевищує його батьківського рівня",
-    "de-ch":
-      "Fehlerhafte Baumstruktur: {badRanks:number|formatted} Fälle gefunden, in denen der Knotenrang nicht größer ist als der des übergeordneten Knotens",
-    "pt-br":
-      "Estrutura de árvore ruim: foram encontrados {badRanks:number|formatted} casos em que a classificação do nó não é maior que a do seu pai",
+    'ru-ru':
+      'Плохая структура дерева: обнаружено {badRanks:number|formatted} случаев, когда ранг узла не превышает ранг его родителя.',
+    'uk-ua':
+      'Погана структура дерева: знайдено {badRanks:number|formatted} випадків, коли ранг вузла не перевищує його батьківського рівня',
+    'de-ch':
+      'Fehlerhafte Baumstruktur: {badRanks:number|formatted} Fälle gefunden, in denen der Knotenrang nicht größer ist als der des übergeordneten Knotens',
+    'pt-br':
+      'Estrutura de árvore ruim: foram encontrados {badRanks:number|formatted} casos em que a classificação do nó não é maior que a do seu pai',
   },
   invalidNodeType: {
     'en-us':
@@ -563,13 +563,26 @@ export const backEndText = createDictionary({
     'uk-ua': 'Кілька визначень дерев у рядку',
   },
   invalidCotype: {
-    "en-us": "Invalid type for selected tree rank(s)",
-    "de-ch": "Ungültiger Typ für ausgewählte(n) Baumrang(e)",
-    "es-es": "Tipo no válido para el rango de árbol seleccionado",
-    "fr-fr": "Type non valide pour les rangs d'arbres sélectionnés",
-    "pt-br": "Tipo inválido para classificação de árvore selecionada(s)",
-    "ru-ru": "Недопустимый тип для выбранного ранга дерева",
-    "uk-ua": "Недійсний тип для вибраного(их) рангу(ів) дерева",
+    'en-us': 'Invalid type for selected tree rank(s)',
+    'de-ch': 'Ungültiger Typ für ausgewählte(n) Baumrang(e)',
+    'es-es': 'Tipo no válido para el rango de árbol seleccionado',
+    'fr-fr': "Type non valide pour les rangs d'arbres sélectionnés",
+    'pt-br': 'Tipo inválido para classificação de árvore selecionada(s)',
+    'ru-ru': 'Недопустимый тип для выбранного ранга дерева',
+    'uk-ua': 'Недійсний тип для вибраного(их) рангу(ів) дерева',
+  },
+  invalidComponentType: {
+    'en-us': 'Invalid {componentType: string} for selected tree rank(s)',
+    'de-ch':
+      'Ungültiger {componentType: string} für ausgewählte(n) Baumrang(e)',
+    'es-es':
+      '{componentType: string} no válido para los rangos de árbol seleccionados',
+    'fr-fr':
+      "{componentType: string} non valide pour le(s) rang(s) d'arbre sélectionné(s)",
+    'pt-br':
+      '{componentType: string} inválido para a(s) classificação(ões) da árvore selecionada(s)',
+    'ru-ru': 'Недопустимый {componentType: string} для выбранных рангов дерева',
+    'uk-ua': 'Недійсний {componentType: string} для вибраних рангів дерев',
   },
   attachmentNotFound: {
     'en-us':

@@ -142,16 +142,20 @@ export function QueryLine({
           required: false,
         };
         // Remove autoNumbering wildCard from default values
-        if (dataModelField.getUiFormatter()?.valueOrWild() === parser.value)
+        if (dataModelField.getUiFormatter()?.defaultValue === parser.value)
           parser = { ...parser, value: undefined };
 
         fieldType =
           tableName === 'CollectionObject' &&
           dataModelField.name === 'catalogNumber'
             ? 'id'
-            : tableName === 'CollectionObject' && dataModelField.name === 'age'
-              ? 'age'
-              : (parser.type ?? 'text');
+            : tableName === 'Component' &&
+                dataModelField.name === 'catalogNumber'
+              ? 'id'
+              : tableName === 'CollectionObject' &&
+                  dataModelField.name === 'age'
+                ? 'age'
+                : (parser.type ?? 'text');
 
         canOpenMap = fieldName === 'latitude1' || fieldName === 'longitude1';
       } else if (isMapped)
