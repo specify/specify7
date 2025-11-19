@@ -155,8 +155,7 @@ function Field({
     isCO &&
     isPartOfCOG &&
     isCatNumberField &&
-    displayPrimaryCatNumberPref &&
-    (value === null || value === '');
+    displayPrimaryCatNumberPref;
 
   const displayParentCatNumberPlaceHolder =
     isNew === false &&
@@ -172,14 +171,6 @@ function Field({
   const [parentCatalogNumber, setParentCatalogNumber] = React.useState<
     string | null
   >(null);
-
-  const normalizeCatValue = (value_: string | null | undefined): string | null =>
-    isCO &&
-    isCatNumberField &&
-    displayPrimaryCatNumberPref &&
-    (value_ === '' || value_ === undefined)
-      ? null
-      : value_ ?? null;
 
   React.useEffect(() => {
     if (resource && displayPrimaryCatNumberPlaceHolder) {
@@ -242,9 +233,9 @@ function Field({
       onBlur={
         isReadOnly
           ? undefined
-          : ({ target }): void => updateValue(normalizeCatValue(target.value))
+          : ({ target }): void => updateValue(target.value)
       }
-      onValueChange={(value): void => updateValue(normalizeCatValue(value), false)}
+      onValueChange={(value): void => updateValue(value, false)}
       /*
        * Update data model value before onBlur, as onBlur fires after onSubmit
        * if form is submitted using the ENTER key
@@ -256,7 +247,7 @@ function Field({
          * field is blurred, unless user tried to paste a date (see definition
          * of Input.Generic)
          */
-        updateValue(normalizeCatValue(input.value), event.type === 'paste');
+        updateValue(input.value, event.type === 'paste');
       }}
     />
   );
