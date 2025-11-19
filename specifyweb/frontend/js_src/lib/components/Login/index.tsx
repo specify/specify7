@@ -40,7 +40,7 @@ export type SetupResources = {
 export type SetupProgress = {
   readonly resources: SetupResources;
   readonly busy: boolean;
-  readonly error?: string;
+  readonly last_error?: string;
 };
 
 export function Login(): JSX.Element {
@@ -66,7 +66,6 @@ export function Login(): JSX.Element {
     const nextUrl = parseDjangoDump<string>('next-url') ?? '/specify/';
     const providers = parseDjangoDump<RA<OicProvider>>('providers') ?? [];
 
-    console.log(setupProgress);
     if (setupProgress === undefined) return <LoadingScreen />;
 
     if (setupProgress.busy || (setupProgress.hasOwnProperty('resources') && Object.values(setupProgress.resources).includes(false))) {

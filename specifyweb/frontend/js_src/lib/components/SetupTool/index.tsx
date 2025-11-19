@@ -145,9 +145,8 @@ export function SetupTool({
     (resourceName) => !setupProgress.resources[resourceName]
   );
   React.useEffect(() => {
-    if (setupProgress.busy) {
-      setInProgress(true);
-    }
+    if (setupProgress.busy) setInProgress(true);
+    if (setupProgress.last_error) setSetupError(setupProgress.last_error);
   }, [setupProgress]);
   React.useEffect(() => {
     // Poll for the latest setup progress.
@@ -162,7 +161,10 @@ export function SetupTool({
         })
           .then(({ data }) => {
             setSetupProgress(data);
-            if (data.error !== undefined) setSetupError(data.error);
+            if (data.last_error !== undefined) {
+              setInProgress(false);
+              setSetupError(data.last_error);
+            }
           })
           .catch((error) => {
             console.error('Failed to fetch setup progress:', error);

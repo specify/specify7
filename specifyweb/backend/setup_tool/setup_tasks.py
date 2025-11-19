@@ -68,11 +68,21 @@ def get_active_setup_task() -> Tuple[Optional[AsyncResult], bool]:
 
     res = app.AsyncResult(task_id)
     busy = res.state in ("PENDING", "RECEIVED", "STARTED", "RETRY", "PROGRESS")
-    # Clear the setup id if its not busy.
+    # Check if the last task ended
     if not busy and res.state in ("SUCCESS", "FAILURE", "REVOKED"):
-        with _active_setup_lock:
-            if _active_setup_task_id == task_id:
-                _active_setup_task_id = None
+        # Get error message if any.
+        if res.state == "FAILURE":
+            info = getattr(res, "info", None)
+            if isinstance(info, dict):
+                error = info.get("error") or info.get("exc_message") or info.get("message") or repr(info)
+            else:
+                error = str(info)
+            set_last_setup_error(error)
+        # Clear the setup id if its not busy.
+        # Commented out to allow error messages to be checked multiple times.
+        # with _active_setup_lock:
+        #     if _active_setup_task_id == task_id:
+        #         _active_setup_task_id = None
     return res, busy
 
 @app.task(bind=True)
@@ -145,10 +155,6 @@ def setup_database_task(self, data: dict):
             update_progress()
     except Exception as e:
         logger.exception(f'Error setting up database: {e}')
-        self.update_state(state='PROGRESS', meta={
-            'error': str(e),
-        })
-        set_last_setup_error(str(e)) # This does nothing.
         raise
 
 def get_last_setup_error() -> Optional[str]:
