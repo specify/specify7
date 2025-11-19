@@ -26,6 +26,36 @@ Division = datamodel.get_table_strict('Division')
 
 from . import auditcodes
 
+
+def _extract_pref_bool(pref_text: str | None, pref_key: str) -> bool | None:
+    """
+    Try to extract a boolean preference value from a preference file.
+    Returns None if the key is not present or the value is not boolean-like.
+    """
+    if not pref_text:
+        return None
+    match = re.search(rf'^{re.escape(pref_key)}\s*=\s*(.+)$', pref_text, re.MULTILINE)
+    if match:
+        value = match.group(1).strip().lower()
+        if value == 'true':
+            return True
+        if value == 'false':
+            return False
+    return None
+
+def _get_pref_bool(pref_key: str, default: bool = False) -> bool:
+    """
+    Return the preference value for the given key, preferring the new
+    GlobalPreferences resource and falling back to the legacy remote
+    preferences. When missing, default to the provided value (false to
+    ensure auditing runs only when explicitly enabled).
+    """
+    for source in (get_global_prefs, get_remote_prefs):
+        value = _extract_pref_bool(source(), pref_key)
+        if value is not None:
+            return value
+    return default
+
 def str_to_bytes(string: str, max_length: int) -> bytes: 
     str_as_bytes = string.encode()
     return str_as_bytes[:max_length]
@@ -42,7 +72,8 @@ class AuditLog:
     _auditingFlds = None
     _auditing = None
     _lastCheck = None
-    _checkInterval = 900
+    # Re-check preferences frequently so UI changes (enable/disable) take effect quickly
+    _checkInterval = 5
     
     def isAuditingFlds(self):
         return self.isAuditing() and self._auditingFlds
@@ -51,16 +82,8 @@ class AuditLog:
         if settings.DISABLE_AUDITING:
             return False
         if self._auditing is None or self._lastCheck is None or time() - self._lastCheck > self._checkInterval:
-            match = re.search(r'auditing\.do_audits=(.+)', get_remote_prefs())
-            if match is None:
-                self._auditing = True
-            else:
-                self._auditing = False if match.group(1).lower() == 'false' else True
-            match = re.search(r'auditing\.audit_field_updates=(.+)', get_remote_prefs())
-            if match is None:
-                self._auditingFlds = True
-            else:
-                self._auditingFlds = False if match.group(1).lower() == 'false' else True
+            self._auditing = _get_pref_bool('auditing.do_audits')
+            self._auditingFlds = _get_pref_bool('auditing.audit_field_updates')
             self.purge()
             self._lastCheck = time()
         return self._auditing;
