@@ -1,10 +1,7 @@
 #!/bin/bash
 
-# This script sets up a master user for Specify 7 to use in MySQL/MariaDB using env vars from the Linux environment.
-
 echo "Starting MariaDB database and user creation script..."
 
-# Read variables from environment
 DB_HOST="${DATABASE_HOST}"
 DB_PORT="${DATABASE_PORT}"
 
@@ -24,7 +21,6 @@ APP_USER_NAME="${APP_USER_NAME}"
 APP_USER_PASSWORD="${APP_USER_PASSWORD}"
 APP_USER_HOST="${APP_HOST}"
 
-# Host defaults (use '%' if not provided)
 MASTER_USER_HOST="${MASTER_USER_HOST:-%}"
 MIGRATOR_USER_HOST="${MIGRATOR_USER_HOST:-%}"
 APP_USER_HOST="${APP_USER_HOST:-%}"
@@ -66,6 +62,22 @@ if [[ -z "$MIGRATOR_PASSWORD" || -z "$APP_USER_NAME" || -z "$APP_USER_PASSWORD" 
   exit 1
 fi
 
+# Relationship flags between the three users
+SAME_MASTER_AND_MIGRATOR=false
+if [[ "$MIGRATOR_NAME" == "$MASTER_USER_NAME" && "$MIGRATOR_PASSWORD" == "$MASTER_USER_PASSWORD" ]]; then
+  SAME_MASTER_AND_MIGRATOR=true
+fi
+
+SAME_MASTER_AND_APP=false
+if [[ "$APP_USER_NAME" == "$MASTER_USER_NAME" && "$APP_USER_PASSWORD" == "$MASTER_USER_PASSWORD" ]]; then
+  SAME_MASTER_AND_APP=true
+fi
+
+SAME_MIGRATOR_AND_APP=false
+if [[ "$APP_USER_NAME" == "$MIGRATOR_NAME" && "$APP_USER_PASSWORD" == "$MIGRATOR_PASSWORD" ]]; then
+  SAME_MIGRATOR_AND_APP=true
+fi
+
 echo "--------------------------------------------------"
 echo "DB Configuration:"
 echo "  DB Host: $DB_HOST"
@@ -92,7 +104,7 @@ echo "MariaDB is up and running."
 # Check master (admin) login
 if ! mariadb -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "SELECT 1;" &> /dev/null; then
   echo "Error: Unable to connect to MariaDB with provided master user credentials ($MASTER_USER_NAME@$MASTER_USER_HOST)."
-  echo "       Check that MYSQL_ROOT_PASSWORD / MASTER_* env vars match the actual DB root user."
+  echo "       Check that MYSQL_ROOT_PASSWORD / MASTER_* env vars match the actual DB root/master user."
   exit 1
 fi
 
@@ -130,14 +142,17 @@ fi
 # MIGRATOR USER
 ########################################
 
-if [[ "$MIGRATOR_NAME" != "root" ]]; then
+if [[ "$SAME_MASTER_AND_MIGRATOR" == true ]]; then
+  echo "Migrator user '$MIGRATOR_NAME' uses the same credentials as master."
+  echo "Skipping creation/grant steps for a separate migrator account and using master connection for migrations."
+  MIGRATION_DB_ALIAS="master"
+else
   echo "Ensuring migrator user '$MIGRATOR_NAME' exists for relevant hosts..."
 
   MIGRATOR_HOSTS_SEEN=""
-  # We'll ensure the user exists for both MIGRATOR_USER_HOST and CLIENT_HOST
+  # Ensure user exists for both MIGRATOR_USER_HOST and CLIENT_HOST
   for h in "$MIGRATOR_USER_HOST" "$CLIENT_HOST"; do
     [[ -z "$h" ]] && continue
-    # avoid duplicates
     if [[ " $MIGRATOR_HOSTS_SEEN " == *" $h "* ]]; then
       continue
     fi
@@ -150,26 +165,27 @@ if [[ "$MIGRATOR_NAME" != "root" ]]; then
     if [[ "$USER_EXISTS_HOST" -eq 0 ]]; then
       echo "Creating user '${MIGRATOR_NAME}'@'${h}'..."
       echo "Executing: CREATE USER '${MIGRATOR_NAME}'@'${h}' IDENTIFIED BY '<hidden>'"
-      if mariadb -h "$DB_HOST" -P "$DB_PORT" \
+      if ! mariadb -h "$DB_HOST" -P "$DB_PORT" \
            -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
            -e "CREATE USER '${MIGRATOR_NAME}'@'${h}' IDENTIFIED BY '${MIGRATOR_PASSWORD}';"; then
-        NEW_MIGRATOR_USER_CREATED=1
-      else
         echo "Error: Failed to create migrator user '${MIGRATOR_NAME}'@'${h}'."
         exit 1
       fi
+      NEW_MIGRATOR_USER_CREATED=1
     else
       echo "Migrator user '${MIGRATOR_NAME}'@'${h}' already exists."
     fi
   done
 
   echo "Existing hosts for '$MIGRATOR_NAME' in mysql.user:"
-  mariadb -h "$DB_HOST" -P "$DB_PORT" \
+  if ! mariadb -h "$DB_HOST" -P "$DB_PORT" \
     -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-    -sse "SELECT CONCAT(\"'\", user, \"'@'\", host, \"'\") FROM mysql.user WHERE user = '$MIGRATOR_NAME';"
+    -e "SELECT CONCAT(\"'\", user, \"'@'\", host, \"'\") FROM mysql.user WHERE user = '$MIGRATOR_NAME';"; then
+    echo "Warning: Could not list existing hosts for '$MIGRATOR_NAME'."
+  fi
 
   # Grant privileges on DB_NAME for all relevant migrator hosts
-  echo "Granting privileges to migrator user '$MIGRATOR_NAME'"
+  echo "Granting privileges to migrator user '$MIGRATOR_NAME'..."
   MIGRATOR_GRANT_HOSTS_SEEN=""
   for h in "$MIGRATOR_USER_HOST" "$CLIENT_HOST"; do
     [[ -z "$h" ]] && continue
@@ -183,6 +199,9 @@ if [[ "$MIGRATOR_NAME" != "root" ]]; then
           -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
           -e "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${h}';"; then
       echo "Error: Failed to grant privileges to migrator user '${MIGRATOR_NAME}'@'${h}'."
+      echo "--------------"
+      echo "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${h}'"
+      echo "--------------"
       exit 1
     fi
   done
@@ -193,53 +212,75 @@ if [[ "$MIGRATOR_NAME" != "root" ]]; then
     echo "Error: Failed to FLUSH PRIVILEGES for migrator user."
     exit 1
   fi
-else
-  echo "Migrator user is 'root'; skipping creation/grant steps for separate migrator account."
-fi
 
-# Verify migrator access (for the configured MIGRATOR_USER_HOST)
-GRANTS_OUTPUT="$(mariadb -N -B -h "$DB_HOST" -P "$DB_PORT" \
-                  -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-                  -e "SHOW GRANTS FOR '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}';" 2>/dev/null || true)"
+  # Verify migrator access for MIGRATOR_USER_HOST
+  GRANTS_OUTPUT="$(mariadb -N -B -h "$DB_HOST" -P "$DB_PORT" \
+                    -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+                    -e "SHOW GRANTS FOR '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}';" 2>/dev/null || true)"
 
-if [[ -z "$GRANTS_OUTPUT" ]]; then
-  echo "Error: Could not retrieve grants for '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'."
-  echo "Check whether this user exists with a different host (e.g. 'localhost' instead of '$MIGRATOR_USER_HOST')."
-  exit 1
-fi
-
-migrator_has_access=false
-
-while IFS= read -r raw_line; do
-  line="$(echo "$raw_line" | tr -s '[:space:]' ' ')"
-  if echo "$line" | grep -Eiq " ON (\*\.\*|(\`?${DB_NAME}\`?)\.\*) "; then
-    privs="$(echo "$line" | sed -E 's/^GRANT (.+) ON .+$/\1/I')"
-    if echo "$privs" | grep -Eiq '^[[:space:]]*USAGE[[:space:]]*$'; then
-      continue
-    fi
-    migrator_has_access=true
-    break
+  if [[ -z "$GRANTS_OUTPUT" ]]; then
+    echo "Error: Could not retrieve grants for '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'."
+    echo "Check whether this user exists with a different host (e.g. 'localhost' instead of '$MIGRATOR_USER_HOST')."
+    exit 1
   fi
-done <<< "$GRANTS_OUTPUT"
 
-if [[ "$migrator_has_access" == true ]]; then
-  echo "Verified: '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' has usable access to '${DB_NAME}'."
-else
-  echo "Notice: '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' lacks usable access to '${DB_NAME}'."
-  echo "Make corrections to the intended MIGRATOR user permissions to resolve."
-  echo "  GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'; FLUSH PRIVILEGES;"
-  MIGRATOR_NAME="$MASTER_USER_NAME"
-  MIGRATOR_PASSWORD="$MASTER_USER_PASSWORD"
-  MIGRATION_DB_ALIAS="master"
+  migrator_has_access=false
+  while IFS= read -r raw_line; do
+    line="$(echo "$raw_line" | tr -s '[:space:]' ' ')"
+    if echo "$line" | grep -Eiq " ON (\*\.\*|(\`?${DB_NAME}\`?)\.\*) "; then
+      privs="$(echo "$line" | sed -E 's/^GRANT (.+) ON .+$/\1/I')"
+      if echo "$privs" | grep -Eiq '^[[:space:]]*USAGE[[:space:]]*$'; then
+        continue
+      fi
+      migrator_has_access=true
+      break
+    fi
+  done <<< "$GRANTS_OUTPUT"
+
+  # Also verify for CLIENT_HOST if available and different
+  if [[ -n "$CLIENT_HOST" && "$CLIENT_HOST" != "$MIGRATOR_USER_HOST" ]]; then
+    CLIENT_GRANTS_OUTPUT="$(mariadb -N -B -h "$DB_HOST" -P "$DB_PORT" \
+                            -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+                            -e "SHOW GRANTS FOR '${MIGRATOR_NAME}'@'${CLIENT_HOST}';" 2>/dev/null || true)"
+    while IFS= read -r raw_line; do
+      line="$(echo "$raw_line" | tr -s '[:space:]' ' ')"
+      if echo "$line" | grep -Eiq " ON (\*\.\*|(\`?${DB_NAME}\`?)\.\*) "; then
+        privs="$(echo "$line" | sed -E 's/^GRANT (.+) ON .+$/\1/I')"
+        if echo "$privs" | grep -Eiq '^[[:space:]]*USAGE[[:space:]]*$'; then
+          continue
+        fi
+        migrator_has_access=true
+        break
+      fi
+    done <<< "$CLIENT_GRANTS_OUTPUT"
+  fi
+
+  if [[ "$migrator_has_access" == true ]]; then
+    echo "Verified: migrator user '${MIGRATOR_NAME}' has usable access to '${DB_NAME}'."
+  else
+    echo "Notice: Migrator user '${MIGRATOR_NAME}' lacks usable access to '${DB_NAME}'."
+    echo "Make corrections to the intended MIGRATOR user permissions to resolve."
+    echo "  GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'; FLUSH PRIVILEGES;"
+    MIGRATOR_NAME="$MASTER_USER_NAME"
+    MIGRATOR_PASSWORD="$MASTER_USER_PASSWORD"
+    MIGRATION_DB_ALIAS="master"
+  fi
 fi
 
 ########################################
 # APP USER
 ########################################
 
-if [[ "$APP_USER_NAME" == "root" ]]; then
-  echo "App user is 'root'; skipping creation/grant steps for a separate app account."
-  echo "Relying on existing root privileges (e.g. 'root'@'%' / 'root'@'localhost')."
+if [[ "$SAME_MASTER_AND_APP" == true ]]; then
+  echo "App user '$APP_USER_NAME' uses the same credentials as master."
+  echo "Skipping creation/grant steps for a separate app account."
+  echo "Relying on master privileges for runtime connections."
+
+elif [[ "$SAME_MIGRATOR_AND_APP" == true ]]; then
+  echo "App user '$APP_USER_NAME' uses the same credentials as migrator."
+  echo "Skipping creation/grant steps for a separate app account."
+  echo "Relying on migrator privileges for runtime connections."
+
 else
   echo "Ensuring app user '$APP_USER_NAME' exists for relevant hosts..."
 
@@ -258,25 +299,25 @@ else
     if [[ "$USER_EXISTS_HOST" -eq 0 ]]; then
       echo "Creating user '${APP_USER_NAME}'@'${h}'..."
       echo "Executing: CREATE USER '${APP_USER_NAME}'@'${h}' IDENTIFIED BY '<hidden>'"
-      if mariadb -h "$DB_HOST" -P "$DB_PORT" \
+      if ! mariadb -h "$DB_HOST" -P "$DB_PORT" \
            -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
            -e "CREATE USER '${APP_USER_NAME}'@'${h}' IDENTIFIED BY '${APP_USER_PASSWORD}';"; then
-        NEW_APP_USER_CREATED=1
-      else
         echo "Error: Failed to create app user '${APP_USER_NAME}'@'${h}'."
         exit 1
       fi
+      NEW_APP_USER_CREATED=1
     else
       echo "App user '${APP_USER_NAME}'@'${h}' already exists."
     fi
   done
 
   echo "Existing hosts for '$APP_USER_NAME' in mysql.user:"
-  mariadb -h "$DB_HOST" -P "$DB_PORT" \
+  if ! mariadb -h "$DB_HOST" -P "$DB_PORT" \
     -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-    -sse "SELECT CONCAT(\"'\", user, \"'@'\", host, \"'\") FROM mysql.user WHERE user = '$APP_USER_NAME';"
+    -e "SELECT CONCAT(\"'\", user, \"'@'\", host, \"'\") FROM mysql.user WHERE user = '$APP_USER_NAME';"; then
+    echo "Warning: Could not list existing hosts for '$APP_USER_NAME'."
+  fi
 
-  # Grant app privileges to all relevant app hosts
   REQUIRED_PRIVS=("SELECT" "INSERT" "UPDATE" "ALTER" "INDEX" "DELETE" "CREATE TEMPORARY TABLES" "LOCK TABLES" "EXECUTE")
 
   echo "Granting required privileges to app user '$APP_USER_NAME' for relevant hosts..."
@@ -293,6 +334,9 @@ else
           -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
           -e "GRANT SELECT, INSERT, UPDATE, ALTER, INDEX, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${APP_USER_NAME}'@'${h}';"; then
       echo "Error: Failed to grant privileges to app user '${APP_USER_NAME}'@'${h}'."
+      echo "--------------"
+      echo "GRANT SELECT, INSERT, UPDATE, ALTER, INDEX, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${APP_USER_NAME}'@'${h}';"
+      echo "--------------"
       exit 1
     fi
   done
@@ -340,12 +384,31 @@ else
     fi
   done
 
+  # Verify at CLIENT_HOST if different
+  if [[ "$app_has_required_permissions" != true && -n "$CLIENT_HOST" && "$CLIENT_HOST" != "$APP_USER_HOST" ]]; then
+    CLIENT_APP_GRANTS_RAW="$(mariadb -N -B -h "$DB_HOST" -P "$DB_PORT" \
+                             -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+                             -e "SHOW GRANTS FOR '${APP_USER_NAME}'@'${CLIENT_HOST}';" 2>/dev/null || true)"
+    mapfile -t CLIENT_APP_GRANTS_LINES < <(printf '%s\n' "$CLIENT_APP_GRANTS_RAW" | sed 's/[[:space:]]\+/ /g')
+    for g in "${CLIENT_APP_GRANTS_LINES[@]}"; do
+      if grep -qiE "^GRANT .*ALL PRIVILEGES.* ON \*\.\* TO " <<<"$g"; then
+        app_has_required_permissions=true; break
+      fi
+      if grep -qiE " ON \*\.\* TO " <<<"$g" && has_all_privs_in_line "$g"; then
+        app_has_required_permissions=true; break
+      fi
+      if grep -qiE " ON (\`?${DB_NAME}\`?)\.\* TO " <<<"$g" && has_all_privs_in_line "$g"; then
+        app_has_required_permissions=true; break
+      fi
+    done
+  fi
+
   if [[ "$app_has_required_permissions" == true ]]; then
-    echo "Verified: '${APP_USER_NAME}'@'${APP_USER_HOST}' has required privileges on '${DB_NAME}'."
+    echo "Verified: app user '${APP_USER_NAME}' has required privileges on '${DB_NAME}'."
   else
-    echo "Error: '${APP_USER_NAME}'@'${APP_USER_HOST}' lacks required privileges on '${DB_NAME}'."
+    echo "Error: '${APP_USER_NAME}' lacks required privileges on '${DB_NAME}'."
     echo "Required (any one GRANT must include all of): ${REQUIRED_PRIVS[*]}"
-    echo "Grants found:"
+    echo "Grants found (APP_USER_HOST):"
     echo "$APP_GRANTS_RAW"
     APP_USER_NAME="$MIGRATOR_NAME"
     APP_USER_PASSWORD="$MIGRATOR_PASSWORD"
