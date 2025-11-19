@@ -14,6 +14,8 @@ import type { ViewDescription } from '../FormParse';
 import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTool } from '../Permissions/PermissionDenied';
 import { userPreferences } from '../Preferences/userPreferences';
+import { UnloadProtectDialog } from '../Router/UnloadProtect';
+import { UnloadProtectsContext } from '../Router/UnloadProtect';
 
 export function Definition({
   table,
@@ -48,11 +50,29 @@ function FormDefinitionDialog({
   readonly viewDescription: ViewDescription | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
+  const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
+  const unloadProtects = React.useContext(UnloadProtectsContext)!;
+
+  const [useFieldLabels = true] = useCachedState('forms', 'useFieldLabels');
+  const initialFieldLabelsValue = React.useRef(useFieldLabels);
+
+  const handleDialogClose = (): void => {
+    if (useFieldLabels === initialFieldLabelsValue.current) {
+      handleClose();
+    } else {
+      if (!showUnloadProtect && unloadProtects.length > 0) {
+        setShowUnloadProtect(true);
+        return;
+      }
+      globalThis.location.reload();
+    }
+  };
+
   return (
     <Dialog
       buttons={commonText.close()}
       header={resourcesText.formDefinition()}
-      onClose={handleClose}
+      onClose={handleDialogClose}
     >
       <UseAutoForm table={table} />
       <UseLabels />
@@ -62,6 +82,16 @@ function FormDefinitionDialog({
           table={table}
           viewSetId={viewDescription.viewSetId}
         />
+      )}
+      {showUnloadProtect && (
+        <UnloadProtectDialog
+          onCancel={(): void => {
+            setShowUnloadProtect(false);
+          }}
+          onConfirm={handleDialogClose}
+        >
+          {formsText.unsavedFormUnloadProtect()}
+        </UnloadProtectDialog>
       )}
     </Dialog>
   );
@@ -93,21 +123,6 @@ function UseLabels(): JSX.Element {
   const [useFieldLabels = true, setUseFieldLabels] = useCachedState(
     'forms',
     'useFieldLabels'
-  );
-
-  const initialValue = React.useRef(useFieldLabels);
-  const isChanged = React.useRef(false);
-  React.useEffect(() => {
-    isChanged.current = useFieldLabels !== initialValue.current;
-  }, [useFieldLabels]);
-
-  React.useEffect(
-    () => () => {
-      if (isChanged.current) {
-        globalThis.location.reload();
-      }
-    },
-    []
   );
 
   return (

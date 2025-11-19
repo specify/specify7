@@ -2,15 +2,17 @@
  * Fetch back-end pick lists and define front-end pick lists
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import type { IR, R, RA } from '../../utils/types';
+import type { IR, R, RA, RR } from '../../utils/types';
 import { months } from '../Atoms/Internationalization';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { fetchCollection } from '../DataModel/collection';
-import { getField } from '../DataModel/helpers';
+import { agentTypes, getField } from '../DataModel/helpers';
 import type { SerializedResource, TableFields } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { deserializeResource } from '../DataModel/serializers';
@@ -24,12 +26,12 @@ let pickLists: R<SpecifyResource<PickList> | undefined> = {};
 // Unsafe, because pick lists might not be defined yet
 export const unsafeGetPickLists = (): typeof pickLists => pickLists;
 
-const agentTypes = [
-  formsText.organization(),
-  formsText.person(),
-  formsText.other(),
-  formsText.group(),
-] as const;
+const agentTypeLabels: RR<keyof typeof agentTypes, LocalizedString> = {
+  ORGANIZATION: formsText.organization(),
+  PERSON: formsText.person(),
+  OTHER: formsText.other(),
+  GROUP: formsText.group(),
+};
 
 const pickListTypes = [
   formsText.userDefinedItems(),
@@ -177,8 +179,8 @@ export const getFrontEndPickLists = f.store<{
     Agent: {
       agentType: definePicklist(
         '_AgentTypeComboBox',
-        agentTypes.map((title, index) =>
-          createPickListItem(index.toString(), title)
+        Object.entries(agentTypes).map(([agentType, value]) =>
+          createPickListItem(value.toString(), agentTypeLabels[agentType])
         )
       ),
     },

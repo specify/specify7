@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
+import { ajax } from '../../utils/ajax';
 import type { Parser } from '../../utils/parser/definitions';
 import { getValidationAttributes } from '../../utils/parser/definitions';
 import { Input } from '../Atoms/Form';
@@ -12,6 +13,7 @@ import { resourceOn } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import { raise } from '../Errors/Crash';
 import { fetchPathAsString } from '../Formatters/formatters';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
 
 export function UiField({
@@ -117,29 +119,108 @@ function Field({
     (field?.isReadOnly === true && !isInSearchDialog);
 
   const validationAttributes = getValidationAttributes(parser);
+  const rightAlignClassName = useRightAlignClassName(parser.type, isReadOnly);
 
-  const [rightAlignNumberFields] = userPreferences.use(
-    'form',
-    'ui',
-    'rightAlignNumberFields'
+  const isNew = resource?.isNew();
+  const isCO = resource?.specifyTable.name === 'CollectionObject';
+  const isComponent = resource?.specifyTable.name === 'Component';
+
+  const isPartOfCOG = isCO
+    ? resource?.get('cojo') !== null && resource?.get('cojo') !== undefined
+    : false;
+
+  const hasCOParent = isComponent
+    ? resource.get('collectionObject') !== null &&
+      resource.get('collectionObject') !== undefined
+    : false;
+
+  const isCatNumberField = field?.name === 'catalogNumber';
+
+  // Check if collection pref wants to inherit primary cat num for empty CO cat num sibilings inside of a COG
+  const [displayPrimaryCatNumberPref] = collectionPreferences.use(
+    'catalogNumberInheritance',
+    'behavior',
+    'inheritance'
   );
+
+  // Check if collection pref wants to inherit parent cat num for empty CO cat num children
+  const [displayParentCatNumberPref] = collectionPreferences.use(
+    'catalogNumberParentInheritance',
+    'behavior',
+    'inheritance'
+  );
+
+  const displayPrimaryCatNumberPlaceHolder =
+    isNew === false &&
+    isCO &&
+    isPartOfCOG &&
+    isCatNumberField &&
+    displayPrimaryCatNumberPref;
+
+  const displayParentCatNumberPlaceHolder =
+    isNew === false &&
+    isComponent &&
+    hasCOParent &&
+    isCatNumberField &&
+    displayParentCatNumberPref;
+
+  const [primaryCatalogNumber, setPrimaryCatalogNumber] = React.useState<
+    string | null
+  >(null);
+
+  const [parentCatalogNumber, setParentCatalogNumber] = React.useState<
+    string | null
+  >(null);
+
+  React.useEffect(() => {
+    if (resource && displayPrimaryCatNumberPlaceHolder) {
+      ajax<string | null>('/inheritance/catalog_number_for_sibling/', {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: resource,
+      })
+        .then((response) => {
+          setPrimaryCatalogNumber(response.data);
+        })
+        .catch((error) => {
+          console.error('Error fetching catalog number:', error);
+        });
+    } else if (resource && displayParentCatNumberPlaceHolder) {
+      ajax<string | null>('/inheritance/catalog_number_from_parent/', {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: resource,
+      })
+        .then((response) => {
+          setParentCatalogNumber(response.data);
+        })
+        .catch((error) => {
+          console.error('Error fetching catalog number:', error);
+        });
+    }
+  }, [
+    resource,
+    displayPrimaryCatNumberPlaceHolder,
+    displayParentCatNumberPlaceHolder,
+  ]);
 
   return (
     <Input.Generic
       forwardRef={validationRef}
+      key={parser.title}
+      max={Number.MAX_SAFE_INTEGER}
       name={name}
-      {...validationAttributes}
-      className={
-        /*
-         * Disable "text-align: right" in non webkit browsers
-         * as they don't support spinner's arrow customization
-         */
-        parser.type === 'number' &&
-        rightAlignNumberFields &&
-        globalThis.navigator.userAgent.toLowerCase().includes('webkit')
-          ? `text-right ${isReadOnly ? '' : 'pr-6'}`
-          : ''
+      placeholder={
+        displayPrimaryCatNumberPlaceHolder &&
+        typeof primaryCatalogNumber === 'string'
+          ? primaryCatalogNumber
+          : displayParentCatNumberPlaceHolder &&
+              typeof parentCatalogNumber === 'string'
+            ? parentCatalogNumber
+            : undefined
       }
+      {...validationAttributes}
+      className={rightAlignClassName}
       id={id}
       isReadOnly={isReadOnly}
       required={'required' in validationAttributes && !isInSearchDialog}
@@ -164,4 +245,25 @@ function Field({
       }}
     />
   );
+}
+
+export function useRightAlignClassName(
+  type: Parser['type'],
+  isReadOnly: boolean
+): string | undefined {
+  const [rightAlignNumberFields] = userPreferences.use(
+    'form',
+    'ui',
+    'rightAlignNumberFields'
+  );
+
+  /*
+   * Disable "text-align: right" in non webkit browsers
+   * as they don't support spinner's arrow customization
+   */
+  return type === 'number' &&
+    rightAlignNumberFields &&
+    globalThis.navigator.userAgent.toLowerCase().includes('webkit')
+    ? `text-right ${isReadOnly ? '' : 'pr-6'}`
+    : '';
 }

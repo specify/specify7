@@ -7,7 +7,7 @@ import { softFail } from '../Errors/Crash';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import type { BusinessRuleDefs } from './businessRuleDefs';
 import { businessRuleDefs } from './businessRuleDefs';
-import { backboneFieldSeparator, djangoLookupSeparator } from './helpers';
+import { backboneFieldSeparator, backendFilter, djangoLookupSeparator } from './helpers';
 import type {
   AnySchema,
   AnyTree,
@@ -80,7 +80,10 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
     const checks: RA<Promise<BusinessRuleResult<SCHEMA> | undefined>> = [
       ...this.checkUnique(processedFieldName),
-      this.invokeRule('fieldChecks', processedFieldName, [this.resource]),
+      this.invokeRule('fieldChecks', processedFieldName, [
+        this.resource,
+        field,
+      ]),
       isTreeResource(this.resource as SpecifyResource<AnySchema>)
         ? treeBusinessRules(
             this.resource as SpecifyResource<AnyTree>,
@@ -313,6 +316,14 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         )
       );
 
+    const stringValuesAreEqual = (
+      left: string,
+      right: string
+    ): boolean =>
+      rule.isDatabaseConstraint
+        ? left.localeCompare(right, undefined, { sensitivity: 'accent' }) === 0
+        : left === right;
+
     const hasSameValues = async (
       other: SpecifyResource<SCHEMA>,
       fieldValues: IR<{
@@ -349,11 +360,11 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
           ) {
             return false;
           }
-          return (
-            otherId === undefined &&
-            otherCid === undefined &&
-            otherValue === value
-          );
+
+          if (otherId !== undefined || otherCid !== undefined) return false;
+          if (typeof otherValue === 'string' && typeof value === 'string')
+            return stringValuesAreEqual(otherValue, value);
+          return otherValue === value;
         }
       );
     };
@@ -382,10 +393,22 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     }
 
     const partialFilters = Object.fromEntries(
-      Object.entries(filters).map(([fieldName, { value }]) => [
-        fieldName,
-        value,
-      ])
+      Object.entries(filters).map(([fieldName, { value }]) => {
+        const leafField = getFieldsFromPath(
+          this.resource.specifyTable,
+          fieldName
+        ).at(-1);
+        if (
+          rule.isDatabaseConstraint &&
+          typeof value === 'string' &&
+          leafField !== undefined &&
+          !leafField.isRelationship
+        )
+          return Object.entries(
+            backendFilter(fieldName).caseInsensitiveEquals(value)
+          ).at(0)!;
+        return [fieldName, value];
+      })
     );
 
     if (Object.values(partialFilters).includes(undefined)) return validResponse;

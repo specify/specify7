@@ -1,4 +1,5 @@
 import type Handsontable from 'handsontable';
+import type { CellChange } from 'handsontable/common';
 import type { Events } from 'handsontable/pluginHooks';
 import type { Action } from 'handsontable/plugins/undoRedo';
 import React from 'react';
@@ -14,6 +15,7 @@ import { overwriteReadOnly } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { LoadingContext } from '../Core/Contexts';
 import { schema } from '../DataModel/schema';
+import type { WbMeta } from './CellMeta';
 import { getHotPlugin } from './handsontable';
 import type { Workbench } from './WbView';
 
@@ -56,30 +58,25 @@ export function useHotHooks({
           : workbench.hot.toPhysicalColumn(visualCol);
       if (physicalCol >= workbench.dataset.columns.length) return;
       const metaArray = workbench.cells.cellMeta?.[physicalRow]?.[physicalCol];
-      if (workbench.cells.getCellMetaFromArray(metaArray, 'isModified'))
-        workbench.cells.runMetaUpdateEffects(
-          td,
-          'isModified',
-          true,
-          visualRow,
-          visualCol
-        );
-      if (workbench.cells.getCellMetaFromArray(metaArray, 'isNew'))
-        workbench.cells.runMetaUpdateEffects(
-          td,
-          'isNew',
-          true,
-          visualRow,
-          visualCol
-        );
-      if (workbench.cells.getCellMetaFromArray(metaArray, 'isSearchResult'))
-        workbench.cells.runMetaUpdateEffects(
-          td,
-          'isSearchResult',
-          true,
-          visualRow,
-          visualCol
-        );
+      const cellMetaToUpdate: RA<keyof WbMeta> = [
+        'isModified',
+        'isNew',
+        'isSearchResult',
+        'isUpdated',
+        'isMatchedAndChanged',
+        'isDeleted',
+      ];
+      cellMetaToUpdate.forEach((metaType) => {
+        if (workbench.cells.getCellMetaFromArray(metaArray, metaType)) {
+          workbench.cells.runMetaUpdateEffects(
+            td,
+            metaType,
+            true,
+            visualRow,
+            visualCol
+          );
+        }
+      });
       if (workbench.mappings?.mappedHeaders?.[physicalCol] === undefined)
         td.classList.add('text-gray-500');
       if (workbench.mappings?.coordinateColumns?.[physicalCol] !== undefined)
@@ -150,6 +147,26 @@ export function useHotHooks({
 
     afterRedo: (data) => afterUndoRedo(workbench, 'redo', data),
 
+    beforeCopy: (data, coords) => {
+      if (workbench.hot === undefined) return;
+      coords.forEach((coord) => {
+        for (let row = coord.startRow; row <= coord.endRow; row++) {
+          const rowIndex = row - coord.startRow;
+          for (let col = coord.startCol; col <= coord.endCol; col++) {
+            /*
+             * If a column is formatted, copying should use the displayed values.
+             * Currently used for the attachments column.
+             */
+            const colIndex = col - coord.startCol;
+            const cellMeta = workbench.hot!.getCellMeta(row, col);
+            if (cellMeta?.renderer && cellMeta?.formattedValue) {
+              data[rowIndex][colIndex] = cellMeta.formattedValue;
+            }
+          }
+        }
+      });
+    },
+
     beforePaste: () => !isReadOnly,
 
     /*
@@ -165,10 +182,12 @@ export function useHotHooks({
     beforeChange: (unfilteredChanges, source) => {
       if (source !== 'CopyPaste.paste') return true;
 
-      const filteredChanges = unfilteredChanges.filter(
-        ([, property]) =>
-          (property as number) < workbench.dataset.columns.length
-      );
+      const filteredChanges = unfilteredChanges
+        .filter((change): change is CellChange => change !== null)
+        .filter(
+          ([, property]) =>
+            (property as number) < workbench.dataset.columns.length
+        );
       if (
         filteredChanges.length === unfilteredChanges.length ||
         workbench.hot === undefined

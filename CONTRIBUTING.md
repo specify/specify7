@@ -98,7 +98,7 @@ Back-end uses Python and Django. It also works closely with a MySQL/MariaDB
 database both though Django ORM and though SQLAlchemy.
 
 Back-end root directory is
-[./specifyweb/](https://github.com/specify/specify7/tree/production/specifyweb)
+[./specifyweb/](https://github.com/specify/specify7/tree/main/specifyweb)
 
 [We have a video of a full back-end overview from January 2023 available here](https://drive.google.com/file/d/1OW60g99aiPw1Y8uHdCUxZCiVnLbFhObG/view?usp=sharing)
 
@@ -106,7 +106,7 @@ Back-end root directory is
 
 No special IDE configuration is required, but some optional plugins would
 improve developer experience -
-https://github.com/specify/specify7/tree/production/specifyweb/frontend/js_src#js_src
+https://github.com/specify/specify7/tree/main/specifyweb/frontend/js_src#js_src
 
 That document includes a short list. For a full list, see
 https://github.com/specifysystems/code-principles
@@ -168,3 +168,167 @@ appropriate.
 | General Inquiry | [support@specifysoftware.org](mailto:support@specifysoftware.org)     |
 | Bug Report      | [GitHub Issue](https://github.com/specify/specify7/issues/new/choose) |
 | User Question   | [Discourse Forum](https://discourse.specifysoftware.org/)             |
+
+
+# Installing Specify 7 Locally
+
+These instructions will guide you through setting up a local development environment for Specify 7.
+
+## 1) Install Required Software
+
+You will need the following software installed on your system:
+
+- **IDE:** [VS Code](https://code.visualstudio.com/) is recommended.
+- **Database GUI (Optional):** A tool like [DBeaver CE](https://dbeaver.io/download/) makes it easier to inspect the database.
+- **Containerization:** [Docker Desktop](https://www.docker.com/products/docker-desktop/) (which includes the Docker Compose plugin).
+- **Version Control:** [Git](https://git-scm.com/downloads).
+- **Database CLI:** A command-line client for MariaDB or MySQL.
+
+**Install the Database CLI (no server needed):**
+
+- **macOS (Homebrew):**
+  ```bash
+  brew install mysql-client
+  echo 'export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc
+  ```
+- **Ubuntu/Debian:**
+  ```bash
+  sudo apt-get update && sudo apt-get install -y mariadb-client
+  ```
+> **Note:** Do NOT install a local MariaDB/MySQL server. The database will run inside a Docker container.
+
+---
+
+## 2) Get the Source Code
+
+Clone the repository to your local machine. This will check out the `main` branch, which is what you should use for contributions.
+
+```bash
+git clone https://github.com/specify/specify7.git
+cd specify7
+```
+
+---
+
+## 3) Set Up Python Virtual Environment
+
+While the application runs in Docker, a Python virtual environment is needed for running helper scripts.
+
+```bash
+# Create the virtual environment
+python3 -m venv ve
+
+# Activate it
+# On macOS/Linux:
+source ve/bin/activate
+# On Windows (PowerShell):
+# .\ve\Scripts\Activate.ps1
+
+# Install dependencies
+pip3 install wheel
+pip3 install --upgrade -r requirements.txt
+```
+
+---
+
+## 4) Download and Prepare the Demo Database
+
+We provide a demo database to get you started quickly.
+
+1.  **Download the demo database:** [sp7demofish.sql.zip](https://drive.google.com/file/d/1b-403b6vHJvEQYaYTuDLsQS_m3QL1yCc/view?usp=sharing).
+2.  **Unzip** the file to get `sp7demofish.sql`.
+3.  **Move** the `sp7demofish.sql` file into the `seed_database/` directory at the root of the project.
+
+---
+
+## 5) Configure Environment Variables
+
+Create a `.env` file in the project root by copying the example file:
+
+```bash
+cp .env.example .env
+```
+
+Now, edit the `.env` file with the following values:
+
+```dotenv
+# .env
+MYSQL_ROOT_PASSWORD=specify
+DATABASE_NAME=sp7demofish
+MASTER_NAME=sp7demofish
+MASTER_PASSWORD=specify
+```
+
+> **Important:** The `DATABASE_NAME` and `MASTER_NAME` must match the name of the database you are using (`sp7demofish`).
+
+---
+
+## 6) Run Specify 7
+
+With all the configuration in place, you can now start the application using Docker Compose.
+
+```bash
+docker compose up --build
+```
+
+The first build will take some time as Docker downloads images and builds the containers. Once it's running, you can access the application at:
+
+- **URL:** [http://localhost/specify](http://localhost/specify)
+- **Login:**
+  - **Username:** `sp7demofish`
+  - **Password:** `specify`
+
+Select any collection to begin.
+
+---
+
+## 7) Connect to the Database (Optional)
+
+You can connect to the MariaDB container to inspect the database using a GUI tool or the command line.
+
+**Connection Details:**
+- **Host:** `localhost`
+- **Port:** `3306`
+- **Database:** `sp7demofish`
+- **Username:** `root`
+- **Password:** `specify` (matches `MYSQL_ROOT_PASSWORD` in your `.env`)
+
+**Using the CLI:**
+
+```bash
+mysql -h 127.0.0.1 -P 3306 -uroot -pspecify
+```
+
+---
+
+## 8) Troubleshooting
+
+**Access Denied / Database Not Found**
+
+If Docker fails to initialize the database correctly, it may be due to old volumes or images.
+
+1.  Stop the running containers (`Ctrl+C` in the terminal or use Docker Desktop).
+2.  Fully clean your Docker environment:
+    ```bash
+    docker compose down -v --remove-orphans # Stops and removes containers, networks, and volumes
+    docker image prune -a # Removes unused images
+    ```
+3.  Rebuild and start the containers:
+    ```bash
+    docker compose up --build
+    ```
+
+**Verify Database State in Container**
+
+If problems persist, you can check the database state directly inside the container:
+
+1.  Find the container ID: `docker ps`
+2.  Open a shell in the container: `docker exec -it <container_id> /bin/bash`
+3.  Connect to MariaDB:
+    ```bash
+    mysql -uroot -p$MYSQL_ROOT_PASSWORD
+    SHOW DATABASES;
+    USE sp7demofish;
+    SHOW TABLES;
+    ```
+This will help confirm if the database was created and seeded correctly.

@@ -1,0 +1,39 @@
+{
+  "geography_tree": {
+    "treedef": {
+      "levels": [
+        {
+          "name": "Earth",
+          "enforced": true,
+          "infullname": false,
+          "rank": 0
+        },
+        {
+          "name": "Continent",
+          "enforced": true,
+          "infullname": false,
+          "rank": 100
+        },
+        {
+          "name": "Country",
+          "enforced": true,
+          "infullname": false,
+          "rank": 200
+        },
+        {
+          "name": "State",
+          "enforced": true,
+          "infullname": false,
+          "rank": 300
+        },
+        {
+          "name": "County",
+          "enforced": true,
+          "infullname": false,
+          "rank": 400
+        }
+      ]
+    },
+    "nodes": []
+  }
+}

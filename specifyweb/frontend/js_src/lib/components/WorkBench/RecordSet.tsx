@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { batchEditText } from '../../localization/batchEdit';
 import { queryText } from '../../localization/query';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
@@ -18,18 +19,25 @@ import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 export function CreateRecordSetButton({
   datasetId,
   datasetName,
+  isUpdate,
   onClose: handleClosed,
   small,
 }: {
   readonly datasetId: number;
   readonly datasetName: string;
+  readonly isUpdate: boolean;
   readonly onClose: () => void;
   readonly small: boolean;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const ButtonComponent = small ? Button.Small : Button.Info;
+  const wbVariant = isUpdate ? 'batch_edit' : 'workbench';
+
   return (
-    <ProtectedAction action="create_recordset" resource="/workbench/dataset">
+    <ProtectedAction
+      action="create_recordset"
+      resource={`/${wbVariant}/dataset`}
+    >
       <ProtectedTool action="create" tool="recordSets">
         <ButtonComponent onClick={handleOpen}>
           {queryText.createRecordSet({
@@ -40,6 +48,7 @@ export function CreateRecordSetButton({
           <CreateRecordSetDialog
             datasetId={datasetId}
             datasetName={datasetName}
+            isUpdate={isUpdate}
             onClose={(): void => {
               handleClose();
               handleClosed();
@@ -54,16 +63,20 @@ export function CreateRecordSetButton({
 function CreateRecordSetDialog({
   datasetId,
   datasetName,
+  isUpdate,
   onClose: handleClose,
 }: {
   readonly datasetId: number;
   readonly datasetName: string;
+  readonly isUpdate: boolean;
   readonly onClose: () => void;
 }): JSX.Element {
   const recordSet = React.useMemo(
     () =>
       new tables.RecordSet.Resource({
-        name: wbText.recordSetName({ dataSet: datasetName }),
+        name: isUpdate
+          ? batchEditText.batchEditRecordSetName({ dataSet: datasetName })
+          : wbText.recordSetName({ dataSet: datasetName }),
       }),
     [datasetId]
   );
@@ -81,7 +94,10 @@ function CreateRecordSetDialog({
             ajax<number>(`/api/workbench/create_recordset/${datasetId}/`, {
               method: 'POST',
               headers: { Accept: 'application/json' },
-              body: formData({ name: recordSet.get('name') }),
+              body: formData({
+                name: recordSet.get('name'),
+                remarks: recordSet.get('remarks') ?? '',
+              }),
               errorMode: 'dismissible',
             }).then(({ data }) =>
               unsafeNavigate(`/specify/record-set/${data}/`)

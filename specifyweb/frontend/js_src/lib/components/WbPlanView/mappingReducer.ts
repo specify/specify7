@@ -21,6 +21,7 @@ import {
 import { defaultColumnOptions, getLinesFromHeaders } from './linesGetter';
 import type {
   AutoMapperSuggestion,
+  BatchEditPrefs,
   MappingLine,
   MappingPath,
   MappingState,
@@ -120,8 +121,8 @@ type ValidationResultClickAction = Action<
   }
 >;
 
-type MustMatchPrefChangeAction = Action<
-  'MustMatchPrefChangeAction',
+type ChangMustMatchPrefAction = Action<
+  'ChangeMustMatchPrefAction',
   {
     readonly mustMatchPreferences: IR<boolean>;
   }
@@ -163,19 +164,27 @@ type ReRunAutoMapperAction = Action<
   }
 >;
 
+type ChangeBatchEditPrefs = Action<
+  'ChangeBatchEditPrefs',
+  {
+    readonly prefs: BatchEditPrefs;
+  }
+>;
+
 export type MappingActions =
   | AddNewHeaderAction
   | AutoMapperSuggestionSelectedAction
   | AutoMapperSuggestionsLoadedAction
+  | ChangeBatchEditPrefs
   | ChangeDefaultValueAction
   | ChangeMatchBehaviorAction
   | ChangeSelectElementValueAction
+  | ChangMustMatchPrefAction
   | ClearMappingLineAction
   | ClearValidationAction
   | CloseSelectElementAction
   | FocusLineAction
   | MappingViewMapAction
-  | MustMatchPrefChangeAction
   | OpenSelectElementAction
   | ReRunAutoMapperAction
   | ResetMappingsAction
@@ -187,6 +196,7 @@ export type MappingActions =
   | ValidationResultClickAction;
 
 export const reducer = generateReducer<MappingState, MappingActions>({
+  /* Workbench Actions (Shared with Batch-Edit) */
   ToggleMappingViewAction: ({ state, action }) => ({
     ...state,
     // REFACTOR: replace setState calls in reducers with useCachedState hooks
@@ -345,7 +355,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     ...state,
     mappingView: mappingPath,
   }),
-  MustMatchPrefChangeAction: ({ state, action }) => ({
+  ChangeMustMatchPrefAction: ({ state, action }) => ({
     ...state,
     changesMade: true,
     mustMatchPreferences: action.mustMatchPreferences,
@@ -401,4 +411,10 @@ export const reducer = generateReducer<MappingState, MappingActions>({
       lines,
     };
   },
+  /* Batch-Edit Specific Actions */
+  ChangeBatchEditPrefs: ({ state, action }) => ({
+    ...state,
+    changesMade: true,
+    batchEditPrefs: action.prefs,
+  }),
 });
