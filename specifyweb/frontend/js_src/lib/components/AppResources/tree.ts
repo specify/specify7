@@ -105,6 +105,13 @@ const prefResource = 'preferences';
 const globalUserType = 'Global Prefs'.toLowerCase();
 const remoteUserType = 'Prefs'.toLowerCase();
 
+const hiddenGlobalResourceNames = new Set(['GlobalPreferences']);
+
+const filterHiddenAppResources = (
+  appResources: RA<SerializedResource<SpAppResource>>
+): RA<SerializedResource<SpAppResource>> =>
+  appResources.filter((resource) => !hiddenGlobalResourceNames.has(resource.name));
+
 const disambiguateGlobalPrefs = (
   appResources: RA<SerializedResource<SpAppResource>>,
   directories: RA<SerializedResource<SpAppResourceDir>>
@@ -172,8 +179,10 @@ const getDirectoryChildren = (
   directory: SerializedResource<SpAppResourceDir>,
   resources: AppResources
 ): DirectoryChildren => ({
-  appResources: resources.appResources.filter(
-    ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri
+  appResources: filterHiddenAppResources(
+    resources.appResources.filter(
+      ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri
+    )
   ),
   viewSets: resources.viewSets.filter(
     ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri

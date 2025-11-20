@@ -39,7 +39,7 @@ exports[`PartialDateUi renders without errors 1`] = `
       <input
         class="not-touched w-full"
         max="9999-12-31"
-        placeholder="MM/DD/YYYY"
+        placeholder="YYYY-MM-DD"
         type="date"
         value=""
       />
