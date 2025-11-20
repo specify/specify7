@@ -13,6 +13,10 @@ def lock_tables(*tables):
     else:
         try:
             # NOTE: Should not do within a transaction.atomic() block
+            # NOTE: See PRs #6490 and #7455
+            # - https://github.com/specify/specify7/issues/6490#issuecomment-3020675840
+            # - https://github.com/specify/specify7/issues/6490#issuecomment-3340619060
+            # - https://github.com/specify/specify7/pull/7455#issue-3459218457
             cursor.execute('lock tables %s' %
                            ' write, '.join(tables) + ' write')
             yield
