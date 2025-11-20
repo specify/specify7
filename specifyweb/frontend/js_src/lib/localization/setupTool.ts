@@ -182,7 +182,7 @@ export const setupToolText = createDictionary({
     'en-us': 'Username',
   },
   specifyUserNameDescription: {
-    'en-us': 'The username for the primary administrator account (e.g., "spadmin").',
+    'en-us': 'The username for the primary administrator account.',
   },
   specifyUserPassword: {
     'en-us': 'Password',

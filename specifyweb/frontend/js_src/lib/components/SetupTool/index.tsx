@@ -23,6 +23,7 @@ import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
 import type { FieldConfig, ResourceConfig } from './setupResources';
 import { FIELD_MAX_LENGTH, resources } from './setupResources';
 import { flattenAllResources } from './utils';
+import { queryText } from '../../localization/query';
 
 type ResourceFormData = Record<string, any>;
 
@@ -424,7 +425,7 @@ export function SetupTool({
         </Container.Center>
       ) : (
         <div className="flex flex-col md:flex-row w-full justify-center gap-8">
-          <div className="w-[18rem] h-full overflow-auto">
+          <div className="w-[18rem] h-full">
             <Container.Center className="p-3 shadow-md max-w-lg h-full">
               <H3 className="text-xl font-semibold mb-4">
                 {setupToolText.overview()}
@@ -506,15 +507,15 @@ function SetupOverview({
   readonly formData: ResourceFormData;
   readonly currentStep: number;
 }): JSX.Element {
-  // Display all previously filled out forms.
+  // Displays all previously filled out forms in a grid format. 
   return (
     <div className="space-y-4 max-h-[70vh] overflow-auto ">
-      <table className="w-full text-sm border-collapse table-fixed">
+      <table className="w-full text-sm border-collapse table-auto rounded-md bg-white dark:bg-neutral-800">
         <colgroup>
           <col style={{ width: '60%' }} />
           <col style={{ width: '40%' }} />
         </colgroup>
-        <tbody>
+        <tbody className="divide-y divide-gray-500">
           {resources.map((resource, step) => {
             // Display only the forms that have been visited.
             if (
@@ -522,40 +523,61 @@ function SetupOverview({
               step <= currentStep) &&
               checkFormCondition(formData, resource)
             ) {
+              // Decide how to render each field.
+              const fieldDisplay = (field: FieldConfig, parentName?: string) => {
+                const fieldName = parentName === undefined ? field.name : `${parentName}.${field.name}`;
+                const rawValue = formData[resource.resourceName]?.[fieldName];
+                let value = rawValue?.toString() ?? '-';
+                if (field.type === 'object') {
+                  // Construct a sub list of properties
+                  field.fields?.map((child_field) => fieldDisplay(child_field, field.name));
+                  return (
+                    <React.Fragment key={`${resource.resourceName}-${field.name}`}>
+                      <tr key={`${resource.resourceName}`}>
+                        <td className="font-medium py-1 pr-2 pl-2" colSpan={2}>
+                          {field.label}
+                        </td>
+                      </tr>
+                      {field.fields?.map((child) => (
+                        <React.Fragment key={`${resource.resourceName}-${field.name}-${child.name}`}>
+                          {fieldDisplay(
+                            child,
+                            parentName ? `${parentName}.${field.name}` : field.name
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </React.Fragment>
+                  );
+                } else if (field.type === 'password') {
+                  value = rawValue ? '***' : '-';
+                } else if (
+                  field.type === 'select' &&
+                  Array.isArray(field.options)
+                ) {
+                  const match = field.options.find(
+                    (option) => String(option.value) === value
+                  );
+                  value = match ? (match.label ?? match.value) : value;
+                } else if (
+                  field.type == 'boolean'
+                ) {
+                  value = rawValue === true ? queryText.yes() : commonText.no();
+                }
+                return (
+                  <tr key={`${resource.resourceName}-${field.name}`}>
+                    <td className={`py-1 pr-2 ${parentName ? 'pl-5' : 'pl-2'}`}>{field.label}</td>
+                    <td className="py-1 pl-2 border-l border-gray-500">{value}</td>
+                  </tr>
+                );
+              };
               return (
                 <React.Fragment key={resource.resourceName}>
                   <tr key={`${resource.resourceName}`}>
-                    <td className="font-bold py-1 pr-2" colSpan={2}>
+                    <td className="font-bold py-1 pr-2 pl-2 bg-gray-200 dark:bg-neutral-700" colSpan={2}>
                       {resource.label}
                     </td>
                   </tr>
-                  {resource.fields.map((field) => {
-                    let value =
-                      formData[resource.resourceName]?.[
-                        field.name
-                      ]?.toString() ?? '-';
-                    if (field.type === 'object') {
-                      value = '●';
-                    } else if (field.type === 'password') {
-                      value = formData[resource.resourceName]?.[field.name]
-                        ? '***'
-                        : '-';
-                    } else if (
-                      field.type === 'select' &&
-                      Array.isArray(field.options)
-                    ) {
-                      const match = field.options.find(
-                        (option) => String(option.value) === value
-                      );
-                      value = match ? (match.label ?? match.value) : value;
-                    }
-                    return (
-                      <tr key={`${resource.resourceName}-${field.name}`}>
-                        <td className="font-medium py-1 pr-2">{field.label}</td>
-                        <td className="py-1">{value}</td>
-                      </tr>
-                    );
-                  })}
+                  {resource.fields.map((field) => fieldDisplay(field))}
                 </React.Fragment>
               );
             }
