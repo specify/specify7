@@ -26,8 +26,18 @@ from specifyweb.backend.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, \
     check_permission_targets, skip_collection_access_check, query_pt, \
     CollectionAccessPT
-from specifyweb.specify.models import Collection, Collectionobject, Institution, \
-    Specifyuser, Spprincipal, Spversion, Collectionobjecttype
+from specifyweb.specify.models import (
+    Collection,
+    Collectionobject,
+    Institution,
+    Specifyuser,
+    Spprincipal,
+    Spversion,
+    Collectionobjecttype,
+    Spappresource,
+    Spappresourcedata,
+    Spappresourcedir,
+)
 from specifyweb.specify.models_utils.schema import base_schema
 from specifyweb.specify.models_utils.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.api.serializers import uri_for_model
@@ -634,6 +644,46 @@ def view_helper(request, limit):
 def remote_prefs(request):
     "Return the 'remoteprefs' java properties file from the database."
     return HttpResponse(get_remote_prefs(), content_type='text/x-java-properties')
+
+@require_http_methods(['PUT'])
+@login_maybe_required
+@cache_control(max_age=0, private=True)
+def global_preferences_resource(request):
+    "Update the legacy 'preferences' app resource that backs the App Resources editor."
+    data = request.body.decode('utf-8', 'replace')
+    collection = request.specify_collection
+    discipline = collection.discipline if collection is not None else None
+
+    directory, _ = Spappresourcedir.objects.get_or_create(
+        collection=collection,
+        discipline=discipline,
+        ispersonal=False,
+        specifyuser=None,
+        usertype='Global Prefs',
+    )
+
+    resource, _ = Spappresource.objects.get_or_create(
+        name='preferences',
+        spappresourcedir=directory,
+        defaults={
+            'level': 0,
+            'mimetype': 'text/x-java-properties',
+            'metadata': '',
+            'specifyuser': request.specify_user,
+        },
+    )
+    resource.mimetype = 'text/x-java-properties'
+    resource.metadata = ''
+    resource.save()
+
+    spappresourcedata, _ = Spappresourcedata.objects.get_or_create(
+        spappresource=resource,
+        defaults={'data': data},
+    )
+    spappresourcedata.data = data
+    spappresourcedata.save()
+
+    return HttpResponse('', content_type='text/plain', status=204)
 
 @require_http_methods(['GET', 'HEAD'])
 def get_server_time(request):

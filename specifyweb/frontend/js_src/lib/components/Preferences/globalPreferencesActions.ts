@@ -1,3 +1,4 @@
+import { ajax } from '../../utils/ajax';
 import { remotePrefs } from '../InitialContext/remotePrefs';
 import {
   buildGlobalPreferencesPayload,
@@ -7,6 +8,7 @@ import {
 } from './globalPreferencesResource';
 import { globalPreferences } from './globalPreferences';
 import type { GlobalPreferenceValues } from './globalPreferences';
+import { notifyGlobalPreferencesUpdated } from './globalPreferencesSync';
 import {
   getGlobalPreferenceFallback,
   globalPreferencesToKeyValue,
@@ -14,6 +16,18 @@ import {
   serializeGlobalPreferences,
   setGlobalPreferenceFallback,
 } from './globalPreferencesUtils';
+
+const GLOBAL_PREFERENCES_APP_RESOURCE_URL =
+  '/context/global-preferences-resource/';
+
+async function syncAppResourceGlobalPreferences(data: string): Promise<void> {
+  await ajax(GLOBAL_PREFERENCES_APP_RESOURCE_URL, {
+    method: 'PUT',
+    body: data,
+    headers: { 'Content-Type': 'text/plain' },
+    errorMode: 'silent',
+  });
+}
 
 export async function saveGlobalPreferences(): Promise<void> {
   const rawValues = globalPreferences.getRaw() as Partial<GlobalPreferenceValues>;
@@ -45,4 +59,13 @@ export async function saveGlobalPreferences(): Promise<void> {
   });
 
   setGlobalPreferenceFallback(mergedValues);
+  notifyGlobalPreferencesUpdated(data);
+  try {
+    await syncAppResourceGlobalPreferences(data);
+  } catch (error) {
+    console.error(
+      'Failed to synchronize App Resources global preferences',
+      error
+    );
+  }
 }

@@ -15,6 +15,7 @@ import { collectionPreferences } from './collectionPreferences';
 import { globalPreferences } from './globalPreferences';
 import type { GenericPreferences } from './types';
 import type { PartialPreferences } from './BasePreferences';
+import { subscribeToGlobalPreferencesUpdates } from './globalPreferencesSync';
 import {
   parseGlobalPreferences,
   serializeGlobalPreferences,
@@ -135,6 +136,10 @@ function createPreferencesEditor<DEFINITIONS extends GenericPreferences>(
       [data]
     );
     const metadataRef = React.useRef<unknown>(initialMetadata);
+    const dataRef = React.useRef<string>(data ?? '');
+    React.useEffect(() => {
+      dataRef.current = data ?? '';
+    }, [data]);
 
     const [preferencesInstance] = useLiveState<BasePreferences<DEFINITIONS>>(
       React.useCallback(() => {
@@ -170,6 +175,14 @@ function createPreferencesEditor<DEFINITIONS extends GenericPreferences>(
         initialRaw as PartialPreferences<GenericPreferences> as PartialPreferences<DEFINITIONS>
       );
     }, [initialMetadata, initialRaw, preferencesInstance]);
+
+    React.useEffect(() => {
+      if (config.prefType !== 'global') return undefined;
+      const unsubscribe = subscribeToGlobalPreferencesUpdates((newData) => {
+        if (newData !== dataRef.current) onChange(newData);
+      });
+      return unsubscribe;
+    }, [config.prefType, onChange]);
 
     const Provider = Context.Provider;
     const contentProps = prefType === undefined ? {} : { prefType };
