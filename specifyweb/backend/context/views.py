@@ -654,34 +654,50 @@ def global_preferences_resource(request):
     collection = request.specify_collection
     discipline = collection.discipline if collection is not None else None
 
-    directory, _ = Spappresourcedir.objects.get_or_create(
-        collection=collection,
-        discipline=discipline,
-        ispersonal=False,
-        specifyuser=None,
-        usertype='Global Prefs',
-    )
+    def resolve_directory(usertype: str) -> Spappresourcedir:
+        queryset = Spappresourcedir.objects.filter(
+            collection=collection,
+            discipline=discipline,
+            ispersonal=False,
+            specifyuser=None,
+            usertype=usertype,
+        ).order_by('id')
+        directory = queryset.first()
+        if directory is not None:
+            return directory
+        return Spappresourcedir.objects.create(
+            collection=collection,
+            discipline=discipline,
+            ispersonal=False,
+            specifyuser=None,
+            usertype=usertype,
+        )
 
-    resource, _ = Spappresource.objects.get_or_create(
-        name='preferences',
-        spappresourcedir=directory,
-        defaults={
-            'level': 0,
-            'mimetype': 'text/x-java-properties',
-            'metadata': '',
-            'specifyuser': request.specify_user,
-        },
-    )
-    resource.mimetype = 'text/x-java-properties'
-    resource.metadata = ''
-    resource.save()
+    def upsert_preferences_resource(usertype: str) -> None:
+        directory = resolve_directory(usertype)
+        resource, _ = Spappresource.objects.get_or_create(
+            name='preferences',
+            spappresourcedir=directory,
+            defaults={
+                'level': 0,
+                'mimetype': 'text/x-java-properties',
+                'metadata': '',
+                'specifyuser': request.specify_user,
+            },
+        )
+        resource.mimetype = 'text/x-java-properties'
+        resource.metadata = ''
+        resource.save()
 
-    spappresourcedata, _ = Spappresourcedata.objects.get_or_create(
-        spappresource=resource,
-        defaults={'data': data},
-    )
-    spappresourcedata.data = data
-    spappresourcedata.save()
+        spappresourcedata, _ = Spappresourcedata.objects.get_or_create(
+            spappresource=resource,
+            defaults={'data': data},
+        )
+        spappresourcedata.data = data
+        spappresourcedata.save()
+
+    upsert_preferences_resource('Global Prefs')
+    upsert_preferences_resource('Prefs')
 
     return HttpResponse('', content_type='text/plain', status=204)
 
