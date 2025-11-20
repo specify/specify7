@@ -638,6 +638,61 @@ def view_helper(request, limit):
 
     return get_views(collection, request.specify_user, view_name, limit, table)
 
+ALLOWED_GLOBAL_PREFERENCE_KEYS = (
+    'auditing.do_audits',
+    'auditing.audit_field_updates',
+    'ui.formatting.scrdateformat',
+    'ui.formatting.scrmonthformat',
+    'attachment.preview_size',
+)
+
+
+def filter_global_preferences_text(data: str) -> str:
+    result = {}
+    for line in data.splitlines():
+        if not line or line.strip().startswith('#') or '=' not in line:
+            continue
+        key, value = line.split('=', 1)
+        result[key.strip()] = value.strip()
+
+    filtered = [
+        f'{key}={result[key]}'
+        for key in ALLOWED_GLOBAL_PREFERENCE_KEYS
+        if key in result
+    ]
+    return '\n'.join(filtered)
+
+
+def find_preferences_resource_data(collection, discipline, usertype: str) -> str:
+    directory = (
+        Spappresourcedir.objects.filter(
+            collection=collection,
+            discipline=discipline,
+            ispersonal=False,
+            specifyuser=None,
+            usertype=usertype,
+        )
+        .order_by('id')
+        .first()
+    )
+    if directory is None:
+        return ''
+
+    resource = (
+        Spappresource.objects.filter(name='preferences', spappresourcedir=directory)
+        .order_by('id')
+        .first()
+    )
+    if resource is None:
+        return ''
+
+    data = (
+        Spappresourcedata.objects.filter(spappresource=resource)
+        .order_by('id')
+        .first()
+    )
+    return data.data if data is not None else ''
+
 @require_http_methods(['GET', 'HEAD'])
 @login_maybe_required
 @cache_control(max_age=86400, private=True)
@@ -645,7 +700,7 @@ def remote_prefs(request):
     "Return the 'remoteprefs' java properties file from the database."
     return HttpResponse(get_remote_prefs(), content_type='text/x-java-properties')
 
-@require_http_methods(['PUT'])
+@require_http_methods(['GET', 'PUT'])
 @login_maybe_required
 @cache_control(max_age=0, private=True)
 def global_preferences_resource(request):
@@ -653,6 +708,13 @@ def global_preferences_resource(request):
     data = request.body.decode('utf-8', 'replace')
     collection = request.specify_collection
     discipline = collection.discipline if collection is not None else None
+
+    if request.method == 'GET':
+        content = find_preferences_resource_data(collection, discipline, 'Global Prefs')
+        if not content:
+            content = find_preferences_resource_data(collection, discipline, 'Prefs')
+        filtered = filter_global_preferences_text(content)
+        return HttpResponse(filtered, content_type='text/plain')
 
     def resolve_directory(usertype: str) -> Spappresourcedir:
         queryset = Spappresourcedir.objects.filter(
