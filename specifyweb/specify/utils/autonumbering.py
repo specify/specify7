@@ -131,21 +131,6 @@ def get_tables_to_lock(collection, obj, field_names) -> set[str]:
 
     return tables
 
-def get_tables_to_lock_strict(obj) -> list[str]:
-    obj_table = obj._meta.db_table
-
-    needed = {obj_table}
-    needed |= {"autonumberingscheme", "autonumsch_coll"}  # or _dsp / _div
-    needed |= {UniquenessRule._meta.db_table, UniquenessRuleField._meta.db_table}
-
-    Discipline = apps.get_model("specify", "Discipline")
-    needed.add(Discipline._meta.db_table)
-
-    if obj_table == "component":
-        needed.add("collectionobject")
-
-    return sorted(needed)
-
 def get_tables_from_field_path(model: str, field_path: str) -> list[str]:
     tables = []
     table = datamodel.get_table_strict(model)
