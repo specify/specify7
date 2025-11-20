@@ -1,13 +1,13 @@
 import { ajax } from '../../utils/ajax';
 import { remotePrefs } from '../InitialContext/remotePrefs';
+import type { GlobalPreferenceValues } from './globalPreferences';
+import { globalPreferences } from './globalPreferences';
 import {
   buildGlobalPreferencesPayload,
   getGlobalPreferencesMetadata,
   setGlobalPreferencesMetadata,
   upsertGlobalPreferencesResource,
 } from './globalPreferencesResource';
-import { globalPreferences } from './globalPreferences';
-import type { GlobalPreferenceValues } from './globalPreferences';
 import { notifyGlobalPreferencesUpdated } from './globalPreferencesSync';
 import {
   getGlobalPreferenceFallback,
@@ -30,12 +30,13 @@ async function syncAppResourceGlobalPreferences(data: string): Promise<void> {
 }
 
 export async function saveGlobalPreferences(): Promise<void> {
-  const rawValues = globalPreferences.getRaw() as Partial<GlobalPreferenceValues>;
+  const rawValues =
+    globalPreferences.getRaw() as Partial<GlobalPreferenceValues>;
   const fallback = getGlobalPreferenceFallback();
   const metadata = getGlobalPreferencesMetadata();
 
   const { data, metadata: updatedMetadata } = serializeGlobalPreferences(
-    rawValues as Partial<GlobalPreferenceValues>,
+    rawValues,
     metadata,
     { fallback }
   );
@@ -47,10 +48,7 @@ export async function saveGlobalPreferences(): Promise<void> {
     errorMode: 'dismissible',
   });
 
-  const mergedValues = mergeWithDefaultValues(
-    rawValues as Partial<GlobalPreferenceValues>,
-    fallback
-  );
+  const mergedValues = mergeWithDefaultValues(rawValues, fallback);
   const keyValues = globalPreferencesToKeyValue(mergedValues);
 
   const mutableRemotePrefs = remotePrefs as Record<string, string>;

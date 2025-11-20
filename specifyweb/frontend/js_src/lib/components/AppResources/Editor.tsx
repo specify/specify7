@@ -31,6 +31,20 @@ import { useResourceView } from '../Forms/BaseResourceView';
 import { SaveButton } from '../Forms/Save';
 import { AppTitle } from '../Molecules/AppTitle';
 import { hasToolPermission } from '../Permissions/helpers';
+import type { GlobalPreferenceValues } from '../Preferences/globalPreferences';
+import { globalPreferences } from '../Preferences/globalPreferences';
+import { saveGlobalPreferences } from '../Preferences/globalPreferencesActions';
+import { ensureGlobalPreferencesLoaded } from '../Preferences/globalPreferencesLoader';
+import {
+  getGlobalPreferencesMetadata,
+  setGlobalPreferencesMetadata,
+} from '../Preferences/globalPreferencesResource';
+import { subscribeToGlobalPreferencesUpdates } from '../Preferences/globalPreferencesSync';
+import {
+  getGlobalPreferenceFallback,
+  parseGlobalPreferences,
+  serializeGlobalPreferences,
+} from '../Preferences/globalPreferencesUtils';
 import { isOverlay, OverlayContext } from '../Router/Router';
 import { clearUrlCache } from '../RouterCommands/CacheBuster';
 import { isXmlSubType } from './Create';
@@ -46,20 +60,6 @@ import { AppResourcesTab, useEditorTabs } from './Tabs';
 import { getScope } from './tree';
 import type { ScopedAppResourceDir } from './types';
 import { appResourceSubTypes } from './types';
-import { ensureGlobalPreferencesLoaded } from '../Preferences/globalPreferencesLoader';
-import { globalPreferences } from '../Preferences/globalPreferences';
-import { saveGlobalPreferences } from '../Preferences/globalPreferencesActions';
-import {
-  getGlobalPreferencesMetadata,
-  setGlobalPreferencesMetadata,
-} from '../Preferences/globalPreferencesResource';
-import {
-  getGlobalPreferenceFallback,
-  parseGlobalPreferences,
-  serializeGlobalPreferences,
-} from '../Preferences/globalPreferencesUtils';
-import { subscribeToGlobalPreferencesUpdates } from '../Preferences/globalPreferencesSync';
-import type { GlobalPreferenceValues } from '../Preferences/globalPreferences';
 
 export const AppResourceContext = React.createContext<
   SpecifyResource<SpAppResource>
@@ -266,14 +266,13 @@ export function AppResourceEditor({
 
   React.useEffect(() => {
     if (currentSubType !== 'remotePreferences') return undefined;
-    const unsubscribe = subscribeToGlobalPreferencesUpdates((newData) => {
+    return subscribeToGlobalPreferencesUpdates((newData) => {
       const text = newData ?? '';
       setResourceData((current) =>
         current === undefined ? current : { ...current, data: text }
       );
       setLastData(text);
     });
-    return unsubscribe;
   }, [currentSubType, setLastData, setResourceData]);
   const handleSetCleanup = React.useCallback(
     (callback: (() => Promise<void>) | undefined) => setCleanup(() => callback),
@@ -380,7 +379,7 @@ export function AppResourceEditor({
                     const { raw, metadata } = parseGlobalPreferences(savedData);
                     setGlobalPreferencesMetadata(metadata);
                     globalPreferences.setRaw(
-                      raw as Partial<GlobalPreferenceValues>
+                      raw 
                     );
                     saveGlobalPreferences().catch((error) => {
                       console.error(

@@ -9,19 +9,19 @@ import { BasePreferences } from '../Preferences/BasePreferences';
 import { userPreferenceDefinitions } from '../Preferences/UserDefinitions';
 import { userPreferences } from '../Preferences/userPreferences';
 import { useTopChild } from '../Preferences/useTopChild';
-import { collectionPreferenceDefinitions } from './CollectionDefinitions';
-import { globalPreferenceDefinitions } from './GlobalDefinitions';
-import { collectionPreferences } from './collectionPreferences';
-import { globalPreferences } from './globalPreferences';
-import type { GenericPreferences } from './types';
 import type { PartialPreferences } from './BasePreferences';
+import { collectionPreferenceDefinitions } from './CollectionDefinitions';
+import { collectionPreferences } from './collectionPreferences';
+import { globalPreferenceDefinitions } from './GlobalDefinitions';
+import type { GlobalPreferenceValues } from './globalPreferences';
+import { globalPreferences } from './globalPreferences';
 import { subscribeToGlobalPreferencesUpdates } from './globalPreferencesSync';
+import type { PropertyLine } from './globalPreferencesUtils';
 import {
   parseGlobalPreferences,
   serializeGlobalPreferences,
 } from './globalPreferencesUtils';
-import type { GlobalPreferenceValues } from './globalPreferences';
-import type { PropertyLine } from './globalPreferencesUtils';
+import type { GenericPreferences } from './types';
 
 type EditorDependencies = Pick<AppResourceTabProps, 'data' | 'onChange'>;
 
@@ -35,9 +35,7 @@ type PreferencesEditorConfig<DEFINITIONS extends GenericPreferences> = {
   readonly dependencyResolver?: (
     inputs: EditorDependencies
   ) => React.DependencyList;
-  readonly parse?: (
-    data: string | null
-  ) => {
+  readonly parse?: (data: string | null) => {
     readonly raw: PartialPreferences<DEFINITIONS>;
     readonly metadata?: unknown;
   };
@@ -60,7 +58,9 @@ const parseJsonPreferences = <DEFINITIONS extends GenericPreferences>(
   readonly raw: PartialPreferences<DEFINITIONS>;
   readonly metadata?: undefined;
 } => ({
-  raw: JSON.parse(data === null || data.length === 0 ? '{}' : data) as PartialPreferences<DEFINITIONS>,
+  raw: JSON.parse(
+    data === null || data.length === 0 ? '{}' : data
+  ) as PartialPreferences<DEFINITIONS>,
 });
 
 const serializeJsonPreferences = <DEFINITIONS extends GenericPreferences>(
@@ -77,11 +77,13 @@ const parseGlobalPreferenceData = (
   data: string | null
 ): {
   readonly raw: PartialPreferences<typeof globalPreferenceDefinitions>;
-  readonly metadata: ReadonlyArray<PropertyLine>;
+  readonly metadata: readonly PropertyLine[];
 } => {
   const { raw, metadata } = parseGlobalPreferences(data);
   return {
-    raw: raw as unknown as PartialPreferences<typeof globalPreferenceDefinitions>,
+    raw: raw as unknown as PartialPreferences<
+      typeof globalPreferenceDefinitions
+    >,
     metadata,
   };
 };
@@ -91,11 +93,11 @@ const serializeGlobalPreferenceData = (
   metadata: unknown
 ): {
   readonly data: string;
-  readonly metadata: ReadonlyArray<PropertyLine>;
+  readonly metadata: readonly PropertyLine[];
 } => {
   const result = serializeGlobalPreferences(
     raw as unknown as GlobalPreferenceValues,
-    (metadata as ReadonlyArray<PropertyLine> | undefined) ?? []
+    (metadata as readonly PropertyLine[] | undefined) ?? []
   );
   return {
     data: result.data,
@@ -123,8 +125,7 @@ function createPreferencesEditor<DEFINITIONS extends GenericPreferences>(
     const dependencies = dependencyResolver({ data, onChange });
     const parse =
       config.parse ??
-      ((rawData: string | null) =>
-        parseJsonPreferences<DEFINITIONS>(rawData));
+      ((rawData: string | null) => parseJsonPreferences<DEFINITIONS>(rawData));
     const serialize =
       config.serialize ??
       ((raw: PartialPreferences<DEFINITIONS>, metadata: unknown) =>
@@ -154,14 +155,14 @@ function createPreferencesEditor<DEFINITIONS extends GenericPreferences>(
           syncChanges: false,
         });
 
-        preferences.setRaw(initialRaw as PartialPreferences<GenericPreferences> as PartialPreferences<DEFINITIONS>);
+        preferences.setRaw(
+          initialRaw as PartialPreferences<GenericPreferences> as PartialPreferences<DEFINITIONS>
+        );
 
         preferences.events.on('update', () => {
-          const result = serialize(
-            preferences.getRaw() as PartialPreferences<DEFINITIONS>,
-            metadataRef.current
-          );
-          if (result.metadata !== undefined) metadataRef.current = result.metadata;
+          const result = serialize(preferences.getRaw(), metadataRef.current);
+          if (result.metadata !== undefined)
+            metadataRef.current = result.metadata;
           onChange(result.data);
         });
 
@@ -178,10 +179,9 @@ function createPreferencesEditor<DEFINITIONS extends GenericPreferences>(
 
     React.useEffect(() => {
       if (config.prefType !== 'global') return undefined;
-      const unsubscribe = subscribeToGlobalPreferencesUpdates((newData) => {
+      return subscribeToGlobalPreferencesUpdates((newData) => {
         if (newData !== dataRef.current) onChange(newData);
       });
-      return unsubscribe;
     }, [config.prefType, onChange]);
 
     const Provider = Context.Provider;
@@ -232,8 +232,10 @@ export const CollectionPreferencesEditor = createPreferencesEditor({
   developmentGlobal: 'editingCollectionPreferences',
   prefType: 'collection',
   dependencyResolver: ({ data, onChange }) => [data, onChange],
-  parse: (data) => parseJsonPreferences<typeof collectionPreferenceDefinitions>(data),
-  serialize: (raw) => serializeJsonPreferences<typeof collectionPreferenceDefinitions>(raw),
+  parse: (data) =>
+    parseJsonPreferences<typeof collectionPreferenceDefinitions>(data),
+  serialize: (raw) =>
+    serializeJsonPreferences<typeof collectionPreferenceDefinitions>(raw),
 });
 
 export const GlobalPreferencesEditor = createPreferencesEditor({
