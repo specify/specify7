@@ -15,6 +15,11 @@ def get_remote_prefs() -> str:
 
 def get_global_prefs() -> str:
     res = Spappresourcedata.objects.filter(
+        spappresource__name='GlobalPreferences')
+    if res.exists():
+        return '\n'.join(force_str(r.data) for r in res)
+
+    legacy_res = Spappresourcedata.objects.filter(
         spappresource__name='preferences',
         spappresource__spappresourcedir__usertype='Global Prefs')
-    return '\n'.join(force_str(r.data) for r in res)
+    return '\n'.join(force_str(r.data) for r in legacy_res)

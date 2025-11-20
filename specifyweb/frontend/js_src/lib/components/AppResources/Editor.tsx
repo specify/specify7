@@ -31,6 +31,20 @@ import { useResourceView } from '../Forms/BaseResourceView';
 import { SaveButton } from '../Forms/Save';
 import { AppTitle } from '../Molecules/AppTitle';
 import { hasToolPermission } from '../Permissions/helpers';
+import type { GlobalPreferenceValues } from '../Preferences/globalPreferences';
+import { globalPreferences } from '../Preferences/globalPreferences';
+import { saveGlobalPreferences } from '../Preferences/globalPreferencesActions';
+import { ensureGlobalPreferencesLoaded } from '../Preferences/globalPreferencesLoader';
+import {
+  getGlobalPreferencesMetadata,
+  setGlobalPreferencesMetadata,
+} from '../Preferences/globalPreferencesResource';
+import { subscribeToGlobalPreferencesUpdates } from '../Preferences/globalPreferencesSync';
+import {
+  getGlobalPreferenceFallback,
+  parseGlobalPreferences,
+  serializeGlobalPreferences,
+} from '../Preferences/globalPreferencesUtils';
 import { isOverlay, OverlayContext } from '../Router/Router';
 import { clearUrlCache } from '../RouterCommands/CacheBuster';
 import { isXmlSubType } from './Create';
@@ -92,6 +106,10 @@ export function AppResourceEditor({
     () => deserializeResource(resource as SerializedResource<SpAppResource>),
     [resource]
   );
+  const currentSubType = f.maybe(
+    toResource(resource, 'SpAppResource'),
+    getAppResourceType
+  );
   useErrorContext('appResource', resource);
 
   const {
@@ -137,7 +155,7 @@ export function AppResourceEditor({
   });
   const isInOverlay = isOverlay(React.useContext(OverlayContext));
 
-  const tabs = useEditorTabs(resource);
+  const tabs = useEditorTabs(resource, directory);
   // Return to first tab on resource type change
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const [tabIndex, setTab] = useLiveState(React.useCallback(() => 0, [tabs]));
@@ -216,6 +234,46 @@ export function AppResourceEditor({
   const [cleanup, setCleanup] = React.useState<
     (() => Promise<void>) | undefined
   >(undefined);
+
+  React.useEffect(() => {
+    if (currentSubType !== 'remotePreferences') return undefined;
+    let cancelled = false;
+    ensureGlobalPreferencesLoaded()
+      .then(() => {
+        if (cancelled) return;
+        const metadata = getGlobalPreferencesMetadata();
+        const fallback = getGlobalPreferenceFallback();
+        const { data } = serializeGlobalPreferences(
+          globalPreferences.getRaw() as Partial<GlobalPreferenceValues>,
+          metadata,
+          { fallback }
+        );
+        setResourceData((current) =>
+          current === undefined ? current : { ...current, data }
+        );
+        setLastData(data);
+      })
+      .catch((error) =>
+        console.error(
+          'Failed to initialize App Resource global preferences from shared preferences',
+          error
+        )
+      );
+    return (): void => {
+      cancelled = true;
+    };
+  }, [currentSubType, setLastData, setResourceData]);
+
+  React.useEffect(() => {
+    if (currentSubType !== 'remotePreferences') return undefined;
+    return subscribeToGlobalPreferencesUpdates((newData) => {
+      const text = newData ?? '';
+      setResourceData((current) =>
+        current === undefined ? current : { ...current, data: text }
+      );
+      setLastData(text);
+    });
+  }, [currentSubType, setLastData, setResourceData]);
   const handleSetCleanup = React.useCallback(
     (callback: (() => Promise<void>) | undefined) => setCleanup(() => callback),
     []
@@ -291,9 +349,10 @@ export function AppResourceEditor({
                   typeof lastDataRef.current === 'function'
                     ? lastDataRef.current()
                     : lastDataRef.current;
+                const savedData = data ?? resourceData.data ?? '';
                 const appResourceData = deserializeResource({
                   ...resourceData,
-                  data: data === undefined ? resourceData.data : data,
+                  data: savedData,
                   spAppResource:
                     toTable(appResource, 'SpAppResource')?.get(
                       'resource_uri'
@@ -314,6 +373,27 @@ export function AppResourceEditor({
                     appResourceData
                   ) as SerializedResource<SpAppResourceData>
                 );
+
+                if (subType === 'remotePreferences') {
+                  try {
+                    const { raw, metadata } = parseGlobalPreferences(savedData);
+                    setGlobalPreferencesMetadata(metadata);
+                    globalPreferences.setRaw(
+                      raw 
+                    );
+                    saveGlobalPreferences().catch((error) => {
+                      console.error(
+                        'Failed to sync global preferences after saving remote preferences',
+                        error
+                      );
+                    });
+                  } catch (error) {
+                    console.error(
+                      'Failed to parse remote preferences when syncing to global preferences',
+                      error
+                    );
+                  }
+                }
 
                 handleSaved(resource, {
                   ...resourceDirectory,

@@ -15,6 +15,7 @@ test('allAppResources', () => {
       "otherJsonResource",
       "otherPropertiesResource",
       "otherXmlResource",
+      "remotePreferences",
       "report",
       "rssExportFeed",
       "typeSearches",

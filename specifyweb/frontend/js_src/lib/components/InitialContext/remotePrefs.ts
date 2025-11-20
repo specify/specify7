@@ -12,6 +12,11 @@ import type { IR, R, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import type { JavaType } from '../DataModel/specifyField';
 import { cacheableUrl, contextUnlockedPromise } from './index';
+import {
+  mergeWithDefaultValues,
+  partialPreferencesFromMap,
+  setGlobalPreferenceFallback,
+} from '../Preferences/globalPreferencesUtils';
 
 const preferences: R<string> = {};
 
@@ -35,7 +40,13 @@ export const fetchContext = contextUnlockedPromise.then(async (entrypoint) =>
                 preferences[key.trim()] = value.trim();
             })
         )
-        .then(() => preferences)
+        .then(() => {
+          const fallback = mergeWithDefaultValues(
+            partialPreferencesFromMap(preferences)
+          );
+          setGlobalPreferenceFallback(fallback);
+          return preferences;
+        })
     : undefined
 );
 
@@ -123,11 +134,30 @@ export const remotePrefsDefinitions = f.store(
       },
       'ui.formatting.scrmonthformat': {
         description: 'Month Date format',
-        defaultValue: 'MM/YYYY',
+        defaultValue: 'YYYY-MM',
         formatters: [formatter.trim, formatter.toUpperCase],
       },
       'attachment.is_public_default': {
         description: 'Whether new Attachments are public by default',
+        defaultValue: true,
+        parser: 'java.lang.Boolean',
+        isLegacy: true,
+      },
+      'attachment.preview_size': {
+        description: 'The size in px of the generated attachment thumbnails',
+        defaultValue: 256,
+        parser: 'java.lang.Long',
+        isLegacy: true,
+      },
+      // These are used on the back end only:
+      'auditing.do_audits': {
+        description: 'Whether Audit Log is enabled',
+        defaultValue: true,
+        parser: 'java.lang.Boolean',
+        isLegacy: true,
+      },
+      'auditing.audit_field_updates': {
+        description: 'Whether Audit Log records field value changes',
         defaultValue: true,
         parser: 'java.lang.Boolean',
         isLegacy: true,
@@ -183,25 +213,6 @@ export const remotePrefsDefinitions = f.store(
         defaultValue: false,
         parser: 'java.lang.Boolean',
         isLegacy: false,
-      },
-      'attachment.preview_size': {
-        description: 'The size in px of the generated attachment thumbnails',
-        defaultValue: 123,
-        parser: 'java.lang.Long',
-        isLegacy: true,
-      },
-      // These are used on the back end only:
-      'auditing.do_audits': {
-        description: 'Whether Audit Log is enabled',
-        defaultValue: true,
-        parser: 'java.lang.Boolean',
-        isLegacy: true,
-      },
-      'auditing.audit_field_updates': {
-        description: 'Whether Audit Log records field value changes',
-        defaultValue: true,
-        parser: 'java.lang.Boolean',
-        isLegacy: true,
       },
       // This is actually stored in Global Prefs:
       /*

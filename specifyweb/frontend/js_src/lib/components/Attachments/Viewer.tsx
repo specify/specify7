@@ -32,6 +32,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { fetchOriginalUrl, fetchThumbnail } from './attachments';
 import { AttachmentRecordLink, getAttachmentTable } from './Cell';
 import { Thumbnail } from './Preview';
+import { useAttachmentThumbnailPreference } from './utils';
 
 export function AttachmentViewer({
   attachment,
@@ -103,8 +104,12 @@ export function AttachmentViewer({
   const mimeType = attachment.get('mimeType') ?? undefined;
   const type = mimeType?.split('/')[0];
 
+  const attachmentThumbnailSize = useAttachmentThumbnailPreference();
   const [thumbnail] = useAsyncState(
-    React.useCallback(async () => fetchThumbnail(serialized), [serialized]),
+    React.useCallback(
+      async () => fetchThumbnail(serialized, attachmentThumbnailSize),
+      [serialized, attachmentThumbnailSize]
+    ),
     false
   );
 

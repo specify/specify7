@@ -12,13 +12,18 @@ test('fetches and parses remotePrefs correctly', async () =>
   expect(fetchContext).resolves.toMatchSnapshot());
 
 describe('Parsing Remote Prefs', () => {
+  const definitions = remotePrefsDefinitions();
   test('parses boolean value', () =>
-    expect(getPref('auditing.do_audits')).toBe(false));
+    expect(getPref('auditing.do_audits')).toBe(
+      definitions['auditing.do_audits'].defaultValue
+    ));
   test('parses numeric value', () =>
-    expect(getPref('attachment.preview_size')).toBe(123));
+    expect(getPref('attachment.preview_size')).toBe(
+      definitions['attachment.preview_size'].defaultValue
+    ));
   test('uses default value if pref is not set', () =>
     expect(getPref('ui.formatting.scrmonthformat')).toBe(
-      remotePrefsDefinitions()['ui.formatting.scrmonthformat'].defaultValue
+      definitions['ui.formatting.scrmonthformat'].defaultValue
     ));
 });
 

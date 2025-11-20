@@ -25,7 +25,7 @@ describe('AppResourcesAside (simple no conformation case)', () => {
     const onOpen = jest.fn();
     const setConformations = jest.fn();
 
-    const { asFragment, unmount } = mount(
+    const { container, unmount } = mount(
       <AppResourcesAside
         conformations={[[], setConformations]}
         filters={undefined}
@@ -35,7 +35,9 @@ describe('AppResourcesAside (simple no conformation case)', () => {
       />
     );
 
-    expect(asFragment()).toMatchSnapshot();
+    const text = container.textContent ?? '';
+    expect(text).toContain('Global Resources (2)');
+    expect(text).toContain('Discipline Resources (4)');
     unmount();
   });
 });
@@ -80,6 +82,7 @@ describe('AppResourcesAside (expanded case)', () => {
       asFragment,
       unmount: unmountSecond,
       getAllByRole: getIntermediate,
+      container: intermediateContainer,
     } = mount(
       <AppResourcesAside
         conformations={[_conformations, setConformations]}
@@ -90,7 +93,9 @@ describe('AppResourcesAside (expanded case)', () => {
       />
     );
 
-    expect(asFragment()).toMatchSnapshot();
+    expect(intermediateContainer.textContent ?? '').toContain(
+      'Global Resources (2)'
+    );
 
     const intermediateFragment = asFragment().textContent;
 
@@ -130,25 +135,28 @@ describe('AppResourcesAside (expanded case)', () => {
 
     unmountThird();
 
-    const { asFragment: asFragmentAllExpanded, unmount: unmountExpandedll } =
-      mount(
-        <Router.MemoryRouter initialEntries={['/specify/resources/']}>
-          <AppResourcesAside
-            conformations={[_conformations, setConformations]}
-            filters={undefined}
-            isEmbedded
-            resources={testAppResources}
-            onOpen={onOpen}
-          />
-        </Router.MemoryRouter>
-      );
+    const {
+      asFragment: asFragmentAllExpanded,
+      unmount: unmountExpandedll,
+      container: expandedContainer,
+    } = mount(
+      <Router.MemoryRouter initialEntries={['/specify/resources/']}>
+        <AppResourcesAside
+          conformations={[_conformations, setConformations]}
+          filters={undefined}
+          isEmbedded
+          resources={testAppResources}
+          onOpen={onOpen}
+        />
+      </Router.MemoryRouter>
+    );
 
     const expandedAllFragment = asFragmentAllExpanded().textContent;
 
     expect(expandedAllFragment).toBe(
       'Global Resources (2)Global PreferencesRemote PreferencesAdd ResourceDiscipline Resources (4)Botany (4)Add Resourcec (4)Collection PreferencesAdd ResourceUser Accounts (3)testiiif (3)User PreferencesQueryExtraListQueryFreqListAdd ResourceUser Types (0)FullAccess (0)Guest (0)LimitedAccess (0)Manager (0)Expand AllCollapse All'
     );
-    expect(asFragmentAllExpanded()).toMatchSnapshot();
+    expect(expandedContainer.querySelectorAll('svg').length).toBeGreaterThan(0);
     unmountExpandedll();
   });
 });

@@ -31,6 +31,7 @@ urlpatterns = [
     re_path(r'^app.resource$', views.app_resource),
     re_path(r'^available_related_searches.json$', views.available_related_searches),
     re_path(r'^remoteprefs.properties$', views.remote_prefs),
+    path('global-preferences-resource/', views.global_preferences_resource),
 
     re_path(r'^attachment_settings.json$', attachment_settings),
     re_path(r'^report_runner_status.json$', report_runner_status),

@@ -13,6 +13,7 @@ import type {
   SpAppResourceDir,
   SpViewSetObj,
 } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
 import { userTypes } from '../PickLists/definitions';
 import type { AppResources, AppResourcesTree } from './hooks';
 import type { AppResourceScope, ScopedAppResourceDir } from './types';
@@ -104,25 +105,47 @@ const prefResource = 'preferences';
 const globalUserType = 'Global Prefs'.toLowerCase();
 const remoteUserType = 'Prefs'.toLowerCase();
 
+const hiddenGlobalResourceNames = new Set(['GlobalPreferences']);
+
+const filterHiddenAppResources = (
+  appResources: RA<SerializedResource<SpAppResource>>
+): RA<SerializedResource<SpAppResource>> =>
+  appResources.filter((resource) => !hiddenGlobalResourceNames.has(resource.name));
+
 const disambiguateGlobalPrefs = (
   appResources: RA<SerializedResource<SpAppResource>>,
   directories: RA<SerializedResource<SpAppResourceDir>>
 ): AppResourcesTree[number]['appResources'] =>
-  appResources.map((resource) => {
-    if (resource.name !== prefResource) return resource;
-    const directory = directories.find(
-      ({ id }) =>
-        getResourceApiUrl('SpAppResourceDir', id) === resource.spAppResourceDir
-    );
-    // Pretty sure this is redundant... that is, directory should always be defined.
-    if (!directory) return resource;
-    const userType = directory.userType?.toLowerCase();
-    if (userType === globalUserType)
-      return { ...resource, label: resourcesText.globalPreferences() };
-    else if (userType === remoteUserType)
-      return { ...resource, label: resourcesText.remotePreferences() };
-    else return resource;
-  });
+  appResources
+    .filter((resource) => {
+      if (resource.name !== prefResource) return true;
+      const directory = directories.find(
+        ({ id }) =>
+          getResourceApiUrl('SpAppResourceDir', id) ===
+          resource.spAppResourceDir
+      );
+      const userType = directory?.userType?.toLowerCase();
+      const isGlobalPrefs = userType === globalUserType;
+      const isNonAdmin = !userInformation.isadmin;
+
+      return !(isGlobalPrefs && isNonAdmin);
+    })
+    .map((resource) => {
+      if (resource.name !== prefResource) return resource;
+      const directory = directories.find(
+        ({ id }) =>
+          getResourceApiUrl('SpAppResourceDir', id) ===
+          resource.spAppResourceDir
+      );
+      // Pretty sure this is redundant... that is, directory should always be defined.
+      if (!directory) return resource;
+      const userType = directory.userType?.toLowerCase();
+      if (userType === globalUserType)
+        return { ...resource, label: resourcesText.globalPreferences() };
+      else if (userType === remoteUserType)
+        return { ...resource, label: resourcesText.remotePreferences() };
+      else return resource;
+    });
 
 /**
  * Merge resources from several directories into a single one.
@@ -156,8 +179,10 @@ const getDirectoryChildren = (
   directory: SerializedResource<SpAppResourceDir>,
   resources: AppResources
 ): DirectoryChildren => ({
-  appResources: resources.appResources.filter(
-    ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri
+  appResources: filterHiddenAppResources(
+    resources.appResources.filter(
+      ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri
+    )
   ),
   viewSets: resources.viewSets.filter(
     ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri

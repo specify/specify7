@@ -1,6 +1,7 @@
 import { resourcesText } from '../../../localization/resources';
 import { replaceItem } from '../../../utils/utils';
 import { getResourceApiUrl } from '../../DataModel/resource';
+import { userInformation } from '../../InitialContext/userInformation';
 import type { AppResourcesTree } from '../hooks';
 import { exportsForTests } from '../tree';
 import { staticAppResources } from './staticAppResources';
@@ -8,6 +9,14 @@ import { staticAppResources } from './staticAppResources';
 const { disambiguateGlobalPrefs } = exportsForTests;
 
 describe('disambiguateGlobalPrefs', () => {
+  beforeAll(() => {
+    Object.defineProperty(userInformation, 'isadmin', {
+      value: true,
+      writable: true,
+      configurable: true,
+    });
+  });
+
   test('no preference app resources', () => {
     const appResources = [0, 2].map(
       (index) => staticAppResources.appResources[index]

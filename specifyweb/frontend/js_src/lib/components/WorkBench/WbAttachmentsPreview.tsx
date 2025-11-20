@@ -19,6 +19,7 @@ import { Button } from '../Atoms/Button';
 import { fetchOriginalUrl } from '../Attachments/attachments';
 import { LeafletImageViewer } from '../Attachments/LeafletImageViewer';
 import { AttachmentPreview } from '../Attachments/Preview';
+import { useAttachmentThumbnailPreference } from '../Attachments/utils';
 import { AttachmentViewer } from '../Attachments/Viewer';
 import { toResource } from '../DataModel/helpers';
 import type {
@@ -74,6 +75,7 @@ export function WbAttachmentsPreview({
     useBooleanState();
 
   const [useWindow, setUseWindow] = React.useState<boolean>(false);
+  const thumbnailSize = useAttachmentThumbnailPreference();
 
   const handleSelection = (row: number | undefined): void => {
     if (!hot) return;
@@ -125,6 +127,7 @@ export function WbAttachmentsPreview({
                       <AttachmentPreview
                         attachment={cell.attachment}
                         key={index}
+                        thumbnailSize={thumbnailSize}
                         onOpen={(): void => {
                           handleShowAttachment();
                           setSelectedAttachment(cell.attachment);

@@ -81,6 +81,7 @@ function AttachmentCellMock({
   readonly onViewRecord:
     | ((table: SpecifyTable, recordId: number) => void)
     | undefined;
+  readonly thumbnailSize: number;
 }) {
   const [_, setState] = React.useState<boolean>(false);
   const triggerChange = React.useCallback(() => {
@@ -117,6 +118,7 @@ describe('AttachmentCell', () => {
           attachment={testAttachment}
           options={options}
           related={[undefined, setRelated]}
+          thumbnailSize={123}
           onOpen={handleOpen}
           onViewRecord={handleViewRecord}
         />
@@ -133,6 +135,7 @@ describe('AttachmentCell', () => {
           attachment={testAttachment}
           options={options}
           related={[undefined, setRelated]}
+          thumbnailSize={123}
           onOpen={handleOpen}
           onViewRecord={handleViewRecord}
         />

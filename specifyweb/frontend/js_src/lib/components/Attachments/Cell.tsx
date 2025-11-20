@@ -31,6 +31,7 @@ export function AttachmentCell({
   onOpen: handleOpen,
   related: [related, setRelated],
   onViewRecord: handleViewRecord,
+  thumbnailSize,
 }: {
   readonly attachment: SerializedResource<Attachment>;
   readonly onOpen: () => void;
@@ -38,6 +39,7 @@ export function AttachmentCell({
   readonly onViewRecord:
     | ((table: SpecifyTable, recordId: number) => void)
     | undefined;
+  readonly thumbnailSize: number;
 }): JSX.Element {
   const table = f.maybe(attachment.tableID ?? undefined, getAttachmentTable);
 
@@ -62,6 +64,7 @@ export function AttachmentCell({
       ) : undefined}
       <AttachmentPreview
         attachment={attachment}
+        thumbnailSize={thumbnailSize}
         onOpen={(): void => {
           if (related === undefined && typeof table === 'object')
             fetchAttachmentParent(table, attachment)

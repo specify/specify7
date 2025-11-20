@@ -85,6 +85,7 @@ describe('AppResourcesFilters', () => {
         'otherJsonResource',
         'otherPropertiesResource',
         'otherXmlResource',
+        'remotePreferences',
         'report',
         'rssExportFeed',
         'typeSearches',
