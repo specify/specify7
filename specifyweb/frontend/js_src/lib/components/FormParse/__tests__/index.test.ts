@@ -7,7 +7,6 @@ import { ensure, localized } from '../../../utils/types';
 import { removeKey } from '../../../utils/utils';
 import { strictParseXml } from '../../AppResources/parseXml';
 import { tables } from '../../DataModel/tables';
-import { getPref } from '../../InitialContext/remotePrefs';
 import { formatUrl } from '../../Router/queryString';
 import type { SimpleXmlNode } from '../../Syncer/xmlToJson';
 import { toSimpleXmlNode, xmlToJson } from '../../Syncer/xmlToJson';
