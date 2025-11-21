@@ -29,7 +29,66 @@ import type { GenericPreferences, PreferenceItem } from './types';
 import { userPreferenceDefinitions } from './UserDefinitions';
 import { userPreferences } from './userPreferences';
 import { useTopChild } from './useTopChild';
+import { IR } from '../../utils/types';
+import { headerText } from '../../localization/header';
+import { BasePreferences } from './BasePreferences';
+import {
+  ProtectedAction,
+  ProtectedTool,
+} from '../Permissions/PermissionDenied';
+import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 
+export type PreferenceType = keyof typeof preferenceInstances;
+
+const preferenceInstances: IR<BasePreferences<any>> = {
+  user: userPreferences,
+  collection: collectionPreferences,
+};
+
+const preferenceDefinitions: IR<GenericPreferences> = {
+  user: userPreferenceDefinitions,
+  collection: collectionPreferenceDefinitions,
+};
+
+type SubcategoryDocumentation = {
+  readonly href: string;
+  readonly label: LocalizedString | (() => LocalizedString);
+};
+
+const SUBCATEGORY_DOCS_MAP: Record<
+  string,
+  Record<string, SubcategoryDocumentation>
+> = {
+  treeManagement: {
+    synonymized: {
+      href: 'https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987',
+      label: headerText.documentation(),
+    },
+  },
+  statistics: {
+    appearance: {
+      href: 'https://discourse.specifysoftware.org/t/statistics-page/1135',
+      label: headerText.documentation(),
+    },
+  },
+};
+
+type DocumentHrefResolver =
+  | ((
+      category: string,
+      subcategory: string,
+      name: string
+    ) => string | undefined)
+  | undefined;
+
+const documentHrefResolvers: IR<DocumentHrefResolver> = {
+  user: undefined,
+  collection: undefined,
+};
+
+const collectionPreferencesPromise = Promise.all([
+  collectionPreferences.fetch(),
+]).then(f.true);
 /**
  * Fetch app resource that stores current user preferences
  *
@@ -42,20 +101,30 @@ const preferencesPromise = Promise.all([
   collectionPreferences.fetch(),
 ]).then(f.true);
 
-function Preferences(): JSX.Element {
+function Preferences({
+  prefType = 'user',
+}: {
+  readonly prefType?: PreferenceType;
+}): JSX.Element {
   const [changesMade, handleChangesMade] = useBooleanState();
   const [needsRestart, handleRestartNeeded] = useBooleanState();
 
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
 
+  const basePreferences = preferenceInstances[prefType];
+  const heading =
+    prefType === 'collection'
+      ? preferencesText.collectionPreferences()
+      : preferencesText.preferences();
+
   React.useEffect(
     () =>
-      userPreferences.events.on('update', (payload) => {
+      basePreferences.events.on('update', (payload) => {
         if (payload?.definition?.requiresReload === true) handleRestartNeeded();
         handleChangesMade();
       }),
-    [handleChangesMade, handleRestartNeeded]
+    [basePreferences, handleChangesMade, handleRestartNeeded]
   );
 
   const {
@@ -68,12 +137,12 @@ function Preferences(): JSX.Element {
 
   return (
     <Container.FullGray>
-      <H2 className="text-2xl">{preferencesText.preferences()}</H2>
+      <H2 className="text-2xl">{heading}</H2>
       <Form
         className="contents"
         onSubmit={(): void =>
           loading(
-            userPreferences
+            basePreferences
               .awaitSynced()
               .then(() =>
                 needsRestart
@@ -91,8 +160,9 @@ function Preferences(): JSX.Element {
             activeCategory={visibleChild}
             references={references}
             setActiveCategory={setVisibleChild}
+            prefType={prefType}
           />
-          <PreferencesContent forwardRefs={forwardRefs} />
+          <PreferencesContent forwardRefs={forwardRefs} prefType={prefType} />
           <span className="flex-1" />
         </div>
         <div className="flex justify-end">
@@ -110,20 +180,22 @@ function Preferences(): JSX.Element {
 }
 
 /** Hide invisible preferences. Remote empty categories and subCategories */
-export function usePrefDefinitions() {
+export function usePrefDefinitions(prefType: PreferenceType = 'user') {
   const isDarkMode = useDarkMode();
   const isRedirecting = React.useContext(userPreferences.Context) !== undefined;
-  const preferencesVisibilityContext = React.useMemo(
-    () => ({
-      isDarkMode,
-      isRedirecting,
-    }),
-    [isDarkMode, isRedirecting]
+  const visibilityContext = React.useMemo(
+    () =>
+      prefType === 'user'
+        ? { isDarkMode, isRedirecting }
+        : { isDarkMode: false, isRedirecting: false },
+    [prefType, isDarkMode, isRedirecting]
   );
+
+  const definitions = preferenceDefinitions[prefType];
 
   return React.useMemo(
     () =>
-      Object.entries(userPreferenceDefinitions as GenericPreferences)
+      Object.entries(definitions)
         .map(
           ([category, { subCategories, ...categoryData }]) =>
             [
@@ -140,7 +212,7 @@ export function usePrefDefinitions() {
                           items: Object.entries(items).filter(
                             ([_name, { visible }]) =>
                               typeof visible === 'function'
-                                ? visible(preferencesVisibilityContext)
+                                ? visible(visibilityContext)
                                 : visible !== false
                           ),
                         },
@@ -151,157 +223,233 @@ export function usePrefDefinitions() {
             ] as const
         )
         .filter(([_name, { subCategories }]) => subCategories.length > 0),
-    [preferencesVisibilityContext]
+    [definitions, visibilityContext]
   );
 }
 
 export function PreferencesContent({
   forwardRefs,
+  prefType = 'user',
 }: {
   readonly forwardRefs?: (index: number, element: HTMLElement | null) => void;
+  readonly prefType?: PreferenceType;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
-  const definitions = usePrefDefinitions();
+
+  const definitions = usePrefDefinitions(prefType);
+
+  const basePreferences = preferenceInstances[prefType];
+
+  const preferences =
+    React.useContext(basePreferences.Context) ?? basePreferences;
+
+  const resolveDocumentHref = documentHrefResolvers[prefType];
+
+  const renderSubCategory = React.useCallback(
+    (
+      categoryKey: string,
+      subcategoryKey: string,
+      {
+        title,
+        description = undefined,
+        items,
+      }: {
+        readonly title: LocalizedString | (() => LocalizedString);
+        readonly description?: LocalizedString | (() => LocalizedString);
+        readonly items: readonly (readonly [string, PreferenceItem<any>])[];
+      },
+      options: { readonly hideTitle?: boolean } = {}
+    ): JSX.Element => {
+      const subcategoryDocument =
+        SUBCATEGORY_DOCS_MAP[categoryKey]?.[subcategoryKey];
+      const { hideTitle = false } = options;
+
+      return (
+        <section
+          className="flex flex-col items-start gap-4 md:items-stretch"
+          key={`${categoryKey}-${subcategoryKey}`}
+        >
+          <div className="flex items-center gap-2">
+            <h4
+              aria-hidden={hideTitle}
+              className={`${className.headerGray} text-xl md:text-center ${
+                hideTitle ? 'invisible' : ''
+              }`}
+            >
+              {typeof title === 'function' ? title() : title}
+            </h4>
+            <div className="flex flex-1 justify-end">
+              <Button.Small
+                onClick={(): void =>
+                  items.forEach(([name]) => {
+                    const definition = preferences.definition(
+                      categoryKey as never,
+                      subcategoryKey as never,
+                      name as never
+                    );
+                    preferences.set(
+                      categoryKey as never,
+                      subcategoryKey as never,
+                      name as never,
+                      definition.defaultValue as never
+                    );
+                  })
+                }
+              >
+                {commonText.reset()}
+              </Button.Small>
+            </div>
+          </div>
+          {subcategoryDocument !== undefined && (
+            <p className="text-gray-500">
+              <Link.NewTab href={subcategoryDocument.href}>
+                <FormatString
+                  text={
+                    typeof subcategoryDocument.label === 'function'
+                      ? subcategoryDocument.label()
+                      : subcategoryDocument.label
+                  }
+                />
+              </Link.NewTab>
+            </p>
+          )}
+          {description !== undefined && (
+            <p>
+              {typeof description === 'function' ? description() : description}
+            </p>
+          )}
+          {items.map(([name, item]) => {
+            const canEdit =
+              !isReadOnly &&
+              (item.visible !== 'protected' ||
+                hasPermission('/preferences/user', 'edit_protected'));
+            const documentHref = resolveDocumentHref?.(
+              categoryKey,
+              subcategoryKey,
+              name
+            );
+            const stackDocumentation =
+              prefType === 'collection' && documentHref !== undefined;
+            const props = {
+              className: `
+                flex items-start gap-2 md:flex-row flex-col
+                ${canEdit ? '' : '!cursor-not-allowed'}
+              `,
+              key: name,
+              title: canEdit
+                ? undefined
+                : preferencesText.adminsOnlyPreference(),
+            };
+            const children = (
+              <>
+                <div className="flex flex-col items-start gap-2 md:flex-1 md:items-stretch">
+                  <p
+                    className={`
+                    flex min-h-[theme(spacing.8)] flex-1 items-center
+                    justify-end md:text-right
+                  `}
+                  >
+                    <FormatString
+                      text={
+                        typeof item.title === 'function'
+                          ? item.title()
+                          : item.title
+                      }
+                    />
+                  </p>
+                  {(item.description !== undefined ||
+                    documentHref !== undefined) && (
+                    <p
+                      className={`flex flex-1 text-gray-500 md:text-right ${
+                        stackDocumentation
+                          ? 'flex-col items-end gap-1'
+                          : 'justify-end'
+                      }`}
+                    >
+                      {item.description !== undefined && (
+                        <FormatString
+                          text={
+                            typeof item.description === 'function'
+                              ? item.description()
+                              : item.description
+                          }
+                        />
+                      )}
+                      {documentHref !== undefined && (
+                        <Link.NewTab
+                          className={
+                            stackDocumentation ? 'self-end' : undefined
+                          }
+                          href={documentHref}
+                        >
+                          {headerText.documentation()}
+                        </Link.NewTab>
+                      )}
+                    </p>
+                  )}
+                </div>
+                <div
+                  className={`
+                  flex min-h-[theme(spacing.8)] flex-1 flex-col justify-center
+                  gap-2
+                `}
+                >
+                  <ReadOnlyContext.Provider value={!canEdit}>
+                    <Item
+                      category={categoryKey}
+                      item={item}
+                      name={name}
+                      subcategory={subcategoryKey}
+                    />
+                  </ReadOnlyContext.Provider>
+                </div>
+              </>
+            );
+            return 'container' in item && item.container === 'div' ? (
+              <div {...props}>{children}</div>
+            ) : (
+              <label {...props}>{children}</label>
+            );
+          })}
+        </section>
+      );
+    },
+    [isReadOnly, prefType, preferences, resolveDocumentHref]
+  );
+
   return (
     <div className="flex h-fit flex-col gap-6">
       {definitions.map(
         (
           [category, { title, description = undefined, subCategories }],
           index
-        ) => (
-          <ErrorBoundary dismissible key={category}>
-            <Container.Center
-              className="gap-8 overflow-y-visible"
-              forwardRef={forwardRefs?.bind(undefined, index)}
-              id={category}
-            >
-              <h3 className="text-2xl">
-                {typeof title === 'function' ? title() : title}
-              </h3>
-              {description !== undefined && (
-                <p>
-                  {typeof description === 'function'
-                    ? description()
-                    : description}
-                </p>
-              )}
-              {subCategories.map(
-                ([subcategory, { title, description = undefined, items }]) => (
-                  <section
-                    className="flex flex-col items-start gap-4 md:items-stretch"
-                    key={subcategory}
-                  >
-                    <div className="flex items-center gap-2">
-                      <h4
-                        className={`${className.headerGray} text-xl md:text-center`}
-                      >
-                        {typeof title === 'function' ? title() : title}
-                      </h4>
-                      <div className="flex flex-1 justify-end">
-                        <Button.Small
-                          onClick={(): void =>
-                            items.forEach(([name]) => {
-                              userPreferences.set(
-                                category as 'general',
-                                subcategory as 'ui',
-                                name as 'theme',
-                                /*
-                                 * Need to get default value via this
-                                 * function as defaults may be changed
-                                 */
-                                userPreferences.definition(
-                                  category as 'general',
-                                  subcategory as 'ui',
-                                  name as 'theme'
-                                ).defaultValue
-                              );
-                            })
-                          }
-                        >
-                          {commonText.reset()}
-                        </Button.Small>
-                      </div>
-                    </div>
-                    {description !== undefined && (
-                      <p>
-                        {typeof description === 'function'
-                          ? description()
-                          : description}
-                      </p>
-                    )}
-                    {items.map(([name, item]) => {
-                      const canEdit =
-                        !isReadOnly &&
-                        (item.visible !== 'protected' ||
-                          hasPermission('/preferences/user', 'edit_protected'));
-                      const props = {
-                        className: `
-                            flex items-start gap-2 md:flex-row flex-col
-                            ${canEdit ? '' : '!cursor-not-allowed'}
-                          `,
-                        key: name,
-                        title: canEdit
-                          ? undefined
-                          : preferencesText.adminsOnlyPreference(),
-                      };
-                      const children = (
-                        <>
-                          <div className="flex flex-col items-start gap-2 md:flex-1 md:items-stretch">
-                            <p
-                              className={`
-                                flex min-h-[theme(spacing.8)] flex-1 items-center
-                                justify-end md:text-right
-                              `}
-                            >
-                              <FormatString
-                                text={
-                                  typeof item.title === 'function'
-                                    ? item.title()
-                                    : item.title
-                                }
-                              />
-                            </p>
-                            {item.description !== undefined && (
-                              <p className="flex flex-1 justify-end text-gray-500 md:text-right">
-                                <FormatString
-                                  text={
-                                    typeof item.description === 'function'
-                                      ? item.description()
-                                      : item.description
-                                  }
-                                />
-                              </p>
-                            )}
-                          </div>
-                          <div
-                            className={`
-                              flex min-h-[theme(spacing.8)] flex-1 flex-col justify-center
-                              gap-2
-                            `}
-                          >
-                            <ReadOnlyContext.Provider value={!canEdit}>
-                              <Item
-                                category={category}
-                                item={item}
-                                name={name}
-                                subcategory={subcategory}
-                              />
-                            </ReadOnlyContext.Provider>
-                          </div>
-                        </>
-                      );
-                      return 'container' in item && item.container === 'div' ? (
-                        <div {...props}>{children}</div>
-                      ) : (
-                        <label {...props}>{children}</label>
-                      );
-                    })}
-                  </section>
-                )
-              )}
-            </Container.Center>
-          </ErrorBoundary>
-        )
+        ) => {
+          if (prefType === 'collection') return null;
+
+          return (
+            <ErrorBoundary dismissible key={category}>
+              <Container.Center
+                className="gap-8 overflow-y-visible"
+                forwardRef={forwardRefs?.bind(undefined, index)}
+                id={category}
+              >
+                <h3 className="text-2xl">
+                  {typeof title === 'function' ? title() : title}
+                </h3>
+                {description !== undefined && (
+                  <p>
+                    {typeof description === 'function'
+                      ? description()
+                      : description}
+                  </p>
+                )}
+                {subCategories.map(([subcategory, data]) =>
+                  renderSubCategory(category, subcategory, data)
+                )}
+              </Container.Center>
+            </ErrorBoundary>
+          );
+        }
       )}
     </div>
   );
@@ -364,7 +512,42 @@ function Item({
   );
 }
 
+function CollectionPreferences(): JSX.Element {
+  return (
+    <ProtectedAction
+      action="edit_collection"
+      resource="/preferences/collection"
+    >
+      <ProtectedTool action="update" tool="resources">
+        <Preferences prefType="collection" />
+      </ProtectedTool>
+    </ProtectedAction>
+  );
+}
+
+function FetchGate({
+  promise,
+  children,
+}: {
+  readonly promise: Promise<unknown>;
+  readonly children?: React.ReactNode;
+}): JSX.Element | null {
+  const [hasFetched] = usePromise(promise, true);
+  return hasFetched ? <>{children}</> : null;
+}
+
 export function PreferencesWrapper(): JSX.Element | null {
-  const [hasFetched] = usePromise(preferencesPromise, true);
-  return hasFetched === true ? <Preferences /> : null;
+  return (
+    <FetchGate promise={preferencesPromise}>
+      <Preferences />
+    </FetchGate>
+  );
+}
+
+export function CollectionPreferencesWrapper(): JSX.Element | null {
+  return (
+    <FetchGate promise={collectionPreferencesPromise}>
+      <CollectionPreferences />
+    </FetchGate>
+  );
 }
