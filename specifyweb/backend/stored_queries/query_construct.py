@@ -2,6 +2,9 @@ import logging
 from collections import namedtuple, deque
 
 from sqlalchemy import orm, sql, or_
+from sqlalchemy import inspect
+from sqlalchemy.orm.util import AliasedClass
+from sqlalchemy.inspection import inspect as sa_inspect
 
 import specifyweb.specify.models as spmodels
 from specifyweb.backend.trees.utils import get_treedefs
@@ -29,47 +32,55 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
     def handle_tree_field(self, node, table, tree_rank: TreeRankQuery, next_join_path, current_field_spec: QueryFieldSpec):
         query = self
-        if query.collection is None: raise AssertionError( # Not sure it makes sense to query across collections
-            f"No Collection found in Query for {table}",
-            {"table" : table,
-             "localizationKey" : "noCollectionInQuery"}) 
-        logger.info('handling treefield %s rank: %s field: %s', table, tree_rank.name, next_join_path)
+        if query.collection is None:
+            raise AssertionError(
+                f"No Collection found in Query for {table}",
+                {"table": table, "localizationKey": "noCollectionInQuery"},
+            )
+        logger.info("handling treefield %s rank: %s field: %s", table, tree_rank.name, next_join_path)
 
         treedefitem_column = table.name + 'TreeDefItemID'
         treedef_column = table.name + 'TreeDefID'
 
-        if (table, 'TreeRanks') in query.join_cache:
-            logger.debug("using join cache for %r tree ranks.", table)
-            ancestors, treedefs = query.join_cache[(table, 'TreeRanks')]
-        else:
-            
-            treedefs = get_treedefs(query.collection, table.name)
+        # Determine starting anchor correctly:
+        # If node is already an alias (from a relationship path), use that alias.
+        # If node is the mapped class (base table), don't alias it, start from the base table.
+        is_alias = isinstance(node, AliasedClass)
+        start_alias = node                       # keep as-is
+        mapped_cls = sa_inspect(node).mapper.class_ if is_alias else node
 
-            # We need to take the max here. Otherwise, it is possible that the same rank
-            # name may not occur at the same level across tree defs.
+        # Use the specific start anchor in the cache key, so each branch has its own chain
+        cache_key = (start_alias, "TreeRanks")
+
+        if cache_key in query.join_cache:
+            logger.debug("using join cache for %r tree ranks.", start_alias)
+            ancestors, treedefs = query.join_cache[cache_key]
+        else:
+            treedefs = get_treedefs(query.collection, table.name)
             max_depth = max(depth for _, depth in treedefs)
-            
-            ancestors = [node]
-            for _ in range(max_depth-1):
-                ancestor = orm.aliased(node)
+
+            # Start ancestry from the provided alias (e.g., HostTaxon alias)
+            ancestors = [start_alias]
+
+            # Build parent chain using aliases of the mapped class
+            for _ in range(max_depth - 1):
+                ancestor = orm.aliased(mapped_cls)
                 query = query.outerjoin(ancestor, ancestors[-1].ParentID == ancestor._id)
                 ancestors.append(ancestor)
-        
 
-            logger.debug("adding to join cache for %r tree ranks.", table)
+            logger.debug("adding to join cache for %r tree ranks.", start_alias)
             query = query._replace(join_cache=query.join_cache.copy())
-            query.join_cache[(table, 'TreeRanks')] = (ancestors, treedefs)
+            query.join_cache[cache_key] = (ancestors, treedefs)
 
         item_model = getattr(spmodels, table.django_name + "treedefitem")
 
         # TODO: optimize out the ranks that appear? cache them
-        treedefs_with_ranks: list[tuple[int, int]] = [tup for tup in [
-            (treedef_id, _safe_filter(item_model.objects.filter(treedef_id=treedef_id, name=tree_rank.name).values_list('id', flat=True)))
+        treedefs_with_ranks: list[tuple[int, int]] = [
+            (treedef_id, _safe_filter(item_model.objects.filter(treedef_id=treedef_id, name=tree_rank.name).values_list("id", flat=True)))
             for treedef_id, _ in treedefs
             # For constructing tree queries for batch edit
             if (tree_rank.treedef_id is None or tree_rank.treedef_id == treedef_id)
-            ] if tup[1] is not None]
-
+        ]
         assert len(treedefs_with_ranks) >= 1, "Didn't find the tree rank across any tree"
 
         treedefitem_params = [treedefitem_id for (_, treedefitem_id) in treedefs_with_ranks]
@@ -96,7 +107,8 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         # We don't want to include treedef if the rank is not present.
         new_filters = [
             *query.internal_filters,
-            or_(getattr(node, treedef_column).in_(defs_to_filter_on), getattr(node, treedef_column) == None)]
+            or_(getattr(start_alias, treedef_column).in_(defs_to_filter_on), getattr(start_alias, treedef_column) == None),
+        ]
         query = query._replace(internal_filters=new_filters)
 
         return query, column, field, table

@@ -171,7 +171,13 @@ export function generateMappingPathPreview(
         ? [parentTableOrTreeName, tableNameNonEmpty]
         : [tableNameNonEmpty];
 
+  // Special case for disambiguation: Host taxon under CollectionObject
+  const isHostTaxonCase =
+    baseTableName === 'CollectionObject' &&
+    parentTableOrTreeName === 'Host taxon';
+
   return filterArray([
+    ...(isHostTaxonCase ? ['Host'] : []),
     ...(valueIsTreeRank(databaseTableOrRankName)
       ? [isAnyRank ? parentTableOrTreeName : tableOrRankName]
       : tableNameFormatted),
