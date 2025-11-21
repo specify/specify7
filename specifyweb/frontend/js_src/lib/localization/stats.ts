@@ -313,5 +313,22 @@ export const statsText = createDictionary({
   categoryToDelete: {
     'en-us': 'This will permanently delete the following category',
   },
+  layoutPreference: {
+    'en-us': 'Defines the layout of the statistics page',
+  },
+  showPreparationsTotal: {
+    'en-us': 'Show Preparations Totals',
+  },
+  showPreparationsTotalDescription: {
+    'en-us':
+      'If enabled, the default Preparations statistics panel will include a total count for each preparation of a particular preparation type alongside the overall total. This is useful for lot-based collections.',
+  },
+  autoRefreshRate: {
+    'en-us': 'Auto-Refresh Rate (Hours)',
+  },
+  autoRefreshRateDescription: {
+    'en-us':
+      'The time interval, in hours, at which the statistics page will automatically refresh its data. Default is 24.',
+  },
 });
 /* eslint-enable @typescript-eslint/naming-convention */

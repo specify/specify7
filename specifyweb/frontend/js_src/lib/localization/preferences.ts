@@ -2074,37 +2074,21 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Додайте рядок пошуку на головну сторінку',
     'pt-br': 'Adicionar barra de pesquisa na página inicial',
   },
+  inheritanceCatNumberPrefDescription: {
+    'en-us':
+      'Control whether component records inherit the {catalogNumber:string} from the primary {collectionObject:string}.',
+  },
   inheritanceCatNumberPref: {
     'en-us':
-      'Enable the inheritance of the primary catalog number to its empty siblings.',
-    'de-ch':
-      'Aktivieren Sie die Vererbung der primären Katalognummer an ihre leeren Geschwister.',
-    'es-es':
-      'Habilitar la herencia del número de catálogo principal a sus hermanos vacíos.',
-    'fr-fr':
-      "Activer l'héritage du numéro de catalogue principal à ses frères vides.",
-    'pt-br':
-      'Habilitar a herança do número de catálogo primário para seus irmãos vazios.',
-    'ru-ru':
-      'Включить наследование основного каталожного номера его пустыми родственными номерами.',
-    'uk-ua':
-      'Увімкнути успадкування основного каталожного номера його порожнім братам і сестрам.',
+      'Enable {catalogNumber:string} Inheritance From Primary {collectionObject:string}',
   },
   inheritanceCatNumberParentCOPref: {
     'en-us':
-      'Enable the inheritance of the parent catalog number to its empty children.',
-    'de-ch':
-      'Aktivieren Sie die Vererbung der übergeordneten Katalognummer an ihre leeren untergeordneten Elemente.',
-    'es-es':
-      'Habilitar la herencia del número de catálogo padre a sus hijos vacíos.',
-    'fr-fr':
-      "Activer l'héritage du numéro de catalogue parent à ses enfants vides.",
-    'pt-br':
-      'Habilita a herança do número do catálogo pai para seus filhos vazios.',
-    'ru-ru':
-      'Включить наследование родительского каталожного номера его пустыми дочерними элементами.',
-    'uk-ua':
-      'Увімкнути успадкування батьківського каталожного номера його порожнім дочірнім елементам.',
+      'Enable {catalogNumber:string} Inheritance From Parent {collectionObject:string}',
+  },
+  inheritanceCatNumberParentCOPrefDescription: {
+    'en-us':
+      'Control whether component records inherit the {catalogNumber:string} from the parent {collectionObject:string}.',
   },
   uniqueCatNumberAcrossCompAndCo: {
     'en-us':
@@ -2121,5 +2105,12 @@ export const preferencesText = createDictionary({
       'Поле «Номер каталога» должно быть уникальным в таблицах «Компонент» и «CO».',
     'uk-ua':
       'Поле «Номер у каталозі» має бути унікальним у таблицях «Компонент» та «CO»',
+  },
+  scopeEntireTablePicklists: {
+    'en-us': 'Scope "Entire Table" Picklists',
+  },
+  scopeEntireTablePicklistsDescription: {
+    'en-us':
+      'If enabled, picklists of type "Entire Table" will only show items that are in use within the current collection.',
   },
 } as const);
