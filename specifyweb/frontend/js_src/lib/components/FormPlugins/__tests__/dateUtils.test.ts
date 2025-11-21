@@ -17,23 +17,23 @@ describe('getDateParser', () => {
     new Date()
   )
 ).toMatchInlineSnapshot(`
-{
-  "formatters": [
-    [Function],
-    [Function],
-  ],
-  "max": "9999-12-31",
-  "minLength": 10,
-  "parser": [Function],
-  "required": false,
-  "title": "Required Format: MM/DD/YYYY.",
-  "type": "date",
-  "validators": [
-    [Function],
-  ],
-  "value": "2022-08-31",
-  "whiteSpaceSensitive": false,
-}
+  {
+    "formatters": [
+      [Function],
+      [Function],
+    ],
+    "max": "9999-12-31",
+    "minLength": 10,
+    "parser": [Function],
+    "required": false,
+    "title": "Required Format: MM/DD/YYYY.",
+    "type": "date",
+    "validators": [
+      [Function],
+    ],
+    "value": "2022-08-31",
+    "whiteSpaceSensitive": false,
+  }
 `));
 
   test('month-year', () =>
