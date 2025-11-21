@@ -26,7 +26,7 @@ describe('getDateParser', () => {
   "minLength": 10,
   "parser": [Function],
   "required": false,
-  "title": "Required Format: YYYY-MM-DD.",
+  "title": "Required Format: MM/DD/YYYY.",
   "type": "date",
   "validators": [
     [Function],
