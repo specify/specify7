@@ -532,11 +532,7 @@ export async function parseFormDefinition(
 }
 
 function getColumnDefinitions(viewDefinition: SimpleXmlNode): string {
-  const definition =
-    getColumnDefinition(
-      viewDefinition,
-      getPref('form.definition.columnSource')
-    ) ?? getColumnDefinition(viewDefinition, undefined);
+  const definition = getColumnDefinition(viewDefinition, undefined);
   // Specify 7 handles forms without column definition fine, so no need to warn for this
   return definition ?? getParsedAttribute(viewDefinition, 'colDef') ?? '';
 }

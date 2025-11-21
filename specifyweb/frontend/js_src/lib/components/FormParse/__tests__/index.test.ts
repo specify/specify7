@@ -471,23 +471,6 @@ describe('parseFormDefinition', () => {
 
 describe('getColumnDefinitions', () => {
   requireContext();
-  test('can customize the column definition source', () =>
-    expect(
-      getColumnDefinitions(
-        toSimpleXmlNode(
-          xmlToJson(
-            strictParseXml(
-              `<viewdef>
-            <columnDef os="abc">A</columnDef>
-            <columnDef os="${getPref(
-              'form.definition.columnSource'
-            )}">B</columnDef>
-          </viewdef>`
-            )
-          )
-        )
-      )
-    ).toBe('B'));
 
   test('fall back to first definition available', () =>
     expect(

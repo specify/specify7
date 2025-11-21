@@ -151,12 +151,6 @@ export const remotePrefsDefinitions = f.store(
         parser: 'java.lang.Boolean',
         isLegacy: true,
       },
-      'form.definition.columnSource': {
-        description: 'The platform to use as a source of columns',
-        defaultValue: 'lnx',
-        formatter: [formatter.trim],
-        isLegacy: false,
-      },
       'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod': {
         description:
           'Allowed to add children to synopsized Geologic Time Period records',
