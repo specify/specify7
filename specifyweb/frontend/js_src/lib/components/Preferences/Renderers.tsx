@@ -30,15 +30,15 @@ import { tables } from '../DataModel/tables';
 import type { Collection } from '../DataModel/types';
 import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
 import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
+import {
+  getTreeDefinitions,
+  treeRanksPromise,
+} from '../InitialContext/treeRanks';
 import { AttachmentPicker } from '../Molecules/AttachmentPicker';
 import { AutoComplete } from '../Molecules/AutoComplete';
 import { ListEdit } from '../Toolbar/ListEdit';
 import type { PreferenceItem, PreferenceRendererProps } from './types';
 import { userPreferences } from './userPreferences';
-import {
-  getTreeDefinitions,
-  treeRanksPromise,
-} from '../InitialContext/treeRanks';
 
 export function ColorPickerPreferenceItem({
   value,
