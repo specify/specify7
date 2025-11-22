@@ -191,4 +191,18 @@ export const specifyNetworkText = createDictionary({
     'uk-ua': 'Кінцевий рік',
     'pt-br': 'Fim de ano',
   },
+  publishingOrganizationKey: {
+    'en-us': 'GBIF Publishing Organization Key',
+  },
+  publishingOrganizationKeyDescription: {
+    'en-us':
+      'The GBIF "publishingOrgKey" (a UUID) for this collection, used for Specify Network integration.',
+  },
+  collectionKey: {
+    'en-us': 'GBIF Data Set Key',
+  },
+  collectionKeyDescription: {
+    'en-us':
+      'The GBIF "dataSetKey" (a UUID) for this collection, used for Specify Network integration.',
+  },
 } as const);

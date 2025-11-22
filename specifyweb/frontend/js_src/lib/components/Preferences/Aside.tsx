@@ -7,18 +7,20 @@ import type { GetSet, WritableArray } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { pathIsOverlay } from '../Router/UnloadProtect';
 import { scrollIntoView } from '../TreeView/helpers';
-import { usePrefDefinitions } from './index';
+import { PreferenceType, usePrefDefinitions } from './index';
 
 export function PreferencesAside({
   activeCategory,
   setActiveCategory,
   references,
+  prefType = 'user',
 }: {
   readonly activeCategory: number | undefined;
   readonly setActiveCategory: (activeCategory: number | undefined) => void;
   readonly references: React.RefObject<WritableArray<HTMLElement | undefined>>;
+  readonly prefType?: PreferenceType;
 }): JSX.Element {
-  const definitions = usePrefDefinitions();
+  const definitions = usePrefDefinitions(prefType);
   const navigate = useNavigate();
   const location = useLocation();
   const isInOverlay = pathIsOverlay(location.pathname);
@@ -39,6 +41,14 @@ export function PreferencesAside({
   const [freezeCategory, setFreezeCategory] = useFrozenCategory();
   const currentIndex = freezeCategory ?? activeCategory;
 
+  const visibleDefinitions = React.useMemo(
+    () =>
+      definitions
+        .map((definition, index) => [index, definition] as const)
+        .filter(() => !(prefType === 'collection')),
+    [definitions, prefType]
+  );
+
   React.useEffect(() => {
     const active = location.hash.replace('#', '').toLowerCase();
     const activeIndex = definitions.findIndex(
@@ -58,12 +68,12 @@ export function PreferencesAside({
         overflow-y-auto md:sticky md:flex-1
       `}
     >
-      {definitions.map(([category, { title }], index) => (
+      {visibleDefinitions.map(([definitionIndex, [category, { title }]]) => (
         <Link.Secondary
-          aria-current={currentIndex === index ? 'page' : undefined}
+          aria-current={currentIndex === definitionIndex ? 'page' : undefined}
           href={`#${category}`}
           key={category}
-          onClick={(): void => setFreezeCategory(index)}
+          onClick={(): void => setFreezeCategory(definitionIndex)}
         >
           {typeof title === 'function' ? title() : title}
         </Link.Secondary>
