@@ -7,7 +7,11 @@ import { softFail } from '../Errors/Crash';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import type { BusinessRuleDefs } from './businessRuleDefs';
 import { businessRuleDefs } from './businessRuleDefs';
-import { backboneFieldSeparator, backendFilter, djangoLookupSeparator } from './helpers';
+import {
+  backboneFieldSeparator,
+  backendFilter,
+  djangoLookupSeparator,
+} from './helpers';
 import type {
   AnySchema,
   AnyTree,
@@ -316,10 +320,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         )
       );
 
-    const stringValuesAreEqual = (
-      left: string,
-      right: string
-    ): boolean =>
+    const stringValuesAreEqual = (left: string, right: string): boolean =>
       rule.isDatabaseConstraint
         ? left.localeCompare(right, undefined, { sensitivity: 'accent' }) === 0
         : left === right;
