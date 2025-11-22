@@ -30,36 +30,37 @@ def create_default_collection_types(apps):
         collection.collectionobjecttype = cot
         collection.save()
 
-def create_default_discipline_for_tree_defs(apps):
+def create_default_discipline_for_tree_defs(apps, using='default'):
     Discipline = apps.get_model('specify', 'Discipline')
     Institution = apps.get_model('specify', 'Institution')
 
-    for discipline in Discipline.objects.all():
+    # Use the specified DB alias for all queries
+    for discipline in Discipline.objects.using(using).all():
         geography_tree_def = discipline.geographytreedef
         if geography_tree_def and geography_tree_def.discipline_id is None:
             geography_tree_def.discipline = discipline
-            geography_tree_def.save()
+            geography_tree_def.save(using=using)
 
         geologic_time_period_tree_def = discipline.geologictimeperiodtreedef
         if geologic_time_period_tree_def and geologic_time_period_tree_def.discipline_id is None:
             geologic_time_period_tree_def.discipline = discipline
-            geologic_time_period_tree_def.save()
+            geologic_time_period_tree_def.save(using=using)
 
         lithostrat_tree_def = discipline.lithostrattreedef
         if lithostrat_tree_def and lithostrat_tree_def.discipline_id is None:
             lithostrat_tree_def.discipline = discipline
-            lithostrat_tree_def.save()
+            lithostrat_tree_def.save(using=using)
 
         taxon_tree_def = discipline.taxontreedef
         if taxon_tree_def and taxon_tree_def.discipline_id is None:
             taxon_tree_def.discipline = discipline
-            taxon_tree_def.save()
+            taxon_tree_def.save(using=using)
 
-    for institution in Institution.objects.all():
+    for institution in Institution.objects.using(using).all():
         storage_tree_def = institution.storagetreedef
-        if storage_tree_def.institution_id is None:
+        if storage_tree_def and storage_tree_def.institution_id is None:
             storage_tree_def.institution = institution
-            storage_tree_def.save()
+            storage_tree_def.save(using=using)
 
 def create_cogtype_type_picklist(apps):
     Collection = apps.get_model('specify', 'Collection')
