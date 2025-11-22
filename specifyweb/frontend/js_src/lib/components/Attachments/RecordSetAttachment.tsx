@@ -109,7 +109,8 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
 
   const isComplete = fetchedCount.current === recordCount;
 
-  const [showCreateRecordSetDialog, setShowCreateRecordSetDialog] = React.useState(false);
+  const [showCreateRecordSetDialog, setShowCreateRecordSetDialog] =
+    React.useState(false);
 
   return (
     <>
@@ -133,16 +134,17 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
               <Button.Info
                 title={attachmentsText.downloadAllDescription()}
                 onClick={(): void =>
-                  (recordSetId === undefined && !isComplete) ? 
-                  setShowCreateRecordSetDialog(true)
-                  :
-                  loading(
-                    downloadAllAttachments(
-                      (recordSetId !== undefined && !isComplete) ? [] : attachmentsRef.current?.attachments ?? [],
-                      name,
-                      recordSetId,
-                    )
-                  )
+                  recordSetId === undefined && !isComplete
+                    ? setShowCreateRecordSetDialog(true)
+                    : loading(
+                        downloadAllAttachments(
+                          recordSetId !== undefined && !isComplete
+                            ? []
+                            : (attachmentsRef.current?.attachments ?? []),
+                          name,
+                          recordSetId
+                        )
+                      )
                 }
               >
                 {attachmentsText.downloadAll()}
@@ -157,15 +159,15 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
           header={
             attachmentsRef.current?.attachments === undefined
               ? attachmentsText.attachments()
-              : (isComplete ? 
-                commonText.countLine({
-                  resource: attachmentsText.attachments(),
-                  count: attachmentsRef.current.attachments.length
-                }) : 
-                commonText.countLineOrMore({
-                  resource: attachmentsText.attachments(),
-                  count: attachmentsRef.current.attachments.length
-                }))
+              : isComplete
+                ? commonText.countLine({
+                    resource: attachmentsText.attachments(),
+                    count: attachmentsRef.current.attachments.length,
+                  })
+                : commonText.countLineOrMore({
+                    resource: attachmentsText.attachments(),
+                    count: attachmentsRef.current.attachments.length,
+                  })
           }
           onClose={handleHideAttachments}
         >
@@ -215,9 +217,7 @@ function CreateRecordSetDialog({
 }): JSX.Element {
   return (
     <Dialog
-      buttons={
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-      }
+      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
       header={attachmentsText.downloadAll()}
       onClose={onClose}
     >
