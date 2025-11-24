@@ -416,7 +416,6 @@ export function SetupTool({
         </div>
       </header>
       <Container.FullGray className="overflow-auto w-full items-center">
-        
         {inProgress ? (
           <Container.Center className="p-3 shadow-md max-w-lg">
             <H3 className="text-xl font-semibold mb-4">
@@ -447,6 +446,7 @@ export function SetupTool({
                   className="flex-1 overflow-auto gap-2"
                   forwardRef={formRef}
                   id={id('form')}
+                  key={currentStep}
                   onSubmit={handleSubmit}
                 >
                   <div className="flex items-center justify-between mb-4">
