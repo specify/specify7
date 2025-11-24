@@ -406,97 +406,104 @@ export function SetupTool({
   const id = useId('setup-tool');
 
   return (
-    <Container.FullGray className="overflow-auto w-full items-center">
-      <img className="w-auto h-12 mx-auto" src="/static/img/logo.svg" />
-      <H2 className="text-2xl mb-6">
-        {setupToolText.specifyConfigurationSetup()}
-      </H2>
-      {inProgress ? (
-        <Container.Center className="p-3 shadow-md max-w-lg">
-          <H3 className="text-xl font-semibold mb-4">
-            {setupToolText.settingUp()}
-          </H3>
-          <H3 className="text-md mb-4">
-            {nextIncompleteStep === -1
-              ? setupToolText.settingUp()
-              : resources[nextIncompleteStep].label}
-          </H3>
-          {loadingBar}
-        </Container.Center>
-      ) : (
-        <div className="flex flex-col md:flex-row w-full justify-center gap-8">
-          <div className="w-[18rem] h-full">
-            <Container.Center className="p-3 shadow-md max-w-lg h-full">
-              <H3 className="text-xl font-semibold mb-4">
-                {setupToolText.overview()}
-              </H3>
-              <div className="overflow-auto">
-                <SetupOverview currentStep={currentStep} formData={formData} />
-              </div>
-            </Container.Center>
-          </div>
-          <div className="w-[32rem] flex flex-col gap-y-4">
-            <Container.Center className="p-3 shadow-md">
-              <Form
-                className="flex-1 overflow-auto gap-2"
-                forwardRef={formRef}
-                id={id('form')}
-                onSubmit={handleSubmit}
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <H3 className="text-xl font-semibold mb-4">
-                    {resources[currentStep].label}
-                  </H3>
-                  {resources[currentStep].documentationUrl !== undefined && (
-                    <Link.NewTab href={resources[currentStep].documentationUrl!}>
-                      {headerText.documentation()}
-                    </Link.NewTab>
-                  )}
-                </div>
-                {resources[currentStep].description ===
-                undefined ? undefined : (
-                  <p className="text-md mb-4">
-                    {resources[currentStep].description}
-                  </p>
-                )}
-                {renderFormFields(resources[currentStep].fields)}
-              </Form>
-              <div className="flex flex-row gap-2 justify-end">
-                <Button.Secondary className="self-start" onClick={handleBack}>
-                  {commonText.back()}
-                </Button.Secondary>
-                {
-                  (currentStep === resources.length - 1) ? 
-                  <Submit.Save className="self-start" form={id('form')}>
-                    {commonText.create()}
-                  </Submit.Save>
-                  :
-                  <Submit.Save className="self-start" form={id('form')}>
-                    {commonText.next()}
-                  </Submit.Save>
-                }
-                
-              </div>
-            </Container.Center>
-            <Container.Center className="p-3 shadow-md max-w-lg">
-              <p className="text-md mb-4">{setupToolText.progress()}</p>
-              <Progress max={stepOrder.length} value={currentStep} />
-            </Container.Center>
-            {setupError === undefined ? undefined : (
-              <Container.Center className="p-3 shadow-md max-w-lg">
-                <div className="flex items-center justify-start gap-3 w-full">
-                  <span className="text-red-500">{dialogIcons.warning}</span>
-                  <H3 className="text-xl font-semibold m-0 leading-none">
-                    {setupToolText.setupError()}
-                  </H3>
-                </div>
-                <p className="text-md mb-4">{localized(setupError)}</p>
-              </Container.Center>
-            )}
-          </div>
+    <div className="w-full">
+      <header className="w-full bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 shadow-lg relative z-20">
+        <div className="w-full flex flex-col items-center justify-center gap-2 pt-3 pb-0 px-4">
+          <img className="w-auto h-12 mx-auto" src="/static/img/logo.svg" />
+          <H2 className="text-2xl mb-6">
+            {setupToolText.specifyConfigurationSetup()}
+          </H2>
         </div>
-      )}
-    </Container.FullGray>
+      </header>
+      <Container.FullGray className="overflow-auto w-full items-center">
+        
+        {inProgress ? (
+          <Container.Center className="p-3 shadow-md max-w-lg">
+            <H3 className="text-xl font-semibold mb-4">
+              {setupToolText.settingUp()}
+            </H3>
+            <H3 className="text-md mb-4">
+              {nextIncompleteStep === -1
+                ? setupToolText.settingUp()
+                : resources[nextIncompleteStep].label}
+            </H3>
+            {loadingBar}
+          </Container.Center>
+        ) : (
+          <div className="flex flex-col md:flex-row w-full justify-center gap-8">
+            <div className="w-[18rem] h-full">
+              <Container.Center className="p-3 shadow-md max-w-lg h-full">
+                <H3 className="text-xl font-semibold mb-4">
+                  {setupToolText.overview()}
+                </H3>
+                <div className="overflow-auto">
+                  <SetupOverview currentStep={currentStep} formData={formData} />
+                </div>
+              </Container.Center>
+            </div>
+            <div className="w-[32rem] flex flex-col gap-y-4">
+              <Container.Center className="p-3 shadow-md">
+                <Form
+                  className="flex-1 overflow-auto gap-2"
+                  forwardRef={formRef}
+                  id={id('form')}
+                  onSubmit={handleSubmit}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <H3 className="text-xl font-semibold mb-4">
+                      {resources[currentStep].label}
+                    </H3>
+                    {resources[currentStep].documentationUrl !== undefined && (
+                      <Link.NewTab href={resources[currentStep].documentationUrl!}>
+                        {headerText.documentation()}
+                      </Link.NewTab>
+                    )}
+                  </div>
+                  {resources[currentStep].description ===
+                  undefined ? undefined : (
+                    <p className="text-md mb-4">
+                      {resources[currentStep].description}
+                    </p>
+                  )}
+                  {renderFormFields(resources[currentStep].fields)}
+                </Form>
+                <div className="flex flex-row gap-2 justify-end">
+                  <Button.Secondary className="self-start" onClick={handleBack}>
+                    {commonText.back()}
+                  </Button.Secondary>
+                  {
+                    (currentStep === resources.length - 1) ? 
+                    <Submit.Save className="self-start" form={id('form')}>
+                      {commonText.create()}
+                    </Submit.Save>
+                    :
+                    <Submit.Save className="self-start" form={id('form')}>
+                      {commonText.next()}
+                    </Submit.Save>
+                  }
+                  
+                </div>
+              </Container.Center>
+              <Container.Center className="p-3 shadow-md max-w-lg">
+                <p className="text-md mb-4">{setupToolText.progress()}</p>
+                <Progress max={stepOrder.length} value={currentStep} />
+              </Container.Center>
+              {setupError === undefined ? undefined : (
+                <Container.Center className="p-3 shadow-md max-w-lg">
+                  <div className="flex items-center justify-start gap-3 w-full">
+                    <span className="text-red-500">{dialogIcons.warning}</span>
+                    <H3 className="text-xl font-semibold m-0 leading-none">
+                      {setupToolText.setupError()}
+                    </H3>
+                  </div>
+                  <p className="text-md mb-4">{localized(setupError)}</p>
+                </Container.Center>
+              )}
+            </div>
+          </div>
+        )}
+      </Container.FullGray>
+    </div>
   );
 }
 
