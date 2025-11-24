@@ -121,8 +121,6 @@ def update_table_schema_config_with_defaults(
         issystem=table.system,
         version=0,
     )
-    if not is_new:
-        return  # If the container already exists, we don't need to update it
 
     # Create a Splocaleitemstr for the table name and description
     for k, text in {
