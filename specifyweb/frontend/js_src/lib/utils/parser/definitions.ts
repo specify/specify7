@@ -94,7 +94,7 @@ const numberPrintFormatter = (value: unknown, { step }: Parser): string =>
     ? f.round(value, step).toString()
     : ((value as number)?.toString() ?? '');
 
-type ExtendedJavaType = JavaType | 'day' | 'month' | 'year' | 'age';
+type ExtendedJavaType = JavaType | 'age' | 'day' | 'month' | 'year';
 
 /**
  * Using this rather than mocking time using jest because this file might be
