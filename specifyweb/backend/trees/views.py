@@ -26,7 +26,7 @@ from specifyweb.backend.stored_queries.execution import set_group_concat_max_len
 from specifyweb.backend.stored_queries.group_concat import group_concat
 from specifyweb.backend.notifications.models import Message
 
-from specifyweb.backend.trees.utils import add_default_taxon, create_default_tree_task, get_search_filters, stream_csv_from_url
+from specifyweb.backend.trees.utils import add_default_tree_record, create_default_tree_task, get_search_filters, stream_csv_from_url, DISCIPLINE_TAXON_CSV_COLUMNS
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from specifyweb.backend.trees.ranks import tree_rank_count
 from . import extras
@@ -636,8 +636,8 @@ def create_default_tree_view(request):
     data = json.loads(request.body)
 
     connected_collection = data.get('collection')
-    discipline_name = data.get('disciplineName', None)
-    if not discipline_name:
+    tree_discipline_name = data.get('disciplineName', None)
+    if not tree_discipline_name:
         return http.JsonResponse({'error': 'Discipline name was not provided.'}, status=400)
 
     logged_in_collection_name = request.user.logincollectionname
@@ -648,9 +648,15 @@ def create_default_tree_view(request):
     logged_in_discipline_name = collection.discipline.name
     # logged_in_discipline_name = request.user.logindisciplinename
 
+    discipline = spmodels.Discipline.objects.filter(name=tree_discipline_name).first()
+    if not discipline:
+        discipline = spmodels.Discipline.objects.filter(name=logged_in_discipline_name).first()
+        if not discipline:
+            discipline = spmodels.Discipline.objects.all().first()
+
     url = data.get('url', None)
 
-    tree_name = discipline_name.capitalize()
+    tree_name = tree_discipline_name.capitalize()
     rank_count = int(tree_rank_count(tree_name, 8))
     
     run_in_background = data.get('runInBackground', True)
@@ -665,16 +671,15 @@ def create_default_tree_view(request):
     if run_in_background:
         Message.objects.create(user=request.specify_user, content=json.dumps({
             'type': 'create-default-tree-starting',
-            'name': "Create_Default_Tree_" + discipline_name,
+            'name': "Create_Default_Tree_" + tree_discipline_name,
             'collection_id': request.specify_collection.id,
             'discipline_name': logged_in_discipline_name,
         }))
 
         task_id = str(uuid4())
         async_result = create_default_tree_task.apply_async(
-            args=[url, discipline_name, logged_in_discipline_name, rank_count,
-                  request.specify_collection.id, request.specify_user.id],
-            task_id=f"create_default_tree_{discipline_name}_{task_id}",
+            args=[url, discipline.id, tree_discipline_name, rank_count, request.specify_collection.id, request.specify_user.id],
+            task_id=f"create_default_tree_{tree_discipline_name}_{task_id}",
             taskid=task_id
         )
         return http.JsonResponse({
@@ -683,8 +688,9 @@ def create_default_tree_view(request):
         }, status=202)
 
     try:
-        for row in stream_csv_from_url(url, discipline_name, rank_count, logged_in_discipline_name, tree_name, set_tree):
-            add_default_taxon(row, tree_name, discipline_name)
+        tree_cfg = DISCIPLINE_TAXON_CSV_COLUMNS[tree_discipline_name]
+        for row in stream_csv_from_url(url, discipline, rank_count, tree_name, set_tree):
+            add_default_tree_record('taxon', discipline, row, tree_name, tree_cfg)
     except requests.HTTPError:
         return http.JsonResponse({'error': 'Failed to fetch the tree data.'}, status=500)
 
