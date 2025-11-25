@@ -4,7 +4,9 @@ import { KEY, sortFunction } from '../../utils/utils';
 import { toResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
+import { hasPermission } from '../Permissions/helpers';
 import type { AppResources } from './hooks';
+import { filterCollectionPreferencesResources } from './permissions';
 import { appResourceSubTypes } from './types';
 
 export const allAppResources = Array.from(
@@ -41,18 +43,34 @@ export function countAppResources(
 export const filterAppResources = (
   resources: AppResources,
   filters: AppResourceFilters
-): AppResources => ({
-  ...resources,
-  viewSets: filters.viewSets ? resources.viewSets : [],
-  appResources:
+): AppResources => {
+  const baseAppResources =
     filters.appResources.length === 0
       ? []
       : isAllAppResourceTypes(filters.appResources)
         ? resources.appResources
         : resources.appResources.filter((resource) =>
             filters.appResources.includes(getAppResourceType(resource))
-          ),
-});
+          );
+
+  const hasEditPermission = hasPermission(
+    '/preferences/collection',
+    'edit_collection'
+  );
+
+  const finalAppResources = baseAppResources.filter((resource) => {
+    if (resource.name !== 'CollectionPreferences') {
+      return hasEditPermission;
+    }
+    return true;
+  });
+
+  return {
+    ...resources,
+    viewSets: filters.viewSets ? resources.viewSets : [],
+    appResources: finalAppResources,
+  };
+};
 
 export const getResourceType = (
   resource: SerializedResource<SpAppResource | SpViewSetObj>
