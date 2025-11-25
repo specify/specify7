@@ -151,58 +151,6 @@ export const remotePrefsDefinitions = f.store(
         parser: 'java.lang.Boolean',
         isLegacy: true,
       },
-      'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod': {
-        description:
-          'Allowed to add children to synopsized Geologic Time Period records',
-        defaultValue: false,
-        parser: 'java.lang.Boolean',
-        isLegacy: false,
-      },
-      'sp7.allow_adding_child_to_synonymized_parent.ChronoStrat': {
-        description:
-          'Allowed to add children to synopsized Chronostratigraphy records',
-        defaultValue: false,
-        parser: 'java.lang.Boolean',
-        isLegacy: false,
-      },
-      'sp7.allow_adding_child_to_synonymized_parent.ChronosStrat': {
-        description:
-          'Allowed to add children to synopsized Chronostratigraphy records',
-        defaultValue: false,
-        parser: 'java.lang.Boolean',
-        isLegacy: false,
-      },
-      'sp7.allow_adding_child_to_synonymized_parent.Taxon': {
-        description: 'Allowed to add children to synopsized Taxon records',
-        defaultValue: false,
-        parser: 'java.lang.Boolean',
-        isLegacy: false,
-      },
-      'sp7.allow_adding_child_to_synonymized_parent.Geography': {
-        description: 'Allowed to add children to synopsized Geography records',
-        defaultValue: false,
-        parser: 'java.lang.Boolean',
-        isLegacy: false,
-      },
-      'sp7.allow_adding_child_to_synonymized_parent.LithoStrat': {
-        description: 'Allowed to add children to synopsized LithoStrat records',
-        defaultValue: false,
-        parser: 'java.lang.Boolean',
-        isLegacy: false,
-      },
-      'sp7.allow_adding_child_to_synonymized_parent.Storage': {
-        description: 'Allowed to add children to synopsized Storage records',
-        defaultValue: false,
-        parser: 'java.lang.Boolean',
-        isLegacy: false,
-      },
-      'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit': {
-        description:
-          'Allowed to add children to synopsized TectonicUnit records',
-        defaultValue: false,
-        parser: 'java.lang.Boolean',
-        isLegacy: false,
-      },
       // This is actually stored in Global Prefs:
       /*
        * 'AUDIT_LIFESPAN_MONTHS': {

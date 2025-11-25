@@ -3,6 +3,7 @@ import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import { getPref } from '../InitialContext/remotePrefs';
 import { fetchPossibleRanks } from '../PickLists/TreeLevelPickList';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { formatUrl } from '../Router/queryString';
 import type { BusinessRuleResult } from './businessRules';
 import type { AnyTree, TableFields } from './helperTypes';
@@ -40,7 +41,9 @@ export const treeBusinessRules = async (
             idFromUrl(parentDefItem.get('treeDef'))!
           );
 
-    const doExpandSynonymActionsPref = getPref(
+    const [doExpandSynonymActionsPref] = collectionPreferences.use(
+      'treeManagement',
+      'synonymized',
       `sp7.allow_adding_child_to_synonymized_parent.${resource.specifyTable.name}`
     );
     const isParentSynonym = !parent.get('isAccepted');
