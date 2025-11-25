@@ -6,7 +6,6 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { hasPermission } from '../Permissions/helpers';
 import type { AppResources } from './hooks';
-import { filterCollectionPreferencesResources } from './permissions';
 import { appResourceSubTypes } from './types';
 
 export const allAppResources = Array.from(
