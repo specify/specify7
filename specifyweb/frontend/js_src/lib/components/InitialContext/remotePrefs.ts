@@ -126,12 +126,6 @@ export const remotePrefsDefinitions = f.store(
         defaultValue: 'MM/YYYY',
         formatters: [formatter.trim, formatter.toUpperCase],
       },
-      'attachment.is_public_default': {
-        description: 'Whether new Attachments are public by default',
-        defaultValue: true,
-        parser: 'java.lang.Boolean',
-        isLegacy: true,
-      },
       'attachment.preview_size': {
         description: 'The size in px of the generated attachment thumbnails',
         defaultValue: 123,

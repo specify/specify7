@@ -13,6 +13,7 @@ import type { Attachment } from '../DataModel/types';
 import { load } from '../InitialContext';
 import { getPref } from '../InitialContext/remotePrefs';
 import { downloadFile } from '../Molecules/FilePicker';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { formatUrl } from '../Router/queryString';
 // Import SVG icons, but better than in Icons.tsx
 import applicationJsonIcon from './MimetypeIcons/application-json.svg';
@@ -284,12 +285,18 @@ export async function uploadFile(
         }
     })
   );
+  const [attachmentIsPublicDefault] = collectionPreferences.use(
+    'general',
+    'attachments',
+    'attachment.is_public_default'
+  );
+
   return new tables.Attachment.Resource({
     attachmentlocation: data.attachmentLocation,
     mimetype: fixMimeType(file.type),
     origfilename: file.name,
     title: file.name,
-    isPublic: getPref('attachment.is_public_default'),
+    isPublic: attachmentIsPublicDefault,
   });
 }
 

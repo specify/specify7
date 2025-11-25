@@ -52,7 +52,6 @@ exports[`fetches and parses remotePrefs correctly 1`] = `
   "SymbiotaTask.SHOW_TASK_PREF.fish": "false",
   "Testing2": "",
   "TreeEditor.RestoreTreeExpansionState": "true",
-  "attachment.is_public_default": "true",
   "attachment.key": "c3wNpDBTLMedXWSb8w2TeSwHWVFLvBwiYmtU0CdOzLQtelcibV9sTXW7NxZlX68",
   "attachment.path": "",
   "attachment.preview_size": "123.3",
