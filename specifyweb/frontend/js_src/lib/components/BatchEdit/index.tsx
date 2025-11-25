@@ -247,7 +247,6 @@ const containsSystemTables = (queryFieldSpec: QueryFieldSpec) => {
   return Boolean(baseIsBlocked || pathHasBlockedSystem);
 };
 
-
 const hasHierarchyBaseTable = (queryFieldSpec: QueryFieldSpec) =>
   Object.keys(schema.domainLevelIds).includes(
     queryFieldSpec.baseTable.name.toLowerCase() as 'collection'
