@@ -187,7 +187,7 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
     () =>
       prefType === 'user'
         ? { isDarkMode, isRedirecting }
-        : { isDarkMode: false, isRedirecting: false },
+        : { isDarkMode, isRedirecting: false },
     [prefType, isDarkMode, isRedirecting]
   );
 

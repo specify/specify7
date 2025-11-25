@@ -8,8 +8,7 @@ import { treeText } from '../../localization/tree';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { ensure } from '../../utils/types';
-import { getField } from '../DataModel/helpers';
-import { genericTables, tables } from '../DataModel/tables';
+import { genericTables } from '../DataModel/tables';
 import { Tables } from '../DataModel/types';
 import type { StatLayout } from '../Statistics/types';
 import type { GenericPreferences } from './types';
@@ -197,19 +196,9 @@ export const collectionPreferenceDefinitions = {
         title: preferencesText.behavior(),
         items: {
           inheritance: definePref<boolean>({
-            title: preferencesText.inheritanceCatNumberPref({
-              catalogNumber: getField(tables.CollectionObject, 'catalogNumber')
-                .label,
-              collectionObject: tables.CollectionObject.label,
-            }),
+            title: preferencesText.inheritanceCatNumberPref(),
             description: () =>
-              preferencesText.inheritanceCatNumberPrefDescription({
-                catalogNumber: getField(
-                  tables.CollectionObject,
-                  'catalogNumber'
-                ).label,
-                collectionObject: tables.CollectionObject.label,
-              }),
+              preferencesText.inheritanceCatNumberPrefDescription(),
             requiresReload: false,
             visible: true,
             defaultValue: false,
@@ -226,19 +215,9 @@ export const collectionPreferenceDefinitions = {
         title: preferencesText.behavior(),
         items: {
           inheritance: definePref<boolean>({
-            title: preferencesText.inheritanceCatNumberParentCOPref({
-              catalogNumber: getField(tables.CollectionObject, 'catalogNumber')
-                .label,
-              collectionObject: tables.CollectionObject.label,
-            }),
+            title: preferencesText.inheritanceCatNumberParentCOPref(),
             description: () =>
-              preferencesText.inheritanceCatNumberParentCOPrefDescription({
-                catalogNumber: getField(
-                  tables.CollectionObject,
-                  'catalogNumber'
-                ).label,
-                collectionObject: tables.CollectionObject.label,
-              }),
+              preferencesText.inheritanceCatNumberParentCOPrefDescription(),
             requiresReload: false,
             visible: true,
             defaultValue: false,

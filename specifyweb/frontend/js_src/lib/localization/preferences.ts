@@ -2076,19 +2076,19 @@ export const preferencesText = createDictionary({
   },
   inheritanceCatNumberPrefDescription: {
     'en-us':
-      'Control whether component records inherit the {catalogNumber:string} from the primary {collectionObject:string}.',
+      'Control whether component records inherit the catalog number from the primary collection object.',
   },
   inheritanceCatNumberPref: {
     'en-us':
-      'Enable {catalogNumber:string} Inheritance From Primary {collectionObject:string}',
+      'Enable the inheritance of the primary catalog number to its empty siblings.',
   },
   inheritanceCatNumberParentCOPref: {
     'en-us':
-      'Enable {catalogNumber:string} Inheritance From Parent {collectionObject:string}',
+      'Enable the inheritance of the parent catalog number to its empty children.',
   },
   inheritanceCatNumberParentCOPrefDescription: {
     'en-us':
-      'Control whether component records inherit the {catalogNumber:string} from the parent {collectionObject:string}.',
+      'Control whether component records inherit the catalog number from the parent collection object.',
   },
   uniqueCatNumberAcrossCompAndCo: {
     'en-us':
