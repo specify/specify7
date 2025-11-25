@@ -2,6 +2,7 @@ import csv
 import json
 import logging
 import time
+from itertools import islice, repeat
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from typing import (
@@ -16,6 +17,7 @@ from typing import (
 from collections.abc import Callable
 from collections.abc import Sized
 
+from django.conf import settings
 from django.db import transaction
 from django.db.utils import OperationalError, IntegrityError
 from jsonschema import validate  # type: ignore
@@ -72,6 +74,8 @@ Rows = list[Row] | csv.DictReader
 Progress = Callable[[int, int | None], None]
 
 logger = logging.getLogger(__name__)
+
+BATCH_SIZE_DEFAULT = 500
 
 
 class RollbackFailure(Exception):
@@ -342,88 +346,110 @@ def do_upload(
     )
     total = len(rows) if isinstance(rows, Sized) else None
     cached_scope_table = None
+    last_scoped_table: ScopedUploadable | None = None
+    batch_size = max(1, int(getattr(settings, "WORKBENCH_UPLOAD_BATCH_SIZE", BATCH_SIZE_DEFAULT)))
 
     scope_context = ScopeContext()
 
     with savepoint("main upload"):
         tic = time.perf_counter()
         results: list[UploadResult] = []
-        for i, row in enumerate(rows):
+
+        def batch_iter():
+            rows_iter = iter(rows)
+            dis_iter = iter(disambiguations) if disambiguations is not None else repeat(None)
+            pack_iter = iter(batch_edit_packs) if batch_edit_packs is not None else repeat(None)
+            while True:
+                batch = list(islice(zip(rows_iter, dis_iter, pack_iter), batch_size))
+                if not batch:
+                    break
+                yield batch
+
+        for batch_index, batch in enumerate(batch_iter()):
             _cache = cache.copy() if cache is not None and allow_partial else cache
-            da = disambiguations[i] if disambiguations else None
-            batch_edit_pack = batch_edit_packs[i] if batch_edit_packs else None
-            with savepoint("row upload") if allow_partial else no_savepoint():
-                # the fact that upload plan is cachable, is invariant across rows.
-                # so, we just apply scoping once. Honestly, see if it causes enough overhead to even warrant caching
+            batch_results_count = 0
+            with savepoint("batch upload") if allow_partial else no_savepoint():
+                for i, (row, da, batch_edit_pack) in enumerate(batch):
+                    # Added to validate cotype on Component table
+                    # Only reorder if this is the Component table
+                    component_upload = cast(Any, upload_plan)
+                    if component_upload.name == 'Component':
+                        toOne = component_upload.toOne
 
-                # Added to validate cotype on Component table
-                # Only reorder if this is the Component table
-                component_upload = cast(Any, upload_plan)
-                if component_upload.name == 'Component':
-                    toOne = component_upload.toOne
+                        # Only reorder if both keys exist
+                        if 'type' in toOne and 'name' in toOne:
+                            # Temporarily remove them
+                            type_val = toOne.pop('type')
+                            name_val = toOne.pop('name')
 
-                    # Only reorder if both keys exist
-                    if 'type' in toOne and 'name' in toOne:
-                        # Temporarily remove them
-                        type_val = toOne.pop('type')
-                        name_val = toOne.pop('name')
+                            # Reinsert in desired order: type before name
+                            toOne.update({'type': type_val, 'name': name_val})
 
-                        # Reinsert in desired order: type before name
-                        toOne.update({'type': type_val, 'name': name_val})
+                    if has_attachments(row):
+                        # If there's an attachments column, add attachments to upload plan
+                        attachments_valid, result = validate_attachment(row, upload_plan) # type: ignore
+                        if not attachments_valid:
+                            results.append(result) # type: ignore
+                            cache = _cache
+                            raise Rollback("failed row")
+                        row, row_upload_plan = add_attachments_to_plan(row, upload_plan) # type: ignore
+                        scoped_table = row_upload_plan.apply_scoping(collection, scope_context, row)
 
-                if has_attachments(row):
-                    # If there's an attachments column, add attachments to upload plan
-                    attachments_valid, result = validate_attachment(row, upload_plan) # type: ignore
-                    if not attachments_valid:
-                        results.append(result) # type: ignore
-                        cache = _cache
-                        raise Rollback("failed row")
-                    row, row_upload_plan = add_attachments_to_plan(row, upload_plan) # type: ignore
-                    scoped_table = row_upload_plan.apply_scoping(collection, scope_context, row)
+                    elif cached_scope_table is None:
+                        scoped_table = upload_plan.apply_scoping(collection, scope_context, row)
+                        if not scope_context.is_variable:
+                            # This forces every row to rescope when not variable
+                            cached_scope_table = scoped_table
+                    else:
+                        scoped_table = cached_scope_table
 
-                elif cached_scope_table is None:
-                    scoped_table = upload_plan.apply_scoping(collection, scope_context, row)
-                    if not scope_context.is_variable:
-                        # This forces every row to rescope when not variable
-                        cached_scope_table = scoped_table
-                else:
-                    scoped_table = cached_scope_table
-
-                bind_result = (
-                    scoped_table.disambiguate(da)
-                    .apply_batch_edit_pack(batch_edit_pack)
-                    .bind(row, uploading_agent_id, _auditor, cache)
-                )
-                if isinstance(bind_result, ParseFailures):
-                    result = UploadResult(bind_result, {}, {})
-                else:
-                    can_save = bind_result.can_save()
-                    # We need to have additional context on whether we can save or not. This could, hackily, be taken from ds's isupdate field.
-                    # But, that seeems very hacky. Instead, we can easily check if the base table can be saved. Legacy ones will simply return false,
-                    # so we'll be able to proceed fine.
-                    result = (
-                        bind_result.save_row(force=True)
-                        if can_save
-                        else bind_result.process_row()
+                    bind_result = (
+                        scoped_table.disambiguate(da)
+                        .apply_batch_edit_pack(batch_edit_pack)
+                        .bind(row, uploading_agent_id, _auditor, cache)
                     )
+                    if isinstance(bind_result, ParseFailures):
+                        result = UploadResult(bind_result, {}, {})
+                    else:
+                        can_save = bind_result.can_save()
+                        # We need to have additional context on whether we can save or not. This could, hackily, be taken from ds's isupdate field.
+                        # But, that seeems very hacky. Instead, we can easily check if the base table can be saved. Legacy ones will simply return false,
+                        # so we'll be able to proceed fine.
+                        result = (
+                            bind_result.save_row(force=True)
+                            if can_save
+                            else bind_result.process_row()
+                        )
 
-                results.append(result)
-                if progress is not None:
-                    progress(len(results), total)
-                logger.info(
-                    f"finished row {len(results)}, cache size: {cache and len(cache)}"
-                )
-                if result.contains_failure():
-                    cache = _cache
-                    raise Rollback("failed row")
+                    results.append(result)
+                    batch_results_count += 1
+                    last_scoped_table = scoped_table
+                    if progress is not None:
+                        progress(len(results), total)
+                    logger.info(
+                        f"finished row {len(results)}, cache size: {cache and len(cache)}"
+                    )
+                    if result.contains_failure():
+                        cache = _cache
+                        if batch_results_count:
+                            del results[-batch_results_count:]
+                            batch_results_count = 0
+                            if progress is not None:
+                                progress(len(results), total)
+                        raise Rollback("failed row")
+
+            # Batch completed successfully; keep cache changes
+            logger.info(
+                f"finished batch {batch_index+1} of size {len(batch)}, cache size: {cache and len(cache)}"
+            )
 
         toc = time.perf_counter()
         logger.info(f"finished upload of {len(results)} rows in {toc-tic}s")
 
         if no_commit:
             raise Rollback("no_commit option")
-        else:
-            fixup_trees(scoped_table, results)
+        elif last_scoped_table is not None:
+            fixup_trees(last_scoped_table, results)
 
     return results
 
