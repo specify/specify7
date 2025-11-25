@@ -38,7 +38,7 @@ export function SelectRecordSets<SCHEMA extends AnySchema>({
     RA<number>
   >([]);
 
-  const { limit, offset } = usePaginator('recordSets');
+  const { paginator, limit, offset } = usePaginator('recordSets');
 
   const [recordSets] = useAsyncState(
     React.useCallback(
@@ -103,6 +103,8 @@ export function SelectRecordSets<SCHEMA extends AnySchema>({
           onClose={handleClose}
           onProceed={handleAddResource}
           onValueChange={onSelected}
+          paginator={paginator}
+          totalCount={recordSets?.totalCount}
         />
       )}
     </>
@@ -117,6 +119,8 @@ export function RecordSetSelection<T>({
   selectedTable,
   onValueChange: handleValueChange,
   isMerge,
+  paginator,
+  totalCount,
 }: {
   readonly recordSets: RA<SerializedResource<RecordSet>> | undefined;
   readonly onProceed: () => void;
@@ -125,6 +129,8 @@ export function RecordSetSelection<T>({
   readonly selectedTable?: number | null;
   readonly onValueChange: (recordSet: T) => void;
   readonly isMerge?: boolean;
+  readonly paginator?: (totalCount: number | undefined) => JSX.Element;
+  readonly totalCount?: number | undefined;
 }): JSX.Element {
   return (
     <Dialog
@@ -163,6 +169,12 @@ export function RecordSetSelection<T>({
           </li>
         ))}
       </Ul>
+      <span className="-mt-2 flex-1" />
+      {recordSets !== undefined &&
+        recordSets.length > 0 &&
+        paginator !== undefined
+        ? paginator(totalCount)
+        : null}
     </Dialog>
   );
 }
