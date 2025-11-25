@@ -235,3 +235,22 @@ export const collectionPrefsDefinitions = {
     parser: 'java.lang.Boolean',
   },
 } as const;
+
+let collectionPrefsFetchPromise: Promise<void> | undefined;
+
+export async function ensureCollectionPreferencesLoaded(): Promise<
+  (typeof import('../Preferences/collectionPreferences'))['collectionPreferences']
+> {
+  const { collectionPreferences } = await import(
+    '../Preferences/collectionPreferences'
+  );
+  if (Object.keys(collectionPreferences.getRaw()).length === 0) {
+    if (collectionPrefsFetchPromise === undefined)
+      collectionPrefsFetchPromise = collectionPreferences
+        .fetch()
+        .catch(() => undefined)
+        .then(() => undefined);
+    await collectionPrefsFetchPromise;
+  }
+  return collectionPreferences;
+}
