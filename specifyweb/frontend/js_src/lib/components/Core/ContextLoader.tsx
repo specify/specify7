@@ -17,7 +17,7 @@ const LOADING_TIMEOUT = 2 * SECOND;
 const fetchContext =
   (
     context: Promise<unknown>,
-    errorMode: 'crash' | 'console'
+    errorMode: 'console' | 'crash'
   ): (() => Promise<true | void>) =>
   async () =>
     context.then(f.true).catch(errorMode === 'crash' ? crash : softFail);
