@@ -277,7 +277,40 @@ DISCIPLINE_TAXON_CSV_COLUMNS = {
             }
         ],
     },
-}   
+}  
+GEOGRAPHY_CSV_COLUMNS = {
+    'geography': {
+        'all_columns': ['Continent','Country','State','County','GeographyCode','CentroidLat','CentroidLon'],
+        'ranks': [
+            {'continent': {'continent': 'name'}},
+            {'country': {'country': 'name'}},
+            {'state': {'state': 'name'}},
+            {'county': {
+                'county': 'name',
+                'GeographyCode': 'geographycode',
+                'CentroidLat': 'centroidlat',
+                'CentroidLon': 'centroidlon'}
+            },
+        ]
+    }
+}
+GEOLOGICTIMEPERIOD_CSV_COLUMNS = {
+    'geologictimeperiod': {
+        'all_columns': ['Erathem/Era', 'System/Period', 'Series/Epoch', 'Stage/Age', 'Start Period', 'Start Uncertainty', 'End Period', 'End Uncertainty'],
+        'rank': [
+            {'era': {'Erathem/Era': 'name'}},
+            {'period': {'System/Period': 'name'}},
+            {'epoch': {'Series/Epoch': 'name'}},
+            {'age': {
+                'Stage/Age': 'name',
+                'Start Period': 'startperiod',
+                'Start Uncertainty': 'startuncertainty',
+                'End Period': 'endperiod',
+                'End Uncertainty': 'enduncertainty'}
+            },
+        ]
+    }
+}
 
 def initialize_default_tree(tree_type: str, discipline, tree_name: str, rank_names_lst: list):
     """Creates an initial empty tree."""
@@ -336,7 +369,11 @@ def add_default_tree_record(tree_type: str, discipline, row: dict, tree_name: st
     it to its parent.
     """
     tree_def_model, tree_rank_model, tree_node_model = get_models(tree_type)
-    tree_def = tree_def_model.objects.get(name=tree_name)
+    if tree_type == 'taxon':
+        # There may be multiple taxon trees, match by name.
+        tree_def = tree_def_model.objects.get(name=tree_name)
+    else:
+        tree_def = tree_def_model.objects.first()
     parent = tree_node_model.objects.get(name='Root', fullname='Root', definition=tree_def)
     rank_id = 10
 
@@ -431,13 +468,21 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
         tree_name = name
 
     try:
-        tree_cfg = DISCIPLINE_TAXON_CSV_COLUMNS[tree_discipline_name]
+        tree_type = 'taxon'
+        if tree_discipline_name == 'geography':
+            tree_type = 'geography'
+            tree_cfg = GEOGRAPHY_CSV_COLUMNS[tree_discipline_name]
+        elif tree_discipline_name == 'geologictimeperiod':
+            tree_type = 'geologictimeperiod'
+            tree_cfg = GEOLOGICTIMEPERIOD_CSV_COLUMNS[tree_discipline_name]
+        else:
+            tree_cfg = DISCIPLINE_TAXON_CSV_COLUMNS[tree_discipline_name]
 
         row_count = count_csv_rows(url) - 2
         progress(0, row_count)
         with transaction.atomic():
             for row in stream_csv_from_url(url, discipline, rank_count, tree_name, set_tree):
-                add_default_tree_record('taxon', discipline, row, tree_name, tree_cfg)
+                add_default_tree_record(tree_type, discipline, row, tree_name, tree_cfg)
                 progress(1, 0)
     except Exception as e:
         Message.objects.create(
