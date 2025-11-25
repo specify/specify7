@@ -158,6 +158,20 @@ export const remotePrefsDefinitions = f.store(
         parser: 'java.lang.Boolean',
         isLegacy: false,
       },
+      'sp7.allow_adding_child_to_synonymized_parent.ChronoStrat': {
+        description:
+          'Allowed to add children to synopsized Chronostratigraphy records',
+        defaultValue: false,
+        parser: 'java.lang.Boolean',
+        isLegacy: false,
+      },
+      'sp7.allow_adding_child_to_synonymized_parent.ChronosStrat': {
+        description:
+          'Allowed to add children to synopsized Chronostratigraphy records',
+        defaultValue: false,
+        parser: 'java.lang.Boolean',
+        isLegacy: false,
+      },
       'sp7.allow_adding_child_to_synonymized_parent.Taxon': {
         description: 'Allowed to add children to synopsized Taxon records',
         defaultValue: false,
