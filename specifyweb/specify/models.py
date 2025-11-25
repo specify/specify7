@@ -86,7 +86,7 @@ class Accession(models.Model):
         indexes = [
             models.Index(fields=['accessionnumber'], name='AccessionNumberIDX'),
             models.Index(fields=['dateaccessioned'], name='AccessionDateIDX'),
-            models.Index(fields=['division_id', 'accessionnumber'], name='AccScopeAccessionsnumberIDX'), # composite index for autonumbering range/gap locks
+            models.Index(fields=['division_id', 'accessionnumber'], name='DivAccessionNumberIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -793,7 +793,8 @@ class Borrow(models.Model):
         indexes = [
             models.Index(fields=['invoicenumber'], name='BorInvoiceNumberIDX'),
             models.Index(fields=['receiveddate'], name='BorReceivedDateIDX'),
-            models.Index(fields=['collectionmemberid'], name='BorColMemIDX')
+            models.Index(fields=['collectionmemberid'], name='BorColMemIDX'),
+            models.Index(fields=['invoicenumber'], name='BorrowInvoiceNumberIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -990,7 +991,8 @@ class Collectingevent(models.Model):
             models.Index(fields=['startdate'], name='CEStartDateIDX'),
             models.Index(fields=['enddate'], name='CEEndDateIDX'),
             models.Index(fields=['uniqueidentifier'], name='CEUniqueIdentifierIDX'),
-            models.Index(fields=['guid'], name='CEGuidIDX')
+            models.Index(fields=['guid'], name='CEGuidIDX'),
+            models.Index(fields=['discipline', 'stationfieldnumber'], name='DispStationFieldNumIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -1387,7 +1389,8 @@ class Collection(models.Model):
         ordering = ()
         indexes = [
             models.Index(fields=['collectionname'], name='CollectionNameIDX'),
-            models.Index(fields=['guid'], name='CollectionGuidIDX')
+            models.Index(fields=['guid'], name='CollectionGuidIDX'),
+            models.Index(fields=['discipline', 'regnumber'], name='DispColRegNumberIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -1492,7 +1495,7 @@ class Collectionobject(models.Model):
             models.Index(fields=['altcatalognumber'], name='AltCatalogNumberIDX'),
             models.Index(fields=['guid'], name='ColObjGuidIDX'),
             models.Index(fields=['collectionmemberid'], name='COColMemIDX'),
-            models.Index(fields=['collectionmemberid', 'catalognumber'], name='ColObjScopeCatalognumberIDX'), # composite index for autonumbering range/gap locks
+            models.Index(fields=['collectionmemberid', 'catalognumber'], name='ColCatalogNumberIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -2012,7 +2015,8 @@ class Collector(models.Model):
         ordering = ('ordernumber',)
         unique_together = (('agent', 'collectingevent'),)
         indexes = [
-            models.Index(fields=['division'], name='COLTRDivIDX')
+            models.Index(fields=['division'], name='COLTRDivIDX'),
+            models.Index(fields=['division', 'ordernumber'], name='DivCollectorOrderNumIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -2671,7 +2675,7 @@ class Deaccession(models.Model):
         db_table = 'deaccession'
         ordering = ()
         indexes = [
-            models.Index(fields=['deaccessionnumber'], name='DeaccessionNumberIDX'),
+            models.Index(fields=['deaccessionnumber'], name='DeaccessionNumberIDX'), # composite index for autonumbering range/gap locks
             models.Index(fields=['deaccessiondate'], name='DeaccessionDateIDX')
         ]
 
@@ -2900,7 +2904,8 @@ class Discipline(model_extras.Discipline):
         db_table = 'discipline'
         ordering = ()
         indexes = [
-            models.Index(fields=['name'], name='DisciplineNameIDX')
+            models.Index(fields=['name'], name='DisciplineNameIDX'),
+            models.Index(fields=['division', 'regnumber'], name='DivDispRegNumberIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -2937,7 +2942,7 @@ class Disposal(models.Model):
         db_table = 'disposal'
         ordering = ()
         indexes = [
-            models.Index(fields=['disposalnumber'], name='DisposalNumberIDX'),
+            models.Index(fields=['disposalnumber'], name='DisposalNumberIDX'), # composite index for autonumbering range/gap locks
             models.Index(fields=['disposaldate'], name='DisposalDateIDX')
         ]
 
@@ -3054,7 +3059,8 @@ class Division(models.Model):
         db_table = 'division'
         ordering = ()
         indexes = [
-            models.Index(fields=['name'], name='DivisionNameIDX')
+            models.Index(fields=['name'], name='DivisionNameIDX'),
+            models.Index(fields=['institution', 'regnumber'], name='InstDivRegNumberIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -3098,7 +3104,9 @@ class Exchangein(models.Model):
         ordering = ()
         indexes = [
             models.Index(fields=['exchangedate'], name='ExchangeDateIDX'),
-            models.Index(fields=['descriptionofmaterial'], name='DescriptionOfMaterialIDX')
+            models.Index(fields=['descriptionofmaterial'], name='DescriptionOfMaterialIDX'),
+            models.Index(fields=['exchangeinnumber'], name='exchangein_exchangeinnumber_idx'),
+            models.Index(fields=['division', 'exchangeinnumber'], name='DivExcInNumberIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -3204,7 +3212,8 @@ class Exchangeout(models.Model):
         indexes = [
             models.Index(fields=['exchangedate'], name='ExchangeOutdateIDX'),
             # models.Index(fields=['DescriptionOfMaterial'], name='DescriptionOfMaterialIDX2'),
-            models.Index(fields=['exchangeoutnumber'], name='ExchangeOutNumberIDX')
+            models.Index(fields=['exchangeoutnumber'], name='ExchangeOutNumberIDX'),
+            models.Index(fields=['division', 'exchangeoutnumber'], name='DivExcOutNumberIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -3318,6 +3327,10 @@ class Exsiccataitem(models.Model):
     class Meta:
         db_table = 'exsiccataitem'
         ordering = ()
+        indexes = [
+            models.Index(fields=['number'], name='exsiccataitem_number_idx'),
+            models.Index(fields=['number'], name='ExsiccataItemNumberIDX'), # composite index for autonumbering range/gap locks
+        ]
 
     
     save = partialmethod(custom_save)
@@ -3439,7 +3452,8 @@ class Fieldnotebookpage(models.Model):
         ordering = ()
         indexes = [
             models.Index(fields=['pagenumber'], name='FNBPPageNumberIDX'),
-            models.Index(fields=['scandate'], name='FNBPScanDateIDX')
+            models.Index(fields=['scandate'], name='FNBPScanDateIDX'),
+            models.Index(fields=['discipline', 'pagenumber'], name='DispFNBPageNumIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -3499,7 +3513,8 @@ class Fieldnotebookpageset(models.Model):
         ordering = ()
         indexes = [
             models.Index(fields=['startdate'], name='FNBPSStartDateIDX'),
-            models.Index(fields=['enddate'], name='FNBPSEndDateIDX')
+            models.Index(fields=['enddate'], name='FNBPSEndDateIDX'),
+            models.Index(fields=['discipline', 'pagenumber'], name='DispFNBPageSetNumIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -3558,7 +3573,8 @@ class Fundingagent(models.Model):
         ordering = ()
         unique_together = (('agent', 'collectingtrip'),)
         indexes = [
-            models.Index(fields=['division'], name='COLTRIPDivIDX')
+            models.Index(fields=['division'], name='COLTRIPDivIDX'),
+            models.Index(fields=['division', 'pagenumber'], name='DivFundingAgentPageNumIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -3896,7 +3912,8 @@ class Gift(models.Model):
         ordering = ()
         indexes = [
             models.Index(fields=['giftnumber'], name='GiftNumberIDX'),
-            models.Index(fields=['giftdate'], name='GiftDateIDX')
+            models.Index(fields=['giftdate'], name='GiftDateIDX'),
+            models.Index(fields=['discipline', 'giftnumber'], name='DispGiftNumberIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -4024,6 +4041,9 @@ class Groupperson(models.Model):
         db_table = 'groupperson'
         ordering = ()
         unique_together = (('ordernumber', 'group'),)
+        indexes = [
+            models.Index(fields=['division', 'ordernumber'], name='DivGroupPersonOrderNumIDX'), # composite index for autonumbering range/gap locks
+        ]
 
     
     save = partialmethod(custom_save)
@@ -4398,7 +4418,8 @@ class Loan(models.Model):
         indexes = [
             models.Index(fields=['loannumber'], name='LoanNumberIDX'),
             models.Index(fields=['loandate'], name='LoanDateIDX'),
-            models.Index(fields=['currentduedate'], name='CurrentDueDateIDX')
+            models.Index(fields=['currentduedate'], name='CurrentDueDateIDX'),
+            models.Index(fields=['discipline', 'loannumber'], name="DispLoanNumberIDX"), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -5040,7 +5061,8 @@ class Permit(models.Model):
         ordering = ()
         indexes = [
             models.Index(fields=['permitnumber'], name='PermitNumberIDX'),
-            models.Index(fields=['issueddate'], name='IssuedDateIDX')
+            models.Index(fields=['issueddate'], name='IssuedDateIDX'),
+            models.Index(fields=['institution', 'permitnumber'], name='InstPermitNumberIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -5697,7 +5719,9 @@ class Referencework(models.Model):
             models.Index(fields=['title'], name='RefWrkTitleIDX'),
             models.Index(fields=['publisher'], name='RefWrkPublisherIDX'),
             models.Index(fields=['guid'], name='RefWrkGuidIDX'),
-            models.Index(fields=['isbn'], name='ISBNIDX')
+            models.Index(fields=['isbn'], name='ISBNIDX'),
+            models.Index(fields=['librarynumber'], name='referencework_librarynumber_idx'),
+            models.Index(fields=['institution', 'librarynumber'], name='InstRefWorkLibNumIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -5765,6 +5789,7 @@ class Repositoryagreement(models.Model):
         ordering = ()
         indexes = [
             models.Index(fields=['repositoryagreementnumber'], name='RefWrkNumberIDX'),
+            models.Index(fields=['division', 'repositoryagreementnumber'], name='DivRepoAgreeNumIDX'), # composite index for autonumbering range/gap locks
             # models.Index(fields=['StartDate'], name='RefWrkStartDate')
         ]
 
@@ -5840,7 +5865,8 @@ class Shipment(models.Model):
             models.Index(fields=['shipmentnumber'], name='ShipmentNumberIDX'),
             models.Index(fields=['shipmentdate'], name='ShipmentDateIDX'),
             models.Index(fields=['discipline'], name='ShipmentDspMemIDX'),
-            models.Index(fields=['shipmentmethod'], name='ShipmentMethodIDX')
+            models.Index(fields=['shipmentmethod'], name='ShipmentMethodIDX'),
+            models.Index(fields=['discipline', 'shipmentnumber'], name='DispShipmentNumberIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -7228,7 +7254,8 @@ class Treatmentevent(models.Model):
             models.Index(fields=['datereceived'], name='TEDateReceivedIDX'),
             models.Index(fields=['datetreatmentstarted'], name='TEDateTreatmentStartedIDX'),
             models.Index(fields=['fieldnumber'], name='TEFieldNumberIDX'),
-            models.Index(fields=['treatmentnumber'], name='TETreatmentNumberIDX')
+            models.Index(fields=['treatmentnumber'], name='TETreatmentNumberIDX'),
+            models.Index(fields=['division', 'treatmentnumber'], name='DivTreatmentNumberIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
