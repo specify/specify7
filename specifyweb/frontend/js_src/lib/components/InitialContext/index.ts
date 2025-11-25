@@ -73,7 +73,8 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
  * not block or prevent access to Specify
  */
 export const secondaryContext = Promise.all([
-  /** REFACTOR: Move non-essential endpoints here from initialContext to speed
+  /**
+   * REFACTOR: Move non-essential endpoints here from initialContext to speed
    * up initial loading times.
    * Icon Definitions, Legacy UI Localization, Uniqueness Rules, and possibly
    * even Field Formatters and Remote Prefs can all theoretically be moved here.

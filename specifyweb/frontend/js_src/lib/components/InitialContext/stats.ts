@@ -1,8 +1,8 @@
-import { fetchContext as fetchSystemInfo } from './systemInfo';
 import { ping } from '../../utils/ajax/ping';
 import { softFail } from '../Errors/Crash';
 import { formatUrl } from '../Router/queryString';
 import { load } from './index';
+import { fetchContext as fetchSystemInfo } from './systemInfo';
 
 type StatsCounts = {
   readonly Collectionobject: number;
