@@ -11,9 +11,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.15-dev\n"
 
-#: components/Attachments/RecordSetAttachment.tsx:159
-#: components/Attachments/RecordSetAttachment.tsx:162
-#: components/Attachments/RecordSetAttachment.tsx:166
+#: components/Attachments/RecordSetAttachment.tsx:161
+#: components/Attachments/RecordSetAttachment.tsx:164
+#: components/Attachments/RecordSetAttachment.tsx:168
 #: components/Attachments/index.tsx:161
 #: components/FormSliders/AttachmentsCollection.tsx:68
 #: components/FormSliders/AttachmentsCollection.tsx:91
@@ -70,7 +70,7 @@ msgid "uploadingInline"
 msgstr "Subiendo…"
 
 #: components/Attachments/Gallery.tsx:137
-#: components/Attachments/RecordSetAttachment.tsx:174
+#: components/Attachments/RecordSetAttachment.tsx:176
 #: components/AttachmentsBulkImport/utils.ts:463
 #. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 msgid "noAttachments"
@@ -247,12 +247,12 @@ msgstr ""
 msgid "noMatch"
 msgstr "Sin coincidencia"
 
-#: components/Attachments/RecordSetAttachment.tsx:177
+#: components/Attachments/RecordSetAttachment.tsx:179
 #. Used in: Components > Attachments > Record Set Attachment
 msgid "attachmentHaltLimit"
 msgstr "No se han encontrado adjuntos en los primeros {halt:number} registros."
 
-#: components/Attachments/RecordSetAttachment.tsx:185
+#: components/Attachments/RecordSetAttachment.tsx:187
 #. Used in: Components > Attachments > Record Set Attachment
 msgid "fetchNextAttachments"
 msgstr "Buscar más adjuntos"
@@ -396,7 +396,7 @@ msgstr ""
 "Error al cargar el archivo adjunto. Es posible que el servidor de archivos "
 "adjuntos no esté disponible o hubo un error al leer el archivo."
 
-#: components/Attachments/RecordSetAttachment.tsx:148
+#: components/Attachments/RecordSetAttachment.tsx:150
 #: components/Attachments/RecordSetAttachment.tsx:221
 #: components/FormSliders/AttachmentsCollection.tsx:84
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
@@ -404,7 +404,7 @@ msgstr ""
 msgid "downloadAll"
 msgstr "Descargar todo"
 
-#: components/Attachments/RecordSetAttachment.tsx:134
+#: components/Attachments/RecordSetAttachment.tsx:135
 #: components/FormSliders/AttachmentsCollection.tsx:79
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #, fuzzy
