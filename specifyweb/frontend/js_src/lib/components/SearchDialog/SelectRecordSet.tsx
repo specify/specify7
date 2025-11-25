@@ -98,13 +98,13 @@ export function SelectRecordSets<SCHEMA extends AnySchema>({
       <Button.Info onClick={handleOpen}>{commonText.recordSets()}</Button.Info>
       {isOpen && (
         <RecordSetSelection
+          paginator={paginator}
           recordSets={recordSets?.records}
           selectedRecordSets={selectedRecordSets}
+          totalCount={recordSets?.totalCount}
           onClose={handleClose}
           onProceed={handleAddResource}
           onValueChange={onSelected}
-          paginator={paginator}
-          totalCount={recordSets?.totalCount}
         />
       )}
     </>
