@@ -229,22 +229,18 @@ function useInitialData(
         );
       };
 
-      if (typeof initialDataFrom === 'number')
-        return fetchResource('SpAppResourceData', initialDataFrom).then(
-          ({ data }) => replaceViewsetName(data)
-        );
-      else if (typeof templateFile === 'string') {
-        if (templateFile.includes('..'))
-          console.error(
-            'Relative paths not allowed. Path is always relative to /static/config/'
-          );
-        else
-          return ajax(`/static/config/${templateFile}`, {
-            headers: {},
-          })
-            .then(({ data }) => replaceViewsetName(data))
-            .catch(() => '');
+      if (typeof initialDataFrom === 'number') {
+        const { data } = await fetchResource('SpAppResourceData', initialDataFrom);
+        return replaceViewsetName(data);
       }
+      if (typeof templateFile === 'string') {
+       try {
+        const { data } = await ajax(`/static/config/${templateFile}`, { headers: {} });
+        return replaceViewsetName(data);
+      } catch {
+        return '';
+      }
+    }
       const subType = f.maybe(
         toResource(resource, 'SpAppResource'),
         getAppResourceType
@@ -254,14 +250,14 @@ function useInitialData(
         const useTemplate =
           typeof type.name === 'string' &&
           (!('useTemplate' in type) || type.useTemplate);
-        if (useTemplate)
-          return ajax(getAppResourceUrl(type.name, 'quiet'), {
+        if (useTemplate) {
+          const { data } = await ajax(getAppResourceUrl(type.name, 'quiet'), {
             headers: {},
-          }).then(({ data }) => replaceViewsetName(data));
+          });
+          return replaceViewsetName(data);
+        }
       }
       return false;
-      // Run this only once
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [initialDataFrom, templateFile, resource]),
     false
   )[0];
