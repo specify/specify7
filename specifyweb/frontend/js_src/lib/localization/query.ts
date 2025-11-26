@@ -956,6 +956,12 @@ export const queryText = createDictionary({
     'ru-ru': 'Наследование каталожного номера',
     'uk-ua': 'Успадкування каталожних номерів',
   },
+  primaryCatalogNumberInheritance: {
+    'en-us': 'Primary Catalog Number Inheritance',
+  },
+  parentCatalogNumberInheritance: {
+    'en-us': 'Parent Catalog Number Inheritance',
+  },
   catalogNumberParentCOInheritance: {
     'en-us': 'Catalog Number Parent Collection Object Inheritance',
     'de-ch': 'Katalognummer Übergeordnete Sammlung Objektvererbung',
@@ -965,6 +971,9 @@ export const queryText = createDictionary({
     'pt-br': 'Número de catálogo Coleção pai Objeto Herança',
     'ru-ru': 'Номер каталога Родительская коллекция Объект Наследование',
     'uk-ua': "Успадкування батьківського об'єкта колекції за номером каталогу",
+  },
+  uniqueCatalogNumberAcrossComponentAndCoTitle: {
+    'en-us': 'Unique Catalog # (Component & CO)',
   },
   uniqueCatalogNumberAcrossComponentAndCo: {
     'en-us': 'Catalog Number Uniqueness Across Component And CO tables',

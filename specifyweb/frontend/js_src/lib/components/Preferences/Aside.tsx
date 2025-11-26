@@ -7,18 +7,20 @@ import type { GetSet, WritableArray } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { pathIsOverlay } from '../Router/UnloadProtect';
 import { scrollIntoView } from '../TreeView/helpers';
-import { usePrefDefinitions } from './index';
+import { PreferenceType, usePrefDefinitions } from './index';
 
 export function PreferencesAside({
   activeCategory,
   setActiveCategory,
   references,
+  prefType = 'user',
 }: {
   readonly activeCategory: number | undefined;
   readonly setActiveCategory: (activeCategory: number | undefined) => void;
   readonly references: React.RefObject<WritableArray<HTMLElement | undefined>>;
+  readonly prefType?: PreferenceType;
 }): JSX.Element {
-  const definitions = usePrefDefinitions();
+  const definitions = usePrefDefinitions(prefType);
   const navigate = useNavigate();
   const location = useLocation();
   const isInOverlay = pathIsOverlay(location.pathname);

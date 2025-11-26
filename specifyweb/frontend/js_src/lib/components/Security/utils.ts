@@ -1,5 +1,6 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
@@ -141,7 +142,11 @@ export function getCollectionRegistriesFromPath(resourceParts: RA<string>) {
  * Localize action name
  */
 export const actionToLabel = (action: string): LocalizedString =>
-  action === anyAction ? userText.allActions() : lowerToHuman(action);
+  action === anyAction
+    ? userText.allActions()
+    : action === 'edit_collection'
+      ? commonText.edit()
+      : lowerToHuman(action);
 
 export const toolPermissionPrefix = 'tools';
 export const anyAction = '%';

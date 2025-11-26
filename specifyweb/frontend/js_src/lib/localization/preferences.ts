@@ -128,6 +128,25 @@ export const preferencesText = createDictionary({
     'de-ch': 'Nicht erforderliche Animationen und Übergänge deaktivieren.',
     'pt-br': 'Desabilite animações e transições não essenciais.',
   },
+  rankThreshold: {
+    'en-us': 'Show object count below',
+  },
+  rankThresholdDescription: {
+    'en-us':
+      'Show the count of linked Collection Objects for all ranks below this one.',
+    'ru-ru':
+      'Показывать количество объектов коллекции для всех рангов, включая и ниже этого.',
+    'es-es':
+      'Mostrar la cantidad de objetos de colección para todos los rangos, incluidos y por debajo de este.',
+    'fr-fr':
+      "Afficher le nombre d'objets de collection pour tous les rangs, y compris et en dessous de celui-ci.",
+    'uk-ua':
+      "Показати кількість об'єктів колекції для всіх рангів, включаючи та нижче цього.",
+    'de-ch':
+      'Anzahl der Sammlungsobjekte für alle Ränge einschließlich und unterhalb dieses Rangs anzeigen.',
+    'pt-br':
+      'Mostrar a contagem de Objetos de Coleção para todos os ranks, incluindo e abaixo deste.',
+  },
   reduceTransparency: {
     'en-us': 'Reduce transparency',
     'ru-ru': 'Уменьшить прозрачность',
@@ -2055,37 +2074,21 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Додайте рядок пошуку на головну сторінку',
     'pt-br': 'Adicionar barra de pesquisa na página inicial',
   },
+  inheritanceCatNumberPrefDescription: {
+    'en-us':
+      'Control whether component records inherit the catalog number from the primary collection object.',
+  },
   inheritanceCatNumberPref: {
     'en-us':
       'Enable the inheritance of the primary catalog number to its empty siblings.',
-    'de-ch':
-      'Aktivieren Sie die Vererbung der primären Katalognummer an ihre leeren Geschwister.',
-    'es-es':
-      'Habilitar la herencia del número de catálogo principal a sus hermanos vacíos.',
-    'fr-fr':
-      "Activer l'héritage du numéro de catalogue principal à ses frères vides.",
-    'pt-br':
-      'Habilitar a herança do número de catálogo primário para seus irmãos vazios.',
-    'ru-ru':
-      'Включить наследование основного каталожного номера его пустыми родственными номерами.',
-    'uk-ua':
-      'Увімкнути успадкування основного каталожного номера його порожнім братам і сестрам.',
   },
   inheritanceCatNumberParentCOPref: {
     'en-us':
       'Enable the inheritance of the parent catalog number to its empty children.',
-    'de-ch':
-      'Aktivieren Sie die Vererbung der übergeordneten Katalognummer an ihre leeren untergeordneten Elemente.',
-    'es-es':
-      'Habilitar la herencia del número de catálogo padre a sus hijos vacíos.',
-    'fr-fr':
-      "Activer l'héritage du numéro de catalogue parent à ses enfants vides.",
-    'pt-br':
-      'Habilita a herança do número do catálogo pai para seus filhos vazios.',
-    'ru-ru':
-      'Включить наследование родительского каталожного номера его пустыми дочерними элементами.',
-    'uk-ua':
-      'Увімкнути успадкування батьківського каталожного номера його порожнім дочірнім елементам.',
+  },
+  inheritanceCatNumberParentCOPrefDescription: {
+    'en-us':
+      'Control whether component records inherit the catalog number from the parent collection object.',
   },
   uniqueCatNumberAcrossCompAndCo: {
     'en-us':
@@ -2102,5 +2105,12 @@ export const preferencesText = createDictionary({
       'Поле «Номер каталога» должно быть уникальным в таблицах «Компонент» и «CO».',
     'uk-ua':
       'Поле «Номер у каталозі» має бути унікальним у таблицях «Компонент» та «CO»',
+  },
+  scopeEntireTablePicklists: {
+    'en-us': 'Scope "Entire Table" Picklists',
+  },
+  scopeEntireTablePicklistsDescription: {
+    'en-us':
+      'If enabled, picklists of type "Entire Table" will only show items that are in use within the current collection.',
   },
 } as const);

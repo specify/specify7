@@ -11,30 +11,30 @@ requireContext();
 describe('getDateParser', () => {
   test('full', () =>
     expect(
-      getDateParser(
-        tables.CollectionObject.strictGetLiteralField(dateFieldName),
-        'full',
-        new Date()
-      )
-    ).toMatchInlineSnapshot(`
-      {
-        "formatters": [
-          [Function],
-          [Function],
-        ],
-        "max": "9999-12-31",
-        "minLength": 10,
-        "parser": [Function],
-        "required": false,
-        "title": "Required Format: MM/DD/YYYY.",
-        "type": "date",
-        "validators": [
-          [Function],
-        ],
-        "value": "2022-08-31",
-        "whiteSpaceSensitive": false,
-      }
-    `));
+  getDateParser(
+    tables.CollectionObject.strictGetLiteralField(dateFieldName),
+    'full',
+    new Date()
+  )
+).toMatchInlineSnapshot(`
+  {
+    "formatters": [
+      [Function],
+      [Function],
+    ],
+    "max": "9999-12-31",
+    "minLength": 10,
+    "parser": [Function],
+    "required": false,
+    "title": "Required Format: MM/DD/YYYY.",
+    "type": "date",
+    "validators": [
+      [Function],
+    ],
+    "value": "2022-08-31",
+    "whiteSpaceSensitive": false,
+  }
+`));
 
   test('month-year', () =>
     expect(getDateParser(undefined, 'month-year', undefined))

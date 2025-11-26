@@ -24,7 +24,10 @@ import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { format } from '../Formatters/formatters';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
-import { getCollectionPref } from '../InitialContext/remotePrefs';
+import {
+  ensureCollectionPreferencesLoaded,
+  getCollectionPref,
+} from '../InitialContext/remotePrefs';
 import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
 import {
   createPickListItem,
@@ -92,8 +95,7 @@ async function fetchPickListItems(
     pickList.get('readOnly') ? (pickList.get('sizeLimit') ?? 0) : 0
   );
 
-  if (type === PickListTypes.TABLE)
-    items = await fetchFromTable(pickList, limit);
+  if (type === PickListTypes.TABLE) items = await fetchFromTable(pickList);
   else if (type === PickListTypes.FIELDS)
     items = await fetchFromField(pickList, limit);
   else {
@@ -115,23 +117,47 @@ export const PickListSortType = {
 
 /** From the table picklist */
 async function fetchFromTable(
-  pickList: SpecifyResource<PickList>,
-  limit: number
+  pickList: SpecifyResource<PickList>
 ): Promise<RA<PickListItemSimple>> {
-  const tableName = strictGetTable(pickList.get('tableName')).name;
+  const specifyTable = strictGetTable(pickList.get('tableName'));
+  const tableName = specifyTable.name;
+
   if (!hasTablePermission(tableName, 'read')) return [];
 
-  const scopeTablePicklist = getCollectionPref(
-    'sp7_scope_table_picklists',
-    schema.domainLevelIds.collection
-  );
+  const prefsPromise = ensureCollectionPreferencesLoaded()
+    .then((collectionPreferences) => {
+      const rawValue =
+        collectionPreferences.getRaw()?.general?.pickLists
+          ?.sp7_scope_table_picklists;
+
+      return typeof rawValue === 'boolean'
+        ? rawValue
+        : collectionPreferences.get(
+            'general',
+            'pickLists',
+            'sp7_scope_table_picklists'
+          );
+    })
+    .catch(() =>
+      getCollectionPref(
+        'sp7_scope_table_picklists',
+        schema.domainLevelIds.collection
+      )
+    );
+
+  const scopeTablePicklist = await prefsPromise;
+
+  const tableHasScope = specifyTable.getScope() !== undefined;
+  const tableSupportsDomainFilter =
+    tableHasScope ||
+    !f.includes(Object.keys(schema.domainLevelIds), toLowerCase(tableName));
 
   const { records } = await fetchCollection(tableName, {
-    domainFilter: scopeTablePicklist
-      ? true
-      : !f.includes(Object.keys(schema.domainLevelIds), toLowerCase(tableName)),
-    limit,
+    domainFilter: tableSupportsDomainFilter
+      ? Boolean(scopeTablePicklist)
+      : undefined,
   });
+
   return Promise.all(
     records.map(async (record) =>
       format(

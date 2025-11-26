@@ -1,16 +1,114 @@
+import { LocalizedString } from 'typesafe-i18n';
+import { attachmentsText } from '../../localization/attachments';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { statsText } from '../../localization/stats';
+import { treeText } from '../../localization/tree';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { ensure, localized } from '../../utils/types';
-import type { QueryView } from '../QueryBuilder/Header';
+import { ensure } from '../../utils/types';
+import { genericTables } from '../DataModel/tables';
+import { Tables } from '../DataModel/types';
 import type { StatLayout } from '../Statistics/types';
 import type { GenericPreferences } from './types';
 import { definePref } from './types';
+import { camelToHuman } from '../../utils/utils';
+
+const tableLabel = (tableName: keyof Tables): LocalizedString =>
+  genericTables[tableName]?.label ?? camelToHuman(tableName);
 
 export const collectionPreferenceDefinitions = {
+  general: {
+    title: preferencesText.general(),
+    subCategories: {
+      pickLists: {
+        title: preferencesText.filterPickLists(),
+        items: {
+          sp7_scope_table_picklists: definePref<boolean>({
+            title: preferencesText.scopeEntireTablePicklists(),
+            description: preferencesText.scopeEntireTablePicklistsDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+      attachments: {
+        title: attachmentsText.attachments(),
+        items: {
+          'attachment.is_public_default': definePref<boolean>({
+            title: attachmentsText.publicDefault(),
+            description: attachmentsText.publicDefaultDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
+  treeManagement: {
+    title: treeText.treeManagement(),
+    subCategories: {
+      synonymized: {
+        title: treeText.synonymizedNodes(),
+        description: treeText.synonymizedNodesDescription(),
+        items: {
+          'sp7.allow_adding_child_to_synonymized_parent.Taxon':
+            definePref<boolean>({
+              title: () => tableLabel('Taxon'),
+              requiresReload: false,
+              visible: true,
+              defaultValue: false,
+              type: 'java.lang.Boolean',
+            }),
+          'sp7.allow_adding_child_to_synonymized_parent.Geography':
+            definePref<boolean>({
+              title: () => tableLabel('Geography'),
+              requiresReload: false,
+              visible: true,
+              defaultValue: false,
+              type: 'java.lang.Boolean',
+            }),
+          'sp7.allow_adding_child_to_synonymized_parent.Storage':
+            definePref<boolean>({
+              title: () => tableLabel('Storage'),
+              requiresReload: false,
+              visible: true,
+              defaultValue: false,
+              type: 'java.lang.Boolean',
+            }),
+          'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod':
+            definePref<boolean>({
+              title: () => tableLabel('GeologicTimePeriod'),
+              requiresReload: false,
+              visible: true,
+              defaultValue: false,
+              type: 'java.lang.Boolean',
+            }),
+          'sp7.allow_adding_child_to_synonymized_parent.LithoStrat':
+            definePref<boolean>({
+              title: () => tableLabel('LithoStrat'),
+              requiresReload: false,
+              visible: true,
+              defaultValue: false,
+              type: 'java.lang.Boolean',
+            }),
+          'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit':
+            definePref<boolean>({
+              title: () => tableLabel('TectonicUnit'),
+              requiresReload: false,
+              visible: true,
+              defaultValue: false,
+              type: 'java.lang.Boolean',
+            }),
+        },
+      },
+    },
+  },
   statistics: {
     title: statsText.statistics(),
     subCategories: {
@@ -18,7 +116,7 @@ export const collectionPreferenceDefinitions = {
         title: preferencesText.appearance(),
         items: {
           layout: definePref<RA<StatLayout> | undefined>({
-            title: localized('_Defines the layout of the stats page'),
+            title: statsText.layoutPreference(),
             requiresReload: false,
             visible: false,
             defaultValue: undefined,
@@ -26,22 +124,20 @@ export const collectionPreferenceDefinitions = {
             container: 'label',
           }),
           showPreparationsTotal: definePref<boolean>({
-            title: localized('Defines if preparation stats include total'),
+            title: statsText.showPreparationsTotal(),
+            description: statsText.showPreparationsTotalDescription(),
             requiresReload: false,
-            visible: false,
+            visible: true,
             defaultValue: true,
-            renderer: f.never,
-            container: 'label',
             type: 'java.lang.Boolean',
           }),
           refreshRate: definePref<number>({
-            title: localized('_Defines the rate of auto refresh in hours'),
+            title: statsText.autoRefreshRate(),
+            description: statsText.autoRefreshRateDescription(),
             requiresReload: false,
-            visible: false,
+            visible: true,
             defaultValue: 24,
-            renderer: f.never,
-            container: 'label',
-            type: 'java.lang.Float',
+            type: 'java.lang.Integer',
           }),
         },
       },
@@ -49,59 +145,39 @@ export const collectionPreferenceDefinitions = {
         title: specifyNetworkText.specifyNetwork(),
         items: {
           publishingOrganization: definePref<string | undefined>({
-            title: localized('_Stores GBIF\'s "publishingOrgKey"'),
+            title: specifyNetworkText.publishingOrganizationKey(),
+            description:
+              specifyNetworkText.publishingOrganizationKeyDescription(),
             requiresReload: false,
-            visible: false,
+            visible: true,
             defaultValue: undefined,
-            renderer: f.never,
-            container: 'label',
+            type: 'java.lang.String',
           }),
           collectionKey: definePref<string | undefined>({
-            title: localized('_Stores GBIF\'s "dataSetKey"'),
+            title: specifyNetworkText.collectionKey(),
+            description: specifyNetworkText.collectionKeyDescription(),
             requiresReload: false,
-            visible: false,
+            visible: true,
             defaultValue: undefined,
-            renderer: f.never,
-            container: 'label',
-          }),
-        },
-      },
-    },
-  },
-  queryBuilder: {
-    title: queryText.queryBuilder(),
-    subCategories: {
-      appearance: {
-        title: preferencesText.appearance(),
-        items: {
-          display: definePref<QueryView>({
-            title: preferencesText.displayBasicView(),
-            requiresReload: false,
-            visible: false,
-            defaultValue: {
-              basicView: [],
-              detailedView: [],
-            },
-            renderer: f.never,
-            container: 'div',
+            type: 'java.lang.String',
           }),
         },
       },
     },
   },
   catalogNumberInheritance: {
-    title: queryText.catalogNumberInheritance(),
+    title: queryText.primaryCatalogNumberInheritance(),
     subCategories: {
       behavior: {
         title: preferencesText.behavior(),
         items: {
           inheritance: definePref<boolean>({
             title: preferencesText.inheritanceCatNumberPref(),
+            description: () =>
+              preferencesText.inheritanceCatNumberPrefDescription(),
             requiresReload: false,
-            visible: false,
+            visible: true,
             defaultValue: false,
-            renderer: f.never,
-            container: 'label',
             type: 'java.lang.Boolean',
           }),
         },
@@ -109,18 +185,18 @@ export const collectionPreferenceDefinitions = {
     },
   },
   catalogNumberParentInheritance: {
-    title: queryText.catalogNumberParentCOInheritance(),
+    title: queryText.parentCatalogNumberInheritance(),
     subCategories: {
       behavior: {
         title: preferencesText.behavior(),
         items: {
           inheritance: definePref<boolean>({
             title: preferencesText.inheritanceCatNumberParentCOPref(),
+            description: () =>
+              preferencesText.inheritanceCatNumberParentCOPrefDescription(),
             requiresReload: false,
-            visible: false,
+            visible: true,
             defaultValue: false,
-            renderer: f.never,
-            container: 'label',
             type: 'java.lang.Boolean',
           }),
         },
@@ -128,7 +204,7 @@ export const collectionPreferenceDefinitions = {
     },
   },
   uniqueCatalogNumberAccrossComponentAndCO: {
-    title: queryText.uniqueCatalogNumberAcrossComponentAndCo(),
+    title: queryText.uniqueCatalogNumberAcrossComponentAndCoTitle(),
     subCategories: {
       behavior: {
         title: preferencesText.behavior(),
@@ -136,10 +212,8 @@ export const collectionPreferenceDefinitions = {
           uniqueness: definePref<boolean>({
             title: preferencesText.uniqueCatNumberAcrossCompAndCo(),
             requiresReload: false,
-            visible: false,
-            defaultValue: false,
-            renderer: f.never,
-            container: 'label',
+            visible: true,
+            defaultValue: true,
             type: 'java.lang.Boolean',
           }),
         },
