@@ -158,16 +158,28 @@ export function QueryLine({
                 : (parser.type ?? 'text');
 
         canOpenMap = fieldName === 'latitude1' || fieldName === 'longitude1';
+
+        // special case for age field with ageRange filter and negative number validation
+  if (fieldType === 'age' && field.filters.some((filter) => filter.type === 'ageRange')) {
+          parser = { 
+            ...parser, 
+            type: 'number', 
+            validators: [
+              ...(parser.validators ?? []),
+              (value: number | string): string | undefined => {
+                const num = typeof value === "number" ? value : parseFloat(value);
+                return num < 0 ? "Age cannot be negative" : undefined;
+              }
+            ]
+          };
+        }
+        
       } else if (isMapped)
         fieldType =
           isFormatted && mappingPath.at(-1) === `${schema.referenceSymbol}1`
             ? 'aggregator'
             : 'formatter';
 
-// special case for age field with ageRange filter
-  if (fieldType === 'age' && field.filters.some((filter ) => filter.type === 'ageRange')) {
-  parser = { type: 'number', min: 0, step: 1, required: false, value:undefined, };
-}
       const updatedFilters = hasParser
         ? field.filters.map((filter) => {
             const resetFilter =
