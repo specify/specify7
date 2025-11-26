@@ -1,7 +1,6 @@
 import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
-import { getPref } from '../InitialContext/remotePrefs';
 import { fetchPossibleRanks } from '../PickLists/TreeLevelPickList';
 import { formatUrl } from '../Router/queryString';
 import type { BusinessRuleResult } from './businessRules';
@@ -40,27 +39,20 @@ export const treeBusinessRules = async (
             idFromUrl(parentDefItem.get('treeDef'))!
           );
 
-    /*
-     * Const doExpandSynonymActionsPref = collectionPreferences.get(
-     *   'treeManagement',
-     *   'synonymized',
-     *   `sp7.allow_adding_child_to_synonymized_parent.${resource.specifyTable.name}`
-     * );
-     */
-
-    /*
-     * Const doExpandSynonymActionsPref = getPref(
-     *   `sp7.allow_adding_child_to_synonymized_parent.${resource.specifyTable.name}`
-     * );
-     */
+    const prefModule = await import('../Preferences/collectionPreferences');
+    const collectionPreferences = prefModule.collectionPreferences;
+    const doExpandSynonymActionsPref = collectionPreferences.get(
+      'treeManagement',
+      'synonymized',
+      `sp7.allow_adding_child_to_synonymized_parent.${resource.specifyTable.name}`
+    );
 
     const isParentSynonym = !parent.get('isAccepted');
 
     const hasBadTreeStrcuture =
       parent.id === resource.id ||
       definitionItem === undefined ||
-      isParentSynonym ||
-      // && !doExpandSynonymActionsPref
+      (isParentSynonym && !doExpandSynonymActionsPref) ||
       parent.get('rankId') >= definitionItem.get('rankId') ||
       (possibleRanks !== undefined &&
         !possibleRanks
