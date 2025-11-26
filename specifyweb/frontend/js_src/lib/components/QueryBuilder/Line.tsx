@@ -159,7 +159,7 @@ export function QueryLine({
 
         canOpenMap = fieldName === 'latitude1' || fieldName === 'longitude1';
 
-        // special case for age field with ageRange filter and negative number validation
+        // Special case for age field with ageRange filter and negative number validation
   if (fieldType === 'age' && field.filters.some((filter) => filter.type === 'ageRange')) {
           parser = { 
             ...parser, 
@@ -167,8 +167,8 @@ export function QueryLine({
             validators: [
               ...(parser.validators ?? []),
               (value: unknown): string | undefined => {
-                const num = typeof value === "number" ? value : parseFloat(String(value));
-                return  !Number.isNaN(num) && num < 0 ? "Age cannot be negative" : undefined;
+                const number_ = typeof value === "number" ? value : Number.parseFloat(String(value));
+                return  !Number.isNaN(number_) && number_ < 0 ? "Age cannot be negative" : undefined;
               }
             ]
           };
