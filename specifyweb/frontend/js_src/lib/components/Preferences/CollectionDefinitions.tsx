@@ -165,30 +165,6 @@ export const collectionPreferenceDefinitions = {
       },
     },
   },
-  queryBuilder: {
-    title: queryText.queryBuilder(),
-    subCategories: {
-      appearance: {
-        title: preferencesText.appearance(),
-        items: {
-          display: definePref<{
-            readonly basicView: RA<number>;
-            readonly detailedView: RA<number>;
-          }>({
-            title: preferencesText.displayBasicView(),
-            requiresReload: false,
-            visible: false,
-            defaultValue: {
-              basicView: [],
-              detailedView: [],
-            },
-            renderer: f.never,
-            container: 'div',
-          }),
-        },
-      },
-    },
-  },
   catalogNumberInheritance: {
     title: queryText.primaryCatalogNumberInheritance(),
     subCategories: {
