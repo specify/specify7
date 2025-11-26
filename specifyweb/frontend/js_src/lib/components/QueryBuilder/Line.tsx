@@ -168,7 +168,7 @@ export function QueryLine({
               ...(parser.validators ?? []),
               (value: unknown): string | undefined => {
                 const num = typeof value === "number" ? value : parseFloat(value);
-                return num < 0 ? "Age cannot be negative" : undefined;
+                return  !Number.isNaN(num) && num < 0 ? "Age cannot be negative" : undefined;
               }
             ]
           };
