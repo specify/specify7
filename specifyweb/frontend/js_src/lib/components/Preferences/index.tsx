@@ -395,12 +395,22 @@ export function PreferencesContent({
                 `}
                 >
                   <ReadOnlyContext.Provider value={!canEdit}>
-                    <Item
-                      category={categoryKey}
-                      item={item}
-                      name={name}
-                      subcategory={subcategoryKey}
-                    />
+                    {prefType === 'user' ? (
+                      // Needed with UserPrefItem and CollectionPrefItem to avoid calling preferences.use() conditionally
+                      <UserPrefItem
+                        category={categoryKey}
+                        item={item}
+                        name={name}
+                        subcategory={subcategoryKey}
+                      />
+                    ) : (
+                      <CollectionPrefItem
+                        category={categoryKey}
+                        item={item}
+                        name={name}
+                        subcategory={subcategoryKey}
+                      />
+                    )}
                   </ReadOnlyContext.Provider>
                 </div>
               </>
@@ -424,8 +434,6 @@ export function PreferencesContent({
           [category, { title, description = undefined, subCategories }],
           index
         ) => {
-          if (prefType === 'collection') return null;
-
           return (
             <ErrorBoundary dismissible key={category}>
               <Container.Center
@@ -476,25 +484,24 @@ function FormatString({
   );
 }
 
-function Item({
+function ItemBase({
   item,
   category,
   subcategory,
   name,
+  value,
+  setValue,
 }: {
   readonly item: PreferenceItem<any>;
   readonly category: string;
   readonly subcategory: string;
   readonly name: string;
-}): JSX.Element {
+  readonly value: any;
+  readonly setValue: (value: any) => void;
+}) {
   const Renderer =
     'renderer' in item ? item.renderer : DefaultPreferenceItemRender;
-  const [value, setValue] = userPreferences.use(
-    // Asserting types just to simplify typing
-    category as 'general',
-    subcategory as 'ui',
-    name as 'theme'
-  );
+
   const children = (
     <Renderer
       category={category}
@@ -505,11 +512,38 @@ function Item({
       onChange={setValue}
     />
   );
+
   return 'renderer' in item ? (
     <ErrorBoundary dismissible>{children}</ErrorBoundary>
   ) : (
     children
   );
+}
+
+// Needed with UserPrefItem and CollectionPrefItem to avoid calling preferences.use() conditionally
+type PreferenceItemProps<T> = {
+  readonly item: PreferenceItem<T>;
+  readonly category: string;
+  readonly subcategory: string;
+  readonly name: string;
+};
+
+function UserPrefItem<T>(props: PreferenceItemProps<T>) {
+  const [value, setValue] = userPreferences.use(
+    props.category as any,
+    props.subcategory as any,
+    props.name as any
+  );
+  return <ItemBase {...props} value={value} setValue={setValue} />;
+}
+
+function CollectionPrefItem<T>(props: PreferenceItemProps<T>) {
+  const [value, setValue] = collectionPreferences.use(
+    props.category as any,
+    props.subcategory as any,
+    props.name as any
+  );
+  return <ItemBase {...props} value={value} setValue={setValue} />;
 }
 
 function CollectionPreferences(): JSX.Element {
