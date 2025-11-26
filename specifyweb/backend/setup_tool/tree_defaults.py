@@ -22,20 +22,17 @@ def create_default_tree(name: str, kwargs: dict, ranks: dict, preload_tree: Opti
         )
 
         # Create tree ranks
-        treedefitems_bulk = []
-        for rank_id, enabled in ranks.items():
-            if enabled:
-                treedefitems_bulk.append(
-                    tree_rank_model(
-                        treedef=treedef,
-                        name=str(rank_id), # TODO: allow rank name configuration
-                        rankid=int(rank_id),
-                    )
-                )
-        if treedefitems_bulk:
-            tree_rank_model.objects.bulk_create(treedefitems_bulk, ignore_conflicts=True)
-
-        tree_def_item, create = tree_rank_model.objects.get_or_create(
+        previous_tree_def_item = None
+        rank_list = list(int(rank_id) for rank_id, enabled in ranks.items() if enabled)
+        rank_list.sort()
+        for rank_id in rank_list:
+            previous_tree_def_item = tree_rank_model.objects.create(
+                treedef=treedef,
+                name=str(rank_id), # TODO: allow rank name configuration
+                rankid=rank_id,
+                parent=previous_tree_def_item,
+            )
+        root_tree_def_item, create = tree_rank_model.objects.get_or_create(
             treedef=treedef,
             rankid=0
         )
@@ -49,7 +46,7 @@ def create_default_tree(name: str, kwargs: dict, ranks: dict, preload_tree: Opti
             rankid=0,
             parent=None,
             definition=treedef,
-            definitionitem=tree_def_item,
+            definitionitem=root_tree_def_item,
             fullname="Root"
         )
 
