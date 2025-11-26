@@ -30,6 +30,7 @@ def validate_node_numbers(table, revalidate_after=True):
         validate_tree_numbering(table)
 
 class Tree(models.Model):
+    _requires_collection_user = True
     class Meta:
         abstract = True
 
