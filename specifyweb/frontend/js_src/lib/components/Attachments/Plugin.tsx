@@ -23,6 +23,7 @@ import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
+import { userPreferences } from '../Preferences/userPreferences';
 import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { attachmentSettingsPromise, uploadFile } from './attachments';
 import { AttachmentViewer } from './Viewer';
@@ -70,11 +71,35 @@ function ProtectedAttachmentsPlugin({
   const related = useTriggerState(
     resource?.specifyTable.name === 'Attachment' ? undefined : resource
   );
+  const [collapseFormByDefault] = userPreferences.use(
+    'attachments',
+    'behavior',
+    'collapseFormByDefault'
+  );
+  const [controlsVisiblePreference] = userPreferences.use(
+    'attachments',
+    'behavior',
+    'showControls'
+  );
+  const areControlsVisible = controlsVisiblePreference;
+  const preferCollapsed = collapseFormByDefault && areControlsVisible;
+
+  const [showMeta, handleShowMeta, handleHideMeta, toggleShowMeta] =
+    useBooleanState(!preferCollapsed);
+
+  React.useEffect(() => {
+    if (typeof attachment !== 'object') return;
+    if (preferCollapsed) {
+      handleHideMeta();
+    } else {
+      handleShowMeta();
+    }
+  }, [attachment, handleHideMeta, handleShowMeta, preferCollapsed]);
   return attachment === undefined ? (
     <AttachmentPluginSkeleton />
   ) : (
     <div
-      className="flex h-full gap-8 overflow-x-auto"
+      className="flex h-full gap-4 overflow-x-auto"
       ref={filePickerContainer}
       tabIndex={-1}
     >
@@ -82,6 +107,8 @@ function ProtectedAttachmentsPlugin({
         <AttachmentViewer
           attachment={attachment}
           related={related}
+          showMeta={showMeta}
+          onToggleSidebar={toggleShowMeta}
           onViewRecord={undefined}
         />
       ) : isReadOnly ? (
