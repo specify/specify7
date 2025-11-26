@@ -94,7 +94,11 @@ const numberPrintFormatter = (value: unknown, { step }: Parser): string =>
     ? f.round(value, step).toString()
     : ((value as number)?.toString() ?? '');
 
+<<<<<<< HEAD
 type ExtendedJavaType = JavaType | 'age' | 'day' | 'month' | 'year';
+=======
+type ExtendedJavaType = JavaType | 'day' | 'month' | 'year';
+>>>>>>> parent of 2b7231248b (attempted fix by adding an age parser)
 
 /**
  * Using this rather than mocking time using jest because this file might be
@@ -251,26 +255,6 @@ export const parsers = f.store(
     text: {
       type: 'text',
       value: '',
-    },
-
-    age: {
-      type: 'number',
-      min: 0,
-      max: Number.MAX_SAFE_INTEGER,
-      step: 1,
-      formatters: [formatter.int],
-      validators: [
-        validators.number,
-        (value): string | undefined => {
-          if (typeof value !== 'number') return undefined;
-          if (!Number.isInteger(value)) {
-            return 'Age must be an integer value';
-          }
-          return undefined;
-        },
-      ],
-      value: 0,
-      printFormatter: numberPrintFormatter,
     },
   })
 );
