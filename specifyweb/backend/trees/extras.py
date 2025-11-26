@@ -1,6 +1,7 @@
 import re
 from contextlib import contextmanager
 import logging
+import json
 
 from specifyweb.backend.trees.ranks import RankOperation, post_tree_rank_save, pre_tree_rank_deletion, \
     verify_rank_parent_chain_integrity, pre_tree_rank_init, post_tree_rank_deletion
@@ -35,7 +36,6 @@ class Tree(models.Model):
     def save(self, *args, skip_tree_extras=False, **kwargs):
         def save():
             save_auto_timestamp_field_with_override(super(Tree, self).save, args, kwargs, self)
-
         # This should be probably after the rank id gets set?
         if skip_tree_extras:
             return save()
@@ -64,7 +64,7 @@ class Tree(models.Model):
                 return
 
             with validate_node_numbers(self._meta.db_table, revalidate_after=False):
-                adding_node(self)
+                adding_node(self, kwargs.get('collection'), kwargs.get('user'))
                 save()
         elif prev_self.parent_id != self.parent_id:
             with validate_node_numbers(self._meta.db_table):
@@ -203,17 +203,25 @@ def close_interval(model, node_number, size):
         highestchildnodenumber=F('highestchildnodenumber')-size,
     )
 
-def adding_node(node):
+def adding_node(node,collection=None, user=None):
+    import specifyweb.backend.context.app_resource as app_resource
     logger.info('adding node %s', node)
     model = type(node)
     parent = model.objects.select_for_update().get(id=node.parent.id)
+
     if parent.accepted_id is not None:
-        # Chnage to use new pref
-        from specifyweb.backend.context.remote_prefs import get_remote_prefs
-        # This business rule can be overriden by a remote pref.
-        pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
-        override = re.search(pattern, get_remote_prefs(), re.MULTILINE)
-        if override is None or override.group(1).strip().lower() != "true":
+        collection_prefs_json, _, __ = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
+        if collection_prefs_json is not None:
+            collection_prefs_dict = json.loads(collection_prefs_json)
+
+        treeManagement_pref = collection_prefs_dict.get('treeManagement', {})
+
+        synonymized = treeManagement_pref.get('synonymized', {}) \
+            if isinstance(treeManagement_pref, dict) else {}
+
+        add_synonym_enabled = synonymized.get(r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)', False) if isinstance(synonymized, dict) else False
+
+        if add_synonym_enabled is False:
             raise TreeBusinessRuleException(
                 f'Adding node "{node.fullname}" to synonymized parent "{parent.fullname}"',
                 {"tree" : "Taxon",
@@ -363,7 +371,7 @@ def bulk_move(node, into, agent):
     field_change_info: FieldChangeInfo = FieldChangeInfo(field_name=model.specify_model.idFieldName, old_value=node.id, new_value=into.id)
     mutation_log(TREE_BULK_MOVE, node, agent, node.parent, [field_change_info])
 
-def synonymize(node, into, agent):
+def synonymize(node, into, agent, user=None, collection=None):
     logger.info('synonymizing %s to %s', node, into)
     model = type(node)
     if not type(into) is model: raise AssertionError(
@@ -398,11 +406,19 @@ def synonymize(node, into, agent):
     node.save()
 
     # This check can be disabled by a remote pref
-    from specifyweb.backend.context.remote_prefs import get_remote_prefs
-    # Change to use new pref
-    pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
-    override = re.search(pattern, get_remote_prefs(), re.MULTILINE)
-    if node.children.count() > 0 and (override is None or override.group(1).strip().lower() != "true"):
+    import specifyweb.backend.context.app_resource as app_resource
+    collection_prefs_json, _, __ = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
+    if collection_prefs_json is not None:
+            collection_prefs_dict = json.loads(collection_prefs_json)
+
+    treeManagement_pref = collection_prefs_dict.get('treeManagement', {})
+
+    synonymized = treeManagement_pref.get('synonymized', {}) \
+        if isinstance(treeManagement_pref, dict) else {}
+
+    add_synonym_enabled = synonymized.get(r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)', False) if isinstance(synonymized, dict) else False
+
+    if node.children.count() > 0 and (add_synonym_enabled is False):
         raise TreeBusinessRuleException(
             f'Synonymizing node "{node.fullname}" which has children',
             {"tree" : "Taxon",

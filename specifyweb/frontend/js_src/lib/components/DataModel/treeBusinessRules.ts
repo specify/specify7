@@ -48,16 +48,19 @@ export const treeBusinessRules = async (
      * );
      */
 
-    const doExpandSynonymActionsPref = getPref(
-      `sp7.allow_adding_child_to_synonymized_parent.${resource.specifyTable.name}`
-    );
+    /*
+     * Const doExpandSynonymActionsPref = getPref(
+     *   `sp7.allow_adding_child_to_synonymized_parent.${resource.specifyTable.name}`
+     * );
+     */
 
     const isParentSynonym = !parent.get('isAccepted');
 
     const hasBadTreeStrcuture =
       parent.id === resource.id ||
       definitionItem === undefined ||
-      (isParentSynonym && !doExpandSynonymActionsPref) ||
+      isParentSynonym ||
+      // && !doExpandSynonymActionsPref
       parent.get('rankId') >= definitionItem.get('rankId') ||
       (possibleRanks !== undefined &&
         !possibleRanks
