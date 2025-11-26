@@ -41,11 +41,18 @@ export const treeBusinessRules = async (
             idFromUrl(parentDefItem.get('treeDef'))!
           );
 
-    const [doExpandSynonymActionsPref] = collectionPreferences.use(
-      'treeManagement',
-      'synonymized',
+    /*
+     * Const doExpandSynonymActionsPref = collectionPreferences.get(
+     *   'treeManagement',
+     *   'synonymized',
+     *   `sp7.allow_adding_child_to_synonymized_parent.${resource.specifyTable.name}`
+     * );
+     */
+
+    const doExpandSynonymActionsPref = getPref(
       `sp7.allow_adding_child_to_synonymized_parent.${resource.specifyTable.name}`
     );
+
     const isParentSynonym = !parent.get('isAccepted');
 
     const hasBadTreeStrcuture =
