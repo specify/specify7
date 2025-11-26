@@ -166,7 +166,7 @@ export function QueryLine({
             type: 'number', 
             validators: [
               ...(parser.validators ?? []),
-              (value: number | string): string | undefined => {
+              (value: unknown): string | undefined => {
                 const num = typeof value === "number" ? value : parseFloat(value);
                 return num < 0 ? "Age cannot be negative" : undefined;
               }
