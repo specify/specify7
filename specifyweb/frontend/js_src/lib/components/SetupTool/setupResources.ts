@@ -1,7 +1,7 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { setupToolText } from '../../localization/setupTool';
 import { formsText } from '../../localization/forms';
+import { setupToolText } from '../../localization/setupTool';
 import type { RA } from '../../utils/types';
 
 // Default for max field length.
@@ -222,11 +222,13 @@ export const resources: RA<ResourceConfig> = [
         required: true,
         default: fullNameDirections[0].value.toString(),
       },
-      // {
-      //   name: 'default',
-      //   label: setupToolText_defaultTree(), // underscore in comment to avoid failing test
-      //   type: 'boolean',
-      // },
+      /*
+       * {
+       *   name: 'default',
+       *   label: setupToolText_defaultTree(), // underscore in comment to avoid failing test
+       *   type: 'boolean',
+       * },
+       */
     ],
   },
   {
@@ -289,11 +291,13 @@ export const resources: RA<ResourceConfig> = [
         required: true,
         default: fullNameDirections[0].value.toString(),
       },
-      // {
-      //   name: 'default',
-      //   label: setupToolText_defaultTree(), // underscore in comment to avoid failing test
-      //   type: 'boolean',
-      // },
+      /*
+       * {
+       *   name: 'default',
+       *   label: setupToolText_defaultTree(), // underscore in comment to avoid failing test
+       *   type: 'boolean',
+       * },
+       */
     ],
   },
   {
@@ -330,12 +334,14 @@ export const resources: RA<ResourceConfig> = [
         required: true,
         default: fullNameDirections[0].value.toString(),
       },
-      // TODO: Select which Taxon tree to import (Re-use dialog from default tree creation in tree viewer)
-      // {
-      //   name: 'default',
-      //   label: setupToolText_defaultTree(), // underscore in comment to avoid failing test
-      //   type: 'boolean',
-      // },
+      /*
+       * TODO: Select which Taxon tree to import (Re-use dialog from default tree creation in tree viewer)
+       * {
+       *   name: 'default',
+       *   label: setupToolText_defaultTree(), // underscore in comment to avoid failing test
+       *   type: 'boolean',
+       * },
+       */
     ],
   },
   {
