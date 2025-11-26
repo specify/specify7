@@ -34,6 +34,9 @@ class Tree(models.Model):
         abstract = True
 
     def save(self, *args, skip_tree_extras=False, **kwargs):
+        collection = kwargs.pop("collection", None)
+        user = kwargs.pop("user", None)
+
         def save():
             save_auto_timestamp_field_with_override(super(Tree, self).save, args, kwargs, self)
         # This should be probably after the rank id gets set?
@@ -64,7 +67,7 @@ class Tree(models.Model):
                 return
 
             with validate_node_numbers(self._meta.db_table, revalidate_after=False):
-                adding_node(self, kwargs.get('collection'), kwargs.get('user'))
+                adding_node(self, collection, user)
                 save()
         elif prev_self.parent_id != self.parent_id:
             with validate_node_numbers(self._meta.db_table):
@@ -221,7 +224,7 @@ def adding_node(node,collection=None, user=None):
 
         add_synonym_enabled = synonymized.get(r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)', False) if isinstance(synonymized, dict) else False
 
-        if add_synonym_enabled is False:
+        if add_synonym_enabled is True:
             raise TreeBusinessRuleException(
                 f'Adding node "{node.fullname}" to synonymized parent "{parent.fullname}"',
                 {"tree" : "Taxon",
@@ -418,7 +421,7 @@ def synonymize(node, into, agent, user=None, collection=None):
 
     add_synonym_enabled = synonymized.get(r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)', False) if isinstance(synonymized, dict) else False
 
-    if node.children.count() > 0 and (add_synonym_enabled is False):
+    if node.children.count() > 0 and (add_synonym_enabled is True):
         raise TreeBusinessRuleException(
             f'Synonymizing node "{node.fullname}" which has children',
             {"tree" : "Taxon",
