@@ -141,13 +141,8 @@ export const collectionPreferenceDefinitions = {
           }),
         },
       },
-    },
-  },
-  specifyNetwork: {
-    title: specifyNetworkText.specifyNetwork(),
-    subCategories: {
-      general: {
-        title: preferencesText.general(),
+      specifyNetwork: {
+        title: specifyNetworkText.specifyNetwork(),
         items: {
           publishingOrganization: definePref<string | undefined>({
             title: specifyNetworkText.publishingOrganizationKey(),
@@ -195,7 +190,7 @@ export const collectionPreferenceDefinitions = {
     },
   },
   catalogNumberInheritance: {
-    title: queryText.catalogNumberInheritance(),
+    title: queryText.primaryCatalogNumberInheritance(),
     subCategories: {
       behavior: {
         title: preferencesText.behavior(),
@@ -214,7 +209,7 @@ export const collectionPreferenceDefinitions = {
     },
   },
   catalogNumberParentInheritance: {
-    title: queryText.catalogNumberParentCOInheritance(),
+    title: queryText.parentCatalogNumberInheritance(),
     subCategories: {
       behavior: {
         title: preferencesText.behavior(),
@@ -233,7 +228,7 @@ export const collectionPreferenceDefinitions = {
     },
   },
   uniqueCatalogNumberAccrossComponentAndCO: {
-    title: queryText.uniqueCatalogNumberAcrossComponentAndCo(),
+    title: queryText.uniqueCatalogNumberAcrossComponentAndCoTitle(),
     subCategories: {
       behavior: {
         title: preferencesText.behavior(),
@@ -241,7 +236,7 @@ export const collectionPreferenceDefinitions = {
           uniqueness: definePref<boolean>({
             title: preferencesText.uniqueCatNumberAcrossCompAndCo(),
             requiresReload: false,
-            visible: false,
+            visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
