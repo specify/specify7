@@ -14,6 +14,7 @@ import type { StatLayout } from '../Statistics/types';
 import type { GenericPreferences } from './types';
 import { definePref } from './types';
 import { camelToHuman } from '../../utils/utils';
+import { QueryView } from '../QueryBuilder/Header';
 
 const tableLabel = (tableName: keyof Tables): LocalizedString =>
   genericTables[tableName]?.label ?? camelToHuman(tableName);
@@ -215,6 +216,27 @@ export const collectionPreferenceDefinitions = {
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
+  queryBuilder: {
+    title: queryText.queryBuilder(),
+    subCategories: {
+      appearance: {
+        title: preferencesText.appearance(),
+        items: {
+          display: definePref<QueryView>({
+            title: preferencesText.displayBasicView(),
+            requiresReload: false,
+            visible: false,
+            defaultValue: {
+              basicView: [],
+              detailedView: [],
+            },
+            renderer: f.never,
+            container: 'div',
           }),
         },
       },
