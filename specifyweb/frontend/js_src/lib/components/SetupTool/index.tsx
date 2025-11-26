@@ -485,7 +485,7 @@ export function SetupTool({
                 </div>
               </Container.Center>
               <Container.Center className="p-3 shadow-md max-w-lg">
-                <p className="text-md mb-4">{setupToolText.progress()}</p>
+                <p className="text-md mb-4">{setupToolText.setupProgress()}</p>
                 <Progress max={stepOrder.length} value={currentStep} />
               </Container.Center>
               {setupError === undefined ? undefined : (

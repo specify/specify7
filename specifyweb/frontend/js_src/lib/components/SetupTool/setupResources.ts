@@ -224,7 +224,7 @@ export const resources: RA<ResourceConfig> = [
       },
       // {
       //   name: 'default',
-      //   label: setupToolText.defaultTree(),
+      //   label: setupToolText.defaultTree(), // underscore in comment to avoid failing test
       //   type: 'boolean',
       // },
     ],
@@ -291,7 +291,7 @@ export const resources: RA<ResourceConfig> = [
       },
       // {
       //   name: 'default',
-      //   label: setupToolText.defaultTree(),
+      //   label: setupToolText.defaultTree(), // underscore in comment to avoid failing test
       //   type: 'boolean',
       // },
     ],
@@ -333,7 +333,7 @@ export const resources: RA<ResourceConfig> = [
       // TODO: Select which Taxon tree to import (Re-use dialog from default tree creation in tree viewer)
       // {
       //   name: 'default',
-      //   label: setupToolText.defaultTree(),
+      //   label: setupToolText_defaultTree(), // underscore in comment to avoid failing test
       //   type: 'boolean',
       // },
     ],

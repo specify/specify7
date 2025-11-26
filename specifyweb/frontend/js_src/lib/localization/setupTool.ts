@@ -13,7 +13,7 @@ export const setupToolText = createDictionary({
     'en-us': 'Specify Configuration Setup',
   },
 
-  progress: {
+  setupProgress: {
     'en-us': 'Progress:',
   },
 
