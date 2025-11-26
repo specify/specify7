@@ -9,7 +9,6 @@ import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { toLowerCase } from '../../utils/utils';
-import { canAccessCollectionPreferencesResource } from '../AppResources/permissions';
 import { icons } from '../Atoms/Icons';
 import type { MenuItem } from '../Core/Main';
 import { getDisciplineTrees } from '../InitialContext/treeRanks';
@@ -62,7 +61,8 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       title: preferencesText.collectionPreferences(),
       url: '/specify/collection-preferences/',
       icon: icons.office,
-      enabled: () => canAccessCollectionPreferencesResource(),
+      enabled: () =>
+        hasPermission('/preferences/collection', 'edit_collection'),
     },
     schemaConfig: {
       title: schemaText.schemaConfig(),
