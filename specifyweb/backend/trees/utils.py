@@ -282,11 +282,11 @@ GEOGRAPHY_CSV_COLUMNS = {
     'geography': {
         'all_columns': ['Continent','Country','State','County','GeographyCode','CentroidLat','CentroidLon'],
         'ranks': [
-            {'continent': {'continent': 'name'}},
-            {'country': {'country': 'name'}},
-            {'state': {'state': 'name'}},
-            {'county': {
-                'county': 'name',
+            {'Continent': {'Continent': 'name'}},
+            {'Country': {'Country': 'name'}},
+            {'State': {'State': 'name'}},
+            {'County': {
+                'County': 'name',
                 'GeographyCode': 'geographycode',
                 'CentroidLat': 'centroidlat',
                 'CentroidLon': 'centroidlon'}
@@ -298,10 +298,10 @@ GEOLOGICTIMEPERIOD_CSV_COLUMNS = {
     'geologictimeperiod': {
         'all_columns': ['Erathem/Era', 'System/Period', 'Series/Epoch', 'Stage/Age', 'Start Period', 'Start Uncertainty', 'End Period', 'End Uncertainty'],
         'rank': [
-            {'era': {'Erathem/Era': 'name'}},
-            {'period': {'System/Period': 'name'}},
-            {'epoch': {'Series/Epoch': 'name'}},
-            {'age': {
+            {'Erathem/Era': {'Erathem/Era': 'name'}},
+            {'System/Period': {'System/Period': 'name'}},
+            {'Series/Epoch': {'Series/Epoch': 'name'}},
+            {'Stage/Age': {
                 'Stage/Age': 'name',
                 'Start Period': 'startperiod',
                 'Start Uncertainty': 'startuncertainty',
@@ -370,7 +370,7 @@ def add_default_tree_record(tree_type: str, discipline, row: dict, tree_name: st
     """
     tree_def_model, tree_rank_model, tree_node_model = get_models(tree_type)
     if tree_type == 'taxon':
-        # There may be multiple taxon trees, match by name.
+        # There may be multiple taxon trees, match by name. TODO: Do this always?
         tree_def = tree_def_model.objects.get(name=tree_name)
     else:
         tree_def = tree_def_model.objects.first()
@@ -481,7 +481,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
         row_count = count_csv_rows(url) - 2
         progress(0, row_count)
         with transaction.atomic():
-            for row in stream_csv_from_url(url, discipline, rank_count, tree_name, set_tree):
+            for row in stream_csv_from_url(url, discipline, rank_count, tree_type, tree_name, set_tree):
                 add_default_tree_record(tree_type, discipline, row, tree_name, tree_cfg)
                 progress(1, 0)
     except Exception as e:
@@ -507,11 +507,11 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
         })
     )
 
-def stream_csv_from_url(url: str, discipline, rank_count: int, initial_tree_name: str, set_tree: Callable[[str], None]) -> Iterator[Dict[str, str]]:
+def stream_csv_from_url(url: str, discipline, rank_count: int, tree_type: str, initial_tree_name: str, set_tree: Callable[[str], None]) -> Iterator[Dict[str, str]]:
     """
     Streams a taxon CSV from a URL. Yields each row.
     """
-    with requests.get(url, stream=True) as resp:
+    with requests.get(url, stream=True, timeout=(5, 30)) as resp:
         try:
             resp.raise_for_status()
         except requests.HTTPError:
@@ -521,7 +521,7 @@ def stream_csv_from_url(url: str, discipline, rank_count: int, initial_tree_name
 
         rank_names_lst = reader.fieldnames[:rank_count]
         rank_names_lst.insert(0, "Root") # Add Root rank
-        tree_name = initialize_default_tree('taxon', discipline, initial_tree_name, rank_names_lst)
+        tree_name = initialize_default_tree(tree_type, discipline, initial_tree_name, rank_names_lst)
         set_tree(tree_name)
         
         for row in reader:

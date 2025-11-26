@@ -688,8 +688,9 @@ def create_default_tree_view(request):
         }, status=202)
 
     try:
+        tree_type = 'taxon'
         tree_cfg = DISCIPLINE_TAXON_CSV_COLUMNS[tree_discipline_name] # TODO: Change this
-        for row in stream_csv_from_url(url, discipline, rank_count, tree_name, set_tree):
+        for row in stream_csv_from_url(url, discipline, rank_count, tree_type, tree_name, set_tree):
             add_default_tree_record('taxon', discipline, row, tree_name, tree_cfg)
     except requests.HTTPError:
         return http.JsonResponse({'error': 'Failed to fetch the tree data.'}, status=500)
