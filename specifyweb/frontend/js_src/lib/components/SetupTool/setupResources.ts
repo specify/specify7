@@ -224,7 +224,7 @@ export const resources: RA<ResourceConfig> = [
       },
       // {
       //   name: 'default',
-      //   label: setupToolText.defaultTree(), // underscore in comment to avoid failing test
+      //   label: setupToolText_defaultTree(), // underscore in comment to avoid failing test
       //   type: 'boolean',
       // },
     ],
@@ -291,7 +291,7 @@ export const resources: RA<ResourceConfig> = [
       },
       // {
       //   name: 'default',
-      //   label: setupToolText.defaultTree(), // underscore in comment to avoid failing test
+      //   label: setupToolText_defaultTree(), // underscore in comment to avoid failing test
       //   type: 'boolean',
       // },
     ],
