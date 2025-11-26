@@ -208,6 +208,7 @@ def adding_node(node):
     model = type(node)
     parent = model.objects.select_for_update().get(id=node.parent.id)
     if parent.accepted_id is not None:
+        # Chnage to use new pref
         from specifyweb.backend.context.remote_prefs import get_remote_prefs
         # This business rule can be overriden by a remote pref.
         pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
@@ -398,6 +399,7 @@ def synonymize(node, into, agent):
 
     # This check can be disabled by a remote pref
     from specifyweb.backend.context.remote_prefs import get_remote_prefs
+    # Change to use new pref
     pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
     override = re.search(pattern, get_remote_prefs(), re.MULTILINE)
     if node.children.count() > 0 and (override is None or override.group(1).strip().lower() != "true"):
