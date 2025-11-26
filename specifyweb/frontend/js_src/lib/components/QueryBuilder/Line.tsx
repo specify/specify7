@@ -164,7 +164,7 @@ export function QueryLine({
             ? 'aggregator'
             : 'formatter';
 
-// special case for age field with ageRange filter
+// Special case for age field with ageRange filter
   if (fieldType === 'age' && field.filters.some((filter ) => filter.type === 'ageRange')) {
   parser = { type: 'number', min: 0, step: 1, required: false, value:undefined, };
 }
