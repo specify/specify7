@@ -5,7 +5,6 @@ import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import type { RA } from '../../../utils/types';
 import { overwriteReadOnly } from '../../../utils/types';
-import { getPref } from '../../InitialContext/remotePrefs';
 import { cogTypes } from '../helpers';
 import type { SerializedResource } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
@@ -864,14 +863,20 @@ describe('treeBusinessRules', () => {
     expect(fieldChangeResult.current[0]).toStrictEqual(['Bad tree structure.']);
   });
   test('saveBlocker not on synonymized parent w/preference', async () => {
-    const remotePrefs = await import('../../InitialContext/remotePrefs');
-    jest
-      .spyOn(remotePrefs, 'getPref')
-      .mockImplementation((key) =>
-        key === 'sp7.allow_adding_child_to_synonymized_parent.Taxon'
-          ? true
-          : getPref(key)
-      );
+    const { collectionPreferences } = await import(
+      '../../Preferences/collectionPreferences'
+    );
+    const originalRaw = collectionPreferences.getRaw();
+    collectionPreferences.setRaw({
+      ...originalRaw,
+      treeManagement: {
+        ...originalRaw.treeManagement,
+        synonymized: {
+          ...originalRaw.treeManagement?.synonymized,
+          'sp7.allow_adding_child_to_synonymized_parent.Taxon': true,
+        },
+      },
+    } as typeof originalRaw);
 
     const taxon = new tables.Taxon.Resource({
       name: 'dauricus',
