@@ -173,7 +173,7 @@ export function QueryLine({
             ]
           };
         }
-        
+
       } else if (isMapped)
         fieldType =
           isFormatted && mappingPath.at(-1) === `${schema.referenceSymbol}1`
