@@ -211,9 +211,27 @@ function useInitialData(
 ): string | false | undefined {
   return useAsyncState(
     React.useCallback(async () => {
+      const escapeXml = (s: string): string =>
+        s
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+
+      const replaceViewsetName = (data: string | null | undefined): string => {
+        const xml = data ?? '';
+        const resourceName = (resource as any)?.name ?? '';
+        if (typeof resourceName !== 'string' || resourceName.length === 0)
+          return xml;
+        return xml.replace(
+          /(<viewset\b[^>]*\bname=)(["])(.*?)\2/,
+          (_match, p1, p2) => `${p1}${p2}${escapeXml(resourceName)}${p2}`
+        );
+      };
+
       if (typeof initialDataFrom === 'number')
         return fetchResource('SpAppResourceData', initialDataFrom).then(
-          ({ data }) => data ?? ''
+          ({ data }) => replaceViewsetName(data)
         );
       else if (typeof templateFile === 'string') {
         if (templateFile.includes('..'))
@@ -224,7 +242,7 @@ function useInitialData(
           return ajax(`/static/config/${templateFile}`, {
             headers: {},
           })
-            .then(({ data }) => data ?? '')
+            .then(({ data }) => replaceViewsetName(data))
             .catch(() => '');
       }
       const subType = f.maybe(
@@ -239,12 +257,12 @@ function useInitialData(
         if (useTemplate)
           return ajax(getAppResourceUrl(type.name, 'quiet'), {
             headers: {},
-          }).then(({ data }) => data);
+          }).then(({ data }) => replaceViewsetName(data));
       }
       return false;
       // Run this only once
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [initialDataFrom, templateFile]),
+    }, [initialDataFrom, templateFile, resource]),
     false
   )[0];
 }
