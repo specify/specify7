@@ -41,14 +41,6 @@ export function PreferencesAside({
   const [freezeCategory, setFreezeCategory] = useFrozenCategory();
   const currentIndex = freezeCategory ?? activeCategory;
 
-  // const visibleDefinitions = React.useMemo(
-  //   () =>
-  //     definitions
-  //       .map((definition, index) => [index, definition] as const)
-  //       .filter(() => !(prefType === 'collection')),
-  //   [definitions, prefType]
-  // );
-
   React.useEffect(() => {
     const active = location.hash.replace('#', '').toLowerCase();
     const activeIndex = definitions.findIndex(
