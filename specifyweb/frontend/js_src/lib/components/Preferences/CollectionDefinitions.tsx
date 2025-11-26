@@ -141,8 +141,13 @@ export const collectionPreferenceDefinitions = {
           }),
         },
       },
-      specifyNetwork: {
-        title: specifyNetworkText.specifyNetwork(),
+    },
+  },
+  specifyNetwork: {
+    title: specifyNetworkText.specifyNetwork(),
+    subCategories: {
+      general: {
+        title: preferencesText.general(),
         items: {
           publishingOrganization: definePref<string | undefined>({
             title: specifyNetworkText.publishingOrganizationKey(),
