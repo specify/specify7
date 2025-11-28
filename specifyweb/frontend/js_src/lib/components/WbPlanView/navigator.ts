@@ -515,7 +515,8 @@ export function getMappingLineData({
         const isInToMany = internalState.mappingLineData.some(
           ({ customSelectSubtype }) => customSelectSubtype === 'toMany'
         );
-        if (isInToMany) {
+        const isZeroToOne = parentRelationship?.type === 'zero-to-one';
+        if (isInToMany && !isZeroToOne) {
           commitInstanceData('simple', table, [formatted]);
           return;
         }
