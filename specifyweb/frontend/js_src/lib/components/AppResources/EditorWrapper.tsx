@@ -211,22 +211,36 @@ function useInitialData(
 ): string | false | undefined {
   return useAsyncState(
     React.useCallback(async () => {
-      if (typeof initialDataFrom === 'number')
-        return fetchResource('SpAppResourceData', initialDataFrom).then(
-          ({ data }) => data ?? ''
+      const escapeXml = (s: string): string =>
+        s
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+
+      const replaceViewsetName = (data: string | null | undefined): string => {
+        const xml = data ?? '';
+        const resourceName = (resource as any)?.name ?? '';
+        if (typeof resourceName !== 'string' || resourceName.length === 0)
+          return xml;
+        return xml.replace(
+          /(<viewset\b[^>]*\bname=)(["])(.*?)\2/,
+          (_match, p1, p2) => `${p1}${p2}${escapeXml(resourceName)}${p2}`
         );
-      else if (typeof templateFile === 'string') {
-        if (templateFile.includes('..'))
-          console.error(
-            'Relative paths not allowed. Path is always relative to /static/config/'
-          );
-        else
-          return ajax(`/static/config/${templateFile}`, {
-            headers: {},
-          })
-            .then(({ data }) => data ?? '')
-            .catch(() => '');
+      };
+
+      if (typeof initialDataFrom === 'number') {
+        const { data } = await fetchResource('SpAppResourceData', initialDataFrom);
+        return replaceViewsetName(data);
       }
+      if (typeof templateFile === 'string') {
+       try {
+        const { data } = await ajax(`/static/config/${templateFile}`, { headers: {} });
+        return replaceViewsetName(data);
+      } catch {
+        return '';
+      }
+    }
       const subType = f.maybe(
         toResource(resource, 'SpAppResource'),
         getAppResourceType
@@ -236,15 +250,15 @@ function useInitialData(
         const useTemplate =
           typeof type.name === 'string' &&
           (!('useTemplate' in type) || type.useTemplate);
-        if (useTemplate)
-          return ajax(getAppResourceUrl(type.name, 'quiet'), {
+        if (useTemplate) {
+          const { data } = await ajax(getAppResourceUrl(type.name, 'quiet'), {
             headers: {},
-          }).then(({ data }) => data);
+          });
+          return replaceViewsetName(data);
+        }
       }
       return false;
-      // Run this only once
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [initialDataFrom, templateFile]),
+    }, [initialDataFrom, templateFile, resource]),
     false
   )[0];
 }
