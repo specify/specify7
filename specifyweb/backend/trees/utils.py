@@ -369,11 +369,7 @@ def add_default_tree_record(tree_type: str, discipline, row: dict, tree_name: st
     it to its parent.
     """
     tree_def_model, tree_rank_model, tree_node_model = get_models(tree_type)
-    if tree_type == 'taxon':
-        # There may be multiple taxon trees, match by name. TODO: Do this always?
-        tree_def = tree_def_model.objects.get(name=tree_name)
-    else:
-        tree_def = tree_def_model.objects.first()
+    tree_def = tree_def_model.objects.get(name=tree_name)
     parent = tree_node_model.objects.get(name='Root', fullname='Root', definition=tree_def)
     rank_id = 10
 
