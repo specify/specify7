@@ -166,7 +166,7 @@ export const schemaText = createDictionary({
     'en-us': 'Table Aggregation',
     'ru-ru': 'Агрегация таблиц',
     'es-es': 'Agregación de tablas',
-    'fr-fr': 'Agrégation de table',
+    'fr-fr': 'Agrégation de tableaux',
     'uk-ua': 'Агрегація таблиць',
     'de-ch': 'Tabellenaggregation',
     'pt-br': 'Agregação de tabelas',
