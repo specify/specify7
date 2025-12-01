@@ -511,7 +511,6 @@ def stream_csv_from_url(url: str, discipline, rank_count: int, tree_type: str, i
     """
     chunk_size = 8192
     max_retries = 5
-    backoff = 0.5
 
     def line_generator() -> Iterator[str]:
         buffer = b""
@@ -528,10 +527,11 @@ def stream_csv_from_url(url: str, discipline, rank_count: int, tree_type: str, i
                 with requests.get(url, stream=True, timeout=(5, 30), headers=headers) as resp:
                     resp.raise_for_status()
                     for chunk in resp.iter_content(chunk_size=chunk_size):
-                        if not chunk:
+                        chunk_length = len(chunk)
+                        if chunk_length == 0:
                             continue
                         buffer += chunk
-                        bytes_downloaded += len(chunk)
+                        bytes_downloaded += chunk_length
                         
                         # Extract all lines from chunk
                         while True:
@@ -548,7 +548,7 @@ def stream_csv_from_url(url: str, discipline, rank_count: int, tree_type: str, i
                 # Trigger retry
                 if retries < max_retries:
                     retries += 1
-                    time.sleep(backoff*retries)
+                    time.sleep(0.5*retries)
                     continue
                 raise
             except Exception:
