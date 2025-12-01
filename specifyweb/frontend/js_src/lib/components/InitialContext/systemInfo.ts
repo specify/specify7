@@ -28,7 +28,7 @@ let systemInfo: SystemInfo;
 export const fetchContext = load<SystemInfo>(
   '/context/system_info.json',
   'application/json'
-).then(async (data) => {
+).then((data) => {
   systemInfo = data;
 
   return systemInfo;
