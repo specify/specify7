@@ -345,11 +345,15 @@ def do_upload(
         agent=models.Agent.objects.get(id=uploading_agent_id),
     )
     total = len(rows) if isinstance(rows, Sized) else None
+    rows_completed = 0
     cached_scope_table = None
     last_scoped_table: ScopedUploadable | None = None
     batch_size = max(1, int(getattr(settings, "WORKBENCH_UPLOAD_BATCH_SIZE", BATCH_SIZE_DEFAULT)))
 
     scope_context = ScopeContext()
+
+    if progress is not None:
+        progress(rows_completed, total)
 
     with savepoint("main upload"):
         tic = time.perf_counter()
@@ -424,19 +428,20 @@ def do_upload(
                     results.append(result)
                     batch_results_count += 1
                     last_scoped_table = scoped_table
-                    if progress is not None:
-                        progress(len(results), total)
-                    logger.info(
-                        f"finished row {len(results)}, cache size: {cache and len(cache)}"
-                    )
                     if result.contains_failure():
                         cache = _cache
                         if batch_results_count:
                             del results[-batch_results_count:]
                             batch_results_count = 0
-                            if progress is not None:
-                                progress(len(results), total)
+                        if progress is not None:
+                            progress(rows_completed, total)
                         raise Rollback("failed row")
+                    rows_completed += 1
+                    if progress is not None:
+                        progress(rows_completed, total)
+                    logger.info(
+                        f"finished row {len(results)}, cache size: {cache and len(cache)}"
+                    )
 
             # Batch completed successfully; keep cache changes
             logger.info(
