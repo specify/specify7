@@ -7510,7 +7510,7 @@
 		"aggregator": null,
 		"defaultui": null,
 		"name": "Collecting Event Attribute",
-		"desc": "Collecting Event Attributes that were also available in Specify 5."
+		"desc": "Attributes specific to a Collecting Event."
 	},
 	"collectingeventauthorization": {
 		"items": {
@@ -12084,7 +12084,7 @@
 		"aggregator": null,
 		"defaultui": null,
 		"name": "Collection Object Attribute",
-		"desc": "Collection Object attributes that were also available in Specify 5."
+		"desc": "Attributes specific to a Collection Object."
 	},
 	"collectionobjectcitation": {
 		"items": {
@@ -35668,7 +35668,7 @@
 		"aggregator": null,
 		"defaultui": null,
 		"name": "Preparation Attribute",
-		"desc": "Preparation attributes that were also available in Specify 5."
+		"desc": "Attributes specific to a Preparation."
 	},
 	"preparationproperty": {
 		"items": {
