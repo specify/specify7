@@ -34,7 +34,7 @@ const delay = async (ms: number) =>
   });
 
 export const fetchContext = delay(5 * SECOND)
-  .then(() => fetchSystemInfo)
+  .then(async () => fetchSystemInfo)
   .then(async (systemInfo) => {
     if (systemInfo === undefined) {
       return;
