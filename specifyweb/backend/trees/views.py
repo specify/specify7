@@ -655,9 +655,12 @@ def create_default_tree_view(request):
             discipline = spmodels.Discipline.objects.all().first()
 
     url = data.get('url', None)
+    mapping_url = data.get('mapping_url', None)
 
     tree_name = tree_discipline_name.capitalize()
     rank_count = int(tree_rank_count(tree_name, 8))
+
+    row_count = data.get('row_count', None)
     
     run_in_background = data.get('runInBackground', True)
 
@@ -678,7 +681,7 @@ def create_default_tree_view(request):
 
         task_id = str(uuid4())
         async_result = create_default_tree_task.apply_async(
-            args=[url, discipline.id, tree_discipline_name, rank_count, request.specify_collection.id, request.specify_user.id],
+            args=[url, discipline.id, tree_discipline_name, rank_count, request.specify_collection.id, request.specify_user.id, mapping_url, row_count],
             task_id=f"create_default_tree_{tree_discipline_name}_{task_id}",
             taskid=task_id
         )
@@ -688,6 +691,7 @@ def create_default_tree_view(request):
         }, status=202)
 
     try:
+        # TODO: Remove non-background execution?
         tree_type = 'taxon'
         tree_cfg = DISCIPLINE_TAXON_CSV_COLUMNS[tree_discipline_name] # TODO: Change this
         for row in stream_csv_from_url(url, discipline, rank_count, tree_type, tree_name, set_tree):

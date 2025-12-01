@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Iterator
+from typing import Any, Callable, Dict, Iterator, Optional
 import json
 import requests
 import csv
@@ -427,7 +427,7 @@ def add_default_tree_record(tree_type: str, discipline, row: dict, tree_name: st
 
 @app.task(base=LogErrorsTask, bind=True)
 def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline_name: str, rank_count: int, specify_collection_id: int,
-                             specify_user_id: int):
+                             specify_user_id: int, mapping_url: Optional[str], row_count: Optional[int]):
     logger.info(f'starting task {str(self.request.id)}')
 
     specify_user = spmodels.Specifyuser.objects.get(id=specify_user_id)
@@ -445,6 +445,9 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
     )
 
     def count_csv_rows(url: str) -> int:
+        # TODO: Remove this. The total line count should be read from the tree metadata.
+        if row_count:
+            return row_count
         with requests.get(url, stream=True) as resp:
             resp.raise_for_status()
             lines = (line.decode('utf-8') for line in resp.iter_lines(decode_unicode=False))
@@ -466,16 +469,27 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
         tree_name = name
 
     try:
+
         tree_type = 'taxon'
         if tree_discipline_name == 'geography':
-            tree_type = 'geography'
             tree_cfg = GEOGRAPHY_CSV_COLUMNS[tree_discipline_name]
         elif tree_discipline_name == 'geologictimeperiod':
-            tree_type = 'geologictimeperiod'
             tree_cfg = GEOLOGICTIMEPERIOD_CSV_COLUMNS[tree_discipline_name]
         else:
             tree_cfg = DISCIPLINE_TAXON_CSV_COLUMNS[tree_discipline_name]
 
+        if mapping_url:
+            try:
+                resp = requests.get(mapping_url)
+                resp.raise_for_status()
+                tree_cfg = resp.json()
+            except Exception:
+                raise
+        else:
+            if tree_discipline_name == 'geography':
+                tree_type = 'geography'
+            elif tree_discipline_name == 'geologictimeperiod':
+                tree_type = 'geologictimeperiod'
         row_count = count_csv_rows(url) - 2
         progress(0, row_count)
         with transaction.atomic():
@@ -512,7 +526,7 @@ def stream_csv_from_url(url: str, discipline, rank_count: int, tree_type: str, i
     chunk_size = 8192
     max_retries = 5
 
-    def line_generator() -> Iterator[str]:
+    def lines_iter() -> Iterator[str]:
         buffer = b""
         bytes_downloaded = 0
         retries = 0
@@ -554,8 +568,7 @@ def stream_csv_from_url(url: str, discipline, rank_count: int, tree_type: str, i
             except Exception:
                 raise
 
-    lines_iter = line_generator()
-    reader = csv.DictReader(lines_iter)
+    reader = csv.DictReader(lines_iter())
 
     rank_names_lst = reader.fieldnames[:rank_count]
     rank_names_lst.insert(0, "Root") # Add Root rank
