@@ -2,6 +2,8 @@ from typing import Any, Callable, Dict, Iterator
 import json
 import requests
 import csv
+import time
+from requests.exceptions import ChunkedEncodingError, ConnectionError
 
 from django.db import transaction
 from django.db.models import Q, Count, Model
@@ -507,18 +509,58 @@ def stream_csv_from_url(url: str, discipline, rank_count: int, tree_type: str, i
     """
     Streams a taxon CSV from a URL. Yields each row.
     """
-    with requests.get(url, stream=True, timeout=(5, 30)) as resp:
-        try:
-            resp.raise_for_status()
-        except requests.HTTPError:
-            raise
-        lines = (line.decode('utf-8') for line in resp.iter_lines(decode_unicode=False))
-        reader = csv.DictReader(lines)
+    chunk_size = 8192
+    max_retries = 5
+    backoff = 0.5
 
-        rank_names_lst = reader.fieldnames[:rank_count]
-        rank_names_lst.insert(0, "Root") # Add Root rank
-        tree_name = initialize_default_tree(tree_type, discipline, initial_tree_name, rank_names_lst)
-        set_tree(tree_name)
-        
-        for row in reader:
-            yield row
+    def line_generator() -> Iterator[str]:
+        buffer = b""
+        bytes_downloaded = 0
+        retries = 0
+
+        headers = {}
+        while True:
+            # Request data starting from the last downloaded bytes
+            if bytes_downloaded > 0:
+                headers['Range'] = f'bytes={bytes_downloaded}-'
+
+            try:
+                with requests.get(url, stream=True, timeout=(5, 30), headers=headers) as resp:
+                    resp.raise_for_status()
+                    for chunk in resp.iter_content(chunk_size=chunk_size):
+                        if not chunk:
+                            continue
+                        buffer += chunk
+                        bytes_downloaded += len(chunk)
+                        
+                        # Extract all lines from chunk
+                        while True:
+                            new_line_index = buffer.find(b'\n')
+                            if new_line_index == -1: break
+                            line = buffer[:new_line_index + 1] # extract line
+                            buffer = buffer[new_line_index + 1 :] # clear read buffer
+                            yield line.decode('utf-8', errors='replace')
+
+                    if buffer:
+                        yield buffer.decode('utf-8', errors='replace')
+                    return
+            except (ChunkedEncodingError, ConnectionError) as e:
+                # Trigger retry
+                if retries < max_retries:
+                    retries += 1
+                    time.sleep(backoff*retries)
+                    continue
+                raise
+            except Exception:
+                raise
+
+    lines_iter = line_generator()
+    reader = csv.DictReader(lines_iter)
+
+    rank_names_lst = reader.fieldnames[:rank_count]
+    rank_names_lst.insert(0, "Root") # Add Root rank
+    tree_name = initialize_default_tree(tree_type, discipline, initial_tree_name, rank_names_lst)
+    set_tree(tree_name)
+    
+    for row in reader:
+        yield row
