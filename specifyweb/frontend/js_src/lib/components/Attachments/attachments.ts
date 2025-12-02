@@ -214,12 +214,19 @@ export const fetchOriginalUrl = async (
       )
     : Promise.resolve(undefined);
 
-export async function uploadFile(
-  file: File,
-  handleProgress?: (percentage: number | true) => void,
-  uploadAttachmentSpec?: UploadAttachmentSpec,
-  strict = true
-): Promise<SpecifyResource<Attachment> | undefined> {
+export async function uploadFile({
+  file,
+  handleProgress,
+  uploadAttachmentSpec,
+  strict,
+  attachmentIsPublicDefault,
+}: {
+  readonly file: File;
+  readonly handleProgress?: (percentage: number | true) => void;
+  readonly uploadAttachmentSpec?: UploadAttachmentSpec;
+  readonly strict?: boolean;
+  readonly attachmentIsPublicDefault?: boolean;
+}): Promise<SpecifyResource<Attachment> | undefined> {
   if (settings === undefined) return undefined;
 
   const data =
@@ -285,11 +292,13 @@ export async function uploadFile(
         }
     })
   );
-  const [attachmentIsPublicDefault] = collectionPreferences.use(
-    'general',
-    'attachments',
-    'attachment.is_public_default'
-  );
+  /*
+   * Const [attachmentIsPublicDefault] = collectionPreferences.use(
+   *   'general',
+   *   'attachments',
+   *   'attachment.is_public_default'
+   * );
+   */
 
   return new tables.Attachment.Resource({
     attachmentlocation: data.attachmentLocation,
