@@ -716,7 +716,7 @@ export const treeText = createDictionary({
     'en-us': 'Default Tree creation failure.',
   },
   defaultTreeTaskCompleted: {
-    'en-us': 'Default Tree creation completed.',
+    'en-us': 'Default Tree creation completed successfully.',
   },
   defaultTreeCreationProgress: {
     comment: 'E.x, Creating tree record 999/1,000',
