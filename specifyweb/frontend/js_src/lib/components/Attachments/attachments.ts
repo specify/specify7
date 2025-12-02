@@ -13,7 +13,6 @@ import type { Attachment } from '../DataModel/types';
 import { load } from '../InitialContext';
 import { getPref } from '../InitialContext/remotePrefs';
 import { downloadFile } from '../Molecules/FilePicker';
-import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { formatUrl } from '../Router/queryString';
 // Import SVG icons, but better than in Icons.tsx
 import applicationJsonIcon from './MimetypeIcons/application-json.svg';
