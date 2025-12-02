@@ -31,6 +31,8 @@ export const httpCodeToErrorMessage: RR<ValueOf<typeof Http>, string> = {
     'This error is likely caused by a bug in Specify. Please report it.',
   [Http.CREATED]:
     'This error is likely caused by a bug in Specify. Please report it.',
+  [Http.ACCEPTED]:
+    'This error is likely caused by a bug in Specify. Please report it.',
   [Http.NO_CONTENT]:
     'This error is likely caused by a bug in Specify. Please report it.',
   [Http.BAD_REQUEST]:

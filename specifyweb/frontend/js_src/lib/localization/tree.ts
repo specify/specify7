@@ -703,6 +703,12 @@ export const treeText = createDictionary({
     'ru-ru': 'Метеориты',
     'uk-ua': 'Метеорити',
   },
+  emptyTrees: {
+    'en-us': 'Empty Trees',
+  },
+  populatedTrees: {
+    'en-us': 'Populated Trees',
+  },
   defaultTreeTaskStarting: {
     'en-us': 'The Default Tree creation process has started.',
   },
