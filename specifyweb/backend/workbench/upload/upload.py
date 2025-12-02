@@ -428,15 +428,16 @@ def do_upload(
                     results.append(result)
                     batch_results_count += 1
                     last_scoped_table = scoped_table
+                    next_completed = rows_completed + 1
                     if result.contains_failure():
                         cache = _cache
                         if batch_results_count:
                             del results[-batch_results_count:]
                             batch_results_count = 0
                         if progress is not None:
-                            progress(rows_completed, total)
+                            progress(next_completed, total)
                         raise Rollback("failed row")
-                    rows_completed += 1
+                    rows_completed = next_completed
                     if progress is not None:
                         progress(rows_completed, total)
                     logger.info(
