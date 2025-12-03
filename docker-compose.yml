@@ -15,7 +15,7 @@
 services:
   mariadb:
     container_name: mariadb
-    image: mariadb:10.11
+    image: mariadb:11.8
     volumes:
       - "database:/var/lib/mysql" # the data directory for mariadb
       - "./seed-database:/docker-entrypoint-initdb.d"
@@ -33,8 +33,6 @@ services:
     build:
       context: ./.
       target: run-development
-    ports: 
-      - "3000:3000"
     command: ve/bin/python manage.py runserver 0.0.0.0:8000
     init: true
     restart: unless-stopped

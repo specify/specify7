@@ -185,6 +185,9 @@ WEB_ATTACHMENT_KEY = os.getenv('ASSET_SERVER_KEY', None)
 WEB_ATTACHMENT_COLLECTION = os.getenv('ASSET_SERVER_COLLECTION', None)
 SEPARATE_WEB_ATTACHMENT_FOLDERS = os.getenv('SEPARATE_WEB_ATTACHMENT_FOLDERS', None)
 
+REDIS_HOST = os.getenv('REDIS_HOST', 'redis')
+REDIS_PORT = os.getenv('REDIS_PORT', 6379)
+REDIS_DB_INDEX = os.getenv('REDIS_DB_INDEX', 0)
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', None)
 CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', None)
 CELERY_TASK_DEFAULT_QUEUE = os.getenv('CELERY_TASK_QUEUE', DATABASE_NAME)
@@ -192,6 +195,8 @@ CELERY_TASK_DEFAULT_QUEUE = os.getenv('CELERY_TASK_QUEUE', DATABASE_NAME)
 ANONYMOUS_USER = os.getenv('ANONYMOUS_USER', None)
 SPECIFY_CONFIG_DIR = os.environ.get('SPECIFY_CONFIG_DIR', '/opt/Specify/config')
 TIME_ZONE = os.environ.get('TIME_ZONE', 'America/Chicago')
+ALLOW_SUPPORT_LOGIN = os.environ.get('ALLOW_SUPPORT_LOGIN', False)
+SUPPORT_LOGIN_TTL = int(os.environ.get('SUPPORT_LOGIN_TTL', 180))
 
 # Resolve ALLOWED_HOSTS in the following precedence:
 # - Use the ALLOWED_HOSTS environment variable (if present)
@@ -260,26 +265,7 @@ USER specify
 
 COPY requirements-testing.txt /home/specify/
 
-RUN ve/bin/pip install --no-cache-dir -r /home/specify/requirements-testing.txt
-
-# RUN mkdir /opt/specify7/.vscode
-# RUN echo "[pytest]\nDJANGO_SETTINGS_MODULE=specifyweb.settings\npython_files=*test*.py testparsing.py\naddopts = --ignore=specifyweb/specify/selenium_tests.py" > /opt/specify7/specifyweb/pytest.ini 
-# RUN cat <<EOF > .vscode/settings.json
-# {
-# 	"python.pythonPath": "ve/bin/python/",
-# 	"python.testing.pytestArgs": [
-# 		"specifyweb",
-# 		"-s",
-# 		"-vv",
-# 		"-o",
-# 		"python_files=*test*.py"
-# 	],
-# 	"python.testing.pytestEnabled": true,
-# 	"python.testing.nosetestsEnabled": false,
-# 	"python.testing.unittestEnabled": false
-# }
-
-# EOF
+# RUN ve/bin/pip install --no-cache-dir -r /home/specify/requirements-testing.txt
 
 COPY mypy.ini ./
 
@@ -291,5 +277,4 @@ FROM run-common AS run
 RUN mv specifyweb.wsgi specifyweb_wsgi.py
 
 CMD ["ve/bin/gunicorn", "-w", "3", "-b", "0.0.0.0:8000", "-t", "300", "specifyweb_wsgi"]
-
 
