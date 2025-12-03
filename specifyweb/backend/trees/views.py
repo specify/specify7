@@ -609,10 +609,6 @@ def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMA
                         "type": "integer",
                         "description": "The total number of rows contained in the CSV file. Only used for progress tracking."
                     },
-                    "runInBackground": {
-                        "type": "boolean",
-                        "description": "Whether or not to create the tree in the background."
-                    }
                 },
                 "required": ["url", "mappingUrl", "disciplineName"],
                 "additionalProperties": False
@@ -669,45 +665,27 @@ def create_default_tree_view(request):
     rank_count = int(tree_rank_count(tree_name, 8))
 
     row_count = data.get('rowCount', None)
-    
-    run_in_background = data.get('runInBackground', True)
-
-    def set_tree(name: str) -> None:
-        nonlocal tree_name
-        tree_name = name
 
     if not url:
         return http.JsonResponse({'error': 'Tree not found.'}, status=404)
 
-    if run_in_background:
-        Message.objects.create(user=request.specify_user, content=json.dumps({
-            'type': 'create-default-tree-starting',
-            'name': "Create_Default_Tree_" + tree_discipline_name,
-            'collection_id': request.specify_collection.id,
-            'discipline_name': logged_in_discipline_name,
-        }))
+    Message.objects.create(user=request.specify_user, content=json.dumps({
+        'type': 'create-default-tree-starting',
+        'name': "Create_Default_Tree_" + tree_discipline_name,
+        'collection_id': request.specify_collection.id,
+        'discipline_name': logged_in_discipline_name,
+    }))
 
-        task_id = str(uuid4())
-        async_result = create_default_tree_task.apply_async(
-            args=[url, discipline.id, tree_discipline_name, rank_count, request.specify_collection.id, request.specify_user.id, mapping_url, row_count],
-            task_id=f"create_default_tree_{tree_discipline_name}_{task_id}",
-            taskid=task_id
-        )
-        return http.JsonResponse({
-            'message': 'Trees creation started in the background.',
-            'task_id': async_result.id
-        }, status=202)
-
-    try:
-        # TODO: Remove non-background execution?
-        tree_type = 'taxon'
-        tree_cfg = {} # TODO: Change this
-        for row in stream_csv_from_url(url, discipline, rank_count, tree_type, tree_name, set_tree):
-            add_default_tree_record('taxon', discipline, row, tree_name, tree_cfg)
-    except requests.HTTPError:
-        return http.JsonResponse({'error': 'Failed to fetch the tree data.'}, status=500)
-
-    return http.JsonResponse({'message': 'Trees created successfully.'}, status=201)
+    task_id = str(uuid4())
+    async_result = create_default_tree_task.apply_async(
+        args=[url, discipline.id, tree_discipline_name, rank_count, request.specify_collection.id, request.specify_user.id, mapping_url, row_count],
+        task_id=f"create_default_tree_{tree_discipline_name}_{task_id}",
+        taskid=task_id
+    )
+    return http.JsonResponse({
+        'message': 'Trees creation started in the background.',
+        'task_id': async_result.id
+    }, status=202)
 
 @openapi(schema={
     "get": {
