@@ -98,222 +98,6 @@ def get_models(name: str):
     
     return tree_def_model, tree_rank_model, tree_node_model
 
-# fishes      kingdom,phylum,class,order,family,genus,species,subspecies,family common name,species author,species source,species lsid,species common name,subspecies author,subspecies source,subspecies lsid,subspecies common name
-# herps       kingdom,phylum,class,order,family,genus,species,subspecies,family common name,species author,species source,species lsid,species common name,subspecies author,subspecies source,subspecies lsid,subspecies common name
-# inverts     kingdom,phylum,class,order,family,genus,species,subspecies,species author,species source,species lsid,species common name,subspecies author,subspecies source,subspecies lsid,subspecies common name
-# mammalia    kingdom,phylum,class,order,family,genus,species,subspecies,family common name,species author,species source,species lsid,species common name,subspecies author,subspecies source,subspecies lsid,subspecies common name
-# orthptera   kingdom,phylum,class,order,superfamily,family,genus,species,subspecies,species author,species source,species lsid,species common name,family common name,subspecies author,subspecies source,subspecies lsid,subspecies common name
-# poales      kingdom,division,class,order,family,genus,species,subspecies,variety,species author,species source,species lsid,species common name,subspecies author,subspecies source,subspecies lsid,subspecies common name,variety author,variety source,variety lsid,variety common name
-DISCIPLINE_TAXON_CSV_COLUMNS = {
-    'fish': {
-        'all_columns': ['kingdom','phylum','class','order','family','genus','species','subspecies','family common name','species author','species source','species lsid','species common name','subspecies author','subspecies source','subspecies lsid','subspecies common name'],
-        'ranks': [
-            {'kingdom': {'kingdom': 'name'}},
-            {'phylum': {'phylum': 'name'}},
-            {'class': {'class': 'name'}},
-            {'order': {'order': 'name'}},
-            {'family': {
-                'family': 'name',
-                'family common name': 'commonname'}
-            },
-            {'genus': {'genus': 'name'}},
-            {'species': {
-                'species': 'name',
-                'species author': 'author',
-                'species source': 'source',
-                'species lsid': 'lsid',
-                'species common name': 'commonname'}
-            },
-            {'subspecies': {
-                'subspecies': 'name',
-                'subspecies author': 'author',
-                'subspecies source': 'source',
-                'subspecies lsid': 'lsid',
-                'subspecies common name': 'commonname'}
-            }
-        ],
-    },
-    'herpetology': {
-        'all_columns': ['kingdom','phylum','class','order','family','genus','species','subspecies','family common name','species author','species source','species lsid','species common name','subspecies author','subspecies source','subspecies lsid','subspecies common name'],
-        'ranks': [
-            {'kingdom': {'kingdom': 'name'}},
-            {'phylum': {'phylum': 'name'}},
-            {'class': {'class': 'name'}},
-            {'order': {'order': 'name'}},
-            {'family': {
-                'family': 'name',
-                'family common name': 'commonname'}
-            },
-            {'genus': {'genus': 'name'}},
-            {'species': {
-                'species': 'name',
-                'species author': 'author',
-                'species source': 'source',
-                'species lsid': 'lsid',
-                'species common name': 'commonname'}
-            },
-            {'subspecies': {
-                'subspecies': 'name',
-                'subspecies author': 'author',
-                'subspecies source': 'source',
-                'subspecies lsid': 'lsid',
-                'subspecies common name': 'commonname'}
-            }
-        ],
-    },
-    'invertebrate': {
-        'all_columns': ['kingdom','phylum','class','order','family','genus','species','subspecies','species author','species source','species lsid','species common name','subspecies author','subspecies source','subspecies lsid','subspecies common name'],
-        'ranks': [
-            {'kingdom': {'kingdom': 'name'}},
-            {'phylum': {'phylum': 'name'}},
-            {'class': {'class': 'name'}},
-            {'order': {'order': 'name'}},
-            {'family': {
-                'family': 'name'}
-            },
-            {'genus': {'genus': 'name'}},
-            {'species': {
-                'species': 'name',
-                'species author': 'author',
-                'species source': 'source',
-                'species lsid': 'lsid',
-                'species common name': 'commonname'}
-            },
-            {'subspecies': {
-                'subspecies': 'name',
-                'subspecies author': 'author',
-                'subspecies source': 'source',
-                'subspecies lsid': 'lsid',
-                'subspecies common name': 'commonname'}
-            }
-        ],
-    },
-    'mammal': {
-        'all_columns': ['kingdom','phylum','class','order','family','genus','species','subspecies','family common name','species author','species source','species lsid','species common name','subspecies author','subspecies source','subspecies lsid','subspecies common name'],
-        'ranks': [
-            {'kingdom': {'kingdom': 'name'}},
-            {'phylum': {'phylum': 'name'}},
-            {'class': {'class': 'name'}},
-            {'order': {'order': 'name'}},
-            {'family': {
-                'family': 'name',
-                'family common name': 'commonname'}
-            },
-            {'genus': {'genus': 'name'}},
-            {'species': {
-                'species': 'name',
-                'species author': 'author',
-                'species source': 'source',
-                'species lsid': 'lsid',
-                'species common name': 'commonname'}
-            },
-            {'subspecies': {
-                'subspecies': 'name',
-                'subspecies author': 'author',
-                'subspecies source': 'source',
-                'subspecies lsid': 'lsid',
-                'subspecies common name': 'commonname'}
-            }
-        ],
-    },
-    'insect': {
-        'all_columns': ['kingdom','phylum','class','order','superfamily','family','genus','species','subspecies','species author','species source','species lsid','species common name','family common name','subspecies author','subspecies source','subspecies lsid','subspecies common name'],
-        'ranks': [
-            {'kingdom': {'kingdom': 'name'}},
-            {'phylum': {'phylum': 'name'}},
-            {'class': {'class': 'name'}},
-            {'order': {'order': 'name'}},
-            {'superfamily': {'superfamily': 'name'}},
-            {'family': {
-                'family': 'name',
-                'family common name': 'commonname'}
-            },
-            {'genus': {'genus': 'name'}},
-            {'species': {
-                'species': 'name',
-                'species author': 'author',
-                'species source': 'source',
-                'species lsid': 'lsid',
-                'species common name': 'commonname'}
-            },
-            {'subspecies': {
-                'subspecies': 'name',
-                'subspecies author': 'author',
-                'subspecies source': 'source',
-                'subspecies lsid': 'lsid',
-                'subspecies common name': 'commonname'}
-            }
-        ],
-    },
-    'botany': {
-        'all_columns': ['kingdom','division','class','order','family','genus','species','subspecies','variety','species author','species source','species lsid','species common name','subspecies author','subspecies source','subspecies lsid','subspecies common name','variety author','variety source','variety lsid','variety common name'],
-        'ranks': [
-            {'kingdom': {'kingdom': 'name'}},
-            {'division': {'division': 'name'}},
-            {'class': {'class': 'name'}},
-            {'order': {'order': 'name'}},
-            {'family': {
-                'family': 'name'}
-            },
-            {'genus': {'genus': 'name'}},
-            {'species': {
-                'species': 'name',
-                'species author': 'author',
-                'species source': 'source',
-                'species lsid': 'lsid',
-                'species common name': 'commonname'}
-            },
-            {'subspecies': {
-                'subspecies': 'name',
-                'subspecies author': 'author',
-                'subspecies source': 'source',
-                'subspecies lsid': 'lsid',
-                'subspecies common name': 'commonname'}
-            },
-            {'variety': {
-                'variety': 'name',
-                'variety author': 'author',
-                'variety source': 'source',
-                'variety lsid': 'lsid',
-                'variety common name': 'commonname'}
-            }
-        ],
-    },
-}  
-GEOGRAPHY_CSV_COLUMNS = {
-    'geography': {
-        'all_columns': ['Continent','Country','State','County','GeographyCode','CentroidLat','CentroidLon'],
-        'ranks': [
-            {'Continent': {'Continent': 'name'}},
-            {'Country': {'Country': 'name'}},
-            {'State': {'State': 'name'}},
-            {'County': {
-                'County': 'name',
-                'GeographyCode': 'geographycode',
-                'CentroidLat': 'centroidlat',
-                'CentroidLon': 'centroidlon'}
-            },
-        ]
-    }
-}
-GEOLOGICTIMEPERIOD_CSV_COLUMNS = {
-    'geologictimeperiod': {
-        'all_columns': ['Erathem/Era', 'System/Period', 'Series/Epoch', 'Stage/Age', 'Start Period', 'Start Uncertainty', 'End Period', 'End Uncertainty'],
-        'rank': [
-            {'Erathem/Era': {'Erathem/Era': 'name'}},
-            {'System/Period': {'System/Period': 'name'}},
-            {'Series/Epoch': {'Series/Epoch': 'name'}},
-            {'Stage/Age': {
-                'Stage/Age': 'name',
-                'Start Period': 'startperiod',
-                'Start Uncertainty': 'startuncertainty',
-                'End Period': 'endperiod',
-                'End Uncertainty': 'enduncertainty'}
-            },
-        ]
-    }
-}
-
 def initialize_default_tree(tree_type: str, discipline, tree_name: str, rank_names_lst: list):
     """Creates an initial empty tree."""
     with transaction.atomic():
@@ -427,7 +211,7 @@ def add_default_tree_record(tree_type: str, discipline, row: dict, tree_name: st
 
 @app.task(base=LogErrorsTask, bind=True)
 def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline_name: str, rank_count: int, specify_collection_id: int,
-                             specify_user_id: int, mapping_url: Optional[str], row_count: Optional[int]):
+                             specify_user_id: int, mapping_url: str, row_count: Optional[int]):
     logger.info(f'starting task {str(self.request.id)}')
 
     specify_user = spmodels.Specifyuser.objects.get(id=specify_user_id)
@@ -444,16 +228,6 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
         })
     )
 
-    def count_csv_rows(url: str) -> int:
-        # TODO: Remove this. The total line count should be read from the tree metadata.
-        if row_count:
-            return row_count
-        with requests.get(url, stream=True) as resp:
-            resp.raise_for_status()
-            lines = (line.decode('utf-8') for line in resp.iter_lines(decode_unicode=False))
-            reader = csv.DictReader(lines)
-            return sum(1 for _ in reader)
-
     current = 0
     total = 1
     def progress(cur: int, additional_total: int=0) -> None:
@@ -469,29 +243,22 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
         tree_name = name
 
     try:
-
         tree_type = 'taxon'
-        if tree_discipline_name == 'geography':
-            tree_cfg = GEOGRAPHY_CSV_COLUMNS[tree_discipline_name]
-        elif tree_discipline_name == 'geologictimeperiod':
-            tree_cfg = GEOLOGICTIMEPERIOD_CSV_COLUMNS[tree_discipline_name]
-        else:
-            tree_cfg = DISCIPLINE_TAXON_CSV_COLUMNS[tree_discipline_name]
+        if tree_discipline_name in SPECIFY_TREES:
+            # non-taxon tree
+            tree_type = tree_discipline_name
 
-        if mapping_url:
-            try:
-                resp = requests.get(mapping_url)
-                resp.raise_for_status()
-                tree_cfg = resp.json()
-            except Exception:
-                raise
-        else:
-            if tree_discipline_name == 'geography':
-                tree_type = 'geography'
-            elif tree_discipline_name == 'geologictimeperiod':
-                tree_type = 'geologictimeperiod'
-        row_count = count_csv_rows(url) - 2
-        progress(0, row_count)
+        try:
+            resp = requests.get(mapping_url)
+            resp.raise_for_status()
+            tree_cfg = resp.json()
+        except Exception:
+            raise
+        
+        total_rows = 0
+        if row_count:
+            total_rows = row_count-2
+        progress(0, total_rows)
         with transaction.atomic():
             for row in stream_csv_from_url(url, discipline, rank_count, tree_type, tree_name, set_tree):
                 add_default_tree_record(tree_type, discipline, row, tree_name, tree_cfg)

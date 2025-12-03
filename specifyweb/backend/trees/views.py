@@ -26,7 +26,7 @@ from specifyweb.backend.stored_queries.execution import set_group_concat_max_len
 from specifyweb.backend.stored_queries.group_concat import group_concat
 from specifyweb.backend.notifications.models import Message
 
-from specifyweb.backend.trees.utils import add_default_tree_record, create_default_tree_task, get_search_filters, stream_csv_from_url, DISCIPLINE_TAXON_CSV_COLUMNS
+from specifyweb.backend.trees.utils import add_default_tree_record, create_default_tree_task, get_search_filters, stream_csv_from_url
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from specifyweb.backend.trees.ranks import tree_rank_count
 from . import extras
@@ -593,6 +593,10 @@ def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMA
                         "type": "string",
                         "description": "The URL of the tree CSV file."
                     },
+                    "mappingUrl": {
+                        "type": "string",
+                        "descripting": "The URL of a JSON file describing the column mapping of the CSV data."
+                    },
                     "disciplineName": {
                         "type": "string",
                         "description": "Name of the disicpline the tree belongs to."
@@ -601,12 +605,16 @@ def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMA
                         "type": "string",
                         "description": "The name of the destination collection. The logged in colleciton will be used otherwise."
                     },
+                    "rowCount": {
+                        "type": "integer",
+                        "description": "The total number of rows contained in the CSV file. Only used for progress tracking."
+                    },
                     "runInBackground": {
                         "type": "boolean",
                         "description": "Whether or not to create the tree in the background."
                     }
                 },
-                "required": ["url", "disciplineName"],
+                "required": ["url", "mappingUrl", "disciplineName"],
                 "additionalProperties": False
             },
             "SuccessBackground": {
@@ -655,12 +663,12 @@ def create_default_tree_view(request):
             discipline = spmodels.Discipline.objects.all().first()
 
     url = data.get('url', None)
-    mapping_url = data.get('mapping_url', None)
+    mapping_url = data.get('mappingUrl', None)
 
     tree_name = tree_discipline_name.capitalize()
     rank_count = int(tree_rank_count(tree_name, 8))
 
-    row_count = data.get('row_count', None)
+    row_count = data.get('rowCount', None)
     
     run_in_background = data.get('runInBackground', True)
 
@@ -693,7 +701,7 @@ def create_default_tree_view(request):
     try:
         # TODO: Remove non-background execution?
         tree_type = 'taxon'
-        tree_cfg = DISCIPLINE_TAXON_CSV_COLUMNS[tree_discipline_name] # TODO: Change this
+        tree_cfg = {} # TODO: Change this
         for row in stream_csv_from_url(url, discipline, rank_count, tree_type, tree_name, set_tree):
             add_default_tree_record('taxon', discipline, row, tree_name, tree_cfg)
     except requests.HTTPError:

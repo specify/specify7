@@ -31,8 +31,10 @@ type TaxonFileDefaultDefinition = {
   readonly title: string;
   readonly coverage: string;
   readonly file: string;
+  readonly mappingFile: string;
   readonly src: string;
   readonly size: number;
+  readonly rows: number;
   readonly description: string;
 };
 type TaxonFileDefaultList = RA<TaxonFileDefaultDefinition>;
@@ -87,7 +89,7 @@ export function CreateTree<
   const connectedCollection = getSystemInfo().collection;
 
   // Start default tree creation
-  const handleClick = async (resourceUrl: string, disciplineName: string): Promise<void> => {
+  const handleClick = async (resourceUrl: string, mappingUrl: string, disciplineName: string, rowCount: number): Promise<void> => {
     setIsTreeCreationStarted(true);
     setTreeCreationProgress(undefined);
     return ajax<TreeCreationInfo>('/trees/create_default_tree/', {
@@ -95,8 +97,10 @@ export function CreateTree<
       headers: { Accept: 'application/json' },
       body: {
         url: resourceUrl,
+        mappingUrl: mappingUrl,
         collection: connectedCollection,
-        disciplineName: disciplineName
+        disciplineName: disciplineName,
+        rowCount: rowCount
       },
     })
       .then(({ data, status }) => {
@@ -188,7 +192,7 @@ export function CreateTree<
                   <li key={index}>
                     <Button.LikeLink
                       onClick={(): void => {
-                        handleClick(resource.file, resource.discipline).catch(console.error);
+                        handleClick(resource.file, resource.mappingFile, resource.discipline, resource.rows).catch(console.error);
                       }}
                     >
                       {localized(resource.title)}
