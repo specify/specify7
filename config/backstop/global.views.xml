@@ -331,22 +331,15 @@
 				<altview name="SymbiotaInstanceDataEntry" viewdef="SymbiotaInstanceDataEntry" mode="edit" validated="true"/>
 			</altviews>
 		</view>
-		<view name="ObjectAttachment" class="edu.ku.brc.specify.datamodel.ObjectAttachmentIFace" busrules="edu.ku.brc.specify.datamodel.busrules.AttachmentBusRules" resourcelabels="false">
-			<desc>The Object-Attachment View.</desc>
+		<view name="ObjectAttachment" objtitle="Attachment" class="edu.ku.brc.specify.datamodel.Attachment" busrules="edu.ku.brc.specify.datamodel.busrules.AttachmentBusRules">
+			<desc/>
 			<altviews>
-				<altview name="ObjectAttachment Icon View" viewdef="ObjectAttachment IconView" mode="view"/>
-				<altview name="ObjectAttachment Icon Edit" viewdef="ObjectAttachment IconView" mode="edit"/>
-				<altview name="ObjectAttachment Table View" viewdef="ObjectAttachment Table" mode="view"/>
-				<altview name="ObjectAttachment Table Edit" viewdef="ObjectAttachment Table" mode="edit"/>
-				<altview name="ObjectAttachment Form View" viewdef="ObjectAttachment Form" label="Form" mode="view" default="true"/>
-				<altview name="ObjectAttachment Form Edit" viewdef="ObjectAttachment Form" label="Form" mode="edit"/>
-			</altviews>
-		</view>
-		<view name="ObjectAttachmentIconOnly" class="edu.ku.brc.specify.datamodel.ObjectAttachmentIFace" busrules="edu.ku.brc.specify.datamodel.busrules.AttachmentBusRules" resourcelabels="false">
-			<desc>The Object-Attachment View.</desc>
-			<altviews>
-				<altview name="ObjectAttachment Icon View" viewdef="ObjectAttachment IconView" label="Thumb" mode="view" default="true"/>
-				<altview name="ObjectAttachment Icon Edit" viewdef="ObjectAttachment IconView" label="Thumb" mode="edit"/>
+				<altview name="ObjectAttachment View" viewdef="ObjectAttachment" mode="view" validated="false"/>
+				<altview name="ObjectAttachment Edit" viewdef="ObjectAttachment" mode="edit" default="true" validated="false"/>
+				<altview name="ObjectAttachment Table View" viewdef="ObjectAttachment Table" mode="view" validated="false"/>
+				<altview name="ObjectAttachment Table Edit" viewdef="ObjectAttachment Table" mode="edit" validated="false"/>
+				<altview name="ObjectAttachment Icon View" viewdef="ObjectAttachment Icon" mode="view" validated="false"/>
+				<altview name="ObjectAttachment Icon Edit" viewdef="ObjectAttachment Icon" mode="edit" validated="false"/>
 			</altviews>
 		</view>
 		<view name="CollectionObjectAttachment" class="edu.ku.brc.specify.datamodel.CollectionObjectAttachment" busrules="edu.ku.brc.specify.datamodel.busrules.AttachmentBusRules" resourcelabels="false">
@@ -2451,19 +2444,59 @@
 				</row>
 			</rows>
 		</viewdef>
-		<viewdef type="formtable" name="ObjectAttachment Table" class="edu.ku.brc.specify.datamodel.ObjectAttachmentIFace" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-			<desc>ObjectAttachment grid view.</desc>
-			<definition>ObjectAttachment Form</definition>
+		<viewdef name="ObjectAttachment" class="edu.ku.brc.specify.datamodel.Attachment" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The Attachment Table</desc>
+			<enableRules/>
+			<columnDef>p,2px,p,2px,p,2px,p,2px,p,2px,p,p:g</columnDef>
+			<rowDef auto="true" cell="p" sep="2px"/>
+			<rows>
+				<row>
+					<cell type="label" labelfor="origFilename" label="Filename"/>
+					<cell type="field" id="origFilename" name="attachment.origFilename" initialize="editoncreate=true" uitype="browse" isrequired="true"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="title" label="Title"/>
+					<cell type="field" id="title" name="attachment.title" uitype="text" isrequired="true"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="mimeType" label="MIME Type"/>
+					<cell type="field" id="mimeType" name="attachment.mimeType" uitype="text"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="Type" label="Type"/>
+					<cell type="field" id="Type" name="attachment.type" uitype="combobox" picklist="Type"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="subType" label="Subtype"/>
+					<cell type="field" id="subType" name="attachment.subtype" uitype="combobox" picklist="Subtype"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="subjectOrientation" label="Orientation"/>
+					<cell type="field" id="subjectOrientation" name="attachment.subjectOrientation" uitype="combobox" picklist="SubjectOrientation"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="captureDevice" label="Subject Part"/>
+					<cell type="field" id="captureDevice" name="attachment.captureDevice" uitype="combobox" picklist="Subject Part"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="credit" label="Credit"/>
+					<cell type="field" id="credit" name="attachment.credit" uitype="text"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="ispub" label=""/>
+					<cell type="field" id="ispub" name="attachment.isPublic" uitype="checkbox" label="Make Public"/>
+				</row>
+				<!--    <row>
+    		        <cell type="subview" id="metadata" name="attachment.metadata" viewname="AttachmentMetadata" colspan="3"/>
+    		    </row>  -->
+			</rows>
 		</viewdef>
-		<viewdef type="formtable" name="CollectionObjectAttachment Table" class="edu.ku.brc.specify.datamodel.CollectionObjectAttachment" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-			<desc>ObjectAttachment grid view.</desc>
-			<definition>ObjectAttachment Form</definition>
+		<viewdef name="ObjectAttachment Icon" class="edu.ku.brc.specify.datamodel.Attachment" type="iconview" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The Attachments Icon Viewer</desc>
 		</viewdef>
-		<viewdef type="iconview" name="ObjectAttachment IconView" class="edu.ku.brc.specify.datamodel.ObjectAttachmentIFace" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-			<desc>The ObjectAttachment Icon Viewer</desc>
-		</viewdef>
-		<viewdef type="iconview" name="CollectionObjectAttachment IconView" class="edu.ku.brc.specify.datamodel.CollectionObjectAttachment" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-			<desc>The ObjectAttachment Icon Viewer</desc>
+		<viewdef name="ObjectAttachment Table" class="edu.ku.brc.specify.datamodel.Attachment" type="formtable" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>The Attachment Table</desc>
+			<definition>ObjectAttachment</definition>
 		</viewdef>
 		<viewdef type="form" name="CollectionObjectAttachment Form" class="edu.ku.brc.specify.datamodel.CollectionObjectAttachment" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj" useresourcelabels="true">
 			<desc>The CollectionObjectAttachment form.</desc>

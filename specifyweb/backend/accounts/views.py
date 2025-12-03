@@ -6,10 +6,11 @@ import jwt
 import logging
 import requests
 import time
+from urllib.parse import unquote_plus
 from django import forms
 from django import http
 from django.conf import settings
-from django.contrib.auth import login, logout
+from django.contrib.auth import login
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import connection
 from django.db.models import Max
@@ -34,6 +35,7 @@ from .models import Spuserexternalid
 from specifyweb.specify.models import Specifyuser
 from django.views.decorators.http import require_POST
 from specifyweb.backend.permissions.permissions import check_permission_targets
+from specifyweb.specify.auth.support_login import b64_url_to_bytes
 from django.db import transaction, connection
 
 logger = logging.getLogger(__name__)
@@ -351,8 +353,10 @@ def support_login(request: http.HttpRequest) -> http.HttpResponse:
         return http.HttpResponseForbidden()
 
     from django.contrib.auth import login, authenticate
+    token = request.GET["token"]
+    key = b64_url_to_bytes(request.GET["key"])
 
-    user = authenticate(token=request.GET['token'])
+    user = authenticate(token=token, key=key)
     if user is not None:
         login(request, user, backend='specifyweb.specify.auth.support_login.SupportLoginBackend')
         return http.HttpResponseRedirect('/')
