@@ -12,9 +12,11 @@ from typing import (
     Optional,
     Sized,
     Tuple,
+    Any,
 )
 from collections.abc import Callable
 from collections.abc import Sized
+from collections import defaultdict
 
 from django.db import transaction
 from django.db.utils import OperationalError, IntegrityError
@@ -57,7 +59,7 @@ from .uploadable import (
     Uploadable,
     BatchEditJson,
 )
-from .upload_table import UploadTable
+from .upload_table import BoundUploadTable, UploadTable, reset_process_timings, get_process_timings
 from .scope_context import ScopeContext
 from ..models import Spdataset
 
@@ -73,6 +75,7 @@ Progress = Callable[[int, int | None], None]
 
 logger = logging.getLogger(__name__)
 
+BULK_BATCH_SIZE = 2000
 
 class RollbackFailure(Exception):
     pass
@@ -87,14 +90,15 @@ class Rollback(Exception):
 def savepoint(description: str):
     try:
         with transaction.atomic():
-            logger.info(f"entering save point: {repr(description)}")
+            # logger.info(f"entering save point: {repr(description)}")
             yield
-            logger.info(f"leaving save point: {repr(description)}")
+            # logger.info(f"leaving save point: {repr(description)}")
 
     except Rollback as r:
-        logger.info(
-            f"rolling back save point: {repr(description)} due to: {repr(r.reason)}"
-        )
+        # logger.info(
+        #     f"rolling back save point: {repr(description)} due to: {repr(r.reason)}"
+        # )
+        pass
 
 
 @contextmanager
@@ -220,6 +224,7 @@ def do_upload_dataset(
             ),
             batch_edit_prefs=batchEditPrefs,
         ),
+        use_bulk_create=True, # TODO: Shift this parameter into the API request
     )
     success = not any(r.contains_failure() for r in results)
     if not no_commit:
@@ -371,6 +376,7 @@ def do_upload(
     progress: Progress | None = None,
     batch_edit_packs: list[BatchEditJson | None] | None = None,
     auditor_props: AuditorProps | None = None,
+    use_bulk_create: bool = False,
 ) -> list[UploadResult]:
     cache: dict = {}
     _auditor = Auditor(
@@ -385,6 +391,7 @@ def do_upload(
     total = len(rows) if isinstance(rows, Sized) else None
 
     scope_context = ScopeContext()
+    reset_process_timings()
 
     stage_timings: dict[str, float] = {
         "apply_scoping": 0.0,
@@ -396,6 +403,15 @@ def do_upload(
     }
 
     scoped_cache: dict[tuple, ScopedUploadable] = {}
+
+    # set bulk_insert stats values
+    bulk_candidates = 0 # rows where we considered bulk insert
+    bulk_eligible = 0 # rows that passed can_use_bulk_insert()
+    bulk_deferred = 0 # rows actually queued for bulk_create
+
+    # Pending bulk inserts: list of (row_index, plan_dict)
+    # plan_dict: {"model": ModelClass, "attrs": dict, "info": ReportInfo, "to_one_results": dict[str, UploadResult]}
+    pending_inserts: list[tuple[int, dict[str, Any]]] = []
 
     with savepoint("main upload"):
         tic = time.perf_counter()
@@ -467,31 +483,139 @@ def do_upload(
                 )
                 stage_timings["bind"] += time.perf_counter() - t0
 
+                row_result: UploadResult | None = None
+                deferred_plan: dict[str, Any] | None = None
+
                 if isinstance(bind_result, ParseFailures):
-                    result = UploadResult(bind_result, {}, {})
+                    row_result = UploadResult(bind_result, {}, {})
                 else:
                     can_save = bind_result.can_save()
 
                     if can_save:
+                        # Updates use the normal creation/upload
                         t0 = time.perf_counter()
-                        result = bind_result.save_row(force=True)
+                        row_result = bind_result.save_row(force=True)
                         stage_timings["save_row"] += time.perf_counter() - t0
                     else:
-                        t0 = time.perf_counter()
-                        result = bind_result.process_row()
-                        stage_timings["process_row"] += time.perf_counter() - t0
+                        # Potential insert path
+                        if use_bulk_create and isinstance(bind_result, BoundUploadTable):
+                            bulk_candidates += 1
 
-                results.append(result)
-                if progress is not None:
-                    progress(len(results), total)
+                            if bind_result.can_use_bulk_insert():
+                                bulk_eligible += 1
 
-                logger.info(
-                    f"finished row {len(results)}, cache size: {cache and len(cache)}"
+                                # Prepare everything except the final INSERT
+                                t0 = time.perf_counter()
+                                bulk_result, insert_plan = bind_result.prepare_for_bulk_insert()
+                                stage_timings["process_row"] += time.perf_counter() - t0
+
+                                if bulk_result is not None:
+                                    # matched existing record, null row, or failure
+                                    row_result = bulk_result
+                                else:
+                                    # Defer the actual INSERT to the bulk creation
+                                    deferred_plan = insert_plan
+                            else:
+                                # Fallback to normal behavior if not eligible
+                                t0 = time.perf_counter()
+                                row_result = bind_result.process_row()
+                                stage_timings["process_row"] += time.perf_counter() - t0
+                        else:
+                            # Normal per-row insert/match path
+                            t0 = time.perf_counter()
+                            row_result = bind_result.process_row()
+                            stage_timings["process_row"] += time.perf_counter() - t0
+
+                if deferred_plan is not None:
+                    # Row will be inserted later via bulk_create
+                    row_index = len(results)
+                    results.append(None)  # placeholder, will be filled after bulk flush
+                    pending_inserts.append((row_index, deferred_plan))
+                    bulk_deferred += 1
+
+                    if progress is not None:
+                        progress(len(results), total)
+
+                    # logger.info(
+                    #     f"finished row {len(results)} (deferred insert), cache size: {cache and len(cache)}"
+                    # )
+                else:
+                    assert row_result is not None
+                    results.append(row_result)
+
+                    if progress is not None:
+                        progress(len(results), total)
+
+                    # logger.info(
+                    #     f"finished row {len(results)}, cache size: {cache and len(cache)}"
+                    # )
+
+                    if row_result.contains_failure():
+                        cache = _cache
+                        raise Rollback("failed row")
+
+        # Perform all deferred bulk inserts
+        if use_bulk_create and pending_inserts:
+            t0_bulk = time.perf_counter()
+
+            # Group pending inserts by model to make bulk_create efficient
+            grouped: dict[type, list[tuple[int, dict[str, Any]]]] = defaultdict(list)
+            for row_index, plan in pending_inserts:
+                grouped[plan["model"]].append((row_index, plan))
+
+            total_inserted = 0
+
+            for model, group in grouped.items():
+                # Build objects for this model
+                objs = [model(**plan["attrs"]) for (_idx, plan) in group]
+
+                # Perform bulk_create in batches
+                created_objs = model.objects.bulk_create(
+                    objs, batch_size=BULK_BATCH_SIZE
                 )
-                if result.contains_failure():
-                    cache = _cache
-                    raise Rollback("failed row")
+                total_inserted += len(created_objs)
 
+                # Attach audit, picklists, to-many, UploadResult
+                for (row_index, plan), obj in zip(group, created_objs):
+                    bound: BoundUploadTable = plan["bound_table"]
+                    info = plan["info"]
+                    to_one_results = plan["to_one_results"]
+
+                    # Audit
+                    _auditor.insert(obj, None)
+
+                    # Picklist additions
+                    picklist_additions = bound._do_picklist_additions()
+
+                    # To-manys insert path
+                    to_many_results = bound._handle_to_many(
+                        update=False,
+                        parent_id=obj.id,
+                        model=model,
+                    )
+
+                    record = Uploaded(obj.id, info, picklist_additions)
+                    results[row_index] = UploadResult(record, to_one_results, to_many_results)
+
+            bulk_duration = time.perf_counter() - t0_bulk
+            stage_timings["save_row"] += bulk_duration
+            logger.info(
+                "bulk_create flush: inserted %d rows in %.4fs",
+                total_inserted,
+                bulk_duration,
+            )
+
+            logger.info(
+                "bulk_create stats: candidates=%d, eligible=%d, deferred=%d, inserted=%d",
+                bulk_candidates,
+                bulk_eligible,
+                bulk_deferred,
+                total_inserted,
+            )
+
+        # Make sure no placeholders are left
+        assert all(r is not None for r in results)
+        
         toc = time.perf_counter()
         total_time = toc - tic
 
@@ -515,6 +639,33 @@ def do_upload(
             total_time,
             stage_summary,
         )
+
+        process_timings = get_process_timings()
+        if process_timings:
+            total_proc_time = sum(process_timings.values())
+            def fmt_inner(name: str, duration: float) -> str:
+                pct = (duration / total_proc_time * 100.0) if total_proc_time > 0 else 0.0
+                return f"{name}={duration:.4f}s ({pct:.1f}%)"
+
+            inner_summary = ", ".join(
+                fmt_inner(name, duration)
+                for name, duration in sorted(
+                    process_timings.items(), key=lambda kv: kv[1], reverse=True
+                )
+            )
+            logger.info(
+                "BoundUploadTable timing breakdown: %s",
+                inner_summary,
+            )
+
+        if use_bulk_create:
+            logger.info(
+                "bulk_create stats: candidates=%d, eligible=%d, deferred=%d, inserted=%d",
+                bulk_candidates,
+                bulk_eligible,
+                bulk_deferred,
+                0 if not pending_inserts else total_inserted,
+            )
 
         if no_commit:
             raise Rollback("no_commit option")
