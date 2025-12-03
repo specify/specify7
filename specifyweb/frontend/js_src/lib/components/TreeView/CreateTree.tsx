@@ -8,6 +8,7 @@ import type { DeepPartial, RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { H2, Ul } from '../Atoms';
+import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import type {
@@ -24,7 +25,6 @@ import type { TreeInformation } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { defaultTreeDefs } from './defaults';
-import { Progress } from '../Atoms';
 
 type TaxonFileDefaultDefinition = {
   readonly discipline: string;
@@ -97,10 +97,10 @@ export function CreateTree<
       headers: { Accept: 'application/json' },
       body: {
         url: resourceUrl,
-        mappingUrl: mappingUrl,
+        mappingUrl,
         collection: connectedCollection,
-        disciplineName: disciplineName,
-        rowCount: rowCount
+        disciplineName,
+        rowCount
       },
     })
       .then(({ data, status }) => {
@@ -228,8 +228,8 @@ export function CreateTree<
                 onClose={() => {setIsTreeCreationStarted(false); setIsActive(0)}}
               >
                 {
-                  (treeCreationProgress !== undefined ? 
-                    (
+                  (treeCreationProgress === undefined ? 
+                    undefined : (
                       <>
                         {treeText.defaultTreeCreationProgress({
                           current: treeCreationProgress,
@@ -237,7 +237,7 @@ export function CreateTree<
                         })}
                         <Progress max={treeCreationProgressTotal} value={treeCreationProgress}/>
                       </>
-                    ) : undefined
+                    )
                   )
                 }
                 
