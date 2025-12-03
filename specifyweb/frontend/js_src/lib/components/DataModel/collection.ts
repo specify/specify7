@@ -107,7 +107,7 @@ function mapValue(
   if (key === 'orderBy') return (value as string).toString().toLowerCase();
   else if (key === 'domainFilter') {
     // GetScope() returns undefined for tables with only collectionmemberid.
-    const scopingField = tables[tableName]?.getScope();
+    const scopingField = tables[tableName].getScope();
     return value === true &&
       (tableName === 'Attachment' || typeof scopingField === 'object')
       ? 'true'
