@@ -10,6 +10,11 @@ import { testAppResources } from './testAppResources';
 
 requireContext();
 
+jest.mock('../../Permissions/helpers', () => ({
+  hasPermission: jest.fn(),
+  hasToolPermission: jest.fn(() => true),
+}));
+
 describe('AppResourcesAside (simple no conformation case)', () => {
   test('simple no conformation case', () => {
     const onOpen = jest.fn();

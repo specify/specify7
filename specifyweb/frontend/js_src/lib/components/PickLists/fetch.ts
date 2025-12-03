@@ -95,7 +95,8 @@ async function fetchPickListItems(
     pickList.get('readOnly') ? (pickList.get('sizeLimit') ?? 0) : 0
   );
 
-  if (type === PickListTypes.TABLE) items = await fetchFromTable(pickList);
+  if (type === PickListTypes.TABLE)
+    items = await fetchFromTable(pickList, limit);
   else if (type === PickListTypes.FIELDS)
     items = await fetchFromField(pickList, limit);
   else {
@@ -117,7 +118,8 @@ export const PickListSortType = {
 
 /** From the table picklist */
 async function fetchFromTable(
-  pickList: SpecifyResource<PickList>
+  pickList: SpecifyResource<PickList>,
+  limit: number
 ): Promise<RA<PickListItemSimple>> {
   const specifyTable = strictGetTable(pickList.get('tableName'));
   const tableName = specifyTable.name;
@@ -156,6 +158,7 @@ async function fetchFromTable(
     domainFilter: tableSupportsDomainFilter
       ? Boolean(scopeTablePicklist)
       : undefined,
+    limit,
   });
 
   return Promise.all(
