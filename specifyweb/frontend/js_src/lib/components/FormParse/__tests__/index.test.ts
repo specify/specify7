@@ -20,7 +20,7 @@ import {
   parseViewDefinition,
   resolveViewDefinition,
 } from '../index';
-import { spAppResourceView } from '../webOnlyViews';
+import { attachmentView } from '../webOnlyViews';
 
 const {
   views,
@@ -271,7 +271,7 @@ describe('fetchView', () => {
     await expect(fetchView(notFoundViewName)).resolves.toBeUndefined();
   });
 
-  const frontEndOnlyView = spAppResourceView;
+  const frontEndOnlyView = attachmentView;
   overrideAjax(
     formatUrl('/context/view.json', { name: frontEndOnlyView, quiet: '' }),
     viewDefinition,

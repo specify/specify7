@@ -73,31 +73,32 @@ export type CacheDefinitions = {
     readonly applyAll: boolean;
   };
   readonly tree: {
+    /** Collapsed ranks in a given tree */
+    readonly [key in `collapsedRanks${AnyTree['tableName']}`]: RA<number>;
+  } & {
+    /** Open nodes in a given tree */
+    readonly [key in `conformations${AnyTree['tableName']}`]: Conformations;
+  } & {
     readonly [key in `definition${AnyTree['tableName']}`]: number;
   } & {
     readonly [key in `focusPath${AnyTree['tableName']}`]: RA<number>;
-  } & {
-    readonly /** Collapsed ranks in a given tree */
-    [key in `collapsedRanks${AnyTree['tableName']}`]: RA<number>;
-  } & {
-    readonly /** Open nodes in a given tree */
-    [key in `conformations${AnyTree['tableName']}`]: Conformations;
   } & {
     readonly hideEmptyNodes: boolean;
     readonly isSplit: boolean;
     readonly isHorizontal: boolean;
   };
   readonly workBenchSortConfig: {
-    readonly /**
+    /**
      * WorkBench column sort setting in a given dataset
      * {Collection ID}_{Dataset ID}
      */
-    [key in `${number}_${number}`]: RA<
+    readonly [key in `${number}_${number}`]: RA<
       Pick<hot.plugins.ColumnSorting.Config, 'column' | 'sortOrder'> & {
         readonly physicalCol: number;
       }
     >;
   };
+  readonly workBenchAttachmentViewer: Readonly<Record<string, RA<number>>>;
   readonly sortConfig: {
     readonly [KEY in keyof SortConfigs]: SortConfig<SortConfigs[KEY]>;
   };
@@ -151,7 +152,7 @@ export type CacheDefinitions = {
     readonly filters: AppResourceFilters;
     readonly showHiddenTables: boolean;
   };
-  readonly pageSizes: RR<Paginators, typeof pageSizes[number]>;
+  readonly pageSizes: RR<Paginators, (typeof pageSizes)[number]>;
   readonly formEditor: {
     readonly layout: 'horizontal' | 'vertical';
   };
@@ -164,6 +165,9 @@ export type CacheDefinitions = {
     readonly statsValue: RA<
       RA<RA<{ readonly itemName: string; readonly value: number | string }>>
     >;
+  };
+  readonly batchEdit: {
+    readonly warningBatchEditDialog: boolean;
   };
 };
 
@@ -213,6 +217,7 @@ export type SortConfigs = {
     | 'name'
     | 'timestampCreated'
     | 'timestampModified';
+  readonly listOfBatchEditDataSets: 'dateCreated' | 'dateUploaded' | 'name';
 };
 
 // Some circular types can't be expressed without interfaces

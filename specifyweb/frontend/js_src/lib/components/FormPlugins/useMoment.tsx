@@ -15,7 +15,7 @@ export function useMoment(
   defaultValue: Date | undefined
 ): readonly [
   ReturnType<typeof dayjs> | undefined,
-  (value: ReturnType<typeof dayjs> | undefined) => void
+  (value: ReturnType<typeof dayjs> | undefined) => void,
 ] {
   const syncMoment = React.useCallback(
     (moment: ReturnType<typeof dayjs> | undefined) => {
@@ -23,7 +23,7 @@ export function useMoment(
       const newMoment =
         value === undefined
           ? undefined
-          : dayjs(value, databaseDateFormat, true) ?? undefined;
+          : (dayjs(value, databaseDateFormat, true) ?? undefined);
 
       // Only change the object instance if it is different
       return moment === undefined ||

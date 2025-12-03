@@ -1,12 +1,15 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
+import { attachmentsText } from '../../localization/attachments';
 import { wbPlanText } from '../../localization/wbPlan';
-import { f } from '../../utils/functools';
 import { icons } from '../Atoms/Icons';
-import { getTable } from '../DataModel/tables';
+import { ReadOnlyContext } from '../Core/Contexts';
+import { getIcon } from '../InitialContext/icons';
+import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { getAttachmentsColumn } from '../WorkBench/attachmentHelpers';
 import type { WbMapping } from './mapping';
 
 const comments = { displayDelay: 100 };
@@ -27,6 +30,7 @@ export function useHotProps({
   readonly mappings: WbMapping | undefined;
   readonly physicalColToMappingCol: (physicalCol: number) => number | undefined;
 }) {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const [autoWrapCol] = userPreferences.use(
     'workBench',
     'editor',
@@ -47,9 +51,12 @@ export function useHotProps({
         (_, physicalCol) => ({
           // Get data from nth column for nth column
           data: physicalCol,
+          readOnly:
+            isReadOnly ||
+            [-1, undefined].includes(physicalColToMappingCol(physicalCol)),
         })
       ),
-    [dataset.columns.length]
+    [dataset.columns.length, isReadOnly]
   );
 
   const [enterMovesPref] = userPreferences.use(
@@ -60,25 +67,29 @@ export function useHotProps({
   const enterMoves =
     enterMovesPref === 'col' ? { col: 1, row: 0 } : { col: 0, row: 1 };
 
+  const attachmentsColumnIndex = getAttachmentsColumn(dataset);
+
   const colHeaders = React.useCallback(
     (physicalCol: number) => {
-      const tableIcon = mappings?.mappedHeaders?.[physicalCol];
-      const isMapped = tableIcon !== undefined;
+      const isAttachmentsColumn = physicalCol === attachmentsColumnIndex;
+      const columnName = isAttachmentsColumn
+        ? attachmentsText.attachments()
+        : dataset.columns[physicalCol];
+      const tableIconUrl = isAttachmentsColumn
+        ? getIcon('Attachment')
+        : mappings?.mappedHeaders?.[physicalCol];
+      const isMapped = tableIconUrl !== undefined;
       const mappingCol = physicalColToMappingCol(physicalCol);
       const tableName =
         (typeof mappingCol === 'number'
           ? mappings?.tableNames[mappingCol]
-          : undefined) ?? tableIcon?.split('/').slice(-1)?.[0]?.split('.')?.[0];
-      const tableLabel = isMapped
-        ? f.maybe(tableName, getTable)?.label ?? tableName ?? ''
-        : '';
-      // REFACTOR: use new table icons
+          : undefined) ?? tableIconUrl?.split('/').at(-1)?.split('.')[0];
+
       return ReactDOMServer.renderToString(
         <ColumnHeader
-          columnName={dataset.columns[physicalCol]}
+          columnName={columnName}
           isMapped={isMapped}
-          tableIcon={tableIcon}
-          tableLabel={tableLabel}
+          tableName={tableName}
         />
       );
     },
@@ -116,6 +127,7 @@ export function useHotProps({
   const tabMoves =
     tabMovesPref === 'col' ? { col: 1, row: 0 } : { col: 0, row: 1 };
 
+  const adjustedMinRows = dataset.isupdate ? 0 : minSpareRows;
   return {
     autoWrapCol,
     autoWrapRow,
@@ -125,7 +137,7 @@ export function useHotProps({
     enterBeginsEditing,
     hiddenRows,
     hiddenColumns,
-    minSpareRows,
+    minSpareRows: adjustedMinRows,
     tabMoves,
     comments,
   };
@@ -133,23 +145,17 @@ export function useHotProps({
 
 function ColumnHeader({
   isMapped,
-  tableLabel,
-  tableIcon,
   columnName,
+  tableName,
 }: {
   readonly isMapped: boolean;
-  readonly tableLabel: string;
-  readonly tableIcon: string | undefined;
   readonly columnName: string;
+  readonly tableName: string | undefined;
 }): JSX.Element {
   return (
     <div className="flex items-center gap-1 pl-4">
-      {isMapped ? (
-        <img
-          alt={tableLabel}
-          className="w-table-icon h-table-icon"
-          src={tableIcon}
-        />
+      {isMapped && tableName !== undefined ? (
+        <TableIcon label={false} name={tableName} />
       ) : (
         <span
           aria-label={wbPlanText.unmappedColumn()}

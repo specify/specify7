@@ -110,7 +110,7 @@ export function UserRoles({
       </legend>
       <Ul className="flex flex-col gap-1 pl-2">
         {typeof collectionRoles === 'object' && typeof userRoles === 'object'
-          ? collectionRoles[collectionId]?.map((role) => (
+          ? (collectionRoles[collectionId]?.map((role) => (
               <li className="flex items-center gap-2" key={role.id}>
                 <Label.Inline>
                   <Input.Checkbox
@@ -161,7 +161,7 @@ export function UserRoles({
             )) ??
             userRoles[collectionId]!.map(({ roleId, roleName }) => (
               <li key={roleId}>{roleName}</li>
-            ))
+            )))
           : commonText.loading()}
       </Ul>
     </fieldset>

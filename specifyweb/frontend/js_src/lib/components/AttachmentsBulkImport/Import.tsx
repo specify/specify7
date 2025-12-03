@@ -75,7 +75,7 @@ export function AttachmentImportById(): JSX.Element | null {
   );
 }
 
-const fetchAndReconstructDataset = async (id: number) =>
+export const fetchAndReconstructAttachmentDataset = async (id: number) =>
   ajax<FetchedDataSet>(`/attachment_gw/dataset/${id}/`, {
     headers: { Accept: 'application/json' },
     method: 'GET',
@@ -99,7 +99,7 @@ function AttachmentImportByIdSafe({
   readonly id: number;
 }): JSX.Element | null {
   const [attachmentDataSet] = usePromise<AttachmentDataSet | undefined>(
-    React.useMemo(async () => fetchAndReconstructDataset(id), [id]),
+    React.useMemo(async () => fetchAndReconstructAttachmentDataset(id), [id]),
     true
   );
   return attachmentDataSet === undefined ? null : (

@@ -115,13 +115,13 @@ function getFields(query: SerializedResource<SpQuery>): RA<QueryField> {
           id: fields.length,
           mappingPath: ['collectingEvent', 'locality'],
           sortType: undefined,
-          dataObjFormatter: undefined,
           isDisplay: true,
           filters: [
             {
               type: 'any',
               startValue: '',
               isNot: false,
+              isStrict: false,
             },
           ],
         },
@@ -222,12 +222,18 @@ export function useExtendedMap(
     gbif?.description,
     iDigBio?.description,
   ]);
-  return items.length === 0 ? undefined : (
+  const hasAnyDescription = Boolean(gbif?.description || iDigBio?.description);
+  return hasAnyDescription ? (
     <details>
       <summary>{developmentText.details()}</summary>
-      {items}
+      {items.map((item, index) => (
+        <React.Fragment key={index}>
+          {item}
+          {index < items.length - 1 && ' '}
+        </React.Fragment>
+      ))}
     </details>
-  );
+  ) : undefined;
 }
 
 export const exportsForTests = {

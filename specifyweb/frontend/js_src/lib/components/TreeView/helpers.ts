@@ -26,7 +26,7 @@ export const fetchRows = async (fetchUrl: string) =>
         string | null,
         string | null,
         number,
-        string | null
+        string | null,
       ]
     >
   >(fetchUrl, {
@@ -151,8 +151,7 @@ export const scrollIntoView = throttle(function scrollIntoView(
   } catch {
     element.scrollIntoView(mode === 'start');
   }
-},
-throttleRate);
+}, throttleRate);
 
 export type KeyAction =
   | 'child'

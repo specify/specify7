@@ -42,7 +42,7 @@ export function useBooleanState(
     state: boolean,
     enable: () => void,
     disable: () => void,
-    toggle: () => void
+    toggle: () => void,
   ]
 > {
   const [state, setState] = useTriggerState(value);

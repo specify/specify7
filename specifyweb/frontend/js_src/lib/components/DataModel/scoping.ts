@@ -1,6 +1,6 @@
 import type { RA } from '../../utils/types';
+import { defined } from '../../utils/types';
 import { takeBetween } from '../../utils/utils';
-import { raise } from '../Errors/Crash';
 import { getCollectionPref } from '../InitialContext/remotePrefs';
 import { getTablePermissions } from '../Permissions';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -13,8 +13,7 @@ import { schema } from './schema';
 import type { Relationship } from './specifyField';
 import type { SpecifyTable } from './specifyTable';
 import { strictGetTable, tables } from './tables';
-import type { CollectionObject } from './types';
-import type { Tables } from './types';
+import type { CollectionObject, Tables } from './types';
 
 /**
  * Some tasks to do after a new resource is created
@@ -40,7 +39,9 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
 
   if (
     getCollectionPref('CO_CREATE_COA', schema.domainLevelIds.collection) &&
-    hasTablePermission('CollectionObjectAttribute', 'create')
+    hasTablePermission('CollectionObjectAttribute', 'create') &&
+    resource.createdBy !== 'clone' &&
+    collectionObject.get('collectionObjectAttribute') == null
   ) {
     const attribute = new tables.CollectionObjectAttribute.Resource();
     attribute.placeInSameHierarchy(collectionObject);
@@ -51,31 +52,43 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
     getCollectionPref('CO_CREATE_PREP', schema.domainLevelIds.collection) &&
     hasTablePermission('Preparation', 'create') &&
     resource.createdBy !== 'clone'
-  )
-    collectionObject
-      .rgetCollection('preparations')
-      .then((preparations) => {
-        if (preparations.models.length === 0)
-          preparations.add(new tables.Preparation.Resource());
-      })
-      .catch(raise);
+  ) {
+    if (collectionObject.getDependentResource('preparations') === undefined)
+      /*
+       * This is needed to initialize the DependentCollection on the resource
+       * See pulls #6581 and #7073
+       * REFACTOR: generalize this and move it to resourceApi.ts
+       */
+      collectionObject.set('preparations', []);
+    const preps = defined(
+      collectionObject.getDependentResource('preparations')
+    );
+    if (preps.length === 0) preps?.add(new tables.Preparation.Resource());
+  }
 
   if (
     getCollectionPref('CO_CREATE_DET', schema.domainLevelIds.collection) &&
     hasTablePermission('Determination', 'create') &&
     resource.createdBy !== 'clone'
-  )
-    collectionObject
-      .rgetCollection('determinations')
-      .then((determinations) => {
-        if (determinations.models.length === 0)
-          determinations.add(new tables.Determination.Resource());
-      })
-      .catch(raise);
+  ) {
+    if (collectionObject.getDependentResource('determinations') === undefined)
+      /*
+       * This is needed to initialize the DependentCollection on the resource
+       * See pulls #6581 and #7073
+       * REFACTOR: generalize this and move it to resourceApi.ts
+       */
+      collectionObject.set('determinations', []);
+
+    const determinations = defined(
+      collectionObject.getDependentResource('determinations')
+    );
+    if (determinations.length === 0)
+      determinations.add(new tables.Determination.Resource());
+  }
 }
 
 export function getDomainResource<
-  LEVEL extends keyof typeof schema.domainLevelIds
+  LEVEL extends keyof typeof schema.domainLevelIds,
 >(level: LEVEL): SpecifyResource<Tables[Capitalize<LEVEL>]> | undefined {
   const id = schema.domainLevelIds?.[level];
   if (id === undefined) {

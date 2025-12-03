@@ -89,6 +89,63 @@ export const collectionPreferenceDefinitions = {
       },
     },
   },
+  catalogNumberInheritance: {
+    title: queryText.catalogNumberInheritance(),
+    subCategories: {
+      behavior: {
+        title: preferencesText.behavior(),
+        items: {
+          inheritance: definePref<boolean>({
+            title: preferencesText.inheritanceCatNumberPref(),
+            requiresReload: false,
+            visible: false,
+            defaultValue: false,
+            renderer: f.never,
+            container: 'label',
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
+  catalogNumberParentInheritance: {
+    title: queryText.catalogNumberParentCOInheritance(),
+    subCategories: {
+      behavior: {
+        title: preferencesText.behavior(),
+        items: {
+          inheritance: definePref<boolean>({
+            title: preferencesText.inheritanceCatNumberParentCOPref(),
+            requiresReload: false,
+            visible: false,
+            defaultValue: false,
+            renderer: f.never,
+            container: 'label',
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
+  uniqueCatalogNumberAccrossComponentAndCO: {
+    title: queryText.uniqueCatalogNumberAcrossComponentAndCo(),
+    subCategories: {
+      behavior: {
+        title: preferencesText.behavior(),
+        items: {
+          uniqueness: definePref<boolean>({
+            title: preferencesText.uniqueCatNumberAcrossCompAndCo(),
+            requiresReload: false,
+            visible: false,
+            defaultValue: false,
+            renderer: f.never,
+            container: 'label',
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
 } as const;
 
 ensure<GenericPreferences>()(collectionPreferenceDefinitions);

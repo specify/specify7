@@ -39,8 +39,8 @@ const getScrollParent = (node: Element | undefined): Element =>
   node === undefined
     ? document.body
     : node.scrollHeight > node.clientHeight
-    ? node
-    : getScrollParent(node.parentElement ?? undefined);
+      ? node
+      : getScrollParent(node.parentElement ?? undefined);
 
 const optionClassName = (isActive: boolean, isSelected: boolean) => `
   p-0.5 active:bg-brand-100 dark:active:bg-brand-500
@@ -130,35 +130,35 @@ export function AutoComplete<T>({
       pendingValue.length === 0
         ? newResults
         : shouldFilterItems
-        ? newResults.filter(({ label, searchValue }) => {
-            let searchString =
-              typeof label === 'string' ? label : searchValue ?? '';
-            let searchQuery = pendingValue;
+          ? newResults.filter(({ label, searchValue }) => {
+              let searchString =
+                typeof label === 'string' ? label : (searchValue ?? '');
+              let searchQuery = pendingValue;
 
-            if (
-              searchAlgorithm === 'contains' ||
-              searchAlgorithm === 'startsWith'
-            ) {
-              searchString = searchString.toLowerCase();
-              searchQuery = pendingValue.toLowerCase();
-            }
+              if (
+                searchAlgorithm === 'contains' ||
+                searchAlgorithm === 'startsWith'
+              ) {
+                searchString = searchString.toLowerCase();
+                searchQuery = pendingValue.toLowerCase();
+              }
 
-            if (
-              searchAlgorithm === 'contains' ||
-              searchAlgorithm === 'containsCaseSensitive'
-            ) {
-              if (searchString.includes(searchQuery)) return true;
-            } else if (searchString.startsWith(searchQuery)) return true;
+              if (
+                searchAlgorithm === 'contains' ||
+                searchAlgorithm === 'containsCaseSensitive'
+              ) {
+                if (searchString.includes(searchQuery)) return true;
+              } else if (searchString.startsWith(searchQuery)) return true;
 
-            return (
-              typeof searchValue === 'string' &&
-              compareStrings(
-                searchValue.slice(0, pendingValue.length),
-                pendingValue
-              ) === 0
-            );
-          })
-        : newResults,
+              return (
+                typeof searchValue === 'string' &&
+                compareStrings(
+                  searchValue.slice(0, pendingValue.length),
+                  pendingValue
+                ) === 0
+              );
+            })
+          : newResults,
     [shouldFilterItems, searchAlgorithm]
   );
 
@@ -200,8 +200,7 @@ export function AutoComplete<T>({
         .then((items) => updateItems(items, value))
         .catch(softFail)
         .finally(handleLoaded);
-    },
-    delay),
+    }, delay),
     []
   );
 
@@ -237,7 +236,7 @@ export function AutoComplete<T>({
    * thus the filtered list of items has only one item.
    */
   const ignoreFilter = currentValue === pendingValue;
-  const itemSource = ignoreFilter ? results ?? [] : filteredItems;
+  const itemSource = ignoreFilter ? (results ?? []) : filteredItems;
 
   const pendingItem = results?.find(
     ({ label, searchValue }) => (searchValue ?? label) === pendingValue
@@ -252,7 +251,7 @@ export function AutoComplete<T>({
   function handleChanged(item: AutoCompleteItem<T>): void {
     handleChange(item);
     const value =
-      typeof item.label === 'string' ? item.label : item.searchValue ?? '';
+      typeof item.label === 'string' ? item.label : (item.searchValue ?? '');
     setPendingValue(value);
     if (typeof pendingValueRef === 'object') pendingValueRef.current = value;
   }
@@ -403,8 +402,8 @@ export function AutoComplete<T>({
           typeof item === 'string'
             ? item
             : typeof item?.label === 'string'
-            ? item.label
-            : item?.searchValue ?? ''
+              ? item.label
+              : (item?.searchValue ?? '')
         }
         ref={forwardChildRef}
         onBlur={withHandleBlur(inputProps?.onBlur).onBlur}

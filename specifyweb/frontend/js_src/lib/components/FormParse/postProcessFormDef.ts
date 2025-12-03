@@ -347,11 +347,11 @@ const addMissingLabel = (
     // Don't add aria-label to checkboxes as they would already have a label
     cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'
       ? undefined
-      : cell.ariaLabel ??
+      : (cell.ariaLabel ??
         (cell.type === 'Field' || cell.type === 'SubView'
           ? table?.getField(cell.fieldNames?.join(backboneFieldSeparator) ?? '')
               ?.label
-          : undefined),
+          : undefined)),
 });
 
 export const exportsForTests = {

@@ -62,7 +62,7 @@ export class WbUtils {
           readonly visualRow: number;
           readonly visualCol: number;
         },
-        number
+        number,
       ]
     | readonly [undefined, number] {
     const cellMetaObject = this.workbench.cells.getCellMetaObject();
@@ -100,8 +100,8 @@ export class WbUtils {
           ? (visualCol: number) => visualCol >= currentTransposedCol
           : (visualCol: number) => visualCol > currentTransposedCol
         : matchCurrentCell
-        ? (visualCol: number) => visualCol <= currentTransposedCol
-        : (visualCol: number) => visualCol < currentTransposedCol;
+          ? (visualCol: number) => visualCol <= currentTransposedCol
+          : (visualCol: number) => visualCol < currentTransposedCol;
 
     let matchedCell:
       | {
@@ -116,37 +116,39 @@ export class WbUtils {
         ? f.id
         : <T>(array: RA<T>): RA<T> => Array.from(array).reverse();
 
-    orderIt(Object.entries(cellMetaObject)).find(([visualRowString, metaRow]) =>
-      typeof metaRow === 'object'
-        ? orderIt(Object.entries(metaRow)).find(
-            ([visualColString, metaArray]) => {
-              /*
-               * This is 10 times faster then Number.parseInt because of a slow
-               * Babel polyfill
-               */
-              const visualRow = f.fastParseInt(visualRowString);
-              const visualCol = f.fastParseInt(visualColString);
+    orderIt(Object.entries(cellMetaObject)).find(
+      ([visualRowString, metaRow]) =>
+        typeof metaRow === 'object'
+          ? orderIt(Object.entries(metaRow)).find(
+              ([visualColString, metaArray]) => {
+                /*
+                 * This is 10 times faster then Number.parseInt because of a slow
+                 * Babel polyfill
+                 */
+                const visualRow = f.fastParseInt(visualRowString);
+                const visualCol = f.fastParseInt(visualColString);
 
-              const cellTypeMatches = this.workbench.cells?.cellIsType(
-                metaArray,
-                type
-              );
-              cellIsTypeCount += cellTypeMatches ? 1 : 0;
+                const cellTypeMatches = this.workbench.cells?.cellIsType(
+                  metaArray,
+                  type
+                );
+                cellIsTypeCount += cellTypeMatches ? 1 : 0;
 
-              const isWithinBounds =
-                compareRows(visualRow) &&
-                (visualRow !== currentTransposedRow || compareCols(visualCol));
+                const isWithinBounds =
+                  compareRows(visualRow) &&
+                  (visualRow !== currentTransposedRow ||
+                    compareCols(visualCol));
 
-              const matches = cellTypeMatches && isWithinBounds;
-              if (matches)
-                matchedCell = {
-                  visualRow: resolveIndex(visualRow, visualCol, true),
-                  visualCol: resolveIndex(visualRow, visualCol, false),
-                };
-              return matches;
-            }
-          )
-        : undefined
+                const matches = cellTypeMatches && isWithinBounds;
+                if (matches)
+                  matchedCell = {
+                    visualRow: resolveIndex(visualRow, visualCol, true),
+                    visualCol: resolveIndex(visualRow, visualCol, false),
+                  };
+                return matches;
+              }
+            )
+          : undefined
     );
 
     let cellRelativePosition;
@@ -400,11 +402,12 @@ export class WbUtils {
               this.workbench.hot!.getDataAtCell(visualRow, visualCol) || '';
             // Don't replace cells with default values
             if (cellValue === '') return;
-            modifications.push([
-              visualRow,
-              visualCol,
-              getNewCellValue(cellValue),
-            ]);
+            if (!this.workbench.hot?.getCellMeta(visualRow, visualCol).readOnly)
+              modifications.push([
+                visualRow,
+                visualCol,
+                getNewCellValue(cellValue),
+              ]);
           })
       );
       this.workbench.hot.setDataAtCell(modifications);
@@ -434,11 +437,13 @@ export class WbUtils {
 
       if (!Array.isArray(nextCell)) return;
 
+      if (this.workbench.hot?.getCellMeta(nextCell[0], nextCell[1]).readOnly)
+        return;
+
       this.workbench.hot.setDataAtCell(
         ...nextCell,
         getNewCellValue(this.workbench.hot.getDataAtCell(...nextCell))
       );
-
       nextCellOfType();
     }
   }

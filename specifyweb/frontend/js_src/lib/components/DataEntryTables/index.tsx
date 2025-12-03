@@ -14,8 +14,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
-import { EditFormTables } from './Edit';
-import { useDataEntryTables } from './fetchTables';
+import { EditFormTables, useFormTables } from './Edit';
 
 export function FormsDialogOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -32,7 +31,7 @@ export function FormsDialog({
   readonly onSelected?: (table: SpecifyTable) => void;
   readonly onClose: () => void;
 }): JSX.Element | null {
-  const tables = useDataEntryTables('form');
+  const tables = useFormTables('form')[0];
   const [isEditing, handleEditing] = useBooleanState();
 
   return isEditing ? (

@@ -28,11 +28,9 @@ import {
   serializeResource,
 } from '../DataModel/serializers';
 import { strictGetTable, tables } from '../DataModel/tables';
-import type { SpQuery, Tables } from '../DataModel/types';
-import type { CollectionObject } from '../DataModel/types';
+import type { CollectionObject, SpQuery, Tables } from '../DataModel/types';
 import type { UiFormatter } from '../FieldFormatters';
-import { formatterTypeMapper } from '../FieldFormatters';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { queryFieldFilterSpecs } from '../QueryBuilder/FieldFilterSpec';
 import { makeQueryField } from '../QueryBuilder/fromTree';
 import type { QueryFieldWithPath } from '../Statistics/types';
 import type { AttachmentUploadSpec } from './Import';
@@ -53,14 +51,14 @@ const resolveAttachmentMatch = (
   matchedId.length === 0
     ? { type: 'invalid', reason: 'noMatch' }
     : matchedId.length > 1 && disambiguated === undefined
-    ? {
-        type: 'invalid',
-        reason: 'multipleMatches',
-      }
-    : {
-        type: 'matched',
-        id: disambiguated ?? matchedId[0],
-      };
+      ? {
+          type: 'invalid',
+          reason: 'multipleMatches',
+        }
+      : {
+          type: 'matched',
+          id: disambiguated ?? matchedId[0],
+        };
 
 export function resolveAttachmentRecord(
   matchedId: RA<number> | undefined,
@@ -98,14 +96,14 @@ function generateInQueryResource(
         ? inQueryField.field
         : {
             isDisplay: true,
-            operStart: queryFieldFilters.in.id,
+            operStart: queryFieldFilterSpecs.in.id,
             // Just unique values are necessary. Also decreases the number of values to send to backend
             startValue: f.unique(filterArray(inQueryField.lookUp)).join(','),
             ...inQueryField.field,
           };
     const { path, ...field } = rawField;
     return serializeResource(
-      makeQueryField(baseTable, rawField.path, { ...field, position: index })
+      makeQueryField(baseTable, path, { ...field, position: index })
     );
   });
 
@@ -232,24 +230,15 @@ export function resolveFileNames(
   // BUG: Won't catch if formatters begin or end with a space
   const splitName = stripFileExtension(fileName).trim();
   let nameToParse = splitName;
-  if (
-    formatter !== undefined &&
-    formatter.fields.every(
-      (field) => !(field instanceof formatterTypeMapper.regex)
-    )
-  ) {
-    const formattedLength = formatter.fields.reduce(
-      (length, field) => length + field.size,
-      0
-    );
-    nameToParse = fileName.trim().slice(0, formattedLength);
+  if (formatter?.parts.every((field) => field.type !== 'regex') === true) {
+    nameToParse = fileName.trim().slice(0, formatter.size);
   }
   let formatted = nameToParse === '' ? undefined : getFormatted(nameToParse);
-  const numericFields = formatter?.fields.filter(
-    (field) => field instanceof formatterTypeMapper.numeric
+  const numericFields = formatter?.parts.filter(
+    (field) => field.type === 'numeric'
   );
   if (
-    formatter?.fields?.length === 1 &&
+    formatter?.parts?.length === 1 &&
     numericFields?.length === 1 &&
     formatted === undefined &&
     splitName !== ''
@@ -385,7 +374,7 @@ export async function reconstructUploadingAttachmentSpec(
         field: {
           path: attachmentTableId,
           isDisplay: true,
-          id: queryFieldFilters.any.id,
+          id: queryFieldFilterSpecs.any.id,
         },
       },
       {
@@ -422,17 +411,17 @@ export const inferUploadedAttachments = (
         typeof foundInQueryResult === 'object'
           ? ({ type: 'success', successType: 'uploaded' } as const)
           : uploadable.status.type === 'matched'
-          ? //
-            /*
-             *BUG: Handle case where attachment location is set to null or resource no longer exists better.
-             * Currently, it will incorrectly inform it to be interrupted. That is fine since trying to upload
-             * the dataset will automatically correctly regenerate tokens / show match error
-             */
-            ({
-              type: 'cancelled',
-              reason: 'uploadInterruption',
-            } as const)
-          : uploadable.status,
+            ? //
+              /*
+               *BUG: Handle case where attachment location is set to null or resource no longer exists better.
+               * Currently, it will incorrectly inform it to be interrupted. That is fine since trying to upload
+               * the dataset will automatically correctly regenerate tokens / show match error
+               */
+              ({
+                type: 'cancelled',
+                reason: 'uploadInterruption',
+              } as const)
+            : uploadable.status,
     };
   });
 
@@ -454,11 +443,11 @@ export const inferDeletedAttachments = (
         foundInQueryResult === undefined
           ? ({ type: 'success', successType: 'deleted' } as const)
           : deletable.status.type === 'matched'
-          ? ({
-              type: 'cancelled',
-              reason: 'rollbackInterruption',
-            } as const)
-          : deletable.status,
+            ? ({
+                type: 'cancelled',
+                reason: 'rollbackInterruption',
+              } as const)
+            : deletable.status,
     };
   });
 

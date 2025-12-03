@@ -78,12 +78,12 @@ export function WebLinkField({
               part.type === 'Field'
                 ? fetchPathAsString(resource, part.field)
                 : part.type === 'ThisField'
-                ? typeof field === 'object'
-                  ? fetchPathAsString(resource, [field])
-                  : undefined
-                : part.type === 'FormattedResource'
-                ? format(resource, part.formatter, false)
-                : part.value
+                  ? typeof field === 'object'
+                    ? fetchPathAsString(resource, [field])
+                    : undefined
+                  : part.type === 'FormattedResource'
+                    ? format(resource, part.formatter, false)
+                    : part.value
             )
           ).then((values) => values.map((value) => value ?? ''));
 
@@ -101,8 +101,8 @@ export function WebLinkField({
         typeof definition === 'object'
           ? definition.description
           : typeof webLink === 'object'
-          ? webLink.name
-          : webLink
+            ? webLink.name
+            : webLink
       }
       className="max-h-[theme(spacing.5)] max-w-[theme(spacing.10)]"
       src={getIcon(icon) ?? unknownIcon}

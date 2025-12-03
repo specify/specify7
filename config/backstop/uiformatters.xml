@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<formats>
+
+  <format system="true" name="AccessionNumber" class="edu.ku.brc.specify.datamodel.Accession" fieldname="accessionNumber" default="true">
+    <autonumber>edu.ku.brc.specify.dbsupport.AccessionAutoNumberAlphaNum</autonumber>
+    <field type="year" size="4" value="YEAR" byyear="true"/>
+    <field type="separator" size="1" value="-"/>
+    <field type="alphanumeric" size="2" value="AA"/>
+    <field type="separator" size="1" value="-"/>
+    <field type="numeric" size="3" inc="true"/>
+  </format>
+  
+  <format system="true" name="AccessionStringFormatter" class="edu.ku.brc.specify.datamodel.Accession" fieldname="accessionNumber" default="true">
+    <field type="alphanumeric" size="10" value="AAAAAAAAAA"/>
+  </format>
+  
+  <format system="true" name="DeaccessionNumber" class="edu.ku.brc.specify.datamodel.Deaccession" fieldname="deaccessionNumber" default="true">
+    <field type="year" size="4" value="YEAR" byyear="true"/>
+    <field type="separator" size="1" value="-"/>
+    <field type="alphanumeric" size="2" value="AA"/>
+    <field type="separator" size="1" value="-"/>
+    <field type="numeric" size="3" inc="false"/>
+  </format>
+  
+  <format system="true" name="AccessionNumberByYear" class="edu.ku.brc.specify.datamodel.Accession" fieldname="accessionNumber" default="true">
+    <autonumber>edu.ku.brc.af.core.db.AutoNumberGeneric</autonumber>
+    <field type="year" size="4" value="YEAR" byyear="true"/>
+    <field type="separator" size="1" value="-"/>
+    <field type="alphanumeric" size="2" value="AA"/>
+    <field type="separator" size="1" value="-"/>
+    <field type="alphanumeric" size="3" value="AAA"/>
+  </format>
+
+  <format system="false" name="CatalogNumber" class="edu.ku.brc.specify.datamodel.CollectionObject" fieldname="catalogNumber" default="true">
+    <autonumber>edu.ku.brc.specify.dbsupport.CollectionAutoNumber</autonumber>
+    <field type="year" size="4" value="YEAR"/>
+    <field type="separator" size="1" value="-"/>
+    <field type="numeric" size="6" inc="true"/>
+  </format>
+
+  <format system="false" name="CatalogNumberAlphaNumByYear" class="edu.ku.brc.specify.datamodel.CollectionObject" fieldname="catalogNumber">
+    <autonumber>edu.ku.brc.specify.dbsupport.CollectionAutoNumber</autonumber>
+    <field type="year" size="4" value="YEAR" byyear="true"/>
+    <field type="separator" size="1" value="-"/>
+    <field type="numeric" size="6" inc="true"/>
+  </format>
+
+  <format system="true" name="CatalogNumberNumeric" class="edu.ku.brc.specify.datamodel.CollectionObject" fieldname="catalogNumber" default="false">
+    <autonumber>edu.ku.brc.specify.dbsupport.CollectionAutoNumber</autonumber>
+    <external>edu.ku.brc.specify.ui.CatalogNumberUIFieldFormatter</external>
+  </format>
+
+  <format system="true" name="CatalogNumberString" class="edu.ku.brc.specify.datamodel.CollectionObject" fieldname="catalogNumber" default="false">
+    <external>edu.ku.brc.specify.ui.CatalogNumberStringUIFieldFormatter</external>
+  </format>
+
+  <format system="true" name="SearchDate" class="java.util.Date" type="date" partialdate="Full">
+    <field type="year" size="4" value="YYYY"/>
+    <field type="separator" size="1" value="-"/>
+    <field type="numeric" size="2" value="MM"/>
+    <field type="separator" size="1" value="-"/>
+    <field type="numeric" size="2" value="DD"/>
+  </format>
+
+  <format system="true" name="GiftNumber" class="edu.ku.brc.specify.datamodel.Gift" fieldname="giftNumber" default="true">
+    <autonumber>edu.ku.brc.af.core.db.AutoNumberGeneric</autonumber>
+    <field type="year" size="4" value="YEAR" byyear="true"/>
+    <field type="separator" size="1" value="-"/>
+    <field type="numeric" size="3" inc="true"/>
+  </format>
+
+  <format system="true" name="InfoRequestNumber" class="edu.ku.brc.specify.datamodel.InfoRequest" fieldname="infoReqNumber" default="true">
+    <autonumber>edu.ku.brc.af.core.db.AutoNumberGeneric</autonumber>
+    <field type="year" size="4" value="YEAR" byyear="true"/>
+    <field type="separator" size="1" value="-"/>
+    <field type="numeric" size="3" inc="true"/>
+  </format>
+
+  <format system="true" name="LoanNumber" class="edu.ku.brc.specify.datamodel.Loan" fieldname="loanNumber" default="true">
+    <autonumber>edu.ku.brc.af.core.db.AutoNumberGeneric</autonumber>
+    <field type="year" size="4" value="YEAR" byyear="true"/>
+    <field type="separator" size="1" value="-"/>
+    <field type="numeric" size="3" inc="true"/>
+  </format>
+  
+  <format system="true" name="GiftNumber" class="edu.ku.brc.specify.datamodel.Gift" fieldname="giftNumber" default="true">
+    <autonumber>edu.ku.brc.af.core.db.AutoNumberGeneric</autonumber>
+    <field type="year" size="4" value="YEAR" byyear="true"/>
+    <field type="separator" size="1" value="-"/>
+    <field type="numeric" size="3" inc="true"/>
+  </format>
+
+  <format system="true" name="NumericBigDecimal" class="java.math.BigDecimal" type="numeric">
+  </format>
+
+  <format system="true" name="NumericByte" class="java.lang.Byte" type="numeric">
+  </format>
+
+  <format system="true" name="NumericDouble" class="java.lang.Double" type="numeric">
+  </format>
+
+  <format system="true" name="NumericFloat" class="java.lang.Float" type="numeric">
+  </format>
+
+  <format system="true" name="NumericInteger" class="java.lang.Integer" type="numeric">
+  </format>
+
+  <format system="true" name="NumericLong" class="java.lang.Long" type="numeric">
+  </format>
+
+  <format system="true" name="NumericShort" class="java.lang.Short" type="numeric">
+  </format>
+  
+   <!-- ********** Dates ********** -->
+  <format system="true" name="Date" class="java.util.Date" type="date" partialdate="Full"/>
+  
+  <format system="true" name="PartialDate" class="java.util.Date" type="date" partialdate="Full">
+    <external>edu.ku.brc.specify.ui.PartialDateFormatter</external>
+  </format>
+  
+  <format system="true" name="PartialDateMonth" class="java.util.Date" type="date" partialdate="Month">
+    <external>edu.ku.brc.specify.ui.PartialDateFormatter</external>
+  </format>
+
+  <format system="true" name="PartialDateYear" class="java.util.Date" type="date" partialdate="Year">
+    <external>edu.ku.brc.specify.ui.PartialDateFormatter</external>
+  </format>
+
+  <format system="true" name="SearchDate" class="java.util.Date" type="date" partialdate="Search">
+  </format>
+
+
+</formats>

@@ -7,7 +7,11 @@ import { handleAjaxResponse } from './response';
 
 // FEATURE: make all back-end endpoints accept JSON
 
-export type MimeType = 'application/json' | 'text/plain' | 'text/xml';
+export type MimeType =
+  | 'application/json'
+  | 'application/octet-stream'
+  | 'text/plain'
+  | 'text/xml';
 
 export type AjaxResponseObject<RESPONSE_TYPE> = {
   /*
@@ -15,6 +19,7 @@ export type AjaxResponseObject<RESPONSE_TYPE> = {
    * Parser is selected based on the value of options.headers.Accept:
    *   - application/json - json
    *   - text/xml - xml
+   *   - application/octet-stream - binary data
    *   - else (i.e text/plain) - string
    */
   readonly data: RESPONSE_TYPE;
@@ -40,6 +45,11 @@ export type AjaxMethod =
   | 'POST'
   | 'PUT';
 
+/**
+ * These methods usually don't modify data, so if they fail it is not a big
+ * deal. If on the other than POST, PUT, DELETE, or PATCH request fails, it
+ * may cause data loss or data corruption
+ */
 const safeMethods: ReadonlySet<AjaxMethod> = new Set([
   'OPTIONS',
   'GET',
@@ -75,16 +85,13 @@ export type AjaxProps = Omit<RequestInit, 'body' | 'headers' | 'method'> & {
 /**
  * All front-end network requests should go through this utility.
  *
- * Wraps native fetch in useful helpers
- * It is intended as a replacement for jQuery's ajax
- *
- * @remarks
- * Automatically adds CSRF token to non GET requests
- * Casts response to correct typescript type
- * Parsers JSON and XML responses
- * Handlers errors (including permission errors)
+ * Wraps native fetch in useful helpers:
+ * - Automatically adds CSRF token to non GET requests
+ * - Casts response to correct typescript type
+ * - Parses JSON and XML responses
+ * - Handlers errors (including permission errors)
+ * - Helps with request mocking in tests
  */
-// "errorMode" is optional for "GET" requests
 export async function ajax<RESPONSE_TYPE = string>(
   url: string,
   /** These options are passed directly to fetch() */
@@ -114,6 +121,7 @@ export async function ajax<RESPONSE_TYPE = string>(
   }
   if (method === 'GET' && typeof pendingRequests[url] === 'object')
     return pendingRequests[url] as Promise<AjaxResponseObject<RESPONSE_TYPE>>;
+  const acceptBlobResponse = accept === 'application/octet-stream';
   pendingRequests[url] = fetch(url, {
     ...options,
     method,
@@ -135,16 +143,22 @@ export async function ajax<RESPONSE_TYPE = string>(
       ...(typeof accept === 'string' ? { Accept: accept } : {}),
     },
   })
-    .then(async (response) => Promise.all([response, response.text()]))
+    .then(async (response) =>
+      Promise.all([
+        response,
+        acceptBlobResponse && response.ok ? response.blob() : response.text(),
+      ])
+    )
     .then(
-      ([response, text]: readonly [Response, string]) => {
+      ([response, text]: readonly [Response, Blob | string]) => {
         extractAppResourceId(url, response);
         return handleAjaxResponse<RESPONSE_TYPE>({
           expectedErrors,
           accept,
           errorMode,
           response,
-          text,
+          text: typeof text === 'string' ? text : '',
+          data: typeof text === 'string' ? undefined : text,
         });
       },
       // This happens when request is aborted (i.e, page is restarting)

@@ -127,6 +127,11 @@ const fieldSpec = (table: SpecifyTable | undefined) =>
     formatter: syncers.xmlAttribute('formatter', 'skip'),
     fieldFormatter: syncers.xmlAttribute('uiFieldFormatter', 'skip'),
     field: pipe(syncers.xmlContent, syncers.field(table?.name)),
+    trimZeros: pipe(
+      syncers.xmlAttribute('trimZeros', 'skip'),
+      syncers.maybe(syncers.toBoolean),
+      syncers.default<boolean>(false)
+    ),
   });
 
 const aggregatorSpec = f.store(() =>
@@ -147,7 +152,7 @@ const aggregatorSpec = f.store(() =>
     ),
     separator: pipe(
       syncers.xmlAttribute('separator', 'empty', false),
-      syncers.default(localized('; '))
+      syncers.fallback(localized('; '))
     ),
     suffix: syncers.xmlAttribute('ending', 'empty', false),
     limit: pipe(

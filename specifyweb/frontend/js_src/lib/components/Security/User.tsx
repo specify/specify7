@@ -485,7 +485,7 @@ function UserView({
                  */
                 loading(
                   (hasPermission('/admin/user/agents', 'update')
-                    ? ajax(`/api/set_agents/${userResource.id}/`, {
+                    ? ajax(`/accounts/set_agents/${userResource.id}/`, {
                         method: 'POST',
                         headers: {},
                         body: filterArray(
@@ -507,49 +507,52 @@ function UserView({
                             response: JSON.parse(data),
                           })
                         : Array.isArray(institutionPolicies) &&
-                          changedInstitutionPolicies
-                        ? ajax(
-                            `/permissions/user_policies/institution/${userResource.id}/`,
-                            {
-                              method: 'PUT',
-                              body: decompressPolicies(institutionPolicies),
-                              headers: { Accept: 'text/plain' },
-                              expectedErrors: [Http.BAD_REQUEST],
-                            }
-                          ).then(({ data, status }) => {
-                            /*
-                             * Removing admin status fails if current user
-                             * is the last admin
-                             */
-                            if (status === Http.BAD_REQUEST) {
-                              const parsed: {
-                                readonly NoAdminUsersException: IR<never>;
-                              } = JSON.parse(data);
-                              if (
-                                typeof parsed === 'object' &&
-                                'NoAdminUsersException' in parsed
-                              )
-                                setState({
-                                  type: 'NoAdminsError',
-                                });
-                              else
-                                setState({
-                                  type: 'SettingAgents',
-                                  response: JSON.parse(data),
-                                });
-                            } else return true;
-                            return undefined;
-                          })
-                        : true
+                            changedInstitutionPolicies
+                          ? ajax(
+                              `/permissions/user_policies/institution/${userResource.id}/`,
+                              {
+                                method: 'PUT',
+                                body: decompressPolicies(institutionPolicies),
+                                headers: { Accept: 'text/plain' },
+                                expectedErrors: [Http.BAD_REQUEST],
+                              }
+                            ).then(({ data, status }) => {
+                              /*
+                               * Removing admin status fails if current user
+                               * is the last admin
+                               */
+                              if (status === Http.BAD_REQUEST) {
+                                const parsed: {
+                                  readonly NoAdminUsersException: IR<never>;
+                                } = JSON.parse(data);
+                                if (
+                                  typeof parsed === 'object' &&
+                                  'NoAdminUsersException' in parsed
+                                )
+                                  setState({
+                                    type: 'NoAdminsError',
+                                  });
+                                else
+                                  setState({
+                                    type: 'SettingAgents',
+                                    response: JSON.parse(data),
+                                  });
+                              } else return true;
+                              return undefined;
+                            })
+                          : true
                     )
                     .then(async (canContinue) =>
                       canContinue === true
                         ? Promise.all([
                             typeof password === 'string' && password !== ''
-                              ? ping(`/api/set_password/${userResource.id}/`, {
-                                  method: 'POST',
-                                  body: formData({ password }),
-                                })
+                              ? ping(
+                                  `/accounts/set_password/${userResource.id}/`,
+                                  {
+                                    method: 'POST',
+                                    body: formData({ password }),
+                                  }
+                                )
                               : undefined,
                             ...Object.entries(userRoles ?? {})
                               .filter(

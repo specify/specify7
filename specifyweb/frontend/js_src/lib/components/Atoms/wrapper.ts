@@ -47,7 +47,7 @@ export function wrap<
    * For example, can make some optional props be required, forbid passing
    * children, or mutate extra props using mergeProps callback
    */
-  EXTRA_PROPS extends IR<unknown> = RR<never, never>
+  EXTRA_PROPS extends IR<unknown> = RR<never, never>,
 >(
   // Would be shown in React DevTools
   name: string,

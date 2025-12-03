@@ -87,7 +87,7 @@ function fetchBucket(formattedKey: string): void {
  */
 export const getCache = <
   CATEGORY extends string & keyof CacheDefinitions,
-  KEY extends string & keyof CacheDefinitions[CATEGORY]
+  KEY extends string & keyof CacheDefinitions[CATEGORY],
 >(
   category: CATEGORY,
   key: KEY
@@ -116,7 +116,7 @@ function genericGet<TYPE>(
 
 export const setCache = <
   CATEGORY extends string & keyof CacheDefinitions,
-  KEY extends string & keyof CacheDefinitions[CATEGORY]
+  KEY extends string & keyof CacheDefinitions[CATEGORY],
 >(
   category: CATEGORY,
   key: KEY,
@@ -163,6 +163,35 @@ function genericSet<T>(
   if (triggerChange) cacheEvents.trigger('change', { category, key });
 
   return value;
+}
+
+export const removeCache = <
+  CATEGORY extends string & keyof CacheDefinitions,
+  KEY extends string & keyof CacheDefinitions[CATEGORY],
+>(
+  category: CATEGORY,
+  key: KEY,
+  triggerChange = true
+) =>
+  genericRemove<CacheDefinitions[CATEGORY][KEY]>(category, key, triggerChange);
+
+function genericRemove<TYPE>(
+  category: string,
+  key: string,
+  triggerChange = true
+): TYPE | undefined {
+  if (!eventListenerIsInitialized) initialize();
+
+  const previousValue = genericGet(category, key);
+
+  const formattedKey = formatCacheKey(category, key);
+
+  globalThis.localStorage.removeItem(formattedKey);
+  delete cache[formattedKey];
+
+  if (triggerChange) cacheEvents.trigger('change', { category, key });
+
+  return previousValue as TYPE | undefined;
 }
 
 export const exportsForTests = {

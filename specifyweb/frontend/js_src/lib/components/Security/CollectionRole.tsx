@@ -213,6 +213,7 @@ function RoleUsers({
               extraFilters={[
                 {
                   field: 'id',
+                  isRelationship: false,
                   isNot: true,
                   operation: 'in',
                   value: userRoles

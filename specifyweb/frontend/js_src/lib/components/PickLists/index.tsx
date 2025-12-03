@@ -93,8 +93,8 @@ export function PickListComboBox({
   const value = React.useMemo(
     () =>
       typeof rawValue === 'object'
-        ? (rawValue as unknown as SpecifyResource<AnySchema>)?.url() ?? null
-        : (rawValue as number | string | undefined)?.toString() ?? null,
+        ? ((rawValue as unknown as SpecifyResource<AnySchema>)?.url() ?? null)
+        : ((rawValue as number | string | undefined)?.toString() ?? null),
     [rawValue]
   );
 
@@ -104,8 +104,8 @@ export function PickListComboBox({
         value === '' && parser.required !== true
           ? null
           : parser?.type === 'number'
-          ? f.parseInt(value) ?? null
-          : value
+            ? (f.parseInt(value) ?? null)
+            : value
       ),
     [rawUpdateValue, parser]
   );
@@ -158,12 +158,17 @@ export function PickListComboBox({
   const name = pickList?.get('name') ?? pickListName;
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+
+  const isSpecialByPrefix =
+    typeof pickListName === 'string' && pickListName.startsWith('_');
+  const isSpecialPicklist =
+    isDisabled || isSpecialByPrefix || pickList?.get?.('readOnly') === true;
+
   return (
     <>
-      {pickList?.get('readOnly') === true || isDisabled ? (
+      {isSpecialPicklist ? (
         <Select
           id={id}
-          // "null" value is represented as an empty string
           value={value ?? ''}
           {...getValidationAttributes(parser)}
           disabled={isDisabled || isReadOnly}
@@ -173,8 +178,8 @@ export function PickListComboBox({
             newValue === ''
               ? updateValue('')
               : items.some(({ value }) => value === newValue)
-              ? updateValue(newValue)
-              : undefined
+                ? updateValue(newValue)
+                : undefined
           }
         >
           {isExistingValue ? (
@@ -196,6 +201,7 @@ export function PickListComboBox({
           ))}
         </Select>
       ) : (
+        // Keep AutoComplete for all other picklists (type-to-search + add-new if permitted)
         <AutoComplete<string>
           aria-label={undefined}
           disabled={isDisabled || isReadOnly}
@@ -210,7 +216,7 @@ export function PickListComboBox({
           value={(currentValue?.title || value) ?? ''}
           onChange={({ data }): void => updateValue(data)}
           onCleared={(): void => updateValue('')}
-          onNewValue={addNewValue}
+          onNewValue={handleAdd ? addNewValue : undefined}
         />
       )}
       {typeof pendingNewValue === 'string' &&

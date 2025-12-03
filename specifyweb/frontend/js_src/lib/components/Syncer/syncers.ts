@@ -381,7 +381,7 @@ export const syncers = {
     SUB_SPEC extends BaseSpec<SimpleXmlNode>,
     NEW_OBJECT extends Omit<OBJECT, KEY> & {
       readonly [key in KEY]: SpecToJson<SUB_SPEC>;
-    }
+    },
   >(
     key: KEY,
     spec: (dependent: OBJECT) => SUB_SPEC
@@ -408,7 +408,7 @@ export const syncers = {
               .deserializer(object?.[key]),
             logContext: getLogContext(),
           },
-        } as unknown as OBJECT)
+        }) as unknown as OBJECT
     ),
 
   /**
@@ -442,7 +442,7 @@ export const syncers = {
     RAW,
     PARSED,
     OBJECT extends { readonly [key in KEY]: RAW },
-    NEW_OBJECT extends Omit<OBJECT, KEY> & { readonly [key in KEY]: PARSED }
+    NEW_OBJECT extends Omit<OBJECT, KEY> & { readonly [key in KEY]: PARSED },
   >(
     key: KEY,
     serializer: (object: OBJECT) => PARSED,
@@ -453,12 +453,12 @@ export const syncers = {
         ({
           ...object,
           [key]: serializer(object),
-        } as unknown as NEW_OBJECT),
+        }) as unknown as NEW_OBJECT,
       (object) =>
         ({
           ...object,
           [key]: deserializer(object ?? {}),
-        } as unknown as OBJECT)
+        }) as unknown as OBJECT
     ),
 
   /**
@@ -610,7 +610,7 @@ export const syncers = {
         readonly type: TYPE_MAPPER[KEY];
         readonly rawType: string & keyof TYPE_MAPPER;
       };
-    }[keyof TYPE_MAPPER]
+    }[keyof TYPE_MAPPER],
   >(
     /**
      * They key in the original object at which the
@@ -688,9 +688,9 @@ export const syncers = {
         const resolvedRawType =
           typeFromRawType === definition.type
             ? rawType
-            : Object.entries(typeMapper).find(
+            : (Object.entries(typeMapper).find(
                 ([_raw, mapped]) => mapped === definition.type
-              )?.[0] ?? rawType;
+              )?.[0] ?? rawType);
         const spec = mapper[definition.type] ?? mapper.Unknown;
         const { deserializer } = syncers.object(
           spec(cell as unknown as IN, extraPayload, rawType)

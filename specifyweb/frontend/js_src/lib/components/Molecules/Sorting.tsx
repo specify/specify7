@@ -50,7 +50,7 @@ export function useSortConfig<NAME extends keyof SortConfigs>(
   applySortConfig: <T>(
     array: RA<T>,
     mapper: (item: T) => boolean | number | string | null | undefined
-  ) => RA<T>
+  ) => RA<T>,
 ] {
   const defaultValue = React.useMemo(
     () => ({ sortField: defaultField, ascending }),

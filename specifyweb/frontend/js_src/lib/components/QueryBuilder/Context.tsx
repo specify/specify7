@@ -21,8 +21,8 @@ export function useQueryViewPref(queryId: number): GetSet<boolean> {
   const isBasic = viewCollectionPref.basicView.includes(queryId)
     ? true
     : viewCollectionPref.detailedView.includes(queryId)
-    ? false
-    : isDefaultBasicViewPref;
+      ? false
+      : isDefaultBasicViewPref;
 
   return [
     isBasic,

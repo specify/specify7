@@ -327,7 +327,7 @@ function useChildren(
         records?.reduce<
           readonly [
             RR<number, SpecifyResource<AnySchema>>,
-            RA<string | undefined>
+            RA<string | undefined>,
           ]
         >(
           ([mappings, mergedRecords], record) => {

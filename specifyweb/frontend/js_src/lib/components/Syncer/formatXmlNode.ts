@@ -24,8 +24,8 @@ const formatXmlChildren = (
         child.type === 'Text'
           ? { ...child, string: child.string.trim() }
           : child.type === 'XmlNode'
-          ? formatXmlNode(child, `${indentation}${indent}`)
-          : child
+            ? formatXmlNode(child, `${indentation}${indent}`)
+            : child
       )
       .flatMap((child) => [
         {

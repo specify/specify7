@@ -4,6 +4,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { appResourceIds } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
@@ -16,6 +17,7 @@ import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type { SpLocaleContainerItem } from '../DataModel/types';
 import { ResourceLink } from '../Molecules/ResourceLink';
@@ -47,6 +49,16 @@ export function SchemaConfigFormat({
       .sort(sortFunction(f.id))
       .map((name) => [name, name] as const)
   );
+
+  const [otherFormatters, formattersForField] = React.useMemo(
+    () =>
+      split(
+        schemaData.uiFormatters,
+        ({ field: formatterField }) => formatterField === field
+      ),
+    [field, schemaData.uiFormatters]
+  );
+
   const id = useId('schema-config-field');
 
   const lineProps = { field, item, id, onFormatted: handleFormatted };
@@ -62,11 +74,38 @@ export function SchemaConfigFormat({
       />
       <FormatterLine
         {...lineProps}
+        extraComponents={
+          <FieldFormatterEditing
+            schemaData={schemaData}
+            table={field.table}
+            value={item.format}
+          />
+        }
         label={schemaText.formatted()}
         name="formatted"
         value={item.format}
         values={{
-          '': schemaData.uiFormatters
+          [`${
+            field === undefined
+              ? ''
+              : schemaText.uiFormattersForField({ fieldLabel: field.label })
+          }`]: formattersForField
+            .map(
+              ({ name, isSystem, value }) =>
+                [
+                  name,
+                  `${name} ${value}${
+                    isSystem
+                      ? ` (${
+                          getField(tables.SpLocaleContainerItem, 'isSystem')
+                            .label
+                        })`
+                      : ''
+                  }`,
+                ] as const
+            )
+            .sort(sortFunction((value) => value[1])),
+          [resourcesText.uiFormatters()]: otherFormatters
             .map(
               ({ name, isSystem, value }) =>
                 [
@@ -152,8 +191,8 @@ function FormatterLine({
     name === 'none' || name === 'pickList'
       ? true
       : name === 'webLink' || name === 'formatted'
-      ? !field.isRelationship
-      : false;
+        ? !field.isRelationship
+        : false;
   return (
     <div className={className.labelForCheckbox}>
       <Label.Inline>
@@ -163,14 +202,16 @@ function FormatterLine({
           isReadOnly={isReadOnly}
           name={id('format')}
           value="none"
-          onChange={(): void =>
-            handleFormatted(
-              name,
-              typeof values === 'object'
-                ? Object.values(values)[0][0][0]! ?? null
-                : null
-            )
-          }
+          onChange={(): void => {
+            const firstValue =
+              typeof values === 'object' && values !== null
+                ? (Object.values(values)?.[0]?.[0]?.[0] ??
+                  values['Field Formatters']?.[0]?.[0] ??
+                  null)
+                : null;
+
+            handleFormatted(name, firstValue);
+          }}
         />
         {label}
       </Label.Inline>
@@ -273,6 +314,9 @@ function PickListEditing({
   );
 }
 
+const overlayPrefix = '/specify/overlay/resources/app-resource/';
+const fullScreenPrefix = '/specify/resources/app-resource/';
+
 function WebLinkEditing({
   value,
   schemaData,
@@ -283,34 +327,76 @@ function WebLinkEditing({
   const index = schemaData.webLinks.find(({ name }) => name === value)?.index;
   const resourceId = appResourceIds.WebLinks;
   const navigate = useNavigate();
+
   return typeof resourceId === 'number' ? (
     <>
       {typeof index === 'number' && (
         <Link.Icon
           className={className.dataEntryEdit}
-          href={`/specify/resources/app-resource/${resourceId}/web-link/${index}/`}
+          href={`${fullScreenPrefix}${resourceId}/web-link/${index}`}
           icon="pencil"
           title={commonText.edit()}
           onClick={(event): void => {
             event.preventDefault();
-            navigate(
-              `/specify/overlay/resources/app-resource/${resourceId}/web-link/${index}/`
-            );
+            navigate(`${overlayPrefix}${resourceId}/web-link/${index}`);
           }}
         />
       )}
       <Link.Icon
         className={className.dataEntryAdd}
-        href={`/specify/resources/app-resource/${resourceId}/web-link/`}
+        href={`${fullScreenPrefix}${resourceId}/web-link`}
         icon="plus"
         title={commonText.add()}
         onClick={(event): void => {
           event.preventDefault();
-          navigate(
-            `/specify/overlay/resources/app-resource/${resourceId}/web-link/`
-          );
+          navigate(`${overlayPrefix}${resourceId}/web-link`);
         }}
       />
     </>
   ) : null;
+}
+
+function FieldFormatterEditing({
+  table,
+  value,
+  schemaData,
+}: {
+  readonly table: SpecifyTable;
+  readonly value: string | null;
+  readonly schemaData: SchemaData;
+}): JSX.Element | null {
+  const index = schemaData.uiFormatters.find(
+    ({ name }) => name === value
+  )?.index;
+  const resourceId = appResourceIds.UIFormatters;
+  const navigate = useNavigate();
+  if (resourceId === undefined) return null;
+
+  const commonUrl = `${resourceId}/field-formatters/${table.name}`;
+  return (
+    <>
+      {typeof index === 'number' && (
+        <Link.Icon
+          className={className.dataEntryEdit}
+          href={`${fullScreenPrefix}${commonUrl}/${index}`}
+          icon="pencil"
+          title={commonText.edit()}
+          onClick={(event): void => {
+            event.preventDefault();
+            navigate(`${overlayPrefix}${commonUrl}/${index}`);
+          }}
+        />
+      )}
+      <Link.Icon
+        className={className.dataEntryAdd}
+        href={`${fullScreenPrefix}${commonUrl}`}
+        icon="plus"
+        title={commonText.add()}
+        onClick={(event): void => {
+          event.preventDefault();
+          navigate(`${overlayPrefix}${commonUrl}`);
+        }}
+      />
+    </>
+  );
 }

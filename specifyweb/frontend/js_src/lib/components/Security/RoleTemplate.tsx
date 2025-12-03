@@ -57,7 +57,7 @@ export function CreateRole({
   const currentRoleNames = (
     scope === 'institution'
       ? Object.values(libraryRoles ?? [])
-      : Object.values(roles ?? []).find(([{ id }]) => id === scope)?.[1] ?? []
+      : (Object.values(roles ?? []).find(([{ id }]) => id === scope)?.[1] ?? [])
   ).map(({ name }) => name);
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();

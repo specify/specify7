@@ -268,8 +268,8 @@ function QueryItem({
         statState === 'noPermission'
           ? userText.noPermission()
           : statState === 'error'
-          ? statsText.error()
-          : value
+            ? statsText.error()
+            : value
       }
       onClick={handleClick}
       onClone={handleClone}

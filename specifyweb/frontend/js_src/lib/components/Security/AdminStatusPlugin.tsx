@@ -49,14 +49,14 @@ export function AdminStatusPlugin({
         resource.isNew()
           ? userText.saveUserFirst()
           : isAdmin && isCurrentUser
-          ? userText.canNotRemoveYourself()
-          : user.userType === 'Manager'
-          ? undefined
-          : userText.mustBeManager()
+            ? userText.canNotRemoveYourself()
+            : user.userType === 'Manager'
+              ? undefined
+              : userText.mustBeManager()
       }
       onClick={(): void =>
         loading(
-          ajax<'false' | 'true'>(`/api/set_admin_status/${user.id}/`, {
+          ajax<'false' | 'true'>(`/accounts/set_admin_status/${user.id}/`, {
             method: 'POST',
             body: formData({
               admin_status: !isAdmin,

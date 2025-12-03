@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files>
+    <file type="system" name="SystemSetup" title="System Setup" file="system.views.xml"/>
+    <file type="system" name="Search"      title="Search"       file="search.views.xml"/>
+
+    <file type="system" name="Global"      title="Global"       file="global.views.xml"/>
+    
+</files>

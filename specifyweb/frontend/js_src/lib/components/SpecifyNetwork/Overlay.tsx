@@ -70,8 +70,8 @@ export function useBrokerData(
   const speciesName = React.useMemo(
     () =>
       (typeof species === 'object'
-        ? extractBrokerField(species, 'gbif', 'dwc:scientificName') ??
-          extractBrokerField(species, 'gbif', 's2n:scientific_name')
+        ? (extractBrokerField(species, 'gbif', 'dwc:scientificName') ??
+          extractBrokerField(species, 'gbif', 's2n:scientific_name'))
         : undefined) ?? occurrenceSpeciesName,
     [species, occurrenceSpeciesName]
   );

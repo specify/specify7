@@ -24,7 +24,7 @@ export function useUserPolicies(
   userPolicies: IR<RA<Policy> | undefined> | undefined,
   setUserPolicies: (value: IR<RA<Policy> | undefined> | undefined) => void,
   initialPolicies: React.MutableRefObject<IR<RA<Policy> | undefined>>,
-  hasChanges: boolean
+  hasChanges: boolean,
 ] {
   const initialUserPolicies = React.useRef<IR<RA<Policy> | undefined>>({});
   const [userPolicies, setUserPolicies] = useAsyncState(
@@ -98,7 +98,7 @@ export function useUserInstitutionalPolicies(
   institutionPolicies: RA<Policy> | undefined,
   setInstitutionPolicies: (value: RA<Policy>) => void,
   initialInstitutionPolicies: React.MutableRefObject<RA<Policy>>,
-  hasChanges: boolean
+  hasChanges: boolean,
 ] {
   const initialInstitutionPolicies = React.useRef<RA<Policy>>([]);
   const [institutionPolicies, setInstitutionPolicies] = useAsyncState(
@@ -107,20 +107,20 @@ export function useUserInstitutionalPolicies(
         userResource.isNew()
           ? []
           : hasDerivedPermission(
-              '/permissions/institutional_policies/user',
-              'read'
-            )
-          ? ajax<IR<RA<string>>>(
-              `/permissions/user_policies/institution/${userResource.id}/`,
-              {
-                headers: { Accept: 'application/json' },
-              }
-            ).then(({ data }) => {
-              const policies = processPolicies(data);
-              initialInstitutionPolicies.current = policies;
-              return policies;
-            })
-          : undefined,
+                '/permissions/institutional_policies/user',
+                'read'
+              )
+            ? ajax<IR<RA<string>>>(
+                `/permissions/user_policies/institution/${userResource.id}/`,
+                {
+                  headers: { Accept: 'application/json' },
+                }
+              ).then(({ data }) => {
+                const policies = processPolicies(data);
+                initialInstitutionPolicies.current = policies;
+                return policies;
+              })
+            : undefined,
       [userResource]
     ),
     false

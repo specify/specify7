@@ -16,6 +16,7 @@ import { caseInsensitiveHash } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label, Select } from '../Atoms/Form';
+import { ChronoChart } from '../Attachments/ChronoChart';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
@@ -37,9 +38,11 @@ import { useTitle } from '../Molecules/AppTitle';
 import { ResourceEdit } from '../Molecules/ResourceLink';
 import { TableIcon } from '../Molecules/TableIcon';
 import { ProtectedTree } from '../Permissions/PermissionDenied';
+import { userPreferences } from '../Preferences/userPreferences';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
 import { TreeViewActions } from './Actions';
+import { CreateTree } from './CreateTree';
 import type { Row } from './helpers';
 import {
   deserializeConformation,
@@ -100,6 +103,7 @@ function TreeViewFromDefinitions<TREE_NAME extends AnyTree['tableName']>({
         <TreeView
           currentTreeInformation={currentTreeInformation}
           definitions={definitionsForTree.map(({ definition }) => definition)}
+          definitionsForTree={definitionsForTree}
           setNewDefinition={setCurrentDefinition}
           tableName={treeName}
         />
@@ -116,6 +120,7 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
     ranks: treeDefinitionItems,
   },
   definitions,
+  definitionsForTree,
   setNewDefinition,
 }: {
   readonly tableName: TREE_NAME;
@@ -123,6 +128,7 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
   readonly definitions: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDef'>>
   >;
+  readonly definitionsForTree: TreeInformation[TREE_NAME];
   readonly setNewDefinition: (newDefinitionId: number) => void;
 }): JSX.Element | null {
   const table = genericTables[tableName] as SpecifyTable<AnyTree>;
@@ -152,9 +158,13 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
   // Node sort order
   const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`);
 
-  const includeAuthor = getPref(`TaxonTreeEditor.DisplayAuthor`);
+  const includeAuthor = userPreferences.get(
+    'treeEditor',
+    'taxon',
+    'displayAuthor'
+  );
 
-  const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
+  const baseUrl = `/trees/specify_tree/${tableName.toLowerCase()}/${
     treeDefinition.id
   }`;
 
@@ -185,6 +195,10 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
   const [lastFocusedRow, setLastFocusedRow] = React.useState<Row | undefined>(
     undefined
   );
+
+  React.useEffect(() => {
+    setLastFocusedRow(undefined);
+  }, [treeDefinition]);
 
   const currentStates = states[lastFocusedTree];
 
@@ -282,6 +296,10 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
           resource={deserializedResource}
           onSaved={(): void => globalThis.location.reload()}
         />
+        <CreateTree
+          tableName={tableName}
+          treeDefinitions={definitionsForTree}
+        />
         <Button.Icon
           disabled={conformation.length === 0 || isSplit}
           icon="chevronDoubleLeft"
@@ -298,7 +316,7 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
           treeDefinitionItems={treeDefinitionItems}
           onFocusPath={currentStates.focusPath[1]}
         />
-
+        {tableName === 'GeologicTimePeriod' ? <ChronoChart /> : undefined}
         <Button.Icon
           aria-pressed={isSplit}
           disabled={!canSplit}

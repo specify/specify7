@@ -17,7 +17,7 @@ import type { Language } from './config';
 import { DEFAULT_LANGUAGE, devLanguage, LANGUAGE } from './config';
 
 export const localizationMetaKeys = ['comment'] as const;
-type MetaKeys = typeof localizationMetaKeys[number];
+type MetaKeys = (typeof localizationMetaKeys)[number];
 export type LocalizationEntry = Partial<RR<Language | MetaKeys, string>> &
   RR<typeof DEFAULT_LANGUAGE, string>;
 export type LocalizationDictionary = IR<LocalizationEntry>;

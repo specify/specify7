@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<icons type="imgproc" subdir="imgproc">
+    
+    <!--  Image Processing -->
+    <icon name="ip_camera"     file="camera.png" sizes="NonStd"/>
+    <icon name="ip_metadata"   file="metadata.png" sizes="NonStd"/>
+    <icon name="ip_barcode"    file="barcode.png" sizes="NonStd"/>
+    <icon name="ip_barcode20"  file="barcode20x20.png" sizes="NonStd"/>
+    <icon name="ip_disk"       file="disk.png" sizes="NonStd"/>
+    <icon name="ip_circle"     file="circle.png" sizes="NonStd"/>
+
+</icons>

@@ -1,7 +1,7 @@
 /**
  * Parse XML cell with a command definition into a JSON structure
  *
- * Documentation - https://github.com/specify/specify7/wiki/Form-System#command
+ * Documentation - https://discourse.specifysoftware.org/t/editing-forms-in-specify/1557#p-2936-command-29
  * On any modifications, please check if documentation needs to be updated.
  */
 
@@ -57,8 +57,8 @@ const processUiCommand: {
     !hasTablePermission('LoanReturnPreparation', 'update')
       ? { type: 'Blank' }
       : table.name === 'Loan'
-      ? { type: 'ReturnLoan' }
-      : { type: 'WrongTable', supportedTables: ['Loan'] },
+        ? { type: 'ReturnLoan' }
+        : { type: 'WrongTable', supportedTables: ['Loan'] },
   Unsupported: ({ name }) => {
     console.error(`Unsupported command: ${name ?? '(null)'}`);
     return { type: 'Unsupported', name };

@@ -17,7 +17,7 @@ import { load } from './index';
 const bundleLanguages = ['en', 'ru', 'uk', 'pt'];
 const locale =
   bundleLanguages.find((language) => LANGUAGE.startsWith(language)) ?? 'en';
-const bundles = {} as Record<typeof bundleNames[number], string>;
+const bundles = {} as Record<(typeof bundleNames)[number], string>;
 
 const bundleNames = [
   'resources',

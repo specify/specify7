@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
-import { queryText } from '../../localization/query';
 import type { Parser } from '../../utils/parser/definitions';
 import { resolveParser } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
@@ -9,25 +8,21 @@ import { filterArray } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { Select } from '../Atoms/Form';
-import { iconClassName, icons } from '../Atoms/Icons';
+import { icons } from '../Atoms/Icons';
 import { schema } from '../DataModel/schema';
-import { genericTables, getTable } from '../DataModel/tables';
+import { getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { join } from '../Molecules';
 import { TableIcon } from '../Molecules/TableIcon';
-import { customSelectElementBackground } from '../WbPlanView/CustomSelectElement';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import {
   getMappingLineProps,
   MappingElement,
   mappingElementDivider,
-  mappingElementDividerClassName,
 } from '../WbPlanView/LineComponents';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import {
   formattedEntry,
-  mappingPathToString,
   parsePartialField,
   valueIsPartialField,
 } from '../WbPlanView/mappingHelpers';
@@ -38,17 +33,14 @@ import {
 } from '../WbPlanView/navigator';
 import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 import { IsQueryBasicContext } from './Context';
-import type { QueryFieldFilter, QueryFieldType } from './FieldFilter';
-import {
-  filtersWithDefaultValue,
-  queryFieldFilters,
-  QueryLineFilter,
-} from './FieldFilter';
+import type { QueryFieldType } from './FieldFilterSpec';
 import type { DatePart } from './fieldSpec';
 import { QueryFieldSpec } from './fieldSpec';
-import { QueryFieldFormatter } from './Formatter';
+import { QueryFieldRecordFormatter } from './Formatter';
 import type { QueryField } from './helpers';
+import { QueryLineFilters } from './QueryLineFilters';
 import { QueryLineTools } from './QueryLineTools';
+import { useQueryFieldFilterSpecs } from './useQueryFieldFilterSpecs';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({
@@ -103,18 +95,14 @@ export function QueryLine({
   readonly onOpenMap: (() => void) | undefined;
 }): JSX.Element {
   const lineRef = React.useRef<HTMLDivElement>(null);
+  const queryFieldFilterSpecs = useQueryFieldFilterSpecs();
 
   React.useLayoutEffect(() => {
     if (isFocused && lineRef.current?.contains(document.activeElement) !== true)
       lineRef.current?.focus();
   }, [isFocused]);
 
-  const [fieldMeta, setFieldMeta] = React.useState<{
-    readonly fieldType: QueryFieldType | undefined;
-    readonly parser: Parser | undefined;
-    readonly canOpenMap: boolean;
-    readonly tableName: keyof Tables | undefined;
-  }>({
+  const [fieldMeta, setFieldMeta] = React.useState<QueryLineFieldMeta>({
     fieldType: undefined,
     parser: undefined,
     canOpenMap: false,
@@ -142,7 +130,7 @@ export function QueryLine({
         : getTable(tableName ?? '')?.getField(fieldName);
 
       let fieldType: QueryFieldType | undefined = undefined;
-      let parser = undefined;
+      let parser: Parser | undefined = undefined;
       const hasParser =
         typeof dataModelField === 'object' &&
         !dataModelField.isRelationship &&
@@ -154,14 +142,20 @@ export function QueryLine({
           required: false,
         };
         // Remove autoNumbering wildCard from default values
-        if (dataModelField.getUiFormatter()?.valueOrWild() === parser.value)
+        if (dataModelField.getUiFormatter()?.defaultValue === parser.value)
           parser = { ...parser, value: undefined };
 
         fieldType =
           tableName === 'CollectionObject' &&
           dataModelField.name === 'catalogNumber'
             ? 'id'
-            : parser.type ?? 'text';
+            : tableName === 'Component' &&
+                dataModelField.name === 'catalogNumber'
+              ? 'id'
+              : tableName === 'CollectionObject' &&
+                  dataModelField.name === 'age'
+                ? 'age'
+                : (parser.type ?? 'text');
 
         canOpenMap = fieldName === 'latitude1' || fieldName === 'longitude1';
       } else if (isMapped)
@@ -174,19 +168,27 @@ export function QueryLine({
         ? field.filters.map((filter) => {
             const resetFilter =
               fieldType === undefined ||
-              !queryFieldFilters[filter.type].types?.includes(fieldType);
+              /*
+               * We want to include all supported types for the filter, not
+               * just visible ones
+               */
+              !Object.keys(
+                queryFieldFilterSpecs[filter.type].types ?? {}
+              ).includes(fieldType);
             return resetFilter
               ? ({
                   type: 'any',
                   isNot: false,
+                  isStrict: false,
                   startValue: '',
                 } as const)
               : filter.type === 'any' && filter.isNot
-              ? {
-                  ...filter,
-                  isNot: false,
-                }
-              : filter;
+                ? {
+                    ...filter,
+                    isNot: false,
+                    isStrict: false,
+                  }
+                : filter;
           })
         : [];
       const anyFilter =
@@ -245,16 +247,6 @@ export function QueryLine({
     });
 
   const isFieldComplete = mappingPathIsComplete(field.mappingPath);
-
-  const availableFilters = Object.entries(queryFieldFilters).filter(
-    ([filterName, { types }]) =>
-      typeof fieldMeta.fieldType === 'string'
-        ? !Array.isArray(types) || types.includes(fieldMeta.fieldType)
-        : filterName === 'any'
-  );
-  const filtersVisible =
-    availableFilters.length > 0 &&
-    (availableFilters.length > 1 || availableFilters[0][0] !== 'any');
 
   const hasAny = field.filters.some(({ type }) => type === 'any');
 
@@ -374,208 +366,44 @@ export function QueryLine({
             )}
             {(fieldMeta.fieldType === 'formatter' ||
               fieldMeta.fieldType === 'aggregator') &&
-            typeof fieldMeta.tableName === 'string' ? (
-              <QueryFieldFormatter
-                formatter={field.dataObjFormatter}
+            typeof fieldMeta.tableName === 'string' &&
+            hasAny ? (
+              // REFACTOR: move this to the field.filters map
+              <QueryFieldRecordFormatter
+                formatter={
+                  field.filters.find(({ type }) => type === 'any')?.fieldFormat
+                }
                 tableName={fieldMeta.tableName}
                 type={fieldMeta.fieldType}
                 onChange={
                   handleChange === undefined
                     ? undefined
-                    : (dataObjectFormatter): void =>
-                        handleChange({
-                          ...field,
-                          dataObjFormatter: dataObjectFormatter,
-                        })
+                    : (dataObjectFormatter): void => {
+                        const filterIndex = field.filters.findIndex(
+                          ({ type }) => type === 'any'
+                        );
+                        handleFilterChange(filterIndex, {
+                          ...field.filters[filterIndex],
+                          fieldFormat: dataObjectFormatter,
+                        });
+                      }
                 }
               />
             ) : undefined}
           </div>
-          {filtersVisible ? (
-            <div
-              className={
-                field.filters.length > 1
-                  ? 'flex flex-col gap-2'
-                  : `flex items-center gap-2 ${isBasic ? '' : ' flex-wrap'}`
-              }
-            >
-              {field.filters.map((filter, index) => (
-                <div
-                  className={
-                    field.filters.length > 1
-                      ? 'flex flex-wrap gap-2'
-                      : 'contents'
-                  }
-                  key={index}
-                >
-                  <div className="flex contents items-center gap-2">
-                    {index === 0 ? (
-                      <>
-                        {isBasic ? null : mappingElementDivider}
-                        {!hasAny && (
-                          <Button.Small
-                            aria-label={queryText.or()}
-                            aria-pressed={field.filters.length > 1}
-                            className={`
-                          print:hidden
-                          ${className.ariaHandled}
-                          ${isFieldComplete ? '' : 'invisible'}
-                        `}
-                            disabled={handleChange === undefined}
-                            title={queryText.or()}
-                            variant={
-                              field.filters.length > 1
-                                ? className.infoButton
-                                : className.secondaryLightButton
-                            }
-                            onClick={(): void =>
-                              handleFilterChange(field.filters.length, {
-                                type: 'any',
-                                isNot: false,
-                                startValue: '',
-                              })
-                            }
-                          >
-                            {icons.plus}
-                          </Button.Small>
-                        )}
-                      </>
-                    ) : (
-                      <>
-                        <span className={mappingElementDividerClassName}>
-                          <span
-                            className={`
-                          flex items-center justify-center uppercase
-                          ${iconClassName}
-                        `}
-                          >
-                            {queryText.or()}
-                          </span>
-                        </span>
-                        <Button.Small
-                          aria-label={commonText.remove()}
-                          className="print:hidden"
-                          disabled={handleChange === undefined}
-                          title={commonText.remove()}
-                          variant={className.dangerButton}
-                          onClick={(): void =>
-                            handleFilterChange(index, undefined)
-                          }
-                        >
-                          {icons.trash}
-                        </Button.Small>
-                      </>
-                    )}
-                    {field.filters[index].type !== 'any' && (
-                      <Button.Small
-                        aria-label={queryText.negate()}
-                        aria-pressed={field.filters[index].isNot}
-                        className={className.ariaHandled}
-                        disabled={handleChange === undefined}
-                        title={queryText.negate()}
-                        variant={
-                          field.filters[index].isNot
-                            ? className.dangerButton
-                            : className.secondaryLightButton
-                        }
-                        onClick={(): void =>
-                          handleFilterChange(index, {
-                            ...field.filters[index],
-                            isNot: !field.filters[index].isNot,
-                          })
-                        }
-                      >
-                        {icons.ban}
-                      </Button.Small>
-                    )}
-                    <div className="contents w-full">
-                      <Select
-                        aria-label={
-                          queryFieldFilters[field.filters[index].type]
-                            .description ?? commonText.filter()
-                        }
-                        className={`
-                        !w-[unset] ${customSelectElementBackground}
-                      `}
-                        disabled={handleChange === undefined}
-                        title={
-                          queryFieldFilters[field.filters[index].type]
-                            .description ?? commonText.filter()
-                        }
-                        value={filter.type}
-                        onChange={({ target }): void => {
-                          const newFilter = (target as HTMLSelectElement)
-                            .value as QueryFieldFilter;
-                          const startValue =
-                            queryFieldFilters[newFilter].component === undefined
-                              ? ''
-                              : filter.type === 'any' &&
-                                filtersWithDefaultValue.has(newFilter) &&
-                                filter.startValue === '' &&
-                                typeof fieldMeta.parser?.value === 'string'
-                              ? fieldMeta.parser.value
-                              : filter.startValue;
-
-                          /*
-                           * When going from "in" to another filter type, throw away
-                           * all but first one or two values
-                           */
-                          const valueLength = newFilter === 'between' ? 2 : 1;
-                          const trimmedValue =
-                            filter.type === 'in'
-                              ? startValue
-                              : startValue
-                                  .split(',')
-                                  .slice(0, valueLength)
-                                  .join(', ');
-
-                          handleFilterChange?.(index, {
-                            ...field.filters[index],
-                            type: newFilter,
-                            startValue: trimmedValue,
-                          });
-                        }}
-                      >
-                        {availableFilters.map(([filterName, { label }]) => (
-                          <option key={filterName} value={filterName}>
-                            {label}
-                          </option>
-                        ))}
-                      </Select>
-                    </div>
-                  </div>
-                  <div className="contents">
-                    {typeof fieldMeta.parser === 'object' && (
-                      <QueryLineFilter
-                        enforceLengthLimit={enforceLengthLimit}
-                        fieldName={mappingPathToString(field.mappingPath)}
-                        filter={field.filters[index]}
-                        parser={fieldMeta.parser}
-                        terminatingField={
-                          isFieldComplete
-                            ? genericTables[baseTableName].getField(
-                                mappingPathToString(field.mappingPath)
-                              )
-                            : undefined
-                        }
-                        onChange={
-                          typeof handleChange === 'function'
-                            ? (startValue): void =>
-                                handleFilterChange(index, {
-                                  ...field.filters[index],
-                                  startValue,
-                                })
-                            : undefined
-                        }
-                      />
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <span className={`${isBasic ? 'col-span-1' : 'contents'}`} />
-          )}
+          <QueryLineFilters
+            baseTableName={baseTableName}
+            enforceLengthLimit={enforceLengthLimit}
+            fieldFilters={field.filters}
+            fieldMeta={fieldMeta}
+            hasAny={hasAny}
+            isBasic={isBasic}
+            isFieldComplete={isFieldComplete}
+            mappingPath={field.mappingPath}
+            queryFieldFilterSpecs={queryFieldFilterSpecs}
+            onFilterChange={handleFilterChange}
+            onQueryFieldChange={handleChange}
+          />
         </div>
         <QueryLineTools
           field={field}
@@ -593,3 +421,10 @@ export function QueryLine({
     </>
   );
 }
+
+export type QueryLineFieldMeta = {
+  readonly fieldType: QueryFieldType | undefined;
+  readonly parser: Parser | undefined;
+  readonly canOpenMap: boolean;
+  readonly tableName: keyof Tables | undefined;
+};

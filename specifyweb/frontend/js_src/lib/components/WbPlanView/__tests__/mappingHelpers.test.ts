@@ -16,7 +16,7 @@ theories(valueIsToManyIndex, [
   [[`${schema.referenceSymbol}2`], true],
   [[`${schema.referenceSymbol}999`], true],
   [['collectionobject'], false],
-  [[`${schema.treeSymbol}Kingdom`], false],
+  [[`${schema.treeRankSymbol}Kingdom`], false],
 ]);
 
 theories(valueIsTreeRank, [
@@ -24,8 +24,8 @@ theories(valueIsTreeRank, [
   [[`${schema.referenceSymbol}2`], false],
   [[`${schema.referenceSymbol}999`], false],
   [['collectionobject'], false],
-  [[`${schema.treeSymbol}Kingdom`], true],
-  [[`${schema.treeSymbol}County`], true],
+  [[`${schema.treeRankSymbol}Kingdom`], true],
+  [[`${schema.treeRankSymbol}County`], true],
 ]);
 
 theories(getNumberFromToManyIndex, [
@@ -36,8 +36,8 @@ theories(getNumberFromToManyIndex, [
 ]);
 
 theories(getNameFromTreeRankName, [
-  [[`${schema.treeSymbol}Kingdom`], 'Kingdom'],
-  [[`${schema.treeSymbol}County`], 'County'],
+  [[`${schema.treeRankSymbol}Kingdom`], 'Kingdom'],
+  [[`${schema.treeRankSymbol}County`], 'County'],
 ]);
 
 theories(findDuplicateMappings, [

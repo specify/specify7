@@ -33,7 +33,7 @@ import {
   pushContext,
   setLogContext,
 } from '../Errors/logContext';
-import { cachableUrl } from '../InitialContext';
+import { cacheableUrl } from '../InitialContext';
 import { getPref } from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
@@ -87,7 +87,7 @@ export type ViewDefinition = {
 };
 
 export const formTypes = ['form', 'formTable'] as const;
-export type FormType = typeof formTypes[number];
+export type FormType = (typeof formTypes)[number];
 export type FormMode = 'edit' | 'search' | 'view';
 
 let views: R<ViewDefinition | undefined> = {};
@@ -117,7 +117,7 @@ export const fetchView = async (
          * NOTE: If getView hasn't yet been invoked, the view URL won't be
          * marked as cachable
          */
-        cachableUrl(getViewSetApiUrl(name)),
+        cacheableUrl(getViewSetApiUrl(name)),
         {
           headers: { Accept: 'text/plain' },
           expectedErrors: [Http.NOT_FOUND],
@@ -300,9 +300,9 @@ export function resolveViewDefinition(
   const resolvedFormType =
     formType === 'formTable'
       ? 'formTable'
-      : formTypes.find(
+      : (formTypes.find(
           (type) => type.toLowerCase() === newFormType?.toLowerCase()
-        ) ?? 'form';
+        ) ?? 'form');
   if (resolvedFormType === undefined)
     console.warn(
       `Unknown form type ${
@@ -425,9 +425,10 @@ async function parseFormTableDefinition(
           : undefined) ??
         labelsForCells[cell.id ?? '']?.text ??
         (cell.type === 'Field' || cell.type === 'SubView'
-          ? table?.getField(cell.fieldNames?.join(backboneFieldSeparator) ?? '')
-              ?.label ??
-            localized(cell.fieldNames?.join(backboneFieldSeparator))
+          ? (table?.getField(
+              cell.fieldNames?.join(backboneFieldSeparator) ?? ''
+            )?.label ??
+            localized(cell.fieldNames?.join(backboneFieldSeparator)))
           : undefined),
       // Remove labels from checkboxes (as labels would be in the table header)
       ...(cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'
@@ -467,6 +468,8 @@ export type FormCondition =
     >
   | State<'Always'>
   | undefined;
+
+export const EMPTY_VALUE_CONDITION = '_EMPTY';
 
 export type ConditionalFormDefinition = RA<{
   readonly condition: FormCondition;

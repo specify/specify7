@@ -16,30 +16,43 @@ export const resourcesText = createDictionary({
     'fr-fr': "Ressources de l'application",
     'uk-ua': 'Ресурси програми',
     'de-ch': 'App Ressourcen',
+    'pt-br': 'Recursos do aplicativo',
   },
   formDefinition: {
     'en-us': 'Form Definition',
     'ru-ru': 'Определение формы',
     'es-es': 'Definición de formulario',
-    'fr-fr': 'Définition du formulaire',
+    'fr-fr': 'Définition de la forme',
     'uk-ua': 'Визначення форми',
     'de-ch': 'Formular Definition',
+    'pt-br': 'Definição de formulário',
   },
   formDefinitions: {
     'en-us': 'Form Definition',
     'ru-ru': 'Определение формы',
     'es-es': 'Definición de formulario',
-    'fr-fr': 'Définition du formulaire',
+    'fr-fr': 'Définition de la forme',
     'uk-ua': 'Визначення форми',
     'de-ch': 'Formulardefinition',
+    'pt-br': 'Definição de formulário',
+  },
+  newViewDefinition: {
+    'en-us': 'New View Definition',
+    'de-ch': 'Neue Ansichtsdefinition',
+    'es-es': 'Nueva definición de vista',
+    'fr-fr': 'Définition de la nouvelle vue',
+    'pt-br': 'Nova definição de visualização',
+    'ru-ru': 'Новое определение взгляда',
+    'uk-ua': 'Нове визначення подання',
   },
   loadFile: {
     'en-us': 'Load File',
     'ru-ru': 'Загрузить файл',
     'es-es': 'Cargar archivo',
-    'fr-fr': 'Fichier de chargement',
+    'fr-fr': 'Charger le fichier',
     'uk-ua': 'Завантажити файл',
     'de-ch': 'Datei Laden',
+    'pt-br': 'Carregar arquivo',
   },
   globalResources: {
     'en-us': 'Global Resources',
@@ -48,6 +61,7 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Ressources mondiales',
     'uk-ua': 'Глобальні ресурси',
     'de-ch': 'Globale Ressourcen',
+    'pt-br': 'Recursos Globais',
   },
   disciplineResources: {
     'en-us': 'Discipline Resources',
@@ -56,6 +70,7 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Ressources disciplinaires',
     'uk-ua': 'Дисциплінарні ресурси',
     'de-ch': 'Disziplin-Ressourcen',
+    'pt-br': 'Recursos da disciplina',
   },
   type: {
     'en-us': 'Type',
@@ -64,6 +79,7 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Taper',
     'uk-ua': 'Тип',
     'de-ch': 'Typ',
+    'pt-br': 'Tipo',
   },
   userTypes: {
     'en-us': 'User Types',
@@ -72,6 +88,7 @@ export const resourcesText = createDictionary({
     'fr-fr': "Types d'utilisateurs",
     'uk-ua': 'Типи користувачів',
     'de-ch': 'Benutzertypen',
+    'pt-br': 'Tipos de usuários',
   },
   resources: {
     'en-us': 'Resources',
@@ -80,6 +97,7 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Ressources',
     'uk-ua': 'Ресурси',
     'de-ch': 'Ressourcen',
+    'pt-br': 'Recursos',
   },
   subCategories: {
     'en-us': 'Sub-categories',
@@ -88,6 +106,7 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Sous-catégories',
     'uk-ua': 'Підкатегорії',
     'de-ch': 'Unterkategorien',
+    'pt-br': 'Subcategorias',
   },
   addResource: {
     'en-us': 'Add Resource',
@@ -96,22 +115,25 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Ajouter une ressource',
     'uk-ua': 'Додати ресурс',
     'de-ch': 'Ressource hinzufügen',
+    'pt-br': 'Adicionar recurso',
   },
   appResource: {
     'en-us': 'App Resource',
     'ru-ru': 'Подкатегории',
-    'es-es': 'Subcategorías',
-    'fr-fr': 'Sous-catégories',
+    'es-es': 'Recursos de la aplicación',
+    'fr-fr': "Ressources de l'application",
     'uk-ua': 'Підкатегорії',
     'de-ch': 'App Ressource',
+    'pt-br': 'Recurso do aplicativo',
   },
   rssExportFeed: {
     'en-us': 'RSS Export Feed',
     'ru-ru': 'RSS-канал экспорта',
     'es-es': 'Fuente de exportación RSS',
-    'fr-fr': "Flux d'exportation RSS",
+    'fr-fr': 'Flux RSS exporté',
     'uk-ua': 'Канал експорту RSS',
     'de-ch': 'RSS-Export-Feed',
+    'pt-br': 'Feed de exportação RSS',
   },
   exports: {
     'en-us': 'Exports',
@@ -120,38 +142,59 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Exportations',
     'ru-ru': 'Экспорт',
     'uk-ua': 'Експорт',
+    'pt-br': 'Exportações',
   },
   expressSearchConfig: {
     'en-us': 'Express Search Config',
     'ru-ru': 'Конфигурация экспресс-поиска',
     'es-es': 'Configuración de búsqueda rápida',
-    'fr-fr': 'Configuration de recherche express',
+    'fr-fr': 'Configuration de la recherche express',
     'uk-ua': 'Конфігурація експрес-пошуку',
     'de-ch': 'Express Suche Konfigurieren',
+    'pt-br': 'Configuração de Busca Expressa',
   },
   typeSearches: {
     'en-us': 'Type Searches',
-    'de-ch': 'Typsuchen',
-    'es-es': 'Tipo de búsquedas',
-    'fr-fr': 'Recherches de types',
+    'de-ch': 'Suchtypen',
+    'es-es': 'Búsquedas de tipos',
+    'fr-fr': 'Type de recherche',
     'ru-ru': 'Тип поиска',
     'uk-ua': 'Пошук типів',
+    'pt-br': 'Pesquisas por tipo',
   },
   webLinks: {
     'en-us': 'Web Links',
     'ru-ru': 'Веб ссылки',
     'es-es': 'Enlaces web',
-    'fr-fr': 'Liens web',
+    'fr-fr': 'Liens Web',
     'uk-ua': 'Веб-посилання',
     'de-ch': 'Weblinks',
+    'pt-br': 'Links da Web',
   },
   uiFormatters: {
     'en-us': 'Field Formatters',
     'ru-ru': 'Форматировщики полей',
-    'es-es': 'Formateadores de campo',
+    'es-es': 'Formateadores de campos',
     'fr-fr': 'Formateurs de champs',
     'uk-ua': 'Форматувальники полів',
     'de-ch': 'Feldformatierer',
+    'pt-br': 'Formatadores de Campo',
+  },
+  fieldFormattersDescription: {
+    'en-us':
+      'The “Field Format” controls how data for a specific table field is displayed in query results, exports, and forms. It manages autonumbering and the composition of various parts that define the field.',
+    'de-ch':
+      'Das „Feldformat“ steuert, wie Daten für ein bestimmtes Tabellenfeld in Abfrageergebnissen, Exporten und Formularen angezeigt werden. Es verwaltet die automatische Nummerierung und die Zusammensetzung der verschiedenen Bestandteile, die das Feld definieren.',
+    'es-es':
+      'El formato de campo controla cómo se muestran los datos de un campo específico de una tabla en los resultados de las consultas, las exportaciones y los formularios. Gestiona la numeración automática y la composición de las distintas partes que definen el campo.',
+    'fr-fr':
+      'Le paramètre « Format de champ » détermine l’affichage des données d’un champ de table spécifique dans les résultats de requêtes, les exportations et les formulaires. Il gère la numérotation automatique et la composition des différents éléments qui définissent le champ.',
+    'pt-br':
+      'O “Formato de Campo” controla como os dados de um campo específico da tabela são exibidos nos resultados de consultas, exportações e formulários. Ele gerencia a numeração automática e a composição das várias partes que definem o campo.',
+    'ru-ru':
+      '«Формат поля» определяет, как данные для конкретного поля таблицы отображаются в результатах запроса, экспортируемых данных и формах. Он управляет автоматической нумерацией и составом различных частей, определяющих поле.',
+    'uk-ua':
+      '«Формат поля» контролює, як дані для певного поля таблиці відображаються в результатах запиту, експорті та формах. Він керує автонумерацією та композицією різних частин, що визначають поле.',
   },
   dataObjectFormatters: {
     'en-us': 'Record Formatters',
@@ -159,106 +202,58 @@ export const resourcesText = createDictionary({
     'es-es': 'Formateadores de registros',
     'uk-ua': 'Форматувальники записів',
     'de-ch': 'Datensatz-Formatierer',
-    'fr-fr': "Formateurs d'enregistrement",
+    'fr-fr': "Formateurs d'enregistrements",
+    'pt-br': 'Formatadores de registro',
   },
   formatter: {
     'en-us': 'Table Format',
     'de-ch': 'Tabellenformat',
     'es-es': 'Formato de tabla',
-    'fr-fr': 'Format du tableau',
+    'fr-fr': 'Format de tableau',
     'ru-ru': 'Формат таблицы',
     'uk-ua': 'Формат таблиці',
+    'pt-br': 'Formato de tabela',
   },
   formatterDescription: {
-    'en-us': `
-      The “Table Format” controls how data from a specific table is shown in
-      query results, exports, and query combo boxes. It determines the fields to
-      display and their order. Conditional formatting can be configured based
-      on a value in the record.
-    `,
-    'de-ch': `
-      Das „Tabellenformat“ steuert, wie Daten aus einer bestimmten Tabelle in
-      Abfrageergebnissen, Exporten und Abfragekombinationsfeldern angezeigt
-      werden. Es bestimmt die anzuzeigenden Felder und deren Reihenfolge. Die
-      bedingte Formatierung kann basierend auf einem Wert im Datensatz
-      konfiguriert werden.
-    `,
-    'es-es': `
-      El "Formato de tabla" controla cómo se muestran los datos de una tabla
-      específica en los resultados de la consulta, las exportaciones y los
-      cuadros combinados de la consulta. Determina los campos a mostrar y su
-      orden. El formato condicional se puede configurar en función de un valor
-      en el registro.
-    `,
-    'fr-fr': `
-      Le « Format de table » contrôle la manière dont les données d'une table
-      spécifique sont affichées dans les résultats de requête, les exportations
-      et les listes déroulantes de requête. Il détermine les champs à afficher
-      et leur ordre. La mise en forme conditionnelle peut être configurée en
-      fonction d'une valeur dans l'enregistrement.
-    `,
-    'ru-ru': `
-      «Формат таблицы» определяет, как данные из определенной таблицы
-      отображаются в результатах запроса, экспорте и полях со списком запроса.
-      Он определяет поля для отображения и их порядок. Условное форматирование
-      можно настроить на основе значения в записи.
-    `,
-    'uk-ua': `
-      «Формат таблиці» керує тим, як дані з певної таблиці відображаються в
-      результатах запитів, експорті та комбінованих полях запитів. Він визначає
-      поля для відображення та їх порядок. Умовне форматування можна налаштувати
-      на основі значення в записі.
-    `,
+    'en-us':
+      'The “Table Format” controls how data from a specific table is shown in query results, exports, and query combo boxes. It determines the fields to display and their order. Conditional formatting can be configured based on a value in the record.',
+    'de-ch':
+      'Die „Tabellenformatierung“ steuert, wie Daten aus einer bestimmten Tabelle in Abfrageergebnissen, Exporten und Abfrage-Kombinationsfeldern dargestellt werden. Sie bestimmt die anzuzeigenden Felder und deren Reihenfolge. Die bedingte Formatierung kann basierend auf einem Wert im Datensatz konfiguriert werden.',
+    'es-es':
+      'El formato de tabla controla cómo se muestran los datos de una tabla específica en los resultados de las consultas, las exportaciones y los cuadros combinados de consulta. Determina los campos que se mostrarán y su orden. Se puede configurar el formato condicional en función de un valor del registro.',
+    'fr-fr':
+      "Le format de tableau détermine l'affichage des données d'un tableau spécifique dans les résultats de requêtes, les exportations et les listes déroulantes. Il définit les champs à afficher et leur ordre. Une mise en forme conditionnelle peut être configurée en fonction d'une valeur de l'enregistrement.",
+    'ru-ru':
+      '«Формат таблицы» определяет, как данные из определенной таблицы отображаются в результатах запроса, экспорте и полях со списком запроса. Он определяет поля для отображения и их порядок. Условное форматирование можно настроить на основе значения в записи.',
+    'uk-ua':
+      '«Формат таблиці» керує тим, як дані з певної таблиці відображаються в результатах запитів, експорті та комбінованих полях запитів. Він визначає поля для відображення та їх порядок. Умовне форматування можна налаштувати на основі значення в записі.',
+    'pt-br':
+      'O “Formato da Tabela” controla como os dados de uma tabela específica são exibidos nos resultados da consulta, nas exportações e nas caixas de combinação de consultas. Ele determina os campos a serem exibidos e a ordem em que serão exibidos. A formatação condicional pode ser configurada com base em um valor no registro.',
   },
   aggregator: {
     'en-us': 'Table Aggregation',
     'de-ch': 'Tabellenaggregation',
     'es-es': 'Agregación de tablas',
-    'fr-fr': 'Agrégation de tables',
+    'fr-fr': 'Agrégation de tableaux',
     'ru-ru': 'Агрегация таблиц',
     'uk-ua': 'Агрегація таблиць',
+    'pt-br': 'Agregação de tabelas',
   },
   aggregatorDescription: {
-    'en-us': `
-      The “Table Aggregation” controls how multiple table records are
-      consolidated together into a single text string. The table format,
-      separator, suffix, sort field, and record preview limit are customizable.
-      It can be displayed in query results and table formats.
-    `,
-    'de-ch': `
-      Die „Tabellenaggregation“ steuert, wie mehrere Tabellendatensätze zu einer
-      einzigen Textzeichenfolge zusammengefasst werden. Tabellenformat,
-      Trennzeichen, Suffix, Sortierfeld und Datensatzvorschaulimit sind
-      anpassbar. Es kann in Abfrageergebnissen und Tabellenformaten angezeigt
-      werden.
-    `,
-    'es-es': `
-      La "Agregación de tablas" controla cómo se consolidan varios registros de
-      tablas en una sola cadena de texto. El formato de la tabla, el separador,
-      el sufijo, el campo de clasificación y el límite de vista previa de
-      registros se pueden personalizar. Se puede mostrar en resultados de
-      consultas y formatos de tablas.
-    `,
-    'fr-fr': `
-      L'« Agrégation de table » contrôle la manière dont plusieurs
-      enregistrements de table sont consolidés en une seule chaîne de texte. Le
-      format du tableau, le séparateur, le suffixe, le champ de tri et la limite
-      d'aperçu des enregistrements sont personnalisables. Il peut être affiché
-      sous forme de résultats de requête et de formats de tableau.
-    `,
-    'ru-ru': `
-      «Агрегация таблиц» управляет тем, как несколько записей таблицы
-      объединяются в одну текстовую строку. Формат таблицы, разделитель,
-      суффикс, поле сортировки и ограничение предварительного просмотра записи
-      можно настроить. Его можно отобразить в результатах запроса и в форматах
-      таблиц.
-    `,
-    'uk-ua': `
-      «Агрегація таблиць» контролює, як кілька записів таблиці об’єднуються
-      разом в один текстовий рядок. Формат таблиці, роздільник, суфікс, поле
-      сортування та ліміт попереднього перегляду запису можна налаштувати. Він
-      може відображатися в результатах запитів і у форматах таблиць.
-    `,
+    'en-us':
+      'The “Table Aggregation” controls how multiple table records are consolidated together into a single text string. The table format, separator, suffix, sort field, and record preview limit are customizable. It can be displayed in query results and table formats.',
+    'de-ch':
+      'Die „Tabellenaggregation“ steuert, wie mehrere Tabelleneinträge zu einer einzigen Textzeichenfolge zusammengefasst werden. Tabellenformat, Trennzeichen, Suffix, Sortierfeld und die Begrenzung der Datensatzvorschau sind anpassbar. Die Ergebnisse können in Abfrageergebnissen und Tabellenformaten angezeigt werden.',
+    'es-es':
+      'La función «Agregación de tablas» controla cómo se consolidan varios registros de una tabla en una sola cadena de texto. El formato de la tabla, el separador, el sufijo, el campo de ordenación y el límite de vista previa de registros son personalizables. Se puede mostrar en los resultados de la consulta y en los formatos de tabla.',
+    'fr-fr':
+      "L'option « Agrégation de tables » permet de regrouper les enregistrements de plusieurs tables en une seule chaîne de texte. Le format de la table, le séparateur, le suffixe, le champ de tri et la limite d'affichage des enregistrements sont personnalisables. L'affichage est possible dans les résultats de requêtes et sous forme de tableaux.",
+    'ru-ru':
+      '«Агрегация таблиц» управляет тем, как несколько записей таблицы объединяются в одну текстовую строку. Формат таблицы, разделитель, суффикс, поле сортировки и ограничение предварительного просмотра записи можно настроить. Его можно отобразить в результатах запроса и в форматах таблиц.',
+    'uk-ua':
+      '«Агрегація таблиць» контролює, як кілька записів таблиці об’єднуються разом в один текстовий рядок. Формат таблиці, роздільник, суфікс, поле сортування та ліміт попереднього перегляду запису можна налаштувати. Він може відображатися в результатах запитів і у форматах таблиць.',
+    'pt-br':
+      'A “Agregação de Tabelas” controla como vários registros de tabelas são consolidados em uma única string de texto. O formato da tabela, o separador, o sufixo, o campo de classificação e o limite de visualização do registro são personalizáveis. Essa configuração pode ser exibida nos resultados da consulta e nos formatos de tabela.',
   },
   formattedResource: {
     'en-us': 'Formatted Resource',
@@ -267,14 +262,16 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Ressource formatée',
     'ru-ru': 'Форматированный ресурс',
     'uk-ua': 'Відформатований ресурс',
+    'pt-br': 'Recurso formatado',
   },
   availableFormatters: {
     'en-us': 'Available Table Formats',
     'de-ch': 'Verfügbare Tabellenformate',
     'es-es': 'Formatos de tabla disponibles',
-    'fr-fr': 'Formats de tableaux disponibles',
+    'fr-fr': 'Formats de tableau disponibles',
     'ru-ru': 'Доступные форматы таблиц',
     'uk-ua': 'Доступні формати таблиць',
+    'pt-br': 'Formatos de tabela disponíveis',
   },
   availableAggregators: {
     'en-us': 'Available Table Aggregations',
@@ -283,6 +280,7 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Agrégations de tables disponibles',
     'ru-ru': 'Доступные агрегаты таблиц',
     'uk-ua': 'Доступні агрегації таблиць',
+    'pt-br': 'Agregações de tabelas disponíveis',
   },
   availableWebLink: {
     'en-us': 'Available Web Links',
@@ -291,29 +289,35 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Liens Web disponibles',
     'ru-ru': 'Доступные веб-ссылки',
     'uk-ua': 'Доступні веб-посилання',
+    'pt-br': 'Links Web disponíveis',
+  },
+  availableFieldFormatters: {
+    'en-us': 'Available Field Formatters',
+    'de-ch': 'Verfügbare Feldformatierer',
+    'es-es': 'Formateadores de campo disponibles',
+    'fr-fr': 'Formateurs de champs disponibles',
+    'ru-ru': 'Доступные форматеры полей',
+    'uk-ua': 'Доступні форматувальники полів',
+    'pt-br': 'Formatadores de campo disponíveis',
   },
   selectDefaultFormatter: {
-    'en-us': 'Please select a default record formatter for this table',
-    'de-ch':
-      'Bitte wählen Sie einen Standarddatensatzformatierer für diese Tabelle',
-    'es-es':
-      'Seleccione un formateador de registros predeterminado para esta tabla',
-    'fr-fr': `
-      Veuillez sélectionner un formateur d'enregistrement par défaut pour cette
-      table
-    `,
-    'ru-ru': `
-      Пожалуйста, выберите форматирование записей по умолчанию для этой таблицы.
-    `,
-    'uk-ua': 'Виберіть стандартний формат запису для цієї таблиці',
+    'en-us': 'Please designate one of the formatters as default',
+    'de-ch': 'Bitte legen Sie einen der Formatierer als Standard fest.',
+    'es-es': 'Por favor, designe uno de los formateadores como predeterminado.',
+    'fr-fr': "Veuillez désigner l'un des formateurs comme formateur par défaut",
+    'pt-br': 'Por favor, designe um dos formatadores como padrão.',
+    'ru-ru':
+      'Пожалуйста, назначьте один из форматировщиков как форматировщик по умолчанию.',
+    'uk-ua': 'Будь ласка, призначте один із форматувальників як стандартний',
   },
   duplicateFormatters: {
     'en-us': 'Record formatter names must be unique',
-    'de-ch': 'Datensatzformatierernamen müssen eindeutig sein',
-    'es-es': 'Los nombres de los formateadores de registros deben ser únicos.',
-    'fr-fr': "Les noms du formateur d'enregistrement doivent être uniques",
+    'de-ch': 'Die Namen der Datensatzformatierer müssen eindeutig sein.',
+    'es-es': 'Los nombres de los formateadores de registro deben ser únicos.',
+    'fr-fr': "Les noms des formateurs d'enregistrements doivent être uniques",
     'ru-ru': 'Имена средств форматирования записей должны быть уникальными.',
     'uk-ua': 'Імена форматування записів мають бути унікальними',
+    'pt-br': 'Os nomes dos formatadores de registro devem ser únicos.',
   },
   dataEntryTables: {
     'en-us': 'Data Entry Tables',
@@ -322,6 +326,7 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Tableaux de saisie de données',
     'uk-ua': 'Таблиці введення даних',
     'de-ch': 'Dateneingabetabellen',
+    'pt-br': 'Tabelas de entrada de dados',
   },
   interactionsTables: {
     'en-us': 'Interactions Tables',
@@ -330,38 +335,43 @@ export const resourcesText = createDictionary({
     'fr-fr': "Tableaux d'interactions",
     'uk-ua': 'Таблиці взаємодій',
     'de-ch': 'Interaktionstabellen',
+    'pt-br': 'Tabelas de interação',
   },
   otherXmlResource: {
     'en-us': 'Other XML Resource',
     'ru-ru': 'Выберите тип ресурса',
-    'es-es': 'Seleccionar tipo de recurso',
-    'fr-fr': 'Sélectionnez le type de ressource',
-    'uk-ua': 'Виберіть тип ресурсу',
+    'es-es': 'Otros recursos XML',
+    'fr-fr': 'Autres ressources XML',
+    'uk-ua': 'Інший XML-ресурс',
     'de-ch': 'Andere XML-Ressource',
+    'pt-br': 'Outro recurso XML',
   },
   otherJsonResource: {
     'en-us': 'Other JSON Resource',
     'ru-ru': 'Другой ресурс JSON',
     'es-es': 'Otro recurso JSON',
     'fr-fr': 'Autre ressource JSON',
-    'uk-ua': 'Інший ресурс JSON',
+    'uk-ua': 'Інший JSON-ресурс',
     'de-ch': 'Andere JSON-Ressource',
+    'pt-br': 'Outro recurso JSON',
   },
   otherPropertiesResource: {
     'en-us': 'Other Properties Resource',
     'ru-ru': 'Ресурс «Другие свойства»',
-    'es-es': 'Recurso de otras propiedades',
-    'fr-fr': 'Autres ressources de propriétés',
+    'es-es': 'Otros recursos de propiedades',
+    'fr-fr': 'Autres ressources immobilières',
     'uk-ua': 'Ресурс інших властивостей',
     'de-ch': 'Andere Eigenschaften Ressource',
+    'pt-br': 'Outros recursos de propriedades',
   },
   otherAppResource: {
     'en-us': 'Other Resource',
     'ru-ru': 'Другой ресурс',
-    'es-es': 'Otro recurso',
-    'fr-fr': 'Autre ressource',
+    'es-es': 'Otros recursos',
+    'fr-fr': 'Autres ressources',
     'uk-ua': 'Інший ресурс',
     'de-ch': 'Andere Ressource',
+    'pt-br': 'Outro recurso',
   },
   filters: {
     'en-us': 'Filters',
@@ -370,22 +380,25 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Filtres',
     'uk-ua': 'Фільтри',
     'de-ch': 'Filter',
+    'pt-br': 'Filtros',
   },
   custom: {
     'en-us': 'Custom',
     'ru-ru': 'Обычай',
     'es-es': 'Costumbre',
     'fr-fr': 'Coutume',
-    'uk-ua': 'Custom',
+    'uk-ua': 'Спеціальні',
     'de-ch': 'Individuell',
+    'pt-br': 'Personalizado',
   },
   leafletLayers: {
     'en-us': 'Leaflet Layers',
     'ru-ru': 'Слои листовок',
-    'es-es': 'Capas de folletos',
-    'fr-fr': 'Couches de brochures',
+    'es-es': 'Capas de hojas',
+    'fr-fr': 'Couches de feuillets',
     'uk-ua': 'Шари листівок',
     'de-ch': 'Leaflet-Layer',
+    'pt-br': 'Camadas de Folhetos',
   },
   textEditor: {
     'en-us': 'Text Editor',
@@ -394,6 +407,7 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Éditeur de texte',
     'uk-ua': 'Текстовий редактор',
     'de-ch': 'Text-Editor',
+    'pt-br': 'Editor de texto',
   },
   xmlEditor: {
     'en-us': 'XML Editor',
@@ -402,6 +416,7 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Éditeur XML',
     'uk-ua': 'Редактор XML',
     'de-ch': 'XML-Editor',
+    'pt-br': 'Editor XML',
   },
   jsonEditor: {
     'en-us': 'JSON Editor',
@@ -409,23 +424,26 @@ export const resourcesText = createDictionary({
     'es-es': 'Editor JSON',
     'fr-fr': 'Éditeur JSON',
     'uk-ua': 'Редактор JSON',
-    'de-ch': 'Separator',
+    'de-ch': 'JSON-Editor',
+    'pt-br': 'Editor JSON',
   },
   visualEditor: {
     'en-us': 'Visual Editor',
     'ru-ru': 'Визуальный редактор',
-    'es-es': 'editor visual',
+    'es-es': 'Editor visual',
     'fr-fr': 'Éditeur visuel',
     'uk-ua': 'Візуальний редактор',
     'de-ch': 'Visueller Editor',
+    'pt-br': 'Editor visual',
   },
   selectResourceType: {
     'en-us': 'Select Resource Type',
     'ru-ru': 'Выберите тип ресурса',
     'es-es': 'Seleccionar tipo de recurso',
-    'fr-fr': 'Sélectionnez le type de ressource',
+    'fr-fr': 'Sélectionner le type de ressource',
     'uk-ua': 'Виберіть тип ресурсу',
     'de-ch': 'Ressourcentyp auswählen',
+    'pt-br': 'Selecione o tipo de recurso',
   },
   globalPreferences: {
     'en-us': 'Global Preferences',
@@ -434,6 +452,7 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Préférences globales',
     'uk-ua': 'Глобальні налаштування',
     'de-ch': 'Globale Einstellungen',
+    'pt-br': 'Preferências Globais',
   },
   remotePreferences: {
     'en-us': 'Remote Preferences',
@@ -442,14 +461,16 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Préférences à distance',
     'uk-ua': 'Віддалені параметри',
     'de-ch': 'Remote-Einstellungen',
+    'pt-br': 'Preferências remotas',
   },
   failedParsingXml: {
     'en-us': 'Failed to parse XML',
     'ru-ru': 'Не удалось разобрать XML',
-    'de-ch': 'XML konnte nicht analysiert werden',
-    'es-es': 'No se pudo analizar XML',
-    'fr-fr': "Échec de l'analyse XML",
+    'de-ch': 'Fehler beim Parsen des XML-Codes',
+    'es-es': 'Error al analizar el XML',
+    'fr-fr': "Échec de l'analyse du XML",
     'uk-ua': 'Не вдалося проаналізувати XML',
+    'pt-br': 'Falha ao analisar o XML',
   },
   name: {
     'en-us': 'Name',
@@ -458,6 +479,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Nombre',
     'fr-fr': 'Nom',
     'uk-ua': "Ім'я",
+    'pt-br': 'Nome',
   },
   title: {
     'en-us': 'Title',
@@ -466,6 +488,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Título',
     'fr-fr': 'Titre',
     'uk-ua': 'Назва',
+    'pt-br': 'Título',
   },
   default: {
     'en-us': 'Default',
@@ -474,6 +497,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Por defecto',
     'fr-fr': 'Défaut',
     'uk-ua': 'За замовчуванням',
+    'pt-br': 'Padrão',
   },
   separator: {
     'en-us': 'Separator',
@@ -482,6 +506,7 @@ export const resourcesText = createDictionary({
     'es-es': 'Separador',
     'fr-fr': 'Séparateur',
     'uk-ua': 'Роздільник',
+    'pt-br': 'Separador',
   },
   suffix: {
     'en-us': 'Suffix',
@@ -490,14 +515,16 @@ export const resourcesText = createDictionary({
     'es-es': 'Sufijo',
     'fr-fr': 'Suffixe',
     'uk-ua': 'Суфікс',
+    'pt-br': 'Sufixo',
   },
   limit: {
     'en-us': 'Limit',
     'ru-ru': 'Лимит',
-    'de-ch': 'Grenze',
+    'de-ch': 'Limit',
     'es-es': 'Límite',
     'fr-fr': 'Limite',
     'uk-ua': 'Ліміт',
+    'pt-br': 'Limite',
   },
   defaultInline: {
     'en-us': '(default)',
@@ -506,14 +533,16 @@ export const resourcesText = createDictionary({
     'fr-fr': '(défaut)',
     'ru-ru': '(по умолчанию)',
     'uk-ua': '(за умовчанням)',
+    'pt-br': '(padrão)',
   },
   sortField: {
     'en-us': 'Sort Field',
     'ru-ru': 'Сортировать поле',
     'de-ch': 'Sortierfeld',
-    'es-es': 'Ordenar campo',
+    'es-es': 'Campo de ordenación',
     'fr-fr': 'Champ de tri',
     'uk-ua': 'Поле сортування',
+    'pt-br': 'Campo de classificação',
   },
   preview: {
     'en-us': 'Preview',
@@ -522,37 +551,31 @@ export const resourcesText = createDictionary({
     'es-es': 'Avance',
     'fr-fr': 'Aperçu',
     'uk-ua': 'Попередній перегляд',
+    'pt-br': 'Pré-visualização',
   },
   previewExplainer: {
     'en-us': 'Search your collection records to preview the record formatter',
-    'de-ch': `
-      Durchsuchen Sie Ihre Sammlungsdatensätze, um eine Vorschau des
-      Datensatzformatierers anzuzeigen
-    `,
-    'es-es': `
-      Busque los registros de su colección para obtener una vista previa del
-      formateador de registros
-    `,
-    'fr-fr': `
-      Recherchez les enregistrements de votre collection pour prévisualiser le
-      formateur d'enregistrements
-    `,
-    'ru-ru': `
-      Выполните поиск в записях своей коллекции, чтобы просмотреть средство
-      форматирования записей.
-    `,
-    'uk-ua': `
-      Виконайте пошук у своїх записах колекції, щоб переглянути інструмент
-      форматування записів
-    `,
+    'de-ch':
+      'Durchsuchen Sie Ihre Sammlungsdatensätze, um eine Vorschau des Datensatzformatierers anzuzeigen.',
+    'es-es':
+      'Busque en los registros de su colección para obtener una vista previa del formateador de registros.',
+    'fr-fr':
+      'Recherchez les enregistrements de votre collection pour prévisualiser le formatage des enregistrements.',
+    'ru-ru':
+      'Выполните поиск в записях своей коллекции, чтобы просмотреть средство форматирования записей.',
+    'uk-ua':
+      'Виконайте пошук у своїх записах колекції, щоб переглянути інструмент форматування записів',
+    'pt-br':
+      'Pesquise os registros da sua coleção para visualizar o formatador de registros.',
   },
   editorNotAvailable: {
     'en-us': 'Visual editor is not available for this resource',
-    'de-ch': 'Für diese Ressource ist kein visueller Editor verfügbar',
+    'de-ch': 'Für diese Ressource ist kein visueller Editor verfügbar.',
     'es-es': 'El editor visual no está disponible para este recurso.',
-    'fr-fr': "L'éditeur visuel n'est pas disponible pour cette ressource",
+    'fr-fr': "L'éditeur visuel n'est pas disponible pour cette ressource.",
     'ru-ru': 'Визуальный редактор недоступен для этого ресурса.',
     'uk-ua': 'Візуальний редактор недоступний для цього ресурсу',
+    'pt-br': 'O editor visual não está disponível para este recurso.',
   },
   definition: {
     'en-us': 'Definition',
@@ -561,6 +584,7 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Définition',
     'ru-ru': 'Определение',
     'uk-ua': 'Визначення',
+    'pt-br': 'Definição',
   },
   addDefinition: {
     'en-us': 'Add definition',
@@ -569,6 +593,7 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Ajouter une définition',
     'ru-ru': 'Добавить определение',
     'uk-ua': 'Додайте визначення',
+    'pt-br': 'Adicionar definição',
   },
   deleteDefinition: {
     'en-us': 'Delete definition',
@@ -577,22 +602,25 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Supprimer la définition',
     'ru-ru': 'Удалить определение',
     'uk-ua': 'Видалити визначення',
+    'pt-br': 'Excluir definição',
   },
   urlPart: {
     'en-us': 'URL part',
     'de-ch': 'URL-Teil',
-    'es-es': 'Otro recurso JSON',
-    'fr-fr': 'Autre ressource JSON',
+    'es-es': 'Parte de la URL',
+    'fr-fr': 'partie URL',
     'ru-ru': 'Другой ресурс JSON',
-    'uk-ua': 'Інший ресурс JSON',
+    'uk-ua': 'URL-адреса',
+    'pt-br': 'Parte da URL',
   },
   addField: {
     'en-us': 'Add field',
     'de-ch': 'Feld hinzufügen',
-    'es-es': 'Agregue campo',
-    'fr-fr': 'Ajouter le champ',
+    'es-es': 'Agregar campo',
+    'fr-fr': 'Ajouter un champ',
     'ru-ru': 'Добавить поле',
     'uk-ua': 'Додати поле',
+    'pt-br': 'Adicionar campo',
   },
   thisField: {
     'en-us': 'This field',
@@ -601,88 +629,66 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Ce champ',
     'ru-ru': 'Это поле',
     'uk-ua': 'Це поле',
+    'pt-br': 'Este campo',
   },
   selectTableFirst: {
     'en-us': 'Select table first',
-    'de-ch': 'Zuerst Tabelle auswählen',
-    'es-es': 'Seleccione la tabla primero',
-    'fr-fr': "Sélectionnez d'abord le tableau",
+    'de-ch': 'Wählen Sie zuerst die Tabelle aus.',
+    'es-es': 'Seleccione primero la tabla.',
+    'fr-fr': "Sélectionnez d'abord la table",
     'ru-ru': 'Сначала выберите таблицу',
     'uk-ua': 'Спочатку виберіть таблицю',
+    'pt-br': 'Selecione a tabela primeiro',
   },
   conditionFieldValue: {
     'en-us': 'Condition Field Value',
-    'de-ch': 'Bedingungsfeldwert',
+    'de-ch': 'Wert des Bedingungsfeldes',
     'es-es': 'Valor del campo de condición',
     'fr-fr': 'Valeur du champ de condition',
     'ru-ru': 'Значение поля условия',
     'uk-ua': 'Умова Значення поля',
+    'pt-br': 'Valor do campo de condição',
   },
   conditionDescription: {
-    'en-us': `
-      This format will be used only if the condition field value equals this
-      condition and is not null.
-    `,
-    'de-ch': `
-      Dieses Format wird nur verwendet, wenn der Wert des Bedingungsfelds dieser
-      Bedingung entspricht und nicht null ist.
-    `,
-    'es-es': `
-      Este formato se utilizará solo si el valor del campo de condición es igual
-      a esta condición y no es nulo.
-    `,
-    'fr-fr': `
-      Ce format sera utilisé uniquement si la valeur du champ de condition est
-      égale à cette condition et n'est pas nulle.
-    `,
-    'ru-ru': `
-      Этот формат будет использоваться только в том случае, если значение поля
-      условия равно этому условию и не равно нулю.
-    `,
-    'uk-ua': `
-      Цей формат використовуватиметься, лише якщо значення поля умови дорівнює
-      цій умові й не є нульовим.
-    `,
+    'en-us':
+      'This format will be used only if the condition field value equals this condition and is not null.',
+    'de-ch':
+      'Dieses Format wird nur verwendet, wenn der Wert des Bedingungsfelds dieser Bedingung entspricht und nicht null ist.',
+    'es-es':
+      'Este formato se utilizará únicamente si el valor del campo de condición es igual a esta condición y no es nulo.',
+    'fr-fr':
+      "Ce format ne sera utilisé que si la valeur du champ de condition correspond à cette condition et n'est pas nulle.",
+    'ru-ru':
+      'Этот формат будет использоваться только в том случае, если значение поля условия равно этому условию и не равно нулю.',
+    'uk-ua':
+      'Цей формат використовуватиметься, лише якщо значення поля умови дорівнює цій умові й не є нульовим.',
+    'pt-br':
+      'Este formato será usado somente se o valor do campo de condição for igual a essa condição e não for nulo.',
   },
   wrongScopeWarning: {
-    'en-us': `
-      This resource belongs to a different collection/discipline than the one
-      you are currently in. It's recommended to switch collection before editing
-      this resource
-    `,
-    'de-ch': `
-      Diese Ressource gehört zu einer anderen Sammlung/Disziplin als der, in der
-      Sie sich gerade befinden. Es wird empfohlen, die Sammlung zu wechseln,
-      bevor Sie diese Ressource bearbeiten
-    `,
-    'es-es': `
-      Este recurso pertenece a una colección/disciplina diferente a la que se
-      encuentra actualmente. Se recomienda cambiar de colección antes de editar
-      este recurso.
-    `,
-    'fr-fr': `
-      Cette ressource appartient à une collection/discipline différente de celle
-      dans laquelle vous vous trouvez actuellement. Il est recommandé de
-      changer de collection avant de modifier cette ressource.
-    `,
-    'ru-ru': `
-      Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в
-      которой вы сейчас находитесь. Перед редактированием этого ресурса
-      рекомендуется сменить коллекцию.
-    `,
-    'uk-ua': `
-      Цей ресурс належить до іншої колекції/дисципліни, ніж та, у якій ви зараз
-      перебуваєте. Рекомендовано змінити колекцію перед редагуванням цього
-      ресурсу
-    `,
+    'en-us':
+      "This resource belongs to a different collection/discipline than the one you are currently in. It's recommended to switch collection before editing this resource",
+    'de-ch':
+      'Diese Ressource gehört zu einer anderen Sammlung/Disziplin als der, in der Sie sich aktuell befinden. Es wird empfohlen, die Sammlung zu wechseln, bevor Sie diese Ressource bearbeiten.',
+    'es-es':
+      'Este recurso pertenece a una colección/disciplina diferente a la que te encuentras actualmente. Se recomienda cambiar de colección antes de editar este recurso.',
+    'fr-fr':
+      'Cette ressource appartient à une collection/discipline différente de celle dans laquelle vous vous trouvez actuellement. Il est recommandé de changer de collection avant de modifier cette ressource.',
+    'ru-ru':
+      'Этот ресурс принадлежит к другой коллекции/дисциплине, отличной от той, в которой вы сейчас находитесь. Перед редактированием этого ресурса рекомендуется сменить коллекцию.',
+    'uk-ua':
+      'Цей ресурс належить до іншої колекції/дисципліни, ніж та, у якій ви зараз перебуваєте. Рекомендовано змінити колекцію перед редагуванням цього ресурсу',
+    'pt-br':
+      'Este recurso pertence a uma coleção/disciplina diferente daquela em que você está atualmente. Recomenda-se trocar de coleção antes de editar este recurso.',
   },
   thisFieldName: {
     'en-us': 'This field name (for preview purposes only)',
-    'de-ch': 'Dieser Feldname (nur für Vorschauzwecke)',
-    'es-es': 'Este nombre de campo (solo para fines de vista previa)',
-    'fr-fr': "Ce nom de champ (à des fins d'aperçu uniquement)",
+    'de-ch': 'Dieser Feldname (nur zur Vorschau)',
+    'es-es': 'Nombre de este campo (solo para fines de vista previa)',
+    'fr-fr': 'Nom de ce champ (à des fins de prévisualisation uniquement)',
     'ru-ru': 'Имя этого поля (только для целей предварительного просмотра)',
     'uk-ua': 'Назва цього поля (лише для попереднього перегляду)',
+    'pt-br': 'Este nome de campo (apenas para fins de visualização)',
   },
   publishEveryDays: {
     'en-us': 'Publish every N days',
@@ -691,6 +697,7 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Publier tous les N jours',
     'ru-ru': 'Публиковать каждые N дней',
     'uk-ua': 'Публікуйте кожні N днів',
+    'pt-br': 'Publicar a cada N dias',
   },
   publish: {
     'en-us': 'Publish',
@@ -699,14 +706,16 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Publier',
     'ru-ru': 'Публиковать',
     'uk-ua': 'Опублікувати',
+    'pt-br': 'Publicar',
   },
   fileName: {
     'en-us': 'File name',
     'de-ch': 'Dateiname',
-    'es-es': 'Seleccione la tabla primero',
-    'fr-fr': "Sélectionnez d'abord le tableau",
+    'es-es': 'Nombre del archivo',
+    'fr-fr': 'Nom de fichier',
     'ru-ru': 'Сначала выберите таблицу',
-    'uk-ua': 'Спочатку виберіть таблицю',
+    'uk-ua': "Ім'я файлу",
+    'pt-br': 'Nome do arquivo',
   },
   runAsUser: {
     'en-us': 'Run as user',
@@ -715,46 +724,52 @@ export const resourcesText = createDictionary({
     'fr-fr': "Exécuter en tant qu'utilisateur",
     'ru-ru': 'Запуск от имени пользователя',
     'uk-ua': 'Запуск від імені користувача',
+    'pt-br': 'Executar como usuário',
   },
   notifyUser: {
     'en-us': 'Send completion notification to user',
-    'de-ch': 'Abschlussbenachrichtigung an Benutzer senden',
+    'de-ch': 'Sende dem Benutzer eine Abschlussbenachrichtigung.',
     'es-es': 'Enviar notificación de finalización al usuario',
-    'fr-fr': "Envoyer une notification d'achèvement à l'utilisateur",
+    'fr-fr': "Envoyer une notification de fin de traitement à l'utilisateur",
     'ru-ru': 'Отправить уведомление о завершении пользователю',
     'uk-ua': 'Надіслати сповіщення про завершення користувачеві',
+    'pt-br': 'Enviar notificação de conclusão ao usuário',
   },
   runInCollection: {
     'en-us': 'Run in collection',
-    'de-ch': 'In Sammlung ausführen',
+    'de-ch': 'In der Sammlung ausführen',
     'es-es': 'Ejecutar en colección',
-    'fr-fr': 'Exécuter en collection',
+    'fr-fr': 'Course dans la collection',
     'ru-ru': 'Запустить в коллекцию',
     'uk-ua': 'Запустити в колекції',
+    'pt-br': 'Executar em coleção',
   },
   createNewForm: {
     'en-us': 'Create a new view definition',
-    'de-ch': 'Definition',
+    'de-ch': 'Erstellen Sie eine neue Ansichtsdefinition',
     'es-es': 'Crear una nueva definición de vista',
     'fr-fr': 'Créer une nouvelle définition de vue',
     'ru-ru': 'Создайте новое определение представления',
     'uk-ua': 'Створіть нове визначення подання',
+    'pt-br': 'Criar uma nova definição de visualização',
   },
   copyFromExistingForm: {
     'en-us': 'Copy existing view definition',
     'de-ch': 'Vorhandene Ansichtsdefinition kopieren',
-    'es-es': 'Copiar la definición de vista existente',
+    'es-es': 'Copiar definición de vista existente',
     'fr-fr': 'Copier la définition de vue existante',
     'ru-ru': 'Копировать существующее определение представления',
     'uk-ua': 'Копіювати існуюче визначення перегляду',
+    'pt-br': 'Copiar definição de visualização existente',
   },
   copyDefaultForm: {
     'en-us': 'Copy default view definition',
     'de-ch': 'Standardansichtsdefinition kopieren',
-    'es-es': 'Formateadores de registros',
-    'fr-fr': "Formateurs d'enregistrement",
+    'es-es': 'Copiar definición de vista predeterminada',
+    'fr-fr': 'Copier la définition de vue par défaut',
     'ru-ru': 'Форматеры записи',
     'uk-ua': 'Формати записів',
+    'pt-br': 'Copiar definição de visualização padrão',
   },
   copyDefaultForms: {
     'en-us': 'Copy default forms',
@@ -763,41 +778,46 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Copier les formulaires par défaut',
     'ru-ru': 'Копировать формы по умолчанию',
     'uk-ua': 'Копіювати стандартні форми',
+    'pt-br': 'Copiar formulários padrão',
   },
   saveFormFirst: {
     'en-us': 'Save form first',
-    'de-ch': 'Formular vorher speichern',
-    'es-es': 'Guarde el formulario primero',
-    'fr-fr': "Enregistrez d'abord le formulaire",
+    'de-ch': 'Formular zuerst speichern',
+    'es-es': 'Primero, guarda el formulario.',
+    'fr-fr': "Enregistrer d'abord",
     'ru-ru': 'Сначала сохраните форму',
     'uk-ua': 'Спочатку збережіть форму',
+    'pt-br': 'Salve o formulário primeiro',
   },
   saveFormFirstDescription: {
     'en-us': 'You need to save this form before you edit another one',
     'de-ch':
-      'Sie müssen dieses Formular speichern, bevor Sie ein anderes bearbeiten',
+      'Sie müssen dieses Formular speichern, bevor Sie ein anderes bearbeiten können.',
     'es-es': 'Debes guardar este formulario antes de editar otro.',
     'fr-fr':
-      "Vous devez enregistrer ce formulaire avant d'en modifier un autre",
+      "Vous devez enregistrer ce formulaire avant d'en modifier un autre.",
     'ru-ru':
       'Вам необходимо сохранить эту форму, прежде чем редактировать другую.',
     'uk-ua': 'Вам потрібно зберегти цю форму, перш ніж редагувати іншу',
+    'pt-br': 'Você precisa salvar este formulário antes de editar outro.',
   },
   conditionalFormatter: {
     'en-us': 'Conditional Format',
-    'de-ch': 'Bedingtes Format',
+    'de-ch': 'Bedingte Formatierung',
     'es-es': 'Formato condicional',
     'fr-fr': 'Format conditionnel',
     'ru-ru': 'Условный формат',
     'uk-ua': 'Умовний формат',
+    'pt-br': 'Formatação condicional',
   },
   customizeFieldFormatters: {
     'en-us': 'Customize Field Formats',
     'de-ch': 'Feldformate anpassen',
     'es-es': 'Personalizar formatos de campo',
-    'fr-fr': 'Personnaliser les formats de champs',
+    'fr-fr': 'Personnaliser les formats de champ',
     'ru-ru': 'Настройте форматы полей',
     'uk-ua': 'Налаштувати формати полів',
+    'pt-br': 'Personalizar formatos de campo',
   },
   expandConditionalField: {
     'en-us': 'Expand Conditional Field',
@@ -806,37 +826,317 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Développer le champ conditionnel',
     'ru-ru': 'Развернуть условное поле',
     'uk-ua': 'Розгорнути умовне поле',
+    'pt-br': 'Expandir Campo Condicional',
   },
   collapseConditionalField: {
     'en-us': 'Collapse Conditional Field',
-    'de-ch': 'Bedingtes Feld reduzieren',
-    'es-es': 'Contraer campo condicional',
-    'fr-fr': 'Réduire le champ conditionnel',
+    'de-ch': 'Zusammenbruch des bedingten Feldes',
+    'es-es': 'Colapso del campo condicional',
+    'fr-fr': 'Champ conditionnel de réduction',
     'ru-ru': 'Свернуть условное поле',
     'uk-ua': 'Згорнути умовне поле',
+    'pt-br': 'Colapso do campo condicional',
   },
   conditionalFieldValue: {
     'en-us': 'Conditional Field Value',
-    'de-ch': 'Bedingter Feldwert',
+    'de-ch': 'Wert des bedingten Feldes',
     'es-es': 'Valor de campo condicional',
-    'fr-fr': 'Valeur du champ conditionnel',
+    'fr-fr': 'Valeur de champ conditionnelle',
     'ru-ru': 'Условное значение поля',
     'uk-ua': 'Умовне значення поля',
+    'pt-br': 'Valor do campo condicional',
   },
   formatPreview: {
     'en-us': 'Format Preview',
-    'de-ch': 'Feldformate anpassen',
-    'es-es': 'Vista previa de formato',
+    'de-ch': 'Formatvorschau',
+    'es-es': 'Vista previa del formato',
     'fr-fr': 'Aperçu du format',
     'ru-ru': 'Предварительный просмотр формата',
     'uk-ua': 'Попередній перегляд формату',
+    'pt-br': 'Pré-visualização de formato',
   },
   currentDeterminationRequired: {
     'en-us': 'A current determination is required.',
-    'de-ch': 'Eine aktuelle Feststellung ist erforderlich.',
+    'de-ch': 'Ein aktueller Befund ist erforderlich.',
     'es-es': 'Se requiere una determinación actual.',
-    'fr-fr': 'Une détermination actuelle est requise.',
+    'fr-fr': 'Une décision actuelle est requise.',
     'ru-ru': 'Требуется текущее определение.',
     'uk-ua': 'Потрібне поточне визначення.',
+    'pt-br': 'É necessária uma avaliação atual.',
+  },
+  cogAddedToItself: {
+    'en-us': 'A COG cannot be added to itself.',
+    'de-ch': 'Ein COG kann nicht zu sich selbst hinzugefügt werden.',
+    'es-es': 'Un centro de gravedad no se puede sumar a sí mismo.',
+    'fr-fr': 'Un centre de gravité ne peut pas être ajouté à lui-même.',
+    'pt-br': 'Um centro de gravidade (COG) não pode ser adicionado a si mesmo.',
+    'ru-ru': 'COG не может быть сложен сам с собой.',
+    'uk-ua': 'COG не можна додати до самого себе.',
+  },
+  primaryCogChildRequired: {
+    'en-us':
+      'A Consolidated Collection Object Group must have a primary Collection Object child',
+    'de-ch':
+      'Eine konsolidierte Sammlungsobjektgruppe muss ein primäres untergeordnetes Sammlungsobjekt enthalten.',
+    'es-es':
+      'Un grupo de objetos de colección consolidados debe tener un objeto de colección hijo principal.',
+    'fr-fr':
+      "Un groupe d'objets de collection consolidée doit avoir un objet de collection enfant principal",
+    'pt-br':
+      'Um Grupo de Objetos de Coleção Consolidado deve ter um Objeto de Coleção filho primário.',
+    'ru-ru':
+      'Группа объектов консолидированной коллекции должна иметь основной дочерний объект коллекции.',
+    'uk-ua':
+      "Консолідована група об'єктів колекції повинна мати дочірній об'єкт первинної колекції",
+  },
+  deletePrimaryRecord: {
+    'en-us': 'Primary record CO cannot be deleted.',
+    'de-ch': 'Der primäre Datensatz CO kann nicht gelöscht werden.',
+    'es-es': 'El registro primario CO no se puede eliminar.',
+    'fr-fr': "L'enregistrement principal CO ne peut pas être supprimé.",
+    'pt-br': 'O registro primário CO não pode ser excluído.',
+    'ru-ru': 'Первичная запись CO не может быть удалена.',
+    'uk-ua': 'Основний запис CO неможливо видалити.',
+  },
+  deleteLoanedPrep: {
+    'en-us': 'A loaned preparation cannot be deleted',
+    'de-ch': 'Eine ausgeliehene Zubereitung kann nicht gelöscht werden',
+    'es-es': 'Una preparación prestada no se puede eliminar.',
+    'fr-fr': 'Une préparation empruntée ne peut pas être supprimée',
+    'pt-br': 'Uma preparação emprestada não pode ser excluída.',
+    'ru-ru': 'Заимствованный препарат не может быть удален',
+    'uk-ua': 'Позичений препарат не можна видалити',
+  },
+  deleteGiftedPrep: {
+    'en-us': 'A gifted preparation cannot be deleted',
+    'de-ch': 'Eine begabte Vorbereitung kann nicht gelöscht werden',
+    'es-es': 'Una preparación excepcional no se puede eliminar',
+    'fr-fr': 'Une préparation offerte ne peut pas être supprimée',
+    'pt-br': 'Uma preparação excelente não pode ser apagada.',
+    'ru-ru': 'Подаренный препарат не может быть удален',
+    'uk-ua': 'Подарований препарат не можна видалити',
+  },
+  deleteDisposedPrep: {
+    'en-us': 'A disposed preparation cannot be deleted',
+    'de-ch': 'Eine verworfene Zubereitung kann nicht gelöscht werden.',
+    'es-es': 'Un preparado desechado no se puede eliminar.',
+    'fr-fr': 'Une préparation éliminée ne peut pas être supprimée.',
+    'pt-br': 'Uma preparação descartada não pode ser apagada.',
+    'ru-ru': 'Утилизированный препарат не может быть удален',
+    'uk-ua': 'Викинутий препарат не можна видалити',
+  },
+  deleteExchangeOutPrep: {
+    'en-us': 'A exchanged out preparation cannot be deleted',
+    'de-ch': 'Eine ausgetauschte Zubereitung kann nicht gelöscht werden.',
+    'es-es': 'Una preparación sustituida no se puede eliminar.',
+    'fr-fr': 'Une préparation échangée ne peut pas être supprimée',
+    'pt-br': 'Uma preparação substituída não pode ser excluída.',
+    'ru-ru': 'Замененный препарат не может быть удален.',
+    'uk-ua': 'Обмінений препарат не можна видалити',
+  },
+  deleteExchangeInPrep: {
+    'en-us': 'A exchanged in preparation cannot be deleted',
+    'de-ch':
+      'Ein im Vorfeld ausgetauschter Eintrag kann nicht gelöscht werden.',
+    'es-es': 'Un intercambio en preparación no se puede eliminar.',
+    'fr-fr': 'Un échange en cours de préparation ne peut pas être supprimé.',
+    'pt-br': 'Um item trocado em preparação não pode ser excluído.',
+    'ru-ru': 'Обмен в стадии подготовки не может быть удален',
+    'uk-ua': 'Обмін, що готується, не можна видалити',
+  },
+  invalidDeterminationTaxon: {
+    'en-us':
+      'Determination does not belong to the taxon tree associated with the Collection Object Type',
+    'de-ch':
+      'Die Bestimmung gehört nicht zum Taxonbaum, der dem Sammlungsobjekttyp zugeordnet ist.',
+    'es-es':
+      'La determinación no pertenece al árbol taxonómico asociado con el tipo de objeto de colección.',
+    'fr-fr':
+      "La détermination n'appartient pas à l'arbre taxonomique associé au type d'objet Collection",
+    'pt-br':
+      'A determinação não pertence à árvore taxonômica associada ao tipo de objeto Coleção.',
+    'ru-ru':
+      'Определение не принадлежит к таксонному дереву, связанному с типом объекта коллекции.',
+    'uk-ua':
+      "Визначення не належить до дерева таксонів, пов'язаного з типом об'єкта колекції",
+  },
+  invalidNameTaxon: {
+    'en-us':
+      '{taxonName: string} does not belong to the {taxonTableLabel: string} tree associated with {typeName: string}',
+    'de-ch':
+      '{taxonName: string} gehört nicht zum {taxonTableLabel: string}-Baum, der mit {typeName: string} verknüpft ist.',
+    'es-es':
+      '{taxonName: string} no pertenece al árbol {taxonTableLabel: string} asociado con {typeName: string}',
+    'fr-fr':
+      "{taxonName: string} n'appartient pas à l'arbre {taxonTableLabel: string} associé à {typeName: string}",
+    'pt-br':
+      '{taxonName: string} não pertence à árvore {taxonTableLabel: string} associada a {typeName: string}',
+    'ru-ru':
+      '{taxonName: string} не принадлежит дереву {taxonTableLabel: string}, связанному с {typeName: string}',
+    'uk-ua':
+      "{taxonName: string} не належить до дерева {taxonTableLabel: string}, пов'язаного з {typeName: string}",
+  },
+  catalogNumberAlreadyUsed: {
+    'en-us':
+      '{catalogNumberFieldName: string} {catalogNumber: string} is already in use for another Component or Collection Object in this collection.',
+    'de-ch':
+      '{catalogNumberFieldName: string} {catalogNumber: string} wird bereits für eine andere Komponente oder ein anderes Sammlungsobjekt in dieser Sammlung verwendet.',
+    'es-es':
+      '{catalogNumberFieldName: string} {catalogNumber: string} ya está en uso para otro Componente u Objeto de Colección en esta colección.',
+    'fr-fr':
+      '{catalogNumberFieldName: string} {catalogNumber: string} est déjà utilisé pour un autre composant ou objet de collection dans cette collection.',
+    'pt-br':
+      '{catalogNumberFieldName: string} {catalogNumber: string} já está em uso para outro componente ou objeto de coleção nesta coleção.',
+    'ru-ru':
+      '{catalogNumberFieldName: string} {catalogNumber: string} уже используется для другого компонента или объекта коллекции в этой коллекции.',
+    'uk-ua':
+      "{catalogNumberFieldName: string} {catalogNumber: string} вже використовується для іншого компонента або об'єкта колекції в цій колекції.",
+  },
+  preparationUsedInLoan: {
+    'en-us': 'The preparation is used in a loan.',
+    'de-ch': 'Das Präparat wird bei einem Darlehen verwendet.',
+    'es-es': 'La preparación se utiliza en un préstamo.',
+    'fr-fr': "Ce document est utilisé dans le cadre d'un prêt.",
+    'pt-br': 'O preparo é utilizado em um empréstimo.',
+    'ru-ru': 'Препарат используется при кредитовании.',
+    'uk-ua': 'Препарат використовується у позиці.',
+  },
+  preparationIsNegative: {
+    'en-us': 'Preparation count cannot be negative',
+    'de-ch': 'Die Anzahl der Vorbereitungen darf nicht negativ sein.',
+    'es-es': 'El recuento de preparaciones no puede ser negativo.',
+    'fr-fr': 'Le nombre de préparations ne peut pas être négatif.',
+    'pt-br': 'A contagem de preparações não pode ser negativa.',
+    'ru-ru': 'Количество приготовлений не может быть отрицательным.',
+    'uk-ua': "Кількість підготовок не може бути від'ємним значенням",
+  },
+  configureField: {
+    'en-us': 'Configure field',
+    'de-ch': 'Feld konfigurieren',
+    'es-es': 'Campo de configuración',
+    'fr-fr': 'Configurer le champ',
+    'pt-br': 'Configurar campo',
+    'ru-ru': 'Настроить поле',
+    'uk-ua': 'Налаштувати поле',
+  },
+  trimZeros: {
+    'en-us': 'Trim Leading Zeros',
+    'de-ch': 'Führende Nullen entfernen',
+    'es-es': 'Eliminar ceros a la izquierda',
+    'fr-fr': 'Supprimer les zéros non significatifs',
+    'pt-br': 'Eliminar zeros à esquerda',
+    'ru-ru': 'Удалить начальные нули',
+    'uk-ua': 'Видалити початкові нулі',
+  },
+  trimZerosDescription: {
+    'en-us': 'Remove leading zeros from numeric values.',
+    'de-ch': 'Führende Nullen von numerischen Werten entfernen.',
+    'es-es': 'Eliminar los ceros a la izquierda de los valores numéricos.',
+    'fr-fr': 'Supprimer les zéros non significatifs des valeurs numériques.',
+    'pt-br': 'Remover zeros à esquerda de valores numéricos.',
+    'ru-ru': 'Удалить начальные нули из числовых значений.',
+    'uk-ua': 'Видаліть початкові нулі з числових значень.',
+  },
+  formatterPreviewUnavailable: {
+    'en-us': 'Preview for formatter of this type is not available',
+    'de-ch': 'Eine Vorschau für diesen Formatierertyp ist nicht verfügbar.',
+    'es-es':
+      'La vista previa para este tipo de formateador no está disponible.',
+    'fr-fr': "L'aperçu pour le formateur de ce type n'est pas disponible.",
+    'pt-br':
+      'A pré-visualização para formatadores deste tipo não está disponível.',
+    'ru-ru':
+      'Предварительный просмотр для форматировщика этого типа недоступен.',
+    'uk-ua': 'Попередній перегляд для форматера цього типу недоступний',
+  },
+  nonConformingInline: {
+    'en-us': '(non-conforming)',
+    'de-ch': '(nicht konform)',
+    'es-es': '(no conforme)',
+    'fr-fr': '(non conforme)',
+    'pt-br': '(não conforme)',
+    'ru-ru': '(несоответствующий)',
+    'uk-ua': '(невідповідний)',
+  },
+  value: {
+    'en-us': 'Value',
+    'de-ch': 'Wert',
+    'es-es': 'Valor',
+    'fr-fr': 'Valeur',
+    'ru-ru': 'Значение',
+    'uk-ua': 'Значення',
+    'pt-br': 'Valor',
+  },
+  constant: {
+    'en-us': 'Constant',
+    'de-ch': 'Konstante',
+    'es-es': 'Constante',
+    'fr-fr': 'Constante',
+    'pt-br': 'Constante',
+    'ru-ru': 'Постоянный',
+    'uk-ua': 'Постійна',
+  },
+  alpha: {
+    'en-us': 'Alpha',
+    'de-ch': 'Alpha',
+    'es-es': 'Alfa',
+    'fr-fr': 'Alpha',
+    'pt-br': 'Alfa',
+    'ru-ru': 'Альфа',
+    'uk-ua': 'Альфа',
+  },
+  numeric: {
+    'en-us': 'Numeric',
+    'de-ch': 'Numerisch',
+    'es-es': 'Numérico',
+    'fr-fr': 'Numérique',
+    'pt-br': 'Numérico',
+    'ru-ru': 'Числовой',
+    'uk-ua': 'Числовий',
+  },
+  alphanumeric: {
+    'en-us': 'Alphanumeric',
+    'de-ch': 'Alphanumerisch',
+    'es-es': 'Alfanumérico',
+    'fr-fr': 'alphanumérique',
+    'pt-br': 'Alfanumérico',
+    'ru-ru': 'Буквенно-цифровой',
+    'uk-ua': 'Буквено-цифровий',
+  },
+  anychar: {
+    'en-us': 'Any character',
+    'de-ch': 'Irgendein Charakter',
+    'es-es': 'Cualquier personaje',
+    'fr-fr': "N'importe quel personnage",
+    'pt-br': 'Qualquer personagem',
+    'ru-ru': 'Любой персонаж',
+    'uk-ua': 'Будь-який символ',
+  },
+  regex: {
+    'en-us': 'Regular expression',
+    'de-ch': 'Regulärer Ausdruck',
+    'es-es': 'Expresión regular',
+    'fr-fr': 'Expression régulière',
+    'pt-br': 'Expressão regular',
+    'ru-ru': 'Регулярное выражение',
+    'uk-ua': 'Регулярний вираз',
+  },
+  exampleField: {
+    'en-us': 'Example Field',
+    'de-ch': 'Beispielfeld',
+    'es-es': 'Campo de ejemplo',
+    'fr-fr': "Champ d'exemple",
+    'ru-ru': 'Пример поля',
+    'uk-ua': 'Приклад поле',
+    'pt-br': 'Campo de exemplo',
+  },
+  pattern: {
+    'en-us': 'Pattern',
+    'de-ch': 'Muster',
+    'es-es': 'Patrón',
+    'fr-fr': 'Modèle',
+    'pt-br': 'Padrão',
+    'ru-ru': 'Шаблон',
+    'uk-ua': 'Візерунок',
   },
 } as const);

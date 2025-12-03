@@ -53,7 +53,7 @@ export const devLanguages = {
   double: 'Double',
 };
 
-export type Language = typeof languages[number];
+export type Language = (typeof languages)[number];
 
 export const DEFAULT_LANGUAGE = 'en-us';
 
@@ -80,6 +80,6 @@ setDevelopmentGlobal('_language', LANGUAGE);
  * If modifying this, also update the trigger in the GitHub Action on
  * this branch and on the weblate-localization branch
  */
-export const syncBranch = 'production';
+export const syncBranch = 'main';
 
 export const weblateBranch = 'weblate-localization';

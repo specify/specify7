@@ -274,7 +274,7 @@ function createViewFromTemplate(
     ...altView,
     viewDef:
       typeof altView.viewDef === 'string'
-        ? nameMapper[altView.viewDef] ?? altView.viewDef
+        ? (nameMapper[altView.viewDef] ?? altView.viewDef)
         : altView.viewDef,
   }));
 
@@ -288,7 +288,7 @@ function createViewFromTemplate(
     ...definition,
     name:
       typeof definition.name === 'string'
-        ? nameMapper[definition.name] ?? definition.name
+        ? (nameMapper[definition.name] ?? definition.name)
         : definition.name,
     raw: {
       ...definition.raw,

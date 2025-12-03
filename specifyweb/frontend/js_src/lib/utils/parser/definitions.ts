@@ -3,6 +3,8 @@
  * parsing it and formatting it
  */
 
+import type { AnySchema } from '../../components/DataModel/helperTypes';
+import type { SpecifyResource } from '../../components/DataModel/legacyTypes';
 import type {
   JavaType,
   LiteralField,
@@ -27,7 +29,8 @@ import { fullDateFormat } from './dateFormat';
 
 /** Makes sure a wrapped function would receive a string value */
 export const stringGuard =
-  (formatter: (value: string) => unknown) => (value: unknown) =>
+  (formatter: (value: string) => unknown) =>
+  (value: unknown): unknown =>
     typeof value === 'string'
       ? formatter(value)
       : error('Value is not a string');
@@ -50,7 +53,7 @@ export const validators: IR<(value: unknown) => string | undefined> = {
 } as const;
 
 export type Parser = Partial<{
-  readonly type: 'checkbox' | 'date' | 'number' | 'text';
+  readonly type: 'age' | 'checkbox' | 'date' | 'number' | 'text';
   readonly minLength: number;
   readonly maxLength: number;
   // Number, or a string date in yyyy-mm-dd format
@@ -71,9 +74,9 @@ export type Parser = Partial<{
    * Format a value before validating it. Formatters are applied in the order
    * they are defined
    */
-  readonly formatters: RA<typeof formatter[string]>;
+  readonly formatters: RA<(typeof formatter)[string]>;
   // Validate the value
-  readonly validators: RA<typeof validators[string]>;
+  readonly validators: RA<(typeof validators)[string]>;
   // Format the value after formatting it
   readonly parser: (value: unknown) => unknown;
   // Format the value for use in read only contexts
@@ -89,7 +92,7 @@ export type Parser = Partial<{
 const numberPrintFormatter = (value: unknown, { step }: Parser): string =>
   typeof value === 'number' && typeof step === 'number' && step > 0
     ? f.round(value, step).toString()
-    : (value as number)?.toString() ?? '';
+    : ((value as number)?.toString() ?? '');
 
 type ExtendedJavaType = JavaType | 'day' | 'month' | 'year';
 
@@ -100,7 +103,8 @@ type ExtendedJavaType = JavaType | 'day' | 'month' | 'year';
  * This could be resolved by enabling time mocking globally, but that's not
  * great as it can alter behavior of the code
  */
-const getDate = () => (process.env.NODE_ENV === 'test' ? testTime : new Date());
+const getDate = (): Date =>
+  process.env.NODE_ENV === 'test' ? testTime : new Date();
 
 export const parsers = f.store(
   (): RR<ExtendedJavaType, ExtendedJavaType | Parser> => ({
@@ -114,8 +118,8 @@ export const parsers = f.store(
         value === undefined
           ? ''
           : Boolean(value)
-          ? queryText.yes()
-          : commonText.no(),
+            ? queryText.yes()
+            : commonText.no(),
       value: false,
     },
 
@@ -269,7 +273,8 @@ export function parserFromType(fieldType: ExtendedJavaType): Parser {
 
 export function resolveParser(
   field: Partial<LiteralField | Relationship>,
-  extras?: Partial<ExtendedField>
+  extras?: Partial<ExtendedField>,
+  resource?: SpecifyResource<AnySchema>
 ): Parser {
   const fullField = { ...field, ...extras };
   let parser = parserFromType(fullField.type as ExtendedJavaType);
@@ -284,7 +289,10 @@ export function resolveParser(
     parser = parsers()[fullField.datePart] as Parser;
 
   const formatter =
-    field.isRelationship === false ? field.getUiFormatter?.() : undefined;
+    field.isRelationship === false
+      ? field.getUiFormatter?.(resource)
+      : undefined;
+
   return mergeParsers(parser, {
     pickListName: field.getPickList?.(),
     // Don't make checkboxes required
@@ -294,7 +302,7 @@ export function resolveParser(
       ? undefined
       : (fullField as LiteralField).whiteSpaceSensitive,
     ...(typeof formatter === 'object'
-      ? formatterToParser(field, formatter)
+      ? fieldFormatterToParser(field, formatter)
       : {}),
   });
 }
@@ -352,21 +360,19 @@ function resolveDate(
     if (values.length === 1) return values[0];
     const leftDate = new Date(values[0]);
     const rightDate = new Date(values[1]);
-    return leftDate.getTime() < rightDate.getTime() === takeMin
-      ? values[0]
-      : values[1];
+    const isLesser = leftDate < rightDate;
+    return isLesser === takeMin ? values[0] : values[1];
   }
   const callback = takeMin ? f.min : f.max;
   return callback(...(values as RA<number | undefined>));
 }
 
-export function formatterToParser(
+export function fieldFormatterToParser(
   field: Partial<LiteralField | Relationship>,
   formatter: UiFormatter
 ): Parser {
-  const regExpString = formatter.parseRegExp();
   const title = formsText.requiredFormat({
-    format: formatter.pattern() ?? formatter.valueOrWild(),
+    format: formatter.placeholder,
   });
 
   const autoNumberingConfig = userPreferences.get(
@@ -379,25 +385,27 @@ export function formatterToParser(
     typeof tableName === 'string'
       ? (autoNumberingConfig[tableName] as RA<string>)
       : undefined;
-  const canAutoNumber =
-    formatter.canAutonumber() &&
-    (autoNumberingFields === undefined ||
-      autoNumberingFields.includes(field.name ?? ''));
+  const autoNumberingEnabled =
+    autoNumberingFields === undefined ||
+    autoNumberingFields.includes(field.name ?? '');
+  const canAutoNumber = formatter.canAutonumber() && autoNumberingEnabled;
 
   return {
-    // Regex may be coming from the user, thus disable strict mode
-    // eslint-disable-next-line require-unicode-regexp
-    pattern: regExpString === null ? undefined : new RegExp(regExpString),
+    pattern: formatter.regex,
     title,
     formatters: [stringGuard(formatter.parse.bind(formatter))],
     validators: [
       (value): string | undefined =>
         value === undefined || value === null ? title : undefined,
     ],
-    placeholder: formatter.pattern() ?? undefined,
+    placeholder: formatter.placeholder,
+    type:
+      field.type === undefined
+        ? undefined
+        : parserFromType(field.type as ExtendedJavaType).type,
     parser: (value: unknown): string =>
       formatter.canonicalize(value as RA<string>),
-    value: canAutoNumber ? formatter.valueOrWild() : undefined,
+    value: canAutoNumber ? formatter.defaultValue : undefined,
   };
 }
 
@@ -455,7 +463,7 @@ export function pluralizeParser(rawParser: Parser): Parser {
 // FEATURE: allow customizing this
 const separator = ',';
 
-/** Modify a regex pattern to allow a comma separate list of values */
+/** Modify a regex pattern to allow a comma separated list of values */
 export function pluralizeRegex(regex: RegExp): RegExp {
   const pattern = browserifyRegex(regex);
   // Pattern with whitespace

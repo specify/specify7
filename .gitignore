@@ -10,17 +10,12 @@ venv/
 ve/
 seed-database
 *.env
-
 /specifyweb/settings/local_settings.py
 /specifyweb/settings/local_specify_settings.py
 /specifyweb/settings/local_logging_settings.py
 /specifyweb/settings/debug.py
 /specifyweb/settings/secret_key.py
 /specifyweb/settings/ldap_settings.py
-
-
-
-# Build artifacts:
 /.mypy_cache
 /specifyweb/frontend/locale/**/*.mo
 /specifyweb/settings/build_version.py
@@ -34,3 +29,5 @@ node_modules
 /local_specifyweb_apache.conf
 /specifyweb/frontend/js_src/stats.json
 /specifyweb/frontend/js_src/dist
+.env
+docker-compose.yml

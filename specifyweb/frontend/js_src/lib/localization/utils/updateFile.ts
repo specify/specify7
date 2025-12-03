@@ -50,7 +50,7 @@ async function updateLocalFile(
     `$<pre>${JSON.stringify(strings, null, 2)}$<post>`
   );
   const config = (await resolvePrettierConfig()) ?? {};
-  const formatted = prettier.format(newContent, {
+  const formatted = await prettier.format(newContent, {
     ...config,
     parser: 'babel-ts',
   });

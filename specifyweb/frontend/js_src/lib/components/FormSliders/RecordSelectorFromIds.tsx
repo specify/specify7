@@ -9,6 +9,7 @@ import type { RA } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
+import { ChronoChart } from '../Attachments/ChronoChart';
 import { RecordSetAttachments } from '../Attachments/RecordSetAttachment';
 import { tablesWithAttachments } from '../Attachments/utils';
 import { ReadOnlyContext } from '../Core/Contexts';
@@ -42,6 +43,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   totalCount = ids.length + (typeof newResource === 'object' ? 1 : 0),
   isLoading: isExternalLoading = false,
   isInRecordSet = false,
+  recordSetId,
   onClose: handleClose,
   onSaved: handleSaved,
   onAdd: handleAdd,
@@ -65,8 +67,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly canRemove?: boolean;
   readonly totalCount?: number;
   readonly isLoading?: boolean;
-  // Record set ID, or false to not update the URL
   readonly isInRecordSet?: boolean;
+  readonly recordSetId?: number | undefined;
   readonly onClose: () => void;
   readonly onSaved: (resource: SpecifyResource<SCHEMA>) => void;
   readonly onClone:
@@ -232,7 +234,16 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               {hasAttachments &&
               !hasSeveralResourceType &&
               !resource?.isNew() ? (
-                <RecordSetAttachments records={records} onFetch={handleFetch} />
+                <RecordSetAttachments
+                  name={title as string}
+                  recordCount={totalCount}
+                  records={records}
+                  recordSetId={isInRecordSet ? recordSetId : undefined}
+                  onFetch={handleFetch}
+                />
+              ) : undefined}
+              {table.view === 'GeologicTimePeriod' ? (
+                <ChronoChart />
               ) : undefined}
               {specifyNetworkBadge}
             </div>

@@ -30,6 +30,7 @@ import {
   getNameFromTreeRankName,
   getNumberFromToManyIndex,
   mappingPathToString,
+  relationshipIsRemoteToOne,
   relationshipIsToMany,
   valueIsToManyIndex,
   valueIsTreeRank,
@@ -569,7 +570,7 @@ export class AutoMapper {
   }
 
   private readonly findFormattedHeaderFieldSynonyms = <
-    TABLE_NAME extends keyof Tables
+    TABLE_NAME extends keyof Tables,
   >(
     tableName: TABLE_NAME,
     fieldName: string
@@ -809,7 +810,10 @@ export class AutoMapper {
       .forEach((relationship) => {
         const localPath = [...mappingPath, relationship.name];
 
-        if (relationshipIsToMany(relationship))
+        if (
+          relationshipIsToMany(relationship) ||
+          relationshipIsRemoteToOne(relationship)
+        )
           localPath.push(formatToManyIndex(1));
 
         const newDepthLevel = localPath.length;
@@ -888,14 +892,14 @@ export class AutoMapper {
     if (isTreeTable(tableName)) {
       fixedNewPathParts = newPathParts.map((mappingPathPart) =>
         valueIsTreeRank(mappingPathPart)
-          ? f.maybe(
+          ? (f.maybe(
               getTreeDefinitionItems(tableName, false, 'all')?.find(
                 ({ name }) =>
                   name.toLowerCase() ===
                   getNameFromTreeRankName(mappingPathPart).toLowerCase()
               )?.name,
               formatTreeRank
-            ) ?? mappingPathPart
+            ) ?? mappingPathPart)
           : mappingPathPart
       );
     }

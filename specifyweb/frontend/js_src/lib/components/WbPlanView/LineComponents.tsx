@@ -28,7 +28,7 @@ import {
 import type { AutoMapperSuggestion } from './Mapper';
 import type { MappingLineData } from './navigator';
 
-export type HtmlGeneratorFieldData = {
+export type MapperComponentData = {
   readonly optionLabel: JSX.Element | string;
   readonly title?: LocalizedString;
   readonly isEnabled?: boolean;
@@ -37,7 +37,6 @@ export type HtmlGeneratorFieldData = {
   readonly isDefault?: boolean;
   readonly isRelationship?: boolean;
   readonly tableName?: keyof Tables;
-  readonly tableTreeDefName?: string;
 };
 
 type MappingLineBaseProps = {
@@ -50,7 +49,7 @@ type MappingLineBaseProps = {
 };
 
 export type MappingElementProps = {
-  readonly fieldsData: IR<HtmlGeneratorFieldData>;
+  readonly fieldsData: IR<MapperComponentData>;
 } & (
   | Omit<CustomSelectElementPropsClosed, 'fieldNames'>
   | (Omit<CustomSelectElementPropsOpenBase, 'autoMapperSuggestions'> & {
@@ -230,16 +229,21 @@ export function MappingElement({
 }: MappingElementProps): JSX.Element {
   const fieldGroups = Object.entries(fieldsData).reduce<
     R<R<CustomSelectElementOptionProps>>
-  >((fieldGroups, [fieldName, fieldData]) => {
-    const groupName = getFieldGroupName(
-      fieldData.isHidden ?? false,
-      fieldData.isRequired ?? false
-    );
-    fieldGroups[groupName] ??= {};
-    fieldGroups[groupName][fieldName] = fieldData;
+  >(
+    (fieldGroups, [fieldName, fieldData]) => {
+      const groupName = getFieldGroupName(
+        fieldData.isHidden ?? false,
+        fieldData.isRequired ?? false
+      );
+      fieldGroups[groupName] ??= {};
+      fieldGroups[groupName][fieldName] = fieldData;
 
-    return fieldGroups;
-  }, Object.fromEntries(Object.keys(fieldGroupLabels).map((groupName) => [groupName, {}])));
+      return fieldGroups;
+    },
+    Object.fromEntries(
+      Object.keys(fieldGroupLabels).map((groupName) => [groupName, {}])
+    )
+  );
 
   const customSelectOptionGroups = Object.fromEntries(
     Object.entries(fieldGroups)

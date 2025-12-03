@@ -100,7 +100,7 @@ export const fetchContext = f
       })
       .forEach(([tableDefinition, table]) => {
         const [frontEndFields, callback] = (
-          schemaExtras[table.name] as typeof schemaExtras['Agent'] | undefined
+          schemaExtras[table.name] as (typeof schemaExtras)['Agent'] | undefined
         )?.(table as SpecifyTable<Agent>) ?? [[]];
         const [literalFields, relationships] = split(
           frontEndFields.map((field) => {
@@ -179,13 +179,13 @@ export function getTable(name: string): SpecifyTable | undefined {
   const lowerCase = name.toLowerCase();
   return name === ''
     ? undefined
-    : genericTables[name as keyof Tables] ??
+    : (genericTables[name as keyof Tables] ??
         Object.values(genericTables).find(
           (table) => table.name.toLowerCase() === lowerCase
         ) ??
         Object.values(genericTables).find(
           (table) => table.longName.toLowerCase() === lowerCase
-        );
+        ));
 }
 
 export const strictGetTable = (name: string): SpecifyTable =>

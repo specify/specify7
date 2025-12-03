@@ -191,6 +191,7 @@ export function CollectionOneToManyPlugin({
           extraFilters={[
             {
               field: 'id',
+              isRelationship: false,
               operation: 'in',
               isNot: true,
               value: existingItemFilter?.join(',') ?? '',

@@ -199,7 +199,7 @@ exports[`DataEntry.Footer renders without errors 1`] = `
 exports[`DataEntry.Grid renders without errors 1`] = `
 <DocumentFragment>
   <div
-    class="grid items-center p-1 -ml-1 gap-2"
+    class="grid items-center p-1 gap-2"
     style="grid-template-columns: 1fr 2fr 3fr auto;"
   >
     Test
@@ -231,7 +231,7 @@ exports[`DataEntry.SubFormHeader renders without errors 1`] = `
 <DocumentFragment>
   <legend>
     <div
-      class="gap-2 flex font-bold border-b border-gray-500 pt-5 pb-1 items-center"
+      class="gap-2 flex font-bold border-b border-gray-500 pt-3 pb-1 items-center"
     >
       Test
     </div>

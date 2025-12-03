@@ -152,8 +152,8 @@ function SingleResource({
     index === -1
       ? undefined
       : index === 0
-      ? location.pathname
-      : location.pathname.slice(0, index);
+        ? location.pathname
+        : location.pathname.slice(0, index);
   if (process.env.NODE_ENV !== 'production') {
     if (path === undefined)
       throw new Error(

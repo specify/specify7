@@ -61,12 +61,12 @@ export function DateInput({
       moment === undefined
         ? ''
         : moment.isValid()
-        ? precision === 'full'
-          ? moment.format(inputFullFormat)
-          : precision === 'month-year'
-          ? moment.format(inputMonthFormat)
-          : moment.year().toString()
-        : inputValueRef.current;
+          ? precision === 'full'
+            ? moment.format(inputFullFormat)
+            : precision === 'month-year'
+              ? moment.format(inputMonthFormat)
+              : moment.year().toString()
+          : inputValueRef.current;
     if (inputValueRef.current !== formattedValue) {
       setInputValue(formattedValue);
       inputValueRef.current = formattedValue;
@@ -79,10 +79,10 @@ export function DateInput({
     isValid
       ? ''
       : precision === 'full'
-      ? formsText.requiredFormat({ format: fullDateFormat() })
-      : precision === 'month-year'
-      ? formsText.requiredFormat({ format: monthFormat() })
-      : formsText.invalidDate()
+        ? formsText.requiredFormat({ format: fullDateFormat() })
+        : precision === 'month-year'
+          ? formsText.requiredFormat({ format: monthFormat() })
+          : formsText.invalidDate()
   );
 
   return (

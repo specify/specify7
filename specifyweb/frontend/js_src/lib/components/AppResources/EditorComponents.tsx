@@ -246,10 +246,10 @@ export function useCodeMirrorExtensions(
       mode === 'json'
         ? [json(), jsonLinter(handleLinted)]
         : mode === 'properties'
-        ? [StreamLanguage.define(properties)]
-        : mode === 'jrxml' || mode === 'xml'
-        ? [xml(), xmlLinter(xmlSpec?.())(handleLinted)]
-        : [];
+          ? [StreamLanguage.define(properties)]
+          : mode === 'jrxml' || mode === 'xml'
+            ? [xml(), xmlLinter(xmlSpec?.())(handleLinted)]
+            : [];
     setExtensions([
       ...language,
       ...(lineWrap ? [EditorView.lineWrapping] : []),

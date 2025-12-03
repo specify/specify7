@@ -209,7 +209,7 @@ function mutatePolicy(policy: Policy): Policy {
     possibleActions.length === 1
       ? possibleActions
       : hasTableActions(possibleActions)
-      ? f.unique(['read', ...selectedActions])
-      : selectedActions
+        ? f.unique(['read', ...selectedActions])
+        : selectedActions
   );
 }

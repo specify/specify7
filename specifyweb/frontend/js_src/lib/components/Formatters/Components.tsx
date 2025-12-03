@@ -36,6 +36,7 @@ import {
   relationshipIsToMany,
   valueIsPartialField,
 } from '../WbPlanView/mappingHelpers';
+import type { MappingLineData } from '../WbPlanView/navigator';
 import { getMappingLineData } from '../WbPlanView/navigator';
 import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 import type { Aggregator, Formatter } from './spec';
@@ -89,7 +90,7 @@ export function GenericFormatterPickList<
   ITEM extends {
     readonly title: LocalizedString | undefined;
     readonly table: SpecifyTable | undefined;
-  }
+  },
 >({
   table,
   value = localized(''),
@@ -148,11 +149,13 @@ export function ResourceMapping({
   mapping: [mapping, setMapping],
   openIndex: [openIndex, setOpenIndex],
   isRequired = false,
+  fieldFilter,
 }: {
   readonly table: SpecifyTable;
   readonly mapping: GetSet<RA<LiteralField | Relationship> | undefined>;
   readonly openIndex: GetSet<number | undefined>;
   readonly isRequired?: boolean;
+  readonly fieldFilter?: (mappingData: MappingLineData) => MappingLineData;
 }): JSX.Element {
   const sourcePath = React.useMemo(() => {
     const rawPath =
@@ -172,8 +175,8 @@ export function ResourceMapping({
       ...(rawPath.length === 0
         ? [emptyMapping]
         : relationship?.isRelationship === false
-        ? []
-        : [formattedEntry]),
+          ? []
+          : [formattedEntry]),
     ]);
   }, [mapping, table.name]);
   const [mappingPath, setMappingPath] = React.useState(sourcePath);
@@ -195,17 +198,26 @@ export function ResourceMapping({
   }, [mappingPath, sourcePath]);
 
   const isReadOnly = React.useContext(ReadOnlyContext);
-  const lineData = React.useMemo(
-    () =>
-      getMappingLineData({
-        baseTableName: table.name,
-        mappingPath,
-        showHiddenFields: true,
-        generateFieldData: 'all',
-        spec: navigatorSpecs.formatterEditor,
-      }),
-    [table.name, mappingPath]
-  );
+  const lineData = React.useMemo(() => {
+    let data = getMappingLineData({
+      baseTableName: table.name,
+      mappingPath,
+      showHiddenFields: true,
+      generateFieldData: 'all',
+      spec: navigatorSpecs.formatterEditor,
+    }).map((line) => ({
+      ...line,
+      fieldsData: Object.fromEntries(
+        Object.entries(line.fieldsData).filter(([key]) => key !== 'age')
+      ),
+    }));
+
+    if (typeof fieldFilter === 'function') {
+      data = data.map(fieldFilter);
+    }
+
+    return data;
+  }, [table.name, mappingPath, fieldFilter]);
 
   const validation = React.useMemo(
     () =>

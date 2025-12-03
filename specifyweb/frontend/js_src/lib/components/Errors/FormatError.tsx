@@ -22,7 +22,7 @@ export function formatError(
   readonly [
     errorObject: JSX.Element,
     errorMessage: string,
-    copiableMessage: string
+    copiableMessage: string,
   ]
 > {
   const errorObject: WritableArray<React.ReactNode> = [

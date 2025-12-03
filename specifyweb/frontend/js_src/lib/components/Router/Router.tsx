@@ -40,8 +40,8 @@ export function unsafeTriggerNotFound(): boolean {
     unsafeLocation === undefined
       ? '/specify/'
       : pathIsOverlay(locationToUrl(unsafeLocation))
-      ? '/specify/overlay/not-found/'
-      : unsafeLocation,
+        ? '/specify/overlay/not-found/'
+        : unsafeLocation,
     {
       replace: true,
       state:

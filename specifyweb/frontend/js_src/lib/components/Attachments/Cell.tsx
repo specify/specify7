@@ -1,11 +1,14 @@
 import React from 'react';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
+import { notificationsText } from '../../localization/notifications';
 import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchRelated } from '../DataModel/collection';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
@@ -19,6 +22,7 @@ import { softFail } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
+import { fetchOriginalUrl } from './attachments';
 import { AttachmentPreview } from './Preview';
 import { getAttachmentRelationship, tablesWithAttachments } from './utils';
 
@@ -36,6 +40,11 @@ export function AttachmentCell({
     | undefined;
 }): JSX.Element {
   const table = f.maybe(attachment.tableID ?? undefined, getAttachmentTable);
+
+  const [originalUrl] = useAsyncState(
+    React.useCallback(async () => fetchOriginalUrl(attachment), [attachment]),
+    false
+  );
 
   return (
     <div className="relative">
@@ -61,6 +70,17 @@ export function AttachmentCell({
           handleOpen();
         }}
       />
+      {typeof originalUrl === 'string' && (
+        <Link.Icon
+          className="absolute right-0 top-0"
+          download={new URL(originalUrl).searchParams.get('downloadname')}
+          href={`/attachment_gw/proxy/${new URL(originalUrl).search}`}
+          icon="download"
+          target="_blank"
+          title={notificationsText.download()}
+          onClick={undefined}
+        />
+      )}
     </div>
   );
 }
@@ -135,7 +155,7 @@ export function AttachmentRecordLink({
 }
 
 /** Fetch CollectionObjectAttachment for a given Attachment */
-async function fetchAttachmentParent(
+export async function fetchAttachmentParent(
   table: SpecifyTable,
   attachment: SerializedResource<Attachment>
 ): Promise<SpecifyResource<AnySchema> | undefined> {
@@ -149,7 +169,7 @@ async function fetchAttachmentParent(
 /**
  * Get CollectionObject id from CollectionObjectAttachment
  */
-function getBaseResourceId(
+export function getBaseResourceId(
   table: SpecifyTable,
   related: SpecifyResource<AnySchema>
 ): number | undefined {

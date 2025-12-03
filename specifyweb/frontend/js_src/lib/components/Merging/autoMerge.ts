@@ -180,8 +180,8 @@ export const resourceToGeneric = (
         Array.isArray(value)
           ? value.map((value) => resourceToGeneric(value, strong))
           : typeof value === 'object' && value !== null
-          ? resourceToGeneric(value, strong)
-          : value,
+            ? resourceToGeneric(value, strong)
+            : value,
       ])
   ) as SerializedResource<AnySchema>;
 };
@@ -273,9 +273,9 @@ const genericPostProcessors: RA<typeof postMergeResource> = [
       Object.entries(merged).map(([fieldName, value]) => [
         fieldName,
         getMax.has(fieldName)
-          ? resources
+          ? (resources
               .map((resource) => resource[fieldName])
-              .sort(sortFunction(f.id, true))[0] ?? value
+              .sort(sortFunction(f.id, true))[0] ?? value)
           : value,
       ])
     ),

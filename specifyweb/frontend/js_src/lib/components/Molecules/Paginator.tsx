@@ -17,7 +17,7 @@ export type Paginators = 'queryBuilder' | 'recordSets';
 
 export function usePaginator(
   cacheName: Paginators,
-  defaultRowsPerPage: typeof pageSizes[number] = 10
+  defaultRowsPerPage: (typeof pageSizes)[number] = 10
 ): {
   readonly paginator: (totalCount: number | undefined) => JSX.Element;
   readonly currentPage: GetSet<number>;

@@ -1,13 +1,19 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import type { PartialBy } from '../../utils/types';
 import { className } from '../Atoms/className';
 import { Link } from '../Atoms/Link';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getResourceViewUrl } from '../DataModel/resource';
+import {
+  fetchResource,
+  getResourceViewUrl,
+  idFromUrl,
+  resourceFromUrl,
+} from '../DataModel/resource';
 import { deserializeResource } from '../DataModel/serializers';
 import { LazyResourceView } from '../Forms/LazyResourceView';
 import type { ResourceView } from '../Forms/ResourceView';
@@ -19,7 +25,7 @@ import type { ResourceView } from '../Forms/ResourceView';
 export const IsNotReadOnly = React.createContext(false);
 IsNotReadOnly.displayName = 'IsNotReadOnly';
 
-export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
+export function ResourceLink<COMPONENT extends (typeof Link)['Icon']>({
   resource,
   component: Component,
   props: rawProps,
@@ -103,6 +109,29 @@ export function ResourceEdit({
   readonly resource: SpecifyResource<AnySchema>;
   readonly onSaved?: () => void;
 }): JSX.Element {
+  const [_, setCurrentDefinition] = useCachedState(
+    'tree',
+    `definition${'Taxon'}`
+  );
+
+  const [defaultTaxonTreeDefinitionId, setDefaultTaxonTreeDefinitionId] =
+    React.useState<number>();
+
+  const disciplineId = resourceFromUrl(resource.get('discipline'))?.get('id');
+
+  React.useEffect(() => {
+    if (disciplineId === undefined || disciplineId === null) return;
+
+    fetchResource('Discipline', disciplineId)
+      .then((data) => {
+        const taxonId = idFromUrl(data.taxonTreeDef ?? '');
+        setDefaultTaxonTreeDefinitionId(taxonId);
+      })
+      .catch((error) => {
+        console.error('Error fetching discipline:', error);
+      });
+  }, [disciplineId]);
+
   return (
     <ResourceLink
       component={Link.Icon}
@@ -113,7 +142,12 @@ export function ResourceEdit({
       }}
       resource={resource}
       resourceView={{
-        onDeleted: undefined,
+        onDeleted: (): void => {
+          if (resource.specifyTable.name === 'TaxonTreeDef') {
+            setCurrentDefinition(defaultTaxonTreeDefinitionId);
+            globalThis.location.replace('/specify/');
+          }
+        },
         onSaved: handleSaved,
       }}
     />

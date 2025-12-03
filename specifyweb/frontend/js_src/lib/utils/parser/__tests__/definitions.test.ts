@@ -5,7 +5,7 @@ import type {
 } from '../../../components/DataModel/specifyField';
 import { tables } from '../../../components/DataModel/tables';
 import {
-  formatterTypeMapper,
+  fieldFormatterTypeMapper,
   UiFormatter,
 } from '../../../components/FieldFormatters';
 import { userPreferences } from '../../../components/Preferences/userPreferences';
@@ -18,8 +18,8 @@ import { removeKey } from '../../utils';
 import type { Parser } from '../definitions';
 import {
   browserifyRegex,
+  fieldFormatterToParser,
   formatter,
-  formatterToParser,
   getValidationAttributes,
   lengthToRegex,
   mergeParsers,
@@ -55,27 +55,27 @@ describe('parserFromType', () => {
 });
 
 const formatterFields = [
-  new formatterTypeMapper.constant({
+  new fieldFormatterTypeMapper.constant({
     size: 2,
-    value: localized('AB'),
+    placeholder: localized('AB'),
     autoIncrement: false,
     byYear: false,
-    pattern: localized('\\d{1,2}'),
   }),
-  new formatterTypeMapper.numeric({
+  new fieldFormatterTypeMapper.numeric({
     size: 2,
     autoIncrement: true,
     byYear: false,
-    pattern: localized('\\d{1,2}'),
   }),
 ];
 const uiFormatter = new UiFormatter(
   false,
   localized('test'),
   formatterFields,
-  tables.CollectionObject
+  tables.CollectionObject,
+  undefined,
+  'test'
 );
-const title = formsText.requiredFormat({ format: uiFormatter.pattern()! });
+const title = formsText.requiredFormat({ format: uiFormatter.defaultValue });
 
 describe('resolveParser', () => {
   test('simple string with parser merger', () => {
@@ -125,7 +125,7 @@ describe('resolveParser', () => {
       ...parserFromType('java.lang.String'),
       required: false,
       ...removeKey(
-        formatterToParser(field, uiFormatter),
+        fieldFormatterToParser(field, uiFormatter),
         'formatters',
         'parser',
         'validators'
@@ -239,14 +239,12 @@ describe('formatterToParser', () => {
       validators,
       parser: parserFunction,
       ...parser
-    } = formatterToParser({}, uiFormatter);
+    } = fieldFormatterToParser({}, uiFormatter);
     expect(parser).toEqual({
-      // Regex may be coming from the user, thus disable strict mode
-      // eslint-disable-next-line require-unicode-regexp
-      pattern: new RegExp(uiFormatter.parseRegExp()),
+      pattern: uiFormatter.regex,
       title,
-      placeholder: uiFormatter.pattern()!,
-      value: uiFormatter.valueOrWild(),
+      placeholder: uiFormatter.placeholder,
+      value: uiFormatter.defaultValue,
     });
 
     expect(formatters).toBeInstanceOf(Array);
@@ -273,7 +271,7 @@ describe('formatterToParser', () => {
     userPreferences.set('form', 'preferences', 'autoNumbering', {
       CollectionObject: [],
     });
-    expect(formatterToParser(field, uiFormatter).value).toBeUndefined();
+    expect(fieldFormatterToParser(field, uiFormatter).value).toBeUndefined();
   });
 });
 

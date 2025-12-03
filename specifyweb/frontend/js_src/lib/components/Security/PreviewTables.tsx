@@ -74,8 +74,8 @@ export function PreviewTables({
                 index === 0
                   ? 'rounded-l'
                   : index + 1 === length
-                  ? 'rounded-r'
-                  : ''
+                    ? 'rounded-r'
+                    : ''
               }
             `}
             key={header}

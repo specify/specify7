@@ -65,7 +65,7 @@ export const DataEntry = {
   >(
     'DataEntry.Grid',
     'div',
-    `items-center p-1 -ml-1 gap-2`,
+    `items-center p-1 gap-2`,
     ({
       viewDefinition,
       display,
@@ -97,9 +97,9 @@ export const DataEntry = {
     'div',
     {
       readonly colSpan: number;
-      readonly align: typeof cellAlign[number];
+      readonly align: (typeof cellAlign)[number];
       readonly visible: boolean;
-      readonly verticalAlign: typeof cellVerticalAlign[number];
+      readonly verticalAlign: (typeof cellVerticalAlign)[number];
     }
   >(
     'DataEntry.Cell',
@@ -115,18 +115,18 @@ export const DataEntry = {
           align === 'right'
             ? 'flex-end'
             : align === 'center'
-            ? 'center'
-            : undefined,
+              ? 'center'
+              : undefined,
         alignSelf:
           verticalAlign === 'stretch'
             ? 'stretch'
             : verticalAlign === 'center'
-            ? 'self-center'
-            : verticalAlign === 'start'
-            ? 'self-start'
-            : verticalAlign === 'end'
-            ? 'self-end'
-            : undefined,
+              ? 'self-center'
+              : verticalAlign === 'start'
+                ? 'self-start'
+                : verticalAlign === 'end'
+                  ? 'self-end'
+                  : undefined,
         ...props.style,
       },
     })
@@ -138,7 +138,7 @@ export const DataEntry = {
   SubFormHeader: wrap(
     'DataEntry.SubFormHeader',
     'legend',
-    'gap-2 flex font-bold border-b border-gray-500 pt-5 pb-1 items-center',
+    'gap-2 flex font-bold border-b border-gray-500 pt-3 pb-1 items-center',
     ({ children, ...props }) => ({
       // A hack for Safari. See https://github.com/specify/specify7/issues/1535
       children: <div {...props}>{children}</div>,

@@ -75,7 +75,8 @@ export const getTotalResolved = (
  * quantityResolved to the summed object values
  */
 export const updateLoanPrep = (
-  collection: Collection<LoanReturnPreparation> | undefined
+  collection: Collection<LoanReturnPreparation> | undefined,
+  silent: boolean = false
 ) => {
   if (
     collection !== undefined &&
@@ -100,8 +101,8 @@ export const updateLoanPrep = (
       { returned: 0, resolved: 0 }
     );
     const loanPrep = collection.related as SpecifyResource<LoanPreparation>;
-    loanPrep.set('quantityReturned', sums.returned);
-    loanPrep.set('quantityResolved', sums.resolved);
+    loanPrep.set('quantityReturned', sums.returned, { silent });
+    loanPrep.set('quantityResolved', sums.resolved, { silent });
   }
 };
 

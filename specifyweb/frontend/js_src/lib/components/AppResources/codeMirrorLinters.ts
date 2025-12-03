@@ -50,8 +50,8 @@ export const xmlLinter = (
     return typeof parsed === 'string'
       ? [formatXmlError(state.doc, parsed)]
       : typeof spec === 'object'
-      ? parseXmlUsingSpec(spec, parsed, string)
-      : [];
+        ? parseXmlUsingSpec(spec, parsed, string)
+        : [];
   });
 
 function parseXmlUsingSpec(
@@ -104,3 +104,8 @@ const formatXmlError = (text: Text, error: string): Diagnostic =>
       message,
     };
   }) ?? { from: 0, to: 0, severity: 'error', message: error };
+
+export const exportsForTests = {
+  parseXmlUsingSpec,
+  formatXmlError,
+};

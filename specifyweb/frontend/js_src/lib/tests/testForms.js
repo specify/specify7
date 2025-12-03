@@ -326,28 +326,28 @@ define([
 
     module('specifyform field text/dsptextfield/formattedtext/label');
     _([true, false]).each(function (doingFormTable) {
-      _(['text', 'dsptextfield', 'formattedtext', 'label']).each(function (
-        uitype
-      ) {
-        var node =
-          '<cell type="field" id="2" name="text2" uitype="' + uitype + '"/>';
-        test(node + ' doingFormTable: ' + doingFormTable, function () {
-          var result = instProcessCell(doingFormTable, node);
-          equal(result.children().length, 1, 'only one element');
-          var control = result.find('.specify-field');
-          ok(control.is('input[type="text"]'), 'control is text input');
-          if (uitype === 'formattedtext')
-            ok(
-              control.hasClass('specify-formattedtext'),
-              'has formattedtext class'
+      _(['text', 'dsptextfield', 'formattedtext', 'label']).each(
+        function (uitype) {
+          var node =
+            '<cell type="field" id="2" name="text2" uitype="' + uitype + '"/>';
+          test(node + ' doingFormTable: ' + doingFormTable, function () {
+            var result = instProcessCell(doingFormTable, node);
+            equal(result.children().length, 1, 'only one element');
+            var control = result.find('.specify-field');
+            ok(control.is('input[type="text"]'), 'control is text input');
+            if (uitype === 'formattedtext')
+              ok(
+                control.hasClass('specify-formattedtext'),
+                'has formattedtext class'
+              );
+            equal(
+              control.prop('readonly'),
+              doingFormTable || uitype === 'dsptextfield' || uitype === 'label',
+              'readonly if doing form table or dsptextfield or label'
             );
-          equal(
-            control.prop('readonly'),
-            doingFormTable || uitype === 'dsptextfield' || uitype === 'label',
-            'readonly if doing form table or dsptextfield or label'
-          );
-        });
-      });
+          });
+        }
+      );
     });
 
     module('specifyform field plugin');

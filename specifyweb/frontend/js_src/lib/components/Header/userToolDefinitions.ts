@@ -19,6 +19,7 @@ import {
   hasTablePermission,
   hasToolPermission,
 } from '../Permissions/helpers';
+import { clearAllCache } from '../RouterCommands/CacheBuster';
 import { filterMenuItems } from './menuItemProcessing';
 
 const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
@@ -28,6 +29,14 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       url: '/accounts/logout/',
       icon: icons.logout,
       enabled: () => userInformation.isauthenticated,
+      onClick: async () =>
+        clearAllCache()
+          .then(() => {
+            console.log('Cache cleared successfully.');
+          })
+          .catch((error) => {
+            console.error('Error occurred during cache clearing:', error);
+          }),
     },
     changePassword: {
       title: userText.changePassword(),
@@ -84,6 +93,12 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       url: '/specify/overlay/master-key/',
       icon: icons.identification,
     },
+    downloadDatabase: {
+      title: headerText.backupDatabase(),
+      enabled: () => hasPermission('/export/backup', 'execute'),
+      url: '/specify/overlay/backup-database/',
+      icon: icons.download,
+    },
   },
   [commonText.export()]: {
     makeDwca: {
@@ -120,7 +135,7 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
     },
     technicalDocumentation: {
       title: headerText.technicalDocumentation(),
-      url: 'https://github.com/specify/specify7/wiki',
+      url: 'https://discourse.specifysoftware.org/c/docs/',
       icon: icons.bookOpen,
     },
   },
