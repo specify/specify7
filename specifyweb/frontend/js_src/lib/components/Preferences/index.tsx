@@ -257,12 +257,10 @@ export function PreferencesContent({
         readonly title: LocalizedString | (() => LocalizedString);
         readonly description?: LocalizedString | (() => LocalizedString);
         readonly items: readonly (readonly [string, PreferenceItem<any>])[];
-      },
-      options: { readonly hideTitle?: boolean } = {}
+      }
     ): JSX.Element => {
       const subcategoryDocument =
         SUBCATEGORY_DOCS_MAP[categoryKey]?.[subcategoryKey];
-      const { hideTitle = false } = options;
 
       return (
         <section
@@ -270,12 +268,7 @@ export function PreferencesContent({
           key={`${categoryKey}-${subcategoryKey}`}
         >
           <div className="flex items-center gap-2">
-            <h4
-              aria-hidden={hideTitle}
-              className={`${className.headerGray} text-xl md:text-center ${
-                hideTitle ? 'invisible' : ''
-              }`}
-            >
+            <h4 className={`${className.headerGray} text-xl md:text-center`}>
               {typeof title === 'function' ? title() : title}
             </h4>
             <div className="flex flex-1 justify-end">
