@@ -235,12 +235,12 @@ msgstr ""
 "Cargar el conjunto de datos agregará los datos a la base de datos de "
 "especificación."
 
-#: components/WorkBench/DataSetMeta.tsx:161
+#: components/WorkBench/DataSetMeta.tsx:166
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "deleteDataSet"
 msgstr "¿Eliminar este conjunto de datos?"
 
-#: components/WorkBench/DataSetMeta.tsx:86
+#: components/WorkBench/DataSetMeta.tsx:89
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "deleteDataSetDescription"
 msgstr ""
@@ -249,12 +249,12 @@ msgstr ""
 "reutilización con otros conjuntos de datos. Además, después de eliminar, la "
 "reversión ya no será una opción para un conjunto de datos cargado."
 
-#: components/WorkBench/DataSetMeta.tsx:128
+#: components/WorkBench/DataSetMeta.tsx:131
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetDeleted"
 msgstr "Conjunto de datos eliminado con éxito"
 
-#: components/WorkBench/DataSetMeta.tsx:131
+#: components/WorkBench/DataSetMeta.tsx:134
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetDeletedDescription"
 msgstr "Conjunto de datos eliminado con éxito."
@@ -276,7 +276,7 @@ msgstr ""
 msgid "saving"
 msgstr "Ahorro..."
 
-#: components/WorkBench/WbView.tsx:108
+#: components/WorkBench/WbView.tsx:124
 #. Used in: Components > Work Bench > Wb View
 msgid "wbUnloadProtect"
 msgstr "Los cambios a este conjunto de datos no se han guardado."
@@ -645,7 +645,7 @@ msgid "firstRowIsHeader"
 msgstr "La primera Fila es el Encabezado:"
 
 #: components/Molecules/FilePicker.tsx:225
-#: components/Toolbar/WbsDialog.tsx:200
+#: components/Toolbar/WbsDialog.tsx:198
 #. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
 msgid "importFile"
 msgstr "Importar archivo"
@@ -679,12 +679,12 @@ msgstr "Actualmente no existen conjuntos de datos."
 msgid "createDataSetInstructions"
 msgstr "Usar \"Importar un archivo\" o \"Crear Nuevo\" para generar uno nuevo."
 
-#: components/Toolbar/WbsDialog.tsx:211
+#: components/Toolbar/WbsDialog.tsx:209
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "createNew"
 msgstr "Crear Nuevo"
 
-#: components/WorkBench/DataSetMeta.tsx:187
+#: components/WorkBench/DataSetMeta.tsx:192
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetMeta"
 msgstr "Propiedades del conjunto de datos"
@@ -692,27 +692,27 @@ msgstr "Propiedades del conjunto de datos"
 #: components/AttachmentsBulkImport/Datasets.tsx:152
 #: components/AttachmentsBulkImport/Datasets.tsx:284
 #: components/WbPlanView/Mapper.tsx:487
-#: components/WorkBench/DataSetMeta.tsx:211
+#: components/WorkBench/DataSetMeta.tsx:216
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 msgid "dataSetName"
 msgstr "Nombre de Conjunto de Datos"
 
-#: components/WorkBench/DataSetMeta.tsx:234
+#: components/WorkBench/DataSetMeta.tsx:239
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfRows"
 msgstr "Número de filas"
 
-#: components/WorkBench/DataSetMeta.tsx:241
+#: components/WorkBench/DataSetMeta.tsx:246
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfColumns"
 msgstr "Número de columnas"
 
-#: components/WorkBench/DataSetMeta.tsx:340
+#: components/WorkBench/DataSetMeta.tsx:345
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "importedFileName"
 msgstr "Importar nombre de archivo"
 
-#: components/WorkBench/DataSetMeta.tsx:337
+#: components/WorkBench/DataSetMeta.tsx:342
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "noFileName"
 msgstr "(sin nombre de archivo)"
@@ -733,17 +733,17 @@ msgstr "Seleccionar nuevo propietario:"
 msgid "dataSetOwnerChanged"
 msgstr "El propietario del conjunto de datos cambió"
 
-#: components/WorkBench/DataSetMeta.tsx:374
+#: components/WorkBench/DataSetMeta.tsx:379
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSet"
 msgstr "Conjunto de Datos"
 
-#: components/Toolbar/WbsDialog.tsx:124
+#: components/Toolbar/WbsDialog.tsx:122
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "dataSetTimestampUploaded"
 msgstr "Marca de tiempo cargada"
 
-#: components/WorkBench/DataSetMeta.tsx:378
+#: components/WorkBench/DataSetMeta.tsx:383
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetUploadedLabel"
 msgstr "(Cargado, Solo lectura)"

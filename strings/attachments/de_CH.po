@@ -31,7 +31,7 @@ msgstr ""
 #: components/WorkBench/WbAttachmentsPreview.tsx:115
 #: components/WorkBench/WbAttachmentsPreview.tsx:302
 #: components/WorkBench/WbAttachmentsPreview.tsx:336
-#: components/WorkBench/WbView.tsx:229
+#: components/WorkBench/WbView.tsx:245
 #: components/WorkBench/hotProps.tsx:76
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Wb Attachment Viewer > Index ⬤ Components > Wb Import Attachments > Index ⬤ Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb Attachments Preview ⬤ Components > Work Bench > Wb View ⬤ Components > Work Bench > Hot Props
 msgid "attachments"
@@ -355,7 +355,7 @@ msgstr "Vom Benutzer gestoppt"
 
 #: components/Router/OverlayRoutes.tsx:237
 #: components/Router/Routes.tsx:213
-#: components/Toolbar/WbsDialog.tsx:197
+#: components/Toolbar/WbsDialog.tsx:195
 #: components/WbImportAttachments/index.tsx:212
 #. Used in: Components > Router > Overlay Routes ⬤ Components > Router > Routes ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import Attachments > Index
 #, fuzzy

@@ -268,13 +268,13 @@ msgstr ""
 "Durch das Hochladen des Datensatzes werden die Daten der Specify-Datenbank "
 "hinzugefügt."
 
-#: components/WorkBench/DataSetMeta.tsx:161
+#: components/WorkBench/DataSetMeta.tsx:166
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "deleteDataSet"
 msgstr "Diesen Datensatz löschen?"
 
-#: components/WorkBench/DataSetMeta.tsx:86
+#: components/WorkBench/DataSetMeta.tsx:89
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "deleteDataSetDescription"
@@ -284,13 +284,13 @@ msgstr ""
 "Datensätze wiederverwendet werden. Nach dem Löschen ist außerdem keine "
 "Wiederherstellung des hochgeladenen Datensatzes mehr möglich."
 
-#: components/WorkBench/DataSetMeta.tsx:128
+#: components/WorkBench/DataSetMeta.tsx:131
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetDeleted"
 msgstr "Datensatz erfolgreich gelöscht"
 
-#: components/WorkBench/DataSetMeta.tsx:131
+#: components/WorkBench/DataSetMeta.tsx:134
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetDeletedDescription"
@@ -316,7 +316,7 @@ msgstr ""
 msgid "saving"
 msgstr "Speichern..."
 
-#: components/WorkBench/WbView.tsx:108
+#: components/WorkBench/WbView.tsx:124
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "wbUnloadProtect"
@@ -748,7 +748,7 @@ msgid "firstRowIsHeader"
 msgstr "Erste Zeile ist die Überschrift:"
 
 #: components/Molecules/FilePicker.tsx:225
-#: components/Toolbar/WbsDialog.tsx:200
+#: components/Toolbar/WbsDialog.tsx:198
 #. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "importFile"
@@ -789,13 +789,13 @@ msgstr ""
 "Verwenden Sie „Datei importieren“ oder „Neu erstellen“, um eine neue Datei "
 "zu erstellen."
 
-#: components/Toolbar/WbsDialog.tsx:211
+#: components/Toolbar/WbsDialog.tsx:209
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "createNew"
 msgstr "Neu erstellen"
 
-#: components/WorkBench/DataSetMeta.tsx:187
+#: components/WorkBench/DataSetMeta.tsx:192
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetMeta"
@@ -804,31 +804,31 @@ msgstr "Eigenschaften des Datensatzes"
 #: components/AttachmentsBulkImport/Datasets.tsx:152
 #: components/AttachmentsBulkImport/Datasets.tsx:284
 #: components/WbPlanView/Mapper.tsx:487
-#: components/WorkBench/DataSetMeta.tsx:211
+#: components/WorkBench/DataSetMeta.tsx:216
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetName"
 msgstr "Name des Datensatzes"
 
-#: components/WorkBench/DataSetMeta.tsx:234
+#: components/WorkBench/DataSetMeta.tsx:239
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "numberOfRows"
 msgstr "Anzahl der Zeilen"
 
-#: components/WorkBench/DataSetMeta.tsx:241
+#: components/WorkBench/DataSetMeta.tsx:246
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "numberOfColumns"
 msgstr "Anzahl der Spalten"
 
-#: components/WorkBench/DataSetMeta.tsx:340
+#: components/WorkBench/DataSetMeta.tsx:345
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "importedFileName"
 msgstr "Name der Importdatei"
 
-#: components/WorkBench/DataSetMeta.tsx:337
+#: components/WorkBench/DataSetMeta.tsx:342
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "noFileName"
@@ -853,19 +853,19 @@ msgstr "Neuen Besitzer auswählen:"
 msgid "dataSetOwnerChanged"
 msgstr "Datensatzbesitzer geändert"
 
-#: components/WorkBench/DataSetMeta.tsx:374
+#: components/WorkBench/DataSetMeta.tsx:379
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSet"
 msgstr "Datensatz"
 
-#: components/Toolbar/WbsDialog.tsx:124
+#: components/Toolbar/WbsDialog.tsx:122
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "dataSetTimestampUploaded"
 msgstr "Zeitstempel Hochgeladen"
 
-#: components/WorkBench/DataSetMeta.tsx:378
+#: components/WorkBench/DataSetMeta.tsx:383
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetUploadedLabel"

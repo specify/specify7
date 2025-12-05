@@ -271,13 +271,13 @@ msgstr ""
 "O carregamento do conjunto de dados adicionará os dados ao banco de dados "
 "especificado."
 
-#: components/WorkBench/DataSetMeta.tsx:161
+#: components/WorkBench/DataSetMeta.tsx:166
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "deleteDataSet"
 msgstr "Excluir este conjunto de dados?"
 
-#: components/WorkBench/DataSetMeta.tsx:86
+#: components/WorkBench/DataSetMeta.tsx:89
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "deleteDataSetDescription"
@@ -287,13 +287,13 @@ msgstr ""
 "reutilização com outros conjuntos de dados. Além disso, após a exclusão, a "
 "reversão não estará mais disponível para um conjunto de dados carregado."
 
-#: components/WorkBench/DataSetMeta.tsx:128
+#: components/WorkBench/DataSetMeta.tsx:131
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetDeleted"
 msgstr "Conjunto de dados excluído com sucesso"
 
-#: components/WorkBench/DataSetMeta.tsx:131
+#: components/WorkBench/DataSetMeta.tsx:134
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetDeletedDescription"
@@ -319,7 +319,7 @@ msgstr ""
 msgid "saving"
 msgstr "Salvando..."
 
-#: components/WorkBench/WbView.tsx:108
+#: components/WorkBench/WbView.tsx:124
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "wbUnloadProtect"
@@ -757,7 +757,7 @@ msgid "firstRowIsHeader"
 msgstr "A primeira linha é o cabeçalho:"
 
 #: components/Molecules/FilePicker.tsx:225
-#: components/Toolbar/WbsDialog.tsx:200
+#: components/Toolbar/WbsDialog.tsx:198
 #. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "importFile"
@@ -796,13 +796,13 @@ msgstr "Atualmente não existem conjuntos de dados."
 msgid "createDataSetInstructions"
 msgstr "Use \"Importar um arquivo\" ou \"Criar novo\" para criar um novo arquivo."
 
-#: components/Toolbar/WbsDialog.tsx:211
+#: components/Toolbar/WbsDialog.tsx:209
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "createNew"
 msgstr "Criar novo"
 
-#: components/WorkBench/DataSetMeta.tsx:187
+#: components/WorkBench/DataSetMeta.tsx:192
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetMeta"
@@ -811,31 +811,31 @@ msgstr "Propriedades do conjunto de dados"
 #: components/AttachmentsBulkImport/Datasets.tsx:152
 #: components/AttachmentsBulkImport/Datasets.tsx:284
 #: components/WbPlanView/Mapper.tsx:487
-#: components/WorkBench/DataSetMeta.tsx:211
+#: components/WorkBench/DataSetMeta.tsx:216
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetName"
 msgstr "Nome do conjunto de dados"
 
-#: components/WorkBench/DataSetMeta.tsx:234
+#: components/WorkBench/DataSetMeta.tsx:239
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "numberOfRows"
 msgstr "Número de linhas"
 
-#: components/WorkBench/DataSetMeta.tsx:241
+#: components/WorkBench/DataSetMeta.tsx:246
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "numberOfColumns"
 msgstr "Número de colunas"
 
-#: components/WorkBench/DataSetMeta.tsx:340
+#: components/WorkBench/DataSetMeta.tsx:345
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "importedFileName"
 msgstr "Nome do arquivo de importação"
 
-#: components/WorkBench/DataSetMeta.tsx:337
+#: components/WorkBench/DataSetMeta.tsx:342
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "noFileName"
@@ -860,19 +860,19 @@ msgstr "Selecionar Novo Proprietário:"
 msgid "dataSetOwnerChanged"
 msgstr "O proprietário do conjunto de dados foi alterado."
 
-#: components/WorkBench/DataSetMeta.tsx:374
+#: components/WorkBench/DataSetMeta.tsx:379
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSet"
 msgstr "Conjunto de dados"
 
-#: components/Toolbar/WbsDialog.tsx:124
+#: components/Toolbar/WbsDialog.tsx:122
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "dataSetTimestampUploaded"
 msgstr "Carimbo de data/hora enviado"
 
-#: components/WorkBench/DataSetMeta.tsx:378
+#: components/WorkBench/DataSetMeta.tsx:383
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetUploadedLabel"

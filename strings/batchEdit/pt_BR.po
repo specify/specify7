@@ -228,7 +228,7 @@ msgstr ""
 "A edição em lote está desativada para tabelas do sistema e tabelas de "
 "hierarquia de escopo."
 
-#: components/WorkBench/DataSetMeta.tsx:382
+#: components/WorkBench/DataSetMeta.tsx:387
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "cannotEditAfterRollback"

@@ -242,7 +242,7 @@ msgstr "Операционный API"
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:235
 #: components/Header/userToolDefinitions.ts:125
 #: components/Preferences/UserDefinitions.tsx:543
-#: components/Toolbar/WbsDialog.tsx:229
+#: components/Toolbar/WbsDialog.tsx:227
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Toolbar > Wbs Dialog
 msgid "documentation"
 msgstr "Документация"

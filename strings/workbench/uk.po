@@ -231,12 +231,12 @@ msgstr "Почати завантаження набору даних?"
 msgid "startUploadDescription"
 msgstr "Завантаження набору даних додасть дані до бази даних Specify."
 
-#: components/WorkBench/DataSetMeta.tsx:161
+#: components/WorkBench/DataSetMeta.tsx:166
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "deleteDataSet"
 msgstr "Видалити цей набір даних?"
 
-#: components/WorkBench/DataSetMeta.tsx:86
+#: components/WorkBench/DataSetMeta.tsx:89
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "deleteDataSetDescription"
 msgstr ""
@@ -245,12 +245,12 @@ msgstr ""
 "іншими наборами даних. Крім того, після видалення відкат більше не буде "
 "доступним для завантаженого набору даних."
 
-#: components/WorkBench/DataSetMeta.tsx:128
+#: components/WorkBench/DataSetMeta.tsx:131
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetDeleted"
 msgstr "Набір даних успішно видалено"
 
-#: components/WorkBench/DataSetMeta.tsx:131
+#: components/WorkBench/DataSetMeta.tsx:134
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetDeletedDescription"
 msgstr "Набір даних успішно видалено."
@@ -272,7 +272,7 @@ msgstr ""
 msgid "saving"
 msgstr "Збереження..."
 
-#: components/WorkBench/WbView.tsx:108
+#: components/WorkBench/WbView.tsx:124
 #. Used in: Components > Work Bench > Wb View
 msgid "wbUnloadProtect"
 msgstr "Зміни в цьому наборі даних не збережено."
@@ -636,7 +636,7 @@ msgid "firstRowIsHeader"
 msgstr "Перший рядок – заголовок:"
 
 #: components/Molecules/FilePicker.tsx:225
-#: components/Toolbar/WbsDialog.tsx:200
+#: components/Toolbar/WbsDialog.tsx:198
 #. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
 msgid "importFile"
 msgstr "Імпорт файлу"
@@ -669,12 +669,12 @@ msgstr "Наразі не існує наборів даних."
 msgid "createDataSetInstructions"
 msgstr "Використовуйте «Імпортувати файл» або «Створити новий», щоб створити новий."
 
-#: components/Toolbar/WbsDialog.tsx:211
+#: components/Toolbar/WbsDialog.tsx:209
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "createNew"
 msgstr "Створити новий"
 
-#: components/WorkBench/DataSetMeta.tsx:187
+#: components/WorkBench/DataSetMeta.tsx:192
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetMeta"
 msgstr "Властивості набору даних"
@@ -682,27 +682,27 @@ msgstr "Властивості набору даних"
 #: components/AttachmentsBulkImport/Datasets.tsx:152
 #: components/AttachmentsBulkImport/Datasets.tsx:284
 #: components/WbPlanView/Mapper.tsx:487
-#: components/WorkBench/DataSetMeta.tsx:211
+#: components/WorkBench/DataSetMeta.tsx:216
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 msgid "dataSetName"
 msgstr "Назва набору даних"
 
-#: components/WorkBench/DataSetMeta.tsx:234
+#: components/WorkBench/DataSetMeta.tsx:239
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfRows"
 msgstr "Кількість рядів"
 
-#: components/WorkBench/DataSetMeta.tsx:241
+#: components/WorkBench/DataSetMeta.tsx:246
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfColumns"
 msgstr "Кількість стовпців"
 
-#: components/WorkBench/DataSetMeta.tsx:340
+#: components/WorkBench/DataSetMeta.tsx:345
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "importedFileName"
 msgstr "Імпортувати ім'я файлу"
 
-#: components/WorkBench/DataSetMeta.tsx:337
+#: components/WorkBench/DataSetMeta.tsx:342
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "noFileName"
 msgstr "(без імені файлу)"
@@ -723,17 +723,17 @@ msgstr "Виберіть нового власника:"
 msgid "dataSetOwnerChanged"
 msgstr "Змінено власника набору даних"
 
-#: components/WorkBench/DataSetMeta.tsx:374
+#: components/WorkBench/DataSetMeta.tsx:379
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSet"
 msgstr "Набір даних"
 
-#: components/Toolbar/WbsDialog.tsx:124
+#: components/Toolbar/WbsDialog.tsx:122
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "dataSetTimestampUploaded"
 msgstr "Мітка часу завантажено"
 
-#: components/WorkBench/DataSetMeta.tsx:378
+#: components/WorkBench/DataSetMeta.tsx:383
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetUploadedLabel"
 msgstr "(Завантажено, лише для читання)"
