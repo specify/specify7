@@ -41,10 +41,10 @@ Agent_model = datamodel.get_table('Agent')
 Spauditlog_model = datamodel.get_table('SpAuditLog')
 
 class ObjectFormatterProps(NamedTuple):
-    format_agent_type: bool = False,
-    format_picklist: bool = False,
-    format_types: bool = True,
-    numeric_catalog_number: bool = True,
+    format_agent_type: bool = False
+    format_picklist: bool = False
+    format_types: bool = True
+    numeric_catalog_number: bool = True
     # format_expr determines if make_expr should call _fieldformat, like in versions before 7.10.2.
     # Batch edit expects it to be false to correctly handle some edge cases.
     format_expr: bool = False
@@ -442,11 +442,15 @@ class ObjectFormatter:
         
         if self.numeric_catalog_number and specify_field is CollectionObject_model.get_field('catalogNumber') \
                 and all_numeric_catnum_formats(self.collection):
+            # Cast to Numeric only if the value is numeric to avoid casting strings like 'F-235694' to 0
             # While the frontend can format the catalogNumber if needed,
             # processes like reports, labels, and query exports generally
             # expect the catalogNumber to be numeric if possible.
             # See https://github.com/specify/specify7/issues/6464
-            return cast(field, types.Numeric(65))
+            return case(
+                [(field.op('REGEXP')('^-?[0-9]+(\.[0-9]+)?$'), cast(field, types.Numeric(65)))],
+                else_=field
+            )
 
         if self.format_types and specify_field.type == 'json' and isinstance(field.comparator.type, types.JSON):
             return cast(field, types.Text)
