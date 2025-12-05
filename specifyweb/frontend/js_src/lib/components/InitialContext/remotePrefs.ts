@@ -183,11 +183,4 @@ export const collectionPrefsDefinitions = {
     defaultValue: false,
     parser: 'java.lang.Boolean',
   },
-  sp7_scope_table_picklists: {
-    separator: '_',
-    description:
-      "Whether to scope picklistitems for picklists of type 'Entire Table'",
-    defaultValue: true,
-    parser: 'java.lang.Boolean',
-  },
 } as const;
