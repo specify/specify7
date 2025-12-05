@@ -549,23 +549,14 @@ function CollectionPreferences(): JSX.Element {
   );
 }
 
-function FetchGate({
-  promise,
-  children,
-}: {
-  readonly promise: Promise<unknown>;
-  readonly children?: React.ReactNode;
-}): JSX.Element | null {
-  const [hasFetched] = usePromise(promise, true);
-  return hasFetched ? <>{children}</> : null;
+function createPreferencesWrapper(Component: React.ComponentType) {
+  return function Wrapper(): JSX.Element | null {
+    const [hasFetched] = usePromise(preferencesPromise, true);
+    return hasFetched ? <Component /> : null;
+  };
 }
 
-export function PreferencesWrapper(): JSX.Element | null {
-  const [hasFetched] = usePromise(preferencesPromise, true);
-  return hasFetched === true ? <Preferences /> : null;
-}
-
-export function CollectionPreferencesWrapper(): JSX.Element | null {
-  const [hasFetched] = usePromise(preferencesPromise, true);
-  return hasFetched === true ? <CollectionPreferences /> : null;
-}
+export const PreferencesWrapper = createPreferencesWrapper(Preferences);
+export const CollectionPreferencesWrapper = createPreferencesWrapper(
+  CollectionPreferences
+);
