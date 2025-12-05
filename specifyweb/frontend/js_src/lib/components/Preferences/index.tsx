@@ -86,9 +86,6 @@ const documentHrefResolvers: IR<DocumentHrefResolver> = {
   collection: undefined,
 };
 
-const collectionPreferencesPromise = Promise.all([
-  collectionPreferences.fetch(),
-]).then(f.true);
 /**
  * Fetch app resource that stores current user preferences
  *
@@ -564,17 +561,11 @@ function FetchGate({
 }
 
 export function PreferencesWrapper(): JSX.Element | null {
-  return (
-    <FetchGate promise={preferencesPromise}>
-      <Preferences />
-    </FetchGate>
-  );
+  const [hasFetched] = usePromise(preferencesPromise, true);
+  return hasFetched === true ? <Preferences /> : null;
 }
 
 export function CollectionPreferencesWrapper(): JSX.Element | null {
-  return (
-    <FetchGate promise={collectionPreferencesPromise}>
-      <CollectionPreferences />
-    </FetchGate>
-  );
+  const [hasFetched] = usePromise(preferencesPromise, true);
+  return hasFetched === true ? <CollectionPreferences /> : null;
 }
