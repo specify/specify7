@@ -249,7 +249,7 @@ export function ResourceMapping({
           const lastField = inflatedPath?.at(-1);
           setMappingPath(
             lastField?.isRelationship === true &&
-            lastField.type !== 'zero-to-one' &&
+              lastField.type !== 'zero-to-one' &&
               relationshipIsToMany(lastField) &&
               !navigatorSpecs.formatterEditor.allowTransientToMany
               ? [...path, formattedEntry]
