@@ -163,14 +163,8 @@ export function QueryLine({
   if (fieldType === 'age' && field.filters.some((filter) => filter.type === 'ageRange')) {
           parser = { 
             ...parser, 
-            type: 'number', 
-            validators: [
-              ...(parser.validators ?? []),
-              (value: unknown): string | undefined => {
-                const number_ = typeof value === "number" ? value : Number.parseFloat(String(value));
-                return  !Number.isNaN(number_) && number_ < 0 ? "Age cannot be negative" : undefined;
-              }
-            ]
+            type: 'number',
+            step: "any"
           };
         }
 
