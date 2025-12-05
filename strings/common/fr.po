@@ -642,7 +642,7 @@ msgid "update"
 msgstr "Mise à jour"
 
 #: components/FormPlugins/DatePrecisionPicker.tsx:46
-#: components/WbPlanView/navigator.ts:662
+#: components/WbPlanView/navigator.ts:663
 #. Used in: Components > Form Plugins > Date Precision Picker ⬤ Components > Wb Plan View > Navigator
 msgid "fullDate"
 msgstr "Date complète"
@@ -879,7 +879,7 @@ msgstr "Rejeter"
 
 #: components/DataModel/specifyTable.ts:281
 #: components/ExportFeed/Editor.tsx:194
-#: components/WbPlanView/navigator.ts:540
+#: components/WbPlanView/navigator.ts:541
 #. Used in: Components > Data Model > Specify Table ⬤ Components > Export Feed > Editor ⬤ Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "id"
