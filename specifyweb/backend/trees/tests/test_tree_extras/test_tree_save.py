@@ -1,5 +1,5 @@
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
-from specifyweb.backend.trees.extras import renumber_tree
+from specifyweb.backend.trees.extras import renumber_tree, validate_tree_numbering
 from specifyweb.specify.models import Taxon, Taxontreedefitem
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
 
@@ -286,6 +286,7 @@ class TestTreeSave(GeographyTree):
         renumber_tree(table)
 
         # Test that the node numbers in the tree are correct
+        # NOTE: Using validate_tree_numbering now instead, but keeping query here for future reference and testing
         bad_node_number_count = (
             Taxon.objects
             .filter(parent__isnull=False)
@@ -301,4 +302,5 @@ class TestTreeSave(GeographyTree):
             .count()
         )
 
-        self.assertEqual(bad_node_number_count, 0)
+        # self.assertEqual(bad_node_number_count, 0)
+        validate_tree_numbering('taxon')
