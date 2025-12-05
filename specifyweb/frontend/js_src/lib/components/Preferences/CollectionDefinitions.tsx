@@ -31,7 +31,7 @@ export const collectionPreferenceDefinitions = {
             description: preferencesText.scopeEntireTablePicklistsDescription(),
             requiresReload: false,
             visible: true,
-            defaultValue: false,
+            defaultValue: true,
             type: 'java.lang.Boolean',
           }),
         },
