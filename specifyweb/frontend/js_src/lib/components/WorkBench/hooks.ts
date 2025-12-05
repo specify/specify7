@@ -185,9 +185,18 @@ export function useHotHooks({
       const filteredChanges = unfilteredChanges
         .filter((change): change is CellChange => change !== null)
         .filter(
-          ([, property]) =>
-            (property as number) < workbench.dataset.columns.length
-        );
+          ([, property]) => {
+            let columnIndex: number | undefined;
+      
+            if (typeof property === 'number') {
+              columnIndex = property;
+            } else if (typeof property === 'string' && workbench.dataset.columns) {
+              columnIndex = workbench.dataset.columns.findIndex(colDef => (colDef as unknown as { readonly data: string }).data === property);
+            }
+      
+            return columnIndex !== undefined && columnIndex >= 0 && columnIndex < workbench.dataset.columns.length;
+          }
+      );
       if (
         filteredChanges.length === unfilteredChanges.length ||
         workbench.hot === undefined
