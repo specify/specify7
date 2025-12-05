@@ -180,12 +180,12 @@ function Preferences({
 export function usePrefDefinitions(prefType: PreferenceType = 'user') {
   const isDarkMode = useDarkMode();
   const isRedirecting = React.useContext(userPreferences.Context) !== undefined;
-  const visibilityContext = React.useMemo(
-    () =>
-      prefType === 'user'
-        ? { isDarkMode, isRedirecting }
-        : { isDarkMode, isRedirecting: false },
-    [prefType, isDarkMode, isRedirecting]
+  const preferencesVisibilityContext = React.useMemo(
+    () => ({
+      isDarkMode,
+      isRedirecting,
+    }),
+    [isDarkMode, isRedirecting]
   );
 
   const definitions = preferenceDefinitions[prefType];
@@ -209,7 +209,7 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
                           items: Object.entries(items).filter(
                             ([_name, { visible }]) =>
                               typeof visible === 'function'
-                                ? visible(visibilityContext)
+                                ? visible(preferencesVisibilityContext)
                                 : visible !== false
                           ),
                         },
@@ -220,7 +220,7 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
             ] as const
         )
         .filter(([_name, { subCategories }]) => subCategories.length > 0),
-    [definitions, visibilityContext]
+    [definitions, preferencesVisibilityContext]
   );
 }
 
