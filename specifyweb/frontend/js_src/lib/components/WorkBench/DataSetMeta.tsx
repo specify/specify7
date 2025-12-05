@@ -147,8 +147,11 @@ export function DataSetMeta({
                     expectedErrors: [Http.NOT_FOUND, Http.NO_CONTENT],
                   }).then(() => {
                     setIsDeleted(true);
-                    const resource = {id: dataset.id, specifyTable: tables.Spdataset } as SpecifyResource<Spdataset>;
-                    resourceEvents.trigger('deleted',resource);
+                    const resource = {
+                      id: dataset.id,
+                      specifyTable: tables.Spdataset,
+                    } as SpecifyResource<Spdataset>;
+                    resourceEvents.trigger('deleted', resource);
                   })
                 );
               }}
