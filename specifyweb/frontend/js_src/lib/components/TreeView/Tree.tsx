@@ -19,7 +19,6 @@ import { idFromUrl } from '../DataModel/resource';
 import { deserializeResource } from '../DataModel/serializers';
 import { softError } from '../Errors/assert';
 import { ResourceView } from '../Forms/ResourceView';
-import { getPref } from '../InitialContext/remotePrefs';
 import { hasTablePermission } from '../Permissions/helpers';
 import { useHighContrast } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -98,9 +97,12 @@ export function Tree<
     'synonymColor'
   );
 
-  const statsThreshold = getPref(
-    `TreeEditor.Rank.Threshold.${tableName as 'Geography'}`
+  const [statsThreshold] = userPreferences.use(
+    'treeEditor',
+    treeToPref[tableName],
+    'rankThreshold'
   );
+
   const getStats = React.useCallback(
     async (nodeId: number | 'null', rankId: number): Promise<Stats> =>
       rankId >= statsThreshold
