@@ -117,8 +117,7 @@ async function fetchFromTable(
   pickList: SpecifyResource<PickList>,
   limit: number
 ): Promise<RA<PickListItemSimple>> {
-  const specifyTable = strictGetTable(pickList.get('tableName'));
-  const tableName = specifyTable.name;
+  const tableName = strictGetTable(pickList.get('tableName')).name;
 
   if (!hasTablePermission(tableName, 'read')) return [];
 
