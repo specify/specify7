@@ -113,15 +113,6 @@ describe('fetchPickListItems', () => {
     },
     objects: [{ id: 3, _tableName: 'Locality', localityname: 'abc' }],
   });
-  overrideAjax('/api/specify/locality/?domainfilter=false&limit=0', {
-    meta: {
-      total_count: 2,
-    },
-    objects: [
-      { id: 3, _tableName: 'Locality', localityname: 'abc' },
-      { id: 4, _tableName: 'Locality', localityname: 'def' },
-    ],
-  });
   test('pick list from entire table', async () => {
     const pickList = deserializeResource(
       addMissingFields('PickList', {
@@ -139,31 +130,11 @@ describe('fetchPickListItems', () => {
     ]);
   });
 
-  overrideAjax('/api/specify/locality/?limit=0', {
-    meta: {
-      total_count: 2,
-    },
-    objects: [
-      { id: 3, _tableName: 'Locality', localityname: 'abc' },
-      { id: 4, _tableName: 'Locality', localityname: 'def' },
-    ],
-  });
-
   overrideAjax('/api/specify/collection/?domainfilter=true&limit=0', {
     meta: {
       total_count: 1,
     },
     objects: [{ id: 1, _tableName: 'Collection', collectionname: 'abc' }],
-  });
-
-  overrideAjax('/api/specify/collection/?domainfilter=false&limit=0', {
-    meta: {
-      total_count: 2,
-    },
-    objects: [
-      { id: 1, _tableName: 'Collection', collectionname: 'abc' },
-      { id: 2, _tableName: 'Collection', collectionname: 'cba' },
-    ],
   });
 
   overrideAjax('/api/specify/collection/?limit=0', {
