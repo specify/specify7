@@ -24,10 +24,6 @@ import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { format } from '../Formatters/formatters';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
-import {
-  ensureCollectionPreferencesLoaded,
-  getCollectionPref,
-} from '../InitialContext/remotePrefs';
 import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
 import {
   createPickListItem,
@@ -126,38 +122,18 @@ async function fetchFromTable(
 
   if (!hasTablePermission(tableName, 'read')) return [];
 
-  const prefsPromise = ensureCollectionPreferencesLoaded()
-    .then((collectionPreferences) => {
-      const rawValue =
-        collectionPreferences.getRaw()?.general?.pickLists
-          ?.sp7_scope_table_picklists;
-
-      return typeof rawValue === 'boolean'
-        ? rawValue
-        : collectionPreferences.get(
-            'general',
-            'pickLists',
-            'sp7_scope_table_picklists'
-          );
-    })
-    .catch(() =>
-      getCollectionPref(
-        'sp7_scope_table_picklists',
-        schema.domainLevelIds.collection
-      )
-    );
-
-  const scopeTablePicklist = await prefsPromise;
-
-  const tableHasScope = specifyTable.getScope() !== undefined;
-  const tableSupportsDomainFilter =
-    tableHasScope ||
-    !f.includes(Object.keys(schema.domainLevelIds), toLowerCase(tableName));
+  const prefModule = await import('../Preferences/collectionPreferences');
+  const collectionPreferences = prefModule.collectionPreferences;
+  const scopeTablePicklistsPref = collectionPreferences.get(
+    'general',
+    'pickLists',
+    'sp7_scope_table_picklists'
+  );
 
   const { records } = await fetchCollection(tableName, {
-    domainFilter: tableSupportsDomainFilter
-      ? Boolean(scopeTablePicklist)
-      : undefined,
+    domainFilter: scopeTablePicklistsPref
+      ? true
+      : !f.includes(Object.keys(schema.domainLevelIds), toLowerCase(tableName)),
     limit,
   });
 
