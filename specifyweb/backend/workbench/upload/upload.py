@@ -21,7 +21,7 @@ from collections import defaultdict
 from django.db import transaction
 from django.db.utils import OperationalError, IntegrityError
 from jsonschema import validate  # type: ignore
-from typing import Any, Optional, cast
+from typing import Any, cast
 
 from specifyweb.backend.permissions.permissions import has_target_permission
 from specifyweb.specify import models
@@ -59,7 +59,7 @@ from .uploadable import (
     Uploadable,
     BatchEditJson,
 )
-from .upload_table import BoundUploadTable, UploadTable, reset_process_timings, get_process_timings
+from .upload_table import BoundUploadTable, reset_process_timings, get_process_timings
 from .scope_context import ScopeContext
 from ..models import Spdataset
 
@@ -76,6 +76,7 @@ Progress = Callable[[int, int | None], None]
 logger = logging.getLogger(__name__)
 
 BULK_BATCH_SIZE = 2000
+BULK_FLUSH_SIZE = 4000
 
 class RollbackFailure(Exception):
     pass
@@ -410,8 +411,64 @@ def do_upload(
     bulk_deferred = 0 # rows actually queued for bulk_create
 
     # Pending bulk inserts: list of (row_index, plan_dict)
-    # plan_dict: {"model": ModelClass, "attrs": dict, "info": ReportInfo, "to_one_results": dict[str, UploadResult]}
+    # plan_dict: {"model": ModelClass, "attrs": dict, "info": ReportInfo, "to_one_results": dict[str, UploadResult], "bound_table": BoundUploadTable}
     pending_inserts: list[tuple[int, dict[str, Any]]] = []
+    total_inserted = 0
+
+    def flush_pending_inserts() -> None:
+        nonlocal total_inserted
+
+        if not use_bulk_create or not pending_inserts:
+            return
+
+        t0_bulk = time.perf_counter()
+
+        # Group pending inserts by model to make bulk_create efficient
+        grouped: dict[type, list[tuple[int, dict[str, Any]]]] = defaultdict(list)
+        for row_index, plan in pending_inserts:
+            grouped[plan["model"]].append((row_index, plan))
+
+        inserted_now = 0
+
+        for model, group in grouped.items():
+            # Build objects for this model and perform bulk_create
+            objs = [model(**plan["attrs"]) for (_idx, plan) in group]
+            created_objs = model.objects.bulk_create(
+                objs, batch_size=BULK_BATCH_SIZE
+            )
+            inserted_now += len(created_objs)
+
+            # Attach audit, picklists, to-many, UploadResult
+            for (row_index, plan), obj in zip(group, created_objs):
+                bound: BoundUploadTable = plan["bound_table"]
+                info = plan["info"]
+                to_one_results = plan["to_one_results"]
+
+                bound.auditor.insert(obj, None)
+                picklist_additions = bound._do_picklist_additions()
+                to_many_results = bound._handle_to_many(
+                    update=False,
+                    parent_id=obj.id,
+                    model=model,
+                )
+
+                record = Uploaded(obj.id, info, picklist_additions)
+                results[row_index] = UploadResult(
+                    record, to_one_results, to_many_results
+                )
+
+        bulk_duration = time.perf_counter() - t0_bulk
+        stage_timings["save_row"] += bulk_duration
+
+        total_inserted += inserted_now
+        logger.info(
+            "bulk_create flush: inserted %d rows in %.4fs",
+            inserted_now,
+            bulk_duration,
+        )
+
+        # Clear buffer after flush
+        pending_inserts.clear()
 
     with savepoint("main upload"):
         tic = time.perf_counter()
@@ -553,6 +610,9 @@ def do_upload(
                     if row_result.contains_failure():
                         cache = _cache
                         raise Rollback("failed row")
+                    
+            if use_bulk_create and len(pending_inserts) >= BULK_FLUSH_SIZE:
+                flush_pending_inserts()
 
         # Perform all deferred bulk inserts
         if use_bulk_create and pending_inserts:
@@ -613,6 +673,11 @@ def do_upload(
                 total_inserted,
             )
 
+        # Flush for any remaining deferred bulk inserts
+        if use_bulk_create:
+            flush_pending_inserts()
+            del pending_inserts
+        
         # Make sure no placeholders are left
         assert all(r is not None for r in results)
         
@@ -664,7 +729,7 @@ def do_upload(
                 bulk_candidates,
                 bulk_eligible,
                 bulk_deferred,
-                0 if not pending_inserts else total_inserted,
+                total_inserted,
             )
 
         if no_commit:
