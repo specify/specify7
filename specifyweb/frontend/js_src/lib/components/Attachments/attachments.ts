@@ -291,13 +291,6 @@ export async function uploadFile({
         }
     })
   );
-  /*
-   * Const [attachmentIsPublicDefault] = collectionPreferences.use(
-   *   'general',
-   *   'attachments',
-   *   'attachment.is_public_default'
-   * );
-   */
 
   return new tables.Attachment.Resource({
     attachmentlocation: data.attachmentLocation,
