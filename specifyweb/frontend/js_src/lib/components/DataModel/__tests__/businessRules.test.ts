@@ -24,6 +24,15 @@ import type {
 mockTime();
 requireContext();
 
+const emptyCollection = {
+  objects: [],
+  meta: {
+    limit: 20,
+    offset: 0,
+    total_count: 0,
+  },
+};
+
 describe('Borrow Material business rules', () => {
   const borrowMaterialId = 1;
   const borrowMaterialUrl = getResourceApiUrl(
@@ -103,6 +112,16 @@ describe('Collection Object business rules', () => {
     });
 
   const orginalEmbeddedCollectingEvent = schema.embeddedCollectingEvent;
+
+  overrideAjax(
+    '/api/specify/component/?catalognumber=000000001&domainfilter=true',
+    emptyCollection
+  );
+
+  overrideAjax(
+    '/api/specify/component/?catalognumber=000000123&domainfilter=true',
+    emptyCollection
+  );
 
   beforeAll(() => {
     overwriteReadOnly(schema, 'embeddedCollectingEvent', true);
@@ -288,6 +307,11 @@ describe('Collection Object business rules', () => {
         total_count: 0,
       },
     }
+  );
+
+  overrideAjax(
+    '/api/specify/component/?catalognumber=2022-%23%23%23%23%23%23&domainfilter=true',
+    emptyCollection
   );
 
   test('CollectionObject -> catalogNumber is reset whenever new CollectionObject -> collectionObjectType changes', async () => {
@@ -618,6 +642,12 @@ describe('uniqueness rules', () => {
       },
     }
   );
+
+  overrideAjax(
+    '/api/specify/component/?catalognumber=000000001&domainfilter=true',
+    emptyCollection
+  );
+
   test('simple uniqueness rule', async () => {
     const collectionObject = new tables.CollectionObject.Resource({
       collection: '/api/specify/collection/4/',
