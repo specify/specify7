@@ -5763,6 +5763,36 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
+            name='AutonumschColl',
+            fields=[
+                ('collectionid', models.ForeignKey(db_column='CollectionID', on_delete=django.db.models.deletion.DO_NOTHING, primary_key=True, serialize=False, to='specify.collection')),
+            ],
+            options={
+                'db_table': 'autonumsch_coll',
+                'managed': False,
+            },
+        ),
+        migrations.CreateModel(
+            name='AutonumschDiv',
+            fields=[
+                ('divisionid', models.ForeignKey(db_column='DivisionID', on_delete=django.db.models.deletion.DO_NOTHING, primary_key=True, serialize=False, to='specify.division')),
+            ],
+            options={
+                'db_table': 'autonumsch_div',
+                'managed': False,
+            },
+        ),
+        migrations.CreateModel(
+            name='AutonumschDsp',
+            fields=[
+                ('disciplineid', models.ForeignKey(db_column='DisciplineID', on_delete=django.db.models.deletion.DO_NOTHING, primary_key=True, serialize=False, to='specify.discipline')),
+            ],
+            options={
+                'db_table': 'autonumsch_dsp',
+                'managed': False,
+            },
+        ),
+        migrations.CreateModel(
             name='Author',
             fields=[
                 ('id', models.AutoField(db_column='authorid', primary_key=True, serialize=False)),
