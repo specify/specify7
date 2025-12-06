@@ -73,19 +73,6 @@ const SUBCATEGORY_DOCS_MAP: Record<
   },
 };
 
-type DocumentHrefResolver =
-  | ((
-      category: string,
-      subcategory: string,
-      name: string
-    ) => string | undefined)
-  | undefined;
-
-const documentHrefResolvers: IR<DocumentHrefResolver> = {
-  user: undefined,
-  collection: undefined,
-};
-
 /**
  * Fetch app resource that stores current user preferences
  *
@@ -180,12 +167,12 @@ function Preferences({
 export function usePrefDefinitions(prefType: PreferenceType = 'user') {
   const isDarkMode = useDarkMode();
   const isRedirecting = React.useContext(userPreferences.Context) !== undefined;
-  const visibilityContext = React.useMemo(
-    () =>
-      prefType === 'user'
-        ? { isDarkMode, isRedirecting }
-        : { isDarkMode, isRedirecting: false },
-    [prefType, isDarkMode, isRedirecting]
+  const preferencesVisibilityContext = React.useMemo(
+    () => ({
+      isDarkMode,
+      isRedirecting,
+    }),
+    [isDarkMode, isRedirecting]
   );
 
   const definitions = preferenceDefinitions[prefType];
@@ -209,7 +196,7 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
                           items: Object.entries(items).filter(
                             ([_name, { visible }]) =>
                               typeof visible === 'function'
-                                ? visible(visibilityContext)
+                                ? visible(preferencesVisibilityContext)
                                 : visible !== false
                           ),
                         },
@@ -220,7 +207,7 @@ export function usePrefDefinitions(prefType: PreferenceType = 'user') {
             ] as const
         )
         .filter(([_name, { subCategories }]) => subCategories.length > 0),
-    [definitions, visibilityContext]
+    [definitions, preferencesVisibilityContext]
   );
 }
 
@@ -236,11 +223,6 @@ export function PreferencesContent({
   const definitions = usePrefDefinitions(prefType);
 
   const basePreferences = preferenceInstances[prefType];
-
-  const preferences =
-    React.useContext(basePreferences.Context) ?? basePreferences;
-
-  const resolveDocumentHref = documentHrefResolvers[prefType];
 
   const renderSubCategory = React.useCallback(
     (
@@ -272,12 +254,12 @@ export function PreferencesContent({
               <Button.Small
                 onClick={(): void =>
                   items.forEach(([name]) => {
-                    const definition = preferences.definition(
+                    const definition = basePreferences.definition(
                       categoryKey as never,
                       subcategoryKey as never,
                       name as never
                     );
-                    preferences.set(
+                    basePreferences.set(
                       categoryKey as never,
                       subcategoryKey as never,
                       name as never,
@@ -313,13 +295,6 @@ export function PreferencesContent({
               !isReadOnly &&
               (item.visible !== 'protected' ||
                 hasPermission('/preferences/user', 'edit_protected'));
-            const documentHref = resolveDocumentHref?.(
-              categoryKey,
-              subcategoryKey,
-              name
-            );
-            const stackDocumentation =
-              prefType === 'collection' && documentHref !== undefined;
             const props = {
               className: `
                 flex items-start gap-2 md:flex-row flex-col
@@ -347,14 +322,9 @@ export function PreferencesContent({
                       }
                     />
                   </p>
-                  {(item.description !== undefined ||
-                    documentHref !== undefined) && (
+                  {item.description !== undefined && (
                     <p
-                      className={`flex flex-1 text-gray-500 md:text-right ${
-                        stackDocumentation
-                          ? 'flex-col items-end gap-1'
-                          : 'justify-end'
-                      }`}
+                      className={`flex flex-1 text-gray-500 md:text-right justify-end`}
                     >
                       {item.description !== undefined && (
                         <FormatString
@@ -364,16 +334,6 @@ export function PreferencesContent({
                               : item.description
                           }
                         />
-                      )}
-                      {documentHref !== undefined && (
-                        <Link.NewTab
-                          className={
-                            stackDocumentation ? 'self-end' : undefined
-                          }
-                          href={documentHref}
-                        >
-                          {headerText.documentation()}
-                        </Link.NewTab>
                       )}
                     </p>
                   )}
@@ -414,7 +374,7 @@ export function PreferencesContent({
         </section>
       );
     },
-    [isReadOnly, prefType, preferences, resolveDocumentHref]
+    [isReadOnly, prefType, basePreferences]
   );
 
   return (
