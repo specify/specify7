@@ -341,7 +341,7 @@ def _make_scope_key(upload_plan: Uploadable, collection, row: Row) -> tuple:
 
     try:
         if plan.name.lower() == "collectionobject" and "collectionobjecttype" in plan.toOne:
-            cotype_ut = plan.toOne["collectionobjecttype"]
+            cotype_ut = cast(Any, plan.toOne["collectionobjecttype"])
             wb_col = cotype_ut.wbcols.get("name")
             if wb_col is not None:
                 key_parts.append(
@@ -357,7 +357,7 @@ def _make_scope_key(upload_plan: Uploadable, collection, row: Row) -> tuple:
             if rel_field not in plan.toOne:
                 continue
 
-            ut_other = plan.toOne[rel_field]
+            ut_other = cast(Any, plan.toOne[rel_field])
             wb_col = ut_other.wbcols.get(filter_field)
             if wb_col is not None:
                 key_parts.append(
@@ -435,7 +435,7 @@ def do_upload(
         t0_bulk = time.perf_counter()
 
         # Group pending inserts by model to make bulk_create efficient
-        grouped: dict[Type[models.ModelWithTable], list[tuple[int, dict[str, Any]]]] = defaultdict(list)
+        grouped: dict[Any, list[tuple[int, dict[str, Any]]]] = defaultdict(list)
         for row_index, plan in pending_inserts:
             grouped[plan["model"]].append((row_index, plan))
 
@@ -506,6 +506,8 @@ def do_upload(
                         toOne.update({"type": type_val, "name": name_val})
 
                 # apply_scoping cached per scope key
+                scoped_table: ScopedUploadable | None
+
                 if has_attachments(row):
                     attachments_valid, result = validate_attachment(
                         row, upload_plan  # type: ignore
@@ -526,7 +528,7 @@ def do_upload(
 
                 else:
                     scope_key = _make_scope_key(upload_plan, collection, row)
-                    scoped_table: ScopedUploadable | None = scoped_cache.get(scope_key)
+                    scoped_table = scoped_cache.get(scope_key)
 
                     if scoped_table is None:
                         t0 = time.perf_counter()
@@ -680,14 +682,15 @@ def do_upload(
                 bulk_deferred,
                 total_inserted,
             )
-        results = cast(list[UploadResult], results)
+        upload_result_lst: list[UploadResult] = [cast(UploadResult, r) for r in results]
 
         if no_commit:
             raise Rollback("no_commit option")
         else:
-            fixup_trees(scoped_table, results)
+            assert scoped_table is not None
+            fixup_trees(scoped_table, upload_result_lst)
 
-    return results
+    return upload_result_lst
 
 
 do_upload_csv = do_upload

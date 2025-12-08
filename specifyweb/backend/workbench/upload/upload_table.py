@@ -1,7 +1,7 @@
 from decimal import Decimal
 import logging
 import time
-from typing import Any, NamedTuple, Literal, Union
+from typing import Any, NamedTuple, Literal, Union, cast
 from collections import defaultdict
 
 from django.db import transaction, IntegrityError
@@ -471,8 +471,8 @@ class BoundUploadTable(NamedTuple):
                     ):
                         continue
                     if field.many_to_one or field.one_to_one:
-                        attname: str = field.attname  # type: ignore
-                        hit = getattr(record_ref, attname) != None
+                        attname = cast(str, getattr(field, "attname"))
+                        hit = getattr(record_ref, attname) is not None
                     else:
                         hit = getattr(record_ref, field.name).exists()
                     if hit:
@@ -748,7 +748,7 @@ class BoundUploadTable(NamedTuple):
             **self.scopingAttrs,
             **self.static,
             **{
-                model._meta.get_field(fieldname).attname: id_  # type: ignore
+                cast(str, getattr(model._meta.get_field(fieldname), "attname")): id_
                 for fieldname, id_ in to_one_ids.items()
             },
             **(
@@ -1088,7 +1088,8 @@ class BoundMustMatchTable(BoundUploadTable):
 def _upload_to_manys(
     parent_model, parent_id, parent_field, is_update, records, is_dependent
 ) -> list[UploadResult]:
-    fk_field = parent_model._meta.get_field(parent_field).remote_field.attname
+    rel = parent_model._meta.get_field(parent_field).remote_field
+    fk_field = cast(str, getattr(rel, "attname"))
     bound_tables = [
         record._replace(
             disambiguation=None, static={**record.static, fk_field: parent_id}
@@ -1203,7 +1204,7 @@ class BoundUpdateTable(BoundUploadTable):
         # map to_one ids
         t0 = time.perf_counter()
         to_one_ids = {
-            model._meta.get_field(fieldname).attname: result.get_id()
+            cast(str, getattr(model._meta.get_field(fieldname), "attname")): result.get_id()
             for fieldname, result in to_one_results.items()
         }
         _add_timing("update_to_one_ids", time.perf_counter() - t0)
@@ -1242,7 +1243,7 @@ class BoundUpdateTable(BoundUploadTable):
             )
             for related, result in to_one_results.items()
             if isinstance(result.record_result, Matched)
-            and model._meta.get_field(related).attname in to_one_changes
+            and cast(str, getattr(model._meta.get_field(related), "attname")) in to_one_changes
         }
         to_one_results = {**to_one_results, **to_one_matched_and_changed}
         _add_timing("update_to_one_mark_changed", time.perf_counter() - t0)
@@ -1278,7 +1279,7 @@ class BoundUpdateTable(BoundUploadTable):
                 try:
                     # audit and save timing
                     t0 = time.perf_counter()
-                    updated = self._do_update(
+                    updated = self._do_update( # type: ignore[attr-defined]
                         reference_record,
                         [*to_one_changes.values(), *concrete_field_changes.values()],
                         **attrs,
