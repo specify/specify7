@@ -13,6 +13,9 @@ from typing import (
     Sized,
     Tuple,
     Any,
+    Protocol,
+    Type,
+    cast,
 )
 from collections.abc import Callable
 from collections.abc import Sized
@@ -21,7 +24,6 @@ from collections import defaultdict
 from django.db import transaction
 from django.db.utils import OperationalError, IntegrityError
 from jsonschema import validate  # type: ignore
-from typing import Any, cast
 
 from specifyweb.backend.permissions.permissions import has_target_permission
 from specifyweb.specify import models
@@ -62,6 +64,7 @@ from .uploadable import (
 from .upload_table import BoundUploadTable, reset_process_timings, get_process_timings
 from .scope_context import ScopeContext
 from ..models import Spdataset
+from .scoping import DEFERRED_SCOPING
 
 from .upload_attachments import (
     has_attachments,
@@ -324,9 +327,9 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> tuple[Table, ScopedUploadab
     base_table, plan, _ = get_raw_ds_upload_plan(ds)
     return base_table, plan.apply_scoping(collection)
 
-from typing import Any
-from .scoping import DEFERRED_SCOPING  # adjust relative import as needed
-
+class _HasNameToOne(Protocol):
+    name: str
+    toOne: dict[str, Uploadable]
 
 def _make_scope_key(upload_plan: Uploadable, collection, row: Row) -> tuple:
     key_parts: list[Any] = [
@@ -334,9 +337,11 @@ def _make_scope_key(upload_plan: Uploadable, collection, row: Row) -> tuple:
         ("base_table", getattr(upload_plan, "name", None)),
     ]
 
+    plan = cast(_HasNameToOne, upload_plan) # helps mypy
+
     try:
-        if upload_plan.name.lower() == "collectionobject" and "collectionobjecttype" in upload_plan.toOne:
-            cotype_ut = upload_plan.toOne["collectionobjecttype"]
+        if plan.name.lower() == "collectionobject" and "collectionobjecttype" in plan.toOne:
+            cotype_ut = plan.toOne["collectionobjecttype"]
             wb_col = cotype_ut.wbcols.get("name")
             if wb_col is not None:
                 key_parts.append(
@@ -347,12 +352,12 @@ def _make_scope_key(upload_plan: Uploadable, collection, row: Row) -> tuple:
 
     try:
         for (table_name, rel_field), (_related_table, filter_field, _rel_name) in DEFERRED_SCOPING.items():
-            if upload_plan.name.lower() != table_name.lower():
+            if plan.name.lower() != table_name.lower():
                 continue
-            if rel_field not in upload_plan.toOne:
+            if rel_field not in plan.toOne:
                 continue
 
-            ut_other = upload_plan.toOne[rel_field]
+            ut_other = plan.toOne[rel_field]
             wb_col = ut_other.wbcols.get(filter_field)
             if wb_col is not None:
                 key_parts.append(
@@ -430,7 +435,7 @@ def do_upload(
         t0_bulk = time.perf_counter()
 
         # Group pending inserts by model to make bulk_create efficient
-        grouped: dict[type, list[tuple[int, dict[str, Any]]]] = defaultdict(list)
+        grouped: dict[Type[models.ModelWithTable], list[tuple[int, dict[str, Any]]]] = defaultdict(list)
         for row_index, plan in pending_inserts:
             grouped[plan["model"]].append((row_index, plan))
 
@@ -478,9 +483,10 @@ def do_upload(
 
     with savepoint("main upload"):
         tic = time.perf_counter()
-        results: list[UploadResult] = []
+        results: list[UploadResult | None] = []
         for i, row in enumerate(rows):
-            _cache = cache.copy() if cache is not None and allow_partial else cache
+            # _cache = cache.copy() if cache is not None and allow_partial else cache
+            _cache = cache
             da = disambiguations[i] if disambiguations else None
             batch_edit_pack = batch_edit_packs[i] if batch_edit_packs else None
 
@@ -520,7 +526,7 @@ def do_upload(
 
                 else:
                     scope_key = _make_scope_key(upload_plan, collection, row)
-                    scoped_table = scoped_cache.get(scope_key)
+                    scoped_table: ScopedUploadable | None = scoped_cache.get(scope_key)
 
                     if scoped_table is None:
                         t0 = time.perf_counter()
@@ -529,6 +535,8 @@ def do_upload(
                         )
                         stage_timings["apply_scoping"] += time.perf_counter() - t0
                         scoped_cache[scope_key] = scoped_table
+
+                assert scoped_table is not None
 
                 t0 = time.perf_counter()
                 scoped_after_disambiguation = scoped_table.disambiguate(da)
@@ -592,7 +600,7 @@ def do_upload(
                 if deferred_plan is not None:
                     # Row will be inserted later via bulk_create
                     row_index = len(results)
-                    results.append(None)  # placeholder, will be filled after bulk flush
+                    results.append(None)
                     pending_inserts.append((row_index, deferred_plan))
                     bulk_deferred += 1
 
@@ -606,7 +614,7 @@ def do_upload(
                         progress(len(results), total)
 
                     if row_result.contains_failure():
-                        cache = _cache
+                        cache = _cache # NOTE: Make sure we want to keep this line
                         raise Rollback("failed row")
 
             # Periodic flush to bound memory usage
@@ -672,6 +680,7 @@ def do_upload(
                 bulk_deferred,
                 total_inserted,
             )
+        results = cast(list[UploadResult], results)
 
         if no_commit:
             raise Rollback("no_commit option")
