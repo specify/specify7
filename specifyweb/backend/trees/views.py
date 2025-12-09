@@ -601,7 +601,7 @@ def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMA
                         "type": "string",
                         "description": "Name of the disicpline the tree belongs to."
                     },
-                    "collection": {
+                    "collectionName": {
                         "type": "string",
                         "description": "The name of the destination collection. The logged in colleciton will be used otherwise."
                     },
@@ -639,16 +639,19 @@ def create_default_tree_view(request):
     
     data = json.loads(request.body)
 
-    connected_collection = data.get('collection')
     tree_discipline_name = data.get('disciplineName', None)
     if not tree_discipline_name:
         return http.JsonResponse({'error': 'Discipline name was not provided.'}, status=400)
 
-    logged_in_collection_name = request.user.logincollectionname
-
-    collection_name = logged_in_collection_name or connected_collection
-    collection = spmodels.Collection.objects.get(collectionname=collection_name)
-
+    collection_name = data.get('collectionName', None)
+    if collection_name is not None:
+        try:
+            collection = spmodels.Collection.objects.get(collectionname=collection_name)
+        except:
+            return http.JsonResponse({'error': 'Collection was not found.'}, status=404)
+    else:
+        collection = request.specify_collection
+    
     logged_in_discipline_name = collection.discipline.name
     # logged_in_discipline_name = request.user.logindisciplinename
 
