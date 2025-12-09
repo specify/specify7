@@ -17,6 +17,17 @@ import { ResourceView } from '../Forms/ResourceView';
 import { load } from '../InitialContext';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { getSystemInfo } from '../InitialContext/systemInfo';
+import { Form } from '../Atoms/Form';
+import { resources } from '../SetupTool/setupResources';
+import { headerText } from '../../localization/header';
+import { Link } from '../Atoms/Link';
+import {
+  renderFormFieldFactory,
+  ResourceFormData,
+  stepOrder,
+} from '../SetupTool/index';
+import { useId } from '../../hooks/useId';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function SystemConfigurationTool(): JSX.Element | null {
   const [allInfo, setAllInfo] = React.useState<InstitutionData | null>(null);
@@ -33,6 +44,9 @@ export function SystemConfigurationTool(): JSX.Element | null {
 
   const institutionData = getSystemInfo();
   const isGeographyGlobal = institutionData.geography_is_global;
+
+  const [addDisciplineGeoTree, setAddDisciplineGeoTree] =
+    useBooleanState(false);
 
   React.useEffect(() => {
     fetchAllSystemData
@@ -64,6 +78,42 @@ export function SystemConfigurationTool(): JSX.Element | null {
       .then(refreshAllInfo)
       .then(closeNewResource);
   };
+
+  const [temporaryFormData, setTemporaryFormData] =
+    React.useState<ResourceFormData>({});
+
+  const [formData, setFormData] = React.useState<ResourceFormData>(
+    Object.fromEntries(stepOrder.map((key) => [key, {}]))
+  );
+
+  const formRef = React.useRef<HTMLFormElement | null>(null);
+
+  const handleChange = (
+    name: string,
+    newValue: LocalizedString | boolean
+  ): void => {
+    setFormData((previous) => {
+      const resourceName = resources[6].resourceName;
+      return {
+        ...previous,
+        [resourceName]: {
+          ...previous[resourceName],
+          [name]: newValue,
+        },
+      };
+    });
+  };
+
+  const { renderFormFields } = renderFormFieldFactory({
+    formData,
+    currentStep: 6,
+    handleChange,
+    temporaryFormData,
+    setTemporaryFormData,
+    formRef,
+  });
+
+  const id = useId('config-tool');
 
   const renderHierarchy = (
     institution: InstitutionData | null
@@ -114,21 +164,79 @@ export function SystemConfigurationTool(): JSX.Element | null {
                       <li key={discipline.id}>
                         <div className="flex">
                           <h4>{`Discipline: ${discipline.name}`}</h4>
-                          <Button.Icon
-                            icon="plus"
-                            title="Add new collection to discipline"
-                            onClick={() => {
-                              console.log(
-                                `'Add new collection to discipline' ${discipline.id}`
-                              );
-                              setNewResource(
-                                new tables.Collection.Resource({
-                                  discipline: `/api/specify/discipline/${discipline.id}/`,
-                                })
-                              );
-                              handleNewResource();
-                            }}
-                          />
+                          {/* Verify isgeoglobal set correctly than chnage the !  */}
+                          {isGeographyGlobal &&
+                          typeof discipline.geographytreedef === 'number' ? (
+                            <Button.Icon
+                              icon="plus"
+                              title="Add new collection to discipline"
+                              onClick={() => {
+                                console.log(
+                                  `'Add new collection to discipline' ${discipline.id}`
+                                );
+                                setNewResource(
+                                  new tables.Collection.Resource({
+                                    discipline: `/api/specify/discipline/${discipline.id}/`,
+                                  })
+                                );
+                                handleNewResource();
+                              }}
+                            />
+                          ) : (
+                            <Button.Icon
+                              icon="globe"
+                              title="Add new geography to discipline"
+                              onClick={() => {
+                                console.log(
+                                  `'Add new geography to discipline' ${discipline.id}`
+                                );
+                                setAddDisciplineGeoTree();
+                                // setNewResource(
+                                //   new tables.Collection.Resource({
+                                //     discipline: `/api/specify/discipline/${discipline.id}/`,
+                                //   })
+                                // );
+                                // handleNewResource();
+                              }}
+                            />
+                          )}
+                          {addDisciplineGeoTree && (
+                            <Dialog
+                              buttons={commonText.cancel()}
+                              header={localized('Add new Resource')}
+                              onClose={closeNewResource}
+                            >
+                              {' '}
+                              <Form
+                                className="flex-1 overflow-auto gap-2"
+                                // forwardRef={formRef}
+                                id={id('form')}
+                                // key={currentStep}
+                                onSubmit={() => console.log()}
+                              >
+                                <div className="flex items-center justify-between mb-4">
+                                  <H3 className="text-xl font-semibold mb-4">
+                                    {resources[6].label}
+                                  </H3>
+                                  {resources[6].documentationUrl !==
+                                    undefined && (
+                                    <Link.NewTab
+                                      href={resources[6].documentationUrl!}
+                                    >
+                                      {headerText.documentation()}
+                                    </Link.NewTab>
+                                  )}
+                                </div>
+                                {resources[6].description ===
+                                undefined ? undefined : (
+                                  <p className="text-md mb-4">
+                                    {resources[6].description}
+                                  </p>
+                                )}
+                                {renderFormFields(resources[6].fields)}
+                              </Form>
+                            </Dialog>
+                          )}
                         </div>
                         {discipline.children.length > 0 && (
                           <Ul className="m-6">
@@ -208,6 +316,8 @@ type InstitutionData = {
         readonly id: number;
         readonly name: string;
       }>;
+      readonly geographytreedef: number | null;
+      readonly taxontreedef: number | null;
     }>;
   }>;
 };
