@@ -14,7 +14,7 @@ DISCIPLINE_TYPES = [
   { 'value': 'botany', 'label': 'Botany' },
   { 'value': 'invertebrate', 'label': 'Invertebrate' },
   { 'value': 'geology', 'label': 'Geology' },
-];
+]
 
 def create_discipline_type_picklist(apps):
     Collection = apps.get_model('specify', 'Collection')
