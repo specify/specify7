@@ -190,7 +190,12 @@ export function SystemConfigurationTool(): JSX.Element | null {
                                 console.log(
                                   `'Add new geography to discipline' ${discipline.id}`
                                 );
+                                setNewResource(
+                                  new tables.GeographyTreeDef.Resource()
+                                );
+
                                 setAddDisciplineGeoTree();
+
                                 // setNewResource(
                                 //   new tables.Collection.Resource({
                                 //     discipline: `/api/specify/discipline/${discipline.id}/`,
@@ -212,7 +217,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
                                 // forwardRef={formRef}
                                 id={id('form')}
                                 // key={currentStep}
-                                onSubmit={() => console.log()}
+                                onSubmit={handleSaved}
                               >
                                 <div className="flex items-center justify-between mb-4">
                                   <H3 className="text-xl font-semibold mb-4">
