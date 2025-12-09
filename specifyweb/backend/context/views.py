@@ -663,7 +663,8 @@ def system_info(request):
         collection=collection and collection.collectionname,
         collection_guid=collection and collection.guid,
         isa_number=collection and collection.isanumber,
-        discipline_type=discipline and discipline.type
+        discipline_type=discipline and discipline.type,
+        geography_is_global=institution.issinglegeographytree
         )
     return HttpResponse(json.dumps(info), content_type='application/json')
 
@@ -684,7 +685,9 @@ def all_system_data(request):
         discipline_map[discipline.id] = {
             "id": discipline.id,
             "name": discipline.name,
-            "children": []
+            "children": [],
+            "geographytreedef": discipline.geographytreedef_id,
+            "taxontreedef": discipline.taxontreedef_id
         }
 
     for collection in collections:

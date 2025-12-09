@@ -16,6 +16,7 @@ import { collection, discipline, division } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { load } from '../InitialContext';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { getSystemInfo } from '../InitialContext/systemInfo';
 
 export function SystemConfigurationTool(): JSX.Element | null {
   const [allInfo, setAllInfo] = React.useState<InstitutionData | null>(null);
@@ -29,6 +30,9 @@ export function SystemConfigurationTool(): JSX.Element | null {
     | SpecifyResource<Division>
     | undefined
   >();
+
+  const institutionData = getSystemInfo();
+  const isGeographyGlobal = institutionData.geography_is_global;
 
   React.useEffect(() => {
     fetchAllSystemData
@@ -146,8 +150,6 @@ export function SystemConfigurationTool(): JSX.Element | null {
       </Ul>
     );
   };
-
-  const viewName = collection;
 
   return (
     <Container.FullGray className="sm:h-auto">
