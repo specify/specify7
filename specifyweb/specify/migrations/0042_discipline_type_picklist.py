@@ -1,5 +1,4 @@
-from django.db import migrations, models
-import django.db.models.deletion
+from django.db import migrations
 
 DISCIPLINE_TYPE_PICKLIST_NAME = 'COGTypes'
 # TODO: Build this from backend/context/app_resource.py
