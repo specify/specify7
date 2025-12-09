@@ -25,7 +25,7 @@ import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
 import type { OicProvider } from './OicLogin';
 import { OicLogin } from './OicLogin';
 
-export type SetupProgress = {
+export type SetupResources = {
   readonly institution: boolean;
   readonly storageTreeDef: boolean;
   readonly globalGeographyTreeDef: boolean;
@@ -35,6 +35,12 @@ export type SetupProgress = {
   readonly taxonTreeDef: boolean;
   readonly collection: boolean;
   readonly specifyUser: boolean;
+}
+
+export type SetupProgress = {
+  readonly resources: SetupResources;
+  readonly busy: boolean;
+  readonly last_error?: string;
 };
 
 export function Login(): JSX.Element {
@@ -62,8 +68,8 @@ export function Login(): JSX.Element {
 
     if (setupProgress === undefined) return <LoadingScreen />;
 
-    if (Object.values(setupProgress).includes(false)) {
-      return <SetupTool setupProgress={setupProgress} setSetupProgress={setSetupProgress}/>;
+    if (setupProgress.busy || (setupProgress.hasOwnProperty('resources') && Object.values(setupProgress.resources).includes(false))) {
+      return <SetupTool setSetupProgress={setSetupProgress} setupProgress={setupProgress}/>;
     }
 
     return providers.length > 0 ? (

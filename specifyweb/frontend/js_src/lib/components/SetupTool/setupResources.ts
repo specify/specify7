@@ -1,8 +1,10 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { formsText } from '../../localization/forms';
 import { setupToolText } from '../../localization/setupTool';
 import type { RA } from '../../utils/types';
 
+// Default for max field length.
 export const FIELD_MAX_LENGTH = 64;
 
 export type ResourceConfig = {
@@ -14,6 +16,7 @@ export type ResourceConfig = {
     string,
     Record<string, boolean | number | string>
   >;
+  readonly documentationUrl?: string;
   readonly fields: RA<FieldConfig>;
 };
 
@@ -62,8 +65,8 @@ const catalogNumberFormats = [
 ];
 
 const fullNameDirections = [
-  { value: 1, label: 'Forward' },
-  { value: -1, label: 'Reverse' },
+  { value: 1, label: formsText.forward() },
+  { value: -1, label: formsText.reverse() },
 ];
 
 export const resources: RA<ResourceConfig> = [
@@ -72,6 +75,7 @@ export const resources: RA<ResourceConfig> = [
     label: setupToolText.institution(),
     description: setupToolText.institutionDescription(),
     endpoint: '/setup_tool/institution/create/',
+    documentationUrl: 'https://discourse.specifysoftware.org/t/specify-setup-configuration-checklist/1056',
     fields: [
       {
         name: 'name',
@@ -96,42 +100,42 @@ export const resources: RA<ResourceConfig> = [
         fields: [
           {
             name: 'address',
-            label: 'Address',
-            description: 'The street address of the institution.',
+            label: setupToolText.address(),
+            description: setupToolText.addressDescription(),
             required: false,
           },
           {
             name: 'city',
-            label: 'City',
-            description: 'The city where the institution is located.',
+            label: setupToolText.addressCity(),
+            description: setupToolText.addressCityDescription(),
             required: false,
             maxLength: 64,
           },
           {
             name: 'state',
-            label: 'State/Providence',
-            description: 'The state or province.',
+            label: setupToolText.addressState(),
+            description: setupToolText.addressStateDescription(),
             required: false,
             maxLength: 64,
           },
           {
             name: 'country',
-            label: 'Country',
-            description: 'The country.',
+            label: setupToolText.addressCountry(),
+            description: setupToolText.addressCountryDescription(),
             required: false,
             maxLength: 64,
           },
           {
             name: 'postalCode',
-            label: 'Zip/Postal Code',
-            description: 'The postal code.',
+            label: setupToolText.addressPostalCode(),
+            description: setupToolText.addressPostalCodeDescription(),
             required: false,
             maxLength: 32,
           },
           {
             name: 'phone1',
-            label: 'Phone',
-            description: 'A contact phone number.',
+            label: setupToolText.addressPhone1(),
+            description: setupToolText.addressPhone1Description(),
             required: false,
             maxLength: 50,
           },
@@ -139,16 +143,14 @@ export const resources: RA<ResourceConfig> = [
       },
       {
         name: 'isAccessionsGlobal',
-        label: 'Define Accession Globally',
-        description:
-          'Global scope allows you to share Accessions between all divisions. Divisional scope ensures Accessions are specific to each division.',
+        label: setupToolText.institutionIsAccessionGlobal(),
+        description: setupToolText.institutionIsAccessionGlobalDescription(),
         type: 'boolean',
       },
       {
         name: 'isSingleGeographyTree',
-        label: 'Use Single Geography Tree',
-        description:
-          'A global geography tree is shared by all disciplines. Otherwise, geography trees are managed separately within each discipline.',
+        label: setupToolText.institutionIsSingleGeographyTree(),
+        description: setupToolText.institutionIsSingleGeographyTreeDescription(),
         type: 'boolean',
         default: false,
       },
@@ -161,7 +163,7 @@ export const resources: RA<ResourceConfig> = [
     fields: [
       {
         name: 'ranks',
-        label: 'Tree Ranks',
+        label: setupToolText.treeRanks(),
         required: false,
         type: 'object',
         // TODO: Rank fields should be generated from a .json file.
@@ -181,7 +183,7 @@ export const resources: RA<ResourceConfig> = [
       // TODO: This should be name direction. Each rank should have configurable formats, too.,
       {
         name: 'fullNameDirection',
-        label: 'Full Name Direction',
+        label: setupToolText.fullNameDirection(),
         type: 'select',
         options: fullNameDirections,
         required: true,
@@ -201,7 +203,7 @@ export const resources: RA<ResourceConfig> = [
     fields: [
       {
         name: 'ranks',
-        label: 'Tree Ranks',
+        label: setupToolText.treeRanks(),
         required: false,
         type: 'object',
         fields: [
@@ -214,12 +216,19 @@ export const resources: RA<ResourceConfig> = [
       },
       {
         name: 'fullNameDirection',
-        label: 'Full Name Direction',
+        label: setupToolText.fullNameDirection(),
         type: 'select',
         options: fullNameDirections,
         required: true,
         default: fullNameDirections[0].value.toString(),
       },
+      /*
+       * {
+       *   name: 'default',
+       *   label: setupToolText_defaultTree(), // underscore in comment to avoid failing test
+       *   type: 'boolean',
+       * },
+       */
     ],
   },
   {
@@ -227,8 +236,8 @@ export const resources: RA<ResourceConfig> = [
     label: setupToolText.division(),
     endpoint: '/setup_tool/division/create/',
     fields: [
-      { name: 'name', label: 'Name', required: true },
-      { name: 'abbrev', label: 'Abbreviation', required: true },
+      { name: 'name', label: setupToolText.divisionName(), required: true },
+      { name: 'abbrev', label: setupToolText.divisionAbbrev(), required: true },
     ],
   },
   {
@@ -238,13 +247,13 @@ export const resources: RA<ResourceConfig> = [
     fields: [
       {
         name: 'name',
-        label: 'Name',
+        label: setupToolText.disciplineName(),
         required: true,
         maxLength: 64,
       },
       {
         name: 'type',
-        label: 'Type',
+        label: setupToolText.disciplineType(),
         type: 'select',
         options: disciplineTypeOptions,
         required: true,
@@ -263,7 +272,7 @@ export const resources: RA<ResourceConfig> = [
     fields: [
       {
         name: 'ranks',
-        label: 'Tree Ranks',
+        label: setupToolText.treeRanks(),
         required: false,
         type: 'object',
         fields: [
@@ -276,12 +285,19 @@ export const resources: RA<ResourceConfig> = [
       },
       {
         name: 'fullNameDirection',
-        label: 'Full Name Direction',
+        label: setupToolText.fullNameDirection(),
         type: 'select',
         options: fullNameDirections,
         required: true,
         default: fullNameDirections[0].value.toString(),
       },
+      /*
+       * {
+       *   name: 'default',
+       *   label: setupToolText_defaultTree(), // underscore in comment to avoid failing test
+       *   type: 'boolean',
+       * },
+       */
     ],
   },
   {
@@ -291,7 +307,7 @@ export const resources: RA<ResourceConfig> = [
     fields: [
       {
         name: 'ranks',
-        label: 'Tree Ranks',
+        label: setupToolText.treeRanks(),
         required: false,
         type: 'object',
         fields: [
@@ -312,12 +328,20 @@ export const resources: RA<ResourceConfig> = [
       },
       {
         name: 'fullNameDirection',
-        label: 'Full Name Direction',
+        label: setupToolText.fullNameDirection(),
         type: 'select',
         options: fullNameDirections,
         required: true,
         default: fullNameDirections[0].value.toString(),
       },
+      /*
+       * TODO: Select which Taxon tree to import (Re-use dialog from default tree creation in tree viewer)
+       * {
+       *   name: 'default',
+       *   label: setupToolText_defaultTree(), // underscore in comment to avoid failing test
+       *   type: 'boolean',
+       * },
+       */
     ],
   },
   {
@@ -327,19 +351,19 @@ export const resources: RA<ResourceConfig> = [
     fields: [
       {
         name: 'collectionName',
-        label: 'Collection Name',
+        label: setupToolText.collectionName(),
         required: true,
         maxLength: 50,
       },
       {
         name: 'code',
-        label: 'Code',
+        label: setupToolText.collectionCode(),
         required: true,
         maxLength: 50,
       },
       {
         name: 'catalogNumFormatName',
-        label: 'Catalog Number Format',
+        label: setupToolText.collectionCatalogNumFormatName(),
         type: 'select',
         options: catalogNumberFormats,
         required: true,
@@ -353,22 +377,21 @@ export const resources: RA<ResourceConfig> = [
     fields: [
       {
         name: 'name',
-        label: 'Username',
-        description:
-          'The username for the primary administrator account (e.g., "spadmin").',
+        label: setupToolText.specifyUserName(),
+        description: setupToolText.specifyUserNameDescription(),
         required: true,
         maxLength: 64,
       },
       {
         name: 'password',
-        label: 'Password',
-        description: 'The password for the account.',
+        label: setupToolText.specifyUserPassword(),
+        description: setupToolText.specifyUserPasswordDescription(),
         type: 'password',
         required: true,
         passwordRepeat: {
           name: 'confirmPassword',
-          label: 'Confirm Password',
-          description: 'Must match the password entered above.',
+          label: setupToolText.specifyUserConfirmPassword(),
+          description: setupToolText.specifyUserConfirmPasswordDescription(),
         },
         maxLength: 256,
       },

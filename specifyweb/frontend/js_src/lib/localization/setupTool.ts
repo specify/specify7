@@ -13,8 +13,8 @@ export const setupToolText = createDictionary({
     'en-us': 'Specify Configuration Setup',
   },
 
-  saveAndContinue: {
-    'en-us': 'Save & Continue',
+  setupProgress: {
+    'en-us': 'Progress:',
   },
 
   overview: {
@@ -25,6 +25,15 @@ export const setupToolText = createDictionary({
     'en-us': 'Setting up the database...',
   },
 
+  setupError: {
+    'en-us': 'An error occurred during the last setup attempt.',
+  },
+
+  /**
+   * Field Captions.
+   * These must be defined here because schema captions don't exist during the setup.
+  */ 
+  // Institution
   institution: {
     'en-us': 'Institution',
   },
@@ -51,36 +60,140 @@ export const setupToolText = createDictionary({
   institutionAddressDescription: {
     'en-us': 'The address of the institution. Optional.',
   },
+  institutionIsAccessionGlobal: {
+    'en-us': 'Define Accession Globally',
+  },
+  institutionIsAccessionGlobalDescription: {
+    'en-us': 'Global scope allows you to share Accessions between all divisions. Divisional scope ensures Accessions are specific to each division.',
+  },
+  institutionIsSingleGeographyTree: {
+    'en-us': 'Use Single Geography Tree',
+  },
+  institutionIsSingleGeographyTreeDescription: {
+    'en-us': 'A global geography tree is shared by all disciplines. Otherwise, geography trees are managed separately within each discipline.',
+  },
 
+  // Address
+  address: {
+    'en-us': 'Address',
+  },
+  addressDescription: {
+    'en-us': 'The street address of the institution.',
+  },
+  addressCity: {
+    'en-us': 'City',
+  },
+  addressCityDescription: {
+    'en-us': 'The city where the institution is located.',
+  },
+  addressState: {
+    'en-us': 'State',
+  },
+  addressStateDescription: {
+    'en-us': 'The state or province.',
+  },
+  addressCountry: {
+    'en-us': 'Country',
+  },
+  addressCountryDescription: {
+    'en-us': 'The country.',
+  },
+  addressPostalCode: {
+    'en-us': 'Zip/Postal Code',
+  },
+  addressPostalCodeDescription: {
+    'en-us': 'The postal code.',
+  },
+  addressPhone1: {
+    'en-us': 'Phone',
+  },
+  addressPhone1Description: {
+    'en-us': 'A contact phone number.',
+  },
+
+  // Trees
+  treeRanks: {
+    'en-us': 'Tree Ranks'
+  },
+  fullNameDirection: {
+    'en-us': 'Full Name Direction',
+  },
+
+  // Storage Tree
   storageTree: {
     'en-us': 'Storage Tree',
   },
-
+  // Geography Tree
   globalGeographyTree: {
     'en-us': 'Global Geography Tree',
   },
-
   geographyTree: {
     'en-us': 'Geography Tree',
   },
-
-  division: {
-    'en-us': 'Division',
-  },
-
-  discipline: {
-    'en-us': 'Discipline',
-  },
-
+  // Taxon Tree
   taxonTree: {
     'en-us': 'Taxon Tree',
   },
+  // defaultTree: {
+  //   'en-us': 'Pre-load Default Tree'
+  // },
 
+  // Division
+  division: {
+    'en-us': 'Division',
+  },
+  divisionName: {
+    'en-us': 'Name',
+  },
+  divisionAbbrev: {
+    'en-us': 'Abbreviation',
+  },
+
+  // Discipline
+  discipline: {
+    'en-us': 'Discipline',
+  },
+  disciplineName: {
+    'en-us': 'Name',
+  },
+  disciplineType: {
+    'en-us': 'Type',
+  },
+
+  // Collection
   collection: {
     'en-us': 'Collection',
   },
+  collectionName: {
+    'en-us': 'Collection Name',
+  },
+  collectionCode: {
+    'en-us': 'Code',
+  },
+  collectionCatalogNumFormatName: {
+    'en-us': 'Catalog Number Format',
+  },
 
+  // Specify User
   specifyUser: {
     'en-us': 'Specify User',
+  },
+  specifyUserName: {
+    'en-us': 'Username',
+  },
+  specifyUserNameDescription: {
+    'en-us': 'The username for the primary administrator account.',
+  },
+  specifyUserPassword: {
+    'en-us': 'Password',
+  },
+  specifyUserPasswordDescription: {
+    'en-us': 'The password for the account.',
+  },
+  specifyUserConfirmPassword: {
+    'en-us': 'Confirm Password',
+  },
+  specifyUserConfirmPasswordDescription: {
+    'en-us': 'Must match the password entered above.',
   },
 } as const);
