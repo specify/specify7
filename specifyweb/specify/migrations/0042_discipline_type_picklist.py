@@ -42,6 +42,23 @@ def revert_discipline_type_picklist(apps):
 
     Picklist.objects.filter(name=DISCIPLINE_TYPE_PICKLIST_NAME).delete()
 
+def update_discipline_type_splocalecontaineritem(apps):
+    Splocalecontaineritem = apps.get_model("specify", "Splocalecontaineritem")
+
+    Splocalecontaineritem.objects.filter(
+        container__name="discipline",
+        container__schematype=0,
+        name="type",
+    ).update(picklistname=DISCIPLINE_TYPE_PICKLIST_NAME, isrequired=True)
+
+def revert_discipline_type_splocalecontaineritem(apps):
+    Splocalecontaineritem = apps.get_model("specify", "Splocalecontaineritem")
+
+    Splocalecontaineritem.objects.filter(
+        container__name="discipline",
+        container__schematype=0,
+        name="type",
+    ).update(picklistname=None, isrequired=None)
 
 class Migration(migrations.Migration):
     dependencies = [
@@ -50,9 +67,11 @@ class Migration(migrations.Migration):
 
     def apply_migration(apps, schema_editor):
         create_discipline_type_picklist(apps)
+        update_discipline_type_splocalecontaineritem(apps)
 
     def revert_migration(apps, schema_editor):
         revert_discipline_type_picklist(apps)
+        revert_discipline_type_splocalecontaineritem(apps)
         
     operations = [
         migrations.RunPython(
