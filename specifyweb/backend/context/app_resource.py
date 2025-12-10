@@ -36,6 +36,19 @@ DISCIPLINE_DIRS = {
     "invertebrate": "invertebrate",
     "geology": "geology",
 }
+DISCIPLINE_NAMES = {
+    'fish': 'Fish',
+    'herpetology': 'Herpetology',
+    'paleobotany': 'Paleobotany',
+    'invertpaleo': 'Invertebrate Paleontology',
+    'vertpaleo': 'Vertebrate Paleontology',
+    'bird': 'Bird',
+    'mammal': 'Mammal',
+    'insect': 'Insect',
+    'botany': 'Botany',
+    'invertebrate': 'Invertebrate',
+    'geology': 'Geology',
+}
 
 FORM_RESOURCE_EXCLUDED_LST = [
     "fish/fishbase.views.xml",

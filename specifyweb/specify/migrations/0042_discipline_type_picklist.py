@@ -1,20 +1,7 @@
 from django.db import migrations
+from specifyweb.backend.context.app_resource import DISCIPLINE_NAMES
 
 DISCIPLINE_TYPE_PICKLIST_NAME = 'COGTypes'
-# TODO: Build this from backend/context/app_resource.py
-DISCIPLINE_TYPES = [
-  { 'value': 'fish', 'label': 'Fish' },
-  { 'value': 'herpetology', 'label': 'Herpetology' },
-  { 'value': 'paleobotany', 'label': 'Paleobotany' },
-  { 'value': 'invertpaleo', 'label': 'Invertebrate Paleontology' },
-  { 'value': 'vertpaleo', 'label': 'Vertebrate Paleontology' },
-  { 'value': 'bird', 'label': 'Bird' },
-  { 'value': 'mammal', 'label': 'Mammal' },
-  { 'value': 'insect', 'label': 'Insect' },
-  { 'value': 'botany', 'label': 'Botany' },
-  { 'value': 'invertebrate', 'label': 'Invertebrate' },
-  { 'value': 'geology', 'label': 'Geology' },
-]
 
 def create_discipline_type_picklist(apps):
     Collection = apps.get_model('specify', 'Collection')
@@ -39,13 +26,13 @@ def create_discipline_type_picklist(apps):
         if created:
             ordinal = 1
             items = []
-            for type in DISCIPLINE_TYPES:
+            for value, title in DISCIPLINE_NAMES.items():
                 items.append(
                     Picklistitem(
                         picklist=picklist,
                         ordinal=ordinal,
-                        value=type['value'],
-                        title=type['label'],
+                        value=value,
+                        title=title,
                     )
                 )
                 ordinal += 1
