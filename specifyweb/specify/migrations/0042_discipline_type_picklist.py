@@ -13,7 +13,6 @@ def create_discipline_type_picklist(apps):
         picklist, created = Picklist.objects.get_or_create(
             name=DISCIPLINE_TYPE_PICKLIST_NAME,
             type=1,
-            tablename='discipline',
             collection=collection,
             defaults={
                 "issystem": True,
