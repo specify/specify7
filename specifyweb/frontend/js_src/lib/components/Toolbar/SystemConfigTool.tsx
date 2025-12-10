@@ -34,6 +34,8 @@ import { useId } from '../../hooks/useId';
 import { LocalizedString } from 'typesafe-i18n';
 import { Submit } from '../Atoms/Submit';
 import { setupToolText } from '../../localization/setupTool';
+import { Link } from '../Atoms/Link';
+import { ResourceLink } from '../Molecules/ResourceLink';
 
 export function SystemConfigurationTool(): JSX.Element | null {
   const [allInfo, setAllInfo] = React.useState<InstitutionData | null>(null);
@@ -197,6 +199,22 @@ export function SystemConfigurationTool(): JSX.Element | null {
                       <div className="flex items-center">
                         <H3>{`Division: ${division.name}`}</H3>
 
+                        <ResourceLink
+                          component={Link.Icon}
+                          props={{ icon: 'pencil', title: commonText.edit() }}
+                          resource={
+                            new tables.Division.Resource({
+                              id: division.id,
+                            })
+                          }
+                          resourceView={{
+                            onDeleted: undefined,
+                            onSaved() {
+                              globalThis.location.reload();
+                            },
+                          }}
+                        />
+
                         <Button.Icon
                           icon="plus"
                           title="Add new discipline to division"
@@ -274,6 +292,25 @@ export function SystemConfigurationTool(): JSX.Element | null {
                                       </div>
                                     )}
 
+                                    <ResourceLink
+                                      component={Link.Icon}
+                                      props={{
+                                        icon: 'pencil',
+                                        title: commonText.edit(),
+                                      }}
+                                      resource={
+                                        new tables.Discipline.Resource({
+                                          id: discipline.id,
+                                        })
+                                      }
+                                      resourceView={{
+                                        onDeleted: undefined,
+                                        onSaved() {
+                                          globalThis.location.reload();
+                                        },
+                                      }}
+                                    />
+
                                     {/* ADD COLLECTION */}
                                     {canAddCollection && (
                                       <Button.Icon
@@ -302,12 +339,32 @@ export function SystemConfigurationTool(): JSX.Element | null {
                                   >
                                     <Ul className="m-4">
                                       {discipline.children.map((collection) => (
-                                        <li
-                                          className="m-4 list-disc"
-                                          key={collection.id}
-                                        >
-                                          <p>{collection.name}</p>
-                                        </li>
+                                        <div className="flex items-center">
+                                          <li
+                                            className="m-4 list-disc"
+                                            key={collection.id}
+                                          >
+                                            <p>{collection.name}</p>
+                                          </li>
+                                          <ResourceLink
+                                            component={Link.Icon}
+                                            props={{
+                                              icon: 'pencil',
+                                              title: commonText.edit(),
+                                            }}
+                                            resource={
+                                              new tables.Collection.Resource({
+                                                id: collection.id,
+                                              })
+                                            }
+                                            resourceView={{
+                                              onDeleted: undefined,
+                                              onSaved() {
+                                                globalThis.location.reload();
+                                              },
+                                            }}
+                                          />
+                                        </div>
                                       ))}
                                     </Ul>
                                   </CollapsibleSection>
