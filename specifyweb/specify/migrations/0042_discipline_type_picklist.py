@@ -55,4 +55,10 @@ class Migration(migrations.Migration):
     def revert_migration(apps, schema_editor):
         revert_discipline_type_picklist(apps)
         
-    operations = []
+    operations = [
+        migrations.RunPython(
+            apply_migration,
+            revert_migration,
+            atomic=True,
+        ),
+    ]
