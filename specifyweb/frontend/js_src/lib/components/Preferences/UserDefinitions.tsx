@@ -1396,7 +1396,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.sortByField(),
             requiresReload: false,
             visible: true,
-            defaultValue: 'name',
+            defaultValue: 'rankId',
             values: [
               {
                 value: 'name',
