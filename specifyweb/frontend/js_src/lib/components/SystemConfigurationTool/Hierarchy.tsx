@@ -128,12 +128,7 @@ export const Hierarchy = ({
     closeAddDisciplineTaxonTree,
   ] = useBooleanState(false);
 
-  const renderCollections = (
-    collections: RA<{
-      readonly id: number;
-      readonly name: string;
-    }>
-  ) => (
+  const renderCollections = (collections: any) => (
     <CollapsibleSection
       title={<p>Collections</p>}
       defaultOpen={false}
