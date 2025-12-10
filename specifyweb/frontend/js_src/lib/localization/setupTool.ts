@@ -32,7 +32,7 @@ export const setupToolText = createDictionary({
   /**
    * Field Captions.
    * These must be defined here because schema captions don't exist during the setup.
-  */ 
+   */
   // Institution
   institution: {
     'en-us': 'Institution',
@@ -64,13 +64,15 @@ export const setupToolText = createDictionary({
     'en-us': 'Define Accession Globally',
   },
   institutionIsAccessionGlobalDescription: {
-    'en-us': 'Global scope allows you to share Accessions between all divisions. Divisional scope ensures Accessions are specific to each division.',
+    'en-us':
+      'Global scope allows you to share Accessions between all divisions. Divisional scope ensures Accessions are specific to each division.',
   },
   institutionIsSingleGeographyTree: {
     'en-us': 'Use Single Geography Tree',
   },
   institutionIsSingleGeographyTreeDescription: {
-    'en-us': 'A global geography tree is shared by all disciplines. Otherwise, geography trees are managed separately within each discipline.',
+    'en-us':
+      'A global geography tree is shared by all disciplines. Otherwise, geography trees are managed separately within each discipline.',
   },
 
   // Address
@@ -113,7 +115,7 @@ export const setupToolText = createDictionary({
 
   // Trees
   treeRanks: {
-    'en-us': 'Tree Ranks'
+    'en-us': 'Tree Ranks',
   },
   fullNameDirection: {
     'en-us': 'Full Name Direction',
@@ -134,9 +136,11 @@ export const setupToolText = createDictionary({
   taxonTree: {
     'en-us': 'Taxon Tree',
   },
-  // defaultTree: {
-  //   'en-us': 'Pre-load Default Tree'
-  // },
+  /*
+   * DefaultTree: {
+   *   'en-us': 'Pre-load Default Tree'
+   * },
+   */
 
   // Division
   division: {
@@ -195,5 +199,14 @@ export const setupToolText = createDictionary({
   },
   specifyUserConfirmPasswordDescription: {
     'en-us': 'Must match the password entered above.',
+  },
+  configGeoTree: {
+    'en-us': 'Configure your geography tree for your discipline',
+  },
+  configTaxonTree: {
+    'en-us': 'Configure your taxon tree for your discipline',
+  },
+  treeConfigurationWarning: {
+    'en-us': 'Set up your tree',
   },
 } as const);
