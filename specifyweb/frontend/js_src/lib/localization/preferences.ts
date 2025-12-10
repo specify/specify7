@@ -2076,7 +2076,7 @@ export const preferencesText = createDictionary({
   },
   inheritanceCatNumberPrefDescription: {
     'en-us':
-      'Control whether component records inherit the catalog number from the primary collection object.',
+      'Control whether collection object inherit the catalog number from the primary collection object.',
   },
   inheritanceCatNumberPref: {
     'en-us':
