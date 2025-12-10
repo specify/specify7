@@ -23,7 +23,6 @@ import { LocalizedString } from 'typesafe-i18n';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import { SpecifyResource } from '../DataModel/legacyTypes';
-import { RA } from '../../utils/types';
 
 type DialogFormProps = {
   open: boolean;
