@@ -1,39 +1,40 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { Dialog, LoadingScreen } from '../Molecules/Dialog';
-import { InstitutionData } from './Utils';
-import { H2, H3, Ul } from '../Atoms';
-import { Button } from '../Atoms/Button';
-import { tables } from '../DataModel/tables';
-import { ResourceLink } from '../Molecules/ResourceLink';
-import { Link } from '../Atoms/Link';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { setupToolText } from '../../localization/setupTool';
+import type { RA } from '../../utils/types';
+import { H2, H3, Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
-import { resources } from '../SetupTool/setupResources';
-import { CollapsibleSection } from './CollapsibleSection';
-import { useId } from '../../hooks/useId';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
+import { getSystemInfo } from '../InitialContext/systemInfo';
+import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { ResourceLink } from '../Molecules/ResourceLink';
+import type {
+  ResourceFormData} from '../SetupTool';
 import {
   renderFormFieldFactory,
-  ResourceFormData,
   stepOrder,
 } from '../SetupTool';
-import { LocalizedString } from 'typesafe-i18n';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { getSystemInfo } from '../InitialContext/systemInfo';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { RA } from '../../utils/types';
+import { resources } from '../SetupTool/setupResources';
+import { CollapsibleSection } from './CollapsibleSection';
+import type { InstitutionData } from './Utils';
 
 type DialogFormProps = {
-  open: boolean;
-  onClose: () => void;
-  resourceIndex: number;
-  title: LocalizedString;
-  step: number;
+  readonly open: boolean;
+  readonly onClose: () => void;
+  readonly resourceIndex: number;
+  readonly title: LocalizedString;
+  readonly step: number;
 };
 
-const DialogForm = ({ open, onClose, title, step }: DialogFormProps) => {
+function DialogForm({ open, onClose, title, step }: DialogFormProps) {
   const id = useId('config-tool');
 
   if (!open) return null;
@@ -49,10 +50,10 @@ const DialogForm = ({ open, onClose, title, step }: DialogFormProps) => {
 
   const handleChange = (name: string, newValue: LocalizedString | boolean) => {
     const resourceName = resources[5].resourceName;
-    setFormData((prev) => ({
-      ...prev,
+    setFormData((previous) => ({
+      ...previous,
       [resourceName]: {
-        ...prev[resourceName],
+        ...previous[resourceName],
         [name]: newValue,
       },
     }));
@@ -88,7 +89,7 @@ const DialogForm = ({ open, onClose, title, step }: DialogFormProps) => {
       </Form>
     </Dialog>
   );
-};
+}
 
 const handleEditResource = (resource: SpecifyResource<any>) => (
   <ResourceLink
@@ -107,24 +108,24 @@ const addButton = (
   tableName: string
 ): JSX.Element => (
   <Button.Icon
+    className="ml-2"
     icon="plus"
     title={`Add new ${tableName}`}
-    className="ml-2"
     onClick={() => {
       createResource();
     }}
   />
 );
 
-export const Hierarchy = ({
+export function Hierarchy({
   institution,
   setNewResource,
   handleNewResource,
 }: {
-  institution: InstitutionData | null;
-  setNewResource: (resource: any) => void;
-  handleNewResource: () => void;
-}): JSX.Element => {
+  readonly institution: InstitutionData | null;
+  readonly setNewResource: (resource: any) => void;
+  readonly handleNewResource: () => void;
+}): JSX.Element {
   if (!institution) return <LoadingScreen />;
 
   const systemInfo = getSystemInfo();
@@ -150,9 +151,9 @@ export const Hierarchy = ({
     }>
   ) => (
     <CollapsibleSection
-      title={<p>Collections</p>}
       defaultOpen={false}
       hasChildren={collections.length > 0}
+      title={<p>Collections</p>}
     >
       <Ul className="m-4">
         {collections.map((collection) => (
@@ -240,19 +241,19 @@ export const Hierarchy = ({
             {/* GEO */}
             <DialogForm
               open={addDisciplineGeoTree}
-              onClose={closeAddDisciplineGeoTree}
               resourceIndex={5}
-              title={setupToolText.addNewGeographyTree()}
               step={5}
+              title={setupToolText.addNewGeographyTree()}
+              onClose={closeAddDisciplineGeoTree}
             />
 
             {/* TAXON */}
             <DialogForm
               open={addDisciplineTaxonTree}
-              onClose={closeAddDisciplineTaxonTree}
               resourceIndex={6}
-              title={setupToolText.addNewTaxonTree()}
               step={6}
+              title={setupToolText.addNewTaxonTree()}
+              onClose={closeAddDisciplineTaxonTree}
             />
           </CollapsibleSection>
         </li>
@@ -261,8 +262,9 @@ export const Hierarchy = ({
 
   const renderDivisions = (institution: InstitutionData) =>
     institution.children.map((division: any) => (
-      <li key={division.id} className="pb-2">
+      <li className="pb-2" key={division.id}>
         <CollapsibleSection
+          hasChildren={division.children.length > 0}
           title={
             <div className="flex items-center">
               <H3>{`Division: ${division.name}`}</H3>
@@ -281,7 +283,6 @@ export const Hierarchy = ({
               }, 'Discipline')}
             </div>
           }
-          hasChildren={division.children.length > 0}
         >
           <Ul className="m-5">{renderDisciplines(division)}</Ul>
         </CollapsibleSection>
@@ -292,6 +293,7 @@ export const Hierarchy = ({
     <Ul className="m-4">
       <li key={institution.id}>
         <CollapsibleSection
+          hasChildren={institution.children.length > 0}
           title={
             <div className="flex items-center">
               <H2>{`Institution: ${institution.name}`}</H2>
@@ -301,11 +303,10 @@ export const Hierarchy = ({
               }, 'Division')}
             </div>
           }
-          hasChildren={institution.children.length > 0}
         >
           <Ul className="m-5">{renderDivisions(institution)}</Ul>
         </CollapsibleSection>
       </li>
     </Ul>
   );
-};
+}
