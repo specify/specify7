@@ -101,6 +101,20 @@ const handleEditResource = (resource: SpecifyResource<any>) => (
   />
 );
 
+const addButton = (
+  createResource: () => void,
+  tableName: string
+): JSX.Element => (
+  <Button.Icon
+    icon="plus"
+    title={`Add new ${tableName}`}
+    className="ml-2"
+    onClick={() => {
+      createResource();
+    }}
+  />
+);
+
 export const Hierarchy = ({
   institution,
   setNewResource,
@@ -162,7 +176,6 @@ export const Hierarchy = ({
             title={
               <div className="flex items-center">
                 <H3>{`Discipline: ${discipline.name}`}</H3>
-
                 {/* GEO TREE */}
                 {needsGeoTree && (
                   <div className="flex items-center ml-2">
@@ -179,7 +192,6 @@ export const Hierarchy = ({
                     </p>
                   </div>
                 )}
-
                 {/* TAXON TREE */}
                 {needsTaxonTree && (
                   <div className="flex items-center ml-2">
@@ -196,27 +208,20 @@ export const Hierarchy = ({
                     </p>
                   </div>
                 )}
-
                 {handleEditResource(
                   new tables.Discipline.Resource({ id: discipline.id })
                 )}
 
                 {/* ADD COLLECTION */}
-                {canAddCollection && (
-                  <Button.Icon
-                    icon="plus"
-                    title="Add new collection"
-                    className="ml-2"
-                    onClick={() => {
-                      setNewResource(
-                        new tables.Collection.Resource({
-                          discipline: `/api/specify/discipline/${discipline.id}/`,
-                        })
-                      );
-                      handleNewResource();
-                    }}
-                  />
-                )}
+                {canAddCollection &&
+                  addButton(() => {
+                    setNewResource(
+                      new tables.Collection.Resource({
+                        discipline: `/api/specify/discipline/${division.id}/`,
+                      })
+                    );
+                    handleNewResource();
+                  }, 'collection')}
               </div>
             }
           >
@@ -254,22 +259,19 @@ export const Hierarchy = ({
           title={
             <div className="flex items-center">
               <H3>{`Division: ${division.name}`}</H3>
+
               {handleEditResource(
                 new tables.Division.Resource({ id: division.id })
               )}
-              <Button.Icon
-                icon="plus"
-                title="Add new discipline to division"
-                className="ml-2"
-                onClick={() => {
-                  setNewResource(
-                    new tables.Discipline.Resource({
-                      division: `/api/specify/division/${division.id}/`,
-                    })
-                  );
-                  handleNewResource();
-                }}
-              />
+
+              {addButton(() => {
+                setNewResource(
+                  new tables.Discipline.Resource({
+                    division: `/api/specify/discipline/${division.id}/`,
+                  })
+                );
+                handleNewResource();
+              }, 'Discipline')}
             </div>
           }
           hasChildren={division.children.length > 0}
@@ -286,15 +288,10 @@ export const Hierarchy = ({
           title={
             <div className="flex items-center">
               <H2>{`Institution: ${institution.name}`}</H2>
-              <Button.Icon
-                icon="plus"
-                title="Add new division to institution"
-                className="ml-2"
-                onClick={() => {
-                  setNewResource(new tables.Division.Resource());
-                  handleNewResource();
-                }}
-              />
+              {addButton(() => {
+                setNewResource(new tables.Division.Resource());
+                handleNewResource();
+              }, 'Division')}
             </div>
           }
           hasChildren={institution.children.length > 0}
