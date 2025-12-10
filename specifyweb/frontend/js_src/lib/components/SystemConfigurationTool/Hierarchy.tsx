@@ -145,7 +145,6 @@ export function Hierarchy({
 
   const renderCollections = (
     collections: RA<{
-      // Collection
       readonly id: number;
       readonly name: string;
     }>
