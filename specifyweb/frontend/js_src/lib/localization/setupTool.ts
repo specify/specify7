@@ -209,4 +209,10 @@ export const setupToolText = createDictionary({
   treeConfigurationWarning: {
     'en-us': 'Set up your tree',
   },
+  addNewGeographyTree: {
+    'en-us': 'Add new Geography Tree',
+  },
+  addNewTaxonTree: {
+    'en-us': 'Add new Taxon Tree',
+  },
 } as const);

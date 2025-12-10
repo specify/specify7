@@ -22,56 +22,40 @@ import {
 import { LocalizedString } from 'typesafe-i18n';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { getSystemInfo } from '../InitialContext/systemInfo';
+import { SpecifyResource } from '../DataModel/legacyTypes';
+import { RA } from '../../utils/types';
 
-export const Hierarchy = ({
-  institution,
-  setNewResource,
-  handleNewResource,
-}: {
-  institution: InstitutionData | null;
-  setNewResource: (resource: any) => void;
-  handleNewResource: () => void;
-}): JSX.Element => {
-  const institutionData = getSystemInfo();
+type DialogFormProps = {
+  open: boolean;
+  onClose: () => void;
+  resourceIndex: number;
+  title: LocalizedString;
+  step: number;
+};
 
-  if (!institution) return <LoadingScreen />;
+const DialogForm = ({ open, onClose, title, step }: DialogFormProps) => {
+  const id = useId('config-tool');
 
-  const isGeographyGlobal = institutionData.geography_is_global;
+  if (!open) return null;
 
-  const [
-    addDisciplineGeoTree,
-    handleOpenAddDisciplineGeoTree,
-    handleCloseAddDisciplineGeoTree,
-  ] = useBooleanState(false);
-
-  const [
-    addDisciplineTaxonTree,
-    handleOpenAddDisciplineTaxonTree,
-    handleCloseAddDisciplineTaxonTree,
-  ] = useBooleanState(false);
-
-  const [temporaryFormData, setTemporaryFormData] =
-    React.useState<ResourceFormData>({});
+  const formRef = React.useRef<HTMLFormElement | null>(null);
 
   const [formData, setFormData] = React.useState<ResourceFormData>(
     Object.fromEntries(stepOrder.map((key) => [key, {}]))
   );
 
-  const formRef = React.useRef<HTMLFormElement | null>(null);
-  const handleChange = (
-    name: string,
-    newValue: LocalizedString | boolean
-  ): void => {
-    setFormData((previous) => {
-      const resourceName = resources[5].resourceName;
-      return {
-        ...previous,
-        [resourceName]: {
-          ...previous[resourceName],
-          [name]: newValue,
-        },
-      };
-    });
+  const [temporaryFormData, setTemporaryFormData] =
+    React.useState<ResourceFormData>({});
+
+  const handleChange = (name: string, newValue: LocalizedString | boolean) => {
+    const resourceName = resources[5].resourceName;
+    setFormData((prev) => ({
+      ...prev,
+      [resourceName]: {
+        ...prev[resourceName],
+        [name]: newValue,
+      },
+    }));
   };
 
   const { renderFormFields } = renderFormFieldFactory({
@@ -83,7 +67,223 @@ export const Hierarchy = ({
     formRef,
   });
 
-  const id = useId('config-tool');
+  return (
+    <Dialog
+      buttons={
+        <>
+          <Submit.Save form={id('form')}>{commonText.create()}</Submit.Save>
+          <span className="-ml-2 flex-1" />
+          <Button.Danger onClick={onClose}>{commonText.cancel()}</Button.Danger>
+        </>
+      }
+      header={title}
+      onClose={onClose}
+    >
+      <Form
+        className="flex-1 overflow-auto gap-2"
+        id={id('form')}
+        onSubmit={() => {}}
+      >
+        {renderFormFields(resources[step].fields)}
+      </Form>
+    </Dialog>
+  );
+};
+
+const handleEditResource = (resource: SpecifyResource<any>) => (
+  <ResourceLink
+    component={Link.Icon}
+    props={{ icon: 'pencil', title: commonText.edit() }}
+    resource={resource}
+    resourceView={{
+      onDeleted: undefined,
+      onSaved: () => globalThis.location.reload(),
+    }}
+  />
+);
+
+export const Hierarchy = ({
+  institution,
+  setNewResource,
+  handleNewResource,
+}: {
+  institution: InstitutionData | null;
+  setNewResource: (resource: any) => void;
+  handleNewResource: () => void;
+}): JSX.Element => {
+  if (!institution) return <LoadingScreen />;
+
+  const systemInfo = getSystemInfo();
+
+  const isGeographyGlobal = systemInfo.geography_is_global;
+
+  const [
+    addDisciplineGeoTree,
+    openAddDisciplineGeoTree,
+    closeAddDisciplineGeoTree,
+  ] = useBooleanState(false);
+  const [
+    addDisciplineTaxonTree,
+    openAddDisciplineTaxonTree,
+    closeAddDisciplineTaxonTree,
+  ] = useBooleanState(false);
+
+  const renderCollections = (
+    collections: RA<{
+      readonly id: number;
+      readonly name: string;
+    }>
+  ) => (
+    <CollapsibleSection
+      title={<p>Collections</p>}
+      defaultOpen={false}
+      hasChildren={collections.length > 0}
+    >
+      <Ul className="m-4">
+        {collections.map((collection) => (
+          <div className="flex items-center" key={collection.id}>
+            <li className="m-4 list-disc">
+              <p>{collection.name}</p>
+            </li>
+            {handleEditResource(
+              new tables.Collection.Resource({ id: collection.id })
+            )}
+          </div>
+        ))}
+      </Ul>
+    </CollapsibleSection>
+  );
+
+  const renderDisciplines = (division: any) =>
+    division.children.map((discipline: any) => {
+      const needsGeoTree =
+        isGeographyGlobal && typeof discipline.geographytreedef !== 'number';
+      const needsTaxonTree = typeof discipline.taxontreedef !== 'number';
+      const canAddCollection = !needsGeoTree && !needsTaxonTree;
+
+      return (
+        <li key={discipline.id}>
+          <CollapsibleSection
+            hasChildren={discipline.children.length > 0}
+            title={
+              <div className="flex items-center">
+                <H3>{`Discipline: ${discipline.name}`}</H3>
+
+                {/* GEO TREE */}
+                {needsGeoTree && (
+                  <div className="flex items-center ml-2">
+                    <Button.Icon
+                      icon="globe"
+                      title={setupToolText.configGeoTree()}
+                      onClick={() => {
+                        setNewResource(new tables.GeographyTreeDef.Resource());
+                        openAddDisciplineGeoTree();
+                      }}
+                    />
+                    <p className="text-red-600 ml-2">
+                      {setupToolText.treeConfigurationWarning()}
+                    </p>
+                  </div>
+                )}
+
+                {/* TAXON TREE */}
+                {needsTaxonTree && (
+                  <div className="flex items-center ml-2">
+                    <Button.Icon
+                      icon="tree"
+                      title={setupToolText.configTaxonTree()}
+                      onClick={() => {
+                        setNewResource(new tables.TaxonTreeDef.Resource());
+                        openAddDisciplineTaxonTree();
+                      }}
+                    />
+                    <p className="text-red-600 ml-2">
+                      {setupToolText.treeConfigurationWarning()}
+                    </p>
+                  </div>
+                )}
+
+                {handleEditResource(
+                  new tables.Discipline.Resource({ id: discipline.id })
+                )}
+
+                {/* ADD COLLECTION */}
+                {canAddCollection && (
+                  <Button.Icon
+                    icon="plus"
+                    title="Add new collection"
+                    className="ml-2"
+                    onClick={() => {
+                      setNewResource(
+                        new tables.Collection.Resource({
+                          discipline: `/api/specify/discipline/${discipline.id}/`,
+                        })
+                      );
+                      handleNewResource();
+                    }}
+                  />
+                )}
+              </div>
+            }
+          >
+            {/* COLLECTIONS */}
+            {discipline.children.length > 0 &&
+              renderCollections(discipline.children)}
+
+            {/* TREE CONFIG DIALOGS */}
+            {/* GEO */}
+            <DialogForm
+              open={addDisciplineGeoTree}
+              onClose={closeAddDisciplineGeoTree}
+              resourceIndex={5}
+              title={setupToolText.addNewGeographyTree()}
+              step={5}
+            />
+
+            {/* TAXON */}
+            <DialogForm
+              open={addDisciplineTaxonTree}
+              onClose={closeAddDisciplineTaxonTree}
+              resourceIndex={6}
+              title={setupToolText.addNewTaxonTree()}
+              step={6}
+            />
+          </CollapsibleSection>
+        </li>
+      );
+    });
+
+  const renderDivisions = (institution: InstitutionData) =>
+    institution.children.map((division: any) => (
+      <li key={division.id} className="pb-2">
+        <CollapsibleSection
+          title={
+            <div className="flex items-center">
+              <H3>{`Division: ${division.name}`}</H3>
+              {handleEditResource(
+                new tables.Division.Resource({ id: division.id })
+              )}
+              <Button.Icon
+                icon="plus"
+                title="Add new discipline to division"
+                className="ml-2"
+                onClick={() => {
+                  setNewResource(
+                    new tables.Discipline.Resource({
+                      division: `/api/specify/division/${division.id}/`,
+                    })
+                  );
+                  handleNewResource();
+                }}
+              />
+            </div>
+          }
+          hasChildren={division.children.length > 0}
+        >
+          <Ul className="m-5">{renderDisciplines(division)}</Ul>
+        </CollapsibleSection>
+      </li>
+    ));
 
   return (
     <Ul className="m-4">
@@ -92,7 +292,6 @@ export const Hierarchy = ({
           title={
             <div className="flex items-center">
               <H2>{`Institution: ${institution.name}`}</H2>
-
               <Button.Icon
                 icon="plus"
                 title="Add new division to institution"
@@ -106,268 +305,7 @@ export const Hierarchy = ({
           }
           hasChildren={institution.children.length > 0}
         >
-          {/* ---------------- DIVISIONS ---------------- */}
-          <Ul className="m-5">
-            {institution.children.map((division) => (
-              <li key={division.id} className="pb-2">
-                <CollapsibleSection
-                  title={
-                    <div className="flex items-center">
-                      <H3>{`Division: ${division.name}`}</H3>
-
-                      <ResourceLink
-                        component={Link.Icon}
-                        props={{ icon: 'pencil', title: commonText.edit() }}
-                        resource={
-                          new tables.Division.Resource({
-                            id: division.id,
-                          })
-                        }
-                        resourceView={{
-                          onDeleted: undefined,
-                          onSaved() {
-                            globalThis.location.reload();
-                          },
-                        }}
-                      />
-
-                      <Button.Icon
-                        icon="plus"
-                        title="Add new discipline to division"
-                        className="ml-2"
-                        onClick={() => {
-                          setNewResource(
-                            new tables.Discipline.Resource({
-                              division: `/api/specify/division/${division.id}/`,
-                            })
-                          );
-                          handleNewResource();
-                        }}
-                      />
-                    </div>
-                  }
-                  hasChildren={division.children.length > 0}
-                >
-                  {/* ---------------- DISCIPLINES ---------------- */}
-                  {division.children.length > 0 && (
-                    <Ul className="m-5">
-                      {division.children.map((discipline) => {
-                        const needsGeoTree =
-                          isGeographyGlobal &&
-                          typeof discipline.geographytreedef !== 'number';
-
-                        const needsTaxonTree =
-                          typeof discipline.taxontreedef !== 'number';
-
-                        const canAddCollection =
-                          !needsGeoTree && !needsTaxonTree;
-
-                        return (
-                          <li key={discipline.id}>
-                            <CollapsibleSection
-                              hasChildren={discipline.children.length > 0}
-                              title={
-                                <div className="flex items-center">
-                                  <h4>{`Discipline: ${discipline.name}`}</h4>
-
-                                  {/* GEO TREE */}
-                                  {needsGeoTree && (
-                                    <div className="flex items-center ml-2">
-                                      <Button.Icon
-                                        icon="globe"
-                                        title={setupToolText.configGeoTree()}
-                                        onClick={() => {
-                                          setNewResource(
-                                            new tables.GeographyTreeDef.Resource()
-                                          );
-                                          handleOpenAddDisciplineGeoTree();
-                                        }}
-                                      />
-                                      <p className="text-red-600 ml-2">
-                                        {setupToolText.treeConfigurationWarning()}
-                                      </p>
-                                    </div>
-                                  )}
-
-                                  {/* TAXON TREE */}
-                                  {needsTaxonTree && (
-                                    <div className="flex items-center ml-2">
-                                      <Button.Icon
-                                        icon="tree"
-                                        title={setupToolText.configTaxonTree()}
-                                        onClick={() => {
-                                          setNewResource(
-                                            new tables.TaxonTreeDef.Resource()
-                                          );
-                                          handleOpenAddDisciplineTaxonTree();
-                                        }}
-                                      />
-                                      <p className="text-red-600 ml-2">
-                                        {setupToolText.treeConfigurationWarning()}
-                                      </p>
-                                    </div>
-                                  )}
-
-                                  <ResourceLink
-                                    component={Link.Icon}
-                                    props={{
-                                      icon: 'pencil',
-                                      title: commonText.edit(),
-                                    }}
-                                    resource={
-                                      new tables.Discipline.Resource({
-                                        id: discipline.id,
-                                      })
-                                    }
-                                    resourceView={{
-                                      onDeleted: undefined,
-                                      onSaved() {
-                                        globalThis.location.reload();
-                                      },
-                                    }}
-                                  />
-
-                                  {/* ADD COLLECTION */}
-                                  {canAddCollection && (
-                                    <Button.Icon
-                                      icon="plus"
-                                      title="Add new collection"
-                                      className="ml-2"
-                                      onClick={() => {
-                                        setNewResource(
-                                          new tables.Collection.Resource({
-                                            discipline: `/api/specify/discipline/${discipline.id}/`,
-                                          })
-                                        );
-                                        handleNewResource();
-                                      }}
-                                    />
-                                  )}
-                                </div>
-                              }
-                            >
-                              {/* ---------------- COLLECTIONS ---------------- */}
-                              {discipline.children.length > 0 && (
-                                <CollapsibleSection
-                                  title={<p>Collections</p>}
-                                  defaultOpen={false}
-                                  hasChildren={discipline.children.length > 0}
-                                >
-                                  <Ul className="m-4">
-                                    {discipline.children.map((collection) => (
-                                      <div
-                                        className="flex items-center"
-                                        key={collection.id}
-                                      >
-                                        <li
-                                          className="m-4 list-disc"
-                                          key={collection.id}
-                                        >
-                                          <p>{collection.name}</p>
-                                        </li>
-                                        <ResourceLink
-                                          component={Link.Icon}
-                                          props={{
-                                            icon: 'pencil',
-                                            title: commonText.edit(),
-                                          }}
-                                          resource={
-                                            new tables.Collection.Resource({
-                                              id: collection.id,
-                                            })
-                                          }
-                                          resourceView={{
-                                            onDeleted: undefined,
-                                            onSaved() {
-                                              globalThis.location.reload();
-                                            },
-                                          }}
-                                        />
-                                      </div>
-                                    ))}
-                                  </Ul>
-                                </CollapsibleSection>
-                              )}
-                            </CollapsibleSection>
-
-                            {/* GEO TREE DIALOG */}
-                            {addDisciplineGeoTree && (
-                              <Dialog
-                                buttons={
-                                  <>
-                                    <Submit.Save form={id('form')}>
-                                      {commonText.create()}
-                                    </Submit.Save>
-                                    <span className="-ml-2 flex-1" />
-                                    <Button.Danger
-                                      onClick={handleCloseAddDisciplineGeoTree}
-                                    >
-                                      {commonText.cancel()}
-                                    </Button.Danger>
-                                  </>
-                                }
-                                header={localized('Add new Geography Tree')}
-                                onClose={handleCloseAddDisciplineGeoTree}
-                              >
-                                <Form
-                                  className="flex-1 overflow-auto gap-2"
-                                  id={id('form')}
-                                  onSubmit={handleSaved}
-                                >
-                                  <div className="flex items-center justify-between mb-4">
-                                    <H3 className="text-xl font-semibold mb-4">
-                                      {resources[5].label}
-                                    </H3>
-                                  </div>
-                                  {renderFormFields(resources[5].fields)}
-                                </Form>
-                              </Dialog>
-                            )}
-
-                            {/* TAXON TREE DIALOG */}
-                            {addDisciplineTaxonTree && (
-                              <Dialog
-                                buttons={
-                                  <>
-                                    <Submit.Save form={id('form')}>
-                                      {commonText.create()}
-                                    </Submit.Save>
-                                    <span className="-ml-2 flex-1" />
-                                    <Button.Danger
-                                      onClick={
-                                        handleCloseAddDisciplineTaxonTree
-                                      }
-                                    >
-                                      {commonText.cancel()}
-                                    </Button.Danger>
-                                  </>
-                                }
-                                header={localized('Add new Taxon Tree')}
-                                onClose={handleCloseAddDisciplineTaxonTree}
-                              >
-                                <Form
-                                  className="flex-1 overflow-auto gap-2"
-                                  id={id('form')}
-                                  onSubmit={handleSaved}
-                                >
-                                  <div className="flex items-center justify-between mb-4">
-                                    <H3 className="text-xl font-semibold mb-4">
-                                      {resources[6].label}
-                                    </H3>
-                                  </div>
-                                  {renderFormFields(resources[6].fields)}
-                                </Form>
-                              </Dialog>
-                            )}
-                          </li>
-                        );
-                      })}
-                    </Ul>
-                  )}
-                </CollapsibleSection>
-              </li>
-            ))}
-          </Ul>
+          <Ul className="m-5">{renderDivisions(institution)}</Ul>
         </CollapsibleSection>
       </li>
     </Ul>
