@@ -1,7 +1,7 @@
 from django.db import migrations
 from specifyweb.backend.context.app_resource import DISCIPLINE_NAMES
 
-DISCIPLINE_TYPE_PICKLIST_NAME = 'COGTypes'
+DISCIPLINE_TYPE_PICKLIST_NAME = 'DisciplineType'
 
 def create_discipline_type_picklist(apps):
     Collection = apps.get_model('specify', 'Collection')
