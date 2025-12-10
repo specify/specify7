@@ -166,7 +166,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
                     onClick={() => {
                       setNewResource(
                         new tables.Discipline.Resource({
-                          division: `/api/specify/discipline/${division.id}/`,
+                          division: `/api/specify/division/${division.id}/`,
                         })
                       );
                       handleNewResource();
