@@ -204,7 +204,8 @@ export function FormTable<SCHEMA extends AnySchema>({
         resource.cid,
         Boolean(
           resource.specifyTable.name === 'Preparation' &&
-            collectionPreparationPref
+            collectionPreparationPref &&
+            resource.isNew()
         ),
       ])
     )
