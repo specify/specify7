@@ -32,6 +32,7 @@ import type { AppResourcesOutlet } from './index';
 import { globalResourceKey } from './tree';
 import type { ScopedAppResourceDir } from './types';
 import { appResourceSubTypes } from './types';
+import { replaceViewsetNameInXml } from './xmlUtils';
 
 export function AppResourceView(): JSX.Element {
   return <Wrapper mode="appResources" />;
@@ -197,13 +198,6 @@ function useAppResource(
   );
 }
 
-/*
- * REFACTOR:
- * Split this function up.
- * Currently, the resource is not needed until subtype needs to be determined.
- * All the functionality that does not depend on resource should be part of a different
- * function.
- */
 function useInitialData(
   resource: SerializedResource<SpAppResource | SpViewSetObj>,
   initialDataFrom: number | undefined,
@@ -211,36 +205,26 @@ function useInitialData(
 ): string | false | undefined {
   return useAsyncState(
     React.useCallback(async () => {
-      const escapeXml = (s: string): string =>
-        s
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-
       const replaceViewsetName = (data: string | null | undefined): string => {
-        const xml = data ?? '';
         const resourceName = (resource as any)?.name ?? '';
-        if (typeof resourceName !== 'string' || resourceName.length === 0)
-          return xml;
-        return xml.replace(
-          /(<viewset\b[^>]*\bname=)(["])(.*?)\2/,
-          (_match, p1, p2) => `${p1}${p2}${escapeXml(resourceName)}${p2}`
-        );
+        return replaceViewsetNameInXml(data, resourceName);
       };
 
-      if (typeof initialDataFrom === 'number') {
-        const { data } = await fetchResource('SpAppResourceData', initialDataFrom);
-        return replaceViewsetName(data);
+      if (typeof initialDataFrom === 'number')
+        return fetchResource('SpAppResourceData', initialDataFrom).then(
+          ({ data }) => replaceViewsetName(data ?? ''));
+      else if (typeof templateFile === 'string') {
+        if (templateFile.includes('..'))
+          console.error(
+            'Relative paths not allowed. Path is always relative to /static/config/'
+          );
+        else
+          return ajax(`/static/config/${templateFile}`, {
+            headers: {},
+          })
+            .then(({ data }) => replaceViewsetName(data))
+            .catch(() => '');
       }
-      if (typeof templateFile === 'string') {
-       try {
-        const { data } = await ajax(`/static/config/${templateFile}`, { headers: {} });
-        return replaceViewsetName(data);
-      } catch {
-        return '';
-      }
-    }
       const subType = f.maybe(
         toResource(resource, 'SpAppResource'),
         getAppResourceType
@@ -250,15 +234,13 @@ function useInitialData(
         const useTemplate =
           typeof type.name === 'string' &&
           (!('useTemplate' in type) || type.useTemplate);
-        if (useTemplate) {
-          const { data } = await ajax(getAppResourceUrl(type.name, 'quiet'), {
+        if (useTemplate)
+          return ajax(getAppResourceUrl(type.name, 'quiet'), {
             headers: {},
-          });
-          return replaceViewsetName(data);
-        }
+          }).then(({ data }) => replaceViewsetName(data));
       }
       return false;
-    }, [initialDataFrom, templateFile, resource]),
+    }, [initialDataFrom, templateFile]),
     false
   )[0];
 }
