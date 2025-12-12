@@ -82,7 +82,7 @@ export const resources: RA<ResourceConfig> = [
         label: setupToolText.institutionName(),
         description: setupToolText.institutionNameDescription(),
         required: true,
-        maxLength: 256,
+        maxLength: 255,
       },
       {
         name: 'code',
@@ -393,7 +393,7 @@ export const resources: RA<ResourceConfig> = [
           label: setupToolText.specifyUserConfirmPassword(),
           description: setupToolText.specifyUserConfirmPasswordDescription(),
         },
-        maxLength: 256,
+        maxLength: 255,
       },
     ],
   },
