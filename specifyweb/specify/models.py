@@ -1376,7 +1376,7 @@ class Collection(models.Model):
     # Relationships: Many-to-One
     admincontact = models.ForeignKey('Agent', db_column='AdminContactID', related_name='+', null=True, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='collections', null=False, on_delete=protect_with_blockers)
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='collections', null=False, on_delete=models.CASCADE)
     institutionnetwork = models.ForeignKey('Institution', db_column='InstitutionNetworkID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     collectionobjecttype = models.ForeignKey('CollectionObjectType', db_column='CollectionObjectTypeID', related_name='collections', null=True, on_delete=models.SET_NULL)
@@ -2886,7 +2886,7 @@ class Discipline(model_extras.Discipline):
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     datatype = models.ForeignKey('DataType', db_column='DataTypeID', related_name='+', null=False, on_delete=protect_with_blockers)
-    division = models.ForeignKey('Division', db_column='DivisionID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
+    division = models.ForeignKey('Division', db_column='DivisionID', related_name='disciplines', null=False, on_delete=models.CASCADE)
     geographytreedef = models.ForeignKey('GeographyTreeDef', db_column='GeographyTreeDefID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
     taxontreedef = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='disciplines', null=True, on_delete=protect_with_blockers)
     geologictimeperiodtreedef = models.ForeignKey('GeologicTimePeriodTreeDef', db_column='GeologicTimePeriodTreeDefID', related_name='disciplines', null=False, on_delete=protect_with_blockers)
@@ -3045,7 +3045,7 @@ class Division(models.Model):
     # Relationships: Many-to-One
     address = models.ForeignKey('Address', db_column='AddressID', related_name='divisions', null=True, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    institution = models.ForeignKey('Institution', db_column='InstitutionID', related_name='divisions', null=False, on_delete=protect_with_blockers)
+    institution = models.ForeignKey('Institution', db_column='InstitutionID', related_name='divisions', null=False, on_delete=models.CASCADE)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -3689,7 +3689,7 @@ class Geographytreedef(models.Model):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='geographytreedefs', null=True, on_delete=protect_with_blockers)
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='geographytreedefs', null=True, on_delete=models.CASCADE)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
@@ -3795,7 +3795,7 @@ class Geologictimeperiodtreedef(models.Model):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='geologictimeperiodtreedefs', null=True, on_delete=protect_with_blockers)
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='geologictimeperiodtreedefs', null=True, on_delete=models.CASCADE)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
@@ -4294,7 +4294,7 @@ class Lithostrattreedef(models.Model):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='lithostratstreedefs', null=True, on_delete=protect_with_blockers)
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='lithostratstreedefs', null=True, on_delete=models.CASCADE)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
@@ -5093,7 +5093,7 @@ class Picklist(models.Model):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='picklists', null=False, on_delete=protect_with_blockers)
+    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='picklists', null=False, on_delete=models.CASCADE)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
@@ -5948,9 +5948,9 @@ class Spappresourcedir(models.Model):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='+', null=True, on_delete=protect_with_blockers)
+    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='+', null=True, on_delete=models.CASCADE)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=True, on_delete=protect_with_blockers)
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=True, on_delete=models.CASCADE)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='spappresourcedirs', null=True, on_delete=models.CASCADE)
 
@@ -6039,7 +6039,7 @@ class Spexportschema(models.Model):
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='spexportschemas', null=False, on_delete=protect_with_blockers)
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='spexportschemas', null=False, on_delete=models.CASCADE)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -6188,7 +6188,7 @@ class Splocalecontainer(models.Model):
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='splocalecontainers', null=False, on_delete=protect_with_blockers)
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='splocalecontainers', null=False, on_delete=models.CASCADE)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -6222,7 +6222,7 @@ class Splocalecontaineritem(models.Model):
     weblinkname = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='WebLinkName', db_index=False)
 
     # Relationships: Many-to-One
-    container = models.ForeignKey('SpLocaleContainer', db_column='SpLocaleContainerID', related_name='items', null=False, on_delete=protect_with_blockers)
+    container = models.ForeignKey('SpLocaleContainer', db_column='SpLocaleContainerID', related_name='items', null=False, on_delete=models.CASCADE)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
@@ -6252,11 +6252,11 @@ class Splocaleitemstr(models.Model):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    containerdesc = models.ForeignKey('SpLocaleContainer', db_column='SpLocaleContainerDescID', related_name='descs', null=True, on_delete=protect_with_blockers)
-    containername = models.ForeignKey('SpLocaleContainer', db_column='SpLocaleContainerNameID', related_name='names', null=True, on_delete=protect_with_blockers)
+    containerdesc = models.ForeignKey('SpLocaleContainer', db_column='SpLocaleContainerDescID', related_name='descs', null=True, on_delete=models.CASCADE)
+    containername = models.ForeignKey('SpLocaleContainer', db_column='SpLocaleContainerNameID', related_name='names', null=True, on_delete=models.CASCADE)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    itemdesc = models.ForeignKey('SpLocaleContainerItem', db_column='SpLocaleContainerItemDescID', related_name='descs', null=True, on_delete=protect_with_blockers)
-    itemname = models.ForeignKey('SpLocaleContainerItem', db_column='SpLocaleContainerItemNameID', related_name='names', null=True, on_delete=protect_with_blockers)
+    itemdesc = models.ForeignKey('SpLocaleContainerItem', db_column='SpLocaleContainerItemDescID', related_name='descs', null=True, on_delete=models.CASCADE)
+    itemname = models.ForeignKey('SpLocaleContainerItem', db_column='SpLocaleContainerItemNameID', related_name='names', null=True, on_delete=models.CASCADE)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -6486,7 +6486,7 @@ class Sptasksemaphore(models.Model):
     # Relationships: Many-to-One
     collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='+', null=True, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=True, on_delete=protect_with_blockers)
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=True, on_delete=models.CASCADE)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     owner = models.ForeignKey('SpecifyUser', db_column='OwnerID', related_name='tasksemaphores', null=True, on_delete=protect_with_blockers)
 
@@ -6701,7 +6701,7 @@ class Storagetreedef(models.Model):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    institution = models.ForeignKey('Institution', db_column='InstitutionID', related_name='storagetreedefs', null=True, on_delete=protect_with_blockers)
+    institution = models.ForeignKey('Institution', db_column='InstitutionID', related_name='storagetreedefs', null=True, on_delete=models.CASCADE)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
@@ -7130,7 +7130,7 @@ class Taxontreedef(models.Model):
 
     # Relationships: Many-to-One
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='taxontreedefs', null=True, on_delete=protect_with_blockers)
-    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=models.CASCADE)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
@@ -7909,7 +7909,7 @@ class Tectonicunittreedef(models.Model):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
     
     # Relationships: Many-to-One
-    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='tectonicunittreedefs', null=True, on_delete=protect_with_blockers)
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='tectonicunittreedefs', null=True, on_delete=models.CASCADE)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     
