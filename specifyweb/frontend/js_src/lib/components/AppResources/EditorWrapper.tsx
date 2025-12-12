@@ -212,7 +212,8 @@ function useInitialData(
 
       if (typeof initialDataFrom === 'number')
         return fetchResource('SpAppResourceData', initialDataFrom).then(
-          ({ data }) => replaceViewsetName(data ?? ''));
+          ({ data }) => replaceViewsetName(data ?? '')
+        );
       else if (typeof templateFile === 'string') {
         if (templateFile.includes('..'))
           console.error(
