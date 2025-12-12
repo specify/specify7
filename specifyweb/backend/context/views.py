@@ -26,7 +26,7 @@ from specifyweb.backend.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, \
     check_permission_targets, skip_collection_access_check, query_pt, \
     CollectionAccessPT
-from specifyweb.specify.models import Collection, Collectionobject, Institution, \
+from specifyweb.specify.models import Collection, Discipline, Division, Collectionobject, Institution, \
     Specifyuser, Spprincipal, Spversion, Collectionobjecttype
 from specifyweb.specify.models_utils.schema import base_schema
 from specifyweb.specify.models_utils.serialize_datamodel import datamodel_to_json
@@ -663,9 +663,59 @@ def system_info(request):
         collection=collection and collection.collectionname,
         collection_guid=collection and collection.guid,
         isa_number=collection and collection.isanumber,
-        discipline_type=discipline and discipline.type
+        discipline_type=discipline and discipline.type,
+        geography_is_global=institution.issinglegeographytree
         )
     return HttpResponse(json.dumps(info), content_type='application/json')
+
+@require_http_methods(["GET"])
+@cache_control(max_age=86400, public=True)
+@skip_collection_access_check
+def all_system_data(request):
+    """
+    Returns all institutions, divisions, disciplines, and collections.
+    """
+    institution = Institution.objects.get()
+    divisions = list(Division.objects.all())
+    disciplines = list(Discipline.objects.all())
+    collections = list(Collection.objects.all())
+
+    discipline_map = {}
+    for discipline in disciplines:
+        discipline_map[discipline.id] = {
+            "id": discipline.id,
+            "name": discipline.name,
+            "children": [],
+            "geographytreedef": discipline.geographytreedef_id,
+            "taxontreedef": discipline.taxontreedef_id
+        }
+
+    for collection in collections:
+        if collection.discipline_id in discipline_map:
+            discipline_map[collection.discipline_id]["children"].append({
+                "id": collection.id,
+                "name": collection.collectionname
+            })
+
+    division_map = {}
+    for division in divisions:
+        division_map[division.id] = {
+            "id": division.id,
+            "name": division.name,
+            "children": []
+        }
+
+    for discipline in disciplines:
+        if discipline.division_id in division_map:
+            division_map[discipline.division_id]["children"].append(discipline_map[discipline.id])
+
+    institution_data = {
+            "id": institution.id,
+            "name": institution.name,
+            "children": list(division_map.values())
+    }
+
+    return JsonResponse(institution_data, safe=False)
 
 PATH_GROUP_RE = re.compile(r'\(\?P<([^>]+)>[^\)]*\)')
 PATH_GROUP_RE_EXTENDED = re.compile(r'<([^:]+):([^>]+)>')

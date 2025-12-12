@@ -172,7 +172,7 @@ def create_division(data):
     data['institution_id'] = institution.id if institution else None
 
     # Remove unwanted keys
-    for key in ['_tableName', 'success']:
+    for key in ['_tableName', 'success', '_tablename']:
         data.pop(key, None)
 
     # Create new division

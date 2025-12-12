@@ -24,6 +24,7 @@ type SystemInfo = {
   readonly stats_url: string | null;
   readonly stats_2_url: string | null;
   readonly discipline_type: string;
+  readonly geography_is_global: string;
 };
 
 type StatsCounts = {
@@ -80,6 +81,7 @@ export const fetchContext = load<SystemInfo>(
       collectionObjectCount: counts?.Collectionobject ?? 0,
       collectionCount: counts?.Collection ?? 0,
       userCount: counts?.Specifyuser ?? 0,
+      geographyIsGlobal: systemInfo.geography_is_global,
     };
 
     await ping(
