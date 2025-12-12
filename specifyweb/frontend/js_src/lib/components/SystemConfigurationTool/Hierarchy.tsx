@@ -233,7 +233,7 @@ export function Hierarchy({
                   addButton(() => {
                     setNewResource(
                       new tables.Collection.Resource({
-                        discipline: `/api/specify/discipline/${division.id}/`,
+                        discipline: `/api/specify/discipline/${discipline.id}/`,
                       })
                     );
                     handleNewResource();
