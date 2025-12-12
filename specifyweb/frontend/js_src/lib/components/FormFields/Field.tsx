@@ -204,22 +204,26 @@ function Field({
     displayParentCatNumberPlaceHolder,
   ]);
 
+  const customPlaceholder =
+    displayPrimaryCatNumberPlaceHolder &&
+    typeof primaryCatalogNumber === 'string'
+      ? primaryCatalogNumber
+      : displayParentCatNumberPlaceHolder &&
+          typeof parentCatalogNumber === 'string'
+        ? parentCatalogNumber
+        : undefined;
+
+  const { placeholder: parserPlaceholder, ...restValidationAttributes } =
+    validationAttributes;
+
   return (
     <Input.Generic
       forwardRef={validationRef}
       key={parser.title}
       max={Number.MAX_SAFE_INTEGER}
       name={name}
-      placeholder={
-        displayPrimaryCatNumberPlaceHolder &&
-        typeof primaryCatalogNumber === 'string'
-          ? primaryCatalogNumber
-          : displayParentCatNumberPlaceHolder &&
-              typeof parentCatalogNumber === 'string'
-            ? parentCatalogNumber
-            : undefined
-      }
-      {...validationAttributes}
+      placeholder={customPlaceholder ?? parserPlaceholder}
+      {...restValidationAttributes}
       className={rightAlignClassName}
       id={id}
       isReadOnly={isReadOnly}
@@ -227,7 +231,9 @@ function Field({
       tabIndex={isReadOnly ? -1 : undefined}
       value={value?.toString() ?? ''}
       onBlur={
-        isReadOnly ? undefined : ({ target }): void => updateValue(target.value)
+        isReadOnly
+          ? undefined
+          : ({ target }): void => updateValue(target.value)
       }
       onValueChange={(value): void => updateValue(value, false)}
       /*
