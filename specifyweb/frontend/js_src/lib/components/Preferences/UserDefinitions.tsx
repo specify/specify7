@@ -50,6 +50,7 @@ import {
   defaultFont,
   FontFamilyPreferenceItem,
   HeaderItemsPreferenceItem,
+  ThresholdRank,
   WelcomePageModePreferenceItem,
 } from './Renderers';
 import type { GenericPreferences, PreferencesVisibilityContext } from './types';
@@ -1474,6 +1475,17 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="Geography" />
+            ),
+            container: 'label',
+          }),
         },
       },
       taxon: {
@@ -1502,6 +1514,15 @@ export const userPreferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => <ThresholdRank {...props} tableName="Taxon" />,
+            container: 'label',
+          }),
         },
       },
       storage: {
@@ -1521,6 +1542,17 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="Storage" />
+            ),
             container: 'label',
           }),
         },
@@ -1544,6 +1576,17 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="GeologicTimePeriod" />
+            ),
+            container: 'label',
+          }),
         },
       },
       lithoStrat: {
@@ -1565,6 +1608,17 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="LithoStrat" />
+            ),
+            container: 'label',
+          }),
         },
       },
       tectonicUnit: {
@@ -1584,6 +1638,17 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="TectonicUnit" />
+            ),
             container: 'label',
           }),
         },
