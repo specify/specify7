@@ -16,12 +16,8 @@ import { tables } from '../DataModel/tables';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
-import type {
-  ResourceFormData} from '../SetupTool';
-import {
-  renderFormFieldFactory,
-  stepOrder,
-} from '../SetupTool';
+import type { ResourceFormData } from '../SetupTool';
+import { renderFormFieldFactory, stepOrder } from '../SetupTool';
 import { resources } from '../SetupTool/setupResources';
 import { CollapsibleSection } from './CollapsibleSection';
 import type { InstitutionData } from './Utils';
@@ -91,14 +87,23 @@ function DialogForm({ open, onClose, title, step }: DialogFormProps) {
   );
 }
 
-const handleEditResource = (resource: SpecifyResource<any>) => (
+const handleEditResource = (
+  resource: SpecifyResource<any>,
+  refreshAllInfo: () => Promise<void>
+) => (
   <ResourceLink
     component={Link.Icon}
     props={{ icon: 'pencil', title: commonText.edit() }}
     resource={resource}
     resourceView={{
-      onDeleted: undefined,
-      onSaved: () => globalThis.location.reload(),
+      onDeleted: async () => {
+        await refreshAllInfo();
+        globalThis.location.reload();
+      },
+      onSaved: async () => {
+        await refreshAllInfo();
+        globalThis.location.reload();
+      },
     }}
   />
 );
@@ -121,10 +126,12 @@ export function Hierarchy({
   institution,
   setNewResource,
   handleNewResource,
+  refreshAllInfo,
 }: {
   readonly institution: InstitutionData | null;
   readonly setNewResource: (resource: any) => void;
   readonly handleNewResource: () => void;
+  readonly refreshAllInfo: () => Promise<void>;
 }): JSX.Element {
   if (!institution) return <LoadingScreen />;
 
@@ -161,7 +168,8 @@ export function Hierarchy({
               <p>{collection.name}</p>
             </li>
             {handleEditResource(
-              new tables.Collection.Resource({ id: collection.id })
+              new tables.Collection.Resource({ id: collection.id }),
+              refreshAllInfo
             )}
           </div>
         ))}
@@ -216,7 +224,8 @@ export function Hierarchy({
                   </div>
                 )}
                 {handleEditResource(
-                  new tables.Discipline.Resource({ id: discipline.id })
+                  new tables.Discipline.Resource({ id: discipline.id }),
+                  refreshAllInfo
                 )}
 
                 {/* ADD COLLECTION */}
@@ -269,7 +278,8 @@ export function Hierarchy({
               <H3>{`Division: ${division.name}`}</H3>
 
               {handleEditResource(
-                new tables.Division.Resource({ id: division.id })
+                new tables.Division.Resource({ id: division.id }),
+                refreshAllInfo
               )}
 
               {addButton(() => {

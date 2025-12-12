@@ -80,6 +80,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
             setNewResource={setNewResource}
             handleNewResource={handleNewResource}
             institution={allInfo}
+            refreshAllInfo={refreshAllInfo}
           />
         )}
       </div>
