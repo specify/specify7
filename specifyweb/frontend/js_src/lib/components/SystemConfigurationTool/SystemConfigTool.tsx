@@ -20,8 +20,9 @@ import { collection, discipline, division } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { load } from '../InitialContext';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
-import { fetchAllSystemData, InstitutionData } from './Utils';
 import { Hierarchy } from './Hierarchy';
+import type { InstitutionData } from './Utils';
+import { fetchAllSystemData } from './Utils';
 
 export function SystemConfigurationTool(): JSX.Element | null {
   const [allInfo, setAllInfo] = React.useState<InstitutionData | null>(null);
@@ -77,10 +78,10 @@ export function SystemConfigurationTool(): JSX.Element | null {
           <LoadingScreen />
         ) : (
           <Hierarchy
-            setNewResource={setNewResource}
             handleNewResource={handleNewResource}
             institution={allInfo}
             refreshAllInfo={refreshAllInfo}
+            setNewResource={setNewResource}
           />
         )}
       </div>
