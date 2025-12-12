@@ -285,7 +285,7 @@ export function Hierarchy({
               {addButton(() => {
                 setNewResource(
                   new tables.Discipline.Resource({
-                    division: `/api/specify/discipline/${division.id}/`,
+                    division: `/api/specify/division/${division.id}/`,
                   })
                 );
                 handleNewResource();
