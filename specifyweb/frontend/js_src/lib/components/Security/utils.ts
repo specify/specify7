@@ -142,11 +142,7 @@ export function getCollectionRegistriesFromPath(resourceParts: RA<string>) {
  * Localize action name
  */
 export const actionToLabel = (action: string): LocalizedString =>
-  action === anyAction
-    ? userText.allActions()
-    : action === 'edit_collection'
-      ? commonText.edit()
-      : lowerToHuman(action);
+   action === anyAction ? userText.allActions() : lowerToHuman(action);
 
 export const toolPermissionPrefix = 'tools';
 export const anyAction = '%';
