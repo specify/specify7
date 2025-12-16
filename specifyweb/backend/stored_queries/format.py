@@ -200,32 +200,57 @@ class ObjectFormatter:
                 formatter,
                 aggregator, previous_tables)
 
+            raw_expr = new_expr
         else:
             new_query, table, model, specify_field = query.build_join(
                 specify_model, orm_table, formatter_field_spec.join_path)
             new_expr = getattr(table, specify_field.name)
-            
+            raw_expr = new_expr
+
+            # Apply field-level formatting, which may include numeric cast
             if self.format_expr:
-                new_expr = self._fieldformat(formatter_field_spec.table, formatter_field_spec.get_field(), new_expr)
+                new_expr = self._fieldformat(
+                    formatter_field_spec.table,
+                    formatter_field_spec.get_field(),
+                    new_expr
+                )
 
-        if 'trimzeros' in fieldNodeAttrib:
-            # new_expr = case(
-            #     [(new_expr.op('REGEXP')(r'^-?[0-9]+(\\.[0-9]+)?$'), cast(new_expr, types.Numeric(65)))],
-            #     else_=new_expr
-            # )
-            numeric_str = cast(cast(new_expr, types.Numeric(65)), types.String())
-            new_expr = case(
-                (new_expr.op('REGEXP')(r'^-?[0-9]+(\\.[0-9]+)?$'), numeric_str),
-                else_=cast(new_expr, types.String()),
+        # Helper function to apply only string-ish transforms with no numeric casts
+        def apply_stringish(expr):
+            e = expr
+            if fieldNodeAttrib.get('trimzeros') == 'true':
+                numeric_str = cast(cast(e, types.Numeric(65)), types.String())
+                e = case(
+                    (e.op('REGEXP')(r'^-?[0-9]+(\\.[0-9]+)?$'), numeric_str),
+                    else_=cast(e, types.String()),
+                )
+            fmt = fieldNodeAttrib.get('format')
+            if fmt is not None:
+                e = self.pseudo_sprintf(fmt, e)
+            sep = fieldNodeAttrib.get('sep')
+            if sep is not None:
+                e = concat(sep, e)
+            return e
+
+        stringish_expr = apply_stringish(raw_expr)
+        formatted_expr = apply_stringish(new_expr)
+
+        if do_blank_null:
+            sf = formatter_field_spec.get_field()
+            is_catalog_num = (
+                sf is not None
+                and sf is CollectionObject_model.get_field('catalogNumber')
             )
+            if (
+                is_catalog_num
+                and self.numeric_catalog_number
+                and all_numeric_catnum_formats(self.collection)
+            ):
+                return new_query, blank_nulls(stringish_expr), formatter_field_spec
 
-        if 'format' in fieldNodeAttrib:
-            new_expr = self.pseudo_sprintf(fieldNodeAttrib['format'], new_expr)
+            return new_query, blank_nulls(formatted_expr), formatter_field_spec
 
-        if 'sep' in fieldNodeAttrib:
-            new_expr = concat(fieldNodeAttrib['sep'], new_expr)
-
-        return new_query, blank_nulls(new_expr) if do_blank_null else new_expr, formatter_field_spec
+        return new_query, formatted_expr, formatter_field_spec
 
     def objformat(self, query: QueryConstruct, orm_table: SQLTable,
                   formatter_name, cycle_detector=[]) -> tuple[QueryConstruct, blank_nulls]:
