@@ -2134,4 +2134,8 @@ export const preferencesText = createDictionary({
     'en-us':
       'If enabled, picklists of type "Entire Table" will only show items that are in use within the current collection.',
   },
+  inheritanceCatNumberParentCOPrefDescription: {
+    'en-us':
+      'Control whether collection object inherit the catalog number from his parent collection object.',
+  },
 } as const);
