@@ -738,9 +738,8 @@ msgstr "Размер"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:166
-#, fuzzy
 msgid "running"
-msgstr "Бег…"
+msgstr "Выполнение…"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:168
