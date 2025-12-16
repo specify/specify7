@@ -4,6 +4,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
+import { queryText } from '../../localization/query';
 import { setupToolText } from '../../localization/setupTool';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
@@ -23,7 +24,6 @@ import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
 import type { FieldConfig, ResourceConfig } from './setupResources';
 import { FIELD_MAX_LENGTH, resources } from './setupResources';
 import { flattenAllResources } from './utils';
-import { queryText } from '../../localization/query';
 
 type ResourceFormData = Record<string, any>;
 
