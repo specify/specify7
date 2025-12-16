@@ -791,9 +791,8 @@ msgstr "Просмотреть запись"
 #: components/FormCells/index.tsx:315
 #: components/FormCommands/index.tsx:110
 #: components/FormPlugins/index.tsx:190
-#, fuzzy
 msgid "nullInline"
-msgstr "(нулевой)"
+msgstr "(пустой)"
 
 #. 🟥Generic. Could refer to any file. Used in: Components > Molecules > File Picker
 #: components/Molecules/FilePicker.tsx:107
