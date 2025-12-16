@@ -15,6 +15,7 @@ from django import http
 from django.conf import settings
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods
+from django.db import IntegrityError
 
 from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.api.dispatch import collection_dispatch, resource_dispatch
@@ -76,6 +77,9 @@ def api_view(dispatch_func):
         except MissingVersionException as e:
             return http.HttpResponseBadRequest(e)
         except http.Http404 as e:
+            return http.HttpResponseNotFound(e)
+        except IntegrityError as e: 
+            ## catch the exact error for Field 'UserGroupScopeId' from e and the exact resource path fron request and continue to avoid current crash
             return http.HttpResponseNotFound(e)
     return view
 
