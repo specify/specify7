@@ -221,7 +221,7 @@ class ObjectFormatter:
             if fieldNodeAttrib.get('trimzeros') == 'true':
                 numeric_str = cast(cast(e, types.Numeric(65)), types.String())
                 e = case(
-                    (e.op('REGEXP')(r'^-?[0-9]+(\\.[0-9]+)?$'), numeric_str),
+                    (e.op('REGEXP')(r'^-?[0-9]+(\.[0-9]+)?$'), numeric_str),
                     else_=cast(e, types.String()),
                 )
             fmt = fieldNodeAttrib.get('format')
