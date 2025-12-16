@@ -3,6 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { resourcesText } from '../../localization/resources';
 import { statsText } from '../../localization/stats';
 import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -10,7 +11,6 @@ import { Form, Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
 import { Dialog } from '../Molecules/Dialog';
-import { resourcesText } from '../../localization/resources';
 
 export function StatsPageEditing({
   label,
