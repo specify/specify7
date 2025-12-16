@@ -760,9 +760,8 @@ msgstr "Поисковый запрос"
 #: components/Attachments/attachments.ts:122
 #: components/HomePage/AboutSpecify.tsx:188
 #: components/HomePage/AboutSpecify.tsx:214
-#, fuzzy
 msgid "unknown"
-msgstr "Неизвестный"
+msgstr "Неизвестно"
 
 #. Used in: Components > Export Feed > Editor ⬤ Components > Login > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Schema Config > Languages
 #: components/ExportFeed/Editor.tsx:74
