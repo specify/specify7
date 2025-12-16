@@ -10,6 +10,7 @@ import { Form, Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
 import { Dialog } from '../Molecules/Dialog';
+import { resourcesText } from '../../localization/resources';
 
 export function StatsPageEditing({
   label,
@@ -57,7 +58,7 @@ export function StatsPageEditing({
         onSubmit={(): void => (handleRename ?? handleAdd)?.(pageName)}
       >
         <Label.Block>
-          {statsText.name()}
+          {resourcesText.name()}
           <Input.Text required value={pageName} onValueChange={setPageName} />
         </Label.Block>
       </Form>
