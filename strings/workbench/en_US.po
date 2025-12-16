@@ -220,7 +220,7 @@ msgstr "Begin Data Set Upload?"
 msgid "startUploadDescription"
 msgstr "Uploading the Data Set will add the data to the Specify database."
 
-#: components/WorkBench/DataSetMeta.tsx:166
+#: components/WorkBench/DataSetMeta.tsx:169
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "deleteDataSet"
 msgstr "Delete this Data Set?"
@@ -659,7 +659,7 @@ msgstr "Use \"Import a file\" or \"Create New\" to make a new one."
 msgid "createNew"
 msgstr "Create New"
 
-#: components/WorkBench/DataSetMeta.tsx:192
+#: components/WorkBench/DataSetMeta.tsx:195
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetMeta"
 msgstr "Data Set Properties"
@@ -667,27 +667,27 @@ msgstr "Data Set Properties"
 #: components/AttachmentsBulkImport/Datasets.tsx:152
 #: components/AttachmentsBulkImport/Datasets.tsx:284
 #: components/WbPlanView/Mapper.tsx:487
-#: components/WorkBench/DataSetMeta.tsx:216
+#: components/WorkBench/DataSetMeta.tsx:219
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 msgid "dataSetName"
 msgstr "Data Set Name"
 
-#: components/WorkBench/DataSetMeta.tsx:239
+#: components/WorkBench/DataSetMeta.tsx:242
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfRows"
 msgstr "Number of rows"
 
-#: components/WorkBench/DataSetMeta.tsx:246
+#: components/WorkBench/DataSetMeta.tsx:249
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfColumns"
 msgstr "Number of columns"
 
-#: components/WorkBench/DataSetMeta.tsx:345
+#: components/WorkBench/DataSetMeta.tsx:348
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "importedFileName"
 msgstr "Import file name"
 
-#: components/WorkBench/DataSetMeta.tsx:342
+#: components/WorkBench/DataSetMeta.tsx:345
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "noFileName"
 msgstr "(no file name)"
@@ -708,7 +708,7 @@ msgstr "Select New Owner:"
 msgid "dataSetOwnerChanged"
 msgstr "Data Set owner changed"
 
-#: components/WorkBench/DataSetMeta.tsx:379
+#: components/WorkBench/DataSetMeta.tsx:382
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSet"
 msgstr "Data Set"
@@ -718,7 +718,7 @@ msgstr "Data Set"
 msgid "dataSetTimestampUploaded"
 msgstr "Timestamp Uploaded"
 
-#: components/WorkBench/DataSetMeta.tsx:383
+#: components/WorkBench/DataSetMeta.tsx:386
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetUploadedLabel"
 msgstr "(Uploaded, Read-Only)"

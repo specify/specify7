@@ -180,7 +180,7 @@ msgstr ""
 msgid "batchEditDisabled"
 msgstr "Batch Edit is disabled for system tables and scoping hierarchy tables"
 
-#: components/WorkBench/DataSetMeta.tsx:387
+#: components/WorkBench/DataSetMeta.tsx:390
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "cannotEditAfterRollback"
 msgstr "(Batch Edit datasets cannot be edited after rollback - Read Only)"

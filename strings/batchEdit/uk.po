@@ -198,7 +198,7 @@ msgstr ""
 "Пакетне редагування вимкнено для системних таблиць та таблиць ієрархії "
 "області видимості"
 
-#: components/WorkBench/DataSetMeta.tsx:387
+#: components/WorkBench/DataSetMeta.tsx:390
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "cannotEditAfterRollback"
 msgstr ""

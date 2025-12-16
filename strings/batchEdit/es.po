@@ -214,7 +214,7 @@ msgstr ""
 "La edición por lotes está deshabilitada para las tablas del sistema y las "
 "tablas de jerarquía de ámbito."
 
-#: components/WorkBench/DataSetMeta.tsx:387
+#: components/WorkBench/DataSetMeta.tsx:390
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "cannotEditAfterRollback"

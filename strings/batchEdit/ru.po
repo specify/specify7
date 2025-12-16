@@ -229,7 +229,7 @@ msgstr ""
 "Пакетное редактирование отключено для системных таблиц и таблиц иерархии "
 "области действия."
 
-#: components/WorkBench/DataSetMeta.tsx:387
+#: components/WorkBench/DataSetMeta.tsx:390
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "cannotEditAfterRollback"

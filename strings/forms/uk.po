@@ -173,8 +173,8 @@ msgid "invalidNumericPicklistValue"
 msgstr "У цьому {pickListTable:string} підтримуються лише числові значення"
 
 #: components/Attachments/Plugin.tsx:115
-#: components/FormCells/FormTable.tsx:275
-#: components/FormCells/FormTable.tsx:609
+#: components/FormCells/FormTable.tsx:276
+#: components/FormCells/FormTable.tsx:610
 #: components/Forms/BaseResourceView.tsx:106
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"
