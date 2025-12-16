@@ -41,7 +41,7 @@ const stepOrder: RA<keyof SetupResources> = [
 
 function checkFormCondition(
   formData: ResourceFormData,
-  resource: ResourceConfig,
+  resource: ResourceConfig
 ): boolean {
   if (resource.condition === undefined) {
     return true;
@@ -56,7 +56,7 @@ function checkFormCondition(
     }
     if (!pass) break;
   }
-  return pass
+  return pass;
 }
 
 function findNextStep(
@@ -436,7 +436,10 @@ export function SetupTool({
                   {setupToolText.overview()}
                 </H3>
                 <div className="overflow-auto">
-                  <SetupOverview currentStep={currentStep} formData={formData} />
+                  <SetupOverview
+                    currentStep={currentStep}
+                    formData={formData}
+                  />
                 </div>
               </Container.Center>
             </div>
@@ -454,7 +457,9 @@ export function SetupTool({
                       {resources[currentStep].label}
                     </H3>
                     {resources[currentStep].documentationUrl !== undefined && (
-                      <Link.NewTab href={resources[currentStep].documentationUrl!}>
+                      <Link.NewTab
+                        href={resources[currentStep].documentationUrl!}
+                      >
                         {headerText.documentation()}
                       </Link.NewTab>
                     )}
@@ -471,17 +476,15 @@ export function SetupTool({
                   <Button.Secondary className="self-start" onClick={handleBack}>
                     {commonText.back()}
                   </Button.Secondary>
-                  {
-                    (currentStep === resources.length - 1) ? 
+                  {currentStep === resources.length - 1 ? (
                     <Submit.Save className="self-start" form={id('form')}>
                       {commonText.create()}
                     </Submit.Save>
-                    :
+                  ) : (
                     <Submit.Save className="self-start" form={id('form')}>
                       {commonText.next()}
                     </Submit.Save>
-                  }
-                  
+                  )}
                 </div>
               </Container.Center>
               <Container.Center className="p-3 shadow-md max-w-lg">
@@ -514,7 +517,7 @@ function SetupOverview({
   readonly formData: ResourceFormData;
   readonly currentStep: number;
 }): JSX.Element {
-  // Displays all previously filled out forms in a grid format. 
+  // Displays all previously filled out forms in a grid format.
   return (
     <div className="space-y-4 max-h-[70vh] overflow-auto ">
       <table className="w-full text-sm border-collapse table-auto rounded-md bg-white dark:bg-neutral-800">
@@ -527,29 +530,43 @@ function SetupOverview({
             // Display only the forms that have been visited.
             if (
               (Object.keys(formData[resource.resourceName]).length > 0 ||
-              step <= currentStep) &&
+                step <= currentStep) &&
               checkFormCondition(formData, resource)
             ) {
               // Decide how to render each field.
-              const fieldDisplay = (field: FieldConfig, parentName?: string) => {
-                const fieldName = parentName === undefined ? field.name : `${parentName}.${field.name}`;
+              const fieldDisplay = (
+                field: FieldConfig,
+                parentName?: string
+              ) => {
+                const fieldName =
+                  parentName === undefined
+                    ? field.name
+                    : `${parentName}.${field.name}`;
                 const rawValue = formData[resource.resourceName]?.[fieldName];
                 let value = rawValue?.toString() ?? '-';
                 if (field.type === 'object') {
                   // Construct a sub list of properties
-                  field.fields?.map((child_field) => fieldDisplay(child_field, field.name));
+                  field.fields?.map((child_field) =>
+                    fieldDisplay(child_field, field.name)
+                  );
                   return (
-                    <React.Fragment key={`${resource.resourceName}-${field.name}`}>
+                    <React.Fragment
+                      key={`${resource.resourceName}-${field.name}`}
+                    >
                       <tr key={`${resource.resourceName}`}>
                         <td className="font-medium py-1 pr-2 pl-2" colSpan={2}>
                           {field.label}
                         </td>
                       </tr>
                       {field.fields?.map((child) => (
-                        <React.Fragment key={`${resource.resourceName}-${field.name}-${child.name}`}>
+                        <React.Fragment
+                          key={`${resource.resourceName}-${field.name}-${child.name}`}
+                        >
                           {fieldDisplay(
                             child,
-                            parentName ? `${parentName}.${field.name}` : field.name
+                            parentName
+                              ? `${parentName}.${field.name}`
+                              : field.name
                           )}
                         </React.Fragment>
                       ))}
@@ -565,22 +582,27 @@ function SetupOverview({
                     (option) => String(option.value) === value
                   );
                   value = match ? (match.label ?? match.value) : value;
-                } else if (
-                  field.type == 'boolean'
-                ) {
+                } else if (field.type == 'boolean') {
                   value = rawValue === true ? queryText.yes() : commonText.no();
                 }
                 return (
                   <tr key={`${resource.resourceName}-${field.name}`}>
-                    <td className={`py-1 pr-2 ${parentName ? 'pl-5' : 'pl-2'}`}>{field.label}</td>
-                    <td className="py-1 pl-2 border-l border-gray-500">{value}</td>
+                    <td className={`py-1 pr-2 ${parentName ? 'pl-5' : 'pl-2'}`}>
+                      {field.label}
+                    </td>
+                    <td className="py-1 pl-2 border-l border-gray-500">
+                      {value}
+                    </td>
                   </tr>
                 );
               };
               return (
                 <React.Fragment key={resource.resourceName}>
                   <tr key={`${resource.resourceName}`}>
-                    <td className="font-bold py-1 pr-2 pl-2 bg-gray-200 dark:bg-neutral-700" colSpan={2}>
+                    <td
+                      className="font-bold py-1 pr-2 pl-2 bg-gray-200 dark:bg-neutral-700"
+                      colSpan={2}
+                    >
                       {resource.label}
                     </td>
                   </tr>
