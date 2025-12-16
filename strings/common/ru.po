@@ -859,17 +859,15 @@ msgstr "Импорт"
 #: components/Errors/ErrorDialog.tsx:177
 #: components/Errors/Toasts.tsx:103
 #: components/Permissions/PermissionDenied.tsx:218
-#, fuzzy
 msgid "dismiss"
-msgstr "Увольнять"
+msgstr "Отклонить"
 
 #. Used in: Components > Data Model > Specify Table ⬤ Components > Export Feed > Editor ⬤ Components > Wb Plan View > Navigator
 #: components/DataModel/specifyTable.ts:281
 #: components/ExportFeed/Editor.tsx:194
 #: components/WbPlanView/navigator.ts:541
-#, fuzzy
 msgid "id"
-msgstr "ИДЕНТИФИКАТОР"
+msgstr "ID"
 
 #. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Query Line Filters
 #: components/Attachments/index.tsx:163
