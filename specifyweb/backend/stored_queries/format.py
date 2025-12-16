@@ -221,7 +221,7 @@ class ObjectFormatter:
             if fieldNodeAttrib.get('trimzeros') == 'true':
                 numeric_str = cast(cast(e, types.Numeric(65)), types.String())
                 e = case(
-                    (e.op('REGEXP')('^-?[0-9]+(\\.[0-9]+)?$'), numeric_str),
+                    (e.op('REGEXP')(r'^-?[0-9]+(\.[0-9]+)?$'), numeric_str),
                     else_=cast(e, types.String()),
                 )
             fmt = fieldNodeAttrib.get('format')
@@ -473,7 +473,7 @@ class ObjectFormatter:
             # expect the catalogNumber to be numeric if possible.
             # See https://github.com/specify/specify7/issues/6464
             return case(
-                [(field.op('REGEXP')('^-?[0-9]+(\.[0-9]+)?$'), cast(field, types.Numeric(65)))],
+                [(field.op('REGEXP')(r'^-?[0-9]+(\.[0-9]+)?$'), cast(field, types.Numeric(65)))],
                 else_=field
             )
 
