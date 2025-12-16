@@ -561,7 +561,7 @@ export const wbText = createDictionary({
     'uk-ua':
       'Натисніть кнопку «Результати», щоб побачити кількість нових записів, доданих до кожної таблиці бази даних.',
     'de-ch':
-      'Klicken Sie auf die Schaltfläche „Ergebnisse“, um die Anzahl der neu hinzugefügten Datensätze in jeder Datenbanktabelle anzuzeigen.',
+      'Klicken Sie auf die Schaltfläche „Ergebnisse“, um die Anzahl der neuen Datensätze anzuzeigen, die zu jeder Datenbanktabelle hinzugefügt wurden.',
     'pt-br':
       'Clique no botão "Resultados" para ver o número de novos registros adicionados a cada tabela do banco de dados.',
   },
@@ -594,7 +594,7 @@ export const wbText = createDictionary({
     'de-ch':
       'Überprüfen Sie den Datensatz und die Mauszeigerhinweise für jede Fehlerzelle. Nehmen Sie anschließend die entsprechenden Korrekturen vor. Speichern Sie die Daten und versuchen Sie es erneut mit {type:string}.',
     'es-es':
-      'Valide el conjunto de datos y revise las sugerencias que aparecen al pasar el ratón por encima de cada celda con error; a continuación, realice las correcciones pertinentes. Guarde y vuelva a intentarlo {type:string}.',
+      'Valide el conjunto de datos y revise las sugerencias al pasar el ratón por cada celda con error. Luego, realice las correcciones pertinentes. Guarde y vuelva a intentar la operación {type:string}.',
     'fr-fr':
       "Validez l'ensemble de données et consultez les infobulles pour chaque cellule d'erreur, puis effectuez les corrections nécessaires. Enregistrez et réessayez {type:string}.",
     'pt-br':
@@ -980,7 +980,7 @@ export const wbText = createDictionary({
     'fr-fr': 'Importer un fichier pour créer un nouvel ensemble de données',
     'uk-ua': 'Імпортуйте файл, щоб створити новий набір даних',
     'de-ch':
-      'Importieren Sie eine Datei, um einen neuen Datensatz zu erstellen',
+      'Importieren Sie eine Datei, um einen neuen Datensatz zu erstellen.',
     'pt-br': 'Importe um arquivo para criar um novo conjunto de dados.',
   },
   previewDataSet: {
@@ -1449,7 +1449,7 @@ export const wbText = createDictionary({
   detachWindow: {
     'en-us': 'Detach Window',
     'de-ch': 'Fenster abnehmen',
-    'es-es': 'Ventana desmontable',
+    'es-es': 'Separar ventana',
     'fr-fr': 'Détacher la fenêtre',
     'pt-br': 'Janela destacável',
     'ru-ru': 'Отсоединить окно',
@@ -1458,7 +1458,7 @@ export const wbText = createDictionary({
   attachWindow: {
     'en-us': 'Attach Window',
     'de-ch': 'Fenster anbringen',
-    'es-es': 'Ventana adjunta',
+    'es-es': 'Adjuntar ventana',
     'fr-fr': 'Fenêtre attachée',
     'pt-br': 'Anexar janela',
     'ru-ru': 'Прикрепить окно',
@@ -1467,7 +1467,7 @@ export const wbText = createDictionary({
   updatedCells: {
     'en-us': 'Updated Cells',
     'de-ch': 'Aktualisierte Zellen',
-    'es-es': 'Celdas actualizadas',
+    'es-es': 'Células actualizadas',
     'fr-fr': 'Cellules mises à jour',
     'pt-br': 'Células atualizadas',
     'ru-ru': 'Обновленные ячейки',
@@ -1476,7 +1476,7 @@ export const wbText = createDictionary({
   deletedCells: {
     'en-us': 'Deleted Cells',
     'de-ch': 'Gelöschte Zellen',
-    'es-es': 'Celdas eliminadas',
+    'es-es': 'Células eliminadas',
     'fr-fr': 'Cellules supprimées',
     'pt-br': 'Células excluídas',
     'ru-ru': 'Удаленные ячейки',
@@ -1514,7 +1514,7 @@ export const wbText = createDictionary({
     'de-ch':
       'Anzahl der neuen Datensätze, die in jeder Tabelle betroffen wären:',
     'es-es':
-      'Número de nuevos registros que se verían afectados en cada tabla:',
+      'Número de registros nuevos que se verían afectados en cada tabla:',
     'fr-fr':
       'Nombre de nouveaux enregistrements qui seraient affectés dans chaque table :',
     'pt-br': 'Número de novos registros que seriam afetados em cada tabela:',
@@ -1543,7 +1543,7 @@ export const wbText = createDictionary({
   recordsDeleted: {
     'en-us': 'Records deleted (not including dependents)',
     'de-ch': 'Gelöschte Datensätze (ohne Angehörige)',
-    'es-es': 'Registros eliminados (sin incluir a los dependientes)',
+    'es-es': 'Registros eliminados (sin incluir dependientes)',
     'fr-fr': "Enregistrements supprimés (à l'exclusion des personnes à charge)",
     'pt-br': 'Registros excluídos (exceto dependentes)',
     'ru-ru': 'Удаленные записи (без учета иждивенцев)',
@@ -1553,8 +1553,7 @@ export const wbText = createDictionary({
     'en-us': 'Related records matched to different records',
     'de-ch':
       'Verwandte Datensätze wurden verschiedenen Datensätzen zugeordnet.',
-    'es-es':
-      'Los registros relacionados coincidieron con registros diferentes.',
+    'es-es': 'Registros relacionados coincidentes con diferentes registros',
     'fr-fr':
       'Enregistrements associés correspondant à des enregistrements différents',
     'pt-br': 'Registros relacionados correspondem a registros diferentes.',
@@ -1564,7 +1563,7 @@ export const wbText = createDictionary({
   matchAndChanged: {
     'en-us': 'Matched and changed cells',
     'de-ch': 'Übereinstimmende und veränderte Zellen',
-    'es-es': 'Celdas coincidentes y modificadas',
+    'es-es': 'Células coincidentes y modificadas',
     'fr-fr': 'Cellules appariées et modifiées',
     'pt-br': 'Células correspondentes e alteradas',
     'ru-ru': 'Совпадающие и измененные ячейки',

@@ -381,7 +381,7 @@ export const attachmentsText = createDictionary({
     'es-es':
       'La reversión eliminará los archivos adjuntos de la base de datos Specify y del servidor de activos.',
     'fr-fr':
-      "La restauration supprimera les pièces jointes de la base de données Specification et du serveur d'actifs.",
+      "La restauration supprimera les pièces jointes de la base de données Specify et du serveur d'actifs.",
     'ru-ru':
       'Откат приведет к удалению вложений из базы данных Specify и сервера Asset.',
     'uk-ua':
@@ -591,7 +591,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Stopped because of error uploading a previous file',
     'de-ch':
       'Der Vorgang wurde aufgrund eines Fehlers beim Hochladen einer vorherigen Datei abgebrochen.',
-    'es-es': 'Se detuvo debido a un error al cargar un archivo anterior.',
+    'es-es': 'Detenido debido a un error al cargar un archivo anterior',
     'fr-fr':
       "Arrêté à cause d'une erreur de téléchargement du précédent fichier",
     'ru-ru': 'Остановлено из-за ошибки при загрузке предыдущего файла',
@@ -712,7 +712,7 @@ export const attachmentsText = createDictionary({
     'de-ch':
       'Es wurden nicht alle Anhänge geladen. Bitte erstellen Sie einen Datensatz der Abfrageergebnisse, um alle Anhänge herunterzuladen.',
     'es-es':
-      'No se han cargado todos los archivos adjuntos. Cree un conjunto de registros con los resultados de la consulta para descargar todos los archivos adjuntos.',
+      'No se han cargado todos los archivos adjuntos. Cree un conjunto de registros con los resultados de la consulta para descargarlos todos.',
     'fr-fr':
       "Toutes les pièces jointes n'ont pas été chargées. Veuillez créer un enregistrement des résultats de la requête pour télécharger toutes les pièces jointes.",
     'pt-br':
@@ -725,7 +725,7 @@ export const attachmentsText = createDictionary({
   deleteAttachmentWarning: {
     'en-us': 'Are you sure you want to delete this attachment?',
     'de-ch': 'Möchten Sie diesen Anhang wirklich löschen?',
-    'es-es': '¿Seguro que quieres eliminar este archivo adjunto?',
+    'es-es': '¿Está seguro que desea eliminar este archivo adjunto?',
     'fr-fr': 'Êtes-vous sûr de vouloir supprimer cette pièce jointe ?',
     'pt-br': 'Tem certeza de que deseja excluir este anexo?',
     'ru-ru': 'Вы уверены, что хотите удалить это вложение?',

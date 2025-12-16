@@ -48,7 +48,7 @@ export const mainText = createDictionary({
     'fr-fr': "Oups ! Rien n'a été trouvé",
     'uk-ua': 'Ой! Нічого не знайдено',
     'de-ch': 'Hoppla! Es wurde nichts gefunden :-(',
-    'pt-br': 'Ops! Nada foi encontrado',
+    'pt-br': 'Ops! Nada foi encontrado.',
   },
   pageNotFoundDescription: {
     comment: 'Used in the paragraph on 404 page',
@@ -65,7 +65,7 @@ export const mainText = createDictionary({
     'de-ch':
       'Die Seite, die Sie suchen, wurde möglicherweise entfernt, ihr Name wurde geändert oder sie ist vorübergehend nicht verfügbar.',
     'pt-br':
-      'A página que você está procurando pode ter sido removida, teve seu nome alterado ou está temporariamente indisponível.',
+      'A página que você está procurando pode ter sido removida, ter tido seu nome alterado ou estar temporariamente indisponível.',
   },
   returnToHomepage: {
     'en-us': 'Return to homepage',
@@ -74,7 +74,7 @@ export const mainText = createDictionary({
     'fr-fr': "Retour à la page d'accueil",
     'uk-ua': 'Повернутися на домашню сторінку',
     'de-ch': 'Zurück zur Startseite',
-    'pt-br': 'Voltar para a página inicial',
+    'pt-br': 'Voltar à página inicial',
   },
   errorOccurred: {
     'en-us': 'We are sorry, something has gone wrong',
@@ -82,17 +82,17 @@ export const mainText = createDictionary({
     'es-es': 'Lo sentimos, algo ha ido mal',
     'fr-fr': "Nous sommes désolés, quelque chose s'est mal passé",
     'uk-ua': 'Вибачте, щось пішло не так',
-    'de-ch': 'Es tut uns leid, etwas ist schiefgelaufen',
-    'pt-br': 'Lamentamos, algo deu errado',
+    'de-ch': 'Es tut uns leid, da ist etwas schiefgelaufen.',
+    'pt-br': 'Pedimos desculpas, algo deu errado.',
   },
   clickToSeeDetails: {
     'en-us': 'Click to see details',
     'es-es': 'Haz clic para ver los detalles',
     'uk-ua': 'Натисніть, щоб переглянути деталі',
-    'de-ch': 'Klicken Sie hier, um Details anzuzeigen',
+    'de-ch': 'Klicken Sie hier, um Details anzuzeigen.',
     'fr-fr': 'Cliquez pour voir les détails',
     'ru-ru': 'Нажмите, чтобы увидеть подробности',
-    'pt-br': 'Clique para ver detalhes',
+    'pt-br': 'Clique para ver os detalhes',
   },
   errorOccurredDescription: {
     'en-us':
@@ -108,7 +108,7 @@ export const mainText = createDictionary({
     'de-ch':
       'Es tut uns leid, aber es scheint, dass Sie auf einen Fehler in Specify 7 gestossen sind, der uns möglicherweise nicht bekannt ist.',
     'pt-br':
-      'Lamentamos, parece que você encontrou um erro no Specify 7 do qual talvez não tenhamos conhecimento.',
+      'Pedimos desculpas, parece que você encontrou um erro no Specify 7 do qual talvez não tenhamos conhecimento.',
   },
   criticalErrorOccurredDescription: {
     'en-us':
@@ -122,9 +122,9 @@ export const mainText = createDictionary({
     'uk-ua':
       'Щоб уникнути пошкодження записів даних, вам потрібно почати знову з безпечного місця – головної сторінки.',
     'de-ch':
-      'Um eine Beschädigung der Datensätze zu vermeiden, müssen Sie an einer sicheren Stelle neu beginnen – der Startseite.',
+      'Um eine Beschädigung der Datensätze zu vermeiden, müssen Sie von einem sicheren Ort aus neu beginnen – der Startseite.',
     'pt-br':
-      'Para evitar corromper registros de dados, você precisa começar novamente de um ponto seguro: a página inicial.',
+      'Para evitar corromper os registros de dados, você precisa começar novamente a partir de um ponto seguro: a página inicial.',
   },
   errorResolutionDescription: {
     'en-us':
@@ -140,7 +140,7 @@ export const mainText = createDictionary({
     'de-ch':
       'Wenn dieses Problem weiterhin besteht, wenden Sie sich bitte an Ihren IT-Support. Wenn es sich um eine Specify Cloud-Datenbank handelt, laden Sie bitte die Fehlermeldung herunter und senden Sie sie an <email />.',
     'pt-br':
-      'Se o problema persistir, entre em contato com o suporte de TI. Se for um banco de dados do Specify Cloud, baixe a mensagem de erro e envie-a para <email />.',
+      'Se o problema persistir, entre em contato com o suporte de TI. Se for um banco de dados Specify Cloud, faça o download da mensagem de erro e envie para <email />.',
   },
   errorResolutionSecondDescription: {
     comment: 'Careful with the <xml> tags when localizing',
@@ -157,7 +157,7 @@ export const mainText = createDictionary({
     'de-ch':
       'Benutzer von <memberLink>Mitgliedsinstitutionen</memberLink> können in unserem <discourseLink>Community Forum</discourseLink> nach Antworten suchen und um Hilfe bitten.',
     'pt-br':
-      'Usuários de <memberLink>instituições associadas</memberLink> podem pesquisar perguntas respondidas e pedir ajuda em nosso <discourseLink>Fórum da Comunidade</discourseLink>.',
+      'Usuários de instituições membros <memberLink>podem pesquisar perguntas respondidas e pedir ajuda em nosso <discourseLink>Fórum da Comunidade</discourseLink>.',
   },
   errorMessage: {
     'en-us': 'Error Message',
@@ -209,7 +209,8 @@ export const mainText = createDictionary({
     'uk-ua': 'Версія Specify не відповідає версії бази даних',
     'de-ch':
       'Die Specify Version stimmt nicht mit der Datenbankversion überein',
-    'pt-br': 'A versão especificada não corresponde à versão do banco de dados',
+    'pt-br':
+      'A versão especificada não corresponde à versão do banco de dados.',
   },
   versionMismatchDescription: {
     'en-us':
@@ -225,7 +226,7 @@ export const mainText = createDictionary({
     'de-ch':
       'Die Specify Version {specifySixVersion:string} stimmt nicht mit der Datenbankversion {databaseVersion:string} überein.',
     'pt-br':
-      'A versão Especificar {specifySixVersion:string} não corresponde à versão do banco de dados {databaseVersion:string}.',
+      'A versão especificada {specifySixVersion:string} não corresponde à versão do banco de dados {databaseVersion:string}.',
   },
   versionMismatchSecondDescription: {
     'en-us':
@@ -239,7 +240,7 @@ export const mainText = createDictionary({
     'de-ch':
       'Einige Funktionen von Specify 7 funktionieren daher möglicherweise nicht richtig.',
     'pt-br':
-      'Alguns recursos do Specify 7 podem, portanto, não funcionar corretamente.',
+      'Portanto, algumas funcionalidades do Specify 7 podem não funcionar corretamente.',
   },
   versionMismatchInstructions: {
     'en-us': 'Instructions for resolving Specify schema mismatch',
@@ -251,7 +252,7 @@ export const mainText = createDictionary({
     'uk-ua': 'Інструкції щодо вирішення невідповідності версій',
     'de-ch': 'Anweisungen zur Behebung der Abweichung des Specify Schemas',
     'pt-br':
-      'Instruções para resolver a incompatibilidade de esquema de especificação',
+      'Instruções para resolver a incompatibilidade de esquema especificado.',
   },
   online: {
     'en-us': 'online',
@@ -269,6 +270,6 @@ export const mainText = createDictionary({
     'ru-ru': 'не в сети',
     'uk-ua': 'офлайн',
     'de-ch': 'offline',
-    'pt-br': 'desconectado',
+    'pt-br': 'offline',
   },
 } as const);
