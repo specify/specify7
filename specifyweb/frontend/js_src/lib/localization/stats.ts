@@ -25,16 +25,6 @@ export const statsText = createDictionary({
     'ru-ru': 'Объекты коллекции',
     'es-es': 'Objetos de la Colección',
   },
-  preparations: {
-    'en-us': 'Preparations',
-    'en-es': 'Preparaciones',
-    'ru-ru': 'Подготовки',
-  },
-  synonymize: {
-    'en-us': 'Synonymize',
-    'ru-ru': 'Сделать синонимом',
-    'es-es': 'Sinonimizar',
-  },
   typeSpecimens: {
     'en-us': 'Type Specimens',
     'es-es': 'Especímenes Tipo',
@@ -68,7 +58,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Предметы в Займы',
     'es-es': 'Artículos en Préstamo',
   },
-  openLoans: {
+  openLoansStat: {
     'en-us': 'Open Loans',
     'ru-ru': 'Открытые Займы',
     'es-es': 'Préstamos Abiertos',
@@ -251,10 +241,6 @@ export const statsText = createDictionary({
     'en-us': 'Delete Category',
     'es-es': 'Eliminar Categoría',
   },
-  name: {
-    'en-us': 'Name',
-    'es-es': 'Nombre',
-  },
   categoryContainsCustom: {
     'en-us': 'Category Contains Custom Statistics',
     'es-es': 'La Categoría Contiene Estadísticas Personalizadas',
@@ -274,10 +260,6 @@ export const statsText = createDictionary({
   refresh: {
     'en-us': 'Refresh',
     'es-es': 'Actualizar',
-  },
-  attachments: {
-    'en-us': 'Attachments',
-    'es-es': 'Adjuntos',
   },
   collectionObjectsWithImages: {
     'en-us': 'Collection Objects with images',
