@@ -10,11 +10,6 @@ import { createDictionary } from './utils';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export const statsText = createDictionary({
-  collectionStatistics: {
-    'en-us': 'Collection Statistics',
-    'ru-ru': 'Статистика коллекции',
-    'es-es': 'Estadísticas de la Colección',
-  },
   holdings: {
     'en-us': 'Holdings',
     'ru-ru': 'Холдинги',
@@ -32,21 +27,6 @@ export const statsText = createDictionary({
   curation: {
     'en-us': 'Curation',
     'es-es': 'Curación',
-  },
-  familiesRepresented: {
-    'en-us': 'Families Represented',
-    'ru-ru': 'Семей',
-    'es-es': 'Familias Representadas',
-  },
-  generaRepresented: {
-    'en-us': 'Genera Represented',
-    'ru-ru': 'Родов',
-    'es-es': 'Géneros Representados',
-  },
-  speciesRepresented: {
-    'en-us': 'Species Represented',
-    'ru-ru': 'Видов',
-    'es-es': 'Especies Representadas',
   },
   loans: {
     'en-us': 'Loans',
@@ -67,35 +47,6 @@ export const statsText = createDictionary({
     'en-us': 'Overdue Loans',
     'ru-ru': 'Просроченные Займы',
     'es-es': 'Préstamos Atrasados',
-  },
-  taxonomicTree: {
-    'en-us': 'Taxon Tree Nodes',
-    'es-es': 'Nodos del Árbol Taxonómico',
-  },
-  classes: {
-    'en-us': 'Classes',
-    'ru-ru': 'Классы',
-    'es-es': 'Clases',
-  },
-  orders: {
-    'en-us': 'Orders',
-    'ru-ru': 'Отряды',
-    'es-es': 'Órdenes',
-  },
-  families: {
-    'en-us': 'Families',
-    'ru-ru': 'Семьи',
-    'es-es': 'Familias',
-  },
-  genera: {
-    'en-us': 'Genera',
-    'ru-ru': 'Роды',
-    'es-es': 'Géneros',
-  },
-  species: {
-    'en-us': 'Species',
-    'ru-ru': 'Разновидносты',
-    'es-es': 'Especies',
   },
   localityGeography: {
     'en-us': 'Locality / Geography',
@@ -151,11 +102,6 @@ export const statsText = createDictionary({
     'en-us': 'Select From Available Default Statistics',
     'es-es': 'Seleccionar de Estadísticas Predeterminadas Disponibles',
   },
-  pageName: {
-    'en-us': 'Page Name',
-    'ru-ru': 'Название страницы',
-    'es-es': 'Nombre de la Página',
-  },
   collection: {
     'en-us': 'Collection',
     'ru-ru': 'Коллекция',
@@ -170,11 +116,6 @@ export const statsText = createDictionary({
     'en-us': 'Private',
     'es-es': 'Privado',
   },
-  collectionObjectsModified: {
-    'en-us': 'Collection Objects Modified',
-    'ru-ru': 'Объекты коллекции изменены',
-    'es-es': 'Objetos de la Colección Modificados',
-  },
   collectionObjectsCataloged: {
     'en-us': 'Collection Objects Cataloged',
     'ru-ru': 'Объекты коллекции каталогизированы',
@@ -185,18 +126,9 @@ export const statsText = createDictionary({
     'ru-ru': 'Объекты коллекции определены',
     'es-es': 'Objetos de la Colección Determinados',
   },
-  collectionObjectsInventorized: {
-    'en-us': 'Collection Objects Inventorized',
-    'es-es': 'Objetos de la Colección Inventariados',
-  },
   lastRefreshed: {
     'en-us': 'Last refreshed',
     'es-es': 'Última Actualización',
-  },
-  source: {
-    'en-us': 'Source',
-    'ru-ru': 'Источник',
-    'es-es': 'Fuente',
   },
   categoryName: {
     'en-us': 'Category Name',
@@ -223,27 +155,13 @@ export const statsText = createDictionary({
     'ru-ru': 'Общий',
     'es-es': 'Compartido',
   },
-  customDeleteWarning: {
-    'en-us':
-      'The category you are about to delete contains custom statistics which are not recoverable if not saved as queries. Check if you want to save a custom statistic as a query before deleting this category.',
-    'es-es':
-      'La categoría que está a punto de eliminar contiene estadísticas personalizadas que no se pueden recuperar si no se guardan como consultas. Compruebe si desea guardar una estadística personalizada como consulta antes de eliminar esta categoría.',
-  },
   statistics: {
     'en-us': 'Statistics',
     'es-es': 'Estadísticas',
   },
-  showStatistics: {
-    'en-us': 'Show Statistics',
-    'es-es': 'Mostrar Estadísticas',
-  },
   deleteCategory: {
     'en-us': 'Delete Category',
     'es-es': 'Eliminar Categoría',
-  },
-  categoryContainsCustom: {
-    'en-us': 'Category Contains Custom Statistics',
-    'es-es': 'La Categoría Contiene Estadísticas Personalizadas',
   },
   editPage: {
     'en-us': 'Edit Page',
