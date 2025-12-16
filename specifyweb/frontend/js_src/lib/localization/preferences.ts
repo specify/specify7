@@ -2082,8 +2082,6 @@ export const preferencesText = createDictionary({
   inheritanceCatNumberPref: {
     'en-us':
       'Enable the inheritance of the primary catalog number to its empty siblings.',
-<<<<<<< HEAD
-=======
     'de-ch':
       'Aktivieren Sie die Vererbung der primären Katalognummer an ihre leeren Geschwister.',
     'es-es':
@@ -2096,7 +2094,6 @@ export const preferencesText = createDictionary({
       'Включить наследование основного каталожного номера его пустыми родственными номерами.',
     'uk-ua':
       'Увімкнути успадкування основного каталожного номера його порожнім братам і сестрам.',
->>>>>>> origin/main
   },
   inheritanceCatNumberParentCOPref: {
     'en-us':
