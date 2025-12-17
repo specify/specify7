@@ -24,10 +24,10 @@ class Migration(migrations.Migration):
         ),
 
         # borrow, invoicenumber, null
-        migrations.AddIndex(
-            model_name='borrow',
-            index=models.Index(fields=['invoicenumber'], name='BorrowInvoiceNumberIDX'),
-        ),
+        # migrations.AddIndex(
+        #     model_name='borrow',
+        #     index=models.Index(fields=['invoicenumber'], name='BorrowInvoiceNumberIDX'),
+        # ),
 
         # exchangein, exchangeinnumber, division
         migrations.AddIndex(
@@ -66,10 +66,10 @@ class Migration(migrations.Migration):
         ),
 
         # disposal, disposalnumber, null
-        migrations.AddIndex(
-            model_name='disposal',
-            index=models.Index(fields=['disposalnumber'], name='DisposalNumberIDX'),
-        ),
+        # migrations.AddIndex(
+        #     model_name='disposal',
+        #     index=models.Index(fields=['disposalnumber'], name='DisposalNumberIDX'),
+        # ),
 
         # division, regnumber, institution
         migrations.AddIndex(
