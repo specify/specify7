@@ -794,7 +794,6 @@ class Borrow(models.Model):
             models.Index(fields=['invoicenumber'], name='BorInvoiceNumberIDX'),
             models.Index(fields=['receiveddate'], name='BorReceivedDateIDX'),
             models.Index(fields=['collectionmemberid'], name='BorColMemIDX'),
-            models.Index(fields=['invoicenumber'], name='BorrowInvoiceNumberIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
