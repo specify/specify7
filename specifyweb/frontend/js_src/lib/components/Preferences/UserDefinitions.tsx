@@ -1615,7 +1615,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: 0,
             renderer: (props) => (
-              <ThresholdRank {...props} tableName="GeologicTimePeriod" />
+              <ThresholdRank {...props} tableName="LithoStrat" />
             ),
             container: 'label',
           }),
@@ -1647,7 +1647,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: 0,
             renderer: (props) => (
-              <ThresholdRank {...props} tableName="GeologicTimePeriod" />
+              <ThresholdRank {...props} tableName="TectonicUnit" />
             ),
             container: 'label',
           }),
