@@ -75,7 +75,8 @@ export const resources: RA<ResourceConfig> = [
     label: setupToolText.institution(),
     description: setupToolText.institutionDescription(),
     endpoint: '/setup_tool/institution/create/',
-    documentationUrl: 'https://discourse.specifysoftware.org/t/specify-setup-configuration-checklist/1056',
+    documentationUrl:
+      'https://discourse.specifysoftware.org/t/specify-setup-configuration-checklist/1056',
     fields: [
       {
         name: 'name',
@@ -150,7 +151,8 @@ export const resources: RA<ResourceConfig> = [
       {
         name: 'isSingleGeographyTree',
         label: setupToolText.institutionIsSingleGeographyTree(),
-        description: setupToolText.institutionIsSingleGeographyTreeDescription(),
+        description:
+          setupToolText.institutionIsSingleGeographyTreeDescription(),
         type: 'boolean',
         default: false,
       },

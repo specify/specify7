@@ -32,8 +32,8 @@ import { InteractionDialog } from '../Interactions/InteractionDialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { AttachmentsCollection } from './AttachmentsCollection';
-import { shouldBeToOne } from './helpers';
 import { AttachmentWarningDeletion } from './AttachmentWarningDeletion';
+import { shouldBeToOne } from './helpers';
 import { RecordSelectorFromCollection } from './RecordSelectorFromCollection';
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */

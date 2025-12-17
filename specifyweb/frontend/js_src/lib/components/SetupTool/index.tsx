@@ -119,12 +119,17 @@ export function renderFormFieldFactory({
   setTemporaryFormData,
   formRef,
 }: {
-  formData: ResourceFormData;
-  currentStep: number;
-  handleChange: (name: string, newValue: boolean | LocalizedString) => void;
-  temporaryFormData: ResourceFormData;
-  setTemporaryFormData: (value: React.SetStateAction<ResourceFormData>) => void;
-  formRef: React.MutableRefObject<HTMLFormElement | null>;
+  readonly formData: ResourceFormData;
+  readonly currentStep: number;
+  readonly handleChange: (
+    name: string,
+    newValue: LocalizedString | boolean
+  ) => void;
+  readonly temporaryFormData: ResourceFormData;
+  readonly setTemporaryFormData: (
+    value: React.SetStateAction<ResourceFormData>
+  ) => void;
+  readonly formRef: React.MutableRefObject<HTMLFormElement | null>;
 }) {
   const renderFormField = (
     field: FieldConfig,
@@ -237,8 +242,8 @@ export function renderFormFieldFactory({
                     );
                   }}
                   onValueChange={(value) =>
-                    setTemporaryFormData((prev) => ({
-                      ...prev,
+                    setTemporaryFormData((previous) => ({
+                      ...previous,
                       [passwordRepeat.name]: value,
                     }))
                   }
@@ -270,7 +275,7 @@ export function renderFormFieldFactory({
   };
 
   const renderFormFields = (
-    fields: ReadonlyArray<FieldConfig>,
+    fields: readonly FieldConfig[],
     parentName?: string
   ) => (
     <div className="grid grid-cols-2 gap-4">
