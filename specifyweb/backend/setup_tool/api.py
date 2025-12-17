@@ -120,7 +120,7 @@ def setup_database(request, direct=False):
         return JsonResponse({"success": True, "setup_progress": get_setup_progress(), "task_id": task_id}, status=200)
     except MissingWorkerError as e:
         logger.exception(str(e))
-        return JsonResponse({'error': str(e)}, status=500)
+        return JsonResponse({'error': str(e)}, status=503)
     except Exception as e:
         logger.exception(str(e))
         return JsonResponse({'error': 'An internal server error occurred.'}, status=500)

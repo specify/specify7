@@ -39,6 +39,12 @@ export const stepOrder: RA<keyof SetupResources> = [
   'specifyUser',
 ];
 
+type SetupResponse = {
+  success: boolean,
+  setup_progress: SetupProgress,
+  task_id: string
+}
+
 function checkFormCondition(
   formData: ResourceFormData,
   resource: ResourceConfig
@@ -358,12 +364,10 @@ export function SetupTool({
 
   const loading = React.useContext(LoadingContext);
 
-  const onResourceSaved = async (
-    endpoint: string,
-    resourceLabel: string,
+  const startSetup = async (
     data: ResourceFormData
   ): Promise<any> =>
-    ajax<any>(endpoint, {
+    ajax<SetupResponse>('/setup_tool/setup_database/create/', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -371,20 +375,21 @@ export function SetupTool({
       },
       body: JSON.stringify(flattenAllResources(data)),
       errorMode: 'visible',
-      expectedErrors: [Http.CREATED],
+      expectedErrors: [
+        Http.CONFLICT, Http.UNAVAILABLE
+      ],
     })
       .then(({ data, status }) => {
         if (status === Http.OK) {
-          console.log(`${resourceLabel} created successfully:`, data);
+          console.log(`Setup completed successfully:`, data);
           return data;
         } else {
-          console.error(`Error creating ${resourceLabel}:`, data);
-          throw new Error(`Issue when creating ${resourceLabel}`);
+          const dataParsed = JSON.parse(data as unknown as string); // data is a string on errors
+          const errorMessage = String(dataParsed.error ?? data);
+          throw new Error(errorMessage);
         }
       })
       .catch((error) => {
-        console.log(error);
-        console.error(`Request failed for ${resourceLabel}:`, error);
         setSetupError(String(error));
         throw error;
       });
@@ -413,9 +418,8 @@ export function SetupTool({
        * Send resources to backend to start the setup
        * const { endpoint, resourceName } = resources[currentStep];
        */
-      const endpoint = '/setup_tool/setup_database/create/';
       loading(
-        onResourceSaved(endpoint, 'TEMPORARY_LABEL', formData)
+        startSetup(formData)
           .then((data) => {
             console.log(data);
             setSetupProgress(data.setup_progress as SetupProgress);
@@ -423,6 +427,7 @@ export function SetupTool({
           })
           .catch((error) => {
             console.error('Form submission failed:', error);
+            setInProgress(false);
           })
       );
     } else {
