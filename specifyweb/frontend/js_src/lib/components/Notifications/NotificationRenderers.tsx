@@ -2,6 +2,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import { backupText } from '../../localization/backup';
 import { localityText } from '../../localization/locality';
@@ -23,6 +24,7 @@ import { mergingQueryParameter } from '../Merging/queryString';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
+import { ping } from '../../utils/ajax/ping';
 
 export type GenericNotification = {
   readonly messageId: string;
@@ -365,10 +367,7 @@ export const notificationRenderers: IR<
     return (
       <>
         <p>{treeText.defaultTreeTaskStarting()}</p>
-        <details>
-          <summary>{localityText.taskId()}</summary>
-          {notification.payload.name}
-        </details>
+        {notification.payload.name}
       </>
     )
   },
@@ -376,9 +375,19 @@ export const notificationRenderers: IR<
     return (
       <>
         <p>{treeText.defaultTreeTaskRunning()}</p>
+        {notification.payload.name}
+        <Button.Danger onClick={
+          (): void => {
+            ping(`/trees/create_default_tree/abort/${notification.payload.taskid}/`, {
+              method: 'POST',
+              body: {},
+              errorMode: 'dismissible',
+            })
+          }
+        }>{commonText.cancel()}</Button.Danger>
         <details>
           <summary>{localityText.taskId()}</summary>
-          {notification.payload.name}
+          {notification.payload.taskid}
         </details>
       </>
     )
@@ -387,9 +396,10 @@ export const notificationRenderers: IR<
     return (
       <>
         <p>{treeText.defaultTreeTaskFailed()}</p>
+        {notification.payload.name}
         <details>
           <summary>{localityText.taskId()}</summary>
-          {notification.payload.name}
+          {notification.payload.taskid}
         </details>
       </>
     )
@@ -398,9 +408,10 @@ export const notificationRenderers: IR<
     return (
       <>
         <p>{treeText.defaultTreeTaskCompleted()}</p>
+        {notification.payload.name}
         <details>
           <summary>{localityText.taskId()}</summary>
-          {notification.payload.name}
+          {notification.payload.taskid}
         </details>
       </>
     )

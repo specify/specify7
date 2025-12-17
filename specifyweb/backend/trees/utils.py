@@ -222,9 +222,9 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
         user=specify_user,
         content=json.dumps({
             'type': 'create-default-tree-running',
-            'name': "Create_Default_Tree_" + tree_discipline_name,
+            'name': tree_name,
+            'taskid': str(self.request.id),
             'collection_id': specify_collection_id,
-            'discipline_name': tree_discipline_name,
         })
     )
 
@@ -268,9 +268,9 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
             user=specify_user,
             content=json.dumps({
                 'type': 'create-default-tree-failed',
-                'name': "Create_Default_Tree_" + tree_discipline_name,
+                'name': tree_name,
+                'taskid': str(self.request.id),
                 'collection_id': specify_collection_id,
-                'discipline_name': tree_discipline_name
                 # 'error': str(e)
             })
         )
@@ -280,9 +280,9 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
         user=specify_user,
         content=json.dumps({
             'type': 'create-default-tree-completed',
-            'name': "Create_Default_Tree_" + tree_discipline_name,
+            'name': tree_name,
+            'taskid': str(self.request.id),
             'collection_id': specify_collection_id,
-            'discipline_name': tree_discipline_name,
         })
     )
 

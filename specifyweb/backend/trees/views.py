@@ -673,9 +673,8 @@ def create_default_tree_view(request):
 
     Message.objects.create(user=request.specify_user, content=json.dumps({
         'type': 'create-default-tree-starting',
-        'name': "Create_Default_Tree_" + tree_discipline_name,
+        'name': tree_name,
         'collection_id': request.specify_collection.id,
-        'discipline_name': logged_in_discipline_name,
     }))
 
     task_id = str(uuid4())
@@ -803,8 +802,8 @@ def abort_default_tree_creation(request, task_id: str) -> http.HttpResponse:
         Message.objects.create(user=request.specify_user, content=json.dumps({
             'type': 'create-default-tree-failed',
             'name': 'Aborted',
-            'collection_id': '',
-            'discipline_name': 'Aborted'
+            'taskid': task_id,
+            'collection_id': request.specify_collection.id,
         }))
 
         return http.HttpResponse('', status=204)
