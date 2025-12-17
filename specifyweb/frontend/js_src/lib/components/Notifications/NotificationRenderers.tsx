@@ -2,13 +2,14 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { commonText } from '../../localization/common';
-import { treeText } from '../../localization/tree';
 import { backupText } from '../../localization/backup';
+import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
 import { mergingText } from '../../localization/merging';
 import { notificationsText } from '../../localization/notifications';
+import { treeText } from '../../localization/tree';
 import { StringToJsx } from '../../localization/utils';
+import { ping } from '../../utils/ajax/ping';
 import type { IR, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
@@ -24,7 +25,6 @@ import { mergingQueryParameter } from '../Merging/queryString';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
-import { ping } from '../../utils/ajax/ping';
 
 export type GenericNotification = {
   readonly messageId: string;
