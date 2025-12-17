@@ -80,14 +80,12 @@ export function DataSetMetaOverlay(): JSX.Element | null {
     true
   );
 
-  const navigate = useNavigate();
-
   return typeof dataset === 'object' ? (
     <WbDataSetMeta
       dataset={dataset}
       onChange={handleClose}
       onClose={handleClose}
-      onDeleted={(): void => navigate('/specify/', { replace: true })}
+      onDeleted={handleClose}
     />
   ) : null;
 }

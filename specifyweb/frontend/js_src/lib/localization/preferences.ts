@@ -2094,7 +2094,7 @@ export const preferencesText = createDictionary({
     'de-ch':
       'Das Feld „Katalognummer“ muss in allen Komponenten- und CO-Tabellen eindeutig sein.',
     'es-es':
-      'El campo Número de catálogo debe ser único en las tablas de componentes y CO.',
+      'El campo Número de catálogo debe ser único en las tablas de componentes y CO',
     'fr-fr':
       'Le champ Numéro de catalogue doit être unique dans les tables Composant et CO',
     'pt-br':
