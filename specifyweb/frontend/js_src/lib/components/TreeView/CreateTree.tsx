@@ -4,6 +4,7 @@ import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
+import { ping } from '../../utils/ajax/ping';
 import type { DeepPartial, RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
@@ -25,7 +26,6 @@ import type { TreeInformation } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { defaultTreeDefs } from './defaults';
-import { ping } from '../../utils/ajax/ping';
 
 type TaxonFileDefaultDefinition = {
   readonly discipline: string;
@@ -119,8 +119,7 @@ export function CreateTree<
       });
   }
 
-  const handleStop = async (): Promise<void> => {
-    return ping(
+  const handleStop = async (): Promise<void> => ping(
       `/trees/create_default_tree/abort/${treeCreationTaskId}/`,
       {
         method: 'POST',
@@ -133,8 +132,7 @@ export function CreateTree<
           setTreeCreationTaskId(undefined);
           setTreeCreationProgress(undefined);
         }
-      })
-  };
+      });
 
   // Poll for tree creation progress
   React.useEffect(() => {
