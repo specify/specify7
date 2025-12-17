@@ -419,7 +419,7 @@ export const commonText = createDictionary({
   },
   running: {
     'en-us': 'Running…',
-    'ru-ru': 'Бег…',
+    'ru-ru': 'Выполнение…',
     'es-es': 'Ejecutando…',
     'fr-fr': "En cours d'exécution…",
     'uk-ua': 'Виконується…',
@@ -446,7 +446,7 @@ export const commonText = createDictionary({
   },
   unknown: {
     'en-us': 'Unknown',
-    'ru-ru': 'Неизвестный',
+    'ru-ru': 'Неизвестно',
     'es-es': 'Desconocido',
     'fr-fr': 'Inconnu',
     'uk-ua': 'Невідомий',
@@ -482,7 +482,7 @@ export const commonText = createDictionary({
   },
   nullInline: {
     'en-us': '(null)',
-    'ru-ru': '(нулевой)',
+    'ru-ru': '(пустой)',
     'es-es': '(nulo)',
     'fr-fr': '(nul)',
     'uk-ua': '(нуль)',
@@ -555,7 +555,7 @@ export const commonText = createDictionary({
   },
   dismiss: {
     'en-us': 'Dismiss',
-    'ru-ru': 'Увольнять',
+    'ru-ru': 'Отклонить',
     'es-es': 'Descartar',
     'fr-fr': 'Rejeter',
     'uk-ua': 'Відхилити',
@@ -564,7 +564,7 @@ export const commonText = createDictionary({
   },
   id: {
     'en-us': 'ID',
-    'ru-ru': 'ИДЕНТИФИКАТОР',
+    'ru-ru': 'ID',
     'es-es': 'ID',
     'fr-fr': 'IDENTIFIANT',
     'uk-ua': 'ID',
