@@ -59,12 +59,6 @@ class Migration(migrations.Migration):
             index=models.Index(fields=['division', 'ordernumber'], name='DivCollectorOrderNumIDX'),
         ),
 
-        # deaccession, deaccessionnumber, null
-        migrations.AddIndex(
-            model_name='deaccession',
-            index=models.Index(fields=['deaccessionnumber'], name='DeaccessionNumberIDX'),
-        ),
-
         # discipline, regnumber, division
         migrations.AddIndex(
             model_name='discipline',
@@ -95,16 +89,16 @@ class Migration(migrations.Migration):
             index=models.Index(fields=['discipline', 'pagenumber'], name='DispFNBPageNumIDX'),
         ),
 
-        # fieldnotebookpageset, pagenumber, discipline
+        # fieldnotebookpageset, ordernumber, discipline
         migrations.AddIndex(
             model_name='fieldnotebookpageset',
-            index=models.Index(fields=['discipline', 'pagenumber'], name='DispFNBPageSetNumIDX'),
+            index=models.Index(fields=['discipline', 'ordernumber'], name='DispFNBPageSetNumIDX'),
         ),
 
-        # fundingagent, pagenumber, division
+        # fundingagent, ordernumber, division
         migrations.AddIndex(
             model_name='fundingagent',
-            index=models.Index(fields=['division', 'pagenumber'], name='DivFundingAgentPageNumIDX'),
+            index=models.Index(fields=['division', 'ordernumber'], name='DivFundingAgentOrderNumIDX'),
         ),
 
         # gift, giftnumber, discipline

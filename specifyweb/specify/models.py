@@ -3105,7 +3105,6 @@ class Exchangein(models.Model):
         indexes = [
             models.Index(fields=['exchangedate'], name='ExchangeDateIDX'),
             models.Index(fields=['descriptionofmaterial'], name='DescriptionOfMaterialIDX'),
-            models.Index(fields=['exchangeinnumber'], name='exchangein_exchangeinnumber_idx'),
             models.Index(fields=['division', 'exchangeinnumber'], name='DivExcInNumberIDX'), # composite index for autonumbering range/gap locks
         ]
 
@@ -3514,7 +3513,7 @@ class Fieldnotebookpageset(models.Model):
         indexes = [
             models.Index(fields=['startdate'], name='FNBPSStartDateIDX'),
             models.Index(fields=['enddate'], name='FNBPSEndDateIDX'),
-            models.Index(fields=['discipline', 'pagenumber'], name='DispFNBPageSetNumIDX'), # composite index for autonumbering range/gap locks
+            models.Index(fields=['discipline', 'ordernumber'], name='DispFNBPageSetNumIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -3574,7 +3573,7 @@ class Fundingagent(models.Model):
         unique_together = (('agent', 'collectingtrip'),)
         indexes = [
             models.Index(fields=['division'], name='COLTRIPDivIDX'),
-            models.Index(fields=['division', 'pagenumber'], name='DivFundingAgentPageNumIDX'), # composite index for autonumbering range/gap locks
+            models.Index(fields=['division', 'ordernumber'], name='DivFundingAgentOrderNumIDX'), # composite index for autonumbering range/gap locks
         ]
 
     
@@ -5720,7 +5719,6 @@ class Referencework(models.Model):
             models.Index(fields=['publisher'], name='RefWrkPublisherIDX'),
             models.Index(fields=['guid'], name='RefWrkGuidIDX'),
             models.Index(fields=['isbn'], name='ISBNIDX'),
-            models.Index(fields=['librarynumber'], name='referencework_librarynumber_idx'),
             models.Index(fields=['institution', 'librarynumber'], name='InstRefWorkLibNumIDX'), # composite index for autonumbering range/gap locks
         ]
 
