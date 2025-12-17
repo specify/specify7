@@ -40,9 +40,9 @@ export const stepOrder: RA<keyof SetupResources> = [
 ];
 
 type SetupResponse = {
-  success: boolean,
-  setup_progress: SetupProgress,
-  task_id: string
+  readonly success: boolean,
+  readonly setup_progress: SetupProgress,
+  readonly task_id: string
 }
 
 function checkFormCondition(
@@ -384,7 +384,7 @@ export function SetupTool({
           console.log(`Setup completed successfully:`, data);
           return data;
         } else {
-          const dataParsed = JSON.parse(data as unknown as string); // data is a string on errors
+          const dataParsed = JSON.parse(data as unknown as string); // Data is a string on errors
           const errorMessage = String(dataParsed.error ?? data);
           throw new Error(errorMessage);
         }
