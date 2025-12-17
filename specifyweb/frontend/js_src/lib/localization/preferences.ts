@@ -2136,6 +2136,6 @@ export const preferencesText = createDictionary({
   },
   inheritanceCatNumberParentCOPrefDescription: {
     'en-us':
-      'Control whether collection object inherit the catalog number from his parent collection object.',
+      'Controls whether collection objects inherit the catalog number from the parent collection object.',
   },
 } as const);
