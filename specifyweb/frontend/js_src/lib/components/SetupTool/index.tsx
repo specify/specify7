@@ -170,7 +170,10 @@ export function renderFormFieldFactory({
             </Label.Inline>
           </div>
         ) : type === 'select' && Array.isArray(options) ? (
-          <div className="mb-4">
+          <div
+            className="mb-4"
+            key={`${resources[currentStep].resourceName}.${fieldName}`}
+          >
             <Label.Block title={description}>
               {label}
               <Select
@@ -252,6 +255,7 @@ export function renderFormFieldFactory({
             )}
           </>
         ) : type === 'object' ? (
+          // Subforms
           <div className="border border-gray-500 rounded-b p-1">
             <H3 className="text-xl font-semibold mb-4" title={description}>
               {label}
@@ -275,7 +279,7 @@ export function renderFormFieldFactory({
   };
 
   const renderFormFields = (
-    fields: readonly FieldConfig[],
+    fields: RA<FieldConfig>,
     parentName?: string
   ) => (
     <div className="grid grid-cols-2 gap-4">
