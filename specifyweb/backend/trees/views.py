@@ -611,7 +611,6 @@ def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMA
                     },
                 },
                 "required": ["url", "mappingUrl", "disciplineName"],
-                "additionalProperties": False
             },
             "SuccessBackground": {
                 "type": "object",
@@ -737,7 +736,7 @@ def create_default_tree_view(request):
                         "description": "Info returned by the task"
                     },
                     "taskid": {
-                        "type": "integer",
+                        "type": "string",
                         "description": "The id of the task you queried"
                     }
                 },
@@ -746,7 +745,7 @@ def create_default_tree_view(request):
         }
     })
 @require_GET
-def default_tree_upload_status(request, task_id: int) -> http.HttpResponse:
+def default_tree_upload_status(request, task_id: str) -> http.HttpResponse:
     """Returns the task status for the default tree upload celery task"""
 
     result = create_default_tree_task.AsyncResult(task_id)
@@ -758,3 +757,56 @@ def default_tree_upload_status(request, task_id: int) -> http.HttpResponse:
     }
 
     return http.JsonResponse(status)
+
+@openapi(schema={
+    "post": {
+        "parameters": [
+            {
+                "name": "task_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+                "description": "ID of the default tree creation task to abort"
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Task aborted successfully"
+            },
+            "400": {
+                "description": "Error aborting the task",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "description": "Error message"
+                                }
+                            },
+                            "required": ["error"]
+                        }
+                    }
+                }
+            }
+        }
+    },
+})
+@require_POST
+def abort_default_tree_creation(request, task_id: str) -> http.HttpResponse:
+    """Stops a default tree upload celery task"""
+    try:
+        task = create_default_tree_task.AsyncResult(task_id)
+        task.revoke(terminate=True)
+
+        Message.objects.create(user=request.specify_user, content=json.dumps({
+            'type': 'create-default-tree-failed',
+            'name': 'Aborted',
+            'collection_id': '',
+            'discipline_name': 'Aborted'
+        }))
+
+        return http.HttpResponse('', status=204)
+    except Exception as e:
+        return http.JsonResponse({'error': str(e)}, status=400)
