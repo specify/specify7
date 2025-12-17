@@ -162,13 +162,16 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
    * below).
    * Instead, the stale remote preference from the old XML configuration was still being
    * used. As a result,name`—which was the default—was always applied.
-   * */
-  // For now, name is being hard-coded to preserve the behavior described in issue-6043.
-  // const sortField = userPreferences.get(
-  //   'treeEditor',
-  //   'behavior',
-  //   'orderByField'
-  // );
+   * 
+   */
+  /*
+   * For now, name is being hard-coded to preserve the behavior described in issue-6043.
+   * const sortField = userPreferences.get(
+   *   'treeEditor',
+   *   'behavior',
+   *   'orderByField'
+   * );
+   */
 
   const includeAuthor = userPreferences.get(
     'treeEditor',
