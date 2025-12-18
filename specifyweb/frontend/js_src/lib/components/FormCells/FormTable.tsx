@@ -508,6 +508,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                           disableRemove
                         }
                         title={commonText.remove()}
+                        // NOTE TO SELF THIS area should retreive parent resources and check if theres any blockers before deleting
                         onClick={(): void => handleDelete(resource)}
                       >
                         {icons.trash}
