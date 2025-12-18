@@ -940,7 +940,7 @@ export const formsText = createDictionary({
   bulkCarryForwardRangeEnabled: {
     'en-us': 'Show Bulk Carry Forward range',
     'de-ch': 'Bereich für Massenüberträge anzeigen',
-    'es-es': 'Mostrar gama de productos para llevar a granel',
+    'es-es': 'Mostrar rango de transferencia masiva',
     'fr-fr': 'Afficher la plage de report en masse',
     'pt-br': 'Mostrar intervalo de transferência de peso',
     'ru-ru': 'Показать диапазон массового переноса данных',
@@ -952,7 +952,7 @@ export const formsText = createDictionary({
     'de-ch':
       'Der Datensatz kann nicht über den angegebenen Bereich {field:string} hinaus fortgeführt werden.',
     'es-es':
-      'No se puede transferir el registro a través del rango {field:string} especificado.',
+      'No se puede trasladar el registro a través del rango {field:string} especificado.',
     'fr-fr':
       "Impossible de reporter l'enregistrement sur la plage {field:string} spécifiée.",
     'pt-br':
@@ -973,7 +973,8 @@ export const formsText = createDictionary({
   bulkCarryForwardRangeExistingRecords: {
     'en-us': 'The following numbers for {field:string} are already being used:',
     'de-ch': 'Folgende Nummern für {field:string} werden bereits verwendet:',
-    'es-es': 'Los siguientes números para {field:string} ya están en uso:',
+    'es-es':
+      'Los siguientes números para {field:string} ya se están utilizando:',
     'fr-fr': 'Les numéros suivants pour {field:string} sont déjà utilisés :',
     'pt-br': 'Os seguintes números para {field:string} já estão sendo usados:',
     'ru-ru': 'Следующие номера для {field:string} уже используются:',
@@ -982,7 +983,7 @@ export const formsText = createDictionary({
   bulkCarryForwardRangeStart: {
     'en-us': 'Carry Forward Range Start',
     'de-ch': 'Vorwärtsbewegung Reichweite Start',
-    'es-es': 'Rango de inicio de arrastre',
+    'es-es': 'Arranque del rango de avance',
     'fr-fr': 'Début de la plage de report',
     'pt-br': 'Início do intervalo de transferência',
     'ru-ru': 'Начало диапазона переноса вперед',
@@ -991,7 +992,7 @@ export const formsText = createDictionary({
   bulkCarryForwardRangeEnd: {
     'en-us': 'Carry Forward Range End',
     'de-ch': 'Reichweitenende für Weitertragen',
-    'es-es': 'Rango de arrastre final',
+    'es-es': 'Fin del rango de arrastre',
     'fr-fr': 'Fin de la plage de report',
     'pt-br': 'Fim do intervalo de transporte',
     'ru-ru': 'Конец диапазона переноса вперед',
@@ -1000,7 +1001,7 @@ export const formsText = createDictionary({
   createRecordSetOnBulkCarryForward: {
     'en-us': 'Create record set on Bulk Carry Forward',
     'de-ch': 'Datensatz für Massenübertrag erstellen',
-    'es-es': 'Crear conjunto de registros en Transferencia masiva',
+    'es-es': 'Crear un conjunto de registros en Bulk Carry Forward',
     'fr-fr': "Créer un ensemble d'enregistrements sur le report en masse",
     'pt-br': 'Criar conjunto de registros em Transferência em Massa',
     'ru-ru': 'Создать набор записей для массового переноса данных',
