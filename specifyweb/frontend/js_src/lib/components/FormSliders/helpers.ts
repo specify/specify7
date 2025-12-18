@@ -1,4 +1,4 @@
-import { Relationship } from '../DataModel/specifyField';
+import type { Relationship } from '../DataModel/specifyField';
 
 export const shouldBeToOne = (
   relationship: Relationship | undefined
