@@ -765,7 +765,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         const firstInput = inputs[0];
         const minValue= firstInput?.getAttribute('min');
         const hasMinAttribute = ( minValue !== null  && minValue >= '0');
-        // modified save blocker logic to consider min attribute and choose either the blocker for negative prepr or HTML min attribute to avoid conflict
+        // Modified save blocker logic to consider min attribute and choose either the blocker for negative prepr or HTML min attribute to avoid conflict
 
         if (totalPrep < 0) {
          if (!hasMinAttribute) {
