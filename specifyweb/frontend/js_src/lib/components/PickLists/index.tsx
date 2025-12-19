@@ -24,6 +24,9 @@ import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
 import { PickListTypes } from './definitions';
 
+type PickListRawValue =
+  SpecifyResource<AnySchema> | boolean | number | string | null | undefined;
+
 export function PickListComboBox({
   id,
   resource,
@@ -90,13 +93,10 @@ export function PickListComboBox({
       [defaultValue, rawIsRequired]
     )
   );
-  const value = React.useMemo(
-    () =>
-      typeof rawValue === 'object'
-        ? ((rawValue as unknown as SpecifyResource<AnySchema>)?.url() ?? null)
-        : ((rawValue as number | string | undefined)?.toString() ?? null),
-    [rawValue]
-  );
+  const value = React.useMemo(() => {
+    if (isSpecifyResource(rawValue)) return rawValue.url?.() ?? null;
+    return (rawValue as number | string | undefined)?.toString() ?? null;
+  }, [rawValue]);
 
   const updateValue = React.useCallback(
     (value: string): void =>
@@ -136,9 +136,31 @@ export function PickListComboBox({
       setPendingNewValue(value);
     else throw new Error('Adding item to wrong type of picklist');
   }
+  const isSpecialByPrefix =
+    typeof pickListName === 'string' && pickListName.startsWith('_');
+  const isSpecialPicklist =
+    isDisabled ||
+    isSpecialByPrefix ||
+    pickList?.get?.('readOnly') === true;
 
   const currentValue = items.find((item) => item.value === value);
-  const isExistingValue = typeof currentValue === 'object';
+  const selectItems = React.useMemo(() => {
+    if (
+      !isSpecialPicklist ||
+      value === null ||
+      items.some(({ value: itemValue }) => itemValue === value)
+    )
+      return items;
+    const fallbackTitle =
+      currentValue?.title ?? getResourceFallbackTitle(rawValue) ?? value;
+    return [{ title: fallbackTitle, value }, ...items];
+  }, [currentValue?.title, isSpecialPicklist, items, rawValue, value]);
+  const selectHasValue = React.useMemo(
+    () =>
+      value !== null &&
+      selectItems.some(({ value: itemValue }) => itemValue === value),
+    [selectItems, value]
+  );
 
   const autocompleteItems = React.useMemo(
     () =>
@@ -159,11 +181,6 @@ export function PickListComboBox({
 
   const isReadOnly = React.useContext(ReadOnlyContext);
 
-  const isSpecialByPrefix =
-    typeof pickListName === 'string' && pickListName.startsWith('_');
-  const isSpecialPicklist =
-    isDisabled || isSpecialByPrefix || pickList?.get?.('readOnly') === true;
-
   return (
     <>
       {isSpecialPicklist ? (
@@ -182,18 +199,18 @@ export function PickListComboBox({
                 : undefined
           }
         >
-          {isExistingValue ? (
+          {selectHasValue ? (
             parser.required === true ? undefined : (
               <option key="nullValue" />
             )
           ) : value === null || value.length === 0 ? (
             <option key="nullValue" />
           ) : (
-            <option key="invalidValue">
+            <option key="invalidValue" value={value}>
               {queryText.invalidPicklistValue({ value })}
             </option>
           )}
-          {items.map(({ title, value }) => (
+          {selectItems.map(({ title, value }) => (
             // If pick list has duplicate values, this triggers React warnings
             <option key={value} value={value}>
               {title}
@@ -299,5 +316,24 @@ function AddingToPicklist({
         pickListName: pickList.get('name'),
       })}
     </Dialog>
+  );
+}
+
+function getResourceFallbackTitle(
+  rawValue: PickListRawValue
+): string | undefined {
+  if (isSpecifyResource(rawValue))
+    return rawValue.get?.('title') ?? rawValue.get?.('name');
+  return undefined;
+}
+
+function isSpecifyResource(
+  rawValue: PickListRawValue
+): rawValue is SpecifyResource<AnySchema> {
+  return (
+    typeof rawValue === 'object' &&
+    rawValue !== null &&
+    'get' in rawValue &&
+    typeof (rawValue ).get === 'function'
   );
 }
