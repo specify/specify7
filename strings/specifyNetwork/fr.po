@@ -1,72 +1,72 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-11-23 04:51+0000\n"
+"PO-Revision-Date: 2025-12-19 15:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: French "
-"<https://hosted.weblate.org/projects/specify-7/specifyNetwork/fr/>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
+"specifyNetwork/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.15-dev\n"
+"X-Generator: Weblate 5.15.1\n"
 
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
 #: components/Preferences/CollectionDefinitions.tsx:146
 #: components/SpecifyNetwork/index.tsx:81
 #: components/SpecifyNetwork/index.tsx:89
 #: components/SpecifyNetwork/index.tsx:98
 #: components/Statistics/Pages.tsx:7
-#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
 msgid "specifyNetwork"
 msgstr "Réseau Specify"
 
-#: components/SpecifyNetwork/index.tsx:84
 #. Used in: Components > Specify Network > Index
+#: components/SpecifyNetwork/index.tsx:84
 #, fuzzy
 msgid "occurrenceOrGuidRequired"
 msgstr "Le nom de l'espèce ou le GUID doit être fourni pour afficher cette page."
 
-#: components/SpecifyNetwork/Overlay.tsx:119
 #. Used in: Components > Specify Network > Overlay
+#: components/SpecifyNetwork/Overlay.tsx:119
 #, fuzzy
 msgid "noDataError"
 msgstr "Aucune donnée n'a pu être trouvée pour cette requête."
 
-#: components/SpecifyNetwork/Overlay.tsx:122
 #. Used in: Components > Specify Network > Overlay
+#: components/SpecifyNetwork/Overlay.tsx:122
 #, fuzzy
 msgid "noDataErrorDescription"
 msgstr "Veuillez essayer de rechercher un autre enregistrement"
 
-#: components/SpecifyNetwork/Table.tsx:51
 #. Used in: Components > Specify Network > Table
+#: components/SpecifyNetwork/Table.tsx:51
 #, fuzzy
 msgid "dataQuality"
 msgstr "Qualité des données"
 
-#: components/SpecifyNetwork/Table.tsx:64
 #. Used in: Components > Specify Network > Table
+#: components/SpecifyNetwork/Table.tsx:64
 #, fuzzy
 msgid "reportedBy"
 msgstr "Signalé par {provider:string}"
 
+#. Used in: Components > Specify Network > Field Mapper
 #: components/SpecifyNetwork/FieldMapper.tsx:109
 #: components/SpecifyNetwork/FieldMapper.tsx:117
-#. Used in: Components > Specify Network > Field Mapper
 #, fuzzy
 msgid "collectionDate"
 msgstr "Date de collecte"
 
-#: components/SpecifyNetwork/Map.tsx:221
 #. Used in: Components > Specify Network > Map
+#: components/SpecifyNetwork/Map.tsx:221
 #, fuzzy
 msgid "mapDescription"
 msgstr ""
 "Cette carte montre les occurrences de ce taxon provenant des agrégateurs "
 "iDigBio et GBIF."
 
-#: components/SpecifyNetwork/overlays.ts:140
 #. Used in: Components > Specify Network > Overlays
+#: components/SpecifyNetwork/overlays.ts:140
 #, fuzzy
 msgid "iDigBioDescription"
 msgstr ""
@@ -77,8 +77,8 @@ msgstr ""
 "une requête de localisation dans Specify, affichant toutes les espèces de "
 "la base de données Specify actuelle collectées à cet endroit."
 
-#: components/SpecifyNetwork/overlays.ts:31
 #. Used in: Components > Specify Network > Overlays
+#: components/SpecifyNetwork/overlays.ts:31
 #, fuzzy
 msgid "gbifDescription"
 msgstr ""
@@ -87,62 +87,70 @@ msgstr ""
 "l'orange en passant par le rouge. Les hexagones rouge foncé correspondent "
 "aux zones de plus forte densité de spécimens collectés de cette espèce."
 
-#: components/SpecifyNetworkCollection/Setup.tsx:59
 #. Used in: Components > Specify Network Collection > Setup
+#: components/SpecifyNetworkCollection/Setup.tsx:59
 #, fuzzy
 msgid "connectToGbif"
 msgstr "Se connecter au GBIF"
 
-#: components/SpecifyNetworkCollection/Setup.tsx:62
 #. Used in: Components > Specify Network Collection > Setup
+#: components/SpecifyNetworkCollection/Setup.tsx:62
 #, fuzzy
 msgid "searchForInstitution"
 msgstr "Recherchez votre établissement :"
 
-#: components/SpecifyNetworkCollection/index.tsx:75
 #. Used in: Components > Specify Network Collection > Index
+#: components/SpecifyNetworkCollection/index.tsx:75
 #, fuzzy
 msgid "institutionDistributionMap"
 msgstr ""
 "Carte de répartition de tous les spécimens numérisés conservés dans votre "
 "institution"
 
-#: components/SpecifyNetworkCollection/index.tsx:149
 #. Used in: Components > Specify Network Collection > Index
+#: components/SpecifyNetworkCollection/index.tsx:149
 #, fuzzy
 msgid "collectionDistributionMap"
 msgstr ""
 "Carte de répartition de tous les spécimens numérisés conservés dans votre "
 "collection"
 
-#: components/Molecules/Range.tsx:23
 #. Used in: Components > Molecules > Range
+#: components/Molecules/Range.tsx:23
 #, fuzzy
 msgid "startYear"
 msgstr "Année de début"
 
-#: components/Molecules/Range.tsx:44
 #. Used in: Components > Molecules > Range
+#: components/Molecules/Range.tsx:44
 #, fuzzy
 msgid "endYear"
 msgstr "Fin d'année"
 
+#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:149
-#. Used in: Components > Preferences > Collection Definitions
+#, fuzzy
 msgid "publishingOrganizationKey"
-msgstr ""
+msgstr "Clé de l'organisation d'édition GBIF"
 
-#: components/Preferences/CollectionDefinitions.tsx:151
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:151
+#, fuzzy
 msgid "publishingOrganizationKeyDescription"
 msgstr ""
+"La clé GBIF « publishingOrgKey » (un UUID) pour cette collection, utilisée "
+"pour l'intégration du réseau Specify."
 
+#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:158
-#. Used in: Components > Preferences > Collection Definitions
+#, fuzzy
 msgid "collectionKey"
-msgstr ""
+msgstr "Clé d'identification des données GBIF"
 
-#: components/Preferences/CollectionDefinitions.tsx:159
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:159
+#, fuzzy
 msgid "collectionKeyDescription"
 msgstr ""
+"Le « dataSetKey » GBIF (un UUID) pour cette collection, utilisé pour "
+"l'intégration du réseau Specification."
