@@ -11,12 +11,12 @@ requireContext();
 describe('getDateParser', () => {
   test('full', () =>
     expect(
-  getDateParser(
-    tables.CollectionObject.strictGetLiteralField(dateFieldName),
-    'full',
-    new Date()
-  )
-).toMatchInlineSnapshot(`
+      getDateParser(
+        tables.CollectionObject.strictGetLiteralField(dateFieldName),
+        'full',
+        new Date()
+      )
+    ).toMatchInlineSnapshot(`
   {
     "formatters": [
       [Function],
