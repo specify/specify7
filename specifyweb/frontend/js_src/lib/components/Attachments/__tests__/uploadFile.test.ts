@@ -69,7 +69,10 @@ describe('uploadFile', () => {
   test('sends request correctly', async () => {
     const onProgress = jest.fn();
 
-    const attachment = await uploadFile(testFile, onProgress);
+    const attachment = await uploadFile({
+      file: testFile,
+      handleProgress: onProgress,
+    });
 
     expect(xhrMock.open).toHaveBeenCalledTimes(1);
     expect(xhrMock.open).toHaveBeenLastCalledWith(
@@ -98,9 +101,13 @@ describe('uploadFile', () => {
 
     const onProgress = jest.fn();
 
-    const attachment = await uploadFile(testFile, onProgress, {
-      token: newToken,
-      attachmentLocation: newLocation,
+    const attachment = await uploadFile({
+      file: testFile,
+      handleProgress: onProgress,
+      uploadAttachmentSpec: {
+        token: newToken,
+        attachmentLocation: newLocation,
+      },
     });
 
     expect(xhrMock.open).toHaveBeenCalledTimes(1);
