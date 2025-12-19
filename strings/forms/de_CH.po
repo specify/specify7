@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.15-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:708
+#: components/Preferences/UserDefinitions.tsx:709
 #. Used in: Components > Preferences > User Definitions
 msgid "forms"
 msgstr "Formulare"
@@ -199,7 +199,7 @@ msgstr "Ungültiger Datentyp"
 msgid "invalidNumericPicklistValue"
 msgstr "In diesem {pickListTable:string} werden nur numerische Werte unterstützt."
 
-#: components/Attachments/Plugin.tsx:115
+#: components/Attachments/Plugin.tsx:116
 #: components/FormCells/FormTable.tsx:276
 #: components/FormCells/FormTable.tsx:610
 #: components/Forms/BaseResourceView.tsx:106
@@ -227,7 +227,7 @@ msgstr "Datensatz zuerst speichern"
 
 #: components/FormSliders/Slider.tsx:32
 #: components/FormSliders/Slider.tsx:34
-#: components/Preferences/UserDefinitions.tsx:1127
+#: components/Preferences/UserDefinitions.tsx:1128
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "firstRecord"
@@ -235,7 +235,7 @@ msgstr "Erster Rekord"
 
 #: components/FormSliders/Slider.tsx:96
 #: components/FormSliders/Slider.tsx:98
-#: components/Preferences/UserDefinitions.tsx:1131
+#: components/Preferences/UserDefinitions.tsx:1132
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "lastRecord"
@@ -792,7 +792,7 @@ msgid "subForm"
 msgstr "Unterformular"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/Preferences/UserDefinitions.tsx:1138
+#: components/Preferences/UserDefinitions.tsx:1139
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "formTable"

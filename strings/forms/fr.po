@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.15-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:708
+#: components/Preferences/UserDefinitions.tsx:709
 #. Used in: Components > Preferences > User Definitions
 msgid "forms"
 msgstr "Formulaires"
@@ -179,7 +179,7 @@ msgstr ""
 "Seules les valeurs numériques sont prises en charge dans ce "
 "{pickListTable:string}"
 
-#: components/Attachments/Plugin.tsx:115
+#: components/Attachments/Plugin.tsx:116
 #: components/FormCells/FormTable.tsx:276
 #: components/FormCells/FormTable.tsx:610
 #: components/Forms/BaseResourceView.tsx:106
@@ -203,14 +203,14 @@ msgstr "Sauvegarder d'abord l'enregistrement"
 
 #: components/FormSliders/Slider.tsx:32
 #: components/FormSliders/Slider.tsx:34
-#: components/Preferences/UserDefinitions.tsx:1127
+#: components/Preferences/UserDefinitions.tsx:1128
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "firstRecord"
 msgstr "Premier enregistrement"
 
 #: components/FormSliders/Slider.tsx:96
 #: components/FormSliders/Slider.tsx:98
-#: components/Preferences/UserDefinitions.tsx:1131
+#: components/Preferences/UserDefinitions.tsx:1132
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "lastRecord"
 msgstr "Dernier enregistrement"
@@ -703,7 +703,7 @@ msgid "subForm"
 msgstr "Sous-formulaire"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/Preferences/UserDefinitions.tsx:1138
+#: components/Preferences/UserDefinitions.tsx:1139
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "formTable"
 msgstr "Grille"

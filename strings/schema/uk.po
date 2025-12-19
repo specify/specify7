@@ -23,13 +23,13 @@ msgstr "Таблиця"
 
 #: components/Attachments/index.tsx:195
 #: components/FormEditor/Table.tsx:49
-#: components/Router/Routes.tsx:407
+#: components/Router/Routes.tsx:415
 #: components/SchemaConfig/Tables.tsx:49
 #. Used in: Components > Attachments > Index ⬤ Components > Form Editor > Table ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 msgid "tables"
 msgstr "Столи"
 
-#: components/Preferences/UserDefinitions.tsx:781
+#: components/Preferences/UserDefinitions.tsx:782
 #: components/WbPlanView/MapperComponents.tsx:452
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
@@ -40,9 +40,9 @@ msgstr "Назва таблиці"
 msgid "withoutTable"
 msgstr "Без столу"
 
-#: components/Header/userToolDefinitions.ts:61
-#: components/Preferences/UserDefinitions.tsx:724
-#: components/Router/Routes.tsx:381
+#: components/Header/userToolDefinitions.ts:68
+#: components/Preferences/UserDefinitions.tsx:725
+#: components/Router/Routes.tsx:389
 #: components/SchemaConfig/Components.tsx:30
 #: components/SchemaConfig/Languages.tsx:36
 #: components/Security/registry.ts:206
@@ -206,7 +206,7 @@ msgstr "Веб-посиланні"
 msgid "userDefined"
 msgstr "Визначено користувачем"
 
-#: components/Router/Routes.tsx:396
+#: components/Router/Routes.tsx:404
 #: components/SchemaConfig/Languages.tsx:29
 #: components/SchemaConfig/Languages.tsx:78
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
@@ -275,7 +275,7 @@ msgstr "Кількість полів"
 msgid "relationshipCount"
 msgstr "Кількість зв'язків"
 
-#: components/Header/userToolDefinitions.ts:144
+#: components/Header/userToolDefinitions.ts:151
 #: components/Router/Routes.tsx:45
 #: components/Router/Routes.tsx:49
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes

@@ -130,7 +130,7 @@ msgstr ""
 "unten eingeben, um den Benutzer für zukünftige Anmeldungen Ihrem "
 "{providerName:string}-Konto zuzuordnen."
 
-#: components/Header/userToolDefinitions.ts:92
+#: components/Header/userToolDefinitions.ts:99
 #: components/Router/OverlayRoutes.tsx:174
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
@@ -345,7 +345,7 @@ msgstr "Sammlungen"
 msgid "configureCollectionAccess"
 msgstr "Benutzerzugriff auswählen"
 
-#: components/Header/userToolDefinitions.ts:78
+#: components/Header/userToolDefinitions.ts:85
 #: components/Router/Routes.tsx:73
 #: components/Toolbar/Security.tsx:102
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security

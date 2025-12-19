@@ -2,7 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain\n"
 
 #: components/Header/menuItemDefinitions.ts:94
-#: components/Preferences/UserDefinitions.tsx:1782
+#: components/Preferences/UserDefinitions.tsx:1847
 #: components/Router/OverlayRoutes.tsx:151
 #: components/WbUtils/datasetVariants.tsx:30
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
@@ -37,8 +37,8 @@ msgstr "Validate"
 msgid "validation"
 msgstr "Validation"
 
-#: components/AttachmentsBulkImport/Upload.tsx:210
-#: components/AttachmentsBulkImport/Upload.tsx:236
+#: components/AttachmentsBulkImport/Upload.tsx:211
+#: components/AttachmentsBulkImport/Upload.tsx:237
 #: components/AttachmentsBulkImport/utils.ts:465
 #: components/Molecules/SyncAttachmentPicker.tsx:111
 #: components/WbUtils/datasetVariants.tsx:41
@@ -51,7 +51,7 @@ msgstr "Upload"
 msgid "rollingBack"
 msgstr "Rolling Back"
 
-#: components/AttachmentsBulkImport/Upload.tsx:108
+#: components/AttachmentsBulkImport/Upload.tsx:109
 #: components/WbUtils/datasetVariants.tsx:53
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Utils > Dataset Variants
 msgid "uploading"
@@ -85,7 +85,7 @@ msgstr "Fill Up"
 msgid "revert"
 msgstr "Revert"
 
-#: components/Preferences/UserDefinitions.tsx:1788
+#: components/Preferences/UserDefinitions.tsx:1853
 #: components/WbActions/WbValidate.tsx:58
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Actions > Wb Validate
 msgid "dataCheck"
@@ -97,7 +97,7 @@ msgstr "Live Validation"
 msgid "dataCheckOn"
 msgstr "Live Validation: On"
 
-#: components/Preferences/UserDefinitions.tsx:1789
+#: components/Preferences/UserDefinitions.tsx:1854
 #. Used in: Components > Preferences > User Definitions
 msgid "dataCheckDescription"
 msgstr ""
@@ -367,13 +367,13 @@ msgstr "Rollback Cancelled"
 msgid "rollbackCanceledDescription"
 msgstr "Data Set Rollback cancelled."
 
-#: components/AttachmentsBulkImport/Upload.tsx:109
+#: components/AttachmentsBulkImport/Upload.tsx:110
 #: components/WbUtils/datasetVariants.tsx:44
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Utils > Dataset Variants
 msgid "uploadCanceled"
 msgstr "Upload Cancelled"
 
-#: components/AttachmentsBulkImport/Upload.tsx:110
+#: components/AttachmentsBulkImport/Upload.tsx:111
 #: components/WbUtils/datasetVariants.tsx:45
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Utils > Dataset Variants
 msgid "uploadCanceledDescription"
@@ -456,7 +456,7 @@ msgstr "Data Set was deleted by another session."
 msgid "includeDmsSymbols"
 msgstr "Include DMS Symbols"
 
-#: components/AttachmentsBulkImport/Upload.tsx:264
+#: components/AttachmentsBulkImport/Upload.tsx:265
 #. Used in: Components > Attachments Bulk Import > Upload
 msgid "uploadResults"
 msgstr "Upload Results"
@@ -568,44 +568,44 @@ msgid "delimiter"
 msgstr "Delimiter:"
 
 #: components/Molecules/CsvFilePicker.tsx:172
-#: components/Preferences/UserDefinitions.tsx:1651
-#: components/Preferences/UserDefinitions.tsx:1896
+#: components/Preferences/UserDefinitions.tsx:1716
+#: components/Preferences/UserDefinitions.tsx:1961
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "comma"
 msgstr "Comma"
 
 #: components/Molecules/CsvFilePicker.tsx:174
-#: components/Preferences/UserDefinitions.tsx:1659
-#: components/Preferences/UserDefinitions.tsx:1904
+#: components/Preferences/UserDefinitions.tsx:1724
+#: components/Preferences/UserDefinitions.tsx:1969
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "semicolon"
 msgstr "Semicolon"
 
 #: components/Molecules/CsvFilePicker.tsx:173
-#: components/Preferences/UserDefinitions.tsx:1655
-#: components/Preferences/UserDefinitions.tsx:1900
+#: components/Preferences/UserDefinitions.tsx:1720
+#: components/Preferences/UserDefinitions.tsx:1965
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "tab"
 msgstr "Tab"
 
 #: components/Molecules/CsvFilePicker.tsx:175
-#: components/Preferences/UserDefinitions.tsx:1663
-#: components/Preferences/UserDefinitions.tsx:1908
+#: components/Preferences/UserDefinitions.tsx:1728
+#: components/Preferences/UserDefinitions.tsx:1973
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "space"
 msgstr "Space"
 
 #: components/Molecules/CsvFilePicker.tsx:176
-#: components/Preferences/UserDefinitions.tsx:1667
-#: components/Preferences/UserDefinitions.tsx:1912
+#: components/Preferences/UserDefinitions.tsx:1732
+#: components/Preferences/UserDefinitions.tsx:1977
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "pipe"
 msgstr "Pipe"
 
 #: components/Molecules/CsvFilePicker.tsx:212
-#: components/Preferences/UserDefinitions.tsx:640
-#: components/Preferences/UserDefinitions.tsx:661
-#: components/Preferences/UserDefinitions.tsx:682
+#: components/Preferences/UserDefinitions.tsx:641
+#: components/Preferences/UserDefinitions.tsx:662
+#: components/Preferences/UserDefinitions.tsx:683
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "determineAutomatically"
 msgstr "Determine automatically"

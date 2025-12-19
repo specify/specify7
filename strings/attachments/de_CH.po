@@ -21,19 +21,21 @@ msgstr ""
 #: components/Header/menuItemDefinitions.ts:99
 #: components/Molecules/SyncAttachmentPicker.tsx:118
 #: components/Molecules/SyncAttachmentPicker.tsx:127
-#: components/Preferences/UserDefinitions.tsx:1324
+#: components/Preferences/CollectionDefinitions.tsx:40
+#: components/Preferences/UserDefinitions.tsx:1325
 #: components/Router/Routes.tsx:182
-#: components/Router/Routes.tsx:477
+#: components/Router/Routes.tsx:485
+#: components/Statistics/StatsSpec.tsx:508
 #: components/WbAttachmentViewer/index.tsx:131
-#: components/WbImportAttachments/index.tsx:181
-#: components/WbImportAttachments/index.tsx:215
+#: components/WbImportAttachments/index.tsx:188
+#: components/WbImportAttachments/index.tsx:222
 #: components/WbToolkit/index.tsx:73
 #: components/WorkBench/WbAttachmentsPreview.tsx:115
 #: components/WorkBench/WbAttachmentsPreview.tsx:302
 #: components/WorkBench/WbAttachmentsPreview.tsx:336
 #: components/WorkBench/WbView.tsx:245
 #: components/WorkBench/hotProps.tsx:76
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Wb Attachment Viewer > Index ⬤ Components > Wb Import Attachments > Index ⬤ Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb Attachments Preview ⬤ Components > Work Bench > Wb View ⬤ Components > Work Bench > Hot Props
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Stats Spec ⬤ Components > Wb Attachment Viewer > Index ⬤ Components > Wb Import Attachments > Index ⬤ Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb Attachments Preview ⬤ Components > Work Bench > Wb View ⬤ Components > Work Bench > Hot Props
 msgid "attachments"
 msgstr "Anhänge"
 
@@ -42,12 +44,12 @@ msgstr "Anhänge"
 msgid "scale"
 msgstr "Massstab"
 
-#: components/Attachments/Plugin.tsx:40
-#: components/Attachments/Plugin.tsx:144
+#: components/Attachments/Plugin.tsx:41
+#: components/Attachments/Plugin.tsx:151
 #: components/Attachments/index.tsx:54
-#: components/AttachmentsBulkImport/Upload.tsx:250
-#: components/AttachmentsBulkImport/Upload.tsx:257
-#: components/WbImportAttachments/index.tsx:184
+#: components/AttachmentsBulkImport/Upload.tsx:251
+#: components/AttachmentsBulkImport/Upload.tsx:258
+#: components/WbImportAttachments/index.tsx:191
 #. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Wb Import Attachments > Index
 msgid "attachmentServerUnavailable"
 msgstr "Attachment-Server nicht verfügbar"
@@ -59,13 +61,13 @@ msgstr "Richten Sie Ihren Attachment-Server ein"
 
 #: components/Attachments/index.tsx:210
 #: components/FormMeta/SubViewMeta.tsx:42
-#: components/Preferences/UserDefinitions.tsx:1311
+#: components/Preferences/UserDefinitions.tsx:1312
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "orderBy"
 msgstr "Sortiere nach"
 
-#: components/Attachments/Plugin.tsx:148
-#: components/WbImportAttachments/index.tsx:190
+#: components/Attachments/Plugin.tsx:155
+#: components/WbImportAttachments/index.tsx:197
 #. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index
 msgid "uploadingInline"
 msgstr "Am Hochladen…"
@@ -234,13 +236,13 @@ msgstr "Anhangs-ID"
 msgid "choosePath"
 msgstr "Wähle den Weg"
 
-#: components/AttachmentsBulkImport/Upload.tsx:240
+#: components/AttachmentsBulkImport/Upload.tsx:241
 #. Used in: Components > Attachments Bulk Import > Upload
 #, fuzzy
 msgid "beginAttachmentUpload"
 msgstr "Anhang hochladen?"
 
-#: components/AttachmentsBulkImport/Upload.tsx:243
+#: components/AttachmentsBulkImport/Upload.tsx:244
 #. Used in: Components > Attachments Bulk Import > Upload
 #, fuzzy
 msgid "beginUploadDescription"
@@ -299,24 +301,24 @@ msgstr "Suchen Sie nach weiteren Anhängen."
 msgid "hideForm"
 msgstr "Formular ausblenden"
 
-#: components/Preferences/UserDefinitions.tsx:1361
+#: components/Preferences/UserDefinitions.tsx:1362
 #. Used in: Components > Preferences > User Definitions
 msgid "collapseFormByDefault"
 msgstr "Formular standardmäßig einklappen"
 
-#: components/Preferences/UserDefinitions.tsx:1362
+#: components/Preferences/UserDefinitions.tsx:1363
 #. Used in: Components > Preferences > User Definitions
 msgid "collapseFormByDefaultDescription"
 msgstr ""
 "Ob das Anhangsformular standardmäßig eingeklappt werden soll oder nicht, "
 "wenn vorhandene Anhänge angezeigt werden."
 
-#: components/Preferences/UserDefinitions.tsx:1353
+#: components/Preferences/UserDefinitions.tsx:1354
 #. Used in: Components > Preferences > User Definitions
 msgid "showControls"
 msgstr "Anhangssteuerungen anzeigen"
 
-#: components/Preferences/UserDefinitions.tsx:1354
+#: components/Preferences/UserDefinitions.tsx:1355
 #. Used in: Components > Preferences > User Definitions
 msgid "showControlsDescription"
 msgstr ""
@@ -356,7 +358,7 @@ msgstr "Vom Benutzer gestoppt"
 #: components/Router/OverlayRoutes.tsx:237
 #: components/Router/Routes.tsx:213
 #: components/Toolbar/WbsDialog.tsx:195
-#: components/WbImportAttachments/index.tsx:212
+#: components/WbImportAttachments/index.tsx:219
 #. Used in: Components > Router > Overlay Routes ⬤ Components > Router > Routes ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import Attachments > Index
 #, fuzzy
 msgid "importAttachments"
@@ -427,7 +429,7 @@ msgid "rollbackResults"
 msgstr "Rollback-Ergebnisse"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:146
-#: components/AttachmentsBulkImport/Upload.tsx:267
+#: components/AttachmentsBulkImport/Upload.tsx:268
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Upload
 #, fuzzy
 msgid "resultValue"
@@ -487,3 +489,13 @@ msgstr "Möchten Sie diesen Anhang wirklich löschen?"
 #, fuzzy
 msgid "attachmentDelition"
 msgstr "Anhang löschen"
+
+#: components/Preferences/CollectionDefinitions.tsx:43
+#. Used in: Components > Preferences > Collection Definitions
+msgid "publicDefault"
+msgstr ""
+
+#: components/Preferences/CollectionDefinitions.tsx:44
+#. Used in: Components > Preferences > Collection Definitions
+msgid "publicDefaultDescription"
+msgstr ""

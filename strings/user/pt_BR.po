@@ -137,7 +137,7 @@ msgstr ""
 "\"Especifique\", poderá inseri-los abaixo para associar esse usuário à sua "
 "conta {providerName:string} para logins futuros."
 
-#: components/Header/userToolDefinitions.ts:92
+#: components/Header/userToolDefinitions.ts:99
 #: components/Router/OverlayRoutes.tsx:174
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
@@ -354,7 +354,7 @@ msgstr "Coleções"
 msgid "configureCollectionAccess"
 msgstr "Selecione o acesso à coleção de usuários"
 
-#: components/Header/userToolDefinitions.ts:78
+#: components/Header/userToolDefinitions.ts:85
 #: components/Router/Routes.tsx:73
 #: components/Toolbar/Security.tsx:102
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security

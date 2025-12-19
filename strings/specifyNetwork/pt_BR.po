@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.15-dev\n"
 
-#: components/Preferences/CollectionDefinitions.tsx:49
+#: components/Preferences/CollectionDefinitions.tsx:146
 #: components/SpecifyNetwork/index.tsx:81
 #: components/SpecifyNetwork/index.tsx:89
 #: components/SpecifyNetwork/index.tsx:98
@@ -127,3 +127,23 @@ msgstr "Ano de início"
 #, fuzzy
 msgid "endYear"
 msgstr "Fim do ano"
+
+#: components/Preferences/CollectionDefinitions.tsx:149
+#. Used in: Components > Preferences > Collection Definitions
+msgid "publishingOrganizationKey"
+msgstr ""
+
+#: components/Preferences/CollectionDefinitions.tsx:151
+#. Used in: Components > Preferences > Collection Definitions
+msgid "publishingOrganizationKeyDescription"
+msgstr ""
+
+#: components/Preferences/CollectionDefinitions.tsx:158
+#. Used in: Components > Preferences > Collection Definitions
+msgid "collectionKey"
+msgstr ""
+
+#: components/Preferences/CollectionDefinitions.tsx:159
+#. Used in: Components > Preferences > Collection Definitions
+msgid "collectionKeyDescription"
+msgstr ""

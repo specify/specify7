@@ -11,10 +11,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/Header/userToolDefinitions.ts:56
-#: components/Preferences/index.tsx:71
+#: components/Preferences/index.tsx:103
 #: components/Router/Routes.tsx:373
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
+#. Used in: Components > Preferences > Index ⬤ Components > Router > Routes
 msgid "preferences"
 msgstr "Preferences"
 
@@ -24,7 +23,8 @@ msgid "customization"
 msgstr "Customization"
 
 #: components/AppResources/types.tsx:93
-#. Used in: Components > App Resources > Types
+#: components/Header/userToolDefinitions.ts:56
+#. Used in: Components > App Resources > Types ⬤ Components > Header > User Tool Definitions
 msgid "userPreferences"
 msgstr "User Preferences"
 
@@ -33,117 +33,139 @@ msgstr "User Preferences"
 msgid "defaultUserPreferences"
 msgstr "Default User Preferences"
 
-#: components/Preferences/UserDefinitions.tsx:82
-#: components/Preferences/UserDefinitions.tsx:530
-#: components/Preferences/UserDefinitions.tsx:617
-#: components/Preferences/UserDefinitions.tsx:711
-#: components/Preferences/UserDefinitions.tsx:1299
-#: components/Preferences/UserDefinitions.tsx:1597
-#: components/Preferences/UserDefinitions.tsx:1785
-#: components/Preferences/UserDefinitions.tsx:2100
-#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/CollectionDefinitions.tsx:24
+#: components/Preferences/UserDefinitions.tsx:83
+#: components/Preferences/UserDefinitions.tsx:531
+#: components/Preferences/UserDefinitions.tsx:618
+#: components/Preferences/UserDefinitions.tsx:712
+#: components/Preferences/UserDefinitions.tsx:1300
+#: components/Preferences/UserDefinitions.tsx:1662
+#: components/Preferences/UserDefinitions.tsx:1850
+#: components/Preferences/UserDefinitions.tsx:2165
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 msgid "general"
 msgstr "General"
 
-#: components/Preferences/UserDefinitions.tsx:85
-#: components/Preferences/UserDefinitions.tsx:825
+#: components/Preferences/UserDefinitions.tsx:86
+#: components/Preferences/UserDefinitions.tsx:826
 #. Used in: Components > Preferences > User Definitions
 msgid "ui"
 msgstr "User Interface"
 
-#: components/Preferences/UserDefinitions.tsx:96
+#: components/Preferences/UserDefinitions.tsx:97
 #. Used in: Components > Preferences > User Definitions
 msgid "theme"
 msgstr "Theme"
-
-#: components/Preferences/UserDefinitions.tsx:103
-#: components/Preferences/UserDefinitions.tsx:138
-#: components/Preferences/UserDefinitions.tsx:160
-#: components/Preferences/UserDefinitions.tsx:181
-#. Used in: Components > Preferences > User Definitions
-msgid "useSystemSetting"
-msgstr "Use system setting"
 
 #: components/Preferences/UserDefinitions.tsx:104
 #: components/Preferences/UserDefinitions.tsx:139
 #: components/Preferences/UserDefinitions.tsx:161
 #: components/Preferences/UserDefinitions.tsx:182
 #. Used in: Components > Preferences > User Definitions
+msgid "useSystemSetting"
+msgstr "Use system setting"
+
+#: components/Preferences/UserDefinitions.tsx:105
+#: components/Preferences/UserDefinitions.tsx:140
+#: components/Preferences/UserDefinitions.tsx:162
+#: components/Preferences/UserDefinitions.tsx:183
+#. Used in: Components > Preferences > User Definitions
 msgid "inheritOsSettings"
 msgstr "Copies value from your Operating System settings"
 
-#: components/Preferences/UserDefinitions.tsx:108
-#: components/Preferences/UserDefinitions.tsx:125
+#: components/Preferences/UserDefinitions.tsx:109
+#: components/Preferences/UserDefinitions.tsx:126
 #. 🟥Light mode. Used in: Components > Preferences > User Definitions
 msgid "light"
 msgstr "Light"
 
-#: components/Preferences/UserDefinitions.tsx:112
-#: components/Preferences/UserDefinitions.tsx:122
+#: components/Preferences/UserDefinitions.tsx:113
+#: components/Preferences/UserDefinitions.tsx:123
 #. 🟥Dark mode. Used in: Components > Preferences > User Definitions
 msgid "dark"
 msgstr "Dark"
 
-#: components/Preferences/UserDefinitions.tsx:130
+#: components/Preferences/UserDefinitions.tsx:131
 #. Used in: Components > Preferences > User Definitions
 msgid "reduceMotion"
 msgstr "Reduce motion"
 
-#: components/Preferences/UserDefinitions.tsx:131
+#: components/Preferences/UserDefinitions.tsx:132
 #. Used in: Components > Preferences > User Definitions
 msgid "reduceMotionDescription"
 msgstr "Disable non-essential animations and transitions."
 
-#: components/Preferences/UserDefinitions.tsx:152
+#: components/Preferences/UserDefinitions.tsx:1479
+#: components/Preferences/UserDefinitions.tsx:1518
+#: components/Preferences/UserDefinitions.tsx:1548
+#: components/Preferences/UserDefinitions.tsx:1580
+#: components/Preferences/UserDefinitions.tsx:1612
+#: components/Preferences/UserDefinitions.tsx:1644
+#: components/Preferences/__tests__/ThresholdRank.test.tsx:37
+#. Used in: Components > Preferences > User Definitions ⬤ Preferences > __tests__ > Threshold Rank
+msgid "rankThreshold"
+msgstr "Show object count below"
+
+#: components/Preferences/UserDefinitions.tsx:1480
+#: components/Preferences/UserDefinitions.tsx:1519
+#: components/Preferences/UserDefinitions.tsx:1549
+#: components/Preferences/UserDefinitions.tsx:1581
+#: components/Preferences/UserDefinitions.tsx:1613
+#: components/Preferences/UserDefinitions.tsx:1645
+#. Used in: Components > Preferences > User Definitions
+msgid "rankThresholdDescription"
+msgstr "Show the count of linked Collection Objects for all ranks below this one."
+
+#: components/Preferences/UserDefinitions.tsx:153
 #. Used in: Components > Preferences > User Definitions
 msgid "reduceTransparency"
 msgstr "Reduce transparency"
 
-#: components/Preferences/UserDefinitions.tsx:153
+#: components/Preferences/UserDefinitions.tsx:154
 #. Used in: Components > Preferences > User Definitions
 msgid "reduceTransparencyDescription"
 msgstr ""
 "Whether to disable translucent backgrounds for user interface components "
 "whenever possible (e.g. table headers in tree view)."
 
-#: components/Preferences/UserDefinitions.tsx:174
+#: components/Preferences/UserDefinitions.tsx:175
 #. Used in: Components > Preferences > User Definitions
 msgid "contrast"
 msgstr "Contrast"
 
-#: components/Preferences/UserDefinitions.tsx:186
+#: components/Preferences/UserDefinitions.tsx:187
 #. Used in: Components > Preferences > User Definitions
 msgid "increase"
 msgstr "Increase"
 
-#: components/Preferences/UserDefinitions.tsx:143
-#: components/Preferences/UserDefinitions.tsx:165
-#: components/Preferences/UserDefinitions.tsx:190
+#: components/Preferences/UserDefinitions.tsx:144
+#: components/Preferences/UserDefinitions.tsx:166
+#: components/Preferences/UserDefinitions.tsx:191
 #. Used in: Components > Preferences > User Definitions
 msgid "reduce"
 msgstr "Reduce"
 
-#: components/Preferences/UserDefinitions.tsx:147
-#: components/Preferences/UserDefinitions.tsx:169
-#: components/Preferences/UserDefinitions.tsx:194
+#: components/Preferences/UserDefinitions.tsx:148
+#: components/Preferences/UserDefinitions.tsx:170
+#: components/Preferences/UserDefinitions.tsx:195
 #. Used in: Components > Preferences > User Definitions
 msgid "noPreference"
 msgstr "No preference"
 
-#: components/Preferences/UserDefinitions.tsx:199
-#: components/Preferences/UserDefinitions.tsx:828
+#: components/Preferences/UserDefinitions.tsx:200
+#: components/Preferences/UserDefinitions.tsx:829
 #. Used in: Components > Preferences > User Definitions
 msgid "fontSize"
 msgstr "Font size"
 
-#: components/Preferences/UserDefinitions.tsx:219
-#: components/Preferences/UserDefinitions.tsx:840
+#: components/Preferences/UserDefinitions.tsx:220
+#: components/Preferences/UserDefinitions.tsx:841
 #. Used in: Components > Preferences > User Definitions
 msgid "fontFamily"
 msgstr "Font family"
 
-#: components/Preferences/UserDefinitions.tsx:220
-#: components/Preferences/UserDefinitions.tsx:841
+#: components/Preferences/UserDefinitions.tsx:221
+#: components/Preferences/UserDefinitions.tsx:842
 #. Used in: Components > Preferences > User Definitions
 msgid "fontFamilyDescription"
 msgstr ""
@@ -151,487 +173,488 @@ msgstr ""
 "list. A comma-separated list of fonts is also supported, where each "
 "subsequent font will be used if the previous one is not available."
 
-#: components/Preferences/Renderers.tsx:197
-#: components/Preferences/Renderers.tsx:199
-#: components/Preferences/Renderers.tsx:221
+#: components/Preferences/Renderers.tsx:201
+#: components/Preferences/Renderers.tsx:203
+#: components/Preferences/Renderers.tsx:225
 #. Used in: Components > Preferences > Renderers
 msgid "defaultFont"
 msgstr "(default font)"
 
-#: components/Preferences/UserDefinitions.tsx:849
+#: components/Preferences/UserDefinitions.tsx:850
 #. Used in: Components > Preferences > User Definitions
 msgid "maxFormWidth"
 msgstr "Max form width"
 
-#: components/Preferences/UserDefinitions.tsx:905
+#: components/Preferences/UserDefinitions.tsx:906
 #. Used in: Components > Preferences > User Definitions
 msgid "fieldBackgrounds"
 msgstr "Field backgrounds"
 
-#: components/Preferences/UserDefinitions.tsx:908
+#: components/Preferences/UserDefinitions.tsx:909
 #. Used in: Components > Preferences > User Definitions
 msgid "fieldBackground"
 msgstr "Field background"
 
-#: components/Preferences/UserDefinitions.tsx:916
+#: components/Preferences/UserDefinitions.tsx:917
 #. Used in: Components > Preferences > User Definitions
 msgid "disabledFieldBackground"
 msgstr "Disabled field background"
 
-#: components/Preferences/UserDefinitions.tsx:924
+#: components/Preferences/UserDefinitions.tsx:925
 #. Used in: Components > Preferences > User Definitions
 msgid "invalidFieldBackground"
 msgstr "Invalid field background"
 
-#: components/Preferences/UserDefinitions.tsx:932
+#: components/Preferences/UserDefinitions.tsx:933
 #. Used in: Components > Preferences > User Definitions
 msgid "requiredFieldBackground"
 msgstr "Required field background"
 
-#: components/Preferences/UserDefinitions.tsx:940
+#: components/Preferences/UserDefinitions.tsx:941
 #. Used in: Components > Preferences > User Definitions
 msgid "darkFieldBackground"
 msgstr "Field background (dark theme)"
 
-#: components/Preferences/UserDefinitions.tsx:948
+#: components/Preferences/UserDefinitions.tsx:949
 #. Used in: Components > Preferences > User Definitions
 msgid "darkDisabledFieldBackground"
 msgstr "Disabled field background (dark theme)"
 
-#: components/Preferences/UserDefinitions.tsx:956
+#: components/Preferences/UserDefinitions.tsx:957
 #. Used in: Components > Preferences > User Definitions
 msgid "darkInvalidFieldBackground"
 msgstr "Invalid field background (dark theme)"
 
-#: components/Preferences/UserDefinitions.tsx:964
+#: components/Preferences/UserDefinitions.tsx:965
 #. Used in: Components > Preferences > User Definitions
 msgid "darkRequiredFieldBackground"
 msgstr "Required field background (dark theme)"
 
-#: components/Preferences/UserDefinitions.tsx:439
+#: components/Preferences/UserDefinitions.tsx:440
 #. Used in: Components > Preferences > User Definitions
 msgid "dialogs"
 msgstr "Dialogs"
 
-#: components/Preferences/CollectionDefinitions.tsx:18
-#: components/Preferences/CollectionDefinitions.tsx:75
-#: components/Preferences/UserDefinitions.tsx:237
-#: components/Preferences/UserDefinitions.tsx:569
-#: components/Preferences/UserDefinitions.tsx:974
-#: components/Preferences/UserDefinitions.tsx:1699
-#: components/Preferences/UserDefinitions.tsx:1960
-#: components/Preferences/UserDefinitions.tsx:2015
+#: components/Preferences/CollectionDefinitions.tsx:117
+#: components/Preferences/CollectionDefinitions.tsx:228
+#: components/Preferences/UserDefinitions.tsx:238
+#: components/Preferences/UserDefinitions.tsx:570
+#: components/Preferences/UserDefinitions.tsx:975
+#: components/Preferences/UserDefinitions.tsx:1764
+#: components/Preferences/UserDefinitions.tsx:2025
+#: components/Preferences/UserDefinitions.tsx:2080
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 msgid "appearance"
 msgstr "Appearance"
 
-#: components/Preferences/UserDefinitions.tsx:305
+#: components/Preferences/UserDefinitions.tsx:306
 #. Used in: Components > Preferences > User Definitions
 msgid "buttonsLight"
 msgstr "Buttons (light mode)"
 
-#: components/Preferences/UserDefinitions.tsx:366
+#: components/Preferences/UserDefinitions.tsx:367
 #. Used in: Components > Preferences > User Definitions
 msgid "buttonsDark"
 msgstr "Buttons (dark mode)"
 
-#: components/Preferences/UserDefinitions.tsx:450
+#: components/Preferences/UserDefinitions.tsx:451
 #. Used in: Components > Preferences > User Definitions
 msgid "translucentDialog"
 msgstr "Translucent dialogs"
 
-#: components/Preferences/UserDefinitions.tsx:451
+#: components/Preferences/UserDefinitions.tsx:452
 #. Used in: Components > Preferences > User Definitions
 msgid "translucentDialogDescription"
 msgstr "Whether dialogs have translucent background."
 
-#: components/Preferences/UserDefinitions.tsx:1302
+#: components/Preferences/UserDefinitions.tsx:1303
 #. Used in: Components > Preferences > User Definitions
 msgid "alwaysPrompt"
 msgstr "Always prompt to choose collection"
 
-#: components/Preferences/UserDefinitions.tsx:1373
+#: components/Preferences/UserDefinitions.tsx:1374
 #. Used in: Components > Preferences > User Definitions
 msgid "treeEditor"
 msgstr "Tree Editor"
 
-#: components/Preferences/UserDefinitions.tsx:1462
-#: components/Preferences/UserDefinitions.tsx:1483
-#: components/Preferences/UserDefinitions.tsx:1511
+#: components/Preferences/UserDefinitions.tsx:1463
+#: components/Preferences/UserDefinitions.tsx:1495
 #: components/Preferences/UserDefinitions.tsx:1532
-#: components/Preferences/UserDefinitions.tsx:1553
-#: components/Preferences/UserDefinitions.tsx:1574
+#: components/Preferences/UserDefinitions.tsx:1564
+#: components/Preferences/UserDefinitions.tsx:1596
+#: components/Preferences/UserDefinitions.tsx:1628
 #. Used in: Components > Preferences > User Definitions
 msgid "treeAccentColor"
 msgstr "Tree accent color"
 
-#: components/Preferences/UserDefinitions.tsx:1470
-#: components/Preferences/UserDefinitions.tsx:1491
-#: components/Preferences/UserDefinitions.tsx:1519
+#: components/Preferences/UserDefinitions.tsx:1471
+#: components/Preferences/UserDefinitions.tsx:1503
 #: components/Preferences/UserDefinitions.tsx:1540
-#: components/Preferences/UserDefinitions.tsx:1561
-#: components/Preferences/UserDefinitions.tsx:1582
+#: components/Preferences/UserDefinitions.tsx:1572
+#: components/Preferences/UserDefinitions.tsx:1604
+#: components/Preferences/UserDefinitions.tsx:1636
 #. Used in: Components > Preferences > User Definitions
 msgid "synonymColor"
 msgstr "Synonym color"
 
-#: components/Preferences/UserDefinitions.tsx:1922
+#: components/Preferences/UserDefinitions.tsx:1987
 #. Used in: Components > Preferences > User Definitions
 msgid "showNewDataSetWarning"
 msgstr "Show new Data Set warning"
 
-#: components/Preferences/UserDefinitions.tsx:1923
+#: components/Preferences/UserDefinitions.tsx:1988
 #. Used in: Components > Preferences > User Definitions
 msgid "showNewDataSetWarningDescription"
 msgstr "Show an informational message when creating a new Data Set."
 
-#: components/Preferences/UserDefinitions.tsx:566
+#: components/Preferences/UserDefinitions.tsx:567
 #. Used in: Components > Preferences > User Definitions
 msgid "header"
 msgstr "Navigation Menu"
 
-#: components/Preferences/UserDefinitions.tsx:427
+#: components/Preferences/UserDefinitions.tsx:428
 #. Used in: Components > Preferences > User Definitions
 msgid "application"
 msgstr "Application"
 
-#: components/Preferences/UserDefinitions.tsx:430
+#: components/Preferences/UserDefinitions.tsx:431
 #. Used in: Components > Preferences > User Definitions
 msgid "allowDismissingErrors"
 msgstr "Allow dismissing error messages"
 
-#: components/Preferences/UserDefinitions.tsx:442
-#: components/Preferences/UserDefinitions.tsx:748
+#: components/Preferences/UserDefinitions.tsx:443
+#: components/Preferences/UserDefinitions.tsx:749
 #. Used in: Components > Preferences > User Definitions
 msgid "updatePageTitle"
 msgstr "Update page title"
 
-#: components/Preferences/UserDefinitions.tsx:443
+#: components/Preferences/UserDefinitions.tsx:444
 #. Used in: Components > Preferences > User Definitions
 msgid "updatePageTitleDescription"
 msgstr "Whether to update the title of the page to match dialog's header."
 
-#: components/Preferences/UserDefinitions.tsx:749
+#: components/Preferences/UserDefinitions.tsx:750
 #. Used in: Components > Preferences > User Definitions
 msgid "updatePageTitleFormDescription"
 msgstr "Whether to update the title of the page to match current record."
 
-#: components/Preferences/UserDefinitions.tsx:1064
+#: components/Preferences/UserDefinitions.tsx:1065
 #. Used in: Components > Preferences > User Definitions
 msgid "queryComboBox"
 msgstr "Query Combo Box"
 
-#: components/Preferences/UserDefinitions.tsx:1019
-#: components/Preferences/UserDefinitions.tsx:1067
-#: components/Preferences/UserDefinitions.tsx:1437
+#: components/Preferences/UserDefinitions.tsx:1020
+#: components/Preferences/UserDefinitions.tsx:1068
+#: components/Preferences/UserDefinitions.tsx:1438
 #. Used in: Components > Preferences > User Definitions
 msgid "searchAlgorithm"
 msgstr "Search Algorithm"
 
-#: components/Preferences/UserDefinitions.tsx:1087
+#: components/Preferences/UserDefinitions.tsx:1088
 #. Used in: Components > Preferences > User Definitions
 msgid "treeSearchAlgorithm"
 msgstr "Search Algorithm (for relationships with tree tables)"
-
-#: components/Preferences/UserDefinitions.tsx:1026
-#: components/Preferences/UserDefinitions.tsx:1074
-#: components/Preferences/UserDefinitions.tsx:1094
-#. Used in: Components > Preferences > User Definitions
-msgid "startsWithInsensitive"
-msgstr "Starts With (case-insensitive)"
 
 #: components/Preferences/UserDefinitions.tsx:1027
 #: components/Preferences/UserDefinitions.tsx:1075
 #: components/Preferences/UserDefinitions.tsx:1095
 #. Used in: Components > Preferences > User Definitions
+msgid "startsWithInsensitive"
+msgstr "Starts With (case-insensitive)"
+
+#: components/Preferences/UserDefinitions.tsx:1028
+#: components/Preferences/UserDefinitions.tsx:1076
+#: components/Preferences/UserDefinitions.tsx:1096
+#. Used in: Components > Preferences > User Definitions
 msgid "startsWithDescription"
 msgstr "Search for values that begin with a given query string."
 
-#: components/Preferences/UserDefinitions.tsx:1031
+#: components/Preferences/UserDefinitions.tsx:1032
 #. Used in: Components > Preferences > User Definitions
 msgid "startsWithCaseSensitive"
 msgstr "Starts With (case-sensitive)"
 
-#: components/Preferences/UserDefinitions.tsx:1033
+#: components/Preferences/UserDefinitions.tsx:1034
 #. Used in: Components > Preferences > User Definitions
 msgid "startsWithCaseSensitiveDescription"
 msgstr "Search for values that begin with a given query string."
 
-#: components/Preferences/UserDefinitions.tsx:1037
-#: components/Preferences/UserDefinitions.tsx:1079
-#: components/Preferences/UserDefinitions.tsx:1099
+#: components/Preferences/UserDefinitions.tsx:1038
+#: components/Preferences/UserDefinitions.tsx:1080
+#: components/Preferences/UserDefinitions.tsx:1100
 #. Used in: Components > Preferences > User Definitions
 msgid "containsInsensitive"
 msgstr "Contains (case-insensitive)"
 
-#: components/Preferences/UserDefinitions.tsx:1042
+#: components/Preferences/UserDefinitions.tsx:1043
 #. Used in: Components > Preferences > User Definitions
 msgid "containsCaseSensitive"
 msgstr "Contains (case-sensitive)"
 
-#: components/Preferences/UserDefinitions.tsx:1038
-#: components/Preferences/UserDefinitions.tsx:1081
-#: components/Preferences/UserDefinitions.tsx:1101
+#: components/Preferences/UserDefinitions.tsx:1039
+#: components/Preferences/UserDefinitions.tsx:1082
+#: components/Preferences/UserDefinitions.tsx:1102
 #. Used in: Components > Preferences > User Definitions
 msgid "containsDescription"
 msgstr "Search for values that contain a given query string (case-insensitive)."
 
-#: components/Preferences/UserDefinitions.tsx:1043
+#: components/Preferences/UserDefinitions.tsx:1044
 #. Used in: Components > Preferences > User Definitions
 msgid "containsCaseSensitiveDescription"
 msgstr "Search for values that contain a given query string (case-sensitive)."
 
-#: components/Preferences/UserDefinitions.tsx:1081
-#: components/Preferences/UserDefinitions.tsx:1101
+#: components/Preferences/UserDefinitions.tsx:1082
+#: components/Preferences/UserDefinitions.tsx:1102
 #. Used in: Components > Preferences > User Definitions
 msgid "containsSecondDescription"
 msgstr ""
 "Can use _ to match any single character or % to match any number of "
 "characters."
 
-#: components/Preferences/UserDefinitions.tsx:1048
+#: components/Preferences/UserDefinitions.tsx:1049
 #. Used in: Components > Preferences > User Definitions
 msgid "highlightMatch"
 msgstr "Highlight matched substring"
 
-#: components/Preferences/UserDefinitions.tsx:728
+#: components/Preferences/UserDefinitions.tsx:729
 #. Used in: Components > Preferences > User Definitions
 msgid "languageDescription"
 msgstr "Determines field captions, usage notes and table captions."
 
-#: components/Preferences/UserDefinitions.tsx:465
+#: components/Preferences/UserDefinitions.tsx:466
 #. Used in: Components > Preferences > User Definitions
 msgid "showDialogIcon"
 msgstr "Show icon in the header"
 
-#: components/Preferences/UserDefinitions.tsx:211
+#: components/Preferences/UserDefinitions.tsx:212
 #. Used in: Components > Preferences > User Definitions
 msgid "scaleInterface"
 msgstr "Scale Interface"
 
-#: components/Preferences/UserDefinitions.tsx:212
+#: components/Preferences/UserDefinitions.tsx:213
 #. Used in: Components > Preferences > User Definitions
 msgid "scaleInterfaceDescription"
 msgstr "Scale interface to match font size."
 
-#: components/Preferences/UserDefinitions.tsx:1499
+#: components/Preferences/UserDefinitions.tsx:1511
 #. Used in: Components > Preferences > User Definitions
 msgid "displayAuthor"
 msgstr "Show author in the tree"
 
-#: components/Preferences/UserDefinitions.tsx:527
+#: components/Preferences/UserDefinitions.tsx:528
 #. Used in: Components > Preferences > User Definitions
 msgid "welcomePage"
 msgstr "Home Page"
 
 #: components/Errors/JsonError.tsx:65
-#: components/Preferences/Renderers.tsx:235
-#: components/Preferences/UserDefinitions.tsx:540
+#: components/Preferences/Renderers.tsx:239
+#: components/Preferences/UserDefinitions.tsx:541
 #. Used in: Components > Errors > Json Error ⬤ Components > Preferences > Renderers ⬤ Components > Preferences > User Definitions
 msgid "content"
 msgstr "Content"
 
-#: components/Preferences/Renderers.tsx:242
+#: components/Preferences/Renderers.tsx:246
 #. Used in: Components > Preferences > Renderers
 msgid "defaultImage"
 msgstr "Specify Logo"
 
-#: components/Preferences/Renderers.tsx:250
+#: components/Preferences/Renderers.tsx:254
 #. Used in: Components > Preferences > Renderers
 msgid "customImage"
 msgstr "Custom Image"
 
-#: components/Preferences/Renderers.tsx:256
+#: components/Preferences/Renderers.tsx:260
 #. Used in: Components > Preferences > Renderers
 msgid "embeddedWebpage"
 msgstr "Embedded web page"
 
-#: components/Preferences/Renderers.tsx:257
+#: components/Preferences/Renderers.tsx:261
 #. Used in: Components > Preferences > Renderers
 msgid "embeddedWebpageDescription"
 msgstr "A URL to a page that would be embedded on the home page:"
 
-#: components/Preferences/CollectionDefinitions.tsx:96
-#: components/Preferences/CollectionDefinitions.tsx:115
-#: components/Preferences/CollectionDefinitions.tsx:134
-#: components/Preferences/UserDefinitions.tsx:502
-#: components/Preferences/UserDefinitions.tsx:738
-#: components/Preferences/UserDefinitions.tsx:1327
-#: components/Preferences/UserDefinitions.tsx:1376
-#: components/Preferences/UserDefinitions.tsx:1629
-#: components/Preferences/UserDefinitions.tsx:1723
-#: components/Preferences/UserDefinitions.tsx:1760
-#: components/Preferences/UserDefinitions.tsx:1972
-#: components/Preferences/UserDefinitions.tsx:2033
+#: components/Preferences/CollectionDefinitions.tsx:173
+#: components/Preferences/CollectionDefinitions.tsx:192
+#: components/Preferences/CollectionDefinitions.tsx:211
+#: components/Preferences/UserDefinitions.tsx:503
+#: components/Preferences/UserDefinitions.tsx:739
+#: components/Preferences/UserDefinitions.tsx:1328
+#: components/Preferences/UserDefinitions.tsx:1377
+#: components/Preferences/UserDefinitions.tsx:1694
+#: components/Preferences/UserDefinitions.tsx:1788
+#: components/Preferences/UserDefinitions.tsx:1825
+#: components/Preferences/UserDefinitions.tsx:2037
+#: components/Preferences/UserDefinitions.tsx:2098
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 msgid "behavior"
 msgstr "Behavior"
 
-#: components/Preferences/UserDefinitions.tsx:1600
-#: components/Preferences/UserDefinitions.tsx:1930
+#: components/Preferences/UserDefinitions.tsx:1665
+#: components/Preferences/UserDefinitions.tsx:1995
 #. Used in: Components > Preferences > User Definitions
 msgid "noRestrictionsMode"
 msgstr "No restrictions mode"
 
-#: components/Preferences/UserDefinitions.tsx:1933
+#: components/Preferences/UserDefinitions.tsx:1998
 #. Used in: Components > Preferences > User Definitions
 msgid "noRestrictionsModeWbDescription"
 msgstr "Allows uploading data to any field in any table."
 
-#: components/Preferences/UserDefinitions.tsx:1603
+#: components/Preferences/UserDefinitions.tsx:1668
 #. Used in: Components > Preferences > User Definitions
 msgid "noRestrictionsModeQueryDescription"
 msgstr "Allows querying data from any field in any table."
 
-#: components/Preferences/UserDefinitions.tsx:1936
+#: components/Preferences/UserDefinitions.tsx:2001
 #. Used in: Components > Preferences > User Definitions
 msgid "noRestrictionsModeWarning"
 msgstr ""
 "WARNING: enabling this may lead to data loss or database corruption. Please "
 "make sure you know what you are doing."
 
-#: components/Preferences/index.tsx:245
+#: components/Preferences/index.tsx:306
 #. Used in: Components > Preferences > Index
 msgid "adminsOnlyPreference"
 msgstr "You don't have permission to change this option"
 
-#: components/Preferences/UserDefinitions.tsx:1632
+#: components/Preferences/UserDefinitions.tsx:1697
 #. Used in: Components > Preferences > User Definitions
 msgid "stickyScrolling"
 msgstr "Sticky scroll bar"
 
-#: components/Preferences/UserDefinitions.tsx:977
+#: components/Preferences/UserDefinitions.tsx:978
 #. Used in: Components > Preferences > User Definitions
 msgid "foreground"
 msgstr "Foreground"
 
-#: components/Preferences/UserDefinitions.tsx:240
-#: components/Preferences/UserDefinitions.tsx:985
+#: components/Preferences/UserDefinitions.tsx:241
+#: components/Preferences/UserDefinitions.tsx:986
 #. Used in: Components > Preferences > User Definitions
 msgid "background"
 msgstr "Background"
 
-#: components/Preferences/UserDefinitions.tsx:117
+#: components/Preferences/UserDefinitions.tsx:118
 #. Used in: Components > Preferences > User Definitions
 msgid "sidebarTheme"
 msgstr "Sidebar theme"
 
-#: components/Preferences/UserDefinitions.tsx:993
+#: components/Preferences/UserDefinitions.tsx:994
 #. Used in: Components > Preferences > User Definitions
 msgid "darkForeground"
 msgstr "Foreground (dark theme)"
 
-#: components/Preferences/UserDefinitions.tsx:248
-#: components/Preferences/UserDefinitions.tsx:1001
+#: components/Preferences/UserDefinitions.tsx:249
+#: components/Preferences/UserDefinitions.tsx:1002
 #. Used in: Components > Preferences > User Definitions
 msgid "darkBackground"
 msgstr "Background (dark theme)"
 
-#: components/Preferences/UserDefinitions.tsx:256
+#: components/Preferences/UserDefinitions.tsx:257
 #. Used in: Components > Preferences > User Definitions
 msgid "accentColor1"
 msgstr "Accent color 1"
 
-#: components/Preferences/UserDefinitions.tsx:264
+#: components/Preferences/UserDefinitions.tsx:265
 #. Used in: Components > Preferences > User Definitions
 msgid "accentColor2"
 msgstr "Accent color 2"
 
-#: components/Preferences/UserDefinitions.tsx:272
+#: components/Preferences/UserDefinitions.tsx:273
 #. Used in: Components > Preferences > User Definitions
 msgid "accentColor3"
 msgstr "Accent color 3"
 
-#: components/Preferences/UserDefinitions.tsx:280
+#: components/Preferences/UserDefinitions.tsx:281
 #. Used in: Components > Preferences > User Definitions
 msgid "accentColor4"
 msgstr "Accent color 4"
 
-#: components/Preferences/UserDefinitions.tsx:288
+#: components/Preferences/UserDefinitions.tsx:289
 #. Used in: Components > Preferences > User Definitions
 msgid "accentColor5"
 msgstr "Accent color 5"
 
-#: components/Preferences/UserDefinitions.tsx:1798
+#: components/Preferences/UserDefinitions.tsx:1863
 #. Used in: Components > Preferences > User Definitions
 msgid "spreadsheet"
 msgstr "Spreadsheet"
 
-#: components/Preferences/UserDefinitions.tsx:1801
+#: components/Preferences/UserDefinitions.tsx:1866
 #. Used in: Components > Preferences > User Definitions
 msgid "minSpareRows"
 msgstr "Number of blank rows at the end"
 
-#: components/Preferences/UserDefinitions.tsx:1812
+#: components/Preferences/UserDefinitions.tsx:1877
 #. Used in: Components > Preferences > User Definitions
 msgid "autoWrapCols"
 msgstr "Navigate to the other side when reaching the edge column"
 
-#: components/Preferences/UserDefinitions.tsx:1819
+#: components/Preferences/UserDefinitions.tsx:1884
 #. Used in: Components > Preferences > User Definitions
 msgid "autoWrapRows"
 msgstr "Navigate to the other side when reaching the edge row"
 
-#: components/Preferences/UserDefinitions.tsx:1860
+#: components/Preferences/UserDefinitions.tsx:1925
 #. Used in: Components > Preferences > User Definitions
 msgid "enterBeginsEditing"
 msgstr "Enter key begins editing cell"
 
-#: components/Preferences/UserDefinitions.tsx:1826
+#: components/Preferences/UserDefinitions.tsx:1891
 #. Used in: Components > Preferences > User Definitions
 msgid "tabMoveDirection"
 msgstr "Direction of movement when <key>Tab</key> key is pressed"
 
-#: components/Preferences/UserDefinitions.tsx:1827
+#: components/Preferences/UserDefinitions.tsx:1892
 #. Used in: Components > Preferences > User Definitions
 msgid "tabMoveDirectionDescription"
 msgstr ""
 "You can move in the opposite direction by pressing "
 "<key>Shift</key>+<key>Tab</key>."
 
-#: components/Preferences/UserDefinitions.tsx:1834
-#: components/Preferences/UserDefinitions.tsx:1851
+#: components/Preferences/UserDefinitions.tsx:1899
+#: components/Preferences/UserDefinitions.tsx:1916
 #. Used in: Components > Preferences > User Definitions
 msgid "column"
 msgstr "Column"
 
 #: components/LocalityUpdate/Status.tsx:376
 #: components/LocalityUpdate/Status.tsx:419
-#: components/Preferences/UserDefinitions.tsx:1838
-#: components/Preferences/UserDefinitions.tsx:1855
+#: components/Preferences/UserDefinitions.tsx:1903
+#: components/Preferences/UserDefinitions.tsx:1920
 #. Used in: Components > Locality Update > Status ⬤ Components > Preferences > User Definitions
 msgid "row"
 msgstr "Row"
 
-#: components/Preferences/UserDefinitions.tsx:1843
+#: components/Preferences/UserDefinitions.tsx:1908
 #. Used in: Components > Preferences > User Definitions
 msgid "enterMoveDirection"
 msgstr "Direction of movement when <key>Enter</key> key is pressed"
 
-#: components/Preferences/UserDefinitions.tsx:1844
+#: components/Preferences/UserDefinitions.tsx:1909
 #. Used in: Components > Preferences > User Definitions
 msgid "enterMoveDirectionDescription"
 msgstr ""
 "You can move in the opposite direction by pressing "
 "<key>Shift</key>+<key>Enter</key>."
 
-#: components/Preferences/UserDefinitions.tsx:1869
-#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/CollectionDefinitions.tsx:27
+#: components/Preferences/UserDefinitions.tsx:1934
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 msgid "filterPickLists"
 msgstr "Filter pick list items"
 
-#: components/Preferences/UserDefinitions.tsx:1644
-#: components/Preferences/UserDefinitions.tsx:1889
+#: components/Preferences/UserDefinitions.tsx:1709
+#: components/Preferences/UserDefinitions.tsx:1954
 #. Used in: Components > Preferences > User Definitions
 msgid "exportFileDelimiter"
 msgstr "Export file delimiter"
 
-#: components/Preferences/UserDefinitions.tsx:1672
+#: components/Preferences/UserDefinitions.tsx:1737
 #. Used in: Components > Preferences > User Definitions
 msgid "exportCsvUtf8Bom"
 msgstr "Add UTF-8 BOM to CSV file exports"
 
-#: components/Preferences/UserDefinitions.tsx:1674
+#: components/Preferences/UserDefinitions.tsx:1739
 #. Used in: Components > Preferences > User Definitions
 msgid "exportCsvUtf8BomDescription"
 msgstr ""
@@ -639,347 +662,347 @@ msgstr ""
 "is correctly recognized and displayed by various programs (Excel, "
 "OpenRefine, etc.), preventing issues with special characters and formatting."
 
-#: components/Preferences/UserDefinitions.tsx:1880
+#: components/Preferences/UserDefinitions.tsx:1945
 #. Used in: Components > Preferences > User Definitions
 msgid "caseSensitive"
 msgstr "Case-sensitive"
 
-#: components/Preferences/UserDefinitions.tsx:1884
+#: components/Preferences/UserDefinitions.tsx:1949
 #. Used in: Components > Preferences > User Definitions
 msgid "caseInsensitive"
 msgstr "Case-insensitive"
 
-#: components/Preferences/UserDefinitions.tsx:1612
+#: components/Preferences/UserDefinitions.tsx:1677
 #. Used in: Components > Preferences > User Definitions
 msgid "showNoReadTables"
 msgstr "Show tables without \"Read\" access"
 
-#: components/Preferences/UserDefinitions.tsx:1946
+#: components/Preferences/UserDefinitions.tsx:2011
 #. Used in: Components > Preferences > User Definitions
 msgid "showNoAccessTables"
 msgstr "Show tables without \"Create\" access"
 
-#: components/Preferences/UserDefinitions.tsx:741
+#: components/Preferences/UserDefinitions.tsx:742
 #. Used in: Components > Preferences > User Definitions
 msgid "textAreaAutoGrow"
 msgstr "Text boxes grow automatically"
 
-#: components/Preferences/UserDefinitions.tsx:1763
+#: components/Preferences/UserDefinitions.tsx:1828
 #. Used in: Components > Preferences > User Definitions
 msgid "clearQueryFilters"
 msgstr "Reset query filters"
 
-#: components/Preferences/UserDefinitions.tsx:1764
+#: components/Preferences/UserDefinitions.tsx:1829
 #. Used in: Components > Preferences > User Definitions
 msgid "clearQueryFiltersDescription"
 msgstr "Clears all query filters when running a Report from a Form."
 
-#: components/Preferences/UserDefinitions.tsx:1771
+#: components/Preferences/UserDefinitions.tsx:1836
 #. Used in: Components > Preferences > User Definitions
 msgid "queryParamtersFromForm"
 msgstr "Show query filters when running a Report from a Form"
 
-#: components/Preferences/UserDefinitions.tsx:1055
+#: components/Preferences/UserDefinitions.tsx:1056
 #. Used in: Components > Preferences > User Definitions
 msgid "autoGrowAutoComplete"
 msgstr "Allow autocomplete to grow as wide as need"
 
-#: components/Preferences/UserDefinitions.tsx:756
+#: components/Preferences/UserDefinitions.tsx:757
 #. Used in: Components > Preferences > User Definitions
 msgid "tableNameInTitle"
 msgstr "Include table name in the browser page title"
 
-#: components/Preferences/UserDefinitions.tsx:763
+#: components/Preferences/UserDefinitions.tsx:764
 #. Used in: Components > Preferences > User Definitions
 msgid "focusFirstField"
 msgstr "Focus first field"
 
-#: components/Preferences/UserDefinitions.tsx:2036
+#: components/Preferences/UserDefinitions.tsx:2101
 #. Used in: Components > Preferences > User Definitions
 msgid "doubleClickZoom"
 msgstr "Double click to zoom"
 
-#: components/Preferences/UserDefinitions.tsx:2043
+#: components/Preferences/UserDefinitions.tsx:2108
 #. Used in: Components > Preferences > User Definitions
 msgid "closePopupOnClick"
 msgstr "Close pop-up on outside click"
 
-#: components/Preferences/UserDefinitions.tsx:2050
+#: components/Preferences/UserDefinitions.tsx:2115
 #. Used in: Components > Preferences > User Definitions
 msgid "animateTransitions"
 msgstr "Animate transitions"
 
-#: components/Preferences/UserDefinitions.tsx:2057
+#: components/Preferences/UserDefinitions.tsx:2122
 #. Used in: Components > Preferences > User Definitions
 msgid "panInertia"
 msgstr "Pan inertia"
 
-#: components/Preferences/UserDefinitions.tsx:2064
+#: components/Preferences/UserDefinitions.tsx:2129
 #. Used in: Components > Preferences > User Definitions
 msgid "mouseDrags"
 msgstr "Mouse drags"
 
-#: components/Preferences/UserDefinitions.tsx:2071
+#: components/Preferences/UserDefinitions.tsx:2136
 #. Used in: Components > Preferences > User Definitions
 msgid "scrollWheelZoom"
 msgstr "Scroll wheel zoom"
 
-#: components/Preferences/UserDefinitions.tsx:809
+#: components/Preferences/UserDefinitions.tsx:810
 #. Used in: Components > Preferences > User Definitions
 msgid "flexibleColumnWidth"
 msgstr "Flexible column width"
 
-#: components/Preferences/UserDefinitions.tsx:816
+#: components/Preferences/UserDefinitions.tsx:817
 #. Used in: Components > Preferences > User Definitions
 msgid "flexibleSubGridColumnWidth"
 msgstr "Flexible subview grid column width"
 
-#: components/Preferences/UserDefinitions.tsx:472
+#: components/Preferences/UserDefinitions.tsx:473
 #. Used in: Components > Preferences > User Definitions
 msgid "closeOnEsc"
 msgstr "Close on <key>ESC</key> key press"
 
-#: components/Preferences/UserDefinitions.tsx:479
+#: components/Preferences/UserDefinitions.tsx:480
 #. Used in: Components > Preferences > User Definitions
 msgid "closeOnOutsideClick"
 msgstr "Close on outside click"
 
-#: components/Preferences/UserDefinitions.tsx:875
+#: components/Preferences/UserDefinitions.tsx:876
 #. Used in: Components > Preferences > User Definitions
 msgid "specifyNetworkBadge"
 msgstr "Specify Network Badge"
 
-#: components/Preferences/UserDefinitions.tsx:882
+#: components/Preferences/UserDefinitions.tsx:883
 #. Used in: Components > Preferences > User Definitions
 msgid "useAccessibleFullDatePicker"
 msgstr "Use accessible full date picker"
 
-#: components/Preferences/UserDefinitions.tsx:889
+#: components/Preferences/UserDefinitions.tsx:890
 #. Used in: Components > Preferences > User Definitions
 msgid "useAccessibleMonthPicker"
 msgstr "Use accessible month picker"
 
-#: components/Preferences/UserDefinitions.tsx:896
+#: components/Preferences/UserDefinitions.tsx:897
 #. Used in: Components > Preferences > User Definitions
 msgid "rightAlignNumberFields"
 msgstr "Right-Justify numeric fields"
 
-#: components/Preferences/UserDefinitions.tsx:296
+#: components/Preferences/UserDefinitions.tsx:297
 #. Used in: Components > Preferences > User Definitions
 msgid "roundedCorners"
 msgstr "Rounded corners"
 
-#: components/Preferences/UserDefinitions.tsx:861
+#: components/Preferences/UserDefinitions.tsx:862
 #. Used in: Components > Preferences > User Definitions
 msgid "showSubviewBorders"
 msgstr "Show borders around subviews"
 
-#: components/Preferences/UserDefinitions.tsx:868
+#: components/Preferences/UserDefinitions.tsx:869
 #. Used in: Components > Preferences > User Definitions
 msgid "limitMaxFieldWidth"
 msgstr "Limit max field width"
 
-#: components/Preferences/UserDefinitions.tsx:1702
+#: components/Preferences/UserDefinitions.tsx:1767
 #. Used in: Components > Preferences > User Definitions
 msgid "condenseQueryResults"
 msgstr "Condense query results"
 
-#: components/Preferences/UserDefinitions.tsx:458
+#: components/Preferences/UserDefinitions.tsx:459
 #. Used in: Components > Preferences > User Definitions
 msgid "blurContentBehindDialog"
 msgstr "Blur content behind the dialog"
 
-#: components/Preferences/UserDefinitions.tsx:1312
+#: components/Preferences/UserDefinitions.tsx:1313
 #. Used in: Components > Preferences > User Definitions
 msgid "collectionSortOrderDescription"
 msgstr "This determines the visual order of collections."
 
-#: components/Preferences/UserDefinitions.tsx:1119
+#: components/Preferences/UserDefinitions.tsx:1120
 #. Used in: Components > Preferences > User Definitions
 msgid "recordSetRecordToOpen"
 msgstr "Record to open by default"
 
-#: components/Preferences/UserDefinitions.tsx:505
+#: components/Preferences/UserDefinitions.tsx:506
 #. Used in: Components > Preferences > User Definitions
 msgid "altClickToSupressNewTab"
 msgstr "<key>{altKeyName:string}</key>+<key>Click</key> to suppress new tab"
 
-#: components/Preferences/UserDefinitions.tsx:506
+#: components/Preferences/UserDefinitions.tsx:507
 #. Used in: Components > Preferences > User Definitions
 msgid "altClickToSupressNewTabDescription"
 msgstr ""
 "<key>{altKeyName:string}</key>+<key>Click</key> a link that usually opens "
 "in a new tab to open it in the current tab."
 
-#: components/Preferences/UserDefinitions.tsx:790
+#: components/Preferences/UserDefinitions.tsx:791
 #. Used in: Components > Preferences > User Definitions
 msgid "makeFormDialogsModal"
 msgstr "Make form dialogs gray out the background"
 
-#: components/Preferences/UserDefinitions.tsx:1379
+#: components/Preferences/UserDefinitions.tsx:1380
 #. Used in: Components > Preferences > User Definitions
 msgid "autoScrollTree"
 msgstr "Auto scroll tree to focused node"
 
-#: components/Preferences/UserDefinitions.tsx:1395
+#: components/Preferences/UserDefinitions.tsx:1396
 #. Used in: Components > Preferences > User Definitions
 msgid "sortByField"
 msgstr "Order By Field"
 
-#: components/Preferences/UserDefinitions.tsx:1975
+#: components/Preferences/UserDefinitions.tsx:2040
 #. Used in: Components > Preferences > User Definitions
 msgid "lineWrap"
 msgstr "Line wrap"
 
-#: components/Preferences/UserDefinitions.tsx:1982
+#: components/Preferences/UserDefinitions.tsx:2047
 #. Used in: Components > Preferences > User Definitions
 msgid "indentSize"
 msgstr "Indent size"
 
-#: components/Preferences/UserDefinitions.tsx:1994
+#: components/Preferences/UserDefinitions.tsx:2059
 #. Used in: Components > Preferences > User Definitions
 msgid "indentWithTab"
 msgstr "Indent with <key>Tab</key>"
 
-#: components/Preferences/UserDefinitions.tsx:770
+#: components/Preferences/UserDefinitions.tsx:771
 #. Used in: Components > Preferences > User Definitions
 msgid "formHeaderFormat"
 msgstr "Form header format"
 
-#: components/Preferences/UserDefinitions.tsx:777
+#: components/Preferences/UserDefinitions.tsx:778
 #. Used in: Components > Preferences > User Definitions
 msgid "iconAndTableName"
 msgstr "Icon and table name"
 
-#: components/Preferences/UserDefinitions.tsx:785
+#: components/Preferences/UserDefinitions.tsx:786
 #. Used in: Components > Preferences > User Definitions
 msgid "tableIcon"
 msgstr "Table icon"
 
-#: components/Preferences/UserDefinitions.tsx:1141
+#: components/Preferences/UserDefinitions.tsx:1142
 #. Used in: Components > Preferences > User Definitions
 msgid "maxHeight"
 msgstr "Max height"
 
-#: components/Preferences/UserDefinitions.tsx:1011
+#: components/Preferences/UserDefinitions.tsx:1012
 #. Used in: Components > Preferences > User Definitions
 msgid "autoComplete"
 msgstr "Auto complete"
 
-#: components/Preferences/UserDefinitions.tsx:1386
+#: components/Preferences/UserDefinitions.tsx:1387
 #. Used in: Components > Preferences > User Definitions
 msgid "searchCaseSensitive"
 msgstr "Case-sensitive search"
 
-#: components/Preferences/UserDefinitions.tsx:1419
+#: components/Preferences/UserDefinitions.tsx:1420
 #. Used in: Components > Preferences > User Definitions
 msgid "searchField"
 msgstr "Search Field"
 
-#: components/Preferences/UserDefinitions.tsx:630
+#: components/Preferences/UserDefinitions.tsx:631
 #. Used in: Components > Preferences > User Definitions
 msgid "createInteractions"
 msgstr "Creating an interaction"
 
-#: components/Preferences/UserDefinitions.tsx:633
+#: components/Preferences/UserDefinitions.tsx:634
 #. Used in: Components > Preferences > User Definitions
 msgid "useSpaceAsDelimiter"
 msgstr "Use space as delimiter"
 
-#: components/Preferences/UserDefinitions.tsx:654
+#: components/Preferences/UserDefinitions.tsx:655
 #. Used in: Components > Preferences > User Definitions
 msgid "useCommaAsDelimiter"
 msgstr "Use comma as delimiter"
 
-#: components/Preferences/UserDefinitions.tsx:675
+#: components/Preferences/UserDefinitions.tsx:676
 #. Used in: Components > Preferences > User Definitions
 msgid "useNewLineAsDelimiter"
 msgstr "Use new line as delimiter"
 
-#: components/Preferences/UserDefinitions.tsx:696
+#: components/Preferences/UserDefinitions.tsx:697
 #. Used in: Components > Preferences > User Definitions
 msgid "useCustomDelimiters"
 msgstr "Use custom delimiters"
 
-#: components/Preferences/UserDefinitions.tsx:697
+#: components/Preferences/UserDefinitions.tsx:698
 #. Used in: Components > Preferences > User Definitions
 msgid "useCustomDelimitersDescription"
 msgstr ""
 "A list of delimiters to use, in addition to the ones defined above. Put one "
 "delimiter per line."
 
-#: components/Preferences/UserDefinitions.tsx:641
-#: components/Preferences/UserDefinitions.tsx:662
-#: components/Preferences/UserDefinitions.tsx:683
+#: components/Preferences/UserDefinitions.tsx:642
+#: components/Preferences/UserDefinitions.tsx:663
+#: components/Preferences/UserDefinitions.tsx:684
 #. Used in: Components > Preferences > User Definitions
 msgid "detectAutomaticallyDescription"
 msgstr "Detect automatically based on catalog number format."
 
-#: components/Preferences/UserDefinitions.tsx:645
-#: components/Preferences/UserDefinitions.tsx:666
-#: components/Preferences/UserDefinitions.tsx:687
+#: components/Preferences/UserDefinitions.tsx:646
+#: components/Preferences/UserDefinitions.tsx:667
+#: components/Preferences/UserDefinitions.tsx:688
 #. 🟥Verb. Used in: Components > Preferences > User Definitions
 msgid "use"
 msgstr "Use"
 
-#: components/Preferences/UserDefinitions.tsx:649
-#: components/Preferences/UserDefinitions.tsx:670
-#: components/Preferences/UserDefinitions.tsx:691
+#: components/Preferences/UserDefinitions.tsx:650
+#: components/Preferences/UserDefinitions.tsx:671
+#: components/Preferences/UserDefinitions.tsx:692
 #. Used in: Components > Preferences > User Definitions
 msgid "dontUse"
 msgstr "Don’t use"
 
-#: components/Preferences/UserDefinitions.tsx:572
-#: components/Preferences/UserDefinitions.tsx:584
+#: components/Preferences/UserDefinitions.tsx:573
+#: components/Preferences/UserDefinitions.tsx:585
 #. Used in: Components > Preferences > User Definitions
 msgid "position"
 msgstr "Position"
 
-#: components/Preferences/UserDefinitions.tsx:578
+#: components/Preferences/UserDefinitions.tsx:579
 #. Used in: Components > Preferences > User Definitions
 msgid "top"
 msgstr "Top"
 
-#: components/Preferences/UserDefinitions.tsx:580
+#: components/Preferences/UserDefinitions.tsx:581
 #. Used in: Components > Preferences > User Definitions
 msgid "bottom"
 msgstr "Bottom"
 
-#: components/Preferences/UserDefinitions.tsx:577
+#: components/Preferences/UserDefinitions.tsx:578
 #. Used in: Components > Preferences > User Definitions
 msgid "left"
 msgstr "Left"
 
-#: components/Preferences/UserDefinitions.tsx:579
+#: components/Preferences/UserDefinitions.tsx:580
 #. Used in: Components > Preferences > User Definitions
 msgid "right"
 msgstr "Right"
 
-#: components/Preferences/UserDefinitions.tsx:515
+#: components/Preferences/UserDefinitions.tsx:516
 #. Used in: Components > Preferences > User Definitions
 msgid "showUnsavedIndicator"
 msgstr "Show unsaved changes indicator"
 
-#: components/Preferences/UserDefinitions.tsx:516
+#: components/Preferences/UserDefinitions.tsx:517
 #. Used in: Components > Preferences > User Definitions
 msgid "showUnsavedIndicatorDescription"
 msgstr ""
 "Show an \"*\" in the tab title when there are unsaved changes in the "
 "current tab."
 
-#: components/Preferences/UserDefinitions.tsx:1727
+#: components/Preferences/UserDefinitions.tsx:1792
 #. Used in: Components > Preferences > User Definitions
 msgid "autoPopulateDescription"
 msgstr ""
 "Auto populate the merged record with values from duplicates when opening "
 "the merging dialog."
 
-#: components/Preferences/UserDefinitions.tsx:1740
+#: components/Preferences/UserDefinitions.tsx:1805
 #. Used in: Components > Preferences > User Definitions
 msgid "autoCreateVariants"
 msgstr "Automatically create {agentVariantTable:string} records"
 
-#: components/Preferences/UserDefinitions.tsx:1744
+#: components/Preferences/UserDefinitions.tsx:1809
 #. Used in: Components > Preferences > User Definitions
 msgid "autoCreateVariantsDescription"
 msgstr ""
@@ -987,41 +1010,44 @@ msgstr ""
 "records based on the variations of first name/last name."
 
 #: components/AppResources/types.tsx:111
-#. Used in: Components > App Resources > Types
+#: components/Header/userToolDefinitions.ts:61
+#: components/Preferences/index.tsx:102
+#: components/Router/Routes.tsx:381
+#. Used in: Components > App Resources > Types ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 msgid "collectionPreferences"
 msgstr "Collection Preferences"
 
-#: components/Preferences/UserDefinitions.tsx:493
+#: components/Preferences/UserDefinitions.tsx:494
 #. Used in: Components > Preferences > User Definitions
 msgid "rememberDialogSizes"
 msgstr "Remember dialog window sizes"
 
-#: components/Preferences/UserDefinitions.tsx:486
+#: components/Preferences/UserDefinitions.tsx:487
 #. Used in: Components > Preferences > User Definitions
 msgid "rememberDialogPositions"
 msgstr "Remember dialog window positions"
 
-#: components/Preferences/UserDefinitions.tsx:1330
+#: components/Preferences/UserDefinitions.tsx:1331
 #. Used in: Components > Preferences > User Definitions
 msgid "autoPlayMedia"
 msgstr "Automatically play media"
 
-#: components/Preferences/UserDefinitions.tsx:228
+#: components/Preferences/UserDefinitions.tsx:229
 #. Used in: Components > Preferences > User Definitions
 msgid "useCustomTooltips"
 msgstr "Use modern tooltips"
 
-#: components/Preferences/UserDefinitions.tsx:1107
+#: components/Preferences/UserDefinitions.tsx:1108
 #. Used in: Components > Preferences > User Definitions
 msgid "alwaysUseQueryBuilder"
 msgstr "Always use query builder search inside of search form"
 
-#: components/Preferences/UserDefinitions.tsx:1963
+#: components/Preferences/UserDefinitions.tsx:2028
 #. Used in: Components > Preferences > User Definitions
 msgid "localizeResourceNames"
 msgstr "Localize the names of recognized app resources"
 
-#: components/Preferences/UserDefinitions.tsx:2001
+#: components/Preferences/UserDefinitions.tsx:2066
 #. Used in: Components > Preferences > User Definitions
 msgid "splitLongXml"
 msgstr "Split long lines of XML into multiple lines"
@@ -1046,87 +1072,87 @@ msgstr "The attachment failed to load."
 msgid "pickImage"
 msgstr "Pick an image"
 
-#: components/Preferences/UserDefinitions.tsx:595
+#: components/Preferences/UserDefinitions.tsx:596
 #. Used in: Components > Preferences > User Definitions
 msgid "customLogo"
 msgstr "Expanded Image URL"
 
-#: components/Preferences/UserDefinitions.tsx:603
+#: components/Preferences/UserDefinitions.tsx:604
 #. Used in: Components > Preferences > User Definitions
 msgid "customLogoCollapsed"
 msgstr "Collapsed Image URL"
 
-#: components/Preferences/UserDefinitions.tsx:600
+#: components/Preferences/UserDefinitions.tsx:601
 #. Used in: Components > Preferences > User Definitions
 msgid "customLogoDescription"
 msgstr ""
 "A URL to an image that would be displayed next to the Specify logo in the "
 "navigation menu."
 
-#: components/Preferences/UserDefinitions.tsx:1709
+#: components/Preferences/UserDefinitions.tsx:1774
 #. Used in: Components > Preferences > User Definitions
 msgid "showLineNumber"
 msgstr "Show query result line number"
 
-#: components/Preferences/UserDefinitions.tsx:308
-#: components/Preferences/UserDefinitions.tsx:369
+#: components/Preferences/UserDefinitions.tsx:309
+#: components/Preferences/UserDefinitions.tsx:370
 #. Used in: Components > Preferences > User Definitions
 msgid "saveButtonColor"
 msgstr "Save button color"
 
-#: components/Preferences/UserDefinitions.tsx:348
-#: components/Preferences/UserDefinitions.tsx:409
+#: components/Preferences/UserDefinitions.tsx:349
+#: components/Preferences/UserDefinitions.tsx:410
 #. Used in: Components > Preferences > User Definitions
 msgid "secondaryButtonColor"
 msgstr "Secondary button color"
 
-#: components/Preferences/UserDefinitions.tsx:356
-#: components/Preferences/UserDefinitions.tsx:417
+#: components/Preferences/UserDefinitions.tsx:357
+#: components/Preferences/UserDefinitions.tsx:418
 #. Used in: Components > Preferences > User Definitions
 msgid "secondaryLightButtonColor"
 msgstr "Secondary light button color"
 
-#: components/Preferences/UserDefinitions.tsx:316
-#: components/Preferences/UserDefinitions.tsx:377
+#: components/Preferences/UserDefinitions.tsx:317
+#: components/Preferences/UserDefinitions.tsx:378
 #. Used in: Components > Preferences > User Definitions
 msgid "dangerButtonColor"
 msgstr "Danger button color"
 
-#: components/Preferences/UserDefinitions.tsx:332
-#: components/Preferences/UserDefinitions.tsx:393
+#: components/Preferences/UserDefinitions.tsx:333
+#: components/Preferences/UserDefinitions.tsx:394
 #. Used in: Components > Preferences > User Definitions
 msgid "infoButtonColor"
 msgstr "Info button color"
 
-#: components/Preferences/UserDefinitions.tsx:324
-#: components/Preferences/UserDefinitions.tsx:385
+#: components/Preferences/UserDefinitions.tsx:325
+#: components/Preferences/UserDefinitions.tsx:386
 #. Used in: Components > Preferences > User Definitions
 msgid "warningButtonColor"
 msgstr "Warning button color"
 
-#: components/Preferences/UserDefinitions.tsx:340
-#: components/Preferences/UserDefinitions.tsx:401
+#: components/Preferences/UserDefinitions.tsx:341
+#: components/Preferences/UserDefinitions.tsx:402
 #. Used in: Components > Preferences > User Definitions
 msgid "successButtonColor"
 msgstr "Success button color"
 
-#: components/Preferences/UserDefinitions.tsx:797
+#: components/Preferences/UserDefinitions.tsx:798
 #. Used in: Components > Preferences > User Definitions
 msgid "openAsReadOnly"
 msgstr "Open all records in read-only mode"
 
-#: components/Preferences/CollectionDefinitions.tsx:78
-#: components/Preferences/UserDefinitions.tsx:1682
+#: components/Preferences/CollectionDefinitions.tsx:231
+#: components/Preferences/UserDefinitions.tsx:1747
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 msgid "displayBasicView"
 msgstr "Display basic view"
 
-#: components/Preferences/UserDefinitions.tsx:1689
+#: components/Preferences/UserDefinitions.tsx:1754
 #. Used in: Components > Preferences > User Definitions
 msgid "showComparisonOperatorsForString"
 msgstr "Show comparison operators for text-based fields"
 
-#: components/Preferences/UserDefinitions.tsx:1690
+#: components/Preferences/UserDefinitions.tsx:1755
 #. Used in: Components > Preferences > User Definitions
 msgid "showComparisonOperatorsDescription"
 msgstr ""
@@ -1145,37 +1171,63 @@ msgstr "Basic view"
 msgid "detailedView"
 msgstr "Detailed view"
 
-#: components/Preferences/UserDefinitions.tsx:1337
+#: components/Preferences/UserDefinitions.tsx:1338
 #. Used in: Components > Preferences > User Definitions
 msgid "attachmentPreviewMode"
 msgstr "Attachment preview mode"
 
-#: components/Preferences/UserDefinitions.tsx:1344
+#: components/Preferences/UserDefinitions.tsx:1345
 #. Used in: Components > Preferences > User Definitions
 msgid "fullResolution"
 msgstr "Full Resolution"
 
-#: components/Preferences/UserDefinitions.tsx:1348
+#: components/Preferences/UserDefinitions.tsx:1349
 #. Used in: Components > Preferences > User Definitions
 msgid "thumbnail"
 msgstr "Thumbnail"
 
-#: components/Preferences/UserDefinitions.tsx:533
+#: components/Preferences/UserDefinitions.tsx:534
 #. Used in: Components > Preferences > User Definitions
 msgid "addSearchBarHomePage"
 msgstr "Add Search Bar on home page"
 
-#: components/Preferences/CollectionDefinitions.tsx:99
+#: components/Preferences/CollectionDefinitions.tsx:178
+#. Used in: Components > Preferences > Collection Definitions
+msgid "inheritanceCatNumberPrefDescription"
+msgstr ""
+"Control whether collection objects inherit the catalog number from the "
+"primary collection object."
+
+#: components/Preferences/CollectionDefinitions.tsx:176
 #. Used in: Components > Preferences > Collection Definitions
 msgid "inheritanceCatNumberPref"
 msgstr "Enable the inheritance of the primary catalog number to its empty siblings."
 
-#: components/Preferences/CollectionDefinitions.tsx:118
+#: components/Preferences/CollectionDefinitions.tsx:195
 #. Used in: Components > Preferences > Collection Definitions
 msgid "inheritanceCatNumberParentCOPref"
 msgstr "Enable the inheritance of the parent catalog number to its empty children."
 
-#: components/Preferences/CollectionDefinitions.tsx:137
+#: components/Preferences/CollectionDefinitions.tsx:214
 #. Used in: Components > Preferences > Collection Definitions
 msgid "uniqueCatNumberAcrossCompAndCo"
 msgstr "Catalog Number field need to be unique across Component and CO tables"
+
+#: components/Preferences/CollectionDefinitions.tsx:30
+#. Used in: Components > Preferences > Collection Definitions
+msgid "scopeEntireTablePicklists"
+msgstr "Scope \"Entire Table\" Picklists"
+
+#: components/Preferences/CollectionDefinitions.tsx:31
+#. Used in: Components > Preferences > Collection Definitions
+msgid "scopeEntireTablePicklistsDescription"
+msgstr ""
+"If enabled, picklists of type \"Entire Table\" will only show items that "
+"are in use within the current collection."
+
+#: components/Preferences/CollectionDefinitions.tsx:197
+#. Used in: Components > Preferences > Collection Definitions
+msgid "inheritanceCatNumberParentCOPrefDescription"
+msgstr ""
+"Controls whether collection objects inherit the catalog number from the "
+"parent collection object."

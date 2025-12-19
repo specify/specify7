@@ -36,13 +36,13 @@ msgstr "Текущая {collectionTable:string}"
 msgid "dataEntry"
 msgstr "Ввод данных"
 
-#: components/Header/userToolDefinitions.ts:105
+#: components/Header/userToolDefinitions.ts:112
 #: components/Router/OverlayRoutes.tsx:190
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "makeDwca"
 msgstr "Создать архив DwC"
 
-#: components/Header/userToolDefinitions.ts:97
+#: components/Header/userToolDefinitions.ts:104
 #: components/Router/OverlayRoutes.tsx:182
 #: components/Router/OverlayRoutes.tsx:262
 #: components/Toolbar/BackupDatabase.tsx:84
@@ -51,7 +51,7 @@ msgstr "Создать архив DwC"
 msgid "backupDatabase"
 msgstr "Резервное копирование базы данных"
 
-#: components/Header/userToolDefinitions.ts:111
+#: components/Header/userToolDefinitions.ts:118
 #: components/Router/OverlayRoutes.tsx:198
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "updateExportFeed"
@@ -89,7 +89,7 @@ msgstr "Начат экспорт DwCA"
 msgid "dwcaExportStartedDescription"
 msgstr "Экспорт запущен. Вы получите уведомление, когда экспорт будет завершен."
 
-#: components/Header/userToolDefinitions.ts:119
+#: components/Header/userToolDefinitions.ts:126
 #: components/LocalityUpdate/index.tsx:83
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Locality Update > Index
 #, fuzzy
@@ -116,7 +116,7 @@ msgstr "Создать новый ярлык"
 msgid "createReport"
 msgstr "Создать новый отчет"
 
-#: components/Header/userToolDefinitions.ts:83
+#: components/Header/userToolDefinitions.ts:90
 #: components/Router/OverlayRoutes.tsx:166
 #: components/Toolbar/TreeRepair.tsx:173
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
@@ -176,14 +176,14 @@ msgstr "Основной поиск"
 msgid "secondarySearch"
 msgstr "Вторичный поиск"
 
-#: components/Preferences/Renderers.tsx:123
+#: components/Preferences/Renderers.tsx:127
 #. Used in: Components > Preferences > Renderers
 msgid "menuItems"
 msgstr "Элементы меню"
 
 #: components/Header/UserTools.tsx:48
 #: components/Header/UserTools.tsx:79
-#: components/Preferences/Renderers.tsx:121
+#: components/Preferences/Renderers.tsx:125
 #: components/Router/OverlayRoutes.tsx:43
 #. Used in: Components > Header > User Tools ⬤ Components > Preferences > Renderers ⬤ Components > Router > Overlay Routes
 msgid "userTools"
@@ -226,45 +226,47 @@ msgstr ""
 "отсутствовать локализация или они имеют неправильную локализацию. Если вы "
 "хотите помочь нам завершить локализацию, <link>следуйте инструкциям.</link>"
 
-#: components/Header/userToolDefinitions.ts:154
+#: components/Header/userToolDefinitions.ts:161
 #. Used in: Components > Header > User Tool Definitions
 msgid "tableApi"
 msgstr "API таблиц"
 
-#: components/Header/userToolDefinitions.ts:159
+#: components/Header/userToolDefinitions.ts:166
 #. Used in: Components > Header > User Tool Definitions
 msgid "operationsApi"
 msgstr "Операционный API"
 
 #: components/AppResources/Create.tsx:97
 #: components/AppResources/Create.tsx:133
-#: components/AppResources/Filters.tsx:154
+#: components/AppResources/Filters.tsx:171
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:235
-#: components/Header/userToolDefinitions.ts:125
-#: components/Preferences/UserDefinitions.tsx:543
+#: components/Header/userToolDefinitions.ts:132
+#: components/Preferences/UserDefinitions.tsx:544
+#: components/Preferences/index.tsx:65
+#: components/Preferences/index.tsx:71
 #: components/Toolbar/WbsDialog.tsx:227
-#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Toolbar > Wbs Dialog
+#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Preferences > Index ⬤ Components > Toolbar > Wbs Dialog
 msgid "documentation"
 msgstr "Документация"
 
-#: components/Header/userToolDefinitions.ts:66
+#: components/Header/userToolDefinitions.ts:73
 #. Used in: Components > Header > User Tool Definitions
 msgid "administration"
 msgstr "Инструменты управления"
 
-#: components/Header/userToolDefinitions.ts:142
+#: components/Header/userToolDefinitions.ts:149
 #. Used in: Components > Header > User Tool Definitions
 msgid "developers"
 msgstr "Ресурсы для разработчиков"
 
-#: components/Header/userToolDefinitions.ts:132
+#: components/Header/userToolDefinitions.ts:139
 #. Used in: Components > Header > User Tool Definitions
 msgid "forum"
 msgstr "форум сообщества"
 
 #: components/Errors/ErrorDialog.tsx:152
-#: components/Header/userToolDefinitions.ts:149
-#: components/Router/Routes.tsx:443
+#: components/Header/userToolDefinitions.ts:156
+#: components/Router/Routes.tsx:451
 #: components/RouterCommands/CacheBuster.tsx:39
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 msgid "clearCache"
@@ -275,7 +277,7 @@ msgstr "Очистить кеш браузера"
 msgid "cacheCleared"
 msgstr "Кэш очищен. Пожалуйста, перезагрузите страницу."
 
-#: components/Header/userToolDefinitions.ts:137
+#: components/Header/userToolDefinitions.ts:144
 #. Used in: Components > Header > User Tool Definitions
 msgid "technicalDocumentation"
 msgstr "Документация"

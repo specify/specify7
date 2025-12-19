@@ -121,7 +121,7 @@ msgstr ""
 "«Вказати», ви можете ввести їх нижче, щоб пов’язати цього користувача з "
 "вашим обліковим записом {providerName:string} для майбутніх входів."
 
-#: components/Header/userToolDefinitions.ts:92
+#: components/Header/userToolDefinitions.ts:99
 #: components/Router/OverlayRoutes.tsx:174
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
@@ -304,7 +304,7 @@ msgstr "Колекції"
 msgid "configureCollectionAccess"
 msgstr "Виберіть доступ до колекції користувачів"
 
-#: components/Header/userToolDefinitions.ts:78
+#: components/Header/userToolDefinitions.ts:85
 #: components/Router/Routes.tsx:73
 #: components/Toolbar/Security.tsx:102
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security

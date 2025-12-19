@@ -12,13 +12,13 @@ msgstr ""
 "X-Generator: Weblate 5.14-dev\n"
 
 #: components/HomePage/index.tsx:65
-#: components/Router/Routes.tsx:472
+#: components/Router/Routes.tsx:480
 #. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #, fuzzy
 msgid "pageTitle"
 msgstr "Bem-vindo"
 
-#: components/Header/userToolDefinitions.ts:127
+#: components/Header/userToolDefinitions.ts:134
 #: components/HomePage/AboutSpecify.tsx:68
 #: components/Router/OverlayRoutes.tsx:206
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
@@ -33,7 +33,7 @@ msgid "downloadInformation"
 msgstr "Informações para download"
 
 #: components/HomePage/TaxonTiles.tsx:80
-#: components/Preferences/Renderers.tsx:246
+#: components/Preferences/Renderers.tsx:250
 #. Used in: Components > Home Page > Taxon Tiles ⬤ Components > Preferences > Renderers
 #, fuzzy
 msgid "taxonTiles"

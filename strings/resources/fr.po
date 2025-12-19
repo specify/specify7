@@ -11,10 +11,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.15-dev\n"
 
-#: components/AppResources/Filters.tsx:70
-#: components/AppResources/Filters.tsx:117
-#: components/Header/userToolDefinitions.ts:68
-#: components/Preferences/UserDefinitions.tsx:1957
+#: components/AppResources/Filters.tsx:87
+#: components/AppResources/Filters.tsx:134
+#: components/Header/userToolDefinitions.ts:75
+#: components/Preferences/UserDefinitions.tsx:2022
 #: components/Router/Routes.tsx:251
 #: components/Security/registry.ts:218
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
@@ -25,15 +25,15 @@ msgstr "Ressources de l'application"
 #: components/AppResources/Create.tsx:288
 #: components/FormMeta/Definition.tsx:31
 #: components/FormMeta/Definition.tsx:74
-#: components/Preferences/UserDefinitions.tsx:806
+#: components/Preferences/UserDefinitions.tsx:807
 #. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "formDefinition"
 msgstr "Définition de la forme"
 
 #: components/AppResources/EditorComponents.tsx:51
-#: components/AppResources/Filters.tsx:58
-#: components/AppResources/Filters.tsx:101
+#: components/AppResources/Filters.tsx:73
+#: components/AppResources/Filters.tsx:118
 #: components/AppResources/types.tsx:35
 #. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 #, fuzzy
@@ -274,15 +274,15 @@ msgstr "Autres ressources immobilières"
 msgid "otherAppResource"
 msgstr "Autres ressources"
 
-#: components/AppResources/Filters.tsx:48
+#: components/AppResources/Filters.tsx:63
 #. Used in: Components > App Resources > Filters
 #, fuzzy
 msgid "filters"
 msgstr "Filtres"
 
-#: components/AppResources/Filters.tsx:73
-#: components/AppResources/Filters.tsx:74
-#: components/AppResources/Filters.tsx:83
+#: components/AppResources/Filters.tsx:90
+#: components/AppResources/Filters.tsx:91
+#: components/AppResources/Filters.tsx:100
 #. Used in: Components > App Resources > Filters
 #, fuzzy
 msgid "custom"
@@ -349,7 +349,8 @@ msgstr "Échec de l'analyse du XML"
 
 #: components/Formatters/Element.tsx:102
 #: components/QueryBuilder/FieldFilterSpec.tsx:554
-#. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter Spec
+#: components/Statistics/StatsPageEditing.tsx:61
+#. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter Spec ⬤ Components > Statistics > Stats Page Editing
 #, fuzzy
 msgid "name"
 msgstr "Nom"
@@ -630,7 +631,7 @@ msgid "cogAddedToItself"
 msgstr "Un centre de gravité ne peut pas être ajouté à lui-même."
 
 #: components/DataModel/businessRuleDefs.ts:269
-#: components/DataModel/__tests__/businessRules.test.ts:393
+#: components/DataModel/__tests__/businessRules.test.ts:416
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #, fuzzy
 msgid "primaryCogChildRequired"
@@ -675,7 +676,7 @@ msgid "deleteExchangeInPrep"
 msgstr "Un échange en cours de préparation ne peut pas être supprimé."
 
 #: components/DataModel/businessRuleDefs.ts:196
-#: components/DataModel/__tests__/businessRules.test.ts:164
+#: components/DataModel/__tests__/businessRules.test.ts:182
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #, fuzzy
 msgid "invalidDeterminationTaxon"

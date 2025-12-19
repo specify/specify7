@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.15-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:708
+#: components/Preferences/UserDefinitions.tsx:709
 #. Used in: Components > Preferences > User Definitions
 msgid "forms"
 msgstr "Формы"
@@ -193,7 +193,7 @@ msgstr "Неверный тип"
 msgid "invalidNumericPicklistValue"
 msgstr "В этом {pickListTable:string} поддерживаются только числовые значения."
 
-#: components/Attachments/Plugin.tsx:115
+#: components/Attachments/Plugin.tsx:116
 #: components/FormCells/FormTable.tsx:276
 #: components/FormCells/FormTable.tsx:610
 #: components/Forms/BaseResourceView.tsx:106
@@ -220,7 +220,7 @@ msgstr "Сначала сохраните запись"
 
 #: components/FormSliders/Slider.tsx:32
 #: components/FormSliders/Slider.tsx:34
-#: components/Preferences/UserDefinitions.tsx:1127
+#: components/Preferences/UserDefinitions.tsx:1128
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "firstRecord"
@@ -228,7 +228,7 @@ msgstr "Первая запись"
 
 #: components/FormSliders/Slider.tsx:96
 #: components/FormSliders/Slider.tsx:98
-#: components/Preferences/UserDefinitions.tsx:1131
+#: components/Preferences/UserDefinitions.tsx:1132
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "lastRecord"
@@ -783,7 +783,7 @@ msgid "subForm"
 msgstr "Подчиненная форма"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/Preferences/UserDefinitions.tsx:1138
+#: components/Preferences/UserDefinitions.tsx:1139
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "formTable"

@@ -12,14 +12,14 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.14-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:2085
+#: components/Preferences/UserDefinitions.tsx:2150
 #: components/QueryBuilder/Header.tsx:97
 #: components/QueryBuilder/Toolbar.tsx:75
 #: components/Reports/RecordSets.tsx:95
 #: components/Toolbar/RecordSetEdit.tsx:52
-#: components/TreeView/Actions.tsx:93
-#: components/TreeView/Actions.tsx:104
-#: components/TreeView/Actions.tsx:110
+#: components/TreeView/Actions.tsx:95
+#: components/TreeView/Actions.tsx:106
+#: components/TreeView/Actions.tsx:112
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 msgid "query"
 msgstr "Запит"
@@ -33,8 +33,8 @@ msgstr "Запит"
 msgid "queries"
 msgstr "Запити"
 
-#: components/Preferences/CollectionDefinitions.tsx:72
-#: components/Preferences/UserDefinitions.tsx:1594
+#: components/Preferences/CollectionDefinitions.tsx:225
+#: components/Preferences/UserDefinitions.tsx:1659
 #: components/SearchDialog/index.tsx:242
 #: components/SearchDialog/index.tsx:386
 #: components/Security/registry.ts:210
@@ -344,7 +344,7 @@ msgstr "в"
 msgid "inDescription"
 msgstr "Список значень, розділених комами"
 
-#: components/Preferences/UserDefinitions.tsx:1448
+#: components/Preferences/UserDefinitions.tsx:1449
 #: components/QueryBuilder/FieldFilterSpec.tsx:509
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 msgid "contains"
@@ -360,7 +360,7 @@ msgstr "Порожній"
 msgid "and"
 msgstr "і"
 
-#: components/Preferences/UserDefinitions.tsx:1444
+#: components/Preferences/UserDefinitions.tsx:1445
 #: components/QueryBuilder/FieldFilterSpec.tsx:517
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 msgid "startsWith"
@@ -553,20 +553,20 @@ msgstr "Суворий"
 msgid "nonStrict"
 msgstr "Не суворий"
 
-#: components/Preferences/CollectionDefinitions.tsx:93
+#: components/Preferences/CollectionDefinitions.tsx:170
 #. Used in: Components > Preferences > Collection Definitions
-msgid "catalogNumberInheritance"
-msgstr "Успадкування каталожних номерів"
+msgid "primaryCatalogNumberInheritance"
+msgstr ""
 
-#: components/Preferences/CollectionDefinitions.tsx:112
+#: components/Preferences/CollectionDefinitions.tsx:189
 #. Used in: Components > Preferences > Collection Definitions
-msgid "catalogNumberParentCOInheritance"
-msgstr "Успадкування батьківського об'єкта колекції за номером каталогу"
+msgid "parentCatalogNumberInheritance"
+msgstr ""
 
-#: components/Preferences/CollectionDefinitions.tsx:131
+#: components/Preferences/CollectionDefinitions.tsx:208
 #. Used in: Components > Preferences > Collection Definitions
-msgid "uniqueCatalogNumberAcrossComponentAndCo"
-msgstr "Унікальність каталожних номерів у таблицях компонентів та CO"
+msgid "uniqueCatalogNumberAcrossComponentAndCoTitle"
+msgstr ""
 
 #: components/QueryBuilder/Formatter.tsx:127
 #. 🟥Used to indicate a text field will be formatted with a specific format. If a format can be identified/named in more than one way, names can be displayed in a comma-separated format Example: Format As: Ichthyology Example: Format As: Rock, Mineral. Used in: Components > Query Builder > Formatter

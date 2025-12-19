@@ -128,7 +128,7 @@ msgstr ""
 "passe, vous pouvez les saisir ci-dessous pour associer cet utilisateur à "
 "votre compte {providerName:string} lors de vos prochaines connexions."
 
-#: components/Header/userToolDefinitions.ts:92
+#: components/Header/userToolDefinitions.ts:99
 #: components/Router/OverlayRoutes.tsx:174
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
@@ -335,7 +335,7 @@ msgstr "Collections"
 msgid "configureCollectionAccess"
 msgstr "Sélectionner l'accès à la collection utilisateur"
 
-#: components/Header/userToolDefinitions.ts:78
+#: components/Header/userToolDefinitions.ts:85
 #: components/Router/Routes.tsx:73
 #: components/Toolbar/Security.tsx:102
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security

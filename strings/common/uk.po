@@ -17,7 +17,7 @@ msgstr ""
 msgid "specifySeven"
 msgstr "Вкажіть 7"
 
-#: components/Preferences/UserDefinitions.tsx:1876
+#: components/Preferences/UserDefinitions.tsx:1941
 #: components/WorkBench/DataSetMeta.tsx:294
 #: utils/parser/definitions.ts:122
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
@@ -83,8 +83,8 @@ msgstr "Немає"
 #: components/Toolbar/RecordSets.tsx:257
 #: components/Toolbar/TreeRepair.tsx:97
 #: components/Toolbar/WbsDialog.tsx:191
-#: components/TreeView/Actions.tsx:401
-#: components/TreeView/Actions.tsx:417
+#: components/TreeView/Actions.tsx:403
+#: components/TreeView/Actions.tsx:419
 #: components/TreeView/AddRank.tsx:54
 #: components/TreeView/CreateTree.tsx:74
 #: components/WbActions/WbRevert.tsx:39
@@ -129,7 +129,7 @@ msgstr "Створити"
 
 #: components/AppResources/DialogEditor.tsx:54
 #: components/AppResources/EditorComponents.tsx:90
-#: components/AppResources/Filters.tsx:82
+#: components/AppResources/Filters.tsx:99
 #: components/Atoms/__tests__/Link.test.ts:6
 #: components/Atoms/__tests__/Link.test.ts:7
 #: components/Atoms/__tests__/Link.test.ts:21
@@ -161,9 +161,9 @@ msgstr "Створити"
 #: components/AttachmentsBulkImport/Import.tsx:415
 #: components/AttachmentsBulkImport/Rollback.tsx:115
 #: components/AttachmentsBulkImport/Rollback.tsx:142
-#: components/AttachmentsBulkImport/Upload.tsx:234
-#: components/AttachmentsBulkImport/Upload.tsx:248
-#: components/AttachmentsBulkImport/Upload.tsx:263
+#: components/AttachmentsBulkImport/Upload.tsx:235
+#: components/AttachmentsBulkImport/Upload.tsx:249
+#: components/AttachmentsBulkImport/Upload.tsx:264
 #: components/BatchEdit/MissingRanks.tsx:42
 #: components/BatchEdit/QueryError.tsx:23
 #: components/BatchEdit/index.tsx:206
@@ -230,7 +230,7 @@ msgstr "Створити"
 #: components/Molecules/SyncAttachmentPicker.tsx:101
 #: components/Notifications/Notifications.tsx:89
 #: components/PickLists/index.tsx:257
-#: components/Preferences/index.tsx:103
+#: components/Preferences/index.tsx:157
 #: components/QueryBuilder/CheckReadAccess.tsx:42
 #: components/QueryBuilder/Components.tsx:288
 #: components/QueryBuilder/Edit.tsx:144
@@ -260,7 +260,7 @@ msgstr "Створити"
 #: components/SpecifyNetwork/index.tsx:80
 #: components/Statistics/AddStatDialog.tsx:75
 #: components/Statistics/ResultsDialog.tsx:74
-#: components/Statistics/StatsPageEditing.tsx:42
+#: components/Statistics/StatsPageEditing.tsx:43
 #: components/Toolbar/BackupDatabase.tsx:81
 #: components/Toolbar/BackupStatus.tsx:76
 #: components/Toolbar/BackupStatus.tsx:79
@@ -269,7 +269,7 @@ msgstr "Створити"
 #: components/Toolbar/QueryTablesEdit.tsx:73
 #: components/Toolbar/QueryTablesWrapper.tsx:156
 #: components/Toolbar/TreeRepair.tsx:97
-#: components/TreeView/Actions.tsx:405
+#: components/TreeView/Actions.tsx:407
 #: components/WbActions/WbNoUploadPlan.tsx:43
 #: components/WbActions/index.tsx:212
 #: components/WbActions/index.tsx:223
@@ -325,7 +325,7 @@ msgstr "Видалити незіставлені стовпці"
 #: components/AttachmentsBulkImport/Datasets.tsx:266
 #: components/AttachmentsBulkImport/Import.tsx:298
 #: components/Forms/Save.tsx:55
-#: components/Preferences/index.tsx:100
+#: components/Preferences/index.tsx:154
 #: components/QueryBuilder/FromMap.tsx:74
 #: components/QueryBuilder/Save.tsx:67
 #: components/Reports/Report.tsx:313
@@ -335,7 +335,7 @@ msgstr "Видалити незіставлені стовпці"
 #: components/Security/Role.tsx:213
 #: components/Security/UserCollections.tsx:72
 #: components/Statistics/ResultsDialog.tsx:84
-#: components/Statistics/StatsPageEditing.tsx:46
+#: components/Statistics/StatsPageEditing.tsx:47
 #: components/Statistics/index.tsx:594
 #: components/WbActions/WbSave.tsx:66
 #: components/WbPlanView/Mapper.tsx:479
@@ -365,7 +365,7 @@ msgstr "зберегти"
 #: components/Security/CollectionRole.tsx:207
 #: components/Security/Policies.tsx:184
 #: components/Statistics/Categories.tsx:285
-#: components/Statistics/StatsPageEditing.tsx:47
+#: components/Statistics/StatsPageEditing.tsx:48
 #: components/Statistics/index.tsx:636
 #: components/Toolbar/ListEdit.tsx:144
 #: components/WbPlanView/navigator.ts:350
@@ -392,7 +392,7 @@ msgstr "ВІДЧИНЕНО"
 #: components/Security/PreviewTables.tsx:68
 #: components/Security/Role.tsx:223
 #: components/Statistics/DeleteCategory.tsx:38
-#: components/TreeView/Actions.tsx:506
+#: components/TreeView/Actions.tsx:508
 #: components/WorkBench/DataSetMeta.tsx:159
 #: components/WorkBench/DataSetMeta.tsx:185
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > Element ⬤ Components > Forms > Delete Button ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Statistics > Delete Category ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta
@@ -456,7 +456,7 @@ msgstr "Інструменти"
 #: components/Molecules/index.tsx:24
 #: components/Permissions/FormatError.tsx:147
 #: components/Permissions/FormatError.tsx:174
-#: components/Preferences/Renderers.tsx:114
+#: components/Preferences/Renderers.tsx:118
 #: components/QueryBuilder/Formatter.tsx:178
 #: components/QueryBuilder/QueryLineFilter.tsx:75
 #: components/QueryBuilder/Results.tsx:199
@@ -493,7 +493,7 @@ msgstr "Інструменти"
 msgid "loading"
 msgstr "Завантажуємо…"
 
-#: components/AttachmentsBulkImport/Upload.tsx:270
+#: components/AttachmentsBulkImport/Upload.tsx:271
 #: components/AttachmentsBulkImport/utils.ts:457
 #: components/WorkBench/DataSetMeta.tsx:301
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Work Bench > Data Set Meta
@@ -519,7 +519,7 @@ msgstr "Завантажено"
 #: components/Security/Policy.tsx:94
 #: components/Security/Policy.tsx:96
 #: components/Security/Role.tsx:182
-#: components/Statistics/StatsPageEditing.tsx:37
+#: components/Statistics/StatsPageEditing.tsx:38
 #: components/Statistics/StatsResult.tsx:62
 #: components/Toolbar/ListEdit.tsx:150
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Field Formatters > Parts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Formatters > Fields ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Field Filter Tool ⬤ Components > Query Builder > Line ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Policy ⬤ Components > Security > Role ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > List Edit
@@ -596,7 +596,7 @@ msgstr "новий"
 #: components/Toolbar/RecordSets.tsx:323
 #: components/Toolbar/WbsDialog.tsx:272
 #: components/Toolbar/WbsDialog.tsx:276
-#: components/TreeView/Actions.tsx:121
+#: components/TreeView/Actions.tsx:123
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Form Editor > Create ⬤ Components > Form Meta > Index ⬤ Components > Forms > Resource View ⬤ Components > Molecules > Resource Link ⬤ Components > Reports > Index ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Table ⬤ Components > Security > User Components ⬤ Components > Statistics > Buttons ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions
 msgid "edit"
 msgstr "Редагувати"
@@ -651,7 +651,7 @@ msgstr "Розгорнути все"
 #: components/Atoms/__tests__/index.test.tsx:14
 #: components/Atoms/__tests__/index.test.tsx:15
 #: components/Molecules/ResourceLink.tsx:70
-#: components/TreeView/Actions.tsx:121
+#: components/TreeView/Actions.tsx:123
 #. 🟥Verb. Used in: Components > Atoms > Data Entry ⬤ Atoms > __tests__ > Button ⬤ Atoms > __tests__ > Index ⬤ Components > Molecules > Resource Link ⬤ Components > Tree View > Actions
 msgid "view"
 msgstr "Переглянути"
@@ -693,7 +693,7 @@ msgstr "Дії"
 #: components/ChooseCollection/index.tsx:138
 #: components/Header/ChooseCollection.tsx:27
 #: components/Header/index.tsx:94
-#: components/Preferences/UserDefinitions.tsx:1296
+#: components/Preferences/UserDefinitions.tsx:1297
 #: components/Router/EntrypointRouter.tsx:32
 #: components/Router/OverlayRoutes.tsx:63
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > Choose Collection ⬤ Components > Header > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Entrypoint Router ⬤ Components > Router > Overlay Routes
@@ -701,13 +701,13 @@ msgid "chooseCollection"
 msgstr "Виберіть колекцію"
 
 #: components/Molecules/Sorting.tsx:30
-#: components/Preferences/Renderers.tsx:159
+#: components/Preferences/Renderers.tsx:163
 #. 🟥As in "Ascending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers
 msgid "ascending"
 msgstr "Висхідний"
 
 #: components/Molecules/Sorting.tsx:31
-#: components/Preferences/Renderers.tsx:174
+#: components/Preferences/Renderers.tsx:178
 #. 🟥As in "Descending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers
 msgid "descending"
 msgstr "Спускається"
@@ -761,8 +761,8 @@ msgstr "Невідомий"
 
 #: components/ExportFeed/Editor.tsx:74
 #: components/Login/index.tsx:144
-#: components/Preferences/UserDefinitions.tsx:88
-#: components/Preferences/UserDefinitions.tsx:727
+#: components/Preferences/UserDefinitions.tsx:89
+#: components/Preferences/UserDefinitions.tsx:728
 #: components/SchemaConfig/Languages.tsx:39
 #: components/SchemaConfig/Languages.tsx:93
 #. Used in: Components > Export Feed > Editor ⬤ Components > Login > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Schema Config > Languages
@@ -817,7 +817,7 @@ msgstr "Невикористаний"
 msgid "ordinal"
 msgstr "Порядковий"
 
-#: components/Header/userToolDefinitions.ts:103
+#: components/Header/userToolDefinitions.ts:110
 #: components/QueryBuilder/Edit.tsx:79
 #: components/SchemaConfig/Tables.tsx:39
 #: components/Security/ImportExport.tsx:252
@@ -828,7 +828,7 @@ msgid "export"
 msgstr "Експорт"
 
 #: components/Attachments/index.tsx:238
-#: components/Header/userToolDefinitions.ts:117
+#: components/Header/userToolDefinitions.ts:124
 #: components/LocalityUpdate/Status.tsx:232
 #: components/LocalityUpdate/index.tsx:135
 #: components/QueryBuilder/Import.tsx:70
@@ -917,7 +917,7 @@ msgid "collapse"
 msgstr "Згорнути"
 
 #: components/AppResources/Aside.tsx:189
-#: components/TreeView/index.tsx:306
+#: components/TreeView/index.tsx:322
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 msgid "collapseAll"
 msgstr "Закрити все"
@@ -925,7 +925,7 @@ msgstr "Закрити все"
 #: components/Attachments/ImageViewer.tsx:59
 #: components/Attachments/LeafletImageViewer.tsx:83
 #: components/Attachments/Viewer.tsx:366
-#: components/Preferences/index.tsx:221
+#: components/Preferences/index.tsx:271
 #: components/Statistics/index.tsx:564
 #: components/Toolbar/QueryTablesEdit.tsx:70
 #. Used in: Components > Attachments > Image Viewer ⬤ Components > Attachments > Leaflet Image Viewer ⬤ Components > Attachments > Viewer ⬤ Components > Preferences > Index ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Query Tables Edit
@@ -939,7 +939,7 @@ msgid "select"
 msgstr "Виберіть"
 
 #: components/PickLists/definitions.ts:54
-#: components/Preferences/Renderers.tsx:158
+#: components/Preferences/Renderers.tsx:162
 #: components/SchemaConfig/Components.tsx:77
 #: components/SchemaConfig/Format.tsx:70
 #: components/Security/Collection.tsx:157
@@ -956,9 +956,9 @@ msgstr "Жодного"
 msgid "noneAvailable"
 msgstr "Немає доступних"
 
-#: components/AppResources/Filters.tsx:100
-#: components/AppResources/Filters.tsx:116
-#: components/AppResources/Filters.tsx:142
+#: components/AppResources/Filters.tsx:117
+#: components/AppResources/Filters.tsx:133
+#: components/AppResources/Filters.tsx:159
 #: components/Attachments/RecordSetAttachment.tsx:163
 #: components/Attachments/index.tsx:179
 #: components/Attachments/index.tsx:188
@@ -1090,7 +1090,7 @@ msgid "dontShowAgain"
 msgstr "Не показувати це знову"
 
 #: components/Molecules/FilePicker.tsx:106
-#: components/WbImportAttachments/index.tsx:53
+#: components/WbImportAttachments/index.tsx:54
 #. Used in: Components > Molecules > File Picker ⬤ Components > Wb Import Attachments > Index
 msgid "multipleFilePickerMessage"
 msgstr "Виберіть файли або перетягніть їх сюди"
