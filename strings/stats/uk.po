@@ -1,28 +1,26 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-12-19 17:00+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-12-20 07:00+0000\n"
+"Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "stats/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 5.15.1\n"
-"Content-Transfer-Encoding: 8bit\n"
 
 #. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:29
 #: components/Statistics/__tests__/layout.tests.ts:18
-#, fuzzy
 msgid "holdings"
 msgstr "Холдинги"
 
 #. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:32
 #: components/Statistics/__tests__/layout.tests.ts:21
-#, fuzzy
 msgid "collectionObjects"
 msgstr "Об'єкти колекції"
 
@@ -32,110 +30,92 @@ msgstr "Об'єкти колекції"
 #: components/Statistics/StatsSpec.tsx:401
 #: components/Statistics/__tests__/layout.tests.ts:83
 #: components/Statistics/__tests__/layout.tests.ts:86
-#, fuzzy
 msgid "typeSpecimens"
 msgstr "Типові зразки"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:569
-#, fuzzy
 msgid "curation"
 msgstr "Кураторство"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:137
-#, fuzzy
 msgid "loans"
 msgstr "Кредити"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:140
-#, fuzzy
 msgid "itemsOnLoans"
 msgstr "Речі в оренду"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:159
-#, fuzzy
 msgid "openLoansStat"
 msgstr "Відкриті позики"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:178
-#, fuzzy
 msgid "overdueLoans"
 msgstr "Прострочені кредити"
 
 #. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:267
 #: components/Statistics/__tests__/layout.tests.ts:68
-#, fuzzy
 msgid "localityGeography"
 msgstr "Місцевість / Географія"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:270
-#, fuzzy
 msgid "localities"
 msgstr "Населені пункти"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:296
-#, fuzzy
 msgid "geographyEntries"
 msgstr "Географічні записи"
 
 #. Used in: Statistics > __tests__ > Layout
 #: components/Statistics/__tests__/layout.tests.ts:71
-#, fuzzy
 msgid "countries"
 msgstr "Країни"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:314
-#, fuzzy
 msgid "georeferencedLocalities"
 msgstr "Геоприв'язані населені пункти"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:446
-#, fuzzy
 msgid "digitization"
 msgstr "Оцифрування"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:449
-#, fuzzy
 msgid "digitizedLastSevenDays"
 msgstr "Оцифровано за останні 7 днів"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:468
-#, fuzzy
 msgid "digitizedLastMonth"
 msgstr "Оцифровано минулого місяця"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:487
-#, fuzzy
 msgid "digitizedLastYear"
 msgstr "Оцифровано минулого року"
 
 #. Used in: Components > Statistics > Add Stat Dialog
 #: components/Statistics/AddStatDialog.tsx:82
-#, fuzzy
 msgid "chooseStatistics"
 msgstr "Виберіть Статистику"
 
 #. Used in: Components > Statistics > Add Stat Dialog
 #: components/Statistics/AddStatDialog.tsx:86
-#, fuzzy
 msgid "selectFromQueries"
 msgstr "Вибрати з запитів"
 
 #. Used in: Components > Statistics > Add Stat Dialog
 #: components/Statistics/AddStatDialog.tsx:110
-#, fuzzy
 msgid "selectFromAvailableDefault"
 msgstr "Виберіть із доступної статистики за замовчуванням"
 
@@ -143,71 +123,60 @@ msgstr "Виберіть із доступної статистики за за�
 #: components/Statistics/StatsSpec.tsx:25
 #: components/Statistics/__tests__/layout.tests.ts:14
 #: components/Statistics/__tests__/layout.tests.ts:103
-#, fuzzy
 msgid "collection"
 msgstr "Колекція"
 
 #. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:565
 #: components/Statistics/__tests__/layout.tests.ts:99
-#, fuzzy
 msgid "personal"
 msgstr "Особисте"
 
 #. Used in: Components > Statistics > Index
 #: components/Statistics/index.tsx:141
 #: components/Statistics/index.tsx:494
-#, fuzzy
 msgid "private"
 msgstr "Приватний"
 
 #. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:572
 #: components/Statistics/__tests__/layout.tests.ts:106
-#, fuzzy
 msgid "collectionObjectsCataloged"
 msgstr "Каталогізовані об'єкти колекції"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:588
-#, fuzzy
 msgid "collectionObjectsDetermined"
 msgstr "Визначено об'єкти колекції"
 
 #. Used in: Components > Statistics > Index
 #: components/Statistics/index.tsx:516
-#, fuzzy
 msgid "lastRefreshed"
 msgstr "Останнє оновлення"
 
 #. Used in: Components > Statistics > Hooks
 #: components/Statistics/hooks.tsx:375
-#, fuzzy
 msgid "categoryName"
 msgstr "Назва категорії"
 
 #. Used in: Components > Statistics > Hooks
 #: components/Statistics/hooks.tsx:376
-#, fuzzy
 msgid "itemName"
 msgstr "Назва елемента"
 
 #. Used in: Components > Statistics > Hooks
 #: components/Statistics/hooks.tsx:377
-#, fuzzy
 msgid "itemValue"
 msgstr "Значення елемента"
 
 #. Used in: Components > Statistics > Index
 #: components/Statistics/index.tsx:545
-#, fuzzy
 msgid "downloadAsTSV"
 msgstr "Завантажити як TSV"
 
 #. Used in: Components > Statistics > Index
 #: components/Statistics/index.tsx:140
 #: components/Statistics/index.tsx:494
-#, fuzzy
 msgid "shared"
 msgstr "Спільний доступ"
 
@@ -218,112 +187,94 @@ msgstr "Спільний доступ"
 #: components/Router/Routes.tsx:461
 #: components/Statistics/hooks.tsx:118
 #: components/Statistics/index.tsx:512
-#, fuzzy
 msgid "statistics"
 msgstr "Статистика"
 
 #. Used in: Components > Statistics > Delete Category
 #: components/Statistics/DeleteCategory.tsx:26
 #: components/Statistics/DeleteCategory.tsx:45
-#, fuzzy
 msgid "deleteCategory"
 msgstr "Видалити категорію"
 
 #. Used in: Components > Statistics > Stats Page Editing
 #: components/Statistics/StatsPageEditing.tsx:52
-#, fuzzy
 msgid "editPage"
 msgstr "Редагувати сторінку"
 
 #. Used in: Components > Statistics > Stats Page Editing
 #: components/Statistics/StatsPageEditing.tsx:52
-#, fuzzy
 msgid "addPage"
 msgstr "Додати сторінку"
 
 #. Used in: Components > Statistics > Categories
 #: components/Statistics/Categories.tsx:298
-#, fuzzy
 msgid "addACategory"
 msgstr "Додати категорію"
 
 #. Used in: Components > Statistics > Index
 #: components/Statistics/index.tsx:521
-#, fuzzy
 msgid "refresh"
 msgstr "Оновити"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:532
-#, fuzzy
 msgid "collectionObjectsWithImages"
 msgstr "Об'єкти колекції із зображеннями"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:511
-#, fuzzy
 msgid "collectionObjectsWithAttachments"
 msgstr "Об'єкти колекції з вкладеннями"
 
 #. Used in: Components > Statistics > Stat Items
 #: components/Statistics/StatItems.tsx:271
-#, fuzzy
 msgid "error"
 msgstr "Помилка"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:204
 #: components/Statistics/StatsSpec.tsx:207
-#, fuzzy
 msgid "taxonRepresented"
 msgstr "Представлені таксони"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:345
 #: components/Statistics/StatsSpec.tsx:348
-#, fuzzy
 msgid "geographiesRepresented"
 msgstr "Представлені географічні регіони"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:334
-#, fuzzy
 msgid "percentGeoReferenced"
 msgstr "Відсоток геоприв'язаних"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:553
-#, fuzzy
 msgid "percentImaged"
 msgstr "Відсоток зображень"
 
 #. Used in: Components > Statistics > Delete Category
 #: components/Statistics/DeleteCategory.tsx:49
-#, fuzzy
 msgid "deleteWarning"
 msgstr "Ви впевнені, що хочете видалити категорію?"
 
 #. Used in: Components > Statistics > Delete Category
 #: components/Statistics/DeleteCategory.tsx:55
-#, fuzzy
 msgid "categoryToDelete"
 msgstr "Це остаточно видалить наступну категорію"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:120
-#, fuzzy
 msgid "layoutPreference"
 msgstr "Визначає макет сторінки статистики"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:128
-#, fuzzy
 msgid "showPreparationsTotal"
 msgstr "Підсумки підготовки до шоу"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:129
-#, fuzzy
 msgid "showPreparationsTotalDescription"
 msgstr ""
 "Якщо ввімкнено, панель статистики препаратів за замовчуванням включатиме "
@@ -332,13 +283,11 @@ msgstr ""
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:136
-#, fuzzy
 msgid "autoRefreshRate"
 msgstr "Частота автоматичного оновлення (години)"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:137
-#, fuzzy
 msgid "autoRefreshRateDescription"
 msgstr ""
 "Інтервал часу в годинах, через який сторінка статистики автоматично "
