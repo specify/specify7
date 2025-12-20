@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-12-19 15:00+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2025-12-20 07:00+0000\n"
+"Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "query/uk/>\n"
 "Language: uk\n"
@@ -555,19 +555,16 @@ msgstr "Не суворий"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:170
-#, fuzzy
 msgid "primaryCatalogNumberInheritance"
 msgstr "Успадкування основного каталожного номера"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:189
-#, fuzzy
 msgid "parentCatalogNumberInheritance"
 msgstr "Успадкування батьківського каталожного номера"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:208
-#, fuzzy
 msgid "uniqueCatalogNumberAcrossComponentAndCoTitle"
 msgstr "Унікальний каталожний номер (компонент та CO)"
 
