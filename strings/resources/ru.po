@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-12-19 15:00+0000\n"
+"PO-Revision-Date: 2025-12-21 00:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "resources/ru/>\n"
@@ -133,10 +133,9 @@ msgstr "Форматировщики полей"
 #, fuzzy
 msgid "fieldFormattersDescription"
 msgstr ""
-"«Формат поля» определяет, как данные для конкретного поля таблицы "
-"отображаются в результатах запроса, экспортируемых данных и формах. Он "
-"управляет автоматической нумерацией и составом различных частей, "
-"определяющих поле."
+"Параметр «Формат поля» определяет, как данные для конкретного поля таблицы "
+"отображаются в результатах запросов, при экспорте и в формах. Он управляет "
+"автоматической нумерацией и составом различных частей, определяющих поле."
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:168
@@ -203,7 +202,7 @@ msgstr "Доступные форматеры полей"
 #, fuzzy
 msgid "selectDefaultFormatter"
 msgstr ""
-"Пожалуйста, назначьте один из форматировщиков как форматировщик по "
+"Пожалуйста, выберите один из форматировщиков в качестве форматировщика по "
 "умолчанию."
 
 #. Used in: Components > Formatters > Element
@@ -537,14 +536,14 @@ msgstr "Предварительный просмотр формата"
 #: components/DataModel/businessRuleDefs.ts:558
 #, fuzzy
 msgid "currentDeterminationRequired"
-msgstr "Требуется текущее определение."
+msgstr "Требуется текущее решение."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:320
 #: components/DataModel/businessRuleDefs.ts:339
 #, fuzzy
 msgid "cogAddedToItself"
-msgstr "COG не может быть сложен сам с собой."
+msgstr "Точка центра тяжести не может быть прибавлена сама к себе."
 
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #: components/DataModel/businessRuleDefs.ts:269
@@ -552,44 +551,44 @@ msgstr "COG не может быть сложен сам с собой."
 #, fuzzy
 msgid "primaryCogChildRequired"
 msgstr ""
-"Группа объектов консолидированной коллекции должна иметь основной дочерний "
-"объект коллекции."
+"Группа объектов консолидированной коллекции должна иметь дочерний объект "
+"основной коллекции."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:357
 #, fuzzy
 msgid "deletePrimaryRecord"
-msgstr "Первичная запись CO не может быть удалена."
+msgstr "Первичную запись CO удалить невозможно."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:797
 #, fuzzy
 msgid "deleteLoanedPrep"
-msgstr "Заимствованный препарат не может быть удален"
+msgstr "Заимствованный препарат удалить невозможно."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:805
 #, fuzzy
 msgid "deleteGiftedPrep"
-msgstr "Подаренный препарат не может быть удален"
+msgstr "Одарённый препарат удалить невозможно."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:813
 #, fuzzy
 msgid "deleteDisposedPrep"
-msgstr "Утилизированный препарат не может быть удален"
+msgstr "Утилизированный препарат удалить невозможно."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:821
 #, fuzzy
 msgid "deleteExchangeOutPrep"
-msgstr "Замененный препарат не может быть удален."
+msgstr "Заменённый препарат удалить нельзя."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:829
 #, fuzzy
 msgid "deleteExchangeInPrep"
-msgstr "Обмен в стадии подготовки не может быть удален"
+msgstr "Подготовленный обмен не может быть удален."
 
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #: components/DataModel/businessRuleDefs.ts:196
@@ -597,8 +596,8 @@ msgstr "Обмен в стадии подготовки не может быть
 #, fuzzy
 msgid "invalidDeterminationTaxon"
 msgstr ""
-"Определение не принадлежит к таксонному дереву, связанному с типом объекта "
-"коллекции."
+"Определение не относится к таксономическому дереву, связанному с типом "
+"объекта коллекции."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:408
@@ -621,13 +620,13 @@ msgstr ""
 #: components/DataModel/businessRuleDefs.ts:772
 #, fuzzy
 msgid "preparationUsedInLoan"
-msgstr "Препарат используется при кредитовании."
+msgstr "Данный препарат используется при оформлении кредита."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:765
 #, fuzzy
 msgid "preparationIsNegative"
-msgstr "Количество приготовлений не может быть отрицательным."
+msgstr "Количество подготовленных образцов не может быть отрицательным."
 
 #. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:336
