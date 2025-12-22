@@ -294,6 +294,7 @@ def stream_csv_from_url(url: str, discipline, rank_count: int, tree_type: str, i
     max_retries = 5
 
     def lines_iter() -> Iterator[str]:
+        # Streams data from the server in -chunks-, yields -lines-.
         buffer = b""
         bytes_downloaded = 0
         retries = 0
@@ -323,6 +324,7 @@ def stream_csv_from_url(url: str, discipline, rank_count: int, tree_type: str, i
                             yield line.decode('utf-8', errors='replace')
 
                     if buffer:
+                        # yield last line
                         yield buffer.decode('utf-8', errors='replace')
                     return
             except (ChunkedEncodingError, ConnectionError) as e:
