@@ -595,7 +595,11 @@ def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMA
                     },
                     "mappingUrl": {
                         "type": "string",
-                        "descripting": "The URL of a JSON file describing the column mapping of the CSV data."
+                        "description": "The URL of a JSON file describing the column mapping of the CSV data."
+                    },
+                    "treeName": {
+                        "type": "string",
+                        "description": "The name to be used by the new tree.",
                     },
                     "disciplineName": {
                         "type": "string",
@@ -663,8 +667,9 @@ def create_default_tree_view(request):
     url = data.get('url', None)
     mapping_url = data.get('mappingUrl', None)
 
-    tree_name = tree_discipline_name.capitalize()
-    rank_count = int(tree_rank_count(tree_name, 8))
+    tree_rank_model_name = tree_discipline_name.capitalize()
+    rank_count = int(tree_rank_count(tree_rank_model_name, 8))
+    tree_name = data.get('treeName', tree_rank_model_name)
 
     row_count = data.get('rowCount', None)
 
@@ -673,13 +678,13 @@ def create_default_tree_view(request):
 
     Message.objects.create(user=request.specify_user, content=json.dumps({
         'type': 'create-default-tree-starting',
-        'name': tree_name,
+        'name': tree_rank_model_name,
         'collection_id': request.specify_collection.id,
     }))
 
     task_id = str(uuid4())
     async_result = create_default_tree_task.apply_async(
-        args=[url, discipline.id, tree_discipline_name, rank_count, request.specify_collection.id, request.specify_user.id, mapping_url, row_count],
+        args=[url, discipline.id, tree_discipline_name, rank_count, request.specify_collection.id, request.specify_user.id, mapping_url, row_count, tree_name],
         task_id=f"create_default_tree_{tree_discipline_name}_{task_id}",
         taskid=task_id
     )

@@ -211,12 +211,11 @@ def add_default_tree_record(tree_type: str, discipline, row: dict, tree_name: st
 
 @app.task(base=LogErrorsTask, bind=True)
 def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline_name: str, rank_count: int, specify_collection_id: int,
-                             specify_user_id: int, mapping_url: str, row_count: Optional[int]):
+                             specify_user_id: int, mapping_url: str, row_count: Optional[int], tree_name: str):
     logger.info(f'starting task {str(self.request.id)}')
 
     specify_user = spmodels.Specifyuser.objects.get(id=specify_user_id)
     discipline = spmodels.Discipline.objects.get(id=discipline_id)
-    tree_name = tree_discipline_name.capitalize()
 
     Message.objects.create(
         user=specify_user,
@@ -239,6 +238,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
         self.update_state(state='RUNNING', meta={'current': current, 'total': total})
 
     def set_tree(name: str) -> None:
+        # Final tree name after being made unique.
         nonlocal tree_name
         tree_name = name
 

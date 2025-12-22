@@ -90,7 +90,7 @@ export function CreateTree<
   const connectedCollection = getSystemInfo().collection;
 
   // Start default tree creation
-  const handleClick = async (resourceUrl: string, mappingUrl: string, disciplineName: string, rowCount: number): Promise<void> => {
+  const handleClick = async (resourceUrl: string, mappingUrl: string, disciplineName: string, rowCount: number, treeName: string): Promise<void> => {
     setIsTreeCreationStarted(true);
     setTreeCreationProgress(undefined);
     return ajax<TreeCreationInfo>('/trees/create_default_tree/', {
@@ -101,7 +101,8 @@ export function CreateTree<
         mappingUrl,
         collection: connectedCollection,
         disciplineName,
-        rowCount
+        rowCount,
+        treeName,
       },
     })
       .then(({ data, status }) => {
@@ -208,7 +209,7 @@ export function CreateTree<
                   <li key={index}>
                     <Button.LikeLink
                       onClick={(): void => {
-                        handleClick(resource.file, resource.mappingFile, resource.discipline, resource.rows).catch(console.error);
+                        handleClick(resource.file, resource.mappingFile, resource.discipline, resource.rows, resource.title).catch(console.error);
                       }}
                     >
                       {localized(resource.title)}
