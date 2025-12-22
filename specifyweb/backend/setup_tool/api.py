@@ -314,7 +314,7 @@ def create_specifyuser(data):
         # Grant permissions
         UserPolicy.objects.create(
             specifyuser=new_user,
-            collection=Collection.objects.last(),
+            collection=None,
             resource='%',
             action='%'
         )
