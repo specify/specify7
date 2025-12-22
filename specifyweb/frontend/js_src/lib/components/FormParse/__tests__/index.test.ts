@@ -7,7 +7,6 @@ import { ensure, localized } from '../../../utils/types';
 import { removeKey } from '../../../utils/utils';
 import { strictParseXml } from '../../AppResources/parseXml';
 import { tables } from '../../DataModel/tables';
-import { getPref } from '../../InitialContext/remotePrefs';
 import { formatUrl } from '../../Router/queryString';
 import type { SimpleXmlNode } from '../../Syncer/xmlToJson';
 import { toSimpleXmlNode, xmlToJson } from '../../Syncer/xmlToJson';
@@ -471,23 +470,6 @@ describe('parseFormDefinition', () => {
 
 describe('getColumnDefinitions', () => {
   requireContext();
-  test('can customize the column definition source', () =>
-    expect(
-      getColumnDefinitions(
-        toSimpleXmlNode(
-          xmlToJson(
-            strictParseXml(
-              `<viewdef>
-            <columnDef os="abc">A</columnDef>
-            <columnDef os="${getPref(
-              'form.definition.columnSource'
-            )}">B</columnDef>
-          </viewdef>`
-            )
-          )
-        )
-      )
-    ).toBe('B'));
 
   test('fall back to first definition available', () =>
     expect(

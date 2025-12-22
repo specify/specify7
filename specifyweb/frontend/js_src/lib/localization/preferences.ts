@@ -128,6 +128,25 @@ export const preferencesText = createDictionary({
     'de-ch': 'Nicht erforderliche Animationen und Übergänge deaktivieren.',
     'pt-br': 'Desative animações e transições não essenciais.',
   },
+  rankThreshold: {
+    'en-us': 'Show object count below',
+  },
+  rankThresholdDescription: {
+    'en-us':
+      'Show the count of linked Collection Objects for all ranks below this one.',
+    'ru-ru':
+      'Показывать количество объектов коллекции для всех рангов, включая и ниже этого.',
+    'es-es':
+      'Mostrar la cantidad de objetos de colección para todos los rangos, incluidos y por debajo de este.',
+    'fr-fr':
+      "Afficher le nombre d'objets de collection pour tous les rangs, y compris et en dessous de celui-ci.",
+    'uk-ua':
+      "Показати кількість об'єктів колекції для всіх рангів, включаючи та нижче цього.",
+    'de-ch':
+      'Anzahl der Sammlungsobjekte für alle Ränge einschließlich und unterhalb dieses Rangs anzeigen.',
+    'pt-br':
+      'Mostrar a contagem de Objetos de Coleção para todos os ranks, incluindo e abaixo deste.',
+  },
   reduceTransparency: {
     'en-us': 'Reduce transparency',
     'ru-ru': 'Уменьшить прозрачность',
@@ -2056,6 +2075,10 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Додайте рядок пошуку на головну сторінку',
     'pt-br': 'Adicionar barra de pesquisa na página inicial',
   },
+  inheritanceCatNumberPrefDescription: {
+    'en-us':
+      'Control whether collection objects inherit the catalog number from the primary collection object.',
+  },
   inheritanceCatNumberPref: {
     'en-us':
       'Enable the inheritance of the primary catalog number to its empty siblings.',
@@ -2103,5 +2126,16 @@ export const preferencesText = createDictionary({
       'Поле «Номер каталога» должно быть уникальным в таблицах «Компонент» и «CO».',
     'uk-ua':
       'Поле «Номер у каталозі» має бути унікальним у таблицях «Компонент» та «CO»',
+  },
+  scopeEntireTablePicklists: {
+    'en-us': 'Scope "Entire Table" Picklists',
+  },
+  scopeEntireTablePicklistsDescription: {
+    'en-us':
+      'If enabled, picklists of type "Entire Table" will only show items that are in use within the current collection.',
+  },
+  inheritanceCatNumberParentCOPrefDescription: {
+    'en-us':
+      'Controls whether collection objects inherit the catalog number from the parent collection object.',
   },
 } as const);
