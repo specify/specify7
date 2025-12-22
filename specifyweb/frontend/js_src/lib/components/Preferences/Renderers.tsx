@@ -24,12 +24,16 @@ import type { RA } from '../../utils/types';
 import { Input, Select, Textarea } from '../Atoms/Form';
 import { iconClassName } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
-import type { AnySchema } from '../DataModel/helperTypes';
+import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type { Collection } from '../DataModel/types';
 import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
 import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
+import {
+  getTreeDefinitions,
+  treeRanksPromise,
+} from '../InitialContext/treeRanks';
 import { AttachmentPicker } from '../Molecules/AttachmentPicker';
 import { AutoComplete } from '../Molecules/AutoComplete';
 import { ListEdit } from '../Toolbar/ListEdit';
@@ -376,5 +380,65 @@ export function DefaultPreferenceItemRender({
         } else handleChanged(newValue);
       }}
     />
+  );
+}
+
+type Rank = { readonly rankId: number; readonly name: string };
+
+/*
+ * This grabs the ranks from the API and displays them in a dropdown
+ * The ranks are sorted in ascending order by `rankId` so they appear in the correct order for the user
+ */
+export function ThresholdRank({
+  value,
+  onChange,
+  tableName,
+}: PreferenceRendererProps<number> & {
+  readonly tableName: AnyTree['tableName'];
+}): JSX.Element {
+  const [items, setItems] = React.useState<readonly Rank[]>([]);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    treeRanksPromise
+      .then(() => {
+        const definitions = getTreeDefinitions(tableName);
+        const activeDefinition = definitions[0];
+        /**
+         * Only expose ranks from the treedef tied to the current discipline.
+         * Otherwise ranks from unrelated trees leak into the dropdown.
+         */
+        const ranks = activeDefinition?.ranks ?? [];
+        if (!isMounted) return;
+        setItems(
+          ranks
+            .map<Rank>(({ rankId, name }) => ({
+              rankId,
+              name,
+            }))
+            .sort((rankA, rankB) => rankA.rankId - rankB.rankId)
+        );
+      })
+      .catch((error: unknown) => {
+        console.error('Error fetching ThresholdRank items:', error);
+        if (isMounted) setItems([]);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [tableName]);
+
+  return (
+    <select
+      value={value ?? ''}
+      onChange={(e) => onChange(Number(e.target.value))}
+    >
+      <option value="">None</option>
+      {items.map(({ rankId, name }) => (
+        <option key={rankId} value={rankId}>
+          {name}
+        </option>
+      ))}
+    </select>
   );
 }

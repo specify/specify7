@@ -1,9 +1,13 @@
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
-from specifyweb.backend.tress.models import Taxon, Taxontreedefitem
+from specifyweb.backend.trees.extras import renumber_tree, validate_tree_numbering
+from specifyweb.specify.models import Taxon, Taxontreedefitem
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
 
+import random
 from unittest import skip
 from unittest.mock import Mock, patch
+
+from django.db.models import F, Q
 
 class TestTreeSave(GeographyTree):
 
@@ -225,3 +229,78 @@ class TestTreeSave(GeographyTree):
         animalia.save()
 
         test_phylum = self.make_taxontree("TestPhylum", "Phylum", parent=animalia)
+
+    def test_renumbering_tree(self):
+        # Create a branching taxon tree to be renumbered
+        (
+            animalia,
+            plantae,
+            test_phylum,
+            test_class_1,
+            test_class_2,
+            test_phylum_plantae,
+            test_plantae_class_1,
+            test_plantae_class_2,
+        ) = self._create_tree_structure()
+
+
+        extra_phylum_animalia = self.make_taxontree("ExtraPhylumAnimalia", "Phylum", parent=animalia)
+
+        extra_order = self.make_taxontree("TestOrder1", "Order", parent=test_class_1)
+        extra_family = self.make_taxontree("TestFamily1", "Family", parent=extra_order)
+        extra_genus = self.make_taxontree("TestGenus1", "Genus", parent=extra_family)
+        extra_species = self.make_taxontree("TestSpecies1", "Species", parent=extra_genus)
+
+        plantae_order = self.make_taxontree("PlantaeOrder1", "Order", parent=test_plantae_class_1)
+        plantae_family = self.make_taxontree("PlantaeFamily1", "Family", parent=plantae_order)
+        plantae_genus = self.make_taxontree("PlantaeGenus1", "Genus", parent=plantae_family)
+        plantae_species = self.make_taxontree("PlantaeSpecies1", "Species", parent=plantae_genus)
+
+        if hasattr(self, "_node_list"):
+            self._node_list.extend([
+                extra_phylum_animalia,
+                extra_order, extra_family, extra_genus, extra_species,
+                plantae_order, plantae_family, plantae_genus, plantae_species,
+            ])
+
+        # Refresh values from DB before renumbering
+        for node in self._node_list:
+            node.refresh_from_db()
+
+        # Randomly shuffle the existing node numbers
+        all_taxa = list(Taxon.objects.all())
+        count = len(all_taxa)
+        nodenums = list(range(1, count + 1))
+        random.shuffle(nodenums)
+        highnums = list(range(1, count + 1))
+        random.shuffle(highnums)
+
+        # Assign each taxon a unique random nodenumber and highestchildnodenumber
+        for t, nn, hcnn in zip(all_taxa, nodenums, highnums):
+            t.nodenumber = nn
+            t.highestchildnodenumber = hcnn
+
+        Taxon.objects.bulk_update(all_taxa, ["nodenumber", "highestchildnodenumber"])
+
+        table = 'taxon'
+        renumber_tree(table)
+
+        # Test that the node numbers in the tree are correct
+        # NOTE: Using validate_tree_numbering now instead, but keeping query here for future reference and testing
+        bad_node_number_count = (
+            Taxon.objects
+            .filter(parent__isnull=False)
+            .filter(
+                nodenumber__isnull=False,
+                parent__nodenumber__isnull=False,
+                parent__highestchildnodenumber__isnull=False,
+            )
+            .filter(
+                Q(nodenumber__lt=F('parent__nodenumber')) |
+                Q(nodenumber__gt=F('parent__highestchildnodenumber'))
+            )
+            .count()
+        )
+
+        # self.assertEqual(bad_node_number_count, 0)
+        validate_tree_numbering('taxon')
