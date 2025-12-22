@@ -20,9 +20,9 @@ import { DeleteButton } from '../Forms/DeleteButton';
 import { Dialog } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 import type { Row } from './helpers';
 import { checkMoveViolatesEnforced } from './helpers';
-import { collectionPreferences } from '../Preferences/collectionPreferences';
 
 const treeActions = [
   'add',
