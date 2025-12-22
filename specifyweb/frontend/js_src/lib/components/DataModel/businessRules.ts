@@ -71,12 +71,14 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     fieldName: string &
       (keyof SCHEMA['fields'] | keyof SCHEMA['toOneIndependent'])
   ): Promise<RA<BusinessRuleResult<SCHEMA>>> {
+    // REFACTOR: When checkField is called directly, the promises are not
+    // added to the public pendingPromise
+
     const field = this.resource.specifyTable.getField(fieldName);
     if (field === undefined) return [];
 
     const processedFieldName = fieldName.toString().toLowerCase();
     const thisCheck: ResolvablePromise<string> = flippedPromise();
-    this.addPromise(thisCheck);
 
     if (this.fieldChangePromises[processedFieldName] !== undefined)
       this.fieldChangePromises[processedFieldName].resolve('superseded');

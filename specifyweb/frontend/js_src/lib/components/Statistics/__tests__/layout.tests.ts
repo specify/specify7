@@ -1,3 +1,4 @@
+import { interactionsText } from '../../../localization/interactions';
 import { statsText } from '../../../localization/stats';
 import { f } from '../../../utils/functools';
 import { ensure } from '../../../utils/types';
@@ -35,10 +36,10 @@ export const statsSpecTest: StatsSpec = {
         },
       },
       preparations: {
-        label: statsText.preparations(),
+        label: interactionsText.preparations(),
         items: {
           phantomItem: {
-            label: statsText.preparations(),
+            label: interactionsText.preparations(),
             spec: {
               type: 'BackEndStat',
               pathToValue: undefined,
