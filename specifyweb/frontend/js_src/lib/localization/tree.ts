@@ -716,7 +716,8 @@ export const treeText = createDictionary({
     'en-us': 'The Default Tree creation process has started.',
   },
   defaultTreeTaskStartingDescription: {
-    'en-us': 'The tree will be created in the background. You will be notified once it is completed.',
+    'en-us':
+      'The tree will be created in the background. You will be notified once it is completed.',
   },
   defaultTreeTaskRunning: {
     'en-us': 'Default Tree creation in progress.',
