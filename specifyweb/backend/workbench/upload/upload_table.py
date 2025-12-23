@@ -5,6 +5,7 @@ from typing import Any, NamedTuple, Literal, Union, cast
 from collections import defaultdict
 
 from django.db import transaction, IntegrityError
+from django.core.exceptions import ValidationError
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
@@ -1279,38 +1280,52 @@ class BoundUpdateTable(BoundUploadTable):
                 try:
                     # audit and save timing
                     t0 = time.perf_counter()
-                    updated = self._do_update( # type: ignore[attr-defined]
-                        reference_record,
-                        [*to_one_changes.values(), *concrete_field_changes.values()],
-                        **attrs,
+                    do_update = getattr(self, "_do_update", None)
+
+                    if do_update is None:
+                        # Default inline update logic
+                        for field, value in attrs.items():
+                            setattr(reference_record, field, value)
+                        reference_record.save()
+                    else:
+                        # Custom override hook, if present
+                        do_update(
+                            reference_record,
+                            [*to_one_changes.values(), *concrete_field_changes.values()],
+                            **attrs,
+                        )
+
+                    _add_timing("update_do_update", time.perf_counter() - t0)
+
+                except ValidationError as e:
+                    messages = getattr(e, "messages", None)
+                    if isinstance(messages, list):
+                        payload = {"messages": [str(m) for m in messages]}
+                    else:
+                        payload = {"message": str(e)}
+
+                    parse_failures = ParseFailures(
+                        [
+                            WorkBenchParseFailure(
+                                "validationError",
+                                payload,
+                                self.parsedFields[0].column if self.parsedFields else "",
+                            )
+                        ]
                     )
-                    _add_timing("update_save", time.perf_counter() - t0)
+                    return UploadResult(parse_failures, to_one_results, {})
 
-                    t1 = time.perf_counter()
-                    picklist_additions = self._do_picklist_additions()
-                    _add_timing("update_picklist", time.perf_counter() - t1)
-                except (BusinessRuleException, IntegrityError) as e:
-                    return UploadResult(
-                        FailedBusinessRule(str(e), {}, info), to_one_results, {}
-                    )
+            pk = reference_record.pk
+            if changed:
+                parent_result = Updated(pk, info, [])
+            else:
+                parent_result = NoChange(pk, info)
 
-        record: Updated | NoChange
-        if changed:
-            record = Updated(updated.pk, info, picklist_additions)
-        else:
-            record = NoChange(reference_record.pk, info)
+            return UploadResult(parent_result, to_one_results, {})
 
-        t0 = time.perf_counter()
-        to_many_results = self._handle_to_many(True, record.get_id(), model)
-        _add_timing("update_to_many", time.perf_counter() - t0)
-
-        t1 = time.perf_counter()
-        to_one_adjusted, to_many_adjusted = self._clean_up_fks(
-            to_one_results, to_many_results
-        )
-        _add_timing("update_cleanup", time.perf_counter() - t1)
-
-        return UploadResult(record, to_one_adjusted, to_many_adjusted)
+        pk = reference_record.pk
+        parent_result = NoChange(pk, info)
+        return UploadResult(parent_result, to_one_results, {})
 
     def _do_insert(self):
         raise Exception("Attempting to insert into a save table directly!")

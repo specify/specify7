@@ -482,6 +482,8 @@ def do_upload(
         pending_inserts.clear()
 
     with savepoint("main upload"):
+        total_inserted = 0
+        any_row_failed = False
         tic = time.perf_counter()
         results: list[UploadResult | None] = []
         for i, row in enumerate(rows):
@@ -616,8 +618,12 @@ def do_upload(
                         progress(len(results), total)
 
                     if row_result.contains_failure():
-                        cache = _cache # NOTE: Make sure we want to keep this line
-                        raise Rollback("failed row")
+                        cache = _cache
+                        if allow_partial:
+                            raise Rollback("failed row")
+                        else:
+                            any_row_failed = True
+                            break
 
             # Periodic flush to bound memory usage
             if use_bulk_create and len(pending_inserts) >= BULK_FLUSH_SIZE:
@@ -684,8 +690,8 @@ def do_upload(
             )
         upload_result_lst: list[UploadResult] = [cast(UploadResult, r) for r in results]
 
-        if no_commit:
-            raise Rollback("no_commit option")
+        if no_commit or (not allow_partial and any_row_failed):
+            raise Rollback("no_commit option" if no_commit else "failed row")
         else:
             assert scoped_table is not None
             fixup_trees(scoped_table, upload_result_lst)
