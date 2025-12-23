@@ -71,8 +71,10 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     fieldName: string &
       (keyof SCHEMA['fields'] | keyof SCHEMA['toOneIndependent'])
   ): Promise<RA<BusinessRuleResult<SCHEMA>>> {
-    // REFACTOR: When checkField is called directly, the promises are not
-    // added to the public pendingPromise
+    /*
+     * REFACTOR: When checkField is called directly, the promises are not
+     * added to the public pendingPromise
+     */
 
     const field = this.resource.specifyTable.getField(fieldName);
     if (field === undefined) return [];
