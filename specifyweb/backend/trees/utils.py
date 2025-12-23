@@ -340,8 +340,10 @@ def stream_csv_from_url(url: str, discipline, rank_count: int, tree_type: str, i
 
     rank_names_lst = reader.fieldnames[:rank_count]
     rank_names_lst.insert(0, "Root") # Add Root rank
-    logger.debug(f"################ CREATING TREE WITH THE FOLLOWING {rank_count} RANKS ###############")
+
+    logger.debug(f"Creating default tree with the following {rank_count} ranks:")
     logger.debug(rank_names_lst)
+    
     tree_name = initialize_default_tree(tree_type, discipline, initial_tree_name, rank_names_lst)
     set_tree(tree_name)
     
