@@ -176,12 +176,14 @@ def add_default_tree_record(tree_type: str, discipline, row: dict, tree_name: st
             if v:
                 defaults[model_field] = v
 
+        # Get the rank by the column name.
+        # It should already exist by this point, but worst case it will be generated here.
         treedef_item, _ = tree_rank_model.objects.get_or_create(
             name=rank,
             treedef=tree_def,
-            rankid=rank_id,
             defaults={
-                'title': rank.capitalize()
+                'title': rank.capitalize(),
+                'rankid': rank_id
             }
         )
 
@@ -343,7 +345,7 @@ def stream_csv_from_url(url: str, discipline, rank_count: int, tree_type: str, i
 
     logger.debug(f"Creating default tree with the following {rank_count} ranks:")
     logger.debug(rank_names_lst)
-    
+
     tree_name = initialize_default_tree(tree_type, discipline, initial_tree_name, rank_names_lst)
     set_tree(tree_name)
     

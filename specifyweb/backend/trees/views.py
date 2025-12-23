@@ -648,18 +648,18 @@ DEFAULT_TREE_MAPPING_SCHEMA = {
                 },
                 "required": ["url", "disciplineName"],
                 "oneOf": [
-                    {"required": ["mapping"],
-                        "properties": {
-                            "mapping": {
-                                "type": "object",
-                                "description": "An object describing the column mapping of the CSV data."
-                            },
-                        }},
                     {"required": ["mappingUrl"],
                         "properties": {
                             "mappingUrl": {
                                 "type": "string",
                                 "description": "The URL of a JSON file describing the column mapping of the CSV data."
+                            },
+                        }},
+                    {"required": ["mapping"],
+                        "properties": {
+                            "mapping": {
+                                "type": "object",
+                                "description": "An object describing the column mapping of the CSV data."
                             },
                         }}
                 ]
