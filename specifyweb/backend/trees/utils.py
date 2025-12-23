@@ -121,13 +121,15 @@ def initialize_default_tree(tree_type: str, discipline, tree_name: str, rank_nam
         # Create tree ranks
         treedefitems_bulk = []
         rank_id = 0
-        for rank_name in rank_names_lst:
+        for i, rank_name in enumerate(rank_names_lst):
             treedefitems_bulk.append(
                 tree_rank_model(
                     treedef=tree_def,
-                    name=rank_name, # TODO: allow rank name configuration
-                    title=rank_name.capitalize(),
+                    name=rank_name,
+                    title=rank_name.capitalize(), # TODO: allow rank name configuration
                     rankid=int(rank_id),
+                    isenforced=(rank_id == 0),
+                    isinfullname=(i >= len(rank_names_lst)-3)
                 )
             )
             rank_id += 10
