@@ -16,6 +16,8 @@ from specifyweb.specify.api.crud import get_object_or_404
 from specifyweb.specify.api.serializers import obj_to_data, toJson
 from sqlalchemy import select, func, distinct, literal
 from sqlalchemy.orm import aliased
+from jsonschema import validate  # type: ignore
+from jsonschema.exceptions import ValidationError  # type: ignore
 
 from specifyweb.middleware.general import require_GET
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
@@ -556,6 +558,39 @@ def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMA
 #     update = PermissionTargetAction()
 #     delete = PermissionTargetAction()
 
+# Schema definition for the mapping file that is used in default tree creation.
+DEFAULT_TREE_MAPPING_SCHEMA = {
+    "title": "Tree column mapping for default trees",
+    "description": "The mapping of the CSV columns for default tree creation.",
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "all_columns": {
+            "description": "A list of all the column header names contained in the CSV. The first columns names should correspond the number of ranks defined in this schema.",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "ranks": {
+            "description": "An ordered list containing all the ranks to be created.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "description": "A rank's mapping definition.",
+                "type": "object",
+                "additionalProperties": {
+                    "description": "Mapping of CSV column names to the rank's field names.",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "required": ["ranks"]
+}
 @openapi(schema={
     "post": {
         "requestBody": {
@@ -594,10 +629,6 @@ def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMA
                         "type": "string",
                         "description": "The URL of the tree CSV file."
                     },
-                    "mappingUrl": {
-                        "type": "string",
-                        "description": "The URL of a JSON file describing the column mapping of the CSV data."
-                    },
                     "treeName": {
                         "type": "string",
                         "description": "The name to be used by the new tree.",
@@ -615,7 +646,23 @@ def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMA
                         "description": "The total number of rows contained in the CSV file. Only used for progress tracking."
                     },
                 },
-                "required": ["url", "mappingUrl", "disciplineName"],
+                "required": ["url", "disciplineName"],
+                "oneOf": [
+                    {"required": ["mapping"],
+                        "properties": {
+                            "mapping": {
+                                "type": "object",
+                                "description": "An object describing the column mapping of the CSV data."
+                            },
+                        }},
+                    {"required": ["mappingUrl"],
+                        "properties": {
+                            "mappingUrl": {
+                                "type": "string",
+                                "description": "The URL of a JSON file describing the column mapping of the CSV data."
+                            },
+                        }}
+                ]
             },
             "SuccessBackground": {
                 "type": "object",
@@ -666,26 +713,39 @@ def create_default_tree_view(request):
             discipline = spmodels.Discipline.objects.all().first()
 
     url = data.get('url', None)
-    mapping_url = data.get('mappingUrl', None)
 
     tree_rank_model_name = tree_discipline_name.capitalize()
-    rank_count = int(tree_rank_count(tree_rank_model_name, 8))
     tree_name = data.get('treeName', tree_rank_model_name)
 
     row_count = data.get('rowCount', None)
 
     if not url:
         return http.JsonResponse({'error': 'Tree not found.'}, status=404)
+    
+    # CSV mapping. Accept the mapping directly or a url to a JSON file containing the mapping.
+    tree_cfg = data.get('mapping', None)
+    mapping_url = data.get('mappingUrl', None)
+    if mapping_url:
+        try:
+            resp = requests.get(mapping_url)
+            resp.raise_for_status()
+            tree_cfg = resp.json()
+        except Exception:
+            return http.JsonResponse({'error': f'Could not retrieve default tree mapping from {mapping_url}.'}, status=404)
+    try:
+        validate(tree_cfg, DEFAULT_TREE_MAPPING_SCHEMA)
+    except ValidationError as e:
+        return http.JsonResponse({'error': f'Default tree mapping is invalid: {e}'}, status=400)
 
     Message.objects.create(user=request.specify_user, content=json.dumps({
         'type': 'create-default-tree-starting',
-        'name': tree_rank_model_name,
+        'name': tree_name,
         'collection_id': request.specify_collection.id,
     }))
 
     task_id = str(uuid4())
     async_result = create_default_tree_task.apply_async(
-        args=[url, discipline.id, tree_discipline_name, rank_count, request.specify_collection.id, request.specify_user.id, mapping_url, row_count, tree_name],
+        args=[url, discipline.id, tree_discipline_name, request.specify_collection.id, request.specify_user.id, tree_cfg, row_count, tree_name],
         task_id=f"create_default_tree_{tree_discipline_name}_{task_id}",
         taskid=task_id
     )

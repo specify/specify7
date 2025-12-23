@@ -126,6 +126,7 @@ def initialize_default_tree(tree_type: str, discipline, tree_name: str, rank_nam
                 tree_rank_model(
                     treedef=tree_def,
                     name=rank_name, # TODO: allow rank name configuration
+                    title=rank_name.capitalize(),
                     rankid=int(rank_id),
                 )
             )
@@ -176,9 +177,12 @@ def add_default_tree_record(tree_type: str, discipline, row: dict, tree_name: st
                 defaults[model_field] = v
 
         treedef_item, _ = tree_rank_model.objects.get_or_create(
-            name=rank.capitalize(),
+            name=rank,
             treedef=tree_def,
-            rankid=rank_id
+            rankid=rank_id,
+            defaults={
+                'title': rank.capitalize()
+            }
         )
 
         obj = tree_node_model.objects.filter(
@@ -210,8 +214,8 @@ def add_default_tree_record(tree_type: str, discipline, row: dict, tree_name: st
         rank_id += 10
 
 @app.task(base=LogErrorsTask, bind=True)
-def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline_name: str, rank_count: int, specify_collection_id: int,
-                             specify_user_id: int, mapping_url: str, row_count: Optional[int], tree_name: str):
+def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline_name: str, specify_collection_id: int,
+                             specify_user_id: int, tree_cfg: dict, row_count: Optional[int], tree_name: str):
     logger.info(f'starting task {str(self.request.id)}')
 
     specify_user = spmodels.Specifyuser.objects.get(id=specify_user_id)
@@ -248,12 +252,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
             # non-taxon tree
             tree_type = tree_discipline_name
 
-        try:
-            resp = requests.get(mapping_url)
-            resp.raise_for_status()
-            tree_cfg = resp.json()
-        except Exception:
-            raise
+        rank_count = len(tree_cfg['ranks'])
         
         total_rows = 0
         if row_count:
@@ -321,11 +320,11 @@ def stream_csv_from_url(url: str, discipline, rank_count: int, tree_type: str, i
                             if new_line_index == -1: break
                             line = buffer[:new_line_index + 1] # extract line
                             buffer = buffer[new_line_index + 1 :] # clear read buffer
-                            yield line.decode('utf-8', errors='replace')
+                            yield line.decode('utf-8-sig', errors='replace')
 
                     if buffer:
                         # yield last line
-                        yield buffer.decode('utf-8', errors='replace')
+                        yield buffer.decode('utf-8-sig', errors='replace')
                     return
             except (ChunkedEncodingError, ConnectionError) as e:
                 # Trigger retry
@@ -341,6 +340,8 @@ def stream_csv_from_url(url: str, discipline, rank_count: int, tree_type: str, i
 
     rank_names_lst = reader.fieldnames[:rank_count]
     rank_names_lst.insert(0, "Root") # Add Root rank
+    logger.debug(f"################ CREATING TREE WITH THE FOLLOWING {rank_count} RANKS ###############")
+    logger.debug(rank_names_lst)
     tree_name = initialize_default_tree(tree_type, discipline, initial_tree_name, rank_names_lst)
     set_tree(tree_name)
     
