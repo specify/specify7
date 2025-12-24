@@ -579,13 +579,20 @@ DEFAULT_TREE_MAPPING_SCHEMA = {
             "items": {
                 "description": "A rank's mapping definition.",
                 "type": "object",
-                "additionalProperties": {
-                    "description": "Mapping of CSV column names to the rank's field names.",
-                    "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
+                "properties": {
+                    "name": {"type": "string", "description": "Display name for the rank"},
+                    "enforced": {"type": "boolean", "description": "isEnforced"},
+                    "infullname": {"type": "boolean", "description": "isInFullName"},
+                    "rankid": {"type": "integer", "description": "Rank's rankid"},
+                    "column": {"type": "string", "description": "The CSV column corresponding to this rank"},
+                    "fields": {
+                        "type": "object",
+                        "description": "Mapping of the rank's field names to the CSV columns containing the values.",
+                        "additionalProperties": {"type": "string"}
                     }
-                }
+                },
+                "required": ["name", "column", "fields"],
+                "additionalProperties": False
             }
         }
     },

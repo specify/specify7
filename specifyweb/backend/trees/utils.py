@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Iterator, Optional
+from typing import Any, Callable, Dict, Iterator, Optional, TypedDict, NotRequired
 import json
 import requests
 import csv
@@ -98,7 +98,14 @@ def get_models(name: str):
     
     return tree_def_model, tree_rank_model, tree_node_model
 
-def initialize_default_tree(tree_type: str, discipline, tree_name: str, rank_names_lst: list):
+class RankConfiguration(TypedDict):
+    name: str
+    title: NotRequired[str]
+    enforced: bool
+    infullname: bool
+    rank: int # rank id
+
+def initialize_default_tree(tree_type: str, discipline, tree_name: str, rank_cfg: list[RankConfiguration]):
     """Creates an initial empty tree."""
     with transaction.atomic():
         tree_def_model, tree_rank_model, tree_node_model = get_models(tree_type)
@@ -121,15 +128,15 @@ def initialize_default_tree(tree_type: str, discipline, tree_name: str, rank_nam
         # Create tree ranks
         treedefitems_bulk = []
         rank_id = 0
-        for i, rank_name in enumerate(rank_names_lst):
+        for rank in rank_cfg:
             treedefitems_bulk.append(
                 tree_rank_model(
                     treedef=tree_def,
-                    name=rank_name,
-                    title=rank_name.capitalize(), # TODO: allow rank name configuration
-                    rankid=int(rank_id),
-                    isenforced=(rank_id == 0),
-                    isinfullname=(i >= len(rank_names_lst)-3)
+                    name=rank['name'],
+                    title=rank['title'] or rank['name'].capitalize(),
+                    rankid=int(rank['rank']),
+                    isenforced=rank['enforced'],
+                    isinfullname=rank['infullname'] if rank['infullname'] is not None else False
                 )
             )
             rank_id += 10
@@ -151,9 +158,17 @@ def initialize_default_tree(tree_type: str, discipline, tree_name: str, rank_nam
         tree_name = tree_def.name
         return tree_name
 
-def add_default_tree_record(tree_type: str, discipline, row: dict, tree_name: str, tree_cfg: dict[str, Any]):
+class TreeConfiguration(TypedDict):
+    name: str
+    enforced: bool
+    rank: NotRequired[int]
+    infullname: NotRequired[bool]
+    title: NotRequired[str]
+    fields: Dict[str, str]
+
+def add_default_tree_record(tree_type: str, row: dict, tree_name: str, tree_cfg: dict[str, Any]):
     """
-    Given one CSV row, the discipline, and a rank configuration dictionary,
+    Given one CSV row and a column mapping / rank configuration dictionary,
     walk through the 'ranks' in order, creating or updating each tree record and linking
     it to its parent.
     """
@@ -163,43 +178,46 @@ def add_default_tree_record(tree_type: str, discipline, row: dict, tree_name: st
     rank_id = 10
 
     for rank_map in tree_cfg['ranks']:
-        rank = next(iter(rank_map))
-        fields_map = rank_map[rank]
+        rank_name = rank_map['name']
+        fields_map = rank_map['fields']
 
-        value = row.get(rank)
-        if not value:
-            continue
+        record_name = row.get('name') # Record's name is in the <rank_name> column.
+        if not record_name:
+            continue # This row doesn't contain a record for this rank.
 
         defaults = {}
-        for csv_col, model_field in fields_map.items():
-            if csv_col == rank:
+        for model_field, csv_col in fields_map.items():
+            if model_field == 'name':
                 continue
             v = row.get(csv_col)
             if v:
                 defaults[model_field] = v
 
+        rank_title = rank_map.get('title', rank_name.capitalize())
+
         # Get the rank by the column name.
         # It should already exist by this point, but worst case it will be generated here.
         treedef_item, _ = tree_rank_model.objects.get_or_create(
-            name=rank,
+            name=rank_name,
             treedef=tree_def,
             defaults={
-                'title': rank.capitalize(),
+                'title': rank_title,
                 'rankid': rank_id
             }
         )
 
+        # Create the record at this rank if it isn't already there.
         obj = tree_node_model.objects.filter(
-            name=value,
-            fullname=value,
+            name=record_name,
+            fullname=record_name,
             definition=tree_def,
             definitionitem=treedef_item,
             parent=parent,
         ).first()
         if obj is None:
             data = {
-                'name': value,
-                'fullname': value,
+                'name': record_name,
+                'fullname': record_name,
                 'definition': tree_def,
                 'definitionitem': treedef_item,
                 'parent': parent,
@@ -219,7 +237,7 @@ def add_default_tree_record(tree_type: str, discipline, row: dict, tree_name: st
 
 @app.task(base=LogErrorsTask, bind=True)
 def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline_name: str, specify_collection_id: int,
-                             specify_user_id: int, tree_cfg: dict, row_count: Optional[int], tree_name: str):
+                             specify_user_id: int, tree_cfg: dict, row_count: Optional[int], initial_tree_name: str):
     logger.info(f'starting task {str(self.request.id)}')
 
     specify_user = spmodels.Specifyuser.objects.get(id=specify_user_id)
@@ -245,26 +263,37 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
             current = total
         self.update_state(state='RUNNING', meta={'current': current, 'total': total})
 
-    def set_tree(name: str) -> None:
-        # Final tree name after being made unique.
-        nonlocal tree_name
-        tree_name = name
-
     try:
         tree_type = 'taxon'
         if tree_discipline_name in SPECIFY_TREES:
             # non-taxon tree
             tree_type = tree_discipline_name
 
-        rank_count = len(tree_cfg['ranks'])
+        rank_count = len(tree_cfg['ranks']) # Ranks to be populated (Excluding the root)
+
+        # Create a new empty tree. Get rank configuration from the mapping.
+        rank_cfg = [{
+            'name': 'Root',
+            'enforced': True,
+            'rank': 0
+        }]
+        for rank in tree_cfg['ranks']:
+            rank_cfg.append({
+                'name': rank['name'],
+                'enforced': rank['enforced'],
+                'infullname': rank['infullname'],
+                'rank': rank['rank']
+            })
+        tree_name = initialize_default_tree(tree_type, initial_tree_name, rank_cfg)
         
+        # Start importing CSV data
         total_rows = 0
         if row_count:
             total_rows = row_count-2
         progress(0, total_rows)
         with transaction.atomic():
-            for row in stream_csv_from_url(url, discipline, rank_count, tree_type, tree_name, set_tree):
-                add_default_tree_record(tree_type, discipline, row, tree_name, tree_cfg)
+            for row in stream_csv_from_url(url, discipline, rank_count, tree_type):
+                add_default_tree_record(tree_type, row, tree_name, tree_cfg)
                 progress(1, 0)
     except Exception as e:
         Message.objects.create(
@@ -289,7 +318,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
         })
     )
 
-def stream_csv_from_url(url: str, discipline, rank_count: int, tree_type: str, initial_tree_name: str, set_tree: Callable[[str], None]) -> Iterator[Dict[str, str]]:
+def stream_csv_from_url(url: str, discipline, rank_count: int, tree_type: str) -> Iterator[Dict[str, str]]:
     """
     Streams a taxon CSV from a URL. Yields each row.
     """
@@ -341,15 +370,6 @@ def stream_csv_from_url(url: str, discipline, rank_count: int, tree_type: str, i
                 raise
 
     reader = csv.DictReader(lines_iter())
-
-    rank_names_lst = reader.fieldnames[:rank_count]
-    rank_names_lst.insert(0, "Root") # Add Root rank
-
-    logger.debug(f"Creating default tree with the following {rank_count} ranks:")
-    logger.debug(rank_names_lst)
-
-    tree_name = initialize_default_tree(tree_type, discipline, initial_tree_name, rank_names_lst)
-    set_tree(tree_name)
     
     for row in reader:
         yield row
