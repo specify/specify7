@@ -55,15 +55,12 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
     logger.debug("creating %s with data: %s", model, data)
     if isinstance(model, str):
         model = get_model_or_404(model)
-    
+
     # Redirect to a dedicated object creation function for the model
     model_name = model.__name__.lower()
     if model_name in CREATE_MODEL_REDIRECTS:
-        try:
-            result = CREATE_MODEL_REDIRECTS[model_name](normalize_keys(data))
-            return model.objects.filter(id=result[f'{model_name}_id']).first()
-        except Exception as e:
-            raise HttpResponseServerError(e)
+        result = CREATE_MODEL_REDIRECTS[model_name](normalize_keys(data))
+        return model.objects.filter(id=result[f'{model_name}_id']).first()
 
     data = cleanData(model, data, parent_relationship)
     obj = model()
