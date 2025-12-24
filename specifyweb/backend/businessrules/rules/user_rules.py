@@ -30,11 +30,12 @@ def added_user(sender, instance, created, raw, **kwargs):
         grouptype=user.usertype,
     )
 
-    for gp in group_principals:
-        cursor.execute(
-            'insert into specifyuser_spprincipal(specifyuserid, spprincipalid) values (%s, %s)',
-            [user.id, gp.id]
-        )
+    # TODO: UNCOMMENT THIS. Commented specifically for testing PR https://github.com/specify/specify7/pull/6671
+    # for gp in group_principals:
+    #     cursor.execute(
+    #         'insert into specifyuser_spprincipal(specifyuserid, spprincipalid) values (%s, %s)',
+    #         [user.id, gp.id]
+    #     )
 
 
 @receiver(signals.pre_delete, sender=Specifyuser)
