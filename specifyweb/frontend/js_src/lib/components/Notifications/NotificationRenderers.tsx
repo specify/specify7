@@ -3,10 +3,13 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { backupText } from '../../localization/backup';
+import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
 import { mergingText } from '../../localization/merging';
 import { notificationsText } from '../../localization/notifications';
+import { treeText } from '../../localization/tree';
 import { StringToJsx } from '../../localization/utils';
+import { ping } from '../../utils/ajax/ping';
 import type { IR, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
@@ -359,6 +362,59 @@ export const notificationRenderers: IR<
         )}
       </>
     );
+  },
+  'create-default-tree-starting'(notification) {
+    return (
+      <>
+        <p>{treeText.defaultTreeTaskStarting()}</p>
+        {notification.payload.name}
+      </>
+    )
+  },
+  'create-default-tree-running'(notification) {
+    return (
+      <>
+        <p>{treeText.defaultTreeTaskRunning()}</p>
+        {notification.payload.name}
+        <Button.Danger onClick={
+          (): void => {
+            ping(`/trees/create_default_tree/abort/${notification.payload.taskid}/`, {
+              method: 'POST',
+              body: {},
+              errorMode: 'dismissible',
+            })
+          }
+        }>{commonText.cancel()}</Button.Danger>
+        <details>
+          <summary>{localityText.taskId()}</summary>
+          {notification.payload.taskid}
+        </details>
+      </>
+    )
+  },
+  'create-default-tree-failed'(notification) {
+    return (
+      <>
+        <p>{treeText.defaultTreeTaskFailed()}</p>
+        {notification.payload.name}
+        <details>
+          <summary>{localityText.taskId()}</summary>
+          {notification.payload.taskid}
+        </details>
+      </>
+    )
+  },
+  'create-default-tree-completed'(notification) {
+    return (
+      <>
+        <p>{treeText.defaultTreeTaskCompleted()}</p>
+        {notification.payload.name}
+        <details>
+          <summary>{localityText.taskId()}</summary>
+          {notification.payload.taskid}
+        </details>
+      </>
+    )
   },
   default(notification) {
     console.error('Unknown notification type', { notification });
