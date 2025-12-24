@@ -188,7 +188,7 @@ def create_division(data):
 def create_discipline(data):
     from specifyweb.specify.models import (
         Division, Datatype, Geographytreedef,
-        Geologictimeperiodtreedef
+        Geologictimeperiodtreedef, Taxontreedef
     )
 
     # Check if discipline_id is provided and already exists
@@ -216,10 +216,17 @@ def create_discipline(data):
     if geographytreedef is None or geologictimeperiodtreedef is None:
         raise SetupError("A Geography tree and Chronostratigraphy tree must exist before creating a discipline.")
 
+    # Assign a taxon tree. Not required, but its eventually needed for collection object type.
+    taxontreedef_url = data.get('taxontreedef', None)
+    taxontreedef = resolve_uri_or_fallback(taxontreedef_url, None, Taxontreedef)
+    if taxontreedef is not None:
+        data['taxontreedef_id'] = taxontreedef.id
+
     data.update({
         'datatype_id': datatype.id,
         'geographytreedef_id': geographytreedef.id,
-        'geologictimeperiodtreedef_id': geologictimeperiodtreedef.id
+        'geologictimeperiodtreedef_id': geologictimeperiodtreedef.id,
+        'taxontreedef_id': taxontreedef.id if taxontreedef else None
     })
 
     # Assign new Discipline ID
@@ -249,7 +256,7 @@ def create_discipline(data):
         raise SetupError(e)
 
 def create_collection(data):
-    from specifyweb.specify.models import Collection, Discipline
+    from specifyweb.specify.models import Collection, Discipline, Taxontreedef
 
     # If collection_id is provided and exists, return success
     existing_id = data.pop('collection_id', None)
@@ -269,7 +276,11 @@ def create_collection(data):
     if discipline is not None:
         data['discipline_id'] = discipline.id
     else:
-        raise SetupError(f"No discipline available")
+        raise SetupError("No discipline available")
+    
+    # The discipline needs a Taxon Tree in order for the Collection Object Type to be created.
+    if not discipline.taxontreedef_id:
+        raise SetupError("The collection's discipline needs a taxontreedef in order for the Collection Object type to be created.")
     
     # Remove keys that should not be passed to model
     for key in ['_tablename', 'success']:
@@ -366,14 +377,16 @@ def create_tree(name: str, data: dict) -> dict:
     # Handle institution assignment
     institution = None
     if use_institution:
+        institution_id = data.pop('institution_id', None)
         institution_url = data.pop('institution', None)
-        institution = resolve_uri_or_fallback(institution_url, None, Institution)
+        institution = resolve_uri_or_fallback(institution_url, institution_id, Institution)
 
     # Handle discipline reference from URL
     discipline = None
     if use_discipline:
+        discipline_id = data.get('discipline_id', None)
         discipline_url = data.get('discipline', None)
-        discipline = resolve_uri_or_fallback(discipline_url, None, Discipline)
+        discipline = resolve_uri_or_fallback(discipline_url, discipline_id, Discipline)
 
     # Get tree configuration
     ranks = data.pop('ranks', dict())
@@ -391,6 +404,14 @@ def create_tree(name: str, data: dict) -> dict:
             kwargs['discipline'] = discipline
 
         treedef = create_default_tree(name, kwargs, ranks, preload_tree)
+
+        # Set as the primary tree in the discipline if its the first one
+        if use_discipline and discipline:
+            field_name = f'{name.lower()}treedef_id'
+            if getattr(discipline, field_name) is None:
+                setattr(discipline, field_name, treedef.id)
+                discipline.save()
+
         return {'treedef_id': treedef.id}
     except Exception as e:
         raise SetupError(e)
