@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-12-19 15:00+0000\n"
+"PO-Revision-Date: 2025-12-26 00:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/query/"
 "fr/>\n"
@@ -586,8 +586,8 @@ msgstr "Les champs suivants sont masqués dans la requête que vous avez import�
 #, fuzzy
 msgid "importNoReadPermission"
 msgstr ""
-"La requête que vous avez importée contient des tables auxquelles vous "
-"n'avez pas d'accès en lecture :"
+"La requête que vous avez importée contient des tables auxquelles vous n'avez "
+"pas accès en lecture :"
 
 #. Used in: Components > Query Builder > Check Read Access
 #: components/QueryBuilder/CheckReadAccess.tsx:43
