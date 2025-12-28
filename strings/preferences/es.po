@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-12-19 15:00+0000\n"
+"PO-Revision-Date: 2025-12-29 00:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "preferences/es/>\n"
@@ -840,7 +840,7 @@ msgstr "Cerrar ventana emergente al hacer clic desde fuera"
 #: components/Preferences/UserDefinitions.tsx:2115
 #, fuzzy
 msgid "animateTransitions"
-msgstr "Animar transiciones"
+msgstr "Transiciones animadas"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2122
