@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2025-12-19 15:00+0000\n"
+"PO-Revision-Date: 2025-12-29 00:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/preferences/pt_BR/>\n"
@@ -315,7 +315,7 @@ msgstr "Se os diálogos têm fundo translúcido."
 #: components/Preferences/UserDefinitions.tsx:1303
 #, fuzzy
 msgid "alwaysPrompt"
-msgstr "Sempre solicitando a escolha da coleção"
+msgstr "Sempre solicitando a seleção da coleção"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1374
@@ -343,7 +343,7 @@ msgstr "cor de destaque da árvore"
 #: components/Preferences/UserDefinitions.tsx:1636
 #, fuzzy
 msgid "synonymColor"
-msgstr "Cor (sinônimo)"
+msgstr "Cor (Sinônimo)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1987
