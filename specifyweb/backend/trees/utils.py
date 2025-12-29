@@ -103,6 +103,7 @@ class RankConfiguration(TypedDict):
     title: NotRequired[str]
     enforced: bool
     infullname: bool
+    fullnameseparator: NotRequired[str]
     rank: int # rank id
 
 def initialize_default_tree(tree_type: str, discipline, tree_name: str, rank_cfg: list[RankConfiguration]):
@@ -136,7 +137,8 @@ def initialize_default_tree(tree_type: str, discipline, tree_name: str, rank_cfg
                     title=rank.get('title', rank['name'].capitalize()),
                     rankid=int(rank.get('rank', rank_id)),
                     isenforced=rank.get('enforced', True),
-                    isinfullname=rank.get('infullname', False)
+                    isinfullname=rank.get('infullname', False),
+                    fullnameseparator=rank.get('fullnameseparator', ' ')
                 )
             )
             rank_id += 10
@@ -164,6 +166,7 @@ class RankMappingConfiguration(TypedDict):
     enforced: NotRequired[bool]
     rank: NotRequired[int]
     infullname: NotRequired[bool]
+    fullnameseparator: NotRequired[str]
     fields: Dict[str, str]
 
 def add_default_tree_record(tree_type: str, row: dict, tree_name: str, tree_cfg: dict[str, RankMappingConfiguration]):
@@ -284,6 +287,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
                 'name': rank['name'],
                 'enforced': rank.get('enforced', True),
                 'infullname': rank.get('infullname', False),
+                'fullnameseparator': rank.get('fullnameseparator', ' '),
                 'rank': rank.get('rank', auto_rank_id)
             })
             auto_rank_id += 10
