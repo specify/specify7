@@ -132,11 +132,11 @@ def initialize_default_tree(tree_type: str, discipline, tree_name: str, rank_cfg
             treedefitems_bulk.append(
                 tree_rank_model(
                     treedef=tree_def,
-                    name=rank['name'],
-                    title=rank['title'] or rank['name'].capitalize(),
-                    rankid=int(rank['rank']),
-                    isenforced=rank['enforced'],
-                    isinfullname=rank['infullname'] if rank['infullname'] is not None else False
+                    name=rank.get('name'),
+                    title=rank.get('title', rank['name'].capitalize()),
+                    rankid=int(rank.get('rank', rank_id)),
+                    isenforced=rank.get('enforced', True),
+                    isinfullname=rank.get('infullname', False)
                 )
             )
             rank_id += 10
@@ -160,10 +160,10 @@ def initialize_default_tree(tree_type: str, discipline, tree_name: str, rank_cfg
 
 class RankMappingConfiguration(TypedDict):
     name: str
-    enforced: bool
+    column: str
+    enforced: NotRequired[bool]
     rank: NotRequired[int]
     infullname: NotRequired[bool]
-    title: NotRequired[str]
     fields: Dict[str, str]
 
 def add_default_tree_record(tree_type: str, row: dict, tree_name: str, tree_cfg: dict[str, RankMappingConfiguration]):
@@ -181,9 +181,11 @@ def add_default_tree_record(tree_type: str, row: dict, tree_name: str, tree_cfg:
         rank_name = rank_map['name']
         fields_map = rank_map['fields']
 
-        record_name = row.get('name') # Record's name is in the <rank_name> column.
+        record_name = row.get(rank_map.get('column', rank_name)) # Record's name is in the <rank_name> column.
+
+        logger.debug(f"Rank name: {rank_name}, Record name: {record_name}")
         if not record_name:
-            continue # This row doesn't contain a record for this rank.
+            continue # This row doesn't contain a record for this rank.        
 
         defaults = {}
         for model_field, csv_col in fields_map.items():
@@ -242,12 +244,13 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
 
     specify_user = spmodels.Specifyuser.objects.get(id=specify_user_id)
     discipline = spmodels.Discipline.objects.get(id=discipline_id)
+    tree_name = initial_tree_name # Name will be uniquified on tree creation
 
     Message.objects.create(
         user=specify_user,
         content=json.dumps({
             'type': 'create-default-tree-running',
-            'name': tree_name,
+            'name': initial_tree_name,
             'taskid': str(self.request.id),
             'collection_id': specify_collection_id,
         })
@@ -269,22 +272,22 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
             # non-taxon tree
             tree_type = tree_discipline_name
 
-        rank_count = len(tree_cfg['ranks']) # Ranks to be populated (Excluding the root)
-
         # Create a new empty tree. Get rank configuration from the mapping.
         rank_cfg = [{
             'name': 'Root',
             'enforced': True,
             'rank': 0
         }]
+        auto_rank_id = 10
         for rank in tree_cfg['ranks']:
             rank_cfg.append({
                 'name': rank['name'],
-                'enforced': rank['enforced'],
-                'infullname': rank['infullname'],
-                'rank': rank['rank']
+                'enforced': rank.get('enforced', True),
+                'infullname': rank.get('infullname', False),
+                'rank': rank.get('rank', auto_rank_id)
             })
-        tree_name = initialize_default_tree(tree_type, initial_tree_name, rank_cfg)
+            auto_rank_id += 10
+        tree_name = initialize_default_tree(tree_type, discipline, initial_tree_name, rank_cfg)
         
         # Start importing CSV data
         total_rows = 0
@@ -292,7 +295,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
             total_rows = row_count-2
         progress(0, total_rows)
         with transaction.atomic():
-            for row in stream_csv_from_url(url, discipline, rank_count, tree_type):
+            for row in stream_csv_from_url(url):
                 add_default_tree_record(tree_type, row, tree_name, tree_cfg)
                 progress(1, 0)
     except Exception as e:
