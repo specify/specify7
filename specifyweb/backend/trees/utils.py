@@ -158,7 +158,7 @@ def initialize_default_tree(tree_type: str, discipline, tree_name: str, rank_cfg
         tree_name = tree_def.name
         return tree_name
 
-class TreeConfiguration(TypedDict):
+class RankMappingConfiguration(TypedDict):
     name: str
     enforced: bool
     rank: NotRequired[int]
@@ -166,7 +166,7 @@ class TreeConfiguration(TypedDict):
     title: NotRequired[str]
     fields: Dict[str, str]
 
-def add_default_tree_record(tree_type: str, row: dict, tree_name: str, tree_cfg: dict[str, Any]):
+def add_default_tree_record(tree_type: str, row: dict, tree_name: str, tree_cfg: dict[str, RankMappingConfiguration]):
     """
     Given one CSV row and a column mapping / rank configuration dictionary,
     walk through the 'ranks' in order, creating or updating each tree record and linking
@@ -318,7 +318,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
         })
     )
 
-def stream_csv_from_url(url: str, discipline, rank_count: int, tree_type: str) -> Iterator[Dict[str, str]]:
+def stream_csv_from_url(url: str) -> Iterator[Dict[str, str]]:
     """
     Streams a taxon CSV from a URL. Yields each row.
     """
