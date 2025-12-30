@@ -3,12 +3,9 @@ import React from 'react';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
-import { ajax } from '../../utils/ajax';
 import { localized } from '../../utils/types';
-import { toLowerCase } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { serializeResource } from '../DataModel/serializers';
 import type {
   Collection,
   Discipline,
