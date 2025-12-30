@@ -132,7 +132,9 @@ def setup_database_task(self, data: dict):
                 api.create_geography_tree(data['geographytreedef'])
 
             logger.debug('Creating discipline')
-            api.create_discipline(data['discipline'])
+            discipline_result = api.create_discipline(data['discipline'])
+            discipline_id = discipline_result.get('discipline_id')
+            default_tree['discipline_id'] = discipline_id
             update_progress()
 
             if is_paleo_geo:
@@ -143,6 +145,8 @@ def setup_database_task(self, data: dict):
                 api.create_tectonicunit_tree(default_tree.copy())
 
             logger.debug('Creating taxon tree')
+            if data['taxontreedef'].get('discipline_id') is None:
+                data['taxontreedef']['discipline_id'] = discipline_id
             api.create_taxon_tree(data['taxontreedef'])
             update_progress()
 
