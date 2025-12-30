@@ -758,24 +758,13 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           totalPrepLoaned += quantity;
         });
 
-        // Check for min attribute on countAmt input field after rendering  
-         const inputs = document.querySelectorAll<HTMLInputElement>(
-          `input[name="countAmt"]`
-        );
-        const firstInput = inputs[0];
-        const minValue= firstInput?.getAttribute('min');
-        const hasMinAttribute = ( minValue !== null  && minValue >= '0');
-        // Modified save blocker logic to consider min attribute and choose either the blocker for negative prepr or HTML min attribute to avoid conflict
-
         if (totalPrep < 0) {
-         if (!hasMinAttribute) {
           setSaveBlockers(
             prep,
             prep.specifyTable.field.countAmt,
             [resourcesText.preparationIsNegative()],
             PREPARATION_NEGATIVE_KEY
           );
-        } 
         } else if (totalPrep < totalPrepLoaned) {
           setSaveBlockers(
             prep,
