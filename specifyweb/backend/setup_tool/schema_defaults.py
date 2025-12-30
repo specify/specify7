@@ -20,7 +20,7 @@ def apply_schema_defaults(discipline: Discipline):
     schema_overrides_path = Path(__file__).parent.parent.parent.parent / 'config' / discipline.type / 'schema_overrides.json'
     overrides = None
     if schema_overrides_path.exists():
-        load_json_from_file(schema_overrides_path)
+        overrides = load_json_from_file(schema_overrides_path)
 
     # Update the schema for each table individually.
     for model_name in model_names_by_table_id.values():

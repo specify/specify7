@@ -240,7 +240,7 @@ def update_table_field_schema_config_with_defaults(
         return
     
     # Apply defaults if provided
-    field_name_str = field.name
+    field_name_str = camel_to_spaced_title_case(field.name)
     field_desc_str = camel_to_spaced_title_case(field.name)
     field_hidden = field_name.lower() in HIDDEN_FIELDS
     field_required = field.required
