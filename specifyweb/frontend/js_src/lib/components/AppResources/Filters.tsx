@@ -15,6 +15,7 @@ import { Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Dialog } from '../Molecules/Dialog';
+import { hasPermission } from '../Permissions/helpers';
 import {
   allAppResources,
   countAppResources,
@@ -23,7 +24,6 @@ import {
 } from './filtersHelpers';
 import type { AppResources } from './hooks';
 import { appResourceSubTypes, appResourceTypes } from './types';
-import { hasPermission } from '../Permissions/helpers';
 
 export function AppResourcesFilters({
   initialResources,
