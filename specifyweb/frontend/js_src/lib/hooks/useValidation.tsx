@@ -97,8 +97,19 @@ export function useValidation<T extends Input = Input>(
       // Do not steal focus when form rendering the form in the form editor
       if (isInFormEditor) return;
 
+      // Check for native validation errors for Negative Number fields Could be extended to other types as needed
+      const hasNativeErrors =
+      input.validity.rangeOverflow ||
+      input.validity.rangeUnderflow ||
+      input.validity.valueMissing; 
+
       // Empty string clears validation error
-      input.setCustomValidity(joined);
+      // now checks for custom validity and clears it to prevent concatenation of both validity messages
+      if (hasNativeErrors) {
+        input.setCustomValidity('');
+      } else{
+        input.setCustomValidity(joined);
+      }
 
       if (
         type === 'focus' ||
