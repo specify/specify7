@@ -51,25 +51,6 @@ export function SystemConfigurationTool(): JSX.Element | null {
       'application/json'
     ).then(setAllInfo);
 
-  const handleSaved = () => {
-    if (!newResource) return;
-
-    const data = serializeResource(newResource as SpecifyResource<Collection>);
-
-    ajax<{}>(
-      `/setup_tool/${toLowerCase(newResource.specifyTable.name)}/create/`,
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-        },
-        body: data,
-      }
-    )
-      .then(refreshAllInfo)
-      .then(closeNewResource);
-  };
-
   return (
     <Container.FullGray className="sm:h-auto overflow-scroll">
       <H2 className="text-2xl">{userText.systemConfigurationTool()}</H2>
@@ -108,7 +89,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
             onAdd={undefined}
             onClose={closeNewResource}
             onDeleted={undefined}
-            onSaved={handleSaved}
+            onSaved={undefined}
           />
         </Dialog>
       ) : undefined}
