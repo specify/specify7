@@ -99,15 +99,17 @@ export function useValidation<T extends Input = Input>(
 
       // Check for native validation errors for Negative Number fields Could be extended to other types as needed
       const hasNativeErrors =
-      input.validity.rangeOverflow ||
-      input.validity.rangeUnderflow ||
-      input.validity.valueMissing; 
+        input.validity.rangeOverflow ||
+        input.validity.rangeUnderflow ||
+        input.validity.valueMissing;
 
-      // Empty string clears validation error
-      // now checks for custom validity and clears it to prevent concatenation of both validity messages
+      /*
+       * Empty string clears validation error
+       * now checks for custom validity and clears it to prevent concatenation of both validity messages
+       */
       if (hasNativeErrors) {
         input.setCustomValidity('');
-      } else{
+      } else {
         input.setCustomValidity(joined);
       }
 
