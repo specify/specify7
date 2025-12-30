@@ -261,7 +261,7 @@ def create_discipline(data):
         raise SetupError(e)
 
 def create_collection(data):
-    from specifyweb.specify.models import Collection, Discipline, Taxontreedef
+    from specifyweb.specify.models import Collection, Discipline
 
     # If collection_id is provided and exists, return success
     existing_id = data.pop('collection_id', None)
@@ -307,21 +307,26 @@ def create_collection(data):
         raise SetupError(e)
 
 def create_specifyuser(data):
-    from specifyweb.specify.models import Specifyuser, Agent, Division, Collection
+    """Creates the first admin user during the initial database setup."""
+    from specifyweb.specify.models import Specifyuser, Agent, Division
 
     # Assign ID manually
     max_id = Specifyuser.objects.aggregate(Max('id'))['id__max'] or 0
     data['id'] = max_id + 1
 
-    # Ensure there is an Agent
-    agent = Agent.objects.last()
-    if not agent:
-        agent = Agent.objects.create(
-            id=1,
-            agenttype=1,
-            firstname='spadmin',
-            division=Division.objects.last(),
-        )
+    username = data.get('username')
+
+    last_name = data.pop('lastname', username)
+    first_name = data.pop('firstname', '')
+
+    # Create agent. We can assume no agents already exist.
+    agent = Agent.objects.create(
+        id=1,
+        agenttype=1,
+        lastname=last_name,
+        firstname=first_name,
+        division=Division.objects.last(),
+    )
 
     try:
         # Create user

@@ -196,4 +196,16 @@ export const setupToolText = createDictionary({
   specifyUserConfirmPasswordDescription: {
     'en-us': 'Must match the password entered above.',
   },
+  specifyUserFirstName: {
+    'en-us': 'First Name'
+  },
+  specifyUserFirstNameDescription: {
+    'en-us': 'The first name of the agent associated with the account. Optional.',
+  },
+  specifyUserLastName: {
+    'en-us': 'Last Name'
+  },
+  specifyUserLastNameDescription: {
+    'en-us': 'The last name of the agent associated with the account. Optional.',
+  }
 } as const);

@@ -395,6 +395,20 @@ export const resources: RA<ResourceConfig> = [
         },
         maxLength: 255,
       },
+      {
+        name: 'firstname',
+        label: setupToolText.specifyUserFirstName(),
+        description: setupToolText.specifyUserFirstNameDescription(),
+        required: false,
+        maxLength: 50,
+      },
+      {
+        name: 'lastname',
+        label: setupToolText.specifyUserLastName(),
+        description: setupToolText.specifyUserLastNameDescription(),
+        required: false,
+        maxLength: 256,
+      },
     ],
   },
 ];
