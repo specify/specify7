@@ -20,6 +20,7 @@ from specifyweb.backend.setup_tool.setup_tasks import setup_database_background,
 from specifyweb.backend.setup_tool.tree_defaults import create_default_tree, update_tree_scoping
 from specifyweb.specify.models import Institution, Discipline
 from specifyweb.specify.migration_utils.default_cots import (create_default_collection_types)
+from specifyweb.backend.businessrules.uniqueness_rules import apply_default_uniqueness_rules
 
 import logging
 logger = logging.getLogger(__name__)
@@ -245,6 +246,9 @@ def create_discipline(data):
         if not division_url:
             # Create Splocalecontainers for all datamodel tables
             apply_schema_defaults(new_discipline)
+
+            # Apply default uniqueness rules
+            apply_default_uniqueness_rules(new_discipline)
 
             # Update tree scoping
             update_tree_scoping(geographytreedef, new_discipline.id)
