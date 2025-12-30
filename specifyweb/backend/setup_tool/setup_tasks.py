@@ -7,9 +7,8 @@ from typing import Tuple, Optional
 from celery.result import AsyncResult
 from specifyweb.backend.setup_tool import api
 from django.db import transaction
-import threading
 from specifyweb.specify.models_utils.model_extras import PALEO_DISCIPLINES, GEOLOGY_DISCIPLINES
-import traceback
+from specifyweb.celery_tasks import is_worker_alive, MissingWorkerError
 
 from uuid import uuid4
 import logging
@@ -17,15 +16,9 @@ logger = logging.getLogger(__name__)
 
 # Keep track of the currently running setup task. There should only ever be one.
 _active_setup_task_id: Optional[str] = None
-_active_setup_lock = threading.Lock()
 
 # Keep track of last error.
 _last_error: Optional[str] = None
-_last_error_lock = threading.Lock()
-
-class MissingWorkerError(Exception):
-    """Raised when worker is not running."""
-    pass
 
 def setup_database_background(data: dict) -> str:
     global _active_setup_task_id, _last_error
@@ -44,24 +37,14 @@ def setup_database_background(data: dict) -> str:
 
     task = setup_database_task.apply_async(args, task_id=task_id)
 
-    with _active_setup_lock:
-        _active_setup_task_id = task.id
+    _active_setup_task_id = task.id
     
     return task.id
-
-def is_worker_alive():
-    """Pings the worker to see if its running."""
-    try:
-        res = app.control.inspect(timeout=1).ping()
-        return bool(res)
-    except Exception:
-        return False
 
 def get_active_setup_task() -> Tuple[Optional[AsyncResult], bool]:
     """Return the current setup task if it is active, and also if it is busy."""
     global _active_setup_task_id
-    with _active_setup_lock:
-        task_id = _active_setup_task_id
+    task_id = _active_setup_task_id
 
     if not task_id:
         return None, False
@@ -80,9 +63,8 @@ def get_active_setup_task() -> Tuple[Optional[AsyncResult], bool]:
             set_last_setup_error(error)
         # Clear the setup id if its not busy.
         # Commented out to allow error messages to be checked multiple times.
-        # with _active_setup_lock:
-        #     if _active_setup_task_id == task_id:
-        #         _active_setup_task_id = None
+        # if _active_setup_task_id == task_id:
+        #     _active_setup_task_id = None
     return res, busy
 
 @app.task(bind=True)
@@ -167,5 +149,4 @@ def get_last_setup_error() -> Optional[str]:
 
 def set_last_setup_error(error_text: Optional[str]):
     global _last_error
-    with _last_error_lock:
-        _last_error = error_text
+    _last_error = error_text

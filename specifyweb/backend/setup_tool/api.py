@@ -16,7 +16,8 @@ from specifyweb.backend.setup_tool.utils import normalize_keys, resolve_uri_or_f
 from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults
 from specifyweb.backend.setup_tool.picklist_defaults import create_default_picklists
 from specifyweb.backend.setup_tool.prep_type_defaults import create_default_prep_types
-from specifyweb.backend.setup_tool.setup_tasks import setup_database_background, get_active_setup_task, get_last_setup_error, set_last_setup_error, MissingWorkerError
+from specifyweb.backend.setup_tool.setup_tasks import setup_database_background, get_active_setup_task, get_last_setup_error, set_last_setup_error
+from specifyweb.celery_tasks import MissingWorkerError
 from specifyweb.backend.setup_tool.tree_defaults import create_default_tree, update_tree_scoping
 from specifyweb.specify.models import Institution, Discipline
 from specifyweb.specify.migration_utils.default_cots import (create_default_collection_types)
