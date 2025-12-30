@@ -706,4 +706,14 @@ export const treeText = createDictionary({
     'ru-ru': 'Метеориты',
     'uk-ua': 'Метеорити',
   },
+  treeManagement: {
+    'en-us': 'Tree Management',
+  },
+  synonymizedNodes: {
+    'en-us': 'Expand Synonym Behavior',
+  },
+  synonymizedNodesDescription: {
+    'en-us':
+      'If enabled, this allows users to add children to synonymized parents and to synonymize a node with children.',
+  },
 } as const);
