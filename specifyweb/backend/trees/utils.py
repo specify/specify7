@@ -373,7 +373,7 @@ def stream_csv_from_url(url: str) -> Iterator[Dict[str, str]]:
                 # Trigger retry
                 if retries < max_retries:
                     retries += 1
-                    time.sleep(0.5*retries)
+                    time.sleep(2 ** retries)
                     continue
                 raise
             except Exception:
