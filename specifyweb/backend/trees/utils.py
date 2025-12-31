@@ -269,39 +269,39 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
         self.update_state(state='RUNNING', meta={'current': current, 'total': total})
 
     try:
-        tree_type = 'taxon'
-        if tree_discipline_name in SPECIFY_TREES:
-            # non-taxon tree
-            tree_type = tree_discipline_name
-
-        # Create a new empty tree. Get rank configuration from the mapping.
-        full_name_direction = 1
-        if tree_type in ('geologictimeperiod'):
-            full_name_direction = -1
-
-        rank_cfg = [{
-            'name': 'Root',
-            'enforced': True,
-            'rank': 0
-        }]
-        auto_rank_id = 10
-        for rank in tree_cfg['ranks']:
-            rank_cfg.append({
-                'name': rank['name'],
-                'enforced': rank.get('enforced', True),
-                'infullname': rank.get('infullname', False),
-                'fullnameseparator': rank.get('fullnameseparator', ' '),
-                'rank': rank.get('rank', auto_rank_id)
-            })
-            auto_rank_id += 10
-        tree_name = initialize_default_tree(tree_type, discipline, initial_tree_name, rank_cfg, full_name_direction)
-        
-        # Start importing CSV data
-        total_rows = 0
-        if row_count:
-            total_rows = row_count-2
-        progress(0, total_rows)
         with transaction.atomic():
+            tree_type = 'taxon'
+            if tree_discipline_name in SPECIFY_TREES:
+                # non-taxon tree
+                tree_type = tree_discipline_name
+
+            # Create a new empty tree. Get rank configuration from the mapping.
+            full_name_direction = 1
+            if tree_type in ('geologictimeperiod'):
+                full_name_direction = -1
+
+            rank_cfg = [{
+                'name': 'Root',
+                'enforced': True,
+                'rank': 0
+            }]
+            auto_rank_id = 10
+            for rank in tree_cfg['ranks']:
+                rank_cfg.append({
+                    'name': rank['name'],
+                    'enforced': rank.get('enforced', True),
+                    'infullname': rank.get('infullname', False),
+                    'fullnameseparator': rank.get('fullnameseparator', ' '),
+                    'rank': rank.get('rank', auto_rank_id)
+                })
+                auto_rank_id += 10
+            tree_name = initialize_default_tree(tree_type, discipline, initial_tree_name, rank_cfg, full_name_direction)
+            
+            # Start importing CSV data
+            total_rows = 0
+            if row_count:
+                total_rows = row_count-2
+            progress(0, total_rows)
             for row in stream_csv_from_url(url):
                 add_default_tree_record(tree_type, row, tree_name, tree_cfg)
                 progress(1, 0)
