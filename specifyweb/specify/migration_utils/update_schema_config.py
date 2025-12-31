@@ -92,7 +92,6 @@ def update_table_schema_config_with_defaults(
     defaults: dict = None,
     overrides: dict = None
 ):
-    logger.debug(f"(1) Starting: {str(table_name)}")
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
@@ -164,7 +163,6 @@ def update_table_schema_config_with_defaults(
 
     for field in table.all_fields:
         update_table_field_schema_config_with_defaults(table_name, discipline_id, field.name, apps, defaults=field_overrides.get(field.name.lower(), None))
-        logger.debug(f"(4) Updated field defaults for {field.name}")
 
 
 def revert_table_schema_config(table_name, apps=global_apps):
