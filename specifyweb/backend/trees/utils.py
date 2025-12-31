@@ -135,7 +135,7 @@ def initialize_default_tree(tree_type: str, discipline, tree_name: str, rank_cfg
                 tree_rank_model(
                     treedef=tree_def,
                     name=rank.get('name'),
-                    title=rank.get('title', rank['name'].capitalize()),
+                    title=rank.get('title', rank['name'].title()),
                     rankid=int(rank.get('rank', rank_id)),
                     isenforced=rank.get('enforced', True),
                     isinfullname=rank.get('infullname', False),
