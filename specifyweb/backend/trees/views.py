@@ -583,6 +583,7 @@ DEFAULT_TREE_MAPPING_SCHEMA = {
                     "name": {"type": "string", "description": "Display name for the rank"},
                     "enforced": {"type": "boolean", "description": "isEnforced"},
                     "infullname": {"type": "boolean", "description": "isInFullName"},
+                    "fullnameseparator": {"type": "string", "description": "fullNameSeparator"},
                     "rank": {"type": "integer", "description": "Rank's rankid"},
                     "column": {"type": "string", "description": "The CSV column corresponding to this rank"},
                     "fields": {
