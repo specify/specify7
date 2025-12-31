@@ -36,6 +36,7 @@ import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { Preview } from '../Molecules/FilePicker';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
 import {
@@ -43,7 +44,6 @@ import {
   attachmentsToCell,
   BASE_TABLE_NAME,
 } from '../WorkBench/attachmentHelpers';
-import { collectionPreferences } from '../Preferences/collectionPreferences';
 
 export function WbImportAttachmentsView(): JSX.Element {
   useMenuItem('workBench');

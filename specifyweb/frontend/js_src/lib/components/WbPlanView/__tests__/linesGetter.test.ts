@@ -21,16 +21,19 @@ theories(getLinesFromHeaders, [
            * TODO: The tests are mapping these Taxon headers to Component
            * over Determination. The issue is not happening within the
            * application
-           *  */
-          // 'Class',
-          // 'Superfamily',
-          // 'Family',
-          // 'Genus',
-          // 'Subgenus',
-          // 'Species',
-          // 'Subspecies',
-          // 'Species Author',
-          // 'Subspecies Author',
+           *
+           */
+          /*
+           * 'Class',
+           * 'Superfamily',
+           * 'Family',
+           * 'Genus',
+           * 'Subgenus',
+           * 'Species',
+           * 'Subspecies',
+           * 'Species Author',
+           * 'Subspecies Author',
+           */
         ],
         runAutoMapper: true,
         baseTableName: 'CollectionObject',
@@ -46,87 +49,89 @@ theories(getLinesFromHeaders, [
           default: null,
         },
       },
-      // {
-      //   mappingPath: ['determinations', '#1', 'taxon', '$Class', 'name'],
-      //   headerName: 'Class',
-      //   columnOptions: {
-      //     matchBehavior: 'ignoreNever',
-      //     nullAllowed: true,
-      //     default: null,
-      //   },
-      // },
-      // {
-      //   mappingPath: [emptyMapping],
-      //   headerName: 'Superfamily',
-      //   columnOptions: {
-      //     matchBehavior: 'ignoreNever',
-      //     nullAllowed: true,
-      //     default: null,
-      //   },
-      // },
-      // {
-      //   mappingPath: ['determinations', '#1', 'taxon', '$Family', 'name'],
-      //   headerName: 'Family',
-      //   columnOptions: {
-      //     matchBehavior: 'ignoreNever',
-      //     nullAllowed: true,
-      //     default: null,
-      //   },
-      // },
-      // {
-      //   mappingPath: ['determinations', '#1', 'taxon', '$Genus', 'name'],
-      //   headerName: 'Genus',
-      //   columnOptions: {
-      //     matchBehavior: 'ignoreNever',
-      //     nullAllowed: true,
-      //     default: null,
-      //   },
-      // },
-      // {
-      //   mappingPath: ['determinations', '#1', 'taxon', '$Subgenus', 'name'],
-      //   headerName: 'Subgenus',
-      //   columnOptions: {
-      //     matchBehavior: 'ignoreNever',
-      //     nullAllowed: true,
-      //     default: null,
-      //   },
-      // },
-      // {
-      //   mappingPath: ['determinations', '#1', 'taxon', '$Species', 'name'],
-      //   headerName: 'Species',
-      //   columnOptions: {
-      //     matchBehavior: 'ignoreNever',
-      //     nullAllowed: true,
-      //     default: null,
-      //   },
-      // },
-      // {
-      //   mappingPath: ['determinations', '#1', 'taxon', '$Subspecies', 'name'],
-      //   headerName: 'Subspecies',
-      //   columnOptions: {
-      //     matchBehavior: 'ignoreNever',
-      //     nullAllowed: true,
-      //     default: null,
-      //   },
-      // },
-      // {
-      //   mappingPath: ['determinations', '#1', 'taxon', '$Species', 'author'],
-      //   headerName: 'Species Author',
-      //   columnOptions: {
-      //     matchBehavior: 'ignoreNever',
-      //     nullAllowed: true,
-      //     default: null,
-      //   },
-      // },
-      // {
-      //   mappingPath: ['determinations', '#1', 'taxon', '$Subspecies', 'author'],
-      //   headerName: 'Subspecies Author',
-      //   columnOptions: {
-      //     matchBehavior: 'ignoreNever',
-      //     nullAllowed: true,
-      //     default: null,
-      //   },
-      // },
+      /*
+       * {
+       *   mappingPath: ['determinations', '#1', 'taxon', '$Class', 'name'],
+       *   headerName: 'Class',
+       *   columnOptions: {
+       *     matchBehavior: 'ignoreNever',
+       *     nullAllowed: true,
+       *     default: null,
+       *   },
+       * },
+       * {
+       *   mappingPath: [emptyMapping],
+       *   headerName: 'Superfamily',
+       *   columnOptions: {
+       *     matchBehavior: 'ignoreNever',
+       *     nullAllowed: true,
+       *     default: null,
+       *   },
+       * },
+       * {
+       *   mappingPath: ['determinations', '#1', 'taxon', '$Family', 'name'],
+       *   headerName: 'Family',
+       *   columnOptions: {
+       *     matchBehavior: 'ignoreNever',
+       *     nullAllowed: true,
+       *     default: null,
+       *   },
+       * },
+       * {
+       *   mappingPath: ['determinations', '#1', 'taxon', '$Genus', 'name'],
+       *   headerName: 'Genus',
+       *   columnOptions: {
+       *     matchBehavior: 'ignoreNever',
+       *     nullAllowed: true,
+       *     default: null,
+       *   },
+       * },
+       * {
+       *   mappingPath: ['determinations', '#1', 'taxon', '$Subgenus', 'name'],
+       *   headerName: 'Subgenus',
+       *   columnOptions: {
+       *     matchBehavior: 'ignoreNever',
+       *     nullAllowed: true,
+       *     default: null,
+       *   },
+       * },
+       * {
+       *   mappingPath: ['determinations', '#1', 'taxon', '$Species', 'name'],
+       *   headerName: 'Species',
+       *   columnOptions: {
+       *     matchBehavior: 'ignoreNever',
+       *     nullAllowed: true,
+       *     default: null,
+       *   },
+       * },
+       * {
+       *   mappingPath: ['determinations', '#1', 'taxon', '$Subspecies', 'name'],
+       *   headerName: 'Subspecies',
+       *   columnOptions: {
+       *     matchBehavior: 'ignoreNever',
+       *     nullAllowed: true,
+       *     default: null,
+       *   },
+       * },
+       * {
+       *   mappingPath: ['determinations', '#1', 'taxon', '$Species', 'author'],
+       *   headerName: 'Species Author',
+       *   columnOptions: {
+       *     matchBehavior: 'ignoreNever',
+       *     nullAllowed: true,
+       *     default: null,
+       *   },
+       * },
+       * {
+       *   mappingPath: ['determinations', '#1', 'taxon', '$Subspecies', 'author'],
+       *   headerName: 'Subspecies Author',
+       *   columnOptions: {
+       *     matchBehavior: 'ignoreNever',
+       *     nullAllowed: true,
+       *     default: null,
+       *   },
+       * },
+       */
     ],
   },
   {
