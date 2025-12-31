@@ -106,7 +106,7 @@ class RankConfiguration(TypedDict):
     fullnameseparator: NotRequired[str]
     rank: int # rank id
 
-def initialize_default_tree(tree_type: str, discipline, tree_name: str, rank_cfg: list[RankConfiguration]):
+def initialize_default_tree(tree_type: str, discipline, tree_name: str, rank_cfg: list[RankConfiguration], full_name_direction: int=1):
     """Creates an initial empty tree."""
     with transaction.atomic():
         tree_def_model, tree_rank_model, tree_node_model = get_models(tree_type)
@@ -123,7 +123,8 @@ def initialize_default_tree(tree_type: str, discipline, tree_name: str, rank_cfg
         # Create tree definition
         tree_def, _ = tree_def_model.objects.get_or_create(
             name=unique_tree_name,
-            discipline=discipline
+            discipline=discipline,
+            fullnamedirection=full_name_direction
         )
         
         # Create tree ranks
@@ -157,8 +158,7 @@ def initialize_default_tree(tree_type: str, discipline, tree_name: str, rank_cfg
                 parent=None
             )
 
-        tree_name = tree_def.name
-        return tree_name
+        return tree_def.name
 
 class RankMappingConfiguration(TypedDict):
     name: str
@@ -186,7 +186,6 @@ def add_default_tree_record(tree_type: str, row: dict, tree_name: str, tree_cfg:
 
         record_name = row.get(rank_map.get('column', rank_name)) # Record's name is in the <rank_name> column.
 
-        logger.debug(f"Rank name: {rank_name}, Record name: {record_name}")
         if not record_name:
             continue # This row doesn't contain a record for this rank.        
 
@@ -276,6 +275,10 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
             tree_type = tree_discipline_name
 
         # Create a new empty tree. Get rank configuration from the mapping.
+        full_name_direction = 1
+        if tree_type in ('geologictimeperiod'):
+            full_name_direction = -1
+
         rank_cfg = [{
             'name': 'Root',
             'enforced': True,
@@ -291,7 +294,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
                 'rank': rank.get('rank', auto_rank_id)
             })
             auto_rank_id += 10
-        tree_name = initialize_default_tree(tree_type, discipline, initial_tree_name, rank_cfg)
+        tree_name = initialize_default_tree(tree_type, discipline, initial_tree_name, rank_cfg, full_name_direction)
         
         # Start importing CSV data
         total_rows = 0
