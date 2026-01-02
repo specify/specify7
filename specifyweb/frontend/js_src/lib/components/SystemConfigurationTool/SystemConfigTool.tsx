@@ -1,9 +1,7 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
-import { localized } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type {
@@ -16,7 +14,7 @@ import type {
 import { collection, discipline, division } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { load } from '../InitialContext';
-import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { LoadingScreen } from '../Molecules/Dialog';
 import { Hierarchy } from './Hierarchy';
 import type { InstitutionData } from './Utils';
 import { fetchAllSystemData } from './Utils';
