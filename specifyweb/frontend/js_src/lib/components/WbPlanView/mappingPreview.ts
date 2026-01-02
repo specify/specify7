@@ -174,7 +174,7 @@ export function generateMappingPathPreview(
   // Special case for disambiguation: Host taxon under CollectionObject
   const isHostTaxonCase =
     baseTableName === 'CollectionObject' &&
-    parentTableOrTreeName === 'Host taxon';
+    (parentTableOrTreeName ?? '').trim().toLowerCase() === 'host taxon';
 
   return filterArray([
     ...(isHostTaxonCase ? ['Host'] : []),
