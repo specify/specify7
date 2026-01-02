@@ -64,31 +64,25 @@ export function SystemConfigurationTool(): JSX.Element | null {
         )}
       </div>
       {newResourceOpen ? (
-        <Dialog
-          buttons={commonText.cancel()}
-          header={localized('Add new Resource')}
+        <ResourceView
+          dialog="modal"
+          isDependent={false}
+          isSubForm={false}
+          resource={newResource as SpecifyResource<Collection>}
+          viewName={
+            newResource?.specifyTable.name === 'Collection'
+              ? collection
+              : newResource?.specifyTable.name === 'Discipline'
+                ? discipline
+                : newResource?.specifyTable.name === 'Division'
+                  ? division
+                  : undefined
+          }
+          onAdd={undefined}
           onClose={closeNewResource}
-        >
-          <ResourceView
-            dialog="modal"
-            isDependent={false}
-            isSubForm={false}
-            resource={newResource as SpecifyResource<Collection>}
-            viewName={
-              newResource?.specifyTable.name === 'Collection'
-                ? collection
-                : newResource?.specifyTable.name === 'Discipline'
-                  ? discipline
-                  : newResource?.specifyTable.name === 'Division'
-                    ? division
-                    : undefined
-            }
-            onAdd={undefined}
-            onClose={closeNewResource}
-            onDeleted={undefined}
-            onSaved={undefined}
-          />
-        </Dialog>
+          onDeleted={undefined}
+          onSaved={undefined}
+        />
       ) : undefined}
     </Container.FullGray>
   );
