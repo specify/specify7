@@ -80,9 +80,9 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       icon: icons.fingerPrint,
     },
     systemConfigurationTool: {
-      title: userText.systemConfigurationTool(),
+      title: userText.systemConfig(),
       url: '/specify/system-configuration/',
-      icon: icons.fingerPrint,
+      icon: icons.library,
     },
     repairTree: {
       title: headerText.repairTree(),

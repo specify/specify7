@@ -1100,4 +1100,7 @@ export const userText = createDictionary({
   systemConfigurationTool: {
     'en-us': 'System Configuration Tool',
   },
+  systemConfig: {
+    'en-us': 'System Config',
+  },
 } as const);
