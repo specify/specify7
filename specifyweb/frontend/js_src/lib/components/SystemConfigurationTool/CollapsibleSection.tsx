@@ -19,7 +19,7 @@ export const CollapsibleSection = ({
     <div className="my-2">
       <div className="flex items-center">
         <Button.Icon
-          icon={isOpen ? 'chevronDown' : 'chevronUp'}
+          icon={isOpen ? 'chevronDown' : 'chevronRight'}
           title={'collapse'}
           className={`ml-2 ${hasChildren ? '' : 'invisible'}`}
           onClick={handleOpen}
