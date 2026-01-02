@@ -43,6 +43,7 @@ import {
   attachmentsToCell,
   BASE_TABLE_NAME,
 } from '../WorkBench/attachmentHelpers';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 
 export function WbImportAttachmentsView(): JSX.Element {
   useMenuItem('workBench');
@@ -69,8 +70,14 @@ function uploadFiles(
   files: RA<File>,
   handleProgress: (progress: (progress: number | undefined) => number) => void
 ): RA<Promise<SpecifyResource<Attachment>>> {
+  const [attachmentIsPublicDefault] = collectionPreferences.use(
+    'general',
+    'attachments',
+    'attachment.is_public_default'
+  );
+
   return files.map(async (file) =>
-    uploadFile(file)
+    uploadFile({ file, attachmentIsPublicDefault })
       .then(async (attachment) =>
         attachment === undefined
           ? Promise.reject(`Upload failed for file ${file.name}`)

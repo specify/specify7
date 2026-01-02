@@ -42,6 +42,7 @@ exports[`Tables with form tables computed correctly 1`] = `
   "[table Collector]",
   "[table CommonNameTx]",
   "[table CommonNameTxCitation]",
+  "[table Component]",
   "[table ConservDescription]",
   "[table ConservDescriptionAttachment]",
   "[table ConservEvent]",
