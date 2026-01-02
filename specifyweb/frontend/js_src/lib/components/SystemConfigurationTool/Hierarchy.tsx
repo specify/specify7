@@ -156,25 +156,27 @@ export function Hierarchy({
       readonly name: string;
     }>
   ) => (
-    <CollapsibleSection
-      defaultOpen={false}
-      hasChildren={collections.length > 0}
-      title={<p>Collections</p>}
-    >
-      <Ul className="m-4">
-        {collections.map((collection) => (
-          <div className="flex items-center" key={collection.id}>
-            <li className="m-4 list-disc">
-              <p>{collection.name}</p>
-            </li>
-            {handleEditResource(
-              new tables.Collection.Resource({ id: collection.id }),
-              refreshAllInfo
-            )}
-          </div>
-        ))}
-      </Ul>
-    </CollapsibleSection>
+    <div className="mt-5 mb-5">
+      <CollapsibleSection
+        defaultOpen={false}
+        hasChildren={collections.length > 0}
+        title={<p>Collections</p>}
+      >
+        <Ul className="">
+          {collections.map((collection) => (
+            <div className="flex items-center" key={collection.id}>
+              <li className="m-4 list-disc">
+                <p>{collection.name}</p>
+              </li>
+              {handleEditResource(
+                new tables.Collection.Resource({ id: collection.id }),
+                refreshAllInfo
+              )}
+            </div>
+          ))}
+        </Ul>
+      </CollapsibleSection>
+    </div>
   );
 
   const renderDisciplines = (division: any) =>
