@@ -162,10 +162,10 @@ export function Hierarchy({
         hasChildren={collections.length > 0}
         title={<p>Collections</p>}
       >
-        <Ul className="">
+        <Ul>
           {collections.map((collection) => (
             <div className="flex items-center" key={collection.id}>
-              <li className="m-4 list-disc">
+              <li className="ml-4 m-2 list-disc">
                 <p>{collection.name}</p>
               </li>
               {handleEditResource(
