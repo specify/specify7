@@ -1,27 +1,28 @@
 import React from 'react';
+
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { Button } from '../Atoms/Button';
 
-export const CollapsibleSection = ({
+export function CollapsibleSection({
   title,
   children,
   defaultOpen = true,
   hasChildren,
 }: {
-  title: React.ReactNode;
-  children: React.ReactNode;
-  defaultOpen?: boolean;
-  hasChildren: boolean;
-}) => {
+  readonly title: React.ReactNode;
+  readonly children: React.ReactNode;
+  readonly defaultOpen?: boolean;
+  readonly hasChildren: boolean;
+}) {
   const [isOpen, _, __, handleOpen] = useBooleanState(defaultOpen);
 
   return (
     <div className="my-2">
       <div className="flex items-center">
         <Button.Icon
-          icon={isOpen ? 'chevronDown' : 'chevronRight'}
-          title={'collapse'}
           className={`ml-2 ${hasChildren ? '' : 'invisible'}`}
+          icon={isOpen ? 'chevronDown' : 'chevronRight'}
+          title="collapse"
           onClick={handleOpen}
         />
         {title}
@@ -30,4 +31,4 @@ export const CollapsibleSection = ({
       {isOpen && <div className="ml-6 mt-2">{children}</div>}
     </div>
   );
-};
+}
