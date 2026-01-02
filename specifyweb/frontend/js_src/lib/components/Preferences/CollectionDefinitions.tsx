@@ -1,4 +1,5 @@
-import { LocalizedString } from 'typesafe-i18n';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { attachmentsText } from '../../localization/attachments';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
@@ -8,13 +9,13 @@ import { treeText } from '../../localization/tree';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { ensure } from '../../utils/types';
+import { camelToHuman } from '../../utils/utils';
 import { genericTables } from '../DataModel/tables';
-import { Tables } from '../DataModel/types';
+import type { Tables } from '../DataModel/types';
+import type { QueryView } from '../QueryBuilder/Header';
 import type { StatLayout } from '../Statistics/types';
 import type { GenericPreferences } from './types';
 import { definePref } from './types';
-import { camelToHuman } from '../../utils/utils';
-import { QueryView } from '../QueryBuilder/Header';
 
 const tableLabel = (tableName: keyof Tables): LocalizedString =>
   genericTables[tableName]?.label ?? camelToHuman(tableName);
