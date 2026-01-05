@@ -2077,55 +2077,55 @@ export const preferencesText = createDictionary({
   },
   inheritanceCatNumberPrefDescription: {
     'en-us':
-      'Control whether collection objects inherit the catalog number from the primary collection object.',
+      'Control whether collection objects inherit the {catalogNumberFieldName: string} from the primary collection object.',
   },
   inheritanceCatNumberPref: {
     'en-us':
-      'Enable the inheritance of the primary catalog number to its empty siblings.',
+      'Enable the inheritance of the primary {catalogNumberFieldName: string} to its empty siblings.',
     'de-ch':
-      'Aktivieren Sie die Vererbung der primären Katalognummer an ihre leeren Geschwister.',
+      'Aktivieren Sie die Vererbung der primären {catalogNumberFieldName: string} an ihre leeren Geschwister.',
     'es-es':
-      'Habilitar la herencia del número de catálogo principal a sus hermanos vacíos.',
+      'Habilitar la herencia del {catalogNumberFieldName: string} principal a sus hermanos vacíos.',
     'fr-fr':
-      "Activer l'héritage du numéro de catalogue principal à ses frères et sœurs vides.",
+      "Activer l'héritage du {catalogNumberFieldName: string} principal à ses frères et sœurs vides.",
     'pt-br':
-      'Permita a herança do número de catálogo principal para seus irmãos vazios.',
+      'Permita a herança do {catalogNumberFieldName: string} principal para seus irmãos vazios.',
     'ru-ru':
-      'Включить наследование основного каталожного номера его пустыми родственными номерами.',
+      'Включить наследование основного {catalogNumberFieldName: string} его пустыми родственными номерами.',
     'uk-ua':
-      'Увімкнути успадкування основного каталожного номера його порожнім братам і сестрам.',
+      'Увімкнути успадкування основного {catalogNumberFieldName: string} його порожнім братам і сестрам.',
   },
   inheritanceCatNumberParentCOPref: {
     'en-us':
-      'Enable the inheritance of the parent catalog number to its empty children.',
+      'Enable the inheritance of the parent {catalogNumberFieldName: string} to its empty children.',
     'de-ch':
-      'Aktivieren Sie die Vererbung der übergeordneten Katalognummer an deren leere untergeordnete Elemente.',
+      'Aktivieren Sie die Vererbung der übergeordneten {catalogNumberFieldName: string} an deren leere untergeordnete Elemente.',
     'es-es':
-      'Habilitar la herencia del número de catálogo padre a sus hijos vacíos.',
+      'Habilitar la herencia del {catalogNumberFieldName: string} padre a sus hijos vacíos.',
     'fr-fr':
-      "Activer l'héritage du numéro de catalogue parent à ses enfants vides.",
+      "Activer l'héritage du {catalogNumberFieldName: string} parent à ses enfants vides.",
     'pt-br':
-      'Habilitar a herança do número de catálogo pai para seus filhos vazios.',
+      'Habilitar a herança da {catalogNumberFieldName: string} pai para seus filhos vazios.',
     'ru-ru':
-      'Включить наследование родительского каталожного номера его пустыми дочерними элементами.',
+      'Включить наследование родительского {catalogNumberFieldName: string} его пустыми дочерними элементами.',
     'uk-ua':
-      'Увімкнути успадкування батьківського каталожного номера його порожнім дочірнім елементам.',
+      'Увімкнути успадкування батьківського {catalogNumberFieldName: string} його порожнім дочірнім елементам.',
   },
   uniqueCatNumberAcrossCompAndCo: {
     'en-us':
-      'Catalog Number field need to be unique across Component and CO tables',
+      '{catalogNumberFieldName: string} field needs to be unique across Component and CO tables',
     'de-ch':
-      'Das Feld „Katalognummer“ muss in allen Komponenten- und CO-Tabellen eindeutig sein.',
+      'Das Feld {catalogNumberFieldName: string} muss in allen Komponenten- und CO-Tabellen eindeutig sein.',
     'es-es':
-      'El campo Número de catálogo debe ser único en las tablas de componentes y CO',
+      'El campo {catalogNumberFieldName: string} debe ser único en las tablas de componentes y CO',
     'fr-fr':
-      'Le champ Numéro de catalogue doit être unique dans les tables Composant et CO',
+      'Le champ {catalogNumberFieldName: string} doit être unique dans les tables Composant et CO',
     'pt-br':
-      'O campo Número de Catálogo precisa ser único em todas as tabelas de Componente e CO.',
+      'O campo {catalogNumberFieldName: string} precisa ser único em todas as tabelas de Componente e CO.',
     'ru-ru':
-      'Поле «Номер каталога» должно быть уникальным в таблицах «Компонент» и «CO».',
+      'Поле {catalogNumberFieldName: string} должно быть уникальным в таблицах «Компонент» и «CO».',
     'uk-ua':
-      'Поле «Номер у каталозі» має бути унікальним у таблицях «Компонент» та «CO»',
+      'Поле {catalogNumberFieldName: string} має бути унікальним у таблицях «Компонент» та «CO»',
   },
   scopeEntireTablePicklists: {
     'en-us': 'Scope "Entire Table" Picklists',
@@ -2136,6 +2136,6 @@ export const preferencesText = createDictionary({
   },
   inheritanceCatNumberParentCOPrefDescription: {
     'en-us':
-      'Controls whether collection objects inherit the catalog number from the parent collection object.',
+      'Controls whether collection objects inherit the {catalogNumberFieldName: string} from the parent collection object.',
   },
 } as const);
