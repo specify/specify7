@@ -151,7 +151,7 @@ def create_institution(data):
         # Create institution
         new_institution = Institution.objects.create(**data)
         Spversion.objects.create(appversion=APP_VERSION, schemaversion=SCHEMA_VERSION)
-    return {'institution_id': new_institution}
+    return {'institution_id': new_institution.id}
 
 def create_division(data):
     from specifyweb.specify.models import Division, Institution

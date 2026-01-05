@@ -70,7 +70,10 @@ def create_picklists(configuraton: list, collection: Collection):
 
             # Create picklist items in bulk
             names = [p.name for p in picklists_bulk]
-            picklist_records = Picklist.objects.filter(name__in=names)
+            picklist_records = Picklist.objects.filter(
+                collection=collection,
+                name__in=names
+            )
             name_to_obj = {pl.name: pl for pl in picklist_records}
 
             picklistitems_bulk = []
