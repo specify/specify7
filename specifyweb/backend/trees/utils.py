@@ -20,6 +20,15 @@ lookup = lambda tree: (tree.lower() + 'treedef')
 
 SPECIFY_TREES = {"taxon", "storage", "geography", "geologictimeperiod", "lithostrat", 'tectonicunit'}
 
+TREE_ROOT_NODES = {
+    'taxon': 'Life',
+    'storage': 'Root',
+    'geography': "Earth",
+    'geologictimeperiod': 'Time',
+    'lithostrat': 'Earth',
+    'tectonicunit': 'Root'
+}
+
 def get_search_filters(collection: spmodels.Collection, tree: str):
     tree_name = tree.lower()
     if tree_name == 'storage':
@@ -150,8 +159,8 @@ def initialize_default_tree(tree_type: str, discipline, tree_name: str, rank_cfg
             # TODO: Avoid having duplicated code from add_root endpoint
             root_rank = tree_rank_model.objects.get(treedef=tree_def, rankid=0)
             tree_node, _ = tree_node_model.objects.get_or_create(
-                name="Root",
-                fullname="Root",
+                name=TREE_ROOT_NODES.get(tree_type, "Root"),
+                fullname=TREE_ROOT_NODES.get(tree_type, "Root"),
                 nodenumber=1,
                 definition=tree_def,
                 definitionitem=root_rank,
@@ -177,7 +186,7 @@ def add_default_tree_record(tree_type: str, row: dict, tree_name: str, tree_cfg:
     """
     tree_def_model, tree_rank_model, tree_node_model = get_models(tree_type)
     tree_def = tree_def_model.objects.get(name=tree_name)
-    parent = tree_node_model.objects.get(name='Root', fullname='Root', definition=tree_def)
+    parent = tree_node_model.objects.filter(definitionitem__rankid=0, definition=tree_def).first()
     rank_id = 10
 
     for rank_map in tree_cfg['ranks']:
@@ -283,7 +292,8 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
             rank_cfg = [{
                 'name': 'Root',
                 'enforced': True,
-                'rank': 0
+                'rank': 0,
+                **tree_cfg.get('root', {})
             }]
             auto_rank_id = 10
             for rank in tree_cfg['ranks']:
@@ -333,7 +343,7 @@ def stream_csv_from_url(url: str) -> Iterator[Dict[str, str]]:
     Streams a taxon CSV from a URL. Yields each row.
     """
     chunk_size = 8192
-    max_retries = 5
+    max_retries = 10
 
     def lines_iter() -> Iterator[str]:
         # Streams data from the server in -chunks-, yields -lines-.

@@ -595,6 +595,13 @@ DEFAULT_TREE_MAPPING_SCHEMA = {
                 "required": ["name", "column", "fields"],
                 "additionalProperties": False
             }
+        },
+        "root": {
+            "type": "object",
+            "properties": {
+                "name": {"type": "string"},
+                "fullnameseparator": {"type": "string"}
+            }
         }
     },
     "required": ["ranks"]
