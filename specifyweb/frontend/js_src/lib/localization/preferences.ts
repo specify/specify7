@@ -2113,7 +2113,7 @@ export const preferencesText = createDictionary({
   },
   uniqueCatNumberAcrossCompAndCo: {
     'en-us':
-      '{catalogNumberFieldName: string} field needs to be unique across Component and CO tables',
+      '{catalogNumberFieldName: string} field needs to be unique across {componentTableName: string} and {collectionObjectTableName: string} tables',
     'de-ch':
       'Das Feld {catalogNumberFieldName: string} muss in allen Komponenten- und CO-Tabellen eindeutig sein.',
     'es-es':

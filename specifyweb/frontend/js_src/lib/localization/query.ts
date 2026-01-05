@@ -948,13 +948,13 @@ export const queryText = createDictionary({
     'uk-ua': 'Не суворий',
   },
   primaryCatalogNumberInheritance: {
-    'en-us': 'Primary {catalogNumberFieldName: string} Inheritance',
+    'en-us': '{collectionObjectGroupTableName: string}: Primary {catalogNumberFieldName: string} Inheritance',
   },
   parentCatalogNumberInheritance: {
-    'en-us': 'Parent {catalogNumberFieldName: string} Inheritance',
+    'en-us': '{componentTableName: string}: Parent {catalogNumberFieldName: string} Inheritance',
   },
   uniqueCatalogNumberAcrossComponentAndCoTitle: {
-    'en-us': 'Unique {catalogNumberFieldName: string} (Component & CO)',
+    'en-us': '{componentTableName: string} & {collectionObjectTableName: string}: Unique {catalogNumberFieldName: string}',
   },
   formatInputAs: {
     comment: `

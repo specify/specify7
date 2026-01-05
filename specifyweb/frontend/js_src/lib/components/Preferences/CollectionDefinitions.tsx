@@ -128,8 +128,16 @@ export const collectionPreferenceDefinitions = {
             container: 'label',
           }),
           showPreparationsTotal: definePref<boolean>({
-            title: statsText.showPreparationsTotal(),
-            description: statsText.showPreparationsTotalDescription(),
+            title: () =>
+              statsText.showPreparationsTotal({
+                PreparationTable: tableLabel('Preparation'),
+              }),
+            description: () =>
+              statsText.showPreparationsTotalDescription({
+                PreparationTable: tableLabel('Preparation'),
+                LowerPreparationTable: tableLabel('Preparation').toLowerCase(),
+                PreparationTypeTable: tableLabel('PreparationType').toLowerCase(),
+              }),
             requiresReload: false,
             visible: true,
             defaultValue: true,
@@ -173,6 +181,7 @@ export const collectionPreferenceDefinitions = {
     title: () =>
       queryText.primaryCatalogNumberInheritance({
         catalogNumberFieldName: fieldLabel('CollectionObject','catalogNumber'),
+        collectionObjectGroupTableName: tableLabel('CollectionObjectGroup'),
       }),
     subCategories: {
       behavior: {
@@ -186,6 +195,8 @@ export const collectionPreferenceDefinitions = {
             description: () =>
               preferencesText.inheritanceCatNumberPrefDescription({
                 catalogNumberFieldName: fieldLabel('CollectionObject','catalogNumber'),
+                collectionObjectTableName: tableLabel('CollectionObject'),
+                collectionObjectGroupTableName: tableLabel('CollectionObjectGroup'),
               }),
             requiresReload: false,
             visible: true,
@@ -199,6 +210,7 @@ export const collectionPreferenceDefinitions = {
   catalogNumberParentInheritance: {
     title: () =>
       queryText.parentCatalogNumberInheritance({
+        componentTableName: tableLabel('Component'),
         catalogNumberFieldName: fieldLabel('CollectionObject','catalogNumber'),
       }),
     subCategories: {
@@ -227,6 +239,8 @@ export const collectionPreferenceDefinitions = {
     title: () =>
       queryText.uniqueCatalogNumberAcrossComponentAndCoTitle({
         catalogNumberFieldName: fieldLabel('CollectionObject','catalogNumber'),
+        componentTableName: tableLabel('Component'),
+        collectionObjectTableName: tableLabel('CollectionObject'),
       }),
     subCategories: {
       behavior: {

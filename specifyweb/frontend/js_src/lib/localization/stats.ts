@@ -217,11 +217,11 @@ export const statsText = createDictionary({
     'en-us': 'Defines the layout of the statistics page',
   },
   showPreparationsTotal: {
-    'en-us': 'Show Preparations Totals',
+    'en-us': 'Show {PreparationTable:string} Totals',
   },
   showPreparationsTotalDescription: {
     'en-us':
-      'If enabled, the default Preparations statistics panel will include a total count for each preparation of a particular preparation type alongside the overall total. This is useful for lot-based collections.',
+      'If enabled, the default {PreparationTable:string} statistics panel will include a total count for each {LowerPreparationTable:string} of a particular {PreparationTypeTable:string} alongside the overall total. This is useful for lot-based collections.',
   },
   autoRefreshRate: {
     'en-us': 'Auto-Refresh Rate (Hours)',
