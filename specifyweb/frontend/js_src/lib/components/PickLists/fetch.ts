@@ -24,7 +24,6 @@ import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { format } from '../Formatters/formatters';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
-import { getCollectionPref } from '../InitialContext/remotePrefs';
 import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
 import {
   createPickListItem,
@@ -119,19 +118,24 @@ async function fetchFromTable(
   limit: number
 ): Promise<RA<PickListItemSimple>> {
   const tableName = strictGetTable(pickList.get('tableName')).name;
+
   if (!hasTablePermission(tableName, 'read')) return [];
 
-  const scopeTablePicklist = getCollectionPref(
-    'sp7_scope_table_picklists',
-    schema.domainLevelIds.collection
+  const prefModule = await import('../Preferences/collectionPreferences');
+  const collectionPreferences = prefModule.collectionPreferences;
+  const scopeTablePicklistsPref = collectionPreferences.get(
+    'general',
+    'pickLists',
+    'sp7_scope_table_picklists'
   );
 
   const { records } = await fetchCollection(tableName, {
-    domainFilter: scopeTablePicklist
+    domainFilter: scopeTablePicklistsPref
       ? true
       : !f.includes(Object.keys(schema.domainLevelIds), toLowerCase(tableName)),
     limit,
   });
+
   return Promise.all(
     records.map(async (record) =>
       format(
