@@ -130,13 +130,13 @@ export const collectionPreferenceDefinitions = {
           showPreparationsTotal: definePref<boolean>({
             title: () =>
               statsText.showPreparationsTotal({
-                PreparationTable: tableLabel('Preparation'),
+                preparationTableName: tableLabel('Preparation'),
               }),
             description: () =>
               statsText.showPreparationsTotalDescription({
-                PreparationTable: tableLabel('Preparation'),
-                LowerPreparationTable: tableLabel('Preparation'),
-                PreparationTypeTable: tableLabel('PrepType'),
+                preparationTableName: tableLabel('Preparation'),
+                lowerPreparationTableName: tableLabel('Preparation').toLowerCase(),
+                prepTypeTableName: tableLabel('PrepType').toLowerCase(),
               }),
             requiresReload: false,
             visible: true,
@@ -190,7 +190,6 @@ export const collectionPreferenceDefinitions = {
             title: () =>
               preferencesText.inheritanceCatNumberPref({
                 catalogNumberFieldName: fieldLabel('CollectionObject','catalogNumber'),
-                collectionObjectTableName: tableLabel('CollectionObject'),
                 collectionObjectGroupTableName: tableLabel('CollectionObjectGroup'),
               }),
             description: () =>
