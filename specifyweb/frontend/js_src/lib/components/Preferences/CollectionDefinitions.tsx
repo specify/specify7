@@ -135,8 +135,8 @@ export const collectionPreferenceDefinitions = {
             description: () =>
               statsText.showPreparationsTotalDescription({
                 PreparationTable: tableLabel('Preparation'),
-                LowerPreparationTable: tableLabel('Preparation').toLowerCase(),
-                PreparationTypeTable: tableLabel('PreparationType').toLowerCase(),
+                LowerPreparationTable: tableLabel('Preparation'),
+                PreparationTypeTable: tableLabel('PrepType'),
               }),
             requiresReload: false,
             visible: true,
@@ -153,31 +153,28 @@ export const collectionPreferenceDefinitions = {
           }),
         },
       },
-      // /* For now, commenting out Specify Network prefs as we are not
-      //  actively developing that module */
-      //
-      // specifyNetwork: {
-      //   title: specifyNetworkText.specifyNetwork(),
-      //   items: {
-      //     publishingOrganization: definePref<string | undefined>({
-      //       title: specifyNetworkText.publishingOrganizationKey(),
-      //       description:
-      //         specifyNetworkText.publishingOrganizationKeyDescription(),
-      //       requiresReload: false,
-      //       visible: true,
-      //       defaultValue: undefined,
-      //       type: 'java.lang.String',
-      //     }),
-      //     collectionKey: definePref<string | undefined>({
-      //       title: specifyNetworkText.collectionKey(),
-      //       description: specifyNetworkText.collectionKeyDescription(),
-      //       requiresReload: false,
-      //       visible: true,
-      //       defaultValue: undefined,
-      //       type: 'java.lang.String',
-      //     }),
-      //   },
-      // },
+      specifyNetwork: {
+        title: specifyNetworkText.specifyNetwork(),
+        items: {
+          publishingOrganization: definePref<string | undefined>({
+            title: specifyNetworkText.publishingOrganizationKey(),
+            description:
+              specifyNetworkText.publishingOrganizationKeyDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: undefined,
+            type: 'java.lang.String',
+          }),
+          collectionKey: definePref<string | undefined>({
+            title: specifyNetworkText.collectionKey(),
+            description: specifyNetworkText.collectionKeyDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: undefined,
+            type: 'java.lang.String',
+          }),
+        },
+      },
     },
   },
   catalogNumberInheritance: {
