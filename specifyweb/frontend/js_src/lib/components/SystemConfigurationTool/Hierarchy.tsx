@@ -5,7 +5,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { setupToolText } from '../../localization/setupTool';
-import type { RA } from '../../utils/types';
+import { localized, type RA } from '../../utils/types';
 import { H2, H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
@@ -94,8 +94,8 @@ const handleEditResource = (
 ) => (
   <div className="flex item-center m-2">
     <ResourceLink
-      component={Link.Icon}
-      props={{ icon: 'pencil', title: commonText.edit() }}
+      component={Link.Default}
+      props={{}}
       resource={resource}
       resourceView={{
         onDeleted: async () => {
@@ -107,8 +107,10 @@ const handleEditResource = (
           globalThis.location.reload();
         },
       }}
-    />
-    <p className="ml-2">Edit</p>
+    >
+      {icons.pencil}
+      {commonText.edit()}
+    </ResourceLink>
   </div>
 );
 
