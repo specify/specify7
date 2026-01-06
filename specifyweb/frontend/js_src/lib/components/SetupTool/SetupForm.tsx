@@ -13,7 +13,7 @@ import { Input, Label, Select } from '../Atoms/Form';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
 import type { FieldConfig, ResourceConfig } from './setupResources';
 import { FIELD_MAX_LENGTH, resources } from './setupResources';
-import { ResourceFormData } from './types';
+import type { ResourceFormData } from './types';
 
 function getFormValue(
   formData: ResourceFormData,

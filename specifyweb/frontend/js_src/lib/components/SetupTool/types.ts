@@ -1,4 +1,3 @@
-
 export type ResourceFormData = Record<string, any>;
 
 export type SetupResources = {
@@ -10,7 +9,7 @@ export type SetupResources = {
   readonly taxonTreeDef: boolean;
   readonly collection: boolean;
   readonly specifyUser: boolean;
-}
+};
 
 export type SetupProgress = {
   readonly resources: SetupResources;

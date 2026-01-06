@@ -2,14 +2,14 @@ import React from 'react';
 
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { checkFormCondition } from './SetupForm';
 import type { FieldConfig } from './setupResources';
 import { resources } from './setupResources';
-import { checkFormCondition } from './SetupForm';
-import { ResourceFormData } from './types';
+import type { ResourceFormData } from './types';
 
 /**
-  * Displays all previously filled out forms in a grid format.
-*/ 
+ * Displays all previously filled out forms in a grid format.
+ */
 export function SetupOverview({
   formData,
   currentStep,

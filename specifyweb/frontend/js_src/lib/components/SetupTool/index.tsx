@@ -16,13 +16,18 @@ import { dialogIcons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import type { SetupProgress, SetupResources, SetupResponse, ResourceFormData } from './types';
 import { loadingBar } from '../Molecules';
-import type { FieldConfig, ResourceConfig } from './setupResources';
-import { resources } from './setupResources';
-import { flattenAllResources } from './utils';
 import { checkFormCondition, renderFormFieldFactory } from './SetupForm';
 import { SetupOverview } from './SetupOverview';
+import type { FieldConfig, ResourceConfig } from './setupResources';
+import { resources } from './setupResources';
+import type {
+  ResourceFormData,
+  SetupProgress,
+  SetupResources,
+  SetupResponse,
+} from './types';
+import { flattenAllResources } from './utils';
 
 export const stepOrder: RA<keyof SetupResources> = [
   'institution',
