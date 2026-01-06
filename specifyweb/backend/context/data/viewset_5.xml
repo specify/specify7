@@ -553,128 +553,6 @@
                 <row>
                     <cell colspan="3" id="-20" label="PROMPT_TO_REPLACE_SYNONYM" name="Determination.PromptToReplaceSynonym" type="field" uitype="checkbox" />
                 </row>
-                <row>
-	                <cell coldef="p,2px,p,p:g,f:p:g" id="16tx" name="treepaneltx" rowdef="p,2px,p,2px,p,2px,p,2px,p" type="panel">
-	                    <rows>
-			                <row>
-			                    <cell colspan="5" label="TAXON_TREE" type="separator" />
-			                </row>
-			                <row>
-			                    <cell label="TT_SHOW_COUNTS_BELOW" labelfor="1" type="label" />
-			                    <cell colspan="3" id="1" ignore="true" name="TreeEditor.Rank.Threshold.Taxon" type="field" uitype="combobox" />
-			                </row>
-			                <row>
-			                    <cell label="TT_COL_CLR_1" labelfor="TreeColColor1.Taxon" type="label" />
-			                    <cell id="TreeColColor1.Taxon" name="Treeeditor.TreeColColor1.Taxon" type="field" uitype="colorchooser" />
-			                </row>
-			                <row>
-			                    <cell label="TT_COL_CLR_2" labelfor="TreeColColor2.Taxon" type="label" />
-			                    <cell id="TreeColColor2.Taxon" name="Treeeditor.TreeColColor2.Taxon" type="field" uitype="colorchooser" />
-			                </row>
-			                <row>
-			                    <cell label="TT_SYN_CLR" labelfor="SynonymyColor.Taxon" type="label" />
-			                    <cell id="SynonymyColor.Taxon" name="Treeeditor.SynonymyColor.Taxon" type="field" uitype="colorchooser" />
-			                </row>
-			            </rows>
-			        </cell>
-	                <cell coldef="p,2px,p,p:g,f:p:g" id="16gt" name="treepanelgt" rowdef="p,2px,p,2px,p,2px,p,2px,p" type="panel">
-	                    <rows>
-			                <row>
-			                    <cell colspan="5" label="GEO_TREE" type="separator" />
-			                </row>
-			                <row>
-			                    <cell label="GT_SHOW_COUNTS_BELOW" labelfor="2" type="label" />
-			                    <cell colspan="3" id="2" ignore="true" name="TreeEditor.Rank.Threshold.Geography" type="field" uitype="combobox" />
-			                </row>
-			               <row>
-			                    <cell label="GT_COL_CLR_1" labelfor="TreeColColor1.Geography" type="label" />
-			                    <cell id="TreeColColor1.Geography" name="Treeeditor.TreeColColor1.Geography" type="field" uitype="colorchooser" />
-			                </row>
-			                <row>
-			                    <cell label="GT_COL_CLR_2" labelfor="TreeColColor2.Geography" type="label" />
-			                    <cell id="TreeColColor2.Geography" name="Treeeditor.TreeColColor2.Geography" type="field" uitype="colorchooser" />
-			                </row>
-			                <row>
-			                    <cell label="GT_SYN_CLR" labelfor="SynonymyColor.Geography" type="label" />
-			                    <cell id="SynonymyColor.Geography" name="Treeeditor.SynonymyColor.Geography" type="field" uitype="colorchooser" />
-			                </row>
-			            </rows>
-			        </cell>
-			    </row>
-			                
-                <row>
-	                <cell coldef="p,2px,p,p:g,f:p:g" id="16lt" name="treepanellt" rowdef="p,2px,p,2px,p,2px,p,2px,p" type="panel">
-	                    <rows>
-			                <row>
-			                    <cell colspan="5" label="LITHO_TREE" type="separator" />
-			                </row>
-			                <row>
-			                    <cell label="LT_SHOW_COUNTS_BELOW" labelfor="3" type="label" />
-			                    <cell colspan="3" id="3" ignore="true" name="TreeEditor.Rank.Threshold.LithoStrat" type="field" uitype="combobox" />
-			                </row>
-			               <row>
-			                    <cell label="LT_COL_CLR_1" labelfor="TreeColColor1.LithoStrat" type="label" />
-			                    <cell id="TreeColColor1.LithoStrat" name="Treeeditor.TreeColColor1.LithoStrat" type="field" uitype="colorchooser" />
-			                </row>
-			                <row>
-			                    <cell label="LT_COL_CLR_2" labelfor="TreeColColor2.LithoStrat" type="label" />
-			                    <cell id="TreeColColor2.LithoStrat" name="Treeeditor.TreeColColor2.LithoStrat" type="field" uitype="colorchooser" />
-			                </row>
-			                <row>
-			                    <cell label="LT_SYN_CLR" labelfor="SynonymyColor.LithoStrat" type="label" />
-			                    <cell id="SynonymyColor.LithoStrat" name="Treeeditor.SynonymyColor.LithoStrat" type="field" uitype="colorchooser" />
-			                </row>
-			            </rows>
-			        </cell>
-	                <cell coldef="p,2px,p,p:g,f:p:g" id="16geo" name="treepanelgeo" rowdef="p,2px,p,2px,p,2px,p,2px,p" type="panel">
-	                    <rows>
-			              <row>
-			                    <cell colspan="5" label="GEO_PERIOD_TREE" type="separator" />
-			                </row>
-			                <row>
-			                    <cell label="GP_SHOW_COUNTS_BELOW" labelfor="4" type="label" />
-			                    <cell colspan="3" id="4" ignore="true" name="TreeEditor.Rank.Threshold.GeologicTimePeriod" type="field" uitype="combobox" />
-			                </row>
-			               <row>
-			                    <cell label="GP_COL_CLR_1" labelfor="TreeColColor1.GeologicTimePeriod" type="label" />
-			                    <cell id="TreeColColor1.GeologicTimePeriod" name="Treeeditor.TreeColColor1.GeologicTimePeriod" type="field" uitype="colorchooser" />
-			                </row>
-			                <row>
-			                    <cell label="GP_COL_CLR_2" labelfor="TreeColColor2.GeologicTimePeriod" type="label" />
-			                    <cell id="TreeColColor2.GeologicTimePeriod" name="Treeeditor.TreeColColor2.GeologicTimePeriod" type="field" uitype="colorchooser" />
-			                </row>
-			                <row>
-			                    <cell label="GP_SYN_CLR" labelfor="SynonymyColor.GeologicTimePeriod" type="label" />
-			                    <cell id="SynonymyColor.GeologicTimePeriod" name="Treeeditor.SynonymyColor.GeologicTimePeriod" type="field" uitype="colorchooser" />
-			                </row>
-			            </rows>
-			        </cell>
-			    </row>
-                <row>
-                    <cell coldef="p,2px,p,p:g,f:p:g" id="16st" name="treepanelst" rowdef="p,2px,p,2px,p,2px,p,2px,p" type="panel">
-                        <rows>
-                            <row>
-                                <cell colspan="5" label="STORAGE_TREE" type="separator" />
-                            </row>
-                            <row>
-                                <cell label="ST_SHOW_COUNTS_BELOW" labelfor="5" type="label" />
-                                <cell colspan="3" id="5" ignore="true" name="TreeEditor.Rank.Threshold.Storage" type="field" uitype="combobox" />
-                            </row>
-                            <row>
-                                <cell label="ST_COL_CLR_1" labelfor="TreeColColor1.Storage" type="label" />
-                                <cell id="TreeColColor1.Storage" name="Treeeditor.TreeColColor1.Storage" type="field" uitype="colorchooser" />
-                            </row>
-                            <row>
-                                <cell label="ST_COL_CLR_2" labelfor="TreeColColor2.Storage" type="label" />
-                                <cell id="TreeColColor2.Storage" name="Treeeditor.TreeColColor2.Storage" type="field" uitype="colorchooser" />
-                            </row>
-			                <row>
-			                    <cell label="ST_SYN_CLR" labelfor="SynonymyColor.Storage" type="label" />
-			                    <cell id="SynonymyColor.Storage" name="Treeeditor.SynonymyColor.Storage" type="field" uitype="colorchooser" />
-			                </row>
-                        </rows>
-                    </cell>
-                </row>
             </rows>
         </viewdef>
         
@@ -1201,10 +1079,6 @@
                 <row>
                     <cell label="Name" labelfor="name" type="label" />
                     <cell id="name" isrequired="true" name="name" type="field" uitype="text" />
-                </row>
-                <row>
-                    <cell label="Display Columns" labelfor="displayColumns" type="label" />
-                    <cell colspan="4" id="displayColumns" isrequired="true" name="displayColumns" type="field" uitype="textarea" />
                 </row>
                 <row>
                     <cell label="Search Field Name" labelfor="searchFieldName" type="label" />

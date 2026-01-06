@@ -36,6 +36,7 @@ import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { Preview } from '../Molecules/FilePicker';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
 import {
@@ -69,8 +70,14 @@ function uploadFiles(
   files: RA<File>,
   handleProgress: (progress: (progress: number | undefined) => number) => void
 ): RA<Promise<SpecifyResource<Attachment>>> {
+  const [attachmentIsPublicDefault] = collectionPreferences.use(
+    'general',
+    'attachments',
+    'attachment.is_public_default'
+  );
+
   return files.map(async (file) =>
-    uploadFile(file)
+    uploadFile({ file, attachmentIsPublicDefault })
       .then(async (attachment) =>
         attachment === undefined
           ? Promise.reject(`Upload failed for file ${file.name}`)

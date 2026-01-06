@@ -7,7 +7,11 @@ import { softFail } from '../Errors/Crash';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import type { BusinessRuleDefs } from './businessRuleDefs';
 import { businessRuleDefs } from './businessRuleDefs';
-import { backboneFieldSeparator, backendFilter, djangoLookupSeparator } from './helpers';
+import {
+  backboneFieldSeparator,
+  backendFilter,
+  djangoLookupSeparator,
+} from './helpers';
 import type {
   AnySchema,
   AnyTree,
@@ -67,12 +71,16 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     fieldName: string &
       (keyof SCHEMA['fields'] | keyof SCHEMA['toOneIndependent'])
   ): Promise<RA<BusinessRuleResult<SCHEMA>>> {
+    /*
+     * REFACTOR: When checkField is called directly, the promises are not
+     * added to the public pendingPromise
+     */
+
     const field = this.resource.specifyTable.getField(fieldName);
     if (field === undefined) return [];
 
     const processedFieldName = fieldName.toString().toLowerCase();
     const thisCheck: ResolvablePromise<string> = flippedPromise();
-    this.addPromise(thisCheck);
 
     if (this.fieldChangePromises[processedFieldName] !== undefined)
       this.fieldChangePromises[processedFieldName].resolve('superseded');
@@ -316,10 +324,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         )
       );
 
-    const stringValuesAreEqual = (
-      left: string,
-      right: string
-    ): boolean =>
+    const stringValuesAreEqual = (left: string, right: string): boolean =>
       rule.isDatabaseConstraint
         ? left.localeCompare(right, undefined, { sensitivity: 'accent' }) === 0
         : left === right;

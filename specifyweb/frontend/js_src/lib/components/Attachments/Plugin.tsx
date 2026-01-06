@@ -23,6 +23,7 @@ import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
 import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { attachmentSettingsPromise, uploadFile } from './attachments';
@@ -140,6 +141,12 @@ export function UploadAttachment({
   const [isFailed, handleFailed] = useBooleanState();
   const loading = React.useContext(LoadingContext);
 
+  const [attachmentIsPublicDefault] = collectionPreferences.use(
+    'general',
+    'attachments',
+    'attachment.is_public_default'
+  );
+
   return isFailed ? (
     <p>{attachmentsText.attachmentServerUnavailable()}</p>
   ) : typeof uploadProgress === 'object' ? (
@@ -161,7 +168,11 @@ export function UploadAttachment({
       acceptedFormats={undefined}
       onFileSelected={(file): void =>
         loading(
-          uploadFile(file, setUploadProgress)
+          uploadFile({
+            file,
+            handleProgress: setUploadProgress,
+            attachmentIsPublicDefault,
+          })
             .then((attachment) =>
               attachment === undefined
                 ? handleFailed()
