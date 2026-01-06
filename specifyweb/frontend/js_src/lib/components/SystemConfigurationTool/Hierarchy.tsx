@@ -301,7 +301,7 @@ export function Hierarchy({
     ));
 
   return (
-    <Ul className="m-4">
+    <Ul className="m-4 bg-[color:var(--background)] p-3 rounded">
       <li key={institution.id}>
         <CollapsibleSection
           hasChildren={institution.children.length > 0}
