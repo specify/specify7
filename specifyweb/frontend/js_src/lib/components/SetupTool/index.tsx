@@ -39,10 +39,10 @@ export const stepOrder: RA<keyof SetupResources> = [
 ];
 
 type SetupResponse = {
-  readonly success: boolean,
-  readonly setup_progress: SetupProgress,
-  readonly task_id: string
-}
+  readonly success: boolean;
+  readonly setup_progress: SetupProgress;
+  readonly task_id: string;
+};
 
 function checkFormCondition(
   formData: ResourceFormData,
@@ -283,10 +283,7 @@ export function renderFormFieldFactory({
     );
   };
 
-  const renderFormFields = (
-    fields: RA<FieldConfig>,
-    parentName?: string
-  ) => (
+  const renderFormFields = (fields: RA<FieldConfig>, parentName?: string) => (
     <div className="grid grid-cols-2 gap-4">
       {fields.map((field) => renderFormField(field, parentName))}
     </div>
@@ -363,9 +360,7 @@ export function SetupTool({
 
   const loading = React.useContext(LoadingContext);
 
-  const startSetup = async (
-    data: ResourceFormData
-  ): Promise<any> =>
+  const startSetup = async (data: ResourceFormData): Promise<any> =>
     ajax<SetupResponse>('/setup_tool/setup_database/create/', {
       method: 'POST',
       headers: {
@@ -374,9 +369,7 @@ export function SetupTool({
       },
       body: JSON.stringify(flattenAllResources(data)),
       errorMode: 'visible',
-      expectedErrors: [
-        Http.CONFLICT, Http.UNAVAILABLE
-      ],
+      expectedErrors: [Http.CONFLICT, Http.UNAVAILABLE],
     })
       .then(({ data, status }) => {
         if (status === Http.OK) {
