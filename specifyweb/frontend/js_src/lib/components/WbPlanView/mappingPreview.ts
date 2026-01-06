@@ -171,9 +171,10 @@ export function generateMappingPathPreview(
         ? [parentTableOrTreeName, tableNameNonEmpty]
         : [tableNameNonEmpty];
 
-  // Special case for disambiguation: Host taxon under CollectionObject
+  // Special case for disambiguation: Host taxon under specific base tables
+  const baseTables = ['CollectionObject', 'CollectingEventAttribute', 'Determination', 'Taxon'];
   const isHostTaxonCase =
-    baseTableName === 'CollectionObject' &&
+    baseTables.includes(baseTableName) &&
     (parentTableOrTreeName ?? '').trim().toLowerCase() === 'host taxon';
 
   return filterArray([
