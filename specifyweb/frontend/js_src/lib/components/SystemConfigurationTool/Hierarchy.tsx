@@ -9,6 +9,7 @@ import { type RA } from '../../utils/types';
 import { H2, H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -21,7 +22,6 @@ import { renderFormFieldFactory, stepOrder } from '../SetupTool';
 import { resources } from '../SetupTool/setupResources';
 import { CollapsibleSection } from './CollapsibleSection';
 import type { InstitutionData } from './Utils';
-import { icons } from '../Atoms/Icons';
 
 type DialogFormProps = {
   readonly open: boolean;
