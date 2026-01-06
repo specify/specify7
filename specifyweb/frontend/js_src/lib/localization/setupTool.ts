@@ -206,8 +206,11 @@ export const setupToolText = createDictionary({
   configTaxonTree: {
     'en-us': 'Configure your taxon tree for your discipline',
   },
-  treeConfigurationWarning: {
-    'en-us': 'Set up your tree',
+  taxonTreeSetUp: {
+    'en-us': 'Set up taxon tree',
+  },
+  geoTreeSetUp: {
+    'en-us': 'Set up geo tree',
   },
   addNewGeographyTree: {
     'en-us': 'Add new Geography Tree',

@@ -18,7 +18,7 @@ export function CollapsibleSection({
 
   return (
     <div className="my-2">
-      <div className="flex items-center">
+      <div className="flex items-start">
         <Button.Icon
           className={`ml-2 ${hasChildren ? '' : 'invisible'}`}
           icon={isOpen ? 'chevronDown' : 'chevronRight'}

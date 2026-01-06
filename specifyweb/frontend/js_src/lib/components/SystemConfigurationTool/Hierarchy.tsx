@@ -21,6 +21,7 @@ import { renderFormFieldFactory, stepOrder } from '../SetupTool';
 import { resources } from '../SetupTool/setupResources';
 import { CollapsibleSection } from './CollapsibleSection';
 import type { InstitutionData } from './Utils';
+import { icons } from '../Atoms/Icons';
 
 type DialogFormProps = {
   readonly open: boolean;
@@ -91,21 +92,24 @@ const handleEditResource = (
   resource: SpecifyResource<any>,
   refreshAllInfo: () => Promise<void>
 ) => (
-  <ResourceLink
-    component={Link.Icon}
-    props={{ icon: 'pencil', title: commonText.edit() }}
-    resource={resource}
-    resourceView={{
-      onDeleted: async () => {
-        await refreshAllInfo();
-        globalThis.location.reload();
-      },
-      onSaved: async () => {
-        await refreshAllInfo();
-        globalThis.location.reload();
-      },
-    }}
-  />
+  <div className="flex item-center m-2">
+    <ResourceLink
+      component={Link.Icon}
+      props={{ icon: 'pencil', title: commonText.edit() }}
+      resource={resource}
+      resourceView={{
+        onDeleted: async () => {
+          await refreshAllInfo();
+          globalThis.location.reload();
+        },
+        onSaved: async () => {
+          await refreshAllInfo();
+          globalThis.location.reload();
+        },
+      }}
+    />
+    <p className="ml-2">Edit</p>
+  </div>
 );
 
 const addButton = (
@@ -164,7 +168,7 @@ export function Hierarchy({
       >
         <Ul>
           {collections.map((collection) => (
-            <div className="flex items-center" key={collection.id}>
+            <div key={collection.id}>
               <li className="ml-4 m-2 list-disc">
                 <p>{collection.name}</p>
               </li>
@@ -191,55 +195,56 @@ export function Hierarchy({
           <CollapsibleSection
             hasChildren={discipline.children.length > 0}
             title={
-              <div className="flex items-center">
-                <H3>{`Discipline: ${discipline.name}`}</H3>
-                {/* GEO TREE */}
-                {needsGeoTree && (
-                  <div className="flex items-center ml-2">
-                    <Button.Icon
-                      icon="globe"
-                      title={setupToolText.configGeoTree()}
-                      onClick={() => {
-                        setNewResource(new tables.GeographyTreeDef.Resource());
-                        openAddDisciplineGeoTree();
-                      }}
-                    />
-                    <p className="text-red-600 ml-2">
-                      {setupToolText.treeConfigurationWarning()}
-                    </p>
-                  </div>
-                )}
-                {/* TAXON TREE */}
-                {needsTaxonTree && (
-                  <div className="flex items-center ml-2">
-                    <Button.Icon
-                      icon="tree"
-                      title={setupToolText.configTaxonTree()}
-                      onClick={() => {
-                        setNewResource(new tables.TaxonTreeDef.Resource());
-                        openAddDisciplineTaxonTree();
-                      }}
-                    />
-                    <p className="text-red-600 ml-2">
-                      {setupToolText.treeConfigurationWarning()}
-                    </p>
-                  </div>
-                )}
-                {handleEditResource(
-                  new tables.Discipline.Resource({ id: discipline.id }),
-                  refreshAllInfo
-                )}
-
-                {/* ADD COLLECTION */}
-                {canAddCollection &&
-                  addButton(() => {
-                    setNewResource(
-                      new tables.Collection.Resource({
-                        discipline: `/api/specify/discipline/${discipline.id}/`,
-                      })
-                    );
-                    handleNewResource();
-                  }, 'collection')}
+              <div>
+                <div className="flex">
+                  <H3>{`Discipline: ${discipline.name}`}</H3>
+                  {/* ADD COLLECTION */}
+                  {canAddCollection &&
+                    addButton(() => {
+                      setNewResource(
+                        new tables.Collection.Resource({
+                          discipline: `/api/specify/discipline/${discipline.id}/`,
+                        })
+                      );
+                      handleNewResource();
+                    }, 'collection')}
+                </div>
+                <div className="m-2">
+                  {/* GEO TREE */}
+                  {needsGeoTree && (
+                    <div className="flex items-center m-2">
+                      <Button.LikeLink
+                        onClick={() => {
+                          setNewResource(
+                            new tables.GeographyTreeDef.Resource()
+                          );
+                          openAddDisciplineGeoTree();
+                        }}
+                      >
+                        {icons.globe}
+                        {setupToolText.geoTreeSetUp()}
+                      </Button.LikeLink>
+                    </div>
+                  )}
+                  {/* TAXON TREE */}
+                  {needsTaxonTree && (
+                    <div className="flex items-center m-2">
+                      <Button.LikeLink
+                        onClick={() => {
+                          setNewResource(new tables.TaxonTreeDef.Resource());
+                          openAddDisciplineTaxonTree();
+                        }}
+                      >
+                        {icons.tree}
+                        {setupToolText.taxonTreeSetUp()}
+                      </Button.LikeLink>
+                    </div>
+                  )}
+                  {handleEditResource(
+                    new tables.Discipline.Resource({ id: discipline.id }),
+                    refreshAllInfo
+                  )}
+                </div>
               </div>
             }
           >
@@ -276,22 +281,24 @@ export function Hierarchy({
         <CollapsibleSection
           hasChildren={division.children.length > 0}
           title={
-            <div className="flex items-center">
-              <H3>{`Division: ${division.name}`}</H3>
+            <div>
+              <div className="flex">
+                <H3>{`Division: ${division.name}`}</H3>
+
+                {addButton(() => {
+                  setNewResource(
+                    new tables.Discipline.Resource({
+                      division: `/api/specify/division/${division.id}/`,
+                    })
+                  );
+                  handleNewResource();
+                }, 'Discipline')}
+              </div>
 
               {handleEditResource(
                 new tables.Division.Resource({ id: division.id }),
                 refreshAllInfo
               )}
-
-              {addButton(() => {
-                setNewResource(
-                  new tables.Discipline.Resource({
-                    division: `/api/specify/division/${division.id}/`,
-                  })
-                );
-                handleNewResource();
-              }, 'Discipline')}
             </div>
           }
         >
