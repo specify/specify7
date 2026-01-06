@@ -37,7 +37,7 @@ msgstr "Preferências do usuário"
 msgid "defaultUserPreferences"
 msgstr "Preferências padrão do usuário"
 
-#: components/Preferences/CollectionDefinitions.tsx:24
+#: components/Preferences/CollectionDefinitions.tsx:25
 #: components/Preferences/UserDefinitions.tsx:83
 #: components/Preferences/UserDefinitions.tsx:531
 #: components/Preferences/UserDefinitions.tsx:618
@@ -274,8 +274,8 @@ msgstr "Fundo de campo obrigatório (tema escuro)"
 msgid "dialogs"
 msgstr "Diálogos"
 
-#: components/Preferences/CollectionDefinitions.tsx:117
-#: components/Preferences/CollectionDefinitions.tsx:228
+#: components/Preferences/CollectionDefinitions.tsx:118
+#: components/Preferences/CollectionDefinitions.tsx:229
 #: components/Preferences/UserDefinitions.tsx:238
 #: components/Preferences/UserDefinitions.tsx:570
 #: components/Preferences/UserDefinitions.tsx:975
@@ -560,9 +560,9 @@ msgstr "Página web incorporada"
 msgid "embeddedWebpageDescription"
 msgstr "Um URL para uma página que seria incorporada na página inicial:"
 
-#: components/Preferences/CollectionDefinitions.tsx:173
-#: components/Preferences/CollectionDefinitions.tsx:192
-#: components/Preferences/CollectionDefinitions.tsx:211
+#: components/Preferences/CollectionDefinitions.tsx:174
+#: components/Preferences/CollectionDefinitions.tsx:193
+#: components/Preferences/CollectionDefinitions.tsx:212
 #: components/Preferences/UserDefinitions.tsx:503
 #: components/Preferences/UserDefinitions.tsx:739
 #: components/Preferences/UserDefinitions.tsx:1328
@@ -752,7 +752,7 @@ msgstr ""
 "Você pode se mover na direção oposta pressionando "
 "<key>Shift</key>+<key>Enter</key>."
 
-#: components/Preferences/CollectionDefinitions.tsx:27
+#: components/Preferences/CollectionDefinitions.tsx:28
 #: components/Preferences/UserDefinitions.tsx:1934
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #, fuzzy
@@ -1355,7 +1355,7 @@ msgstr "Cor do botão de sucesso"
 msgid "openAsReadOnly"
 msgstr "Abrir todos os registros em modo somente leitura"
 
-#: components/Preferences/CollectionDefinitions.tsx:231
+#: components/Preferences/CollectionDefinitions.tsx:232
 #: components/Preferences/UserDefinitions.tsx:1747
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #, fuzzy
@@ -1414,25 +1414,25 @@ msgstr "Miniatura"
 msgid "addSearchBarHomePage"
 msgstr "Adicionar barra de pesquisa na página inicial"
 
-#: components/Preferences/CollectionDefinitions.tsx:178
+#: components/Preferences/CollectionDefinitions.tsx:179
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "inheritanceCatNumberPrefDescription"
 msgstr ""
 
-#: components/Preferences/CollectionDefinitions.tsx:176
+#: components/Preferences/CollectionDefinitions.tsx:177
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "inheritanceCatNumberPref"
 msgstr "Permita a herança do número de catálogo principal para seus irmãos vazios."
 
-#: components/Preferences/CollectionDefinitions.tsx:195
+#: components/Preferences/CollectionDefinitions.tsx:196
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "inheritanceCatNumberParentCOPref"
 msgstr "Habilitar a herança do número de catálogo pai para seus filhos vazios."
 
-#: components/Preferences/CollectionDefinitions.tsx:214
+#: components/Preferences/CollectionDefinitions.tsx:215
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "uniqueCatNumberAcrossCompAndCo"
@@ -1440,19 +1440,19 @@ msgstr ""
 "O campo Número de Catálogo precisa ser único em todas as tabelas de "
 "Componente e CO."
 
-#: components/Preferences/CollectionDefinitions.tsx:30
+#: components/Preferences/CollectionDefinitions.tsx:31
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "scopeEntireTablePicklists"
 msgstr ""
 
-#: components/Preferences/CollectionDefinitions.tsx:31
+#: components/Preferences/CollectionDefinitions.tsx:32
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "scopeEntireTablePicklistsDescription"
 msgstr ""
 
-#: components/Preferences/CollectionDefinitions.tsx:197
+#: components/Preferences/CollectionDefinitions.tsx:198
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "inheritanceCatNumberParentCOPrefDescription"

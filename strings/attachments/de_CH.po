@@ -21,7 +21,7 @@ msgstr ""
 #: components/Header/menuItemDefinitions.ts:99
 #: components/Molecules/SyncAttachmentPicker.tsx:118
 #: components/Molecules/SyncAttachmentPicker.tsx:127
-#: components/Preferences/CollectionDefinitions.tsx:40
+#: components/Preferences/CollectionDefinitions.tsx:41
 #: components/Preferences/UserDefinitions.tsx:1325
 #: components/Router/Routes.tsx:182
 #: components/Router/Routes.tsx:485
@@ -490,13 +490,13 @@ msgstr "Möchten Sie diesen Anhang wirklich löschen?"
 msgid "attachmentDelition"
 msgstr "Anhang löschen"
 
-#: components/Preferences/CollectionDefinitions.tsx:43
+#: components/Preferences/CollectionDefinitions.tsx:44
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "publicDefault"
 msgstr ""
 
-#: components/Preferences/CollectionDefinitions.tsx:44
+#: components/Preferences/CollectionDefinitions.tsx:45
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "publicDefaultDescription"

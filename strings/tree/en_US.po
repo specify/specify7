@@ -407,17 +407,17 @@ msgstr "Rocks"
 msgid "meteorites"
 msgstr "Meteorites"
 
-#: components/Preferences/CollectionDefinitions.tsx:55
+#: components/Preferences/CollectionDefinitions.tsx:56
 #. Used in: Components > Preferences > Collection Definitions
 msgid "treeManagement"
 msgstr "Tree Management"
 
-#: components/Preferences/CollectionDefinitions.tsx:58
+#: components/Preferences/CollectionDefinitions.tsx:59
 #. Used in: Components > Preferences > Collection Definitions
 msgid "synonymizedNodes"
 msgstr "Expand Synonym Behavior"
 
-#: components/Preferences/CollectionDefinitions.tsx:59
+#: components/Preferences/CollectionDefinitions.tsx:60
 #. Used in: Components > Preferences > Collection Definitions
 msgid "synonymizedNodesDescription"
 msgstr ""

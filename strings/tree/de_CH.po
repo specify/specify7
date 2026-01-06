@@ -451,19 +451,19 @@ msgstr "Felsen"
 msgid "meteorites"
 msgstr "Meteoriten"
 
-#: components/Preferences/CollectionDefinitions.tsx:55
+#: components/Preferences/CollectionDefinitions.tsx:56
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "treeManagement"
 msgstr ""
 
-#: components/Preferences/CollectionDefinitions.tsx:58
+#: components/Preferences/CollectionDefinitions.tsx:59
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "synonymizedNodes"
 msgstr ""
 
-#: components/Preferences/CollectionDefinitions.tsx:59
+#: components/Preferences/CollectionDefinitions.tsx:60
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "synonymizedNodesDescription"

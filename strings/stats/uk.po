@@ -181,7 +181,7 @@ msgid "shared"
 msgstr ""
 
 #: components/Header/menuItemDefinitions.ts:109
-#: components/Preferences/CollectionDefinitions.tsx:114
+#: components/Preferences/CollectionDefinitions.tsx:115
 #: components/Preferences/UserDefinitions.tsx:2077
 #: components/Router/Routes.tsx:461
 #: components/Statistics/hooks.tsx:118
@@ -263,27 +263,27 @@ msgstr ""
 msgid "categoryToDelete"
 msgstr ""
 
-#: components/Preferences/CollectionDefinitions.tsx:120
+#: components/Preferences/CollectionDefinitions.tsx:121
 #. Used in: Components > Preferences > Collection Definitions
 msgid "layoutPreference"
 msgstr ""
 
-#: components/Preferences/CollectionDefinitions.tsx:128
+#: components/Preferences/CollectionDefinitions.tsx:129
 #. Used in: Components > Preferences > Collection Definitions
 msgid "showPreparationsTotal"
 msgstr ""
 
-#: components/Preferences/CollectionDefinitions.tsx:129
+#: components/Preferences/CollectionDefinitions.tsx:130
 #. Used in: Components > Preferences > Collection Definitions
 msgid "showPreparationsTotalDescription"
 msgstr ""
 
-#: components/Preferences/CollectionDefinitions.tsx:136
+#: components/Preferences/CollectionDefinitions.tsx:137
 #. Used in: Components > Preferences > Collection Definitions
 msgid "autoRefreshRate"
 msgstr ""
 
-#: components/Preferences/CollectionDefinitions.tsx:137
+#: components/Preferences/CollectionDefinitions.tsx:138
 #. Used in: Components > Preferences > Collection Definitions
 msgid "autoRefreshRateDescription"
 msgstr ""

@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.15.1\n"
 
-#: components/Preferences/CollectionDefinitions.tsx:146
+#: components/Preferences/CollectionDefinitions.tsx:147
 #: components/SpecifyNetwork/index.tsx:81
 #: components/SpecifyNetwork/index.tsx:89
 #: components/SpecifyNetwork/index.tsx:98
@@ -127,25 +127,25 @@ msgstr "Год начала"
 msgid "endYear"
 msgstr "Конец года"
 
-#: components/Preferences/CollectionDefinitions.tsx:149
+#: components/Preferences/CollectionDefinitions.tsx:150
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "publishingOrganizationKey"
 msgstr ""
 
-#: components/Preferences/CollectionDefinitions.tsx:151
+#: components/Preferences/CollectionDefinitions.tsx:152
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "publishingOrganizationKeyDescription"
 msgstr ""
 
-#: components/Preferences/CollectionDefinitions.tsx:158
+#: components/Preferences/CollectionDefinitions.tsx:159
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "collectionKey"
 msgstr ""
 
-#: components/Preferences/CollectionDefinitions.tsx:159
+#: components/Preferences/CollectionDefinitions.tsx:160
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "collectionKeyDescription"

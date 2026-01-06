@@ -33,7 +33,7 @@ msgstr "Запит"
 msgid "queries"
 msgstr "Запити"
 
-#: components/Preferences/CollectionDefinitions.tsx:225
+#: components/Preferences/CollectionDefinitions.tsx:226
 #: components/Preferences/UserDefinitions.tsx:1659
 #: components/SearchDialog/index.tsx:242
 #: components/SearchDialog/index.tsx:386
@@ -553,17 +553,17 @@ msgstr "Суворий"
 msgid "nonStrict"
 msgstr "Не суворий"
 
-#: components/Preferences/CollectionDefinitions.tsx:170
+#: components/Preferences/CollectionDefinitions.tsx:171
 #. Used in: Components > Preferences > Collection Definitions
 msgid "primaryCatalogNumberInheritance"
 msgstr ""
 
-#: components/Preferences/CollectionDefinitions.tsx:189
+#: components/Preferences/CollectionDefinitions.tsx:190
 #. Used in: Components > Preferences > Collection Definitions
 msgid "parentCatalogNumberInheritance"
 msgstr ""
 
-#: components/Preferences/CollectionDefinitions.tsx:208
+#: components/Preferences/CollectionDefinitions.tsx:209
 #. Used in: Components > Preferences > Collection Definitions
 msgid "uniqueCatalogNumberAcrossComponentAndCoTitle"
 msgstr ""

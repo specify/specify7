@@ -170,7 +170,7 @@ msgid "shared"
 msgstr "Shared"
 
 #: components/Header/menuItemDefinitions.ts:109
-#: components/Preferences/CollectionDefinitions.tsx:114
+#: components/Preferences/CollectionDefinitions.tsx:115
 #: components/Preferences/UserDefinitions.tsx:2077
 #: components/Router/Routes.tsx:461
 #: components/Statistics/hooks.tsx:118
@@ -252,17 +252,17 @@ msgstr "Are you sure you want to delete the category?"
 msgid "categoryToDelete"
 msgstr "This will permanently delete the following category"
 
-#: components/Preferences/CollectionDefinitions.tsx:120
+#: components/Preferences/CollectionDefinitions.tsx:121
 #. Used in: Components > Preferences > Collection Definitions
 msgid "layoutPreference"
 msgstr "Defines the layout of the statistics page"
 
-#: components/Preferences/CollectionDefinitions.tsx:128
+#: components/Preferences/CollectionDefinitions.tsx:129
 #. Used in: Components > Preferences > Collection Definitions
 msgid "showPreparationsTotal"
 msgstr "Show Preparations Totals"
 
-#: components/Preferences/CollectionDefinitions.tsx:129
+#: components/Preferences/CollectionDefinitions.tsx:130
 #. Used in: Components > Preferences > Collection Definitions
 msgid "showPreparationsTotalDescription"
 msgstr ""
@@ -270,12 +270,12 @@ msgstr ""
 "count for each preparation of a particular preparation type alongside the "
 "overall total. This is useful for lot-based collections."
 
-#: components/Preferences/CollectionDefinitions.tsx:136
+#: components/Preferences/CollectionDefinitions.tsx:137
 #. Used in: Components > Preferences > Collection Definitions
 msgid "autoRefreshRate"
 msgstr "Auto-Refresh Rate (Hours)"
 
-#: components/Preferences/CollectionDefinitions.tsx:137
+#: components/Preferences/CollectionDefinitions.tsx:138
 #. Used in: Components > Preferences > Collection Definitions
 msgid "autoRefreshRateDescription"
 msgstr ""

@@ -32,7 +32,7 @@ msgstr "Consulta"
 msgid "queries"
 msgstr "Consultas"
 
-#: components/Preferences/CollectionDefinitions.tsx:225
+#: components/Preferences/CollectionDefinitions.tsx:226
 #: components/Preferences/UserDefinitions.tsx:1659
 #: components/SearchDialog/index.tsx:242
 #: components/SearchDialog/index.tsx:386
@@ -585,19 +585,19 @@ msgstr "Estricto"
 msgid "nonStrict"
 msgstr "No estricto"
 
-#: components/Preferences/CollectionDefinitions.tsx:170
+#: components/Preferences/CollectionDefinitions.tsx:171
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "primaryCatalogNumberInheritance"
 msgstr ""
 
-#: components/Preferences/CollectionDefinitions.tsx:189
+#: components/Preferences/CollectionDefinitions.tsx:190
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "parentCatalogNumberInheritance"
 msgstr ""
 
-#: components/Preferences/CollectionDefinitions.tsx:208
+#: components/Preferences/CollectionDefinitions.tsx:209
 #. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "uniqueCatalogNumberAcrossComponentAndCoTitle"
