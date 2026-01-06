@@ -200,12 +200,6 @@ export const setupToolText = createDictionary({
   specifyUserConfirmPasswordDescription: {
     'en-us': 'Must match the password entered above.',
   },
-  configGeoTree: {
-    'en-us': 'Configure your geography tree for your discipline',
-  },
-  configTaxonTree: {
-    'en-us': 'Configure your taxon tree for your discipline',
-  },
   taxonTreeSetUp: {
     'en-us': 'Set up taxon tree',
   },

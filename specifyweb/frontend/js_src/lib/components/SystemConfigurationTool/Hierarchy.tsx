@@ -5,7 +5,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { setupToolText } from '../../localization/setupTool';
-import { localized, type RA } from '../../utils/types';
+import { type RA } from '../../utils/types';
 import { H2, H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
