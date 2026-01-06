@@ -87,11 +87,6 @@ def setup_database_task(self, data: dict):
             api.create_storage_tree(data['storagetreedef'])
             update_progress()
 
-            uses_global_geography_tree = data['institution'].get('issinglegeographytree', False)
-            if uses_global_geography_tree == True:
-                logger.debug('Creating singular geography tree')
-                api.create_global_geography_tree(data['globalgeographytreedef'])
-
             logger.debug('Creating division')
             api.create_division(data['division'])
             update_progress()
@@ -112,9 +107,10 @@ def setup_database_task(self, data: dict):
             default_chronostrat_tree['fullnamedirection'] = -1
             api.create_geologictimeperiod_tree(default_chronostrat_tree)
 
-            if uses_global_geography_tree == False:
-                logger.debug('Creating geography tree')
-                api.create_geography_tree(data['geographytreedef'])
+            uses_global_geography_tree = data['institution'].get('issinglegeographytree', False)
+
+            logger.debug('Creating geography tree')
+            api.create_geography_tree(data['geographytreedef'], global_tree=uses_global_geography_tree)
 
             logger.debug('Creating discipline')
             discipline_result = api.create_discipline(data['discipline'])

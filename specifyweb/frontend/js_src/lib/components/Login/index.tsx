@@ -28,7 +28,6 @@ import { OicLogin } from './OicLogin';
 export type SetupResources = {
   readonly institution: boolean;
   readonly storageTreeDef: boolean;
-  readonly globalGeographyTreeDef: boolean;
   readonly division: boolean;
   readonly discipline: boolean;
   readonly geographyTreeDef: boolean;

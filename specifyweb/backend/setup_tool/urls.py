@@ -12,7 +12,6 @@ urlpatterns = [
     # These urls are functional but unused by the setup process. The API can be used instead.
     # re_path(r'^institution/create/$', views.create_institution_view),
     # re_path(r'^storagetreedef/create/$', views.create_storage_tree_view),
-    # re_path(r'^global_geographytreedef/create/$', views.create_geography_tree_view),
     # re_path(f'^division/create/$', views.create_division_view),
     # re_path(f'^discipline/create/$', views.create_discipline_view),
     # re_path(f'^geographytreedef/create/$', views.create_geography_tree_view),

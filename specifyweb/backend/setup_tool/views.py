@@ -11,7 +11,6 @@ _SCHEMA_COMPONENTS = {
             "properties": {
                 "institution": {"type": "boolean"},
                 "storageTreeDef": {"type": "boolean"},
-                "globalGeographyTreeDef": {"type": "boolean"},
                 "division": {"type": "boolean"},
                 "discipline": {"type": "boolean"},
                 "geographyTreeDef": {"type": "boolean"},
@@ -19,8 +18,8 @@ _SCHEMA_COMPONENTS = {
                 "collection": {"type": "boolean"},
                 "specifyUser": {"type": "boolean"}
             },
-            "required": ["institution", "storageTreeDef", "globalGeographyTreeDef", "division", "discipline",
-                         "geographyTreeDef", "taxonTreeDef", "collection", "specifyUser"],
+            "required": ["institution", "storageTreeDef", "division", "discipline", "geographyTreeDef",
+                         "taxonTreeDef", "collection", "specifyUser"],
             "description": "A list of which required database resources have been created so far."
         },
         "SetupProgress": {
@@ -98,10 +97,6 @@ def create_institution_view(request):
 @require_POST
 def create_storage_tree_view(request):
     return api.handle_request(request, api.create_storage_tree)
-
-@require_POST
-def create_global_geography_tree_view(request):
-    return api.handle_request(request, api.create_global_geography_tree)
 
 @require_POST
 def create_division_view(request):

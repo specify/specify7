@@ -30,7 +30,6 @@ export type ResourceFormData = Record<string, any>;
 export const stepOrder: RA<keyof SetupResources> = [
   'institution',
   'storageTreeDef',
-  'globalGeographyTreeDef',
   'division',
   'discipline',
   'geographyTreeDef',

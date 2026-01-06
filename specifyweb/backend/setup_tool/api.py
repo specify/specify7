@@ -61,14 +61,9 @@ def get_setup_progress() -> dict:
 
 def get_setup_resource_progress() -> dict:
     """Returns a dictionary of the status of database setup resources."""
-    institution_created = models.Institution.objects.exists()
-    institution = models.Institution.objects.first()
-    globalGeographyTree = institution and institution.issinglegeographytree
-
     return {
-        "institution": institution_created,
+        "institution": models.Institution.objects.exists(),
         "storageTreeDef": models.Storagetreedef.objects.exists(),
-        "globalGeographyTreeDef": institution_created and ((not globalGeographyTree) or models.Geographytreedef.objects.exists()),
         "division": models.Division.objects.exists(),
         "discipline": models.Discipline.objects.exists(),
         "geographyTreeDef": models.Geographytreedef.objects.exists(),
@@ -355,10 +350,7 @@ def create_specifyuser(data):
 def create_storage_tree(data):
     return create_tree('Storage', data)
 
-def create_global_geography_tree(data):
-    return create_tree('Geography', data)
-
-def create_geography_tree(data):
+def create_geography_tree(data, global_tree: bool = False):
     return create_tree('Geography', data)
 
 def create_taxon_tree(data):

@@ -126,9 +126,6 @@ export const setupToolText = createDictionary({
     'en-us': 'Storage Tree',
   },
   // Geography Tree
-  globalGeographyTree: {
-    'en-us': 'Global Geography Tree',
-  },
   geographyTree: {
     'en-us': 'Geography Tree',
   },

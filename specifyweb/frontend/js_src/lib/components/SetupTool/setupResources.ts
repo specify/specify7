@@ -192,46 +192,6 @@ export const resources: RA<ResourceConfig> = [
     ],
   },
   {
-    resourceName: 'globalGeographyTreeDef',
-    label: setupToolText.globalGeographyTree(),
-    endpoint: '/setup_tool/global_geographytreedef/create/',
-    condition: {
-      institution: {
-        isSingleGeographyTree: true,
-      },
-    },
-    fields: [
-      {
-        name: 'ranks',
-        label: setupToolText.treeRanks(),
-        required: false,
-        type: 'object',
-        fields: [
-          { name: '0', label: 'Earth', type: 'boolean', default: true },
-          { name: '100', label: 'Continent', type: 'boolean', default: true },
-          { name: '200', label: 'Country', type: 'boolean', default: true },
-          { name: '300', label: 'State', type: 'boolean', default: true },
-          { name: '400', label: 'County', type: 'boolean', default: true },
-        ],
-      },
-      {
-        name: 'fullNameDirection',
-        label: setupToolText.fullNameDirection(),
-        type: 'select',
-        options: fullNameDirections,
-        required: true,
-        default: fullNameDirections[0].value.toString(),
-      },
-      /*
-       * {
-       *   name: 'default',
-       *   label: setupToolText_defaultTree(), // underscore in comment to avoid failing test
-       *   type: 'boolean',
-       * },
-       */
-    ],
-  },
-  {
     resourceName: 'division',
     label: setupToolText.division(),
     endpoint: '/setup_tool/division/create/',
@@ -264,11 +224,6 @@ export const resources: RA<ResourceConfig> = [
     resourceName: 'geographyTreeDef',
     label: setupToolText.geographyTree(),
     endpoint: '/setup_tool/geographytreedef/create/',
-    condition: {
-      institution: {
-        isSingleGeographyTree: false,
-      },
-    },
     fields: [
       {
         name: 'ranks',
