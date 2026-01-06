@@ -4,28 +4,25 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
-import { queryText } from '../../localization/query';
 import { setupToolText } from '../../localization/setupTool';
-import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { type RA, localized } from '../../utils/types';
 import { Container, H2, H3 } from '../Atoms';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { Form, Input, Label, Select } from '../Atoms/Form';
+import { Form } from '../Atoms/Form';
 import { dialogIcons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import type { SetupProgress, SetupResources } from '../Login';
+import type { SetupProgress, SetupResources, SetupResponse, ResourceFormData } from './types';
 import { loadingBar } from '../Molecules';
-import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
 import type { FieldConfig, ResourceConfig } from './setupResources';
-import { FIELD_MAX_LENGTH, resources } from './setupResources';
+import { resources } from './setupResources';
 import { flattenAllResources } from './utils';
-
-export type ResourceFormData = Record<string, any>;
+import { checkFormCondition, renderFormFieldFactory } from './SetupForm';
+import { SetupOverview } from './SetupOverview';
 
 export const stepOrder: RA<keyof SetupResources> = [
   'institution',
@@ -37,32 +34,6 @@ export const stepOrder: RA<keyof SetupResources> = [
   'collection',
   'specifyUser',
 ];
-
-type SetupResponse = {
-  readonly success: boolean;
-  readonly setup_progress: SetupProgress;
-  readonly task_id: string;
-};
-
-function checkFormCondition(
-  formData: ResourceFormData,
-  resource: ResourceConfig
-): boolean {
-  if (resource.condition === undefined) {
-    return true;
-  }
-  let pass = true;
-  for (const [resourceName, fields] of Object.entries(resource.condition)) {
-    for (const [fieldName, requiredValue] of Object.entries(fields)) {
-      if (formData[resourceName][fieldName] !== requiredValue) {
-        pass = false;
-        break;
-      }
-    }
-    if (!pass) break;
-  }
-  return pass;
-}
 
 function findNextStep(
   currentStep: number,
@@ -82,14 +53,6 @@ function findNextStep(
     step += direction;
   }
   return currentStep;
-}
-
-function getFormValue(
-  formData: ResourceFormData,
-  currentStep: number,
-  fieldName: string
-): number | string | undefined {
-  return formData[resources[currentStep].resourceName][fieldName];
 }
 
 function useFormDefaults(
@@ -114,182 +77,6 @@ function useFormDefaults(
       ...previous[resourceName],
     },
   }));
-}
-
-export function renderFormFieldFactory({
-  formData,
-  currentStep,
-  handleChange,
-  temporaryFormData,
-  setTemporaryFormData,
-  formRef,
-}: {
-  readonly formData: ResourceFormData;
-  readonly currentStep: number;
-  readonly handleChange: (
-    name: string,
-    newValue: LocalizedString | boolean
-  ) => void;
-  readonly temporaryFormData: ResourceFormData;
-  readonly setTemporaryFormData: (
-    value: React.SetStateAction<ResourceFormData>
-  ) => void;
-  readonly formRef: React.MutableRefObject<HTMLFormElement | null>;
-}) {
-  const renderFormField = (
-    field: FieldConfig,
-    parentName?: string
-  ): JSX.Element => {
-    const {
-      name,
-      label,
-      type,
-      required = false,
-      description,
-      options,
-      fields,
-      passwordRepeat,
-    } = field;
-
-    const fieldName = parentName === undefined ? name : `${parentName}.${name}`;
-
-    const colSpan = type === 'object' ? 2 : 1;
-
-    return (
-      <div className={`mb-2 col-span-${colSpan}`} key={fieldName}>
-        {type === 'boolean' ? (
-          <div className="flex items-center space-x-2">
-            <Label.Inline title={description}>
-              <Input.Checkbox
-                checked={Boolean(
-                  getFormValue(formData, currentStep, fieldName)
-                )}
-                id={fieldName}
-                name={fieldName}
-                required={required}
-                onValueChange={(isChecked) =>
-                  handleChange(fieldName, isChecked)
-                }
-              />
-              {label}
-            </Label.Inline>
-          </div>
-        ) : type === 'select' && Array.isArray(options) ? (
-          <div
-            className="mb-4"
-            key={`${resources[currentStep].resourceName}.${fieldName}`}
-          >
-            <Label.Block title={description}>
-              {label}
-              <Select
-                aria-label={label}
-                className="w-full min-w-[theme(spacing.40)]"
-                id={fieldName}
-                name={fieldName}
-                required={required}
-                value={getFormValue(formData, currentStep, fieldName) ?? ''}
-                onValueChange={(value) => handleChange(fieldName, value)}
-              >
-                <option disabled value="">
-                  {commonText.select()}
-                </option>
-                {options.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label ?? option.value}
-                  </option>
-                ))}
-              </Select>
-            </Label.Block>
-          </div>
-        ) : type === 'password' ? (
-          <>
-            <Label.Block title={description}>
-              {label}
-              <Input.Generic
-                maxLength={field.maxLength ?? FIELD_MAX_LENGTH}
-                minLength={MIN_PASSWORD_LENGTH}
-                name={fieldName}
-                required={required}
-                type="password"
-                value={getFormValue(formData, currentStep, fieldName) ?? ''}
-                onValueChange={(value) => {
-                  handleChange(fieldName, value);
-                  if (passwordRepeat !== undefined && formRef.current) {
-                    const target = formRef.current.elements.namedItem(
-                      passwordRepeat.name
-                    ) as HTMLInputElement | null;
-
-                    if (target) {
-                      target.setCustomValidity(
-                        target.value && target.value === value
-                          ? ''
-                          : userText.passwordsDoNotMatchError()
-                      );
-                    }
-                  }
-                }}
-              />
-            </Label.Block>
-
-            {passwordRepeat === undefined ? null : (
-              <Label.Block title={passwordRepeat.description}>
-                {passwordRepeat.label}
-                <Input.Generic
-                  maxLength={field.maxLength ?? FIELD_MAX_LENGTH}
-                  minLength={MIN_PASSWORD_LENGTH}
-                  name={passwordRepeat.name}
-                  required={required}
-                  type="password"
-                  value={temporaryFormData[passwordRepeat.name] ?? ''}
-                  onChange={({ target }): void => {
-                    target.setCustomValidity(
-                      target.value ===
-                        getFormValue(formData, currentStep, fieldName)
-                        ? ''
-                        : userText.passwordsDoNotMatchError()
-                    );
-                  }}
-                  onValueChange={(value) =>
-                    setTemporaryFormData((previous) => ({
-                      ...previous,
-                      [passwordRepeat.name]: value,
-                    }))
-                  }
-                />
-              </Label.Block>
-            )}
-          </>
-        ) : type === 'object' ? (
-          // Subforms
-          <div className="border border-gray-500 rounded-b p-1">
-            <H3 className="text-xl font-semibold mb-4" title={description}>
-              {label}
-            </H3>
-            {fields ? renderFormFields(fields, name) : null}
-          </div>
-        ) : (
-          <Label.Block title={description}>
-            {label}
-            <Input.Text
-              maxLength={field.maxLength ?? FIELD_MAX_LENGTH}
-              name={fieldName}
-              required={required}
-              value={getFormValue(formData, currentStep, fieldName) ?? ''}
-              onValueChange={(value) => handleChange(fieldName, value)}
-            />
-          </Label.Block>
-        )}
-      </div>
-    );
-  };
-
-  const renderFormFields = (fields: RA<FieldConfig>, parentName?: string) => (
-    <div className="grid grid-cols-2 gap-4">
-      {fields.map((field) => renderFormField(field, parentName))}
-    </div>
-  );
-
-  return { renderFormField, renderFormFields };
 }
 
 export function SetupTool({
@@ -544,114 +331,6 @@ export function SetupTool({
           </div>
         )}
       </Container.FullGray>
-    </div>
-  );
-}
-
-function SetupOverview({
-  formData,
-  currentStep,
-}: {
-  readonly formData: ResourceFormData;
-  readonly currentStep: number;
-}): JSX.Element {
-  // Displays all previously filled out forms in a grid format.
-  return (
-    <div className="space-y-4 max-h-[70vh] overflow-auto ">
-      <table className="w-full text-sm border-collapse table-auto rounded-md bg-white dark:bg-neutral-800">
-        <colgroup>
-          <col style={{ width: '60%' }} />
-          <col style={{ width: '40%' }} />
-        </colgroup>
-        <tbody className="divide-y divide-gray-500">
-          {resources.map((resource, step) => {
-            // Display only the forms that have been visited.
-            if (
-              (Object.keys(formData[resource.resourceName]).length > 0 ||
-                step <= currentStep) &&
-              checkFormCondition(formData, resource)
-            ) {
-              // Decide how to render each field.
-              const fieldDisplay = (
-                field: FieldConfig,
-                parentName?: string
-              ) => {
-                const fieldName =
-                  parentName === undefined
-                    ? field.name
-                    : `${parentName}.${field.name}`;
-                const rawValue = formData[resource.resourceName]?.[fieldName];
-                let value = rawValue?.toString() ?? '-';
-                if (field.type === 'object') {
-                  // Construct a sub list of properties
-                  field.fields?.map((child_field) =>
-                    fieldDisplay(child_field, field.name)
-                  );
-                  return (
-                    <React.Fragment
-                      key={`${resource.resourceName}-${field.name}`}
-                    >
-                      <tr key={`${resource.resourceName}`}>
-                        <td className="font-medium py-1 pr-2 pl-2" colSpan={2}>
-                          {field.label}
-                        </td>
-                      </tr>
-                      {field.fields?.map((child) => (
-                        <React.Fragment
-                          key={`${resource.resourceName}-${field.name}-${child.name}`}
-                        >
-                          {fieldDisplay(
-                            child,
-                            parentName
-                              ? `${parentName}.${field.name}`
-                              : field.name
-                          )}
-                        </React.Fragment>
-                      ))}
-                    </React.Fragment>
-                  );
-                } else if (field.type === 'password') {
-                  value = rawValue ? '***' : '-';
-                } else if (
-                  field.type === 'select' &&
-                  Array.isArray(field.options)
-                ) {
-                  const match = field.options.find(
-                    (option) => String(option.value) === value
-                  );
-                  value = match ? (match.label ?? match.value) : value;
-                } else if (field.type == 'boolean') {
-                  value = rawValue === true ? queryText.yes() : commonText.no();
-                }
-                return (
-                  <tr key={`${resource.resourceName}-${field.name}`}>
-                    <td className={`py-1 pr-2 ${parentName ? 'pl-5' : 'pl-2'}`}>
-                      {field.label}
-                    </td>
-                    <td className="py-1 pl-2 border-l border-gray-500">
-                      {value}
-                    </td>
-                  </tr>
-                );
-              };
-              return (
-                <React.Fragment key={resource.resourceName}>
-                  <tr key={`${resource.resourceName}`}>
-                    <td
-                      className="font-bold py-1 pr-2 pl-2 bg-gray-200 dark:bg-neutral-700"
-                      colSpan={2}
-                    >
-                      {resource.label}
-                    </td>
-                  </tr>
-                  {resource.fields.map((field) => fieldDisplay(field))}
-                </React.Fragment>
-              );
-            }
-            return undefined;
-          })}
-        </tbody>
-      </table>
     </div>
   );
 }

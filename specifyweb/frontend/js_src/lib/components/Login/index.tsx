@@ -24,23 +24,7 @@ import { SetupTool } from '../SetupTool';
 import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
 import type { OicProvider } from './OicLogin';
 import { OicLogin } from './OicLogin';
-
-export type SetupResources = {
-  readonly institution: boolean;
-  readonly storageTreeDef: boolean;
-  readonly division: boolean;
-  readonly discipline: boolean;
-  readonly geographyTreeDef: boolean;
-  readonly taxonTreeDef: boolean;
-  readonly collection: boolean;
-  readonly specifyUser: boolean;
-}
-
-export type SetupProgress = {
-  readonly resources: SetupResources;
-  readonly busy: boolean;
-  readonly last_error?: string;
-};
+import type { SetupProgress } from '../SetupTool/types';
 
 export function Login(): JSX.Element {
   const [setupProgress, setSetupProgress] = useAsyncState(
