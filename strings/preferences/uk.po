@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-01-06 20:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/uk/>\n"
 "Language: uk\n"
@@ -104,7 +104,6 @@ msgstr "Вимкніть необов'язкову анімацію та пер�
 #: components/Preferences/UserDefinitions.tsx:1612
 #: components/Preferences/UserDefinitions.tsx:1644
 #: components/Preferences/__tests__/ThresholdRank.test.tsx:37
-#, fuzzy
 msgid "rankThreshold"
 msgstr "Показати кількість об'єктів нижче"
 
@@ -1196,7 +1195,6 @@ msgstr "Додайте рядок пошуку на головну сторін�
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:179
-#, fuzzy
 msgid "inheritanceCatNumberPrefDescription"
 msgstr ""
 "Контролюйте, чи успадковують об'єкти колекції каталожний номер від основного "
@@ -1223,13 +1221,11 @@ msgstr "Поле «Номер у каталозі» має бути унікал
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:31
-#, fuzzy
 msgid "scopeEntireTablePicklists"
 msgstr "Списки вибору «Уся таблиця»"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:32
-#, fuzzy
 msgid "scopeEntireTablePicklistsDescription"
 msgstr ""
 "Якщо ввімкнено, у списках вибору типу «Уся таблиця» відображатимуться лише "
@@ -1237,7 +1233,6 @@ msgstr ""
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:198
-#, fuzzy
 msgid "inheritanceCatNumberParentCOPrefDescription"
 msgstr ""
 "Керує тим, чи успадковують об'єкти колекції каталожний номер від "
