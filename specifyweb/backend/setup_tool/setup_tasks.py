@@ -2,11 +2,13 @@
 A Celery task for setting up the database in the background.
 """
 
+from django.db import transaction
 from specifyweb.celery_tasks import app
 from typing import Tuple, Optional
 from celery.result import AsyncResult
 from specifyweb.backend.setup_tool import api
-from django.db import transaction
+from specifyweb.backend.setup_tool.app_resource_defaults import create_app_resource_defaults
+from specifyweb.specify.management.commands.run_key_migration_functions import fix_schema_config
 from specifyweb.specify.models_utils.model_extras import PALEO_DISCIPLINES, GEOLOGY_DISCIPLINES
 from specifyweb.celery_tasks import is_worker_alive, MissingWorkerError
 
@@ -107,9 +109,8 @@ def setup_database_task(self, data: dict):
             default_chronostrat_tree['fullnamedirection'] = -1
             api.create_geologictimeperiod_tree(default_chronostrat_tree)
 
-            uses_global_geography_tree = data['institution'].get('issinglegeographytree', False)
-
             logger.debug('Creating geography tree')
+            uses_global_geography_tree = data['institution'].get('issinglegeographytree', False)
             api.create_geography_tree(data['geographytreedef'], global_tree=uses_global_geography_tree)
 
             logger.debug('Creating discipline')
@@ -137,6 +138,10 @@ def setup_database_task(self, data: dict):
 
             logger.debug('Creating specify user')
             api.create_specifyuser(data['specifyuser'])
+
+            logger.debug('Finalizing database')
+            fix_schema_config()
+            create_app_resource_defaults()
             update_progress()
     except Exception as e:
         logger.exception(f'Error setting up database: {e}')
