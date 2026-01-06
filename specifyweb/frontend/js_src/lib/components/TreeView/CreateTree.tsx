@@ -12,6 +12,7 @@ import { H2, Ul } from '../Atoms';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
+import { LoadingContext } from '../Core/Contexts';
 import type {
   AnySchema,
   AnyTree,
@@ -26,7 +27,6 @@ import type { TreeInformation } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { defaultTreeDefs } from './defaults';
-import { LoadingContext } from '../Core/Contexts';
 
 type TaxonFileDefaultDefinition = {
   readonly discipline: string;
@@ -228,9 +228,9 @@ export function TreeCreationProgressDialog({
   onClose,
   onStopped,
 }: {
-  taskId: string;
-  onClose: () => void;
-  onStopped: () => void;
+  readonly taskId: string;
+  readonly onClose: () => void;
+  readonly onStopped: () => void;
 }): JSX.Element | null {
   const loading = React.useContext(LoadingContext);
   const [progress, setProgress] = React.useState<number | undefined>(undefined);
@@ -279,9 +279,7 @@ export function TreeCreationProgressDialog({
   return (
     <Dialog
       buttons={
-        <>
-          <Button.Danger onClick={() => {loading(handleStop())}}>{commonText.cancel()}</Button.Danger>
-        </>
+        <Button.Danger onClick={() => {loading(handleStop())}}>{commonText.cancel()}</Button.Danger>
       }
       header={treeText.defaultTreeTaskStarting()}
       onClose={onClose}
