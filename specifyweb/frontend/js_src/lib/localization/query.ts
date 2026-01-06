@@ -457,7 +457,7 @@ export const queryText = createDictionary({
     'es-es':
       'Usar "%" para hacer coincidir cualquier número de caracteres.\n\nUsar "_" para hacer coincidir un solo carácter',
     'fr-fr':
-      'Utilisez « % » pour correspondre à un nombre quelconque de caractères.\n\n\n\n\n\nUtilisez « _ » pour correspondre à un seul caractère.',
+      'Utilisez « % » pour correspondre à un nombre quelconque de caractères.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nUtilisez « _ » pour correspondre à un seul caractère.',
     'uk-ua':
       'Використовуйте "%", щоб відповідати будь-якій кількості символів.\n\nВикористовуйте "_", щоб відповідати одному символу',
     'de-ch':
@@ -948,13 +948,31 @@ export const queryText = createDictionary({
     'uk-ua': 'Не суворий',
   },
   primaryCatalogNumberInheritance: {
-    'en-us': '{collectionObjectTableName: string}',
+    'en-us': 'Primary Catalog Number Inheritance',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   parentCatalogNumberInheritance: {
-    'en-us': '{componentTableName: string}',
+    'en-us': 'Parent Catalog Number Inheritance',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   uniqueCatalogNumberAcrossComponentAndCoTitle: {
-    'en-us': '{componentTableName: string} & {collectionObjectTableName: string}',
+    'en-us': 'Unique Catalog # (Component & CO)',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   formatInputAs: {
     comment: `

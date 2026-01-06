@@ -418,7 +418,7 @@ export const wbPlanText = createDictionary({
     'es-es':
       'Está viendo las asignaciones de campos/mapeo para un conjunto de datos ya cargado.\n\nPara editar los mapeos, d´s marcha-atrás para los datos cargados o cree un nuevo conjunto de datos',
     'fr-fr':
-      "Vous visualisez les correspondances d'un jeu de données importé.\n\n\n\n\n\nPour modifier les correspondances, annulez l'importation des données ou créez un nouveau jeu de données.",
+      "Vous visualisez les correspondances d'un jeu de données importé.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPour modifier les correspondances, annulez l'importation des données ou créez un nouveau jeu de données.",
     'uk-ua':
       'Ви переглядаєте зіставлення для завантаженого набору даних.\n\nЩоб редагувати зіставлення, відкотіть завантажені дані або створіть новий набір даних',
     'de-ch':

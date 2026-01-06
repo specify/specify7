@@ -194,16 +194,40 @@ export const specifyNetworkText = createDictionary({
   },
   publishingOrganizationKey: {
     'en-us': 'GBIF Publishing Organization Key',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   publishingOrganizationKeyDescription: {
     'en-us':
       'The GBIF "publishingOrgKey" (a UUID) for this collection, used for Specify Network integration.',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   collectionKey: {
     'en-us': 'GBIF Data Set Key',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   collectionKeyDescription: {
     'en-us':
       'The GBIF "dataSetKey" (a UUID) for this collection, used for Specify Network integration.',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
 } as const);
