@@ -525,6 +525,11 @@ class BoundUploadTable(NamedTuple):
 
         if cache_hit is not None:
             if not should_cache:
+                # As an optimization, for the first update, return the cached one, but immediately evict it.
+                # Currently, it is not possible for more than 1 successive write-intent access to _get_reference so this is very good for it.
+                # If somewhere, somehow, we do have more than that, this algorithm still works, since the read/write table evicts it.
+                # Eample: If we do have more than 1, the first one will evict it, and then the second one will refetch it (won't get a cache hit) -- cache coherency not broken
+                # Using pop as a _different_ memory optimization.
                 assert self.cache is not None
                 self.cache.pop(cache_key)
             return cache_hit
@@ -585,6 +590,8 @@ class BoundUploadTable(NamedTuple):
             for fieldname_, value in parsedField.upload.items()
         }
 
+        # This is very handy to check for whether the entire record needs to be skipped or not.
+        # This also returns predicates for to-many, we if this is empty, we really are a null record
         is_edit_table = isinstance(self, BoundUpdateTable)
 
         t0 = time.perf_counter()
@@ -597,6 +604,7 @@ class BoundUploadTable(NamedTuple):
                 origin_is_editable=is_edit_table,
             )
         except ContetRef as e:
+            # Not sure if there is a better way for this. Consider moving this to binding.
             _add_timing("predicates", time.perf_counter() - t0)
             return UploadResult(
                 FailedBusinessRule(str(e), {}, info), to_one_results, {}
@@ -623,17 +631,23 @@ class BoundUploadTable(NamedTuple):
 
             # Possible second predicates build, time this separately
             if not filter_predicate.filters and self.current_id is not None:
+                # Technically, we'll get always the empty predicate back if self.current_id is None
+                # So, we can skip the check for "self.current_id is not None:". But, it 
+                # is an optimization (a micro-one)
                 t0 = time.perf_counter()
                 filter_predicate = self.get_django_predicates(
                     should_defer_match=self._should_defer_match,
+                    # to_one_results should be completely empty (or all nulls)
+                    # Having it here is an optimization.
                     to_one_override=to_one_results,
                     consider_dependents=False,
+                    # Don't necessarily reduce the empty fields now.
                     is_origin=False,
                     origin_is_editable=False,
                 )
                 _add_timing("predicates_secondary", time.perf_counter() - t0)
 
-            # ---- timing: _match ----
+            # timing _match
             t0 = time.perf_counter()
             match = self._match(filter_predicate, info)
             _add_timing("match", time.perf_counter() - t0)
@@ -727,10 +741,13 @@ class BoundUploadTable(NamedTuple):
             for fieldname_, value in parsedField.upload.items()
         }
 
+        # by the time we get here, we know we need to so something.
         to_one_results = {
             **to_one_results,
             **{
                 fieldname: to_one_def.force_upload_row()
+                # Make the upload order deterministic (maybe? depends on if it matched I guess)
+                # But because the records can't be shared, the unupload order shouldn't matter anyways...
                 for fieldname, to_one_def in Func.sort_by_key(self.toOne)
                 if to_one_def.is_one_to_one()
             },
@@ -788,6 +805,7 @@ class BoundUploadTable(NamedTuple):
                 fieldname,
                 update,
                 records,
+                # we don't care about checking for dependents if we aren't going to delete them!
                 self.auditor.props.allow_delete_dependents
                 and self._relationship_is_dependent(fieldname),
             )
@@ -795,6 +813,32 @@ class BoundUploadTable(NamedTuple):
         }
         _add_timing(stage_name, time.perf_counter() - t0)
         return result
+
+    def _has_scoping_changes(self, concrete_field_changes):
+        return any(
+            scoping_attr in concrete_field_changes
+            for scoping_attr in self.scopingAttrs.keys()
+        )
+    
+    # Edge case: Scope change is allowed for Loan -> division.
+    # See: https://github.com/specify/specify7/pull/5417#issuecomment-2613245552
+    def _is_scope_change_allowed(self, concrete_field_changes):
+        if self.name == "Loan" and "division_id" in concrete_field_changes:
+            return True
+        
+        return False
+
+    def _do_update(self, reference_obj, dirty_fields, **attrs):
+        # TODO: Try handling parent_obj. Quite complicated and ugly.
+        self.auditor.update(reference_obj, None, dirty_fields)
+        for key, value in attrs.items():
+            setattr(reference_obj, key, value)
+        if hasattr(reference_obj, "version"):
+            # Consider using bump_version here.
+            # I'm not doing it for performance reasons -- we already checked our version at this point, and have a lock, so can just increment the version.
+            setattr(reference_obj, "version", getattr(reference_obj, "version") + 1)
+        reference_obj.save()
+        return reference_obj
 
     def _do_insert(self, model, attrs) -> Any:
         inserter = self._get_inserter()
@@ -1209,7 +1253,7 @@ class BoundUpdateTable(BoundUploadTable):
         }
         _add_timing("update_to_one_ids", time.perf_counter() - t0)
 
-        # reference (cache hit expected, but time anyway)
+        # Should also always get a cache hit at this point, evict the hit.
         t0 = time.perf_counter()
         reference_record = self._get_reference(should_cache=False)
         _add_timing("update_get_reference", time.perf_counter() - t0)
@@ -1263,6 +1307,8 @@ class BoundUpdateTable(BoundUploadTable):
             info = info._replace(columns=modified_columns)
             _add_timing("update_modified_columns", time.perf_counter() - t0)
 
+        # Changed is just concrete field changes. We might have changed a to-one too.
+        # This is done like this to avoid an unecessary save when we know there is none.
         # main UPDATE, auditor and save, only if something actually changed
         if changed or to_one_changes:
             attrs = {
