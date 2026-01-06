@@ -9,9 +9,11 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
+import type { IR } from '../../utils/types';
 import { Container, H2, Key } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -21,7 +23,13 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { hasPermission } from '../Permissions/helpers';
+import {
+  ProtectedAction,
+  ProtectedTool,
+} from '../Permissions/PermissionDenied';
 import { PreferencesAside } from './Aside';
+import type { BasePreferences } from './BasePreferences';
+import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 import { collectionPreferences } from './collectionPreferences';
 import { useDarkMode } from './Hooks';
 import { DefaultPreferenceItemRender } from './Renderers';
@@ -29,14 +37,6 @@ import type { GenericPreferences, PreferenceItem } from './types';
 import { userPreferenceDefinitions } from './UserDefinitions';
 import { userPreferences } from './userPreferences';
 import { useTopChild } from './useTopChild';
-import { IR } from '../../utils/types';
-import { headerText } from '../../localization/header';
-import { BasePreferences } from './BasePreferences';
-import {
-  ProtectedAction,
-  ProtectedTool,
-} from '../Permissions/PermissionDenied';
-import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 
 export type PreferenceType = keyof typeof preferenceInstances;
 
@@ -142,9 +142,9 @@ function Preferences({
         >
           <PreferencesAside
             activeCategory={visibleChild}
+            prefType={prefType}
             references={references}
             setActiveCategory={setVisibleChild}
-            prefType={prefType}
           />
           <PreferencesContent forwardRefs={forwardRefs} prefType={prefType} />
           <span className="flex-1" />
@@ -323,9 +323,7 @@ export function PreferencesContent({
                     />
                   </p>
                   {item.description !== undefined && (
-                    <p
-                      className={`flex flex-1 text-gray-500 md:text-right justify-end`}
-                    >
+                    <p className="flex flex-1 text-gray-500 md:text-right justify-end">
                       {item.description !== undefined && (
                         <FormatString
                           text={
@@ -383,31 +381,29 @@ export function PreferencesContent({
         (
           [category, { title, description = undefined, subCategories }],
           index
-        ) => {
-          return (
-            <ErrorBoundary dismissible key={category}>
-              <Container.Center
-                className="gap-8 overflow-y-visible"
-                forwardRef={forwardRefs?.bind(undefined, index)}
-                id={category}
-              >
-                <h3 className="text-2xl">
-                  {typeof title === 'function' ? title() : title}
-                </h3>
-                {description !== undefined && (
-                  <p>
-                    {typeof description === 'function'
-                      ? description()
-                      : description}
-                  </p>
-                )}
-                {subCategories.map(([subcategory, data]) =>
-                  renderSubCategory(category, subcategory, data)
-                )}
-              </Container.Center>
-            </ErrorBoundary>
-          );
-        }
+        ) => (
+          <ErrorBoundary dismissible key={category}>
+            <Container.Center
+              className="gap-8 overflow-y-visible"
+              forwardRef={forwardRefs?.bind(undefined, index)}
+              id={category}
+            >
+              <h3 className="text-2xl">
+                {typeof title === 'function' ? title() : title}
+              </h3>
+              {description !== undefined && (
+                <p>
+                  {typeof description === 'function'
+                    ? description()
+                    : description}
+                </p>
+              )}
+              {subCategories.map(([subcategory, data]) =>
+                renderSubCategory(category, subcategory, data)
+              )}
+            </Container.Center>
+          </ErrorBoundary>
+        )
       )}
     </div>
   );
@@ -484,7 +480,7 @@ function UserPrefItem<T>(props: PreferenceItemProps<T>) {
     props.subcategory as any,
     props.name as any
   );
-  return <ItemBase {...props} value={value} setValue={setValue} />;
+  return <ItemBase {...props} setValue={setValue} value={value} />;
 }
 
 function CollectionPrefItem<T>(props: PreferenceItemProps<T>) {
@@ -493,7 +489,7 @@ function CollectionPrefItem<T>(props: PreferenceItemProps<T>) {
     props.subcategory as any,
     props.name as any
   );
-  return <ItemBase {...props} value={value} setValue={setValue} />;
+  return <ItemBase {...props} setValue={setValue} value={value} />;
 }
 
 function CollectionPreferences(): JSX.Element {
