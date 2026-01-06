@@ -10,7 +10,7 @@
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
-import { strictGetTable } from '../DataModel/tables';
+import { strictGetTable, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import type { MappingPath } from './Mapper';
 import {
@@ -171,7 +171,18 @@ export function generateMappingPathPreview(
         ? [parentTableOrTreeName, tableNameNonEmpty]
         : [tableNameNonEmpty];
 
+  // Special case for disambiguation: Host taxon under specific base tables
+  const baseTables = ['CollectionObject', 'CollectingEventAttribute', 'Determination', 'Taxon'];
+  const hostTaxonNames = [
+    'host taxon', 
+    tables[baseTableName]?.getField('hostTaxon')?.localization.name?.trim()?.toLowerCase()
+  ].filter(Boolean);
+  const isHostTaxonCase =
+    baseTables.includes(baseTableName) &&
+    hostTaxonNames.includes((parentTableOrTreeName ?? '').trim().toLowerCase());
+
   return filterArray([
+    ...(isHostTaxonCase ? ['Host'] : []),
     ...(valueIsTreeRank(databaseTableOrRankName)
       ? [isAnyRank ? parentTableOrTreeName : tableOrRankName]
       : tableNameFormatted),

@@ -7,7 +7,8 @@ import type { GetSet, WritableArray } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { pathIsOverlay } from '../Router/UnloadProtect';
 import { scrollIntoView } from '../TreeView/helpers';
-import { PreferenceType, usePrefDefinitions } from './index';
+import type { PreferenceType } from './index';
+import { usePrefDefinitions } from './index';
 
 export function PreferencesAside({
   activeCategory,
