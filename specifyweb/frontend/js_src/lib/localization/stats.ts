@@ -217,11 +217,11 @@ export const statsText = createDictionary({
     'en-us': 'Defines the layout of the statistics page',
   },
   showPreparationsTotal: {
-    'en-us': 'Show Preparations Totals',
+    'en-us': 'Show {preparationTableName:string} Totals',
   },
   showPreparationsTotalDescription: {
     'en-us':
-      'If enabled, the default Preparations statistics panel will include a total count for each preparation of a particular preparation type alongside the overall total. This is useful for lot-based collections.',
+      'If enabled, the default {preparationTableName:string} statistics panel will include a total count for each {lowerPreparationTableName:string} of a particular {prepTypeTableName:string} alongside the overall total. This is useful for lot-based collections.',
   },
   autoRefreshRate: {
     'en-us': 'Auto-Refresh Rate (Hours)',
@@ -230,5 +230,5 @@ export const statsText = createDictionary({
     'en-us':
       'The time interval, in hours, at which the statistics page will automatically refresh its data. Default is 24.',
   },
-});
+} as const);
 /* eslint-enable @typescript-eslint/naming-convention */
