@@ -26,6 +26,7 @@ import type { TreeInformation } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { defaultTreeDefs } from './defaults';
+import { LoadingContext } from '../Core/Contexts';
 
 type TaxonFileDefaultDefinition = {
   readonly discipline: string;
@@ -61,11 +62,10 @@ export function CreateTree<
 }): JSX.Element {
   const treeNameArray = treeDefinitions.map((tree) => tree.definition.name);
 
+  const loading = React.useContext(LoadingContext);
   const [isActive, setIsActive] = React.useState(0);
   const [isTreeCreationStarted, setIsTreeCreationStarted] = React.useState(false);
   const [treeCreationTaskId, setTreeCreationTaskId] = React.useState<string | undefined>(undefined);
-  const [treeCreationProgress, setTreeCreationProgress] = React.useState<number | undefined>(undefined);
-  const [treeCreationProgressTotal, setTreeCreationProgressTotal] = React.useState<number>(1);
 
   const [selectedResource, setSelectedResource] = React.useState<
     SpecifyResource<AnySchema> | undefined
@@ -92,7 +92,6 @@ export function CreateTree<
   // Start default tree creation
   const handleClick = async (resourceUrl: string, mappingUrl: string, disciplineName: string, rowCount: number, treeName: string): Promise<void> => {
     setIsTreeCreationStarted(true);
-    setTreeCreationProgress(undefined);
     return ajax<TreeCreationInfo>('/trees/create_default_tree/', {
       method: 'POST',
       headers: { Accept: 'application/json' },
@@ -119,50 +118,6 @@ export function CreateTree<
         throw error;
       });
   }
-
-  const handleStop = async (): Promise<void> => ping(
-      `/trees/create_default_tree/abort/${treeCreationTaskId}/`,
-      {
-        method: 'POST',
-        body: {},
-      }
-    )
-      .then((status) => {
-        if (status === Http.NO_CONTENT) {
-          setIsTreeCreationStarted(false);
-          setTreeCreationTaskId(undefined);
-          setTreeCreationProgress(undefined);
-        }
-      });
-
-  // Poll for tree creation progress
-  React.useEffect(() => {
-    if (treeCreationTaskId === undefined) return;
-
-    const interval = setInterval(
-      async () =>
-        ajax<TreeCreationProgressInfo>(`/trees/create_default_tree/status/${treeCreationTaskId}/`, {
-          method: 'GET',
-          headers: { Accept: 'application/json' },
-          errorMode: 'silent',
-        })
-          .then(({ data }) => {
-            if (data.taskstatus === 'RUNNING') {
-              setTreeCreationProgress(data.taskprogress.current ?? 0);
-              setTreeCreationProgressTotal(data.taskprogress.total ?? 1);
-            } else if (data.taskstatus === 'FAILURE') {
-              setIsTreeCreationStarted(false);
-              setTreeCreationTaskId(undefined);
-              setTreeCreationProgress(undefined);
-              throw data.taskprogress;
-            } else if (data.taskstatus === 'SUCCESS') {
-              globalThis.location.reload();
-            }
-          }),
-      5000
-    );
-    return () => clearInterval(interval);
-  }, [treeCreationTaskId]);
 
   const handleClickEmptyTree = (
     resource: DeepPartial<SerializedResource<TaxonTreeDef>>
@@ -209,7 +164,9 @@ export function CreateTree<
                   <li key={index}>
                     <Button.LikeLink
                       onClick={(): void => {
-                        handleClick(resource.file, resource.mappingFile, resource.discipline, resource.rows, resource.title).catch(console.error);
+                        loading(
+                          handleClick(resource.file, resource.mappingFile, resource.discipline, resource.rows, resource.title).catch(console.error)
+                        );
                       }}
                     >
                       {localized(resource.title)}
@@ -234,38 +191,18 @@ export function CreateTree<
             ))}
           </Ul>
           <>
-            {isTreeCreationStarted ? (
-              <Dialog
-                buttons={
-                  <>
-                    <Button.Danger onClick={handleStop}>
-                      {commonText.cancel()}
-                    </Button.Danger>
-                    <Button.DialogClose component={Button.BorderedGray}>
-                      {commonText.close()}
-                    </Button.DialogClose>
-                  </>
-                }
-                header={treeText.defaultTreeTaskStarting()}
-                onClose={() => {setIsTreeCreationStarted(false); setIsActive(0)}}
-              >
-                <>
-                  {treeCreationProgress === undefined
-                    ? null
-                    : treeText.defaultTreeCreationProgress({
-                        current: treeCreationProgress,
-                        total: treeCreationProgressTotal,
-                      }
-                    )
-                  }
-                  <Progress
-                    max={treeCreationProgressTotal}
-                    value={treeCreationProgress ?? 0}
-                  />
-                </>
-                
-                {treeText.defaultTreeTaskStartingDescription()}
-              </Dialog>
+            {isTreeCreationStarted && treeCreationTaskId ? (
+              <TreeCreationProgressDialog
+                taskId={treeCreationTaskId}
+                onClose={() => {
+                  setIsTreeCreationStarted(false);
+                  setTreeCreationTaskId(undefined);
+                }}
+                onStopped={() => {
+                  setIsTreeCreationStarted(false);
+                  setTreeCreationTaskId(undefined);
+                }}
+              />
             ) : undefined}
           </>
         </Dialog>
@@ -283,5 +220,82 @@ export function CreateTree<
         />
       ) : null}
     </>
+  );
+}
+
+export function TreeCreationProgressDialog({
+  taskId,
+  onClose,
+  onStopped,
+}: {
+  taskId: string;
+  onClose: () => void;
+  onStopped: () => void;
+}): JSX.Element | null {
+  const loading = React.useContext(LoadingContext);
+  const [progress, setProgress] = React.useState<number | undefined>(undefined);
+  const [progressTotal, setProgressTotal] = React.useState<number>(1);
+
+  const handleStop = async (): Promise<void> => {
+    ping(
+      `/trees/create_default_tree/abort/${taskId}/`,
+      {
+        method: 'POST',
+        body: {},
+      }
+    )
+      .then((status) => {
+        if (status === Http.NO_CONTENT) {
+          onStopped();
+        }
+      })
+  }
+
+  // Poll for tree creation progress
+  React.useEffect(() => {
+    const interval = setInterval(
+      async () =>
+        ajax<TreeCreationProgressInfo>(`/trees/create_default_tree/status/${taskId}/`, {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+          errorMode: 'silent',
+        })
+          .then(({ data }) => {
+            if (data.taskstatus === 'RUNNING') {
+              setProgress(data.taskprogress.current ?? 0);
+              setProgressTotal(data.taskprogress.total ?? 1);
+            } else if (data.taskstatus === 'FAILURE') {
+              onStopped();
+              throw data.taskprogress;
+            } else if (data.taskstatus === 'SUCCESS') {
+              globalThis.location.reload();
+            }
+          }),
+      5000
+    );
+    return () => clearInterval(interval);
+  }, [taskId]);
+
+  return (
+    <Dialog
+      buttons={
+        <>
+          <Button.Danger onClick={() => {loading(handleStop())}}>{commonText.cancel()}</Button.Danger>
+        </>
+      }
+      header={treeText.defaultTreeTaskStarting()}
+      onClose={onClose}
+    >
+      <>
+        {progress === undefined
+          ? null
+          : treeText.defaultTreeCreationProgress({
+              current: progress,
+              total: progressTotal,
+            })}
+        <Progress max={progressTotal} value={progress ?? 0} />
+      </>
+      {treeText.defaultTreeTaskStartingDescription()}
+    </Dialog>
   );
 }
