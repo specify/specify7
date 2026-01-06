@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-01-06 20:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "specifyNetwork/uk/>\n"
 "Language: uk\n"
@@ -109,13 +109,11 @@ msgstr "Кінцевий рік"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:150
-#, fuzzy
 msgid "publishingOrganizationKey"
 msgstr "Ключ видавничої організації GBIF"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:152
-#, fuzzy
 msgid "publishingOrganizationKeyDescription"
 msgstr ""
 "GBIF \"publishingOrgKey\" (UUID) для цієї колекції, що використовується для "
@@ -123,13 +121,11 @@ msgstr ""
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:159
-#, fuzzy
 msgid "collectionKey"
 msgstr "Ключ набору даних GBIF"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:160
-#, fuzzy
 msgid "collectionKeyDescription"
 msgstr ""
 "GBIF \"dataSetKey\" (UUID) для цієї колекції, що використовується для "
