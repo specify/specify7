@@ -1,4 +1,6 @@
 import React from 'react';
+import type { HierarchyPointLink, HierarchyPointNode } from 'd3';
+import { hierarchy as d3Hierarchy, tree as d3Tree } from 'd3';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -22,6 +24,210 @@ import { resources } from '../SetupTool/setupResources';
 import { CollapsibleSection } from './CollapsibleSection';
 import type { InstitutionData } from './Utils';
 import { icons } from '../Atoms/Icons';
+import { tableLabel } from '../Preferences/UserDefinitions';
+
+type HierarchyNodeKind = 'institution' | 'division' | 'discipline' | 'collection';
+
+type HierarchyNodeDatum = {
+  readonly id: number;
+  readonly name: string;
+  readonly kind: HierarchyNodeKind;
+  readonly children?: RA<HierarchyNodeDatum>;
+};
+
+type HierarchyDiagramProps = {
+  readonly institution: InstitutionData;
+  readonly onSelect: (node: HierarchyNodeDatum) => void;
+  readonly orientation: 'vertical' | 'horizontal';
+  readonly onToggleOrientation: () => void;
+};
+
+const NODE_WIDTH = 300;
+const NODE_HEIGHT = 64;
+const NODE_HORIZONTAL_GAP = 24;
+const NODE_VERTICAL_GAP = 10;
+const CHART_MARGIN = { top: 12, right: 16, bottom: 12, left: 16 } as const;
+
+const colorByKind: Record<HierarchyNodeKind, string> = {
+  institution: '#9c0d0dff',
+  division: '#16a34a', // tailwind green-600
+  discipline: '#2563eb', // tailwind blue-600
+  collection: '#92400e', // tailwind amber-800 (brownish?)
+};
+
+const textByKind: Record<HierarchyNodeKind, string> = {
+  institution: tableLabel('Institution'),
+  division: tableLabel('Division'),
+  discipline: tableLabel('Discipline'),
+  collection: tableLabel('Collection'),
+};
+
+const toHierarchyDatum = (institution: InstitutionData): HierarchyNodeDatum => ({
+  id: institution.id,
+  name: institution.name,
+  kind: 'institution',
+  children: institution.children.map((division) => ({
+    id: division.id,
+    name: division.name,
+    kind: 'division',
+    children: division.children.map((discipline) => ({
+      id: discipline.id,
+      name: discipline.name,
+      kind: 'discipline',
+      children: discipline.children.map((collection) => ({
+        id: collection.id,
+        name: collection.name,
+        kind: 'collection',
+      })),
+    })),
+  })),
+});
+
+const HierarchyDiagram = ({
+  institution,
+  onSelect,
+  orientation,
+  onToggleOrientation,
+}: HierarchyDiagramProps) => {
+  const isVertical = orientation === 'vertical';
+
+  const layout = React.useMemo(() => {
+    const root = d3Hierarchy<HierarchyNodeDatum>(toHierarchyDatum(institution));
+    return d3Tree<HierarchyNodeDatum>()
+      .nodeSize(
+        isVertical
+          ? [NODE_HEIGHT + NODE_VERTICAL_GAP, NODE_WIDTH + NODE_HORIZONTAL_GAP]
+          : [NODE_WIDTH + NODE_HORIZONTAL_GAP, NODE_HEIGHT + NODE_VERTICAL_GAP]
+      )
+      .separation(() => 1)(root);
+  }, [institution, isVertical]);
+
+  const nodes = layout.descendants();
+  const links = layout.links();
+
+  const getX = (node: HierarchyPointNode<HierarchyNodeDatum>) =>
+    isVertical ? node.y : node.x;
+  const getY = (node: HierarchyPointNode<HierarchyNodeDatum>) =>
+    isVertical ? node.x : node.y;
+
+  const minX = Math.min(...nodes.map((node) => getX(node)));
+  const maxX = Math.max(...nodes.map((node) => getX(node)));
+  const minY = Math.min(...nodes.map((node) => getY(node)));
+  const maxY = Math.max(...nodes.map((node) => getY(node)));
+
+  const width = maxX - minX + NODE_WIDTH + CHART_MARGIN.left + CHART_MARGIN.right;
+  const height = maxY - minY + NODE_HEIGHT + CHART_MARGIN.top + CHART_MARGIN.bottom;
+
+  const xOffset = CHART_MARGIN.left - minX;
+  const yOffset = CHART_MARGIN.top - minY;
+
+  const handleKeyDown = (
+    event: React.KeyboardEvent<SVGGElement>,
+    node: HierarchyNodeDatum
+  ) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      onSelect(node);
+    }
+  };
+
+  return (
+    <div className="bg-[color:var(--background)] p-3 rounded h-full min-h-0 flex flex-col">
+      <div className="mb-3 flex items-center justify-between">
+        <H3 className="text-lg font-semibold">
+          {setupToolText.hierarchyStructureTitle()}
+        </H3>
+        <div className="flex items-center gap-3">
+          <p className="text-sm text-slate-300">
+            {setupToolText.hierarchyStructureHint()}
+          </p>
+          <Button.LikeLink onClick={onToggleOrientation}>
+            {orientation === 'vertical'
+              ? setupToolText.hierarchySwitchToHorizontal()
+              : setupToolText.hierarchySwitchToVertical()}
+          </Button.LikeLink>
+        </div>
+      </div>
+      <div className="overflow-auto flex-1">
+        <svg
+          height={height}
+          role="img"
+          aria-label={setupToolText.hierarchyDiagram()}
+          width={width}
+        >
+          <g transform={`translate(0,0)`}>
+            {links.map((link: HierarchyPointLink<HierarchyNodeDatum>) => {
+              const sourceX = getX(link.source) + xOffset + NODE_WIDTH / 2;
+              const sourceY = getY(link.source) + yOffset + NODE_HEIGHT / 2;
+              const targetX = getX(link.target) + xOffset + NODE_WIDTH / 2;
+              const targetY = getY(link.target) + yOffset + NODE_HEIGHT / 2;
+
+              const controlXOffset = (targetX - sourceX) / 2;
+              const controlYOffset = (targetY - sourceY) / 2;
+
+              return (
+                <path
+                  key={`${link.source.data.id}-${link.target.data.id}`}
+                  className="stroke-slate-500"
+                  d={`M${sourceX},${sourceY} C${
+                    isVertical ? sourceX + controlXOffset : sourceX
+                  },${
+                    isVertical ? sourceY : sourceY + controlYOffset
+                  } ${
+                    isVertical ? targetX - controlXOffset : targetX
+                  },${
+                    isVertical ? targetY : targetY - controlYOffset
+                  } ${targetX},${targetY}`}
+                  fill="none"
+                  strokeOpacity={0.6}
+                  strokeWidth={2}
+                />
+              );
+            })}
+
+            {nodes.map((node: HierarchyPointNode<HierarchyNodeDatum>) => (
+              <g
+                key={node.data.id}
+                className="cursor-pointer drop-shadow-sm fill-white"
+                onClick={() => onSelect(node.data)}
+                onKeyDown={(event) => handleKeyDown(event, node.data)}
+                role="button"
+                tabIndex={0}
+                transform={`translate(${getX(node) + xOffset},${getY(node) + yOffset})`}
+                aria-label={`${textByKind[node.data.kind]} ${node.data.name}`}
+              >
+                <rect
+                  fill={colorByKind[node.data.kind]}
+                  height={NODE_HEIGHT - 12}
+                  rx={10}
+                  width={NODE_WIDTH}
+                  y={6}
+                  opacity={1}
+                />
+                <text
+                  className="fill-white text-sm font-semibold"
+                  x={NODE_WIDTH / 2}
+                  y={NODE_HEIGHT / 2}
+                  textAnchor="middle"
+                >
+                  {node.data.name}
+                </text>
+                <text
+                  className="fill-slate-200 text-xs"
+                  x={NODE_WIDTH / 2}
+                  y={NODE_HEIGHT / 2 + 12}
+                  textAnchor="middle"
+                >
+                  {textByKind[node.data.kind]}
+                </text>
+              </g>
+            ))}
+          </g>
+        </svg>
+      </div>
+    </div>
+  );
+};
 
 type DialogFormProps = {
   readonly open: boolean;
@@ -121,7 +327,7 @@ const addButton = (
   <Button.Icon
     className="ml-2"
     icon="plus"
-    title={`Add new ${tableName}`}
+    title={`${setupToolText.hierarchyAddNew()} ${tableName}`}
     onClick={() => {
       createResource();
     }}
@@ -156,6 +362,25 @@ export function Hierarchy({
     closeAddDisciplineTaxonTree,
   ] = useBooleanState(false);
 
+  const [isVertical, , , toggleOrientation] = useBooleanState(true);
+
+  const handleNodeSelect = React.useCallback(
+    (node: HierarchyNodeDatum) => {
+      const resource =
+        node.kind === 'institution'
+          ? new tables.Institution.Resource({ id: node.id })
+          : node.kind === 'division'
+            ? new tables.Division.Resource({ id: node.id })
+            : node.kind === 'discipline'
+              ? new tables.Discipline.Resource({ id: node.id })
+              : new tables.Collection.Resource({ id: node.id });
+
+      setNewResource(resource);
+      handleNewResource();
+    },
+    [handleNewResource, setNewResource]
+  );
+
   const renderCollections = (
     collections: RA<{
       readonly id: number;
@@ -166,13 +391,16 @@ export function Hierarchy({
       <CollapsibleSection
         defaultOpen={false}
         hasChildren={collections.length > 0}
-        title={<p>Collections</p>}
+        title={<p>{setupToolText.hierarchyCollections()}</p>}
       >
         <Ul>
           {collections.map((collection) => (
             <div key={collection.id}>
               <li className="ml-4 m-2 list-disc">
-                <p>{collection.name}</p>
+                <p>
+                  <span className="text-amber-800 font-semibold mr-1">{`${tableLabel('Collection')}:`}</span>
+                  <span>{collection.name}</span>
+                </p>
               </li>
               {handleEditResource(
                 new tables.Collection.Resource({ id: collection.id }),
@@ -198,8 +426,11 @@ export function Hierarchy({
             hasChildren={discipline.children.length > 0}
             title={
               <div>
-                <div className="flex">
-                  <H3>{`Discipline: ${discipline.name}`}</H3>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <div className="flex items-baseline gap-2">
+                    <H3 className="text-blue-700 font-semibold">{`${tableLabel('Discipline')}:`}</H3>
+                    <H3>{discipline.name}</H3>
+                  </div>
                   {/* ADD COLLECTION */}
                   {canAddCollection &&
                     addButton(() => {
@@ -209,7 +440,7 @@ export function Hierarchy({
                         })
                       );
                       handleNewResource();
-                    }, 'collection')}
+                    }, tableLabel('Collection'))}
                 </div>
                 <div className="m-2">
                   {/* GEO TREE */}
@@ -284,17 +515,21 @@ export function Hierarchy({
           hasChildren={division.children.length > 0}
           title={
             <div>
-              <div className="flex">
-                <H3>{`Division: ${division.name}`}</H3>
-
-                {addButton(() => {
-                  setNewResource(
-                    new tables.Discipline.Resource({
-                      division: `/api/specify/division/${division.id}/`,
-                    })
-                  );
-                  handleNewResource();
-                }, 'Discipline')}
+              <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex items-baseline gap-2">
+                  <H3 className="text-green-700 font-semibold">{`${tableLabel('Division')}:`}</H3>
+                  <H3>{division.name}</H3>
+                </div>
+                <div className="flex items-center gap-2 ml-auto">
+                  {addButton(() => {
+                    setNewResource(
+                      new tables.Discipline.Resource({
+                        division: `/api/specify/division/${division.id}/`,
+                      })
+                    );
+                    handleNewResource();
+                  }, `${tableLabel('Discipline')}`)}
+                </div>
               </div>
 
               {handleEditResource(
@@ -310,23 +545,52 @@ export function Hierarchy({
     ));
 
   return (
-    <Ul className="m-4 bg-[color:var(--background)] p-3 rounded h-fit">
-      <li key={institution.id}>
-        <CollapsibleSection
-          hasChildren={institution.children.length > 0}
-          title={
-            <div className="flex items-center">
-              <H2>{`Institution: ${institution.name}`}</H2>
-              {addButton(() => {
-                setNewResource(new tables.Division.Resource());
-                handleNewResource();
-              }, 'Division')}
-            </div>
-          }
+    <div className="flex flex-col md:flex-row flex-1 min-h-0 gap-4 overflow-hidden m-4">
+      <div
+        className="flex-1 min-w-0 min-h-0 overflow-hidden md:w-1/4 md:flex-none"
+        role="navigation"
+        aria-label={setupToolText.hierarchyStructureTitle()}
+      >
+        <Ul
+          className="bg-[color:var(--background)] p-3 rounded h-full min-h-0 overflow-auto"
+          aria-label={setupToolText.hierarchyStructureTitle()}
         >
-          <Ul className="m-5">{renderDivisions(institution)}</Ul>
-        </CollapsibleSection>
-      </li>
-    </Ul>
+          <li key={institution.id}>
+            <CollapsibleSection
+              hasChildren={institution.children.length > 0}
+              title={
+                <div className="flex items-center gap-3 flex-wrap">
+                  <div className="flex items-baseline gap-2">
+                    <H3 className="text-red-700 font-semibold">{`${tableLabel('Institution')}:`}</H3>
+                    <H3>{institution.name}</H3>
+                  </div>
+                  <div className="flex items-center gap-2 ml-auto">
+                    {addButton(() => {
+                      setNewResource(new tables.Division.Resource());
+                      handleNewResource();
+                    }, tableLabel('Division'))}
+                    {handleEditResource(
+                      new tables.Institution.Resource({ id: institution.id }),
+                      refreshAllInfo
+                    )}
+                  </div>
+                </div>
+              }
+            >
+              <Ul className="m-5">{renderDivisions(institution)}</Ul>
+            </CollapsibleSection>
+          </li>
+        </Ul>
+      </div>
+
+      <div className="flex-1 min-w-0 min-h-0 overflow-hidden h-[50vh] md:h-auto md:w-2/3">
+        <HierarchyDiagram
+          institution={institution}
+          onSelect={handleNodeSelect}
+          orientation={isVertical ? 'vertical' : 'horizontal'}
+          onToggleOrientation={toggleOrientation}
+        />
+      </div>
+    </div>
   );
 }

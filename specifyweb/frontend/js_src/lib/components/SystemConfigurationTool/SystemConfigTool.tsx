@@ -8,6 +8,7 @@ import type {
   Collection,
   Discipline,
   Division,
+  Institution,
   GeographyTreeDef,
   TaxonTreeDef,
 } from '../DataModel/types';
@@ -29,6 +30,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
     | SpecifyResource<Collection>
     | SpecifyResource<Discipline>
     | SpecifyResource<Division>
+    | SpecifyResource<Institution>
     | SpecifyResource<GeographyTreeDef>
     | SpecifyResource<TaxonTreeDef>
     | undefined
@@ -78,8 +80,14 @@ export function SystemConfigurationTool(): JSX.Element | null {
           }
           onAdd={undefined}
           onClose={closeNewResource}
-          onDeleted={undefined}
-          onSaved={undefined}
+          onDeleted={async () => {
+            await refreshAllInfo();
+            closeNewResource();
+          }}
+          onSaved={async () => {
+            await refreshAllInfo();
+            closeNewResource();
+          }}
         />
       ) : undefined}
     </Container.FullGray>
