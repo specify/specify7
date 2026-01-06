@@ -513,8 +513,8 @@ msgstr "Загружено"
 #: components/QueryBuilder/Components.tsx:167
 #: components/QueryBuilder/FieldFilterTool.tsx:100
 #: components/QueryBuilder/FieldFilterTool.tsx:103
-#: components/QueryBuilder/Line.tsx:285
-#: components/QueryBuilder/Line.tsx:289
+#: components/QueryBuilder/Line.tsx:295
+#: components/QueryBuilder/Line.tsx:299
 #: components/SchemaConfig/UniquenessRuleRow.tsx:273
 #: components/Security/Policy.tsx:94
 #: components/Security/Policy.tsx:96

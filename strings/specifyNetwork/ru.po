@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-01-06 20:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
-"specifyNetwork/ru/>\n"
+"Language-Team: Russian "
+"<https://hosted.weblate.org/projects/specify-7/specifyNetwork/ru/>\n"
 "Language: ru\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,148 +12,141 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.15.1\n"
 
-#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
 #: components/Preferences/CollectionDefinitions.tsx:147
 #: components/SpecifyNetwork/index.tsx:81
 #: components/SpecifyNetwork/index.tsx:89
 #: components/SpecifyNetwork/index.tsx:98
 #: components/Statistics/Pages.tsx:7
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
 #, fuzzy
 msgid "specifyNetwork"
 msgstr "Укажите сеть"
 
-#. Used in: Components > Specify Network > Index
 #: components/SpecifyNetwork/index.tsx:84
+#. Used in: Components > Specify Network > Index
 #, fuzzy
 msgid "occurrenceOrGuidRequired"
 msgstr "Для отображения этой страницы необходимо указать название вида или GUID."
 
-#. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:119
+#. Used in: Components > Specify Network > Overlay
 #, fuzzy
 msgid "noDataError"
 msgstr "Не удалось найти данные по этому запросу."
 
-#. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:122
+#. Used in: Components > Specify Network > Overlay
 #, fuzzy
 msgid "noDataErrorDescription"
-msgstr "Пожалуйста, попробуйте поискать другую запись."
+msgstr "Попробуйте поискать другую запись."
 
-#. Used in: Components > Specify Network > Table
 #: components/SpecifyNetwork/Table.tsx:51
+#. Used in: Components > Specify Network > Table
 #, fuzzy
 msgid "dataQuality"
 msgstr "Качество данных"
 
-#. Used in: Components > Specify Network > Table
 #: components/SpecifyNetwork/Table.tsx:64
+#. Used in: Components > Specify Network > Table
 #, fuzzy
 msgid "reportedBy"
-msgstr "Сообщение от {provider:string}"
+msgstr "Сообщил {provider:string}"
 
-#. Used in: Components > Specify Network > Field Mapper
 #: components/SpecifyNetwork/FieldMapper.tsx:109
 #: components/SpecifyNetwork/FieldMapper.tsx:117
+#. Used in: Components > Specify Network > Field Mapper
 #, fuzzy
 msgid "collectionDate"
 msgstr "Дата сбора"
 
-#. Used in: Components > Specify Network > Map
 #: components/SpecifyNetwork/Map.tsx:221
+#. Used in: Components > Specify Network > Map
 #, fuzzy
 msgid "mapDescription"
 msgstr ""
-"На этой карте показаны данные о встречаемости данного таксона из агрегаторов "
-"iDigBio и GBIF."
+"На этой карте показаны случаи встречаемости этого таксона по данным "
+"агрегаторов iDigBio и GBIF."
 
-#. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:140
+#. Used in: Components > Specify Network > Overlays
 #, fuzzy
 msgid "iDigBioDescription"
 msgstr ""
-"Зарегистрированные в iDigBio находки отображаются в виде круглых зеленых "
-"точек, за исключением тех, что относятся к текущей коллекции, "
-"зарегистрированной в iDigBio, которые отображаются в виде круглых красных "
-"точек. При увеличении масштаба красных точек появляется синяя метка в форме "
-"капли; щелчок по этой метке запускает запрос по местонахождению в Specify, "
-"который отображает все виды из текущей базы данных Specify, собранные в этом "
-"месте."
+"Встречи, зарегистрированные в iDigBio, отображаются круглыми зелёными "
+"точками, за исключением случаев из текущей коллекции, зарегистрированной в "
+"iDigBio, которые обозначены круглыми красными точками. При увеличении "
+"красных точек появляется синяя каплевидная метка; нажатие на метку "
+"выполняет запрос по местоположению в Specify, который отображает все виды "
+"из текущей базы данных Specify, собранные в этом месте."
 
-#. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:31
+#. Used in: Components > Specify Network > Overlays
 #, fuzzy
 msgid "gbifDescription"
 msgstr ""
-"В данных GBIF отдельные точки и группы точек отображаются в виде "
-"шестиугольников разных цветов, от желтого до оранжевого и красного. Темно-"
-"красные шестиугольники соответствуют наиболее плотным распределениям "
-"собранных экземпляров данного вида."
+"В данных GBIF отдельные точки и скопления точек показаны шестиугольниками "
+"разных цветов: от жёлтого до оранжевого и красного. Тёмно-красные "
+"шестиугольники соответствуют наиболее плотному распределению собранных "
+"особей данного вида."
 
-#. Used in: Components > Specify Network Collection > Setup
 #: components/SpecifyNetworkCollection/Setup.tsx:59
+#. Used in: Components > Specify Network Collection > Setup
 #, fuzzy
 msgid "connectToGbif"
-msgstr "Подключитесь к GBIF"
+msgstr "Подключиться к ГБИФ"
 
-#. Used in: Components > Specify Network Collection > Setup
 #: components/SpecifyNetworkCollection/Setup.tsx:62
+#. Used in: Components > Specify Network Collection > Setup
 #, fuzzy
 msgid "searchForInstitution"
-msgstr "Найдите своё учебное заведение:"
+msgstr "Поиск вашего учреждения:"
 
-#. Used in: Components > Specify Network Collection > Index
 #: components/SpecifyNetworkCollection/index.tsx:75
+#. Used in: Components > Specify Network Collection > Index
 #, fuzzy
 msgid "institutionDistributionMap"
 msgstr ""
-"Карта распространения всех оцифрованных образцов, хранящихся в вашем "
-"учреждении."
+"Карта распределения всех оцифрованных образцов, хранящихся в вашем "
+"учреждении"
 
-#. Used in: Components > Specify Network Collection > Index
 #: components/SpecifyNetworkCollection/index.tsx:149
+#. Used in: Components > Specify Network Collection > Index
 #, fuzzy
 msgid "collectionDistributionMap"
-msgstr ""
-"Карта распространения всех оцифрованных образцов, хранящихся в вашей "
-"коллекции."
+msgstr "Карта распределения всех оцифрованных образцов, хранящихся в вашей коллекции"
 
-#. Used in: Components > Molecules > Range
 #: components/Molecules/Range.tsx:23
+#. Used in: Components > Molecules > Range
 #, fuzzy
 msgid "startYear"
-msgstr "Начало года"
+msgstr "Год начала"
 
-#. Used in: Components > Molecules > Range
 #: components/Molecules/Range.tsx:44
+#. Used in: Components > Molecules > Range
 #, fuzzy
 msgid "endYear"
 msgstr "Конец года"
 
-#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:150
+#. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "publishingOrganizationKey"
-msgstr "Ключ к издательской организации GBIF"
+msgstr ""
 
-#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:152
+#. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "publishingOrganizationKeyDescription"
 msgstr ""
-"Ключ публикации GBIF \"publishingOrgKey\" (UUID) для этой коллекции, "
-"используемый для интеграции с Specify Network."
 
-#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:159
+#. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "collectionKey"
-msgstr "Ключ набора данных GBIF"
+msgstr ""
 
-#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:160
+#. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "collectionKeyDescription"
 msgstr ""
-"Ключ набора данных GBIF (UUID) для этой коллекции используется для "
-"интеграции с Specify Network."
