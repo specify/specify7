@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2025-12-20 07:00+0000\n"
 "Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
-"stats/uk/>\n"
+"Language-Team: Ukrainian "
+"<https://hosted.weblate.org/projects/specify-7/stats/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,283 +12,278 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 5.15.1\n"
 
-#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:29
 #: components/Statistics/__tests__/layout.tests.ts:18
-msgid "holdings"
-msgstr "Холдинги"
-
 #. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
+msgid "holdings"
+msgstr ""
+
 #: components/Statistics/StatsSpec.tsx:32
 #: components/Statistics/__tests__/layout.tests.ts:21
-msgid "collectionObjects"
-msgstr "Об'єкти колекції"
-
 #. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
+msgid "collectionObjects"
+msgstr ""
+
 #: components/Statistics/StatsSpec.tsx:63
 #: components/Statistics/StatsSpec.tsx:398
 #: components/Statistics/StatsSpec.tsx:401
 #: components/Statistics/__tests__/layout.tests.ts:83
 #: components/Statistics/__tests__/layout.tests.ts:86
-msgid "typeSpecimens"
-msgstr "Типові зразки"
-
-#. Used in: Components > Statistics > Stats Spec
-#: components/Statistics/StatsSpec.tsx:569
-msgid "curation"
-msgstr "Кураторство"
-
-#. Used in: Components > Statistics > Stats Spec
-#: components/Statistics/StatsSpec.tsx:137
-msgid "loans"
-msgstr "Кредити"
-
-#. Used in: Components > Statistics > Stats Spec
-#: components/Statistics/StatsSpec.tsx:140
-msgid "itemsOnLoans"
-msgstr "Речі в оренду"
-
-#. Used in: Components > Statistics > Stats Spec
-#: components/Statistics/StatsSpec.tsx:159
-msgid "openLoansStat"
-msgstr "Відкриті позики"
-
-#. Used in: Components > Statistics > Stats Spec
-#: components/Statistics/StatsSpec.tsx:178
-msgid "overdueLoans"
-msgstr "Прострочені кредити"
-
 #. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
+msgid "typeSpecimens"
+msgstr ""
+
+#: components/Statistics/StatsSpec.tsx:569
+#. Used in: Components > Statistics > Stats Spec
+msgid "curation"
+msgstr ""
+
+#: components/Statistics/StatsSpec.tsx:137
+#. Used in: Components > Statistics > Stats Spec
+msgid "loans"
+msgstr ""
+
+#: components/Statistics/StatsSpec.tsx:140
+#. Used in: Components > Statistics > Stats Spec
+msgid "itemsOnLoans"
+msgstr ""
+
+#: components/Statistics/StatsSpec.tsx:159
+#. Used in: Components > Statistics > Stats Spec
+msgid "openLoansStat"
+msgstr ""
+
+#: components/Statistics/StatsSpec.tsx:178
+#. Used in: Components > Statistics > Stats Spec
+msgid "overdueLoans"
+msgstr ""
+
 #: components/Statistics/StatsSpec.tsx:267
 #: components/Statistics/__tests__/layout.tests.ts:68
-msgid "localityGeography"
-msgstr "Місцевість / Географія"
-
-#. Used in: Components > Statistics > Stats Spec
-#: components/Statistics/StatsSpec.tsx:270
-msgid "localities"
-msgstr "Населені пункти"
-
-#. Used in: Components > Statistics > Stats Spec
-#: components/Statistics/StatsSpec.tsx:296
-msgid "geographyEntries"
-msgstr "Географічні записи"
-
-#. Used in: Statistics > __tests__ > Layout
-#: components/Statistics/__tests__/layout.tests.ts:71
-msgid "countries"
-msgstr "Країни"
-
-#. Used in: Components > Statistics > Stats Spec
-#: components/Statistics/StatsSpec.tsx:314
-msgid "georeferencedLocalities"
-msgstr "Геоприв'язані населені пункти"
-
-#. Used in: Components > Statistics > Stats Spec
-#: components/Statistics/StatsSpec.tsx:446
-msgid "digitization"
-msgstr "Оцифрування"
-
-#. Used in: Components > Statistics > Stats Spec
-#: components/Statistics/StatsSpec.tsx:449
-msgid "digitizedLastSevenDays"
-msgstr "Оцифровано за останні 7 днів"
-
-#. Used in: Components > Statistics > Stats Spec
-#: components/Statistics/StatsSpec.tsx:468
-msgid "digitizedLastMonth"
-msgstr "Оцифровано минулого місяця"
-
-#. Used in: Components > Statistics > Stats Spec
-#: components/Statistics/StatsSpec.tsx:487
-msgid "digitizedLastYear"
-msgstr "Оцифровано минулого року"
-
-#. Used in: Components > Statistics > Add Stat Dialog
-#: components/Statistics/AddStatDialog.tsx:82
-msgid "chooseStatistics"
-msgstr "Виберіть Статистику"
-
-#. Used in: Components > Statistics > Add Stat Dialog
-#: components/Statistics/AddStatDialog.tsx:86
-msgid "selectFromQueries"
-msgstr "Вибрати з запитів"
-
-#. Used in: Components > Statistics > Add Stat Dialog
-#: components/Statistics/AddStatDialog.tsx:110
-msgid "selectFromAvailableDefault"
-msgstr "Виберіть із доступної статистики за замовчуванням"
-
 #. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
+msgid "localityGeography"
+msgstr ""
+
+#: components/Statistics/StatsSpec.tsx:270
+#. Used in: Components > Statistics > Stats Spec
+msgid "localities"
+msgstr ""
+
+#: components/Statistics/StatsSpec.tsx:296
+#. Used in: Components > Statistics > Stats Spec
+msgid "geographyEntries"
+msgstr ""
+
+#: components/Statistics/__tests__/layout.tests.ts:71
+#. Used in: Statistics > __tests__ > Layout
+msgid "countries"
+msgstr ""
+
+#: components/Statistics/StatsSpec.tsx:314
+#. Used in: Components > Statistics > Stats Spec
+msgid "georeferencedLocalities"
+msgstr ""
+
+#: components/Statistics/StatsSpec.tsx:446
+#. Used in: Components > Statistics > Stats Spec
+msgid "digitization"
+msgstr ""
+
+#: components/Statistics/StatsSpec.tsx:449
+#. Used in: Components > Statistics > Stats Spec
+msgid "digitizedLastSevenDays"
+msgstr ""
+
+#: components/Statistics/StatsSpec.tsx:468
+#. Used in: Components > Statistics > Stats Spec
+msgid "digitizedLastMonth"
+msgstr ""
+
+#: components/Statistics/StatsSpec.tsx:487
+#. Used in: Components > Statistics > Stats Spec
+msgid "digitizedLastYear"
+msgstr ""
+
+#: components/Statistics/AddStatDialog.tsx:82
+#. Used in: Components > Statistics > Add Stat Dialog
+msgid "chooseStatistics"
+msgstr ""
+
+#: components/Statistics/AddStatDialog.tsx:86
+#. Used in: Components > Statistics > Add Stat Dialog
+msgid "selectFromQueries"
+msgstr ""
+
+#: components/Statistics/AddStatDialog.tsx:110
+#. Used in: Components > Statistics > Add Stat Dialog
+msgid "selectFromAvailableDefault"
+msgstr ""
+
 #: components/Statistics/StatsSpec.tsx:25
 #: components/Statistics/__tests__/layout.tests.ts:14
 #: components/Statistics/__tests__/layout.tests.ts:103
-msgid "collection"
-msgstr "Колекція"
-
 #. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
+msgid "collection"
+msgstr ""
+
 #: components/Statistics/StatsSpec.tsx:565
 #: components/Statistics/__tests__/layout.tests.ts:99
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 msgid "personal"
-msgstr "Особисте"
+msgstr ""
 
-#. Used in: Components > Statistics > Index
 #: components/Statistics/index.tsx:141
 #: components/Statistics/index.tsx:494
+#. Used in: Components > Statistics > Index
 msgid "private"
-msgstr "Приватний"
+msgstr ""
 
-#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:572
 #: components/Statistics/__tests__/layout.tests.ts:106
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 msgid "collectionObjectsCataloged"
-msgstr "Каталогізовані об'єкти колекції"
+msgstr ""
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:588
+#. Used in: Components > Statistics > Stats Spec
 msgid "collectionObjectsDetermined"
-msgstr "Визначено об'єкти колекції"
+msgstr ""
 
-#. Used in: Components > Statistics > Index
 #: components/Statistics/index.tsx:516
+#. Used in: Components > Statistics > Index
 msgid "lastRefreshed"
-msgstr "Останнє оновлення"
+msgstr ""
 
-#. Used in: Components > Statistics > Hooks
 #: components/Statistics/hooks.tsx:375
+#. Used in: Components > Statistics > Hooks
 msgid "categoryName"
-msgstr "Назва категорії"
+msgstr ""
 
-#. Used in: Components > Statistics > Hooks
 #: components/Statistics/hooks.tsx:376
-msgid "itemName"
-msgstr "Назва елемента"
-
 #. Used in: Components > Statistics > Hooks
+msgid "itemName"
+msgstr ""
+
 #: components/Statistics/hooks.tsx:377
+#. Used in: Components > Statistics > Hooks
 msgid "itemValue"
-msgstr "Значення елемента"
+msgstr ""
 
-#. Used in: Components > Statistics > Index
 #: components/Statistics/index.tsx:545
-msgid "downloadAsTSV"
-msgstr "Завантажити як TSV"
-
 #. Used in: Components > Statistics > Index
+msgid "downloadAsTSV"
+msgstr ""
+
 #: components/Statistics/index.tsx:140
 #: components/Statistics/index.tsx:494
+#. Used in: Components > Statistics > Index
 msgid "shared"
-msgstr "Спільний доступ"
+msgstr ""
 
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Hooks ⬤ Components > Statistics > Index
 #: components/Header/menuItemDefinitions.ts:109
 #: components/Preferences/CollectionDefinitions.tsx:114
 #: components/Preferences/UserDefinitions.tsx:2077
 #: components/Router/Routes.tsx:461
 #: components/Statistics/hooks.tsx:118
 #: components/Statistics/index.tsx:512
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Hooks ⬤ Components > Statistics > Index
 msgid "statistics"
-msgstr "Статистика"
+msgstr ""
 
-#. Used in: Components > Statistics > Delete Category
 #: components/Statistics/DeleteCategory.tsx:26
 #: components/Statistics/DeleteCategory.tsx:45
+#. Used in: Components > Statistics > Delete Category
 msgid "deleteCategory"
-msgstr "Видалити категорію"
+msgstr ""
 
-#. Used in: Components > Statistics > Stats Page Editing
 #: components/Statistics/StatsPageEditing.tsx:52
+#. Used in: Components > Statistics > Stats Page Editing
 msgid "editPage"
-msgstr "Редагувати сторінку"
+msgstr ""
 
-#. Used in: Components > Statistics > Stats Page Editing
 #: components/Statistics/StatsPageEditing.tsx:52
+#. Used in: Components > Statistics > Stats Page Editing
 msgid "addPage"
-msgstr "Додати сторінку"
+msgstr ""
 
-#. Used in: Components > Statistics > Categories
 #: components/Statistics/Categories.tsx:298
+#. Used in: Components > Statistics > Categories
 msgid "addACategory"
-msgstr "Додати категорію"
+msgstr ""
 
-#. Used in: Components > Statistics > Index
 #: components/Statistics/index.tsx:521
+#. Used in: Components > Statistics > Index
 msgid "refresh"
-msgstr "Оновити"
+msgstr ""
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:532
+#. Used in: Components > Statistics > Stats Spec
 msgid "collectionObjectsWithImages"
-msgstr "Об'єкти колекції із зображеннями"
+msgstr ""
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:511
-msgid "collectionObjectsWithAttachments"
-msgstr "Об'єкти колекції з вкладеннями"
-
-#. Used in: Components > Statistics > Stat Items
-#: components/Statistics/StatItems.tsx:271
-msgid "error"
-msgstr "Помилка"
-
 #. Used in: Components > Statistics > Stats Spec
+msgid "collectionObjectsWithAttachments"
+msgstr ""
+
+#: components/Statistics/StatItems.tsx:271
+#. Used in: Components > Statistics > Stat Items
+msgid "error"
+msgstr ""
+
 #: components/Statistics/StatsSpec.tsx:204
 #: components/Statistics/StatsSpec.tsx:207
-msgid "taxonRepresented"
-msgstr "Представлені таксони"
-
 #. Used in: Components > Statistics > Stats Spec
+msgid "taxonRepresented"
+msgstr ""
+
 #: components/Statistics/StatsSpec.tsx:345
 #: components/Statistics/StatsSpec.tsx:348
+#. Used in: Components > Statistics > Stats Spec
 msgid "geographiesRepresented"
-msgstr "Представлені географічні регіони"
+msgstr ""
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:334
-msgid "percentGeoReferenced"
-msgstr "Відсоток геоприв'язаних"
-
 #. Used in: Components > Statistics > Stats Spec
+msgid "percentGeoReferenced"
+msgstr ""
+
 #: components/Statistics/StatsSpec.tsx:553
+#. Used in: Components > Statistics > Stats Spec
 msgid "percentImaged"
-msgstr "Відсоток зображень"
+msgstr ""
 
-#. Used in: Components > Statistics > Delete Category
 #: components/Statistics/DeleteCategory.tsx:49
-msgid "deleteWarning"
-msgstr "Ви впевнені, що хочете видалити категорію?"
-
 #. Used in: Components > Statistics > Delete Category
+msgid "deleteWarning"
+msgstr ""
+
 #: components/Statistics/DeleteCategory.tsx:55
+#. Used in: Components > Statistics > Delete Category
 msgid "categoryToDelete"
-msgstr "Це остаточно видалить наступну категорію"
+msgstr ""
 
-#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:120
+#. Used in: Components > Preferences > Collection Definitions
 msgid "layoutPreference"
-msgstr "Визначає макет сторінки статистики"
+msgstr ""
 
-#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:128
-msgid "showPreparationsTotal"
-msgstr "Підсумки підготовки до шоу"
-
 #. Used in: Components > Preferences > Collection Definitions
+msgid "showPreparationsTotal"
+msgstr ""
+
 #: components/Preferences/CollectionDefinitions.tsx:129
+#. Used in: Components > Preferences > Collection Definitions
 msgid "showPreparationsTotalDescription"
 msgstr ""
-"Якщо ввімкнено, панель статистики препаратів за замовчуванням включатиме "
-"загальну кількість для кожного препарату певного типу препарату поряд із "
-"загальною кількістю. Це корисно для колекцій на основі партій."
 
-#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:136
-msgid "autoRefreshRate"
-msgstr "Частота автоматичного оновлення (години)"
-
 #. Used in: Components > Preferences > Collection Definitions
+msgid "autoRefreshRate"
+msgstr ""
+
 #: components/Preferences/CollectionDefinitions.tsx:137
+#. Used in: Components > Preferences > Collection Definitions
 msgid "autoRefreshRateDescription"
 msgstr ""
-"Інтервал часу в годинах, через який сторінка статистики автоматично "
-"оновлюватиме свої дані. Значення за замовчуванням – 24."

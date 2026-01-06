@@ -150,24 +150,24 @@ msgstr "Сьогодні"
 msgid "todayButtonDescription"
 msgstr "Встановити на поточну дату"
 
-#: components/PickLists/index.tsx:291
+#: components/PickLists/index.tsx:285
 #. Used in: Components > Pick Lists > Index
 msgid "addToPickListConfirmation"
 msgstr "Додати до {pickListTable:string}?"
 
-#: components/PickLists/index.tsx:296
+#: components/PickLists/index.tsx:290
 #. Used in: Components > Pick Lists > Index
 msgid "addToPickListConfirmationDescription"
 msgstr ""
 "Додати значення \"{value:string}\" до {pickListTable:string} з назвою "
 "\"{pickListName:string}\"?"
 
-#: components/PickLists/index.tsx:258
+#: components/PickLists/index.tsx:252
 #. Used in: Components > Pick Lists > Index
 msgid "invalidType"
 msgstr "Недійсний тип"
 
-#: components/PickLists/index.tsx:261
+#: components/PickLists/index.tsx:255
 #. Used in: Components > Pick Lists > Index
 msgid "invalidNumericPicklistValue"
 msgstr "У цьому {pickListTable:string} підтримуються лише числові значення"

@@ -3,298 +3,293 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2025-12-19 17:00+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/stats/"
-"es/>\n"
+"Language-Team: Spanish "
+"<https://hosted.weblate.org/projects/specify-7/stats/es/>\n"
 "Language: es\n"
 "Content-Type: text/plain\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.15.1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:29
 #: components/Statistics/__tests__/layout.tests.ts:18
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 msgid "holdings"
 msgstr "Mantenimientos"
 
-#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:32
 #: components/Statistics/__tests__/layout.tests.ts:21
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 msgid "collectionObjects"
 msgstr "Objetos de la Colección"
 
-#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:63
 #: components/Statistics/StatsSpec.tsx:398
 #: components/Statistics/StatsSpec.tsx:401
 #: components/Statistics/__tests__/layout.tests.ts:83
 #: components/Statistics/__tests__/layout.tests.ts:86
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 msgid "typeSpecimens"
 msgstr "Especímenes Tipo"
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:569
+#. Used in: Components > Statistics > Stats Spec
 msgid "curation"
 msgstr "Curación"
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:137
+#. Used in: Components > Statistics > Stats Spec
 msgid "loans"
 msgstr "Préstamos"
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:140
+#. Used in: Components > Statistics > Stats Spec
 msgid "itemsOnLoans"
 msgstr "Artículos en Préstamo"
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:159
+#. Used in: Components > Statistics > Stats Spec
 msgid "openLoansStat"
 msgstr "Préstamos Abiertos"
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:178
+#. Used in: Components > Statistics > Stats Spec
 msgid "overdueLoans"
 msgstr "Préstamos Atrasados"
 
-#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:267
 #: components/Statistics/__tests__/layout.tests.ts:68
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 msgid "localityGeography"
 msgstr "Localidad / Geografía"
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:270
+#. Used in: Components > Statistics > Stats Spec
 msgid "localities"
 msgstr "Localidades"
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:296
+#. Used in: Components > Statistics > Stats Spec
 msgid "geographyEntries"
 msgstr "Entradas de Geografía"
 
-#. Used in: Statistics > __tests__ > Layout
 #: components/Statistics/__tests__/layout.tests.ts:71
+#. Used in: Statistics > __tests__ > Layout
 msgid "countries"
 msgstr "Países"
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:314
+#. Used in: Components > Statistics > Stats Spec
 msgid "georeferencedLocalities"
 msgstr "Localidades Georreferenciadas"
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:446
+#. Used in: Components > Statistics > Stats Spec
 msgid "digitization"
 msgstr "Digitalización"
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:449
+#. Used in: Components > Statistics > Stats Spec
 msgid "digitizedLastSevenDays"
 msgstr "Digitalizado Últimos 7 Días"
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:468
+#. Used in: Components > Statistics > Stats Spec
 msgid "digitizedLastMonth"
 msgstr "Digitalizado Último Mes"
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:487
+#. Used in: Components > Statistics > Stats Spec
 msgid "digitizedLastYear"
 msgstr "Digitalizado Último Año"
 
-#. Used in: Components > Statistics > Add Stat Dialog
 #: components/Statistics/AddStatDialog.tsx:82
+#. Used in: Components > Statistics > Add Stat Dialog
 msgid "chooseStatistics"
 msgstr "Seleccionar Estadísticas"
 
-#. Used in: Components > Statistics > Add Stat Dialog
 #: components/Statistics/AddStatDialog.tsx:86
+#. Used in: Components > Statistics > Add Stat Dialog
 msgid "selectFromQueries"
 msgstr "Seleccionar de Consultas"
 
-#. Used in: Components > Statistics > Add Stat Dialog
 #: components/Statistics/AddStatDialog.tsx:110
+#. Used in: Components > Statistics > Add Stat Dialog
 msgid "selectFromAvailableDefault"
 msgstr "Seleccionar de Estadísticas Predeterminadas Disponibles"
 
-#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:25
 #: components/Statistics/__tests__/layout.tests.ts:14
 #: components/Statistics/__tests__/layout.tests.ts:103
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 msgid "collection"
 msgstr "Colección"
 
-#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:565
 #: components/Statistics/__tests__/layout.tests.ts:99
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 msgid "personal"
 msgstr "Personal"
 
-#. Used in: Components > Statistics > Index
 #: components/Statistics/index.tsx:141
 #: components/Statistics/index.tsx:494
+#. Used in: Components > Statistics > Index
 msgid "private"
 msgstr "Privado"
 
-#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:572
 #: components/Statistics/__tests__/layout.tests.ts:106
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 msgid "collectionObjectsCataloged"
 msgstr "Objetos de la Colección Catalogados"
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:588
+#. Used in: Components > Statistics > Stats Spec
 msgid "collectionObjectsDetermined"
 msgstr "Objetos de la Colección Determinados"
 
-#. Used in: Components > Statistics > Index
 #: components/Statistics/index.tsx:516
+#. Used in: Components > Statistics > Index
 msgid "lastRefreshed"
 msgstr "Última Actualización"
 
-#. Used in: Components > Statistics > Hooks
 #: components/Statistics/hooks.tsx:375
+#. Used in: Components > Statistics > Hooks
 msgid "categoryName"
 msgstr "Nombre de la Categoría"
 
-#. Used in: Components > Statistics > Hooks
 #: components/Statistics/hooks.tsx:376
+#. Used in: Components > Statistics > Hooks
 msgid "itemName"
 msgstr "Nombre del Item"
 
-#. Used in: Components > Statistics > Hooks
 #: components/Statistics/hooks.tsx:377
+#. Used in: Components > Statistics > Hooks
 msgid "itemValue"
 msgstr "Valor del Ítem"
 
-#. Used in: Components > Statistics > Index
 #: components/Statistics/index.tsx:545
+#. Used in: Components > Statistics > Index
 msgid "downloadAsTSV"
 msgstr "Descargar como TSV"
 
-#. Used in: Components > Statistics > Index
 #: components/Statistics/index.tsx:140
 #: components/Statistics/index.tsx:494
+#. Used in: Components > Statistics > Index
 msgid "shared"
 msgstr "Compartido"
 
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Hooks ⬤ Components > Statistics > Index
 #: components/Header/menuItemDefinitions.ts:109
 #: components/Preferences/CollectionDefinitions.tsx:114
 #: components/Preferences/UserDefinitions.tsx:2077
 #: components/Router/Routes.tsx:461
 #: components/Statistics/hooks.tsx:118
 #: components/Statistics/index.tsx:512
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Hooks ⬤ Components > Statistics > Index
 msgid "statistics"
 msgstr "Estadísticas"
 
-#. Used in: Components > Statistics > Delete Category
 #: components/Statistics/DeleteCategory.tsx:26
 #: components/Statistics/DeleteCategory.tsx:45
+#. Used in: Components > Statistics > Delete Category
 msgid "deleteCategory"
 msgstr "Eliminar Categoría"
 
-#. Used in: Components > Statistics > Stats Page Editing
 #: components/Statistics/StatsPageEditing.tsx:52
+#. Used in: Components > Statistics > Stats Page Editing
 msgid "editPage"
 msgstr "Editar Página"
 
-#. Used in: Components > Statistics > Stats Page Editing
 #: components/Statistics/StatsPageEditing.tsx:52
+#. Used in: Components > Statistics > Stats Page Editing
 msgid "addPage"
 msgstr "Agregar Página"
 
-#. Used in: Components > Statistics > Categories
 #: components/Statistics/Categories.tsx:298
+#. Used in: Components > Statistics > Categories
 msgid "addACategory"
 msgstr "Agregar una Categoría"
 
-#. Used in: Components > Statistics > Index
 #: components/Statistics/index.tsx:521
+#. Used in: Components > Statistics > Index
 msgid "refresh"
 msgstr "Actualizar"
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:532
+#. Used in: Components > Statistics > Stats Spec
 msgid "collectionObjectsWithImages"
 msgstr "Objetos de la Colección con imágenes"
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:511
+#. Used in: Components > Statistics > Stats Spec
 msgid "collectionObjectsWithAttachments"
 msgstr "Objetos de la Colección con adjuntos"
 
-#. Used in: Components > Statistics > Stat Items
 #: components/Statistics/StatItems.tsx:271
+#. Used in: Components > Statistics > Stat Items
 msgid "error"
 msgstr "Error"
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:204
 #: components/Statistics/StatsSpec.tsx:207
+#. Used in: Components > Statistics > Stats Spec
 msgid "taxonRepresented"
 msgstr "Taxones Representados"
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:345
 #: components/Statistics/StatsSpec.tsx:348
+#. Used in: Components > Statistics > Stats Spec
 msgid "geographiesRepresented"
 msgstr "Geografías Representadas"
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:334
+#. Used in: Components > Statistics > Stats Spec
 msgid "percentGeoReferenced"
 msgstr "Porcentaje Georreferenciado"
 
-#. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:553
+#. Used in: Components > Statistics > Stats Spec
 msgid "percentImaged"
 msgstr "Porcentaje Capturado"
 
-#. Used in: Components > Statistics > Delete Category
 #: components/Statistics/DeleteCategory.tsx:49
+#. Used in: Components > Statistics > Delete Category
 #, fuzzy
 msgid "deleteWarning"
-msgstr "¿Estás seguro que deseas eliminar la categoría?"
+msgstr ""
 
-#. Used in: Components > Statistics > Delete Category
 #: components/Statistics/DeleteCategory.tsx:55
+#. Used in: Components > Statistics > Delete Category
 #, fuzzy
 msgid "categoryToDelete"
-msgstr "Esto eliminará permanentemente la siguiente categoría"
+msgstr ""
 
-#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:120
+#. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "layoutPreference"
-msgstr "Define el diseño de la página de estadísticas."
+msgstr ""
 
-#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:128
+#. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "showPreparationsTotal"
-msgstr "Totales de preparativos del espectáculo"
+msgstr ""
 
-#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:129
+#. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "showPreparationsTotalDescription"
 msgstr ""
-"Si está habilitado, el panel de estadísticas de preparaciones predeterminado "
-"incluirá un recuento total de cada preparación de un tipo específico, junto "
-"con el total general. Esto resulta útil para recolecciones basadas en lotes."
 
-#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:136
+#. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "autoRefreshRate"
-msgstr "Frecuencia de actualización automática (horas)"
+msgstr ""
 
-#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:137
+#. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "autoRefreshRateDescription"
 msgstr ""
-"El intervalo de tiempo, en horas, en el que la página de estadísticas "
-"actualizará automáticamente sus datos. El valor predeterminado es 24."

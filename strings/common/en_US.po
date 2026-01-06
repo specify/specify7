@@ -52,7 +52,7 @@ msgstr "No"
 #: components/Molecules/LinkedRecords.tsx:88
 #: components/Molecules/LinkedRecords.tsx:100
 #: components/Molecules/SyncAttachmentPicker.tsx:126
-#: components/PickLists/index.tsx:288
+#: components/PickLists/index.tsx:282
 #: components/QueryBuilder/Components.tsx:169
 #: components/QueryBuilder/Edit.tsx:174
 #: components/QueryBuilder/FromMap.tsx:72
@@ -228,7 +228,7 @@ msgstr "Create"
 #: components/Molecules/LinkedRecords.tsx:125
 #: components/Molecules/SyncAttachmentPicker.tsx:101
 #: components/Notifications/Notifications.tsx:89
-#: components/PickLists/index.tsx:257
+#: components/PickLists/index.tsx:251
 #: components/Preferences/index.tsx:157
 #: components/QueryBuilder/CheckReadAccess.tsx:42
 #: components/QueryBuilder/Components.tsx:288
@@ -351,7 +351,7 @@ msgstr "Save"
 #: components/Forms/Save.tsx:279
 #: components/Merging/CompareSubView.tsx:184
 #: components/Molecules/AutoComplete.tsx:524
-#: components/PickLists/index.tsx:286
+#: components/PickLists/index.tsx:280
 #: components/QueryBuilder/Wrapped.tsx:484
 #: components/SchemaConfig/Format.tsx:299
 #: components/SchemaConfig/Format.tsx:349

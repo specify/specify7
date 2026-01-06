@@ -176,13 +176,13 @@ msgstr "Hoje"
 msgid "todayButtonDescription"
 msgstr "Definir para a data atual"
 
-#: components/PickLists/index.tsx:291
+#: components/PickLists/index.tsx:285
 #. Used in: Components > Pick Lists > Index
 #, fuzzy
 msgid "addToPickListConfirmation"
 msgstr "Adicionar ao {pickListTable:string}?"
 
-#: components/PickLists/index.tsx:296
+#: components/PickLists/index.tsx:290
 #. Used in: Components > Pick Lists > Index
 #, fuzzy
 msgid "addToPickListConfirmationDescription"
@@ -190,13 +190,13 @@ msgstr ""
 "Adicionar o valor \"{value:string}\" ao {pickListTable:string} nomeado "
 "\"{pickListName:string}\"?"
 
-#: components/PickLists/index.tsx:258
+#: components/PickLists/index.tsx:252
 #. Used in: Components > Pick Lists > Index
 #, fuzzy
 msgid "invalidType"
 msgstr "Tipo inválido"
 
-#: components/PickLists/index.tsx:261
+#: components/PickLists/index.tsx:255
 #. Used in: Components > Pick Lists > Index
 #, fuzzy
 msgid "invalidNumericPicklistValue"
