@@ -111,4 +111,14 @@ class Migration(migrations.Migration):
             name='discipline',
             field=models.ForeignKey(db_column='DisciplineID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='tectonicunittreedefs', to='specify.discipline'),
         ),
+        migrations.AlterField(
+            model_name='collectionobjecttype',
+            name='collection',
+            field=models.ForeignKey(db_column='CollectionID', on_delete=django.db.models.deletion.CASCADE, related_name='cotypes', to='specify.collection'),
+        ),
+        migrations.AlterField(
+            model_name='preptype',
+            name='collection',
+            field=models.ForeignKey(db_column='CollectionID', on_delete=django.db.models.deletion.CASCADE, related_name='preptypes', to='specify.collection'),
+        ),
     ]
