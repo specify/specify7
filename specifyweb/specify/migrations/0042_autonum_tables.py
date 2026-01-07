@@ -4,8 +4,7 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
     dependencies = [
-        # Replace with your app's latest migration:
-        ("your_app_label", "00xx_previous_migration"),
+        ("specify", "0041_add_missing_schema_after_reorganization"),
     ]
 
     operations = [
