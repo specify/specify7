@@ -6,7 +6,6 @@ import { hasNativeErrors, isInputTouched } from '../components/Forms/validationH
 import { listen } from '../utils/events';
 import type { RA } from '../utils/types';
 
-
 /**
  * An integration into native browser error reporting mechanism.
  * Can set an error message via prop or callback.
@@ -100,8 +99,7 @@ export function useValidation<T extends Input = Input>(
 
       /*
        * Empty string clears validation error
-       * simple  check for HTML validation, through hasNativeErrors and prevents from both Validators to be active simultaneously
-       * 
+       * simple  check for HTML validation, through hasNativeErrors and prevents from both Validators to be active simultaneously 
        */
       if (hasNativeErrors(input)) {
         input.setCustomValidity('');
