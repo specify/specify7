@@ -708,12 +708,36 @@ export const treeText = createDictionary({
   },
   treeManagement: {
     'en-us': 'Tree Management',
+    'de-ch': 'Baumpflege',
+    'es-es': 'Manejo de árboles',
+    'fr-fr': 'Gestion des arbres',
+    'pt-br': 'Gestão de árvores',
+    'ru-ru': 'Управление деревьями',
+    'uk-ua': 'Управління деревами',
   },
   synonymizedNodes: {
     'en-us': 'Expand Synonym Behavior',
+    'de-ch': 'Synonymverhalten erweitern',
+    'es-es': 'Expandir el comportamiento de los sinónimos',
+    'fr-fr': 'Développer le comportement des synonymes',
+    'pt-br': 'Expandir o comportamento dos sinônimos',
+    'ru-ru': 'Развернуть поведение синонимов',
+    'uk-ua': 'Розгорнути поведінку синонімів',
   },
   synonymizedNodesDescription: {
     'en-us':
       'If enabled, this allows users to add children to synonymized parents and to synonymize a node with children.',
+    'de-ch':
+      'Ist diese Funktion aktiviert, können Benutzer Kindknoten zu synonymisierten Elternknoten hinzufügen und einen Knoten mit Kindknoten synonymisieren.',
+    'es-es':
+      'Si está habilitado, esto permite a los usuarios agregar hijos a padres sinonimizados y sinonimizar un nodo con hijos.',
+    'fr-fr':
+      "Si cette option est activée, elle permet aux utilisateurs d'ajouter des enfants à des parents synonymisés et de synonymiser un nœud avec ses enfants.",
+    'pt-br':
+      'Se ativada, essa opção permite que os usuários adicionem filhos a nós pais sinonimizados e sinonimizem um nó com seus filhos.',
+    'ru-ru':
+      'Если эта функция включена, она позволяет пользователям добавлять дочерние элементы к синонимизированным родительским элементам и синонимизировать узел с дочерними элементами.',
+    'uk-ua':
+      'Якщо це ввімкнено, користувачі можуть додавати дочірні елементи до синонімізованих батьківських елементів та синонімізувати вузол з дочірніми елементами.',
   },
 } as const);
