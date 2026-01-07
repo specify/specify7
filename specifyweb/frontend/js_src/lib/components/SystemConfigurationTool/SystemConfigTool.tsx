@@ -42,11 +42,14 @@ export function SystemConfigurationTool(): JSX.Element | null {
       .catch(() => console.warn('Error when fetching institution info'));
   }, []);
 
-  const refreshAllInfo = async () =>
-    load<InstitutionData>(
-      `/context/all_system_data.json?cb=${Date.now()}`,
-      'application/json'
-    ).then(setAllInfo);
+  const refreshAllInfo = React.useCallback(
+    async () =>
+      load<InstitutionData>(
+        `/context/all_system_data.json?cb=${Date.now()}`,
+        'application/json'
+      ).then(setAllInfo),
+    []
+  );
 
   const newResourceViewName =
     newResource?.isNew?.() === true
