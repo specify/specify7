@@ -73,10 +73,11 @@
     { "name": "Sheet", "isloanable": true }
   ],
   "vertpaleo": [
-    { "name": "C&S", "isloanable": true },
-    { "name": "EtOH", "isloanable": true },
-    { "name": "Skeleton", "isloanable": true },
-    { "name": "X-Ray", "isloanable": true }
+    { "name": "Fossil", "isloanable": true },
+    { "name": "Cast", "isloanable": true },
+    { "name": "Mold", "isloanable": true },
+    { "name": "Peel", "isloanable": true },
+    { "name": "Slide", "isloanable": true }
   ],
   "geology": [
     { "name": "Hand Sample", "isloanable": true },
