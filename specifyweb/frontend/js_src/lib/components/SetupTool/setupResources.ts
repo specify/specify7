@@ -172,7 +172,13 @@ export const resources: RA<ResourceConfig> = [
         type: 'object',
         // TODO: Rank fields should be generated from a .json file.
         fields: [
-          { name: '0', label: 'Site', type: 'boolean', default: true, required: true },
+          {
+            name: '0',
+            label: 'Site',
+            type: 'boolean',
+            default: true,
+            required: true,
+          },
           { name: '100', label: 'Building', type: 'boolean' },
           { name: '150', label: 'Collection', type: 'boolean' },
           { name: '200', label: 'Room', type: 'boolean' },
@@ -235,7 +241,13 @@ export const resources: RA<ResourceConfig> = [
         required: false,
         type: 'object',
         fields: [
-          { name: '0', label: 'Earth', type: 'boolean', default: true, required: true },
+          {
+            name: '0',
+            label: 'Earth',
+            type: 'boolean',
+            default: true,
+            required: true,
+          },
           { name: '100', label: 'Continent', type: 'boolean', default: true },
           { name: '200', label: 'Country', type: 'boolean', default: true },
           { name: '300', label: 'State', type: 'boolean', default: true },
@@ -270,7 +282,13 @@ export const resources: RA<ResourceConfig> = [
         required: false,
         type: 'object',
         fields: [
-          { name: '0', label: 'Life', type: 'boolean', default: true, required: true },
+          {
+            name: '0',
+            label: 'Life',
+            type: 'boolean',
+            default: true,
+            required: true,
+          },
           { name: '10', label: 'Kingdom', type: 'boolean', default: true },
           { name: '30', label: 'Phylum', type: 'boolean', default: true },
           { name: '40', label: 'Subphylum', type: 'boolean', default: true },
