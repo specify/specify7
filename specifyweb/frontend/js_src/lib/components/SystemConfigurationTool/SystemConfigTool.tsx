@@ -13,7 +13,7 @@ import type {
   TaxonTreeDef,
 } from '../DataModel/types';
 import { collection, discipline, division } from '../FormParse/webOnlyViews';
-import { ResourceView } from '../Forms/ResourceView';
+import { LazyResourceView } from '../Forms/LazyResourceView';
 import { load } from '../InitialContext';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { Hierarchy } from './Hierarchy';
@@ -64,20 +64,11 @@ export function SystemConfigurationTool(): JSX.Element | null {
         )}
       </div>
       {newResourceOpen ? (
-        <ResourceView
+        <LazyResourceView
           dialog="modal"
           isDependent={false}
           isSubForm={false}
           resource={newResource as SpecifyResource<Collection>}
-          viewName={
-            newResource?.specifyTable.name === 'Collection'
-              ? collection
-              : newResource?.specifyTable.name === 'Discipline'
-                ? discipline
-                : newResource?.specifyTable.name === 'Division'
-                  ? division
-                  : undefined
-          }
           onAdd={undefined}
           onClose={closeNewResource}
           onDeleted={async () => {
