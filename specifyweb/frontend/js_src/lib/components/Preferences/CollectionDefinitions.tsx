@@ -133,12 +133,10 @@ export const collectionPreferenceDefinitions = {
           }),
           showPreparationsTotal: definePref<boolean>({
             title: () =>
-              // @ts-expect-error — upstream i18n typing incorrectly resolves params to neve
               statsText.showPreparationsTotal({
                 preparationTableName: tableLabel('Preparation'),
               }),
             description: () =>
-              // @ts-expect-error — upstream i18n typing incorrectly resolves params to neve
               statsText.showPreparationsTotalDescription({
                 preparationTableName: tableLabel('Preparation'),
                 lowerPreparationTableName:
@@ -186,7 +184,6 @@ export const collectionPreferenceDefinitions = {
   },
   catalogNumberInheritance: {
     title: () =>
-      // @ts-expect-error — upstream i18n typing incorrectly resolves params to neve
       queryText.primaryCatalogNumberInheritance({
         collectionObjectTableName: tableLabel('CollectionObject'),
       }),
@@ -196,7 +193,6 @@ export const collectionPreferenceDefinitions = {
         items: {
           inheritance: definePref<boolean>({
             title: () =>
-              // @ts-expect-error — upstream i18n typing incorrectly resolves params to neve
               preferencesText.inheritanceCatNumberPref({
                 catalogNumberFieldName: fieldLabel(
                   'CollectionObject',
@@ -207,7 +203,6 @@ export const collectionPreferenceDefinitions = {
                 ),
               }),
             description: () =>
-              // @ts-expect-error — upstream i18n typing incorrectly resolves params to neve
               preferencesText.inheritanceCatNumberPrefDescription({
                 catalogNumberFieldName: fieldLabel(
                   'CollectionObject',
@@ -229,7 +224,6 @@ export const collectionPreferenceDefinitions = {
   },
   catalogNumberParentInheritance: {
     title: () =>
-      // @ts-expect-error — upstream i18n typing incorrectly resolves params to neve
       queryText.parentCatalogNumberInheritance({
         componentTableName: tableLabel('Component'),
       }),
@@ -239,7 +233,6 @@ export const collectionPreferenceDefinitions = {
         items: {
           inheritance: definePref<boolean>({
             title: () =>
-              // @ts-expect-error — upstream i18n typing incorrectly resolves params to neve
               preferencesText.inheritanceCatNumberParentCOPref({
                 catalogNumberFieldName: fieldLabel(
                   'CollectionObject',
@@ -248,7 +241,6 @@ export const collectionPreferenceDefinitions = {
                 componentTableName: tableLabel('Component'),
               }),
             description: () =>
-              // @ts-expect-error — upstream i18n typing incorrectly resolves params to neve
               preferencesText.inheritanceCatNumberParentCOPrefDescription({
                 catalogNumberFieldName: fieldLabel(
                   'CollectionObject',
@@ -268,7 +260,6 @@ export const collectionPreferenceDefinitions = {
   },
   uniqueCatalogNumberAccrossComponentAndCO: {
     title: () =>
-      // @ts-expect-error — upstream i18n typing incorrectly resolves params to neve
       queryText.uniqueCatalogNumberAcrossComponentAndCoTitle({
         componentTableName: tableLabel('Component'),
         collectionObjectTableName: tableLabel('CollectionObject'),
@@ -279,7 +270,6 @@ export const collectionPreferenceDefinitions = {
         items: {
           uniqueness: definePref<boolean>({
             title: () =>
-              // @ts-expect-error — upstream i18n typing incorrectly resolves params to neve
               preferencesText.uniqueCatNumberAcrossCompAndCo({
                 catalogNumberFieldName: fieldLabel(
                   'CollectionObject',
