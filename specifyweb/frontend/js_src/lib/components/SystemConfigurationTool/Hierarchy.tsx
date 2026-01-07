@@ -8,7 +8,7 @@ import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { setupToolText } from '../../localization/setupTool';
 import { type RA } from '../../utils/types';
-import { H2, H3, Ul } from '../Atoms';
+import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
@@ -329,7 +329,6 @@ const addButton = (
     onClick={() => {
       createResource();
     }}
-    title={`${setupToolText.hierarchyAddNew()} ${tableName}`}
   >
     <span className="flex items-center gap-1">
       {icons.plus}
