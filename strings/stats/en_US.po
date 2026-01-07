@@ -170,7 +170,7 @@ msgid "shared"
 msgstr "Shared"
 
 #: components/Header/menuItemDefinitions.ts:109
-#: components/Preferences/CollectionDefinitions.tsx:115
+#: components/Preferences/CollectionDefinitions.tsx:121
 #: components/Preferences/UserDefinitions.tsx:2077
 #: components/Router/Routes.tsx:461
 #: components/Statistics/hooks.tsx:118
@@ -252,30 +252,31 @@ msgstr "Are you sure you want to delete the category?"
 msgid "categoryToDelete"
 msgstr "This will permanently delete the following category"
 
-#: components/Preferences/CollectionDefinitions.tsx:121
+#: components/Preferences/CollectionDefinitions.tsx:127
 #. Used in: Components > Preferences > Collection Definitions
 msgid "layoutPreference"
 msgstr "Defines the layout of the statistics page"
 
-#: components/Preferences/CollectionDefinitions.tsx:129
+#: components/Preferences/CollectionDefinitions.tsx:136
 #. Used in: Components > Preferences > Collection Definitions
 msgid "showPreparationsTotal"
-msgstr "Show Preparations Totals"
+msgstr "Show {preparationTableName:string} Totals"
 
-#: components/Preferences/CollectionDefinitions.tsx:130
+#: components/Preferences/CollectionDefinitions.tsx:140
 #. Used in: Components > Preferences > Collection Definitions
 msgid "showPreparationsTotalDescription"
 msgstr ""
-"If enabled, the default Preparations statistics panel will include a total "
-"count for each preparation of a particular preparation type alongside the "
-"overall total. This is useful for lot-based collections."
+"If enabled, the default {preparationTableName:string} statistics panel will "
+"include a total count for each {lowerPreparationTableName:string} of a "
+"particular {prepTypeTableName:string} alongside the overall total. This is "
+"useful for lot-based collections."
 
-#: components/Preferences/CollectionDefinitions.tsx:137
+#: components/Preferences/CollectionDefinitions.tsx:152
 #. Used in: Components > Preferences > Collection Definitions
 msgid "autoRefreshRate"
 msgstr "Auto-Refresh Rate (Hours)"
 
-#: components/Preferences/CollectionDefinitions.tsx:138
+#: components/Preferences/CollectionDefinitions.tsx:153
 #. Used in: Components > Preferences > Collection Definitions
 msgid "autoRefreshRateDescription"
 msgstr ""

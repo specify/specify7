@@ -20,9 +20,9 @@ msgstr "Move"
 
 #: components/Merging/CompareField.tsx:216
 #: components/Merging/CompareField.tsx:218
-#: components/Merging/index.tsx:359
-#: components/Merging/index.tsx:364
-#: components/Merging/index.tsx:367
+#: components/Merging/index.tsx:365
+#: components/Merging/index.tsx:370
+#: components/Merging/index.tsx:373
 #: components/SearchDialog/SelectRecordSet.tsx:135
 #: components/SearchDialog/SelectRecordSet.tsx:139
 #: components/Toolbar/MergeRecordSets.tsx:79
@@ -407,17 +407,17 @@ msgstr "Rocks"
 msgid "meteorites"
 msgstr "Meteorites"
 
-#: components/Preferences/CollectionDefinitions.tsx:56
+#: components/Preferences/CollectionDefinitions.tsx:62
 #. Used in: Components > Preferences > Collection Definitions
 msgid "treeManagement"
 msgstr "Tree Management"
 
-#: components/Preferences/CollectionDefinitions.tsx:59
+#: components/Preferences/CollectionDefinitions.tsx:65
 #. Used in: Components > Preferences > Collection Definitions
 msgid "synonymizedNodes"
 msgstr "Expand Synonym Behavior"
 
-#: components/Preferences/CollectionDefinitions.tsx:60
+#: components/Preferences/CollectionDefinitions.tsx:66
 #. Used in: Components > Preferences > Collection Definitions
 msgid "synonymizedNodesDescription"
 msgstr ""

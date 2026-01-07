@@ -22,7 +22,7 @@ msgstr "Query"
 msgid "queries"
 msgstr "Queries"
 
-#: components/Preferences/CollectionDefinitions.tsx:226
+#: components/Preferences/CollectionDefinitions.tsx:291
 #: components/Preferences/UserDefinitions.tsx:1659
 #: components/SearchDialog/index.tsx:242
 #: components/SearchDialog/index.tsx:386
@@ -540,20 +540,20 @@ msgstr "Strict"
 msgid "nonStrict"
 msgstr "Non strict"
 
-#: components/Preferences/CollectionDefinitions.tsx:171
+#: components/Preferences/CollectionDefinitions.tsx:187
 #. Used in: Components > Preferences > Collection Definitions
 msgid "primaryCatalogNumberInheritance"
-msgstr "Primary Catalog Number Inheritance"
+msgstr "{collectionObjectTableName: string}"
 
-#: components/Preferences/CollectionDefinitions.tsx:190
+#: components/Preferences/CollectionDefinitions.tsx:227
 #. Used in: Components > Preferences > Collection Definitions
 msgid "parentCatalogNumberInheritance"
-msgstr "Parent Catalog Number Inheritance"
+msgstr "{componentTableName: string}"
 
-#: components/Preferences/CollectionDefinitions.tsx:209
+#: components/Preferences/CollectionDefinitions.tsx:263
 #. Used in: Components > Preferences > Collection Definitions
 msgid "uniqueCatalogNumberAcrossComponentAndCoTitle"
-msgstr "Unique Catalog # (Component & CO)"
+msgstr "{componentTableName: string} & {collectionObjectTableName: string}"
 
 #: components/QueryBuilder/Formatter.tsx:127
 #. 🟥Used to indicate a text field will be formatted with a specific format. If a format can be identified/named in more than one way, names can be displayed in a comma-separated format Example: Format As: Ichthyology Example: Format As: Rock, Mineral. Used in: Components > Query Builder > Formatter

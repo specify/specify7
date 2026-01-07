@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Preferences/CollectionDefinitions.tsx:147
+#: components/Preferences/CollectionDefinitions.tsx:162
 #: components/SpecifyNetwork/index.tsx:81
 #: components/SpecifyNetwork/index.tsx:89
 #: components/SpecifyNetwork/index.tsx:98
@@ -101,24 +101,24 @@ msgstr "Start Year"
 msgid "endYear"
 msgstr "End Year"
 
-#: components/Preferences/CollectionDefinitions.tsx:150
+#: components/Preferences/CollectionDefinitions.tsx:165
 #. Used in: Components > Preferences > Collection Definitions
 msgid "publishingOrganizationKey"
 msgstr "GBIF Publishing Organization Key"
 
-#: components/Preferences/CollectionDefinitions.tsx:152
+#: components/Preferences/CollectionDefinitions.tsx:167
 #. Used in: Components > Preferences > Collection Definitions
 msgid "publishingOrganizationKeyDescription"
 msgstr ""
 "The GBIF \"publishingOrgKey\" (a UUID) for this collection, used for "
 "Specify Network integration."
 
-#: components/Preferences/CollectionDefinitions.tsx:159
+#: components/Preferences/CollectionDefinitions.tsx:174
 #. Used in: Components > Preferences > Collection Definitions
 msgid "collectionKey"
 msgstr "GBIF Data Set Key"
 
-#: components/Preferences/CollectionDefinitions.tsx:160
+#: components/Preferences/CollectionDefinitions.tsx:175
 #. Used in: Components > Preferences > Collection Definitions
 msgid "collectionKeyDescription"
 msgstr ""

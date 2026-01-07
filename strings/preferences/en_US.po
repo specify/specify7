@@ -33,7 +33,7 @@ msgstr "User Preferences"
 msgid "defaultUserPreferences"
 msgstr "Default User Preferences"
 
-#: components/Preferences/CollectionDefinitions.tsx:25
+#: components/Preferences/CollectionDefinitions.tsx:31
 #: components/Preferences/UserDefinitions.tsx:83
 #: components/Preferences/UserDefinitions.tsx:531
 #: components/Preferences/UserDefinitions.tsx:618
@@ -235,8 +235,8 @@ msgstr "Required field background (dark theme)"
 msgid "dialogs"
 msgstr "Dialogs"
 
-#: components/Preferences/CollectionDefinitions.tsx:118
-#: components/Preferences/CollectionDefinitions.tsx:229
+#: components/Preferences/CollectionDefinitions.tsx:124
+#: components/Preferences/CollectionDefinitions.tsx:294
 #: components/Preferences/UserDefinitions.tsx:238
 #: components/Preferences/UserDefinitions.tsx:570
 #: components/Preferences/UserDefinitions.tsx:975
@@ -473,9 +473,6 @@ msgstr "Embedded web page"
 msgid "embeddedWebpageDescription"
 msgstr "A URL to a page that would be embedded on the home page:"
 
-#: components/Preferences/CollectionDefinitions.tsx:174
-#: components/Preferences/CollectionDefinitions.tsx:193
-#: components/Preferences/CollectionDefinitions.tsx:212
 #: components/Preferences/UserDefinitions.tsx:503
 #: components/Preferences/UserDefinitions.tsx:739
 #: components/Preferences/UserDefinitions.tsx:1328
@@ -485,9 +482,15 @@ msgstr "A URL to a page that would be embedded on the home page:"
 #: components/Preferences/UserDefinitions.tsx:1825
 #: components/Preferences/UserDefinitions.tsx:2037
 #: components/Preferences/UserDefinitions.tsx:2098
-#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
+#. Used in: Components > Preferences > User Definitions
 msgid "behavior"
 msgstr "Behavior"
+
+#: components/Preferences/CollectionDefinitions.tsx:192
+#: components/Preferences/CollectionDefinitions.tsx:232
+#. Used in: Components > Preferences > Collection Definitions
+msgid "inheritance"
+msgstr "Inheritance"
 
 #: components/Preferences/UserDefinitions.tsx:1665
 #: components/Preferences/UserDefinitions.tsx:1995
@@ -637,7 +640,7 @@ msgstr ""
 "You can move in the opposite direction by pressing "
 "<key>Shift</key>+<key>Enter</key>."
 
-#: components/Preferences/CollectionDefinitions.tsx:28
+#: components/Preferences/CollectionDefinitions.tsx:34
 #: components/Preferences/UserDefinitions.tsx:1934
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 msgid "filterPickLists"
@@ -938,6 +941,11 @@ msgstr ""
 msgid "detectAutomaticallyDescription"
 msgstr "Detect automatically based on catalog number format."
 
+#: components/Preferences/CollectionDefinitions.tsx:269
+#. Used in: Components > Preferences > Collection Definitions
+msgid "uniqueness"
+msgstr "Uniqueness"
+
 #: components/Preferences/UserDefinitions.tsx:646
 #: components/Preferences/UserDefinitions.tsx:667
 #: components/Preferences/UserDefinitions.tsx:688
@@ -1141,7 +1149,7 @@ msgstr "Success button color"
 msgid "openAsReadOnly"
 msgstr "Open all records in read-only mode"
 
-#: components/Preferences/CollectionDefinitions.tsx:232
+#: components/Preferences/CollectionDefinitions.tsx:297
 #: components/Preferences/UserDefinitions.tsx:1747
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 msgid "displayBasicView"
@@ -1191,43 +1199,52 @@ msgstr "Thumbnail"
 msgid "addSearchBarHomePage"
 msgstr "Add Search Bar on home page"
 
-#: components/Preferences/CollectionDefinitions.tsx:179
+#: components/Preferences/CollectionDefinitions.tsx:206
 #. Used in: Components > Preferences > Collection Definitions
 msgid "inheritanceCatNumberPrefDescription"
 msgstr ""
-"Control whether collection objects inherit the catalog number from the "
-"primary collection object."
-
-#: components/Preferences/CollectionDefinitions.tsx:177
-#. Used in: Components > Preferences > Collection Definitions
-msgid "inheritanceCatNumberPref"
-msgstr "Enable the inheritance of the primary catalog number to its empty siblings."
+"Only {collectionObjectTableName: string} records without a "
+"{catalogNumberFieldName: string} will inherit one from the primary "
+"{collectionObjectTableName: string} in a {collectionObjectGroupTableName: "
+"string}."
 
 #: components/Preferences/CollectionDefinitions.tsx:196
 #. Used in: Components > Preferences > Collection Definitions
-msgid "inheritanceCatNumberParentCOPref"
-msgstr "Enable the inheritance of the parent catalog number to its empty children."
+msgid "inheritanceCatNumberPref"
+msgstr ""
+"Enable {catalogNumberFieldName: string} inheritance for "
+"{collectionObjectGroupTableName: string} siblings"
 
-#: components/Preferences/CollectionDefinitions.tsx:215
+#: components/Preferences/CollectionDefinitions.tsx:236
+#. Used in: Components > Preferences > Collection Definitions
+msgid "inheritanceCatNumberParentCOPref"
+msgstr ""
+"Enable {catalogNumberFieldName: string} inheritance for "
+"{componentTableName: string} records"
+
+#: components/Preferences/CollectionDefinitions.tsx:273
 #. Used in: Components > Preferences > Collection Definitions
 msgid "uniqueCatNumberAcrossCompAndCo"
-msgstr "Catalog Number field need to be unique across Component and CO tables"
+msgstr ""
+"Enforce uniqueness for the {catalogNumberFieldName: string} field across "
+"{componentTableName: string} and {collectionObjectTableName: string}."
 
-#: components/Preferences/CollectionDefinitions.tsx:31
+#: components/Preferences/CollectionDefinitions.tsx:37
 #. Used in: Components > Preferences > Collection Definitions
 msgid "scopeEntireTablePicklists"
 msgstr "Scope \"Entire Table\" Picklists"
 
-#: components/Preferences/CollectionDefinitions.tsx:32
+#: components/Preferences/CollectionDefinitions.tsx:38
 #. Used in: Components > Preferences > Collection Definitions
 msgid "scopeEntireTablePicklistsDescription"
 msgstr ""
 "If enabled, picklists of type \"Entire Table\" will only show items that "
 "are in use within the current collection."
 
-#: components/Preferences/CollectionDefinitions.tsx:198
+#: components/Preferences/CollectionDefinitions.tsx:244
 #. Used in: Components > Preferences > Collection Definitions
 msgid "inheritanceCatNumberParentCOPrefDescription"
 msgstr ""
-"Controls whether collection objects inherit the catalog number from the "
-"parent collection object."
+"Only {componentTableName: string} records without a "
+"{catalogNumberFieldName: string} will inherit one from its parent "
+"{collectionObjectTableName: string}."

@@ -10,7 +10,7 @@ msgstr "Content-Type: text/plain\n"
 #: components/Header/menuItemDefinitions.ts:99
 #: components/Molecules/SyncAttachmentPicker.tsx:118
 #: components/Molecules/SyncAttachmentPicker.tsx:127
-#: components/Preferences/CollectionDefinitions.tsx:41
+#: components/Preferences/CollectionDefinitions.tsx:47
 #: components/Preferences/UserDefinitions.tsx:1325
 #: components/Router/Routes.tsx:182
 #: components/Router/Routes.tsx:485
@@ -418,12 +418,12 @@ msgstr "Are you sure you want to delete this attachment?"
 msgid "attachmentDelition"
 msgstr "Attachment deletion"
 
-#: components/Preferences/CollectionDefinitions.tsx:44
+#: components/Preferences/CollectionDefinitions.tsx:50
 #. Used in: Components > Preferences > Collection Definitions
 msgid "publicDefault"
 msgstr "Make Attachments Public by Default"
 
-#: components/Preferences/CollectionDefinitions.tsx:45
+#: components/Preferences/CollectionDefinitions.tsx:51
 #. Used in: Components > Preferences > Collection Definitions
 msgid "publicDefaultDescription"
 msgstr ""

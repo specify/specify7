@@ -47,8 +47,8 @@ msgstr "No"
 #: components/LocalityUpdate/Status.tsx:145
 #: components/LocalityUpdate/Status.tsx:191
 #: components/Merging/Status.tsx:119
-#: components/Merging/index.tsx:272
-#: components/Merging/index.tsx:378
+#: components/Merging/index.tsx:278
+#: components/Merging/index.tsx:384
 #: components/Molecules/LinkedRecords.tsx:88
 #: components/Molecules/LinkedRecords.tsx:100
 #: components/Molecules/SyncAttachmentPicker.tsx:126
@@ -607,7 +607,7 @@ msgid "ignore"
 msgstr "Ignore"
 
 #: components/FormSliders/RecordSelectorFromIds.tsx:285
-#: components/Merging/index.tsx:394
+#: components/Merging/index.tsx:400
 #: components/Toolbar/Language.tsx:108
 #: components/WbActions/WbUpload.tsx:117
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Merging > Index ⬤ Components > Toolbar > Language ⬤ Components > Wb Actions > Wb Upload
@@ -1082,7 +1082,7 @@ msgstr "Unlimited"
 msgid "change"
 msgstr "Change"
 
-#: components/Merging/index.tsx:386
+#: components/Merging/index.tsx:392
 #: components/WbActions/WbUpload.tsx:109
 #. Used in: Components > Merging > Index ⬤ Components > Wb Actions > Wb Upload
 msgid "dontShowAgain"

@@ -18,10 +18,10 @@ msgid "recordMerging"
 msgstr "Fusão de Registros"
 
 #: components/FormMeta/MergeRecord.tsx:56
-#: components/Merging/index.tsx:89
-#: components/Merging/index.tsx:93
-#: components/Merging/index.tsx:402
-#: components/Merging/index.tsx:415
+#: components/Merging/index.tsx:90
+#: components/Merging/index.tsx:94
+#: components/Merging/index.tsx:408
+#: components/Merging/index.tsx:421
 #: components/Router/OverlayRoutes.tsx:231
 #. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
 #, fuzzy
@@ -34,7 +34,7 @@ msgstr "Mesclar registros"
 msgid "mergedRecord"
 msgstr "Registro consolidado"
 
-#: components/Merging/index.tsx:448
+#: components/Merging/index.tsx:454
 #. Used in: Components > Merging > Index
 #, fuzzy
 msgid "showConflictingFieldsOnly"
@@ -71,7 +71,7 @@ msgstr "Controles de subvisualização"
 msgid "mergeFields"
 msgstr "Mesclar {field:string}"
 
-#: components/Merging/index.tsx:267
+#: components/Merging/index.tsx:273
 #: components/Preferences/UserDefinitions.tsx:1791
 #. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 #, fuzzy
@@ -108,7 +108,7 @@ msgstr "Alguns registros não podem ser mesclados."
 msgid "mergeOthers"
 msgstr "Mescle outros"
 
-#: components/Merging/index.tsx:405
+#: components/Merging/index.tsx:411
 #. Used in: Components > Merging > Index
 #, fuzzy
 msgid "warningMergeText"
