@@ -67,13 +67,13 @@ export const setupToolText = createDictionary({
     'en-us':
       'Global scope allows you to share Accessions between all divisions. Divisional scope ensures Accessions are specific to each division.',
   },
-  institutionIsSingleGeographyTree: {
-    'en-us': 'Use Single Geography Tree',
-  },
-  institutionIsSingleGeographyTreeDescription: {
-    'en-us':
-      'A global geography tree is shared by all disciplines. Otherwise, geography trees are managed separately within each discipline.',
-  },
+  // institutionIsSingleGeographyTree: {
+  //   'en-us': 'Use Single Geography Tree',
+  // },
+  // institutionIsSingleGeographyTreeDescription: {
+  //   'en-us':
+  //     'A global geography tree is shared by all disciplines. Otherwise, geography trees are managed separately within each discipline.',
+  // },
 
   // Address
   address: {

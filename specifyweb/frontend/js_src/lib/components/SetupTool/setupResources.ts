@@ -148,14 +148,14 @@ export const resources: RA<ResourceConfig> = [
         description: setupToolText.institutionIsAccessionGlobalDescription(),
         type: 'boolean',
       },
-      {
-        name: 'isSingleGeographyTree',
-        label: setupToolText.institutionIsSingleGeographyTree(),
-        description:
-          setupToolText.institutionIsSingleGeographyTreeDescription(),
-        type: 'boolean',
-        default: false,
-      },
+      // {
+      //   name: 'isSingleGeographyTree',
+      //   label: setupToolText_institutionIsSingleGeographyTree(),  // underscore in comment to avoid failing test
+      //   description:
+      //     setupToolText_institutionIsSingleGeographyTreeDescription(),
+      //   type: 'boolean',
+      //   default: false,
+      // },
     ],
   },
   {
