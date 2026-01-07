@@ -41,7 +41,11 @@
     { "name": "X-Ray", "isloanable": true }
   ],
   "invertpaleo": [
-    { "name": "Jar", "isloanable": true }
+    { "name": "Fossil", "isloanable": true },
+    { "name": "Cast", "isloanable": true },
+    { "name": "Mold", "isloanable": true },
+    { "name": "Peel", "isloanable": true },
+    { "name": "Slide", "isloanable": true }
   ],
   "paleobotany": [
     { "name": "Sheet", "isloanable": true }
