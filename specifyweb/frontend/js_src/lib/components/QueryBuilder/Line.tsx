@@ -142,7 +142,7 @@ export function QueryLine({
           required: false,
         };
         // Remove autoNumbering wildCard from default values
-        if (dataModelField.getUiFormatter()?.valueOrWild() === parser.value)
+        if (dataModelField.getUiFormatter()?.defaultValue === parser.value)
           parser = { ...parser, value: undefined };
 
         fieldType =
@@ -158,6 +158,16 @@ export function QueryLine({
                 : (parser.type ?? 'text');
 
         canOpenMap = fieldName === 'latitude1' || fieldName === 'longitude1';
+
+        // Special case for age field with ageRange filter non-numeric validation
+  if (fieldType === 'age' && field.filters.some((filter) => filter.type === 'ageRange')) {
+          parser = { 
+            ...parser, 
+            type: 'number',
+            step: "any"
+          };
+        }
+
       } else if (isMapped)
         fieldType =
           isFormatted && mappingPath.at(-1) === `${schema.referenceSymbol}1`

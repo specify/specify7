@@ -13,6 +13,7 @@ import { tables } from '../tables';
 import type {
   CollectionObject,
   CollectionObjectAttribute,
+  CollectionObjectType,
   Determination,
 } from '../types';
 
@@ -46,6 +47,21 @@ const determinationsResponse: RA<Partial<SerializedRecord<Determination>>> = [
   },
 ];
 
+const collectionObjectTypeResponse: Partial<
+  SerializedRecord<CollectionObjectType>
+> = {
+  id: 1,
+  name: 'TestType',
+  taxontreedef: getResourceApiUrl('TaxonTreeDef', 1),
+  collection: getResourceApiUrl('Collection', 4),
+  resource_uri: getResourceApiUrl('CollectionObjectType', 1),
+};
+
+overrideAjax(
+  getResourceApiUrl('CollectionObjectType', 1),
+  collectionObjectTypeResponse
+);
+
 const collectionObjectResponse = {
   id: collectionObjectId,
   collectionobjecttype: getResourceApiUrl('CollectionObjectType', 1),
@@ -56,8 +72,6 @@ const collectionObjectResponse = {
   collection: getResourceApiUrl('Collection', 4),
   determinations: determinationsResponse,
 };
-
-overrideAjax(getResourceApiUrl('CollectionObjectType', 1), {});
 
 overrideAjax(collectionObjectUrl, collectionObjectResponse);
 overrideAjax(
@@ -70,6 +84,30 @@ overrideAjax(
       total_count: 1,
     },
   }
+);
+
+const emptyCollection = {
+  objects: [],
+  meta: {
+    limit: 20,
+    offset: 0,
+    total_count: 0,
+  },
+};
+
+overrideAjax(
+  '/api/specify/component/?catalognumber=000029432&domainfilter=true',
+  emptyCollection
+);
+
+overrideAjax(
+  '/api/specify/component/?catalognumber=000000001&domainfilter=true',
+  emptyCollection
+);
+
+overrideAjax(
+  '/api/specify/component/?catalognumber=%23%23%23%23%23%23%23%23%23&domainfilter=true',
+  emptyCollection
 );
 
 const firstCollectionObjectUrl = getResourceApiUrl('CollectionObject', 1);
@@ -257,6 +295,11 @@ describe('rgetCollection', () => {
 });
 
 describe('eventHandlerForToMany', () => {
+  overrideAjax(getResourceApiUrl('Taxon', 1), {
+    id: 1,
+    resource_uri: getResourceApiUrl('Taxon', 1),
+  });
+
   test('saverequired', () => {
     const resource = new tables.CollectionObject.Resource(
       addMissingFields('CollectionObject', {

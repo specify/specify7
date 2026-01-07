@@ -119,12 +119,7 @@ function Field({
     (field?.isReadOnly === true && !isInSearchDialog);
 
   const validationAttributes = getValidationAttributes(parser);
-
-  const [rightAlignNumberFields] = userPreferences.use(
-    'form',
-    'ui',
-    'rightAlignNumberFields'
-  );
+  const rightAlignClassName = useRightAlignClassName(parser.type, isReadOnly);
 
   const isNew = resource?.isNew();
   const isCO = resource?.specifyTable.name === 'CollectionObject';
@@ -209,33 +204,27 @@ function Field({
     displayParentCatNumberPlaceHolder,
   ]);
 
+  const customPlaceholder =
+    displayPrimaryCatNumberPlaceHolder &&
+    typeof primaryCatalogNumber === 'string'
+      ? primaryCatalogNumber
+      : displayParentCatNumberPlaceHolder &&
+          typeof parentCatalogNumber === 'string'
+        ? parentCatalogNumber
+        : undefined;
+
+  const { placeholder: parserPlaceholder, ...restValidationAttributes } =
+    validationAttributes;
+
   return (
     <Input.Generic
       forwardRef={validationRef}
       key={parser.title}
       max={Number.MAX_SAFE_INTEGER}
       name={name}
-      placeholder={
-        displayPrimaryCatNumberPlaceHolder &&
-        typeof primaryCatalogNumber === 'string'
-          ? primaryCatalogNumber
-          : displayParentCatNumberPlaceHolder &&
-              typeof parentCatalogNumber === 'string'
-            ? parentCatalogNumber
-            : undefined
-      }
-      {...validationAttributes}
-      className={
-        /*
-         * Disable "text-align: right" in non webkit browsers
-         * as they don't support spinner's arrow customization
-         */
-        parser.type === 'number' &&
-        rightAlignNumberFields &&
-        globalThis.navigator.userAgent.toLowerCase().includes('webkit')
-          ? `text-right ${isReadOnly ? '' : 'pr-6'}`
-          : ''
-      }
+      placeholder={customPlaceholder ?? parserPlaceholder}
+      {...restValidationAttributes}
+      className={rightAlignClassName}
       id={id}
       isReadOnly={isReadOnly}
       required={'required' in validationAttributes && !isInSearchDialog}
@@ -260,4 +249,25 @@ function Field({
       }}
     />
   );
+}
+
+export function useRightAlignClassName(
+  type: Parser['type'],
+  isReadOnly: boolean
+): string | undefined {
+  const [rightAlignNumberFields] = userPreferences.use(
+    'form',
+    'ui',
+    'rightAlignNumberFields'
+  );
+
+  /*
+   * Disable "text-align: right" in non webkit browsers
+   * as they don't support spinner's arrow customization
+   */
+  return type === 'number' &&
+    rightAlignNumberFields &&
+    globalThis.navigator.userAgent.toLowerCase().includes('webkit')
+    ? `text-right ${isReadOnly ? '' : 'pr-6'}`
+    : '';
 }

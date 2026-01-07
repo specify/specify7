@@ -1,7 +1,7 @@
 import re
 from contextlib import contextmanager
 import logging
-from typing import List
+import json
 
 from specifyweb.backend.trees.ranks import RankOperation, post_tree_rank_save, pre_tree_rank_deletion, \
     verify_rank_parent_chain_integrity, pre_tree_rank_init, post_tree_rank_deletion
@@ -30,13 +30,16 @@ def validate_node_numbers(table, revalidate_after=True):
         validate_tree_numbering(table)
 
 class Tree(models.Model):
+    _requires_collection_user = True
     class Meta:
         abstract = True
 
     def save(self, *args, skip_tree_extras=False, **kwargs):
+        collection = kwargs.pop("collection", None)
+        user = kwargs.pop("user", None)
+
         def save():
             save_auto_timestamp_field_with_override(super(Tree, self).save, args, kwargs, self)
-
         # This should be probably after the rank id gets set?
         if skip_tree_extras:
             return save()
@@ -65,7 +68,7 @@ class Tree(models.Model):
                 return
 
             with validate_node_numbers(self._meta.db_table, revalidate_after=False):
-                adding_node(self)
+                adding_node(self, collection, user)
                 save()
         elif prev_self.parent_id != self.parent_id:
             with validate_node_numbers(self._meta.db_table):
@@ -204,16 +207,25 @@ def close_interval(model, node_number, size):
         highestchildnodenumber=F('highestchildnodenumber')-size,
     )
 
-def adding_node(node):
+def adding_node(node,collection=None, user=None):
+    import specifyweb.backend.context.app_resource as app_resource
     logger.info('adding node %s', node)
     model = type(node)
     parent = model.objects.select_for_update().get(id=node.parent.id)
+
     if parent.accepted_id is not None:
-        from specifyweb.backend.context.remote_prefs import get_remote_prefs
-        # This business rule can be overriden by a remote pref.
-        pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
-        override = re.search(pattern, get_remote_prefs(), re.MULTILINE)
-        if override is None or override.group(1).strip().lower() != "true":
+        collection_prefs_json, _, __ = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
+        if collection_prefs_json is not None:
+            collection_prefs_dict = json.loads(collection_prefs_json)
+
+        treeManagement_pref = collection_prefs_dict.get('treeManagement', {})
+
+        synonymized = treeManagement_pref.get('synonymized', {}) \
+            if isinstance(treeManagement_pref, dict) else {}
+
+        add_synonym_enabled = synonymized.get(r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)', False) if isinstance(synonymized, dict) else False
+
+        if add_synonym_enabled is True:
             raise TreeBusinessRuleException(
                 f'Adding node "{node.fullname}" to synonymized parent "{parent.fullname}"',
                 {"tree" : "Taxon",
@@ -363,7 +375,7 @@ def bulk_move(node, into, agent):
     field_change_info: FieldChangeInfo = FieldChangeInfo(field_name=model.specify_model.idFieldName, old_value=node.id, new_value=into.id)
     mutation_log(TREE_BULK_MOVE, node, agent, node.parent, [field_change_info])
 
-def synonymize(node, into, agent):
+def synonymize(node, into, agent, user=None, collection=None):
     logger.info('synonymizing %s to %s', node, into)
     model = type(node)
     if not type(into) is model: raise AssertionError(
@@ -398,10 +410,19 @@ def synonymize(node, into, agent):
     node.save()
 
     # This check can be disabled by a remote pref
-    from specifyweb.backend.context.remote_prefs import get_remote_prefs
-    pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
-    override = re.search(pattern, get_remote_prefs(), re.MULTILINE)
-    if node.children.count() > 0 and (override is None or override.group(1).strip().lower() != "true"):
+    import specifyweb.backend.context.app_resource as app_resource
+    collection_prefs_json, _, __ = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
+    if collection_prefs_json is not None:
+            collection_prefs_dict = json.loads(collection_prefs_json)
+
+    treeManagement_pref = collection_prefs_dict.get('treeManagement', {})
+
+    synonymized = treeManagement_pref.get('synonymized', {}) \
+        if isinstance(treeManagement_pref, dict) else {}
+
+    add_synonym_enabled = synonymized.get(r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)', False) if isinstance(synonymized, dict) else False
+
+    if node.children.count() > 0 and (add_synonym_enabled is True):
         raise TreeBusinessRuleException(
             f'Synonymizing node "{node.fullname}" which has children',
             {"tree" : "Taxon",
@@ -529,7 +550,7 @@ def fullname_expr(depth, reverse):
 
 def parent_joins(table, depth):
     return '\n'.join([
-        "left join {table} t{1} on t{0}.parentid = t{1}.{table}id".format(j-1, j, table=table)
+        "LEFT JOIN {table} t{1} ON t{0}.parentid = t{1}.{table}id".format(j-1, j, table=table)
         for j in range(1, depth)
     ])
 
@@ -639,7 +660,8 @@ def print_paths(table, depth):
         print(r)
     print(sql)
 
-def renumber_tree(table):
+def renumber_tree_old(table):
+    # NOTE: This old implementation doesn't work in MariaDB 11.8
     logger.info('renumbering tree')
     cursor = connection.cursor()
 
@@ -742,3 +764,80 @@ def is_treedef(obj):
     return issubclass(obj.__class__, Tree) or bool(
         re.search(r"treedef'>$", str(obj.__class__), re.IGNORECASE)
     )
+
+def renumber_tree(table: str) -> None:
+    cursor = connection.cursor()
+    logger.debug(f"[renumber_tree] running for {table}")
+
+    # cursor.execute("SET SESSION sql_safe_updates = 0") # might be needed for MariaDB 11, uncomment if updates don't occur
+
+    # Sync rankid
+    sql_sync = (
+        f"UPDATE {table} t "
+        f"JOIN {table}treedefitem d ON t.{table}treedefitemid = d.{table}treedefitemid "
+        f"SET t.rankid = d.rankid"
+    )
+    logger.debug(sql_sync)
+    cursor.execute(sql_sync)
+
+    # Compute max logical depth to size the LEFT JOIN ladder
+    cursor.execute(f"SELECT COUNT(DISTINCT rankid) FROM {table}")
+    depth = cursor.fetchone()[0] or 1
+
+    def tree_parent_joins(tbl: str, d: int) -> str: # replace parent_joins if join errors occur
+        if d <= 1:
+            return ""  # only t0 exists
+        return "\n".join(
+            f"LEFT JOIN {tbl} t{j} ON t{j-1}.parentid = t{j}.{tbl}id"
+            for j in range(1, d)
+        )
+
+    def tree_path_expr(tbl: str, d: int) -> str: # replace path_expr if ordering issues arise
+        # Highest ancestor first, leaf last; LPAD stabilizes lexical order
+        parts = ", ".join([f"LPAD(t{i}.{tbl}id, 12, '0')" for i in reversed(range(d))])
+        return f"CONCAT_WS(',', {parts})"
+
+    # Preorder numbering using ROW_NUMBER()
+    sql_preorder = (
+        f"UPDATE {table} t\n"
+        f"JOIN (\n"
+        f"  SELECT id, rn FROM (\n"
+        f"    SELECT\n"
+        f"      t0.{table}id AS id,\n"
+        f"      ROW_NUMBER() OVER (ORDER BY {path_expr(table, depth)}, t0.{table}id) AS rn\n"
+        f"    FROM {table} t0\n"
+        f"{parent_joins(table, depth)}\n"
+        f"  ) ordered\n"
+        f") r ON r.id = t.{table}id\n"
+        f"SET t.nodenumber = r.rn,\n"
+        f"    t.highestchildnodenumber = r.rn"
+    )
+    logger.debug(sql_preorder)
+    cursor.execute(sql_preorder)
+
+    # Compute highestchildnodenumber bottom-up
+    sql_ranks = f"SELECT DISTINCT rankid FROM {table} ORDER BY rankid DESC"
+    logger.debug(sql_ranks)
+    cursor.execute(sql_ranks)
+    ranks = [row[0] for row in cursor.fetchall()]
+
+    for rank in ranks[1:]:
+        sql_hcnn = (
+            f"UPDATE {table} t\n"
+            f"JOIN (\n"
+            f"  SELECT parentid, MAX(highestchildnodenumber) AS hcnn\n"
+            f"  FROM {table}\n"
+            f"  WHERE rankid > %(rank)s\n"
+            f"  GROUP BY parentid\n"
+            f") sub ON sub.parentid = t.{table}id\n"
+            f"SET t.highestchildnodenumber = sub.hcnn\n"
+            f"WHERE t.rankid = %(rank)s"
+        )
+        logger.debug(sql_hcnn, {"rank": rank})
+        cursor.execute(sql_hcnn, {"rank": rank})
+
+    # Clear task semaphores
+    from specifyweb.specify.models import datamodel, Sptasksemaphore
+    tree_model = datamodel.get_table(table)
+    tasknames = [name.format(tree_model.name) for name in ("UpdateNodes{}", "BadNodes{}")]
+    Sptasksemaphore.objects.filter(taskname__in=tasknames).update(islocked=False)
