@@ -1,6 +1,6 @@
-import React from 'react';
 import type { HierarchyPointLink, HierarchyPointNode } from 'd3';
 import { hierarchy as d3Hierarchy, tree as d3Tree } from 'd3';
+import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -11,6 +11,7 @@ import { type RA } from '../../utils/types';
 import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -18,15 +19,14 @@ import { tables } from '../DataModel/tables';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
+import { tableLabel } from '../Preferences/UserDefinitions';
 import type { ResourceFormData } from '../SetupTool';
 import { renderFormFieldFactory, stepOrder } from '../SetupTool';
 import { resources } from '../SetupTool/setupResources';
 import { CollapsibleSection } from './CollapsibleSection';
 import type { InstitutionData } from './Utils';
-import { icons } from '../Atoms/Icons';
-import { tableLabel } from '../Preferences/UserDefinitions';
 
-type HierarchyNodeKind = 'institution' | 'division' | 'discipline' | 'collection';
+type HierarchyNodeKind = 'collection' | 'discipline' | 'division' | 'institution';
 
 type HierarchyNodeDatum = {
   readonly id: number;
@@ -38,7 +38,7 @@ type HierarchyNodeDatum = {
 type HierarchyDiagramProps = {
   readonly institution: InstitutionData;
   readonly onSelect: (node: HierarchyNodeDatum) => void;
-  readonly orientation: 'vertical' | 'horizontal';
+  readonly orientation: 'horizontal' | 'vertical';
   readonly onToggleOrientation: () => void;
 };
 
@@ -50,9 +50,9 @@ const CHART_MARGIN = { top: 12, right: 16, bottom: 12, left: 16 } as const;
 
 const colorByKind: Record<HierarchyNodeKind, string> = {
   institution: '#9c0d0dff',
-  division: '#16a34a', // tailwind green-600
-  discipline: '#2563eb', // tailwind blue-600
-  collection: '#92400e', // tailwind amber-800 (brownish?)
+  division: '#16a34a', // Tailwind green-600
+  discipline: '#2563eb', // Tailwind blue-600
+  collection: '#92400e', // Tailwind amber-800 (brownish?)
 };
 
 const textByKind: Record<HierarchyNodeKind, string> = {
@@ -83,12 +83,12 @@ const toHierarchyDatum = (institution: InstitutionData): HierarchyNodeDatum => (
   })),
 });
 
-const HierarchyDiagram = ({
+function HierarchyDiagram({
   institution,
   onSelect,
   orientation,
   onToggleOrientation,
-}: HierarchyDiagramProps) => {
+}: HierarchyDiagramProps) {
   const isVertical = orientation === 'vertical';
 
   const layout = React.useMemo(() => {
@@ -150,12 +150,12 @@ const HierarchyDiagram = ({
       </div>
       <div className="overflow-auto flex-1">
         <svg
+          aria-label={setupToolText.hierarchyDiagram()}
           height={height}
           role="img"
-          aria-label={setupToolText.hierarchyDiagram()}
           width={width}
         >
-          <g transform={`translate(0,0)`}>
+          <g transform="translate(0,0)">
             {links.map((link: HierarchyPointLink<HierarchyNodeDatum>) => {
               const sourceX = getX(link.source) + xOffset + NODE_WIDTH / 2;
               const sourceY = getY(link.source) + yOffset + NODE_HEIGHT / 2;
@@ -167,7 +167,6 @@ const HierarchyDiagram = ({
 
               return (
                 <path
-                  key={`${link.source.data.id}-${link.target.data.id}`}
                   className="stroke-slate-500"
                   d={`M${sourceX},${sourceY} C${
                     isVertical ? sourceX + controlXOffset : sourceX
@@ -179,6 +178,7 @@ const HierarchyDiagram = ({
                     isVertical ? targetY : targetY - controlYOffset
                   } ${targetX},${targetY}`}
                   fill="none"
+                  key={`${link.source.data.id}-${link.target.data.id}`}
                   strokeOpacity={0.6}
                   strokeWidth={2}
                 />
@@ -187,36 +187,36 @@ const HierarchyDiagram = ({
 
             {nodes.map((node: HierarchyPointNode<HierarchyNodeDatum>) => (
               <g
-                key={node.data.id}
+                aria-label={`${textByKind[node.data.kind]} ${node.data.name}`}
                 className="cursor-pointer drop-shadow-sm fill-white"
-                onClick={() => onSelect(node.data)}
-                onKeyDown={(event) => handleKeyDown(event, node.data)}
+                key={node.data.id}
                 role="button"
                 tabIndex={0}
                 transform={`translate(${getX(node) + xOffset},${getY(node) + yOffset})`}
-                aria-label={`${textByKind[node.data.kind]} ${node.data.name}`}
+                onClick={() => onSelect(node.data)}
+                onKeyDown={(event) => handleKeyDown(event, node.data)}
               >
                 <rect
                   fill={colorByKind[node.data.kind]}
                   height={NODE_HEIGHT - 12}
+                  opacity={1}
                   rx={10}
                   width={NODE_WIDTH}
                   y={6}
-                  opacity={1}
                 />
                 <text
                   className="fill-white text-sm font-semibold"
+                  textAnchor="middle"
                   x={NODE_WIDTH / 2}
                   y={NODE_HEIGHT / 2}
-                  textAnchor="middle"
                 >
                   {node.data.name}
                 </text>
                 <text
                   className="fill-slate-200 text-xs"
+                  textAnchor="middle"
                   x={NODE_WIDTH / 2}
                   y={NODE_HEIGHT / 2 + 12}
-                  textAnchor="middle"
                 >
                   {textByKind[node.data.kind]}
                 </text>
@@ -227,7 +227,7 @@ const HierarchyDiagram = ({
       </div>
     </div>
   );
-};
+}
 
 type DialogFormProps = {
   readonly open: boolean;
@@ -548,13 +548,13 @@ export function Hierarchy({
   return (
     <div className="flex flex-col md:flex-row flex-1 min-h-0 gap-4 overflow-hidden m-4">
       <div
+        aria-label={setupToolText.hierarchyStructureTitle()}
         className="flex-1 min-w-0 min-h-0 overflow-y-auto overflow-x-auto md:basis-1/3 md:max-w-[33%]"
         role="navigation"
-        aria-label={setupToolText.hierarchyStructureTitle()}
       >
         <Ul
-          className="bg-[color:var(--background)] p-3 rounded h-full min-h-0 overflow-auto w-max min-w-full"
           aria-label={setupToolText.hierarchyStructureTitle()}
+          className="bg-[color:var(--background)] p-3 rounded h-full min-h-0 overflow-auto w-max min-w-full"
         >
           <li key={institution.id}>
             <CollapsibleSection
@@ -589,8 +589,8 @@ export function Hierarchy({
       <div className="flex-1 min-w-0 min-h-0 overflow-hidden h-[50vh] md:h-auto md:w-2/3">
         <HierarchyDiagram
           institution={institution}
-          onSelect={handleNodeSelect}
           orientation={isVertical ? 'vertical' : 'horizontal'}
+          onSelect={handleNodeSelect}
           onToggleOrientation={toggleOrientation}
         />
       </div>
