@@ -44,7 +44,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
 
   const refreshAllInfo = async () =>
     load<InstitutionData>(
-      '/context/all_system_data.json',
+      `/context/all_system_data.json?cb=${Date.now()}`,
       'application/json'
     ).then(setAllInfo);
 

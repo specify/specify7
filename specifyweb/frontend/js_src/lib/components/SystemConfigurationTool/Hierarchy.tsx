@@ -184,7 +184,7 @@ function HierarchyDiagram({
                     isVertical ? targetY : targetY - controlYOffset
                   } ${targetX},${targetY}`}
                   fill="none"
-                  key={`${link.source.data.id}-${link.target.data.id}`}
+                  key={`${link.source.data.kind}-${link.source.data.id}-${link.target.data.kind}-${link.target.data.id}`}
                   strokeOpacity={0.6}
                   strokeWidth={2}
                 />
@@ -195,7 +195,7 @@ function HierarchyDiagram({
               <g
                 aria-label={`${textByKind[node.data.kind]} ${node.data.name}`}
                 className="cursor-pointer drop-shadow-sm fill-white"
-                key={node.data.id}
+                key={`${node.data.kind}-${node.data.id}`}
                 role="button"
                 tabIndex={0}
                 transform={`translate(${getX(node) + xOffset},${getY(node) + yOffset})`}
@@ -235,9 +235,10 @@ type DialogFormProps = {
   readonly resourceIndex: number;
   readonly title: LocalizedString;
   readonly step: number;
+  readonly refreshAllInfo: () => Promise<void>;
 };
 
-function DialogForm({ open, onClose, title, step }: DialogFormProps) {
+function DialogForm({ open, onClose, title, step, refreshAllInfo }: DialogFormProps) {
   const id = useId('config-tool');
 
   if (!open) return null;
@@ -286,7 +287,12 @@ function DialogForm({ open, onClose, title, step }: DialogFormProps) {
       <Form
         className="flex-1 overflow-auto gap-2"
         id={id('form')}
-        onSubmit={() => {}}
+        onSubmit={() => {
+          void refreshAllInfo();
+          globalThis.setTimeout(() => {
+            void refreshAllInfo();
+          }, 400);
+        }}
       >
         {renderFormFields(resources[step].fields)}
       </Form>
@@ -306,11 +312,9 @@ const handleEditResource = (
       resourceView={{
         onDeleted: async () => {
           await refreshAllInfo();
-          globalThis.location.reload();
         },
         onSaved: async () => {
           await refreshAllInfo();
-          globalThis.location.reload();
         },
       }}
     >
@@ -351,6 +355,10 @@ export function Hierarchy({
   if (!institution) return <LoadingScreen />;
 
   const systemInfo = getSystemInfo();
+
+  React.useEffect(() => {
+    void refreshAllInfo();
+  }, [refreshAllInfo]);
 
   const isGeographyGlobal = systemInfo.geography_is_global;
 
@@ -482,6 +490,7 @@ export function Hierarchy({
                     })
                   );
                   handleNewResource();
+                  void refreshAllInfo();
                 }, tableLabel('Collection'))}
               </div>
             )}
@@ -493,6 +502,7 @@ export function Hierarchy({
               resourceIndex={5}
               step={5}
               title={setupToolText.addNewGeographyTree()}
+              refreshAllInfo={refreshAllInfo}
               onClose={closeAddDisciplineGeoTree}
             />
 
@@ -502,6 +512,7 @@ export function Hierarchy({
               resourceIndex={6}
               step={6}
               title={setupToolText.addNewTaxonTree()}
+              refreshAllInfo={refreshAllInfo}
               onClose={closeAddDisciplineTaxonTree}
             />
           </CollapsibleSection>
@@ -541,6 +552,7 @@ export function Hierarchy({
                   })
                 );
                 handleNewResource();
+                void refreshAllInfo();
               },
               `${tableLabel('Discipline')}`
             )}
@@ -583,6 +595,7 @@ export function Hierarchy({
                 {addButton(() => {
                   setNewResource(new tables.Division.Resource());
                   handleNewResource();
+                  void refreshAllInfo();
                 }, tableLabel('Division'))}
               </div>
             </CollapsibleSection>
