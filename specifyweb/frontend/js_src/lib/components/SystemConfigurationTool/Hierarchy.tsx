@@ -499,20 +499,20 @@ export function Hierarchy({
             {/* GEO */}
             <DialogForm
               open={addDisciplineGeoTree}
+              refreshAllInfo={refreshAllInfo}
               resourceIndex={5}
               step={5}
               title={setupToolText.addNewGeographyTree()}
-              refreshAllInfo={refreshAllInfo}
               onClose={closeAddDisciplineGeoTree}
             />
 
             {/* TAXON */}
             <DialogForm
               open={addDisciplineTaxonTree}
+              refreshAllInfo={refreshAllInfo}
               resourceIndex={6}
               step={6}
               title={setupToolText.addNewTaxonTree()}
-              refreshAllInfo={refreshAllInfo}
               onClose={closeAddDisciplineTaxonTree}
             />
           </CollapsibleSection>
