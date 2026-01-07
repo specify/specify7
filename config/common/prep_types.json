@@ -77,5 +77,15 @@
     { "name": "EtOH", "isloanable": true },
     { "name": "Skeleton", "isloanable": true },
     { "name": "X-Ray", "isloanable": true }
+  ],
+  "geology": [
+    { "name": "Hand Sample", "isloanable": true },
+    { "name": "Thin Section", "isloanable": true },
+    { "name": "Polished Section", "isloanable": true },
+    { "name": "Grain Mount", "isloanable": true },
+    { "name": "Polished Slab", "isloanable": true },
+    { "name": "Core Segment", "isloanable": true },
+    { "name": "Cutting", "isloanable": true },
+    { "name": "Powder", "isloanable": true }
   ]
 }
