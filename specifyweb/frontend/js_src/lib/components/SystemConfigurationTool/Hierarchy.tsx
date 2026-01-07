@@ -26,7 +26,11 @@ import { resources } from '../SetupTool/setupResources';
 import { CollapsibleSection } from './CollapsibleSection';
 import type { InstitutionData } from './Utils';
 
-type HierarchyNodeKind = 'collection' | 'discipline' | 'division' | 'institution';
+type HierarchyNodeKind =
+  | 'collection'
+  | 'discipline'
+  | 'division'
+  | 'institution';
 
 type HierarchyNodeDatum = {
   readonly id: number;
@@ -62,7 +66,9 @@ const textByKind: Record<HierarchyNodeKind, string> = {
   collection: tableLabel('Collection'),
 };
 
-const toHierarchyDatum = (institution: InstitutionData): HierarchyNodeDatum => ({
+const toHierarchyDatum = (
+  institution: InstitutionData
+): HierarchyNodeDatum => ({
   id: institution.id,
   name: institution.name,
   kind: 'institution',
@@ -115,8 +121,10 @@ function HierarchyDiagram({
   const minY = Math.min(...nodes.map((node) => getY(node)));
   const maxY = Math.max(...nodes.map((node) => getY(node)));
 
-  const width = maxX - minX + NODE_WIDTH + CHART_MARGIN.left + CHART_MARGIN.right;
-  const height = maxY - minY + NODE_HEIGHT + CHART_MARGIN.top + CHART_MARGIN.bottom;
+  const width =
+    maxX - minX + NODE_WIDTH + CHART_MARGIN.left + CHART_MARGIN.right;
+  const height =
+    maxY - minY + NODE_HEIGHT + CHART_MARGIN.top + CHART_MARGIN.bottom;
 
   const xOffset = CHART_MARGIN.left - minX;
   const yOffset = CHART_MARGIN.top - minY;
@@ -170,9 +178,7 @@ function HierarchyDiagram({
                   className="stroke-slate-500"
                   d={`M${sourceX},${sourceY} C${
                     isVertical ? sourceX + controlXOffset : sourceX
-                  },${
-                    isVertical ? sourceY : sourceY + controlYOffset
-                  } ${
+                  },${isVertical ? sourceY : sourceY + controlYOffset} ${
                     isVertical ? targetX - controlXOffset : targetX
                   },${
                     isVertical ? targetY : targetY - controlYOffset
@@ -470,7 +476,8 @@ export function Hierarchy({
             }
           >
             {/* COLLECTIONS */}
-            {discipline.children.length > 0 && renderCollections(discipline.children)}
+            {discipline.children.length > 0 &&
+              renderCollections(discipline.children)}
 
             {canAddCollection && (
               <div className="flex  mb-2 ml-2">
@@ -532,14 +539,17 @@ export function Hierarchy({
         >
           <Ul className="m-5">{renderDisciplines(division)}</Ul>
           <div className="flex mt-1">
-            {addButton(() => {
-              setNewResource(
-                new tables.Discipline.Resource({
-                  division: `/api/specify/division/${division.id}/`,
-                })
-              );
-              handleNewResource();
-            }, `${tableLabel('Discipline')}`)}
+            {addButton(
+              () => {
+                setNewResource(
+                  new tables.Discipline.Resource({
+                    division: `/api/specify/division/${division.id}/`,
+                  })
+                );
+                handleNewResource();
+              },
+              `${tableLabel('Discipline')}`
+            )}
           </div>
         </CollapsibleSection>
       </li>
