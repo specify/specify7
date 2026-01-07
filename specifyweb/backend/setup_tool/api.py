@@ -310,6 +310,8 @@ def create_specifyuser(data):
     username = data.get('username')
 
     last_name = data.pop('lastname', username)
+    if not last_name:
+        last_name = username
     first_name = data.pop('firstname', '')
 
     # Create agent. We can assume no agents already exist.

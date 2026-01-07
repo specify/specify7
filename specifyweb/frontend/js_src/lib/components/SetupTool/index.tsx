@@ -268,8 +268,8 @@ export function SetupTool({
           </Container.Center>
         ) : (
           <div className="flex flex-col md:flex-row w-full justify-center gap-8">
-            <div className="w-[20rem] h-full">
-              <Container.Center className="p-3 shadow-md max-w-lg h-full">
+            <div className="w-[20rem]">
+              <Container.Center className="p-3 shadow-md max-w-lg">
                 <H3 className="text-xl font-semibold mb-4">
                   {setupToolText.overview()}
                 </H3>
