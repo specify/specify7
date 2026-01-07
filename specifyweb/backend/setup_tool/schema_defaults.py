@@ -20,25 +20,36 @@ def apply_schema_defaults(discipline: Discipline):
     schema_overrides_path = Path(__file__).parent.parent.parent.parent / 'config' / discipline.type / 'schema_overrides.json'
     overrides = None
     if schema_overrides_path.exists():
-        load_json_from_file(schema_overrides_path)
+        overrides = load_json_from_file(schema_overrides_path)
+
+        # Apply overrides to defaults
+        if overrides is not None:
+            # Overrides contains a dict for each table with overrides
+            for table_name, table in overrides.items():
+                # Items contains a list of dicts (item).
+                for item in table.get('items', []):
+                    # Each item is a dict with only one entry.
+                    for key, override_dict in item.items():
+                        defaults[table_name][key.lower()] = override_dict
+                # Replace other properties
+                for key, v in table.items():
+                    if key == 'items':
+                        continue
+                    defaults[key] = v
 
     # Update the schema for each table individually.
     for model_name in model_names_by_table_id.values():
-        logger.debug(f'Applying schema defaults for {model_name}. Using overrides: {overrides is not None}.')
+        logger.debug(f'Applying schema defaults for {model_name}. Using defaults: {overrides is not None}.')
     
         # Table information
-        table_description = get_table_override(defaults, model_name, 'desc')
+        table_defaults = defaults.get(model_name.lower())
+        table_description = None
+        if table_defaults:
+            table_description = table_defaults.get('desc')
 
         update_table_schema_config_with_defaults(
             table_name=model_name,
-            description=table_description,
             discipline_id=discipline.id,
-            defaults=defaults,
-            overrides=overrides,
+            description=table_description,
+            defaults=table_defaults,
         )
-
-def get_table_override(overrides: Optional[dict], model_name: str, key: str):
-    """Get a specific table's field override from a dict of all table overrides."""
-    if overrides is not None and overrides.get(model_name, None) is not None:
-        return overrides[model_name].get(key, None)
-    return None

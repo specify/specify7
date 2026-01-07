@@ -16,10 +16,12 @@ from specifyweb.backend.setup_tool.utils import normalize_keys, resolve_uri_or_f
 from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults
 from specifyweb.backend.setup_tool.picklist_defaults import create_default_picklists
 from specifyweb.backend.setup_tool.prep_type_defaults import create_default_prep_types
-from specifyweb.backend.setup_tool.setup_tasks import setup_database_background, get_active_setup_task, get_last_setup_error, set_last_setup_error, MissingWorkerError
+from specifyweb.backend.setup_tool.setup_tasks import setup_database_background, get_active_setup_task, get_last_setup_error, set_last_setup_error
+from specifyweb.celery_tasks import MissingWorkerError
 from specifyweb.backend.setup_tool.tree_defaults import create_default_tree, update_tree_scoping
 from specifyweb.specify.models import Institution, Discipline
 from specifyweb.specify.migration_utils.default_cots import (create_default_collection_types)
+from specifyweb.backend.businessrules.uniqueness_rules import apply_default_uniqueness_rules
 
 import logging
 logger = logging.getLogger(__name__)
@@ -59,14 +61,9 @@ def get_setup_progress() -> dict:
 
 def get_setup_resource_progress() -> dict:
     """Returns a dictionary of the status of database setup resources."""
-    institution_created = models.Institution.objects.exists()
-    institution = models.Institution.objects.first()
-    globalGeographyTree = institution and institution.issinglegeographytree
-
     return {
-        "institution": institution_created,
+        "institution": models.Institution.objects.exists(),
         "storageTreeDef": models.Storagetreedef.objects.exists(),
-        "globalGeographyTreeDef": institution_created and ((not globalGeographyTree) or models.Geographytreedef.objects.exists()),
         "division": models.Division.objects.exists(),
         "discipline": models.Discipline.objects.exists(),
         "geographyTreeDef": models.Geographytreedef.objects.exists(),
@@ -149,7 +146,7 @@ def create_institution(data):
         # Create institution
         new_institution = Institution.objects.create(**data)
         Spversion.objects.create(appversion=APP_VERSION, schemaversion=SCHEMA_VERSION)
-    return {'institution_id': new_institution}
+    return {'institution_id': new_institution.id}
 
 def create_division(data):
     from specifyweb.specify.models import Division, Institution
@@ -246,6 +243,9 @@ def create_discipline(data):
             # Create Splocalecontainers for all datamodel tables
             apply_schema_defaults(new_discipline)
 
+            # Apply default uniqueness rules
+            apply_default_uniqueness_rules(new_discipline)
+
             # Update tree scoping
             update_tree_scoping(geographytreedef, new_discipline.id)
             update_tree_scoping(geologictimeperiodtreedef, new_discipline.id)
@@ -256,7 +256,7 @@ def create_discipline(data):
         raise SetupError(e)
 
 def create_collection(data):
-    from specifyweb.specify.models import Collection, Discipline, Taxontreedef
+    from specifyweb.specify.models import Collection, Discipline
 
     # If collection_id is provided and exists, return success
     existing_id = data.pop('collection_id', None)
@@ -302,21 +302,26 @@ def create_collection(data):
         raise SetupError(e)
 
 def create_specifyuser(data):
-    from specifyweb.specify.models import Specifyuser, Agent, Division, Collection
+    """Creates the first admin user during the initial database setup."""
+    from specifyweb.specify.models import Specifyuser, Agent, Division
 
     # Assign ID manually
     max_id = Specifyuser.objects.aggregate(Max('id'))['id__max'] or 0
     data['id'] = max_id + 1
 
-    # Ensure there is an Agent
-    agent = Agent.objects.last()
-    if not agent:
-        agent = Agent.objects.create(
-            id=1,
-            agenttype=1,
-            firstname='spadmin',
-            division=Division.objects.last(),
-        )
+    username = data.get('username')
+
+    last_name = data.pop('lastname', username)
+    first_name = data.pop('firstname', '')
+
+    # Create agent. We can assume no agents already exist.
+    agent = Agent.objects.create(
+        id=1,
+        agenttype=1,
+        lastname=last_name,
+        firstname=first_name,
+        division=Division.objects.last(),
+    )
 
     try:
         # Create user
@@ -345,10 +350,7 @@ def create_specifyuser(data):
 def create_storage_tree(data):
     return create_tree('Storage', data)
 
-def create_global_geography_tree(data):
-    return create_tree('Geography', data)
-
-def create_geography_tree(data):
+def create_geography_tree(data, global_tree: bool = False):
     return create_tree('Geography', data)
 
 def create_taxon_tree(data):

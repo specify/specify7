@@ -22,8 +22,6 @@ from specifyweb.specify.models_utils.models_by_table_id import get_model_by_tabl
 from specifyweb.specify.models_utils.relationships import get_recordset_info, get_related_or_none, handle_fk_fields, handle_to_many, is_dependent_field
 from specifyweb.specify.utils.uiformatters import AutonumberOverflowException
 from specifyweb.specify.api.validators import GetCollectionForm, cleanData, fld_change_info
-from specifyweb.backend.setup_tool.api import create_institution, create_division, create_discipline, create_collection
-from specifyweb.backend.setup_tool.utils import normalize_keys
 
 logger = logging.getLogger(__name__)
 
@@ -43,15 +41,17 @@ def get_resource(name, id, checker: ReadPermChecker, recordsetid=None) -> dict:
         data['recordset_info'] = get_recordset_info(obj, recordsetid)
     return data
 
-CREATE_MODEL_REDIRECTS = {
-    'institution': create_institution,
-    'division': create_division,
-    'discipline': create_discipline,
-    'collection': create_collection,
-}
-
 def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, parent_relationship=None):
     """Create a new instance of 'model' and populate it with 'data'."""
+    from specifyweb.backend.setup_tool.api import create_institution, create_division, create_discipline, create_collection
+    from specifyweb.backend.setup_tool.utils import normalize_keys
+    CREATE_MODEL_REDIRECTS = {
+        'institution': create_institution,
+        'division': create_division,
+        'discipline': create_discipline,
+        'collection': create_collection,
+    }
+    
     logger.debug("creating %s with data: %s", model, data)
     if isinstance(model, str):
         model = get_model_or_404(model)

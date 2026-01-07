@@ -7,6 +7,7 @@ from specifyweb.specify.models import (
     Collection,
     Preptype
 )
+from .utils import load_json_from_file
 
 logger = logging.getLogger(__name__)
 
@@ -15,15 +16,7 @@ def create_default_prep_types(collection: Collection, discipline_type: str):
     Load default collection prep types from the prep_types file.
     """
     logger.debug('Creating default prep types.')
-    prep_type_list = None
-    prep_types_file = (Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'prep_types.json')
-    try:
-        with prep_types_file.open('r', encoding='utf-8') as fh:
-            prep_type_list = json.load(fh)
-    except Exception as e:
-        logger.exception(f'Failed to prepTypes from {prep_types_file}: {e}')
-        prep_type_list = None
-
+    prep_type_list = load_json_from_file(Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'prep_types.json')
     if prep_type_list is None:
         return
     

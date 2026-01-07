@@ -84,15 +84,14 @@ class FieldSchemaConfig(NamedTuple):
 def uncapitilize(string: str) -> str: 
     return string.lower() if len(string) <= 1 else string[0].lower() + string[1:]
 
+
 def update_table_schema_config_with_defaults(
     table_name,
     discipline_id: int,
     description: str = None,
     apps = global_apps,
     defaults: dict = None,
-    overrides: dict = None
 ):
-    logger.debug(f"(1) Starting: {str(table_name)}")
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
@@ -107,7 +106,7 @@ def update_table_schema_config_with_defaults(
         )
         return
 
-    table_defaults = defaults.get(table_name.lower(), dict()) if defaults is not None else dict()
+    table_defaults = defaults if defaults is not None else dict()
     table_name_str = table_defaults.get('name', camel_to_spaced_title_case(uncapitilize(table.name)))
     table_desc_str = table_defaults.get('desc', camel_to_spaced_title_case(uncapitilize(table.name)))
 
@@ -146,25 +145,11 @@ def update_table_schema_config_with_defaults(
         item_str_bulk.append(Splocaleitemstr(**item_str))
     Splocaleitemstr.objects.bulk_create(item_str_bulk, ignore_conflicts=True)
 
-    # Create dict of field defaults
-    field_overrides = dict()
-    # Defaults first
-    if defaults is not None and defaults.get(table.name.lower(), None) is not None:
-        # items is an dict of all fields
-        field_overrides = table_defaults.get('items', [])
-    # Overrides next
-    if overrides is not None and overrides.get(table.name.lower(), None) is not None:
-        table_overrides = overrides.get(table.name.lower(), dict())
-        items = table_overrides.get('items', [])
-        # Items contains a list of dicts (item).
-        for item in items:
-            # Each item is a dict with only one entry.
-            for key, override_dict in item.items():
-                field_overrides[key.lower()] = override_dict
-
     for field in table.all_fields:
-        update_table_field_schema_config_with_defaults(table_name, discipline_id, field.name, apps, defaults=field_overrides.get(field.name.lower(), None))
-        logger.debug(f"(4) Updated field defaults for {field.name}")
+        field_defaults = None
+        if table_defaults.get('items'):
+            field_defaults = table_defaults['items'].get(field.name.lower())
+        update_table_field_schema_config_with_defaults(table_name, discipline_id, field.name, apps, defaults=field_defaults)
 
 
 def revert_table_schema_config(table_name, apps=global_apps):
@@ -240,7 +225,7 @@ def update_table_field_schema_config_with_defaults(
         return
     
     # Apply defaults if provided
-    field_name_str = field.name
+    field_name_str = camel_to_spaced_title_case(field.name)
     field_desc_str = camel_to_spaced_title_case(field.name)
     field_hidden = field_name.lower() in HIDDEN_FIELDS
     field_required = field.required
@@ -249,7 +234,7 @@ def update_table_field_schema_config_with_defaults(
         field_name_str = defaults.get('name', field_name_str)
         field_desc_str = defaults.get('desc', field_desc_str)
         field_hidden = defaults.get('ishidden', field_hidden)
-        field_required = defaults.get('isrequired', field_hidden)
+        field_required = defaults.get('isrequired', field_required)
         picklist_name = defaults.get('picklistname', picklist_name)
 
     field_config = FieldSchemaConfig(

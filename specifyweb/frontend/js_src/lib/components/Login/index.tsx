@@ -21,27 +21,10 @@ import { LoadingContext } from '../Core/Contexts';
 import { SplashScreen } from '../Core/SplashScreen';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { SetupTool } from '../SetupTool';
+import type { SetupProgress } from '../SetupTool/types';
 import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
 import type { OicProvider } from './OicLogin';
 import { OicLogin } from './OicLogin';
-
-export type SetupResources = {
-  readonly institution: boolean;
-  readonly storageTreeDef: boolean;
-  readonly globalGeographyTreeDef: boolean;
-  readonly division: boolean;
-  readonly discipline: boolean;
-  readonly geographyTreeDef: boolean;
-  readonly taxonTreeDef: boolean;
-  readonly collection: boolean;
-  readonly specifyUser: boolean;
-}
-
-export type SetupProgress = {
-  readonly resources: SetupResources;
-  readonly busy: boolean;
-  readonly last_error?: string;
-};
 
 export function Login(): JSX.Element {
   const [setupProgress, setSetupProgress] = useAsyncState(

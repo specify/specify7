@@ -67,13 +67,13 @@ export const setupToolText = createDictionary({
     'en-us':
       'Global scope allows you to share Accessions between all divisions. Divisional scope ensures Accessions are specific to each division.',
   },
-  institutionIsSingleGeographyTree: {
-    'en-us': 'Use Single Geography Tree',
-  },
-  institutionIsSingleGeographyTreeDescription: {
-    'en-us':
-      'A global geography tree is shared by all disciplines. Otherwise, geography trees are managed separately within each discipline.',
-  },
+  // institutionIsSingleGeographyTree: {
+  //   'en-us': 'Use Single Geography Tree',
+  // },
+  // institutionIsSingleGeographyTreeDescription: {
+  //   'en-us':
+  //     'A global geography tree is shared by all disciplines. Otherwise, geography trees are managed separately within each discipline.',
+  // },
 
   // Address
   address: {
@@ -126,9 +126,6 @@ export const setupToolText = createDictionary({
     'en-us': 'Storage Tree',
   },
   // Geography Tree
-  globalGeographyTree: {
-    'en-us': 'Global Geography Tree',
-  },
   geographyTree: {
     'en-us': 'Geography Tree',
   },
@@ -200,6 +197,21 @@ export const setupToolText = createDictionary({
   specifyUserConfirmPasswordDescription: {
     'en-us': 'Must match the password entered above.',
   },
+  specifyUserFirstName: {
+    'en-us': 'First Name',
+  },
+  specifyUserFirstNameDescription: {
+    'en-us':
+      'The first name of the agent associated with the account. Optional.',
+  },
+  specifyUserLastName: {
+    'en-us': 'Last Name',
+  },
+  specifyUserLastNameDescription: {
+    'en-us':
+      'The last name of the agent associated with the account. Optional.',
+  },
+  
   taxonTreeSetUp: {
     'en-us': 'Set up taxon tree',
   },
