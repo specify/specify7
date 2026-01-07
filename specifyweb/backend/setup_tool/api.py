@@ -238,17 +238,15 @@ def create_discipline(data):
     try:
         new_discipline = Discipline.objects.create(**data)
 
-        # Check if initial setup.
-        if not division_url:
-            # Create Splocalecontainers for all datamodel tables
-            apply_schema_defaults(new_discipline)
+        # Create Splocalecontainers for all datamodel tables
+        apply_schema_defaults(new_discipline)
 
-            # Apply default uniqueness rules
-            apply_default_uniqueness_rules(new_discipline)
+        # Apply default uniqueness rules
+        apply_default_uniqueness_rules(new_discipline)
 
-            # Update tree scoping
-            update_tree_scoping(geographytreedef, new_discipline.id)
-            update_tree_scoping(geologictimeperiodtreedef, new_discipline.id)
+        # Update tree scoping
+        update_tree_scoping(geographytreedef, new_discipline.id)
+        update_tree_scoping(geologictimeperiodtreedef, new_discipline.id)
 
         return {"discipline_id": new_discipline.id}
 

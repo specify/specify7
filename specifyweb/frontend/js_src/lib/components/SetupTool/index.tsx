@@ -108,6 +108,14 @@ export function SetupTool({
     useFormDefaults(resources[currentStep], setFormData, currentStep);
   }, [currentStep]);
 
+  const [saveBlocked, setSaveBlocked] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    const formValid = formRef.current?.checkValidity();
+    setSaveBlocked(!formValid);
+  }, [formData, temporaryFormData, currentStep]);
+  const SubmitComponent = saveBlocked ? Submit.Danger : Submit.Save;
+
   // Keep track of the last backend error.
   const [setupError, setSetupError] = React.useState<string | undefined>(
     undefined
@@ -236,7 +244,7 @@ export function SetupTool({
   const id = useId('setup-tool');
 
   return (
-    <div className="w-full">
+    <div className="w-full flex flex-col h-full min-h-0">
       <header className="w-full bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 shadow-lg relative z-20">
         <div className="w-full flex flex-col items-center justify-center gap-2 pt-3 pb-0 px-4">
           <img className="w-auto h-12 mx-auto" src="/static/img/logo.svg" />
@@ -306,15 +314,9 @@ export function SetupTool({
                   <Button.Secondary className="self-start" onClick={handleBack}>
                     {commonText.back()}
                   </Button.Secondary>
-                  {currentStep === resources.length - 1 ? (
-                    <Submit.Save className="self-start" form={id('form')}>
-                      {commonText.create()}
-                    </Submit.Save>
-                  ) : (
-                    <Submit.Save className="self-start" form={id('form')}>
-                      {commonText.next()}
-                    </Submit.Save>
-                  )}
+                  <SubmitComponent className="self-start" form={id('form')}>
+                    {(currentStep === resources.length - 1) ? commonText.create() : commonText.next()}
+                  </SubmitComponent>
                 </div>
               </Container.Center>
               <Container.Center className="p-3 shadow-md max-w-lg">
