@@ -20,7 +20,10 @@ import { definePref } from './types';
 const tableLabel = (tableName: keyof Tables): LocalizedString =>
   genericTables[tableName]?.label ?? camelToHuman(tableName);
 
-const fieldLabel = (tableName: keyof Tables, fieldName: keyof typeof genericTables[keyof Tables]['field']): LocalizedString =>
+const fieldLabel = (
+  tableName: keyof Tables,
+  fieldName: keyof (typeof genericTables)[keyof Tables]['field']
+): LocalizedString =>
   genericTables[tableName]?.field[fieldName].label ?? camelToHuman(fieldName);
 
 export const collectionPreferenceDefinitions = {
@@ -136,7 +139,8 @@ export const collectionPreferenceDefinitions = {
             description: () =>
               statsText.showPreparationsTotalDescription({
                 preparationTableName: tableLabel('Preparation'),
-                lowerPreparationTableName: tableLabel('Preparation').toLowerCase(),
+                lowerPreparationTableName:
+                  tableLabel('Preparation').toLowerCase(),
                 prepTypeTableName: tableLabel('PrepType').toLowerCase(),
               }),
             requiresReload: false,
@@ -190,14 +194,24 @@ export const collectionPreferenceDefinitions = {
           inheritance: definePref<boolean>({
             title: () =>
               preferencesText.inheritanceCatNumberPref({
-                catalogNumberFieldName: fieldLabel('CollectionObject','catalogNumber'),
-                collectionObjectGroupTableName: tableLabel('CollectionObjectGroup'),
+                catalogNumberFieldName: fieldLabel(
+                  'CollectionObject',
+                  'catalogNumber'
+                ),
+                collectionObjectGroupTableName: tableLabel(
+                  'CollectionObjectGroup'
+                ),
               }),
             description: () =>
               preferencesText.inheritanceCatNumberPrefDescription({
-                catalogNumberFieldName: fieldLabel('CollectionObject','catalogNumber'),
+                catalogNumberFieldName: fieldLabel(
+                  'CollectionObject',
+                  'catalogNumber'
+                ),
                 collectionObjectTableName: tableLabel('CollectionObject'),
-                collectionObjectGroupTableName: tableLabel('CollectionObjectGroup'),
+                collectionObjectGroupTableName: tableLabel(
+                  'CollectionObjectGroup'
+                ),
               }),
             requiresReload: false,
             visible: true,
@@ -211,7 +225,7 @@ export const collectionPreferenceDefinitions = {
   catalogNumberParentInheritance: {
     title: () =>
       queryText.parentCatalogNumberInheritance({
-        componentTableName: tableLabel('Component')
+        componentTableName: tableLabel('Component'),
       }),
     subCategories: {
       behavior: {
@@ -220,12 +234,18 @@ export const collectionPreferenceDefinitions = {
           inheritance: definePref<boolean>({
             title: () =>
               preferencesText.inheritanceCatNumberParentCOPref({
-                catalogNumberFieldName: fieldLabel('CollectionObject','catalogNumber'),
+                catalogNumberFieldName: fieldLabel(
+                  'CollectionObject',
+                  'catalogNumber'
+                ),
                 componentTableName: tableLabel('Component'),
               }),
             description: () =>
               preferencesText.inheritanceCatNumberParentCOPrefDescription({
-                catalogNumberFieldName: fieldLabel('CollectionObject','catalogNumber'),
+                catalogNumberFieldName: fieldLabel(
+                  'CollectionObject',
+                  'catalogNumber'
+                ),
                 componentTableName: tableLabel('Component'),
                 collectionObjectTableName: tableLabel('CollectionObject'),
               }),
@@ -251,7 +271,10 @@ export const collectionPreferenceDefinitions = {
           uniqueness: definePref<boolean>({
             title: () =>
               preferencesText.uniqueCatNumberAcrossCompAndCo({
-                catalogNumberFieldName: fieldLabel('CollectionObject','catalogNumber'),
+                catalogNumberFieldName: fieldLabel(
+                  'CollectionObject',
+                  'catalogNumber'
+                ),
                 componentTableName: tableLabel('Component'),
                 collectionObjectTableName: tableLabel('CollectionObject'),
               }),
