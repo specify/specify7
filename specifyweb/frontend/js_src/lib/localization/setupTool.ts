@@ -226,9 +226,6 @@ export const setupToolText = createDictionary({
   hierarchySwitchToVertical: {
     'en-us': 'Switch to vertical',
   },
-  hierarchyCollections: {
-    'en-us': 'Collections',
-  },
   hierarchyAddNew: {
     'en-us': 'Add',
   },
