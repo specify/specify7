@@ -8,8 +8,8 @@ import type {
   Collection,
   Discipline,
   Division,
-  Institution,
   GeographyTreeDef,
+  Institution,
   TaxonTreeDef,
 } from '../DataModel/types';
 import { collection, discipline, division } from '../FormParse/webOnlyViews';
@@ -27,13 +27,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
     useBooleanState();
 
   const [newResource, setNewResource] = React.useState<
-    | SpecifyResource<Collection>
-    | SpecifyResource<Discipline>
-    | SpecifyResource<Division>
-    | SpecifyResource<Institution>
-    | SpecifyResource<GeographyTreeDef>
-    | SpecifyResource<TaxonTreeDef>
-    | undefined
+    SpecifyResource<Collection> | SpecifyResource<Discipline> | SpecifyResource<Division> | SpecifyResource<GeographyTreeDef> | SpecifyResource<Institution> | SpecifyResource<TaxonTreeDef> | undefined
   >();
 
   React.useEffect(() => {
