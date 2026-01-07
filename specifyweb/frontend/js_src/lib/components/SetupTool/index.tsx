@@ -244,7 +244,7 @@ export function SetupTool({
   const id = useId('setup-tool');
 
   return (
-    <div className="w-full">
+    <div className="w-full flex flex-col h-full min-h-0">
       <header className="w-full bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 shadow-lg relative z-20">
         <div className="w-full flex flex-col items-center justify-center gap-2 pt-3 pb-0 px-4">
           <img className="w-auto h-12 mx-auto" src="/static/img/logo.svg" />
