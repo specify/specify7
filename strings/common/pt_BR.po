@@ -512,8 +512,8 @@ msgstr "Enviado"
 #: components/QueryBuilder/Components.tsx:167
 #: components/QueryBuilder/FieldFilterTool.tsx:100
 #: components/QueryBuilder/FieldFilterTool.tsx:103
-#: components/QueryBuilder/Line.tsx:295
-#: components/QueryBuilder/Line.tsx:299
+#: components/QueryBuilder/Line.tsx:297
+#: components/QueryBuilder/Line.tsx:301
 #: components/SchemaConfig/UniquenessRuleRow.tsx:273
 #: components/Security/Policy.tsx:94
 #: components/Security/Policy.tsx:96
