@@ -947,37 +947,15 @@ export const queryText = createDictionary({
     'ru-ru': 'Нестрогий',
     'uk-ua': 'Не суворий',
   },
-  catalogNumberInheritance: {
-    'en-us': 'Catalog Number Inheritance',
-    'de-ch': 'Vererbung der Katalognummer',
-    'es-es': 'Herencia del número de catálogo',
-    'fr-fr': 'Héritage du numéro de catalogue',
-    'pt-br': 'Herança do número de catálogo',
-    'ru-ru': 'Наследование каталожного номера',
-    'uk-ua': 'Успадкування каталожних номерів',
+  primaryCatalogNumberInheritance: {
+    'en-us': '{collectionObjectTableName: string}',
   },
-  catalogNumberParentCOInheritance: {
-    'en-us': 'Catalog Number Parent Collection Object Inheritance',
-    'de-ch': 'Katalognummer Übergeordnete Sammlung Objektvererbung',
-    'es-es':
-      'Herencia de objetos de la colección principal del número de catálogo',
-    'fr-fr': "Héritage d'objet de la collection parente du numéro de catalogue",
-    'pt-br': 'Número de catálogo Coleção pai Objeto Herança',
-    'ru-ru': 'Номер каталога Родительская коллекция Объект Наследование',
-    'uk-ua': "Успадкування батьківського об'єкта колекції за номером каталогу",
+  parentCatalogNumberInheritance: {
+    'en-us': '{componentTableName: string}',
   },
-  uniqueCatalogNumberAcrossComponentAndCo: {
-    'en-us': 'Catalog Number Uniqueness Across Component And CO tables',
-    'de-ch':
-      'Eindeutigkeit der Katalognummern über Komponenten- und CO-Tabellen hinweg',
-    'es-es':
-      'Unicidad del número de catálogo en las tablas de componentes y CO',
-    'fr-fr':
-      'Unicité du numéro de catalogue dans les tableaux des composants et des CO',
-    'pt-br':
-      'Unicidade do número de catálogo entre tabelas de componentes e CO',
-    'ru-ru': 'Уникальность каталожного номера в таблицах компонентов и CO',
-    'uk-ua': 'Унікальність каталожних номерів у таблицях компонентів та CO',
+  uniqueCatalogNumberAcrossComponentAndCoTitle: {
+    'en-us':
+      '{componentTableName: string} & {collectionObjectTableName: string}',
   },
   formatInputAs: {
     comment: `

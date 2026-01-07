@@ -56,7 +56,7 @@ export const schemaText = createDictionary({
   },
   unsavedSchemaUnloadProtect: {
     'en-us': 'Schema changes have not been saved',
-    'ru-ru': 'Изменения схемы не были сохранены',
+    'ru-ru': 'Изменения в схеме не были сохранены.',
     'es-es': 'Los cambios en el esquema no se han guardado',
     'fr-fr': "Les modifications de schéma n'ont pas été enregistrées.",
     'uk-ua': 'Зміни схеми не збережено',
@@ -110,7 +110,7 @@ export const schemaText = createDictionary({
   },
   setScope: {
     'en-us': 'Set Scope',
-    'de-ch': 'Zielbereich einstellen',
+    'de-ch': 'Zielbereich festlegen',
     'es-es': 'Establecer alcance',
     'fr-fr': 'Définir le périmètre',
     'ru-ru': 'Установить область действия',
@@ -164,7 +164,7 @@ export const schemaText = createDictionary({
   },
   tableAggregation: {
     'en-us': 'Table Aggregation',
-    'ru-ru': 'Агрегация таблиц',
+    'ru-ru': 'Агрегирование таблиц',
     'es-es': 'Agregación de tablas',
     'fr-fr': 'Agrégation de tableaux',
     'uk-ua': 'Агрегація таблиць',
@@ -191,7 +191,7 @@ export const schemaText = createDictionary({
   },
   manyToOne: {
     'en-us': 'Many-to-one',
-    'ru-ru': 'Многие-к-одному',
+    'ru-ru': 'Многие к одному',
     'es-es': 'Muchos a uno',
     'fr-fr': 'Plusieurs vers un',
     'uk-ua': 'Багато до одного',
@@ -200,8 +200,8 @@ export const schemaText = createDictionary({
   },
   manyToMany: {
     'en-us': 'many-to-many',
-    'ru-ru': 'многие-ко-многим',
-    'es-es': 'muchos a muchos',
+    'ru-ru': 'многие ко многим',
+    'es-es': 'de muchos a muchos',
     'fr-fr': 'plusieurs à plusieurs',
     'uk-ua': 'багато-до-багатьох',
     'de-ch': 'Viele zu viele',
@@ -237,10 +237,10 @@ export const schemaText = createDictionary({
   uiFormattersForField: {
     'en-us': 'Field Formatters for {fieldLabel:string}',
     'de-ch': 'Feldformatierer für {fieldLabel:string}',
-    'es-es': 'Formateadores de campo para {fieldLabel:string}',
+    'es-es': 'Formateadores de campos para {fieldLabel:string}',
     'fr-fr': 'Formateurs de champs pour {fieldLabel:string}',
     'pt-br': 'Formatadores de campo para {fieldLabel:string}',
-    'ru-ru': 'Форматировщики полей для {fieldLabel:string}',
+    'ru-ru': 'Форматирование полей для {fieldLabel:string}',
     'uk-ua': 'Форматування полів для {fieldLabel:string}',
   },
   formatted: {
@@ -290,7 +290,7 @@ export const schemaText = createDictionary({
   },
   relatedTable: {
     'en-us': 'Related Model',
-    'ru-ru': 'Связанная модель',
+    'ru-ru': 'Соответствующая модель',
     'es-es': 'Modelo relacionado',
     'fr-fr': 'Modèle associé',
     'uk-ua': "Пов'язана модель",
@@ -299,11 +299,11 @@ export const schemaText = createDictionary({
   },
   otherSideName: {
     'en-us': 'Other side name',
-    'ru-ru': 'Имя другой стороны',
+    'ru-ru': 'Название другой стороны',
     'fr-fr': "Nom de l'autre côté",
     'uk-ua': 'Інша назва сторони',
     'de-ch': 'Name der anderen Seite',
-    'es-es': 'Otro nombre lateral',
+    'es-es': 'Nombre del otro lado',
     'pt-br': 'Outro nome do lado',
   },
   dependent: {
@@ -326,7 +326,7 @@ export const schemaText = createDictionary({
   },
   downloadAsJson: {
     'en-us': 'Download as JSON',
-    'ru-ru': 'Скачать как JSON',
+    'ru-ru': 'Скачать в формате JSON',
     'es-es': 'Descargar como JSON',
     'fr-fr': 'Télécharger au format JSON',
     'uk-ua': 'Завантажити як JSON',
@@ -335,7 +335,7 @@ export const schemaText = createDictionary({
   },
   downloadAsXml: {
     'en-us': 'Download as XML',
-    'ru-ru': 'Загрузить как XML',
+    'ru-ru': 'Скачать в формате XML',
     'es-es': 'Descargar como XML',
     'fr-fr': 'Télécharger au format XML',
     'uk-ua': 'Завантажити як XML',
@@ -344,7 +344,7 @@ export const schemaText = createDictionary({
   },
   downloadAsTsv: {
     'en-us': 'Download as TSV',
-    'ru-ru': 'Загрузить как TSV',
+    'ru-ru': 'Скачать в формате TSV',
     'es-es': 'Descargar como TSV',
     'fr-fr': 'Télécharger au format TSV',
     'uk-ua': 'Завантажити як TSV',
@@ -363,7 +363,7 @@ export const schemaText = createDictionary({
   fieldCount: {
     'en-us': 'Field count',
     'ru-ru': 'Количество полей',
-    'es-es': 'Conteo de campos',
+    'es-es': 'Recuento de campos',
     'fr-fr': 'Nombre de champs',
     'uk-ua': 'Кількість полів',
     'de-ch': 'Anzahl Felder',
@@ -407,7 +407,7 @@ export const schemaText = createDictionary({
   },
   goToTop: {
     'en-us': 'Go to top',
-    'es-es': 'Volver al inicio',
+    'es-es': 'Ir arriba',
     'fr-fr': 'Retour en haut',
     'uk-ua': 'Перейти на початок',
     'de-ch': 'Nach oben',
@@ -426,7 +426,7 @@ export const schemaText = createDictionary({
   tableUniquenessRules: {
     'en-us': '{tableName:string} Uniqueness Rules',
     'de-ch': '{tableName:string} Eindeutigkeitsregeln',
-    'es-es': '{tableName:string} Reglas de unicidad',
+    'es-es': '{tableName:string} Reglas de singularidad',
     'fr-fr': "{tableName:string} Règles d'unicité",
     'ru-ru': '{tableName:string} Правила уникальности',
     'uk-ua': '{tableName:string} Правила унікальності',
@@ -453,7 +453,7 @@ export const schemaText = createDictionary({
   addUniquenessRule: {
     'en-us': 'Add Uniqueness Rule',
     'de-ch': 'Eindeutigkeitsregel hinzufügen',
-    'es-es': 'Añadir regla de unicidad',
+    'es-es': 'Agregar regla de unicidad',
     'fr-fr': "Ajouter une règle d'unicité",
     'ru-ru': 'Добавить правило уникальности',
     'uk-ua': 'Додати правило унікальності',
@@ -464,7 +464,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Eindeutigkeitsregel konfigurieren',
     'es-es': 'Configurar regla de unicidad',
     'fr-fr': "Configurer la règle d'unicité",
-    'ru-ru': 'Настроить правило уникальности',
+    'ru-ru': 'Настройка правила уникальности',
     'uk-ua': 'Налаштувати правило унікальності',
     'pt-br': 'Configurar regra de unicidade',
   },
@@ -482,7 +482,7 @@ export const schemaText = createDictionary({
     'de-ch': 'In der Datenbank gefundene Duplikate',
     'es-es': 'muchos a uno',
     'fr-fr': 'Des doublons ont été trouvés dans la base de données.',
-    'ru-ru': 'В базе данных найдены дубликаты',
+    'ru-ru': 'В базе данных обнаружены дубликаты.',
     'uk-ua': 'У базі даних знайдено дублікати',
     'pt-br': 'Foram encontrados duplicados no banco de dados.',
   },
@@ -491,7 +491,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Duplikate exportieren',
     'es-es': 'Exportar duplicados',
     'fr-fr': 'Exporter les doublons',
-    'ru-ru': 'Экспортировать дубликаты',
+    'ru-ru': 'Экспорт дубликатов',
     'uk-ua': 'Експорт дублікатів',
     'pt-br': 'Exportar duplicados',
   },
@@ -516,7 +516,7 @@ export const schemaText = createDictionary({
   schemaExportFileName: {
     'en-us': 'Specify 7 Data Model',
     'ru-ru': 'Укажите 7 моделей данных',
-    'es-es': 'Especifique el modelo de datos 7',
+    'es-es': 'Especificar 7 modelos de datos',
     'fr-fr': 'Spécifiez le modèle de données 7',
     'uk-ua': 'Specify 7 моделей даних',
     'de-ch': 'Specify 7 Datenmodell',
@@ -545,7 +545,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Benutzerdefiniertes Feldformat',
     'es-es': 'Formato de campo personalizado',
     'fr-fr': 'Format de champ personnalisé',
-    'ru-ru': 'Пользовательский формат поля',
+    'ru-ru': 'Формат пользовательского поля',
     'uk-ua': 'Формат користувацького поля',
     'pt-br': 'Formato de campo personalizado',
   },
