@@ -21,9 +21,9 @@ import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
 import { tableLabel } from '../Preferences/UserDefinitions';
 import { stepOrder } from '../SetupTool';
-import type { ResourceFormData } from '../SetupTool/types';
 import { renderFormFieldFactory } from '../SetupTool/SetupForm';
 import { resources } from '../SetupTool/setupResources';
+import type { ResourceFormData } from '../SetupTool/types';
 import { CollapsibleSection } from './CollapsibleSection';
 import type { InstitutionData } from './Utils';
 
@@ -162,10 +162,10 @@ function HierarchyDiagram({
           aria-label={setupToolText.hierarchyDiagram()}
           className="w-full h-full"
           height="100%"
+          preserveAspectRatio="xMidYMid meet"
           role="img"
           viewBox={`0 0 ${width} ${height}`}
           width="100%"
-          preserveAspectRatio="xMidYMid meet"
         >
           <g transform="translate(0,0)">
             {links.map((link: HierarchyPointLink<HierarchyNodeDatum>) => {
