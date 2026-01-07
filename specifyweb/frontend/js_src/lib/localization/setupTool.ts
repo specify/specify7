@@ -230,7 +230,7 @@ export const setupToolText = createDictionary({
     'en-us': 'Collections',
   },
   hierarchyAddNew: {
-    'en-us': 'Add new',
+    'en-us': 'Add',
   },
   hierarchyDiagram: {
     'en-us': 'Institutional Hierarchy',

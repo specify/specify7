@@ -298,7 +298,7 @@ const handleEditResource = (
   resource: SpecifyResource<any>,
   refreshAllInfo: () => Promise<void>
 ) => (
-  <div className="flex item-center m-2">
+  <div className="flex items-center">
     <ResourceLink
       component={Link.Default}
       props={{}}
@@ -324,14 +324,18 @@ const addButton = (
   createResource: () => void,
   tableName: string
 ): JSX.Element => (
-  <Button.Icon
-    className="ml-2"
-    icon="plus"
-    title={`${setupToolText.hierarchyAddNew()} ${tableName}`}
+  <Button.LikeLink
+    className="flex items-center gap-2 mb-2"
     onClick={() => {
       createResource();
     }}
-  />
+    title={`${setupToolText.hierarchyAddNew()} ${tableName}`}
+  >
+    <span className="flex items-center gap-1">
+      {icons.plus}
+      {`${setupToolText.hierarchyAddNew()} ${tableName}`}
+    </span>
+  </Button.LikeLink>
 );
 
 export function Hierarchy({
@@ -387,29 +391,22 @@ export function Hierarchy({
       readonly name: string;
     }>
   ) => (
-    <div className="mt-5 mb-5">
-      <CollapsibleSection
-        defaultOpen={false}
-        hasChildren={collections.length > 0}
-        title={<p>{setupToolText.hierarchyCollections()}</p>}
-      >
-        <Ul>
-          {collections.map((collection) => (
-            <div key={collection.id}>
-              <li className="ml-4 m-2 list-disc">
-                <p>
-                  <span className="text-amber-800 font-semibold mr-1">{`${tableLabel('Collection')}:`}</span>
-                  <span>{collection.name}</span>
-                </p>
-              </li>
-              {handleEditResource(
-                new tables.Collection.Resource({ id: collection.id }),
-                refreshAllInfo
-              )}
-            </div>
-          ))}
-        </Ul>
-      </CollapsibleSection>
+    <div className="mt-2 mb-2 ml-2 space-y-2">
+      {collections.map((collection) => (
+        <div
+          className="flex items-center gap-2 flex-wrap bg-[color:var(--background)] rounded px-2 py-1"
+          key={collection.id}
+        >
+          <H3 className="text-amber-800 font-semibold">{`${tableLabel('Collection')}:`}</H3>
+          <H3>{collection.name}</H3>
+          <div className="flex items-center gap-1 ml-3">
+            {handleEditResource(
+              new tables.Collection.Resource({ id: collection.id }),
+              refreshAllInfo
+            )}
+          </div>
+        </div>
+      ))}
     </div>
   );
 
@@ -426,21 +423,17 @@ export function Hierarchy({
             hasChildren={discipline.children.length > 0}
             title={
               <div>
-                <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex items-center gap-1 flex-wrap">
                   <div className="flex items-baseline gap-2">
                     <H3 className="text-blue-700 font-semibold">{`${tableLabel('Discipline')}:`}</H3>
                     <H3>{discipline.name}</H3>
                   </div>
-                  {/* ADD COLLECTION */}
-                  {canAddCollection &&
-                    addButton(() => {
-                      setNewResource(
-                        new tables.Collection.Resource({
-                          discipline: `/api/specify/discipline/${discipline.id}/`,
-                        })
-                      );
-                      handleNewResource();
-                    }, tableLabel('Collection'))}
+                  <div className="flex items-center gap-3 ml-auto">
+                    {handleEditResource(
+                      new tables.Discipline.Resource({ id: discipline.id }),
+                      refreshAllInfo
+                    )}
+                  </div>
                 </div>
                 <div className="m-2">
                   {/* GEO TREE */}
@@ -473,17 +466,25 @@ export function Hierarchy({
                       </Button.LikeLink>
                     </div>
                   )}
-                  {handleEditResource(
-                    new tables.Discipline.Resource({ id: discipline.id }),
-                    refreshAllInfo
-                  )}
                 </div>
               </div>
             }
           >
             {/* COLLECTIONS */}
-            {discipline.children.length > 0 &&
-              renderCollections(discipline.children)}
+            {discipline.children.length > 0 && renderCollections(discipline.children)}
+
+            {canAddCollection && (
+              <div className="flex  mb-2 ml-2">
+                {addButton(() => {
+                  setNewResource(
+                    new tables.Collection.Resource({
+                      discipline: `/api/specify/discipline/${discipline.id}/`,
+                    })
+                  );
+                  handleNewResource();
+                }, tableLabel('Collection'))}
+              </div>
+            )}
 
             {/* TREE CONFIG DIALOGS */}
             {/* GEO */}
@@ -510,7 +511,7 @@ export function Hierarchy({
 
   const renderDivisions = (institution: InstitutionData) =>
     institution.children.map((division: any) => (
-      <li className="pb-2" key={division.id}>
+      <li key={division.id}>
         <CollapsibleSection
           hasChildren={division.children.length > 0}
           title={
@@ -520,26 +521,27 @@ export function Hierarchy({
                   <H3 className="text-green-700 font-semibold">{`${tableLabel('Division')}:`}</H3>
                   <H3>{division.name}</H3>
                 </div>
-                <div className="flex items-center gap-2 ml-auto">
-                  {addButton(() => {
-                    setNewResource(
-                      new tables.Discipline.Resource({
-                        division: `/api/specify/division/${division.id}/`,
-                      })
-                    );
-                    handleNewResource();
-                  }, `${tableLabel('Discipline')}`)}
+                <div className="flex items-center gap-3 ml-auto">
+                  {handleEditResource(
+                    new tables.Division.Resource({ id: division.id }),
+                    refreshAllInfo
+                  )}
                 </div>
               </div>
-
-              {handleEditResource(
-                new tables.Division.Resource({ id: division.id }),
-                refreshAllInfo
-              )}
             </div>
           }
         >
           <Ul className="m-5">{renderDisciplines(division)}</Ul>
+          <div className="flex mt-1">
+            {addButton(() => {
+              setNewResource(
+                new tables.Discipline.Resource({
+                  division: `/api/specify/division/${division.id}/`,
+                })
+              );
+              handleNewResource();
+            }, `${tableLabel('Discipline')}`)}
+          </div>
         </CollapsibleSection>
       </li>
     ));
@@ -547,12 +549,12 @@ export function Hierarchy({
   return (
     <div className="flex flex-col md:flex-row flex-1 min-h-0 gap-4 overflow-hidden m-4">
       <div
-        className="flex-1 min-w-0 min-h-0 overflow-hidden md:w-1/4 md:flex-none"
+        className="flex-1 min-w-0 min-h-0 overflow-y-auto overflow-x-auto md:basis-1/3 md:max-w-[33%]"
         role="navigation"
         aria-label={setupToolText.hierarchyStructureTitle()}
       >
         <Ul
-          className="bg-[color:var(--background)] p-3 rounded h-full min-h-0 overflow-auto"
+          className="bg-[color:var(--background)] p-3 rounded h-full min-h-0 overflow-auto w-max min-w-full"
           aria-label={setupToolText.hierarchyStructureTitle()}
         >
           <li key={institution.id}>
@@ -564,11 +566,7 @@ export function Hierarchy({
                     <H3 className="text-red-700 font-semibold">{`${tableLabel('Institution')}:`}</H3>
                     <H3>{institution.name}</H3>
                   </div>
-                  <div className="flex items-center gap-2 ml-auto">
-                    {addButton(() => {
-                      setNewResource(new tables.Division.Resource());
-                      handleNewResource();
-                    }, tableLabel('Division'))}
+                  <div className="flex items-center gap-3 ml-auto">
                     {handleEditResource(
                       new tables.Institution.Resource({ id: institution.id }),
                       refreshAllInfo
@@ -578,6 +576,12 @@ export function Hierarchy({
               }
             >
               <Ul className="m-5">{renderDivisions(institution)}</Ul>
+              <div className="flex mt-1">
+                {addButton(() => {
+                  setNewResource(new tables.Division.Resource());
+                  handleNewResource();
+                }, tableLabel('Division'))}
+              </div>
             </CollapsibleSection>
           </li>
         </Ul>
