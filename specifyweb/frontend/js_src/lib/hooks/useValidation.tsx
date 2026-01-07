@@ -2,9 +2,10 @@ import React from 'react';
 
 import { InFormEditorContext } from '../components/FormEditor/Context';
 import type { Input } from '../components/Forms/validationHelpers';
-import { isInputTouched } from '../components/Forms/validationHelpers';
+import { hasNativeErrors, isInputTouched } from '../components/Forms/validationHelpers';
 import { listen } from '../utils/events';
 import type { RA } from '../utils/types';
+
 
 /**
  * An integration into native browser error reporting mechanism.
@@ -97,17 +98,12 @@ export function useValidation<T extends Input = Input>(
       // Do not steal focus when form rendering the form in the form editor
       if (isInFormEditor) return;
 
-      // Check for native validation errors for Negative Number fields Could be extended to other types as needed
-      const hasNativeErrors =
-        input.validity.rangeOverflow ||
-        input.validity.rangeUnderflow ||
-        input.validity.valueMissing;
-
       /*
        * Empty string clears validation error
-       * now checks for custom validity and clears it to prevent concatenation of both validity messages
+       * simple  check for HTML validation, through hasNativeErrors and prevents from both Validators to be active simultaneously
+       * 
        */
-      if (hasNativeErrors) {
+      if (hasNativeErrors(input)) {
         input.setCustomValidity('');
       } else {
         input.setCustomValidity(joined);
