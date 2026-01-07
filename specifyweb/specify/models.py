@@ -7989,3 +7989,68 @@ class Tectonicunit(model_extras.Tectonicunit):
         ordering = ()
 
     save = partialmethod(custom_save)
+
+class AutonumSchColl(models.Model):
+    collection = models.ForeignKey(
+        "Collection",
+        db_column="CollectionID",
+        on_delete=models.DO_NOTHING,
+    )
+    autonumberingscheme = models.ForeignKey(
+        "AutoNumberingScheme",
+        db_column="AutoNumberingSchemeID",
+        on_delete=models.DO_NOTHING,
+    )
+
+    class Meta:
+        managed = False
+        db_table = "autonumsch_coll"
+        unique_together = (("collection", "autonumberingscheme"),)
+        indexes = [
+            models.Index(fields=["autonumberingscheme"], name="FK46F04F2AFE55DD76"),
+            models.Index(fields=["collection"], name="FK46F04F2A8C2288BA"),
+        ]
+
+
+class AutonumSchDiv(models.Model):
+    division = models.ForeignKey(
+        "Division",
+        db_column="DivisionID",
+        on_delete=models.DO_NOTHING,
+    )
+    autonumberingscheme = models.ForeignKey(
+        "AutoNumberingScheme",
+        db_column="AutoNumberingSchemeID",
+        on_delete=models.DO_NOTHING,
+    )
+
+    class Meta:
+        managed = False
+        db_table = "autonumsch_div"
+        unique_together = (("division", "autonumberingscheme"),)
+        indexes = [
+            models.Index(fields=["autonumberingscheme"], name="FKA8BE493FE55DD76"),
+            models.Index(fields=["division"], name="FKA8BE49397C961D8"),
+        ]
+
+
+class AutonumSchDsp(models.Model):
+    discipline = models.ForeignKey(
+        "Discipline",
+        db_column="DisciplineID",
+        on_delete=models.DO_NOTHING,
+    )
+    autonumberingscheme = models.ForeignKey(
+        "AutoNumberingScheme",
+        db_column="AutoNumberingSchemeID",
+        on_delete=models.DO_NOTHING,
+    )
+
+    class Meta:
+        managed = False
+        db_table = "autonumsch_dsp"
+        unique_together = (("discipline", "autonumberingscheme"),)
+        indexes = [
+            models.Index(fields=["autonumberingscheme"], name="FKA8BE5C3FE55DD76"),
+            models.Index(fields=["discipline"], name="FKA8BE5C34CE675DE"),
+        ]
