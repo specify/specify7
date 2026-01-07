@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                             models.ForeignKey(
                                 db_column="CollectionID",
                                 on_delete=django.db.models.deletion.DO_NOTHING,
-                                to="your_app_label.collection",
+                                to="specify.collection",
                             ),
                         ),
                         (
@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
                             models.ForeignKey(
                                 db_column="AutoNumberingSchemeID",
                                 on_delete=django.db.models.deletion.DO_NOTHING,
-                                to="your_app_label.autonumberingscheme",
+                                to="specify.autonumberingscheme",
                             ),
                         ),
                     ],
@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
                             models.ForeignKey(
                                 db_column="DivisionID",
                                 on_delete=django.db.models.deletion.DO_NOTHING,
-                                to="your_app_label.division",
+                                to="specify.division",
                             ),
                         ),
                         (
@@ -67,7 +67,7 @@ class Migration(migrations.Migration):
                             models.ForeignKey(
                                 db_column="AutoNumberingSchemeID",
                                 on_delete=django.db.models.deletion.DO_NOTHING,
-                                to="your_app_label.autonumberingscheme",
+                                to="specify.autonumberingscheme",
                             ),
                         ),
                     ],
