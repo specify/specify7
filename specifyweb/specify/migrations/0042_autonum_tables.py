@@ -99,7 +99,7 @@ class Migration(migrations.Migration):
                             models.ForeignKey(
                                 db_column="DisciplineID",
                                 on_delete=django.db.models.deletion.DO_NOTHING,
-                                to="your_app_label.discipline",
+                                to="specify.discipline",
                             ),
                         ),
                         (
@@ -107,7 +107,7 @@ class Migration(migrations.Migration):
                             models.ForeignKey(
                                 db_column="AutoNumberingSchemeID",
                                 on_delete=django.db.models.deletion.DO_NOTHING,
-                                to="your_app_label.autonumberingscheme",
+                                to="specify.autonumberingscheme",
                             ),
                         ),
                     ],
