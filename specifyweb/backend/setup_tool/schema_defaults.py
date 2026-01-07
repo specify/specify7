@@ -1,6 +1,7 @@
 from typing import Optional
-from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
-from specifyweb.specify.migration_utils.update_schema_config import update_table_schema_config_with_defaults
+# from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
+# from specifyweb.specify.migration_utils.update_schema_config import update_table_schema_config_with_defaults
+from specifyweb.specify.migration_utils.update_schema_config import create_default_table_schema_config
 from .utils import load_json_from_file
 from specifyweb.specify.models import Discipline
 
@@ -38,18 +39,22 @@ def apply_schema_defaults(discipline: Discipline):
                     defaults[key] = v
 
     # Update the schema for each table individually.
-    for model_name in model_names_by_table_id.values():
-        logger.debug(f'Applying schema defaults for {model_name}. Using defaults: {overrides is not None}.')
+    # for model_name in model_names_by_table_id.values():
+    #     logger.debug(f'Applying schema defaults for {model_name}. Using defaults: {overrides is not None}.')
     
-        # Table information
-        table_defaults = defaults.get(model_name.lower())
-        table_description = None
-        if table_defaults:
-            table_description = table_defaults.get('desc')
+    #     # Table information
+    #     table_defaults = defaults.get(model_name.lower())
+    #     table_description = None
+    #     if table_defaults:
+    #         table_description = table_defaults.get('desc')
 
-        update_table_schema_config_with_defaults(
-            table_name=model_name,
-            discipline_id=discipline.id,
-            description=table_description,
-            defaults=table_defaults,
-        )
+    #     update_table_schema_config_with_defaults(
+    #         table_name=model_name,
+    #         discipline_id=discipline.id,
+    #         description=table_description,
+    #         defaults=table_defaults,
+    #     )
+    create_default_table_schema_config(
+        discipline_id=discipline.id,
+        defaults=defaults,
+    )
