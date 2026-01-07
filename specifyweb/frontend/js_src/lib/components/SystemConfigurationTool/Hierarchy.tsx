@@ -408,7 +408,7 @@ export function Hierarchy({
           className="flex items-center gap-2 flex-wrap bg-[color:var(--background)] rounded px-2 py-1"
           key={collection.id}
         >
-          <H3 style={{ color: colorByKind['collection'] }} className="font-semibold">{`${tableLabel('Collection')}:`}</H3>
+          <H3 className="font-semibold" style={{ color: colorByKind.collection }}>{`${tableLabel('Collection')}:`}</H3>
           <H3>{collection.name}</H3>
           <div className="flex items-center gap-1">
             {handleEditResource(
@@ -436,7 +436,7 @@ export function Hierarchy({
               <div>
                 <div className="flex items-center gap-1 flex-wrap">
                   <div className="flex items-baseline gap-2">
-                    <H3 style={{ color: colorByKind['discipline'] }} className="font-semibold">{`${tableLabel('Discipline')}:`}</H3>
+                    <H3 className="font-semibold" style={{ color: colorByKind.discipline }}>{`${tableLabel('Discipline')}:`}</H3>
                     <H3>{discipline.name}</H3>
                   </div>
                   <div className="flex items-center gap-3 ml-auto">
@@ -533,7 +533,7 @@ export function Hierarchy({
             <div>
               <div className="flex items-center gap-3 flex-wrap">
                 <div className="flex items-baseline gap-2">
-                  <H3 style={{ color: colorByKind['division'] }} className="font-semibold">{`${tableLabel('Division')}:`}</H3>
+                  <H3 className="font-semibold" style={{ color: colorByKind.division }}>{`${tableLabel('Division')}:`}</H3>
                   <H3>{division.name}</H3>
                 </div>
                 <div className="flex items-center gap-3 ml-auto">
@@ -582,7 +582,7 @@ export function Hierarchy({
               title={
                 <div className="flex items-center gap-3 flex-wrap">
                   <div className="flex items-baseline gap-2">
-                    <H3 style={{ color: colorByKind['institution'] }} className="font-semibold">{`${tableLabel('Institution')}:`}</H3>
+                    <H3 className="font-semibold" style={{ color: colorByKind.institution }}>{`${tableLabel('Institution')}:`}</H3>
                     <H3>{institution.name}</H3>
                   </div>
                   <div className="flex items-center gap-3 ml-auto">
