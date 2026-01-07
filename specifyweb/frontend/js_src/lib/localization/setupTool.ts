@@ -212,4 +212,24 @@ export const setupToolText = createDictionary({
   addNewTaxonTree: {
     'en-us': 'Add new Taxon Tree',
   },
+
+  // System Configuration Tool - Hierarchy diagram
+  hierarchyStructureTitle: {
+    'en-us': 'View the Institutional Hierarchy',
+  },
+  hierarchyStructureHint: {
+    'en-us': 'Click any block to open its edit form.',
+  },
+  hierarchySwitchToHorizontal: {
+    'en-us': 'Switch to horizontal',
+  },
+  hierarchySwitchToVertical: {
+    'en-us': 'Switch to vertical',
+  },
+  hierarchyAddNew: {
+    'en-us': 'Add',
+  },
+  hierarchyDiagram: {
+    'en-us': 'Institutional Hierarchy',
+  },
 } as const);

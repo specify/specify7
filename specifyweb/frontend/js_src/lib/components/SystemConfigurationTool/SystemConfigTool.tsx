@@ -9,6 +9,7 @@ import type {
   Discipline,
   Division,
   GeographyTreeDef,
+  Institution,
   TaxonTreeDef,
 } from '../DataModel/types';
 import { collection, discipline, division } from '../FormParse/webOnlyViews';
@@ -26,12 +27,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
     useBooleanState();
 
   const [newResource, setNewResource] = React.useState<
-    | SpecifyResource<Collection>
-    | SpecifyResource<Discipline>
-    | SpecifyResource<Division>
-    | SpecifyResource<GeographyTreeDef>
-    | SpecifyResource<TaxonTreeDef>
-    | undefined
+    SpecifyResource<Collection> | SpecifyResource<Discipline> | SpecifyResource<Division> | SpecifyResource<GeographyTreeDef> | SpecifyResource<Institution> | SpecifyResource<TaxonTreeDef> | undefined
   >();
 
   React.useEffect(() => {
@@ -45,6 +41,17 @@ export function SystemConfigurationTool(): JSX.Element | null {
       '/context/all_system_data.json',
       'application/json'
     ).then(setAllInfo);
+
+  const newResourceViewName =
+    newResource?.isNew?.() === true
+      ? newResource?.specifyTable.name === 'Collection'
+        ? collection
+        : newResource?.specifyTable.name === 'Discipline'
+          ? discipline
+          : newResource?.specifyTable.name === 'Division'
+            ? division
+            : undefined
+      : undefined;
 
   return (
     <Container.FullGray className="sm:h-auto overflow-scroll">
@@ -67,19 +74,17 @@ export function SystemConfigurationTool(): JSX.Element | null {
           isDependent={false}
           isSubForm={false}
           resource={newResource as SpecifyResource<Collection>}
-          viewName={
-            newResource?.specifyTable.name === 'Collection'
-              ? collection
-              : newResource?.specifyTable.name === 'Discipline'
-                ? discipline
-                : newResource?.specifyTable.name === 'Division'
-                  ? division
-                  : undefined
-          }
+          viewName={newResourceViewName}
           onAdd={undefined}
           onClose={closeNewResource}
-          onDeleted={undefined}
-          onSaved={undefined}
+          onDeleted={async () => {
+            await refreshAllInfo();
+            closeNewResource();
+          }}
+          onSaved={async () => {
+            await refreshAllInfo();
+            closeNewResource();
+          }}
         />
       ) : undefined}
     </Container.FullGray>

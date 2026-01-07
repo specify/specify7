@@ -17,7 +17,7 @@ export function CollapsibleSection({
   const [isOpen, _, __, handleOpen] = useBooleanState(defaultOpen);
 
   return (
-    <div className="my-2">
+    <div className="mb-2">
       <div className="flex items-start">
         <Button.Icon
           className={`ml-2 ${hasChildren ? '' : 'invisible'}`}
@@ -28,7 +28,7 @@ export function CollapsibleSection({
         {title}
       </div>
 
-      {isOpen && <div className="ml-6 mt-2">{children}</div>}
+      {isOpen && <div className="ml-10">{children}</div>}
     </div>
   );
 }
