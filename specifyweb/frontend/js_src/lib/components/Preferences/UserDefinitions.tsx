@@ -1711,7 +1711,7 @@ export const userPreferenceDefinitions = {
             description: preferencesText.autoPopulateDescription(),
             requiresReload: false,
             visible: 'protected',
-            defaultValue: false,
+            defaultValue: true,
             type: 'java.lang.Boolean',
           }),
         },
