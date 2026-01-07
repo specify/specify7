@@ -12,7 +12,6 @@ import type {
   GeographyTreeDef,
   TaxonTreeDef,
 } from '../DataModel/types';
-import { collection, discipline, division } from '../FormParse/webOnlyViews';
 import { LazyResourceView } from '../Forms/LazyResourceView';
 import { load } from '../InitialContext';
 import { LoadingScreen } from '../Molecules/Dialog';
