@@ -86,6 +86,10 @@ export function SystemConfigurationTool(): JSX.Element | null {
           onDeleted={async () => {
             await refreshAllInfo();
             closeNewResource();
+            await fetch('/specify/command/clear-cache/', {
+              method: 'POST',
+              credentials: 'include',
+            });
           }}
           onSaved={async () => {
             await refreshAllInfo();
