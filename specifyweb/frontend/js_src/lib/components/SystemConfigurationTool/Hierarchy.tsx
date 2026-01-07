@@ -160,9 +160,12 @@ function HierarchyDiagram({
       <div className="overflow-auto flex-1">
         <svg
           aria-label={setupToolText.hierarchyDiagram()}
-          height={height}
+          className="w-full h-full"
+          height="100%"
           role="img"
-          width={width}
+          viewBox={`0 0 ${width} ${height}`}
+          width="100%"
+          preserveAspectRatio="xMidYMid meet"
         >
           <g transform="translate(0,0)">
             {links.map((link: HierarchyPointLink<HierarchyNodeDatum>) => {
