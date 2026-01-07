@@ -12,7 +12,8 @@ import type {
   GeographyTreeDef,
   TaxonTreeDef,
 } from '../DataModel/types';
-import { LazyResourceView } from '../Forms/LazyResourceView';
+import { collection, discipline, division } from '../FormParse/webOnlyViews';
+import { ResourceView } from '../Forms/ResourceView';
 import { load } from '../InitialContext';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { Hierarchy } from './Hierarchy';
@@ -47,6 +48,17 @@ export function SystemConfigurationTool(): JSX.Element | null {
       'application/json'
     ).then(setAllInfo);
 
+  const newResourceViewName =
+    newResource?.isNew?.() === true
+      ? newResource?.specifyTable.name === 'Collection'
+        ? collection
+        : newResource?.specifyTable.name === 'Discipline'
+          ? discipline
+          : newResource?.specifyTable.name === 'Division'
+            ? division
+            : undefined
+      : undefined;
+
   return (
     <Container.FullGray className="sm:h-auto overflow-scroll">
       <H2 className="text-2xl">{userText.systemConfigurationTool()}</H2>
@@ -63,11 +75,12 @@ export function SystemConfigurationTool(): JSX.Element | null {
         )}
       </div>
       {newResourceOpen ? (
-        <LazyResourceView
+        <ResourceView
           dialog="modal"
           isDependent={false}
           isSubForm={false}
           resource={newResource as SpecifyResource<Collection>}
+          viewName={newResourceViewName}
           onAdd={undefined}
           onClose={closeNewResource}
           onDeleted={async () => {
