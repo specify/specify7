@@ -54,10 +54,10 @@ const NODE_VERTICAL_GAP = 10;
 const CHART_MARGIN = { top: 12, right: 16, bottom: 12, left: 16 } as const;
 
 const colorByKind: Record<HierarchyNodeKind, string> = {
-  institution: '#9c0d0dff',
-  division: '#16a34a', // Tailwind green-600
-  discipline: '#2563eb', // Tailwind blue-600
-  collection: '#92400e', // Tailwind amber-800 (brownish?)
+  institution: '#c3452d',
+  division: '#66b642',
+  discipline: '#4f98d6',
+  collection: '#f1a43c',
 };
 
 const textByKind: Record<HierarchyNodeKind, string> = {
@@ -436,7 +436,7 @@ export function Hierarchy({
               <div>
                 <div className="flex items-center gap-1 flex-wrap">
                   <div className="flex items-baseline gap-2">
-                    <H3 className="!text-blue-700 font-semibold">{`${tableLabel('Discipline')}:`}</H3>
+                    <H3 style={{ color: colorByKind['discipline'] }} className="font-semibold">{`${tableLabel('Discipline')}:`}</H3>
                     <H3>{discipline.name}</H3>
                   </div>
                   <div className="flex items-center gap-3 ml-auto">
@@ -533,7 +533,7 @@ export function Hierarchy({
             <div>
               <div className="flex items-center gap-3 flex-wrap">
                 <div className="flex items-baseline gap-2">
-                  <H3 className="!text-green-700 font-semibold">{`${tableLabel('Division')}:`}</H3>
+                  <H3 style={{ color: colorByKind['division'] }} className="font-semibold">{`${tableLabel('Division')}:`}</H3>
                   <H3>{division.name}</H3>
                 </div>
                 <div className="flex items-center gap-3 ml-auto">
