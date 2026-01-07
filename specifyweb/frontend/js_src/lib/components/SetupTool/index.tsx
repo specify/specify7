@@ -315,7 +315,9 @@ export function SetupTool({
                     {commonText.back()}
                   </Button.Secondary>
                   <SubmitComponent className="self-start" form={id('form')}>
-                    {(currentStep === resources.length - 1) ? commonText.create() : commonText.next()}
+                    {currentStep === resources.length - 1
+                      ? commonText.create()
+                      : commonText.next()}
                   </SubmitComponent>
                 </div>
               </Container.Center>
