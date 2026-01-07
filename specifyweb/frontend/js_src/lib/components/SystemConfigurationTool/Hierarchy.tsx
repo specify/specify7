@@ -210,22 +210,16 @@ function HierarchyDiagram({
                   width={NODE_WIDTH}
                   y={6}
                 />
-                <text
-                  className="fill-white text-sm font-semibold"
-                  textAnchor="middle"
-                  x={NODE_WIDTH / 2}
-                  y={NODE_HEIGHT / 2}
-                >
-                  {node.data.name}
-                </text>
-                <text
-                  className="fill-slate-200 text-xs"
-                  textAnchor="middle"
-                  x={NODE_WIDTH / 2}
-                  y={NODE_HEIGHT / 2 + 12}
-                >
-                  {textByKind[node.data.kind]}
-                </text>
+                <foreignObject height={NODE_HEIGHT - 12} width={NODE_WIDTH} y={6}>
+                  <div className="text-white h-full px-3 flex flex-col items-center justify-center text-center leading-tight break-words">
+                    <div className="text-sm font-semibold">
+                      {node.data.name}
+                    </div>
+                    <div className="text-xs">
+                      {textByKind[node.data.kind]}
+                    </div>
+                  </div>
+                </foreignObject>
               </g>
             ))}
           </g>
@@ -404,7 +398,7 @@ export function Hierarchy({
         >
           <H3 className="!text-amber-800 font-semibold">{`${tableLabel('Collection')}:`}</H3>
           <H3>{collection.name}</H3>
-          <div className="flex items-center gap-1 ml-3">
+          <div className="flex items-center gap-1">
             {handleEditResource(
               new tables.Collection.Resource({ id: collection.id }),
               refreshAllInfo
