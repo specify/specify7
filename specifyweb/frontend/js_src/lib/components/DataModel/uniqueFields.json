@@ -64,6 +64,7 @@
     "preparationAttachments",
     "referenceWorkAttachments",
     "repositoryAgreementAttachments",
+    "spDataSetAttachments",
     "storageAttachments",
     "taxonAttachments",
     "treatmentEventAttachments",
@@ -194,6 +195,7 @@
   "collector": ["timestampCreated", "version", "timestampModified"],
   "commonnametx": ["timestampCreated", "version", "timestampModified"],
   "commonnametxcitation": ["timestampCreated", "version", "timestampModified"],
+  "component": ["timestampCreated", "version", "timestampModified"],
   "conservdescription": [
     "conservDescriptionAttachments",
     "timestampCreated",
@@ -610,7 +612,11 @@
   "userrole": [],
   "rolepolicy": [],
   "libraryrolepolicy": [],
-  "spdataset": ["timestampcreated", "timestampmodified"],
+  "spdataset": [
+    "spDataSetAttachments",
+    "timestampcreated",
+    "timestampmodified"
+  ],
   "collectionobjecttype": ["timestampCreated", "version", "timestampModified"],
   "collectionobjectgroup": [
     "guid",
