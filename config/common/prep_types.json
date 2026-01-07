@@ -64,7 +64,7 @@
   ],
   "reptile": [
     { "name": "C&S", "isloanable": true },
-    { "name": "Denatured EtoH", "isloanable": true },
+    { "name": "Denatured EtOH", "isloanable": true },
     { "name": "Dry", "isloanable": true },
     { "name": "EtOH", "isloanable": true },
     { "name": "Formalin", "isloanable": true },
