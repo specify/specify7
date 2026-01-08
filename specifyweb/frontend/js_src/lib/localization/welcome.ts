@@ -157,16 +157,6 @@ export const welcomeText = createDictionary({
     'de-ch': 'Datenbank-Name:',
     'pt-br': 'Nome do banco de dados:',
   },
-  isaNumber: {
-    comment: 'I believe ISA stands for Institution Service Agreement',
-    'en-us': 'ISA Number:',
-    'ru-ru': 'Номер ISA:',
-    'es-es': 'Número ISA:',
-    'fr-fr': 'Numéro ISA :',
-    'uk-ua': 'Номер ISA:',
-    'de-ch': 'ISA-Nummer:',
-    'pt-br': 'Número ISA:',
-  },
   browser: {
     'en-us': 'Browser:',
     'ru-ru': 'Браузер:',

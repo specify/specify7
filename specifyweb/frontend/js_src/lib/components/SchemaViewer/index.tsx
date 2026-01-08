@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { welcomeText } from '../../localization/welcome';
 import { Container, H2 } from '../Atoms';
