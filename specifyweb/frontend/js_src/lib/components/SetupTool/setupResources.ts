@@ -353,6 +353,20 @@ export const resources: RA<ResourceConfig> = [
     endpoint: '/setup_tool/specifyuser/create/',
     fields: [
       {
+        name: 'firstname',
+        label: setupToolText.specifyUserFirstName(),
+        description: setupToolText.specifyUserFirstNameDescription(),
+        required: false,
+        maxLength: 50,
+      },
+      {
+        name: 'lastname',
+        label: setupToolText.specifyUserLastName(),
+        description: setupToolText.specifyUserLastNameDescription(),
+        required: true,
+        maxLength: 256,
+      },
+      {
         name: 'name',
         label: setupToolText.specifyUserName(),
         description: setupToolText.specifyUserNameDescription(),
@@ -371,20 +385,6 @@ export const resources: RA<ResourceConfig> = [
           description: setupToolText.specifyUserConfirmPasswordDescription(),
         },
         maxLength: 255,
-      },
-      {
-        name: 'firstname',
-        label: setupToolText.specifyUserFirstName(),
-        description: setupToolText.specifyUserFirstNameDescription(),
-        required: false,
-        maxLength: 50,
-      },
-      {
-        name: 'lastname',
-        label: setupToolText.specifyUserLastName(),
-        description: setupToolText.specifyUserLastNameDescription(),
-        required: true,
-        maxLength: 256,
       },
     ],
   },
