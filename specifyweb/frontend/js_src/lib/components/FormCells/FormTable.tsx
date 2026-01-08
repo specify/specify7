@@ -513,7 +513,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                         if (typeof handleDelete === 'function') {
                           handleDelete(resource);
                         }
-                        globalThis.location.reload();
+              
                       }}
                       />
                     ) : undefined}
