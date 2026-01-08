@@ -15,6 +15,23 @@
       ]
     },
     {
+      "name": "LifeStage",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 8,
+      "items": [
+        { "title": "Unknown", "value": "Unknown" },
+        { "title": "Egg", "value": "Egg" },
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Fledgling", "value": "Fledgling" },
+        { "title": "Nestling", "value": "Nestling" },
+        { "title": "Hatchling", "value": "Hatchling" },
+        { "title": "Juvenile", "value": "Juvenile" },
+        { "title": "Adult", "value": "Adult" }
+      ]
+    },
+    {
       "name": "CollObjPrepMeth",
       "issystem": true,
       "type": 0,
@@ -153,8 +170,7 @@
         { "title": "Fruiting", "value": "Fruiting" },
         { "title": "Mature", "value": "Mature" },
         { "title": "Seed", "value": "Seed" },
-        { "title": "Seedling", "value": "Seedling" },
-        { "title": "Senescent", "value": "Senescent" }
+        { "title": "Seedling", "value": "Seedling" }
       ]
     }
   ],
