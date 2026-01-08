@@ -253,7 +253,7 @@ export function SetupTool({
           </H2>
         </div>
       </header>
-      <Container.FullGray className="overflow-auto w-full items-center shaodw-none">
+      <Container.FullGray className="overflow-auto w-full items-center shadow-none">
         {inProgress ? (
           <Container.Center className="p-3 shadow-none max-w-lg">
             <H3 className="text-xl font-semibold">
