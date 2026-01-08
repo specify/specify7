@@ -37,16 +37,16 @@ DISCIPLINE_DIRS = {
     "geology": "geology",
 }
 DISCIPLINE_NAMES = {
-    'fish': 'Fish',
+    'fish': 'Ichthyology',
     'herpetology': 'Herpetology',
     'paleobotany': 'Paleobotany',
     'invertpaleo': 'Invertebrate Paleontology',
     'vertpaleo': 'Vertebrate Paleontology',
-    'bird': 'Bird',
-    'mammal': 'Mammal',
-    'insect': 'Insect',
+    'bird': 'Ornithology',
+    'mammal': 'Mammalogy',
+    'insect': 'Entomology',
     'botany': 'Botany',
-    'invertebrate': 'Invertebrate',
+    'invertebrate': 'Invertebrate Zoology',
     'geology': 'Geology',
 }
 
