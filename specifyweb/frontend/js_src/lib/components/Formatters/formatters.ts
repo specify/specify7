@@ -171,7 +171,7 @@ async function formatField(
     formatted = field.isRelationship
       ? isCycle
         ? ''
-        : await (relationshipIsToMany(field)
+        : await (relationshipIsToMany(field) && field.type !== 'zero-to-one'
             ? aggregate(
                 await resource.rgetCollection(field.name),
                 aggregator,

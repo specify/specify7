@@ -46,7 +46,7 @@ export const specifyNetworkText = createDictionary({
     'de-ch': 'Bitte versuchen Sie, nach einem anderen Datensatz zu suchen.',
     'es-es': 'Intente buscar un registro diferente',
     'fr-fr': 'Veuillez essayer de rechercher un autre enregistrement',
-    'ru-ru': 'Попробуйте поискать другую запись.',
+    'ru-ru': 'Пожалуйста, попробуйте поискать другую запись.',
     'uk-ua': 'Будь ласка, спробуйте знайти інший запис',
     'pt-br': 'Por favor, tente pesquisar um registro diferente.',
   },
@@ -64,7 +64,7 @@ export const specifyNetworkText = createDictionary({
     'de-ch': 'Gemeldet von {provider:string}',
     'es-es': 'Reportado por {provider:string}',
     'fr-fr': 'Signalé par {provider:string}',
-    'ru-ru': 'Сообщил {provider:string}',
+    'ru-ru': 'Сообщение от {provider:string}',
     'uk-ua': 'Повідомив {provider:string}',
     'pt-br': 'Relatado por {provider:string}',
   },
@@ -87,7 +87,7 @@ export const specifyNetworkText = createDictionary({
     'fr-fr':
       'Cette carte montre les occurrences de ce taxon provenant des agrégateurs iDigBio et GBIF.',
     'ru-ru':
-      'На этой карте показаны случаи встречаемости этого таксона по данным агрегаторов iDigBio и GBIF.',
+      'На этой карте показаны данные о встречаемости данного таксона из агрегаторов iDigBio и GBIF.',
     'uk-ua':
       'Ця карта показує випадки появи цього таксону з агрегаторів iDigBio та GBIF.',
     'pt-br':
@@ -103,7 +103,7 @@ export const specifyNetworkText = createDictionary({
     'fr-fr':
       "Les occurrences enregistrées dans iDigBio sont représentées par des points verts ronds, à l'exception de celles de la collection actuelle, qui sont représentées par des points rouges ronds. Un zoom sur les points rouges fait apparaître une épingle bleue en forme de larme ; cliquer dessus lance une requête de localisation dans Specify, affichant toutes les espèces de la base de données Specify actuelle collectées à cet endroit.",
     'ru-ru':
-      'Встречи, зарегистрированные в iDigBio, отображаются круглыми зелёными точками, за исключением случаев из текущей коллекции, зарегистрированной в iDigBio, которые обозначены круглыми красными точками. При увеличении красных точек появляется синяя каплевидная метка; нажатие на метку выполняет запрос по местоположению в Specify, который отображает все виды из текущей базы данных Specify, собранные в этом месте.',
+      'Зарегистрированные в iDigBio находки отображаются в виде круглых зеленых точек, за исключением тех, что относятся к текущей коллекции, зарегистрированной в iDigBio, которые отображаются в виде круглых красных точек. При увеличении масштаба красных точек появляется синяя метка в форме капли; щелчок по этой метке запускает запрос по местонахождению в Specify, который отображает все виды из текущей базы данных Specify, собранные в этом месте.',
     'uk-ua':
       'Випадки, записані в iDigBio, відображаються круглими зеленими точками, за винятком випадків із поточної колекції, записаної в iDigBio, які мають круглі червоні точки. Збільшення масштабу червоних крапок відкриває блакитну шпильку-сльозинку, клацання шпильки виконує запит місцевості в Specify, який показує всі види в поточній базі даних Specify, зібрані з цього місця.',
     'pt-br':
@@ -119,7 +119,7 @@ export const specifyNetworkText = createDictionary({
     'fr-fr':
       "Pour les données GBIF, les points individuels et les groupes de points sont représentés par des hexagones de différentes couleurs allant du jaune à l'orange en passant par le rouge. Les hexagones rouge foncé correspondent aux zones de plus forte densité de spécimens collectés de cette espèce.",
     'ru-ru':
-      'В данных GBIF отдельные точки и скопления точек показаны шестиугольниками разных цветов: от жёлтого до оранжевого и красного. Тёмно-красные шестиугольники соответствуют наиболее плотному распределению собранных особей данного вида.',
+      'В данных GBIF отдельные точки и группы точек отображаются в виде шестиугольников разных цветов, от желтого до оранжевого и красного. Темно-красные шестиугольники соответствуют наиболее плотным распределениям собранных экземпляров данного вида.',
     'uk-ua':
       'Для даних GBIF окремі точки та кластери точок відображаються у вигляді шестикутників різних кольорів від жовтого до оранжевого та червоного. Темно-червоні шестикутники відповідають найщільнішому розподілу зібраних зразків цього виду.',
     'pt-br':
@@ -130,7 +130,7 @@ export const specifyNetworkText = createDictionary({
     'de-ch': 'Verbindung zu GBIF herstellen',
     'es-es': 'Conectarse a GBIF',
     'fr-fr': 'Se connecter au GBIF',
-    'ru-ru': 'Подключиться к ГБИФ',
+    'ru-ru': 'Подключитесь к GBIF',
     'uk-ua': 'Підключіться до GBIF',
     'pt-br': 'Conecte-se ao GBIF',
   },
@@ -139,7 +139,7 @@ export const specifyNetworkText = createDictionary({
     'de-ch': 'Suchen Sie nach Ihrer Institution:',
     'es-es': 'Busque su institución:',
     'fr-fr': 'Recherchez votre établissement :',
-    'ru-ru': 'Поиск вашего учреждения:',
+    'ru-ru': 'Найдите своё учебное заведение:',
     'uk-ua': 'Підключіться до GBIF',
     'pt-br': 'Procure sua instituição:',
   },
@@ -153,7 +153,7 @@ export const specifyNetworkText = createDictionary({
     'fr-fr':
       'Carte de répartition de tous les spécimens numérisés conservés dans votre institution',
     'ru-ru':
-      'Карта распределения всех оцифрованных образцов, хранящихся в вашем учреждении',
+      'Карта распространения всех оцифрованных образцов, хранящихся в вашем учреждении.',
     'uk-ua':
       'Карта розповсюдження всіх оцифрованих зразків, збережених у вашій установі',
     'pt-br':
@@ -168,7 +168,7 @@ export const specifyNetworkText = createDictionary({
     'fr-fr':
       'Carte de répartition de tous les spécimens numérisés conservés dans votre collection',
     'ru-ru':
-      'Карта распределения всех оцифрованных образцов, хранящихся в вашей коллекции',
+      'Карта распространения всех оцифрованных образцов, хранящихся в вашей коллекции.',
     'uk-ua':
       'Карта розповсюдження всіх оцифрованих зразків, збережених у вашій колекції',
     'pt-br':
@@ -179,7 +179,7 @@ export const specifyNetworkText = createDictionary({
     'de-ch': 'Startjahr',
     'es-es': 'Año de inicio',
     'fr-fr': 'Année de début',
-    'ru-ru': 'Год начала',
+    'ru-ru': 'Начало года',
     'uk-ua': 'Рік початку',
     'pt-br': 'Ano de início',
   },
@@ -191,5 +191,55 @@ export const specifyNetworkText = createDictionary({
     'ru-ru': 'Конец года',
     'uk-ua': 'Кінцевий рік',
     'pt-br': 'Fim do ano',
+  },
+  publishingOrganizationKey: {
+    'en-us': 'GBIF Publishing Organization Key',
+    'de-ch': 'GBIF-Veröffentlichungsorganisationsschlüssel',
+    'es-es': 'Clave de la organización editorial de GBIF',
+    'fr-fr': "Clé de l'organisation d'édition GBIF",
+    'pt-br': 'Chave da Organização de Publicação do GBIF',
+    'ru-ru': 'Ключ к издательской организации GBIF',
+    'uk-ua': 'Ключ видавничої організації GBIF',
+  },
+  publishingOrganizationKeyDescription: {
+    'en-us':
+      'The GBIF "publishingOrgKey" (a UUID) for this collection, used for Specify Network integration.',
+    'de-ch':
+      'Der GBIF-„publishingOrgKey“ (eine UUID) für diese Sammlung, der für die Specify Network-Integration verwendet wird.',
+    'es-es':
+      'La "publishingOrgKey" de GBIF (un UUID) para esta colección, utilizada para la integración de Specify Network.',
+    'fr-fr':
+      "La clé GBIF « publishingOrgKey » (un UUID) pour cette collection, utilisée pour l'intégration du réseau Specify.",
+    'pt-br':
+      'A chave "publishingOrgKey" (um UUID) do GBIF para esta coleção, usada para a integração com a rede Specify.',
+    'ru-ru':
+      'Ключ публикации GBIF "publishingOrgKey" (UUID) для этой коллекции, используемый для интеграции с Specify Network.',
+    'uk-ua':
+      'GBIF "publishingOrgKey" (UUID) для цієї колекції, що використовується для інтеграції Specify Network.',
+  },
+  collectionKey: {
+    'en-us': 'GBIF Data Set Key',
+    'de-ch': 'GBIF-Datensatzschlüssel',
+    'es-es': 'Clave del conjunto de datos GBIF',
+    'fr-fr': "Clé d'identification des données GBIF",
+    'pt-br': 'Chave do conjunto de dados GBIF',
+    'ru-ru': 'Ключ набора данных GBIF',
+    'uk-ua': 'Ключ набору даних GBIF',
+  },
+  collectionKeyDescription: {
+    'en-us':
+      'The GBIF "dataSetKey" (a UUID) for this collection, used for Specify Network integration.',
+    'de-ch':
+      'Der GBIF-Datensatzschlüssel (eine UUID) für diese Sammlung, der für die Specify Network-Integration verwendet wird.',
+    'es-es':
+      'La "dataSetKey" de GBIF (un UUID) para esta colección, utilizada para la integración de Specify Network.',
+    'fr-fr':
+      "Le « dataSetKey » GBIF (un UUID) pour cette collection, utilisé pour l'intégration du réseau Specification.",
+    'pt-br':
+      'A "dataSetKey" do GBIF (um UUID) para esta coleção, usada para a integração do Specify Network.',
+    'ru-ru':
+      'Ключ набора данных GBIF (UUID) для этой коллекции используется для интеграции с Specify Network.',
+    'uk-ua':
+      'GBIF "dataSetKey" (UUID) для цієї колекції, що використовується для інтеграції Specify Network.',
   },
 } as const);
