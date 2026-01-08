@@ -44,14 +44,14 @@ export type FieldConfig = {
 
 // Discipline list from backend/context/app_resource.py
 const disciplineTypeOptions = [
-  { value: 'fish', label: 'Fish' },
+  { value: 'fish', label: 'Ichthyology' },
   { value: 'herpetology', label: 'Herpetology' },
   { value: 'paleobotany', label: 'Paleobotany' },
   { value: 'invertpaleo', label: 'Invertebrate Paleontology' },
   { value: 'vertpaleo', label: 'Vertebrate Paleontology' },
-  { value: 'bird', label: 'Bird' },
-  { value: 'mammal', label: 'Mammal' },
-  { value: 'insect', label: 'Insect' },
+  { value: 'bird', label: 'Ornithology' },
+  { value: 'mammal', label: 'Mammalogy' },
+  { value: 'insect', label: 'Entomology' },
   { value: 'botany', label: 'Botany' },
   { value: 'invertebrate', label: 'Invertebrate' },
   { value: 'geology', label: 'Geology' },
