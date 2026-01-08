@@ -249,7 +249,7 @@ export function SetupTool({
         <div className="w-full flex flex-col items-center justify-center gap-2 py-3">
           <img className="w-auto h-12 mx-auto" src="/static/img/logo.svg" />
           <H2 className="text-2xl">
-            {setupToolText.specifyGuidedSetup()}
+            {setupToolText.guidedSetup()}
           </H2>
         </div>
       </header>

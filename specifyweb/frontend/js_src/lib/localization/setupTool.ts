@@ -9,8 +9,8 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const setupToolText = createDictionary({
-  specifyGuidedSetup: {
-    'en-us': 'Specify Guided Setup',
+  guidedSetup: {
+    'en-us': 'Guided Setup',
   },
 
   setupProgress: {
