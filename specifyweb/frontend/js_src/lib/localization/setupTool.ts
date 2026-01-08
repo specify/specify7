@@ -25,6 +25,10 @@ export const setupToolText = createDictionary({
     'en-us': 'Setting up the database...',
   },
 
+  creating: {
+    'en-us': 'Creating the',
+  },
+
   setupError: {
     'en-us': 'An error occurred during the last setup attempt.',
   },

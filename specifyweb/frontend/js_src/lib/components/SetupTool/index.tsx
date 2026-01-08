@@ -262,7 +262,7 @@ export function SetupTool({
             <H3 className="text-md">
               {nextIncompleteStep === -1
                 ? setupToolText.settingUp()
-                : resources[nextIncompleteStep].label}
+                : `${setupToolText.creating()} ${resources[nextIncompleteStep].label}`}
             </H3>
             {loadingBar}
           </Container.Center>
