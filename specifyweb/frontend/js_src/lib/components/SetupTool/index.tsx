@@ -256,10 +256,10 @@ export function SetupTool({
       <Container.FullGray className="overflow-auto w-full items-center">
         {inProgress ? (
           <Container.Center className="p-3 shadow-md max-w-lg">
-            <H3 className="text-xl font-semibold mb-4">
+            <H3 className="text-xl font-semibold">
               {setupToolText.settingUp()}
             </H3>
-            <H3 className="text-md mb-4">
+            <H3 className="text-md">
               {nextIncompleteStep === -1
                 ? setupToolText.settingUp()
                 : resources[nextIncompleteStep].label}
@@ -270,7 +270,7 @@ export function SetupTool({
           <div className="flex flex-col md:flex-row w-full justify-center gap-8">
             <div className="w-[20rem]">
               <Container.Center className="p-3 shadow-md max-w-lg">
-                <H3 className="text-xl font-semibold mb-4">
+                <H3 className="text-xl font-semibold">
                   {setupToolText.overview()}
                 </H3>
                 <div className="overflow-auto">
@@ -290,8 +290,8 @@ export function SetupTool({
                   key={currentStep}
                   onSubmit={handleSubmit}
                 >
-                  <div className="flex items-center justify-between mb-4">
-                    <H3 className="text-xl font-semibold mb-4">
+                  <div className="flex items-center justify-between">
+                    <H3 className="text-xl font-semibold">
                       {resources[currentStep].label}
                     </H3>
                     {resources[currentStep].documentationUrl !== undefined && (
@@ -304,7 +304,7 @@ export function SetupTool({
                   </div>
                   {resources[currentStep].description ===
                   undefined ? undefined : (
-                    <p className="text-md mb-4">
+                    <p className="text-md">
                       {resources[currentStep].description}
                     </p>
                   )}
@@ -320,7 +320,7 @@ export function SetupTool({
                 </div>
               </Container.Center>
               <Container.Center className="p-3 shadow-md max-w-lg">
-                <p className="text-md mb-4">{setupToolText.setupProgress()}</p>
+                <p className="text-md">{setupToolText.setupProgress()}</p>
                 <Progress max={stepOrder.length} value={currentStep} />
               </Container.Center>
               {setupError === undefined ? undefined : (
@@ -331,7 +331,7 @@ export function SetupTool({
                       {setupToolText.setupError()}
                     </H3>
                   </div>
-                  <p className="text-md mb-4">{localized(setupError)}</p>
+                  <p className="text-md">{localized(setupError)}</p>
                 </Container.Center>
               )}
             </div>
