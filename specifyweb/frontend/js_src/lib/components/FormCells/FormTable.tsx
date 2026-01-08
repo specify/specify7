@@ -25,6 +25,7 @@ import type { CollectionObjectGroup } from '../DataModel/types';
 import { FormMeta } from '../FormMeta';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
 import { attachmentView } from '../FormParse/webOnlyViews';
+import { DeleteButton } from '../Forms/DeleteButton';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubViewContext } from '../Forms/SubView';
 import { propsToFormMode, useViewDefinition } from '../Forms/useViewDefinition';
@@ -41,7 +42,6 @@ import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { COJODialog } from './COJODialog';
 import { FormCell } from './index';
-import { DeleteButton } from '../Forms/DeleteButton';
 
 const cellToLabel = (
   table: SpecifyTable,
@@ -499,8 +499,8 @@ export function FormTable<SCHEMA extends AnySchema>({
                       !disableRemove && (renderedResourceId === undefined || renderedResourceId === resource.id) ? (
                       <DeleteButton
                       component ={Button.Small}
-                      deferred={true}
-                      isIcon={true}
+                      deferred
+                      isIcon
                       resource ={resource}
                       onDeleted = {(): void => {
                         if (typeof handleDelete === 'function') {
