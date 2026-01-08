@@ -4,8 +4,7 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
     dependencies = [
-        # Replace with your app's latest migration:
-        ("your_app_label", "00xx_previous_migration"),
+        ("specify", "0041_add_missing_schema_after_reorganization"),
     ]
 
     operations = [
@@ -20,7 +19,7 @@ class Migration(migrations.Migration):
                             models.ForeignKey(
                                 db_column="CollectionID",
                                 on_delete=django.db.models.deletion.DO_NOTHING,
-                                to="your_app_label.collection",
+                                to="specify.collection",
                             ),
                         ),
                         (
@@ -28,7 +27,7 @@ class Migration(migrations.Migration):
                             models.ForeignKey(
                                 db_column="AutoNumberingSchemeID",
                                 on_delete=django.db.models.deletion.DO_NOTHING,
-                                to="your_app_label.autonumberingscheme",
+                                to="specify.autonumberingscheme",
                             ),
                         ),
                     ],
@@ -60,7 +59,7 @@ class Migration(migrations.Migration):
                             models.ForeignKey(
                                 db_column="DivisionID",
                                 on_delete=django.db.models.deletion.DO_NOTHING,
-                                to="your_app_label.division",
+                                to="specify.division",
                             ),
                         ),
                         (
@@ -68,7 +67,7 @@ class Migration(migrations.Migration):
                             models.ForeignKey(
                                 db_column="AutoNumberingSchemeID",
                                 on_delete=django.db.models.deletion.DO_NOTHING,
-                                to="your_app_label.autonumberingscheme",
+                                to="specify.autonumberingscheme",
                             ),
                         ),
                     ],
@@ -100,7 +99,7 @@ class Migration(migrations.Migration):
                             models.ForeignKey(
                                 db_column="DisciplineID",
                                 on_delete=django.db.models.deletion.DO_NOTHING,
-                                to="your_app_label.discipline",
+                                to="specify.discipline",
                             ),
                         ),
                         (
@@ -108,7 +107,7 @@ class Migration(migrations.Migration):
                             models.ForeignKey(
                                 db_column="AutoNumberingSchemeID",
                                 on_delete=django.db.models.deletion.DO_NOTHING,
-                                to="your_app_label.autonumberingscheme",
+                                to="specify.autonumberingscheme",
                             ),
                         ),
                     ],
