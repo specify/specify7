@@ -63,7 +63,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
       : undefined;
 
   return (
-    <Container.FullGray className="sm:h-auto overflow-scroll">
+    <Container.FullGray className="sm:h-auto overflow-scroll max-h-full">
       <H2 className="text-2xl">{userText.systemConfigurationTool()}</H2>
       <div className="flex h-0 flex-1 flex-col gap-4 md:flex-row">
         {allInfo === undefined || allInfo === null ? (

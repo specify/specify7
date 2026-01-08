@@ -1,5 +1,11 @@
-import type { HierarchyPointLink, HierarchyPointNode } from 'd3';
-import { hierarchy as d3Hierarchy, tree as d3Tree } from 'd3';
+import type { HierarchyPointLink, HierarchyPointNode, ZoomBehavior } from 'd3';
+import {
+  hierarchy as d3Hierarchy,
+  select as d3Select,
+  tree as d3Tree,
+  zoom as d3Zoom,
+  zoomIdentity,
+} from 'd3';
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
@@ -97,6 +103,8 @@ function HierarchyDiagram({
   onToggleOrientation,
 }: HierarchyDiagramProps) {
   const isVertical = orientation === 'vertical';
+  const svgRef = React.useRef<SVGSVGElement | null>(null);
+  const [transform, setTransform] = React.useState(zoomIdentity);
 
   const layout = React.useMemo(() => {
     const root = d3Hierarchy<HierarchyNodeDatum>(toHierarchyDatum(institution));
@@ -129,6 +137,27 @@ function HierarchyDiagram({
 
   const xOffset = CHART_MARGIN.left - minX;
   const yOffset = CHART_MARGIN.top - minY;
+
+  React.useEffect(() => {
+    if (!svgRef.current) return;
+
+    const zoomBehavior = d3Zoom<SVGSVGElement, unknown>()
+      .scaleExtent([0.5, 8])
+      .on('zoom', (event) => {
+        setTransform(event.transform);
+      });
+
+    const svgSelection = d3Select(svgRef.current);
+    svgSelection.call(zoomBehavior);
+
+    // Resets so you don't lose the view
+    svgSelection.call(zoomBehavior.transform, zoomIdentity);
+    setTransform(zoomIdentity);
+
+    return () => {
+      svgSelection.call(zoomBehavior);
+    };
+  }, [isVertical]);
 
   const handleKeyDown = (
     event: React.KeyboardEvent<SVGGElement>,
@@ -163,11 +192,12 @@ function HierarchyDiagram({
           className="w-full h-full"
           height="100%"
           preserveAspectRatio="xMidYMid meet"
+          ref={svgRef}
           role="img"
           viewBox={`0 0 ${width} ${height}`}
           width="100%"
         >
-          <g transform="translate(0,0)">
+          <g transform={transform.toString()}>
             {links.map((link: HierarchyPointLink<HierarchyNodeDatum>) => {
               const sourceX = getX(link.source) + xOffset + NODE_WIDTH / 2;
               const sourceY = getY(link.source) + yOffset + NODE_HEIGHT / 2;
@@ -566,15 +596,15 @@ export function Hierarchy({
     ));
 
   return (
-    <div className="flex flex-col md:flex-row flex-1 min-h-0 gap-4 overflow-hidden m-4">
+    <div className="flex flex-col md:flex-row flex-1 min-h-0 gap-4 overflow-hidden h-ful rounded">
       <div
         aria-label={setupToolText.hierarchyStructureTitle()}
-        className="flex-1 min-w-0 min-h-0 overflow-y-auto overflow-x-auto md:basis-1/3 md:max-w-[33%]"
+        className="flex-shrink-0 md:flex-shrink md:basis-1/3 md:max-w-[33%] overflow-y-auto overflow-x-auto min-h-0"
         role="navigation"
       >
         <Ul
           aria-label={setupToolText.hierarchyStructureTitle()}
-          className="bg-[color:var(--background)] p-3 rounded h-full min-h-0 overflow-auto w-max min-w-full"
+          className="bg-[color:var(--background)] p-3 min-h-full w-max min-w-full"
         >
           <li key={institution.id}>
             <CollapsibleSection
@@ -607,7 +637,7 @@ export function Hierarchy({
         </Ul>
       </div>
 
-      <div className="flex-1 min-w-0 min-h-0 overflow-hidden h-[50vh] md:h-auto md:w-2/3">
+      <div className="flex-1 min-w-0 min-h-0 overflow-hidden">
         <HierarchyDiagram
           institution={institution}
           orientation={isVertical ? 'vertical' : 'horizontal'}
