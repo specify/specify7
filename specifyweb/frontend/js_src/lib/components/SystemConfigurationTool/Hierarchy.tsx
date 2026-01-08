@@ -1,4 +1,4 @@
-import type { HierarchyPointLink, HierarchyPointNode, ZoomBehavior } from 'd3';
+import type { HierarchyPointLink, HierarchyPointNode } from 'd3';
 import {
   hierarchy as d3Hierarchy,
   select as d3Select,
@@ -143,6 +143,7 @@ function HierarchyDiagram({
 
     const zoomBehavior = d3Zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.5, 8])
+      .wheelDelta((wheelEvent: WheelEvent) => -wheelEvent.deltaY * (wheelEvent.deltaMode === 1 ? 0.05 : 0.002))
       .on('zoom', (event) => {
         setTransform(event.transform);
       });
