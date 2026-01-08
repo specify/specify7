@@ -41,6 +41,7 @@ import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { COJODialog } from './COJODialog';
 import { FormCell } from './index';
+import { DeleteButton } from '../Forms/DeleteButton';
 
 const cellToLabel = (
   table: SpecifyTable,
@@ -495,25 +496,17 @@ export function FormTable<SCHEMA extends AnySchema>({
                         relationship.relatedTable.name,
                         isDependent ? 'delete' : 'update'
                       )) ? (
-                      <Button.Small
-                        aria-label={commonText.remove()}
-                        className="h-full"
-                        disabled={
-                          (!resource.isNew() &&
-                            !hasTablePermission(
-                              resource.specifyTable.name,
-                              isDependent ? 'delete' : 'update'
-                            )) ||
-                          (renderedResourceId !== undefined &&
-                            resource.id === renderedResourceId) ||
-                          disableRemove
+                      <DeleteButton
+                      component ={Button.Small}
+                      deferred={true}
+                      isIcon={true}
+                      resource ={resource}
+                      onDeleted = {(): void => {
+                        if (typeof handleDelete === 'function') {
+                          handleDelete(resource);
                         }
-                        title={commonText.remove()}
-                        // NOTE TO SELF THIS area should retreive parent resources and check if theres any blockers before deleting
-                        onClick={(): void => handleDelete(resource)}
-                      >
-                        {icons.trash}
-                      </Button.Small>
+                      }}
+                      />
                     ) : undefined}
                     {isExpanded[resource.cid] === true && (
                       <FormMeta
