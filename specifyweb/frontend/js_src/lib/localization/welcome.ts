@@ -164,7 +164,7 @@ export const welcomeText = createDictionary({
     'pt-br': 'Versão do banco de dados:',
   },
   schemaVersion: {
-    'en-us': 'DB Schema Version',
+    'en-us': 'Database Schema Version:',
     'ru-ru': 'Версия схемы базы данных',
     'es-es': 'Versión del Esquema de base de datos',
     'fr-fr': 'Version du schéma de base de données',

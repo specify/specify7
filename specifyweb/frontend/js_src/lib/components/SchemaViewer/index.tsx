@@ -45,7 +45,7 @@ export function SchemaViewer(): JSX.Element {
         <H2 className="text-2xl">
           {commonText.colonLine({
             label: welcomeText.schemaVersion(),
-            value: getSystemInfo().schema_version,
+            value: getSystemInfo().version,
           })}
         </H2>
         <span className="-ml-2 flex-1" />
