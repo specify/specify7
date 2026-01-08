@@ -81,6 +81,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   isCollapsed = false,
   preHeaderButtons,
   collection,
+  disableRemove,
 }: {
   readonly relationship: Relationship;
   readonly isDependent: boolean;
@@ -98,6 +99,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   readonly isCollapsed: boolean | undefined;
   readonly preHeaderButtons?: JSX.Element;
   readonly collection: Collection<AnySchema> | undefined;
+  readonly disableRemove?: boolean;
 }): JSX.Element {
   const [sortConfig, setSortConfig] = React.useState<
     SortConfig<string> | undefined
@@ -493,7 +495,8 @@ export function FormTable<SCHEMA extends AnySchema>({
                       hasTablePermission(
                         relationship.relatedTable.name,
                         isDependent ? 'delete' : 'update'
-                      )) ? (
+                      )) &&
+                      !disableRemove && (renderedResourceId === undefined || renderedResourceId === resource.id) ? (
                       <DeleteButton
                       component ={Button.Small}
                       deferred={true}
@@ -503,6 +506,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                         if (typeof handleDelete === 'function') {
                           handleDelete(resource);
                         }
+                        globalThis.location.reload();
                       }}
                       />
                     ) : undefined}
