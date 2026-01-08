@@ -56,19 +56,12 @@ export function SchemaViewer(): JSX.Element {
         >
           {schemaText.downloadAsJson()}
         </Link.Info>
-        <Link.Info
-          className="print:hidden"
-          download
-          href="/static/config/specify_datamodel.xml"
-        >
-          {schemaText.downloadAsXml()}
-        </Link.Info>
         <Button.Info
           className="print:hidden"
           onClick={(): void =>
             void downloadFile(
-              `${schemaText.schemaExportFileName()} - v${
-                getSystemInfo().schema_version
+              `${schemaText.schemaExportFileName()} - ${
+                getSystemInfo().version
               }.tsv`,
               schemaToTsv()
             ).catch(softFail)
