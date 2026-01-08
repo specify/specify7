@@ -85,23 +85,6 @@
       ]
     },
     {
-      "name": "Age",
-      "issystem": true,
-      "type": 0,
-      "readonly": true,
-      "sizelimit": 9,
-      "items": [
-        { "title": "Unknown", "value": "Unknown" },
-        { "title": "Adult", "value": "Adult" },
-        { "title": "Egg", "value": "Egg" },
-        { "title": "Hatchling", "value": "Hatchling" },
-        { "title": "Nestling", "value": "Nestling" },
-        { "title": "Fledgling", "value": "Fledgling" },
-        { "title": "Immature", "value": "Immature" },
-        { "title": "Juvenile", "value": "Juvenile" }
-      ]
-    },
-    {
       "name": "Preparation",
       "issystem": true,
       "type": 0,
@@ -189,22 +172,18 @@
       ]
     },
     {
-      "name": "BiologicalStage",
+      "name": "LifeStage",
       "issystem": true,
       "type": 0,
       "readonly": true,
-      "sizelimit": 10,
+      "sizelimit": 50,
       "items": [
         { "title": "Unknown", "value": "Unknown" },
-        { "title": "Adult", "value": "Adult" },
-        { "title": "Juvenile", "value": "Juvenile" },
-        { "title": "Immature", "value": "Immature" },
-        { "title": "Embryo", "value": "Embryo" },
         { "title": "Egg", "value": "Egg" },
-        { "title": "Hatchling", "value": "Hatchling" },
+        { "title": "Embryo", "value": "Embryo" },
         { "title": "Larva", "value": "Larva" },
-        { "title": "Nymph", "value": "Nymph" },
-        { "title": "Pupa", "value": "Pupa" }
+        { "title": "Juvenile", "value": "Juvenile" },
+        { "title": "Adult", "value": "Adult" }
       ]
     },
     {
@@ -303,7 +282,7 @@
       ]
     },
     {
-      "name": "Stage",
+      "name": "LifeStage",
       "issystem": true,
       "type": 0,
       "readonly": true,
@@ -376,7 +355,7 @@
       ]
     },
     {
-      "name": "Stage",
+      "name": "LifeStage",
       "issystem": true,
       "type": 0,
       "readonly": true,
@@ -441,22 +420,22 @@
       ]
     },
     {
-      "name": "BiologicalStage",
+      "name": "LifeStage",
       "issystem": true,
       "type": 0,
       "readonly": true,
-      "sizelimit": 10,
+      "sizelimit": 50,
       "items": [
         { "title": "Unknown", "value": "Unknown" },
-        { "title": "Adult", "value": "Adult" },
-        { "title": "Juvenile", "value": "Juvenile" },
-        { "title": "Immature", "value": "Immature" },
-        { "title": "Embryo", "value": "Embryo" },
         { "title": "Egg", "value": "Egg" },
-        { "title": "Hatchling", "value": "Hatchling" },
+        { "title": "Embryo", "value": "Embryo" },
         { "title": "Larva", "value": "Larva" },
         { "title": "Nymph", "value": "Nymph" },
-        { "title": "Pupa", "value": "Pupa" }
+        { "title": "Pupa", "value": "Pupa" },
+        { "title": "Juvenile", "value": "Juvenile" },
+        { "title": "Adult", "value": "Adult" },
+        { "title": "Nauplius", "value": "Nauplius" },
+        { "title": "Veliger", "value": "Veliger" }
       ]
     },
     {
@@ -529,22 +508,19 @@
       ]
     },
     {
-      "name": "BiologicalStage",
+      "name": "LifeStage",
       "issystem": true,
       "type": 0,
       "readonly": true,
-      "sizelimit": 10,
+      "sizelimit": 50,
       "items": [
         { "title": "Unknown", "value": "Unknown" },
-        { "title": "Adult", "value": "Adult" },
-        { "title": "Juvenile", "value": "Juvenile" },
-        { "title": "Immature", "value": "Immature" },
         { "title": "Embryo", "value": "Embryo" },
-        { "title": "Egg", "value": "Egg" },
-        { "title": "Hatchling", "value": "Hatchling" },
-        { "title": "Larva", "value": "Larva" },
-        { "title": "Nymph", "value": "Nymph" },
-        { "title": "Pupa", "value": "Pupa" }
+        { "title": "Fetus", "value": "Fetus" },
+        { "title": "Neonate", "value": "Neonate" },
+        { "title": "Juvenile", "value": "Juvenile" },
+        { "title": "Subadult", "value": "Subadult" },
+        { "title": "Adult", "value": "Adult" }
       ]
     },
     {
@@ -577,24 +553,6 @@
         { "title": "X-Ray", "value": "X-Ray" },
         { "title": "Image", "value": "Image" },
         { "title": "Skeleton", "value": "Skeleton" }
-      ]
-    },
-    {
-      "name": "Age",
-      "issystem": true,
-      "type": 0,
-      "readonly": true,
-      "sizelimit": 10,
-      "items": [
-        { "title": "Unknown", "value": "Unknown" },
-        { "title": "Adult", "value": "Adult" },
-        { "title": "Juvenile", "value": "Juvenile" },
-        { "title": "Subadult", "value": "Subadult" },
-        { "title": "Fetus", "value": "Fetus" },
-        { "title": "Neonate", "value": "Neonate" },
-        { "title": "Embryo", "value": "Embryo" },
-        { "title": "Egg", "value": "Egg" },
-        { "title": "Zygote", "value": "Zygote" }
       ]
     }
   ],
@@ -652,7 +610,7 @@
       ]
     },
     {
-      "name": "Stage",
+      "name": "LifeStage",
       "issystem": true,
       "type": 0,
       "readonly": true,
@@ -773,22 +731,18 @@
       ]
     },
     {
-      "name": "BiologicalStage",
+      "name": "LifeStage",
       "issystem": true,
       "type": 0,
       "readonly": true,
-      "sizelimit": 10,
+      "sizelimit": 50,
       "items": [
         { "title": "Unknown", "value": "Unknown" },
-        { "title": "Adult", "value": "Adult" },
-        { "title": "Juvenile", "value": "Juvenile" },
-        { "title": "Immature", "value": "Immature" },
-        { "title": "Embryo", "value": "Embryo" },
         { "title": "Egg", "value": "Egg" },
-        { "title": "Hatchling", "value": "Hatchling" },
-        { "title": "Larva", "value": "Larva" },
-        { "title": "Nymph", "value": "Nymph" },
-        { "title": "Pupa", "value": "Pupa" }
+        { "title": "Embryo", "value": "Embryo" },
+        { "title": "Juvenile", "value": "Juvenile" },
+        { "title": "Subadult", "value": "Subadult" },
+        { "title": "Adult", "value": "Adult" }
       ]
     },
     {
