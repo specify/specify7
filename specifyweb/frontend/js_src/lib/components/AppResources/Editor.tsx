@@ -46,10 +46,22 @@ import { AppResourcesTab, useEditorTabs } from './Tabs';
 import { getScope } from './tree';
 import type { ScopedAppResourceDir } from './types';
 import { appResourceSubTypes } from './types';
+import { replaceViewsetNameInXml } from './xmlUtils';
 
 export const AppResourceContext = React.createContext<
   SpecifyResource<SpAppResource>
 >(undefined!);
+
+const syncViewsetNameInXml = (
+  data: string | null | undefined,
+  appResource: SpecifyResource<SpAppResource | SpViewSetObject>
+): string => {
+  const viewSet = toTable(appResource, 'SpViewSetObj');
+  const name = viewSet?.get('name');
+  if (typeof data !== 'string') return data ?? '';
+  if (typeof name !== 'string' || name.length === 0) return data;
+  return replaceViewsetNameInXml(data, name);
+};
 
 export function AppResourceEditor({
   resource,
@@ -291,9 +303,13 @@ export function AppResourceEditor({
                   typeof lastDataRef.current === 'function'
                     ? lastDataRef.current()
                     : lastDataRef.current;
+                const syncedData = syncViewsetNameInXml(
+                  data === undefined ? resourceData.data : data,
+                  appResource
+                );
                 const appResourceData = deserializeResource({
                   ...resourceData,
-                  data: data === undefined ? resourceData.data : data,
+                  data: syncedData,
                   spAppResource:
                     toTable(appResource, 'SpAppResource')?.get(
                       'resource_uri'
