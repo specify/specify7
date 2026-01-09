@@ -41,12 +41,8 @@ export function SchemaViewer(): JSX.Element {
   return (
     <Container.Full className="pt-0">
       <div className="flex items-center gap-2 pt-4">
-        <H2 className="text-2xl">
-          {welcomeText.schemaVersion()}
-        </H2>
-        <H2 className="text-xl">
-          {getSystemInfo().version}
-        </H2>
+        <H2 className="text-2xl">{welcomeText.schemaVersion()}</H2>
+        <H2 className="text-xl">{getSystemInfo().version}</H2>
         <span className="-ml-2 flex-1" />
         <Link.Info
           className="print:hidden"
