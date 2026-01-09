@@ -8027,8 +8027,8 @@ class AutonumSchDsp(models.Model):
         ]
 
 class SpecifyuserSpprincipal(models.Model):
-    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', on_delete=django.db.models.deletion.DO_NOTHING)
-    spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', on_delete=django.db.models.deletion.DO_NOTHING)
+    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', on_delete=models.deletion.DO_NOTHING)
+    spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', on_delete=models.deletion.DO_NOTHING)
 
     class Meta:
         db_table = 'specifyuser_spprincipal'
