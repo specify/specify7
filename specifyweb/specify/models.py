@@ -7995,7 +7995,6 @@ class AutonumSchColl(models.Model):
     autonumberingscheme = models.ForeignKey("AutoNumberingScheme", db_column="AutoNumberingSchemeID", on_delete=models.DO_NOTHING)
 
     class Meta:
-        managed = False # Change if schema changes are needed for this table
         db_table = "autonumsch_coll"
         unique_together = (("collection", "autonumberingscheme"),)
         indexes = [
@@ -8008,7 +8007,6 @@ class AutonumSchDiv(models.Model):
     autonumberingscheme = models.ForeignKey("AutoNumberingScheme", db_column="AutoNumberingSchemeID", on_delete=models.DO_NOTHING)
 
     class Meta:
-        managed = False # Change if schema changes are needed for this table
         db_table = "autonumsch_div"
         unique_together = (("division", "autonumberingscheme"),)
         indexes = [
@@ -8021,7 +8019,6 @@ class AutonumSchDsp(models.Model):
     autonumberingscheme = models.ForeignKey("AutoNumberingScheme", db_column="AutoNumberingSchemeID", on_delete=models.DO_NOTHING)
 
     class Meta:
-        managed = False # Change if schema changes are needed for this table
         db_table = "autonumsch_dsp"
         unique_together = (("discipline", "autonumberingscheme"),)
         indexes = [
