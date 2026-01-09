@@ -76,7 +76,7 @@ export const resources: RA<ResourceConfig> = [
     description: setupToolText.institutionDescription(),
     endpoint: '/setup_tool/institution/create/',
     documentationUrl:
-      'https://discourse.specifysoftware.org/t/specify-setup-configuration-checklist/1056',
+      'https://discourse.specifysoftware.org/t/guided-setup/3234',
     fields: [
       {
         name: 'name',
@@ -344,6 +344,7 @@ export const resources: RA<ResourceConfig> = [
         type: 'select',
         options: catalogNumberFormats,
         required: true,
+        default: catalogNumberFormats[0].value.toString(),
       },
     ],
   },

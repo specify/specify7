@@ -245,31 +245,31 @@ export function SetupTool({
 
   return (
     <div className="w-full flex flex-col h-full min-h-0">
-      <header className="w-full bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 shadow-lg relative z-20">
-        <div className="w-full flex flex-col items-center justify-center gap-2 pt-3 pb-0 px-4">
+      <header className="w-full bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 relative z-20">
+        <div className="w-full flex flex-col items-center justify-center gap-2 py-3">
           <img className="w-auto h-12 mx-auto" src="/static/img/logo.svg" />
-          <H2 className="text-2xl mb-6">
-            {setupToolText.specifyConfigurationSetup()}
+          <H2 className="text-2xl">
+            {setupToolText.guidedSetup()}
           </H2>
         </div>
       </header>
-      <Container.FullGray className="overflow-auto w-full items-center">
+      <Container.FullGray className="overflow-auto w-full items-center shadow-none">
         {inProgress ? (
-          <Container.Center className="p-3 shadow-md max-w-lg">
+          <Container.Center className="p-3 shadow-none max-w-lg">
             <H3 className="text-xl font-semibold">
               {setupToolText.settingUp()}
             </H3>
             <H3 className="text-md">
               {nextIncompleteStep === -1
                 ? setupToolText.settingUp()
-                : resources[nextIncompleteStep].label}
+                : `${setupToolText.creating()} ${resources[nextIncompleteStep].label}`}
             </H3>
             {loadingBar}
           </Container.Center>
         ) : (
-          <div className="flex flex-col md:flex-row w-full justify-center gap-8">
+          <div className="flex flex-col md:flex-row w-full justify-center gap-4">
             <div className="w-[20rem]">
-              <Container.Center className="p-3 shadow-md max-w-lg">
+              <Container.Center className="p-3 shadow-none max-w-lg">
                 <H3 className="text-xl font-semibold">
                   {setupToolText.overview()}
                 </H3>
@@ -282,7 +282,7 @@ export function SetupTool({
               </Container.Center>
             </div>
             <div className="w-[32rem] flex flex-col gap-y-4">
-              <Container.Center className="p-3 shadow-md">
+              <Container.Center className="p-3 shadow-none">
                 <Form
                   className="flex-1 overflow-auto gap-2"
                   forwardRef={formRef}
@@ -321,12 +321,12 @@ export function SetupTool({
                   </SubmitComponent>
                 </div>
               </Container.Center>
-              <Container.Center className="p-3 shadow-md max-w-lg">
+              <Container.Center className="p-3 shadow-none max-w-lg">
                 <p className="text-md">{setupToolText.setupProgress()}</p>
                 <Progress max={stepOrder.length} value={currentStep} />
               </Container.Center>
               {setupError === undefined ? undefined : (
-                <Container.Center className="p-3 shadow-md max-w-lg">
+                <Container.Center className="p-3 shadow-none max-w-lg">
                   <div className="flex items-center justify-start gap-3 w-full">
                     <span className="text-red-500">{dialogIcons.warning}</span>
                     <H3 className="text-xl font-semibold m-0 leading-none">
