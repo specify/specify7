@@ -7025,4 +7025,21 @@ class Migration(migrations.Migration):
                 ],
             },
         ),
+        migrations.CreateModel(
+            name='SpecifyuserSpprincipal',
+            fields=[
+                ('specifyuser', models.ForeignKey(db_column='SpecifyUserID', on_delete=django.db.models.deletion.DO_NOTHING, to='specify.specifyuser')),
+                ('spprincipal', models.ForeignKey(db_column='SpPrincipalID', on_delete=django.db.models.deletion.DO_NOTHING, to='specify.spprincipal')),
+            ],
+            options={
+                'db_table': 'specifyuser_spprincipal',
+                'managed': False,
+                'ordering': (),
+                'unique_together': {('specifyuser', 'spprincipal')},
+                'indexes': [
+                    models.Index(fields=['specifyuser'], name='FK81E18B5E4BDD9E10'),
+                    models.Index(fields=['spprincipal'], name='FK81E18B5E99A7381A'),
+                ],
+            },
+        ),
     ]
