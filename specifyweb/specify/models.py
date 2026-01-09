@@ -7991,16 +7991,8 @@ class Tectonicunit(model_extras.Tectonicunit):
     save = partialmethod(custom_save)
 
 class AutonumSchColl(models.Model):
-    collection = models.ForeignKey(
-        "Collection",
-        db_column="CollectionID",
-        on_delete=models.DO_NOTHING,
-    )
-    autonumberingscheme = models.ForeignKey(
-        "AutoNumberingScheme",
-        db_column="AutoNumberingSchemeID",
-        on_delete=models.DO_NOTHING,
-    )
+    collection = models.ForeignKey("Collection", db_column="CollectionID", on_delete=models.DO_NOTHING)
+    autonumberingscheme = models.ForeignKey("AutoNumberingScheme", db_column="AutoNumberingSchemeID", on_delete=models.DO_NOTHING)
 
     class Meta:
         managed = False # Change if schema changes are needed for this table
@@ -8011,18 +8003,9 @@ class AutonumSchColl(models.Model):
             models.Index(fields=["collection"], name="FK46F04F2A8C2288BA"),
         ]
 
-
 class AutonumSchDiv(models.Model):
-    division = models.ForeignKey(
-        "Division",
-        db_column="DivisionID",
-        on_delete=models.DO_NOTHING,
-    )
-    autonumberingscheme = models.ForeignKey(
-        "AutoNumberingScheme",
-        db_column="AutoNumberingSchemeID",
-        on_delete=models.DO_NOTHING,
-    )
+    division = models.ForeignKey("Division", db_column="DivisionID", on_delete=models.DO_NOTHING)
+    autonumberingscheme = models.ForeignKey("AutoNumberingScheme", db_column="AutoNumberingSchemeID", on_delete=models.DO_NOTHING)
 
     class Meta:
         managed = False # Change if schema changes are needed for this table
@@ -8033,18 +8016,9 @@ class AutonumSchDiv(models.Model):
             models.Index(fields=["division"], name="FKA8BE49397C961D8"),
         ]
 
-
 class AutonumSchDsp(models.Model):
-    discipline = models.ForeignKey(
-        "Discipline",
-        db_column="DisciplineID",
-        on_delete=models.DO_NOTHING,
-    )
-    autonumberingscheme = models.ForeignKey(
-        "AutoNumberingScheme",
-        db_column="AutoNumberingSchemeID",
-        on_delete=models.DO_NOTHING,
-    )
+    discipline = models.ForeignKey("Discipline", db_column="DisciplineID", on_delete=models.DO_NOTHING)
+    autonumberingscheme = models.ForeignKey("AutoNumberingScheme", db_column="AutoNumberingSchemeID", on_delete=models.DO_NOTHING)
 
     class Meta:
         managed = False # Change if schema changes are needed for this table
