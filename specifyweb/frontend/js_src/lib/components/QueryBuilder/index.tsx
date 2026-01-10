@@ -97,6 +97,7 @@ export function createQuery(
   query.set('contextName', table.name);
   query.set('contextTableId', table.tableId);
   query.set('selectDistinct', false);
+  query.set('searchSynonymy', false);
   query.set('smushed', false);
   query.set('countOnly', false);
   query.set('formatAuditRecIds', false);
