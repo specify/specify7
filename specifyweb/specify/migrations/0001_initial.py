@@ -6977,4 +6977,69 @@ class Migration(migrations.Migration):
             model_name='accession',
             index=models.Index(fields=['dateaccessioned'], name='AccessionDateIDX'),
         ),
+        migrations.CreateModel(
+            name='AutonumschColl',
+            fields=[
+                ('collection', models.ForeignKey(db_column='CollectionID', on_delete=django.db.models.deletion.DO_NOTHING, to='specify.collection')),
+                ('autonumberingscheme', models.ForeignKey(db_column='AutoNumberingSchemeID', on_delete=django.db.models.deletion.DO_NOTHING, to='specify.autonumberingscheme')),
+            ],
+            options={
+                'db_table': 'autonumsch_coll',
+                'ordering': (),
+                'unique_together': {('collection', 'autonumberingscheme')},
+                'indexes': [
+                    models.Index(fields=['autonumberingscheme'], name='FK46F04F2AFE55DD76'),
+                    models.Index(fields=['collection'], name='FK46F04F2A8C2288BA'),
+                ],
+            },
+        ),
+        migrations.CreateModel(
+            name='AutonumschDiv',
+            fields=[
+                ('division', models.ForeignKey(db_column='DivisionID', on_delete=django.db.models.deletion.DO_NOTHING, to='specify.division')),
+                ('autonumberingscheme', models.ForeignKey(db_column='AutoNumberingSchemeID', on_delete=django.db.models.deletion.DO_NOTHING, to='specify.autonumberingscheme')),
+            ],
+            options={
+                'db_table': 'autonumsch_div',
+                'ordering': (),
+                'unique_together': {('division', 'autonumberingscheme')},
+                'indexes': [
+                    models.Index(fields=['autonumberingscheme'], name='FKA8BE493FE55DD76'),
+                    models.Index(fields=['division'], name='FKA8BE49397C961D8'),
+                ],
+            },
+        ),
+        migrations.CreateModel(
+            name='AutonumschDsp',
+            fields=[
+                ('discipline', models.ForeignKey(db_column='DisciplineID', on_delete=django.db.models.deletion.DO_NOTHING, to='specify.discipline')),
+                ('autonumberingscheme', models.ForeignKey(db_column='AutoNumberingSchemeID', on_delete=django.db.models.deletion.DO_NOTHING, to='specify.autonumberingscheme')),
+            ],
+            options={
+                'db_table': 'autonumsch_dsp',
+                'ordering': (),
+                'unique_together': {('discipline', 'autonumberingscheme')},
+                'indexes': [
+                    models.Index(fields=['autonumberingscheme'], name='FKA8BE5C3FE55DD76'),
+                    models.Index(fields=['discipline'], name='FKA8BE5C34CE675DE'),
+                ],
+            },
+        ),
+        migrations.CreateModel(
+            name='SpecifyuserSpprincipal',
+            fields=[
+                ('specifyuser', models.ForeignKey(db_column='SpecifyUserID', on_delete=django.db.models.deletion.DO_NOTHING, to='specify.specifyuser')),
+                ('spprincipal', models.ForeignKey(db_column='SpPrincipalID', on_delete=django.db.models.deletion.DO_NOTHING, to='specify.spprincipal')),
+            ],
+            options={
+                'db_table': 'specifyuser_spprincipal',
+                'managed': False,
+                'ordering': (),
+                'unique_together': {('specifyuser', 'spprincipal')},
+                'indexes': [
+                    models.Index(fields=['specifyuser'], name='FK81E18B5E4BDD9E10'),
+                    models.Index(fields=['spprincipal'], name='FK81E18B5E99A7381A'),
+                ],
+            },
+        ),
     ]
