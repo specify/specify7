@@ -15,6 +15,7 @@ import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import { toLowerCase } from '../../utils/utils';
+import { type RA } from '../../utils/types';
 import { parseRebuildResponse } from '../../utils/treeRebuild';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -232,7 +233,7 @@ function ActionsMenu({
     readonly description: () => LocalizedString;
     readonly run: () => void;
   };
-  const actions: readonly ActionDef[] = [
+  const actions: RA<ActionDef> = [
     {
       key: 'repair',
       can: canRepair,
