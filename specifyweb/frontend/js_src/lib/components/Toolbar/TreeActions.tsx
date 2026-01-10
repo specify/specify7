@@ -10,8 +10,8 @@ import { headerText } from '../../localization/header';
 import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
-import { type RA } from '../../utils/types';
 import { parseRebuildResponse } from '../../utils/treeRebuild';
+import { type RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Portal } from '../Molecules/Portal';
 import { hasPermission } from '../Permissions/helpers';
@@ -180,7 +180,7 @@ export function TreeActionsDropdown({ treeName, treeDefinition }: TreeActionsPro
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLButtonElement | null>(null);
   const menuRef = React.useRef<HTMLDivElement | null>(null);
-  const [position, setPosition] = React.useState<{ top: number; left: number } | null>(null);
+  const [position, setPosition] = React.useState<{ readonly top: number; readonly left: number } | null>(null);
 
   const hasAnyPermission = React.useMemo(() => {
     if (!(treeName in TREE_RESOURCES)) return false;
