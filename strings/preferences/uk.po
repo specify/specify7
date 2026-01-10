@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-01-07 17:25+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-01-10 10:01+0000\n"
+"Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/uk/>\n"
 "Language: uk\n"
@@ -104,7 +104,6 @@ msgstr "Вимкніть необов'язкову анімацію та пер�
 #: components/Preferences/UserDefinitions.tsx:1612
 #: components/Preferences/UserDefinitions.tsx:1644
 #: components/Preferences/__tests__/ThresholdRank.test.tsx:37
-#, fuzzy
 msgid "rankThreshold"
 msgstr "Показати кількість об'єктів нижче"
 
@@ -493,7 +492,6 @@ msgstr "Поведінка"
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:192
 #: components/Preferences/CollectionDefinitions.tsx:232
-#, fuzzy
 msgid "inheritance"
 msgstr "Спадщина"
 
@@ -947,7 +945,6 @@ msgstr "Визначати автоматично на основі формат
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:269
-#, fuzzy
 msgid "uniqueness"
 msgstr "Унікальність"
 
@@ -1206,7 +1203,6 @@ msgstr "Додайте рядок пошуку на головну сторін�
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:206
-#, fuzzy
 msgid "inheritanceCatNumberPrefDescription"
 msgstr ""
 "Тільки записи {collectionObjectTableName: string} без "
@@ -1230,7 +1226,6 @@ msgstr ""
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:273
-#, fuzzy
 msgid "uniqueCatNumberAcrossCompAndCo"
 msgstr ""
 "Забезпечити унікальність для поля {catalogNumberFieldName: string} у "
@@ -1238,13 +1233,11 @@ msgstr ""
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:37
-#, fuzzy
 msgid "scopeEntireTablePicklists"
 msgstr "Списки вибору «Уся таблиця»"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:38
-#, fuzzy
 msgid "scopeEntireTablePicklistsDescription"
 msgstr ""
 "Якщо ввімкнено, у списках вибору типу «Уся таблиця» відображатимуться лише "
@@ -1252,7 +1245,6 @@ msgstr ""
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:244
-#, fuzzy
 msgid "inheritanceCatNumberParentCOPrefDescription"
 msgstr ""
 "Тільки записи {componentTableName: string} без {catalogNumberFieldName: "
