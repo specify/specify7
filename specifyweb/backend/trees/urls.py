@@ -13,7 +13,7 @@ urlpatterns = [
         path('<int:id>/bulk_move/', views.bulk_move),
         path('<int:id>/synonymize/', views.synonymize),
         path('<int:id>/desynonymize/', views.desynonymize),
-        path('<int:id>/rebuild-fullname/', views.rebuild_fullname),
+        path('<int:id>/rebuild_fullname/', views.rebuild_fullname),
         path('<int:rankid>/tree_rank_item_count/', views.tree_rank_item_count),
         path('<int:parentid>/predict_fullname/', views.predict_fullname),
         re_path(r'^(?P<treedef>\d+)/(?P<parentid>\w+)/stats/$', views.tree_stats),

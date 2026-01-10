@@ -72,7 +72,7 @@ function ActionsMenu({ treeName, treeDefinition }: TreeActionsProps): JSX.Elemen
     setResult(null);
     setRepairStatus('idle');
     ajax<unknown>(
-      `/trees/specify_tree/${treeName.toLowerCase()}/${id}/rebuild-fullname/${withSynonyms ? '?rebuild_synonyms=true' : ''}`,
+      `/trees/specify_tree/${treeName.toLowerCase()}/${id}/rebuild_fullname/${withSynonyms ? '?rebuild_synonyms=true' : ''}`,
       {
         method: 'POST',
         headers: { Accept: 'application/json' },
