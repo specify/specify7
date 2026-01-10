@@ -258,36 +258,34 @@ function ActionsMenu({
   ];
   const visibleActions = actions.filter((a) => a.can);
 
-  let status: React.ReactNode = null;
-  if (isRunning)
-    status = <span className="text-xs">{commonText.working()}</span>;
-  else if (result && canRebuild) {
-    status =
-      result.total > 0 ? (
-        <div className="text-xs">
-          {treeText.rebuildResult({
-            total: result.total,
-            accepted: result.accepted,
-            synonyms: result.synonyms,
-          })}
+  const status: React.ReactNode = isRunning ? (
+    <span className="text-xs">{commonText.working()}</span>
+  ) : result && canRebuild ? (
+    result.total > 0 ? (
+      <div className="text-xs">
+        {treeText.rebuildResult({
+          total: result.total,
+          accepted: result.accepted,
+          synonyms: result.synonyms,
+        })}
+      </div>
+    ) : (
+      <div className="text-xs italic">{treeText.noFullNamesUpdated()}</div>
+    )
+  ) : repairStatus === 'success' && (!canRebuild || !result) ? (
+    <div className="text-xs text-green-600 dark:text-green-400">
+      {headerText.treeRepairComplete()}
+    </div>
+  ) : hoveredAction ? (
+    (() => {
+      const current = actions.find((a) => a.key === hoveredAction);
+      return current ? (
+        <div className="text-xs leading-snug opacity-80">
+          {current.description()}
         </div>
-      ) : (
-        <div className="text-xs italic">{treeText.noFullNamesUpdated()}</div>
-      );
-  } else if (repairStatus === 'success' && (!canRebuild || !result)) {
-    status = (
-      <div className="text-xs text-green-600 dark:text-green-400">
-        {headerText.treeRepairComplete()}
-      </div>
-    );
-  } else if (hoveredAction) {
-    const current = actions.find((a) => a.key === hoveredAction);
-    status = current ? (
-      <div className="text-xs leading-snug opacity-80">
-        {current.description()}
-      </div>
-    ) : null;
-  }
+      ) : null;
+    })()
+  ) : null;
   return (
     <div className="flex flex-col gap-1 p-2 bg-[color:var(--background)] rounded">
       <div className="flex flex-col gap-2">
