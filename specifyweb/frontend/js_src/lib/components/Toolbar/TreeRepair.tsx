@@ -15,6 +15,7 @@ import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import { toLowerCase } from '../../utils/utils';
+import { parseRebuildResponse } from '../../utils/treeRebuild';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
@@ -195,23 +196,6 @@ function ActionsMenu({
   );
   if (!canRebuild && !canRepair) return null;
   const id = treeDefinition.get('id');
-  type RebuildChanged = { readonly accepted: number; readonly synonyms: number; readonly total: number }
-  type RebuildResponse = { readonly success?: boolean; readonly rebuild_synonyms?: boolean; readonly changed?: Partial<RebuildChanged> | null }
-  const parseRebuildResponse = (raw: unknown): RebuildChanged => {
-    let payload: unknown = raw;
-    if (payload && typeof payload === 'object' && 'data' in (payload as any)) {
-      payload = (payload as any).data;
-    }
-    if (typeof payload === 'string') {
-      try { payload = JSON.parse(payload); } catch { return { accepted: 0, synonyms: 0, total: 0 }; }
-    }
-    if (!payload || typeof payload !== 'object') return { accepted: 0, synonyms: 0, total: 0 };
-    const changed = (payload as RebuildResponse).changed || undefined;
-    const accepted = typeof changed?.accepted === 'number' ? changed.accepted : 0;
-    const synonyms = typeof changed?.synonyms === 'number' ? changed.synonyms : 0;
-    const total = typeof changed?.total === 'number' ? changed.total : accepted + synonyms;
-    return { accepted, synonyms, total };
-  };
 
   const trigger = (withSynonyms: boolean): void => {
     setIsRunning(true);
