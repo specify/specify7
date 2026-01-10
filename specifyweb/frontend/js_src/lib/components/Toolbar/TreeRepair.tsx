@@ -45,6 +45,7 @@ const TREE_RESOURCES = {
   TectonicUnit: '/tree/edit/tectonicunit',
 } as const;
 type TreeNameKey = keyof typeof TREE_RESOURCES;
+type ActionKey = 'rebuildAccepted' | 'rebuildSynonyms' | 'repair';
 
 export function TreeSelectOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -224,7 +225,6 @@ function ActionsMenu({
       .then(() => setRepairStatus('success'))
       .finally(() => setIsRunning(false));
   };
-  type ActionKey = 'rebuildAccepted' | 'rebuildSynonyms' | 'repair';
   type ActionDef = {
     readonly key: ActionKey;
     readonly can: boolean;
