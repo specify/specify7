@@ -84,7 +84,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Match Behavior:',
     'ru-ru': 'Поведение при совпадении:',
     'es-es': 'Coincidir en comportamiento:',
-    'fr-fr': 'Comportement de match :',
+    'fr-fr': "Comportement d'adaptation :",
     'uk-ua': 'Поведінка відповідності:',
     'de-ch': 'Übereinstimmungsverhalten:',
     'pt-br': 'Comportamento de correspondência:',
@@ -394,7 +394,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'Seleccione una tabla base con archivos adjuntos',
     'fr-fr': 'Sélectionnez une table de base avec pièces jointes',
     'pt-br': 'Selecione uma mesa base com anexos.',
-    'ru-ru': 'Выберите базовую таблицу с прикреплениями',
+    'ru-ru': 'Выберите базовую таблицу с вложениями.',
     'uk-ua': 'Виберіть базову таблицю з вкладеннями',
   },
   dataSetUploaded: {
