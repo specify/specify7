@@ -217,4 +217,37 @@ export const setupToolText = createDictionary({
     'en-us':
       'The last name of the agent associated with the account. Optional.',
   },
+
+  taxonTreeSetUp: {
+    'en-us': 'Set up taxon tree',
+  },
+  geoTreeSetUp: {
+    'en-us': 'Set up geo tree',
+  },
+  addNewGeographyTree: {
+    'en-us': 'Add new Geography Tree',
+  },
+  addNewTaxonTree: {
+    'en-us': 'Add new Taxon Tree',
+  },
+
+  // System Configuration Tool - Hierarchy diagram
+  hierarchyStructureTitle: {
+    'en-us': 'View the Institutional Hierarchy',
+  },
+  hierarchyStructureHint: {
+    'en-us': 'Click any block to open its edit form.',
+  },
+  hierarchySwitchToHorizontal: {
+    'en-us': 'Switch to horizontal',
+  },
+  hierarchySwitchToVertical: {
+    'en-us': 'Switch to vertical',
+  },
+  hierarchyAddNew: {
+    'en-us': 'Add',
+  },
+  hierarchyDiagram: {
+    'en-us': 'Institutional Hierarchy',
+  },
 } as const);
