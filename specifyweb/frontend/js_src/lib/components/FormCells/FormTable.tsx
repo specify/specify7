@@ -25,6 +25,7 @@ import type { CollectionObjectGroup } from '../DataModel/types';
 import { FormMeta } from '../FormMeta';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
 import { attachmentView } from '../FormParse/webOnlyViews';
+import { DeleteButton } from '../Forms/DeleteButton';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubViewContext } from '../Forms/SubView';
 import { propsToFormMode, useViewDefinition } from '../Forms/useViewDefinition';
@@ -494,25 +495,20 @@ export function FormTable<SCHEMA extends AnySchema>({
                       hasTablePermission(
                         relationship.relatedTable.name,
                         isDependent ? 'delete' : 'update'
-                      )) ? (
-                      <Button.Small
-                        aria-label={commonText.remove()}
-                        className="h-full"
-                        disabled={
-                          (!resource.isNew() &&
-                            !hasTablePermission(
-                              resource.specifyTable.name,
-                              isDependent ? 'delete' : 'update'
-                            )) ||
-                          (renderedResourceId !== undefined &&
-                            resource.id === renderedResourceId) ||
-                          disableRemove
+                      )) &&
+                      !disableRemove && (renderedResourceId === undefined || renderedResourceId === resource.id) ? (
+                      <DeleteButton
+                      component ={Button.Small}
+                      deferred
+                      isIcon
+                      resource ={resource}
+                      onDeleted = {(): void => {
+                        if (typeof handleDelete === 'function') {
+                          handleDelete(resource);
                         }
-                        title={commonText.remove()}
-                        onClick={(): void => handleDelete(resource)}
-                      >
-                        {icons.trash}
-                      </Button.Small>
+              
+                      }}
+                      />
                     ) : undefined}
                     {isExpanded[resource.cid] === true && (
                       <FormMeta
