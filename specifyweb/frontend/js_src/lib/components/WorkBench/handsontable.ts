@@ -26,6 +26,12 @@ export function configureHandsontable(
   identifyDefaultValues(hot, mappings);
   curryCells(hot, mappings, dataset, pickLists);
   setSort(hot, dataset);
+
+  // Enable filtering and dropdown menu
+  hot.updateSettings({
+    filters: true,
+    dropdownMenu: true,
+  });
 }
 
 export function identifyDefaultValues(
