@@ -1,3 +1,4 @@
+from typing import Dict, List
 from hypothesis import given, infer, settings, HealthCheck, strategies as st
 
 import json
