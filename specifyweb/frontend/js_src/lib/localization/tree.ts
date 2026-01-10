@@ -63,6 +63,76 @@ export const treeText = createDictionary({
     'de-ch': 'Synonymisieren',
     'pt-br': 'Sinônimos',
   },
+    repairTreeDescription: {
+      'en-us': 'Repair tree numbering and rank consistency.',
+      'ru-ru': 'Исправить нумерацию и согласованность рангов дерева.',
+      'es-es': 'Reparar la numeración y coherencia de rangos del árbol.',
+      'fr-fr': "Réparer la numérotation et la cohérence des rangs de l’arbre.",
+      'uk-ua': 'Виправити нумерацію та узгодженість рангів дерева.',
+      'de-ch': 'Reparieren Sie Nummerierung und Rangfolge des Baums.',
+      'pt-br': 'Reparar a numeração e a consistência de hierarquia da árvore.',
+    },
+    rebuildNames: {
+      'en-us': 'Rebuild full names',
+      'ru-ru': 'Пересобрать полные имена',
+      'es-es': 'Reconstruir nombres completos',
+      'fr-fr': 'Reconstruire les noms complets',
+      'uk-ua': 'Перебудувати повні назви',
+      'de-ch': 'Vollständige Namen neu aufbauen',
+      'pt-br': 'Reconstruir nomes completos',
+    },
+    rebuildNamesDescription: {
+      'en-us': 'Update fullName for accepted nodes.',
+      'ru-ru': 'Обновить fullName для принятых узлов.',
+      'es-es': 'Actualizar fullName para nodos aceptados.',
+      'fr-fr': 'Mettre à jour fullName pour les nœuds acceptés.',
+      'uk-ua': 'Оновити fullName для прийнятих вузлів.',
+      'de-ch': 'Aktualisiere fullName für akzeptierte Knoten.',
+      'pt-br': 'Atualizar fullName para nós aceitos.',
+    },
+    rebuildNamesSynonyms: {
+      'en-us': 'Rebuild full names (synonyms)',
+      'ru-ru': 'Пересобрать полные имена (синонимы)',
+      'es-es': 'Reconstruir nombres completos (sinónimos)',
+      'fr-fr': 'Reconstruire les noms complets (synonymes)',
+      'uk-ua': 'Перебудувати повні назви (синоніми)',
+      'de-ch': 'Vollständige Namen neu aufbauen (Synonyme)',
+      'pt-br': 'Reconstruir nomes completos (sinônimos)',
+    },
+    rebuildNamesSynonymsDescription: {
+      'en-us': 'Include synonym (non-accepted) nodes when rebuilding fullName.',
+      'ru-ru': 'Включить синонимы (непринятые узлы) при пересборке fullName.',
+      'es-es': 'Incluir nodos sinónimos (no aceptados) al reconstruir fullName.',
+      'fr-fr': 'Inclure les nœuds synonymes (non acceptés) lors de la reconstruction de fullName.',
+      'uk-ua': 'Включити вузли-синоніми (неприйняті) під час перебудови fullName.',
+      'de-ch': 'Synonym-Knoten (nicht akzeptiert) beim Neuaufbau von fullName einbeziehen.',
+      'pt-br': 'Incluir nós sinônimos (não aceitos) ao reconstruir fullName.',
+    },
+    rebuildResult: {
+      'en-us':
+        'Updated {total:number} nodes (accepted: {accepted:number}, synonyms: {synonyms:number}).',
+      'ru-ru':
+        'Обновлено {total:number} узлов (принято: {accepted:number}, синонимов: {synonyms:number}).',
+      'es-es':
+        'Se actualizaron {total:number} nodos (aceptados: {accepted:number}, sinónimos: {synonyms:number}).',
+      'fr-fr':
+        'Mis à jour {total:number} nœuds (acceptés : {accepted:number}, synonymes : {synonyms:number}).',
+      'uk-ua':
+        'Оновлено {total:number} вузлів (прийняті: {accepted:number}, синоніми: {synonyms:number}).',
+      'de-ch':
+        '{total:number} Knoten aktualisiert (akzeptiert: {accepted:number}, Synonyme: {synonyms:number}).',
+      'pt-br':
+        'Atualizados {total:number} nós (aceitos: {accepted:number}, sinônimos: {synonyms:number}).',
+    },
+    noFullNamesUpdated: {
+      'en-us': 'No full name values were updated.',
+      'ru-ru': 'Значения fullName не были обновлены.',
+      'es-es': 'No se actualizaron valores de fullName.',
+      'fr-fr': 'Aucune valeur fullName mise à jour.',
+      'uk-ua': 'Жодних значень fullName не оновлено.',
+      'de-ch': 'Keine fullName-Werte wurden aktualisiert.',
+      'pt-br': 'Nenhum valor de fullName foi atualizado.',
+    },
   actionFailed: {
     'en-us': 'Operation failed',
     'ru-ru': 'Операция провалилась',

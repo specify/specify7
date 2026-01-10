@@ -139,6 +139,15 @@ export const commonText = createDictionary({
     'de-ch': 'Öffnen',
     'pt-br': 'Abrir',
   },
+  working: {
+    'en-us': 'Working…',
+    'ru-ru': 'Работа…',
+    'es-es': 'Trabajando…',
+    'fr-fr': 'Travail…',
+    'uk-ua': 'Працює…',
+    'de-ch': 'Arbeiten…',
+    'pt-br': 'Trabalhando…',
+  },
   delete: {
     'en-us': 'Delete',
     'es-es': 'Eliminar',
