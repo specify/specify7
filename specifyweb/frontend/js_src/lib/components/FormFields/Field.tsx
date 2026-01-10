@@ -231,7 +231,9 @@ function Field({
       tabIndex={isReadOnly ? -1 : undefined}
       value={value?.toString() ?? ''}
       onBlur={
-        isReadOnly ? undefined : ({ target }): void => updateValue(target.value)
+        isReadOnly
+          ? undefined
+          : ({ target }): void => updateValue(target.value)
       }
       onValueChange={(value): void => updateValue(value, false)}
       /*
