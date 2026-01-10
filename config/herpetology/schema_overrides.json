@@ -71,12 +71,12 @@
           "format": null,
           "ishidden": false,
           "isuiformatter": false,
-          "picklistname": "Stage",
+          "picklistname": "LifeStage",
           "type": "java.lang.String",
           "isrequired": false,
           "weblinkname": null,
-          "name": "Stage",
-          "desc": "Stage"
+          "name": "LifeStage",
+          "desc": "LifeStage"
         }
       },
       {

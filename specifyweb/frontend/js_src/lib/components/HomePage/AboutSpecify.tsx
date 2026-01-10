@@ -104,12 +104,6 @@ function AboutDialog({
                 getSystemInfo().specify6_version,
               ],
               [welcomeText.databaseVersion(), getSystemInfo().database_version],
-              [
-                `${welcomeText.schemaVersion()}:`,
-                <Link.Default href="/specify/datamodel/" key="link">
-                  {getSystemInfo().schema_version}
-                </Link.Default>,
-              ],
               [welcomeText.databaseName(), getSystemInfo().database],
               ...(hasTablePermission('SpVersion', 'read')
                 ? [
@@ -130,10 +124,6 @@ function AboutDialog({
               [
                 commonText.colonHeader({ header: tables.Collection.label }),
                 getSystemInfo().collection,
-              ],
-              [
-                welcomeText.isaNumber(),
-                getSystemInfo().isa_number ?? commonText.notApplicable(),
               ],
               [welcomeText.browser(), globalThis.navigator.userAgent],
             ].map(([label, value], index) => (
