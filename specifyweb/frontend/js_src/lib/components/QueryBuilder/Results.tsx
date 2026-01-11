@@ -169,7 +169,8 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
       setResults(newResults(results));
       if (removeCount === 0) return;
       setTotalCount((totalCount) =>
-        totalCount === undefined ? undefined : totalCount - removeCount
+        totalCount === undefined ? undefined : Math.max(0, totalCount - removeCount)
+      
       );
       const newSelectedRows = (selectedRows: ReadonlySet<number>) =>
         new Set(Array.from(selectedRows).filter((id) => id !== recordId));
