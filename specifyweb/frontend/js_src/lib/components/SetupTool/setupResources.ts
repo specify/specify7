@@ -344,7 +344,7 @@ export const resources: RA<ResourceConfig> = [
         type: 'select',
         options: catalogNumberFormats,
         required: true,
-        default: catalogNumberFormats[0].value.toString(),
+        default: 'CatalogNumberNumeric',
       },
     ],
   },
