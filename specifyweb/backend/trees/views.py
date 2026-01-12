@@ -752,12 +752,6 @@ def create_default_tree_view(request):
     except ValidationError as e:
         return http.JsonResponse({'error': f'Default tree mapping is invalid: {e}'}, status=400)
 
-    Message.objects.create(user=request.specify_user, content=json.dumps({
-        'type': 'create-default-tree-starting',
-        'name': tree_name,
-        'collection_id': request.specify_collection.id,
-    }))
-
     task_id = str(uuid4())
     async_result = create_default_tree_task.apply_async(
         args=[url, discipline.id, tree_discipline_name, request.specify_collection.id, request.specify_user.id, tree_cfg, row_count, tree_name],
@@ -881,8 +875,8 @@ def abort_default_tree_creation(request, task_id: str) -> http.HttpResponse:
         task.revoke(terminate=True)
 
         Message.objects.create(user=request.specify_user, content=json.dumps({
-            'type': 'create-default-tree-failed',
-            'name': 'Aborted',
+            'type': 'create-default-tree-cancelled',
+            'name': '',
             'taskid': task_id,
             'collection_id': request.specify_collection.id,
         }))

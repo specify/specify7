@@ -366,29 +366,8 @@ export const notificationRenderers: IR<
   'create-default-tree-starting'(notification) {
     return (
       <>
-        <p>{treeText.defaultTreeTaskStarting()}</p>
+        <p>{treeText.defaultTreeTaskStarted()}</p>
         {notification.payload.name}
-      </>
-    )
-  },
-  'create-default-tree-running'(notification) {
-    return (
-      <>
-        <p>{treeText.defaultTreeTaskRunning()}</p>
-        {notification.payload.name}
-        <Button.Danger onClick={
-          (): void => {
-            ping(`/trees/create_default_tree/abort/${notification.payload.taskid}/`, {
-              method: 'POST',
-              body: {},
-              errorMode: 'dismissible',
-            })
-          }
-        }>{commonText.cancel()}</Button.Danger>
-        <details>
-          <summary>{localityText.taskId()}</summary>
-          {notification.payload.taskid}
-        </details>
       </>
     )
   },
@@ -397,10 +376,14 @@ export const notificationRenderers: IR<
       <>
         <p>{treeText.defaultTreeTaskFailed()}</p>
         {notification.payload.name}
-        <details>
-          <summary>{localityText.taskId()}</summary>
-          {notification.payload.taskid}
-        </details>
+      </>
+    )
+  },
+  'create-default-tree-cancelled'(notification) {
+    return (
+      <>
+        <p>{treeText.defaultTreeTaskCancelled()}</p>
+        {notification.payload.name}
       </>
     )
   },
@@ -409,10 +392,6 @@ export const notificationRenderers: IR<
       <>
         <p>{treeText.defaultTreeTaskCompleted()}</p>
         {notification.payload.name}
-        <details>
-          <summary>{localityText.taskId()}</summary>
-          {notification.payload.taskid}
-        </details>
       </>
     )
   },

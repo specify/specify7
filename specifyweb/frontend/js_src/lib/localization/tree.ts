@@ -712,21 +712,24 @@ export const treeText = createDictionary({
   populatedTrees: {
     'en-us': 'Populated Trees',
   },
-  defaultTreeTaskStarting: {
-    'en-us': 'The Default Tree creation process has started.',
+  defaultTreeCreationStarted: {
+    'en-us': 'Default Tree Creation Started',
   },
-  defaultTreeTaskStartingDescription: {
+  defaultTreeCreationStartedDescription: {
     'en-us':
       'The tree will be created in the background. You will be notified once it is completed.',
   },
-  defaultTreeTaskRunning: {
-    'en-us': 'Default Tree creation in progress.',
+  defaultTreeTaskStarted: {
+    'en-us': 'The default tree creation process has started.',
   },
   defaultTreeTaskFailed: {
-    'en-us': 'Default Tree creation failure.',
+    'en-us': 'Default tree creation failed.',
+  },
+  defaultTreeTaskCancelled: {
+    'en-us': 'Default tree creation was cancelled.',
   },
   defaultTreeTaskCompleted: {
-    'en-us': 'Default Tree creation completed successfully.',
+    'en-us': 'Default tree creation completed successfully.',
   },
   defaultTreeCreationProgress: {
     comment: 'E.x, Creating tree record 999/1,000',

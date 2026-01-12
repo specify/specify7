@@ -90,31 +90,31 @@ export function CreateTree<
   const connectedCollection = getSystemInfo().collection;
 
   // Start default tree creation
-  const handleClick = async (resourceUrl: string, mappingUrl: string, disciplineName: string, rowCount: number, treeName: string): Promise<void> => {
+  const handleClick = async (resource: TaxonFileDefaultDefinition): Promise<void> => {
     setIsTreeCreationStarted(true);
     return ajax<TreeCreationInfo>('/trees/create_default_tree/', {
       method: 'POST',
       headers: { Accept: 'application/json' },
       body: {
-        url: resourceUrl,
-        mappingUrl,
+        url: resource.file,
+        mappingUrl: resource.mappingFile,
         collection: connectedCollection,
-        disciplineName,
-        rowCount,
-        treeName,
+        disciplineName: resource.discipline,
+        rowCount: resource.rows,
+        treeName: resource.title,
       },
     })
       .then(({ data, status }) => {
         if (status === Http.OK) {
-          console.log(`${disciplineName} tree created successfully:`, data);
+          console.log(`${resource.title} tree created successfully:`, data);
         } else if (status === Http.ACCEPTED) {
           // Tree is being created in the background.
-          console.log(`${disciplineName} tree creation started successfully:`, data);
+          console.log(`${resource.title} tree creation started successfully:`, data);
           setTreeCreationTaskId(data.task_id);
         }
       })
       .catch((error) => {
-        console.error(`Request failed for ${resourceUrl}:`, error);
+        console.error(`Request failed for ${resource.file}:`, error);
         throw error;
       });
   }
@@ -156,40 +156,48 @@ export function CreateTree<
           header={treeText.addTree()}
           onClose={() => setIsActive(0)}
         >
-          <Ul className="flex flex-col gap-2">
-            <H2>{treeText.populatedTrees()}</H2>
-            {treeOptions === undefined
-              ? undefined
-              : treeOptions.map((resource, index) => (
+          <div className="flex flex-col gap-5">
+            <section>
+              <Ul className="flex flex-col gap-2">
+                <H2>{treeText.populatedTrees()}</H2>
+                {treeOptions === undefined
+                  ? undefined
+                  : treeOptions.map((resource, index) => (
+                      <li key={index}>
+                        <Button.LikeLink
+                          onClick={(): void => {
+                            loading(
+                              handleClick(resource).catch(console.error)
+                            );
+                          }}
+                        >
+                          {localized(resource.title)}
+                        </Button.LikeLink>
+                        <div className="text-xs text-gray-500">
+                          {resource.description}
+                        </div>
+                        <div className="text-xs text-gray-400 italic">
+                          {`Source: ${resource.src}`}
+                        </div>
+                      </li>
+                    ))}
+              </Ul>
+            </section>
+            <section>
+              <Ul className="flex flex-col gap-2">
+                <H2>{treeText.emptyTrees()}</H2>
+                {defaultTreeDefs.map((resource, index) => (
                   <li key={index}>
                     <Button.LikeLink
-                      onClick={(): void => {
-                        loading(
-                          handleClick(resource.file, resource.mappingFile, resource.discipline, resource.rows, resource.title).catch(console.error)
-                        );
-                      }}
+                      onClick={(): void => handleClickEmptyTree(resource)}
                     >
-                      {localized(resource.title)}
+                      {localized(resource.name)}
                     </Button.LikeLink>
-                    <div className="text-xs text-gray-500">
-                      {resource.description}
-                    </div>
-                    <div className="text-xs text-gray-400 italic">
-                      {`Source: ${resource.src}`}
-                    </div>
                   </li>
                 ))}
-            <H2>{treeText.emptyTrees()}</H2>
-            {defaultTreeDefs.map((resource, index) => (
-              <li key={index}>
-                <Button.LikeLink
-                  onClick={(): void => handleClickEmptyTree(resource)}
-                >
-                  {localized(resource.name)}
-                </Button.LikeLink>
-              </li>
-            ))}
-          </Ul>
+              </Ul>
+            </section>
+          </div>
           <>
             {isTreeCreationStarted && treeCreationTaskId ? (
               <TreeCreationProgressDialog
@@ -279,9 +287,16 @@ export function TreeCreationProgressDialog({
   return (
     <Dialog
       buttons={
-        <Button.Danger onClick={() => {loading(handleStop())}}>{commonText.cancel()}</Button.Danger>
+        <>
+          <Button.Danger onClick={() => {loading(handleStop())}}>
+            {commonText.cancel()}
+          </Button.Danger>
+          <Button.DialogClose component={Button.BorderedGray}>
+            {commonText.close()}
+          </Button.DialogClose>
+        </>
       }
-      header={treeText.defaultTreeTaskStarting()}
+      header={treeText.defaultTreeCreationStarted()}
       onClose={onClose}
     >
       <>
@@ -293,7 +308,7 @@ export function TreeCreationProgressDialog({
             })}
         <Progress max={progressTotal} value={progress ?? 0} />
       </>
-      {treeText.defaultTreeTaskStartingDescription()}
+      {treeText.defaultTreeCreationStartedDescription()}
     </Dialog>
   );
 }
