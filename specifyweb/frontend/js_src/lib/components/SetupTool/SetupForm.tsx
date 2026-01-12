@@ -85,6 +85,15 @@ export function renderFormFieldFactory({
 
     const colSpan = type === 'object' ? 2 : 1;
 
+    const disciplineTypeValue =
+      resources[currentStep].resourceName === 'discipline'
+        ? getFormValue(formData, currentStep, 'type')
+        : undefined;
+    const isDisciplineNameDisabled =
+      resources[currentStep].resourceName === 'discipline' &&
+      fieldName === 'name' &&
+      (disciplineTypeValue === undefined || disciplineTypeValue === '');
+
     return (
       <div className={`mb-2 col-span-${colSpan}`} key={fieldName}>
         {type === 'boolean' ? (
@@ -201,6 +210,7 @@ export function renderFormFieldFactory({
           <Label.Block title={description}>
             {label}
             <Input.Text
+              disabled={isDisciplineNameDisabled}
               maxLength={field.maxLength ?? FIELD_MAX_LENGTH}
               name={fieldName}
               required={required}

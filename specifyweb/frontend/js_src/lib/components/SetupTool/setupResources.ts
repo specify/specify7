@@ -43,7 +43,7 @@ export type FieldConfig = {
 };
 
 // Discipline list from backend/context/app_resource.py
-const disciplineTypeOptions = [
+export const disciplineTypeOptions = [
   { value: 'fish', label: 'Ichthyology' },
   { value: 'herpetology', label: 'Herpetology' },
   { value: 'paleobotany', label: 'Paleobotany' },
@@ -53,7 +53,7 @@ const disciplineTypeOptions = [
   { value: 'mammal', label: 'Mammalogy' },
   { value: 'insect', label: 'Entomology' },
   { value: 'botany', label: 'Botany' },
-  { value: 'invertebrate', label: 'Invertebrate' },
+  { value: 'invertebrate', label: 'Invertebrate Zoology' },
   { value: 'geology', label: 'Geology' },
 ];
 
@@ -216,17 +216,17 @@ export const resources: RA<ResourceConfig> = [
     endpoint: '/setup_tool/discipline/create/',
     fields: [
       {
-        name: 'name',
-        label: setupToolText.disciplineName(),
-        required: true,
-        maxLength: 64,
-      },
-      {
         name: 'type',
         label: setupToolText.disciplineType(),
         type: 'select',
         options: disciplineTypeOptions,
         required: true,
+      },
+      {
+        name: 'name',
+        label: setupToolText.disciplineName(),
+        required: true,
+        maxLength: 64,
       },
     ],
   },

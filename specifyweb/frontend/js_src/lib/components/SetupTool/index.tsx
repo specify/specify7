@@ -20,7 +20,7 @@ import { loadingBar } from '../Molecules';
 import { checkFormCondition, renderFormFieldFactory } from './SetupForm';
 import { SetupOverview } from './SetupOverview';
 import type { FieldConfig, ResourceConfig } from './setupResources';
-import { resources } from './setupResources';
+import { disciplineTypeOptions, resources } from './setupResources';
 import type {
   ResourceFormData,
   SetupProgress,
@@ -186,12 +186,24 @@ export function SetupTool({
   ): void => {
     setFormData((previous) => {
       const resourceName = resources[currentStep].resourceName;
+      const previousResourceData = previous[resourceName];
+      const updates: Record<string, any> = {
+        ...previousResourceData,
+        [name]: newValue,
+      };
+
+      if (resourceName === 'discipline' && name === 'type') {
+        const matchingType = disciplineTypeOptions.find(
+          (option) => option.value === newValue
+        );
+        updates.name = matchingType
+          ? matchingType.label ?? String(matchingType.value)
+          : '';
+      }
+
       return {
         ...previous,
-        [resourceName]: {
-          ...previous[resourceName],
-          [name]: newValue,
-        },
+        [resourceName]: updates,
       };
     });
   };
