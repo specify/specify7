@@ -1579,6 +1579,9 @@ export const preferencesText = createDictionary({
     'de-ch': 'Eine Interaktion erstellen',
     'pt-br': 'Criar uma interação',
   },
+  preparationField: {
+    'en-us': 'Identifier for interactions',
+  },
   useSpaceAsDelimiter: {
     'en-us': 'Use space as delimiter',
     'ru-ru': 'Используйте пробел в качестве разделителя.',

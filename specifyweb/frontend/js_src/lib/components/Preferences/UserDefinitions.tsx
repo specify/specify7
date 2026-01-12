@@ -32,10 +32,11 @@ import {
   overwriteReadOnly,
 } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
+import { Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
 import type { TableFields } from '../DataModel/helperTypes';
-import { genericTables } from '../DataModel/tables';
+import { genericTables, tables } from '../DataModel/tables';
 import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
 import type { StatLayout } from '../Statistics/types';
@@ -71,6 +72,36 @@ const altKeyName =
   typeof navigator !== 'undefined' && navigator?.userAgent?.includes('Mac')
     ? 'Option'
     : 'Alt';
+
+const defaultPreparationField = 'barCode';
+
+const PreparationFieldPreferenceItem = ({
+  value,
+  onChange: handleChange,
+}: PreferenceRendererProps<string>): JSX.Element => {
+  const options = React.useMemo(
+    () =>
+      (tables.Preparation?.literalFields.length ?? 0) === 0
+        ? [
+            { value: 'barCode', title: camelToHuman('barCode') }
+          ]
+        : tables.Preparation.literalFields.map(({ name, label }) => ({
+            value: name,
+            title: label ?? camelToHuman(name),
+          })),
+    []
+  );
+
+  return (
+    <Select value={value} onValueChange={handleChange}>
+      {options.map(({ value: optionValue, title }) => (
+        <option key={optionValue} value={optionValue}>
+          {title}
+        </option>
+      ))}
+    </Select>
+  );
+};
 
 /**
  * Have to be careful as preferences may be used before schema is loaded
@@ -630,6 +661,14 @@ export const userPreferenceDefinitions = {
       createInteractions: {
         title: preferencesText.createInteractions(),
         items: {
+          preparationField: definePref<string>({
+            title: preferencesText.preparationField(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: defaultPreparationField,
+            renderer: PreparationFieldPreferenceItem,
+            container: 'label',
+          }),
           useSpaceAsDelimiter: definePref<'auto' | 'false' | 'true'>({
             title: preferencesText.useSpaceAsDelimiter(),
             requiresReload: false,
