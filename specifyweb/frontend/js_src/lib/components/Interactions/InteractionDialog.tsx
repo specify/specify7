@@ -486,36 +486,6 @@ export function InteractionDialog({
                       : commonText.next()}
                   </Button.Info>
                 </div>
-                {state.type === 'InvalidState' && (
-                  <>
-                    {interactionsText.problemsFound()}
-                    {state.invalid.map((error, index) => (
-                      <p key={index}>{error}</p>
-                    ))}
-                  </>
-                )}
-                {state.type === 'MissingState' && (
-                  <>
-                    {state.missing.length > 0 && (
-                      <>
-                        <H3>{interactionsText.preparationsNotFoundFor()}</H3>
-                        {state.missing.map((problem, index) => (
-                          <p key={index}>{problem}</p>
-                        ))}
-                      </>
-                    )}
-                    {state.unavailableBis.length > 0 && (
-                      <>
-                        <H3>
-                          {interactionsText.preparationsNotAvailableFor()}
-                        </H3>
-                        {state.unavailableBis.map((problem, index) => (
-                          <p key={index}>{problem}</p>
-                        ))}
-                      </>
-                    )}
-                  </>
-                )}
               </div>
             </details>
             <details>
@@ -545,6 +515,34 @@ export function InteractionDialog({
                 </div>
               </div>
             </details>
+            {state.type === 'InvalidState' && (
+              <div className="mt-2 space-y-1">
+                <H3>{interactionsText.problemsFound()}</H3>
+                {state.invalid.map((error, index) => (
+                  <p key={index}>{error}</p>
+                ))}
+              </div>
+            )}
+            {state.type === 'MissingState' && (
+              <div className="mt-2 space-y-2">
+                {state.missing.length > 0 && (
+                  <div>
+                    <H3>{interactionsText.preparationsNotFoundFor()}</H3>
+                    {state.missing.map((problem, index) => (
+                      <p key={index}>{problem}</p>
+                    ))}
+                  </div>
+                )}
+                {state.unavailableBis.length > 0 && (
+                  <div>
+                    <H3>{interactionsText.preparationsNotAvailableFor()}</H3>
+                    {state.unavailableBis.map((problem, index) => (
+                      <p key={index}>{problem}</p>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </Dialog>
         )}
       </RecordSetsDialog>
