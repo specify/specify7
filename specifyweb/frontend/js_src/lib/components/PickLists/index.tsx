@@ -159,14 +159,9 @@ export function PickListComboBox({
 
   const isReadOnly = React.useContext(ReadOnlyContext);
 
-  const isSpecialByPrefix =
-    typeof pickListName === 'string' && pickListName.startsWith('_');
-  const isSpecialPicklist =
-    isDisabled || isSpecialByPrefix || pickList?.get?.('readOnly') === true;
-
   return (
     <>
-      {isSpecialPicklist ? (
+      {pickList?.get('readOnly') === true || isDisabled ? (
         <Select
           id={id}
           value={value ?? ''}
@@ -201,7 +196,6 @@ export function PickListComboBox({
           ))}
         </Select>
       ) : (
-        // Keep AutoComplete for all other picklists (type-to-search + add-new if permitted)
         <AutoComplete<string>
           aria-label={undefined}
           disabled={isDisabled || isReadOnly}
@@ -216,7 +210,7 @@ export function PickListComboBox({
           value={(currentValue?.title || value) ?? ''}
           onChange={({ data }): void => updateValue(data)}
           onCleared={(): void => updateValue('')}
-          onNewValue={handleAdd ? addNewValue : undefined}
+          onNewValue={addNewValue}
         />
       )}
       {typeof pendingNewValue === 'string' &&

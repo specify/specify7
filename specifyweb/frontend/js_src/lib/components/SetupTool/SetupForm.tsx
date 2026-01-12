@@ -191,8 +191,8 @@ export function renderFormFieldFactory({
           </>
         ) : type === 'object' ? (
           // Subforms
-          <div className="border border-gray-500 rounded-b p-1">
-            <H3 className="text-xl font-semibold mb-4" title={description}>
+          <div>
+            <H3 className="text-xl font-semibold" title={description}>
               {label}
             </H3>
             {fields ? renderFormFields(fields, name) : null}

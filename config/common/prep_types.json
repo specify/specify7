@@ -41,10 +41,20 @@
     { "name": "X-Ray", "isloanable": true }
   ],
   "invertpaleo": [
-    { "name": "Jar", "isloanable": true }
+    { "name": "Fossil", "isloanable": true },
+    { "name": "Cast", "isloanable": true },
+    { "name": "Mold", "isloanable": true },
+    { "name": "Peel", "isloanable": true },
+    { "name": "Slide", "isloanable": true }
   ],
   "paleobotany": [
-    { "name": "Sheet", "isloanable": true }
+    { "name": "Fossil", "isloanable": true },
+    { "name": "Cast", "isloanable": true },
+    { "name": "Mold", "isloanable": true },
+    { "name": "Peel", "isloanable": true },
+    { "name": "Slide", "isloanable": true },
+    { "name": "Cuticle", "isloanable": true },
+    { "name": "Coal", "isloanable": true }
   ],
   "mammal": [
     { "name": "C&S", "isloanable": true },
@@ -54,7 +64,7 @@
   ],
   "reptile": [
     { "name": "C&S", "isloanable": true },
-    { "name": "Denatured EtoH", "isloanable": true },
+    { "name": "Denatured EtOH", "isloanable": true },
     { "name": "Dry", "isloanable": true },
     { "name": "EtOH", "isloanable": true },
     { "name": "Formalin", "isloanable": true },
@@ -73,10 +83,11 @@
     { "name": "Sheet", "isloanable": true }
   ],
   "vertpaleo": [
-    { "name": "C&S", "isloanable": true },
-    { "name": "EtOH", "isloanable": true },
-    { "name": "Skeleton", "isloanable": true },
-    { "name": "X-Ray", "isloanable": true }
+    { "name": "Fossil", "isloanable": true },
+    { "name": "Cast", "isloanable": true },
+    { "name": "Mold", "isloanable": true },
+    { "name": "Peel", "isloanable": true },
+    { "name": "Slide", "isloanable": true }
   ],
   "geology": [
     { "name": "Hand Sample", "isloanable": true },

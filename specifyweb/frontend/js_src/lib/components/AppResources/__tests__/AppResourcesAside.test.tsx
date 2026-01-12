@@ -10,6 +10,11 @@ import { testAppResources } from './testAppResources';
 
 requireContext();
 
+jest.mock('../../Permissions/helpers', () => ({
+  hasPermission: jest.fn(),
+  hasToolPermission: jest.fn(() => true),
+}));
+
 describe('AppResourcesAside (simple no conformation case)', () => {
   test('simple no conformation case', () => {
     const onOpen = jest.fn();
@@ -106,13 +111,13 @@ describe('AppResourcesAside (expanded case)', () => {
     const laterFragment = asFragmentLater().textContent;
 
     expect(initialFragment).toBe(
-      'Global Resources (2)Discipline Resources (4)Expand AllCollapse All'
+      'Global Resources (0)Discipline Resources (1)Expand AllCollapse All'
     );
     expect(intermediateFragment).toBe(
-      'Global Resources (2)Discipline Resources (4)Botany (4)Expand AllCollapse All'
+      'Global Resources (0)Discipline Resources (1)Botany (1)Expand AllCollapse All'
     );
     expect(laterFragment).toBe(
-      'Global Resources (2)Discipline Resources (4)Expand AllCollapse All'
+      'Global Resources (0)Discipline Resources (1)Expand AllCollapse All'
     );
 
     const expandAllButton = getFinal('button')[2];
@@ -136,7 +141,7 @@ describe('AppResourcesAside (expanded case)', () => {
     const expandedAllFragment = asFragmentAllExpanded().textContent;
 
     expect(expandedAllFragment).toBe(
-      'Global Resources (2)Global PreferencesRemote PreferencesAdd ResourceDiscipline Resources (4)Botany (4)Add Resourcec (4)Collection PreferencesAdd ResourceUser Accounts (3)testiiif (3)User PreferencesQueryExtraListQueryFreqListAdd ResourceUser Types (0)FullAccess (0)Guest (0)LimitedAccess (0)Manager (0)Expand AllCollapse All'
+      'Global Resources (0)Discipline Resources (1)Botany (1)Add Resourcec (1)Collection PreferencesAdd ResourceUser Accounts (0)testiiif (0)User Types (0)FullAccess (0)Guest (0)LimitedAccess (0)Manager (0)Expand AllCollapse All'
     );
     expect(asFragmentAllExpanded()).toMatchSnapshot();
     unmountExpandedll();

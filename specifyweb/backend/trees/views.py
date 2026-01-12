@@ -384,7 +384,8 @@ def synonymize(request, tree: TREE_TABLE, id: int):
     )
     node = get_object_or_404(tree, id=id)
     target = get_object_or_404(tree, id=request.POST["target"])
-    extras.synonymize(node, target, request.specify_user_agent)
+    extras.synonymize(node, target, request.specify_user_agent, request.specify_user,
+            request.specify_collection)
 
 
 @tree_mutation
