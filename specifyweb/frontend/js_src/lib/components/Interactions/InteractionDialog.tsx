@@ -192,7 +192,8 @@ export function InteractionDialog({
     prepsData: RA<PreparationRow>,
     options?: { readonly skipEntryMatch?: boolean }
   ) {
-    const skipEntryMatch = options?.skipEntryMatch === true;
+    const skipEntryMatch =
+      options?.skipEntryMatch === true && prepsData.length > 0;
     const catalogNumbers = prepsData.map(([catalogNumber]) => catalogNumber);
     const missing = skipEntryMatch
       ? []

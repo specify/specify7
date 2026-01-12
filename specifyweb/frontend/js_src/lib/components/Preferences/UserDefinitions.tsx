@@ -75,6 +75,18 @@ const altKeyName =
 
 const defaultPreparationField = 'barCode';
 
+const isAllowedPrepField = (name: string): boolean => {
+  const lowered = name.toLowerCase();
+  return (
+    lowered === 'barcode' ||
+    lowered === 'samplenumber' ||
+    lowered === 'samplenum' ||
+    lowered === 'guid' ||
+    lowered === 'uniqueidentifier' ||
+    /^text\d+$/.test(lowered)
+  );
+};
+
 const PreparationFieldPreferenceItem = ({
   value,
   onChange: handleChange,
@@ -82,13 +94,13 @@ const PreparationFieldPreferenceItem = ({
   const options = React.useMemo(
     () =>
       (tables.Preparation?.literalFields.length ?? 0) === 0
-        ? [
-            { value: 'barCode', title: camelToHuman('barCode') }
-          ]
-        : tables.Preparation.literalFields.map(({ name, label }) => ({
-            value: name,
-            title: label ?? camelToHuman(name),
-          })),
+        ? [{ value: 'barCode', title: camelToHuman('barCode') }]
+        : tables.Preparation.literalFields
+            .filter(({ name }) => isAllowedPrepField(name))
+            .map(({ name, label }) => ({
+              value: name,
+              title: label ?? camelToHuman(name),
+            })),
     []
   );
 
