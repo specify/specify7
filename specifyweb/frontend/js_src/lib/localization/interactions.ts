@@ -382,15 +382,7 @@ export const interactionsText = createDictionary({
   },
   noPreparationsWarning: {
     'en-us':
-      'None of these objects have preparations. Would you like to continue?',
-    'de-ch':
-      'Keines dieser Objekte weist Vorbereitungen auf. Möchten Sie fortfahren?',
-    'es-es':
-      'Ninguno de estos objetos tiene preparaciones. ¿Quieres continuar?',
-    'fr-fr': "Aucun de ces objets n'est préparé. Souhaitez-vous continuer ?",
-    'ru-ru': 'Ни один из этих объектов не имеет подготовки. Хотите продолжить?',
-    'uk-ua': "Жоден з цих об'єктів не має підготовки. Бажаєте продовжити?",
-    'pt-br': 'Nenhum desses objetos possui preparações. Deseja continuar?',
+      'None of these records have preparations. Would you like to continue?',
   },
   continue: {
     'en-us': 'Continue',

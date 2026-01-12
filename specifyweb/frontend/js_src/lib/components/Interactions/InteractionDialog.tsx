@@ -189,11 +189,14 @@ export function InteractionDialog({
 
   function availablePrepsReady(
     entries: RA<string> | undefined,
-    prepsData: RA<PreparationRow>
+    prepsData: RA<PreparationRow>,
+    options?: { readonly skipEntryMatch?: boolean }
   ) {
+    const skipEntryMatch = options?.skipEntryMatch === true;
     const catalogNumbers = prepsData.map(([catalogNumber]) => catalogNumber);
-    const missing =
-      typeof entries === 'object'
+    const missing = skipEntryMatch
+      ? []
+      : typeof entries === 'object'
         ? entries.filter(
             (entry) => !catalogNumbers.some((data) => data.includes(entry))
           )
@@ -204,8 +207,9 @@ export function InteractionDialog({
     const availablePrep = prepsData.filter(
       (prepData) => Number.parseInt(prepData[10]) > 0
     );
-    const unavailable =
-      typeof entries === 'object'
+    const unavailable = skipEntryMatch
+      ? []
+      : typeof entries === 'object'
         ? entries.filter((entry) =>
             unavailablePrep.some((item) => entry === item[0])
           )
@@ -342,7 +346,7 @@ export function InteractionDialog({
             values,
             isLoan
           )
-      ).then((data) => availablePrepsReady(values, data))
+      ).then((data) => availablePrepsReady(values, data, { skipEntryMatch: true }))
     );
   }
 
