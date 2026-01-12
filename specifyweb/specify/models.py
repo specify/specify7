@@ -328,6 +328,7 @@ class Agent(models.Model):
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     organization = models.ForeignKey('Agent', db_column='ParentOrganizationID', related_name='orgmembers', null=True, on_delete=protect_with_blockers)
     specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='agents', null=True, on_delete=models.SET_NULL)
+    institutiontc = models.ForeignKey("InstitutionNetwork", db_column="InstitutionTCID", on_delete=models.DO_NOTHING, null=True, blank=True, related_name="agents_institutiontc")
 
     class Meta:
         db_table = 'agent'
@@ -1380,6 +1381,7 @@ class Collection(models.Model):
     institutionnetwork = models.ForeignKey('Institution', db_column='InstitutionNetworkID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     collectionobjecttype = models.ForeignKey('CollectionObjectType', db_column='CollectionObjectTypeID', related_name='collections', null=True, on_delete=models.SET_NULL)
+    institutionnetwork = models.ForeignKey("InstitutionNetwork", db_column="InstitutionNetworkID", on_delete=models.DO_NOTHING, null=True, blank=True, related_name="collections")
 
     class Meta:
         db_table = 'collection'
@@ -2882,6 +2884,7 @@ class Discipline(model_extras.Discipline):
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
     type = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Type', db_index=False)
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
+    disciplineid = models.IntegerField(blank=True, null=False, unique=False, db_column='DisciplineId', db_index=False)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -7987,5 +7990,160 @@ class Tectonicunit(model_extras.Tectonicunit):
     class Meta:
         db_table = 'tectonicunit'
         ordering = ()
+
+    save = partialmethod(custom_save)
+
+class AutonumschColl(models.Model):
+    specify_model = datamodel.get_table_strict('autonumsch_coll')
+
+    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='autonumsch_coll_links', null=False, on_delete=protect_with_blockers, primary_key=True)
+    autonumberingscheme = models.ForeignKey('AutoNumberingScheme', db_column='AutoNumberingSchemeID', related_name='autonumsch_coll_links', null=False, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'autonumsch_coll'
+        ordering = ()
+        unique_together = (('collection', 'autonumberingscheme'),)
+
+    save = partialmethod(custom_save)
+
+
+class AutonumschDiv(models.Model):
+    specify_model = datamodel.get_table_strict('autonumsch_div')
+
+    division = models.ForeignKey('Division', db_column='DivisionID', related_name='autonumsch_div_links', null=False, on_delete=protect_with_blockers, primary_key=True)
+    autonumberingscheme = models.ForeignKey('AutoNumberingScheme', db_column='AutoNumberingSchemeID', related_name='autonumsch_div_links', null=False, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'autonumsch_div'
+        ordering = ()
+        unique_together = (('division', 'autonumberingscheme'),)
+
+    save = partialmethod(custom_save)
+
+
+class AutonumschDsp(models.Model):
+    specify_model = datamodel.get_table_strict('autonumsch_dsp')
+
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='autonumsch_dsp_links', null=False, on_delete=protect_with_blockers, primary_key=True)
+    autonumberingscheme = models.ForeignKey('AutoNumberingScheme', db_column='AutoNumberingSchemeID', related_name='autonumsch_dsp_links', null=False, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'autonumsch_dsp'
+        ordering = ()
+        unique_together = (('discipline', 'autonumberingscheme'),)
+
+    save = partialmethod(custom_save)
+
+class SpecifyuserSpprincipal(models.Model):
+    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', on_delete=models.deletion.DO_NOTHING)
+    spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', on_delete=models.deletion.DO_NOTHING)
+
+    class Meta:
+        db_table = 'specifyuser_spprincipal'
+        managed = False
+        ordering = ()
+        unique_together = (('specifyuser', 'spprincipal'),)
+        indexes = [
+            models.Index(fields=['specifyuser'], name='FK81E18B5E4BDD9E10'),
+            models.Index(fields=['spprincipal'], name='FK81E18B5E99A7381A'),
+        ]
+
+class Deaccessionpreparation(models.Model):
+    specify_model = datamodel.get_table_strict('deaccessionpreparation')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='DeaccessionPreparationID')
+
+    # Fields
+    quantity = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Quantity', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    version = models.IntegerField(blank=True, null=True, unique=False, db_column='version', db_index=False, default=0)
+
+    # Relationships: Many-to-One
+    deaccession = models.ForeignKey('Deaccession', db_column='DeaccessionID', related_name='deaccessionpreparations', null=False, on_delete=protect_with_blockers)
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    preparation = models.ForeignKey('Preparation', db_column='PreparationID', related_name='deaccessionpreparations', null=True, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'deaccessionpreparation'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class ProjectColobj(models.Model):
+    specify_model = datamodel.get_table_strict('project_colobj')
+
+    # Composite PK table (no AutoField); use the two FKs as the PK
+    project = models.ForeignKey('Project', db_column='ProjectID', related_name='project_colobjs', null=False, on_delete=protect_with_blockers, primary_key=True)
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='project_colobjs', null=False, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'project_colobj'
+        ordering = ()
+        unique_together = (('project', 'collectionobject'),)
+
+    save = partialmethod(custom_save)
+
+class Sgrbatchmatchresultitem(models.Model):
+    specify_model = datamodel.get_table_strict('sgrbatchmatchresultitem')
+
+    # ID Field
+    id = models.BigAutoField(primary_key=True, db_column='id')
+
+    # Fields
+    matchedid = models.CharField(blank=False, max_length=128, null=False, unique=False, db_column='matchedId', db_index=False)
+    maxscore = models.FloatField(blank=False, null=False, unique=False, db_column='maxScore', db_index=False)
+    qtime = models.IntegerField(blank=False, null=False, unique=False, db_column='qTime', db_index=False)
+
+    # Relationships: Many-to-One
+    batchmatchresultset = models.ForeignKey('SgrBatchMatchResultSet', db_column='batchMatchResultSetId', related_name='items', null=False, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'sgrbatchmatchresultitem'
+        ordering = ()
+
+    save = partialmethod(custom_save)
+
+class SpSchemaMapping(models.Model):
+    specify_model = datamodel.get_table_strict('sp_schema_mapping')
+
+    # Composite PK table; use one FK as primary key + unique_together
+    spexportschemamapping = models.ForeignKey('SpExportSchemaMapping', db_column='SpExportSchemaMappingID', related_name='sp_schema_mappings', null=False, on_delete=protect_with_blockers, primary_key=True)
+    spexportschema = models.ForeignKey('SpExportSchema', db_column='SpExportSchemaID', related_name='sp_schema_mappings', null=False, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'sp_schema_mapping'
+        ordering = ()
+        unique_together = (('spexportschemamapping', 'spexportschema'),)
+
+    save = partialmethod(custom_save)
+
+class SpecifyuserSpprincipal(models.Model):
+    specify_model = datamodel.get_table_strict('specifyuser_spprincipal')
+
+    # Composite PK table; use one FK as primary key + unique_together
+    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='spprincipal_links', null=False, on_delete=protect_with_blockers, primary_key=True)
+    spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', related_name='specifyuser_links', null=False, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'specifyuser_spprincipal'
+        ordering = ()
+        unique_together = (('specifyuser', 'spprincipal'),)
+
+    save = partialmethod(custom_save)
+
+class SpprincipalSppermission(models.Model):
+    specify_model = datamodel.get_table_strict('spprincipal_sppermission')
+
+    sppermission = models.ForeignKey('SpPermission', db_column='SpPermissionID', related_name='spprincipal_links', null=False, on_delete=protect_with_blockers, primary_key=True)
+    spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', related_name='sppermission_links', null=False, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'spprincipal_sppermission'
+        ordering = ()
+        unique_together = (('sppermission', 'spprincipal'),)
 
     save = partialmethod(custom_save)

@@ -3047,7 +3047,8 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='type', column='Type', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='disciplineId', column='DisciplineId', indexed=False, unique=False, required=False, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='DisciplineNameIDX', column_names=['Name'])
