@@ -57,11 +57,14 @@ export const disciplineTypeOptions = [
   { value: 'geology', label: 'Geology' },
 ];
 
+// Must match config/backstop/uiformatters.xml
+// TODO: Fetch uiformatters.xml from the backend instead and use UIFormatter.placeholder
+const currentYear = new Date().getFullYear();
 const catalogNumberFormats = [
-  { value: 'CatalogNumber' },
-  { value: 'CatalogNumberAlphaNumByYear' },
-  { value: 'CatalogNumberNumeric' },
-  { value: 'CatalogNumberString' },
+  { value: 'CatalogNumber', label: `CatalogNumberNumeric (${currentYear}-######)` },
+  { value: 'CatalogNumberAlphaNumByYear', label: `CatalogNumberAlphaNumByYear (${currentYear}-######)` },
+  { value: 'CatalogNumberNumeric', label: 'CatalogNumberNumeric (#########)' },
+  { value: 'CatalogNumberString', label: 'CatalogNumberString (AAAAAAAAAA)' },
 ];
 
 const fullNameDirections = [

@@ -52,6 +52,7 @@ def get_active_setup_task() -> Tuple[Optional[AsyncResult], bool]:
         return None, False
 
     res = app.AsyncResult(task_id)
+    logger.debug(res)
     busy = res.state in ("PENDING", "RECEIVED", "STARTED", "RETRY", "PROGRESS")
     # Check if the last task ended
     if not busy and res.state in ("SUCCESS", "FAILURE", "REVOKED"):
