@@ -73,10 +73,30 @@ export function InteractionDialog({
   readonly itemCollection?: Collection<AnyInteractionPreparation>;
   readonly interactionResource?: SpecifyResource<AnySchema>;
 }): JSX.Element {
-  const itemTable = isLoanReturn ? tables.Loan : tables.CollectionObject;
-  const searchField = itemTable.strictGetLiteralField(
-    itemTable.name === 'Loan' ? 'loanNumber' : 'catalogNumber'
+  const [collectionObjectFieldPref] = userPreferences.use(
+    'interactions',
+    'createInteractions',
+    'collectionObjectField'
   );
+
+  const itemTable = isLoanReturn ? tables.Loan : tables.CollectionObject;
+
+  const collectionObjectField = React.useMemo(() => {
+    const coField = tables.CollectionObject.literalFields.find(
+      ({ name }) => name === collectionObjectFieldPref
+    );
+    const fallback =
+      tables.CollectionObject.literalFields.find(
+        ({ name }) => name === 'catalogNumber'
+      ) ?? tables.CollectionObject.literalFields[0];
+    return coField ?? fallback;
+  }, [collectionObjectFieldPref]);
+
+  const searchField =
+    itemTable.name === 'Loan'
+      ? itemTable.strictGetLiteralField('loanNumber')
+      : collectionObjectField;
+
   const { parser, split, attributes } = useParser(searchField);
 
   const [preparationFieldPref] = userPreferences.use(
@@ -177,11 +197,16 @@ export function InteractionDialog({
         (catalogNumbers.length === 0
           ? Promise.resolve([])
           : getPrepsAvailableForLoanCoIds(
-              'CatalogNumber',
+              searchField.name,
               catalogNumbers,
               isLoan
             )
-        ).then((data) => availablePrepsReady(catalogNumbers, data))
+        ).then((data) =>
+          availablePrepsReady(catalogNumbers, data, {
+            skipEntryMatch:
+              searchField.name.toLowerCase() !== 'catalognumber',
+          })
+        )
       );
   }
 

@@ -54,7 +54,11 @@ import {
   ThresholdRank,
   WelcomePageModePreferenceItem,
 } from './Renderers';
-import type { GenericPreferences, PreferencesVisibilityContext } from './types';
+import type {
+  GenericPreferences,
+  PreferenceRendererProps,
+  PreferencesVisibilityContext,
+} from './types';
 import { definePref } from './types';
 
 const isLightMode = ({
@@ -74,6 +78,18 @@ const altKeyName =
     : 'Alt';
 
 const defaultPreparationField = 'barCode';
+const defaultCollectionObjectField = 'catalogNumber';
+
+const isAllowedCollectionObjectField = (name: string): boolean => {
+  const lowered = name.toLowerCase();
+  return (
+    lowered === 'catalognumber' ||
+    lowered === 'altcatalognumber' ||
+    lowered === 'fieldnumber' ||
+    lowered === 'guid' ||
+    /^text\d+$/.test(lowered)
+  );
+};
 
 const isAllowedPrepField = (name: string): boolean => {
   const lowered = name.toLowerCase();
@@ -97,6 +113,34 @@ const PreparationFieldPreferenceItem = ({
         ? [{ value: 'barCode', title: camelToHuman('barCode') }]
         : tables.Preparation.literalFields
             .filter(({ name }) => isAllowedPrepField(name))
+            .map(({ name, label }) => ({
+              value: name,
+              title: label ?? camelToHuman(name),
+            })),
+    []
+  );
+
+  return (
+    <Select value={value} onValueChange={handleChange}>
+      {options.map(({ value: optionValue, title }) => (
+        <option key={optionValue} value={optionValue}>
+          {title}
+        </option>
+      ))}
+    </Select>
+  );
+};
+
+const CollectionObjectFieldPreferenceItem = ({
+  value,
+  onChange: handleChange,
+}: PreferenceRendererProps<string>): JSX.Element => {
+  const options = React.useMemo(
+    () =>
+      (tables.CollectionObject?.literalFields.length ?? 0) === 0
+        ? [{ value: 'catalogNumber', title: camelToHuman('catalogNumber') }]
+        : tables.CollectionObject.literalFields
+            .filter(({ name }) => isAllowedCollectionObjectField(name))
             .map(({ name, label }) => ({
               value: name,
               title: label ?? camelToHuman(name),
@@ -673,8 +717,22 @@ export const userPreferenceDefinitions = {
       createInteractions: {
         title: preferencesText.createInteractions(),
         items: {
+          collectionObjectField: definePref<string>({
+            title: () =>
+              preferencesText.tableIdentifier({
+                tableName: tableLabel('CollectionObject'),
+              }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: defaultCollectionObjectField,
+            renderer: CollectionObjectFieldPreferenceItem,
+            container: 'label',
+          }),
           preparationField: definePref<string>({
-            title: preferencesText.preparationField(),
+            title: () =>
+              preferencesText.tableIdentifier({
+                tableName: tableLabel('Preparation'),
+              }),
             requiresReload: false,
             visible: true,
             defaultValue: defaultPreparationField,
