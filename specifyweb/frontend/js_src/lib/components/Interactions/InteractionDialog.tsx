@@ -55,6 +55,7 @@ import type {
 import { interactionsWithPrepTables } from './helpers';
 import {
   getPrepsAvailableForLoanCoIds,
+  getPrepsAvailableForLoanPrepField,
   getPrepsAvailableForLoanRs,
 } from './helpers';
 import { PrepDialog } from './PrepDialog';
@@ -77,6 +78,28 @@ export function InteractionDialog({
     itemTable.name === 'Loan' ? 'loanNumber' : 'catalogNumber'
   );
   const { parser, split, attributes } = useParser(searchField);
+
+  const [preparationFieldPref] = userPreferences.use(
+    'interactions',
+    'createInteractions',
+    'preparationField'
+  );
+
+  const preparationField = React.useMemo(() => {
+    const prepField = tables.Preparation.literalFields.find(
+      ({ name }) => name === preparationFieldPref
+    );
+    const fallback =
+      tables.Preparation.literalFields.find(({ name }) => name === 'barCode') ??
+      tables.Preparation.literalFields[0];
+    return prepField ?? fallback;
+  }, [preparationFieldPref]);
+
+  const {
+    parser: prepParser,
+    split: prepSplit,
+    attributes: prepAttributes,
+  } = useParser(preparationField);
 
   const [state, setState] = React.useState<
     | State<
@@ -105,6 +128,13 @@ export function InteractionDialog({
   const { validationRef, inputRef, setValidation } =
     useValidation<HTMLTextAreaElement>();
   const [catalogNumbers, setCatalogNumbers] = React.useState<string>('');
+
+  const {
+    validationRef: prepValidationRef,
+    inputRef: prepInputRef,
+    setValidation: setPrepValidation,
+  } = useValidation<HTMLTextAreaElement>();
+  const [preparationValues, setPreparationValues] = React.useState<string>('');
 
   const loading = React.useContext(LoadingContext);
 
@@ -265,6 +295,34 @@ export function InteractionDialog({
     return parsed;
   }
 
+  function handleParsePreparationField(): RA<string> | undefined {
+    const parseResults = prepSplit(preparationValues).map((value) =>
+      parseValue(prepParser, prepInputRef.current ?? undefined, value)
+    );
+
+    const errorMessages = parseResults
+      .filter((result): result is InvalidParseResult => !result.isValid)
+      .map(({ reason, value }) => `${reason} (${value})`);
+
+    if (errorMessages.length > 0) {
+      setPrepValidation(errorMessages);
+      return undefined;
+    }
+
+    setPrepValidation([]);
+
+    const parsed = f.unique(
+      (parseResults as RA<ValidParseResult>)
+        .filter(({ parsed }) => parsed !== null)
+        .map(({ parsed }) => (parsed as number | string).toString())
+        .sort(sortFunction(f.id))
+    );
+
+    setPreparationValues(parsed.join('\n'));
+
+    return parsed;
+  }
+
   const addInteractionResource = (): void => {
     itemCollection?.add(
       (interactionResource as SpecifyResource<
@@ -272,6 +330,21 @@ export function InteractionDialog({
       >) ?? new itemCollection.table.specifyTable.Resource()
     );
   };
+
+  function handleProceedPreparationField(): void {
+    const values = handleParsePreparationField();
+    if (values === undefined) return undefined;
+    loading(
+      (values.length === 0
+        ? Promise.resolve([])
+        : getPrepsAvailableForLoanPrepField(
+            preparationField.name,
+            values,
+            isLoan
+          )
+      ).then((data) => availablePrepsReady(values, data))
+    );
+  }
 
   const collectionObjectGroupResourceTableId = React.useMemo(
     () => new tables.CollectionObjectGroup.Resource().specifyTable.tableId,
@@ -443,6 +516,33 @@ export function InteractionDialog({
                     )}
                   </>
                 )}
+              </div>
+            </details>
+            <details>
+              <summary>
+                {interactionsText.byEnteringNumbers({
+                  fieldName: preparationField?.label ?? '',
+                })}
+              </summary>
+              <div className="flex flex-col gap-2">
+                <AutoGrowTextArea
+                  forwardRef={prepValidationRef}
+                  spellCheck={false}
+                  value={preparationValues}
+                  onValueChange={setPreparationValues}
+                  {...prepAttributes}
+                />
+                <div>
+                  <Button.Info
+                    disabled={preparationValues.length === 0}
+                    onClick={(): void => handleProceedPreparationField()}
+                  >
+                    {state.type === 'MissingState' ||
+                    state.type === 'InvalidState'
+                      ? commonText.update()
+                      : commonText.next()}
+                  </Button.Info>
+                </div>
               </div>
             </details>
           </Dialog>
