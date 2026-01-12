@@ -84,6 +84,7 @@ class FieldSchemaConfig(NamedTuple):
 def uncapitilize(string: str) -> str: 
     return string.lower() if len(string) <= 1 else string[0].lower() + string[1:]
 
+from typing import NamedTuple, Literal
 from django.db import transaction
 from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
 
@@ -100,7 +101,7 @@ def create_default_table_schema_config(
     with transaction.atomic():
         container_batch = []
         item_batch = []
-        item_str_batch = []
+        str_batch = []
 
         # These seemingly redundant loops are used for much needed batching
 
@@ -121,24 +122,21 @@ def create_default_table_schema_config(
 
         # Create items for all fields in every table #
         for table_name in model_names_by_table_id.values():
-            table = datamodel.get_table(table_name)
             table_defaults = defaults.get(table_name.lower()) if defaults is not None else dict()
             if table_defaults is None:
                 table_defaults = dict()
 
-            key = table.name.lower()
-            sp_local_container = container_map[key]
+            container = container_map[table.name.lower()]
 
             for field in table.all_fields:
                 field_defaults = None
                 if table_defaults.get('items'):
                     field_defaults = table_defaults['items'].get(field.name.lower())
 
-                field_name = field.name
                 item_batch.extend(create_field_item(
-                    field_name,
+                    field.name,
                     table_name,
-                    sp_local_container,
+                    container,
                     field_defaults
                 ))
 
@@ -157,34 +155,33 @@ def create_default_table_schema_config(
             if table_defaults is None:
                 table_defaults = dict()
 
-            key = table.name.lower()
-            sp_local_container = container_map[key]
+            container = container_map[table.name.lower()]
 
-            item_str_batch.extend(create_table_strings(
-                field_name,
+            str_batch.extend(create_table_strings(
                 table_name,
-                sp_local_container,
-                field_defaults
+                container,
+                table_defaults
             ))
 
             for field in table.all_fields:
+                field_name = field.name.lower()
+
                 field_defaults = None
                 if table_defaults.get('items'):
-                    field_defaults = table_defaults['items'].get(field.name.lower())
+                    field_defaults = table_defaults['items'].get(field_name)
 
-                item_key = (sp_local_container.name, field_name)
-                sp_local_container_item = item_map[item_key]
+                item_key = (container.name, field_name)
+                item = item_map[item_key]
 
-                item_str_batch.extend(
+                str_batch.extend(
                     create_field_strings(
                         field_name,
                         table_name,
-                        sp_local_container_item,
+                        item,
                         field_defaults,
                     )
                 )
-        # 8. Bulk create itemstrs
-        Splocaleitemstr.objects.bulk_create(item_str_batch, ignore_conflicts=True)
+        Splocaleitemstr.objects.bulk_create(str_batch, ignore_conflicts=True)
 
 def create_table_container(
     table_name: str,
@@ -248,31 +245,14 @@ def create_field_item(
 def create_table_strings(
     table_name: str,
     container,
-    item,
     table_defaults: dict = None,
     apps = global_apps,
 ):
-    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
-    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
-    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
-
     table = datamodel.get_table(table_name)
     table_name_str = table_defaults.get('name', camel_to_spaced_title_case(uncapitilize(table.name)))
     table_desc_str = table_defaults.get('desc', camel_to_spaced_title_case(uncapitilize(table.name)))
 
-    strings = []
-    for k, text in {
-        "containername": table_name_str,
-        "containerdesc": table_desc_str,
-    }.items():
-        item_str = {
-            "text": text,
-            "language": "en",
-            "version": 0,
-        }
-        item_str[k] = container
-        strings.append(Splocaleitemstr(**item_str))
-    return strings
+    return create_strings('container', container, table_name_str, table_desc_str, apps)
     
 def create_field_strings(
     field_name: str,
@@ -281,10 +261,6 @@ def create_field_strings(
     field_defaults: dict = None,
     apps = global_apps,
 ):
-    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
-    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
-    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
-
     table = datamodel.get_table(table_name)
     field = table.get_field_strict(field_name)
     field_name = field.name
@@ -295,10 +271,20 @@ def create_field_strings(
         field_name_str = field_defaults.get('name', field_name_str)
         field_desc_str = field_defaults.get('desc', field_desc_str)
 
+    return create_strings('item', item, field_name_str, field_desc_str, apps)
+
+def create_strings(
+    parent_type: Literal['item', 'container'],
+    item,
+    name_str,
+    desc_str,
+    apps = global_apps,
+):
+    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
     strings = []
     for k, text in {
-        "itemname": field_name_str,
-        "itemdesc": field_desc_str,
+        f"{parent_type}name": name_str,
+        f"{parent_type}desc": desc_str,
     }.items():
         itm_str = {
             'text': text,
@@ -307,9 +293,7 @@ def create_field_strings(
         }
         itm_str[k] = item
         strings.append(Splocaleitemstr(**itm_str))
-
     return strings
-
 
 def update_table_schema_config_with_defaults(
     table_name,
