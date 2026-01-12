@@ -64,7 +64,7 @@ const catalogNumberFormats = [
   { value: 'CatalogNumber', label: `CatalogNumberNumeric (${currentYear}-######)` },
   { value: 'CatalogNumberAlphaNumByYear', label: `CatalogNumberAlphaNumByYear (${currentYear}-######)` },
   { value: 'CatalogNumberNumeric', label: 'CatalogNumberNumeric (#########)' },
-  { value: 'CatalogNumberString', label: 'CatalogNumberString (AAAAAAAAAA)' },
+  { value: 'CatalogNumberString', label: 'None' },
 ];
 
 const fullNameDirections = [
