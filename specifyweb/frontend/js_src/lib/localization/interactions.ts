@@ -73,30 +73,20 @@ export const interactionsText = createDictionary({
   },
   byChoosingRecordSet: {
     comment: 'See documentation for syntax for plural rules',
-    'en-us': 'By choosing a recordset ({{count:none | one | ??}} available)',
-    'ru-ru': 'Выбрав набор записей (доступно {{count:none | one | ??}})',
-    'es-es':
-      'Al elegir un conjunto de registros ({{count:none | one | ??}} disponibles)',
-    'fr-fr':
-      "En choisissant un ensemble d'enregistrements ({{count:none | one | ??}} disponible)",
-    'uk-ua': 'Вибравши набір записів (доступно {{count:none | one | ??}})',
-    'de-ch':
-      'Durch wählen eines Datensatzes ({{count:none | one | ??}} available)',
-    'pt-br':
-      'Ao escolher um conjunto de registros ({{count:none | one | ??}} disponível)',
+    'en-us': 'Choose a {recordSet:string} ({{count:none | one | ??}} available)',
   },
   byEnteringNumbers: {
     comment: `
       Field name is localized. Coming from Schema Configuration. I.e, By
       entering Catalog Numbers
     `,
-    'en-us': 'By entering {fieldName:string}s',
-    'ru-ru': 'Введя {fieldName:string}s',
-    'es-es': 'Ingresando {fieldName:string}s',
-    'fr-fr': 'En saisissant les {fieldName:string}',
-    'uk-ua': 'Ввівши {fieldName:string}s',
-    'de-ch': 'Durch Eingabe von {fieldName:string}s',
-    'pt-br': 'Ao inserir {fieldName:string}s',
+    'en-us': 'By entering {tableName:string} {fieldName:string}s',
+    'ru-ru': 'Введя {tableName:string} {fieldName:string}s',
+    'es-es': 'Ingresando {tableName:string} {fieldName:string}s',
+    'fr-fr': 'En saisissant les {tableName:string} {fieldName:string}s',
+    'uk-ua': 'Ввівши {tableName:string} {fieldName:string}s',
+    'de-ch': 'Durch Eingabe von {tableName:string} {fieldName:string}s',
+    'pt-br': 'Ao inserir {tableName:string} {fieldName:string}s',
   },
   withoutPreparations: {
     'en-us': 'Without preparations',

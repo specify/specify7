@@ -487,13 +487,16 @@ export function InteractionDialog({
           >
             <details>
               <summary>
-                {interactionsText.byChoosingRecordSet({ count: totalCount })}
+                {interactionsText.byChoosingRecordSet(
+                  { recordSet: tables.RecordSet.label, 
+                    count: totalCount })}
               </summary>
               {children}
             </details>
             <details>
               <summary>
                 {interactionsText.byEnteringNumbers({
+                  tableName: tables.CollectionObject.label,
                   fieldName: searchField?.label ?? '',
                 })}
               </summary>
@@ -521,6 +524,7 @@ export function InteractionDialog({
             <details>
               <summary>
                 {interactionsText.byEnteringNumbers({
+                  tableName: preparationField.table.label,
                   fieldName: preparationField?.label ?? '',
                 })}
               </summary>
