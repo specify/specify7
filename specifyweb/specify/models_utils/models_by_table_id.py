@@ -222,11 +222,11 @@ model_names_by_table_id = {
     1031:'AutonumschDiv',
     1032:'AutonumschDsp',
     1033:'Deaccessionpreparation',
-    1034:'Projectcollectionobject',
+    1034:'ProjectColobj',
     1035:'Sgrbatchmatchresultitem',
-    1036:'Spschemamapping',
-    1037:'Specifyuserspprincipal',
-    1038:'Spprincipalsppermission'
+    1036:'SpSchemaMapping',
+    1037:'SpecifyuserSpprincipal',
+    1038:'SpprincipalSppermission'
 }
 
 model_names_by_app = {
@@ -462,11 +462,11 @@ model_names_by_app = {
         'AutonumschDiv',
         'AutonumschDsp',
         'Deaccessionpreparation',
-        'Projectcollectionobject',
+        'ProjectColobj',
         'Sgrbatchmatchresultitem',
-        'Spschemamapping',
-        'Specifyuserspprincipal',
-        'Spprincipalsppermission'
+        'SpSchemaMapping',
+        'SpecifyuserSpprincipal',
+        'SpprincipalSppermission'
     }
 }
 

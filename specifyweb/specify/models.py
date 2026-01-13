@@ -8006,7 +8006,6 @@ class AutonumschColl(models.Model):
 
     save = partialmethod(custom_save)
 
-
 class AutonumschDiv(models.Model):
     specify_model = datamodel.get_table_strict('autonumsch_div')
 
@@ -8019,7 +8018,6 @@ class AutonumschDiv(models.Model):
         unique_together = (('division', 'autonumberingscheme'),)
 
     save = partialmethod(custom_save)
-
 
 class AutonumschDsp(models.Model):
     specify_model = datamodel.get_table_strict('autonumsch_dsp')

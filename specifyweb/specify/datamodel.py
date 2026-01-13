@@ -8939,7 +8939,7 @@ datamodel = Datamodel(tables=[
         searchDialog=None
     ),
     Table(
-        classname='edu.ku.brc.specify.datamodel.ProjectCollectionObject',
+        classname='edu.ku.brc.specify.datamodel.ProjectColobj',
         table='project_colobj',
         tableId=1034,
         idColumns=['ProjectID', 'CollectionObjectID'],
