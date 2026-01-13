@@ -80,13 +80,13 @@ export const interactionsText = createDictionary({
       Field name is localized. Coming from Schema Configuration. I.e, By
       entering Catalog Numbers
     `,
-    'en-us': 'By entering {tableName:string} {fieldName:string}s',
-    'ru-ru': 'Введя {tableName:string} {fieldName:string}s',
-    'es-es': 'Ingresando {tableName:string} {fieldName:string}s',
-    'fr-fr': 'En saisissant les {tableName:string} {fieldName:string}s',
-    'uk-ua': 'Ввівши {tableName:string} {fieldName:string}s',
-    'de-ch': 'Durch Eingabe von {tableName:string} {fieldName:string}s',
-    'pt-br': 'Ao inserir {tableName:string} {fieldName:string}s',
+    'en-us': 'Enter {tableName:string} {fieldName:string}s',
+    'de-ch': '{tableName:string} {fieldName:string}s eingeben',
+    'es-es': 'Ingrese {tableName:string} {fieldName:string}s',
+    'fr-fr': 'Saisir des {fieldName:string}s de {tableName:string}',
+    'ru-ru': 'Введите {fieldName:string} {tableName:string}',
+    'uk-ua': 'Введіть {fieldName:string} {tableName:string}',
+    'pt-br': 'Insira {tableName:string} {fieldName:string}s',
   },
   withoutPreparations: {
     'en-us': 'Without preparations',
