@@ -72,7 +72,8 @@ export const formsText = createDictionary({
   },
   valuesOfMustBeUniqueToDatabase: {
     'en-us': 'Values of {values:string} must be unique to database',
-    'ru-ru': 'Значения {values:string} должны быть уникальными в базе данных.',
+    'ru-ru':
+      'Значения {values:string} должны быть уникальными для всей базы данных.',
     'es-es':
       'Los valores de {values:string} deben ser únicos para la base de datos.',
     'fr-fr':
@@ -98,7 +99,7 @@ export const formsText = createDictionary({
     'es-es': 'Comprobando si este registro está actualmente en uso…',
     'fr-fr': 'Vérification de la disponibilité de cet enregistrement…',
     'pt-br': 'Verificando se este registro está em uso…',
-    'ru-ru': 'Проверяем, используется ли эта запись в данный момент…',
+    'ru-ru': 'Проверка, используется ли эта запись в данный момент…',
     'uk-ua': 'Перевірка, чи цей запис зараз використовується…',
   },
   noLinkedRecords: {
@@ -118,7 +119,7 @@ export const formsText = createDictionary({
     'fr-fr':
       'Cette ressource est actuellement liée aux enregistrements suivants :',
     'pt-br': 'Este recurso está atualmente vinculado aos seguintes registros:',
-    'ru-ru': 'В настоящее время этот ресурс связан со следующими записями:',
+    'ru-ru': 'В настоящее время данный ресурс связан со следующими записями:',
     'uk-ua': 'Цей ресурс наразі пов’язаний з такими записами:',
   },
   deleteBlocked: {
@@ -182,7 +183,7 @@ export const formsText = createDictionary({
     'fr-fr':
       'Le plugin Paleo Map exige que les {localityTable:string} aient des coordonnées géographiques et que le contexte paléo ait un âge géographique avec au moins une heure de début ou une heure de fin renseignées.',
     'ru-ru':
-      'Для работы плагина Paleo Map требуется, чтобы {localityTable:string} имел географические координаты, а палеоконтекст имел географический возраст с указанием как минимум начального и конечного времени.',
+      'Для работы плагина Paleo Map необходимо, чтобы {localityTable:string} содержал географические координаты, а палеоконтекст — географический возраст, как минимум с указанием времени начала или окончания.',
     'uk-ua':
       'Плагін Paleo Map вимагає, щоб {localityTable:string} мав географічні координати, а палеодієнтний контекст мав географічний вік із зазначенням принаймні часу початку або часу завершення.',
     'pt-br':
@@ -206,7 +207,7 @@ export const formsText = createDictionary({
     'fr-fr':
       'Êtes-vous sûr de vouloir supprimer définitivement ce {tableName:string} de la base de données ?',
     'ru-ru':
-      'Вы уверены, что хотите навсегда удалить {tableName:string} из базы данных?',
+      'Вы уверены, что хотите навсегда удалить этот {tableName:string} из базы данных?',
     'uk-ua':
       'Ви впевнені, що хочете остаточно видалити цей {tableName:string} з бази даних?',
     'pt-br':
@@ -214,7 +215,7 @@ export const formsText = createDictionary({
   },
   deleteConfirmationDescription: {
     'en-us': 'This action cannot be undone.',
-    'ru-ru': 'Это действие не может быть отменено.',
+    'ru-ru': 'Это действие необратимо.',
     'es-es': 'Esta acción no se puede deshacer.',
     'fr-fr': 'Cette action ne peut pas être annulée.',
     'uk-ua': 'Цю дію не можна скасувати.',
@@ -247,7 +248,7 @@ export const formsText = createDictionary({
     comment:
       'A placeholder for partial date field when "year" type is selected',
     'en-us': 'YYYY',
-    'ru-ru': 'ГГГГ',
+    'ru-ru': 'ГГГГГ',
     'es-es': 'AAAA',
     'fr-fr': 'AAAA',
     'uk-ua': 'РРРР',
@@ -265,8 +266,8 @@ export const formsText = createDictionary({
   },
   todayButtonDescription: {
     'en-us': 'Set to current date',
-    'ru-ru': 'Установить на текущую дату',
-    'es-es': 'Establecido a la fecha actual',
+    'ru-ru': 'Установлено на текущую дату',
+    'es-es': 'Establecer en la fecha actual',
     'fr-fr': 'Définir sur la date actuelle',
     'uk-ua': 'Встановити на поточну дату',
     'de-ch': 'Auf aktuelles Datum einstellen',
@@ -287,11 +288,11 @@ export const formsText = createDictionary({
     'de-ch':
       'Den Wert "{value:string}" zum {pickListTable:string} mit dem Namen "{pickListName:string}" hinzufügen?',
     'es-es':
-      '¿Agregar el valor "{value:string}" al {pickListTable:string} llamado "{pickListName:string}"?',
+      '¿Agregar valor "{value:string}" al {pickListTable:string} llamado "{pickListName:string}"?',
     'fr-fr':
       'Ajouter la valeur « {value:string} » au {pickListTable:string} nommé « {pickListName:string} » ?',
     'ru-ru':
-      'Добавить значение «{value:string}» к {pickListTable:string} с именем «{pickListName:string}»?',
+      'Добавить значение "{value:string}" к {pickListTable:string} с именем "{pickListName:string}"?',
     'uk-ua':
       'Додати значення "{value:string}" до {pickListTable:string} з назвою "{pickListName:string}"?',
     'pt-br':
@@ -299,7 +300,7 @@ export const formsText = createDictionary({
   },
   invalidType: {
     'en-us': 'Invalid Type',
-    'ru-ru': 'Неверный тип',
+    'ru-ru': 'Недопустимый тип',
     'es-es': 'Tipo inválido',
     'fr-fr': 'Type invalide',
     'uk-ua': 'Недійсний тип',
@@ -310,8 +311,7 @@ export const formsText = createDictionary({
     'en-us': 'Only numeric values are supported in this {pickListTable:string}',
     'de-ch':
       'In diesem {pickListTable:string} werden nur numerische Werte unterstützt.',
-    'es-es':
-      'En este {pickListTable:string} solo se admiten valores numéricos.',
+    'es-es': 'En este {pickListTable:string} solo se admiten valores numéricos',
     'fr-fr':
       'Seules les valeurs numériques sont prises en charge dans ce {pickListTable:string}',
     'ru-ru':
@@ -334,9 +334,9 @@ export const formsText = createDictionary({
     'en-us':
       'The {recordSetTable:string} "{recordSetName:string}" will be deleted. The referenced records will NOT be deleted from the database.',
     'ru-ru':
-      '{recordSetTable:string} "{recordSetName:string}" будет удалён. Связанные с этим записи НЕ будут удалены из базы данных.',
+      '{recordSetTable:string} "{recordSetName:string}" будет удалено. Указанные записи НЕ будут удалены из базы данных.',
     'es-es':
-      'El {recordSetTable:string} "{recordSetName:string}" se eliminará. Los registros a los que hace referencia NO se eliminarán de la base de datos.',
+      'Se eliminará el {recordSetTable:string} "{recordSetName:string}". Los registros referenciados no se eliminarán de la base de datos.',
     'fr-fr':
       'Le {recordSetTable:string} « {recordSetName:string} » sera supprimé. Les enregistrements référencés ne seront PAS supprimés de la base de données.',
     'uk-ua':
@@ -348,7 +348,7 @@ export const formsText = createDictionary({
   },
   saveRecordFirst: {
     'en-us': 'Save record first',
-    'ru-ru': 'Сначала сохраните запись',
+    'ru-ru': 'Сначала сохраните запись.',
     'es-es': 'Guardar registro primero',
     'fr-fr': "Sauvegarder d'abord l'enregistrement",
     'uk-ua': 'Спочатку збережіть запис',
@@ -358,7 +358,7 @@ export const formsText = createDictionary({
   firstRecord: {
     'en-us': 'First Record',
     'ru-ru': 'Первая запись',
-    'es-es': 'Primer registro',
+    'es-es': 'Primer disco',
     'fr-fr': 'Premier enregistrement',
     'uk-ua': 'Перший запис',
     'de-ch': 'Erster Rekord',
@@ -385,7 +385,7 @@ export const formsText = createDictionary({
   nextRecord: {
     'en-us': 'Next Record',
     'ru-ru': 'Следующая запись',
-    'es-es': 'Siguiente récord',
+    'es-es': 'Próximo récord',
     'fr-fr': 'Enregistrement suivant',
     'uk-ua': 'Наступний запис',
     'de-ch': 'Nächster Datensatz',
@@ -402,8 +402,8 @@ export const formsText = createDictionary({
   },
   unsavedFormUnloadProtect: {
     'en-us': 'This form has not been saved.',
-    'ru-ru': 'Эта форма не была сохранена.',
-    'es-es': 'Este formulario no se ha guardado.',
+    'ru-ru': 'Эта форма не сохранена.',
+    'es-es': 'Este formulario no ha sido guardado.',
     'fr-fr': "Ce formulaire n'a pas été enregistré.",
     'uk-ua': 'Цю форму не збережено.',
     'de-ch': 'Dieses Formular wurde nicht gespeichert.',
@@ -423,9 +423,9 @@ export const formsText = createDictionary({
     'en-us':
       'The data shown on this page has been changed by another user or in another browser tab and is out of date. The page must be reloaded to prevent inconsistent data from being saved.',
     'ru-ru':
-      'Данные на этой странице были изменены другим пользователем или на другой вкладке браузера и устарели. Для предотвращения сохранения несоответствующих данных необходимо перезагрузить страницу.',
+      'Данные, отображаемые на этой странице, были изменены другим пользователем или в другой вкладке браузера и устарели. Для предотвращения сохранения несогласованных данных необходимо перезагрузить страницу.',
     'es-es':
-      'Los datos que se muestran en esta página han sido modificados por otro usuario o en otra pestaña del navegador y están desactualizados. Es necesario recargar la página para evitar que se guarden datos incorrectos.',
+      'Los datos que se muestran en esta página han sido modificados por otro usuario o en otra pestaña del navegador y están desactualizados. Es necesario recargar la página para evitar que se guarden datos incoherentes.',
     'fr-fr':
       "Les données affichées sur cette page ont été modifiées par un autre utilisateur ou dans un autre onglet du navigateur et sont obsolètes. La page doit être rechargée pour éviter l'enregistrement de données incohérentes.",
     'uk-ua':
@@ -440,13 +440,13 @@ export const formsText = createDictionary({
     'de-ch': 'Speichern blockiert',
     'es-es': 'Guardar bloqueado',
     'fr-fr': 'Enregistrement bloqué',
-    'ru-ru': 'Сохранить заблокировано',
+    'ru-ru': 'Сохранение заблокировано',
     'uk-ua': 'Зберегти заблоковано',
     'pt-br': 'Salvar bloqueado',
   },
   saveBlockedDescription: {
     'en-us': 'Form cannot be saved because of the following error:',
-    'ru-ru': 'Форму невозможно сохранить из-за следующей ошибки:',
+    'ru-ru': 'Сохранение формы невозможно из-за следующей ошибки:',
     'es-es': 'No se puede guardar el formulario debido al siguiente error:',
     'fr-fr':
       "Le formulaire ne peut pas être enregistré en raison de l'erreur suivante :",
@@ -457,7 +457,7 @@ export const formsText = createDictionary({
   },
   unavailableCommandButton: {
     'en-us': 'Command N/A',
-    'ru-ru': 'Команда N/A',
+    'ru-ru': 'Команда недоступна',
     'es-es': 'Comando N/A',
     'fr-fr': 'Commande N/A',
     'uk-ua': 'Команда Немає',
@@ -475,7 +475,8 @@ export const formsText = createDictionary({
   },
   commandUnavailableDescription: {
     'en-us': 'This command is currently unavailable for Specify 7.',
-    'ru-ru': 'Эта команда в настоящее время недоступна для Specify 7.',
+    'ru-ru':
+      'В настоящее время эта команда недоступна для параметра Specify 7.',
     'es-es': 'Este comando no está disponible actualmente para Specify 7.',
     'uk-ua': 'Ця команда наразі недоступна для Specify 7.',
     'de-ch': 'Dieser Befehl ist für Specify 7 derzeit nicht verfügbar.',
@@ -486,7 +487,7 @@ export const formsText = createDictionary({
     'en-us':
       'It was probably included on this form from Specify 6 and may be supported in the future.',
     'ru-ru':
-      'Вероятно, он был включен в эту форму из Specify 6 и может поддерживаться в будущем.',
+      'Вероятно, эта функция была включена в данную форму начиная с версии Specification 6 и может быть добавлена в будущем.',
     'es-es':
       'Probablemente se incluyó en este formulario de la Especificación 6 y es posible que se admita en el futuro.',
     'fr-fr':
@@ -494,13 +495,13 @@ export const formsText = createDictionary({
     'uk-ua':
       'Ймовірно, це було включено до цієї форми з Specify 6 і може бути підтримано в майбутньому.',
     'de-ch':
-      'Es wurde wahrscheinlich in Specify 6 in dieses Formular aufgenommen und wird möglicherweise auch in Zukunft unterstützt.',
+      'Es wurde wahrscheinlich in dieser Version von Specify 6 übernommen und wird möglicherweise auch in Zukunft unterstützt.',
     'pt-br':
       'Provavelmente foi incluído neste formulário a partir da versão 6 do Specify e poderá ser suportado no futuro.',
   },
   commandName: {
     'en-us': 'Command name',
-    'ru-ru': 'Имя команды',
+    'ru-ru': 'Название команды',
     'es-es': 'Nombre del comando',
     'fr-fr': 'Nom de la commande',
     'uk-ua': 'Назва команди',
@@ -509,7 +510,7 @@ export const formsText = createDictionary({
   },
   unavailablePluginButton: {
     'en-us': 'Plugin N/A',
-    'ru-ru': 'Плагин N/A',
+    'ru-ru': 'Плагин недоступен',
     'es-es': 'Complemento N/A',
     'fr-fr': 'Plugin N/A',
     'uk-ua': 'Плагін Немає',
@@ -540,7 +541,7 @@ export const formsText = createDictionary({
     'en-us':
       'This plugin cannot be used on the {currentTable:string} form. Try moving it to the {supportedTables:string} forms.',
     'ru-ru':
-      'Этот плагин нельзя использовать на форме {currentTable:string}. Попробуйте перенести его на формы {supportedTables:string}.',
+      'Этот плагин нельзя использовать в форме {currentTable:string}. Попробуйте переместить его в формы {supportedTables:string}.',
     'es-es':
       'Este complemento no se puede utilizar en el formulario {currentTable:string}. Intente moverlo a los formularios {supportedTables:string}.',
     'fr-fr':
@@ -556,7 +557,7 @@ export const formsText = createDictionary({
     'en-us':
       'The command cannot be used on the {currentTable:string} form. It can only be used on the {correctTable:string} form.',
     'ru-ru':
-      'Эту команду нельзя использовать в форме {currentTable:string}. Её можно использовать только в форме {correctTable:string}.',
+      'Данная команда не может быть использована в форме {currentTable:string}. Она может быть использована только в форме {correctTable:string}.',
     'es-es':
       'El comando no se puede utilizar en el formulario {currentTable:string}. Sólo se puede utilizar en el formulario {correctTable:string}.',
     'fr-fr':
@@ -570,7 +571,7 @@ export const formsText = createDictionary({
   },
   pluginName: {
     'en-us': 'Plugin name',
-    'ru-ru': 'Имя плагина',
+    'ru-ru': 'Название плагина',
     'es-es': 'Nombre del complemento',
     'fr-fr': 'Nom du plugin',
     'uk-ua': 'Назва плагіна',
@@ -583,7 +584,7 @@ export const formsText = createDictionary({
       changing which values are recognized as Yes/No in a given language
     `,
     'en-us': 'Illegal value for a Yes/No field',
-    'ru-ru': 'Недопустимое значение для поля «Да/Нет»',
+    'ru-ru': 'Недопустимое значение для поля "Да/Нет"',
     'es-es': 'Valor ilegal para un campo Sí/No',
     'fr-fr': 'Valeur interdite pour un champ Oui/Non',
     'uk-ua': 'Неприпустиме значення для поля «Так/Ні»',
@@ -704,7 +705,7 @@ export const formsText = createDictionary({
       Represents truncated search dialog output (when lots of results returned)
     `,
     'en-us': 'Additional results omitted',
-    'ru-ru': 'Дополнительные результаты пропущены',
+    'ru-ru': 'Дополнительные результаты опущены',
     'es-es': 'Resultados adicionales omitidos',
     'fr-fr': 'Résultats supplémentaires masqués',
     'uk-ua': 'Додаткові результати пропущені',
@@ -726,9 +727,9 @@ export const formsText = createDictionary({
       another record
     `,
     'en-us': 'You might want to save this record before navigating away.',
-    'ru-ru': 'Возможно, вы захотите сохранить эту запись, прежде чем уйти.',
-    'es-es':
-      'Quizás quieras guardar este registro antes de salir de la página.',
+    'ru-ru':
+      'Возможно, вам стоит сохранить эту запись, прежде чем покинуть страницу.',
+    'es-es': 'Es posible que desees guardar este registro antes de navegar.',
     'fr-fr':
       'Vous voudrez peut-être sauvegarder cet enregistrement avant de quitter la page.',
     'uk-ua':
@@ -797,7 +798,7 @@ export const formsText = createDictionary({
       'This record is already present in the current {recordSetTable:string}',
     'ru-ru': 'Эта запись уже присутствует в текущем {recordSetTable:string}',
     'es-es':
-      'Este registro ya está presente en el {recordSetTable:string} actual',
+      'Este registro ya está presente en el actual {recordSetTable:string}',
     'fr-fr':
       'Cet enregistrement est déjà présent dans le {recordSetTable:string} actuel',
     'uk-ua': 'Цей запис вже присутній у поточному {recordSetTable:string}',
@@ -808,7 +809,7 @@ export const formsText = createDictionary({
   addToRecordSet: {
     'en-us': 'Add to {recordSetTable:string}',
     'ru-ru': 'Добавить в {recordSetTable:string}',
-    'es-es': 'Agregar a {recordSetTable:string}',
+    'es-es': 'Añadir a {recordSetTable:string}',
     'fr-fr': 'Ajouter à {recordSetTable:string}',
     'uk-ua': 'Додати до {recordSetTable:string}',
     'de-ch': 'Zu {recordSetTable:string} hinzufügen',
@@ -835,7 +836,7 @@ export const formsText = createDictionary({
   carryForward: {
     comment: 'Verb. Button label',
     'en-us': 'Carry Forward',
-    'ru-ru': 'Перенести вперед',
+    'ru-ru': 'Перенести на следующий день',
     'es-es': 'Llevar adelante',
     'fr-fr': 'Reporter',
     'uk-ua': 'Перенести далі',
@@ -844,8 +845,8 @@ export const formsText = createDictionary({
   },
   carryForwardEnabled: {
     'en-us': 'Show Carry Forward button',
-    'ru-ru': 'Показать кнопку «Перенести вперед»',
-    'es-es': 'Mostrar botón de acarreo',
+    'ru-ru': 'Показать кнопку "Перенести"',
+    'es-es': 'Mostrar el botón Llevar adelante',
     'fr-fr': 'Afficher le bouton Reporter',
     'uk-ua': 'Показати кнопку «Перенести вперед»',
     'de-ch': 'Schaltfläche „Übertrag anzeigen“',
@@ -854,25 +855,25 @@ export const formsText = createDictionary({
   bulkCarryForwardEnabled: {
     'en-us': 'Show Bulk Carry Forward count',
     'de-ch': 'Anzahl der Massenüberträge anzeigen',
-    'es-es': 'Mostrar recuento de arrastre a granel',
+    'es-es': 'Mostrar recuento de transferencia masiva',
     'fr-fr': 'Afficher le nombre de reports en bloc',
     'pt-br': 'Mostrar contagem de transferência em massa',
-    'ru-ru': 'Показать счетчик массового переноса данных',
+    'ru-ru': 'Показать количество перенесенных пакетов данных',
     'uk-ua': 'Показати кількість групового перенесення',
   },
   bulkCarryForwardCount: {
     'en-us': 'Bulk Carry Forward count',
     'de-ch': 'Zählung der Massenüberträge',
-    'es-es': 'Conteo de arrastre a granel',
+    'es-es': 'Recuento de transferencia masiva',
     'fr-fr': 'Nombre de report en vrac',
     'pt-br': 'Contagem de transferência em massa',
-    'ru-ru': 'Подсчет массового переноса данных',
+    'ru-ru': 'Перенос данных на будущие периоды',
     'uk-ua': 'Кількість перенесених даних',
   },
   carryForwardDescription: {
     'en-us': 'Create a new record with certain fields carried over',
-    'ru-ru': 'Создайте новую запись с перенесенными определенными полями',
-    'es-es': 'Crea un nuevo registro con ciertos campos transferidos.',
+    'ru-ru': 'Создать новую запись с перенесенными определенными полями.',
+    'es-es': 'Crear un nuevo registro con ciertos campos transferidos',
     'fr-fr': 'Créer un nouvel enregistrement avec certains champs reportés',
     'uk-ua': 'Створити новий запис із перенесенням певних полів',
     'de-ch':
@@ -881,8 +882,8 @@ export const formsText = createDictionary({
   },
   carryForwardSettingsDescription: {
     'en-us': 'Configure fields to carry forward',
-    'ru-ru': 'Настройте поля для переноса',
-    'es-es': 'Configurar los campos que se transferirán',
+    'ru-ru': 'Настройте поля для переноса.',
+    'es-es': 'Configurar campos para transferir',
     'fr-fr': 'Configurer les champs à reporter',
     'uk-ua': 'Налаштуйте поля для перенесення',
     'de-ch': 'Konfigurieren Sie die Felder, die übertragen werden sollen',
@@ -891,16 +892,16 @@ export const formsText = createDictionary({
   bulkCarryForwardSettingsDescription: {
     'en-us': 'Configure fields to bulk carry forward',
     'de-ch': 'Felder für den Massenübertrag konfigurieren',
-    'es-es': 'Configurar campos para transferir en bloque',
+    'es-es': 'Configurar campos para transferirlos en masa',
     'fr-fr': 'Configurer les champs pour un report en masse',
     'pt-br': 'Configure os campos para transferência em massa.',
-    'ru-ru': 'Настройте поля для массового переноса',
+    'ru-ru': 'Настройте поля для массового переноса.',
     'uk-ua': 'Налаштуйте поля для масового перенесення',
   },
   carryForwardTableSettingsDescription: {
     'en-us': 'Configure fields to carry forward ({tableName:string})',
     'ru-ru': 'Настройте поля для переноса ({tableName:string})',
-    'es-es': 'Configurar campos para transferir ({tableName:string})',
+    'es-es': 'Configurar campos para trasladar ({tableName:string})',
     'fr-fr': 'Configurer les champs à reporter ({tableName:string})',
     'uk-ua': 'Налаштуйте поля для перенесення ({tableName:string})',
     'de-ch':
@@ -910,17 +911,19 @@ export const formsText = createDictionary({
   bulkCarryForwardTableSettingsDescription: {
     'en-us': 'Configure fields to bulk carry forward ({tableName:string})',
     'de-ch': 'Felder für den Massenübertrag konfigurieren ({tableName:string})',
-    'es-es': 'Configurar campos para transferencia masiva ({tableName:string})',
+    'es-es':
+      'Configurar campos para transferirlos en masa ({tableName:string})',
     'fr-fr':
       'Configurer les champs pour un report en masse ({tableName:string})',
     'pt-br':
       'Configurar campos para transferência em massa ({tableName:string})',
-    'ru-ru': 'Настройте поля для массового переноса ({tableName:string})',
+    'ru-ru': 'Настройка полей для массового переноса ({tableName:string})',
     'uk-ua': 'Налаштуйте поля для масового перенесення ({tableName:string})',
   },
   carryForwardUniqueField: {
     'en-us': 'This field must be unique. It can not be carried over',
-    'ru-ru': 'Это поле должно быть уникальным. Оно не может быть перенесено.',
+    'ru-ru':
+      'Это поле должно быть уникальным. Оно не может быть перенесено из одного места в другое.',
     'es-es': 'Este campo debe ser único. No se puede transferir.',
     'fr-fr': 'Ce champ doit être unique. Il ne peut pas être reporté.',
     'uk-ua': 'Це поле має бути унікальним. Його не можна переносити',
@@ -930,7 +933,7 @@ export const formsText = createDictionary({
   },
   carryForwardRequiredField: {
     'en-us': 'This field is required. It must be carried forward',
-    'ru-ru': 'Это поле обязательно для заполнения. Его необходимо перенести.',
+    'ru-ru': 'Это поле обязательно для заполнения. Оно должно быть сохранено.',
     'es-es': 'Este campo es obligatorio. Debe ser transferido',
     'fr-fr': 'Ce champ est obligatoire. Il doit être reporté',
     'uk-ua': "Це поле обов'язкове. Його потрібно перенести",
@@ -943,7 +946,7 @@ export const formsText = createDictionary({
     'es-es': 'Mostrar rango de transferencia masiva',
     'fr-fr': 'Afficher la plage de report en masse',
     'pt-br': 'Mostrar intervalo de transferência de peso',
-    'ru-ru': 'Показать диапазон массового переноса данных',
+    'ru-ru': 'Показать диапазон переноса оптовых заказов',
     'uk-ua': 'Показати діапазон масового перенесення',
   },
   bulkCarryForwardRangeErrorDescription: {
@@ -967,7 +970,7 @@ export const formsText = createDictionary({
     'es-es': 'El rango excede el límite de registro de {limit:number}.',
     'fr-fr': "La plage dépasse la limite d'enregistrement de {limit:number}.",
     'pt-br': 'O alcance excede o limite de registro de {limit:number}.',
-    'ru-ru': 'Диапазон превышает предел записи {limit:number}.',
+    'ru-ru': 'Диапазон превышает рекордный предел {limit:number}.',
     'uk-ua': 'Діапазон перевищує ліміт записів {limit:number}.',
   },
   bulkCarryForwardRangeExistingRecords: {
@@ -986,16 +989,16 @@ export const formsText = createDictionary({
     'es-es': 'Arranque del rango de avance',
     'fr-fr': 'Début de la plage de report',
     'pt-br': 'Início do intervalo de transferência',
-    'ru-ru': 'Начало диапазона переноса вперед',
+    'ru-ru': 'Начало диапазона переноса',
     'uk-ua': 'Початок діапазону перенесення вперед',
   },
   bulkCarryForwardRangeEnd: {
     'en-us': 'Carry Forward Range End',
     'de-ch': 'Reichweitenende für Weitertragen',
-    'es-es': 'Fin del rango de arrastre',
+    'es-es': 'Llevar adelante el final del rango',
     'fr-fr': 'Fin de la plage de report',
     'pt-br': 'Fim do intervalo de transporte',
-    'ru-ru': 'Конец диапазона переноса вперед',
+    'ru-ru': 'Конец диапазона переноса',
     'uk-ua': 'Кінець діапазону перенесення вперед',
   },
   createRecordSetOnBulkCarryForward: {
@@ -1004,12 +1007,12 @@ export const formsText = createDictionary({
     'es-es': 'Crear un conjunto de registros en Bulk Carry Forward',
     'fr-fr': "Créer un ensemble d'enregistrements sur le report en masse",
     'pt-br': 'Criar conjunto de registros em Transferência em Massa',
-    'ru-ru': 'Создать набор записей для массового переноса данных',
+    'ru-ru': 'Создание набора записей в рамках функции массового переноса.',
     'uk-ua': 'Створення набору записів для групового перенесення',
   },
   cloneButtonEnabled: {
     'en-us': 'Show Clone button',
-    'ru-ru': 'Показать кнопку «Клонировать»',
+    'ru-ru': 'Показать кнопку «Клон»',
     'es-es': 'Mostrar botón Clonar',
     'fr-fr': 'Afficher le bouton Cloner',
     'uk-ua': 'Кнопка «Показати клон»',
@@ -1019,7 +1022,7 @@ export const formsText = createDictionary({
   addButtonEnabled: {
     'en-us': 'Show Add button',
     'ru-ru': 'Показать кнопку «Добавить»',
-    'es-es': 'Mostrar botón Agregar',
+    'es-es': 'Mostrar el botón Agregar',
     'fr-fr': 'Afficher le bouton Ajouter',
     'uk-ua': 'Показати кнопку «Додати»',
     'de-ch': 'Schaltfläche „Hinzufügen“ anzeigen',
@@ -1028,7 +1031,7 @@ export const formsText = createDictionary({
   addButtonDescription: {
     'en-us': 'Create a new blank record',
     'ru-ru': 'Создать новую пустую запись',
-    'es-es': 'Crea un nuevo registro en blanco',
+    'es-es': 'Crear un nuevo registro en blanco',
     'fr-fr': 'Créer un nouvel enregistrement vierge',
     'uk-ua': 'Створити новий пустий запис',
     'de-ch': 'Einen neuen leeren Datensatz erstellen',
@@ -1064,7 +1067,7 @@ export const formsText = createDictionary({
   editFormDefinition: {
     'en-us': 'Edit Form Definition',
     'ru-ru': 'Редактировать определение формы',
-    'es-es': 'Definición del formulario de edición',
+    'es-es': 'Editar definición de formulario',
     'fr-fr': 'Modifier la définition du formulaire',
     'uk-ua': 'Редагувати визначення форми',
     'de-ch': 'Definition des Bearbeitungsformulars',
@@ -1072,7 +1075,7 @@ export const formsText = createDictionary({
   },
   useAutoGeneratedForm: {
     'en-us': 'Use Auto Generated Form',
-    'ru-ru': 'Использовать автоматически сгенерированную форму',
+    'ru-ru': 'Используйте автоматически сгенерированную форму',
     'es-es': 'Utilice el formulario generado automáticamente',
     'fr-fr': 'Utiliser le formulaire généré automatiquement',
     'uk-ua': 'Використати автоматично згенеровану форму',
@@ -1081,8 +1084,8 @@ export const formsText = createDictionary({
   },
   useFieldLabels: {
     'en-us': 'Use Localized Field Labels',
-    'ru-ru': 'Используйте локализованные метки полей',
-    'es-es': 'Utilizar etiquetas de campo localizadas',
+    'ru-ru': 'Используйте локализованные метки полей.',
+    'es-es': 'Utilice etiquetas de campo localizadas',
     'fr-fr': 'Utiliser les étiquettes de champs localisées',
     'uk-ua': 'Використовуйте локалізовані мітки полів',
     'de-ch': 'Lokalisierte Feldbezeichnungen verwenden',
@@ -1091,9 +1094,9 @@ export const formsText = createDictionary({
   showFieldLabels: {
     'en-us': 'Show Localized Field Labels',
     'de-ch': 'Lokalisierte Feldbezeichnungen anzeigen',
-    'es-es': 'Mostrar etiquetas de campo localizadas',
+    'es-es': 'Mostrar etiquetas de campos localizados',
     'fr-fr': 'Afficher les étiquettes de champ localisées',
-    'ru-ru': 'Показать локализованные метки полей',
+    'ru-ru': 'Отображение локализованных меток полей',
     'uk-ua': 'Показати локалізовані підписи полів',
     'pt-br': 'Exibir rótulos de campo localizados',
   },
@@ -1102,14 +1105,14 @@ export const formsText = createDictionary({
     'de-ch': 'Datenmodellfeldnamen anzeigen',
     'es-es': 'Mostrar nombres de campos del modelo de datos',
     'fr-fr': 'Afficher les noms des champs du modèle de données',
-    'ru-ru': 'Показать имена полей модели данных',
+    'ru-ru': 'Отображение названий полей модели данных',
     'uk-ua': 'Показати назви полів моделі даних',
     'pt-br': 'Exibir nomes de campos do modelo de dados',
   },
   editHistory: {
     'en-us': 'Edit history',
-    'ru-ru': 'История редактирования',
-    'es-es': 'Historial de ediciones',
+    'ru-ru': 'Редактировать историю',
+    'es-es': 'Historial de edición',
     'fr-fr': "Modifier l'historique",
     'uk-ua': 'Історія редагування',
     'de-ch': 'Bearbeitungsgeschichte',
@@ -1117,8 +1120,8 @@ export const formsText = createDictionary({
   },
   editHistoryQueryName: {
     'en-us': 'Edit history for "{formattedRecord:string}"',
-    'ru-ru': 'История изменений для «{formattedRecord:string}»',
-    'es-es': 'Historial de ediciones para "{formattedRecord:string}"',
+    'ru-ru': 'История изменений для "{formattedRecord:string}"',
+    'es-es': 'Historial de edición de "{formattedRecord:string}"',
     'fr-fr': "Modifier l'historique pour « {formattedRecord:string} »",
     'uk-ua': 'Історія редагувань для "{formattedRecord:string}"',
     'de-ch': 'Bearbeitungsverlauf für „{formattedRecord:string}“',
@@ -1126,7 +1129,7 @@ export const formsText = createDictionary({
   },
   formConfiguration: {
     'en-us': 'Form Configuration',
-    'ru-ru': 'Конфигурация формы',
+    'ru-ru': 'Настройка формы',
     'es-es': 'Configuración del formulario',
     'fr-fr': 'Configuration du formulaire',
     'uk-ua': 'Конфігурація форми',
@@ -1136,7 +1139,7 @@ export const formsText = createDictionary({
   formState: {
     'en-us': 'Form State',
     'ru-ru': 'Форма государства',
-    'es-es': 'Estado de formulario',
+    'es-es': 'Estado del formulario',
     'fr-fr': 'État du formulaire',
     'uk-ua': 'Стан форми',
     'de-ch': 'Form State',
@@ -1145,7 +1148,7 @@ export const formsText = createDictionary({
   recordInformation: {
     'en-us': 'Record Information',
     'ru-ru': 'Запись информации',
-    'es-es': 'Información del registro',
+    'es-es': 'Información de registro',
     'fr-fr': 'Informations sur les enregistrements',
     'uk-ua': 'Інформація про запис',
     'de-ch': 'Datensatzinformationen',
@@ -1162,8 +1165,8 @@ export const formsText = createDictionary({
   },
   findUsages: {
     'en-us': 'Find usages',
-    'ru-ru': 'Найти случаи использования',
-    'es-es': 'Buscar usos',
+    'ru-ru': 'Найти примеры использования',
+    'es-es': 'Encuentra usos',
     'fr-fr': 'Trouver des utilisations',
     'uk-ua': 'Знайти вживання',
     'de-ch': 'Anwendungsbeispiele finden',
@@ -1171,7 +1174,7 @@ export const formsText = createDictionary({
   },
   usagesOfPickList: {
     'en-us': 'Usages of "{pickList:string}" pick list',
-    'ru-ru': 'Использование списка выбора «{pickList:string}»',
+    'ru-ru': 'Использование списка выбора "{pickList:string}"',
     'es-es': 'Usos de la lista de selección "{pickList:string}"',
     'fr-fr': 'Utilisations de la liste de sélection « {pickList:string} »',
     'uk-ua': 'Використання списку вибору "{pickList:string}"',
@@ -1180,7 +1183,7 @@ export const formsText = createDictionary({
   },
   subForm: {
     'en-us': 'Subform',
-    'ru-ru': 'Подчиненная форма',
+    'ru-ru': 'Подформа',
     'es-es': 'Subform',
     'fr-fr': 'Sous-formulaire',
     'uk-ua': 'Підформа',
@@ -1198,17 +1201,17 @@ export const formsText = createDictionary({
   },
   subviewConfiguration: {
     'en-us': 'Subview',
-    'ru-ru': 'Подвид',
+    'ru-ru': 'Дополнительный просмотр',
     'es-es': 'Subvista',
     'uk-ua': 'Підвид',
     'de-ch': 'Unteransicht',
     'fr-fr': 'Sous-vue',
-    'pt-br': 'Subvista',
+    'pt-br': 'Subvisualização',
   },
   disableReadOnly: {
     'en-us': 'Disable read-only mode',
     'ru-ru': 'Отключить режим только для чтения',
-    'es-es': 'Desactivar el modo de solo lectura',
+    'es-es': 'Deshabilitar el modo de solo lectura',
     'fr-fr': 'Désactiver le mode lecture seule',
     'uk-ua': 'Вимкнути режим лише для читання',
     'de-ch': 'Schreibgeschützten Modus deaktivieren',
@@ -1217,15 +1220,15 @@ export const formsText = createDictionary({
   enableReadOnly: {
     'en-us': 'Enable read-only mode',
     'ru-ru': 'Включить режим только для чтения',
-    'es-es': 'Habilitar modo de solo lectura',
+    'es-es': 'Habilitar el modo de solo lectura',
     'fr-fr': 'Activer le mode lecture seule',
     'uk-ua': 'Увімкнути режим лише для читання',
     'de-ch': 'Nur-Lese-Modus aktivieren',
-    'pt-br': 'Ativar modo somente leitura',
+    'pt-br': 'Ativar o modo somente leitura',
   },
   configureDataEntryTables: {
     'en-us': 'Configure data entry tables',
-    'ru-ru': 'Настройте таблицы ввода данных',
+    'ru-ru': 'Настройка таблиц ввода данных',
     'es-es': 'Configurar tablas de entrada de datos',
     'fr-fr': 'Configurer les tables de saisie de données',
     'uk-ua': 'Налаштування таблиць для введення даних',
@@ -1234,7 +1237,7 @@ export const formsText = createDictionary({
   },
   configureInteractionTables: {
     'en-us': 'Configure interaction tables',
-    'ru-ru': 'Настроить таблицы взаимодействия',
+    'ru-ru': 'Настройка таблиц взаимодействия',
     'es-es': 'Configurar tablas de interacción',
     'fr-fr': "Configurer les tables d'interaction",
     'uk-ua': 'Налаштування таблиць взаємодії',
@@ -1244,7 +1247,7 @@ export const formsText = createDictionary({
   formMeta: {
     'en-us': 'Form Meta',
     'ru-ru': 'Форма Мета',
-    'es-es': 'Formulario Meta',
+    'es-es': 'Meta del formulario',
     'fr-fr': 'Formulaire Meta',
     'uk-ua': 'Метадані форми',
     'de-ch': 'Formular Meta',
@@ -1282,8 +1285,8 @@ export const formsText = createDictionary({
   },
   resourceDeletedDescription: {
     'en-us': 'Item was deleted successfully.',
-    'ru-ru': 'Элемент был успешно удален.',
-    'es-es': 'El elemento se eliminó correctamente.',
+    'ru-ru': 'Элемент успешно удалён.',
+    'es-es': 'El artículo fue eliminado exitosamente.',
     'fr-fr': "L'élément a été supprimé avec succès.",
     'uk-ua': 'Елемент успішно видалено.',
     'de-ch': 'Der Artikel wurde erfolgreich gelöscht.',
@@ -1304,14 +1307,14 @@ export const formsText = createDictionary({
     'de-ch': 'Katalognummer (numerisch)',
     'es-es': 'Número de catálogo numérico',
     'fr-fr': 'Numéro de catalogue numérique',
-    'ru-ru': 'Номер каталога Цифровой',
+    'ru-ru': 'Каталожный номер (числовой)',
     'uk-ua': 'Номер у каталозі (числовий)',
     'pt-br': 'Número de catálogo numérico',
   },
   addCOGChildren: {
     'en-us': 'Add COG Children',
     'de-ch': 'COG-Kinder hinzufügen',
-    'es-es': 'Agregar hijos COG',
+    'es-es': 'Agregar niños COG',
     'fr-fr': 'Ajouter des enfants COG',
     'pt-br': 'Adicionar COG Children',
     'ru-ru': 'Добавить детей COG',
