@@ -8828,10 +8828,10 @@ datamodel = Datamodel(tables=[
     Table(
         classname='edu.ku.brc.specify.datamodel.AutoNumSchColl',
         table='autonumsch_coll',
-        tableId=9997,  # TODO pick next unused
-        idColumn=None,
-        idFieldName=None,
-        idField=None,
+        tableId=1030,
+        idColumn='AutoNumberingSchemeID',  # Actually a duel key id with CollectionID and AutoNumberingSchemeID
+        idFieldName='autoNumberingSchemeId',
+        idField=IdField(name='autoNumberingSchemeId', column='AutoNumberingSchemeID', type='java.lang.Integer'),
         fields=[
 
         ],
@@ -8852,10 +8852,10 @@ datamodel = Datamodel(tables=[
     Table(
         classname='edu.ku.brc.specify.datamodel.AutoNumSchDiv',
         table='autonumsch_div',
-        tableId=9998,  # TODO pick next unused
-        idColumn=None,
-        idFieldName=None,
-        idField=None,
+        tableId=1031,
+        idColumn='AutoNumberingSchemeID',  # Actually a duel key id with DivisionID and AutoNumberingSchemeID
+        idFieldName='autoNumberingSchemeId',
+        idField=IdField(name='autoNumberingSchemeId', column='AutoNumberingSchemeID', type='java.lang.Integer'),
         fields=[
 
         ],
@@ -8876,10 +8876,10 @@ datamodel = Datamodel(tables=[
     Table(
         classname='edu.ku.brc.specify.datamodel.AutoNumSchDsp',
         table='autonumsch_dsp',
-        tableId=9999,  # TODO pick next unused
-        idColumn=None,
-        idFieldName=None,
-        idField=None,
+        tableId=1032,
+        idColumn='AutoNumberingSchemeID',  # Actually a duel key id with DisciplineID and AutoNumberingSchemeID
+        idFieldName='autoNumberingSchemeId',
+        idField=IdField(name='autoNumberingSchemeId', column='AutoNumberingSchemeID', type='java.lang.Integer'),
         fields=[
 
         ],
@@ -8900,7 +8900,7 @@ datamodel = Datamodel(tables=[
     Table(
         classname='edu.ku.brc.specify.datamodel.DeaccessionPreparation',
         table='deaccessionpreparation',
-        tableId=9991,  # TODO pick next unused
+        tableId=1033,
         idColumn='DeaccessionPreparationID',
         idFieldName='deaccessionPreparationId',
         idField=IdField(name='deaccessionPreparationId', column='DeaccessionPreparationID', type='java.lang.Integer'),
@@ -8932,10 +8932,10 @@ datamodel = Datamodel(tables=[
     Table(
         classname='edu.ku.brc.specify.datamodel.ProjectCollectionObject',
         table='project_colobj',
-        tableId=9992,  # TODO pick next unused
-        idColumn=None,
-        idFieldName=None,
-        idField=None,
+        tableId=1034,
+        idColumn='ProjectID',  # Actually a duel key id with ProjectID and CollectionObjectID
+        idFieldName='projectId',
+        idField=IdField(name='projectId', column='ProjectID', type='java.lang.Integer'),
         fields=[
 
         ],
@@ -8956,7 +8956,7 @@ datamodel = Datamodel(tables=[
     Table(
         classname='edu.ku.brc.specify.datamodel.SgrBatchMatchResultItem',
         table='sgrbatchmatchresultitem',
-        tableId=9993,  # TODO pick next unused
+        tableId=1035,
         idColumn='id',
         idFieldName='id',
         idField=IdField(name='id', column='id', type='java.lang.Long'),
@@ -8980,10 +8980,10 @@ datamodel = Datamodel(tables=[
     Table(
         classname='edu.ku.brc.specify.datamodel.SpSchemaMapping',
         table='sp_schema_mapping',
-        tableId=9994,  # TODO pick next unused
-        idColumn=None,
-        idFieldName=None,
-        idField=None,
+        tableId=1036,
+        idColumn='SpExportSchemaMappingID',  # Actually a duel key id with SpExportSchemaMappingID and SpExportSchemaID
+        idFieldName='spExportSchemaMappingId',
+        idField=IdField(name='spExportSchemaMappingId', column='SpExportSchemaMappingID', type='java.lang.Integer'),
         fields=[
 
         ],
@@ -9004,10 +9004,10 @@ datamodel = Datamodel(tables=[
     Table(
         classname='edu.ku.brc.specify.datamodel.SpecifyUserSpPrincipal',
         table='specifyuser_spprincipal',
-        tableId=9995,  # TODO pick next unused
-        idColumn=None,
-        idFieldName=None,
-        idField=None,
+        tableId=1037,
+        idColumn='SpecifyUserID',  # Actually a duel key id with SpecifyUserID and SpPrincipalID
+        idFieldName='specifyUserId',
+        idField=IdField(name='specifyUserId', column='SpecifyUserID', type='java.lang.Integer'),
         fields=[
 
         ],
@@ -9028,10 +9028,10 @@ datamodel = Datamodel(tables=[
     Table(
         classname='edu.ku.brc.specify.datamodel.SpPrincipalSpPermission',
         table='spprincipal_sppermission',
-        tableId=9996,  # TODO pick next unused
-        idColumn=None,
-        idFieldName=None,
-        idField=None,
+        tableId=1038,
+        idColumn='SpPermissionID',  # Actually a duel key id with SpPermissionID and SpPrincipalID
+        idFieldName='spPermissionId',
+        idField=IdField(name='spPermissionId', column='SpPermissionID', type='java.lang.Integer'),
         fields=[
 
         ],

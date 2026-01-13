@@ -217,7 +217,16 @@ model_names_by_table_id = {
     1026:'Tectonicunittreedefitem',
     1027:'Tectonicunit', 
     1028:'Spdatasetattachment', 
-    1029: 'Component'
+    1029:'Component',
+    1030:'AutoNumSchColl',
+    1031:'AutoNumSchDiv',
+    1032:'AutoNumSchDsp',
+    1033:'DeaccessionPreparation',
+    1034:'ProjectCollectionObject',
+    1035:'SgrBatchMatchResultItem',
+    1036:'SpSchemaMapping',
+    1037:'SpecifyUserSpPrincipal',
+    1038:'SpPrincipalSpPermission'
 }
 
 model_names_by_app = {

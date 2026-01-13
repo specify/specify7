@@ -50,7 +50,7 @@ class Datamodel:
     def get_table_strict(self, tablename: str) -> "Table":
         tablename = tablename.lower()
         for table in self.tables:
-            if table.name.lower() == tablename:
+            if table.name.lower() == tablename or table.table.lower() == tablename:
                 return table
         raise TableDoesNotExistError(
             _("No table with name: %(table_name)r") % {"table_name": tablename}
