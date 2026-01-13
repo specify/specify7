@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 # Keep track of the currently running setup task. There should only ever be one.
 ACTIVE_TASK_REDIS_KEY = "specify:setup:active_task_id"
-
+ACTIVE_TASK_TTL = 60*60*2 # setup should be less than 2 hours
 # Keep track of last error.
 LAST_ERROR_REDIS_KEY = "specify:setup:last_error"
 
@@ -38,24 +38,20 @@ def setup_database_background(data: dict) -> str:
 
     task = setup_database_task.apply_async(args, task_id=task_id)
 
-    set_string(ACTIVE_TASK_REDIS_KEY, task.id)
+    set_string(ACTIVE_TASK_REDIS_KEY, task.id, time_to_live=ACTIVE_TASK_TTL)
     
     return task.id
 
 def get_active_setup_task() -> Tuple[Optional[AsyncResult], bool]:
     """Return the current setup task if it is active, and also if it is busy."""
     task_id = get_string(ACTIVE_TASK_REDIS_KEY)
-    last_error = get_string(LAST_ERROR_REDIS_KEY)
 
-    logger.debug('########## GETTING WORKER TASK STATUS ########')
-    logger.debug(task_id)
-    logger.debug(last_error)
     if not task_id:
         return None, False
 
     res = app.AsyncResult(task_id)
-    logger.debug(res.state)
     busy = res.state in ("PENDING", "RECEIVED", "STARTED", "RETRY", "PROGRESS")
+
     # Check if the last task ended
     if not busy and res.state in ("SUCCESS", "FAILURE", "REVOKED"):
         # Get error message if any.
@@ -157,4 +153,4 @@ def get_last_setup_error() -> Optional[str]:
     return err
 
 def set_last_setup_error(error_text: Optional[str]):
-    set_string(LAST_ERROR_REDIS_KEY, error_text or '')
+    set_string(LAST_ERROR_REDIS_KEY, error_text or '', time_to_live=60*60*24)
