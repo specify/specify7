@@ -8825,6 +8825,230 @@ datamodel = Datamodel(tables=[
 
         ],
     ),
+    Table(
+        classname='edu.ku.brc.specify.datamodel.AutoNumSchColl',
+        table='autonumsch_coll',
+        tableId=9997,  # TODO pick next unused
+        idColumn=None,
+        idFieldName=None,
+        idField=None,
+        fields=[
+
+        ],
+        indexes=[
+            Index(name='FK46F04F2A8C2288BA', column_names=['CollectionID']),
+            Index(name='FK46F04F2AFE55DD76', column_names=['AutoNumberingSchemeID'])
+        ],
+        relationships=[
+            Relationship(name='collection', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionID'),
+            Relationship(name='autoNumberingScheme', type='many-to-one', required=True, relatedModelName='AutoNumberingScheme', column='AutoNumberingSchemeID')
+        ],
+        fieldAliases=[
+
+        ],
+        view=None,
+        searchDialog=None
+    ),
+    Table(
+        classname='edu.ku.brc.specify.datamodel.AutoNumSchDiv',
+        table='autonumsch_div',
+        tableId=9998,  # TODO pick next unused
+        idColumn=None,
+        idFieldName=None,
+        idField=None,
+        fields=[
+
+        ],
+        indexes=[
+            Index(name='FKA8BE49397C961D8', column_names=['DivisionID']),
+            Index(name='FKA8BE493FE55DD76', column_names=['AutoNumberingSchemeID'])
+        ],
+        relationships=[
+            Relationship(name='division', type='many-to-one', required=True, relatedModelName='Division', column='DivisionID'),
+            Relationship(name='autoNumberingScheme', type='many-to-one', required=True, relatedModelName='AutoNumberingScheme', column='AutoNumberingSchemeID')
+        ],
+        fieldAliases=[
+
+        ],
+        view=None,
+        searchDialog=None
+    ),
+    Table(
+        classname='edu.ku.brc.specify.datamodel.AutoNumSchDsp',
+        table='autonumsch_dsp',
+        tableId=9999,  # TODO pick next unused
+        idColumn=None,
+        idFieldName=None,
+        idField=None,
+        fields=[
+
+        ],
+        indexes=[
+            Index(name='FKA8BE5C34CE675DE', column_names=['DisciplineID']),
+            Index(name='FKA8BE5C3FE55DD76', column_names=['AutoNumberingSchemeID'])
+        ],
+        relationships=[
+            Relationship(name='discipline', type='many-to-one', required=True, relatedModelName='Discipline', column='DisciplineID'),
+            Relationship(name='autoNumberingScheme', type='many-to-one', required=True, relatedModelName='AutoNumberingScheme', column='AutoNumberingSchemeID')
+        ],
+        fieldAliases=[
+
+        ],
+        view=None,
+        searchDialog=None
+    ),
+    Table(
+        classname='edu.ku.brc.specify.datamodel.DeaccessionPreparation',
+        table='deaccessionpreparation',
+        tableId=9991,  # TODO pick next unused
+        idColumn='DeaccessionPreparationID',
+        idFieldName='deaccessionPreparationId',
+        idField=IdField(name='deaccessionPreparationId', column='DeaccessionPreparationID', type='java.lang.Integer'),
+        fields=[
+            Field(name='quantity', column='Quantity', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='version', column='version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+        ],
+        indexes=[
+            Index(name='FK6A06F1F47699B003', column_names=['CreatedByAgentID']),
+            Index(name='FK6A06F1F45327F942', column_names=['ModifiedByAgentID']),
+            Index(name='FK6A06F1F4BE26B05E', column_names=['DeaccessionID']),
+            Index(name='FK6A06F1F418627F06', column_names=['PreparationID'])
+        ],
+        relationships=[
+            Relationship(name='deaccession', type='many-to-one', required=True, relatedModelName='Deaccession', column='DeaccessionID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='preparation', type='many-to-one', required=False, relatedModelName='Preparation', column='PreparationID')
+        ],
+        fieldAliases=[
+
+        ],
+        view=None,
+        searchDialog=None
+    ),
+    Table(
+        classname='edu.ku.brc.specify.datamodel.ProjectCollectionObject',
+        table='project_colobj',
+        tableId=9992,  # TODO pick next unused
+        idColumn=None,
+        idFieldName=None,
+        idField=None,
+        fields=[
+
+        ],
+        indexes=[
+            Index(name='FK1E416F5DAF28760A', column_names=['ProjectID']),
+            Index(name='FK1E416F5D75E37458', column_names=['CollectionObjectID'])
+        ],
+        relationships=[
+            Relationship(name='project', type='many-to-one', required=True, relatedModelName='Project', column='ProjectID'),
+            Relationship(name='collectionObject', type='many-to-one', required=True, relatedModelName='CollectionObject', column='CollectionObjectID')
+        ],
+        fieldAliases=[
+
+        ],
+        view=None,
+        searchDialog=None
+    ),
+    Table(
+        classname='edu.ku.brc.specify.datamodel.SgrBatchMatchResultItem',
+        table='sgrbatchmatchresultitem',
+        tableId=9993,  # TODO pick next unused
+        idColumn='id',
+        idFieldName='id',
+        idField=IdField(name='id', column='id', type='java.lang.Long'),
+        fields=[
+            Field(name='matchedId', column='matchedId', indexed=False, unique=False, required=True, type='java.lang.String', length=128),
+            Field(name='maxScore', column='maxScore', indexed=False, unique=False, required=True, type='java.lang.Double'),
+            Field(name='qTime', column='qTime', indexed=False, unique=False, required=True, type='java.lang.Integer')
+        ],
+        indexes=[
+            Index(name='sgrbatchmatchresultitemfk1', column_names=['batchMatchResultSetId'])
+        ],
+        relationships=[
+            Relationship(name='batchMatchResultSet', type='many-to-one', required=True, relatedModelName='SgrBatchMatchResultSet', column='batchMatchResultSetId')
+        ],
+        fieldAliases=[
+
+        ],
+        view=None,
+        searchDialog=None
+    ),
+    Table(
+        classname='edu.ku.brc.specify.datamodel.SpSchemaMapping',
+        table='sp_schema_mapping',
+        tableId=9994,  # TODO pick next unused
+        idColumn=None,
+        idFieldName=None,
+        idField=None,
+        fields=[
+
+        ],
+        indexes=[
+            Index(name='FKC5EDFE525722A7A2', column_names=['SpExportSchemaID']),
+            Index(name='FKC5EDFE52F7C8AAB0', column_names=['SpExportSchemaMappingID'])
+        ],
+        relationships=[
+            Relationship(name='spExportSchema', type='many-to-one', required=True, relatedModelName='SpExportSchema', column='SpExportSchemaID'),
+            Relationship(name='spExportSchemaMapping', type='many-to-one', required=True, relatedModelName='SpExportSchemaMapping', column='SpExportSchemaMappingID')
+        ],
+        fieldAliases=[
+
+        ],
+        view=None,
+        searchDialog=None
+    ),
+    Table(
+        classname='edu.ku.brc.specify.datamodel.SpecifyUserSpPrincipal',
+        table='specifyuser_spprincipal',
+        tableId=9995,  # TODO pick next unused
+        idColumn=None,
+        idFieldName=None,
+        idField=None,
+        fields=[
+
+        ],
+        indexes=[
+            Index(name='FK81E18B5E4BDD9E10', column_names=['SpecifyUserID']),
+            Index(name='FK81E18B5E99A7381A', column_names=['SpPrincipalID'])
+        ],
+        relationships=[
+            Relationship(name='specifyUser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
+            Relationship(name='spPrincipal', type='many-to-one', required=True, relatedModelName='SpPrincipal', column='SpPrincipalID')
+        ],
+        fieldAliases=[
+
+        ],
+        view=None,
+        searchDialog=None
+    ),
+    Table(
+        classname='edu.ku.brc.specify.datamodel.SpPrincipalSpPermission',
+        table='spprincipal_sppermission',
+        tableId=9996,  # TODO pick next unused
+        idColumn=None,
+        idFieldName=None,
+        idField=None,
+        fields=[
+
+        ],
+        indexes=[
+            Index(name='FK9DD8B2FA99A7381A', column_names=['SpPrincipalID']),
+            Index(name='FK9DD8B2FA891F8736', column_names=['SpPermissionID'])
+        ],
+        relationships=[
+            Relationship(name='spPrincipal', type='many-to-one', required=True, relatedModelName='SpPrincipal', column='SpPrincipalID'),
+            Relationship(name='spPermission', type='many-to-one', required=True, relatedModelName='SpPermission', column='SpPermissionID')
+        ],
+        fieldAliases=[
+
+        ],
+        view=None,
+        searchDialog=None
+    ),
 ])
 
 # add_collectingevents_to_locality(datamodel) # added statically to datamodel definitions
