@@ -226,7 +226,9 @@ model_names_by_table_id = {
     1035:'Sgrbatchmatchresultitem',
     1036:'SpSchemaMapping',
     1037:'SpecifyuserSpprincipal',
-    1038:'SpprincipalSppermission'
+    1038:'SpprincipalSppermission',
+    1039: 'Sgrbatchmatchresultset',
+    1040: 'Sgrmatchconfiguration',
 }
 
 model_names_by_app = {
@@ -466,7 +468,9 @@ model_names_by_app = {
         'Sgrbatchmatchresultitem',
         'SpSchemaMapping',
         'SpecifyuserSpprincipal',
-        'SpprincipalSppermission'
+        'SpprincipalSppermission',
+        'Sgrbatchmatchresultset',
+        'Sgrmatchconfiguration',
     }
 }
 

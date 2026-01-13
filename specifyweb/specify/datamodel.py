@@ -351,6 +351,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='specifyUser', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='agents'),
             Relationship(name='variants', type='one-to-many',required=False, relatedModelName='AgentVariant', otherSideName='agent', dependent=True),
             Relationship(name='components', type='one-to-many',required=False, relatedModelName='Component', otherSideName='identifiedBy'),
+            # Relationship(name='institutiontc', type='many-to-one', required=False, relatedModelName='InstitutionNetwork', column='InstitutionTCID', otherSideName='agents_institutiontc'),
         ],
         fieldAliases=[
 
@@ -8986,6 +8987,71 @@ datamodel = Datamodel(tables=[
         fieldAliases=[
 
         ],
+        view=None,
+        searchDialog=None
+    ),
+    Table(
+        classname='edu.ku.brc.specify.datamodel.SgrBatchMatchResultSet',
+        table='sgrbatchmatchresultset',
+        tableId=1039,
+        idColumn='id',
+        idFieldName='id',
+        idField=IdField(name='id', column='id', type='java.lang.Long'),
+        fields=[
+            Field(name='insertTime', column='insertTime', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='name', column='name', indexed=False, unique=False, required=True, type='java.lang.String', length=128),
+            Field(name='recordSetID', column='recordSetID', indexed=False, unique=False, required=False, type='java.lang.Long'),
+            Field(name='matchConfigurationId', column='matchConfigurationId', indexed=False, unique=False, required=True, type='java.lang.Long'),
+            Field(name='query', column='query', indexed=False, unique=False, required=True, type='text', length=65535),
+            Field(name='remarks', column='remarks', indexed=False, unique=False, required=True, type='text', length=65535),
+            Field(name='dbTableId', column='dbTableId', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        ],
+        indexes=[
+            Index(name='sgrbatchmatchresultsetfk2', column_names=['matchConfigurationId']),
+        ],
+        relationships=[
+            Relationship(
+                name='items',
+                type='one-to-many',
+                required=False,
+                relatedModelName='SgrBatchMatchResultItem',
+                otherSideName='batchMatchResultSet',
+            ),
+            Relationship(
+                name='matchConfiguration',
+                type='many-to-one',
+                required=True,
+                relatedModelName='SgrMatchConfiguration',
+                column='matchConfigurationId',
+                otherSideName='batchMatchResultSets',
+            ),
+        ],
+        fieldAliases=[],
+        view=None,
+        searchDialog=None,
+    ),
+    Table(
+        classname='edu.ku.brc.specify.datamodel.SgrMatchConfiguration',
+        table='sgrmatchconfiguration',
+        tableId=1040,
+        idColumn='id',
+        idFieldName='id',
+        idField=IdField(name='id', column='id', type='java.lang.Long'),
+        fields=[
+            Field(name='name', column='name', indexed=False, unique=False, required=True, type='java.lang.String', length=128),
+            Field(name='similarityFields', column='similarityFields', indexed=False, unique=False, required=True, type='text', length=65535),
+            Field(name='serverUrl', column='serverUrl', indexed=False, unique=False, required=True, type='text', length=65535),
+            Field(name='filterQuery', column='filterQuery', indexed=False, unique=False, required=True, type='java.lang.String', length=128),
+            Field(name='queryFields', column='queryFields', indexed=False, unique=False, required=True, type='text', length=65535),
+            Field(name='remarks', column='remarks', indexed=False, unique=False, required=True, type='text', length=65535),
+            Field(name='boostInterestingTerms', column='boostInterestingTerms', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
+            Field(name='nRows', column='nRows', indexed=False, unique=False, required=True, type='java.lang.Integer'),
+        ],
+        indexes=[],
+        relationships=[
+            Relationship(name='batchMatchResultSets', type='one-to-many', required=False, relatedModelName='SgrBatchMatchResultSet', otherSideName='matchConfiguration'),
+        ],
+        fieldAliases=[],
         view=None,
         searchDialog=None
     ),

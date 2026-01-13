@@ -328,7 +328,7 @@ class Agent(models.Model):
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     organization = models.ForeignKey('Agent', db_column='ParentOrganizationID', related_name='orgmembers', null=True, on_delete=protect_with_blockers)
     specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='agents', null=True, on_delete=models.SET_NULL)
-    institutiontc = models.ForeignKey("InstitutionNetwork", db_column="InstitutionTCID", on_delete=models.DO_NOTHING, null=True, blank=True, related_name="agents_institutiontc")
+    # institutiontc = models.ForeignKey("InstitutionNetwork", db_column="InstitutionTCID", on_delete=models.DO_NOTHING, null=True, blank=True, related_name="agents_institutiontc")
 
     class Meta:
         db_table = 'agent'
@@ -8105,6 +8105,54 @@ class Sgrbatchmatchresultitem(models.Model):
 
     save = partialmethod(custom_save)
 
+class Sgrbatchmatchresultset(models.Model):
+    specify_model = datamodel.get_table_strict('sgrbatchmatchresultset')
+
+    # ID Field
+    id = models.BigAutoField(primary_key=True, db_column='id')
+
+    # Fields
+    inserttime = models.DateTimeField( blank=False, null=False, unique=False, db_column='insertTime', db_index=False, default=timezone.now)
+    name = models.CharField( blank=False, max_length=128, null=False, unique=False, db_column='name', db_index=False)
+    recordsetid = models.BigIntegerField( blank=True, null=True, unique=False, db_column='recordSetID', db_index=False)
+    matchconfigurationid = models.BigIntegerField( blank=False, null=False, unique=False, db_column='matchConfigurationId', db_index=False)
+    query = models.TextField( blank=False, null=False, unique=False, db_column='query', db_index=False)
+    remarks = models.TextField( blank=False, null=False, unique=False, db_column='remarks', db_index=False)
+    dbtableid = models.IntegerField( blank=True, null=True, unique=False, db_column='dbTableId', db_index=False)
+
+    # Relationships
+    matchconfiguration = models.ForeignKey( 'Sgrmatchconfiguration', db_column='matchConfigurationId', related_name='batchmatchresultsets', null=False, on_delete=models.DO_NOTHING)
+
+    class Meta:
+        db_table = 'sgrbatchmatchresultset'
+        ordering = ()
+        indexes = [
+            models.Index(fields=['matchconfigurationid'], name='sgrbatchmatchresultsetfk2'),
+        ]
+
+    save = partialmethod(custom_save)
+
+class Sgrmatchconfiguration(models.Model):
+    specify_model = datamodel.get_table_strict('sgrmatchconfiguration')
+
+    # ID Field
+    id = models.BigAutoField(primary_key=True, db_column='id')
+
+    # Fields
+    name = models.CharField(blank=False, max_length=128, null=False, unique=False, db_column='name', db_index=False)
+    similarityfields = models.TextField(blank=False, null=False, unique=False, db_column='similarityFields', db_index=False)
+    serverurl = models.TextField(blank=False, null=False, unique=False, db_column='serverUrl', db_index=False)
+    filterquery = models.CharField(blank=False, max_length=128, null=False, unique=False, db_column='filterQuery', db_index=False)
+    queryfields = models.TextField(blank=False, null=False, unique=False, db_column='queryFields', db_index=False)
+    remarks = models.TextField(blank=False, null=False, unique=False, db_column='remarks', db_index=False)
+    boostinterestingterms = models.BooleanField(blank=False, null=False, unique=False, db_column='boostInterestingTerms', db_index=False)
+    nrows = models.IntegerField(blank=False, null=False, unique=False, db_column='nRows', db_index=False)
+
+    class Meta:
+        db_table = 'sgrmatchconfiguration'
+        ordering = ()
+
+    save = partialmethod(custom_save)
 class SpSchemaMapping(models.Model):
     specify_model = datamodel.get_table_strict('sp_schema_mapping')
 
