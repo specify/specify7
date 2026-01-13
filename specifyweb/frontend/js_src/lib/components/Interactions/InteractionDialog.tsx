@@ -79,7 +79,10 @@ export function InteractionDialog({
     'collectionObjectField'
   );
 
-  const itemTable = isLoanReturn ? tables.Loan : tables.CollectionObject;
+  const isLoanReturnLike =
+    isLoanReturn || (actionTable.name !== 'Loan' && actionTable.name.includes('Loan'));
+
+  const itemTable = isLoanReturnLike ? tables.Loan : tables.CollectionObject;
 
   const collectionObjectField = React.useMemo(() => {
     const coField = tables.CollectionObject.literalFields.find(
@@ -93,7 +96,7 @@ export function InteractionDialog({
   }, [collectionObjectFieldPref]);
 
   const searchField =
-    itemTable.name === 'Loan'
+    isLoanReturnLike && itemTable.name === 'Loan'
       ? itemTable.strictGetLiteralField('loanNumber')
       : collectionObjectField;
 
@@ -496,10 +499,10 @@ export function InteractionDialog({
             </details>
             <details>
               <summary>
-                {isLoan
-                  ? interactionsText.enterLoanNumbers(
-                      { fieldName: searchField?.label ?? '' }
-                  )
+                {isLoanReturnLike
+                  ? interactionsText.enterLoanNumbers({
+                      fieldName: searchField?.label ?? '',
+                    })
                   : interactionsText.byEnteringNumbers({
                       tableName: tables.CollectionObject.label,
                       fieldName: searchField?.label ?? '',
@@ -526,7 +529,7 @@ export function InteractionDialog({
                 </div>
               </div>
             </details>
-            {isLoan ? null : (
+            {isLoanReturnLike ? null : (
               <details>
                 <summary>
                   {interactionsText.byEnteringNumbers({
