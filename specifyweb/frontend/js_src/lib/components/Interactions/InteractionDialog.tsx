@@ -237,7 +237,9 @@ export function InteractionDialog({
       (prepData) => Number.parseInt(prepData[10]) > 0
     );
     const unavailable = skipEntryMatch
-      ? []
+      ? unavailablePrep
+          .map((item, index) => entries?.[index] ?? item[0])
+          .filter(Boolean)
       : typeof entries === 'object'
         ? entries.filter((entry) =>
             unavailablePrep.some((item) => entry === item[0])
