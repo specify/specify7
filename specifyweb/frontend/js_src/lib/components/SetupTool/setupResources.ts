@@ -61,7 +61,7 @@ export const disciplineTypeOptions = [
 // TODO: Fetch uiformatters.xml from the backend instead and use UIFormatter.placeholder
 const currentYear = new Date().getFullYear();
 const catalogNumberFormats = [
-  { value: 'CatalogNumber', label: `CatalogNumberNumeric (${currentYear}-######)` },
+  { value: 'CatalogNumber', label: `CatalogNumber (${currentYear}-######)` },
   { value: 'CatalogNumberAlphaNumByYear', label: `CatalogNumberAlphaNumByYear (${currentYear}-######)` },
   { value: 'CatalogNumberNumeric', label: 'CatalogNumberNumeric (#########)' },
   { value: 'CatalogNumberString', label: 'None' },
