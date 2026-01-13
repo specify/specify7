@@ -43,7 +43,7 @@ export type FieldConfig = {
 };
 
 // Discipline list from backend/context/app_resource.py
-const disciplineTypeOptions = [
+export const disciplineTypeOptions = [
   { value: 'fish', label: 'Ichthyology' },
   { value: 'herpetology', label: 'Herpetology' },
   { value: 'paleobotany', label: 'Paleobotany' },
@@ -53,15 +53,18 @@ const disciplineTypeOptions = [
   { value: 'mammal', label: 'Mammalogy' },
   { value: 'insect', label: 'Entomology' },
   { value: 'botany', label: 'Botany' },
-  { value: 'invertebrate', label: 'Invertebrate' },
+  { value: 'invertebrate', label: 'Invertebrate Zoology' },
   { value: 'geology', label: 'Geology' },
 ];
 
+// Must match config/backstop/uiformatters.xml
+// TODO: Fetch uiformatters.xml from the backend instead and use UIFormatter.placeholder
+const currentYear = new Date().getFullYear();
 const catalogNumberFormats = [
-  { value: 'CatalogNumber' },
-  { value: 'CatalogNumberAlphaNumByYear' },
-  { value: 'CatalogNumberNumeric' },
-  { value: 'CatalogNumberString' },
+  { value: 'CatalogNumber', label: `CatalogNumber (${currentYear}-######)` },
+  { value: 'CatalogNumberAlphaNumByYear', label: `CatalogNumberAlphaNumByYear (${currentYear}-######)` },
+  { value: 'CatalogNumberNumeric', label: 'CatalogNumberNumeric (#########)' },
+  { value: 'CatalogNumberString', label: 'None' },
 ];
 
 const fullNameDirections = [
@@ -216,17 +219,17 @@ export const resources: RA<ResourceConfig> = [
     endpoint: '/setup_tool/discipline/create/',
     fields: [
       {
-        name: 'name',
-        label: setupToolText.disciplineName(),
-        required: true,
-        maxLength: 64,
-      },
-      {
         name: 'type',
         label: setupToolText.disciplineType(),
         type: 'select',
         options: disciplineTypeOptions,
         required: true,
+      },
+      {
+        name: 'name',
+        label: setupToolText.disciplineName(),
+        required: true,
+        maxLength: 64,
       },
     ],
   },
@@ -291,7 +294,7 @@ export const resources: RA<ResourceConfig> = [
           },
           { name: '10', label: 'Kingdom', type: 'boolean', default: true },
           { name: '30', label: 'Phylum', type: 'boolean', default: true },
-          { name: '40', label: 'Subphylum', type: 'boolean', default: true },
+          { name: '40', label: 'Subphylum', type: 'boolean', default: false },
           { name: '60', label: 'Class', type: 'boolean', default: true },
           { name: '70', label: 'Subclass', type: 'boolean', default: false },
           { name: '90', label: 'Superorder', type: 'boolean', default: false },
@@ -344,7 +347,7 @@ export const resources: RA<ResourceConfig> = [
         type: 'select',
         options: catalogNumberFormats,
         required: true,
-        default: catalogNumberFormats[0].value.toString(),
+        default: 'CatalogNumberNumeric',
       },
     ],
   },

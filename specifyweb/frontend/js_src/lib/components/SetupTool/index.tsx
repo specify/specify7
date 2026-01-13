@@ -20,7 +20,7 @@ import { loadingBar } from '../Molecules';
 import { checkFormCondition, renderFormFieldFactory } from './SetupForm';
 import { SetupOverview } from './SetupOverview';
 import type { FieldConfig, ResourceConfig } from './setupResources';
-import { resources } from './setupResources';
+import { disciplineTypeOptions, resources } from './setupResources';
 import type {
   ResourceFormData,
   SetupProgress,
@@ -117,19 +117,15 @@ export function SetupTool({
   const SubmitComponent = saveBlocked ? Submit.Danger : Submit.Save;
 
   // Keep track of the last backend error.
-  const [setupError, setSetupError] = React.useState<string | undefined>(
-    undefined
+  const [setupError, setSetupError] = React.useState<string | null>(
+    setupProgress.last_error
   );
 
   // Is the database currrently being created?
-  const [inProgress, setInProgress] = React.useState<boolean>(false);
+  const [inProgress, setInProgress] = React.useState<boolean>(setupProgress.busy);
   const nextIncompleteStep = stepOrder.findIndex(
     (resourceName) => !setupProgress.resources[resourceName]
   );
-  React.useEffect(() => {
-    if (setupProgress.busy) setInProgress(true);
-    if (setupProgress.last_error) setSetupError(setupProgress.last_error);
-  }, [setupProgress]);
   React.useEffect(() => {
     // Poll for the latest setup progress.
     if (!inProgress) return;
@@ -143,10 +139,8 @@ export function SetupTool({
         })
           .then(({ data }) => {
             setSetupProgress(data);
-            if (data.last_error !== undefined) {
-              setInProgress(false);
-              setSetupError(data.last_error);
-            }
+            setInProgress(data.busy);
+            setSetupError(data.last_error);
           })
           .catch((error) => {
             console.error('Failed to fetch setup progress:', error);
@@ -173,7 +167,7 @@ export function SetupTool({
     })
       .then(({ data, status }) => {
         if (status === Http.OK) {
-          console.log(`Setup completed successfully:`, data);
+          console.log(`Setup started successfully:`, data);
           return data;
         } else {
           const dataParsed = JSON.parse(data as unknown as string); // Data is a string on errors
@@ -192,12 +186,24 @@ export function SetupTool({
   ): void => {
     setFormData((previous) => {
       const resourceName = resources[currentStep].resourceName;
+      const previousResourceData = previous[resourceName];
+      const updates: Record<string, any> = {
+        ...previousResourceData,
+        [name]: newValue,
+      };
+
+      if (resourceName === 'discipline' && name === 'type') {
+        const matchingType = disciplineTypeOptions.find(
+          (option) => option.value === newValue
+        );
+        updates.name = matchingType
+          ? matchingType.label ?? String(matchingType.value)
+          : '';
+      }
+
       return {
         ...previous,
-        [resourceName]: {
-          ...previous[resourceName],
-          [name]: newValue,
-        },
+        [resourceName]: updates,
       };
     });
   };
@@ -213,7 +219,6 @@ export function SetupTool({
       loading(
         startSetup(formData)
           .then((data) => {
-            console.log(data);
             setSetupProgress(data.setup_progress as SetupProgress);
             setInProgress(true);
           })
@@ -323,7 +328,7 @@ export function SetupTool({
                 <p className="text-md">{setupToolText.setupProgress()}</p>
                 <Progress max={stepOrder.length} value={currentStep} />
               </Container.Center>
-              {setupError === undefined ? undefined : (
+              {setupError === null ? undefined : (
                 <Container.Center className="p-3 shadow-none max-w-lg">
                   <div className="flex items-center justify-start gap-3 w-full">
                     <span className="text-red-500">{dialogIcons.warning}</span>

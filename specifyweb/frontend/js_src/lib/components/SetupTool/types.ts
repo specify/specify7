@@ -14,7 +14,7 @@ export type SetupResources = {
 export type SetupProgress = {
   readonly resources: SetupResources;
   readonly busy: boolean;
-  readonly last_error?: string;
+  readonly last_error: string | null;
 };
 
 export type SetupResponse = {

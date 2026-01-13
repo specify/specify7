@@ -11,20 +11,19 @@ from specifyweb.backend.setup_tool.app_resource_defaults import create_app_resou
 from specifyweb.specify.management.commands.run_key_migration_functions import fix_schema_config
 from specifyweb.specify.models_utils.model_extras import PALEO_DISCIPLINES, GEOLOGY_DISCIPLINES
 from specifyweb.celery_tasks import is_worker_alive, MissingWorkerError
+from specifyweb.backend.redis_cache.store import set_string, get_string
 
 from uuid import uuid4
 import logging
 logger = logging.getLogger(__name__)
 
 # Keep track of the currently running setup task. There should only ever be one.
-_active_setup_task_id: Optional[str] = None
-
+ACTIVE_TASK_REDIS_KEY = "specify:setup:active_task_id"
+ACTIVE_TASK_TTL = 60*60*2 # setup should be less than 2 hours
 # Keep track of last error.
-_last_error: Optional[str] = None
+LAST_ERROR_REDIS_KEY = "specify:setup:last_error"
 
 def setup_database_background(data: dict) -> str:
-    global _active_setup_task_id, _last_error
-
     # Clear any previous error logs.
     set_last_setup_error(None)
 
@@ -39,20 +38,20 @@ def setup_database_background(data: dict) -> str:
 
     task = setup_database_task.apply_async(args, task_id=task_id)
 
-    _active_setup_task_id = task.id
+    set_string(ACTIVE_TASK_REDIS_KEY, task.id, time_to_live=ACTIVE_TASK_TTL)
     
     return task.id
 
 def get_active_setup_task() -> Tuple[Optional[AsyncResult], bool]:
     """Return the current setup task if it is active, and also if it is busy."""
-    global _active_setup_task_id
-    task_id = _active_setup_task_id
+    task_id = get_string(ACTIVE_TASK_REDIS_KEY)
 
     if not task_id:
         return None, False
 
     res = app.AsyncResult(task_id)
     busy = res.state in ("PENDING", "RECEIVED", "STARTED", "RETRY", "PROGRESS")
+
     # Check if the last task ended
     if not busy and res.state in ("SUCCESS", "FAILURE", "REVOKED"):
         # Get error message if any.
@@ -148,9 +147,10 @@ def setup_database_task(self, data: dict):
         raise
 
 def get_last_setup_error() -> Optional[str]:
-    global _last_error
-    return _last_error
+    err = get_string(LAST_ERROR_REDIS_KEY)
+    if err == '':
+        return None
+    return err
 
 def set_last_setup_error(error_text: Optional[str]):
-    global _last_error
-    _last_error = error_text
+    set_string(LAST_ERROR_REDIS_KEY, error_text or '', time_to_live=60*60*24)

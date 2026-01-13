@@ -86,6 +86,30 @@ overrideAjax(
   }
 );
 
+const emptyCollection = {
+  objects: [],
+  meta: {
+    limit: 20,
+    offset: 0,
+    total_count: 0,
+  },
+};
+
+overrideAjax(
+  '/api/specify/component/?catalognumber=000029432&domainfilter=true',
+  emptyCollection
+);
+
+overrideAjax(
+  '/api/specify/component/?catalognumber=000000001&domainfilter=true',
+  emptyCollection
+);
+
+overrideAjax(
+  '/api/specify/component/?catalognumber=%23%23%23%23%23%23%23%23%23&domainfilter=true',
+  emptyCollection
+);
+
 const firstCollectionObjectUrl = getResourceApiUrl('CollectionObject', 1);
 const firstCollectionObject = {
   id: 1,

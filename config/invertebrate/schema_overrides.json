@@ -32,7 +32,7 @@
           "format": null,
           "ishidden": false,
           "isuiformatter": false,
-          "picklistname": "BiologicalStage",
+          "picklistname": "LifeStage",
           "type": "java.lang.String",
           "isrequired": false,
           "weblinkname": null,

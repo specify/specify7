@@ -204,22 +204,26 @@ function Field({
     displayParentCatNumberPlaceHolder,
   ]);
 
+  const customPlaceholder =
+    displayPrimaryCatNumberPlaceHolder &&
+    typeof primaryCatalogNumber === 'string'
+      ? primaryCatalogNumber
+      : displayParentCatNumberPlaceHolder &&
+          typeof parentCatalogNumber === 'string'
+        ? parentCatalogNumber
+        : undefined;
+
+  const { placeholder: parserPlaceholder, ...restValidationAttributes } =
+    validationAttributes;
+
   return (
     <Input.Generic
       forwardRef={validationRef}
       key={parser.title}
       max={Number.MAX_SAFE_INTEGER}
       name={name}
-      placeholder={
-        displayPrimaryCatNumberPlaceHolder &&
-        typeof primaryCatalogNumber === 'string'
-          ? primaryCatalogNumber
-          : displayParentCatNumberPlaceHolder &&
-              typeof parentCatalogNumber === 'string'
-            ? parentCatalogNumber
-            : undefined
-      }
-      {...validationAttributes}
+      placeholder={customPlaceholder ?? parserPlaceholder}
+      {...restValidationAttributes}
       className={rightAlignClassName}
       id={id}
       isReadOnly={isReadOnly}

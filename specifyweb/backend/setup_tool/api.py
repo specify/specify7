@@ -7,7 +7,6 @@ import json
 from django.http import (JsonResponse)
 from django.db.models import Max
 from django.db import transaction
-from django.apps import apps
 
 from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.specify.models import Spversion
@@ -20,8 +19,8 @@ from specifyweb.backend.setup_tool.setup_tasks import setup_database_background,
 from specifyweb.celery_tasks import MissingWorkerError
 from specifyweb.backend.setup_tool.tree_defaults import create_default_tree, update_tree_scoping
 from specifyweb.specify.models import Institution, Discipline
-from specifyweb.specify.migration_utils.default_cots import (create_default_collection_types)
 from specifyweb.backend.businessrules.uniqueness_rules import apply_default_uniqueness_rules
+from specifyweb.specify.management.commands.run_key_migration_functions import fix_cots
 
 import logging
 logger = logging.getLogger(__name__)
@@ -293,7 +292,7 @@ def create_collection(data):
         # Create picklists
         create_default_picklists(new_collection, discipline.type)
         # Create Collection Object Type
-        create_default_collection_types(apps)
+        fix_cots()
 
         return {"collection_id": new_collection.id}
     except Exception as e:
