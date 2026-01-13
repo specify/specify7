@@ -103,10 +103,10 @@ const isAllowedPrepField = (name: string): boolean => {
   );
 };
 
-const PreparationFieldPreferenceItem = ({
+function PreparationFieldPreferenceItem({
   value,
   onChange: handleChange,
-}: PreferenceRendererProps<string>): JSX.Element => {
+}: PreferenceRendererProps<string>): JSX.Element {
   const options = React.useMemo(
     () =>
       (tables.Preparation?.literalFields.length ?? 0) === 0
@@ -129,12 +129,12 @@ const PreparationFieldPreferenceItem = ({
       ))}
     </Select>
   );
-};
+}
 
-const CollectionObjectFieldPreferenceItem = ({
+function CollectionObjectFieldPreferenceItem({
   value,
   onChange: handleChange,
-}: PreferenceRendererProps<string>): JSX.Element => {
+}: PreferenceRendererProps<string>): JSX.Element {
   const options = React.useMemo(
     () =>
       (tables.CollectionObject?.literalFields.length ?? 0) === 0
@@ -157,7 +157,7 @@ const CollectionObjectFieldPreferenceItem = ({
       ))}
     </Select>
   );
-};
+}
 
 /**
  * Have to be careful as preferences may be used before schema is loaded
