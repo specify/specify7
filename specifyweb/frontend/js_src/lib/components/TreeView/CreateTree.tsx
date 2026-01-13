@@ -205,6 +205,7 @@ export function CreateTree<
                 onClose={() => {
                   setIsTreeCreationStarted(false);
                   setTreeCreationTaskId(undefined);
+                  setIsActive(0);
                 }}
                 onStopped={() => {
                   setIsTreeCreationStarted(false);
