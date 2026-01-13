@@ -30,27 +30,44 @@ class CustomBIT(mysql_bit_type):
         return process
 
 def make_table(datamodel: Datamodel, tabledef: Table):
-    columns = [ Column(tabledef.idColumn, types.Integer, primary_key=True) ]
+    # Start with the declared primary key column
+    columns = [Column(tabledef.idColumn, types.Integer, primary_key=True)]
 
+    # Track all column names we have already added to avoid duplicates
+    colnames = {tabledef.idColumn}
+
+    # Add normal fields
     columns.extend(make_column(field) for field in tabledef.fields)
+    for field in tabledef.fields:
+        if getattr(field, "column", None):
+            colnames.add(field.column)
+
+    # Add FK columns, but never if the column already exists (e.g. PK doubles as FK)
     for reldef in tabledef.relationships:
-        if reldef.type in ('many-to-one', 'one-to-one') and hasattr(reldef, 'column') and reldef.column:
+        if reldef.type in ("many-to-one", "one-to-one") and getattr(reldef, "column", None):
+            if reldef.column in colnames:
+                continue  # don't redefine an existing column
+
             fk = make_foreign_key(datamodel, reldef)
-            if fk is not None: columns.append(fk)
+            if fk is not None:
+                columns.append(fk)
+                colnames.add(reldef.column)
 
     return Table_Sqlalchemy(tabledef.table, metadata, *columns)
 
 def make_foreign_key(datamodel: Datamodel, reldef: Relationship):
-    remote_tabledef = datamodel.get_table(reldef.relatedModelName) # TODO: this could be a method of relationship
+    remote_tabledef = datamodel.get_table(reldef.relatedModelName)
     if remote_tabledef is None:
-        return
+        return None
 
-    fk_target = '.'.join((remote_tabledef.table, remote_tabledef.idColumn))
+    fk_target = ".".join((remote_tabledef.table, remote_tabledef.idColumn))
 
-    return Column(reldef.column,
-                  ForeignKey(fk_target),
-                  nullable = not reldef.required,
-                  unique = reldef.type == 'one_to_one')
+    return Column(
+        reldef.column,
+        ForeignKey(fk_target),
+        nullable=not reldef.required,
+        unique=reldef.type == "one-to-one",
+    )
 
 def make_column(flddef: Field):
     field_type = field_type_map[ flddef.type ]

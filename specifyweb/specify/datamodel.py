@@ -8829,9 +8829,12 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.AutoNumSchColl',
         table='autonumsch_coll',
         tableId=1030,
-        idColumn='AutoNumberingSchemeID',  # Actually a duel key id with CollectionID and AutoNumberingSchemeID
-        idFieldName='autoNumberingSchemeId',
-        idField=IdField(name='autoNumberingSchemeId', column='AutoNumberingSchemeID', type='java.lang.Integer'),
+        idColumns=['CollectionID', 'AutoNumberingSchemeID'],
+        idFieldNames=['collectionId', 'autoNumberingSchemeId'],
+        idFields=[
+            IdField(name='collectionId', column='CollectionID', type='java.lang.Integer'),
+            IdField(name='autoNumberingSchemeId', column='AutoNumberingSchemeID', type='java.lang.Integer'),
+        ],
         fields=[
 
         ],
@@ -8853,9 +8856,12 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.AutoNumSchDiv',
         table='autonumsch_div',
         tableId=1031,
-        idColumn='AutoNumberingSchemeID',  # Actually a duel key id with DivisionID and AutoNumberingSchemeID
-        idFieldName='autoNumberingSchemeId',
-        idField=IdField(name='autoNumberingSchemeId', column='AutoNumberingSchemeID', type='java.lang.Integer'),
+        idColumns=['DivisionID', 'AutoNumberingSchemeID'],
+        idFieldNames=['divisionId', 'autoNumberingSchemeId'],
+        idFields=[
+            IdField(name='divisionId', column='DivisionID', type='java.lang.Integer'),
+            IdField(name='autoNumberingSchemeId', column='AutoNumberingSchemeID', type='java.lang.Integer'),
+        ],
         fields=[
 
         ],
@@ -8877,9 +8883,12 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.AutoNumSchDsp',
         table='autonumsch_dsp',
         tableId=1032,
-        idColumn='AutoNumberingSchemeID',  # Actually a duel key id with DisciplineID and AutoNumberingSchemeID
-        idFieldName='autoNumberingSchemeId',
-        idField=IdField(name='autoNumberingSchemeId', column='AutoNumberingSchemeID', type='java.lang.Integer'),
+        idColumns=['DisciplineID', 'AutoNumberingSchemeID'],
+        idFieldNames=['disciplineId', 'autoNumberingSchemeId'],
+        idFields=[
+            IdField(name='disciplineId', column='DisciplineID', type='java.lang.Integer'),
+            IdField(name='autoNumberingSchemeId', column='AutoNumberingSchemeID', type='java.lang.Integer'),
+        ],
         fields=[
 
         ],
@@ -8933,9 +8942,12 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.ProjectCollectionObject',
         table='project_colobj',
         tableId=1034,
-        idColumn='ProjectID',  # Actually a duel key id with ProjectID and CollectionObjectID
-        idFieldName='projectId',
-        idField=IdField(name='projectId', column='ProjectID', type='java.lang.Integer'),
+        idColumns=['ProjectID', 'CollectionObjectID'],
+        idFieldNames=['projectId', 'collectionObjectId'],
+        idFields=[
+            IdField(name='projectId', column='ProjectID', type='java.lang.Integer'),
+            IdField(name='collectionObjectId', column='CollectionObjectID', type='java.lang.Integer'),
+        ],
         fields=[
 
         ],
@@ -8981,9 +8993,12 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpSchemaMapping',
         table='sp_schema_mapping',
         tableId=1036,
-        idColumn='SpExportSchemaMappingID',  # Actually a duel key id with SpExportSchemaMappingID and SpExportSchemaID
-        idFieldName='spExportSchemaMappingId',
-        idField=IdField(name='spExportSchemaMappingId', column='SpExportSchemaMappingID', type='java.lang.Integer'),
+        idColumns=['SpExportSchemaID', 'SpExportSchemaMappingID'],
+        idFieldNames=['spExportSchemaId', 'spExportSchemaMappingId'],
+        idFields=[
+            IdField(name='spExportSchemaId', column='SpExportSchemaID', type='java.lang.Integer'),
+            IdField(name='spExportSchemaMappingId', column='SpExportSchemaMappingID', type='java.lang.Integer'),
+        ],
         fields=[
 
         ],
@@ -9005,9 +9020,12 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpecifyUserSpPrincipal',
         table='specifyuser_spprincipal',
         tableId=1037,
-        idColumn='SpecifyUserID',  # Actually a duel key id with SpecifyUserID and SpPrincipalID
-        idFieldName='specifyUserId',
-        idField=IdField(name='specifyUserId', column='SpecifyUserID', type='java.lang.Integer'),
+        idColumns=['SpecifyUserID', 'SpPrincipalID'],
+        idFieldNames=['specifyUserId', 'spPrincipalId'],
+        idFields=[
+            IdField(name='specifyUserId', column='SpecifyUserID', type='java.lang.Integer'),
+            IdField(name='spPrincipalId', column='SpPrincipalID', type='java.lang.Integer'),
+        ],
         fields=[
 
         ],
@@ -9029,9 +9047,12 @@ datamodel = Datamodel(tables=[
         classname='edu.ku.brc.specify.datamodel.SpPrincipalSpPermission',
         table='spprincipal_sppermission',
         tableId=1038,
-        idColumn='SpPermissionID',  # Actually a duel key id with SpPermissionID and SpPrincipalID
-        idFieldName='spPermissionId',
-        idField=IdField(name='spPermissionId', column='SpPermissionID', type='java.lang.Integer'),
+        idColumns=['SpPrincipalID', 'SpPermissionID'],
+        idFieldNames=['spPrincispalId', 'spPermissionId'],
+        idFields=[
+            IdField(name='spPrincipalId', column='SpPrincipalID', type='java.lang.Integer'),
+            IdField(name='spPermissionId', column='SpPermissionID', type='java.lang.Integer'),
+        ],
         fields=[
 
         ],

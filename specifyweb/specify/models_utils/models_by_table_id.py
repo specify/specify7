@@ -218,15 +218,15 @@ model_names_by_table_id = {
     1027:'Tectonicunit', 
     1028:'Spdatasetattachment', 
     1029:'Component',
-    1030:'AutoNumSchColl',
-    1031:'AutoNumSchDiv',
-    1032:'AutoNumSchDsp',
-    1033:'DeaccessionPreparation',
-    1034:'ProjectCollectionObject',
-    1035:'SgrBatchMatchResultItem',
-    1036:'SpSchemaMapping',
-    1037:'SpecifyUserSpPrincipal',
-    1038:'SpPrincipalSpPermission'
+    1030:'AutonumschColl',
+    1031:'AutonumschDiv',
+    1032:'AutonumschDsp',
+    1033:'Deaccessionpreparation',
+    1034:'Projectcollectionobject',
+    1035:'Sgrbatchmatchresultitem',
+    1036:'Spschemamapping',
+    1037:'Specifyuserspprincipal',
+    1038:'Spprincipalsppermission'
 }
 
 model_names_by_app = {
@@ -457,7 +457,16 @@ model_names_by_app = {
         'Tectonicunittreedef',
         'Tectonicunittreedefitem',
         'Tectonicunit', 
-        'Component'
+        'Component',
+        'AutonumschColl',
+        'AutonumschDiv',
+        'AutonumschDsp',
+        'Deaccessionpreparation',
+        'Projectcollectionobject',
+        'Sgrbatchmatchresultitem',
+        'Spschemamapping',
+        'Specifyuserspprincipal',
+        'Spprincipalsppermission'
     }
 }
 
