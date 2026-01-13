@@ -496,10 +496,14 @@ export function InteractionDialog({
             </details>
             <details>
               <summary>
-                {interactionsText.byEnteringNumbers({
-                  tableName: tables.CollectionObject.label,
-                  fieldName: searchField?.label ?? '',
-                })}
+                {isLoan
+                  ? interactionsText.enterLoanNumbers(
+                      { fieldName: searchField?.label ?? '' }
+                  )
+                  : interactionsText.byEnteringNumbers({
+                      tableName: tables.CollectionObject.label,
+                      fieldName: searchField?.label ?? '',
+                    })}
               </summary>
               <div className="flex flex-col gap-2">
                 <AutoGrowTextArea
@@ -522,34 +526,36 @@ export function InteractionDialog({
                 </div>
               </div>
             </details>
-            <details>
-              <summary>
-                {interactionsText.byEnteringNumbers({
-                  tableName: preparationField.table.label,
-                  fieldName: preparationField?.label ?? '',
-                })}
-              </summary>
-              <div className="flex flex-col gap-2">
-                <AutoGrowTextArea
-                  forwardRef={prepValidationRef}
-                  spellCheck={false}
-                  value={preparationValues}
-                  onValueChange={setPreparationValues}
-                  {...prepAttributes}
-                />
-                <div>
-                  <Button.Info
-                    disabled={preparationValues.length === 0}
-                    onClick={(): void => handleProceedPreparationField()}
-                  >
-                    {state.type === 'MissingState' ||
-                    state.type === 'InvalidState'
-                      ? commonText.update()
-                      : commonText.next()}
-                  </Button.Info>
+            {isLoan ? null : (
+              <details>
+                <summary>
+                  {interactionsText.byEnteringNumbers({
+                    tableName: preparationField.table.label,
+                    fieldName: preparationField?.label ?? '',
+                  })}
+                </summary>
+                <div className="flex flex-col gap-2">
+                  <AutoGrowTextArea
+                    forwardRef={prepValidationRef}
+                    spellCheck={false}
+                    value={preparationValues}
+                    onValueChange={setPreparationValues}
+                    {...prepAttributes}
+                  />
+                  <div>
+                    <Button.Info
+                      disabled={preparationValues.length === 0}
+                      onClick={(): void => handleProceedPreparationField()}
+                    >
+                      {state.type === 'MissingState' ||
+                      state.type === 'InvalidState'
+                        ? commonText.update()
+                        : commonText.next()}
+                    </Button.Info>
+                  </div>
                 </div>
-              </div>
-            </details>
+              </details>
+            )}
             {state.type === 'InvalidState' && (
               <div className="mt-2 space-y-1">
                 <H3>{interactionsText.problemsFound()}</H3>

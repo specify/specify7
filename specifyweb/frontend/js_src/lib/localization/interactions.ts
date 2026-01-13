@@ -88,6 +88,15 @@ export const interactionsText = createDictionary({
     'uk-ua': 'Введіть {fieldName:string} {tableName:string}',
     'pt-br': 'Insira {tableName:string} {fieldName:string}s',
   },
+  enterLoanNumbers: {
+    'en-us': 'Enter {fieldName: string}s',
+    'de-ch': 'Geben Sie {fieldName: string}s ein',
+    'es-es': 'Ingrese {fieldName: string}s',
+    'fr-fr': 'Saisir des {fieldName: string}s',
+    'ru-ru': 'Введите {fieldName: string}s',
+    'uk-ua': 'Введіть {fieldName: string}s',
+    'pt-br': 'Insira {fieldName: string}s',
+  },
   withoutPreparations: {
     'en-us': 'Without preparations',
     'ru-ru': 'Без подготовки',
