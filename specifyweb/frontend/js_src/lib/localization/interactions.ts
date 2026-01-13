@@ -73,7 +73,7 @@ export const interactionsText = createDictionary({
   },
   byChoosingRecordSet: {
     comment: 'See documentation for syntax for plural rules',
-    'en-us': 'Choose a {recordSet:string} ({{count:none | one | ??}} available)',
+    'en-us': 'Choose a {recordSet:string} ({count:number|formatted} available)',
   },
   byEnteringNumbers: {
     comment: `

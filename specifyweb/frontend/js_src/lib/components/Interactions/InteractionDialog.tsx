@@ -487,9 +487,10 @@ export function InteractionDialog({
           >
             <details>
               <summary>
-                {interactionsText.byChoosingRecordSet(
-                  { recordSet: tables.RecordSet.label, 
-                    count: totalCount })}
+                {interactionsText.byChoosingRecordSet({
+                  recordSet: tables.RecordSet.label,
+                  count: totalCount ?? 0,
+                })}
               </summary>
               {children}
             </details>
