@@ -3,13 +3,11 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { backupText } from '../../localization/backup';
-import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
 import { mergingText } from '../../localization/merging';
 import { notificationsText } from '../../localization/notifications';
 import { treeText } from '../../localization/tree';
 import { StringToJsx } from '../../localization/utils';
-import { ping } from '../../utils/ajax/ping';
 import type { IR, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
