@@ -294,7 +294,7 @@ export const resources: RA<ResourceConfig> = [
           },
           { name: '10', label: 'Kingdom', type: 'boolean', default: true },
           { name: '30', label: 'Phylum', type: 'boolean', default: true },
-          { name: '40', label: 'Subphylum', type: 'boolean', default: true },
+          { name: '40', label: 'Subphylum', type: 'boolean', default: false },
           { name: '60', label: 'Class', type: 'boolean', default: true },
           { name: '70', label: 'Subclass', type: 'boolean', default: false },
           { name: '90', label: 'Superorder', type: 'boolean', default: false },
