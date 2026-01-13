@@ -1579,8 +1579,14 @@ export const preferencesText = createDictionary({
     'de-ch': 'Eine Interaktion erstellen',
     'pt-br': 'Criar uma interação',
   },
-  fieldIdentifier: {
-    'en-us': '{tableName:string} Identifier',
+  tableIdentifier: {
+    'en-us': '{tableName:string} identifier',
+    'ru-ru': 'Идентификатор {tableName:string}',
+    'es-es': 'Identificador de {tableName:string}',
+    'fr-fr': 'Identifiant {tableName:string}',
+    'uk-ua': 'Ідентифікатор {tableName:string}',
+    'de-ch': '{tableName:string}-Identifikator',
+    'pt-br': 'Identificador de {tableName:string}',
   },
   useSpaceAsDelimiter: {
     'en-us': 'Use space as delimiter',

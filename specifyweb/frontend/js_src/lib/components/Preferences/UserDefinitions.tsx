@@ -720,7 +720,7 @@ export const userPreferenceDefinitions = {
           collectionObjectField: definePref<string>({
             title: () =>
               preferencesText.tableIdentifier({
-                tableName: tableLabel('CollectionObject'),
+                tableName: tables.CollectionObject.label,
               }),
             requiresReload: false,
             visible: true,
@@ -731,7 +731,7 @@ export const userPreferenceDefinitions = {
           preparationField: definePref<string>({
             title: () =>
               preferencesText.tableIdentifier({
-                tableName: tableLabel('Preparation'),
+                tableName: tables.Preparation.label,
               }),
             requiresReload: false,
             visible: true,
