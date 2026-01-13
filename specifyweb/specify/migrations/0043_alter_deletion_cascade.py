@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0041_add_missing_schema_after_reorganization'),
+        ('specify', '0042_discipline_type_picklist'),
     ]
 
     operations = [

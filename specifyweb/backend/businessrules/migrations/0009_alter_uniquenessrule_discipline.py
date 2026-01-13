@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0042_alter_deletion_cascade'),
+        ('specify', '0043_alter_deletion_cascade'),
         ('businessrules', '0008_fix_global_default_rules'),
     ]
 
