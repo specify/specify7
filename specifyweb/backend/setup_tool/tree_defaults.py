@@ -12,7 +12,6 @@ logger = logging.getLogger(__name__)
 DEFAULT_TREE_RANKS_FILES = {
     'Storage': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'storage_tree.json',
     'Geography': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'geography_tree.json',
-    # TODO: Defaults for the rest of the trees
     'Taxon': Path(__file__).parent.parent.parent.parent / 'config' / 'mammal' / 'taxon_mammal_tree.json',
     'Geologictimeperiod': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'geologictimeperiod_tree.json',
     'Lithostrat': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'lithostrat_tree.json',
@@ -57,9 +56,9 @@ def create_default_tree(tree_type: str, kwargs: dict, user_rank_cfg: dict, prelo
         rank_cfg.append(rank)    
 
     if tree_type == 'Storage':
-        discipline_or_institution = kwargs['institution']
+        discipline_or_institution = kwargs.get('institution')
     else:
-        discipline_or_institution = kwargs['discipline']
+        discipline_or_institution = kwargs.get('discipline')
 
     tree_def = initialize_default_tree(tree_type.lower(), discipline_or_institution, tree_type.title(), rank_cfg, kwargs['fullnamedirection'])
 

@@ -3,32 +3,39 @@
     "treedef": {
       "levels": [
         {
-            "name": "Erathem/Era",
-            "rank": 100,
-            "enforced": false,
-            "infullname": false,
-            "fullnameseparator": ", "
+          "name": "Time Root",
+          "rank": 0,
+          "enforced": true,
+          "infullname": false,
+          "fullnameseparator": ", "
         },
         {
-            "name": "System/Period",
-            "rank": 200,
-            "enforced": false,
-            "infullname": false,
-            "fullnameseparator": ", "
+          "name": "Erathem/Era",
+          "rank": 100,
+          "enforced": false,
+          "infullname": false,
+          "fullnameseparator": ", "
         },
         {
-            "name": "Series/Epoch",
-            "rank": 300,
-            "enforced": false,
-            "infullname": true,
-            "fullnameseparator": ", "
+          "name": "System/Period",
+          "rank": 200,
+          "enforced": false,
+          "infullname": false,
+          "fullnameseparator": ", "
         },
         {
-            "name": "Stage/Age",
-            "rank": 400,
-            "enforced": false,
-            "infullname": true,
-            "fullnameseparator": ", "
+          "name": "Series/Epoch",
+          "rank": 300,
+          "enforced": false,
+          "infullname": true,
+          "fullnameseparator": ", "
+        },
+        {
+          "name": "Stage/Age",
+          "rank": 400,
+          "enforced": false,
+          "infullname": true,
+          "fullnameseparator": ", "
         }
       ]
     },

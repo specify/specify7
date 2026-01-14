@@ -3,64 +3,40 @@
     "treedef": {
       "levels": [
         {
-          "name": "Site",
+          "name": "Root",
           "enforced": true,
           "infullname": false,
           "rank": 0
         },
         {
-          "name": "Building",
+          "name": "Superstructure",
           "enforced": false,
           "infullname": false,
-          "rank": 100
+          "rank": 10
         },
         {
-          "name": "Collection",
+          "name": "Tectonic Domain",
           "enforced": false,
           "infullname": false,
-          "rank": 150
+          "rank": 20
         },
         {
-          "name": "Room",
+          "name": "Tectonic Subdomain",
           "enforced": false,
           "infullname": false,
-          "rank": 200
+          "rank": 30
         },
         {
-          "name": "Aisle",
+          "name": "Tectonic Unit",
           "enforced": false,
-          "infullname": false,
-          "rank": 250
+          "infullname": true,
+          "rank": 40
         },
         {
-          "name": "Cabinet",
+          "name": "Tectonic Subunit",
           "enforced": false,
-          "infullname": false,
-          "rank": 300
-        },
-        {
-          "name": "Shelf",
-          "enforced": false,
-          "infullname": false,
-          "rank": 350
-        },
-        {
-          "name": "Box",
-          "enforced": false,
-          "infullname": false,
-          "rank": 400
-        },
-        {
-          "name": "Rack",
-          "enforced": false,
-          "infullname": false,
-          "rank": 450
-        },
-        {
-          "name": "Vial",
-          "enforced": false,
-          "infullname": false,
-          "rank": 500
+          "infullname": true,
+          "rank": 50
         }
       ]
     },
