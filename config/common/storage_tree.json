@@ -53,7 +53,7 @@
         {
           "name": "Rack",
           "enforced": false,
-          "infullname": "Rack",
+          "infullname": false,
           "rank": 450
         },
         {
