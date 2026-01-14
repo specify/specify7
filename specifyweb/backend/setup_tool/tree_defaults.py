@@ -14,9 +14,9 @@ DEFAULT_TREE_RANKS_FILES = {
     'Geography': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'geography_tree.json',
     # TODO: Defaults for the rest of the trees
     'Taxon': Path(__file__).parent.parent.parent.parent / 'config' / 'mammal' / 'taxon_mammal_tree.json',
-    'Geologictimeperiod': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'storage_tree.json',
-    'Lithostrat': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'storage_tree.json',
-    'Tectonicunit': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'storage_tree.json'
+    'Geologictimeperiod': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'geologictimeperiod_tree.json',
+    'Lithostrat': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'lithostrat_tree.json',
+    'Tectonicunit': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'tectonicunit_tree.json'
 }
 
 def create_default_tree(tree_type: str, kwargs: dict, user_rank_cfg: dict, preload_tree: Optional[str]):
