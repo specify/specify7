@@ -70,6 +70,7 @@ function useFormDefaults(
   const applyFieldDefaults = (field: FieldConfig, parentName?: string) => {
     const fieldName =
       parentName === undefined ? field.name : `${parentName}.${field.name}`;
+    console.log(fieldName);
     if (field.type === 'object' && field.fields !== undefined)
       field.fields.forEach((field) => applyFieldDefaults(field, fieldName));
     if (field.default !== undefined) defaultFormData[fieldName] = field.default;

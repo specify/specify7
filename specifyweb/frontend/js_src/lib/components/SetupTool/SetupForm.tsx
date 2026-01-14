@@ -79,11 +79,12 @@ export function renderFormFieldFactory({
       options,
       fields,
       passwordRepeat,
+      width,
     } = field;
 
     const fieldName = parentName === undefined ? name : `${parentName}.${name}`;
 
-    const colSpan = type === 'object' ? 2 : 1;
+    const colSpan = width ? `col-span-${width}` : (type === 'object' ? 'col-span-4' : 'col-span-2');
 
     const disciplineTypeValue =
       resources[currentStep].resourceName === 'discipline'
@@ -95,7 +96,7 @@ export function renderFormFieldFactory({
       (disciplineTypeValue === undefined || disciplineTypeValue === '');
 
     return (
-      <div className={`mb-2 col-span-${colSpan}`} key={fieldName}>
+      <div className={`mb-2 ${colSpan}`} key={fieldName}>
         {type === 'boolean' ? (
           <div className="flex items-center space-x-2">
             <Label.Inline title={description}>
@@ -204,7 +205,7 @@ export function renderFormFieldFactory({
             <H3 className="text-xl font-semibold" title={description}>
               {label}
             </H3>
-            {fields ? renderFormFields(fields, name) : null}
+            {fields ? renderFormFields(fields, fieldName) : null}
           </div>
         ) : (
           <Label.Block title={description}>
@@ -224,7 +225,7 @@ export function renderFormFieldFactory({
   };
 
   const renderFormFields = (fields: RA<FieldConfig>, parentName?: string) => (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-4 gap-4">
       {fields.map((field) => renderFormField(field, parentName))}
     </div>
   );

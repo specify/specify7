@@ -10,7 +10,6 @@ export const FIELD_MAX_LENGTH = 64;
 export type ResourceConfig = {
   readonly resourceName: string;
   readonly label: LocalizedString;
-  readonly endpoint: string;
   readonly description?: LocalizedString;
   readonly condition?: Record<
     string,
@@ -40,6 +39,7 @@ export type FieldConfig = {
     readonly description: string;
   };
   readonly maxLength?: number;
+  readonly width?: number;
 };
 
 // Discipline list from backend/context/app_resource.py
@@ -72,12 +72,61 @@ const fullNameDirections = [
   { value: -1, label: formsText.reverse() },
 ];
 
+function generateTreeRankFields(
+  rankNames: RA<string>,
+  enabled: RA<string>,
+  enforced: RA<string>,
+  inFullName: RA<string>,
+  separator: string = ', '
+): RA<FieldConfig> {
+  return rankNames.map(
+    (rankName, index) => {
+      return {
+        name: rankName.toLowerCase(),
+        label: rankName,
+        type: 'object',
+        fields: [
+          {
+            name: 'include',
+            label: 'Include',
+            type: 'boolean',
+            default: index === 0 || enabled.includes(rankName),
+            required: index === 0,
+            width: 1
+          },
+          {
+            name: 'isEnforced',
+            label: 'Enforced',
+            type: 'boolean',
+            default: index === 0 || enforced.includes(rankName),
+            required: index === 0,
+            width: 1
+          },
+          {
+            name: 'isInFullName',
+            label: 'In Full Name',
+            type: 'boolean',
+            default: inFullName.includes(rankName),
+            width: 1
+          },
+          {
+            name: 'fullNameSeparator',
+            label: 'Separator',
+            type: 'text',
+            default: separator,
+            width: 1
+          }
+        ]
+      } as FieldConfig
+    }
+  )
+}
+
 export const resources: RA<ResourceConfig> = [
   {
     resourceName: 'institution',
     label: setupToolText.institution(),
     description: setupToolText.institutionDescription(),
-    endpoint: '/setup_tool/institution/create/',
     documentationUrl:
       'https://discourse.specifysoftware.org/t/guided-setup/3234',
     fields: [
@@ -166,7 +215,6 @@ export const resources: RA<ResourceConfig> = [
   {
     resourceName: 'storageTreeDef',
     label: setupToolText.storageTree(),
-    endpoint: '/setup_tool/storagetreedef/create/',
     fields: [
       {
         name: 'ranks',
@@ -174,24 +222,12 @@ export const resources: RA<ResourceConfig> = [
         required: false,
         type: 'object',
         // TODO: Rank fields should be generated from a .json file.
-        fields: [
-          {
-            name: '0',
-            label: 'Site',
-            type: 'boolean',
-            default: true,
-            required: true,
-          },
-          { name: '100', label: 'Building', type: 'boolean', default: true },
-          { name: '150', label: 'Collection', type: 'boolean', default: true },
-          { name: '200', label: 'Room', type: 'boolean', default: true },
-          { name: '250', label: 'Aisle', type: 'boolean', default: true },
-          { name: '300', label: 'Cabinet', type: 'boolean', default: true },
-          { name: '350', label: 'Shelf', type: 'boolean' },
-          { name: '400', label: 'Box', type: 'boolean' },
-          { name: '450', label: 'Rack', type: 'boolean' },
-          { name: '500', label: 'Vial', type: 'boolean' },
-        ],
+        fields: generateTreeRankFields(
+          ['Site', 'Building', 'Collection', 'Room', 'Aisle', 'Cabinet', 'Shelf', 'Box', 'Rack', 'Vial'],
+          ['Site', 'Building', 'Collection', 'Room', 'Aisle', 'Cabinet'],
+          [],
+          []
+        )
       },
       // TODO: This should be name direction. Each rank should have configurable formats, too.,
       {
@@ -207,7 +243,6 @@ export const resources: RA<ResourceConfig> = [
   {
     resourceName: 'division',
     label: setupToolText.division(),
-    endpoint: '/setup_tool/division/create/',
     fields: [
       { name: 'name', label: setupToolText.divisionName(), required: true },
       { name: 'abbrev', label: setupToolText.divisionAbbrev(), required: true },
@@ -216,7 +251,6 @@ export const resources: RA<ResourceConfig> = [
   {
     resourceName: 'discipline',
     label: setupToolText.discipline(),
-    endpoint: '/setup_tool/discipline/create/',
     fields: [
       {
         name: 'type',
@@ -236,26 +270,18 @@ export const resources: RA<ResourceConfig> = [
   {
     resourceName: 'geographyTreeDef',
     label: setupToolText.geographyTree(),
-    endpoint: '/setup_tool/geographytreedef/create/',
     fields: [
       {
         name: 'ranks',
         label: setupToolText.treeRanks(),
         required: false,
         type: 'object',
-        fields: [
-          {
-            name: '0',
-            label: 'Earth',
-            type: 'boolean',
-            default: true,
-            required: true,
-          },
-          { name: '100', label: 'Continent', type: 'boolean', default: true },
-          { name: '200', label: 'Country', type: 'boolean', default: true },
-          { name: '300', label: 'State', type: 'boolean', default: true },
-          { name: '400', label: 'County', type: 'boolean', default: true },
-        ],
+        fields: generateTreeRankFields(
+          ['Earth', 'Continent', 'Country', 'State', 'County'],
+          ['Earth', 'Continent', 'Country', 'State', 'County'],
+          ['Earth', 'Continent', 'Country', 'State', 'County'],
+          []
+        )
       },
       {
         name: 'fullNameDirection',
@@ -277,34 +303,18 @@ export const resources: RA<ResourceConfig> = [
   {
     resourceName: 'taxonTreeDef',
     label: setupToolText.taxonTree(),
-    endpoint: '/setup_tool/taxontreedef/create/',
     fields: [
       {
         name: 'ranks',
         label: setupToolText.treeRanks(),
         required: false,
         type: 'object',
-        fields: [
-          {
-            name: '0',
-            label: 'Life',
-            type: 'boolean',
-            default: true,
-            required: true,
-          },
-          { name: '10', label: 'Kingdom', type: 'boolean', default: true },
-          { name: '30', label: 'Phylum', type: 'boolean', default: true },
-          { name: '40', label: 'Subphylum', type: 'boolean', default: false },
-          { name: '60', label: 'Class', type: 'boolean', default: true },
-          { name: '70', label: 'Subclass', type: 'boolean', default: false },
-          { name: '90', label: 'Superorder', type: 'boolean', default: false },
-          { name: '100', label: 'Order', type: 'boolean', default: true },
-          { name: '140', label: 'Family', type: 'boolean', default: true },
-          { name: '150', label: 'Subfamily', type: 'boolean', default: false },
-          { name: '180', label: 'Genus', type: 'boolean', default: true },
-          { name: '220', label: 'Species', type: 'boolean', default: true },
-          { name: '230', label: 'Subspecies', type: 'boolean', default: false },
-        ],
+        fields: generateTreeRankFields(
+          ['Life', 'Kingdom', 'Phylum', 'Subphylum', 'Class', 'Subclass', 'Superorder', 'Order', 'Family', 'Subfamily', 'Genus', 'Species', 'Subspecies'],
+          ['Life', 'Kingdom', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'],
+          ['Life', 'Kingdom', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'],
+          ['Genus', 'Species', 'Subspecies']
+        )
       },
       {
         name: 'fullNameDirection',
@@ -327,7 +337,6 @@ export const resources: RA<ResourceConfig> = [
   {
     resourceName: 'collection',
     label: setupToolText.collection(),
-    endpoint: '/setup_tool/collection/create/',
     fields: [
       {
         name: 'collectionName',
@@ -354,7 +363,6 @@ export const resources: RA<ResourceConfig> = [
   {
     resourceName: 'specifyUser',
     label: setupToolText.specifyUser(),
-    endpoint: '/setup_tool/specifyuser/create/',
     fields: [
       {
         name: 'firstname',

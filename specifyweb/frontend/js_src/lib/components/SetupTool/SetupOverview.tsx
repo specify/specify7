@@ -46,7 +46,7 @@ export function SetupOverview({
                 if (field.type === 'object') {
                   // Construct a sub list of properties
                   field.fields?.map((child_field) =>
-                    fieldDisplay(child_field, field.name)
+                    fieldDisplay(child_field, fieldName)
                   );
                   return (
                     <React.Fragment
@@ -59,7 +59,7 @@ export function SetupOverview({
                       </tr>
                       {field.fields?.map((child) => (
                         <React.Fragment
-                          key={`${resource.resourceName}-${field.name}-${child.name}`}
+                          key={`${resource.resourceName}-${fieldName}-${child.name}`}
                         >
                           {fieldDisplay(
                             child,
