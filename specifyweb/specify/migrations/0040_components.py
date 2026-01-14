@@ -32,7 +32,7 @@ def remove_0029_schema_config_fields(apps, schema_editor):
         items.delete()
 
 def create_table_schema_config_with_defaults(apps, schema_editor):
-    Discipline = specify_apps.get_model('specify', 'Discipline')
+    Discipline = apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
         for table, desc in SCHEMA_CONFIG_TABLES:
             update_table_schema_config_with_defaults(table, discipline.id, desc, apps)
