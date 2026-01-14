@@ -95,10 +95,7 @@ def setup_database_task(self, data: dict):
             discipline_type = data['discipline'].get('type', '')
             is_paleo_geo = discipline_type in PALEO_DISCIPLINES or discipline_type in GEOLOGY_DISCIPLINES
             default_tree = {
-                'fullnamedirection': 1,
-                'ranks': {
-                    '0': True
-                }
+                'ranks': {}
             }
 
             # if is_paleo_geo:

@@ -1,43 +1,78 @@
 from django.db import transaction
 from django.db.models import Model as DjangoModel
-from typing import Type, Optional
+from typing import Type, Optional, List
+from pathlib import Path
 
-from ..trees.utils import get_models
+from .utils import load_json_from_file
+from specifyweb.backend.trees.utils import initialize_default_tree
 
 import logging
 logger = logging.getLogger(__name__)
 
-def create_default_tree(name: str, kwargs: dict, ranks: dict, preload_tree: Optional[str]):
+DEFAULT_TREE_RANKS_FILES = {
+    'Storage': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'storage_tree.json',
+    'Geography': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'geography_tree.json',
+    # TODO: Defaults for the rest of the trees
+    'Taxon': Path(__file__).parent.parent.parent.parent / 'config' / 'mammal' / 'taxon_mammal_tree.json',
+    'Geologictimeperiod': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'storage_tree.json',
+    'Lithostrat': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'storage_tree.json',
+    'Tectonicunit': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'storage_tree.json'
+}
+
+def create_default_tree(tree_type: str, kwargs: dict, user_rank_cfg: dict, preload_tree: Optional[str]):
     """Creates an initial empty tree. This should not be used outside of the initial database setup."""
-    with transaction.atomic():
-        tree_def_model, tree_rank_model, tree_node_model = get_models(name)
+    # Load all default ranks for this type of tree
+    rank_data = load_json_from_file(DEFAULT_TREE_RANKS_FILES.get(tree_type))
+    if rank_data is None:
+        raise Exception(f'Could not load default rank JSON file for tree type {tree_type}.')
 
-        if tree_def_model.objects.count() > 0:
-            raise RuntimeError(f'Tree {name} already exists, cannot create default.')
+    # list[RankConfiguration]
+    default_rank_cfg = rank_data.get('tree',{}).get('treedef',{}).get('levels')
+    if default_rank_cfg is None:
+        logger.debug(rank_data)
+        raise Exception(f'No default ranks found in the {tree_type} rank JSON file.')
 
-        # Create tree definition
-        treedef = tree_def_model.objects.create(
-            name=name,
-            **kwargs,
-        )
+    # Override default configuration with user's configuration
+    configurable_fields = {'title', 'enforced', 'infullname', 'fullnameseparator'}
 
-        # Create tree ranks
-        previous_tree_def_item = None
-        rank_list = list(int(rank_id) for rank_id, enabled in ranks.items() if enabled)
-        rank_list.sort()
-        for rank_id in rank_list:
-            previous_tree_def_item = tree_rank_model.objects.create(
-                treedef=treedef,
-                name=str(rank_id), # TODO: allow rank name configuration
-                rankid=rank_id,
-                parent=previous_tree_def_item,
-            )
+    rank_cfg = []
+    for rank in default_rank_cfg:
+        name = rank.get('name', '').lower()
+        user_rank = user_rank_cfg.get(name)
+
+        # Initially assume all ranks should be included, except those explicitly set to False
+        rank_included = not (user_rank == False)
         
-        # TODO: Preload tree
-        if preload_tree is not None:
-            pass
+        if isinstance(user_rank, dict):
+            # The user configured this rank's properties
+            rank_included = user_rank.get('include', True)
 
-        return treedef
+            for field in configurable_fields:
+                rank[field] = user_rank.get(field, rank[field])
+        
+        if not rank_included:
+            # The user disabled this rank.
+            continue
+        # Add this rank to the final rank configuration
+        rank_cfg.append(rank)    
+
+    if tree_type == 'Storage':
+        discipline_or_institution = kwargs['institution']
+    else:
+        discipline_or_institution = kwargs['discipline']
+
+    tree_def = initialize_default_tree(tree_type.lower(), discipline_or_institution, tree_type.title(), rank_cfg, kwargs['fullnamedirection'])
+
+    # TODO: Preload tree
+    # if preload_tree is not None:
+    #     task_id = str(uuid4())
+    #     create_default_tree_task.apply_async(
+    #         args=[url, discipline.id, tree_discipline_name, request.specify_collection.id, request.specify_user.id, tree_cfg, row_count, tree_name],
+    #         task_id=f"create_default_tree_{tree_discipline_name}_{task_id}",
+    #         taskid=task_id
+    #     )
+
+    return tree_def
     
 def update_tree_scoping(treedef: Type[DjangoModel], discipline_id: int):
     """Trees may be created before a discipline is created. This will update their discipline."""
