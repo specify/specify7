@@ -95,7 +95,7 @@ function generateTreeRankFields(
             width: 1
           },
           {
-            name: 'isEnforced',
+            name: 'enforced',
             label: 'Enforced',
             type: 'boolean',
             default: index === 0 || enforced.includes(rankName),
@@ -103,14 +103,14 @@ function generateTreeRankFields(
             width: 1
           },
           {
-            name: 'isInFullName',
+            name: 'infullname',
             label: 'In Full Name',
             type: 'boolean',
             default: inFullName.includes(rankName),
             width: 1
           },
           {
-            name: 'fullNameSeparator',
+            name: 'fullnameseparator',
             label: 'Separator',
             type: 'text',
             default: separator,
