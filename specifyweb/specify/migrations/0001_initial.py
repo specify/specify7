@@ -1834,11 +1834,23 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('discipline', models.ForeignKey(db_column='DisciplineID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='spexportschemas', to='specify.discipline')),
+                ('mappings', models.ManyToManyField(related_name='spexportschemas', through='specify.Spexportschema_exportmapping', to='specify.spexportschemamapping')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
             ],
             options={
                 'db_table': 'spexportschema',
                 'ordering': (),
+            },
+        ),
+        migrations.CreateModel(
+            name='Spexportschema_exportmapping',
+            fields=[
+                ('id', models.AutoField(db_column='SpExportSchemaExportMappingID', primary_key=True, serialize=False)),
+                ('spexportschema', models.ForeignKey(db_column='SpExportSchemaID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.spexportschema')),
+                ('spexportschemamapping', models.ForeignKey(db_column='SpExportSchemaMappingID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.spexportschemamapping')),
+            ],
+            options={
+                'db_table': 'sp_schema_mapping',
             },
         ),
         migrations.CreateModel(
@@ -7072,5 +7084,9 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name='project_colobj',
             constraint=models.UniqueConstraint(fields=('project', 'collectionobject'), name='project_collectionobject'),
+        ),
+        migrations.AddConstraint(
+            model_name='spexportschema_exportmapping',
+            constraint=models.UniqueConstraint(fields=('spexportschema', 'spexportschemamapping'), name='exportschema_exportmapping'),
         ),
     ]

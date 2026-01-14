@@ -6070,6 +6070,14 @@ class Spexportschema(models.Model):
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='spexportschemas', null=False, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
+    # Relationships: Many-to-Many
+    mappings = models.ManyToManyField(
+        "Spexportschemamapping",
+        through="Spexportschema_exportmapping",
+        through_fields=("spexportschema", "spexportschemamapping"),
+        related_name="spexportschemas"
+    )
+
     class Meta:
         db_table = 'spexportschema'
         ordering = ()
@@ -8110,4 +8118,16 @@ class Project_colobj(models.Model):
         db_table = 'project_colobj'
         constraints = [
             models.UniqueConstraint(fields=["project", "collectionobject"], name="project_collectionobject")
+        ]
+
+class Spexportschema_exportmapping(models.Model):
+    id = models.AutoField(primary_key=True, db_column='SpExportSchemaExportMappingID')
+
+    spexportschema = models.ForeignKey('Spexportschema', db_column='SpExportSchemaID', related_name="+", on_delete=protect_with_blockers)
+    spexportschemamapping = models.ForeignKey('Spexportschemamapping',db_column='SpExportSchemaMappingID', related_name="+", on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'sp_schema_mapping'
+        constraints = [
+            models.UniqueConstraint(fields=["spexportschema", "spexportschemamapping"], name="exportschema_exportmapping")
         ]
