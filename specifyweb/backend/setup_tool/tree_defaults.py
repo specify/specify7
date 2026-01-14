@@ -44,16 +44,16 @@ def create_default_tree(tree_type: str, kwargs: dict, user_rank_cfg: dict, prelo
         
         if isinstance(user_rank, dict):
             # The user configured this rank's properties
-            rank_included = user_rank.get('include', True)
+            rank_included = user_rank.get('include', False)
 
             for field in configurable_fields:
-                rank[field] = user_rank.get(field, rank[field])
+                rank[field] = user_rank.get(field, rank.get(field))
         
         if not rank_included:
             # The user disabled this rank.
             continue
         # Add this rank to the final rank configuration
-        rank_cfg.append(rank)    
+        rank_cfg.append(rank)
 
     if tree_type == 'Storage':
         discipline_or_institution = kwargs.get('institution')
