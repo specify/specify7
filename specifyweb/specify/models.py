@@ -7991,8 +7991,8 @@ class Tectonicunit(model_extras.Tectonicunit):
     save = partialmethod(custom_save)
 
 class AutonumSchColl(models.Model):
-    collection = models.ForeignKey("Collection", db_column="CollectionID", on_delete=models.DO_NOTHING)
-    autonumberingscheme = models.ForeignKey("AutoNumberingScheme", db_column="AutoNumberingSchemeID", on_delete=models.DO_NOTHING)
+    collection = models.ForeignKey("Collection", db_column="CollectionID", on_delete=models.CASCADE)
+    autonumberingscheme = models.ForeignKey("AutoNumberingScheme", db_column="AutoNumberingSchemeID", on_delete=models.CASCADE)
 
     class Meta:
         db_table = "autonumsch_coll"
@@ -8003,8 +8003,8 @@ class AutonumSchColl(models.Model):
         ]
 
 class AutonumSchDiv(models.Model):
-    division = models.ForeignKey("Division", db_column="DivisionID", on_delete=models.DO_NOTHING)
-    autonumberingscheme = models.ForeignKey("AutoNumberingScheme", db_column="AutoNumberingSchemeID", on_delete=models.DO_NOTHING)
+    division = models.ForeignKey("Division", db_column="DivisionID", on_delete=models.CASCADE)
+    autonumberingscheme = models.ForeignKey("AutoNumberingScheme", db_column="AutoNumberingSchemeID", on_delete=models.CASCADE)
 
     class Meta:
         db_table = "autonumsch_div"
@@ -8015,8 +8015,8 @@ class AutonumSchDiv(models.Model):
         ]
 
 class AutonumSchDsp(models.Model):
-    discipline = models.ForeignKey("Discipline", db_column="DisciplineID", on_delete=models.DO_NOTHING)
-    autonumberingscheme = models.ForeignKey("AutoNumberingScheme", db_column="AutoNumberingSchemeID", on_delete=models.DO_NOTHING)
+    discipline = models.ForeignKey("Discipline", db_column="DisciplineID", on_delete=models.CASCADE)
+    autonumberingscheme = models.ForeignKey("AutoNumberingScheme", db_column="AutoNumberingSchemeID", on_delete=models.CASCADE)
 
     class Meta:
         db_table = "autonumsch_dsp"
@@ -8032,7 +8032,6 @@ class SpecifyuserSpprincipal(models.Model):
 
     class Meta:
         db_table = 'specifyuser_spprincipal'
-        managed = False
         ordering = ()
         unique_together = (('specifyuser', 'spprincipal'),)
         indexes = [
