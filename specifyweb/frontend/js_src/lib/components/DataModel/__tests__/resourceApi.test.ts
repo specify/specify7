@@ -13,6 +13,7 @@ import { tables } from '../tables';
 import type {
   CollectionObject,
   CollectionObjectAttribute,
+  CollectionObjectType,
   Determination,
 } from '../types';
 
@@ -42,8 +43,24 @@ const determinationsResponse: RA<Partial<SerializedRecord<Determination>>> = [
     resource_uri: determinationUrl,
     id: 123,
     number1: null,
+    iscurrent: true,
   },
 ];
+
+const collectionObjectTypeResponse: Partial<
+  SerializedRecord<CollectionObjectType>
+> = {
+  id: 1,
+  name: 'TestType',
+  taxontreedef: getResourceApiUrl('TaxonTreeDef', 1),
+  collection: getResourceApiUrl('Collection', 4),
+  resource_uri: getResourceApiUrl('CollectionObjectType', 1),
+};
+
+overrideAjax(
+  getResourceApiUrl('CollectionObjectType', 1),
+  collectionObjectTypeResponse
+);
 
 const collectionObjectResponse = {
   id: collectionObjectId,
@@ -56,8 +73,6 @@ const collectionObjectResponse = {
   determinations: determinationsResponse,
 };
 
-overrideAjax(getResourceApiUrl('CollectionObjectType', 1), {});
-
 overrideAjax(collectionObjectUrl, collectionObjectResponse);
 overrideAjax(
   '/api/specify/collectionobject/?domainfilter=false&catalognumber=000029432&collection=4&offset=0',
@@ -69,6 +84,30 @@ overrideAjax(
       total_count: 1,
     },
   }
+);
+
+const emptyCollection = {
+  objects: [],
+  meta: {
+    limit: 20,
+    offset: 0,
+    total_count: 0,
+  },
+};
+
+overrideAjax(
+  '/api/specify/component/?catalognumber=000029432&domainfilter=true',
+  emptyCollection
+);
+
+overrideAjax(
+  '/api/specify/component/?catalognumber=000000001&domainfilter=true',
+  emptyCollection
+);
+
+overrideAjax(
+  '/api/specify/component/?catalognumber=%23%23%23%23%23%23%23%23%23&domainfilter=true',
+  emptyCollection
 );
 
 const firstCollectionObjectUrl = getResourceApiUrl('CollectionObject', 1);
@@ -256,6 +295,11 @@ describe('rgetCollection', () => {
 });
 
 describe('eventHandlerForToMany', () => {
+  overrideAjax(getResourceApiUrl('Taxon', 1), {
+    id: 1,
+    resource_uri: getResourceApiUrl('Taxon', 1),
+  });
+
   test('saverequired', () => {
     const resource = new tables.CollectionObject.Resource(
       addMissingFields('CollectionObject', {
@@ -423,6 +467,22 @@ test('save', async () => {
   const newDetermination =
     resource.getDependentResource('determinations')!.models[0];
   expect(newDetermination.get('number1')).toBe(2);
+});
+
+describe('resource initialization', () => {
+  test('Initialization with dependent resources does not trigger saveRequired', () => {
+    const resource = new tables.CollectionObject.Resource({
+      determinations: [
+        {
+          id: 1,
+        },
+        {
+          id: 2,
+        },
+      ],
+    });
+    expect(resource.needsSaved).toBe(false);
+  });
 });
 
 describe('set', () => {

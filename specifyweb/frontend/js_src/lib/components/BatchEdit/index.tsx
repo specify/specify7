@@ -48,11 +48,13 @@ export function BatchEditFromQuery({
   query,
   fields,
   baseTableName,
+  saveRequired,
   recordSetId,
 }: {
   readonly query: SpecifyResource<SpQuery>;
   readonly fields: RA<QueryField>;
   readonly baseTableName: keyof Tables;
+  readonly saveRequired: boolean;
   readonly recordSetId?: number;
 }) {
   const hasRelationships = userPreferences.get(
@@ -88,7 +90,7 @@ export function BatchEditFromQuery({
   const [treeDefsFilter, setTreeDefsFilter] = React.useState<TreeDefsFilter>(
     {}
   );
-  const [hasUnsavedQuery, openWarningDialog, closeWarningDialog] =
+  const [showWarningDialog, openWarningDialog, closeWarningDialog] =
     useBooleanState();
   const loading = React.useContext(LoadingContext);
 
@@ -180,7 +182,7 @@ export function BatchEditFromQuery({
         disabled={isDisabled}
         title={isDisabled ? batchEditText.batchEditDisabled() : undefined}
         onClick={() => {
-          if (query.needsSaved) openWarningDialog();
+          if (saveRequired || query.needsSaved) openWarningDialog();
           else handleClickBatchEdit();
         }}
       >
@@ -197,7 +199,7 @@ export function BatchEditFromQuery({
           onSelectTreeDef={handleCheckboxChange}
         />
       ) : undefined}
-      {hasUnsavedQuery && (
+      {showWarningDialog && (
         <Dialog
           buttons={
             <Button.Danger onClick={closeWarningDialog}>
@@ -230,8 +232,20 @@ function containsFaultyNestedToMany(queryFieldSpec: QueryFieldSpec): boolean {
   return nestedToManyCount.length > allowedToMany;
 }
 
-const containsSystemTables = (queryFieldSpec: QueryFieldSpec) =>
-  queryFieldSpec.joinPath.some((field) => field.table.isSystem);
+const containsSystemTables = (queryFieldSpec: QueryFieldSpec) => {
+  const baseIsBlocked =
+    queryFieldSpec.baseTable?.isSystem &&
+    !queryFieldSpec.baseTable?.name?.toLowerCase?.().includes('attachment');
+
+  const pathHasBlockedSystem = queryFieldSpec.joinPath?.some((field: any) => {
+    const isAttachment =
+      field?.relatedTable?.name?.toLowerCase?.().includes('attachment') ||
+      field?.table?.name?.toLowerCase?.().includes('attachment');
+    return field?.table?.isSystem && !isAttachment;
+  });
+
+  return Boolean(baseIsBlocked || pathHasBlockedSystem);
+};
 
 const hasHierarchyBaseTable = (queryFieldSpec: QueryFieldSpec) =>
   Object.keys(schema.domainLevelIds).includes(
@@ -247,4 +261,7 @@ const containsDisallowedTables = (query: SpecifyResource<SpQuery>) =>
   );
 
 // Error filters
-const filters = [containsFaultyNestedToMany, containsSystemTables];
+const filters: RA<(queryFieldSpec: QueryFieldSpec) => boolean> = [
+  containsFaultyNestedToMany,
+  containsSystemTables,
+];

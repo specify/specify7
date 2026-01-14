@@ -27,7 +27,6 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables, getTable } from '../DataModel/tables';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useMenuItem } from '../Header/MenuContext';
-import { getPref } from '../InitialContext/remotePrefs';
 import type { TreeInformation } from '../InitialContext/treeRanks';
 import {
   getTreeDefinitions,
@@ -38,6 +37,7 @@ import { useTitle } from '../Molecules/AppTitle';
 import { ResourceEdit } from '../Molecules/ResourceLink';
 import { TableIcon } from '../Molecules/TableIcon';
 import { ProtectedTree } from '../Permissions/PermissionDenied';
+import { userPreferences } from '../Preferences/userPreferences';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
 import { TreeViewActions } from './Actions';
@@ -155,22 +155,43 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
   useTitle(treeText.treeViewTitle({ treeName: table.label }));
 
   // Node sort order
-  const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`);
+  /**
+   * A new feature was implemented in PR https://github.com/specify/specify7/pull/6046 to
+   * allow defining the “sort by” field in user preferences. However, this new preference
+   * was not used when fetching rows (see formatUrl(\${baseUrl}/${parentId}/name/`
+   * below).
+   * Instead, the stale remote preference from the old XML configuration was still being
+   * used. As a result,name`—which was the default—was always applied.
+   *
+   */
+  /*
+   * For now, name is being hard-coded to preserve the behavior described in issue-6043.
+   * const sortField = userPreferences.get(
+   *   'treeEditor',
+   *   'behavior',
+   *   'orderByField'
+   * );
+   */
 
-  const includeAuthor = getPref(`TaxonTreeEditor.DisplayAuthor`);
+  const includeAuthor = userPreferences.get(
+    'treeEditor',
+    'taxon',
+    'displayAuthor'
+  );
 
-  const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
+  const baseUrl = `/trees/specify_tree/${tableName.toLowerCase()}/${
     treeDefinition.id
   }`;
 
   const getRows = React.useCallback(
     async (parentId: number | 'null') =>
       fetchRows(
-        formatUrl(`${baseUrl}/${parentId}/${sortField}/`, {
+        // See above comment for sortField being hard coded as name here
+        formatUrl(`${baseUrl}/${parentId}/name/`, {
           includeAuthor: includeAuthor.toString(),
         })
       ),
-    [baseUrl, sortField]
+    [baseUrl]
   );
 
   const [rows, setRows] = useAsyncState<RA<Row>>(

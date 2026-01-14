@@ -50,6 +50,7 @@ import {
   defaultFont,
   FontFamilyPreferenceItem,
   HeaderItemsPreferenceItem,
+  ThresholdRank,
   WelcomePageModePreferenceItem,
 } from './Renderers';
 import type { GenericPreferences, PreferencesVisibilityContext } from './types';
@@ -539,7 +540,7 @@ export const userPreferenceDefinitions = {
           mode: definePref<WelcomePageMode>({
             title: preferencesText.content(),
             description: (
-              <Link.NewTab href="https://github.com/specify/specify7/wiki/Customizing-the-splash-screen">
+              <Link.NewTab href="https://discourse.specifysoftware.org/t/customizing-the-splash-screen/2604">
                 {headerText.documentation()}
               </Link.NewTab>
             ),
@@ -620,7 +621,7 @@ export const userPreferenceDefinitions = {
             title: localized('_shownTables'),
             requiresReload: false,
             visible: false,
-            defaultValue: 'legacy',
+            defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
             container: 'div',
           }),
@@ -714,7 +715,7 @@ export const userPreferenceDefinitions = {
             title: localized('_shownTables'),
             requiresReload: false,
             visible: false,
-            defaultValue: 'legacy',
+            defaultValue: [],
             renderer: f.never,
             container: 'div',
           }),
@@ -856,6 +857,13 @@ export const userPreferenceDefinitions = {
               min: 100,
               max: 10_000,
             },
+          }),
+          showSubviewBorders: definePref<boolean>({
+            title: preferencesText.showSubviewBorders(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
           }),
           limitMaxFieldWidth: definePref<boolean>({
             title: preferencesText.limitMaxFieldWidth(),
@@ -1201,6 +1209,22 @@ export const userPreferenceDefinitions = {
             renderer: f.never,
             container: 'div',
           }),
+          enableBulkCarryForwardRange: definePref<RA<keyof Tables>>({
+            title: localized('_enableBulkCarryForwardRange'),
+            requiresReload: false,
+            visible: false,
+            defaultValue: [],
+            renderer: f.never,
+            container: 'div',
+          }),
+          createRecordSetOnBulkCarryForward: definePref<RA<keyof Tables>>({
+            title: localized('_createRecordSetOnBulkCarryForward'),
+            requiresReload: false,
+            visible: false,
+            defaultValue: [],
+            renderer: f.never,
+            container: 'div',
+          }),
           /*
            * Can temporary disable clone for a given table
            * Since most tables are likely to have carry enabled, this pref is
@@ -1326,6 +1350,22 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
+          showControls: definePref<boolean>({
+            title: attachmentsText.showControls(),
+            description: attachmentsText.showControlsDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          collapseFormByDefault: definePref<boolean>({
+            title: attachmentsText.collapseFormByDefault(),
+            description: attachmentsText.collapseFormByDefaultDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
     },
@@ -1435,6 +1475,17 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="Geography" />
+            ),
+            container: 'label',
+          }),
         },
       },
       taxon: {
@@ -1454,6 +1505,22 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          displayAuthor: definePref<boolean>({
+            title: preferencesText.displayAuthor(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => <ThresholdRank {...props} tableName="Taxon" />,
             container: 'label',
           }),
         },
@@ -1477,6 +1544,17 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="Storage" />
+            ),
+            container: 'label',
+          }),
         },
       },
       geologicTimePeriod: {
@@ -1496,6 +1574,17 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="GeologicTimePeriod" />
+            ),
             container: 'label',
           }),
         },
@@ -1519,6 +1608,17 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="LithoStrat" />
+            ),
+            container: 'label',
+          }),
         },
       },
       tectonicUnit: {
@@ -1538,6 +1638,17 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="TectonicUnit" />
+            ),
             container: 'label',
           }),
         },
@@ -1681,7 +1792,7 @@ export const userPreferenceDefinitions = {
             description: preferencesText.autoPopulateDescription(),
             requiresReload: false,
             visible: 'protected',
-            defaultValue: false,
+            defaultValue: true,
             type: 'java.lang.Boolean',
           }),
         },

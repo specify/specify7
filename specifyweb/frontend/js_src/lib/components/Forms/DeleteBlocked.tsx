@@ -13,7 +13,7 @@ import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import { TableIcon } from '../Molecules/TableIcon';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { queryFieldFilterSpecs } from '../QueryBuilder/FieldFilterSpec';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { DateRange } from './DateRange';
 
@@ -57,7 +57,7 @@ export function DeleteBlockers({
                 ...blockers[blockerIndex],
                 blockers: replaceItem(
                   blockers[blockerIndex].blockers,
-                  blockerIndex,
+                  relationshipIndex,
                   {
                     ...blockers[blockerIndex].blockers[relationshipIndex],
                     ids: removeItem(
@@ -82,10 +82,7 @@ function TableBlockersPreview({
 }: {
   readonly blocker: DeleteBlocker;
   readonly parentResource: SpecifyResource<AnySchema>;
-  readonly onDeleted: (
-    relationshipIndex: number,
-    resourceIndex: number
-  ) => void;
+  readonly onDeleted: (blockerIndex: number, resourceIndex: number) => void;
 }): JSX.Element {
   const label = (
     <>
@@ -122,7 +119,7 @@ function TableBlockersPreview({
                 nested
                 parentResource={parentResource}
                 onDeleted={(resourceIndex): void =>
-                  handleDeleted(0, resourceIndex)
+                  handleDeleted(blockerIndex, resourceIndex)
                 }
               />
             ))}
@@ -178,13 +175,13 @@ function BlockerPreview({
       rawQueryField
         ?.toSpQueryField()
         .set('isDisplay', false)
-        .set('operStart', queryFieldFilters.equal.id)
+        .set('operStart', queryFieldFilterSpecs.equal.id)
         .set('startValue', parentResource.id.toString()) ??
       QueryFieldSpec.fromPath(table.name, ['id'])
         .toSpQueryField()
         .set('isDisplay', false)
         .set('startValue', resolvedIds.join(','))
-        .set('operStart', queryFieldFilters.in.id)
+        .set('operStart', queryFieldFilterSpecs.in.id)
     );
   }, [resolvedIds]);
   return (

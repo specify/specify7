@@ -28,6 +28,7 @@ import { attachmentView } from '../FormParse/webOnlyViews';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubViewContext } from '../Forms/SubView';
 import { propsToFormMode, useViewDefinition } from '../Forms/useViewDefinition';
+import { shouldBeToOne } from '../FormSliders/helpers';
 import { getCollectionPref } from '../InitialContext/remotePrefs';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
@@ -157,8 +158,8 @@ export function FormTable<SCHEMA extends AnySchema>({
     lastRow?.focus();
   }, [resources]);
 
-  const isToOne = !relationshipIsToMany(relationship);
-
+  const isToOne =
+    !relationshipIsToMany(relationship) || shouldBeToOne(relationship);
   const disableAdding = isToOne && resources.length > 0;
 
   const header = commonText.countLine({
@@ -203,10 +204,17 @@ export function FormTable<SCHEMA extends AnySchema>({
         resource.cid,
         Boolean(
           resource.specifyTable.name === 'Preparation' &&
-            collectionPreparationPref
+            collectionPreparationPref &&
+            resource.isNew()
         ),
       ])
     )
+  );
+
+  const [showSubviewBorders] = userPreferences.use(
+    'form',
+    'ui',
+    'showSubviewBorders'
   );
 
   const [flexibleColumnWidth] = userPreferences.use(
@@ -271,7 +279,9 @@ export function FormTable<SCHEMA extends AnySchema>({
         className={
           isCollapsed
             ? 'hidden'
-            : 'overflow-x-auto border border-gray-500 border-t-0 rounded-b pl-1 pr-1 pb-1'
+            : showSubviewBorders
+              ? 'overflow-x-auto border border-gray-500 border-t-0 rounded-b pl-1 pr-1 pb-1'
+              : 'overflow-x-auto pl-1 pr-1 pb-1'
         }
         onScroll={handleScroll}
       >

@@ -1,11 +1,13 @@
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { requireContext } from '../../../tests/helpers';
-import { formatterToParser } from '../../../utils/parser/definitions';
+import { fieldFormatterToParser } from '../../../utils/parser/definitions';
 import type { IR, RA } from '../../../utils/types';
 import { localized } from '../../../utils/types';
 import { tables } from '../../DataModel/tables';
 import {
   CatalogNumberNumeric,
-  formatterTypeMapper,
+  fieldFormatterTypeMapper,
   UiFormatter,
 } from '../../FieldFormatters';
 import { syncFieldFormat } from '../../Formatters/fieldFormat';
@@ -49,14 +51,15 @@ const fileNameTestSpec: TestDefinition = {
       false,
       localized('testNumeric'),
       [
-        new formatterTypeMapper.numeric({
+        new fieldFormatterTypeMapper.numeric({
           size: 3,
           autoIncrement: true,
           byYear: false,
         }),
       ],
       tables.CollectionObject,
-      tables.CollectionObject?.getLiteralField('catalogNumber')
+      tables.CollectionObject?.getLiteralField('catalogNumber'),
+      'testNumeric'
     ),
     testCases: [
       ['000.jpg', '000'],
@@ -73,15 +76,16 @@ const fileNameTestSpec: TestDefinition = {
       false,
       localized('testRegex'),
       [
-        new formatterTypeMapper.regex({
+        new fieldFormatterTypeMapper.regex({
           size: 3,
           autoIncrement: true,
-          value: localized('^\\d{1,6}(?:[a-zA-Z]{1,2})?$'),
+          placeholder: localized('^\\d{1,6}(?:[a-zA-Z]{1,2})?$'),
           byYear: false,
         }),
       ],
       tables.CollectionObject,
-      tables.CollectionObject?.getLiteralField('catalogNumber')
+      tables.CollectionObject?.getLiteralField('catalogNumber'),
+      'testRegex'
     ),
     testCases: [
       ['45265.jpg', '45265'],
@@ -101,13 +105,14 @@ describe('file names resolution test', () => {
         jest.spyOn(console, 'error').mockImplementation();
         const field = tables.CollectionObject.getLiteralField('text1')!;
         const getResultFormatter =
-          (formatter: UiFormatter) => (value: number | string | undefined) =>
+          (formatter: UiFormatter) =>
+          (value: number | string | undefined): LocalizedString | undefined =>
             value === undefined || value === null
               ? undefined
               : syncFieldFormat(
                   field,
                   value.toString(),
-                  formatterToParser(field, formatter),
+                  fieldFormatterToParser(field, formatter),
                   undefined,
                   true
                 );

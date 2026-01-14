@@ -43,7 +43,7 @@ export const userText = createDictionary({
     'fr-fr': "Vous n'avez pas accès à cette collection",
     'uk-ua': 'У вас немає доступу до цієї колекції',
     'de-ch': 'Sie haben keinen Zugang zu dieser Sammlung',
-    'pt-br': 'Você não tem acesso a esta coleção',
+    'pt-br': 'Você não tem acesso a esta coleção.',
   },
   collectionAccessDeniedDescription: {
     'en-us':
@@ -108,21 +108,21 @@ export const userText = createDictionary({
   },
   setUserAgents: {
     'en-us': 'Set User Agents',
-    'ru-ru': 'Установить пользовательских агентов',
+    'ru-ru': 'Установить пользовательские агенты',
     'es-es': 'Establecer agentes usuarios',
     'fr-fr': 'Définir les agents utilisateurs',
     'uk-ua': 'Налаштування агентів користувачів',
     'de-ch': 'Benutzeragenten festlegen',
-    'pt-br': 'Definir agentes de usuário',
+    'pt-br': 'Configurar agentes de usuário',
   },
   noAgent: {
     'en-us': 'Current user does not have an agent assigned',
-    'ru-ru': 'Текущий пользователь не имеет назначенного агента',
+    'ru-ru': 'Текущий пользователь не имеет назначенного агента.',
     'es-es': 'El usuario actual no tiene un agente asignado',
-    'fr-fr': "L'utilisateur actuel n'a pas d'agent attribué",
+    'fr-fr': "L'utilisateur actuel n'a pas d'agent attribué.",
     'uk-ua': 'Поточному користувачеві не призначено агента',
-    'de-ch': 'Dem aktuellen Benutzer ist kein Agent zugewiesen',
-    'pt-br': 'O usuário atual não tem um agente atribuído',
+    'de-ch': 'Dem aktuellen Benutzer ist kein Agent zugewiesen.',
+    'pt-br': 'O usuário atual não possui um agente atribuído.',
   },
   noAgentDescription: {
     'en-us': 'Please log in as admin and assign an agent to this user',
@@ -131,13 +131,13 @@ export const userText = createDictionary({
     'es-es':
       'Iniciar sesión como administrador y asignar un agente a este usuario',
     'fr-fr':
-      "Veuillez vous connecter en tant qu'administrateur et attribuer un agent à cet utilisateur",
+      "Veuillez vous connecter en tant qu'administrateur et attribuer un agent à cet utilisateur.",
     'uk-ua':
       'Будь ласка, увійдіть як адміністратор і призначте агента цьому користувачеві',
     'de-ch':
-      'Bitte melden Sie sich als Administrator an und weisen Sie diesem Benutzer einen Agenten zu',
+      'Bitte melden Sie sich als Administrator an und weisen Sie diesem Benutzer einen Agenten zu.',
     'pt-br':
-      'Por favor, faça login como administrador e atribua um agente a este usuário',
+      'Faça login como administrador e atribua um agente a este usuário.',
   },
   helloMessage: {
     'en-us': 'Hello, {userName:string}!',
@@ -152,7 +152,7 @@ export const userText = createDictionary({
     'en-us':
       "You've been invited to associate an external login to your Specify user account. This will enable you to log in to Specify with your chosen provider going forward.",
     'ru-ru':
-      'Вас пригласили связать внешний вход с вашей учетной записью пользователя Specify. Это позволит вам в дальнейшем входить в Specify с выбранным вами провайдером.',
+      'Вам предложено связать внешний логин с вашей учётной записью Specify. Это позволит вам в дальнейшем входить в Specify через выбранного вами провайдера.',
     'es-es':
       'Se le ha invitado a asociar un inicio de sesión externo a su cuenta de usuario de Specify. Esto le permitirá en el futuro iniciar sesión en Specify con el proveedor elegido.',
     'fr-fr':
@@ -160,34 +160,34 @@ export const userText = createDictionary({
     'uk-ua':
       'Вам запропоновано пов’язати зовнішній логін із вашим обліковим записом користувача Specify. Це дозволить вам надалі входити в Specify за допомогою обраного вами постачальника.',
     'de-ch':
-      'Sie wurden aufgefordert, Ihrem Specify-Benutzerkonto einen externen Login zuzuordnen. Dadurch können Sie sich künftig mit Ihrem gewählten Anbieter bei Specify anmelden.',
+      'Sie wurden eingeladen, ein externes Login mit Ihrem Specify-Benutzerkonto zu verknüpfen. Dadurch können Sie sich zukünftig mit Ihrem gewählten Anbieter bei Specify anmelden.',
     'pt-br':
-      'Você foi convidado a associar um login externo à sua conta de usuário do Specify. Isso permitirá que você faça login no Specify com o provedor escolhido a partir de agora.',
+      'Você foi convidado a associar um login externo à sua conta de usuário do Specify. Isso permitirá que você faça login no Specify com o provedor escolhido daqui para frente.',
   },
   legacyLogin: {
     'en-us': 'Sign in with Specify Account',
-    'ru-ru': 'Войти с помощью Указать учетную запись',
+    'ru-ru': 'Войти, указав учетную запись',
     'es-es': 'Iniciar sesión con una cuenta de Specify',
-    'fr-fr': 'Connectez-vous avec un compte spécifié',
+    'fr-fr': 'Se connecter avec le compte spécifié',
     'uk-ua': 'Увійти за допомогою Вказати обліковий запис',
-    'de-ch': 'Mit „Konto angeben“ anmelden',
-    'pt-br': 'Entrar com Especificar Conta',
+    'de-ch': 'Mit dem angegebenen Konto anmelden',
+    'pt-br': 'Faça login com a conta especificada.',
   },
   unknownOicUser: {
     'en-us':
       'There is currently no Specify user associated with your {providerName:string} account. If you have a Specify user name and password, you can enter them below to associate that user with your {providerName:string} account for future logins.',
     'ru-ru':
-      'В настоящее время нет Указанного пользователя, связанного с вашей учетной записью {providerName:string}. Если у вас есть Указанное имя пользователя и пароль, вы можете ввести их ниже, чтобы связать этого пользователя с вашей учетной записью {providerName:string} для будущих входов.',
+      'В настоящее время с вашей учётной записью {providerName:string} не связан пользователь «Specified». Если у вас есть имя пользователя и пароль «Specified», введите их ниже, чтобы связать этого пользователя с вашей учётной записью {providerName:string} для последующих входов в систему.',
     'es-es':
       'Actualmente no hay ningún usuario de Specify asociado con su cuenta {providerName:string}. Si tiene un nombre de usuario y contraseña de Specify, puede ingresarlos a continuación para asociar ese usuario con su cuenta {providerName:string} para futuros inicios de sesión.',
     'fr-fr':
-      "Aucun utilisateur spécifié n'est actuellement associé à votre compte {providerName:string}. Si vous possédez un nom d'utilisateur et un mot de passe spécifiés, saisissez-les ci-dessous pour associer cet utilisateur à votre compte {providerName:string} lors de vos prochaines connexions.",
+      "Aucun utilisateur n'est actuellement associé à votre compte {providerName:string}. Si vous possédez un nom d'utilisateur et un mot de passe, vous pouvez les saisir ci-dessous pour associer cet utilisateur à votre compte {providerName:string} lors de vos prochaines connexions.",
     'uk-ua':
       'Наразі з вашим обліковим записом {providerName:string} не пов’язано жодного користувача типу «Вказати». Якщо у вас є ім’я користувача та пароль типу «Вказати», ви можете ввести їх нижче, щоб пов’язати цього користувача з вашим обліковим записом {providerName:string} для майбутніх входів.',
     'de-ch':
-      'Ihrem {providerName:string}-Konto ist derzeit kein Benutzername zugeordnet. Wenn Sie über einen Benutzernamen und ein Passwort verfügen, können Sie diese unten eingeben, um diesen Benutzer bei zukünftigen Anmeldungen Ihrem {providerName:string}-Konto zuzuordnen.',
+      'Aktuell ist Ihrem {providerName:string}-Konto kein Benutzer zugeordnet. Falls Sie einen Benutzernamen und ein Passwort besitzen, können Sie diese unten eingeben, um den Benutzer für zukünftige Anmeldungen Ihrem {providerName:string}-Konto zuzuordnen.',
     'pt-br':
-      'Atualmente, não há nenhum usuário específico associado à sua conta {providerName:string}. Se você tiver um nome de usuário e uma senha específicos, poderá inseri-los abaixo para associar esse usuário à sua conta {providerName:string} para logins futuros.',
+      'Atualmente, não há nenhum usuário "Especifique" associado à sua conta {providerName:string}. Se você tiver um nome de usuário e senha "Especifique", poderá inseri-los abaixo para associar esse usuário à sua conta {providerName:string} para logins futuros.',
   },
   generateMasterKey: {
     'en-us': 'Generate Master Key',
@@ -196,7 +196,7 @@ export const userText = createDictionary({
     'de-ch': 'Masterschlüssel generieren',
     'ru-ru': 'Сгенерировать главный ключ',
     'uk-ua': 'Згенерувати головний ключ',
-    'pt-br': 'Gerar Chave Mestra',
+    'pt-br': 'Gerar chave mestra',
   },
   userPassword: {
     'en-us': 'User Password',
@@ -218,7 +218,7 @@ export const userText = createDictionary({
   },
   masterKeyGenerated: {
     'en-us': 'Master key generated',
-    'ru-ru': 'Сгенерирован главный ключ',
+    'ru-ru': 'Мастер-ключ сгенерирован',
     'es-es': 'Clave maestra generada',
     'fr-fr': 'Clé principale générée',
     'uk-ua': 'Згенеровано головний ключ',
@@ -236,7 +236,7 @@ export const userText = createDictionary({
   },
   incorrectPassword: {
     'en-us': 'Password was incorrect.',
-    'ru-ru': 'Пароль неверный.',
+    'ru-ru': 'Пароль был неверным.',
     'es-es': 'La contraseña era incorrecta.',
     'fr-fr': 'Le mot de passe était incorrect.',
     'uk-ua': 'Пароль був неправильним.',
@@ -247,32 +247,32 @@ export const userText = createDictionary({
     'en-us':
       'You do not have access to any {collectionTable:string} containing this resource through the currently logged in account',
     'ru-ru':
-      'У вас нет доступа ни к одному {collectionTable:string}, содержащему этот ресурс, через текущую учетную запись.',
+      'У вас нет доступа к {collectionTable:string}, содержащим этот ресурс, через текущую учетную запись.',
     'es-es':
       'No tiene acceso a ningún {collectionTable:string} que contenga este recurso a través de la cuenta actualmente iniciada',
     'fr-fr':
-      "Vous n'avez accès à aucun {collectionTable:string} contenant cette ressource via le compte actuellement connecté",
+      "Vous n'avez accès à aucun {collectionTable:string} contenant cette ressource via le compte actuellement connecté.",
     'uk-ua':
       'Ви не маєте доступу до жодного {collectionTable:string}, що містить цей ресурс, через обліковий запис, у який ви зараз увійшли',
     'de-ch':
-      'Sie haben über das aktuell angemeldete Konto keinen Zugriff auf {collectionTable:string}, das diese Ressource enthält',
+      'Sie haben über das aktuell angemeldete Konto keinen Zugriff auf {collectionTable:string}-Dateien, die diese Ressource enthalten.',
     'pt-br':
-      'Você não tem acesso a nenhum {collectionTable:string} contendo este recurso por meio da conta atualmente conectada',
+      'Você não tem acesso a nenhum {collectionTable:string} que contenha este recurso por meio da conta atualmente conectada.',
   },
   resourceInaccessible: {
     'en-us':
       'The requested resource cannot be accessed while logged into the current collection.',
     'ru-ru':
-      'Запрошенный ресурс не может быть доступен, пока вы вошли в текущую коллекцию.',
+      'Запрошенный ресурс не может быть доступен во время входа в текущую коллекцию.',
     'es-es':
       'No se puede acceder al recurso solicitado mientras se está conectado a la colección actual.',
     'fr-fr':
-      "La ressource demandée n'est pas accessible lorsque vous êtes connecté à la collection actuelle.",
+      'La ressource demandée est inaccessible lorsque vous êtes connecté à la collection actuelle.',
     'uk-ua': 'Запитаний ресурс недоступний під час входу в поточну колекцію.',
     'de-ch':
-      'Auf die angeforderte Ressource kann nicht zugegriffen werden, während Sie bei der aktuellen Sammlung angemeldet sind.',
+      'Auf die angeforderte Ressource kann nicht zugegriffen werden, während Sie in der aktuellen Sammlung angemeldet sind.',
     'pt-br':
-      'O recurso solicitado não pode ser acessado enquanto estiver conectado à coleção atual.',
+      'O recurso solicitado não pode ser acessado enquanto você estiver conectado à coleção atual.',
   },
   selectCollection: {
     'en-us': 'Select one of the following collections:',
@@ -294,7 +294,7 @@ export const userText = createDictionary({
     'de-ch':
       'Sie können sich bei {collectionTable:string} anmelden, um fortzufahren:',
     'pt-br':
-      'Você pode fazer login no {collectionTable:string}, para prosseguir:',
+      'Você pode fazer login no {collectionTable:string} para prosseguir:',
   },
   sessionTimeOut: {
     'en-us': 'Insufficient Privileges',
@@ -303,7 +303,7 @@ export const userText = createDictionary({
     'fr-fr': 'Privilèges insuffisants',
     'uk-ua': 'Недостатньо привілеїв',
     'de-ch': 'Unzureichende Berechtigungen',
-    'pt-br': 'Privilégios Insuficientes',
+    'pt-br': 'Privilégios insuficientes',
   },
   sessionTimeOutDescription: {
     'en-us':
@@ -313,13 +313,13 @@ export const userText = createDictionary({
     'es-es':
       'No tiene privilegios suficientes para esa acción o se ha cerrado la sesión actual.',
     'fr-fr':
-      'Vous ne disposez pas des privilèges suffisants pour cette action ou votre session actuelle a été déconnectée.',
+      'Vous ne disposez pas des privilèges suffisants pour effectuer cette action, ou votre session actuelle a été déconnectée.',
     'uk-ua':
       'У вас недостатньо прав для цієї дії, або ваш поточний сеанс завершено.',
     'de-ch':
-      'Ihnen fehlen die erforderlichen Berechtigungen für diese Aktion oder Ihre aktuelle Sitzung wurde abgemeldet.',
+      'Sie verfügen nicht über ausreichende Berechtigungen für diese Aktion, oder Sie wurden von Ihrer aktuellen Sitzung abgemeldet.',
     'pt-br':
-      'Você não tem privilégios suficientes para essa ação ou sua sessão atual foi desconectada.',
+      'Você não possui privilégios suficientes para realizar essa ação, ou sua sessão atual foi encerrada.',
   },
   noPermission: {
     comment: `
@@ -340,7 +340,7 @@ export const userText = createDictionary({
     'es-es': 'Error de permiso denegado',
     'fr-fr': "Erreur d'autorisation refusée",
     'uk-ua': 'Помилка відмови у доступі',
-    'de-ch': 'Fehler „Berechtigung verweigert“',
+    'de-ch': 'Zugriff verweigert',
     'pt-br': 'Erro de permissão negada',
   },
   permissionDeniedDescription: {
@@ -355,9 +355,9 @@ export const userText = createDictionary({
     'uk-ua':
       'У вас немає жодної політики чи ролі, яка б давала вам дозвіл на виконання наступної дії:',
     'de-ch':
-      'Sie verfügen über keine Richtlinie oder Rolle, die Ihnen die Berechtigung zur Ausführung der folgenden Aktion erteilt:',
+      'Sie verfügen über keine Richtlinie oder Rolle, die Ihnen die Erlaubnis zur folgenden Aktion erteilt:',
     'pt-br':
-      'Você não tem nenhuma política ou função que lhe dê permissão para executar a seguinte ação:',
+      'Você não possui nenhuma política ou função que lhe dê permissão para realizar a seguinte ação:',
   },
   emptyRecordSetsReadOnly: {
     'en-us': 'Cannot open empty {recordSetTable:string} when in Read-Only mode',
@@ -370,15 +370,15 @@ export const userText = createDictionary({
     'uk-ua':
       'Не вдається відкрити порожній {recordSetTable:string} у режимі лише для читання',
     'de-ch':
-      'Leeres {recordSetTable:string} kann im schreibgeschützten Modus nicht geöffnet werden',
+      'Leere {recordSetTable:string}-Dateien können im Nur-Lese-Modus nicht geöffnet werden.',
     'pt-br':
-      'Não é possível abrir {recordSetTable:string} vazio no modo somente leitura',
+      'Não é possível abrir {recordSetTable:string} vazio no modo somente leitura.',
   },
   permissionDeniedForUrl: {
     'en-us': 'Permission denied when accessing <url />',
     'ru-ru': 'Отказано в доступе при доступе <url />',
     'es-es': 'Permiso denegado al acceder a <url />',
-    'fr-fr': "Autorisation refusée lors de l'accès à <url />",
+    'fr-fr': 'Accès refusé à <url />',
     'uk-ua': 'Відмовлено в доступі під час доступу до <url />',
     'de-ch': 'Zugriff verweigert beim Zugriff auf <url />',
     'pt-br': 'Permissão negada ao acessar <url />',
@@ -387,17 +387,17 @@ export const userText = createDictionary({
     'en-us':
       'The logged in user has not been given access to any collections in this database. You must login as another user.',
     'ru-ru':
-      'Вошедшему в систему пользователю не предоставлен доступ ни к одной коллекции в этой базе данных. Вы должны войти в систему как другой пользователь.',
+      'Вошедший в систему пользователь не имеет доступа ни к одной коллекции в этой базе данных. Вам необходимо войти как другой пользователь.',
     'es-es':
       'Al usuario que inició sesión no se le ha dado acceso a ninguna colección de esta base de datos. Debe iniciar sesión como otro usuario.',
     'fr-fr':
-      "L'utilisateur connecté n'a accès à aucune collection de cette base de données. Vous devez vous connecter sous un autre nom d'utilisateur.",
+      "L'utilisateur connecté n'a pas accès aux collections de cette base de données. Vous devez vous connecter en tant qu'autre utilisateur.",
     'uk-ua':
       'Користувач, який зареєстрований, не має доступу до жодної колекції в цій базі даних. Ви повинні увійти як інший користувач.',
     'de-ch':
-      'Dem angemeldeten Benutzer wurde kein Zugriff auf Sammlungen in dieser Datenbank gewährt. Sie müssen sich als anderer Benutzer anmelden.',
+      'Der angemeldete Benutzer hat keinen Zugriff auf Sammlungen in dieser Datenbank. Sie müssen sich als anderer Benutzer anmelden.',
     'pt-br':
-      'O usuário logado não recebeu acesso a nenhuma coleção neste banco de dados. Você deve efetuar login como outro usuário.',
+      'O usuário conectado não tem acesso a nenhuma coleção neste banco de dados. Você precisa entrar com outra conta de usuário.',
   },
   userAccount: {
     'en-us': 'User Account',
@@ -421,10 +421,11 @@ export const userText = createDictionary({
     'en-us': 'You cannot revoke your own admin status',
     'ru-ru': 'Вы не можете отозвать свой собственный статус администратора.',
     'es-es': 'No puede revocar su propio estatus de administrador',
-    'fr-fr': "Vous ne pouvez pas révoquer votre propre statut d'administrateur",
+    'fr-fr':
+      "Vous ne pouvez pas révoquer votre propre statut d'administrateur.",
     'uk-ua': 'Ви не можете скасувати свій власний статус адміністратора',
-    'de-ch': 'Sie können Ihren eigenen Administratorstatus nicht widerrufen',
-    'pt-br': 'Você não pode revogar seu próprio status de administrador',
+    'de-ch': 'Sie können Ihren eigenen Administratorstatus nicht widerrufen.',
+    'pt-br': 'Você não pode revogar seu próprio status de administrador.',
   },
   makeAdmin: {
     'en-us': 'Make Admin',
@@ -432,14 +433,14 @@ export const userText = createDictionary({
     'es-es': 'Hacer administrador',
     'fr-fr': 'Créer un administrateur',
     'uk-ua': 'Зробити адміністратором',
-    'de-ch': 'Zum Administrator machen',
+    'de-ch': 'Administrator erstellen',
     'pt-br': 'Tornar administrador',
   },
   saveUserFirst: {
     'en-us': 'Save user first',
     'ru-ru': 'Сначала сохраните пользователя',
     'es-es': 'Guardar usuario primero',
-    'fr-fr': "Enregistrer l'utilisateur en premier",
+    'fr-fr': "Sauvegarder l'utilisateur en premier",
     'uk-ua': 'Спочатку збережіть користувача',
     'de-ch': 'Benutzer zuerst speichern',
     'pt-br': 'Salvar usuário primeiro',
@@ -448,17 +449,17 @@ export const userText = createDictionary({
     'en-us': 'User must be saved as Manager first',
     'ru-ru': 'Сначала пользователь должен быть сохранен как менеджер.',
     'es-es': 'El usuario debe guardarse primero como administrador',
-    'de-ch': 'Der Benutzer muss zuerst als Manager gespeichert werden',
+    'de-ch': 'Der Benutzer muss zuerst als Manager gespeichert werden.',
     'fr-fr':
-      "L'utilisateur doit d'abord être enregistré en tant que gestionnaire",
+      "L'utilisateur doit d'abord être enregistré en tant que gestionnaire.",
     'uk-ua': 'Спочатку користувача потрібно зберегти як менеджера',
-    'pt-br': 'O usuário deve ser salvo como gerente primeiro',
+    'pt-br': 'O usuário deve ser salvo como Gerente primeiro.',
   },
   users: {
     'en-us': 'User Accounts',
     'ru-ru': 'Учетные записи пользователей',
     'es-es': 'Cuentas de usuario',
-    'fr-fr': "Comptes d'utilisateurs",
+    'fr-fr': 'Comptes utilisateurs',
     'uk-ua': 'Облікові записи користувачів',
     'de-ch': 'Benutzerkonten',
     'pt-br': 'Contas de usuário',
@@ -482,7 +483,8 @@ export const userText = createDictionary({
     'fr-fr': "Comptes d'utilisateurs attribués à ce {collectionTable:string}",
     'uk-ua':
       'Облікові записи користувачів, призначені цьому {collectionTable:string}',
-    'de-ch': 'Zugewiesene Benutzerkonten {collectionTable:string}',
+    'de-ch':
+      'Benutzerkonten, die diesem {collectionTable:string} zugewiesen sind',
     'pt-br': 'Contas de usuário atribuídas a este {collectionTable:string}',
   },
   setPassword: {
@@ -525,9 +527,9 @@ export const userText = createDictionary({
     'en-us': 'Select user collection access',
     'ru-ru': 'Выберите доступ к коллекции пользователей',
     'es-es': 'Seleccionar acceso a la colección del usuario',
-    'fr-fr': "Sélectionner l'accès à la collection d'utilisateurs",
+    'fr-fr': "Sélectionner l'accès à la collection utilisateur",
     'uk-ua': 'Виберіть доступ до колекції користувачів',
-    'de-ch': 'Auswählen des Benutzerzugriffs auf die Sammlung',
+    'de-ch': 'Benutzerzugriff auswählen',
     'pt-br': 'Selecione o acesso à coleção de usuários',
   },
   securityPanel: {
@@ -541,12 +543,12 @@ export const userText = createDictionary({
   },
   userRoleLibrary: {
     'en-us': 'Institution Library of Role Templates',
-    'ru-ru': 'Библиотека шаблонов ролей учреждений',
+    'ru-ru': 'Библиотека шаблонов ролей учреждения',
     'es-es': 'Biblioteca institucional de plantillas de roles',
     'fr-fr': 'Bibliothèque institutionnelle de modèles de rôles',
     'uk-ua': 'Бібліотека шаблонів ролей установи',
-    'de-ch': 'Institutionsbibliothek mit Rollenvorlagen',
-    'pt-br': 'Biblioteca de Modelos de Funções da Instituição',
+    'de-ch': 'Institutionelle Bibliothek mit Rollenvorlagen',
+    'pt-br': 'Biblioteca Institucional de Modelos de Funções',
   },
   userRoles: {
     'en-us': 'User Roles',
@@ -561,10 +563,10 @@ export const userText = createDictionary({
     'en-us': '{collectionTable:string} User Roles',
     'ru-ru': '{collectionTable:string} Роли пользователей',
     'es-es': 'Roles de usuario de {collectionTable:string}',
-    'fr-fr': '{collectionTable:string} Rôles utilisateur',
+    'fr-fr': '{collectionTable:string} Rôles des utilisateurs',
     'uk-ua': 'Ролі користувачів {collectionTable:string}',
     'de-ch': '{collectionTable:string} Benutzerrollen',
-    'pt-br': '{collectionTable:string} Funções do usuário',
+    'pt-br': '{collectionTable:string} Funções do Usuário',
   },
   assignedUserRoles: {
     'en-us': 'Assigned User Roles',
@@ -582,7 +584,7 @@ export const userText = createDictionary({
     'fr-fr': "Politiques d'autorisation des rôles",
     'uk-ua': 'Політики дозволів для ролей',
     'de-ch': 'Rollenberechtigungsrichtlinien',
-    'pt-br': 'Políticas de permissão de função',
+    'pt-br': 'Políticas de permissão de funções',
   },
   userPolicies: {
     'en-us': 'User Permission Policies',
@@ -590,24 +592,24 @@ export const userText = createDictionary({
     'es-es': 'Políticas de permisos de usuario',
     'fr-fr': "Politiques d'autorisation des utilisateurs",
     'uk-ua': 'Політики дозволів користувачів',
-    'de-ch': 'Richtlinien für Benutzerberechtigungen',
+    'de-ch': 'Benutzerberechtigungsrichtlinien',
     'pt-br': 'Políticas de permissão do usuário',
   },
   customUserPolices: {
     'en-us':
       'Custom Collection-level Policies (applies to this collection only)',
     'ru-ru':
-      'Пользовательские политики на уровне коллекции (применяются только к этой коллекции)',
+      'Политики на уровне пользовательской коллекции (применяются только к этой коллекции)',
     'es-es':
       'Políticas personalizadas a nivel de colección (sólo se aplican a esta colección)',
     'fr-fr':
-      "Politiques personnalisées au niveau de la collection (s'applique uniquement à cette collection)",
+      "Stratégies personnalisées au niveau de la collection (s'applique uniquement à cette collection)",
     'uk-ua':
       'Політики на рівні користувацьких колекцій (стосуються лише цієї колекції)',
     'de-ch':
       'Benutzerdefinierte Richtlinien auf Sammlungsebene (gilt nur für diese Sammlung)',
     'pt-br':
-      'Políticas personalizadas em nível de coleção (aplica-se somente a esta coleção)',
+      'Políticas personalizadas ao nível da coleção (aplicam-se apenas a esta coleção)',
   },
   role: {
     'en-us': 'Role',
@@ -633,18 +635,18 @@ export const userText = createDictionary({
     'es-es': 'Perfil de permisos del usuario (solo lectura)',
     'fr-fr': "Profil d'autorisation de l'utilisateur (lecture seule)",
     'uk-ua': 'Профіль дозволів користувача (лише для читання)',
-    'de-ch': 'Berechtigungsprofil des Benutzers (schreibgeschützt)',
-    'pt-br': 'Perfil de permissão do usuário (somente leitura)',
+    'de-ch': 'Benutzerberechtigungsprofil (schreibgeschützt)',
+    'pt-br': 'Perfil de permissões do usuário (somente leitura)',
   },
   outOfDateWarning: {
     'en-us':
       'Note: preview may be out of date. Save changes to update the preview',
     'ru-ru':
-      'Примечание: предварительный просмотр может быть устаревшим. Сохраните изменения, чтобы обновить предварительный просмотр',
+      'Примечание: предварительный просмотр может быть устаревшим. Сохраните изменения, чтобы обновить предварительный просмотр.',
     'es-es':
       'Nota: la vista previa puede estar desactualizada. Guarde los cambios para actualizar la vista previa',
     'fr-fr':
-      "Remarque : l'aperçu peut être obsolète. Enregistrez les modifications pour le mettre à jour.",
+      'Remarque : l’aperçu peut être obsolète. Enregistrez les modifications pour mettre à jour l’aperçu.',
     'uk-ua':
       'Примітка: попередній перегляд може бути застарілим. Збережіть зміни, щоб оновити попередній перегляд',
     'de-ch':
@@ -721,7 +723,7 @@ export const userText = createDictionary({
     'es-es': 'Habilitar acceso a la colección',
     'fr-fr': "Autoriser l'accès à la collection",
     'uk-ua': 'Увімкнути доступ до колекції',
-    'de-ch': 'Sammlungszugriff aktivieren',
+    'de-ch': 'Zugriff auf die Sammlung aktivieren',
     'pt-br': 'Habilitar acesso à coleção',
   },
   createRole: {
@@ -740,7 +742,7 @@ export const userText = createDictionary({
     'fr-fr': 'Nouveau rôle',
     'uk-ua': 'Нова роль',
     'de-ch': 'Neue Rolle',
-    'pt-br': 'Nova função',
+    'pt-br': 'Novo cargo',
   },
   fromLibrary: {
     'en-us': 'From library:',
@@ -757,12 +759,12 @@ export const userText = createDictionary({
     'es-es': 'Desde un rol existente:',
     'fr-fr': "À partir d'un rôle existant :",
     'uk-ua': 'З існуючої ролі:',
-    'de-ch': 'Aus einer vorhandenen Rolle:',
-    'pt-br': 'De uma função existente:',
+    'de-ch': 'Aus einer bestehenden Position:',
+    'pt-br': 'De uma função já existente:',
   },
   createNewRoles: {
     'en-us': 'Create new roles:',
-    'ru-ru': 'Создать новые роли:',
+    'ru-ru': 'Создайте новые роли:',
     'es-es': 'Crear nuevos roles:',
     'fr-fr': 'Créer de nouveaux rôles :',
     'uk-ua': 'Створити нові ролі:',
@@ -775,7 +777,7 @@ export const userText = createDictionary({
     'es-es': 'Actualizar roles existentes:',
     'fr-fr': 'Mettre à jour les rôles existants :',
     'uk-ua': 'Оновити існуючі ролі:',
-    'de-ch': 'Vorhandene Rollen aktualisieren:',
+    'de-ch': 'Bestehende Rollen aktualisieren:',
     'pt-br': 'Atualizar funções existentes:',
   },
   unchangedRoles: {
@@ -793,12 +795,12 @@ export const userText = createDictionary({
     'es-es': 'Administrador de la institución',
     'fr-fr': "Administrateur de l'établissement",
     'uk-ua': 'Адміністратор установи',
-    'de-ch': 'Institutionsadministrator',
-    'pt-br': 'Administrador da Instituição',
+    'de-ch': 'Institutionsverwaltung',
+    'pt-br': 'Administração da Instituição',
   },
   createInviteLink: {
     'en-us': 'Create Invite Link',
-    'ru-ru': 'Создать ссылку для приглашения',
+    'ru-ru': 'Создать ссылку-приглашение',
     'es-es': 'Crear enlace de invitación',
     'fr-fr': "Créer un lien d'invitation",
     'uk-ua': 'Створити посилання для запрошення',
@@ -811,7 +813,7 @@ export const userText = createDictionary({
     'es-es': 'Enlace de invitación de usuario',
     'fr-fr': "Lien d'invitation utilisateur",
     'uk-ua': 'Посилання для запрошення користувача',
-    'de-ch': 'Benutzereinladungslink',
+    'de-ch': 'Benutzer-Einladungslink',
     'pt-br': 'Link de convite do usuário',
   },
   userInviteLinkDescription: {
@@ -826,7 +828,7 @@ export const userText = createDictionary({
     'uk-ua':
       'Надішліть наступне посилання користувачу {userName:string}, щоб дозволити йому вперше увійти в систему.',
     'de-ch':
-      'Senden Sie den folgenden Link an {userName:string}, um ihnen die erstmalige Anmeldung zu ermöglichen.',
+      'Senden Sie den folgenden Link an {userName:string}, damit diese sich zum ersten Mal anmelden können.',
     'pt-br':
       'Envie o seguinte link para {userName:string} para permitir que eles façam login pela primeira vez.',
   },
@@ -834,7 +836,7 @@ export const userText = createDictionary({
     'en-us':
       'No external identity provider is configured. You can configure some in Specify 7 server settings',
     'ru-ru':
-      'Внешний поставщик удостоверений не настроен. Вы можете настроить некоторые параметры в разделе «Укажите 7 параметров сервера»',
+      'Внешний поставщик удостоверений не настроен. Вы можете настроить его в разделе «Укажите 7 параметров сервера».',
     'es-es':
       'No hay configurado ningún proveedor de identidad externo. Puede configurar algunos en configuraciones de servidor de Specify 7',
     'fr-fr':
@@ -842,9 +844,9 @@ export const userText = createDictionary({
     'uk-ua':
       'Зовнішнього постачальника ідентифікаційних даних не налаштовано. Ви можете налаштувати деякі з них у розділі «Specify 7 параметрів сервера»',
     'de-ch':
-      'Es ist kein externer Identitätsanbieter konfiguriert. Sie können einige in den Servereinstellungen festlegen.',
+      'Es ist kein externer Identitätsanbieter konfiguriert. Sie können einen unter „7 Servereinstellungen angeben“ konfigurieren.',
     'pt-br':
-      'Nenhum provedor de identidade externo está configurado. Você pode configurar alguns em "Especificar 7 configurações do servidor".',
+      'Nenhum provedor de identidade externo está configurado. Você pode configurar alguns em Especificar 7 configurações do servidor.',
   },
   legacyPermissions: {
     'en-us': 'Specify 6 Permissions',
@@ -859,7 +861,7 @@ export const userText = createDictionary({
     'en-us':
       "Consider setting a password for this user. Users without a password won't be able to sign in",
     'ru-ru':
-      'Рассмотрите возможность установки пароля для этого пользователя. Пользователи без пароля не смогут войти в систему',
+      'Попробуйте установить пароль для этого пользователя. Пользователи без пароля не смогут войти в систему.',
     'es-es':
       'Considere establecer una contraseña para este usuario. Los usuarios sin contraseña no podrán iniciar sesión',
     'fr-fr':
@@ -869,16 +871,16 @@ export const userText = createDictionary({
     'de-ch':
       'Erwägen Sie, für diesen Benutzer ein Passwort festzulegen. Benutzer ohne Passwort können sich nicht anmelden.',
     'pt-br':
-      'Considere definir uma senha para este usuário. Usuários sem senha não conseguirão fazer login.',
+      'Considere definir uma senha para este usuário. Usuários sem senha não poderão fazer login.',
   },
   setCollections: {
     'en-us': 'Set Collections',
-    'ru-ru': 'Набор Коллекций',
+    'ru-ru': 'Набор коллекций',
     'es-es': 'Establecer colecciones',
     'fr-fr': "Collections d'ensembles",
     'uk-ua': 'Колекції наборів',
-    'de-ch': 'Sammlungen festlegen',
-    'pt-br': 'Conjuntos de coleções',
+    'de-ch': 'Set-Kollektionen',
+    'pt-br': 'Conjuntos de Coleções',
   },
   agentInUse: {
     'en-us': 'This agent is already associated with a different user.',
@@ -891,13 +893,13 @@ export const userText = createDictionary({
   },
   setAgentsBeforeProceeding: {
     'en-us': 'Please set the following agents before proceeding:',
-    'ru-ru': 'Прежде чем продолжить, установите следующие агенты:',
+    'ru-ru': 'Перед продолжением установите следующие агенты:',
     'es-es': 'Configure los siguientes agentes antes de continuar:',
     'uk-ua': 'Будь ласка, налаштуйте наступних агентів, перш ніж продовжити:',
     'de-ch':
-      'Bitte legen Sie die folgenden Agenten fest, bevor Sie fortfahren:',
-    'fr-fr': 'Veuillez définir les agents suivants avant de continuer :',
-    'pt-br': 'Defina os seguintes agentes antes de prosseguir:',
+      'Bitte stellen Sie die folgenden Agenten ein, bevor Sie fortfahren:',
+    'fr-fr': 'Veuillez configurer les agents suivants avant de continuer :',
+    'pt-br': 'Por favor, configure os seguintes agentes antes de prosseguir:',
   },
   externalIdentityProviders: {
     'en-us': 'External identity providers:',
@@ -906,7 +908,7 @@ export const userText = createDictionary({
     'de-ch': 'Externe Identitätsanbieter:',
     'ru-ru': 'Внешние поставщики удостоверений:',
     'uk-ua': 'Зовнішні постачальники ідентифікаційних даних:',
-    'pt-br': 'Provedores de identidade externos:',
+    'pt-br': 'Fornecedores de identidade externos:',
   },
   allTables: {
     'en-us': 'All tables',
@@ -923,7 +925,7 @@ export const userText = createDictionary({
     'es-es': 'Cargando administradores...',
     'fr-fr': 'Chargement des administrateurs…',
     'uk-ua': 'Завантаження адміністраторів...',
-    'de-ch': 'Administratoren werden geladen …',
+    'de-ch': 'Administratoren werden geladen...',
     'pt-br': 'Carregando administradores...',
   },
   specifyAdmin: {
@@ -931,20 +933,20 @@ export const userText = createDictionary({
     'en-us': '(Specify 7 Admin)',
     'ru-ru': '(Укажите 7 Администратор)',
     'es-es': '(Administradores de Specify 7)',
-    'fr-fr': '(Spécifiez 7 Admin)',
+    'fr-fr': '(Préciser 7 Administrateurs)',
     'uk-ua': '(Specify 7 Адміністратор)',
-    'de-ch': '(Geben Sie 7 Admin an)',
-    'pt-br': '(Especifique 7 Admin)',
+    'de-ch': '(7 Administratoren angeben)',
+    'pt-br': '(Especifique 7 administradores)',
   },
   legacyAdmin: {
     comment: 'Shown next to user name for admin users',
     'en-us': '(Specify 6 Admin)',
     'ru-ru': '(Укажите 6 Администратор)',
     'es-es': '(Administradores de Specify 6)',
-    'fr-fr': '(Spécifiez 6 Admin)',
+    'fr-fr': '(Préciser 6 Administrateurs)',
     'uk-ua': '(Specify 6 Адміністратор)',
-    'de-ch': '(Geben Sie 6 Admin an)',
-    'pt-br': '(Especifique 6 Admin)',
+    'de-ch': '(6 Administratoren angeben)',
+    'pt-br': '(Especifique 6 administradores)',
   },
   deleteRoleWithUsers: {
     'en-us': 'Delete role that has users?',
@@ -952,18 +954,18 @@ export const userText = createDictionary({
     'es-es': '¿Eliminar rol que tiene usuarios?',
     'fr-fr': 'Supprimer le rôle qui a des utilisateurs ?',
     'uk-ua': 'Видалити роль, яка має користувачів?',
-    'de-ch': 'Rolle löschen, die Benutzer hat?',
+    'de-ch': 'Rolle mit Benutzern löschen?',
     'pt-br': 'Excluir função que possui usuários?',
   },
   deleteRoleWithUsersDescription: {
     'en-us': 'Users will not be deleted, but they would lose this role.',
-    'ru-ru': 'Пользователи не будут удалены, но они потеряют эту роль.',
+    'ru-ru': 'Пользователи не будут удалены, но потеряют эту роль.',
     'es-es': 'Los usuarios no serán eliminados, pero perderán este rol.',
     'fr-fr':
       'Les utilisateurs ne seront pas supprimés, mais ils perdront ce rôle.',
     'uk-ua': 'Користувачів не буде видалено, але вони втратять цю роль.',
     'de-ch':
-      'Benutzer werden nicht gelöscht, sie würden jedoch diese Rolle verlieren.',
+      'Die Benutzer werden nicht gelöscht, aber sie verlieren diese Rolle.',
     'pt-br': 'Os usuários não serão excluídos, mas perderão essa função.',
   },
   institutionPolicies: {
@@ -974,13 +976,13 @@ export const userText = createDictionary({
     'es-es':
       'Políticas personalizadas a nivel de Institución (se aplican a todas las colecciones asignadas)',
     'fr-fr':
-      "Politiques personnalisées au niveau de l'institution (s'appliquent à toutes les collections attribuées)",
+      "Politiques institutionnelles personnalisées (s'appliquent à toutes les collections assignées)",
     'uk-ua':
       'Спеціальні правила на рівні установи (стосуються всіх призначених колекцій)',
     'de-ch':
-      'Benutzerdefinierte Richtlinien auf Institutionsebene (gilt für alle zugewiesenen Sammlungen)',
+      'Benutzerdefinierte institutionelle Richtlinien (gilt für alle zugewiesenen Sammlungen)',
     'pt-br':
-      'Políticas personalizadas em nível de instituição (aplica-se a todas as coleções atribuídas)',
+      'Políticas personalizadas a nível institucional (aplicáveis a todas as coleções atribuídas)',
   },
   cantRemoveLastAdmin: {
     'en-us': "Can't remove Institution Admin status",
@@ -990,23 +992,22 @@ export const userText = createDictionary({
     'fr-fr':
       "Impossible de supprimer le statut d'administrateur de l'établissement",
     'uk-ua': 'Не вдається видалити статус адміністратора установи',
-    'de-ch':
-      'Der Status „Institutionsadministrator“ kann nicht entfernt werden',
-    'pt-br': 'Não é possível remover o status de administrador da instituição',
+    'de-ch': 'Institutionsadministratorstatus kann nicht entfernt werden',
+    'pt-br': 'Não é possível remover o status de Administrador da Instituição.',
   },
   cantRemoveLastAdminDescription: {
     'en-us': 'There must be at least one Institution Admin in institution',
     'ru-ru':
-      'В учреждении должен быть как минимум один администратор учреждения.',
+      'В учреждении должен быть по крайней мере один администратор учреждения.',
     'es-es':
       'En la Institución debe haber al menos un Administrador de la Institución',
     'fr-fr':
       "Il doit y avoir au moins un administrateur d'établissement dans l'établissement",
     'uk-ua': 'У закладі має бути принаймні один адміністратор закладу',
     'de-ch':
-      'Es muss mindestens einen Institutionsadministrator in der Institution geben',
+      'Es muss mindestens einen Institutionsadministrator in der Institution geben.',
     'pt-br':
-      'Deve haver pelo menos um administrador da instituição na instituição',
+      'Deve haver pelo menos um Administrador Institucional na instituição.',
   },
   switchToHorizontalLayout: {
     'en-us': 'Switch to horizontal layout',
@@ -1014,17 +1015,17 @@ export const userText = createDictionary({
     'es-es': 'Cambiar a diseño horizontal',
     'fr-fr': "Passer à l'affichage horizontal",
     'uk-ua': 'Перейти до горизонтального розташування',
-    'de-ch': 'Zum horizontalen Layout wechseln',
-    'pt-br': 'Mudar para layout horizontal',
+    'de-ch': 'Zur horizontalen Anordnung wechseln',
+    'pt-br': 'Alternar para o layout horizontal',
   },
   switchToVerticalLayout: {
     'en-us': 'Switch to vertical layout',
     'ru-ru': 'Переключиться на вертикальную компоновку',
     'es-es': 'Cambiar al diseño vertical',
     'fr-fr': "Passer à l'affichage vertical",
-    'de-ch': 'Zum vertikalen Layout wechseln',
+    'de-ch': 'Zur vertikalen Anordnung wechseln',
     'uk-ua': 'Перейти до вертикального розташування',
-    'pt-br': 'Mudar para layout vertical',
+    'pt-br': 'Alternar para o layout vertical',
   },
   advancedTables: {
     'en-us': 'Advanced tables',
@@ -1052,13 +1053,13 @@ export const userText = createDictionary({
     'es-es':
       '(Algunas políticas que se aplican solo a nivel de institución no están presentes aquí, a nivel de colección)',
     'fr-fr':
-      '(Certaines politiques qui s’appliquent uniquement au niveau de l’institution ne sont pas présentes ici au niveau de la collection.)',
+      "(Certaines politiques qui s'appliquent uniquement au niveau de l'établissement ne sont pas présentes ici au niveau de la collection.)",
     'uk-ua':
       '(Деякі політики, що застосовуються лише на рівні установи, відсутні тут на рівні колекції.)',
     'de-ch':
-      '(Einige Richtlinien, die nur auf Institutionsebene gelten, sind hier auf Sammlungsebene nicht vorhanden.)',
+      '(Einige Richtlinien, die nur auf institutioneller Ebene gelten, sind hier auf Sammlungsebene nicht vorhanden.)',
     'pt-br':
-      '(Algumas políticas que se aplicam apenas ao nível da instituição não estão presentes aqui no nível da coleção.)',
+      '(Algumas políticas que se aplicam apenas ao nível institucional não estão presentes aqui ao nível da coleção.)',
   },
   accountSetupOptions: {
     'en-us': 'Account Setup Options',
@@ -1066,8 +1067,8 @@ export const userText = createDictionary({
     'es-es': 'Opciones de configuración de cuenta',
     'fr-fr': 'Options de configuration du compte',
     'uk-ua': 'Параметри налаштування облікового запису',
-    'de-ch': 'Optionen zur Kontoeinrichtung',
-    'pt-br': 'Opções de configuração de conta',
+    'de-ch': 'Kontoeinrichtungsoptionen',
+    'pt-br': 'Opções de configuração da conta',
   },
   currentUser: {
     'en-us': 'Current User',

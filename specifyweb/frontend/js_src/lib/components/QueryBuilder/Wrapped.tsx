@@ -161,9 +161,9 @@ function Wrapped({
     handleChange?.({
       fields: unParseQueryFields(state.baseTableName, state.fields),
       isDistinct: query.selectDistinct,
-      isSeries: query.selectSeries,
+      isSeries: query.smushed,
     });
-  }, [state, query.selectDistinct, query.selectSeries]);
+  }, [state, query.selectDistinct, query.smushed]);
 
   /**
    * If tried to save a query, enforce the field length limit for the
@@ -314,7 +314,7 @@ function Wrapped({
     if (!showSeries)
       setQuery({
         ...query,
-        selectSeries: false,
+        smushed: false,
       });
   }, [showSeries]);
 
@@ -578,7 +578,7 @@ function Wrapped({
               />
               <QueryToolbar
                 isDistinct={query.selectDistinct ?? false}
-                isSeries={query.selectSeries ?? false}
+                isSeries={query.smushed ?? false}
                 showHiddenFields={showHiddenFields}
                 showSeries={showSeries}
                 tableName={table.name}
@@ -588,19 +588,20 @@ function Wrapped({
                     ? runQuery('regular')
                     : undefined
                 }
-                onToggleDistinct={(): void =>
+                onToggleDistinct={(): void => {
                   setQuery({
                     ...query,
                     selectDistinct: !(query.selectDistinct ?? false),
-                  })
-                }
+                  });
+                  setSaveRequired(true);
+                }}
                 onToggleHidden={setShowHiddenFields}
-                onToggleSeries={(): void =>
+                onToggleSeries={(): void => {
                   setQuery({
                     ...query,
-                    selectSeries: !(query.selectSeries ?? false),
-                  })
-                }
+                    smushed: !(query.smushed ?? false),
+                  });
+                }}
               />
             </div>
             {hasPermission('/querybuilder/query', 'execute') && (
@@ -625,6 +626,7 @@ function Wrapped({
                         fields={state.fields}
                         query={queryResource}
                         recordSetId={recordSet?.id}
+                        saveRequired={saveRequired}
                       />
                     )}
                     {query.countOnly ? undefined : (
