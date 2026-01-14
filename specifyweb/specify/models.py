@@ -2884,7 +2884,7 @@ class Discipline(model_extras.Discipline):
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
     type = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Type', db_index=False)
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
-    disciplineid = models.IntegerField(blank=True, null=False, unique=False, db_column='DisciplineId', db_index=False)
+    # disciplineid = models.IntegerField(blank=True, null=False, unique=False, db_column='DisciplineId', db_index=False)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
