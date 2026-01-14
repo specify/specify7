@@ -12,31 +12,31 @@
           "name": "Superstructure",
           "enforced": false,
           "infullname": false,
-          "rank": 10
+          "rank": 100
         },
         {
           "name": "Tectonic Domain",
           "enforced": false,
           "infullname": false,
-          "rank": 20
+          "rank": 200
         },
         {
           "name": "Tectonic Subdomain",
           "enforced": false,
           "infullname": false,
-          "rank": 30
+          "rank": 300
         },
         {
           "name": "Tectonic Unit",
           "enforced": false,
           "infullname": true,
-          "rank": 40
+          "rank": 400
         },
         {
           "name": "Tectonic Subunit",
           "enforced": false,
           "infullname": true,
-          "rank": 50
+          "rank": 500
         }
       ]
     },
