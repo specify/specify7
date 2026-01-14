@@ -12,7 +12,7 @@ from django.db.models import QuerySet, Q, F, Model, Exists, OuterRef
 import specifyweb.specify.models as spmodels
 from specifyweb.specify.utils.func import Func
 
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, FieldDoesNotExist, FieldError
 
 from specifyweb.backend.workbench.upload.clone import GENERIC_FIELDS_TO_SKIP
 
@@ -38,6 +38,14 @@ def add_to_remove_node(previous: ToRemoveNode, new_node: ToRemoveNode) -> ToRemo
         **previous,
         **{key: [*previous.get(key, []), *values] for key, values in new_node.items()},
     }
+
+def _model_supports_filter_key(model, key: str) -> bool:
+    field_name = key[:-3] if key.endswith("_id") else key
+    try:
+        model._meta.get_field(field_name)
+        return True
+    except FieldDoesNotExist:
+        return False
 
 
 class ToRemove(NamedTuple):
@@ -134,9 +142,36 @@ class DjangoPredicates(NamedTuple):
 
         unique_alias = next(get_unique_alias)
 
-        alias_path = _get_field_name("id")
-        query = query.filter(**filtered).alias(**{unique_alias: F(alias_path)})
-        aliases = [*aliases, (alias_path, unique_alias)]
+        # Apply filters first
+        query = query.filter(**filtered)
+
+        # Pick a "tenant scope" field that actually exists on the current model.
+        # IMPORTANT: Django model fields are named "collection", "discipline", etc.,
+        # not "collection_id". So we check support using _model_supports_filter_key.
+        scope_field = None
+        for candidate in ("collection_id", "discipline_id", "division_id", "institution_id"):
+            if _model_supports_filter_key(current_model, candidate):
+                scope_field = candidate
+                break
+
+        # Only add aliasing if we found a valid scope field AND it is present on this predicate level
+        if scope_field is not None:
+            alias_path = _get_field_name(scope_field)
+
+            # Only alias if this predicate level is actually filtering on this scope key
+            # (otherwise we'd create aliases that don't correspond to any constraint).
+            if alias_path in filtered:
+                unique_alias = next(get_unique_alias)
+                try:
+                    query = query.alias(**{unique_alias: F(alias_path)})
+                    aliases = [*aliases, (alias_path, unique_alias)]
+                except FieldError:
+                    pass
+            else:
+                # keep alias generator deterministic
+                unique_alias = next(get_unique_alias)
+        else:
+            unique_alias = next(get_unique_alias)
 
         def _reduce_by_key(rel_name: str):
             # mypy isn't able to infer types correctly

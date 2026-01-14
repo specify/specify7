@@ -1,6 +1,6 @@
 from typing import Optional
 from specifyweb.specify.models_utils.load_datamodel import Datamodel, Table, Field, Relationship
-from sqlalchemy import Table as Table_Sqlalchemy, Column, ForeignKey, types, orm, MetaData
+from sqlalchemy import Table as Table_Sqlalchemy, Column, ForeignKey, types, orm, MetaData, ForeignKeyConstraint
 from sqlalchemy.dialects.mysql import BIT as mysql_bit_type
 metadata = MetaData()
 
@@ -30,43 +30,95 @@ class CustomBIT(mysql_bit_type):
         return process
 
 def make_table(datamodel: Datamodel, tabledef: Table):
-    # Start with the declared primary key column
-    columns = [Column(tabledef.idColumn, types.Integer, primary_key=True)]
+    """
+    Build a SQLAlchemy Table for a Specify datamodel Table definition.
+
+    Key behavior:
+    - Supports composite PKs via tabledef.idColumns if present, else uses tabledef.idColumn.
+    - Avoids defining the same column name twice.
+    - Still establishes foreign key constraints even if a FK column was already created
+      as part of the PK (e.g. join tables where PK columns are also FKs).
+    """
+
+    # --- Primary key columns (support composite PKs) ---
+    pk_cols = getattr(tabledef, "idColumns", None) or [tabledef.idColumn]
+    columns = [Column(col, types.Integer, primary_key=True) for col in pk_cols]
 
     # Track all column names we have already added to avoid duplicates
-    colnames = {tabledef.idColumn}
+    colnames = set(pk_cols)
 
-    # Add normal fields
+    # Track FK constraints that need to be applied at the table level
+    fk_constraints = []
+
+    # --- Normal fields ---
     columns.extend(make_column(field) for field in tabledef.fields)
     for field in tabledef.fields:
-        if getattr(field, "column", None):
-            colnames.add(field.column)
+        col = getattr(field, "column", None)
+        if col:
+            colnames.add(col)
 
-    # Add FK columns, but never if the column already exists (e.g. PK doubles as FK)
+    # --- Relationships (to-one FKs) ---
     for reldef in tabledef.relationships:
-        if reldef.type in ("many-to-one", "one-to-one") and getattr(reldef, "column", None):
-            if reldef.column in colnames:
-                continue  # don't redefine an existing column
+        if reldef.type not in ("many-to-one", "one-to-one"):
+            continue
 
-            fk = make_foreign_key(datamodel, reldef)
-            if fk is not None:
-                columns.append(fk)
-                colnames.add(reldef.column)
+        rel_col = getattr(reldef, "column", None)
+        if not rel_col:
+            continue
 
-    return Table_Sqlalchemy(tabledef.table, metadata, *columns)
+        # Always add a ForeignKeyConstraint, even if the column already exists
+        fk_target = make_fk_target(datamodel, reldef)
+        if fk_target is not None:
+            remote_table, remote_col = fk_target
+            fk_constraints.append(
+                ForeignKeyConstraint([rel_col], [f"{remote_table}.{remote_col}"])
+            )
 
-def make_foreign_key(datamodel: Datamodel, reldef: Relationship):
+        # Only add the FK column as a Column(...) if it doesn't already exist
+        # (e.g., avoid redefining a PK column that doubles as FK)
+        if rel_col not in colnames:
+            fk_col = make_foreign_key(datamodel, reldef)
+            if fk_col is not None:
+                columns.append(fk_col)
+                colnames.add(rel_col)
+
+    return Table_Sqlalchemy(tabledef.table, metadata, *columns, *fk_constraints)
+
+
+def make_fk_target(datamodel: Datamodel, reldef: Relationship):
+    """
+    Resolve the FK target (remote_table, remote_pk_column) for a relationship.
+    Returns None if the remote table can't be found or has a composite PK (unsupported as FK target here).
+    """
     remote_tabledef = datamodel.get_table(reldef.relatedModelName)
     if remote_tabledef is None:
         return None
 
-    fk_target = ".".join((remote_tabledef.table, remote_tabledef.idColumn))
+    remote_pk_cols = getattr(remote_tabledef, "idColumns", None) or [remote_tabledef.idColumn]
+    if len(remote_pk_cols) != 1:
+        # We don't currently build FKs pointing at composite PK targets.
+        return None
+
+    return (remote_tabledef.table, remote_pk_cols[0])
+
+
+def make_foreign_key(datamodel: Datamodel, reldef: Relationship):
+    """
+    Build a SQLAlchemy Column for a relationship FK column.
+    Used only when the column doesn't already exist in the table.
+    """
+    fk_target = make_fk_target(datamodel, reldef)
+    if fk_target is None:
+        return None
+
+    remote_table, remote_col = fk_target
+    target = f"{remote_table}.{remote_col}"
 
     return Column(
         reldef.column,
-        ForeignKey(fk_target),
+        ForeignKey(target),
         nullable=not reldef.required,
-        unique=reldef.type == "one-to-one",
+        unique=(reldef.type == "one-to-one"),
     )
 
 def make_column(flddef: Field):

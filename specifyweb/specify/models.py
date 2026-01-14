@@ -1381,7 +1381,7 @@ class Collection(models.Model):
     institutionnetwork = models.ForeignKey('Institution', db_column='InstitutionNetworkID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     collectionobjecttype = models.ForeignKey('CollectionObjectType', db_column='CollectionObjectTypeID', related_name='collections', null=True, on_delete=models.SET_NULL)
-    institutionnetwork = models.ForeignKey("InstitutionNetwork", db_column="InstitutionNetworkID", on_delete=models.DO_NOTHING, null=True, blank=True, related_name="collections")
+    # institutionnetwork = models.ForeignKey("InstitutionNetwork", db_column="InstitutionNetworkID", on_delete=models.DO_NOTHING, null=True, blank=True, related_name="collections")
 
     class Meta:
         db_table = 'collection'
@@ -8032,19 +8032,19 @@ class AutonumschDsp(models.Model):
 
     save = partialmethod(custom_save)
 
-class SpecifyuserSpprincipal(models.Model):
-    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', on_delete=models.deletion.DO_NOTHING)
-    spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', on_delete=models.deletion.DO_NOTHING)
+# class SpecifyuserSpprincipal(models.Model):
+#     specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', on_delete=models.deletion.DO_NOTHING)
+#     spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', on_delete=models.deletion.DO_NOTHING)
 
-    class Meta:
-        db_table = 'specifyuser_spprincipal'
-        managed = False
-        ordering = ()
-        unique_together = (('specifyuser', 'spprincipal'),)
-        indexes = [
-            models.Index(fields=['specifyuser'], name='FK81E18B5E4BDD9E10'),
-            models.Index(fields=['spprincipal'], name='FK81E18B5E99A7381A'),
-        ]
+#     class Meta:
+#         db_table = 'specifyuser_spprincipal'
+#         managed = False
+#         ordering = ()
+#         unique_together = (('specifyuser', 'spprincipal'),)
+#         indexes = [
+#             models.Index(fields=['specifyuser'], name='FK81E18B5E4BDD9E10'),
+#             models.Index(fields=['spprincipal'], name='FK81E18B5E99A7381A'),
+#         ]
 
 class Deaccessionpreparation(models.Model):
     specify_model = datamodel.get_table_strict('deaccessionpreparation')

@@ -2,6 +2,7 @@ from typing import Union, Optional, TypeVar, cast, Literal
 from collections.abc import Callable
 from collections.abc import Iterable
 from xml.etree import ElementTree
+from dataclasses import dataclass
 import os
 import warnings
 import logging
@@ -26,6 +27,10 @@ class FieldDoesNotExistError(DoesNotExistError):
 
 T = TypeVar("T")
 U = TypeVar("U")
+
+@dataclass(frozen=True)
+class _MissingRelationship:
+    dependent: bool = False
 
 
 def strict_to_optional(f: Callable[[U], T], lookup: U, strict: bool) -> T | None:
@@ -227,10 +232,17 @@ class Table:
         )
 
     def get_relationship(self, name: str) -> "Relationship":
-        field = self.get_field_strict(name)
+        try:
+            field = self.get_field_strict(name)
+        except FieldDoesNotExistError:
+            # Reverse Django related_name relationships may not be present in the datamodel.
+            # Treat as non-dependent by default.
+            return _MissingRelationship()  # type: ignore[return-value]
+
         if not isinstance(field, Relationship):
             raise FieldDoesNotExistError(
-                f"Field {name} in table {self.name} is not a relationship."
+                _("Field %(field_name)s not in table %(table_name)s. ")
+                % {"field_name": name, "table_name": self.name}
             )
         return field
 
