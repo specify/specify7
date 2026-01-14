@@ -145,33 +145,16 @@ class DjangoPredicates(NamedTuple):
         # Apply filters first
         query = query.filter(**filtered)
 
-        # Pick a "tenant scope" field that actually exists on the current model.
-        # IMPORTANT: Django model fields are named "collection", "discipline", etc.,
-        # not "collection_id". So we check support using _model_supports_filter_key.
-        scope_field = None
-        for candidate in ("collection_id", "discipline_id", "division_id", "institution_id"):
-            if _model_supports_filter_key(current_model, candidate):
-                scope_field = candidate
-                break
-
-        # Only add aliasing if we found a valid scope field AND it is present on this predicate level
-        if scope_field is not None:
-            alias_path = _get_field_name(scope_field)
-
-            # Only alias if this predicate level is actually filtering on this scope key
-            # (otherwise we'd create aliases that don't correspond to any constraint).
-            if alias_path in filtered:
-                unique_alias = next(get_unique_alias)
-                try:
-                    query = query.alias(**{unique_alias: F(alias_path)})
-                    aliases = [*aliases, (alias_path, unique_alias)]
-                except FieldError:
-                    pass
-            else:
-                # keep alias generator deterministic
-                unique_alias = next(get_unique_alias)
-        else:
-            unique_alias = next(get_unique_alias)
+        # IMPORTANT: downstream reduction logic assumes every predicate level
+        # defines a "predicate-N" alias, so always alias the PK.
+        unique_alias = next(get_unique_alias)
+        alias_path = _get_field_name("id")
+        try:
+            query = query.alias(**{unique_alias: F(alias_path)})
+            aliases = [*aliases, (alias_path, unique_alias)]
+        except FieldError:
+            # Extremely defensive; every model should have "id"
+            pass
 
         def _reduce_by_key(rel_name: str):
             # mypy isn't able to infer types correctly
