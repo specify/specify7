@@ -8115,19 +8115,18 @@ class Sgrbatchmatchresultset(models.Model):
     inserttime = models.DateTimeField( blank=False, null=False, unique=False, db_column='insertTime', db_index=False, default=timezone.now)
     name = models.CharField( blank=False, max_length=128, null=False, unique=False, db_column='name', db_index=False)
     recordsetid = models.BigIntegerField( blank=True, null=True, unique=False, db_column='recordSetID', db_index=False)
-    matchconfigurationid = models.BigIntegerField( blank=False, null=False, unique=False, db_column='matchConfigurationId', db_index=False)
     query = models.TextField( blank=False, null=False, unique=False, db_column='query', db_index=False)
     remarks = models.TextField( blank=False, null=False, unique=False, db_column='remarks', db_index=False)
     dbtableid = models.IntegerField( blank=True, null=True, unique=False, db_column='dbTableId', db_index=False)
 
     # Relationships
-    matchconfiguration = models.ForeignKey( 'Sgrmatchconfiguration', db_column='matchConfigurationId', related_name='batchmatchresultsets', null=False, on_delete=models.DO_NOTHING)
+    matchconfiguration = models.ForeignKey('Sgrmatchconfiguration', db_column='matchConfigurationId', related_name='batchmatchresultsets', null=False, on_delete=models.DO_NOTHING)
 
     class Meta:
         db_table = 'sgrbatchmatchresultset'
         ordering = ()
         indexes = [
-            models.Index(fields=['matchconfigurationid'], name='sgrbatchmatchresultsetfk2'),
+            models.Index(fields=['matchconfiguration'], name='sgrbatchmatchresultsetfk2'),
         ]
 
     save = partialmethod(custom_save)
@@ -8153,6 +8152,7 @@ class Sgrmatchconfiguration(models.Model):
         ordering = ()
 
     save = partialmethod(custom_save)
+
 class SpSchemaMapping(models.Model):
     specify_model = datamodel.get_table_strict('sp_schema_mapping')
 

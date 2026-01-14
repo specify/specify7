@@ -9001,7 +9001,6 @@ datamodel = Datamodel(tables=[
             Field(name='insertTime', column='insertTime', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='name', column='name', indexed=False, unique=False, required=True, type='java.lang.String', length=128),
             Field(name='recordSetID', column='recordSetID', indexed=False, unique=False, required=False, type='java.lang.Long'),
-            Field(name='matchConfigurationId', column='matchConfigurationId', indexed=False, unique=False, required=True, type='java.lang.Long'),
             Field(name='query', column='query', indexed=False, unique=False, required=True, type='text', length=65535),
             Field(name='remarks', column='remarks', indexed=False, unique=False, required=True, type='text', length=65535),
             Field(name='dbTableId', column='dbTableId', indexed=False, unique=False, required=False, type='java.lang.Integer'),
