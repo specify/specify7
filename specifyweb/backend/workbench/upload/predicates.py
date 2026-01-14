@@ -132,7 +132,7 @@ class DjangoPredicates(NamedTuple):
         base_predicates = {
             _get_field_name(field_name): value
             for (field_name, value) in self.filters.items()
-            if not isinstance(value, list)
+            if not isinstance(value, list) and _model_supports_filter_key(current_model, field_name)
         }
 
         filtered = {
