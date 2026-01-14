@@ -7057,6 +7057,45 @@ class Migration(migrations.Migration):
             constraint=models.UniqueConstraint(fields=('project', 'collectionobject'), name='project_colobj_projectid_collectionobjectid_uniq'),
         ),
         migrations.CreateModel(
+            name='Sgrmatchconfiguration',
+            fields=[
+                ('id', models.BigAutoField(db_column='id', primary_key=True, serialize=False)),
+                ('name', models.CharField(db_column='name', max_length=128)),
+                ('similarityfields', models.TextField(db_column='similarityFields')),
+                ('serverurl', models.TextField(db_column='serverUrl')),
+                ('filterquery', models.CharField(db_column='filterQuery', max_length=128)),
+                ('queryfields', models.TextField(db_column='queryFields')),
+                ('remarks', models.TextField(db_column='remarks')),
+                ('boostinterestingterms', models.BooleanField(db_column='boostInterestingTerms')),
+                ('nrows', models.IntegerField(db_column='nRows')),
+            ],
+            options={
+                'db_table': 'sgrmatchconfiguration',
+                'ordering': (),
+            },
+        ),
+        migrations.CreateModel(
+            name='Sgrbatchmatchresultset',
+            fields=[
+                ('id', models.BigAutoField(db_column='id', primary_key=True, serialize=False)),
+                ('inserttime', models.DateTimeField(db_column='insertTime')),
+                ('name', models.CharField(db_column='name', max_length=128)),
+                ('recordsetid', models.BigIntegerField(blank=True, db_column='recordSetID', null=True)),
+                ('query', models.TextField(db_column='query')),
+                ('remarks', models.TextField(db_column='remarks')),
+                ('dbtableid', models.IntegerField(blank=True, db_column='dbTableId', null=True)),
+                ('matchconfiguration', models.ForeignKey(db_column='matchConfigurationId', on_delete=django.db.models.deletion.DO_NOTHING, to='specify.sgrmatchconfiguration')),
+            ],
+            options={
+                'db_table': 'sgrbatchmatchresultset',
+                'ordering': (),
+            },
+        ),
+        migrations.AddIndex(
+            model_name='sgrbatchmatchresultset',
+            index=models.Index(fields=['matchconfiguration'], name='sgrbatchmatchresultsetfk2'),
+        ),
+        migrations.CreateModel(
             name='Sgrbatchmatchresultitem',
             fields=[
                 ('id', models.BigAutoField(db_column='id', primary_key=True, serialize=False)),
