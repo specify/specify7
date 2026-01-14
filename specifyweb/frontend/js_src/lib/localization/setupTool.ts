@@ -95,7 +95,7 @@ export const setupToolText = createDictionary({
     'en-us': 'The city where the institution is located.',
   },
   addressState: {
-    'en-us': 'State',
+    'en-us': 'Province/State',
   },
   addressStateDescription: {
     'en-us': 'The state or province.',
