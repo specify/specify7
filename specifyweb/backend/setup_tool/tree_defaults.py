@@ -32,24 +32,7 @@ def create_default_tree(name: str, kwargs: dict, ranks: dict, preload_tree: Opti
                 rankid=rank_id,
                 parent=previous_tree_def_item,
             )
-        root_tree_def_item, create = tree_rank_model.objects.get_or_create(
-            treedef=treedef,
-            rankid=0
-        )
-
-        # Create root node
-        # TODO: Avoid having duplicated code from add_root endpoint
-        root_node = tree_node_model.objects.create(
-            name="Root",
-            isaccepted=1,
-            nodenumber=1,
-            rankid=0,
-            parent=None,
-            definition=treedef,
-            definitionitem=root_tree_def_item,
-            fullname="Root"
-        )
-
+        
         # TODO: Preload tree
         if preload_tree is not None:
             pass
