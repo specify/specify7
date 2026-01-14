@@ -4,19 +4,17 @@ from specifyweb.backend.interactions.cog_preps import modify_update_of_interacti
 from specifyweb.backend.interactions.tests.test_cog_consolidated_prep_sibling_context import (
     TestCogConsolidatedPrepSiblingContext,
 )
-from specifyweb.specify.api.api_utils import strict_uri_to_model
+from specifyweb.specify.api.serializers import obj_to_data
+from specifyweb.specify.api_utils import strict_uri_to_model
 from specifyweb.specify.models import (
     Borrow,
     Disposal,
-    Disposalpreparation,
     Gift,
     Giftpreparation,
     Loan,
     Loanpreparation,
 )
 import copy
-
-from specifyweb.specify.api.serializers import obj_to_data
 
 PrepGetter = Callable[["TestModifyUpdateInteractionSiblingPreps"], list[Any]]
 PrepGetterFromPreps = Callable[[list[Any]], list[Any]]
