@@ -5754,12 +5754,48 @@ class Migration(migrations.Migration):
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
+                ('collections', models.ManyToManyField(related_name='autonumberingschemes', through='specify.Autonumschcoll', to='specify.collection')),
+                ('disciplines', models.ManyToManyField(related_name='autonumberingschemes', through='specify.Autonumschdsp', to='specify.discipline')),
+                ('divisions', models.ManyToManyField(related_name='autonumberingschemes', through='specify.Autonumschdiv', to='specify.division')),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
             ],
             options={
                 'db_table': 'autonumberingscheme',
                 'ordering': (),
+            },
+        ),
+        migrations.CreateModel(
+            name='Autonumschdsp',
+            fields=[
+                ('id', models.AutoField(db_column='AutonumSchDspID', primary_key=True, serialize=False)),
+                ('autonumberingscheme', models.ForeignKey(db_column='AutoNumberingSchemeID', related_name="+", on_delete=specifyweb.specify.models.protect_with_blockers, to='specify.autonumberingscheme')),
+                ('discipline', models.ForeignKey(db_column='DisciplineID', related_name="+", on_delete=specifyweb.specify.models.protect_with_blockers, to='specify.discipline')),
+            ],
+            options={
+                'db_table': 'autonumsch_dsp',
+            },
+        ),
+        migrations.CreateModel(
+            name='Autonumschdiv',
+            fields=[
+                ('id', models.AutoField(db_column='AutonumSchDivID', primary_key=True, serialize=False)),
+                ('autonumberingscheme', models.ForeignKey(db_column='AutoNumberingSchemeID', related_name="+", on_delete=specifyweb.specify.models.protect_with_blockers, to='specify.autonumberingscheme')),
+                ('division', models.ForeignKey(db_column='DivisionID', related_name="+", on_delete=specifyweb.specify.models.protect_with_blockers, to='specify.division')),
+            ],
+            options={
+                'db_table': 'autonumsch_div',
+            },
+        ),
+        migrations.CreateModel(
+            name='Autonumschcoll',
+            fields=[
+                ('id', models.AutoField(db_column='AutonumSchCollID', primary_key=True, serialize=False)),
+                ('autonumberingscheme', models.ForeignKey(db_column='AutoNumberingSchemeID', related_name="+", on_delete=specifyweb.specify.models.protect_with_blockers, to='specify.autonumberingscheme')),
+                ('collection', models.ForeignKey(db_column='CollectionID', related_name="+", on_delete=specifyweb.specify.models.protect_with_blockers, to='specify.collection')),
+            ],
+            options={
+                'db_table': 'autonumsch_coll',
             },
         ),
         migrations.CreateModel(
@@ -6976,5 +7012,17 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name='accession',
             index=models.Index(fields=['dateaccessioned'], name='AccessionDateIDX'),
+        ),
+        migrations.AddConstraint(
+            model_name='autonumschdsp',
+            constraint=models.UniqueConstraint(fields=('autonumberingscheme', 'discipline'), name='autonumberingscheme_discipline'),
+        ),
+        migrations.AddConstraint(
+            model_name='autonumschdiv',
+            constraint=models.UniqueConstraint(fields=('autonumberingscheme', 'division'), name='autonumberingscheme_division'),
+        ),
+        migrations.AddConstraint(
+            model_name='autonumschcoll',
+            constraint=models.UniqueConstraint(fields=('autonumberingscheme', 'collection'), name='autonumberingscheme_collection'),
         ),
     ]

@@ -741,6 +741,26 @@ class Autonumberingscheme(models.Model):
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
+    # Relationships: Many-to-Many
+    collections = models.ManyToManyField(
+        "Collection",
+        through="Autonumschcoll",
+        through_fields=("autonumberingscheme", "collection"),
+        related_name="autonumberingschemes"
+    )
+    disciplines = models.ManyToManyField(
+        "Discipline",
+        through="Autonumschdsp",
+        through_fields=("autonumberingscheme", "discipline"),
+        related_name="autonumberingschemes"
+    )
+    divisions = models.ManyToManyField(
+        "Division",
+        through="Autonumschdiv",
+        through_fields=("autonumberingscheme", "division"),
+        related_name="autonumberingschemes"
+    )
+
     class Meta:
         db_table = 'autonumberingscheme'
         ordering = ()
@@ -7989,3 +8009,45 @@ class Tectonicunit(model_extras.Tectonicunit):
         ordering = ()
 
     save = partialmethod(custom_save)
+
+class Autonumschcoll(models.Model):
+    # specify_model = datamodel.get_table_strict("Autonumschcoll")
+
+    id = models.AutoField(primary_key=True, db_column='AutonumSchCollID')
+
+    autonumberingscheme = models.ForeignKey('Autonumberingscheme', db_column='AutoNumberingSchemeID', related_name="+", on_delete=protect_with_blockers)
+    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name="+", on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table='autonumsch_coll'
+        constraints = [
+            models.UniqueConstraint(fields=["autonumberingscheme", "collection"], name="autonumberingscheme_collection")
+        ]
+
+class Autonumschdsp(models.Model):
+    # specify_model = datamodel.get_table_strict("Autonumschdsp")
+
+    id = models.AutoField(primary_key=True, db_column='AutonumSchDspID')
+
+    autonumberingscheme = models.ForeignKey('Autonumberingscheme', db_column='AutoNumberingSchemeID', related_name="+", on_delete=protect_with_blockers)
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name="+", on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table='autonumsch_dsp'
+        constraints = [
+            models.UniqueConstraint(fields=["autonumberingscheme", "discipline"], name="autonumberingscheme_discipline")
+        ]
+
+class Autonumschdiv(models.Model):
+    # specify_model = datamodel.get_table_strict("Autonumschdiv")
+
+    id = models.AutoField(primary_key=True, db_column='AutonumSchDivID')
+
+    autonumberingscheme = models.ForeignKey('Autonumberingscheme', db_column='AutoNumberingSchemeID', related_name="+", on_delete=protect_with_blockers)
+    division = models.ForeignKey('Division', db_column='DivisionID', related_name="+", on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table='autonumsch_div'
+        constraints = [
+            models.UniqueConstraint(fields=["autonumberingscheme", "division"], name="autonumberingscheme_division")
+        ]
