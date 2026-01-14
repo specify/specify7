@@ -2,6 +2,9 @@ from django.db import transaction
 from django.db.models import Model as DjangoModel
 from typing import Type, Optional, List
 from pathlib import Path
+from uuid import uuid4
+from specifyweb.backend.trees.utils import create_default_tree_task
+import requests
 
 from .utils import load_json_from_file
 from specifyweb.backend.trees.utils import initialize_default_tree
@@ -17,9 +20,18 @@ DEFAULT_TREE_RANKS_FILES = {
     'Lithostrat': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'lithostrat_tree.json',
     'Tectonicunit': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'tectonicunit_tree.json'
 }
+DEFAULT_TREE_URLS = {
+    'Geography': 'https://files.specifysoftware.org/geographyfiles/geonames.csv',
+    'Geologictimeperiod': 'https://files.specifysoftware.org/treerows/geography.json',
+}
+DEFAULT_TREE_MAPPING_URLS = {
+    'Geography': 'https://files.specifysoftware.org/treerows/geography.json',
+    'Geologictimeperiod': 'https://files.specifysoftware.org/treerows/geologictimeperiod.json',
+}
 
 def create_default_tree(tree_type: str, kwargs: dict, user_rank_cfg: dict, preload_tree: Optional[str]):
     """Creates an initial empty tree. This should not be used outside of the initial database setup."""
+    from specifyweb.specify.models import Collection
     # Load all default ranks for this type of tree
     rank_data = load_json_from_file(DEFAULT_TREE_RANKS_FILES.get(tree_type))
     if rank_data is None:
@@ -62,14 +74,21 @@ def create_default_tree(tree_type: str, kwargs: dict, user_rank_cfg: dict, prelo
 
     tree_def = initialize_default_tree(tree_type.lower(), discipline_or_institution, tree_type.title(), rank_cfg, kwargs['fullnamedirection'])
 
-    # TODO: Preload tree
-    # if preload_tree is not None:
-    #     task_id = str(uuid4())
-    #     create_default_tree_task.apply_async(
-    #         args=[url, discipline.id, tree_discipline_name, request.specify_collection.id, request.specify_user.id, tree_cfg, row_count, tree_name],
-    #         task_id=f"create_default_tree_{tree_discipline_name}_{task_id}",
-    #         taskid=task_id
-    #     )
+    if preload_tree is not None:
+        collection = Collection.objects.last()
+
+        url = DEFAULT_TREE_URLS.get(tree_type)
+        mapping_url = DEFAULT_TREE_MAPPING_URLS.get(tree_type)
+        resp = requests.get(mapping_url)
+        resp.raise_for_status()
+        tree_cfg = resp.json()
+
+        task_id = str(uuid4())
+        create_default_tree_task.apply_async(
+            args=[url, discipline_or_institution.id, tree_type.lower(), collection, False, tree_cfg, 0, tree_type.title()],
+            task_id=f"create_default_tree_{tree_type}_{task_id}",
+            taskid=task_id
+        )
 
     return tree_def
     

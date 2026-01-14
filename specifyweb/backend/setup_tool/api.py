@@ -393,8 +393,7 @@ def create_tree(name: str, data: dict) -> dict:
     ranks = data.pop('ranks', dict())
 
     # Pre-load Default Tree
-    # TODO: trees/create_default_trees
-    preload_tree = data.pop('default', None)
+    preload_tree = data.pop('preload', None)
     
     try:
         kwargs = {}

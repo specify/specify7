@@ -200,16 +200,6 @@ export const resources: RA<ResourceConfig> = [
         description: setupToolText.institutionIsAccessionGlobalDescription(),
         type: 'boolean',
       },
-      /*
-       * {
-       *   name: 'isSingleGeographyTree',
-       *   label: setupToolText_institutionIsSingleGeographyTree(),  // underscore in comment to avoid failing test
-       *   description:
-       *     setupToolText_institutionIsSingleGeographyTreeDescription(),
-       *   type: 'boolean',
-       *   default: false,
-       * },
-       */
     ],
   },
   {
@@ -291,13 +281,11 @@ export const resources: RA<ResourceConfig> = [
         required: true,
         default: fullNameDirections[0].value.toString(),
       },
-      /*
-       * {
-       *   name: 'default',
-       *   label: setupToolText_defaultTree(), // underscore in comment to avoid failing test
-       *   type: 'boolean',
-       * },
-       */
+      {
+        name: 'preload',
+        label: setupToolText.preloadTree(),
+        type: 'boolean',
+      },
     ],
   },
   {
@@ -324,14 +312,11 @@ export const resources: RA<ResourceConfig> = [
         required: true,
         default: fullNameDirections[0].value.toString(),
       },
-      /*
-       * TODO: Select which Taxon tree to import (Re-use dialog from default tree creation in tree viewer)
-       * {
-       *   name: 'default',
-       *   label: setupToolText_defaultTree(), // underscore in comment to avoid failing test
-       *   type: 'boolean',
-       * },
-       */
+      {
+        name: 'preload',
+        label: setupToolText.preloadTree(),
+        type: 'boolean',
+      },
     ],
   },
   {

@@ -139,11 +139,9 @@ export const setupToolText = createDictionary({
   taxonTree: {
     'en-us': 'Taxon Tree',
   },
-  /*
-   * DefaultTree: {
-   *   'en-us': 'Pre-load Default Tree'
-   * },
-   */
+  preloadTree: {
+    'en-us': 'Pre-load  Tree'
+  },
 
   // Division
   division: {

@@ -259,22 +259,23 @@ def add_default_tree_record(tree_type: str, row: dict, tree_name: str, tree_cfg:
 
 @app.task(base=LogErrorsTask, bind=True)
 def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline_name: str, specify_collection_id: int,
-                             specify_user_id: int, tree_cfg: dict, row_count: Optional[int], initial_tree_name: str):
+                             specify_user_id: Optional[int], tree_cfg: dict, row_count: Optional[int], initial_tree_name: str):
     logger.info(f'starting task {str(self.request.id)}')
 
-    specify_user = spmodels.Specifyuser.objects.get(id=specify_user_id)
     discipline = spmodels.Discipline.objects.get(id=discipline_id)
     tree_name = initial_tree_name # Name will be uniquified on tree creation
 
-    Message.objects.create(
-        user=specify_user,
-        content=json.dumps({
-            'type': 'create-default-tree-starting',
-            'name': initial_tree_name,
-            'taskid': str(self.request.id),
-            'collection_id': specify_collection_id,
-        })
-    )
+    if specify_user_id:
+        specify_user = spmodels.Specifyuser.objects.get(id=specify_user_id)
+        Message.objects.create(
+            user=specify_user,
+            content=json.dumps({
+                'type': 'create-default-tree-starting',
+                'name': initial_tree_name,
+                'taskid': str(self.request.id),
+                'collection_id': specify_collection_id,
+            })
+        )
 
     current = 0
     total = 1
@@ -326,27 +327,29 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
                 add_default_tree_record(tree_type, row, tree_name, tree_cfg)
                 progress(1, 0)
     except Exception as e:
+        if specify_user_id:
+            Message.objects.create(
+                user=specify_user,
+                content=json.dumps({
+                    'type': 'create-default-tree-failed',
+                    'name': tree_name,
+                    'taskid': str(self.request.id),
+                    'collection_id': specify_collection_id,
+                    # 'error': str(e)
+                })
+            )
+        raise
+
+    if specify_user_id:
         Message.objects.create(
             user=specify_user,
             content=json.dumps({
-                'type': 'create-default-tree-failed',
+                'type': 'create-default-tree-completed',
                 'name': tree_name,
                 'taskid': str(self.request.id),
                 'collection_id': specify_collection_id,
-                # 'error': str(e)
             })
         )
-        raise
-
-    Message.objects.create(
-        user=specify_user,
-        content=json.dumps({
-            'type': 'create-default-tree-completed',
-            'name': tree_name,
-            'taskid': str(self.request.id),
-            'collection_id': specify_collection_id,
-        })
-    )
 
 def stream_csv_from_url(url: str) -> Iterator[Dict[str, str]]:
     """
