@@ -31,6 +31,7 @@ class Migration(migrations.Migration):
                 ('loginouttime', models.DateTimeField(blank=True, db_column='LoginOutTime', null=True)),
                 ('name', models.CharField(db_column='Name', max_length=64, unique=True)),
                 ('password', models.CharField(db_column='Password', max_length=255)),
+                ('spprincipals', models.ManyToManyField(related_name='spprincipals', through='specify.Specifyuser_spprincipal', to='specify.spprincipal')),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('usertype', models.CharField(blank=True, db_column='UserType', max_length=32, null=True)),
@@ -1953,6 +1954,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(db_column='Name', max_length=64)),
                 ('priority', models.SmallIntegerField(db_column='Priority')),
                 ('remarks', models.TextField(blank=True, db_column='Remarks', null=True)),
+                ('sppermissions', models.ManyToManyField(related_name='spprincipals', through='specify.Spprincipal_sppermission', to='specify.sppermission')),
                 ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
@@ -1963,6 +1965,28 @@ class Migration(migrations.Migration):
             options={
                 'db_table': 'spprincipal',
                 'ordering': (),
+            },
+        ),
+        migrations.CreateModel(
+            name='Spprincipal_sppermission',
+            fields=[
+                ('id', models.AutoField(db_column='SpPrincipalSpPermissionID', primary_key=True, serialize=False)),
+                ('sppermission', models.ForeignKey(db_column='SpPermissionID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.sppermission')),
+                ('spprincipal', models.ForeignKey(db_column='SpPrincipalID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.spprincipal')),
+            ],
+            options={
+                'db_table': 'spprincipal_sppermission',
+            },
+        ),
+        migrations.CreateModel(
+            name='Specifyuser_spprincipal',
+            fields=[
+                ('id', models.AutoField(db_column='SpeicfyuserSpPrincipalID', primary_key=True, serialize=False)),
+                ('specifyuser', models.ForeignKey(db_column='SpecifyUserID', on_delete=django.db.models.deletion.CASCADE, related_name='+', to=settings.AUTH_USER_MODEL)),
+                ('spprincipal', models.ForeignKey(db_column='SpPrincipalID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.spprincipal')),
+            ],
+            options={
+                'db_table': 'specifyuser_spprincipal',
             },
         ),
         migrations.CreateModel(
@@ -7024,5 +7048,13 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name='autonumschcoll',
             constraint=models.UniqueConstraint(fields=('autonumberingscheme', 'collection'), name='autonumberingscheme_collection'),
+        ),
+        migrations.AddConstraint(
+            model_name='spprincipal_sppermission',
+            constraint=models.UniqueConstraint(fields=('spprincipal', 'sppermission'), name='spprincipal_sppermission'),
+        ),
+        migrations.AddConstraint(
+            model_name='specifyuser_spprincipal',
+            constraint=models.UniqueConstraint(fields=('specifyuser', 'spprincipal'), name='specifyuser_spprincipal'),
         ),
     ]

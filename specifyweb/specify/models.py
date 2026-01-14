@@ -6329,6 +6329,14 @@ class Spprincipal(models.Model):
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     userGroupScopeID = models.IntegerField(blank=True, null=True, db_column='userGroupScopeID')
 
+    # Relationships: Many-to-Many
+    sppermissions = models.ManyToManyField(
+        "SpPermission",
+        through="Spprincipal_sppermission",
+        through_fields=("spprincipal", "sppermission"),
+        related_name="spprincipals"
+    )
+
     class Meta:
         db_table = 'spprincipal'
         ordering = ()
@@ -6628,6 +6636,14 @@ class Specifyuser(model_extras.Specifyuser):
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+
+    # Relationships: Many-to-Many
+    spprincipals = models.ManyToManyField(
+        "SpPrincipal",
+        through="Specifyuser_spprincipal",
+        through_fields=("specifyuser", "spprincipal"),
+        related_name="spprincipals"
+    )
 
     class Meta:
         db_table = 'specifyuser'
@@ -8050,4 +8066,28 @@ class Autonumschdiv(models.Model):
         db_table='autonumsch_div'
         constraints = [
             models.UniqueConstraint(fields=["autonumberingscheme", "division"], name="autonumberingscheme_division")
+        ]
+
+class Specifyuser_spprincipal(models.Model):
+    id = models.AutoField(primary_key=True, db_column='SpeicfyuserSpPrincipalID')
+
+    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', on_delete=models.CASCADE, related_name="+")
+    spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', on_delete=protect_with_blockers, related_name="+")
+
+    class Meta:
+        db_table = 'specifyuser_spprincipal'
+        constraints = [
+            models.UniqueConstraint(fields=["specifyuser", "spprincipal"], name="specifyuser_spprincipal")
+        ]
+
+class Spprincipal_sppermission(models.Model):
+    id = models.AutoField(primary_key=True, db_column='SpPrincipalSpPermissionID')
+
+    sppermission = models.ForeignKey('SpPermission', db_column='SpPermissionID', related_name="+", on_delete=protect_with_blockers)
+    spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', related_name="+", on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'spprincipal_sppermission'
+        constraints = [
+            models.UniqueConstraint(fields=["spprincipal", "sppermission"], name="spprincipal_sppermission")
         ]
