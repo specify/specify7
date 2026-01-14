@@ -175,6 +175,14 @@ export const routes: RA<EnhancedRoute> = [
     ],
   },
   {
+    path: 'system-configuration',
+    title: userText.securityPanel(),
+    element: () =>
+      import('../SystemConfigurationTool/SystemConfigTool').then(
+        ({ SystemConfigurationTool }) => SystemConfigurationTool
+      ),
+  },
+  {
     path: 'attachments',
     children: [
       {

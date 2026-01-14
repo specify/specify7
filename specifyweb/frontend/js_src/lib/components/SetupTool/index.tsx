@@ -253,9 +253,7 @@ export function SetupTool({
       <header className="w-full bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 relative z-20">
         <div className="w-full flex flex-col items-center justify-center gap-2 py-3">
           <img className="w-auto h-12 mx-auto" src="/static/img/logo.svg" />
-          <H2 className="text-2xl">
-            {setupToolText.guidedSetup()}
-          </H2>
+          <H2 className="text-2xl">{setupToolText.guidedSetup()}</H2>
         </div>
       </header>
       <Container.FullGray className="overflow-auto w-full items-center shadow-none">
