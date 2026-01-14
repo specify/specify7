@@ -5603,6 +5603,14 @@ class Project(models.Model):
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
+    # Relationships: Many-to-Many
+    collectionobjects = models.ManyToManyField(
+        'CollectionObject',
+        through="Project_colobj",
+        through_fields=("project", "collectionobject"),
+        related_name="projects"
+    )
+
     class Meta:
         db_table = 'project'
         ordering = ()
@@ -8090,4 +8098,16 @@ class Spprincipal_sppermission(models.Model):
         db_table = 'spprincipal_sppermission'
         constraints = [
             models.UniqueConstraint(fields=["spprincipal", "sppermission"], name="spprincipal_sppermission")
+        ]
+
+class Project_colobj(models.Model):
+    id = models.AutoField(primary_key=True, db_column='ProjectColObjID')
+
+    project = models.ForeignKey('Project', db_column='ProjectID', related_name="+", on_delete=protect_with_blockers)
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name="+", on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'project_colobj'
+        constraints = [
+            models.UniqueConstraint(fields=["project", "collectionobject"], name="project_collectionobject")
         ]

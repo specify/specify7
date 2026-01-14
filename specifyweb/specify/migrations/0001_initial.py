@@ -3216,6 +3216,7 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('yesno1', models.BooleanField(blank=True, db_column='YesNo1', null=True)),
                 ('yesno2', models.BooleanField(blank=True, db_column='YesNo2', null=True)),
+                ('collectionobjects', models.ManyToManyField(related_name='projects', through='specify.Project_colobj', to='specify.collectionobject')),
                 ('agent', models.ForeignKey(db_column='ProjectAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
@@ -3223,6 +3224,17 @@ class Migration(migrations.Migration):
             options={
                 'db_table': 'project',
                 'ordering': (),
+            },
+        ),
+        migrations.CreateModel(
+            name='Project_colobj',
+            fields=[
+                ('id', models.AutoField(db_column='ProjectColObjID', primary_key=True, serialize=False)),
+                ('collectionobject', models.ForeignKey(db_column='CollectionObjectID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.collectionobject')),
+                ('project', models.ForeignKey(db_column='ProjectID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.project')),
+            ],
+            options={
+                'db_table': 'project_colobj',
             },
         ),
         migrations.CreateModel(
@@ -7056,5 +7068,9 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name='specifyuser_spprincipal',
             constraint=models.UniqueConstraint(fields=('specifyuser', 'spprincipal'), name='specifyuser_spprincipal'),
+        ),
+        migrations.AddConstraint(
+            model_name='project_colobj',
+            constraint=models.UniqueConstraint(fields=('project', 'collectionobject'), name='project_collectionobject'),
         ),
     ]
