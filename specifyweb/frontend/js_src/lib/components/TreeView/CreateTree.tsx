@@ -2,12 +2,17 @@ import React from 'react';
 
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-import type { DeepPartial } from '../../utils/types';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
+import { ping } from '../../utils/ajax/ping';
+import type { DeepPartial, RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
-import { Ul } from '../Atoms';
+import { H2, Ul } from '../Atoms';
+import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
+import { LoadingContext } from '../Core/Contexts';
 import type {
   AnySchema,
   AnyTree,
@@ -17,10 +22,33 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { deserializeResource } from '../DataModel/serializers';
 import type { TaxonTreeDef } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
+import { getSystemInfo } from '../InitialContext/systemInfo';
 import type { TreeInformation } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { defaultTreeDefs } from './defaults';
+
+type TaxonFileDefaultDefinition = {
+  readonly discipline: string;
+  readonly title: string;
+  readonly coverage: string;
+  readonly file: string;
+  readonly mappingFile: string;
+  readonly src: string;
+  readonly size: number;
+  readonly rows: number;
+  readonly description: string;
+};
+type TaxonFileDefaultList = RA<TaxonFileDefaultDefinition>;
+type TreeCreationInfo = {
+  readonly message: string;
+  readonly task_id?: string;
+}
+type TreeCreationProgressInfo = {
+  readonly taskstatus: string;
+  readonly taskprogress: any;
+  readonly taskid: string;
+}
 
 export function CreateTree<
   SCHEMA extends AnyTree,
@@ -34,13 +62,64 @@ export function CreateTree<
 }): JSX.Element {
   const treeNameArray = treeDefinitions.map((tree) => tree.definition.name);
 
+  const loading = React.useContext(LoadingContext);
   const [isActive, setIsActive] = React.useState(0);
+  const [isTreeCreationStarted, setIsTreeCreationStarted] = React.useState(false);
+  const [treeCreationTaskId, setTreeCreationTaskId] = React.useState<string | undefined>(undefined);
 
   const [selectedResource, setSelectedResource] = React.useState<
     SpecifyResource<AnySchema> | undefined
   >(undefined);
 
-  const handleClick = (
+  const [treeOptions, setTreeOptions] = React.useState<
+    TaxonFileDefaultList | undefined
+  >(undefined);
+
+  // Fetch list of available default trees.
+  React.useEffect(() => {
+    fetch('https://files.specifysoftware.org/taxonfiles/taxonfiles.json')
+      .then(async (response) => response.json())
+      .then((data: TaxonFileDefaultList) => {
+        setTreeOptions(data);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch tree options:', error);
+      });
+  }, []);
+
+  const connectedCollection = getSystemInfo().collection;
+
+  // Start default tree creation
+  const handleClick = async (resource: TaxonFileDefaultDefinition): Promise<void> => {
+    setIsTreeCreationStarted(true);
+    return ajax<TreeCreationInfo>('/trees/create_default_tree/', {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: {
+        url: resource.file,
+        mappingUrl: resource.mappingFile,
+        collection: connectedCollection,
+        disciplineName: resource.discipline,
+        rowCount: resource.rows,
+        treeName: resource.title,
+      },
+    })
+      .then(({ data, status }) => {
+        if (status === Http.OK) {
+          console.log(`${resource.title} tree created successfully:`, data);
+        } else if (status === Http.ACCEPTED) {
+          // Tree is being created in the background.
+          console.log(`${resource.title} tree creation started successfully:`, data);
+          setTreeCreationTaskId(data.task_id);
+        }
+      })
+      .catch((error) => {
+        console.error(`Request failed for ${resource.file}:`, error);
+        throw error;
+      });
+  }
+
+  const handleClickEmptyTree = (
     resource: DeepPartial<SerializedResource<TaxonTreeDef>>
   ) => {
     const uniqueName = getUniqueName(
@@ -77,15 +156,64 @@ export function CreateTree<
           header={treeText.addTree()}
           onClose={() => setIsActive(0)}
         >
-          <Ul className="flex flex-col gap-2">
-            {defaultTreeDefs.map((resource, index) => (
-              <li key={index}>
-                <Button.LikeLink onClick={(): void => handleClick(resource)}>
-                  {localized(resource.name)}
-                </Button.LikeLink>
-              </li>
-            ))}
-          </Ul>
+          <div className="flex flex-col gap-5">
+            <section>
+              <Ul className="flex flex-col gap-2">
+                <H2>{treeText.populatedTrees()}</H2>
+                {treeOptions === undefined
+                  ? undefined
+                  : treeOptions.map((resource, index) => (
+                      <li key={index}>
+                        <Button.LikeLink
+                          onClick={(): void => {
+                            loading(
+                              handleClick(resource).catch(console.error)
+                            );
+                          }}
+                        >
+                          {localized(resource.title)}
+                        </Button.LikeLink>
+                        <div className="text-xs text-gray-500">
+                          {resource.description}
+                        </div>
+                        <div className="text-xs text-gray-400 italic">
+                          {`Source: ${resource.src}`}
+                        </div>
+                      </li>
+                    ))}
+              </Ul>
+            </section>
+            <section>
+              <Ul className="flex flex-col gap-2">
+                <H2>{treeText.emptyTrees()}</H2>
+                {defaultTreeDefs.map((resource, index) => (
+                  <li key={index}>
+                    <Button.LikeLink
+                      onClick={(): void => handleClickEmptyTree(resource)}
+                    >
+                      {localized(resource.name)}
+                    </Button.LikeLink>
+                  </li>
+                ))}
+              </Ul>
+            </section>
+          </div>
+          <>
+            {isTreeCreationStarted && treeCreationTaskId ? (
+              <TreeCreationProgressDialog
+                taskId={treeCreationTaskId}
+                onClose={() => {
+                  setIsTreeCreationStarted(false);
+                  setTreeCreationTaskId(undefined);
+                  setIsActive(0);
+                }}
+                onStopped={() => {
+                  setIsTreeCreationStarted(false);
+                  setTreeCreationTaskId(undefined);
+                }}
+              />
+            ) : undefined}
+          </>
         </Dialog>
       ) : null}
       {isActive === 2 && selectedResource !== undefined ? (
@@ -101,5 +229,87 @@ export function CreateTree<
         />
       ) : null}
     </>
+  );
+}
+
+export function TreeCreationProgressDialog({
+  taskId,
+  onClose,
+  onStopped,
+}: {
+  readonly taskId: string;
+  readonly onClose: () => void;
+  readonly onStopped: () => void;
+}): JSX.Element | null {
+  const loading = React.useContext(LoadingContext);
+  const [progress, setProgress] = React.useState<number | undefined>(undefined);
+  const [progressTotal, setProgressTotal] = React.useState<number>(1);
+
+  const handleStop = async (): Promise<void> => {
+    ping(
+      `/trees/create_default_tree/abort/${taskId}/`,
+      {
+        method: 'POST',
+        body: {},
+      }
+    )
+      .then((status) => {
+        if (status === Http.NO_CONTENT) {
+          onStopped();
+        }
+      })
+  }
+
+  // Poll for tree creation progress
+  React.useEffect(() => {
+    const interval = setInterval(
+      async () =>
+        ajax<TreeCreationProgressInfo>(`/trees/create_default_tree/status/${taskId}/`, {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+          errorMode: 'silent',
+        })
+          .then(({ data }) => {
+            if (data.taskstatus === 'RUNNING') {
+              setProgress(data.taskprogress.current ?? 0);
+              setProgressTotal(data.taskprogress.total ?? 1);
+            } else if (data.taskstatus === 'FAILURE') {
+              onStopped();
+              throw data.taskprogress;
+            } else if (data.taskstatus === 'SUCCESS') {
+              globalThis.location.reload();
+            }
+          }),
+      5000
+    );
+    return () => clearInterval(interval);
+  }, [taskId]);
+
+  return (
+    <Dialog
+      buttons={
+        <>
+          <Button.Danger onClick={() => {loading(handleStop())}}>
+            {commonText.cancel()}
+          </Button.Danger>
+          <Button.DialogClose component={Button.BorderedGray}>
+            {commonText.close()}
+          </Button.DialogClose>
+        </>
+      }
+      header={treeText.defaultTreeCreationStarted()}
+      onClose={onClose}
+    >
+      <>
+        {progress === undefined
+          ? null
+          : treeText.defaultTreeCreationProgress({
+              current: progress,
+              total: progressTotal,
+            })}
+        <Progress max={progressTotal} value={progress ?? 0} />
+      </>
+      {treeText.defaultTreeCreationStartedDescription()}
+    </Dialog>
   );
 }
