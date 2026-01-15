@@ -1,6 +1,7 @@
 from django.db import connection, transaction
 from contextlib import contextmanager
 import logging
+import sys
 
 logger = logging.getLogger(__name__)
 
@@ -57,11 +58,22 @@ def mysql_named_lock(lock_name: str, timeout: int = 10):
     try:
         yield
     finally:
+        in_flight_exc = sys.exc_info()[0] is not None
         try:
             with connection.cursor() as cur:
                 cur.execute("SELECT RELEASE_LOCK(%s)", [lock_name])
+                released = cur.fetchone()[0]  # 1 released, 0 not released
+            if released != 1:
+                msg = f"RELEASE_LOCK({lock_name!r}) returned {released!r} (lock may still be held)"
+                logger.error(msg)
+                connection.close()
+                if not in_flight_exc:
+                    raise RuntimeError(msg)
         except Exception:
-            logger.info("Failed to release MySQL named lock %r", lock_name, exc_info=True)
+            logger.error("Failed to release MySQL named lock %r; closing DB connection", lock_name, exc_info=True)
+            connection.close()
+            if not in_flight_exc:
+                raise
 
 def get_autonumbering_lock_name(db_name, table_name):
     return f"autonumbering:{db_name.lower()}:{table_name.lower()}"
