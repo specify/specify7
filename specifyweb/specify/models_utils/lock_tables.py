@@ -38,7 +38,9 @@ def mysql_named_lock(lock_name: str, timeout: int = 10):
         cur.execute("SELECT GET_LOCK(%s, %s)", [lock_name, timeout])
         got = cur.fetchone()[0]
 
-    if not got:
+    if got == 1:
+        pass # acquired
+    elif got == 0:
         with connection.cursor() as cur:
                 cur.execute("SELECT IS_USED_LOCK(%s)", [lock_name])
                 locking_db_process_id = cur.fetchone()[0]
@@ -54,6 +56,12 @@ def mysql_named_lock(lock_name: str, timeout: int = 10):
                         lock_name
                     )
         raise TimeoutError(f"Could not acquire MySQL named lock {lock_name!r}")
+    elif got is None:
+        logger.error("GET_LOCK(%r, %r) returned NULL (lock acquisition error)", lock_name, timeout)
+        raise RuntimeError(f"GET_LOCK returned NULL for {lock_name!r} (lock acquisition error)")
+    else:
+        logger.error("Unexpected GET_LOCK return value %r for lock %r", got, lock_name)
+        raise RuntimeError(f"Unexpected GET_LOCK return value {got!r} for {lock_name!r}")
 
     try:
         yield
