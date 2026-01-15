@@ -23,6 +23,7 @@ import { strictGetTable } from '../DataModel/tables';
 import type { Attachment, Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { ActionState } from './ActionState';
 import type { AttachmentUploadSpec, EagerDataSet } from './Import';
 import { PerformAttachmentTask } from './PerformAttachmentTask';
@@ -328,6 +329,12 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
 
   if (dryRun) return getUploadableCommited({ status: record });
 
+  const [attachmentIsPublicDefault] = collectionPreferences.use(
+    'general',
+    'attachments',
+    'attachment.is_public_default'
+  );
+
   /*
    * TODO: Make this smarter if it causes performance problems.
    * Fetch multiple tokens at once
@@ -347,15 +354,17 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
          */
         token === undefined
           ? undefined
-          : uploadFile(
-              uploadableFile.uploadFile.file as File,
-              () => undefined,
-              token === undefined ||
+          : uploadFile({
+              file: uploadableFile.uploadFile.file as File,
+              handleProgress: () => undefined,
+              uploadAttachmentSpec:
+                token === undefined ||
                 uploadAttachmentSpec?.attachmentLocation === undefined
-                ? undefined
-                : { ...uploadAttachmentSpec, token },
-              false
-            )
+                  ? undefined
+                  : { ...uploadAttachmentSpec, token },
+              strict: false,
+              attachmentIsPublicDefault,
+            })
       )
       .catch(triggerRetry));
 
