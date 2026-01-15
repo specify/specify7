@@ -74,7 +74,10 @@ def initialize_default_tree(tree_type: str, discipline_or_institution, tree_name
         if treedefitems_bulk:
             tree_rank_model.objects.bulk_create(treedefitems_bulk, ignore_conflicts=False)
 
-            create_default_root(tree_def, tree_type)
+            # Create a root node
+            # New taxon trees are expected to be empty
+            if tree_type != 'taxon':
+                create_default_root(tree_def, tree_type)
 
         return tree_def
 
@@ -230,8 +233,6 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
                 # Import into exisiting tree
                 tree_def_model, tree_rank_model, tree_node_model = get_models(tree_type)
                 tree_def = tree_def_model.objects.filter(pk=existing_tree_def_id).first()
-                if tree_def:
-                    create_default_root(tree_def, tree_type)
 
             if tree_def is None:
                 # Create a new empty tree. Get rank configuration from the mapping.
@@ -257,6 +258,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
                     auto_rank_id += 10
                 tree_def = initialize_default_tree(tree_type, discipline, initial_tree_name, rank_cfg, full_name_direction)
             
+            create_default_root(tree_def, tree_type)
             tree_name = tree_def.name
             
             # Start importing CSV data
