@@ -73,30 +73,29 @@ export const interactionsText = createDictionary({
   },
   byChoosingRecordSet: {
     comment: 'See documentation for syntax for plural rules',
-    'en-us': 'By choosing a recordset ({{count:none | one | ??}} available)',
-    'ru-ru': 'Выбрав набор записей (доступно {{count:none | one | ??}})',
-    'es-es':
-      'Al elegir un conjunto de registros ({{count:none | one | ??}} disponibles)',
-    'fr-fr':
-      "En choisissant un ensemble d'enregistrements ({{count:none | one | ??}} disponible)",
-    'uk-ua': 'Вибравши набір записів (доступно {{count:none | one | ??}})',
-    'de-ch':
-      'Durch wählen eines Datensatzes ({{count:none | one | ??}} available)',
-    'pt-br':
-      'Ao escolher um conjunto de registros ({{count:none | one | ??}} disponível)',
+    'en-us': 'Choose a {recordSet:string} ({count:number|formatted} available)',
   },
   byEnteringNumbers: {
     comment: `
       Field name is localized. Coming from Schema Configuration. I.e, By
       entering Catalog Numbers
     `,
-    'en-us': 'By entering {fieldName:string}s',
-    'ru-ru': 'Введя {fieldName:string}s',
-    'es-es': 'Ingresando {fieldName:string}s',
-    'fr-fr': 'En saisissant les {fieldName:string}',
-    'uk-ua': 'Ввівши {fieldName:string}s',
-    'de-ch': 'Durch Eingabe von {fieldName:string}s',
-    'pt-br': 'Ao inserir {fieldName:string}s',
+    'en-us': 'Enter {tableName:string} {fieldName:string}s',
+    'de-ch': '{tableName:string} {fieldName:string}s eingeben',
+    'es-es': 'Ingrese {tableName:string} {fieldName:string}s',
+    'fr-fr': 'Saisir des {fieldName:string}s de {tableName:string}',
+    'ru-ru': 'Введите {fieldName:string} {tableName:string}',
+    'uk-ua': 'Введіть {fieldName:string} {tableName:string}',
+    'pt-br': 'Insira {tableName:string} {fieldName:string}s',
+  },
+  enterLoanNumbers: {
+    'en-us': 'Enter {fieldName: string}s',
+    'de-ch': 'Geben Sie {fieldName: string}s ein',
+    'es-es': 'Ingrese {fieldName: string}s',
+    'fr-fr': 'Saisir des {fieldName: string}s',
+    'ru-ru': 'Введите {fieldName: string}s',
+    'uk-ua': 'Введіть {fieldName: string}s',
+    'pt-br': 'Insira {fieldName: string}s',
   },
   withoutPreparations: {
     'en-us': 'Without preparations',
@@ -382,15 +381,7 @@ export const interactionsText = createDictionary({
   },
   noPreparationsWarning: {
     'en-us':
-      'None of these objects have preparations. Would you like to continue?',
-    'de-ch':
-      'Keines dieser Objekte weist Vorbereitungen auf. Möchten Sie fortfahren?',
-    'es-es':
-      'Ninguno de estos objetos tiene preparaciones. ¿Quieres continuar?',
-    'fr-fr': "Aucun de ces objets n'est préparé. Souhaitez-vous continuer ?",
-    'ru-ru': 'Ни один из этих объектов не имеет подготовки. Хотите продолжить?',
-    'uk-ua': "Жоден з цих об'єктів не має підготовки. Бажаєте продовжити?",
-    'pt-br': 'Nenhum desses objetos possui preparações. Deseja continuar?',
+      'None of these records have preparations. Would you like to continue?',
   },
   continue: {
     'en-us': 'Continue',
