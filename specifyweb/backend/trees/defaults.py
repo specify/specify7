@@ -86,6 +86,16 @@ def create_default_root(tree_def, tree_type: str):
     # TODO: Avoid having duplicated code from add_root endpoint
     tree_def_model, tree_rank_model, tree_node_model = get_models(tree_type)
     root_rank = tree_rank_model.objects.get(treedef=tree_def, rankid=0)
+
+    # Don't create a root if one already exists
+    existing_root = tree_node_model.objects.filter(
+        definition=tree_def,
+        definitionitem=root_rank
+    ).first()
+    
+    if existing_root:
+        return existing_root
+
     tree_node, _ = tree_node_model.objects.get_or_create(
         name=TREE_ROOT_NODES.get(tree_type, "Root"),
         fullname=TREE_ROOT_NODES.get(tree_type, "Root"),
