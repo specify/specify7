@@ -39,8 +39,7 @@ def autonumber_and_save(collection, user, obj) -> None:
 
 
 def do_autonumbering_old(collection, obj, fields: list[tuple[UIFormatter, Sequence[str]]]) -> None:
-    # THis is the old implementation of autonumbering involving lock mysql table explicitly.
-    # Fall back to using this implementation if race-conditions are found.
+    # This is the old implementation of autonumbering involving lock mysql table explicitly.
     logger.debug("autonumbering %s fields: %s", obj, fields)
 
     # The autonumber action is prepared and thunked outside the locked table
@@ -51,12 +50,10 @@ def do_autonumbering_old(collection, obj, fields: list[tuple[UIFormatter, Sequen
         for formatter, vals in fields
     ]
 
-    # Serialize the autonumbering critical section without table locks.
-    db_name = transaction.get_connection().alias
-    table_name = obj._meta.db_table
-    with autonumbering_lock_table(db_name, table_name):
+    with lock_tables(*get_tables_to_lock(collection, obj, [formatter.field_name for formatter, _ in fields])):
         for apply_autonumbering_to in thunks:
             apply_autonumbering_to(obj)
+
         obj.save()
 
 def do_autonumbering(collection, obj, fields: list[tuple[UIFormatter, Sequence[str]]]) -> None:
