@@ -32,7 +32,10 @@ def autonumber_and_save(collection, user, obj) -> None:
         do_autonumbering(collection, obj, autonumber_fields)
     else:
         logger.debug("no fields to autonumber for %s", obj)
-        obj.save()
+        if hasattr(obj, "_requires_collection_user"):
+            obj.save(collection=collection, user=user)
+        else:
+            obj.save()
 
 
 def do_autonumbering_old(collection, obj, fields: list[tuple[UIFormatter, Sequence[str]]]) -> None:
