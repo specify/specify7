@@ -770,15 +770,4 @@ export const treeText = createDictionary({
     'uk-ua':
       'Якщо це ввімкнено, користувачі можуть додавати дочірні елементи до синонімізованих батьківських елементів та синонімізувати вузол з дочірніми елементами.',
   },
-  populatedTrees: {
-    'en-us': 'Populated trees',
-  },
-  emptyTrees: {
-    'en-us': 'Empty Trees',
-  },
-  defaultTreeCreationProgress: {
-    comment: 'E.x, Creating tree record 999/1,000',
-    'en-us':
-      'Creating tree record {current:number|formatted}/{total:number|formatted}',
-  },
 } as const);

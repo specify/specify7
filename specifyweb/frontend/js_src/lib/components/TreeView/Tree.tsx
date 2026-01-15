@@ -224,9 +224,7 @@ export function Tree<
             icon="plus"
             title={treeText.addRootNode()}
             onClick={createRootNode}
-          >
-            {treeText.addRootNode()}
-          </Button.Icon>
+          />
           {treeDefId ? (
             <ImportTree
               tableName={tableName}

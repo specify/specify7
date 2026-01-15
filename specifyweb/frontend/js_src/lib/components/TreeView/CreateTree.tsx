@@ -246,9 +246,7 @@ export function ImportTree<
           onClick={() => {
             setIsActive(1);
           }}
-        >
-          {commonText.import()}
-        </Button.Icon>
+        />
       ) : null}
       {isActive === 1 ? (
         <Dialog
