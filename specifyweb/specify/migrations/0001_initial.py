@@ -7033,7 +7033,6 @@ class Migration(migrations.Migration):
             ],
             options={
                 'db_table': 'specifyuser_spprincipal',
-                'managed': False,
                 'ordering': (),
                 'unique_together': {('specifyuser', 'spprincipal')},
                 'indexes': [
