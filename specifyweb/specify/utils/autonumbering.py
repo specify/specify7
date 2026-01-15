@@ -86,13 +86,13 @@ def do_autonumbering(collection, obj, fields: list[tuple[UIFormatter, Sequence[s
 
                 # Lock the range of all rows in-scope with field >= biggest_value
                 biggest_value = getattr(biggest_obj, fieldname)
-                formatter.lock_ge_range(
-                    collection=collection,
-                    model=obj.__class__,
-                    fieldname=fieldname,
-                    with_year=with_year,
-                    biggest_value=biggest_value,
-                )
+                # formatter.lock_ge_range( # NOTE: maybe get working in the future
+                #     collection=collection,
+                #     model=obj.__class__,
+                #     fieldname=fieldname,
+                #     with_year=with_year,
+                #     biggest_value=biggest_value,
+                # )
 
                 # Get next value off the locked biggest and assign
                 filled_vals = formatter.fill_vals_after(biggest_value)
