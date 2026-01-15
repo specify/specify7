@@ -74,19 +74,24 @@ def initialize_default_tree(tree_type: str, discipline_or_institution, tree_name
         if treedefitems_bulk:
             tree_rank_model.objects.bulk_create(treedefitems_bulk, ignore_conflicts=False)
 
-            # Create root node
-            # TODO: Avoid having duplicated code from add_root endpoint
-            root_rank = tree_rank_model.objects.get(treedef=tree_def, rankid=0)
-            tree_node, _ = tree_node_model.objects.get_or_create(
-                name=TREE_ROOT_NODES.get(tree_type, "Root"),
-                fullname=TREE_ROOT_NODES.get(tree_type, "Root"),
-                nodenumber=1,
-                definition=tree_def,
-                definitionitem=root_rank,
-                parent=None
-            )
+            create_default_root(tree_def, tree_type)
 
         return tree_def
+
+def create_default_root(tree_def, tree_type: str):
+    """Create root node"""
+    # TODO: Avoid having duplicated code from add_root endpoint
+    tree_def_model, tree_rank_model, tree_node_model = get_models(tree_type)
+    root_rank = tree_rank_model.objects.get(treedef=tree_def, rankid=0)
+    tree_node, _ = tree_node_model.objects.get_or_create(
+        name=TREE_ROOT_NODES.get(tree_type, "Root"),
+        fullname=TREE_ROOT_NODES.get(tree_type, "Root"),
+        nodenumber=1,
+        definition=tree_def,
+        definitionitem=root_rank,
+        parent=None
+    )
+    return tree_node
 
 class RankMappingConfiguration(TypedDict):
     name: str
@@ -225,6 +230,8 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
                 # Import into exisiting tree
                 tree_def_model, tree_rank_model, tree_node_model = get_models(tree_type)
                 tree_def = tree_def_model.objects.filter(pk=existing_tree_def_id).first()
+                if tree_def:
+                    create_default_root(tree_def, tree_type)
 
             if tree_def is None:
                 # Create a new empty tree. Get rank configuration from the mapping.

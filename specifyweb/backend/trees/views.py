@@ -661,6 +661,10 @@ DEFAULT_TREE_MAPPING_SCHEMA = {
                         "type": "integer",
                         "description": "The total number of rows contained in the CSV file. Only used for progress tracking."
                     },
+                    "treeDefId": {
+                        "type": "integer",
+                        "description": "(optional) The ID of the existing tree to import into."
+                    }
                 },
                 "required": ["url", "disciplineName"],
                 "oneOf": [
@@ -738,6 +742,9 @@ def create_default_tree_view(request):
     if not url:
         return http.JsonResponse({'error': 'Tree not found.'}, status=404)
     
+    # Import into an existing tree
+    tree_def_id = data.get('treeDefId')
+    
     # CSV mapping. Accept the mapping directly or a url to a JSON file containing the mapping.
     tree_cfg = data.get('mapping', None)
     mapping_url = data.get('mappingUrl', None)
@@ -755,7 +762,7 @@ def create_default_tree_view(request):
 
     task_id = str(uuid4())
     async_result = create_default_tree_task.apply_async(
-        args=[url, discipline.id, tree_discipline_name, request.specify_collection.id, request.specify_user.id, tree_cfg, row_count, tree_name],
+        args=[url, discipline.id, tree_discipline_name, request.specify_collection.id, request.specify_user.id, tree_cfg, row_count, tree_name, tree_def_id],
         task_id=f"create_default_tree_{tree_discipline_name}_{task_id}",
         taskid=task_id
     )

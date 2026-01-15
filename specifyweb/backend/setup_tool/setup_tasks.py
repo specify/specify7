@@ -81,15 +81,15 @@ def setup_database_task(self, data: dict):
             logger.debug('## SETTING UP DATABASE WITH SETTINGS:##')
             logger.debug(data)
 
-            logger.debug('Creating institution')
+            logger.info('Creating institution')
             api.create_institution(data['institution'])
             update_progress()
 
-            logger.debug('Creating storage tree')
+            logger.info('Creating storage tree')
             api.create_storage_tree(data['storagetreedef'])
             update_progress()
 
-            logger.debug('Creating division')
+            logger.info('Creating division')
             api.create_division(data['division'])
             update_progress()
 
@@ -101,52 +101,52 @@ def setup_database_task(self, data: dict):
 
             # if is_paleo_geo:
             # Create an empty chronostrat tree no matter what because discipline needs it.
-            logger.debug('Creating Chronostratigraphy tree')
+            logger.info('Creating Chronostratigraphy tree')
             default_chronostrat_tree = default_tree.copy()
             default_chronostrat_tree['fullnamedirection'] = -1
             chronostrat_result = api.create_geologictimeperiod_tree(default_chronostrat_tree)
             chronostrat_treedef_id = chronostrat_result.get('treedef_id')
 
-            logger.debug('Creating geography tree')
+            logger.info('Creating geography tree')
             uses_global_geography_tree = data['institution'].get('issinglegeographytree', False)
             geography_result = api.create_geography_tree(data['geographytreedef'].copy(), global_tree=uses_global_geography_tree)
             geography_treedef_id = geography_result.get('treedef_id')
 
-            logger.debug('Creating discipline')
+            logger.info('Creating discipline')
             discipline_result = api.create_discipline(data['discipline'])
             discipline_id = discipline_result.get('discipline_id')
             default_tree['discipline_id'] = discipline_id
             update_progress()
 
             if is_paleo_geo:
-                logger.debug('Creating Lithostratigraphy tree')
+                logger.info('Creating Lithostratigraphy tree')
                 api.create_lithostrat_tree(default_tree.copy())
 
-                logger.debug('Creating Tectonic Unit tree')
+                logger.info('Creating Tectonic Unit tree')
                 api.create_tectonicunit_tree(default_tree.copy())
 
-            logger.debug('Creating taxon tree')
+            logger.info('Creating taxon tree')
             if data['taxontreedef'].get('discipline_id') is None:
                 data['taxontreedef']['discipline_id'] = discipline_id
             taxon_result = api.create_taxon_tree(data['taxontreedef'].copy())
             taxon_treedef_id = taxon_result.get('treedef_id')
             update_progress()
 
-            logger.debug('Creating collection')
+            logger.info('Creating collection')
             collection_result = api.create_collection(data['collection'])
             collection_id = collection_result.get('collection_id')
             update_progress()
 
-            logger.debug('Creating specify user')
+            logger.info('Creating specify user')
             specifyuser_result = api.create_specifyuser(data['specifyuser'])
             specifyuser_id = specifyuser_result.get('user_id')
 
-            logger.debug('Finalizing database')
+            logger.info('Finalizing database')
             fix_schema_config()
             create_app_resource_defaults()
 
             # Pre-load trees
-            logger.debug('Starting default tree downloads')
+            logger.info('Starting default tree downloads')
             if is_paleo_geo:
                     preload_default_tree('Geologictimeperiod', discipline_id, collection_id, chronostrat_treedef_id, specifyuser_id)
             if data['geographytreedef'].get('preload'):

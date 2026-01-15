@@ -193,6 +193,8 @@ def create_discipline(data):
         existing_discipline = Discipline.objects.filter(id=existing_id).first()
         if existing_discipline:
             return {"discipline_id": existing_discipline.id}
+    
+    is_first_discipline = Discipline.objects.count() == 0
 
     # Resolve division
     division_url = data.get('division')
@@ -245,6 +247,12 @@ def create_discipline(data):
         # Update tree scoping
         update_tree_scoping(geographytreedef, new_discipline.id)
         update_tree_scoping(geologictimeperiodtreedef, new_discipline.id)
+
+        # Create a default taxon tree if the database is already set up.
+        if not is_first_discipline:
+            create_taxon_tree({
+                'discipline_id': new_discipline.id
+            })
 
         return {"discipline_id": new_discipline.id}
 
