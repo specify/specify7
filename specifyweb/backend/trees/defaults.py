@@ -191,9 +191,6 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
         discipline = spmodels.Discipline.objects.get(id=discipline_id)
     tree_name = initial_tree_name # Name will be uniquified on tree creation
 
-    logger.debug("CREATING TREE:")
-    logger.debug(tree_name)
-
     if specify_user_id and specify_collection_id:
         specify_user = spmodels.Specifyuser.objects.get(id=specify_user_id)
         Message.objects.create(
@@ -229,10 +226,6 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
                 tree_def_model, tree_rank_model, tree_node_model = get_models(tree_type)
                 tree_def = tree_def_model.objects.filter(pk=existing_tree_def_id).first()
 
-            logger.debug("treedef")
-            logger.debug(existing_tree_def_id)
-            logger.debug(tree_def is None)
-
             if tree_def is None:
                 # Create a new empty tree. Get rank configuration from the mapping.
                 full_name_direction = 1
@@ -258,8 +251,6 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
                 tree_def = initialize_default_tree(tree_type, discipline, initial_tree_name, rank_cfg, full_name_direction)
             
             tree_name = tree_def.name
-
-            logger.debug(tree_name)
             
             # Start importing CSV data
             context = DefaultTreeContext(tree_type, tree_name)

@@ -20,9 +20,10 @@ DEFAULT_TREE_RANKS_FILES = {
     'Lithostrat': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'lithostrat_tree.json',
     'Tectonicunit': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'tectonicunit_tree.json'
 }
+DEFAULT_TAXON_TREE_LIST_URL = 'https://files.specifysoftware.org/taxonfiles/taxonfiles.json'
 DEFAULT_TREE_URLS = {
     'Geography': 'https://files.specifysoftware.org/geographyfiles/geonames.csv',
-    'Geologictimeperiod': 'https://files.specifysoftware.org/treerows/geography.json',
+    'Geologictimeperiod': 'https://files.specifysoftware.org/chronostratfiles/GeologicTimePeriod.csv',
 }
 DEFAULT_TREE_MAPPING_URLS = {
     'Geography': 'https://files.specifysoftware.org/treerows/geography.json',
@@ -76,23 +77,52 @@ def create_default_tree(tree_type: str, kwargs: dict, user_rank_cfg: dict, prelo
     return tree_def
 
 def preload_default_tree(tree_type: str, discipline_id: Optional[int], collection_id: Optional[int], tree_def_id: int, specify_user_id: Optional[int]):
-    """Automatically creates a populated default tree."""
-    # Tree download config:
-    tree_discipline_name = tree_type.lower()
-    tree_name = tree_type.title()
-    # Tree file urls
-    url = DEFAULT_TREE_URLS.get(tree_type)
-    mapping_url = DEFAULT_TREE_MAPPING_URLS.get(tree_type)
-    resp = requests.get(mapping_url)
-    resp.raise_for_status()
-    tree_cfg = resp.json()
+    """Creates a populated default tree without user input."""
+    try:
+        # Tree download config:
+        tree_discipline_name = tree_type.lower()
+        tree_name = tree_type.title()
+        # Tree file urls
+        url = DEFAULT_TREE_URLS.get(tree_type)
+        mapping_url = DEFAULT_TREE_MAPPING_URLS.get(tree_type)
 
-    task_id = str(uuid4())
-    create_default_tree_task.apply_async(
-        args=[url, discipline_id, tree_discipline_name, collection_id, specify_user_id, tree_cfg, 1000000, tree_name, tree_def_id],
-        task_id=f"create_default_tree_{tree_type}_{task_id}",
-        taskid=task_id
-    )
+        if tree_type.lower() == 'taxon':
+            discipline = Discipline.objects.filter(pk=discipline_id).first()
+            tree_discipline_name = discipline.type
+
+            # Retrieve taxon tree list to find an appropriate one.
+            # Schema described in CreateTree.tsx
+            logger.debug(f'Fetching default taxon list from {DEFAULT_TAXON_TREE_LIST_URL}')
+            resp = requests.get(DEFAULT_TAXON_TREE_LIST_URL)
+            resp.raise_for_status()
+            taxon_tree_list = resp.json()
+
+            for tree in taxon_tree_list:
+                if tree.get('discipline') == tree_discipline_name:
+                    logger.debug(f'Found matching default taxon url for {tree_discipline_name}')
+                    url = tree.get('file')
+                    mapping_url = tree.get('mappingFile')
+                    tree_name = tree.get('title')
+                    break
+
+        if not url or not mapping_url:
+            logger.warning(f'Can\'t preload tree, no default tree URLs for {tree_discipline_name} tree.')
+            return
+
+        resp = requests.get(mapping_url)
+        resp.raise_for_status()
+        tree_cfg = resp.json()
+
+        task_id = str(uuid4())
+        create_default_tree_task.apply_async(
+            args=[url, discipline_id, tree_discipline_name, collection_id, specify_user_id, tree_cfg, 1000000, tree_name, tree_def_id],
+            task_id=f"create_default_tree_{tree_type}_{task_id}",
+            taskid=task_id
+        )
+    except Exception as e:
+        # Give up if there's an error to avoid resetting the entire setup.
+        logger.warning(f'Error trying to preload {tree_type} tree: {e}')
+        return
     
 def update_tree_scoping(treedef: Type[DjangoModel], discipline_id: int):
     """Trees may be created before a discipline is created. This will update their discipline."""

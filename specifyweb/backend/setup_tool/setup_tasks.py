@@ -144,14 +144,14 @@ def setup_database_task(self, data: dict):
             logger.debug('Finalizing database')
             fix_schema_config()
             create_app_resource_defaults()
+
+            # Pre-load trees
+            logger.debug('Starting default tree downloads')
             if is_paleo_geo:
-                preload_default_tree('Geologictimeperiod', discipline_id, collection_id, chronostrat_treedef_id, specifyuser_id)
-            logger.debug(data['geographytreedef'])
+                    preload_default_tree('Geologictimeperiod', discipline_id, collection_id, chronostrat_treedef_id, specifyuser_id)
             if data['geographytreedef'].get('preload'):
-                logger.debug("trying to create geography tree")
                 preload_default_tree('Geography', discipline_id, collection_id, geography_treedef_id, specifyuser_id)
             if data['taxontreedef'].get('preload'):
-                logger.debug('trying to create taxon tree')
                 preload_default_tree('Taxon', discipline_id, collection_id, taxon_treedef_id, specifyuser_id)
 
             update_progress()
