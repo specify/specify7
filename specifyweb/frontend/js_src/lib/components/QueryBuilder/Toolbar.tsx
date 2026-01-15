@@ -66,7 +66,7 @@ export function QueryToolbar({
               {queryText.distinct()}
             </Label.Inline>
           )}
-          {isTreeTable(tableName) && (
+          {isTreeTable(tableName) || tableName === 'CollectionObject' ? (
             <Label.Inline>
               <Input.Checkbox
                 checked={searchSynonymy}
@@ -74,7 +74,7 @@ export function QueryToolbar({
               />
               {queryText.searchSynonyms()}
             </Label.Inline>
-          )}
+          ) : undefined}
           <Button.Small onClick={handleRunCountOnly}>
             {queryText.countOnly()}
           </Button.Small>
