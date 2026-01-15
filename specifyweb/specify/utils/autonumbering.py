@@ -78,7 +78,7 @@ def do_autonumbering(collection, obj, fields: list[tuple[UIFormatter, Sequence[s
                 # Use django's select_for_update() to lock the current max row itself
                 qs_max = formatter._autonumber_queryset(collection, obj.__class__, fieldname, with_year)
                 biggest_obj = (qs_max
-                            .select_for_update()
+                            .select_for_update(nowait=True)
                             .order_by('-' + fieldname)
                             .first())
 
