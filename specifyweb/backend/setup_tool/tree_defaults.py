@@ -1,13 +1,13 @@
 from django.db import transaction
 from django.db.models import Model as DjangoModel
+from specifyweb.specify.models import Discipline, Collection
 from typing import Type, Optional, List
 from pathlib import Path
 from uuid import uuid4
-from specifyweb.backend.trees.utils import create_default_tree_task
 import requests
 
 from .utils import load_json_from_file
-from specifyweb.backend.trees.utils import initialize_default_tree
+from specifyweb.backend.trees.defaults import initialize_default_tree, create_default_tree_task
 
 import logging
 logger = logging.getLogger(__name__)
@@ -29,9 +29,8 @@ DEFAULT_TREE_MAPPING_URLS = {
     'Geologictimeperiod': 'https://files.specifysoftware.org/treerows/geologictimeperiod.json',
 }
 
-def create_default_tree(tree_type: str, kwargs: dict, user_rank_cfg: dict, preload_tree: Optional[str]):
+def create_default_tree(tree_type: str, kwargs: dict, user_rank_cfg: dict, preload_tree: Optional[bool]):
     """Creates an initial empty tree. This should not be used outside of the initial database setup."""
-    from specifyweb.specify.models import Collection
     # Load all default ranks for this type of tree
     rank_data = load_json_from_file(DEFAULT_TREE_RANKS_FILES.get(tree_type))
     if rank_data is None:
@@ -74,23 +73,26 @@ def create_default_tree(tree_type: str, kwargs: dict, user_rank_cfg: dict, prelo
 
     tree_def = initialize_default_tree(tree_type.lower(), discipline_or_institution, tree_type.title(), rank_cfg, kwargs['fullnamedirection'])
 
-    if preload_tree is not None:
-        collection = Collection.objects.last()
-
-        url = DEFAULT_TREE_URLS.get(tree_type)
-        mapping_url = DEFAULT_TREE_MAPPING_URLS.get(tree_type)
-        resp = requests.get(mapping_url)
-        resp.raise_for_status()
-        tree_cfg = resp.json()
-
-        task_id = str(uuid4())
-        create_default_tree_task.apply_async(
-            args=[url, discipline_or_institution.id, tree_type.lower(), collection, False, tree_cfg, 0, tree_type.title()],
-            task_id=f"create_default_tree_{tree_type}_{task_id}",
-            taskid=task_id
-        )
-
     return tree_def
+
+def preload_default_tree(tree_type: str, discipline_id: Optional[int], collection_id: Optional[int], tree_def_id: int, specify_user_id: Optional[int]):
+    """Automatically creates a populated default tree."""
+    # Tree download config:
+    tree_discipline_name = tree_type.lower()
+    tree_name = tree_type.title()
+    # Tree file urls
+    url = DEFAULT_TREE_URLS.get(tree_type)
+    mapping_url = DEFAULT_TREE_MAPPING_URLS.get(tree_type)
+    resp = requests.get(mapping_url)
+    resp.raise_for_status()
+    tree_cfg = resp.json()
+
+    task_id = str(uuid4())
+    create_default_tree_task.apply_async(
+        args=[url, discipline_id, tree_discipline_name, collection_id, specify_user_id, tree_cfg, 1000000, tree_name, tree_def_id],
+        task_id=f"create_default_tree_{tree_type}_{task_id}",
+        taskid=task_id
+    )
     
 def update_tree_scoping(treedef: Type[DjangoModel], discipline_id: int):
     """Trees may be created before a discipline is created. This will update their discipline."""

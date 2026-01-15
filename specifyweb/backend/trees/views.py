@@ -28,7 +28,8 @@ from specifyweb.backend.stored_queries.execution import set_group_concat_max_len
 from specifyweb.backend.stored_queries.group_concat import group_concat
 from specifyweb.backend.notifications.models import Message
 
-from specifyweb.backend.trees.utils import add_default_tree_record, create_default_tree_task, get_search_filters, stream_csv_from_url
+from specifyweb.backend.trees.utils import get_search_filters
+from specifyweb.backend.trees.defaults import create_default_tree_task
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from specifyweb.backend.trees.ranks import tree_rank_count
 from . import extras

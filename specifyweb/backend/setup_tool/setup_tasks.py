@@ -8,6 +8,7 @@ from typing import Tuple, Optional
 from celery.result import AsyncResult
 from specifyweb.backend.setup_tool import api
 from specifyweb.backend.setup_tool.app_resource_defaults import create_app_resource_defaults
+from specifyweb.backend.setup_tool.tree_defaults import preload_default_tree
 from specifyweb.specify.management.commands.run_key_migration_functions import fix_schema_config
 from specifyweb.specify.models_utils.model_extras import PALEO_DISCIPLINES, GEOLOGY_DISCIPLINES
 from specifyweb.celery_tasks import is_worker_alive, MissingWorkerError
@@ -103,11 +104,13 @@ def setup_database_task(self, data: dict):
             logger.debug('Creating Chronostratigraphy tree')
             default_chronostrat_tree = default_tree.copy()
             default_chronostrat_tree['fullnamedirection'] = -1
-            api.create_geologictimeperiod_tree(default_chronostrat_tree)
+            chronostrat_result = api.create_geologictimeperiod_tree(default_chronostrat_tree)
+            chronostrat_treedef_id = chronostrat_result.get('treedef_id')
 
             logger.debug('Creating geography tree')
             uses_global_geography_tree = data['institution'].get('issinglegeographytree', False)
-            api.create_geography_tree(data['geographytreedef'], global_tree=uses_global_geography_tree)
+            geography_result = api.create_geography_tree(data['geographytreedef'].copy(), global_tree=uses_global_geography_tree)
+            geography_treedef_id = geography_result.get('treedef_id')
 
             logger.debug('Creating discipline')
             discipline_result = api.create_discipline(data['discipline'])
@@ -125,19 +128,32 @@ def setup_database_task(self, data: dict):
             logger.debug('Creating taxon tree')
             if data['taxontreedef'].get('discipline_id') is None:
                 data['taxontreedef']['discipline_id'] = discipline_id
-            api.create_taxon_tree(data['taxontreedef'])
+            taxon_result = api.create_taxon_tree(data['taxontreedef'].copy())
+            taxon_treedef_id = taxon_result.get('treedef_id')
             update_progress()
 
             logger.debug('Creating collection')
-            api.create_collection(data['collection'])
+            collection_result = api.create_collection(data['collection'])
+            collection_id = collection_result.get('collection_id')
             update_progress()
 
             logger.debug('Creating specify user')
-            api.create_specifyuser(data['specifyuser'])
+            specifyuser_result = api.create_specifyuser(data['specifyuser'])
+            specifyuser_id = specifyuser_result.get('user_id')
 
             logger.debug('Finalizing database')
             fix_schema_config()
             create_app_resource_defaults()
+            if is_paleo_geo:
+                preload_default_tree('Geologictimeperiod', discipline_id, collection_id, chronostrat_treedef_id, specifyuser_id)
+            logger.debug(data['geographytreedef'])
+            if data['geographytreedef'].get('preload'):
+                logger.debug("trying to create geography tree")
+                preload_default_tree('Geography', discipline_id, collection_id, geography_treedef_id, specifyuser_id)
+            if data['taxontreedef'].get('preload'):
+                logger.debug('trying to create taxon tree')
+                preload_default_tree('Taxon', discipline_id, collection_id, taxon_treedef_id, specifyuser_id)
+
             update_progress()
     except Exception as e:
         logger.exception(f'Error setting up database: {e}')

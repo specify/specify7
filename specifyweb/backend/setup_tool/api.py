@@ -215,14 +215,13 @@ def create_discipline(data):
     # Assign a taxon tree. Not required, but its eventually needed for collection object type.
     taxontreedef_url = data.get('taxontreedef', None)
     taxontreedef = resolve_uri_or_fallback(taxontreedef_url, None, Taxontreedef)
-    if taxontreedef is not None:
+    if taxontreedef_url and taxontreedef is not None:
         data['taxontreedef_id'] = taxontreedef.id
 
     data.update({
         'datatype_id': datatype.id,
         'geographytreedef_id': geographytreedef.id,
-        'geologictimeperiodtreedef_id': geologictimeperiodtreedef.id,
-        'taxontreedef_id': taxontreedef.id if taxontreedef else None
+        'geologictimeperiodtreedef_id': geologictimeperiodtreedef.id
     })
 
     # Assign new Discipline ID
@@ -365,9 +364,6 @@ def create_tectonicunit_tree(data):
     return create_tree('Tectonicunit', data)
 
 def create_tree(name: str, data: dict) -> dict:
-    # TODO: Use trees/create_default_trees
-    # https://github.com/specify/specify7/pull/6429
-
     # Figure out which scoping field should be used.
     use_institution = False
     use_discipline = True
