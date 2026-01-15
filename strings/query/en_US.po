@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Preferences/UserDefinitions.tsx:2150
+#: components/Preferences/UserDefinitions.tsx:2259
 #: components/QueryBuilder/Header.tsx:97
 #: components/QueryBuilder/Toolbar.tsx:75
 #: components/Reports/RecordSets.tsx:95
@@ -23,7 +23,7 @@ msgid "queries"
 msgstr "Queries"
 
 #: components/Preferences/CollectionDefinitions.tsx:291
-#: components/Preferences/UserDefinitions.tsx:1659
+#: components/Preferences/UserDefinitions.tsx:1768
 #: components/SearchDialog/index.tsx:242
 #: components/SearchDialog/index.tsx:386
 #: components/Security/registry.ts:210
@@ -335,7 +335,7 @@ msgstr "In"
 msgid "inDescription"
 msgstr "A comma-separated list of values"
 
-#: components/Preferences/UserDefinitions.tsx:1449
+#: components/Preferences/UserDefinitions.tsx:1558
 #: components/QueryBuilder/FieldFilterSpec.tsx:509
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 msgid "contains"
@@ -351,7 +351,7 @@ msgstr "Empty"
 msgid "and"
 msgstr "and"
 
-#: components/Preferences/UserDefinitions.tsx:1445
+#: components/Preferences/UserDefinitions.tsx:1554
 #: components/QueryBuilder/FieldFilterSpec.tsx:517
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 msgid "startsWith"

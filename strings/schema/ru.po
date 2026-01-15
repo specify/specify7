@@ -31,7 +31,7 @@ msgstr "Стол"
 msgid "tables"
 msgstr "Таблицы"
 
-#: components/Preferences/UserDefinitions.tsx:782
+#: components/Preferences/UserDefinitions.tsx:891
 #: components/WbPlanView/MapperComponents.tsx:452
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
@@ -45,7 +45,7 @@ msgid "withoutTable"
 msgstr "Без стола"
 
 #: components/Header/userToolDefinitions.ts:68
-#: components/Preferences/UserDefinitions.tsx:725
+#: components/Preferences/UserDefinitions.tsx:834
 #: components/Router/Routes.tsx:389
 #: components/SchemaConfig/Components.tsx:30
 #: components/SchemaConfig/Languages.tsx:36

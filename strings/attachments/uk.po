@@ -22,7 +22,7 @@ msgstr ""
 #: components/Molecules/SyncAttachmentPicker.tsx:118
 #: components/Molecules/SyncAttachmentPicker.tsx:127
 #: components/Preferences/CollectionDefinitions.tsx:47
-#: components/Preferences/UserDefinitions.tsx:1325
+#: components/Preferences/UserDefinitions.tsx:1434
 #: components/Router/Routes.tsx:182
 #: components/Router/Routes.tsx:485
 #: components/Statistics/StatsSpec.tsx:508
@@ -61,7 +61,7 @@ msgstr "Налаштуйте сервер прикріплень"
 
 #: components/Attachments/index.tsx:210
 #: components/FormMeta/SubViewMeta.tsx:42
-#: components/Preferences/UserDefinitions.tsx:1312
+#: components/Preferences/UserDefinitions.tsx:1421
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "orderBy"
 msgstr "Сортувати по"
@@ -261,24 +261,24 @@ msgstr "Шукайте більше вкладень"
 msgid "hideForm"
 msgstr "Сховати форму"
 
-#: components/Preferences/UserDefinitions.tsx:1362
+#: components/Preferences/UserDefinitions.tsx:1471
 #. Used in: Components > Preferences > User Definitions
 msgid "collapseFormByDefault"
 msgstr "Згортати форму за замовчуванням"
 
-#: components/Preferences/UserDefinitions.tsx:1363
+#: components/Preferences/UserDefinitions.tsx:1472
 #. Used in: Components > Preferences > User Definitions
 msgid "collapseFormByDefaultDescription"
 msgstr ""
 "Згортати чи не згортати форму вкладення за замовчуванням під час перегляду "
 "існуючих вкладень."
 
-#: components/Preferences/UserDefinitions.tsx:1354
+#: components/Preferences/UserDefinitions.tsx:1463
 #. Used in: Components > Preferences > User Definitions
 msgid "showControls"
 msgstr "Показувати елементи керування вкладеннями"
 
-#: components/Preferences/UserDefinitions.tsx:1355
+#: components/Preferences/UserDefinitions.tsx:1464
 #. Used in: Components > Preferences > User Definitions
 msgid "showControlsDescription"
 msgstr ""

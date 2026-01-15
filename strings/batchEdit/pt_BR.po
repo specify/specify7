@@ -13,7 +13,7 @@ msgstr ""
 
 #: components/BatchEdit/index.tsx:189
 #: components/Header/menuItemDefinitions.ts:115
-#: components/Preferences/UserDefinitions.tsx:2147
+#: components/Preferences/UserDefinitions.tsx:2256
 #: components/Router/OverlayRoutes.tsx:254
 #: components/WbUtils/datasetVariants.tsx:89
 #: components/WbUtils/datasetVariants.tsx:105
@@ -29,7 +29,7 @@ msgstr "Edição em lote"
 msgid "batchEditPrefs"
 msgstr "Preferências de edição em lote"
 
-#: components/Preferences/UserDefinitions.tsx:2153
+#: components/Preferences/UserDefinitions.tsx:2262
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "numberOfRecords"
@@ -83,13 +83,13 @@ msgstr ""
 "Use o construtor de consultas para criar um novo conjunto de dados para "
 "edição em lote."
 
-#: components/Preferences/UserDefinitions.tsx:2176
+#: components/Preferences/UserDefinitions.tsx:2285
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "showRollback"
 msgstr "Mostrar botão de reversão"
 
-#: components/Preferences/UserDefinitions.tsx:2181
+#: components/Preferences/UserDefinitions.tsx:2290
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "showRollbackDescription"
@@ -236,13 +236,13 @@ msgstr ""
 "(Os conjuntos de dados editados em lote não podem ser editados após o "
 "rollback - Somente leitura)"
 
-#: components/Preferences/UserDefinitions.tsx:2168
+#: components/Preferences/UserDefinitions.tsx:2277
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "enableRelationships"
 msgstr "Promover relacionamentos"
 
-#: components/Preferences/UserDefinitions.tsx:2173
+#: components/Preferences/UserDefinitions.tsx:2282
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "enableRelationshipsDescription"

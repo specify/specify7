@@ -17,7 +17,7 @@ msgstr ""
 msgid "specifySeven"
 msgstr "Укажите 7"
 
-#: components/Preferences/UserDefinitions.tsx:1941
+#: components/Preferences/UserDefinitions.tsx:2050
 #: components/WorkBench/DataSetMeta.tsx:294
 #: utils/parser/definitions.ts:122
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
@@ -41,7 +41,7 @@ msgstr "Нет"
 #: components/Forms/ResourceView.tsx:388
 #: components/Header/ChooseCollection.tsx:26
 #: components/Header/ExpressSearchTask.tsx:49
-#: components/Interactions/InteractionDialog.tsx:307
+#: components/Interactions/InteractionDialog.tsx:415
 #: components/Interactions/InteractionsDialog.tsx:54
 #: components/Interactions/LoanReturn.tsx:167
 #: components/Interactions/PrepDialog.tsx:125
@@ -209,8 +209,8 @@ msgstr "Создать"
 #: components/Forms/Save.tsx:338
 #: components/Header/UserTools.tsx:75
 #: components/HomePage/AboutSpecify.tsx:60
-#: components/Interactions/InteractionDialog.tsx:283
-#: components/Interactions/InteractionDialog.tsx:373
+#: components/Interactions/InteractionDialog.tsx:391
+#: components/Interactions/InteractionDialog.tsx:481
 #: components/Interactions/LoanReturn.tsx:71
 #: components/Interactions/PrepDialog.tsx:122
 #: components/Leaflet/Map.tsx:103
@@ -400,7 +400,8 @@ msgid "delete"
 msgstr "Удалить"
 
 #: components/Attachments/Dialog.tsx:128
-#: components/Interactions/InteractionDialog.tsx:413
+#: components/Interactions/InteractionDialog.tsx:529
+#: components/Interactions/InteractionDialog.tsx:558
 #: components/WbToolkit/GeoLocate.tsx:154
 #. Used in: Components > Attachments > Dialog ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Wb Toolkit > Geo Locate
 msgid "next"
@@ -626,7 +627,8 @@ msgid "end"
 msgstr "Конец"
 
 #: components/ExportFeed/ForceUpdate.tsx:46
-#: components/Interactions/InteractionDialog.tsx:412
+#: components/Interactions/InteractionDialog.tsx:528
+#: components/Interactions/InteractionDialog.tsx:557
 #: components/PickLists/definitions.ts:44
 #: components/Security/PreviewTables.tsx:67
 #. 🟥Verb. Used in: Components > Export Feed > Force Update ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables
@@ -693,7 +695,7 @@ msgstr "Действия"
 #: components/ChooseCollection/index.tsx:138
 #: components/Header/ChooseCollection.tsx:27
 #: components/Header/index.tsx:94
-#: components/Preferences/UserDefinitions.tsx:1297
+#: components/Preferences/UserDefinitions.tsx:1406
 #: components/Router/EntrypointRouter.tsx:32
 #: components/Router/OverlayRoutes.tsx:63
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > Choose Collection ⬤ Components > Header > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Entrypoint Router ⬤ Components > Router > Overlay Routes
@@ -765,8 +767,8 @@ msgstr "Неизвестно"
 
 #: components/ExportFeed/Editor.tsx:74
 #: components/Login/index.tsx:144
-#: components/Preferences/UserDefinitions.tsx:89
-#: components/Preferences/UserDefinitions.tsx:728
+#: components/Preferences/UserDefinitions.tsx:176
+#: components/Preferences/UserDefinitions.tsx:837
 #: components/SchemaConfig/Languages.tsx:39
 #: components/SchemaConfig/Languages.tsx:93
 #. Used in: Components > Export Feed > Editor ⬤ Components > Login > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Schema Config > Languages

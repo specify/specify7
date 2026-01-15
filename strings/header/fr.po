@@ -246,7 +246,7 @@ msgstr "API Opérations"
 #: components/AppResources/Filters.tsx:171
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:235
 #: components/Header/userToolDefinitions.ts:132
-#: components/Preferences/UserDefinitions.tsx:544
+#: components/Preferences/UserDefinitions.tsx:631
 #: components/Preferences/index.tsx:65
 #: components/Preferences/index.tsx:71
 #: components/Toolbar/WbsDialog.tsx:227

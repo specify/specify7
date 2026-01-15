@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.15.1\n"
 
-#: components/Preferences/UserDefinitions.tsx:2150
+#: components/Preferences/UserDefinitions.tsx:2259
 #: components/QueryBuilder/Header.tsx:97
 #: components/QueryBuilder/Toolbar.tsx:75
 #: components/Reports/RecordSets.tsx:95
@@ -34,7 +34,7 @@ msgid "queries"
 msgstr "Запити"
 
 #: components/Preferences/CollectionDefinitions.tsx:291
-#: components/Preferences/UserDefinitions.tsx:1659
+#: components/Preferences/UserDefinitions.tsx:1768
 #: components/SearchDialog/index.tsx:242
 #: components/SearchDialog/index.tsx:386
 #: components/Security/registry.ts:210
@@ -344,7 +344,7 @@ msgstr "в"
 msgid "inDescription"
 msgstr "Список значень, розділених комами"
 
-#: components/Preferences/UserDefinitions.tsx:1449
+#: components/Preferences/UserDefinitions.tsx:1558
 #: components/QueryBuilder/FieldFilterSpec.tsx:509
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 msgid "contains"
@@ -360,7 +360,7 @@ msgstr "Порожній"
 msgid "and"
 msgstr "і"
 
-#: components/Preferences/UserDefinitions.tsx:1445
+#: components/Preferences/UserDefinitions.tsx:1554
 #: components/QueryBuilder/FieldFilterSpec.tsx:517
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 msgid "startsWith"
