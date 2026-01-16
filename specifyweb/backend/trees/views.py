@@ -411,6 +411,54 @@ def repair_tree(request, tree: TREE_TABLE):
     extras.renumber_tree(table)
     extras.validate_tree_numbering(table)
 
+@login_maybe_required
+@require_POST
+@transaction.atomic
+def rebuild_fullname(request, tree: TREE_TABLE, id: int):
+    """Rebuild fullname values for the specified tree definition.
+
+    By default only accepted (preferred) nodes are processed. Pass
+    ?rebuild_synonyms=true to also rebuild fullname values for synonym nodes.
+    """
+    check_permission_targets(
+        request.specify_collection.id,
+        request.specify_user.id,
+        [perm_target(tree).rebuild_fullname],
+    )
+
+    rebuild_synonyms = request.GET.get('rebuild_synonyms', 'false').lower() == 'true'
+
+    tree_name = tree.title()
+    treedef = get_object_or_404(f"{tree_name}treedef", id=id)
+
+    accepted_changed = extras.set_fullnames(
+        treedef,
+        null_only=False,
+        include_synonyms=False,
+        synonyms_only=False,
+    )
+
+    synonyms_changed = 0
+    if rebuild_synonyms:
+        synonyms_changed = extras.set_fullnames(
+            treedef,
+            null_only=False,
+            include_synonyms=True,
+            synonyms_only=True,
+        )
+
+    payload = {
+        "success": True,
+        "rebuild_synonyms": rebuild_synonyms,
+        "changed": {
+            "accepted": accepted_changed,
+            "synonyms": synonyms_changed,
+            "total": accepted_changed + synonyms_changed,
+        },
+    }
+
+    return HttpResponse(toJson(payload), content_type="application/json")
+
 @tree_mutation
 def add_root(request, tree, treeid): 
     "Creates a root node in a specific tree."
@@ -550,6 +598,7 @@ class TaxonMutationPT(PermissionTarget):
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
+    rebuild_fullname = PermissionTargetAction()
 
 
 class GeographyMutationPT(PermissionTarget):
@@ -559,6 +608,7 @@ class GeographyMutationPT(PermissionTarget):
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
+    rebuild_fullname = PermissionTargetAction()
 
 
 class StorageMutationPT(PermissionTarget):
@@ -569,6 +619,7 @@ class StorageMutationPT(PermissionTarget):
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
+    rebuild_fullname = PermissionTargetAction()
 
 
 class GeologictimeperiodMutationPT(PermissionTarget):
@@ -578,6 +629,7 @@ class GeologictimeperiodMutationPT(PermissionTarget):
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
+    rebuild_fullname = PermissionTargetAction()
 
 
 class LithostratMutationPT(PermissionTarget):
@@ -587,6 +639,7 @@ class LithostratMutationPT(PermissionTarget):
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
+    rebuild_fullname = PermissionTargetAction()
 
 class TectonicunitMutationPT(PermissionTarget):
     resource = "/tree/edit/tectonicunit"
@@ -595,6 +648,7 @@ class TectonicunitMutationPT(PermissionTarget):
     synonymize = PermissionTargetAction()
     desynonymize = PermissionTargetAction()
     repair = PermissionTargetAction()
+    rebuild_fullname = PermissionTargetAction()
 
 def perm_target(tree):
     return {
