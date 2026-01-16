@@ -2,7 +2,7 @@ import React from 'react';
 
 import { InFormEditorContext } from '../components/FormEditor/Context';
 import type { Input } from '../components/Forms/validationHelpers';
-import { isInputTouched } from '../components/Forms/validationHelpers';
+import { hasNativeErrors, isInputTouched } from '../components/Forms/validationHelpers';
 import { listen } from '../utils/events';
 import type { RA } from '../utils/types';
 
@@ -97,8 +97,15 @@ export function useValidation<T extends Input = Input>(
       // Do not steal focus when form rendering the form in the form editor
       if (isInFormEditor) return;
 
-      // Empty string clears validation error
-      input.setCustomValidity(joined);
+      /*
+       * Empty string clears validation error
+       * simple  check for HTML validation, through hasNativeErrors and prevents from both Validators to be active simultaneously 
+       */
+      if (hasNativeErrors(input)) {
+        input.setCustomValidity('');
+      } else {
+        input.setCustomValidity(joined);
+      }
 
       if (
         type === 'focus' ||
