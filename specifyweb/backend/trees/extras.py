@@ -11,11 +11,9 @@ logger = logging.getLogger(__name__)
 
 
 from django.db import models, connection
-from django.db.models import F, Q, ProtectedError
-from django.conf import settings
+from django.db.models import F, ProtectedError
 
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
-import specifyweb.specify.models as spmodels
 
 from  specifyweb.backend.workbench.upload.auditcodes import TREE_BULK_MOVE, TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
 
@@ -756,9 +754,7 @@ def renumber_tree_old(table):
     Sptasksemaphore.objects.filter(taskname__in=tasknames).update(islocked=False)
 
 def is_treedefitem(obj):
-    return issubclass(obj.__class__, TreeRank) or bool(
-        re.search(r"treedefitem'>$", str(obj.__class__), re.IGNORECASE)
-    )
+    return issubclass(obj.__class__, TreeRank) or obj._meta.db_table.lower().endswith("treedefitem")
 
 def is_treedef(obj):
     return issubclass(obj.__class__, Tree) or bool(
