@@ -379,11 +379,19 @@ def parse_locality_set(collection, raw_headers: list[str], data: list[list[str]]
         locality_id: int | None = None if len(
             locality_query) != 1 else locality_query[0].id
 
-        parsed_locality_fields = [parse_field(
-            collection, 'Locality', dict['field'], dict['value'], locality_id, row_number) for dict in locality_values if dict['value'].strip() != ""]
+        parsed_locality_fields = [
+            parse_field(
+                collection, 'Locality', d['field'], d['value'], locality_id, row_number
+            )
+            for d in locality_values
+        ]
 
-        parsed_geocoorddetail_fields = [parse_field(
-            collection, 'Geocoorddetail', dict["field"], dict['value'], locality_id, row_number) for dict in geocoorddetail_values if dict['value'].strip() != ""]
+        parsed_geocoorddetail_fields = [
+            parse_field(
+                collection, 'Geocoorddetail', d['field'], d['value'], locality_id, row_number
+            )
+            for d in geocoorddetail_values
+        ]
 
         parsed_row, parsed_errors = merge_parse_results(
             [*parsed_locality_fields, *parsed_geocoorddetail_fields], locality_id, row_number)
