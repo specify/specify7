@@ -7,7 +7,7 @@ from collections.abc import Callable
 from django.db import transaction
 from django.core.exceptions import FieldError, FieldDoesNotExist
 from django.db.models import Model, F
-from django.http import (Http404)
+from django.http import (HttpResponseServerError, Http404)
 from django.apps import apps
 
 from specifyweb.backend.permissions.permissions import check_field_permissions, check_table_permissions
@@ -41,12 +41,26 @@ def get_resource(name, id, checker: ReadPermChecker, recordsetid=None) -> dict:
         data['recordset_info'] = get_recordset_info(obj, recordsetid)
     return data
 
-
 def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, parent_relationship=None):
     """Create a new instance of 'model' and populate it with 'data'."""
+    from specifyweb.backend.setup_tool.api import create_institution, create_division, create_discipline, create_collection
+    from specifyweb.backend.setup_tool.utils import normalize_keys
+    CREATE_MODEL_REDIRECTS = {
+        'institution': create_institution,
+        'division': create_division,
+        'discipline': create_discipline,
+        'collection': create_collection,
+    }
+    
     logger.debug("creating %s with data: %s", model, data)
     if isinstance(model, str):
         model = get_model_or_404(model)
+
+    # Redirect to a dedicated object creation function for the model
+    model_name = model.__name__.lower()
+    if model_name in CREATE_MODEL_REDIRECTS:
+        result = CREATE_MODEL_REDIRECTS[model_name](normalize_keys(data))
+        return model.objects.filter(id=result[f'{model_name}_id']).first()
 
     data = cleanData(model, data, parent_relationship)
     obj = model()

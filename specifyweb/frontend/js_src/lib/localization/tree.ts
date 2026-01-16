@@ -706,6 +706,36 @@ export const treeText = createDictionary({
     'ru-ru': 'Метеориты',
     'uk-ua': 'Метеорити',
   },
+  emptyTrees: {
+    'en-us': 'Empty Trees',
+  },
+  populatedTrees: {
+    'en-us': 'Populated Trees',
+  },
+  defaultTreeCreationStarted: {
+    'en-us': 'Default Tree Creation Started',
+  },
+  defaultTreeCreationStartedDescription: {
+    'en-us':
+      'The tree will be created in the background. You will be notified once it is completed.',
+  },
+  defaultTreeTaskStarted: {
+    'en-us': 'The default tree creation process has started.',
+  },
+  defaultTreeTaskFailed: {
+    'en-us': 'Default tree creation failed.',
+  },
+  defaultTreeTaskCancelled: {
+    'en-us': 'Default tree creation was cancelled.',
+  },
+  defaultTreeTaskCompleted: {
+    'en-us': 'Default tree creation completed successfully.',
+  },
+  defaultTreeCreationProgress: {
+    comment: 'E.x, Creating tree record 999/1,000',
+    'en-us':
+      'Creating tree record {current:number|formatted}/{total:number|formatted}',
+  },
   treeManagement: {
     'en-us': 'Tree Management',
     'de-ch': 'Baumpflege',

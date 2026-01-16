@@ -45,7 +45,7 @@
           "format": null,
           "ishidden": false,
           "isuiformatter": false,
-          "picklistname": "BiologicalStage",
+          "picklistname": "LifeStage",
           "type": null,
           "isrequired": false,
           "weblinkname": null,

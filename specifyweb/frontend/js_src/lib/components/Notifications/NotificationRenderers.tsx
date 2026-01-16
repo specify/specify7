@@ -6,6 +6,7 @@ import { backupText } from '../../localization/backup';
 import { localityText } from '../../localization/locality';
 import { mergingText } from '../../localization/merging';
 import { notificationsText } from '../../localization/notifications';
+import { treeText } from '../../localization/tree';
 import { StringToJsx } from '../../localization/utils';
 import type { IR, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -359,6 +360,38 @@ export const notificationRenderers: IR<
         )}
       </>
     );
+  },
+  'create-default-tree-starting'(notification) {
+    return (
+      <>
+        <p>{treeText.defaultTreeTaskStarted()}</p>
+        {notification.payload.name}
+      </>
+    )
+  },
+  'create-default-tree-failed'(notification) {
+    return (
+      <>
+        <p>{treeText.defaultTreeTaskFailed()}</p>
+        {notification.payload.name}
+      </>
+    )
+  },
+  'create-default-tree-cancelled'(notification) {
+    return (
+      <>
+        <p>{treeText.defaultTreeTaskCancelled()}</p>
+        {notification.payload.name}
+      </>
+    )
+  },
+  'create-default-tree-completed'(notification) {
+    return (
+      <>
+        <p>{treeText.defaultTreeTaskCompleted()}</p>
+        {notification.payload.name}
+      </>
+    )
   },
   default(notification) {
     console.error('Unknown notification type', { notification });
