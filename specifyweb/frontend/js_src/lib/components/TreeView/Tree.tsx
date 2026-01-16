@@ -26,6 +26,7 @@ import { AddRank } from './AddRank';
 import type { Conformations, Row, Stats } from './helpers';
 import { fetchStats } from './helpers';
 import { TreeRow } from './Row';
+import { ImportTree } from './CreateTree'
 
 const treeToPref = {
   Geography: 'geography',
@@ -218,11 +219,19 @@ export function Tree<
         </div>
       </div>
       {rows.length === 0 ? (
-        <Button.Icon
-          icon="plus"
-          title={treeText.addRootNode()}
-          onClick={createRootNode}
-        />
+        <div className="flex flex-col gap-2 p-2">
+          <Button.Icon
+            icon="plus"
+            title={treeText.addRootNode()}
+            onClick={createRootNode}
+          />
+          {treeDefId ? (
+            <ImportTree
+              tableName={tableName}
+              treeDefId={treeDefId}
+            />
+          ) : null}
+        </div>
       ) : undefined}
       <ul role="tree rowgroup">
         {rows.map((row, index) => (

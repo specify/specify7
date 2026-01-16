@@ -3,61 +3,37 @@
     "treedef": {
       "levels": [
         {
-          "name": "Site",
+          "name": "Surface",
           "enforced": true,
           "infullname": false,
           "rank": 0
         },
         {
-          "name": "Building",
+          "name": "Super Group",
           "enforced": false,
           "infullname": false,
           "rank": 100
         },
         {
-          "name": "Collection",
-          "enforced": false,
-          "infullname": false,
-          "rank": 150
-        },
-        {
-          "name": "Room",
+          "name": "Litho Group",
           "enforced": false,
           "infullname": false,
           "rank": 200
         },
         {
-          "name": "Aisle",
-          "enforced": false,
-          "infullname": false,
-          "rank": 250
-        },
-        {
-          "name": "Cabinet",
+          "name": "Formation",
           "enforced": false,
           "infullname": false,
           "rank": 300
         },
         {
-          "name": "Shelf",
-          "enforced": false,
-          "infullname": false,
-          "rank": 350
-        },
-        {
-          "name": "Box",
+          "name": "Member",
           "enforced": false,
           "infullname": false,
           "rank": 400
         },
         {
-          "name": "Rack",
-          "enforced": false,
-          "infullname": false,
-          "rank": 450
-        },
-        {
-          "name": "Vial",
+          "name": "Bed",
           "enforced": false,
           "infullname": false,
           "rank": 500

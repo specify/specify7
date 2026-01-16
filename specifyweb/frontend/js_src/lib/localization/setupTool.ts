@@ -95,7 +95,7 @@ export const setupToolText = createDictionary({
     'en-us': 'The city where the institution is located.',
   },
   addressState: {
-    'en-us': 'State',
+    'en-us': 'Province/State',
   },
   addressStateDescription: {
     'en-us': 'The state or province.',
@@ -139,11 +139,9 @@ export const setupToolText = createDictionary({
   taxonTree: {
     'en-us': 'Taxon Tree',
   },
-  /*
-   * DefaultTree: {
-   *   'en-us': 'Pre-load Default Tree'
-   * },
-   */
+  preloadTree: {
+    'en-us': 'Pre-load  Tree'
+  },
 
   // Division
   division: {
@@ -215,7 +213,7 @@ export const setupToolText = createDictionary({
   },
   specifyUserLastNameDescription: {
     'en-us':
-      'The last name of the agent associated with the account. Optional.',
+      'The last name of the agent associated with the account.',
   },
 
   taxonTreeSetUp: {
