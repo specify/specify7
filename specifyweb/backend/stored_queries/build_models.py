@@ -1,6 +1,6 @@
 from typing import Optional
 from specifyweb.specify.models_utils.load_datamodel import Datamodel, Table, Field, Relationship
-from sqlalchemy import Table as Table_Sqlalchemy, Column, ForeignKey, types, orm, MetaData
+from sqlalchemy import Table as Table_Sqlalchemy, Column, ForeignKey, types, orm, MetaData, ForeignKeyConstraint
 from sqlalchemy.dialects.mysql import BIT as mysql_bit_type
 metadata = MetaData()
 
@@ -30,27 +30,96 @@ class CustomBIT(mysql_bit_type):
         return process
 
 def make_table(datamodel: Datamodel, tabledef: Table):
-    columns = [ Column(tabledef.idColumn, types.Integer, primary_key=True) ]
+    """
+    Build a SQLAlchemy Table for a Specify datamodel Table definition.
 
+    Key behavior:
+    - Supports composite PKs via tabledef.idColumns if present, else uses tabledef.idColumn.
+    - Avoids defining the same column name twice.
+    - Still establishes foreign key constraints even if a FK column was already created
+      as part of the PK (e.g. join tables where PK columns are also FKs).
+    """
+
+    # --- Primary key columns (support composite PKs) ---
+    pk_cols = getattr(tabledef, "idColumns", None) or [tabledef.idColumn]
+    columns = [Column(col, types.Integer, primary_key=True) for col in pk_cols]
+
+    # Track all column names we have already added to avoid duplicates
+    colnames = set(pk_cols)
+
+    # Track FK constraints that need to be applied at the table level
+    fk_constraints = []
+
+    # --- Normal fields ---
     columns.extend(make_column(field) for field in tabledef.fields)
-    for reldef in tabledef.relationships:
-        if reldef.type in ('many-to-one', 'one-to-one') and hasattr(reldef, 'column') and reldef.column:
-            fk = make_foreign_key(datamodel, reldef)
-            if fk is not None: columns.append(fk)
+    for field in tabledef.fields:
+        col = getattr(field, "column", None)
+        if col:
+            colnames.add(col)
 
-    return Table_Sqlalchemy(tabledef.table, metadata, *columns)
+    # --- Relationships (to-one FKs) ---
+    for reldef in tabledef.relationships:
+        if reldef.type not in ("many-to-one", "one-to-one"):
+            continue
+
+        rel_col = getattr(reldef, "column", None)
+        if not rel_col:
+            continue
+
+        # Always add a ForeignKeyConstraint, even if the column already exists
+        fk_target = make_fk_target(datamodel, reldef)
+        if fk_target is not None:
+            remote_table, remote_col = fk_target
+            fk_constraints.append(
+                ForeignKeyConstraint([rel_col], [f"{remote_table}.{remote_col}"])
+            )
+
+        # Only add the FK column as a Column(...) if it doesn't already exist
+        # (e.g., avoid redefining a PK column that doubles as FK)
+        if rel_col not in colnames:
+            fk_col = make_foreign_key(datamodel, reldef)
+            if fk_col is not None:
+                columns.append(fk_col)
+                colnames.add(rel_col)
+
+    return Table_Sqlalchemy(tabledef.table, metadata, *columns, *fk_constraints)
+
+
+def make_fk_target(datamodel: Datamodel, reldef: Relationship):
+    """
+    Resolve the FK target (remote_table, remote_pk_column) for a relationship.
+    Returns None if the remote table can't be found or has a composite PK (unsupported as FK target here).
+    """
+    remote_tabledef = datamodel.get_table(reldef.relatedModelName)
+    if remote_tabledef is None:
+        return None
+
+    remote_pk_cols = getattr(remote_tabledef, "idColumns", None) or [remote_tabledef.idColumn]
+    if len(remote_pk_cols) != 1:
+        # We don't currently build FKs pointing at composite PK targets.
+        return None
+
+    return (remote_tabledef.table, remote_pk_cols[0])
+
 
 def make_foreign_key(datamodel: Datamodel, reldef: Relationship):
-    remote_tabledef = datamodel.get_table(reldef.relatedModelName) # TODO: this could be a method of relationship
-    if remote_tabledef is None:
-        return
+    """
+    Build a SQLAlchemy Column for a relationship FK column.
+    Used only when the column doesn't already exist in the table.
+    """
+    fk_target = make_fk_target(datamodel, reldef)
+    if fk_target is None:
+        return None
 
-    fk_target = '.'.join((remote_tabledef.table, remote_tabledef.idColumn))
+    remote_table, remote_col = fk_target
+    target = f"{remote_table}.{remote_col}"
 
-    return Column(reldef.column,
-                  ForeignKey(fk_target),
-                  nullable = not reldef.required,
-                  unique = reldef.type == 'one_to_one')
+    return Column(
+        reldef.column,
+        ForeignKey(target),
+        nullable=not reldef.required,
+        unique=(reldef.type == "one-to-one"),
+    )
 
 def make_column(flddef: Field):
     field_type = field_type_map[ flddef.type ]
@@ -105,29 +174,82 @@ def map_classes(datamodel: Datamodel, tables: list[Table], classes):
         cls = classes[ tabledef.name ]
         table = tables[ tabledef.table ]
 
+        def _col(tbl, name: str):
+            if name in tbl.c:
+                return tbl.c[name]
+            lowered = name.lower()
+            for k in tbl.c.keys():
+                if k.lower() == lowered:
+                    return tbl.c[k]
+            return None
+
         def make_relationship(reldef):
-            if not hasattr(reldef, 'column') or not reldef.column or reldef.relatedModelName not in classes:
+            if reldef.relatedModelName not in classes:
                 return
 
-            remote_class = classes[ reldef.relatedModelName ]
-            column = getattr(table.c, reldef.column)
+            remote_class = classes[reldef.relatedModelName]
 
-            relationship_args = {'foreign_keys': column}
-            if remote_class is cls:
-                relationship_args['remote_side'] = table.c[ tabledef.idColumn ]
+            # Case A: FK column is on *this* table (many-to-one / one-to-one)
+            if getattr(reldef, "column", None):
+                column = _col(table, reldef.column)
+                if column is None:
+                    return
 
-            if hasattr(reldef, 'otherSideName') and reldef.otherSideName:
-                backref_args = {'uselist': reldef.type != 'one-to-one'}
+                relationship_args = {"foreign_keys": column}
 
-                relationship_args['backref'] = orm.backref(reldef.otherSideName, **backref_args)
+                # Self-referential case
+                if remote_class is cls:
+                    pk_cols = getattr(tabledef, "idColumns", None) or [tabledef.idColumn]
+                    relationship_args["remote_side"] = table.c[pk_cols[0]]
 
-            return reldef.name, orm.relationship(remote_class, **relationship_args)
+                if getattr(reldef, "otherSideName", None):
+                    backref_args = {"uselist": reldef.type != "one-to-one"}
+                    relationship_args["backref"] = orm.backref(reldef.otherSideName, **backref_args)
 
-        id_column = table.c[tabledef.idColumn]
-        properties = {
-            '_id': id_column,
-            tabledef.idFieldName: orm.synonym('_id'),
-        }
+                return reldef.name, orm.relationship(remote_class, **relationship_args)
+
+            # Case B: FK column is on the *remote* table (one-to-many)
+            if reldef.type == "one-to-many" and getattr(reldef, "otherSideName", None):
+                remote_tabledef = datamodel.get_table(reldef.relatedModelName)
+                if remote_tabledef is None:
+                    return
+
+                # Find the remote relationship that points back to this table; it has the FK column
+                remote_fk_rel = next(
+                    (
+                        r for r in remote_tabledef.relationships
+                        if r.name == reldef.otherSideName and getattr(r, "column", None)
+                    ),
+                    None,
+                )
+                if remote_fk_rel is None:
+                    return
+
+                remote_table = tables[remote_tabledef.table]
+                fk_col = _col(remote_table, remote_fk_rel.column)
+                if fk_col is None:
+                    return
+
+                # Backref on the child should be scalar for many-to-one / one-to-one
+                child_uselist = remote_fk_rel.type not in ("many-to-one", "one-to-one")
+
+                relationship_args = {
+                    "foreign_keys": fk_col,
+                    "backref": orm.backref(reldef.otherSideName, uselist=child_uselist),
+                }
+
+                return reldef.name, orm.relationship(remote_class, **relationship_args)
+
+            # Otherwise: unsupported / not mappable here
+            return
+
+        pk_cols = getattr(tabledef, "idColumns", None) or [tabledef.idColumn]
+        pk_names = getattr(tabledef, "idFieldNames", None) or [tabledef.idFieldName]
+
+        properties = {"_id": table.c[pk_cols[0]], pk_names[0]: orm.synonym("_id")}
+        for col, name in zip(pk_cols, pk_names):
+            if name != pk_names[0]:
+                properties[name] = table.c[col]
 
         properties.update({ flddef.name: table.c[flddef.column]
                             for flddef in tabledef.fields })

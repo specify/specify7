@@ -411,18 +411,48 @@ def synonymize(node, into, agent, user=None, collection=None):
 
     # This check can be disabled by a remote pref
     import specifyweb.backend.context.app_resource as app_resource
-    collection_prefs_json, _, __ = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
-    if collection_prefs_json is not None:
-            collection_prefs_dict = json.loads(collection_prefs_json)
+
+    collection_prefs_dict = {}  # always defined
+
+    res = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
+    force_checks = (collection is None or user is None)
+    if res is not None:
+        collection_prefs_json, _, __ = res
+        if collection_prefs_json:
+            try:
+                collection_prefs_dict = json.loads(collection_prefs_json) or {}
+            except Exception:
+                collection_prefs_dict = {}
+
+    import specifyweb.backend.context.app_resource as app_resource
 
     treeManagement_pref = collection_prefs_dict.get('treeManagement', {})
-
+    if force_checks and target.children.exists():
+        raise TreeBusinessRuleException(
+            f'Synonymizing "{node.fullname}" to "{into.fullname}" which has children',
+            {"tree": "Taxon",
+             "localizationKey": "nodeSynonimizeWithChildren",
+             "node": {
+                "id": node.id,
+                "rankid": node.rankid,
+                "fullName": node.fullname,
+                "children": list(node.children.values('id', 'fullname'))
+             },
+             "parent": {
+                "id": into.id,
+                "rankid": into.rankid,
+                "fullName": into.fullname,
+                "parentid": into.parent.id,
+                "children": list(into.children.values('id', 'fullname'))
+             }}
+        )
+    force_checks = (collection is None or user is None)
     synonymized = treeManagement_pref.get('synonymized', {}) \
         if isinstance(treeManagement_pref, dict) else {}
 
     add_synonym_enabled = synonymized.get(r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)', False) if isinstance(synonymized, dict) else False
 
-    if node.children.count() > 0 and (add_synonym_enabled is True):
+    if node.children.count() > 0 and (force_checks or add_synonym_enabled is False):
         raise TreeBusinessRuleException(
             f'Synonymizing node "{node.fullname}" which has children',
             {"tree" : "Taxon",
