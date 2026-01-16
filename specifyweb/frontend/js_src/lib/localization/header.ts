@@ -454,7 +454,7 @@ export const headerText = createDictionary({
     'es-es': 'Carta cronoestratigráfica',
     'fr-fr': 'Charte chronostratigraphique',
     'pt-br': 'Carta cronoestratigráfica',
-    'ru-ru': 'Хроностратиграфическая карта',
+    'ru-ru': 'Хроностратиграфическая диаграмма',
     'uk-ua': 'Хроностратиграфічна діаграма',
   },
 } as const);
