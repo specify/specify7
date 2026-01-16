@@ -302,12 +302,31 @@ def canonicalize_remove_node(node: ToRemoveNode) -> Q:
 
 def _map_matchee(matchee: list[ToRemoveMatchee], model_name: str) -> Exists:
     model: Model = get_model(model_name)
-    qs = [Q(**match["filter_on"]) for match in matchee]
+
+    # Filter out any filter keys that don't exist on this model
+    qs: list[Q] = []
+    for match in matchee:
+        safe_filter_on = {
+            k: v
+            for k, v in match["filter_on"].items()
+            if _model_supports_filter_key(model, k)
+        }
+        # If nothing remains, this particular matchee can't apply to this model
+        if safe_filter_on:
+            qs.append(Q(**safe_filter_on))
+
+    # If none of the matchees had any applicable filter keys,
+    # make this Exists() always false by filtering on an empty pk set.
+    if not qs:
+        return Exists(model.objects.none())
+
     qs_or = Func.make_ors(qs)
     query = model.objects.filter(qs_or)
+
     to_remove = [match["remove"] for match in matchee if match["remove"] is not None]
     if to_remove:
         query = query.exclude(Func.make_ors(to_remove))
+
     return Exists(query)
 
 
