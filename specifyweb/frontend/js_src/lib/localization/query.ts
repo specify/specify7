@@ -453,11 +453,11 @@ export const queryText = createDictionary({
     'en-us':
       'Use "%" to match any number of characters.\n\nUse "_" to match a single character',
     'ru-ru':
-      'Используйте символ "%" для сопоставления любого количества символов.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nИспользуйте символ "_" для сопоставления одного символа.',
+      'Используйте символ "%" для сопоставления любого количества символов.\n\n\n\n\n\nИспользуйте символ "_" для сопоставления одного символа.',
     'es-es':
       'Usar "%" para hacer coincidir cualquier número de caracteres.\n\nUsar "_" para hacer coincidir un solo carácter',
     'fr-fr':
-      'Utilisez « % » pour correspondre à un nombre quelconque de caractères.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nUtilisez « _ » pour correspondre à un seul caractère.',
+      'Utilisez « % » pour correspondre à un nombre quelconque de caractères.\n\n\n\n\n\nUtilisez « _ » pour correspondre à un seul caractère.',
     'uk-ua':
       'Використовуйте "%", щоб відповідати будь-якій кількості символів.\n\nВикористовуйте "_", щоб відповідати одному символу',
     'de-ch':
