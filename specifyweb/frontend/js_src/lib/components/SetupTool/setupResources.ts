@@ -57,12 +57,17 @@ export const disciplineTypeOptions = [
   { value: 'geology', label: 'Geology' },
 ];
 
-// Must match config/backstop/uiformatters.xml
-// TODO: Fetch uiformatters.xml from the backend instead and use UIFormatter.placeholder
+/*
+ * Must match config/backstop/uiformatters.xml
+ * TODO: Fetch uiformatters.xml from the backend instead and use UIFormatter.placeholder
+ */
 const currentYear = new Date().getFullYear();
 const catalogNumberFormats = [
   { value: 'CatalogNumber', label: `CatalogNumber (${currentYear}-######)` },
-  { value: 'CatalogNumberAlphaNumByYear', label: `CatalogNumberAlphaNumByYear (${currentYear}-######)` },
+  {
+    value: 'CatalogNumberAlphaNumByYear',
+    label: `CatalogNumberAlphaNumByYear (${currentYear}-######)`,
+  },
   { value: 'CatalogNumberNumeric', label: 'CatalogNumberNumeric (#########)' },
   { value: 'CatalogNumberString', label: 'None' },
 ];
@@ -77,11 +82,11 @@ function generateTreeRankFields(
   enabled: RA<string>,
   enforced: RA<string>,
   inFullName: RA<string>,
-  separator: string = ', '
+  separator: string = ' '
 ): RA<FieldConfig> {
   return rankNames.map(
-    (rankName, index) => {
-      return {
+    (rankName, index) =>
+      ({
         name: rankName.toLowerCase(),
         label: rankName,
         type: 'object',
@@ -92,7 +97,7 @@ function generateTreeRankFields(
             type: 'boolean',
             default: index === 0 || enabled.includes(rankName),
             required: index === 0,
-            width: 1
+            width: 1,
           },
           {
             name: 'enforced',
@@ -100,26 +105,25 @@ function generateTreeRankFields(
             type: 'boolean',
             default: index === 0 || enforced.includes(rankName),
             required: index === 0,
-            width: 1
+            width: 1,
           },
           {
             name: 'infullname',
             label: 'In Full Name',
             type: 'boolean',
             default: inFullName.includes(rankName),
-            width: 1
+            width: 1,
           },
           {
             name: 'fullnameseparator',
             label: 'Separator',
             type: 'text',
             default: separator,
-            width: 1
-          }
-        ]
-      } as FieldConfig
-    }
-  )
+            width: 1,
+          },
+        ],
+      }) as FieldConfig
+  );
 }
 
 export const resources: RA<ResourceConfig> = [
@@ -213,11 +217,22 @@ export const resources: RA<ResourceConfig> = [
         type: 'object',
         // TODO: Rank fields should be generated from a .json file.
         fields: generateTreeRankFields(
-          ['Site', 'Building', 'Collection', 'Room', 'Aisle', 'Cabinet', 'Shelf', 'Box', 'Rack', 'Vial'],
+          [
+            'Site',
+            'Building',
+            'Collection',
+            'Room',
+            'Aisle',
+            'Cabinet',
+            'Shelf',
+            'Box',
+            'Rack',
+            'Vial',
+          ],
           ['Site', 'Building', 'Collection', 'Room', 'Aisle', 'Cabinet'],
           [],
           []
-        )
+        ),
       },
       // TODO: This should be name direction. Each rank should have configurable formats, too.,
       {
@@ -271,7 +286,7 @@ export const resources: RA<ResourceConfig> = [
           ['Earth', 'Continent', 'Country', 'State', 'County'],
           ['Earth', 'Continent', 'Country', 'State', 'County'],
           []
-        )
+        ),
       },
       {
         name: 'fullNameDirection',
@@ -298,11 +313,43 @@ export const resources: RA<ResourceConfig> = [
         required: false,
         type: 'object',
         fields: generateTreeRankFields(
-          ['Life', 'Kingdom', 'Phylum', 'Subphylum', 'Class', 'Subclass', 'Superorder', 'Order', 'Family', 'Subfamily', 'Genus', 'Species', 'Subspecies'],
-          ['Life', 'Kingdom', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'],
-          ['Life', 'Kingdom', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species'],
+          [
+            'Life',
+            'Kingdom',
+            'Phylum',
+            'Subphylum',
+            'Class',
+            'Subclass',
+            'Superorder',
+            'Order',
+            'Family',
+            'Subfamily',
+            'Genus',
+            'Species',
+            'Subspecies',
+          ],
+          [
+            'Life',
+            'Kingdom',
+            'Phylum',
+            'Class',
+            'Order',
+            'Family',
+            'Genus',
+            'Species',
+          ],
+          [
+            'Life',
+            'Kingdom',
+            'Phylum',
+            'Class',
+            'Order',
+            'Family',
+            'Genus',
+            'Species',
+          ],
           ['Genus', 'Species', 'Subspecies']
-        )
+        ),
       },
       {
         name: 'fullNameDirection',
