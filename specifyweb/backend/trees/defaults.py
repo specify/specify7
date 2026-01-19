@@ -124,20 +124,95 @@ class DefaultTreeContext():
         self.tree_def_model, self.tree_rank_model, self.tree_node_model = get_models(tree_type)
 
         self.tree_def = self.tree_def_model.objects.get(name=tree_name)
-        self.tree_def_item_map = self.create_rank_map()
+        
+        self.create_rank_map()
         self.root_parent = self.tree_node_model.objects.filter(
             definitionitem__rankid=0, 
             definition=self.tree_def
         ).first()
 
+        self.counter = 0
+        self.batch_size = 1000
+
     def create_rank_map(self):
         """Rank lookup map to reduce queries"""
-        return {
-            rank.name: rank 
-            for rank in self.tree_rank_model.objects.filter(treedef=self.tree_def)
-        }
+        ranks = list(self.tree_rank_model.objects.filter(treedef=self.tree_def))
+        self.tree_def_item_map = {rank.name: rank for rank in ranks}
+        # Buffers for batches
+        self.rankid_map = {rank.rankid: rank for rank in ranks}
+        self.buffers = {rank.rankid: {} for rank in ranks}
 
-def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: dict[str, RankMappingConfiguration]):
+    def add_node_to_buffer(self, node, rank_id, row_id):
+        """Add node to the current batch of nodes to be created"""
+        if rank_id not in self.buffers:
+            self.buffers[rank_id] = {}
+        self.buffers[rank_id][row_id] = node
+        return node
+
+    def get_node_in_buffer(self, rank_id: int, name: str):
+        """Get a node if its already in the current batch's buffer. Prevents duplication."""
+        buffer = self.buffers.get(rank_id, {})
+        for node in buffer.values():
+            if node.name == name:
+                return node
+        return None
+
+    def flush(self, force=False):
+        """Flushes this batch's buffer if the batch is complete. Bulk creates the nodes in a complete batch."""
+        self.counter += 1
+        if not (force or self.counter > self.batch_size):
+            return
+        logger.debug(f"Batch creating {self.batch_size} rows.")
+
+        created_map: Dict[int, Dict[str, Any]] = {}
+        
+        # Go through ranks in ascending order and bulk create nodes
+        ordered_rank_ids = sorted(self.buffers.keys())
+        for rank_id in ordered_rank_ids:
+            logger.debug(f"On rank {rank_id}")
+            buffer = self.buffers.get(rank_id, {})
+
+            rank = self.rankid_map.get(rank_id)
+            if rank is None:
+                # Can't create nodes because this rank doesn't exist
+                # TODO: Make sure that this works correctly (parenting might get broken)
+                continue
+
+            nodes_to_create = []
+            # Update the nodes' parents to a saved version of their parents
+            for row_id, node in list(buffer.items()):
+                parent = getattr(node, 'parent', None)
+                if parent is not None and getattr(parent, 'pk', None) is None:
+                    saved_parent = created_map.get(parent.rankid, {}).get(parent.name)
+                    # Handle root
+                    if not saved_parent and parent.name == getattr(self.root_parent, 'name', None):
+                        saved_parent = self.root_parent
+                    if saved_parent:
+                        node.parent = saved_parent
+
+                # Create node if its parent has been created
+                if getattr(node.parent, 'pk', None) is not None:
+                    nodes_to_create.append(node)
+                else:
+                    logger.warning(f"Could not create {node.name} because a valid parent could not be resolved.")
+
+            if nodes_to_create:
+                self.tree_node_model.objects.bulk_create(nodes_to_create, ignore_conflicts=True)
+
+                # Store which nodes were created in this batch
+                created_names = [n.name for n in nodes_to_create]
+                created_nodes = self.tree_node_model.objects.filter(
+                    definition=self.tree_def,
+                    definitionitem=rank,
+                    name__in=created_names
+                )
+                created_map[rank_id] = {n.name: n for n in created_nodes}
+
+            self.buffers[rank_id] = {}
+
+        self.counter = 0
+
+def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: dict[str, RankMappingConfiguration], row_id: int):
     """
     Given one CSV row and a column mapping / rank configuration dictionary,
     walk through the 'ranks' in order, creating or updating each tree record and linking
@@ -175,14 +250,10 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: di
             continue
 
         # Create the node at this rank if it isn't already there.
-        obj = tree_node_model.objects.filter(
-            name=record_name,
-            fullname=record_name,
-            definition=tree_def,
-            definitionitem=tree_def_item,
-            parent=parent,
-        ).first()
-        if obj is None:
+        buffered = context.get_node_in_buffer(tree_def_item.rankid, record_name)
+        if buffered is not None:
+            obj = buffered
+        else:
             data = {
                 'name': record_name,
                 'fullname': record_name,
@@ -193,7 +264,8 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: di
                 **defaults
             }
             obj = tree_node_model(**data)
-            obj.save(skip_tree_extras=True)
+            obj = context.add_node_to_buffer(obj, tree_def_item.rankid, row_id)
+            # obj.save(skip_tree_extras=True)
 
         parent = obj
         rank_id += 10
@@ -280,8 +352,10 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
             progress(0, total_rows)
             
             for row in stream_csv_from_url(url):
-                add_default_tree_record(context, row, tree_cfg)
+                add_default_tree_record(context, row, tree_cfg, current)
+                context.flush()
                 progress(1, 0)
+            context.flush(force=True)
     except Exception as e:
         if specify_user_id and specify_collection_id:
             Message.objects.create(
