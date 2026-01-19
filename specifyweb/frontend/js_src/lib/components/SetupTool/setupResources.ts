@@ -40,6 +40,7 @@ export type FieldConfig = {
   };
   readonly maxLength?: number;
   readonly width?: number;
+  readonly collapse?: boolean;
 };
 
 // Discipline list from backend/context/app_resource.py
@@ -215,6 +216,7 @@ export const resources: RA<ResourceConfig> = [
         label: setupToolText.treeRanks(),
         required: false,
         type: 'object',
+        collapse: true,
         // TODO: Rank fields should be generated from a .json file.
         fields: generateTreeRankFields(
           [
@@ -231,7 +233,8 @@ export const resources: RA<ResourceConfig> = [
           ],
           ['Site', 'Building', 'Collection', 'Room', 'Aisle', 'Cabinet'],
           [],
-          []
+          [],
+          ' '
         ),
       },
       // TODO: This should be name direction. Each rank should have configurable formats, too.,
@@ -281,11 +284,13 @@ export const resources: RA<ResourceConfig> = [
         label: setupToolText.treeRanks(),
         required: false,
         type: 'object',
+        collapse: true,
         fields: generateTreeRankFields(
           ['Earth', 'Continent', 'Country', 'State', 'County'],
           ['Earth', 'Continent', 'Country', 'State', 'County'],
           ['Earth', 'Continent', 'Country', 'State', 'County'],
-          []
+          [],
+          ', '
         ),
       },
       {
@@ -299,6 +304,7 @@ export const resources: RA<ResourceConfig> = [
       {
         name: 'preload',
         label: setupToolText.preloadTree(),
+        description: setupToolText.preloadTreeDescription(),
         type: 'boolean',
       },
     ],
@@ -312,6 +318,7 @@ export const resources: RA<ResourceConfig> = [
         label: setupToolText.treeRanks(),
         required: false,
         type: 'object',
+        collapse: true,
         fields: generateTreeRankFields(
           [
             'Life',
@@ -348,7 +355,8 @@ export const resources: RA<ResourceConfig> = [
             'Genus',
             'Species',
           ],
-          ['Genus', 'Species', 'Subspecies']
+          ['Genus', 'Species', 'Subspecies'],
+          ' '
         ),
       },
       {
@@ -359,11 +367,12 @@ export const resources: RA<ResourceConfig> = [
         required: true,
         default: fullNameDirections[0].value.toString(),
       },
-      {
-        name: 'preload',
-        label: setupToolText.preloadTree(),
-        type: 'boolean',
-      },
+      // Pre-loading is disabled for now for taxon trees.
+      // {
+      //   name: 'preload',
+      //   label: setupToolText_preloadTree(),
+      //   type: 'boolean',
+      // },
     ],
   },
   {
