@@ -36,6 +36,8 @@ import { AttachmentWarningDeletion } from './AttachmentWarningDeletion';
 import { shouldBeToOne } from './helpers';
 import { RecordSelectorFromCollection } from './RecordSelectorFromCollection';
 import { DeleteButton } from '../Forms/DeleteButton';
+import { className } from '../Atoms/className';
+import { title } from 'process';
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
 
@@ -313,16 +315,24 @@ export function IntegratedRecordSelector({
                         relationship.relatedTable.name,
                         isDependent ? 'delete' : 'read'
                       ) && typeof handleRemove === 'function' && resource !== undefined ? (
-                        isTreeTable ? (
+                        isTreeTable && resource.id !== undefined && resource.id !== null ? (
                           <DeleteButton
+                          component={( {onClick, title , ...props }) => (
+                            <Button.Icon
+                            {...props}
+                            className={className.dataEntryRemove}
+                            icon ='minus'
+                            title={title ?? commonText.remove() }
+                            onClick={onClick}
+                            />
+                          )}
+
                             deferred={true}
-                            isIcon={true}
                             resource={resource}
                             onDeleted={(): void => {
                               handleRemove('minusButton');
                             }}
-                          ><span className="text-red-600">{commonText.remove()}</span>
-                          </DeleteButton>
+                          />
                            
                         ) : (
                           <DataEntry.Remove
