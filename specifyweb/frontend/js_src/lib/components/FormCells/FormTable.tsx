@@ -148,6 +148,9 @@ export function FormTable<SCHEMA extends AnySchema>({
 
   const rowsRef = React.useRef<HTMLDivElement | null>(null);
 
+  const isTreeTable =
+    collection!.table.specifyTable.name.includes('Tree');
+
   React.useEffect(() => {
     if (addedResource.current === undefined) return;
     const resourceIndex = resources.indexOf(addedResource.current);
@@ -505,6 +508,9 @@ export function FormTable<SCHEMA extends AnySchema>({
                         isDependent ? 'delete' : 'update'
                       )) &&
                       !disableRemove && (renderedResourceId === undefined || renderedResourceId === resource.id) ? (
+                        resource.id !== undefined &&
+                        resource.id !== null && isTreeTable
+                        ? (
                       <DeleteButton
                       component ={Button.Small}
                       deferred
@@ -517,6 +523,18 @@ export function FormTable<SCHEMA extends AnySchema>({
               
                       }}
                       />
+                    ) :(
+                      <Button.Small
+                        aria-label={commonText.remove()}
+                        className="h-full"
+                        title={commonText.remove()}
+                        onClick={(): void => {handleDelete(resource)
+                        }}
+                      >
+                        {icons.trash}
+                      </Button.Small>
+
+                    )
                     ) : undefined}
                     {isExpanded[resource.cid] === true && (
                       <FormMeta
