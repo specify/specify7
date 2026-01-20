@@ -30,7 +30,7 @@ exports[`AppResourcesAside (expanded case) expanded case 1`] = `
           <span
             class="pl-2 text-neutral-500"
           >
-            (2)
+            (0)
           </span>
         </button>
       </li>
@@ -51,7 +51,7 @@ exports[`AppResourcesAside (expanded case) expanded case 1`] = `
           <span
             class="pl-2 text-neutral-500"
           >
-            (4)
+            (1)
           </span>
         </button>
         <ul
@@ -76,7 +76,7 @@ exports[`AppResourcesAside (expanded case) expanded case 1`] = `
               <span
                 class="pl-2 text-neutral-500"
               >
-                (4)
+                (1)
               </span>
             </button>
           </li>
@@ -121,7 +121,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
       role="tree"
     >
       <li
-        aria-expanded="true"
+        aria-expanded="false"
         aria-labelledby="app-resources-tree-9-label"
         class="flex flex-col gap-2"
         id="app-resources-tree-9-li"
@@ -137,92 +137,9 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
           <span
             class="pl-2 text-neutral-500"
           >
-            (2)
+            (0)
           </span>
         </button>
-        <ul
-          aria-label="Resources"
-          class=" pl-4"
-          role="group"
-        >
-          <li>
-            <a
-              class="link [&:not([aria-current]):not(:hover)]:!text-neutral-500"
-              href="/specify/resources/app-resource/1/"
-            >
-              <span
-                aria-hidden="true"
-                title="Other Properties Resource"
-              >
-                <svg
-                  aria-hidden="true"
-                  class="w-6 h-6 flex-shrink-0"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    clip-rule="evenodd"
-                    d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                    fill-rule="evenodd"
-                  />
-                </svg>
-              </span>
-              Global Preferences
-            </a>
-          </li>
-          <li>
-            <a
-              class="link [&:not([aria-current]):not(:hover)]:!text-neutral-500"
-              href="/specify/resources/app-resource/2/"
-            >
-              <span
-                aria-hidden="true"
-                title="Other Properties Resource"
-              >
-                <svg
-                  aria-hidden="true"
-                  class="w-6 h-6 flex-shrink-0"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    clip-rule="evenodd"
-                    d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                    fill-rule="evenodd"
-                  />
-                </svg>
-              </span>
-              Remote Preferences
-            </a>
-          </li>
-          <li>
-            <a
-              class="link"
-              href="/specify/resources/create/globalResource/"
-            >
-              <span
-                class="!text-green-700 print:hidden"
-              >
-                <svg
-                  aria-hidden="true"
-                  class="w-6 h-6 flex-shrink-0"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    clip-rule="evenodd"
-                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                    fill-rule="evenodd"
-                  />
-                </svg>
-              </span>
-              Add Resource
-            </a>
-          </li>
-        </ul>
       </li>
       <li
         aria-expanded="true"
@@ -241,7 +158,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
           <span
             class="pl-2 text-neutral-500"
           >
-            (4)
+            (1)
           </span>
         </button>
         <ul
@@ -266,7 +183,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
               <span
                 class="pl-2 text-neutral-500"
               >
-                (4)
+                (1)
               </span>
             </button>
             <ul
@@ -322,7 +239,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                   <span
                     class="pl-2 text-neutral-500"
                   >
-                    (4)
+                    (1)
                   </span>
                 </button>
                 <ul
@@ -404,7 +321,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                       <span
                         class="pl-2 text-neutral-500"
                       >
-                        (3)
+                        (0)
                       </span>
                     </button>
                     <ul
@@ -413,7 +330,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                       role="group"
                     >
                       <li
-                        aria-expanded="true"
+                        aria-expanded="false"
                         aria-labelledby="app-resources-tree-14-label"
                         class="flex flex-col gap-2"
                         id="app-resources-tree-14-li"
@@ -429,118 +346,9 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                           <span
                             class="pl-2 text-neutral-500"
                           >
-                            (3)
+                            (0)
                           </span>
                         </button>
-                        <ul
-                          aria-label="Resources"
-                          class=" pl-4"
-                          role="group"
-                        >
-                          <li>
-                            <a
-                              class="link [&:not([aria-current]):not(:hover)]:!text-neutral-500"
-                              href="/specify/resources/app-resource/5/"
-                            >
-                              <span
-                                aria-hidden="true"
-                                title="User Preferences"
-                              >
-                                <svg
-                                  aria-hidden="true"
-                                  class="w-6 h-6 flex-shrink-0"
-                                  fill="currentColor"
-                                  viewBox="0 0 20 20"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    clip-rule="evenodd"
-                                    d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                                    fill-rule="evenodd"
-                                  />
-                                </svg>
-                              </span>
-                              User Preferences
-                            </a>
-                          </li>
-                          <li>
-                            <a
-                              class="link [&:not([aria-current]):not(:hover)]:!text-neutral-500"
-                              href="/specify/resources/app-resource/4/"
-                            >
-                              <span
-                                aria-hidden="true"
-                                title="Other XML Resource"
-                              >
-                                <svg
-                                  aria-hidden="true"
-                                  class="w-6 h-6 flex-shrink-0"
-                                  fill="currentColor"
-                                  viewBox="0 0 20 20"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    clip-rule="evenodd"
-                                    d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z"
-                                    fill-rule="evenodd"
-                                  />
-                                </svg>
-                              </span>
-                              QueryExtraList
-                            </a>
-                          </li>
-                          <li>
-                            <a
-                              class="link [&:not([aria-current]):not(:hover)]:!text-neutral-500"
-                              href="/specify/resources/app-resource/3/"
-                            >
-                              <span
-                                aria-hidden="true"
-                                title="Other XML Resource"
-                              >
-                                <svg
-                                  aria-hidden="true"
-                                  class="w-6 h-6 flex-shrink-0"
-                                  fill="currentColor"
-                                  viewBox="0 0 20 20"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    clip-rule="evenodd"
-                                    d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z"
-                                    fill-rule="evenodd"
-                                  />
-                                </svg>
-                              </span>
-                              QueryFreqList
-                            </a>
-                          </li>
-                          <li>
-                            <a
-                              class="link"
-                              href="/specify/resources/create/collection_4_user_1/"
-                            >
-                              <span
-                                class="!text-green-700 print:hidden"
-                              >
-                                <svg
-                                  aria-hidden="true"
-                                  class="w-6 h-6 flex-shrink-0"
-                                  fill="currentColor"
-                                  viewBox="0 0 20 20"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    clip-rule="evenodd"
-                                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                                    fill-rule="evenodd"
-                                  />
-                                </svg>
-                              </span>
-                              Add Resource
-                            </a>
-                          </li>
-                        </ul>
                       </li>
                     </ul>
                   </li>
@@ -716,7 +524,7 @@ exports[`AppResourcesAside (simple no conformation case) simple no conformation 
           <span
             class="pl-2 text-neutral-500"
           >
-            (2)
+            (0)
           </span>
         </button>
       </li>
@@ -737,7 +545,7 @@ exports[`AppResourcesAside (simple no conformation case) simple no conformation 
           <span
             class="pl-2 text-neutral-500"
           >
-            (4)
+            (1)
           </span>
         </button>
       </li>

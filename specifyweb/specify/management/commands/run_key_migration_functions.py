@@ -73,7 +73,9 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
         usc.remove_collectionobject_parentco, # specify 0029
         usc.add_quantities_gift, # specify 0032
         usc.update_paleo_desc, # specify 0033
-        usc.update_accession_date_fields # specify 0034
+        usc.update_accession_date_fields, # specify 0034
+        usc.create_discipline_type_picklist, # specify 0042
+        usc.update_discipline_type_splocalecontaineritem # specify 0042
     ]
     log_and_run(funcs, stdout)
 
