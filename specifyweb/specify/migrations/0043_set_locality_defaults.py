@@ -6,15 +6,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        # migrations.RunSQL(
-        #     """
-        #     UPDATE locality
-        #     SET SrcLatLongUnit = 0
-        #     WHERE SrcLatLongUnit IS NULL;
-        #     """,
-        #     reverse_sql=migrations.RunSQL.noop,
-        # ),
-
         migrations.AlterField(
             model_name="locality",
             name="srclatlongunit",
@@ -27,12 +18,4 @@ class Migration(migrations.Migration):
                 db_index=False,
             ),
         ),
-
-        # migrations.RunSQL(
-        #     """
-        #     ALTER TABLE locality
-        #     MODIFY SrcLatLongUnit SMALLINT NOT NULL DEFAULT 0;
-        #     """,
-        #     reverse_sql=migrations.RunSQL.noop,
-        # ),
     ]
