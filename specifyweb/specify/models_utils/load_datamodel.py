@@ -368,6 +368,35 @@ class Relationship(Field):
     def is_remote_to_one(self):
         return self.type == "one-to-one" and self.column == None
 
+# REFACTOR: extract other relationship types from base Relationship?
+class ManyToMany(Relationship):
+    through_table: str
+    through_column: str
+
+    def __init__(self,
+                 name = None,
+                 required = None,
+                 relatedModelName = None,
+                 otherSideName = None,
+                 through_table = None,
+                 through_column = None):
+        super().__init__(name=name,
+                         type='many-to-many',
+                         is_relationship=True,
+                         #FEATURE: add support for dependent many-to-many
+                         dependent=False,
+                         required=required,
+                         relatedModelName=relatedModelName,
+                         otherSideName=otherSideName)
+        if through_table is None:
+            raise ValueError("A through table must be specified for a \
+                             ManyToMany Relationship!")
+        if through_column is None:
+            raise ValueError("A column on the through table for the source \
+                             side must be specified!")
+
+        self.through_table = through_table
+        self.through_column = through_column
 
 def make_table(tabledef: ElementTree.Element) -> Table:
     iddef = tabledef.find("id")
