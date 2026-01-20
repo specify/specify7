@@ -35,6 +35,7 @@ import { AttachmentsCollection } from './AttachmentsCollection';
 import { AttachmentWarningDeletion } from './AttachmentWarningDeletion';
 import { shouldBeToOne } from './helpers';
 import { RecordSelectorFromCollection } from './RecordSelectorFromCollection';
+import { DeleteButton } from '../Forms/DeleteButton';
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
 
@@ -136,6 +137,9 @@ export function IntegratedRecordSelector({
 
   const isAttachmentTable =
     collection.table.specifyTable.name.includes('Attachment');
+
+  const isTreeTable =
+    collection.table.specifyTable.name.includes('Tree');
 
   const subviewContext = React.useContext(SubViewContext);
   const parentContext = React.useMemo(
@@ -308,9 +312,21 @@ export function IntegratedRecordSelector({
                       {hasTablePermission(
                         relationship.relatedTable.name,
                         isDependent ? 'delete' : 'read'
-                      ) && typeof handleRemove === 'function' ? (
-                        <DataEntry.Remove
-                          disabled={
+                      ) && typeof handleRemove === 'function' && resource !== undefined ? (
+                        isTreeTable ? (
+                          <DeleteButton
+                            deferred={true}
+                            isIcon={true}
+                            resource={resource}
+                            onDeleted={(): void => {
+                              handleRemove('minusButton');
+                            }}
+                          ><span className="text-red-600">{commonText.remove()}</span>
+                          </DeleteButton>
+                           
+                        ) : (
+                          <DataEntry.Remove
+                            disabled={
                             isReadOnly ||
                             collection.models.length === 0 ||
                             resource === undefined ||
@@ -326,6 +342,7 @@ export function IntegratedRecordSelector({
                             }
                           }}
                         />
+                        )
                       ) : undefined}
                       <span
                         className={`flex-1 ${
