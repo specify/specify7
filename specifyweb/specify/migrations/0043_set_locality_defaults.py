@@ -18,4 +18,11 @@ class Migration(migrations.Migration):
                 db_index=False,
             ),
         ),
+        migrations.RunSQL(
+        """
+        ALTER TABLE locality
+        MODIFY SrcLatLongUnit TINYINT(4) NOT NULL DEFAULT 0;
+        """,
+        reverse_sql=migrations.RunSQL.noop,
+    ),
     ]
