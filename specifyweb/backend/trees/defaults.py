@@ -141,20 +141,31 @@ class DefaultTreeContext():
         # Buffers for batches
         self.rankid_map = {rank.rankid: rank for rank in ranks}
         self.buffers = {rank.rankid: {} for rank in ranks}
+        self.created = {rank.rankid: {} for rank in ranks}
 
     def add_node_to_buffer(self, node, rank_id, row_id):
         """Add node to the current batch of nodes to be created"""
         if rank_id not in self.buffers:
             self.buffers[rank_id] = {}
+            self.created[rank_id] = {}
         self.buffers[rank_id][row_id] = node
         return node
 
     def get_node_in_buffer(self, rank_id: int, name: str):
-        """Get a node if its already in the current batch's buffer. Prevents duplication."""
+        """Gets a node if its already in the current batch's buffer. Prevents duplication within a batch."""
+        # Check for node in buffer, return node
         buffer = self.buffers.get(rank_id, {})
         for node in buffer.values():
             if node.name == name:
                 return node
+        return None
+    
+    def get_existing_node_id(self, rank_id: int, name: str) -> Optional[int]:
+        """Gets a node's id if it has already been created. Prevents duplication across an entire import."""
+        # Check for existing id, return id
+        created_in_rank = self.created.get(rank_id)
+        if created_in_rank:
+            return created_in_rank.get(name)
         return None
 
     def flush(self, force=False):
@@ -163,8 +174,6 @@ class DefaultTreeContext():
         if not (force or self.counter > self.batch_size):
             return
         logger.debug(f"Batch creating {self.batch_size} rows.")
-
-        created_map: Dict[int, Dict[str, Any]] = {}
         
         # Go through ranks in ascending order and bulk create nodes
         ordered_rank_ids = sorted(self.buffers.keys())
@@ -175,38 +184,39 @@ class DefaultTreeContext():
             rank = self.rankid_map.get(rank_id)
             if rank is None:
                 # Can't create nodes because this rank doesn't exist
-                # TODO: Make sure that this works correctly (parenting might get broken)
                 continue
 
             nodes_to_create = []
             # Update the nodes' parents to a saved version of their parents
             for row_id, node in list(buffer.items()):
                 parent = getattr(node, 'parent', None)
+                parent_id = getattr(node, 'parent_id', None)
                 if parent is not None and getattr(parent, 'pk', None) is None:
-                    saved_parent = created_map.get(parent.rankid, {}).get(parent.name)
+                    saved_parent_id = self.created[parent.rankid].get(parent.name)
                     # Handle root
-                    if not saved_parent and parent.name == getattr(self.root_parent, 'name', None):
-                        saved_parent = self.root_parent
-                    if saved_parent:
-                        node.parent = saved_parent
+                    if not saved_parent_id and parent.name == getattr(self.root_parent, 'name', None):
+                        saved_parent_id = self.root_parent.id
+                    if saved_parent_id:
+                        node.parent = None
+                        node.parent_id = saved_parent_id
 
                 # Create node if its parent has been created
-                if getattr(node.parent, 'pk', None) is not None:
+                if getattr(node.parent, 'pk', None) is not None or getattr(node, 'parent_id', None) is not None:
                     nodes_to_create.append(node)
                 else:
-                    logger.warning(f"Could not create {node.name} because a valid parent could not be resolved.")
+                    logger.warning(f"Could not create {node.name} because a valid parent could not be resolved. {parent_id}, {str(parent)}")
 
             if nodes_to_create:
                 self.tree_node_model.objects.bulk_create(nodes_to_create, ignore_conflicts=True)
 
-                # Store which nodes were created in this batch
+                # Store the ids of the nodes were created in this batch
                 created_names = [n.name for n in nodes_to_create]
                 created_nodes = self.tree_node_model.objects.filter(
                     definition=self.tree_def,
                     definitionitem=rank,
                     name__in=created_names
                 )
-                created_map[rank_id] = {n.name: n for n in created_nodes}
+                self.created[rank_id].update({n.name: n.id for n in created_nodes})
 
             self.buffers[rank_id] = {}
 
@@ -221,6 +231,7 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: di
     tree_node_model = context.tree_node_model
     tree_def = context.tree_def
     parent = context.root_parent
+    parent_id = None
     rank_id = 10
 
     for rank_mapping in tree_cfg['ranks']:
@@ -251,23 +262,31 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: di
 
         # Create the node at this rank if it isn't already there.
         buffered = context.get_node_in_buffer(tree_def_item.rankid, record_name)
-        if buffered is not None:
-            obj = buffered
+        existing_id = context.get_existing_node_id(tree_def_item.rankid, record_name)
+        if existing_id is not None:
+            parent_id = existing_id
+            parent = None
+        elif buffered is not None:
+            parent_id = None
+            parent = buffered
         else:
             data = {
                 'name': record_name,
                 'fullname': record_name,
                 'definition': tree_def,
                 'definitionitem': tree_def_item,
-                'parent': parent,
                 'rankid': tree_def_item.rankid,
                 **defaults
             }
+            if parent is not None:
+                data['parent'] = parent
+            elif parent_id is not None:
+                data['parent_id'] = parent_id
             obj = tree_node_model(**data)
             obj = context.add_node_to_buffer(obj, tree_def_item.rankid, row_id)
-            # obj.save(skip_tree_extras=True)
 
-        parent = obj
+            parent = obj
+            parent_id = None
         rank_id += 10
 
 @app.task(base=LogErrorsTask, bind=True)
