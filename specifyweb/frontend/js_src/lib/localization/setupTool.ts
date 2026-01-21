@@ -127,10 +127,10 @@ export const setupToolText = createDictionary({
     'en-us': 'Full Name Direction',
   },
   preloadTree: {
-    'en-us': 'Pre-load  Tree'
+    'en-us': 'Pre-load  Tree',
   },
   preloadTreeDescription: {
-    'en-us': 'Download default records for this tree.'
+    'en-us': 'Download default records for this tree.',
   },
 
   // Storage Tree
@@ -169,9 +169,6 @@ export const setupToolText = createDictionary({
   },
 
   // Collection
-  collection: {
-    'en-us': 'Collection',
-  },
   collectionName: {
     'en-us': 'Collection Name',
   },
@@ -215,8 +212,7 @@ export const setupToolText = createDictionary({
     'en-us': 'Last Name',
   },
   specifyUserLastNameDescription: {
-    'en-us':
-      'The last name of the agent associated with the account.',
+    'en-us': 'The last name of the agent associated with the account.',
   },
 
   taxonTreeSetUp: {

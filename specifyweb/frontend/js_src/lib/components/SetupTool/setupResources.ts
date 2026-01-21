@@ -2,6 +2,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { formsText } from '../../localization/forms';
 import { setupToolText } from '../../localization/setupTool';
+import { statsText } from '../../localization/stats';
 import type { RA } from '../../utils/types';
 
 // Default for max field length.
@@ -367,17 +368,19 @@ export const resources: RA<ResourceConfig> = [
         required: true,
         default: fullNameDirections[0].value.toString(),
       },
-      // Pre-loading is disabled for now for taxon trees.
-      // {
-      //   name: 'preload',
-      //   label: setupToolText_preloadTree(),
-      //   type: 'boolean',
-      // },
+      /*
+       * Pre-loading is disabled for now for taxon trees.
+       * {
+       *   name: 'preload',
+       *   label: setupToolText_preloadTree(),
+       *   type: 'boolean',
+       * },
+       */
     ],
   },
   {
     resourceName: 'collection',
-    label: setupToolText.collection(),
+    label: statsText.collection(),
     fields: [
       {
         name: 'collectionName',
