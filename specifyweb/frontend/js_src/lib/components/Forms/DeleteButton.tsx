@@ -80,7 +80,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
 
   const iconName = resource.specifyTable.name;
 
-// callback for button click
+// Callback for button click
   const handleClick = (): void => {
     handleOpen();
     fetchBlockers();
@@ -90,7 +90,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
 
   return (
     <>
-    {/* use  children as render prop if provided */}
+    {/* Use  children as render prop if provided */}
      {typeof children === 'function' ? (
       children(handleClick, isDisabled)
      ) :
