@@ -547,7 +547,6 @@ export function FormTable<SCHEMA extends AnySchema>({
                       >
                         {icons.trash}
                       </Button.Small>
-
                     )
                     ) : undefined}
                     {isExpanded[resource.cid] === true && (
