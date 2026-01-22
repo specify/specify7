@@ -42,6 +42,7 @@ import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { COJODialog } from './COJODialog';
 import { FormCell } from './index';
+import { on } from 'events';
 
 const cellToLabel = (
   table: SpecifyTable,
@@ -516,8 +517,20 @@ export function FormTable<SCHEMA extends AnySchema>({
                         }
               
                       }}
-                      />
-                    ) :(
+                      >
+                        {(onClick, disabled):JSX.Element => (
+                          <Button.Small
+                        aria-label={commonText.remove()}
+                        className="h-full"
+                        title={commonText.remove()}
+                        onClick={onClick}
+                        disabled={disabled}
+                      >
+                        {icons.trash}
+                      </Button.Small>
+                        )}
+                        </DeleteButton>
+                    ) : (
                       <Button.Small
                         aria-label={commonText.remove()}
                         className="h-full"
