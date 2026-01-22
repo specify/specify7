@@ -143,6 +143,9 @@ class DefaultTreeContext():
             definitionitem__rankid=0,
             definition=self.tree_def
         ).first()
+        
+        if self.root_parent is not None and not hasattr(self.root_parent, "_tmp_path"):
+            self.root_parent._tmp_path = f"/{self.root_parent.name}"
 
         # Ensure a real root exists for new trees, otherwise everything starts with parent=None
         if self.root_parent is None:
@@ -154,8 +157,10 @@ class DefaultTreeContext():
                     definition=self.tree_def,
                     definitionitem=root_rank,
                     parent=None,
+                    rankid=root_rank.rankid,
                 )
                 self.root_parent.save(skip_tree_extras=True)
+                self.root_parent._tmp_path = f"/{self.root_parent.name}"
 
         self.counter = 0
         self.batch_size = 1000
@@ -165,32 +170,18 @@ class DefaultTreeContext():
         ranks = list(self.tree_rank_model.objects.filter(treedef=self.tree_def))
         self.tree_def_item_map = {rank.name: rank for rank in ranks}
         self.rankid_map = {rank.rankid: rank for rank in ranks}
+        self.buffers: Dict[int, Dict[str, Any]] = {rank.rankid: {} for rank in ranks}
 
-        # buffers[rank_id] = {(rank_id, parent_key, name): node}
-        self.buffers: Dict[int, Dict[Tuple[int, Tuple[str, Optional[int]], str], Any]] = {
-            rank.rankid: {} for rank in ranks
-        }
-
-    def _parent_key(self, parent) -> Tuple[str, Optional[int]]:
-        if parent is None:
-            return ("root", None)
-        pk = getattr(parent, "pk", None)
-        if pk is not None:
-            return ("pk", int(pk))
-        return ("tmp", id(parent))
-
-    def add_node_to_buffer(self, node, rank_id: int):
-        """Add node to current batch buffer, de-duping on (rank_id, parent, name)."""
-        parent = getattr(node, "parent", None)
-        key = (rank_id, self._parent_key(parent), node.name)
+    def get_node_in_buffer(self, rank_id: int, path: str):
+        """Get a node if it's already in the current batch's buffer."""
+        return self.buffers.get(rank_id, {}).get(path)
+    
+    def add_node_to_buffer(self, node, rank_id: int, path: str):
+        """Add node to current batch buffer, de-duping on a stable path."""
         self.buffers.setdefault(rank_id, {})
-        self.buffers[rank_id][key] = node
+        node._tmp_path = path  # stable across saved/unsaved
+        self.buffers[rank_id][path] = node
         return node
-
-    def get_node_in_buffer(self, rank_id: int, name: str, parent):
-        """Get a node if its already in the current batch's buffer. Prevents duplication."""
-        key = (rank_id, self._parent_key(parent), name)
-        return self.buffers.get(rank_id, {}).get(key)
 
     def flush(self, force: bool = False):
         """Flushes this batch's buffer if the batch is complete. Bulk creates the nodes in a complete batch."""
@@ -198,10 +189,16 @@ class DefaultTreeContext():
         if not (force or self.counter >= self.batch_size):
             return
 
-        created_map: Dict[int, Dict[Tuple[str, Tuple[str, Optional[int]]], Any]] = {}
+        created_map: Dict[str, Any] = {}
 
-        # create ranks in ascending order so parents exist before children
+        # Ensure root has a stable path key for this run
+        if self.root_parent is not None and not hasattr(self.root_parent, "_tmp_path"):
+            self.root_parent._tmp_path = f"/{self.root_parent.name}"
+
         for rank_id in sorted(self.buffers.keys()):
+            if rank_id == 0:
+                self.buffers[rank_id] = {}
+                continue
             buffer = self.buffers.get(rank_id, {})
             if not buffer:
                 continue
@@ -212,20 +209,16 @@ class DefaultTreeContext():
                 continue
 
             nodes_to_create = []
-            for (node_rankid, node_parent_key, node_name), node in list(buffer.items()):
+            for path, node in list(buffer.items()):
                 parent = getattr(node, "parent", None)
 
-                # Resolve unsaved parent from nodes created earlier in this batch
+                # Resolve parent if it's unsaved
                 if parent is not None and getattr(parent, "pk", None) is None:
-                    parent_rankid = getattr(getattr(parent, "definitionitem", None), "rankid", None)
-
-                    saved_parent = None
-                    if parent_rankid is not None:
-                        parent_lookup_key = (
-                            parent.name,
-                            self._parent_key(getattr(parent, "parent", None))
-                        )
-                        saved_parent = created_map.get(parent_rankid, {}).get(parent_lookup_key)
+                    parent_path = getattr(parent, "_tmp_path", None)
+                    if parent_path:
+                        saved_parent = created_map.get(parent_path)
+                    else:
+                        saved_parent = None
 
                     # Fallback to real root
                     if saved_parent is None and self.root_parent is not None:
@@ -235,37 +228,34 @@ class DefaultTreeContext():
                     if saved_parent is not None:
                         node.parent = saved_parent
 
-                # Only root nodes may have parent=None
-                if node_rankid == 0:
+                # Non-root nodes must have a saved parent
+                if getattr(getattr(node, "parent", None), "pk", None) is not None:
                     nodes_to_create.append(node)
                 else:
-                    if getattr(getattr(node, "parent", None), "pk", None) is not None:
-                        nodes_to_create.append(node)
-                    else:
-                        logger.warning(
-                            f"Skipping {node.name} (rank {node_rankid}) – parent could not be resolved"
-                        )
+                    logger.warning(
+                        f"Skipping {node.name} (rank {rank_id}) – parent could not be resolved"
+                    )
 
             if nodes_to_create:
                 self.tree_node_model.objects.bulk_create(nodes_to_create, ignore_conflicts=True)
 
-                # Load the saved copies so children can point to them
-                created_names = [n.name for n in nodes_to_create]
-                created_nodes = self.tree_node_model.objects.filter(
+                # Re-fetch nodes created for this rank in this flush.
+                pairs = {(n.name, n.parent_id) for n in nodes_to_create}
+
+                q = self.tree_node_model.objects.filter(
                     definition=self.tree_def,
                     definitionitem=rank,
-                    name__in=created_names
+                    name__in=[p[0] for p in pairs],
                 )
+                fetched = [n for n in q if (n.name, n.parent_id) in pairs]
+                fetched_map = {(n.name, n.parent_id): n for n in fetched}
 
-                # Map by parent_key and name
-                rank_created: Dict[Tuple[str, Tuple[str, Optional[int]]], Any] = {}
-                for n in created_nodes:
-                    key = (
-                        n.name,
-                        self._parent_key(getattr(n, "parent", None))
-                    )
-                    rank_created[key] = n
-                created_map[rank_id] = rank_created
+                # Populate created_map using each node's path
+                for n in nodes_to_create:
+                    key = (n.name, n.parent_id)
+                    saved = fetched_map.get(key)
+                    if saved is not None:
+                        created_map[getattr(n, "_tmp_path")] = saved
 
             self.buffers[rank_id] = {}
 
@@ -280,7 +270,6 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: di
     tree_node_model = context.tree_node_model
     tree_def = context.tree_def
     parent = context.root_parent
-    rank_id = 10
 
     for rank_mapping in tree_cfg['ranks']:
         rank_name = rank_mapping['name']
@@ -309,7 +298,14 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: di
             continue
 
         # Create the node at this rank if it isn't already there.
-        buffered = context.get_node_in_buffer(tree_def_item.rankid, record_name, parent)
+        parent_path = getattr(parent, "_tmp_path", None)
+        if parent_path is None:
+            parent_path = f"/{getattr(parent, 'name', 'ROOT')}"
+            setattr(parent, "_tmp_path", parent_path)
+
+        path = f"{parent_path}/{record_name}"
+
+        buffered = context.get_node_in_buffer(tree_def_item.rankid, path)
         if buffered is not None:
             obj = buffered
         else:
@@ -319,13 +315,13 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: di
                 'definition': tree_def,
                 'definitionitem': tree_def_item,
                 'parent': parent,
+                'rankid': tree_def_item.rankid,
                 **defaults
             }
             obj = tree_node_model(**data)
-            obj = context.add_node_to_buffer(obj, tree_def_item.rankid)
+            obj = context.add_node_to_buffer(obj, tree_def_item.rankid, path)
 
         parent = obj
-        rank_id += 10
 
 @app.task(base=LogErrorsTask, bind=True)
 def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline_name: str, specify_collection_id: Optional[int],
