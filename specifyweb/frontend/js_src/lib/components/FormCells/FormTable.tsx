@@ -500,6 +500,8 @@ export function FormTable<SCHEMA extends AnySchema>({
                         isDependent ? 'delete' : 'update'
                       )) &&
                       !disableRemove && (renderedResourceId === undefined || renderedResourceId === resource.id) ? (
+                        // check condition for tree table delete button, since new resources do not have id yet 
+                        // alternates between DeleteButton logic with save blcokers and simple remove button for new, and unsaved resources
                         resource.id !== undefined &&
                         resource.id !== null && isTreeTable
                         ? (
