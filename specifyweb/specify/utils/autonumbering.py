@@ -2,11 +2,12 @@
 Autonumbering logic
 """
 
+from contextlib import contextmanager
 
 from .uiformatters import UIFormatter, get_uiformatters
-from ..models_utils.lock_tables import lock_tables
+from ..models_utils.lock_tables import named_lock
 import logging
-from typing import List, Tuple, Set
+from typing import Generator, Literal, Any
 from collections.abc import Sequence
 
 from specifyweb.specify.utils.scoping import Scoping
@@ -32,6 +33,39 @@ def autonumber_and_save(collection, user, obj) -> None:
         obj.save()
 
 
+@contextmanager
+def autonumbering_lock(table_name: str, timeout: int = 10) -> Generator[Literal[True] | None, Any, None]:
+    """
+    A convienent wrapper for the named_lock generator that adds the 'autonumber'
+    prefix to the table_name string argument for the resulting lock name.
+
+    Raises a TimeoutError if timeout seconds have elapsed without acquiring the
+    lock, and a ConnectionError if the database was otherwise unable to acquire
+    the lock.
+
+    Example:
+    ```
+    try:
+        with autonumbering_lock('Collectionobject') as lock:
+        ... # do something
+    except TimeoutError:
+        ... # handle case when lock is held by other connection for > timeout
+    ```
+    
+    :param table_name: The name of the table that is being autonumbered
+    :type table_name: str
+    :param timeout: The time in seconds to wait for lock release if another 
+    connection holds the lock
+    :type timeout: int
+    :return: yields True if the lock was obtained successfully and None 
+    otherwise
+    :rtype: Generator[Literal[True] | None, Any, None]
+    """
+    lock_name = f"autonumber_{table_name.lower()}"
+    with named_lock(lock_name, timeout) as lock:
+        yield lock
+
+
 def do_autonumbering(collection, obj, fields: list[tuple[UIFormatter, Sequence[str]]]) -> None:
     logger.debug("autonumbering %s fields: %s", obj, fields)
 
@@ -43,13 +77,14 @@ def do_autonumbering(collection, obj, fields: list[tuple[UIFormatter, Sequence[s
         for formatter, vals in fields
     ]
 
-    with lock_tables(*get_tables_to_lock(collection, obj, [formatter.field_name for formatter, _ in fields])):
+    with autonumbering_lock(obj._meta.db_table):
         for apply_autonumbering_to in thunks:
             apply_autonumbering_to(obj)
 
         obj.save()
 
 
+# REFACTOR: Remove this funtion as it is no longer used
 def get_tables_to_lock(collection, obj, field_names) -> set[str]:
     # TODO: Include the fix for https://github.com/specify/specify7/issues/4148
     from specifyweb.backend.businessrules.models import UniquenessRule
