@@ -42,7 +42,6 @@ import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { COJODialog } from './COJODialog';
 import { FormCell } from './index';
-import { on } from 'events';
 
 const cellToLabel = (
   table: SpecifyTable,
