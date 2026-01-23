@@ -95,7 +95,8 @@ function generateTreeRankFields(
         fields: [
           {
             name: 'include',
-            label: 'Include',
+            label: setupToolText.include(),
+            description: setupToolText.includeDescription(),
             type: 'boolean',
             default: index === 0 || enabled.includes(rankName),
             required: index === 0,
@@ -103,7 +104,8 @@ function generateTreeRankFields(
           },
           {
             name: 'enforced',
-            label: 'Enforced',
+            label: setupToolText.enforced(),
+            description: setupToolText.enforcedDescription(),
             type: 'boolean',
             default: index === 0 || enforced.includes(rankName),
             required: index === 0,
@@ -111,14 +113,16 @@ function generateTreeRankFields(
           },
           {
             name: 'infullname',
-            label: 'In Full Name',
+            label: setupToolText.inFullName(),
+            description: setupToolText.inFullNameDescription(),
             type: 'boolean',
             default: inFullName.includes(rankName),
             width: 1,
           },
           {
             name: 'fullnameseparator',
-            label: 'Separator',
+            label: setupToolText.fullNameSeparator(),
+            description: setupToolText.fullNameSeparatorDescription(),
             type: 'text',
             default: separator,
             width: 1,
@@ -234,8 +238,8 @@ export const resources: RA<ResourceConfig> = [
           ],
           ['Site', 'Building', 'Collection', 'Room', 'Aisle', 'Cabinet'],
           [],
-          [],
-          ' '
+          ['Room', 'Aisle', 'Cabinet'],
+          ', '
         ),
       },
       // TODO: This should be name direction. Each rank should have configurable formats, too.,
@@ -290,7 +294,7 @@ export const resources: RA<ResourceConfig> = [
           ['Earth', 'Continent', 'Country', 'State', 'County'],
           ['Earth', 'Continent', 'Country', 'State', 'County'],
           ['Earth', 'Continent', 'Country', 'State', 'County'],
-          [],
+          ['Country', 'State'],
           ', '
         ),
       },
@@ -356,7 +360,7 @@ export const resources: RA<ResourceConfig> = [
             'Genus',
             'Species',
           ],
-          ['Genus', 'Species', 'Subspecies'],
+          ['Genus', 'Species'],
           ' '
         ),
       },

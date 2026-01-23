@@ -17,7 +17,7 @@ from specifyweb.backend.setup_tool.picklist_defaults import create_default_pickl
 from specifyweb.backend.setup_tool.prep_type_defaults import create_default_prep_types
 from specifyweb.backend.setup_tool.setup_tasks import setup_database_background, get_active_setup_task, get_last_setup_error, set_last_setup_error
 from specifyweb.celery_tasks import MissingWorkerError
-from specifyweb.backend.setup_tool.tree_defaults import create_default_tree, update_tree_scoping
+from specifyweb.backend.setup_tool.tree_defaults import start_default_tree_from_configuration, update_tree_scoping
 from specifyweb.specify.models import Institution, Discipline
 from specifyweb.backend.businessrules.uniqueness_rules import apply_default_uniqueness_rules
 from specifyweb.specify.management.commands.run_key_migration_functions import fix_cots
@@ -407,7 +407,7 @@ def create_tree(name: str, data: dict) -> dict:
         if use_discipline and discipline is not None:
             kwargs['discipline'] = discipline
 
-        treedef = create_default_tree(name, kwargs, ranks, preload_tree)
+        treedef = start_default_tree_from_configuration(name, kwargs, ranks, preload_tree)
 
         # Set as the primary tree in the discipline if its the first one
         if use_discipline and discipline:
