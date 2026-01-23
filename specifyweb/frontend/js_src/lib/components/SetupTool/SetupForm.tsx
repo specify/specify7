@@ -80,6 +80,7 @@ export function renderFormFieldFactory({
       fields,
       passwordRepeat,
       width,
+      collapse,
     } = field;
 
     const fieldName = parentName === undefined ? name : `${parentName}.${name}`;
@@ -205,7 +206,13 @@ export function renderFormFieldFactory({
             <H3 className="text-xl font-semibold" title={description}>
               {label}
             </H3>
-            {fields ? renderFormFields(fields, fieldName) : null}
+            {collapse ? (
+              <details>
+                {fields ? renderFormFields(fields, fieldName) : null}
+              </details>
+            ) : (
+              fields ? renderFormFields(fields, fieldName) : null
+            )}
           </div>
         ) : (
           <Label.Block title={description}>

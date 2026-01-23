@@ -126,6 +126,12 @@ export const setupToolText = createDictionary({
   fullNameDirection: {
     'en-us': 'Full Name Direction',
   },
+  preloadTree: {
+    'en-us': 'Pre-load  Tree'
+  },
+  preloadTreeDescription: {
+    'en-us': 'Download default records for this tree.'
+  },
 
   // Storage Tree
   storageTree: {
@@ -138,9 +144,6 @@ export const setupToolText = createDictionary({
   // Taxon Tree
   taxonTree: {
     'en-us': 'Taxon Tree',
-  },
-  preloadTree: {
-    'en-us': 'Pre-load  Tree'
   },
 
   // Division
