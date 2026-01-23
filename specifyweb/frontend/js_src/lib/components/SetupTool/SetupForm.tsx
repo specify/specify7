@@ -87,6 +87,8 @@ export function renderFormFieldFactory({
 
     const colSpan = width ? `col-span-${width}` : (type === 'object' ? 'col-span-4' : 'col-span-2');
 
+    const verticalSpacing = (width && width < 2) ? '-mb-2' : 'mb-2'
+
     const disciplineTypeValue =
       resources[currentStep].resourceName === 'discipline'
         ? getFormValue(formData, currentStep, 'type')
@@ -97,7 +99,7 @@ export function renderFormFieldFactory({
       (disciplineTypeValue === undefined || disciplineTypeValue === '');
 
     return (
-      <div className={`mb-2 ${colSpan}`} key={fieldName}>
+      <div className={`${verticalSpacing} ${colSpan}`} key={fieldName}>
         {type === 'boolean' ? (
           <div className="flex items-center space-x-2">
             <Label.Inline title={description}>
