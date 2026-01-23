@@ -70,7 +70,10 @@ function applyFormDefaults(
 ): void {
   const resourceName = resources[currentStep].resourceName;
   const defaultFormData: ResourceFormData = {};
-  const applyFieldDefaults = (field: FieldConfig, parentName?: string): void => {
+  const applyFieldDefaults = (
+    field: FieldConfig,
+    parentName?: string
+  ): void => {
     const fieldName =
       parentName === undefined ? field.name : `${parentName}.${field.name}`;
     if (field.type === 'object' && field.fields !== undefined)
@@ -137,7 +140,9 @@ export function SetupTool({
   );
 
   // Is the database currrently being created?
-  const [inProgress, setInProgress] = React.useState<boolean>(setupProgress.busy);
+  const [inProgress, setInProgress] = React.useState<boolean>(
+    setupProgress.busy
+  );
   const nextIncompleteStep = stepOrder.findIndex(
     (resourceName) => !setupProgress.resources[resourceName]
   );
@@ -212,7 +217,7 @@ export function SetupTool({
           (option) => option.value === newValue
         );
         updates.name = matchingType
-          ? matchingType.label ?? String(matchingType.value)
+          ? (matchingType.label ?? String(matchingType.value))
           : '';
       }
 
@@ -268,7 +273,11 @@ export function SetupTool({
     <div className="w-full flex flex-col h-full min-h-0">
       <header className="w-full bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 relative z-20">
         <div className="w-full flex flex-col items-center justify-center gap-2 py-3">
-          <img alt="" className="w-auto h-12 mx-auto" src="/static/img/logo.svg" />
+          <img
+            alt=""
+            className="w-auto h-12 mx-auto"
+            src="/static/img/logo.svg"
+          />
           <H2 className="text-2xl">{setupToolText.guidedSetup()}</H2>
         </div>
       </header>
