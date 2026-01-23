@@ -8851,7 +8851,8 @@ datamodel = Datamodel(tables=[
 
         ],
         view=None,
-        searchDialog=None
+        searchDialog=None,
+        skip=True
     ),
     Table(
         classname='edu.ku.brc.specify.datamodel.AutoNumSchDiv',
@@ -8878,7 +8879,8 @@ datamodel = Datamodel(tables=[
 
         ],
         view=None,
-        searchDialog=None
+        searchDialog=None,
+        skip=True
     ),
     Table(
         classname='edu.ku.brc.specify.datamodel.AutoNumSchDsp',
@@ -8905,7 +8907,8 @@ datamodel = Datamodel(tables=[
 
         ],
         view=None,
-        searchDialog=None
+        searchDialog=None,
+        skip=True
     ),
     Table(
         classname='edu.ku.brc.specify.datamodel.DeaccessionPreparation',
@@ -8964,7 +8967,8 @@ datamodel = Datamodel(tables=[
 
         ],
         view=None,
-        searchDialog=None
+        searchDialog=None,
+        skip=True
     ),
     Table(
         classname='edu.ku.brc.specify.datamodel.SgrBatchMatchResultItem',
@@ -9079,7 +9083,8 @@ datamodel = Datamodel(tables=[
 
         ],
         view=None,
-        searchDialog=None
+        searchDialog=None,
+        skip=True
     ),
     Table(
         classname='edu.ku.brc.specify.datamodel.SpecifyUserSpPrincipal',
@@ -9106,7 +9111,8 @@ datamodel = Datamodel(tables=[
 
         ],
         view=None,
-        searchDialog=None
+        searchDialog=None,
+        skip=True
     ),
     Table(
         classname='edu.ku.brc.specify.datamodel.SpPrincipalSpPermission',
@@ -9133,7 +9139,8 @@ datamodel = Datamodel(tables=[
 
         ],
         view=None,
-        searchDialog=None
+        searchDialog=None,
+        skip=True
     ),
 ])
 
