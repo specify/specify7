@@ -30,8 +30,8 @@ DEFAULT_TREE_MAPPING_URLS = {
     'Geologictimeperiod': 'https://files.specifysoftware.org/treerows/geologictimeperiod.json',
 }
 
-def create_default_tree(tree_type: str, kwargs: dict, user_rank_cfg: dict, preload_tree: Optional[bool]):
-    """Creates an initial empty tree. This should not be used outside of the initial database setup."""
+def start_default_tree_from_configuration(tree_type: str, kwargs: dict, user_rank_cfg: dict, preload_tree: Optional[bool]):
+    """Starts the creation of an initial empty tree. This should not be used outside of the initial database setup."""
     # Load all default ranks for this type of tree
     rank_data = load_json_from_file(DEFAULT_TREE_RANKS_FILES.get(tree_type))
     if rank_data is None:
@@ -76,8 +76,8 @@ def create_default_tree(tree_type: str, kwargs: dict, user_rank_cfg: dict, prelo
 
     return tree_def
 
-def preload_default_tree(tree_type: str, discipline_id: Optional[int], collection_id: Optional[int], tree_def_id: int, specify_user_id: Optional[int]):
-    """Creates a populated default tree without user input."""
+def start_preload_default_tree(tree_type: str, discipline_id: Optional[int], collection_id: Optional[int], tree_def_id: int, specify_user_id: Optional[int]):
+    """Starts a populated default tree import without user input."""
     try:
         # Tree download config:
         tree_discipline_name = tree_type.lower()

@@ -8,7 +8,7 @@ from typing import Tuple, Optional
 from celery.result import AsyncResult
 from specifyweb.backend.setup_tool import api
 from specifyweb.backend.setup_tool.app_resource_defaults import create_app_resource_defaults
-from specifyweb.backend.setup_tool.tree_defaults import preload_default_tree
+from specifyweb.backend.setup_tool.tree_defaults import start_preload_default_tree
 from specifyweb.specify.management.commands.run_key_migration_functions import fix_schema_config
 from specifyweb.specify.models_utils.model_extras import PALEO_DISCIPLINES, GEOLOGY_DISCIPLINES
 from specifyweb.celery_tasks import is_worker_alive, MissingWorkerError
@@ -148,11 +148,11 @@ def setup_database_task(self, data: dict):
             # Pre-load trees
             logger.info('Starting default tree downloads')
             if is_paleo_geo:
-                    preload_default_tree('Geologictimeperiod', discipline_id, collection_id, chronostrat_treedef_id, specifyuser_id)
+                start_preload_default_tree('Geologictimeperiod', discipline_id, collection_id, chronostrat_treedef_id, specifyuser_id)
             if data['geographytreedef'].get('preload'):
-                preload_default_tree('Geography', discipline_id, collection_id, geography_treedef_id, specifyuser_id)
+                start_preload_default_tree('Geography', discipline_id, collection_id, geography_treedef_id, specifyuser_id)
             if data['taxontreedef'].get('preload'):
-                preload_default_tree('Taxon', discipline_id, collection_id, taxon_treedef_id, specifyuser_id)
+                start_preload_default_tree('Taxon', discipline_id, collection_id, taxon_treedef_id, specifyuser_id)
 
             update_progress()
     except Exception as e:
