@@ -212,7 +212,7 @@ export function ImportTree<SCHEMA extends AnyTree>({
   treeDefId,
 }: {
   readonly tableName: SCHEMA['tableName'];
-  readonly treeDefId: Number;
+  readonly treeDefId: number;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [isActive, setIsActive] = React.useState(0);
@@ -238,7 +238,7 @@ export function ImportTree<SCHEMA extends AnyTree>({
         disciplineName: resource.discipline,
         rowCount: resource.rows,
         treeName: resource.title,
-        treeDefId: treeDefId,
+        treeDefId,
       },
     })
       .then(({ data, status }) => {

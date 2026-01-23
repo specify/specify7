@@ -88,7 +88,7 @@ export function renderFormFieldFactory({
 
     const fieldName = parentName === undefined ? name : `${parentName}.${name}`;
 
-    const colSpan = (width !== undefined) ? `col-span-${width}` : (type === 'object' ? 'col-span-4' : 'col-span-2');
+    const colSpan = (width === undefined) ? (type === 'object' ? 'col-span-4' : 'col-span-2') : `col-span-${width}`;
 
     const verticalSpacing = (width !== undefined && width < 2) ? '-mb-2' : 'mb-2'
 
@@ -106,9 +106,9 @@ export function renderFormFieldFactory({
       fieldName === 'preload' &&
       (
         Array.isArray(treeOptions) &&
-        treeOptions.some(
+        !treeOptions.some(
           (tree) => tree.discipline === getFormValue(formData, 3, 'type')
-        ) === false
+        )
       );
 
     return (
