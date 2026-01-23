@@ -265,13 +265,24 @@ class Table:
 
     @property
     def attachments_field(self) -> Optional["Relationship"]:
-        try:
-            return self.get_relationship("attachments")
-        except FieldDoesNotExistError:
-            try:
-                return self.get_relationship(self.name + "attachments")
-            except FieldDoesNotExistError:
-                return None
+        candidates = (
+            "attachments",
+            f"{self.name}attachments",
+            f"{self.name}Attachments",
+        )
+
+        for rel in self.relationships or []:
+            if not rel.name:
+                continue
+            rel_name_lower = rel.name.lower()
+            if rel_name_lower in (c.lower() for c in candidates):
+                return rel
+            if rel_name_lower.endswith("attachments"):
+                return rel
+            if rel.relatedModelName and rel.relatedModelName.lower().endswith("attachment"):
+                return rel
+
+        return None
 
     @property
     def is_attachment_jointable(self) -> bool:

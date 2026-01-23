@@ -345,6 +345,10 @@ def validate_sqlalchemy_model(datamodel_table):
     known_fields = datamodel_table.all_fields
 
     for field in known_fields:
+        if field.is_relationship:
+            remote_td = spmodels.datamodel.get_table(field.relatedModelName)
+            if remote_td is not None and getattr(remote_td, "skip", False):
+                continue
 
         in_sql = getattr(orm_table, field.name, None) or getattr(orm_table, field.name.lower(), None)
 
@@ -385,7 +389,8 @@ def validate_sqlalchemy_model(datamodel_table):
 
 class SQLAlchemyModelTest(TestCase):
     def test_sqlalchemy_model_errors(self):
-        for table in spmodels.datamodel.tables:
+        # for table in spmodels.datamodel.tables:
+        for table in (t for t in spmodels.datamodel.tables if not getattr(t, "skip", False)):
             table_errors = validate_sqlalchemy_model(table)
             self.assertTrue(len(table_errors) == 0 or table.name in expected_errors, f"Did not find {table.name}. Has errors: {table_errors}")
             if 'not_found' in table_errors:

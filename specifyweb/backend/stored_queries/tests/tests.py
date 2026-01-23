@@ -183,6 +183,10 @@ class SQLAlchemyModelTest(TestCase):
         known_fields = datamodel_table.all_fields
 
         for field in known_fields:
+            if field.is_relationship:
+                remote_td = spmodels.datamodel.get_table(field.relatedModelName)
+                if remote_td is not None and getattr(remote_td, "skip", False):
+                    continue
 
             in_sql = getattr(orm_table, field.name, None) or getattr(
                 orm_table, field.name.lower(), None

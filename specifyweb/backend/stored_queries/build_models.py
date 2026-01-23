@@ -106,22 +106,75 @@ def map_classes(datamodel: Datamodel, tables: list[Table], classes):
         table = tables[ tabledef.table ]
 
         def make_relationship(reldef):
-            if not hasattr(reldef, 'column') or not reldef.column or reldef.relatedModelName not in classes:
+            has_back_populates = False
+            if reldef.relatedModelName not in classes:
                 return
 
-            remote_class = classes[ reldef.relatedModelName ]
-            column = getattr(table.c, reldef.column)
+            remote_class = classes[reldef.relatedModelName]
+            remote_tabledef = datamodel.get_table(reldef.relatedModelName)
+            remote_table = tables.get(remote_tabledef.table) if remote_tabledef else None
 
-            relationship_args = {'foreign_keys': column}
-            if remote_class is cls:
-                relationship_args['remote_side'] = table.c[ tabledef.idColumn ]
+            # Handle standard to-one relationships with an explicit column.
+            if getattr(reldef, "column", None):
+                column = getattr(table.c, reldef.column)
+                relationship_args = {"foreign_keys": column}
 
-            if hasattr(reldef, 'otherSideName') and reldef.otherSideName:
-                backref_args = {'uselist': reldef.type != 'one-to-one'}
+                if remote_class is cls:
+                    relationship_args["remote_side"] = table.c[tabledef.idColumn]
 
-                relationship_args['backref'] = orm.backref(reldef.otherSideName, **backref_args)
+                # If the remote side declares a one-to-many back-link without a column,
+                # wire the two sides together.
+                reverse_one_to_many = None
+                if remote_tabledef:
+                    reverse_one_to_many = next(
+                        (
+                            r
+                            for r in remote_tabledef.relationships
+                            if r.relatedModelName == tabledef.name
+                            and r.type == "one-to-many"
+                        ),
+                        None,
+                    )
+                if reverse_one_to_many is not None:
+                    relationship_args["back_populates"] = reverse_one_to_many.name
+                    has_back_populates = True
 
-            return reldef.name, orm.relationship(remote_class, **relationship_args)
+                if (not has_back_populates) and getattr(reldef, "otherSideName", None):
+                    backref_args = {"uselist": reldef.type != "one-to-one"}
+                    relationship_args["backref"] = orm.backref(
+                        reldef.otherSideName, **backref_args
+                    )
+
+                return reldef.name, orm.relationship(remote_class, **relationship_args)
+
+            # Handle one-to-many relationships defined on the parent side (no column specified).
+            if reldef.type == "one-to-many" and remote_table is not None:
+                # Find a reverse many-to-one pointing back to this table with a FK column.
+                reverse_rel = next(
+                    (
+                        r
+                        for r in remote_tabledef.relationships
+                        if r.relatedModelName == tabledef.name
+                        and getattr(r, "column", None)
+                        and r.type in ("many-to-one", "one-to-one")
+                    ),
+                    None,
+                )
+                if reverse_rel is None:
+                    return
+
+                fk_column = remote_table.c[reverse_rel.column]
+                relationship_args = {
+                    "foreign_keys": fk_column,
+                    "primaryjoin": table.c[tabledef.idColumn] == fk_column,
+                }
+
+                # Keep both sides linked when possible.
+                relationship_args["back_populates"] = reverse_rel.name
+
+                return reldef.name, orm.relationship(remote_class, **relationship_args)
+
+            return
 
         id_column = table.c[tabledef.idColumn]
         properties = {
