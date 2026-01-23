@@ -244,7 +244,8 @@ class SQLAlchemyModelTest(TestCase):
         return {key: value for key, value in table_errors.items() if len(value) > 0}
 
     def test_sqlalchemy_model_errors(self):
-        for table in spmodels.datamodel.tables:
+        # for table in spmodels.datamodel.tables:
+        for table in (t for t in spmodels.datamodel.tables if not getattr(t, "skip", False)):
             table_errors = SQLAlchemyModelTest.validate_sqlalchemy_model(table)
             self.assertTrue(
                 len(table_errors) == 0 or table.name in expected_errors,

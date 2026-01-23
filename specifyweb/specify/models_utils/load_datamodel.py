@@ -563,7 +563,8 @@ def flag_dependent_fields(datamodel: Datamodel) -> None:
         if table.is_attachment_jointable:
             table.get_relationship("attachment").dependent = True
         if table.attachments_field:
-            table.attachments_field.dependent = True
+            # table.attachments_field.dependent = True
+            object.__setattr__(table.attachments_field, "dependent", True)
 
 
 def flag_system_tables(datamodel: Datamodel) -> None:
