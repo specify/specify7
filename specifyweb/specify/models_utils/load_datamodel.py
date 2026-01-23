@@ -102,6 +102,7 @@ class Table:
     sp7_only: bool = False
     django_app: str = "specify"
     virtual_fields: list["Field"] = []
+    skip: bool = False
 
     def __init__(
         self,
@@ -129,6 +130,7 @@ class Table:
         sp7_only: bool = False,
         django_app: str = "specify",
         virtual_fields: list["Field"] | None = None,
+        skip: bool = False
     ):
         if not classname:
             raise ValueError("classname is required")
@@ -176,6 +178,7 @@ class Table:
         self.sp7_only = sp7_only
         self.django_app = django_app
         self.virtual_fields = virtual_fields if virtual_fields is not None else []
+        self.skip = skip
 
     # -------- Backwards-compatible properties --------
     @property
