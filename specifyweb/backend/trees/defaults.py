@@ -11,6 +11,7 @@ from specifyweb.backend.notifications.models import Message
 from specifyweb.celery_tasks import LogErrorsTask, app
 import specifyweb.specify.models as spmodels
 from specifyweb.backend.trees.utils import get_models, SPECIFY_TREES, TREE_ROOT_NODES
+from specifyweb.backend.trees.extras import renumber_tree, set_fullnames
 
 import logging
 logger = logging.getLogger(__name__)
@@ -387,6 +388,10 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
                 context.flush()
                 progress(1, 0)
             context.flush(force=True)
+
+            # Finalize Tree
+            renumber_tree(tree_type)
+            set_fullnames(tree_def)
     except Exception as e:
         if specify_user_id and specify_collection_id:
             Message.objects.create(
