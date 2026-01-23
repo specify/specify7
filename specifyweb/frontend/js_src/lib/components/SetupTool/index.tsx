@@ -8,8 +8,7 @@ import { setupToolText } from '../../localization/setupTool';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { type RA, localized } from '../../utils/types';
-import { Container, H2, H3 } from '../Atoms';
-import { Progress } from '../Atoms';
+import { Container, H2, H3, Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { dialogIcons } from '../Atoms/Icons';
@@ -17,6 +16,8 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { loadingBar } from '../Molecules';
+import type { TaxonFileDefaultList } from '../TreeView/CreateTree';
+import { fetchDefaultTrees } from '../TreeView/CreateTree';
 import { checkFormCondition, renderFormFieldFactory } from './SetupForm';
 import { SetupOverview } from './SetupOverview';
 import type { FieldConfig, ResourceConfig } from './setupResources';
@@ -28,6 +29,8 @@ import type {
   SetupResponse,
 } from './types';
 import { flattenAllResources } from './utils';
+
+const SETUP_POLLING_INTERVAL = 3000;
 
 export const stepOrder: RA<keyof SetupResources> = [
   'institution',
@@ -60,23 +63,22 @@ function findNextStep(
   return currentStep;
 }
 
-function useFormDefaults(
+function applyFormDefaults(
   resource: ResourceConfig,
   setFormData: (data: ResourceFormData) => void,
   currentStep: number
 ): void {
   const resourceName = resources[currentStep].resourceName;
   const defaultFormData: ResourceFormData = {};
-  const applyFieldDefaults = (field: FieldConfig, parentName?: string) => {
+  const applyFieldDefaults = (field: FieldConfig, parentName?: string): void => {
     const fieldName =
       parentName === undefined ? field.name : `${parentName}.${field.name}`;
-    console.log(fieldName);
     if (field.type === 'object' && field.fields !== undefined)
       field.fields.forEach((field) => applyFieldDefaults(field, fieldName));
     if (field.default !== undefined) defaultFormData[fieldName] = field.default;
   };
   resource.fields.forEach((field) => applyFieldDefaults(field));
-  setFormData((previous: any) => ({
+  setFormData((previous: ResourceFormData) => ({
     ...previous,
     [resourceName]: {
       ...defaultFormData,
@@ -106,16 +108,28 @@ export function SetupTool({
 
   const [currentStep, setCurrentStep] = React.useState<number>(0);
   React.useEffect(() => {
-    useFormDefaults(resources[currentStep], setFormData, currentStep);
+    applyFormDefaults(resources[currentStep], setFormData, currentStep);
   }, [currentStep]);
 
   const [saveBlocked, setSaveBlocked] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     const formValid = formRef.current?.checkValidity();
-    setSaveBlocked(!formValid);
+    setSaveBlocked(formValid !== true);
   }, [formData, temporaryFormData, currentStep]);
   const SubmitComponent = saveBlocked ? Submit.Danger : Submit.Save;
+
+  // Fetch list of available default trees.
+  const [treeOptions, setTreeOptions] = React.useState<
+    TaxonFileDefaultList | undefined
+  >(undefined);
+  React.useEffect(() => {
+    fetchDefaultTrees()
+      .then((data) => setTreeOptions(data))
+      .catch((error) => {
+        console.error('Failed to fetch tree options:', error);
+      });
+  }, []);
 
   // Keep track of the last backend error.
   const [setupError, setSetupError] = React.useState<string | null>(
@@ -147,7 +161,7 @@ export function SetupTool({
             console.error('Failed to fetch setup progress:', error);
             return undefined;
           }),
-      3000
+      SETUP_POLLING_INTERVAL
     );
 
     return () => clearInterval(interval);
@@ -155,7 +169,7 @@ export function SetupTool({
 
   const loading = React.useContext(LoadingContext);
 
-  const startSetup = async (data: ResourceFormData): Promise<any> =>
+  const startSetup = async (data: ResourceFormData): Promise<SetupResponse> =>
     ajax<SetupResponse>('/setup_tool/setup_database/create/', {
       method: 'POST',
       headers: {
@@ -185,7 +199,7 @@ export function SetupTool({
     name: string,
     newValue: LocalizedString | boolean
   ): void => {
-    setFormData((previous) => {
+    setFormData((previous: ResourceFormData) => {
       const resourceName = resources[currentStep].resourceName;
       const previousResourceData = previous[resourceName];
       const updates: Record<string, any> = {
@@ -220,7 +234,7 @@ export function SetupTool({
       loading(
         startSetup(formData)
           .then((data) => {
-            setSetupProgress(data.setup_progress as SetupProgress);
+            setSetupProgress(data.setup_progress);
             setInProgress(true);
           })
           .catch((error) => {
@@ -245,6 +259,7 @@ export function SetupTool({
     temporaryFormData,
     setTemporaryFormData,
     formRef,
+    treeOptions,
   });
 
   const id = useId('setup-tool');
@@ -253,7 +268,7 @@ export function SetupTool({
     <div className="w-full flex flex-col h-full min-h-0">
       <header className="w-full bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 relative z-20">
         <div className="w-full flex flex-col items-center justify-center gap-2 py-3">
-          <img className="w-auto h-12 mx-auto" src="/static/img/logo.svg" />
+          <img alt="" className="w-auto h-12 mx-auto" src="/static/img/logo.svg" />
           <H2 className="text-2xl">{setupToolText.guidedSetup()}</H2>
         </div>
       </header>

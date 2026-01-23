@@ -11,6 +11,7 @@ import { type RA } from '../../utils/types';
 import { H3 } from '../Atoms';
 import { Input, Label, Select } from '../Atoms/Form';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
+import type { TaxonFileDefaultList } from '../TreeView/CreateTree';
 import type { FieldConfig, ResourceConfig } from './setupResources';
 import { FIELD_MAX_LENGTH, resources } from './setupResources';
 import type { ResourceFormData } from './types';
@@ -53,6 +54,7 @@ export function renderFormFieldFactory({
   temporaryFormData,
   setTemporaryFormData,
   formRef,
+  treeOptions,
 }: {
   readonly formData: ResourceFormData;
   readonly currentStep: number;
@@ -65,6 +67,7 @@ export function renderFormFieldFactory({
     value: React.SetStateAction<ResourceFormData>
   ) => void;
   readonly formRef: React.MutableRefObject<HTMLFormElement | null>;
+  readonly treeOptions?: TaxonFileDefaultList | undefined;
 }) {
   const renderFormField = (
     field: FieldConfig,
@@ -85,9 +88,9 @@ export function renderFormFieldFactory({
 
     const fieldName = parentName === undefined ? name : `${parentName}.${name}`;
 
-    const colSpan = width ? `col-span-${width}` : (type === 'object' ? 'col-span-4' : 'col-span-2');
+    const colSpan = (width !== undefined) ? `col-span-${width}` : (type === 'object' ? 'col-span-4' : 'col-span-2');
 
-    const verticalSpacing = (width && width < 2) ? '-mb-2' : 'mb-2'
+    const verticalSpacing = (width !== undefined && width < 2) ? '-mb-2' : 'mb-2'
 
     const disciplineTypeValue =
       resources[currentStep].resourceName === 'discipline'
@@ -98,15 +101,26 @@ export function renderFormFieldFactory({
       fieldName === 'name' &&
       (disciplineTypeValue === undefined || disciplineTypeValue === '');
 
+    const taxonTreePreloadDisabled = 
+      resources[currentStep].resourceName === 'taxonTreeDef' &&
+      fieldName === 'preload' &&
+      (
+        Array.isArray(treeOptions) &&
+        treeOptions.some(
+          (tree) => tree.discipline === getFormValue(formData, 3, 'type')
+        ) === false
+      );
+
     return (
       <div className={`${verticalSpacing} ${colSpan}`} key={fieldName}>
         {type === 'boolean' ? (
-          <div className="flex items-center space-x-2">
+          <div className="h-full flex items-center space-x-2">
             <Label.Inline title={description}>
               <Input.Checkbox
                 checked={Boolean(
                   getFormValue(formData, currentStep, fieldName)
-                )}
+                ) && !taxonTreePreloadDisabled}
+                disabled={taxonTreePreloadDisabled}
                 id={fieldName}
                 name={fieldName}
                 required={required}
@@ -208,7 +222,7 @@ export function renderFormFieldFactory({
             <H3 className="text-xl font-semibold" title={description}>
               {label}
             </H3>
-            {collapse ? (
+            {(collapse === true) ? (
               <details>
                 {fields ? renderFormFields(fields, fieldName) : null}
               </details>
@@ -233,7 +247,7 @@ export function renderFormFieldFactory({
     );
   };
 
-  const renderFormFields = (fields: RA<FieldConfig>, parentName?: string) => (
+  const renderFormFields = (fields: RA<FieldConfig>, parentName?: string): JSX.Element => (
     <div className="grid grid-cols-4 gap-4">
       {fields.map((field) => renderFormField(field, parentName))}
     </div>
