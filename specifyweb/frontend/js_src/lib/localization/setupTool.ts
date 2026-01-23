@@ -142,19 +142,22 @@ export const setupToolText = createDictionary({
     'en-us': 'Enforced',
   },
   enforcedDescription: {
-    'en-us': 'Is Enforced ensures that the level can not be skipped when adding nodes lower down the tree.',
+    'en-us':
+      'Is Enforced ensures that the level can not be skipped when adding nodes lower down the tree.',
   },
   inFullName: {
     'en-us': 'In Full Name',
   },
   inFullNameDescription: {
-    'en-us': 'Is in Full Name includes the level when building a full name expression, which can be queried and used in reports.',
+    'en-us':
+      'Is in Full Name includes the level when building a full name expression, which can be queried and used in reports.',
   },
   fullNameSeparator: {
     'en-us': 'Separator',
   },
   fullNameSeparatorDescription: {
-    'en-us': 'Separator refers to the character that separates the levels when displaying the full name.',
+    'en-us':
+      'Separator refers to the character that separates the levels when displaying the full name.',
   },
 
   // Storage Tree
