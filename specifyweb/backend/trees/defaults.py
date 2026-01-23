@@ -63,7 +63,7 @@ def initialize_default_tree(tree_type: str, discipline_or_institution, tree_name
                 tree_rank_model(
                     treedef=tree_def,
                     name=rank.get('name'),
-                    title=rank.get('title') or rank.get('name').title(),
+                    title=(rank.get('title') or rank.get('name').title()),
                     rankid=int(rank.get('rank', rank_id)),
                     isenforced=rank.get('enforced', True),
                     isinfullname=rank.get('infullname', False),
@@ -75,6 +75,18 @@ def initialize_default_tree(tree_type: str, discipline_or_institution, tree_name
             tree_rank_model.objects.bulk_create(treedefitems_bulk, ignore_conflicts=False)
 
             # Create a root node
+            created_items = list(
+                tree_rank_model.objects.filter(treedef=tree_def).order_by('rankid')
+            )
+
+            parent_item = None
+            for item in created_items:
+                item.parent = parent_item
+                parent_item = item
+
+            tree_rank_model.objects.bulk_update(created_items, ['parent'])
+
+            # Create a root node for non-taxon trees
             # New taxon trees are expected to be empty
             if tree_type != 'taxon':
                 create_default_root(tree_def, tree_type)
