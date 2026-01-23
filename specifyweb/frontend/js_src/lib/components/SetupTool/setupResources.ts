@@ -238,7 +238,7 @@ export const resources: RA<ResourceConfig> = [
           ],
           ['Site', 'Building', 'Collection', 'Room', 'Aisle', 'Cabinet'],
           [],
-          ['Room', 'Aisle', 'Cabinet'],
+          ['Building', 'Collection', 'Room', 'Aisle', 'Cabinet'],
           ', '
         ),
       },
@@ -294,7 +294,7 @@ export const resources: RA<ResourceConfig> = [
           ['Earth', 'Continent', 'Country', 'State', 'County'],
           ['Earth', 'Continent', 'Country', 'State', 'County'],
           ['Earth', 'Continent', 'Country', 'State', 'County'],
-          ['Country', 'State'],
+          ['Country', 'State', 'County'],
           ', '
         ),
       },
