@@ -241,7 +241,6 @@ export function renderFormFieldFactory({
                 const tree = selectedTree as TaxonFileDefaultDefinition;
                 return (
                   <div className="mt-2">
-                    <div className="text-sm font-medium mb-1">{commonText.selected()}</div>
                     <div className="p-2 border border-gray-500 rounded">
                       <div className="font-medium">{tree.title}</div>
                       <div className="text-xs text-gray-500">{tree.description}</div>
@@ -261,6 +260,7 @@ export function renderFormFieldFactory({
                   handleClick={
                     (resource: TaxonFileDefaultDefinition): void => {
                       handleChange(fieldName, resource);
+                      handleChange('preload', true);
                       handleTreeDialogClose();
                     }
                   }
