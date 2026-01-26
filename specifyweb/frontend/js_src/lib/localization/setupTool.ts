@@ -95,7 +95,7 @@ export const setupToolText = createDictionary({
     'en-us': 'The city where the institution is located.',
   },
   addressState: {
-    'en-us': 'State',
+    'en-us': 'Province/State',
   },
   addressStateDescription: {
     'en-us': 'The state or province.',
@@ -126,6 +126,45 @@ export const setupToolText = createDictionary({
   fullNameDirection: {
     'en-us': 'Full Name Direction',
   },
+  preloadTree: {
+    'en-us': 'Populate tree with default records',
+  },
+  preloadTreeDescription: {
+    'en-us': 'Download default records for this tree.',
+  },
+  treeToPreload: {
+    'en-us': 'Tree to download:',
+  },
+  selectATree: {
+    'en-us': 'Select a tree',
+  },
+  include: {
+    'en-us': 'Include',
+  },
+  includeDescription: {
+    'en-us': 'Include places the Level in the tree definition.',
+  },
+  enforced: {
+    'en-us': 'Enforced',
+  },
+  enforcedDescription: {
+    'en-us':
+      'Is Enforced ensures that the level can not be skipped when adding nodes lower down the tree.',
+  },
+  inFullName: {
+    'en-us': 'In Full Name',
+  },
+  inFullNameDescription: {
+    'en-us':
+      'Is in Full Name includes the level when building a full name expression, which can be queried and used in reports.',
+  },
+  fullNameSeparator: {
+    'en-us': 'Separator',
+  },
+  fullNameSeparatorDescription: {
+    'en-us':
+      'Separator refers to the character that separates the levels when displaying the full name.',
+  },
 
   // Storage Tree
   storageTree: {
@@ -139,11 +178,6 @@ export const setupToolText = createDictionary({
   taxonTree: {
     'en-us': 'Taxon Tree',
   },
-  /*
-   * DefaultTree: {
-   *   'en-us': 'Pre-load Default Tree'
-   * },
-   */
 
   // Division
   division: {
@@ -168,9 +202,6 @@ export const setupToolText = createDictionary({
   },
 
   // Collection
-  collection: {
-    'en-us': 'Collection',
-  },
   collectionName: {
     'en-us': 'Collection Name',
   },
@@ -214,7 +245,39 @@ export const setupToolText = createDictionary({
     'en-us': 'Last Name',
   },
   specifyUserLastNameDescription: {
-    'en-us':
-      'The last name of the agent associated with the account. Optional.',
+    'en-us': 'The last name of the agent associated with the account.',
+  },
+
+  taxonTreeSetUp: {
+    'en-us': 'Set up taxon tree',
+  },
+  geoTreeSetUp: {
+    'en-us': 'Set up geo tree',
+  },
+  addNewGeographyTree: {
+    'en-us': 'Add new Geography Tree',
+  },
+  addNewTaxonTree: {
+    'en-us': 'Add new Taxon Tree',
+  },
+
+  // System Configuration Tool - Hierarchy diagram
+  hierarchyStructureTitle: {
+    'en-us': 'View the Institutional Hierarchy',
+  },
+  hierarchyStructureHint: {
+    'en-us': 'Click any block to open its edit form.',
+  },
+  hierarchySwitchToHorizontal: {
+    'en-us': 'Switch to horizontal',
+  },
+  hierarchySwitchToVertical: {
+    'en-us': 'Switch to vertical',
+  },
+  hierarchyAddNew: {
+    'en-us': 'Add',
+  },
+  hierarchyDiagram: {
+    'en-us': 'Institutional Hierarchy',
   },
 } as const);

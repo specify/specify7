@@ -30,13 +30,16 @@ def apply_schema_defaults(discipline: Discipline):
                 # Items contains a list of dicts (item).
                 for item in table.get('items', []):
                     # Each item is a dict with only one entry.
-                    for key, override_dict in item.items():
-                        defaults[table_name][key.lower()] = override_dict
+                    for field_name, override_dict in item.items():
+                        table_items = defaults.setdefault(table_name, {}).setdefault('items', {})
+                        default_dict = table_items.get(field_name) or {}
+                        merged_dict = {**default_dict, **override_dict}
+                        table_items[field_name] = merged_dict
                 # Replace other properties
                 for key, v in table.items():
                     if key == 'items':
                         continue
-                    defaults[key] = v
+                    defaults.setdefault(table_name, {})[key] = v
 
     # Update the schema for each table individually.
     # for model_name in model_names_by_table_id.values():
