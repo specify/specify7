@@ -123,18 +123,6 @@ export function SetupTool({
   }, [formData, temporaryFormData, currentStep]);
   const SubmitComponent = saveBlocked ? Submit.Danger : Submit.Save;
 
-  // Fetch list of available default trees.
-  const [treeOptions, setTreeOptions] = React.useState<
-    TaxonFileDefaultList | undefined
-  >(undefined);
-  React.useEffect(() => {
-    fetchDefaultTrees()
-      .then((data) => setTreeOptions(data))
-      .catch((error) => {
-        console.error('Failed to fetch tree options:', error);
-      });
-  }, []);
-
   // Keep track of the last backend error.
   const [setupError, setSetupError] = React.useState<string | null>(
     setupProgress.last_error
