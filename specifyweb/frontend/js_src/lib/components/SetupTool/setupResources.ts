@@ -29,7 +29,13 @@ type Option = {
 export type FieldConfig = {
   readonly name: string;
   readonly label: string;
-  readonly type?: 'boolean' | 'object' | 'password' | 'select' | 'text' | 'tree';
+  readonly type?:
+    | 'boolean'
+    | 'object'
+    | 'password'
+    | 'select'
+    | 'text'
+    | 'tree';
   readonly required?: boolean;
   readonly default?: boolean | number | string;
   readonly description?: string;

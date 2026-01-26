@@ -5,22 +5,22 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { setupToolText } from '../../localization/setupTool';
+import { treeText } from '../../localization/tree';
 import { userText } from '../../localization/user';
 import { type RA } from '../../utils/types';
 import { H3 } from '../Atoms';
-import { Input, Label, Select } from '../Atoms/Form';
 import { Button } from '../Atoms/Button';
+import { Input, Label, Select } from '../Atoms/Form';
+import { Dialog } from '../Molecules/Dialog';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
+import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
+import { PopulatedTreeList } from '../TreeView/CreateTree';
 import type { FieldConfig, ResourceConfig } from './setupResources';
 import { FIELD_MAX_LENGTH, resources } from './setupResources';
 import type { ResourceFormData } from './types';
-import { PopulatedTreeList } from '../TreeView/CreateTree';
-import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { treeText } from '../../localization/tree';
-import { Dialog } from '../Molecules/Dialog';
-import { setupToolText } from '../../localization/setupTool';
 
 function getFormValue(
   formData: ResourceFormData,
@@ -65,7 +65,7 @@ export function renderFormFieldFactory({
   readonly currentStep: number;
   readonly handleChange: (
     name: string,
-    newValue: LocalizedString | boolean | TaxonFileDefaultDefinition
+    newValue: LocalizedString | TaxonFileDefaultDefinition | boolean
   ) => void;
   readonly temporaryFormData: ResourceFormData;
   readonly setTemporaryFormData: (
@@ -292,10 +292,10 @@ export function renderFormFieldFactory({
                 <th className="px-2 py-3 text-left font-semibold text-gray-700 dark:text-gray-100 border-r border-gray-300 dark:border-gray-500 break-words last:border-r-0">
                   {setupToolText.treeRanks()}
                 </th>
-                {fields[0].fields!.map((subField) => (
+                {fields[0].fields.map((subField) => (
                   <th
-                    key={subField.name}
                     className="px-2 py-3 text-left font-semibold text-gray-700 dark:text-gray-100 border-r border-gray-300 dark:border-gray-500 break-words last:border-r-0"
+                    key={subField.name}
                   >
                     {subField.label}
                   </th>
@@ -305,14 +305,14 @@ export function renderFormFieldFactory({
             <tbody>
               {fields.map((field) => (
                 <tr
+                  className="bg-white dark:bg-neutral-800 border-b border-gray-200 dark:border-gray-500 align-middle last:border-b-0"
                   key={field.name}
-                  className={`bg-white dark:bg-neutral-800 border-b border-gray-200 dark:border-gray-500 align-middle last:border-b-0`}
                 >
                   <td className="px-2 py-3 font-semibold text-gray-800 dark:text-gray-100 border-r border-gray-300 dark:border-gray-500 last:border-r-0">
                     {field.label}
                   </td>
                   {field.fields!.map((subField) => (
-                    <td key={`${field.name}-${subField.name}`} className="px-2 py-2 border-r border-gray-300 dark:border-gray-500 align-middle last:border-r-0">
+                    <td className="px-2 py-2 border-r border-gray-300 dark:border-gray-500 align-middle last:border-r-0" key={`${field.name}-${subField.name}`}>
                       {renderFormField(
                         subField,
                         parentName === undefined ? field.name : `${parentName}.${field.name}`,

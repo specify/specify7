@@ -30,9 +30,9 @@ import { stepOrder } from '../SetupTool';
 import { renderFormFieldFactory } from '../SetupTool/SetupForm';
 import { resources } from '../SetupTool/setupResources';
 import type { ResourceFormData } from '../SetupTool/types';
+import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
 import { CollapsibleSection } from './CollapsibleSection';
 import type { InstitutionData } from './Utils';
-import { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
 
 type HierarchyNodeKind =
   | 'collection'
@@ -144,7 +144,10 @@ function HierarchyDiagram({
 
     const zoomBehavior = d3Zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.5, 8])
-      .wheelDelta((wheelEvent: WheelEvent) => -wheelEvent.deltaY * (wheelEvent.deltaMode === 1 ? 0.05 : 0.002))
+      .wheelDelta(
+        (wheelEvent: WheelEvent) =>
+          -wheelEvent.deltaY * (wheelEvent.deltaMode === 1 ? 0.05 : 0.002)
+      )
       .on('zoom', (event) => {
         setTransform(event.transform);
       });
@@ -246,14 +249,16 @@ function HierarchyDiagram({
                   width={NODE_WIDTH}
                   y={6}
                 />
-                <foreignObject height={NODE_HEIGHT - 12} width={NODE_WIDTH} y={6}>
+                <foreignObject
+                  height={NODE_HEIGHT - 12}
+                  width={NODE_WIDTH}
+                  y={6}
+                >
                   <div className="text-white h-full px-3 flex flex-col items-center justify-center text-center leading-tight break-words">
                     <div className="text-sm font-semibold">
                       {node.data.name}
                     </div>
-                    <div className="text-xs">
-                      {textByKind[node.data.kind]}
-                    </div>
+                    <div className="text-xs">{textByKind[node.data.kind]}</div>
                   </div>
                 </foreignObject>
               </g>
@@ -274,7 +279,13 @@ type DialogFormProps = {
   readonly refreshAllInfo: () => Promise<void>;
 };
 
-function DialogForm({ open, onClose, title, step, refreshAllInfo }: DialogFormProps) {
+function DialogForm({
+  open,
+  onClose,
+  title,
+  step,
+  refreshAllInfo,
+}: DialogFormProps) {
   const id = useId('config-tool');
 
   if (!open) return null;
@@ -288,7 +299,10 @@ function DialogForm({ open, onClose, title, step, refreshAllInfo }: DialogFormPr
   const [temporaryFormData, setTemporaryFormData] =
     React.useState<ResourceFormData>({});
 
-  const handleChange = (name: string, newValue: LocalizedString | boolean | TaxonFileDefaultDefinition) => {
+  const handleChange = (
+    name: string,
+    newValue: LocalizedString | TaxonFileDefaultDefinition | boolean
+  ) => {
     const resourceName = resources[5].resourceName;
     setFormData((previous) => ({
       ...previous,
@@ -440,7 +454,10 @@ export function Hierarchy({
           className="flex items-center gap-2 flex-wrap bg-[color:var(--background)] rounded px-2 py-1"
           key={collection.id}
         >
-          <H3 className="font-semibold" style={{ color: colorByKind.collection }}>{`${tableLabel('Collection')}:`}</H3>
+          <H3
+            className="font-semibold"
+            style={{ color: colorByKind.collection }}
+          >{`${tableLabel('Collection')}:`}</H3>
           <H3>{collection.name}</H3>
           <div className="flex items-center gap-1">
             {handleEditResource(
@@ -468,7 +485,10 @@ export function Hierarchy({
               <div>
                 <div className="flex items-center gap-1 flex-wrap">
                   <div className="flex items-baseline gap-2">
-                    <H3 className="font-semibold" style={{ color: colorByKind.discipline }}>{`${tableLabel('Discipline')}:`}</H3>
+                    <H3
+                      className="font-semibold"
+                      style={{ color: colorByKind.discipline }}
+                    >{`${tableLabel('Discipline')}:`}</H3>
                     <H3>{discipline.name}</H3>
                   </div>
                   <div className="flex items-center gap-3 ml-auto">
@@ -565,7 +585,10 @@ export function Hierarchy({
             <div>
               <div className="flex items-center gap-3 flex-wrap">
                 <div className="flex items-baseline gap-2">
-                  <H3 className="font-semibold" style={{ color: colorByKind.division }}>{`${tableLabel('Division')}:`}</H3>
+                  <H3
+                    className="font-semibold"
+                    style={{ color: colorByKind.division }}
+                  >{`${tableLabel('Division')}:`}</H3>
                   <H3>{division.name}</H3>
                 </div>
                 <div className="flex items-center gap-3 ml-auto">
@@ -614,7 +637,10 @@ export function Hierarchy({
               title={
                 <div className="flex items-center gap-3 flex-wrap">
                   <div className="flex items-baseline gap-2">
-                    <H3 className="font-semibold" style={{ color: colorByKind.institution }}>{`${tableLabel('Institution')}:`}</H3>
+                    <H3
+                      className="font-semibold"
+                      style={{ color: colorByKind.institution }}
+                    >{`${tableLabel('Institution')}:`}</H3>
                     <H3>{institution.name}</H3>
                   </div>
                   <div className="flex items-center gap-3 ml-auto">
