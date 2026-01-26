@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-01-15 22:02+0000\n"
+"PO-Revision-Date: 2026-01-26 17:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/query/"
 "fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.15.2\n"
+"X-Generator: Weblate 5.16-dev\n"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 #: components/Preferences/UserDefinitions.tsx:2259
@@ -586,8 +586,8 @@ msgstr "Les champs suivants sont masqués dans la requête que vous avez import�
 #, fuzzy
 msgid "importNoReadPermission"
 msgstr ""
-"La requête que vous avez importée contient des tables auxquelles vous "
-"n'avez pas accès en lecture :"
+"La requête que vous avez importée contient des tables auxquelles vous n'avez "
+"pas d'accès en lecture :"
 
 #. Used in: Components > Query Builder > Check Read Access
 #: components/QueryBuilder/CheckReadAccess.tsx:43
