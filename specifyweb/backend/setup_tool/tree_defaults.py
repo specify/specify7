@@ -36,7 +36,7 @@ def start_default_tree_from_configuration(tree_type: str, kwargs: dict, user_ran
         if discipline:
             taxon_tree_discipline = discipline.type
             rank_data = load_json_from_file(Path(__file__).parent.parent.parent.parent / 'config' / taxon_tree_discipline / f'taxon_{taxon_tree_discipline}_tree.json')
-    else:
+    if rank_data is None:
         rank_data = load_json_from_file(DEFAULT_TREE_RANKS_FILES.get(tree_type))
     if rank_data is None:
         raise Exception(f'Could not load default rank JSON file for tree type {tree_type}.')
