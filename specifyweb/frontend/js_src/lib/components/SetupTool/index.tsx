@@ -16,6 +16,7 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { loadingBar } from '../Molecules';
+import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
 import { checkFormCondition, renderFormFieldFactory } from './SetupForm';
 import { SetupOverview } from './SetupOverview';
 import type { FieldConfig, ResourceConfig } from './setupResources';
@@ -27,7 +28,6 @@ import type {
   SetupResponse,
 } from './types';
 import { flattenAllResources } from './utils';
-import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
 
 const SETUP_POLLING_INTERVAL = 3000;
 
@@ -189,7 +189,7 @@ export function SetupTool({
 
   const handleChange = (
     name: string,
-    newValue: LocalizedString | boolean | TaxonFileDefaultDefinition
+    newValue: LocalizedString | TaxonFileDefaultDefinition | boolean
   ): void => {
     setFormData((previous: ResourceFormData) => {
       const resourceName = resources[currentStep].resourceName;
