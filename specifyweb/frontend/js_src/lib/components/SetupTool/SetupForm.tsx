@@ -10,11 +10,17 @@ import { userText } from '../../localization/user';
 import { type RA } from '../../utils/types';
 import { H3 } from '../Atoms';
 import { Input, Label, Select } from '../Atoms/Form';
+import { Button } from '../Atoms/Button';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
-import type { TaxonFileDefaultList } from '../TreeView/CreateTree';
 import type { FieldConfig, ResourceConfig } from './setupResources';
 import { FIELD_MAX_LENGTH, resources } from './setupResources';
 import type { ResourceFormData } from './types';
+import { PopulatedTreeList } from '../TreeView/CreateTree';
+import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { treeText } from '../../localization/tree';
+import { Dialog } from '../Molecules/Dialog';
+import { setupToolText } from '../../localization/setupTool';
 
 function getFormValue(
   formData: ResourceFormData,
@@ -54,21 +60,21 @@ export function renderFormFieldFactory({
   temporaryFormData,
   setTemporaryFormData,
   formRef,
-  treeOptions,
 }: {
   readonly formData: ResourceFormData;
   readonly currentStep: number;
   readonly handleChange: (
     name: string,
-    newValue: LocalizedString | boolean
+    newValue: LocalizedString | boolean | TaxonFileDefaultDefinition
   ) => void;
   readonly temporaryFormData: ResourceFormData;
   readonly setTemporaryFormData: (
     value: React.SetStateAction<ResourceFormData>
   ) => void;
   readonly formRef: React.MutableRefObject<HTMLFormElement | null>;
-  readonly treeOptions?: TaxonFileDefaultList | undefined;
 }) {
+  const [isTreeDialogOpen, handleTreeDialogOpen, handleTreeDialogClose] = useBooleanState(false);
+
   const renderFormField = (
     field: FieldConfig,
     parentName?: string
@@ -101,16 +107,6 @@ export function renderFormFieldFactory({
       fieldName === 'name' &&
       (disciplineTypeValue === undefined || disciplineTypeValue === '');
 
-    const taxonTreePreloadDisabled = 
-      resources[currentStep].resourceName === 'taxonTreeDef' &&
-      fieldName === 'preload' &&
-      (
-        Array.isArray(treeOptions) &&
-        !treeOptions.some(
-          (tree) => tree.discipline === getFormValue(formData, 3, 'type')
-        )
-      );
-
     return (
       <div className={`${verticalSpacing} ${colSpan}`} key={fieldName}>
         {type === 'boolean' ? (
@@ -119,8 +115,7 @@ export function renderFormFieldFactory({
               <Input.Checkbox
                 checked={Boolean(
                   getFormValue(formData, currentStep, fieldName)
-                ) && !taxonTreePreloadDisabled}
-                disabled={taxonTreePreloadDisabled}
+                )}
                 id={fieldName}
                 name={fieldName}
                 required={required}
@@ -230,6 +225,48 @@ export function renderFormFieldFactory({
               fields ? renderFormFields(fields, fieldName) : null
             )}
           </div>
+        ) : type === 'tree' ? (
+          // Taxon tree selection
+          <Label.Block title={description}>
+            {label}
+            <Button.Fancy
+              onClick={handleTreeDialogOpen}
+            >
+              {setupToolText.selectATree()}
+            </Button.Fancy>
+            {(() => {
+              // Display the selected tree
+              const selectedTree = getFormValue(formData, currentStep, fieldName);
+              if (selectedTree && typeof selectedTree === 'object') {
+                const tree = selectedTree as TaxonFileDefaultDefinition;
+                return (
+                  <div className="mt-2">
+                    <div className="text-sm font-medium mb-1">{commonText.selected()}</div>
+                    <div className="p-2 border border-gray-500 rounded">
+                      <div className="font-medium">{tree.title}</div>
+                      <div className="text-xs text-gray-500">{tree.description}</div>
+                      <div className="text-xs text-gray-400 italic">{`${treeText.source()}: ${tree.src}`}</div>
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            })()}
+              {isTreeDialogOpen ? (<Dialog
+                buttons={commonText.cancel()}
+                header={treeText.trees()}
+                onClose={handleTreeDialogClose}
+              >
+                <PopulatedTreeList
+                  handleClick={
+                    (resource: TaxonFileDefaultDefinition): void => {
+                      handleChange(fieldName, resource);
+                      handleTreeDialogClose();
+                    }
+                  }
+                />
+              </Dialog>) : null}
+          </Label.Block>
         ) : (
           <Label.Block title={description}>
             {label}

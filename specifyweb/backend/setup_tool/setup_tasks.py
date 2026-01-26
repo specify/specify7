@@ -150,9 +150,9 @@ def setup_database_task(self, data: dict):
             if is_paleo_geo:
                 start_preload_default_tree('Geologictimeperiod', discipline_id, collection_id, chronostrat_treedef_id, specifyuser_id)
             if data['geographytreedef'].get('preload'):
-                start_preload_default_tree('Geography', discipline_id, collection_id, geography_treedef_id, specifyuser_id)
+                start_preload_default_tree('Geography', discipline_id, collection_id, geography_treedef_id, specifyuser_id, data['geographytreedef'].get('preloadfile'))
             if data['taxontreedef'].get('preload'):
-                start_preload_default_tree('Taxon', discipline_id, collection_id, taxon_treedef_id, specifyuser_id)
+                start_preload_default_tree('Taxon', discipline_id, collection_id, taxon_treedef_id, specifyuser_id, data['taxontreedef'].get('preloadfile'))
 
             update_progress()
     except Exception as e:

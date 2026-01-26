@@ -29,6 +29,7 @@ import type {
   SetupResponse,
 } from './types';
 import { flattenAllResources } from './utils';
+import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
 
 const SETUP_POLLING_INTERVAL = 3000;
 
@@ -202,7 +203,7 @@ export function SetupTool({
 
   const handleChange = (
     name: string,
-    newValue: LocalizedString | boolean
+    newValue: LocalizedString | boolean | TaxonFileDefaultDefinition
   ): void => {
     setFormData((previous: ResourceFormData) => {
       const resourceName = resources[currentStep].resourceName;
@@ -264,7 +265,6 @@ export function SetupTool({
     temporaryFormData,
     setTemporaryFormData,
     formRef,
-    treeOptions,
   });
 
   const id = useId('setup-tool');

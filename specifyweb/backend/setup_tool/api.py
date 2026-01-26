@@ -398,6 +398,7 @@ def create_tree(name: str, data: dict) -> dict:
 
     # Pre-load Default Tree
     preload_tree = data.pop('preload', None)
+    preload_tree_file = data.pop('preloadFile', None)
     
     try:
         kwargs = {}

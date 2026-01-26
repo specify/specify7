@@ -1,5 +1,6 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { setupToolText } from '../../localization/setupTool';
 import { statsText } from '../../localization/stats';
@@ -28,7 +29,7 @@ type Option = {
 export type FieldConfig = {
   readonly name: string;
   readonly label: string;
-  readonly type?: 'boolean' | 'object' | 'password' | 'select' | 'text';
+  readonly type?: 'boolean' | 'object' | 'password' | 'select' | 'text' | 'tree';
   readonly required?: boolean;
   readonly default?: boolean | number | string;
   readonly description?: string;
@@ -71,7 +72,7 @@ const catalogNumberFormats = [
     label: `CatalogNumberAlphaNumByYear (${currentYear}-######)`,
   },
   { value: 'CatalogNumberNumeric', label: 'CatalogNumberNumeric (#########)' },
-  { value: 'CatalogNumberString', label: 'None' },
+  { value: 'CatalogNumberString', label: commonText.none() },
 ];
 
 const fullNameDirections = [
@@ -379,6 +380,12 @@ export const resources: RA<ResourceConfig> = [
         label: setupToolText.preloadTree(),
         description: setupToolText.preloadTreeDescription(),
         type: 'boolean',
+      },
+      {
+        name: 'preloadFile',
+        label: setupToolText.treeToPreload(),
+        description: setupToolText.preloadTreeDescription(),
+        type: 'tree',
       },
     ],
   },
