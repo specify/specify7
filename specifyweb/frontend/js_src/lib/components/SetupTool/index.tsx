@@ -16,8 +16,6 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { loadingBar } from '../Molecules';
-import type { TaxonFileDefaultList } from '../TreeView/CreateTree';
-import { fetchDefaultTrees } from '../TreeView/CreateTree';
 import { checkFormCondition, renderFormFieldFactory } from './SetupForm';
 import { SetupOverview } from './SetupOverview';
 import type { FieldConfig, ResourceConfig } from './setupResources';
