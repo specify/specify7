@@ -92,18 +92,19 @@ def create_default_table_schema_config(
 
         # Create items for all fields in every table #
         for table_name in model_names_by_table_id.values():
+            table = datamodel.get_table(table_name)
             table_defaults = defaults.get(table_name.lower()) if defaults is not None else dict()
             if table_defaults is None:
                 table_defaults = dict()
 
-            container = container_map[table.name.lower()]
+            container = container_map[table_name.lower()]
 
             for field in table.all_fields:
                 field_defaults = None
                 if table_defaults.get('items'):
                     field_defaults = table_defaults['items'].get(field.name.lower())
 
-                item_batch.extend(create_field_item(
+                item_batch.append(create_field_item(
                     field.name,
                     table_name,
                     container,
@@ -116,7 +117,7 @@ def create_default_table_schema_config(
             container__name__in=[c.name for c in container_batch],
             container__discipline_id=discipline_id
         )
-        item_map = {(i.container.name, i.name): i for i in saved_items}
+        item_map = {(i.container.name.lower(), i.name.lower()): i for i in saved_items}
 
         # Create strings for names and descriptions belonging all tables and their fields #
         for table_name in model_names_by_table_id.values():
@@ -140,7 +141,7 @@ def create_default_table_schema_config(
                 if table_defaults.get('items'):
                     field_defaults = table_defaults['items'].get(field_name)
 
-                item_key = (container.name, field_name)
+                item_key = (container.name.lower(), field_name.lower())
                 item = item_map[item_key]
 
                 str_batch.extend(
@@ -217,7 +218,7 @@ def create_table_strings(
     container,
     table_defaults: dict = None,
     apps = global_apps,
-):
+) -> list:
     table = datamodel.get_table(table_name)
     table_name_str = table_defaults.get('name', camel_to_spaced_title_case(uncapitilize(table.name)))
     table_desc_str = table_defaults.get('desc', camel_to_spaced_title_case(uncapitilize(table.name)))
