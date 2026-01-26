@@ -737,7 +737,7 @@ export const treeText = createDictionary({
       'Creating tree record {current:number|formatted}/{total:number|formatted}',
   },
   source: {
-    'en-us': 'Source'
+    'en-us': 'Source',
   },
   treeManagement: {
     'en-us': 'Tree Management',

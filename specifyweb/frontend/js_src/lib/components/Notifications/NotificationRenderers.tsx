@@ -367,7 +367,7 @@ export const notificationRenderers: IR<
         <p>{treeText.defaultTreeTaskStarted()}</p>
         {notification.payload.name}
       </>
-    )
+    );
   },
   'create-default-tree-failed'(notification) {
     return (
@@ -375,7 +375,7 @@ export const notificationRenderers: IR<
         <p>{treeText.defaultTreeTaskFailed()}</p>
         {notification.payload.name}
       </>
-    )
+    );
   },
   'create-default-tree-cancelled'(notification) {
     return (
@@ -383,7 +383,7 @@ export const notificationRenderers: IR<
         <p>{treeText.defaultTreeTaskCancelled()}</p>
         {notification.payload.name}
       </>
-    )
+    );
   },
   'create-default-tree-completed'(notification) {
     return (
@@ -391,7 +391,7 @@ export const notificationRenderers: IR<
         <p>{treeText.defaultTreeTaskCompleted()}</p>
         {notification.payload.name}
       </>
-    )
+    );
   },
   default(notification) {
     console.error('Unknown notification type', { notification });
