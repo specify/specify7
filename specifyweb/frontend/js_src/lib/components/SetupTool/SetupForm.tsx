@@ -69,9 +69,22 @@ export function renderFormFieldFactory({
   readonly formRef: React.MutableRefObject<HTMLFormElement | null>;
   readonly treeOptions?: TaxonFileDefaultList | undefined;
 }) {
+  const [darkTheme, setDarkTheme] = React.useState(
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  );
+
+  React.useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      setDarkTheme(e.matches);
+    };
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
   const renderFormField = (
     field: FieldConfig,
-    parentName?: string
+    parentName?: string,
+    suppressLabel: boolean = false,
   ): JSX.Element => {
     const {
       name,
@@ -128,7 +141,7 @@ export function renderFormFieldFactory({
                   handleChange(fieldName, isChecked)
                 }
               />
-              {label}
+              {!suppressLabel && label}
             </Label.Inline>
           </div>
         ) : type === 'select' && Array.isArray(options) ? (
@@ -136,32 +149,34 @@ export function renderFormFieldFactory({
             className="mb-4"
             key={`${resources[currentStep].resourceName}.${fieldName}`}
           >
-            <Label.Block title={description}>
-              {label}
-              <Select
-                aria-label={label}
-                className="w-full min-w-[theme(spacing.40)]"
-                id={fieldName}
-                name={fieldName}
-                required={required}
-                value={getFormValue(formData, currentStep, fieldName) ?? ''}
-                onValueChange={(value) => handleChange(fieldName, value)}
-              >
-                <option disabled value="">
-                  {commonText.select()}
+            {!suppressLabel && (
+              <Label.Block title={description}>
+                {label}
+              </Label.Block>
+            )}
+            <Select
+              aria-label={label}
+              className="w-full min-w-[theme(spacing.40)]"
+              id={fieldName}
+              name={fieldName}
+              required={required}
+              value={getFormValue(formData, currentStep, fieldName) ?? ''}
+              onValueChange={(value) => handleChange(fieldName, value)}
+            >
+              <option disabled value="">
+                {commonText.select()}
+              </option>
+              {options.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label ?? option.value}
                 </option>
-                {options.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label ?? option.value}
-                  </option>
-                ))}
-              </Select>
-            </Label.Block>
+              ))}
+            </Select>
           </div>
         ) : type === 'password' ? (
           <>
             <Label.Block title={description}>
-              {label}
+              {!suppressLabel && label}
               <Input.Generic
                 maxLength={field.maxLength ?? FIELD_MAX_LENGTH}
                 minLength={MIN_PASSWORD_LENGTH}
@@ -190,7 +205,7 @@ export function renderFormFieldFactory({
 
             {passwordRepeat === undefined ? null : (
               <Label.Block title={passwordRepeat.description}>
-                {passwordRepeat.label}
+                {!suppressLabel && passwordRepeat.label}
                 <Input.Generic
                   maxLength={field.maxLength ?? FIELD_MAX_LENGTH}
                   minLength={MIN_PASSWORD_LENGTH}
@@ -222,17 +237,11 @@ export function renderFormFieldFactory({
             <H3 className="text-xl font-semibold" title={description}>
               {label}
             </H3>
-            {(collapse === true) ? (
-              <details>
-                {fields ? renderFormFields(fields, fieldName) : null}
-              </details>
-            ) : (
-              fields ? renderFormFields(fields, fieldName) : null
-            )}
+            {fields ? renderFormFields(fields, fieldName, collapse === true) : null}
           </div>
         ) : (
           <Label.Block title={description}>
-            {label}
+            {!suppressLabel && label}
             <Input.Text
               disabled={isDisciplineNameDisabled}
               maxLength={field.maxLength ?? FIELD_MAX_LENGTH}
@@ -247,11 +256,58 @@ export function renderFormFieldFactory({
     );
   };
 
-  const renderFormFields = (fields: RA<FieldConfig>, parentName?: string): JSX.Element => (
-    <div className="grid grid-cols-4 gap-4">
-      {fields.map((field) => renderFormField(field, parentName))}
-    </div>
-  );
+  const renderFormFields = (fields: RA<FieldConfig>, parentName?: string, table: boolean = false): JSX.Element => {
+    if (table && fields.length > 0 && fields[0].fields) {
+      return (
+        <div className="w-full">
+          <table className="w-full border-collapse table-fixed bg-white dark:bg-neutral-800">
+            <thead>
+              <tr className="bg-gray-100 dark:bg-neutral-700 border-b-2 border-gray-400 dark:border-gray-500">
+                <th className="px-2 py-3 text-left font-semibold text-gray-700 dark:text-gray-100 border-r border-gray-300 dark:border-gray-500 break-words">
+                  Rank
+                </th>
+                {fields[0].fields!.map((subField) => (
+                  <th
+                    key={subField.name}
+                    className="px-2 py-3 text-left font-semibold text-gray-700 dark:text-gray-100 border-r border-gray-300 dark:border-gray-500 break-words"
+                  >
+                    {subField.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {fields.map((field, index) => (
+                <tr
+                  key={field.name}
+                  className={`${
+                    index % 2 === 0 ? 'bg-white dark:bg-neutral-800' : 'bg-gray-50 dark:bg-neutral-900'
+                  } border-b border-gray-200 dark:border-gray-500 hover:bg-blue-50 dark:hover:bg-neutral-700 transition-colors`}
+                >
+                  <td className="px-2 py-3 font-semibold text-gray-800 dark:text-gray-100 border-r border-gray-300 dark:border-gray-500">
+                    {field.label}
+                  </td>
+                  {field.fields!.map((subField) => (
+                    <td key={`${field.name}-${subField.name}`} className="px-2 py-2 border-r border-gray-300 dark:border-gray-500">
+                      {renderFormField(
+                        subField,
+                        parentName === undefined ? field.name : `${parentName}.${field.name}`
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    }
+    return (
+      <div className="grid grid-cols-4 gap-4">
+        {fields.map((field) => renderFormField(field, parentName))}
+      </div>
+    );
+  };
 
   return { renderFormField, renderFormFields };
 }
