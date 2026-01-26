@@ -132,6 +132,12 @@ export const setupToolText = createDictionary({
   preloadTreeDescription: {
     'en-us': 'Download default records for this tree.',
   },
+  treeToPreload: {
+    'en-us': 'Tree to pre-load:',
+  },
+  selectATree: {
+    'en-us': 'Select a tree',
+  },
   include: {
     'en-us': 'Include',
   },

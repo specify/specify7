@@ -16,8 +16,7 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { loadingBar } from '../Molecules';
-import type { TaxonFileDefaultList } from '../TreeView/CreateTree';
-import { fetchDefaultTrees } from '../TreeView/CreateTree';
+import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
 import { checkFormCondition, renderFormFieldFactory } from './SetupForm';
 import { SetupOverview } from './SetupOverview';
 import type { FieldConfig, ResourceConfig } from './setupResources';
@@ -122,18 +121,6 @@ export function SetupTool({
   }, [formData, temporaryFormData, currentStep]);
   const SubmitComponent = saveBlocked ? Submit.Danger : Submit.Save;
 
-  // Fetch list of available default trees.
-  const [treeOptions, setTreeOptions] = React.useState<
-    TaxonFileDefaultList | undefined
-  >(undefined);
-  React.useEffect(() => {
-    fetchDefaultTrees()
-      .then((data) => setTreeOptions(data))
-      .catch((error) => {
-        console.error('Failed to fetch tree options:', error);
-      });
-  }, []);
-
   // Keep track of the last backend error.
   const [setupError, setSetupError] = React.useState<string | null>(
     setupProgress.last_error
@@ -202,7 +189,7 @@ export function SetupTool({
 
   const handleChange = (
     name: string,
-    newValue: LocalizedString | boolean
+    newValue: LocalizedString | TaxonFileDefaultDefinition | boolean
   ): void => {
     setFormData((previous: ResourceFormData) => {
       const resourceName = resources[currentStep].resourceName;
@@ -264,7 +251,6 @@ export function SetupTool({
     temporaryFormData,
     setTemporaryFormData,
     formRef,
-    treeOptions,
   });
 
   const id = useId('setup-tool');

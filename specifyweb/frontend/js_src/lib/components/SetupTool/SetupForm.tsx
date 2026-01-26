@@ -10,11 +10,17 @@ import { userText } from '../../localization/user';
 import { type RA } from '../../utils/types';
 import { H3 } from '../Atoms';
 import { Input, Label, Select } from '../Atoms/Form';
+import { Button } from '../Atoms/Button';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
-import type { TaxonFileDefaultList } from '../TreeView/CreateTree';
 import type { FieldConfig, ResourceConfig } from './setupResources';
 import { FIELD_MAX_LENGTH, resources } from './setupResources';
 import type { ResourceFormData } from './types';
+import { PopulatedTreeList } from '../TreeView/CreateTree';
+import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { treeText } from '../../localization/tree';
+import { Dialog } from '../Molecules/Dialog';
+import { setupToolText } from '../../localization/setupTool';
 
 function getFormValue(
   formData: ResourceFormData,
@@ -54,24 +60,25 @@ export function renderFormFieldFactory({
   temporaryFormData,
   setTemporaryFormData,
   formRef,
-  treeOptions,
 }: {
   readonly formData: ResourceFormData;
   readonly currentStep: number;
   readonly handleChange: (
     name: string,
-    newValue: LocalizedString | boolean
+    newValue: LocalizedString | boolean | TaxonFileDefaultDefinition
   ) => void;
   readonly temporaryFormData: ResourceFormData;
   readonly setTemporaryFormData: (
     value: React.SetStateAction<ResourceFormData>
   ) => void;
   readonly formRef: React.MutableRefObject<HTMLFormElement | null>;
-  readonly treeOptions?: TaxonFileDefaultList | undefined;
 }) {
+  const [isTreeDialogOpen, handleTreeDialogOpen, handleTreeDialogClose] = useBooleanState(false);
+
   const renderFormField = (
     field: FieldConfig,
-    parentName?: string
+    parentName?: string,
+    inTable: boolean = false,
   ): JSX.Element => {
     const {
       name,
@@ -83,7 +90,7 @@ export function renderFormFieldFactory({
       fields,
       passwordRepeat,
       width,
-      collapse,
+      isTable,
     } = field;
 
     const fieldName = parentName === undefined ? name : `${parentName}.${name}`;
@@ -101,16 +108,6 @@ export function renderFormFieldFactory({
       fieldName === 'name' &&
       (disciplineTypeValue === undefined || disciplineTypeValue === '');
 
-    const taxonTreePreloadDisabled = 
-      resources[currentStep].resourceName === 'taxonTreeDef' &&
-      fieldName === 'preload' &&
-      (
-        Array.isArray(treeOptions) &&
-        !treeOptions.some(
-          (tree) => tree.discipline === getFormValue(formData, 3, 'type')
-        )
-      );
-
     return (
       <div className={`${verticalSpacing} ${colSpan}`} key={fieldName}>
         {type === 'boolean' ? (
@@ -119,8 +116,7 @@ export function renderFormFieldFactory({
               <Input.Checkbox
                 checked={Boolean(
                   getFormValue(formData, currentStep, fieldName)
-                ) && !taxonTreePreloadDisabled}
-                disabled={taxonTreePreloadDisabled}
+                )}
                 id={fieldName}
                 name={fieldName}
                 required={required}
@@ -128,7 +124,7 @@ export function renderFormFieldFactory({
                   handleChange(fieldName, isChecked)
                 }
               />
-              {label}
+              {!inTable && label}
             </Label.Inline>
           </div>
         ) : type === 'select' && Array.isArray(options) ? (
@@ -136,32 +132,34 @@ export function renderFormFieldFactory({
             className="mb-4"
             key={`${resources[currentStep].resourceName}.${fieldName}`}
           >
-            <Label.Block title={description}>
-              {label}
-              <Select
-                aria-label={label}
-                className="w-full min-w-[theme(spacing.40)]"
-                id={fieldName}
-                name={fieldName}
-                required={required}
-                value={getFormValue(formData, currentStep, fieldName) ?? ''}
-                onValueChange={(value) => handleChange(fieldName, value)}
-              >
-                <option disabled value="">
-                  {commonText.select()}
+            {!inTable && (
+              <Label.Block title={description}>
+                {label}
+              </Label.Block>
+            )}
+            <Select
+              aria-label={label}
+              className="w-full min-w-[theme(spacing.40)]"
+              id={fieldName}
+              name={fieldName}
+              required={required}
+              value={getFormValue(formData, currentStep, fieldName) ?? ''}
+              onValueChange={(value) => handleChange(fieldName, value)}
+            >
+              <option disabled value="">
+                {commonText.select()}
+              </option>
+              {options.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label ?? option.value}
                 </option>
-                {options.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label ?? option.value}
-                  </option>
-                ))}
-              </Select>
-            </Label.Block>
+              ))}
+            </Select>
           </div>
         ) : type === 'password' ? (
           <>
             <Label.Block title={description}>
-              {label}
+              {!inTable && label}
               <Input.Generic
                 maxLength={field.maxLength ?? FIELD_MAX_LENGTH}
                 minLength={MIN_PASSWORD_LENGTH}
@@ -190,7 +188,7 @@ export function renderFormFieldFactory({
 
             {passwordRepeat === undefined ? null : (
               <Label.Block title={passwordRepeat.description}>
-                {passwordRepeat.label}
+                {!inTable && passwordRepeat.label}
                 <Input.Generic
                   maxLength={field.maxLength ?? FIELD_MAX_LENGTH}
                   minLength={MIN_PASSWORD_LENGTH}
@@ -222,17 +220,53 @@ export function renderFormFieldFactory({
             <H3 className="text-xl font-semibold" title={description}>
               {label}
             </H3>
-            {(collapse === true) ? (
-              <details>
-                {fields ? renderFormFields(fields, fieldName) : null}
-              </details>
-            ) : (
-              fields ? renderFormFields(fields, fieldName) : null
-            )}
+            {fields ? renderFormFields(fields, fieldName, isTable === true) : null}
           </div>
-        ) : (
+        ) : type === 'tree' ? (
+          // Taxon tree selection
           <Label.Block title={description}>
             {label}
+            <Button.Fancy
+              onClick={handleTreeDialogOpen}
+            >
+              {setupToolText.selectATree()}
+            </Button.Fancy>
+            {(() => {
+              // Display the selected tree
+              const selectedTree = getFormValue(formData, currentStep, fieldName);
+              if (selectedTree && typeof selectedTree === 'object') {
+                const tree = selectedTree as TaxonFileDefaultDefinition;
+                return (
+                  <div className="mt-2">
+                    <div className="p-2 border border-gray-500 rounded">
+                      <div className="font-medium">{tree.title}</div>
+                      <div className="text-xs text-gray-500">{tree.description}</div>
+                      <div className="text-xs text-gray-400 italic">{`${treeText.source()}: ${tree.src}`}</div>
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            })()}
+              {isTreeDialogOpen ? (<Dialog
+                buttons={commonText.cancel()}
+                header={treeText.trees()}
+                onClose={handleTreeDialogClose}
+              >
+                <PopulatedTreeList
+                  handleClick={
+                    (resource: TaxonFileDefaultDefinition): void => {
+                      handleChange(fieldName, resource);
+                      handleChange('preload', true);
+                      handleTreeDialogClose();
+                    }
+                  }
+                />
+              </Dialog>) : null}
+          </Label.Block>
+        ) : (
+          <Label.Block title={description}>
+            {!inTable && label}
             <Input.Text
               disabled={isDisciplineNameDisabled}
               maxLength={field.maxLength ?? FIELD_MAX_LENGTH}
@@ -247,11 +281,59 @@ export function renderFormFieldFactory({
     );
   };
 
-  const renderFormFields = (fields: RA<FieldConfig>, parentName?: string): JSX.Element => (
-    <div className="grid grid-cols-4 gap-4">
-      {fields.map((field) => renderFormField(field, parentName))}
-    </div>
-  );
+  const renderFormFields = (fields: RA<FieldConfig>, parentName?: string, isTable: boolean = false): JSX.Element => {
+    if (isTable && fields.length > 0 && fields[0].fields) {
+      // Table format specifically for tree rank configuration
+      return (
+        <div className="w-full rounded-md overflow-hidden border border-gray-300 dark:border-gray-500">
+          <table className="w-full border-collapse table-fixed bg-white dark:bg-neutral-800">
+            <thead>
+              <tr className="bg-gray-100 dark:bg-neutral-700 border-b-2 border-gray-400 dark:border-gray-500">
+                <th className="px-2 py-3 text-left font-semibold text-gray-700 dark:text-gray-100 border-r border-gray-300 dark:border-gray-500 break-words last:border-r-0">
+                  {setupToolText.treeRanks()}
+                </th>
+                {fields[0].fields!.map((subField) => (
+                  <th
+                    key={subField.name}
+                    className="px-2 py-3 text-left font-semibold text-gray-700 dark:text-gray-100 border-r border-gray-300 dark:border-gray-500 break-words last:border-r-0"
+                  >
+                    {subField.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {fields.map((field) => (
+                <tr
+                  key={field.name}
+                  className={`bg-white dark:bg-neutral-800 border-b border-gray-200 dark:border-gray-500 align-middle last:border-b-0`}
+                >
+                  <td className="px-2 py-3 font-semibold text-gray-800 dark:text-gray-100 border-r border-gray-300 dark:border-gray-500 last:border-r-0">
+                    {field.label}
+                  </td>
+                  {field.fields!.map((subField) => (
+                    <td key={`${field.name}-${subField.name}`} className="px-2 py-2 border-r border-gray-300 dark:border-gray-500 align-middle last:border-r-0">
+                      {renderFormField(
+                        subField,
+                        parentName === undefined ? field.name : `${parentName}.${field.name}`,
+                        true
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    }
+    // Otherwise, lay out fields normally
+    return (
+      <div className="grid grid-cols-4 gap-4">
+        {fields.map((field) => renderFormField(field, parentName))}
+      </div>
+    );
+  };
 
   return { renderFormField, renderFormFields };
 }

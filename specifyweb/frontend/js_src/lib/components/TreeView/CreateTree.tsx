@@ -330,7 +330,7 @@ function EmptyTreeList({
   );
 }
 
-function PopulatedTreeList({
+export function PopulatedTreeList({
   handleClick,
 }: {
   readonly handleClick: (resource: TaxonFileDefaultDefinition) => void;
@@ -362,7 +362,7 @@ function PopulatedTreeList({
                 {resource.description}
               </div>
               <div className="text-xs text-gray-400 italic">
-                {`Source: ${resource.src}`}
+                {`${treeText.source()}: ${resource.src}`}
               </div>
             </li>
           ))}

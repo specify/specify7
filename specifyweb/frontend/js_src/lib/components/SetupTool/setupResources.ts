@@ -1,5 +1,6 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { setupToolText } from '../../localization/setupTool';
 import { statsText } from '../../localization/stats';
@@ -28,7 +29,7 @@ type Option = {
 export type FieldConfig = {
   readonly name: string;
   readonly label: string;
-  readonly type?: 'boolean' | 'object' | 'password' | 'select' | 'text';
+  readonly type?: 'boolean' | 'object' | 'password' | 'select' | 'text' | 'tree';
   readonly required?: boolean;
   readonly default?: boolean | number | string;
   readonly description?: string;
@@ -41,7 +42,7 @@ export type FieldConfig = {
   };
   readonly maxLength?: number;
   readonly width?: number;
-  readonly collapse?: boolean;
+  readonly isTable?: boolean;
 };
 
 // Discipline list from backend/context/app_resource.py
@@ -71,7 +72,7 @@ const catalogNumberFormats = [
     label: `CatalogNumberAlphaNumByYear (${currentYear}-######)`,
   },
   { value: 'CatalogNumberNumeric', label: 'CatalogNumberNumeric (#########)' },
-  { value: 'CatalogNumberString', label: 'None' },
+  { value: 'CatalogNumberString', label: commonText.none() },
 ];
 
 const fullNameDirections = [
@@ -221,7 +222,7 @@ export const resources: RA<ResourceConfig> = [
         label: setupToolText.treeRanks(),
         required: false,
         type: 'object',
-        collapse: true,
+        isTable: true,
         // TODO: Rank fields should be generated from a .json file.
         fields: generateTreeRankFields(
           [
@@ -289,7 +290,7 @@ export const resources: RA<ResourceConfig> = [
         label: setupToolText.treeRanks(),
         required: false,
         type: 'object',
-        collapse: true,
+        isTable: true,
         fields: generateTreeRankFields(
           ['Earth', 'Continent', 'Country', 'State', 'County'],
           ['Earth', 'Continent', 'Country', 'State', 'County'],
@@ -324,7 +325,7 @@ export const resources: RA<ResourceConfig> = [
        *   label: setupToolText.treeRanks(),
        *   required: false,
        *   type: 'object',
-       *   collapse: true,
+       *   isTable: true,
        *   fields: generateTreeRankFields(
        *     [
        *       'Life',
@@ -379,6 +380,12 @@ export const resources: RA<ResourceConfig> = [
         label: setupToolText.preloadTree(),
         description: setupToolText.preloadTreeDescription(),
         type: 'boolean',
+      },
+      {
+        name: 'preloadFile',
+        label: setupToolText.treeToPreload(),
+        description: setupToolText.preloadTreeDescription(),
+        type: 'tree',
       },
     ],
   },

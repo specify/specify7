@@ -82,34 +82,24 @@ def start_default_tree_from_configuration(tree_type: str, kwargs: dict, user_ran
 
     return tree_def
 
-def start_preload_default_tree(tree_type: str, discipline_id: Optional[int], collection_id: Optional[int], tree_def_id: int, specify_user_id: Optional[int]):
+def start_preload_default_tree(tree_type: str, discipline_id: Optional[int], collection_id: Optional[int], tree_def_id: int, specify_user_id: Optional[int], preload_file = None):
     """Starts a populated default tree import without user input."""
     try:
         # Tree download config:
         tree_discipline_name = tree_type.lower()
         tree_name = tree_type.title()
+        row_count = 1000000 # dummy value, only to allow progress checking
         # Tree file urls
         url = DEFAULT_TREE_URLS.get(tree_type)
         mapping_url = DEFAULT_TREE_MAPPING_URLS.get(tree_type)
 
-        if tree_type.lower() == 'taxon':
-            discipline = Discipline.objects.filter(pk=discipline_id).first()
-            tree_discipline_name = discipline.type
-
-            # Retrieve taxon tree list to find an appropriate one.
+        if tree_type.lower() == 'taxon' and preload_file is not None:
             # Schema described in CreateTree.tsx
-            logger.debug(f'Fetching default taxon list from {DEFAULT_TAXON_TREE_LIST_URL}')
-            resp = requests.get(DEFAULT_TAXON_TREE_LIST_URL)
-            resp.raise_for_status()
-            taxon_tree_list = resp.json()
-
-            for tree in taxon_tree_list:
-                if tree.get('discipline') == tree_discipline_name:
-                    logger.debug(f'Found matching default taxon url for {tree_discipline_name}')
-                    url = tree.get('file')
-                    mapping_url = tree.get('mappingFile')
-                    tree_name = tree.get('title')
-                    break
+            logger.debug(f'Using tree configuration provided for taxon tree {tree_discipline_name}')
+            url = preload_file.get('file')
+            mapping_url = preload_file.get('mappingFile', preload_file.get('mappingfile'))
+            tree_name = preload_file.get('title', tree_name)
+            row_count = preload_file.get('rows', row_count)
 
         if not url or not mapping_url:
             logger.warning(f'Can\'t preload tree, no default tree URLs for {tree_discipline_name} tree.')
@@ -121,7 +111,7 @@ def start_preload_default_tree(tree_type: str, discipline_id: Optional[int], col
 
         task_id = str(uuid4())
         create_default_tree_task.apply_async(
-            args=[url, discipline_id, tree_discipline_name, collection_id, specify_user_id, tree_cfg, 1000000, tree_name, tree_def_id],
+            args=[url, discipline_id, tree_discipline_name, collection_id, specify_user_id, tree_cfg, row_count, tree_name, tree_def_id],
             task_id=f"create_default_tree_{tree_type}_{task_id}",
             taskid=task_id
         )
