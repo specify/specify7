@@ -108,6 +108,9 @@ export function renderFormFieldFactory({
       fieldName === 'name' &&
       (disciplineTypeValue === undefined || disciplineTypeValue === '');
 
+    const showTreeSelector = 
+      getFormValue(formData, currentStep, 'preload');
+
     return (
       <div className={`${verticalSpacing} ${colSpan}`} key={fieldName}>
         {type === 'boolean' ? (
@@ -223,47 +226,51 @@ export function renderFormFieldFactory({
             {fields ? renderFormFields(fields, fieldName, isTable === true) : null}
           </div>
         ) : type === 'tree' ? (
-          // Taxon tree selection
-          <Label.Block title={description}>
-            {label}
-            <Button.Fancy
-              onClick={handleTreeDialogOpen}
-            >
-              {setupToolText.selectATree()}
-            </Button.Fancy>
-            {(() => {
-              // Display the selected tree
-              const selectedTree = getFormValue(formData, currentStep, fieldName);
-              if (selectedTree && typeof selectedTree === 'object') {
-                const tree = selectedTree as TaxonFileDefaultDefinition;
-                return (
-                  <div className="mt-2">
-                    <div className="p-2 border border-gray-500 rounded">
-                      <div className="font-medium">{tree.title}</div>
-                      <div className="text-xs text-gray-500">{tree.description}</div>
-                      <div className="text-xs text-gray-400 italic">{`${treeText.source()}: ${tree.src}`}</div>
-                    </div>
-                  </div>
-                );
-              }
-              return null;
-            })()}
-              {isTreeDialogOpen ? (<Dialog
-                buttons={commonText.cancel()}
-                header={treeText.trees()}
-                onClose={handleTreeDialogClose}
+          showTreeSelector ? (
+            // Taxon tree selection
+            <Label.Block title={description}>
+              {label}
+              <Button.Fancy
+                onClick={handleTreeDialogOpen}
               >
-                <PopulatedTreeList
-                  handleClick={
-                    (resource: TaxonFileDefaultDefinition): void => {
-                      handleChange(fieldName, resource);
-                      handleChange('preload', true);
-                      handleTreeDialogClose();
+                {setupToolText.selectATree()}
+              </Button.Fancy>
+              {(() => {
+                // Display the selected tree
+                const selectedTree = getFormValue(formData, currentStep, fieldName);
+                if (selectedTree && typeof selectedTree === 'object') {
+                  const tree = selectedTree as TaxonFileDefaultDefinition;
+                  return (
+                    <div className="mt-2">
+                      <div className="p-2 border border-gray-500 rounded">
+                        <div className="font-medium">{tree.title}</div>
+                        <div className="text-xs text-gray-500">{tree.description}</div>
+                        <div className="text-xs text-gray-400 italic">{`${treeText.source()}: ${tree.src}`}</div>
+                      </div>
+                    </div>
+                  );
+                }
+                return null;
+              })()}
+                {isTreeDialogOpen ? (<Dialog
+                  buttons={commonText.cancel()}
+                  header={treeText.trees()}
+                  onClose={handleTreeDialogClose}
+                >
+                  <PopulatedTreeList
+                    handleClick={
+                      (resource: TaxonFileDefaultDefinition): void => {
+                        handleChange(fieldName, resource);
+                        handleChange('preload', true);
+                        handleTreeDialogClose();
+                      }
                     }
-                  }
-                />
-              </Dialog>) : null}
-          </Label.Block>
+                  />
+                </Dialog>) : null}
+            </Label.Block>
+          ) : (
+            null
+          )
         ) : (
           <Label.Block title={description}>
             {!inTable && label}

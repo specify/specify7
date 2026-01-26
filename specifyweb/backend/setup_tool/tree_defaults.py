@@ -1,7 +1,5 @@
-from django.db import transaction
 from django.db.models import Model as DjangoModel
-from specifyweb.specify.models import Discipline, Collection
-from typing import Type, Optional, List
+from typing import Type, Optional
 from pathlib import Path
 from uuid import uuid4
 import requests
@@ -30,7 +28,7 @@ DEFAULT_TREE_MAPPING_URLS = {
     'Geologictimeperiod': 'https://files.specifysoftware.org/treerows/geologictimeperiod.json',
 }
 
-def start_default_tree_from_configuration(tree_type: str, kwargs: dict, user_rank_cfg: dict, preload_tree: Optional[bool]):
+def start_default_tree_from_configuration(tree_type: str, kwargs: dict, user_rank_cfg: dict):
     """Starts the creation of an initial empty tree. This should not be used outside of the initial database setup."""
     # Load all default ranks for this type of tree
     if tree_type == 'Taxon':

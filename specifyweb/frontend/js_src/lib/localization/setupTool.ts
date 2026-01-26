@@ -127,13 +127,13 @@ export const setupToolText = createDictionary({
     'en-us': 'Full Name Direction',
   },
   preloadTree: {
-    'en-us': 'Pre-load  Tree',
+    'en-us': 'Populate tree with default records',
   },
   preloadTreeDescription: {
     'en-us': 'Download default records for this tree.',
   },
   treeToPreload: {
-    'en-us': 'Tree to pre-load:',
+    'en-us': 'Tree to download:',
   },
   selectATree: {
     'en-us': 'Select a tree',

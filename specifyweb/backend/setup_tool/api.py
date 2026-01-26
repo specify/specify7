@@ -396,7 +396,7 @@ def create_tree(name: str, data: dict) -> dict:
     # Get tree configuration
     ranks = data.pop('ranks', dict())
 
-    # Pre-load Default Tree
+    # Properties for pre-loading default tree. Pre-loading should be done once setup is complete.
     preload_tree = data.pop('preload', None)
     preload_tree_file = data.pop('preloadFile', None)
     
@@ -408,7 +408,7 @@ def create_tree(name: str, data: dict) -> dict:
         if use_discipline and discipline is not None:
             kwargs['discipline'] = discipline
 
-        treedef = start_default_tree_from_configuration(name, kwargs, ranks, preload_tree)
+        treedef = start_default_tree_from_configuration(name, kwargs, ranks)
 
         # Set as the primary tree in the discipline if its the first one
         if use_discipline and discipline:
