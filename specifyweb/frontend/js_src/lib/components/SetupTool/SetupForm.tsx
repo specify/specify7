@@ -7,7 +7,6 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
-import { setupToolText } from '../../localization/setupTool';
 import { type RA } from '../../utils/types';
 import { H3 } from '../Atoms';
 import { Input, Label, Select } from '../Atoms/Form';
@@ -290,13 +289,13 @@ export function renderFormFieldFactory({
           <table className="w-full border-collapse table-fixed bg-white dark:bg-neutral-800">
             <thead>
               <tr className="bg-gray-100 dark:bg-neutral-700 border-b-2 border-gray-400 dark:border-gray-500">
-                <th className="px-2 py-3 text-left font-semibold text-gray-700 dark:text-gray-100 border-r border-gray-300 dark:border-gray-500 break-words">
+                <th className="px-2 py-3 text-left font-semibold text-gray-700 dark:text-gray-100 border-r border-gray-300 dark:border-gray-500 break-words last:border-r-0">
                   {setupToolText.treeRanks()}
                 </th>
                 {fields[0].fields!.map((subField) => (
                   <th
                     key={subField.name}
-                    className="px-2 py-3 text-left font-semibold text-gray-700 dark:text-gray-100 border-r border-gray-300 dark:border-gray-500 break-words"
+                    className="px-2 py-3 text-left font-semibold text-gray-700 dark:text-gray-100 border-r border-gray-300 dark:border-gray-500 break-words last:border-r-0"
                   >
                     {subField.label}
                   </th>
@@ -307,13 +306,13 @@ export function renderFormFieldFactory({
               {fields.map((field) => (
                 <tr
                   key={field.name}
-                  className={`bg-white dark:bg-neutral-800 border-b border-gray-200 dark:border-gray-500 align-middle`}
+                  className={`bg-white dark:bg-neutral-800 border-b border-gray-200 dark:border-gray-500 align-middle last:border-b-0`}
                 >
-                  <td className="px-2 py-3 font-semibold text-gray-800 dark:text-gray-100 border-r border-gray-300 dark:border-gray-500">
+                  <td className="px-2 py-3 font-semibold text-gray-800 dark:text-gray-100 border-r border-gray-300 dark:border-gray-500 last:border-r-0">
                     {field.label}
                   </td>
                   {field.fields!.map((subField) => (
-                    <td key={`${field.name}-${subField.name}`} className="px-2 py-2 border-r border-gray-300 dark:border-gray-500 align-middle">
+                    <td key={`${field.name}-${subField.name}`} className="px-2 py-2 border-r border-gray-300 dark:border-gray-500 align-middle last:border-r-0">
                       {renderFormField(
                         subField,
                         parentName === undefined ? field.name : `${parentName}.${field.name}`,
