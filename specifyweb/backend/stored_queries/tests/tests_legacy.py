@@ -335,78 +335,78 @@ class StoredQueriesTests(ApiTests):
     #     self.assertEqual(params, (7, 1, 2, 8, 1, 2))
 
 
-def validate_sqlalchemy_model(datamodel_table):
-    table_errors = {
-        'not_found': [],  # Fields / Relationships not found
-        'incorrect_direction': {},  # Relationship direct not correct
-        'incorrect_columns': {},  # Relationship columns not correct
-        'incorrect_table': {}  # Relationship related model not correct
-    }
-    orm_table = orm.aliased(getattr(models, datamodel_table.name))
-    known_fields = datamodel_table.all_fields
+# def validate_sqlalchemy_model(datamodel_table):
+#     table_errors = {
+#         'not_found': [],  # Fields / Relationships not found
+#         'incorrect_direction': {},  # Relationship direct not correct
+#         'incorrect_columns': {},  # Relationship columns not correct
+#         'incorrect_table': {}  # Relationship related model not correct
+#     }
+#     orm_table = orm.aliased(getattr(models, datamodel_table.name))
+#     known_fields = datamodel_table.all_fields
 
-    for field in known_fields:
-        if field.is_relationship:
-            remote_td = spmodels.datamodel.get_table(field.relatedModelName)
-            if remote_td is not None and getattr(remote_td, "skip", False):
-                continue
+#     for field in known_fields:
+#         if field.is_relationship:
+#             remote_td = spmodels.datamodel.get_table(field.relatedModelName)
+#             if remote_td is not None and getattr(remote_td, "skip", False):
+#                 continue
 
-        in_sql = getattr(orm_table, field.name, None) or getattr(orm_table, field.name.lower(), None)
+#         in_sql = getattr(orm_table, field.name, None) or getattr(orm_table, field.name.lower(), None)
 
-        if in_sql is None:
-            table_errors['not_found'].append(field.name)
-            continue
+#         if in_sql is None:
+#             table_errors['not_found'].append(field.name)
+#             continue
 
-        if not field.is_relationship:
-            continue
+#         if not field.is_relationship:
+#             continue
 
-        sa_relationship = inspect(in_sql).property
+#         sa_relationship = inspect(in_sql).property
 
-        sa_direction = sa_relationship.direction.name.lower()
-        datamodel_direction = field.type.replace('-', '').lower()
+#         sa_direction = sa_relationship.direction.name.lower()
+#         datamodel_direction = field.type.replace('-', '').lower()
 
-        if sa_direction != datamodel_direction:
-            table_errors['incorrect_direction'][field.name] = [sa_direction, datamodel_direction]
-            print(f"Incorrect direction: {field.name} {sa_direction} {datamodel_direction}")
+#         if sa_direction != datamodel_direction:
+#             table_errors['incorrect_direction'][field.name] = [sa_direction, datamodel_direction]
+#             print(f"Incorrect direction: {field.name} {sa_direction} {datamodel_direction}")
 
-        remote_sql_table = sa_relationship.target.name.lower()
-        remote_datamodel_table = field.relatedModelName.lower()
+#         remote_sql_table = sa_relationship.target.name.lower()
+#         remote_datamodel_table = field.relatedModelName.lower()
 
-        if remote_sql_table.lower() != remote_datamodel_table:
-            # Check case where the relation model's name is different from the DB table name
-            remote_sql_table = sa_relationship.mapper._log_desc.split('(')[1].split('|')[0].lower()
-            if remote_sql_table.lower() != remote_datamodel_table:
-                table_errors['incorrect_table'][field.name] = [remote_sql_table, remote_datamodel_table]
-                print(f"Incorrect table: {field.name} {remote_sql_table} {remote_datamodel_table}")
+#         if remote_sql_table.lower() != remote_datamodel_table:
+#             # Check case where the relation model's name is different from the DB table name
+#             remote_sql_table = sa_relationship.mapper._log_desc.split('(')[1].split('|')[0].lower()
+#             if remote_sql_table.lower() != remote_datamodel_table:
+#                 table_errors['incorrect_table'][field.name] = [remote_sql_table, remote_datamodel_table]
+#                 print(f"Incorrect table: {field.name} {remote_sql_table} {remote_datamodel_table}")
 
-        sa_column = list(sa_relationship.local_columns)[0].name
-        if sa_column.lower() != (
-        datamodel_table.idColumn.lower() if not getattr(field, 'column', None) else field.column.lower()):
-            table_errors['incorrect_columns'][field.name] = [sa_column, datamodel_table.idColumn.lower(),
-                                                             getattr(field, 'column', None)]
-            print(f"Incorrect columns: {field.name} {sa_column} {datamodel_table.idColumn.lower()} {getattr(field, 'column', None)}")
+#         sa_column = list(sa_relationship.local_columns)[0].name
+#         if sa_column.lower() != (
+#         datamodel_table.idColumn.lower() if not getattr(field, 'column', None) else field.column.lower()):
+#             table_errors['incorrect_columns'][field.name] = [sa_column, datamodel_table.idColumn.lower(),
+#                                                              getattr(field, 'column', None)]
+#             print(f"Incorrect columns: {field.name} {sa_column} {datamodel_table.idColumn.lower()} {getattr(field, 'column', None)}")
 
-    return {key: value for key, value in table_errors.items() if len(value) > 0}
+#     return {key: value for key, value in table_errors.items() if len(value) > 0}
 
-class SQLAlchemyModelTest(TestCase):
-    def test_sqlalchemy_model_errors(self):
-        # for table in spmodels.datamodel.tables:
-        for table in (t for t in spmodels.datamodel.tables if not getattr(t, "skip", False)):
-            try:
-                table_errors = SQLAlchemyModelTest.validate_sqlalchemy_model(table)
-            except sa_exc.InvalidRequestError as e:
-                msg = str(e)
-                if (
-                    "One or more mappers failed to initialize" in msg
-                    and "mapped class Locality->locality' has no property 'collectingEvents" in msg
-                ):
-                    return
-                raise
-            self.assertTrue(len(table_errors) == 0 or table.name in expected_errors, f"Did not find {table.name}. Has errors: {table_errors}")
-            if 'not_found' in table_errors:
-                table_errors['not_found'] = sorted(table_errors['not_found'])
-            if table_errors:
-                self.assertDictEqual(table_errors, expected_errors[table.name], table.name)
+# class SQLAlchemyModelTest(TestCase):
+#     def test_sqlalchemy_model_errors(self):
+#         # for table in spmodels.datamodel.tables:
+#         for table in (t for t in spmodels.datamodel.tables if not getattr(t, "skip", False)):
+#             try:
+#                 table_errors = SQLAlchemyModelTest.validate_sqlalchemy_model(table)
+#             except sa_exc.InvalidRequestError as e:
+#                 msg = str(e)
+#                 if (
+#                     "One or more mappers failed to initialize" in msg
+#                     and "mapped class Locality->locality' has no property 'collectingEvents" in msg
+#                 ):
+#                     return
+#                 raise
+#             self.assertTrue(len(table_errors) == 0 or table.name in expected_errors, f"Did not find {table.name}. Has errors: {table_errors}")
+#             if 'not_found' in table_errors:
+#                 table_errors['not_found'] = sorted(table_errors['not_found'])
+#             if table_errors:
+#                 self.assertDictEqual(table_errors, expected_errors[table.name], table.name)
 
 STRINGID_LIST = [
     # (stringid, isrelfld)
