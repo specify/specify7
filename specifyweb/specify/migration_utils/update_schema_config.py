@@ -490,18 +490,18 @@ def create_cogtype_picklist(apps):
 
     # Create a cogtype picklist for each collection
     for collection in Collection.objects.all():
-        Picklist.objects.get_or_create(
-            name=COG_PICKLIST_NAME,
-            type=1,
-            tablename='collectionobjectgrouptype',
+        Picklist.objects.update_or_create(
             collection=collection,
+            name=COG_PICKLIST_NAME,
             defaults={
+                "type": 1,
+                "tablename": "collectionobjectgrouptype",
                 "issystem": True,
                 "readonly": True,
                 "sizelimit": -1,
                 "sorttype": 1,
-                "formatter": 'CollectionObjectGroupType',
-            }
+                "formatter": "CollectionObjectGroupType",
+            },
         )
 
 def revert_cogtype_picklist(apps):
