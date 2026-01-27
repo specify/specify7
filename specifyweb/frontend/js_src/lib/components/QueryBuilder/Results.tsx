@@ -210,7 +210,26 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           >
             {interactionsText.deselectAll()}
           </Button.Small>
+
+          
         )}
+       {/* dummy buttons for select All and invert selection*/}
+
+        <Button.Small
+          onClick={(): void => {
+          
+            }}
+            >
+            {interactionsText.selectAll()}
+          </Button.Small>
+
+          <Button.Small
+          onClick={(): void => {
+          
+            }}
+            >
+            {"Invert Selection"}
+          </Button.Small>
         <div className="-ml-2 flex-1" />
         {displayedFields.length > 0 &&
         visibleFieldSpecs.length > 0 &&
