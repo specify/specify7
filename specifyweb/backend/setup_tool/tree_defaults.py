@@ -28,6 +28,31 @@ DEFAULT_TREE_MAPPING_URLS = {
     'Geologictimeperiod': 'https://files.specifysoftware.org/treerows/geologictimeperiod.json',
 }
 
+def _extract_levels(rank_data: dict) -> Optional[list]:
+    """
+    Supports multiple tree config shapes:
+      {"tree": {"treedef": {"levels": [...]}}}
+      {"treedef": {"levels": [...]}}
+      {"<something>": {"treedef": {"levels": [...]}}}
+    """
+    if not isinstance(rank_data, dict):
+        return None
+
+    levels = (rank_data.get('treedef') or {}).get('levels')
+    if levels is not None:
+        return levels
+
+    levels = (rank_data.get('tree') or {}).get('treedef', {}).get('levels')
+    if levels is not None:
+        return levels
+
+    for v in rank_data.values():
+        if isinstance(v, dict):
+            levels = (v.get('treedef') or {}).get('levels')
+            if levels is not None:
+                return levels
+    return None
+
 def start_default_tree_from_configuration(tree_type: str, kwargs: dict, user_rank_cfg: dict):
     """Starts the creation of an initial empty tree. This should not be used outside of the initial database setup."""
     # Load all default ranks for this type of tree
@@ -48,7 +73,7 @@ def start_default_tree_from_configuration(tree_type: str, kwargs: dict, user_ran
         raise Exception(f'Could not load default rank JSON file for tree type {tree_type}.')
 
     # list[RankConfiguration]
-    default_rank_cfg = rank_data.get('tree',{}).get('treedef',{}).get('levels')
+    default_rank_cfg = _extract_levels(rank_data)
     if default_rank_cfg is None:
         logger.debug(rank_data)
         raise Exception(f'No default ranks found in the {tree_type} rank JSON file.')
