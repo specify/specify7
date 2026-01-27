@@ -31,11 +31,17 @@ DEFAULT_TREE_MAPPING_URLS = {
 def start_default_tree_from_configuration(tree_type: str, kwargs: dict, user_rank_cfg: dict):
     """Starts the creation of an initial empty tree. This should not be used outside of the initial database setup."""
     # Load all default ranks for this type of tree
+    rank_data = None
     if tree_type == 'Taxon':
         discipline = kwargs.get('discipline')
         if discipline:
             taxon_tree_discipline = discipline.type
-            rank_data = load_json_from_file(Path(__file__).parent.parent.parent.parent / 'config' / taxon_tree_discipline / f'taxon_{taxon_tree_discipline}_tree.json')
+            rank_data = load_json_from_file(
+                Path(__file__).parent.parent.parent.parent
+                / 'config'
+                / taxon_tree_discipline
+                / f'taxon_{taxon_tree_discipline}_tree.json'
+            )
     if rank_data is None:
         rank_data = load_json_from_file(DEFAULT_TREE_RANKS_FILES.get(tree_type))
     if rank_data is None:
