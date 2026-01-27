@@ -742,6 +742,26 @@ class Autonumberingscheme(models.Model):
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
+    # Relationships: Many-to-Many
+    collections = models.ManyToManyField(
+        "Collection",
+        through="Autonumschcoll",
+        through_fields=("autonumberingscheme", "collection"),
+        related_name="autonumberingschemes"
+    )
+    disciplines = models.ManyToManyField(
+        "Discipline",
+        through="Autonumschdsp",
+        through_fields=("autonumberingscheme", "discipline"),
+        related_name="autonumberingschemes"
+    )
+    divisions = models.ManyToManyField(
+        "Division",
+        through="Autonumschdiv",
+        through_fields=("autonumberingscheme", "division"),
+        related_name="autonumberingschemes"
+    )
+
     class Meta:
         db_table = 'autonumberingscheme'
         ordering = ()
@@ -5586,6 +5606,14 @@ class Project(models.Model):
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
+    # Relationships: Many-to-Many
+    collectionobjects = models.ManyToManyField(
+        'CollectionObject',
+        through="Project_colobj",
+        through_fields=("project", "collectionobject"),
+        related_name="projects"
+    )
+
     class Meta:
         db_table = 'project'
         ordering = ()
@@ -6312,6 +6340,14 @@ class Spprincipal(models.Model):
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     userGroupScopeID = models.IntegerField(blank=True, null=True, db_column='userGroupScopeID')
 
+    # Relationships: Many-to-Many
+    sppermissions = models.ManyToManyField(
+        "SpPermission",
+        through="Spprincipal_sppermission",
+        through_fields=("spprincipal", "sppermission"),
+        related_name="spprincipals"
+    )
+
     class Meta:
         db_table = 'spprincipal'
         ordering = ()
@@ -6611,6 +6647,14 @@ class Specifyuser(model_extras.Specifyuser):
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+
+    # Relationships: Many-to-Many
+    spprincipals = models.ManyToManyField(
+        "SpPrincipal",
+        through="Specifyuser_spprincipal",
+        through_fields=("specifyuser", "spprincipal"),
+        related_name="spprincipals"
+    )
 
     class Meta:
         db_table = 'specifyuser'
@@ -7993,11 +8037,13 @@ class Tectonicunit(model_extras.Tectonicunit):
 
     save = partialmethod(custom_save)
 
+
+
 class AutonumschColl(models.Model):
     specify_model = datamodel.get_table_strict('autonumsch_coll')
 
-    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='autonumsch_coll_links', null=False, on_delete=protect_with_blockers, primary_key=True)
-    autonumberingscheme = models.ForeignKey('AutoNumberingScheme', db_column='AutoNumberingSchemeID', related_name='autonumsch_coll_links', null=False, on_delete=protect_with_blockers)
+    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='+', null=False, on_delete=protect_with_blockers, primary_key=True)
+    autonumberingscheme = models.ForeignKey('AutoNumberingScheme', db_column='AutoNumberingSchemeID', related_name='+', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'autonumsch_coll'
@@ -8009,8 +8055,8 @@ class AutonumschColl(models.Model):
 class AutonumschDiv(models.Model):
     specify_model = datamodel.get_table_strict('autonumsch_div')
 
-    division = models.ForeignKey('Division', db_column='DivisionID', related_name='autonumsch_div_links', null=False, on_delete=protect_with_blockers, primary_key=True)
-    autonumberingscheme = models.ForeignKey('AutoNumberingScheme', db_column='AutoNumberingSchemeID', related_name='autonumsch_div_links', null=False, on_delete=protect_with_blockers)
+    division = models.ForeignKey('Division', db_column='DivisionID', related_name='+', null=False, on_delete=protect_with_blockers, primary_key=True)
+    autonumberingscheme = models.ForeignKey('AutoNumberingScheme', db_column='AutoNumberingSchemeID', related_name='+', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'autonumsch_div'
@@ -8022,8 +8068,8 @@ class AutonumschDiv(models.Model):
 class AutonumschDsp(models.Model):
     specify_model = datamodel.get_table_strict('autonumsch_dsp')
 
-    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='autonumsch_dsp_links', null=False, on_delete=protect_with_blockers, primary_key=True)
-    autonumberingscheme = models.ForeignKey('AutoNumberingScheme', db_column='AutoNumberingSchemeID', related_name='autonumsch_dsp_links', null=False, on_delete=protect_with_blockers)
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers, primary_key=True)
+    autonumberingscheme = models.ForeignKey('AutoNumberingScheme', db_column='AutoNumberingSchemeID', related_name='+', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'autonumsch_dsp'
@@ -8032,19 +8078,19 @@ class AutonumschDsp(models.Model):
 
     save = partialmethod(custom_save)
 
-# class SpecifyuserSpprincipal(models.Model):
-#     specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', on_delete=models.deletion.DO_NOTHING)
-#     spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', on_delete=models.deletion.DO_NOTHING)
+class SpecifyuserSpprincipal(models.Model):
+    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', on_delete=mmodels.CASCADE, related_name="+")
+    spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', on_delete=models.deletion.DO_NOTHING, related_name="+")
 
-#     class Meta:
-#         db_table = 'specifyuser_spprincipal'
-#         managed = False
-#         ordering = ()
-#         unique_together = (('specifyuser', 'spprincipal'),)
-#         indexes = [
-#             models.Index(fields=['specifyuser'], name='FK81E18B5E4BDD9E10'),
-#             models.Index(fields=['spprincipal'], name='FK81E18B5E99A7381A'),
-#         ]
+    class Meta:
+        db_table = 'specifyuser_spprincipal'
+        managed = False
+        ordering = ()
+        unique_together = (('specifyuser', 'spprincipal'),)
+        indexes = [
+            models.Index(fields=['specifyuser'], name='FK81E18B5E4BDD9E10'),
+            models.Index(fields=['spprincipal'], name='FK81E18B5E99A7381A'),
+        ]
 
 class Deaccessionpreparation(models.Model):
     specify_model = datamodel.get_table_strict('deaccessionpreparation')
@@ -8075,8 +8121,8 @@ class ProjectColobj(models.Model):
     specify_model = datamodel.get_table_strict('project_colobj')
 
     # Composite PK table (no AutoField); use the two FKs as the PK
-    project = models.ForeignKey('Project', db_column='ProjectID', related_name='project_colobjs', null=False, on_delete=protect_with_blockers, primary_key=True)
-    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='project_colobjs', null=False, on_delete=protect_with_blockers)
+    project = models.ForeignKey('Project', db_column='ProjectID', related_name='+', null=False, on_delete=protect_with_blockers, primary_key=True)
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='+', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'project_colobj'
