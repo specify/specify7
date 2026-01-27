@@ -69,17 +69,9 @@ def autonumbering_lock(table_name: str, timeout: int = 10) -> Generator[Literal[
 def do_autonumbering(collection, obj, fields: list[tuple[UIFormatter, Sequence[str]]]) -> None:
     logger.debug("autonumbering %s fields: %s", obj, fields)
 
-    # The autonumber action is prepared and thunked outside the locked table
-    # context since it looks at other tables and that is not allowed by mysql
-    # if those tables are not also locked.
-    thunks = [
-        formatter.prepare_autonumber_thunk(collection, obj.__class__, vals)
-        for formatter, vals in fields
-    ]
-
     with autonumbering_lock(obj._meta.db_table):
-        for apply_autonumbering_to in thunks:
-            apply_autonumbering_to(obj)
+        for formatter, vals in fields:
+            formatter.apply_autonumbering(collection, obj, vals)
 
         obj.save()
 
