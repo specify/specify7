@@ -35,6 +35,8 @@ import { useFetchQueryResults } from './hooks';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
+import { LoadingContext } from '../Core/Contexts';
+import {ajax} from "../../utils/ajax";
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -188,6 +190,8 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     typeof loadedResults?.[0]?.[0] === 'string' && loadedResults !== undefined;
   const metaColumns = (showLineNumber ? 1 : 0) + 2;
 
+  const loading = React.useContext(LoadingContext);
+
   return (
     <Container.Base className="w-full !bg-[color:var(--form-background)]">
       <div className="flex items-center items-stretch gap-2">
@@ -214,14 +218,30 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           
         )}
        {/* dummy buttons for select All and invert selection*/}
-
-        <Button.Small
+        {(totalCount ?? 0) > 0 && (totalCount ?? 0) < 1000000 && (
+           <Button.Small
           onClick={(): void => {
-          
+           loading( 
+            (async () => {
+              try {
+                const allIDs = await fetchAllIDs(table.name.toLowerCase(),
+                {},
+                totalCount ?? 0,
+                loading
+            );
+            setSelectedRows(new Set(allIDs));
+            handleSelected?.(allIDs);
+              } catch (error) {
+                console.error('Error fetching all IDs:', error);
+              }
+              
+            })()
+           );
             }}
             >
             {interactionsText.selectAll()}
           </Button.Small>
+        )}
 
           <Button.Small
           onClick={(): void => {
@@ -486,4 +506,40 @@ export function canMerge(table: SpecifyTable): boolean {
     table.name !== 'CollectingEvent' &&
     canMerge;
   return canMergeOtherTables || canMergePaleoContext || canMergeCollectingEvent;
+}
+
+async function fetchAllIDs(
+  modelName: string,
+  filters: Record<string, unknown>,
+  totalCount: number,
+  loading: (promise: Promise<unknown>) => void
+): Promise<RA<number>> {
+  return new Promise<RA<number>>((resolve, reject) => {
+    loading(
+      (async () => {
+        try {
+          const params = new URLSearchParams({
+            fields: "id",
+            limit: "0",
+            offset: "0",
+            domainfilter: "true",
+          
+            ...Object.fromEntries(
+              Object.entries(filters).map(([key, value]) => [key, String(value)])
+            ),
+          });
+          const response = await ajax<RA<[number]>>(
+            `/api/specify_rows/${modelName}/?${params}`,
+            {
+              headers: { Accept: 'application/json' },
+            }
+          );
+          const ids = response.data.map((row) => row[0]);
+          resolve(ids);
+        } catch (error) {
+          reject(error);
+        }
+      })()
+    );
+  });
 }
