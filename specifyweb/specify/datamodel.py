@@ -351,6 +351,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='specifyUser', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='agents'),
             Relationship(name='variants', type='one-to-many',required=False, relatedModelName='AgentVariant', otherSideName='agent', dependent=True),
             Relationship(name='components', type='one-to-many',required=False, relatedModelName='Component', otherSideName='identifiedBy'),
+            # Relationship(name='institutiontc', type='many-to-one', required=False, relatedModelName='InstitutionNetwork', column='InstitutionTCID', otherSideName='agents_institutiontc'),
         ],
         fieldAliases=[
 
@@ -3047,7 +3048,8 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='type', column='Type', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            # Field(name='disciplineId', column='DisciplineId', indexed=False, unique=False, required=False, type='java.lang.Integer')
         ],
         indexes=[
             Index(name='DisciplineNameIDX', column_names=['Name'])
@@ -8824,6 +8826,322 @@ datamodel = Datamodel(tables=[
 
         ],
     ),
+    # Table(
+    #     classname='edu.ku.brc.specify.datamodel.AutoNumSchColl',
+    #     table='autonumsch_coll',
+    #     tableId=1030,
+    #     idColumns=['CollectionID', 'AutoNumberingSchemeID'],
+    #     idFieldNames=['collectionId', 'autoNumberingSchemeId'],
+    #     idFields=[
+    #         IdField(name='collectionId', column='CollectionID', type='java.lang.Integer'),
+    #         IdField(name='autoNumberingSchemeId', column='AutoNumberingSchemeID', type='java.lang.Integer'),
+    #     ],
+    #     fields=[
+
+    #     ],
+    #     indexes=[
+    #         Index(name='FK46F04F2A8C2288BA', column_names=['CollectionID']),
+    #         Index(name='FK46F04F2AFE55DD76', column_names=['AutoNumberingSchemeID'])
+    #     ],
+    #     relationships=[
+    #         Relationship(name='collection', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionID'),
+    #         Relationship(name='autoNumberingScheme', type='many-to-one', required=True, relatedModelName='AutoNumberingScheme', column='AutoNumberingSchemeID')
+    #     ],
+    #     fieldAliases=[
+
+    #     ],
+    #     view=None,
+    #     searchDialog=None,
+    #     skip=True
+    # ),
+    # Table(
+    #     classname='edu.ku.brc.specify.datamodel.AutoNumSchDiv',
+    #     table='autonumsch_div',
+    #     tableId=1031,
+    #     idColumns=['DivisionID', 'AutoNumberingSchemeID'],
+    #     idFieldNames=['divisionId', 'autoNumberingSchemeId'],
+    #     idFields=[
+    #         IdField(name='divisionId', column='DivisionID', type='java.lang.Integer'),
+    #         IdField(name='autoNumberingSchemeId', column='AutoNumberingSchemeID', type='java.lang.Integer'),
+    #     ],
+    #     fields=[
+
+    #     ],
+    #     indexes=[
+    #         Index(name='FKA8BE49397C961D8', column_names=['DivisionID']),
+    #         Index(name='FKA8BE493FE55DD76', column_names=['AutoNumberingSchemeID'])
+    #     ],
+    #     relationships=[
+    #         Relationship(name='division', type='many-to-one', required=True, relatedModelName='Division', column='DivisionID'),
+    #         Relationship(name='autoNumberingScheme', type='many-to-one', required=True, relatedModelName='AutoNumberingScheme', column='AutoNumberingSchemeID')
+    #     ],
+    #     fieldAliases=[
+
+    #     ],
+    #     view=None,
+    #     searchDialog=None,
+    #     skip=True
+    # ),
+    # Table(
+    #     classname='edu.ku.brc.specify.datamodel.AutoNumSchDsp',
+    #     table='autonumsch_dsp',
+    #     tableId=1032,
+    #     idColumns=['DisciplineID', 'AutoNumberingSchemeID'],
+    #     idFieldNames=['disciplineId', 'autoNumberingSchemeId'],
+    #     idFields=[
+    #         IdField(name='disciplineId', column='DisciplineID', type='java.lang.Integer'),
+    #         IdField(name='autoNumberingSchemeId', column='AutoNumberingSchemeID', type='java.lang.Integer'),
+    #     ],
+    #     fields=[
+
+    #     ],
+    #     indexes=[
+    #         Index(name='FKA8BE5C34CE675DE', column_names=['DisciplineID']),
+    #         Index(name='FKA8BE5C3FE55DD76', column_names=['AutoNumberingSchemeID'])
+    #     ],
+    #     relationships=[
+    #         Relationship(name='discipline', type='many-to-one', required=True, relatedModelName='Discipline', column='DisciplineID'),
+    #         Relationship(name='autoNumberingScheme', type='many-to-one', required=True, relatedModelName='AutoNumberingScheme', column='AutoNumberingSchemeID')
+    #     ],
+    #     fieldAliases=[
+
+    #     ],
+    #     view=None,
+    #     searchDialog=None,
+    #     skip=True
+    # ),
+    Table(
+        classname='edu.ku.brc.specify.datamodel.DeaccessionPreparation',
+        table='deaccessionpreparation',
+        tableId=1033,
+        idColumn='DeaccessionPreparationID',
+        idFieldName='deaccessionPreparationId',
+        idField=IdField(name='deaccessionPreparationId', column='DeaccessionPreparationID', type='java.lang.Integer'),
+        fields=[
+            Field(name='quantity', column='Quantity', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
+            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+            Field(name='version', column='version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+        ],
+        indexes=[
+            Index(name='FK6A06F1F47699B003', column_names=['CreatedByAgentID']),
+            Index(name='FK6A06F1F45327F942', column_names=['ModifiedByAgentID']),
+            Index(name='FK6A06F1F4BE26B05E', column_names=['DeaccessionID']),
+            Index(name='FK6A06F1F418627F06', column_names=['PreparationID'])
+        ],
+        relationships=[
+            Relationship(name='deaccession', type='many-to-one', required=True, relatedModelName='Deaccession', column='DeaccessionID'),
+            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
+            Relationship(name='preparation', type='many-to-one', required=False, relatedModelName='Preparation', column='PreparationID')
+        ],
+        fieldAliases=[
+
+        ],
+        view=None,
+        searchDialog=None
+    ),
+    # Table(
+    #     classname='edu.ku.brc.specify.datamodel.ProjectColobj',
+    #     table='project_colobj',
+    #     tableId=1034,
+    #     idColumns=['ProjectID', 'CollectionObjectID'],
+    #     idFieldNames=['projectId', 'collectionObjectId'],
+    #     idFields=[
+    #         IdField(name='projectId', column='ProjectID', type='java.lang.Integer'),
+    #         IdField(name='collectionObjectId', column='CollectionObjectID', type='java.lang.Integer'),
+    #     ],
+    #     fields=[
+
+    #     ],
+    #     indexes=[
+    #         Index(name='FK1E416F5DAF28760A', column_names=['ProjectID']),
+    #         Index(name='FK1E416F5D75E37458', column_names=['CollectionObjectID'])
+    #     ],
+    #     relationships=[
+    #         Relationship(name='project', type='many-to-one', required=True, relatedModelName='Project', column='ProjectID'),
+    #         Relationship(name='collectionObject', type='many-to-one', required=True, relatedModelName='CollectionObject', column='CollectionObjectID')
+    #     ],
+    #     fieldAliases=[
+
+    #     ],
+    #     view=None,
+    #     searchDialog=None,
+    #     skip=True
+    # ),
+    Table(
+        classname='edu.ku.brc.specify.datamodel.SgrBatchMatchResultItem',
+        table='sgrbatchmatchresultitem',
+        tableId=1035,
+        idColumn='id',
+        idFieldName='id',
+        idField=IdField(name='id', column='id', type='java.lang.Long'),
+        fields=[
+            Field(name='matchedId', column='matchedId', indexed=False, unique=False, required=True, type='java.lang.String', length=128),
+            Field(name='maxScore', column='maxScore', indexed=False, unique=False, required=True, type='java.lang.Double'),
+            Field(name='qTime', column='qTime', indexed=False, unique=False, required=True, type='java.lang.Integer')
+        ],
+        indexes=[
+            Index(name='sgrbatchmatchresultitemfk1', column_names=['batchMatchResultSetId'])
+        ],
+        relationships=[
+            Relationship(name='batchMatchResultSet', type='many-to-one', required=True, relatedModelName='SgrBatchMatchResultSet', column='batchMatchResultSetId')
+        ],
+        fieldAliases=[
+
+        ],
+        view=None,
+        searchDialog=None
+    ),
+    Table(
+        classname='edu.ku.brc.specify.datamodel.SgrBatchMatchResultSet',
+        table='sgrbatchmatchresultset',
+        tableId=1039,
+        idColumn='id',
+        idFieldName='id',
+        idField=IdField(name='id', column='id', type='java.lang.Long'),
+        fields=[
+            Field(name='insertTime', column='insertTime', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+            Field(name='name', column='name', indexed=False, unique=False, required=True, type='java.lang.String', length=128),
+            Field(name='recordSetID', column='recordSetID', indexed=False, unique=False, required=False, type='java.lang.Long'),
+            Field(name='query', column='query', indexed=False, unique=False, required=True, type='text', length=65535),
+            Field(name='remarks', column='remarks', indexed=False, unique=False, required=True, type='text', length=65535),
+            Field(name='dbTableId', column='dbTableId', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        ],
+        indexes=[
+            Index(name='sgrbatchmatchresultsetfk2', column_names=['matchConfigurationId']),
+        ],
+        relationships=[
+            Relationship(
+                name='items',
+                type='one-to-many',
+                required=False,
+                relatedModelName='SgrBatchMatchResultItem',
+                otherSideName='batchMatchResultSet',
+            ),
+            Relationship(
+                name='matchConfiguration',
+                type='many-to-one',
+                required=True,
+                relatedModelName='SgrMatchConfiguration',
+                column='matchConfigurationId',
+                otherSideName='batchMatchResultSets',
+            ),
+        ],
+        fieldAliases=[],
+        view=None,
+        searchDialog=None,
+    ),
+    Table(
+        classname='edu.ku.brc.specify.datamodel.SgrMatchConfiguration',
+        table='sgrmatchconfiguration',
+        tableId=1040,
+        idColumn='id',
+        idFieldName='id',
+        idField=IdField(name='id', column='id', type='java.lang.Long'),
+        fields=[
+            Field(name='name', column='name', indexed=False, unique=False, required=True, type='java.lang.String', length=128),
+            Field(name='similarityFields', column='similarityFields', indexed=False, unique=False, required=True, type='text', length=65535),
+            Field(name='serverUrl', column='serverUrl', indexed=False, unique=False, required=True, type='text', length=65535),
+            Field(name='filterQuery', column='filterQuery', indexed=False, unique=False, required=True, type='java.lang.String', length=128),
+            Field(name='queryFields', column='queryFields', indexed=False, unique=False, required=True, type='text', length=65535),
+            Field(name='remarks', column='remarks', indexed=False, unique=False, required=True, type='text', length=65535),
+            Field(name='boostInterestingTerms', column='boostInterestingTerms', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
+            Field(name='nRows', column='nRows', indexed=False, unique=False, required=True, type='java.lang.Integer'),
+        ],
+        indexes=[],
+        relationships=[
+            Relationship(name='batchMatchResultSets', type='one-to-many', required=False, relatedModelName='SgrBatchMatchResultSet', otherSideName='matchConfiguration'),
+        ],
+        fieldAliases=[],
+        view=None,
+        searchDialog=None
+    ),
+    # Table(
+    #     classname='edu.ku.brc.specify.datamodel.SpSchemaMapping',
+    #     table='sp_schema_mapping',
+    #     tableId=1036,
+    #     idColumns=['SpExportSchemaID', 'SpExportSchemaMappingID'],
+    #     idFieldNames=['spExportSchemaId', 'spExportSchemaMappingId'],
+    #     idFields=[
+    #         IdField(name='spExportSchemaId', column='SpExportSchemaID', type='java.lang.Integer'),
+    #         IdField(name='spExportSchemaMappingId', column='SpExportSchemaMappingID', type='java.lang.Integer'),
+    #     ],
+    #     fields=[
+
+    #     ],
+    #     indexes=[
+    #         Index(name='FKC5EDFE525722A7A2', column_names=['SpExportSchemaID']),
+    #         Index(name='FKC5EDFE52F7C8AAB0', column_names=['SpExportSchemaMappingID'])
+    #     ],
+    #     relationships=[
+    #         Relationship(name='spExportSchema', type='many-to-one', required=True, relatedModelName='SpExportSchema', column='SpExportSchemaID'),
+    #         Relationship(name='spExportSchemaMapping', type='many-to-one', required=True, relatedModelName='SpExportSchemaMapping', column='SpExportSchemaMappingID')
+    #     ],
+    #     fieldAliases=[
+
+    #     ],
+    #     view=None,
+    #     searchDialog=None,
+    #     skip=True
+    # ),
+    # Table(
+    #     classname='edu.ku.brc.specify.datamodel.SpecifyUserSpPrincipal',
+    #     table='specifyuser_spprincipal',
+    #     tableId=1037,
+    #     idColumns=['SpecifyUserID', 'SpPrincipalID'],
+    #     idFieldNames=['specifyUserId', 'spPrincipalId'],
+    #     idFields=[
+    #         IdField(name='specifyUserId', column='SpecifyUserID', type='java.lang.Integer'),
+    #         IdField(name='spPrincipalId', column='SpPrincipalID', type='java.lang.Integer'),
+    #     ],
+    #     fields=[
+
+    #     ],
+    #     indexes=[
+    #         Index(name='FK81E18B5E4BDD9E10', column_names=['SpecifyUserID']),
+    #         Index(name='FK81E18B5E99A7381A', column_names=['SpPrincipalID'])
+    #     ],
+    #     relationships=[
+    #         Relationship(name='specifyUser', type='many-to-one', required=True, relatedModelName='SpecifyUser', column='SpecifyUserID'),
+    #         Relationship(name='spPrincipal', type='many-to-one', required=True, relatedModelName='SpPrincipal', column='SpPrincipalID')
+    #     ],
+    #     fieldAliases=[
+
+    #     ],
+    #     view=None,
+    #     searchDialog=None,
+    #     skip=True
+    # ),
+    # Table(
+    #     classname='edu.ku.brc.specify.datamodel.SpPrincipalSpPermission',
+    #     table='spprincipal_sppermission',
+    #     tableId=1038,
+    #     idColumns=['SpPrincipalID', 'SpPermissionID'],
+    #     idFieldNames=['spPrincispalId', 'spPermissionId'],
+    #     idFields=[
+    #         IdField(name='spPrincipalId', column='SpPrincipalID', type='java.lang.Integer'),
+    #         IdField(name='spPermissionId', column='SpPermissionID', type='java.lang.Integer'),
+    #     ],
+    #     fields=[
+
+    #     ],
+    #     indexes=[
+    #         Index(name='FK9DD8B2FA99A7381A', column_names=['SpPrincipalID']),
+    #         Index(name='FK9DD8B2FA891F8736', column_names=['SpPermissionID'])
+    #     ],
+    #     relationships=[
+    #         Relationship(name='spPrincipal', type='many-to-one', required=True, relatedModelName='SpPrincipal', column='SpPrincipalID'),
+    #         Relationship(name='spPermission', type='many-to-one', required=True, relatedModelName='SpPermission', column='SpPermissionID')
+    #     ],
+    #     fieldAliases=[
+
+    #     ],
+    #     view=None,
+    #     searchDialog=None,
+    #     skip=True
+    # ),
 ])
 
 # add_collectingevents_to_locality(datamodel) # added statically to datamodel definitions
