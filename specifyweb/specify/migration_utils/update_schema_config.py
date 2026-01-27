@@ -115,7 +115,7 @@ def update_table_schema_config_with_defaults(
         language="en",
     )
 
-    # Create or fetch Splocalecontainer for the table (this already encodes discipline_id)
+    # Create Splocalecontainer for the table
     sp_local_container, is_new = Splocalecontainer.objects.get_or_create(
         name=table_config.name.lower(),
         discipline_id=discipline_id,
