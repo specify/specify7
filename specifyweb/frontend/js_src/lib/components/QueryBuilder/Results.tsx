@@ -213,7 +213,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
 
           
         )}
-       {/* dummy buttons for select All and invert selection*/}
+       {/* Dummy buttons for select All and invert selection*/}
 
         <Button.Small
           onClick={(): void => {
@@ -228,7 +228,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           
             }}
             >
-            {"Invert Selection"}
+            Invert Selection
           </Button.Small>
         <div className="-ml-2 flex-1" />
         {displayedFields.length > 0 &&
