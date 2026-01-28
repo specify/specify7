@@ -73,12 +73,13 @@ export function renderFormFieldFactory({
   ) => void;
   readonly formRef: React.MutableRefObject<HTMLFormElement | null>;
 }) {
-  const [isTreeDialogOpen, handleTreeDialogOpen, handleTreeDialogClose] = useBooleanState(false);
+  const [isTreeDialogOpen, handleTreeDialogOpen, handleTreeDialogClose] =
+    useBooleanState(false);
 
   const renderFormField = (
     field: FieldConfig,
     parentName?: string,
-    inTable: boolean = false,
+    inTable: boolean = false
   ): JSX.Element => {
     const {
       name,
@@ -95,9 +96,14 @@ export function renderFormFieldFactory({
 
     const fieldName = parentName === undefined ? name : `${parentName}.${name}`;
 
-    const colSpan = (width === undefined) ? (type === 'object' ? 'col-span-4' : 'col-span-2') : `col-span-${width}`;
+    const colSpan =
+      width === undefined
+        ? type === 'object'
+          ? 'col-span-4'
+          : 'col-span-2'
+        : `col-span-${width}`;
 
-    const verticalSpacing = (width !== undefined && width < 2) ? '-mb-2' : 'mb-2'
+    const verticalSpacing = width !== undefined && width < 2 ? '-mb-2' : 'mb-2';
 
     const disciplineTypeValue =
       resources[currentStep].resourceName === 'discipline'
@@ -108,8 +114,7 @@ export function renderFormFieldFactory({
       fieldName === 'name' &&
       (disciplineTypeValue === undefined || disciplineTypeValue === '');
 
-    const showTreeSelector = 
-      getFormValue(formData, currentStep, 'preload');
+    const showTreeSelector = getFormValue(formData, currentStep, 'preload');
 
     return (
       <div className={`${verticalSpacing} ${colSpan}`} key={fieldName}>
@@ -135,11 +140,7 @@ export function renderFormFieldFactory({
             className="mb-4"
             key={`${resources[currentStep].resourceName}.${fieldName}`}
           >
-            {!inTable && (
-              <Label.Block title={description}>
-                {label}
-              </Label.Block>
-            )}
+            {!inTable && <Label.Block title={description}>{label}</Label.Block>}
             <Select
               aria-label={label}
               className="w-full min-w-[theme(spacing.40)]"
@@ -223,28 +224,34 @@ export function renderFormFieldFactory({
             <H3 className="text-xl font-semibold" title={description}>
               {label}
             </H3>
-            {fields ? renderFormFields(fields, fieldName, isTable === true) : null}
+            {fields
+              ? renderFormFields(fields, fieldName, isTable === true)
+              : null}
           </div>
         ) : type === 'tree' ? (
           showTreeSelector ? (
             // Taxon tree selection
             <Label.Block title={description}>
               {label}
-              <Button.Fancy
-                onClick={handleTreeDialogOpen}
-              >
+              <Button.Fancy onClick={handleTreeDialogOpen}>
                 {setupToolText.selectATree()}
               </Button.Fancy>
               {(() => {
                 // Display the selected tree
-                const selectedTree = getFormValue(formData, currentStep, fieldName);
+                const selectedTree = getFormValue(
+                  formData,
+                  currentStep,
+                  fieldName
+                );
                 if (selectedTree && typeof selectedTree === 'object') {
                   const tree = selectedTree as TaxonFileDefaultDefinition;
                   return (
                     <div className="mt-2">
                       <div className="p-2 border border-gray-500 rounded">
                         <div className="font-medium">{tree.title}</div>
-                        <div className="text-xs text-gray-500">{tree.description}</div>
+                        <div className="text-xs text-gray-500">
+                          {tree.description}
+                        </div>
                         <div className="text-xs text-gray-400 italic">{`${treeText.source()}: ${tree.src}`}</div>
                       </div>
                     </div>
@@ -252,25 +259,25 @@ export function renderFormFieldFactory({
                 }
                 return null;
               })()}
-                {isTreeDialogOpen ? (<Dialog
+              {isTreeDialogOpen ? (
+                <Dialog
                   buttons={commonText.cancel()}
                   header={treeText.trees()}
                   onClose={handleTreeDialogClose}
                 >
                   <PopulatedTreeList
-                    handleClick={
-                      (resource: TaxonFileDefaultDefinition): void => {
-                        handleChange(fieldName, resource);
-                        handleChange('preload', true);
-                        handleTreeDialogClose();
-                      }
-                    }
+                    handleClick={(
+                      resource: TaxonFileDefaultDefinition
+                    ): void => {
+                      handleChange(fieldName, resource);
+                      handleChange('preload', true);
+                      handleTreeDialogClose();
+                    }}
                   />
-                </Dialog>) : null}
+                </Dialog>
+              ) : null}
             </Label.Block>
-          ) : (
-            null
-          )
+          ) : null
         ) : (
           <Label.Block title={description}>
             {!inTable && label}
@@ -288,7 +295,11 @@ export function renderFormFieldFactory({
     );
   };
 
-  const renderFormFields = (fields: RA<FieldConfig>, parentName?: string, isTable: boolean = false): JSX.Element => {
+  const renderFormFields = (
+    fields: RA<FieldConfig>,
+    parentName?: string,
+    isTable: boolean = false
+  ): JSX.Element => {
     if (isTable && fields.length > 0 && fields[0].fields) {
       // Table format specifically for tree rank configuration
       return (
@@ -319,10 +330,15 @@ export function renderFormFieldFactory({
                     {field.label}
                   </td>
                   {field.fields!.map((subField) => (
-                    <td className="px-2 py-2 border-r border-gray-300 dark:border-gray-500 align-middle last:border-r-0" key={`${field.name}-${subField.name}`}>
+                    <td
+                      className="px-2 py-2 border-r border-gray-300 dark:border-gray-500 align-middle last:border-r-0"
+                      key={`${field.name}-${subField.name}`}
+                    >
                       {renderFormField(
                         subField,
-                        parentName === undefined ? field.name : `${parentName}.${field.name}`,
+                        parentName === undefined
+                          ? field.name
+                          : `${parentName}.${field.name}`,
                         true
                       )}
                     </td>
