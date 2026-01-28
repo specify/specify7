@@ -2,7 +2,6 @@ from typing import Union, Optional, TypeVar, cast, Literal
 from collections.abc import Callable
 from collections.abc import Iterable
 from xml.etree import ElementTree
-from dataclasses import dataclass
 import os
 import warnings
 import logging
@@ -28,10 +27,6 @@ class FieldDoesNotExistError(DoesNotExistError):
 T = TypeVar("T")
 U = TypeVar("U")
 
-@dataclass(frozen=True)
-class _MissingRelationship:
-    dependent: bool = False
-
 
 def strict_to_optional(f: Callable[[U], T], lookup: U, strict: bool) -> T | None:
     try:
@@ -55,7 +50,7 @@ class Datamodel:
     def get_table_strict(self, tablename: str) -> "Table":
         tablename = tablename.lower()
         for table in self.tables:
-            if table.name.lower() == tablename or table.table.lower() == tablename:
+            if table.name.lower() == tablename:
                 return table
         raise TableDoesNotExistError(
             _("No table with name: %(table_name)r") % {"table_name": tablename}
@@ -87,39 +82,27 @@ class Table:
     classname: str
     table: str
     tableId: int
-
-    # NEW: multi-field PK support
-    idColumns: list[str]
-    idFieldNames: list[str]
-    idFields: list["IdField"]
-
+    idColumn: str
+    idFieldName: str
+    idField: "Field"
     view: str | None = None
-    searchDialog: str | None = None
+    searchDialog: str | None = None 
     fields: list["Field"]
     indexes: list["Index"]
     relationships: list["Relationship"]
     fieldAliases: list[dict[str, str]]
     sp7_only: bool = False
     django_app: str = "specify"
-    virtual_fields: list["Field"] = []
-    skip: bool = False
+    virtual_fields: list['Field'] = []
 
     def __init__(
         self,
         classname: str | None = None,
         table: str | None = None,
         tableId: int | None = None,
-
-        # Back-compat (single-column PK)
         idColumn: str | None = None,
         idFieldName: str | None = None,
-        idField: Optional["IdField"] = None,
-
-        # NEW (multi-column PK)
-        idColumns: list[str] | None = None,
-        idFieldNames: list[str] | None = None,
-        idFields: list["IdField"] | None = None,
-
+        idField: Optional["Field"] = None,
         view: str | None = None,
         searchDialog: str | None = None,
         fields: list["Field"] | None = None,
@@ -129,8 +112,7 @@ class Table:
         system: bool = False,
         sp7_only: bool = False,
         django_app: str = "specify",
-        virtual_fields: list["Field"] | None = None,
-        skip: bool = False
+        virtual_fields: list['Field'] | None = None
     ):
         if not classname:
             raise ValueError("classname is required")
@@ -138,37 +120,19 @@ class Table:
             raise ValueError("table is required")
         if not tableId:
             raise ValueError("tableId is required")
-
-        # Normalize PK inputs:
-        # Prefer multi-field args if provided, else fall back to single-field args
-        if idColumns is not None or idFieldNames is not None or idFields is not None:
-            _idColumns = idColumns or []
-            _idFieldNames = idFieldNames or []
-            _idFields = idFields or []
-            if not _idColumns or not _idFieldNames or not _idFields:
-                raise ValueError("idColumns, idFieldNames, and idFields are required when using multi-field PK")
-            if not (len(_idColumns) == len(_idFieldNames) == len(_idFields)):
-                raise ValueError("idColumns, idFieldNames, and idFields must have the same length")
-        else:
-            if not idColumn:
-                raise ValueError("idColumn is required")
-            if not idFieldName:
-                raise ValueError("idFieldName is required")
-            if not idField:
-                raise ValueError("idField is required")
-            _idColumns = [idColumn]
-            _idFieldNames = [idFieldName]
-            _idFields = [idField]
-
+        if not idColumn:
+            raise ValueError("idColumn is required")
+        if not idFieldName:
+            raise ValueError("idFieldName is required")
+        if not idField:
+            raise ValueError("idField is required")
         self.system = system
         self.classname = classname
         self.table = table
         self.tableId = tableId
-
-        self.idColumns = _idColumns
-        self.idFieldNames = _idFieldNames
-        self.idFields = _idFields
-
+        self.idColumn = idColumn
+        self.idFieldName = idFieldName
+        self.idField = idField
         self.view = view
         self.searchDialog = searchDialog
         self.fields = fields if fields is not None else []
@@ -178,22 +142,7 @@ class Table:
         self.sp7_only = sp7_only
         self.django_app = django_app
         self.virtual_fields = virtual_fields if virtual_fields is not None else []
-        self.skip = skip
 
-    # -------- Backwards-compatible properties --------
-    @property
-    def idColumn(self) -> str:
-        return self.idColumns[0]
-
-    @property
-    def idFieldName(self) -> str:
-        return self.idFieldNames[0]
-
-    @property
-    def idField(self) -> "IdField":
-        return self.idFields[0]
-
-    # -------- Convenience helpers --------
     @property
     def name(self) -> str:
         if self.classname is None:
@@ -206,17 +155,19 @@ class Table:
 
     @property
     def all_fields(self) -> list[Union["Field", "Relationship"]]:
-        def af() -> Iterable[Union["Field", "Relationship"]]:
-            yield from self.fields or []
-            yield from self.relationships or []
-            # include ALL PK fields (not just one)
-            yield from (self.idFields or [])
+        def af() -> Iterable[Union["Field","Relationship"]]:
+            yield from self.fields or []  # Handle None by using an empty list
+            yield from self.relationships or []  # Handle None by using an empty list
+            if self.idField is not None:
+                yield self.idField
+
         return list(af())
+
 
     def is_virtual_field(self, fieldname: str) -> bool:
         return fieldname in [f.name for f in self.virtual_fields] if self.virtual_fields else False
-
-    def get_field(self, fieldname: str, strict: bool = False) -> Union["Field", "Relationship", None]:
+   
+    def get_field(self, fieldname: str, strict: bool=False) -> Union['Field', 'Relationship', None]:
         return strict_to_optional(self.get_field_strict, fieldname, strict)
 
     def get_field_strict(self, fieldname: str) -> Union["Field", "Relationship"]:
@@ -229,23 +180,16 @@ class Table:
             for field in self.virtual_fields:
                 if fieldname and field.name and field.name.lower() == fieldname:
                     return field
-        raise FieldDoesNotExistError(
-            _("Field %(field_name)s not in table %(table_name)s. ") % {"field_name": fieldname, "table_name": self.name}
-            + _("Fields: %(fields)s") % {"fields": [f.name for f in self.all_fields]}
-        )
+        # if self.table == 'collectionobject' and fieldname == 'age': # TODO: This is temporary for testing, more conprehensive solution to come.
+        #     return Field(name='age', column='age', indexed=False, unique=False, required=False, type='java.lang.Integer', length=0)
+        raise FieldDoesNotExistError(_("Field %(field_name)s not in table %(table_name)s. ") % {'field_name':fieldname, 'table_name':self.name} +
+                                     _("Fields: %(fields)s") % {'fields':[f.name for f in self.all_fields]})
 
     def get_relationship(self, name: str) -> "Relationship":
-        try:
-            field = self.get_field_strict(name)
-        except FieldDoesNotExistError:
-            # Reverse Django related_name relationships may not be present in the datamodel.
-            # Treat as non-dependent by default.
-            return _MissingRelationship()  # type: ignore[return-value]
-
+        field = self.get_field_strict(name)
         if not isinstance(field, Relationship):
             raise FieldDoesNotExistError(
-                _("Field %(field_name)s not in table %(table_name)s. ")
-                % {"field_name": name, "table_name": self.name}
+                f"Field {name} in table {self.name} is not a relationship."
             )
         return field
 
@@ -265,24 +209,13 @@ class Table:
 
     @property
     def attachments_field(self) -> Optional["Relationship"]:
-        candidates = (
-            "attachments",
-            f"{self.name}attachments",
-            f"{self.name}Attachments",
-        )
-
-        for rel in self.relationships or []:
-            if not rel.name:
-                continue
-            rel_name_lower = rel.name.lower()
-            if rel_name_lower in (c.lower() for c in candidates):
-                return rel
-            if rel_name_lower.endswith("attachments"):
-                return rel
-            if rel.relatedModelName and rel.relatedModelName.lower().endswith("attachment"):
-                return rel
-
-        return None
+        try:
+            return self.get_relationship("attachments")
+        except FieldDoesNotExistError:
+            try:
+                return self.get_relationship(self.name + "attachments")
+            except FieldDoesNotExistError:
+                return None
 
     @property
     def is_attachment_jointable(self) -> bool:
@@ -437,32 +370,28 @@ class Relationship(Field):
 
 
 def make_table(tabledef: ElementTree.Element) -> Table:
-    iddefs = tabledef.findall("id")
-    if not iddefs:
-        raise ValueError(f"Table {tabledef.attrib.get('table')} has no <id> definition")
-
+    iddef = tabledef.find("id")
+    assert iddef is not None
     display = tabledef.find("display")
-
-    # Support: 1 id (normal) or many ids (composite PK)
-    idColumns = [i.attrib["column"] for i in iddefs]
-    idFieldNames = [i.attrib["name"] for i in iddefs]
-    idFields = [make_id_field(i) for i in iddefs]
-
     table = Table(
         classname=tabledef.attrib["classname"],
         table=tabledef.attrib["table"],
         tableId=int(tabledef.attrib["tableid"]),
-
-        idColumns=idColumns,
-        idFieldNames=idFieldNames,
-        idFields=idFields,
-
+        idColumn=iddef.attrib["column"],
+        idFieldName=iddef.attrib["name"],
+        idField=make_id_field(iddef),
         view=display.attrib.get("view", None) if display is not None else None,
-        searchDialog=(display.attrib.get("searchdlg", None) if display is not None else None),
+        searchDialog=(
+            display.attrib.get("searchdlg", None) if display is not None else None
+        ),
         fields=[make_field(fielddef) for fielddef in tabledef.findall("field")],
         indexes=[make_index(indexdef) for indexdef in tabledef.findall("tableindex")],
-        relationships=[make_relationship(reldef) for reldef in tabledef.findall("relationship")],
-        fieldAliases=[make_field_alias(aliasdef) for aliasdef in tabledef.findall("fieldalias")],
+        relationships=[
+            make_relationship(reldef) for reldef in tabledef.findall("relationship")
+        ],
+        fieldAliases=[
+            make_field_alias(aliasdef) for aliasdef in tabledef.findall("fieldalias")
+        ],
     )
     return table
 
@@ -574,8 +503,7 @@ def flag_dependent_fields(datamodel: Datamodel) -> None:
         if table.is_attachment_jointable:
             table.get_relationship("attachment").dependent = True
         if table.attachments_field:
-            # table.attachments_field.dependent = True
-            object.__setattr__(table.attachments_field, "dependent", True)
+            table.attachments_field.dependent = True
 
 
 def flag_system_tables(datamodel: Datamodel) -> None:

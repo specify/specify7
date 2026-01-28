@@ -195,8 +195,7 @@ def record_merge_fx(model_name: str, old_model_ids: list[int], new_model_id: int
 
     # Get all of the columns in all of the tables of specify the are foreign keys referencing model ID
     foreign_key_cols = []
-    # for table in spmodels.datamodel.tables:
-    for table in (t for t in spmodels.datamodel.tables if not getattr(t, "skip", False)):
+    for table in spmodels.datamodel.tables:
         for relationship in table.relationships:
             if relationship.relatedModelName.lower() == model_name.lower() and not relationship.type.endswith('to-many'):
                 foreign_key_cols.append((table.name, relationship.name))

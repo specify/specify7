@@ -745,19 +745,19 @@ class Autonumberingscheme(models.Model):
     # Relationships: Many-to-Many
     collections = models.ManyToManyField(
         "Collection",
-        through="Autonumschcoll",
+        through="specify.Autonumschcoll",
         through_fields=("autonumberingscheme", "collection"),
         related_name="autonumberingschemes"
     )
     disciplines = models.ManyToManyField(
         "Discipline",
-        through="Autonumschdsp",
+        through="specify.AutonumschDsp",
         through_fields=("autonumberingscheme", "discipline"),
         related_name="autonumberingschemes"
     )
     divisions = models.ManyToManyField(
         "Division",
-        through="Autonumschdiv",
+        through="specify.AutonumschDiv",
         through_fields=("autonumberingscheme", "division"),
         related_name="autonumberingschemes"
     )
@@ -5609,7 +5609,7 @@ class Project(models.Model):
     # Relationships: Many-to-Many
     collectionobjects = models.ManyToManyField(
         'CollectionObject',
-        through="Project_colobj",
+        through="specify.ProjectColobj",
         through_fields=("project", "collectionobject"),
         related_name="projects"
     )
@@ -6343,7 +6343,7 @@ class Spprincipal(models.Model):
     # Relationships: Many-to-Many
     sppermissions = models.ManyToManyField(
         "SpPermission",
-        through="Spprincipal_sppermission",
+        through="specify.SpprincipalSppermission",
         through_fields=("spprincipal", "sppermission"),
         related_name="spprincipals"
     )
@@ -6651,7 +6651,7 @@ class Specifyuser(model_extras.Specifyuser):
     # Relationships: Many-to-Many
     spprincipals = models.ManyToManyField(
         "SpPrincipal",
-        through="Specifyuser_spprincipal",
+        through="specify.SpecifyuserSpprincipal",
         through_fields=("specifyuser", "spprincipal"),
         related_name="spprincipals"
     )
@@ -8040,7 +8040,7 @@ class Tectonicunit(model_extras.Tectonicunit):
 
 
 class AutonumschColl(models.Model):
-    specify_model = datamodel.get_table_strict('autonumsch_coll')
+    # specify_model = datamodel.get_table_strict('autonumsch_coll')
 
     collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='+', null=False, on_delete=protect_with_blockers, primary_key=True)
     autonumberingscheme = models.ForeignKey('AutoNumberingScheme', db_column='AutoNumberingSchemeID', related_name='+', null=False, on_delete=protect_with_blockers)
@@ -8053,7 +8053,7 @@ class AutonumschColl(models.Model):
     save = partialmethod(custom_save)
 
 class AutonumschDiv(models.Model):
-    specify_model = datamodel.get_table_strict('autonumsch_div')
+    # specify_model = datamodel.get_table_strict('autonumsch_div')
 
     division = models.ForeignKey('Division', db_column='DivisionID', related_name='+', null=False, on_delete=protect_with_blockers, primary_key=True)
     autonumberingscheme = models.ForeignKey('AutoNumberingScheme', db_column='AutoNumberingSchemeID', related_name='+', null=False, on_delete=protect_with_blockers)
@@ -8066,7 +8066,7 @@ class AutonumschDiv(models.Model):
     save = partialmethod(custom_save)
 
 class AutonumschDsp(models.Model):
-    specify_model = datamodel.get_table_strict('autonumsch_dsp')
+    # specify_model = datamodel.get_table_strict('autonumsch_dsp')
 
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers, primary_key=True)
     autonumberingscheme = models.ForeignKey('AutoNumberingScheme', db_column='AutoNumberingSchemeID', related_name='+', null=False, on_delete=protect_with_blockers)
@@ -8079,7 +8079,9 @@ class AutonumschDsp(models.Model):
     save = partialmethod(custom_save)
 
 class SpecifyuserSpprincipal(models.Model):
-    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', on_delete=mmodels.CASCADE, related_name="+")
+    # specify_model = datamodel.get_table_strict('specifyuser_spprincipal')
+
+    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', on_delete=models.CASCADE, related_name="+")
     spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', on_delete=models.deletion.DO_NOTHING, related_name="+")
 
     class Meta:
@@ -8118,7 +8120,7 @@ class Deaccessionpreparation(models.Model):
     save = partialmethod(custom_save)
 
 class ProjectColobj(models.Model):
-    specify_model = datamodel.get_table_strict('project_colobj')
+    # specify_model = datamodel.get_table_strict('project_colobj')
 
     # Composite PK table (no AutoField); use the two FKs as the PK
     project = models.ForeignKey('Project', db_column='ProjectID', related_name='+', null=False, on_delete=protect_with_blockers, primary_key=True)
@@ -8200,7 +8202,7 @@ class Sgrmatchconfiguration(models.Model):
     save = partialmethod(custom_save)
 
 class SpSchemaMapping(models.Model):
-    specify_model = datamodel.get_table_strict('sp_schema_mapping')
+    # specify_model = datamodel.get_table_strict('sp_schema_mapping')
 
     # Composite PK table; use one FK as primary key + unique_together
     spexportschemamapping = models.ForeignKey('SpExportSchemaMapping', db_column='SpExportSchemaMappingID', related_name='sp_schema_mappings', null=False, on_delete=protect_with_blockers, primary_key=True)
@@ -8213,22 +8215,8 @@ class SpSchemaMapping(models.Model):
 
     save = partialmethod(custom_save)
 
-class SpecifyuserSpprincipal(models.Model):
-    specify_model = datamodel.get_table_strict('specifyuser_spprincipal')
-
-    # Composite PK table; use one FK as primary key + unique_together
-    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='spprincipal_links', null=False, on_delete=protect_with_blockers, primary_key=True)
-    spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', related_name='specifyuser_links', null=False, on_delete=protect_with_blockers)
-
-    class Meta:
-        db_table = 'specifyuser_spprincipal'
-        ordering = ()
-        unique_together = (('specifyuser', 'spprincipal'),)
-
-    save = partialmethod(custom_save)
-
 class SpprincipalSppermission(models.Model):
-    specify_model = datamodel.get_table_strict('spprincipal_sppermission')
+    # specify_model = datamodel.get_table_strict('spprincipal_sppermission')
 
     sppermission = models.ForeignKey('SpPermission', db_column='SpPermissionID', related_name='spprincipal_links', null=False, on_delete=protect_with_blockers, primary_key=True)
     spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', related_name='sppermission_links', null=False, on_delete=protect_with_blockers)
