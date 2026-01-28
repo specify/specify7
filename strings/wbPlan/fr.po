@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-01-15 22:01+0000\n"
+"PO-Revision-Date: 2026-01-28 16:13+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/wbPlan/"
 "fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.15.2\n"
+"X-Generator: Weblate 5.16-dev\n"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Wb View
 #: components/Preferences/UserDefinitions.tsx:2093
@@ -201,8 +201,8 @@ msgstr "La validation a détecté des correspondances manquantes :"
 msgid "validationFailedDescription"
 msgstr ""
 "Il manque un ou plusieurs champs de données requis pour le chargement selon "
-"votre configuration. Ajoutez les correspondances manquantes indiquées ou "
-"enregistrez ce plan de chargement comme inachevé."
+"votre configuration. Ajoutez les correspondances manquantes ou enregistrez "
+"ce plan de chargement comme inachevé."
 
 #. 🟥I.e, this field must be mapped before you can continue. Used in: Components > Formatters > Components
 #: components/Formatters/Components.tsx:226
