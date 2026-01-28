@@ -36,6 +36,8 @@ from specifyweb.specify.migration_utils.sp7_schemaconfig import (
     MIGRATION_0034_FIELDS,
     MIGRATION_0034_UPDATE_FIELDS,
     MIGRATION_0035_FIELDS,
+    MIGRATION_0038_FIELDS,
+    MIGRATION_0038_UPDATE_FIELDS,
 )
 
 logger = logging.getLogger(__name__)
@@ -337,6 +339,12 @@ def update_table_field_schema_config_params(
 # ##############################################################################
 # Migration schema config helper functions
 # ##############################################################################
+
+def update_all_table_schema_config_with_defaults(apps):
+    Discipline = apps.get_model('specify', 'Discipline')
+    for discipline in Discipline.objects.all():
+        for table in datamodel.tables:
+            update_table_schema_config_with_defaults(table.name, discipline.id, None, apps)
 
 # ##########################################
 # Used in 0002_schema_config_update.py
@@ -1397,6 +1405,84 @@ def revert_version_required(apps):
         for table, fields in MIGRATION_0035_FIELDS.items():
             for field in fields:    
                 update_table_field_schema_config_params(table, discipline.id, field, updated_config_params, apps)
+
+# ##########################################
+# Used in 0039_agent_fields_for_loan_and_gift.py
+# ##########################################
+
+def update_loan_and_gift_agent_fields(apps):
+    Discipline = apps.get_model('specify', 'Discipline')
+    for discipline in Discipline.objects.all():
+        for table, fields in MIGRATION_0038_FIELDS.items():
+            for field_name in fields:
+                update_table_field_schema_config_with_defaults(table, discipline.id, field_name, apps)
+
+def revert_loan_and_gift_agent_fields(apps):
+    for table, fields in MIGRATION_0038_FIELDS.items():
+        for field_name in fields:
+            revert_table_field_schema_config(table, field_name, apps)
+
+def update_loan_and_gift_agents(apps):
+    """
+    Update field descriptions and display names using MIGRATION_0038_UPDATE_FIELDS
+    (tuple: (fieldName, newLabel, newDesc)).
+    """
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+
+    for table, fields in MIGRATION_0038_UPDATE_FIELDS.items():
+        containers = Splocalecontainer.objects.filter(name=table.lower())
+
+        for container in containers:
+            for (field_name, new_name, new_desc) in fields:
+                items = Splocalecontaineritem.objects.filter(
+                    container=container,
+                    name=field_name.lower(),
+                )
+
+                for item in items:
+                    # Hide the existing field
+                    if not item.ishidden:
+                        item.ishidden = True
+                        item.save(update_fields=["ishidden"])
+
+                    # Description string: update if exists, otherwise create
+                    desc_obj, _ = Splocaleitemstr.objects.get_or_create(
+                        itemdesc_id=item.id,
+                        defaults={"text": new_desc},
+                    )
+                    if desc_obj.text != new_desc:
+                        desc_obj.text = new_desc
+                        desc_obj.save(update_fields=["text"])
+
+                    # Name/label string: update if exists, otherwise create
+                    name_obj, _ = Splocaleitemstr.objects.get_or_create(
+                        itemname_id=item.id,
+                        defaults={"text": new_name},
+                    )
+                    if name_obj.text != new_name:
+                        name_obj.text = new_name
+                        name_obj.save(update_fields=["text"])
+
+def revert_loan_and_gift_agents(apps):
+    """
+    Revert the field name/description updates.
+    """
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+    for table, fields in MIGRATION_0038_UPDATE_FIELDS.items():
+        containers = Splocalecontainer.objects.filter(name=table.lower())
+        for container in containers:
+            for (field_name, _, _) in fields:
+                items = Splocalecontaineritem.objects.filter(
+                    container=container,
+                    name=field_name.lower()
+                )
+                for item in items:
+                    # If needed, reset ishidden or revert text
+                    pass
 
 # ##########################################
 # Used in 0042_discipline_type_picklist.py
