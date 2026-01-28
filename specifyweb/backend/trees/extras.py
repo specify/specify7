@@ -424,8 +424,6 @@ def synonymize(node, into, agent, user=None, collection=None):
             except Exception:
                 collection_prefs_dict = {}
 
-    import specifyweb.backend.context.app_resource as app_resource
-
     treeManagement_pref = collection_prefs_dict.get('treeManagement', {})
     if force_checks and target.children.exists():
         raise TreeBusinessRuleException(

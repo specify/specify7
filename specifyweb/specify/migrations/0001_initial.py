@@ -2430,7 +2430,7 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='children', to='specify.taxontreedefitem')),
+                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='specify.taxontreedefitem')),
                 ('treedef', models.ForeignKey(db_column='TaxonTreeDefID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='treedefitems', to='specify.taxontreedef')),
             ],
             options={
@@ -7075,9 +7075,9 @@ class Migration(migrations.Migration):
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('version', models.IntegerField(blank=True, db_column='version', default=0, null=True)),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('deaccession', models.ForeignKey(db_column='DeaccessionID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='deaccessionpreparations', to='specify.deaccession')),
+                ('deaccession', models.ForeignKey(db_column='DeaccessionID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.deaccession')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('preparation', models.ForeignKey(db_column='PreparationID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='deaccessionpreparations', to='specify.preparation')),
+                ('preparation', models.ForeignKey(db_column='PreparationID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.preparation')),
             ],
             options={
                 'db_table': 'deaccessionpreparation',
@@ -7178,5 +7178,20 @@ class Migration(migrations.Migration):
         migrations.AlterUniqueTogether(
             name='autonumschcoll',
             unique_together={('collection', 'autonumberingscheme')},
+        ),
+        migrations.AlterField(
+            model_name='deaccessionpreparation',
+            name='deaccession',
+            field=models.ForeignKey(db_column='DeaccessionID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.deaccession'),
+        ),
+        migrations.AlterField(
+            model_name='deaccessionpreparation',
+            name='preparation',
+            field=models.ForeignKey(db_column='PreparationID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.preparation'),
+        ),
+        migrations.AlterField(
+            model_name='taxontreedefitem',
+            name='parent',
+            field=models.ForeignKey(db_column='ParentItemID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='specify.taxontreedefitem'),
         ),
     ]
