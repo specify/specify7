@@ -84,7 +84,6 @@ class FieldSchemaConfig(NamedTuple):
 def uncapitilize(string: str) -> str: 
     return string.lower() if len(string) <= 1 else string[0].lower() + string[1:]
 
-
 def update_table_schema_config_with_defaults(
     table_name,
     discipline_id: int,
