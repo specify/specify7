@@ -353,9 +353,9 @@ export const Select = wrap<
        * the background in dark-mode. This is a fix:
        */
       if (props.required !== true && props.multiple === true) {
-        selected.map((option) => option.classList.add('dark:bg-neutral-100'));
+        selected.map((option) => option.classList.add('dark:bg-neutral-500')); // Highlights selected object less bright
         unselected.map((option) =>
-          option.classList.remove('dark:bg-neutral-100')
+          option.classList.remove('dark:bg-neutral-500') // Prevents a previously selected option from remaining highlighted
         );
       }
       const value = (event.target as HTMLSelectElement).value;

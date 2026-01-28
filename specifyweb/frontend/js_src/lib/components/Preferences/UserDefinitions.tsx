@@ -32,10 +32,11 @@ import {
   overwriteReadOnly,
 } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
+import { Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
 import type { TableFields } from '../DataModel/helperTypes';
-import { genericTables } from '../DataModel/tables';
+import { genericTables, tables } from '../DataModel/tables';
 import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
 import type { StatLayout } from '../Statistics/types';
@@ -53,7 +54,11 @@ import {
   ThresholdRank,
   WelcomePageModePreferenceItem,
 } from './Renderers';
-import type { GenericPreferences, PreferencesVisibilityContext } from './types';
+import type {
+  GenericPreferences,
+  PreferenceRendererProps,
+  PreferencesVisibilityContext,
+} from './types';
 import { definePref } from './types';
 
 const isLightMode = ({
@@ -71,6 +76,88 @@ const altKeyName =
   typeof navigator !== 'undefined' && navigator?.userAgent?.includes('Mac')
     ? 'Option'
     : 'Alt';
+
+const defaultPreparationField = 'barCode';
+const defaultCollectionObjectField = 'catalogNumber';
+
+const isAllowedCollectionObjectField = (name: string): boolean => {
+  const lowered = name.toLowerCase();
+  return (
+    lowered === 'catalognumber' ||
+    lowered === 'altcatalognumber' ||
+    lowered === 'fieldnumber' ||
+    lowered === 'guid' ||
+    /^text\d+$/.test(lowered)
+  );
+};
+
+const isAllowedPrepField = (name: string): boolean => {
+  const lowered = name.toLowerCase();
+  return (
+    lowered === 'barcode' ||
+    lowered === 'samplenumber' ||
+    lowered === 'samplenum' ||
+    lowered === 'guid' ||
+    lowered === 'uniqueidentifier' ||
+    /^text\d+$/.test(lowered)
+  );
+};
+
+function PreparationFieldPreferenceItem({
+  value,
+  onChange: handleChange,
+}: PreferenceRendererProps<string>): JSX.Element {
+  const options = React.useMemo(
+    () =>
+      (tables.Preparation?.literalFields.length ?? 0) === 0
+        ? [{ value: 'barCode', title: camelToHuman('barCode') }]
+        : tables.Preparation.literalFields
+            .filter(({ name }) => isAllowedPrepField(name))
+            .map(({ name, label }) => ({
+              value: name,
+              title: label ?? camelToHuman(name),
+            })),
+    []
+  );
+
+  return (
+    <Select value={value} onValueChange={handleChange}>
+      {options.map(({ value: optionValue, title }) => (
+        <option key={optionValue} value={optionValue}>
+          {title}
+        </option>
+      ))}
+    </Select>
+  );
+}
+
+function CollectionObjectFieldPreferenceItem({
+  value,
+  onChange: handleChange,
+}: PreferenceRendererProps<string>): JSX.Element {
+  const options = React.useMemo(
+    () =>
+      (tables.CollectionObject?.literalFields.length ?? 0) === 0
+        ? [{ value: 'catalogNumber', title: camelToHuman('catalogNumber') }]
+        : tables.CollectionObject.literalFields
+            .filter(({ name }) => isAllowedCollectionObjectField(name))
+            .map(({ name, label }) => ({
+              value: name,
+              title: label ?? camelToHuman(name),
+            })),
+    []
+  );
+
+  return (
+    <Select value={value} onValueChange={handleChange}>
+      {options.map(({ value: optionValue, title }) => (
+        <option key={optionValue} value={optionValue}>
+          {title}
+        </option>
+      ))}
+    </Select>
+  );
+}
 
 /**
  * Have to be careful as preferences may be used before schema is loaded
@@ -630,6 +717,28 @@ export const userPreferenceDefinitions = {
       createInteractions: {
         title: preferencesText.createInteractions(),
         items: {
+          collectionObjectField: definePref<string>({
+            title: () =>
+              preferencesText.tableIdentifier({
+                tableName: tables.CollectionObject.label,
+              }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: defaultCollectionObjectField,
+            renderer: CollectionObjectFieldPreferenceItem,
+            container: 'label',
+          }),
+          preparationField: definePref<string>({
+            title: () =>
+              preferencesText.tableIdentifier({
+                tableName: tables.Preparation.label,
+              }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: defaultPreparationField,
+            renderer: PreparationFieldPreferenceItem,
+            container: 'label',
+          }),
           useSpaceAsDelimiter: definePref<'auto' | 'false' | 'true'>({
             title: preferencesText.useSpaceAsDelimiter(),
             requiresReload: false,
