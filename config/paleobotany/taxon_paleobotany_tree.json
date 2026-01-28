@@ -21,12 +21,6 @@
           "rank": 30
         },
         {
-          "name": "Subphylum",
-          "enforced": false,
-          "infullname": false,
-          "rank": 40
-        },
-        {
           "name": "Class",
           "enforced": true,
           "infullname": false,
@@ -57,12 +51,6 @@
           "rank": 140
         },
         {
-          "name": "Subfamily",
-          "enforced": false,
-          "infullname": false,
-          "rank": 150
-        },
-        {
           "name": "Genus",
           "enforced": true,
           "infullname": true,
@@ -73,12 +61,6 @@
           "enforced": true,
           "infullname": true,
           "rank": 220
-        },
-        {
-          "name": "Subspecies",
-          "enforced": false,
-          "infullname": true,
-          "rank": 230
         }
       ]
     },
