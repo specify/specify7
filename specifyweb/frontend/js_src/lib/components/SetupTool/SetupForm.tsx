@@ -353,7 +353,14 @@ export function renderFormFieldFactory({
     // Otherwise, lay out fields normally
     return (
       <div className="grid grid-cols-4 gap-4">
-        {fields.map((field) => renderFormField(field, parentName))}
+        {fields.map((field) =>
+          field.name === 'preload' &&
+          ['geology', 'paleobotany', 'invertpaleo', 'vertpaleo'].includes(
+            formData.discipline.type
+          )
+            ? setupToolText.emptyTaxonTree()
+            : renderFormField(field, parentName)
+        )}
       </div>
     );
   };

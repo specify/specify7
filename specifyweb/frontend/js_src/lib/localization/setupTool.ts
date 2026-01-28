@@ -280,4 +280,7 @@ export const setupToolText = createDictionary({
   hierarchyDiagram: {
     'en-us': 'Institutional Hierarchy',
   },
+  emptyTaxonTree: {
+    'en-us': 'An empty taxon tree will be created',
+  },
 } as const);
