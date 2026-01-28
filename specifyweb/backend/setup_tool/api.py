@@ -23,6 +23,8 @@ from specifyweb.backend.businessrules.uniqueness_rules import apply_default_uniq
 from specifyweb.specify.management.commands.run_key_migration_functions import fix_cots
 
 import logging
+
+from specifyweb.specify.models_utils.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
 logger = logging.getLogger(__name__)
 
 APP_VERSION = "7"
@@ -184,7 +186,7 @@ def create_division(data):
 def create_discipline(data):
     from specifyweb.specify.models import (
         Division, Datatype, Geographytreedef,
-        Geologictimeperiodtreedef, Taxontreedef
+        Geologictimeperiodtreedef, Taxontreedef, Tectonicunittreedef, Lithostrattreedef
     )
 
     # Check if discipline_id is provided and already exists
@@ -207,9 +209,13 @@ def create_discipline(data):
     # Ensure required foreign key objects exist
     datatype = Datatype.objects.last() or Datatype.objects.create(id=1, name='Biota')
     geographytreedef_url = data.pop('geographytreedef', None)
+    tectonicunittreedef_url = data.pop('tectonicunittreedef', None)
+    lithostrattreedef_url = data.pop('lithostrattreedef', None)
     geologictimeperiodtreedef_url = data.pop('geologictimeperiodtreedef', None)
     geographytreedef = resolve_uri_or_fallback(geographytreedef_url, None, Geographytreedef)
     geologictimeperiodtreedef = resolve_uri_or_fallback(geologictimeperiodtreedef_url, None, Geologictimeperiodtreedef)
+    tectonicunittreedef = resolve_uri_or_fallback(tectonicunittreedef_url, None, Tectonicunittreedef)
+    lithostrattreedef = resolve_uri_or_fallback(lithostrattreedef_url, None, Lithostrattreedef)
 
     if geographytreedef is None or geologictimeperiodtreedef is None:
         raise SetupError("A Geography tree and Chronostratigraphy tree must exist before creating a discipline.")
@@ -225,6 +231,13 @@ def create_discipline(data):
         'geographytreedef_id': geographytreedef.id,
         'geologictimeperiodtreedef_id': geologictimeperiodtreedef.id
     })
+
+    if (
+        data['type'] in PALEO_DISCIPLINES
+        or data['type'] in GEOLOGY_DISCIPLINES
+    ):
+        data['tectonicunittreedef_id'] = tectonicunittreedef.id
+        data['lithostrattreedef_id'] = lithostrattreedef.id
 
     # Assign new Discipline ID
     max_id = Discipline.objects.aggregate(Max('id'))['id__max'] or 0
@@ -247,6 +260,13 @@ def create_discipline(data):
         # Update tree scoping
         update_tree_scoping(geographytreedef, new_discipline.id)
         update_tree_scoping(geologictimeperiodtreedef, new_discipline.id)
+
+        if (
+            data['type'] in PALEO_DISCIPLINES
+            or data['type'] in GEOLOGY_DISCIPLINES
+        ):
+            update_tree_scoping(tectonicunittreedef, new_discipline.id)
+            update_tree_scoping(lithostrattreedef, new_discipline.id)
 
         # Create a default taxon tree if the database is already set up.
         if not is_first_discipline:
