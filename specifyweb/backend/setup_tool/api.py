@@ -236,8 +236,11 @@ def create_discipline(data):
         data['type'] in PALEO_DISCIPLINES
         or data['type'] in GEOLOGY_DISCIPLINES
     ):
-        data['tectonicunittreedef_id'] = tectonicunittreedef.id
-        data['lithostrattreedef_id'] = lithostrattreedef.id
+        if tectonicunittreedef is not None:
+            data['tectonicunittreedef_id'] = tectonicunittreedef.id
+
+        if lithostrattreedef is not None:
+            data['lithostrattreedef_id'] = lithostrattreedef.id
 
     # Assign new Discipline ID
     max_id = Discipline.objects.aggregate(Max('id'))['id__max'] or 0
@@ -265,8 +268,11 @@ def create_discipline(data):
             data['type'] in PALEO_DISCIPLINES
             or data['type'] in GEOLOGY_DISCIPLINES
         ):
-            update_tree_scoping(tectonicunittreedef, new_discipline.id)
-            update_tree_scoping(lithostrattreedef, new_discipline.id)
+            if tectonicunittreedef is None or lithostrattreedef is None:
+                pass
+            else:
+                update_tree_scoping(tectonicunittreedef, new_discipline.id)
+                update_tree_scoping(lithostrattreedef, new_discipline.id)
 
         # Create a default taxon tree if the database is already set up.
         if not is_first_discipline:
