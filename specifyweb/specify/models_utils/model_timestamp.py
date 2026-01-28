@@ -12,9 +12,11 @@ def save_auto_timestamp_field_with_override(save_func, args, kwargs, obj):
     fields_to_update = kwargs.get('update_fields', None)
     if fields_to_update is None:
         fields_to_update = [
-            field.name for field in model._meta.get_fields(include_hidden=True) if field.concrete
-            and not field.primary_key
-            ]
+            f.name for f in model._meta.get_fields(include_hidden=True)
+            if getattr(f, "concrete", False)
+            and not getattr(f, "many_to_many", False)
+            and not getattr(f, "primary_key", False)
+        ]
 
     if obj.id is not None:
         fields_to_update = [
