@@ -11,7 +11,7 @@ from django.db import transaction
 from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.specify.models import Spversion
 from specifyweb.specify import models
-from specifyweb.backend.setup_tool.utils import normalize_keys, resolve_uri_or_fallback
+from specifyweb.backend.setup_tool.utils import ensure_discipline_type_picklist, normalize_keys, resolve_uri_or_fallback
 from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults
 from specifyweb.backend.setup_tool.picklist_defaults import create_default_picklists
 from specifyweb.backend.setup_tool.prep_type_defaults import create_default_prep_types
@@ -318,6 +318,8 @@ def create_collection(data):
         create_default_prep_types(new_collection, discipline.type)
         # Create picklists
         create_default_picklists(new_collection, discipline.type)
+        # Create discipline type picklists
+        ensure_discipline_type_picklist(new_collection)
         # Create Collection Object Type
         fix_cots()
 
