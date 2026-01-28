@@ -1,4 +1,4 @@
-from typing import Any, TypedDict, Optional, Union
+from typing import Any, TypedDict, Optional, Union, Literal
 from collections.abc import Callable
 from typing_extensions import Protocol
 
@@ -44,7 +44,10 @@ class Uploadable(Protocol):
     # we cannot cache. well, we can make this more complicated by recursviely caching
     # static parts of even a non-entirely-cachable uploadable.
     def apply_scoping(
-        self, collection, context: ScopeContext | None = None, row=None
+        self,
+        collection,
+        context: ScopeContext | None = None,
+        row=None
     ) -> "ScopedUploadable": ...
 
     def get_cols(self) -> set[str]: ...

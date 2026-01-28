@@ -1,6 +1,6 @@
 from decimal import Decimal
 import logging
-from typing import Any, NamedTuple, Literal, Union
+from typing import Any, NamedTuple, Literal, Union, Callable
 
 from django.db import transaction, IntegrityError
 
@@ -17,6 +17,7 @@ from specifyweb.backend.workbench.upload.predicates import (
     resolve_reference_attributes,
     safe_fetch,
 )
+from specifyweb.specify.models_utils.lock_tables import LockDispatcher
 from specifyweb.backend.workbench.upload.scope_context import ScopeContext
 from .column_options import ColumnOptions, ExtendedColumnOptions
 from .parsing import parse_many, ParseResult, WorkBenchParseFailure
@@ -68,7 +69,10 @@ class UploadTable(NamedTuple):
     overrideScope: dict[Literal["collection"], int | None] | None = None
 
     def apply_scoping(
-        self, collection, context: ScopeContext | None = None, row=None
+        self,
+        collection,
+        context: ScopeContext | None = None,
+        row=None
     ) -> "ScopedUploadTable":
         from .scoping import apply_scoping_to_uploadtable
 

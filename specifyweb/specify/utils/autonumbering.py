@@ -5,7 +5,7 @@ Autonumbering logic
 from contextlib import contextmanager
 
 from .uiformatters import UIFormatter, get_uiformatters
-from ..models_utils.lock_tables import named_lock
+from ..models_utils.lock_tables import LockDispatcher
 import logging
 from typing import Generator, Literal, Any
 from collections.abc import Sequence
@@ -32,6 +32,10 @@ def autonumber_and_save(collection, user, obj) -> None:
         logger.debug("no fields to autonumber for %s", obj)
         obj.save()
 
+class AutonumberingLockDispatcher(LockDispatcher):
+    def __init__(self):
+        lock_prefix = "autonumbering"
+        super().__init__(lock_prefix=lock_prefix, case_sensitive_names=False)
 
 @contextmanager
 def autonumbering_lock(table_name: str, timeout: int = 10) -> Generator[Literal[True] | None, Any, None]:
@@ -61,9 +65,9 @@ def autonumbering_lock(table_name: str, timeout: int = 10) -> Generator[Literal[
     otherwise
     :rtype: Generator[Literal[True] | None, Any, None]
     """
-    lock_name = f"autonumber_{table_name.lower()}"
-    with named_lock(lock_name, timeout) as lock:
-        yield lock
+    with AutonumberingLockDispatcher() as locks:
+        locks.acquire(name=table_name.lower(), timeout=timeout)
+        yield
 
 
 def do_autonumbering(collection, obj, fields: list[tuple[UIFormatter, Sequence[str]]]) -> None:

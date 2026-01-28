@@ -125,7 +125,7 @@ def extend_columnoptions(
 
     ui_formatter = get_or_defer_formatter(collection, tablename, fieldname, row, toOne, context)
     scoped_formatter = (
-        None if ui_formatter is None else ui_formatter.apply_scope(collection)
+        None if ui_formatter is None else ui_formatter.apply_scope(collection, context.lock_dispatcher)
     )
 
     if tablename.lower() == "collectionobjecttype" and fieldname.lower() == "name":
@@ -255,7 +255,10 @@ def get_or_defer_formatter(
 
 
 def apply_scoping_to_uploadtable(
-    ut: UploadTable, collection, context: ScopeContext | None = None, row=None
+    ut: UploadTable,
+    collection,
+    context: ScopeContext | None = None,
+    row=None
 ) -> ScopedUploadTable:
     # IMPORTANT:
     # before this comment, collection is untrusted and unreliable

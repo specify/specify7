@@ -1,9 +1,11 @@
 from django.db import connection
 from django.conf import settings
 from contextlib import contextmanager
+from typing import Iterable
 import logging
 
 logger = logging.getLogger(__name__)
+LOCK_NAME_SEPARATOR = "_"
 
 
 @contextmanager
@@ -137,3 +139,72 @@ def release_named_lock(lock_name: str) -> bool | None:
     elif released == 0:
         return False
     return None
+
+class Lock:
+    def __init__(self, name: str, timeout: int):
+        self.name = name
+        self.timeout = timeout
+
+    def acquire(self):
+        acquired = acquired_named_lock(self.name, self.timeout)
+
+        if acquired == False:
+            raise TimeoutError(f"Unable to acquire named lock: '{self.name}'. Held by other connection")
+        if acquired is None:
+            raise ConnectionError(f"Unable to acquire named lock: '{self.name}'. The process might have run out of memory")
+        
+        return acquired
+
+    def release(self):
+        released = release_named_lock(self.name)
+        return released
+
+class LockDispatcher:
+    def __init__(self, lock_prefix: str | None = None, case_sensitive_names = False):
+        db_name = getattr(settings, "DATABASE_NAME")
+        self.lock_prefix_parts: list[str] = [db_name]
+
+        if lock_prefix is not None:
+            self.lock_prefix_parts.append(lock_prefix)
+
+        self.case_sensitive_names = case_sensitive_names
+        self.locks: list[Lock] = []
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.release_all()
+
+    def lock_name(self, name: str):
+        final_name = LOCK_NAME_SEPARATOR.join((*self.lock_prefix_parts, name.lower()))
+
+        return final_name.lower() if self.case_sensitive_names else final_name
+    
+    @contextmanager
+    def lock_and_release(self, name: str, timeout: int = 5):
+        try:
+            yield self.acquire(name, timeout)
+        finally:
+            self.release(name)
+
+    def acquire(self, name: str, timeout: int = 5):
+        lock_name = self.lock_name(name)
+        lock = Lock(lock_name, timeout)
+        self.locks.append(lock)
+        return lock.acquire()
+
+    def release_all(self):
+        for lock in self.locks:
+            lock.release()
+        self.locks = []
+
+    def release(self, name: str):
+        lock_name = self.lock_name(name)
+        remaining: list[Lock] = []
+        for lock in self.locks:
+            if lock.name == lock_name:
+                lock.release()
+            else:
+                remaining.append(lock)
+        self.locks = remaining
