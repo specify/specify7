@@ -143,7 +143,7 @@ class UIFormatter(NamedTuple):
         objs = model.objects.filter(**{ fieldname + '__regex': self.autonumber_regexp(with_year) })
         return group_filter(objs).order_by('-' + fieldname)
 
-    def apply_autonumbering(self, collection, obj, vals):
+    def apply_autonumbering(self, collection, obj, vals: Sequence[str]):
         field_name = self.field_name.lower()
         field_value = self.autonumber_now(collection, obj.__class__, vals)
         setattr(obj, field_name, field_value)
