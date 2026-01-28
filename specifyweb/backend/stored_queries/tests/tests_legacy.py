@@ -962,5 +962,5 @@ expected_errors = {
     #   ]
     # }
     "not_found": ["cojo"]
-  },
+  }
 }

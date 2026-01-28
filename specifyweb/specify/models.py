@@ -6341,12 +6341,7 @@ class Spprincipal(models.Model):
     userGroupScopeID = models.IntegerField(blank=True, null=True, db_column='userGroupScopeID')
 
     # Relationships: Many-to-Many
-    sppermissions = models.ManyToManyField(
-        "SpPermission",
-        through="specify.SpprincipalSppermission",
-        through_fields=("spprincipal", "sppermission"),
-        related_name="spprincipals"
-    )
+    sppermissions = models.ManyToManyField("SpPermission", through="specify.SpprincipalSppermission", through_fields=("spprincipal", "sppermission"), related_name="spprincipals")
 
     class Meta:
         db_table = 'spprincipal'
@@ -6649,12 +6644,7 @@ class Specifyuser(model_extras.Specifyuser):
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     # Relationships: Many-to-Many
-    spprincipals = models.ManyToManyField(
-        "SpPrincipal",
-        through="specify.SpecifyuserSpprincipal",
-        through_fields=("specifyuser", "spprincipal"),
-        related_name="spprincipals"
-    )
+    spprincipals = models.ManyToManyField("SpPrincipal", through="specify.SpecifyuserSpprincipal", through_fields=("specifyuser", "spprincipal"), related_name="spprincipals")
 
     class Meta:
         db_table = 'specifyuser'
@@ -8108,10 +8098,10 @@ class Deaccessionpreparation(models.Model):
     version = models.IntegerField(blank=True, null=True, unique=False, db_column='version', db_index=False, default=0)
 
     # Relationships: Many-to-One
-    deaccession = models.ForeignKey('Deaccession', db_column='DeaccessionID', related_name='deaccessionpreparations', null=False, on_delete=protect_with_blockers)
+    deaccession = models.ForeignKey('Deaccession', db_column='DeaccessionID', related_name='+', null=False, on_delete=protect_with_blockers)
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    preparation = models.ForeignKey('Preparation', db_column='PreparationID', related_name='deaccessionpreparations', null=True, on_delete=protect_with_blockers)
+    preparation = models.ForeignKey('Preparation', db_column='PreparationID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'deaccessionpreparation'
