@@ -168,7 +168,7 @@ class LockDispatcher:
             self.lock_prefix_parts.append(lock_prefix)
 
         self.case_sensitive_names = case_sensitive_names
-        self.locks: list[Lock] = []
+        self.locks: dict[str, Lock] = dict()
 
     def __enter__(self):
         return self
@@ -190,21 +190,20 @@ class LockDispatcher:
 
     def acquire(self, name: str, timeout: int = 5):
         lock_name = self.lock_name(name)
+        if self.locks.get(lock_name) is not None:
+            return
         lock = Lock(lock_name, timeout)
-        self.locks.append(lock)
+        self.locks[lock_name] = lock
         return lock.acquire()
 
     def release_all(self):
-        for lock in self.locks:
+        for lock in self.locks.values():
             lock.release()
-        self.locks = []
+        self.locks = dict()
 
     def release(self, name: str):
         lock_name = self.lock_name(name)
-        remaining: list[Lock] = []
-        for lock in self.locks:
-            if lock.name == lock_name:
-                lock.release()
-            else:
-                remaining.append(lock)
-        self.locks = remaining
+        lock = self.locks.pop(lock_name, None)
+        if lock is None:
+            return
+        lock.release()
