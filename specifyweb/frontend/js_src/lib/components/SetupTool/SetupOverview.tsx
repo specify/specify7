@@ -46,7 +46,7 @@ export function SetupOverview({
                 if (field.type === 'object') {
                   // Construct a sub list of properties
                   field.fields?.map((child_field) =>
-                    fieldDisplay(child_field, field.name)
+                    fieldDisplay(child_field, fieldName)
                   );
                   return (
                     <React.Fragment
@@ -59,7 +59,7 @@ export function SetupOverview({
                       </tr>
                       {field.fields?.map((child) => (
                         <React.Fragment
-                          key={`${resource.resourceName}-${field.name}-${child.name}`}
+                          key={`${resource.resourceName}-${fieldName}-${child.name}`}
                         >
                           {fieldDisplay(
                             child,
@@ -81,8 +81,10 @@ export function SetupOverview({
                     (option) => String(option.value) === value
                   );
                   value = match ? (match.label ?? match.value) : value;
-                } else if (field.type == 'boolean') {
+                } else if (field.type === 'boolean') {
                   value = rawValue === true ? queryText.yes() : commonText.no();
+                } else if (field.type === 'tree') {
+                  value = typeof rawValue === 'object' ? String(rawValue.title) : '-';
                 }
                 return (
                   <tr key={`${resource.resourceName}-${field.name}`}>

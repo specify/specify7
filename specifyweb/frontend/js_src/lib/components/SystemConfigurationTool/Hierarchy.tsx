@@ -32,6 +32,7 @@ import { resources } from '../SetupTool/setupResources';
 import type { ResourceFormData } from '../SetupTool/types';
 import { CollapsibleSection } from './CollapsibleSection';
 import type { InstitutionData } from './Utils';
+import { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
 
 type HierarchyNodeKind =
   | 'collection'
@@ -287,7 +288,7 @@ function DialogForm({ open, onClose, title, step, refreshAllInfo }: DialogFormPr
   const [temporaryFormData, setTemporaryFormData] =
     React.useState<ResourceFormData>({});
 
-  const handleChange = (name: string, newValue: LocalizedString | boolean) => {
+  const handleChange = (name: string, newValue: LocalizedString | boolean | TaxonFileDefaultDefinition) => {
     const resourceName = resources[5].resourceName;
     setFormData((previous) => ({
       ...previous,

@@ -17,7 +17,7 @@ from specifyweb.backend.setup_tool.picklist_defaults import create_default_pickl
 from specifyweb.backend.setup_tool.prep_type_defaults import create_default_prep_types
 from specifyweb.backend.setup_tool.setup_tasks import setup_database_background, get_active_setup_task, get_last_setup_error, set_last_setup_error
 from specifyweb.celery_tasks import MissingWorkerError
-from specifyweb.backend.setup_tool.tree_defaults import create_default_tree, update_tree_scoping
+from specifyweb.backend.setup_tool.tree_defaults import start_default_tree_from_configuration, update_tree_scoping
 from specifyweb.specify.models import Institution, Discipline
 from specifyweb.backend.businessrules.uniqueness_rules import apply_default_uniqueness_rules
 from specifyweb.specify.management.commands.run_key_migration_functions import fix_cots
@@ -193,6 +193,8 @@ def create_discipline(data):
         existing_discipline = Discipline.objects.filter(id=existing_id).first()
         if existing_discipline:
             return {"discipline_id": existing_discipline.id}
+    
+    is_first_discipline = Discipline.objects.count() == 0
 
     # Resolve division
     division_url = data.get('division')
@@ -215,14 +217,13 @@ def create_discipline(data):
     # Assign a taxon tree. Not required, but its eventually needed for collection object type.
     taxontreedef_url = data.get('taxontreedef', None)
     taxontreedef = resolve_uri_or_fallback(taxontreedef_url, None, Taxontreedef)
-    if taxontreedef is not None:
+    if taxontreedef_url and taxontreedef is not None:
         data['taxontreedef_id'] = taxontreedef.id
 
     data.update({
         'datatype_id': datatype.id,
         'geographytreedef_id': geographytreedef.id,
-        'geologictimeperiodtreedef_id': geologictimeperiodtreedef.id,
-        'taxontreedef_id': taxontreedef.id if taxontreedef else None
+        'geologictimeperiodtreedef_id': geologictimeperiodtreedef.id
     })
 
     # Assign new Discipline ID
@@ -246,6 +247,12 @@ def create_discipline(data):
         # Update tree scoping
         update_tree_scoping(geographytreedef, new_discipline.id)
         update_tree_scoping(geologictimeperiodtreedef, new_discipline.id)
+
+        # Create a default taxon tree if the database is already set up.
+        if not is_first_discipline:
+            create_taxon_tree({
+                'discipline_id': new_discipline.id
+            })
 
         return {"discipline_id": new_discipline.id}
 
@@ -365,9 +372,6 @@ def create_tectonicunit_tree(data):
     return create_tree('Tectonicunit', data)
 
 def create_tree(name: str, data: dict) -> dict:
-    # TODO: Use trees/create_default_trees
-    # https://github.com/specify/specify7/pull/6429
-
     # Figure out which scoping field should be used.
     use_institution = False
     use_discipline = True
@@ -392,9 +396,9 @@ def create_tree(name: str, data: dict) -> dict:
     # Get tree configuration
     ranks = data.pop('ranks', dict())
 
-    # Pre-load Default Tree
-    # TODO: trees/create_default_trees
-    preload_tree = data.pop('default', None)
+    # Properties for pre-loading default tree. Pre-loading should be done once setup is complete.
+    preload_tree = data.pop('preload', None)
+    preload_tree_file = data.pop('preloadFile', None)
     
     try:
         kwargs = {}
@@ -404,7 +408,7 @@ def create_tree(name: str, data: dict) -> dict:
         if use_discipline and discipline is not None:
             kwargs['discipline'] = discipline
 
-        treedef = create_default_tree(name, kwargs, ranks, preload_tree)
+        treedef = start_default_tree_from_configuration(name, kwargs, ranks)
 
         # Set as the primary tree in the discipline if its the first one
         if use_discipline and discipline:
