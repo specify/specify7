@@ -145,8 +145,7 @@ class UIFormatter(NamedTuple):
 
     def apply_autonumbering(self, collection, obj, vals):
         field_name = self.field_name.lower()
-        with_year = self.fillin_year(vals)
-        field_value = self.autonumber_now(collection, obj.__class__, vals, with_year)
+        field_value = self.autonumber_now(collection, obj.__class__, vals)
         setattr(obj, field_name, field_value)
 
     def fill_vals_after(self, prior: str) -> list[str]:
