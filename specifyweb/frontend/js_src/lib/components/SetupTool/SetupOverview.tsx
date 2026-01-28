@@ -84,7 +84,8 @@ export function SetupOverview({
                 } else if (field.type === 'boolean') {
                   value = rawValue === true ? queryText.yes() : commonText.no();
                 } else if (field.type === 'tree') {
-                  value = typeof rawValue === 'object' ? String(rawValue.title) : '-';
+                  value =
+                    typeof rawValue === 'object' ? String(rawValue.title) : '-';
                 }
                 return (
                   <tr key={`${resource.resourceName}-${field.name}`}>

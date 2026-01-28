@@ -23,10 +23,10 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { useHighContrast } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
 import { AddRank } from './AddRank';
+import { ImportTree } from './CreateTree';
 import type { Conformations, Row, Stats } from './helpers';
 import { fetchStats } from './helpers';
 import { TreeRow } from './Row';
-import { ImportTree } from './CreateTree'
 
 const treeToPref = {
   Geography: 'geography',
@@ -226,10 +226,7 @@ export function Tree<
             onClick={createRootNode}
           />
           {treeDefId ? (
-            <ImportTree
-              tableName={tableName}
-              treeDefId={treeDefId}
-            />
+            <ImportTree tableName={tableName} treeDefId={treeDefId} />
           ) : null}
         </div>
       ) : undefined}
