@@ -55,28 +55,3 @@ def normalize_keys(obj):
         return {k.lower(): normalize_keys(v) for k, v in obj.items()}
     else:
         return obj
-
-DISCIPLINE_TYPE_PICKLIST_NAME = 'DisciplineType'
-def ensure_discipline_type_picklist(collection):
-    picklist, created = Picklist.objects.get_or_create(
-        name=DISCIPLINE_TYPE_PICKLIST_NAME,
-        type=0,
-        collection=collection,
-        defaults={
-            "issystem": True,
-            "readonly": True,
-            "sizelimit": -1,
-            "sorttype": 1,
-        }
-    )
-
-    if created:
-        Picklistitem.objects.bulk_create([
-            Picklistitem(
-                picklist=picklist,
-                ordinal=i + 1,
-                value=value,
-                title=title,
-            )
-            for i, (value, title) in enumerate(DISCIPLINE_NAMES.items())
-        ])
