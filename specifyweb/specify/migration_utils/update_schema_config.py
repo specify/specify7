@@ -93,6 +93,7 @@ def update_table_schema_config_with_defaults(
     apps = global_apps
 ):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
     table = datamodel.get_table(table_name)
@@ -110,9 +111,17 @@ def update_table_schema_config_with_defaults(
         name=table.name,
         discipline_id=discipline_id,
         schema_type=0,
-        description=camel_to_spaced_title_case(uncapitilize(table.name)) if description is None else description,
+        description=camel_to_spaced_title_case(uncapitilize(table.name))
+        if description is None
+        else description,
         language="en"
     )
+
+    if Splocalecontaineritem.objects.filter(
+        container=sp_local_container,
+        name=table_config.name.lower(),
+    ).exists():
+        return
 
     # Create Splocalecontainer for the table
     sp_local_container, is_new = Splocalecontainer.objects.get_or_create(
@@ -123,8 +132,6 @@ def update_table_schema_config_with_defaults(
         issystem=table.system,
         version=0,
     )
-    if not is_new:
-        return  # If the container already exists, we don't need to update it
 
     # Create a Splocaleitemstr for the table name and description
     for k, text in {
@@ -140,7 +147,12 @@ def update_table_schema_config_with_defaults(
         Splocaleitemstr.objects.get_or_create(**item_str)
 
     for field in table.all_fields:
-        update_table_field_schema_config_with_defaults(table_name, discipline_id, field.name, apps)
+        update_table_field_schema_config_with_defaults(
+            table_name,
+            discipline_id,
+            field.name,
+            apps,
+        )
 
 
 def revert_table_schema_config(table_name, apps=global_apps):
