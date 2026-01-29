@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-01-15 22:01+0000\n"
+"PO-Revision-Date: 2026-01-29 20:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/interactions/pt_BR/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.15.2\n"
+"X-Generator: Weblate 5.16-dev\n"
 
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #: components/FormCommands/ShowTransactions.tsx:119
@@ -89,7 +89,7 @@ msgstr "Continuar sem preparativos"
 #: components/Interactions/InteractionDialog.tsx:462
 #, fuzzy
 msgid "addUnassociated"
-msgstr "Adicionar item não associado"
+msgstr "Adicionar item não relacionado"
 
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Interactions/PrepDialog.tsx:157
@@ -106,7 +106,7 @@ msgstr "Preparativos"
 #: components/FormCommands/index.tsx:101
 #, fuzzy
 msgid "preparationsCanNotBeReturned"
-msgstr "Neste contexto, as preparações não podem ser devolvidas."
+msgstr "Neste contexto, os produtos não podem ser devolvidos."
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:75
