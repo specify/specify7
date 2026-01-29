@@ -80,7 +80,8 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
         usc.componets_schema_config_migrations, # specify 0040
         usc.create_discipline_type_picklist, # specify 0042
         usc.update_discipline_type_splocalecontaineritem, # specify 0042
-        usc.deduplicate_schema_config_sql
+        # usc.deduplicate_schema_config_sql,
+        usc.deduplicate_schema_config_orm,
     ]
     log_and_run(funcs, stdout)
 

@@ -3,10 +3,12 @@ import re
 from typing import NamedTuple, List
 import logging
 
-from django.db.models import Q, Count
+
+from django.db.models import Q, Count, Window, F
 from django.apps import apps as global_apps
 from django.core.exceptions import MultipleObjectsReturned
-from django.db import connection
+from django.db import connection, transaction
+from django.db.models.functions import RowNumber
 
 from specifyweb.specify.models_utils.load_datamodel import Table, FieldDoesNotExistError, TableDoesNotExistError
 from specifyweb.specify.models_utils.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
@@ -402,6 +404,36 @@ def deduplicate_schema_config_sql(apps=None):
     cursor = connection.cursor()
     cursor.execute(dedupe_sql)
     cursor.close()
+
+def deduplicate_schema_config_orm(apps, schema_editor=None):
+    ContainerItem = apps.get_model('specify', 'SpLocaleContainerItem')
+    ItemStr = apps.get_model('specify', 'SpLocaleItemStr')
+
+    with transaction.atomic():
+        qs = ContainerItem.objects.annotate(
+            rn=Window(
+                expression=RowNumber(),
+                partition_by=[
+                    F('container__discipline'), 
+                    F('container__name'), 
+                    F('name')
+                ],
+                order_by=F('id').asc()
+            )
+        )
+
+        ids_to_delete = [item.id for item in qs if item.rn > 1]
+
+        if ids_to_delete:
+            print(f"Found {len(ids_to_delete)} duplicate ContainerItems. Cleaning up...")
+            
+            ItemStr.objects.filter(item_name_id__in=ids_to_delete).delete()
+            ItemStr.objects.filter(item_desc_id__in=ids_to_delete).delete()
+            
+            ContainerItem.objects.filter(id__in=ids_to_delete).delete()
+            print("Deduplication complete.")
+        else:
+            print("No duplicates found.")
 
 # ##############################################################################
 # Migration schema config helper functions
