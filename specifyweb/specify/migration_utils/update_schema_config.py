@@ -1534,6 +1534,31 @@ def update_loan_and_gift_agents(apps):
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
+    def upsert_single_str(*, itemdesc_id=None, itemname_id=None, text=""):
+        if (itemdesc_id is None) == (itemname_id is None):
+            raise ValueError("Exactly one of itemdesc_id or itemname_id must be provided")
+
+        qs = Splocaleitemstr.objects.filter(
+            itemdesc_id=itemdesc_id,
+            itemname_id=itemname_id,
+        ).order_by("id")
+
+        obj = qs.first()
+        if obj is None:
+            return Splocaleitemstr.objects.create(
+                itemdesc_id=itemdesc_id,
+                itemname_id=itemname_id,
+                text=text,
+            )
+
+        qs.exclude(id=obj.id).delete()
+
+        if obj.text != text:
+            obj.text = text
+            obj.save(update_fields=["text"])
+
+        return obj
+
     for table, fields in MIGRATION_0038_UPDATE_FIELDS.items():
         containers = Splocalecontainer.objects.filter(name=table.lower())
 
@@ -1550,23 +1575,8 @@ def update_loan_and_gift_agents(apps):
                         item.ishidden = True
                         item.save(update_fields=["ishidden"])
 
-                    # Description string: update if exists, otherwise create
-                    desc_obj, _ = Splocaleitemstr.objects.get_or_create(
-                        itemdesc_id=item.id,
-                        defaults={"text": new_desc},
-                    )
-                    if desc_obj.text != new_desc:
-                        desc_obj.text = new_desc
-                        desc_obj.save(update_fields=["text"])
-
-                    # Name/label string: update if exists, otherwise create
-                    name_obj, _ = Splocaleitemstr.objects.get_or_create(
-                        itemname_id=item.id,
-                        defaults={"text": new_name},
-                    )
-                    if name_obj.text != new_name:
-                        name_obj.text = new_name
-                        name_obj.save(update_fields=["text"])
+                    upsert_single_str(itemdesc_id=item.id, text=new_desc)
+                    upsert_single_str(itemname_id=item.id, text=new_name)
 
 def revert_loan_and_gift_agents(apps):
     """
