@@ -20,7 +20,7 @@ from specifyweb.celery_tasks import MissingWorkerError
 from specifyweb.backend.setup_tool.tree_defaults import start_default_tree_from_configuration, update_tree_scoping
 from specifyweb.specify.models import Institution, Discipline
 from specifyweb.backend.businessrules.uniqueness_rules import apply_default_uniqueness_rules
-from specifyweb.specify.management.commands.run_key_migration_functions import fix_cots
+from specifyweb.specify.management.commands.run_key_migration_functions import fix_cots, fix_schema_config
 
 import logging
 
@@ -325,7 +325,8 @@ def create_collection(data):
         # Create picklists
         create_default_picklists(new_collection, discipline.type)
         # Create discipline type picklists
-        ensure_discipline_type_picklist(new_collection)
+        # ensure_discipline_type_picklist(new_collection)
+        fix_schema_config()
         # Create Collection Object Type
         fix_cots()
 
