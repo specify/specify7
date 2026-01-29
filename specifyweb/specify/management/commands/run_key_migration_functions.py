@@ -79,7 +79,8 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
         # usc.update_loan_and_gift_agents, # specify 0039
         usc.componets_schema_config_migrations, # specify 0040
         usc.create_discipline_type_picklist, # specify 0042
-        usc.update_discipline_type_splocalecontaineritem # specify 0042
+        usc.update_discipline_type_splocalecontaineritem, # specify 0042
+        usc.deduplicate_schema_config_sql
     ]
     log_and_run(funcs, stdout)
 

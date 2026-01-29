@@ -6,6 +6,7 @@ import logging
 from django.db.models import Q, Count
 from django.apps import apps as global_apps
 from django.core.exceptions import MultipleObjectsReturned
+from django.db import connection
 
 from specifyweb.specify.models_utils.load_datamodel import Table, FieldDoesNotExistError, TableDoesNotExistError
 from specifyweb.specify.models_utils.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
@@ -351,6 +352,56 @@ def update_table_field_schema_config_params(
     for k, v in update_params.items():
         setattr(sp_local_container_item, k, v)
     sp_local_container_item.save(update_fields=list(update_params.keys()))
+
+def deduplicate_schema_config_sql(apps=None):
+    dedupe_sql = '''
+    /*
+
+    This script removes duplicate entries in the `splocalecontaineritem` table
+    based on the combination of `DisciplineID`, `Name`, and `Field Name`.
+    It ensures that only one unique entry remains for each combination,
+    deleting any duplicates along with their associated string entries
+    to maintain schema integrity.
+
+    This was created to clean up duplicates found in a Swiss database on 2025-01-28.
+
+    */
+
+
+    -- 1. Identify all duplicate Container Item IDs 
+    -- We group by Discipline, Table Name, and Field Name
+    -- We keep the record with the lowest ID (rn = 1) and mark the rest (rn > 1)
+    CREATE TEMPORARY TABLE container_items_to_delete AS
+    SELECT 
+        sub.SpLocaleContainerItemID
+    FROM (
+        SELECT 
+            slci.SpLocaleContainerItemID,
+            ROW_NUMBER() OVER (
+                PARTITION BY slc.DisciplineID, slc.Name, slci.Name 
+                ORDER BY slci.SpLocaleContainerItemID ASC
+            ) as rn
+        FROM splocalecontaineritem slci
+        JOIN splocalecontainer slc ON slci.SpLocaleContainerID = slc.SpLocaleContainerID
+    ) sub
+    WHERE sub.rn > 1;
+
+    -- 2. Delete the dependent strings first to satisfy Foreign Key constraints
+    -- This handles strings linked as either 'Name' or 'Description'
+    DELETE FROM splocaleitemstr 
+    WHERE SpLocaleContainerItemNameID IN (SELECT SpLocaleContainerItemID FROM container_items_to_delete)
+    OR SpLocaleContainerItemDescID IN (SELECT SpLocaleContainerItemID FROM container_items_to_delete);
+
+    -- 3. Delete the duplicate Container Items
+    DELETE FROM splocalecontaineritem 
+    WHERE SpLocaleContainerItemID IN (SELECT SpLocaleContainerItemID FROM container_items_to_delete);
+
+    -- 4. Clean up the temporary table
+    DROP TEMPORARY TABLE container_items_to_delete;
+    '''
+    cursor = connection.cursor()
+    cursor.execute(dedupe_sql)
+    cursor.close()
 
 # ##############################################################################
 # Migration schema config helper functions
