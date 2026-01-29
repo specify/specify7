@@ -124,12 +124,6 @@ def update_table_schema_config_with_defaults(
         language="en"
     )
 
-    if Splocalecontaineritem.objects.filter(
-        container=sp_local_container,
-        name=table_config.name.lower(),
-    ).exists():
-        return
-
     # Create Splocalecontainer for the table
     sp_local_container, is_new = Splocalecontainer.objects.get_or_create(
         name=table_config.name.lower(),
@@ -139,6 +133,12 @@ def update_table_schema_config_with_defaults(
         issystem=table.system,
         version=0,
     )
+
+    if Splocalecontaineritem.objects.filter(
+        container=sp_local_container,
+        name=table_config.name.lower(),
+    ).exists():
+        return
 
     # Create a Splocaleitemstr for the table name and description
     for k, text in {
