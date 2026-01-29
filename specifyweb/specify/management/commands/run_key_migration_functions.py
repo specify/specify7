@@ -77,6 +77,7 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
         usc.update_accession_date_fields, # specify 0034
         usc.update_loan_and_gift_agent_fields, # specify 0039
         # usc.update_loan_and_gift_agents, # specify 0039
+        use.componets_schema_config_migrations, # specify 0040
         usc.create_discipline_type_picklist, # specify 0042
         usc.update_discipline_type_splocalecontaineritem # specify 0042
     ]
