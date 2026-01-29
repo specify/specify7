@@ -410,6 +410,8 @@ def deduplicate_schema_config_orm(apps, schema_editor=None):
     ItemStr = apps.get_model('specify', 'SpLocaleItemStr')
 
     with transaction.atomic():
+        # Identify duplicates using Window function
+        # Partition by the container relationship and the item name
         qs = ContainerItem.objects.annotate(
             rn=Window(
                 expression=RowNumber(),
@@ -422,16 +424,18 @@ def deduplicate_schema_config_orm(apps, schema_editor=None):
             )
         )
 
+        # Extract the IDs of the duplicates, keep the first and delete the rest
         ids_to_delete = [item.id for item in qs if item.rn > 1]
 
         if ids_to_delete:
-            print(f"Found {len(ids_to_delete)} duplicate ContainerItems. Cleaning up...")
+            # Delete dependent strings using corrected field names
+            ItemStr.objects.filter(itemname_id__in=ids_to_delete).delete()
+            ItemStr.objects.filter(itemdesc_id__in=ids_to_delete).delete()
             
-            ItemStr.objects.filter(item_name_id__in=ids_to_delete).delete()
-            ItemStr.objects.filter(item_desc_id__in=ids_to_delete).delete()
-            
+            # Delete the duplicate Container Items
             ContainerItem.objects.filter(id__in=ids_to_delete).delete()
-            print("Deduplication complete.")
+            
+            print(f"Successfully deleted {len(ids_to_delete)} duplicate schema items.")
         else:
             print("No duplicates found.")
 
