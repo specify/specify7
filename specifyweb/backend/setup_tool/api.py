@@ -208,10 +208,11 @@ def create_discipline(data):
     
     # Ensure required foreign key objects exist
     datatype = Datatype.objects.last() or Datatype.objects.create(id=1, name='Biota')
-    geographytreedef_url = data.pop('geographytreedef', None)
+    geographytreedef_url = data.pop('geographytreedef_1', None)
+    geologictimeperiodtreedef_url = data.pop('geologictimeperiodtreedef_1', None)
     tectonicunittreedef_url = data.pop('tectonicunittreedef', None)
     lithostrattreedef_url = data.pop('lithostrattreedef', None)
-    geologictimeperiodtreedef_url = data.pop('geologictimeperiodtreedef', None)
+
     geographytreedef = resolve_uri_or_fallback(geographytreedef_url, None, Geographytreedef)
     geologictimeperiodtreedef = resolve_uri_or_fallback(geologictimeperiodtreedef_url, None, Geologictimeperiodtreedef)
     tectonicunittreedef = resolve_uri_or_fallback(tectonicunittreedef_url, None, Tectonicunittreedef)
@@ -236,10 +237,21 @@ def create_discipline(data):
         data['type'] in PALEO_DISCIPLINES
         or data['type'] in GEOLOGY_DISCIPLINES
     ):
-        if tectonicunittreedef is not None:
+        # Automatically create trees if they don't exist
+        default_tree = {'ranks': {}}
+
+        if tectonicunittreedef is None:
+            create_tectonicunit_tree(default_tree.copy())
+            tectonicunittreedef = Tectonicunittreedef.objects.last()
+            data['tectonicunittreedef_id'] = tectonicunittreedef.id
+        else:
             data['tectonicunittreedef_id'] = tectonicunittreedef.id
 
-        if lithostrattreedef is not None:
+        if lithostrattreedef is None:
+            create_lithostrat_tree(default_tree.copy())
+            lithostrattreedef = Lithostrattreedef.objects.last()
+            data['lithostrattreedef_id'] = lithostrattreedef.id
+        else:
             data['lithostrattreedef_id'] = lithostrattreedef.id
 
     # Assign new Discipline ID
