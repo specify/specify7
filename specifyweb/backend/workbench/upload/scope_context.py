@@ -2,7 +2,6 @@
 from typing import Any, TypedDict
 
 from specifyweb.specify.utils.uiformatters import UIFormatter
-from specifyweb.specify.models_utils.lock_tables import LockDispatcher
 
 # This stores some info we can reuse for caching. If this is empty, logic doesn't change, just it is slower.
 # IMPORTANT: In the current implementation, if there are no CRs or COTypes, it _automatically_ caches scoped upload plan
@@ -23,7 +22,6 @@ class ScopeContext:
 
     def __init__(self):
         self.cache = {}
-        self.lock_dispatcher: LockDispatcher | None = None
         self.cache['cotypes'] = {}
         self.cache['date_format'] = None
         self.cache['fields'] = {}
@@ -37,9 +35,6 @@ class ScopeContext:
         # for more info. We don't bother calling this function when we know we aren't variable so we 
         # don't need any parameter to this function.
         self._is_variable = True
-    
-    def set_lock_dispatcher(self, dispatcher: LockDispatcher):
-        self.lock_dispatcher = dispatcher
 
     @property
     def is_variable(self):

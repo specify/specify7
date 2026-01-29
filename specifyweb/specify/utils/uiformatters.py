@@ -18,7 +18,6 @@ from django.db import connection
 logger = logging.getLogger(__name__)
 
 from specifyweb.backend.context.app_resource import get_app_resource
-from specifyweb.specify.models_utils.lock_tables import LockDispatcher
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify import models
 
@@ -173,16 +172,17 @@ class UIFormatter(NamedTuple):
     def canonicalize(self, values: Sequence[str]) -> str:
         return ''.join([field.canonicalize(value) for field, value in zip(self.fields, values)])
 
-    def apply_scope(self, collection, lock_dispatcher: LockDispatcher | None) -> ScopedFormatter:
+    def apply_scope(self, collection, autonumbering_lock_dispatcher = None) -> ScopedFormatter:
+        from specifyweb.specify.utils.autonumbering import highest_autonumbering_value
         def parser(table: Table, value: str) -> str:
             parsed = self.parse(value)
             if self.needs_autonumber(parsed):
-                if lock_dispatcher is not None:
-                    lock_dispatcher.acquire(table.name, timeout=10)
-                canonicalized = self.autonumber_now(
+                canonicalized = highest_autonumbering_value(
                     collection,
                     getattr(models, table.django_name),
-                    parsed
+                    self,
+                    parsed,
+                    get_lock_dispatcher=autonumbering_lock_dispatcher
                 )
             else:
                 canonicalized = self.canonicalize(parsed)

@@ -8,6 +8,7 @@ from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
 from specifyweb.specify.utils.func import Func
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
+from specifyweb.specify.utils.autonumbering import AutonumberingLockDispatcher
 from specifyweb.backend.workbench.upload.clone import clone_record
 from specifyweb.backend.workbench.upload.predicates import (
     ContetRef,
@@ -72,11 +73,12 @@ class UploadTable(NamedTuple):
         self,
         collection,
         context: ScopeContext | None = None,
-        row=None
+        row=None,
+        lock_dispatcher: Callable[[], AutonumberingLockDispatcher] | None = None
     ) -> "ScopedUploadTable":
         from .scoping import apply_scoping_to_uploadtable
 
-        return apply_scoping_to_uploadtable(self, collection, context, row)
+        return apply_scoping_to_uploadtable(self, collection, context, row, lock_dispatcher=lock_dispatcher)
 
     def get_cols(self) -> set[str]:
         return (
@@ -274,9 +276,13 @@ class ScopedUploadTable(NamedTuple):
 
 class OneToOneTable(UploadTable):
     def apply_scoping(
-        self, collection, context: ScopeContext | None = None, row=None
+        self,
+        collection,
+        context: ScopeContext | None = None,
+        row=None,
+        lock_dispatcher: Callable[[], AutonumberingLockDispatcher] | None = None
     ) -> "ScopedOneToOneTable":
-        s = super().apply_scoping(collection, context, row)
+        s = super().apply_scoping(collection, context, row, lock_dispatcher=lock_dispatcher)
         return ScopedOneToOneTable(*s)
 
     def to_json(self) -> dict:
@@ -297,9 +303,13 @@ class ScopedOneToOneTable(ScopedUploadTable):
 
 class MustMatchTable(UploadTable):
     def apply_scoping(
-        self, collection, context: ScopeContext | None = None, row=None
+        self,
+        collection,
+        context: ScopeContext | None = None,
+        row=None,
+        lock_dispatcher: Callable[[], AutonumberingLockDispatcher] | None = None
     ) -> "ScopedMustMatchTable":
-        s = super().apply_scoping(collection, context, row)
+        s = super().apply_scoping(collection, context, row, lock_dispatcher=lock_dispatcher)
         return ScopedMustMatchTable(*s)
 
     def to_json(self) -> dict:

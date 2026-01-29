@@ -3,6 +3,7 @@ from collections.abc import Callable
 from typing_extensions import Protocol
 
 from specifyweb.backend.workbench.upload.predicates import DjangoPredicates, ToRemove
+from specifyweb.specify.utils.autonumbering import AutonumberingLockDispatcher
 
 from specifyweb.backend.workbench.upload.scope_context import ScopeContext
 
@@ -47,7 +48,8 @@ class Uploadable(Protocol):
         self,
         collection,
         context: ScopeContext | None = None,
-        row=None
+        row=None,
+        lock_dispatcher: Callable[[], AutonumberingLockDispatcher] | None = None
     ) -> "ScopedUploadable": ...
 
     def get_cols(self) -> set[str]: ...

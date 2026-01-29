@@ -2,16 +2,19 @@
 Autonumbering logic
 """
 
-from contextlib import contextmanager
+from collections import defaultdict
+
+from django.db.models import Value, Case, When
 
 from .uiformatters import UIFormatter, get_uiformatters
 from ..models_utils.lock_tables import LockDispatcher
 import logging
-from typing import Generator, Literal, Any
+from typing import MutableMapping, Callable
 from collections.abc import Sequence
 
 from specifyweb.specify.utils.scoping import Scoping
 from specifyweb.specify.datamodel import datamodel
+from specifyweb.backend.redis_cache.connect import RedisConnection, RedisString
 
 logger = logging.getLogger(__name__)
 
@@ -32,52 +35,127 @@ def autonumber_and_save(collection, user, obj) -> None:
         logger.debug("no fields to autonumber for %s", obj)
         obj.save()
 
+
 class AutonumberingLockDispatcher(LockDispatcher):
     def __init__(self):
         lock_prefix = "autonumbering"
         super().__init__(lock_prefix=lock_prefix, case_sensitive_names=False)
 
-@contextmanager
-def autonumbering_lock(table_name: str, timeout: int = 10) -> Generator[Literal[True] | None, Any, None]:
-    """
-    A convienent wrapper for the named_lock generator that adds the 'autonumber'
-    prefix to the table_name string argument for the resulting lock name.
+        # We use Redis for IPC, to maintain the current "highest" autonumbering
+        # value for each table + field
+        self.redis = RedisConnection(decode_responses=True)
+        # Before the records are created within a transaction, they're stored
+        # locally within this dictonary
+        # The whole dictonary can be committed to Redis via commit_highest
+        # The key hierarchy is generally:
+        # table -> field -> collection = "highest value"
+        self.highest_in_flight: MutableMapping[str, MutableMapping[str, MutableMapping[int, str]]] = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(str)))
 
-    Raises a TimeoutError if timeout seconds have elapsed without acquiring the
-    lock, and a ConnectionError if the database was otherwise unable to acquire
-    the lock.
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        super().__exit__(exc_type, exc_val, exc_tb)
 
-    Example:
-    ```
-    try:
-        with autonumbering_lock('Collectionobject') as lock:
-        ... # do something
-    except TimeoutError:
-        ... # handle case when lock is held by other connection for > timeout
-    ```
-    
-    :param table_name: The name of the table that is being autonumbered
-    :type table_name: str
-    :param timeout: The time in seconds to wait for lock release if another 
-    connection holds the lock
-    :type timeout: int
-    :return: yields True if the lock was obtained successfully and None 
-    otherwise
-    :rtype: Generator[Literal[True] | None, Any, None]
+    def highest_stored_value(self, table_name: str, field_name: str, collection_id: int) -> str | None:
+        key_name = self.lock_name(
+            table_name, field_name, "highest", str(collection_id))
+        highest = RedisString(self.redis).get(key_name)
+        if isinstance(highest, bytes):
+            return highest.decode()
+        elif highest is None:
+            return None
+        return str(highest)
+
+    def cache_highest(self, table_name: str, field_name: str, collection_id: int, value: str):
+        self.highest_in_flight[table_name.lower(
+        )][field_name.lower()][collection_id] = value
+
+    def commit_highest(self):
+        for table_name, tables in self.highest_in_flight.items():
+            for field_name, fields in tables.items():
+                for collection, value in fields.items():
+                    self.set_highest_value(
+                        table_name, field_name, collection, value)
+        self.highest_in_flight.clear()
+
+    def set_highest_value(self, table_name: str, field_name: str, collection_id: int, value: str, time_to_live: int = 10):
+        key_name = self.lock_name(
+            table_name, field_name, "highest", str(collection_id))
+        RedisString(self.redis).set(key_name, value,
+                                    time_to_live, override_existing=True)
+
+
+def highest_autonumbering_value(
+        collection,
+        model,
+        formatter: UIFormatter,
+        values: Sequence[str],
+        get_lock_dispatcher: Callable[[],
+                                      AutonumberingLockDispatcher] | None = None,
+        wait_for_lock=10) -> str:
     """
-    with AutonumberingLockDispatcher() as locks:
-        locks.acquire(name=table_name.lower(), timeout=timeout)
-        yield
+    Retrieves the next highest number in the autonumbering sequence for a given
+    autonumbering field format
+    """
+
+    if not formatter.needs_autonumber(values):
+        raise ValueError(
+            f"Formatter {formatter.format_name} does not need need autonumbered with {values}")
+
+    if get_lock_dispatcher is not None:
+        lock_dispatcher = get_lock_dispatcher()
+        lock_dispatcher.acquire(model._meta.db_table, timeout=wait_for_lock)
+
+    field_name = formatter.field_name.lower()
+
+    stored_highest_value = (lock_dispatcher.highest_stored_value(
+        model._meta.db_table, field_name, collection.id)
+        if lock_dispatcher is not None else None)
+
+    with_year = formatter.fillin_year(values)
+    largest_in_database = formatter._autonumber_queryset(collection, model, field_name, with_year).annotate(
+        greater_than_stored=Case(
+            When(**{field_name + '__gt': stored_highest_value},
+                 then=Value(True)),
+            default=Value(False))
+        if stored_highest_value is not None
+        else Value(False))
+
+    if not largest_in_database.exists():
+        if stored_highest_value is not None:
+            filled_values = formatter.fill_vals_after(stored_highest_value)
+        else:
+            filled_values = formatter.fill_vals_no_prior(with_year)
+    else:
+        largest = largest_in_database[0]
+        database_larger = largest.greater_than_stored
+        value_to_inc = (getattr(largest, field_name)
+                        if database_larger or stored_highest_value is None
+                        else stored_highest_value)
+        filled_values = formatter.fill_vals_after(value_to_inc)
+
+    highest = ''.join(filled_values)
+
+    if lock_dispatcher is not None and lock_dispatcher.in_context:
+        lock_dispatcher.cache_highest(
+            model._meta.db_table, field_name, collection.id, highest)
+
+    return highest
 
 
 def do_autonumbering(collection, obj, fields: list[tuple[UIFormatter, Sequence[str]]]) -> None:
     logger.debug("autonumbering %s fields: %s", obj, fields)
 
-    with autonumbering_lock(obj._meta.db_table):
+    with AutonumberingLockDispatcher() as locks:
         for formatter, vals in fields:
-            formatter.apply_autonumbering(collection, obj, vals)
-
+            new_field_value = highest_autonumbering_value(
+                collection,
+                obj.__class__,
+                formatter,
+                vals,
+                get_lock_dispatcher=lambda: locks)
+            setattr(obj, formatter.field_name.lower(), new_field_value)
         obj.save()
+        locks.commit_highest()
 
 
 # REFACTOR: Remove this funtion as it is no longer used

@@ -21,44 +21,82 @@ class RedisConnection:
             decode_responses=self.decode_responses
         )
 
+    def delete(self, key: str):
+        return self.connection.delete(key)
 
-class RedisDataType(RedisConnection):
 
-    @classmethod
-    def from_connection(cls, connection: RedisConnection):
-        return cls(
-            host=connection.host,
-            port=connection.port,
-            db_index=connection.db_index,
-            decode_responses=connection.decode_responses
-        )
+class RedisDataType:
+    def __init__(self, established: RedisConnection) -> None:
+        self._established = established
+
+    @property
+    def connection(self):
+        return self._established.connection
+
+    def delete(self, key: str):
+        return self._established.delete(key)
 
 class RedisList(RedisDataType):
     """
     See https://redis.io/docs/latest/develop/data-types/lists/
     """
 
-    def lpush(self, key: str, value) -> int:
+    def left_push(self, key: str, value) -> int:
         return self.connection.lpush(key, value)
 
-    def rpush(self, key: str, value) -> int:
+    def right_push(self, key: str, value) -> int:
         return self.connection.rpush(key, value)
 
-    def rpop(self, key: str) -> str | bytes | None:
+    def right_pop(self, key: str) -> str | bytes | None:
         return self.connection.rpop(key)
 
-    def lpop(self, key: str) -> str | bytes | None:
+    def left_pop(self, key: str) -> str | bytes | None:
         return self.connection.lpop(key)
 
-    def llen(self, key: str) -> int:
+    def length(self, key: str) -> int:
         return self.connection.llen(key)
 
-    def lrange(self, key: str, start_index: int, end_index: int) -> list[str] | list[bytes]:
+    def range(self, key: str, start_index: int, end_index: int) -> list[str] | list[bytes]:
         return self.connection.lrange(key, start_index, end_index)
 
-    def ltrim(self, key: str, start_index: int, end_index: int) -> list[str] | list[bytes]:
+    def trim(self, key: str, start_index: int, end_index: int) -> list[str] | list[bytes]:
         return self.connection.ltrim(key, start_index, end_index)
+    
+    def blocking_left_pop(self, key: str, timeout: int) -> str | bytes | None:
+        response = self.connection.blpop(key, timeout=timeout)
+        if response is None:
+            return None
+        _filled_list_key, item = response
+        return item
 
+class RedisSet(RedisDataType):
+    """
+    See https://redis.io/docs/latest/develop/data-types/sets/
+    """
+    def add(self, key: str, *values: str) -> int:
+        return self.connection.sadd(key, *values)
+
+    def is_member(self, key: str, value: str) -> bool:
+        is_member = int(self.connection.sismember(key, value))
+        return is_member == 1
+
+    def remove(self, key: str, value: str):
+        return self.connection.srem(key, value)
+
+    def size(self, key: str) -> int:
+        return self.connection.scard(key)
+
+    def members(self, key: str) -> set[str]:
+        return self.connection.smembers(key)
+
+    def union(self, *keys: str) -> set[str]:
+        return self.connection.sunion(*keys)
+
+    def intersection(self, *keys: str) -> set[str]:
+        return self.connection.sinter(*keys)
+
+    def difference(self, *keys: str) -> set[str]:
+        return self.connection.sdiff(*keys)
 
 class RedisString(RedisDataType):
     """

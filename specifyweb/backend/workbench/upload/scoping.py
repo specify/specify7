@@ -1,11 +1,12 @@
 
 
 from functools import reduce
-from typing import Any, cast
+from typing import Any, Callable, cast
 from collections.abc import Callable
 
 from specifyweb.specify.datamodel import datamodel, Table, is_tree_table
 from specifyweb.specify.utils.func import CustomRepr
+from specifyweb.specify.utils.autonumbering import AutonumberingLockDispatcher
 from specifyweb.specify.models_utils.load_datamodel import DoesNotExistError
 from specifyweb.specify import models
 from specifyweb.backend.trees.utils import get_default_treedef
@@ -113,7 +114,8 @@ def extend_columnoptions(
         fieldname: str, 
         row: Row | None = None,
         toOne: dict[str, Uploadable] | None = None,
-        context: ScopeContext | None = None
+        context: ScopeContext | None = None,
+        lock_dispatcher: Callable[[], AutonumberingLockDispatcher] | None = None
     ) -> ExtendedColumnOptions:
 
     context = context or ScopeContext()
@@ -125,7 +127,7 @@ def extend_columnoptions(
 
     ui_formatter = get_or_defer_formatter(collection, tablename, fieldname, row, toOne, context)
     scoped_formatter = (
-        None if ui_formatter is None else ui_formatter.apply_scope(collection, context.lock_dispatcher)
+        None if ui_formatter is None else ui_formatter.apply_scope(collection, lock_dispatcher)
     )
 
     if tablename.lower() == "collectionobjecttype" and fieldname.lower() == "name":
@@ -258,7 +260,8 @@ def apply_scoping_to_uploadtable(
     ut: UploadTable,
     collection,
     context: ScopeContext | None = None,
-    row=None
+    row=None,
+    lock_dispatcher: Callable[[], AutonumberingLockDispatcher] | None = None
 ) -> ScopedUploadTable:
     # IMPORTANT:
     # before this comment, collection is untrusted and unreliable
@@ -301,7 +304,14 @@ def apply_scoping_to_uploadtable(
     scoped_table = ScopedUploadTable(
         name=ut.name,
         wbcols={
-            f: extend_columnoptions(colopts, collection, table.name, f, row, ut.toOne, context)
+            f: extend_columnoptions(colopts,
+                                    collection,
+                                    table.name,
+                                    f,
+                                    row,
+                                    ut.toOne,
+                                    context,
+                                    lock_dispatcher=lock_dispatcher)
             for f, colopts in ut.wbcols.items()
         },
         static=ut.static,
@@ -349,7 +359,10 @@ def set_order_number(
     return tmr._replace(strong_ignore=[*tmr.strong_ignore, *to_ignore])
 
 
-def apply_scoping_to_treerecord(tr: TreeRecord, collection, context: ScopeContext | None = None) -> ScopedTreeRecord:
+def apply_scoping_to_treerecord(tr: TreeRecord,
+                                collection,
+                                context: ScopeContext | None = None, 
+                                lock_dispatcher: Callable[[], AutonumberingLockDispatcher] | None = None) -> ScopedTreeRecord:
     table = datamodel.get_table_strict(tr.name)
 
     treedef = get_default_treedef(table, collection)
@@ -378,7 +391,11 @@ def apply_scoping_to_treerecord(tr: TreeRecord, collection, context: ScopeContex
             else r._replace(treedef_id=treedef.id) if r.treedef_id is None  # Adjust treeid for parsed JSON plans
             else r
         ): {
-            f: extend_columnoptions(colopts, collection, table.name, f)
+            f: extend_columnoptions(colopts,
+                collection,
+                table.name,
+                f,
+                lock_dispatcher=lock_dispatcher)
             for f, colopts in cols.items()
         }
         for r, cols in tr.ranks.items()
