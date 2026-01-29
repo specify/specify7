@@ -37,6 +37,7 @@ import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
 import { LoadingContext } from '../Core/Contexts';
 import {ajax} from "../../utils/ajax";
+import { invert } from 'underscore';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -217,7 +218,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
 
           
         )}
-       {/* dummy buttons for select All and invert selection*/}
+       {/* buttons for select All and invert selection*/}
         {(totalCount ?? 0) > 0 && (totalCount ?? 0) < 1000000 && (
            <Button.Small
           onClick={(): void => {
@@ -242,14 +243,23 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
             {interactionsText.selectAll()}
           </Button.Small>
         )}
-
+          {(totalCount ?? 0) > 0  && (
           <Button.Small
           onClick={(): void => {
-          
+            if (!loadedResults) return;
+            const allIDs =  new Set(
+              loadedResults.map((result) => result[queryIdField] as number)
+            );
+            const invertedSelection = new Set( Array.from(allIDs).filter(id => !(selectedRows.has(id))));
+            setSelectedRows(invertedSelection);
+            handleSelected?.(Array.from(invertedSelection));  
+            
             }}
             >
-            {"Invert Selection"}
+            {interactionsText.invertSelection()}
           </Button.Small>
+          )}
+
         <div className="-ml-2 flex-1" />
         {displayedFields.length > 0 &&
         visibleFieldSpecs.length > 0 &&

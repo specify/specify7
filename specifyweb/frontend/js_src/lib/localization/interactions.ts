@@ -421,4 +421,7 @@ export const interactionsText = createDictionary({
     'ru-ru': 'Нет в наличии',
     'uk-ua': 'Не доступно',
   },
+  invertSelection: {
+    "en-us": "Invert Selection",
+  }
 } as const);
