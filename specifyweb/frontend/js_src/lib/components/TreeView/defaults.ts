@@ -246,6 +246,24 @@ const subforma: Partial<SerializedResource<TaxonTreeDefItem>> = {
   rankId: 270,
 };
 
+const root: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: 'TaxonTreeDefItem',
+  name: 'Root',
+  title: 'Root',
+  isEnforced: true,
+  isInFullName: false,
+  rankId: 0,
+};
+
+const minerals: Partial<SerializedResource<TaxonTreeDefItem>> = {
+  _tableName: 'TaxonTreeDefItem',
+  name: 'Minerals',
+  title: 'Minerals',
+  isEnforced: true,
+  isInFullName: true,
+  rankId: 10,
+};
+
 const rank1: Partial<SerializedResource<TaxonTreeDefItem>> = {
   _tableName: 'TaxonTreeDefItem',
   name: 'Rank1',
@@ -411,7 +429,6 @@ const level12: Partial<SerializedResource<TaxonTreeDefItem>> = {
 export const botanyTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: 'TaxonTreeDef',
   name: treeText.botany(),
-  remarks: treeText.defaultRemarks(),
   fullNameDirection: 1,
   treeDefItems: [
     life,
@@ -439,7 +456,6 @@ export const entomologyTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> =
   {
     _tableName: 'TaxonTreeDef',
     name: treeText.entomology(),
-    remarks: treeText.defaultRemarks(),
     fullNameDirection: 1,
     treeDefItems: [
       life,
@@ -467,7 +483,6 @@ export const herpetologyTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> =
   {
     _tableName: 'TaxonTreeDef',
     name: treeText.herpetology(),
-    remarks: treeText.defaultRemarks(),
     fullNameDirection: 1,
     treeDefItems: [
       life,
@@ -489,7 +504,6 @@ export const ichthyologyTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> =
   {
     _tableName: 'TaxonTreeDef',
     name: treeText.ichthyology(),
-    remarks: treeText.defaultRemarks(),
     fullNameDirection: 1,
     treeDefItems: [
       life,
@@ -513,7 +527,6 @@ export const invertpaleoTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> =
   {
     _tableName: 'TaxonTreeDef',
     name: treeText.invertpaleo(),
-    remarks: treeText.defaultRemarks(),
     fullNameDirection: 1,
     treeDefItems: [
       life,
@@ -532,7 +545,6 @@ export const invertpaleoTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> =
 export const invertzooTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: 'TaxonTreeDef',
   name: treeText.invertzoo(),
-  remarks: treeText.defaultRemarks(),
   fullNameDirection: 1,
   treeDefItems: [
     life,
@@ -557,7 +569,6 @@ export const invertzooTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
 export const mammalogyTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: 'TaxonTreeDef',
   name: treeText.mammalogy(),
-  remarks: treeText.defaultRemarks(),
   fullNameDirection: 1,
   treeDefItems: [
     life,
@@ -576,7 +587,6 @@ export const ornithologyTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> =
   {
     _tableName: 'TaxonTreeDef',
     name: treeText.ornithology(),
-    remarks: treeText.defaultRemarks(),
     fullNameDirection: 1,
     treeDefItems: [
       life,
@@ -597,7 +607,6 @@ export const ornithologyTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> =
 export const paleobotTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: 'TaxonTreeDef',
   name: treeText.paleobot(),
-  remarks: treeText.defaultRemarks(),
   fullNameDirection: 1,
   treeDefItems: [
     life,
@@ -616,7 +625,6 @@ export const paleobotTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
 export const vascplantTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: 'TaxonTreeDef',
   name: treeText.vascplant(),
-  remarks: treeText.defaultRemarks(),
   fullNameDirection: 1,
   treeDefItems: [
     life,
@@ -643,7 +651,6 @@ export const vascplantTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
 export const vertpaleoTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: 'TaxonTreeDef',
   name: treeText.vertpaleo(),
-  remarks: treeText.defaultRemarks(),
   fullNameDirection: 1,
   treeDefItems: [
     life,
@@ -660,16 +667,14 @@ export const vertpaleoTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
 export const mineralsTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: 'TaxonTreeDef',
   name: treeText.minerals(),
-  remarks: treeText.defaultRemarks(),
   fullNameDirection: 1,
-  treeDefItems: [rank1, rank2],
+  treeDefItems: [root, minerals],
 };
 
 export const meteoritesTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> =
   {
     _tableName: 'TaxonTreeDef',
     name: treeText.meteorites(),
-    remarks: treeText.defaultRemarks(),
     fullNameDirection: 1,
     treeDefItems: [rank1, rank2, rank3, rank4, rank5, rank6],
   };
@@ -677,7 +682,6 @@ export const meteoritesTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> =
 export const rocksTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: 'TaxonTreeDef',
   name: treeText.rocks(),
-  remarks: treeText.defaultRemarks(),
   fullNameDirection: 1,
   treeDefItems: [
     level1,
@@ -698,7 +702,6 @@ export const rocksTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
 export const emptyTreeDef: DeepPartial<SerializedResource<TaxonTreeDef>> = {
   _tableName: 'TaxonTreeDef',
   name: treeText.emptyTree(),
-  remarks: treeText.defaultRemarks(),
   fullNameDirection: 1,
   treeDefItems: [life],
 };
