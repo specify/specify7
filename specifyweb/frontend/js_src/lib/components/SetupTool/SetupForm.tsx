@@ -119,7 +119,7 @@ export function renderFormFieldFactory({
 
     const isRowEnableToggle = name === 'include';
     const isRowEnabled =
-      Boolean(getFormValue(formData, currentStep, `${parentName}.include`)) === true;
+      Boolean(getFormValue(formData, currentStep, `${parentName}.include`));
 
     const taxonTreeAvailable =
       Array.isArray(treeOptions) &&
@@ -145,14 +145,14 @@ export function renderFormFieldFactory({
                   checked={Boolean(
                     getFormValue(formData, currentStep, fieldName)
                   )}
+                  disabled={
+                    inTable
+                      ? !isRowEnabled && !isRowEnableToggle
+                      : false
+                  }
                   id={fieldName}
                   name={fieldName}
                   required={required}
-                  disabled={
-                    inTable
-                      ? !isRowEnabled && isRowEnableToggle === false
-                      : false
-                  }
                   onValueChange={(isChecked) =>
                     handleChange(fieldName, isChecked)
                   }
@@ -311,7 +311,7 @@ export function renderFormFieldFactory({
             <Input.Text
               disabled={
                 inTable
-                  ? !isRowEnabled && isRowEnableToggle === false
+                  ? !isRowEnabled && !isRowEnableToggle
                   : isDisciplineNameDisabled
               }
               maxLength={field.maxLength ?? FIELD_MAX_LENGTH}
