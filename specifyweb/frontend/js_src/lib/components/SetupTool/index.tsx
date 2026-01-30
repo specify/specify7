@@ -28,6 +28,8 @@ import type {
   SetupResponse,
 } from './types';
 import { flattenAllResources } from './utils';
+import { fetchDefaultTrees } from '../TreeView/CreateTree';
+import type { TaxonFileDefaultList } from '../TreeView/CreateTree';
 
 const SETUP_POLLING_INTERVAL = 3000;
 
@@ -120,6 +122,18 @@ export function SetupTool({
     setSaveBlocked(formValid !== true);
   }, [formData, temporaryFormData, currentStep]);
   const SubmitComponent = saveBlocked ? Submit.Danger : Submit.Save;
+
+  // Fetch list of available default trees.
+  const [treeOptions, setTreeOptions] = React.useState<
+    TaxonFileDefaultList | undefined
+  >(undefined);
+  React.useEffect(() => {
+    fetchDefaultTrees()
+      .then((data) => setTreeOptions(data))
+      .catch((error) => {
+        console.error('Failed to fetch tree options:', error);
+      });
+  }, []);
 
   // Keep track of the last backend error.
   const [setupError, setSetupError] = React.useState<string | null>(
@@ -251,6 +265,7 @@ export function SetupTool({
     temporaryFormData,
     setTemporaryFormData,
     formRef,
+    treeOptions,
   });
 
   const id = useId('setup-tool');

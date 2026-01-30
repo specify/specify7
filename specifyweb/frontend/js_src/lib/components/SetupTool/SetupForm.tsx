@@ -16,7 +16,10 @@ import { Button } from '../Atoms/Button';
 import { Input, Label, Select } from '../Atoms/Form';
 import { Dialog } from '../Molecules/Dialog';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
-import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
+import type {
+  TaxonFileDefaultDefinition,
+  TaxonFileDefaultList,
+} from '../TreeView/CreateTree';
 import { PopulatedTreeList } from '../TreeView/CreateTree';
 import type { FieldConfig, ResourceConfig } from './setupResources';
 import { FIELD_MAX_LENGTH, resources } from './setupResources';
@@ -60,6 +63,7 @@ export function renderFormFieldFactory({
   temporaryFormData,
   setTemporaryFormData,
   formRef,
+  treeOptions,
 }: {
   readonly formData: ResourceFormData;
   readonly currentStep: number;
@@ -72,6 +76,7 @@ export function renderFormFieldFactory({
     value: React.SetStateAction<ResourceFormData>
   ) => void;
   readonly formRef: React.MutableRefObject<HTMLFormElement | null>;
+  readonly treeOptions?: TaxonFileDefaultList;
 }) {
   const [isTreeDialogOpen, handleTreeDialogOpen, handleTreeDialogClose] =
     useBooleanState(false);
@@ -105,35 +110,47 @@ export function renderFormFieldFactory({
 
     const verticalSpacing = width !== undefined && width < 2 ? '-mb-2' : 'mb-2';
 
-    const disciplineTypeValue =
-      resources[currentStep].resourceName === 'discipline'
-        ? getFormValue(formData, currentStep, 'type')
-        : undefined;
+    // 3 is the ID of discipline form
+    const disciplineTypeValue = getFormValue(formData, 3, 'type');
     const isDisciplineNameDisabled =
       resources[currentStep].resourceName === 'discipline' &&
       fieldName === 'name' &&
       (disciplineTypeValue === undefined || disciplineTypeValue === '');
 
+    const taxonTreeAvailable =
+      Array.isArray(treeOptions) &&
+      disciplineTypeValue !== undefined &&
+      treeOptions.some(
+        (tree: TaxonFileDefaultDefinition) =>
+          tree.discipline === disciplineTypeValue
+      );
+    const isTaxonTreeSelector =
+      fieldName === 'preload' &&
+      resources[currentStep].resourceName === 'taxonTreeDef';
     const showTreeSelector = getFormValue(formData, currentStep, 'preload');
 
     return (
       <div className={`${verticalSpacing} ${colSpan}`} key={fieldName}>
         {type === 'boolean' ? (
           <div className="h-full flex items-center space-x-2">
-            <Label.Inline title={description}>
-              <Input.Checkbox
-                checked={Boolean(
-                  getFormValue(formData, currentStep, fieldName)
-                )}
-                id={fieldName}
-                name={fieldName}
-                required={required}
-                onValueChange={(isChecked) =>
-                  handleChange(fieldName, isChecked)
-                }
-              />
-              {!inTable && label}
-            </Label.Inline>
+            {isTaxonTreeSelector && !taxonTreeAvailable ? (
+              setupToolText.emptyTaxonTree()
+            ) : (
+              <Label.Inline title={description}>
+                <Input.Checkbox
+                  checked={Boolean(
+                    getFormValue(formData, currentStep, fieldName)
+                  )}
+                  id={fieldName}
+                  name={fieldName}
+                  required={required}
+                  onValueChange={(isChecked) =>
+                    handleChange(fieldName, isChecked)
+                  }
+                />
+                {!inTable && label}
+              </Label.Inline>
+            )}
           </div>
         ) : type === 'select' && Array.isArray(options) ? (
           <div
@@ -308,7 +325,7 @@ export function renderFormFieldFactory({
             <thead>
               <tr className="bg-gray-100 dark:bg-neutral-700 border-b-2 border-gray-400 dark:border-gray-500">
                 <th className="px-2 py-3 text-left font-semibold text-gray-700 dark:text-gray-100 border-r border-gray-300 dark:border-gray-500 break-words last:border-r-0">
-                  {setupToolText.treeRanks()}
+                  {setupToolText.rank()}
                 </th>
                 {fields[0].fields.map((subField) => (
                   <th
@@ -353,14 +370,7 @@ export function renderFormFieldFactory({
     // Otherwise, lay out fields normally
     return (
       <div className="grid grid-cols-4 gap-4">
-        {fields.map((field) =>
-          field.name === 'preload' &&
-          ['geology', 'paleobotany', 'invertpaleo', 'vertpaleo'].includes(
-            formData.discipline.type
-          )
-            ? setupToolText.emptyTaxonTree()
-            : renderFormField(field, parentName)
-        )}
+        {fields.map((field) => renderFormField(field, parentName))}
       </div>
     );
   };

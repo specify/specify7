@@ -123,6 +123,9 @@ export const setupToolText = createDictionary({
   treeRanks: {
     'en-us': 'Tree Ranks',
   },
+  rank: {
+    'en-us': 'Rank',
+  },
   fullNameDirection: {
     'en-us': 'Full Name Direction',
   },
