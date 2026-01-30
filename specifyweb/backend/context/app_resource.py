@@ -51,7 +51,6 @@ DISCIPLINE_NAMES = {
 }
 
 FORM_RESOURCE_EXCLUDED_LST = [
-    "fish/fishbase.views.xml",
     "accessions/accessions.views.xml",
     "backstop/system.views.xml",
     "backstop/editorpanel.views.xml",
