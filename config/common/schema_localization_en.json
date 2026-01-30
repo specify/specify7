@@ -4301,7 +4301,7 @@
 		"aggregator": null,
 		"defaultui": null,
 		"name": "Attachment",
-		"desc": "The information in this record identifies everything the application will need to load and display the attachment. The attachment location is an absolute path to the file. The file itself is not stored in the database."
+		"desc": "An attachment is any digital file linked to a specific data record to provide supplementary information or media. This could be a photograph of a specimen, a scanned permit document, a field notes PDF, or an audio recording. Instead of storing the file directly in the database, which would make it large and slow, Specify saves the file to a dedicated Web Asset Server and stores only a reference to that file in the database record."
 	},
 	"attachmentimageattribute": {
 		"items": {
@@ -6656,8 +6656,8 @@
 		"type": null,
 		"aggregator": null,
 		"defaultui": null,
-		"name": "Collecting Information",
-		"desc": "A collecting event is a place and time that a collection is made. In some disciplines, a field number is used as the primary designation for place and time information, while in others, locality name and date are used to link specimens."
+		"name": "Collecting Event",
+		"desc": "A Collecting Event captures the “when” and “how” of a collection. It records the date, time, method, and the people (collectors) involved in capturing the specimen. Some disciplines identify CEs by a field number, while others rely on the unique combination of the locality name and date."
 	},
 	"collectingeventattachment": {
 		"items": {
@@ -6680,7 +6680,7 @@
 				"type": "ManyToOne",
 				"isrequired": false,
 				"weblinkname": null,
-				"name": "Collecting Information",
+				"name": "Collecting Event",
 				"desc": "Collecting Event"
 			},
 			"collectionmemberid": {
@@ -6903,7 +6903,7 @@
 		"aggregator": null,
 		"defaultui": null,
 		"name": "Collecting Event Attribute",
-		"desc": "Extensible attributes introduced for Specify 6."
+		"desc": "User-customizable attributes that can be repurposed for various data collection needs."
 	},
 	"collectingeventattribute": {
 		"items": {
@@ -7510,7 +7510,7 @@
 		"aggregator": null,
 		"defaultui": null,
 		"name": "Collecting Event Attribute",
-		"desc": "Collecting Event Attributes that were also available in Specify 5."
+		"desc": "User-customizable attributes that can be repurposed for various data collection needs."
 	},
 	"collectingeventauthorization": {
 		"items": {
@@ -8827,7 +8827,7 @@
 		"aggregator": null,
 		"defaultui": null,
 		"name": "Collecting Trip Attribute",
-		"desc": "Collecting Trip Attribute"
+		"desc": "User-customizable attributes that can be repurposed for various data collection needs"
 	},
 	"collectingtripauthorization": {
 		"items": {
@@ -10417,7 +10417,7 @@
 		"aggregator": null,
 		"defaultui": null,
 		"name": "Collection Object",
-		"desc": "A general term for anything that can be a part of your collection: a specimen, a specimen lot, a sound recording, a slide, a tissue, an extract, or a spectrogram."
+		"desc": "A general term for any item that can be part of a collection. This includes a physical specimen, a specimen lot, an observation, a sound recording, a slide, a tissue sample, or an extract. This is the central record that ties all other information together"
 	},
 	"collectionobjectattachment": {
 		"items": {
@@ -10663,7 +10663,7 @@
 		"aggregator": null,
 		"defaultui": null,
 		"name": "Collection Object Attribute",
-		"desc": "Extensible attributes introduced for Specify 6."
+		"desc": "User-customizable attributes that can be repurposed for various data collection needs."
 	},
 	"collectionobjectattribute": {
 		"items": {
@@ -12084,7 +12084,7 @@
 		"aggregator": null,
 		"defaultui": null,
 		"name": "Collection Object Attribute",
-		"desc": "Collection Object attributes that were also available in Specify 5."
+		"desc": "User-customizable attributes that can be repurposed for various data collection needs."
 	},
 	"collectionobjectcitation": {
 		"items": {
@@ -18341,7 +18341,7 @@
 		"aggregator": null,
 		"defaultui": null,
 		"name": "Determination",
-		"desc": "The determination of the collection object."
+		"desc": "Sometimes referred to as an ‘Identification’, this record captures the taxonomic name assigned to a Collection Object. It includes data such as the determiner (the person who identified it), the date it was determined, confidence qualifiers (like “cf.” or “?”), type statuses, and remarks. A single Collection Object can have a history of many Determinations over time."
 	},
 	"determinationcitation": {
 		"items": {
@@ -19152,7 +19152,7 @@
 		"aggregator": null,
 		"defaultui": null,
 		"name": "Disposal",
-		"desc": "Disposal"
+		"desc": "A specific record documenting the physical removal or destruction of a preparation during a deaccession or process (e.g., a tissue sample being consumed for DNA analysis). This may be a destructive sample, item lost in transport, the item was disposed, or simply no longer found in the collection. These are linked to Preparations."
 	},
 	"disposalagent": {
 		"items": {
@@ -30781,7 +30781,7 @@
 		"aggregator": null,
 		"defaultui": null,
 		"name": "Locality",
-		"desc": "The name of the location where a specimen was collected or observed. Some taxonomic disciplines or collectors may use a locality name instead of a field number to associate a collecting event with a specimen."
+		"desc": "Locality records define the “where.” They include the specific name of a locale, its geographic coordinates (point, line, or rectangle), the method used to determine latitude/longitude, the datum, and other georeferencing details."
 	},
 	"localityattachment": {
 		"items": {
@@ -34881,7 +34881,7 @@
 		"aggregator": null,
 		"defaultui": null,
 		"name": "Preparation",
-		"desc": "Preparation information describes the physical status of a specimen and its storage media. Specify provides an extensive array of utilities for curatorial management of specimen preparations."
+		"desc": "Preparations represent the distinct physical components of a Collection Object (e.g., a skin, a tissue sample, a skeleton, a fluid-preserved jar, or a microscope slide). It supports a large number of extensible attributes and properties."
 	},
 	"preparationattachment": {
 		"items": {
@@ -35126,8 +35126,8 @@
 		"type": null,
 		"aggregator": null,
 		"defaultui": null,
-		"name": "Preparation Attribute",
-		"desc": "Extensible attributes introduced for Specify 6."
+		"name": "Preparation Attr",
+		"desc": "One-to-many user-customizable attributes that can be repurposed for various data collection needs."
 	},
 	"preparationattribute": {
 		"items": {
@@ -35668,7 +35668,7 @@
 		"aggregator": null,
 		"defaultui": null,
 		"name": "Preparation Attribute",
-		"desc": "Preparation attributes that were also available in Specify 5."
+		"desc": "User-customizable attributes that can be repurposed for various data collection needs."
 	},
 	"preparationproperty": {
 		"items": {
