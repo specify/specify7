@@ -24,27 +24,15 @@ import { fetchDefaultTrees } from '../TreeView/CreateTree';
 import { checkFormCondition, renderFormFieldFactory } from './SetupForm';
 import { SetupOverview } from './SetupOverview';
 import type { FieldConfig, ResourceConfig } from './setupResources';
-import { disciplineTypeOptions, resources } from './setupResources';
+import { stepOrder, disciplineTypeOptions, resources } from './setupResources';
 import type {
   ResourceFormData,
   SetupProgress,
-  SetupResources,
   SetupResponse,
 } from './types';
 import { flattenAllResources } from './utils';
 
 const SETUP_POLLING_INTERVAL = 3000;
-
-export const stepOrder: RA<keyof SetupResources> = [
-  'institution',
-  'storageTreeDef',
-  'division',
-  'discipline',
-  'geographyTreeDef',
-  'taxonTreeDef',
-  'collection',
-  'specifyUser',
-];
 
 function findNextStep(
   currentStep: number,

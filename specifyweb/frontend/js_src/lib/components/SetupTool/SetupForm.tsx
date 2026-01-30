@@ -22,7 +22,7 @@ import type {
 } from '../TreeView/CreateTree';
 import { PopulatedTreeList } from '../TreeView/CreateTree';
 import type { FieldConfig, ResourceConfig } from './setupResources';
-import { FIELD_MAX_LENGTH, resources } from './setupResources';
+import { stepOrder, FIELD_MAX_LENGTH, resources } from './setupResources';
 import type { ResourceFormData } from './types';
 
 function getFormValue(
@@ -110,8 +110,7 @@ export function renderFormFieldFactory({
 
     const verticalSpacing = width !== undefined && width < 2 ? '-mb-2' : 'mb-2';
 
-    // 3 is the ID of discipline form
-    const disciplineTypeValue = getFormValue(formData, 3, 'type');
+    const disciplineTypeValue = getFormValue(formData, stepOrder.indexOf('discipline'), 'type');
     const isDisciplineNameDisabled =
       resources[currentStep].resourceName === 'discipline' &&
       fieldName === 'name' &&

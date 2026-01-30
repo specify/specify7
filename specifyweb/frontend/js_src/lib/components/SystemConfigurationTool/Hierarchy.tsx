@@ -26,10 +26,11 @@ import { getSystemInfo } from '../InitialContext/systemInfo';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
 import { tableLabel } from '../Preferences/UserDefinitions';
-import { stepOrder } from '../SetupTool';
 import { renderFormFieldFactory } from '../SetupTool/SetupForm';
-import { resources } from '../SetupTool/setupResources';
+import { disciplineTypeOptions, stepOrder, resources } from '../SetupTool/setupResources';
 import type { ResourceFormData } from '../SetupTool/types';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
 import { CollapsibleSection } from './CollapsibleSection';
 import type { InstitutionData } from './Utils';
@@ -273,6 +274,7 @@ function HierarchyDiagram({
 type DialogFormProps = {
   readonly open: boolean;
   readonly onClose: () => void;
+  readonly onSubmit: (formData: ResourceFormData) => void;
   readonly resourceIndex: number;
   readonly title: LocalizedString;
   readonly step: number;
@@ -282,13 +284,12 @@ type DialogFormProps = {
 function DialogForm({
   open,
   onClose,
+  onSubmit,
   title,
   step,
   refreshAllInfo,
 }: DialogFormProps) {
   const id = useId('config-tool');
-
-  if (!open) return null;
 
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
@@ -302,25 +303,57 @@ function DialogForm({
   const handleChange = (
     name: string,
     newValue: LocalizedString | TaxonFileDefaultDefinition | boolean
-  ) => {
-    const resourceName = resources[5].resourceName;
-    setFormData((previous) => ({
-      ...previous,
-      [resourceName]: {
-        ...previous[resourceName],
+  ): void => {
+    setFormData((previous: ResourceFormData) => {
+      const resourceName = resources[step].resourceName;
+      const previousResourceData = previous[resourceName];
+      const updates: Record<string, any> = {
+        ...previousResourceData,
         [name]: newValue,
-      },
-    }));
+      };
+
+      // Switch discipline type
+      if (resourceName === 'discipline' && name === 'type') {
+        const matchingType = disciplineTypeOptions.find(
+          (option) => option.value === newValue
+        );
+        updates.name = matchingType
+          ? (matchingType.label ?? String(matchingType.value))
+          : '';
+
+        // Clear previous taxon tree configuration
+        if (Boolean(previous.taxonTreeDef?.preload)) {
+          const clearedTaxon = {
+            ...previous.taxonTreeDef,
+            preload: false,
+            preloadFile: undefined,
+          };
+
+          return {
+            ...previous,
+            [resourceName]: updates,
+            taxonTreeDef: clearedTaxon,
+          };
+        }
+      }
+
+      return {
+        ...previous,
+        [resourceName]: updates,
+      };
+    });
   };
 
   const { renderFormFields } = renderFormFieldFactory({
     formData,
-    currentStep: 5,
+    currentStep: step,
     handleChange,
     temporaryFormData,
     setTemporaryFormData,
     formRef,
   });
+
+  if (!open) return null;
 
   return (
     <Dialog
@@ -338,10 +371,7 @@ function DialogForm({
         className="flex-1 overflow-auto gap-2"
         id={id('form')}
         onSubmit={() => {
-          void refreshAllInfo();
-          globalThis.setTimeout(() => {
-            void refreshAllInfo();
-          }, 400);
+          onSubmit(formData)
         }}
       >
         {renderFormFields(resources[step].fields)}
@@ -422,6 +452,14 @@ export function Hierarchy({
     openAddDisciplineTaxonTree,
     closeAddDisciplineTaxonTree,
   ] = useBooleanState(false);
+
+  const [disciplineCreationOpen,
+    openDisciplineCreation,
+    closeDisciplineCreation
+  ] = useBooleanState(true);
+  const [disciplineStep, setDisciplineStep] = React.useState(0);
+
+  const [disciplineRelatedFormData, setDisciplineRelatedFormData] = React.useState<Record<string, any>>({});
 
   const [isVertical, , , toggleOrientation] = useBooleanState(true);
 
@@ -551,25 +589,81 @@ export function Hierarchy({
               </div>
             )}
 
-            {/* TREE CONFIG DIALOGS */}
-            {/* GEO */}
+            {/* DISCIPLINE CONFIG DIALOGS */}
             <DialogForm
-              open={addDisciplineGeoTree}
+              open={disciplineCreationOpen && disciplineStep === 0}
               refreshAllInfo={refreshAllInfo}
-              resourceIndex={5}
-              step={5}
-              title={setupToolText.addNewGeographyTree()}
-              onClose={closeAddDisciplineGeoTree}
+              resourceIndex={stepOrder.indexOf('discipline')}
+              step={stepOrder.indexOf('discipline')}
+              title={tableLabel('Discipline')}
+              onClose={closeDisciplineCreation}
+              onSubmit={(formData) => {
+                setDisciplineRelatedFormData((prev) => ({
+                  ...prev,
+                  discipline: formData,
+                }));
+                setDisciplineStep(1);
+              }}
             />
-
-            {/* TAXON */}
             <DialogForm
-              open={addDisciplineTaxonTree}
+              open={disciplineCreationOpen && disciplineStep === 1}
               refreshAllInfo={refreshAllInfo}
-              resourceIndex={6}
-              step={6}
+              resourceIndex={stepOrder.indexOf('geographyTreeDef')}
+              step={stepOrder.indexOf('geographyTreeDef')}
+              title={setupToolText.addNewGeographyTree()}
+              onClose={closeDisciplineCreation}
+              onSubmit={(formData) => {
+                setDisciplineRelatedFormData((prev) => ({
+                  ...prev,
+                  geographyTreeDef: formData,
+                }));
+                setDisciplineStep(2);
+              }}
+            />
+            <DialogForm
+              open={disciplineCreationOpen && disciplineStep === 2}
+              refreshAllInfo={refreshAllInfo}
+              resourceIndex={stepOrder.indexOf('taxonTreeDef')}
+              step={stepOrder.indexOf('taxonTreeDef')}
               title={setupToolText.addNewTaxonTree()}
-              onClose={closeAddDisciplineTaxonTree}
+              onClose={closeDisciplineCreation}
+              onSubmit={
+                (formData) => {
+                  // Store final form data and send creation request
+                  setDisciplineRelatedFormData((prev) => {
+                    const next = {
+                      ...prev,
+                      taxonTreeDef: formData,
+                    };
+
+                    void ajax('/setup_tool/discipline_and_trees/create/', {
+                      method: 'POST',
+                      headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify(next),
+                      errorMode: 'visible',
+                      expectedErrors: [Http.CONFLICT, Http.UNAVAILABLE],
+                    })
+                      .then(() => {
+                        void refreshAllInfo();
+                      })
+                      .catch((err) => {
+                        console.error('Failed to create discipline and trees:', err);
+                      });
+
+                    return next;
+                  });
+
+                  closeDisciplineCreation();
+                  setDisciplineStep(0);
+                  void refreshAllInfo();
+                  globalThis.setTimeout(() => {
+                    void refreshAllInfo();
+                  }, 400);
+                }
+              }
             />
           </CollapsibleSection>
         </li>
@@ -605,13 +699,15 @@ export function Hierarchy({
           <div className="flex mt-1">
             {addButton(
               () => {
-                setNewResource(
-                  new tables.Discipline.Resource({
-                    division: `/api/specify/division/${division.id}/`,
-                  })
-                );
-                handleNewResource();
-                void refreshAllInfo();
+                // setNewResource(
+                //   new tables.Discipline.Resource({
+                //     division: `/api/specify/division/${division.id}/`,
+                //   })
+                // );
+                // handleNewResource();
+                // void refreshAllInfo();
+                openDisciplineCreation();
+                setDisciplineStep(0);
               },
               `${tableLabel('Discipline')}`
             )}

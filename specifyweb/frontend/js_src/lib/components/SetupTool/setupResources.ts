@@ -5,6 +5,18 @@ import { formsText } from '../../localization/forms';
 import { setupToolText } from '../../localization/setupTool';
 import { statsText } from '../../localization/stats';
 import type { RA } from '../../utils/types';
+import type { SetupResources } from './types';
+
+export const stepOrder: RA<keyof SetupResources> = [
+  'institution',
+  'storageTreeDef',
+  'division',
+  'discipline',
+  'geographyTreeDef',
+  'taxonTreeDef',
+  'collection',
+  'specifyUser',
+];
 
 // Default for max field length.
 export const FIELD_MAX_LENGTH = 64;
