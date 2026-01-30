@@ -51,11 +51,7 @@ DISCIPLINE_NAMES = {
 }
 
 FORM_RESOURCE_EXCLUDED_LST = [
-    "accessions/accessions.views.xml",
     "backstop/system.views.xml",
-    "backstop/editorpanel.views.xml",
-    "backstop/gbif.views.xml",
-    "backstop/preferences.views.xml",
 ]
 
 # get_app_resource is the main interface provided by this module
