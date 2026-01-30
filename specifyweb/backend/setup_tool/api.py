@@ -267,7 +267,7 @@ def create_discipline(data):
         new_discipline = Discipline.objects.create(**data)
 
         # Create Splocalecontainers for all datamodel tables
-        apply_schema_defaults(new_discipline)
+        # apply_schema_defaults(new_discipline)
 
         # Apply default uniqueness rules
         apply_default_uniqueness_rules(new_discipline)
@@ -456,6 +456,11 @@ def create_tree(name: str, data: dict) -> dict:
                 setattr(discipline, field_name, treedef.id)
                 discipline.save()
 
+        # Optionally preload tree
+        # NOTE: You probably do not want to do this during the initial setup, as there are still resources missing.
+        # if preload_tree:
+        #     if discipline is not None:
+        #         start_preload_default_tree(name, discipline.id, None, treedef.id, None, preload_tree_file)
         return {'treedef_id': treedef.id}
     except Exception as e:
         raise SetupError(e)

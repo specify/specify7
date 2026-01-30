@@ -667,7 +667,7 @@ DEFAULT_TREE_MAPPING_SCHEMA = {
                     },
                     "createMissingRanks": {
                         "type": "boolean",
-                        "desciption": "(optional) Whether or not to create the ranks included in the downloadable tree."
+                        "description": "(optional) Whether or not to create the ranks included in the downloadable tree."
                     }
                 },
                 "required": ["url", "disciplineName"],
