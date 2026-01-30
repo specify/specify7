@@ -14,7 +14,7 @@ class ScopeType(Enum):
     INSTITUTION = 3
     GLOBAL = 10
 
-    def from_model(obj) -> "ScopeType":
+    def from_model(self, obj) -> "ScopeType":
         clazz = obj.__class__
 
         if clazz is models.Institution:
