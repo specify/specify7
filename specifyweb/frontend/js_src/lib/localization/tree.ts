@@ -661,15 +661,6 @@ export const treeText = createDictionary({
     'ru-ru': 'Палеонтология позвоночных',
     'uk-ua': 'Палеонтологія хребетних',
   },
-  defaultRemarks: {
-    'en-us': 'A default taxon tree',
-    'de-ch': 'Ein Standard-Taxonbaum',
-    'es-es': 'Un árbol de taxones predeterminado',
-    'fr-fr': 'Un arbre taxonomique par défaut',
-    'pt-br': 'Uma árvore taxonômica padrão',
-    'ru-ru': 'Дерево таксонов по умолчанию',
-    'uk-ua': 'Дерево таксонів за замовчуванням',
-  },
   emptyTree: {
     'en-us': 'Empty Tree',
     'de-ch': 'Leerer Baum',
