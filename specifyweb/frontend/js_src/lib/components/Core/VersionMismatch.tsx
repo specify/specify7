@@ -7,9 +7,14 @@ import { Link } from '../Atoms/Link';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import { Dialog } from '../Molecules/Dialog';
 
+/**
+ * A version mismatch is detected when a database created in Specify 6 does not have a matching database schema version and its last used Specify 6 version.
+ * For databases created in Specify 7 this check is currently unnessecary.
+ */
 export function VersionMismatch(): JSX.Element | null {
   const [showVersionMismatch, setShowVersionMismatch] = React.useState(
-    getSystemInfo().specify6_version !== getSystemInfo().database_version
+    getSystemInfo().specify6_version !== getSystemInfo().database_version &&
+      getSystemInfo().database_version !== '7'
   );
   return showVersionMismatch ? (
     <Dialog

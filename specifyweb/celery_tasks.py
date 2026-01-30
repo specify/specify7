@@ -60,3 +60,15 @@ class LogErrorsTask(Task):
         logger.exception('Celery task failure!!!1', exc_info=exc)
         super().on_failure(
             exc, task_id, args, kwargs, einfo)
+
+class MissingWorkerError(Exception):
+    """Raised when worker is not running."""
+    pass
+
+def is_worker_alive():
+    """Pings the worker to see if its running."""
+    try:
+        res = app.control.inspect(timeout=1).ping()
+        return bool(res)
+    except Exception:
+        return False
