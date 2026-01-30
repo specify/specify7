@@ -332,8 +332,10 @@ function EmptyTreeList({
 
 export function PopulatedTreeList({
   handleClick,
+  discipline,
 }: {
   readonly handleClick: (resource: TaxonFileDefaultDefinition) => void;
+  readonly discipline?: string;
 }): JSX.Element {
   const [treeOptions, setTreeOptions] = React.useState<
     TaxonFileDefaultList | undefined
@@ -348,12 +350,20 @@ export function PopulatedTreeList({
       });
   }, []);
 
+  // If a discipline name was provided only show trees belonging to that discipline.
+  const displayedOptions =
+    treeOptions === undefined
+      ? undefined
+      : discipline
+      ? treeOptions.filter((r) => r.discipline === discipline)
+      : treeOptions;
+
   return (
     <Ul className="flex flex-col gap-2">
       <H2>{treeText.populatedTrees()}</H2>
-      {treeOptions === undefined
+      {displayedOptions === undefined
         ? undefined
-        : treeOptions.map((resource, index) => (
+        : displayedOptions.map((resource, index) => (
             <li key={index}>
               <Button.LikeLink onClick={(): void => handleClick(resource)}>
                 {localized(resource.title)}
