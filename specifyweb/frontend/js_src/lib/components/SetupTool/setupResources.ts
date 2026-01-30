@@ -319,6 +319,7 @@ export const resources: RA<ResourceConfig> = [
         description: setupToolText.preloadTreeDescription(),
         type: 'boolean',
         width: 4,
+        default: true,
       },
     ],
   },
