@@ -157,6 +157,16 @@ export function ResourceView<SCHEMA extends AnySchema>({
 
   const isModified = useIsModified(resource);
 
+  React.useEffect(() => {
+    if (!isModified) return;
+    const handleBeforeUnload = (event: BeforeUnloadEvent): void => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isModified]);
+
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
 
   const [makeFormDialogsModal] = userPreferences.use(
