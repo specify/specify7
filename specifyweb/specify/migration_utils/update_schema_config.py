@@ -170,7 +170,7 @@ def update_table_schema_config_with_defaults(
             discipline_id,
             field.name,
             apps,
-            defaults=field_defaults.
+            defaults=field_defaults,
         )
 
 

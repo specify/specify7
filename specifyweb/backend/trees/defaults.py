@@ -305,7 +305,7 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: di
 @app.task(base=LogErrorsTask, bind=True)
 def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline_name: str, specify_collection_id: Optional[int],
                              specify_user_id: Optional[int], tree_cfg: dict, row_count: Optional[int], initial_tree_name: str,
-                             existing_tree_def_id = None):
+                             existing_tree_def_id = None, create_missing_ranks: bool = False, notify: bool = True):
     logger.info(f'starting task {str(self.request.id)}')
 
     discipline = None
@@ -313,7 +313,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
         discipline = spmodels.Discipline.objects.get(id=discipline_id)
     tree_name = initial_tree_name # Name will be uniquified on tree creation
 
-    if specify_user_id and specify_collection_id:
+    if notify and specify_user_id and specify_collection_id:
         specify_user = spmodels.Specifyuser.objects.get(id=specify_user_id)
         Message.objects.create(
             user=specify_user,
@@ -393,7 +393,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
             renumber_tree(tree_type)
             set_fullnames(tree_def)
     except Exception as e:
-        if specify_user_id and specify_collection_id:
+        if notify and specify_user_id and specify_collection_id:
             Message.objects.create(
                 user=specify_user,
                 content=json.dumps({
@@ -406,7 +406,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
             )
         raise
 
-    if specify_user_id and specify_collection_id:
+    if notify and specify_user_id and specify_collection_id:
         Message.objects.create(
             user=specify_user,
             content=json.dumps({
