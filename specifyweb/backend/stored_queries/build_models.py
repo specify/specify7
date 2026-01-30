@@ -141,4 +141,3 @@ def map_classes(datamodel: Datamodel, tables: list[Table], classes):
 
     for tabledef in datamodel.tables:
         map_class(tabledef)
-
