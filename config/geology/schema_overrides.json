@@ -1,4 +1,64 @@
 {
+  "collectionobject": {
+    "items": [
+      {
+        "collectionObjectAttribute": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": null,
+          "type": "ManyToOne",
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Attributes",
+          "desc": "Attributes"
+        }
+      },
+      {
+        "paleoContext": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": null,
+          "type": null,
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Geo Context",
+          "desc": "Geologic context about the specimen, including information on the chronostratigraphy, lithostratigraphy, and tectonic setting"
+        }
+      }
+    ]
+  },
+  "paleocontext": {
+    "items": [
+      {
+        "text1": {
+          "format": null,
+          "ishidden": true,
+          "isuiformatter": false,
+          "picklistname": null,
+          "type": null,
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Text1",
+          "desc": "Text1"
+        }
+      },
+      {
+        "chronoStratEnd": {
+          "format": null,
+          "ishidden": false,
+          "isuiformatter": false,
+          "picklistname": null,
+          "type": null,
+          "isrequired": false,
+          "weblinkname": null,
+          "name": "Chrono Strat End",
+          "desc": "End chronostratigraphic unit"
+        }
+      }
+    ]
+  },
   "collectingevent": {
     "items": [
       {
