@@ -167,7 +167,7 @@ def highest_autonumbering_value(
 
     if lock_dispatcher is not None and lock_dispatcher.in_context:
         lock_dispatcher.cache_highest(
-            model._meta.db_table, field_name, collection.id, highest)
+            model._meta.db_table, field_name, scope_type, hierarchy_model.id, highest)
 
     return highest
 

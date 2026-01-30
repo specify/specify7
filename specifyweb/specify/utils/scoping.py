@@ -27,6 +27,31 @@ class ScopeType(Enum):
             return ScopeType.COLLECTION
         raise TypeError(f"{clazz.__name__} is not a hierarchy table")
 
+    def __gt__(self, other):
+        if not isinstance(other, ScopeType):
+            return NotImplemented
+        return self.value > other.value
+
+    def __ge__(self, other):
+        if not isinstance(other, ScopeType):
+            return NotImplemented
+        return self.value >= other.value
+
+    def __lt__(self, other):
+        if not isinstance(other, ScopeType):
+            return NotImplemented
+        return self.value < other.value
+
+    def __le__(self, other):
+        if not isinstance(other, ScopeType):
+            return NotImplemented
+        return self.value <= other.value
+
+    def __eq__(self, other):
+        if not isinstance(other, ScopeType):
+            return NotImplemented
+        return self.value == other.value
+
 
 class ModelClassScope:
     def __init__(self, model_class):
@@ -88,6 +113,7 @@ class ModelClassScope:
 
 
 #############################################################################
+
 
     def _infer_scope(self):
         if hasattr(self.model_class, "division"):
@@ -232,6 +258,7 @@ class Scoping:
         for _ in range(num_steps):
             model = Scoping.model_from_instance(model)
         return model
+
 
 def has_related(model_instance, field_name: str) -> bool:
     return hasattr(model_instance, field_name) and getattr(model_instance, field_name, None) is not None
