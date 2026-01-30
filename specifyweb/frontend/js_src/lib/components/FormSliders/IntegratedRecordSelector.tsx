@@ -35,6 +35,8 @@ import { AttachmentsCollection } from './AttachmentsCollection';
 import { AttachmentWarningDeletion } from './AttachmentWarningDeletion';
 import { shouldBeToOne } from './helpers';
 import { RecordSelectorFromCollection } from './RecordSelectorFromCollection';
+import { DeleteButton } from '../Forms/DeleteButton';
+import { className } from '../Atoms/className'; 
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
 
@@ -136,6 +138,9 @@ export function IntegratedRecordSelector({
 
   const isAttachmentTable =
     collection.table.specifyTable.name.includes('Attachment');
+
+  const isTreeTable =
+    collection.table.specifyTable.name.includes('Tree');
 
   const subviewContext = React.useContext(SubViewContext);
   const parentContext = React.useMemo(
@@ -308,9 +313,29 @@ export function IntegratedRecordSelector({
                       {hasTablePermission(
                         relationship.relatedTable.name,
                         isDependent ? 'delete' : 'read'
-                      ) && typeof handleRemove === 'function' ? (
-                        <DataEntry.Remove
-                          disabled={
+                      ) && typeof handleRemove === 'function' && resource !== undefined ? (
+                        isTreeTable && resource.id !== undefined && resource.id !== null ? (
+                          <DeleteButton
+                            deferred={true}
+                            isIcon={true}
+                            resource ={resource}
+                            onDeleted ={(): void => {
+                              handleRemove('minusButton');
+                            }}
+                          >
+                            {(onClick, disabled) => (
+                              <Button.Icon
+                                className={className.dataEntryRemove}
+                                disabled={disabled}
+                                icon="minus"
+                                title={commonText.remove()}
+                                onClick={onClick}
+                              />
+                            )}
+                          </DeleteButton>
+                        ) : (
+                          <DataEntry.Remove
+                            disabled={
                             isReadOnly ||
                             collection.models.length === 0 ||
                             resource === undefined ||
@@ -326,6 +351,7 @@ export function IntegratedRecordSelector({
                             }
                           }}
                         />
+                        )
                       ) : undefined}
                       <span
                         className={`flex-1 ${
