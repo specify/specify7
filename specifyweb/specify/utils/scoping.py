@@ -218,7 +218,7 @@ class Scoping:
         instance = ModelInstanceScope(obj)
         return instance.scope_type, instance.scope_model
 
-    @staticmethod()
+    @staticmethod
     def model_from_instance(obj: Model) -> Model:
         instance = ModelInstanceScope(obj)
         return instance.scope_model
