@@ -32,6 +32,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission, hasTreeAccess } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
+import { TreeActionsDropdown } from './TreeActions';
 
 export function TreeSelectOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -108,32 +109,40 @@ export function TreeSelectDialog({
           <Ul className="flex flex-col gap-1">
             {treeData.map(([treeName, treeDefinition]) => (
               <li className="contents" key={treeName}>
-                <div className="flex gap-2">
-                  <Link.Default
-                    className="flex-1"
-                    href={getLink(treeName)}
-                    title={treeDefinition?.get('remarks') ?? undefined}
-                    onClick={(event): void => {
-                      if (handleClick === undefined) return;
-                      event.preventDefault();
-                      loading(
-                        Promise.resolve(handleClick(treeName)).then(() =>
-                          typeof confirmationMessage === 'string'
-                            ? setIsFinished()
-                            : handleClose()
-                        )
-                      );
-                    }}
-                  >
-                    <TableIcon label={false} name={treeName} />
-                    {genericTables[treeName].label}
-                  </Link.Default>
-                  {typeof treeDefinition === 'object' && (
-                    <ResourceEdit
-                      resource={treeDefinition}
-                      onSaved={(): void => globalThis.location.reload()}
-                    />
-                  )}
+                <div className="flex flex-col gap-1">
+                  <div className="flex gap-2 items-start">
+                    <Link.Default
+                      className="flex-1"
+                      href={getLink(treeName)}
+                      title={treeDefinition?.get('remarks') ?? undefined}
+                      onClick={(event): void => {
+                        if (handleClick === undefined) return;
+                        event.preventDefault();
+                        loading(
+                          Promise.resolve(handleClick(treeName)).then(() =>
+                            typeof confirmationMessage === 'string'
+                              ? setIsFinished()
+                              : handleClose()
+                          )
+                        );
+                      }}
+                    >
+                      <TableIcon label={false} name={treeName} />
+                      {genericTables[treeName].label}
+                    </Link.Default>
+                    {typeof treeDefinition === 'object' && (
+                      <ResourceEdit
+                        resource={treeDefinition}
+                        onSaved={(): void => globalThis.location.reload()}
+                      />
+                    )}
+                    {permissionName === 'repair' && (
+                      <TreeActionsDropdown
+                        treeDefinition={treeDefinition}
+                        treeName={treeName}
+                      />
+                    )}
+                  </div>
                 </div>
               </li>
             ))}
