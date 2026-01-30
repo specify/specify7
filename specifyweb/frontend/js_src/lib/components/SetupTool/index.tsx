@@ -17,6 +17,8 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { loadingBar } from '../Molecules';
 import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
+import type { TaxonFileDefaultList } from '../TreeView/CreateTree';
+import { fetchDefaultTrees } from '../TreeView/CreateTree';
 import { checkFormCondition, renderFormFieldFactory } from './SetupForm';
 import { SetupOverview } from './SetupOverview';
 import type { FieldConfig, ResourceConfig } from './setupResources';
@@ -28,8 +30,6 @@ import type {
   SetupResponse,
 } from './types';
 import { flattenAllResources } from './utils';
-import { fetchDefaultTrees } from '../TreeView/CreateTree';
-import type { TaxonFileDefaultList } from '../TreeView/CreateTree';
 
 const SETUP_POLLING_INTERVAL = 3000;
 
