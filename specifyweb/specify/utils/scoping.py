@@ -65,7 +65,23 @@ class ModelClassScope:
         return ScopeType.INSTITUTION
 
     def taxon(self):
-        ScopeType.DISCIPLINE
+        return ScopeType.DISCIPLINE
+
+    def geography(self):
+        return ScopeType.DISCIPLINE
+    
+    def geologictimeperiod(self):
+        return ScopeType.DISCIPLINE
+    
+    def lithostrat(self):
+        return ScopeType.DISCIPLINE
+    
+    def tectonicunit(self):
+        return ScopeType.DISCIPLINE
+    
+    def storage(self):
+        return ScopeType.INSTITUTION
+
 
 #############################################################################
 
@@ -138,6 +154,21 @@ class ModelInstanceScope:
 
     def taxon(self) -> Model:
         return self.obj.definition.discipline
+
+    def geography(self):
+        return self.obj.definition.discipline
+    
+    def geologictimeperiod(self):
+        return self.obj.definition.discipline
+    
+    def lithostrat(self):
+        return self.obj.definition.discipline
+    
+    def tectonicunit(self):
+        return self.obj.definition.discipline
+    
+    def storage(self):
+        return self.obj.definition.institution
     
     def _infer_scope_model(self) -> Model:
         if has_related(self.obj, "division"):
