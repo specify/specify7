@@ -3,9 +3,12 @@ import re
 from typing import NamedTuple, List
 import logging
 
-from django.db.models import Q, Count
+
+from django.db.models import Q, Count, Window, F
 from django.apps import apps as global_apps
 from django.core.exceptions import MultipleObjectsReturned
+from django.db import connection, transaction
+from django.db.models.functions import RowNumber
 
 from specifyweb.specify.models_utils.load_datamodel import Table, FieldDoesNotExistError, TableDoesNotExistError
 from specifyweb.specify.models_utils.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
@@ -36,6 +39,12 @@ from specifyweb.specify.migration_utils.sp7_schemaconfig import (
     MIGRATION_0034_FIELDS,
     MIGRATION_0034_UPDATE_FIELDS,
     MIGRATION_0035_FIELDS,
+    MIGRATION_0038_FIELDS,
+    MIGRATION_0038_UPDATE_FIELDS,
+    MIGRATION_0040_TABLES,
+    MIGRATION_0040_FIELDS,
+    MIGRATION_0040_UPDATE_FIELDS,
+    MIGRATION_0040_HIDDEN_FIELDS,
 )
 
 logger = logging.getLogger(__name__)
@@ -93,6 +102,7 @@ def update_table_schema_config_with_defaults(
     defaults: dict = None,
 ):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
     table = datamodel.get_table(table_name)
@@ -114,7 +124,9 @@ def update_table_schema_config_with_defaults(
         name=table.name,
         discipline_id=discipline_id,
         schema_type=0,
-        description=table_desc_str if description is None else description,
+        description=table_desc_str
+        if description is None
+        else description,
         language="en"
     )
 
@@ -127,9 +139,13 @@ def update_table_schema_config_with_defaults(
         issystem=table.system,
         version=0,
     )
-    if not is_new:
-        return  # If the container already exists, we don't need to update it
-    
+
+    if Splocalecontaineritem.objects.filter(
+        container=sp_local_container,
+        name=table_config.name.lower(),
+    ).exists():
+        return
+
     # Create a Splocaleitemstr for the table name and description
     item_str_bulk = []
     for k, text in {
@@ -149,7 +165,13 @@ def update_table_schema_config_with_defaults(
         field_defaults = None
         if table_defaults.get('items'):
             field_defaults = table_defaults['items'].get(field.name.lower())
-        update_table_field_schema_config_with_defaults(table_name, discipline_id, field.name, apps, defaults=field_defaults)
+        update_table_field_schema_config_with_defaults(
+            table_name,
+            discipline_id,
+            field.name,
+            apps,
+            defaults=field_defaults.
+        )
 
 
 def revert_table_schema_config(table_name, apps=global_apps):
@@ -362,9 +384,99 @@ def update_table_field_schema_config_params(
         setattr(sp_local_container_item, k, v)
     sp_local_container_item.save(update_fields=list(update_params.keys()))
 
+def deduplicate_schema_config_sql(apps=None):
+    dedupe_sql = '''
+    /*
+
+    This script removes duplicate entries in the `splocalecontaineritem` table
+    based on the combination of `DisciplineID`, `Name`, and `Field Name`.
+    It ensures that only one unique entry remains for each combination,
+    deleting any duplicates along with their associated string entries
+    to maintain schema integrity.
+
+    This was created to clean up duplicates found in a Swiss database on 2025-01-28.
+
+    */
+
+
+    -- 1. Identify all duplicate Container Item IDs 
+    -- We group by Discipline, Table Name, and Field Name
+    -- We keep the record with the lowest ID (rn = 1) and mark the rest (rn > 1)
+    CREATE TEMPORARY TABLE container_items_to_delete AS
+    SELECT 
+        sub.SpLocaleContainerItemID
+    FROM (
+        SELECT 
+            slci.SpLocaleContainerItemID,
+            ROW_NUMBER() OVER (
+                PARTITION BY slc.DisciplineID, slc.Name, slci.Name 
+                ORDER BY slci.SpLocaleContainerItemID ASC
+            ) as rn
+        FROM splocalecontaineritem slci
+        JOIN splocalecontainer slc ON slci.SpLocaleContainerID = slc.SpLocaleContainerID
+    ) sub
+    WHERE sub.rn > 1;
+
+    -- 2. Delete the dependent strings first to satisfy Foreign Key constraints
+    -- This handles strings linked as either 'Name' or 'Description'
+    DELETE FROM splocaleitemstr 
+    WHERE SpLocaleContainerItemNameID IN (SELECT SpLocaleContainerItemID FROM container_items_to_delete)
+    OR SpLocaleContainerItemDescID IN (SELECT SpLocaleContainerItemID FROM container_items_to_delete);
+
+    -- 3. Delete the duplicate Container Items
+    DELETE FROM splocalecontaineritem 
+    WHERE SpLocaleContainerItemID IN (SELECT SpLocaleContainerItemID FROM container_items_to_delete);
+
+    -- 4. Clean up the temporary table
+    DROP TEMPORARY TABLE container_items_to_delete;
+    '''
+    cursor = connection.cursor()
+    cursor.execute(dedupe_sql)
+    cursor.close()
+
+def deduplicate_schema_config_orm(apps, schema_editor=None):
+    ContainerItem = apps.get_model('specify', 'SpLocaleContainerItem')
+    ItemStr = apps.get_model('specify', 'SpLocaleItemStr')
+
+    with transaction.atomic():
+        # Identify duplicates using Window function
+        # Partition by the container relationship and the item name
+        qs = ContainerItem.objects.annotate(
+            rn=Window(
+                expression=RowNumber(),
+                partition_by=[
+                    F('container__discipline'), 
+                    F('container__name'), 
+                    F('name')
+                ],
+                order_by=F('id').asc()
+            )
+        )
+
+        # Extract the IDs of the duplicates, keep the first and delete the rest
+        ids_to_delete = [item.id for item in qs if item.rn > 1]
+
+        if ids_to_delete:
+            # Delete dependent strings using corrected field names
+            ItemStr.objects.filter(itemname_id__in=ids_to_delete).delete()
+            ItemStr.objects.filter(itemdesc_id__in=ids_to_delete).delete()
+            
+            # Delete the duplicate Container Items
+            ContainerItem.objects.filter(id__in=ids_to_delete).delete()
+            
+            print(f"Successfully deleted {len(ids_to_delete)} duplicate schema items.")
+        else:
+            print("No duplicates found.")
+
 # ##############################################################################
 # Migration schema config helper functions
 # ##############################################################################
+
+def update_all_table_schema_config_with_defaults(apps):
+    Discipline = apps.get_model('specify', 'Discipline')
+    for discipline in Discipline.objects.all():
+        for table in datamodel.tables:
+            update_table_schema_config_with_defaults(table.name, discipline.id, None, apps)
 
 # ##########################################
 # Used in 0002_schema_config_update.py
@@ -518,18 +630,18 @@ def create_cogtype_picklist(apps):
 
     # Create a cogtype picklist for each collection
     for collection in Collection.objects.all():
-        Picklist.objects.get_or_create(
-            name=COG_PICKLIST_NAME,
-            type=1,
-            tablename='collectionobjectgrouptype',
+        Picklist.objects.update_or_create(
             collection=collection,
+            name=COG_PICKLIST_NAME,
             defaults={
+                "type": 1,
+                "tablename": "collectionobjectgrouptype",
                 "issystem": True,
                 "readonly": True,
                 "sizelimit": -1,
                 "sorttype": 1,
-                "formatter": 'CollectionObjectGroupType',
-            }
+                "formatter": "CollectionObjectGroupType",
+            },
         )
 
 def revert_cogtype_picklist(apps):
@@ -1425,6 +1537,225 @@ def revert_version_required(apps):
         for table, fields in MIGRATION_0035_FIELDS.items():
             for field in fields:    
                 update_table_field_schema_config_params(table, discipline.id, field, updated_config_params, apps)
+
+# ##########################################
+# Used in 0039_agent_fields_for_loan_and_gift.py
+# ##########################################
+
+def update_loan_and_gift_agent_fields(apps):
+    Discipline = apps.get_model('specify', 'Discipline')
+    for discipline in Discipline.objects.all():
+        for table, fields in MIGRATION_0038_FIELDS.items():
+            for field_name in fields:
+                update_table_field_schema_config_with_defaults(table, discipline.id, field_name, apps)
+
+def revert_loan_and_gift_agent_fields(apps):
+    for table, fields in MIGRATION_0038_FIELDS.items():
+        for field_name in fields:
+            revert_table_field_schema_config(table, field_name, apps)
+
+def update_loan_and_gift_agents(apps):
+    """
+    Update field descriptions and display names using MIGRATION_0038_UPDATE_FIELDS
+    (tuple: (fieldName, newLabel, newDesc)).
+    """
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+
+    def upsert_single_str(*, itemdesc_id=None, itemname_id=None, text=""):
+        if (itemdesc_id is None) == (itemname_id is None):
+            raise ValueError("Exactly one of itemdesc_id or itemname_id must be provided")
+
+        qs = Splocaleitemstr.objects.filter(
+            itemdesc_id=itemdesc_id,
+            itemname_id=itemname_id,
+        ).order_by("id")
+
+        obj = qs.first()
+        if obj is None:
+            return Splocaleitemstr.objects.create(
+                itemdesc_id=itemdesc_id,
+                itemname_id=itemname_id,
+                text=text,
+            )
+
+        qs.exclude(id=obj.id).delete()
+
+        if obj.text != text:
+            obj.text = text
+            obj.save(update_fields=["text"])
+
+        return obj
+
+    for table, fields in MIGRATION_0038_UPDATE_FIELDS.items():
+        containers = Splocalecontainer.objects.filter(name=table.lower())
+
+        for container in containers:
+            for (field_name, new_name, new_desc) in fields:
+                items = Splocalecontaineritem.objects.filter(
+                    container=container,
+                    name=field_name.lower(),
+                )
+
+                for item in items:
+                    # Hide the existing field
+                    if not item.ishidden:
+                        item.ishidden = True
+                        item.save(update_fields=["ishidden"])
+
+                    upsert_single_str(itemdesc_id=item.id, text=new_desc)
+                    upsert_single_str(itemname_id=item.id, text=new_name)
+
+def revert_loan_and_gift_agents(apps):
+    """
+    Revert the field name/description updates.
+    """
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+    for table, fields in MIGRATION_0038_UPDATE_FIELDS.items():
+        containers = Splocalecontainer.objects.filter(name=table.lower())
+        for container in containers:
+            for (field_name, _, _) in fields:
+                items = Splocalecontaineritem.objects.filter(
+                    container=container,
+                    name=field_name.lower()
+                )
+                for item in items:
+                    # If needed, reset ishidden or revert text
+                    pass
+
+# ##########################################
+# Used in 0040_components.py
+# ##########################################
+
+def remove_0029_schema_config_fields(apps, schema_editor=None):
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+
+    FIELDS_TO_REMOVE = MIGRATION_0029_UPDATE_FIELDS
+    for table, fields in FIELDS_TO_REMOVE.items():
+        items = Splocalecontaineritem.objects.filter(
+            container__name=table.lower(),
+            container__schematype=0,
+            # we only need the field name from the tuple of Schema Config information
+            name__in=list(map(lambda f: f[0].lower(), fields))
+        )
+
+        # Delete field labels (captions) and descriptions (Splocaleitemstr) associated with the fields
+        Splocaleitemstr.objects.filter(
+            Q(itemdesc__in=items) | Q(itemname__in=items)
+        ).delete()
+
+        items.delete()
+
+def create_table_schema_config_with_defaults(apps, schema_editor=None):
+    Discipline = apps.get_model('specify', 'Discipline')
+    for discipline in Discipline.objects.all():
+        for table, desc in MIGRATION_0040_TABLES:
+            update_table_schema_config_with_defaults(table, discipline.id, desc, apps)
+
+        for table, fields in MIGRATION_0040_FIELDS.items():
+            for field in fields:
+                update_table_field_schema_config_with_defaults(table, discipline.id, field, apps)
+
+def update_schema_config_field_desc_for_components(apps, schema_editor=None):
+    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+
+    for table, fields in MIGRATION_0040_UPDATE_FIELDS.items():
+        for field_name, new_name, new_desc in fields:
+
+            Splocaleitemstr.objects.filter(
+                itemdesc__container__name=table.lower(),
+                itemdesc__container__schematype=0,
+                itemdesc__name=field_name.lower()
+            ).update(text=new_desc)
+
+            Splocaleitemstr.objects.filter(
+                itemname__container__name=table.lower(),
+                itemname__container__schematype=0,
+                itemname__name=field_name.lower()
+            ).update(text=new_name)
+
+def update_hidden_prop_for_compoenents(apps, schema_editor=None):
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+    for table, fields in MIGRATION_0040_FIELDS.items():
+        Splocalecontaineritem.objects.filter(
+            container__name=table.lower(),
+            container__schematype=0,
+            name__in=list(map(lambda f: f.lower(), fields))
+        ).update(ishidden=True)
+
+def create_cotype_splocalecontaineritem_for_components(apps):
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+    PICKLIST_NAME = 'CollectionObjectType'
+    FIELD_NAME = 'type'
+
+    # Create a Splocalecontaineritem record for each Component Splocalecontainer
+    # NOTE: Each discipline has its own Component Splocalecontainer
+    Splocalecontaineritem.objects.filter(
+        container__name='component',
+        container__schematype=0,
+        name=FIELD_NAME
+    ).update(
+        picklistname=PICKLIST_NAME,
+        isrequired=True,
+        type='ManyToOne',
+    )
+
+def hide_component_fields(apps, schema_editor=None):
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+    for table, fields in MIGRATION_0040_HIDDEN_FIELDS.items():
+        Splocalecontaineritem.objects.filter(
+            container__name=table.lower(),
+            container__schematype=0,
+            name__in=list(map(lambda f: f.lower(), fields))
+        ).update(ishidden=True)
+
+def restore_0029_schema_config_fields(apps, schema_editor=None):
+    Discipline = apps.get_model('specify', 'Discipline')
+    FIELDS_TO_REMOVE = MIGRATION_0029_UPDATE_FIELDS
+    for discipline in Discipline.objects.all():
+        for table, fields in FIELDS_TO_REMOVE.items():
+            for field_name, _, _ in fields:
+                update_table_field_schema_config_with_defaults(table, discipline.id, field_name, apps)
+
+def revert_table_schema_config_with_defaults(apps, schema_editor=None):
+    for table, _ in MIGRATION_0040_TABLES:
+        revert_table_schema_config(table, apps)
+    for table, fields in MIGRATION_0040_FIELDS.items():
+        for field in fields:
+            revert_table_field_schema_config(table, field, apps)
+
+def reverse_hide_component_fields(apps, schema_editor=None):
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+    Discipline = apps.get_model('specify', 'Discipline')
+
+    for discipline in Discipline.objects.all():
+        for table, fields in MIGRATION_0040_HIDDEN_FIELDS.items():
+            containers = Splocalecontainer.objects.filter(
+                name=table.lower(),
+                discipline_id=discipline.id,
+            )
+            for container in containers:
+                for field_name in fields:
+                    items = Splocalecontaineritem.objects.filter(
+                        container=container,
+                        name=field_name.lower()
+                    )
+                    items.update(ishidden=True)
+                    
+def componets_schema_config_migrations(apps, schema_editor=None):
+        remove_0029_schema_config_fields(apps, schema_editor)
+        create_table_schema_config_with_defaults(apps, schema_editor)
+        update_schema_config_field_desc(apps, schema_editor)
+        update_hidden_prop(apps, schema_editor)
+        create_cotype_splocalecontaineritem(apps)
+        hide_component_fields(apps, schema_editor)
 
 # ##########################################
 # Used in 0042_discipline_type_picklist.py
