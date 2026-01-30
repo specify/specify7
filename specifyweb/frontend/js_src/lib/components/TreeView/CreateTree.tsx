@@ -355,8 +355,8 @@ export function PopulatedTreeList({
     treeOptions === undefined
       ? undefined
       : discipline
-      ? treeOptions.filter((r) => r.discipline === discipline)
-      : treeOptions;
+        ? treeOptions.filter((r) => r.discipline === discipline)
+        : treeOptions;
 
   return (
     <Ul className="flex flex-col gap-2">

@@ -16,7 +16,10 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { loadingBar } from '../Molecules';
-import type { TaxonFileDefaultDefinition, TaxonFileDefaultList } from '../TreeView/CreateTree';
+import type {
+  TaxonFileDefaultDefinition,
+  TaxonFileDefaultList,
+} from '../TreeView/CreateTree';
 import { fetchDefaultTrees } from '../TreeView/CreateTree';
 import { checkFormCondition, renderFormFieldFactory } from './SetupForm';
 import { SetupOverview } from './SetupOverview';
@@ -220,11 +223,11 @@ export function SetupTool({
         updates.name = matchingType
           ? (matchingType.label ?? String(matchingType.value))
           : '';
-        
+
         // Clear previous taxon tree configuration
-        if (Boolean(previous['taxonTreeDef']?.preload) === true) {
+        if (Boolean(previous.taxonTreeDef?.preload)) {
           const clearedTaxon = {
-            ...previous['taxonTreeDef'],
+            ...previous.taxonTreeDef,
             preload: false,
             preloadFile: undefined,
           };

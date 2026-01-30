@@ -292,6 +292,7 @@ export function renderFormFieldFactory({
                   onClose={handleTreeDialogClose}
                 >
                   <PopulatedTreeList
+                    discipline={disciplineTypeValue as string | undefined}
                     handleClick={(
                       resource: TaxonFileDefaultDefinition,
                     ): void => {
@@ -299,7 +300,6 @@ export function renderFormFieldFactory({
                       handleChange('preload', true);
                       handleTreeDialogClose();
                     }}
-                    discipline={disciplineTypeValue as string | undefined}
                   />
                 </Dialog>
               ) : null}
