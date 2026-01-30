@@ -664,6 +664,10 @@ DEFAULT_TREE_MAPPING_SCHEMA = {
                     "treeDefId": {
                         "type": "integer",
                         "description": "(optional) The ID of the existing tree to import into."
+                    },
+                    "createMissingRanks": {
+                        "type": "boolean",
+                        "desciption": "(optional) Whether or not to create the ranks included in the downloadable tree."
                     }
                 },
                 "required": ["url", "disciplineName"],
@@ -739,6 +743,8 @@ def create_default_tree_view(request):
 
     row_count = data.get('rowCount', None)
 
+    create_missing_ranks = data.get('createMissingRanks', False)
+
     if not url:
         return http.JsonResponse({'error': 'Tree not found.'}, status=404)
     
@@ -762,7 +768,7 @@ def create_default_tree_view(request):
 
     task_id = str(uuid4())
     async_result = create_default_tree_task.apply_async(
-        args=[url, discipline.id, tree_discipline_name, request.specify_collection.id, request.specify_user.id, tree_cfg, row_count, tree_name, tree_def_id],
+        args=[url, discipline.id, tree_discipline_name, request.specify_collection.id, request.specify_user.id, tree_cfg, row_count, tree_name, tree_def_id, create_missing_ranks, True],
         task_id=f"create_default_tree_{tree_discipline_name}_{task_id}",
         taskid=task_id
     )
