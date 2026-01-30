@@ -27,6 +27,7 @@ class ScopeType(Enum):
             return ScopeType.COLLECTION
         raise TypeError(f"{clazz.__name__} is not a hierarchy table")
 
+
 class ModelClassScope:
     def __init__(self, model_class):
         if not isclass(model_class):
@@ -48,11 +49,14 @@ class ModelClassScope:
         else:
             return ScopeType.DIVISION
 
-    def conservevent(self): return ModelClassScope(models.Conservdescription).scope_type
+    def conservevent(self): return ModelClassScope(
+        models.Conservdescription).scope_type
 
-    def fieldnotebookpage(self): return ModelClassScope(models.Fieldnotebookpageset).scope_type
+    def fieldnotebookpage(self): return ModelClassScope(
+        models.Fieldnotebookpageset).scope_type
 
-    def fieldnotebookpageset(self): return ModelClassScope(models.Fieldnotebook).scope_type
+    def fieldnotebookpageset(self): return ModelClassScope(
+        models.Fieldnotebook).scope_type
 
     def gift(self): return ScopeType.DISCIPLINE
 
@@ -69,16 +73,16 @@ class ModelClassScope:
 
     def geography(self):
         return ScopeType.DISCIPLINE
-    
+
     def geologictimeperiod(self):
         return ScopeType.DISCIPLINE
-    
+
     def lithostrat(self):
         return ScopeType.DISCIPLINE
-    
+
     def tectonicunit(self):
         return ScopeType.DISCIPLINE
-    
+
     def storage(self):
         return ScopeType.INSTITUTION
 
@@ -94,6 +98,7 @@ class ModelClassScope:
             return ScopeType.COLLECTION
 
         return ScopeType.INSTITUTION
+
 
 class ModelInstanceScope:
     def __init__(self, model_instance):
@@ -116,7 +121,7 @@ class ModelInstanceScope:
             return self._infer_scope()
 
         return scope
-    
+
     def _infer_scope_type(self) -> ScopeType:
         scope_obj = self._infer_scope_model()
         return ScopeType.from_model(scope_obj)
@@ -129,25 +134,25 @@ class ModelInstanceScope:
 
     def conservevent(self) -> Model:
         return ModelInstanceScope(self.obj.conservdescription).scope_model
-    
+
     def fieldnotebookpage(self) -> Model:
         return ModelInstanceScope(self.obj.pageset).scope_model
-    
+
     def fieldnotebookpageset(self) -> Model:
         return ModelInstanceScope(self.obj.fieldnotebook).scope_model
-    
+
     def gift(self) -> Model:
         if has_related(self.obj, "discipline"):
             return self.obj.discipline
-    
+
     def loan(self) -> Model:
         if has_related(self.obj, 'discipline'):
             return self.obj.discipline
-        
+
     def permit(self) -> Model:
         if has_related(self.obj, 'institution'):
             return self.obj.institution
-    
+
     def referencework(self) -> Model:
         if has_related(self.obj, 'institution'):
             return self.obj.institution
@@ -157,19 +162,19 @@ class ModelInstanceScope:
 
     def geography(self):
         return self.obj.definition.discipline
-    
+
     def geologictimeperiod(self):
         return self.obj.definition.discipline
-    
+
     def lithostrat(self):
         return self.obj.definition.discipline
-    
+
     def tectonicunit(self):
         return self.obj.definition.discipline
-    
+
     def storage(self):
         return self.obj.definition.institution
-    
+
     def _infer_scope_model(self) -> Model:
         if has_related(self.obj, "division"):
             return self.obj.division
@@ -179,7 +184,7 @@ class ModelInstanceScope:
             return self._simple_collection_scope()
 
         return models.Institution.objects.get()
-    
+
     def _simple_collection_scope(self) -> Model:
         if hasattr(self.obj, "collectionmemberid"):
             try:
@@ -199,6 +204,7 @@ class ModelInstanceScope:
 
         return collection
 
+
 class Scoping:
     def __init__(self):
         pass
@@ -206,17 +212,26 @@ class Scoping:
     @staticmethod
     def from_model(model) -> ScopeType:
         return ModelClassScope(model).scope_type
-    
+
     @staticmethod
     def from_instance(obj: Model) -> tuple[ScopeType, Model]:
         instance = ModelInstanceScope(obj)
         return instance.scope_type, instance.scope_model
-    
+
     @staticmethod()
     def model_from_instance(obj: Model) -> Model:
         instance = ModelInstanceScope(obj)
         return instance.scope_model
 
+    @staticmethod
+    def get_hierarchy_model(collection, scope_type: ScopeType) -> Model:
+        steps = [ScopeType.COLLECTION, ScopeType.DISCIPLINE,
+                 ScopeType.DIVISION, ScopeType.INSTITUTION]
+        num_steps = steps.index(scope_type)
+        model = collection
+        for _ in range(num_steps):
+            model = Scoping.model_from_instance(model)
+        return model
 
 def has_related(model_instance, field_name: str) -> bool:
     return hasattr(model_instance, field_name) and getattr(model_instance, field_name, None) is not None
