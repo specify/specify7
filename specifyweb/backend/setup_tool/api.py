@@ -11,6 +11,7 @@ from django.db import transaction
 from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.specify.models import Spversion
 from specifyweb.specify import models
+from specifyweb.backend.setup_tool.utils import normalize_keys, resolve_uri_or_fallback
 from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults
 from specifyweb.backend.setup_tool.picklist_defaults import create_default_picklists
 from specifyweb.backend.setup_tool.prep_type_defaults import create_default_prep_types
