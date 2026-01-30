@@ -266,7 +266,7 @@ const minerals: Partial<SerializedResource<TaxonTreeDefItem>> = {
 
 const rank1: Partial<SerializedResource<TaxonTreeDefItem>> = {
   _tableName: 'TaxonTreeDefItem',
-  name: 'Rank1',
+  name: 'Rank 1',
   title: 'Rank 1',
   isEnforced: true,
   isInFullName: false,
@@ -275,7 +275,7 @@ const rank1: Partial<SerializedResource<TaxonTreeDefItem>> = {
 
 const rank2: Partial<SerializedResource<TaxonTreeDefItem>> = {
   _tableName: 'TaxonTreeDefItem',
-  name: 'Rank2',
+  name: 'Rank 2',
   title: 'Rank 2',
   isEnforced: true,
   isInFullName: false,
@@ -284,7 +284,7 @@ const rank2: Partial<SerializedResource<TaxonTreeDefItem>> = {
 
 const rank3: Partial<SerializedResource<TaxonTreeDefItem>> = {
   _tableName: 'TaxonTreeDefItem',
-  name: 'Rank3',
+  name: 'Rank 3',
   title: 'Rank 3',
   isEnforced: true,
   isInFullName: false,
@@ -293,7 +293,7 @@ const rank3: Partial<SerializedResource<TaxonTreeDefItem>> = {
 
 const rank4: Partial<SerializedResource<TaxonTreeDefItem>> = {
   _tableName: 'TaxonTreeDefItem',
-  name: 'Rank4',
+  name: 'Rank 4',
   title: 'Rank 4',
   isEnforced: true,
   isInFullName: false,
@@ -302,7 +302,7 @@ const rank4: Partial<SerializedResource<TaxonTreeDefItem>> = {
 
 const rank5: Partial<SerializedResource<TaxonTreeDefItem>> = {
   _tableName: 'TaxonTreeDefItem',
-  name: 'Rank5',
+  name: 'Rank 5',
   title: 'Rank 5',
   isEnforced: true,
   isInFullName: false,
@@ -311,7 +311,7 @@ const rank5: Partial<SerializedResource<TaxonTreeDefItem>> = {
 
 const rank6: Partial<SerializedResource<TaxonTreeDefItem>> = {
   _tableName: 'TaxonTreeDefItem',
-  name: 'Rank6',
+  name: 'Rank 6',
   title: 'Rank 6',
   isEnforced: true,
   isInFullName: false,
@@ -320,7 +320,7 @@ const rank6: Partial<SerializedResource<TaxonTreeDefItem>> = {
 
 const level1: Partial<SerializedResource<TaxonTreeDefItem>> = {
   _tableName: 'TaxonTreeDefItem',
-  name: 'Level1',
+  name: 'Level 1',
   title: 'Level 1',
   isEnforced: true,
   isInFullName: false,
@@ -329,7 +329,7 @@ const level1: Partial<SerializedResource<TaxonTreeDefItem>> = {
 
 const level2: Partial<SerializedResource<TaxonTreeDefItem>> = {
   _tableName: 'TaxonTreeDefItem',
-  name: 'Level2',
+  name: 'Level 2',
   title: 'Level 2',
   isEnforced: true,
   isInFullName: false,
@@ -338,7 +338,7 @@ const level2: Partial<SerializedResource<TaxonTreeDefItem>> = {
 
 const level3: Partial<SerializedResource<TaxonTreeDefItem>> = {
   _tableName: 'TaxonTreeDefItem',
-  name: 'Level3',
+  name: 'Level 3',
   title: 'Level 3',
   isEnforced: true,
   isInFullName: false,
@@ -347,7 +347,7 @@ const level3: Partial<SerializedResource<TaxonTreeDefItem>> = {
 
 const level4: Partial<SerializedResource<TaxonTreeDefItem>> = {
   _tableName: 'TaxonTreeDefItem',
-  name: 'Level4',
+  name: 'Level 4',
   title: 'Level 4',
   isEnforced: true,
   isInFullName: false,
@@ -356,7 +356,7 @@ const level4: Partial<SerializedResource<TaxonTreeDefItem>> = {
 
 const level5: Partial<SerializedResource<TaxonTreeDefItem>> = {
   _tableName: 'TaxonTreeDefItem',
-  name: 'Level5',
+  name: 'Level 5',
   title: 'Level 5',
   isEnforced: true,
   isInFullName: false,
@@ -365,7 +365,7 @@ const level5: Partial<SerializedResource<TaxonTreeDefItem>> = {
 
 const level6: Partial<SerializedResource<TaxonTreeDefItem>> = {
   _tableName: 'TaxonTreeDefItem',
-  name: 'Level6',
+  name: 'Level 6',
   title: 'Level 6',
   isEnforced: true,
   isInFullName: false,
@@ -374,7 +374,7 @@ const level6: Partial<SerializedResource<TaxonTreeDefItem>> = {
 
 const level7: Partial<SerializedResource<TaxonTreeDefItem>> = {
   _tableName: 'TaxonTreeDefItem',
-  name: 'Level7',
+  name: 'Level 7',
   title: 'Level 7',
   isEnforced: true,
   isInFullName: false,
@@ -383,7 +383,7 @@ const level7: Partial<SerializedResource<TaxonTreeDefItem>> = {
 
 const level8: Partial<SerializedResource<TaxonTreeDefItem>> = {
   _tableName: 'TaxonTreeDefItem',
-  name: 'Level8',
+  name: 'Level 8',
   title: 'Level 8',
   isEnforced: true,
   isInFullName: false,
@@ -392,7 +392,7 @@ const level8: Partial<SerializedResource<TaxonTreeDefItem>> = {
 
 const level9: Partial<SerializedResource<TaxonTreeDefItem>> = {
   _tableName: 'TaxonTreeDefItem',
-  name: 'Level9',
+  name: 'Level 9',
   title: 'Level 9',
   isEnforced: true,
   isInFullName: false,
@@ -401,7 +401,7 @@ const level9: Partial<SerializedResource<TaxonTreeDefItem>> = {
 
 const level10: Partial<SerializedResource<TaxonTreeDefItem>> = {
   _tableName: 'TaxonTreeDefItem',
-  name: 'Level10',
+  name: 'Level 10',
   title: 'Level 10',
   isEnforced: true,
   isInFullName: false,
@@ -410,7 +410,7 @@ const level10: Partial<SerializedResource<TaxonTreeDefItem>> = {
 
 const level11: Partial<SerializedResource<TaxonTreeDefItem>> = {
   _tableName: 'TaxonTreeDefItem',
-  name: 'Level11',
+  name: 'Level 11',
   title: 'Level 11',
   isEnforced: true,
   isInFullName: false,
@@ -419,7 +419,7 @@ const level11: Partial<SerializedResource<TaxonTreeDefItem>> = {
 
 const level12: Partial<SerializedResource<TaxonTreeDefItem>> = {
   _tableName: 'TaxonTreeDefItem',
-  name: 'Level12',
+  name: 'Level 12',
   title: 'Level 12',
   isEnforced: true,
   isInFullName: false,
