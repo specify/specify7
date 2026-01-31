@@ -12,7 +12,7 @@ import logging
 from typing import MutableMapping, Callable
 from collections.abc import Sequence
 
-from specifyweb.specify.utils.scoping import Scoping, ScopeType
+from specifyweb.specify.utils.scoping import Scoping
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.backend.redis_cache.connect import RedisConnection, RedisString
 
