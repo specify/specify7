@@ -3,13 +3,14 @@ For uploading tree records.
 """
 
 import logging
-from typing import Any, NamedTuple, Union, Optional
+from typing import Any, NamedTuple, Union, Optional, Callable
 
 from django.db import transaction, IntegrityError
 from typing_extensions import TypedDict
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
+from specifyweb.specify.utils.autonumbering import AutonumberingLockDispatcher
 from specifyweb.backend.workbench.upload.clone import clone_record
 from specifyweb.backend.workbench.upload.predicates import (
     SPECIAL_TREE_FIELDS_TO_SKIP,
@@ -149,11 +150,15 @@ class TreeRecord(NamedTuple):
     ranks: dict[str | TreeRankRecord, dict[str, ColumnOptions]]
 
     def apply_scoping(
-        self, collection, context: ScopeContext | None = None, row=None
+        self,
+        collection,
+        context: ScopeContext | None = None,
+        row=None,
+        lock_dispatcher: Callable[[], AutonumberingLockDispatcher] | None = None
     ) -> "ScopedTreeRecord":
         from .scoping import apply_scoping_to_treerecord as apply_scoping
 
-        return apply_scoping(self, collection, context)
+        return apply_scoping(self, collection, context, lock_dispatcher=lock_dispatcher)
 
     def get_cols(self) -> set[str]:
         return {
@@ -464,9 +469,13 @@ class ScopedTreeRecord(NamedTuple):
 
 class MustMatchTreeRecord(TreeRecord):
     def apply_scoping(
-        self, collection, context: ScopeContext | None = None, row=None
+        self,
+        collection,
+        context: ScopeContext | None = None,
+        row=None,
+        lock_dispatcher: Callable[[], AutonumberingLockDispatcher] | None = None
     ) -> "ScopedMustMatchTreeRecord":
-        s = super().apply_scoping(collection, context, row)
+        s = super().apply_scoping(collection, context, row, lock_dispatcher=lock_dispatcher)
         return ScopedMustMatchTreeRecord(*s)
 
 

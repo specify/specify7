@@ -5,13 +5,8 @@ import time
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from typing import (
-    List,
-    Dict,
-    Union,
     Callable,
-    Optional,
     Sized,
-    Tuple,
 )
 from collections.abc import Callable
 from collections.abc import Sized
@@ -33,6 +28,7 @@ from specifyweb.backend.workbench.upload.auditor import (
     BatchEditPrefs,
 )
 from specifyweb.backend.trees.views import ALL_TREES
+from specifyweb.specify.utils.autonumbering import AutonumberingLockDispatcher
 
 from . import disambiguation
 from .upload_plan_schema import schema, parse_plan_with_basetable
@@ -351,7 +347,12 @@ def do_upload(
             _cache = cache.copy() if cache is not None and allow_partial else cache
             da = disambiguations[i] if disambiguations else None
             batch_edit_pack = batch_edit_packs[i] if batch_edit_packs else None
-            with savepoint("row upload") if allow_partial else no_savepoint():
+            with (
+                savepoint("row upload") if allow_partial else no_savepoint() as _,
+                AutonumberingLockDispatcher() as autonum_dispatcher
+            ):
+                get_lock_dispatcher = lambda: autonum_dispatcher
+
                 # the fact that upload plan is cachable, is invariant across rows.
                 # so, we just apply scoping once. Honestly, see if it causes enough overhead to even warrant caching
 
@@ -363,9 +364,9 @@ def do_upload(
                         cache = _cache
                         raise Rollback("failed row")
                     row, row_upload_plan = add_attachments_to_plan(row, upload_plan) # type: ignore
-                    scoped_table = row_upload_plan.apply_scoping(collection, scope_context, row)
+                    scoped_table = row_upload_plan.apply_scoping(collection, scope_context, row, lock_dispatcher=get_lock_dispatcher)
                 elif cached_scope_table is None:
-                    scoped_table = upload_plan.apply_scoping(collection, scope_context, row)
+                    scoped_table = upload_plan.apply_scoping(collection, scope_context, row, lock_dispatcher=get_lock_dispatcher)
                     if not scope_context.is_variable:
                         # This forces every row to rescope when not variable
                         cached_scope_table = scoped_table
@@ -399,6 +400,8 @@ def do_upload(
                 if result.contains_failure():
                     cache = _cache
                     raise Rollback("failed row")
+                
+                autonum_dispatcher.commit_highest()
 
         toc = time.perf_counter()
         logger.info(f"finished upload of {len(results)} rows in {toc-tic}s")

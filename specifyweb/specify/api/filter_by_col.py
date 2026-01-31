@@ -28,12 +28,12 @@ def filter_by_collection(queryset, collection, strict=True):
     if queryset.model is Attachment:
         return queryset.filter(
             Q(scopetype=None)
-            | Q(scopetype=ScopeType.GLOBAL)
-            | Q(scopetype=ScopeType.COLLECTION, scopeid=collection.id)
-            | Q(scopetype=ScopeType.DISCIPLINE, scopeid=collection.discipline.id)
-            | Q(scopetype=ScopeType.DIVISION, scopeid=collection.discipline.division.id)
+            | Q(scopetype=ScopeType.GLOBAL.value)
+            | Q(scopetype=ScopeType.COLLECTION.value, scopeid=collection.id)
+            | Q(scopetype=ScopeType.DISCIPLINE.value, scopeid=collection.discipline.id)
+            | Q(scopetype=ScopeType.DIVISION.value, scopeid=collection.discipline.division.id)
             | Q(
-                scopetype=ScopeType.INSTITUTION,
+                scopetype=ScopeType.INSTITUTION.value,
                 scopeid=collection.discipline.division.institution.id,
             )
         )
