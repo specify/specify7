@@ -56,6 +56,33 @@ export function checkFormCondition(
   return pass;
 }
 
+export function applyFormDefaults(
+  resource: ResourceConfig,
+  setFormData: (data: ResourceFormData) => void,
+  currentStep: number
+): void {
+  const resourceName = resources[currentStep].resourceName;
+  const defaultFormData: ResourceFormData = {};
+  const applyFieldDefaults = (
+    field: FieldConfig,
+    parentName?: string
+  ): void => {
+    const fieldName =
+      parentName === undefined ? field.name : `${parentName}.${field.name}`;
+    if (field.type === 'object' && field.fields !== undefined)
+      field.fields.forEach((field) => applyFieldDefaults(field, fieldName));
+    if (field.default !== undefined) defaultFormData[fieldName] = field.default;
+  };
+  resource.fields.forEach((field) => applyFieldDefaults(field));
+  setFormData((previous: ResourceFormData) => ({
+    ...previous,
+    [resourceName]: {
+      ...defaultFormData,
+      ...previous[resourceName],
+    },
+  }));
+}
+
 export function renderFormFieldFactory({
   formData,
   currentStep,

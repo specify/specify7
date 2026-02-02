@@ -28,7 +28,7 @@ import { getSystemInfo } from '../InitialContext/systemInfo';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
 import { tableLabel } from '../Preferences/UserDefinitions';
-import { renderFormFieldFactory } from '../SetupTool/SetupForm';
+import { applyFormDefaults, renderFormFieldFactory } from '../SetupTool/SetupForm';
 import {
   disciplineTypeOptions,
   resources,
@@ -296,6 +296,10 @@ function DialogForm({ open, onClose, onSubmit, title, step }: DialogFormProps) {
   const [temporaryFormData, setTemporaryFormData] =
     React.useState<ResourceFormData>({});
 
+  React.useEffect(() => {
+    applyFormDefaults(resources[step], setFormData, step);
+  }, [step]);
+
   const handleChange = (
     name: string,
     newValue: LocalizedString | TaxonFileDefaultDefinition | boolean
@@ -355,7 +359,7 @@ function DialogForm({ open, onClose, onSubmit, title, step }: DialogFormProps) {
     <Dialog
       buttons={
         <>
-          <Button.Danger onClick={onClose}>{commonText.cancel()}</Button.Danger>
+          <Button.Info onClick={onClose}>{commonText.cancel()}</Button.Info>
           <Submit.Save form={id('form')}>{commonText.save()}</Submit.Save>
         </>
       }
