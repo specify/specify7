@@ -453,7 +453,7 @@ export function Hierarchy({
     disciplineCreationOpen,
     openDisciplineCreation,
     closeDisciplineCreation,
-  ] = useBooleanState(true);
+  ] = useBooleanState(false);
   const [disciplineStep, setDisciplineStep] = React.useState(0);
 
   const [_disciplineRelatedFormData, setDisciplineRelatedFormData] =
@@ -597,7 +597,7 @@ export function Hierarchy({
               onSubmit={(formData) => {
                 setDisciplineRelatedFormData((previous) => ({
                   ...previous,
-                  discipline: formData,
+                  discipline: formData["discipline"],
                 }));
                 setDisciplineStep(1);
               }}
@@ -611,7 +611,7 @@ export function Hierarchy({
               onSubmit={(formData) => {
                 setDisciplineRelatedFormData((previous) => ({
                   ...previous,
-                  geographyTreeDef: formData,
+                  geographyTreeDef: formData["geographyTreeDef"],
                 }));
                 setDisciplineStep(2);
               }}
@@ -627,7 +627,7 @@ export function Hierarchy({
                 setDisciplineRelatedFormData((previous) => {
                   const next = {
                     ...previous,
-                    taxonTreeDef: formData,
+                    taxonTreeDef: formData["taxonTreeDef"],
                   };
 
                   void ajax('/setup_tool/discipline_and_trees/create/', {
