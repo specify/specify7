@@ -24,7 +24,7 @@ import { fetchDefaultTrees } from '../TreeView/CreateTree';
 import { checkFormCondition, renderFormFieldFactory } from './SetupForm';
 import { SetupOverview } from './SetupOverview';
 import type { FieldConfig, ResourceConfig } from './setupResources';
-import { stepOrder, disciplineTypeOptions, resources } from './setupResources';
+import { disciplineTypeOptions, resources,stepOrder } from './setupResources';
 import type {
   ResourceFormData,
   SetupProgress,
