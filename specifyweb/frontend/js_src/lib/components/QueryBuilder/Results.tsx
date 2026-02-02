@@ -5,10 +5,12 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
+import {ajax} from "../../utils/ajax";
 import { f } from '../../utils/functools';
 import { type GetSet, type RA } from '../../utils/types';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyTable } from '../DataModel/specifyTable';
@@ -35,8 +37,6 @@ import { useFetchQueryResults } from './hooks';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
-import { LoadingContext } from '../Core/Contexts';
-import {ajax} from "../../utils/ajax";
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -217,8 +217,8 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
 
           
         )}
-       {/* buttons for select All and invert selection*/}
-        {(totalCount ?? 0) > 0 && (totalCount ?? 0) < 1000000 && (
+       {/* Buttons for select All and invert selection*/}
+        {(totalCount ?? 0) > 0 && (totalCount ?? 0) < 1_000_000 && (
            <Button.Small
           onClick={(): void => {
            loading( 
@@ -520,14 +520,14 @@ export function canMerge(table: SpecifyTable): boolean {
 async function fetchAllIDs(
   modelName: string,
   filters: Record<string, unknown>,
-  _totalCount: number, // unused but may be usefil is a limit parameter is needed in future
+  _totalCount: number, // Unused but may be usefil is a limit parameter is needed in future
   loading: (promise: Promise<unknown>) => void
 ): Promise<RA<number>> {
   return new Promise<RA<number>>((resolve, reject) => {
     loading(
       (async () => {
         try {
-          const params = new URLSearchParams({
+          const parameters = new URLSearchParams({
             fields: "id",
             limit: "0",
             offset: "0",
@@ -537,8 +537,8 @@ async function fetchAllIDs(
               Object.entries(filters).map(([key, value]) => [key, String(value)])
             ),
           });
-          const response = await ajax<RA<[number]>>(
-            `/api/specify_rows/${modelName}/?${params}`,
+          const response = await ajax<RA<readonly [number]>>(
+            `/api/specify_rows/${modelName}/?${parameters}`,
             {
               headers: { Accept: 'application/json' },
             }
