@@ -37,7 +37,6 @@ import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
 import { LoadingContext } from '../Core/Contexts';
 import {ajax} from "../../utils/ajax";
-import { invert } from 'underscore';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -521,7 +520,7 @@ export function canMerge(table: SpecifyTable): boolean {
 async function fetchAllIDs(
   modelName: string,
   filters: Record<string, unknown>,
-  totalCount: number,
+  _totalCount: number, // unused but may be usefil is a limit parameter is needed in future
   loading: (promise: Promise<unknown>) => void
 ): Promise<RA<number>> {
   return new Promise<RA<number>>((resolve, reject) => {
