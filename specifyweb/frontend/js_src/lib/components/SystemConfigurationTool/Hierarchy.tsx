@@ -278,7 +278,6 @@ type DialogFormProps = {
   readonly resourceIndex: number;
   readonly title: LocalizedString;
   readonly step: number;
-  readonly refreshAllInfo: () => Promise<void>;
 };
 
 function DialogForm({
@@ -287,7 +286,6 @@ function DialogForm({
   onSubmit,
   title,
   step,
-  refreshAllInfo,
 }: DialogFormProps) {
   const id = useId('config-tool');
 
@@ -443,14 +441,14 @@ export function Hierarchy({
   const isGeographyGlobal = systemInfo.geography_is_global;
 
   const [
-    addDisciplineGeoTree,
+    _addDisciplineGeoTree,
     openAddDisciplineGeoTree,
-    closeAddDisciplineGeoTree,
+    _closeAddDisciplineGeoTree,
   ] = useBooleanState(false);
   const [
-    addDisciplineTaxonTree,
+    _addDisciplineTaxonTree,
     openAddDisciplineTaxonTree,
-    closeAddDisciplineTaxonTree,
+    _closeAddDisciplineTaxonTree,
   ] = useBooleanState(false);
 
   const [disciplineCreationOpen,
@@ -459,7 +457,7 @@ export function Hierarchy({
   ] = useBooleanState(true);
   const [disciplineStep, setDisciplineStep] = React.useState(0);
 
-  const [disciplineRelatedFormData, setDisciplineRelatedFormData] = React.useState<Record<string, any>>({});
+  const [_disciplineRelatedFormData, setDisciplineRelatedFormData] = React.useState<Record<string, any>>({});
 
   const [isVertical, , , toggleOrientation] = useBooleanState(true);
 
@@ -592,7 +590,6 @@ export function Hierarchy({
             {/* DISCIPLINE CONFIG DIALOGS */}
             <DialogForm
               open={disciplineCreationOpen && disciplineStep === 0}
-              refreshAllInfo={refreshAllInfo}
               resourceIndex={stepOrder.indexOf('discipline')}
               step={stepOrder.indexOf('discipline')}
               title={tableLabel('Discipline')}
@@ -607,7 +604,6 @@ export function Hierarchy({
             />
             <DialogForm
               open={disciplineCreationOpen && disciplineStep === 1}
-              refreshAllInfo={refreshAllInfo}
               resourceIndex={stepOrder.indexOf('geographyTreeDef')}
               step={stepOrder.indexOf('geographyTreeDef')}
               title={setupToolText.addNewGeographyTree()}
@@ -622,7 +618,6 @@ export function Hierarchy({
             />
             <DialogForm
               open={disciplineCreationOpen && disciplineStep === 2}
-              refreshAllInfo={refreshAllInfo}
               resourceIndex={stepOrder.indexOf('taxonTreeDef')}
               step={stepOrder.indexOf('taxonTreeDef')}
               title={setupToolText.addNewTaxonTree()}

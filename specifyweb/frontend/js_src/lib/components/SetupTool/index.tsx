@@ -7,7 +7,7 @@ import { headerText } from '../../localization/header';
 import { setupToolText } from '../../localization/setupTool';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
-import { type RA, localized } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { Container, H2, H3, Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
