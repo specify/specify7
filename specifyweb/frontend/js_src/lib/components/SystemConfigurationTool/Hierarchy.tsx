@@ -282,16 +282,18 @@ type DialogFormProps = {
   readonly resourceIndex: number;
   readonly title: LocalizedString;
   readonly step: number;
+  readonly formRef: React.MutableRefObject<HTMLFormElement | null>;
+  readonly formData: ResourceFormData;
+  readonly setFormData: (
+      value: React.SetStateAction<ResourceFormData>
+    ) => void;
 };
 
-function DialogForm({ open, onClose, onSubmit, title, step }: DialogFormProps) {
+import { fetchDefaultTrees } from '../TreeView/CreateTree';
+import type { TaxonFileDefaultList } from '../TreeView/CreateTree';
+
+function DialogForm({ open, onClose, onSubmit, title, step, formRef, formData, setFormData }: DialogFormProps) {
   const id = useId('config-tool');
-
-  const formRef = React.useRef<HTMLFormElement | null>(null);
-
-  const [formData, setFormData] = React.useState<ResourceFormData>(
-    Object.fromEntries(stepOrder.map((key) => [key, {}]))
-  );
 
   const [temporaryFormData, setTemporaryFormData] =
     React.useState<ResourceFormData>({});
@@ -299,6 +301,20 @@ function DialogForm({ open, onClose, onSubmit, title, step }: DialogFormProps) {
   React.useEffect(() => {
     applyFormDefaults(resources[step], setFormData, step);
   }, [step]);
+
+  // Fetch list of available default trees.
+  const [treeOptions, setTreeOptions] = React.useState<
+    TaxonFileDefaultList | undefined
+  >(undefined);
+  React.useEffect(() => {
+    if (open && step === stepOrder.indexOf('taxonTreeDef')) {
+      fetchDefaultTrees()
+        .then((data) => setTreeOptions(data))
+        .catch((error) => {
+          console.error('Failed to fetch tree options:', error);
+        });
+    }
+  }, [open, step]);
 
   const handleChange = (
     name: string,
@@ -351,6 +367,7 @@ function DialogForm({ open, onClose, onSubmit, title, step }: DialogFormProps) {
     temporaryFormData,
     setTemporaryFormData,
     formRef,
+    treeOptions,
   });
 
   if (!open) return null;
@@ -433,6 +450,12 @@ export function Hierarchy({
 }): JSX.Element {
   if (!institution) return <LoadingScreen />;
 
+  const formRef = React.useRef<HTMLFormElement | null>(null);
+
+  const [formData, setFormData] = React.useState<ResourceFormData>(
+    Object.fromEntries(stepOrder.map((key) => [key, {}]))
+  );
+
   const systemInfo = getSystemInfo();
 
   React.useEffect(() => {
@@ -440,17 +463,6 @@ export function Hierarchy({
   }, [refreshAllInfo]);
 
   const isGeographyGlobal = systemInfo.geography_is_global;
-
-  const [
-    _addDisciplineGeoTree,
-    openAddDisciplineGeoTree,
-    _closeAddDisciplineGeoTree,
-  ] = useBooleanState(false);
-  const [
-    _addDisciplineTaxonTree,
-    openAddDisciplineTaxonTree,
-    _closeAddDisciplineTaxonTree,
-  ] = useBooleanState(false);
 
   const [
     disciplineCreationOpen,
@@ -537,38 +549,6 @@ export function Hierarchy({
                     )}
                   </div>
                 </div>
-                <div className="m-2">
-                  {/* GEO TREE */}
-                  {needsGeoTree && (
-                    <div className="flex items-center m-2">
-                      <Button.LikeLink
-                        onClick={() => {
-                          setNewResource(
-                            new tables.GeographyTreeDef.Resource()
-                          );
-                          openAddDisciplineGeoTree();
-                        }}
-                      >
-                        {icons.globe}
-                        {setupToolText.geoTreeSetUp()}
-                      </Button.LikeLink>
-                    </div>
-                  )}
-                  {/* TAXON TREE */}
-                  {needsTaxonTree && (
-                    <div className="flex items-center m-2">
-                      <Button.LikeLink
-                        onClick={() => {
-                          setNewResource(new tables.TaxonTreeDef.Resource());
-                          openAddDisciplineTaxonTree();
-                        }}
-                      >
-                        {icons.tree}
-                        {setupToolText.taxonTreeSetUp()}
-                      </Button.LikeLink>
-                    </div>
-                  )}
-                </div>
               </div>
             }
           >
@@ -604,6 +584,9 @@ export function Hierarchy({
                 }));
                 setDisciplineStep(1);
               }}
+              formRef={formRef}
+              formData={formData}
+              setFormData={setFormData}
             />
             <DialogForm
               open={disciplineCreationOpen && disciplineStep === 1}
@@ -618,6 +601,9 @@ export function Hierarchy({
                 }));
                 setDisciplineStep(2);
               }}
+              formRef={formRef}
+              formData={formData}
+              setFormData={setFormData}
             />
             <DialogForm
               open={disciplineCreationOpen && disciplineStep === 2}
@@ -663,6 +649,9 @@ export function Hierarchy({
                   void refreshAllInfo();
                 }, 400);
               }}
+              formRef={formRef}
+              formData={formData}
+              setFormData={setFormData}
             />
           </CollapsibleSection>
         </li>
