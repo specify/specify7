@@ -117,11 +117,11 @@ class ModelClassScope:
 
 
     def _infer_scope(self):
-        if hasattr(self.model_class, "division"):
+        if is_related(self.model_class, "division"):
             return ScopeType.DIVISION
-        if hasattr(self.model_class, "discipline"):
+        if is_related(self.model_class, "discipline"):
             return ScopeType.DISCIPLINE
-        if hasattr(self.model_class, "collectionmemberid") or hasattr(self.model_class, "collection"):
+        if hasattr(self.model_class, "collectionmemberid") or is_related(self.model_class, "collection"):
             return ScopeType.COLLECTION
 
         return ScopeType.INSTITUTION
@@ -139,13 +139,10 @@ class ModelInstanceScope:
 
     @property
     def scope_model(self) -> Model:
-        return self._infer_scope_model()
-
-    def _infer_scope_model(self) -> Model:
         table = self.obj.__class__.__name__.lower()
         scope = getattr(self, table, lambda: None)()
         if scope is None:
-            return self._infer_scope()
+            return self._infer_scope_model()
 
         return scope
 
@@ -203,11 +200,11 @@ class ModelInstanceScope:
         return self.obj.definition.institution
 
     def _infer_scope_model(self) -> Model:
-        if has_related(self.obj, "division"):
+        if is_related(self.obj.__class__, "division") and has_related(self.obj, "division"):
             return self.obj.division
-        if has_related(self.obj, "discipline"):
+        if is_related(self.obj.__class__, "discipline") and has_related(self.obj, "discipline"):
             return self.obj.discipline
-        if has_related(self.obj, "collectionmemberid") or has_related(self.obj, "collection"):
+        if has_related(self.obj, "collectionmemberid") or (is_related(self.obj.__class__, "collection") and has_related(self.obj, "collection")):
             return self._simple_collection_scope()
 
         return models.Institution.objects.get()
@@ -233,8 +230,6 @@ class ModelInstanceScope:
 
 
 class Scoping:
-    def __init__(self):
-        pass
 
     @staticmethod
     def from_model(model) -> ScopeType:
@@ -261,9 +256,14 @@ class Scoping:
         return model
 
 
-def has_related(model_instance, field_name: str) -> bool:
+def has_related(model_instance: Model, field_name: str) -> bool:
     return hasattr(model_instance, field_name) and getattr(model_instance, field_name, None) is not None
 
+def is_related(model_class: Model, field_name: str) -> bool:
+    if not hasattr(model_class, field_name):
+        return False
+    field = getattr(model_class, field_name)
+    return getattr(field, "is_relation", False)
 
 def in_same_scope(object1: Model, object2: Model) -> bool:
     """
