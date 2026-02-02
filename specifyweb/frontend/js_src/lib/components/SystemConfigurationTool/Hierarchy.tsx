@@ -355,9 +355,8 @@ function DialogForm({ open, onClose, onSubmit, title, step }: DialogFormProps) {
     <Dialog
       buttons={
         <>
-          <Submit.Save form={id('form')}>{commonText.create()}</Submit.Save>
-          <span className="-ml-2 flex-1" />
           <Button.Danger onClick={onClose}>{commonText.cancel()}</Button.Danger>
+          <Submit.Save form={id('form')}>{commonText.save()}</Submit.Save>
         </>
       }
       header={title}
