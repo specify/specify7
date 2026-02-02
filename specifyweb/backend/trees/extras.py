@@ -207,23 +207,38 @@ def close_interval(model, node_number, size):
         highestchildnodenumber=F('highestchildnodenumber')-size,
     )
 
-def adding_node(node,collection=None, user=None):
+def _get_collection_prefs_dict(collection, user) -> dict:
     import specifyweb.backend.context.app_resource as app_resource
+    res = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
+    if not res:
+        return {}
+    collection_prefs_json, _, __ = res
+    if not collection_prefs_json:
+        return {}
+    try:
+        loaded = json.loads(collection_prefs_json)
+        return loaded if isinstance(loaded, dict) else {}
+    except Exception:
+        return {}
+
+def adding_node(node, collection=None, user=None):
     logger.info('adding node %s', node)
     model = type(node)
     parent = model.objects.select_for_update().get(id=node.parent.id)
 
     if parent.accepted_id is not None:
-        collection_prefs_json, _, __ = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
-        collection_prefs_dict = (json.loads(collection_prefs_json)
-                                 if collection_prefs_json is not None
-                                 else dict())
+        collection_prefs_dict = _get_collection_prefs_dict(collection, user)
 
         treeManagement_pref = collection_prefs_dict.get('treeManagement', {})
-        synonymized = treeManagement_pref.get('synonymized', dict())
+        treeManagement_pref = treeManagement_pref if isinstance(treeManagement_pref, dict) else {}
 
-        add_synonym_enabled = synonymized.get('sp7.allow_adding_child_to_synonymized_parent.' + node.specify_model.name, False) if isinstance(synonymized, dict) else False
+        synonymized = treeManagement_pref.get('synonymized', {})
+        synonymized = synonymized if isinstance(synonymized, dict) else {}
 
+        pref_key = f"sp7.allow_adding_child_to_synonymized_parent.{node.specify_model.name}"
+        add_synonym_enabled = bool(synonymized.get(pref_key, False))
+
+        # If NOT enabled, block adding to synonymized parent
         if add_synonym_enabled is False:
             raise TreeBusinessRuleException(
                 f'Adding node "{node.fullname}" to synonymized parent "{parent.fullname}"',
@@ -244,7 +259,6 @@ def adding_node(node,collection=None, user=None):
                     "parentid": parent.parent.id,
                     "children": list(parent.children.values('id', 'fullname'))
                  }})
-
     insertion_point = open_interval(model, parent.nodenumber, 1)
     node.highestchildnodenumber = node.nodenumber = insertion_point
 
@@ -409,35 +423,35 @@ def synonymize(node, into, agent, user=None, collection=None):
     node.save()
 
     # This check can be disabled by a remote pref
-    import specifyweb.backend.context.app_resource as app_resource
-    collection_prefs_json, _, __ = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
-    collection_prefs_dict = (json.loads(collection_prefs_json)
-                                if collection_prefs_json is not None
-                                else dict())
+    collection_prefs_dict = _get_collection_prefs_dict(collection, user)
 
     treeManagement_pref = collection_prefs_dict.get('treeManagement', {})
-    synonymized = treeManagement_pref.get('synonymized', dict())
+    treeManagement_pref = treeManagement_pref if isinstance(treeManagement_pref, dict) else {}
 
-    add_synonym_enabled = synonymized.get('sp7.allow_adding_child_to_synonymized_parent.' + node.specify_model.name, False) if isinstance(synonymized, dict) else False
+    synonymized = treeManagement_pref.get('synonymized', {})
+    synonymized = synonymized if isinstance(synonymized, dict) else {}
 
-    if (add_synonym_enabled == False) and node.children.count() > 0:
+    pref_key = f"sp7.allow_adding_child_to_synonymized_parent.{node.specify_model.name}"
+    add_synonym_enabled = bool(synonymized.get(pref_key, False))
+
+    if (add_synonym_enabled is False) and node.children.exists():
         raise TreeBusinessRuleException(
             f'Synonymizing node "{node.fullname}" which has children',
             {"tree" : "Taxon",
-             "localizationKey" : "nodeSynonimizeWithChildren",
-             "node" : {
+            "localizationKey" : "nodeSynonimizeWithChildren",
+            "node" : {
                 "id" : node.id,
                 "rankid" : node.rankid,
                 "fullName" : node.fullname,
                 "children": list(node.children.values('id', 'fullname'))
-             },
-             "parent" : {
+            },
+            "parent" : {
                 "id" : into.id,
                 "rankid" : into.rankid,
                 "fullName" : into.fullname,
                 "parentid": into.parent.id,
                 "children": list(into.children.values('id', 'fullname'))
-             }})
+            }})
     node.acceptedchildren.update(**{node.accepted_id_attr().replace('_id', ''): target})
     #assuming synonym can't be synonymized
     field_change_infos = [
