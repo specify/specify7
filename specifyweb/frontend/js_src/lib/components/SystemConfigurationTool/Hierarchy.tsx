@@ -13,6 +13,8 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { setupToolText } from '../../localization/setupTool';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { type RA } from '../../utils/types';
 import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -27,10 +29,12 @@ import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
 import { tableLabel } from '../Preferences/UserDefinitions';
 import { renderFormFieldFactory } from '../SetupTool/SetupForm';
-import { disciplineTypeOptions, stepOrder, resources } from '../SetupTool/setupResources';
+import {
+  disciplineTypeOptions,
+  resources,
+  stepOrder,
+} from '../SetupTool/setupResources';
 import type { ResourceFormData } from '../SetupTool/types';
-import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
 import { CollapsibleSection } from './CollapsibleSection';
 import type { InstitutionData } from './Utils';
@@ -278,17 +282,9 @@ type DialogFormProps = {
   readonly resourceIndex: number;
   readonly title: LocalizedString;
   readonly step: number;
-  readonly refreshAllInfo: () => Promise<void>;
 };
 
-function DialogForm({
-  open,
-  onClose,
-  onSubmit,
-  title,
-  step,
-  refreshAllInfo,
-}: DialogFormProps) {
+function DialogForm({ open, onClose, onSubmit, title, step }: DialogFormProps) {
   const id = useId('config-tool');
 
   const formRef = React.useRef<HTMLFormElement | null>(null);
@@ -359,9 +355,8 @@ function DialogForm({
     <Dialog
       buttons={
         <>
-          <Submit.Save form={id('form')}>{commonText.create()}</Submit.Save>
-          <span className="-ml-2 flex-1" />
           <Button.Danger onClick={onClose}>{commonText.cancel()}</Button.Danger>
+          <Submit.Save form={id('form')}>{commonText.save()}</Submit.Save>
         </>
       }
       header={title}
@@ -371,7 +366,7 @@ function DialogForm({
         className="flex-1 overflow-auto gap-2"
         id={id('form')}
         onSubmit={() => {
-          onSubmit(formData)
+          onSubmit(formData);
         }}
       >
         {renderFormFields(resources[step].fields)}
@@ -443,23 +438,25 @@ export function Hierarchy({
   const isGeographyGlobal = systemInfo.geography_is_global;
 
   const [
-    addDisciplineGeoTree,
+    _addDisciplineGeoTree,
     openAddDisciplineGeoTree,
-    closeAddDisciplineGeoTree,
+    _closeAddDisciplineGeoTree,
   ] = useBooleanState(false);
   const [
-    addDisciplineTaxonTree,
+    _addDisciplineTaxonTree,
     openAddDisciplineTaxonTree,
-    closeAddDisciplineTaxonTree,
+    _closeAddDisciplineTaxonTree,
   ] = useBooleanState(false);
 
-  const [disciplineCreationOpen,
+  const [
+    disciplineCreationOpen,
     openDisciplineCreation,
-    closeDisciplineCreation
-  ] = useBooleanState(true);
+    closeDisciplineCreation,
+  ] = useBooleanState(false);
   const [disciplineStep, setDisciplineStep] = React.useState(0);
 
-  const [disciplineRelatedFormData, setDisciplineRelatedFormData] = React.useState<Record<string, any>>({});
+  const [_disciplineRelatedFormData, setDisciplineRelatedFormData] =
+    React.useState<Record<string, any>>({});
 
   const [isVertical, , , toggleOrientation] = useBooleanState(true);
 
@@ -592,78 +589,76 @@ export function Hierarchy({
             {/* DISCIPLINE CONFIG DIALOGS */}
             <DialogForm
               open={disciplineCreationOpen && disciplineStep === 0}
-              refreshAllInfo={refreshAllInfo}
               resourceIndex={stepOrder.indexOf('discipline')}
               step={stepOrder.indexOf('discipline')}
               title={tableLabel('Discipline')}
               onClose={closeDisciplineCreation}
               onSubmit={(formData) => {
-                setDisciplineRelatedFormData((prev) => ({
-                  ...prev,
-                  discipline: formData,
+                setDisciplineRelatedFormData((previous) => ({
+                  ...previous,
+                  discipline: formData.discipline,
                 }));
                 setDisciplineStep(1);
               }}
             />
             <DialogForm
               open={disciplineCreationOpen && disciplineStep === 1}
-              refreshAllInfo={refreshAllInfo}
               resourceIndex={stepOrder.indexOf('geographyTreeDef')}
               step={stepOrder.indexOf('geographyTreeDef')}
               title={setupToolText.addNewGeographyTree()}
               onClose={closeDisciplineCreation}
               onSubmit={(formData) => {
-                setDisciplineRelatedFormData((prev) => ({
-                  ...prev,
-                  geographyTreeDef: formData,
+                setDisciplineRelatedFormData((previous) => ({
+                  ...previous,
+                  geographyTreeDef: formData.geographyTreeDef,
                 }));
                 setDisciplineStep(2);
               }}
             />
             <DialogForm
               open={disciplineCreationOpen && disciplineStep === 2}
-              refreshAllInfo={refreshAllInfo}
               resourceIndex={stepOrder.indexOf('taxonTreeDef')}
               step={stepOrder.indexOf('taxonTreeDef')}
               title={setupToolText.addNewTaxonTree()}
               onClose={closeDisciplineCreation}
-              onSubmit={
-                (formData) => {
-                  // Store final form data and send creation request
-                  setDisciplineRelatedFormData((prev) => {
-                    const next = {
-                      ...prev,
-                      taxonTreeDef: formData,
-                    };
+              onSubmit={(formData) => {
+                // Store final form data and send creation request
+                setDisciplineRelatedFormData((previous) => {
+                  const next = {
+                    ...previous,
+                    taxonTreeDef: formData.taxonTreeDef,
+                  };
 
-                    void ajax('/setup_tool/discipline_and_trees/create/', {
-                      method: 'POST',
-                      headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify(next),
-                      errorMode: 'visible',
-                      expectedErrors: [Http.CONFLICT, Http.UNAVAILABLE],
+                  void ajax('/setup_tool/discipline_and_trees/create/', {
+                    method: 'POST',
+                    headers: {
+                      Accept: 'application/json',
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(next),
+                    errorMode: 'visible',
+                    expectedErrors: [Http.CONFLICT, Http.UNAVAILABLE],
+                  })
+                    .then(() => {
+                      void refreshAllInfo();
                     })
-                      .then(() => {
-                        void refreshAllInfo();
-                      })
-                      .catch((err) => {
-                        console.error('Failed to create discipline and trees:', err);
-                      });
+                    .catch((error) => {
+                      console.error(
+                        'Failed to create discipline and trees:',
+                        error
+                      );
+                    });
 
-                    return next;
-                  });
+                  return next;
+                });
 
-                  closeDisciplineCreation();
-                  setDisciplineStep(0);
+                closeDisciplineCreation();
+                setDisciplineStep(0);
+                void refreshAllInfo();
+                globalThis.setTimeout(() => {
                   void refreshAllInfo();
-                  globalThis.setTimeout(() => {
-                    void refreshAllInfo();
-                  }, 400);
-                }
-              }
+                }, 400);
+              }}
             />
           </CollapsibleSection>
         </li>
@@ -699,13 +694,15 @@ export function Hierarchy({
           <div className="flex mt-1">
             {addButton(
               () => {
-                // setNewResource(
-                //   new tables.Discipline.Resource({
-                //     division: `/api/specify/division/${division.id}/`,
-                //   })
-                // );
-                // handleNewResource();
-                // void refreshAllInfo();
+                /*
+                 * SetNewResource(
+                 *   new tables.Discipline.Resource({
+                 *     division: `/api/specify/division/${division.id}/`,
+                 *   })
+                 * );
+                 * handleNewResource();
+                 * void refreshAllInfo();
+                 */
                 openDisciplineCreation();
                 setDisciplineStep(0);
               },
