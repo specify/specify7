@@ -281,7 +281,7 @@ def apply_scoping_to_uploadtable(
 
     apply_scoping = lambda key, value: get_deferred_scoping(
         key, table.django_name, value, row, ut, context
-    ).apply_scoping(collection, context, row)
+    ).apply_scoping(collection, context, row, lock_dispatcher=lock_dispatcher)
 
     to_ones = {
         key: adjuster(apply_scoping(key, value), key)

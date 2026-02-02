@@ -128,7 +128,9 @@ def highest_autonumbering_value(
         raise ValueError(
             f"Formatter {formatter.format_name} does not need need autonumbered with {values}")
 
-    if get_lock_dispatcher is not None:
+    if get_lock_dispatcher is None:
+        lock_dispatcher = None
+    else:
         lock_dispatcher = get_lock_dispatcher()
         lock_dispatcher.acquire(model._meta.db_table, timeout=wait_for_lock)
 
