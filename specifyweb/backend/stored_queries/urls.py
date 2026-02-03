@@ -10,5 +10,6 @@ urlpatterns = [
     path('make_recordset/', views.make_recordset),
     path('merge_recordsets/', views.merge_recordsets),
     path('return_loan_preps/', views.return_loan_preps),
-    path('batch_edit/', views.batch_edit)
+    path('batch_edit/', views.batch_edit),
+    path('query/<int:id>/ids/', views.query_ids),
 ]

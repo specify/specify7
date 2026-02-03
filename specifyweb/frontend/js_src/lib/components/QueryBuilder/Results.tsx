@@ -37,6 +37,7 @@ import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
 import { LoadingContext } from '../Core/Contexts';
 import {ajax} from "../../utils/ajax";
+import { spec } from 'node:test/reporters';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -218,31 +219,25 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           
         )}
        {/* buttons for select All and invert selection*/}
-        {(totalCount ?? 0) > 0 && (totalCount ?? 0) < 1000000 && (
-           <Button.Small
-          onClick={(): void => {
-           loading( 
-            (async () => {
-              try {
-                const allIDs = await fetchAllIDs(table.name.toLowerCase(),
-                {},
-                totalCount ?? 0,
-                loading
-            );
+        {(totalCount ?? 0) > 0 && (totalCount ?? 0) < 10000000 && queryResource?.get("id") && (
+          <Button.Small
+    onClick={(): void => {
+      loading(
+        fetchAllIDs(queryResource, loading)
+          .then((allIDs) => {
             setSelectedRows(new Set(allIDs));
             handleSelected?.(allIDs);
-              } catch (error) {
-                console.error('Error fetching all IDs:', error);
-              }
-              
-            })()
-           );
-            }}
-            >
-            {interactionsText.selectAll()}
-          </Button.Small>
+          })
+          .catch((error) => {
+            console.error('Error fetching all IDs:', error);
+          })
+      );
+    }}
+  >
+    {interactionsText.selectAll()}
+  </Button.Small>
         )}
-          {(totalCount ?? 0) > 0  && (
+          {(totalCount ?? 0) > 0  && queryResource?.get("id") && (
           <Button.Small
           onClick={(): void => {
             if (!loadedResults) return;
@@ -518,33 +513,34 @@ export function canMerge(table: SpecifyTable): boolean {
 }
 
 async function fetchAllIDs(
-  modelName: string,
-  filters: Record<string, unknown>,
-  _totalCount: number, // unused but may be usefil is a limit parameter is needed in future
+queryResource: SpecifyResource<SpQuery> | undefined,
   loading: (promise: Promise<unknown>) => void
 ): Promise<RA<number>> {
+
+  const queryId = queryResource.get('id');
+
+  if (!queryResource) {
+    throw new Error('Query resource is undefined');
+  }
+  
   return new Promise<RA<number>>((resolve, reject) => {
     loading(
       (async () => {
         try {
-          const params = new URLSearchParams({
-            fields: "id",
-            limit: "0",
-            offset: "0",
-            domainfilter: "true",
-          
-            ...Object.fromEntries(
-              Object.entries(filters).map(([key, value]) => [key, String(value)])
-            ),
-          });
-          const response = await ajax<RA<[number]>>(
-            `/api/specify_rows/${modelName}/?${params}`,
+          console.log('Fetching all IDs for query');
+           const startTime = performance.now();
+           const {data} = await ajax<{readonly ids: RA<number>}>(
+            `/stored_query/query/${queryId}/ids/`,
             {
               headers: { Accept: 'application/json' },
-            }
+             errorMode: "visible",
+           }  
           );
-          const ids = response.data.map((row) => row[0]);
-          resolve(ids);
+
+          const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
+          console.log(`Fetched ${data.ids.length} IDs in ${elapsed} seconds`);
+  
+          resolve(data.ids);
         } catch (error) {
           reject(error);
         }
