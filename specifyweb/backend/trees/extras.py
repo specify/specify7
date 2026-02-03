@@ -221,6 +221,35 @@ def _get_collection_prefs_dict(collection, user) -> dict:
     except Exception:
         return {}
 
+def _expand_synonymization_actions_enabled(collection, user, tree_name: str) -> bool:
+    """
+    New CollectionPreferences shape:
+      treeManagement.expand_synonymization_actions.<tree_name> = true/false
+
+    Backward compat with legacy shape:
+      treeManagement.synonymized["sp7.allow_adding_child_to_synonymized_parent.<tree_name>"] = true/false
+    """
+    prefs = _get_collection_prefs_dict(collection, user)
+
+    tm = prefs.get("treeManagement") or {}
+    if not isinstance(tm, dict):
+        return False
+
+    # New shape
+    esa = tm.get("expand_synonymization_actions")
+    if isinstance(esa, dict) and tree_name in esa:
+        return bool(esa.get(tree_name))
+
+    # Legacy shape
+    syn = tm.get("synonymized")
+    if isinstance(syn, dict):
+        legacy_key = f"sp7.allow_adding_child_to_synonymized_parent.{tree_name}"
+        if legacy_key in syn:
+            return bool(syn.get(legacy_key))
+
+    # Default if nothing set
+    return False
+
 def adding_node(node, collection=None, user=None):
     logger.info('adding node %s', node)
     model = type(node)
@@ -235,8 +264,8 @@ def adding_node(node, collection=None, user=None):
         synonymized = treeManagement_pref.get('synonymized', {})
         synonymized = synonymized if isinstance(synonymized, dict) else {}
 
-        pref_key = f"sp7.allow_adding_child_to_synonymized_parent.{node.specify_model.name}"
-        add_synonym_enabled = bool(synonymized.get(pref_key, False))
+        tree_name = node.specify_model.name
+        add_synonym_enabled = _expand_synonymization_actions_enabled(collection, user, tree_name)
 
         if add_synonym_enabled is False:
             raise TreeBusinessRuleException(
