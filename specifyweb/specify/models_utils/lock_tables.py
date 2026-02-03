@@ -226,7 +226,7 @@ class LockDispatcher:
         final_name = LOCK_NAME_SEPARATOR.join(
             (*self.lock_prefix_parts, *name_parts))
 
-        return final_name.lower() if self.case_sensitive_names else final_name
+        return final_name.lower() if not self.case_sensitive_names else final_name
 
     @contextmanager
     def lock_and_release(self, name: str, timeout: int = 5):

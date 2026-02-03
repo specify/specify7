@@ -153,7 +153,7 @@ class ModelInstanceScope:
     def accession(self) -> Model:
         institution = models.Institution.objects.get()
         if institution.isaccessionsglobal:
-            return models.Institution.objects.get()
+            return institution
         return self.obj.division
 
     def conservevent(self) -> Model:
@@ -232,8 +232,26 @@ class ModelInstanceScope:
 class Scoping:
 
     @staticmethod
-    def from_model(model) -> ScopeType:
-        return ModelClassScope(model).scope_type
+    def scope_type_from_class(model_class) -> ScopeType:
+        """
+        Returns the ScopeType that a particular class can be scoped to.
+        If you have an instantiated instance of the class, prefer using the 
+        other methods like `from_instance` or `model_from_instance`
+
+        Example:
+        ```
+        loan_scope = Scoping.scope_type_from_class(models.Loan)
+        # ScopeType.Discipline
+
+        accession_scope = Scoping.scope_type_from_class(models.Accession)
+        # ScopeType.Institution if accessions are global else ScopeType.Division
+        ```
+
+        :param model_class:
+        :return:
+        :rtype: ScopeType
+        """
+        return ModelClassScope(model_class).scope_type
 
     @staticmethod
     def from_instance(obj: Model) -> tuple[ScopeType, Model]:
@@ -242,11 +260,44 @@ class Scoping:
 
     @staticmethod
     def model_from_instance(obj: Model) -> Model:
+        """
+        Returns the Model that the provided Model instance can be scoped to.
+        Usually always one of: Collection, Discipline, Division, or Institution
+
+        Example:
+        ```
+        my_co = Collectionobject.objects.get(some_filters)
+        scoped = Scoping.model_from_instance(my_co)
+        isinstance(scoped, models.Collection) #-> True
+        ```
+
+        :param obj:
+        :type obj: Model
+        :return:
+        :rtype: Model
+        """
         instance = ModelInstanceScope(obj)
         return instance.scope_model
 
     @staticmethod
     def get_hierarchy_model(collection, scope_type: ScopeType) -> Model:
+        """
+        Given a collection and desired ScopeType, returns the model associated
+        with the ScopeType.
+
+        Example:
+        ```
+        my_collection = Collection.objects.get(some_filters)
+        my_div = Scoping.get_hierarchy_model(ny_collection, ScopeType.Division)
+        my_dis = Scoping.get_hierarchy_model(ny_collection, ScopeType.Discipline)
+        ```
+
+        :param collection: Description
+        :param scope_type: Description
+        :type scope_type: ScopeType
+        :return:
+        :rtype: Model
+        """
         steps = [ScopeType.COLLECTION, ScopeType.DISCIPLINE,
                  ScopeType.DIVISION, ScopeType.INSTITUTION]
         num_steps = steps.index(scope_type)
@@ -257,9 +308,29 @@ class Scoping:
 
 
 def has_related(model_instance: Model, field_name: str) -> bool:
+    """
+    
+    :param model_instance: Description
+    :type model_instance: Model
+    :param field_name: Description
+    :type field_name: str
+    :return: Returns true if the model instance contains some non-None value in
+    the given field name
+    :rtype: bool
+    """
     return hasattr(model_instance, field_name) and getattr(model_instance, field_name, None) is not None
 
 def is_related(model_class: Model, field_name: str) -> bool:
+    """
+    
+    :param model_class: Description
+    :type model_class: Model
+    :param field_name: Description
+    :type field_name: str
+    :return: Returns true if the field name for the model class is a
+    relationship
+    :rtype: bool
+    """
     if not hasattr(model_class, field_name):
         return False
     field = getattr(model_class, field_name)

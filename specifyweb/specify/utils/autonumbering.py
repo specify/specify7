@@ -136,7 +136,7 @@ def highest_autonumbering_value(
 
     field_name = formatter.field_name.lower()
 
-    scope_type = Scoping.from_model(model)
+    scope_type = Scoping.scope_type_from_class(model)
     hierarchy_model = Scoping.get_hierarchy_model(collection, scope_type)
 
     stored_highest_value = (lock_dispatcher.highest_stored_value(
