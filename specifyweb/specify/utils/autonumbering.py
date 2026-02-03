@@ -2,6 +2,8 @@
 Autonumbering logic
 """
 
+import re
+
 from collections import defaultdict
 
 from django.db.models import Value, Case, When
@@ -44,13 +46,9 @@ class AutonumberingLockDispatcher(LockDispatcher):
         # We use Redis for IPC, to maintain the current "highest" autonumbering
         # value for each table + field
         self.redis = RedisConnection(decode_responses=True)
-        # Before the records are created within a transaction, they're stored
-        # locally within this dictonary
-        # The whole dictonary can be committed to Redis via commit_highest
-        # The key hierarchy is generally:
-        # table -> field -> scope -> scope_id = "highest value"
-        self.highest_in_flight: MutableMapping[str, MutableMapping[str, MutableMapping[str, MutableMapping[int, str]]]] = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(str))))
+        # Before the records are created within a transaction, and committed to
+        # Redis, they're stored locally within this dictonary
+        self.highest_in_flight: dict[str, str] = dict()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         super().__exit__(exc_type, exc_val, exc_tb)
@@ -58,10 +56,11 @@ class AutonumberingLockDispatcher(LockDispatcher):
     def highest_stored_value(self,
                              table_name: str,
                              field_name: str,
+                             auto_num_regex: str,
                              scope_name: str,
                              scope_id: int) -> str | None:
         key_name = self.autonumbering_redis_key(
-            table_name, field_name, scope_name, scope_id)
+            table_name, field_name, auto_num_regex, scope_name, scope_id)
         highest = RedisString(self.redis).get(key_name)
         if isinstance(highest, bytes):
             return highest.decode()
@@ -72,40 +71,34 @@ class AutonumberingLockDispatcher(LockDispatcher):
     def cache_highest(self,
                       table_name: str,
                       field_name: str,
+                      auto_num_regex: str,
                       scope_name: str,
                       scope_id: int,
                       value: str):
-        self.highest_in_flight[table_name.lower(
-        )][field_name.lower()][scope_name][scope_id] = value
+        key_name = self.autonumbering_redis_key(table_name, field_name, auto_num_regex, scope_name, scope_id)
+        self.highest_in_flight[key_name] = value
 
     def commit_highest(self):
-        for table_name, tables in self.highest_in_flight.items():
-            for field_name, fields in tables.items():
-                for scope_type, scope_ids in fields.items():
-                    for scope_id, value in scope_ids.items():
-                        self.set_highest_value(
-                            table_name, field_name, scope_type, scope_id, value)
+        for key_name, value in self.highest_in_flight.items():
+            self.set_highest_value(key_name, value)
         self.highest_in_flight.clear()
 
     def set_highest_value(self,
-                          table_name: str,
-                          field_name: str,
-                          scope_name: str,
-                          scope_id: int,
+                          key_name: str,
                           value: str,
                           time_to_live: int = 5):
-        key_name = self.autonumbering_redis_key(
-            table_name, field_name, scope_name, scope_id)
         RedisString(self.redis).set(key_name, value,
                                     time_to_live, override_existing=True)
 
     def autonumbering_redis_key(self,
                                 table_name: str,
                                 field_name: str,
+                                auto_num_regex: str,
                                 scope_name: str,
                                 scope_id: int):
         return self.lock_name(table_name,
                               field_name,
+                              auto_num_regex,
                               "highest",
                               scope_name,
                               str(scope_id))
@@ -139,11 +132,17 @@ def highest_autonumbering_value(
     scope_type = Scoping.scope_type_from_class(model)
     hierarchy_model = Scoping.get_hierarchy_model(collection, scope_type)
 
+    with_year = formatter.fillin_year(values)
+    auto_number_regex = formatter.autonumber_regexp(with_year)
+
     stored_highest_value = (lock_dispatcher.highest_stored_value(
-        model._meta.db_table, field_name, scope_type.name, hierarchy_model.id)
+        model._meta.db_table,
+        field_name,
+        auto_number_regex,
+        scope_type.name,
+        hierarchy_model.id)
         if lock_dispatcher is not None else None)
 
-    with_year = formatter.fillin_year(values)
     largest_in_database = formatter._autonumber_queryset(collection, model, field_name, with_year).annotate(
         greater_than_stored=Case(
             When(**{field_name + '__gt': stored_highest_value},
@@ -169,7 +168,12 @@ def highest_autonumbering_value(
 
     if lock_dispatcher is not None and lock_dispatcher.in_context:
         lock_dispatcher.cache_highest(
-            model._meta.db_table, field_name, scope_type.name, hierarchy_model.id, highest)
+            model._meta.db_table,
+            field_name,
+            auto_number_regex,
+            scope_type.name,
+            hierarchy_model.id,
+            highest)
 
     return highest
 
