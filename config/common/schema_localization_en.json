@@ -9492,7 +9492,7 @@
 				"type": "OneToOne",
 				"isrequired": false,
 				"weblinkname": null,
-				"name": "Parent COG",
+				"name": "Parent Group",
 				"desc": "Connects a Collection Object to its Collection Object Group"
 			},
 			"collectingevent": {
@@ -12274,7 +12274,7 @@
 				"type": "OneToOne",
 				"isrequired": false,
 				"weblinkname": null,
-				"name": "Parent COG",
+				"name": "Parent Group",
 				"desc": "This connects a Collection Object Group to its parent Collection Object Group, which is used for managing a hierarchy."
 			},
 			"collection": {
