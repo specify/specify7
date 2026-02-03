@@ -1,7 +1,8 @@
 import re
 
-from typing import NamedTuple, List
+from typing import NamedTuple, Tuple
 import logging
+from collections import defaultdict
 
 
 from django.db.models import Q, Count, Window, F
@@ -93,6 +94,68 @@ class FieldSchemaConfig(NamedTuple):
 def uncapitilize(string: str) -> str: 
     return string.lower() if len(string) <= 1 else string[0].lower() + string[1:]
 
+def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]):
+    if not rows:
+        return 0
+
+    # Group rows by which FK field they use, because the matching logic differs per FK column
+    groups: dict[str, list[dict]] = defaultdict(list)
+    fk_fields = ("itemname", "itemdesc", "containername", "containerdesc")
+
+    for r in rows:
+        present = [f for f in fk_fields if r.get(f) is not None]
+        if len(present) != 1:
+            raise ValueError(f"Each row must set exactly one FK among {fk_fields}. Got: {present}")
+        groups[present[0]].append(r)
+
+    total_created = 0
+
+    # Process each FK group with one query to find existing keys
+    for fk_field, group_rows in groups.items():
+        wanted: set[Tuple[str, str, int]] = set()
+        fk_ids: set[int] = set()
+        texts: set[str] = set()
+        languages: set[str] = set()
+
+        for r in group_rows:
+            lang = r["language"]
+            text = r["text"]
+            fk_obj = r[fk_field]
+            fk_id = fk_obj.pk
+
+            wanted.add((lang, text, fk_id))
+            fk_ids.add(fk_id)
+            texts.add(text)
+            languages.add(lang)
+
+        # Fetch existing rows for just these keys
+        filt = {
+            f"{fk_field}_id__in": list(fk_ids),
+            "text__in": list(texts),
+            "language__in": list(languages),
+        }
+        existing = set(
+            Splocaleitemstr.objects.filter(**filt).values_list("language", "text", f"{fk_field}_id")
+        )
+
+        to_create = []
+        for r in group_rows:
+            lang = r["language"]
+            text = r["text"]
+            fk_id = r[fk_field].pk
+            key = (lang, text, fk_id)
+
+            if key in existing:
+                continue
+
+            existing.add(key)
+            to_create.append(Splocaleitemstr(**r))
+
+        if to_create:
+            Splocaleitemstr.objects.bulk_create(to_create)
+            total_created += len(to_create)
+
+    return total_created
 
 def update_table_schema_config_with_defaults(
     table_name,
@@ -147,19 +210,20 @@ def update_table_schema_config_with_defaults(
         return
 
     # Create a Splocaleitemstr for the table name and description
-    item_str_bulk = []
+    item_str_rows = []
     for k, text in {
         "containername": table_name_str,
         "containerdesc": table_desc_str,
     }.items():
-        item_str = {
+        row = {
             "text": text,
             "language": "en",
             "version": 0,
+            k: sp_local_container,
         }
-        item_str[k] = sp_local_container
-        item_str_bulk.append(Splocaleitemstr(**item_str))
-    Splocaleitemstr.objects.bulk_create(item_str_bulk, ignore_conflicts=True)
+        item_str_rows.append(row)
+
+    bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, item_str_rows)
 
     for field in table.all_fields:
         field_defaults = None
@@ -278,19 +342,20 @@ def update_table_field_schema_config_with_defaults(
         picklistname=picklist_name
     )
 
-    itm_str_bulk = []
+    itm_str_rows = []
     for k, text in {
         "itemname": field_name_str,
         "itemdesc": field_desc_str,
     }.items():
-        itm_str = {
-            'text': text,
-            'language': 'en',
-            'version': 0,
+        row = {
+            "text": text,
+            "language": "en",
+            "version": 0,
+            k: sp_local_container_item,
         }
-        itm_str[k] = sp_local_container_item
-        itm_str_bulk.append(Splocaleitemstr(**itm_str))
-    Splocaleitemstr.objects.bulk_create(itm_str_bulk, ignore_conflicts=True)
+        itm_str_rows.append(row)
+
+    bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, itm_str_rows)
 
 def revert_table_field_schema_config(table_name, field_name, apps=global_apps):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
