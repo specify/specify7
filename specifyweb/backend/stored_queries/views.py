@@ -112,6 +112,7 @@ def query(request, id):
 @login_maybe_required
 @never_cache
 def query_ids(request, id):
+    """Executes the query with id <id> and returns only the record IDs of the results as JSON."""
     check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.execute])
     offset = int(request.GET.get('offset', 0))
 

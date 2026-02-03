@@ -39,7 +39,6 @@ import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
 import { LoadingContext } from '../Core/Contexts';
 import {ajax} from "../../utils/ajax";
-import { spec } from 'node:test/reporters';
 
 export type QueryResultRow = RA<number | string | null>;
 
