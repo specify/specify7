@@ -30,7 +30,12 @@
       { "lightrecommendations": { "ishidden": false, "name": "Light Recommendations", "desc": "Information about the recommended lighting conditions for the object or preparation." } },
       { "displayrecommendations": { "ishidden": false, "name": "Display Recommendations", "desc": "Information about the recommended display technique for the object or preparation." } },
       { "otherrecommendations": { "ishidden": false, "name": "Other Recommendations", "desc": "Miscellaneous recommendations for the object or preparation." } },
-      { "events": { "ishidden": false, "name": "Conservator Events", "desc": "Links to one or more Conservator Events." } }
+      { "events": { "ishidden": false, "name": "Conservator Events", "desc": "Links to one or more Conservator Events." } },
+      { "objLength": { "ishidden": true } },
+      { "width": { "ishidden": true } },
+      { "height": { "ishidden": true } },
+      { "units": { "ishidden": true } },
+      { "description": { "ishidden": true } }
     ]
   },
 
