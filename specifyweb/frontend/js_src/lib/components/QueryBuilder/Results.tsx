@@ -516,7 +516,7 @@ queryResource: SpecifyResource<SpQuery> | undefined,
   loading: (promise: Promise<unknown>) => void
 ): Promise<RA<number>> {
 
-  const queryId = queryResource.get('id');
+  const queryId = queryResource!.get('id');
 
   if (!queryResource) {
     throw new Error('Query resource is undefined');
