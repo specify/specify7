@@ -1,328 +1,43 @@
 {
   "collectionobject": {
     "items": [
-      {
-        "collectionObjectAttribute": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": "ManyToOne",
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Attributes",
-          "desc": "Attributes"
-        }
-      },
-      {
-        "paleoContext": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Geo Context",
-          "desc": "Geologic context about the specimen, including information on the chronostratigraphy, lithostratigraphy, and tectonic setting"
-        }
-      },
-      {
-        "collectingEvent": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Collecting Event",
-          "desc": "Collecting Event test",
-          "items": [
-            {
-              "stationFieldNumber": {
-                "format": null,
-                "ishidden": false,
-                "isuiformatter": false,
-                "picklistname": null,
-                "type": null,
-                "isrequired": false,
-                "weblinkname": null,
-                "name": "Collector Number",
-                "desc": "Number assigned by the collector"
-              }
-            },
-            {
-              "method": {
-                "format": null,
-                "ishidden": false,
-                "isuiformatter": false,
-                "picklistname": null,
-                "type": null,
-                "isrequired": false,
-                "weblinkname": null,
-                "name": "Method",
-                "desc": "Method used to collect the specimen"
-              }
-            },
-            {
-              "startTime": {
-                "format": null,
-                "ishidden": false,
-                "isuiformatter": false,
-                "picklistname": null,
-                "type": null,
-                "isrequired": false,
-                "weblinkname": null,
-                "name": "Start Time",
-                "desc": "Time, if known, that the collecting event started"
-              }
-            },
-            {
-              "endTime": {
-                "format": null,
-                "ishidden": false,
-                "isuiformatter": false,
-                "picklistname": null,
-                "type": null,
-                "isrequired": false,
-                "weblinkname": null,
-                "name": "End Time",
-                "desc": "Time, if known, that the collecting event ended"
-              }
-            },
-            {
-              "verbatimDate": {
-                "format": null,
-                "ishidden": true,
-                "isuiformatter": false,
-                "picklistname": null,
-                "type": null,
-                "isrequired": false,
-                "weblinkname": null,
-                "name": "Verbatim Date",
-                "desc": "The verbatim date as recorded by the collector"
-              }
-            },
-            {
-              "collectingtrip": {
-                "format": null,
-                "ishidden": false,
-                "isuiformatter": false,
-                "picklistname": null,
-                "type": null,
-                "isrequired": false,
-                "weblinkname": null,
-                "name": "Collecting Trip",
-                "desc": "The collecting trip associated with the event. Each collecting trip may have multiple collecting events."
-              }
-            }
-          ]
-        }
-      },
-      {
-        "taxon": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Taxon",
-          "desc": "Taxon",
-          "items": [
-            { "text10": { "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null, "name": "Approved Formula","desc":"The approved chemical formula for a mineral." } },
-            { "text11": { "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null, "name": "IMA Status","desc":"International Mineralogical Association status." } },
-            { "text12": { "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null, "name": "IMA No./Year","desc":"International Mineralogical Association number and year." } },
-            { "text13": { "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null, "name": "Country","desc":"The country where the mineral was found." } },
-            { "text14": { "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null, "name": "First Reference","desc":"The first reference for the mineral." } },
-            { "text15": { "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null, "name": "Second Reference","desc":"The second reference for the mineral." } },
-            { "text3":  { "format": null, "ishidden": true,  "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null, "name": "Code","desc":"Code" } }
-          ]
-        }
-      },
-      {
-        "determination": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Determination",
-          "desc": "Determination",
-          "items": [
-            {
-              "alternateName": {
-                "format": null,
-                "ishidden": false,
-                "isuiformatter": false,
-                "picklistname": null,
-                "type": null,
-                "isrequired": false,
-                "weblinkname": null,
-                "name": "Verbatim Name",
-                "desc": "The verbatim name of the specimen as recorded in the original source."
-              }
-            }
-          ]
-        }
-      }
-    ],
-    "format": null,
-    "ishidden": false,
-    "isuiformatter": null,
-    "picklistname": null,
-    "type": null,
-    "aggregator": null,
-    "defaultui": null,
-    "name": "Collection Object",
-    "desc": "Collection Object"
+      { "collectionObjectAttribute": { "name": "Attributes", "desc": "Attributes" } },
+      { "paleoContext": { "ishidden": false, "name": "Geologic Context", "desc": "Geologic context about the specimen, including information on the chronostratigraphy, lithostratigraphy, and tectonic setting" } },
+      { "collectingEvent": { "ishidden": false, "name": "Collecting Event", "desc": "Collecting Event test", "items": [
+        { "stationFieldNumber": { "ishidden": false, "name": "Collector Number", "desc": "Number assigned by the collector" } },
+        { "method": { "ishidden": false, "name": "Method", "desc": "Method used to collect the specimen" } },
+        { "startTime": { "ishidden": false, "name": "Start Time", "desc": "Time, if known, that the collecting event started" } },
+        { "endTime": { "ishidden": false, "name": "End Time", "desc": "Time, if known, that the collecting event ended" } },
+        { "verbatimDate": { "ishidden": true, "name": "Verbatim Date", "desc": "The verbatim date as recorded by the collector" } },
+        { "collectingtrip": { "ishidden": false, "name": "Collecting Trip", "desc": "The collecting trip associated with the event. Each collecting trip may have multiple collecting events." } }
+      ] } },
+      { "taxon": { "ishidden": false, "name": "Taxon", "desc": "Taxon", "items": [
+        { "text10": { "ishidden": false, "name": "Approved Formula", "desc": "The approved chemical formula for a mineral." } },
+        { "text11": { "ishidden": false, "name": "IMA Status", "desc": "International Mineralogical Association status." } },
+        { "text12": { "ishidden": false, "name": "IMA No./Year", "desc": "International Mineralogical Association number and year." } },
+        { "text13": { "ishidden": false, "name": "Country", "desc": "The country where the mineral was found." } },
+        { "text14": { "ishidden": false, "name": "First Reference", "desc": "The first reference for the mineral." } },
+        { "text15": { "ishidden": false, "name": "Second Reference", "desc": "The second reference for the mineral." } },
+        { "text3": { "ishidden": true, "name": "Code", "desc": "Code" } }
+      ] } },
+      { "determination": { "ishidden": false, "name": "Determination", "desc": "Determination", "items": [
+        { "alternateName": { "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null, "name": "Verbatim Name", "desc": "The verbatim name of the specimen as recorded in the original source." } }
+      ] } }
+    ]
   },
 
   "collectionobjectattribute": {
     "items": [
-      {
-        "text3": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Size",
-          "desc": "Size of the specimen"
-        }
-      },
-      {
-        "text4": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Weight (g)",
-          "desc": "Weight, in grams"
-        }
-      },
-      {
-        "text7": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Color",
-          "desc": "Color of the specimen"
-        }
-      },
-      {
-        "text8": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Streak",
-          "desc": "Streak of the mineral"
-        }
-      },
-      {
-        "text10": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Hardness",
-          "desc": "Hardness of the specimen"
-        }
-      },
-      {
-        "text11": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Crystal Form",
-          "desc": "Crystal form of the mineral"
-        }
-      },
-      {
-        "text13": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Cleavage",
-          "desc": "Cleavage of the mineral"
-        }
-      },
-      {
-        "number1": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Appraised Value",
-          "desc": "Current appraised value of the specimen"
-        }
-      },
-      {
-        "number2": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Current Value",
-          "desc": "Current value of the specimen"
-        }
-      },
-      {
-        "number3": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Insured Value",
-          "desc": "Insured value of the specimen"
-        }
-      }
-    ],
-    "format": null,
-    "ishidden": false,
-    "isuiformatter": null,
-    "picklistname": null,
-    "type": null,
-    "aggregator": null,
-    "defaultui": null,
-    "name": "Attribute",
-    "desc": "Attributes about the specimen"
+      { "text3": { "ishidden": false, "name": "Size", "desc": "Size of the specimen" } },
+      { "text4": { "ishidden": false, "name": "Weight (g)", "desc": "Weight, in grams" } },
+      { "text7": { "ishidden": false, "name": "Color", "desc": "Color of the specimen" } },
+      { "text8": { "ishidden": false, "name": "Streak", "desc": "Streak of the mineral" } },
+      { "text10": { "ishidden": false, "name": "Hardness", "desc": "Hardness of the specimen" } },
+      { "text11": { "ishidden": false,  "name": "Crystal Form", "desc": "Crystal form of the mineral" } },
+      { "text13": { "ishidden": false, "name": "Cleavage", "desc": "Cleavage of the mineral" } },
+      { "number1": { "ishidden": false, "name": "Appraised Value", "desc": "Current appraised value of the specimen" } },
+      { "number2": { "ishidden": false, "name": "Current Value", "desc": "Current value of the specimen" } },
+      { "number3": { "ishidden": false, "name": "Insured Value", "desc": "Insured value of the specimen" } }
+    ]
   }
 }

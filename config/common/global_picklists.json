@@ -424,7 +424,7 @@
       ]
     },
     {
-      "name": "AbsoluteDatingMethod",
+      "name": "AbsoluteAgeDatingMethod",
       "issystem": true,
       "type": 0,
       "readonly": true,
@@ -438,7 +438,7 @@
       ]
     },
     {
-      "name": "RelativeDatingMethod",
+      "name": "RelativeAgeDatingMethod",
       "issystem": true,
       "type": 0,
       "readonly": true,
