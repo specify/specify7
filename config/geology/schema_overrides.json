@@ -178,7 +178,12 @@
       { "author": { "ishidden": false, "name": "Author", "desc": "Author." } },
       { "text3": { "ishidden": false, "name": "Source", "desc": "Source." } },
       { "guid": { "ishidden": false, "name": "GUID", "desc": "Auto-generated or user-assigned GUID." } },
-      { "taxonattachments": { "ishidden": false, "name": "Attachments", "desc": "Attachments linked to the taxon record." } },
+      { "taxonattachments": { "ishidden": false } },
+      { "text10": { "ishidden": false, "name": "Valence Chemistry", "desc": "Valence chemistry of the mineral." } },
+      { "text11": { "ishidden": false, "name": "IMA Status", "desc": "IMA status of the mineral." } },
+      { "text12": { "ishidden": false, "name": "IMA Number", "desc": "IMA number of the mineral." } },
+      { "text13": { "ishidden": false, "name": "Country of Type Locality", "desc": "Country of the type locality for the mineral." } },
+      { "text14": { "ishidden": false, "name": "IMA Chemistry", "desc": "IMA chemistry of the mineral." } },
       { "ishybrid": { "ishidden": true } },
       { "source": { "ishidden": true } }
     ]

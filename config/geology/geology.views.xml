@@ -1256,6 +1256,25 @@
 					<cell type="field" id="guid" uitype="text" name="guid" colspan="7" readonly="true"/>
 				</row>
 				<row>
+					<cell type="separator" label="Mineral Information" colspan="10"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="IMAStatus"/>
+					<cell type="field" id="IMAStatus" uitype="text" name="text11"/>
+					<cell type="label" labelfor="IMANumber"/>
+					<cell type="field" id="IMANumber" uitype="text" name="text12"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="IMAChemistry"/>
+					<cell type="field" id="IMAChemistry" uitype="text" name="text14"/>
+					<cell type="label" labelfor="ValenceChemistry"/>
+					<cell type="field" id="ValenceChemistry" uitype="text" name="text10"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="CountryOfTypeLocality"/>
+					<cell type="field" id="CountryOfTypeLocality" uitype="text" name="text13"/>
+				</row>
+				<row>
 					<cell type="subview" viewname="TaxonSubform" id="acceptedChildren" name="acceptedChildren" colspan="10"/>
 				</row>
 				<row>
@@ -1265,7 +1284,7 @@
 					<cell type="subview" viewname="TaxonCitation" id="taxonCitations" name="taxonCitations" colspan="10"/>
 				</row>
 				<row>
-					<cell type="separator" label="ATTACHMENTS" colspan="10"/>
+					<cell type="separator" label="Attachments" colspan="10"/>
 				</row>
 				<row>
 					<cell type="subview" id="attachments" viewname="ObjectAttachment" name="taxonAttachments" colspan="10" initialize="btn=true;icon=TaxonAttachment"/>
