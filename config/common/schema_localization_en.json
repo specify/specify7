@@ -45825,7 +45825,7 @@
 			},
 			"hybridparent1": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -45836,7 +45836,7 @@
 			},
 			"hybridparent2": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
