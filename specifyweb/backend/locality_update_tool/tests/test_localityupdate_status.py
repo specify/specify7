@@ -36,7 +36,7 @@ class TestLocalityUpdateStatus(ApiTests):
         self._assertStatusCodeEqual(response, http.HttpResponseNotFound.status_code)
         self.assertEqual(response.content.decode(), f"The localityupdate with task id '{task_id}' was not found")
 
-    @patch("specifyweb.backend.locality_update_tool.views.update_locality_task.AsyncResult")
+    @patch("specifyweb.specify.views.update_locality_task.AsyncResult")
     def test_failed(self, AsyncResult: Mock):
         mock_result = Mock()
         mock_result.state = CELERY_TASK_STATE.FAILURE
@@ -70,7 +70,7 @@ class TestLocalityUpdateStatus(ApiTests):
             }
         )
 
-    @patch("specifyweb.backend.locality_update_tool.views.update_locality_task.AsyncResult")
+    @patch("specifyweb.specify.views.update_locality_task.AsyncResult")
     def test_parse_failed(self, AsyncResult: Mock):
         mock_result = Mock()
         mock_result.state = CELERY_TASK_STATE.SUCCESS
@@ -98,7 +98,7 @@ class TestLocalityUpdateStatus(ApiTests):
             }
         )
     
-    @patch("specifyweb.backend.locality_update_tool.views.update_locality_task.AsyncResult")
+    @patch("specifyweb.specify.views.update_locality_task.AsyncResult")
     def test_parsed(self, AsyncResult: Mock):
         mock_result = Mock()
         mock_result.state = CELERY_TASK_STATE.SUCCESS
@@ -149,7 +149,7 @@ class TestLocalityUpdateStatus(ApiTests):
             }
         )
 
-    @patch("specifyweb.backend.locality_update_tool.views.update_locality_task.AsyncResult")
+    @patch("specifyweb.specify.views.update_locality_task.AsyncResult")
     def test_succeeded(self, AsyncResult: Mock):
         mock_result = Mock()
         mock_result.state = LocalityUpdateStatus.SUCCEEDED
@@ -181,7 +181,7 @@ class TestLocalityUpdateStatus(ApiTests):
             }
         )
 
-    @patch("specifyweb.backend.locality_update_tool.views.update_locality_task.AsyncResult")
+    @patch("specifyweb.specify.views.update_locality_task.AsyncResult")
     def test_succeeded_locality_rows(self, AsyncResult: Mock):
         mock_result = Mock()
         mock_result.state = LocalityUpdateStatus.SUCCEEDED
