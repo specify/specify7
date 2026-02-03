@@ -959,7 +959,4 @@ expected_errors = {
       "cojo": ["onetomany", "onetoone"]
     }
   },
-  "SgrBatchMatchResultSet": {
-      "not_found": ['items']
-  }
 }

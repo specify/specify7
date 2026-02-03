@@ -6988,24 +6988,6 @@ class Migration(migrations.Migration):
                 'managed': False,
             },
         ),
-        migrations.CreateModel(
-            name='Sgrmatchconfiguration',
-            fields=[
-                ('id', models.BigAutoField(db_column='id', primary_key=True, serialize=False)),
-                ('name', models.CharField(db_column='name', max_length=128)),
-                ('similarityfields', models.TextField(db_column='similarityFields')),
-                ('serverurl', models.TextField(db_column='serverUrl')),
-                ('filterquery', models.CharField(db_column='filterQuery', max_length=128)),
-                ('queryfields', models.TextField(db_column='queryFields')),
-                ('remarks', models.TextField(db_column='remarks')),
-                ('boostinterestingterms', models.BooleanField(db_column='boostInterestingTerms')),
-                ('nrows', models.IntegerField(db_column='nRows')),
-            ],
-            options={
-                'db_table': 'sgrmatchconfiguration',
-                'ordering': (),
-            },
-        ),
         migrations.AlterField(
             model_name='taxontreedefitem',
             name='parent',
@@ -7024,37 +7006,6 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='Sgrbatchmatchresultset',
-            fields=[
-                ('id', models.BigAutoField(db_column='id', primary_key=True, serialize=False)),
-                ('inserttime', models.DateTimeField(db_column='insertTime', default=django.utils.timezone.now)),
-                ('name', models.CharField(db_column='name', max_length=128)),
-                ('recordsetid', models.BigIntegerField(blank=True, db_column='recordSetID', null=True)),
-                ('query', models.TextField(db_column='query')),
-                ('remarks', models.TextField(db_column='remarks')),
-                ('dbtableid', models.IntegerField(blank=True, db_column='dbTableId', null=True)),
-                ('matchconfiguration', models.ForeignKey(db_column='matchConfigurationId', on_delete=django.db.models.deletion.DO_NOTHING, related_name='batchmatchresultsets', to='specify.sgrmatchconfiguration')),
-            ],
-            options={
-                'db_table': 'sgrbatchmatchresultset',
-                'ordering': (),
-            },
-        ),
-        migrations.CreateModel(
-            name='Sgrbatchmatchresultitem',
-            fields=[
-                ('id', models.BigAutoField(db_column='id', primary_key=True, serialize=False)),
-                ('matchedid', models.CharField(db_column='matchedId', max_length=128)),
-                ('maxscore', models.FloatField(db_column='maxScore')),
-                ('qtime', models.IntegerField(db_column='qTime')),
-                ('batchmatchresultset', models.ForeignKey(db_column='batchMatchResultSetId', on_delete=django.db.models.deletion.CASCADE, related_name='items', to='specify.sgrbatchmatchresultset')),
-            ],
-            options={
-                'db_table': 'sgrbatchmatchresultitem',
-                'ordering': (),
-            },
-        ),
-        migrations.CreateModel(
             name='ProjectColobj',
             fields=[
                 ('project', models.ForeignKey(db_column='ProjectID', on_delete=specifyweb.specify.models.protect_with_blockers, primary_key=True, related_name='+', serialize=False, to='specify.project')),
@@ -7062,25 +7013,6 @@ class Migration(migrations.Migration):
             ],
             options={
                 'db_table': 'project_colobj',
-                'ordering': (),
-            },
-        ),
-        migrations.CreateModel(
-            name='Deaccessionpreparation',
-            fields=[
-                ('id', models.AutoField(db_column='DeaccessionPreparationID', primary_key=True, serialize=False)),
-                ('quantity', models.SmallIntegerField(blank=True, db_column='Quantity', null=True)),
-                ('remarks', models.TextField(blank=True, db_column='Remarks', null=True)),
-                ('timestampcreated', models.DateTimeField(db_column='TimestampCreated', default=django.utils.timezone.now)),
-                ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
-                ('version', models.IntegerField(blank=True, db_column='version', default=0, null=True)),
-                ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('deaccession', models.ForeignKey(db_column='DeaccessionID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.deaccession')),
-                ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('preparation', models.ForeignKey(db_column='PreparationID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.preparation')),
-            ],
-            options={
-                'db_table': 'deaccessionpreparation',
                 'ordering': (),
             },
         ),
@@ -7159,10 +7091,6 @@ class Migration(migrations.Migration):
                 'unique_together': {('spexportschemamapping', 'spexportschema')},
             },
         ),
-        migrations.AddIndex(
-            model_name='sgrbatchmatchresultset',
-            index=models.Index(fields=['matchconfiguration'], name='sgrbatchmatchresultsetfk2'),
-        ),
         migrations.AlterUniqueTogether(
             name='projectcolobj',
             unique_together={('project', 'collectionobject')},
@@ -7178,16 +7106,6 @@ class Migration(migrations.Migration):
         migrations.AlterUniqueTogether(
             name='autonumschcoll',
             unique_together={('collection', 'autonumberingscheme')},
-        ),
-        migrations.AlterField(
-            model_name='deaccessionpreparation',
-            name='deaccession',
-            field=models.ForeignKey(db_column='DeaccessionID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.deaccession'),
-        ),
-        migrations.AlterField(
-            model_name='deaccessionpreparation',
-            name='preparation',
-            field=models.ForeignKey(db_column='PreparationID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.preparation'),
         ),
         migrations.AlterField(
             model_name='taxontreedefitem',

@@ -8084,31 +8084,6 @@ class SpecifyuserSpprincipal(models.Model):
             models.Index(fields=['spprincipal'], name='FK81E18B5E99A7381A'),
         ]
 
-class Deaccessionpreparation(models.Model):
-    specify_model = datamodel.get_table_strict('deaccessionpreparation')
-
-    # ID Field
-    id = models.AutoField(primary_key=True, db_column='DeaccessionPreparationID')
-
-    # Fields
-    quantity = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Quantity', db_index=False)
-    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
-    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
-    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
-    version = models.IntegerField(blank=True, null=True, unique=False, db_column='version', db_index=False, default=0)
-
-    # Relationships: Many-to-One
-    deaccession = models.ForeignKey('Deaccession', db_column='DeaccessionID', related_name='+', null=False, on_delete=protect_with_blockers)
-    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    preparation = models.ForeignKey('Preparation', db_column='PreparationID', related_name='+', null=True, on_delete=protect_with_blockers)
-
-    class Meta:
-        db_table = 'deaccessionpreparation'
-        ordering = ()
-
-    save = partialmethod(custom_save)
-
 class ProjectColobj(models.Model):
     # specify_model = datamodel.get_table_strict('project_colobj')
 
@@ -8120,74 +8095,6 @@ class ProjectColobj(models.Model):
         db_table = 'project_colobj'
         ordering = ()
         unique_together = (('project', 'collectionobject'),)
-
-    save = partialmethod(custom_save)
-
-class Sgrbatchmatchresultitem(models.Model):
-    specify_model = datamodel.get_table_strict('sgrbatchmatchresultitem')
-
-    # ID Field
-    id = models.BigAutoField(primary_key=True, db_column='id')
-
-    # Fields
-    matchedid = models.CharField(blank=False, max_length=128, null=False, unique=False, db_column='matchedId', db_index=False)
-    maxscore = models.FloatField(blank=False, null=False, unique=False, db_column='maxScore', db_index=False)
-    qtime = models.IntegerField(blank=False, null=False, unique=False, db_column='qTime', db_index=False)
-
-    # Relationships: Many-to-One
-    batchmatchresultset = models.ForeignKey('SgrBatchMatchResultSet', db_column='batchMatchResultSetId', related_name='items', null=False, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = 'sgrbatchmatchresultitem'
-        ordering = ()
-
-    save = partialmethod(custom_save)
-
-class Sgrbatchmatchresultset(models.Model):
-    specify_model = datamodel.get_table_strict('sgrbatchmatchresultset')
-
-    # ID Field
-    id = models.BigAutoField(primary_key=True, db_column='id')
-
-    # Fields
-    inserttime = models.DateTimeField( blank=False, null=False, unique=False, db_column='insertTime', db_index=False, default=timezone.now)
-    name = models.CharField( blank=False, max_length=128, null=False, unique=False, db_column='name', db_index=False)
-    recordsetid = models.BigIntegerField( blank=True, null=True, unique=False, db_column='recordSetID', db_index=False)
-    query = models.TextField( blank=False, null=False, unique=False, db_column='query', db_index=False)
-    remarks = models.TextField( blank=False, null=False, unique=False, db_column='remarks', db_index=False)
-    dbtableid = models.IntegerField( blank=True, null=True, unique=False, db_column='dbTableId', db_index=False)
-
-    # Relationships
-    matchconfiguration = models.ForeignKey('Sgrmatchconfiguration', db_column='matchConfigurationId', related_name='batchmatchresultsets', null=False, on_delete=models.DO_NOTHING)
-
-    class Meta:
-        db_table = 'sgrbatchmatchresultset'
-        ordering = ()
-        indexes = [
-            models.Index(fields=['matchconfiguration'], name='sgrbatchmatchresultsetfk2'),
-        ]
-
-    save = partialmethod(custom_save)
-
-class Sgrmatchconfiguration(models.Model):
-    specify_model = datamodel.get_table_strict('sgrmatchconfiguration')
-
-    # ID Field
-    id = models.BigAutoField(primary_key=True, db_column='id')
-
-    # Fields
-    name = models.CharField(blank=False, max_length=128, null=False, unique=False, db_column='name', db_index=False)
-    similarityfields = models.TextField(blank=False, null=False, unique=False, db_column='similarityFields', db_index=False)
-    serverurl = models.TextField(blank=False, null=False, unique=False, db_column='serverUrl', db_index=False)
-    filterquery = models.CharField(blank=False, max_length=128, null=False, unique=False, db_column='filterQuery', db_index=False)
-    queryfields = models.TextField(blank=False, null=False, unique=False, db_column='queryFields', db_index=False)
-    remarks = models.TextField(blank=False, null=False, unique=False, db_column='remarks', db_index=False)
-    boostinterestingterms = models.BooleanField(blank=False, null=False, unique=False, db_column='boostInterestingTerms', db_index=False)
-    nrows = models.IntegerField(blank=False, null=False, unique=False, db_column='nRows', db_index=False)
-
-    class Meta:
-        db_table = 'sgrmatchconfiguration'
-        ordering = ()
 
     save = partialmethod(custom_save)
 

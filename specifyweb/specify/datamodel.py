@@ -8910,38 +8910,6 @@ datamodel = Datamodel(tables=[
     #     searchDialog=None,
     #     skip=True
     # ),
-    Table(
-        classname='edu.ku.brc.specify.datamodel.DeaccessionPreparation',
-        table='deaccessionpreparation',
-        tableId=1033,
-        idColumn='DeaccessionPreparationID',
-        idFieldName='deaccessionPreparationId',
-        idField=IdField(name='deaccessionPreparationId', column='DeaccessionPreparationID', type='java.lang.Integer'),
-        fields=[
-            Field(name='quantity', column='Quantity', indexed=False, unique=False, required=False, type='java.lang.Integer'),
-            Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
-            Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
-            Field(name='version', column='version', indexed=False, unique=False, required=False, type='java.lang.Integer')
-        ],
-        indexes=[
-            Index(name='FK6A06F1F47699B003', column_names=['CreatedByAgentID']),
-            Index(name='FK6A06F1F45327F942', column_names=['ModifiedByAgentID']),
-            Index(name='FK6A06F1F4BE26B05E', column_names=['DeaccessionID']),
-            Index(name='FK6A06F1F418627F06', column_names=['PreparationID'])
-        ],
-        relationships=[
-            Relationship(name='deaccession', type='many-to-one', required=True, relatedModelName='Deaccession', column='DeaccessionID'),
-            Relationship(name='createdByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='CreatedByAgentID'),
-            Relationship(name='modifiedByAgent', type='many-to-one', required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
-            Relationship(name='preparation', type='many-to-one', required=False, relatedModelName='Preparation', column='PreparationID')
-        ],
-        fieldAliases=[
-
-        ],
-        view=None,
-        searchDialog=None
-    ),
     # Table(
     #     classname='edu.ku.brc.specify.datamodel.ProjectColobj',
     #     table='project_colobj',
@@ -8970,94 +8938,6 @@ datamodel = Datamodel(tables=[
     #     searchDialog=None,
     #     skip=True
     # ),
-    Table(
-        classname='edu.ku.brc.specify.datamodel.SgrBatchMatchResultItem',
-        table='sgrbatchmatchresultitem',
-        tableId=1035,
-        idColumn='id',
-        idFieldName='id',
-        idField=IdField(name='id', column='id', type='java.lang.Long'),
-        fields=[
-            Field(name='matchedId', column='matchedId', indexed=False, unique=False, required=True, type='java.lang.String', length=128),
-            Field(name='maxScore', column='maxScore', indexed=False, unique=False, required=True, type='java.lang.Double'),
-            Field(name='qTime', column='qTime', indexed=False, unique=False, required=True, type='java.lang.Integer')
-        ],
-        indexes=[
-            Index(name='sgrbatchmatchresultitemfk1', column_names=['batchMatchResultSetId'])
-        ],
-        relationships=[
-            Relationship(name='batchMatchResultSet', type='many-to-one', required=True, relatedModelName='SgrBatchMatchResultSet', column='batchMatchResultSetId')
-        ],
-        fieldAliases=[
-
-        ],
-        view=None,
-        searchDialog=None
-    ),
-    Table(
-        classname='edu.ku.brc.specify.datamodel.SgrBatchMatchResultSet',
-        table='sgrbatchmatchresultset',
-        tableId=1039,
-        idColumn='id',
-        idFieldName='id',
-        idField=IdField(name='id', column='id', type='java.lang.Long'),
-        fields=[
-            Field(name='insertTime', column='insertTime', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
-            Field(name='name', column='name', indexed=False, unique=False, required=True, type='java.lang.String', length=128),
-            Field(name='recordSetID', column='recordSetID', indexed=False, unique=False, required=False, type='java.lang.Long'),
-            Field(name='query', column='query', indexed=False, unique=False, required=True, type='text', length=65535),
-            Field(name='remarks', column='remarks', indexed=False, unique=False, required=True, type='text', length=65535),
-            Field(name='dbTableId', column='dbTableId', indexed=False, unique=False, required=False, type='java.lang.Integer'),
-        ],
-        indexes=[
-            Index(name='sgrbatchmatchresultsetfk2', column_names=['matchConfigurationId']),
-        ],
-        relationships=[
-            Relationship(
-                name='items',
-                type='one-to-many',
-                required=False,
-                relatedModelName='SgrBatchMatchResultItem',
-                otherSideName='batchMatchResultSet',
-            ),
-            Relationship(
-                name='matchConfiguration',
-                type='many-to-one',
-                required=True,
-                relatedModelName='SgrMatchConfiguration',
-                column='matchConfigurationId',
-                otherSideName='batchMatchResultSets',
-            ),
-        ],
-        fieldAliases=[],
-        view=None,
-        searchDialog=None,
-    ),
-    Table(
-        classname='edu.ku.brc.specify.datamodel.SgrMatchConfiguration',
-        table='sgrmatchconfiguration',
-        tableId=1040,
-        idColumn='id',
-        idFieldName='id',
-        idField=IdField(name='id', column='id', type='java.lang.Long'),
-        fields=[
-            Field(name='name', column='name', indexed=False, unique=False, required=True, type='java.lang.String', length=128),
-            Field(name='similarityFields', column='similarityFields', indexed=False, unique=False, required=True, type='text', length=65535),
-            Field(name='serverUrl', column='serverUrl', indexed=False, unique=False, required=True, type='text', length=65535),
-            Field(name='filterQuery', column='filterQuery', indexed=False, unique=False, required=True, type='java.lang.String', length=128),
-            Field(name='queryFields', column='queryFields', indexed=False, unique=False, required=True, type='text', length=65535),
-            Field(name='remarks', column='remarks', indexed=False, unique=False, required=True, type='text', length=65535),
-            Field(name='boostInterestingTerms', column='boostInterestingTerms', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
-            Field(name='nRows', column='nRows', indexed=False, unique=False, required=True, type='java.lang.Integer'),
-        ],
-        indexes=[],
-        relationships=[
-            Relationship(name='batchMatchResultSets', type='one-to-many', required=False, relatedModelName='SgrBatchMatchResultSet', otherSideName='matchConfiguration'),
-        ],
-        fieldAliases=[],
-        view=None,
-        searchDialog=None
-    ),
     # Table(
     #     classname='edu.ku.brc.specify.datamodel.SpSchemaMapping',
     #     table='sp_schema_mapping',

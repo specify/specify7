@@ -305,5 +305,4 @@ expected_errors = {
     "CollectionObjectGroup": {
         "incorrect_direction": {"cojo": ["onetomany", "onetoone"]}
     },
-    "SgrBatchMatchResultSet": {"not_found": ["items"]},
 }

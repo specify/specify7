@@ -221,14 +221,10 @@ model_names_by_table_id = {
     1030:'AutonumschColl',
     1031:'AutonumschDiv',
     1032:'AutonumschDsp',
-    1033:'Deaccessionpreparation',
-    1034:'ProjectColobj',
-    1035:'Sgrbatchmatchresultitem',
-    1036:'SpSchemaMapping',
-    1037:'SpecifyuserSpprincipal',
-    1038:'SpprincipalSppermission',
-    1039: 'Sgrbatchmatchresultset',
-    1040: 'Sgrmatchconfiguration',
+    1033:'ProjectColobj',
+    1034:'SpSchemaMapping',
+    1035:'SpecifyuserSpprincipal',
+    1036:'SpprincipalSppermission',
 }
 
 model_names_by_app = {
@@ -463,14 +459,10 @@ model_names_by_app = {
         'AutonumschColl',
         'AutonumschDiv',
         'AutonumschDsp',
-        'Deaccessionpreparation',
         'ProjectColobj',
-        'Sgrbatchmatchresultitem',
         'SpSchemaMapping',
         'SpecifyuserSpprincipal',
         'SpprincipalSppermission',
-        'Sgrbatchmatchresultset',
-        'Sgrmatchconfiguration',
     }
 }
 
