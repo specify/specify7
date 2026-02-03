@@ -217,8 +217,8 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
 
           
         )}
-       {/* buttons for select All and invert selection*/}
-        {(totalCount ?? 0) > 0 && (totalCount ?? 0) < 10000000 && queryResource?.get("id") && (
+       {/* Buttons for select All and invert selection*/}
+        {(totalCount ?? 0) > 0 && (totalCount ?? 0) < 10_000_000 && queryResource?.get("id") && (
           <Button.Small
     onClick={(): void => {
       loading(
