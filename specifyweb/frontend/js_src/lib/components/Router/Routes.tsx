@@ -365,7 +365,6 @@ export const routes: RA<EnhancedRoute> = [
     title: preferencesText.preferences(),
     element: () =>
       import('../Preferences').then(
-        
         ({ PreferencesWrapper }) => PreferencesWrapper
       ),
   },
